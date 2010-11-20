@@ -16,7 +16,7 @@ libavcodec (AVI), imagemagick (MIFF), yuv420p, MNG and others.
 Links
 
 Web:  	http://synfig.org/
-Code: 	http://synfig.org/Dev:Source_code
+Code: 	http://synfig.org/wiki/Dev:Source_code
 Proj: 	http://sourceforge.net/projects/synfig/
 Forums:	http://synfig.org/forums
 IRC:  	irc://irc.freenode.net/synfig
@@ -37,6 +37,7 @@ Copyright 2009-2010 Nikita Kitaev
 Copyright 2009-2010 Konstantin Dmitriev
 Copyright 2009 Carlos A. Sosa Navarro
 Copyright 2010 Brendon Higgins
+Copyright 2010 Ray Frederic
 
 
 Licence

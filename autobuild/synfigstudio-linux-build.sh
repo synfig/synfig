@@ -665,6 +665,14 @@ initialize()
 			fi
 			BREED=${BREED%_master}
 		fi
+		if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
+			if [[ $BREED == 'master' ]]; then
+				BREED=rc${VERSION##*-RC}
+			else
+				BREED=rc${VERSION##*-RC}.$BREED
+			fi
+			VERSION=${VERSION%%-*}
+		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}_debug
 		REVISION=`git show --pretty=medium $SELECTEDREVISION | head -n 3 |tail -n 1 | sed 's/Date: *//' | sed 's/ +.*//'`
 		REVISION=`date --date="${REVISION}" +%Y%m%d`
@@ -751,14 +759,14 @@ mkpackage()
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
 		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk2.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
-		for ARCH in i386 amd64; do
+		for ARCH in amd64 i386; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'
 		else
 			SETARCH='linux64'
 		fi
 		if ! [ -e $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id ]; then
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://ftp.us.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id

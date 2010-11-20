@@ -31,6 +31,7 @@
 #	include <config.h>
 #endif
 
+#include <sys/stat.h>
 #include "dock_paledit.h"
 #include "../../widgets/widget_color.h"
 #include <gtkmm/frame.h>
@@ -119,7 +120,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Dock_PalEdit::Dock_PalEdit():
-	Dockable("pal_edit",_("Palette Editor"),Gtk::StockID("gtk-select-color")),
+	Dockable("pal_edit",_("Palette Editor"),Gtk::StockID("synfig-palette")),
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {

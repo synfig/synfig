@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig Core 0.62.01\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2010-08-04 01:11+0800\n"
+"POT-Creation-Date: 2010-10-15 00:31+0800\n"
 "PO-Revision-Date: 2010-08-04 14:23+0800\n"
-"Last-Translator: Yu Chen <jcomee@gmail.com>\n"
+"Last-Translator: Yu Chen (jcome)<jcomee@gmail.com>\n"
 "Language-Team: Chinese (simplified) <translation-team-zh-cn@lists."
 "sourceforge.net>\n"
 "Language: zh_CN\n"
@@ -28,42 +28,42 @@ msgstr "填充矩形"
 msgid "Example"
 msgstr "示例"
 
-#: src/modules/mod_example/filledrect.cpp:117
-#: src/modules/mod_example/simplecircle.cpp:104
-#: src/modules/lyr_freetype/lyr_freetype.cpp:513
-#: src/modules/lyr_std/shade.cpp:375
+#: src/modules/mod_example/filledrect.cpp:119
+#: src/modules/mod_example/simplecircle.cpp:106
+#: src/modules/lyr_freetype/lyr_freetype.cpp:515
+#: src/modules/lyr_std/shade.cpp:377
 #: src/modules/mod_geometry/checkerboard.cpp:121
-#: src/modules/mod_geometry/circle.cpp:125
-#: src/modules/mod_geometry/rectangle.cpp:122 src/synfig/layer_shape.cpp:1192
-#: src/synfig/layer_solidcolor.cpp:99
+#: src/modules/mod_geometry/circle.cpp:127
+#: src/modules/mod_geometry/rectangle.cpp:124 src/synfig/layer_shape.cpp:1192
+#: src/synfig/layer_solidcolor.cpp:101
 msgid "Color"
 msgstr "颜色"
 
-#: src/modules/mod_example/filledrect.cpp:121
-#: src/modules/mod_geometry/rectangle.cpp:126
-#: src/modules/mod_gradient/lineargradient.cpp:184
+#: src/modules/mod_example/filledrect.cpp:123
+#: src/modules/mod_geometry/rectangle.cpp:128
+#: src/modules/mod_gradient/lineargradient.cpp:189
 msgid "Point 1"
 msgstr "点1"
 
-#: src/modules/mod_example/filledrect.cpp:126
-#: src/modules/mod_geometry/rectangle.cpp:131
-#: src/modules/mod_gradient/lineargradient.cpp:188
+#: src/modules/mod_example/filledrect.cpp:128
+#: src/modules/mod_geometry/rectangle.cpp:133
+#: src/modules/mod_gradient/lineargradient.cpp:193
 msgid "Point 2"
 msgstr "点2"
 
-#: src/modules/mod_example/filledrect.cpp:130
+#: src/modules/mod_example/filledrect.cpp:132
 msgid "Feather X"
 msgstr "羽化 X"
 
-#: src/modules/mod_example/filledrect.cpp:134
+#: src/modules/mod_example/filledrect.cpp:136
 msgid "Feather Y"
 msgstr "羽化 Y"
 
-#: src/modules/mod_example/filledrect.cpp:138 src/modules/lyr_std/bevel.cpp:67
+#: src/modules/mod_example/filledrect.cpp:140 src/modules/lyr_std/bevel.cpp:67
 msgid "Bevel"
 msgstr "倒角"
 
-#: src/modules/mod_example/filledrect.cpp:142
+#: src/modules/mod_example/filledrect.cpp:144
 msgid "Keep Bevel Circular"
 msgstr "保持倒角圆"
 
@@ -71,40 +71,39 @@ msgstr "保持倒角圆"
 msgid "Metaballs"
 msgstr "变形球"
 
-#: src/modules/mod_example/metaballs.cpp:132
-#: src/modules/mod_gradient/conicalgradient.cpp:106
-#: src/modules/mod_gradient/curvegradient.cpp:546
-#: src/modules/mod_gradient/lineargradient.cpp:191
-#: src/modules/mod_gradient/radialgradient.cpp:110
-#: src/modules/mod_gradient/spiralgradient.cpp:109
-#: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
+#: src/modules/mod_example/metaballs.cpp:134
+#: src/modules/mod_gradient/conicalgradient.cpp:108
+#: src/modules/mod_gradient/curvegradient.cpp:549
+#: src/modules/mod_gradient/lineargradient.cpp:196
+#: src/modules/mod_gradient/radialgradient.cpp:112
+#: src/modules/mod_gradient/spiralgradient.cpp:111
+#: src/modules/mod_noise/noise.cpp:258 src/modules/mod_particle/plant.cpp:401
 #: src/synfig/valuenode_gradientrotate.cpp:148
 #: src/synfig/valuenode_repeat_gradient.cpp:186
 msgid "Gradient"
 msgstr "渐变"
 
-#: src/modules/mod_example/metaballs.cpp:136
-#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:248
-msgid "Points"
-msgstr "尖角"
+#: src/modules/mod_example/metaballs.cpp:138
+msgid "Balls"
+msgstr "球"
 
-#: src/modules/mod_example/metaballs.cpp:140
+#: src/modules/mod_example/metaballs.cpp:142
 msgid "Radii"
 msgstr "半径"
 
-#: src/modules/mod_example/metaballs.cpp:144
+#: src/modules/mod_example/metaballs.cpp:146
 msgid "Weights"
 msgstr "权重"
 
-#: src/modules/mod_example/metaballs.cpp:148
+#: src/modules/mod_example/metaballs.cpp:150
 msgid "Gradient Left"
 msgstr "渐变左边"
 
-#: src/modules/mod_example/metaballs.cpp:152
+#: src/modules/mod_example/metaballs.cpp:154
 msgid "Gradient Right"
 msgstr "渐变右边"
 
-#: src/modules/mod_example/metaballs.cpp:156
+#: src/modules/mod_example/metaballs.cpp:158
 msgid "Positive Only"
 msgstr "仅正向"
 
@@ -112,42 +111,42 @@ msgstr "仅正向"
 msgid "Simple Circle"
 msgstr "简单圆形"
 
-#: src/modules/mod_example/simplecircle.cpp:108
-#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:109
-#: src/modules/lyr_std/zoom.cpp:101
-#: src/modules/mod_gradient/conicalgradient.cpp:110
-#: src/modules/mod_gradient/radialgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:113
+#: src/modules/mod_example/simplecircle.cpp:110
+#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:111
+#: src/modules/lyr_std/zoom.cpp:103
+#: src/modules/mod_gradient/conicalgradient.cpp:112
+#: src/modules/mod_gradient/radialgradient.cpp:116
+#: src/modules/mod_gradient/spiralgradient.cpp:115
 msgid "Center"
 msgstr "中心"
 
-#: src/modules/mod_example/simplecircle.cpp:112
-#: src/modules/lyr_std/sphere_distort.cpp:147
-#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
-#: src/modules/mod_gradient/radialgradient.cpp:118
-#: src/modules/mod_gradient/spiralgradient.cpp:117
+#: src/modules/mod_example/simplecircle.cpp:114
+#: src/modules/lyr_std/sphere_distort.cpp:149
+#: src/modules/lyr_std/twirl.cpp:115 src/modules/mod_geometry/circle.cpp:130
+#: src/modules/mod_gradient/radialgradient.cpp:120
+#: src/modules/mod_gradient/spiralgradient.cpp:119
 #: src/modules/mod_noise/valuenode_random.cpp:248
 #: src/synfig/valuenode_radialcomposite.cpp:200
 msgid "Radius"
 msgstr "半径"
 
-#: src/modules/mod_example/simplecircle.cpp:113
-#: src/modules/lyr_std/twirl.cpp:114
-#: src/modules/mod_gradient/radialgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:118
+#: src/modules/mod_example/simplecircle.cpp:115
+#: src/modules/lyr_std/twirl.cpp:116
+#: src/modules/mod_gradient/radialgradient.cpp:121
+#: src/modules/mod_gradient/spiralgradient.cpp:120
 msgid "This is the radius of the circle"
 msgstr "这是圆的半径"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:63
-#: src/modules/lyr_freetype/lyr_freetype.cpp:507
+#: src/modules/lyr_freetype/lyr_freetype.cpp:509
 msgid "Text"
 msgstr "文本"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:64
-#: src/modules/lyr_std/import.cpp:59 src/modules/lyr_std/supersample.cpp:56
-#: src/modules/lyr_std/timeloop.cpp:58 src/modules/lyr_std/xorpattern.cpp:55
-#: src/modules/mod_particle/plant.cpp:69 src/synfig/layer_duplicate.cpp:57
-#: src/synfig/layer_pastecanvas.cpp:78
+#: src/modules/lyr_std/import.cpp:59 src/modules/lyr_std/stroboscope.cpp:60
+#: src/modules/lyr_std/supersample.cpp:56 src/modules/lyr_std/timeloop.cpp:58
+#: src/modules/lyr_std/xorpattern.cpp:55 src/modules/mod_particle/plant.cpp:69
+#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:78
 msgid "Other"
 msgstr "其他"
 
@@ -155,169 +154,169 @@ msgstr "其他"
 msgid "Text Layer"
 msgstr "文本层"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:380
+#: src/modules/lyr_freetype/lyr_freetype.cpp:382
 msgid "unable to initialize"
 msgstr "未能初始化"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:399
+#: src/modules/lyr_freetype/lyr_freetype.cpp:401
 msgid "empty font set"
 msgstr "空字体集"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:508
+#: src/modules/lyr_freetype/lyr_freetype.cpp:510
 msgid "Text to Render"
 msgstr "要渲染的文本"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:514
+#: src/modules/lyr_freetype/lyr_freetype.cpp:516
 msgid "Color of the text"
 msgstr "文本的颜色"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:518
+#: src/modules/lyr_freetype/lyr_freetype.cpp:520
 msgid "Font Family"
 msgstr "字体族"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:523
+#: src/modules/lyr_freetype/lyr_freetype.cpp:525
 msgid "Style"
 msgstr "风格"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:525
-#: src/modules/lyr_freetype/lyr_freetype.cpp:535
+#: src/modules/lyr_freetype/lyr_freetype.cpp:527
+#: src/modules/lyr_freetype/lyr_freetype.cpp:537
 msgid "Normal"
 msgstr "普通"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:526
+#: src/modules/lyr_freetype/lyr_freetype.cpp:528
 msgid "Oblique"
 msgstr "斜的"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:527
+#: src/modules/lyr_freetype/lyr_freetype.cpp:529
 msgid "Italic"
 msgstr "斜体"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:531
+#: src/modules/lyr_freetype/lyr_freetype.cpp:533
 msgid "Weight"
 msgstr "浓淡"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:533
+#: src/modules/lyr_freetype/lyr_freetype.cpp:535
 msgid "Ultralight"
 msgstr "超淡"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:534
+#: src/modules/lyr_freetype/lyr_freetype.cpp:536
 msgid "light"
 msgstr "淡"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:536
-msgid "Bold"
-msgstr "粗体"
-
-#: src/modules/lyr_freetype/lyr_freetype.cpp:537
-msgid "Ultrabold"
-msgstr "超粗体"
-
 #: src/modules/lyr_freetype/lyr_freetype.cpp:538
-msgid "Heavy"
-msgstr ""
+msgid "Bold"
+msgstr "黑体"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:541
+#: src/modules/lyr_freetype/lyr_freetype.cpp:539
+msgid "Ultrabold"
+msgstr "超黑"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:540
+msgid "Heavy"
+msgstr "巨黑"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:543
 msgid "Horizontal Spacing"
 msgstr "字距"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:542
+#: src/modules/lyr_freetype/lyr_freetype.cpp:544
 msgid "Describes how close glyphs are horizontally"
 msgstr "描述水平方向的文字之间的靠近程度"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:546
+#: src/modules/lyr_freetype/lyr_freetype.cpp:548
 msgid "Vertical Spacing"
 msgstr "垂直行距"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:547
+#: src/modules/lyr_freetype/lyr_freetype.cpp:549
 msgid "Describes how close lines of text are vertically"
 msgstr "描述垂直方向的文本行与行之间的靠近程度"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:551
-#: src/modules/lyr_std/shade.cpp:381 src/modules/lyr_std/xorpattern.cpp:125
-#: src/modules/mod_filter/blur.cpp:242
-#: src/modules/mod_filter/radialblur.cpp:111
+#: src/modules/lyr_freetype/lyr_freetype.cpp:553
+#: src/modules/lyr_std/shade.cpp:383 src/modules/lyr_std/xorpattern.cpp:127
+#: src/modules/mod_filter/blur.cpp:245
+#: src/modules/mod_filter/radialblur.cpp:115
 #: src/modules/mod_geometry/checkerboard.cpp:128
-#: src/modules/mod_noise/distort.cpp:201 src/modules/mod_noise/noise.cpp:256
+#: src/modules/mod_noise/distort.cpp:208 src/modules/mod_noise/noise.cpp:264
 msgid "Size"
 msgstr "大小"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:552
+#: src/modules/lyr_freetype/lyr_freetype.cpp:554
 msgid "Size of the text"
 msgstr "文本的大小"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:559
+#: src/modules/lyr_freetype/lyr_freetype.cpp:561
 msgid "Orientation"
 msgstr "方向"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:560
+#: src/modules/lyr_freetype/lyr_freetype.cpp:562
 msgid "Text Orientation"
 msgstr "文本的方向"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:565
-#: src/modules/lyr_std/insideout.cpp:141 src/modules/lyr_std/rotate.cpp:112
-#: src/modules/lyr_std/shade.cpp:378 src/modules/lyr_std/translate.cpp:97
-#: src/modules/lyr_std/curvewarp.cpp:386
-#: src/modules/lyr_std/xorpattern.cpp:122
-#: src/modules/mod_filter/radialblur.cpp:106
+#: src/modules/lyr_freetype/lyr_freetype.cpp:567
+#: src/modules/lyr_std/insideout.cpp:143 src/modules/lyr_std/rotate.cpp:115
+#: src/modules/lyr_std/shade.cpp:380 src/modules/lyr_std/translate.cpp:99
+#: src/modules/lyr_std/curvewarp.cpp:388
+#: src/modules/lyr_std/xorpattern.cpp:124
+#: src/modules/mod_filter/radialblur.cpp:110
 #: src/modules/mod_geometry/checkerboard.cpp:125
-#: src/modules/mod_geometry/circle.cpp:137
-#: src/modules/mod_gradient/curvegradient.cpp:533
-#: src/modules/mod_particle/plant.cpp:390 src/synfig/layer_pastecanvas.cpp:128
+#: src/modules/mod_geometry/circle.cpp:139
+#: src/modules/mod_gradient/curvegradient.cpp:536
+#: src/modules/mod_particle/plant.cpp:397 src/synfig/layer_pastecanvas.cpp:131
 #: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:295
 msgid "Origin"
 msgstr "原点"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:566
+#: src/modules/lyr_freetype/lyr_freetype.cpp:568
 msgid "Text Position"
 msgstr "文本的位置"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:570
+#: src/modules/lyr_freetype/lyr_freetype.cpp:572
 msgid "Font"
 msgstr "字体"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:571
+#: src/modules/lyr_freetype/lyr_freetype.cpp:573
 msgid "Filename of the font to use"
 msgstr "要用的字体的文件名"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:578
+#: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Kerning"
 msgstr "字距微调"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:579
+#: src/modules/lyr_freetype/lyr_freetype.cpp:581
 msgid "Enables/Disables font kerning (If the font supports it)"
 msgstr "打开/关闭字体字距微调（如果该字体支持这个功能）"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:583
+#: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Sharpen Edges"
 msgstr "锐化边界"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:584
+#: src/modules/lyr_freetype/lyr_freetype.cpp:586
 msgid "Turn this off if you are going to be animating the text"
 msgstr "如果您准备动画文本，请把它关掉"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:587
-#: src/modules/lyr_std/shade.cpp:398 src/modules/mod_geometry/circle.cpp:140
+#: src/modules/lyr_freetype/lyr_freetype.cpp:589
+#: src/modules/lyr_std/shade.cpp:400 src/modules/mod_geometry/circle.cpp:142
 #: src/synfig/layer_shape.cpp:1199
 msgid "Invert"
 msgstr "反相"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:644
+#: src/modules/lyr_freetype/lyr_freetype.cpp:646
 msgid "No face loaded, no text will be rendered."
 msgstr "没有加载的面，不渲染文本。"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:670
+#: src/modules/lyr_freetype/lyr_freetype.cpp:672
 msgid "Text too small, no text will be rendered."
 msgstr "文本太小，将不做渲染。"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:694
+#: src/modules/lyr_freetype/lyr_freetype.cpp:696
 msgid "Unable to set face size."
 msgstr "未能设置面的大小。"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:737
+#: src/modules/lyr_freetype/lyr_freetype.cpp:739
 msgid "Invalid multibyte sequence - is the locale set?\n"
 msgstr "无效的多字节系列 —— is the locale set？\n"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:744
+#: src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Can't parse multibyte character.\n"
 msgstr "不能处理多字节字符。\n"
 
@@ -325,67 +324,67 @@ msgstr "不能处理多字节字符。\n"
 msgid "Stylize"
 msgstr "风格化"
 
-#: src/modules/lyr_std/bevel.cpp:356 src/modules/lyr_std/shade.cpp:387
-#: src/modules/mod_filter/blur.cpp:246
-#: src/modules/mod_filter/halftone2.cpp:166
+#: src/modules/lyr_std/bevel.cpp:358 src/modules/lyr_std/shade.cpp:389
+#: src/modules/mod_filter/blur.cpp:249
+#: src/modules/mod_filter/halftone2.cpp:169
 msgid "Type"
 msgstr "类型"
 
-#: src/modules/lyr_std/bevel.cpp:357 src/modules/lyr_std/shade.cpp:388
-#: src/modules/mod_filter/blur.cpp:247
+#: src/modules/lyr_std/bevel.cpp:359 src/modules/lyr_std/shade.cpp:390
+#: src/modules/mod_filter/blur.cpp:250
 msgid "Type of blur to use"
 msgstr "要采用的模糊类型"
 
-#: src/modules/lyr_std/bevel.cpp:359 src/modules/lyr_std/shade.cpp:390
-#: src/modules/mod_filter/blur.cpp:249 src/synfig/layer_shape.cpp:1212
+#: src/modules/lyr_std/bevel.cpp:361 src/modules/lyr_std/shade.cpp:392
+#: src/modules/mod_filter/blur.cpp:252 src/synfig/layer_shape.cpp:1212
 msgid "Box Blur"
 msgstr "盒形模糊"
 
-#: src/modules/lyr_std/bevel.cpp:360 src/modules/lyr_std/shade.cpp:391
-#: src/modules/mod_filter/blur.cpp:250 src/synfig/layer_shape.cpp:1213
+#: src/modules/lyr_std/bevel.cpp:362 src/modules/lyr_std/shade.cpp:393
+#: src/modules/mod_filter/blur.cpp:253 src/synfig/layer_shape.cpp:1213
 msgid "Fast Gaussian Blur"
 msgstr "快速高斯模糊"
 
-#: src/modules/lyr_std/bevel.cpp:361 src/modules/lyr_std/shade.cpp:392
-#: src/modules/mod_filter/blur.cpp:251 src/synfig/layer_shape.cpp:1214
+#: src/modules/lyr_std/bevel.cpp:363 src/modules/lyr_std/shade.cpp:394
+#: src/modules/mod_filter/blur.cpp:254 src/synfig/layer_shape.cpp:1214
 msgid "Cross-Hatch Blur"
 msgstr "交叉影线模糊"
 
-#: src/modules/lyr_std/bevel.cpp:362 src/modules/lyr_std/shade.cpp:393
-#: src/modules/mod_filter/blur.cpp:252 src/synfig/layer_shape.cpp:1215
+#: src/modules/lyr_std/bevel.cpp:364 src/modules/lyr_std/shade.cpp:395
+#: src/modules/mod_filter/blur.cpp:255 src/synfig/layer_shape.cpp:1215
 msgid "Gaussian Blur"
 msgstr "高斯模糊"
 
-#: src/modules/lyr_std/bevel.cpp:363 src/modules/lyr_std/shade.cpp:394
-#: src/modules/mod_filter/blur.cpp:253 src/synfig/layer_shape.cpp:1216
+#: src/modules/lyr_std/bevel.cpp:365 src/modules/lyr_std/shade.cpp:396
+#: src/modules/mod_filter/blur.cpp:256 src/synfig/layer_shape.cpp:1216
 msgid "Disc Blur"
 msgstr "圆盘形模糊"
 
-#: src/modules/lyr_std/bevel.cpp:367
+#: src/modules/lyr_std/bevel.cpp:369
 msgid "Hi-Color"
 msgstr "亮色"
 
-#: src/modules/lyr_std/bevel.cpp:370
+#: src/modules/lyr_std/bevel.cpp:372
 msgid "Lo-Color"
 msgstr "暗色"
 
-#: src/modules/lyr_std/bevel.cpp:373
+#: src/modules/lyr_std/bevel.cpp:375
 msgid "Light Angle"
 msgstr "光线角度"
 
-#: src/modules/lyr_std/bevel.cpp:377
+#: src/modules/lyr_std/bevel.cpp:379
 msgid "Depth of Bevel"
 msgstr "倒角深度"
 
-#: src/modules/lyr_std/bevel.cpp:381
+#: src/modules/lyr_std/bevel.cpp:383
 msgid "Softness"
 msgstr "柔和"
 
-#: src/modules/lyr_std/bevel.cpp:384
+#: src/modules/lyr_std/bevel.cpp:386
 msgid "Use Luma"
 msgstr "使用亮度 (Luma)"
 
-#: src/modules/lyr_std/bevel.cpp:387
+#: src/modules/lyr_std/bevel.cpp:389
 msgid "Solid"
 msgstr "实地"
 
@@ -408,19 +407,19 @@ msgstr "夹子"
 msgid "Filters"
 msgstr "滤镜"
 
-#: src/modules/lyr_std/clamp.cpp:155
+#: src/modules/lyr_std/clamp.cpp:157
 msgid "Invert Negative"
 msgstr "反转负相"
 
-#: src/modules/lyr_std/clamp.cpp:159
+#: src/modules/lyr_std/clamp.cpp:161
 msgid "Clamp Ceiling"
 msgstr "夹子上限"
 
-#: src/modules/lyr_std/clamp.cpp:163
+#: src/modules/lyr_std/clamp.cpp:165
 msgid "Ceiling"
 msgstr "上限"
 
-#: src/modules/lyr_std/clamp.cpp:167
+#: src/modules/lyr_std/clamp.cpp:169
 msgid "Floor"
 msgstr "下限"
 
@@ -428,20 +427,20 @@ msgstr "下限"
 msgid "Import Image"
 msgstr "导入图像"
 
-#: src/modules/lyr_std/import.cpp:138
+#: src/modules/lyr_std/import.cpp:141
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
 msgstr "文件名好像已经设置为“%s”（%s）"
 
-#: src/modules/lyr_std/import.cpp:209
+#: src/modules/lyr_std/import.cpp:215
 msgid "Filename"
 msgstr "文件名"
 
-#: src/modules/lyr_std/import.cpp:210
+#: src/modules/lyr_std/import.cpp:216
 msgid "File to import"
 msgstr "要输入的文件"
 
-#: src/modules/lyr_std/import.cpp:214 src/synfig/layer_pastecanvas.cpp:141
+#: src/modules/lyr_std/import.cpp:220 src/synfig/layer_pastecanvas.cpp:144
 msgid "Time Offset"
 msgstr "时间偏移"
 
@@ -451,13 +450,13 @@ msgstr "里翻外"
 
 #: src/modules/lyr_std/insideout.cpp:56
 #: src/modules/lyr_std/sphere_distort.cpp:73
-#: src/modules/lyr_std/stretch.cpp:59 src/modules/lyr_std/twirl.cpp:56
+#: src/modules/lyr_std/stretch.cpp:57 src/modules/lyr_std/twirl.cpp:56
 #: src/modules/lyr_std/warp.cpp:56 src/modules/lyr_std/curvewarp.cpp:55
 #: src/modules/mod_noise/distort.cpp:57
 msgid "Distortions"
 msgstr "变形"
 
-#: src/modules/lyr_std/insideout.cpp:142
+#: src/modules/lyr_std/insideout.cpp:144
 msgid "Defines the where the center will be"
 msgstr "定义放置中心的地点"
 
@@ -469,97 +468,97 @@ msgstr "朱丽亚集"
 msgid "Fractals"
 msgstr "分形"
 
-#: src/modules/lyr_std/julia.cpp:300
+#: src/modules/lyr_std/julia.cpp:309
 msgid "Inside Color"
 msgstr "内部颜色"
 
-#: src/modules/lyr_std/julia.cpp:301
+#: src/modules/lyr_std/julia.cpp:310
 msgid "Color of the Set"
 msgstr "集的颜色"
 
-#: src/modules/lyr_std/julia.cpp:304
+#: src/modules/lyr_std/julia.cpp:313
 msgid "Outside Color"
 msgstr "外部颜色"
 
-#: src/modules/lyr_std/julia.cpp:305
+#: src/modules/lyr_std/julia.cpp:314
 msgid "Color outside the Set"
 msgstr "集外的颜色"
 
-#: src/modules/lyr_std/julia.cpp:308
+#: src/modules/lyr_std/julia.cpp:317
 msgid "Color Shift"
 msgstr "颜色位移"
 
-#: src/modules/lyr_std/julia.cpp:311 src/modules/lyr_std/mandelbrot.cpp:213
+#: src/modules/lyr_std/julia.cpp:320 src/modules/lyr_std/mandelbrot.cpp:223
 msgid "Iterations"
 msgstr "迭代次数"
 
-#: src/modules/lyr_std/julia.cpp:314
+#: src/modules/lyr_std/julia.cpp:323
 msgid "Seed Point"
 msgstr "种子点"
 
-#: src/modules/lyr_std/julia.cpp:317 src/modules/lyr_std/mandelbrot.cpp:216
+#: src/modules/lyr_std/julia.cpp:326 src/modules/lyr_std/mandelbrot.cpp:226
 msgid "Bailout ValueBase"
 msgstr "Bailout 值基"
 
-#: src/modules/lyr_std/julia.cpp:321 src/modules/lyr_std/mandelbrot.cpp:226
-#: src/modules/lyr_std/twirl.cpp:125
+#: src/modules/lyr_std/julia.cpp:330 src/modules/lyr_std/mandelbrot.cpp:236
+#: src/modules/lyr_std/twirl.cpp:127
 msgid "Distort Inside"
 msgstr "内部变形"
 
-#: src/modules/lyr_std/julia.cpp:324 src/modules/lyr_std/mandelbrot.cpp:230
+#: src/modules/lyr_std/julia.cpp:333 src/modules/lyr_std/mandelbrot.cpp:240
 msgid "Shade Inside"
 msgstr "内部阴影"
 
-#: src/modules/lyr_std/julia.cpp:327 src/modules/lyr_std/mandelbrot.cpp:234
+#: src/modules/lyr_std/julia.cpp:336 src/modules/lyr_std/mandelbrot.cpp:244
 msgid "Solid Inside"
 msgstr "内部实地"
 
-#: src/modules/lyr_std/julia.cpp:330 src/modules/lyr_std/mandelbrot.cpp:238
+#: src/modules/lyr_std/julia.cpp:339 src/modules/lyr_std/mandelbrot.cpp:248
 msgid "Invert Inside"
 msgstr "内部反转"
 
-#: src/modules/lyr_std/julia.cpp:333
+#: src/modules/lyr_std/julia.cpp:342
 msgid "Color Inside"
 msgstr "内部颜色"
 
-#: src/modules/lyr_std/julia.cpp:336 src/modules/lyr_std/mandelbrot.cpp:255
-#: src/modules/lyr_std/twirl.cpp:129
+#: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:265
+#: src/modules/lyr_std/twirl.cpp:131
 msgid "Distort Outside"
 msgstr "外部变形"
 
-#: src/modules/lyr_std/julia.cpp:339 src/modules/lyr_std/mandelbrot.cpp:259
+#: src/modules/lyr_std/julia.cpp:348 src/modules/lyr_std/mandelbrot.cpp:269
 msgid "Shade Outside"
 msgstr "外部阴影"
 
-#: src/modules/lyr_std/julia.cpp:342 src/modules/lyr_std/mandelbrot.cpp:263
+#: src/modules/lyr_std/julia.cpp:351 src/modules/lyr_std/mandelbrot.cpp:273
 msgid "Solid Outside"
 msgstr "外部实地"
 
-#: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:267
+#: src/modules/lyr_std/julia.cpp:354 src/modules/lyr_std/mandelbrot.cpp:277
 msgid "Invert Outside"
 msgstr "外部反转"
 
-#: src/modules/lyr_std/julia.cpp:348
+#: src/modules/lyr_std/julia.cpp:357
 msgid "Color Outside"
 msgstr "外部颜色"
 
-#: src/modules/lyr_std/julia.cpp:352
+#: src/modules/lyr_std/julia.cpp:361
 msgid "Color Cycle"
 msgstr "圆环颜色"
 
-#: src/modules/lyr_std/julia.cpp:355 src/modules/lyr_std/mandelbrot.cpp:275
+#: src/modules/lyr_std/julia.cpp:364 src/modules/lyr_std/mandelbrot.cpp:285
 msgid "Smooth Outside"
 msgstr "外部平滑"
 
-#: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:276
+#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:286
 msgid "Smooth the coloration outside the set"
 msgstr "平滑集外的染色"
 
-#: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:220
+#: src/modules/lyr_std/julia.cpp:368 src/modules/lyr_std/mandelbrot.cpp:230
 msgid "Break Set"
 msgstr "破碎集"
 
-#: src/modules/lyr_std/julia.cpp:360 src/modules/lyr_std/mandelbrot.cpp:221
+#: src/modules/lyr_std/julia.cpp:369 src/modules/lyr_std/mandelbrot.cpp:231
 msgid "Modify equation to achieve interesting results"
 msgstr "修改等式以得到有趣的结果"
 
@@ -567,48 +566,48 @@ msgstr "修改等式以得到有趣的结果"
 msgid "Mandelbrot Set"
 msgstr "曼德布洛特集"
 
-#: src/modules/lyr_std/mandelbrot.cpp:227
-#: src/modules/lyr_std/mandelbrot.cpp:231
-#: src/modules/lyr_std/mandelbrot.cpp:235
-#: src/modules/lyr_std/mandelbrot.cpp:239
-#: src/modules/lyr_std/mandelbrot.cpp:243
-#: src/modules/lyr_std/mandelbrot.cpp:247
-#: src/modules/lyr_std/mandelbrot.cpp:251
+#: src/modules/lyr_std/mandelbrot.cpp:237
+#: src/modules/lyr_std/mandelbrot.cpp:241
+#: src/modules/lyr_std/mandelbrot.cpp:245
+#: src/modules/lyr_std/mandelbrot.cpp:249
+#: src/modules/lyr_std/mandelbrot.cpp:253
+#: src/modules/lyr_std/mandelbrot.cpp:257
+#: src/modules/lyr_std/mandelbrot.cpp:261
 msgid "Inside"
 msgstr "内部"
 
-#: src/modules/lyr_std/mandelbrot.cpp:242
+#: src/modules/lyr_std/mandelbrot.cpp:252
 msgid "Gradient Inside"
 msgstr "内部渐变"
 
-#: src/modules/lyr_std/mandelbrot.cpp:246
+#: src/modules/lyr_std/mandelbrot.cpp:256
 msgid "Offset Inside"
 msgstr "内部偏移"
 
-#: src/modules/lyr_std/mandelbrot.cpp:250
-msgid "Loop Inside"
-msgstr "内部闭环"
-
-#: src/modules/lyr_std/mandelbrot.cpp:256
 #: src/modules/lyr_std/mandelbrot.cpp:260
-#: src/modules/lyr_std/mandelbrot.cpp:264
-#: src/modules/lyr_std/mandelbrot.cpp:268
-#: src/modules/lyr_std/mandelbrot.cpp:272
-#: src/modules/lyr_std/mandelbrot.cpp:277
-#: src/modules/lyr_std/mandelbrot.cpp:281
-#: src/modules/lyr_std/mandelbrot.cpp:285
+msgid "Loop Inside"
+msgstr "内部循环"
+
+#: src/modules/lyr_std/mandelbrot.cpp:266
+#: src/modules/lyr_std/mandelbrot.cpp:270
+#: src/modules/lyr_std/mandelbrot.cpp:274
+#: src/modules/lyr_std/mandelbrot.cpp:278
+#: src/modules/lyr_std/mandelbrot.cpp:282
+#: src/modules/lyr_std/mandelbrot.cpp:287
+#: src/modules/lyr_std/mandelbrot.cpp:291
+#: src/modules/lyr_std/mandelbrot.cpp:295
 msgid "Outside"
 msgstr "外部"
 
-#: src/modules/lyr_std/mandelbrot.cpp:271
+#: src/modules/lyr_std/mandelbrot.cpp:281
 msgid "Gradient outside"
 msgstr "外部渐变"
 
-#: src/modules/lyr_std/mandelbrot.cpp:280
+#: src/modules/lyr_std/mandelbrot.cpp:290
 msgid "Offset Outside"
 msgstr "外部位移"
 
-#: src/modules/lyr_std/mandelbrot.cpp:284
+#: src/modules/lyr_std/mandelbrot.cpp:294
 msgid "Scale Outside"
 msgstr "外部缩放"
 
@@ -621,16 +620,16 @@ msgstr "旋转"
 msgid "Transform"
 msgstr "变换"
 
-#: src/modules/lyr_std/rotate.cpp:113 src/modules/lyr_std/translate.cpp:98
-#: src/modules/mod_filter/radialblur.cpp:107
-#: src/synfig/layer_pastecanvas.cpp:129
+#: src/modules/lyr_std/rotate.cpp:116 src/modules/lyr_std/translate.cpp:100
+#: src/modules/mod_filter/radialblur.cpp:111
+#: src/synfig/layer_pastecanvas.cpp:132
 msgid "Point where you want the origin to be"
 msgstr "您想要放置原点的位置点"
 
-#: src/modules/lyr_std/rotate.cpp:117
-#: src/modules/lyr_std/sphere_distort.cpp:153
-#: src/modules/lyr_std/stretch.cpp:103 src/modules/lyr_std/zoom.cpp:96
-#: src/synfig/layer_composite.cpp:142
+#: src/modules/lyr_std/rotate.cpp:120
+#: src/modules/lyr_std/sphere_distort.cpp:155
+#: src/modules/lyr_std/stretch.cpp:103 src/modules/lyr_std/zoom.cpp:98
+#: src/synfig/layer_composite.cpp:156
 #: src/synfig/valuenode_blinecalctangent.cpp:245
 #: src/synfig/valuenode_blinecalcvertex.cpp:204
 #: src/synfig/valuenode_blinecalcwidth.cpp:210
@@ -639,7 +638,7 @@ msgstr "您想要放置原点的位置点"
 msgid "Amount"
 msgstr "量"
 
-#: src/modules/lyr_std/rotate.cpp:118
+#: src/modules/lyr_std/rotate.cpp:121
 msgid "Amount of rotation"
 msgstr "旋转量"
 
@@ -647,54 +646,66 @@ msgstr "旋转量"
 msgid "Shade"
 msgstr "阴影"
 
-#: src/modules/lyr_std/shade.cpp:382
+#: src/modules/lyr_std/shade.cpp:384
 msgid "Size of Shade"
 msgstr "阴影大小"
 
 #: src/modules/lyr_std/sphere_distort.cpp:72
-#: src/modules/lyr_std/sphere_distort.cpp:165
+#: src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Spherize"
 msgstr "球面化"
 
-#: src/modules/lyr_std/sphere_distort.cpp:143
+#: src/modules/lyr_std/sphere_distort.cpp:145
 msgid "Position"
 msgstr "位置"
 
-#: src/modules/lyr_std/sphere_distort.cpp:158 src/modules/lyr_std/warp.cpp:400
+#: src/modules/lyr_std/sphere_distort.cpp:160 src/modules/lyr_std/warp.cpp:402
 msgid "Clip"
 msgstr "修剪"
 
-#: src/modules/lyr_std/sphere_distort.cpp:162
+#: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
 msgstr "变形类型"
 
-#: src/modules/lyr_std/sphere_distort.cpp:163
+#: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
 msgstr "变形的方向"
 
-#: src/modules/lyr_std/sphere_distort.cpp:166
+#: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
 msgstr "竖条"
 
-#: src/modules/lyr_std/sphere_distort.cpp:167
+#: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Horizontal Bar"
 msgstr "横条"
 
-#: src/modules/lyr_std/stretch.cpp:58
+#: src/modules/lyr_std/stretch.cpp:56
 msgid "Stretch"
 msgstr "拉伸"
+
+#: src/modules/lyr_std/stroboscope.cpp:59
+msgid "Stroboscope"
+msgstr "频闪器"
+
+#: src/modules/lyr_std/stroboscope.cpp:101
+msgid "Frequency"
+msgstr "频率"
+
+#: src/modules/lyr_std/stroboscope.cpp:102
+msgid "Frequency of the Strobe in times per second"
+msgstr "按每秒的次数计的频闪频率"
 
 #: src/modules/lyr_std/supersample.cpp:55
 msgid "Super Sample"
 msgstr "超样本"
 
-#: src/modules/lyr_std/supersample.cpp:119
+#: src/modules/lyr_std/supersample.cpp:121
 msgid "Unable to create SurfaceTarget"
 msgstr "未能创建表面目标"
 
-#: src/modules/lyr_std/supersample.cpp:215
-#: src/modules/lyr_std/curvewarp.cpp:389
-#: src/modules/mod_gradient/curvegradient.cpp:537
+#: src/modules/lyr_std/supersample.cpp:217
+#: src/modules/lyr_std/curvewarp.cpp:391
+#: src/modules/mod_gradient/curvegradient.cpp:540
 #: src/synfig/valuenode_composite.cpp:293
 #: src/synfig/valuenode_realstring.cpp:185
 #: src/synfig/valuenode_repeat_gradient.cpp:188
@@ -702,65 +713,65 @@ msgstr "未能创建表面目标"
 msgid "Width"
 msgstr "宽度"
 
-#: src/modules/lyr_std/supersample.cpp:216
+#: src/modules/lyr_std/supersample.cpp:218
 msgid "Width of sample area (In pixels)"
 msgstr "样本区域的宽度（按像素）"
 
-#: src/modules/lyr_std/supersample.cpp:219 src/tool/main.cpp:860
+#: src/modules/lyr_std/supersample.cpp:221 src/tool/main.cpp:860
 msgid "Height"
 msgstr "高度"
 
-#: src/modules/lyr_std/supersample.cpp:220
+#: src/modules/lyr_std/supersample.cpp:222
 msgid "Height of sample area (In pixels)"
 msgstr "样本区域的高度（按像素）"
 
-#: src/modules/lyr_std/supersample.cpp:223
+#: src/modules/lyr_std/supersample.cpp:225
 msgid "Use Parametric"
 msgstr "参数化"
 
-#: src/modules/lyr_std/supersample.cpp:224
+#: src/modules/lyr_std/supersample.cpp:226
 msgid "Use the Parametric Renderer"
 msgstr "使用参数化渲染器"
 
-#: src/modules/lyr_std/supersample.cpp:227
+#: src/modules/lyr_std/supersample.cpp:229
 msgid "Be Alpha Safe"
-msgstr "保证透明安全"
+msgstr "确保透明(Alpha)安全"
 
-#: src/modules/lyr_std/timeloop.cpp:57 src/synfig/valuenode.cpp:168
+#: src/modules/lyr_std/timeloop.cpp:57 src/synfig/valuenode.cpp:164
 #: src/synfig/valuenode_timeloop.cpp:191
 msgid "Time Loop"
 msgstr "时间循环"
 
-#: src/modules/lyr_std/timeloop.cpp:120 src/synfig/valuenode_timeloop.cpp:124
+#: src/modules/lyr_std/timeloop.cpp:122 src/synfig/valuenode_timeloop.cpp:124
 msgid "Link Time"
 msgstr "链接时间"
 
-#: src/modules/lyr_std/timeloop.cpp:124 src/synfig/valuenode_timeloop.cpp:125
+#: src/modules/lyr_std/timeloop.cpp:126 src/synfig/valuenode_timeloop.cpp:125
 msgid "Local Time"
 msgstr "本地时间"
 
-#: src/modules/lyr_std/timeloop.cpp:128 src/synfig/valuenode_step.cpp:215
+#: src/modules/lyr_std/timeloop.cpp:130 src/synfig/valuenode_step.cpp:215
 #: src/synfig/valuenode_timeloop.cpp:126
 msgid "Duration"
 msgstr "持续"
 
-#: src/modules/lyr_std/timeloop.cpp:132
+#: src/modules/lyr_std/timeloop.cpp:134
 msgid "Only For Positive Duration"
 msgstr "仅为正的持续时间"
 
-#: src/modules/lyr_std/timeloop.cpp:136
+#: src/modules/lyr_std/timeloop.cpp:138
 msgid "Symmetrical"
 msgstr "对称"
 
 #: src/modules/lyr_std/translate.cpp:54
 msgid "Translate"
-msgstr "位置转换"
+msgstr "位移"
 
 #: src/modules/lyr_std/twirl.cpp:55
 msgid "Twirl"
 msgstr "旋扭"
 
-#: src/modules/lyr_std/twirl.cpp:120
+#: src/modules/lyr_std/twirl.cpp:122
 msgid "Rotations"
 msgstr "旋转"
 
@@ -768,31 +779,31 @@ msgstr "旋转"
 msgid "Warp"
 msgstr "翘曲"
 
-#: src/modules/lyr_std/warp.cpp:371
+#: src/modules/lyr_std/warp.cpp:373
 msgid "Source TL"
 msgstr "左上角的源"
 
-#: src/modules/lyr_std/warp.cpp:376
+#: src/modules/lyr_std/warp.cpp:378
 msgid "Source BR"
 msgstr "右下角的源"
 
-#: src/modules/lyr_std/warp.cpp:380
+#: src/modules/lyr_std/warp.cpp:382
 msgid "Dest TL"
 msgstr "左上角 Dest"
 
-#: src/modules/lyr_std/warp.cpp:385
+#: src/modules/lyr_std/warp.cpp:387
 msgid "Dest TR"
 msgstr "右上角 Dest"
 
-#: src/modules/lyr_std/warp.cpp:390
+#: src/modules/lyr_std/warp.cpp:392
 msgid "Dest BR"
 msgstr "右下角 Dest"
 
-#: src/modules/lyr_std/warp.cpp:395
+#: src/modules/lyr_std/warp.cpp:397
 msgid "Dest BL"
 msgstr "左下角 Dest"
 
-#: src/modules/lyr_std/warp.cpp:404
+#: src/modules/lyr_std/warp.cpp:406
 msgid "Horizon"
 msgstr "地平线"
 
@@ -800,31 +811,31 @@ msgstr "地平线"
 msgid "Curve Warp"
 msgstr "曲线翘曲"
 
-#: src/modules/lyr_std/curvewarp.cpp:393
+#: src/modules/lyr_std/curvewarp.cpp:395
 msgid "Start Point"
 msgstr "起点"
 
-#: src/modules/lyr_std/curvewarp.cpp:397
+#: src/modules/lyr_std/curvewarp.cpp:399
 msgid "End Point"
 msgstr "终点"
 
-#: src/modules/lyr_std/curvewarp.cpp:400
-#: src/modules/mod_geometry/outline.cpp:807
+#: src/modules/lyr_std/curvewarp.cpp:402
+#: src/modules/mod_geometry/outline.cpp:810
 #: src/modules/mod_geometry/region.cpp:232
-#: src/modules/mod_gradient/curvegradient.cpp:540
-#: src/modules/mod_particle/plant.cpp:383
+#: src/modules/mod_gradient/curvegradient.cpp:543
+#: src/modules/mod_particle/plant.cpp:390
 msgid "Vertices"
 msgstr "顶点"
 
-#: src/modules/lyr_std/curvewarp.cpp:403
-#: src/modules/mod_geometry/outline.cpp:810
-#: src/modules/mod_gradient/curvegradient.cpp:543
-#: src/modules/mod_particle/plant.cpp:384
+#: src/modules/lyr_std/curvewarp.cpp:405
+#: src/modules/mod_geometry/outline.cpp:813
+#: src/modules/mod_gradient/curvegradient.cpp:546
+#: src/modules/mod_particle/plant.cpp:391
 msgid "A list of BLine Points"
 msgstr "一列 BLine 点"
 
-#: src/modules/lyr_std/curvewarp.cpp:406
-#: src/modules/mod_gradient/curvegradient.cpp:554
+#: src/modules/lyr_std/curvewarp.cpp:408
+#: src/modules/mod_gradient/curvegradient.cpp:557
 msgid "Fast"
 msgstr "快速"
 
@@ -832,87 +843,87 @@ msgstr "快速"
 msgid "XOR Pattern"
 msgstr "异或图案"
 
-#: src/modules/lyr_std/zoom.cpp:51 src/synfig/layer_pastecanvas.cpp:136
+#: src/modules/lyr_std/zoom.cpp:51 src/synfig/layer_pastecanvas.cpp:139
 msgid "Zoom"
-msgstr "放大"
+msgstr "缩放"
 
-#: src/modules/lyr_std/zoom.cpp:97
+#: src/modules/lyr_std/zoom.cpp:99
 msgid "Amount to zoom in"
 msgstr "放大量"
 
-#: src/modules/lyr_std/zoom.cpp:102
+#: src/modules/lyr_std/zoom.cpp:104
 msgid "Point to zoom in to"
 msgstr "放大的位置点"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:133 src/modules/mod_bmp/mptr_bmp.cpp:134
+#: src/modules/mod_bmp/mptr_bmp.cpp:131 src/modules/mod_bmp/mptr_bmp.cpp:132
 #: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
 msgid "Unable to open %s"
 msgstr "未能打开%s"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:145 src/modules/mod_bmp/mptr_bmp.cpp:146
+#: src/modules/mod_bmp/mptr_bmp.cpp:143 src/modules/mod_bmp/mptr_bmp.cpp:144
 #, c-format
 msgid "%s is not in BMP format"
 msgstr "%s不是 BMP 格式的"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:152
+#: src/modules/mod_bmp/mptr_bmp.cpp:150
 #, c-format
 msgid "Failure while reading BITMAPFILEHEADER from %s"
 msgstr "从%s中读取 BITMAPFILEHEADER 失败"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:160
+#: src/modules/mod_bmp/mptr_bmp.cpp:158
 #, c-format
 msgid "Failure while reading BITMAPINFOHEADER from %s"
 msgstr "从%s中读取 BITMAPINFOHEADER 失败"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:170
+#: src/modules/mod_bmp/mptr_bmp.cpp:168
 #, c-format
 msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
 msgstr "在 %s 中出现错误的位图文件头。（bfOffsetBits=%d，应该是 %d）"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:178
+#: src/modules/mod_bmp/mptr_bmp.cpp:176
 #, c-format
 msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
 msgstr "在 %s 中出现错误的位图文件头。（biSize=%d，应该是40）"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:196 src/modules/mod_bmp/mptr_bmp.cpp:197
+#: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
 msgid "Reading compressed bitmaps is not supported"
 msgstr "不支持读取压缩过的位图"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:203 src/modules/mod_bmp/mptr_bmp.cpp:204
+#: src/modules/mod_bmp/mptr_bmp.cpp:201 src/modules/mod_bmp/mptr_bmp.cpp:202
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
 msgstr "不支持的位深（bit_count=%d，应该是24或32）"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:185
+#: src/modules/mod_bmp/trgt_bmp.cpp:183
 msgid " (animated)"
 msgstr "（动画的）"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:195 src/modules/mod_bmp/trgt_bmp.cpp:196
+#: src/modules/mod_bmp/trgt_bmp.cpp:193 src/modules/mod_bmp/trgt_bmp.cpp:194
 msgid "Unable to open file"
 msgstr "未能打开文件"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:226 src/modules/mod_bmp/trgt_bmp.cpp:227
+#: src/modules/mod_bmp/trgt_bmp.cpp:224 src/modules/mod_bmp/trgt_bmp.cpp:225
 msgid "Unable to write file header to file"
 msgstr "未能把文件头写入文件"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:233 src/modules/mod_bmp/trgt_bmp.cpp:234
+#: src/modules/mod_bmp/trgt_bmp.cpp:231 src/modules/mod_bmp/trgt_bmp.cpp:232
 msgid "Unable to write info header"
 msgstr "未能写入信息头"
 
-#: src/modules/mod_dv/trgt_dv.cpp:167 src/modules/mod_dv/trgt_dv.cpp:176
-#: src/modules/mod_dv/trgt_dv.cpp:183 src/modules/mod_dv/trgt_dv.cpp:193
-#: src/modules/mod_dv/trgt_dv.cpp:201 src/modules/mod_dv/trgt_dv.cpp:206
-#: src/modules/mod_dv/trgt_dv.cpp:210 src/modules/mod_dv/trgt_dv.cpp:219
-#: src/modules/mod_dv/trgt_dv.cpp:228
+#: src/modules/mod_dv/trgt_dv.cpp:165 src/modules/mod_dv/trgt_dv.cpp:174
+#: src/modules/mod_dv/trgt_dv.cpp:181 src/modules/mod_dv/trgt_dv.cpp:191
+#: src/modules/mod_dv/trgt_dv.cpp:199 src/modules/mod_dv/trgt_dv.cpp:204
+#: src/modules/mod_dv/trgt_dv.cpp:208 src/modules/mod_dv/trgt_dv.cpp:217
+#: src/modules/mod_dv/trgt_dv.cpp:226
 msgid "Unable to open pipe to encodedv"
 msgstr "未能打开 encodedv 的管道"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:199
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:206
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:216
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:270
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:288
 msgid "Unable to open pipe to ffmpeg"
 msgstr "未能打开 ffmpeg 的管道"
 
@@ -925,7 +936,7 @@ msgstr "模糊"
 msgid "Blurs"
 msgstr "模糊"
 
-#: src/modules/mod_filter/blur.cpp:243
+#: src/modules/mod_filter/blur.cpp:246
 msgid "Size of Blur"
 msgstr "模糊大小"
 
@@ -933,23 +944,23 @@ msgstr "模糊大小"
 msgid "Color Correct"
 msgstr "颜色矫正"
 
-#: src/modules/mod_filter/colorcorrect.cpp:203
+#: src/modules/mod_filter/colorcorrect.cpp:210
 msgid "Hue Adjust"
 msgstr "色调调整"
 
-#: src/modules/mod_filter/colorcorrect.cpp:207
+#: src/modules/mod_filter/colorcorrect.cpp:214
 msgid "Brightness"
 msgstr "亮度"
 
-#: src/modules/mod_filter/colorcorrect.cpp:211
+#: src/modules/mod_filter/colorcorrect.cpp:218
 msgid "Contrast"
 msgstr "对比"
 
-#: src/modules/mod_filter/colorcorrect.cpp:215
+#: src/modules/mod_filter/colorcorrect.cpp:222
 msgid "Exposure Adjust"
 msgstr "曝光调整"
 
-#: src/modules/mod_filter/colorcorrect.cpp:219 src/synfig/layer_bitmap.cpp:141
+#: src/modules/mod_filter/colorcorrect.cpp:226 src/synfig/layer_bitmap.cpp:157
 msgid "Gamma Adjustment"
 msgstr "伽马调整"
 
@@ -957,45 +968,45 @@ msgstr "伽马调整"
 msgid "Halftone 2"
 msgstr "半调2"
 
-#: src/modules/mod_filter/halftone2.cpp:147
+#: src/modules/mod_filter/halftone2.cpp:150
 msgid "Mask Origin"
 msgstr "遮罩原点"
 
-#: src/modules/mod_filter/halftone2.cpp:151
+#: src/modules/mod_filter/halftone2.cpp:154
 msgid "Mask Angle"
 msgstr "遮罩角度"
 
-#: src/modules/mod_filter/halftone2.cpp:155
-#: src/modules/mod_filter/halftone3.cpp:305
+#: src/modules/mod_filter/halftone2.cpp:158
+#: src/modules/mod_filter/halftone3.cpp:308
 msgid "Mask Size"
 msgstr "遮罩大小"
 
-#: src/modules/mod_filter/halftone2.cpp:160
+#: src/modules/mod_filter/halftone2.cpp:163
 msgid "Light Color"
 msgstr "亮色"
 
-#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone2.cpp:166
 msgid "Dark Color"
 msgstr "暗色"
 
-#: src/modules/mod_filter/halftone2.cpp:168
-#: src/modules/mod_filter/halftone3.cpp:310
-#: src/modules/mod_gradient/conicalgradient.cpp:119
+#: src/modules/mod_filter/halftone2.cpp:171
+#: src/modules/mod_filter/halftone3.cpp:313
+#: src/modules/mod_gradient/conicalgradient.cpp:121
 msgid "Symmetric"
 msgstr "对称"
 
-#: src/modules/mod_filter/halftone2.cpp:169
-#: src/modules/mod_filter/halftone3.cpp:311
+#: src/modules/mod_filter/halftone2.cpp:172
+#: src/modules/mod_filter/halftone3.cpp:314
 msgid "Light On Dark"
 msgstr "亮色在黑色上"
 
-#: src/modules/mod_filter/halftone2.cpp:171
-#: src/modules/mod_filter/halftone3.cpp:313
+#: src/modules/mod_filter/halftone2.cpp:174
+#: src/modules/mod_filter/halftone3.cpp:316
 msgid "Diamond"
 msgstr "棱形"
 
-#: src/modules/mod_filter/halftone2.cpp:172
-#: src/modules/mod_filter/halftone3.cpp:314
+#: src/modules/mod_filter/halftone2.cpp:175
+#: src/modules/mod_filter/halftone3.cpp:317
 msgid "Stripe"
 msgstr "条纹"
 
@@ -1003,23 +1014,23 @@ msgstr "条纹"
 msgid "Halftone 3"
 msgstr "半调3"
 
-#: src/modules/mod_filter/halftone3.cpp:308
+#: src/modules/mod_filter/halftone3.cpp:311
 msgid " Type"
 msgstr "类型"
 
-#: src/modules/mod_filter/halftone3.cpp:317
+#: src/modules/mod_filter/halftone3.cpp:320
 msgid "Subtractive Flag"
 msgstr "负旗帜"
 
-#: src/modules/mod_filter/halftone3.cpp:325
+#: src/modules/mod_filter/halftone3.cpp:328
 msgid " Color"
 msgstr "颜色"
 
-#: src/modules/mod_filter/halftone3.cpp:329
+#: src/modules/mod_filter/halftone3.cpp:332
 msgid " Mask Origin"
 msgstr "遮罩原点"
 
-#: src/modules/mod_filter/halftone3.cpp:333
+#: src/modules/mod_filter/halftone3.cpp:336
 msgid " Mask Angle"
 msgstr "遮罩角度"
 
@@ -1031,11 +1042,11 @@ msgstr "亮度键"
 msgid "Radial Blur"
 msgstr "径向模糊"
 
-#: src/modules/mod_filter/radialblur.cpp:112
+#: src/modules/mod_filter/radialblur.cpp:116
 msgid "Size of blur"
 msgstr "模糊大小"
 
-#: src/modules/mod_filter/radialblur.cpp:117
+#: src/modules/mod_filter/radialblur.cpp:121
 msgid "Fade Out"
 msgstr "淡出"
 
@@ -1064,44 +1075,44 @@ msgstr "棋子大小"
 msgid "Circle"
 msgstr "圆形"
 
-#: src/modules/mod_geometry/circle.cpp:133 src/synfig/layer_shape.cpp:1205
+#: src/modules/mod_geometry/circle.cpp:135 src/synfig/layer_shape.cpp:1205
 msgid "Feather"
 msgstr "羽化"
 
-#: src/modules/mod_geometry/circle.cpp:141
+#: src/modules/mod_geometry/circle.cpp:143
 msgid "Invert the circle"
 msgstr "反相圆形"
 
-#: src/modules/mod_geometry/circle.cpp:145
+#: src/modules/mod_geometry/circle.cpp:147
 msgid "Falloff"
 msgstr "衰减"
 
-#: src/modules/mod_geometry/circle.cpp:146
+#: src/modules/mod_geometry/circle.cpp:148
 msgid "Determines the falloff function for the feather"
 msgstr "决定羽化的衰减功能"
 
-#: src/modules/mod_geometry/circle.cpp:148
-#: src/modules/mod_noise/distort.cpp:211 src/modules/mod_noise/noise.cpp:263
-#: src/synfig/layer_bitmap.cpp:135 src/synfig/layer_motionblur.cpp:148
-#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_linear.cpp:143
+#: src/modules/mod_geometry/circle.cpp:150
+#: src/modules/mod_noise/distort.cpp:218 src/modules/mod_noise/noise.cpp:271
+#: src/synfig/layer_bitmap.cpp:151 src/synfig/layer_motionblur.cpp:150
+#: src/synfig/valuenode.cpp:137 src/synfig/valuenode_linear.cpp:143
 msgid "Linear"
 msgstr "线性"
 
-#: src/modules/mod_geometry/circle.cpp:149
+#: src/modules/mod_geometry/circle.cpp:151
 msgid "Squared"
 msgstr "平方"
 
-#: src/modules/mod_geometry/circle.cpp:150
+#: src/modules/mod_geometry/circle.cpp:152
 msgid "Square Root"
 msgstr "平方根"
 
-#: src/modules/mod_geometry/circle.cpp:151
+#: src/modules/mod_geometry/circle.cpp:153
 msgid "Sigmond"
-msgstr ""
+msgstr "西格玛"
 
-#: src/modules/mod_geometry/circle.cpp:152
-#: src/modules/mod_noise/distort.cpp:212 src/modules/mod_noise/noise.cpp:264
-#: src/synfig/layer_bitmap.cpp:136
+#: src/modules/mod_geometry/circle.cpp:154
+#: src/modules/mod_noise/distort.cpp:219 src/modules/mod_noise/noise.cpp:272
+#: src/synfig/layer_bitmap.cpp:152
 msgid "Cosine"
 msgstr "余弦"
 
@@ -1109,44 +1120,44 @@ msgstr "余弦"
 msgid "Outline"
 msgstr "轮廓"
 
-#: src/modules/mod_geometry/outline.cpp:178
+#: src/modules/mod_geometry/outline.cpp:181
 msgid "No vertices in outline "
 msgstr "轮廓上没有顶点"
 
-#: src/modules/mod_geometry/outline.cpp:824
+#: src/modules/mod_geometry/outline.cpp:827
 msgid "Outline Width"
 msgstr "轮廓宽度"
 
-#: src/modules/mod_geometry/outline.cpp:829
+#: src/modules/mod_geometry/outline.cpp:832
 msgid "Expand"
 msgstr "外扩"
 
-#: src/modules/mod_geometry/outline.cpp:833
+#: src/modules/mod_geometry/outline.cpp:836
 msgid "Sharp Cusps"
 msgstr "尖端"
 
-#: src/modules/mod_geometry/outline.cpp:834
+#: src/modules/mod_geometry/outline.cpp:837
 msgid "Determines cusp type"
 msgstr "决定尖端类型"
 
-#: src/modules/mod_geometry/outline.cpp:838
+#: src/modules/mod_geometry/outline.cpp:841
 msgid "Rounded Begin"
 msgstr "圆的起点"
 
-#: src/modules/mod_geometry/outline.cpp:839
-#: src/modules/mod_geometry/outline.cpp:844
+#: src/modules/mod_geometry/outline.cpp:842
+#: src/modules/mod_geometry/outline.cpp:847
 msgid "Round off the tip"
 msgstr "圆滑线头"
 
-#: src/modules/mod_geometry/outline.cpp:843
+#: src/modules/mod_geometry/outline.cpp:846
 msgid "Rounded End"
 msgstr "圆的终点"
 
-#: src/modules/mod_geometry/outline.cpp:847
+#: src/modules/mod_geometry/outline.cpp:850
 msgid "Loopyness"
 msgstr "松散"
 
-#: src/modules/mod_geometry/outline.cpp:850
+#: src/modules/mod_geometry/outline.cpp:853
 msgid "Homogeneous"
 msgstr "单一性"
 
@@ -1154,11 +1165,11 @@ msgstr "单一性"
 msgid "Rectangle"
 msgstr "矩形"
 
-#: src/modules/mod_geometry/rectangle.cpp:136
+#: src/modules/mod_geometry/rectangle.cpp:138
 msgid "Expand amount"
 msgstr "外扩量"
 
-#: src/modules/mod_geometry/rectangle.cpp:140
+#: src/modules/mod_geometry/rectangle.cpp:142
 msgid "Invert the rectangle"
 msgstr "反相矩形"
 
@@ -1170,51 +1181,55 @@ msgstr "区域"
 msgid "Star"
 msgstr "星形"
 
-#: src/modules/mod_geometry/star.cpp:174
+#: src/modules/mod_geometry/star.cpp:181
 msgid "Outer Radius"
 msgstr "外半径"
 
-#: src/modules/mod_geometry/star.cpp:175
+#: src/modules/mod_geometry/star.cpp:182
 msgid "The radius of the outer points in the star"
 msgstr "星形尖角的半径"
 
-#: src/modules/mod_geometry/star.cpp:181
+#: src/modules/mod_geometry/star.cpp:188
 msgid "Inner Radius"
 msgstr "内半径"
 
-#: src/modules/mod_geometry/star.cpp:182
+#: src/modules/mod_geometry/star.cpp:189
 msgid "The radius of the inner points in the star"
 msgstr "星形内角的半径"
 
-#: src/modules/mod_geometry/star.cpp:188
-#: src/modules/mod_gradient/conicalgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:124
+#: src/modules/mod_geometry/star.cpp:195
+#: src/modules/mod_gradient/conicalgradient.cpp:116
+#: src/modules/mod_gradient/spiralgradient.cpp:126
 #: src/synfig/valuenode_cos.cpp:170 src/synfig/valuenode_sine.cpp:166
 msgid "Angle"
 msgstr "角度"
 
-#: src/modules/mod_geometry/star.cpp:189
+#: src/modules/mod_geometry/star.cpp:196
 msgid "The orientation of the star"
 msgstr "星形的朝向"
 
-#: src/modules/mod_geometry/star.cpp:195
+#: src/modules/mod_geometry/star.cpp:201 src/synfig/distance.cpp:248
+msgid "Points"
+msgstr "尖角"
+
+#: src/modules/mod_geometry/star.cpp:202
 msgid "The number of points in the star"
 msgstr "星形的点数"
 
-#: src/modules/mod_geometry/star.cpp:199
+#: src/modules/mod_geometry/star.cpp:206
 msgid "Regular Polygon"
 msgstr "常规多边形"
 
-#: src/modules/mod_geometry/star.cpp:200
+#: src/modules/mod_geometry/star.cpp:207
 msgid "Whether to draw a star or a regular polygon"
 msgstr "是否绘成星形或常规多边形"
 
-#: src/modules/mod_gif/trgt_gif.cpp:107
+#: src/modules/mod_gif/trgt_gif.cpp:105
 #, c-format
 msgid "Unable to open \"%s\" for write access!"
 msgstr "未能打开“%s”取得写入权限"
 
-#: src/modules/mod_gif/trgt_gif.cpp:195
+#: src/modules/mod_gif/trgt_gif.cpp:193
 msgid "Description not set!"
 msgstr "没有设置描述！"
 
@@ -1235,22 +1250,22 @@ msgstr "渐变"
 msgid "Curve Gradient"
 msgstr "曲线渐变"
 
-#: src/modules/mod_gradient/curvegradient.cpp:548
-#: src/modules/mod_gradient/lineargradient.cpp:194
-#: src/modules/mod_gradient/radialgradient.cpp:125
+#: src/modules/mod_gradient/curvegradient.cpp:551
+#: src/modules/mod_gradient/lineargradient.cpp:199
+#: src/modules/mod_gradient/radialgradient.cpp:127
 #: src/synfig/valuenode_blinecalctangent.cpp:244
 #: src/synfig/valuenode_blinecalcvertex.cpp:203
 #: src/synfig/valuenode_blinecalcwidth.cpp:209
 msgid "Loop"
 msgstr "循环"
 
-#: src/modules/mod_gradient/curvegradient.cpp:550
-#: src/modules/mod_gradient/lineargradient.cpp:197
-#: src/modules/mod_gradient/radialgradient.cpp:129
+#: src/modules/mod_gradient/curvegradient.cpp:553
+#: src/modules/mod_gradient/lineargradient.cpp:202
+#: src/modules/mod_gradient/radialgradient.cpp:131
 msgid "ZigZag"
 msgstr "之字形"
 
-#: src/modules/mod_gradient/curvegradient.cpp:552
+#: src/modules/mod_gradient/curvegradient.cpp:555
 msgid "Perpendicular"
 msgstr "垂直线"
 
@@ -1266,7 +1281,7 @@ msgstr "径向渐变"
 msgid "Spiral Gradient"
 msgstr "螺旋渐变"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:129
+#: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Clockwise"
 msgstr "顺时针"
 
@@ -1279,13 +1294,13 @@ msgstr "无文件可加载"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
-#: src/synfig/listimporter.cpp:182 src/synfig/listimporter.cpp:183
+#: src/synfig/listimporter.cpp:184 src/synfig/listimporter.cpp:185
 msgid "Unable to open "
 msgstr "未能打开"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
-#: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
+#: src/synfig/listimporter.cpp:191 src/synfig/listimporter.cpp:192
 msgid "Unable to get frame from "
 msgstr "未能获得帧"
 
@@ -1319,7 +1334,7 @@ msgstr "文件过早结束（文件头之后）"
 msgid "Premature end of file"
 msgstr "文件过早结束"
 
-#: src/modules/mod_imagemagick/trgt_imagemagick.cpp:158
+#: src/modules/mod_imagemagick/trgt_imagemagick.cpp:156
 msgid "Unable to open pipe to imagemagick's convert utility"
 msgstr "未能打开 ImageMagick 的转换工具管道"
 
@@ -1327,49 +1342,49 @@ msgstr "未能打开 ImageMagick 的转换工具管道"
 msgid "Noise Distort"
 msgstr "噪音扭曲"
 
-#: src/modules/mod_noise/distort.cpp:197
+#: src/modules/mod_noise/distort.cpp:204
 msgid "Displacement"
 msgstr "换置"
 
-#: src/modules/mod_noise/distort.cpp:204 src/modules/mod_noise/noise.cpp:253
+#: src/modules/mod_noise/distort.cpp:211 src/modules/mod_noise/noise.cpp:261
 msgid "RandomNoise Seed"
 msgstr "随机噪音种子"
 
-#: src/modules/mod_noise/distort.cpp:207 src/modules/mod_noise/noise.cpp:259
+#: src/modules/mod_noise/distort.cpp:214 src/modules/mod_noise/noise.cpp:267
 #: src/modules/mod_noise/valuenode_random.cpp:251
-#: src/synfig/layer_bitmap.cpp:131
+#: src/synfig/layer_bitmap.cpp:147
 msgid "Interpolation"
 msgstr "插值方法"
 
-#: src/modules/mod_noise/distort.cpp:208 src/modules/mod_noise/noise.cpp:260
-#: src/synfig/layer_bitmap.cpp:132
+#: src/modules/mod_noise/distort.cpp:215 src/modules/mod_noise/noise.cpp:268
+#: src/synfig/layer_bitmap.cpp:148
 msgid "What type of interpolation to use"
 msgstr "要用的插值类型"
 
-#: src/modules/mod_noise/distort.cpp:210 src/modules/mod_noise/noise.cpp:262
-#: src/synfig/layer_bitmap.cpp:134
+#: src/modules/mod_noise/distort.cpp:217 src/modules/mod_noise/noise.cpp:270
+#: src/synfig/layer_bitmap.cpp:150
 msgid "Nearest Neighbor"
 msgstr "最近的邻居"
 
-#: src/modules/mod_noise/distort.cpp:213 src/modules/mod_noise/noise.cpp:265
+#: src/modules/mod_noise/distort.cpp:220 src/modules/mod_noise/noise.cpp:273
 msgid "Spline"
 msgstr "Spline"
 
-#: src/modules/mod_noise/distort.cpp:214 src/modules/mod_noise/noise.cpp:266
-#: src/synfig/layer_bitmap.cpp:137
+#: src/modules/mod_noise/distort.cpp:221 src/modules/mod_noise/noise.cpp:274
+#: src/synfig/layer_bitmap.cpp:153
 msgid "Cubic"
 msgstr "立方"
 
-#: src/modules/mod_noise/distort.cpp:217 src/modules/mod_noise/noise.cpp:269
+#: src/modules/mod_noise/distort.cpp:224 src/modules/mod_noise/noise.cpp:277
 msgid "Detail"
 msgstr "细节"
 
-#: src/modules/mod_noise/distort.cpp:220 src/modules/mod_noise/noise.cpp:272
+#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:280
 #: src/modules/mod_noise/valuenode_random.cpp:250
 msgid "Animation Speed"
 msgstr "动画速度"
 
-#: src/modules/mod_noise/distort.cpp:223 src/modules/mod_noise/noise.cpp:275
+#: src/modules/mod_noise/distort.cpp:230 src/modules/mod_noise/noise.cpp:283
 msgid "Turbulent"
 msgstr "湍流"
 
@@ -1382,16 +1397,16 @@ msgstr "随机"
 msgid "Noise Gradient"
 msgstr "噪音渐变"
 
-#: src/modules/mod_noise/noise.cpp:278
+#: src/modules/mod_noise/noise.cpp:286
 msgid "Do Alpha"
 msgstr "用透明"
 
-#: src/modules/mod_noise/noise.cpp:281
+#: src/modules/mod_noise/noise.cpp:289
 msgid "Super Sampling"
 msgstr "超级取样"
 
 #: src/modules/mod_noise/valuenode_random.cpp:247
-#: src/synfig/valuenode_not.cpp:111 src/synfig/valuenode_range.cpp:262
+#: src/synfig/valuenode_not.cpp:111 src/synfig/valuenode_range.cpp:260
 #: src/synfig/valuenode_reciprocal.cpp:124
 #: src/synfig/valuenode_reference.cpp:114 src/synfig/valuenode_scale.cpp:226
 #: src/synfig/valuenode_step.cpp:214 src/synfig/valuenode_timeloop.cpp:123
@@ -1399,7 +1414,7 @@ msgid "Link"
 msgstr "链接"
 
 #: src/modules/mod_noise/valuenode_random.cpp:249
-#: src/modules/mod_particle/plant.cpp:441
+#: src/modules/mod_particle/plant.cpp:448
 msgid "Seed"
 msgstr "种子"
 
@@ -1411,120 +1426,120 @@ msgstr "时间循环"
 msgid "Plant"
 msgstr "植物"
 
-#: src/modules/mod_particle/plant.cpp:395
+#: src/modules/mod_particle/plant.cpp:402
 msgid "Gradient to be used for coloring the plant"
 msgstr "用于植物上色的渐变"
 
-#: src/modules/mod_particle/plant.cpp:399
+#: src/modules/mod_particle/plant.cpp:406
 msgid "Split Angle"
 msgstr "分离角度"
 
-#: src/modules/mod_particle/plant.cpp:400
+#: src/modules/mod_particle/plant.cpp:407
 msgid "Angle by which each split deviates from its parent"
 msgstr "从父辈分离的角度"
 
-#: src/modules/mod_particle/plant.cpp:404
+#: src/modules/mod_particle/plant.cpp:411
 msgid "Gravity"
 msgstr "引力"
 
-#: src/modules/mod_particle/plant.cpp:405
+#: src/modules/mod_particle/plant.cpp:412
 msgid "Direction in which the shoots tend to face"
 msgstr "嫩枝的倾向"
 
-#: src/modules/mod_particle/plant.cpp:410
+#: src/modules/mod_particle/plant.cpp:417
 msgid "Tangential Velocity"
 msgstr "正切率"
 
-#: src/modules/mod_particle/plant.cpp:411
+#: src/modules/mod_particle/plant.cpp:418
 msgid "Amount to which shoots tend to grow along the tangent to the BLine"
 msgstr "沿BLine切线的增长趋量"
 
-#: src/modules/mod_particle/plant.cpp:415
+#: src/modules/mod_particle/plant.cpp:422
 msgid "Perpendicular Velocity"
 msgstr "垂直速度"
 
-#: src/modules/mod_particle/plant.cpp:416
+#: src/modules/mod_particle/plant.cpp:423
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the BLine"
 msgstr "垂直BLine切线的增长趋量"
 
-#: src/modules/mod_particle/plant.cpp:420
+#: src/modules/mod_particle/plant.cpp:427
 msgid "Stem Size"
 msgstr "茎大小"
 
-#: src/modules/mod_particle/plant.cpp:421
+#: src/modules/mod_particle/plant.cpp:428
 msgid "Size of the stem"
 msgstr "茎的大小"
 
-#: src/modules/mod_particle/plant.cpp:426
+#: src/modules/mod_particle/plant.cpp:433
 msgid "Size As Alpha"
 msgstr "大小按照透明度"
 
-#: src/modules/mod_particle/plant.cpp:427
+#: src/modules/mod_particle/plant.cpp:434
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "如果打开，渐变的透明度通道用茎的大小相乘，在渲染是使用的透明度为1.0"
 
-#: src/modules/mod_particle/plant.cpp:431
+#: src/modules/mod_particle/plant.cpp:438
 msgid "Reverse"
 msgstr "颠倒"
 
-#: src/modules/mod_particle/plant.cpp:432
+#: src/modules/mod_particle/plant.cpp:439
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "如果激活，植物出现在另一面"
 
-#: src/modules/mod_particle/plant.cpp:436 src/synfig/valuenode.cpp:172
+#: src/modules/mod_particle/plant.cpp:443 src/synfig/valuenode.cpp:168
 #: src/synfig/valuenode_duplicate.cpp:123 src/synfig/valuenode_step.cpp:139
 msgid "Step"
 msgstr "步长"
 
-#: src/modules/mod_particle/plant.cpp:437
+#: src/modules/mod_particle/plant.cpp:444
 msgid "Measure of the distance between points when rendering"
 msgstr "渲染时测量点与点之间的距离"
 
-#: src/modules/mod_particle/plant.cpp:442
+#: src/modules/mod_particle/plant.cpp:449
 msgid "Used to seed the pseudo-random number generator"
 msgstr "用作伪随机数生产器的种子"
 
-#: src/modules/mod_particle/plant.cpp:446
+#: src/modules/mod_particle/plant.cpp:453
 msgid "Splits"
 msgstr "分叉"
 
-#: src/modules/mod_particle/plant.cpp:447
+#: src/modules/mod_particle/plant.cpp:454
 msgid "Maximum number of times that each sprout can sprout recursively"
 msgstr "每个枝桠的分支最大次数"
 
-#: src/modules/mod_particle/plant.cpp:451
+#: src/modules/mod_particle/plant.cpp:458
 msgid "Sprouts"
 msgstr "枝桠"
 
-#: src/modules/mod_particle/plant.cpp:452
+#: src/modules/mod_particle/plant.cpp:459
 msgid "Number of places that growth occurs on each bline section"
 msgstr "每段 BLine 出现的生长点的最大数量"
 
-#: src/modules/mod_particle/plant.cpp:456
+#: src/modules/mod_particle/plant.cpp:463
 msgid "Random Factor"
 msgstr "随机因子"
 
-#: src/modules/mod_particle/plant.cpp:457
+#: src/modules/mod_particle/plant.cpp:464
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
 msgstr "用作缩小所有的随机效果。设为零是取消随机性"
 
-#: src/modules/mod_particle/plant.cpp:461
+#: src/modules/mod_particle/plant.cpp:468
 msgid "Drag"
 msgstr "拽"
 
-#: src/modules/mod_particle/plant.cpp:462
+#: src/modules/mod_particle/plant.cpp:469
 msgid "Drag slows the growth"
 msgstr "拽着，放慢生长"
 
-#: src/modules/mod_particle/plant.cpp:466
+#: src/modules/mod_particle/plant.cpp:473
 msgid "Use Width"
 msgstr "使用宽度"
 
-#: src/modules/mod_particle/plant.cpp:467
+#: src/modules/mod_particle/plant.cpp:474
 msgid "Scale the velocity by the bline's width"
 msgstr "用 BLine 的宽度来伸缩速度"
 
@@ -1532,6 +1547,11 @@ msgstr "用 BLine 的宽度来伸缩速度"
 #, c-format
 msgid "%s was not in PPM format"
 msgstr "%s 不是 PPM 格式"
+
+#: src/synfig/canvas.cpp:777 src/synfig/canvas.cpp:842
+#: src/synfig/canvas.cpp:865
+msgid "in line"
+msgstr "内联"
 
 #: src/synfig/distance.cpp:246
 msgid "Units"
@@ -1557,47 +1577,47 @@ msgstr "毫米"
 msgid "Centimeters"
 msgstr "厘米"
 
-#: src/synfig/importer.cpp:89
+#: src/synfig/importer.cpp:87
 msgid "Importer::open(): Cannot open empty filename"
 msgstr "输入::打开():不能打开空文件名"
 
-#: src/synfig/importer.cpp:103
+#: src/synfig/importer.cpp:101
 msgid "Importer::open(): Couldn't find extension"
 msgstr "输入::打开():不能找到扩展名"
 
-#: src/synfig/importer.cpp:114
+#: src/synfig/importer.cpp:112
 msgid "Importer::open(): Unknown file type -- "
 msgstr "输入::打开():未知文件类型——"
 
-#: src/synfig/layer.cpp:512 src/synfig/layer_composite.cpp:114
+#: src/synfig/layer.cpp:547 src/synfig/layer_composite.cpp:127
 msgid "Unable to create surface target"
 msgstr "未能创建面目标"
 
-#: src/synfig/layer.cpp:550
+#: src/synfig/layer.cpp:585
 msgid "Z Depth"
 msgstr "Z 深度"
 
-#: src/synfig/layer_bitmap.cpp:121
+#: src/synfig/layer_bitmap.cpp:137
 msgid "Top-Left"
 msgstr "左上角"
 
-#: src/synfig/layer_bitmap.cpp:122
+#: src/synfig/layer_bitmap.cpp:138
 msgid "Upper left-hand Corner of image"
 msgstr "图像的左上角"
 
-#: src/synfig/layer_bitmap.cpp:126
+#: src/synfig/layer_bitmap.cpp:142
 msgid "Bottom-Right"
 msgstr "右下角"
 
-#: src/synfig/layer_bitmap.cpp:127
+#: src/synfig/layer_bitmap.cpp:143
 msgid "Lower right-hand Corner of image"
 msgstr "图像的右下角"
 
-#: src/synfig/layer_composite.cpp:145 src/synfig/paramdesc.cpp:62
+#: src/synfig/layer_composite.cpp:159 src/synfig/paramdesc.cpp:62
 msgid "Blend Method"
 msgstr "混合方式"
 
-#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:170
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:166
 #: src/synfig/valuenode_duplicate.cpp:209
 msgid "Duplicate"
 msgstr "复制"
@@ -1612,97 +1632,97 @@ msgstr "拷贝索引"
 
 #: src/synfig/layer_mime.cpp:86
 msgid "[MIME]"
-msgstr ""
+msgstr "[MIME]"
 
 #: src/synfig/layer_motionblur.cpp:56
 msgid "Motion Blur"
 msgstr "运动模糊"
 
-#: src/synfig/layer_motionblur.cpp:134
+#: src/synfig/layer_motionblur.cpp:136
 msgid "Aperture"
 msgstr "光圈"
 
-#: src/synfig/layer_motionblur.cpp:135
+#: src/synfig/layer_motionblur.cpp:137
 msgid "Shutter Time"
 msgstr "快门时间"
 
-#: src/synfig/layer_motionblur.cpp:139
+#: src/synfig/layer_motionblur.cpp:141
 msgid "Subsamples Factor"
 msgstr "二次抽样系数"
 
-#: src/synfig/layer_motionblur.cpp:140
+#: src/synfig/layer_motionblur.cpp:142
 msgid "Multiplies The Number Of Subsamples Rendered"
-msgstr ""
+msgstr "乘预渲染的子样本的数量"
 
-#: src/synfig/layer_motionblur.cpp:144
+#: src/synfig/layer_motionblur.cpp:146
 msgid "Subsampling Type"
 msgstr "二次抽样类型"
 
-#: src/synfig/layer_motionblur.cpp:145
+#: src/synfig/layer_motionblur.cpp:147
 msgid "Curve Type For Weighting Subsamples"
-msgstr ""
+msgstr "用于权重子样本的曲线类型"
 
-#: src/synfig/layer_motionblur.cpp:147 src/synfig/valuenode_const.cpp:127
+#: src/synfig/layer_motionblur.cpp:149 src/synfig/valuenode_const.cpp:127
 msgid "Constant"
 msgstr "常量"
 
-#: src/synfig/layer_motionblur.cpp:149
+#: src/synfig/layer_motionblur.cpp:151
 msgid "Hyperbolic"
 msgstr "双曲线"
 
-#: src/synfig/layer_motionblur.cpp:153
+#: src/synfig/layer_motionblur.cpp:155
 msgid "Subsample Start Amount"
 msgstr "二次抽样始量"
 
-#: src/synfig/layer_motionblur.cpp:154
+#: src/synfig/layer_motionblur.cpp:156
 msgid "Relative Amount Of The First Subsample, For Linear Weighting"
-msgstr ""
+msgstr "第一个子样本的相关量，用于线性权重"
 
-#: src/synfig/layer_motionblur.cpp:158
+#: src/synfig/layer_motionblur.cpp:160
 msgid "Subsample End Amount"
 msgstr "二次抽样末量"
 
-#: src/synfig/layer_motionblur.cpp:159
+#: src/synfig/layer_motionblur.cpp:161
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
-msgstr ""
+msgstr "最后子样本的相关量，用于线性权重"
 
 #: src/synfig/layer_pastecanvas.cpp:77
 msgid "Paste Canvas"
 msgstr "粘贴画布"
 
-#: src/synfig/layer_pastecanvas.cpp:115
+#: src/synfig/layer_pastecanvas.cpp:118
 msgid "Pasted Canvas"
 msgstr "已粘贴的画布"
 
-#: src/synfig/layer_pastecanvas.cpp:116
+#: src/synfig/layer_pastecanvas.cpp:119
 msgid "Inline Canvas"
 msgstr "内联画布"
 
-#: src/synfig/layer_pastecanvas.cpp:132
+#: src/synfig/layer_pastecanvas.cpp:135
 msgid "Canvas"
 msgstr "画布"
 
-#: src/synfig/layer_pastecanvas.cpp:133
+#: src/synfig/layer_pastecanvas.cpp:136
 msgid "Canvas to paste"
 msgstr "要粘贴的画布"
 
-#: src/synfig/layer_pastecanvas.cpp:137
+#: src/synfig/layer_pastecanvas.cpp:140
 msgid "Size of canvas"
 msgstr "画布的大小"
 
-#: src/synfig/layer_pastecanvas.cpp:145
+#: src/synfig/layer_pastecanvas.cpp:148
 msgid "Children Lock"
 msgstr "子女锁"
 
-#: src/synfig/layer_pastecanvas.cpp:149
+#: src/synfig/layer_pastecanvas.cpp:152
 msgid "Focus Point"
 msgstr "聚焦点"
 
-#: src/synfig/layer_pastecanvas.cpp:152
+#: src/synfig/layer_pastecanvas.cpp:155
 msgid "Point to remain fixed when zooming"
 msgstr "缩放时用来保持固定的点"
 
-#: src/synfig/layer_pastecanvas.cpp:163
+#: src/synfig/layer_pastecanvas.cpp:166
 msgid "Current Time"
 msgstr "当前时间"
 
@@ -1710,7 +1730,7 @@ msgstr "当前时间"
 msgid "Polygon"
 msgstr "多边形"
 
-#: src/synfig/layer_polygon.cpp:172
+#: src/synfig/layer_polygon.cpp:174
 msgid "Vector List"
 msgstr "矢量清单"
 
@@ -1756,439 +1776,439 @@ msgstr "奇/偶"
 
 #: src/synfig/layer_solidcolor.cpp:55
 msgid "Solid Color"
-msgstr "实色"
+msgstr "平涂色"
 
-#: src/synfig/listimporter.cpp:159 src/synfig/listimporter.cpp:160
+#: src/synfig/listimporter.cpp:161 src/synfig/listimporter.cpp:162
 msgid "No images in list"
 msgstr "清单没有图像"
 
-#: src/synfig/loadcanvas.cpp:139
+#: src/synfig/loadcanvas.cpp:138
 #, c-format
 msgid "cannot load '%s' recursively"
 msgstr "不能递归加载‘%s’"
 
-#: src/synfig/loadcanvas.cpp:182
+#: src/synfig/loadcanvas.cpp:181
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
 msgstr "非期望的元素<%s>，而期望的是<%s>"
 
-#: src/synfig/loadcanvas.cpp:188
+#: src/synfig/loadcanvas.cpp:187
 #, c-format
 msgid "Unexpected element <%s>"
 msgstr "非期望的颜色<%s>"
 
-#: src/synfig/loadcanvas.cpp:202
+#: src/synfig/loadcanvas.cpp:201
 msgid "Too many warnings"
 msgstr "太多警告"
 
-#: src/synfig/loadcanvas.cpp:233
+#: src/synfig/loadcanvas.cpp:232
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr "<%s>需要“%s”属性"
 
-#: src/synfig/loadcanvas.cpp:258 src/synfig/loadcanvas.cpp:277
-#: src/synfig/loadcanvas.cpp:296 src/synfig/loadcanvas.cpp:460
-#: src/synfig/loadcanvas.cpp:815
+#: src/synfig/loadcanvas.cpp:257 src/synfig/loadcanvas.cpp:276
+#: src/synfig/loadcanvas.cpp:295 src/synfig/loadcanvas.cpp:459
+#: src/synfig/loadcanvas.cpp:814
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr "<%s>里不应包含如何东西"
 
-#: src/synfig/loadcanvas.cpp:262 src/synfig/loadcanvas.cpp:281
-#: src/synfig/loadcanvas.cpp:300 src/synfig/loadcanvas.cpp:464
-#: src/synfig/loadcanvas.cpp:819
+#: src/synfig/loadcanvas.cpp:261 src/synfig/loadcanvas.cpp:280
+#: src/synfig/loadcanvas.cpp:299 src/synfig/loadcanvas.cpp:463
+#: src/synfig/loadcanvas.cpp:818
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr "<%s>需要“值“属性"
 
-#: src/synfig/loadcanvas.cpp:475
+#: src/synfig/loadcanvas.cpp:474 src/synfig/loadcanvas.cpp:840
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr "在<%s>中出现错误的值“%s”"
 
-#: src/synfig/loadcanvas.cpp:499
+#: src/synfig/loadcanvas.cpp:498
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr "<%s>需要“pos”属性"
 
-#: src/synfig/loadcanvas.cpp:906
+#: src/synfig/loadcanvas.cpp:975
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr "未能用“%s”创建 <aminated>"
 
-#: src/synfig/loadcanvas.cpp:923
+#: src/synfig/loadcanvas.cpp:992
 msgid "<waypoint> is missing attribute \"time\""
 msgstr "<waypoint>缺少“时间”属性"
 
-#: src/synfig/loadcanvas.cpp:936
+#: src/synfig/loadcanvas.cpp:1005
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr "发现<waypoint>“用“属性，但不是空的。忽略内容..."
 
-#: src/synfig/loadcanvas.cpp:956 src/synfig/loadcanvas.cpp:968
+#: src/synfig/loadcanvas.cpp:1025 src/synfig/loadcanvas.cpp:1037
 #, c-format
 msgid "<%s> is missing its data"
 msgstr "<%s>缺失数据"
 
-#: src/synfig/loadcanvas.cpp:985
+#: src/synfig/loadcanvas.cpp:1054
 msgid "Bad data for <waypoint>"
 msgstr "<waypoint>的错误数据"
 
-#: src/synfig/loadcanvas.cpp:1000
+#: src/synfig/loadcanvas.cpp:1069
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr "非期望的<%s>元素出现在<waypoint>数据之后，忽略..."
 
-#: src/synfig/loadcanvas.cpp:1042 src/synfig/loadcanvas.cpp:1059
+#: src/synfig/loadcanvas.cpp:1111 src/synfig/loadcanvas.cpp:1128
 #, c-format
 msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
 msgstr "“%s”不是<%s>中的“%s”属性的有效值"
 
-#: src/synfig/loadcanvas.cpp:1120
+#: src/synfig/loadcanvas.cpp:1189
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr "<%s>中缺失“类型”属性"
 
-#: src/synfig/loadcanvas.cpp:1128
+#: src/synfig/loadcanvas.cpp:1197
 #, c-format
 msgid "Bad type in <%s>"
 msgstr "<%s>的错误类型"
 
-#: src/synfig/loadcanvas.cpp:1137
+#: src/synfig/loadcanvas.cpp:1206
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr "使用类型'%s'创建值节点<%s>出错。参考'%s'"
 
-#: src/synfig/loadcanvas.cpp:1146
+#: src/synfig/loadcanvas.cpp:1215
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr "<%s>不接受‘%s’类型"
 
-#: src/synfig/loadcanvas.cpp:1172 src/synfig/loadcanvas.cpp:1240
+#: src/synfig/loadcanvas.cpp:1241 src/synfig/loadcanvas.cpp:1309
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr "‘%s’已经在<%s>中定义了"
 
-#: src/synfig/loadcanvas.cpp:1182
+#: src/synfig/loadcanvas.cpp:1251
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr "在<%s>中的属性‘%s‘引用未知 ID‘%s’"
 
-#: src/synfig/loadcanvas.cpp:1191
+#: src/synfig/loadcanvas.cpp:1260
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr "未能设置链接“%s”到值节点“%s”（链接#%d在“%s”）"
 
-#: src/synfig/loadcanvas.cpp:1215
+#: src/synfig/loadcanvas.cpp:1284
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr "当参考值节点“%s”时，有未知异常抛出"
 
-#: src/synfig/loadcanvas.cpp:1255
+#: src/synfig/loadcanvas.cpp:1324
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr "元素<%s>丢失其内容"
 
-#: src/synfig/loadcanvas.cpp:1264
+#: src/synfig/loadcanvas.cpp:1333
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr "‘%s’的解释失败"
 
-#: src/synfig/loadcanvas.cpp:1271
+#: src/synfig/loadcanvas.cpp:1340
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr "未能联接值节点（'%s'类型的'%s'）到链接%d（%s）"
 
-#: src/synfig/loadcanvas.cpp:1289
+#: src/synfig/loadcanvas.cpp:1358
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr "在处理“%s”元素时未知例外抛出"
 
-#: src/synfig/loadcanvas.cpp:1330
+#: src/synfig/loadcanvas.cpp:1399
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr "<%s> 缺少链接 %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1396
+#: src/synfig/loadcanvas.cpp:1465
 msgid "Unable to create <dynamic_list>"
 msgstr "未能创建<dynamic_list>"
 
-#: src/synfig/loadcanvas.cpp:1546
+#: src/synfig/loadcanvas.cpp:1615
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr "<entry>缺少其内容或缺少“使用”元素"
 
-#: src/synfig/loadcanvas.cpp:1591
+#: src/synfig/loadcanvas.cpp:1660
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "<%s>中有坏数据"
 
-#: src/synfig/loadcanvas.cpp:1623
+#: src/synfig/loadcanvas.cpp:1692
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr "期待值节点。参考‘%s’"
 
-#: src/synfig/loadcanvas.cpp:1644
+#: src/synfig/loadcanvas.cpp:1713
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "坏 ID“%s”"
 
-#: src/synfig/loadcanvas.cpp:1649
+#: src/synfig/loadcanvas.cpp:1718
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr "复制 ID“%s”"
 
-#: src/synfig/loadcanvas.cpp:1654
+#: src/synfig/loadcanvas.cpp:1723
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr "添加值节点“%s”时抛出未知异常"
 
-#: src/synfig/loadcanvas.cpp:1689
+#: src/synfig/loadcanvas.cpp:1758
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr "缺失“层”元素的“类型”属性"
 
-#: src/synfig/loadcanvas.cpp:1708
+#: src/synfig/loadcanvas.cpp:1777
 msgid "Installed layer version is smaller than layer version in file"
 msgstr "安装的层的版本号小于文件中的"
 
-#: src/synfig/loadcanvas.cpp:1728
+#: src/synfig/loadcanvas.cpp:1797
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr "<layer>的<name>条目是不支持的。正在忽略..."
 
-#: src/synfig/loadcanvas.cpp:1731
+#: src/synfig/loadcanvas.cpp:1800
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr "<layer>的<desc>条目是不支持的。正在忽略..."
 
-#: src/synfig/loadcanvas.cpp:1739
+#: src/synfig/loadcanvas.cpp:1808
 msgid "Missing \"name\" attribute for <param>."
 msgstr "缺失<param>的”名字“属性。"
 
-#: src/synfig/loadcanvas.cpp:1756
+#: src/synfig/loadcanvas.cpp:1825
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr "找到<param>”使用“属性，但它不是空的。正在忽略内容..."
 
-#: src/synfig/loadcanvas.cpp:1761
+#: src/synfig/loadcanvas.cpp:1830
 msgid "Empty use=\"\" value in <param>"
 msgstr "在<param>中空的使用值"
 
-#: src/synfig/loadcanvas.cpp:1767
+#: src/synfig/loadcanvas.cpp:1836
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr "加载子画布失败‘%s’"
 
-#: src/synfig/loadcanvas.cpp:1769
+#: src/synfig/loadcanvas.cpp:1838
 msgid "Layer rejected canvas link"
 msgstr "层退回画布链接"
 
-#: src/synfig/loadcanvas.cpp:1787
+#: src/synfig/loadcanvas.cpp:1858
 #, c-format
 msgid "Unknown ID (%s) referenced in <param>"
 msgstr "在<param>引用未知ID(%s)"
 
-#: src/synfig/loadcanvas.cpp:1803
+#: src/synfig/loadcanvas.cpp:1874
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr "<param>可能缺失其内容，或者是缺失一个”使用“属性。"
 
-#: src/synfig/loadcanvas.cpp:1815 src/synfig/loadcanvas.cpp:1835
+#: src/synfig/loadcanvas.cpp:1886 src/synfig/loadcanvas.cpp:1906
 msgid "Bad data for <param>"
 msgstr "用于<param>的坏数据"
 
-#: src/synfig/loadcanvas.cpp:1823
+#: src/synfig/loadcanvas.cpp:1894
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr "层‘%s’弹出值给参数‘%s’"
 
-#: src/synfig/loadcanvas.cpp:1846
+#: src/synfig/loadcanvas.cpp:1917
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr "非期望望的元素<%s> 在 <param> 数据，正在忽略..."
 
-#: src/synfig/loadcanvas.cpp:1919 src/synfig/loadcanvas.cpp:1927
+#: src/synfig/loadcanvas.cpp:1990 src/synfig/loadcanvas.cpp:1998
 msgid "Canvas with width or height less than one is not allowed"
 msgstr "画布的宽度或高度小于一是不允许的"
 
-#: src/synfig/loadcanvas.cpp:2013
+#: src/synfig/loadcanvas.cpp:2084
 msgid "Inline canvas cannot have a <defs> section"
 msgstr "内联画布不能有个<defs>段落"
 
-#: src/synfig/loadcanvas.cpp:2021
+#: src/synfig/loadcanvas.cpp:2092
 msgid "Inline canvas cannot have keyframes"
 msgstr "内联画布不能拥有关键帧"
 
-#: src/synfig/loadcanvas.cpp:2033
+#: src/synfig/loadcanvas.cpp:2104
 msgid "Inline canvases cannot have metadata"
 msgstr "内联画布不能拥有元素据"
 
-#: src/synfig/loadcanvas.cpp:2041
+#: src/synfig/loadcanvas.cpp:2112
 msgid "<meta> must have a name"
 msgstr "<meta>必须有名字"
 
-#: src/synfig/loadcanvas.cpp:2047
+#: src/synfig/loadcanvas.cpp:2118
 msgid "<meta> must have content"
 msgstr "<meta>必须有内容"
 
-#: src/synfig/loadcanvas.cpp:2059
+#: src/synfig/loadcanvas.cpp:2130
 msgid "blank \"name\" entity"
 msgstr "空白的“名字”栏"
 
-#: src/synfig/loadcanvas.cpp:2074
+#: src/synfig/loadcanvas.cpp:2145
 msgid "blank \"desc\" entity"
 msgstr "空白的“描述”栏"
 
-#: src/synfig/loadcanvas.cpp:2089
+#: src/synfig/loadcanvas.cpp:2160
 msgid "blank \"author\" entity"
 msgstr "空白的“作者”栏"
 
-#: src/synfig/loadcanvas.cpp:2121
+#: src/synfig/loadcanvas.cpp:2192
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "画布‘%s’还么定义%s：%s"
 
-#: src/synfig/loadcanvas.cpp:2123 src/synfig/valuenode.cpp:380
+#: src/synfig/loadcanvas.cpp:2194 src/synfig/valuenode.cpp:347
 msgid "ValueNode"
 msgstr "值节点"
 
-#: src/synfig/loadcanvas.cpp:2123
+#: src/synfig/loadcanvas.cpp:2194
 msgid "ValueNodes"
 msgstr "值节点"
 
-#: src/synfig/loadcanvas.cpp:2203 src/synfig/loadcanvas.cpp:2259
+#: src/synfig/loadcanvas.cpp:2274 src/synfig/loadcanvas.cpp:2330
 msgid "Can't open file"
 msgstr "不能打开文件"
 
-#: src/synfig/main.cpp:103
+#: src/synfig/main.cpp:101
 #, c-format
 msgid "API Version mismatch (LIB:%d, PROG:%d)"
 msgstr "API 版本不匹配（库：%d，程序：%d）"
 
-#: src/synfig/main.cpp:108
+#: src/synfig/main.cpp:106
 #, c-format
 msgid "Size of Vector mismatch (app:%d, lib:%d)"
 msgstr "向量大小不匹配（程序：%d，库：%d）"
 
-#: src/synfig/main.cpp:113
+#: src/synfig/main.cpp:111
 #, c-format
 msgid "Size of Color mismatch (app:%d, lib:%d)"
 msgstr "颜色大小不匹配(app:%d,lib:%d)"
 
-#: src/synfig/main.cpp:118
+#: src/synfig/main.cpp:116
 #, c-format
 msgid "Size of Canvas mismatch (app:%d, lib:%d)"
 msgstr "画布大小不匹配(app:%d, lib%d)"
 
-#: src/synfig/main.cpp:123
+#: src/synfig/main.cpp:121
 #, c-format
 msgid "Size of Layer mismatch (app:%d, lib:%d)"
 msgstr "层的大小不匹配(app:%d, lib:%d)"
 
-#: src/synfig/main.cpp:185
+#: src/synfig/main.cpp:183
 msgid "Starting Subsystem \"Modules\""
 msgstr "正在启动“模块”子系统"
 
-#: src/synfig/main.cpp:187
+#: src/synfig/main.cpp:185
 msgid "Unable to initialize subsystem \"Module\""
 msgstr "未能初始化“模块”子系统"
 
-#: src/synfig/main.cpp:189
+#: src/synfig/main.cpp:187
 msgid "Starting Subsystem \"Layers\""
 msgstr "正在启动“层子系统”"
 
-#: src/synfig/main.cpp:193
+#: src/synfig/main.cpp:191
 msgid "Unable to initialize subsystem \"Layers\""
 msgstr "未能初始化“层”子系统"
 
-#: src/synfig/main.cpp:196
+#: src/synfig/main.cpp:194
 msgid "Starting Subsystem \"Targets\""
 msgstr "正在启动“目标”子系统"
 
-#: src/synfig/main.cpp:201
+#: src/synfig/main.cpp:199
 msgid "Unable to initialize subsystem \"Targets\""
 msgstr "未能初始化“目标”子系统"
 
-#: src/synfig/main.cpp:204
+#: src/synfig/main.cpp:202
 msgid "Starting Subsystem \"Importers\""
 msgstr "正在启动“输入”子系统"
 
-#: src/synfig/main.cpp:210
+#: src/synfig/main.cpp:208
 msgid "Unable to initialize subsystem \"Importers\""
 msgstr "未能初始化“输入”子系统"
 
-#: src/synfig/main.cpp:213
+#: src/synfig/main.cpp:211
 msgid "Starting Subsystem \"ValueNodes\""
 msgstr "正在启动“值节点”子系统"
 
-#: src/synfig/main.cpp:220
+#: src/synfig/main.cpp:218
 msgid "Unable to initialize subsystem \"ValueNodes\""
 msgstr "未能初始化“值节点”子系统"
 
-#: src/synfig/main.cpp:257 src/synfig/main.cpp:258
+#: src/synfig/main.cpp:255 src/synfig/main.cpp:256
 #, c-format
 msgid "Loading modules from %s"
 msgstr "正在从%s中加载模块"
 
-#: src/synfig/main.cpp:268
+#: src/synfig/main.cpp:266
 #, c-format
 msgid "Unable to open module list file '%s'"
 msgstr "未能打开模块列表文件‘%s’"
 
-#: src/synfig/main.cpp:282
+#: src/synfig/main.cpp:280
 msgid "DONE"
 msgstr "完成"
 
-#: src/synfig/main.cpp:348
+#: src/synfig/main.cpp:346
 msgid "error"
 msgstr "错误"
 
-#: src/synfig/main.cpp:363
+#: src/synfig/main.cpp:361
 msgid "warning"
 msgstr "警告"
 
-#: src/synfig/main.cpp:378
+#: src/synfig/main.cpp:376
 msgid "info"
 msgstr "信息"
 
-#: src/synfig/module.cpp:66
+#: src/synfig/module.cpp:64
 msgid "Errors on lt_dlinit()"
 msgstr "lt_dlinit() 的错误"
 
-#: src/synfig/module.cpp:103
+#: src/synfig/module.cpp:101
 #, c-format
 msgid "Unable to load module '%s'"
 msgstr "未能加载'%s'模块"
 
-#: src/synfig/module.cpp:128
+#: src/synfig/module.cpp:126
 #, c-format
 msgid "Attempting to register \"%s\""
-msgstr "尝试注册“%s”"
+msgstr "正在注册“%s”"
 
-#: src/synfig/module.cpp:135
+#: src/synfig/module.cpp:133
 #, c-format
 msgid "Unable to find module \"%s\" (%s)"
 msgstr "未能找到“%s”（%s）模块"
 
-#: src/synfig/module.cpp:139
+#: src/synfig/module.cpp:137
 #, c-format
 msgid "Found module \"%s\""
 msgstr "发现“%s”模块"
 
-#: src/synfig/module.cpp:173
+#: src/synfig/module.cpp:171
 #, c-format
 msgid "Unable to find entrypoint in module \"%s\" (%s)"
 msgstr "未能在“%s（%s）”模块中找到人口点"
 
-#: src/synfig/module.cpp:186
+#: src/synfig/module.cpp:184
 msgid "Entrypoint did not return a module."
 msgstr "入口点没有返回模块。"
 
-#: src/synfig/module.cpp:190
+#: src/synfig/module.cpp:188
 #, c-format
 msgid "Success for \"%s\""
 msgstr "成功“%s”"
 
 #: src/synfig/palette.cpp:74
 msgid "Unnamed"
-msgstr "为命名"
+msgstr "未命名"
 
 #: src/synfig/palette.cpp:91
 msgid "Surface Palette"
@@ -2197,7 +2217,7 @@ msgstr ""
 #: src/synfig/palette.cpp:286
 #, c-format
 msgid "%0.2f%% Gray"
-msgstr ""
+msgstr "%0.2f%% 灰"
 
 #: src/synfig/palette.cpp:301
 #, c-format
@@ -2244,7 +2264,7 @@ msgstr "重叠(_Y)"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "_Hard Light"
-msgstr ""
+msgstr "强光(_H)"
 
 #: src/synfig/paramdesc.cpp:72
 msgid "_Multiply"
@@ -2302,19 +2322,19 @@ msgstr "透明度变亮(_P)"
 msgid "Al_pha Darken"
 msgstr "透明度变暗"
 
-#: src/synfig/render.cpp:247 src/synfig/render.cpp:248
-#: src/synfig/render.cpp:302 src/synfig/render.cpp:303
-#: src/synfig/render.cpp:423 src/synfig/render.cpp:424
-#: src/synfig/render.cpp:450 src/synfig/render.cpp:451
+#: src/synfig/render.cpp:245 src/synfig/render.cpp:246
+#: src/synfig/render.cpp:300 src/synfig/render.cpp:301
+#: src/synfig/render.cpp:421 src/synfig/render.cpp:422
+#: src/synfig/render.cpp:448 src/synfig/render.cpp:449
 msgid "Target panic"
 msgstr "目标 Panic"
 
-#: src/synfig/savecanvas.cpp:254
+#: src/synfig/savecanvas.cpp:261
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr "未知的值（%s）,不能创建 XML Representation！"
 
-#: src/synfig/savecanvas.cpp:529
+#: src/synfig/savecanvas.cpp:490
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr "未知值节点类型（%s），不能创建 XML representation"
@@ -2361,275 +2381,275 @@ msgstr "坏的面"
 msgid "add_tile():Unable to put surface on target"
 msgstr "添加标题（）：未能放置面到目标上"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:268 src/synfig/value.cpp:323
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:270 src/synfig/value.cpp:325
 msgid "bool"
 msgstr "布尔"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:270 src/synfig/value.cpp:321
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:272 src/synfig/value.cpp:323
 msgid "integer"
 msgstr "整数"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:272
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:274
 msgid "angle"
 msgstr "角度"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:274 src/synfig/value.cpp:315
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:276 src/synfig/value.cpp:317
 msgid "time"
 msgstr "时间"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:276 src/synfig/value.cpp:318
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:278 src/synfig/value.cpp:320
 msgid "real"
 msgstr "实数"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:278
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:280
 msgid "vector"
 msgstr "向量"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:280
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:282
 msgid "color"
 msgstr "颜色"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:282
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:284
 msgid "segment"
 msgstr "线段"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:284
-msgid "bline_point"
-msgstr "BLine 点(_P)"
-
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:286
+msgid "bline_point"
+msgstr "BLine 点"
+
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:288
 msgid "list"
 msgstr "清单"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:288
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:290
 msgid "canvas"
 msgstr "画布"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:290
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:292
 msgid "string"
 msgstr "字符串"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:292
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:294
 msgid "gradient"
 msgstr "渐变"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:294
+#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:296
 msgid "nil"
-msgstr "全无"
+msgstr "无"
 
-#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_composite.cpp:435
+#: src/synfig/valuenode.cpp:138 src/synfig/valuenode_composite.cpp:435
 msgid "Composite"
 msgstr "复合"
 
-#: src/synfig/valuenode.cpp:143 src/synfig/valuenode_radialcomposite.cpp:306
+#: src/synfig/valuenode.cpp:139 src/synfig/valuenode_radialcomposite.cpp:306
 msgid "Radial Composite"
-msgstr "径向复合"
+msgstr "半径复合"
 
-#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_reference.cpp:159
+#: src/synfig/valuenode.cpp:140 src/synfig/valuenode_reference.cpp:159
 msgid "Reference"
 msgstr "引用"
 
-#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_blinecalctangent.cpp:247
+#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_blinecalctangent.cpp:247
 #: src/synfig/valuenode_blinecalcwidth.cpp:211
 #: src/synfig/valuenode_exp.cpp:158 src/synfig/valuenode_scale.cpp:264
 msgid "Scale"
 msgstr "缩放"
 
-#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_segcalctangent.cpp:103
+#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_segcalctangent.cpp:103
 msgid "Segment Tangent"
 msgstr "线段切线"
 
-#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_segcalcvertex.cpp:101
+#: src/synfig/valuenode.cpp:143 src/synfig/valuenode_segcalcvertex.cpp:101
 msgid "Segment Vertex"
 msgstr "线段顶点"
 
-#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_stripes.cpp:78
+#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_stripes.cpp:78
 #: src/synfig/valuenode_stripes.cpp:228
 msgid "Stripes"
 msgstr "条纹"
 
-#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_subtract.cpp:234
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_subtract.cpp:234
 msgid "Subtract"
 msgstr "部分追踪"
 
-#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_twotone.cpp:180
+#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_twotone.cpp:180
 msgid "Two-Tone"
-msgstr "两色调的"
+msgstr "双色调"
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:832
+#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_bline.cpp:832
 #: src/synfig/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenode_blinecalcvertex.cpp:202
 #: src/synfig/valuenode_blinecalcwidth.cpp:208
 msgid "BLine"
 msgstr "BLine"
 
-#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_dynamiclist.cpp:715
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_dynamiclist.cpp:715
 msgid "Dynamic List"
 msgstr "动态清单"
 
-#: src/synfig/valuenode.cpp:153 src/synfig/valuenode_gradientrotate.cpp:75
+#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_gradientrotate.cpp:75
 #: src/synfig/valuenode_gradientrotate.cpp:190
 msgid "Gradient Rotate"
 msgstr "渐变旋转"
 
-#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_sine.cpp:107
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_sine.cpp:107
 msgid "Sine"
 msgstr "正弦"
 
-#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_timedswap.cpp:265
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_timedswap.cpp:265
 msgid "Timed Swap"
 msgstr "定时交换"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_repeat_gradient.cpp:81
+#: src/synfig/valuenode.cpp:153 src/synfig/valuenode_repeat_gradient.cpp:81
 #: src/synfig/valuenode_repeat_gradient.cpp:237
 msgid "Repeat Gradient"
 msgstr "重复渐变"
 
-#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_exp.cpp:103
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_exp.cpp:103
 msgid "Exponential"
 msgstr "指数"
 
-#: src/synfig/valuenode.cpp:159 src/synfig/valuenode_add.cpp:230
+#: src/synfig/valuenode.cpp:155 src/synfig/valuenode_add.cpp:230
 msgid "Add"
 msgstr "添加"
 
-#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_blinecalctangent.cpp:175
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_blinecalctangent.cpp:175
 msgid "BLine Tangent"
 msgstr "BLine 切线"
 
-#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_blinecalcvertex.cpp:143
+#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_blinecalcvertex.cpp:143
 msgid "BLine Vertex"
 msgstr "BLine 顶点"
 
-#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_range.cpp:299
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_range.cpp:297
 msgid "Range"
 msgstr "范围"
 
-#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_switch.cpp:173
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_switch.cpp:173
 msgid "Switch"
 msgstr "开关"
 
-#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_cos.cpp:106
+#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_cos.cpp:106
 msgid "Cos"
 msgstr "余弦"
 
-#: src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode.cpp:162
 msgid "aTan2"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:167
+#: src/synfig/valuenode.cpp:163
 msgid "Reverse Tangent"
 msgstr "反正切"
 
-#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_reciprocal.cpp:182
+#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_reciprocal.cpp:182
 msgid "Reciprocal"
 msgstr "倒数"
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenode_integer.cpp:186
+#: src/synfig/valuenode.cpp:167 src/synfig/valuenode_integer.cpp:186
 msgid "From Integer"
 msgstr "从整数"
 
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_blinecalcwidth.cpp:146
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_blinecalcwidth.cpp:146
 msgid "BLine Width"
 msgstr "BLine 宽度"
 
-#: src/synfig/valuenode.cpp:175
+#: src/synfig/valuenode.cpp:171
 msgid "Vector Angle"
 msgstr "向量角度"
 
-#: src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode.cpp:172
 msgid "Vector Length"
 msgstr "向量长度"
 
-#: src/synfig/valuenode.cpp:177
+#: src/synfig/valuenode.cpp:173
 msgid "Vector X"
 msgstr "向量 X"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:174
 msgid "Vector Y"
 msgstr "向量 Y"
 
-#: src/synfig/valuenode.cpp:179
+#: src/synfig/valuenode.cpp:175
 msgid "Gradient Color"
-msgstr "渐变颜色"
+msgstr "渐变色"
 
-#: src/synfig/valuenode.cpp:180
+#: src/synfig/valuenode.cpp:176
 msgid "Dot Product"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_timestring.cpp:116
+#: src/synfig/valuenode.cpp:177 src/synfig/valuenode_timestring.cpp:116
 msgid "Time String"
 msgstr "时间字符串"
 
-#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_realstring.cpp:122
+#: src/synfig/valuenode.cpp:178 src/synfig/valuenode_realstring.cpp:122
 msgid "Real String"
 msgstr "实数字符串"
 
-#: src/synfig/valuenode.cpp:183 src/synfig/valuenode_join.cpp:141
+#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_join.cpp:141
 msgid "Joined List"
 msgstr "加入的清单"
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:180
 msgid "Angle String"
 msgstr "角度字符串"
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:181
 msgid "Int String"
 msgstr "整数字符串"
 
-#: src/synfig/valuenode.cpp:186
+#: src/synfig/valuenode.cpp:182
 msgid "Logarithm"
 msgstr "对数"
 
-#: src/synfig/valuenode.cpp:188
+#: src/synfig/valuenode.cpp:184
 msgid "Greyed"
 msgstr "变灰的"
 
-#: src/synfig/valuenode.cpp:189 src/synfig/valuenode_pow.cpp:123
+#: src/synfig/valuenode.cpp:185 src/synfig/valuenode_pow.cpp:123
 #: src/synfig/valuenode_pow.cpp:200
 msgid "Power"
-msgstr ""
+msgstr "幂"
 
-#: src/synfig/valuenode.cpp:190 src/synfig/valuenode_compare.cpp:190
+#: src/synfig/valuenode.cpp:186 src/synfig/valuenode_compare.cpp:190
 msgid "Compare"
 msgstr "比较"
 
-#: src/synfig/valuenode.cpp:191
+#: src/synfig/valuenode.cpp:187
 msgid "Not"
 msgstr "非"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:188
 msgid "And"
 msgstr "与"
 
-#: src/synfig/valuenode.cpp:193
+#: src/synfig/valuenode.cpp:189
 msgid "Or"
 msgstr "或"
 
-#: src/synfig/valuenode.cpp:260
+#: src/synfig/valuenode.cpp:227
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr "错误类型：值节点‘%s’不接受‘%s’类型"
 
-#: src/synfig/valuenode.cpp:540
+#: src/synfig/valuenode.cpp:507
 msgid "Placeholder"
 msgstr "位置标志符"
 
-#: src/synfig/valuenode.h:62
+#: src/synfig/valuenode.h:59
 #, c-format
 msgid "%s:%d wrong type for %s: need %s but got %s"
 msgstr "%s:%d，%s的错误类型：需要%s却得到%s"
@@ -2675,18 +2695,18 @@ msgstr "链接2"
 msgid "AND"
 msgstr "与"
 
-#: src/synfig/valuenode_animated.cpp:261 src/synfig/valuenode_animated.cpp:285
-#: src/synfig/valuenode_animated.cpp:561 src/synfig/valuenode_animated.cpp:579
-#: src/synfig/valuenode_animated.cpp:659 src/synfig/valuenode_animated.cpp:678
+#: src/synfig/valuenode_animated.cpp:240 src/synfig/valuenode_animated.cpp:264
+#: src/synfig/valuenode_animated.cpp:540 src/synfig/valuenode_animated.cpp:558
+#: src/synfig/valuenode_animated.cpp:638 src/synfig/valuenode_animated.cpp:657
 msgid "A waypoint already exists at this point in time"
 msgstr "在这个时间点上已存在一个航点"
 
-#: src/synfig/valuenode_animated.cpp:1055
+#: src/synfig/valuenode_animated.cpp:971
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
 msgstr "%s：您不能在有动画的值节点中使用一个%s"
 
-#: src/synfig/valuenode_animated.cpp:1090
+#: src/synfig/valuenode_animated.cpp:1006
 msgid "Animated"
 msgstr "动画"
 
@@ -2766,6 +2786,10 @@ msgstr "分离切线"
 #, c-format
 msgid "C%d"
 msgstr "C%d"
+
+#: src/synfig/valuenode_const.cpp:127
+msgid "Static"
+msgstr "静态"
 
 #: src/synfig/valuenode_compare.cpp:128
 msgid "Greater Than"
@@ -2877,11 +2901,11 @@ msgstr "色调"
 msgid "Some of my parameters aren't set!"
 msgstr "我的一些参数没有设定！"
 
-#: src/synfig/valuenode_range.cpp:260
+#: src/synfig/valuenode_range.cpp:258
 msgid "Min"
 msgstr "最小"
 
-#: src/synfig/valuenode_range.cpp:261
+#: src/synfig/valuenode_range.cpp:259
 msgid "Max"
 msgstr "最大"
 
@@ -3245,11 +3269,11 @@ msgstr "Y 分辨率"
 
 #: src/tool/main.cpp:934
 msgid "Diagonal Image Span"
-msgstr ""
+msgstr "图像对角跨度"
 
 #: src/tool/main.cpp:943
 msgid "Interlaced"
-msgstr ""
+msgstr "交错"
 
 #: src/tool/main.cpp:949
 msgid "Antialias"
@@ -3277,7 +3301,7 @@ msgstr "致命错误：Synfig 版本不匹配"
 
 #: src/tool/main.cpp:1029
 msgid "verbosity set to "
-msgstr ""
+msgstr "冗长设至"
 
 #: src/tool/main.cpp:1066
 msgid "Unable to load '"

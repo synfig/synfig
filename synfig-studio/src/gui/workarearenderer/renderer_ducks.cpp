@@ -315,34 +315,39 @@ Renderer_Ducks::render_vfunc(
 		if(!(*iter)->get_editable())
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
-		{
-			// Check if we can reach the canvas and set the time to
-			// evaluate the split value accordingly
-			synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
-			synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
-			// Retrieve the split value of the bline point.
-			synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
-			synfig::LinkableValueNode::Handle parent;
-			if(v_d.parent_is_linkable_value_node())
-			{
-				parent=v_d.get_parent_value_node();
-				bool split;
-				synfig::ValueNode::Handle child(parent->get_link("split"));
-				if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+			if(0){
+				// Tangents have different color depending on the split state (disabled for now)
+				//
+				// Check if we can reach the canvas and set the time to
+				// evaluate the split value accordingly
+				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+				// Retrieve the split value of the bline point.
+				synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+				synfig::LinkableValueNode::Handle parent;
+				if(v_d.parent_is_linkable_value_node())
 				{
-					synfig::ValueNode_Animated::Handle animated_child(synfig::ValueNode_Animated::Handle::cast_dynamic(child));
-					split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
+					parent=v_d.get_parent_value_node();
+					bool split;
+					synfig::ValueNode::Handle child(parent->get_link("split"));
+					if(synfig::ValueNode_Animated::Handle::cast_dynamic(child))
+					{
+						synfig::ValueNode_Animated::Handle animated_child(synfig::ValueNode_Animated::Handle::cast_dynamic(child));
+						split=animated_child->new_waypoint_at_time(time).get_value(time).get(split);
+					}
+					else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
+					{
+						synfig::ValueNode_Const::Handle const_child(synfig::ValueNode_Const::Handle::cast_dynamic(child));
+						split=(const_child->get_value()).get(split);
+					}
+					screen_duck.color=(split? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
 				}
-				else if(synfig::ValueNode_Const::Handle::cast_dynamic(child))
-				{
-					synfig::ValueNode_Const::Handle const_child(synfig::ValueNode_Const::Handle::cast_dynamic(child));
-					split=(const_child->get_value()).get(split);
-				}
-				screen_duck.color=(split? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
+				else
+					screen_duck.color=DUCK_COLOR_TANGENT_1;
+			} else {
+				// All tangents are the same color
+				screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
 			}
-			else
-				screen_duck.color=DUCK_COLOR_TANGENT_1;
-		}
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)

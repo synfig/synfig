@@ -132,25 +132,47 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
 	Gtk::Stock::add(stock_##name);
 
-	INIT_STOCK_ICON(bool,"bool_icon."IMAGE_EXT,_("Bool"));
-	INIT_STOCK_ICON(integer,"integer_icon."IMAGE_EXT,_("Integer"));
-	INIT_STOCK_ICON(angle,"angle_icon."IMAGE_EXT,_("Angle"));
-	INIT_STOCK_ICON(time,"time_icon."IMAGE_EXT,_("Time"));
-	INIT_STOCK_ICON(real,"real_icon."IMAGE_EXT,_("Real"));
-	INIT_STOCK_ICON(vector,"vector_icon."IMAGE_EXT,_("Vector"));
-	INIT_STOCK_ICON(color,"color_icon."IMAGE_EXT,_("Color"));
-	INIT_STOCK_ICON(segment,"segment_icon."IMAGE_EXT,_("Segment"));
-	INIT_STOCK_ICON(blinepoint,"blinepoint_icon."IMAGE_EXT,_("BLine Point"));
-	INIT_STOCK_ICON(list,"list_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
-	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
+	// Types
+	INIT_STOCK_ICON(type_bool,"type_bool_icon."IMAGE_EXT,_("Bool"));
+	INIT_STOCK_ICON(type_integer,"type_integer_icon."IMAGE_EXT,_("Integer"));
+	INIT_STOCK_ICON(type_angle,"type_angle_icon."IMAGE_EXT,_("Angle"));
+	INIT_STOCK_ICON(type_time,"type_time_icon."IMAGE_EXT,_("Time"));
+	INIT_STOCK_ICON(type_real,"type_real_icon."IMAGE_EXT,_("Real"));
+	INIT_STOCK_ICON(type_vector,"type_vector_icon."IMAGE_EXT,_("Vector"));
+	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
+	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
+	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("BLine Point"));
+	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("List"));
+	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("String"));
+	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
+	INIT_STOCK_ICON(type_gradient,"type_gradient_icon."IMAGE_EXT,_("Gradient"))
 
+	// ToolBox Tools
+	INIT_STOCK_ICON(normal,"tool_normal_icon."IMAGE_EXT,_("Transform Tool"));
+        INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
+        INIT_STOCK_ICON(bline,"tool_bline_icon."IMAGE_EXT,_("BLine Tool"));
+        INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
+        INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
+        INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
+        INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
+        INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
+        INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
+        INIT_STOCK_ICON(smooth_move,"tool_smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
+        INIT_STOCK_ICON(rotate,"tool_rotate_icon."IMAGE_EXT,"Rotate Tool");
+        INIT_STOCK_ICON(width,"tool_width_icon."IMAGE_EXT,_("Width Tool"));
+        INIT_STOCK_ICON(scale,"tool_scale_icon."IMAGE_EXT,"Scale Tool");
+        INIT_STOCK_ICON(zoom,"tool_zoom_icon."IMAGE_EXT,_("Zoom Tool"));
+        INIT_STOCK_ICON(mirror,"tool_mirror_icon."IMAGE_EXT,_("Mirror Tool"));
+        INIT_STOCK_ICON(text,"tool_text_icon."IMAGE_EXT,"Text Tool");
+        INIT_STOCK_ICON(gradient,"tool_gradient_icon."IMAGE_EXT,_("Gradient Tool"));
+        INIT_STOCK_ICON(star,"tool_star_icon."IMAGE_EXT,_("Star Tool"));
+	//ToolBox Others
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(canvas_pointer,"canvas_pointer_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 
@@ -216,7 +238,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
+	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
+
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
 	INIT_STOCK_ICON(grid_snap_enable,"grid_snap_enable_icon."IMAGE_EXT,_("Enable Grid Snap"));
@@ -234,6 +258,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(meta_data,"meta_data_icon."IMAGE_EXT,_("MetaData"));
 	INIT_STOCK_ICON(navigator,"navigator_icon."IMAGE_EXT,_("Navigator"));
 	INIT_STOCK_ICON(timetrack,"time_track_icon."IMAGE_EXT,_("Time Track"));
+	INIT_STOCK_ICON(history,"history_icon."IMAGE_EXT,_("History"));
+	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
+	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
 
 	INIT_STOCK_ICON(keyframe_lock_all,"keyframe_lock_all."IMAGE_EXT,_("All Keyframes Locked"));
 	INIT_STOCK_ICON(keyframe_lock_past,"keyframe_lock_past."IMAGE_EXT,_("Past Keyframes Locked"));
@@ -275,28 +302,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
 	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
-
-	// Tools
-	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Transform Tool"));
-	INIT_STOCK_ICON(transform,"transform_icon."IMAGE_EXT,_("Transform Tool"));
-	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
-	INIT_STOCK_ICON(bline,"bline_icon."IMAGE_EXT,_("BLine Tool"));
-	INIT_STOCK_ICON(eyedrop,"eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
-	INIT_STOCK_ICON(fill,"fill_icon."IMAGE_EXT,_("Fill Tool"));
-	INIT_STOCK_ICON(draw,"draw_icon."IMAGE_EXT,_("Draw Tool"));
-	INIT_STOCK_ICON(sketch,"sketch_icon."IMAGE_EXT,_("Sketch Tool"));
-	INIT_STOCK_ICON(circle,"circle_icon."IMAGE_EXT,_("Circle Tool"));
-	INIT_STOCK_ICON(rectangle,"rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
-	INIT_STOCK_ICON(smooth_move,"smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
-	INIT_STOCK_ICON(rotate,"rotate_icon."IMAGE_EXT,"Rotate Tool");
-	INIT_STOCK_ICON(width,"width_icon."IMAGE_EXT,_("Width Tool"));
-	INIT_STOCK_ICON(scale,"scale_icon."IMAGE_EXT,"Scale Tool");
-	INIT_STOCK_ICON(zoom,"zoom_icon."IMAGE_EXT,_("Zoom Tool"));
-	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
-	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));
-	INIT_STOCK_ICON(text,"text_icon."IMAGE_EXT,"Text Tool");
-	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient Tool"));
-	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,_("Star Tool"));
 
 #undef INIT_STOCK_ICON
 #undef INIT_STOCK_ICON_CLONE
@@ -374,43 +379,43 @@ studio::value_icon(synfig::ValueBase::Type type)
 		switch(type)
 		{
 		case ValueBase::TYPE_BOOL:
-			return Gtk::StockID("synfig-bool");
+			return Gtk::StockID("synfig-type_bool");
 			break;
 		case ValueBase::TYPE_INTEGER:
-			return Gtk::StockID("synfig-integer");
+			return Gtk::StockID("synfig-type_integer");
 			break;
 		case ValueBase::TYPE_ANGLE:
-			return Gtk::StockID("synfig-angle");
+			return Gtk::StockID("synfig-type_angle");
 			break;
 		case ValueBase::TYPE_TIME:
-			return Gtk::StockID("synfig-time");
+			return Gtk::StockID("synfig-type_time");
 			break;
 		case ValueBase::TYPE_REAL:
-			return Gtk::StockID("synfig-real");
+			return Gtk::StockID("synfig-type_real");
 			break;
 		case ValueBase::TYPE_VECTOR:
-			return Gtk::StockID("synfig-vector");
+			return Gtk::StockID("synfig-type_vector");
 			break;
 		case ValueBase::TYPE_COLOR:
-			return Gtk::StockID("synfig-color");
+			return Gtk::StockID("synfig-type_color");
 			break;
 		case ValueBase::TYPE_SEGMENT:
-			return Gtk::StockID("synfig-segment");
+			return Gtk::StockID("synfig-type_segment");
 			break;
 		case ValueBase::TYPE_BLINEPOINT:
-			return Gtk::StockID("synfig-blinepoint");
+			return Gtk::StockID("synfig-type_blinepoint");
 			break;
 		case ValueBase::TYPE_LIST:
-			return Gtk::StockID("synfig-list");
+			return Gtk::StockID("synfig-type_list");
 			break;
 		case ValueBase::TYPE_CANVAS:
-			return Gtk::StockID("synfig-canvas_pointer");
+			return Gtk::StockID("synfig-type_canvas");
 			break;
 		case ValueBase::TYPE_STRING:
-			return Gtk::StockID("synfig-string");
+			return Gtk::StockID("synfig-type_string");
 			break;
 		case ValueBase::TYPE_GRADIENT:
-			return Gtk::StockID("synfig-gradient");
+			return Gtk::StockID("synfig-type_gradient");
 			break;
 		case ValueBase::TYPE_NIL:
 		default:

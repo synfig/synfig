@@ -2,11 +2,35 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/wiki/Releases
+http://synfig.org/en/news/releases
 
- 0.62.xx (git tag: "synfig-0.62.xx") - Month day, 2010
+ 0.62.02 (git tag: "synfig-0.62.02") - November 13, 2010- Bug fixes, features
 
   * Fix load and save palette feature.
+  * Code documentation. Not full yet.
+  * Adapt api.sh script to run as a cron job at tuxfamily servers.
+    Now API is updated at http://download.tuxfamily.org/synfig/api/index.html
+  * Rename secondary layer's Z column to "Icon" and make it not reorderable.
+    Make "Name" column resizable.
+  * Britain English translation. Robert Readman.
+  * Fix Bug #3029832 Time Offset parameter fails for multiple times imported files
+  * Simplified Chinese translation. Yu Chen
+  * New "By Layer Default" blend method.
+    Now some layers define its own blend method instead of Composite or
+    the selected by user. For example Shade->Behind
+  * Fix bug #2958077. Incorrect fps in ListImporter
+  * New Stroboscope Layer. Ray Fredesikson
+  * Added "Static" option for individual parameters.
+    If "Static" is on, then in animation mode it is no created any waypoint
+    when modified. Only valid for layer parameters and constant value nodes.
+  * Fix bug #3060560. Link two tangents and one is animated, the animated is not used.
+  * Smart linking bline tangents implementation. Now all tangents are yellow ducks.
+  * Move reverse manipulation code to Value Desc.
+    This allows recursive reverse manipulation for valuenodes which has
+    inverse manipulation implemented.
+  * Assume frames when no unit is provided in a time field. Apply feature request #2879693
+  * Spanish translation update.
+  * New Simplified Chinese translation. Yu Chen
 
  0.62.01 (git tag: "synfig-0.62.01") - May 31, 2010 - Bug fixes, features.
 

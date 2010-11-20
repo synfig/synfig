@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio Inside Out Icon</name>
   <desc>Placed in the Public Domain in 2010 by Bertrand Gr&#xE9;goire (berteh)</desc>
   <meta name="grid_show" content="0"/>
@@ -231,9 +231,9 @@
     </param>
     <param name="color">
       <color>
-        <r>1.000000</r>
-        <g>1.000000</g>
-        <b>1.000000</b>
+        <r>0.170138</r>
+        <g>0.353741</g>
+        <b>0.632043</b>
         <a>1.000000</a>
       </color>
     </param>
@@ -332,7 +332,7 @@
                   <real value="8.8176882272"/>
                 </radius>
                 <theta>
-                  <angle value="83.190948"/>
+                  <angle value="83.190941"/>
                 </theta>
               </radial_composite>
             </t2>
@@ -353,9 +353,9 @@
     </param>
     <param name="color">
       <color>
-        <r>0.000000</r>
-        <g>0.000000</g>
-        <b>0.000000</b>
+        <r>0.010398</r>
+        <g>0.065754</g>
+        <b>0.246800</b>
         <a>1.000000</a>
       </color>
     </param>
@@ -454,7 +454,7 @@
                   <real value="8.8176882272"/>
                 </radius>
                 <theta>
-                  <angle value="83.190948"/>
+                  <angle value="83.190941"/>
                 </theta>
               </radial_composite>
             </t2>
@@ -501,7 +501,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="SolidColor" active="false" version="0.1">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -533,9 +533,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
+              <r>0.030257</r>
+              <g>0.130352</g>
+              <b>0.378676</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -675,30 +675,12 @@
             <integer value="0"/>
           </param>
           <param name="color">
-            <gradientcolor type="color">
-              <gradient>
-                <gradient>
-                  <color pos="0.159763">
-                    <r>1.000000</r>
-                    <g>1.000000</g>
-                    <b>1.000000</b>
-                    <a>1.000000</a>
-                  </color>
-                  <color pos="1.000000">
-                    <r>0.302085</r>
-                    <g>0.302085</g>
-                    <b>0.302086</b>
-                    <a>1.000000</a>
-                  </color>
-                </gradient>
-              </gradient>
-              <index>
-                <real value="1.0000000000"/>
-              </index>
-              <loop>
-                <bool value="false"/>
-              </loop>
-            </gradientcolor>
+            <color>
+              <r>0.170138</r>
+              <g>0.353741</g>
+              <b>0.632043</b>
+              <a>1.000000</a>
+            </color>
           </param>
           <param name="origin">
             <vector>
@@ -826,6 +808,17 @@
     <param name="focus">
       <vector>
         <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-1.1200000000"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>-0.0181268882</x>
         <y>0.0000000000</y>
       </vector>
     </param>

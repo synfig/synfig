@@ -1,6 +1,8 @@
 # translation of es.po to Español
-# Copyright (C) YEAR Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# Spanish translations for Synfig Studio package
+# Traducciones al español para el paquete Synfig Studio.
+# Copyright (C) 2010 Synfig Contributors
+# This file is distributed under the same license as the Synfig Studio package.
 #
 # Franco Iacomella <yaco@gnu.org>, 2008.
 # Carlos López González <carloslopezgonzalez@yahoo.es>, 2008, 2009, 2010.
@@ -8,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2010-06-01 15:55-0700\n"
-"PO-Revision-Date: 2010-05-19 19:40+0200\n"
-"Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
+"POT-Creation-Date: 2010-10-20 17:36+0200\n"
+"PO-Revision-Date: 2010-11-13 11:46+0100\n"
+"Last-Translator: Carlos López González <genetita@gmail.com>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,17 +33,20 @@ msgstr "Grupo Sin Nombre"
 msgid "Add New Keyframe"
 msgstr "Añadir un nuevo Fotograma Clave"
 
-#: src/gui/actionmanagers/keyframeactionmanager.cpp:239 src/gui/app.cpp:761
+#: src/gui/actionmanagers/keyframeactionmanager.cpp:239
+#: src/gui/app.cpp:765
 msgid "Keyframe Properties"
 msgstr "Propiedades del Fotograma Clave"
 
 #: src/gui/actionmanagers/layeractionmanager.cpp:105
-#: src/gui/actionmanagers/layeractionmanager.cpp:498 src/gui/app.cpp:842
+#: src/gui/actionmanagers/layeractionmanager.cpp:498
+#: src/gui/app.cpp:846
 msgid "Increase Amount"
 msgstr "Incrementar la Cantidad"
 
 #: src/gui/actionmanagers/layeractionmanager.cpp:117
-#: src/gui/actionmanagers/layeractionmanager.cpp:515 src/gui/app.cpp:843
+#: src/gui/actionmanagers/layeractionmanager.cpp:515
+#: src/gui/app.cpp:847
 msgid "Decrease Amount"
 msgstr "Disminuir la Cantidad"
 
@@ -50,7 +55,7 @@ msgid "Amount"
 msgstr "Cantidad"
 
 #: src/gui/actionmanagers/layeractionmanager.cpp:135
-#: src/gui/iconcontroller.cpp:201
+#: src/gui/iconcontroller.cpp:250
 msgid "Select All Child Layers"
 msgstr "Seleccionar Todas las Capas Decendientes"
 
@@ -77,17 +82,22 @@ msgstr "Introduzca Texto del Párrafo Aquí"
 msgid "<Inline Canvas>"
 msgstr "<Lienzo en Línea>"
 
+#: src/gui/cellrenderer/cellrenderer_value.cpp:416
+msgid "<No Image Selected>"
+msgstr "<Ninguna Imagen Seleccionada>"
+
 #: src/gui/cellrenderer/cellrenderer_value.cpp:441
-#: src/gui/iconcontroller.cpp:142
+#: src/gui/iconcontroller.cpp:143
 msgid "Segment"
 msgstr "Segmento"
 
 #: src/gui/cellrenderer/cellrenderer_value.cpp:448
+#: src/gui/iconcontroller.cpp:145
 msgid "List"
 msgstr "Lista"
 
 #: src/gui/cellrenderer/cellrenderer_value.cpp:451
-#: src/gui/iconcontroller.cpp:143
+#: src/gui/iconcontroller.cpp:144
 msgid "BLine Point"
 msgstr "Punto Línea Bézier"
 
@@ -211,8 +221,10 @@ msgstr "Rejilla"
 msgid "_Grid size"
 msgstr "_Tamaño de Rejilla"
 
-#: src/gui/dialogs/canvasoptions.cpp:104 src/gui/trees/keyframetree.cpp:62
-#: src/gui/iconcontroller.cpp:138 src/gui/renddesc.cpp:96
+#: src/gui/dialogs/canvasoptions.cpp:104
+#: src/gui/trees/keyframetree.cpp:62
+#: src/gui/iconcontroller.cpp:139
+#: src/gui/renddesc.cpp:96
 #: src/synfigapp/actions/activepointadd.cpp:86
 #: src/synfigapp/actions/activepointsetoff.cpp:93
 #: src/synfigapp/actions/activepointseton.cpp:93
@@ -226,7 +238,7 @@ msgstr "_Tamaño de Rejilla"
 #: src/synfigapp/actions/valuedescblinelink.cpp:89
 #: src/synfigapp/actions/valuedescconvert.cpp:102
 #: src/synfigapp/actions/valuedescdisconnect.cpp:95
-#: src/synfigapp/actions/valuedescset.cpp:100
+#: src/synfigapp/actions/valuedescset.cpp:106
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
 #: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:81
@@ -236,7 +248,8 @@ msgstr "_Tamaño de Rejilla"
 msgid "Time"
 msgstr "Tiempo"
 
-#: src/gui/dialogs/canvasoptions.cpp:113 src/gui/dialogs/dialog_setup.cpp:178
+#: src/gui/dialogs/canvasoptions.cpp:113
+#: src/gui/dialogs/dialog_setup.cpp:178
 msgid "Units"
 msgstr "Unidades"
 
@@ -244,7 +257,8 @@ msgstr "Unidades"
 msgid "Not yet implemented!"
 msgstr "¡Aún no creado!"
 
-#: src/gui/dialogs/canvasoptions.cpp:151 src/gui/app.cpp:777
+#: src/gui/dialogs/canvasoptions.cpp:151
+#: src/gui/app.cpp:781
 #: src/gui/canvasview.cpp:1472
 msgid "Options"
 msgstr "Opciones"
@@ -277,11 +291,13 @@ msgstr "_Nombre"
 msgid "_Description"
 msgstr "_Descripción"
 
-#: src/gui/dialogs/canvasproperties.cpp:146 src/gui/docks/dock_metadata.cpp:69
+#: src/gui/dialogs/canvasproperties.cpp:146
+#: src/gui/docks/dock_metadata.cpp:69
 msgid "Key"
 msgstr "Clave"
 
-#: src/gui/dialogs/canvasproperties.cpp:147 src/gui/docks/dock_metadata.cpp:70
+#: src/gui/dialogs/canvasproperties.cpp:147
+#: src/gui/docks/dock_metadata.cpp:70
 msgid "Data"
 msgstr "Datos"
 
@@ -295,7 +311,8 @@ msgstr "Nueva Entrada de Meta Datos"
 msgid "Please enter the name of the key"
 msgstr "Por favor introduzca el nombre de la clave"
 
-#: src/gui/dialogs/canvasproperties.cpp:197 src/gui/app.cpp:792
+#: src/gui/dialogs/canvasproperties.cpp:197
+#: src/gui/app.cpp:796
 msgid "Properties"
 msgstr "Propiedades"
 
@@ -307,11 +324,13 @@ msgstr "Editar Propiedades del Lienzo"
 msgid "Colors"
 msgstr "Colores"
 
-#: src/gui/dialogs/dialog_color.cpp:66 src/gui/iconcontroller.cpp:218
+#: src/gui/dialogs/dialog_color.cpp:66
+#: src/gui/iconcontroller.cpp:270
 msgid "Set as Outline"
 msgstr "Establece como Contorno"
 
-#: src/gui/dialogs/dialog_color.cpp:68 src/gui/iconcontroller.cpp:219
+#: src/gui/dialogs/dialog_color.cpp:68
+#: src/gui/iconcontroller.cpp:271
 msgid "Set as Fill"
 msgstr "Establece como Relleno"
 
@@ -327,7 +346,8 @@ msgstr "Establece por Defecto"
 msgid "Keyframe Dialog"
 msgstr "Diálogo de Fotograma Clave"
 
-#: src/gui/dialogs/dialog_preview.cpp:62 src/gui/canvasview.cpp:1586
+#: src/gui/dialogs/dialog_preview.cpp:62
+#: src/gui/canvasview.cpp:1586
 msgid "Preview Window"
 msgstr "Ventana de Previsualización"
 
@@ -339,7 +359,8 @@ msgstr "Opciones de Previsualización"
 msgid "_Begin Time"
 msgstr "Tiempo de _Comienzo"
 
-#: src/gui/dialogs/dialog_preview.cpp:92 src/gui/renddesc.cpp:556
+#: src/gui/dialogs/dialog_preview.cpp:92
+#: src/gui/renddesc.cpp:556
 msgid "_End Time"
 msgstr "Tiempo de _Fin"
 
@@ -355,19 +376,23 @@ msgstr "<b>Preferencias Generales</b>"
 msgid "_Zoom"
 msgstr "_Ampliación"
 
-#: src/gui/dialogs/dialog_preview.cpp:129 src/gui/renddesc.cpp:546
+#: src/gui/dialogs/dialog_preview.cpp:129
+#: src/gui/renddesc.cpp:546
 msgid "_Frames per second"
 msgstr "_Fotogramas por Segundo"
 
-#: src/gui/dialogs/dialog_preview.cpp:138 src/gui/renddesc.cpp:532
+#: src/gui/dialogs/dialog_preview.cpp:138
+#: src/gui/renddesc.cpp:532
 msgid "Time Settings"
 msgstr "Preferencias de Tiempo"
 
-#: src/gui/dialogs/dialog_preview.cpp:140 src/gui/renddesc.cpp:534
+#: src/gui/dialogs/dialog_preview.cpp:140
+#: src/gui/renddesc.cpp:534
 msgid "<b>Time Settings</b>"
 msgstr "<b>Atributos de Tiempo</b>"
 
-#: src/gui/dialogs/dialog_preview.cpp:171 src/gui/app.cpp:774
+#: src/gui/dialogs/dialog_preview.cpp:171
+#: src/gui/app.cpp:778
 #: src/gui/canvasview.cpp:1466
 msgid "Preview"
 msgstr "Previsualizar"
@@ -594,107 +619,114 @@ msgid "Time _Offset"
 msgstr "_Desfase de Tiempo"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:45
-#, fuzzy
 msgid "Custom Video Codec"
-msgstr "Tamaño Personalizado"
+msgstr "Códec de Vídeo Personalizado"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:46
 msgid "write your video codec here"
-msgstr ""
+msgstr "escriba su códec de video aquí"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:68
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
-msgstr ""
+msgstr "Vídeo Flash (FLV) / Sorenson Spark / Sorenson H.263."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:69
 msgid "H.263+ / H.263-1998 / H.263 version 2."
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 versión 2."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:70
 msgid "Huffyuv / HuffYUV."
-msgstr ""
+msgstr "Huffyuv / HuffYUV."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:71
 msgid "libtheora Theora."
-msgstr ""
+msgstr "libtheora Theora."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:72
 msgid "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
-msgstr ""
+msgstr "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 parte 10."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:73
 msgid "MJPEG (Motion JPEG)."
-msgstr ""
+msgstr "MJPEG (Movimiento JPEG)."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:74
 msgid "raw MPEG-1 video."
-msgstr ""
+msgstr "MPEG-1 vídeo sin tratar."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:75
 msgid "raw MPEG-2 video."
-msgstr ""
+msgstr "MPEG-2 vídeo sin tratar"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:76
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 parte 2. (XviD/DivX)"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:77
 msgid "MPEG-4 part 2 Microsoft variant version 3."
-msgstr ""
+msgstr "MPEG-4 parte 2 Variante Microsoft versión 3."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:78
 msgid "MPEG-4 part 2 Microsoft variant version 1."
-msgstr ""
+msgstr "MPEG-4 part 2 Variante Microsoft versión 1."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:79
 msgid "MPEG-4 part 2 Microsoft variant version 2."
-msgstr ""
+msgstr "MPEG-4 part 2 Variante Microsoft versión 2."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:80
 msgid "Windows Media Video 7."
-msgstr ""
+msgstr "Windows Media Vídeo 7."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:81
 msgid "Windows Media Video 8."
-msgstr ""
+msgstr "Windows Media Vídeo 8."
 
 #: src/gui/dialogs/dialog_targetparam.cpp:92
-#, fuzzy
 msgid "Target Parameters"
-msgstr "Parámetros TCB"
+msgstr "Parámetros del Objetivo"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:100
 msgid "Available Video Codecs:"
-msgstr ""
+msgstr "Códecs de Vídeo Disponibles:"
 
 #: src/gui/dialogs/dialog_targetparam.cpp:130
 msgid "Video Bit Rate:"
-msgstr ""
+msgstr "Ratio de Bit del Vídeo"
 
 #: src/gui/dialogs/dialog_waypoint.cpp:63
 msgid "Waypoint Editor"
 msgstr "Editor de Interpolación"
 
-#: src/gui/dials/framedial.cpp:59 src/gui/app.cpp:835
-#: src/gui/canvasview.cpp:1637 src/gui/iconcontroller.cpp:221
+#: src/gui/dials/framedial.cpp:59
+#: src/gui/app.cpp:839
+#: src/gui/canvasview.cpp:1637
+#: src/gui/iconcontroller.cpp:273
 msgid "Seek to Begin"
 msgstr "Retroceder al Principio"
 
-#: src/gui/dials/framedial.cpp:61 src/gui/iconcontroller.cpp:222
+#: src/gui/dials/framedial.cpp:61
+#: src/gui/iconcontroller.cpp:274
 msgid "Previous Frame"
 msgstr "Fotograma Previo"
 
-#: src/gui/dials/framedial.cpp:63 src/gui/app.cpp:813 src/gui/preview.cpp:358
+#: src/gui/dials/framedial.cpp:63
+#: src/gui/app.cpp:817
+#: src/gui/preview.cpp:358
 msgid "Play"
 msgstr "Reproducir"
 
-#: src/gui/dials/framedial.cpp:65 src/gui/app.cpp:831
-#: src/gui/canvasview.cpp:1624 src/gui/iconcontroller.cpp:223
+#: src/gui/dials/framedial.cpp:65
+#: src/gui/app.cpp:835
+#: src/gui/canvasview.cpp:1624
+#: src/gui/iconcontroller.cpp:275
 msgid "Next Frame"
 msgstr "Fotograma Siguiente"
 
-#: src/gui/dials/framedial.cpp:67 src/gui/app.cpp:836
-#: src/gui/canvasview.cpp:1634 src/gui/iconcontroller.cpp:224
+#: src/gui/dials/framedial.cpp:67
+#: src/gui/app.cpp:840
+#: src/gui/canvasview.cpp:1634
+#: src/gui/iconcontroller.cpp:276
 msgid "Seek to End"
 msgstr "Avanzar al Final"
 
@@ -706,8 +738,9 @@ msgstr "Fotograma Clave Previo"
 msgid "Next KeyFrame"
 msgstr "Fotograma Clave Siguiente"
 
-#: src/gui/dials/keyframedial.cpp:59 src/gui/canvasview.cpp:2800
-#: src/gui/iconcontroller.cpp:213
+#: src/gui/dials/keyframedial.cpp:59
+#: src/gui/canvasview.cpp:2800
+#: src/gui/iconcontroller.cpp:265
 msgid "All Keyframes Locked"
 msgstr "Todos los Fotogramas Clave Bloqueados"
 
@@ -727,27 +760,33 @@ msgstr "Baja Res."
 msgid "Use Low Resolution when enabled"
 msgstr "Muestra Baja Resolución si se habilita"
 
-#: src/gui/dials/toggleducksdial.cpp:55 src/gui/iconcontroller.cpp:231
+#: src/gui/dials/toggleducksdial.cpp:55
+#: src/gui/iconcontroller.cpp:283
 msgid "Toggle position ducks"
 msgstr "Alternar los Nodos de Posición"
 
-#: src/gui/dials/toggleducksdial.cpp:56 src/gui/iconcontroller.cpp:232
+#: src/gui/dials/toggleducksdial.cpp:56
+#: src/gui/iconcontroller.cpp:284
 msgid "Toggle vertex ducks"
 msgstr "Alternar los Nodos de Vértice"
 
-#: src/gui/dials/toggleducksdial.cpp:57 src/gui/iconcontroller.cpp:233
+#: src/gui/dials/toggleducksdial.cpp:57
+#: src/gui/iconcontroller.cpp:285
 msgid "Toggle tangent ducks"
 msgstr "Alternar los Nodos de Tangente"
 
-#: src/gui/dials/toggleducksdial.cpp:58 src/gui/iconcontroller.cpp:234
+#: src/gui/dials/toggleducksdial.cpp:58
+#: src/gui/iconcontroller.cpp:286
 msgid "Toggle radius ducks"
 msgstr "Alternar los Nodos de Radio"
 
-#: src/gui/dials/toggleducksdial.cpp:59 src/gui/iconcontroller.cpp:235
+#: src/gui/dials/toggleducksdial.cpp:59
+#: src/gui/iconcontroller.cpp:287
 msgid "Toggle width ducks"
 msgstr "Alternar los Nodos de Espesor"
 
-#: src/gui/dials/toggleducksdial.cpp:60 src/gui/iconcontroller.cpp:236
+#: src/gui/dials/toggleducksdial.cpp:60
+#: src/gui/iconcontroller.cpp:288
 msgid "Toggle angle ducks"
 msgstr "Alterar los Nodos de Ángulo"
 
@@ -784,16 +823,19 @@ msgstr "X"
 msgid "Canvas Browser"
 msgstr "Navegador de Lienzos"
 
-#: src/gui/docks/dock_canvases.cpp:108 src/gui/trees/childrentree.cpp:93
+#: src/gui/docks/dock_canvases.cpp:108
+#: src/gui/trees/childrentree.cpp:93
 #: src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
 msgstr "ID"
 
-#: src/gui/docks/dock_children.cpp:67 src/gui/iconcontroller.cpp:206
+#: src/gui/docks/dock_children.cpp:67
+#: src/gui/iconcontroller.cpp:255
 msgid "Children"
 msgstr "Descendientes"
 
-#: src/gui/docks/dock_curves.cpp:69 src/gui/iconcontroller.cpp:207
+#: src/gui/docks/dock_curves.cpp:69
+#: src/gui/iconcontroller.cpp:256
 msgid "Curves"
 msgstr "Curvas"
 
@@ -805,11 +847,14 @@ msgstr "Panel Empotrable"
 msgid "Empty Dock Panel"
 msgstr "Panel Empotrable Vacío"
 
-#: src/gui/docks/dock_history.cpp:69 src/gui/docks/dock_history.cpp:125
+#: src/gui/docks/dock_history.cpp:69
+#: src/gui/docks/dock_history.cpp:125
+#: src/gui/iconcontroller.cpp:261
 msgid "History"
 msgstr "Historial"
 
-#: src/gui/docks/dock_history.cpp:78 src/gui/iconcontroller.cpp:203
+#: src/gui/docks/dock_history.cpp:78
+#: src/gui/iconcontroller.cpp:252
 msgid "Clear Undo Stack"
 msgstr "Vaciar Pila de Deshacer"
 
@@ -817,7 +862,8 @@ msgstr "Vaciar Pila de Deshacer"
 msgid "Clear the undo stack"
 msgstr "Vaciar la pila de deshacer"
 
-#: src/gui/docks/dock_history.cpp:89 src/gui/iconcontroller.cpp:204
+#: src/gui/docks/dock_history.cpp:89
+#: src/gui/iconcontroller.cpp:253
 msgid "Clear Redo Stack"
 msgstr "Vaciar Pila de Rehacer"
 
@@ -833,7 +879,8 @@ msgstr "Vaciar Pilas de Deshacer y Rehacer"
 msgid "Clear the undo and redo stacks"
 msgstr "Vaciar pilas de deshacer y de rehacer"
 
-#: src/gui/docks/dock_history.cpp:111 src/gui/toolbox.cpp:289
+#: src/gui/docks/dock_history.cpp:111
+#: src/gui/toolbox.cpp:289
 msgid "Undo"
 msgstr "Deshacer"
 
@@ -841,7 +888,8 @@ msgstr "Deshacer"
 msgid "Undo the previous action"
 msgstr "Deshacer la acción anterior"
 
-#: src/gui/docks/dock_history.cpp:119 src/gui/toolbox.cpp:290
+#: src/gui/docks/dock_history.cpp:119
+#: src/gui/toolbox.cpp:290
 msgid "Redo"
 msgstr "Rehacer"
 
@@ -849,11 +897,13 @@ msgstr "Rehacer"
 msgid "Redo the previously undone action"
 msgstr "Rehacer la acción previamente deshecha"
 
-#: src/gui/docks/dock_history.cpp:190 src/gui/trees/keyframetree.cpp:92
+#: src/gui/docks/dock_history.cpp:190
+#: src/gui/trees/keyframetree.cpp:92
 msgid "Jump"
 msgstr "Saltar"
 
-#: src/gui/docks/dock_history.cpp:195 src/gui/trees/keyframetree.cpp:96
+#: src/gui/docks/dock_history.cpp:195
+#: src/gui/trees/keyframetree.cpp:96
 msgid "(JMP)"
 msgstr "(SALTA)"
 
@@ -861,7 +911,8 @@ msgstr "(SALTA)"
 msgid "Action"
 msgstr "Acción"
 
-#: src/gui/docks/dock_history.cpp:254 src/gui/docks/dock_history.cpp:262
+#: src/gui/docks/dock_history.cpp:254
+#: src/gui/docks/dock_history.cpp:262
 #: src/gui/docks/dock_history.cpp:270
 msgid "Clear History"
 msgstr "Borrar Historial"
@@ -890,7 +941,8 @@ msgstr ""
 "No podrá deshacer o rehacer cualquier cambio que haya hecho!\n"
 "¿Está seguro de que quiere vaciar las pilas de deshacer y rehacer?"
 
-#: src/gui/docks/dock_info.cpp:96 src/gui/instance.cpp:510
+#: src/gui/docks/dock_info.cpp:96
+#: src/gui/instance.cpp:510
 msgid "Info"
 msgstr "Información"
 
@@ -918,7 +970,8 @@ msgstr "B: "
 msgid "A: "
 msgstr "A: "
 
-#: src/gui/docks/dock_keyframes.cpp:66 src/gui/iconcontroller.cpp:208
+#: src/gui/docks/dock_keyframes.cpp:66
+#: src/gui/iconcontroller.cpp:257
 msgid "Keyframes"
 msgstr "Fotogramas Clave"
 
@@ -950,7 +1003,8 @@ msgstr "Añadir una nueva entrada de Meta Dato"
 msgid "Remove selected MetaData entry"
 msgstr "Borra la entrada de Meta Dato seleccionada"
 
-#: src/gui/docks/dock_navigator.cpp:495 src/gui/iconcontroller.cpp:210
+#: src/gui/docks/dock_navigator.cpp:495
+#: src/gui/iconcontroller.cpp:259
 msgid "Navigator"
 msgstr "Navegador"
 
@@ -958,8 +1012,10 @@ msgstr "Navegador"
 msgid "Params"
 msgstr "Parámetros"
 
-#: src/gui/docks/dock_timetrack.cpp:83 src/gui/trees/layergrouptree.cpp:75
-#: src/gui/trees/layertree.cpp:221 src/gui/trees/layertree.cpp:300
+#: src/gui/docks/dock_timetrack.cpp:83
+#: src/gui/trees/layergrouptree.cpp:75
+#: src/gui/trees/layertree.cpp:207
+#: src/gui/trees/layertree.cpp:277
 #: src/synfigapp/actions/canvasnameset.cpp:82
 #: src/synfigapp/actions/valuedescexport.cpp:93
 #: src/synfigapp/actions/valuenodeadd.cpp:77
@@ -967,8 +1023,10 @@ msgstr "Parámetros"
 msgid "Name"
 msgstr "Nombre"
 
-#: src/gui/docks/dock_timetrack.cpp:87 src/gui/trees/childrentree.cpp:140
-#: src/gui/trees/layertree.cpp:367 src/gui/iconcontroller.cpp:211
+#: src/gui/docks/dock_timetrack.cpp:87
+#: src/gui/trees/childrentree.cpp:140
+#: src/gui/trees/layertree.cpp:344
+#: src/gui/iconcontroller.cpp:260
 msgid "Time Track"
 msgstr "Línea de Tiempo"
 
@@ -980,15 +1038,15 @@ msgstr "Línea de Tiempo"
 msgid "Palette Browser"
 msgstr "Navegador de Paleta"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:121
+#: src/gui/modules/mod_palette/dock_paledit.cpp:123
 msgid "Palette Editor"
 msgstr "Editor de Paleta"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:129
+#: src/gui/modules/mod_palette/dock_paledit.cpp:131
 msgid "Add Color"
 msgstr "Añadir Color"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:130
+#: src/gui/modules/mod_palette/dock_paledit.cpp:132
 msgid ""
 "Add current outline color\n"
 "to the palette"
@@ -996,45 +1054,42 @@ msgstr ""
 "Añadir color de contorno actual\n"
 "a la paleta"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:140
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:142
 msgid "Save palette"
-msgstr "Guardar Boceto"
+msgstr "Guardar Paleta"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:141
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:143
 msgid "Save the current palette"
-msgstr "Cambia el tiempo actual"
+msgstr "Guarda la paleta actual"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:151
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:153
 msgid "Load a palette"
-msgstr "Cargar Paleta por Defecto"
+msgstr "Cargar una paleta"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:152
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:154
 msgid "Load a saved palette"
-msgstr "Cargar Paleta por Defecto"
+msgstr "Cargar una paleta salvada"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:162
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:164
 msgid "Load default"
 msgstr "Cargar Paleta por Defecto"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:163
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:165
 msgid "Load default palette"
 msgstr "Cargar Paleta por Defecto"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:231 src/gui/instance.cpp:278
+#: src/gui/modules/mod_palette/dock_paledit.cpp:233
+#: src/gui/instance.cpp:278
 msgid "Choose a Filename to Save As"
 msgstr "Elija un Nombre de Archivo para Guardar Como"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:246 src/gui/instance.cpp:296
+#: src/gui/modules/mod_palette/dock_paledit.cpp:248
+#: src/gui/instance.cpp:296
 msgid "Unknown extension"
 msgstr "Extensión desconocida"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:247 src/gui/instance.cpp:297
+#: src/gui/modules/mod_palette/dock_paledit.cpp:249
+#: src/gui/instance.cpp:297
 msgid ""
 "You have given the file name an extension\n"
 "which I do not recognize. Are you sure this is what you want?"
@@ -1042,17 +1097,18 @@ msgstr ""
 "Ha dado una extensión al archivo desconocida.\n"
 "¿Está seguro que es eso lo que quiere?"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:264 src/gui/instance.cpp:314
+#: src/gui/modules/mod_palette/dock_paledit.cpp:266
+#: src/gui/instance.cpp:314
 #, c-format
 msgid "Unable to check whether '%s' exists."
 msgstr "Imposible comprobar si '%s' existe."
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:265
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:267
 msgid "Save Palette - Error"
-msgstr "Guardar - Error"
+msgstr "Guardar Paleta - Error"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:270 src/gui/instance.cpp:320
+#: src/gui/modules/mod_palette/dock_paledit.cpp:272
+#: src/gui/instance.cpp:320
 #, c-format
 msgid ""
 "A file named '%s' already exists.\n"
@@ -1063,53 +1119,68 @@ msgstr ""
 "\n"
 "Quiere reemplazarlo con el fuchero que está salvando?"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:273 src/gui/instance.cpp:323
+#: src/gui/modules/mod_palette/dock_paledit.cpp:275
+#: src/gui/instance.cpp:323
 msgid "File exists"
 msgstr "El fichero existe"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:285
-#, fuzzy
+#: src/gui/modules/mod_palette/dock_paledit.cpp:287
 msgid "Choose a Palette to load"
-msgstr "Elija un Nombre de Archivo para Guardar Como"
+msgstr "Elija una Paleta para cargar"
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:298 src/gui/app.cpp:2492
+#: src/gui/modules/mod_palette/dock_paledit.cpp:300
+#: src/gui/app.cpp:2494
 msgid "Unable to open file"
 msgstr "Imposible abrir fichero"
 
-#: src/gui/states/state_bline.cpp:362 src/gui/states/state_circle.cpp:405
-#: src/gui/states/state_draw.cpp:415 src/gui/states/state_polygon.cpp:326
-#: src/gui/states/state_rectangle.cpp:343 src/gui/states/state_star.cpp:443
+#: src/gui/states/state_bline.cpp:362
+#: src/gui/states/state_circle.cpp:405
+#: src/gui/states/state_draw.cpp:415
+#: src/gui/states/state_polygon.cpp:326
+#: src/gui/states/state_rectangle.cpp:343
+#: src/gui/states/state_star.cpp:443
 msgid "Create Region BLine"
 msgstr "Crear Región"
 
-#: src/gui/states/state_bline.cpp:363 src/gui/states/state_circle.cpp:406
-#: src/gui/states/state_draw.cpp:416 src/gui/states/state_polygon.cpp:327
-#: src/gui/states/state_rectangle.cpp:344 src/gui/states/state_star.cpp:444
+#: src/gui/states/state_bline.cpp:363
+#: src/gui/states/state_circle.cpp:406
+#: src/gui/states/state_draw.cpp:416
+#: src/gui/states/state_polygon.cpp:327
+#: src/gui/states/state_rectangle.cpp:344
+#: src/gui/states/state_star.cpp:444
 msgid "Create Outline BLine"
 msgstr "Crear Contorno"
 
-#: src/gui/states/state_bline.cpp:364 src/gui/states/state_circle.cpp:407
-#: src/gui/states/state_polygon.cpp:328 src/gui/states/state_rectangle.cpp:345
+#: src/gui/states/state_bline.cpp:364
+#: src/gui/states/state_circle.cpp:407
+#: src/gui/states/state_polygon.cpp:328
+#: src/gui/states/state_rectangle.cpp:345
 #: src/gui/states/state_star.cpp:445
 msgid "Create Curve Gradient BLine"
 msgstr "Crear Gradiente Curvado"
 
-#: src/gui/states/state_bline.cpp:365 src/gui/states/state_circle.cpp:408
-#: src/gui/states/state_polygon.cpp:329 src/gui/states/state_rectangle.cpp:346
+#: src/gui/states/state_bline.cpp:365
+#: src/gui/states/state_circle.cpp:408
+#: src/gui/states/state_polygon.cpp:329
+#: src/gui/states/state_rectangle.cpp:346
 #: src/gui/states/state_star.cpp:446
 msgid "Create Plant BLine"
 msgstr "Crear Planta"
 
-#: src/gui/states/state_bline.cpp:366 src/gui/states/state_circle.cpp:409
-#: src/gui/states/state_polygon.cpp:330 src/gui/states/state_star.cpp:447
+#: src/gui/states/state_bline.cpp:366
+#: src/gui/states/state_circle.cpp:409
+#: src/gui/states/state_polygon.cpp:330
+#: src/gui/states/state_star.cpp:447
 msgid "Link Origins"
 msgstr "Enlazar Orígenes"
 
-#: src/gui/states/state_bline.cpp:367 src/gui/states/state_draw.cpp:417
+#: src/gui/states/state_bline.cpp:367
+#: src/gui/states/state_draw.cpp:417
 msgid "Auto Export"
 msgstr "Auto Exportar"
 
-#: src/gui/states/state_bline.cpp:368 src/gui/states/state_polygon.cpp:331
+#: src/gui/states/state_bline.cpp:368
+#: src/gui/states/state_polygon.cpp:331
 msgid "Make"
 msgstr "Crear"
 
@@ -1117,12 +1188,14 @@ msgstr "Crear"
 msgid "Clear"
 msgstr "Borrar"
 
-#: src/gui/states/state_bline.cpp:378 src/gui/states/state_bline.cpp:422
-#: src/gui/iconcontroller.cpp:258
+#: src/gui/states/state_bline.cpp:378
+#: src/gui/states/state_bline.cpp:422
+#: src/gui/iconcontroller.cpp:153
 msgid "BLine Tool"
 msgstr "Herramienta Línea Bézier"
 
-#: src/gui/states/state_bline.cpp:386 src/gui/states/state_draw.cpp:452
+#: src/gui/states/state_bline.cpp:386
+#: src/gui/states/state_draw.cpp:452
 #: src/gui/states/state_polygon.cpp:353
 msgid "Feather"
 msgstr "Desvanecimiento"
@@ -1143,86 +1216,128 @@ msgstr "Nueva Línea Bézier"
 msgid "Unable to add value node"
 msgstr "Imposible añadir valor de nodo"
 
-#: src/gui/states/state_bline.cpp:628 src/gui/states/state_bline.cpp:691
-#: src/gui/states/state_bline.cpp:754 src/gui/states/state_bline.cpp:825
-#: src/gui/states/state_circle.cpp:633 src/gui/states/state_circle.cpp:700
-#: src/gui/states/state_circle.cpp:774 src/gui/states/state_circle.cpp:848
-#: src/gui/states/state_circle.cpp:928 src/gui/states/state_draw.cpp:1045
-#: src/gui/states/state_draw.cpp:1064 src/gui/states/state_draw.cpp:1076
-#: src/gui/states/state_draw.cpp:1110 src/gui/states/state_draw.cpp:1801
-#: src/gui/states/state_gradient.cpp:412 src/gui/states/state_gradient.cpp:425
-#: src/gui/states/state_gradient.cpp:438 src/gui/states/state_gradient.cpp:454
-#: src/gui/states/state_polygon.cpp:537 src/gui/states/state_polygon.cpp:614
-#: src/gui/states/state_polygon.cpp:678 src/gui/states/state_polygon.cpp:742
-#: src/gui/states/state_polygon.cpp:812 src/gui/states/state_rectangle.cpp:527
+#: src/gui/states/state_bline.cpp:628
+#: src/gui/states/state_bline.cpp:691
+#: src/gui/states/state_bline.cpp:754
+#: src/gui/states/state_bline.cpp:825
+#: src/gui/states/state_circle.cpp:633
+#: src/gui/states/state_circle.cpp:700
+#: src/gui/states/state_circle.cpp:774
+#: src/gui/states/state_circle.cpp:848
+#: src/gui/states/state_circle.cpp:928
+#: src/gui/states/state_draw.cpp:1045
+#: src/gui/states/state_draw.cpp:1064
+#: src/gui/states/state_draw.cpp:1076
+#: src/gui/states/state_draw.cpp:1110
+#: src/gui/states/state_draw.cpp:1801
+#: src/gui/states/state_gradient.cpp:412
+#: src/gui/states/state_gradient.cpp:425
+#: src/gui/states/state_gradient.cpp:438
+#: src/gui/states/state_gradient.cpp:454
+#: src/gui/states/state_polygon.cpp:537
+#: src/gui/states/state_polygon.cpp:614
+#: src/gui/states/state_polygon.cpp:678
+#: src/gui/states/state_polygon.cpp:742
+#: src/gui/states/state_polygon.cpp:812
+#: src/gui/states/state_rectangle.cpp:527
 #: src/gui/states/state_rectangle.cpp:560
 #: src/gui/states/state_rectangle.cpp:624
 #: src/gui/states/state_rectangle.cpp:688
-#: src/gui/states/state_rectangle.cpp:758 src/gui/states/state_star.cpp:674
-#: src/gui/states/state_star.cpp:745 src/gui/states/state_star.cpp:814
-#: src/gui/states/state_star.cpp:883 src/gui/states/state_star.cpp:958
+#: src/gui/states/state_rectangle.cpp:758
+#: src/gui/states/state_star.cpp:674
+#: src/gui/states/state_star.cpp:745
+#: src/gui/states/state_star.cpp:814
+#: src/gui/states/state_star.cpp:883
+#: src/gui/states/state_star.cpp:958
 #: src/gui/states/state_text.cpp:408
 msgid "Unable to create layer"
 msgstr "Imposible crear capa"
 
-#: src/gui/states/state_bline.cpp:631 src/gui/states/state_circle.cpp:705
-#: src/gui/states/state_polygon.cpp:619 src/gui/states/state_rectangle.cpp:565
+#: src/gui/states/state_bline.cpp:631
+#: src/gui/states/state_circle.cpp:705
+#: src/gui/states/state_polygon.cpp:619
+#: src/gui/states/state_rectangle.cpp:565
 #: src/gui/states/state_star.cpp:750
 msgid " Gradient"
 msgstr "Gradiente"
 
-#: src/gui/states/state_bline.cpp:650 src/gui/states/state_bline.cpp:673
-#: src/gui/states/state_circle.cpp:729 src/gui/states/state_circle.cpp:752
-#: src/gui/states/state_polygon.cpp:638 src/gui/states/state_polygon.cpp:661
+#: src/gui/states/state_bline.cpp:650
+#: src/gui/states/state_bline.cpp:673
+#: src/gui/states/state_circle.cpp:729
+#: src/gui/states/state_circle.cpp:752
+#: src/gui/states/state_polygon.cpp:638
+#: src/gui/states/state_polygon.cpp:661
 #: src/gui/states/state_rectangle.cpp:584
-#: src/gui/states/state_rectangle.cpp:607 src/gui/states/state_star.cpp:769
+#: src/gui/states/state_rectangle.cpp:607
+#: src/gui/states/state_star.cpp:769
 #: src/gui/states/state_star.cpp:792
 msgid "Unable to create Gradient layer"
 msgstr "Imposible crear una Capa Gradiente"
 
-#: src/gui/states/state_bline.cpp:694 src/gui/states/state_circle.cpp:779
-#: src/gui/states/state_polygon.cpp:683 src/gui/states/state_rectangle.cpp:629
+#: src/gui/states/state_bline.cpp:694
+#: src/gui/states/state_circle.cpp:779
+#: src/gui/states/state_polygon.cpp:683
+#: src/gui/states/state_rectangle.cpp:629
 #: src/gui/states/state_star.cpp:819
 msgid " Plant"
 msgstr "Planta"
 
-#: src/gui/states/state_bline.cpp:713 src/gui/states/state_bline.cpp:736
-#: src/gui/states/state_circle.cpp:803 src/gui/states/state_circle.cpp:826
-#: src/gui/states/state_polygon.cpp:702 src/gui/states/state_polygon.cpp:725
+#: src/gui/states/state_bline.cpp:713
+#: src/gui/states/state_bline.cpp:736
+#: src/gui/states/state_circle.cpp:803
+#: src/gui/states/state_circle.cpp:826
+#: src/gui/states/state_polygon.cpp:702
+#: src/gui/states/state_polygon.cpp:725
 #: src/gui/states/state_rectangle.cpp:648
-#: src/gui/states/state_rectangle.cpp:671 src/gui/states/state_star.cpp:838
+#: src/gui/states/state_rectangle.cpp:671
+#: src/gui/states/state_star.cpp:838
 #: src/gui/states/state_star.cpp:861
 msgid "Unable to create Plant layer"
 msgstr "Imposible crear una Capa Planta"
 
-#: src/gui/states/state_bline.cpp:757 src/gui/states/state_circle.cpp:853
-#: src/gui/states/state_draw.cpp:1080 src/gui/states/state_draw.cpp:2003
-#: src/gui/states/state_polygon.cpp:747 src/gui/states/state_rectangle.cpp:693
+#: src/gui/states/state_bline.cpp:757
+#: src/gui/states/state_circle.cpp:853
+#: src/gui/states/state_draw.cpp:1080
+#: src/gui/states/state_draw.cpp:2003
+#: src/gui/states/state_polygon.cpp:747
+#: src/gui/states/state_rectangle.cpp:693
 #: src/gui/states/state_star.cpp:888
 msgid " Region"
 msgstr "Region"
 
-#: src/gui/states/state_bline.cpp:784 src/gui/states/state_bline.cpp:807
-#: src/gui/states/state_circle.cpp:885 src/gui/states/state_circle.cpp:908
-#: src/gui/states/state_draw.cpp:1827 src/gui/states/state_draw.cpp:2019
-#: src/gui/states/state_polygon.cpp:774 src/gui/states/state_polygon.cpp:797
+#: src/gui/states/state_bline.cpp:784
+#: src/gui/states/state_bline.cpp:807
+#: src/gui/states/state_circle.cpp:885
+#: src/gui/states/state_circle.cpp:908
+#: src/gui/states/state_draw.cpp:1827
+#: src/gui/states/state_draw.cpp:2019
+#: src/gui/states/state_polygon.cpp:774
+#: src/gui/states/state_polygon.cpp:797
 #: src/gui/states/state_rectangle.cpp:720
-#: src/gui/states/state_rectangle.cpp:743 src/gui/states/state_star.cpp:915
+#: src/gui/states/state_rectangle.cpp:743
+#: src/gui/states/state_star.cpp:915
 #: src/gui/states/state_star.cpp:938
 msgid "Unable to create Region layer"
 msgstr "Imposible crear una capa Región"
 
-#: src/gui/states/state_bline.cpp:828 src/gui/states/state_circle.cpp:933
-#: src/gui/states/state_draw.cpp:1068 src/gui/states/state_polygon.cpp:817
-#: src/gui/states/state_rectangle.cpp:763 src/gui/states/state_star.cpp:963
+#: src/gui/states/state_bline.cpp:828
+#: src/gui/states/state_circle.cpp:933
+#: src/gui/states/state_draw.cpp:1068
+#: src/gui/states/state_polygon.cpp:817
+#: src/gui/states/state_rectangle.cpp:763
+#: src/gui/states/state_star.cpp:963
 msgid " Outline"
 msgstr "Contorno"
 
-#: src/gui/states/state_bline.cpp:852 src/gui/states/state_bline.cpp:875
-#: src/gui/states/state_circle.cpp:963 src/gui/states/state_circle.cpp:986
-#: src/gui/states/state_polygon.cpp:842 src/gui/states/state_polygon.cpp:865
+#: src/gui/states/state_bline.cpp:852
+#: src/gui/states/state_bline.cpp:875
+#: src/gui/states/state_circle.cpp:963
+#: src/gui/states/state_circle.cpp:986
+#: src/gui/states/state_polygon.cpp:842
+#: src/gui/states/state_polygon.cpp:865
 #: src/gui/states/state_rectangle.cpp:788
-#: src/gui/states/state_rectangle.cpp:811 src/gui/states/state_star.cpp:988
+#: src/gui/states/state_rectangle.cpp:811
+#: src/gui/states/state_star.cpp:988
 #: src/gui/states/state_star.cpp:1011
 msgid "Unable to create Outline layer"
 msgstr "Imposible crear una Capa Contorno"
@@ -1244,11 +1359,8 @@ msgid "Insert Vertex"
 msgstr "Insertar Vértice"
 
 #: src/gui/states/state_bline.cpp:1346
-msgid ""
-"Unable to find where to insert vertex, internal error, please report this bug"
-msgstr ""
-"Imposible encontrar donde insertar el vértice, error interno, por favor "
-"reporte este bug"
+msgid "Unable to find where to insert vertex, internal error, please report this bug"
+msgstr "Imposible encontrar donde insertar el vértice, error interno, por favor reporte este bug"
 
 #: src/gui/states/state_bline.cpp:1365
 msgid "Unable to remove vertex, internal error, please report this bug"
@@ -1264,8 +1376,10 @@ msgstr "Mezclar tangentes"
 msgid "Split Tangents"
 msgstr "Dividir Tangentes"
 
-#: src/gui/states/state_circle.cpp:403 src/gui/states/state_polygon.cpp:324
-#: src/gui/states/state_rectangle.cpp:341 src/gui/states/state_star.cpp:440
+#: src/gui/states/state_circle.cpp:403
+#: src/gui/states/state_polygon.cpp:324
+#: src/gui/states/state_rectangle.cpp:341
+#: src/gui/states/state_star.cpp:440
 msgid "Invert"
 msgstr "Invertir"
 
@@ -1273,7 +1387,8 @@ msgstr "Invertir"
 msgid "Create Circle Layer"
 msgstr "Crear Capa Círculo"
 
-#: src/gui/states/state_circle.cpp:410 src/gui/states/state_star.cpp:448
+#: src/gui/states/state_circle.cpp:410
+#: src/gui/states/state_star.cpp:448
 msgid "BLine Origins at Center"
 msgstr "Orígen de la Línea Bezier en el Centro"
 
@@ -1285,7 +1400,8 @@ msgstr "Caída"
 msgid "Determines the falloff function for the feather"
 msgstr "Determina la funcíon de caída del desvanecimiento"
 
-#: src/gui/states/state_circle.cpp:419 src/gui/states/state_gradient.cpp:275
+#: src/gui/states/state_circle.cpp:419
+#: src/gui/states/state_gradient.cpp:275
 #: src/gui/widgets/widget_waypoint.cpp:89
 #: src/gui/widgets/widget_waypoint.cpp:96
 #: src/gui/widgets/widget_waypointmodel.cpp:75
@@ -1309,7 +1425,8 @@ msgstr "Sigmoidea"
 msgid "Cosine"
 msgstr "Coseno"
 
-#: src/gui/states/state_circle.cpp:427 src/gui/states/state_gradient.cpp:282
+#: src/gui/states/state_circle.cpp:427
+#: src/gui/states/state_gradient.cpp:282
 msgid "Blend Method"
 msgstr "Método de Mezcla"
 
@@ -1317,8 +1434,9 @@ msgstr "Método de Mezcla"
 msgid "Defines the blend method to be used for circles"
 msgstr "Define el método de mezcla usado para círculos"
 
-#: src/gui/states/state_circle.cpp:433 src/gui/states/state_circle.cpp:497
-#: src/gui/iconcontroller.cpp:263
+#: src/gui/states/state_circle.cpp:433
+#: src/gui/states/state_circle.cpp:497
+#: src/gui/iconcontroller.cpp:158
 msgid "Circle Tool"
 msgstr "Herramienta de Círculo"
 
@@ -1326,7 +1444,8 @@ msgstr "Herramienta de Círculo"
 msgid "Falloff:"
 msgstr "Caída:"
 
-#: src/gui/states/state_circle.cpp:451 src/gui/states/state_rectangle.cpp:371
+#: src/gui/states/state_circle.cpp:451
+#: src/gui/states/state_rectangle.cpp:371
 #: src/gui/states/state_star.cpp:467
 msgid "Feather:"
 msgstr "Desvanecimiento:"
@@ -1363,7 +1482,8 @@ msgstr "Auto Extender"
 msgid "Auto Link"
 msgstr "Auto Enlazar"
 
-#: src/gui/states/state_draw.cpp:418 src/gui/states/state_draw.cpp:526
+#: src/gui/states/state_draw.cpp:418
+#: src/gui/states/state_draw.cpp:526
 msgid "Fill Last Stroke"
 msgstr "Rellenar Último Trazo"
 
@@ -1375,8 +1495,9 @@ msgstr "Mínima Presión"
 msgid "LocalError"
 msgstr "Error Local"
 
-#: src/gui/states/state_draw.cpp:435 src/gui/states/state_draw.cpp:521
-#: src/gui/iconcontroller.cpp:261
+#: src/gui/states/state_draw.cpp:435
+#: src/gui/states/state_draw.cpp:521
+#: src/gui/iconcontroller.cpp:156
 msgid "Draw Tool"
 msgstr "Herramienta de Dibujo"
 
@@ -1392,15 +1513,18 @@ msgstr "Esbozar Línea Bézier"
 msgid "Define Region"
 msgstr "Definir Region"
 
-#: src/gui/states/state_draw.cpp:1861 src/gui/states/state_draw.cpp:1912
+#: src/gui/states/state_draw.cpp:1861
+#: src/gui/states/state_draw.cpp:1912
 msgid "Extend BLine"
 msgstr "Extender Línea Béizer"
 
-#: src/gui/states/state_draw.cpp:1874 src/gui/states/state_draw.cpp:1925
+#: src/gui/states/state_draw.cpp:1874
+#: src/gui/states/state_draw.cpp:1925
 msgid "Unable to set loop for bline"
 msgstr "Imposible hacer bucle para la línea béizer"
 
-#: src/gui/states/state_draw.cpp:1898 src/gui/states/state_draw.cpp:1949
+#: src/gui/states/state_draw.cpp:1898
+#: src/gui/states/state_draw.cpp:1949
 msgid "Unable to insert item"
 msgstr "Imposible insertar elemento"
 
@@ -1416,8 +1540,9 @@ msgstr "No hay capa aquí"
 msgid "Unable to set layer color"
 msgstr "Imposible establecer color de capa"
 
-#: src/gui/states/state_gradient.cpp:268 src/gui/states/state_gradient.cpp:328
-#: src/gui/iconcontroller.cpp:273
+#: src/gui/states/state_gradient.cpp:268
+#: src/gui/states/state_gradient.cpp:328
+#: src/gui/iconcontroller.cpp:167
 msgid "Gradient Tool"
 msgstr "Herramienta de Gradiente"
 
@@ -1457,8 +1582,9 @@ msgstr "Horizontal"
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/gui/states/state_mirror.cpp:176 src/gui/states/state_mirror.cpp:235
-#: src/gui/iconcontroller.cpp:271
+#: src/gui/states/state_mirror.cpp:176
+#: src/gui/states/state_mirror.cpp:235
+#: src/gui/iconcontroller.cpp:165
 msgid "Mirror Tool"
 msgstr "Herramienta de Espejo"
 
@@ -1466,8 +1592,9 @@ msgstr "Herramienta de Espejo"
 msgid "(Shift key toggles axis)"
 msgstr "La tecla SHIFT alterna ejes"
 
-#: src/gui/states/state_normal.cpp:220 src/gui/states/state_normal.cpp:245
-#: src/gui/iconcontroller.cpp:255 src/gui/iconcontroller.cpp:256
+#: src/gui/states/state_normal.cpp:220
+#: src/gui/states/state_normal.cpp:245
+#: src/gui/iconcontroller.cpp:151
 msgid "Transform Tool"
 msgstr "Herramienta de Transformación"
 
@@ -1487,8 +1614,9 @@ msgstr "SHIFT para restringir"
 msgid "Create Polygon Layer"
 msgstr "Crear Capa Polígono"
 
-#: src/gui/states/state_polygon.cpp:339 src/gui/states/state_polygon.cpp:393
-#: src/gui/iconcontroller.cpp:257
+#: src/gui/states/state_polygon.cpp:339
+#: src/gui/states/state_polygon.cpp:393
+#: src/gui/iconcontroller.cpp:152
 msgid "Polygon Tool"
 msgstr "Herramienta Polígono"
 
@@ -1504,7 +1632,8 @@ msgstr "Borrar Polígono actual"
 msgid "New Polygon"
 msgstr "Nuevo Polígono"
 
-#: src/gui/states/state_polygon.cpp:595 src/gui/states/state_polygon.cpp:597
+#: src/gui/states/state_polygon.cpp:595
+#: src/gui/states/state_polygon.cpp:597
 msgid "Unable to create Polygon layer"
 msgstr "Imposible crear una Capa Polígono"
 
@@ -1517,7 +1646,8 @@ msgid "Link BLine Origins"
 msgstr "Enlazar Orígenes de Líneas Bézier"
 
 #: src/gui/states/state_rectangle.cpp:353
-#: src/gui/states/state_rectangle.cpp:409 src/gui/iconcontroller.cpp:264
+#: src/gui/states/state_rectangle.cpp:409
+#: src/gui/iconcontroller.cpp:159
 msgid "Rectangle Tool"
 msgstr "Herramienta de Rectángulo"
 
@@ -1530,11 +1660,11 @@ msgid "New Rectangle"
 msgstr "Nuevo Rectángulo"
 
 #: src/gui/states/state_rotate.cpp:180
-#, fuzzy
 msgid "Allow Scale"
-msgstr "ALT para escalar"
+msgstr "Permitir Escalado"
 
-#: src/gui/states/state_rotate.cpp:185 src/gui/states/state_rotate.cpp:212
+#: src/gui/states/state_rotate.cpp:185
+#: src/gui/states/state_rotate.cpp:212
 msgid "Rotate Tool"
 msgstr "Heramienta de Rotar"
 
@@ -1550,11 +1680,13 @@ msgstr "Rotar Nodos"
 msgid "Lock Aspect Ratio"
 msgstr "Bloquear Relación de Aspecto"
 
-#: src/gui/states/state_scale.cpp:172 src/gui/states/state_scale.cpp:198
+#: src/gui/states/state_scale.cpp:172
+#: src/gui/states/state_scale.cpp:198
 msgid "Scale Tool"
 msgstr "Herramienta de Escalar"
 
-#: src/gui/states/state_sketch.cpp:159 src/gui/states/state_sketch.cpp:240
+#: src/gui/states/state_sketch.cpp:159
+#: src/gui/states/state_sketch.cpp:240
 msgid "Save Sketch"
 msgstr "Guardar Boceto"
 
@@ -1562,7 +1694,8 @@ msgstr "Guardar Boceto"
 msgid "Unable to save sketch"
 msgstr "Imposible guardar boceto"
 
-#: src/gui/states/state_sketch.cpp:178 src/gui/states/state_sketch.cpp:241
+#: src/gui/states/state_sketch.cpp:178
+#: src/gui/states/state_sketch.cpp:241
 msgid "Load Sketch"
 msgstr "Cargar Boceto"
 
@@ -1570,7 +1703,8 @@ msgstr "Cargar Boceto"
 msgid "Unable to load sketch"
 msgstr "Imposible cargar boceto"
 
-#: src/gui/states/state_sketch.cpp:238 src/gui/states/state_sketch.cpp:269
+#: src/gui/states/state_sketch.cpp:238
+#: src/gui/states/state_sketch.cpp:269
 #: src/gui/states/state_sketch.cpp:270
 msgid "Clear Sketch"
 msgstr "Borrar Boceto"
@@ -1583,25 +1717,31 @@ msgstr "Deshacer Trazo"
 msgid "Show Sketch"
 msgstr "Mostrar Boceto"
 
-#: src/gui/states/state_sketch.cpp:257 src/gui/states/state_sketch.cpp:258
+#: src/gui/states/state_sketch.cpp:257
+#: src/gui/states/state_sketch.cpp:258
 msgid "Undo Last Stroke"
 msgstr "Deshacer Último Trazo"
 
-#: src/gui/states/state_sketch.cpp:281 src/gui/states/state_sketch.cpp:282
-#: src/gui/states/state_sketch.cpp:293 src/gui/states/state_sketch.cpp:294
+#: src/gui/states/state_sketch.cpp:281
+#: src/gui/states/state_sketch.cpp:282
+#: src/gui/states/state_sketch.cpp:293
+#: src/gui/states/state_sketch.cpp:294
 msgid "Save Sketch As..."
 msgstr "Guardar Boceto Como..."
 
-#: src/gui/states/state_sketch.cpp:305 src/gui/states/state_sketch.cpp:306
+#: src/gui/states/state_sketch.cpp:305
+#: src/gui/states/state_sketch.cpp:306
 msgid "Open a Sketch"
 msgstr "Abrir un Boceto"
 
-#: src/gui/states/state_sketch.cpp:326 src/gui/states/state_sketch.cpp:400
-#: src/gui/iconcontroller.cpp:262
+#: src/gui/states/state_sketch.cpp:326
+#: src/gui/states/state_sketch.cpp:400
+#: src/gui/iconcontroller.cpp:157
 msgid "Sketch Tool"
 msgstr "Herramienta de Boceto"
 
-#: src/gui/states/state_smoothmove.cpp:184 src/gui/iconcontroller.cpp:265
+#: src/gui/states/state_smoothmove.cpp:184
+#: src/gui/iconcontroller.cpp:160
 msgid "SmoothMove Tool"
 msgstr "Herramienta de Mover Suave"
 
@@ -1621,8 +1761,9 @@ msgstr "Polígono Regular"
 msgid "Create Star Layer"
 msgstr "Crear Capa Estrella"
 
-#: src/gui/states/state_star.cpp:455 src/gui/states/state_star.cpp:524
-#: src/gui/iconcontroller.cpp:274
+#: src/gui/states/state_star.cpp:455
+#: src/gui/states/state_star.cpp:524
+#: src/gui/iconcontroller.cpp:168
 msgid "Star Tool"
 msgstr "Herramienta de Estrella"
 
@@ -1666,7 +1807,8 @@ msgstr "Imposible crear capa Estrella"
 msgid "Multiline Editor"
 msgstr "Editor Multiínea"
 
-#: src/gui/states/state_text.cpp:285 src/gui/states/state_text.cpp:330
+#: src/gui/states/state_text.cpp:285
+#: src/gui/states/state_text.cpp:330
 msgid "Text Tool"
 msgstr "Herramienta de Texto"
 
@@ -1690,7 +1832,8 @@ msgstr "Nuevo Texto"
 msgid "Text Paragraph"
 msgstr "Texto del Párrafo"
 
-#: src/gui/states/state_text.cpp:401 src/gui/states/state_text.cpp:403
+#: src/gui/states/state_text.cpp:401
+#: src/gui/states/state_text.cpp:403
 msgid "Enter text here:"
 msgstr "Introduzca Texto aquí:"
 
@@ -1702,8 +1845,9 @@ msgstr "Entrada de Texto"
 msgid "Relative Growth"
 msgstr "Crecimiento Relativo"
 
-#: src/gui/states/state_width.cpp:230 src/gui/states/state_width.cpp:306
-#: src/gui/iconcontroller.cpp:267
+#: src/gui/states/state_width.cpp:230
+#: src/gui/states/state_width.cpp:306
+#: src/gui/iconcontroller.cpp:162
 msgid "Width Tool"
 msgstr "Herramienta de Espesor"
 
@@ -1719,25 +1863,34 @@ msgstr "Radio:"
 msgid "Sketch Width"
 msgstr "Espesor del Boceto"
 
-#: src/gui/trees/canvastreestore.cpp:204 src/gui/trees/canvastreestore.cpp:242
-#: src/gui/trees/childrentreestore.cpp:204 src/gui/iconcontroller.cpp:145
-#: src/synfigapp/action.cpp:484
+#: src/gui/trees/canvastreestore.cpp:205
+#: src/gui/trees/canvastreestore.cpp:249
+#: src/gui/trees/childrentreestore.cpp:204
+#: src/gui/iconcontroller.cpp:147
+#: src/gui/iconcontroller.cpp:175
+#: src/synfigapp/action.cpp:493
 msgid "Canvas"
 msgstr "Lienzo"
 
-#: src/gui/trees/canvastreestore.cpp:241
-#: src/gui/trees/childrentreestore.cpp:201 src/gui/instance.cpp:412
+#: src/gui/trees/canvastreestore.cpp:221
+msgid " (Static)"
+msgstr "(Estático)"
+
+#: src/gui/trees/canvastreestore.cpp:248
+#: src/gui/trees/childrentreestore.cpp:201
+#: src/gui/instance.cpp:412
 msgid "[Unnamed]"
 msgstr "[Sin Nombre]"
 
-#: src/gui/trees/childrentree.cpp:113 src/gui/trees/layertree.cpp:354
+#: src/gui/trees/childrentree.cpp:113
+#: src/gui/trees/layertree.cpp:331
 #: src/synfigapp/actions/valuedescconvert.cpp:97
 msgid "Type"
 msgstr "Tipo"
 
 #: src/gui/trees/childrentree.cpp:124
 #: src/synfigapp/actions/layerparamset.cpp:80
-#: src/synfigapp/actions/valuedescset.cpp:96
+#: src/synfigapp/actions/valuedescset.cpp:102
 #: src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
 msgstr "Valor Base"
@@ -1765,11 +1918,12 @@ msgid "Unable to find Keyframe in table"
 msgstr "Imposible encontrar un Fotograma Clave en la tabla"
 
 #: src/gui/trees/keyframetreestore.cpp:801
-msgid "There are no keyframes n this canvas"
+msgid "There are no keyframes in this canvas"
 msgstr "No hay fotogramas clave en este lienzo"
 
-#: src/gui/trees/layergrouptree.cpp:64 src/gui/trees/layergrouptree.cpp:69
-#: src/gui/trees/layertree.cpp:193
+#: src/gui/trees/layergrouptree.cpp:64
+#: src/gui/trees/layergrouptree.cpp:69
+#: src/gui/trees/layertree.cpp:189
 msgid " "
 msgstr " "
 
@@ -1786,7 +1940,8 @@ msgid "Regroup"
 msgstr "Reagrupar"
 
 #: src/gui/trees/layergrouptreestore.cpp:921
-#: src/gui/trees/layertreestore.cpp:965 src/gui/iconcontroller.cpp:157
+#: src/gui/trees/layertreestore.cpp:965
+#: src/gui/iconcontroller.cpp:180
 #: src/synfigapp/actions/groupaddlayers.cpp:72
 #: src/synfigapp/actions/groupremovelayers.cpp:73
 #: src/synfigapp/actions/layeractivate.cpp:86
@@ -1809,11 +1964,20 @@ msgstr "Establecer los Parámetros de Capa"
 
 #: src/gui/trees/layerparamtreestore.cpp:246
 #: src/gui/widgets/widget_canvaschooser.cpp:145
-#: src/gui/widgets/widget_canvaschooser.cpp:164 src/gui/app.cpp:2428
-#: src/gui/app.cpp:2433 src/gui/app.cpp:2438 src/gui/instance.cpp:441
-#: src/gui/instance.cpp:457 src/gui/instance.cpp:469 src/gui/instance.cpp:480
-#: src/gui/instance.cpp:494 src/gui/instance.cpp:505 src/gui/instance.cpp:535
-#: src/gui/instance.cpp:546 src/gui/instance.cpp:562 src/gui/instance.cpp:571
+#: src/gui/widgets/widget_canvaschooser.cpp:164
+#: src/gui/app.cpp:2430
+#: src/gui/app.cpp:2435
+#: src/gui/app.cpp:2440
+#: src/gui/instance.cpp:441
+#: src/gui/instance.cpp:457
+#: src/gui/instance.cpp:469
+#: src/gui/instance.cpp:480
+#: src/gui/instance.cpp:494
+#: src/gui/instance.cpp:505
+#: src/gui/instance.cpp:535
+#: src/gui/instance.cpp:546
+#: src/gui/instance.cpp:562
+#: src/gui/instance.cpp:571
 msgid "Error"
 msgstr "Error"
 
@@ -1821,11 +1985,15 @@ msgstr "Error"
 msgid "Unable to set all layer parameters."
 msgstr "Imposible establecer todos los parámetros de capa."
 
-#: src/gui/trees/layertree.cpp:206 src/gui/trees/layertree.cpp:249
-msgid "Z"
-msgstr "Z"
+#: src/gui/trees/layertree.cpp:202
+msgid "Icon"
+msgstr "Icono"
 
-#: src/gui/trees/layertree.cpp:334
+#: src/gui/trees/layertree.cpp:225
+msgid "Z Depth"
+msgstr "Profund. Z"
+
+#: src/gui/trees/layertree.cpp:311
 msgid "Value"
 msgstr "Valor"
 
@@ -1930,37 +2098,48 @@ msgid "Brush Size"
 msgstr "Tamaño de Brocha"
 
 #: src/gui/widgets/widget_defaults.cpp:284
+msgid "By Layer Default"
+msgstr "Según Capa"
+
+#: src/gui/widgets/widget_defaults.cpp:287
 msgid "Default Blend Method"
 msgstr "Método de Mezcla por Defecto"
 
-#: src/gui/widgets/widget_defaults.cpp:292 src/gui/canvasview.cpp:3708
-#: src/gui/canvasview.cpp:3711 src/gui/canvasview.cpp:3714
+#: src/gui/widgets/widget_defaults.cpp:295
+#: src/gui/canvasview.cpp:3561
+#: src/gui/canvasview.cpp:3564
+#: src/gui/canvasview.cpp:3567
 msgid "_TCB"
 msgstr "_TCB"
 
-#: src/gui/widgets/widget_defaults.cpp:293 src/gui/canvasview.cpp:3738
-#: src/gui/canvasview.cpp:3741 src/gui/canvasview.cpp:3744
+#: src/gui/widgets/widget_defaults.cpp:296
+#: src/gui/canvasview.cpp:3591
+#: src/gui/canvasview.cpp:3594
+#: src/gui/canvasview.cpp:3597
 msgid "_Constant"
 msgstr "_Constante"
 
-#: src/gui/widgets/widget_defaults.cpp:294 src/gui/canvasview.cpp:3734
+#: src/gui/widgets/widget_defaults.cpp:297
+#: src/gui/canvasview.cpp:3587
 msgid "_Ease In/Out"
 msgstr "_Suave"
 
-#: src/gui/widgets/widget_defaults.cpp:295 src/gui/canvasview.cpp:3718
-#: src/gui/canvasview.cpp:3721 src/gui/canvasview.cpp:3724
+#: src/gui/widgets/widget_defaults.cpp:298
+#: src/gui/canvasview.cpp:3571
+#: src/gui/canvasview.cpp:3574
+#: src/gui/canvasview.cpp:3577
 msgid "_Linear"
 msgstr "_Lineal"
 
-#: src/gui/widgets/widget_defaults.cpp:298
+#: src/gui/widgets/widget_defaults.cpp:301
 msgid "Default Interpolation"
 msgstr "Interpolación por Defecto"
 
-#: src/gui/widgets/widget_defaults.cpp:306
+#: src/gui/widgets/widget_defaults.cpp:309
 msgid "Default Opacity"
 msgstr "Opacidad por Defecto"
 
-#: src/gui/widgets/widget_defaults.cpp:313
+#: src/gui/widgets/widget_defaults.cpp:316
 msgid "Default Gradient"
 msgstr "Gradiente por Defecto"
 
@@ -2104,410 +2283,438 @@ msgstr "Bias:"
 msgid "Temporal Tension:"
 msgstr "Tensión Temporal:"
 
-#: src/gui/app.cpp:732 src/gui/toolbox.cpp:276
+#: src/gui/app.cpp:736
+#: src/gui/toolbox.cpp:276
 msgid "_File"
 msgstr "_Archivo"
 
-#: src/gui/app.cpp:733 src/gui/canvasview.cpp:3769
+#: src/gui/app.cpp:737
+#: src/gui/canvasview.cpp:3622
 msgid "_Edit"
 msgstr "Edi_tar"
 
-#: src/gui/app.cpp:734
+#: src/gui/app.cpp:738
 msgid "_View"
 msgstr "_Ver"
 
-#: src/gui/app.cpp:735
+#: src/gui/app.cpp:739
 msgid "_Canvas"
 msgstr "_Lienzo"
 
-#: src/gui/app.cpp:736
+#: src/gui/app.cpp:740
 msgid "_Layer"
 msgstr "_Capa"
 
-#: src/gui/app.cpp:737
+#: src/gui/app.cpp:741
 msgid "Show/Hide Ducks"
 msgstr "Mostrar/Ocultar Nodos"
 
-#: src/gui/app.cpp:738
+#: src/gui/app.cpp:742
 msgid "Preview Quality"
 msgstr "Calidad de Previsualización"
 
-#: src/gui/app.cpp:739
+#: src/gui/app.cpp:743
 msgid "Low-Res Pixel Size"
 msgstr "Tamaño de pixel en Baja Resolución"
 
-#: src/gui/app.cpp:740 src/gui/canvasview.cpp:2531
+#: src/gui/app.cpp:744
+#: src/gui/canvasview.cpp:2531
 #: src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
 msgstr "Nueva Capa"
 
-#: src/gui/app.cpp:741 src/synfigapp/actions/keyframeduplicate.cpp:79
+#: src/gui/app.cpp:745
+#: src/synfigapp/actions/keyframeduplicate.cpp:79
 #: src/synfigapp/actions/keyframeremove.cpp:78
 #: src/synfigapp/actions/keyframesetdelta.cpp:79
 #: src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
 msgstr "Fotograma Clave"
 
-#: src/gui/app.cpp:742 src/gui/iconcontroller.cpp:194
+#: src/gui/app.cpp:746
+#: src/gui/iconcontroller.cpp:242
 #: src/synfigapp/actions/groupaddlayers.cpp:78
 #: src/synfigapp/actions/groupremove.cpp:72
 msgid "Group"
 msgstr "Grupo"
 
-#: src/gui/app.cpp:743
+#: src/gui/app.cpp:747
 msgid "Tool"
 msgstr "Herramienta"
 
-#: src/gui/app.cpp:744
+#: src/gui/app.cpp:748
 msgid "Toolbox"
 msgstr "Caja de Herramientas"
 
-#: src/gui/app.cpp:772 src/gui/canvasview.cpp:1460
+#: src/gui/app.cpp:776
+#: src/gui/canvasview.cpp:1460
 msgid "Import"
 msgstr "Importar"
 
-#: src/gui/app.cpp:773 src/gui/canvasview.cpp:1463 src/gui/render.cpp:175
+#: src/gui/app.cpp:777
+#: src/gui/canvasview.cpp:1463
+#: src/gui/render.cpp:175
 msgid "Render"
 msgstr "Renderizar"
 
-#: src/gui/app.cpp:775
+#: src/gui/app.cpp:779
 msgid "Preview Dialog"
 msgstr "Diálogo de Previsualización"
 
-#: src/gui/app.cpp:776 src/gui/canvasview.cpp:1469
+#: src/gui/app.cpp:780
+#: src/gui/canvasview.cpp:1469
 msgid "Sound File"
 msgstr "Archivo de Sonido"
 
-#: src/gui/app.cpp:778
+#: src/gui/app.cpp:782
 msgid "Close View"
 msgstr "Cerrar Vista"
 
-#: src/gui/app.cpp:779 src/gui/canvasview.cpp:1478
+#: src/gui/app.cpp:783
+#: src/gui/canvasview.cpp:1478
 msgid "Close Document"
 msgstr "Cerrar Documento"
 
-#: src/gui/app.cpp:788 src/gui/canvasview.cpp:1493
+#: src/gui/app.cpp:792
+#: src/gui/canvasview.cpp:1493
 msgid "Select All Ducks"
 msgstr "Seleccionar todos los Nodos"
 
-#: src/gui/app.cpp:789 src/gui/canvasview.cpp:1497
+#: src/gui/app.cpp:793
+#: src/gui/canvasview.cpp:1497
 msgid "Unselect All Ducks"
 msgstr "Deseleccionar todos los Nodos"
 
-#: src/gui/app.cpp:790 src/gui/canvasview.cpp:1501
+#: src/gui/app.cpp:794
+#: src/gui/canvasview.cpp:1501
 msgid "Select All Layers"
 msgstr "Seleccionar Todas las Capas"
 
-#: src/gui/app.cpp:791 src/gui/canvasview.cpp:1505
+#: src/gui/app.cpp:795
+#: src/gui/canvasview.cpp:1505
 msgid "Unselect All Layers"
 msgstr "Deseleccionar Todas las Capas"
 
-#: src/gui/app.cpp:794 src/gui/canvasview.cpp:1671
+#: src/gui/app.cpp:798
+#: src/gui/canvasview.cpp:1671
 msgid "Show Position Ducks"
 msgstr "Mostrar los Nodos de Posición"
 
-#: src/gui/app.cpp:795 src/gui/canvasview.cpp:1673
+#: src/gui/app.cpp:799
+#: src/gui/canvasview.cpp:1673
 msgid "Show Vertex Ducks"
 msgstr "Mostrar los Nodos de Vértice"
 
-#: src/gui/app.cpp:796 src/gui/canvasview.cpp:1672
+#: src/gui/app.cpp:800
+#: src/gui/canvasview.cpp:1672
 msgid "Show Tangent Ducks"
 msgstr "Mostrar los Nodos de Tangente"
 
-#: src/gui/app.cpp:797 src/gui/canvasview.cpp:1674
+#: src/gui/app.cpp:801
+#: src/gui/canvasview.cpp:1674
 msgid "Show Radius Ducks"
 msgstr "Mostrar los Nodos de Radio"
 
-#: src/gui/app.cpp:798 src/gui/canvasview.cpp:1675
+#: src/gui/app.cpp:802
+#: src/gui/canvasview.cpp:1675
 msgid "Show Width Ducks"
 msgstr "Mostrar los Nodos de Espesor"
 
-#: src/gui/app.cpp:799 src/gui/canvasview.cpp:1676
+#: src/gui/app.cpp:803
+#: src/gui/canvasview.cpp:1676
 msgid "Show Angle Ducks"
 msgstr "Mostrar los Nodos de Ángulo"
 
-#: src/gui/app.cpp:800 src/gui/canvasview.cpp:1524
+#: src/gui/app.cpp:804
+#: src/gui/canvasview.cpp:1524
 msgid "Use Parametric Renderer"
 msgstr "Usar Renderizado Paramétrico "
 
-#: src/gui/app.cpp:801
+#: src/gui/app.cpp:805
 msgid "Use Quality Level 1"
 msgstr "Usar Nivel de Calidad 1"
 
-#: src/gui/app.cpp:802
+#: src/gui/app.cpp:806
 msgid "Use Quality Level 2"
 msgstr "Usar Nivel de Calidad 2"
 
-#: src/gui/app.cpp:803
+#: src/gui/app.cpp:807
 msgid "Use Quality Level 3"
 msgstr "Usar Nivel de Calidad 3"
 
-#: src/gui/app.cpp:804
+#: src/gui/app.cpp:808
 msgid "Use Quality Level 4"
 msgstr "Usar Nivel de Calidad 4"
 
-#: src/gui/app.cpp:805
+#: src/gui/app.cpp:809
 msgid "Use Quality Level 5"
 msgstr "Usar Nivel de Calidad 5"
 
-#: src/gui/app.cpp:806
+#: src/gui/app.cpp:810
 msgid "Use Quality Level 6"
 msgstr "Usar Nivel de Calidad 6"
 
-#: src/gui/app.cpp:807
+#: src/gui/app.cpp:811
 msgid "Use Quality Level 7"
 msgstr "Usar Nivel de Calidad 7"
 
-#: src/gui/app.cpp:808
+#: src/gui/app.cpp:812
 msgid "Use Quality Level 8"
 msgstr "Usar Nivel de Calidad 8"
 
-#: src/gui/app.cpp:809
+#: src/gui/app.cpp:813
 msgid "Use Quality Level 9"
 msgstr "Usar Nivel de Calidad 8"
 
-#: src/gui/app.cpp:810
+#: src/gui/app.cpp:814
 msgid "Use Quality Level 10"
 msgstr "Usar Nivel de Calidad 10"
 
-#: src/gui/app.cpp:812 src/gui/canvasview.cpp:1558
+#: src/gui/app.cpp:816
+#: src/gui/canvasview.cpp:1558
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Establecer el tamaño de pixel de Baja Resolución a %d"
 
-#: src/gui/app.cpp:815 src/gui/canvasview.cpp:1094 src/gui/preview.cpp:364
+#: src/gui/app.cpp:819
+#: src/gui/canvasview.cpp:1094
+#: src/gui/preview.cpp:364
 msgid "Stop"
 msgstr "Parar"
 
-#: src/gui/app.cpp:816
+#: src/gui/app.cpp:820
 msgid "Toggle Grid Show"
 msgstr "Alternar Mostrar Rejilla"
 
-#: src/gui/app.cpp:817
+#: src/gui/app.cpp:821
 msgid "Toggle Grid Snap"
 msgstr "Alternar Adherir a Rejilla"
 
-#: src/gui/app.cpp:818
+#: src/gui/app.cpp:822
 msgid "Toggle Guide Show"
 msgstr "Alternar Mostrar Guía"
 
-#: src/gui/app.cpp:819
+#: src/gui/app.cpp:823
 msgid "Toggle Low-Res"
 msgstr "Alternar Baja Resolución"
 
-#: src/gui/app.cpp:820 src/gui/canvasview.cpp:1574
+#: src/gui/app.cpp:824
+#: src/gui/canvasview.cpp:1574
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Disminuir el tamaño de pixel de Baja Resolución"
 
-#: src/gui/app.cpp:821 src/gui/canvasview.cpp:1577
+#: src/gui/app.cpp:825
+#: src/gui/canvasview.cpp:1577
 msgid "Increase Low-Res Pixel Size"
 msgstr "Aumentar  el tamaño de pixel de Baja Resolución"
 
-#: src/gui/app.cpp:822
+#: src/gui/app.cpp:826
 msgid "Toggle Onion Skin"
 msgstr "Alternar Piel de Cebolla"
 
-#: src/gui/app.cpp:829 src/gui/canvasview.cpp:1640
+#: src/gui/app.cpp:833
+#: src/gui/canvasview.cpp:1640
 msgid "Jump to Next Keyframe"
 msgstr "Saltar al Fotograma Clave Siguiente"
 
-#: src/gui/app.cpp:830 src/gui/canvasview.cpp:1643
+#: src/gui/app.cpp:834
+#: src/gui/canvasview.cpp:1643
 msgid "Jump to Prev Keyframe"
 msgstr "Saltar al Fotograma Clave Previo"
 
-#: src/gui/app.cpp:832 src/gui/canvasview.cpp:1626
+#: src/gui/app.cpp:836
+#: src/gui/canvasview.cpp:1626
 msgid "Prev Frame"
 msgstr "Fotograma Previo"
 
-#: src/gui/app.cpp:833 src/gui/canvasview.cpp:1629
+#: src/gui/app.cpp:837
+#: src/gui/canvasview.cpp:1629
 msgid "Seek Forward"
 msgstr "Avanzar"
 
-#: src/gui/app.cpp:834 src/gui/canvasview.cpp:1631
+#: src/gui/app.cpp:838
+#: src/gui/canvasview.cpp:1631
 msgid "Seek Backward"
 msgstr "Retroceder"
 
-#: src/gui/app.cpp:838
+#: src/gui/app.cpp:842
 msgid "Add group"
 msgstr "Añadir grupo"
 
-#: src/gui/app.cpp:840 src/gui/iconcontroller.cpp:154
+#: src/gui/app.cpp:844
+#: src/gui/iconcontroller.cpp:176
 #: src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
 msgstr "Nuevo Lienzo"
 
-#: src/gui/app.cpp:1156 src/gui/toolbox.cpp:353
+#: src/gui/app.cpp:1160
+#: src/gui/toolbox.cpp:353
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
-#: src/gui/app.cpp:1169 src/gui/app.cpp:1174
+#: src/gui/app.cpp:1173
+#: src/gui/app.cpp:1178
 msgid "Failed to initialize synfig!"
 msgstr "¡Fallo al inicializar Synfig!"
 
-#: src/gui/app.cpp:1183
+#: src/gui/app.cpp:1187
 msgid "Init UI Manager..."
 msgstr "Iniciar Encargado de Interfaz de Usuario ..."
 
-#: src/gui/app.cpp:1187
+#: src/gui/app.cpp:1191
 msgid "Init Dock Manager..."
 msgstr "Iniciar Encargado de Empotrables..."
 
-#: src/gui/app.cpp:1190
+#: src/gui/app.cpp:1194
 msgid "Init State Manager..."
 msgstr "Iniciar Encargado de Estado..."
 
-#: src/gui/app.cpp:1193
+#: src/gui/app.cpp:1197
 msgid "Init Toolbox..."
 msgstr "Iniciar Caja de Herramientas..."
 
-#: src/gui/app.cpp:1196
+#: src/gui/app.cpp:1200
 msgid "Init About Dialog..."
 msgstr "Iniciar Diálogo Acerca de..."
 
-#: src/gui/app.cpp:1199
+#: src/gui/app.cpp:1203
 msgid "Init Tool Options..."
 msgstr "Iniciar Opciones de Herramienta..."
 
-#: src/gui/app.cpp:1203
+#: src/gui/app.cpp:1207
 msgid "Init History..."
 msgstr "Iniciar Historial..."
 
-#: src/gui/app.cpp:1207
+#: src/gui/app.cpp:1211
 msgid "Init Canvases..."
 msgstr "Iniciar Lienzos..."
 
-#: src/gui/app.cpp:1211
+#: src/gui/app.cpp:1215
 msgid "Init Keyframes..."
 msgstr "Iniciar Fotogramas Claves..."
 
-#: src/gui/app.cpp:1215
+#: src/gui/app.cpp:1219
 msgid "Init Layers..."
 msgstr "Iniciar Capas..."
 
-#: src/gui/app.cpp:1219
+#: src/gui/app.cpp:1223
 msgid "Init Params..."
 msgstr "Iniciar Parámetros..."
 
-#: src/gui/app.cpp:1223
+#: src/gui/app.cpp:1227
 msgid "Init MetaData..."
 msgstr "Iniciar Meta Datos..."
 
-#: src/gui/app.cpp:1227
+#: src/gui/app.cpp:1231
 msgid "Init Children..."
 msgstr "Iniciar Descendientes..."
 
-#: src/gui/app.cpp:1231
+#: src/gui/app.cpp:1235
 msgid "Init Info..."
 msgstr "Iniciar Información..."
 
-#: src/gui/app.cpp:1235
+#: src/gui/app.cpp:1239
 msgid "Init Navigator..."
 msgstr "Iniciar Navegador..."
 
-#: src/gui/app.cpp:1239
+#: src/gui/app.cpp:1243
 msgid "Init Timetrack..."
 msgstr "Iniciar Línea de Tiempo..."
 
-#: src/gui/app.cpp:1243
+#: src/gui/app.cpp:1247
 msgid "Init Curve Editor..."
 msgstr "Iniciar Editor de Curvas..."
 
-#: src/gui/app.cpp:1247
+#: src/gui/app.cpp:1251
 msgid "Init Layer Groups..."
 msgstr "Iniciar Grupos de Capas..."
 
-#: src/gui/app.cpp:1252
+#: src/gui/app.cpp:1256
 msgid "Init Color Dialog..."
 msgstr "Iniciar Diálogo de Color..."
 
-#: src/gui/app.cpp:1255
+#: src/gui/app.cpp:1259
 msgid "Init Gradient Dialog..."
 msgstr "Iniciar Diálogo de Gradiente..."
 
-#: src/gui/app.cpp:1258
+#: src/gui/app.cpp:1262
 msgid "Init DeviceTracker..."
 msgstr "Iniciar Seguimiento Dispositivos..."
 
-#: src/gui/app.cpp:1261
+#: src/gui/app.cpp:1265
 msgid "Init Tools..."
 msgstr "Iniciar Herramientas..."
 
-#: src/gui/app.cpp:1289
+#: src/gui/app.cpp:1293
 msgid "Init ModPalette..."
 msgstr "Iniciar Módulo Paleta..."
 
-#: src/gui/app.cpp:1292
+#: src/gui/app.cpp:1296
 msgid "Init Setup Dialog..."
 msgstr "Iniciar Diálogo de Preferencias..."
 
-#: src/gui/app.cpp:1295
+#: src/gui/app.cpp:1299
 msgid "Init Input Dialog..."
 msgstr "Iniciar Diálogo de Entrada..."
 
-#: src/gui/app.cpp:1300
+#: src/gui/app.cpp:1304
 msgid "Init auto recovery..."
 msgstr "Iniciar Auto Recuperación..."
 
-#: src/gui/app.cpp:1304
+#: src/gui/app.cpp:1308
 msgid "Loading Settings..."
 msgstr "Cargando Preferencias..."
 
-#: src/gui/app.cpp:1308
+#: src/gui/app.cpp:1312
 msgid "Checking auto-recover..."
 msgstr "Chequeando Auto Recuperación..."
 
-#: src/gui/app.cpp:1317
+#: src/gui/app.cpp:1320
+msgid "Crash Recovery"
+msgstr "Recuperación de Rotura"
+
+#: src/gui/app.cpp:1321
 msgid "Auto recovery file found"
 msgstr "Fichero de Auto Recuperación encontrado"
 
-#: src/gui/app.cpp:1318
-msgid ""
-"Synfig Studio seems to have crashed\n"
-"before you could save all your files.\n"
-"Recover unsaved changes?"
-msgstr ""
-"Synfig parece haberse cerrado antes \n"
-"de que pudiera salvar todos los ficheros.\n"
-"¿Quiere recuperar los cambios no salvados?"
+#: src/gui/app.cpp:1322
+msgid "Synfig Studio seems to have crashed before you could save all your files. Recover unsaved changes?"
+msgstr "Synfig parece haberse cerrado antes de que pudiera salvar todos los ficheros. ¿Quiere recuperar los cambios no salvados?"
 
-#: src/gui/app.cpp:1321
+#: src/gui/app.cpp:1324
 msgid "Recover"
 msgstr "Recuperar"
 
-#: src/gui/app.cpp:1321
+#: src/gui/app.cpp:1324
 msgid "Ignore"
 msgstr "Ignorar"
 
-#: src/gui/app.cpp:1327
+#: src/gui/app.cpp:1330
 msgid "Unable to fully recover from previous crash"
 msgstr "Imposible recuperar completamente desde el ultimo cierrre"
 
-#: src/gui/app.cpp:1329
+#: src/gui/app.cpp:1332
 msgid "Unable to recover from previous crash"
 msgstr "Imposible recuperar desde el ultimo cierre"
 
-#: src/gui/app.cpp:1332
-msgid ""
-"Synfig Studio has attempted to recover\n"
-"from a previous crash. The files that it has\n"
-"recovered are NOT YET SAVED. It would be a good\n"
-"idea to review them and save them now."
-msgstr ""
-"Synfig ha intentado recuperarse de\n"
-"un cierre previo. Los archivos que no se\n"
-"han recuperado NO HAN SIDO GUARDADOS \n"
-" TODAVÍA. Parece una buena idea recuperarlos\n"
-"y guardarlos ahora."
+#: src/gui/app.cpp:1334
+msgid "Warning"
+msgstr "Aviso"
 
-#: src/gui/app.cpp:1348
+#: src/gui/app.cpp:1335
+msgid "Synfig Studio has attempted to recover from a previous crash. The files that it has recovered are NOT YET SAVED. It would be a good idea to review them and save them now."
+msgstr "Synfig Studio ha intentado recuperarse de un cierre previo. Los archivos que no se han recuperado NO HAN SIDO GUARDADOS TODAVÍA. Parece una buena idea recuperarlos y guardarlos ahora."
+
+#: src/gui/app.cpp:1350
 msgid "Loading files..."
 msgstr "Cargando Ficheros..."
 
-#: src/gui/app.cpp:1359
+#: src/gui/app.cpp:1361
 msgid "Done."
 msgstr "Hecho."
 
-#: src/gui/app.cpp:1375 src/gui/app.cpp:1379
+#: src/gui/app.cpp:1377
+#: src/gui/app.cpp:1381
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
@@ -2515,15 +2722,15 @@ msgstr ""
 "Atrapada excepción desconocida cuando se construía la Aplicación. \n"
 "Este programa puede ser inestable."
 
-#: src/gui/app.cpp:1845
+#: src/gui/app.cpp:1847
 msgid "Quit Request"
 msgstr "Requerimiento de Salida"
 
-#: src/gui/app.cpp:1848
+#: src/gui/app.cpp:1850
 msgid "Cannot quit!"
 msgstr "¡No puedo Salir!"
 
-#: src/gui/app.cpp:1848
+#: src/gui/app.cpp:1850
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
@@ -2531,35 +2738,35 @@ msgstr ""
 "Hay tareas ejecutandose actualmente.\n"
 "Por favor cancelelas e inténtelo de nuevo."
 
-#: src/gui/app.cpp:1916
+#: src/gui/app.cpp:1918
 msgid "Quit Request sent"
 msgstr "Requerimiento de Salida enviado"
 
-#: src/gui/app.cpp:2088
+#: src/gui/app.cpp:2090
 msgid "current"
 msgstr "actual"
 
-#: src/gui/app.cpp:2093
+#: src/gui/app.cpp:2095
 msgid "and older"
 msgstr "y más antiguo"
 
-#: src/gui/app.cpp:2097
+#: src/gui/app.cpp:2099
 msgid "File Format Version: "
 msgstr "Versión de Formato de Archivo: "
 
-#: src/gui/app.cpp:2196
+#: src/gui/app.cpp:2198
 msgid "Feature not available"
 msgstr "Característica no disponible"
 
-#: src/gui/app.cpp:2197
+#: src/gui/app.cpp:2199
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Lo siento, esta funcionalidad no ha sido aún creada"
 
-#: src/gui/app.cpp:2282
+#: src/gui/app.cpp:2284
 msgid "Documentation"
 msgstr "Documentación"
 
-#: src/gui/app.cpp:2283
+#: src/gui/app.cpp:2285
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
@@ -2569,20 +2776,20 @@ msgstr ""
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 
-#: src/gui/app.cpp:2284 src/gui/toolbox.cpp:293
+#: src/gui/app.cpp:2286
+#: src/gui/toolbox.cpp:293
 msgid "Help"
 msgstr "_Ayuda"
 
-#: src/gui/app.cpp:2294
-msgid "No browser was found. Please load this website manually:"
-msgstr ""
-"No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
-
 #: src/gui/app.cpp:2296
+msgid "No browser was found. Please load this website manually:"
+msgstr "No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
+
+#: src/gui/app.cpp:2298
 msgid "No browser found"
 msgstr "No se ha encontrado Navegador"
 
-#: src/gui/app.cpp:2405
+#: src/gui/app.cpp:2407
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
@@ -2591,36 +2798,38 @@ msgstr ""
 "Imposible cargar \"%s\":\n"
 "\n"
 
-#: src/gui/app.cpp:2408 src/gui/canvasview.cpp:3905
-#: src/gui/canvasview.cpp:4044
+#: src/gui/app.cpp:2410
+#: src/gui/canvasview.cpp:3758
+#: src/gui/canvasview.cpp:3897
 msgid "Warnings"
 msgstr "Avisos"
 
-#: src/gui/app.cpp:2416
+#: src/gui/app.cpp:2418
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Imposible crear instancia para \"%s\""
 
-#: src/gui/app.cpp:2422 src/gui/iconcontroller.cpp:250
+#: src/gui/app.cpp:2424
+#: src/gui/iconcontroller.cpp:302
 #: src/gui/instance.cpp:519
 msgid "CVS Update"
 msgstr "Actualización por CVS"
 
-#: src/gui/app.cpp:2422
+#: src/gui/app.cpp:2424
 msgid ""
-"There appears to be a newer version of this file available on the CVS "
-"repository.\n"
+"There appears to be a newer version of this file available on the CVS repository.\n"
 "Would you like to update now? (It would probably be a good idea)"
 msgstr ""
 "Parece haber una nueva versión de este fichero en el depósito CVS.\n"
 "¿Quiere actualizar ahora? (probablemente sea una buena idea)"
 
-#: src/gui/app.cpp:2438
+#: src/gui/app.cpp:2440
 msgid "Uncaught error on file open (BUG)"
 msgstr "Error no atrapado al abrir fichero (BUG)"
 
-#: src/gui/canvasview.cpp:246 src/gui/workarea.cpp:2368
-#: src/gui/workarea.cpp:2463
+#: src/gui/canvasview.cpp:246
+#: src/gui/workarea.cpp:2369
+#: src/gui/workarea.cpp:2464
 msgid "Idle"
 msgstr "Inactivo"
 
@@ -2705,7 +2914,8 @@ msgstr "(el más rápido)"
 msgid "Set Quality to %d"
 msgstr "Establecer calidad a %d"
 
-#: src/gui/canvasview.cpp:1593 src/gui/iconcontroller.cpp:195
+#: src/gui/canvasview.cpp:1593
+#: src/gui/iconcontroller.cpp:244
 msgid "Show Grid"
 msgstr "Mostar Rejilla"
 
@@ -2733,7 +2943,8 @@ msgstr "Acercar a la Línea de Tiempo"
 msgid "Zoom Out on Timeline"
 msgstr "Alejar de la Linea de Tiempo"
 
-#: src/gui/canvasview.cpp:2061 src/gui/canvasview.cpp:2534
+#: src/gui/canvasview.cpp:2061
+#: src/gui/canvasview.cpp:2534
 msgid "Select All Children"
 msgstr "Seleccionar todos los Descendientes"
 
@@ -2757,110 +2968,131 @@ msgstr "En Modo de Edición de Animación"
 msgid "Not in Animate Editing Mode"
 msgstr "No en Modo de Edición de Animación"
 
-#: src/gui/canvasview.cpp:2810 src/gui/iconcontroller.cpp:215
+#: src/gui/canvasview.cpp:2810
+#: src/gui/iconcontroller.cpp:267
 msgid "Future Keyframes Locked"
 msgstr "Fotogramas Claves Futuros Bloqueados"
 
-#: src/gui/canvasview.cpp:2820 src/gui/iconcontroller.cpp:214
+#: src/gui/canvasview.cpp:2820
+#: src/gui/iconcontroller.cpp:266
 msgid "Past Keyframes Locked"
 msgstr "Fotogramas Clave Pasados Bloqueados"
 
-#: src/gui/canvasview.cpp:2830 src/gui/iconcontroller.cpp:216
+#: src/gui/canvasview.cpp:2830
+#: src/gui/iconcontroller.cpp:268
 msgid "No Keyframes Locked"
 msgstr "Sin Bloquear Fotogramas Clave"
 
-#: src/gui/canvasview.cpp:3616
+#: src/gui/canvasview.cpp:3469
 msgid "Change Waypoint Group"
 msgstr "Cambiar Interpolación del Grupo"
 
-#: src/gui/canvasview.cpp:3647
+#: src/gui/canvasview.cpp:3500
 msgid "Duplicate Waypoints"
 msgstr "Duplicar Interpolaciones"
 
-#: src/gui/canvasview.cpp:3663
+#: src/gui/canvasview.cpp:3516
 msgid "Remove Waypoints"
 msgstr "Borrar Interpolaciones"
 
-#: src/gui/canvasview.cpp:3728
+#: src/gui/canvasview.cpp:3581
 msgid "_Ease In"
 msgstr "_Suave"
 
-#: src/gui/canvasview.cpp:3731
+#: src/gui/canvasview.cpp:3584
 msgid "_Ease Out"
 msgstr "_Suave"
 
-#: src/gui/canvasview.cpp:3759
+#: src/gui/canvasview.cpp:3612
 msgid "_Jump To"
 msgstr "Sa_ltar A"
 
-#: src/gui/canvasview.cpp:3762
+#: src/gui/canvasview.cpp:3615
 msgid "_Duplicate"
 msgstr "_Duplicar"
 
-#: src/gui/canvasview.cpp:3765
+#: src/gui/canvasview.cpp:3618
 msgid "_Remove"
 msgstr "_Borrar"
 
-#: src/gui/canvasview.cpp:3765
+#: src/gui/canvasview.cpp:3618
 #, c-format
 msgid "_Remove %d Waypoints"
 msgstr "_Borrar %d Interpolación"
 
-#: src/gui/canvasview.cpp:3776
+#: src/gui/canvasview.cpp:3629
 msgid "_Both"
 msgstr "_Ambos"
 
-#: src/gui/canvasview.cpp:3777
+#: src/gui/canvasview.cpp:3630
 msgid "_In"
 msgstr "_Entrada"
 
-#: src/gui/canvasview.cpp:3778
+#: src/gui/canvasview.cpp:3631
 msgid "_Out"
 msgstr "_Salida"
 
-#: src/gui/canvasview.cpp:4040 src/synfigapp/canvasinterface.cpp:569
+#: src/gui/canvasview.cpp:3893
+#: src/synfigapp/canvasinterface.cpp:570
 msgid "Import Image"
 msgstr "Importar imagen"
 
-#: src/gui/iconcontroller.cpp:135
+#: src/gui/iconcontroller.cpp:136
 msgid "Bool"
 msgstr "Booleano"
 
-#: src/gui/iconcontroller.cpp:136
+#: src/gui/iconcontroller.cpp:137
 msgid "Integer"
 msgstr "Entero"
 
-#: src/gui/iconcontroller.cpp:137
+#: src/gui/iconcontroller.cpp:138
 msgid "Angle"
 msgstr "Ángulo"
 
-#: src/gui/iconcontroller.cpp:139
+#: src/gui/iconcontroller.cpp:140
 msgid "Real"
 msgstr "Real"
 
-#: src/gui/iconcontroller.cpp:140
+#: src/gui/iconcontroller.cpp:141
 msgid "Vector"
 msgstr "Vector"
 
-#: src/gui/iconcontroller.cpp:141
+#: src/gui/iconcontroller.cpp:142
 msgid "Color"
 msgstr "Color"
 
-#: src/gui/iconcontroller.cpp:144 src/gui/iconcontroller.cpp:146
-#: src/gui/iconcontroller.cpp:152 src/gui/iconcontroller.cpp:153
-msgid "Rename"
-msgstr "Renombar"
+#: src/gui/iconcontroller.cpp:146
+msgid "String"
+msgstr "Cadena"
 
 #: src/gui/iconcontroller.cpp:148
+msgid "Gradient"
+msgstr "Gradiente"
+
+#: src/gui/iconcontroller.cpp:154
+msgid "Eyedrop Tool"
+msgstr "Herramienta Recoge Color"
+
+#: src/gui/iconcontroller.cpp:155
+msgid "Fill Tool"
+msgstr "Herramienta de Relleno"
+
+#: src/gui/iconcontroller.cpp:164
+msgid "Zoom Tool"
+msgstr "Herramienta de Zoom"
+
+#: src/gui/iconcontroller.cpp:170
 msgid "Reset Colors"
 msgstr "Restablecer Colores"
 
-#: src/gui/iconcontroller.cpp:149
+#: src/gui/iconcontroller.cpp:171
 msgid "Swap Colors"
 msgstr "Intercambiar Colores"
 
-#: src/gui/iconcontroller.cpp:150
+#: src/gui/iconcontroller.cpp:172
 #: src/synfigapp/actions/layerparamconnect.cpp:80
+#: src/synfigapp/actions/valuenodeconstsetstatic.cpp:73
+#: src/synfigapp/actions/valuenodeconstunsetstatic.cpp:73
 #: src/synfigapp/actions/valuenodedynamiclistloop.cpp:73
 #: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:73
 #: src/synfigapp/actions/valuenoderemove.cpp:80
@@ -2868,251 +3100,313 @@ msgstr "Intercambiar Colores"
 msgid "ValueNode"
 msgstr "Valor de Nodo"
 
-#: src/gui/iconcontroller.cpp:151
+#: src/gui/iconcontroller.cpp:173
 msgid "About"
 msgstr "Acerca de"
 
-#: src/gui/iconcontroller.cpp:155 src/gui/toolbox.cpp:288
+#: src/gui/iconcontroller.cpp:174
+msgid "Rename"
+msgstr "Renombar"
+
+#: src/gui/iconcontroller.cpp:177
+#: src/gui/toolbox.cpp:288
 msgid "Save All"
 msgstr "Salvar Todo"
 
-#: src/gui/iconcontroller.cpp:158
-msgid "Paste Canvas"
-msgstr "Lienzo Pegado"
+#: src/gui/iconcontroller.cpp:182
+msgid "Blur Layer"
+msgstr "Capa Desenfoque"
 
-#: src/gui/iconcontroller.cpp:159 src/synfigapp/actions/layerduplicate.cpp:52
+#: src/gui/iconcontroller.cpp:183
+msgid "Motion Blur Layer"
+msgstr "Capa Desenfoque de Movimiento"
+
+#: src/gui/iconcontroller.cpp:184
+msgid "Radial Blur Layer"
+msgstr "Capa Desenfoque Radial"
+
+#: src/gui/iconcontroller.cpp:186
+msgid "Curve Warp Layer"
+msgstr "Capa Combar por Curva"
+
+#: src/gui/iconcontroller.cpp:187
+msgid "Inside Out Layer"
+msgstr "Capas Al Revés"
+
+#: src/gui/iconcontroller.cpp:188
+msgid "Noise Distort Layer"
+msgstr "Capa Distorsión Ruidosa"
+
+#: src/gui/iconcontroller.cpp:189
+msgid "Spherize Layer"
+msgstr "Capa Esferizar"
+
+#: src/gui/iconcontroller.cpp:190
+msgid "Stretch Layer"
+msgstr "Capa Encoger"
+
+#: src/gui/iconcontroller.cpp:191
+msgid "Twirl Layer"
+msgstr "Capa Torbellino"
+
+#: src/gui/iconcontroller.cpp:192
+msgid "Warp Layer"
+msgstr "Capa Combar"
+
+#: src/gui/iconcontroller.cpp:194
+msgid "Filled Rectangle Layer"
+msgstr "Capa Rectángulo Relleno"
+
+#: src/gui/iconcontroller.cpp:195
+msgid "Metallballs Layer"
+msgstr "Capa Meta Bolas"
+
+#: src/gui/iconcontroller.cpp:196
+msgid "Simple Circle Layer"
+msgstr "Capa Círculo Simple"
+
+#: src/gui/iconcontroller.cpp:198
+msgid "Clamp Layer"
+msgstr "Capa Recortar Color"
+
+#: src/gui/iconcontroller.cpp:199
+msgid "Color Correct Layer"
+msgstr "Capa Corregir Color"
+
+#: src/gui/iconcontroller.cpp:200
+msgid "Halftone 2 Layer"
+msgstr "Capa Medios Tonos 2"
+
+#: src/gui/iconcontroller.cpp:201
+msgid "Halftone 3 Layer"
+msgstr "Capa Medios Tonos 3"
+
+#: src/gui/iconcontroller.cpp:202
+msgid "Luna Key Layer"
+msgstr "Capa Clave Luma"
+
+#: src/gui/iconcontroller.cpp:204
+msgid "Julia Set Layer"
+msgstr "Capa Conjunto de Julia"
+
+#: src/gui/iconcontroller.cpp:205
+msgid "Mandelbrot Set Layer"
+msgstr "Capa Conjunto de Mandelbrot"
+
+#: src/gui/iconcontroller.cpp:207
+msgid "Checker Board Layer"
+msgstr "Capa Cuadrícula"
+
+#: src/gui/iconcontroller.cpp:208
+msgid "Circle Layer"
+msgstr "Capa Círculo"
+
+#: src/gui/iconcontroller.cpp:209
+msgid "Outline Layer"
+msgstr "Capa Contorno"
+
+#: src/gui/iconcontroller.cpp:210
+msgid "Polygon Layer"
+msgstr "Capa Polígono"
+
+#: src/gui/iconcontroller.cpp:211
+msgid "Rectangle Layer"
+msgstr "Capa Rectángulo"
+
+#: src/gui/iconcontroller.cpp:212
+msgid "Region Layer"
+msgstr "Capa Región"
+
+#: src/gui/iconcontroller.cpp:213
+msgid "Solid Color Layer"
+msgstr "Capa Color Sólido"
+
+#: src/gui/iconcontroller.cpp:214
+msgid "Star Layer"
+msgstr "Capa Estrella"
+
+#: src/gui/iconcontroller.cpp:216
+msgid "Conical Gradient Layer"
+msgstr "Capa Gradiente Cónico"
+
+#: src/gui/iconcontroller.cpp:217
+msgid "Curve Gradient Layer"
+msgstr "Capa Gradiente Curvado"
+
+#: src/gui/iconcontroller.cpp:218
+msgid "Noise Gradient Layer"
+msgstr "Capa Gradiente Ruidoso"
+
+#: src/gui/iconcontroller.cpp:219
+msgid "Linear Gradient Layer"
+msgstr "Capa Gradiente Lineal"
+
+#: src/gui/iconcontroller.cpp:220
+msgid "Radial Gradient Layer"
+msgstr "Capa Gradiente Radial"
+
+#: src/gui/iconcontroller.cpp:221
+msgid "Spiral Gradient Layer"
+msgstr "Capa Gradiente Espiral"
+
+#: src/gui/iconcontroller.cpp:223
+#: src/synfigapp/actions/layerduplicate.cpp:52
 #: src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layer"
 msgstr "Duplicar Capa"
 
-#: src/gui/iconcontroller.cpp:160
-msgid "Lineal Gradient Layer"
-msgstr "Capa Gradiente Lineal"
+#: src/gui/iconcontroller.cpp:224
+msgid "Import Image Layer"
+msgstr "Capa Importar imagen"
 
-#: src/gui/iconcontroller.cpp:161
-msgid "Radial Gradient Layer"
-msgstr "Capa Gradiente Radial"
+#: src/gui/iconcontroller.cpp:225
+msgid "Paste Canvas Layer"
+msgstr "Capa Lienzo Pegado"
 
-#: src/gui/iconcontroller.cpp:162
-msgid "Spiral Gradient Layer"
-msgstr "Capa Gradiente Espiral"
+#: src/gui/iconcontroller.cpp:226
+msgid "Plant Layer"
+msgstr "Capa Planta"
 
-#: src/gui/iconcontroller.cpp:163
-msgid "Curve Gradient Layer"
-msgstr "Capa Gradiente Curvado"
-
-#: src/gui/iconcontroller.cpp:164
-msgid "Conical Gradient Layer"
-msgstr "Capa Gradiente Cónico"
-
-#: src/gui/iconcontroller.cpp:165
-msgid "Noise Gradient Layer"
-msgstr "Capa Gradiente Ruidoso"
-
-#: src/gui/iconcontroller.cpp:166
-msgid "Checker Board Layer"
-msgstr "Capa Cuadrícula"
-
-#: src/gui/iconcontroller.cpp:167
-msgid "Blur Layer"
-msgstr "Capa Desenfoque"
-
-#: src/gui/iconcontroller.cpp:168
-msgid "Motion Blur Layer"
-msgstr "Capa Desenfoque de Movimiento"
-
-#: src/gui/iconcontroller.cpp:169
-msgid "Radial Blur Layer"
-msgstr "Capa Desenfoque Radial"
-
-#: src/gui/iconcontroller.cpp:170
-msgid "Curve Warp Layer"
-msgstr "Capa Combar por Curva"
-
-#: src/gui/iconcontroller.cpp:171
-msgid "Inside Out Layer"
-msgstr "Capas Al Revés"
-
-#: src/gui/iconcontroller.cpp:172
-msgid "Noise Distort Layer"
-msgstr "Capa Distorsión Ruidosa"
-
-#: src/gui/iconcontroller.cpp:173
-msgid "Spherize Layer"
-msgstr "Capa Esferizar"
-
-#: src/gui/iconcontroller.cpp:174
-msgid "Stretch Layer"
-msgstr "Capa Encoger"
-
-#: src/gui/iconcontroller.cpp:175
-msgid "Twirl Layer"
-msgstr "Capa Torbellino"
-
-#: src/gui/iconcontroller.cpp:176
-msgid "Warp Layer"
-msgstr "Capa Combar"
-
-#: src/gui/iconcontroller.cpp:177
-msgid "Clamp Layer"
-msgstr "Capa Recortar Color"
-
-#: src/gui/iconcontroller.cpp:178
-msgid "Color Correct Layer"
-msgstr "Capa Corregir Color"
-
-#: src/gui/iconcontroller.cpp:179
-msgid "Half Tone 2 Layer"
-msgstr "Capa Medios Tonos 2"
-
-#: src/gui/iconcontroller.cpp:180
-msgid "Half Tone 3 Layer"
-msgstr "Capa Medios Tonos 3"
-
-#: src/gui/iconcontroller.cpp:181
-msgid "Luma Layer"
-msgstr "Capa Luma"
-
-#: src/gui/iconcontroller.cpp:182
-msgid "Mandelbrot Set Layer"
-msgstr "Capa Conjunto de Mandelbrot"
-
-#: src/gui/iconcontroller.cpp:183
-msgid "Julia Set Layer"
-msgstr "Capa Conjunto de Julia"
-
-#: src/gui/iconcontroller.cpp:184
-msgid "Bevel Layer"
-msgstr "Capa Bisel"
-
-#: src/gui/iconcontroller.cpp:185
-msgid "Shade Layer"
-msgstr "Capa Sombra"
-
-#: src/gui/iconcontroller.cpp:186
-msgid "Metaballs Layer"
-msgstr "Capa Metaballs"
-
-#: src/gui/iconcontroller.cpp:187
-msgid "XOR Pattern Layer"
-msgstr "Capa Patrón XOR"
-
-#: src/gui/iconcontroller.cpp:188
+#: src/gui/iconcontroller.cpp:227
 msgid "Super Sample Layer"
 msgstr "Capa Super Muestreo"
 
-#: src/gui/iconcontroller.cpp:189
+#: src/gui/iconcontroller.cpp:228
+msgid "Text Layer"
+msgstr "Capa Texto"
+
+#: src/gui/iconcontroller.cpp:229
 msgid "Time Loop Layer"
 msgstr "Capa Bucle de Tiempo"
 
-#: src/gui/iconcontroller.cpp:190
+#: src/gui/iconcontroller.cpp:230
+msgid "XOR Pattern Layer"
+msgstr "Capa Patrón XOR"
+
+#: src/gui/iconcontroller.cpp:232
+msgid "Bevel Layer"
+msgstr "Capa Bisel"
+
+#: src/gui/iconcontroller.cpp:233
+msgid "Shade Layer"
+msgstr "Capa Sombra"
+
+#: src/gui/iconcontroller.cpp:235
+msgid "Rotate Layer"
+msgstr "Capa Rotar"
+
+#: src/gui/iconcontroller.cpp:236
 msgid "Translate Layer"
 msgstr "Capa Trasladar"
 
-#: src/gui/iconcontroller.cpp:196
+#: src/gui/iconcontroller.cpp:237
+msgid "Zoom Layer"
+msgstr "Capa Aumentar"
+
+#: src/gui/iconcontroller.cpp:241
+msgid "Info Tool"
+msgstr "Herramienta de Información"
+
+#: src/gui/iconcontroller.cpp:245
 msgid "Hide Grid"
 msgstr "Ocultar Rejilla"
 
-#: src/gui/iconcontroller.cpp:197
+#: src/gui/iconcontroller.cpp:246
 msgid "Enable Grid Snap"
 msgstr "Habilitar Adherir a Rejilla"
 
-#: src/gui/iconcontroller.cpp:198
+#: src/gui/iconcontroller.cpp:247
 msgid "Disable Grid Snap"
 msgstr "Deshabilitar Adherir a Rejilla"
 
-#: src/gui/iconcontroller.cpp:199
+#: src/gui/iconcontroller.cpp:248
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: src/gui/iconcontroller.cpp:200
+#: src/gui/iconcontroller.cpp:249
 #: src/synfigapp/actions/layerencapsulate.cpp:52
 msgid "Encapsulate"
 msgstr "Encapsular"
 
-#: src/gui/iconcontroller.cpp:209
+#: src/gui/iconcontroller.cpp:258
 msgid "MetaData"
 msgstr "Meta Dato"
 
-#: src/gui/iconcontroller.cpp:225
+#: src/gui/iconcontroller.cpp:262
+msgid "Palette"
+msgstr "Paleta"
+
+#: src/gui/iconcontroller.cpp:263
+msgid "Parameters"
+msgstr "Parámetros"
+
+#: src/gui/iconcontroller.cpp:277
 msgid "Add Layer to Group"
 msgstr "Añadir Capa a Grupo"
 
-#: src/gui/iconcontroller.cpp:226
+#: src/gui/iconcontroller.cpp:278
 msgid "Remove Layer from Group"
 msgstr "Borra Capa de Grupo"
 
-#: src/gui/iconcontroller.cpp:227 src/synfigapp/actions/layersetdesc.cpp:50
+#: src/gui/iconcontroller.cpp:279
+#: src/synfigapp/actions/layersetdesc.cpp:50
 #: src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
 msgstr "Establecer Descripción de la Capa"
 
-#: src/gui/iconcontroller.cpp:228
+#: src/gui/iconcontroller.cpp:280
 msgid "Export Value Node"
 msgstr "Exportar Valor de Nodo"
 
-#: src/gui/iconcontroller.cpp:229
+#: src/gui/iconcontroller.cpp:281
 msgid "Unexport Value Node"
 msgstr "Des-Exportar Valor de Nodo"
 
-#: src/gui/iconcontroller.cpp:238
+#: src/gui/iconcontroller.cpp:290
 msgid "Toggle show grid"
 msgstr "Alternar Mostrar Rejilla"
 
-#: src/gui/iconcontroller.cpp:239
+#: src/gui/iconcontroller.cpp:291
 msgid "Toggle snap grid"
 msgstr "Alternar Adherir Rejilla"
 
-#: src/gui/iconcontroller.cpp:241
+#: src/gui/iconcontroller.cpp:293
 msgid "Toggle onion skin"
 msgstr "Alternar Piel de Cebolla"
 
-#: src/gui/iconcontroller.cpp:243
+#: src/gui/iconcontroller.cpp:295
 msgid "Increase resolution"
 msgstr "Incrementar la Resolución"
 
-#: src/gui/iconcontroller.cpp:244
+#: src/gui/iconcontroller.cpp:296
 msgid "Decrease resolution"
 msgstr "Disminuir la Resolución"
 
-#: src/gui/iconcontroller.cpp:246
+#: src/gui/iconcontroller.cpp:298
 msgid "Preview Options Dialog"
 msgstr "Diálogo de Opciones de Previsualización"
 
-#: src/gui/iconcontroller.cpp:247
+#: src/gui/iconcontroller.cpp:299
 msgid "Render Options Dialog"
 msgstr "Diálogo de Opciones de Renderizado"
 
-#: src/gui/iconcontroller.cpp:249
+#: src/gui/iconcontroller.cpp:301
 msgid "CVS Add"
 msgstr "Añadir CVS"
 
-#: src/gui/iconcontroller.cpp:251 src/gui/instance.cpp:450
+#: src/gui/iconcontroller.cpp:303
+#: src/gui/instance.cpp:450
 #: src/gui/instance.cpp:461
 msgid "CVS Commit"
 msgstr "Entrega CVS"
 
-#: src/gui/iconcontroller.cpp:252 src/gui/instance.cpp:552
+#: src/gui/iconcontroller.cpp:304
+#: src/gui/instance.cpp:552
 msgid "CVS Revert"
 msgstr "Revertir CVS"
 
-#: src/gui/iconcontroller.cpp:259
-msgid "Eyedrop Tool"
-msgstr "Herramienta Recoge Color"
-
-#: src/gui/iconcontroller.cpp:260
-msgid "Fill Tool"
-msgstr "Herramienta de Relleno"
-
-#: src/gui/iconcontroller.cpp:269
-msgid "Zoom Tool"
-msgstr "Herramienta de Zoom"
-
-#: src/gui/iconcontroller.cpp:270
-msgid "Info Tool"
-msgstr "Herramienta de Información"
-
-#: src/gui/instance.cpp:228 src/gui/instance.cpp:332
+#: src/gui/instance.cpp:228
+#: src/gui/instance.cpp:332
 #, c-format
 msgid "Unable to save to '%s'"
 msgstr "Imposible guardar a '%s'"
@@ -3133,7 +3427,9 @@ msgstr ""
 "fichero que está abierto en ese momento. Cierre esos\n"
 "ficheros primero antes de intentar usar \"Guardar Como\"."
 
-#: src/gui/instance.cpp:264 src/gui/instance.cpp:315 src/gui/instance.cpp:333
+#: src/gui/instance.cpp:264
+#: src/gui/instance.cpp:315
+#: src/gui/instance.cpp:333
 msgid "SaveAs - Error"
 msgstr "Guardar Como - Error"
 
@@ -3141,7 +3437,8 @@ msgstr "Guardar Como - Error"
 msgid "You must first add this composition to the repository"
 msgstr "Debe añadir antes esta composición al repositorio"
 
-#: src/gui/instance.cpp:450 src/gui/instance.cpp:519
+#: src/gui/instance.cpp:450
+#: src/gui/instance.cpp:519
 msgid "This will save any changes you have made. Are you sure?"
 msgstr "Esto guardará cualquier cambio que haya hecho. ¿Está seguro?"
 
@@ -3150,14 +3447,12 @@ msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
 msgstr ""
-"La copia local del archivo no ha sido cambiado desde la última "
-"actualización.\n"
+"La copia local del archivo no ha sido cambiado desde la última actualización.\n"
 "¡Nada que enviar!"
 
 #: src/gui/instance.cpp:461
 msgid "Enter a log message describing the changes you have made"
-msgstr ""
-"Introduzca un mensaje de diario describiendo los cambios que ha realizado"
+msgstr "Introduzca un mensaje de diario describiendo los cambios que ha realizado"
 
 #: src/gui/instance.cpp:469
 msgid "An error has occurred when trying to COMMIT"
@@ -3172,26 +3467,21 @@ msgid "An error has occurred when trying to ADD"
 msgstr "Un error ha ocurrido cuando se intentaba AÑADIR"
 
 #: src/gui/instance.cpp:505
-msgid ""
-"This file is not under version control, so there is nothing to update from!"
-msgstr ""
-"Este archivo no está actualmente bajo control de versión, así que ¡nada que "
-"actualizar!"
+msgid "This file is not under version control, so there is nothing to update from!"
+msgstr "Este archivo no está actualmente bajo control de versión, así que ¡nada que actualizar!"
 
 #: src/gui/instance.cpp:510
 msgid "This file is up-to-date"
 msgstr "Este archivo está actualizado"
 
-#: src/gui/instance.cpp:535 src/gui/instance.cpp:571
+#: src/gui/instance.cpp:535
+#: src/gui/instance.cpp:571
 msgid "An error has occurred when trying to UPDATE"
 msgstr "Ha ocurrido un error cuando trataba de ACTUALIZAR"
 
 #: src/gui/instance.cpp:546
-msgid ""
-"This file is not under version control, so there is nothing to revert to!"
-msgstr ""
-"Este archivo no está actualmente bajo control de versión, así que ¡nada que "
-"desactualizar!"
+msgid "This file is not under version control, so there is nothing to revert to!"
+msgstr "Este archivo no está actualmente bajo control de versión, así que ¡nada que desactualizar!"
 
 #: src/gui/instance.cpp:553
 msgid ""
@@ -3293,7 +3583,8 @@ msgstr "el proceso existente será usado"
 msgid "synfig studio -- starting up application..."
 msgstr "Synfig Studio: iniciando aplicación..."
 
-#: src/gui/onemoment.cpp:91 src/gui/onemoment.cpp:93
+#: src/gui/onemoment.cpp:91
+#: src/gui/onemoment.cpp:93
 msgid "One Moment, Please..."
 msgstr "Un momento, Por Favor..."
 
@@ -3429,7 +3720,8 @@ msgstr "<b>Punto de Foco</b>"
 msgid "_Focus Point"
 msgstr "Punto de _Foco"
 
-#: src/gui/render.cpp:64 src/gui/render.cpp:187
+#: src/gui/render.cpp:64
+#: src/gui/render.cpp:187
 msgid "Render Settings"
 msgstr "Atributos de Muestreo"
 
@@ -3525,7 +3817,8 @@ msgstr "AVISO:"
 msgid "Cannot save"
 msgstr "No se puede Guardar"
 
-#: src/gui/toolbox.cpp:135 src/gui/toolbox.cpp:147
+#: src/gui/toolbox.cpp:135
+#: src/gui/toolbox.cpp:147
 msgid "Nothing to save"
 msgstr "Nada para Guardar"
 
@@ -3641,32 +3934,34 @@ msgstr "Preferencias"
 msgid "About Synfig Studio"
 msgstr "Acerca de Synfig Studio"
 
-#: src/gui/workarea.cpp:1195
+#: src/gui/workarea.cpp:1196
 msgid "Nudge"
 msgstr "Empujoncito"
 
-#: src/gui/workarea.cpp:1655
+#: src/gui/workarea.cpp:1656
 msgid "Move"
 msgstr "Mover"
 
-#: src/gui/workarea.cpp:2346
+#: src/gui/workarea.cpp:2347
 msgid "Rendering..."
 msgstr "Renderizando..."
 
-#: src/gui/workarea.cpp:2373 src/gui/workarea.cpp:2465
+#: src/gui/workarea.cpp:2374
+#: src/gui/workarea.cpp:2466
 msgid "Render Failed"
 msgstr "El Render Falló"
 
-#: src/gui/workarea.cpp:2447
+#: src/gui/workarea.cpp:2448
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "Renderizando lienzos %s..."
 
-#: src/synfigapp/action.cpp:485
+#: src/synfigapp/action.cpp:494
 msgid "Selected Canvas"
 msgstr "Lienzo Seleccionado"
 
-#: src/synfigapp/action.cpp:489 src/synfigapp/action.cpp:490
+#: src/synfigapp/action.cpp:498
+#: src/synfigapp/action.cpp:499
 msgid "Canvas Interface"
 msgstr "Interfase de Lienzo"
 
@@ -3686,8 +3981,8 @@ msgstr "Añadir Punto activo"
 #: src/synfigapp/actions/valuedescdisconnect.cpp:82
 #: src/synfigapp/actions/valuedescdisconnect.cpp:91
 #: src/synfigapp/actions/valuedescexport.cpp:89
-#: src/synfigapp/actions/valuedescset.cpp:83
-#: src/synfigapp/actions/valuedescset.cpp:92
+#: src/synfigapp/actions/valuedescset.cpp:89
+#: src/synfigapp/actions/valuedescset.cpp:98
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
 #: src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
@@ -4000,12 +4295,8 @@ msgid "Set Keyframe"
 msgstr "Establecer Fotograma Clave"
 
 #: src/synfigapp/actions/keyframeset.cpp:385
-msgid ""
-"Cannot change keyframe time because another keyframe already exists with "
-"that time."
-msgstr ""
-"No puedo cambiar el fotograma clave porque otro fotograma clave existe "
-"actualmente con ese tiempo"
+msgid "Cannot change keyframe time because another keyframe already exists with that time."
+msgstr "No puedo cambiar el fotograma clave porque otro fotograma clave existe actualmente con ese tiempo"
 
 #: src/synfigapp/actions/keyframesetdelta.cpp:53
 msgid "Set Keyframe Delta"
@@ -4054,7 +4345,8 @@ msgstr "El nuevo estado de la capa"
 msgid "This layer doesn't exist anymore."
 msgstr "La capa ya no existe."
 
-#: src/synfigapp/actions/layeradd.cpp:50 src/synfigapp/actions/layeradd.cpp:71
+#: src/synfigapp/actions/layeradd.cpp:50
+#: src/synfigapp/actions/layeradd.cpp:71
 #: src/synfigapp/actions/layeradd.cpp:73
 msgid "Add Layer"
 msgstr "Añadir capa"
@@ -4181,8 +4473,35 @@ msgstr "Valor de Nodo adjunto a Parámetro"
 
 #: src/synfigapp/actions/layerparamset.cpp:137
 #: src/synfigapp/actions/layerparamset.cpp:157
+#: src/synfigapp/actions/layerparamunsetstatic.cpp:183
 msgid "Layer did not accept parameter."
 msgstr "Capa no acepta el parámetro"
+
+#: src/synfigapp/actions/layerparamsetstatic.cpp:50
+#: src/synfigapp/actions/valuenodeconstsetstatic.cpp:50
+msgid "Forbid Animation"
+msgstr "Prohibir Animación"
+
+#: src/synfigapp/actions/layerparamsetstatic.cpp:73
+#: src/synfigapp/actions/layerparamunsetstatic.cpp:73
+msgid "Value Desc"
+msgstr "Descripción de Valor"
+
+#: src/synfigapp/actions/layerparamsetstatic.cpp:162
+#: src/synfigapp/actions/layerparamunsetstatic.cpp:165
+msgid "This action is not for Value Nodes!"
+msgstr "¡Esta acción no es para Valores de Nodo!"
+
+#: src/synfigapp/actions/layerparamsetstatic.cpp:167
+#: src/synfigapp/actions/layerparamsetstatic.cpp:180
+#: src/synfigapp/actions/layerparamunsetstatic.cpp:170
+msgid "Layer did not accept static value."
+msgstr "Capa no acepta el valor estático"
+
+#: src/synfigapp/actions/layerparamunsetstatic.cpp:50
+#: src/synfigapp/actions/valuenodeconstunsetstatic.cpp:50
+msgid "Allow Animation"
+msgstr "Permitir Animación"
 
 #: src/synfigapp/actions/layerraise.cpp:51
 #: src/synfigapp/actions/layerraise.cpp:71
@@ -4262,8 +4581,7 @@ msgstr "Nuevo Valor Base Seleccionado"
 #: src/synfigapp/actions/timepointsdelete.cpp:97
 #: src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
-msgstr ""
-"Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
+msgstr "Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
 
 #: src/synfigapp/actions/timepointscopy.cpp:104
 #: src/synfigapp/actions/timepointsdelete.cpp:103
@@ -4300,7 +4618,6 @@ msgid "Link to BLine"
 msgstr "Enlazar a Línea Beizer"
 
 #: src/synfigapp/actions/valuedescblinelink.cpp:82
-#: src/synfigapp/actions/valuedesclink.cpp:75
 msgid "ValueDesc to link"
 msgstr "Descripción del Valor a enlazar"
 
@@ -4389,125 +4706,151 @@ msgstr "Exportar '%s' como '%s'"
 msgid "The name that you want this value to be exported as"
 msgstr "El nombre con el que quiere que se exporte este valor"
 
-#: src/synfigapp/actions/valuedescexport.cpp:167
+#: src/synfigapp/actions/valuedescexport.cpp:166
 msgid "Can only export Canvas when used as constant parameter"
-msgstr ""
-"Sólo se puede exportar un lienzo cuando se use como parámetro constante"
+msgstr "Sólo se puede exportar un lienzo cuando se use como parámetro constante"
 
-#: src/synfigapp/actions/valuedescexport.cpp:208
+#: src/synfigapp/actions/valuedescexport.cpp:207
 msgid "ValueBase is already exported"
 msgstr "Valor de Base actualmente exportado"
 
-#: src/synfigapp/actions/valuedescexport.cpp:216
+#: src/synfigapp/actions/valuedescexport.cpp:215
 msgid "Unable to export parameter. (Bug?)"
 msgstr "Imposible exportar parámetro. (¿Bug?)"
 
-#: src/synfigapp/actions/valuedesclink.cpp:52
+#: src/synfigapp/actions/valuedesclink.cpp:54
 msgid "Link"
 msgstr "Enlazar"
 
-#: src/synfigapp/actions/valuedesclink.cpp:112
+#: src/synfigapp/actions/valuedesclink.cpp:63
+msgid "Link Opposite"
+msgstr "Enlazar Opuesto"
+
+#: src/synfigapp/actions/valuedesclink.cpp:87
+msgid "ValueDesc to smart link"
+msgstr "Descripción de Valor para enlace inteligente"
+
+#: src/synfigapp/actions/valuedesclink.cpp:124
 msgid "Cannot link two different exported values ('"
 msgstr "No puedo enlazar dos valores exportados diferentes ('"
 
-#: src/synfigapp/actions/valuedesclink.cpp:113
+#: src/synfigapp/actions/valuedesclink.cpp:125
 msgid "' and '"
 msgstr "' y '"
 
-#: src/synfigapp/actions/valuedesclink.cpp:114
+#: src/synfigapp/actions/valuedesclink.cpp:126
 msgid "')"
 msgstr "')"
 
-#: src/synfigapp/actions/valuedesclink.cpp:119
+#: src/synfigapp/actions/valuedesclink.cpp:132
 msgid "Used exported ValueNode ('"
 msgstr "Usado Valor de Nodo exportado ('"
 
-#: src/synfigapp/actions/valuedesclink.cpp:119
+#: src/synfigapp/actions/valuedesclink.cpp:132
 msgid "')."
 msgstr "')."
 
-#: src/synfigapp/actions/valuedesclink.cpp:126
+#: src/synfigapp/actions/valuedesclink.cpp:139
 msgid "Using the only available ValueNode."
 msgstr "Usando el único Valor de Nodo disponible."
 
-#: src/synfigapp/actions/valuedesclink.cpp:139
-#: src/synfigapp/actions/valuedesclink.cpp:145
+#: src/synfigapp/actions/valuedesclink.cpp:153
+#: src/synfigapp/actions/valuedesclink.cpp:160
 msgid "Using the most referenced ValueNode."
 msgstr "Usando el Valor de Nodo más referenciado."
 
-#: src/synfigapp/actions/valuedesclink.cpp:153
-#: src/synfigapp/actions/valuedesclink.cpp:161
+#: src/synfigapp/actions/valuedesclink.cpp:168
+#: src/synfigapp/actions/valuedesclink.cpp:177
 msgid "There's a tie for most referenced; using the animated ValueNode."
 msgstr "Hay un lazo para el más referenciado; usando el Valor de Nodo animado."
 
-#: src/synfigapp/actions/valuedesclink.cpp:174
-#: src/synfigapp/actions/valuedesclink.cpp:180
-msgid ""
-"There's a tie for most referenced, and both are animated; using the one with "
-"the most waypoints."
-msgstr ""
-"Hay un lazo para el más referenciado; y ámbos son animados; usando el que "
-"tiene mas interpolaciones."
+#: src/synfigapp/actions/valuedesclink.cpp:190
+#: src/synfigapp/actions/valuedesclink.cpp:197
+msgid "There's a tie for most referenced, and both are animated; using the one with the most waypoints."
+msgstr "Hay un lazo para el más referenciado; y ámbos son animados; usando el que tiene mas interpolaciones."
 
-#: src/synfigapp/actions/valuedesclink.cpp:189
-#: src/synfigapp/actions/valuedesclink.cpp:195
+#: src/synfigapp/actions/valuedesclink.cpp:210
+#: src/synfigapp/actions/valuedesclink.cpp:217
+msgid "There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints."
+msgstr "Hay un empate para el más referenciado; y ambos son animados; usando el que tiene mas interpolaciones."
+
+#: src/synfigapp/actions/valuedesclink.cpp:226
+#: src/synfigapp/actions/valuedesclink.cpp:233
 msgid "Everything is tied; using the least recently modified value."
 msgstr "Todo esta enlazado; usando el valor más recientemente modificado."
 
-#: src/synfigapp/actions/valuedesclink.cpp:201
+#: src/synfigapp/actions/valuedesclink.cpp:239
 msgid "Absolutely everything is tied."
 msgstr "Absolutamente todo esta enlazado."
 
-#: src/synfigapp/actions/valuedesclink.cpp:209
+#: src/synfigapp/actions/valuedesclink.cpp:247
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
 msgstr "No puedo enlazar dos valores de tipo diferente ('%s' y '%s')"
 
-#: src/synfigapp/actions/valuedesclink.cpp:246
+#: src/synfigapp/actions/valuedesclink.cpp:284
 msgid "No ValueNodes were available, so one was created."
 msgstr "No hay Valor de Nodo disponible, así que uno fue creado."
 
-#: src/synfigapp/actions/valuedescset.cpp:59
+#: src/synfigapp/actions/valuedescset.cpp:65
 msgid "Set ValueDesc"
 msgstr "Establecer Descripción del Valor"
 
-#: src/synfigapp/actions/valuedescset.cpp:80
+#: src/synfigapp/actions/valuedescset.cpp:86
 #, c-format
 msgid "Set %s"
 msgstr "Establecer %s"
 
-#: src/synfigapp/actions/valuedescset.cpp:182
-#: src/synfigapp/actions/valuedescset.cpp:207
-#: src/synfigapp/actions/valuedescset.cpp:275
-#: src/synfigapp/actions/valuedescset.cpp:333
-#: src/synfigapp/actions/valuedescset.cpp:370
-#: src/synfigapp/actions/valuedescset.cpp:395
-#: src/synfigapp/actions/valuedescset.cpp:413
+#: src/synfigapp/actions/valuedescset.cpp:188
+#: src/synfigapp/actions/valuedescset.cpp:213
+#: src/synfigapp/actions/valuedescset.cpp:281
+#: src/synfigapp/actions/valuedescset.cpp:339
+#: src/synfigapp/actions/valuedescset.cpp:380
+#: src/synfigapp/actions/valuedescset.cpp:410
+#: src/synfigapp/actions/valuedescset.cpp:437
+#: src/synfigapp/actions/valuedescset.cpp:477
+#: src/synfigapp/actions/valuedescset.cpp:543
+#: src/synfigapp/actions/valuedescset.cpp:569
+#: src/synfigapp/actions/valuedescset.cpp:593
+#: src/synfigapp/actions/valuedescset.cpp:633
+#: src/synfigapp/actions/valuedescset.cpp:658
+#: src/synfigapp/actions/valuedescset.cpp:676
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:184
 msgid "Unable to find action ValueDescSet (bug)"
 msgstr "Imposible encontrar acción ValueSetDesc (error)"
 
-#: src/synfigapp/actions/valuedescset.cpp:264
+#: src/synfigapp/actions/valuedescset.cpp:270
 #, c-format
 msgid "Bad type for composite (%s)"
 msgstr "Mal tipo para composición (%s)"
 
-#: src/synfigapp/actions/valuedescset.cpp:323
+#: src/synfigapp/actions/valuedescset.cpp:329
 #, c-format
 msgid "Bad type for radial composite (%s)"
 msgstr "Mal tipo para composición radial (%s)"
 
-#: src/synfigapp/actions/valuedescset.cpp:499
-#: src/synfigapp/actions/valuedescset.cpp:546
-msgid "Direct manipulation of this ValueNode type is not yet supported"
-msgstr ""
-"Manipulación directa de este tipo de Valor de Nodo no esta soportada aún"
+#: src/synfigapp/actions/valuedescset.cpp:364
+msgid "Attempt to edit scale ValueNode with a scale factor of zero."
+msgstr "Intento de editar un Valor de Nodo con un factor de escala de cero"
 
-#: src/synfigapp/actions/valuedescset.cpp:544
+#: src/synfigapp/actions/valuedescset.cpp:373
+msgid "Inverse manipulation of real scale values not implemented in core."
+msgstr "Manipulación inversa de valores reales escalados no implementado en el núcleo."
+
+#: src/synfigapp/actions/valuedescset.cpp:403
+msgid "Inverse manipulation of real range values not implemented in core."
+msgstr "Manipulación inversa de valores reales en rango no implementado en el núcleo."
+
+#: src/synfigapp/actions/valuedescset.cpp:770
+#: src/synfigapp/actions/valuedescset.cpp:818
+msgid "Direct manipulation of this ValueNode type is not yet supported"
+msgstr "Manipulación directa de este tipo de Valor de Nodo no esta soportada aún"
+
+#: src/synfigapp/actions/valuedescset.cpp:816
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
 msgstr "Debe estar en Modo de Edición de Animación para manipular este valor"
 
-#: src/synfigapp/actions/valuedescset.cpp:566
+#: src/synfigapp/actions/valuedescset.cpp:839
 msgid "Unsupported ValueDesc type"
 msgstr "Tipo de Descripción de Valor no soportado"
 
@@ -4765,20 +5108,12 @@ msgid "Unable to create ValueNode_Reference"
 msgstr "Imposible crear Referencia al Valor de Nodo"
 
 #: src/synfigapp/actions/waypointremove.cpp:172
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (1)"
-msgstr ""
-"Este valor de nodo animado debería estar vacío, por alguna razón no lo está. "
-"Esto es un error. (1)"
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"
+msgstr "Este valor de nodo animado debería estar vacío, por alguna razón no lo está. Esto es un error. (1)"
 
 #: src/synfigapp/actions/waypointremove.cpp:190
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (2)"
-msgstr ""
-"Este valor de nodo animado debería estar vacío, por alguna razón no lo está. "
-"Esto es un error. (2)"
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (2)"
+msgstr "Este valor de nodo animado debería estar vacío, por alguna razón no lo está. Esto es un error. (2)"
 
 #: src/synfigapp/actions/waypointremove.cpp:195
 msgid "A Waypoint already exists at this point in time"
@@ -4811,7 +5146,8 @@ msgstr "La acción no está preparada"
 msgid "This action cannot be undone! Are you sure you want to continue?"
 msgstr "¡Esta acción no puede deshacerse! ¿Esta seguro de querer continuar?"
 
-#: src/synfigapp/action_system.cpp:131 src/synfigapp/action_system.cpp:148
+#: src/synfigapp/action_system.cpp:131
+#: src/synfigapp/action_system.cpp:148
 #: src/synfigapp/action_system.cpp:159
 msgid "Failed"
 msgstr "Fallido"
@@ -4820,7 +5156,8 @@ msgstr "Fallido"
 msgid "Successful"
 msgstr "Éxito"
 
-#: src/synfigapp/action_system.cpp:225 src/synfigapp/action_system.cpp:227
+#: src/synfigapp/action_system.cpp:225
+#: src/synfigapp/action_system.cpp:227
 msgid " (Undo): "
 msgstr "(Deshacer): "
 
@@ -4828,7 +5165,8 @@ msgstr "(Deshacer): "
 msgid "Failed to undo."
 msgstr "Fallado al deshacer"
 
-#: src/synfigapp/action_system.cpp:323 src/synfigapp/action_system.cpp:325
+#: src/synfigapp/action_system.cpp:323
+#: src/synfigapp/action_system.cpp:325
 msgid " (Redo): "
 msgstr " (Rehacer): "
 
@@ -4852,45 +5190,52 @@ msgstr "Imposible cambiar el modo"
 msgid "Add Layer To"
 msgstr "Añadir Capa A"
 
-#: src/synfigapp/canvasinterface.cpp:292 src/synfigapp/canvasinterface.cpp:353
-#: src/synfigapp/canvasinterface.cpp:386 src/synfigapp/canvasinterface.cpp:598
+#: src/synfigapp/canvasinterface.cpp:293
+#: src/synfigapp/canvasinterface.cpp:354
+#: src/synfigapp/canvasinterface.cpp:387
+#: src/synfigapp/canvasinterface.cpp:599
 msgid "Action Not Ready"
 msgstr "Acción No Preparada"
 
-#: src/synfigapp/canvasinterface.cpp:298 src/synfigapp/canvasinterface.cpp:360
-#: src/synfigapp/canvasinterface.cpp:393 src/synfigapp/canvasinterface.cpp:481
-#: src/synfigapp/canvasinterface.cpp:498 src/synfigapp/canvasinterface.cpp:517
-#: src/synfigapp/canvasinterface.cpp:534 src/synfigapp/canvasinterface.cpp:602
-#: src/synfigapp/canvasinterface.cpp:738 src/synfigapp/canvasinterface.cpp:763
-#: src/synfigapp/canvasinterface.cpp:816
+#: src/synfigapp/canvasinterface.cpp:299
+#: src/synfigapp/canvasinterface.cpp:361
+#: src/synfigapp/canvasinterface.cpp:394
+#: src/synfigapp/canvasinterface.cpp:482
+#: src/synfigapp/canvasinterface.cpp:499
+#: src/synfigapp/canvasinterface.cpp:518
+#: src/synfigapp/canvasinterface.cpp:535
+#: src/synfigapp/canvasinterface.cpp:603
+#: src/synfigapp/canvasinterface.cpp:739
+#: src/synfigapp/canvasinterface.cpp:764
+#: src/synfigapp/canvasinterface.cpp:817
 msgid "Action Failed."
 msgstr "Acció Fallida."
 
-#: src/synfigapp/canvasinterface.cpp:320
+#: src/synfigapp/canvasinterface.cpp:321
 msgid "Move Action Not Ready"
 msgstr "Acción Mover No Preparada"
 
-#: src/synfigapp/canvasinterface.cpp:326
+#: src/synfigapp/canvasinterface.cpp:327
 msgid "Move Action Failed."
 msgstr "Acción Mover Falida."
 
-#: src/synfigapp/canvasinterface.cpp:369
+#: src/synfigapp/canvasinterface.cpp:370
 msgid "Empty name!"
 msgstr "¡Nombre vacío!"
 
-#: src/synfigapp/canvasinterface.cpp:575
+#: src/synfigapp/canvasinterface.cpp:576
 msgid "Filename must have an extension!"
 msgstr "¡El archivo debe terner una extensión!"
 
-#: src/synfigapp/canvasinterface.cpp:615
+#: src/synfigapp/canvasinterface.cpp:616
 msgid "Unable to open this composition"
 msgstr "Imposible abrir esta composición"
 
-#: src/synfigapp/canvasinterface.cpp:619
+#: src/synfigapp/canvasinterface.cpp:620
 msgid "Unable to create \"Paste Canvas\" layer"
 msgstr "Impsible crear  capa \"Lienzo Pegado\""
 
-#: src/synfigapp/canvasinterface.cpp:635
+#: src/synfigapp/canvasinterface.cpp:636
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
@@ -4898,16 +5243,16 @@ msgstr ""
 "Excepción sin atrapar cuando se intentaba\n"
 "abrir esta composición"
 
-#: src/synfigapp/canvasinterface.cpp:641
+#: src/synfigapp/canvasinterface.cpp:642
 msgid "I don't know how to open images of this type -- "
 msgstr "No se como abrir imágenes de este tipo -- "
 
-#: src/synfigapp/canvasinterface.cpp:808
+#: src/synfigapp/canvasinterface.cpp:809
 #, c-format
 msgid "Unnamed%08d"
 msgstr "Sin Nombre%08d"
 
-#: src/synfigapp/canvasinterface.cpp:839
+#: src/synfigapp/canvasinterface.cpp:840
 msgid ""
 "The value you are trying to edit is in a composition\n"
 "which doesn't seem to be open. Open that composition and you\n"
@@ -4917,11 +5262,13 @@ msgstr ""
 "que parece que no está abierta. Abra esa composición y podrá\n"
 "editar este valor normalmente."
 
-#: src/synfigapp/uimanager.cpp:83 src/synfigapp/uimanager.cpp:110
+#: src/synfigapp/uimanager.cpp:83
+#: src/synfigapp/uimanager.cpp:110
 msgid "(no/yes)"
 msgstr "(no/si)"
 
-#: src/synfigapp/uimanager.cpp:85 src/synfigapp/uimanager.cpp:112
+#: src/synfigapp/uimanager.cpp:85
+#: src/synfigapp/uimanager.cpp:112
 msgid "(yes/no)"
 msgstr "(si/no)"
 
@@ -4953,63 +5300,48 @@ msgstr "Valor de Nodo constante"
 msgid "Exported ValueNode"
 msgstr "Valor de Nodo Exportado"
 
+#~ msgid "Z"
+#~ msgstr "Z"
 #~ msgid "Init ModMirror..."
 #~ msgstr "Iniciar Módulo Espejo..."
-
 #~ msgid "Normal Tool"
 #~ msgstr "Herramienta Normal"
-
 #~ msgid "Synfig Wiki"
 #~ msgstr "Synfig Wiki"
-
 #~ msgid "/Main_Page"
 #~ msgstr "/Main_Page.es"
-
 #~ msgid "/Contact"
 #~ msgstr "/Contact.es"
-
 #~ msgid "Keyboard Shortcuts"
 #~ msgstr "Atajos de Teclado"
-
 #~ msgid "/Keyboard_Shortcuts"
 #~ msgstr "/Keyboard_Shortcuts.es"
-
 #~ msgid "Mouse Shortcuts"
 #~ msgstr "Atajos de Ratón"
-
 #~ msgid "/Mouse_Shortcuts"
 #~ msgstr "/Mouse_Shortcuts.es"
-
 #~ msgid "All Pages"
 #~ msgstr "Todas las Páginas"
-
 #~ msgid "State"
 #~ msgstr "Estado"
-
 #~ msgid "Unable to open file \"%s\""
 #~ msgstr "Imposible abrir archivo \"%s\""
-
 #~ msgid "Flipbook Dialog"
 #~ msgstr "Diálogo de Previsualización"
-
 #~ msgid "Grab"
 #~ msgstr "Grabar"
-
 #~ msgid "Foreground Color"
 #~ msgstr "Color de Frente"
-
 #~ msgid "Background Color"
 #~ msgstr "Color de Fondo"
-
 #~ msgid ""
 #~ "Swap Background and\n"
 #~ "Foreground Colors"
 #~ msgstr ""
 #~ "Intercambiar colores \n"
 #~ "de Frente y Fondo"
-
 #~ msgid ": (Undo) "
 #~ msgstr ": (Deshacer) "
-
 #~ msgid "Value Node"
 #~ msgstr "Valor de Nodo"
+
