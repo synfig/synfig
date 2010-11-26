@@ -45,11 +45,11 @@ int bspline_basic_test(void)
 	etl::clock timer;
 	double t;
 
-	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
-	*BSpline.cpoints().insert(BSpline.cpoints().end())=-1;
-	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
-	*BSpline.cpoints().insert(BSpline.cpoints().end())=1;
-	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
+	BSpline.cpoints().insert(BSpline.cpoints().end(), 0.0);
+	BSpline.cpoints().insert(BSpline.cpoints().end(), -1.0);
+	BSpline.cpoints().insert(BSpline.cpoints().end(), 0.0);
+	BSpline.cpoints().insert(BSpline.cpoints().end(), 1.0);
+	BSpline.cpoints().insert(BSpline.cpoints().end(), 0.0);
 
 	BSpline.set_m(4);
 	BSpline.reset_knots();
