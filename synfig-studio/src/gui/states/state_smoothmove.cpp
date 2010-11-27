@@ -155,18 +155,36 @@ StateSmoothMove::~StateSmoothMove()
 void
 StateSmoothMove_Context::load_settings()
 {
-	String value;
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		String value;
 
-	if(settings.get_value("smooth_move.radius",value))
-		set_radius(atof(value.c_str()));
-	else
-		set_radius(1.0f);
+		if(settings.get_value("smooth_move.radius",value))
+			set_radius(atof(value.c_str()));
+		else
+			set_radius(1.0f);
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State SmothMove: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateSmoothMove_Context::save_settings()
 {
-	settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+	try
+	{
+	SETTINGS_LOCALE_SAFE_AND_BACKUP
+		settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+	SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State SmoothMove: Caught exception when attempting to save settings.");
+	}
 }
 
 StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):

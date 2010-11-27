@@ -246,121 +246,139 @@ StateStar::~StateStar()
 void
 StateStar_Context::load_settings()
 {
-	String value;
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		String value;
 
-	//parse the arguments yargh!
-	if(settings.get_value("star.id",value))
-		set_id(value);
-	else
-		set_id("Star");
+		//parse the arguments yargh!
+		if(settings.get_value("star.id",value))
+			set_id(value);
+		else
+			set_id("Star");
 
-	if(settings.get_value("star.feather",value))
-		set_feather(atof(value.c_str()));
-	else
-		set_feather(0);
+		if(settings.get_value("star.feather",value))
+			set_feather(atof(value.c_str()));
+		else
+			set_feather(0);
 
-	if(settings.get_value("star.number_of_points",value))
-		set_number_of_points(atof(value.c_str()));
-	else
-		set_number_of_points(5);
+		if(settings.get_value("star.number_of_points",value))
+			set_number_of_points(atof(value.c_str()));
+		else
+			set_number_of_points(5);
 
-	if(settings.get_value("star.inner_tangent",value))
-		set_inner_tangent(atof(value.c_str()));
-	else
-		set_inner_tangent(0);
+		if(settings.get_value("star.inner_tangent",value))
+			set_inner_tangent(atof(value.c_str()));
+		else
+			set_inner_tangent(0);
 
-	if(settings.get_value("star.outer_tangent",value))
-		set_outer_tangent(atof(value.c_str()));
-	else
-		set_outer_tangent(0);
+		if(settings.get_value("star.outer_tangent",value))
+			set_outer_tangent(atof(value.c_str()));
+		else
+			set_outer_tangent(0);
 
-	if(settings.get_value("star.inner_width",value))
-		set_inner_width(atof(value.c_str()));
-	else
-		set_inner_width(1);
+		if(settings.get_value("star.inner_width",value))
+			set_inner_width(atof(value.c_str()));
+		else
+			set_inner_width(1);
 
-	if(settings.get_value("star.outer_width",value))
-		set_outer_width(atof(value.c_str()));
-	else
-		set_outer_width(1);
+		if(settings.get_value("star.outer_width",value))
+			set_outer_width(atof(value.c_str()));
+		else
+			set_outer_width(1);
 
-	if(settings.get_value("star.radius_ratio",value))
-		set_radius_ratio(atof(value.c_str()));
-	else
-		set_radius_ratio(0.5);
+		if(settings.get_value("star.radius_ratio",value))
+			set_radius_ratio(atof(value.c_str()));
+		else
+			set_radius_ratio(0.5);
 
-	if(settings.get_value("star.angle_offset",value))
-		set_angle_offset(atof(value.c_str()));
-	else
-		set_angle_offset(0);
+		if(settings.get_value("star.angle_offset",value))
+			set_angle_offset(atof(value.c_str()));
+		else
+			set_angle_offset(0);
 
-	if(settings.get_value("star.invert",value) && value != "0")
-		set_invert(true);
-	else
-		set_invert(false);
+		if(settings.get_value("star.invert",value) && value != "0")
+			set_invert(true);
+		else
+			set_invert(false);
 
-	if(settings.get_value("star.regular_polygon",value) && value != "0")
-		set_regular_polygon(true);
-	else
-		set_regular_polygon(false);
+		if(settings.get_value("star.regular_polygon",value) && value != "0")
+			set_regular_polygon(true);
+		else
+			set_regular_polygon(false);
 
-	if(settings.get_value("star.layer_star",value) && value=="0")
-		set_layer_star_flag(false);
-	else
-		set_layer_star_flag(true);
+		if(settings.get_value("star.layer_star",value) && value=="0")
+			set_layer_star_flag(false);
+		else
+			set_layer_star_flag(true);
 
-	if(settings.get_value("star.layer_region",value) && value=="1")
-		set_layer_region_flag(true);
-	else
-		set_layer_region_flag(false);
+		if(settings.get_value("star.layer_region",value) && value=="1")
+			set_layer_region_flag(true);
+		else
+			set_layer_region_flag(false);
 
-	if(settings.get_value("star.layer_outline",value) && value=="1")
-		set_layer_outline_flag(true);
-	else
-		set_layer_outline_flag(false);
+		if(settings.get_value("star.layer_outline",value) && value=="1")
+			set_layer_outline_flag(true);
+		else
+			set_layer_outline_flag(false);
 
-	if(settings.get_value("star.layer_curve_gradient",value) && value=="1")
-		set_layer_curve_gradient_flag(true);
-	else
-		set_layer_curve_gradient_flag(false);
+		if(settings.get_value("star.layer_curve_gradient",value) && value=="1")
+			set_layer_curve_gradient_flag(true);
+		else
+			set_layer_curve_gradient_flag(false);
 
-	if(settings.get_value("star.layer_plant",value) && value=="1")
-		set_layer_plant_flag(true);
-	else
-		set_layer_plant_flag(false);
+		if(settings.get_value("star.layer_plant",value) && value=="1")
+			set_layer_plant_flag(true);
+		else
+			set_layer_plant_flag(false);
 
-	if(settings.get_value("star.layer_link_origins",value) && value=="0")
-		set_layer_link_origins_flag(false);
-	else
-		set_layer_link_origins_flag(true);
+		if(settings.get_value("star.layer_link_origins",value) && value=="0")
+			set_layer_link_origins_flag(false);
+		else
+			set_layer_link_origins_flag(true);
 
-	if(settings.get_value("star.layer_origins_at_center",value) && value=="0")
-		set_layer_origins_at_center_flag(false);
-	else
-		set_layer_origins_at_center_flag(true);
+		if(settings.get_value("star.layer_origins_at_center",value) && value=="0")
+			set_layer_origins_at_center_flag(false);
+		else
+			set_layer_origins_at_center_flag(true);
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Star: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateStar_Context::save_settings()
 {
-	settings.set_value("star.id",get_id());
-	settings.set_value("star.feather",strprintf("%f",(float)get_feather()));
-	settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
-	settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
-	settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
-	settings.set_value("star.inner_width",strprintf("%f",(float)get_inner_width()));
-	settings.set_value("star.outer_width",strprintf("%f",(float)get_outer_width()));
-	settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
-	settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
-	settings.set_value("star.invert",get_invert()?"1":"0");
-	settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
-	settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
-	settings.set_value("star.layer_outline",get_layer_outline_flag()?"1":"0");
-	settings.set_value("star.layer_region",get_layer_region_flag()?"1":"0");
-	settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-	settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
-	settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-	settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		settings.set_value("star.id",get_id());
+		settings.set_value("star.feather",strprintf("%f",(float)get_feather()));
+		settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
+		settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
+		settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
+		settings.set_value("star.inner_width",strprintf("%f",(float)get_inner_width()));
+		settings.set_value("star.outer_width",strprintf("%f",(float)get_outer_width()));
+		settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
+		settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
+		settings.set_value("star.invert",get_invert()?"1":"0");
+		settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
+		settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
+		settings.set_value("star.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("star.layer_region",get_layer_region_flag()?"1":"0");
+		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+		settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
+		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Star: Caught exception when attempting to save settings.");
+	}
 }
 
 void

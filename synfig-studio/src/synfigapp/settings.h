@@ -31,8 +31,17 @@
 #include <map>
 #include <list>
 #include <ETL/stringf>
+#include <string.h>
 
 /* === M A C R O S ========================================================= */
+
+#define SETTINGS_LOCALE_SAFE_AND_BACKUP										\
+	char * old_locale;														\
+	old_locale=strdup(setlocale(LC_NUMERIC, NULL));							\
+	setlocale(LC_NUMERIC, "C");
+
+#define SETTINGS_LOCALE_RESTORE												\
+	setlocale(LC_NUMERIC,old_locale);
 
 /* === T Y P E D E F S ===================================================== */
 

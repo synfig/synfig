@@ -174,34 +174,52 @@ StateGradient::~StateGradient()
 void
 StateGradient_Context::load_settings()
 {
-	String value;
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		String value;
 
-	if(settings.get_value("gradient.id",value))
-		set_id(value);
-	else
-		set_id("Gradient");
+		if(settings.get_value("gradient.id",value))
+			set_id(value);
+		else
+			set_id("Gradient");
 
-	if(settings.get_value("gradient.type",value))
-		set_type(atoi(value.c_str()));
-	else
-		set_type(GRADIENT_INTERPOLATION_LINEAR);
+		if(settings.get_value("gradient.type",value))
+			set_type(atoi(value.c_str()));
+		else
+			set_type(GRADIENT_INTERPOLATION_LINEAR);
 
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	if(settings.get_value("gradient.blend",value))
-		set_blend(atoi(value.c_str()));
-	else
-		set_blend(Color::BLEND_COMPOSITE);
+		if(settings.get_value("gradient.blend",value))
+			set_blend(atoi(value.c_str()));
+		else
+			set_blend(Color::BLEND_COMPOSITE);
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Gradient: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateGradient_Context::save_settings()
 {
-	settings.set_value("gradient.id",get_id().c_str());
-	settings.set_value("gradient.type",strprintf("%d",get_type()));
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		settings.set_value("gradient.id",get_id().c_str());
+		settings.set_value("gradient.type",strprintf("%d",get_type()));
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	settings.set_value("gradient.blend",strprintf("%d",get_blend()));
+		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Gradient: Caught exception when attempting to save settings.");
+	}
 }
 
 void

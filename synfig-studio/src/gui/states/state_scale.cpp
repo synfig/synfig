@@ -147,18 +147,36 @@ StateScale::~StateScale()
 void
 StateScale_Context::load_settings()
 {
-	String value;
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		String value;
 
-	if(settings.get_value("scale.lock_aspect",value) && value=="0")
-		set_aspect_lock_flag(false);
-	else
-		set_aspect_lock_flag(true);
+		if(settings.get_value("scale.lock_aspect",value) && value=="0")
+			set_aspect_lock_flag(false);
+		else
+			set_aspect_lock_flag(true);
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Scale: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateScale_Context::save_settings()
 {
-	settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+	try
+	{
+		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+		SETTINGS_LOCALE_RESTORE
+	}
+	catch(...)
+	{
+		synfig::warning("State Scale: Caught exception when attempting to save settings.");
+	}
 }
 
 StateScale_Context::StateScale_Context(CanvasView* canvas_view):
