@@ -1322,6 +1322,13 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Settings..."));
 		load_settings();
 		device_tracker->load_preferences();
+		// If the default bline width is modified before focus a canvas
+		// window, the Distance widget doesn't understand the given value
+		// and produces this message:
+		// Distance::ident_system(): Unknown distance system ".00pt"
+		// setting the default bline width to 1 unit.
+		// This line fixes that.
+		synfigapp::Main::set_bline_width(synfigapp::Main::get_selected_input_device()->get_bline_width());
 
 		studio_init_cb.task(_("Checking auto-recover..."));
 
