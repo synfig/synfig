@@ -171,11 +171,13 @@ VALUENODESOURCES = \
 
 VALUEHEADERS = \
 	blinepoint.h \
+	widthpoint.h \
 	gradient.h \
 	value.h
 
 VALUESOURCES = \
 	blinepoint.cpp \
+	widthpoint.cpp \
 	gradient.cpp \
 	value.cpp
 
