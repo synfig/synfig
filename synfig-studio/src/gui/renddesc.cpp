@@ -290,7 +290,7 @@ Widget_RendDesc::on_fps_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_frame_rate((int)(adjustment_fps.get_value()+0.5));
+	rend_desc_.set_frame_rate(adjustment_fps.get_value());
 	refresh();
 	signal_changed()();
 }
