@@ -259,7 +259,7 @@ StateDraw_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("draw.id",value))
@@ -337,7 +337,6 @@ StateDraw_Context::load_settings()
 			set_local_error_flag(true);
 		else
 			set_local_error_flag(false);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -350,7 +349,7 @@ StateDraw_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("draw.id",get_id().c_str());
 		settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
 		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
@@ -365,7 +364,6 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
 		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

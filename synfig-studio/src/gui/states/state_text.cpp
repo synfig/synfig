@@ -165,7 +165,7 @@ StateText_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 		Vector v;
 
@@ -204,7 +204,6 @@ StateText_Context::load_settings()
 			set_family(value);
 		else
 			set_family("Sans Serif");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -217,7 +216,7 @@ StateText_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("text.id",get_id());
 		settings.set_value("text.paragraph",get_paragraph_flag()?"1":"0");
 		settings.set_value("text.size_x",strprintf("%f",(float)get_size()[0]));
@@ -225,7 +224,6 @@ StateText_Context::save_settings()
 		settings.set_value("text.orient_x",strprintf("%f",(float)get_orientation()[0]));
 		settings.set_value("text.orient_y",strprintf("%f",(float)get_orientation()[1]));
 		settings.set_value("text.family",get_family());
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

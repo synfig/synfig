@@ -157,14 +157,13 @@ StateSmoothMove_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("smooth_move.radius",value))
 			set_radius(atof(value.c_str()));
 		else
 			set_radius(1.0f);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -177,9 +176,8 @@ StateSmoothMove_Context::save_settings()
 {
 	try
 	{
-	SETTINGS_LOCALE_SAFE_AND_BACKUP
+	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
-	SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

@@ -248,7 +248,7 @@ StateStar_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		//parse the arguments yargh!
@@ -341,7 +341,6 @@ StateStar_Context::load_settings()
 			set_layer_origins_at_center_flag(false);
 		else
 			set_layer_origins_at_center_flag(true);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -354,7 +353,7 @@ StateStar_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("star.id",get_id());
 		settings.set_value("star.feather",strprintf("%f",(float)get_feather()));
 		settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
@@ -373,7 +372,6 @@ StateStar_Context::save_settings()
 		settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
 		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
 		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

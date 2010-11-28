@@ -238,7 +238,7 @@ StateBLine_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("bline.layer_region",value) && value=="0")
@@ -281,9 +281,7 @@ StateBLine_Context::load_settings()
 			Real n = atof(value.c_str());
 			set_feather(n);
 		}
-
 		sanity_check();
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -296,7 +294,7 @@ StateBLine_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		sanity_check();
 		settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
 		settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
@@ -306,7 +304,6 @@ StateBLine_Context::save_settings()
 		settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("bline.id",get_id().c_str());
 		settings.set_value("bline.feather",strprintf("%f",get_feather()));
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

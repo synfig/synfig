@@ -62,7 +62,7 @@ public:
 	{
 		try
 		{
-			SETTINGS_LOCALE_SAFE_AND_BACKUP
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="state")
 			{
 				value=input_device->get_state();
@@ -112,7 +112,6 @@ public:
 				get_keys_value(value);
 				return true;
 			}
-			SETTINGS_LOCALE_RESTORE
 		}
 		catch(...)
 		{
@@ -153,7 +152,7 @@ public:
 	{
 		try
 		{
-			SETTINGS_LOCALE_SAFE_AND_BACKUP
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="state")
 			{
 				input_device->set_state(value);
@@ -205,7 +204,6 @@ public:
 				set_keys_value(value);
 				return true;
 			}
-			SETTINGS_LOCALE_RESTORE
 		}
 		catch(...)
 		{

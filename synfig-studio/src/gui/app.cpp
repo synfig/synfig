@@ -500,7 +500,7 @@ public:
 	{
 		try
 		{
-			SETTINGS_LOCALE_SAFE_AND_BACKUP
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="gamma")
 			{
 				value=strprintf("%f %f %f %f",
@@ -588,7 +588,6 @@ public:
 				value=strprintf("%s",App::predefined_fps.c_str());
 				return true;
 			}
-			SETTINGS_LOCALE_RESTORE
 		}
 		catch(...)
 		{
@@ -601,7 +600,7 @@ public:
 	{
 		try
 		{
-			SETTINGS_LOCALE_SAFE_AND_BACKUP
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="gamma")
 			{
 				float r,g,b,blk;
@@ -704,7 +703,6 @@ public:
 				App::predefined_fps=value;
 				return true;
 			}
-			SETTINGS_LOCALE_RESTORE
 		}
 		catch(...)
 		{
@@ -1618,7 +1616,7 @@ App::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::save(filename);
@@ -1658,7 +1656,7 @@ App::save_settings()
 		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
-		SETTINGS_LOCALE_RESTORE
+
 	}
 	catch(...)
 	{
@@ -1671,7 +1669,7 @@ App::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
@@ -1727,7 +1725,7 @@ App::load_settings()
 				reset_initial_window_configuration();
 			}
 		}
-	SETTINGS_LOCALE_RESTORE
+
 	}
 	catch(...)
 	{

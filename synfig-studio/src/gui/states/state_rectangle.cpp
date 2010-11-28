@@ -209,7 +209,7 @@ StateRectangle_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		//parse the arguments yargh!
@@ -262,7 +262,6 @@ StateRectangle_Context::load_settings()
 			set_layer_link_origins_flag(false);
 		else
 			set_layer_link_origins_flag(true);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -275,7 +274,7 @@ StateRectangle_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("rectangle.id",get_id().c_str());
 		settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
 		settings.set_value("rectangle.feather",strprintf("%f",(float)get_feather()));
@@ -286,7 +285,6 @@ StateRectangle_Context::save_settings()
 		settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 		settings.set_value("rectangle.layer_plant",get_layer_plant_flag()?"1":"0");
 		settings.set_value("rectangle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

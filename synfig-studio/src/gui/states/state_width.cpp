@@ -175,7 +175,7 @@ StateWidth_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		//parse the arguments yargh!
@@ -194,7 +194,6 @@ StateWidth_Context::load_settings()
 			set_relative(true);
 		else
 			set_relative(false);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -207,11 +206,10 @@ StateWidth_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("width.delta",strprintf("%f",get_delta()));
 		settings.set_value("width.radius",strprintf("%f",get_radius()));
 		settings.set_value("width.relative",get_relative()?"1":"0");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

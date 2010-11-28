@@ -160,14 +160,13 @@ StateRotate_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("rotate.scale",value) && value=="0")
 			set_scale_flag(false);
 		else
 			set_scale_flag(true);
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -180,9 +179,8 @@ StateRotate_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("rotate.scale",get_scale_flag()?"1":"0");
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

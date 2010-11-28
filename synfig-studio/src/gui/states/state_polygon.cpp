@@ -201,7 +201,7 @@ StatePolygon_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("polygon.id",value))
@@ -249,7 +249,6 @@ StatePolygon_Context::load_settings()
 			Real n = atof(value.c_str());
 			set_feather(n);
 		}
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -262,7 +261,7 @@ StatePolygon_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("polygon.id",get_id().c_str());
 		settings.set_value("polygon.invert",get_invert()?"1":"0");
 		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
@@ -272,7 +271,6 @@ StatePolygon_Context::save_settings()
 		settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
 		settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
 		settings.set_value("polygon.feather",strprintf("%f",get_feather()));
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{

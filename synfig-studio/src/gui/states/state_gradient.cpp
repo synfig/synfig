@@ -176,7 +176,7 @@ StateGradient_Context::load_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
 
 		if(settings.get_value("gradient.id",value))
@@ -195,7 +195,6 @@ StateGradient_Context::load_settings()
 		else
 			set_blend(Color::BLEND_COMPOSITE);
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
@@ -208,13 +207,12 @@ StateGradient_Context::save_settings()
 {
 	try
 	{
-		SETTINGS_LOCALE_SAFE_AND_BACKUP
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("gradient.id",get_id().c_str());
 		settings.set_value("gradient.type",strprintf("%d",get_type()));
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
-		SETTINGS_LOCALE_RESTORE
 	}
 	catch(...)
 	{
