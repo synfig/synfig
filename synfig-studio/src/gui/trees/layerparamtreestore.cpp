@@ -418,6 +418,7 @@ LayerParamTreeStore::rebuild()
 			);
 		}
 		//row[model.label] = iter->get_local_name();
+		row[model.tooltip] = iter->get_local_name()+": "+iter->get_description();
 		row[model.param_desc] = *iter;
 		row[model.canvas] = layer_list.front()->get_canvas();
 		row[model.is_inconsistent] = false;

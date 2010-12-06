@@ -917,12 +917,12 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
 			{
-				tooltips_.unset_tip(*this);
-				Glib::ustring tooltips_string(row[layer_model.tooltip]);
+				tooltips_.unset_tip(get_param_tree_view());
+				Glib::ustring tooltips_string(row[param_model.tooltip]);
 				last_tooltip_path=path;
 				if(!tooltips_string.empty())
 				{
-					tooltips_.set_tip(*this,tooltips_string);
+					tooltips_.set_tip(get_param_tree_view(),tooltips_string);
 					tooltips_.force_window();
 				}
 			}
