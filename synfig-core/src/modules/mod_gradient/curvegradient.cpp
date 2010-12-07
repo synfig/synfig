@@ -533,28 +533,39 @@ CurveGradient::get_param_vocab()const
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
 	ret.push_back(ParamDesc("origin")
-				  .set_local_name(_("Origin")));
-
+				  .set_local_name(_("Origin"))
+				  .set_description(_("Offset for the Vertices List"))
+	);
 	ret.push_back(ParamDesc("width")
 				  .set_is_distance()
-				  .set_local_name(_("Width")));
-
+				  .set_local_name(_("Width"))
+				  .set_description(_("Global width of the gradient"))
+	);
 	ret.push_back(ParamDesc("bline")
 				  .set_local_name(_("Vertices"))
 				  .set_origin("origin")
 				  .set_hint("width")
-				  .set_description(_("A list of BLine Points")));
-
+				  .set_description(_("A list of BLine Points"))
+	);
 	ret.push_back(ParamDesc("gradient")
-				  .set_local_name(_("Gradient")));
+				  .set_local_name(_("Gradient"))
+				  .set_description(_("Gradient to apply"))
+	);
 	ret.push_back(ParamDesc("loop")
-				  .set_local_name(_("Loop")));
+				  .set_local_name(_("Loop"))
+				  .set_description(_("When checked the gradient is looped"))
+	);
 	ret.push_back(ParamDesc("zigzag")
-				  .set_local_name(_("ZigZag")));
+				  .set_local_name(_("ZigZag"))
+				  .set_description(_("When checked the gradient is summetrical at the center"))
+	);
 	ret.push_back(ParamDesc("perpendicular")
-				  .set_local_name(_("Perpendicular")));
+				  .set_local_name(_("Perpendicular"))
+	);
 	ret.push_back(ParamDesc("fast")
-				  .set_local_name(_("Fast")));
+				  .set_local_name(_("Fast"))
+				  .set_description(_("When checked, renders quickly but with artifacts"))
+	);
 
 	return ret;
 }

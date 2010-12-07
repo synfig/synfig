@@ -154,9 +154,11 @@ Layer_Composite::get_param_vocab()const
 	//! Now inserts the two parameters that this layer knows.
 	ret.push_back(ParamDesc(amount,"amount")
 		.set_local_name(_("Amount"))
+		.set_description(_("Alpha channel of the layer"))
 	);
 	ret.push_back(ParamDesc(blend_method,"blend_method")
 		.set_local_name(_("Blend Method"))
+		.set_description(_("The blending method used to composite on the layers below"))
 	);
 
 	return ret;

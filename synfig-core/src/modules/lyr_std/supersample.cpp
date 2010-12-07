@@ -227,6 +227,7 @@ SuperSample::get_param_vocab(void)const
 	);
 	ret.push_back(ParamDesc("alpha_aware")
 		.set_local_name(_("Be Alpha Safe"))
+		.set_description(_("Avoid alpha artifacts when checked"))
 	);
 
 	return ret;

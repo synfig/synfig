@@ -102,10 +102,12 @@ Layer_Stretch::get_param_vocab()const
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_origin("center")
+		.set_description(_("Size of the stretch relative to its Center"))
 	);
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
+		.set_description(_("Where the stretch distortion is centered"))
 	);
 
 	return ret;

@@ -123,6 +123,7 @@ CheckerBoard::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
+		.set_description(_("Center of the checkers"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
