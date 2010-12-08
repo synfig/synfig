@@ -825,11 +825,13 @@ Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("width")
 		.set_is_distance()
 		.set_local_name(_("Outline Width"))
+		.set_description(_("Global width of the outline"))
 	);
 
 	ret.push_back(ParamDesc("expand")
 		.set_is_distance()
 		.set_local_name(_("Expand"))
+		.set_description(_("Value to add to the global width"))
 	);
 
 	ret.push_back(ParamDesc("sharp_cusps")
@@ -851,6 +853,7 @@ Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("homogeneous_width")
 		.set_local_name(_("Homogeneous"))
+		.set_description(_("When checked the width takes the length of the spline to interpolate"))
 	);
 
 	return ret;

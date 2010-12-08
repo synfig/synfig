@@ -122,15 +122,18 @@ Rectangle::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
+		.set_description(_("Fill color of the layer"))
 	);
 
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
 		.set_box("point2")
+		.set_description(_("First corner of the rectangle"))
 	);
 
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
+		.set_description(_("Second corner of the rectangle"))
 	);
 
 	ret.push_back(ParamDesc("expand")

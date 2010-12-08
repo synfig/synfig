@@ -122,11 +122,13 @@ FilledRect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
+		.set_description(_("First corner of the rectangle"))
 		.set_box("point2")
 	);
 
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
+		.set_description(_("Second corner of the rectangle"))
 	);
 
 	ret.push_back(ParamDesc("feather_x")

@@ -218,6 +218,7 @@ Import::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("time_offset")
 		.set_local_name(_("Time Offset"))
+		.set_description(_("Time Offset to apply to the imported file"))
 	);
 
 	return ret;
