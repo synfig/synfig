@@ -236,6 +236,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_DynamicList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_DynamicList
 
 typedef ValueNode_DynamicList::ListEntry::Activepoint Activepoint;

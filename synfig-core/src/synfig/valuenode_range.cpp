@@ -305,3 +305,26 @@ ValueNode_Range::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_REAL
 		|| type==ValueBase::TYPE_TIME;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Range::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"min")
+		.set_local_name(_("Min"))
+		.set_description(_("Returned value when 'Link' is smaller"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"max")
+		.set_local_name(_("Max"))
+		.set_description(_("Returned value when 'Link' is greater"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node to limit its range"))
+	);
+
+	return ret;
+}

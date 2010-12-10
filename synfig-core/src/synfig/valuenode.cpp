@@ -34,7 +34,6 @@
 #include "valuenode.h"
 #include "general.h"
 #include "canvas.h"
-#include "paramdesc.h"
 #include "releases.h"
 
 #include "valuenode_const.h"
@@ -669,3 +668,12 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 
 	return description;
 }
+
+/*
+int
+LinkableValueNode::link_count()const
+{
+	Vocab ret(get_param_vocab());
+	return ret.size();
+}
+*/

@@ -444,3 +444,89 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_COLOR ||
 		type==ValueBase::TYPE_BLINEPOINT;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Composite::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		ret.push_back(ParamDesc(ValueBase(),"red")
+			.set_local_name(_("Red"))
+			.set_description(_("The red component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"green")
+			.set_local_name(_("Green"))
+			.set_description(_("The green component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"blue")
+			.set_local_name(_("Blue"))
+			.set_description(_("The blue component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"alpha")
+			.set_local_name(_("Alpha"))
+			.set_description(_("The alpha of the color"))
+		);
+		return ret;
+	case ValueBase::TYPE_SEGMENT:
+		ret.push_back(ParamDesc(ValueBase(),"p1")
+			.set_local_name(_("Vertex 1"))
+			.set_description(_("The first vertex of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t1")
+			.set_local_name(_("Tangent 1"))
+			.set_description(_("The first tangent of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"p2")
+			.set_local_name(_("Vertex 2"))
+			.set_description(_("The second vertex of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t2")
+			.set_local_name(_("Tangent 2"))
+			.set_description(_("The second tangent of the segment"))
+		);
+		return ret;
+	case ValueBase::TYPE_VECTOR:
+		ret.push_back(ParamDesc(ValueBase(),"x")
+			.set_local_name(_("X-Axis"))
+			.set_description(_("The X-Axis component of the vector"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"y")
+			.set_local_name(_("Y-Axis"))
+			.set_description(_("The Y-Axis component of the vector"))
+		);
+		return ret;
+	case ValueBase::TYPE_BLINEPOINT:
+		ret.push_back(ParamDesc(ValueBase(),"point")
+			.set_local_name(_("Vertex"))
+			.set_description(_("The vertex of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"width")
+			.set_local_name(_("Width"))
+			.set_description(_("The width of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"origin")
+			.set_local_name(_("Origin"))
+			.set_description(_("Defines the Off and On position relative to neighbours"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"split")
+			.set_local_name(_("Split"))
+			.set_description(_("When checked, tangents are independent"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t1")
+			.set_local_name(_("Tangent 1"))
+			.set_description(_("The first tangent of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t2")
+			.set_local_name(_("Tangent 2"))
+			.set_description(_("The second tangent of the BLine Point"))
+		);
+		return ret;
+	default:
+		break;
+	}
+
+	return ret;
+}

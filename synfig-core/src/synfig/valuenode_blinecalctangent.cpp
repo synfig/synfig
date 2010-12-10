@@ -269,3 +269,40 @@ ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
 			type==ValueBase::TYPE_REAL  ||
 			type==ValueBase::TYPE_VECTOR);
 }
+
+LinkableValueNode::Vocab
+ValueNode_BLineCalcTangent::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"bline")
+		.set_local_name(_("BLine"))
+		.set_description(_("The BLine where the tangent is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop"))
+		.set_description(_("When checked, the amount would loop"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked tangent on the BLine (0,1]"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"offset")
+		.set_local_name(_("Offset"))
+		.set_description(_("Angle offset of the tangent"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"scale")
+		.set_local_name(_("Scale"))
+		.set_description(_("Scale of the tangent"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"fixed_length")
+		.set_local_name(_("Fixed Length"))
+		.set_description(_("When checked, the tangent's length is fixed"))
+	);
+	return ret;
+}

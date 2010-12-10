@@ -179,3 +179,20 @@ ValueNode_SegCalcVertex::create_new()const
 {
 	return new ValueNode_SegCalcVertex(ValueBase::TYPE_VECTOR);
 }
+
+LinkableValueNode::Vocab
+ValueNode_SegCalcVertex::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"segment")
+		.set_local_name(_("Segment"))
+		.set_description(_("The Segment where the vertex is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked vertex on the Segment (0,1]"))
+	);
+	return ret;
+}

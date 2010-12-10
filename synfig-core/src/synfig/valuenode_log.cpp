@@ -183,4 +183,26 @@ ValueNode_Logarithm::check_type(ValueBase::Type type)
 	return type==ValueBase::TYPE_REAL;
 }
 
+LinkableValueNode::Vocab
+ValueNode_Logarithm::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("Value node used to calculate the Neperian logarithm"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		.set_local_name(_("Epsilon"))
+		.set_description(_("Value used to compare 'link' with zero "))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		.set_local_name(_("Infinite"))
+		.set_description(_("Returned value when result tends to infinite"))
+	);
+
+	return ret;
+}
 

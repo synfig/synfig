@@ -80,3 +80,16 @@ ValueNode_Greyed::get_local_name()const
 {
 	return _("Greyed");
 }
+
+LinkableValueNode::Vocab
+ValueNode_Greyed::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The greyed value"))
+	);
+
+	return ret;
+}

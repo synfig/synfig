@@ -200,3 +200,21 @@ ValueNode_BLineRevTangent::check_type(ValueBase::Type type)
 {
 	return (type==ValueBase::TYPE_BLINEPOINT);
 }
+
+LinkableValueNode::Vocab
+ValueNode_BLineRevTangent::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"reference")
+		.set_local_name(_("Reference"))
+		.set_description(_("The referenced tangent to reverse"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"reverse")
+		.set_local_name(_("Reverse"))
+		.set_description(_("When checked, the reference is reversed"))
+	);
+
+	return ret;
+}

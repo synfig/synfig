@@ -185,3 +185,16 @@ ValueNode_TimeString::check_type(ValueBase::Type type)
 	return
 		type==ValueBase::TYPE_STRING;
 }
+
+LinkableValueNode::Vocab
+ValueNode_TimeString::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"time")
+		.set_local_name(_("Time"))
+		.set_description(_("The time that is converted to string"))
+	);
+
+	return ret;
+}

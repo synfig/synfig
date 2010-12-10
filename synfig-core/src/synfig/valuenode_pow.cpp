@@ -205,3 +205,31 @@ ValueNode_Pow::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Pow::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"base")
+		.set_local_name(_("Base"))
+		.set_description(_("The base to be raised to the power"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"power")
+		.set_local_name(_("Power"))
+		.set_description(_("The power used to raise the base"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		.set_local_name(_("Epsilon"))
+		.set_description(_("Value used to compare base or power with zero "))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		.set_local_name(_("Infinite"))
+		.set_description(_("Returned value when result tends to infinite"))
+	);
+
+	return ret;
+}

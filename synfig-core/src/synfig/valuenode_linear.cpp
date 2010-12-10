@@ -225,3 +225,37 @@ ValueNode_Linear::get_link_index_from_name(const String &name)const
 
 	throw Exception::BadLinkName(name);
 }
+
+
+LinkableValueNode::Vocab
+ValueNode_Linear::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	switch(get_type())
+	{
+	case ValueBase::TYPE_ANGLE:
+	case ValueBase::TYPE_COLOR:
+	case ValueBase::TYPE_INTEGER:
+	case ValueBase::TYPE_REAL:
+	case ValueBase::TYPE_TIME:
+		ret.push_back(ParamDesc(ValueBase(),"slope")
+			.set_local_name(_("Rate"))
+			.set_description(_("Value that is multiplied by the current time (in seconds)"))
+		);
+	break;
+	case ValueBase::TYPE_VECTOR:
+	default:
+		ret.push_back(ParamDesc(ValueBase(),"slope")
+			.set_local_name(_("Slope"))
+			.set_description(_("Value that is multiplied by the current time (in seconds)"))
+		);
+	}
+
+	ret.push_back(ParamDesc(ValueBase(),"offset")
+		.set_local_name(_("Offset"))
+		.set_description(_("Returned value when the current time is zero"))
+	);
+
+	return ret;
+}

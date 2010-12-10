@@ -215,3 +215,26 @@ ValueNode_Duplicate::check_type(ValueBase::Type type __attribute__ ((unused)))
 	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
 	return false;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Duplicate::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"from")
+		.set_local_name(_("From"))
+		.set_description(_("Initial value of the index "))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"to")
+		.set_local_name(_("To"))
+		.set_description(_("Final value of the index"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"step")
+		.set_local_name(_("Step"))
+		.set_description(_("Amount increment of the index"))
+	);
+
+	return ret;
+}

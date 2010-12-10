@@ -233,3 +233,31 @@ ValueNode_Stripes::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Stripes::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"color1")
+		.set_local_name(_("Color 1"))
+		.set_description(_("One color of the gradient stripes"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"color2")
+		.set_local_name(_("Color 2"))
+		.set_description(_("Other color of the gradient stripes"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"stripes")
+		.set_local_name(_("Stripe Count"))
+		.set_description(_("Number of stripes in the gradient"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Width of stripes in the gradient between [0,1]"))
+	);
+
+	return ret;
+}

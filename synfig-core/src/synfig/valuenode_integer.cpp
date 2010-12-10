@@ -197,3 +197,16 @@ ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 //		type==ValueBase::TYPE_REAL  ||
 //		type==ValueBase::TYPE_TIME;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Integer::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"integer")
+		.set_local_name(_("Integer"))
+		.set_description(_("The integer value to be converted"))
+	);
+
+	return ret;
+}

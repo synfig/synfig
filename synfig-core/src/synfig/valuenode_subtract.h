@@ -73,6 +73,7 @@ public:
 	//! Gets the scalar value_node
 	ValueNode::Handle get_scalar()const { return scalar; }
 
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_Subtract
 
 }; // END of namespace synfig

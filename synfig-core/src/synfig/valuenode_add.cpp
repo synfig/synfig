@@ -241,3 +241,26 @@ ValueNode_Add::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_TIME
 		|| type==ValueBase::TYPE_VECTOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Add::get_param_vocab() const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("Left Hand Side of the add"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("Right Hand Side of the add"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		.set_local_name(_("Scalar"))
+		.set_description(_("Value that multiplies the add"))
+	);
+
+	return ret;
+}

@@ -230,3 +230,31 @@ ValueNode_Step::get_link_index_from_name(const String &name)const
 
 	throw Exception::BadLinkName(name);
 }
+
+LinkableValueNode::Vocab
+ValueNode_Step::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to make the step"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"duration")
+		.set_local_name(_("Duration"))
+		.set_description(_("The duration of the step"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"start_time")
+		.set_local_name(_("Start Time"))
+		.set_description(_("The time when the step conversion starts"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"intersection")
+		.set_local_name(_("Intersection"))
+		.set_description(_("Value that define whether the step is centerd on the value [0,1]"))
+	);
+
+	return ret;
+}

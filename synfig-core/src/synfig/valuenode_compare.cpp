@@ -195,3 +195,36 @@ ValueNode_Compare::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Compare::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("The left side of the comparison"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("The right side of the comparison"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"greater")
+		.set_local_name(_("Greater"))
+		.set_description(_("When checked, returns true if LHS > RHS"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"equal")
+		.set_local_name(_("Equal"))
+		.set_description(_("When checked, returns true if LHS = RHS"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"less")
+		.set_local_name(_("Less"))
+		.set_description(_("When checked, returns true if LHS < RHS"))
+	);
+
+	return ret;
+}

@@ -195,3 +195,21 @@ ValueNode_GradientRotate::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }
+
+LinkableValueNode::Vocab
+ValueNode_GradientRotate::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"gradient")
+		.set_local_name(_("Gradient"))
+		.set_description(_("The source gradient to rotate"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"offset")
+		.set_local_name(_("Offset"))
+		.set_description(_("The amount to offset the gradient"))
+	);
+
+	return ret;
+}

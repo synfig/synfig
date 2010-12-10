@@ -166,3 +166,21 @@ ValueNode_Or::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Or::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link1")
+		.set_local_name(_("Link1"))
+		.set_description(_("Value node used for the OR boolean operation"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link2")
+		.set_local_name(_("Link2"))
+		.set_description(_("Value node used for the OR boolean operation"))
+	);
+
+	return ret;
+}

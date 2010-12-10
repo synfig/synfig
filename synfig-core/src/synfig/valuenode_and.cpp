@@ -166,3 +166,21 @@ ValueNode_And::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_And::get_param_vocab() const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link1")
+		.set_local_name(_("Link1"))
+		.set_description(_("First operand of the AND operation"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link2")
+		.set_local_name(_("Link2"))
+		.set_description(_("Second operand of the AND operation"))
+	);
+
+	return ret;
+}

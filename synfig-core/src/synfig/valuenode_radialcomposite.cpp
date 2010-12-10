@@ -313,3 +313,43 @@ ValueNode_RadialComposite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_COLOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_RadialComposite::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		ret.push_back(ParamDesc(ValueBase(),"y_luma")
+		.set_local_name(_("Luma"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"saturation")
+		.set_local_name(_("Saturation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"hue")
+		.set_local_name(_("Hue"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"alpha")
+		.set_local_name(_("Saturation"))
+		);
+		return ret;
+		break;
+	case ValueBase::TYPE_VECTOR:
+		ret.push_back(ParamDesc(ValueBase(),"radius")
+		.set_local_name(_("Radius"))
+		.set_description(_("The length of the vector"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"theta")
+		.set_local_name(_("Theta"))
+		.set_description(_("The angle of the vector with the X axis"))
+		);
+		return ret;
+		break;
+	default:
+		break;
+	}
+
+	return ret;
+}

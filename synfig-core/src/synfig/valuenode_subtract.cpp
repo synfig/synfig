@@ -245,3 +245,26 @@ ValueNode_Subtract::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_TIME
 		|| type==ValueBase::TYPE_VECTOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Subtract::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("Left Hand Side of the subtraction"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("Right Hand Side of the subtraction"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		.set_local_name(_("Scalar"))
+		.set_description(_("Value that multiplies the subtraction"))
+	);
+
+	return ret;
+}

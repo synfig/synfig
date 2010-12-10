@@ -225,3 +225,31 @@ ValueNode_Join::check_type(ValueBase::Type type)
 	return
 		type==ValueBase::TYPE_STRING;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Join::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"strings")
+		.set_local_name(_("Strings"))
+		.set_description(_("The List of strings to join"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"before")
+		.set_local_name(_("Before"))
+		.set_description(_("The string to place before the joined strings"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"separator")
+		.set_local_name(_("Separator"))
+		.set_description(_("The string to place between each string joined"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"after")
+		.set_local_name(_("After"))
+		.set_description(_("The string to place after the joined strings"))
+	);
+
+	return ret;
+}

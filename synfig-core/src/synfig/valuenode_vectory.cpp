@@ -164,3 +164,16 @@ ValueNode_VectorY::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_VectorY::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"vector")
+		.set_local_name(_("Vector"))
+		.set_description(_("The vector where the Y coordinate is extracted from"))
+	);
+
+	return ret;
+}

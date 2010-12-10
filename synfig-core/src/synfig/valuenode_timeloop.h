@@ -75,6 +75,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_TimeLoop* create(const ValueBase &x);
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_TimeLoop
 
 }; // END of namespace synfig

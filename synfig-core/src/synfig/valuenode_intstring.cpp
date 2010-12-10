@@ -198,3 +198,26 @@ ValueNode_IntString::check_type(ValueBase::Type type)
 	return
 		type==ValueBase::TYPE_STRING;
 }
+
+LinkableValueNode::Vocab
+ValueNode_IntString::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"int")
+		.set_local_name(_("Int"))
+		.set_description(_("Value to convert to string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Width of the string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"zero_pad")
+		.set_local_name(_("Zero Padded"))
+		.set_description(_("When checked, the string is left filled with zeros to match the width"))
+	);
+
+	return ret;
+}

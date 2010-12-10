@@ -195,3 +195,21 @@ ValueNode_DotProduct::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_ANGLE ||
 		type==ValueBase::TYPE_REAL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_DotProduct::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("The left side of the dot product"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("The right side of the dot product"))
+	);
+
+	return ret;
+}

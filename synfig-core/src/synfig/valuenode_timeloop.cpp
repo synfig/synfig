@@ -198,3 +198,31 @@ ValueNode_TimeLoop::check_type(ValueBase::Type type)
 		return true;
 	return false;
 }
+
+
+LinkableValueNode::Vocab
+ValueNode_TimeLoop::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc("link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node to time loop"))
+	);
+
+	ret.push_back(ParamDesc("link_time")
+		.set_local_name(_("Link Time"))
+		.set_description(_("Start time of the loop for the value node timeline"))
+	);
+
+	ret.push_back(ParamDesc("local_time")
+		.set_local_name(_("Local Time"))
+		.set_description(_("The time when the resulted loop starts"))
+	);
+
+	ret.push_back(ParamDesc("duration")
+		.set_local_name(_("Duration"))
+		.set_description(_("Lenght of the loop"))
+	);
+	return ret;
+}

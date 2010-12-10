@@ -185,3 +185,26 @@ ValueNode_GradientColor::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_COLOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_GradientColor::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"gradient")
+		.set_local_name(_("Gradient"))
+		.set_description(_("The gradient where the color is picked from"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"index")
+		.set_local_name(_("Index"))
+		.set_description(_("The position of the color at the gradient (0,1]"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop"))
+		.set_description(_("When checked, the index would loop"))
+	);
+
+	return ret;
+}

@@ -275,3 +275,21 @@ ValueNode_Scale::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_TIME ||
 		type==ValueBase::TYPE_VECTOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Scale::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to scale"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"scalar")
+		.set_local_name(_("Scalar"))
+		.set_description(_("Value that multiplies the value node"))
+	);
+
+	return ret;
+}

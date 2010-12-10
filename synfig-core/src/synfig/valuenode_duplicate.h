@@ -78,6 +78,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Duplicate* create(const ValueBase &x);
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_Duplicate
 
 }; // END of namespace synfig

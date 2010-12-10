@@ -75,6 +75,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Range* create(const ValueBase &value=ValueBase());
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_Range
 
 }; // END of namespace synfig

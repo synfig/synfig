@@ -187,3 +187,26 @@ ValueNode_Reciprocal::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Reciprocal::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to calculate its reciprocal"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		.set_local_name(_("Epsilon"))
+		.set_description(_("The value used to decide whether 'Link' is too small to obtain its reciprocal"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		.set_local_name(_("Infinite"))
+		.set_description(_("The resulting value when 'Link' < 'Epsilon'"))
+	);
+
+	return ret;
+}

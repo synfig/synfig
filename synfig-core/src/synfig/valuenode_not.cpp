@@ -157,3 +157,16 @@ ValueNode_Not::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Not::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("Value node used to do the NOT operation"))
+	);
+
+	return ret;
+}

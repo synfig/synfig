@@ -300,3 +300,47 @@ ValueNode_Random::randomize_seed()
 		set_link(i, ValueNode_Const::create(seed));
 	}
 }
+
+LinkableValueNode::Vocab
+ValueNode_Random::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node source that provides the central value"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"radius")
+		.set_local_name(_("Radius"))
+		.set_description(_("The value of the maximum random difference"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"seed")
+		.set_local_name(_("Seed"))
+		.set_description(_("Seeds the random number generator"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"speed")
+		.set_local_name(_("Speed"))
+		.set_description(_("Defines how often a new random value is chosen (in choices per second) "))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"smooth")
+		.set_local_name(_("Interpolation"))
+		.set_description(_("Determines how the value is interpolated from one random choice to the next"))
+		.set_hint("enum")
+		.add_enum_value(RandomNoise::SMOOTH_DEFAULT,"default",_("No interpolation"))
+		.add_enum_value(RandomNoise::SMOOTH_LINEAR,"linear",_("Linear"))
+		.add_enum_value(RandomNoise::SMOOTH_COSINE,"cosine",_("Cosine"))
+		.add_enum_value(RandomNoise::SMOOTH_SPLINE,"spline",_("Spline"))
+		.add_enum_value(RandomNoise::SMOOTH_CUBIC,"cubic",_("Cubic"))
+	);
+
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop Time"))
+		.set_description(_("Makes the random value repeat after the given time"))
+	);
+	return ret;
+}

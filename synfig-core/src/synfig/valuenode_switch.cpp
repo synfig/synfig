@@ -180,3 +180,26 @@ ValueNode_Switch::check_type(ValueBase::Type type)
 		return true;
 	return false;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Switch::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link_off")
+		.set_local_name(_("Link Off"))
+		.set_description(_("The value node returned when the switch is off"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link_on")
+		.set_local_name(_("Link On"))
+		.set_description(_("The value node returned when the switch is on"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"switch")
+		.set_local_name(_("Switch"))
+		.set_description(_("When checked, returns 'Link On', otherwise returns 'Link Off'"))
+	);
+
+	return ret;
+}

@@ -166,3 +166,16 @@ ValueNode_Reference::check_type(ValueBase::Type type)
 		return true;
 	return false;
 }
+
+LinkableValueNode::Vocab
+ValueNode_Reference::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The referenced value"))
+	);
+
+	return ret;
+}

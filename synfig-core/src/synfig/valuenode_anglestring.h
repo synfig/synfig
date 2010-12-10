@@ -76,6 +76,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_AngleString* create(const ValueBase &x);
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_AngleString
 
 }; // END of namespace synfig

@@ -182,3 +182,21 @@ ValueNode_Cos::get_link_index_from_name(const String &name)const
 
 	throw Exception::BadLinkName(name);
 }
+
+LinkableValueNode::Vocab
+ValueNode_Cos::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"angle")
+		.set_local_name(_("Angle"))
+		.set_description(_("Value to calculate the cosine"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amp")
+		.set_local_name(_("Amplitude"))
+		.set_description(_("Multiplier of the resulting cosine"))
+	);
+
+	return ret;
+}

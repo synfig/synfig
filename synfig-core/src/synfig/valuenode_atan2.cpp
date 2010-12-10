@@ -176,3 +176,21 @@ ValueNode_Atan2::get_link_index_from_name(const String &name)const
 
 	throw Exception::BadLinkName(name);
 }
+
+LinkableValueNode::Vocab
+ValueNode_Atan2::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"x")
+		.set_local_name(_("X"))
+		.set_description(_("Cosine of the angle"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"y")
+		.set_local_name(_("Y"))
+		.set_description(_("Sine of the angle"))
+	);
+
+	return ret;
+}

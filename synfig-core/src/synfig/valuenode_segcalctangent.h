@@ -74,6 +74,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_SegCalcTangent* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
+	virtual Vocab get_param_vocab()const;
 }; // END of class ValueNode_SegCalcTangent
 
 }; // END of namespace synfig

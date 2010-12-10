@@ -39,6 +39,7 @@
 #include <sigc++/signal.h>
 #include "guid.h"
 #include <ETL/angle>
+#include "paramdesc.h"
 
 #include "node.h"
 
@@ -77,6 +78,7 @@ namespace synfig {
 class Canvas;
 class LinkableValueNode;
 class Layer;
+class ParamVocab;
 
 /*!	\class ValueNode
 **	\brief Base class for all Value Nodes
@@ -335,6 +337,8 @@ public:
 	*/
 	typedef std::map<String,BookEntry> Book;
 
+	typedef ParamVocab Vocab;
+
 	static Book& book();
 
 	//! Creates a Linkable Value Node based on the name and the returned
@@ -388,6 +392,9 @@ public:
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
 	//! Return a full description of the linked ValueNode given by the index
 	String get_description(int index = -1, bool show_exported_name = true)const;
+
+	//! Gets the parameter vocabulary for linkable value nodes
+	virtual Vocab get_param_vocab()const=0;
 
 protected:
 	//! Sets the type of the ValueNode

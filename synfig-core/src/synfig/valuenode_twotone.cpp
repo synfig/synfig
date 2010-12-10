@@ -185,3 +185,21 @@ ValueNode_TwoTone::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }
+
+LinkableValueNode::Vocab
+ValueNode_TwoTone::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"color1")
+		.set_local_name(_("Color 1"))
+		.set_description(_("The start color of the gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"color2")
+		.set_local_name(_("Color 2"))
+		.set_description(_("The end color of the gradient"))
+	);
+
+	return ret;
+}

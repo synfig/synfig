@@ -220,3 +220,26 @@ ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_VECTOR;
 }
+
+LinkableValueNode::Vocab
+ValueNode_BLineCalcVertex::get_param_vocab()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"bline")
+		.set_local_name(_("BLine"))
+		.set_description(_("The BLine where the vertex is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop"))
+		.set_description(_("When checked, the amount would loop"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked vertex on the BLine (0,1]"))
+	);
+
+	return ret;
+}
