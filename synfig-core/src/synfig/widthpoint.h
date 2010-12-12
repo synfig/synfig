@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file widthpoint.h
-**	\brief Template Header for the implementation of a width point
+**	\brief Template Header for the implementation of a Width Point
 **
 **	$Id$
 **
@@ -57,6 +57,8 @@ public:
 	};
 
 	WidthPoint();
+	WidthPoint(Real position, Real width, int cupbefore=CUPTYPE_INTERPOLATE,
+		int cupafter=CUPTYPE_INTERPOLATE);
 
 	const Real& get_position()const;
 	void set_position(const Real& x);
@@ -65,7 +67,9 @@ public:
 	void set_width(Real x);
 
 	int get_cup_type_before();
+	void set_cup_before(int cupbefore);
 	int get_cup_type_after();
+	void set_cup_after(int cupafter);
 	int get_cup_type(int i);
 
 }; // END of class WidthPoint

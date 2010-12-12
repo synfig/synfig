@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file blinepoint.cpp
-**	\brief Template File for a width point implementation
+**	\brief Template File for a Width Point implementation
 **
 **	$Id$
 **
@@ -47,11 +47,19 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::WidthPoint::WidthPoint():
-		position_(0.0),
-		width_(0.01)
+WidthPoint::WidthPoint():
+	position_(0.0),
+	width_(0.01)
 {
 	cup_type_[0] = cup_type_[1] = CUPTYPE_INTERPOLATE;
+}
+
+WidthPoint::WidthPoint(Real position, Real width, int cupbefore, int cupafter):
+	position_(position),
+	width_(width)
+{
+	cup_type_[0]=cupbefore;
+	cup_type_[1]=cupafter;
 }
 
 const Real&
@@ -83,10 +91,22 @@ WidthPoint::get_cup_type_before()
 	return cup_type_[0];
 }
 
+void
+WidthPoint::set_cup_type_before(int cupbefore)
+{
+	cup_type_[0]=cupbefore;
+}
+
 int
 WidthPoint::get_cup_type_after()
 {
 	return cup_type_[1];
+}
+
+void
+WidthPoint::set_cup_type_after(int cupafter)
+{
+	cup_type_[1]=cupafter;
 }
 
 int
