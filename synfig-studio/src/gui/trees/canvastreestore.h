@@ -87,6 +87,7 @@ public:
 		Gtk::TreeModelColumn<bool> is_exported;
 
 		Gtk::TreeModelColumn<synfigapp::ValueDesc> value_desc;
+		Gtk::TreeModelColumn<synfig::ParamDesc>	child_param_desc;
 
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 
@@ -107,6 +108,7 @@ public:
 			add(is_exported);
 			add(is_editable);
 			add(value_desc);
+			add(child_param_desc);
 			add(link_count);
 			add(link_id);
 
