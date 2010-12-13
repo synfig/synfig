@@ -373,13 +373,13 @@ public:
 	virtual int link_count()const=0;
 
 	//! Returns the local name of the 'i' linked Value Node
-	virtual String link_local_name(int i)const=0;
+	virtual String link_local_name(int i)const;
 
 	//! Returns the name of the 'i' linked Value Node
-	virtual String link_name(int i)const=0;
+	virtual String link_name(int i)const;
 
 	//! Returns the child index Value Node based on the name
-	virtual int get_link_index_from_name(const String &name)const=0;
+	virtual int get_link_index_from_name(const String &name)const;
 
 	//! Clones a Value Node
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
