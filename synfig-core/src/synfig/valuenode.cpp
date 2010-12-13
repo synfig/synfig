@@ -669,11 +669,3 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	return description;
 }
 
-/*
-int
-LinkableValueNode::link_count()const
-{
-	Vocab ret(get_param_vocab());
-	return ret.size();
-}
-*/

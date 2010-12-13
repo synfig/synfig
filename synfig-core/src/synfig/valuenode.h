@@ -337,6 +337,9 @@ public:
 	*/
 	typedef std::map<String,BookEntry> Book;
 
+	//! The vocabulary of the children
+	/*! \see synfig::Paramdesc
+	 */
 	typedef ParamVocab Vocab;
 
 	static Book& book();
