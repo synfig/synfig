@@ -95,13 +95,14 @@ ValueNode_AngleString::operator()(Time t)const
 	int precision((*precision_)(t).get(int()));
 	int zero_pad((*zero_pad_)(t).get(bool()));
 
+	if(precision<0) precision=0;
 	switch (get_type())
 	{
 	case ValueBase::TYPE_STRING:
 		return strprintf(strprintf("%%%s%d.%df",
 								   zero_pad ? "0" : "",
 								   width,
-								   precision).c_str(), angle);
+								   precision).c_str(), angle)+"°";
 	default:
 		break;
 	}
