@@ -108,35 +108,6 @@ ValueNode_And::link_count()const
 	return 2;
 }
 
-String
-ValueNode_And::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link1");
-	if(i==1) return _("Link2");
-	return String();
-}
-
-String
-ValueNode_And::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link1";
-	if(i==1) return "link2";
-	return String();
-}
-
-int
-ValueNode_And::get_link_index_from_name(const String &name)const
-{
-	if(name=="link1")    return 0;
-	if(name=="link2")    return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_And::operator()(Time t)const
 {

@@ -182,43 +182,6 @@ ValueNode_Add::link_count()const
 }
 
 String
-ValueNode_Add::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("LHS");
-		case 1: return _("RHS");
-		case 2: return _("Scalar");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Add::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "lhs";
-		case 1: return "rhs";
-		case 2: return "scalar";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Add::get_link_index_from_name(const String &name)const
-{
-	if(name=="lhs") return 0;
-	if(name=="rhs") return 1;
-	if(name=="scalar") return 2;
-	throw Exception::BadLinkName(name);
-}
-
-String
 ValueNode_Add::get_name()const
 {
 	return "add";

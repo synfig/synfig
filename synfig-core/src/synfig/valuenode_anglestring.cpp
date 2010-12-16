@@ -160,47 +160,6 @@ ValueNode_AngleString::link_count()const
 	return 4;
 }
 
-String
-ValueNode_AngleString::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "angle";
-		case 1: return "width";
-		case 2: return "precision";
-		case 3: return "zero_pad";
-	}
-	return String();
-}
-
-String
-ValueNode_AngleString::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Angle");
-		case 1: return _("Width");
-		case 2: return _("Precision");
-		case 3: return _("Zero Padded");
-	}
-	return String();
-}
-
-int
-ValueNode_AngleString::get_link_index_from_name(const String &name)const
-{
-	if (name=="angle") return 0;
-	if (name=="width") return 1;
-	if (name=="precision") return 2;
-	if (name=="zero_pad") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_AngleString::check_type(ValueBase::Type type)
 {
