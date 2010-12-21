@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("duration",     ValueNode_Const::create(Time(1)));
 	set_link("start_time",   ValueNode_Const::create(Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));
@@ -234,6 +236,9 @@ ValueNode_Step::get_link_index_from_name(const String &name)const
 LinkableValueNode::Vocab
 ValueNode_Step::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"link")

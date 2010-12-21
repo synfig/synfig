@@ -55,6 +55,8 @@ using namespace synfig;
 
 synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("gradient",ValueNode_Const::create(x));
 	set_link("count",count_=ValueNode_Const::create(int(3)));
 	set_link("width",ValueNode_Const::create(0.5));
@@ -246,6 +248,9 @@ ValueNode_Repeat_Gradient::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_Repeat_Gradient::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"gradient")

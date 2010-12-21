@@ -58,6 +58,8 @@ using namespace synfig;
 ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x!=ValueBase::TYPE_REAL)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
@@ -232,6 +234,9 @@ ValueNode_BLineCalcWidth::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")

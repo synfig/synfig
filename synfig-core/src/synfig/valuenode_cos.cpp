@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Cos::ValueNode_Cos(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -186,6 +188,9 @@ ValueNode_Cos::get_link_index_from_name(const String &name)const
 LinkableValueNode::Vocab
 ValueNode_Cos::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"angle")

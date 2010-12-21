@@ -59,6 +59,8 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase::Type &x):
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(x.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -201,6 +203,9 @@ ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 LinkableValueNode::Vocab
 ValueNode_Integer::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"integer")

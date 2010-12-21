@@ -700,8 +700,20 @@ LinkableValueNode::get_link_index_from_name(const String &name)const
 	throw Exception::BadLinkName(name);
 }
 
+int
+LinkableValueNode::link_count()const
+{
+	return get_children_vocab().size();
+}
+
 LinkableValueNode::Vocab
 LinkableValueNode::get_children_vocab()const
 {
 	return get_children_vocab_vfunc();
+}
+
+void
+LinkableValueNode::set_children_vocab(Vocab &newvocab)
+{
+	children_vocab.assign(newvocab.begin(),newvocab.end());
 }

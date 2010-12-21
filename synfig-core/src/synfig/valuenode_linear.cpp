@@ -55,6 +55,8 @@ using namespace synfig;
 ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -230,6 +232,9 @@ ValueNode_Linear::get_link_index_from_name(const String &name)const
 LinkableValueNode::Vocab
 ValueNode_Linear::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	switch(get_type())

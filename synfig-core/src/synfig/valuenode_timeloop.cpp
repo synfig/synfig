@@ -58,6 +58,8 @@ ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueBase::Type &x):
 ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("link", x);
 	set_link("link_time",  ValueNode_Const::create(Time(0)));
 	set_link("local_time", ValueNode_Const::create(Time(0)));
@@ -203,6 +205,9 @@ ValueNode_TimeLoop::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_TimeLoop::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc("link")

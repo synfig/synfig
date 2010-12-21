@@ -58,6 +58,8 @@ using namespace synfig;
 ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
@@ -224,6 +226,9 @@ ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")

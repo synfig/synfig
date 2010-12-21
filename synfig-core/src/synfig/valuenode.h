@@ -370,7 +370,7 @@ protected:
 public:
 
 	//! Returns the number of linked Value Nodes
-	virtual int link_count()const=0;
+	virtual int link_count()const;
 
 	//! Returns the local name of the 'i' linked Value Node
 	virtual String link_local_name(int i)const;
@@ -400,6 +400,8 @@ public:
 	virtual Vocab get_children_vocab()const;
 
 protected:
+	//! Member to store the children vocabulary
+	Vocab children_vocab;
 	//! Sets the type of the ValueNode
 	void set_type(ValueBase::Type t) { ValueNode::set_type(t); }
 
@@ -414,6 +416,9 @@ protected:
 
 	//! Pure Virtual member to get the children vocabulary
 	virtual Vocab get_children_vocab_vfunc()const=0;
+
+	//! Virtual memebr to set the children vocabulary to a given value
+	virtual void set_children_vocab(Vocab& rvocab);
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

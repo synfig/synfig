@@ -55,6 +55,8 @@ using namespace synfig;
 
 synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("color1",ValueNode_Const::create(Color::alpha()));
 	set_link("color2",ValueNode_Const::create(Color::black()));
 	set_link("stripes",stripes_=ValueNode_Const::create(int(5)));
@@ -237,6 +239,9 @@ ValueNode_Stripes::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_Stripes::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"color1")

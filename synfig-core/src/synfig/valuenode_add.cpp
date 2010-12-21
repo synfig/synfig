@@ -60,6 +60,8 @@ using namespace synfig;
 synfig::ValueNode_Add::ValueNode_Add(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	ValueBase::Type id(value.get_type());
 

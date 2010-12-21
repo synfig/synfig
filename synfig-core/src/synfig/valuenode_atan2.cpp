@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:

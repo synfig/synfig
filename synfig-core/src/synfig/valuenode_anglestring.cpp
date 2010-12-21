@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:

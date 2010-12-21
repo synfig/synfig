@@ -58,6 +58,8 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase::Type &x):
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("from", ValueNode_Const::create(Real(1.0)));
 	set_link("to",   ValueNode_Const::create(x.get(Real())));
 	set_link("step", ValueNode_Const::create(Real(1.0)));
@@ -219,6 +221,9 @@ ValueNode_Duplicate::check_type(ValueBase::Type type __attribute__ ((unused)))
 LinkableValueNode::Vocab
 ValueNode_Duplicate::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"from")

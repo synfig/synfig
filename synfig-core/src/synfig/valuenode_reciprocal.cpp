@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -191,6 +193,9 @@ ValueNode_Reciprocal::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_Reciprocal::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"link")

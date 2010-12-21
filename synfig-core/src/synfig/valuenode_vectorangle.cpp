@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_VectorAngle::ValueNode_VectorAngle(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -170,6 +172,9 @@ ValueNode_VectorAngle::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_VectorAngle::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"vector")

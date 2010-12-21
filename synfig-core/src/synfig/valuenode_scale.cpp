@@ -59,6 +59,8 @@ using namespace synfig;
 ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(Real(1.0))));
 	ValueBase::Type id(value.get_type());
 
@@ -279,6 +281,9 @@ ValueNode_Scale::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_Scale::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"link")

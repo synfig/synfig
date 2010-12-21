@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_Or::ValueNode_Or(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	bool value(x.get(bool()));
 
 	set_link("link1",        ValueNode_Const::create(bool(false)));
@@ -170,6 +172,9 @@ ValueNode_Or::check_type(ValueBase::Type type)
 LinkableValueNode::Vocab
 ValueNode_Or::get_children_vocab_vfunc()const
 {
+	if(children_vocab.size())
+		return children_vocab;
+
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"link1")
