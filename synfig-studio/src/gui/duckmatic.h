@@ -112,6 +112,32 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
+class BezierDrag_Base : public etl::shared_object
+{
+public:
+	virtual void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos)=0;
+	virtual bool end_bezier_drag(Duckmatic* duckmatic)=0;
+	virtual void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector)=0;
+};
+
+class BezierDrag_Default : public BezierDrag_Base
+{
+	synfig::Vector last_translate_;
+	synfig::Vector drag_offset_;
+	float click_pos_;
+	synfig::Vector c1_initial;
+	synfig::Vector c2_initial;
+	float c1_ratio;
+	float c2_ratio;
+	bool c1_selected;
+	bool c2_selected;
+
+public:
+	void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos);
+	bool end_bezier_drag(Duckmatic* duckmatic);
+	void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
+};
+
 /*! \class Duckmatic
 **
 **	This class helps organize any of the devices displayed in
@@ -180,6 +206,8 @@ private:
 	//synfig::Vector snap;
 
 	etl::handle<DuckDrag_Base> duck_dragger_;
+
+	etl::handle<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
 
@@ -323,6 +351,8 @@ public:
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
+	etl::handle<Bezier> get_selected_bezier()const { return selected_bezier; }
+
 	//! Begin dragging ducks
 	/*! \param offset Canvas coordinates of the mouse when the drag began */
 	void start_duck_drag(const synfig::Vector& offset);
@@ -338,6 +368,15 @@ public:
 
 	//! Ends the duck drag
 	bool end_duck_drag();
+
+	//! \todo writeme
+	// bezier drags (similar to duck drags)
+	void start_bezier_drag(const synfig::Vector& offset, float bezier_click_pos);
+
+	void translate_selected_bezier(const synfig::Vector& vector);
+
+	bool end_bezier_drag();
+
 
 	//! Signals to each selected duck that it has been clicked
 	void signal_user_click_selected_ducks(int button);
@@ -410,6 +449,11 @@ public:
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
 	void clear_duck_dragger() { duck_dragger_=new DuckDrag_Translate(); }
+
+
+	void set_bezier_dragger(etl::handle<BezierDrag_Base> x) { bezier_dragger_=x; }
+	etl::handle<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
+	void clear_bezier_dragger() { bezier_dragger_=new BezierDrag_Default(); }
 }; // END of class Duckmatic
 
 

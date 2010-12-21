@@ -101,6 +101,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	axis_lock=false;
 	drag_offset_=Point(0,0);
 	clear_duck_dragger();
+	clear_bezier_dragger();
 }
 
 Duckmatic::~Duckmatic()
@@ -526,6 +527,28 @@ Duckmatic::end_duck_drag()
 	return false;
 }
 
+void
+Duckmatic::start_bezier_drag(const synfig::Vector& offset, float bezier_click_pos)
+{
+	if(bezier_dragger_)
+		bezier_dragger_->begin_bezier_drag(this,offset,bezier_click_pos);
+}
+
+void
+Duckmatic::translate_selected_bezier(const synfig::Vector& vector)
+{
+	if(bezier_dragger_)
+		bezier_dragger_->bezier_drag(this,vector);
+}
+
+bool
+Duckmatic::end_bezier_drag()
+{
+	if(bezier_dragger_)
+		return bezier_dragger_->end_bezier_drag(this);
+	return false;
+}
+
 Point
 Duckmatic::snap_point_to_grid(const synfig::Point& x, float radius)const
 {
@@ -635,6 +658,92 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 	duckmatic->update_ducks();
 
 	last_translate_=vect;
+}
+
+void
+BezierDrag_Default::begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& offset, float bezier_click_pos)
+{
+	drag_offset_=offset;
+	click_pos_=bezier_click_pos;
+
+	etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
+	etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+
+	// temporarily select the tangent ducks
+	c1_selected = duckmatic->duck_is_selected(c1);
+	c2_selected = duckmatic->duck_is_selected(c2);
+	duckmatic->select_duck(c1);
+	duckmatic->select_duck(c2);
+
+	c1_initial = c1->get_trans_point();
+	c2_initial = c2->get_trans_point();
+	last_translate_ = synfig::Vector(0,0);
+
+	if (c1 == duckmatic->get_selected_bezier()->p1
+		&& c2 == duckmatic->get_selected_bezier()->p2)
+	{
+		// This is a polygon segment
+		// We can't bend the curve, so drag it instead
+		c1_ratio = 1.0;
+		c2_ratio = 1.0;
+
+	}
+	else
+	{
+		// This is a bline segment, so we can bend the curve
+
+		// Magic Bezier Drag Equations follow! (stolen from Inkscape)
+		// "weight" describes how the influence of the drag should be
+		// distributed among the handles;
+		// 0 = front handle only, 1 = back handle only.
+
+		float t = bezier_click_pos;
+		float weight;
+		if (t <= 1.0/6.0 ) weight=0;
+		else if (t <= 0.5 ) weight = (pow((6 * t - 1) / 2.0, 3)) / 2;
+		else if (t <= 5.0 / 6.0) weight = (1 - pow((6 * (1-t) - 1) / 2.0, 3)) / 2 + 0.5;
+		else weight = 1;
+
+		c1_ratio = (1-weight)/(3*t*(1-t)*(1-t));
+		c2_ratio = weight/(3*t*t*(1-t));
+	}
+}
+
+void
+BezierDrag_Default::bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
+{
+	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
+	Time time(duckmatic->get_time());
+
+	synfig::Vector c1_offset(vect[0]*c1_ratio, vect[1]*c1_ratio);
+	synfig::Vector c2_offset(vect[0]*c2_ratio, vect[1]*c2_ratio);
+
+	duckmatic->get_selected_bezier()->c1->set_sub_trans_point(c1_initial+c1_offset, time);
+	duckmatic->get_selected_bezier()->c2->set_sub_trans_point(c2_initial+c2_offset, time);
+
+	last_translate_=vect;
+}
+
+bool
+BezierDrag_Default::end_bezier_drag(Duckmatic* duckmatic)
+{
+	if(last_translate_.mag()>0.0001)
+	{
+		duckmatic->signal_edited_selected_ducks();
+	
+		// restore duck selection
+		if (!c1_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c1);
+		if (!c2_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c2);
+
+		return true;
+	}
+	else
+	{
+		// restore duck selection
+		if (!c1_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c1);
+		if (!c2_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c2);
+		return false;
+	}
 }
 
 
