@@ -181,7 +181,7 @@ ValueNode_Sine::get_link_index_from_name(const String &name)const
 }
 
 LinkableValueNode::Vocab
-ValueNode_Sine::get_param_vocab()const
+ValueNode_Sine::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

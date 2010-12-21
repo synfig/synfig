@@ -227,7 +227,7 @@ ValueNode_Join::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Join::get_param_vocab()const
+ValueNode_Join::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

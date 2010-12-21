@@ -187,7 +187,7 @@ ValueNode_GradientColor::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_GradientColor::get_param_vocab()const
+ValueNode_GradientColor::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

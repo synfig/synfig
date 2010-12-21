@@ -278,7 +278,7 @@ ValueNode_TimedSwap::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_TimedSwap::get_param_vocab()const
+ValueNode_TimedSwap::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

@@ -184,7 +184,7 @@ ValueNode_Cos::get_link_index_from_name(const String &name)const
 }
 
 LinkableValueNode::Vocab
-ValueNode_Cos::get_param_vocab()const
+ValueNode_Cos::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

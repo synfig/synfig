@@ -60,7 +60,7 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	static bool check_type(ValueBase::Type type);
-	virtual Vocab get_param_vocab()const;
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Add
 
 }; // END of namespace synfig

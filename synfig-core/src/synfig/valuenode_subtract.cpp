@@ -247,7 +247,7 @@ ValueNode_Subtract::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Subtract::get_param_vocab()const
+ValueNode_Subtract::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

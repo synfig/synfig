@@ -244,7 +244,7 @@ ValueNode_Repeat_Gradient::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Repeat_Gradient::get_param_vocab()const
+ValueNode_Repeat_Gradient::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

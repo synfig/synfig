@@ -201,7 +201,7 @@ ValueNode_TimeLoop::check_type(ValueBase::Type type)
 
 
 LinkableValueNode::Vocab
-ValueNode_TimeLoop::get_param_vocab()const
+ValueNode_TimeLoop::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

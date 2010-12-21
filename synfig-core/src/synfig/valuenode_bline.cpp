@@ -845,7 +845,7 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_BLine::get_param_vocab()const
+ValueNode_BLine::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 	for(unsigned int i=0; i<list.size();i++)

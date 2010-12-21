@@ -197,7 +197,7 @@ ValueNode_DotProduct::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_DotProduct::get_param_vocab()const
+ValueNode_DotProduct::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

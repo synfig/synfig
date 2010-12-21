@@ -183,7 +183,7 @@ ValueNode_SegCalcTangent::create_new()const
 }
 
 LinkableValueNode::Vocab
-ValueNode_SegCalcTangent::get_param_vocab()const
+ValueNode_SegCalcTangent::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

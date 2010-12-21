@@ -184,7 +184,7 @@ ValueNode_Logarithm::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Logarithm::get_param_vocab()const
+ValueNode_Logarithm::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

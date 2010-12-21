@@ -82,7 +82,7 @@ ValueNode_Greyed::get_local_name()const
 }
 
 LinkableValueNode::Vocab
-ValueNode_Greyed::get_param_vocab()const
+ValueNode_Greyed::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

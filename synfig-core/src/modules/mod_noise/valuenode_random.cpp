@@ -302,7 +302,7 @@ ValueNode_Random::randomize_seed()
 }
 
 LinkableValueNode::Vocab
-ValueNode_Random::get_param_vocab()const
+ValueNode_Random::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

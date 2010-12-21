@@ -168,7 +168,7 @@ ValueNode_AngleString::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_AngleString::get_param_vocab()const
+ValueNode_AngleString::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

@@ -178,7 +178,7 @@ ValueNode_Atan2::get_link_index_from_name(const String &name)const
 }
 
 LinkableValueNode::Vocab
-ValueNode_Atan2::get_param_vocab()const
+ValueNode_Atan2::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

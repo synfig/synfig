@@ -181,7 +181,7 @@ ValueNode_SegCalcVertex::create_new()const
 }
 
 LinkableValueNode::Vocab
-ValueNode_SegCalcVertex::get_param_vocab()const
+ValueNode_SegCalcVertex::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

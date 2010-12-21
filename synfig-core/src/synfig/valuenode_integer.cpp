@@ -199,7 +199,7 @@ ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 }
 
 LinkableValueNode::Vocab
-ValueNode_Integer::get_param_vocab()const
+ValueNode_Integer::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

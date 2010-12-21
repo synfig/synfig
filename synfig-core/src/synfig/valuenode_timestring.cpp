@@ -187,7 +187,7 @@ ValueNode_TimeString::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_TimeString::get_param_vocab()const
+ValueNode_TimeString::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

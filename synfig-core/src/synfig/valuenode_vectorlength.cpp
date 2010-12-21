@@ -166,7 +166,7 @@ ValueNode_VectorLength::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_VectorLength::get_param_vocab()const
+ValueNode_VectorLength::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

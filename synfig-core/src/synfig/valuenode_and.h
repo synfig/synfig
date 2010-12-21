@@ -62,7 +62,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_And* create(const ValueBase &x);
-	virtual LinkableValueNode::Vocab get_param_vocab()const;
+	virtual LinkableValueNode::Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_And
 
 }; // END of namespace synfig

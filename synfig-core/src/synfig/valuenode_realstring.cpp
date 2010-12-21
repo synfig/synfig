@@ -208,7 +208,7 @@ ValueNode_RealString::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_RealString::get_param_vocab()const
+ValueNode_RealString::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

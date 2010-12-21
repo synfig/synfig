@@ -76,7 +76,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Compare* create(const ValueBase &x);
-	virtual Vocab get_param_vocab()const;
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Compare
 
 }; // END of namespace synfig

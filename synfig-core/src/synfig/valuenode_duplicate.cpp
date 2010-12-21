@@ -217,7 +217,7 @@ ValueNode_Duplicate::check_type(ValueBase::Type type __attribute__ ((unused)))
 }
 
 LinkableValueNode::Vocab
-ValueNode_Duplicate::get_param_vocab()const
+ValueNode_Duplicate::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

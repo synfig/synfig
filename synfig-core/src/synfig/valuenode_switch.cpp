@@ -182,7 +182,7 @@ ValueNode_Switch::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Switch::get_param_vocab()const
+ValueNode_Switch::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

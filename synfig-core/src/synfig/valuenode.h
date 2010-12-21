@@ -396,8 +396,8 @@ public:
 	//! Return a full description of the linked ValueNode given by the index
 	String get_description(int index = -1, bool show_exported_name = true)const;
 
-	//! Gets the parameter vocabulary for linkable value nodes
-	virtual Vocab get_param_vocab()const=0;
+	//! Gets the children vocabulary for linkable value nodes
+	virtual Vocab get_children_vocab()const;
 
 protected:
 	//! Sets the type of the ValueNode
@@ -411,6 +411,9 @@ protected:
 
 	//! Returns the cached times values for all the children (linked Value Nodes)
 	virtual void get_times_vfunc(Node::time_set &set) const;
+
+	//! Pure Virtual member to get the children vocabulary
+	virtual Vocab get_children_vocab_vfunc()const=0;
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

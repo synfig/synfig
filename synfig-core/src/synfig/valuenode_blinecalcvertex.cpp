@@ -222,7 +222,7 @@ ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_BLineCalcVertex::get_param_vocab()const
+ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

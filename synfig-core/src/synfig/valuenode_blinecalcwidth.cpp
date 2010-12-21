@@ -230,7 +230,7 @@ ValueNode_BLineCalcWidth::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_BLineCalcWidth::get_param_vocab()const
+ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

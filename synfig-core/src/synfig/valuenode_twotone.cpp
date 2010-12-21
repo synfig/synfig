@@ -187,7 +187,7 @@ ValueNode_TwoTone::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_TwoTone::get_param_vocab()const
+ValueNode_TwoTone::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

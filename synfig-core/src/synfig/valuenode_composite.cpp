@@ -446,7 +446,7 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Composite::get_param_vocab()const
+ValueNode_Composite::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

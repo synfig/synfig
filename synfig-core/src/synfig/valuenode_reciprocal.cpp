@@ -189,7 +189,7 @@ ValueNode_Reciprocal::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_Reciprocal::get_param_vocab()const
+ValueNode_Reciprocal::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 

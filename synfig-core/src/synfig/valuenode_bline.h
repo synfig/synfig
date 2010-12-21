@@ -89,7 +89,7 @@ public:
 	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
-	virtual Vocab get_param_vocab()const;
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

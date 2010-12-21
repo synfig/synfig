@@ -271,7 +271,7 @@ ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_BLineCalcTangent::get_param_vocab()const
+ValueNode_BLineCalcTangent::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 
