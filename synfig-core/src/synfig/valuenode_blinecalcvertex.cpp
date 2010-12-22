@@ -174,49 +174,6 @@ ValueNode_BLineCalcVertex::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineCalcVertex::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_BLineCalcVertex::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "bline";
-		case 1: return "loop";
-		case 2: return "amount";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineCalcVertex::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("BLine");
-		case 1: return _("Loop");
-		case 2: return _("Amount");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineCalcVertex::get_link_index_from_name(const String &name)const
-{
-	if(name=="bline")  return 0;
-	if(name=="loop")   return 1;
-	if(name=="amount") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 {

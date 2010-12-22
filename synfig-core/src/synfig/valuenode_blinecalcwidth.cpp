@@ -179,52 +179,6 @@ ValueNode_BLineCalcWidth::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineCalcWidth::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_BLineCalcWidth::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "bline";
-		case 1: return "loop";
-		case 2: return "amount";
-		case 3: return "scale";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineCalcWidth::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("BLine");
-		case 1: return _("Loop");
-		case 2: return _("Amount");
-		case 3: return _("Scale");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineCalcWidth::get_link_index_from_name(const String &name)const
-{
-	if(name=="bline")  return 0;
-	if(name=="loop")   return 1;
-	if(name=="amount") return 2;
-	if(name=="scale")  return 3;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineCalcWidth::check_type(ValueBase::Type type)
 {

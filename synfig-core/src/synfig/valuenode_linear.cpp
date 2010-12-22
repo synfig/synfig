@@ -180,55 +180,6 @@ ValueNode_Linear::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Linear::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Linear::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "slope";
-	if(i==1) return "offset";
-	return String();
-}
-
-String
-ValueNode_Linear::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		switch(get_type())
-		{
-		case ValueBase::TYPE_ANGLE:
-		case ValueBase::TYPE_COLOR:
-		case ValueBase::TYPE_INTEGER:
-		case ValueBase::TYPE_REAL:
-		case ValueBase::TYPE_TIME:
-			return _("Rate");
-		case ValueBase::TYPE_VECTOR:
-		default:
-			return _("Slope");
-		}
-	if(i==1)
-		return _("Offset");
-	return String();
-}
-
-int
-ValueNode_Linear::get_link_index_from_name(const String &name)const
-{
-	if(name=="slope")  return 0;
-	if(name=="offset") return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
-
 LinkableValueNode::Vocab
 ValueNode_Linear::get_children_vocab_vfunc()const
 {

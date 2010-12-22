@@ -157,46 +157,6 @@ ValueNode_BLineRevTangent::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineRevTangent::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_BLineRevTangent::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "reference";
-		case 1: return "reverse";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineRevTangent::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Reference");
-		case 1: return _("Reverse");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineRevTangent::get_link_index_from_name(const String &name)const
-{
-	if(name=="reference")	return 0;
-	if(name=="reverse")		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineRevTangent::check_type(ValueBase::Type type)
 {

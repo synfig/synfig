@@ -51,7 +51,6 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
 
 protected:
 	LinkableValueNode* create_new()const;

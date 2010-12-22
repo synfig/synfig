@@ -149,47 +149,6 @@ ValueNode_DotProduct::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_DotProduct::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_DotProduct::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "lhs";
-		case 1: return "rhs";
-	}
-	return String();
-}
-
-String
-ValueNode_DotProduct::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("LHS");
-		case 1: return _("RHS");
-	}
-	return String();
-}
-
-int
-ValueNode_DotProduct::get_link_index_from_name(const String &name)const
-{
-	if (name=="lhs") return 0;
-	if (name=="rhs") return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_DotProduct::check_type(ValueBase::Type type)
 {

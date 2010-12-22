@@ -129,21 +129,6 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 	}
 }
 
-int
-ValueNode_RadialComposite::link_count()const
-{
-	switch(get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
-		return 2;
-	case ValueBase::TYPE_COLOR:
-		return 4;
-	default:
-		synfig::warning(string("ValueNode_RadialComposite::component_count():")+_("Bad type for radialcomposite"));
-		return 1;
-	}
-}
-
 bool
 ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 {
@@ -191,43 +176,6 @@ ValueNode_RadialComposite::get_link_vfunc(int i)const
 }
 
 String
-ValueNode_RadialComposite::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(get_type())
-	{
-		case ValueBase::TYPE_VECTOR:
-			if(i==0)
-				return _("Radius");
-			else if(i==1)
-				return _("Theta");
-			break;
-
-		case ValueBase::TYPE_COLOR:
-			if(i==0)
-				return _("Luma");
-			else if(i==1)
-				return _("Saturation");
-			else if(i==2)
-				return _("Hue");
-			else if(i==3)
-				return _("Alpha");
-			break;
-
-		default:
-			break;
-	}
-
-	assert(0);
-	// notice that Composite counts from 1 and Radial Composite counts
-	// from 0!  we need to keep it like that to correctly load old
-	// animations, but let's not save "c%d" format link names in future
-	return etl::strprintf(_("C%d"),i);
-}
-
-
-String
 ValueNode_RadialComposite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
@@ -235,38 +183,15 @@ ValueNode_RadialComposite::link_name(int i)const
 	if (get_file_version() < RELEASE_VERSION_0_61_08)
 		return strprintf("c%d",i);
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_COLOR:
-		switch(i)
-		{
-		case 0: return "y_luma"; // the 'luma' attribute is recognised by the fact that it starts with a 'y'
-		case 1: return "saturation";
-		case 2: return "hue";
-		case 3: return "alpha";
-		}
-		break;
-	case ValueBase::TYPE_VECTOR:
-		switch(i)
-		{
-		case 0: return "radius";
-		case 1: return "theta";
-		}
-		break;
-	default:
-		break;
-	}
-
-	assert(0);
-	// notice that Composite counts from 1 and Radial Composite counts
-	// from 0!  we need to keep it like that to correctly load old
-	// animations, but let's not save "c%d" format link names in future
-	return strprintf("c%d",i);
+	return LinkableValueNode::link_name(i);
 }
 
 int
 ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
 {
+	// Here we don't use the LinkableValueNode::get_link_index_from_name
+	// due to the particularities of the link index from name for old files.
+	// So we keep this alive to maintain old file compatibilities.
 	if(name.empty())
 		throw Exception::BadLinkName(name);
 

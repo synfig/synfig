@@ -133,53 +133,6 @@ ValueNode_GradientRotate::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_GradientRotate::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_GradientRotate::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Gradient");
-		case 1:
-			return _("Offset");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_GradientRotate::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "gradient";
-		case 1:
-			return "offset";
-		default: return String();
-	}
-}
-
-int
-ValueNode_GradientRotate::get_link_index_from_name(const String &name)const
-{
-	if(name=="gradient")
-		return 0;
-	if(name=="offset")
-		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_GradientRotate::get_name()const
 {

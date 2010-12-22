@@ -120,38 +120,6 @@ ValueNode_Integer::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Integer::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_Integer::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Integer");
-	return String();
-}
-
-String
-ValueNode_Integer::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "integer";
-	return String();
-}
-
-int
-ValueNode_Integer::get_link_index_from_name(const String &name)const
-{
-	if(name=="integer") return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Integer::operator()(Time t)const
 {

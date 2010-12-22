@@ -60,11 +60,6 @@ public:
 
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
-	virtual String link_name(int i)const;
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 
 protected:
 	LinkableValueNode* create_new()const;

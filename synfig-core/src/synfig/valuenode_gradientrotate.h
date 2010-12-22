@@ -54,17 +54,7 @@ public:
 
 	virtual ~ValueNode_GradientRotate();
 
-//	static Handle create(ValueBase::Type id=ValueBase::TYPE_GRADIENT);
-
-
-
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual int link_count()const;
-
-	virtual String link_local_name(int i)const;
-	virtual String link_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 
 	virtual ValueBase operator()(Time t)const;
 

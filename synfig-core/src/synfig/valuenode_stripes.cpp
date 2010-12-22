@@ -158,66 +158,6 @@ ValueNode_Stripes::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Stripes::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Stripes::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Color 1");
-		case 1:
-			return _("Color 2");
-		case 2:
-			return _("Stripe Count");
-		case 3:
-			return _("Width");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_Stripes::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "color1";
-		case 1:
-			return "color2";
-		case 2:
-			return "stripes";
-		case 3:
-			return "width";
-		default:
-			return String();
-	}
-}
-
-int
-ValueNode_Stripes::get_link_index_from_name(const String &name)const
-{
-	if(name=="color1")
-		return 0;
-	if(name=="color2")
-		return 1;
-	if(name=="stripes")
-		return 2;
-	if(name=="width")
-		return 3;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Stripes::get_name()const
 {

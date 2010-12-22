@@ -156,12 +156,6 @@ ValueNode_AngleString::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_AngleString::link_count()const
-{
-	return 4;
-}
-
 bool
 ValueNode_AngleString::check_type(ValueBase::Type type)
 {

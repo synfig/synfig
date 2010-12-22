@@ -110,49 +110,6 @@ ValueNode_Switch::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Switch::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Switch::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link_off";
-	case 1: return "link_on";
-	case 2: return "switch";
-	}
-	return String();
-}
-
-String
-ValueNode_Switch::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "Link Off";
-	case 1: return "Link On";
-	case 2: return "Switch";
-	}
-	return String();
-}
-
-int
-ValueNode_Switch::get_link_index_from_name(const String &name)const
-{
-	if(name=="link_off") return 0;
-	if(name=="link_on" ) return 1;
-	if(name=="switch"  ) return 2;
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Switch::operator()(Time t)const
 {

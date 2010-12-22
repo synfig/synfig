@@ -137,47 +137,6 @@ ValueNode_SegCalcTangent::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_SegCalcTangent::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_SegCalcTangent::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "segment";
-	if(i==1)
-		return "amount";
-	return String();
-}
-
-String
-ValueNode_SegCalcTangent::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Segment");
-	if(i==1)
-		return _("Amount");
-	return String();
-}
-
-int
-ValueNode_SegCalcTangent::get_link_index_from_name(const String &name)const
-{
-	if(name=="segment")
-		return 0;
-	if(name=="amount")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode*
 ValueNode_SegCalcTangent::create_new()const
 {

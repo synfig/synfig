@@ -138,47 +138,6 @@ ValueNode_Atan2::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Atan2::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Atan2::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "x";
-	if(i==1)
-		return "y";
-	return String();
-}
-
-String
-ValueNode_Atan2::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("X");
-	if(i==1)
-		return _("Y");
-	return String();
-}
-
-int
-ValueNode_Atan2::get_link_index_from_name(const String &name)const
-{
-	if(name=="x")
-		return 0;
-	if(name=="y")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode::Vocab
 ValueNode_Atan2::get_children_vocab_vfunc()const
 {

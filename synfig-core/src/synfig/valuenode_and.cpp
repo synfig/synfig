@@ -104,12 +104,6 @@ ValueNode_And::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_And::link_count()const
-{
-	return 2;
-}
-
 ValueBase
 ValueNode_And::operator()(Time t)const
 {

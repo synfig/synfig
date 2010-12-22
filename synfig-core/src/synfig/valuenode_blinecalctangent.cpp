@@ -212,58 +212,6 @@ ValueNode_BLineCalcTangent::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineCalcTangent::link_count()const
-{
-	return 6;
-}
-
-String
-ValueNode_BLineCalcTangent::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "bline";
-		case 1: return "loop";
-		case 2: return "amount";
-		case 3: return "offset";
-		case 4: return "scale";
-		case 5: return "fixed_length";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineCalcTangent::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("BLine");
-		case 1: return _("Loop");
-		case 2: return _("Amount");
-		case 3: return _("Offset");
-		case 4: return _("Scale");
-		case 5: return _("Fixed Length");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineCalcTangent::get_link_index_from_name(const String &name)const
-{
-	if (name=="bline")		  return 0;
-	if (name=="loop")		  return 1;
-	if (name=="amount")		  return 2;
-	if (name=="offset")		  return 3;
-	if (name=="scale")		  return 4;
-	if (name=="fixed_length") return 5;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
 {

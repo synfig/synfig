@@ -213,47 +213,6 @@ ValueNode_Scale::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Scale::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Scale::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Link");
-	else if(i==1)
-		return _("Scalar");
-	return String();
-}
-
-String
-ValueNode_Scale::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "link";
-	else if(i==1)
-		return "scalar";
-	return String();
-}
-
-int
-ValueNode_Scale::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")
-		return 0;
-	if(name=="scalar")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Scale::get_name()const
 {

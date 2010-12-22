@@ -184,55 +184,6 @@ ValueNode_Step::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Step::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Step::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	case 1: return "duration";
-	case 2: return "start_time";
-	case 3: return "intersection";
-	default:
-		return String();
-	}
-}
-
-String
-ValueNode_Step::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	case 1: return _("Duration");
-	case 2: return _("Start Time");
-	case 3: return _("Intersection");
-	default:
-		return String();
-	}
-}
-
-int
-ValueNode_Step::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")         return 0;
-	if(name=="duration")     return 1;
-	if(name=="start_time")   return 2;
-	if(name=="intersection") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode::Vocab
 ValueNode_Step::get_children_vocab_vfunc()const
 {

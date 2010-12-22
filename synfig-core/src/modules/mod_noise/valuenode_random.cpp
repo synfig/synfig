@@ -216,58 +216,6 @@ ValueNode_Random::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Random::link_count()const
-{
-	return 6;
-}
-
-String
-ValueNode_Random::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	case 1: return "radius";
-	case 2: return "seed";
-	case 3: return "speed";
-	case 4: return "smooth";
-	case 5: return "loop";
-	}
-	return String();
-}
-
-String
-ValueNode_Random::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	case 1: return _("Radius");
-	case 2: return _("Seed");
-	case 3: return _("Animation Speed");
-	case 4: return _("Interpolation");
-	case 5: return _("Loop Time");
-	}
-	return String();
-}
-
-int
-ValueNode_Random::get_link_index_from_name(const String &name)const
-{
-	if(name=="link"  ) return 0;
-	if(name=="radius") return 1;
-	if(name=="seed"  ) return 2;
-	if(name=="speed" ) return 3;
-	if(name=="smooth") return 4;
-	if(name=="loop"  ) return 5;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Random::check_type(ValueBase::Type type)
 {

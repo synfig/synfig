@@ -109,44 +109,6 @@ ValueNode_Duplicate::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Duplicate::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Duplicate::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("From");
-	if(i==1) return _("To");
-	if(i==2) return _("Step");
-	return String();
-}
-
-String
-ValueNode_Duplicate::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "from";
-	if(i==1) return "to";
-	if(i==2) return "step";
-	return String();
-}
-
-int
-ValueNode_Duplicate::get_link_index_from_name(const String &name)const
-{
-	if(name=="from") return 0;
-	if(name=="to")   return 1;
-	if(name=="step") return 2;
-
-	throw Exception::BadLinkName(name);
-}
-
 void
 ValueNode_Duplicate::reset_index(Time t)const
 {

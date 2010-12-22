@@ -111,47 +111,6 @@ ValueNode_TimeLoop::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TimeLoop::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_TimeLoop::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link");
-	if(i==1) return _("Link Time");
-	if(i==2) return _("Local Time");
-	if(i==3) return _("Duration");
-	return String();
-}
-
-String
-ValueNode_TimeLoop::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link";
-	if(i==1) return "link_time";
-	if(i==2) return "local_time";
-	if(i==3) return "duration";
-	return String();
-}
-
-int
-ValueNode_TimeLoop::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")       return 0;
-	if(name=="link_time")  return 1;
-	if(name=="local_time") return 2;
-	if(name=="duration")   return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_TimeLoop::operator()(Time t)const
 {

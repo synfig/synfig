@@ -114,41 +114,6 @@ ValueNode_VectorY::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_VectorY::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_VectorY::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Vector");
-	return String();
-}
-
-String
-ValueNode_VectorY::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "vector";
-	return String();
-}
-
-int
-ValueNode_VectorY::get_link_index_from_name(const String &name)const
-{
-	if(name=="vector")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_VectorY::get_name()const
 {

@@ -57,11 +57,6 @@ public:
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
-	virtual int link_count()const;
-
-	virtual String link_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
-
 	virtual ValueBase operator()(Time t)const;
 
 	//! Returns the modified Link to match the target value at time t
@@ -73,8 +68,6 @@ public:
 	virtual String get_name()const;
 
 	virtual String get_local_name()const;
-
-	virtual String link_local_name(int i)const;
 
 protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);

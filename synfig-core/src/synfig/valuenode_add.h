@@ -56,7 +56,6 @@ public:
 	virtual ValueBase operator()(Time t)const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	static bool check_type(ValueBase::Type type);

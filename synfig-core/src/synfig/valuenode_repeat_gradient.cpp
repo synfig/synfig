@@ -172,61 +172,6 @@ ValueNode_Repeat_Gradient::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Repeat_Gradient::link_count()const
-{
-	return 7;
-}
-
-String
-ValueNode_Repeat_Gradient::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:  return _("Gradient");
-		case 1:  return _("Count");
-		case 2:  return _("Width");
-		case 3:  return _("Specify Start");
-		case 4:  return _("Specify End");
-		case 5:  return _("Start Color");
-		case 6:  return _("End Color");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Repeat_Gradient::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:  return "gradient";
-		case 1:  return "count";
-		case 2:  return "width";
-		case 3:  return "specify_start";
-		case 4:  return "specify_end";
-		case 5:  return "start_color";
-		case 6:  return "end_color";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Repeat_Gradient::get_link_index_from_name(const String &name)const
-{
-	if(name=="gradient") return 0;
-	if(name=="count")    return 1;
-	if(name=="width")    return 2;
-	if(name=="specify_start") return 3;
-	if(name=="specify_end")   return 4;
-	if(name=="start_color")   return 5;
-	if(name=="end_color")     return 6;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Repeat_Gradient::get_name()const
 {

@@ -141,47 +141,6 @@ ValueNode_Sine::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Sine::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Sine::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "angle";
-	if(i==1)
-		return "amp";
-	return String();
-}
-
-String
-ValueNode_Sine::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Angle");
-	if(i==1)
-		return _("Amplitude");
-	return String();
-}
-
-int
-ValueNode_Sine::get_link_index_from_name(const String &name)const
-{
-	if(name=="angle")
-		return 0;
-	if(name=="amp")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode::Vocab
 ValueNode_Sine::get_children_vocab_vfunc()const
 {

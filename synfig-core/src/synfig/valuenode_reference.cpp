@@ -100,45 +100,6 @@ ValueNode_Reference::get_link_vfunc(int i __attribute__ ((unused)))const
 	return link_;
 }
 
-int
-ValueNode_Reference::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_Reference::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	}
-	return String();
-}
-
-String
-ValueNode_Reference::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	}
-	return String();
-}
-
-int
-ValueNode_Reference::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Reference::operator()(Time t)const
 {

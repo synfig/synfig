@@ -177,12 +177,6 @@ ValueNode_Add::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Add::link_count()const
-{
-	return 3;
-}
-
 String
 ValueNode_Add::get_name()const
 {

@@ -122,54 +122,6 @@ ValueNode_TwoTone::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TwoTone::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_TwoTone::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Color1");
-		case 1:
-			return _("Color2");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_TwoTone::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "color1";
-		case 1:
-			return "color2";
-		default:
-			return String();
-	}
-}
-
-int
-ValueNode_TwoTone::get_link_index_from_name(const String &name)const
-{
-	if(name=="color1")
-		return 0;
-	if(name=="color2")
-		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_TwoTone::get_name()const
 {

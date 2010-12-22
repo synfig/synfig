@@ -208,53 +208,6 @@ ValueNode_TimedSwap::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TimedSwap::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_TimedSwap::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Before");
-	case 1: return _("After");
-	case 2: return _("Swap Time");
-	case 3: return _("Swap Duration");
-	default:return String();
-	}
-}
-
-String
-ValueNode_TimedSwap::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "before";
-	case 1: return "after";
-	case 2: return "time";
-	case 3: return "length";
-	default:return String();
-	}
-}
-
-int
-ValueNode_TimedSwap::get_link_index_from_name(const String &name)const
-{
-	if(name=="before")	return 0;
-	if(name=="after")	return 1;
-	if(name=="time")	return 2;
-	if(name=="length")	return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_TimedSwap::get_name()const
 {

@@ -131,47 +131,6 @@ ValueNode_Exp::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Exp::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Exp::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "exp";
-	if(i==1)
-		return "scale";
-	return String();
-}
-
-String
-ValueNode_Exp::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Exponent");
-	if(i==1)
-		return _("Scale");
-	return String();
-}
-
-int
-ValueNode_Exp::get_link_index_from_name(const String &name)const
-{
-	if(name=="exp")
-		return 0;
-	if(name=="scale")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Exp::check_type(ValueBase::Type type)
 {

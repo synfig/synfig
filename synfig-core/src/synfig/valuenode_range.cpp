@@ -244,49 +244,6 @@ ValueNode_Range::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Range::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Range::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Min");
-		case 1: return _("Max");
-		case 2: return _("Link");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Range::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "min";
-		case 1: return "max";
-		case 2: return "link";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Range::get_link_index_from_name(const String &name)const
-{
-	if(name=="min") return 0;
-	if(name=="max") return 1;
-	if(name=="link") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Range::get_name()const
 {

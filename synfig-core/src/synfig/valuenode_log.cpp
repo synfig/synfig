@@ -110,44 +110,6 @@ ValueNode_Logarithm::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Logarithm::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Logarithm::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link");
-	if(i==1) return _("Epsilon");
-	if(i==2) return _("Infinite");
-	return String();
-}
-
-String
-ValueNode_Logarithm::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link";
-	if(i==1) return "epsilon";
-	if(i==2) return "infinite";
-	return String();
-}
-
-int
-ValueNode_Logarithm::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")     return 0;
-	if(name=="epsilon")  return 1;
-	if(name=="infinite") return 2;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Logarithm::operator()(Time t)const
 {

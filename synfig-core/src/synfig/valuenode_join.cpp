@@ -174,53 +174,6 @@ ValueNode_Join::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Join::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Join::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "strings";
-		case 1: return "before";
-		case 2: return "separator";
-		case 3: return "after";
-	}
-	return String();
-}
-
-String
-ValueNode_Join::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Strings");
-		case 1: return _("Before");
-		case 2: return _("Separator");
-		case 3: return _("After");
-	}
-	return String();
-}
-
-int
-ValueNode_Join::get_link_index_from_name(const String &name)const
-{
-	if (name=="strings") return 0;
-	if (name=="before") return 1;
-	if (name=="separator") return 2;
-	if (name=="after") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Join::check_type(ValueBase::Type type)
 {

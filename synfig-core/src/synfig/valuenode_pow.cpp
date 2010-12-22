@@ -110,47 +110,6 @@ ValueNode_Pow::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Pow::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Pow::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Base");
-	if(i==1) return _("Power");
-	if(i==2) return _("Epsilon");
-	if(i==3) return _("Infinite");
-	return String();
-}
-
-String
-ValueNode_Pow::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "base";
-	if(i==1) return "power";
-	if(i==2) return "epsilon";
-	if(i==3) return "infinite";
-	return String();
-}
-
-int
-ValueNode_Pow::get_link_index_from_name(const String &name)const
-{
-	if(name=="base")     return 0;
-	if(name=="power")    return 1;
-	if(name=="epsilon")  return 2;
-	if(name=="infinite") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Pow::operator()(Time t)const
 {

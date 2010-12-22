@@ -181,49 +181,6 @@ ValueNode_Subtract::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Subtract::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Subtract::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("LHS");
-		case 1: return _("RHS");
-		case 2: return _("Scalar");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Subtract::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "lhs";
-		case 1: return "rhs";
-		case 2: return "scalar";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Subtract::get_link_index_from_name(const String &name)const
-{
-	if(name=="lhs") return 0;
-	if(name=="rhs") return 1;
-	if(name=="scalar") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Subtract::get_name()const
 {

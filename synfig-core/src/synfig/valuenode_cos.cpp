@@ -142,49 +142,6 @@ ValueNode_Cos::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Cos::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Cos::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "angle";
-	case 1: return "amp";
-	}
-
-	return String();
-}
-
-String
-ValueNode_Cos::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Angle");
-	case 1: return _("Amplitude");
-	}
-
-	return String();
-}
-
-int
-ValueNode_Cos::get_link_index_from_name(const String &name)const
-{
-	if(name=="angle")	return 0;
-	if(name=="amp")		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode::Vocab
 ValueNode_Cos::get_children_vocab_vfunc()const
 {

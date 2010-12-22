@@ -150,50 +150,6 @@ ValueNode_IntString::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_IntString::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_IntString::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "int";
-		case 1: return "width";
-		case 2: return "zero_pad";
-	}
-	return String();
-}
-
-String
-ValueNode_IntString::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Int");
-		case 1: return _("Width");
-		case 2: return _("Zero Padded");
-	}
-	return String();
-}
-
-int
-ValueNode_IntString::get_link_index_from_name(const String &name)const
-{
-	if (name=="int") return 0;
-	if (name=="width") return 1;
-	if (name=="zero_pad") return 2;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_IntString::check_type(ValueBase::Type type)
 {

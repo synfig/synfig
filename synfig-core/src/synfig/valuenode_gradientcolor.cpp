@@ -127,49 +127,6 @@ ValueNode_GradientColor::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_GradientColor::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_GradientColor::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Gradient");
-		case 1: return _("Index");
-		case 2: return _("Loop");
-	}
-	return String();
-}
-
-String
-ValueNode_GradientColor::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "gradient";
-		case 1: return "index";
-		case 2: return "loop";
-	}
-	return String();
-}
-
-int
-ValueNode_GradientColor::get_link_index_from_name(const String &name)const
-{
-	if (name=="gradient") return 0;
-	if (name=="index")	  return 1;
-	if (name=="loop")	  return 2;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_GradientColor::get_name()const
 {

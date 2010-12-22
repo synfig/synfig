@@ -47,24 +47,14 @@ public:
 	typedef etl::handle<ValueNode_SegCalcVertex> Handle;
 	typedef etl::handle<const ValueNode_SegCalcVertex> ConstHandle;
 
-//	static Handle create(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
-
-
 	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_SegCalcVertex();
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-//	static bool check_type(const ValueBase::Type &type);
-
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
-	virtual String link_name(int i)const;
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 
 protected:
 	LinkableValueNode* create_new()const;
