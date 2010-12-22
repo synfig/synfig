@@ -418,7 +418,7 @@ protected:
 	virtual Vocab get_children_vocab_vfunc()const=0;
 
 	//! Virtual memebr to set the children vocabulary to a given value
-	virtual void set_children_vocab(Vocab& rvocab);
+	virtual void set_children_vocab(const Vocab& rvocab);
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

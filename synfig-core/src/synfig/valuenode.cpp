@@ -713,7 +713,7 @@ LinkableValueNode::get_children_vocab()const
 }
 
 void
-LinkableValueNode::set_children_vocab(Vocab &newvocab)
+LinkableValueNode::set_children_vocab(const Vocab &newvocab)
 {
 	children_vocab.assign(newvocab.begin(),newvocab.end());
 }
