@@ -55,6 +55,8 @@ using namespace synfig;
 
 synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("color1",ValueNode_Const::create(Color::alpha()));
 	set_link("color2",ValueNode_Const::create(Color::black()));
 	set_link("stripes",stripes_=ValueNode_Const::create(int(5)));
@@ -156,66 +158,6 @@ ValueNode_Stripes::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Stripes::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Stripes::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Color 1");
-		case 1:
-			return _("Color 2");
-		case 2:
-			return _("Stripe Count");
-		case 3:
-			return _("Width");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_Stripes::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "color1";
-		case 1:
-			return "color2";
-		case 2:
-			return "stripes";
-		case 3:
-			return "width";
-		default:
-			return String();
-	}
-}
-
-int
-ValueNode_Stripes::get_link_index_from_name(const String &name)const
-{
-	if(name=="color1")
-		return 0;
-	if(name=="color2")
-		return 1;
-	if(name=="stripes")
-		return 2;
-	if(name=="width")
-		return 3;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Stripes::get_name()const
 {
@@ -232,4 +174,35 @@ bool
 ValueNode_Stripes::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Stripes::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"color1")
+		.set_local_name(_("Color 1"))
+		.set_description(_("One color of the gradient stripes"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"color2")
+		.set_local_name(_("Color 2"))
+		.set_description(_("Other color of the gradient stripes"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"stripes")
+		.set_local_name(_("Stripe Count"))
+		.set_description(_("Number of stripes in the gradient"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Width of stripes in the gradient between [0,1]"))
+	);
+
+	return ret;
 }

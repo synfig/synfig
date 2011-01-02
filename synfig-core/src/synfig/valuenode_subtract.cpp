@@ -60,6 +60,8 @@ using namespace synfig;
 synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	ValueBase::Type id(value.get_type());
 
@@ -179,49 +181,6 @@ ValueNode_Subtract::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Subtract::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Subtract::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("LHS");
-		case 1: return _("RHS");
-		case 2: return _("Scalar");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Subtract::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "lhs";
-		case 1: return "rhs";
-		case 2: return "scalar";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Subtract::get_link_index_from_name(const String &name)const
-{
-	if(name=="lhs") return 0;
-	if(name=="rhs") return 1;
-	if(name=="scalar") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Subtract::get_name()const
 {
@@ -244,4 +203,30 @@ ValueNode_Subtract::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_REAL
 		|| type==ValueBase::TYPE_TIME
 		|| type==ValueBase::TYPE_VECTOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Subtract::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("Left Hand Side of the subtraction"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("Right Hand Side of the subtraction"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		.set_local_name(_("Scalar"))
+		.set_description(_("Value that multiplies the subtraction"))
+	);
+
+	return ret;
 }

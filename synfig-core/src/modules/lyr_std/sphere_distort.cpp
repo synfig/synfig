@@ -143,21 +143,25 @@ Layer_SphereDistort::get_param_vocab()const
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Position"))
+		.set_description(_("Where the sphere distortion is centered"))
 	);
 
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_origin("center")
 		.set_is_distance()
+		.set_description(_("The size of the sphere distortion"))
 	);
 
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_is_distance(false)
+		.set_description(_("The distortion intensity (negative values inverts effect)"))
 	);
 
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
+		.set_description(_("When cheked, the area outside the Radius are not distorted"))
 	);
 
 	ret.push_back(ParamDesc("type")

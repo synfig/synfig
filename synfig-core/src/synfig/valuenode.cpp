@@ -34,7 +34,6 @@
 #include "valuenode.h"
 #include "general.h"
 #include "canvas.h"
-#include "paramdesc.h"
 #include "releases.h"
 
 #include "valuenode_const.h"
@@ -761,4 +760,53 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	}
 
 	return description;
+}
+
+String
+LinkableValueNode::link_name(int i)const
+{
+	Vocab vocab(get_children_vocab());
+	Vocab::iterator iter(vocab.begin());
+	int j=0;
+	for(; iter!=vocab.end(), j<i; iter++, j++);
+	return iter!=vocab.end()?iter->get_name():String();
+}
+
+String
+LinkableValueNode::link_local_name(int i)const
+{
+	Vocab vocab(get_children_vocab());
+	Vocab::iterator iter(vocab.begin());
+	int j=0;
+	for(; iter!=vocab.end(), j<i; iter++, j++);
+	return iter!=vocab.end()?iter->get_local_name():String();
+}
+
+int
+LinkableValueNode::get_link_index_from_name(const String &name)const
+{
+	Vocab vocab(get_children_vocab());
+	Vocab::iterator iter(vocab.begin());
+	int j=0;
+	for(; iter!=vocab.end(); iter++, j++)
+		if(iter->get_name()==name) return j;
+	throw Exception::BadLinkName(name);
+}
+
+int
+LinkableValueNode::link_count()const
+{
+	return get_children_vocab().size();
+}
+
+LinkableValueNode::Vocab
+LinkableValueNode::get_children_vocab()const
+{
+	return get_children_vocab_vfunc();
+}
+
+void
+LinkableValueNode::set_children_vocab(const Vocab &newvocab)
+{
+	children_vocab.assign(newvocab.begin(),newvocab.end());
 }

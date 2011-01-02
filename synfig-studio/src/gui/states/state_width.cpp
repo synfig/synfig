@@ -173,32 +173,48 @@ StateWidth::~StateWidth()
 void
 StateWidth_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	//parse the arguments yargh!
-	if(settings.get_value("width.delta",value))
-		set_delta(atof(value.c_str()));
-	else
-		set_delta(6);
+		//parse the arguments yargh!
+		if(settings.get_value("width.delta",value))
+			set_delta(atof(value.c_str()));
+		else
+			set_delta(6);
 
-	if(settings.get_value("width.radius",value))
-		set_radius(atof(value.c_str()));
-	else
-		set_radius(15);
+		if(settings.get_value("width.radius",value))
+			set_radius(atof(value.c_str()));
+		else
+			set_radius(15);
 
-	//defaults to false
-	if(settings.get_value("width.relative",value) && value == "1")
-		set_relative(true);
-	else
-		set_relative(false);
+		//defaults to false
+		if(settings.get_value("width.relative",value) && value == "1")
+			set_relative(true);
+		else
+			set_relative(false);
+	}
+	catch(...)
+	{
+		synfig::warning("State Width: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateWidth_Context::save_settings()
 {
-	settings.set_value("width.delta",strprintf("%f",get_delta()));
-	settings.set_value("width.radius",strprintf("%f",get_radius()));
-	settings.set_value("width.relative",get_relative()?"1":"0");
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("width.delta",strprintf("%f",get_delta()));
+		settings.set_value("width.radius",strprintf("%f",get_radius()));
+		settings.set_value("width.relative",get_relative()?"1":"0");
+	}
+	catch(...)
+	{
+		synfig::warning("State Width: Caught exception when attempting to save settings.");
+	}
 }
 
 void

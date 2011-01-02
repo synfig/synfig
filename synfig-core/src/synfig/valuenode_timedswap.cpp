@@ -56,6 +56,8 @@ using namespace synfig;
 ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -206,53 +208,6 @@ ValueNode_TimedSwap::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TimedSwap::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_TimedSwap::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Before");
-	case 1: return _("After");
-	case 2: return _("Swap Time");
-	case 3: return _("Swap Duration");
-	default:return String();
-	}
-}
-
-String
-ValueNode_TimedSwap::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "before";
-	case 1: return "after";
-	case 2: return "time";
-	case 3: return "length";
-	default:return String();
-	}
-}
-
-int
-ValueNode_TimedSwap::get_link_index_from_name(const String &name)const
-{
-	if(name=="before")	return 0;
-	if(name=="after")	return 1;
-	if(name=="time")	return 2;
-	if(name=="length")	return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_TimedSwap::get_name()const
 {
@@ -275,4 +230,35 @@ ValueNode_TimedSwap::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_REAL ||
 		type==ValueBase::TYPE_TIME ||
 		type==ValueBase::TYPE_VECTOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_TimedSwap::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"before")
+		.set_local_name(_("Before"))
+		.set_description(_("The value node returned when current time is before 'time' - 'length'"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"after")
+		.set_local_name(_("After"))
+		.set_description(_("The value node returned when current time is after 'time'"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"time")
+		.set_local_name(_("Time"))
+		.set_description(_("The time when the linear interpolation ends"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"length")
+		.set_local_name(_("Length"))
+		.set_description(_("The length of time when the linear interpolation between 'Before' and 'After' is made"))
+	);
+
+	return ret;
 }

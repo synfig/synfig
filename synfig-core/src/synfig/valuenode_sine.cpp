@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Sine::ValueNode_Sine(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -139,43 +141,23 @@ ValueNode_Sine::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Sine::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Sine::get_children_vocab_vfunc()const
 {
-	return 2;
-}
+	if(children_vocab.size())
+		return children_vocab;
 
-String
-ValueNode_Sine::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	LinkableValueNode::Vocab ret;
 
-	if(i==0)
-		return "angle";
-	if(i==1)
-		return "amp";
-	return String();
-}
+	ret.push_back(ParamDesc(ValueBase(),"angle")
+		.set_local_name(_("Angle"))
+		.set_description(_("The angle where the sine is calculated from"))
+	);
 
-String
-ValueNode_Sine::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	ret.push_back(ParamDesc(ValueBase(),"amp")
+		.set_local_name(_("Amplitude"))
+		.set_description(_("The value that multiplies the resulting sine"))
+	);
 
-	if(i==0)
-		return _("Angle");
-	if(i==1)
-		return _("Amplitude");
-	return String();
-}
-
-int
-ValueNode_Sine::get_link_index_from_name(const String &name)const
-{
-	if(name=="angle")
-		return 0;
-	if(name=="amp")
-		return 1;
-
-	throw Exception::BadLinkName(name);
+	return ret;
 }

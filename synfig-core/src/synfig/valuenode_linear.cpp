@@ -55,6 +55,8 @@ using namespace synfig;
 ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -178,50 +180,38 @@ ValueNode_Linear::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Linear::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Linear::get_children_vocab_vfunc()const
 {
-	return 2;
-}
+	if(children_vocab.size())
+		return children_vocab;
 
-String
-ValueNode_Linear::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	LinkableValueNode::Vocab ret;
 
-	if(i==0) return "slope";
-	if(i==1) return "offset";
-	return String();
-}
+	switch(get_type())
+	{
+	case ValueBase::TYPE_ANGLE:
+	case ValueBase::TYPE_COLOR:
+	case ValueBase::TYPE_INTEGER:
+	case ValueBase::TYPE_REAL:
+	case ValueBase::TYPE_TIME:
+		ret.push_back(ParamDesc(ValueBase(),"slope")
+			.set_local_name(_("Rate"))
+			.set_description(_("Value that is multiplied by the current time (in seconds)"))
+		);
+	break;
+	case ValueBase::TYPE_VECTOR:
+	default:
+		ret.push_back(ParamDesc(ValueBase(),"slope")
+			.set_local_name(_("Slope"))
+			.set_description(_("Value that is multiplied by the current time (in seconds)"))
+		);
+	}
 
-String
-ValueNode_Linear::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	ret.push_back(ParamDesc(ValueBase(),"offset")
+		.set_local_name(_("Offset"))
+		.set_description(_("Returned value when the current time is zero"))
+	);
 
-	if(i==0)
-		switch(get_type())
-		{
-		case ValueBase::TYPE_ANGLE:
-		case ValueBase::TYPE_COLOR:
-		case ValueBase::TYPE_INTEGER:
-		case ValueBase::TYPE_REAL:
-		case ValueBase::TYPE_TIME:
-			return _("Rate");
-		case ValueBase::TYPE_VECTOR:
-		default:
-			return _("Slope");
-		}
-	if(i==1)
-		return _("Offset");
-	return String();
-}
-
-int
-ValueNode_Linear::get_link_index_from_name(const String &name)const
-{
-	if(name=="slope")  return 0;
-	if(name=="offset") return 1;
-
-	throw Exception::BadLinkName(name);
+	return ret;
 }

@@ -159,14 +159,17 @@ Layer_Clamp::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clamp_ceiling")
 		.set_local_name(_("Clamp Ceiling"))
+		.set_description(_("When checked the Ceiling value is used"))
 	);
 
 	ret.push_back(ParamDesc("ceiling")
 		.set_local_name(_("Ceiling"))
+		.set_description(_("Upper boundary of the clamping"))
 	);
 
 	ret.push_back(ParamDesc("floor")
 		.set_local_name(_("Floor"))
+		.set_description(_("Lower boundary of the clamping"))
 	);
 
 	return ret;

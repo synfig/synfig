@@ -199,67 +199,83 @@ StatePolygon::~StatePolygon()
 void
 StatePolygon_Context::load_settings()
 {
-	String value;
-
-	if(settings.get_value("polygon.id",value))
-		set_id(value);
-	else
-		set_id("Polygon");
-
-	if(settings.get_value("polygon.invert",value) && value != "0")
-		set_invert(true);
-	else
-		set_invert(false);
-
-	if(settings.get_value("polygon.layer_polygon",value) && value=="0")
-		set_layer_polygon_flag(false);
-	else
-		set_layer_polygon_flag(true);
-
-	if(settings.get_value("polygon.layer_region",value) && value=="1")
-		set_layer_region_flag(true);
-	else
-		set_layer_region_flag(false);
-
-	if(settings.get_value("polygon.layer_outline",value) && value=="1")
-		set_layer_outline_flag(true);
-	else
-		set_layer_outline_flag(false);
-
-	if(settings.get_value("polygon.layer_curve_gradient",value) && value=="1")
-		set_layer_curve_gradient_flag(true);
-	else
-		set_layer_curve_gradient_flag(false);
-
-	if(settings.get_value("polygon.layer_plant",value) && value=="1")
-		set_layer_plant_flag(true);
-	else
-		set_layer_plant_flag(false);
-
-	if(settings.get_value("polygon.layer_link_origins",value) && value=="0")
-		set_layer_link_origins_flag(false);
-	else
-		set_layer_link_origins_flag(true);
-
-	if(settings.get_value("polygon.feather",value))
+	try
 	{
-		Real n = atof(value.c_str());
-		set_feather(n);
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
+
+		if(settings.get_value("polygon.id",value))
+			set_id(value);
+		else
+			set_id("Polygon");
+
+		if(settings.get_value("polygon.invert",value) && value != "0")
+			set_invert(true);
+		else
+			set_invert(false);
+
+		if(settings.get_value("polygon.layer_polygon",value) && value=="0")
+			set_layer_polygon_flag(false);
+		else
+			set_layer_polygon_flag(true);
+
+		if(settings.get_value("polygon.layer_region",value) && value=="1")
+			set_layer_region_flag(true);
+		else
+			set_layer_region_flag(false);
+
+		if(settings.get_value("polygon.layer_outline",value) && value=="1")
+			set_layer_outline_flag(true);
+		else
+			set_layer_outline_flag(false);
+
+		if(settings.get_value("polygon.layer_curve_gradient",value) && value=="1")
+			set_layer_curve_gradient_flag(true);
+		else
+			set_layer_curve_gradient_flag(false);
+
+		if(settings.get_value("polygon.layer_plant",value) && value=="1")
+			set_layer_plant_flag(true);
+		else
+			set_layer_plant_flag(false);
+
+		if(settings.get_value("polygon.layer_link_origins",value) && value=="0")
+			set_layer_link_origins_flag(false);
+		else
+			set_layer_link_origins_flag(true);
+
+		if(settings.get_value("polygon.feather",value))
+		{
+			Real n = atof(value.c_str());
+			set_feather(n);
+		}
+	}
+	catch(...)
+	{
+		synfig::warning("State Polygon: Caught exception when attempting to load settings.");
 	}
 }
 
 void
 StatePolygon_Context::save_settings()
 {
-	settings.set_value("polygon.id",get_id().c_str());
-	settings.set_value("polygon.invert",get_invert()?"1":"0");
-	settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
-	settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
-	settings.set_value("polygon.layer_region",get_layer_region_flag()?"1":"0");
-	settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-	settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
-	settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-	settings.set_value("polygon.feather",strprintf("%f",get_feather()));
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("polygon.id",get_id().c_str());
+		settings.set_value("polygon.invert",get_invert()?"1":"0");
+		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
+		settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("polygon.layer_region",get_layer_region_flag()?"1":"0");
+		settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+		settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
+		settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+		settings.set_value("polygon.feather",strprintf("%f",get_feather()));
+	}
+	catch(...)
+	{
+		synfig::warning("State Polygon: Caught exception when attempting to save settings.");
+	}
 }
 
 void

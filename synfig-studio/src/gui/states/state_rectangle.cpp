@@ -207,73 +207,89 @@ StateRectangle::~StateRectangle()
 void
 StateRectangle_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	//parse the arguments yargh!
-	if(settings.get_value("rectangle.id",value))
-		set_id(value);
-	else
-		set_id("Rectangle");
+		//parse the arguments yargh!
+		if(settings.get_value("rectangle.id",value))
+			set_id(value);
+		else
+			set_id("Rectangle");
 
-	if(settings.get_value("rectangle.expand",value))
-		set_expand(atof(value.c_str()));
-	else
-		set_expand(0);
+		if(settings.get_value("rectangle.expand",value))
+			set_expand(atof(value.c_str()));
+		else
+			set_expand(0);
 
-	if(settings.get_value("rectangle.feather",value))
-		set_feather(atof(value.c_str()));
-	else
-		set_feather(0);
+		if(settings.get_value("rectangle.feather",value))
+			set_feather(atof(value.c_str()));
+		else
+			set_feather(0);
 
-	if(settings.get_value("rectangle.invert",value) && value != "0")
-		set_invert(true);
-	else
-		set_invert(false);
+		if(settings.get_value("rectangle.invert",value) && value != "0")
+			set_invert(true);
+		else
+			set_invert(false);
 
-	if(settings.get_value("rectangle.layer_rectangle",value) && value=="0")
-		set_layer_rectangle_flag(false);
-	else
-		set_layer_rectangle_flag(true);
+		if(settings.get_value("rectangle.layer_rectangle",value) && value=="0")
+			set_layer_rectangle_flag(false);
+		else
+			set_layer_rectangle_flag(true);
 
-	if(settings.get_value("rectangle.layer_region",value) && value=="1")
-		set_layer_region_flag(true);
-	else
-		set_layer_region_flag(false);
+		if(settings.get_value("rectangle.layer_region",value) && value=="1")
+			set_layer_region_flag(true);
+		else
+			set_layer_region_flag(false);
 
-	if(settings.get_value("rectangle.layer_outline",value) && value=="1")
-		set_layer_outline_flag(true);
-	else
-		set_layer_outline_flag(false);
+		if(settings.get_value("rectangle.layer_outline",value) && value=="1")
+			set_layer_outline_flag(true);
+		else
+			set_layer_outline_flag(false);
 
-	if(settings.get_value("rectangle.layer_curve_gradient",value) && value=="1")
-		set_layer_curve_gradient_flag(true);
-	else
-		set_layer_curve_gradient_flag(false);
+		if(settings.get_value("rectangle.layer_curve_gradient",value) && value=="1")
+			set_layer_curve_gradient_flag(true);
+		else
+			set_layer_curve_gradient_flag(false);
 
-	if(settings.get_value("rectangle.layer_plant",value) && value=="1")
-		set_layer_plant_flag(true);
-	else
-		set_layer_plant_flag(false);
+		if(settings.get_value("rectangle.layer_plant",value) && value=="1")
+			set_layer_plant_flag(true);
+		else
+			set_layer_plant_flag(false);
 
-	if(settings.get_value("rectangle.layer_link_origins",value) && value=="0")
-		set_layer_link_origins_flag(false);
-	else
-		set_layer_link_origins_flag(true);
+		if(settings.get_value("rectangle.layer_link_origins",value) && value=="0")
+			set_layer_link_origins_flag(false);
+		else
+			set_layer_link_origins_flag(true);
+	}
+	catch(...)
+	{
+		synfig::warning("State Rectangle: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateRectangle_Context::save_settings()
 {
-	settings.set_value("rectangle.id",get_id().c_str());
-	settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
-	settings.set_value("rectangle.feather",strprintf("%f",(float)get_feather()));
-	settings.set_value("rectangle.invert",get_invert()?"1":"0");
-	settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
-	settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
-	settings.set_value("rectangle.layer_region",get_layer_region_flag()?"1":"0");
-	settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-	settings.set_value("rectangle.layer_plant",get_layer_plant_flag()?"1":"0");
-	settings.set_value("rectangle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("rectangle.id",get_id().c_str());
+		settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
+		settings.set_value("rectangle.feather",strprintf("%f",(float)get_feather()));
+		settings.set_value("rectangle.invert",get_invert()?"1":"0");
+		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
+		settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("rectangle.layer_region",get_layer_region_flag()?"1":"0");
+		settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+		settings.set_value("rectangle.layer_plant",get_layer_plant_flag()?"1":"0");
+		settings.set_value("rectangle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+	}
+	catch(...)
+	{
+		synfig::warning("State Rectangle: Caught exception when attempting to save settings.");
+	}
 }
 
 void

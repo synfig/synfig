@@ -68,8 +68,6 @@ public:
 
 public:
 
-
-
  	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_BLine();
@@ -93,12 +91,11 @@ public:
 	//! Returns the BlinePoint at time t, with the tangents modified if
 	//! the vertex is boned influenced, otherwise returns the Blinepoint at time t.
 	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t)const;
-
+	virtual Vocab get_children_vocab_vfunc()const;
 #ifdef _DEBUG
 	virtual void ref()const;
 	virtual bool unref()const;
 #endif
-
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

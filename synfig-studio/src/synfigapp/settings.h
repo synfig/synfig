@@ -31,6 +31,7 @@
 #include <map>
 #include <list>
 #include <ETL/stringf>
+#include <string.h>
 
 /* === M A C R O S ========================================================= */
 

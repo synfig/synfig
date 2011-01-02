@@ -155,45 +155,21 @@ ValueNode_BoneWeightPair::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BoneWeightPair::link_count()const
+
+LinkableValueNode::Vocab
+ValueNode_BoneWeightPair::get_children_vocab_vfunc() const
 {
-	return 2;
-}
+	LinkableValueNode::Vocab ret;
 
-String
-ValueNode_BoneWeightPair::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	ret.push_back(ParamDesc(ValueBase(),"bone")
+		.set_local_name(_("Bone"))
+		.set_description(_("Bone used to make influence"))
+	);
 
-	switch(i)
-	{
-	case 0:	return "bone";
-	case 1: return "weight";
-	}
+	ret.push_back(ParamDesc(ValueBase(),"weight")
+		.set_local_name(_("weight"))
+		.set_description(_("The relative value of influence of the bone"))
+	);
 
-	return String();
-}
-
-String
-ValueNode_BoneWeightPair::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0:	return _("Bone");
-	case 1: return _("Weight");
-	}
-
-	return String();
-}
-
-int
-ValueNode_BoneWeightPair::get_link_index_from_name(const String &name)const
-{
-	if(name=="bone") return 0;
-	if(name=="weight") return 1;
-
-	throw Exception::BadLinkName(name);
+	return ret;
 }

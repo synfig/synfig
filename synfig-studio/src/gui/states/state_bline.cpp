@@ -236,64 +236,79 @@ StateBLine::~StateBLine()
 void
 StateBLine_Context::load_settings()
 {
-	String value;
-
-	if(settings.get_value("bline.layer_region",value) && value=="0")
-		set_layer_region_flag(false);
-	else
-		set_layer_region_flag(true);
-
-	if(settings.get_value("bline.layer_outline",value) && value=="0")
-		set_layer_outline_flag(false);
-	else
-		set_layer_outline_flag(true);
-
-	if(settings.get_value("bline.layer_curve_gradient",value) && value=="1")
-		set_layer_curve_gradient_flag(true);
-	else
-		set_layer_curve_gradient_flag(false);
-
-	if(settings.get_value("bline.layer_plant",value) && value=="1")
-		set_layer_plant_flag(true);
-	else
-		set_layer_plant_flag(false);
-
-	if(settings.get_value("bline.layer_link_origins",value) && value=="0")
-		set_layer_link_origins_flag(false);
-	else
-		set_layer_link_origins_flag(true);
-
-	if(settings.get_value("bline.auto_export",value) && value=="1")
-		set_auto_export_flag(true);
-	else
-		set_auto_export_flag(false);
-
-	if(settings.get_value("bline.id",value))
-		set_id(value);
-	else
-		set_id("NewBLine");
-
-	if(settings.get_value("bline.feather",value))
+	try
 	{
-		Real n = atof(value.c_str());
-		set_feather(n);
-	}
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	sanity_check();
+		if(settings.get_value("bline.layer_region",value) && value=="0")
+			set_layer_region_flag(false);
+		else
+			set_layer_region_flag(true);
+
+		if(settings.get_value("bline.layer_outline",value) && value=="0")
+			set_layer_outline_flag(false);
+		else
+			set_layer_outline_flag(true);
+
+		if(settings.get_value("bline.layer_curve_gradient",value) && value=="1")
+			set_layer_curve_gradient_flag(true);
+		else
+			set_layer_curve_gradient_flag(false);
+
+		if(settings.get_value("bline.layer_plant",value) && value=="1")
+			set_layer_plant_flag(true);
+		else
+			set_layer_plant_flag(false);
+
+		if(settings.get_value("bline.layer_link_origins",value) && value=="0")
+			set_layer_link_origins_flag(false);
+		else
+			set_layer_link_origins_flag(true);
+
+		if(settings.get_value("bline.auto_export",value) && value=="1")
+			set_auto_export_flag(true);
+		else
+			set_auto_export_flag(false);
+
+		if(settings.get_value("bline.id",value))
+			set_id(value);
+		else
+			set_id("NewBLine");
+
+		if(settings.get_value("bline.feather",value))
+		{
+			Real n = atof(value.c_str());
+			set_feather(n);
+		}
+		sanity_check();
+	}
+	catch(...)
+	{
+		synfig::warning("State BLine: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateBLine_Context::save_settings()
 {
-	sanity_check();
-	settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
-	settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
-	settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-	settings.set_value("bline.layer_plant",get_layer_plant_flag()?"1":"0");
-	settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-	settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
-	settings.set_value("bline.id",get_id().c_str());
-	settings.set_value("bline.feather",strprintf("%f",get_feather()));
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		sanity_check();
+		settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
+		settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+		settings.set_value("bline.layer_plant",get_layer_plant_flag()?"1":"0");
+		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+		settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
+		settings.set_value("bline.id",get_id().c_str());
+		settings.set_value("bline.feather",strprintf("%f",get_feather()));
+	}
+	catch(...)
+	{
+		synfig::warning("State BLine : Caught exception when attempting to save settings.");
+	}
 }
 
 void

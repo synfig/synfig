@@ -913,3 +913,17 @@ ValueNode_DynamicList::insert_time(const Time& location, const Time& delta)
 	}
 	changed();
 }
+
+LinkableValueNode::Vocab
+ValueNode_DynamicList::get_children_vocab_vfunc()const
+{
+	LinkableValueNode::Vocab ret;
+	for(unsigned int i=0; i<list.size();i++)
+	{
+		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
+			.set_local_name(etl::strprintf(_("Item %03d"),i+1))
+		);
+	}
+
+	return ret;
+}

@@ -128,6 +128,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_StaticList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	virtual Vocab get_children_vocab_vfunc()const;
 
 #ifdef _DEBUG
 	virtual void ref()const;

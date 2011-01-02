@@ -397,6 +397,20 @@ ValueNode_StaticList::check_type(ValueBase::Type type) // line 717
 	return type==ValueBase::TYPE_LIST;
 }
 
+LinkableValueNode::Vocab
+ValueNode_StaticList::get_children_vocab_vfunc() const
+{
+	LinkableValueNode::Vocab ret;
+	for(unsigned int i=0; i<list.size();i++)
+	{
+		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
+			.set_local_name(etl::strprintf(_("Item %03d"),i+1))
+		);
+	}
+
+	return ret;
+}
+
 void
 ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
 {

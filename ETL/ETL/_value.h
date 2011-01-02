@@ -158,7 +158,7 @@ private: //implementation interface
 		}
 
 	public: //allocation interface
-		void *operator new(unsigned int size)
+		void *operator new(size_t size)
 		{
 			assert(size == sizeof(holder<T>));
 

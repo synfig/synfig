@@ -498,202 +498,216 @@ class Preferences : public synfigapp::Settings
 public:
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
-		if(key=="gamma")
+		try
 		{
-			value=strprintf("%f %f %f %f",
-				App::gamma.get_gamma_r(),
-				App::gamma.get_gamma_g(),
-				App::gamma.get_gamma_b(),
-				App::gamma.get_black_level()
-			);
-			return true;
-		}
-		if(key=="time_format")
-		{
-			value=strprintf("%i",App::get_time_format());
-			return true;
-		}
-		if(key=="file_history.size")
-		{
-			value=strprintf("%i",App::get_max_recent_files());
-			return true;
-		}
-		if(key=="use_colorspace_gamma")
-		{
-			value=strprintf("%i",(int)App::use_colorspace_gamma);
-			return true;
-		}
-		if(key=="distance_system")
-		{
-			value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
-			return true;
-		}
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="gamma")
+			{
+				value=strprintf("%f %f %f %f",
+					App::gamma.get_gamma_r(),
+					App::gamma.get_gamma_g(),
+					App::gamma.get_gamma_b(),
+					App::gamma.get_black_level()
+				);
+				return true;
+			}
+			if(key=="time_format")
+			{
+				value=strprintf("%i",App::get_time_format());
+				return true;
+			}
+			if(key=="file_history.size")
+			{
+				value=strprintf("%i",App::get_max_recent_files());
+				return true;
+			}
+			if(key=="use_colorspace_gamma")
+			{
+				value=strprintf("%i",(int)App::use_colorspace_gamma);
+				return true;
+			}
+			if(key=="distance_system")
+			{
+				value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
+				return true;
+			}
 #ifdef SINGLE_THREADED
-		if(key=="single_threaded")
-		{
-			value=strprintf("%i",(int)App::single_threaded);
-			return true;
-		}
+			if(key=="single_threaded")
+			{
+				value=strprintf("%i",(int)App::single_threaded);
+				return true;
+			}
 #endif
-		if(key=="auto_recover_backup_interval")
-		{
-			value=strprintf("%i",App::auto_recover->get_timeout());
-			return true;
+			if(key=="auto_recover_backup_interval")
+			{
+				value=strprintf("%i",App::auto_recover->get_timeout());
+				return true;
+			}
+			if(key=="restrict_radius_ducks")
+			{
+				value=strprintf("%i",(int)App::restrict_radius_ducks);
+				return true;
+			}
+			if(key=="resize_imported_images")
+			{
+				value=strprintf("%i",(int)App::resize_imported_images);
+				return true;
+			}
+			if(key=="browser_command")
+			{
+				value=App::browser_command;
+				return true;
+			}
+			if(key=="custom_filename_prefix")
+			{
+				value=App::custom_filename_prefix;
+				return true;
+			}
+			if(key=="preferred_x_size")
+			{
+				value=strprintf("%i",App::preferred_x_size);
+				return true;
+			}
+			if(key=="preferred_y_size")
+			{
+				value=strprintf("%i",App::preferred_y_size);
+				return true;
+			}
+			if(key=="predefined_size")
+			{
+				value=strprintf("%s",App::predefined_size.c_str());
+				return true;
+			}
+			if(key=="preferred_fps")
+			{
+				value=strprintf("%f",App::preferred_fps);
+				return true;
+			}
+			if(key=="predefined_fps")
+			{
+				value=strprintf("%s",App::predefined_fps.c_str());
+				return true;
+			}
 		}
-		if(key=="restrict_radius_ducks")
+		catch(...)
 		{
-			value=strprintf("%i",(int)App::restrict_radius_ducks);
-			return true;
+			synfig::warning("Preferences: Caught exception when attempting to get value.");
 		}
-		if(key=="resize_imported_images")
-		{
-			value=strprintf("%i",(int)App::resize_imported_images);
-			return true;
-		}
-		if(key=="browser_command")
-		{
-			value=App::browser_command;
-			return true;
-		}
-		if(key=="custom_filename_prefix")
-		{
-			value=App::custom_filename_prefix;
-			return true;
-		}
-		if(key=="preferred_x_size")
-		{
-			value=strprintf("%i",App::preferred_x_size);
-			return true;
-		}
-		if(key=="preferred_y_size")
-		{
-			value=strprintf("%i",App::preferred_y_size);
-			return true;
-		}
-		if(key=="predefined_size")
-		{
-			value=strprintf("%s",App::predefined_size.c_str());
-			return true;
-		}
-		if(key=="preferred_fps")
-		{
-			value=strprintf("%f",App::preferred_fps);
-			return true;
-		}
-		if(key=="predefined_fps")
-		{
-			value=strprintf("%s",App::predefined_fps.c_str());
-			return true;
-		}
-
 		return synfigapp::Settings::get_value(key,value);
 	}
 
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
-		if(key=="gamma")
+		try
 		{
-			float r,g,b,blk;
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="gamma")
+			{
+				float r,g,b,blk;
 
-			strscanf(value,"%f %f %f %f",
-				&r,
-				&g,
-				&b,
-				&blk
-			);
+				strscanf(value,"%f %f %f %f",
+					&r,
+					&g,
+					&b,
+					&blk
+				);
 
-			App::gamma.set_all(r,g,b,blk);
+				App::gamma.set_all(r,g,b,blk);
 
-			return true;
-		}
-		if(key=="time_format")
-		{
-			int i(atoi(value.c_str()));
-			App::set_time_format(static_cast<synfig::Time::Format>(i));
-			return true;
-		}
-		if(key=="auto_recover_backup_interval")
-		{
-			int i(atoi(value.c_str()));
-			App::auto_recover->set_timeout(i);
-			return true;
-		}
-		if(key=="file_history.size")
-		{
-			int i(atoi(value.c_str()));
-			App::set_max_recent_files(i);
-			return true;
-		}
-		if(key=="use_colorspace_gamma")
-		{
-			int i(atoi(value.c_str()));
-			App::use_colorspace_gamma=i;
-			return true;
-		}
-		if(key=="distance_system")
-		{
-			App::distance_system=Distance::ident_system(value);;
-			return true;
-		}
+				return true;
+			}
+			if(key=="time_format")
+			{
+				int i(atoi(value.c_str()));
+				App::set_time_format(static_cast<synfig::Time::Format>(i));
+				return true;
+			}
+			if(key=="auto_recover_backup_interval")
+			{
+				int i(atoi(value.c_str()));
+				App::auto_recover->set_timeout(i);
+				return true;
+			}
+			if(key=="file_history.size")
+			{
+				int i(atoi(value.c_str()));
+				App::set_max_recent_files(i);
+				return true;
+			}
+			if(key=="use_colorspace_gamma")
+			{
+				int i(atoi(value.c_str()));
+				App::use_colorspace_gamma=i;
+				return true;
+			}
+			if(key=="distance_system")
+			{
+				App::distance_system=Distance::ident_system(value);;
+				return true;
+			}
 #ifdef SINGLE_THREADED
-		if(key=="single_threaded")
-		{
-			int i(atoi(value.c_str()));
-			App::single_threaded=i;
-			return true;
-		}
+			if(key=="single_threaded")
+			{
+				int i(atoi(value.c_str()));
+				App::single_threaded=i;
+				return true;
+			}
 #endif
-		if(key=="restrict_radius_ducks")
-		{
-			int i(atoi(value.c_str()));
-			App::restrict_radius_ducks=i;
-			return true;
+			if(key=="restrict_radius_ducks")
+			{
+				int i(atoi(value.c_str()));
+				App::restrict_radius_ducks=i;
+				return true;
+			}
+			if(key=="resize_imported_images")
+			{
+				int i(atoi(value.c_str()));
+				App::resize_imported_images=i;
+				return true;
+			}
+			if(key=="browser_command")
+			{
+				App::browser_command=value;
+				return true;
+			}
+			if(key=="custom_filename_prefix")
+			{
+				App::custom_filename_prefix=value;
+				return true;
+			}
+			if(key=="preferred_x_size")
+			{
+				int i(atoi(value.c_str()));
+				App::preferred_x_size=i;
+				return true;
+			}
+			if(key=="preferred_y_size")
+			{
+				int i(atoi(value.c_str()));
+				App::preferred_y_size=i;
+				return true;
+			}
+			if(key=="predefined_size")
+			{
+				App::predefined_size=value;
+				return true;
+			}
+			if(key=="preferred_fps")
+			{
+				float i(atof(value.c_str()));
+				App::preferred_fps=i;
+				return true;
+			}
+			if(key=="predefined_fps")
+			{
+				App::predefined_fps=value;
+				return true;
+			}
 		}
-		if(key=="resize_imported_images")
+		catch(...)
 		{
-			int i(atoi(value.c_str()));
-			App::resize_imported_images=i;
-			return true;
+			synfig::warning("Preferences: Caught exception when attempting to set value.");
 		}
-		if(key=="browser_command")
-		{
-			App::browser_command=value;
-			return true;
-		}
-		if(key=="custom_filename_prefix")
-		{
-			App::custom_filename_prefix=value;
-			return true;
-		}
-		if(key=="preferred_x_size")
-		{
-			int i(atoi(value.c_str()));
-			App::preferred_x_size=i;
-			return true;
-		}
-		if(key=="preferred_y_size")
-		{
-			int i(atoi(value.c_str()));
-			App::preferred_y_size=i;
-			return true;
-		}
-		if(key=="predefined_size")
-		{
-			App::predefined_size=value;
-			return true;
-		}
-		if(key=="preferred_fps")
-		{
-			float i(atof(value.c_str()));
-			App::preferred_fps=i;
-			return true;
-		}
-		if(key=="predefined_fps")
-		{
-			App::predefined_fps=value;
-			return true;
-		}
-
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -1318,6 +1332,13 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Settings..."));
 		load_settings();
 		device_tracker->load_preferences();
+		// If the default bline width is modified before focus a canvas
+		// window, the Distance widget doesn't understand the given value
+		// and produces this message:
+		// Distance::ident_system(): Unknown distance system ".00pt"
+		// setting the default bline width to 1 unit.
+		// This line fixes that.
+		synfigapp::Main::set_bline_width(synfigapp::Main::get_selected_input_device()->get_bline_width());
 
 		studio_init_cb.task(_("Checking auto-recover..."));
 
@@ -1610,11 +1631,9 @@ App::set_time_format(synfig::Time::Format x)
 void
 App::save_settings()
 {
-	char * old_locale;
 	try
 	{
-	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
-	setlocale(LC_NUMERIC, "C");
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::save(filename);
@@ -1654,7 +1673,7 @@ App::save_settings()
 		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
-	setlocale(LC_NUMERIC,old_locale);
+
 	}
 	catch(...)
 	{
@@ -1665,11 +1684,9 @@ App::save_settings()
 void
 App::load_settings()
 {
-	char  * old_locale;
 	try
 	{
-	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
-	setlocale(LC_NUMERIC, "C");
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
@@ -1725,7 +1742,7 @@ App::load_settings()
 				reset_initial_window_configuration();
 			}
 		}
-	setlocale(LC_NUMERIC,old_locale);
+
 	}
 	catch(...)
 	{

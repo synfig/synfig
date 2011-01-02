@@ -79,11 +79,6 @@ public:
 	virtual String get_bone_name(Time t)const;
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
-	virtual String link_name(int i)const;
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 
 protected:
 	LinkableValueNode* create_new()const;
@@ -97,6 +92,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Bone* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
+	virtual Vocab get_children_vocab_vfunc()const;
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;
 	static void show_bone_map(etl::loose_handle<Canvas> canvas, const char *file, int line, String text, Time t=0);

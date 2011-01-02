@@ -224,6 +224,8 @@ ValueNode_Bone::ValueNode_Bone():
 	LinkableValueNode(ValueBase::TYPE_BONE),
 	setup_(false)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
 		printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
@@ -238,7 +240,8 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		printf("%s:%d --- ValueNode_Bone() for %s at %lx---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ulong(this));
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
-
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_BONE:
@@ -629,89 +632,75 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Bone::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Bone::get_children_vocab_vfunc() const
 {
-#ifdef HIDE_BONE_FIELDS
-	return 2;
-#else
-	return 12;
-#endif
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"name")
+		.set_local_name(_("Name"))
+		.set_description(_("The name of the bone"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"parent")
+		.set_local_name(_("Parent"))
+		.set_description(_("The parent bone of the bone"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"origin")
+		.set_local_name(_("Origin"))
+		.set_description(_("The rotating origin of the bone relative to its parent"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"angle")
+		.set_local_name(_("Angle"))
+		.set_description(_("The rotating angle of the bone relative to its parent"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalelx")
+		.set_local_name(_("Local Length Scale"))
+		.set_description(_("The scale of the bone aligned its length"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalely")
+		.set_local_name(_("Local Width Scale"))
+		.set_description(_("The scale of the bone perpendicular to its length"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scalex")
+		.set_local_name(_("Recursive Length Scale"))
+		.set_description(_("The scale of the bone and its children aligned to its length"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"scaley")
+		.set_local_name(_("Recursive Width Scale"))
+		.set_description(_("The scale of the bone and its children perpendicular to its length"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"origin0")
+		.set_local_name(_("Origin Setup"))
+		.set_description(_("The rotating origin of the bone relative to its parent at setup"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"angle0")
+		.set_local_name(_("Angle Setup"))
+		.set_description(_("The rotating angle of the bone relative to its parent at setup"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"length")
+		.set_local_name(_("Length Setup"))
+		.set_description(_("The length of the bone at setup"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"strength")
+		.set_local_name(_("Strength Setup"))
+		.set_description(_("The strength of the bone at setup"))
+	);
+
+	return ret;
 }
 
-String
-ValueNode_Bone::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "name";
-	case 1: return "parent";
-#ifndef HIDE_BONE_FIELDS
-	case 2: return "origin";
-	case 3: return "angle";
-	case 4: return "scalelx";
-	case 5: return "scalely";
-	case 6: return "scalex";
-	case 7: return "scaley";
-	case 8: return "origin0";
-	case 9: return "angle0";
-	case 10:return "length";
-	case 11:return "strength";
-#endif
-	}
-
-	return String();
-}
-
-String
-ValueNode_Bone::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Name");
-	case 1: return _("Parent");
-#ifndef HIDE_BONE_FIELDS
-	case 2: return _("Origin");
-	case 3: return _("Angle");
-	case 4: return _("Local Length Scale");
-	case 5: return _("Local Width Scale");
-	case 6: return _("Recursive Length Scale");
-	case 7: return _("Recursive Width Scale");
-	case 8: return _("Origin Setup");
-	case 9: return _("Angle Setup");
-	case 10:return _("Length Setup");
-	case 11:return _("Strength Setup");
-#endif
-	}
-
-	return String();
-}
-
-int
-ValueNode_Bone::get_link_index_from_name(const String &name)const
-{
-	if (name == "name")		return 0;
-	if (name == "parent")	return 1;
-#ifndef HIDE_BONE_FIELDS
-	if (name == "origin")	return 2;
-	if (name == "angle")	return 3;
-	if (name == "scalel")	{warning("%s:%d removeme", __FILE__, __LINE__); return 4;}
-	if (name == "scalelx")	return 4;
-	if (name == "scalely")	return 5;
-	if (name == "scalex")	return 6;
-	if (name == "scaley")	return 7;
-	if (name == "origin0")	return 8;
-	if (name == "angle0")	return 9;
-	if (name == "length")	return 10;
-	if (name == "strength")	return 11;
-#endif
-
-	throw Exception::BadLinkName(name);
-}
 
 ValueNode_Bone::LooseHandle
 ValueNode_Bone::find(String name)const

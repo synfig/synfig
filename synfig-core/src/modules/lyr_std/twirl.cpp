@@ -109,6 +109,7 @@ Twirl::get_param_vocab()const
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
+		.set_description(_("Center of the circle"))
 	);
 
 	ret.push_back(ParamDesc("radius")
@@ -120,15 +121,18 @@ Twirl::get_param_vocab()const
 
 	ret.push_back(ParamDesc("rotations")
 		.set_local_name(_("Rotations"))
+		.set_description(_("The number of rotations of the twirl effect"))
 		.set_origin("center")
 	);
 
 	ret.push_back(ParamDesc("distort_inside")
 		.set_local_name(_("Distort Inside"))
+		.set_description(_("When checked, distorts inside the circle"))
 	);
 
 	ret.push_back(ParamDesc("distort_outside")
 		.set_local_name(_("Distort Outside"))
+		.set_description(_("When checked, distorts outside the circle"))
 	);
 
 	return ret;

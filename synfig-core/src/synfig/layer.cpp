@@ -593,6 +593,7 @@ Layer::get_param_vocab()const
 	ret.push_back(ParamDesc(z_depth,"z_depth")
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
+		.set_description(_("Modifies the position of the layer in the layer stack"))
 	);
 
 	return ret;

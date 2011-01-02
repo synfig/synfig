@@ -125,18 +125,22 @@ Circle::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
+		.set_description(_("Fill color of the layer"))
 	);
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_origin("origin")
+		.set_description(_("Radius of the circle"))
 		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("feather")
 		.set_local_name(_("Feather"))
 		.set_is_distance()
+		.set_description(_("Amount of feather of the circle"))
 	);
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
+		.set_description(_("Center of the circle"))
 	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))

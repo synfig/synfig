@@ -117,15 +117,18 @@ FilledRect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
+		.set_description(_("Fill color of the layer"))
 	);
 
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
+		.set_description(_("First corner of the rectangle"))
 		.set_box("point2")
 	);
 
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
+		.set_description(_("Second corner of the rectangle"))
 	);
 
 	ret.push_back(ParamDesc("feather_x")
@@ -138,10 +141,12 @@ FilledRect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bevel")
 		.set_local_name(_("Bevel"))
+		.set_description(_("Use Bevel for the corners"))
 	);
 
 	ret.push_back(ParamDesc("bevCircle")
 		.set_local_name(_("Keep Bevel Circular"))
+		.set_description(_("When checked the bevel is circular"))
 	);
 
 	return ret;

@@ -59,6 +59,8 @@ using namespace synfig;
 ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(Real(1.0))));
 	ValueBase::Type id(value.get_type());
 
@@ -211,47 +213,6 @@ ValueNode_Scale::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Scale::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Scale::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Link");
-	else if(i==1)
-		return _("Scalar");
-	return String();
-}
-
-String
-ValueNode_Scale::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "link";
-	else if(i==1)
-		return "scalar";
-	return String();
-}
-
-int
-ValueNode_Scale::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")
-		return 0;
-	if(name=="scalar")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Scale::get_name()const
 {
@@ -274,4 +235,25 @@ ValueNode_Scale::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_REAL ||
 		type==ValueBase::TYPE_TIME ||
 		type==ValueBase::TYPE_VECTOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Scale::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to scale"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"scalar")
+		.set_local_name(_("Scalar"))
+		.set_description(_("Value that multiplies the value node"))
+	);
+
+	return ret;
 }

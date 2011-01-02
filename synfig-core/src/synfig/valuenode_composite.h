@@ -50,12 +50,8 @@ public:
 	~ValueNode_Composite();
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
 	virtual String link_name(int i)const;
-	virtual String link_local_name(int i)const;
 	virtual ValueBase operator()(Time t)const;
-
-
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	virtual int get_link_index_from_name(const String &name)const;
@@ -70,6 +66,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Composite* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Composite
 
 }; // END of namespace synfig

@@ -103,6 +103,7 @@ class Widget_ValueBase : public Gtk::HBox
 
 	synfig::ParamDesc param_desc;
 	synfigapp::ValueDesc value_desc;
+	synfig::ParamDesc child_param_desc;
 	etl::handle<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
 	sigc::signal<void> signal_activate_;
@@ -124,6 +125,9 @@ public:
 
 	void set_value_desc(const synfigapp::ValueDesc &x) { value_desc=x; }
 	const synfigapp::ValueDesc &get_value_desc() { return value_desc; }
+
+	void set_child_param_desc(const synfig::ParamDesc &x) { child_param_desc=x; }
+	const synfig::ParamDesc &get_child_param_desc() { return child_param_desc; }
 
 	void set_sensitive(bool x);
 

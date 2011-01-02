@@ -209,56 +209,31 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BoneInfluence::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_BoneInfluence::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("bone_weight_list");
-	case 1: return _("link");
-	}
-
-	return String();
-}
-
-String
-ValueNode_BoneInfluence::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Bone Weight List");
-	case 1: return _("Link");
-	}
-
-	return String();
-}
-
-int
-ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
-{
-	if(name=="bone_weight_list")	return 0;
-	if(name=="link")				return 1;
-	if(name=="vertex_setup")		{warning("%s:%d removeme", __FILE__, __LINE__); return 1;}
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BoneInfluence::check_type(ValueBase::Type type)
 {
 	return 	type==ValueBase::TYPE_VECTOR ||
 			type==ValueBase::TYPE_BLINEPOINT;
 }
+
+LinkableValueNode::Vocab
+ValueNode_BoneInfluence::get_children_vocab_vfunc() const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"bone_weight_list")
+		.set_local_name(_("Bone Weight List"))
+		.set_description(_("List of bones used to calculate the influence"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node being bone influenced"))
+	);
+
+	return ret;
+}
+
 
 Matrix
 ValueNode_BoneInfluence::calculate_transform(Time t)const

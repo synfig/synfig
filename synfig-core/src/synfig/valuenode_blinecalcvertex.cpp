@@ -58,6 +58,8 @@ using namespace synfig;
 ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
@@ -172,51 +174,34 @@ ValueNode_BLineCalcVertex::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineCalcVertex::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_BLineCalcVertex::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "bline";
-		case 1: return "loop";
-		case 2: return "amount";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineCalcVertex::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("BLine");
-		case 1: return _("Loop");
-		case 2: return _("Amount");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineCalcVertex::get_link_index_from_name(const String &name)const
-{
-	if(name=="bline")  return 0;
-	if(name=="loop")   return 1;
-	if(name=="amount") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_VECTOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"bline")
+		.set_local_name(_("BLine"))
+		.set_description(_("The BLine where the vertex is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop"))
+		.set_description(_("When checked, the amount would loop"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked vertex on the BLine (0,1]"))
+	);
+
+	return ret;
 }

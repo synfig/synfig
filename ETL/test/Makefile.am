@@ -23,9 +23,9 @@ TESTS = \
 	pen \
 	surface \
 	smart_ptr \
-	benchmark
-#	spline \
-#	value
+	benchmark \
+	spline \
+	value
 
 check_PROGRAMS = \
 	fixed \
@@ -39,9 +39,9 @@ check_PROGRAMS = \
 	surface \
 	smart_ptr \
 	benchmark \
-	smach
-#	spline \
-#	value
+	smach \
+	spline \
+	value
 
 benchmark_SOURCES=benchmark.cpp
 smart_ptr_SOURCES=smart_ptr.cpp
@@ -54,9 +54,9 @@ fixed_SOURCES=fixed.cpp
 smach_SOURCES=smach.cpp
 clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
-#spline_SOURCES=spline.cpp
+spline_SOURCES=spline.cpp
 stringf_SOURCES=stringf.cpp
-#value_SOURCES=value.cpp
+value_SOURCES=value.cpp
 
 # FIXME: fix compiler errors for the spline and value tests.
 EXTRA_DIST = \

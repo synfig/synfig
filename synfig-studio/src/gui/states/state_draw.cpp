@@ -257,102 +257,118 @@ StateDraw::~StateDraw()
 void
 StateDraw_Context::load_settings()
 {
-	String value;
-
-	if(settings.get_value("draw.id",value))
-		set_id(value);
-	else
-		set_id("NewDrawing");
-
-	if(settings.get_value("draw.pressure_width",value) && value=="0")
-		set_pressure_width_flag(false);
-	else
-		set_pressure_width_flag(true);
-
-	if(settings.get_value("draw.auto_loop",value) && value=="0")
-		set_auto_loop_flag(false);
-	else
-		set_auto_loop_flag(true);
-
-	if(settings.get_value("draw.auto_extend",value) && value=="0")
-		set_auto_extend_flag(false);
-	else
-		set_auto_extend_flag(true);
-
-	if(settings.get_value("draw.auto_link",value) && value=="0")
-		set_auto_link_flag(false);
-	else
-		set_auto_link_flag(true);
-
-	if(settings.get_value("draw.region",value) && value=="0")
-		set_region_flag(false);
-	else
-		set_region_flag(true);
-
-	if(settings.get_value("draw.outline",value) && value=="0")
-		set_outline_flag(false);
-	else
-		set_outline_flag(true);
-
-	if(settings.get_value("draw.auto_export",value) && value=="1")
-		set_auto_export_flag(true);
-	else
-		set_auto_export_flag(false);
-
-	if(settings.get_value("draw.min_pressure_on",value) && value=="0")
-		set_min_pressure_flag(false);
-	else
-		set_min_pressure_flag(true);
-
-	if(settings.get_value("draw.min_pressure",value))
+	try
 	{
-		Real n = atof(value.c_str());
-		set_min_pressure(n);
-	}else
-		set_min_pressure(0);
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	if(settings.get_value("draw.feather",value))
-	{
-		Real n = atof(value.c_str());
-		set_feather(n);
-	}else
-		set_feather(0);
+		if(settings.get_value("draw.id",value))
+			set_id(value);
+		else
+			set_id("NewDrawing");
 
-	if(settings.get_value("draw.gthreshold",value))
-	{
-		Real n = atof(value.c_str());
-		set_gthres(n);
+		if(settings.get_value("draw.pressure_width",value) && value=="0")
+			set_pressure_width_flag(false);
+		else
+			set_pressure_width_flag(true);
+
+		if(settings.get_value("draw.auto_loop",value) && value=="0")
+			set_auto_loop_flag(false);
+		else
+			set_auto_loop_flag(true);
+
+		if(settings.get_value("draw.auto_extend",value) && value=="0")
+			set_auto_extend_flag(false);
+		else
+			set_auto_extend_flag(true);
+
+		if(settings.get_value("draw.auto_link",value) && value=="0")
+			set_auto_link_flag(false);
+		else
+			set_auto_link_flag(true);
+
+		if(settings.get_value("draw.region",value) && value=="0")
+			set_region_flag(false);
+		else
+			set_region_flag(true);
+
+		if(settings.get_value("draw.outline",value) && value=="0")
+			set_outline_flag(false);
+		else
+			set_outline_flag(true);
+
+		if(settings.get_value("draw.auto_export",value) && value=="1")
+			set_auto_export_flag(true);
+		else
+			set_auto_export_flag(false);
+
+		if(settings.get_value("draw.min_pressure_on",value) && value=="0")
+			set_min_pressure_flag(false);
+		else
+			set_min_pressure_flag(true);
+
+		if(settings.get_value("draw.min_pressure",value))
+		{
+			Real n = atof(value.c_str());
+			set_min_pressure(n);
+		}else
+			set_min_pressure(0);
+
+		if(settings.get_value("draw.feather",value))
+		{
+			Real n = atof(value.c_str());
+			set_feather(n);
+		}else
+			set_feather(0);
+
+		if(settings.get_value("draw.gthreshold",value))
+		{
+			Real n = atof(value.c_str());
+			set_gthres(n);
+		}
+
+		if(settings.get_value("draw.lthreshold",value))
+		{
+			Real n = atof(value.c_str());
+			set_lthres(n);
+		}
+
+		if(settings.get_value("draw.localize",value) && value == "1")
+			set_local_error_flag(true);
+		else
+			set_local_error_flag(false);
 	}
-
-	if(settings.get_value("draw.lthreshold",value))
+	catch(...)
 	{
-		Real n = atof(value.c_str());
-		set_lthres(n);
+		synfig::warning("State Draw: Caught exception when attempting to load settings.");
 	}
-
-	if(settings.get_value("draw.localize",value) && value == "1")
-		set_local_error_flag(true);
-	else
-		set_local_error_flag(false);
 }
 
 void
 StateDraw_Context::save_settings()
 {
-	settings.set_value("draw.id",get_id().c_str());
-	settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
-	settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
-	settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
-	settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
-	settings.set_value("draw.region",get_region_flag()?"1":"0");
-	settings.set_value("draw.outline",get_outline_flag()?"1":"0");
-	settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
-	settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
-	settings.set_value("draw.feather",strprintf("%f",get_feather()));
-	settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
-	settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
-	settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
-	settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("draw.id",get_id().c_str());
+		settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
+		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
+		settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
+		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
+		settings.set_value("draw.region",get_region_flag()?"1":"0");
+		settings.set_value("draw.outline",get_outline_flag()?"1":"0");
+		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
+		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
+		settings.set_value("draw.feather",strprintf("%f",get_feather()));
+		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
+		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
+		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
+		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
+	}
+	catch(...)
+	{
+		synfig::warning("State Draw: Caught exception when attempting to save settings.");
+	}
 }
 
 void

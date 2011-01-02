@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -147,51 +149,31 @@ ValueNode_DotProduct::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_DotProduct::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_DotProduct::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "lhs";
-		case 1: return "rhs";
-	}
-	return String();
-}
-
-String
-ValueNode_DotProduct::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("LHS");
-		case 1: return _("RHS");
-	}
-	return String();
-}
-
-int
-ValueNode_DotProduct::get_link_index_from_name(const String &name)const
-{
-	if (name=="lhs") return 0;
-	if (name=="rhs") return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_DotProduct::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||
 		type==ValueBase::TYPE_REAL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_DotProduct::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("The left side of the dot product"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("The right side of the dot product"))
+	);
+
+	return ret;
 }

@@ -99,6 +99,7 @@ Layer_SolidColor::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
+		.set_description(_("Fill color of the layer"))
 	);
 
 	return ret;

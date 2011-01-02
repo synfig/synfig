@@ -316,6 +316,7 @@ LayerTree::create_param_tree()
 		cellrenderer_value->property_value()=synfig::ValueBase();
 		column->add_attribute(cellrenderer_value->property_param_desc(), param_model.param_desc);
 		column->add_attribute(cellrenderer_value->property_value_desc(), param_model.value_desc);
+		column->add_attribute(cellrenderer_value->property_child_param_desc(), param_model.child_param_desc);
 		column->add_attribute(cellrenderer_value->property_inconsistent(),param_model.is_inconsistent);
 		//cellrenderer_value->property_canvas()=canvas_interface->get_canvas(); // Is this line necessary?
 		cellrenderer_value->property_attributes()=attr_list;
@@ -918,12 +919,12 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
 			{
-				tooltips_.unset_tip(*this);
-				Glib::ustring tooltips_string(row[layer_model.tooltip]);
+				tooltips_.unset_tip(get_param_tree_view());
+				Glib::ustring tooltips_string(row[param_model.tooltip]);
 				last_tooltip_path=path;
 				if(!tooltips_string.empty())
 				{
-					tooltips_.set_tip(*this,tooltips_string);
+					tooltips_.set_tip(get_param_tree_view(),tooltips_string);
 					tooltips_.force_window();
 				}
 			}

@@ -55,6 +55,8 @@ using namespace synfig;
 synfig::ValueNode_GradientRotate::ValueNode_GradientRotate(const Gradient& x):
 	LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("gradient",ValueNode_Const::create(x));
 	set_link("offset",ValueNode_Const::create(Real(0)));
 }
@@ -131,53 +133,6 @@ ValueNode_GradientRotate::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_GradientRotate::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_GradientRotate::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Gradient");
-		case 1:
-			return _("Offset");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_GradientRotate::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "gradient";
-		case 1:
-			return "offset";
-		default: return String();
-	}
-}
-
-int
-ValueNode_GradientRotate::get_link_index_from_name(const String &name)const
-{
-	if(name=="gradient")
-		return 0;
-	if(name=="offset")
-		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_GradientRotate::get_name()const
 {
@@ -194,4 +149,25 @@ bool
 ValueNode_GradientRotate::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
+}
+
+LinkableValueNode::Vocab
+ValueNode_GradientRotate::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"gradient")
+		.set_local_name(_("Gradient"))
+		.set_description(_("The source gradient to rotate"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"offset")
+		.set_local_name(_("Offset"))
+		.set_description(_("The amount to offset the gradient"))
+	);
+
+	return ret;
 }

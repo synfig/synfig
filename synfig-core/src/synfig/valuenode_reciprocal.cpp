@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -110,44 +112,6 @@ ValueNode_Reciprocal::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Reciprocal::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Reciprocal::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link");
-	if(i==1) return _("Epsilon");
-	if(i==2) return _("Infinite");
-	return String();
-}
-
-String
-ValueNode_Reciprocal::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link";
-	if(i==1) return "epsilon";
-	if(i==2) return "infinite";
-	return String();
-}
-
-int
-ValueNode_Reciprocal::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")     return 0;
-	if(name=="epsilon")  return 1;
-	if(name=="infinite") return 2;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Reciprocal::operator()(Time t)const
 {
@@ -186,4 +150,30 @@ bool
 ValueNode_Reciprocal::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Reciprocal::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to calculate its reciprocal"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		.set_local_name(_("Epsilon"))
+		.set_description(_("The value used to decide whether 'Link' is too small to obtain its reciprocal"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		.set_local_name(_("Infinite"))
+		.set_description(_("The resulting value when 'Link' < 'Epsilon'"))
+	);
+
+	return ret;
 }

@@ -202,13 +202,16 @@ NoiseDistort::get_param_vocab()const
 
 	ret.push_back(ParamDesc("displacement")
 		.set_local_name(_("Displacement"))
+		.set_description(_("How big the distortion displaces the context"))
 	);
 
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
+		.set_description(_("The distance between distortions"))
 	);
 	ret.push_back(ParamDesc("seed")
 		.set_local_name(_("RandomNoise Seed"))
+		.set_description(_("Change to modify the random seed of the noise"))
 	);
 	ret.push_back(ParamDesc("smooth")
 		.set_local_name(_("Interpolation"))
@@ -222,12 +225,15 @@ NoiseDistort::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("detail")
 		.set_local_name(_("Detail"))
+		.set_description(_("Increase to obtain fine details of the noise"))
 	);
 	ret.push_back(ParamDesc("speed")
 		.set_local_name(_("Animation Speed"))
+		.set_description(_("In cycles per second"))
 	);
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
+		.set_description(_("When checked produces turbulent noise"))
 	);
 
 	return ret;

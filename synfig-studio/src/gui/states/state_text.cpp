@@ -163,56 +163,72 @@ StateText::~StateText()
 void
 StateText_Context::load_settings()
 {
-	String value;
-	Vector v;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
+		Vector v;
 
-	//parse the arguments yargh!
-	if(settings.get_value("text.id",value))
-		set_id(value);
-	else
-		set_id("Text");
+		//parse the arguments yargh!
+		if(settings.get_value("text.id",value))
+			set_id(value);
+		else
+			set_id("Text");
 
-	if(settings.get_value("text.paragraph",value) && value=="1")
-		set_paragraph_flag(true);
-	else
-		set_paragraph_flag(false);
+		if(settings.get_value("text.paragraph",value) && value=="1")
+			set_paragraph_flag(true);
+		else
+			set_paragraph_flag(false);
 
-	if(settings.get_value("text.size_x",value))
-		v[0] = atof(value.c_str());
-	else
-		v[0] = 0.25;
-	if(settings.get_value("text.size_y",value))
-		v[1] = atof(value.c_str());
-	else
-		v[1] = 0.25;
-	set_size(v);
+		if(settings.get_value("text.size_x",value))
+			v[0] = atof(value.c_str());
+		else
+			v[0] = 0.25;
+		if(settings.get_value("text.size_y",value))
+			v[1] = atof(value.c_str());
+		else
+			v[1] = 0.25;
+		set_size(v);
 
-	if(settings.get_value("text.orient_x",value))
-		v[0] = atof(value.c_str());
-	else
-		v[0] = 0.5;
-	if(settings.get_value("text.orient_y",value))
-		v[1] = atof(value.c_str());
-	else
-		v[1] = 0.5;
-	set_orientation(v);
+		if(settings.get_value("text.orient_x",value))
+			v[0] = atof(value.c_str());
+		else
+			v[0] = 0.5;
+		if(settings.get_value("text.orient_y",value))
+			v[1] = atof(value.c_str());
+		else
+			v[1] = 0.5;
+		set_orientation(v);
 
-	if(settings.get_value("text.family",value))
-		set_family(value);
-	else
-		set_family("Sans Serif");
+		if(settings.get_value("text.family",value))
+			set_family(value);
+		else
+			set_family("Sans Serif");
+	}
+	catch(...)
+	{
+		synfig::warning("State Text: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateText_Context::save_settings()
 {
-	settings.set_value("text.id",get_id());
-	settings.set_value("text.paragraph",get_paragraph_flag()?"1":"0");
-	settings.set_value("text.size_x",strprintf("%f",(float)get_size()[0]));
-	settings.set_value("text.size_y",strprintf("%f",(float)get_size()[1]));
-	settings.set_value("text.orient_x",strprintf("%f",(float)get_orientation()[0]));
-	settings.set_value("text.orient_y",strprintf("%f",(float)get_orientation()[1]));
-	settings.set_value("text.family",get_family());
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("text.id",get_id());
+		settings.set_value("text.paragraph",get_paragraph_flag()?"1":"0");
+		settings.set_value("text.size_x",strprintf("%f",(float)get_size()[0]));
+		settings.set_value("text.size_y",strprintf("%f",(float)get_size()[1]));
+		settings.set_value("text.orient_x",strprintf("%f",(float)get_orientation()[0]));
+		settings.set_value("text.orient_y",strprintf("%f",(float)get_orientation()[1]));
+		settings.set_value("text.family",get_family());
+	}
+	catch(...)
+	{
+		synfig::warning("State Text: Caught exception when attempting to save settings.");
+	}
 }
 
 void
