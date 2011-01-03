@@ -65,7 +65,11 @@ public:
 	virtual String link_local_name(int i)const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-	// Inserts a new entry at index with time and origin used for
+	//! Inserts a new entry at index with time and origin used for
+	//! \param index the index of the width point where to insert the new one before it
+	//! \param time the time when inserted when in animation mode
+	//! \param origin how much close is the inserted to the index (origin=1.0) or to the previous to index (origin=0.0)
+	//! \return the new List Entry
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
 protected:

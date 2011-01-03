@@ -80,6 +80,9 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 	}
 	// If the bline is not looped then make the cups type rounded for the
 	// first and last width points.
+	// In the future when this function is used to convert old blines to
+	// new wlines the end and start cups should be readed from the oultline
+	// layer
 	if(!bline.get_loop())
 	{
 		iter=ret.back();
@@ -174,18 +177,24 @@ ValueNode_WPList::create_list_entry(int index, Time time, Real origin)
 	next=(*list[next_i].value_node)(time);
 	prev=(*list[prev_i].value_node)(time);
 
-	etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
-
-	synfig::WPListPoint WPList_point;
-	WPList_point.set_vertex(curve(origin));
-	WPList_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
-	WPList_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
-	WPList_point.set_tangent2(WPList_point.get_tangent1());
-	WPList_point.set_split_tangent_flag(false);
-	WPList_point.set_origin(origin);
-
-	ret.value_node=ValueNode_Composite::create(WPList_point);
+	synfig::WidthPoint wpoint;
+	Real ppos(prev.get_position());
+	Real npos(next.get_position());
+	Real pos(ppos+(npos-ppos)*origin);
+	Real pwid(prev.get_width());
+	Real nwid(next.get_width());
+	Real wid(pwid+(nwid-pwid)*origin);
+	// Setup the position
+	wpoint.set_position(pos);
+	// Setup the width
+	// TODO: if in the future there are different interpolations between
+	// width points other than linear, use it here.
+	wpoint.set_width(wid);
+	// Setup the origin
+	wpoint.set_origin(origin);
+	// Note: before and after interpolations are INTERPOLATE by default.
+	// no need to set up here.
+	ret.value_node=ValueNode_Composite::create(wpoint);
 
 	return ret;
 }
