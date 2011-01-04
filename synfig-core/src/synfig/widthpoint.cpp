@@ -115,15 +115,3 @@ WidthPoint::get_cup_type(int i)
 {
 	return i>0? cup_type_[1]: cup_type_[0];
 }
-
-const Real&
-WidthPoint::get_origin()const
-{
-	return origin_;
-}
-
-void
-WidthPoint::set_origin(const Real& x)
-{
-	origin_=x;
-}

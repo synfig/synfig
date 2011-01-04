@@ -45,7 +45,6 @@ private:
 	Real position_;
 	Real width_;
 	int cup_type_[2]; // Before [0] and After[1] cup types
-	Real origin_;
 
 public:
 
@@ -72,8 +71,7 @@ public:
 	int get_cup_type_after();
 	void set_cup_after(int cupafter);
 	int get_cup_type(int i);
-	void set_origin(const Real &origin);
-	const Real& get_origin()const;
+	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
 
 }; // END of class WidthPoint
 
