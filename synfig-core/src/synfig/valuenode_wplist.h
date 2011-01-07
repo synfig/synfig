@@ -66,8 +66,8 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	//! Inserts a new entry at index with time used for
-	//! \param index the index of the width point where to insert the new one before it
-	//! \param time the time when inserted when in animation mode
+	//! \param position the position of the width point to be inserted
+	//! \param time the time when inserted in animation mode
 	//! \return the new List Entry
 	virtual ListEntry create_list_entry(Real position, Time time=0);
 

@@ -53,10 +53,9 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
-// convert_bline_to_width_list(const ValueBase& bline)
-// This fun
+//! Converts a ValueNode_BLine into a WidthPoint list
 ValueBase
-synfig::convert_bline_to_width_list(const ValueBase& bline)
+synfig::convert_bline_to_wpoint_list(const ValueBase& bline)
 {
 	// returns if the parameter is not a list or if it is a list, it is empty
 	if(bline.empty())
@@ -113,9 +112,9 @@ ValueNode_WPList::create(const ValueBase &value)
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=ValueBase::TYPE_LIST)
 		return NULL;
-
+	// create an empty list
 	ValueNode_WPList* value_node(new ValueNode_WPList());
-
+	// If the value parameter is not empty
 	if(!value.empty())
 	{
 		switch(value.get_contained_type())
@@ -169,6 +168,8 @@ ValueNode_WPList::create_list_entry(Real position, Time time)
 	ret.set_parent_value_node(this);
 
 	// TODO: define those functions
+	// Given a time and a postion, those functions returns a valid withpoint
+	// (fully on) before or after that position
 	next=find_next_valid_entry_by_postion(position, time);
 	prev=find_prev_valid_entry_by_postion(position, time);
 
@@ -208,7 +209,6 @@ ValueNode_WPList::operator()(Time t)const
 
 	std::vector<ListEntry>::const_iterator iter,first_iter;
 	bool rising;
-	float next_scale(1.0f);
 
 	WidthPoint curr;
 
@@ -225,7 +225,7 @@ ValueNode_WPList::operator()(Time t)const
 		if (amount > 1.0f - 0.0000001f)
 		{
 			// we store the current width point
-			curr=(*iter->value_node)(t).get(prev);
+			curr=(*iter->value_node)(t).get(curr);
 			// and push back to the returning list
 			ret_list.push_back(curr);
 		}
@@ -234,7 +234,7 @@ ValueNode_WPList::operator()(Time t)const
 		{
 			// This is where the interesting stuff happens
 			// We need to seek in the list to see what the next and prev
-			// active width point are
+			// active width points are
 
 			WidthPoint wp_on;  // the current widthpoint, when fully on
 			WidthPoint wp_off; // the current widthpoint, when fully off
