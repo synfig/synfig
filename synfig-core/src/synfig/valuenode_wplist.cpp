@@ -233,15 +233,9 @@ ValueNode_WPList::operator()(Time t)const
 		else if(amount>0.0f)
 		{
 			// This is where the interesting stuff happens
-			// We need to seek in the list to see what the next and prev
-			// active width points are
-
-			WidthPoint wp_on;  // the current widthpoint, when fully on
-			WidthPoint wp_off; // the current widthpoint, when fully off
 			WidthPoint wp_now; // the current widthpoint, right now (between on and off)
-			WidthPoint wp_prev_off; // the previous width point in terms of position when the current one is fully off
-			WidthPoint wp_next_off; // the next width point in terms of position when the current one is fully off
-
+			WidthPoint wp_prev_off; // the previous width point by position when the current one is fully off
+			WidthPoint wp_next_off; // the next width point by position when the current one is fully off
 			Time off_time, on_time;
 			if(!rising)	// if not rising, then we were fully on in the past, and will be fully off in the future
 			{
@@ -257,18 +251,20 @@ ValueNode_WPList::operator()(Time t)const
 				try{ on_time=iter->find_next(t)->get_time(); }
 				catch(...) { on_time=Time::end(); }
 			}
-
-			wp_on=(*iter->value_node)(on_time).get(wp_on);
-			wp_off=(*iter->value_node)(off_time).get(wp_off);
+			// the current width point at time t
 			wp_now=(*iter->value_node)(t).get(wp_now);
+			// the previous by position width point fully off at fully off time of the current one
 			wp_prev_off=find_prev_valid_entry_by_postion(position, off_time);
+			// the next by position width point fully off at fully off time of the current one
 			wp_next_off=find_next_valid_entry_by_postion(position, off_time);
 			// TODO: interpolate_width member function
+			// off_width is the width considering that the current point is fully off
 			Real off_width(interpolate_width(wp_prev_off, wp_next_off, position));
-			Real on_width(wp_on.get_width());
-			// linear interpolation
-			// TODO: use the wp_now width to scale the result
-			wp_now.set_width(off_width+(on_width-off_width)*amount);
+			Real now_width(wp_now.get_width());
+			// linear interpolation by amount
+			wp_now.set_width(off_width*(1-amount)+(now_width)*amount);
+			// now insert the calculated width point into the widht list
+			ret_list.push_back(wp_now);
 		}
 	if(list.empty())
 		synfig::warning(string("ValueNode_WPList::operator()():")+_("No entries in list"));
