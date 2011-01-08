@@ -70,6 +70,10 @@ public:
 	//! \param time the time when inserted in animation mode
 	//! \return the new List Entry
 	virtual ListEntry create_list_entry(Real position, Time time=0);
+	//! Finds a fully on width point at given time and after the given position
+	synfig::WidthPoint find_next_valid_entry_by_postion(Real position, Time time=0)const;
+	//! Finds a fully on width point at given time and before the given position
+	synfig::WidthPoint find_prev_valid_entry_by_postion(Real position, Time time=0)const;
 
 protected:
 

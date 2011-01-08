@@ -55,7 +55,7 @@ using namespace synfig;
 
 //! Converts a ValueNode_BLine into a WidthPoint list
 ValueBase
-synfig::convert_bline_to_wpoint_list(const ValueBase& bline)
+synfig::convert_bline_to_wplist(const ValueBase& bline)
 {
 	// returns if the parameter is not a list or if it is a list, it is empty
 	if(bline.empty())
@@ -135,7 +135,7 @@ ValueNode_WPList::create(const ValueBase &value)
 		case ValueBase::TYPE_BLINEPOINT:
 		{
 			// this will create a standard list of width points
-			std::vector<WidthPoint> wplist(convert_bline_to_width_list(value));
+			std::vector<WidthPoint> wplist(convert_bline_to_wplist(value));
 			// and then let's call again the create method to convert the
 			// standard list of widthpoints to a ValueNode_WPList
 			return create(wplist);
@@ -207,7 +207,7 @@ ValueNode_WPList::operator()(Time t)const
 
 	std::vector<WidthPoint> ret_list;
 
-	std::vector<ListEntry>::const_iterator iter,first_iter;
+	std::vector<ListEntry>::const_iterator iter;
 	bool rising;
 
 	WidthPoint curr;
@@ -305,3 +305,44 @@ ValueNode_WPList::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_LIST;
 }
+
+synfig::WidthPoint
+ValueNode_WPList::find_next_valid_entry_by_postion(Real position, Time time=0)const
+{
+	std::vector<ListEntry>::const_iterator iter;
+	Real next_pos(10000.0);
+	synfig::WidthPoint curr, next_ret(next_pos, 0.0);
+	for(iter=list.begin();iter!=list.end();++iter)
+	{
+		curr=(*iter->value_node)(t).get(curr)
+		Real curr_pos(curr.get_position());
+		bool status(iter->status_at_time(time);
+		if((curr_pos => position && curr_pos <=next_pos) && status)
+		{
+			next_pos=curr_pos;
+			next_ret=curr;
+		}
+	}
+	return next_ret;
+}
+
+synfig::WidthPoint
+ValueNode_WPList::find_prev_valid_entry_by_postion(Real position, Time time=0)const
+{
+	std::vector<ListEntry>::const_iterator iter;
+	Real prev_pos(-10000.0);
+	synfig::WidthPoint curr, prev_ret(prev_pos, 0.0);
+	for(iter=list.begin();iter!=list.end();++iter)
+	{
+		curr=(*iter->value_node)(t).get(curr)
+		Real curr_pos(curr.get_position());
+		bool status(iter->status_at_time(time);
+		if((curr_pos <= position && curr_pos >=prev_pos) && status)
+		{
+			prev_pos=curr_pos;
+			prev_ret=curr;
+		}
+	}
+	return prev_ret;
+}
+
