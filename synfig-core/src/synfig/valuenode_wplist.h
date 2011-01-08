@@ -71,9 +71,26 @@ public:
 	//! \return the new List Entry
 	virtual ListEntry create_list_entry(Real position, Time time=0);
 	//! Finds a fully on width point at given time and after the given position
-	synfig::WidthPoint find_next_valid_entry_by_postion(Real position, Time time=0)const;
+	//! \param position the position where to start to seek from
+	//! \param time the time when things are evaluated
+	//! \return a width point reference with the proper values
+	WidthPoint& find_next_valid_entry_by_position(Real position, Time time=0)const;
 	//! Finds a fully on width point at given time and before the given position
-	synfig::WidthPoint find_prev_valid_entry_by_postion(Real position, Time time=0)const;
+	//! \param position the position where to start to seek from
+	//! \param time the time when things are evaluated
+	//! \return a width point reference with the proper values
+	WidthPoint& find_prev_valid_entry_by_position(Real position, Time time=0)const;
+	//! Interpolated width at a a given time based on surrounding full 'on' widht points
+	//! \param position the position where to evaluate the width
+	//! \param time the time when evaluates
+	//! \return the interpolated width
+	const Real& interpolated_width(Real position, Time time);
+	//! Interpolated width
+	//! \param prev the previous width point to evaluate the width
+	//! \param next the next width point to evaluate the width
+	//! \param position the position to interpolate between prev and next
+	//! \return the interpolated width based on surrounding width points and its values
+	const Real& interpolate(WidthPoint& prev, WidthPoint& next, Real position);
 
 protected:
 

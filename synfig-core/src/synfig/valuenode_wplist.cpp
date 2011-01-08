@@ -156,45 +156,15 @@ ValueNode_WPList::ListEntry
 ValueNode_WPList::create_list_entry(Real position, Time time)
 {
 	ValueNode_WPList::ListEntry ret;
-
-	synfig::WidthPoint prev,next;
-
-	int prev_i,next_i;
-	int index(0);
-
+	WidthPoint wpoint(position, interpolated_width(position, time));
 	// as width points are unsorted in terms of position,
 	// we always insert the width point at the begining of the list
-	ret.index=index;
+	ret.index=0;
 	ret.set_parent_value_node(this);
-
-	// TODO: define those functions
-	// Given a time and a postion, those functions returns a valid withpoint
-	// (fully on) before or after that position
-	next=find_next_valid_entry_by_postion(position, time);
-	prev=find_prev_valid_entry_by_postion(position, time);
-
-	synfig::WidthPoint wpoint;
-	Real ppos(prev.get_position());
-	Real npos(next.get_position());
-	Real pos;
-	if(npos-ppos < Real(0.0000001f))
-		pos=0.5;
-	else
-	// linear interpolation
-		pos=(position-ppos)/(npos-ppos);
-	Real pwid(prev.get_width());
-	Real nwid(next.get_width());
-	Real wid(pwid+(nwid-pwid)*pos);
-	// Setup the position
-	wpoint.set_position(position);
-	// Setup the width
-	// TODO: if in the future there are different interpolations between
-	// width points other than linear, use it here.
-	wpoint.set_width(wid);
 	// Note: before and after interpolations are INTERPOLATE by default.
-	// no need to set up here.
+	// not need to set up here.
+	//TODO: Composite should accept WidthPoints
 	ret.value_node=ValueNode_Composite::create(wpoint);
-
 	return ret;
 }
 
@@ -212,59 +182,47 @@ ValueNode_WPList::operator()(Time t)const
 
 	WidthPoint curr;
 
-	// loop through all the list's entries
+	// go through all the list's entries
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		// how 'on' is this widthpoint?
 		float amount(iter->amount_at_time(t,&rising));
-
 		assert(amount>=0.0f);
 		assert(amount<=1.0f);
-
+		// we store the current width point
+		curr=(*iter->value_node)(t).get(curr);
 		// it's fully on
 		if (amount > 1.0f - 0.0000001f)
 		{
-			// we store the current width point
-			curr=(*iter->value_node)(t).get(curr);
-			// and push back to the returning list
+			// push back to the returning list
 			ret_list.push_back(curr);
 		}
 		// it's partly on
 		else if(amount>0.0f)
 		{
 			// This is where the interesting stuff happens
-			WidthPoint wp_now; // the current widthpoint, right now (between on and off)
-			WidthPoint wp_prev_off; // the previous width point by position when the current one is fully off
-			WidthPoint wp_next_off; // the next width point by position when the current one is fully off
 			Time off_time, on_time;
-			if(!rising)	// if not rising, then we were fully on in the past, and will be fully off in the future
+			if(!rising)	// if not rising, then we were fully 'on' in the past, and will be fully 'off' in the future
 			{
 				try{ on_time=iter->find_prev(t)->get_time(); }
 				catch(...) { on_time=Time::begin(); }
 				try{ off_time=iter->find_next(t)->get_time(); }
 				catch(...) { off_time=Time::end(); }
 			}
-			else // otherwise we were fully off in the past, and will be fully on in the future
+			else // otherwise we were fully 'off' in the past, and will be fully 'on' in the future
 			{
 				try{ off_time=iter->find_prev(t)->get_time(); }
 				catch(...) { off_time=Time::begin(); }
 				try{ on_time=iter->find_next(t)->get_time(); }
 				catch(...) { on_time=Time::end(); }
 			}
-			// the current width point at time t
-			wp_now=(*iter->value_node)(t).get(wp_now);
-			// the previous by position width point fully off at fully off time of the current one
-			wp_prev_off=find_prev_valid_entry_by_postion(position, off_time);
-			// the next by position width point fully off at fully off time of the current one
-			wp_next_off=find_next_valid_entry_by_postion(position, off_time);
-			// TODO: interpolate_width member function
-			// off_width is the width considering that the current point is fully off
-			Real off_width(interpolate_width(wp_prev_off, wp_next_off, position));
-			Real now_width(wp_now.get_width());
+			// i_width is the interpolated width at current time given by fully 'on' surrounding width points
+			Real i_width(interpolated_width(curr.get_norm_position(), time));
+			Real curr_width(curr.get_width());
 			// linear interpolation by amount
-			wp_now.set_width(off_width*(1-amount)+(now_width)*amount);
+			curr.set_width(i_width*(1.0-amount)+(curr_width)*amount);
 			// now insert the calculated width point into the widht list
-			ret_list.push_back(wp_now);
+			ret_list.push_back(curr);
 		}
 	if(list.empty())
 		synfig::warning(string("ValueNode_WPList::operator()():")+_("No entries in list"));
@@ -306,18 +264,18 @@ ValueNode_WPList::check_type(ValueBase::Type type)
 	return type==ValueBase::TYPE_LIST;
 }
 
-synfig::WidthPoint
-ValueNode_WPList::find_next_valid_entry_by_postion(Real position, Time time=0)const
+synfig::WidthPoint&
+ValueNode_WPList::find_next_valid_entry_by_position(Real position, Time time=0)const
 {
 	std::vector<ListEntry>::const_iterator iter;
-	Real next_pos(10000.0);
+	Real next_pos(1.0);
 	synfig::WidthPoint curr, next_ret(next_pos, 0.0);
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
-		curr=(*iter->value_node)(t).get(curr)
-		Real curr_pos(curr.get_position());
-		bool status(iter->status_at_time(time);
-		if((curr_pos => position && curr_pos <=next_pos) && status)
+		curr=(*iter->value_node)(time).get(curr)
+		Real curr_pos(curr.get_norm_position());
+		bool status(*iter->status_at_time(time);
+		if((curr_pos => position) && (curr_pos <= next_pos) && status)
 		{
 			next_pos=curr_pos;
 			next_ret=curr;
@@ -326,18 +284,18 @@ ValueNode_WPList::find_next_valid_entry_by_postion(Real position, Time time=0)co
 	return next_ret;
 }
 
-synfig::WidthPoint
-ValueNode_WPList::find_prev_valid_entry_by_postion(Real position, Time time=0)const
+synfig::WidthPoint&
+ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time=0)const
 {
 	std::vector<ListEntry>::const_iterator iter;
-	Real prev_pos(-10000.0);
+	Real prev_pos(-0.0);
 	synfig::WidthPoint curr, prev_ret(prev_pos, 0.0);
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
-		curr=(*iter->value_node)(t).get(curr)
-		Real curr_pos(curr.get_position());
-		bool status(iter->status_at_time(time);
-		if((curr_pos <= position && curr_pos >=prev_pos) && status)
+		curr=(*iter->value_node)(time).get(curr)
+		Real curr_pos(curr.get_norm_position());
+		bool status(*iter->status_at_time(time);
+		if((curr_pos <= position) && (curr_pos >= prev_pos) && status)
 		{
 			prev_pos=curr_pos;
 			prev_ret=curr;
@@ -346,3 +304,55 @@ ValueNode_WPList::find_prev_valid_entry_by_postion(Real position, Time time=0)co
 	return prev_ret;
 }
 
+const Real&
+ValueNode_WPList::interpolated_width(Real position, Time time)
+{
+	synfig::WidthPoint prev, next;
+	prev=find_prev_valid_entry_by_position(position, time);
+	next=find_next_valid_entry_by_position(position, time);
+	return interpolate(prev, next, position);
+}
+
+const Real&
+ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)
+{
+	WidthPoint::CupType cup_int(WidthPoint::CUPTYPE_INTERPOLATE);
+	Real ppos, npos;
+
+	Real nw, pw, rw(0.0);
+	npos=next.get_norm_position();
+	pops=prev.get_norm_position();
+	nw=next.get_width();
+	pw=prev.get_width();
+	if(position < npos && position > ppos)
+	{
+		Real p;
+		if(next.get_cup_type_before() != cup_int)
+			nw=0.0;
+		if(prev.get_cup_type_after() != cup_int)
+			pw=0.0;
+		//if previous and next are so close
+		if(npos-ppos < Real(0.0000001f))
+			p=0.5;
+		else
+			// linear interpolation
+			p=(position-ppos)/(npos-ppos);
+		rw=pw+(nw-pw)*p
+	}
+	else if(position > npos)
+	{
+		if(next.get_cup_type_after() == cup_int)
+			rw=nw;
+	}
+	else if(position < ppos)
+	{
+		if(prev.get_cup_type_before() == cup_int)
+			rw=pw;
+	}
+	else if(position == npos)
+		rw=nw;
+	else if(position == ppos)
+		rw=pw;
+
+	return rw;
+}
