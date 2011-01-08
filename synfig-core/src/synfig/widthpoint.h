@@ -62,6 +62,8 @@ public:
 
 	const Real& get_position()const;
 	void set_position(const Real& x);
+	// gets the normalised position: converts it to be inside [0,1]
+	const Real& get_norm_position()const
 
 	const Real& get_width()const;
 	void set_width(Real x);
