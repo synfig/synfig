@@ -43,6 +43,7 @@
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -246,7 +247,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 			// bline
 			if(iter->second.get_type()==ValueBase::TYPE_LIST)
 			{
-				// check whether it's a list of blinepoints only
+				// check whether it's a list of blinepoints or widthpoints only
 				vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
@@ -259,8 +260,16 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 						value_node=LinkableValueNode::create("bline",iter->second);
 						ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
+					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+						if (iter2->get_type() != ValueBase::TYPE_WIDTHPOINT)
+							break;
+					if (iter2 == list.end())
+					{
+						value_node=LinkableValueNode::create("wplist",iter->second);
+						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
 				}
-
+				// it has something else so just insert the dynamic list
 				if (!value_node)
 					value_node=LinkableValueNode::create("dynamic_list",iter->second);
 			}
