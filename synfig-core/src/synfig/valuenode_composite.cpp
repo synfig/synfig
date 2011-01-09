@@ -89,6 +89,15 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
 			break;
 		}
+		case ValueBase::TYPE_WIDTHPOINT:
+		{
+			WidthPoint wpoint(value);
+			set_link("position",ValueNode_Const::create(wpoint.get_position()));
+			set_link("width",ValueNode_Const::create(wpoint.get_width()));
+			set_link("cup_before",ValueNode_Const::create(wpoint.get_cup_type_before()));
+			set_link("cup_after",ValueNode_Const::create(wpoint.get_cup_type_after()));
+			break;
+		}
 		default:
 			assert(0);
 			throw Exception::BadType(ValueBase::type_local_name(get_type()));
@@ -161,6 +170,16 @@ synfig::ValueNode_Composite::operator()(Time t)const
 				ret.set_tangent2((*components[5])(t).get(Vector()));
 			return ret;
 		}
+		case ValueBase::TYPE_WIDTHPOINT:
+		{
+			WidthPoint ret;
+			assert(components[0] && components[1] && components[2] && components[3]);
+			ret.set_position((*components[0])(t).get(Real()));
+			ret.set_width((*components[1])(t).get(Real()));
+			ret.set_cup_type_before((*components[2])(t).get(int()));
+			ret.set_cup_type_after((*components[3])(t).get(int()));
+			return ret;
+		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
@@ -181,6 +200,8 @@ ValueNode_Composite::link_count()const
 		return 4;
 	case ValueBase::TYPE_BLINEPOINT:
 		return 6;
+	case ValueBase::TYPE_WIDTHPOINT:
+		return 4;
 	default:
 		synfig::warning(string("ValueNode_Composite::component_count():")+_("Bad type for composite"));
 		return 1;
@@ -236,6 +257,19 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return true;
 			}
 			if(i==3 && x->get_type()==ValueBase(bool()).get_type())
+			{
+				components[i]=x;
+				return true;
+			}
+			break;
+
+		case ValueBase::TYPE_WIDTHPOINT:
+			if((i==0 || i==1) && x->get_type()==ValueBase(Real()).get_type())
+			{
+				components[i]=x;
+				return true;
+			}
+			if((i==2 || i==3) && x->get_type()==ValueBase(int()).get_type())
 			{
 				components[i]=x;
 				return true;
@@ -300,6 +334,16 @@ ValueNode_Composite::link_local_name(int i)const
 			else if(i==5)
 				return _("Tangent 2");
 
+		case ValueBase::TYPE_WIDTHPOINT:
+			if(i==0)
+				return _("Position");
+			else if(i==1)
+				return _("Width");
+			else if(i==2)
+				return _("Cup Type Before");
+			else if(i==3)
+				return _("Cup Type After");
+
 		default:
 			assert(0);
 			// notice that Composite counts from 1 and Radial Composite counts
@@ -356,6 +400,16 @@ ValueNode_Composite::link_name(int i)const
 		case 5: return "t2";
 		}
 		break;
+	case ValueBase::TYPE_WIDTHPOINT:
+		switch(i)
+		{
+		case 0: return "position";
+		case 1: return "width";
+		case 2: return "cup_before";
+		case 3: return "cup_after";
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -416,6 +470,15 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="t2")
 			return 5;
+	case ValueBase::TYPE_WIDTHPOINT:
+		if(name=="position")
+			return 0;
+		if(name=="width")
+			return 1;
+		if(name=="cup_before")
+			return 2;
+		if(name=="cup_after")
+			return 3;
 	default:
 		break;
 	}
@@ -442,5 +505,6 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_SEGMENT ||
 		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_BLINEPOINT;
+		type==ValueBase::TYPE_BLINEPOINT||
+		type==ValueBase::TYPE_WIDTHPOINT;
 }

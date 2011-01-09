@@ -127,7 +127,6 @@ ValueNode_WPList::create(const ValueBase &value)
 
 			for(iter=list.begin();iter!=list.end();iter++)
 			{
-				//TODO: Composite should handle WidthPoints ************
 				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
 			}
 			value_node->set_loop(value.get_loop());
@@ -164,8 +163,7 @@ ValueNode_WPList::create_list_entry(Real position, Time time)
 	ret.index=0;
 	ret.set_parent_value_node(this);
 	// Note: before and after interpolations are INTERPOLATE by default.
-	// not need to set up here.
-	//TODO: Composite should accept WidthPoints
+	// not need to set it up here.
 	ret.value_node=ValueNode_Composite::create(wpoint);
 	return ret;
 }
