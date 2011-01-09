@@ -244,7 +244,7 @@ ValueNode_WPList::link_local_name(int i)const
 String
 ValueNode_WPList::get_name()const
 {
-	return "WPList";
+	return "wplist";
 }
 
 String
