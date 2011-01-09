@@ -61,6 +61,7 @@ class Time;
 class Segment;
 class Gradient;
 class BLinePoint;
+class WidthPoint;
 class Color;
 
 /*!	\class ValueBase
@@ -364,6 +365,7 @@ public:
 
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
+	operator const WidthPoint&()const {  return get(WidthPoint()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }

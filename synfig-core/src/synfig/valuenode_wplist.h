@@ -36,12 +36,15 @@
 #include "time.h"
 #include "uniqueid.h"
 #include "widthpoint.h"
+#include "valuenode_dynamiclist.h"
 
 /* === M A C R O S ========================================================= */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+//! Converts a ValueNode_BLine into a WidthPoint list
+synfig::ValueBase convert_bline_to_wplist(const ValueBase& bline);
 
 /*! \class ValueNode_WPList
 **	\brief This class implements a list of Width Points
@@ -74,23 +77,23 @@ public:
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated
 	//! \return a width point reference with the proper values
-	WidthPoint& find_next_valid_entry_by_position(Real position, Time time=0)const;
+	WidthPoint find_next_valid_entry_by_position(Real position, Time time=0)const;
 	//! Finds a fully on width point at given time and before the given position
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated
 	//! \return a width point reference with the proper values
-	WidthPoint& find_prev_valid_entry_by_position(Real position, Time time=0)const;
+	WidthPoint find_prev_valid_entry_by_position(Real position, Time time=0)const;
 	//! Interpolated width at a a given time based on surrounding full 'on' widht points
 	//! \param position the position where to evaluate the width
 	//! \param time the time when evaluates
 	//! \return the interpolated width
-	const Real& interpolated_width(Real position, Time time);
+	Real interpolated_width(Real position, Time time)const;
 	//! Interpolated width
 	//! \param prev the previous width point to evaluate the width
 	//! \param next the next width point to evaluate the width
 	//! \param position the position to interpolate between prev and next
 	//! \return the interpolated width based on surrounding width points and its values
-	const Real& interpolate(WidthPoint& prev, WidthPoint& next, Real position);
+	Real interpolate(WidthPoint& prev, WidthPoint& next, Real position)const;
 
 protected:
 

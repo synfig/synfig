@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <math.h>
 #include "widthpoint.h"
 
 #endif
@@ -68,10 +69,10 @@ WidthPoint::get_position()const
 	return position_;
 }
 
-const Real&
+Real
 WidthPoint::get_norm_position()const
 {
-	Real ret_pos(fabs(fmod(position_, 1.0f));
+	Real ret_pos(fabs(fmod(position_, 1.0f)));
 	if(fabs(position_) >= 1.0 && ret_pos==0.0)
 		return 1.0;
 	return ret_pos;

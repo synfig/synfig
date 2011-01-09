@@ -63,15 +63,15 @@ public:
 	const Real& get_position()const;
 	void set_position(const Real& x);
 	// gets the normalised position: converts it to be inside [0,1]
-	const Real& get_norm_position()const
+	Real get_norm_position()const;
 
 	const Real& get_width()const;
 	void set_width(Real x);
 
 	int get_cup_type_before();
-	void set_cup_before(int cupbefore);
+	void set_cup_type_before(int cupbefore);
 	int get_cup_type_after();
-	void set_cup_after(int cupafter);
+	void set_cup_type_after(int cupafter);
 	int get_cup_type(int i);
 	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
 

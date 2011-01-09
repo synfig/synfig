@@ -113,7 +113,8 @@ VALUENODEHEADERS = \
 	valuenode_vectorangle.h \
 	valuenode_vectorlength.h \
 	valuenode_vectorx.h \
-	valuenode_vectory.h
+	valuenode_vectory.h \
+	valuenode_wplist.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -166,7 +167,8 @@ VALUENODESOURCES = \
 	valuenode_vectorangle.cpp \
 	valuenode_vectorlength.cpp \
 	valuenode_vectorx.cpp \
-	valuenode_vectory.cpp
+	valuenode_vectory.cpp \
+	valuenode_wplist.cpp
 
 
 VALUEHEADERS = \
