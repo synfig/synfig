@@ -86,9 +86,9 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 		std::vector<WidthPoint>::iterator iter;
 		iter=ret.end();
 		iter--;
-		iter->set_cup_type_after(WidthPoint::CUPTYPE_ROUNDED);
+		iter->set_side_type_after(WidthPoint::TYPE_ROUNDED);
 		iter=ret.begin();
-		iter->set_cup_type_before(WidthPoint::CUPTYPE_ROUNDED);
+		iter->set_side_type_before(WidthPoint::TYPE_ROUNDED);
 	}
 
 	return ValueBase(ret);
@@ -317,7 +317,7 @@ ValueNode_WPList::interpolated_width(Real position, Time time)const
 Real
 ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)const
 {
-	WidthPoint::CupType cup_int(WidthPoint::CUPTYPE_INTERPOLATE);
+	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
 	Real ppos, npos;
 
 	Real nw, pw, rw(0.0);
@@ -328,9 +328,9 @@ ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)
 	if(position < npos && position > ppos)
 	{
 		Real p;
-		if(next.get_cup_type_before() != cup_int)
+		if(next.get_side_type_before() != side_int)
 			nw=0.0;
-		if(prev.get_cup_type_after() != cup_int)
+		if(prev.get_side_type_after() != side_int)
 			pw=0.0;
 		//if previous and next are so close
 		if(npos-ppos < Real(0.0000001f))
@@ -342,12 +342,12 @@ ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)
 	}
 	else if(position > npos)
 	{
-		if(next.get_cup_type_after() == cup_int)
+		if(next.get_side_type_after() == side_int)
 			rw=nw;
 	}
 	else if(position < ppos)
 	{
-		if(prev.get_cup_type_before() == cup_int)
+		if(prev.get_side_type_before() == side_int)
 			rw=pw;
 	}
 	else if(position == npos)

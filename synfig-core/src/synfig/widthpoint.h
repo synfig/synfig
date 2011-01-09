@@ -44,21 +44,21 @@ class WidthPoint : public UniqueID
 private:
 	Real position_;
 	Real width_;
-	int cup_type_[2]; // Before [0] and After[1] cup types
+	int side_type_[2]; // Before [0] and After[1] side types
 
 public:
 
-	enum CupType
+	enum SideType
 	{
-		CUPTYPE_INTERPOLATE					=0,
-		CUPTYPE_ROUNDED						=1,
-		CUPTYPE_SQUARED						=2,
-		CUPTYPE_PEAK						=3
+		TYPE_INTERPOLATE     =0,
+		TYPE_ROUNDED         =1,
+		TYPE_SQUARED         =2,
+		TYPE_PEAK            =3
 	};
 
 	WidthPoint();
-	WidthPoint(Real position, Real width, int cupbefore=CUPTYPE_INTERPOLATE,
-		int cupafter=CUPTYPE_INTERPOLATE);
+	WidthPoint(Real position, Real width, int sidebefore=TYPE_INTERPOLATE,
+		int sideafter=TYPE_INTERPOLATE);
 
 	const Real& get_position()const;
 	void set_position(const Real& x);
@@ -68,11 +68,11 @@ public:
 	const Real& get_width()const;
 	void set_width(Real x);
 
-	int get_cup_type_before();
-	void set_cup_type_before(int cupbefore);
-	int get_cup_type_after();
-	void set_cup_type_after(int cupafter);
-	int get_cup_type(int i);
+	int get_side_type_before();
+	void set_side_type_before(int sidebefore);
+	int get_side_type_after();
+	void set_side_type_after(int sideafter);
+	int get_side_type(int i);
 	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
 
 }; // END of class WidthPoint

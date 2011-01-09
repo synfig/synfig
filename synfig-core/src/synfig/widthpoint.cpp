@@ -52,15 +52,15 @@ WidthPoint::WidthPoint():
 	position_(0.0),
 	width_(0.01)
 {
-	cup_type_[0] = cup_type_[1] = CUPTYPE_INTERPOLATE;
+	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
 }
 
-WidthPoint::WidthPoint(Real position, Real width, int cupbefore, int cupafter):
+WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter):
 	position_(position),
 	width_(width)
 {
-	cup_type_[0]=cupbefore;
-	cup_type_[1]=cupafter;
+	side_type_[0]=sidebefore;
+	side_type_[1]=sideafter;
 }
 
 const Real&
@@ -98,31 +98,31 @@ WidthPoint::set_width(Real x)
 }
 
 int
-WidthPoint::get_cup_type_before()
+WidthPoint::get_side_type_before()
 {
-	return cup_type_[0];
+	return side_type_[0];
 }
 
 void
-WidthPoint::set_cup_type_before(int cupbefore)
+WidthPoint::set_side_type_before(int sidebefore)
 {
-	cup_type_[0]=cupbefore;
+	side_type_[0]=sidebefore;
 }
 
 int
-WidthPoint::get_cup_type_after()
+WidthPoint::get_side_type_after()
 {
-	return cup_type_[1];
+	return side_type_[1];
 }
 
 void
-WidthPoint::set_cup_type_after(int cupafter)
+WidthPoint::set_side_type_after(int sideafter)
 {
-	cup_type_[1]=cupafter;
+	side_type_[1]=sideafter;
 }
 
 int
-WidthPoint::get_cup_type(int i)
+WidthPoint::get_side_type(int i)
 {
-	return i>0? cup_type_[1]: cup_type_[0];
+	return i>0? side_type_[1]: side_type_[0];
 }

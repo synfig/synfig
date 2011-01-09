@@ -94,8 +94,8 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			WidthPoint wpoint(value);
 			set_link("position",ValueNode_Const::create(wpoint.get_position()));
 			set_link("width",ValueNode_Const::create(wpoint.get_width()));
-			set_link("cup_before",ValueNode_Const::create(wpoint.get_cup_type_before()));
-			set_link("cup_after",ValueNode_Const::create(wpoint.get_cup_type_after()));
+			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
+			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
 			break;
 		}
 		default:
@@ -176,8 +176,8 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			assert(components[0] && components[1] && components[2] && components[3]);
 			ret.set_position((*components[0])(t).get(Real()));
 			ret.set_width((*components[1])(t).get(Real()));
-			ret.set_cup_type_before((*components[2])(t).get(int()));
-			ret.set_cup_type_after((*components[3])(t).get(int()));
+			ret.set_side_type_before((*components[2])(t).get(int()));
+			ret.set_side_type_after((*components[3])(t).get(int()));
 			return ret;
 		}
 		default:
@@ -405,8 +405,8 @@ ValueNode_Composite::link_name(int i)const
 		{
 		case 0: return "position";
 		case 1: return "width";
-		case 2: return "cup_before";
-		case 3: return "cup_after";
+		case 2: return "side_before";
+		case 3: return "side_after";
 		}
 		break;
 
@@ -475,9 +475,9 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 0;
 		if(name=="width")
 			return 1;
-		if(name=="cup_before")
+		if(name=="side_before")
 			return 2;
-		if(name=="cup_after")
+		if(name=="side_after")
 			return 3;
 	default:
 		break;
