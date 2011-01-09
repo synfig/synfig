@@ -57,6 +57,7 @@
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
+#include "valuenode_wplist.h"
 
 #include "layer.h"
 #include "string.h"
@@ -1423,7 +1424,9 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 handle<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
-	assert(element->get_name()=="dynamic_list" || element->get_name()=="bline");
+	assert(element->get_name()=="dynamic_list" ||
+		element->get_name()=="bline" ||
+		element->get_name()=="wplist");
 
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
 
@@ -1443,6 +1446,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	handle<ValueNode_DynamicList> value_node;
 	handle<ValueNode_BLine> bline_value_node;
+	handle<ValueNode_WPList> wplist_value_node;
 
 	if(element->get_name()=="bline")
 	{
@@ -1455,7 +1459,18 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 				bline_value_node->set_loop(false);
 		}
-
+	}
+	else if(element->get_name()=="wplist")
+	{
+		value_node=wplist_value_node=ValueNode_WPList::create();
+		if(element->get_attribute("loop"))
+		{
+			String loop=element->get_attribute("loop")->get_value();
+			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
+				wplist_value_node->set_loop(true);
+			else
+				wplist_value_node->set_loop(false);
+		}
 	}
 	else
 		value_node=ValueNode_DynamicList::create(type);
@@ -1676,6 +1691,9 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(element->get_name()=="bline") // This is not a typo. The dynamic list parser will parse a bline.
+		value_node=parse_dynamic_list(element,canvas);
+	else
+	if(element->get_name()=="wplist") // This is not a typo. The dynamic list parser will parse a wplist.
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(LinkableValueNode::book().count(element->get_name()))

@@ -42,6 +42,7 @@
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
 #include "valuenode_bline.h"
+#include "valuenode_wplist.h"
 #include "time.h"
 #include "keyframe.h"
 #include "layer.h"
@@ -362,10 +363,18 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
 
 	ValueNode_BLine::ConstHandle bline_value_node(ValueNode_BLine::ConstHandle::cast_dynamic(value_node));
+	ValueNode_BLine::ConstHandle wplist_value_node(ValueNode_WPList::ConstHandle::cast_dynamic(value_node));
 
 	if(bline_value_node)
 	{
 		if(bline_value_node->get_loop())
+			root->set_attribute("loop","true");
+		else
+			root->set_attribute("loop","false");
+	}
+	if(wplist_value_node)
+	{
+		if(wplist_value_node->get_loop())
 			root->set_attribute("loop","true");
 		else
 			root->set_attribute("loop","false");
