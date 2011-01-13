@@ -59,6 +59,8 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase::Type &x):
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(x.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -118,38 +120,6 @@ ValueNode_Integer::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Integer::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_Integer::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Integer");
-	return String();
-}
-
-String
-ValueNode_Integer::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "integer";
-	return String();
-}
-
-int
-ValueNode_Integer::get_link_index_from_name(const String &name)const
-{
-	if(name=="integer") return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Integer::operator()(Time t)const
 {
@@ -196,4 +166,20 @@ ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 //		type==ValueBase::TYPE_BOOL  ||
 //		type==ValueBase::TYPE_REAL  ||
 //		type==ValueBase::TYPE_TIME;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Integer::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"integer")
+		.set_local_name(_("Integer"))
+		.set_description(_("The integer value to be converted"))
+	);
+
+	return ret;
 }

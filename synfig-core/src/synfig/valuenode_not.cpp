@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_Not::ValueNode_Not(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	bool value(x.get(bool()));
 
 	set_link("link",         ValueNode_Const::create(!value));
@@ -97,38 +99,6 @@ ValueNode_Not::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Not::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_Not::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link");
-	return String();
-}
-
-String
-ValueNode_Not::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link";
-	return String();
-}
-
-int
-ValueNode_Not::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")     return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Not::operator()(Time t)const
 {
@@ -156,4 +126,20 @@ bool
 ValueNode_Not::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Not::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("Value node used to do the NOT operation"))
+	);
+
+	return ret;
 }

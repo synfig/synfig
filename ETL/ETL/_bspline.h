@@ -91,11 +91,11 @@ public:
 			while(m>(signed)_cpoints.size())
 				m--;
 			for(i=0;i<m;i++)
-				*_knots.insert(_knots.end())=0;
+				_knots.insert(_knots.end(), 0);
 			for(i=1;i<(signed)_cpoints.size()-m+1;i++)
-				*_knots.insert(_knots.end())=i;
+				_knots.insert(_knots.end(), i);
 			for(i=0;i<m;i++)
-				*_knots.insert(_knots.end())=_cpoints.size()-m+1;
+				_knots.insert(_knots.end(), _cpoints.size()-m+1);
 		}
 		else
 		{
@@ -105,7 +105,7 @@ public:
 			while(m>(signed)_cpoints.size())
 				m--;
 			for(i=0;i<=(signed)_cpoints.size()-m+1;i++)
-				*_knots.insert(_knots.end())=i;
+				_knots.insert(_knots.end(), i);
 		}
 	}
 

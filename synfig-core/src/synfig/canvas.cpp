@@ -714,7 +714,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 	Layer::LooseHandle loose_layer(x);
 
 	add_connection(loose_layer,
-				   sigc::connection::connection(
+				   sigc::connection(
 					   x->signal_added_to_group().connect(
 						   sigc::bind(
 							   sigc::mem_fun(
@@ -722,7 +722,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 								   &Canvas::add_group_pair),
 							   loose_layer))));
 	add_connection(loose_layer,
-				   sigc::connection::connection(
+				   sigc::connection(
 					   x->signal_removed_from_group().connect(
 						   sigc::bind(
 							   sigc::mem_fun(

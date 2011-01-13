@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_Or::ValueNode_Or(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	bool value(x.get(bool()));
 
 	set_link("link1",        ValueNode_Const::create(bool(false)));
@@ -102,41 +104,6 @@ ValueNode_Or::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Or::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Or::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link1");
-	if(i==1) return _("Link2");
-	return String();
-}
-
-String
-ValueNode_Or::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link1";
-	if(i==1) return "link2";
-	return String();
-}
-
-int
-ValueNode_Or::get_link_index_from_name(const String &name)const
-{
-	if(name=="link1")    return 0;
-	if(name=="link2")    return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Or::operator()(Time t)const
 {
@@ -165,4 +132,25 @@ bool
 ValueNode_Or::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Or::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link1")
+		.set_local_name(_("Link1"))
+		.set_description(_("Value node used for the OR boolean operation"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link2")
+		.set_local_name(_("Link2"))
+		.set_description(_("Value node used for the OR boolean operation"))
+	);
+
+	return ret;
 }

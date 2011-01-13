@@ -46,21 +46,11 @@ public:
 	typedef etl::handle<const ValueNode_And> ConstHandle;
 
 	ValueNode_And(const ValueBase &x);
-
 	virtual ValueBase operator()(Time t)const;
-
 	virtual ~ValueNode_And();
-
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-
-
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
-	virtual String link_name(int i)const;
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 
 protected:
 	LinkableValueNode* create_new()const;
@@ -68,10 +58,10 @@ protected:
 
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
-
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_And* create(const ValueBase &x);
+	virtual LinkableValueNode::Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_And
 
 }; // END of namespace synfig

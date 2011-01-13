@@ -39,6 +39,7 @@
 #include <sigc++/signal.h>
 #include "guid.h"
 #include <ETL/angle>
+#include "paramdesc.h"
 
 #include "node.h"
 
@@ -77,6 +78,7 @@ namespace synfig {
 class Canvas;
 class LinkableValueNode;
 class Layer;
+class ParamVocab;
 
 /*!	\class ValueNode
 **	\brief Base class for all Value Nodes
@@ -335,6 +337,11 @@ public:
 	*/
 	typedef std::map<String,BookEntry> Book;
 
+	//! The vocabulary of the children
+	/*! \see synfig::Paramdesc
+	 */
+	typedef ParamVocab Vocab;
+
 	static Book& book();
 
 	//! Creates a Linkable Value Node based on the name and the returned
@@ -363,16 +370,16 @@ protected:
 public:
 
 	//! Returns the number of linked Value Nodes
-	virtual int link_count()const=0;
+	virtual int link_count()const;
 
 	//! Returns the local name of the 'i' linked Value Node
-	virtual String link_local_name(int i)const=0;
+	virtual String link_local_name(int i)const;
 
 	//! Returns the name of the 'i' linked Value Node
-	virtual String link_name(int i)const=0;
+	virtual String link_name(int i)const;
 
 	//! Returns the child index Value Node based on the name
-	virtual int get_link_index_from_name(const String &name)const=0;
+	virtual int get_link_index_from_name(const String &name)const;
 
 	//! Clones a Value Node
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
@@ -389,7 +396,12 @@ public:
 	//! Return a full description of the linked ValueNode given by the index
 	String get_description(int index = -1, bool show_exported_name = true)const;
 
+	//! Gets the children vocabulary for linkable value nodes
+	virtual Vocab get_children_vocab()const;
+
 protected:
+	//! Member to store the children vocabulary
+	Vocab children_vocab;
 	//! Sets the type of the ValueNode
 	void set_type(ValueBase::Type t) { ValueNode::set_type(t); }
 
@@ -401,6 +413,12 @@ protected:
 
 	//! Returns the cached times values for all the children (linked Value Nodes)
 	virtual void get_times_vfunc(Node::time_set &set) const;
+
+	//! Pure Virtual member to get the children vocabulary
+	virtual Vocab get_children_vocab_vfunc()const=0;
+
+	//! Virtual memebr to set the children vocabulary to a given value
+	virtual void set_children_vocab(const Vocab& rvocab);
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

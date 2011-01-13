@@ -58,6 +58,8 @@ ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueBase::Type &x):
 ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("link", x);
 	set_link("link_time",  ValueNode_Const::create(Time(0)));
 	set_link("local_time", ValueNode_Const::create(Time(0)));
@@ -109,47 +111,6 @@ ValueNode_TimeLoop::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TimeLoop::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_TimeLoop::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Link");
-	if(i==1) return _("Link Time");
-	if(i==2) return _("Local Time");
-	if(i==3) return _("Duration");
-	return String();
-}
-
-String
-ValueNode_TimeLoop::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "link";
-	if(i==1) return "link_time";
-	if(i==2) return "local_time";
-	if(i==3) return "duration";
-	return String();
-}
-
-int
-ValueNode_TimeLoop::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")       return 0;
-	if(name=="link_time")  return 1;
-	if(name=="local_time") return 2;
-	if(name=="duration")   return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_TimeLoop::operator()(Time t)const
 {
@@ -197,4 +158,35 @@ ValueNode_TimeLoop::check_type(ValueBase::Type type)
 	if(type)
 		return true;
 	return false;
+}
+
+
+LinkableValueNode::Vocab
+ValueNode_TimeLoop::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc("link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node to time loop"))
+	);
+
+	ret.push_back(ParamDesc("link_time")
+		.set_local_name(_("Link Time"))
+		.set_description(_("Start time of the loop for the value node timeline"))
+	);
+
+	ret.push_back(ParamDesc("local_time")
+		.set_local_name(_("Local Time"))
+		.set_description(_("The time when the resulted loop starts"))
+	);
+
+	ret.push_back(ParamDesc("duration")
+		.set_local_name(_("Duration"))
+		.set_description(_("Lenght of the loop"))
+	);
+	return ret;
 }

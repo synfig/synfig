@@ -57,6 +57,8 @@ using namespace synfig;
 synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	ValueBase::Type id(value.get_type());
 
 	switch(id)
@@ -242,49 +244,6 @@ ValueNode_Range::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Range::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Range::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Min");
-		case 1: return _("Max");
-		case 2: return _("Link");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Range::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "min";
-		case 1: return "max";
-		case 2: return "link";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Range::get_link_index_from_name(const String &name)const
-{
-	if(name=="min") return 0;
-	if(name=="max") return 1;
-	if(name=="link") return 2;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Range::get_name()const
 {
@@ -304,4 +263,30 @@ ValueNode_Range::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_INTEGER
 		|| type==ValueBase::TYPE_REAL
 		|| type==ValueBase::TYPE_TIME;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Range::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"min")
+		.set_local_name(_("Min"))
+		.set_description(_("Returned value when 'Link' is smaller"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"max")
+		.set_local_name(_("Max"))
+		.set_description(_("Returned value when 'Link' is greater"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node to limit its range"))
+	);
+
+	return ret;
 }

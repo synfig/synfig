@@ -427,12 +427,16 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 			if(linkable && do_children)
 			{
 				row[model.link_count] = linkable->link_count();
-				for(int i=0;i<linkable->link_count();i++)
+				LinkableValueNode::Vocab vocab(linkable->get_children_vocab());
+				LinkableValueNode::Vocab::iterator iter(vocab.begin());
+				for(int i=0;i<linkable->link_count();i++, iter++)
 				{
 					Gtk::TreeRow child_row=*(append(row.children()));
 					child_row[model.link_id] = i;
 					child_row[model.canvas] = static_cast<Canvas::Handle>(row[model.canvas]);
 					child_row[model.name] = linkable->link_local_name(i);
+					child_row[model.tooltip] = iter->get_description();
+					child_row[model.child_param_desc] = *iter;
 					set_row(child_row,synfigapp::ValueDesc(linkable,i));
 				}
 			}

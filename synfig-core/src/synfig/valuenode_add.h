@@ -56,13 +56,10 @@ public:
 	virtual ValueBase operator()(Time t)const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual int link_count()const;
-	virtual String link_local_name(int i)const;
-	virtual String link_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	static bool check_type(ValueBase::Type type);
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Add
 
 }; // END of namespace synfig

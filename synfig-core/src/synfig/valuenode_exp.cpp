@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Exp::ValueNode_Exp(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -129,49 +131,29 @@ ValueNode_Exp::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Exp::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_Exp::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "exp";
-	if(i==1)
-		return "scale";
-	return String();
-}
-
-String
-ValueNode_Exp::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Exponent");
-	if(i==1)
-		return _("Scale");
-	return String();
-}
-
-int
-ValueNode_Exp::get_link_index_from_name(const String &name)const
-{
-	if(name=="exp")
-		return 0;
-	if(name=="scale")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Exp::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Exp::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"exp")
+		.set_local_name(_("Exponent"))
+		.set_description(_("The value to raise the constant 'e'"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"scale")
+		.set_local_name(_("Scale"))
+		.set_description(_("Multiplier of the resulting exponent"))
+	);
+
+	return ret;
 }

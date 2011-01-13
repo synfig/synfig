@@ -60,6 +60,8 @@ using namespace synfig;
 synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
@@ -96,6 +98,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("width",ValueNode_Const::create(wpoint.get_width()));
 			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
+			set_link("hidden_vertex", ValueNode_Const::create(wpoint.get_hidden_vertex()));
 			break;
 		}
 		default:
@@ -178,33 +181,13 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_side_type_before((*components[2])(t).get(int()));
 			ret.set_side_type_after((*components[3])(t).get(int()));
+			ret.set_hidden_vertex((*components[4])(t).get(Vector()));
 			return ret;
 		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
 			return (*components[0])(t);
-	}
-}
-
-int
-ValueNode_Composite::link_count()const
-{
-	switch(get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
-		return 2;
-	case ValueBase::TYPE_COLOR:
-		return 4;
-	case ValueBase::TYPE_SEGMENT:
-		return 4;
-	case ValueBase::TYPE_BLINEPOINT:
-		return 6;
-	case ValueBase::TYPE_WIDTHPOINT:
-		return 4;
-	default:
-		synfig::warning(string("ValueNode_Composite::component_count():")+_("Bad type for composite"));
-		return 1;
 	}
 }
 
@@ -274,6 +257,11 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				components[i]=x;
 				return true;
 			}
+			if(i==4 && x-get_type()==ValueBase(Vector()).get_type())
+			{
+				components[i]=x;
+				return true;
+			}
 			break;
 
 		default:
@@ -290,69 +278,6 @@ ValueNode_Composite::get_link_vfunc(int i)const
 	return components[i];
 }
 
-String
-ValueNode_Composite::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(get_type())
-	{
-		case ValueBase::TYPE_VECTOR:
-			return strprintf("%c-Axis",'X'+i);
-
-		case ValueBase::TYPE_COLOR:
-			if(i==0)
-				return _("Red");
-			else if(i==1)
-				return _("Green");
-			else if(i==2)
-				return _("Blue");
-			else if(i==3)
-				return _("Alpha");
-
-		case ValueBase::TYPE_SEGMENT:
-			if(i==0)
-				return _("Vertex 1");
-			else if(i==1)
-				return _("Tangent 1");
-			else if(i==2)
-				return _("Vertex 2");
-			else if(i==3)
-				return _("Tangent 2");
-
-		case ValueBase::TYPE_BLINEPOINT:
-			if(i==0)
-				return _("Vertex");
-			else if(i==1)
-				return _("Width");
-			else if(i==2)
-				return _("Origin");
-			else if(i==3)
-				return _("Split Tangents");
-			else if(i==4)
-				return _("Tangent 1");
-			else if(i==5)
-				return _("Tangent 2");
-
-		case ValueBase::TYPE_WIDTHPOINT:
-			if(i==0)
-				return _("Position");
-			else if(i==1)
-				return _("Width");
-			else if(i==2)
-				return _("Cup Type Before");
-			else if(i==3)
-				return _("Cup Type After");
-
-		default:
-			assert(0);
-			// notice that Composite counts from 1 and Radial Composite counts
-			// from 0!  we need to keep it like that to correctly load old
-			// animations, but let's not save "c%d" format link names in future
-			return etl::strprintf(_("C%d"),i+1);
-	}
-}
-
 
 String
 ValueNode_Composite::link_name(int i)const
@@ -362,68 +287,15 @@ ValueNode_Composite::link_name(int i)const
 	if (get_file_version() < RELEASE_VERSION_0_61_08)
 		return strprintf("c%d",i+1);
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_COLOR:
-		switch(i)
-		{
-		case 0: return "red";
-		case 1: return "green";
-		case 2: return "blue";
-		case 3: return "alpha";
-		}
-		break;
-	case ValueBase::TYPE_SEGMENT:
-		switch(i)
-		{
-		case 0: return "p1";
-		case 1: return "t1";
-		case 2: return "p2";
-		case 3: return "t2";
-		}
-		break;
-	case ValueBase::TYPE_VECTOR:
-		switch(i)
-		{
-		case 0: return "x";
-		case 1: return "y";
-		}
-		break;
-	case ValueBase::TYPE_BLINEPOINT:
-		switch(i)
-		{
-		case 0: return "point";
-		case 1: return "width";
-		case 2: return "origin";
-		case 3: return "split";
-		case 4: return "t1";
-		case 5: return "t2";
-		}
-		break;
-	case ValueBase::TYPE_WIDTHPOINT:
-		switch(i)
-		{
-		case 0: return "position";
-		case 1: return "width";
-		case 2: return "side_before";
-		case 3: return "side_after";
-		}
-		break;
-
-	default:
-		break;
-	}
-
-	assert(0);
-	// notice that Composite counts from 1 and Radial Composite counts
-	// from 0!  we need to keep it like that to correctly load old
-	// animations, but let's not save "c%d" format link names in future
-	return strprintf("c%d",i+1);
+	return LinkableValueNode::link_name(i);
 }
 
 int
 ValueNode_Composite::get_link_index_from_name(const String &name)const
 {
+	// Here we don't use the LinkableValueNode::get_link_index_from_name
+	// due to the particularities of the link index from name for old files.
+	// So we keep this alive to maintain old file compatibilities.
 	if(name.empty())
 		throw Exception::BadLinkName(name);
 
@@ -479,6 +351,8 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
+		if(name=="hidden_vertex")
+			return 4;
 	default:
 		break;
 	}
@@ -507,4 +381,127 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_COLOR ||
 		type==ValueBase::TYPE_BLINEPOINT||
 		type==ValueBase::TYPE_WIDTHPOINT;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Composite::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		ret.push_back(ParamDesc(ValueBase(),"red")
+			.set_local_name(_("Red"))
+			.set_description(_("The red component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"green")
+			.set_local_name(_("Green"))
+			.set_description(_("The green component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"blue")
+			.set_local_name(_("Blue"))
+			.set_description(_("The blue component of the color"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"alpha")
+			.set_local_name(_("Alpha"))
+			.set_description(_("The alpha of the color"))
+		);
+		return ret;
+	case ValueBase::TYPE_SEGMENT:
+		ret.push_back(ParamDesc(ValueBase(),"p1")
+			.set_local_name(_("Vertex 1"))
+			.set_description(_("The first vertex of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t1")
+			.set_local_name(_("Tangent 1"))
+			.set_description(_("The first tangent of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"p2")
+			.set_local_name(_("Vertex 2"))
+			.set_description(_("The second vertex of the segment"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t2")
+			.set_local_name(_("Tangent 2"))
+			.set_description(_("The second tangent of the segment"))
+		);
+		return ret;
+	case ValueBase::TYPE_VECTOR:
+		ret.push_back(ParamDesc(ValueBase(),"x")
+			.set_local_name(_("X-Axis"))
+			.set_description(_("The X-Axis component of the vector"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"y")
+			.set_local_name(_("Y-Axis"))
+			.set_description(_("The Y-Axis component of the vector"))
+		);
+		return ret;
+	case ValueBase::TYPE_BLINEPOINT:
+		ret.push_back(ParamDesc(ValueBase(),"point")
+			.set_local_name(_("Vertex"))
+			.set_description(_("The vertex of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"width")
+			.set_local_name(_("Width"))
+			.set_description(_("The width of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"origin")
+			.set_local_name(_("Origin"))
+			.set_description(_("Defines the Off and On position relative to neighbours"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"split")
+			.set_local_name(_("Split"))
+			.set_description(_("When checked, tangents are independent"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t1")
+			.set_local_name(_("Tangent 1"))
+			.set_description(_("The first tangent of the BLine Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"t2")
+			.set_local_name(_("Tangent 2"))
+			.set_description(_("The second tangent of the BLine Point"))
+		);
+		return ret;
+	case ValueBase::TYPE_WIDTHPOINT:
+		ret.push_back(ParamDesc(ValueBase(),"position")
+			.set_local_name(_("Position"))
+			.set_description(_("The [0,1] position of the Width Point over the BLine"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"width")
+			.set_local_name(_("Width"))
+			.set_description(_("The width of the Width Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"side_before")
+			.set_local_name(_("Side Type Before"))
+			.set_description(_("Defines the interpolation type of the width point"))
+			.set_hint("enum")
+			.add_enum_value(WidthPoint::TYPE_INTERPOLATE,"interpolate",_("Interpolate"))
+			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+			);
+		ret.push_back(ParamDesc(ValueBase(),"side_after")
+			.set_local_name(_("Side Type After"))
+			.set_description(_("Defines the interpolation type of the width point"))
+			.set_hint("enum")
+			.add_enum_value(WidthPoint::TYPE_INTERPOLATE,"interpolate",_("Interpolate"))
+			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"hidden_vertex")
+			.set_local_name(_("Hidden Vertex"))
+			.set_description(_("The calculated vertex that lies on the BLine"))
+			.hidden()
+			.not_critical()
+		);
+		return ret;
+	default:
+		break;
+	}
+
+	return ret;
 }

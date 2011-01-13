@@ -63,6 +63,8 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueBase::Type &x):
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x->get_type()!=ValueBase::TYPE_BLINEPOINT)
 		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
 
@@ -155,48 +157,29 @@ ValueNode_BLineRevTangent::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_BLineRevTangent::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_BLineRevTangent::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "reference";
-		case 1: return "reverse";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineRevTangent::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Reference");
-		case 1: return _("Reverse");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineRevTangent::get_link_index_from_name(const String &name)const
-{
-	if(name=="reference")	return 0;
-	if(name=="reverse")		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_BLineRevTangent::check_type(ValueBase::Type type)
 {
 	return (type==ValueBase::TYPE_BLINEPOINT);
+}
+
+LinkableValueNode::Vocab
+ValueNode_BLineRevTangent::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"reference")
+		.set_local_name(_("Reference"))
+		.set_description(_("The referenced tangent to reverse"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"reverse")
+		.set_local_name(_("Reverse"))
+		.set_description(_("When checked, the reference is reversed"))
+	);
+
+	return ret;
 }

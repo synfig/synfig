@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
@@ -141,47 +143,25 @@ ValueNode_TimeString::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TimeString::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_TimeString::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "time";
-	}
-	return String();
-}
-
-String
-ValueNode_TimeString::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Time");
-	}
-	return String();
-}
-
-int
-ValueNode_TimeString::get_link_index_from_name(const String &name)const
-{
-	if (name=="time") return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_TimeString::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_STRING;
+}
+
+LinkableValueNode::Vocab
+ValueNode_TimeString::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"time")
+		.set_local_name(_("Time"))
+		.set_description(_("The time that is converted to string"))
+	);
+
+	return ret;
 }

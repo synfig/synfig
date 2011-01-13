@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_Cos::ValueNode_Cos(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -140,45 +142,23 @@ ValueNode_Cos::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Cos::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Cos::get_children_vocab_vfunc()const
 {
-	return 2;
-}
+	if(children_vocab.size())
+		return children_vocab;
 
-String
-ValueNode_Cos::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	LinkableValueNode::Vocab ret;
 
-	switch(i)
-	{
-	case 0: return "angle";
-	case 1: return "amp";
-	}
+	ret.push_back(ParamDesc(ValueBase(),"angle")
+		.set_local_name(_("Angle"))
+		.set_description(_("Value to calculate the cosine"))
+	);
 
-	return String();
-}
+	ret.push_back(ParamDesc(ValueBase(),"amp")
+		.set_local_name(_("Amplitude"))
+		.set_description(_("Multiplier of the resulting cosine"))
+	);
 
-String
-ValueNode_Cos::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Angle");
-	case 1: return _("Amplitude");
-	}
-
-	return String();
-}
-
-int
-ValueNode_Cos::get_link_index_from_name(const String &name)const
-{
-	if(name=="angle")	return 0;
-	if(name=="amp")		return 1;
-
-	throw Exception::BadLinkName(name);
+	return ret;
 }

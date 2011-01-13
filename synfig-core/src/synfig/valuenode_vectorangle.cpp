@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_VectorAngle::ValueNode_VectorAngle(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -113,41 +115,6 @@ ValueNode_VectorAngle::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_VectorAngle::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_VectorAngle::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Vector");
-	return String();
-}
-
-String
-ValueNode_VectorAngle::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "vector";
-	return String();
-}
-
-int
-ValueNode_VectorAngle::get_link_index_from_name(const String &name)const
-{
-	if(name=="vector")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_VectorAngle::get_name()const
 {
@@ -164,4 +131,21 @@ bool
 ValueNode_VectorAngle::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_ANGLE;
+}
+
+
+LinkableValueNode::Vocab
+ValueNode_VectorAngle::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"vector")
+		.set_local_name(_("Vector"))
+		.set_description(_("The vector where the angle is calculated from"))
+	);
+
+	return ret;
 }

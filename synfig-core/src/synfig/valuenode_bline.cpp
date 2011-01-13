@@ -843,3 +843,17 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_LIST;
 }
+
+LinkableValueNode::Vocab
+ValueNode_BLine::get_children_vocab_vfunc()const
+{
+	LinkableValueNode::Vocab ret;
+	for(unsigned int i=0; i<list.size();i++)
+	{
+		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
+			.set_local_name(etl::strprintf(_("Vertex %03d"),i+1))
+		);
+	}
+
+	return ret;
+}

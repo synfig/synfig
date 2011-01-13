@@ -50,7 +50,7 @@ protected:
 
 public:
 	static ValueNode_Greyed* create(const ValueBase &x);
-
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Greyed
 
 }; // END of namespace synfig

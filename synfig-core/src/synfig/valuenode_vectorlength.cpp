@@ -53,6 +53,8 @@ using namespace synfig;
 ValueNode_VectorLength::ValueNode_VectorLength(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -112,41 +114,6 @@ ValueNode_VectorLength::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_VectorLength::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_VectorLength::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Vector");
-	return String();
-}
-
-String
-ValueNode_VectorLength::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "vector";
-	return String();
-}
-
-int
-ValueNode_VectorLength::get_link_index_from_name(const String &name)const
-{
-	if(name=="vector")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_VectorLength::get_name()const
 {
@@ -163,4 +130,20 @@ bool
 ValueNode_VectorLength::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_VectorLength::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"vector")
+		.set_local_name(_("Vector"))
+		.set_description(_("The vector where the length is calculated from"))
+	);
+
+	return ret;
 }

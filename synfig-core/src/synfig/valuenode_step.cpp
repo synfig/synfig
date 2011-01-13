@@ -54,6 +54,8 @@ using namespace synfig;
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("duration",     ValueNode_Const::create(Time(1)));
 	set_link("start_time",   ValueNode_Const::create(Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));
@@ -182,51 +184,33 @@ ValueNode_Step::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Step::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Step::get_children_vocab_vfunc()const
 {
-	return 4;
-}
+	if(children_vocab.size())
+		return children_vocab;
 
-String
-ValueNode_Step::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	LinkableValueNode::Vocab ret;
 
-	switch(i)
-	{
-	case 0: return "link";
-	case 1: return "duration";
-	case 2: return "start_time";
-	case 3: return "intersection";
-	default:
-		return String();
-	}
-}
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node used to make the step"))
+	);
 
-String
-ValueNode_Step::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	ret.push_back(ParamDesc(ValueBase(),"duration")
+		.set_local_name(_("Duration"))
+		.set_description(_("The duration of the step"))
+	);
 
-	switch(i)
-	{
-	case 0: return _("Link");
-	case 1: return _("Duration");
-	case 2: return _("Start Time");
-	case 3: return _("Intersection");
-	default:
-		return String();
-	}
-}
+	ret.push_back(ParamDesc(ValueBase(),"start_time")
+		.set_local_name(_("Start Time"))
+		.set_description(_("The time when the step conversion starts"))
+	);
 
-int
-ValueNode_Step::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")         return 0;
-	if(name=="duration")     return 1;
-	if(name=="start_time")   return 2;
-	if(name=="intersection") return 3;
+		ret.push_back(ParamDesc(ValueBase(),"intersection")
+		.set_local_name(_("Intersection"))
+		.set_description(_("Value that define whether the step is centerd on the value [0,1]"))
+	);
 
-	throw Exception::BadLinkName(name);
+	return ret;
 }
