@@ -176,7 +176,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		case ValueBase::TYPE_WIDTHPOINT:
 		{
 			WidthPoint ret;
-			assert(components[0] && components[1] && components[2] && components[3]);
+			assert(components[0] && components[1] && components[2] && components[3] && components[4]);
 			ret.set_position((*components[0])(t).get(Real()));
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_side_type_before((*components[2])(t).get(int()));
@@ -257,7 +257,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				components[i]=x;
 				return true;
 			}
-			if(i==4 && x-get_type()==ValueBase(Vector()).get_type())
+			if(i==4 && x->get_type()==ValueBase(Vector()).get_type())
 			{
 				components[i]=x;
 				return true;
