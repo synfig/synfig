@@ -363,7 +363,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
 
 	ValueNode_BLine::ConstHandle bline_value_node(ValueNode_BLine::ConstHandle::cast_dynamic(value_node));
-	ValueNode_BLine::ConstHandle wplist_value_node(ValueNode_WPList::ConstHandle::cast_dynamic(value_node));
+	ValueNode_WPList::ConstHandle wplist_value_node(ValueNode_WPList::ConstHandle::cast_dynamic(value_node));
 
 	if(bline_value_node)
 	{
