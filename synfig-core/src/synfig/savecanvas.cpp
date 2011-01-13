@@ -464,14 +464,16 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
 
 	int i;
-	for(i=0;i<value_node->link_count();i++)
+	synfig::ParamVocab child_vocab(value_node->get_children_vocab());
+	synfig::ParamVocab::iterator iter(child_vocab.begin());
+	for(i=0;i<value_node->link_count();i++, iter++)
 	{
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
 		if(!link)
 			throw runtime_error("Bad link");
 		if(link->is_exported())
 			root->set_attribute(value_node->link_name(i),link->get_relative_id(canvas));
-		else
+		else if(iter->get_critical())
 			encode_value_node(root->add_child(value_node->link_name(i))->add_child("value_node"),link,canvas);
 	}
 
