@@ -352,7 +352,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	IMPORT_AS(round_tip_[0],"round_tip[0]");
-	IMPORT_AS(round_tip_[1], "round_tip[0]");
+	IMPORT_AS(round_tip_[1], "round_tip[1]");
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
 	if( param=="width" && value.get_type()==ValueBase::get_type(Real()) )
 	{
