@@ -423,7 +423,6 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
-		.set_hint("width")
 		.set_description(_("A list of BLine Points"))
 	);
 
@@ -462,6 +461,7 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
+		.set_hint("width")
 		.set_description(_("List of width Points that defines the variable width"))
 	);
 
