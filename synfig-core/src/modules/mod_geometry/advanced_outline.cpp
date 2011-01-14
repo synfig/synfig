@@ -100,7 +100,10 @@ Advanced_Outline::Advanced_Outline()
 	vector<WidthPoint> wpoint_list;
 	wpoint_list.push_back(WidthPoint());
 	wpoint_list.push_back(WidthPoint());
-	wpoint_list.push_back(WidthPoint());
+	wpoint_list[0].set_position(0.0);
+	wpoint_list[1].set_position(1.0);
+	wpoint_list[0].set_width(0.0);
+	wpoint_list[1].set_width(1.0);
 	wplist=wpoint_list;
 
 	needs_sync=true;
