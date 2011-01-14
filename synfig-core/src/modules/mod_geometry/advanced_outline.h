@@ -49,25 +49,25 @@ class Advanced_Outline : public synfig::Layer_Polygon
 	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	synfig::ValueBase bline;
-	synfig::ValueBase wplist;
+	synfig::ValueBase bline_;
+	synfig::ValueBase wplist_;
 
-	bool round_tip[2];
+	bool round_tip_[2];
 
-	bool sharp_cusps;
+	bool sharp_cusps_;
 
 	bool loop_;
 
-	synfig::Real width;
+	synfig::Real width_;
 
-	synfig::Real expand;
+	synfig::Real expand_;
 
-	Real loopyness;
-	bool old_version;
+	Real loopyness_;
+	bool old_version_;
 
 	bool needs_sync;
 
-	bool homogeneous_width;
+	bool homogeneous_width_;
 
 public:
 
@@ -83,8 +83,8 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
-	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}
-	virtual void reset_version(){old_version=false;}
+	virtual bool set_version(const String &ver){if(ver=="0.1")old_version_=true; return true;}
+	virtual void reset_version(){old_version_=false;}
 
 };
 
