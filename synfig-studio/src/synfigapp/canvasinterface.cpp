@@ -219,7 +219,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	// Apply some defaults
 	if(layer->set_param("fg",synfigapp::Main::get_outline_color()))
 		layer->set_param("bg",synfigapp::Main::get_fill_color());
-	else if (name == "outline")
+	else if (name == "outline" || name == "advanced_outline")
 		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_fill_color());
