@@ -265,7 +265,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		String layer_name(layer->get_name());
 
 		if (layer_name == "outline" || layer_name == "region" || layer_name == "plant" ||
-			layer_name == "polygon" || layer_name == "curve_gradient")
+			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
 		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
