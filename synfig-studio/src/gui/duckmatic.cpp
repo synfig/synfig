@@ -47,6 +47,7 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -1835,6 +1836,82 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 				add_bezier(bezier);
 				bezier=0;
+			}
+			return true;
+		}
+		else // Checnk for WPList
+		if(value_desc.is_value_node() &&
+			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueNode_WPList::Handle value_node;
+			value_node=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
+			int i;
+			etl::handle<Duck> pduck, wduck;
+			for (i = 0; i < value_node->link_count(); i++)
+			{
+				float amount(value_node->list[i].amount_at_time(get_time()));
+				// skip width points that aren't fully on
+				if (amount < 0.9999f)
+					continue;
+				WidthPoint width_point((*value_node->get_link(i))(get_time()));
+				// try casting the width point to Composite - this tells us whether it is composite or not
+				ValueNode_Composite::Handle composite_width_point_value_node(
+					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
+				if(composite_width_point_value_node) // Add the hidden vertex
+				{
+					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,4),canvas_view,transform_stack))
+					{
+						pduck=last_duck();
+						pduck->set_type(Duck::TYPE_POSITION);
+						pduck->signal_user_click(2).clear();
+						pduck->signal_user_click(2).connect(
+							sigc::bind(
+								sigc::bind(
+									sigc::bind(
+										sigc::mem_fun(
+											*canvas_view,
+											&studio::CanvasView::popup_param_menu),
+										false),
+									1.0f),
+								synfigapp::ValueDesc(value_node,i)));
+						pduck->set_value_desc(synfigapp::ValueDesc(value_node,i));
+
+						if(param_desc)
+						{
+							if(!param_desc->get_origin().empty())
+							{
+								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+								pduck->set_origin(last_duck());
+							}
+						}
+					}
+					else
+						return false;
+					// add the width duck
+					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,1),canvas_view,transform_stack))
+					{
+						wduck=last_duck();
+						wduck->set_origin(pduck);
+						wduck->set_type(Duck::TYPE_WIDTH);
+						// if the composite comes from a layer get the layer's "width" parameter and scale the
+						// duck by that value.
+						if (param_desc)
+						{
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
+							if(value.same_type_as(synfig::Real()))
+								wduck->set_scalar(value.get(synfig::Real())*0.5f);
+							// if it doesn't have a "width" parameter, scale by 0.5f instead
+							else
+								wduck->set_scalar(0.5f);
+						}
+						// otherwise just present the raw unscaled width
+						else
+							wduck->set_scalar(0.5f);
+					}
+					else
+						return false;
+				}
 			}
 			return true;
 		}
