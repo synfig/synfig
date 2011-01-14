@@ -496,7 +496,6 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_local_name(_("Hidden Vertex"))
 			.set_description(_("The calculated vertex that lies on the BLine"))
 			.hidden()
-			.not_critical()
 		);
 		return ret;
 	default:
