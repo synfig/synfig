@@ -46,6 +46,9 @@
 #include <vector>
 
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_blinecalcvertex.h>
 
 #endif
 
@@ -400,4 +403,61 @@ Advanced_Outline::get_param_vocab()const
 		.set_description(_("List of width Points that defines the variable width"))
 	);
 	return ret;
+}
+
+bool
+Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
+{
+	synfig::info("attempting to connect %s", param.c_str());
+	if(param=="bline")
+		if(!connect_bline_to_wplist(x))
+			synfig::warning("Advanced Outline: WPList doesn't accept new bline");
+	return Layer::connect_dynamic_param(param, x);
+}
+
+bool
+Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
+{
+	if(x->get_type() != ValueBase::TYPE_LIST)
+	{
+		synfig::info("Not a list");
+		return false;
+	}
+	if(ValueNode_DynamicList::Handle::cast_static(x)->get_contained_type() != ValueBase::TYPE_BLINEPOINT)
+	{
+		synfig::info("Not blinepoints!");
+		return false;
+	}
+	ValueNode::LooseHandle vnode;
+	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
+	if(iter==dynamic_param_list().end())
+	{
+		synfig::warning("WPList doesn't exists yet");
+		return false;
+	}
+	ValueNode_WPList::LooseHandle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
+	if(!wplist)
+	{
+		synfig::info("WPList is not ready: NULL");
+		return false;
+	}
+	int i;
+	if(!wplist->link_count())
+	{
+		synfig::info("WPList::link_count()=0");
+		return false;
+	}
+	for(i=0;i<wplist->link_count();i++)
+	{
+		ValueNode_Composite::LooseHandle compo(ValueNode_Composite::Handle::cast_dynamic(wplist->get_link(i)));
+		ValueNode::LooseHandle hidden_vertex(compo->get_link("hidden_vertex"));
+		if(!hidden_vertex)
+		{
+			synfig::warning("Unable to retrieve WPList::hidden vertex Handle!");
+			return false;
+		}
+		if(!ValueNode_BLineCalcVertex::Handle::cast_dynamic(hidden_vertex))
+			synfig::info("hidden vertex reached, not converted");
+	}
+	return true;
 }

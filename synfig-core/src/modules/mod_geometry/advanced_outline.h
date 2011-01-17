@@ -73,7 +73,12 @@ public:
 	virtual void set_time(Context context, Time time, Vector pos)const;
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version_=true; return true;}
 	virtual void reset_version(){old_version_=false;}
+	//! Connects the parameter to another Value Node. Implementation for this layer
+	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
 
+private:
+
+	bool connect_bline_to_wplist(etl::loose_handle<ValueNode> x);
 };
 
 /* === E N D =============================================================== */
