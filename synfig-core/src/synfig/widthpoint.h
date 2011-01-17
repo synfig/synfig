@@ -46,7 +46,7 @@ private:
 	Real position_;
 	Real width_;
 	int side_type_[2]; // Before [0] and After[1] side types
-	mutable Vector hidden_vertex_;
+	Vector hidden_vertex_;
 
 public:
 
