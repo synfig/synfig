@@ -51,35 +51,23 @@ private:
 
 	synfig::ValueBase bline_;
 	synfig::ValueBase wplist_;
-
 	bool round_tip_[2];
-
 	bool sharp_cusps_;
-
 	bool loop_;
-
 	synfig::Real width_;
-
 	synfig::Real expand_;
-
 	Real loopyness_;
 	bool old_version_;
-
 	bool needs_sync;
-
 	bool homogeneous_width_;
 
 public:
 
 	Advanced_Outline();
-
 	//! Updates the polygon data to match the parameters.
 	void sync();
-
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
