@@ -132,16 +132,6 @@ ValueNode_WPList::create(const ValueBase &value)
 			value_node->set_loop(value.get_loop());
 		}
 			break;
-		case ValueBase::TYPE_BLINEPOINT:
-		{
-			// this will create a standard list of width points
-			ValueBase value_base(convert_bline_to_wplist(value));
-			std::vector<WidthPoint> wplist(value_base.get_list().begin(), value_base.get_list().end());
-			// and then let's call again the create method to convert the
-			// standard list of widthpoints to a ValueNode_WPList
-			return create(wplist);
-		}
-			break;
 		default:
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
