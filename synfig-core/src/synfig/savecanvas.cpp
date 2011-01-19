@@ -194,6 +194,17 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
+xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
+{
+	root->set_name(ValueBase::type_name(ValueBase::TYPE_WIDTHPOINT));
+	encode_real(root->add_child("position")->add_child("real"),width_point.get_position());
+	encode_real(root->add_child("width")->add_child("real"),width_point.get_width());
+	encode_integer(root->add_child("side_before")->add_child("integer"),width_point.get_side_type_before());
+	encode_integer(root->add_child("side_after")->add_child("integer"),width_point.get_side_type_after());
+	encode_vector(root->add_child("hidden_vertex")->add_child("vector"),width_point.get_hidden_vertex());
+	return root;
+}
+
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x,bool s=false)
 {
 	root->set_name("gradient");
@@ -248,6 +259,8 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_segment(root,data.get(Segment()), data.get_static());
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
+	case ValueBase::TYPE_WIDTHPOINT:
+		return encode_width_point(root,data.get(WidthPoint()));
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()), data.get_static());
 	case ValueBase::TYPE_LIST:
