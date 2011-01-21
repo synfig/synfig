@@ -73,6 +73,7 @@ public:
 	//! \param time the time when inserted in animation mode
 	//! \return the new List Entry
 	virtual ListEntry create_list_entry(Real position, Time time=0);
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0);
 	//! Finds a fully on width point at given time and after the given position
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated

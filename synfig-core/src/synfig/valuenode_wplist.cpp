@@ -155,9 +155,17 @@ ValueNode_WPList::create_list_entry(Real position, Time time)
 	// Note: before and after interpolations are INTERPOLATE by default.
 	// not need to set it up here.
 	ret.value_node=ValueNode_Composite::create(wpoint);
+	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
 }
 
+ValueNode_WPList::ListEntry
+ValueNode_WPList::create_list_entry(int index, Time /*time*/, Real /*origin*/)
+{
+	// Initially all the width points are created at 0.0
+	// TODO: take the decision on what to call on valuenodedynamiclistinsert action
+	return create_list_entry(0.0);
+}
 
 ValueBase
 ValueNode_WPList::operator()(Time t)const
