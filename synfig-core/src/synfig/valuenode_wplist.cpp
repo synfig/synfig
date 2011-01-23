@@ -160,7 +160,7 @@ ValueNode_WPList::create_list_entry(Real position, Time time)
 }
 
 ValueNode_WPList::ListEntry
-ValueNode_WPList::create_list_entry(int index, Time /*time*/, Real /*origin*/)
+ValueNode_WPList::create_list_entry(int /*index*/, Time /*time*/, Real /*origin*/)
 {
 	// Initially all the width points are created at 0.0
 	// TODO: take the decision on what to call on valuenodedynamiclistinsert action
@@ -354,4 +354,17 @@ ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)
 		rw=pw;
 
 	return rw;
+}
+
+ValueNode::LooseHandle
+ValueNode_WPList::get_bline()
+{
+	return bline_;
+}
+
+void
+ValueNode_WPList::set_bline(ValueNode::Handle b)
+{
+	bline_=b;
+	// TODO: sync the wplist with the new bline
 }

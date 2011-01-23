@@ -55,10 +55,13 @@ synfig::ValueBase convert_bline_to_wplist(const ValueBase& bline);
 */
 class ValueNode_WPList : public ValueNode_DynamicList
 {
+private:
+	ValueNode::RHandle bline_;
 public:
 
 	typedef etl::handle<ValueNode_WPList> Handle;
 	typedef etl::handle<const ValueNode_WPList> ConstHandle;
+	typedef etl::handle<const ValueNode_WPList> LooseHandle;
 	ValueNode_WPList();
 
 public:
@@ -95,6 +98,10 @@ public:
 	//! \param position the position to interpolate between prev and next
 	//! \return the interpolated width based on surrounding width points and its values
 	Real interpolate(WidthPoint& prev, WidthPoint& next, Real position)const;
+	//! Gets the bline RHandle
+	ValueNode::LooseHandle get_bline();
+	//! Sets the bline RHandle
+	void set_bline(ValueNode::Handle b);
 
 protected:
 

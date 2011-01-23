@@ -50,9 +50,11 @@
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 
+
 #endif
 
 using namespace etl;
+
 
 /* === M A C R O S ========================================================= */
 #define SAMPLES		50
@@ -423,9 +425,9 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 		synfig::info("Not a list");
 		return false;
 	}
-	if(ValueNode_DynamicList::Handle::cast_static(x)->get_contained_type() != ValueBase::TYPE_BLINEPOINT)
+	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 	{
-		synfig::info("Not blinepoints!");
+		synfig::info("No blinepoints!");
 		return false;
 	}
 	ValueNode::LooseHandle vnode;
@@ -435,29 +437,14 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 		synfig::warning("WPList doesn't exists yet");
 		return false;
 	}
-	ValueNode_WPList::LooseHandle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
+	ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
 	if(!wplist)
 	{
 		synfig::info("WPList is not ready: NULL");
 		return false;
 	}
-	int i;
 	if(!wplist->link_count())
-	{
-		synfig::info("WPList::link_count()=0");
-		return false;
-	}
-	for(i=0;i<wplist->link_count();i++)
-	{
-		ValueNode_Composite::LooseHandle compo(ValueNode_Composite::Handle::cast_dynamic(wplist->get_link(i)));
-		ValueNode::LooseHandle hidden_vertex(compo->get_link("hidden_vertex"));
-		if(!hidden_vertex)
-		{
-			synfig::warning("Unable to retrieve WPList::hidden vertex Handle!");
-			return false;
-		}
-		if(!ValueNode_BLineCalcVertex::Handle::cast_dynamic(hidden_vertex))
-			synfig::info("hidden vertex reached, not converted");
-	}
+		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
+	wplist->set_bline(ValueNode::Handle(x));
 	return true;
 }
