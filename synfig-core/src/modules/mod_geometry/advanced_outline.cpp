@@ -412,8 +412,31 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 {
 	synfig::info("attempting to connect %s", param.c_str());
 	if(param=="bline")
+	{
 		if(!connect_bline_to_wplist(x))
 			synfig::warning("Advanced Outline: WPList doesn't accept new bline");
+	}
+	if(param=="wplist")
+	{
+		if(Layer::connect_dynamic_param(param, x))
+		{
+			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
+			if(iter==dynamic_param_list().end())
+				{
+					synfig::warning("BLine doesn't exists yet!!");
+					return false;
+				}
+			else if(!connect_bline_to_wplist(iter->second))
+			{
+				synfig::warning("Advanced Outline: WPList doesn't accept new bline");
+				return false;
+			}
+			else
+				return true;
+		}
+		else
+			return false;
+	}
 	return Layer::connect_dynamic_param(param, x);
 }
 
@@ -446,5 +469,6 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	if(!wplist->link_count())
 		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
 	wplist->set_bline(ValueNode::Handle(x));
+	synfig::info("set bline success");
 	return true;
 }
