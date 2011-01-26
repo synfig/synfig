@@ -46,7 +46,6 @@ private:
 	Real position_;
 	Real width_;
 	int side_type_[2]; // Before [0] and After[1] side types
-	Vector hidden_vertex_;
 
 public:
 
@@ -75,8 +74,6 @@ public:
 	int get_side_type_after();
 	void set_side_type_after(int sideafter);
 	int get_side_type(int i);
-	const Vector& get_hidden_vertex()const;
-	void set_hidden_vertex(Vector hv);
 	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
 
 }; // END of class WidthPoint

@@ -201,7 +201,6 @@ xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
 	encode_real(root->add_child("width")->add_child("real"),width_point.get_width());
 	encode_integer(root->add_child("side_before")->add_child("integer"),width_point.get_side_type_before());
 	encode_integer(root->add_child("side_after")->add_child("integer"),width_point.get_side_type_after());
-	encode_vector(root->add_child("hidden_vertex")->add_child("vector"),width_point.get_hidden_vertex());
 	return root;
 }
 

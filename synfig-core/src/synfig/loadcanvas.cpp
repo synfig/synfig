@@ -923,27 +923,6 @@ CanvasParser::parse_width_point(xmlpp::Element *element)
 			ret.set_side_type_after(parse_integer(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
-		// Hidden vertex
-		if(child->get_name()=="hidden_vertex")
-		{
-			xmlpp::Element::NodeList list = child->get_children();
-			xmlpp::Element::NodeList::iterator iter;
-			// Search for the first non-text XML element
-			for(iter = list.begin(); iter != list.end(); ++iter)
-				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-			if(iter==list.end())
-			{
-				error(element, "Undefined value in <hidden_vertex>");
-				continue;
-			}
-			if((*iter)->get_name()!="vector")
-			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
-				continue;
-			}
-			ret.set_hidden_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
-		}
-		else
 			error_unexpected_element(child,child->get_name());
 	}
 	return ret;

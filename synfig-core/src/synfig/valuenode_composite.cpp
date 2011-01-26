@@ -98,7 +98,6 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("width",ValueNode_Const::create(wpoint.get_width()));
 			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
-			set_link("hidden_vertex", ValueNode_Const::create(wpoint.get_hidden_vertex()));
 			break;
 		}
 		default:
@@ -176,12 +175,11 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		case ValueBase::TYPE_WIDTHPOINT:
 		{
 			WidthPoint ret;
-			assert(components[0] && components[1] && components[2] && components[3] && components[4]);
+			assert(components[0] && components[1] && components[2] && components[3]);
 			ret.set_position((*components[0])(t).get(Real()));
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_side_type_before((*components[2])(t).get(int()));
 			ret.set_side_type_after((*components[3])(t).get(int()));
-			ret.set_hidden_vertex((*components[4])(t).get(Vector()));
 			return ret;
 		}
 		default:
@@ -351,8 +349,6 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
-		if(name=="hidden_vertex")
-			return 4;
 	default:
 		break;
 	}
@@ -491,11 +487,6 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
-		);
-		ret.push_back(ParamDesc(ValueBase(),"hidden_vertex")
-			.set_local_name(_("Hidden Vertex"))
-			.set_description(_("The calculated vertex that lies on the BLine"))
-			.hidden()
 		);
 		return ret;
 	default:

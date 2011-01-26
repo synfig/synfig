@@ -126,16 +126,3 @@ WidthPoint::get_side_type(int i)
 {
 	return i>0? side_type_[1]: side_type_[0];
 }
-
-const Vector&
-WidthPoint::get_hidden_vertex()const
-{
-	return hidden_vertex_;
-}
-
-void
-WidthPoint::set_hidden_vertex(Vector x)
-{
-	hidden_vertex_[0]=x[0];
-	hidden_vertex_[1]=x[1];
-}
