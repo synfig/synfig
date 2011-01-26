@@ -357,7 +357,7 @@ ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)
 }
 
 ValueNode::LooseHandle
-ValueNode_WPList::get_bline()
+ValueNode_WPList::get_bline()const
 {
 	return bline_;
 }
@@ -366,5 +366,4 @@ void
 ValueNode_WPList::set_bline(ValueNode::Handle b)
 {
 	bline_=b;
-	// TODO: sync the wplist with the new bline
 }

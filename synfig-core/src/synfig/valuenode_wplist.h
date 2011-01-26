@@ -99,7 +99,7 @@ public:
 	//! \return the interpolated width based on surrounding width points and its values
 	Real interpolate(WidthPoint& prev, WidthPoint& next, Real position)const;
 	//! Gets the bline RHandle
-	ValueNode::LooseHandle get_bline();
+	ValueNode::LooseHandle get_bline()const;
 	//! Sets the bline RHandle
 	void set_bline(ValueNode::Handle b);
 
