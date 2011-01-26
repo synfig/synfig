@@ -1880,10 +1880,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
 					pduck->set_point((*bline_calc_vertex)(get_time()));
 					// hack end
-					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".position"));
+					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));
 					pduck->set_editable(synfigapp::is_editable(wpoint_value_desc.get_value_node()));
 					pduck->signal_edited().clear();
-					pduck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+					pduck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), wpoint_value_desc));
 					pduck->signal_user_click(2).clear();
 					pduck->signal_user_click(2).connect(
 						sigc::bind(
@@ -1894,7 +1894,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 										&studio::CanvasView::popup_param_menu),
 									false),
 								1.0f),
-							value_desc));
+							wpoint_value_desc));
 					add_duck(pduck);
 					if(param_desc)
 					{

@@ -38,6 +38,7 @@
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -229,7 +230,9 @@ Action::ValueDescSet::prepare()
 	// If we are a composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
-	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	// except if we are TYPE WIDTHPOINT
+	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT)
 	{
 		ValueBase components[6];
 		int n_components(0);
@@ -605,7 +608,62 @@ Action::ValueDescSet::prepare()
 		}
 		return;
 	}
-	
+
+	// WidthPoint Composite: adjust the width point position
+	// to achieve the desired point
+	// Code copied from BLineCalcVertex above
+	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_LIST)
+	{
+		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == ValueBase::TYPE_WIDTHPOINT)
+		{
+			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			if(wplist)
+			{
+				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+				ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+				if(wpoint_composite)
+				{
+					Real radius = 0.0;
+					ValueBase new_amount;
+					if (wplist->get_loop()){
+						// The wplist is looped. Animation may require a position parameter
+						// outside the range of 0-1, so make sure that the amount does
+						// not change drastically.
+						Real amount_old((*(wpoint_composite->get_link("position")))(time).get(Real()));
+						Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+										//fmod is called twice to avoid negative values
+						if (difference > 0.5) difference=difference-1.0;
+
+						new_amount = amount_old+difference;
+					} else {
+						new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+					}
+
+					Action::Handle action(Action::create("ValueDescSet"));
+
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",new_amount);
+					action->set_param("value_desc",ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
+
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+
+					add_action(action);
+					return;
+				}
+				else synfig::info("not wpoint composite");
+			}
+			else synfig::info("not wplist");
+		}
+	}
+
+
 	// end reverse manipulations
 
 

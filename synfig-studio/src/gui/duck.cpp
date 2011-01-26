@@ -35,6 +35,7 @@
 #include <ETL/misc>
 
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -247,6 +248,27 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 				&closest_point);
 			set_point(closest_point);
 		}
+		ValueNode_Composite::Handle wpoint_composite;
+		ValueNode_WPList::Handle wplist;
+		wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(get_value_desc().get_value_node());
+		if(wpoint_composite && wpoint_composite->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			if(get_value_desc().parent_is_value_node())
+			{
+				wplist=ValueNode_WPList::Handle::cast_dynamic(get_value_desc().get_parent_value_node());
+				if(wplist)
+				{
+					ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+					synfig::Point closest_point = get_point();
+					synfig::Real radius = 0.0;
+					synfig::find_closest_point(
+						(*bline)(time),
+						get_point(),
+						radius,
+						bline->get_loop(),
+						&closest_point);
+					set_point(closest_point);
+				}
+			}
 	}
 	else set_point((x-get_sub_trans_origin())/get_scalar());
 }

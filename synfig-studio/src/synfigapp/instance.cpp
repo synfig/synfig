@@ -42,6 +42,7 @@
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_range.h>
 #include <map>
