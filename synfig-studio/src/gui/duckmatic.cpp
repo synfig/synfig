@@ -1845,8 +1845,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			ValueNode_WPList::Handle value_node;
 			value_node=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
+			if(!value_node)
+			{
+				error("expected a ValueNode_WPList");
+				assert(0);
+			}
 			int i;
-			etl::handle<Duck> pduck, wduck;
 			for (i = 0; i < value_node->link_count(); i++)
 			{
 				float amount(value_node->list[i].amount_at_time(get_time()));
@@ -1857,40 +1861,54 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// try casting the width point to Composite - this tells us whether it is composite or not
 				ValueNode_Composite::Handle composite_width_point_value_node(
 					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
-				if(composite_width_point_value_node) // Add the hidden vertex
+				if(composite_width_point_value_node) // Add the position
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,4),canvas_view,transform_stack))
-					{
-						pduck=last_duck();
-						pduck->set_type(Duck::TYPE_POSITION);
-						pduck->signal_user_click(2).clear();
-						pduck->signal_user_click(2).connect(
+					etl::handle<Duck> pduck=new Duck();
+					synfigapp::ValueDesc wpoint_value_desc(value_node, i); // The i-widthpoint on WPList
+					pduck->set_type(Duck::TYPE_POSITION);
+					pduck->set_transform_stack(transform_stack);
+					pduck->set_name(guid_string(wpoint_value_desc));
+					pduck->set_value_desc(wpoint_value_desc);
+					// This is a quick hack to obtain the ducks position.
+					// The position by amount and the amount by position
+					// has to be written considering the bline length too
+					// optionally
+					const ValueBase bline((*value_node->get_bline())(get_time()));
+					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
+					bline_calc_vertex->set_link("bline", value_node->get_bline());
+					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
+					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					pduck->set_point((*bline_calc_vertex)(get_time()));
+					// hack end
+					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".position"));
+					pduck->set_editable(synfigapp::is_editable(wpoint_value_desc.get_value_node()));
+					pduck->signal_edited().clear();
+					pduck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+					pduck->signal_user_click(2).clear();
+					pduck->signal_user_click(2).connect(
+						sigc::bind(
 							sigc::bind(
 								sigc::bind(
-									sigc::bind(
-										sigc::mem_fun(
-											*canvas_view,
-											&studio::CanvasView::popup_param_menu),
-										false),
-									1.0f),
-								synfigapp::ValueDesc(value_node,i)));
-						pduck->set_value_desc(synfigapp::ValueDesc(value_node,i));
-
-						if(param_desc)
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu),
+									false),
+								1.0f),
+							value_desc));
+					add_duck(pduck);
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
 						{
-							if(!param_desc->get_origin().empty())
-							{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								pduck->set_origin(last_duck());
-							}
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							pduck->set_origin(last_duck());
 						}
 					}
-					else
-						return false;
 					// add the width duck
 					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,1),canvas_view,transform_stack))
 					{
+						etl::handle<Duck> wduck;
 						wduck=last_duck();
 						wduck->set_origin(pduck);
 						wduck->set_type(Duck::TYPE_WIDTH);
