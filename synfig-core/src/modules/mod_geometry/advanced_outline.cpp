@@ -402,6 +402,7 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
 		.set_hint("width")
+		.set_origin("origin")
 		.set_description(_("List of width Points that defines the variable width"))
 	);
 	return ret;
