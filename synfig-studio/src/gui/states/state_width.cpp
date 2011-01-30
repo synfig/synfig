@@ -285,6 +285,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 		radius->set_radius(true);
 		radius->set_type(Duck::TYPE_RADIUS);
 		radius->set_name("radius");
+		radius->set_point(Point(1.0,0.0));
 	}
 
 	if(!closestpoint)
@@ -296,7 +297,9 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	//Disable duck clicking for the maximum coolness :)
 	get_work_area()->set_allow_duck_clicks(false);
-	get_work_area()->set_type_mask((Duck::Type)((int)Duck::TYPE_WIDTH + (int)Duck::TYPE_RADIUS));
+	// Hide all tangent, vertex and angle ducks and show the width and
+	// radius ducks
+	get_work_area()->set_type_mask((old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
 
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
@@ -536,6 +539,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			curve[1] = c->c1->get_trans_point();
 			curve[2] = c->c2->get_trans_point();
 			curve[3] = c->p2->get_trans_point();
+			curve.sync();
 
 			p = curve(t);
 			rsq = (p-event.pos).mag_squared();
@@ -544,7 +548,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 
 			if(rsq < r)
 			{
-				closestpoint->set_point(curve(t));
+				closestpoint->set_point(p);
 
 				//adjust the width...
 				//squared falloff for radius... [0,1]
@@ -553,6 +557,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 				AdjustWidth(c,t,ri*event.pressure*get_delta()*dtime,invert);
 			}
 		}
+
 
 		//the points have been added
 		added = true;
