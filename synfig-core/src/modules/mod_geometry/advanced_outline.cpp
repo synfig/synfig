@@ -77,12 +77,10 @@ Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, con
 
 Advanced_Outline::Advanced_Outline()
 {
-	old_version_=false;
 	round_tip_[0]=true;
 	round_tip_[1]=true;
 	sharp_cusps_=true;
 	width_=1.0f;
-	loopyness_=1.0f;
 	expand_=0;
 	homogeneous_width_=true;
 	clear();
@@ -129,14 +127,14 @@ Advanced_Outline::sync()
 	}
 	try
 	{
-		const bool loop(bline_.get_loop());
+		const bool blineloop(bline_.get_loop());
 		ValueNode_BLine::Handle bline_valuenode;
 		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		vector<BLinePoint>::const_iterator iter,next(bline.begin());
 		const vector<BLinePoint>::const_iterator
 			end(bline.end());
 		vector<Point> side_a, side_b;
-		if(loop)
+		if(blineloop)
 			iter=--bline.end();
 		else
 			iter=next++;
@@ -147,14 +145,14 @@ Advanced_Outline::sync()
 		Vector first_tangent=bline.front().get_tangent2();
 		Vector last_tangent=iter->get_tangent1();
 		// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
-		if (loop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
+		if (blineloop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
 		{
 			hermite<Vector> curve((iter-1)->get_vertex(), iter->get_vertex(), (iter-1)->get_tangent2(), iter->get_tangent1());
 			const derivative< hermite<Vector> > deriv(curve);
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
 		// `first' is for making the cusps; don't do that for the first point if we're not looped
-		for(bool first=!loop; next!=end; iter=next++)
+		for(bool first=!blineloop; next!=end; iter=next++)
 		{
 			Vector prev_t(iter->get_tangent1());
 			Vector iter_t(iter->get_tangent2());
@@ -246,7 +244,7 @@ Advanced_Outline::sync()
 			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*next_w);
 			first=false;
 		}
-		if(loop)
+		if(blineloop)
 		{
 			reverse(side_b.begin(),side_b.end());
 			add_polygon(side_a);
@@ -254,7 +252,7 @@ Advanced_Outline::sync()
 			return;
 		}
 		// Insert code for adding end tip
-		if(round_tip_[1] && !loop && side_a.size())
+		if(round_tip_[1] && !blineloop && side_a.size())
 		{
 			// remove the last point
 			side_a.pop_back();
@@ -273,7 +271,7 @@ Advanced_Outline::sync()
 		for(;!side_b.empty();side_b.pop_back())
 			side_a.push_back(side_b.back());
 		// Insert code for adding begin tip
-		if(round_tip_[0] && !loop && side_a.size())
+		if(round_tip_[0] && !blineloop && side_a.size())
 		{
 			// remove the last point
 			side_a.pop_back();
@@ -291,7 +289,7 @@ Advanced_Outline::sync()
 		} // begin tip
 		add_polygon(side_a);
 	}
-	catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
+	catch (...) { synfig::error("Advanced Outline::sync(): Exception thrown"); throw; }
 }
 
 bool
@@ -305,14 +303,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(round_tip_[0],"round_tip[0]");
 	IMPORT_AS(round_tip_[1], "round_tip[1]");
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
-	if( param=="width" && value.get_type()==ValueBase::get_type(Real()) )
-	{
-		width_=value;
-		if(old_version_)
-			width_*=2.0;
-		return true;
-	}
-	IMPORT_AS(loopyness_, "loopyness");
+	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
 	IMPORT_AS(homogeneous_width_, "homogeneous_width");
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
@@ -349,7 +340,6 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(round_tip_[1], "round_tip[1]");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
 	EXPORT_AS(width_, "width");
-	EXPORT_AS(loopyness_, "loopyness");
 	EXPORT_AS(wplist_, "wplist");
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -390,9 +380,6 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("round_tip[1]")
 		.set_local_name(_("Rounded End"))
 		.set_description(_("Round off the tip"))
-	);
-	ret.push_back(ParamDesc("loopyness")
-		.set_local_name(_("Loopyness"))
 	);
 	ret.push_back(ParamDesc("homogeneous_width")
 		.set_local_name(_("Homogeneous"))

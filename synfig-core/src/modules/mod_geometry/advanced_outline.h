@@ -56,8 +56,6 @@ private:
 	bool loop_;
 	synfig::Real width_;
 	synfig::Real expand_;
-	Real loopyness_;
-	bool old_version_;
 	bool homogeneous_width_;
 
 public:
@@ -70,8 +68,6 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
-	virtual bool set_version(const String &ver){if(ver=="0.1")old_version_=true; return true;}
-	virtual void reset_version(){old_version_=false;}
 	//! Connects the parameter to another Value Node. Implementation for this layer
 	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
 
