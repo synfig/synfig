@@ -36,6 +36,8 @@
 #include <ETL/bezier>
 
 #include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_composite.h>
 #include <synfigapp/action_system.h>
 
 #include "state_width.h"
@@ -393,19 +395,13 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 {
 	//Leave the function if there is no curve
 	if(!c)return;
-
 	Real amount1=0,amount2=0;
-
 	//decide how much to change each width
 	/*
 	t \in [0,1]
-
 	both pressure and multiply amount are in mult
 		(may want to change this to allow different types of falloff)
-
 	rsq is the squared distance from the point on the curve (also part of the falloff)
-
-
 	*/
 	//may want to provide a different falloff function...
 	if(t <= 0.2)
@@ -418,24 +414,21 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		amount1 = (1-t)*mult;
 		amount2 = t*mult;
 	}
-
+	// change sign if we are decreasing widths
 	if(invert)
 	{
 		amount1 *= -1;
 		amount2 *= -1;
 	}
-
+	// ducks for the bezier vertexes
 	handle<Duck>	p1 = c->p1;
 	handle<Duck>	p2 = c->p2;
-
+	// ducks for the widths of the bezier vertexes
 	handle<Duck>	w1,w2;
-
 	//find w1,w2
 	{
 		const DuckList dl = get_work_area()->get_duck_list();
-
 		DuckList::const_iterator i = dl.begin();
-
 		for(;i != dl.end(); ++i)
 		{
 			if((*i)->get_type() == Duck::TYPE_WIDTH)
@@ -444,7 +437,6 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 				{
 					w1 = *i;
 				}
-
 				if((*i)->get_origin_duck() == p2)
 				{
 					w2 = *i;
@@ -452,30 +444,97 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 			}
 		}
 	}
-
+	// change the widths of the affected BLine of Outlines
 	if(amount1 != 0 && w1)
 	{
 		Real width = w1->get_point().mag();
-
 		width += amount1;
 		w1->set_point(Vector(width,0));
-
 		//log in the list of changes...
 		//to truly be changed after everything is said and done
 		changetable[w1] = width;
 	}
-
 	if(amount2 != 0 && w2)
 	{
 		Real width = w2->get_point().mag();
-
 		width += amount2;
 		w2->set_point(Vector(width,0));
-
 		//log in the list of changes...
 		//to truly be changed after everything is said and done
 		changetable[w2] = width;
 	}
+	///////
+	// Change the widths of the affected BLine of Advance Outlines
+	// Parents value nodes of the value node of the p1 and p2 ducks.
+	synfig::ValueNode::Handle p1pvn(p1->get_value_desc().get_parent_value_node());
+	synfig::ValueNode::Handle p2pvn(p2->get_value_desc().get_parent_value_node());
+	// if the bezier position ducks are linkable valuenode children
+	if(p1pvn && p2pvn && p1pvn==p2pvn)
+	{
+		synfig::ValueNode::Handle bezier_bline=p1pvn;
+		// Positions of the points on the bline
+		Real p1_pos, p2_pos;
+		// indexes of the points on the bline
+		int p1_i, p2_i;
+		// retrieve the number of blinepoints on the bline
+		int bline_size((*(bezier_bline))(get_canvas()->get_time()).get_list().size());
+		//synfig::info("numbers of points on the bline: %d", bline_size);
+		p1_i = p1->get_value_desc().get_index();
+		p2_i = p2->get_value_desc().get_index();
+		// check if we are handling the first bezier which is defined
+		//  by the last blinepoint and the first one
+		if(p2_i==0 && p1_i==(bline_size-1))
+		{
+			p1_i=0;
+			p2_i=1;
+		}
+		// Those are the positions of the bezier on the bline
+		p1_pos = Real(p1_i)/Real(bline_size-1);
+		p2_pos = Real(p2_i)/Real(bline_size-1);
+		// find all the widthpoints
+		{
+			const DuckList dl = get_work_area()->get_duck_list();
+			DuckList::const_iterator i = dl.begin();
+			for(;i != dl.end(); ++i)
+			{
+				handle<Duck> iduck(*i);
+				handle<Duck> iduck_origin(iduck->get_origin_duck());
+				if(iduck->get_type() == Duck::TYPE_WIDTH && iduck_origin)
+				{
+					synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
+					ValueNode_Composite::Handle wpcompo(ValueNode_Composite::Handle::cast_dynamic(origin_value_desc.get_value_node()));
+					if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
+					{
+						ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
+						if(wplist)
+						{
+							ValueNode::Handle bline(wplist->get_bline());
+							if(bline && (bline==bezier_bline))
+							{
+								Real pos((*wpcompo->get_link("position"))(get_canvas()->get_time()));
+								if((p2_pos-pos)>=-0.0001 && (pos-p1_pos)>=-0.0001)
+								{
+									Real l(p2_pos-p1_pos);
+									Real s((pos-p1_pos)/l);
+									Real amount(s*amount2 + (1.0-s)*amount1);
+									Real width = iduck->get_point().mag();
+									width += amount;
+									iduck->set_point(Vector(width,0));
+									changetable[iduck] = width;
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+	else
+	{
+		synfig::info("beziers points haven't a bline as parent??!");
+	}
+
 }
 
 Smach::event_result
