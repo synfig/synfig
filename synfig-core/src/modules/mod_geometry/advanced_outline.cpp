@@ -109,7 +109,6 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[0].set_width(0.0);
 	wpoint_list[1].set_width(1.0);
 	wplist_=wpoint_list;
-	needs_sync=true;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 }

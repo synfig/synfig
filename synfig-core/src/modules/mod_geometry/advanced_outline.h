@@ -58,7 +58,6 @@ private:
 	synfig::Real expand_;
 	Real loopyness_;
 	bool old_version_;
-	bool needs_sync;
 	bool homogeneous_width_;
 
 public:
