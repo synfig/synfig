@@ -410,9 +410,9 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		amount2 = mult;
 	else
 	{
-		t = (t-0.2)/0.6;
-		amount1 = (1-t)*mult;
-		amount2 = t*mult;
+		float u = (t-0.2)/0.6;
+		amount1 = (1-u)*mult;
+		amount2 = u*mult;
 	}
 	// change sign if we are decreasing widths
 	if(invert)
@@ -512,16 +512,14 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 							if(bline && (bline==bezier_bline))
 							{
 								Real pos((*wpcompo->get_link("position"))(get_canvas()->get_time()));
-								if((p2_pos-pos)>=-0.0001 && (pos-p1_pos)>=-0.0001)
-								{
-									Real l(p2_pos-p1_pos);
-									Real s((pos-p1_pos)/l);
-									Real amount(s*amount2 + (1.0-s)*amount1);
-									Real width = iduck->get_point().mag();
-									width += amount;
-									iduck->set_point(Vector(width,0));
-									changetable[iduck] = width;
-								}
+								Real l(p2_pos-p1_pos);
+								Real tpos(t*l+p1_pos);
+								Real amount(mult*exp(-20.0*(fabs(pos-tpos)+0.000001)));
+								amount*=invert?-1.0:1.0;
+								Real width = iduck->get_point().mag();
+								width += amount;
+								iduck->set_point(Vector(width,0));
+								changetable[iduck] = width;
 							}
 						}
 					}
@@ -530,11 +528,6 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 			}
 		}
 	}
-	else
-	{
-		synfig::info("beziers points haven't a bline as parent??!");
-	}
-
 }
 
 Smach::event_result
