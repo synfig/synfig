@@ -471,60 +471,68 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 	// if the bezier position ducks are linkable valuenode children
 	if(p1pvn && p2pvn && p1pvn==p2pvn)
 	{
+		// we guess that the parent value node is a bline value node
 		synfig::ValueNode::Handle bezier_bline=p1pvn;
 		// Positions of the points on the bline
-		Real p1_pos, p2_pos;
-		// indexes of the points on the bline
-		int p1_i, p2_i;
-		// retrieve the number of blinepoints on the bline
+		Real p1_pos, bezier_size;
+		// index of the first point on the bezier
+		int p1_i;
+		// retrieve the number of blinepoints on the bline and the loop of the bline
 		int bline_size((*(bezier_bline))(get_canvas()->get_time()).get_list().size());
-		//synfig::info("numbers of points on the bline: %d", bline_size);
+		bool loop((*(bezier_bline))(get_canvas()->get_time()).get_loop());
 		p1_i = p1->get_value_desc().get_index();
-		p2_i = p2->get_value_desc().get_index();
-		// check if we are handling the first bezier which is defined
-		//  by the last blinepoint and the first one
-		if(p2_i==0 && p1_i==(bline_size-1))
+		// bezier size depends on loop status
+		bezier_size = 1.0/(loop?bline_size:(bline_size-1));
+		if(loop)
 		{
-			p1_i=0;
-			p2_i=1;
+			// if looped and the we are in the first bezier
+			if(p1_i == (bline_size -1))
+				p1_i = 0;
+			else
+				p1_i++;
 		}
-		// Those are the positions of the bezier on the bline
-		p1_pos = Real(p1_i)/Real(bline_size-1);
-		p2_pos = Real(p2_i)/Real(bline_size-1);
+		// the position is based on the indez and the bezier size
+		p1_pos = Real(p1_i)*bezier_size;
 		// find all the widthpoints
+		const DuckList dl = get_work_area()->get_duck_list();
+		DuckList::const_iterator i = dl.begin();
+		for(;i != dl.end(); ++i)
 		{
-			const DuckList dl = get_work_area()->get_duck_list();
-			DuckList::const_iterator i = dl.begin();
-			for(;i != dl.end(); ++i)
+			handle<Duck> iduck(*i);
+			handle<Duck> iduck_origin(iduck->get_origin_duck());
+			// If we find a width duck
+			if(iduck->get_type() == Duck::TYPE_WIDTH && iduck_origin)
 			{
-				handle<Duck> iduck(*i);
-				handle<Duck> iduck_origin(iduck->get_origin_duck());
-				if(iduck->get_type() == Duck::TYPE_WIDTH && iduck_origin)
+				// if it has an origin duck
+				synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
+				ValueNode_Composite::Handle wpcompo(ValueNode_Composite::Handle::cast_dynamic(origin_value_desc.get_value_node()));
+				// if the origin duck us widthpoint composite
+				if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
 				{
-					synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
-					ValueNode_Composite::Handle wpcompo(ValueNode_Composite::Handle::cast_dynamic(origin_value_desc.get_value_node()));
-					if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
+					// and if the width point list that it belongs to...
+					ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
+					if(wplist)
 					{
-						ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
-						if(wplist)
+						// has a bline valid and is the same as the bline
+						// we found for the bezier previously catched
+						ValueNode::Handle bline(wplist->get_bline());
+						if(bline && (bline==bezier_bline))
 						{
-							ValueNode::Handle bline(wplist->get_bline());
-							if(bline && (bline==bezier_bline))
-							{
-								Real pos((*wpcompo->get_link("position"))(get_canvas()->get_time()));
-								Real l(p2_pos-p1_pos);
-								Real tpos(t*l+p1_pos);
-								Real amount(mult*exp(-20.0*(fabs(pos-tpos)+0.000001)));
-								amount*=invert?-1.0:1.0;
-								Real width = iduck->get_point().mag();
-								width += amount;
-								iduck->set_point(Vector(width,0));
-								changetable[iduck] = width;
-							}
+							// update the values properly
+							Real pos((*wpcompo->get_link("position"))(get_canvas()->get_time()));
+							Real tpos(p1_pos+t*bezier_size);
+							// The factor of 20 can be modified by the user as a preference.
+							// The higher value the more local effect has the
+							// Width Tool around the widths points.
+							Real amount(mult*exp(-20.0*(fabs(pos-tpos)+0.000001)));
+							amount*=invert?-1.0:1.0;
+							Real width = iduck->get_point().mag();
+							width += amount;
+							iduck->set_point(Vector(width,0));
+							changetable[iduck] = width;
 						}
 					}
 				}
-
 			}
 		}
 	}
