@@ -130,38 +130,38 @@ Advanced_Outline::sync()
 		const bool blineloop(bline_.get_loop());
 		ValueNode_BLine::Handle bline_valuenode;
 		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
-		vector<BLinePoint>::const_iterator iter,next(bline.begin());
-		const vector<BLinePoint>::const_iterator
-			end(bline.end());
+		const vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
+		const vector<BLinePoint>::const_iterator b_end(bline.end());
 		vector<Point> side_a, side_b;
 		if(blineloop)
-			iter=--bline.end();
+			biter=--bline.end();
 		else
-			iter=next++;
-		// 				iter	next
+			biter=bnext++;
+		// 				biter	bnext
 		//				----	----
 		// looped		nth		1st
 		// !looped		1st		2nd
 		Vector first_tangent=bline.front().get_tangent2();
-		Vector last_tangent=iter->get_tangent1();
+		Vector last_tangent=biter->get_tangent1();
 		// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
 		if (blineloop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
 		{
-			hermite<Vector> curve((iter-1)->get_vertex(), iter->get_vertex(), (iter-1)->get_tangent2(), iter->get_tangent1());
+			hermite<Vector> curve((biter-1)->get_vertex(), biter->get_vertex(), (biter-1)->get_tangent2(), biter->get_tangent1());
 			const derivative< hermite<Vector> > deriv(curve);
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
 		// `first' is for making the cusps; don't do that for the first point if we're not looped
-		for(bool first=!blineloop; next!=end; iter=next++)
+		for(bool first=!blineloop; bnext!=b_end; biter=bnext++)
 		{
-			Vector prev_t(iter->get_tangent1());
-			Vector iter_t(iter->get_tangent2());
-			Vector next_t(next->get_tangent1());
-			bool split_flag(iter->get_split_tangent_flag());
+			Vector prev_t(biter->get_tangent1());
+			Vector iter_t(biter->get_tangent2());
+			Vector next_t(bnext->get_tangent1());
+			bool split_flag(biter->get_split_tangent_flag());
 			// if iter.t2 == 0 and next.t1 == 0, this is a straight line
 			if(iter_t.is_equal_to(Vector::zero()) && next_t.is_equal_to(Vector::zero()))
 			{
-				iter_t=next_t=next->get_vertex()-iter->get_vertex();
+				iter_t=next_t=bnext->get_vertex()-biter->get_vertex();
 				// split_flag=true;
 				// if the two points are on top of each other, ignore this segment
 				// leave `first' true if was before
@@ -170,14 +170,16 @@ Advanced_Outline::sync()
 			}
 			// Setup the curve
 			hermite<Vector> curve(
-				iter->get_vertex(),
-				next->get_vertex(),
+				biter->get_vertex(),
+				bnext->get_vertex(),
 				iter_t,
 				next_t
 			);
+			// Calculate the iter and next positions comparable with the
+			// width points
 			const float
-				iter_w((iter->get_width()*width_)*0.5f+expand_),
-				next_w((next->get_width()*width_)*0.5f+expand_);
+				biter_w((biter->get_width()*width_)*0.5f+expand_),
+				bnext_w((bnext->get_width()*width_)*0.5f+expand_);
 			const derivative< hermite<Vector> > deriv(curve);
 			if (first)
 				first_tangent = deriv(CUSP_TANGENT_ADJUST);
@@ -191,25 +193,25 @@ Advanced_Outline::sync()
 				Real perp((t1-t2).mag());
 				if(cross>CUSP_THRESHOLD)
 				{
-					const Point p1(iter->get_vertex()+t1*iter_w);
-					const Point p2(iter->get_vertex()+t2*iter_w);
+					const Point p1(biter->get_vertex()+t1*biter_w);
+					const Point p2(biter->get_vertex()+t2*biter_w);
 					side_a.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
 				}
 				else if(cross<-CUSP_THRESHOLD)
 				{
-					const Point p1(iter->get_vertex()-t1*iter_w);
-					const Point p2(iter->get_vertex()-t2*iter_w);
+					const Point p1(biter->get_vertex()-t1*biter_w);
+					const Point p2(biter->get_vertex()-t2*biter_w);
 					side_b.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
 				}
 				else if(cross>0 && perp>1)
 				{
 					float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-					side_a.push_back(iter->get_vertex()+(t1+t2).norm()*iter_w*amount);
+					side_a.push_back(biter->get_vertex()+(t1+t2).norm()*biter_w*amount);
 				}
 				else if(cross<0 && perp>1)
 				{
 					float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-					side_b.push_back(iter->get_vertex()-(t1+t2).norm()*iter_w*amount);
+					side_b.push_back(biter->get_vertex()-(t1+t2).norm()*biter_w*amount);
 				}
 			}
 			// Make the outline
@@ -224,7 +226,7 @@ Advanced_Outline::sync()
 					const Vector p(curve(n));
 					if(n)
 						dist+=(p-lastpoint).mag();
-					const float w(((next_w-iter_w)*(dist/length)+iter_w));
+					const float w(((bnext_w-biter_w)*(dist/length)+biter_w));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					lastpoint=p;
@@ -235,13 +237,13 @@ Advanced_Outline::sync()
 				{
 					const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
 					const Vector p(curve(n));
-					const float w(((next_w-iter_w)*n+iter_w));
+					const float w(((bnext_w-biter_w)*n+biter_w));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
-			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*next_w);
-			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*next_w);
+			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*bnext_w);
+			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*bnext_w);
 			first=false;
 		}
 		if(blineloop)
