@@ -69,11 +69,11 @@ public:
 	const Real& get_width()const;
 	void set_width(Real x);
 
-	int get_side_type_before();
+	int get_side_type_before()const;
 	void set_side_type_before(int sidebefore);
-	int get_side_type_after();
+	int get_side_type_after()const;
 	void set_side_type_after(int sideafter);
-	int get_side_type(int i);
+	int get_side_type(int i)const;
 	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
 
 }; // END of class WidthPoint

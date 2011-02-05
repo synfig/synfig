@@ -98,7 +98,7 @@ WidthPoint::set_width(Real x)
 }
 
 int
-WidthPoint::get_side_type_before()
+WidthPoint::get_side_type_before()const
 {
 	return side_type_[0];
 }
@@ -110,7 +110,7 @@ WidthPoint::set_side_type_before(int sidebefore)
 }
 
 int
-WidthPoint::get_side_type_after()
+WidthPoint::get_side_type_after()const
 {
 	return side_type_[1];
 }
@@ -122,7 +122,7 @@ WidthPoint::set_side_type_after(int sideafter)
 }
 
 int
-WidthPoint::get_side_type(int i)
+WidthPoint::get_side_type(int i)const
 {
 	return i>0? side_type_[1]: side_type_[0];
 }

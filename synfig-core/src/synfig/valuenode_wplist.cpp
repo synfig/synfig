@@ -94,6 +94,50 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 	return ValueBase(ret);
 }
 
+Real
+synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real position)
+{
+	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
+	Real ppos, npos;
+
+	Real nw, pw, rw(0.0);
+	npos=next.get_norm_position();
+	ppos=prev.get_norm_position();
+	nw=next.get_width();
+	pw=prev.get_width();
+	if(position < npos && position > ppos)
+	{
+		Real p;
+		if(next.get_side_type_before() != side_int)
+			nw=0.0;
+		if(prev.get_side_type_after() != side_int)
+			pw=0.0;
+		//if previous and next are so close
+		if(npos-ppos < Real(0.0000001f))
+			p=0.5;
+		else
+			// linear interpolation
+			p=(position-ppos)/(npos-ppos);
+		rw=pw+(nw-pw)*p;
+	}
+	else if(position > npos)
+	{
+		if(next.get_side_type_after() == side_int)
+			rw=nw;
+	}
+	else if(position < ppos)
+	{
+		if(prev.get_side_type_before() == side_int)
+			rw=pw;
+	}
+	else if(position == npos)
+		rw=nw;
+	else if(position == ppos)
+		rw=pw;
+
+	return rw;
+}
+
 
 /* === M E T H O D S ======================================================= */
 
@@ -309,52 +353,9 @@ ValueNode_WPList::interpolated_width(Real position, Time time)const
 	synfig::WidthPoint prev, next;
 	prev=find_prev_valid_entry_by_position(position, time);
 	next=find_next_valid_entry_by_position(position, time);
-	return interpolate(prev, next, position);
+	return widthpoint_interpolate(prev, next, position);
 }
 
-Real
-ValueNode_WPList::interpolate(WidthPoint& prev, WidthPoint& next, Real position)const
-{
-	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
-	Real ppos, npos;
-
-	Real nw, pw, rw(0.0);
-	npos=next.get_norm_position();
-	ppos=prev.get_norm_position();
-	nw=next.get_width();
-	pw=prev.get_width();
-	if(position < npos && position > ppos)
-	{
-		Real p;
-		if(next.get_side_type_before() != side_int)
-			nw=0.0;
-		if(prev.get_side_type_after() != side_int)
-			pw=0.0;
-		//if previous and next are so close
-		if(npos-ppos < Real(0.0000001f))
-			p=0.5;
-		else
-			// linear interpolation
-			p=(position-ppos)/(npos-ppos);
-		rw=pw+(nw-pw)*p;
-	}
-	else if(position > npos)
-	{
-		if(next.get_side_type_after() == side_int)
-			rw=nw;
-	}
-	else if(position < ppos)
-	{
-		if(prev.get_side_type_before() == side_int)
-			rw=pw;
-	}
-	else if(position == npos)
-		rw=nw;
-	else if(position == ppos)
-		rw=pw;
-
-	return rw;
-}
 
 ValueNode::LooseHandle
 ValueNode_WPList::get_bline()const

@@ -45,6 +45,12 @@
 namespace synfig {
 //! Converts a ValueNode_BLine into a WidthPoint list
 synfig::ValueBase convert_bline_to_wplist(const ValueBase& bline);
+//! Interpolated width
+//! \param prev the previous width point to evaluate the width
+//! \param next the next width point to evaluate the width
+//! \param position the position to interpolate between prev and next
+//! \return the interpolated width based on surrounding width points and its values
+synfig::Real widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real position);
 
 /*! \class ValueNode_WPList
 **	\brief This class implements a list of Width Points
@@ -92,12 +98,6 @@ public:
 	//! \param time the time when evaluates
 	//! \return the interpolated width
 	Real interpolated_width(Real position, Time time)const;
-	//! Interpolated width
-	//! \param prev the previous width point to evaluate the width
-	//! \param next the next width point to evaluate the width
-	//! \param position the position to interpolate between prev and next
-	//! \return the interpolated width based on surrounding width points and its values
-	Real interpolate(WidthPoint& prev, WidthPoint& next, Real position)const;
 	//! Gets the bline RHandle
 	ValueNode::LooseHandle get_bline()const;
 	//! Sets the bline RHandle
