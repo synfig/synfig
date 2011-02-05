@@ -74,7 +74,7 @@ public:
 	int get_side_type_after()const;
 	void set_side_type_after(int sideafter);
 	int get_side_type(int i)const;
-	bool operator < (const WidthPoint& rhs) { return position_  < rhs.position_; }
+	bool operator < (const WidthPoint& rhs);
 
 }; // END of class WidthPoint
 

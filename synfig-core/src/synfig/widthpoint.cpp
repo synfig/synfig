@@ -126,3 +126,9 @@ WidthPoint::get_side_type(int i)const
 {
 	return i>0? side_type_[1]: side_type_[0];
 }
+
+bool
+WidthPoint::operator<(const WidthPoint& rhs)
+{
+	return get_norm_position() < rhs.get_norm_position();
+}
