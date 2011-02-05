@@ -132,7 +132,7 @@ Advanced_Outline::sync()
 		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		const vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
-		const vector<BLinePoint>::const_iterator b_end(bline.end());
+		const vector<BLinePoint>::const_iterator bend(bline.end());
 		vector<Point> side_a, side_b;
 		if(blineloop)
 			biter=--bline.end();
@@ -152,7 +152,7 @@ Advanced_Outline::sync()
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
 		// `first' is for making the cusps; don't do that for the first point if we're not looped
-		for(bool first=!blineloop; bnext!=b_end; biter=bnext++)
+		for(bool first=!blineloop; bnext!=bend; biter=bnext++)
 		{
 			Vector prev_t(biter->get_tangent1());
 			Vector iter_t(biter->get_tangent2());
