@@ -128,12 +128,17 @@ Advanced_Outline::sync()
 	try
 	{
 		const bool blineloop(bline_.get_loop());
-		ValueNode_BLine::Handle bline_valuenode;
 		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
-		const vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		int bline_size(bline.size());
+		vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
+		vector<WidthPoint>::iterator witer, wnext;
+		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
+		Real biter_pos(0.0), bnext_pos(bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
 		vector<Point> side_a, side_b;
+		// If we are looped, the first bezier to handle starts form the
+		// last blinepoint to the first one
 		if(blineloop)
 			biter=--bline.end();
 		else
@@ -175,7 +180,27 @@ Advanced_Outline::sync()
 				iter_t,
 				next_t
 			);
-			// Calculate the iter and next positions comparable with the
+			vector<synfig::WidthPoint> bwpoints;
+			vector<synfig::WidthPoint>::iterator bwpi;
+			// Collect the widthpoints that are inside this bezier
+			synfig::info("Collecting wpoints of %d wpoints", wplist.size());
+			if(wplist.size())
+			{
+				for(witer=wplist.begin(); witer!=wplist.end();witer++)
+				{
+					Real witer_pos(witer->get_norm_position());
+					if(witer_pos < bnext_pos && witer_pos > biter_pos)
+						bwpoints.push_back(*witer);
+				}
+			}
+			synfig::info("=====biter pos %f", biter_pos);
+			sort(bwpoints.begin(), bwpoints.end());
+			if(bwpoints.size())
+			{
+				for(bwpi=bwpoints.begin();bwpi!=bwpoints.end();bwpi++)
+					synfig::info("Wpoint pos: %f", bwpi->get_position());
+			}
+			synfig::info("=====bnext pos %f", bnext_pos);
 			// width points
 			const float
 				biter_w((biter->get_width()*width_)*0.5f+expand_),
@@ -245,6 +270,8 @@ Advanced_Outline::sync()
 			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*bnext_w);
 			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*bnext_w);
 			first=false;
+			biter_pos = bnext_pos;
+			bnext_pos+=bezier_size;
 		}
 		if(blineloop)
 		{
