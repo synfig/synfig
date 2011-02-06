@@ -95,46 +95,88 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 }
 
 Real
-synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real position)
+synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real p)
 {
 	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
-	Real ppos, npos;
-
+	int nsb, nsa, psb, psa;
+	Real pp, np;
 	Real nw, pw, rw(0.0);
-	npos=next.get_norm_position();
-	ppos=prev.get_norm_position();
+	const Real epsilon(0.0000001f);
+	np=next.get_norm_position();
+	pp=prev.get_norm_position();
 	nw=next.get_width();
 	pw=prev.get_width();
-	if(position < npos && position > ppos)
+	nsb=next.get_side_type_before();
+	nsa=next.get_side_type_after();
+	psb=prev.get_side_type_before();
+	psa=prev.get_side_type_after();
+	if(p==np)
+		return nw;
+	if(p==pp)
+		return pw;
+	// Normal case: previous position is lower than next position
+	if(np >= pp)
 	{
-		Real p;
-		if(next.get_side_type_before() != side_int)
-			nw=0.0;
-		if(prev.get_side_type_after() != side_int)
-			pw=0.0;
-		//if previous and next are so close
-		if(npos-ppos < Real(0.0000001f))
-			p=0.5;
-		else
-			// linear interpolation
-			p=(position-ppos)/(npos-ppos);
-		rw=pw+(nw-pw)*p;
-	}
-	else if(position > npos)
-	{
-		if(next.get_side_type_after() == side_int)
-			rw=nw;
-	}
-	else if(position < ppos)
-	{
-		if(prev.get_side_type_before() == side_int)
+		if(np > p && p > pp )
+		{
+			Real q;
+			if(nsb != side_int)
+				nw=0.0;
+			if(psa != side_int)
+				pw=0.0;
+			if(np-pp < epsilon)
+				q=0.5;
+			else
+				q=(p-pp)/(np-pp);
+			rw=pw+(nw-pw)*q;
+		}
+		else if(p < pp)
+		{
+			if(psb != side_int)
+				pw=0.0;
 			rw=pw;
+		}
+		else if(p > np)
+		{
+			if(nsa != side_int)
+				nw=0.0;
+			rw=nw;
+		}
 	}
-	else if(position == npos)
-		rw=nw;
-	else if(position == ppos)
-		rw=pw;
-
+	// particular case: previous position is higher than next position
+	else
+	if(p > pp || np > p)
+	{
+		Real q;
+		if(nsb != side_int)
+			nw=0.0;
+		if(psa != side_int)
+			pw=0.0;
+		if(np+1.0-pp < epsilon)
+			q=0.5;
+		else
+		{
+			if(p > pp)
+				q=(p-pp)/(np+1.0-pp);
+			if(np > p)
+				q=(p+1.0-pp)/(np+1.0-pp);
+		}
+		rw=pw+(nw-pw)*q;
+	}
+	else
+	if(p > np && p < pp)
+	{
+		Real q;
+		if(nsa != side_int)
+			nw=0.0;
+		if(psb != side_int)
+			pw=0.0;
+		if(pp-np < epsilon)
+			q=0.5;
+		else
+			q=(p-np)/(pp-np);
+		rw=nw+(pw-nw)*q;
+	}
 	return rw;
 }
 
