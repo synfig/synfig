@@ -72,10 +72,15 @@ WidthPoint::get_position()const
 Real
 WidthPoint::get_norm_position()const
 {
-	Real ret_pos(fabs(fmod(position_, Real(1.0f))));
-	if(fabs(position_) >= 1.0 && ret_pos==0.0)
-		return 1.0;
-	return ret_pos;
+	Real pos(get_position());
+	Real integer;
+	if(pos>=0.0 && pos <=1.0)
+		return pos;
+	else
+	{
+		Real ret(modf(pos, &integer));
+		return ret>=0.0?ret:(1.0+ret);
+	}
 }
 
 void
