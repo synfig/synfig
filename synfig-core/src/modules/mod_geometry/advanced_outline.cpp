@@ -189,7 +189,7 @@ Advanced_Outline::sync()
 				for(witer=wplist.begin(); witer!=wplist.end();witer++)
 				{
 					Real witer_pos(witer->get_norm_position());
-					if(witer_pos < bnext_pos && witer_pos > biter_pos)
+					if(witer_pos <= bnext_pos && witer_pos >= biter_pos)
 						bwpoints.push_back(*witer);
 				}
 			}
@@ -198,7 +198,7 @@ Advanced_Outline::sync()
 			if(bwpoints.size())
 			{
 				for(bwpi=bwpoints.begin();bwpi!=bwpoints.end();bwpi++)
-					synfig::info("Wpoint pos: %f", bwpi->get_position());
+					synfig::info("Wpoint pos: %f (%f)", bwpi->get_position(), bwpi->get_norm_position());
 			}
 			synfig::info("=====bnext pos %f", bnext_pos);
 			// width points
