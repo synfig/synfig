@@ -491,7 +491,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 			else
 				p1_i++;
 		}
-		// the position is based on the indez and the bezier size
+		// the position is based on the index and the bezier size
 		p1_pos = Real(p1_i)*bezier_size;
 		// find all the widthpoints
 		const DuckList dl = get_work_area()->get_duck_list();
@@ -505,21 +505,22 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 			{
 				// if it has an origin duck
 				synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
-				ValueNode_Composite::Handle wpcompo(ValueNode_Composite::Handle::cast_dynamic(origin_value_desc.get_value_node()));
-				// if the origin duck us widthpoint composite
-				if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
+				ValueNode::Handle wpvn(ValueNode::Handle::cast_dynamic(origin_value_desc.get_value_node()));
+				// if the origin duck is widthpoint type and it belongs to a list
+				if(wpvn && wpvn->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
 				{
 					// and if the width point list that it belongs to...
 					ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
 					if(wplist)
 					{
-						// has a bline valid and is the same as the bline
-						// we found for the bezier previously catched
+						// ... has a bline valid and is the same as the bline
+						// we found for the bezier previously catched...
 						ValueNode::Handle bline(wplist->get_bline());
 						if(bline && (bline==bezier_bline))
 						{
-							// update the values properly
-							Real pos((*wpcompo->get_link("position"))(get_canvas()->get_time()));
+							// ... then update the values properly
+							synfig::WidthPoint wpoint((*wpvn)(get_canvas()->get_time()));
+							Real pos(wpoint.get_norm_position());
 							Real tpos(p1_pos+t*bezier_size);
 							// The factor of 20 can be modified by the user as a preference.
 							// The higher value the more local effect has the
