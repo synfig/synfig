@@ -127,17 +127,22 @@ Advanced_Outline::sync()
 	}
 	try
 	{
+		const vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
+		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
 		const bool blineloop(bline_.get_loop());
-		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		int bline_size(bline.size());
-		vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
-		sort(wplist.begin(),wplist.end());
+		int wplist_size(wplist.size());
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
 		vector<WidthPoint>::iterator witer, wnext;
+		WidthPoint last_widthpoint, next_widthpoint, bezier_last_widthpoint;
+		Vector first_tangent;
+		Vector last_tangent;
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		Real biter_pos(0.0), bnext_pos(bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
 		vector<Point> side_a, side_b;
+		// Sort the wplist. It is needed to calculate the first widthpoint
+		sort(wplist.begin(),wplist.end());
 		// If we are looped, the first bezier to handle starts form the
 		// last blinepoint to the first one
 		if(blineloop)
@@ -148,8 +153,10 @@ Advanced_Outline::sync()
 		//				----	----
 		// looped		nth		1st
 		// !looped		1st		2nd
-		Vector first_tangent=bline.front().get_tangent2();
-		Vector last_tangent=biter->get_tangent1();
+		// First tangent is used only to add the start tip
+		first_tangent=bline.front().get_tangent2();
+		// Last tangent is only to draw sharp cusps for the first blinepoint
+		last_tangent=biter->get_tangent1();
 		// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
 		if (blineloop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
 		{
@@ -157,13 +164,18 @@ Advanced_Outline::sync()
 			const derivative< hermite<Vector> > deriv(curve);
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
-		synfig::WidthPoint last_widthpoint;
 		// at start, a last_widthpoint is needed
-		if(!blineloop)
-			last_widthpoint=wplist.front();
-		else
-			last_widthpoint=wplist.back();
+		if(wplist_size)
+		{
+			if(!blineloop)
+				last_widthpoint=wplist.front();
+			else
+				last_widthpoint=wplist.back();
+		}
+		else // use the global width
+			last_widthpoint=WidthPoint(0.0, get_param("width"));
 		// `first' is for making the cusps; don't do that for the first point if we're not looped
+		// For all the beziers beween iter and next do:
 		for(bool first=!blineloop; bnext!=bend; biter=bnext++)
 		{
 			Vector prev_t(biter->get_tangent1());
@@ -187,28 +199,75 @@ Advanced_Outline::sync()
 				iter_t,
 				next_t
 			);
-			vector<synfig::WidthPoint> bwpoints;
-			vector<synfig::WidthPoint>::iterator bwpi;
-			// Collect the widthpoints that are inside this bezier
-			synfig::info("Last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
-			synfig::info("Collecting wpoints of %d wpoints", wplist.size());
-			if(wplist.size())
+			// List of widthpoints in the current bezire
+			vector<WidthPoint> bwpoints;
+			Real biter_width, bnext_width;
+			// Find all the widthpoints on the bezier and the first
+			// widthpoint of the next bezier (the 'past' one)
+			bool found_bezier_last_widthpoint=false;
+			if(wplist_size)
 			{
-				for(witer=wplist.begin(); witer!=wplist.end();witer++)
+				bool found=false;
+				Real witer_pos, wnext_pos;
+				for(wnext=witer=wplist.begin(); witer!=wplist.end();witer++)
 				{
-					Real witer_pos(witer->get_norm_position());
+					witer_pos=witer->get_norm_position();
+					wnext_pos=wnext->get_norm_position();
 					if(witer_pos <= bnext_pos && witer_pos >= biter_pos)
 						bwpoints.push_back(*witer);
+					if(!found && witer_pos > wnext_pos)
+					{
+						wnext=witer;
+						if(witer_pos > bnext_pos)
+							found=true;
+					}
 				}
+				// if no wfirst is found higher to bnext and we are looped
+				// then use the front widthpoint as 'next'
+				if(blineloop && !found)
+					wnext=wplist.begin();
+				next_widthpoint=*wnext;
 			}
-			synfig::info("=====biter pos %f", biter_pos);
+			else // use the global width
+				next_widthpoint=WidthPoint(1.0,  get_param("width"));
+			// Sort the list of collected widthpoints
+			synfig::info("last_widthpoint pos: %f", last_widthpoint.get_norm_position());
+			synfig::info("next_widthpoint pos: %f", next_widthpoint.get_norm_position());
 			sort(bwpoints.begin(), bwpoints.end());
+			// keep track of the last widthpoint from the collected
 			if(bwpoints.size())
 			{
-				for(bwpi=bwpoints.begin();bwpi!=bwpoints.end();bwpi++)
-					synfig::info("Wpoint pos: %f (%f)", bwpi->get_position(), bwpi->get_norm_position());
+				bezier_last_widthpoint=bwpoints.back();
+				found_bezier_last_widthpoint=true;
 			}
-			synfig::info("=====bnext pos %f", bnext_pos);
+			// Now insert the biter withpoint at the bwpoints vector if there
+			// is not any widthpoint exactly at biter_pos
+			if(bwpoints.size())
+			{
+				// Calculate the interpolated width on the biter blinepoint.
+				biter_width=synfig::widthpoint_interpolate(last_widthpoint, bwpoints.front(), biter_pos);
+				bnext_width=synfig::widthpoint_interpolate(bwpoints.back(), next_widthpoint, bnext_pos);
+				// Insert a fake widthpoint at the biter_pos and bnext_pos
+				// if there are not widthpoint there
+				if(bwpoints.front().get_norm_position()!=biter_pos)
+					bwpoints.insert(bwpoints.begin(), WidthPoint(biter_pos, biter_width));
+				if(bwpoints.back().get_norm_position()!=bnext_pos)
+					bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
+			}
+			else
+			{
+				biter_width=synfig::widthpoint_interpolate(last_widthpoint, next_widthpoint, biter_pos);
+				bnext_width=synfig::widthpoint_interpolate(last_widthpoint, next_widthpoint, bnext_pos);
+				bwpoints.push_back(WidthPoint(biter_pos, biter_width));
+				bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
+			}
+			synfig::info("bezier form %f to %f===============", biter_pos, bnext_pos);
+			if(bwpoints.size())
+			{
+				for(witer=bwpoints.begin();witer!=bwpoints.end();witer++)
+					synfig::info("Wpoint pos: %f w: %f", witer->get_norm_position(), witer->get_width());
+			}
+			synfig::info("===================================");
 			// width points
 			const float
 				biter_w((biter->get_width()*width_)*0.5f+expand_),
@@ -284,8 +343,8 @@ Advanced_Outline::sync()
 			biter_pos = bnext_pos;
 			bnext_pos+=bezier_size;
 			// update the last width point with the last of this group
-			if(bwpoints.size())
-				last_widthpoint=bwpoints.back();
+			if(found_bezier_last_widthpoint)
+				last_widthpoint=bezier_last_widthpoint;
 		}
 		synfig::info("last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
 		if(blineloop)
