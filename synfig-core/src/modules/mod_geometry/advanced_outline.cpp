@@ -131,6 +131,7 @@ Advanced_Outline::sync()
 		const vector<synfig::BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		int bline_size(bline.size());
 		vector<synfig::WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		sort(wplist.begin(),wplist.end());
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
 		vector<WidthPoint>::iterator witer, wnext;
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
@@ -156,6 +157,12 @@ Advanced_Outline::sync()
 			const derivative< hermite<Vector> > deriv(curve);
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
+		synfig::WidthPoint last_widthpoint;
+		// at start, a last_widthpoint is needed
+		if(!blineloop)
+			last_widthpoint=wplist.front();
+		else
+			last_widthpoint=wplist.back();
 		// `first' is for making the cusps; don't do that for the first point if we're not looped
 		for(bool first=!blineloop; bnext!=bend; biter=bnext++)
 		{
@@ -183,6 +190,7 @@ Advanced_Outline::sync()
 			vector<synfig::WidthPoint> bwpoints;
 			vector<synfig::WidthPoint>::iterator bwpi;
 			// Collect the widthpoints that are inside this bezier
+			synfig::info("Last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
 			synfig::info("Collecting wpoints of %d wpoints", wplist.size());
 			if(wplist.size())
 			{
@@ -206,8 +214,8 @@ Advanced_Outline::sync()
 				biter_w((biter->get_width()*width_)*0.5f+expand_),
 				bnext_w((bnext->get_width()*width_)*0.5f+expand_);
 			const derivative< hermite<Vector> > deriv(curve);
-			if (first)
-				first_tangent = deriv(CUSP_TANGENT_ADJUST);
+			//if (first)
+				//first_tangent = deriv(CUSP_TANGENT_ADJUST);
 			// Make cusps as necessary
 			if(!first && sharp_cusps_ && split_flag && (!prev_t.is_equal_to(iter_t) || iter_t.is_equal_to(Vector::zero())) && !last_tangent.is_equal_to(Vector::zero()))
 			{
@@ -266,13 +274,20 @@ Advanced_Outline::sync()
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
+			// Insert the last two sides evaluated at end of curve (bezier)
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*bnext_w);
 			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*bnext_w);
+			// make first false as we have done the first bezier
 			first=false;
+			// update the iter and next positions adding the bezier size.
 			biter_pos = bnext_pos;
 			bnext_pos+=bezier_size;
+			// update the last width point with the last of this group
+			if(bwpoints.size())
+				last_widthpoint=bwpoints.back();
 		}
+		synfig::info("last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
 		if(blineloop)
 		{
 			reverse(side_b.begin(),side_b.end());
