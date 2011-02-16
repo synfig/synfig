@@ -333,8 +333,9 @@ Advanced_Outline::sync()
 				synfig::info("start=%f",start);
 				synfig::info("end=%f",end);
 				Real distance=end-start;
-				Real increase=distance<EPSILON?distance:distance/SAMPLES;
+				Real increase=distance/SAMPLES;
 				synfig::info("increase=%f",increase);
+				if(increase < EPSILON) continue;
 				for(Real n=start;n<=end;n+=increase)
 				{
 					const Vector d(deriv(n).perp().norm());
