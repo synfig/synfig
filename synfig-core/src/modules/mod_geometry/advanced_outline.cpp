@@ -207,7 +207,7 @@ Advanced_Outline::sync()
 			bool found_bezier_last_widthpoint=false;
 			if(wplist_size)
 			{
-				bool found=false;
+				vector<WidthPoint>::iterator wnext_found(wplist.begin());
 				Real witer_pos, wnext_pos;
 				for(wnext=witer=wplist.begin(); witer!=wplist.end();witer++)
 				{
@@ -217,21 +217,26 @@ Advanced_Outline::sync()
 					if(witer_pos <= bnext_pos && witer_pos >= biter_pos)
 						// store it on the list
 						bwpoints.push_back(*witer);
-					// if the next_widthpoint hasn't been found (found=false)
-					// and we find one widthpoint higher than the current
-					// 'next_widhtpoint' then keep track of it
-					if(!found && witer_pos > wnext_pos)
+					// if we haven't found any 'next_widthpoint' beyond
+					// current bezier edge
+					if(witer_pos > wnext_pos && wnext_pos < bnext_pos)
 					{
+						// then keep track of the current widthpoint
 						wnext=witer;
-						// if the width point passes the higher boundary of the
-						// bezier then consider as found the 'next_widthpoint'
-						if(witer_pos > bnext_pos)
-							found=true;
+					}
+					// else we have one 'next_widthpoint' found at last
+					else if(witer_pos > wnext_pos && wnext_pos >= bnext_pos)
+					{
+						// if current widthpoint is closer to the
+						// bezier boundary than the 'next_widthpoint'
+						// then keep track of it
+						if(witer_pos - bnext_pos < wnext_pos - bnext_pos)
+							wnext=witer;
 					}
 				}
 				// if no wfirst is found higher to bnext and we are looped
 				// then use the front widthpoint as 'next_widthpoint'
-				if(blineloop && !found)
+				if(blineloop && wnext->get_norm_position() < bnext_pos)
 					wnext=wplist.begin();
 				next_widthpoint=*wnext;
 			}
@@ -335,7 +340,7 @@ Advanced_Outline::sync()
 					const Vector d(deriv(n).perp().norm());
 					const Vector p(curve(n));
 					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, biter_pos+n*bezier_size));
-					synfig::info("n=%f w=%f",n, w);
+					//synfig::info("n=%f w=%f",n, w);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
@@ -381,7 +386,7 @@ Advanced_Outline::sync()
 			if(found_bezier_last_widthpoint)
 				last_widthpoint=bezier_last_widthpoint;
 		} // end of loop through beziers of the bline
-		synfig::info("last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
+		//synfig::info("last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
 		if(blineloop)
 		{
 			reverse(side_b.begin(),side_b.end());
