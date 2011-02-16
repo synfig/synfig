@@ -317,6 +317,30 @@ Advanced_Outline::sync()
 				}
 			}
 			// Make the outline
+			wnext=bwpoints.begin();
+			wnext++;
+			for(witer=bwpoints.begin(); wnext!=bwpoints.end(); witer++, wnext++)
+			{
+				Real s(witer->get_norm_position());
+				Real e(wnext->get_norm_position());
+				Real start((s-biter_pos)/bezier_size);
+				Real end((e-biter_pos)/bezier_size);
+				synfig::info("start=%f",start);
+				synfig::info("end=%f",end);
+				Real distance=end-start;
+				Real increase=distance<EPSILON?distance:distance/SAMPLES;
+				synfig::info("increase=%f",increase);
+				for(Real n=start;n<=end;n+=increase)
+				{
+					const Vector d(deriv(n).perp().norm());
+					const Vector p(curve(n));
+					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, biter_pos+n*bezier_size));
+					synfig::info("n=%f w=%f",n, w);
+					side_a.push_back(p+d*w);
+					side_b.push_back(p-d*w);
+				}
+			}
+			/*
 			if(homogeneous_width_)
 			{
 				const float length(curve.length());
@@ -343,10 +367,11 @@ Advanced_Outline::sync()
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
+			*/
 			// Insert the last two sides evaluated at end of curve (bezier)
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
-			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*bnext_w);
-			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*bnext_w);
+			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*witer->get_width()*width_*0.5);
+			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*witer->get_width()*width_*0.5);
 			// make first false as we have done the first bezier
 			first=false;
 			// update the iter and next positions adding the bezier size.
