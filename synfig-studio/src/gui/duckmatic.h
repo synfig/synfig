@@ -381,6 +381,10 @@ public:
 	//! Signals to each selected duck that it has been clicked
 	void signal_user_click_selected_ducks(int button);
 
+	//! Calls a single duck's edited signal
+	/*! Updates the corresponding valuenodes after a drag */
+	void signal_edited_duck(const etl::handle<Duck> &duck);
+
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks();

@@ -669,12 +669,6 @@ BezierDrag_Default::begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector
 	etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
 	etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
 
-	// temporarily select the tangent ducks
-	c1_selected = duckmatic->duck_is_selected(c1);
-	c2_selected = duckmatic->duck_is_selected(c2);
-	duckmatic->select_duck(c1);
-	duckmatic->select_duck(c2);
-
 	c1_initial = c1->get_trans_point();
 	c2_initial = c2->get_trans_point();
 	last_translate_ = synfig::Vector(0,0);
@@ -729,19 +723,16 @@ BezierDrag_Default::end_bezier_drag(Duckmatic* duckmatic)
 {
 	if(last_translate_.mag()>0.0001)
 	{
-		duckmatic->signal_edited_selected_ducks();
-	
-		// restore duck selection
-		if (!c1_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c1);
-		if (!c2_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c2);
+		etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
+		etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+
+		duckmatic->signal_edited_duck(c1);
+		duckmatic->signal_edited_duck(c2);
 
 		return true;
 	}
 	else
 	{
-		// restore duck selection
-		if (!c1_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c1);
-		if (!c2_selected) duckmatic->unselect_duck(duckmatic->get_selected_bezier()->c2);
 		return false;
 	}
 }
@@ -759,6 +750,49 @@ Duckmatic::signal_user_click_selected_ducks(int button)
 	}
 }
 
+void
+Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck)
+{
+	if (duck->get_type() == Duck::TYPE_ANGLE)
+	{
+		if(!duck->signal_edited_angle()(duck->get_rotations()))
+		{
+			throw String("Bad edit");
+		}
+	}
+	else if (App::restrict_radius_ducks &&
+			 duck->is_radius())
+	{
+		Point point(duck->get_point());
+		bool changed = false;
+
+		if (point[0] < 0)
+		{
+			point[0] = 0;
+			changed = true;
+		}
+		if (point[1] < 0)
+		{
+			point[1] = 0;
+			changed = true;
+		}
+
+		if (changed) duck->set_point(point);
+
+		if(!duck->signal_edited()(point))
+		{
+			throw String("Bad edit");
+		}
+	}
+	else
+	{
+		if(!duck->signal_edited()(duck->get_point()))
+		{
+			throw String("Bad edit");
+		}
+	}
+}
+
 
 void
 Duckmatic::signal_edited_selected_ducks()
@@ -771,55 +805,20 @@ Duckmatic::signal_edited_selected_ducks()
 	// If we have more than 20 things to move, then display
 	// something to explain that it may take a moment
 	smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
-
-	// Go ahead and call everyone's signals
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
-		if ((*iter)->get_type() == Duck::TYPE_ANGLE)
+		try
 		{
-			if(!(*iter)->signal_edited_angle()((*iter)->get_rotations()))
-			{
-				selected_ducks=old_set;
-				throw String("Bad edit");
-			}
+			signal_edited_duck(*iter);
 		}
-		else if (App::restrict_radius_ducks &&
-				 (*iter)->is_radius())
+		catch (String)
 		{
-			Point point((*iter)->get_point());
-			bool changed = false;
-
-			if (point[0] < 0)
-			{
-				point[0] = 0;
-				changed = true;
-			}
-			if (point[1] < 0)
-			{
-				point[1] = 0;
-				changed = true;
-			}
-
-			if (changed) (*iter)->set_point(point);
-
-			if(!(*iter)->signal_edited()(point))
-			{
-				selected_ducks=old_set;
-				throw String("Bad edit");
-			}
-		}
-		else
-		{
-			if(!(*iter)->signal_edited()((*iter)->get_point()))
-			{
-				selected_ducks=old_set;
-				throw String("Bad edit");
-			}
+			selected_ducks=old_set;
+			throw;
 		}
 	}
 	selected_ducks=old_set;
 }
-
 
 bool
 Duckmatic::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc)
