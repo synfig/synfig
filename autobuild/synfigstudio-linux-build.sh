@@ -674,8 +674,7 @@ initialize()
 			VERSION=${VERSION%%-*}
 		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}_debug
-		REVISION=`git show --pretty=medium $SELECTEDREVISION | head -n 3 |tail -n 1 | sed 's/Date: *//' | sed 's/ +.*//'`
-		REVISION=`date --date="${REVISION}" +%Y%m%d`
+		REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 		echo
 		echo
 		echo "BUILDING synfigstudio-$VERSION-$REVISION.$BREED.$RELEASE"
