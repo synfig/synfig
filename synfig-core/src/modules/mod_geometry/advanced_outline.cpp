@@ -328,8 +328,6 @@ Advanced_Outline::sync()
 				{
 					const Vector d(deriv(n).perp().norm());
 					const Vector p(curve(n));
-//					synfig::info("pos = %f, biter_pos=%f, bezier_size=%f", n, biter_pos, bezier_size);
-//					synfig::info("bline pos = %f", bezier_to_bline(n, biter_pos, bezier_size));
 					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, bezier_to_bline(n, biter_pos, bezier_size)));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
@@ -356,42 +354,24 @@ Advanced_Outline::sync()
 			add_polygon(side_b);
 			return;
 		}
-		// Insert code for adding end tip
-		if(round_tip_[1] && !blineloop && side_a.size())
+		// Insert code for adding end and start tip
+		const Point vertex_end(bline.back().get_vertex());
+		const Vector tangent_end(last_tangent.norm());
+		const WidthPoint wp_end(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED);
+		const Point vertex_start(bline.front().get_vertex());
+		const Vector tangent_start(first_tangent.norm());
+		const WidthPoint wp_start(0.0, 1.0, WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE);
+		if(round_tip_[1] && !blineloop)
+			add_tip(side_a, side_b, vertex_end, tangent_end, wp_end);
+		if(round_tip_[0] && !blineloop)
 		{
-			// remove the last point
-			side_a.pop_back();
-			const Point vertex(bline.back().get_vertex());
-			const Vector tangent(last_tangent.norm());
-			const float w((bline.back().get_width()*width_)*0.5f+expand_);
-			hermite<Vector> curve(
-				vertex+tangent.perp()*w,
-				vertex-tangent.perp()*w,
-				tangent*w*ROUND_END_FACTOR,
-				-tangent*w*ROUND_END_FACTOR
-			);
-			for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
-				side_a.push_back(curve(n));
+			reverse(side_a.begin(), side_a.end());
+			reverse(side_b.begin(), side_b.end());
+			add_tip(side_a, side_b, vertex_start, tangent_start, wp_start);
 		}
+		// concatenate sides before add to polygon
 		for(;!side_b.empty();side_b.pop_back())
 			side_a.push_back(side_b.back());
-		// Insert code for adding begin tip
-		if(round_tip_[0] && !blineloop && side_a.size())
-		{
-			// remove the last point
-			side_a.pop_back();
-			const Point vertex(bline.front().get_vertex());
-			const Vector tangent(first_tangent.norm());
-			const float w((bline.front().get_width()*width_)*0.5f+expand_);
-			hermite<Vector> curve(
-				vertex-tangent.perp()*w,
-				vertex+tangent.perp()*w,
-				-tangent*w*ROUND_END_FACTOR,
-				tangent*w*ROUND_END_FACTOR
-			);
-			for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
-				side_a.push_back(curve(n));
-		} // begin tip
 		add_polygon(side_a);
 	}
 	catch (...) { synfig::error("Advanced Outline::sync(): Exception thrown"); throw; }
@@ -578,3 +558,46 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 {
 	return origin+bezier_pos*bezier_size;
 }
+
+void
+Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
+{
+	Real w(width_*0.5*wp.get_width());
+	// Side Before
+	switch (wp.get_side_type_before())
+	{
+		case WidthPoint::TYPE_ROUNDED:
+			hermite<Vector> curve(
+				vertex-tangent.perp()*w,
+				vertex+tangent.perp()*w,
+				-tangent*w*ROUND_END_FACTOR,
+				tangent*w*ROUND_END_FACTOR
+			);
+			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
+			{
+				side_a.push_back(curve(0.5+n));
+				side_b.push_back(curve(0.5-n));
+			}
+			side_a.push_back(curve(1.0));
+			side_a.push_back(curve(0.0));
+	}
+	// Side After
+	switch (wp.get_side_type_after())
+	{
+		case WidthPoint::TYPE_ROUNDED:
+			hermite<Vector> curve(
+				vertex+tangent.perp()*w,
+				vertex-tangent.perp()*w,
+				tangent*w*ROUND_END_FACTOR,
+				-tangent*w*ROUND_END_FACTOR
+			);
+			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
+			{
+				side_a.push_back(curve(n));
+				side_b.push_back(curve(1-n));
+			}
+			side_a.push_back(curve(0.5));
+			side_a.push_back(curve(0.5));
+	}
+}
+
