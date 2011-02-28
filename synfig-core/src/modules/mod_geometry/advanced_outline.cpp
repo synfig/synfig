@@ -63,7 +63,7 @@ using namespace etl;
 #define SPIKE_AMOUNT		(4)
 #define NO_LOOP_COOKIE		synfig::Vector(84951305,7836658)
 #define EPSILON				(0.000000001)
-#define CUSP_TANGENT_ADJUST	(0.025)
+#define CUSP_TANGENT_ADJUST	(0.0025)
 /* === G L O B A L S ======================================================= */
 SYNFIG_LAYER_INIT(Advanced_Outline);
 SYNFIG_LAYER_SET_NAME(Advanced_Outline,"advanced_outline");
@@ -275,9 +275,7 @@ Advanced_Outline::sync()
 				bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
 			}
 			// width points
-			const float
-				biter_w((biter->get_width()*width_)*0.5f+expand_),
-				bnext_w((bnext->get_width()*width_)*0.5f+expand_);
+			const float biter_w(width_*0.5*biter_width);
 			const derivative< hermite<Vector> > deriv(curve);
 			//if (first)
 				//first_tangent = deriv(CUSP_TANGENT_ADJUST);
