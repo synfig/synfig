@@ -74,6 +74,8 @@ public:
 private:
 
 	bool connect_bline_to_wplist(etl::loose_handle<ValueNode> x);
+	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
+	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
 };
 
 /* === E N D =============================================================== */

@@ -319,8 +319,8 @@ Advanced_Outline::sync()
 			{
 				Real s(witer->get_norm_position());
 				Real e(wnext->get_norm_position());
-				Real start((s-biter_pos)/bezier_size);
-				Real end((e-biter_pos)/bezier_size);
+				Real start(bline_to_bezier(s, biter_pos, bezier_size));
+				Real end(bline_to_bezier(e, biter_pos, bezier_size));
 				Real distance=end-start;
 				Real increase=distance/SAMPLES;
 				if(increase < EPSILON) continue;
@@ -328,7 +328,9 @@ Advanced_Outline::sync()
 				{
 					const Vector d(deriv(n).perp().norm());
 					const Vector p(curve(n));
-					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, biter_pos+n*bezier_size));
+//					synfig::info("pos = %f, biter_pos=%f, bezier_size=%f", n, biter_pos, bezier_size);
+//					synfig::info("bline pos = %f", bezier_to_bline(n, biter_pos, bezier_size));
+					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, bezier_to_bline(n, biter_pos, bezier_size)));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
@@ -561,4 +563,18 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	wplist->set_bline(ValueNode::Handle(x));
 	synfig::info("set bline success");
 	return true;
+}
+
+
+Real
+Advanced_Outline::bline_to_bezier(Real bline_pos, Real origin, Real bezier_size)
+{
+	if(bezier_size)
+		return (bline_pos-origin)/bezier_size;
+	return bline_pos;
+}
+Real
+Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size)
+{
+	return origin+bezier_pos*bezier_size;
 }
