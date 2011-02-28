@@ -283,32 +283,7 @@ Advanced_Outline::sync()
 			if(!first && sharp_cusps_ && split_flag && (!prev_t.is_equal_to(iter_t) || iter_t.is_equal_to(Vector::zero())) && !last_tangent.is_equal_to(Vector::zero()))
 			{
 				Vector curr_tangent(deriv(CUSP_TANGENT_ADJUST));
-				const Vector t1(last_tangent.perp().norm());
-				const Vector t2(curr_tangent.perp().norm());
-				Real cross(t1*t2.perp());
-				Real perp((t1-t2).mag());
-				if(cross>CUSP_THRESHOLD)
-				{
-					const Point p1(biter->get_vertex()+t1*biter_w);
-					const Point p2(biter->get_vertex()+t2*biter_w);
-					side_a.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
-				}
-				else if(cross<-CUSP_THRESHOLD)
-				{
-					const Point p1(biter->get_vertex()-t1*biter_w);
-					const Point p2(biter->get_vertex()-t2*biter_w);
-					side_b.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
-				}
-				else if(cross>0 && perp>1)
-				{
-					float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-					side_a.push_back(biter->get_vertex()+(t1+t2).norm()*biter_w*amount);
-				}
-				else if(cross<0 && perp>1)
-				{
-					float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-					side_b.push_back(biter->get_vertex()-(t1+t2).norm()*biter_w*amount);
-				}
+				add_cusp(side_a, side_b, biter->get_vertex(), curr_tangent, last_tangent, biter_w);
 			}
 			// Make the outline
 			wnext=bwpoints.begin();
@@ -598,4 +573,33 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_a.push_back(curve(0.5));
 	}
 }
-
+void
+Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real w)
+{
+	const Vector t1(last.perp().norm());
+	const Vector t2(curr.perp().norm());
+	Real cross(t1*t2.perp());
+	Real perp((t1-t2).mag());
+	if(cross>CUSP_THRESHOLD)
+	{
+		const Point p1(vertex+t1*w);
+		const Point p2(vertex+t2*w);
+		side_a.push_back(line_intersection(p1,last,p2,curr));
+	}
+	else if(cross<-CUSP_THRESHOLD)
+	{
+		const Point p1(vertex-t1*w);
+		const Point p2(vertex-t2*w);
+		side_b.push_back(line_intersection(p1,last,p2,curr));
+	}
+	else if(cross>0 && perp>1)
+	{
+		float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+		side_a.push_back(vertex+(t1+t2).norm()*w*amount);
+	}
+	else if(cross<0 && perp>1)
+	{
+		float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+		side_b.push_back(vertex-(t1+t2).norm()*w*amount);
+	}
+}
