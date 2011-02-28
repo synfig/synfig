@@ -243,8 +243,6 @@ Advanced_Outline::sync()
 			else // use the global width
 				next_widthpoint=WidthPoint(1.0,  get_param("width"));
 			// Sort the list of collected widthpoints
-			synfig::info("last_widthpoint pos: %f", last_widthpoint.get_norm_position());
-			synfig::info("next_widthpoint pos: %f", next_widthpoint.get_norm_position());
 			sort(bwpoints.begin(), bwpoints.end());
 			// keep track of the last widthpoint from the collected
 			// It will be used later to be passed to the 'last_widthpoint'
@@ -276,13 +274,6 @@ Advanced_Outline::sync()
 				bwpoints.push_back(WidthPoint(biter_pos, biter_width));
 				bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
 			}
-			synfig::info("bezier form %f to %f===============", biter_pos, bnext_pos);
-			if(bwpoints.size())
-			{
-				for(witer=bwpoints.begin();witer!=bwpoints.end();witer++)
-					synfig::info("Wpoint pos: %f w: %f", witer->get_norm_position(), witer->get_width());
-			}
-			synfig::info("===================================");
 			// width points
 			const float
 				biter_w((biter->get_width()*width_)*0.5f+expand_),
@@ -330,50 +321,18 @@ Advanced_Outline::sync()
 				Real e(wnext->get_norm_position());
 				Real start((s-biter_pos)/bezier_size);
 				Real end((e-biter_pos)/bezier_size);
-				synfig::info("start=%f",start);
-				synfig::info("end=%f",end);
 				Real distance=end-start;
 				Real increase=distance/SAMPLES;
-				synfig::info("increase=%f",increase);
 				if(increase < EPSILON) continue;
 				for(Real n=start;n<=end;n+=increase)
 				{
 					const Vector d(deriv(n).perp().norm());
 					const Vector p(curve(n));
 					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, biter_pos+n*bezier_size));
-					//synfig::info("n=%f w=%f",n, w);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 				}
 			}
-			/*
-			if(homogeneous_width_)
-			{
-				const float length(curve.length());
-				float dist(0);
-				Point lastpoint;
-				for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
-				{
-					const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
-					const Vector p(curve(n));
-					if(n)
-						dist+=(p-lastpoint).mag();
-					const float w(((bnext_w-biter_w)*(dist/length)+biter_w));
-					side_a.push_back(p+d*w);
-					side_b.push_back(p-d*w);
-					lastpoint=p;
-				}
-			}
-			else
-				for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
-				{
-					const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
-					const Vector p(curve(n));
-					const float w(((bnext_w-biter_w)*n+biter_w));
-					side_a.push_back(p+d*w);
-					side_b.push_back(p-d*w);
-				}
-			*/
 			// Insert the last two sides evaluated at end of curve (bezier)
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*witer->get_width()*width_*0.5);
@@ -387,7 +346,7 @@ Advanced_Outline::sync()
 			if(found_bezier_last_widthpoint)
 				last_widthpoint=bezier_last_widthpoint;
 		} // end of loop through beziers of the bline
-		//synfig::info("last_widthpoint [pos=%f, w=%f]", last_widthpoint.get_norm_position(), last_widthpoint.get_width());
+
 		if(blineloop)
 		{
 			reverse(side_b.begin(),side_b.end());
