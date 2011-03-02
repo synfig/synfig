@@ -127,19 +127,19 @@ Advanced_Outline::sync()
 	}
 	try
 	{
-		const vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
+		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
 		vector<WidthPoint>::iterator witer, wnext;
-		WidthPoint last_widthpoint, next_widthpoint, bezier_last_widthpoint;
 		Vector first_tangent;
 		Vector last_tangent;
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		Real biter_pos(0.0), bnext_pos(bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
+		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
 		sort(wplist.begin(),wplist.end());
@@ -164,34 +164,71 @@ Advanced_Outline::sync()
 			const derivative< hermite<Vector> > deriv(curve);
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
-		// at start, a last_widthpoint is needed
-		if(wplist_size)
+		///////////////////////////////////////////// Prepare the wplist
+		// if we have some widthpoint in the list
+		// If not looped
+		if(!blineloop)
 		{
-			if(!blineloop)
-				last_widthpoint=wplist.front();
+			if(wplist_size)
+			{
+				WidthPoint wpfront(wplist.front());
+				WidthPoint wpback(wplist.back());
+				// if the first widthpoint interpolation before is INTERPOLATE and it is not exactly at 0.0
+				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_norm_position()!=0.0)
+					// Add a fake widthpoint at position 0.0
+					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
+				// if last widhtpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
+				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_norm_position()!=1.0)
+				// Add a fake withpoint at position 1.0
+					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+			}
 			else
-				last_widthpoint=wplist.back();
+			{
+				// If there are not widthpoints in list, just use the global width
+				wplist.push_back(WidthPoint(0.0, 1.0 , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
+				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+			}
 		}
-		else // use the global width
-			last_widthpoint=WidthPoint(0.0, get_param("width"));
-		// `first' is for making the cusps; don't do that for the first point if we're not looped
-		// For all the beziers beween iter and next do:
-		for(bool first=!blineloop; bnext!=bend; biter=bnext++)
+		else
 		{
-			Vector prev_t(biter->get_tangent1());
+			if(wplist_size)
+			{
+				WidthPoint wpfront(wplist.front());
+				WidthPoint wpback(wplist.back());
+				// if the first widthpoint interpolation before is  INTERPOLATE and it is not exactly at 0.0
+				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_norm_position()!=0.0)
+					// Add a fake widthpoint at position 0.0
+					wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+				// If the last widthpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
+				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_norm_position()!=1.0)
+					// Add a fake widthpoint at position 1.0
+					wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+			}
+			else
+			{
+				// If there are not widthpoints in list, just use the global width
+				wplist.push_back(WidthPoint(0.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+			}
+		}
+
+		// Sort the wplist again to place the two new widthpoints on place.
+		sort(wplist.begin(),wplist.end());
+		////////////////////////////////////////////////////////////////
+		//list the wplist
+		for(witer=wplist.begin();witer!=wplist.end();witer++)
+			synfig::info("P:%f W:%f", witer->get_norm_position(), witer->get_width());
+		synfig::info("------");
+		////////////////////////////////////////////////////////////////
+
+		Real ipos(0.0);
+		Real step(1.0/SAMPLES);
+		witer=wnext=wplist.begin();
+		do
+		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
 			bool split_flag(biter->get_split_tangent_flag());
-			// if iter.t2 == 0 and next.t1 == 0, this is a straight line
-			if(iter_t.is_equal_to(Vector::zero()) && next_t.is_equal_to(Vector::zero()))
-			{
-				iter_t=next_t=bnext->get_vertex()-biter->get_vertex();
-				// split_flag=true;
-				// if the two points are on top of each other, ignore this segment
-				// leave `first' true if was before
-				if (iter_t.is_equal_to(Vector::zero()))
-					continue;
-			}
 			// Setup the curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
@@ -199,126 +236,76 @@ Advanced_Outline::sync()
 				iter_t,
 				next_t
 			);
-			// List of widthpoints in the current bezier
-			vector<WidthPoint> bwpoints;
-			Real biter_width, bnext_width;
-			// Find all the widthpoints on the bezier and also find the first
-			// widthpoint of the next bezier (the called 'next_widthpoint')
-			bool found_bezier_last_widthpoint=false;
-			if(wplist_size)
-			{
-				vector<WidthPoint>::iterator wnext_found(wplist.begin());
-				Real witer_pos, wnext_pos;
-				for(wnext=witer=wplist.begin(); witer!=wplist.end();witer++)
-				{
-					witer_pos=witer->get_norm_position();
-					wnext_pos=wnext->get_norm_position();
-					// if this widhtpoint is on the bezier
-					if(witer_pos <= bnext_pos && witer_pos >= biter_pos)
-						// store it on the list
-						bwpoints.push_back(*witer);
-					// if we haven't found any 'next_widthpoint' beyond
-					// current bezier edge
-					if(witer_pos > wnext_pos && wnext_pos < bnext_pos)
-					{
-						// then keep track of the current widthpoint
-						wnext=witer;
-					}
-					// else we have one 'next_widthpoint' found at last
-					else if(witer_pos > wnext_pos && wnext_pos >= bnext_pos)
-					{
-						// if current widthpoint is closer to the
-						// bezier boundary than the 'next_widthpoint'
-						// then keep track of it
-						if(witer_pos - bnext_pos < wnext_pos - bnext_pos)
-							wnext=witer;
-					}
-				}
-				// if no wfirst is found higher to bnext and we are looped
-				// then use the front widthpoint as 'next_widthpoint'
-				if(blineloop && wnext->get_norm_position() < bnext_pos)
-					wnext=wplist.begin();
-				next_widthpoint=*wnext;
-			}
-			else // use the global width
-				next_widthpoint=WidthPoint(1.0,  get_param("width"));
-			// Sort the list of collected widthpoints
-			sort(bwpoints.begin(), bwpoints.end());
-			// keep track of the last widthpoint from the collected
-			// It will be used later to be passed to the 'last_widthpoint'
-			// if no widthpoint is found at the bezier, the 'last_widthpoint'
-			// will remain the same
-			if(bwpoints.size())
-			{
-				bezier_last_widthpoint=bwpoints.back();
-				found_bezier_last_widthpoint=true;
-			}
-			// Now insert the biter withpoint at the bwpoints vector if there
-			// is not any widthpoint exactly at biter_pos
-			if(bwpoints.size())
-			{
-				// Calculate the interpolated width on the biter blinepoint.
-				biter_width=synfig::widthpoint_interpolate(last_widthpoint, bwpoints.front(), biter_pos);
-				bnext_width=synfig::widthpoint_interpolate(bwpoints.back(), next_widthpoint, bnext_pos);
-				// Insert a fake widthpoint at the biter_pos and bnext_pos
-				// if there are not widthpoint there
-				if(bwpoints.front().get_norm_position()!=biter_pos)
-					bwpoints.insert(bwpoints.begin(), WidthPoint(biter_pos, biter_width));
-				if(bwpoints.back().get_norm_position()!=bnext_pos)
-					bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
-			}
-			else // if no widthpoint was collected when use the last and next to interpolate
-			{
-				biter_width=synfig::widthpoint_interpolate(last_widthpoint, next_widthpoint, biter_pos);
-				bnext_width=synfig::widthpoint_interpolate(last_widthpoint, next_widthpoint, bnext_pos);
-				bwpoints.push_back(WidthPoint(biter_pos, biter_width));
-				bwpoints.push_back(WidthPoint(bnext_pos, bnext_width));
-			}
-			// width points
-			const float biter_w(width_*0.5*biter_width);
 			const derivative< hermite<Vector> > deriv(curve);
-			//if (first)
-				//first_tangent = deriv(CUSP_TANGENT_ADJUST);
-			// Make cusps as necessary
-			if(!first && sharp_cusps_ && split_flag && (!prev_t.is_equal_to(iter_t) || iter_t.is_equal_to(Vector::zero())) && !last_tangent.is_equal_to(Vector::zero()))
+			Real wnext_pos(wnext->get_norm_position());
+			if(ipos==wnext_pos)
 			{
-				Vector curr_tangent(deriv(CUSP_TANGENT_ADJUST));
-				add_cusp(side_a, side_b, biter->get_vertex(), curr_tangent, last_tangent, biter_w);
+				// Do tips
+				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
+				synfig::info("bezier_ipos %f", bezier_ipos);
+				add_tip(side_a, side_b, curve(bezier_ipos), deriv(bezier_ipos).norm(), *wnext);
+				// Update wplist iterators
+				witer=wnext;
+				wnext++;
+				// If we are at the last widthpoint then end
+				if(wnext==wend)
+					break;
+				else
+					continue;
 			}
-			// Make the outline
-			wnext=bwpoints.begin();
-			wnext++;
-			for(witer=bwpoints.begin(); wnext!=bwpoints.end(); witer++, wnext++)
+			if((ipos==biter_pos || ipos==bnext_pos))
 			{
-				Real s(witer->get_norm_position());
-				Real e(wnext->get_norm_position());
-				Real start(bline_to_bezier(s, biter_pos, bezier_size));
-				Real end(bline_to_bezier(e, biter_pos, bezier_size));
-				Real distance=end-start;
-				Real increase=distance/SAMPLES;
-				if(increase < EPSILON) continue;
-				for(Real n=start;n<=end;n+=increase)
+				// Do cusp at ipos
+				if(ipos==biter_pos && ipos!=0.0 && sharp_cusps_ && split_flag)
 				{
-					const Vector d(deriv(n).perp().norm());
-					const Vector p(curve(n));
-					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, bezier_to_bline(n, biter_pos, bezier_size)));
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
+				}
+				if(bnext+1==bend && ipos == bnext_pos)
+					break;
+			}
+			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
+				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+			{
+				ipos=wnext_pos;
+				continue;
+			}
+			do
+			{
+				ipos = ipos + step;
+				if(ipos > wnext_pos)
+				{
+					ipos=wnext_pos;
+					// Add interpolation for the last step
+					synfig::info("ipos=%f", ipos);
+					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
+					break;
 				}
-			}
-			// Insert the last two sides evaluated at end of curve (bezier)
-			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
-			side_a.push_back(curve(1.0)+last_tangent.perp().norm()*witer->get_width()*width_*0.5);
-			side_b.push_back(curve(1.0)-last_tangent.perp().norm()*witer->get_width()*width_*0.5);
-			// make first false as we have done the first bezier
-			first=false;
-			// update the iter and next positions adding the bezier size.
-			biter_pos = bnext_pos;
-			bnext_pos+=bezier_size;
-			// update the last width point with the last of this group if any
-			if(found_bezier_last_widthpoint)
-				last_widthpoint=bezier_last_widthpoint;
-		} // end of loop through beziers of the bline
+				if(ipos > bnext_pos)
+				{
+					ipos=bnext_pos;
+					// Update iterators
+					biter=bnext;
+					bnext++;
+					// Update blinepoints positions
+					biter_pos = bnext_pos;
+					bnext_pos+=bezier_size;
+					// remember last tangent value
+					last_tangent=next_t;
+					break;
+				}
+				// Add interpolation
+				synfig::info("ipos=%f", ipos);
+				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+				const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+				side_a.push_back(p+d*w);
+				side_b.push_back(p-d*w);
+			} while (1);
+		} while(1);
 
 		if(blineloop)
 		{
@@ -327,21 +314,7 @@ Advanced_Outline::sync()
 			add_polygon(side_b);
 			return;
 		}
-		// Insert code for adding end and start tip
-		const Point vertex_end(bline.back().get_vertex());
-		const Vector tangent_end(last_tangent.norm());
-		const WidthPoint wp_end(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED);
-		const Point vertex_start(bline.front().get_vertex());
-		const Vector tangent_start(first_tangent.norm());
-		const WidthPoint wp_start(0.0, 1.0, WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE);
-		if(round_tip_[1] && !blineloop)
-			add_tip(side_a, side_b, vertex_end, tangent_end, wp_end);
-		if(round_tip_[0] && !blineloop)
-		{
-			reverse(side_a.begin(), side_a.end());
-			reverse(side_b.begin(), side_b.end());
-			add_tip(side_a, side_b, vertex_start, tangent_start, wp_start);
-		}
+
 		// concatenate sides before add to polygon
 		for(;!side_b.empty();side_b.pop_back())
 			side_a.push_back(side_b.back());
@@ -546,13 +519,15 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 				-tangent*w*ROUND_END_FACTOR,
 				tangent*w*ROUND_END_FACTOR
 			);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
 			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
 			{
 				side_a.push_back(curve(0.5+n));
 				side_b.push_back(curve(0.5-n));
 			}
 			side_a.push_back(curve(1.0));
-			side_a.push_back(curve(0.0));
+			side_b.push_back(curve(0.0));
 	}
 	// Side After
 	switch (wp.get_side_type_after())
@@ -564,13 +539,15 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 				tangent*w*ROUND_END_FACTOR,
 				-tangent*w*ROUND_END_FACTOR
 			);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
 			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
 			{
-				side_a.push_back(curve(n));
-				side_b.push_back(curve(1-n));
+				side_a.push_back(curve(1-n));
+				side_b.push_back(curve(n));
 			}
 			side_a.push_back(curve(0.5));
-			side_a.push_back(curve(0.5));
+			side_b.push_back(curve(0.5));
 	}
 }
 void
