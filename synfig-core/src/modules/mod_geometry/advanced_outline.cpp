@@ -189,20 +189,26 @@ Advanced_Outline::sync()
 				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
 			}
 		}
-		else
+		else // looped
 		{
 			if(wplist_size)
 			{
 				WidthPoint wpfront(wplist.front());
 				WidthPoint wpback(wplist.back());
-				// if the first widthpoint interpolation before is  INTERPOLATE and it is not exactly at 0.0
-				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_norm_position()!=0.0)
+				bool wpfb_int(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE);
+				bool wpba_int(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE);
+				// if any of front(back) widthpoint interpolation before(after) is  INTERPOLATE
+				if(wpfb_int || wpba_int)
+				{
+					// if it is not exactly at 0.0
+					if(wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-					wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
-				// If the last widthpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
-				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_norm_position()!=1.0)
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					// If it is not exactly at 1.0
+					if(wpback.get_norm_position()!=1.0)
 					// Add a fake widthpoint at position 1.0
-					wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+				}
 			}
 			else
 			{
@@ -528,6 +534,7 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(1.0));
 			side_b.push_back(curve(0.0));
+			synfig::info("rounded before rendered at %f, %f", vertex[0], vertex[1]);
 	}
 	// Side After
 	switch (wp.get_side_type_after())
@@ -539,8 +546,6 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 				tangent*w*ROUND_END_FACTOR,
 				-tangent*w*ROUND_END_FACTOR
 			);
-			side_a.push_back(vertex);
-			side_b.push_back(vertex);
 			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
 			{
 				side_a.push_back(curve(1-n));
@@ -548,6 +553,8 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(0.5));
 			side_b.push_back(curve(0.5));
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
 	}
 }
 void
