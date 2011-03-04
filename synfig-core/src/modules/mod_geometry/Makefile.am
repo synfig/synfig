@@ -31,7 +31,9 @@ libmod_geometry_la_SOURCES = \
 	region.cpp \
 	outline.h \
 	outline.cpp \
-	main.cpp 
+	advanced_outline.h \
+	advanced_outline.cpp \
+	main.cpp
 
 libmod_geometry_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@

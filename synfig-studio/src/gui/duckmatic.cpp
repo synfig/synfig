@@ -47,6 +47,7 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -265,7 +266,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		String layer_name(layer->get_name());
 
 		if (layer_name == "outline" || layer_name == "region" || layer_name == "plant" ||
-			layer_name == "polygon" || layer_name == "curve_gradient")
+			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
 		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
@@ -1835,6 +1836,100 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 				add_bezier(bezier);
 				bezier=0;
+			}
+			return true;
+		}
+		else // Checnk for WPList
+		if(value_desc.is_value_node() &&
+			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueNode_WPList::Handle value_node;
+			value_node=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
+			if(!value_node)
+			{
+				error("expected a ValueNode_WPList");
+				assert(0);
+			}
+			int i;
+			for (i = 0; i < value_node->link_count(); i++)
+			{
+				float amount(value_node->list[i].amount_at_time(get_time()));
+				// skip width points that aren't fully on
+				if (amount < 0.9999f)
+					continue;
+				WidthPoint width_point((*value_node->get_link(i))(get_time()));
+				// try casting the width point to Composite - this tells us whether it is composite or not
+				ValueNode_Composite::Handle composite_width_point_value_node(
+					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
+				if(composite_width_point_value_node) // Add the position
+				{
+					etl::handle<Duck> pduck=new Duck();
+					synfigapp::ValueDesc wpoint_value_desc(value_node, i); // The i-widthpoint on WPList
+					pduck->set_type(Duck::TYPE_POSITION);
+					pduck->set_transform_stack(transform_stack);
+					pduck->set_name(guid_string(wpoint_value_desc));
+					pduck->set_value_desc(wpoint_value_desc);
+					// This is a quick hack to obtain the ducks position.
+					// The position by amount and the amount by position
+					// has to be written considering the bline length too
+					// optionally
+					const ValueBase bline((*value_node->get_bline())(get_time()));
+					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
+					bline_calc_vertex->set_link("bline", value_node->get_bline());
+					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
+					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					pduck->set_point((*bline_calc_vertex)(get_time()));
+					// hack end
+					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));
+					pduck->set_editable(synfigapp::is_editable(wpoint_value_desc.get_value_node()));
+					pduck->signal_edited().clear();
+					pduck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), wpoint_value_desc));
+					pduck->signal_user_click(2).clear();
+					pduck->signal_user_click(2).connect(
+						sigc::bind(
+							sigc::bind(
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu),
+									false),
+								1.0f),
+							wpoint_value_desc));
+					add_duck(pduck);
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
+						{
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							pduck->set_origin(last_duck());
+						}
+					}
+					// add the width duck
+					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,1),canvas_view,transform_stack))
+					{
+						etl::handle<Duck> wduck;
+						wduck=last_duck();
+						wduck->set_origin(pduck);
+						wduck->set_type(Duck::TYPE_WIDTH);
+						// if the composite comes from a layer get the layer's "width" parameter and scale the
+						// duck by that value.
+						if (param_desc)
+						{
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
+							if(value.same_type_as(synfig::Real()))
+								wduck->set_scalar(value.get(synfig::Real())*0.5f);
+							// if it doesn't have a "width" parameter, scale by 0.5f instead
+							else
+								wduck->set_scalar(0.5f);
+						}
+						// otherwise just present the raw unscaled width
+						else
+							wduck->set_scalar(0.5f);
+					}
+					else
+						return false;
+				}
 			}
 			return true;
 		}

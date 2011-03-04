@@ -465,6 +465,9 @@ CellRenderer_ValueBase::render_vfunc(
 	case ValueBase::TYPE_BLINEPOINT:
 		property_text()=(Glib::ustring)_("BLine Point");
 		break;
+	case ValueBase::TYPE_WIDTHPOINT:
+		property_text()=(Glib::ustring)_("Width Point");
+		break;
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
 		break;
