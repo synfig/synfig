@@ -1373,9 +1373,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//else
 			//	clear_selected_ducks();
 
-
-
 			selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+
 			if(duck)
 			{
 				if (!duck->get_editable())
@@ -1425,49 +1424,59 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				get_canvas_view()->reset_cancel_status();
 				return true;
 			}
+			else
+			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+			{
+				if (selected_bezier
+					&& 0.005 < bezier_click_pos 
+					&& bezier_click_pos < 0.995 )
+					// If we click a selected bezier
+					// not to close to the endpoints
+				{
+					// We give the states first priority to process the
+					// event so as not to interfere with the bline tool
+					dragging=DRAG_BEZIER;
+					drag_point=mouse_pos;
+					start_bezier_drag(mouse_pos, bezier_click_pos);
+					return true;
+				}
 // I commented out this section because
 // it was causing issues when rotoscoping.
 // At the moment, we don't need it, so
 // this was the easiest way to fix the problem.
 /*
-			else
-			if(selected_bezier)
-			{
-				selected_duck=0;
-				selected_bezier->signal_user_click(0)(bezier_click_pos);
-			}
-*/
-			else
-			{
-				//clear_selected_ducks();
-				selected_bezier=0;
-				if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+				else
+				if(selected_bezier)
 				{
-					// Check for a guide click
-					GuideList::iterator iter;
+					selected_duck=0;
+					selected_bezier->signal_user_click(0)(bezier_click_pos);
+				}
+*/
 
-					iter=find_guide_x(mouse_pos,radius);
-					if(iter==get_guide_list_x().end())
-					{
-						curr_guide_is_x=false;
-						iter=find_guide_y(mouse_pos,radius);
-					}
-					else
-						curr_guide_is_x=true;
-					if(iter!=get_guide_list_x().end() && iter!=get_guide_list_y().end())
-					{
-						dragging=DRAG_GUIDE;
-						curr_guide=iter;
-						return true;
-					}
+				// Check for a guide click
+				GuideList::iterator iter;
 
-
-					// All else fails, try making a selection box
-					dragging=DRAG_BOX;
-					curr_point=drag_point=mouse_pos;
+				iter=find_guide_x(mouse_pos,radius);
+				if(iter==get_guide_list_x().end())
+				{
+					curr_guide_is_x=false;
+					iter=find_guide_y(mouse_pos,radius);
+				}
+				else
+					curr_guide_is_x=true;
+				if(iter!=get_guide_list_x().end() && iter!=get_guide_list_y().end())
+				{
+					dragging=DRAG_GUIDE;
+					curr_guide=iter;
 					return true;
 				}
+
+				// All else fails, try making a selection box
+				dragging=DRAG_BOX;
+				curr_point=drag_point=mouse_pos;
+				return true;
 			}
+			selected_bezier=0;
 			break;
 		}
 		case 2:	// Attempt to drag and move the window
@@ -1597,6 +1606,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			drawing_area->queue_draw();
 		}
+		if(dragging==DRAG_BEZIER)
+		{
+			if(canvas_view->get_cancel_status())
+			{
+				dragging=DRAG_NONE;
+				canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+
+			translate_selected_bezier(mouse_pos);
+
+			drawing_area->queue_draw();
+		}
 
 		if(dragging==DRAG_BOX)
 		{
@@ -1697,6 +1719,43 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			ret=true;
 		}
+		else
+		if(dragging==DRAG_BEZIER)
+		{
+			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
+			dragging=DRAG_NONE;
+			//translate_selected_ducks(mouse_pos);
+			set_axis_lock(false);
+
+			try{
+			get_canvas_view()->duck_refresh_flag=false;
+			get_canvas_view()->duck_refresh_needed=false;
+			const bool drag_did_anything(end_bezier_drag());
+			get_canvas_view()->duck_refresh_flag=true;
+			if(!drag_did_anything)
+			{
+				// We didn't move the bezier, just clicked on it
+				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
+				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_UP,BUTTON_LEFT,mouse_pos,pressure,modifier));
+			}
+			else
+			{
+				if(canvas_view->duck_refresh_needed)
+					canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+			}catch(String)
+			{
+				canvas_view->duck_refresh_flag=true;
+				canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+			//queue_draw();
+			clicked_duck=0;
+
+			ret=true;
+		}
+		else
 
 		if(dragging==DRAG_BOX)
 		{
