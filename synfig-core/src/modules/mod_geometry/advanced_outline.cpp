@@ -139,7 +139,6 @@ Advanced_Outline::sync()
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		Real biter_pos(0.0), bnext_pos(bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
-		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
 		sort(wplist.begin(),wplist.end());
@@ -222,14 +221,16 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////////////////////////////////////////////////
 		//list the wplist
+		synfig::info("------");
 		for(witer=wplist.begin();witer!=wplist.end();witer++)
-			synfig::info("P:%f W:%f", witer->get_norm_position(), witer->get_width());
+			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
 		synfig::info("------");
 		////////////////////////////////////////////////////////////////
 
 		Real ipos(0.0);
 		Real step(1.0/SAMPLES);
 		witer=wnext=wplist.begin();
+		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -248,7 +249,7 @@ Advanced_Outline::sync()
 			{
 				// Do tips
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
-				synfig::info("bezier_ipos %f", bezier_ipos);
+				//synfig::info("bezier_ipos %f", bezier_ipos);
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(bezier_ipos).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -282,10 +283,15 @@ Advanced_Outline::sync()
 				{
 					ipos=wnext_pos;
 					// Add interpolation for the last step
-					synfig::info("ipos=%f", ipos);
+					//synfig::info("ipos=%f", ipos);
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					Real ww;
+					if(wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+						ww=0.0;
+					else
+						ww=wnext->get_width();
+					const Real w(width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					break;
@@ -304,10 +310,10 @@ Advanced_Outline::sync()
 					break;
 				}
 				// Add interpolation
-				synfig::info("ipos=%f", ipos);
+				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+				const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 			} while (1);
@@ -525,8 +531,6 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 				-tangent*w*ROUND_END_FACTOR,
 				tangent*w*ROUND_END_FACTOR
 			);
-			side_a.push_back(vertex);
-			side_b.push_back(vertex);
 			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
 			{
 				side_a.push_back(curve(0.5+n));
@@ -534,7 +538,7 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(1.0));
 			side_b.push_back(curve(0.0));
-			synfig::info("rounded before rendered at %f, %f", vertex[0], vertex[1]);
+			//synfig::info("rounded before rendered at %f, %f", vertex[0], vertex[1]);
 	}
 	// Side After
 	switch (wp.get_side_type_after())
@@ -553,8 +557,6 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(0.5));
 			side_b.push_back(curve(0.5));
-			side_a.push_back(vertex);
-			side_b.push_back(vertex);
 	}
 }
 void
