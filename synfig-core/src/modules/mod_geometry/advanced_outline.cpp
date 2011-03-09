@@ -545,8 +545,8 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 	{
 		case WidthPoint::TYPE_ROUNDED:
 			hermite<Vector> curve(
-				vertex+tangent.perp()*w,
 				vertex-tangent.perp()*w,
+				vertex+tangent.perp()*w,
 				tangent*w*ROUND_END_FACTOR,
 				-tangent*w*ROUND_END_FACTOR
 			);
