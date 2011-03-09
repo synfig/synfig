@@ -249,7 +249,6 @@ Advanced_Outline::sync()
 			{
 				// Do tips
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
-				//synfig::info("bezier_ipos %f", bezier_ipos);
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(bezier_ipos).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -274,6 +273,17 @@ Advanced_Outline::sync()
 				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
 			{
 				ipos=wnext_pos;
+				while(ipos > bnext_pos && bnext+1!=bend)
+				{
+					// keep track of last tangent
+					last_tangent=bnext->get_tangent1();
+					// Update iterators
+					biter=bnext;
+					bnext++;
+					// Update blinepoints positions
+					biter_pos = bnext_pos;
+					bnext_pos+=bezier_size;
+				}
 				continue;
 			}
 			do
@@ -307,6 +317,7 @@ Advanced_Outline::sync()
 					bnext_pos+=bezier_size;
 					// remember last tangent value
 					last_tangent=next_t;
+
 					break;
 				}
 				// Add interpolation
