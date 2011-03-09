@@ -228,7 +228,7 @@ Advanced_Outline::sync()
 		////////////////////////////////////////////////////////////////
 
 		Real ipos(0.0);
-		Real step(1.0/SAMPLES);
+		Real step(1.0/SAMPLES/bline_size);
 		witer=wnext=wplist.begin();
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		do
