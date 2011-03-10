@@ -262,7 +262,7 @@ Advanced_Outline::sync()
 			if((ipos==biter_pos || ipos==bnext_pos))
 			{
 				// Do cusp at ipos
-				if(ipos==biter_pos && ipos!=0.0 && sharp_cusps_ && split_flag)
+				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
 				}
