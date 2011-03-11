@@ -288,7 +288,6 @@ Advanced_Outline::sync()
 			}
 			do
 			{
-				ipos = ipos + step;
 				if(ipos > wnext_pos)
 				{
 					ipos=wnext_pos;
@@ -309,6 +308,11 @@ Advanced_Outline::sync()
 				if(ipos > bnext_pos)
 				{
 					ipos=bnext_pos;
+					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					side_a.push_back(p+d*w);
+					side_b.push_back(p-d*w);
 					// Update iterators
 					biter=bnext;
 					bnext++;
@@ -317,7 +321,6 @@ Advanced_Outline::sync()
 					bnext_pos+=bezier_size;
 					// remember last tangent value
 					last_tangent=next_t;
-
 					break;
 				}
 				// Add interpolation
@@ -327,6 +330,7 @@ Advanced_Outline::sync()
 				const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
+				ipos = ipos + step;
 			} while (1);
 		} while(1);
 
