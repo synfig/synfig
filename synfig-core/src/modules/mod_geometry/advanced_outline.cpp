@@ -572,6 +572,8 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(0.5));
 			side_b.push_back(curve(0.5));
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
 	}
 }
 void
