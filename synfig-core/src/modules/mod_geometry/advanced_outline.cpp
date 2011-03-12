@@ -229,7 +229,8 @@ Advanced_Outline::sync()
 
 		Real ipos(0.0);
 		Real step(1.0/SAMPLES/bline_size);
-		witer=wnext=wplist.begin();
+		witer=--wplist.end();
+		wnext=wplist.begin();
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		do
 		{
@@ -259,16 +260,6 @@ Advanced_Outline::sync()
 				else
 					continue;
 			}
-			if((ipos==biter_pos || ipos==bnext_pos))
-			{
-				// Do cusp at ipos
-				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
-				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
-				}
-				if(bnext+1==bend && ipos == bnext_pos)
-					break;
-			}
 			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
 				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
 			{
@@ -285,6 +276,16 @@ Advanced_Outline::sync()
 					bnext_pos+=bezier_size;
 				}
 				continue;
+			}
+			if((ipos==biter_pos || ipos==bnext_pos))
+			{
+				// Do cusp at ipos
+				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
+				{
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
+				}
+				if(bnext+1==bend && ipos == bnext_pos)
+					break;
 			}
 			do
 			{
