@@ -337,10 +337,10 @@ Action::ValueDescSet::prepare()
 		ValueBase new_value;
 		if (value.get_type() == ValueBase::TYPE_ANGLE)
 			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
-		else if (value.get_type() == ValueBase::TYPE_REAL)
-			throw Error(_("Inverse manipulation of real scale values not implemented in core."));
-		else
+		else if(value.get_type() == ValueBase::TYPE_VECTOR)
 			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
+		else
+			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
@@ -360,10 +360,8 @@ Action::ValueDescSet::prepare()
 		ValueBase new_value;
 		if (value.get_type() == ValueBase::TYPE_ANGLE)
 			new_value = range_value_node->get_inverse(time, value.get(Angle()));
-		else if (value.get_type() == ValueBase::TYPE_REAL)
-			throw Error(_("Inverse manipulation of real range values not implemented in core."));
 		else
-			new_value = range_value_node->get_inverse(time, value.get(Vector()));
+			throw Error(_("Inverse manipulation of %s range values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
