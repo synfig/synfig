@@ -478,6 +478,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
 			);
 		ret.push_back(ParamDesc(ValueBase(),"side_after")
 			.set_local_name(_("Side Type After"))
@@ -487,6 +488,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
 		);
 		return ret;
 	default:

@@ -54,7 +54,8 @@ public:
 		TYPE_INTERPOLATE     =0,
 		TYPE_ROUNDED         =1,
 		TYPE_SQUARED         =2,
-		TYPE_PEAK            =3
+		TYPE_PEAK            =3,
+		TYPE_FLAT            =4
 	};
 
 	WidthPoint();

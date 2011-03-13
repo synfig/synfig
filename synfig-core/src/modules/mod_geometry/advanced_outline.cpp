@@ -106,6 +106,8 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[1].set_position(1.0);
 	wpoint_list[0].set_width(0.0);
 	wpoint_list[1].set_width(1.0);
+	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_ROUNDED);
+	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_ROUNDED);
 	wplist_=wpoint_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
@@ -591,6 +593,12 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_b.push_back(vertex);
 			break;
 		}
+		case WidthPoint::TYPE_FLAT:
+		{
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			break;
+		}
 		case WidthPoint::TYPE_INTERPOLATE:
 		default:
 			break;
@@ -640,6 +648,12 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_b.push_back(vertex);
 			side_b.push_back(vertex+tangent*w);
 			side_b.push_back(vertex+tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_FLAT:
+		{
+			side_a.push_back(vertex);
 			side_b.push_back(vertex);
 			break;
 		}
