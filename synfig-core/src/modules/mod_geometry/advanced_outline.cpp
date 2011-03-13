@@ -229,8 +229,11 @@ Advanced_Outline::sync()
 
 		Real ipos(0.0);
 		Real step(1.0/SAMPLES/bline_size);
-		witer=--wplist.end();
 		wnext=wplist.begin();
+		if(blineloop)
+			witer=--wplist.end();
+		else
+			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		do
 		{
@@ -304,7 +307,8 @@ Advanced_Outline::sync()
 					const Real w(width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
-					break;
+					if(ipos <= bnext_pos)
+						break;
 				}
 				if(ipos > bnext_pos)
 				{
@@ -541,12 +545,15 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 	switch (wp.get_side_type_before())
 	{
 		case WidthPoint::TYPE_ROUNDED:
+		{
 			hermite<Vector> curve(
 				vertex-tangent.perp()*w,
 				vertex+tangent.perp()*w,
 				-tangent*w*ROUND_END_FACTOR,
 				tangent*w*ROUND_END_FACTOR
 			);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
 			for(float n=0.0f;n<0.499999f;n+=2.0f/SAMPLES)
 			{
 				side_a.push_back(curve(0.5+n));
@@ -554,12 +561,45 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(1.0));
 			side_b.push_back(curve(0.0));
-			//synfig::info("rounded before rendered at %f, %f", vertex[0], vertex[1]);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_SQUARED:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex-tangent*w);
+			side_a.push_back(vertex+(tangent.perp()-tangent)*w);
+			side_a.push_back(vertex+tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex-tangent*w);
+			side_b.push_back(vertex+(-tangent.perp()-tangent)*w);
+			side_b.push_back(vertex-tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_PEAK:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex-tangent*w);
+			side_a.push_back(vertex+tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex-tangent*w);
+			side_b.push_back(vertex-tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_INTERPOLATE:
+		default:
+			break;
 	}
 	// Side After
 	switch (wp.get_side_type_after())
 	{
 		case WidthPoint::TYPE_ROUNDED:
+		{
 			hermite<Vector> curve(
 				vertex-tangent.perp()*w,
 				vertex+tangent.perp()*w,
@@ -575,6 +615,37 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_b.push_back(curve(0.5));
 			side_a.push_back(vertex);
 			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_SQUARED:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex+tangent*w);
+			side_a.push_back(vertex+(-tangent.perp()+tangent)*w);
+			side_a.push_back(vertex-tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex+tangent*w);
+			side_b.push_back(vertex+(tangent.perp()+tangent)*w);
+			side_b.push_back(vertex+tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_PEAK:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex+tangent*w);
+			side_a.push_back(vertex-tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex+tangent*w);
+			side_b.push_back(vertex+tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_INTERPOLATE:
+		default:
+			break;
 	}
 }
 void
