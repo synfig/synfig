@@ -229,7 +229,6 @@ Advanced_Outline::sync()
 		synfig::info("------");
 		////////////////////////////////////////////////////////////////
 
-		Real ipos(0.0);
 		Real step(1.0/SAMPLES/bline_size);
 		wnext=wplist.begin();
 		if(blineloop)
@@ -237,6 +236,7 @@ Advanced_Outline::sync()
 		else
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
+		Real ipos(blineloop?0.0:witer->get_norm_position());
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
