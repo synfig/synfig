@@ -421,7 +421,7 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 
 		for(iter=children.begin();iter!=children.end();iter++)
 			insert_canvas(*(canvas_tree_store()->append(row.children())),*iter);
-	}	
+	}
 }
 
 void
@@ -1008,6 +1008,156 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		{
 		}
 	}
+	//// Add here the rest of actions here for specific single value descriptions
+	//
+	// Specific actions for Widthpoints (Composite)
+	if(value_desc.get_value_type()==ValueBase::TYPE_WIDTHPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+		synfigapp::Action::ParamList param_list;
+		Gtk::Menu *before_menu=manage(new Gtk::Menu());
+		Gtk::Menu *after_menu=manage(new Gtk::Menu());
+		param_list.add("canvas",canvas);
+		param_list.add("canvas_interface",canvas_interface);
+		param_list.add("time",canvas_interface->get_time());
+		parammenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		////// Before //////////////////
+		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
+		///////////////// Interpolate
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
+		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolate"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Rounded
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
+		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Rounded"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Squared
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
+		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Squared"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Peak
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
+		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Peak"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Flat
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
+		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Flat"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Set Side Before"), *before_menu));
+		////// After ///////////////////////
+		param_list.erase("value_desc");
+		param_list.erase("new_value");
+		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
+		///////////////// Interpolate
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
+		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolate"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Rounded
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
+		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Rounded"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Squared
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
+		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Squared"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Peak
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
+		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Peak"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		///////////////// Flat
+		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
+		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Flat"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Set Side After"), *after_menu));
+	}
 }
 
 void
@@ -1147,4 +1297,5 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 			)
 		));
 	}
+	// add here the rest of specific actions for multiple selected value_descs
 }
