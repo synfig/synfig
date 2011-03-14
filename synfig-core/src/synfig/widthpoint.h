@@ -54,7 +54,8 @@ public:
 		TYPE_INTERPOLATE     =0,
 		TYPE_ROUNDED         =1,
 		TYPE_SQUARED         =2,
-		TYPE_PEAK            =3
+		TYPE_PEAK            =3,
+		TYPE_FLAT            =4
 	};
 
 	WidthPoint();
@@ -75,6 +76,7 @@ public:
 	void set_side_type_after(int sideafter);
 	int get_side_type(int i)const;
 	bool operator < (const WidthPoint& rhs);
+	bool operator == (const WidthPoint& rhs);
 
 }; // END of class WidthPoint
 

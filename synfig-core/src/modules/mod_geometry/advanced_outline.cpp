@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file outline.cpp
-**	\brief Implementation of the "Outline" layer
+**	\brief Implementation of the "Advanced Outline" layer
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,8 +35,6 @@
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
@@ -48,8 +46,6 @@
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_composite.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-
 
 #endif
 
@@ -106,6 +102,8 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[1].set_position(1.0);
 	wpoint_list[0].set_width(0.0);
 	wpoint_list[1].set_width(1.0);
+	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_ROUNDED);
+	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_ROUNDED);
 	wplist_=wpoint_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
@@ -139,7 +137,6 @@ Advanced_Outline::sync()
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		Real biter_pos(0.0), bnext_pos(bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
-		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
 		sort(wplist.begin(),wplist.end());
@@ -222,14 +219,20 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////////////////////////////////////////////////
 		//list the wplist
+		synfig::info("------");
 		for(witer=wplist.begin();witer!=wplist.end();witer++)
-			synfig::info("P:%f W:%f", witer->get_norm_position(), witer->get_width());
+			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
 		synfig::info("------");
 		////////////////////////////////////////////////////////////////
 
-		Real ipos(0.0);
-		Real step(1.0/SAMPLES);
-		witer=wnext=wplist.begin();
+		Real step(1.0/SAMPLES/bline_size);
+		wnext=wplist.begin();
+		if(blineloop)
+			witer=--wplist.end();
+		else
+			witer=wnext;
+		const vector<WidthPoint>::const_iterator wend(wplist.end());
+		Real ipos(blineloop?0.0:witer->get_norm_position());
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -248,7 +251,6 @@ Advanced_Outline::sync()
 			{
 				// Do tips
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
-				synfig::info("bezier_ipos %f", bezier_ipos);
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(bezier_ipos).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -259,40 +261,61 @@ Advanced_Outline::sync()
 				else
 					continue;
 			}
+			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
+				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+			{
+				ipos=wnext_pos;
+				while(ipos > bnext_pos && bnext+1!=bend)
+				{
+					// keep track of last tangent
+					last_tangent=bnext->get_tangent1();
+					// Update iterators
+					biter=bnext;
+					bnext++;
+					// Update blinepoints positions
+					biter_pos = bnext_pos;
+					bnext_pos+=bezier_size;
+				}
+				continue;
+			}
 			if((ipos==biter_pos || ipos==bnext_pos))
 			{
 				// Do cusp at ipos
-				if(ipos==biter_pos && ipos!=0.0 && sharp_cusps_ && split_flag)
+				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
 				}
 				if(bnext+1==bend && ipos == bnext_pos)
 					break;
 			}
-			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
-				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
-			{
-				ipos=wnext_pos;
-				continue;
-			}
 			do
 			{
-				ipos = ipos + step;
 				if(ipos > wnext_pos)
 				{
 					ipos=wnext_pos;
 					// Add interpolation for the last step
-					synfig::info("ipos=%f", ipos);
+					//synfig::info("ipos=%f", ipos);
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					Real ww;
+					if(wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+						ww=0.0;
+					else
+						ww=wnext->get_width();
+					const Real w(width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
-					break;
+					if(ipos <= bnext_pos)
+						break;
 				}
 				if(ipos > bnext_pos)
 				{
 					ipos=bnext_pos;
+					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					side_a.push_back(p+d*w);
+					side_b.push_back(p-d*w);
 					// Update iterators
 					biter=bnext;
 					bnext++;
@@ -304,12 +327,13 @@ Advanced_Outline::sync()
 					break;
 				}
 				// Add interpolation
-				synfig::info("ipos=%f", ipos);
+				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const float w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+				const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
+				ipos = ipos + step;
 			} while (1);
 		} while(1);
 
@@ -519,6 +543,7 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 	switch (wp.get_side_type_before())
 	{
 		case WidthPoint::TYPE_ROUNDED:
+		{
 			hermite<Vector> curve(
 				vertex-tangent.perp()*w,
 				vertex+tangent.perp()*w,
@@ -534,15 +559,54 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(1.0));
 			side_b.push_back(curve(0.0));
-			synfig::info("rounded before rendered at %f, %f", vertex[0], vertex[1]);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_SQUARED:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex-tangent*w);
+			side_a.push_back(vertex+(tangent.perp()-tangent)*w);
+			side_a.push_back(vertex+tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex-tangent*w);
+			side_b.push_back(vertex+(-tangent.perp()-tangent)*w);
+			side_b.push_back(vertex-tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_PEAK:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex-tangent*w);
+			side_a.push_back(vertex+tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex-tangent*w);
+			side_b.push_back(vertex-tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_FLAT:
+		{
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_INTERPOLATE:
+		default:
+			break;
 	}
 	// Side After
 	switch (wp.get_side_type_after())
 	{
 		case WidthPoint::TYPE_ROUNDED:
+		{
 			hermite<Vector> curve(
-				vertex+tangent.perp()*w,
 				vertex-tangent.perp()*w,
+				vertex+tangent.perp()*w,
 				tangent*w*ROUND_END_FACTOR,
 				-tangent*w*ROUND_END_FACTOR
 			);
@@ -555,6 +619,43 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_b.push_back(curve(0.5));
 			side_a.push_back(vertex);
 			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_SQUARED:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex+tangent*w);
+			side_a.push_back(vertex+(-tangent.perp()+tangent)*w);
+			side_a.push_back(vertex-tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex+tangent*w);
+			side_b.push_back(vertex+(tangent.perp()+tangent)*w);
+			side_b.push_back(vertex+tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_PEAK:
+		{
+			side_a.push_back(vertex);
+			side_a.push_back(vertex+tangent*w);
+			side_a.push_back(vertex-tangent.perp()*w);
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			side_b.push_back(vertex+tangent*w);
+			side_b.push_back(vertex+tangent.perp()*w);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_FLAT:
+		{
+			side_a.push_back(vertex);
+			side_b.push_back(vertex);
+			break;
+		}
+		case WidthPoint::TYPE_INTERPOLATE:
+		default:
+			break;
 	}
 }
 void

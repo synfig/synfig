@@ -115,7 +115,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, R
 	if(p==pp)
 		return pw;
 	// Normal case: previous position is lower than next position
-	if(np >= pp)
+	if(np > pp)
 	{
 		if(np > p && p > pp )
 		{

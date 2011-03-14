@@ -137,3 +137,12 @@ WidthPoint::operator<(const WidthPoint& rhs)
 {
 	return get_norm_position() < rhs.get_norm_position();
 }
+
+bool
+WidthPoint::operator == (const WidthPoint& rhs)
+{
+	return 	side_type_[0] == rhs.get_side_type(0) &&
+			side_type_[1] == rhs.get_side_type(1) &&
+			position_ == rhs.get_position() &&
+			width_ == rhs.get_width();
+}
