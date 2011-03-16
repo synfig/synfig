@@ -96,7 +96,7 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 }
 
 Real
-synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real p, Real smoothness)
+synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const Real smoothness)
 {
 	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
 	int nsb, nsa, psb, psa;
@@ -136,8 +136,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, R
 			Vector(0.0,0.0),
 			Vector(0.0,0.0)
 			);
-			rw=curve(q)[0];
-			//rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+			rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
 		}
 		else if(p < pp)
 		{

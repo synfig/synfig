@@ -200,11 +200,11 @@ Advanced_Outline::sync()
 					// if it is not exactly at 0.0
 					if(wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 					// If it is not exactly at 1.0
 					if(wpback.get_norm_position()!=1.0)
 					// Add a fake widthpoint at position 1.0
-						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 				}
 			}
 			else
@@ -283,7 +283,7 @@ Advanced_Outline::sync()
 				// Do cusp at ipos
 				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
 				if(bnext+1==bend && ipos == bnext_pos)
 					break;
@@ -313,7 +313,7 @@ Advanced_Outline::sync()
 					ipos=bnext_pos;
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -330,7 +330,7 @@ Advanced_Outline::sync()
 				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+				const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
