@@ -78,7 +78,7 @@ Advanced_Outline::Advanced_Outline()
 	sharp_cusps_=true;
 	width_=1.0f;
 	expand_=0;
-	homogeneous_width_=true;
+	smoothness_=0.5;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -366,7 +366,13 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
-	IMPORT_AS(homogeneous_width_, "homogeneous_width");
+	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
+	{
+		if(value > 1.0) smoothness_=1.0;
+		else if(value < 0.0) smoothness_=0.0;
+		else smoothness_=value;
+		return true;
+	}
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
 	{
 		wplist_=value;
@@ -396,7 +402,7 @@ Advanced_Outline::get_param(const String& param)const
 {
 	EXPORT_AS(bline_, "bline");
 	EXPORT_AS(expand_, "expand");
-	EXPORT_AS(homogeneous_width_, "homogeneous_width");
+	EXPORT_AS(smoothness_, "smoothness");
 	EXPORT_AS(round_tip_[0], "round_tip[0]");
 	EXPORT_AS(round_tip_[1], "round_tip[1]");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
@@ -442,9 +448,9 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Rounded End"))
 		.set_description(_("Round off the tip"))
 	);
-	ret.push_back(ParamDesc("homogeneous_width")
-		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked the width takes the length of the spline to interpolate"))
+	ret.push_back(ParamDesc("smoothness")
+		.set_local_name(_("Smoothness"))
+		.set_description(_("Determines the interpolation between withpoints. (0) Linear (1) Smooth"))
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
