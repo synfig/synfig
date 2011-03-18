@@ -78,7 +78,7 @@ Advanced_Outline::Advanced_Outline()
 	sharp_cusps_=true;
 	width_=1.0f;
 	expand_=0;
-	homogeneous_width_=true;
+	smoothness_=0.5;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -200,11 +200,11 @@ Advanced_Outline::sync()
 					// if it is not exactly at 0.0
 					if(wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 					// If it is not exactly at 1.0
 					if(wpback.get_norm_position()!=1.0)
 					// Add a fake widthpoint at position 1.0
-						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 				}
 			}
 			else
@@ -283,7 +283,7 @@ Advanced_Outline::sync()
 				// Do cusp at ipos
 				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos));
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
 				if(bnext+1==bend && ipos == bnext_pos)
 					break;
@@ -313,7 +313,7 @@ Advanced_Outline::sync()
 					ipos=bnext_pos;
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+					const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -330,7 +330,7 @@ Advanced_Outline::sync()
 				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const Real w(width_*0.5*synfig::widthpoint_interpolate(*witer, *wnext, ipos));
+				const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -366,7 +366,13 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
-	IMPORT_AS(homogeneous_width_, "homogeneous_width");
+	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
+	{
+		if(value > 1.0) smoothness_=1.0;
+		else if(value < 0.0) smoothness_=0.0;
+		else smoothness_=value;
+		return true;
+	}
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
 	{
 		wplist_=value;
@@ -396,7 +402,7 @@ Advanced_Outline::get_param(const String& param)const
 {
 	EXPORT_AS(bline_, "bline");
 	EXPORT_AS(expand_, "expand");
-	EXPORT_AS(homogeneous_width_, "homogeneous_width");
+	EXPORT_AS(smoothness_, "smoothness");
 	EXPORT_AS(round_tip_[0], "round_tip[0]");
 	EXPORT_AS(round_tip_[1], "round_tip[1]");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
@@ -442,9 +448,9 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Rounded End"))
 		.set_description(_("Round off the tip"))
 	);
-	ret.push_back(ParamDesc("homogeneous_width")
-		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked the width takes the length of the spline to interpolate"))
+	ret.push_back(ParamDesc("smoothness")
+		.set_local_name(_("Smoothness"))
+		.set_description(_("Determines the interpolation between withpoints. (0) Linear (1) Smooth"))
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))

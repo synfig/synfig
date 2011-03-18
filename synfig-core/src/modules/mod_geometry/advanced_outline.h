@@ -56,7 +56,7 @@ private:
 	bool loop_;
 	synfig::Real width_;
 	synfig::Real expand_;
-	bool homogeneous_width_;
+	Real smoothness_;
 
 public:
 

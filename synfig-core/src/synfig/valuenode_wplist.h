@@ -49,8 +49,9 @@ synfig::ValueBase convert_bline_to_wplist(const ValueBase& bline);
 //! \param prev the previous width point to evaluate the width
 //! \param next the next width point to evaluate the width
 //! \param position the position to interpolate between prev and next
+//! \param smoothness a [0,1] value that defines how is calculated the interpolation
 //! \return the interpolated width based on surrounding width points and its values
-synfig::Real widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, Real position);
+synfig::Real widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real position, const Real smoothness=0.0);
 
 /*! \class ValueNode_WPList
 **	\brief This class implements a list of Width Points
