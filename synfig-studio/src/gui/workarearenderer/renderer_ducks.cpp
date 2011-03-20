@@ -116,24 +116,28 @@ Renderer_Ducks::render_vfunc(
 	// Render the strokes
 	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
-		Point window_start(window_startx,window_starty);
-		vector<Gdk::Point> points;
-		std::list<synfig::Point>::iterator iter2;
-		Point holder;
+		cr->save();
 
+		cr->set_source_rgb(
+			colorconv_synfig2gdk((*iter)->color).get_red_p(),
+			colorconv_synfig2gdk((*iter)->color).get_green_p(),
+			colorconv_synfig2gdk((*iter)->color).get_blue_p()
+			);
+		cr->set_line_width(1.0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+		std::list<synfig::Point>::iterator iter2;
 		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
 		{
-			holder=*iter2-window_start;
-			holder[0]/=pw;holder[1]/=ph;
-			points.push_back(Gdk::Point(round_to_int(holder[0]),round_to_int(holder[1])));
+			cr->line_to(
+				((*iter2)[0]-window_startx)/pw,
+				((*iter2)[1]-window_starty)/ph
+				);
 		}
 
-		gc->set_rgb_fg_color(colorconv_synfig2gdk((*iter)->color));
-		gc->set_function(Gdk::COPY);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-
-		// Draw the stroke
-  		drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+		cr->stroke();
+		cr->restore();
 	}
 
 
