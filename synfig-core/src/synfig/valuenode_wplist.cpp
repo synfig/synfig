@@ -36,7 +36,6 @@
 #include "general.h"
 #include "exception.h"
 #include "widthpoint.h"
-#include <ETL/hermite>
 #include <vector>
 #include <list>
 
@@ -130,13 +129,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 				q=0.5;
 			else
 				q=(p-pp)/(np-pp);
-			hermite<Vector> curve(
-			Vector(pp, pw),
-			Vector(np, nw),
-			Vector(0.0,0.0),
-			Vector(0.0,0.0)
-			);
-			rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+			rw=pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 		}
 		else if(p < pp)
 		{
@@ -169,13 +162,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 			if(np > p)
 				q=(p+1.0-pp)/(np+1.0-pp);
 		}
-		hermite<Vector> curve(
-		Vector(pp, pw),
-		Vector(np, nw),
-		Vector(0.0,0.0),
-		Vector(0.0,0.0)
-		);
-		rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+		rw=pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 	}
 	else
 	if(p > np && p < pp)
@@ -189,13 +176,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 			q=0.5;
 		else
 			q=(p-np)/(pp-np);
-		hermite<Vector> curve(
-		Vector(np, nw),
-		Vector(pp, pw),
-		Vector(0.0,0.0),
-		Vector(0.0,0.0)
-		);
-		rw=(nw+(pw-nw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+		rw=nw+(pw-nw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 	}
 	return rw;
 }
