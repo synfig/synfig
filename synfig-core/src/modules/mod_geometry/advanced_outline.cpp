@@ -73,8 +73,6 @@ Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, con
 
 Advanced_Outline::Advanced_Outline()
 {
-	round_tip_[0]=true;
-	round_tip_[1]=true;
 	sharp_cusps_=true;
 	width_=1.0f;
 	expand_=0;
@@ -361,8 +359,6 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		bline_=value;
 		return true;
 	}
-	IMPORT_AS(round_tip_[0],"round_tip[0]");
-	IMPORT_AS(round_tip_[1], "round_tip[1]");
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
@@ -403,8 +399,6 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(bline_, "bline");
 	EXPORT_AS(expand_, "expand");
 	EXPORT_AS(smoothness_, "smoothness");
-	EXPORT_AS(round_tip_[0], "round_tip[0]");
-	EXPORT_AS(round_tip_[1], "round_tip[1]");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
@@ -439,14 +433,6 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("sharp_cusps")
 		.set_local_name(_("Sharp Cusps"))
 		.set_description(_("Determines cusp type"))
-	);
-	ret.push_back(ParamDesc("round_tip[0]")
-		.set_local_name(_("Rounded Begin"))
-		.set_description(_("Round off the tip"))
-	);
-	ret.push_back(ParamDesc("round_tip[1]")
-		.set_local_name(_("Rounded End"))
-		.set_description(_("Round off the tip"))
 	);
 	ret.push_back(ParamDesc("smoothness")
 		.set_local_name(_("Smoothness"))
