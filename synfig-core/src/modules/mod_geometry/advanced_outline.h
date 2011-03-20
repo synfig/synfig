@@ -51,6 +51,8 @@ private:
 
 	synfig::ValueBase bline_;
 	synfig::ValueBase wplist_;
+	WidthPoint::SideType start_tip_;
+	WidthPoint::SideType end_tip_;
 	bool sharp_cusps_;
 	bool loop_;
 	synfig::Real width_;

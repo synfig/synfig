@@ -74,6 +74,7 @@ Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, con
 Advanced_Outline::Advanced_Outline()
 {
 	sharp_cusps_=true;
+	start_tip_= end_tip_= WidthPoint::TYPE_ROUNDED;
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
@@ -360,6 +361,8 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
+	IMPORT_AS(start_tip_, "start_tip");
+	IMPORT_AS(end_tip_, "end_tip");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
@@ -400,6 +403,8 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(expand_, "expand");
 	EXPORT_AS(smoothness_, "smoothness");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
+	EXPORT_AS(start_tip_,"start_tip");
+	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
 	EXPORT_NAME();
@@ -430,6 +435,24 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Expand"))
 		.set_description(_("Value to add to the global width"))
 	);
+	ret.push_back(ParamDesc(ValueBase(),"start_tip")
+		.set_local_name(_("Tip Type at Start"))
+		.set_description(_("Defines the Tip type of the first bline point when bline is unlooped"))
+		.set_hint("enum")
+		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+	ret.push_back(ParamDesc(ValueBase(),"end_tip")
+		.set_local_name(_("Tip Type at End"))
+		.set_description(_("Defines the Tip type of the last bline point when bline is unlooped"))
+		.set_hint("enum")
+		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
 	ret.push_back(ParamDesc("sharp_cusps")
 		.set_local_name(_("Sharp Cusps"))
 		.set_description(_("Determines cusp type"))
