@@ -282,7 +282,7 @@ Advanced_Outline::sync()
 				// Do cusp at ipos
 				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
 				if(bnext+1==bend && ipos == bnext_pos)
 					break;
@@ -301,7 +301,7 @@ Advanced_Outline::sync()
 						ww=0.0;
 					else
 						ww=wnext->get_width();
-					const Real w(width_*0.5*ww);
+					const Real w(expand_+width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					if(ipos <= bnext_pos)
@@ -312,7 +312,7 @@ Advanced_Outline::sync()
 					ipos=bnext_pos;
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -329,7 +329,7 @@ Advanced_Outline::sync()
 				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -553,7 +553,7 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 void
 Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
 {
-	Real w(width_*0.5*wp.get_width());
+	Real w(expand_+width_*0.5*wp.get_width());
 	// Side Before
 	switch (wp.get_side_type_before())
 	{
