@@ -92,51 +92,45 @@ Renderer_Ducks::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
+	const synfig::Point window_start(get_work_area()->get_window_tl());
+	const float pw(get_pw()),ph(get_ph());
 
+	const bool solid_lines(get_work_area()->solid_lines);
 
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
+	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
+	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
+
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
-	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-
-	const float pw(get_pw()),ph(get_ph());
-
-	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
-	const bool solid_lines(get_work_area()->solid_lines);
-
-	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
-
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
+	cr->save();
+	cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+	cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 	// Render the strokes
 	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
 		cr->save();
 
+		std::list<synfig::Point>::iterator iter2;
+		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
+		{
+			cr->line_to(
+				((*iter2)[0]-window_start[0])/pw,
+				((*iter2)[1]-window_start[1])/ph
+				);
+		}
+
+		cr->set_line_width(1.0);
 		cr->set_source_rgb(
 			colorconv_synfig2gdk((*iter)->color).get_red_p(),
 			colorconv_synfig2gdk((*iter)->color).get_green_p(),
 			colorconv_synfig2gdk((*iter)->color).get_blue_p()
 			);
-		cr->set_line_width(1.0);
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-		cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
-		std::list<synfig::Point>::iterator iter2;
-		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
-		{
-			cr->line_to(
-				((*iter2)[0]-window_startx)/pw,
-				((*iter2)[1]-window_starty)/ph
-				);
-		}
-
 		cr->stroke();
+
 		cr->restore();
 	}
 
@@ -145,7 +139,6 @@ Renderer_Ducks::render_vfunc(
 	// Render the beziers
 	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
 	{
-		Point window_start(window_startx,window_starty);
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
@@ -156,8 +149,6 @@ Renderer_Ducks::render_vfunc(
 		c2[0]/=pw;c2[1]/=ph;
 
 		cr->save();
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 		cr->move_to(p1[0], p1[1]);
 		cr->curve_to(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]);
@@ -176,12 +167,12 @@ Renderer_Ducks::render_vfunc(
 		else
 */
 		{
-			//Draw the background
+			//Solid line background
 			cr->set_line_width(1.0);
 			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
 			cr->stroke_preserve();
 
-			//Draw dashes
+			//Dashes
 			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
@@ -194,8 +185,7 @@ Renderer_Ducks::render_vfunc(
 
 
 	const DuckList duck_list(get_work_area()->get_duck_list());
-	//Gtk::StateType state = Gtk::STATE_ACTIVE;
-	Gtk::ShadowType shadow=Gtk::SHADOW_OUT;
+
 	std::list<ScreenDuck> screen_duck_list;
 	const float radius((abs(pw)+abs(ph))*4);
 
@@ -209,8 +199,6 @@ Renderer_Ducks::render_vfunc(
 		if((*iter)->get_type() && (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
 			continue;
 
-//		Real x,y;
-	//	Gdk::Rectangle area;
 		Point sub_trans_point((*iter)->get_sub_trans_point());
 		Point sub_trans_origin((*iter)->get_sub_trans_origin());
 
@@ -226,8 +214,8 @@ Renderer_Ducks::render_vfunc(
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
-		point[0]=(point[0]-window_startx)/pw;
-		point[1]=(point[1]-window_starty)/ph;
+		point[0]=(point[0]-window_start[0])/pw;
+		point[1]=(point[1]-window_start[1])/ph;
 
 		bool has_connect(false);
 		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
@@ -240,13 +228,11 @@ Renderer_Ducks::render_vfunc(
 			origin=(*iter)->get_connect_duck()->get_trans_point();
 		}
 
-		origin[0]=(origin[0]-window_startx)/pw;
-		origin[1]=(origin[1]-window_starty)/ph;
+		origin[0]=(origin[0]-window_start[0])/pw;
+		origin[1]=(origin[1]-window_start[1])/ph;
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
 		bool hover(*iter==hover_duck || (*iter)->get_hover());
-
-		shadow = selected?Gtk::SHADOW_IN:Gtk::SHADOW_OUT;
 
 		if(get_work_area()->get_selected_value_node())
 		{
@@ -256,10 +242,6 @@ Renderer_Ducks::render_vfunc(
 				 (value_desc.parent_is_value_node()	&& get_work_area()->get_selected_value_node() == value_desc.get_parent_value_node())))
 			{
 				cr->save();
-				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
-				cr->set_line_width(2.0);
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 				cr->rectangle(
 					round_to_int(point[0]-5),
@@ -267,7 +249,11 @@ Renderer_Ducks::render_vfunc(
 					10,
 					10
 					);
+
+				cr->set_line_width(2.0);
+				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
 				cr->stroke();
+
 				cr->restore();
 			}
 
@@ -276,8 +262,8 @@ Renderer_Ducks::render_vfunc(
 		if((*iter)->get_box_duck())
 		{
 			Point boxpoint((*iter)->get_box_duck()->get_trans_point());
-			boxpoint[0]=(boxpoint[0]-window_startx)/pw;
-			boxpoint[1]=(boxpoint[1]-window_starty)/ph;
+			boxpoint[0]=(boxpoint[0]-window_start[0])/pw;
+			boxpoint[1]=(boxpoint[1]-window_start[1])/ph;
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
 			cr->save();
@@ -290,20 +276,16 @@ Renderer_Ducks::render_vfunc(
 				);
 
 			// Solid white box
-			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
 			cr->set_line_width(1.0);
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
+			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
 			cr->stroke_preserve();
 
-			// Black dash on top of the white
+			// Dashes
 			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;
 			cr->set_dash(dashes, 0);
-			
 			cr->stroke();
 
 			cr->restore();
@@ -365,57 +347,40 @@ Renderer_Ducks::render_vfunc(
 
 		if(has_connect)
 		{
+			cr->save();
+
+			cr->move_to(origin[0], origin[1]);
+			cr->line_to(point[0], point[1]);
+
 			if(solid_lines)
 			{
-				cr->save();
-
-				cr->move_to(origin[0], origin[1]);
-				cr->line_to(point[0], point[1]);
-
-				//draw the outside
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				// Outside
 				cr->set_line_width(3.0);
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
 
-				//draw the inside
-				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				// Inside
 				cr->set_line_width(1.0);
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
+				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
 				cr->stroke();
-
-				cr->restore();
 			}
 			else
 			{
-				cr->save();
-
-				cr->move_to(origin[0], origin[1]);
-				cr->line_to(point[0], point[1]);
-
 				// White background
-				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->set_line_width(1.0);
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
 				cr->stroke_preserve();
 
-				// Dash on top of the background
+				// Dashes on top of the background
 				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
 				std::valarray<double> dashes(2);
 				dashes[0]=5.0;
 				dashes[1]=5.0;
 				cr->set_dash(dashes, 0);
-
 				cr->stroke();
-
-				cr->restore();
 			}
+
+			cr->restore();
 		}
 
 		if((*iter)->is_radius())
@@ -423,35 +388,6 @@ Renderer_Ducks::render_vfunc(
 			const Real mag((point-origin).mag());
 
 			cr->save();
-			if(solid_lines)
-			{
-				cr->save();
-				cr->set_source_rgb(0,0,0);
-				cr->set_line_width(3.0);
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
-				cr->arc(
-					origin[0],
-					origin[1],
-					mag,
-					0,
-					M_PI*2
-					);
-				cr->stroke();
-
-				cr->restore();
-				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
-			}
-			else
-			{
-				cr->set_source_rgb(1.0,1.0,1.0);
-				// \todo OPERATOR_DIFFERENCE is supported by cairo, but not by cairomm
-				//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
-			}
-			cr->set_line_width(1.0);
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 			cr->arc(
 				origin[0],
@@ -460,6 +396,23 @@ Renderer_Ducks::render_vfunc(
 				0,
 				M_PI*2
 				);
+
+			if(solid_lines)
+			{
+				cr->set_line_width(3.0);
+				cr->set_source_rgb(0,0,0);
+				cr->stroke();
+
+				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
+			}
+			else
+			{
+				cr->set_source_rgb(1.0,1.0,1.0);
+				// \todo OPERATOR_DIFFERENCE is supported by cairo, but not by cairomm
+				//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
+			}
+
+			cr->set_line_width(1.0);
 			cr->stroke();
 
 			cr->restore();
@@ -512,9 +465,18 @@ Renderer_Ducks::render_vfunc(
 
 	for(;screen_duck_list.size();screen_duck_list.pop_front())
 	{
-		int radius=4;
-		int outline=1;
 		Gdk::Color color(screen_duck_list.front().color);
+		double radius = 4;
+		double outline = 1;
+
+		// Draw the hovered duck last (on top of everything)
+		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
+		{
+			screen_duck_list.push_back(screen_duck_list.front());
+			continue;
+		}
+
+		cr->save();
 
 		if(!screen_duck_list.front().selected)
 		{
@@ -523,25 +485,11 @@ Renderer_Ducks::render_vfunc(
 			color.set_blue(color.get_blue()*2/3);
 		}
 
-		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
-		{
-			screen_duck_list.push_back(screen_duck_list.front());
-			continue;
-		}
-
 		if(screen_duck_list.front().hover)
 		{
-			radius+=2;
-			outline++;
+			radius += 1;
+			outline += 1;
 		}
-
-		cr->save();
-
-		cr->set_line_width(1.0);
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-		cr->set_line_join(Cairo::LINE_JOIN_MITER);
-
-		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
 
 		cr->arc(
 			screen_duck_list.front().pos[0],
@@ -550,26 +498,17 @@ Renderer_Ducks::render_vfunc(
 			0,
 			M_PI*2
 			);
-		cr->fill();
-
-		cr->set_line_width(1.0);
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 		cr->set_source_rgb(
 			color.get_red_p(),
 			color.get_green_p(),
 			color.get_blue_p()
 			);
+		cr->fill_preserve();
 
-		cr->arc(
-			screen_duck_list.front().pos[0],
-			screen_duck_list.front().pos[1],
-			radius-outline,
-			0,
-			M_PI*2
-			);
-		cr->fill();
+		cr->set_line_width(outline);
+		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
+		cr->stroke();
 
 		cr->restore();
 	}
