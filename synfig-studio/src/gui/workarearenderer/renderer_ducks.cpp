@@ -408,8 +408,9 @@ Renderer_Ducks::render_vfunc(
 			else
 			{
 				cr->set_source_rgb(1.0,1.0,1.0);
-				// \todo OPERATOR_DIFFERENCE is supported by cairo, but not by cairomm
+				// OPERATOR_DIFFERENCE does not currently have a C++ wrapper
 				//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
+				cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
 			}
 
 			cr->set_line_width(1.0);
