@@ -99,7 +99,7 @@ Renderer_Ducks::render_vfunc(
 	drawable->get_size(drawable_w,drawable_h);
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
@@ -254,17 +254,20 @@ Renderer_Ducks::render_vfunc(
 				((value_desc.is_value_node()		&& get_work_area()->get_selected_value_node() == value_desc.get_value_node()) ||
 				 (value_desc.parent_is_value_node()	&& get_work_area()->get_selected_value_node() == value_desc.get_parent_value_node())))
 			{
-				gc->set_function(Gdk::COPY);
-				gc->set_rgb_fg_color(DUCK_COLOR_SELECTED);
-				//gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_line_attributes(2,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+				cr->save();
+				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
+				cr->set_line_width(2.0);
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
-				drawable->draw_rectangle(gc,false,
+				cr->rectangle(
 					round_to_int(point[0]-5),
 					round_to_int(point[1]-5),
 					10,
 					10
-				);
+					);
+				cr->stroke();
+				cr->restore();
 			}
 
 		}
@@ -276,24 +279,33 @@ Renderer_Ducks::render_vfunc(
 			boxpoint[1]=(boxpoint[1]-window_starty)/ph;
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
-			gc->set_function(Gdk::COPY);
-			gc->set_rgb_fg_color(DUCK_COLOR_BOX_1);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_rectangle(gc,false,
+			cr->save();
+
+			cr->rectangle(
 				round_to_int(tl[0]),
 				round_to_int(tl[1]),
 				round_to_int(abs(boxpoint[0]-point[0])),
 				round_to_int(abs(boxpoint[1]-point[1]))
-			);
-			gc->set_function(Gdk::COPY);
-			gc->set_rgb_fg_color(DUCK_COLOR_BOX_2);
-			gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_rectangle(gc,false,
-				round_to_int(tl[0]),
-				round_to_int(tl[1]),
-				round_to_int(abs(boxpoint[0]-point[0])),
-				round_to_int(abs(boxpoint[1]-point[1]))
-			);
+				);
+
+			// Solid white box
+			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->set_line_width(1.0);
+			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+			cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+			cr->stroke_preserve();
+
+			// Black dash on top of the white
+			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			
+			cr->stroke();
+
+			cr->restore();
 		}
 
 		ScreenDuck screen_duck;
@@ -354,70 +366,102 @@ Renderer_Ducks::render_vfunc(
 		{
 			if(solid_lines)
 			{
-				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
-				gc->set_function(Gdk::COPY);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+				cr->save();
+
+				cr->move_to(origin[0], origin[1]);
+				cr->line_to(point[0], point[1]);
+
+				//draw the outside
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->set_line_width(3.0);
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+				cr->stroke_preserve();
+
+				//draw the inside
+				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				cr->set_line_width(1.0);
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+				cr->stroke();
+
+				cr->restore();
 			}
 			else
 			{
-//				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-//				gc->set_function(Gdk::INVERT);
-//				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
-				gc->set_function(Gdk::COPY);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+				cr->save();
+
+				cr->move_to(origin[0], origin[1]);
+				cr->line_to(point[0], point[1]);
+
+				// White background
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->set_line_width(1.0);
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+				cr->stroke_preserve();
+
+				// Dash on top of the background
+				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				std::valarray<double> dashes(2);
+				dashes[0]=5.0;
+				dashes[1]=5.0;
+				cr->set_dash(dashes, 0);
+
+				cr->stroke();
+
+				cr->restore();
 			}
 		}
 
 		if((*iter)->is_radius())
 		{
 			const Real mag((point-origin).mag());
-			const int d(round_to_int(mag*2));
-			const int x(round_to_int(origin[0]-mag));
-			const int y(round_to_int(origin[1]-mag));
 
+			cr->save();
 			if(solid_lines)
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
-				gc->set_function(Gdk::COPY);
-				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				drawable->draw_arc(
-					gc,
-					false,
-					x,
-					y,
-					d,
-					d,
+				cr->save();
+				cr->set_source_rgb(0,0,0);
+				cr->set_line_width(3.0);
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+				cr->arc(
+					origin[0],
+					origin[1],
+					mag,
 					0,
-					360*64
-				);
-				gc->set_rgb_fg_color(Gdk::Color("#afafaf"));
+					M_PI*2
+					);
+				cr->stroke();
+
+				cr->restore();
+				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
 			}
 			else
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-				gc->set_function(Gdk::INVERT);
+				cr->set_source_rgb(1.0,1.0,1.0);
+				// \todo OPERATOR_DIFFERENCE is supported by cairo, but not by cairomm
+				//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
 			}
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+			cr->set_line_width(1.0);
+			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+			cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
-			drawable->draw_arc(
-				gc,
-				false,
-				x,
-				y,
-				d,
-				d,
+			cr->arc(
+				origin[0],
+				origin[1],
+				mag,
 				0,
-				360*64
-			);
+				M_PI*2
+				);
+			cr->stroke();
+
+			cr->restore();
 
 			if(hover)
 			{
@@ -490,32 +534,42 @@ Renderer_Ducks::render_vfunc(
 			outline++;
 		}
 
-		gc->set_function(Gdk::COPY);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		gc->set_rgb_fg_color(DUCK_COLOR_OUTLINE);
-		drawable->draw_arc(
-			gc,
-			true,
-			round_to_int(screen_duck_list.front().pos[0]-radius),
-			round_to_int(screen_duck_list.front().pos[1]-radius),
-			radius*2,
-			radius*2,
+		cr->save();
+
+		cr->set_line_width(1.0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
+
+		cr->arc(
+			screen_duck_list.front().pos[0],
+			screen_duck_list.front().pos[1],
+			radius,
 			0,
-			360*64
-		);
+			M_PI*2
+			);
+		cr->fill();
 
+		cr->set_line_width(1.0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
-		gc->set_rgb_fg_color(color);
+		cr->set_source_rgb(
+			color.get_red_p(),
+			color.get_green_p(),
+			color.get_blue_p()
+			);
 
-		drawable->draw_arc(
-			gc,
-			true,
-			round_to_int(screen_duck_list.front().pos[0]-radius+outline),
-			round_to_int(screen_duck_list.front().pos[1]-radius+outline),
-			radius*2-outline*2,
-			radius*2-outline*2,
+		cr->arc(
+			screen_duck_list.front().pos[0],
+			screen_duck_list.front().pos[1],
+			radius-outline,
 			0,
-			360*64
-		);
+			M_PI*2
+			);
+		cr->fill();
+
+		cr->restore();
 	}
 }
