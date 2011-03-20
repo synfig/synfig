@@ -401,7 +401,7 @@ Renderer_Ducks::render_vfunc(
 			{
 				cr->set_line_width(3.0);
 				cr->set_source_rgb(0,0,0);
-				cr->stroke();
+				cr->stroke_preserve();
 
 				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
 			}
