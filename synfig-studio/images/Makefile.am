@@ -82,6 +82,7 @@ EXTRA_DIST = \
 	layer_geometry_checkerboard_icon.sif \
 	layer_geometry_circle_icon.sif \
 	layer_geometry_outline_icon.sif \
+	layer_geometry_advanced_outline.sif \
 	layer_geometry_polygon_icon.sif \
 	layer_geometry_rectangle_icon.sif \
 	layer_geometry_region_icon.sif \
@@ -225,6 +226,7 @@ IMAGES = \
 	layer_geometry_checkerboard_icon.$(EXT) \
 	layer_geometry_circle_icon.$(EXT) \
 	layer_geometry_outline_icon.$(EXT) \
+	layer_geometry_advanced_outline_icon.$(EXT) \
 	layer_geometry_polygon_icon.$(EXT) \
 	layer_geometry_rectangle_icon.$(EXT) \
 	layer_geometry_region_icon.$(EXT) \
