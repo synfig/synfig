@@ -172,17 +172,17 @@ Advanced_Outline::sync()
 				// if the first widthpoint interpolation before is INTERPOLATE and it is not exactly at 0.0
 				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
+					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , start_tip_, WidthPoint::TYPE_INTERPOLATE));
 				// if last widhtpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
 				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_norm_position()!=1.0)
 				// Add a fake withpoint at position 1.0
-					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
 			else
 			{
 				// If there are not widthpoints in list, just use the global width
-				wplist.push_back(WidthPoint(0.0, 1.0 , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
-				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+				wplist.push_back(WidthPoint(0.0, 1.0 , start_tip_, WidthPoint::TYPE_INTERPOLATE));
+				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
 		}
 		else // looped
