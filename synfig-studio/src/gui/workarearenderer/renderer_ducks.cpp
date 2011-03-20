@@ -154,45 +154,42 @@ Renderer_Ducks::render_vfunc(
 		p2[0]/=pw;p2[1]/=ph;
 		c1[0]/=pw;c1[1]/=ph;
 		c2[0]/=pw;c2[1]/=ph;
-		bezier<Point> curve(p1,c1,c2,p2);
-		vector<Gdk::Point> points;
 
-		float f;
-		Point pt;
-		for(f=0;f<1.0;f+=1.0/17.0)
-		{
-			pt=curve(f);
-			points.push_back(Gdk::Point(round_to_int(pt[0]),round_to_int(pt[1])));
-		}
-		points.push_back(Gdk::Point(round_to_int(p2[0]),round_to_int(p2[1])));
+		cr->save();
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
-		// Draw the curve
-/*		if(solid_lines)
+		cr->move_to(p1[0], p1[1]);
+		cr->curve_to(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]);
+
+/*
+		if (solid_lines)
 		{
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_1);
-			gc->set_function(Gdk::COPY);
-			gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_2);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->set_line_width(3.0);
+			cr->stroke_preserve();
+
+			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			cr->set_line_width(1.0);
+			cr->stroke();
 		}
 		else
 */
 		{
-//			gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-//			gc->set_function(Gdk::INVERT);
-//			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-//			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_1);
-			gc->set_function(Gdk::COPY);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_2);
-			gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+			//Draw the background
+			cr->set_line_width(1.0);
+			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->stroke_preserve();
 
+			//Draw dashes
+			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			cr->stroke();
 		}
+		cr->restore();
 	}
 
 
