@@ -1646,6 +1646,30 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging==DRAG_GUIDE)
 		{
+			double y,x;
+			if(event->button.axes)
+			{
+				x=(event->button.axes[0]);
+				y=(event->button.axes[1]);
+			}
+			else
+			{
+				x=event->button.x;
+				y=event->button.y;
+			}
+
+			// Erase the guides if dragged into the rulers
+			if(curr_guide_is_x && !isnan(x) && x<0.0 )
+			{
+				get_guide_list_x().erase(curr_guide);
+			}
+			else if(!curr_guide_is_x && !isnan(y) && y<0.0 )
+			{
+				get_guide_list_y().erase(curr_guide);
+			}
+
+			drawing_area->queue_draw();
+
 			dragging=DRAG_NONE;
 			save_meta_data();
 			return true;
