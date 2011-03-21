@@ -90,7 +90,6 @@ Renderer_Dragbox::render_vfunc(
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
