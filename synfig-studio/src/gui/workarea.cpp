@@ -1859,16 +1859,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 }
 
 bool
-WorkArea::on_hruler_event(GdkEvent */*event*/)
+WorkArea::on_hruler_event(GdkEvent *event)
 {
-/*
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
 		if(dragging==DRAG_NONE)
 		{
 			dragging=DRAG_GUIDE;
-			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin());
+			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
 			curr_guide_is_x=false;
 		}
 		return true;
@@ -1893,6 +1892,10 @@ WorkArea::on_hruler_event(GdkEvent */*event*/)
 			if(isnan(y) || isnan(x))
 				return false;
 
+			// Event is in the hruler, which has a slightly different
+			// coordinate system from the canvas.
+			y -= 2*hruler->property_max_size();
+
 			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[1];
 
 			queue_draw();
@@ -1904,44 +1907,72 @@ WorkArea::on_hruler_event(GdkEvent */*event*/)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
 			dragging=DRAG_NONE;
-			get_guide_list_y().erase(curr_guide);
+//			get_guide_list_y().erase(curr_guide);
 		}
 		break;
 		return true;
 	default:
 		break;
 	}
-*/
 	return false;
 }
 
 bool
-WorkArea::on_vruler_event(GdkEvent */*event*/)
+WorkArea::on_vruler_event(GdkEvent *event)
 {
-/*
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
 		if(dragging==DRAG_NONE)
 		{
 			dragging=DRAG_GUIDE;
-			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin());
+			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
 			curr_guide_is_x=true;
 		}
 		return true;
 		break;
+
+	case GDK_MOTION_NOTIFY:
+		// Guide movement
+		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
+		{
+			double y,x;
+			if(event->button.axes)
+			{
+				x=(event->button.axes[0]);
+				y=(event->button.axes[1]);
+			}
+			else
+			{
+				x=event->button.x;
+				y=event->button.y;
+			}
+
+			if(isnan(y) || isnan(x))
+				return false;
+
+			// Event is in the vruler, which has a slightly different
+			// coordinate system from the canvas.
+			x -= 2*vruler->property_max_size();
+
+			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[0];
+
+			queue_draw();
+		}
+		return true;
+		break;
+
 	case GDK_BUTTON_RELEASE:
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
 			dragging=DRAG_NONE;
-			get_guide_list_x().erase(curr_guide);
+//			get_guide_list_x().erase(curr_guide);
 		}
 		break;
 		return true;
 	default:
 		break;
 	}
-*/
 	return false;
 }
 
