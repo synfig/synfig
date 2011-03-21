@@ -101,8 +101,6 @@ Renderer_Ducks::render_vfunc(
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	cr->save();
@@ -441,22 +439,29 @@ Renderer_Ducks::render_vfunc(
 
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
+
+                cr->save();
+
 				layout->set_text(real_mag.get_string());
 
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_1);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+1+6,
-					round_to_int(point[1])+1-8,
-					layout
-				);
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_2);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+6,
-					round_to_int(point[1])-8,
-					layout
-				);
+                cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+                cr->move_to(
+                    point[0]+1+6,
+                    point[1]+1-8
+                    );
+                layout->show_in_cairo_context(cr);
+                cr->stroke();
+
+
+                cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+                cr->move_to(
+                    point[0]+6,
+                    point[1]-8
+                    );
+                layout->show_in_cairo_context(cr);
+                cr->stroke();
+
+                cr->restore();
 			}
 
 		}
