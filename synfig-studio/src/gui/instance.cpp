@@ -1025,7 +1025,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
 		///////////////// Interpolate
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
-		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolate"),
+		Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		before_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Interpolate"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1038,7 +1042,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Rounded
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
-		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Rounded"),
+		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		before_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Rounded"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1051,7 +1059,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Squared
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
-		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Squared"),
+		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		before_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Squared"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1064,7 +1076,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Peak
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
-		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Peak"),
+		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		before_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Peak"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1077,7 +1093,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Flat
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
-		before_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Flat"),
+		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		before_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Flat"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1094,7 +1114,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
 		///////////////// Interpolate
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
-		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolate"),
+		image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		after_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Interpolate"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1107,7 +1131,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Rounded
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
-		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Rounded"),
+		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		after_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Rounded"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1120,7 +1148,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Squared
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
-		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Squared"),
+		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		after_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Squared"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1133,7 +1165,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Peak
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
-		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Peak"),
+		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		after_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Peak"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
@@ -1146,7 +1182,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		///////////////// Flat
 		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
-		after_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Flat"),
+		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
+		after_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Flat"),
+				*image,
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),

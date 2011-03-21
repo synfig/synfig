@@ -58,6 +58,11 @@ EXTRA_DIST = \
 	action_remove_from_group_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
+	action_flat_interpolation_icon.sif \
+	action_interpolate_interpolation_icon.sif \
+	action_peak_interpolation_icon.sif \
+	action_rounded_interpolation_icon.sif \
+	action_squared_interpolation_icon.sif \
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -202,6 +207,11 @@ IMAGES = \
 	action_remove_from_group_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
+	action_flat_interpolation_icon.$(EXT) \
+	action_interpolate_interpolation_icon.$(EXT) \
+	action_peak_interpolation_icon.$(EXT) \
+	action_rounded_interpolation_icon.$(EXT) \
+	action_squared_interpolation_icon.$(EXT) \
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \

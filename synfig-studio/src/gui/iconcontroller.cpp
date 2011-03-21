@@ -280,6 +280,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));
+	INIT_STOCK_ICON(flat_interpolation,"action_flat_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Flat"));
+	INIT_STOCK_ICON(interpolate_interpolation,"action_interpolate_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Interpolate"));
+	INIT_STOCK_ICON(peak_interpolation,"action_peak_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Peak"));
+	INIT_STOCK_ICON(rounded_interpolation,"action_rounded_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Rounded"));
+	INIT_STOCK_ICON(squared_interpolation,"action_squared_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Squared"));
 
 	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position ducks"));
 	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex ducks"));
