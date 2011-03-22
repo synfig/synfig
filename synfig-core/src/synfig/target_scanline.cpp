@@ -279,9 +279,11 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, Render
 						return false;
 					}
 					*/
+					if(cb)cb->error(_("OpenGL rendering not supported"));
 					return false;
 					break;
 				case CAIRO:
+					if(cb)cb->error(_("Cairo rendering not supported"));
 					return false;
 					break;
 				}
