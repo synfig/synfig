@@ -325,20 +325,20 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 
 		//draw to drawing area
 		Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(drawto.get_window());
-        Cairo::RefPtr<Cairo::Context> cr = drawto.get_window()->create_cairo_context();
+		Cairo::RefPtr<Cairo::Context> cr = drawto.get_window()->create_cairo_context();
 
 		//synfig::warning("Nav: Scaling pixmap to off (%d,%d) with size (%d,%d)", offx,offy,nw, nh);
 		Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
 
-        cr->save();
+		cr->save();
 
 		//synfig::warning("Nav: Drawing scaled bitmap");
-        Gdk::Cairo::set_source_pixbuf(
-            cr, //cairo context
-            scalepx, //pixbuf
-            offx, offy //coordinates to place upper left corner of pixbuf
-            );
-        cr->paint();
+		Gdk::Cairo::set_source_pixbuf(
+			cr, //cairo context
+			scalepx, //pixbuf
+			offx, offy //coordinates to place upper left corner of pixbuf
+			);
+		cr->paint();
 
 		//draw fancy red rectangle around focus point
 		const Point &wtl = get_canvas_view()->work_area->get_window_tl(),
@@ -363,15 +363,15 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 		//synfig::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
 		//synfig::warning("Nav: Drawing Rectangle (%d,%d) with dim (%d,%d)", l,t,rw,rh);
 
-        cr->set_line_width(2.0);
-        cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-        cr->set_line_join(Cairo::LINE_JOIN_MITER);
-        cr->set_antialias(Cairo::ANTIALIAS_NONE);
-        cr->set_source_rgb(1,0,0);
-        cr->rectangle(l,t,rw,rh);
-        cr->stroke();
+		cr->set_line_width(2.0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+		cr->set_source_rgb(1,0,0);
+		cr->rectangle(l,t,rw,rh);
+		cr->stroke();
 
-        cr->restore();
+		cr->restore();
 	}
 
 	return false; //draw everything else too

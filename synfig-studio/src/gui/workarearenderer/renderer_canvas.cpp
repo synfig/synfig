@@ -139,14 +139,14 @@ Renderer_Canvas::render_vfunc(
 		{
 			if(tile_book[0].first)
 			{
-                cr->save();
-                Gdk::Cairo::set_source_pixbuf(
-                    cr, //cairo context
-                    tile_book[0].first, //pixbuf
-                    x, y //coordinates to place upper left corner of pixbuf
-                    );
-                cr->paint();
-                cr->restore();
+				cr->save();
+				Gdk::Cairo::set_source_pixbuf(
+					cr, //cairo context
+					tile_book[0].first, //pixbuf
+					x, y //coordinates to place upper left corner of pixbuf
+					);
+				cr->paint();
+				cr->restore();
 /*
 				drawable->draw_pixbuf(
 					gc, //GC
@@ -192,15 +192,14 @@ Renderer_Canvas::render_vfunc(
 						tx=u*tile_w;
 						ty=v*tile_w;
 
-
-                        cr->save();
-                        Gdk::Cairo::set_source_pixbuf(
-                            cr, //cairo context
-                            tile_book[index].first, //pixbuf
-                            x+tx, y+ty //coordinates to place upper left corner of pixbuf
-                            );
-                        cr->paint();
-                        cr->restore();
+						cr->save();
+						Gdk::Cairo::set_source_pixbuf(
+							cr, //cairo context
+							tile_book[index].first, //pixbuf
+							x+tx, y+ty //coordinates to place upper left corner of pixbuf
+							);
+						cr->paint();
+						cr->restore();
 /*
 
 						drawable->draw_pixbuf(
@@ -231,22 +230,22 @@ Renderer_Canvas::render_vfunc(
 
 	// Draw the border around the rendered region
 	{
-        cr->save();
+		cr->save();
 
-        cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-        cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
 
-        cr->set_line_width(1.0);
-        cr->set_source_rgb(0,0,0);
-        
-        cr->rectangle(
-            round_to_int(x), round_to_int(y),
-            w, h
-            );
+		cr->set_line_width(1.0);
+		cr->set_source_rgb(0,0,0);
+		
+		cr->rectangle(
+			round_to_int(x), round_to_int(y),
+			w, h
+			);
 
-        cr->stroke();
+		cr->stroke();
 
-        cr->restore();
+		cr->restore();
 	}
 }

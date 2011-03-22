@@ -2146,20 +2146,20 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 #else
 		// So let's do it in a more primitive fashion.
-        Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
-        cr->save();
+		Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
+		cr->save();
 
-        cr->set_source_rgb(1,0,0);
+		cr->set_source_rgb(1,0,0);
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
 
-        cr->rectangle(
-            0,0, // x,y
+		cr->rectangle(
+			0,0, // x,y
 			drawing_area->get_width(),drawing_area->get_height() //w,h
-            );
-        cr->stroke();
-        cr->restore();
+			);
+		cr->stroke();
+		cr->restore();
 #endif
 	}
 #ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE

@@ -573,14 +573,14 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		*/
 		//px->composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const
 
-        cr->save();
-        Gdk::Cairo::set_source_pixbuf(
-            cr, //cairo context
-            pxnew, //pixbuf
-            0, 0 //coordinates to place upper left corner of pixbuf
-            );
-        cr->paint();
-        cr->restore();
+		cr->save();
+		Gdk::Cairo::set_source_pixbuf(
+			cr, //cairo context
+			pxnew, //pixbuf
+			0, 0 //coordinates to place upper left corner of pixbuf
+			);
+		cr->paint();
+		cr->restore();
 
 		if(timedisp >= 0)
 		{
@@ -590,16 +590,16 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 																			App::get_time_format()));
 			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
 
-            cr->save();
+			cr->save();
 
 			layout->set_text(timecode);
 
-            cr->set_source_rgb(1,0,0);
-            cr->move_to(4,4);
-            layout->show_in_cairo_context(cr);
-            cr->stroke();
+			cr->set_source_rgb(1,0,0);
+			cr->move_to(4,4);
+			layout->show_in_cairo_context(cr);
+			cr->stroke();
 
-            cr->restore();
+			cr->restore();
 		}
 	}
 

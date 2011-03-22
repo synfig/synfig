@@ -440,28 +440,28 @@ Renderer_Ducks::render_vfunc(
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
 
-                cr->save();
+				cr->save();
 
 				layout->set_text(real_mag.get_string());
 
-                cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
-                cr->move_to(
-                    point[0]+1+6,
-                    point[1]+1-8
-                    );
-                layout->show_in_cairo_context(cr);
-                cr->stroke();
+				cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+				cr->move_to(
+					point[0]+1+6,
+					point[1]+1-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
 
 
-                cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
-                cr->move_to(
-                    point[0]+6,
-                    point[1]-8
-                    );
-                layout->show_in_cairo_context(cr);
-                cr->stroke();
+				cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+				cr->move_to(
+					point[0]+6,
+					point[1]-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
 
-                cr->restore();
+				cr->restore();
 			}
 
 		}

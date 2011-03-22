@@ -86,8 +86,8 @@ Renderer_Timecode::render_vfunc(
 		return;
 
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-    
-    Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	synfig::Time cur_time(canvas->get_time());
@@ -113,12 +113,12 @@ Renderer_Timecode::render_vfunc(
 			assert(0);
 		}
 
-        cr->save();
+		cr->save();
 
-        cr->set_source_rgb(95.0/255.0,0,0);
-        cr->move_to(4,4);
-        layout->show_in_cairo_context(cr);
+		cr->set_source_rgb(95.0/255.0,0,0);
+		cr->move_to(4,4);
+		layout->show_in_cairo_context(cr);
 
-        cr->restore();
+		cr->restore();
 	}
 }
