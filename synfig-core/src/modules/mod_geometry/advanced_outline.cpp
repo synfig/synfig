@@ -97,12 +97,12 @@ Advanced_Outline::Advanced_Outline()
 	vector<WidthPoint> wpoint_list;
 	wpoint_list.push_back(WidthPoint());
 	wpoint_list.push_back(WidthPoint());
-	wpoint_list[0].set_position(0.0);
-	wpoint_list[1].set_position(1.0);
-	wpoint_list[0].set_width(0.0);
+	wpoint_list[0].set_position(0.1);
+	wpoint_list[1].set_position(0.9);
+	wpoint_list[0].set_width(1.0);
 	wpoint_list[1].set_width(1.0);
-	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_ROUNDED);
-	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_ROUNDED);
+	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_INTERPOLATE);
+	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_INTERPOLATE);
 	wplist_=wpoint_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
