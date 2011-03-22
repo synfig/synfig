@@ -169,6 +169,7 @@ void display_help(bool full)
 		display_help_option("-c", "<canvas id>", _("Render the canvas with the given id instead of the root."));
 		display_help_option("-o", "<output file>", _("Specify output filename"));
 		display_help_option("-T", "<# of threads>", _("Enable multithreaded renderer using specified # of threads"));
+		display_help_option("-r", "<rendering method>", _("Render scene with the specified method - 0: Software (Default), 1: OpenGL, 2: Cairo"));
 		display_help_option("-b", NULL, _("Print Benchmarks"));
 		display_help_option("--fps", "<framerate>", _("Set the frame rate"));
 		display_help_option("--time", "<time>", _("Render a single frame at <seconds>"));
@@ -402,7 +403,7 @@ int process_global_flags(arg_list_t &arg_list)
 bool flag_requires_value(String flag)
 {
 	return (flag=="-a"			|| flag=="-c"			|| flag=="-g"			|| flag=="-h"			|| flag=="-o"			||
-			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
+			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-r"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
 			flag=="--time"		|| flag=="-vc"			|| flag=="-vb"			|| flag=="--sequence-separator");
@@ -584,6 +585,47 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 
 	return SYNFIGTOOL_OK;
 }
+
+int extract_render_method(arg_list_t &arg_list,RenderMethod &render_method)
+{
+	const char *methods[] = {"Software", "OpenGL","Cairo"};
+	arg_list_t::iterator iter, next;
+	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	{
+		if(*iter=="-r")
+		{
+			arg_list.erase(iter);
+			iter=next++;
+			int method = atoi(iter->c_str());
+
+			switch (method) {
+			case 0:
+				render_method = SOFTWARE;
+				VERBOSE_OUT(1)<<strprintf(_("Rendering method set to %s"),methods[method])<<endl;
+				break;
+			case 1:
+				render_method = OPENGL;
+				VERBOSE_OUT(1)<<strprintf(_("Rendering method set to %s"),methods[method])<<endl;
+				break;
+			case 2:
+				render_method = CAIRO;
+				VERBOSE_OUT(1)<<strprintf(_("Rendering method set to %s"),methods[method])<<endl;
+				break;
+			default:
+				method = 0;
+				render_method = SOFTWARE;
+				VERBOSE_OUT(1)<<strprintf(_("Unknown specified rendering method, using %s"), methods[method])<<endl;
+				break;
+			}
+			arg_list.erase(iter);
+		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
+	}
+
+	return SYNFIGTOOL_OK;
+}
+
 
 int extract_target(arg_list_t &arg_list,string &type)
 {
@@ -1049,6 +1091,7 @@ int main(int argc, char *argv[])
 			string target_name;
 			job_list.push_front(Job());
 			int threads=0;
+			RenderMethod render_method = SOFTWARE;
 
 			imageargs=defaults;
 			job_list.front().filename=arg_list.front();
@@ -1115,6 +1158,7 @@ int main(int argc, char *argv[])
 			extract_RendDesc(imageargs,job_list.front().canvas->rend_desc());
 			extract_target(imageargs,target_name);
 			extract_threads(imageargs,threads);
+			extract_render_method(imageargs,render_method);
 			job_list.front().quality=DEFAULT_QUALITY;
 			extract_quality(imageargs,job_list.front().quality);
 			VERBOSE_OUT(2)<<_("Quality set to ")<<job_list.front().quality<<endl;
@@ -1263,6 +1307,10 @@ int main(int argc, char *argv[])
 			// Set the threads for the target
 			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
 				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
+
+			// Set the rendering method for the target
+			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
+				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_render_method(render_method);
 
 			if(imageargs.size())
 			{
