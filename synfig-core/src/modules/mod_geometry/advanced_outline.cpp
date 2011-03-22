@@ -254,6 +254,11 @@ Advanced_Outline::sync()
 				// Update wplist iterators
 				witer=wnext;
 				wnext++;
+				// increase ipos so we do attempt to do the next interpolation segment.
+				// fix bad render when first widhtpoint is not interpolate after and
+				// next widhtpoint is interpolate before. Noticiable for the FLAT case
+				// or when the width is smaller than the step on the bezier.
+				ipos=ipos+step;
 				// If we are at the last widthpoint then end
 				if(wnext==wend)
 					break;
