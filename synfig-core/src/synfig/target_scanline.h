@@ -119,7 +119,7 @@ public:
 	int get_threads()const { return threads_; }
 	//! Puts the rendered surface onto the target.
 	bool add_frame(const synfig::Surface *surface);
-	bool add_frame(const unsigned char *data, const unsigned int width, const unsigned int height);
+	bool add_frame(const unsigned char *data, const unsigned int width, const unsigned int height, const unsigned int stride);
 
 private:
 	bool render_frame_(int quality, ProgressCallback *cb=0, RenderMethod=SOFTWARE);
