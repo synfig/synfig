@@ -397,6 +397,7 @@ public:
 	bool get_show_guides()const { return show_guides; }
 	void set_show_guides(bool x);
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
+	void toggle_guide_snap() { Duckmatic::toggle_guide_snap(); }
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
