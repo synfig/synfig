@@ -358,7 +358,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-			if (!render_frame_(quality, 0, method))
+			if (!render_frame_(quality, cb, method))
 				return false;
 		} while((i=next_frame(t)));
 	}
