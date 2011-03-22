@@ -494,7 +494,9 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 		}
 		else*/
 			// TODO: If target needs data in other way than RGBA, convert using another fragment shader (OpenGL)
-			memcpy(colordata, data + (stride * y), width);
+
+		memcpy(colordata, data + (stride * y), width * 4);
+		// ARGB is 4 channels x 8 bits
 
 		if(!end_scanline_rgba())
 		{
