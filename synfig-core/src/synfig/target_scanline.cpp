@@ -115,7 +115,7 @@ Target_Scanline::next_frame(Time& time)
 }
 
 bool
-synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
+synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, RenderMethod method)
 {
 	Context context;
 
@@ -147,7 +147,7 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
 				return false;
 		}
 	}
-	else // If quality is set otherwise, then we use the accelerated renderer
+	else // If quality is set otherwise, then we use the appropriate renderer
 	{
 		#if USE_PIXELRENDERING_LIMIT
 		if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
@@ -190,11 +190,21 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
 				if (cb)
 					sc = new SuperCallback(cb, i*rowheight, (i+1)*rowheight, totalheight);
 
-				if(!context.accelerated_render(&surface,quality,blockrd,sc))
+				if(method == SOFTWARE && !context.accelerated_render(&surface,quality,blockrd,sc))
 				{
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
 					return false;
-				}else
+				}
+				else if (method == OPENGL)
+				{
+					error(_("OpenGL rendering not supported"));
+					return false;
+				}
+				else if (method == CAIRO)
+				{
+					error(_("Cairo rendering not supported"));
+				}
+				else
 				{
 					int y;
 					int rowspan=sizeof(Color)*surface.get_w();
@@ -297,6 +307,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		t=0,
 		time_start,
 		time_end;
+	RenderMethod method = get_render_method();
 
 	assert(canvas);
 	curr_frame_=0;
@@ -345,7 +356,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-			if (!render_frame_(quality, 0))
+			if (!render_frame_(quality, 0, method))
 				return false;
 		} while((i=next_frame(t)));
 	}
@@ -355,7 +366,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
 
-		if (!render_frame_(quality, cb))
+		if (!render_frame_(quality, cb, method))
 			return false;
 	}
 

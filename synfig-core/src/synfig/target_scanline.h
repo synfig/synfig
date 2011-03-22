@@ -122,7 +122,7 @@ public:
 	bool add_frame(const unsigned char *data, const unsigned int width, const unsigned int height);
 
 private:
-	bool render_frame_(int quality, ProgressCallback *cb=0);
+	bool render_frame_(int quality, ProgressCallback *cb=0, RenderMethod=SOFTWARE);
 }; // END of class Target_Scanline
 
 }; // END of namespace synfig
