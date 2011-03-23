@@ -466,6 +466,13 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 		return false;
 	}
 
+    PixelFormat cairo_data_format = (PF_RGB | PF_A | PF_8BITS);
+    int cairo_pixel_size = 4;
+
+    int pixel_size = channels(target_format_);
+    if ( target_format_ && PF_16BITS) pixel_size *= 2;
+    if ( target_format_ && PF_32BITS) pixel_size *= 4;
+
 	for (unsigned int y = 0; y < height; y++)
 	{
 		unsigned char *colordata= start_scanline_rgba(y);
@@ -475,17 +482,30 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 			return false;
 		}
 
-		// TODO: Add a fragment shader to remove the alpha (OpenGL)
-		/*if(get_remove_alpha())
+		if ( target_format_ == cairo_data_format )
 		{
-			for(int i=0;i<surface->get_w();i++)
-				colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
+			// Same format as cairo data
+			memcpy(colordata, data + (stride * y), width * cairo_pixel_size);
 		}
-		else*/
-			// TODO: If target needs data in other way than RGBA, convert using another fragment shader (OpenGL)
+		else
+		{
+			// Cairo data format and target format are not the same
+			// Perform a (slow) color conversion
+			for (unsigned int x = 0; x < width; x++)
+			{
+				Color c;
+                PixelFormat2Color(c,
+                                  cairo_data_format,
+                                  data + y * stride + x * cairo_pixel_size
+                    );
 
-		memcpy(colordata, data + (stride * y), width * 4);
-		// ARGB is 4 channels x 8 bits
+				Color2PixelFormat(c,
+								  target_format_,
+								  colordata + x * pixel_size,
+								  gamma()
+					);
+			}
+		}
 
 		if(!end_scanline_rgba())
 		{
