@@ -97,7 +97,8 @@ Target::Target():
 	quality_(4),
 	gamma_(*default_gamma_),
 	remove_alpha(false),
-	avoid_time_sync_(false)
+	avoid_time_sync_(false),
+	render_method_(SOFTWARE)
 {
 }
 
