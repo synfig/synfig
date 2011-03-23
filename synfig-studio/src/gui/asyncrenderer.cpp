@@ -346,6 +346,19 @@ public:
 		return alive_flag;
 	}
 
+	virtual unsigned char* start_scanline_rgba(int /*scanline*/)
+	{
+		Glib::Mutex::Lock lock(mutex);
+
+		return NULL;
+	}
+
+	virtual bool end_scanline_rgba()
+	{
+		return alive_flag;
+	}
+
+
 	void frame_ready()
 	{
 		Glib::Mutex::Lock lock(mutex);

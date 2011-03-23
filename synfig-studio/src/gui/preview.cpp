@@ -128,6 +128,16 @@ public:
 
 	virtual bool end_scanline() {return true;}
 
+	virtual unsigned char* start_scanline_rgba(int /*scanline*/)
+	{
+		return NULL;
+	}
+
+	virtual bool end_scanline_rgba()
+	{
+		return true;
+	}
+
 	sigc::signal<void, const Preview_Target *>	&signal_frame_done() {return signal_frame_done_;}
 
 	const Surface &get_surface() const {return surface;}

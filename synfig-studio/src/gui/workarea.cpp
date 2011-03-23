@@ -539,6 +539,16 @@ public:
 		return true;
 	}
 
+	virtual unsigned char* start_scanline_rgba(int /*scanline*/)
+	{
+		return NULL;
+	}
+
+	virtual bool end_scanline_rgba()
+	{
+		return true;
+	}
+
 	static void free_buff(const guint8 *x) { free(const_cast<guint8*>(x)); }
 
 	virtual void end_frame()
