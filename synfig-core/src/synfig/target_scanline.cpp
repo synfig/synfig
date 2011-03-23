@@ -286,9 +286,19 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, Render
 				return false;
 				break;
 			case CAIRO:
-				Cairo::RefPtr< Cairo::ImageSurface > cr_surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, desc.get_w(), desc.get_h());
+				Cairo::RefPtr< Cairo::ImageSurface > cr_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, desc.get_w(), desc.get_h());
 
 				Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(cr_surface);
+
+				if (get_remove_alpha())
+				{
+					// If no alpha channel, draw a white background
+					cr->save();
+					cr->set_source_rgb(1,1,1);
+					cr->set_operator(Cairo::OPERATOR_SOURCE);
+					cr->paint();
+					cr->restore();
+				}
 
 				if(!context.cairo_render(cr,quality,desc,cb))
 				{
@@ -466,12 +476,12 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 		return false;
 	}
 
-    PixelFormat cairo_data_format = (PF_RGB | PF_A | PF_8BITS);
+    PixelFormat cairo_data_format = (PF_BGR | PF_A | PF_8BITS);
     int cairo_pixel_size = 4;
 
     int pixel_size = channels(target_format_);
-    if ( target_format_ && PF_16BITS) pixel_size *= 2;
-    if ( target_format_ && PF_32BITS) pixel_size *= 4;
+    //if ( target_format_ & PF_16BITS) pixel_size *= 2;
+    //if ( target_format_ & PF_32BITS) pixel_size *= 4;
 
 	for (unsigned int y = 0; y < height; y++)
 	{
@@ -482,7 +492,7 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 			return false;
 		}
 
-		if ( target_format_ == cairo_data_format )
+		if ( false && target_format_ == cairo_data_format )
 		{
 			// Same format as cairo data
 			memcpy(colordata, data + (stride * y), width * cairo_pixel_size);
@@ -498,7 +508,6 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
                                   cairo_data_format,
                                   data + y * stride + x * cairo_pixel_size
                     );
-
 				Color2PixelFormat(c,
 								  target_format_,
 								  colordata + x * pixel_size,

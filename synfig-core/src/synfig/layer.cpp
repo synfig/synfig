@@ -577,7 +577,7 @@ Layer::cairo_render(Context context,Cairo::RefPtr<Cairo::Context> cr,int quality
 	}
 
 	// Create a new cairo image surface
-	Cairo::RefPtr< Cairo::ImageSurface > img_surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, renddesc.get_w(), renddesc.get_h());
+	Cairo::RefPtr< Cairo::ImageSurface > img_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, renddesc.get_w(), renddesc.get_h());
 	int stride = img_surface->get_stride();
 
 	// Copy the rendered image onto the cairo surface
@@ -591,7 +591,7 @@ Layer::cairo_render(Context context,Cairo::RefPtr<Cairo::Context> cr,int quality
 		convert_color_format(
 			data+y*stride,surface[y],
 			renddesc.get_w(),
-			PF_RGB|PF_A,
+			PF_BGR|PF_A|PF_8BITS,
 			1.0/2.2 // Gamma \todo: use actual gamma
 			);
 	}
