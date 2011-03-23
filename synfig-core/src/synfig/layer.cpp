@@ -51,6 +51,8 @@
 #include "rect.h"
 #include "guid.h"
 
+#include <cairomm/cairomm.h>
+
 #include <sigc++/adaptors/bind.h>
 #endif
 
@@ -561,6 +563,47 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 
 	return render(context,target,desc,cb);
 	//return render_threaded(context,target,desc,cb,2);
+}
+
+bool
+Layer::cairo_render(Context context,Cairo::RefPtr<Cairo::Context> cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
+{
+	// Render the layer using the software renderer
+	Surface surface;
+	if(!accelerated_render(context,&surface,quality,renddesc,cb))
+	{
+		// For some reason, the accelerated renderer failed.
+		return false;
+	}
+
+	// Create a new cairo image surface
+	Cairo::RefPtr< Cairo::ImageSurface > img_surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, renddesc.get_w(), renddesc.get_h());
+	int stride = img_surface->get_stride();
+
+	// Copy the rendered image onto the cairo surface
+	img_surface->flush();
+	unsigned char *data = img_surface->get_data();
+
+	Surface::pen pen=surface.begin();
+
+	for(int y=0;y<renddesc.get_h();y++,pen.inc_y())
+    {
+		convert_color_format(
+			data+y*stride,surface[y],
+			renddesc.get_w(),
+			PF_RGB|PF_A,
+			1.0/2.2 // Gamma \todo: use actual gamma
+			);
+	}
+	img_surface->mark_dirty();
+
+	// Copy this surface onto our Cairo context
+	cr->save();
+	cr->set_source(img_surface, 0, 0);
+	cr->paint();
+	cr->restore();
+
+	return true;
 }
 
 String

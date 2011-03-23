@@ -36,6 +36,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Cairo {
+template <class T_CppObject >
+	class RefPtr;
+class Context;
+}
+
 namespace synfig {
 
 class Vector;
@@ -71,6 +77,8 @@ public:
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+
+	bool cairo_render(Cairo::RefPtr<Cairo::Context > cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Sets the context to the Time \time. It is done recursively.
    	void set_time(Time time)const;

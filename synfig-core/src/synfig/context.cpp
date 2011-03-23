@@ -40,6 +40,8 @@
 #include "renddesc.h"
 #include "valuenode.h"
 
+#include <cairomm/cairomm.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -313,6 +315,119 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		throw;
 	}
 }
+
+bool
+Context::cairo_render(Cairo::RefPtr<Cairo::Context > cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const
+{
+	const Rect bbox(renddesc.get_rect());
+
+	// this is going to be set to true if this layer contributes
+	// nothing, but it's a straight blend with non-zero amount, and so
+	// it has an effect anyway
+	bool straight_and_empty = false;
+	etl::handle<Layer_Composite> composite;
+	Context context(*this);
+
+	for(;!(context)->empty();++context)
+	{
+		// If we are not active then move on to next layer
+		if(!(*context)->active())
+			continue;
+
+		const Rect layer_bounds((*context)->get_bounding_rect());
+		composite = etl::handle<Layer_Composite>::cast_dynamic(*context);
+
+		// If the box area is less than zero or the boxes do not
+		// intersect then move on to next layer, unless the layer is
+		// using a straight blend and has a non-zero amount, in which
+		// case it will still affect the result
+		if(layer_bounds.area() <= 0.0000000000001 || !(layer_bounds && bbox))
+		{
+			if (composite &&
+				Color::is_straight(composite->get_blend_method()) &&
+				composite->get_amount() != 0.0f)
+			{
+				straight_and_empty = true;
+				break;
+			}
+			continue;
+		}
+
+		// If this layer has Straight as the blend method and amount
+		// is 1.0, and the layer doesn't depend on its context, then
+		// we don't want to render the context
+		if (composite &&
+			composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+			composite->get_amount() == 1.0f &&
+			!composite->reads_context())
+		{
+			Layer::Handle layer = *context;
+			while (!context->empty()) context++; // skip the context
+			return layer->cairo_render(context,cr,quality,renddesc, cb);
+		}
+
+		// Break out of the loop--we have found a good layer
+		break;
+	}
+
+	// If this layer isn't defined, return alpha
+	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
+	{
+/* \todo Cairo equivalent
+		surface->set_wh(renddesc.get_w(),renddesc.get_h());
+		surface->clear();
+*/
+		return true;
+	}
+
+	try {
+		RWLock::ReaderLock lock((*context)->get_rw_lock());
+
+	bool ret;
+
+	// this layer doesn't draw anything onto the canvas we're
+	// rendering, but it uses straight blending, so we need to render
+	// the stuff under us and then blit transparent pixels over it
+	// using the appropriate 'amount'
+	if (straight_and_empty)
+	{
+		if ((ret = Context((context+1)).cairo_render(cr,quality,renddesc,cb)))
+		{
+/* \todo Cairo equivalent
+			Surface clearsurface;
+			clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
+			clearsurface.clear();
+
+			Surface::alpha_pen apen(surface->begin());
+			apen.set_alpha(composite->get_amount());
+			apen.set_blend_method(composite->get_blend_method());
+
+			clearsurface.blit_to(apen);
+*/
+		}
+	}
+	else
+		ret = (*context)->cairo_render(context+1,cr,quality,renddesc, cb);
+
+	return ret;
+	}
+	catch(std::bad_alloc)
+	{
+		synfig::error("Context::cairo_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
+#ifdef _DEBUG
+		return false;
+#else  // _DEBUG
+		++context;
+		return context.cairo_render(cr, quality, renddesc, cb);
+#endif	// _DEBUG
+	}
+	catch(...)
+	{
+		synfig::error("Context::cairo_render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
+		throw;
+	}
+}
+
 
 void
 Context::set_time(Time time)const

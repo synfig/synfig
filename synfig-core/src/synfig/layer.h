@@ -147,6 +147,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Cairo {
+template <class T_CppObject >
+	class RefPtr;
+class Context;
+}
+
 namespace synfig {
 
 class Canvas;
@@ -518,6 +524,17 @@ public:
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
+	//! Renders the Canvas using the given Cairo context
+	/*!	\param context		Context iterator referring to next Layer.
+	**	\param cr			Pointer to the Cairo Context
+	**	\param quality		The requested quality-level to render at.
+	**	\param renddesc		The associated RendDesc.
+	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
+	**	\return \c true on success, \c false on failure
+	**	\see Context::accelerated_render()
+	*/
+	virtual bool cairo_render(Context context,Cairo::RefPtr<Cairo::Context> cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.

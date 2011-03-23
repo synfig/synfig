@@ -37,7 +37,6 @@
 #include "canvas.h"
 #include "context.h"
 
-#include <cairo.h>
 #include <cairomm/cairomm.h>
 
 #endif
@@ -250,73 +249,62 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, Render
 		}else //use normal rendering...
 		{
 		#endif
+
 			Surface surface;
 
-			if(!context.accelerated_render(&surface,quality,desc,cb))
+			switch (method)
 			{
-				// For some reason, the accelerated renderer failed.
-				if(cb)cb->error(_("Accelerated Renderer Failure"));
-				return false;
-			}
-			else
-			{
-				// If the method requires it, copy the generated image to the surface
-				switch (method) {
-				case SOFTWARE:
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(&surface))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-					break;
-				case OPENGL:
-					/*
-					const unsigned char *data; = (const unsigned char*)renderer_opengl().get_data(target_format_);
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(data, desc.get_w(), desc.get_h()))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-					*/
-					if(cb)cb->error(_("OpenGL rendering not supported"));
+			case SOFTWARE:
+				if(!context.accelerated_render(&surface,quality,desc,cb))
+				{
+					// For some reason, the accelerated renderer failed.
+					if(cb)cb->error(_("Accelerated Renderer Failure"));
 					return false;
-					break;
-				case CAIRO:
-					unsigned char *data = NULL;
-					int stride;
-					cairo_format_t data_format = CAIRO_FORMAT_RGB24;
-
-					stride = cairo_format_stride_for_width (data_format, desc.get_w());
-					data = (unsigned char*) malloc (stride * desc.get_h());
-
-					cairo_surface_t* cr_surface = cairo_image_surface_create_for_data(
-						data,
-						data_format,
-						desc.get_w(),
-						desc.get_h(),
-						stride
-						);
-
-					Cairo::Context cr(cairo_create(cr_surface));
-					cr.set_source_rgb(1,1,1);
-					cr.rectangle(0,0,10,10);
-					cr.fill();
-					
-					// Put the surface we renderer
-					// onto the target.
-						if(!add_frame(data, desc.get_w(), desc.get_h(), stride ))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-//					if(cb)cb->error(_("Cairo rendering not supported"));
-//					return false;
-					break;
 				}
+
+				// Put the surface we rendered onto the target.
+				if(!add_frame(&surface))
+				{
+					if(cb)cb->error(_("Unable to put surface on target"));
+					return false;
+				}
+
+				break;
+			case OPENGL:
+				/*
+				  const unsigned char *data; = (const unsigned char*)renderer_opengl().get_data(target_format_);
+				  // Put the surface we renderer
+				  // onto the target.
+				  if(!add_frame(data, desc.get_w(), desc.get_h()))
+				  {
+				  if(cb)cb->error(_("Unable to put surface on target"));
+				  return false;
+				  }
+				*/
+				if(cb)cb->error(_("OpenGL rendering not supported"));
+				return false;
+				break;
+			case CAIRO:
+				Cairo::RefPtr< Cairo::ImageSurface > cr_surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, desc.get_w(), desc.get_h());
+
+				Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(cr_surface);
+
+				if(!context.cairo_render(cr,quality,desc,cb))
+				{
+					// For some reason, the accelerated renderer failed.
+					if(cb)cb->error(_("Cairo Renderer Failure"));
+					return false;
+				}
+
+				// Put the surface we renderer
+				// onto the target.
+				cr_surface->flush();
+				if(!add_frame(cr_surface->get_data(), desc.get_w(), desc.get_h(), cr_surface->get_stride() ))
+				{
+					if(cb)cb->error(_("Unable to put surface on target"));
+					return false;
+				}
+				break;
 			}
 		#if USE_PIXELRENDERING_LIMIT
 		}
