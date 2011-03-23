@@ -204,7 +204,8 @@ synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb, Render
 				}
 				else if (method == CAIRO)
 				{
-					error(_("Cairo rendering not supported"));
+					error(_("Rendering split into blocks is not supported using Cairo"));
+					return false;
 				}
 				else
 				{
