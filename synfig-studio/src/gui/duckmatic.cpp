@@ -712,8 +712,8 @@ BezierDrag_Default::bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vect
 	synfig::Vector c1_offset(vect[0]*c1_ratio, vect[1]*c1_ratio);
 	synfig::Vector c2_offset(vect[0]*c2_ratio, vect[1]*c2_ratio);
 
-	duckmatic->get_selected_bezier()->c1->set_sub_trans_point(c1_initial+c1_offset, time);
-	duckmatic->get_selected_bezier()->c2->set_sub_trans_point(c2_initial+c2_offset, time);
+	duckmatic->get_selected_bezier()->c1->set_trans_point(c1_initial+c1_offset, time);
+	duckmatic->get_selected_bezier()->c2->set_trans_point(c2_initial+c2_offset, time);
 
 	last_translate_=vect;
 }
