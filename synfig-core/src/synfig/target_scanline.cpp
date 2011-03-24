@@ -503,15 +503,11 @@ Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, 
 			// Perform a (slow) color conversion
 			for (unsigned int x = 0; x < width; x++)
 			{
-				Color c;
-                PixelFormat2Color(c,
-                                  cairo_data_format,
-                                  data + y * stride + x * cairo_pixel_size
-                    );
-				Color2PixelFormat(c,
-								  target_format_,
-								  colordata + x * pixel_size,
-								  gamma()
+				convert_pixel_formats(
+					data + y * stride + x * cairo_pixel_size,
+					cairo_data_format,
+					colordata + x * pixel_size,
+					target_format_
 					);
 			}
 		}

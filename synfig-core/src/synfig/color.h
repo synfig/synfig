@@ -895,7 +895,105 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 	return out;
 }
 
+inline const unsigned char*
+convert_pixel_formats(const unsigned char *in, const PixelFormat &pf_in, unsigned char *out, const PixelFormat &pf_out)
+{
+	// Assume 8-bit color channels everwhere
+	unsigned char a,r,g,b;
+	if (FLAGS(pf_in,PF_ZA|PF_A_START|PF_Z_START))
+	{
+		if(FLAGS(pf_in,PF_Z_START))
+			in++;
+		if(FLAGS(pf_in,PF_A_START))
+			a=*in++;
+	}
+	else
+	{
+		if(FLAGS(pf_in,PF_A_START))
+			a=*in++;
+		if(FLAGS(pf_in,PF_Z_START))
+			*in++;
+	}
+	if(FLAGS(pf_in,PF_GRAY))
+		r=g=b=*in++;
+	else
+	{
+		if(FLAGS(pf_in,PF_BGR))
+		{
+			b = *in++;
+			g = *in++;
+			r = *in++;
+		}
+		else
+		{
+			r = *in++;
+			g = *in++;
+			b = *in++;
+		}
+	}
+	if(FLAGS(pf_in,PF_ZA))
+	{
+		if(!FLAGS(pf_in,PF_Z_START) && FLAGS(pf_in,PF_Z))
+			*in++;
+		if(!FLAGS(pf_in,PF_A_START) && FLAGS(pf_in,PF_A))
+			a = *in++;
+	}
+	else
+	{
+		if(!FLAGS(pf_in,PF_A_START) && FLAGS(pf_in,PF_A))
+			a = *in++;
+		if(!FLAGS(pf_in,PF_Z_START) && FLAGS(pf_in,PF_Z))
+			*in++;
+	}
 
+	//Write the new color format
+	if (FLAGS(pf_out,PF_ZA|PF_A_START|PF_Z_START))
+	{
+		if(FLAGS(pf_out,PF_Z_START))
+			out++;
+		if(FLAGS(pf_out,PF_A_START))
+			*out++=a;
+	}
+	else
+	{
+		if(FLAGS(pf_out,PF_A_START))
+			*out++=a;
+		if(FLAGS(pf_out,PF_Z_START))
+			*out++;
+	}
+	if(FLAGS(pf_out,PF_GRAY))
+		*out++=(r+g+b)/3; //verify
+	else
+	{
+		if(FLAGS(pf_out,PF_BGR))
+		{
+			*out++ = b;
+			*out++ = g;
+			*out++ = r;
+		}
+		else
+		{
+			*out++ = r;
+			*out++ = g;
+			*out++ = b;
+		}
+	}
+	if(FLAGS(pf_out,PF_ZA))
+	{
+		if(!FLAGS(pf_out,PF_Z_START) && FLAGS(pf_out,PF_Z))
+			*out++;
+		if(!FLAGS(pf_out,PF_A_START) && FLAGS(pf_out,PF_A))
+			*out++ = a;
+	}
+	else
+	{
+		if(!FLAGS(pf_out,PF_A_START) && FLAGS(pf_out,PF_A))
+			*out++ = a;
+		if(!FLAGS(pf_out,PF_Z_START) && FLAGS(pf_out,PF_Z))
+			*out++;
+	}
+	return out;
+}
 
 }; // END of namespace synfig
 
