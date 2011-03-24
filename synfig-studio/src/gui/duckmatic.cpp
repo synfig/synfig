@@ -287,6 +287,9 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 					ValueNode_BLineCalcVertex::Handle::cast_dynamic(
 						parent_value_node->get_link("point")))
 					return false;
+				// widths ducks of the widthpoints
+				if (parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT)
+					return false;
 			}
 			else if (ValueNode_BLine::Handle::cast_dynamic(parent_value_node))
 			{
@@ -296,6 +299,10 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 					ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))
 					return false;
 			}
+			// position ducks of the widthpoints
+			else if (ValueNode_WPList::Handle::cast_dynamic(parent_value_node))
+				return false;
+
 		}
 	}
 	return true;

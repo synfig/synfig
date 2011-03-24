@@ -207,6 +207,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_geometry_checkerboard,"layer_geometry_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle,"layer_geometry_circle_icon."IMAGE_EXT,_("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline,"layer_geometry_outline_icon."IMAGE_EXT,_("Outline Layer"));
+	INIT_STOCK_ICON(layer_geometry_advanced_outline,"layer_geometry_advanced_outline_icon."IMAGE_EXT,_("Advabced Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_polygon,"layer_geometry_polygon_icon."IMAGE_EXT,_("Polygon Layer"));
 	INIT_STOCK_ICON(layer_geometry_rectangle,"layer_geometry_rectangle_icon."IMAGE_EXT,_("Rectangle Layer"));
 	INIT_STOCK_ICON(layer_geometry_region,"layer_geometry_region_icon."IMAGE_EXT,_("Region Layer"));
@@ -279,6 +280,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));
+	INIT_STOCK_ICON(flat_interpolation,"action_flat_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Flat"));
+	INIT_STOCK_ICON(interpolate_interpolation,"action_interpolate_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Interpolate"));
+	INIT_STOCK_ICON(peak_interpolation,"action_peak_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Peak"));
+	INIT_STOCK_ICON(rounded_interpolation,"action_rounded_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Rounded"));
+	INIT_STOCK_ICON(squared_interpolation,"action_squared_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Squared"));
 
 	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position ducks"));
 	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex ducks"));
@@ -529,6 +535,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_geometry_circle");
 	else if(layer=="outline")
 		return Gtk::StockID("synfig-layer_geometry_outline");
+	else if(layer=="advanced_outline")
+		return Gtk::StockID("synfig-layer_geometry_advanced_outline");
 	else if(layer=="polygon")
 		return Gtk::StockID("synfig-layer_geometry_polygon");
 	else if(layer=="rectangle")

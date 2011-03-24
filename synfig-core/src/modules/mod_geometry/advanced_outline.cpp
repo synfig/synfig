@@ -73,9 +73,8 @@ Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, con
 
 Advanced_Outline::Advanced_Outline()
 {
-	round_tip_[0]=true;
-	round_tip_[1]=true;
 	sharp_cusps_=true;
+	start_tip_= end_tip_= WidthPoint::TYPE_ROUNDED;
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
@@ -173,17 +172,17 @@ Advanced_Outline::sync()
 				// if the first widthpoint interpolation before is INTERPOLATE and it is not exactly at 0.0
 				if(wpfront.get_side_type_before() == WidthPoint::TYPE_INTERPOLATE && wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
+					wplist.push_back(WidthPoint(0.0, wpfront.get_width() , start_tip_, WidthPoint::TYPE_INTERPOLATE));
 				// if last widhtpoint interpolation after is INTERPOLATE and it is not exactly at 1.0
 				if(wpback.get_side_type_after() == WidthPoint::TYPE_INTERPOLATE && wpback.get_norm_position()!=1.0)
 				// Add a fake withpoint at position 1.0
-					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
 			else
 			{
 				// If there are not widthpoints in list, just use the global width
-				wplist.push_back(WidthPoint(0.0, 1.0 , WidthPoint::TYPE_ROUNDED, WidthPoint::TYPE_INTERPOLATE));
-				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_ROUNDED));
+				wplist.push_back(WidthPoint(0.0, 1.0 , start_tip_, WidthPoint::TYPE_INTERPOLATE));
+				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
 		}
 		else // looped
@@ -283,7 +282,7 @@ Advanced_Outline::sync()
 				// Do cusp at ipos
 				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
 				if(bnext+1==bend && ipos == bnext_pos)
 					break;
@@ -302,7 +301,7 @@ Advanced_Outline::sync()
 						ww=0.0;
 					else
 						ww=wnext->get_width();
-					const Real w(width_*0.5*ww);
+					const Real w(expand_+width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					if(ipos <= bnext_pos)
@@ -313,7 +312,7 @@ Advanced_Outline::sync()
 					ipos=bnext_pos;
 					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -330,7 +329,7 @@ Advanced_Outline::sync()
 				//synfig::info("ipos=%f", ipos);
 				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const Real w(width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -361,9 +360,9 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		bline_=value;
 		return true;
 	}
-	IMPORT_AS(round_tip_[0],"round_tip[0]");
-	IMPORT_AS(round_tip_[1], "round_tip[1]");
 	IMPORT_AS(sharp_cusps_, "sharp_cusps");
+	IMPORT_AS(start_tip_, "start_tip");
+	IMPORT_AS(end_tip_, "end_tip");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
@@ -403,9 +402,9 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(bline_, "bline");
 	EXPORT_AS(expand_, "expand");
 	EXPORT_AS(smoothness_, "smoothness");
-	EXPORT_AS(round_tip_[0], "round_tip[0]");
-	EXPORT_AS(round_tip_[1], "round_tip[1]");
 	EXPORT_AS(sharp_cusps_, "sharp_cusps");
+	EXPORT_AS(start_tip_,"start_tip");
+	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
 	EXPORT_NAME();
@@ -436,17 +435,27 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Expand"))
 		.set_description(_("Value to add to the global width"))
 	);
+	ret.push_back(ParamDesc(ValueBase(),"start_tip")
+		.set_local_name(_("Tip Type at Start"))
+		.set_description(_("Defines the Tip type of the first bline point when bline is unlooped"))
+		.set_hint("enum")
+		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+	ret.push_back(ParamDesc(ValueBase(),"end_tip")
+		.set_local_name(_("Tip Type at End"))
+		.set_description(_("Defines the Tip type of the last bline point when bline is unlooped"))
+		.set_hint("enum")
+		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
 	ret.push_back(ParamDesc("sharp_cusps")
 		.set_local_name(_("Sharp Cusps"))
 		.set_description(_("Determines cusp type"))
-	);
-	ret.push_back(ParamDesc("round_tip[0]")
-		.set_local_name(_("Rounded Begin"))
-		.set_description(_("Round off the tip"))
-	);
-	ret.push_back(ParamDesc("round_tip[1]")
-		.set_local_name(_("Rounded End"))
-		.set_description(_("Round off the tip"))
 	);
 	ret.push_back(ParamDesc("smoothness")
 		.set_local_name(_("Smoothness"))
@@ -544,7 +553,7 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 void
 Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
 {
-	Real w(width_*0.5*wp.get_width());
+	Real w(expand_+width_*0.5*wp.get_width());
 	// Side Before
 	switch (wp.get_side_type_before())
 	{

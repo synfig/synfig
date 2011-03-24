@@ -36,7 +36,6 @@
 #include "general.h"
 #include "exception.h"
 #include "widthpoint.h"
-#include <ETL/hermite>
 #include <vector>
 #include <list>
 
@@ -95,9 +94,26 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 	return ValueBase(ret);
 }
 
+	//! synfig::widthpoint_interpolate
+	/*!
+	 * @param prev previous withpoint
+	 * @param next next withpoint
+	 * @param p position to calculate the new width between previous position and next position
+	 * @param smoothness [0,1] how much linear (0) or smooth (1) the interpolation is
+	 * @return the interpolated width
+	*/
 Real
 synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const Real smoothness)
 {
+	// Smoothness gives linear interpolation  between
+	// the result of the linear interpolation between the withpoints
+	// and the interpolation based on a 5th degree polynomial that matches
+	// following rules:
+	// q [0,1]
+	// p(0)= 0    p(1)= 1
+	// p'(0)= 0   p'(1)= 0
+	// p''(0)= 0  p''(1)= 0
+	// It is: p(q) = 6*q^5-15*q^4+10*q^3 = q*q*q*(10+q*(6*q-15)
 	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
 	int nsb, nsa, psb, psa;
 	Real pp, np;
@@ -130,13 +146,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 				q=0.5;
 			else
 				q=(p-pp)/(np-pp);
-			hermite<Vector> curve(
-			Vector(pp, pw),
-			Vector(np, nw),
-			Vector(0.0,0.0),
-			Vector(0.0,0.0)
-			);
-			rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+			rw=pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 		}
 		else if(p < pp)
 		{
@@ -169,13 +179,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 			if(np > p)
 				q=(p+1.0-pp)/(np+1.0-pp);
 		}
-		hermite<Vector> curve(
-		Vector(pp, pw),
-		Vector(np, nw),
-		Vector(0.0,0.0),
-		Vector(0.0,0.0)
-		);
-		rw=(pw+(nw-pw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+		rw=pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 	}
 	else
 	if(p > np && p < pp)
@@ -189,13 +193,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 			q=0.5;
 		else
 			q=(p-np)/(pp-np);
-		hermite<Vector> curve(
-		Vector(np, nw),
-		Vector(pp, pw),
-		Vector(0.0,0.0),
-		Vector(0.0,0.0)
-		);
-		rw=(nw+(pw-nw)*q)*(1.0-smoothness)+curve(q)[1]*smoothness;
+		rw=nw+(pw-nw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness);
 	}
 	return rw;
 }
