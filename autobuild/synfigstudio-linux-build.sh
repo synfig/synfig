@@ -49,7 +49,7 @@ RELEASE=1
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
-PACKAGES_BUILDROOT=/tmp/synfig-buildroot	# path of for build infrastructure
+PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
 MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
@@ -466,13 +466,12 @@ EOF
 	rm -rf $TBZPREFIX
 	
 	#== rpm ==
-	RPMREVISION=`echo $REVISION.$BREED | sed s/-/_/`
     cat > synfigstudio.spec << EOF
 %define __spec_install_post /bin/true
 
 Name:           synfigstudio
 Version:        ${VERSION}
-Release:        ${RPMREVISION}.${RELEASE}
+Release:        ${REVISION}.${BREED}.${RELEASE}
 Summary:        Film-Quality 2D Vector Animation package
 Group:          Applications/Graphics
 License:        GPL
@@ -572,10 +571,10 @@ $PREFIX
 EOF
     rpmbuild -bb synfigstudio.spec
     
-    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm ../
-    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm /packages/
+    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm ../
+    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm /packages/
     pushd /packages/
-    alien -k synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm
+    alien -k synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm
     rm -rf synfigstudio-${VERSION}
     popd
 }
@@ -673,7 +672,8 @@ initialize()
 			fi
 			VERSION=${VERSION%%-*}
 		fi
-		[[ $DEBUG == 1 ]] && BREED=${BREED}_debug
+		[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
+		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
 		REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 		echo
 		echo
