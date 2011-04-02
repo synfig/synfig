@@ -78,12 +78,14 @@ public:
 	virtual String link_local_name(int i)const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-	//! Inserts a new entry at index with time used for
-	//! \param position the position of the width point to be inserted
+	//! Inserts a new entry between the previous found
+	//! widthpoint and the one where the action was called
+	//! with an average width and a middle position.
+	//! \param index the index of the entry wher the action is done
 	//! \param time the time when inserted in animation mode
+	//! \param origin unused. Always is in the middle.
 	//! \return the new List Entry
-	virtual ListEntry create_list_entry(Real position, Time time=0);
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0);
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 	//! Finds a fully on width point at given time and after the given position
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated
