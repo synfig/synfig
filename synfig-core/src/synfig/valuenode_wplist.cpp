@@ -33,6 +33,7 @@
 #include "valuenode_wplist.h"
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
+#include "valuenode_bline.h"
 #include "general.h"
 #include "exception.h"
 #include "widthpoint.h"
@@ -388,8 +389,10 @@ synfig::WidthPoint
 ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time)const
 {
 	std::vector<ListEntry>::const_iterator iter;
-	Real prev_pos(-0.0);
+	Real prev_pos(-123456.0);
 	synfig::WidthPoint curr, prev_ret(prev_pos, 0.0);
+	if(!list.size())
+		return prev_ret;
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		curr=(*iter->value_node)(time).get(curr);
@@ -400,6 +403,20 @@ ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time)con
 			prev_pos=curr_pos;
 			prev_ret=curr;
 		}
+	}
+	if(prev_ret.get_position() == -123456.0)
+	// This means that no previous has been found.
+	// Let's consider if the bline is looped.
+	{
+		bool blineloop(ValueNode_BLine::Handle::cast_dynamic(get_bline())->get_loop());
+		if(blineloop)
+			prev_ret =find_prev_valid_entry_by_position(2.0, time);
+		else
+		{
+			prev_ret =find_next_valid_entry_by_position(-1.0, time);
+			prev_ret.set_position(0.0);
+		}
+
 	}
 	return prev_ret;
 }
