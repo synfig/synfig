@@ -225,7 +225,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 			(new_halves > 1 || new_halves < -1 ||
 			 old_halves > 1 || old_halves < -1))
 			synfig::info("rotation: %.2f turns", new_halves/2.0)*/;
-	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION)
+	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION || get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
 	{
 		set_point((x-get_sub_trans_origin())/get_scalar());
 
@@ -313,6 +313,7 @@ Duck::type_name(Type id)
 	if (id & TYPE_WIDTH	  ) { if (!ret.empty()) ret += ", "; ret += "width"   ; }
 	if (id & TYPE_ANGLE	  ) { if (!ret.empty()) ret += ", "; ret += "angle"   ; }
 	if (id & TYPE_VERTEX  ) { if (!ret.empty()) ret += ", "; ret += "vertex"  ; }
+	if (id & TYPE_WIDTHPOINT_POSITION  ) { if (!ret.empty()) ret += ", "; ret += "widthpoint position"  ; }
 
 	if (ret.empty())
 		ret = "none";

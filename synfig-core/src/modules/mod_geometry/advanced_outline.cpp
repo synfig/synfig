@@ -341,7 +341,7 @@ Advanced_Outline::sync()
 				continue;
 			}
 			// If we are exactly on the first blinepoint...
-			if((ipos==biter_pos)
+			if(ipos==biter_pos)
 			{
 				// ... do cusp at ipos
 				// notice that if we are in the second blinepoint

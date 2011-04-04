@@ -345,6 +345,8 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)
 			screen_duck.color=(DUCK_COLOR_ANGLE);
+		else if((*iter)->get_type()&Duck::TYPE_WIDTHPOINT_POSITION)
+			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else
 			screen_duck.color=DUCK_COLOR_OTHER;
 
