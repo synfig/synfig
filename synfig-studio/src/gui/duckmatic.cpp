@@ -1872,7 +1872,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				{
 					etl::handle<Duck> pduck=new Duck();
 					synfigapp::ValueDesc wpoint_value_desc(value_node, i); // The i-widthpoint on WPList
-					pduck->set_type(Duck::TYPE_POSITION);
+					pduck->set_type(Duck::TYPE_WIDTHPOINT_POSITION);
 					pduck->set_transform_stack(transform_stack);
 					pduck->set_name(guid_string(wpoint_value_desc));
 					pduck->set_value_desc(wpoint_value_desc);
