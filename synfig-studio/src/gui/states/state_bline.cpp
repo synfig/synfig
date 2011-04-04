@@ -251,10 +251,10 @@ StateBLine_Context::load_settings()
 		else
 			set_layer_region_flag(true);
 
-		if(settings.get_value("bline.layer_outline",value) && value=="0")
-			set_layer_outline_flag(false);
-		else
+		if(settings.get_value("bline.layer_outline",value) && value=="1")
 			set_layer_outline_flag(true);
+		else
+			set_layer_outline_flag(false);
 
 		if(settings.get_value("bline.layer_advanced_outline",value) && value=="0")
 			set_layer_advanced_outline_flag(false);

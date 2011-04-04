@@ -33,6 +33,7 @@
 #include "valuenode_wplist.h"
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
+#include "valuenode_bline.h"
 #include "general.h"
 #include "exception.h"
 #include "widthpoint.h"
@@ -248,27 +249,24 @@ ValueNode_WPList::create(const ValueBase &value)
 }
 
 ValueNode_WPList::ListEntry
-ValueNode_WPList::create_list_entry(Real position, Time time)
+ValueNode_WPList::create_list_entry(int index, Time time, Real /*origin*/)
 {
 	ValueNode_WPList::ListEntry ret;
-	WidthPoint wpoint(position, interpolated_width(position, time));
-	// as width points are unsorted in terms of position,
-	// we always insert the width point at the begining of the list
+	synfig::WidthPoint curr, prev, inserted;
+	//ValueNode_Composite::Handle vnh(ValueNode_Composite::Handle::cast_dynamic(list[index].value_node));
+	curr=(*(list[index].value_node))(time).get(curr);
+	Real curr_pos(curr.get_norm_position());
+	prev=find_prev_valid_entry_by_position(curr_pos, time);
+	Real prev_pos(prev.get_norm_position());
+	inserted.set_position((prev_pos+curr_pos)/2);
+	Real prev_width(prev.get_width());
+	Real curr_width(curr.get_width());
+	inserted.set_width((prev_width+curr_width)/2);
 	ret.index=0;
 	ret.set_parent_value_node(this);
-	// Note: before and after interpolations are INTERPOLATE by default.
-	// not need to set it up here.
-	ret.value_node=ValueNode_Composite::create(wpoint);
+	ret.value_node=ValueNode_Composite::create(inserted);
 	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
-}
-
-ValueNode_WPList::ListEntry
-ValueNode_WPList::create_list_entry(int /*index*/, Time /*time*/, Real /*origin*/)
-{
-	// Initially all the width points are created at 0.0
-	// TODO: take the decision on what to call on valuenodedynamiclistinsert action
-	return create_list_entry(0.0);
 }
 
 ValueBase
@@ -378,7 +376,7 @@ ValueNode_WPList::find_next_valid_entry_by_position(Real position, Time time)con
 		curr=(*iter->value_node)(time).get(curr);
 		Real curr_pos(curr.get_norm_position());
 		bool status((*iter).status_at_time(time));
-		if((curr_pos >= position) && (curr_pos <= next_pos) && status)
+		if((curr_pos > position) && (curr_pos < next_pos) && status)
 		{
 			next_pos=curr_pos;
 			next_ret=curr;
@@ -391,18 +389,34 @@ synfig::WidthPoint
 ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time)const
 {
 	std::vector<ListEntry>::const_iterator iter;
-	Real prev_pos(-0.0);
+	Real prev_pos(-123456.0);
 	synfig::WidthPoint curr, prev_ret(prev_pos, 0.0);
+	if(!list.size())
+		return prev_ret;
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		curr=(*iter->value_node)(time).get(curr);
 		Real curr_pos(curr.get_norm_position());
 		bool status((*iter).status_at_time(time));
-		if((curr_pos <= position) && (curr_pos >= prev_pos) && status)
+		if((curr_pos < position) && (curr_pos > prev_pos) && status)
 		{
 			prev_pos=curr_pos;
 			prev_ret=curr;
 		}
+	}
+	if(prev_ret.get_position() == -123456.0)
+	// This means that no previous has been found.
+	// Let's consider if the bline is looped.
+	{
+		bool blineloop(ValueNode_BLine::Handle::cast_dynamic(get_bline())->get_loop());
+		if(blineloop)
+			prev_ret =find_prev_valid_entry_by_position(2.0, time);
+		else
+		{
+			prev_ret =find_next_valid_entry_by_position(-1.0, time);
+			prev_ret.set_position(0.0);
+		}
+
 	}
 	return prev_ret;
 }

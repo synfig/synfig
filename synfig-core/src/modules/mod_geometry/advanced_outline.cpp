@@ -579,8 +579,6 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			}
 			side_a.push_back(curve(1.0));
 			side_b.push_back(curve(0.0));
-			side_a.push_back(vertex);
-			side_b.push_back(vertex);
 			break;
 		}
 		case WidthPoint::TYPE_SQUARED:
@@ -589,12 +587,10 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_a.push_back(vertex-tangent*w);
 			side_a.push_back(vertex+(tangent.perp()-tangent)*w);
 			side_a.push_back(vertex+tangent.perp()*w);
-			side_a.push_back(vertex);
 			side_b.push_back(vertex);
 			side_b.push_back(vertex-tangent*w);
 			side_b.push_back(vertex+(-tangent.perp()-tangent)*w);
 			side_b.push_back(vertex-tangent.perp()*w);
-			side_b.push_back(vertex);
 			break;
 		}
 		case WidthPoint::TYPE_PEAK:
@@ -602,11 +598,9 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 			side_a.push_back(vertex);
 			side_a.push_back(vertex-tangent*w);
 			side_a.push_back(vertex+tangent.perp()*w);
-			side_a.push_back(vertex);
 			side_b.push_back(vertex);
 			side_b.push_back(vertex-tangent*w);
 			side_b.push_back(vertex-tangent.perp()*w);
-			side_b.push_back(vertex);
 			break;
 		}
 		case WidthPoint::TYPE_FLAT:
