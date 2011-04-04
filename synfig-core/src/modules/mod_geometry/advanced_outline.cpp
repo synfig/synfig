@@ -59,7 +59,7 @@ using namespace etl;
 #define SPIKE_AMOUNT		(4)
 #define NO_LOOP_COOKIE		synfig::Vector(84951305,7836658)
 #define EPSILON				(0.000000001)
-#define CUSP_TANGENT_ADJUST	(0.0025)
+#define CUSP_TANGENT_ADJUST	(0.025)
 /* === G L O B A L S ======================================================= */
 SYNFIG_LAYER_INIT(Advanced_Outline);
 SYNFIG_LAYER_SET_NAME(Advanced_Outline,"advanced_outline");
@@ -129,9 +129,19 @@ Advanced_Outline::sync()
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
+		// biter: first blinepoint of the current bezier
+		// bnext: second blinepoint of the current bezier
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
+		// witer: current widthpoint in cosideration
+		// wnext: next widthpoint in consideration
 		vector<WidthPoint>::iterator witer, wnext;
+		// first tangent: used to remember the first tangent of the first bezier
+		// used to draw sharp cusp on the last step.
 		Vector first_tangent;
+		// Used to remember first tangent only once
+		bool first;
+		// last tangent: used to remember second tangent of the previous bezier
+		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		Real biter_pos(0.0), bnext_pos(bezier_size);
@@ -141,19 +151,18 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		// If we are looped, the first bezier to handle starts form the
 		// last blinepoint and ends at the first one
-		if(blineloop)
-			biter=--bline.end();
-		else
-			biter=bnext++;
 		// 				biter	bnext
 		//				----	----
 		// looped		nth		1st
 		// !looped		1st		2nd
-		// First tangent is used only to add the start of the bline tip
-		first_tangent=bline.front().get_tangent2();
-		// Last tangent is only to draw sharp cusps for the first blinepoint
+		if(blineloop)
+			biter=--bline.end();
+		else
+			biter=bnext++;
+		// Let's give to last tangent an initial value.
 		last_tangent=biter->get_tangent1();
-		// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
+		// if we are looped and drawing sharp cusps and the last tangent is zero,
+		// we'll need a value for the incoming tangent
 		if (blineloop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
 		{
 			hermite<Vector> curve((biter-1)->get_vertex(), biter->get_vertex(), (biter-1)->get_tangent2(), biter->get_tangent1());
@@ -223,21 +232,29 @@ Advanced_Outline::sync()
 			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
 		synfig::info("------");
 		////////////////////////////////////////////////////////////////
-
+		// TODO: step should be a function of the current situation
+		// i.e.: where in the bline, and where in wplist so we could go
+		// faster or slower when needed.
 		Real step(1.0/SAMPLES/bline_size);
+		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
+		// then the current widthpoint would be the last one if blinelooped
 		if(blineloop)
 			witer=--wplist.end();
 		else
+			// or the same as the first one if not blinelooped.
+			// This allows to make the first tip without need to take a decision
+			// in the code. Later they are separated and works as expected.
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
+		// Is this comparison needed? I think that it is always 0.0
 		Real ipos(blineloop?0.0:witer->get_norm_position());
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
 			bool split_flag(biter->get_split_tangent_flag());
-			// Setup the curve
+			// Setup the bezier curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
 				bnext->get_vertex(),
@@ -245,34 +262,74 @@ Advanced_Outline::sync()
 				next_t
 			);
 			const derivative< hermite<Vector> > deriv(curve);
+			// Remember the first tangent to use it on the last cusp
+			if(blineloop && first)
+			{
+				first_tangent=deriv(CUSP_TANGENT_ADJUST);
+				first=false;
+			}
+			// get the position of the next widhtpoint.
+			// remember that it is the first widthpoint the first time
+			// code passes here.
 			Real wnext_pos(wnext->get_norm_position());
+			// if we are exactly on the next widthpoint...
 			if(ipos==wnext_pos)
 			{
-				// Do tips
+				// .. Do tips. If withpoint is interpolate it doesn't do
+				// anything.
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(bezier_ipos).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
 				wnext++;
-				// increase ipos so we do attempt to do the next interpolation segment.
-				// fix bad render when first widhtpoint is not interpolate after and
-				// next widhtpoint is interpolate before. Noticiable for the FLAT case
-				// or when the width is smaller than the step on the bezier.
-				ipos=ipos+step;
-				// If we are at the last widthpoint then end
+				// If we are at the last widthpoint
 				if(wnext==wend)
+				{
+					// There is always a widthpoint at the end (and start)
+					// when it is blinelooped and interpolated on last blinepoint.
+					// ... let's make the last cusp...
+					if(blineloop && sharp_cusps_ && bnext->get_split_tangent_flag())
+					{
+						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					}
+					// ... and get out of the main loop.
 					break;
+				}
 				else
+				{
+					// In this case there are more width points waiting
+					// to be rendered. We need to increase ipos so we do
+					// attempt to do the next interpolation segment.
+					// It is needed to be EPSILON to produce good cusps
+					// for the last blinepoint. Bigger step bends the last
+					// cusp.
+					// This is because over a widthpoint the interpolation
+					// gives a width of exactly the width of the width
+					// point, but from the point of view of the next
+					// widthpoint in the list, if the current one has not
+					//  interpolate side after the interpolated width is zero.
+					// see synfig::interpolate_width
+					// This modification fixes bad render when first widht
+					// point is not interpolate after and next widhtpoint is
+					//  interpolate before. Noticiable for the FLAT case
+					// or when the width is smaller than the step on the bezier.
+					ipos=ipos+EPSILON;
+					// continue with the main loop
 					continue;
+				}
 			}
+			// if we are in the middle of two widthpoints with sides
+			// that doesn't produce interpolation, then jump to the
+			// next withpoint.
 			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
 				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
 			{
 				ipos=wnext_pos;
+				// we need to consider if we are jumping any bezier too
 				while(ipos > bnext_pos && bnext+1!=bend)
 				{
 					// keep track of last tangent
-					last_tangent=bnext->get_tangent1();
+					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					// Update iterators
 					biter=bnext;
 					bnext++;
@@ -280,28 +337,39 @@ Advanced_Outline::sync()
 					biter_pos = bnext_pos;
 					bnext_pos+=bezier_size;
 				}
+				// continue with the main loop
 				continue;
 			}
-			if((ipos==biter_pos || ipos==bnext_pos))
+			// If we are exactly on the first blinepoint...
+			if((ipos==biter_pos)
 			{
-				// Do cusp at ipos
-				if(ipos==biter_pos /*&& ipos!=0.0*/ && sharp_cusps_ && split_flag)
+				// ... do cusp at ipos
+				// notice that if we are in the second blinepoint
+				// for the last bezier, we will be over a widthpoint
+				// artificially inserted, so here we only insert cups
+				// for the intermediate blinepoints when looped
+				if(ipos==biter_pos && sharp_cusps_ && split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), iter_t, last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
-				if(bnext+1==bend && ipos == bnext_pos)
-					break;
 			}
-			do
+			do // secondary loop. For interpolation steps.
 			{
+				// If during the interpolation travel, we passed a
+				// widhpoint...
 				if(ipos > wnext_pos)
 				{
+					// ... just stay on it and ...
 					ipos=wnext_pos;
-					// Add interpolation for the last step
-					//synfig::info("ipos=%f", ipos);
-					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+					// ... add interpolation for the last step
+					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
+					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
+					const Vector d(deriv(q).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
 					Real ww;
+					// last step has width of zero if the widthpoint is not interpolate
+					// on the before side.
 					if(wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
 						ww=0.0;
 					else
@@ -309,13 +377,19 @@ Advanced_Outline::sync()
 					const Real w(expand_+width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
+					// if we haven't passed the position of the second blinepoint
+					// we don't want to step back due to the next checking with
+					// bnext_pos
 					if(ipos <= bnext_pos)
 						break;
 				}
 				if(ipos > bnext_pos)
 				{
 					ipos=bnext_pos;
-					const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
+					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
+					const Vector d(deriv(q).perp().norm());
 					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
 					const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
@@ -327,12 +401,14 @@ Advanced_Outline::sync()
 					biter_pos = bnext_pos;
 					bnext_pos+=bezier_size;
 					// remember last tangent value
-					last_tangent=next_t;
+					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					break;
 				}
 				// Add interpolation
-				//synfig::info("ipos=%f", ipos);
-				const Vector d(deriv(bline_to_bezier(ipos, biter_pos, bezier_size)).perp().norm());
+				Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
+				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
+				const Vector d(deriv(q).perp().norm());
 				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
 				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
@@ -341,6 +417,7 @@ Advanced_Outline::sync()
 			} while (1);
 		} while(1);
 
+		// if it is blinelooped, reverse sides and send them to polygon
 		if(blineloop)
 		{
 			reverse(side_b.begin(),side_b.end());
@@ -349,7 +426,7 @@ Advanced_Outline::sync()
 			return;
 		}
 
-		// concatenate sides before add to polygon
+		// else concatenate sides before add to polygon
 		for(;!side_b.empty();side_b.pop_back())
 			side_a.push_back(side_b.back());
 		add_polygon(side_a);
@@ -675,6 +752,9 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 void
 Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real w)
 {
+	static int counter=0;
+	counter++;
+	synfig::info("cusp number %d", counter);
 	const Vector t1(last.perp().norm());
 	const Vector t2(curr.perp().norm());
 	Real cross(t1*t2.perp());
