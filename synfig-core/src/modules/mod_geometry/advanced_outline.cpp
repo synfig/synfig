@@ -247,8 +247,7 @@ Advanced_Outline::sync()
 			// in the code. Later they are separated and works as expected.
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
-		// Is this comparison needed? I think that it is always 0.0
-		Real ipos(blineloop?0.0:witer->get_norm_position());
+		Real ipos(0.0);
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -321,8 +320,15 @@ Advanced_Outline::sync()
 			// if we are in the middle of two widthpoints with sides
 			// that doesn't produce interpolation, then jump to the
 			// next withpoint.
-			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
+			// or
+			// if are doing the first widthpoint of a non blinelooped outline
+			// then we need to jump to the first widthpoint
+			if(
+				(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
 				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+				||
+				(witer==wplist.begin() && wnext==wplist.begin())
+				)
 			{
 				ipos=wnext_pos;
 				// we need to consider if we are jumping any bezier too
