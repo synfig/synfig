@@ -53,13 +53,19 @@ private:
 	synfig::ValueBase wplist_;
 	WidthPoint::SideType start_tip_;
 	WidthPoint::SideType end_tip_;
-	bool sharp_cusps_;
+	int cusp_type_;
 	bool loop_;
 	synfig::Real width_;
 	synfig::Real expand_;
 	Real smoothness_;
 
 public:
+	enum CuspType
+	{
+		TYPE_SHARP     =0,
+		TYPE_ROUNDED   =1,
+		TYPE_BEVEL     =2
+	};
 
 	Advanced_Outline();
 	//! Updates the polygon data to match the parameters.
