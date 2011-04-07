@@ -73,7 +73,7 @@ Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, con
 
 Advanced_Outline::Advanced_Outline()
 {
-	sharp_cusps_=true;
+	cusp_type_=TYPE_SHARP;
 	start_tip_= end_tip_= WidthPoint::TYPE_ROUNDED;
 	width_=1.0f;
 	expand_=0;
@@ -163,7 +163,7 @@ Advanced_Outline::sync()
 		last_tangent=biter->get_tangent1();
 		// if we are looped and drawing sharp cusps and the last tangent is zero,
 		// we'll need a value for the incoming tangent
-		if (blineloop && sharp_cusps_ && last_tangent.is_equal_to(Vector::zero()))
+		if (blineloop && cusp_type_==TYPE_SHARP && last_tangent.is_equal_to(Vector::zero()))
 		{
 			hermite<Vector> curve((biter-1)->get_vertex(), biter->get_vertex(), (biter-1)->get_tangent2(), biter->get_tangent1());
 			const derivative< hermite<Vector> > deriv(curve);
@@ -247,8 +247,7 @@ Advanced_Outline::sync()
 			// in the code. Later they are separated and works as expected.
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
-		// Is this comparison needed? I think that it is always 0.0
-		Real ipos(blineloop?0.0:witer->get_norm_position());
+		Real ipos(0.0);
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -288,7 +287,7 @@ Advanced_Outline::sync()
 					// There is always a widthpoint at the end (and start)
 					// when it is blinelooped and interpolated on last blinepoint.
 					// ... let's make the last cusp...
-					if(blineloop && sharp_cusps_ && bnext->get_split_tangent_flag())
+					if(blineloop && cusp_type_==TYPE_SHARP && bnext->get_split_tangent_flag())
 					{
 						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					}
@@ -321,8 +320,15 @@ Advanced_Outline::sync()
 			// if we are in the middle of two widthpoints with sides
 			// that doesn't produce interpolation, then jump to the
 			// next withpoint.
-			if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
+			// or
+			// if are doing the first widthpoint of a non blinelooped outline
+			// then we need to jump to the first widthpoint
+			if(
+				(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
 				wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+				||
+				(witer==wplist.begin() && wnext==wplist.begin())
+				)
 			{
 				ipos=wnext_pos;
 				// we need to consider if we are jumping any bezier too
@@ -348,7 +354,7 @@ Advanced_Outline::sync()
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cups
 				// for the intermediate blinepoints when looped
-				if(ipos==biter_pos && sharp_cusps_ && split_flag)
+				if(ipos==biter_pos && cusp_type_==TYPE_SHARP && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
@@ -442,7 +448,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		bline_=value;
 		return true;
 	}
-	IMPORT_AS(sharp_cusps_, "sharp_cusps");
+	IMPORT_AS(cusp_type_, "cusp_type");
 	IMPORT_AS(start_tip_, "start_tip");
 	IMPORT_AS(end_tip_, "end_tip");
 	IMPORT_AS(width_,"width");
@@ -484,7 +490,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(bline_, "bline");
 	EXPORT_AS(expand_, "expand");
 	EXPORT_AS(smoothness_, "smoothness");
-	EXPORT_AS(sharp_cusps_, "sharp_cusps");
+	EXPORT_AS(cusp_type_, "cusp_type");
 	EXPORT_AS(start_tip_,"start_tip");
 	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
@@ -535,9 +541,13 @@ Advanced_Outline::get_param_vocab()const
 		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
 		);
-	ret.push_back(ParamDesc("sharp_cusps")
-		.set_local_name(_("Sharp Cusps"))
+	ret.push_back(ParamDesc("cusp_type")
+		.set_local_name(_("Cusps Type"))
 		.set_description(_("Determines cusp type"))
+		.set_hint("enum")
+		.add_enum_value(TYPE_SHARP,"sharp", _("Sharp"))
+		.add_enum_value(TYPE_ROUNDED,"rounded", _("Rounded"))
+		.add_enum_value(TYPE_BEVEL,"bevel", _("Bevel"))
 	);
 	ret.push_back(ParamDesc("smoothness")
 		.set_local_name(_("Smoothness"))

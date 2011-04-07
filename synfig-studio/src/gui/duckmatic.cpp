@@ -288,8 +288,9 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 						parent_value_node->get_link("point")))
 					return false;
 				// widths ducks of the widthpoints
-				if (parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT)
-					return false;
+				// Do not avoid selection of the width ducks from widthpoints
+				//if (parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT)
+				//	return false;
 			}
 			else if (ValueNode_BLine::Handle::cast_dynamic(parent_value_node))
 			{
