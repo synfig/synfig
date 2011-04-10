@@ -143,7 +143,7 @@ Renderer_Canvas::render_vfunc(
 				Gdk::Cairo::set_source_pixbuf(
 					cr, //cairo context
 					tile_book[0].first, //pixbuf
-					x, y //coordinates to place upper left corner of pixbuf
+					round_to_int(x), round_to_int(y) //coordinates to place upper left corner of pixbuf
 					);
 				cr->paint();
 				cr->restore();
@@ -196,7 +196,7 @@ Renderer_Canvas::render_vfunc(
 						Gdk::Cairo::set_source_pixbuf(
 							cr, //cairo context
 							tile_book[index].first, //pixbuf
-							x+tx, y+ty //coordinates to place upper left corner of pixbuf
+							round_to_int(x)+tx, round_to_int(y)+ty //coordinates to place upper left corner of pixbuf
 							);
 						cr->paint();
 						cr->restore();
