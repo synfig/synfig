@@ -1085,7 +1085,7 @@ init_ui_manager()
 	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
 	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
-	ACCEL("<Mod1>7",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
