@@ -248,6 +248,18 @@ Advanced_Outline::sync()
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		Real ipos(0.0);
+		// Fix bug of bad render of start (end) tip when the first
+		// (last) widthpoint has side type before (after) set to
+		// interpolate and it is at 0.0 (1.0). User expects the tip to
+		// have the same type of the layer's start (end) tip.
+		if(!blineloop)
+		{
+			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
+				wnext->set_side_type_before(start_tip_);
+			const vector<WidthPoint>::const_iterator last=--wplist.end();
+			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
+				wnext->set_side_type_after(end_tip_);
+		}
 		do
 		{
 			Vector iter_t(biter->get_tangent2());
