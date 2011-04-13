@@ -302,7 +302,7 @@ Advanced_Outline::sync()
 					// There is always a widthpoint at the end (and start)
 					// when it is blinelooped and interpolated on last blinepoint.
 					// ... let's make the last cusp...
-					if(blineloop && cusp_type_==TYPE_SHARP && bnext->get_split_tangent_flag())
+					if(blineloop && bnext->get_split_tangent_flag())
 					{
 						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					}
@@ -369,7 +369,7 @@ Advanced_Outline::sync()
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cups
 				// for the intermediate blinepoints when looped
-				if(ipos==biter_pos && cusp_type_==TYPE_SHARP && split_flag)
+				if(ipos==biter_pos && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
@@ -781,26 +781,100 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 	const Vector t2(curr.perp().norm());
 	Real cross(t1*t2.perp());
 	Real perp((t1-t2).mag());
-	if(cross>CUSP_THRESHOLD)
+	switch(cusp_type_)
 	{
-		const Point p1(vertex+t1*w);
-		const Point p2(vertex+t2*w);
-		side_a.push_back(line_intersection(p1,last,p2,curr));
-	}
-	else if(cross<-CUSP_THRESHOLD)
-	{
-		const Point p1(vertex-t1*w);
-		const Point p2(vertex-t2*w);
-		side_b.push_back(line_intersection(p1,last,p2,curr));
-	}
-	else if(cross>0 && perp>1)
-	{
-		float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-		side_a.push_back(vertex+(t1+t2).norm()*w*amount);
-	}
-	else if(cross<0 && perp>1)
-	{
-		float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-		side_b.push_back(vertex-(t1+t2).norm()*w*amount);
+	case TYPE_SHARP:
+		{
+			if(cross>CUSP_THRESHOLD)
+			{
+				const Point p1(vertex+t1*w);
+				const Point p2(vertex+t2*w);
+				side_a.push_back(line_intersection(p1,last,p2,curr));
+			}
+			else if(cross<-CUSP_THRESHOLD)
+			{
+				const Point p1(vertex-t1*w);
+				const Point p2(vertex-t2*w);
+				side_b.push_back(line_intersection(p1,last,p2,curr));
+			}
+			else if(cross>0 && perp>1)
+			{
+				float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+				side_a.push_back(vertex+(t1+t2).norm()*w*amount);
+			}
+			else if(cross<0 && perp>1)
+			{
+				float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+				side_b.push_back(vertex-(t1+t2).norm()*w*amount);
+			}
+			break;
+		}
+	case TYPE_ROUNDED:
+		{
+			if(cross > 0)
+			{
+				synfig::info("rounded and cross >0");
+				const Point p1(vertex+t1*w);
+				const Point p2(vertex+t2*w);
+				Angle::rad offset(t1.angle());
+				Angle::rad angle(t2.angle()-offset);
+				if(angle < Angle::rad(0) && offset > Angle::rad(0))
+				{
+					angle+=Angle::deg(360);
+					offset+=Angle::deg(360);
+				}
+				Real tangent(4 * ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get()));
+				hermite<Vector> curve(
+					p1,
+					p2,
+					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get()),
+					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get())
+				);
+				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
+				synfig::info("p1 %f, %f", p1[0], p1[1]);
+				synfig::info("p2 %f, %f", p2[0], p2[1]);
+				synfig::info("last %f, %f", last[0], last[1]);
+				synfig::info("curr %f, %f", curr[0], curr[1]);
+				synfig::info("angle %f", Angle::deg(angle).get());
+				synfig::info("offset %f", Angle::deg(offset).get());
+				synfig::info("tangent %f", tangent);
+				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
+					side_a.push_back(curve(n));
+			}
+			if(cross < 0)
+			{
+				synfig::info("rounded and cross <0");
+				const Point p1(vertex-t1*w);
+				const Point p2(vertex-t2*w);
+				Angle::rad offset(t2.angle());
+				Angle::rad angle(t1.angle()-offset);
+				if(angle < Angle::rad(0) && offset > Angle::rad(0))
+				{
+					angle+=Angle::deg(360);
+					offset+=Angle::deg(360);
+				}
+				Real tangent(4 * ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get()));
+				hermite<Vector> curve(
+					p1,
+					p2,
+					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get()),
+					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get())
+				);
+				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
+				synfig::info("p1 %f, %f", p1[0], p1[1]);
+				synfig::info("p2 %f, %f", p2[0], p2[1]);
+				synfig::info("last %f, %f", last[0], last[1]);
+				synfig::info("curr %f, %f", curr[0], curr[1]);
+				synfig::info("angle %f", Angle::deg(angle).get());
+				synfig::info("offset %f", Angle::deg(offset).get());
+				synfig::info("tangent %f", tangent);
+				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
+					side_b.push_back(curve(n));
+			}
+			break;
+		}
+	case TYPE_BEVEL:
+	default:
+		break;
 	}
 }
