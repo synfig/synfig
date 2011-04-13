@@ -3851,6 +3851,8 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	if(toggling_ducks_)
 		return;
 	toggling_ducks_=true;
+	if(type == Duck::TYPE_WIDTH)
+		type=type|Duck::TYPE_WIDTHPOINT_POSITION;
 	bool is_currently_on(work_area->get_type_mask()&type);
 
 	if(is_currently_on)
