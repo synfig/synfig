@@ -256,9 +256,9 @@ Advanced_Outline::sync()
 		{
 			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
 				wnext->set_side_type_before(start_tip_);
-			const vector<WidthPoint>::const_iterator last=--wplist.end();
+			vector<WidthPoint>::iterator last=--wplist.end();
 			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
-				wnext->set_side_type_after(end_tip_);
+				last->set_side_type_after(end_tip_);
 		}
 		do
 		{
