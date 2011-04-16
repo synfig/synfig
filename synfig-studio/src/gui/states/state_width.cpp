@@ -301,19 +301,8 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_duck_clicks(false);
 	// Hide all tangent, vertex and angle ducks and show the width and
 	// radius ducks
-	if(old_duckmask & Duck::TYPE_TANGENT)
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_TANGENT);
-	if(old_duckmask & Duck::TYPE_VERTEX)
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_VERTEX);
-	if(old_duckmask & Duck::TYPE_ANGLE)
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_ANGLE);
-	if(!(old_duckmask & Duck::TYPE_WIDTH))
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-	if(!(old_duckmask & Duck::TYPE_WIDTHPOINT_POSITION))
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTHPOINT_POSITION);
-	if(!(old_duckmask & Duck::TYPE_RADIUS))
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_RADIUS);
-	//get_work_area()->set_type_mask((old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+	get_work_area()->set_type_mask((old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
