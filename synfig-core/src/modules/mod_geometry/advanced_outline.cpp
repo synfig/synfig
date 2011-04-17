@@ -170,10 +170,10 @@ Advanced_Outline::sync()
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
 		///////////////////////////////////////////// Prepare the wplist
-		// if we have some widthpoint in the list
 		// If not looped
 		if(!blineloop)
 		{
+		// if we have some widthpoint in the list
 			if(wplist_size)
 			{
 				WidthPoint wpfront(wplist.front());
@@ -187,6 +187,7 @@ Advanced_Outline::sync()
 				// Add a fake withpoint at position 1.0
 					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
+			// don't have any widthpoint in the list
 			else
 			{
 				// If there are not widthpoints in list, just use the global width
@@ -238,12 +239,12 @@ Advanced_Outline::sync()
 		Real step(1.0/SAMPLES/bline_size);
 		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
-		// then the current widthpoint would be the last one if blinelooped
+		// then the current widthpoint would be the last one if blinelooped...
 		if(blineloop)
 			witer=--wplist.end();
 		else
-			// or the same as the first one if not blinelooped.
-			// This allows to make the first tip without need to take a decision
+			// ...or the same as the first one if not blinelooped.
+			// This allows to make the first tip without need to take any decision
 			// in the code. Later they are separated and works as expected.
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
@@ -260,7 +261,7 @@ Advanced_Outline::sync()
 			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(end_tip_);
 		}
-		do
+		do // Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
@@ -280,14 +281,13 @@ Advanced_Outline::sync()
 				first=false;
 			}
 			// get the position of the next widhtpoint.
-			// remember that it is the first widthpoint the first time
-			// code passes here.
+			// Remember that it is the first widthpoint the first time
+			// code passes by here.
 			Real wnext_pos(wnext->get_norm_position());
 			// if we are exactly on the next widthpoint...
 			if(ipos==wnext_pos)
 			{
-				// .. Do tips. If withpoint is interpolate it doesn't do
-				// anything.
+				// .. do tips. (If withpoint is interpolate it doesn't do anything).
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
@@ -367,7 +367,7 @@ Advanced_Outline::sync()
 				// ... do cusp at ipos
 				// notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
-				// artificially inserted, so here we only insert cups
+				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
 				if(ipos==biter_pos && split_flag)
 				{
