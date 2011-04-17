@@ -291,7 +291,7 @@ Advanced_Outline::sync()
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
+				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
