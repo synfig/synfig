@@ -144,7 +144,10 @@ Advanced_Outline::sync()
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
-		Real biter_pos(0.0), bnext_pos(bezier_size);
+		Real bindex(0.0);
+		Real biter_pos(bindex*bezier_size);
+		bindex++;
+		Real bnext_pos(bindex*bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
@@ -356,7 +359,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bnext_pos+=bezier_size;
+					bindex++;
+					bnext_pos=bindex*bezier_size;
 				}
 				// continue with the main loop
 				continue;
@@ -420,7 +424,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bnext_pos+=bezier_size;
+					bindex++;
+					bnext_pos=bindex*bezier_size;
 					// remember last tangent value
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					break;
