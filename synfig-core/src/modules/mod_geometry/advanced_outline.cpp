@@ -143,12 +143,18 @@ Advanced_Outline::sync()
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
+		// Bezier size is differnt depending on whether the bline is looped or not.
+		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
+		// bindex is used to calculate the bnext_pos (bilinepoint's position
+		// of the second bilinepoint of each bezier) properly
+		// *multiply by index is better than sum an index of times*
 		Real bindex(0.0);
 		Real biter_pos(bindex*bezier_size);
 		bindex++;
 		Real bnext_pos(bindex*bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
+		// side_a and side_b are the sides of the polygon
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
 		sort(wplist.begin(),wplist.end());
@@ -440,8 +446,8 @@ Advanced_Outline::sync()
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
-			} while (1);
-		} while(1);
+			} while (1); // secondary loop
+		} while(1); // main loop
 
 		// if it is blinelooped, reverse sides and send them to polygon
 		if(blineloop)
