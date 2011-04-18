@@ -388,7 +388,7 @@ Advanced_Outline::sync()
 			{
 				// If during the interpolation travel, we passed a
 				// widhpoint...
-				if(ipos > wnext_pos)
+				if(ipos > wnext_pos && bnext_pos >= wnext_pos)
 				{
 					// ... just stay on it and ...
 					ipos=wnext_pos;
@@ -411,10 +411,9 @@ Advanced_Outline::sync()
 					// if we haven't passed the position of the second blinepoint
 					// we don't want to step back due to the next checking with
 					// bnext_pos
-					if(ipos <= bnext_pos)
-						break;
+					break;
 				}
-				if(ipos > bnext_pos)
+				else if(ipos > bnext_pos && bnext_pos < wnext_pos)
 				{
 					ipos=bnext_pos;
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
