@@ -125,7 +125,8 @@ public:
 		DRAG_WINDOW,
 		DRAG_DUCK,
 		DRAG_GUIDE,
-		DRAG_BOX
+		DRAG_BOX,
+		DRAG_BEZIER
 	};
 
 	/*
