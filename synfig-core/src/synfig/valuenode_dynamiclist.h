@@ -89,6 +89,7 @@ public:
 	{
 		friend class ValueNode_DynamicList;
 		friend class ValueNode_BLine;
+		friend class ValueNode_WPList;
 	public:
 		typedef synfig::Activepoint Activepoint;
 

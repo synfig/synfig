@@ -425,8 +425,6 @@ private:
 
 	void refresh_rend_desc();
 
-	void toggle_duck_mask(Duckmatic::Type type);
-
 	Gtk::Widget *create_work_area();
 
 	Gtk::Widget *create_time_bar();
@@ -632,7 +630,7 @@ public:
 
 	void update_quality();
 
-
+	void toggle_duck_mask(Duckmatic::Type type);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

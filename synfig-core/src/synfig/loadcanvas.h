@@ -192,6 +192,8 @@ private:
 	Gradient parse_gradient(xmlpp::Element *node);
 	//! Bline Point Value Base Parsing Function
 	BLinePoint parse_bline_point(xmlpp::Element *node);
+	//! Width Point Value Base Parsing Function
+	WidthPoint parse_width_point(xmlpp::Element *node);
 
 	//! Keyframe Parsing Function
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);

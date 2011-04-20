@@ -37,6 +37,7 @@
 #include <ETL/handle>
 #include "general.h"
 #include "blinepoint.h"
+#include "widthpoint.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -60,6 +61,7 @@ class Time;
 class Segment;
 class Gradient;
 class BLinePoint;
+class WidthPoint;
 class Color;
 
 /*!	\class ValueBase
@@ -93,6 +95,7 @@ public:
 		TYPE_COLOR,			//!< Color (Real, Real, Real, Real)
 		TYPE_SEGMENT,		//!< Segment Point and Vector
 		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
+		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), Cup Type (int enum)
 
 		// All types after this point require construction/destruction
 
@@ -332,6 +335,7 @@ public:
 	static Type get_type(const Color&) { return TYPE_COLOR; }
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static Type get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(Canvas*) { return TYPE_CANVAS; }
@@ -361,6 +365,7 @@ public:
 
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
+	operator const WidthPoint&()const {  return get(WidthPoint()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }

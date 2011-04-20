@@ -78,6 +78,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_COLOR:		data=static_cast<void*>(new Color());				break;
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
+	case TYPE_WIDTHPOINT:	data=static_cast<void*>(new WidthPoint());			break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
@@ -119,6 +120,7 @@ ValueBase::get_string() const
 	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_WIDTHPOINT:	return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
 
 		// All types after this point require construction/destruction
 
@@ -237,6 +239,7 @@ ValueBase::clear()
 		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
 		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
+		case TYPE_WIDTHPOINT:	delete static_cast<WidthPoint*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
@@ -284,6 +287,8 @@ ValueBase::type_name(Type id)
 	case TYPE_SEGMENT:		return N_("segment");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BLINEPOINT:	return N_("bline_point");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_WIDTHPOINT:	return N_("width_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_LIST:			return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -337,6 +342,8 @@ ValueBase::ident_type(const String &str)
 	else if(str=="gradient")	return TYPE_GRADIENT;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
+	else if(str=="width_point" ||
+			str=="widthpoint")	return TYPE_WIDTHPOINT;
 
 	return TYPE_NIL;
 }
@@ -364,6 +371,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
+	case TYPE_WIDTHPOINT:
 	case TYPE_NIL:
 	default:				   return false;
 	}

@@ -815,6 +815,7 @@ init_ui_manager()
 	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Ducks"));
 	DEFINE_ACTION("mask-width-ducks", _("Show Width Ducks"));
 	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Ducks"));
+	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Ducks"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -918,6 +919,7 @@ init_ui_manager()
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -1085,6 +1087,7 @@ init_ui_manager()
 	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
 	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);

@@ -57,6 +57,7 @@
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
+#include "valuenode_wplist.h"
 
 #include "layer.h"
 #include "string.h"
@@ -805,6 +806,129 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 	return ret;
 }
 
+WidthPoint
+CanvasParser::parse_width_point(xmlpp::Element *element)
+{
+	assert(element->get_name()=="width_point");
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <width_point>");
+		return WidthPoint();
+	}
+
+	WidthPoint ret;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		// Position
+		if(child->get_name()=="position")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <position>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_position(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Width
+		if(child->get_name()=="width")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <width>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_width(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Side type before
+		if(child->get_name()=="side_before")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <side_before>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="integer")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"integer");
+				continue;
+			}
+
+			ret.set_side_type_before(parse_integer(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Side type after
+		if(child->get_name()=="side_after")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <side_after>");
+				continue;
+			}
+			if((*iter)->get_name()!="integer")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"integer");
+				continue;
+			}
+			ret.set_side_type_after(parse_integer(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+			error_unexpected_element(child,child->get_name());
+	}
+	return ret;
+}
+
+
 Angle
 CanvasParser::parse_angle(xmlpp::Element *element)
 {
@@ -930,6 +1054,9 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	}	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
+	else
+	if(element->get_name()=="width_point")
+		return parse_width_point(element);
 	else
 	if(element->get_name()=="canvas")
 	{
@@ -1423,7 +1550,9 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 handle<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
-	assert(element->get_name()=="dynamic_list" || element->get_name()=="bline");
+	assert(element->get_name()=="dynamic_list" ||
+		element->get_name()=="bline" ||
+		element->get_name()=="wplist");
 
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
 
@@ -1443,6 +1572,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	handle<ValueNode_DynamicList> value_node;
 	handle<ValueNode_BLine> bline_value_node;
+	handle<ValueNode_WPList> wplist_value_node;
 
 	if(element->get_name()=="bline")
 	{
@@ -1455,7 +1585,18 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 				bline_value_node->set_loop(false);
 		}
-
+	}
+	else if(element->get_name()=="wplist")
+	{
+		value_node=wplist_value_node=ValueNode_WPList::create();
+		if(element->get_attribute("loop"))
+		{
+			String loop=element->get_attribute("loop")->get_value();
+			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
+				wplist_value_node->set_loop(true);
+			else
+				wplist_value_node->set_loop(false);
+		}
 	}
 	else
 		value_node=ValueNode_DynamicList::create(type);
@@ -1676,6 +1817,9 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(element->get_name()=="bline") // This is not a typo. The dynamic list parser will parse a bline.
+		value_node=parse_dynamic_list(element,canvas);
+	else
+	if(element->get_name()=="wplist") // This is not a typo. The dynamic list parser will parse a wplist.
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(LinkableValueNode::book().count(element->get_name()))

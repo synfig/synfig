@@ -478,9 +478,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
-
+	// Hide all tangent and width ducks
 	old_duckmask=get_work_area()->get_type_mask();
-	get_work_area()->set_type_mask(Duck::TYPE_ALL-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+	get_work_area()->set_type_mask(old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -560,6 +561,7 @@ StateDraw_Context::~StateDraw_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->set_type_mask(old_duckmask);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	get_work_area()->reset_cursor();
 
