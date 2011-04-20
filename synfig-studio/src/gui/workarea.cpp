@@ -2189,8 +2189,6 @@ WorkArea::refresh(GdkEventExpose*event)
 	//const synfig::Vector::value_type window_starty(window_tl[1]);
 	//const synfig::Vector::value_type window_endy(window_br[1]);
 
-	Glib::RefPtr<Gdk::GC> gc=Gdk::GC::create(drawing_area->get_window());
-
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
@@ -2203,13 +2201,20 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 #else
 		// So let's do it in a more primitive fashion.
-		gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		drawing_area->get_window()->draw_rectangle(
-			gc,
-			false,	// Fill?
-			0,0,	// x,y
-			drawing_area->get_width()-1,drawing_area->get_height()-1); // w,h
+		Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
+		cr->save();
+
+		cr->set_source_rgb(1,0,0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->rectangle(
+			0,0, // x,y
+			drawing_area->get_width(),drawing_area->get_height() //w,h
+			);
+		cr->stroke();
+		cr->restore();
 #endif
 	}
 #ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE

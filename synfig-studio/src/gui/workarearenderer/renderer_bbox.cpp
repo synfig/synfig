@@ -104,9 +104,14 @@ Renderer_BBox::render_vfunc(
 		cr->set_line_width(1.0);
 		cr->set_source_rgb(1.0,1.0,1.0);
 
-		// OPERATOR_DIFFERENCE does not currently have a C++ wrapper
-		//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
+		// Operator difference was added in Cairo 1.9.4
+		// It currently isn't supported by Cairomm
+#if CAIRO_VERSION >= 10904
 		cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+#else
+		// Fallback: set color to black
+        cr->set_source_rgb(0,0,0);
+#endif
 
 		cr->rectangle(
 			tl[0],
