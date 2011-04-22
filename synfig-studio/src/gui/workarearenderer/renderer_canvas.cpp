@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -238,7 +239,7 @@ Renderer_Canvas::render_vfunc(
 
 		cr->set_line_width(1.0);
 		cr->set_source_rgb(0,0,0);
-		
+
 		cr->rectangle(
 			round_to_int(x), round_to_int(y),
 			w, h

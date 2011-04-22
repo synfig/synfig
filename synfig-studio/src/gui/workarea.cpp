@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2006 Yue Shi Lai
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -1428,7 +1429,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
 			{
 				if (selected_bezier
-					&& 0.005 < bezier_click_pos 
+					&& 0.005 < bezier_click_pos
 					&& bezier_click_pos < 0.995 )
 					// If we click a selected bezier
 					// not to close to the endpoints
