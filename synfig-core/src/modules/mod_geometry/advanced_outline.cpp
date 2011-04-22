@@ -143,9 +143,18 @@ Advanced_Outline::sync()
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
+		// Bezier size is differnt depending on whether the bline is looped or not.
+		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
-		Real biter_pos(0.0), bnext_pos(bezier_size);
+		// bindex is used to calculate the bnext_pos (bilinepoint's position
+		// of the second bilinepoint of each bezier) properly
+		// *multiply by index is better than sum an index of times*
+		Real bindex(0.0);
+		Real biter_pos(bindex*bezier_size);
+		bindex++;
+		Real bnext_pos(bindex*bezier_size);
 		const vector<BLinePoint>::const_iterator bend(bline.end());
+		// side_a and side_b are the sides of the polygon
 		vector<Point> side_a, side_b;
 		// Sort the wplist. It is needed to calculate the first widthpoint
 		sort(wplist.begin(),wplist.end());
@@ -170,10 +179,10 @@ Advanced_Outline::sync()
 			last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		}
 		///////////////////////////////////////////// Prepare the wplist
-		// if we have some widthpoint in the list
 		// If not looped
 		if(!blineloop)
 		{
+		// if we have some widthpoint in the list
 			if(wplist_size)
 			{
 				WidthPoint wpfront(wplist.front());
@@ -187,6 +196,7 @@ Advanced_Outline::sync()
 				// Add a fake withpoint at position 1.0
 					wplist.push_back(WidthPoint(1.0, wpback.get_width() , WidthPoint::TYPE_INTERPOLATE, end_tip_));
 			}
+			// don't have any widthpoint in the list
 			else
 			{
 				// If there are not widthpoints in list, just use the global width
@@ -238,17 +248,29 @@ Advanced_Outline::sync()
 		Real step(1.0/SAMPLES/bline_size);
 		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
-		// then the current widthpoint would be the last one if blinelooped
+		// then the current widthpoint would be the last one if blinelooped...
 		if(blineloop)
 			witer=--wplist.end();
 		else
-			// or the same as the first one if not blinelooped.
-			// This allows to make the first tip without need to take a decision
+			// ...or the same as the first one if not blinelooped.
+			// This allows to make the first tip without need to take any decision
 			// in the code. Later they are separated and works as expected.
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		Real ipos(0.0);
-		do
+		// Fix bug of bad render of start (end) tip when the first
+		// (last) widthpoint has side type before (after) set to
+		// interpolate and it is at 0.0 (1.0). User expects the tip to
+		// have the same type of the layer's start (end) tip.
+		if(!blineloop)
+		{
+			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
+				wnext->set_side_type_before(start_tip_);
+			vector<WidthPoint>::iterator last=--wplist.end();
+			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
+				last->set_side_type_after(end_tip_);
+		}
+		do // Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
@@ -268,18 +290,17 @@ Advanced_Outline::sync()
 				first=false;
 			}
 			// get the position of the next widhtpoint.
-			// remember that it is the first widthpoint the first time
-			// code passes here.
+			// Remember that it is the first widthpoint the first time
+			// code passes by here.
 			Real wnext_pos(wnext->get_norm_position());
 			// if we are exactly on the next widthpoint...
 			if(ipos==wnext_pos)
 			{
-				// .. Do tips. If withpoint is interpolate it doesn't do
-				// anything.
+				// .. do tips. (If withpoint is interpolate it doesn't do anything).
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
+				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -290,7 +311,7 @@ Advanced_Outline::sync()
 					// There is always a widthpoint at the end (and start)
 					// when it is blinelooped and interpolated on last blinepoint.
 					// ... let's make the last cusp...
-					if(blineloop && cusp_type_==TYPE_SHARP && bnext->get_split_tangent_flag())
+					if(blineloop && bnext->get_split_tangent_flag())
 					{
 						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					}
@@ -344,7 +365,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bnext_pos+=bezier_size;
+					bindex++;
+					bnext_pos=bindex*bezier_size;
 				}
 				// continue with the main loop
 				continue;
@@ -355,9 +377,9 @@ Advanced_Outline::sync()
 				// ... do cusp at ipos
 				// notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
-				// artificially inserted, so here we only insert cups
+				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
-				if(ipos==biter_pos && cusp_type_==TYPE_SHARP && split_flag)
+				if(ipos==biter_pos && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
@@ -366,7 +388,7 @@ Advanced_Outline::sync()
 			{
 				// If during the interpolation travel, we passed a
 				// widhpoint...
-				if(ipos > wnext_pos)
+				if(ipos > wnext_pos && bnext_pos >= wnext_pos)
 				{
 					// ... just stay on it and ...
 					ipos=wnext_pos;
@@ -389,10 +411,9 @@ Advanced_Outline::sync()
 					// if we haven't passed the position of the second blinepoint
 					// we don't want to step back due to the next checking with
 					// bnext_pos
-					if(ipos <= bnext_pos)
-						break;
+					break;
 				}
-				if(ipos > bnext_pos)
+				else if(ipos > bnext_pos && bnext_pos < wnext_pos)
 				{
 					ipos=bnext_pos;
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
@@ -408,7 +429,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bnext_pos+=bezier_size;
+					bindex++;
+					bnext_pos=bindex*bezier_size;
 					// remember last tangent value
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					break;
@@ -423,8 +445,8 @@ Advanced_Outline::sync()
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
-			} while (1);
-		} while(1);
+			} while (1); // secondary loop
+		} while(1); // main loop
 
 		// if it is blinelooped, reverse sides and send them to polygon
 		if(blineloop)
@@ -772,26 +794,100 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 	const Vector t2(curr.perp().norm());
 	Real cross(t1*t2.perp());
 	Real perp((t1-t2).mag());
-	if(cross>CUSP_THRESHOLD)
+	switch(cusp_type_)
 	{
-		const Point p1(vertex+t1*w);
-		const Point p2(vertex+t2*w);
-		side_a.push_back(line_intersection(p1,last,p2,curr));
-	}
-	else if(cross<-CUSP_THRESHOLD)
-	{
-		const Point p1(vertex-t1*w);
-		const Point p2(vertex-t2*w);
-		side_b.push_back(line_intersection(p1,last,p2,curr));
-	}
-	else if(cross>0 && perp>1)
-	{
-		float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-		side_a.push_back(vertex+(t1+t2).norm()*w*amount);
-	}
-	else if(cross<0 && perp>1)
-	{
-		float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-		side_b.push_back(vertex-(t1+t2).norm()*w*amount);
+	case TYPE_SHARP:
+		{
+			if(cross>CUSP_THRESHOLD)
+			{
+				const Point p1(vertex+t1*w);
+				const Point p2(vertex+t2*w);
+				side_a.push_back(line_intersection(p1,last,p2,curr));
+			}
+			else if(cross<-CUSP_THRESHOLD)
+			{
+				const Point p1(vertex-t1*w);
+				const Point p2(vertex-t2*w);
+				side_b.push_back(line_intersection(p1,last,p2,curr));
+			}
+			else if(cross>0 && perp>1)
+			{
+				float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+				side_a.push_back(vertex+(t1+t2).norm()*w*amount);
+			}
+			else if(cross<0 && perp>1)
+			{
+				float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
+				side_b.push_back(vertex-(t1+t2).norm()*w*amount);
+			}
+			break;
+		}
+	case TYPE_ROUNDED:
+		{
+			if(cross > 0)
+			{
+				synfig::info("rounded and cross >0");
+				const Point p1(vertex+t1*w);
+				const Point p2(vertex+t2*w);
+				Angle::rad offset(t1.angle());
+				Angle::rad angle(t2.angle()-offset);
+				if(angle < Angle::rad(0) && offset > Angle::rad(0))
+				{
+					angle+=Angle::deg(360);
+					offset+=Angle::deg(360);
+				}
+				Real tangent(4 * ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get()));
+				hermite<Vector> curve(
+					p1,
+					p2,
+					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get()),
+					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get())
+				);
+				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
+				synfig::info("p1 %f, %f", p1[0], p1[1]);
+				synfig::info("p2 %f, %f", p2[0], p2[1]);
+				synfig::info("last %f, %f", last[0], last[1]);
+				synfig::info("curr %f, %f", curr[0], curr[1]);
+				synfig::info("angle %f", Angle::deg(angle).get());
+				synfig::info("offset %f", Angle::deg(offset).get());
+				synfig::info("tangent %f", tangent);
+				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
+					side_a.push_back(curve(n));
+			}
+			if(cross < 0)
+			{
+				synfig::info("rounded and cross <0");
+				const Point p1(vertex-t1*w);
+				const Point p2(vertex-t2*w);
+				Angle::rad offset(t2.angle());
+				Angle::rad angle(t1.angle()-offset);
+				if(angle < Angle::rad(0) && offset > Angle::rad(0))
+				{
+					angle+=Angle::deg(360);
+					offset+=Angle::deg(360);
+				}
+				Real tangent(4 * ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get()));
+				hermite<Vector> curve(
+					p1,
+					p2,
+					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get()),
+					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get())
+				);
+				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
+				synfig::info("p1 %f, %f", p1[0], p1[1]);
+				synfig::info("p2 %f, %f", p2[0], p2[1]);
+				synfig::info("last %f, %f", last[0], last[1]);
+				synfig::info("curr %f, %f", curr[0], curr[1]);
+				synfig::info("angle %f", Angle::deg(angle).get());
+				synfig::info("offset %f", Angle::deg(offset).get());
+				synfig::info("tangent %f", tangent);
+				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
+					side_b.push_back(curve(n));
+			}
+			break;
+		}
+	case TYPE_BEVEL:
+	default:
+		break;
 	}
 }

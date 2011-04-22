@@ -200,51 +200,30 @@ Renderer_Guides::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	// const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
-	//std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
 
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
-	// Calculate the window coordinates of the top-left
-	// corner of the canvas.
-	// const synfig::Vector::value_type
-	// 	x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
-	// 	y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
-
-	/*const synfig::Vector::value_type window_startx(window_tl[0]);
-	const synfig::Vector::value_type window_endx(window_br[0]);
-	const synfig::Vector::value_type window_starty(window_tl[1]);
-	const synfig::Vector::value_type window_endy(window_br[1]);
-	*/
-	// const int
-	// 	tile_w(get_work_area()->get_tile_w()),
-	// 	tile_h(get_work_area()->get_tile_h());
-
-	// const int
-	// 	w(get_w()),
-	// 	h(get_h());
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-
-	//const synfig::Vector grid_size(get_grid_size());
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	// const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-	// const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
 	// Draw out the guides
 	{
-		gc->set_function(Gdk::COPY);
-		gc->set_rgb_fg_color(Gdk::Color("#9f9fff"));
-		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-
 		Duckmatic::GuideList::const_iterator iter;
+
+		cr->save();
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->set_line_width(1.0);
+		std::valarray<double> dashes(2);
+		dashes[0]=5.0;
+		dashes[1]=5.0;
+		cr->set_dash(dashes, 0);
 
 		// vertical
 		for(iter=get_guide_list_x().begin();iter!=get_guide_list_x().end();++iter)
@@ -252,16 +231,19 @@ Renderer_Guides::render_vfunc(
 			const float x((*iter-window_startx)/pw);
 
 			if(iter==get_work_area()->curr_guide)
-				gc->set_rgb_fg_color(Gdk::Color("#ff6f6f"));
+				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
-				gc->set_rgb_fg_color(Gdk::Color("#6f6fff"));
+				cr->set_source_rgb(111.0/255.0,111.0/255.0,1.0);
 
-			drawable->draw_line(gc,
-				round_to_int(x),
-				0,
-				round_to_int(x),
+			cr->move_to(
+				x,
+				0
+				);
+			cr->line_to(
+				x,
 				drawable_h
 			);
+			cr->stroke();
 		}
 		// horizontal
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
@@ -269,16 +251,21 @@ Renderer_Guides::render_vfunc(
 			const float y((*iter-window_starty)/ph);
 
 			if(iter==get_work_area()->curr_guide)
-				gc->set_rgb_fg_color(Gdk::Color("#ff6f6f"));
+				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
-				gc->set_rgb_fg_color(Gdk::Color("#6f6fff"));
+				cr->set_source_rgb(111.0/255.0,111.0/255.0,1.0);
 
-			drawable->draw_line(gc,
+			cr->move_to(
 				0,
-				round_to_int(y),
+				y
+				);
+			cr->line_to(
 				drawable_w,
-				round_to_int(y)
+				y
 			);
+			cr->stroke();
 		}
+
+		cr->restore();
 	}
 }

@@ -93,7 +93,7 @@ using namespace studio;
 
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
-	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH),
+	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION),
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),

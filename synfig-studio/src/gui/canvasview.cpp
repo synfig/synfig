@@ -1600,7 +1600,12 @@ CanvasView::init_menus()
 
 		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
 		action->set_active(work_area->get_show_guides());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_show_guides));
+
+		action = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
+		action->set_active(work_area->get_guide_snap());
 		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_guide_snap));
+
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
@@ -3851,6 +3856,8 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	if(toggling_ducks_)
 		return;
 	toggling_ducks_=true;
+	if(type & Duck::TYPE_WIDTH)
+		type=type|Duck::TYPE_WIDTHPOINT_POSITION;
 	bool is_currently_on(work_area->get_type_mask()&type);
 
 	if(is_currently_on)

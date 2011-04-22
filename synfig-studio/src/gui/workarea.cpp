@@ -1668,6 +1668,30 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging==DRAG_GUIDE)
 		{
+			double y,x;
+			if(event->button.axes)
+			{
+				x=(event->button.axes[0]);
+				y=(event->button.axes[1]);
+			}
+			else
+			{
+				x=event->button.x;
+				y=event->button.y;
+			}
+
+			// Erase the guides if dragged into the rulers
+			if(curr_guide_is_x && !isnan(x) && x<0.0 )
+			{
+				get_guide_list_x().erase(curr_guide);
+			}
+			else if(!curr_guide_is_x && !isnan(y) && y<0.0 )
+			{
+				get_guide_list_y().erase(curr_guide);
+			}
+
+			drawing_area->queue_draw();
+
 			dragging=DRAG_NONE;
 			save_meta_data();
 			return true;
@@ -1918,16 +1942,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 }
 
 bool
-WorkArea::on_hruler_event(GdkEvent */*event*/)
+WorkArea::on_hruler_event(GdkEvent *event)
 {
-/*
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
 		if(dragging==DRAG_NONE)
 		{
 			dragging=DRAG_GUIDE;
-			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin());
+			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
 			curr_guide_is_x=false;
 		}
 		return true;
@@ -1952,6 +1975,10 @@ WorkArea::on_hruler_event(GdkEvent */*event*/)
 			if(isnan(y) || isnan(x))
 				return false;
 
+			// Event is in the hruler, which has a slightly different
+			// coordinate system from the canvas.
+			y -= 2*hruler->property_max_size();
+
 			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[1];
 
 			queue_draw();
@@ -1963,44 +1990,72 @@ WorkArea::on_hruler_event(GdkEvent */*event*/)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
 			dragging=DRAG_NONE;
-			get_guide_list_y().erase(curr_guide);
+//			get_guide_list_y().erase(curr_guide);
 		}
 		break;
 		return true;
 	default:
 		break;
 	}
-*/
 	return false;
 }
 
 bool
-WorkArea::on_vruler_event(GdkEvent */*event*/)
+WorkArea::on_vruler_event(GdkEvent *event)
 {
-/*
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
 		if(dragging==DRAG_NONE)
 		{
 			dragging=DRAG_GUIDE;
-			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin());
+			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
 			curr_guide_is_x=true;
 		}
 		return true;
 		break;
+
+	case GDK_MOTION_NOTIFY:
+		// Guide movement
+		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
+		{
+			double y,x;
+			if(event->button.axes)
+			{
+				x=(event->button.axes[0]);
+				y=(event->button.axes[1]);
+			}
+			else
+			{
+				x=event->button.x;
+				y=event->button.y;
+			}
+
+			if(isnan(y) || isnan(x))
+				return false;
+
+			// Event is in the vruler, which has a slightly different
+			// coordinate system from the canvas.
+			x -= 2*vruler->property_max_size();
+
+			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[0];
+
+			queue_draw();
+		}
+		return true;
+		break;
+
 	case GDK_BUTTON_RELEASE:
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
 			dragging=DRAG_NONE;
-			get_guide_list_x().erase(curr_guide);
+//			get_guide_list_x().erase(curr_guide);
 		}
 		break;
 		return true;
 	default:
 		break;
 	}
-*/
 	return false;
 }
 
@@ -2193,8 +2248,6 @@ WorkArea::refresh(GdkEventExpose*event)
 	//const synfig::Vector::value_type window_starty(window_tl[1]);
 	//const synfig::Vector::value_type window_endy(window_br[1]);
 
-	Glib::RefPtr<Gdk::GC> gc=Gdk::GC::create(drawing_area->get_window());
-
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
@@ -2207,13 +2260,20 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 #else
 		// So let's do it in a more primitive fashion.
-		gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		drawing_area->get_window()->draw_rectangle(
-			gc,
-			false,	// Fill?
-			0,0,	// x,y
-			drawing_area->get_width()-1,drawing_area->get_height()-1); // w,h
+		Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
+		cr->save();
+
+		cr->set_source_rgb(1,0,0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->rectangle(
+			0,0, // x,y
+			drawing_area->get_width(),drawing_area->get_height() //w,h
+			);
+		cr->stroke();
+		cr->restore();
 #endif
 	}
 #ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE

@@ -1197,6 +1197,41 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			)
 		);
 		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Set Side After"), *after_menu));
+		///////
+		parammenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		/////// Set WIDTH to ZERO
+		param_list.erase("value_desc");
+		param_list.erase("new_value");
+		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
+		param_list.add("new_value", ValueBase(Real(0.0)));
+		parammenu.items().push_back(
+			Gtk::Menu_Helpers::MenuElem(
+				_("Set width to zero"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
+		/////// Set WIDTH to DEFAULT
+		param_list.erase("new_value");
+		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
+		param_list.add("new_value", ValueBase(Real(1.0)));
+		parammenu.items().push_back(
+			Gtk::Menu_Helpers::MenuElem(
+				_("Set width to default"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSet"
+				)
+			)
+		);
 	}
 }
 

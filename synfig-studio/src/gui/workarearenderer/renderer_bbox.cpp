@@ -75,53 +75,16 @@ Renderer_BBox::render_vfunc(
 	if(!get_work_area())
 		return;
 
-//	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
-//	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
-
-	// Calculate the window coordinates of the top-left
-	// corner of the canvas.
-//	const synfig::Vector::value_type
-//		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
-//		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
-
-	/*const synfig::Vector::value_type window_startx(window_tl[0]);
-	const synfig::Vector::value_type window_endx(window_br[0]);
-	const synfig::Vector::value_type window_starty(window_tl[1]);
-	const synfig::Vector::value_type window_endy(window_br[1]);
-	*/
-//	const int
-//		tile_w(get_work_area()->get_tile_w()),
-//		tile_h(get_work_area()->get_tile_h());
-
-//	const int
-//		w(get_w()),
-//		h(get_h());
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-
-	//const synfig::Vector grid_size(get_grid_size());
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-//	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-//	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
 	const synfig::Point curr_point(get_bbox().get_min());
 	const synfig::Point drag_point(get_bbox().get_max());
 	if(get_bbox().area()<10000000000000000.0)
 	{
-		gc->set_function(Gdk::INVERT);
-		gc->set_rgb_fg_color(Gdk::Color("#FFFFFF"));
-		//gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-
 		Point tl(std::min(drag_point[0],curr_point[0]),std::min(drag_point[1],curr_point[1]));
 		Point br(std::max(drag_point[0],curr_point[0]),std::max(drag_point[1],curr_point[1]));
 
@@ -134,11 +97,30 @@ Renderer_BBox::render_vfunc(
 		if(tl[1]>br[1])
 			swap(tl[1],br[1]);
 
-		drawable->draw_rectangle(gc,false,
-			round_to_int(tl[0]),
-			round_to_int(tl[1]),
-			round_to_int(br[0]-tl[0]),
-			round_to_int(br[1]-tl[1])
+		cr->save();
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+
+		cr->set_line_width(1.0);
+		cr->set_source_rgb(1.0,1.0,1.0);
+
+		// Operator difference was added in Cairo 1.9.4
+		// It currently isn't supported by Cairomm
+#if CAIRO_VERSION >= 10904
+		cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+#else
+		// Fallback: set color to black
+        cr->set_source_rgb(0,0,0);
+#endif
+
+		cr->rectangle(
+			tl[0],
+			tl[1],
+			br[0]-tl[0],
+			br[1]-tl[1]
 		);
+		cr->stroke();
+
+		cr->restore();
 	}
 }

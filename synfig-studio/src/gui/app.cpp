@@ -835,6 +835,7 @@ init_ui_manager()
 	DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
 	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
+	DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
 	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
 	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
 	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
@@ -953,6 +954,7 @@ init_ui_manager()
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
+"		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<separator name='bleh10'/>"

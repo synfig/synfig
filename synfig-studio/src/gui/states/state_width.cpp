@@ -51,6 +51,7 @@
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "docks/dialog_tooloptions.h"
+#include "widgets/widget_distance.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
 
@@ -85,7 +86,6 @@ class studio::StateWidth_Context : public sigc::trackable
 	CanvasView::IsWorking is_working;
 
 	//Point mouse_pos;
-
 	handle<Duck> center;
 	handle<Duck> radius;
 	handle<Duck> closestpoint;
@@ -112,8 +112,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	Gtk::Adjustment	adj_delta;
 	Gtk::SpinButton	spin_delta;
 
-	Gtk::Adjustment	adj_radius;
-	Gtk::SpinButton	spin_radius;
+	Widget_Distance *influence_radius;
 
 	Gtk::CheckButton check_relative;
 
@@ -124,8 +123,8 @@ public:
 	Real get_delta()const { return adj_delta.get_value(); }
 	void set_delta(Real f) { adj_delta.set_value(f); }
 
-	Real get_radius()const { return adj_radius.get_value(); }
-	void set_radius(Real f) { adj_radius.set_value(f); }
+	Real get_radius()const { return influence_radius->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc());}
+	void set_radius(Distance f) { influence_radius->set_value(f); }
 
 	bool get_relative() const { return check_relative.get_active(); }
 	void set_relative(bool r) { check_relative.set_active(r); }
@@ -187,9 +186,9 @@ StateWidth_Context::load_settings()
 			set_delta(6);
 
 		if(settings.get_value("width.radius",value))
-			set_radius(atof(value.c_str()));
+			set_radius(Distance(value.c_str()));
 		else
-			set_radius(15);
+			set_radius(Distance("60pt"));
 
 		//defaults to false
 		if(settings.get_value("width.relative",value) && value == "1")
@@ -210,7 +209,7 @@ StateWidth_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("width.delta",strprintf("%f",get_delta()));
-		settings.set_value("width.radius",strprintf("%f",get_radius()));
+		settings.set_value("width.radius",influence_radius->get_value().get_string());
 		settings.set_value("width.relative",get_relative()?"1":"0");
 	}
 	catch(...)
@@ -237,11 +236,14 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	adj_delta(6,0,20,0.01,0.1),
 	spin_delta(adj_delta,0.01,3),
 
-	adj_radius(200,0,1e50,1,10),
-	spin_radius(adj_radius,1,1),
-
 	check_relative(_("Relative Growth"))
 {
+	influence_radius=manage(new Widget_Distance());
+	influence_radius->show();
+	influence_radius->set_digits(0);
+	influence_radius->set_range(0,10000000);
+	influence_radius->set_size_request(24,-1);
+
 	load_settings();
 
 	// Set up the tool options dialog
@@ -250,36 +252,25 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	//expand stuff
 	options_table.attach(*manage(new Gtk::Label(_("Growth:"))),		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_delta,								1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 	options_table.attach(*manage(new Gtk::Label(_("Radius:"))),		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_radius,								1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
+	options_table.attach(*influence_radius,								1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(check_relative,							0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
-
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
-
-	// clear out the ducks
-	//get_work_area()->clear_ducks();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
-
 	//Create the new ducks
 	added = false;
-
 	if(!center)
 	{
 		center = new Duck();
 		center->set_name("p1");
 		center->set_type(Duck::TYPE_POSITION);
 	}
-
 	if(!radius)
 	{
 		radius = new Duck();
@@ -289,32 +280,20 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 		radius->set_name("radius");
 		radius->set_point(Point(1.0,0.0));
 	}
-
 	if(!closestpoint)
 	{
 		closestpoint = new Duck();
 		closestpoint->set_name("closest");
 		closestpoint->set_type(Duck::TYPE_POSITION);
 	}
-
 	//Disable duck clicking for the maximum coolness :)
 	get_work_area()->set_allow_duck_clicks(false);
 	// Hide all tangent, vertex and angle ducks and show the width and
 	// radius ducks
 	get_work_area()->set_type_mask((old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
-
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateWidth_Context::on_user_click));
 
 	App::toolbox->refresh();
 }
@@ -338,7 +317,6 @@ StateWidth_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 StateWidth_Context::~StateWidth_Context()
 {
 	save_settings();
-
 	//remove ducks if need be
 	if(added)
 	{
@@ -347,28 +325,17 @@ StateWidth_Context::~StateWidth_Context()
 		get_work_area()->erase_duck(closestpoint);
 		added = false;
 	}
-
 	// Restore Duck clicking
 	get_work_area()->set_allow_duck_clicks(prev_workarea_duck_clicking);
-
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_clicking);
-
 	// Restore the mouse pointer
 	get_work_area()->reset_cursor();
-
 	// Restore duck masking
 	get_work_area()->set_type_mask(old_duckmask);
-
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 	// Tool options be rid of ye!!
 	App::dialog_tool_options->clear();
-
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -378,7 +345,6 @@ StateWidth_Context::~StateWidth_Context()
 Smach::event_result
 StateWidth_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -569,27 +535,18 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		}
 		clocktime.reset();
 
-		//make way for new ducks
-		//get_work_area()->clear_ducks();
-
-		//update positions
-		//mouse_pos = event.pos;
-
 		center->set_point(event.pos);
 		if(!added)get_work_area()->add_duck(center);
 
 		radius->set_scalar(rad);
 		if(!added)get_work_area()->add_duck(radius);
-
 		//the other duck is at the current duck
 		closestpoint->set_point(event.pos);
 		if(!added)get_work_area()->add_duck(closestpoint);
-
 		//get the closest curve...
 		handle<Duckmatic::Bezier>	c;
 		if(event.pressure >= threshold)
 			c = get_work_area()->find_bezier(event.pos,scale*8,rad,&t);
-
 		//run algorithm on event.pos to get 2nd placement
 		if(!c.empty())
 		{
@@ -601,31 +558,22 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			curve[2] = c->c2->get_trans_point();
 			curve[3] = c->p2->get_trans_point();
 			curve.sync();
-
 			p = curve(t);
 			rsq = (p-event.pos).mag_squared();
-
 			const Real r = rad*rad;
-
 			if(rsq < r)
 			{
 				closestpoint->set_point(p);
-
 				//adjust the width...
 				//squared falloff for radius... [0,1]
-
 				Real ri = (r - rsq)/r;
 				AdjustWidth(c,t,ri*event.pressure*get_delta()*dtime,invert);
 			}
 		}
-
-
 		//the points have been added
 		added = true;
-
 		//draw where it is yo!
 		get_work_area()->queue_draw();
-
 		return Smach::RESULT_ACCEPT;
 	}
 
@@ -638,16 +586,13 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			get_work_area()->erase_duck(closestpoint);
 			added = false;
 		}
-
 		//Affect the width changes here...
 		map<handle<Duck>,Real>::iterator i = changetable.begin();
-
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width"));
 		for(; i != changetable.end(); ++i)
 		{
 			//for each duck modify IT!!!
 			ValueDesc desc = i->first->get_value_desc();
-
 			if(	desc.get_value_type() == ValueBase::TYPE_REAL )
 			{
 				Action::Handle action(Action::create("ValueDescSet"));
@@ -670,9 +615,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		}
 
 		changetable.clear();
-
 		get_work_area()->queue_draw();
-
 		return Smach::RESULT_ACCEPT;
 	}
 
