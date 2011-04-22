@@ -2,8 +2,11 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/Releases (synfig.org locked now but working in the future)
-http://www.synfig.com (new website in progress)
+http://synfig.org/en/news/releases
+
+ 0.04.14 (git tag: "ETL-0.04.14") - May ###, 2011 - Bug fixes.
+
+  * Correct code and enable tests for ETL "spline" and "value".
 
  0.04.13 (git tag: "ETL-0.04.13") - October 12, 2009 - Bug fixes.
 

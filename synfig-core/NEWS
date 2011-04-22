@@ -4,6 +4,15 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+ 0.63.00 (git tag: "synfig-0.63.00") - May #####, 2011 - Bug fixes, major features
+
+  * Fix bug #3111032: Load and save settings must be locale independent.
+  * Added missing descriptions for several parameters.
+  * Fix bug: Avoid negative precision to produce always good strings from angle.
+  * Use º instead of DEG.
+  * Added new descriptions for linkable value node parameters.
+  * New advanced outline layer. Slidable variable width support and other features
+
  0.62.02 (git tag: "synfig-0.62.02") - November 13, 2010- Bug fixes, features
 
   * Fix load and save palette feature.
