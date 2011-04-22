@@ -207,7 +207,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_geometry_checkerboard,"layer_geometry_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle,"layer_geometry_circle_icon."IMAGE_EXT,_("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline,"layer_geometry_outline_icon."IMAGE_EXT,_("Outline Layer"));
-	INIT_STOCK_ICON(layer_geometry_advanced_outline,"layer_geometry_advanced_outline_icon."IMAGE_EXT,_("Advabced Outline Layer"));
+	INIT_STOCK_ICON(layer_geometry_advanced_outline,"layer_geometry_advanced_outline_icon."IMAGE_EXT,_("Advanced Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_polygon,"layer_geometry_polygon_icon."IMAGE_EXT,_("Polygon Layer"));
 	INIT_STOCK_ICON(layer_geometry_rectangle,"layer_geometry_rectangle_icon."IMAGE_EXT,_("Rectangle Layer"));
 	INIT_STOCK_ICON(layer_geometry_region,"layer_geometry_region_icon."IMAGE_EXT,_("Region Layer"));
