@@ -13,7 +13,9 @@ http://synfig.org/en/news/releases
     value node parameters.
   * New cairo renderer for ducks, timecode, preview, navigator, grid and guides.
   * New beizer dragging system pulling from the bezier itself.
+  * Fix workarea guides usage.
   * New advanced outline layer. Slidable variable width support and other features
+  * Fix Width Tool adding influence radius feedback and duck influence position visibility
 
  0.62.02 (git tag: "synfigstudio-0.62.02") - November 13, 2010 - Features
 
