@@ -50,6 +50,7 @@ PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
+BUILDROOT_VERSION=1
 MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
@@ -61,21 +62,25 @@ OPENGL=0
 DEBUG=0
 BREED=
 
-LIBSIGCPP=2.0.17
+LIBSIGCPP=2.0.18
 GLEW=1.5.1
-CAIROMM=1.2.4
+CAIROMM=1.8.0
 IMAGEMAGICK=6.4.0
-#GTKMM=2.10.9
-GTKMM=2.8.12
+PANGOMM=2.24.0
+GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
 FTGL=2.1.2
 FREEGLUT=2.4.0
 GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
-#LIBXMLPP=2.14.0
-LIBXMLPP=2.20.0
-#LIBXMLPP=2.23.2
-GLIBMM=2.12.8
-#GLIBMM=2.18.1
+LIBXMLPP=2.22.0
+GLIBMM=2.18.2 #!!! >= 2.18.0
+
+GLIB=2.20.5
+GTK=2.16.6
+PIXMAN=0.12.0
+CAIRO=1.8.8
+PANGO=1.24.5
+
 GITVERSION=1.7.0   # git version for chroot environment
 
 SYNFIG_REPO_DIR=''
@@ -96,9 +101,9 @@ fi
 
 mklibsigcpp()
 {
-if [ ! -d ${PREFIX}/include/sigc++-2.0 ]; then
+if ! pkg-config sigc\+\+-2.0 --exact-version=${SIGCPP}  --print-errors; then
 	pushd /source
-	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2
+	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
 	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared 
@@ -109,9 +114,24 @@ if [ ! -d ${PREFIX}/include/sigc++-2.0 ]; then
 fi
 }
 
+mkglib()
+{
+if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
+	pushd /source
+	[ ! -d glib-${GLIB} ] && tar -xjf glib-${GLIB}.tar.bz2
+	cd glib-${GLIB}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS 
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkglibmm()
 {
-if [ ! -d ${PREFIX}/include/glibmm-2.4 ]; then
+if ! pkg-config glibmm-2.4 --exact-version=${GLIBMM}  --print-errors; then
 	pushd /source
 	[ ! -d glibmm-${GLIBMM} ] && tar -xjf glibmm-${GLIBMM}.tar.bz2
 	cd glibmm-${GLIBMM}
@@ -126,7 +146,7 @@ fi
 
 mklibxmlpp()
 {
-if [ ! -d ${PREFIX}/include/libxml++-2.6 ]; then
+if ! pkg-config libxml\+\+-2.6 --exact-version=${LIBXMLPP}  --print-errors; then
 	pushd /source
 	[ ! -d libxml++-${LIBXMLPP} ] && tar -xjf libxml++-${LIBXMLPP}.tar.bz2
 	cd libxml++-${LIBXMLPP}
@@ -141,7 +161,7 @@ fi
 
 mkimagemagick()
 {
-if [ ! -d ${PREFIX}/include/ImageMagick ]; then
+if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 	pushd /source
 	[ ! -d ImageMagick-${IMAGEMAGICK} ] && tar -xjf ImageMagick-${IMAGEMAGICK}-10.tar.bz2 && cd ImageMagick-${IMAGEMAGICK} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
 	cd ImageMagick-${IMAGEMAGICK}
@@ -191,9 +211,44 @@ mkglew()
 	popd
 }
 
+mkpixman()
+{
+if ! pkg-config pixman-1 --exact-version=${PIXMAN}  --print-errors; then
+	pushd /source
+	[ ! -d pixman-${PIXMAN} ] && tar -xzf pixman-${PIXMAN}.tar.gz
+	cd pixman-${PIXMAN}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS 
+	make install
+	cd ..
+fi
+}
+
+mkcairo()
+{
+if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
+	pushd /source
+	[ ! -d cairo-${CAIRO} ] && tar -xzf cairo-${CAIRO}.tar.gz
+	cd cairo-${CAIRO}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure \
+		--disable-static 	\
+		--enable-warnings 	\
+		--enable-xlib 		\
+		--enable-freetype 	\
+	    --enable-gobject    \
+		--disable-gtk-doc   \
+	    --enable-xcb
+	make -j$MAKE_THREADS 
+	make install
+	cd ..
+fi
+}
+
 mkcairomm()
 {
-if [ ! -d ${PREFIX}/include/cairomm-1.0 ]; then
+if ! pkg-config cairomm-1.0 --exact-version=${CAIROMM}  --print-errors; then
 	pushd /source
 	[ ! -d cairomm-${CAIROMM} ] && tar -xzf cairomm-${CAIROMM}.tar.gz
 	cd cairomm-${CAIROMM}
@@ -205,9 +260,54 @@ if [ ! -d ${PREFIX}/include/cairomm-1.0 ]; then
 fi
 }
 
+mkpango()
+{
+if ! pkg-config pango --exact-version=${PANGO}  --print-errors; then
+	pushd /source
+	[ ! -d pango-${PANGO} ] && tar -xjf pango-${PANGO}.tar.bz2
+	cd pango-${PANGO}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure  --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkpangomm()
+{
+if ! pkg-config pangomm-1.4 --exact-version=${PANGOMM}  --print-errors; then
+	pushd /source
+	[ ! -d pangomm-${PANGOMM} ] && tar -xjf pangomm-${PANGOMM}.tar.bz2
+	cd pangomm-${PANGOMM}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-docs
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkgtk()
+{
+if ! pkg-config gtk\+-2.0 --exact-version=${GTK}  --print-errors; then
+	pushd /source
+	[ ! -d gtk\+-${GTK} ] && tar -xjf gtk\+-${GTK}.tar.bz2
+	cd gtk\+-${GTK}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared --disable-examples --disable-demos --disable-docs
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkgtkmm()
 {
-if [ ! -d ${PREFIX}/include/gtkmm-2.4 ]; then
+if ! pkg-config gtkmm-2.4 --exact-version=${GTKMM}  --print-errors; then
 	pushd /source
 	[ ! -d gtkmm-${GTKMM} ] && tar -xjf gtkmm-${GTKMM}.tar.bz2
 	cd gtkmm-${GTKMM}
@@ -451,10 +551,12 @@ EOF
 	rm -rf $TBZPREFIX/lib/gdkmm-2.4
 	rm -rf $TBZPREFIX/lib/libxml++-2.6
 	rm -rf $TBZPREFIX/lib/glibmm-2.4
+	rm -rf $TBZPREFIX/lib/pangomm-1.4
 	rm -rf $TBZPREFIX/lib/gtkmm-2.4
 	rm -rf $TBZPREFIX/lib/pkgconfig
 	rm -rf $TBZPREFIX/lib/sigc++-2.0
 	rm -rf $TBZPREFIX/share/doc
+	rm -rf $TBZPREFIX/share/devhelp
 	rm -rf $TBZPREFIX/share/aclocal
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
@@ -539,9 +641,11 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/libxml++-2.6
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/glibmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gtkmm-2.4
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pangomm-1.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pkgconfig
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/sigc++-2.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/doc
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/devhelp
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/aclocal
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/ImageMagick-6.4.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
@@ -583,11 +687,29 @@ initialize()
 {
 	# Make sure we have all dependencies installed
 	echo "Checking dependencies..."
-	DEB_LIST_MINIMAL="build-essential autoconf automake libltdl3-dev libtool gettext cvs libpng12-dev libjpeg62-dev libfreetype6-dev libfontconfig1-dev libgtk2.0-dev libxml2-dev bzip2"
+	DEB_LIST_MINIMAL="\
+		build-essential \
+		autoconf automake \
+		libltdl3-dev \
+		libtool \
+		gettext \
+		cvs \
+		libpng12-dev \
+		libjpeg62-dev \
+		libfreetype6-dev \
+		libfontconfig1-dev \
+		libxml2-dev \
+		libtiff4-dev \
+		libjasper-dev \
+		x11proto-xext-dev libcups2-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev libxcb-render0-dev libxcb-render-util0-dev \
+		libatk1.0-dev \
+		bzip2"
 	if which yum >/dev/null; then
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
-			PKG_LIST="${PKG_LIST} debootstrap rsync"
+			PKG_LIST="${PKG_LIST} \
+				debootstrap \
+				rsync"
 		else
 			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
@@ -599,7 +721,7 @@ initialize()
 	elif which apt-get >/dev/null; then
 		PKG_LIST="git-core"
 		if [[ $MODE == 'package' ]]; then
-			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 				#we are inside of chroot
 				PKG_LIST="$DEB_LIST_MINIMAL rpm alien xsltproc wget python"
 			else
@@ -638,7 +760,7 @@ initialize()
 	
 	
 	
-	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		SYNFIG_REPO_DIR="/source/synfig.git"
 		PREFIX="/opt/synfig"
 		
@@ -702,9 +824,10 @@ initialize()
 		fi
 	fi
 	
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
+	#export PREFIX=/opt/synfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/local/lib/pkgconfig
 	export PATH=${PREFIX}/bin:$PATH
-	export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=${PREFIX}/lib:/usr/local/lib:$LD_LIBRARY_PATH
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
 }
 
@@ -723,13 +846,19 @@ mk()
 mkpackage()
 {
 	#check if we already in chroot
-	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		echo "We are in chroot now."
 		
 		echo "[user]"  > /root/.gitconfig
 		echo "email = packages@synfig.org"  >> /root/.gitconfig
 		echo "name = Synfig Packager" >> /root/.gitconfig
 		
+		#system libs
+		mkglib
+		mkpixman
+		mkcairo
+		mkpango
+		mkgtk
 		
 		
 		#synfig-core deps
@@ -740,8 +869,10 @@ mkpackage()
 			mkglew
 		fi
 		mkimagemagick
+		
 		#synfig-studio deps
 		mkcairomm
+		mkpangomm
 		mkgtkmm
 		if [[ $OPENGL == 1 ]]; then
 			mkfreeglut
@@ -764,11 +895,15 @@ mkpackage()
 		else
 			SETARCH='linux64'
 		fi
-		if ! [ -e $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id ]; then
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id` != "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/
+			fi
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
-		echo "Synfig Packages Buildroot" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
+		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
 		#keep proxy settings
 		if ! [ -z $http_proxy ]; then 
@@ -790,10 +925,18 @@ mkpackage()
 		cd synfig.git && git fetch && cd ..
 		[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
 		for FILE in \
-			cairomm-${CAIROMM}.tar.gz \
+			glib-${GLIB}.tar.bz2 \
+			pixman-${PIXMAN}.tar.gz \
+			cairo-${CAIRO}.tar.gz \
+			pango-${PANGO}.tar.bz2 \
+			gtk\+-${GTK}.tar.bz2 \
+			glib-${GLIB}.tar.bz2 \
 			glibmm-${GLIBMM}.tar.bz2 \
+			cairomm-${CAIROMM}.tar.gz \
+			pangomm-${PANGOMM}.tar.bz2 \
 			gtkmm-${GTKMM}.tar.bz2 \
 			libsigc++-${LIBSIGCPP}.tar.bz2 \
+			libsigc++-2.0_2.0.18-2.diff \
 			libxml++-${LIBXMLPP}.tar.bz2 \
 			ImageMagick-6.3.8-invalid-gerror-use.patch \
 			ImageMagick-${IMAGEMAGICK}-10.tar.bz2 \
