@@ -237,10 +237,10 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////////////////////////////////////////////////
 		//list the wplist
-		synfig::info("------");
-		for(witer=wplist.begin();witer!=wplist.end();witer++)
-			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		synfig::info("------");
+		//synfig::info("------");
+		//for(witer=wplist.begin();witer!=wplist.end();witer++)
+			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
+		//synfig::info("------");
 		////////////////////////////////////////////////////////////////
 		// TODO: step should be a function of the current situation
 		// i.e.: where in the bline, and where in wplist so we could go
@@ -590,7 +590,7 @@ Advanced_Outline::get_param_vocab()const
 bool
 Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
 {
-	synfig::info("attempting to connect %s", param.c_str());
+	//synfig::info("attempting to connect %s", param.c_str());
 	if(param=="bline")
 	{
 		if(!connect_bline_to_wplist(x))
@@ -649,7 +649,7 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	if(!wplist->link_count())
 		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
 	wplist->set_bline(ValueNode::Handle(x));
-	synfig::info("set bline success");
+	//synfig::info("set bline success");
 	return true;
 }
 
@@ -823,7 +823,6 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 		{
 			if(cross > 0)
 			{
-				synfig::info("rounded and cross >0");
 				const Point p1(vertex+t1*w);
 				const Point p2(vertex+t2*w);
 				Angle::rad offset(t1.angle());
@@ -840,20 +839,11 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get()),
 					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get())
 				);
-				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
-				synfig::info("p1 %f, %f", p1[0], p1[1]);
-				synfig::info("p2 %f, %f", p2[0], p2[1]);
-				synfig::info("last %f, %f", last[0], last[1]);
-				synfig::info("curr %f, %f", curr[0], curr[1]);
-				synfig::info("angle %f", Angle::deg(angle).get());
-				synfig::info("offset %f", Angle::deg(offset).get());
-				synfig::info("tangent %f", tangent);
 				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
 					side_a.push_back(curve(n));
 			}
 			if(cross < 0)
 			{
-				synfig::info("rounded and cross <0");
 				const Point p1(vertex-t1*w);
 				const Point p2(vertex-t2*w);
 				Angle::rad offset(t2.angle());
@@ -870,14 +860,6 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 					Point(-tangent*w*Angle::sin(angle*1+offset).get(),tangent*w*Angle::cos(angle*1+offset).get()),
 					Point(-tangent*w*Angle::sin(angle*0+offset).get(),tangent*w*Angle::cos(angle*0+offset).get())
 				);
-				synfig::info("vertex %f, %f", vertex[0], vertex[1]);
-				synfig::info("p1 %f, %f", p1[0], p1[1]);
-				synfig::info("p2 %f, %f", p2[0], p2[1]);
-				synfig::info("last %f, %f", last[0], last[1]);
-				synfig::info("curr %f, %f", curr[0], curr[1]);
-				synfig::info("angle %f", Angle::deg(angle).get());
-				synfig::info("offset %f", Angle::deg(offset).get());
-				synfig::info("tangent %f", tangent);
 				for(float n=0.0f;n<0.999999f;n+=4.0f/SAMPLES)
 					side_b.push_back(curve(n));
 			}
