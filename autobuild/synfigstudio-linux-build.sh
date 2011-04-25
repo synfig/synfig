@@ -45,12 +45,12 @@
 # = TODO =
 # - debuginfo packages
 
-RELEASE=1
+RELEASE=2
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
-BUILDROOT_VERSION=1
+BUILDROOT_VERSION=2
 MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
@@ -238,8 +238,7 @@ if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
 		--enable-xlib 		\
 		--enable-freetype 	\
 	    --enable-gobject    \
-		--disable-gtk-doc   \
-	    --enable-xcb
+		--disable-gtk-doc
 	make -j$MAKE_THREADS 
 	make install
 	cd ..
@@ -701,7 +700,7 @@ initialize()
 		libxml2-dev \
 		libtiff4-dev \
 		libjasper-dev \
-		x11proto-xext-dev libcups2-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev libxcb-render0-dev libxcb-render-util0-dev \
+		x11proto-xext-dev libcups2-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
 		bzip2"
 	if which yum >/dev/null; then
