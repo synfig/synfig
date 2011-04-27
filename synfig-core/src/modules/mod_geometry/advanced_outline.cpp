@@ -787,6 +787,9 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 void
 Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real w)
 {
+	static int counter=0;
+	counter++;
+	synfig::info("cusp number %d", counter);
 	const Vector t1(last.perp().norm());
 	const Vector t2(curr.perp().norm());
 	Real cross(t1*t2.perp());
