@@ -330,7 +330,8 @@ CLEANDIRS = \
 	32x32 \
 	48x48 \
 	64x64 \
-	128x128
+	128x128 \
+	256x256
 
 image_DATA = $(IMAGES)
 
@@ -452,6 +453,13 @@ icons64_DATA = 64x64/synfig_icon.$(EXT)
 
 icons128dir = $(datadir)/icons/hicolor/128x128/apps
 icons128_DATA = 128x128/synfig_icon.$(EXT)
+
+256x256/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 256x256
+	$(SYNFIG) -q $< -o $@ --time 0 -w 256 -h 256
+
++icons256dir = $(datadir)/icons/hicolor/256x256/apps
++icons256_DATA = 256x256/synfig_icon.$(EXT)
 
 iconsscalabledir = $(datadir)/icons/hicolor/scalable/apps
 iconsscalable_DATA = synfig_icon.svg
