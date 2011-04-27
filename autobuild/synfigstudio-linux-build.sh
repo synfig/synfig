@@ -106,8 +106,8 @@ if ! pkg-config sigc\+\+-2.0 --exact-version=${SIGCPP}  --print-errors; then
 	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
-	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -122,7 +122,7 @@ if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
 	cd glib-${GLIB}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --disable-static --enable-shared
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -136,8 +136,8 @@ if ! pkg-config glibmm-2.4 --exact-version=${GLIBMM}  --print-errors; then
 	[ ! -d glibmm-${GLIBMM} ] && tar -xjf glibmm-${GLIBMM}.tar.bz2
 	cd glibmm-${GLIBMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-fulldocs 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-fulldocs
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -151,8 +151,8 @@ if ! pkg-config libxml\+\+-2.6 --exact-version=${LIBXMLPP}  --print-errors; then
 	[ ! -d libxml++-${LIBXMLPP} ] && tar -xjf libxml++-${LIBXMLPP}.tar.bz2
 	cd libxml++-${LIBXMLPP}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -191,7 +191,7 @@ if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 		--without-openexr
 	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -219,7 +219,7 @@ if ! pkg-config pixman-1 --exact-version=${PIXMAN}  --print-errors; then
 	cd pixman-${PIXMAN}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --disable-static --enable-shared
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 fi
@@ -239,7 +239,7 @@ if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
 		--enable-freetype 	\
 	    --enable-gobject    \
 		--disable-gtk-doc
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 fi
@@ -253,7 +253,7 @@ if ! pkg-config cairomm-1.0 --exact-version=${CAIROMM}  --print-errors; then
 	cd cairomm-${CAIROMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-docs=no
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 fi
@@ -325,7 +325,7 @@ mkfreeglut()
 	[ ! -d freeglut-${FREEGLUT} ] && tar -xzf freeglut-${FREEGLUT}.tar.gz
 	cd freeglut-${FREEGLUT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static  --disable-warnings --enable-shared 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static  --disable-warnings --enable-shared
 	make -j$MAKE_THREADS
 	make install
 	cd ..
@@ -349,7 +349,7 @@ mkftgl()
 	cd FTGL
 	cd unix
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-gl-inc=${PREFIX}/include  --with-gl-lib=${PREFIX}/lib  --with-glut-inc=${PREFIX}/include  --with-glut-lib=${PREFIX}/lib  --with-x 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-gl-inc=${PREFIX}/include  --with-gl-lib=${PREFIX}/lib  --with-glut-inc=${PREFIX}/include  --with-glut-lib=${PREFIX}/lib  --with-x
 	make all -j$MAKE_THREADS
 	make install
 	cd ..
@@ -362,8 +362,8 @@ mkgtkglext()
 	[ ! -d gtkglext-${GTKGLEXT} ] && tar -xjf gtkglext-${GTKGLEXT}.tar.bz2
 	cd gtkglext-${GTKGLEXT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-gtk-doc --disable-static  --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-gtk-doc --disable-static  --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -375,8 +375,8 @@ mkgtkglextmm()
 	[ ! -d gtkglextmm-${GTKGLEXTMM} ] && tar -xjf gtkglextmm-${GTKGLEXTMM}.tar.bz2 && cd gtkglextmm-${GTKGLEXTMM} && patch -p1 < gtkglextmm-1.2.0-aclocal.diff && cd ..
 	cd gtkglextmm-${GTKGLEXTMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-dependency-tracking --disable-static  --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-dependency-tracking --disable-static  --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	popd
 cd ..
@@ -413,7 +413,7 @@ if [[ $MODE != 'quick' ]]; then
 	echo "Going to configure..."
 	rm -f aclocal.m4
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG
 fi
 
 make -j$MAKE_THREADS
@@ -439,7 +439,7 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -493,19 +493,19 @@ popd
 mkpack()
 {
 	[ -d /packages ] || mkdir /packages
-	
+
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
 	mkdir -p $TBZPREFIX
 	cp -r  ${PREFIX}/* $TBZPREFIX
-	
+
 	if [[ $DEBUG == '--enable-debug' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \$@ || "
 	else
 		GDB=''
 	fi
-	
+
 	#binaries
 	cat > $TBZPREFIX/synfig <<EOF
 #!/bin/sh
@@ -536,14 +536,14 @@ $GDB\$PREFIX/bin/synfigstudio \$@
 EOF
 	chmod a+x $TBZPREFIX/synfig
 	chmod a+x $TBZPREFIX/synfigstudio
-	
+
 	#cleaning devel stuff
 	mkdir $TBZPREFIX/bin.tmp
 	mv $TBZPREFIX/bin/synfig $TBZPREFIX/bin.tmp/synfig
 	mv $TBZPREFIX/bin/synfigstudio $TBZPREFIX/bin.tmp/synfigstudio
 	rm -rf $TBZPREFIX/bin
 	mv $TBZPREFIX/bin.tmp $TBZPREFIX/bin
-	
+
 	rm -f $TBZPREFIX/lib/*.la
 	rm -f $TBZPREFIX/lib/*.a
 	rm -rf $TBZPREFIX/include
@@ -559,13 +559,13 @@ EOF
 	rm -rf $TBZPREFIX/share/aclocal
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
-	
+
 	rm -f /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2
 	pushd $TBZPREFIX/../
 	tar cjf /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	popd
 	rm -rf $TBZPREFIX
-	
+
 	#== rpm ==
     cat > synfigstudio.spec << EOF
 %define __spec_install_post /bin/true
@@ -586,11 +586,10 @@ AutoReqProv: no
 Synfig Animation Studio is a powerful, industrial-strength vector-based
 2D animation software, designed from the ground-up for producing
 feature-film quality animation with fewer people and resources.
-It is designed to be capable of producing feature-film quality
-animation. It eliminates the need for tweening, preventing the
-need to hand-draw each frame. Synfig features spatial and temporal
-resolution independence (sharp and smoothat any resolution or framerate),
-high dynamic range images, and a flexible plugin system.
+It eliminates the need for tweening, preventing the need to hand-draw
+each frame. Synfig features spatial and temporal resolution independence
+(sharp and smooth at any resolution or framerate), high dynamic range
+images, and a flexible plugin system.
 
 
 %prep
@@ -673,7 +672,7 @@ $PREFIX
 
 EOF
     rpmbuild -bb synfigstudio.spec
-    
+
     #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm ../
     cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm /packages/
     pushd /packages/
@@ -732,7 +731,7 @@ initialize()
 		fi
 		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
 			echo "Running apt-get (you need root privelegies to do that)..."
-			echo 
+			echo
 			#echo "http_proxy =====" $http_proxy
 			#env
 			sudo apt-get update || true
@@ -750,21 +749,21 @@ initialize()
 		fi
 	fi
 	echo "Done."
-	
+
 	if [[ $DEBUG == 1 ]]; then
 		DEBUG='--enable-debug'
 	else
 		DEBUG=''
 	fi
-	
-	
-	
+
+
+
 	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		SYNFIG_REPO_DIR="/source/synfig.git"
 		PREFIX="/opt/synfig"
-		
+
 		which git || mkgit
-		
+
 		pushd $SYNFIG_REPO_DIR
 		git fetch
 		git reset --hard HEAD
@@ -803,7 +802,7 @@ initialize()
 		echo
 		sleep 5
 		popd
-		
+
 		#Trick to detect arch under chroot
 		#ARCH=`rpm -q --queryformat='%{arch}\n' e2fsprogs`
 		MACHINE_TYPE=`uname -m`
@@ -822,7 +821,7 @@ initialize()
 			WORKDIR_IS_REPO=1
 		fi
 	fi
-	
+
 	#export PREFIX=/opt/synfig
 	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/local/lib/pkgconfig
 	export PATH=${PREFIX}/bin:$PATH
@@ -836,7 +835,7 @@ mk()
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
 		git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig ${SYNFIG_REPO_DIR}
 	fi
-	
+
 	mkETL
 	mksynfig
 	mksynfigstudio
@@ -847,19 +846,19 @@ mkpackage()
 	#check if we already in chroot
 	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		echo "We are in chroot now."
-		
+
 		echo "[user]"  > /root/.gitconfig
 		echo "email = packages@synfig.org"  >> /root/.gitconfig
 		echo "name = Synfig Packager" >> /root/.gitconfig
-		
+
 		#system libs
 		mkglib
 		mkpixman
 		mkcairo
 		mkpango
 		mkgtk
-		
-		
+
+
 		#synfig-core deps
 		mklibsigcpp
 		mkglibmm
@@ -868,7 +867,7 @@ mkpackage()
 			mkglew
 		fi
 		mkimagemagick
-		
+
 		#synfig-studio deps
 		mkcairomm
 		mkpangomm
@@ -879,11 +878,11 @@ mkpackage()
 			mkgtkglext
 			mkgtkglextmm
 		fi
-		
+
 		mkETL
 		mksynfig
 		mksynfigstudio
-		
+
 		mkpack
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
@@ -905,7 +904,7 @@ mkpackage()
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
 		#keep proxy settings
-		if ! [ -z $http_proxy ]; then 
+		if ! [ -z $http_proxy ]; then
 			#echo "export http_proxy=\"$http_proxy\";" >> $PACKAGES_BUILDROOT.$ARCH/root/.bashrc
 			#echo "echo 'proxy export done';" >> $PACKAGES_BUILDROOT.$ARCH/root/.bashrc
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
