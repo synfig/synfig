@@ -1008,6 +1008,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 	Real closest(10000000);
 	etl::handle<Duck> ret;
+	std::vector< etl::handle<Duck> > ret_vector;
 
 	DuckMap::const_iterator iter;
 
@@ -1021,20 +1022,64 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 		Real dist((duck->get_trans_point()-point).mag_squared());
 
-		if(duck->get_type()&Duck::TYPE_VERTEX)
-			dist*=1.0001;
-		else if(duck->get_type()&Duck::TYPE_TANGENT && duck->get_scalar()>0)
-			dist*=1.00005;
-		else if(duck->get_type()&Duck::TYPE_RADIUS)
-			dist*=0.9999;
-
 		if(dist<=closest)
 		{
+			// if there are two ducks at the same position, keep track of them
+			if(dist == closest)
+			{
+				// if we haven't any duck stored keep track of last found
+				if(!ret_vector.size())
+					ret_vector.push_back(ret);
+				// and also keep track of the one on the same place
+				ret_vector.push_back(duck);
+			}
+			// we have another closer duck then discard the stored
+			else if (dist < closest && ret_vector.size())
+				ret_vector.clear();
 			closest=dist;
 			ret=duck;
 		}
 	}
 
+	// Priorization of duck selection when are in the same place.
+	bool found(false);
+	if(ret_vector.size())
+	{
+		for(uint i=0; i<ret_vector.size();i++)
+			if(ret_vector[i]->get_type() & Duck::TYPE_WIDTHPOINT_POSITION)
+			{
+				ret=ret_vector[i];
+				found=true;
+			}
+		if(!found)
+			for(uint i=0; i<ret_vector.size();i++)
+				if(ret_vector[i]->get_type() & Duck::TYPE_WIDTH)
+				{
+					ret=ret_vector[i];
+					found=true;
+				}
+		if(!found)
+			for(uint i=0; i<ret_vector.size();i++)
+				if(ret_vector[i]->get_type() & Duck::TYPE_RADIUS)
+				{
+					ret=ret_vector[i];
+					found=true;
+				}
+		if(!found)
+			for(uint i=0; i<ret_vector.size();i++)
+				if(ret_vector[i]->get_type() & Duck::TYPE_TANGENT)
+				{
+					ret=ret_vector[i];
+					found=true;
+				}
+		if(!found)
+			for(uint i=0; i<ret_vector.size();i++)
+				if(ret_vector[i]->get_type() & Duck::TYPE_POSITION)
+				{
+					ret=ret_vector[i];
+					found=true;
+				}
+	}
 	if(radius==0 || closest<radius*radius)
 		return ret;
 
