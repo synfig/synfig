@@ -1050,6 +1050,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 			{
 				ret=ret_vector[i];
 				found=true;
+				break;
 			}
 		if(!found)
 			for(uint i=0; i<ret_vector.size();i++)
@@ -1057,6 +1058,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				{
 					ret=ret_vector[i];
 					found=true;
+					break;
 				}
 		if(!found)
 			for(uint i=0; i<ret_vector.size();i++)
@@ -1064,6 +1066,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				{
 					ret=ret_vector[i];
 					found=true;
+					break;
 				}
 		if(!found)
 			for(uint i=0; i<ret_vector.size();i++)
@@ -1071,6 +1074,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				{
 					ret=ret_vector[i];
 					found=true;
+					break;
 				}
 		if(!found)
 			for(uint i=0; i<ret_vector.size();i++)
@@ -1078,6 +1082,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				{
 					ret=ret_vector[i];
 					found=true;
+					break;
 				}
 	}
 	if(radius==0 || closest<radius*radius)
