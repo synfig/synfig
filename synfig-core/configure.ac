@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.63.00-RC1],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
+AC_INIT([Synfig Core],[0.63.00-RC2],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -401,8 +401,8 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.14-RC1],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.14-RC1 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.14-RC2],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.14-RC2 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
