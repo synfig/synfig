@@ -37,6 +37,7 @@
 #include <ETL/clock>
 #include <algorithm>
 #include <cstring>
+#include <errno.h>
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
@@ -1217,7 +1218,12 @@ int main(int argc, char *argv[])
 
 			VERBOSE_OUT(4)<<"target_name="<<target_name<<endl;
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
-
+			if (access(dirname(job_list.front().outfilename).c_str(),W_OK) == -1)
+				{
+					cerr<<(_("Unable to create ouput for ")+job_list.front().outfilename+": "+strerror(errno))<<endl;
+					job_list.pop_front();
+					continue;
+				}
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
 			job_list.front().target =
 				synfig::Target::create(target_name,
