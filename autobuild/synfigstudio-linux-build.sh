@@ -45,13 +45,13 @@
 # = TODO =
 # - debuginfo packages
 
-RELEASE=2
+RELEASE=7
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
-BUILDROOT_VERSION=2
-MAKE_THREADS=2					#count of threads for make
+BUILDROOT_VERSION=7
+MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -75,11 +75,13 @@ GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.18.2 #!!! >= 2.18.0
 
+ATK=1.25.2
 GLIB=2.20.5
 GTK=2.16.6
 PIXMAN=0.12.0
 CAIRO=1.8.8
 PANGO=1.24.5
+FONTCONFIG=2.5.0
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -120,6 +122,21 @@ if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
 	pushd /source
 	[ ! -d glib-${GLIB} ] && tar -xjf glib-${GLIB}.tar.bz2
 	cd glib-${GLIB}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkatk()
+{
+if ! pkg-config atk --exact-version=${ATK}  --print-errors; then
+	pushd /source
+	[ ! -d atk-${ATK} ] && tar -xjf atk-${ATK}.tar.bz2
+	cd atk-${ATK}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --disable-static --enable-shared
 	make -j$MAKE_THREADS
@@ -209,6 +226,20 @@ mkglew()
 	make install GLEW_DEST=${PREFIX} libdir=/lib bindir=/bin  includedir=/include
 	cd ..
 	popd
+}
+
+mkfontconfig()
+{
+if ! pkg-config fontconfig --exact-version=${FONTCONFIG}  --print-errors; then
+	pushd /source
+	[ ! -d fontconfig-${FONTCONFIG} ] && tar -xzf fontconfig-${FONTCONFIG}.tar.gz
+	cd fontconfig-${FONTCONFIG}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+fi
 }
 
 mkpixman()
@@ -694,12 +725,13 @@ initialize()
 		cvs \
 		libpng12-dev \
 		libjpeg62-dev \
+		fontconfig \
 		libfreetype6-dev \
 		libfontconfig1-dev \
 		libxml2-dev \
 		libtiff4-dev \
 		libjasper-dev \
-		x11proto-xext-dev libcups2-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
 		bzip2"
 	if which yum >/dev/null; then
@@ -853,6 +885,8 @@ mkpackage()
 
 		#system libs
 		mkglib
+		mkfontconfig
+		mkatk
 		mkpixman
 		mkcairo
 		mkpango
@@ -897,8 +931,8 @@ mkpackage()
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
-			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
@@ -923,9 +957,11 @@ mkpackage()
 		cd synfig.git && git fetch && cd ..
 		[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
 		for FILE in \
+			atk-${ATK}.tar.bz2 \
 			glib-${GLIB}.tar.bz2 \
 			pixman-${PIXMAN}.tar.gz \
 			cairo-${CAIRO}.tar.gz \
+			fontconfig-${FONTCONFIG}.tar.gz \
 			pango-${PANGO}.tar.bz2 \
 			gtk\+-${GTK}.tar.bz2 \
 			glib-${GLIB}.tar.bz2 \
