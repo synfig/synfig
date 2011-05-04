@@ -87,6 +87,7 @@ case "$host" in
 		AM_CONDITIONAL(MACOSX_PKG, false)
 	;;
 esac
+
 # -- L I B R A R I E S ----------------------------------------
 
 PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
@@ -265,6 +266,13 @@ AC_SUBST(imageext)
 
 imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
+
+AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
+AC_ARG_ENABLE(update-mimedb,
+   AC_HELP_STRING([--disable-update-mimedb],
+                   [disable the update-mime-database after install [default=no]]),,
+    enable_update_mimedb=yes)
+AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
 
 AC_CONFIG_FILES([Makefile
 build_tools/Makefile
