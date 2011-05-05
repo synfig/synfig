@@ -688,11 +688,13 @@ rm -rf \$RPM_BUILD_ROOT
 if [ -x /usr/bin/update-mime-database ]; then
   update-mime-database /usr/share/mime
 fi
+update-desktop-database
 
 %postun
 if [ -x /usr/bin/update-mime-database ]; then
   update-mime-database /usr/share/mime
 fi
+update-desktop-database
 
 %files
 %defattr(-,root,root,-)
@@ -929,7 +931,7 @@ mkpackage()
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
 		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk2.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
-		for ARCH in amd64 i386; do
+		for ARCH in i386 amd64; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'
 		else
