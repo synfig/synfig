@@ -635,6 +635,7 @@ cp -r  ${PREFIX}/* \$RPM_BUILD_ROOT/${PREFIX}
 mkdir -p \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/${PREFIX}/share/applications \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/${PREFIX}/share/icons \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/${PREFIX}/share/mime \$RPM_BUILD_ROOT/usr/share
 mkdir -p \$RPM_BUILD_ROOT/usr/share/mime-info
 ln -sf ${PREFIX}/share/mime-info/synfigstudio.keys \$RPM_BUILD_ROOT/usr/share/mime-info/synfigstudio.keys
 ln -sf ${PREFIX}/share/mime-info/synfigstudio.mime \$RPM_BUILD_ROOT/usr/share/mime-info/synfigstudio.mime
@@ -684,8 +685,14 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
 rm -rf \$RPM_BUILD_ROOT
 
 %post
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
 
 %postun
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
 
 %files
 %defattr(-,root,root,-)
@@ -719,6 +726,7 @@ initialize()
 	DEB_LIST_MINIMAL="\
 		build-essential \
 		autoconf automake \
+		shared-mime-info \
 		libltdl3-dev \
 		libtool \
 		gettext \
@@ -741,7 +749,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
