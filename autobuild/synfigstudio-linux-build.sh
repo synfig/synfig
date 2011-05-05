@@ -500,9 +500,13 @@ fi
 
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
+if [[ $MODE == 'package' ]]; then
+	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
+fi
+
 if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
 make -j$MAKE_THREADS
@@ -716,7 +720,7 @@ EOF
     #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm ../
     cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm /packages/
     pushd /packages/
-    alien -k synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm
+    alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm
     rm -rf synfigstudio-${VERSION}
     popd
 }
