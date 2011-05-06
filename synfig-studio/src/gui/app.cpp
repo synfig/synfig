@@ -277,7 +277,7 @@ bool studio::App::use_colorspace_gamma=true;
 	bool studio::App::single_threaded=false;
 	#endif // WIN32
 #endif  // SINGLE THREADED
-bool studio::App::restrict_radius_ducks=false;
+bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
@@ -1841,7 +1841,7 @@ App::reset_initial_preferences()
 #ifdef SINGLE_THREADED
 	synfigapp::Main::settings().set_value("pref.single_threaded","1");
 #endif
-	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
