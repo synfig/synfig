@@ -674,7 +674,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	low_res_pixel_size=2;
 	rendering=false;
 	canceled_=false;
-	low_resolution=true;
+	low_resolution=false;
 	pw=0.001;
 	ph=0.001;
 	last_focus_point=Point(0,0);
