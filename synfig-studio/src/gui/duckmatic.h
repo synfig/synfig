@@ -352,7 +352,7 @@ public:
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
-	etl::handle<Bezier> get_selected_bezier()const { return selected_bezier; }
+	etl::handle<Bezier> get_selected_bezier()const;
 
 	//! Begin dragging ducks
 	/*! \param offset Canvas coordinates of the mouse when the drag began */

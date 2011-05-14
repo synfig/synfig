@@ -217,6 +217,12 @@ Duckmatic::get_selected_duck()const
 	return duck_map.find(*selected_ducks.begin())->second;
 }
 
+etl::handle<Duckmatic::Bezier>
+Duckmatic::get_selected_bezier()const
+{
+	return selected_bezier;
+}
+
 void
 Duckmatic::refresh_selected_ducks()
 {
