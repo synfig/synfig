@@ -789,7 +789,6 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 {
 	static int counter=0;
 	counter++;
-	synfig::info("cusp number %d", counter);
 	const Vector t1(last.perp().norm());
 	const Vector t2(curr.perp().norm());
 	Real cross(t1*t2.perp());
