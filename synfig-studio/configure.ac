@@ -67,7 +67,7 @@ AC_LIBTOOL_PATCH
 ## FIXME: add i18n for .desktop and other non-compiled files
 ## AM_GLIB_GNU_GETTEXT([external])
 ## AC_PROG_INTLTOOL(0.11)
-ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR fa_IR"
+ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
