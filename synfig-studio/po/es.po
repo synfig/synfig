@@ -8,12 +8,12 @@
 # Carlos López González <genetita@gmail.com>, 2008, 2009, 2010, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: es\n"
+"Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
 "POT-Creation-Date: 2011-04-20 18:05+0200\n"
-"PO-Revision-Date: 2011-04-22 08:58+0000\n"
-"Last-Translator: Carlos López González <genetita@gmail.com>\n"
-"Language-Team: Español <es@li.org>\n"
+"PO-Revision-Date: 2011-05-19 12:01+0000\n"
+"Last-Translator: genete <genetita@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -74,7 +74,7 @@ msgstr "Párrafo"
 
 #: src/gui/cellrenderer/cellrenderer_value.cpp:231
 msgid "Enter Paragraph Text Here:"
-msgstr "Introduzca Texto del Párrafo Aquí"
+msgstr "Introduzca Texto del Párrafo Aquí:"
 
 #: src/gui/cellrenderer/cellrenderer_value.cpp:426
 msgid "<Inline Canvas>"
@@ -731,7 +731,7 @@ msgstr "Disminuir la Resolución"
 
 #: src/gui/dials/resolutiondial.cpp:58
 msgid "Low Res"
-msgstr "Baja Res."
+msgstr "Baja Resolución"
 
 #: src/gui/dials/resolutiondial.cpp:58
 msgid "Use Low Resolution when enabled"
@@ -5202,3 +5202,5 @@ msgstr "Valor de Nodo constante"
 #: src/synfigapp/value_desc.cpp:90
 msgid "Exported ValueNode"
 msgstr "Valor de Nodo Exportado"
+
+
