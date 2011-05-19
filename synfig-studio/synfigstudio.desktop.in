@@ -7,4 +7,4 @@ Type=Application
 Icon=synfig_icon
 Categories=GTK;Graphics;2DGraphics;VectorGraphics;
 StartupNotify=true
-MimeType=image/sif;
+MimeType=application/x-sif;

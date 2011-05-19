@@ -48,18 +48,23 @@ EXTRA_DIST = \
 	synfigstudio-thumbnailer.schemas.in
 
 
+DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
+
 # Desktop entry
 desktopdir = $(prefix)/share/applications
 desktop_DATA = synfigstudio.desktop
 
 # @INTLTOOL_DESKTOP_RULE@
 
-mimedir              = $(prefix)/share/mime-info
-mime_DATA            = synfigstudio.keys synfigstudio.mime
+mimeinfodir              = $(prefix)/share/mime-info
+mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Icon
 icondir                 = $(datadir)/pixmaps
 icon_DATA               = images/synfig_icon.png images/sif_icon.png
+
+mimedir              = $(prefix)/share/mime/packages
+mime_DATA            = synfigstudio.xml
 
 ACLOCAL_AMFLAGS=-I m4
 
@@ -125,6 +130,16 @@ else
 if MACOSX_PKG
 package: package-osx
 endif
+endif
+
+install-data-hook:
+if ENABLE_UPDATE_MIMEDB
+	$(UPDATE_MIME_DATABASE) "$(DESTDIR)$(datadir)/mime"
+endif
+
+uninstall-hook:
+if ENABLE_UPDATE_MIMEDB
+	$(UPDATE_MIME_DATABASE) "$(DESTDIR)$(datadir)/mime"
 endif
 
 html: .doc_stamp
