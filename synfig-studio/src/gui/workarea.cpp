@@ -1428,21 +1428,23 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			else
 			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
 			{
-				synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
-				synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
-				if (selected_bezier
-					&& distance_1.mag() > radius*2
-					&& distance_2.mag() > radius*2
-					)
+				if (selected_bezier)
+				{
+					synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
+					synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
+					if( distance_1.mag() > radius*2
+					    && distance_2.mag() > radius*2
+						)
 					// If we click a selected bezier
 					// not too close to the endpoints
-				{
-					// We give the states first priority to process the
-					// event so as not to interfere with the bline tool
-					dragging=DRAG_BEZIER;
-					drag_point=mouse_pos;
-					start_bezier_drag(mouse_pos, bezier_click_pos);
-					return true;
+					{
+						// We give the states first priority to process the
+						// event so as not to interfere with the bline tool
+						dragging=DRAG_BEZIER;
+						drag_point=mouse_pos;
+						start_bezier_drag(mouse_pos, bezier_click_pos);
+						return true;
+					}
 				}
 // I commented out this section because
 // it was causing issues when rotoscoping.
