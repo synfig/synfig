@@ -1051,7 +1051,8 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 	bool found(false);
 	if(ret_vector.size())
 	{
-		for(uint i=0; i<ret_vector.size();i++)
+		unsigned int i;
+		for(i=0; i<ret_vector.size();i++)
 			if(ret_vector[i]->get_type() & Duck::TYPE_WIDTHPOINT_POSITION)
 			{
 				ret=ret_vector[i];
@@ -1059,7 +1060,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				break;
 			}
 		if(!found)
-			for(uint i=0; i<ret_vector.size();i++)
+			for(i=0; i<ret_vector.size();i++)
 				if(ret_vector[i]->get_type() & Duck::TYPE_WIDTH)
 				{
 					ret=ret_vector[i];
@@ -1067,7 +1068,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 					break;
 				}
 		if(!found)
-			for(uint i=0; i<ret_vector.size();i++)
+			for(i=0; i<ret_vector.size();i++)
 				if(ret_vector[i]->get_type() & Duck::TYPE_RADIUS)
 				{
 					ret=ret_vector[i];
@@ -1075,7 +1076,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 					break;
 				}
 		if(!found)
-			for(uint i=0; i<ret_vector.size();i++)
+			for(i=0; i<ret_vector.size();i++)
 				if(ret_vector[i]->get_type() & Duck::TYPE_TANGENT)
 				{
 					ret=ret_vector[i];
@@ -1083,7 +1084,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 					break;
 				}
 		if(!found)
-			for(uint i=0; i<ret_vector.size();i++)
+			for(i=0; i<ret_vector.size();i++)
 				if(ret_vector[i]->get_type() & Duck::TYPE_POSITION)
 				{
 					ret=ret_vector[i];
