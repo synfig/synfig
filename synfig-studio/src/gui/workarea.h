@@ -243,6 +243,7 @@ private:
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 	bool allow_duck_clicks;
+	bool allow_bezier_clicks;
 	bool allow_layer_clicks;
 	bool cancel;
 	bool curr_guide_is_x;
@@ -279,6 +280,9 @@ public:
 
 	bool get_allow_duck_clicks() { return allow_duck_clicks; }
 	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
+
+	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
+	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
 	// used in renderer_ducks.cpp
 	bool solid_lines;

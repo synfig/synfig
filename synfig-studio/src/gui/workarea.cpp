@@ -667,6 +667,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	curr_input_device=0;
 	full_frame=false;
 	allow_duck_clicks=true;
+	allow_bezier_clicks=true;
 	allow_layer_clicks=true;
 	render_idle_func_id=0;
 	zoom=prev_zoom=1.0;
@@ -1374,7 +1375,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//else
 			//	clear_selected_ducks();
 
-			selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+			if(allow_bezier_clicks)
+			{
+				selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+			}
 
 			if(duck)
 			{
