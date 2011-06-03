@@ -555,11 +555,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	Glib::RefPtr<Gdk::Window>	wind = draw_area.get_window();
 	Cairo::RefPtr<Cairo::Context> cr = wind->create_cairo_context();
 
-	{
-		Gdk::Rectangle r(0,0,draw_area.get_width(),draw_area.get_height());
-		draw_area.get_window()->begin_paint_rect(r);
-	}
-
 	if(!wind) synfig::warning("The destination window is broken...");
 
 	{
@@ -603,8 +598,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 			cr->restore();
 		}
 	}
-
-	draw_area.get_window()->end_paint();
 
 	//synfig::warning("Refresh the draw area");
 	//make sure the widget refreshes
