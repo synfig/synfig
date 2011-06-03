@@ -61,6 +61,8 @@ class studio::StateFill_Context
 	CanvasView *canvas_view;
 	CanvasView::IsWorking is_working;
 
+	WorkArea::PushState push_state;
+
 public:
 	StateFill_Context(CanvasView *canvas_view);
 	~StateFill_Context();
@@ -103,9 +105,19 @@ StateFill::~StateFill()
 
 StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 	canvas_view(canvas_view),
-	is_working(*canvas_view)
+	is_working(*canvas_view),
+	push_state(get_work_area())
 {
 	synfig::info("Entered Fill State");
+
+	// Disable duck and bezier clicking
+	get_work_area()->set_allow_duck_clicks(false);
+	get_work_area()->set_allow_bezier_clicks(false);
+
+	// Hide all ducks
+	get_work_area()->set_type_mask(Duck::TYPE_NONE);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+
 	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();

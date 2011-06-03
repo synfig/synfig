@@ -100,9 +100,7 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	void refresh_ducks();
 
-	bool prev_workarea_layer_clicking;
-	bool prev_workarea_duck_clicking;
-	Duckmatic::Type old_duckmask;
+	WorkArea::PushState push_state;
 
 	//Toolbox settings
 	synfigapp::Settings& settings;
@@ -228,9 +226,8 @@ StateWidth_Context::reset()
 StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_clicking(get_work_area()->get_allow_layer_clicks()),
-	prev_workarea_duck_clicking(get_work_area()->get_allow_duck_clicks()),
-	old_duckmask(get_work_area()->get_type_mask()),
+
+	push_state(get_work_area()),
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
@@ -291,8 +288,9 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_duck_clicks(false);
 	// Hide all tangent, vertex and angle ducks and show the width and
 	// radius ducks
-	get_work_area()->set_type_mask((old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+	get_work_area()->set_type_mask((get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
@@ -326,15 +324,7 @@ StateWidth_Context::~StateWidth_Context()
 		get_work_area()->erase_duck(closestpoint);
 		added = false;
 	}
-	// Restore Duck clicking
-	get_work_area()->set_allow_duck_clicks(prev_workarea_duck_clicking);
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_clicking);
-	// Restore the mouse pointer
-	get_work_area()->reset_cursor();
-	// Restore duck masking
-	get_work_area()->set_type_mask(old_duckmask);
-	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+
 	// Tool options be rid of ye!!
 	App::dialog_tool_options->clear();
 	// Refresh the work area

@@ -2926,3 +2926,31 @@ WorkArea::resort_render_set()
 	renderer_set_.swap(tmp);
 	queue_draw();
 }
+
+WorkArea::PushState::PushState(WorkArea *workarea_):
+	workarea_(workarea_)
+{
+	type_mask=workarea_->get_type_mask();
+	allow_duck_clicks=workarea_->get_allow_duck_clicks();
+	allow_bezier_clicks=workarea_->get_allow_bezier_clicks();
+	allow_layer_clicks=workarea_->get_allow_layer_clicks();
+	needs_restore=true;
+}
+
+WorkArea::PushState::~PushState()
+{
+	if(needs_restore)
+		restore();
+}
+
+void
+WorkArea::PushState::restore()
+{
+	workarea_->set_type_mask(type_mask);
+	// update the toggle buttons for the duck types
+	workarea_->get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	workarea_->set_allow_duck_clicks(allow_duck_clicks);
+	workarea_->set_allow_bezier_clicks(allow_bezier_clicks);
+	workarea_->set_allow_layer_clicks(allow_layer_clicks);
+	needs_restore=false;
+}
