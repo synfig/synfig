@@ -1379,6 +1379,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
 			}
+			else
+			{
+				selected_bezier=0;
+			}
 
 			if(duck)
 			{
