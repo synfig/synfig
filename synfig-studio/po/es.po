@@ -6,6 +6,7 @@
 #
 # Franco Iacomella <yaco@gnu.org>, 2008.
 # Carlos López González <genetita@gmail.com>, 2008, 2009, 2010, 2011.
+# carlos_tutor <carlos_tutor@hotmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"

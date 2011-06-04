@@ -2,11 +2,9 @@
 # French translations for Synfig Studio package.
 # Copyright (C) 2011 Synfig Contributors
 # This file is distributed under the same license as the Synfig Studio package.
-# Aurore D <aurore.d@gmail.com>, 2007.
-#
-# Aurore D. <aurore.d@gmail.com>, 2010.
+# Aurore D <aurore.d@gmail.com>, 2007, 2010.
 # berteh <<berteh@hotmail.com>, 2010.
-# Animtim <animtim@gmail.com>, 2011.
+# Animtim <animtim@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -14,7 +12,7 @@ msgstr ""
 "POT-Creation-Date: 2011-04-20 18:05+0200\n"
 "PO-Revision-Date: 2011-04-23 17:52+0000\n"
 "Last-Translator: Animtim <animtim@gmail.com>\n"
-"Language-Team: <fr@li.org>\n"
+"Language-Team: LANGUAGE <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -5217,3 +5215,5 @@ msgstr "Nœud de valeur constant"
 #: src/synfigapp/value_desc.cpp:90
 msgid "Exported ValueNode"
 msgstr "Nœud de valeur exporté"
+
+
