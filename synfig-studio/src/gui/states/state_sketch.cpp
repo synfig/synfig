@@ -88,8 +88,9 @@ class studio::StateSketch_Context : public sigc::trackable
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
+	WorkArea::PushState push_state;
+
 	bool prev_table_status;
-	bool prev_workarea_layer_status_;
 
 	Gtk::Table options_table;
 	Gtk::Button button_clear_sketch;
@@ -234,7 +235,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	action_group(Gtk::ActionGroup::create("action_group_state_sketch")),
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
+	push_state(get_work_area()),
 	button_clear_sketch(_("Clear Sketch")),
 	button_undo_stroke(_("Undo Stroke")),
 	button_save_sketch(_("Save Sketch")),
@@ -366,12 +367,6 @@ StateSketch_Context::~StateSketch_Context()
 	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
-
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-
-	// Restore duck clicking
-	get_work_area()->set_allow_duck_clicks(true);
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);

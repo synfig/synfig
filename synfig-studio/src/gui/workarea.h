@@ -115,6 +115,9 @@ class WorkArea : public Gtk::Table, public Duckmatic
 
 public:
 
+	class PushState;
+	friend class PushState;
+
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
 	void erase_renderer(const etl::handle<WorkAreaRenderer> &x);
@@ -243,6 +246,7 @@ private:
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 	bool allow_duck_clicks;
+	bool allow_bezier_clicks;
 	bool allow_layer_clicks;
 	bool cancel;
 	bool curr_guide_is_x;
@@ -279,6 +283,9 @@ public:
 
 	bool get_allow_duck_clicks() { return allow_duck_clicks; }
 	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
+
+	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
+	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
 	// used in renderer_ducks.cpp
 	bool solid_lines;
@@ -510,6 +517,25 @@ private:
 	static gboolean __render_preview(gpointer data);
 
 }; // END of class WorkArea
+
+/*! \class WorkArea::PushState
+**	Saves the current duck view and editing options
+**  Should be used by tools that hide ducks or change clickability settings */
+class WorkArea::PushState
+{
+	WorkArea *workarea_;
+	Type type_mask;
+	bool allow_duck_clicks;
+	bool allow_bezier_clicks;
+	bool allow_layer_clicks;
+
+	bool needs_restore;
+
+public:
+	PushState(WorkArea *workarea_);
+	~PushState();
+	void restore();
+}; // END of class WorkArea::PushState
 
 }; // END of namespace studio
 

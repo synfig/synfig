@@ -667,6 +667,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	curr_input_device=0;
 	full_frame=false;
 	allow_duck_clicks=true;
+	allow_bezier_clicks=true;
 	allow_layer_clicks=true;
 	render_idle_func_id=0;
 	zoom=prev_zoom=1.0;
@@ -1374,7 +1375,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//else
 			//	clear_selected_ducks();
 
-			selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+			if(allow_bezier_clicks)
+			{
+				selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+			}
+			else
+			{
+				selected_bezier=0;
+			}
 
 			if(duck)
 			{
@@ -2921,4 +2929,32 @@ WorkArea::resort_render_set()
 	);
 	renderer_set_.swap(tmp);
 	queue_draw();
+}
+
+WorkArea::PushState::PushState(WorkArea *workarea_):
+	workarea_(workarea_)
+{
+	type_mask=workarea_->get_type_mask();
+	allow_duck_clicks=workarea_->get_allow_duck_clicks();
+	allow_bezier_clicks=workarea_->get_allow_bezier_clicks();
+	allow_layer_clicks=workarea_->get_allow_layer_clicks();
+	needs_restore=true;
+}
+
+WorkArea::PushState::~PushState()
+{
+	if(needs_restore)
+		restore();
+}
+
+void
+WorkArea::PushState::restore()
+{
+	workarea_->set_type_mask(type_mask);
+	// update the toggle buttons for the duck types
+	workarea_->get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	workarea_->set_allow_duck_clicks(allow_duck_clicks);
+	workarea_->set_allow_bezier_clicks(allow_bezier_clicks);
+	workarea_->set_allow_layer_clicks(allow_layer_clicks);
+	needs_restore=false;
 }

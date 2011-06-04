@@ -97,9 +97,10 @@ class studio::StateDraw_Context : public sigc::trackable
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
+	WorkArea::PushState push_state;
+
 	bool prev_table_status;
 	bool loop_;
-	bool prev_workarea_layer_status_;
 
 	int nested;
 	sigc::connection process_queue_connection;
@@ -109,13 +110,9 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
-	//Duckmatic::Push duckmatic_push;
-
 	std::list< etl::smart_ptr<std::list<synfig::Point> > > stroke_list;
 
 	void refresh_ducks();
-
-	Duckmatic::Type old_duckmask;
 
 	void fill_last_stroke();
 	Smach::event_result fill_last_stroke_and_unselect_other_layers();
@@ -421,8 +418,8 @@ StateDraw_Context::increment_id()
 StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
+	push_state(get_work_area()),
 	loop_(false),
-	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	checkbutton_pressure_width(_("Pressure Width")),
@@ -480,8 +477,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	App::dialog_tool_options->present();
 
 	// Hide all tangent and width ducks
-	old_duckmask=get_work_area()->get_type_mask();
-	get_work_area()->set_type_mask(old_duckmask-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Turn off layer clicking
@@ -489,12 +485,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// Turn off duck clicking
 	get_work_area()->set_allow_duck_clicks(false);
-
-	// clear out the ducks
-	//get_work_area()->clear_ducks();
-
-	// Refresh the work area
-	//get_work_area()->queue_draw();
 
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
@@ -561,16 +551,7 @@ StateDraw_Context::~StateDraw_Context()
 
 	App::dialog_tool_options->clear();
 
-	get_work_area()->set_type_mask(old_duckmask);
-	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-
 	get_work_area()->reset_cursor();
-
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-
-	// Restore duck clicking
-	get_work_area()->set_allow_duck_clicks(true);
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
