@@ -347,11 +347,11 @@ msgstr "Não é possível definir o tamanho da face."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:739
 msgid "Invalid multibyte sequence - is the locale set?\n"
-msgstr "Sequência multibyte inválida - é o local definido?"
+msgstr "Sequência multibyte inválida - é o local definido?\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Can't parse multibyte character.\n"
-msgstr "Não é possível analisar caracteres multibyte."
+msgstr "Não é possível analisar caracteres multibyte.\n"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
