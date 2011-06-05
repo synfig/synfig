@@ -907,7 +907,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	{
 		std::list<synfig::BLinePoint>::iterator iter;
-		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+		const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{

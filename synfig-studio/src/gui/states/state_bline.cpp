@@ -197,7 +197,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	const synfig::TransformStack& get_transform_stack()const { return canvas_view_->get_curr_transform_stack(); }
+	const synfig::TransformStack& get_transform_stack()const { return get_work_area()->get_curr_transform_stack(); }
 
 	void load_settings();
 	void save_settings();

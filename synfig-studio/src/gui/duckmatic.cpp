@@ -38,6 +38,9 @@
 #include <ETL/hermite>
 
 #include "duckmatic.h"
+#include "ducktransform_scale.h"
+#include "ducktransform_translate.h"
+#include "ducktransform_rotate.h"
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/general.h>
@@ -121,6 +124,8 @@ Duckmatic::~Duckmatic()
 void
 Duckmatic::clear_ducks()
 {
+	for(;!duck_changed_connections.empty();duck_changed_connections.pop_back())duck_changed_connections.back().disconnect();
+
 	duck_data_share_map.clear();
 	duck_map.clear();
 
@@ -1325,6 +1330,100 @@ Duckmatic::create_duck_from(const synfigapp::ValueDesc& value_desc,etl::handle<C
 	return duck;
 }
 */
+
+void
+Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack)
+{
+	int transforms(0);
+	String layer_name;
+
+#define QUEUE_REBUILD_DUCKS		sigc::mem_fun(*canvas_view,&CanvasView::queue_rebuild_ducks)
+
+	if(!canvas)
+	{
+		synfig::warning("Duckmatic::add_ducks_layers(): Layer doesn't have canvas set");
+		return;
+	}
+	for(Canvas::iterator iter(canvas->begin());iter!=canvas->end();++iter)
+	{
+		Layer::Handle layer(*iter);
+
+		if(selected_layer_set.count(layer))
+		{
+			if(!curr_transform_stack_set)
+			{
+				curr_transform_stack_set=true;
+				curr_transform_stack=transform_stack;
+			}
+
+			// This layer is currently selected.
+			duck_changed_connections.push_back(layer->signal_changed().connect(QUEUE_REBUILD_DUCKS));
+
+			// do the bounding box thing
+			synfig::Rect& bbox = canvas_view->get_bbox();
+			bbox|=transform_stack.perform(layer->get_bounding_rect());
+
+			// Grab the layer's list of parameters
+			Layer::ParamList paramlist(layer->get_param_list());
+
+			// Grab the layer vocabulary
+			Layer::Vocab vocab=layer->get_param_vocab();
+			Layer::Vocab::iterator iter;
+
+			for(iter=vocab.begin();iter!=vocab.end();iter++)
+			{
+				if(!iter->get_hidden() && !iter->get_invisible_duck())
+				{
+					synfigapp::ValueDesc value_desc(layer,iter->get_name());
+					add_to_ducks(value_desc,canvas_view,transform_stack,&*iter);
+					if(value_desc.is_value_node())
+						duck_changed_connections.push_back(value_desc.get_value_node()->signal_changed().connect(QUEUE_REBUILD_DUCKS));
+				}
+			}
+		}
+
+		layer_name=layer->get_name();
+
+		if(layer->active())
+		{
+			Transform::Handle trans(layer->get_transform());
+			if(trans)
+			{
+				transform_stack.push(trans);
+				transforms++;
+			}
+		}
+
+		// If this is a paste canvas layer, then we need to
+		// descend into it
+		if(layer_name=="PasteCanvas")
+		{
+			Vector scale;
+			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));
+			Vector origin(layer->get_param("origin").get(Vector()));
+
+			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
+			Vector focus(layer->get_param("focus").get(Vector()));
+
+			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.push(new Transform_Scale(layer->get_guid(), scale,origin+focus));
+			if(!origin.is_equal_to(Vector(0,0)))
+				transform_stack.push(new Transform_Translate(layer->get_guid(), origin));
+
+			add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
+
+			if(!origin.is_equal_to(Vector(0,0)))
+				transform_stack.pop();
+			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.pop();
+		}
+	}
+	// Remove all of the transforms we have added
+	while(transforms--) { transform_stack.pop(); }
+
+#undef QUEUE_REBUILD_DUCKS
+}
+
 
 bool
 Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc, int multiple)

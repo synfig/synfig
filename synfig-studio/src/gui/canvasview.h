@@ -192,9 +192,6 @@ public:
 	WorkArea* get_work_area() { return work_area.get(); }
 private:
 
-	synfig::TransformStack curr_transform_stack;
-	bool curr_transform_stack_set;
-
 	synfig::Rect bbox;
 
 	// DEBUGPOINT_CLASS(1);
@@ -447,8 +444,6 @@ private:
 	//! Rebuilds the "new layer" menu
 	void build_new_layer_menu(Gtk::Menu &menu);
 
-	void rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list);
-
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
@@ -463,9 +458,7 @@ private:
 	*/
 
 public:
-	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
-
-	const synfig::Rect& get_bbox()const { return bbox; }
+	synfig::Rect& get_bbox() { return bbox; }
 
 	Glib::RefPtr<Glib::ObjectBase> get_ref_obj(const synfig::String& x);
 	Glib::RefPtr<const Glib::ObjectBase> get_ref_obj(const synfig::String& x)const;
