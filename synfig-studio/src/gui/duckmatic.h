@@ -223,6 +223,10 @@ private:
 
 	mutable synfig::String sketch_filename_;
 
+	synfig::TransformStack curr_transform_stack;
+	bool curr_transform_stack_set;
+	std::list<sigc::connection> duck_changed_connections;
+
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
 	*/
@@ -352,6 +356,11 @@ public:
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
+	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
+
+	inline void clear_curr_transform_stack() { curr_transform_stack.clear(); curr_transform_stack_set=false; }
+
+
 	etl::handle<Bezier> get_selected_bezier()const;
 
 	//! Begin dragging ducks
@@ -433,6 +442,8 @@ public:
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
 
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
+
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
 

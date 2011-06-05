@@ -2895,140 +2895,6 @@ CanvasView::selected_layer_color_set(synfig::Color color)
 }
 
 void
-CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list)
-{
-	int transforms(0);
-	String layer_name;
-
-#define QUEUE_REBUILD_DUCKS		sigc::mem_fun(*this,&CanvasView::queue_rebuild_ducks)
-
-	if(!canvas)
-	{
-		synfig::warning("CanvasView::rebuild_ducks_layer_(): Layer doesn't have canvas set");
-		return;
-	}
-	for(Canvas::iterator iter(canvas->begin());iter!=canvas->end();++iter)
-	{
-		Layer::Handle layer(*iter);
-
-		if(selected_list.count(layer))
-		{
-			if(!curr_transform_stack_set)
-			{
-				curr_transform_stack_set=true;
-				curr_transform_stack=transform_stack;
-			}
-
-			// This layer is currently selected.
-			duck_changed_connections.push_back(layer->signal_changed().connect(QUEUE_REBUILD_DUCKS));
-
-			// do the bounding box thing
-			bbox|=transform_stack.perform(layer->get_bounding_rect());
-
-			// Grab the layer's list of parameters
-			Layer::ParamList paramlist(layer->get_param_list());
-
-			// Grab the layer vocabulary
-			Layer::Vocab vocab=layer->get_param_vocab();
-			Layer::Vocab::iterator iter;
-
-			for(iter=vocab.begin();iter!=vocab.end();iter++)
-			{
-				if(!iter->get_hidden() && !iter->get_invisible_duck())
-				{
-					synfigapp::ValueDesc value_desc(layer,iter->get_name());
-					work_area->add_to_ducks(value_desc,this,transform_stack,&*iter);
-					if(value_desc.is_value_node())
-						duck_changed_connections.push_back(value_desc.get_value_node()->signal_changed().connect(QUEUE_REBUILD_DUCKS));
-				}
-				if(iter->get_name()=="color")
-				{
-					/*
-					if(!App::dialog_color->busy())
-					{
-						App::dialog_color->reset();
-						App::dialog_color->set_color(layer->get_param("color").get(Color()));
-						App::dialog_color->signal_edited().connect(
-							sigc::mem_fun(
-								*this,
-								&studio::CanvasView::selected_layer_color_set
-							)
-						);
-					}
-					*/
-				}
-			}
-		}
-
-		layer_name=layer->get_name();
-
-		if(layer->active())
-		{
-			Transform::Handle trans(layer->get_transform());
-			if(trans)
-			{
-				transform_stack.push(trans);
-				transforms++;
-			}
-
-/*			// Add transforms onto the stack
-			if(layer_name=="Translate")
-			{
-				transform_stack.push(synfig::Transform_Translate(layer->get_param("origin").get(Vector())));
-				transforms++;
-			}else
-			if(layer_name=="Zoom")
-			{
-				Vector scale;
-				scale[0]=scale[1]=exp(layer->get_param("amount").get(Real()));
-				transform_stack.push(synfig::Transform_Scale(scale,layer->get_param("center").get(Vector())));
-				transforms++;
-			}else
-			if(layer_name=="stretch")
-			{
-				Vector scale(layer->get_param("amount").get(Vector()));
-				transform_stack.push(synfig::Transform_Scale(scale,layer->get_param("center").get(Vector())));
-				transforms++;
-			}else
-			if(layer_name=="Rotate")
-			{
-				transform_stack.push(synfig::Transform_Rotate(layer->get_param("amount").get(Angle()),layer->get_param("origin").get(Vector())));
-				transforms++;
-			}
-*/
-		}
-
-		// If this is a paste canvas layer, then we need to
-		// descend into it
-		if(layer_name=="PasteCanvas")
-		{
-			Vector scale;
-			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));
-			Vector origin(layer->get_param("origin").get(Vector()));
-
-			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
-			Vector focus(layer->get_param("focus").get(Vector()));
-
-			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.push(new Transform_Scale(layer->get_guid(), scale,origin+focus));
-			if(!origin.is_equal_to(Vector(0,0)))
-				transform_stack.push(new Transform_Translate(layer->get_guid(), origin));
-
-			rebuild_ducks_layer_(transform_stack,child_canvas,selected_list);
-
-			if(!origin.is_equal_to(Vector(0,0)))
-				transform_stack.pop();
-			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.pop();
-		}
-	}
-	// Remove all of the transforms we have added
-	while(transforms--) { transform_stack.pop(); }
-
-#undef QUEUE_REBUILD_DUCKS
-}
-
-void
 CanvasView::queue_rebuild_ducks()
 {
 #if 0
@@ -3077,13 +2943,9 @@ CanvasView::rebuild_ducks()
 	bbox=Rect::zero();
 
 	work_area->clear_ducks();
+	work_area->clear_curr_transform_stack();
 	work_area->set_time(get_time());
 	get_canvas()->set_time(get_time());
-	curr_transform_stack.clear();
-	//curr_transform_stack.push(new Transform_Translate(Point(0,0)));
-	curr_transform_stack_set=false;
-
-	for(;!duck_changed_connections.empty();duck_changed_connections.pop_back())duck_changed_connections.back().disconnect();
 
 	//get_canvas()->set_time(get_time());
 	bool not_empty(false);
@@ -3098,7 +2960,7 @@ CanvasView::rebuild_ducks()
 
 		synfig::TransformStack transform_stack;
 
-		rebuild_ducks_layer_(transform_stack, get_canvas(), layer_set);
+		work_area->add_ducks_layers(get_canvas(), layer_set, this,transform_stack);
 
 	}while(0);
 

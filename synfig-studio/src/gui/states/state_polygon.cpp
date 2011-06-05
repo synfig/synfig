@@ -511,7 +511,7 @@ StatePolygon_Context::run()
 	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
 		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 
 	std::vector<BLinePoint> new_list;
 	std::list<synfig::Point>::iterator iter;
