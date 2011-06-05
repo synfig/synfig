@@ -603,7 +603,7 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
 			if(iter==dynamic_param_list().end())
 				{
-					synfig::warning("BLine doesn't exists yet!!");
+					synfig::warning("BLine doesn't exist yet!!");
 					return false;
 				}
 			else if(!connect_bline_to_wplist(iter->second))
@@ -637,7 +637,7 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
 	if(iter==dynamic_param_list().end())
 	{
-		synfig::warning("WPList doesn't exists yet");
+		synfig::warning("WPList doesn't exist yet");
 		return false;
 	}
 	ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
