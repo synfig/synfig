@@ -397,10 +397,14 @@ splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
 	sed "s|%branch%|$$branch|" $< | sed "s|%commit_date%|$$commit_date|" | sed "s|%commit_id%|$$commit_id|" | sed "s|synfig_icon.sif#|$(srcdir)/synfig_icon.sif#|" > $@
 splash_screen.$(EXT): splash_screen_development.sif
 	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 .PHONY: splash_screen_development.sif
 else
 splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
 	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 endif
 
 if !WIN32_PKG

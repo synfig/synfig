@@ -9,6 +9,7 @@ all-local:
 	touch $(top_builddir)/autorevision.h
 endif
 
+.PHONY: all-local
+
 clean-local:
 	-rm -f $(top_builddir)/autorevision.h
-
