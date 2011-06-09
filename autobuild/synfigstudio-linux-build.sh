@@ -45,7 +45,7 @@
 # = TODO =
 # - debuginfo packages
 
-RELEASE=7
+RELEASE=8
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
