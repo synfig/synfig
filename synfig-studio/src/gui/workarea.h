@@ -167,8 +167,7 @@ private:
 	synfig::Real	canvasheight;	//!< Height of the canvas
 	synfig::Real	pw;				//!< The width of a pixel
 	synfig::Real	ph;				//!< The height of a pixel
-	float zoom;					//!< Zoom factor
-	float prev_zoom;			//!< Previous Zoom factor
+	// float zoom, prev_zoom are declared in Duckmatic
 	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
 	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
 

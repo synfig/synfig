@@ -244,6 +244,9 @@ protected:
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
 
+	float zoom;					//!< Zoom factor
+	float prev_zoom;			//!< Previous Zoom factor
+
 	bool show_persistent_strokes;
 
 	bool axis_lock;

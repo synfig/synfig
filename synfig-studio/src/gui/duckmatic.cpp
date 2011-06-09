@@ -104,6 +104,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	drag_offset_=Point(0,0);
 	clear_duck_dragger();
 	clear_bezier_dragger();
+	zoom=prev_zoom=1.0;
 }
 
 Duckmatic::~Duckmatic()

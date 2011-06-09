@@ -670,7 +670,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	allow_bezier_clicks=true;
 	allow_layer_clicks=true;
 	render_idle_func_id=0;
-	zoom=prev_zoom=1.0;
 	quality=10;
 	low_res_pixel_size=2;
 	rendering=false;
