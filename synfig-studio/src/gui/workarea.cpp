@@ -1472,23 +1472,25 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 */
 
 				// Check for a guide click
-				GuideList::iterator iter;
-
-				iter=find_guide_x(mouse_pos,radius);
-				if(iter==get_guide_list_x().end())
+				if (show_guides)
 				{
-					curr_guide_is_x=false;
-					iter=find_guide_y(mouse_pos,radius);
-				}
-				else
-					curr_guide_is_x=true;
-				if(iter!=get_guide_list_x().end() && iter!=get_guide_list_y().end())
-				{
-					dragging=DRAG_GUIDE;
-					curr_guide=iter;
-					return true;
-				}
+					GuideList::iterator iter;
 
+					iter=find_guide_x(mouse_pos,radius);
+					if(iter==get_guide_list_x().end())
+					{
+						curr_guide_is_x=false;
+						iter=find_guide_y(mouse_pos,radius);
+					}
+					else
+						curr_guide_is_x=true;
+					if(iter!=get_guide_list_x().end() && iter!=get_guide_list_y().end())
+					{
+						dragging=DRAG_GUIDE;
+						curr_guide=iter;
+						return true;
+					}
+				}
 				// All else fails, try making a selection box
 				dragging=DRAG_BOX;
 				curr_point=drag_point=mouse_pos;
@@ -1965,7 +1967,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE)
+		if(dragging==DRAG_NONE && show_guides)
 		{
 			dragging=DRAG_GUIDE;
 			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
@@ -2025,7 +2027,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE)
+		if(dragging==DRAG_NONE && show_guides)
 		{
 			dragging=DRAG_GUIDE;
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
