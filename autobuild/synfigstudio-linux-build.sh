@@ -692,13 +692,17 @@ rm -rf \$RPM_BUILD_ROOT
 if [ -x /usr/bin/update-mime-database ]; then
   update-mime-database /usr/share/mime
 fi
-update-desktop-database
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
 
 %postun
 if [ -x /usr/bin/update-mime-database ]; then
   update-mime-database /usr/share/mime
 fi
-update-desktop-database
+if [ -x /usr/bin/update-desktop-database ]; then
+  update-desktop-database
+fi
 
 %files
 %defattr(-,root,root,-)
