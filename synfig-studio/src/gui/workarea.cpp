@@ -889,6 +889,8 @@ WorkArea::save_meta_data()
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide_x",data);
+		else if (!canvas->get_meta_data("guide_x").empty())
+			canvas_interface->erase_meta_data("guide_x");
 
 		data.clear();
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
@@ -899,6 +901,8 @@ WorkArea::save_meta_data()
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide_y",data);
+		else if (!canvas->get_meta_data("guide_y").empty())
+			canvas_interface->erase_meta_data("guide_y");
 	}
 
 	if(get_sketch_filename().size())
@@ -2004,6 +2008,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
 			dragging=DRAG_NONE;
+			save_meta_data();
 //			get_guide_list_y().erase(curr_guide);
 		}
 		break;
@@ -2063,6 +2068,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
 			dragging=DRAG_NONE;
+			save_meta_data();
 //			get_guide_list_x().erase(curr_guide);
 		}
 		break;

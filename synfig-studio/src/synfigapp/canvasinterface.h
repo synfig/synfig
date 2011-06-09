@@ -186,6 +186,8 @@ public:
 
 	void set_meta_data(const synfig::String& key,const synfig::String& data);
 
+	void erase_meta_data(const synfig::String& key);
+
 	//! Changes the current SelectionManager object
 	void set_selection_manager(const etl::handle<SelectionManager> &sm) { selection_manager_=sm; }
 
