@@ -878,6 +878,11 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 	get_canvas()->set_meta_data(key,data);
 }
 
+void
+CanvasInterface::erase_meta_data(const synfig::String& key)
+{
+	get_canvas()->erase_meta_data(key);
+}
 
 // this function goes with find_important_value_descs()
 static int

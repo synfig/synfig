@@ -244,6 +244,9 @@ protected:
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
 
+	float zoom;					//!< Zoom factor
+	float prev_zoom;			//!< Previous Zoom factor
+
 	bool show_persistent_strokes;
 
 	bool axis_lock;
@@ -295,7 +298,7 @@ public:
 
 	void toggle_grid_snap() { set_grid_snap(!grid_snap); }
 
-	synfig::Point snap_point_to_grid(const synfig::Point& x, float radius=0.1)const;
+	synfig::Point snap_point_to_grid(const synfig::Point& x)const;
 
 	bool get_show_persistent_strokes()const { return show_persistent_strokes; }
 	void set_show_persistent_strokes(bool x);

@@ -104,6 +104,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	drag_offset_=Point(0,0);
 	clear_duck_dragger();
 	clear_bezier_dragger();
+	zoom=prev_zoom=1.0;
 }
 
 Duckmatic::~Duckmatic()
@@ -566,9 +567,10 @@ Duckmatic::end_bezier_drag()
 }
 
 Point
-Duckmatic::snap_point_to_grid(const synfig::Point& x, float radius)const
+Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 {
 	Point ret(x);
+	float radius(0.1/zoom);
 
 	GuideList::const_iterator guide_x,guide_y;
 	bool has_guide_x(false), has_guide_y(false);
