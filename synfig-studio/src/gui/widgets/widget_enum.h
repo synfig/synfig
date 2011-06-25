@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/combobox.h>
+#include <gtkmm/liststore.h>
 #include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
@@ -37,17 +37,25 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Menu; };
-
 namespace studio {
-
-class Widget_Enum : public Gtk::OptionMenu
+class Widget_Enum : public Gtk::ComboBox
 {
-	Gtk::Menu *enum_menu;
 	synfig::ParamDesc param_desc;
-
 	int value;
-	void set_value_(int data);
+protected:
+class Model : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+
+		Model()
+		{ add(value); add(local_name); }
+
+		Gtk::TreeModelColumn<int> value;
+		Gtk::TreeModelColumn<Glib::ustring> local_name;
+	};
+	Model enum_model;
+	Glib::RefPtr<Gtk::ListStore> enum_TreeModel;
+
 public:
 
 	Widget_Enum();
@@ -58,8 +66,8 @@ public:
 
 	void set_value(int data);
 	int get_value() const;
+	virtual void on_changed();
 }; // END of class Widget_Enum
-
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

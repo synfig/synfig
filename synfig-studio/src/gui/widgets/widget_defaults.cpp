@@ -278,7 +278,7 @@ Widget_Defaults::Widget_Defaults()
 
 	widget_blend_method=manage(new Widget_Enum());
 	widget_blend_method->show();
-	widget_blend_method->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
+	widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
 	widget_blend_method->set_param_desc(
 		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
@@ -288,7 +288,7 @@ Widget_Defaults::Widget_Defaults()
 
 	widget_interpolation=manage(new Widget_Enum());
 	widget_interpolation->show();
-	widget_interpolation->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_interpolation_changed));
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_interpolation_changed));
 	widget_interpolation->set_param_desc(
 		ParamDesc("interpolation")
 			.set_hint("enum")

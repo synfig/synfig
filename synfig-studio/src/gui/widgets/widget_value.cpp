@@ -123,7 +123,7 @@ Widget_ValueBase::Widget_ValueBase():
 
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	enum_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	enum_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	real_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
