@@ -2609,3 +2609,18 @@ studio::App::get_base_path()
 {
 	return app_base_path_;
 }
+
+void
+studio::App::setup_changed()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
+	{
+		std::list< etl::handle<synfigapp::CanvasInterface> >::iterator citer;
+		std::list< etl::handle<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
+		for(citer=cilist.begin();citer!=cilist.end();++citer)
+			{
+				(*citer)->signal_rend_desc_changed()();
+			}
+	}
+}

@@ -44,6 +44,8 @@
 #include <ETL/misc>
 #include "general.h"
 
+#include <synfigapp/canvasinterface.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -354,6 +356,9 @@ Dialog_Setup::on_apply_pressed()
 	App::preferred_fps=Real(adj_pref_fps.get_value());
 
 	App::save_settings();
+
+	App::setup_changed();
+
 }
 
 void
