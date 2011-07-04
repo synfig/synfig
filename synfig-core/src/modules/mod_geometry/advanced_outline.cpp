@@ -274,7 +274,7 @@ Advanced_Outline::sync()
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
-			bool split_flag(biter->get_split_tangent_flag());
+			bool split_flag(biter->get_split_tangent_flag() || (iter_t.mag()==0.0));
 			// Setup the bezier curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
