@@ -178,7 +178,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -408,9 +408,6 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_user_click));
-
 	App::toolbox->refresh();
 }
 
@@ -478,8 +475,6 @@ StatePolygon_Context::~StatePolygon_Context()
 Smach::event_result
 StatePolygon_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoPolygon: Received Stop Event");
-	//throw Smach::egress_exception();
 	reset();
 	return Smach::RESULT_ACCEPT;
 
@@ -488,7 +483,6 @@ StatePolygon_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StatePolygon_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoPolygon: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -663,7 +657,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -686,7 +679,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -727,7 +719,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -750,7 +741,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -799,7 +789,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -822,7 +811,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -869,7 +857,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -892,7 +879,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -939,7 +925,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;
@@ -962,7 +947,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;
@@ -983,7 +967,6 @@ StatePolygon_Context::run()
 Smach::event_result
 StatePolygon_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	synfig::info("STATE ROTOPOLYGON: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{

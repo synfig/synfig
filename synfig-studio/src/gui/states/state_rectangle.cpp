@@ -183,7 +183,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -403,7 +403,6 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 
 	options_table.show_all();
 
-	//App::dialog_tool_options->set_widget(options_table);
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -417,16 +416,6 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	get_work_area()->queue_draw();
 
 	get_work_area()->set_cursor(Gdk::DOTBOX);
-
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateRectangle_Context::on_user_click));
 
 	App::toolbox->refresh();
 }
@@ -457,12 +446,6 @@ StateRectangle_Context::~StateRectangle_Context()
 	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
-
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -609,7 +592,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -632,7 +614,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -673,7 +654,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -696,7 +676,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -815,7 +794,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -838,7 +816,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -885,7 +862,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;
@@ -908,7 +884,6 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;

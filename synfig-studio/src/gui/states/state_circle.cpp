@@ -214,7 +214,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -504,15 +504,6 @@ options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),	0, 1, 15
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_user_click));
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
@@ -544,12 +535,6 @@ StateCircle_Context::~StateCircle_Context()
 
 	App::dialog_tool_options->clear();
 
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -561,7 +546,6 @@ StateCircle_Context::~StateCircle_Context()
 Smach::event_result
 StateCircle_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -702,7 +686,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Circle layer"));
 				group.cancel();
 				throw String(_("Unable to create Circle layer"));
 				return;
@@ -753,7 +736,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -776,7 +758,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -827,7 +808,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -850,7 +830,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -987,7 +966,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -1010,7 +988,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -1066,7 +1043,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;
@@ -1089,7 +1065,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Advanced Outline layer"));
 				return;
