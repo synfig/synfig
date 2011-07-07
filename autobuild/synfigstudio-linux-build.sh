@@ -736,6 +736,7 @@ initialize()
 	DEB_LIST_MINIMAL="\
 		build-essential \
 		autoconf automake \
+		autopoint \
 		shared-mime-info \
 		libltdl3-dev \
 		libtool \
