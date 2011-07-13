@@ -283,6 +283,158 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 
 }
 
+Real
+synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size = list.size(), from_vertex;
+	if(!looped) size--;
+	if(size < 1) return Real();
+	if (loop)
+	{
+		pos = pos - int(pos);
+		if (pos < 0) pos++;
+	}
+	else
+	{
+		if (pos < 0) pos = 0;
+		if (pos > 1) pos = 1;
+	}
+	// Calculate the lengths and the total length
+	Real tl=0, pl=0, l;
+	std::vector<Real> lengths;
+	vector<BLinePoint>::const_iterator iter, next(list.begin());
+	iter = looped ? --list.end() : next++;
+	for(;next!=list.end(); next++)
+	{
+		blinepoint0 = *iter;
+		blinepoint1 = *next;
+		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+		l=curve.length();
+		tl+=l;
+		lengths.push_back(l);
+		iter=next;
+	}
+	// If the total length of the bline is zero return pos
+	if(tl==0.0) return pos;
+	from_vertex = int(pos*size);
+	// Calculate the partial length until the bezier that holds the current
+	std::vector<Real>::const_iterator liter(lengths.begin());
+	for(int i=0;i<from_vertex; i++, liter++)
+		pl+=*liter;
+	// Calculate the remaining length of the position over current bezier
+	// Setup the curve of the current bezier.
+	next=list.begin();
+	iter = looped ? --list.end() : next++;
+	if (from_vertex > size-1) from_vertex = size-1; // if we are at the end of the last bezier
+	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
+	blinepoint1 = *(next+from_vertex);
+	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+	// add the distance on the bezier we are on.
+	pl+=curve.find_distance(0.0, pos*size - from_vertex);
+	// and return the homogenous position
+	return pl/tl;
+}
+
+Real
+synfig::hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size = list.size(), from_vertex(0);
+	if(!looped) size--;
+	if(size < 1) return Real();
+	if (loop)
+	{
+		pos = pos - int(pos);
+		if (pos < 0) pos++;
+	}
+	else
+	{
+		if (pos < 0) pos = 0;
+		if (pos > 1) pos = 1;
+	}
+	// Calculate the lengths and the total length
+	Real tl(0), pl(0), mpl, bl, l;
+	std::vector<Real> lengths;
+	vector<BLinePoint>::const_iterator iter, next(list.begin());
+	iter = looped ? --list.end() : next++;
+	for(;next!=list.end(); next++)
+	{
+		blinepoint0 = *iter;
+		blinepoint1 = *next;
+		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+		l=curve.length();
+		tl+=l;
+		lengths.push_back(l);
+		iter=next;
+	}
+	// Calculate the my partial length (the length where pos is)
+	mpl=pos*tl;
+	next=list.begin();
+	iter = looped ? --list.end() : next++;
+	std::vector<Real>::const_iterator liter(lengths.begin());
+	// Find the previous bezier where we pos is placed and the sum
+	// of lengths to it (pl)
+	// also remember the bezier's length where we stop
+	while(mpl > pl && next!=list.end())
+	{
+		pl+=*liter;
+		bl=*liter;
+		iter=next;
+		next++;
+		liter++;
+		from_vertex++;
+	}
+	// correct the iters and partial length in case we passed over
+	if(pl > mpl)
+	{
+		liter--;
+		next--;
+		if(next==list.begin())
+			iter=--list.end();
+		else
+			iter--;
+		pl-=*liter;
+		from_vertex--;
+	}
+	// set up the cureve
+	blinepoint0 = *iter;
+	blinepoint1 = *next;
+	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+	// Find the solution to which is the standard postion which matches the current
+	// homogenous position
+	// Secant method: http://en.wikipedia.org/wiki/Secant_method
+	Real sn(0.0); // the standard position on current bezier
+	Real sn1(0.0), sn2(1.0);
+	Real t0((mpl-pl)/bl); // the homogenous position on the current bezier
+	int iterations=0;
+	int max_iterations=100;
+	Real max_error(0.00001);
+	Real error;
+	Real fsn1(t0-curve.find_distance(0.0,sn1)/bl);
+	Real fsn2(t0-curve.find_distance(0.0,sn2)/bl);
+	Real fsn;
+	do
+	{
+		sn=sn1-fsn1*((sn1-sn2)/(fsn1-fsn2));
+		fsn=t0-curve.find_distance(0.0, sn)/bl;
+		sn2=sn1;
+		sn1=sn;
+		fsn2=fsn1;
+		fsn1=fsn;
+		error=fabs(fsn2-fsn1);
+		iterations++;
+	}while (error>max_error && max_iterations > iterations);
+	// convert the current standard index (s) to the bline's standard index
+	// and return it
+	return Real(from_vertex + sn)/size;
+}
 /* === M E T H O D S ======================================================= */
 
 
