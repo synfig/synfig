@@ -445,14 +445,14 @@ ValueNode_WPList::set_bline(ValueNode::Handle b)
 }
 
 
-bool
+ValueNode::LooseHandle
 ValueNode_WPList::get_homogeneous()const
 {
 	return homogeneous_;
 }
 
 void
-ValueNode_WPList::set_homogeneous(bool h)
+ValueNode_WPList::set_homogeneous(ValueNode::Handle h)
 {
 	homogeneous_=h;
 }
