@@ -235,6 +235,7 @@ ValueNode_WPList::create(const ValueBase &value)
 				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
 			}
 			value_node->set_loop(value.get_loop());
+			value_node->set_homogeneous(false);
 		}
 			break;
 		default:
@@ -441,4 +442,17 @@ void
 ValueNode_WPList::set_bline(ValueNode::Handle b)
 {
 	bline_=b;
+}
+
+
+bool
+ValueNode_WPList::get_homogeneous()const
+{
+	return homogeneous_;
+}
+
+void
+ValueNode_WPList::set_homogeneous(bool h)
+{
+	homogeneous_=h;
 }
