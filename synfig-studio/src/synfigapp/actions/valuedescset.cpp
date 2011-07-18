@@ -409,6 +409,7 @@ Action::ValueDescSet::prepare()
 			// outside the range of 0-1, so make sure that the amount does
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
+
 			Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 			//fmod is called twice to avoid negative values
@@ -418,6 +419,9 @@ Action::ValueDescSet::prepare()
 		}
 		else
 			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+		if(homogeneous)
+			new_amount=std_to_hom((*bline)(time), new_amount, bline->get_loop(), ((*(bline_vertex->get_link("loop")))(time).get(bool())) );
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));

@@ -500,7 +500,9 @@ Duckmatic::update_ducks()
 						synfig::Real radius = 0.0;
 						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
 						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
-
+						bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+						if(homogeneous)
+							amount=std_to_hom((*bline)(time), amount, bline->get_loop(), ((*(bline_vertex->get_link("loop")))(time).get(bool())) );
 						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
 
