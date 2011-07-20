@@ -301,6 +301,9 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
 		if (pos < 0) pos = 0;
 		if (pos > 1) pos = 1;
 	}
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
 	// Calculate the lengths and the total length
 	Real tl=0, pl=0, l;
 	std::vector<Real> lengths;
@@ -357,6 +360,9 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped)
 		if (pos < 0) pos = 0;
 		if (pos > 1) pos = 1;
 	}
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
 	// Calculate the lengths and the total length
 	Real tl(0), pl(0), mpl, bl, l;
 	std::vector<Real> lengths;
