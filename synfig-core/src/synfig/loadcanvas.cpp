@@ -1524,6 +1524,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->link_name(i) == "loop")
 				continue;
 
+			// 'homogeneous' was added while canvas version 0.7 was in use and the BLineCalcVertex,
+			// BLineCalcTangent and BLineCalcWidth have been modified since canvas version 0.5
+			if ((version == "0.5" || version == "0.6" || version == "0.7") &&
+				(element->get_name() == "blinecalcvertex" || element->get_name() == "blinecalctangent" || element->get_name() == "blinecalcwidth") &&
+				value_node->link_name(i) == "homogeneous")
+				continue;
+
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,
