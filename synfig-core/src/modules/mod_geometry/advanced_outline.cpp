@@ -78,6 +78,7 @@ Advanced_Outline::Advanced_Outline()
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
+	homogeneous_=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
