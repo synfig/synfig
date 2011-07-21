@@ -75,7 +75,9 @@ VALUENODE_ACTION_HH = \
 	actions/valuenodelinkdisconnect.h \
 	actions/valuenoderemove.h \
 	actions/valuenoderename.h \
-	actions/valuenodereplace.h
+	actions/valuenodereplace.h \
+	actions/wplistsethomogeneous.h \
+	actions/wplistunsethomogeneous.h
 
 VALUENODE_ACTION_CC = \
 	actions/valuenodeadd.cpp \
@@ -93,7 +95,9 @@ VALUENODE_ACTION_CC = \
 	actions/valuenodelinkdisconnect.cpp \
 	actions/valuenoderemove.cpp \
 	actions/valuenoderename.cpp \
-	actions/valuenodereplace.cpp
+	actions/valuenodereplace.cpp \
+	actions/wplistsethomogeneous.cpp \
+	actions/wplistunsethomogeneous.cpp
 
 
 WAYPOINT_ACTION_HH = \

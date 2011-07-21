@@ -1605,6 +1605,14 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 				wplist_value_node->set_loop(false);
 		}
+		if(element->get_attribute("homogeneous"))
+		{
+			String homogeneous=element->get_attribute("homogeneous")->get_value();
+			if(homogeneous=="true" || homogeneous=="1" || homogeneous=="TRUE" || homogeneous=="True")
+				wplist_value_node->set_homogeneous(true);
+			else
+				wplist_value_node->set_homogeneous(false);
+		}
 	}
 	else
 		value_node=ValueNode_DynamicList::create(type);

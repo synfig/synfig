@@ -204,7 +204,8 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 
 
 ValueNode_WPList::ValueNode_WPList():
-	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT)
+	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT),
+	homogeneous_(false)
 {
 }
 
