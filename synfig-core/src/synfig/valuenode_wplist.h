@@ -66,7 +66,7 @@ private:
 	ValueNode::RHandle bline_;
 	//! This member defines whether the widhtpoint uses the bline's length to
 	//! calculate the position of a widthpoint.
-	ValueNode::RHandle homogeneous_;
+	bool homogeneous_;
 public:
 
 	typedef etl::handle<ValueNode_WPList> Handle;
@@ -109,9 +109,9 @@ public:
 	//! Sets the bline RHandle
 	void set_bline(ValueNode::Handle b);
 	//! Gets the homogenous value
-	ValueNode::LooseHandle get_homogeneous() const;
+	bool get_homogeneous() const;
 	//! Sets the homogenous value
-	void set_homogeneous(ValueNode::Handle h);
+	void set_homogeneous(bool h);
 
 protected:
 
