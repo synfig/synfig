@@ -58,7 +58,6 @@ private:
 	synfig::Real width_;
 	synfig::Real expand_;
 	Real smoothness_;
-	bool homogeneous_;
 
 public:
 	enum CuspType
@@ -82,7 +81,6 @@ public:
 private:
 
 	bool connect_bline_to_wplist(etl::loose_handle<ValueNode> x);
-	bool connect_homogeneous_to_wplist(etl::loose_handle<ValueNode> x);
 	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
 	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
 	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp);

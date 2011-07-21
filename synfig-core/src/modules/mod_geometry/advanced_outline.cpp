@@ -78,7 +78,6 @@ Advanced_Outline::Advanced_Outline()
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
-	homogeneous_=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -491,7 +490,6 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		wplist_=value;
 		return true;
 	}
-	IMPORT_AS(homogeneous_, "homogeneous");
 	if(param=="vector_list")
 		return false;
 	return Layer_Polygon::set_param(param,value);
@@ -522,7 +520,6 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
-	EXPORT_AS(homogeneous_,"homogeneous");
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -587,10 +584,6 @@ Advanced_Outline::get_param_vocab()const
 		.set_origin("origin")
 		.set_description(_("List of width Points that defines the variable width"))
 	);
-	ret.push_back(ParamDesc("homogeneous")
-		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked the position is bline length based"))
-	);
 	return ret;
 }
 
@@ -602,11 +595,6 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 	{
 		if(!connect_bline_to_wplist(x))
 			synfig::warning("Advanced Outline: WPList doesn't accept new bline");
-	}
-	if(param=="homogeneous")
-	{
-		if(!connect_homogeneous_to_wplist(x))
-			synfig::warning("Advanced Outline: WPList doesn't accept new homogeneous");
 	}
 	if(param=="wplist")
 	{
@@ -621,17 +609,6 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 			else if(!connect_bline_to_wplist(iter->second))
 			{
 				synfig::warning("Advanced Outline: WPList doesn't accept new bline");
-				return false;
-			}
-			iter=dynamic_param_list().find("homogeneous");
-			if(iter==dynamic_param_list().end())
-			{
-				synfig::warning("Homogenous doesn't exist yet!!");
-				return false;
-			}
-			else if(!connect_homogeneous_to_wplist(iter->second))
-			{
-				synfig::warning("Advanced Outline: WPList doesn't accept new homogeneous");
 				return false;
 			}
 			return true;
@@ -672,33 +649,6 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
 	wplist->set_bline(ValueNode::Handle(x));
 	//synfig::info("set bline success");
-	return true;
-}
-
-bool
-Advanced_Outline::connect_homogeneous_to_wplist(etl::loose_handle<ValueNode> x)
-{
-	if(x->get_type() != ValueBase::TYPE_BOOL)
-	{
-		synfig::info("Not a bool");
-		return false;
-	}
-	ValueNode::LooseHandle vnode;
-	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
-	if(iter==dynamic_param_list().end())
-	{
-		synfig::warning("WPList doesn't exist yet");
-		return false;
-	}
-	ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
-	if(!wplist)
-	{
-		synfig::info("WPList is not ready: NULL");
-		return false;
-	}
-	if(!wplist->link_count())
-		synfig::warning("Advanced_Outline::connect_homogeneous_to_wplist: WPList::link_count()=0");
-	wplist->set_homogeneous(ValueNode::Handle(x));
 	return true;
 }
 
