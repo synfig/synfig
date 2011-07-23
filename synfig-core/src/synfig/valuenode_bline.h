@@ -55,11 +55,10 @@ ValueBase convert_bline_to_width_list(const ValueBase &bline);
 Real find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point = 0);
 
 //! Converts from standard to homogeneous index (considers the length)
-//! looped is for bline looping and loop is for index looping
-Real std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped);
+Real std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
 
 //! Converts from homogeneous to standard index
-Real hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped);
+Real hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
 
 
 /*! \class ValueNode_BLine

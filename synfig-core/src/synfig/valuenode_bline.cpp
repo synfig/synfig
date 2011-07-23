@@ -284,14 +284,14 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 }
 
 Real
-synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
+synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
 	BLinePoint blinepoint0, blinepoint1;
 	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	int size = list.size(), from_vertex;
-	if(!looped) size--;
+	if(!bline_loop) size--;
 	if(size < 1) return Real();
-	if (loop)
+	if (index_loop)
 	{
 		pos = pos - int(pos);
 		if (pos < 0) pos++;
@@ -308,7 +308,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
 	Real tl=0, pl=0, l;
 	std::vector<Real> lengths;
 	vector<BLinePoint>::const_iterator iter, next(list.begin());
-	iter = looped ? --list.end() : next++;
+	iter = bline_loop ? --list.end() : next++;
 	for(;next!=list.end(); next++)
 	{
 		blinepoint0 = *iter;
@@ -330,7 +330,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
 	// Calculate the remaining length of the position over current bezier
 	// Setup the curve of the current bezier.
 	next=list.begin();
-	iter = looped ? --list.end() : next++;
+	iter = bline_loop ? --list.end() : next++;
 	if (from_vertex > size-1) from_vertex = size-1; // if we are at the end of the last bezier
 	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
 	blinepoint1 = *(next+from_vertex);
@@ -343,14 +343,14 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool loop, bool looped)
 }
 
 Real
-synfig::hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped)
+synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
 	BLinePoint blinepoint0, blinepoint1;
 	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	int size = list.size(), from_vertex(0);
-	if(!looped) size--;
+	if(!bline_loop) size--;
 	if(size < 1) return Real();
-	if (loop)
+	if (index_loop)
 	{
 		pos = pos - int(pos);
 		if (pos < 0) pos++;
@@ -367,7 +367,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped)
 	Real tl(0), pl(0), mpl, bl, l;
 	std::vector<Real> lengths;
 	vector<BLinePoint>::const_iterator iter, next(list.begin());
-	iter = looped ? --list.end() : next++;
+	iter = bline_loop ? --list.end() : next++;
 	for(;next!=list.end(); next++)
 	{
 		blinepoint0 = *iter;
@@ -382,7 +382,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool loop, bool looped)
 	// Calculate the my partial length (the length where pos is)
 	mpl=pos*tl;
 	next=list.begin();
-	iter = looped ? --list.end() : next++;
+	iter = bline_loop ? --list.end() : next++;
 	std::vector<Real>::const_iterator liter(lengths.begin());
 	// Find the previous bezier where we pos is placed and the sum
 	// of lengths to it (pl)
