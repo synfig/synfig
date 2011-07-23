@@ -2155,6 +2155,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					bline_calc_vertex->set_link("bline", value_node->get_bline());
 					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
 					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(value_node->get_homogeneous()));
 					pduck->set_point((*bline_calc_vertex)(get_time()));
 					// hack end
 					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));

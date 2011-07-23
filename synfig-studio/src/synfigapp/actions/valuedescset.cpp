@@ -559,6 +559,10 @@ Action::ValueDescSet::prepare()
 					}
 					else
 						new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+					if(wplist->get_homogeneous())
+					{
+						new_amount=std_to_hom((*bline)(time), new_amount, wplist->get_loop(), bline->get_loop() );
+					}
 					Action::Handle action(Action::create("ValueDescSet"));
 					if(!action)
 						throw Error(_("Unable to find action ValueDescSet (bug)"));
