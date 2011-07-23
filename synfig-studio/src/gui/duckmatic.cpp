@@ -502,7 +502,7 @@ Duckmatic::update_ducks()
 						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
 						bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 						if(homogeneous)
-							amount=std_to_hom((*bline)(time), amount, bline->get_loop(), ((*(bline_vertex->get_link("loop")))(time).get(bool())) );
+							amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
 
@@ -2116,7 +2116,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			return true;
 		}
-		else // Checnk for WPList
+		else // Check for WPList
 		if(value_desc.is_value_node() &&
 			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
 		{

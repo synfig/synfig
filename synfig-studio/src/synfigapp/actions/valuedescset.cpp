@@ -421,7 +421,7 @@ Action::ValueDescSet::prepare()
 			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
 		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 		if(homogeneous)
-			new_amount=std_to_hom((*bline)(time), new_amount, bline->get_loop(), ((*(bline_vertex->get_link("loop")))(time).get(bool())) );
+			new_amount=std_to_hom((*bline)(time), new_amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
