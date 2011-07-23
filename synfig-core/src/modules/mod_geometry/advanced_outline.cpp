@@ -126,6 +126,19 @@ Advanced_Outline::sync()
 	{
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		bool homogeneous(false);
+		// Rescue the homogeneous option from the WPList
+		DynamicParamList::const_iterator dpiter(dynamic_param_list().find("wplist"));
+		if(dpiter!=dynamic_param_list().end())
+		{
+			ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(dpiter->second));
+			if(wplist)
+				homogeneous=wplist->get_homogeneous();
+			else
+				synfig::warning("WPlist is null!?");
+		}
+		else
+			synfig::warning("WPList not found!?");
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
@@ -258,6 +271,7 @@ Advanced_Outline::sync()
 			witer=wnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		Real ipos(0.0);
+		Real sipos(0.0);
 		// Fix bug of bad render of start (end) tip when the first
 		// (last) widthpoint has side type before (after) set to
 		// interpolate and it is at 0.0 (1.0). User expects the tip to
@@ -296,8 +310,9 @@ Advanced_Outline::sync()
 			// if we are exactly on the next widthpoint...
 			if(ipos==wnext_pos)
 			{
+				sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
 				// .. do tips. (If withpoint is interpolate it doesn't do anything).
-				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
+				Real bezier_ipos(bline_to_bezier(sipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
@@ -356,7 +371,8 @@ Advanced_Outline::sync()
 			{
 				ipos=wnext_pos;
 				// we need to consider if we are jumping any bezier too
-				while(ipos > bnext_pos && bnext+1!=bend)
+				sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
+				while(sipos > bnext_pos && bnext+1!=bend)
 				{
 					// keep track of last tangent
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
@@ -372,14 +388,15 @@ Advanced_Outline::sync()
 				continue;
 			}
 			// If we are exactly on the first blinepoint...
-			if(ipos==biter_pos)
+			sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
+			if(sipos==biter_pos)
 			{
 				// ... do cusp at ipos
 				// notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
-				if(ipos==biter_pos && split_flag)
+				if(sipos==biter_pos && split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
@@ -388,16 +405,18 @@ Advanced_Outline::sync()
 			{
 				// If during the interpolation travel, we passed a
 				// widhpoint...
-				if(ipos > wnext_pos && bnext_pos >= wnext_pos)
+				Real swnext_pos(homogeneous?hom_to_std(bline, wnext_pos, wplist_.get_loop(), blineloop):wnext_pos);
+				if(ipos > wnext_pos && bnext_pos >= swnext_pos)
 				{
 					// ... just stay on it and ...
 					ipos=wnext_pos;
+					sipos=swnext_pos;
 					// ... add interpolation for the last step
-					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
 					Real ww;
 					// last step has width of zero if the widthpoint is not interpolate
 					// on the before side.
@@ -413,14 +432,15 @@ Advanced_Outline::sync()
 					// bnext_pos
 					break;
 				}
-				else if(ipos > bnext_pos && bnext_pos < wnext_pos)
+				else if(sipos > bnext_pos && bnext_pos < swnext_pos)
 				{
-					ipos=bnext_pos;
-					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					sipos=bnext_pos;
+					ipos=homogeneous?std_to_hom(bline, bnext_pos, wplist_.get_loop(), blineloop):bnext_pos;
+					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
 					const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
@@ -436,15 +456,16 @@ Advanced_Outline::sync()
 					break;
 				}
 				// Add interpolation
-				Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+				Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 				const Vector d(deriv(q).perp().norm());
-				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+				const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
 				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
+				sipos = homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
 			} while (1); // secondary loop
 		} while(1); // main loop
 
