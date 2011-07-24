@@ -152,7 +152,7 @@ Advanced_Outline::sync()
 		// used to draw sharp cusp on the last step.
 		Vector first_tangent;
 		// Used to remember first tangent only once
-		bool first;
+		bool first(true);
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
@@ -326,6 +326,7 @@ Advanced_Outline::sync()
 					// There is always a widthpoint at the end (and start)
 					// when it is blinelooped and interpolated on last blinepoint.
 					// ... let's make the last cusp...
+					wnext=wplist.begin();
 					if(blineloop && bnext->get_split_tangent_flag())
 					{
 						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
