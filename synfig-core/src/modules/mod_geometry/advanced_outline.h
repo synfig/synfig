@@ -85,6 +85,7 @@ private:
 	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
 	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp);
 	void add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real width);
+	Real step(Real ipos, Real witer_pos, Real wnext_pos, Real biter_pos, Real bnext_pos);
 };
 
 /* === E N D =============================================================== */
