@@ -54,9 +54,6 @@ using namespace etl;
 
 /* === M A C R O S ========================================================= */
 #define SAMPLES		50
-#define ANGLE_ERROR		0.01
-#define MINIMUM_STD_STEP	0.001
-#define IMPROVE_STEPS	true
 #define ROUND_END_FACTOR	(4)
 #define CUSP_THRESHOLD		(0.40)
 #define SPIKE_AMOUNT		(4)
@@ -251,13 +248,17 @@ Advanced_Outline::sync()
 
 		// Sort the wplist again to place the two new widthpoints on place.
 		sort(wplist.begin(),wplist.end());
-		/////////////////////////////DEBUG/////////////////////////////
+		////////////////////////////////////////////////////////////////
 		//list the wplist
 		//synfig::info("------");
 		//for(witer=wplist.begin();witer!=wplist.end();witer++)
 			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
 		//synfig::info("------");
-		////////////////////////////DEBUG//////////////////////////////
+		////////////////////////////////////////////////////////////////
+		// TODO: step should be a function of the current situation
+		// i.e.: where in the bline, and where in wplist so we could go
+		// faster or slower when needed.
+		Real step(1.0/SAMPLES/bline_size);
 		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
 		// then the current widthpoint would be the last one if blinelooped...
@@ -464,30 +465,8 @@ Advanced_Outline::sync()
 				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
-				// get the standard position
+				ipos = ipos + step;
 				sipos = homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
-				Real witer_pos((*witer).get_norm_position());
-				witer_pos = homogeneous?hom_to_std(bline, witer_pos, wplist_.get_loop(), blineloop):witer_pos;
-				// calculate a new standard positon based on the surrounding points (width and bline)
-				Real sipos_new = sipos + step(sipos, witer_pos, swnext_pos, biter_pos, bnext_pos);
-				// if we stay in the same bezier...
-				if(sipos_new <  bnext_pos && IMPROVE_STEPS)
-				{
-					// Lets compare the new position with the tangent on previous position
-					// to see how much polygonal is the step we are doing
-					Vector p2(curve(bline_to_bezier(sipos_new, biter_pos, bezier_size)));
-					Vector d2(deriv(q).norm());
-					Vector on_curve(Vector(p2-p).norm());
-					Real cosfi(on_curve*d2);
-					while ((1.0-cosfi) > ANGLE_ERROR && (sipos_new-sipos) > MINIMUM_STD_STEP)
-					{
-						sipos_new = sipos_new - (sipos_new-sipos)/2;
-						p2=curve(bline_to_bezier(sipos_new, biter_pos, bezier_size));
-						on_curve=Vector(p2-p).norm();
-						cosfi=on_curve*d2;
-					}
-				}
-				ipos = homogeneous?std_to_hom(bline, sipos_new, wplist_.get_loop(), blineloop):sipos_new;
 			} while (1); // secondary loop
 		} while(1); // main loop
 
@@ -913,13 +892,4 @@ Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_
 	default:
 		break;
 	}
-}
-
-Real
-Advanced_Outline::step(Real ipos, Real wipos, Real wnpos, Real bipos, Real bnpos)
-{
-	if(ipos < wnpos && ipos < bnpos && ipos > wipos && ipos > bipos)
-		return min(min(min(bnpos-wipos, bnpos-bipos), wnpos-wipos), wnpos-bipos)/SAMPLES;
-	else
-		return (bnpos-bipos)/SAMPLES;
 }
