@@ -153,6 +153,8 @@ Advanced_Outline::sync()
 		Vector first_tangent;
 		// Used to remember first tangent only once
 		bool first(true);
+		// Used to remember if in the next loop we should do a middle corner
+		bool middle_corner(false);
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
@@ -353,6 +355,7 @@ Advanced_Outline::sync()
 					//  interpolate before. Noticiable for the FLAT case
 					// or when the width is smaller than the step on the bezier.
 					ipos=ipos+EPSILON;
+					middle_corner=false;
 					// continue with the main loop
 					continue;
 				}
@@ -386,21 +389,23 @@ Advanced_Outline::sync()
 					bnext_pos=bindex*bezier_size;
 				}
 				// continue with the main loop
+				middle_corner=false;
 				continue;
 			}
 			// If we are exactly on the first blinepoint...
 			sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
-			if(sipos==biter_pos)
+			if(middle_corner==true)
 			{
 				// ... do cusp at ipos
 				// notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
-				if(sipos==biter_pos && split_flag)
+				if(split_flag)
 				{
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
 				}
+				middle_corner=false;
 			}
 			do // secondary loop. For interpolation steps.
 			{
@@ -437,6 +442,7 @@ Advanced_Outline::sync()
 				{
 					sipos=bnext_pos;
 					ipos=homogeneous?std_to_hom(bline, bnext_pos, wplist_.get_loop(), blineloop):bnext_pos;
+					middle_corner=true;
 					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
