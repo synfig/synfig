@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file blinepoint.cpp
+/*!	\file widthpoint.cpp
 **	\brief Template File for a Width Point implementation
 **
 **	$Id$
