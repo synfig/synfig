@@ -417,7 +417,9 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// homogenous position
 	// Secant method: http://en.wikipedia.org/wiki/Secant_method
 	Real sn(0.0); // the standard position on current bezier
-	Real sn1(0.0), sn2(1.0);
+	Real pos1=(pos-0.1)< 0.0?0.0:(pos-0.1);
+	Real pos2=(pos+0.1)> 1.0?1.0:(pos+0.1);
+	Real sn1(pos1), sn2(pos2);
 	Real t0((mpl-pl)/bl); // the homogenous position on the current bezier
 	int iterations=0;
 	int max_iterations=100;
