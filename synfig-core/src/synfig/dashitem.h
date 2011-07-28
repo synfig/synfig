@@ -28,7 +28,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "uniqueid.h"
 #include "widthpoint.h"
 
 /* === M A C R O S ========================================================= */
@@ -44,6 +43,7 @@ class DashItem : public WidthPoint
 public:
 
 	DashItem();
+	DashItem(const DashItem &ref);
 	DashItem(Real position, Real length, int sidebefore=TYPE_FLAT,
 		int sideafter=TYPE_FLAT);
 

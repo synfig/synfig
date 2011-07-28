@@ -55,9 +55,14 @@ DashItem::DashItem()
 	set_side_type_after(TYPE_FLAT);
 }
 
+DashItem::DashItem(const DashItem &ref) :
+WidthPoint::WidthPoint(ref.get_offset(), ref.get_length(), ref.get_side_type_before(), ref.get_side_type_after())
+{
+}
+
 DashItem::DashItem(Real offset, Real length, int sidebefore, int sideafter)
 {
-	set_offset(position);
+	set_offset(offset);
 	set_width(length);
 	set_side_type_before(sidebefore);
 	set_side_type_after(sideafter);
