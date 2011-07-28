@@ -228,6 +228,14 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.back().name="width";
 				channels.back().color=Gdk::Color("#00ff00");
 				break;
+			case ValueBase::TYPE_DASHITEM:
+				channels.push_back(Channel());
+				channels.back().name="offset";
+				channels.back().color=Gdk::Color("#ff0000");
+				channels.push_back(Channel());
+				channels.back().name="length";
+				channels.back().color=Gdk::Color("#00ff00");
+				break;
 			default:
 				throw synfig::Exception::BadType("Bad type for curves");
 		}
