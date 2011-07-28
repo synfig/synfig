@@ -106,10 +106,11 @@ ValueNode_DIList::ListEntry
 ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 {
 	ValueNode_DIList::ListEntry ret;
+	synfig::DashItem inserted;
 	int new_index(find_prev_valid_entry(index, time));
 	ret.index=new_index;
 	ret.set_parent_value_node(this);
-	ret.value_node=ValueNode_Composite::create(ret);
+	ret.value_node=ValueNode_Composite::create(inserted);
 	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
 }
@@ -130,7 +131,7 @@ ValueNode_DIList::operator()(Time t)const
 	// go through all the list's entries
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
-		// how 'on' is this widthpoint?
+		// how 'on' is this dashitem?
 		float amount(iter->amount_at_time(t,&rising));
 		assert(amount>=0.0f);
 		assert(amount<=1.0f);
