@@ -305,21 +305,10 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	if(pos == 0.0 || pos == 1.0)
 		return pos;
 	// Calculate the lengths and the total length
-	Real tl=0, pl=0, l;
+	Real tl=0, pl=0;
 	std::vector<Real> lengths;
-	vector<BLinePoint>::const_iterator iter, next(list.begin());
-	iter = bline_loop ? --list.end() : next++;
-	for(;next!=list.end(); next++)
-	{
-		blinepoint0 = *iter;
-		blinepoint1 = *next;
-		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
-							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-		l=curve.length();
-		tl+=l;
-		lengths.push_back(l);
-		iter=next;
-	}
+	vector<BLinePoint>::const_iterator iter, next;
+	tl=bline_length(bline, bline_loop, &lengths);
 	// If the total length of the bline is zero return pos
 	if(tl==0.0) return pos;
 	from_vertex = int(pos*size);
@@ -364,21 +353,10 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	if(pos == 0.0 || pos == 1.0)
 		return pos;
 	// Calculate the lengths and the total length
-	Real tl(0), pl(0), mpl, bl, l;
+	Real tl(0), pl(0), mpl, bl;
 	std::vector<Real> lengths;
-	vector<BLinePoint>::const_iterator iter, next(list.begin());
-	iter = bline_loop ? --list.end() : next++;
-	for(;next!=list.end(); next++)
-	{
-		blinepoint0 = *iter;
-		blinepoint1 = *next;
-		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
-							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-		l=curve.length();
-		tl+=l;
-		lengths.push_back(l);
-		iter=next;
-	}
+	vector<BLinePoint>::const_iterator iter, next;
+	tl=bline_length(bline, bline_loop,&lengths);
 	// Calculate the my partial length (the length where pos is)
 	mpl=pos*tl;
 	next=list.begin();
@@ -442,6 +420,32 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// convert the current standard index (s) to the bline's standard index
 	// and return it
 	return Real(from_vertex + sn)/size;
+}
+
+Real
+synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size(list.size());
+	if(!bline_loop) size--;
+	if(size < 1) return Real();
+	// Calculate the lengths and the total length
+	Real tl(0), l;
+	vector<BLinePoint>::const_iterator iter, next(list.begin());
+	iter = bline_loop ? --list.end() : next++;
+	for(;next!=list.end(); next++)
+	{
+		blinepoint0 = *iter;
+		blinepoint1 = *next;
+		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+		l=curve.length();
+		if(lengths) lengths->push_back(l);
+		tl+=l;
+		iter=next;
+	}
+	return tl;
 }
 /* === M E T H O D S ======================================================= */
 

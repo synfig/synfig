@@ -60,6 +60,9 @@ Real std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_lo
 //! Converts from homogeneous to standard index
 Real hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
 
+//! Returns the length of the bline
+Real bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths);
+
 
 /*! \class ValueNode_BLine
 **	\brief \writeme
