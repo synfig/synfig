@@ -194,3 +194,16 @@ ValueNode_DIList::set_bline(ValueNode::Handle b)
 {
 	bline_=b;
 }
+
+bool
+ValueNode_DIList::get_enabled() const
+{
+	return enabled_;
+}
+
+void
+ValueNode_DIList::set_enabled(bool x)
+{
+	enabled_=x;
+}
+
