@@ -101,6 +101,15 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
 			break;
 		}
+		case ValueBase::TYPE_DASHITEM:
+		{
+			DashItem ditem(value);
+			set_link("offset",ValueNode_Const::create(ditem.get_offset()));
+			set_link("length",ValueNode_Const::create(ditem.get_length()));
+			set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
+			set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
+			break;
+		}
 		default:
 			assert(0);
 			throw Exception::BadType(ValueBase::type_local_name(get_type()));
@@ -183,6 +192,16 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_side_type_after((*components[3])(t).get(int()));
 			return ret;
 		}
+		case ValueBase::TYPE_DASHITEM:
+		{
+			DashItem ret;
+			assert(components[0] && components[1] && components[2] && components[3]);
+			ret.set_offset((*components[0])(t).get(Real()));
+			ret.set_length((*components[1])(t).get(Real()));
+			ret.set_side_type_before((*components[2])(t).get(int()));
+			ret.set_side_type_after((*components[3])(t).get(int()));
+			return ret;
+		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
@@ -244,7 +263,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return true;
 			}
 			break;
-
+		case ValueBase::TYPE_DASHITEM:
 		case ValueBase::TYPE_WIDTHPOINT:
 			if((i==0 || i==1) && x->get_type()==ValueBase(Real()).get_type())
 			{
@@ -256,13 +275,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				components[i]=x;
 				return true;
 			}
-			if(i==4 && x->get_type()==ValueBase(Vector()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
 			break;
-
 		default:
 			break;
 	}
@@ -350,6 +363,15 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
+	case ValueBase::TYPE_DASHITEM:
+		if(name=="offset")
+			return 0;
+		if(name=="length")
+			return 1;
+		if(name=="side_before")
+			return 2;
+		if(name=="side_after")
+			return 3;
 	default:
 		break;
 	}
@@ -376,8 +398,9 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_SEGMENT ||
 		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_BLINEPOINT||
-		type==ValueBase::TYPE_WIDTHPOINT;
+		type==ValueBase::TYPE_BLINEPOINT ||
+		type==ValueBase::TYPE_WIDTHPOINT ||
+		type==ValueBase::TYPE_DASHITEM;
 }
 
 LinkableValueNode::Vocab
@@ -486,6 +509,36 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("Defines the interpolation type of the width point"))
 			.set_hint("enum")
 			.add_enum_value(WidthPoint::TYPE_INTERPOLATE,"interpolate",_("Interpolate"))
+			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+		return ret;
+	case ValueBase::TYPE_DASHITEM:
+		ret.push_back(ParamDesc(ValueBase(),"offset")
+			.set_local_name(_("Offset"))
+			.set_description(_("The offset length of the Dash Item over the BLine"))
+			.set_is_distance()
+		);
+		ret.push_back(ParamDesc(ValueBase(),"length")
+			.set_local_name(_("Length"))
+			.set_description(_("The length of the Dash Item"))
+			.set_is_distance()
+		);
+		ret.push_back(ParamDesc(ValueBase(),"side_before")
+			.set_local_name(_("Side Type Before"))
+			.set_description(_("Defines the interpolation type of the width point"))
+			.set_hint("enum")
+			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
+			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
+			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
+			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+			);
+		ret.push_back(ParamDesc(ValueBase(),"side_after")
+			.set_local_name(_("Side Type After"))
+			.set_description(_("Defines the interpolation type of the width point"))
+			.set_hint("enum")
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))

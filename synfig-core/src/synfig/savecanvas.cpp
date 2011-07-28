@@ -44,6 +44,7 @@
 #include "valuenode_reference.h"
 #include "valuenode_bline.h"
 #include "valuenode_wplist.h"
+#include "dashitem.h"
 #include "time.h"
 #include "keyframe.h"
 #include "layer.h"
@@ -205,6 +206,16 @@ xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
 	return root;
 }
 
+xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
+{
+	root->set_name(ValueBase::type_name(ValueBase::TYPE_DASHITEM));
+	encode_real(root->add_child("offset")->add_child("real"),dash_item.get_offset());
+	encode_real(root->add_child("length")->add_child("real"),dash_item.get_length());
+	encode_integer(root->add_child("side_before")->add_child("integer"),dash_item.get_side_type_before());
+	encode_integer(root->add_child("side_after")->add_child("integer"),dash_item.get_side_type_after());
+	return root;
+}
+
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x,bool s=false)
 {
 	root->set_name("gradient");
@@ -261,6 +272,8 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_bline_point(root,data.get(BLinePoint()));
 	case ValueBase::TYPE_WIDTHPOINT:
 		return encode_width_point(root,data.get(WidthPoint()));
+	case ValueBase::TYPE_DASHITEM:
+		return encode_dash_item(root,data.get(DashItem()));
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()), data.get_static());
 	case ValueBase::TYPE_LIST:
