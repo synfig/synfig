@@ -45,6 +45,7 @@
 
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_dilist.h>
 #include <synfig/valuenode_composite.h>
 
 #endif
@@ -104,6 +105,9 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_INTERPOLATE);
 	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_INTERPOLATE);
 	wplist_=wpoint_list;
+	vector<DashItem> ditem_list;
+	ditem_list.push_back(DashItem());
+	dilist_=ditem_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 }
@@ -518,6 +522,11 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		wplist_=value;
 		return true;
 	}
+	if(param=="dilist" && value.get_type()==ValueBase::TYPE_LIST)
+	{
+		dilist_=value;
+		return true;
+	}
 	if(param=="vector_list")
 		return false;
 	return Layer_Polygon::set_param(param,value);
@@ -548,6 +557,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
+	EXPORT_AS(dilist_, "dilist");
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -612,17 +622,24 @@ Advanced_Outline::get_param_vocab()const
 		.set_origin("origin")
 		.set_description(_("List of width Points that defines the variable width"))
 	);
+	ret.push_back(ParamDesc("dilist")
+		.set_local_name(_("Dash Item List"))
+		.set_hint("dash")
+		.set_origin("origin")
+		.set_description(_("List of dash items that defines the dashed outline"))
+	);
 	return ret;
 }
 
 bool
 Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
 {
-	//synfig::info("attempting to connect %s", param.c_str());
 	if(param=="bline")
 	{
 		if(!connect_bline_to_wplist(x))
 			synfig::warning("Advanced Outline: WPList doesn't accept new bline");
+		if(!connect_bline_to_dilist(x))
+			synfig::warning("Advanced Outline: DIList doesn't accept new bline");
 	}
 	if(param=="wplist")
 	{
@@ -644,6 +661,27 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 		else
 			return false;
 	}
+	if(param=="dilist")
+	{
+		if(Layer::connect_dynamic_param(param, x))
+		{
+			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
+			if(iter==dynamic_param_list().end())
+			{
+				synfig::warning("BLine doesn't exist yet!!");
+				return false;
+			}
+			else if(!connect_bline_to_dilist(iter->second))
+			{
+				synfig::warning("Advanced Outline: DIList doesn't accept new bline");
+				return false;
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+
 	return Layer::connect_dynamic_param(param, x);
 }
 
@@ -677,6 +715,39 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
 	wplist->set_bline(ValueNode::Handle(x));
 	//synfig::info("set bline success");
+	return true;
+}
+
+bool
+Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
+{
+	if(x->get_type() != ValueBase::TYPE_LIST)
+	{
+		synfig::info("Not a list");
+		return false;
+	}
+	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
+	{
+		synfig::info("No blinepoints!");
+		return false;
+	}
+	ValueNode::LooseHandle vnode;
+	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
+	if(iter==dynamic_param_list().end())
+	{
+		synfig::warning("DIList doesn't exist yet");
+		return false;
+	}
+	ValueNode_DIList::Handle dilist(ValueNode_DIList::Handle::cast_dynamic(iter->second));
+	if(!dilist)
+	{
+		synfig::info("DIList is not ready: NULL");
+		return false;
+	}
+	if(!dilist->link_count())
+		synfig::warning("Advanced_Outline::connect_bline_to_dilist: DIList::link_count()=0");
+	dilist->set_bline(ValueNode::Handle(x));
+	synfig::info("success dlilist");
 	return true;
 }
 
