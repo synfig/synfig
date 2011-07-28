@@ -316,7 +316,7 @@ Widget_ValueBase::get_value()
 		value=vector_widget->get_value();
 		break;
 	case ValueBase::TYPE_REAL:
-		if(param_desc.get_is_distance() && canvas)
+		if((child_param_desc.get_is_distance() || param_desc.get_is_distance()) && canvas)
 			value=distance_widget->get_value().units(canvas->rend_desc());
 		else
 			value=real_widget->get_value();
