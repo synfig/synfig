@@ -67,6 +67,8 @@
 #include "actions/valuenoderemove.h"
 #include "actions/wplistsethomogeneous.h"
 #include "actions/wplistunsethomogeneous.h"
+#include "actions/dilistenable.h"
+#include "actions/dilistdisable.h"
 
 #include "actions/valuedescset.h"
 #include "actions/valuedescexport.h"
@@ -193,6 +195,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeRemove);
 	ADD_ACTION(Action::WPListSetHomogeneous);
 	ADD_ACTION(Action::WPListUnSetHomogeneous);
+	ADD_ACTION(Action::DIListEnable);
+	ADD_ACTION(Action::DIListDisable);
 
 	ADD_ACTION(Action::ValueDescSet);
 	ADD_ACTION(Action::ValueDescExport);
