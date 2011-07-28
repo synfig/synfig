@@ -44,6 +44,7 @@
 #include "valuenode_reference.h"
 #include "valuenode_bline.h"
 #include "valuenode_wplist.h"
+#include "valuenode_dilist.h"
 #include "dashitem.h"
 #include "time.h"
 #include "keyframe.h"
@@ -390,6 +391,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 	ValueNode_BLine::ConstHandle bline_value_node(ValueNode_BLine::ConstHandle::cast_dynamic(value_node));
 	ValueNode_WPList::ConstHandle wplist_value_node(ValueNode_WPList::ConstHandle::cast_dynamic(value_node));
+	ValueNode_DIList::ConstHandle dilist_value_node(ValueNode_DIList::ConstHandle::cast_dynamic(value_node));
 
 	if(bline_value_node)
 	{
@@ -408,6 +410,17 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 			root->set_attribute("homogeneous", "true");
 		else
 			root->set_attribute("homogeneous", "false");
+	}
+	if(dilist_value_node)
+	{
+		if(dilist_value_node->get_loop())
+			root->set_attribute("loop","true");
+		else
+			root->set_attribute("loop","false");
+		if(dilist_value_node->get_enabled())
+			root->set_attribute("enabled", "true");
+		else
+			root->set_attribute("enabled", "false");
 	}
 
 	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
