@@ -58,7 +58,8 @@ using namespace synfig;
 
 
 ValueNode_DIList::ValueNode_DIList():
-	ValueNode_DynamicList(ValueBase::TYPE_DASHITEM)
+	ValueNode_DynamicList(ValueBase::TYPE_DASHITEM),
+	enabled_(false)
 {
 }
 
