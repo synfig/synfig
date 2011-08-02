@@ -52,7 +52,7 @@ using namespace studio;
 
 KeyFrameDial::KeyFrameDial(): Gtk::Table(1, 3, false)
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
 	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
 	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
@@ -67,8 +67,9 @@ Gtk::Button *
 KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 		const char * tooltip)
 {
-	Gtk::Button *button = manage(new class Gtk::Button());
+	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
+	Gtk::Button *button = manage(new class Gtk::Button());
 	button->add(*icon);
 	tooltips.set_tip(*button, tooltip);
 	icon->set_padding(0, 0);
@@ -83,8 +84,9 @@ Gtk::Button *
 KeyFrameDial::create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & stockid,
 		const char * tooltip)
 {
+	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::Button *button = manage(new class Gtk::Button());
-	Gtk::Image *icon = manage(new Gtk::Image(stockid, iconsize));
 	button->add(*icon);
 	tooltips.set_tip(*button, tooltip);
 	icon->set_padding(0, 0);

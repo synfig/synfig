@@ -2802,7 +2802,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 
 	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_all"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_all"),iconsize));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("All keyframes locked"));
@@ -2811,7 +2811,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if((mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future"),iconsize));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("Future keyframes locked"));
@@ -2820,7 +2820,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past"),iconsize));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("Past keyframes locked"));
@@ -2829,7 +2829,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_none"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_none"),iconsize));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("No keyframes locked"));
