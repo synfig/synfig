@@ -2786,7 +2786,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("In Animate Editing Mode"));
+		tooltips.set_tip(*animatebutton,_("In animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2795,7 +2795,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("Not in Animate Editing Mode"));
+		tooltips.set_tip(*animatebutton,_("Not in animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2805,7 +2805,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_all"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
-		tooltips.set_tip(*keyframebutton,_("All Keyframes Locked"));
+		tooltips.set_tip(*keyframebutton,_("All keyframes locked"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2814,7 +2814,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
-		tooltips.set_tip(*keyframebutton,_("Future Keyframes Locked"));
+		tooltips.set_tip(*keyframebutton,_("Future keyframes locked"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2823,7 +2823,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
-		tooltips.set_tip(*keyframebutton,_("Past Keyframes Locked"));
+		tooltips.set_tip(*keyframebutton,_("Past keyframes locked"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2832,7 +2832,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_none"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
-		tooltips.set_tip(*keyframebutton,_("No Keyframes Locked"));
+		tooltips.set_tip(*keyframebutton,_("No keyframes locked"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
