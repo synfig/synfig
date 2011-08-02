@@ -54,9 +54,9 @@ KeyFrameDial::KeyFrameDial(): Gtk::Table(1, 3, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous KeyFrame"));
-	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next KeyFrame"));
-	lock_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_all",_("All Keyframes Locked"));
+	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
+	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
+	lock_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_all",_("All keyframes locked"));
 
 	attach(*seek_prev_keyframe, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_next_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
