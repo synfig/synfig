@@ -959,8 +959,6 @@ CanvasView::get_pixel_sizes()
 Gtk::Widget *
 CanvasView::create_time_bar()
 {
-	Gtk::Image *icon;
-
 	//Setup the Time Slider and the Time window scroll
 	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_window_adjustment()));
 	//Gtk::HScrollbar *time_scroll = manage(new class Gtk::HScrollbar(time_adjustment()));
@@ -985,9 +983,14 @@ CanvasView::create_time_bar()
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
-	SMALL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
-	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
+	animatebutton = Gtk::manage(new class Gtk::ToggleButton());
+	icon->set_padding(0,0);
+	icon->show();
+	animatebutton->add(*icon);
+	animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &studio::CanvasView::toggle_animatebutton));
+	animatebutton->set_relief(Gtk::RELIEF_NONE);
 	animatebutton->show();
 
 	//Setup the audio display
@@ -2775,11 +2778,11 @@ void
 CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 {
 	// If the animate flag was set in mode...
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon;
 	if(mode&synfigapp::MODE_ANIMATE)
 	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("gtk-no"),iconsize));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("In Animate Editing Mode"));
@@ -2788,8 +2791,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else
 	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("gtk-yes"),iconsize));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("Not in Animate Editing Mode"));
@@ -2799,7 +2801,6 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 
 	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_all"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
@@ -2809,7 +2810,6 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if((mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
@@ -2819,7 +2819,6 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
@@ -2829,7 +2828,6 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	}
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
 	{
-		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_none"),Gtk::ICON_SIZE_BUTTON));
 		keyframebutton->remove();
 		keyframebutton->add(*icon);
@@ -2842,7 +2840,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 }
 
 void
-CanvasView::on_animate_button_pressed()
+CanvasView::toggle_animatebutton()
 {
 	if(get_mode()&synfigapp::MODE_ANIMATE)
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE);

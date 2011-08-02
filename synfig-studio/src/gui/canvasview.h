@@ -265,7 +265,7 @@ private:
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
 	Gtk::Table *displaybar;
-	Gtk::Button *animatebutton;
+	Gtk::ToggleButton *animatebutton;
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
@@ -452,6 +452,8 @@ private:
 	void toggle_show_grid();
 	void toggle_snap_grid();
 	void toggle_onion_skin();
+
+	void toggle_animatebutton();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
