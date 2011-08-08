@@ -205,7 +205,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 
 ValueNode_WPList::ValueNode_WPList():
 	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT),
-	homogeneous_(false)
+	homogeneous_(true) // true by default for new layers
 {
 }
 
@@ -236,7 +236,6 @@ ValueNode_WPList::create(const ValueBase &value)
 				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
 			}
 			value_node->set_loop(value.get_loop());
-			value_node->set_homogeneous(false);
 		}
 			break;
 		default:

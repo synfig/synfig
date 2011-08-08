@@ -1725,6 +1725,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	else if(element->get_name()=="wplist")
 	{
 		value_node=wplist_value_node=ValueNode_WPList::create();
+		// Set it to false when reading a file.
+		wplist_value_node->set_homogeneous(false);
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
