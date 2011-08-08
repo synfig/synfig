@@ -2127,6 +2127,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				error("expected a ValueNode_WPList");
 				assert(0);
 			}
+			Layer::Handle layer_parent;
+			if(value_desc.parent_is_layer_param())
+				layer_parent=value_desc.get_layer();
+			if(layer_parent)
+				{
+					String layer_name(layer_parent->get_name());
+					if(layer_name=="advanced_outline")
+						synfig::info("found advanced ouline layer");
+				}
 			int i;
 			for (i = 0; i < value_node->link_count(); i++)
 			{
