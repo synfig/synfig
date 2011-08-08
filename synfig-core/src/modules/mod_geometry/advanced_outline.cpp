@@ -756,7 +756,7 @@ Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 	if(!dilist->link_count())
 		synfig::warning("Advanced_Outline::connect_bline_to_dilist: DIList::link_count()=0");
 	dilist->set_bline(ValueNode::Handle(x));
-	synfig::info("success dlilist");
+	//synfig::info("success dlilist");
 	return true;
 }
 
