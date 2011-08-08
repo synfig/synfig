@@ -366,23 +366,23 @@ ValueBase::operator==(const ValueBase& rhs)const
 
 	switch(get_type())
 	{
-	case TYPE_TIME:			   return get(Time()).is_equal(rhs.get(Time()));
-	case TYPE_REAL:			   return abs(get(Real())-rhs.get(Real()))<=0.00000000000001;
-	case TYPE_INTEGER:		   return get(int())==rhs.get(int());
-	case TYPE_BOOL:			   return get(bool())==rhs.get(bool());
-	case TYPE_ANGLE:		   return get(Angle())==rhs.get(Angle());
-	case TYPE_VECTOR:		   return get(Vector()).is_equal_to(rhs.get(Vector()));
-	case TYPE_COLOR:		   return get(Color())==rhs.get(Color());
-	case TYPE_STRING:		   return get(String())==rhs.get(String());
-	case TYPE_CANVAS:		   return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
-	case TYPE_LIST:			   return get_list()==rhs.get_list();
-	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
-	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
-	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
-	case TYPE_WIDTHPOINT:	   return get(WidthPoint())==rhs.get(WidthPoint());
-	case TYPE_DASHITEM:		   return get(DashItem())==rhs.get(DashItem());
+	case TYPE_TIME:            return get(Time()).is_equal(rhs.get(Time()));
+	case TYPE_REAL:            return abs(get(Real())-rhs.get(Real()))<=0.00000000000001;
+	case TYPE_INTEGER:         return get(int())==rhs.get(int());
+	case TYPE_BOOL:            return get(bool())==rhs.get(bool());
+	case TYPE_ANGLE:           return get(Angle())==rhs.get(Angle());
+	case TYPE_VECTOR:          return get(Vector()).is_equal_to(rhs.get(Vector()));
+	case TYPE_COLOR:           return get(Color())==rhs.get(Color());
+	case TYPE_STRING:          return get(String())==rhs.get(String());
+	case TYPE_CANVAS:          return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
+	case TYPE_LIST:            return get_list()==rhs.get_list();
+	case TYPE_WIDTHPOINT:      return get(WidthPoint())==rhs.get(WidthPoint());
+	case TYPE_DASHITEM:        return get(DashItem())==rhs.get(DashItem());
+	case TYPE_SEGMENT:      // return get(Segment())==rhs.get(Segment());
+	case TYPE_GRADIENT:     // return get(Gradient())==rhs.get(Gradient());
+	case TYPE_BLINEPOINT:   // return get(BLinePoint())==rhs.get(BLinePoint());
 	case TYPE_NIL:
-	default:				   return false;
+	default:                   return false;
 	}
 	return false;
 }
