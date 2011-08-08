@@ -50,9 +50,11 @@ class FrameDial : public Gtk::Table
 	Gtk::Tooltips tooltips;
 
 	Gtk::Button *seek_begin;
+	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_prev_frame;
 	Gtk::Button *play_stop;
 	Gtk::Button *seek_next_frame;
+	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
 
 	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
@@ -62,10 +64,12 @@ public:
 	FrameDial();
 
 	Glib::SignalProxy0<void> signal_seek_begin()		{ return seek_begin->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_keyframe()	{ return seek_prev_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_frame()	{ return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play_stop()			{ return play_stop->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_play_stop()		{ return play_stop->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_next_frame()	{ return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()			{ return seek_end->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_next_keyframe()	{ return seek_next_keyframe->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_end()		{ return seek_end->signal_clicked(); }
 
 	Gtk::Button *get_play_button() { return play_stop; }
 

@@ -51,26 +51,25 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(5, 1, false)
+FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
-	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,
-					_("Seek to Begin"));
-	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,
-					_("Previous Frame"));
-	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,
-					_("Play"));
-	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,
-					_("Next Frame"));
-	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,
-					_("Seek to End"));
+	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,_("Seek to Begin"));
+	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
+	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,_("Previous Frame"));
+	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,_("Play"));
+	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,_("Next Frame"));
+	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
+	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,_("Seek to End"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_frame, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*play_stop, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_prev_frame, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*play_stop, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_next_frame, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_next_keyframe, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_end, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::Button *

@@ -50,17 +50,17 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-KeyFrameDial::KeyFrameDial(): Gtk::Table(1, 3, false)
+KeyFrameDial::KeyFrameDial(): Gtk::Table(1, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
-	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
-	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
+//	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
+//	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
 	lock_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_all",_("All keyframes locked"));
 
-	attach(*seek_prev_keyframe, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*lock_keyframe, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+//	attach(*seek_prev_keyframe, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+//	attach(*seek_next_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*lock_keyframe, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::Button *
@@ -79,7 +79,7 @@ KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 
 	return button;
 }
-
+/*
 Gtk::Button *
 KeyFrameDial::create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & stockid,
 		const char * tooltip)
@@ -96,3 +96,4 @@ KeyFrameDial::create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & st
 
 	return button;
 }
+*/

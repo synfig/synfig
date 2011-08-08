@@ -1022,24 +1022,18 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
-	framedial->signal_seek_prev_frame().connect(
-			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1)
-	);
-	framedial->signal_play_stop().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::on_play_stop_pressed)
-	);
-	framedial->signal_seek_next_frame().connect(
-			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), 1)
-	);
-	framedial->signal_seek_end().connect(
-			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::end())
-	);
+	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
+	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1));
+	framedial->signal_play_stop().connect(sigc::mem_fun(*this, &studio::CanvasView::on_play_stop_pressed));
+	framedial->signal_seek_next_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), 1));
+	framedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
+	framedial->signal_seek_end().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::end()));
 	framedial->show();
 
 	//Setup the KeyFrameDial widget
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
-	keyframedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
-	keyframedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
+//	keyframedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
+//	keyframedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
 	keyframedial->signal_lock_keyframe().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframedial->show();
 	keyframebutton=keyframedial->get_lock_button();
