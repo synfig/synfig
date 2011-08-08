@@ -406,10 +406,6 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 			root->set_attribute("loop","true");
 		else
 			root->set_attribute("loop","false");
-		if(wplist_value_node->get_homogeneous())
-			root->set_attribute("homogeneous", "true");
-		else
-			root->set_attribute("homogeneous", "false");
 	}
 	if(dilist_value_node)
 	{

@@ -80,6 +80,7 @@ Advanced_Outline::Advanced_Outline()
 	expand_=0;
 	smoothness_=0.5;
 	dash_offset_=0.0;
+	homogeneous_=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -131,19 +132,7 @@ Advanced_Outline::sync()
 	{
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
-		bool homogeneous(false);
-		// Rescue the homogeneous option from the WPList
-		DynamicParamList::const_iterator dpiter(dynamic_param_list().find("wplist"));
-		if(dpiter!=dynamic_param_list().end())
-		{
-			ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(dpiter->second));
-			if(wplist)
-				homogeneous=wplist->get_homogeneous();
-			else
-				synfig::warning("WPlist is null!?");
-		}
-		else
-			synfig::warning("WPList not found!?");
+		bool homogeneous(homogeneous_);
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
@@ -512,6 +501,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
 	IMPORT_AS(dash_offset_,"dash_offset");
+	IMPORT_AS(homogeneous_,"homogeneous");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
@@ -561,6 +551,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(wplist_, "wplist");
 	EXPORT_AS(dash_offset_,"dash_offset");
 	EXPORT_AS(dilist_, "dilist");
+	EXPORT_AS(homogeneous_, "homogeneous");
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -618,6 +609,10 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("smoothness")
 		.set_local_name(_("Smoothness"))
 		.set_description(_("Determines the interpolation between withpoints. (0) Linear (1) Smooth"))
+	);
+	ret.push_back(ParamDesc("homogeneous")
+		.set_local_name(_("Homogeneous"))
+		.set_description(_("Determines whether the interpolated width is length based (true) or bezier based (false)"))
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))

@@ -1725,8 +1725,6 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	else if(element->get_name()=="wplist")
 	{
 		value_node=wplist_value_node=ValueNode_WPList::create();
-		// Set it to false when reading a file.
-		wplist_value_node->set_homogeneous(false);
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
@@ -1734,14 +1732,6 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				wplist_value_node->set_loop(true);
 			else
 				wplist_value_node->set_loop(false);
-		}
-		if(element->get_attribute("homogeneous"))
-		{
-			String homogeneous=element->get_attribute("homogeneous")->get_value();
-			if(homogeneous=="true" || homogeneous=="1" || homogeneous=="TRUE" || homogeneous=="True")
-				wplist_value_node->set_homogeneous(true);
-			else
-				wplist_value_node->set_homogeneous(false);
 		}
 	}
 	else if(element->get_name()=="dilist")

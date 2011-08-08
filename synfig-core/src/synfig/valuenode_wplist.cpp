@@ -204,8 +204,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 
 
 ValueNode_WPList::ValueNode_WPList():
-	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT),
-	homogeneous_(true) // true by default for new layers
+	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT)
 {
 }
 
@@ -444,15 +443,3 @@ ValueNode_WPList::set_bline(ValueNode::Handle b)
 	bline_=b;
 }
 
-
-bool
-ValueNode_WPList::get_homogeneous()const
-{
-	return homogeneous_;
-}
-
-void
-ValueNode_WPList::set_homogeneous(bool h)
-{
-	homogeneous_=h;
-}

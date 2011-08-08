@@ -559,7 +559,21 @@ Action::ValueDescSet::prepare()
 					}
 					else
 						new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
-					if(wplist->get_homogeneous())
+					bool homogeneous=false;
+					// Retrieve the homogeneous layer parameter
+					Layer::Handle layer_parent;
+					std::set<Node*>::iterator iter;
+					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+						{
+							Layer::Handle layer;
+							layer=Layer::Handle::cast_dynamic(*iter);
+							if(layer && layer->get_name() == "advanced_outline")
+							{
+								homogeneous=layer->get_param("homogeneous").get(bool());
+								break;
+							}
+						}
+					if(homogeneous)
 					{
 						new_amount=std_to_hom((*bline)(time), new_amount, wplist->get_loop(), bline->get_loop() );
 					}

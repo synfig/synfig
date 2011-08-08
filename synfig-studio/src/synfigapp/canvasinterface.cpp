@@ -225,6 +225,9 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_fill_color());
+	// by default, new advanced outline layers are homogeneous
+	if(name=="advanced_outline")
+		layer->set_param("homogeneous", true);
 
 	layer->set_param("width",synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
 	layer->set_param("gradient",synfigapp::Main::get_gradient());

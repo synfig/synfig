@@ -59,6 +59,7 @@ private:
 	synfig::Real width_;
 	synfig::Real expand_;
 	Real smoothness_;
+	bool homogeneous_;
 	Real dash_offset_;
 
 public:
