@@ -47,48 +47,72 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-DashItem::DashItem()
+DashItem::DashItem():
+offset_(0.1),
+length_(0.1)
 {
-	set_offset(0.1);
-	set_length(0.1);
-	set_side_type_before(TYPE_FLAT);
-	set_side_type_after(TYPE_FLAT);
+	side_type_[0] = side_type_[1] = TYPE_FLAT;
 }
 
-DashItem::DashItem(const DashItem &ref) :
-WidthPoint::WidthPoint(ref.get_offset(), ref.get_length(), ref.get_side_type_before(), ref.get_side_type_after())
-{
-}
 
-DashItem::DashItem(Real offset, Real length, int sidebefore, int sideafter)
+DashItem::DashItem(Real offset, Real length, int sidebefore, int sideafter):
+	offset_(offset),
+	length_(length)
 {
-	set_offset(offset);
-	set_width(length);
-	set_side_type_before(sidebefore);
-	set_side_type_after(sideafter);
+	side_type_[0]=sidebefore;
+	side_type_[1]=sideafter;
 }
-
 
 void
 DashItem::set_length(Real x)
 {
-	set_width(x);
+	length_=x;
 }
 
 const Real&
 DashItem::get_length()const
 {
-	return get_width();
+	return length_;
 }
 
 void
 DashItem::set_offset(Real x)
 {
-	set_position(x);
+	offset_=x;
 }
 
 const Real&
 DashItem::get_offset()const
 {
-	return get_position();
+	return offset_;
+}
+
+int
+DashItem::get_side_type_before()const
+{
+	return side_type_[0];
+}
+
+void
+DashItem::set_side_type_before(int sidebefore)
+{
+	side_type_[0]=sidebefore;
+}
+
+int
+DashItem::get_side_type_after()const
+{
+	return side_type_[1];
+}
+
+void
+DashItem::set_side_type_after(int sideafter)
+{
+	side_type_[1]=sideafter;
+}
+
+int
+DashItem::get_side_type(int i)const
+{
+	return i>0? side_type_[1]: side_type_[0];
 }

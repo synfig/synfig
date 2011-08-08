@@ -99,7 +99,7 @@ public:
 		TYPE_SEGMENT,		//!< Segment Point and Vector
 		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
 		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), 2xSide Type (int enum)
-		TYPE_DASHITEM,		//!< DashItem Offset (Real distance), Length (Real distance), 2xSide Type (int enum), inherited from WidthPoint
+		TYPE_DASHITEM,		//!< DashItem Offset (Real distance), Length (Real distance), 2xSide Type (int enum)
 
 		// All types after this point require construction/destruction
 

@@ -28,7 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "widthpoint.h"
+#include "uniqueid.h"
+#include "real.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,12 +39,21 @@
 
 namespace synfig {
 
-class DashItem : public WidthPoint
+class DashItem : public UniqueID
 {
+private:
+	Real offset_;
+	Real length_;
+	int side_type_[2]; // Before [0] and After[1] side types
 public:
-
+	enum SideType
+	{
+		TYPE_ROUNDED         =0,
+		TYPE_SQUARED         =1,
+		TYPE_PEAK            =2,
+		TYPE_FLAT            =3
+	};
 	DashItem();
-	DashItem(const DashItem &ref);
 	DashItem(Real position, Real length, int sidebefore=TYPE_FLAT,
 		int sideafter=TYPE_FLAT);
 
@@ -51,6 +61,11 @@ public:
 	void set_length(Real x);
 	const Real& get_offset()const;
 	void set_offset(Real x);
+	int get_side_type_before()const;
+	void set_side_type_before(int sidebefore);
+	int get_side_type_after()const;
+	void set_side_type_after(int sideafter);
+	int get_side_type(int i)const;
 }; // END of class DashItem
 
 }; // END of namespace synfig
