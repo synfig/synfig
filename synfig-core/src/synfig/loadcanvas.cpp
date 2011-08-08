@@ -1745,14 +1745,6 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 				dilist_value_node->set_loop(false);
 		}
-		if(element->get_attribute("enabled"))
-		{
-			String homogeneous=element->get_attribute("enabled")->get_value();
-			if(homogeneous=="true" || homogeneous=="1" || homogeneous=="TRUE" || homogeneous=="True")
-				dilist_value_node->set_enabled(true);
-			else
-				dilist_value_node->set_enabled(false);
-		}
 	}
 	else
 		value_node=ValueNode_DynamicList::create(type);

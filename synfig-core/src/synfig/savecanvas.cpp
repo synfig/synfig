@@ -413,10 +413,6 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 			root->set_attribute("loop","true");
 		else
 			root->set_attribute("loop","false");
-		if(dilist_value_node->get_enabled())
-			root->set_attribute("enabled", "true");
-		else
-			root->set_attribute("enabled", "false");
 	}
 
 	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)

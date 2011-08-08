@@ -53,7 +53,6 @@ class ValueNode_DIList : public ValueNode_DynamicList
 {
 private:
 	ValueNode::RHandle bline_;
-	bool enabled_;
 public:
 
 	typedef etl::handle<ValueNode_DIList> Handle;
@@ -79,8 +78,6 @@ public:
 	ValueNode::LooseHandle get_bline()const;
 	//! Sets the bline RHandle
 	void set_bline(ValueNode::Handle b);
-	bool get_enabled() const;
-	void set_enabled(bool x);
 
 protected:
 

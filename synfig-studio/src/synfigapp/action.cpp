@@ -65,8 +65,6 @@
 #include "actions/valuenodedynamiclistrotateorder.h"
 #include "actions/valuenoderename.h"
 #include "actions/valuenoderemove.h"
-#include "actions/dilistenable.h"
-#include "actions/dilistdisable.h"
 
 #include "actions/valuedescset.h"
 #include "actions/valuedescexport.h"
@@ -191,8 +189,6 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListRotateOrder);
 	ADD_ACTION(Action::ValueNodeRename);
 	ADD_ACTION(Action::ValueNodeRemove);
-	ADD_ACTION(Action::DIListEnable);
-	ADD_ACTION(Action::DIListDisable);
 
 	ADD_ACTION(Action::ValueDescSet);
 	ADD_ACTION(Action::ValueDescExport);

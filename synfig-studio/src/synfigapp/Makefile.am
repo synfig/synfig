@@ -75,9 +75,7 @@ VALUENODE_ACTION_HH = \
 	actions/valuenodelinkdisconnect.h \
 	actions/valuenoderemove.h \
 	actions/valuenoderename.h \
-	actions/valuenodereplace.h \
-	actions/dilistenable.h \
-	actions/dilistdisable.h
+	actions/valuenodereplace.h
 
 VALUENODE_ACTION_CC = \
 	actions/valuenodeadd.cpp \
@@ -95,9 +93,7 @@ VALUENODE_ACTION_CC = \
 	actions/valuenodelinkdisconnect.cpp \
 	actions/valuenoderemove.cpp \
 	actions/valuenoderename.cpp \
-	actions/valuenodereplace.cpp \
-	actions/dilistenable.cpp \
-	actions/dilistdisable.cpp
+	actions/valuenodereplace.cpp
 
 
 WAYPOINT_ACTION_HH = \
