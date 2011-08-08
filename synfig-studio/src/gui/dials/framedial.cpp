@@ -55,13 +55,16 @@ FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
-	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,_("Seek to Begin"));
+        Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
+
+
+	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,_("Seek to begin"));
 	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
-	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,_("Previous Frame"));
+	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,_("Previous frame"));
 	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,_("Play"));
-	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,_("Next Frame"));
+	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,_("Next frame"));
 	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
-	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,_("Seek to End"));
+	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,_("Seek to end"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
