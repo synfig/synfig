@@ -116,3 +116,12 @@ DashItem::get_side_type(int i)const
 {
 	return i>0? side_type_[1]: side_type_[0];
 }
+
+bool
+DashItem::operator == (const DashItem& rhs)
+{
+	return 	side_type_[0] == rhs.get_side_type(0) &&
+			side_type_[1] == rhs.get_side_type(1) &&
+			length_ == rhs.get_length() &&
+			offset_ == rhs.get_offset();
+}
