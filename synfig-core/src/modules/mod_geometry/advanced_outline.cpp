@@ -79,6 +79,7 @@ Advanced_Outline::Advanced_Outline()
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
+	dash_offset_=0.0;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -510,6 +511,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(end_tip_, "end_tip");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
+	IMPORT_AS(dash_offset_,"dash_offset");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
@@ -557,6 +559,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
+	EXPORT_AS(dash_offset_,"dash_offset");
 	EXPORT_AS(dilist_, "dilist");
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -627,6 +630,12 @@ Advanced_Outline::get_param_vocab()const
 		.set_hint("dash")
 		.set_origin("origin")
 		.set_description(_("List of dash items that defines the dashed outline"))
+	);
+	ret.push_back(ParamDesc("dash_offset")
+		.set_local_name(_("Dash Items Offset"))
+		.set_is_distance()
+		.set_hint("dash")
+		.set_description(_("Distance to Offset the Dash Items"))
 	);
 	return ret;
 }
