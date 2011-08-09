@@ -309,7 +309,7 @@ Advanced_Outline::sync()
 					do
 					{
 						WidthPoint before((dpos+diter->get_offset())/blinelength, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						WidthPoint after((dpos+diter->get_length()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
+						WidthPoint after((dpos+diter->get_offset()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
 						dwplist.push_back(before);
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
