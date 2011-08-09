@@ -298,6 +298,8 @@ Advanced_Outline::sync()
 				Real dpos=dash_offset;
 				Real dashes_length(0.0);
 				vector<DashItem>::iterator diter(dilist.begin());
+				vector<DashItem>::reverse_iterator rditer(dilist.rbegin());
+				WidthPoint before, after;
 				for(;diter!=dilist.end(); diter++)
 				{
 					dashes_length+=diter->get_length()+diter->get_offset();
@@ -306,26 +308,86 @@ Advanced_Outline::sync()
 				diter=dilist.begin();
 				if(dashes_length>EPSILON)
 				{
-					do
+					// Insert the widthpoints from Dash Offset to 1.0
+					int inserted(0);
+					while(dpos < blinelength)
 					{
-						WidthPoint before((dpos+diter->get_offset())/blinelength, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						WidthPoint after((dpos+diter->get_offset()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
+						before=WidthPoint((dpos+diter->get_offset())/blinelength, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
+						after=WidthPoint((dpos+diter->get_offset()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
 						dwplist.push_back(before);
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
 						diter++;
+						inserted++;
 						if(diter==dilist.end())
 							diter=dilist.begin();
-					}while(dpos < blinelength);
-				}
-			}
+					};
+					// Correct the two last widthpoints triming its position to be <= 1.0
+					if(inserted)
+					{
+						after=dwplist.back();
+						// if the if the 'after' widthpoint passed 1.0
+						if(after.get_position() > 1.0)
+						{
+							// trim to 1.0
+							after.set_position(1.0);
+							dwplist.pop_back();
+							before=dwplist.back();
+							// then watch the before one and if it passeed 1.0
+							if(before.get_position() > 1.0)
+								// discard it (and also the 'after' one)
+								dwplist.pop_back();
+							else
+							// restore the 'after' widthpoint
+								dwplist.push_back(after);
+						}
+					}
+					inserted=0;
+					//
+					// Now insert the widhtpoints from Dash Offset to 0.0
+					dpos=dash_offset;
+					while(dpos > 0.0)
+					{
+						before=WidthPoint((dpos-rditer->get_length())/blinelength, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
+						after=WidthPoint((dpos)/blinelength, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after());
+						dwplist.insert(dwplist.begin(),after);
+						dwplist.insert(dwplist.begin(),before);
+						dpos-=rditer->get_offset() + rditer->get_length();
+						rditer++;
+						inserted++;
+						if(rditer==dilist.rend())
+							rditer=dilist.rbegin();
+					};
+					// Correct the two first widthpoints triming its position to be <= 1.0
+					if(inserted)
+					{
+						before=dwplist.front();
+						// if the dash is cutted in the middle then trim the 'before' widthpoint
+						if(before.get_position() < 0.0  )
+						{
+							// trim it to 0.0
+							before.set_position(0.0);
+							dwplist.erase(dwplist.begin());
+							after=dwplist.front();
+							// then watch the after one and if it passed 0.0
+							if(after.get_position() < 0.0)
+								// discard the 'after' one (and the 'before' one too)
+								dwplist.erase(dwplist.begin());
+							else
+								// restore the 'before' widthpoint
+								dwplist.insert(dwplist.begin(), before);
+						}
+					}
+				} // if dashes_length > EPSILON
+			} // if blinelength > EPSILON
+			//// Debug info
 			synfig::info("------");
 			vector<WidthPoint>::iterator dwiter(dwplist.begin());
 			for(;dwiter!=dwplist.end();dwiter++)
 				synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
 			synfig::info("------");
-		}
-		do // Main loop
+		} // if dash_enabled
+		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
