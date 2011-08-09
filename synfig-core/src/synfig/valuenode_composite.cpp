@@ -196,8 +196,12 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		{
 			DashItem ret;
 			assert(components[0] && components[1] && components[2] && components[3]);
-			ret.set_offset((*components[0])(t).get(Real()));
-			ret.set_length((*components[1])(t).get(Real()));
+			Real offset((*components[0])(t).get(Real()));
+			if(offset < 0.0) offset=0.0;
+			Real length((*components[1])(t).get(Real()));
+			if(length < 0.0) length=0.0;
+			ret.set_offset(offset);
+			ret.set_length(length);
 			ret.set_side_type_before((*components[2])(t).get(int()));
 			ret.set_side_type_after((*components[3])(t).get(int()));
 			return ret;
