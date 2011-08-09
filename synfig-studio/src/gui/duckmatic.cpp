@@ -2128,6 +2128,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				error("expected a ValueNode_WPList");
 				assert(0);
 			}
+			ValueNode::Handle bline(value_node->get_bline());
+			// it is not possible to place any widthpoint's duck if there is
+			// not associated bline.
+			if(!bline)
+				return false;
 			// Retrieve the homogeneous layer parameter
 			Layer::Handle layer_parent;
 			if(value_desc.parent_is_layer_param())
@@ -2161,9 +2166,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// The position by amount and the amount by position
 					// has to be written considering the bline length too
 					// optionally
-					const ValueBase bline((*value_node->get_bline())(get_time()));
 					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
-					bline_calc_vertex->set_link("bline", value_node->get_bline());
+					bline_calc_vertex->set_link("bline", bline);
 					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
 					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
 					bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(homogeneous));
