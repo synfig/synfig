@@ -4029,19 +4029,20 @@ CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
 void
 CanvasView::on_play_stop_pressed()
 {
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon;
 	Gtk::Button *stop_button;
 	stop_button=framedial->get_play_button();
 	bool play_flag;
 	if(!is_playing())
 	{
-		icon = manage(new Gtk::Image(Gtk::Stock::MEDIA_STOP, Gtk::IconSize::from_name("synfig-small_icon")));
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_stop"),iconsize));
 		stop_button->set_relief(Gtk::RELIEF_NORMAL);
 		play_flag=true;
 	}
 	else
 	{
-		icon = manage(new Gtk::Image(Gtk::Stock::MEDIA_PLAY, Gtk::IconSize::from_name("synfig-small_icon")));
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"),iconsize));
 		stop_button->set_relief(Gtk::RELIEF_NONE);
 		play_flag=false;
 	}

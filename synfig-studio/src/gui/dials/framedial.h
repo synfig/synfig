@@ -57,12 +57,10 @@ class FrameDial : public Gtk::Table
 	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
-			const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 	FrameDial();
-
 	Glib::SignalProxy0<void> signal_seek_begin()		{ return seek_begin->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_keyframe()	{ return seek_prev_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_frame()	{ return seek_prev_frame->signal_clicked(); }

@@ -53,18 +53,13 @@ using namespace studio;
 
 FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-        Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
-
-
-	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,_("Seek to begin"));
-	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous keyframe"));
-	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,_("Previous frame"));
-	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,_("Play"));
-	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,_("Next frame"));
-	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next keyframe"));
-	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,_("Seek to end"));
+	seek_begin =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin",_("Seek to begin"));
+	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Previous keyframe"));
+	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Previous frame"));
+	play_stop =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_play",_("Play"));
+	seek_next_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_frame",_("Next frame"));
+	seek_next_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe",_("Next keyframe"));
+	seek_end =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_end",_("Seek to end"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -76,11 +71,11 @@ FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 }
 
 Gtk::Button *
-FrameDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
-		const char * tooltip)
+FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip)
 {
+	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::Button *button = manage(new class Gtk::Button());
-	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
 	button->add(*icon);
 	tooltips.set_tip(*button, tooltip);
 	icon->set_padding(0, 0);
