@@ -133,10 +133,16 @@ Advanced_Outline::sync()
 	{
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
+		// This is the list of widthpoints created for the dashed outlines
+		vector<WidthPoint> dwplist;
 		bool homogeneous(homogeneous_);
+		bool dash_enabled(dash_enabled_);
+		Real dash_offset(dash_offset_);
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
+		int dilist_size(dilist.size());
 		// biter: first blinepoint of the current bezier
 		// bnext: second blinepoint of the current bezier
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
@@ -242,10 +248,9 @@ Advanced_Outline::sync()
 				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 			}
 		}
-
 		// Sort the wplist again to place the two new widthpoints on place.
 		sort(wplist.begin(),wplist.end());
-		////////////////////////////////////////////////////////////////
+		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
 		//synfig::info("------");
 		//for(witer=wplist.begin();witer!=wplist.end();witer++)
@@ -280,6 +285,21 @@ Advanced_Outline::sync()
 			vector<WidthPoint>::iterator last=--wplist.end();
 			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(end_tip_);
+		}
+		// prepare the widhtpoints from the dash list
+		if(dash_enabled)
+		{
+			Real blinelength(bline_length(bline, blineloop, NULL));
+			// Put dash_offset in the [0,1] interval
+			while (dash_offset > 1.0) dash_offset-=1.0;
+			while (dash_offset < 0.0) dash_offset+=1.0;
+			Real dashes_length(0.0);
+			vector<DashItem>::iterator diter(dilist.begin());
+			for(;diter!=dilist.end(); diter++)
+			{
+				dashes_length+=diter->get_length()+diter->get_offset();
+			}
+			synfig::info("dashes length % f, bline length %f", dashes_length, blinelength);
 		}
 		do // Main loop
 		{
@@ -509,6 +529,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		if(value > 1.0) smoothness_=1.0;
 		else if(value < 0.0) smoothness_=0.0;
 		else smoothness_=value;
+		set_param_static("homogeneous", value.get_static());
 		return true;
 	}
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
