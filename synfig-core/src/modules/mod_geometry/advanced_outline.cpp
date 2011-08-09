@@ -81,6 +81,7 @@ Advanced_Outline::Advanced_Outline()
 	smoothness_=0.5;
 	dash_offset_=0.0;
 	homogeneous_=false;
+	dash_enabled_=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -502,6 +503,7 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(expand_, "expand");
 	IMPORT_AS(dash_offset_,"dash_offset");
 	IMPORT_AS(homogeneous_,"homogeneous");
+	IMPORT_AS(dash_enabled_, "dash_enabled");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
@@ -552,6 +554,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(dash_offset_,"dash_offset");
 	EXPORT_AS(dilist_, "dilist");
 	EXPORT_AS(homogeneous_, "homogeneous");
+	EXPORT_AS(dash_enabled_,"dash_enabled");
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -619,6 +622,11 @@ Advanced_Outline::get_param_vocab()const
 		.set_hint("width")
 		.set_origin("origin")
 		.set_description(_("List of width Points that defines the variable width"))
+	);
+	ret.push_back(ParamDesc("dash_enabled")
+		.set_local_name(_("Dashed Outline"))
+		.set_hint("dash")
+		.set_description(_("When checked outline is dashed"))
 	);
 	ret.push_back(ParamDesc("dilist")
 		.set_local_name(_("Dash Item List"))

@@ -61,6 +61,7 @@ private:
 	Real smoothness_;
 	bool homogeneous_;
 	Real dash_offset_;
+	bool dash_enabled_;
 
 public:
 	enum CuspType
