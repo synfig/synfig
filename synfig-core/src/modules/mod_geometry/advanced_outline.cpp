@@ -290,16 +290,40 @@ Advanced_Outline::sync()
 		if(dash_enabled)
 		{
 			Real blinelength(bline_length(bline, blineloop, NULL));
-			// Put dash_offset in the [0,1] interval
-			while (dash_offset > 1.0) dash_offset-=1.0;
-			while (dash_offset < 0.0) dash_offset+=1.0;
-			Real dashes_length(0.0);
-			vector<DashItem>::iterator diter(dilist.begin());
-			for(;diter!=dilist.end(); diter++)
+			if(blinelength > EPSILON)
 			{
-				dashes_length+=diter->get_length()+diter->get_offset();
+				// Put dash_offset in the [0,blinelength] interval
+				dash_offset=fabs(dash_offset);
+				if (dash_offset > blinelength) dash_offset=fmod(blinelength, dash_offset);
+				Real dpos=dash_offset;
+				Real dashes_length(0.0);
+				vector<DashItem>::iterator diter(dilist.begin());
+				for(;diter!=dilist.end(); diter++)
+				{
+					dashes_length+=diter->get_length()+diter->get_offset();
+				}
+				synfig::info("dashes length % f, bline length %f", dashes_length, blinelength);
+				diter=dilist.begin();
+				if(dashes_length>EPSILON)
+				{
+					do
+					{
+						WidthPoint before((dpos+diter->get_offset())/blinelength, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
+						WidthPoint after((dpos+diter->get_length()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
+						dwplist.push_back(before);
+						dwplist.push_back(after);
+						dpos+=diter->get_offset() + diter->get_length();
+						diter++;
+						if(diter==dilist.end())
+							diter=dilist.begin();
+					}while(dpos < blinelength);
+				}
 			}
-			synfig::info("dashes length % f, bline length %f", dashes_length, blinelength);
+			synfig::info("------");
+			vector<WidthPoint>::iterator dwiter(dwplist.begin());
+			for(;dwiter!=dwplist.end();dwiter++)
+				synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
+			synfig::info("------");
 		}
 		do // Main loop
 		{
