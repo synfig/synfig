@@ -142,7 +142,6 @@ Advanced_Outline::sync()
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
-		int dilist_size(dilist.size());
 		// biter: first blinepoint of the current bezier
 		// bnext: second blinepoint of the current bezier
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
@@ -286,7 +285,7 @@ Advanced_Outline::sync()
 			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(end_tip_);
 		}
-		// prepare the widhtpoints from the dash list
+		//////////////////// prepare the widhtpoints from the dash list
 		if(dash_enabled)
 		{
 			Real blinelength(bline_length(bline, blineloop, NULL));
@@ -378,15 +377,15 @@ Advanced_Outline::sync()
 								dwplist.insert(dwplist.begin(), before);
 						}
 					}
+					//// Debug info
+					synfig::info("------");
+					vector<WidthPoint>::iterator dwiter(dwplist.begin());
+					for(;dwiter!=dwplist.end();dwiter++)
+						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
+					synfig::info("------");
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
-			//// Debug info
-			synfig::info("------");
-			vector<WidthPoint>::iterator dwiter(dwplist.begin());
-			for(;dwiter!=dwplist.end();dwiter++)
-				synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-			synfig::info("------");
-		} // if dash_enabled
+		} ////////////////////////////////////////////// if dash_enabled
 		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
