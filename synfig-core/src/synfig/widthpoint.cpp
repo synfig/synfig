@@ -62,6 +62,7 @@ WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter)
 {
 	side_type_[0]=sidebefore;
 	side_type_[1]=sideafter;
+	dash_=false;
 }
 
 const Real&
