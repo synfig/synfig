@@ -408,6 +408,10 @@ Advanced_Outline::sync()
 					for(;dwiter!=fdwplist.end();dwiter++)
 						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
 					synfig::info("------");
+					// Mark all the filtered dash withpoints as dash type
+					dwiter=fdwplist.begin();
+					for(;dwiter!=fdwplist.end();dwiter++)
+						dwiter->set_dash(true);
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
