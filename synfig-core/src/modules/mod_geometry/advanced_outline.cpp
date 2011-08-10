@@ -136,6 +136,9 @@ Advanced_Outline::sync()
 		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
 		// This is the list of widthpoints created for the dashed outlines
 		vector<WidthPoint> dwplist;
+		// This is the filtered (removed unused) list of dash widthpoints
+		// it is a partial filetered of the previous dwplist
+		vector<WidthPoint> fdwplist;
 		bool homogeneous(homogeneous_);
 		bool dash_enabled(dash_enabled_);
 		Real dash_offset(dash_offset_);
@@ -322,6 +325,7 @@ Advanced_Outline::sync()
 					dpos=dash_offset;
 					while(dpos > 0.0)
 					{
+						// dash widthpoints are homogeneous by default
 						before=WidthPoint((dpos-rditer->get_length())/blinelength, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
 						after=WidthPoint((dpos)/blinelength, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after());
 						dwplist.insert(dwplist.begin(),after);
@@ -358,7 +362,52 @@ Advanced_Outline::sync()
 					for(;dwiter!=dwplist.end();dwiter++)
 						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
 					synfig::info("------");
-
+					// now let's remove those dash widthpoints that doesn't
+					// lie on a drawable place
+					// first prepare the widthpoint iterators
+					wnext=wplist.begin();
+					if(blineloop)
+						witer=--wplist.end();
+					else
+						witer=wnext;
+					do
+					{
+						// grab the homogeneous position of the next widthpoint
+						// and the homogeneous position of the iter widthpoint
+						Real witer_pos(witer->get_norm_position());
+						Real wnext_pos(wnext->get_norm_position());
+						witer_pos=homogeneous?witer_pos:std_to_hom(bline, witer_pos, wplist_.get_loop(), blineloop);
+						wnext_pos=homogeneous?wnext_pos:std_to_hom(bline, wnext_pos, wplist_.get_loop(), blineloop);
+						// if the current widthpoint interval is not empty
+						// then keep all the dash widthpoints that are in between
+						// or
+						// if we aren't in the first non blinelooped widthpoint
+						if(!(
+						(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
+						wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
+						||
+						(witer==wplist.begin() && wnext==wplist.begin())
+						))
+						{
+							dwiter=dwplist.begin();
+							// extract the dash widthpoints that are in a non empty interval
+							while(dwiter!=dwplist.end())
+							{
+								Real dwiter_pos=dwiter->get_norm_position();
+								if(dwiter_pos > witer_pos && dwiter_pos < wnext_pos)
+									fdwplist.push_back(*dwiter);
+								dwiter++;
+							}
+						}
+						witer=wnext;
+						wnext++;
+					}while(wnext!=wplist.end());
+					//// Debug info
+					synfig::info("-----after filter-----");
+					dwiter=fdwplist.begin();
+					for(;dwiter!=fdwplist.end();dwiter++)
+						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
+					synfig::info("------");
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
