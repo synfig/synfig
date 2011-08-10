@@ -50,7 +50,8 @@ using namespace synfig;
 
 WidthPoint::WidthPoint():
 	position_(0.0),
-	width_(0.01)
+	width_(0.01),
+	dash_(false)
 {
 	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
 }
@@ -131,6 +132,19 @@ WidthPoint::get_side_type(int i)const
 {
 	return i>0? side_type_[1]: side_type_[0];
 }
+
+void
+WidthPoint::set_dash(bool l)
+{
+	dash_=l;
+}
+
+bool
+WidthPoint::get_dash()const
+{
+	return dash_;
+}
+
 
 bool
 WidthPoint::operator<(const WidthPoint& rhs)
