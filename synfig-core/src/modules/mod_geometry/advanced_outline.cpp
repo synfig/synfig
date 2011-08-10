@@ -260,31 +260,6 @@ Advanced_Outline::sync()
 		// i.e.: where in the bline, and where in wplist so we could go
 		// faster or slower when needed.
 		Real step(1.0/SAMPLES/bline_size);
-		// we start with the next withpoint being the first on the list.
-		wnext=wplist.begin();
-		// then the current widthpoint would be the last one if blinelooped...
-		if(blineloop)
-			witer=--wplist.end();
-		else
-			// ...or the same as the first one if not blinelooped.
-			// This allows to make the first tip without need to take any decision
-			// in the code. Later they are separated and works as expected.
-			witer=wnext;
-		const vector<WidthPoint>::const_iterator wend(wplist.end());
-		Real ipos(0.0);
-		Real sipos(0.0);
-		// Fix bug of bad render of start (end) tip when the first
-		// (last) widthpoint has side type before (after) set to
-		// interpolate and it is at 0.0 (1.0). User expects the tip to
-		// have the same type of the layer's start (end) tip.
-		if(!blineloop)
-		{
-			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
-				wnext->set_side_type_before(start_tip_);
-			vector<WidthPoint>::iterator last=--wplist.end();
-			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
-				last->set_side_type_after(end_tip_);
-		}
 		//////////////////// prepare the widhtpoints from the dash list
 		if(dash_enabled)
 		{
@@ -383,9 +358,36 @@ Advanced_Outline::sync()
 					for(;dwiter!=dwplist.end();dwiter++)
 						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
 					synfig::info("------");
+
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
+		// Prepare the widthpoint iterators
+		// we start with the next withpoint being the first on the list.
+		wnext=wplist.begin();
+		// then the current widthpoint would be the last one if blinelooped...
+		if(blineloop)
+			witer=--wplist.end();
+		else
+			// ...or the same as the first one if not blinelooped.
+			// This allows to make the first tip without need to take any decision
+			// in the code. Later they are separated and works as expected.
+			witer=wnext;
+		const vector<WidthPoint>::const_iterator wend(wplist.end());
+		Real ipos(0.0);
+		Real sipos(0.0);
+		// Fix bug of bad render of start (end) tip when the first
+		// (last) widthpoint has side type before (after) set to
+		// interpolate and it is at 0.0 (1.0). User expects the tip to
+		// have the same type of the layer's start (end) tip.
+		if(!blineloop)
+		{
+			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
+				wnext->set_side_type_before(start_tip_);
+			vector<WidthPoint>::iterator last=--wplist.end();
+			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
+				last->set_side_type_after(end_tip_);
+		}
 		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
