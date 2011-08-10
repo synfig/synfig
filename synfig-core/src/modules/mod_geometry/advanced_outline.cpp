@@ -412,6 +412,18 @@ Advanced_Outline::sync()
 					dwiter=fdwplist.begin();
 					for(;dwiter!=fdwplist.end();dwiter++)
 						dwiter->set_dash(true);
+					// Merge the filtered list with the current one.
+					dwiter=fdwplist.begin();
+					for(;dwiter!=fdwplist.end();dwiter++)
+						wplist.push_back(*dwiter);
+					// sort again the wplist
+					sort(wplist.begin(),wplist.end());
+					dwiter=wplist.begin();
+					//////////////
+					synfig::info("-------after filter and merge");
+					for(;dwiter!=wplist.end();dwiter++)
+						synfig::info("P:%f W:%f B:%d A:%d D%d", dwiter->get_norm_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after(), dwiter->get_dash());
+					synfig::info("------");
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
