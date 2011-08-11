@@ -56,13 +56,13 @@ WidthPoint::WidthPoint():
 	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
 }
 
-WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter):
+WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter, bool dash):
 	position_(position),
 	width_(width)
 {
 	side_type_[0]=sidebefore;
 	side_type_[1]=sideafter;
-	dash_=false;
+	dash_=dash;
 }
 
 const Real&

@@ -61,7 +61,7 @@ public:
 
 	WidthPoint();
 	WidthPoint(Real position, Real width, int sidebefore=TYPE_INTERPOLATE,
-		int sideafter=TYPE_INTERPOLATE);
+		int sideafter=TYPE_INTERPOLATE, bool dash_=false);
 
 	const Real& get_position()const;
 	void set_position(const Real& x);

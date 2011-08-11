@@ -294,8 +294,8 @@ Advanced_Outline::sync()
 						Real after_pos=(dpos+diter->get_offset()+diter->get_length())/blinelength;
 						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
 						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
-						before=WidthPoint(before_pos, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						after=WidthPoint(after_pos, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
+						before=WidthPoint(before_pos, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(after_pos, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after(), true);
 						dwplist.push_back(before);
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
@@ -335,8 +335,8 @@ Advanced_Outline::sync()
 						Real after_pos=(dpos)/blinelength;
 						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
 						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
-						before=WidthPoint(before_pos, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						after=WidthPoint(after_pos, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after());
+						before=WidthPoint(before_pos, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(after_pos, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after(), true);
 						dwplist.insert(dwplist.begin(),after);
 						dwplist.insert(dwplist.begin(),before);
 						dpos-=rditer->get_offset() + rditer->get_length();
@@ -381,12 +381,10 @@ Advanced_Outline::sync()
 						witer=wnext;
 					do
 					{
-						// grab the homogeneous position of the next widthpoint
-						// and the homogeneous position of the iter widthpoint
+						// grab the position of the next widthpoint
+						// and the position of the iter widthpoint
 						Real witer_pos(witer->get_norm_position());
 						Real wnext_pos(wnext->get_norm_position());
-						witer_pos=homogeneous?witer_pos:std_to_hom(bline, witer_pos, wplist_.get_loop(), blineloop);
-						wnext_pos=homogeneous?wnext_pos:std_to_hom(bline, wnext_pos, wplist_.get_loop(), blineloop);
 						// if the current widthpoint interval is not empty
 						// then keep all the dash widthpoints that are in between
 						// or
@@ -417,10 +415,6 @@ Advanced_Outline::sync()
 					for(;dwiter!=fdwplist.end();dwiter++)
 						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
 					synfig::info("------");
-					// Mark all the filtered dash withpoints as dash type
-					dwiter=fdwplist.begin();
-					for(;dwiter!=fdwplist.end();dwiter++)
-						dwiter->set_dash(true);
 					// Merge the filtered list with the current one.
 					dwiter=fdwplist.begin();
 					for(;dwiter!=fdwplist.end();dwiter++)
