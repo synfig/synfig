@@ -32,7 +32,7 @@
 
 #include <gtkmm/tooltips.h>
 #include <gtkmm/table.h>
-#include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
 
 #include "general.h"
 
@@ -49,20 +49,17 @@ class KeyFrameDial : public Gtk::Table
 {
 	Gtk::Tooltips tooltips;
 
-	Gtk::Button *seek_prev_keyframe;
-	Gtk::Button *seek_next_keyframe;
-	Gtk::Button *lock_keyframe;
+	Gtk::ToggleButton *lock_keyframe_past;
+	Gtk::ToggleButton *lock_keyframe_future;
 
-	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
-	Gtk::Button *create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & stockid, const char * tooltip);
+	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 
 	KeyFrameDial();
-	Glib::SignalProxy0<void> signal_seek_prev_keyframe()  { return seek_prev_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_lock_keyframe()  { return lock_keyframe->signal_clicked(); }
-	Gtk::Button *get_lock_button() { return lock_keyframe; }
+	Glib::SignalProxy0<void> signal_lock_keyframe_past()  { return lock_keyframe_past->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_lock_keyframe_future()	{ return lock_keyframe_future->signal_clicked(); }
+	Gtk::ToggleButton *get_lock_button() { return lock_keyframe_past; }
 
 }; // END of class KeyFrameDial
 

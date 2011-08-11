@@ -263,10 +263,10 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
 	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
 
-	INIT_STOCK_ICON(keyframe_lock_all,"keyframe_lock_all."IMAGE_EXT,_("All Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_past,"keyframe_lock_past."IMAGE_EXT,_("Past Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_future,"keyframe_lock_future."IMAGE_EXT,_("Future Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_none,"keyframe_lock_none."IMAGE_EXT,_("No Keyframes Locked"));
+	INIT_STOCK_ICON(keyframe_lock_past_off,"keyframe_lock_past_off_icon."IMAGE_EXT,_("Past keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_past_on,"keyframe_lock_past_on_icon."IMAGE_EXT,_("Past keyframes locked"));
+	INIT_STOCK_ICON(keyframe_lock_future_off,"keyframe_lock_future_off_icon."IMAGE_EXT,_("Future keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_future_on,"keyframe_lock_future_on_icon."IMAGE_EXT,_("Future keyframes locked"));
 
 	INIT_STOCK_ICON(animate_mode_off,"animate_mode_off_icon."IMAGE_EXT,_("Animate Mode Off"));
 	INIT_STOCK_ICON(animate_mode_on,"animate_mode_on_icon."IMAGE_EXT,_("Animate Mode On"));
