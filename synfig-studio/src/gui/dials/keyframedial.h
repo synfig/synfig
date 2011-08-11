@@ -49,17 +49,18 @@ class KeyFrameDial : public Gtk::Table
 {
 	Gtk::Tooltips tooltips;
 
-	Gtk::ToggleButton *lock_keyframe_past;
-	Gtk::ToggleButton *lock_keyframe_future;
+	Gtk::ToggleButton *toggle_keyframe_past;
+	Gtk::ToggleButton *toggle_keyframe_future;
 
 	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 
 	KeyFrameDial();
-	Glib::SignalProxy0<void> signal_lock_keyframe_past()  { return lock_keyframe_past->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_lock_keyframe_future()	{ return lock_keyframe_future->signal_clicked(); }
-	Gtk::ToggleButton *get_lock_button() { return lock_keyframe_past; }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_past()	{ return toggle_keyframe_past->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_future()	{ return toggle_keyframe_future->signal_toggled(); }
+	Gtk::ToggleButton *get_toggle_pastbutton()		{ return toggle_keyframe_past; }
+	Gtk::ToggleButton *get_toggle_futurebutton()		{ return toggle_keyframe_future; }
 
 }; // END of class KeyFrameDial
 

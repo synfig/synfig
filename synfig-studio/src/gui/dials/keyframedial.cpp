@@ -53,10 +53,10 @@ KeyFrameDial::KeyFrameDial(): Gtk::Table(2, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
-	lock_keyframe_past = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_past_off",_("Lock past keyframe"));
-	lock_keyframe_future = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_future_off",_("Lock future keyframe"));
-	attach(*lock_keyframe_past, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*lock_keyframe_future, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	toggle_keyframe_past = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_past_off",_("Lock past keyframe"));
+	toggle_keyframe_future = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_future_off",_("Lock future keyframe"));
+	attach(*toggle_keyframe_past, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*toggle_keyframe_future, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::ToggleButton *
