@@ -294,8 +294,8 @@ Advanced_Outline::sync()
 						Real after_pos=(dpos+diter->get_offset()+diter->get_length())/blinelength;
 						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
 						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
-						before=WidthPoint(before_pos, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
-						after=WidthPoint(after_pos, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after(), true);
+						before=WidthPoint(before_pos, 1.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(after_pos, 1.0, WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after(), true);
 						dwplist.push_back(before);
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
@@ -336,7 +336,7 @@ Advanced_Outline::sync()
 						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
 						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
 						before=WidthPoint(before_pos, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
-						after=WidthPoint(after_pos, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after(), true);
+						after=WidthPoint(after_pos, 1.0, WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after(), true);
 						dwplist.insert(dwplist.begin(),after);
 						dwplist.insert(dwplist.begin(),before);
 						dpos-=rditer->get_offset() + rditer->get_length();
