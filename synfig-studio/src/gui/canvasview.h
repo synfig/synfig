@@ -267,6 +267,8 @@ private:
 	Gtk::Table *displaybar;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::Button *keyframebutton;
+	Gtk::ToggleButton *pastkeyframebutton;
+	Gtk::ToggleButton *futurekeyframebutton;
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
 	bool toggling_ducks_;
@@ -689,7 +691,9 @@ private:
 	void on_animate_button_pressed();
 
 	void on_keyframe_button_pressed();
-
+	void toggle_past_keyframe_button();
+	void toggle_future_keyframe_button();
+	
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
 
