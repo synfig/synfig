@@ -289,8 +289,13 @@ Advanced_Outline::sync()
 					int inserted(0);
 					while(dpos < blinelength)
 					{
-						before=WidthPoint((dpos+diter->get_offset())/blinelength, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						after=WidthPoint((dpos+diter->get_offset()+diter->get_length())/blinelength, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
+						// dash widthpoints should have the same homogeneous or standard comparable positions.
+						Real before_pos=(dpos+diter->get_offset())/blinelength;
+						Real after_pos=(dpos+diter->get_offset()+diter->get_length())/blinelength;
+						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
+						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
+						before=WidthPoint(before_pos, 0.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
+						after=WidthPoint(after_pos, 0.0,WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after());
 						dwplist.push_back(before);
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
@@ -325,9 +330,13 @@ Advanced_Outline::sync()
 					dpos=dash_offset;
 					while(dpos > 0.0)
 					{
-						// dash widthpoints are homogeneous by default
-						before=WidthPoint((dpos-rditer->get_length())/blinelength, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
-						after=WidthPoint((dpos)/blinelength, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after());
+						// dash widthpoints should have the same homogeneous or standard comparable positions.
+						Real before_pos=(dpos-rditer->get_length())/blinelength;
+						Real after_pos=(dpos)/blinelength;
+						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
+						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
+						before=WidthPoint(before_pos, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE);
+						after=WidthPoint(after_pos, 1.0,WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after());
 						dwplist.insert(dwplist.begin(),after);
 						dwplist.insert(dwplist.begin(),before);
 						dpos-=rditer->get_offset() + rditer->get_length();
@@ -336,7 +345,7 @@ Advanced_Outline::sync()
 						if(rditer==dilist.rend())
 							rditer=dilist.rbegin();
 					};
-					// Correct the two first widthpoints triming its position to be <= 1.0
+					// Correct the two first widthpoints triming its position to be >= 0.0
 					if(inserted)
 					{
 						before=dwplist.front();
