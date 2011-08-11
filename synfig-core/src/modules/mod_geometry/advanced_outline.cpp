@@ -328,7 +328,10 @@ Advanced_Outline::sync()
 								dwplist.pop_back();
 							else
 							// restore the 'after' widthpoint
+							{
+								synfig::info("restoring after");
 								dwplist.push_back(after);
+							}
 						}
 					}
 					inserted=0;
@@ -369,7 +372,10 @@ Advanced_Outline::sync()
 								dwplist.erase(dwplist.begin());
 							else
 								// restore the 'before' widthpoint
+							{
+								synfig::info("restoring before");
 								dwplist.insert(dwplist.begin(), before);
+							}
 						}
 					}
 					//// Debug info
@@ -396,12 +402,8 @@ Advanced_Outline::sync()
 						// then keep all the dash widthpoints that are in between
 						// or
 						// if we aren't in the first non blinelooped widthpoint
-						if(!(
-						(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE &&
-						wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
-						||
-						(witer==wplist.begin() && wnext==wplist.begin())
-						))
+						if((witer->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE ||
+						wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE))
 						{
 							dwiter=dwplist.begin();
 							// extract the dash widthpoints that are in a non empty interval
@@ -416,6 +418,11 @@ Advanced_Outline::sync()
 						witer=wnext;
 						wnext++;
 					}while(wnext!=wplist.end());
+					synfig::info("----after remove dash width points--");
+					dwiter=fdwplist.begin();
+					for(;dwiter!=fdwplist.end();dwiter++)
+						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
+					synfig::info("------");
 					// Now we need to remove the regular widthpoints that
 					// lie in a dash empty space.
 					// first prepare the dash widthpoint iterators
@@ -437,6 +444,12 @@ Advanced_Outline::sync()
 							break;
 						dwnext++;
 					}while(1);
+					dwiter=fdwplist.begin();
+					synfig::info("----after add the normal width points--");
+					for(;dwiter!=fdwplist.end();dwiter++)
+						synfig::info("P:%f W:%f B:%d A:%d D:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after(), dwiter->get_dash());
+					synfig::info("------");
+
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
