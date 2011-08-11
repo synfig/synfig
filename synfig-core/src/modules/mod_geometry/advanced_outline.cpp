@@ -409,16 +409,31 @@ Advanced_Outline::sync()
 						witer=wnext;
 						wnext++;
 					}while(wnext!=wplist.end());
-					//// Debug info
-					synfig::info("-----after filter-----");
-					dwiter=fdwplist.begin();
-					for(;dwiter!=fdwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
-					// Merge the filtered list with the current one.
-					dwiter=fdwplist.begin();
-					for(;dwiter!=fdwplist.end();dwiter++)
-						wplist.push_back(*dwiter);
+					// Now we need to remove the regular widthpoints that
+					// lie in a dash empty space.
+					// first prepare the dash widthpoint iterators
+					dwiter=dwplist.begin();
+					vector<WidthPoint>::iterator dwnext(dwiter+1);
+					do
+					{
+						Real dwiter_pos=dwiter->get_position();
+						Real dwnext_pos=dwnext->get_position();
+						for(witer=wplist.begin(); witer!=wplist.end();witer++)
+						{
+							Real witer_pos=witer->get_norm_position();
+							if(witer_pos < dwnext_pos && witer_pos > dwiter_pos)
+								fdwplist.push_back(*witer);
+						}
+						dwnext++;
+						dwiter=dwnext;
+						if(dwnext==dwplist.end())
+							break;
+						dwnext++;
+					}while(1);
+					// now replace the original widthpoint list
+					// with the filtered one, inlcuding the visible dash withpoints and
+					// the visible regular widthpoints.
+					wplist.assign(fdwplist.begin(), fdwplist.end());
 					// sort again the wplist
 					sort(wplist.begin(),wplist.end());
 					dwiter=wplist.begin();
