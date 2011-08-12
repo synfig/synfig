@@ -1038,7 +1038,7 @@ CanvasView::create_time_bar()
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
 
-	timebar = Gtk::manage(new class Gtk::Table(5, 333, false));
+	timebar = Gtk::manage(new class Gtk::Table(5, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
