@@ -579,7 +579,11 @@ Advanced_Outline::sync()
 					cwiter=--cwplist.end();
 					if(blineloop && bnext->get_split_tangent_flag())
 					{
-						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+						vector<WidthPoint>::iterator first(wplist.begin());
+						vector<WidthPoint>::iterator last(--wplist.end());
+						// when doing dashed outlines, the above rule is not always true
+						if(first->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE || last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
 					}
 					// ... and get out of the main loop.
 					break;
