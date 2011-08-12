@@ -261,10 +261,10 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
-		//synfig::info("------");
-		//for(witer=wplist.begin();witer!=wplist.end();witer++)
-			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		//synfig::info("------");
+		synfig::info("---wplist---");
+		for(witer=wplist.begin();witer!=wplist.end();witer++)
+			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
+		synfig::info("------");
 		////////////////////////////////////////////////////////////////
 		// TODO: step should be a function of the current situation
 		// i.e.: where in the bline, and where in wplist so we could go
@@ -435,7 +435,7 @@ Advanced_Outline::sync()
 						for(witer=wplist.begin(); witer!=wplist.end();witer++)
 						{
 							Real witer_pos=witer->get_norm_position();
-							if(witer_pos < dwnext_pos && witer_pos > dwiter_pos)
+							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
 								fdwplist.push_back(*witer);
 						}
 						dwnext++;
@@ -503,6 +503,34 @@ Advanced_Outline::sync()
 			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(end_tip_);
 		}
+		// If the first (last) widthpoint are interpolate before (after)
+		// and the last (first) widthpoint is not interpolate after (before)
+		// and we are doing dashes, then make the first (last) widthpoint to
+		// have the layer start (end) tip type
+		if(blineloop && dash_enabled)
+		{
+			synfig::info("blineloop and dash_enabled");
+			vector<WidthPoint>::iterator first(wplist.begin());
+			vector<WidthPoint>::iterator last(--wplist.end());
+			synfig::info("first type before = %d", first->get_side_type_before());
+			if(first->get_side_type_before() == WidthPoint::TYPE_INTERPOLATE
+			&&
+			last->get_side_type_after() != WidthPoint::TYPE_INTERPOLATE)
+			{
+				synfig::info("setting first to before=%d", start_tip_);
+				first->set_side_type_before(start_tip_);
+			}
+			synfig::info("last type after = %d", last->get_side_type_after());
+			synfig::info("last position = %f", last->get_position());
+			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE
+			&&
+			first->get_side_type_before() != WidthPoint::TYPE_INTERPOLATE)
+			{
+				synfig::info("setting last to after=%d", end_tip_);
+				last->set_side_type_after(end_tip_);
+			}
+		}
+
 		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -548,7 +576,7 @@ Advanced_Outline::sync()
 					// when it is blinelooped and interpolated on last blinepoint.
 					// ... let's make the last cusp...
 					cwnext=cwplist.begin();
-					cwiter=cwplist.end()--;
+					cwiter=--cwplist.end();
 					if(blineloop && bnext->get_split_tangent_flag())
 					{
 						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
