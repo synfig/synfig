@@ -281,10 +281,10 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
-		synfig::info("---wplist---");
-		for(witer=wplist.begin();witer!=wplist.end();witer++)
-			synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		synfig::info("------");
+		//synfig::info("---wplist---");
+		//for(witer=wplist.begin();witer!=wplist.end();witer++)
+			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
+		//synfig::info("------");
 		////////////////////////////////////////////////////////////////
 		// TODO: step should be a function of the current situation
 		// i.e.: where in the bline, and where in wplist so we could go
@@ -308,7 +308,6 @@ Advanced_Outline::sync()
 				{
 					dashes_length+=diter->get_length()+diter->get_offset();
 				}
-				synfig::info("dashes length % f, bline length %f", dashes_length, blinelength);
 				diter=dilist.begin();
 				if(dashes_length>EPSILON)
 				{
@@ -331,11 +330,6 @@ Advanced_Outline::sync()
 						if(diter==dilist.end())
 							diter=dilist.begin();
 					};
-					synfig::info("---from dash offset to 1.0 ---");
-					dwiter=dwplist.begin();
-					for(;dwiter!=dwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
 					// Correct the two last widthpoints triming its position to be <= 1.0
 					if(inserted)
 					{
@@ -354,18 +348,11 @@ Advanced_Outline::sync()
 							else
 							// restore the 'after' widthpoint
 							{
-								synfig::info("restoring after");
 								dend_tip=after.get_side_type_after();
-								synfig::info("after type     = %d", dend_tip);
 								dwplist.push_back(after);
 							}
 						}
 					}
-					synfig::info("---trim > 1.0 ---");
-					dwiter=dwplist.begin();
-					for(;dwiter!=dwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
 					inserted=0;
 					//
 					// Now insert the widhtpoints from Dash Offset to 0.0
@@ -387,11 +374,6 @@ Advanced_Outline::sync()
 						if(rditer==dilist.rend())
 							rditer=dilist.rbegin();
 					};
-					synfig::info("---From Dash Offset to 0.0 ---");
-					dwiter=dwplist.begin();
-					for(;dwiter!=dwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
 					// Correct the two first widthpoints triming its position to be >= 0.0
 					if(inserted)
 					{
@@ -410,23 +392,11 @@ Advanced_Outline::sync()
 							else
 								// restore the 'before' widthpoint
 							{
-								synfig::info("restoring before");
 								dstart_tip=before.get_side_type_before();
 								dwplist.insert(dwplist.begin(), before);
 							}
 						}
 					}
-					synfig::info("---trim < 0.0 ---");
-					dwiter=dwplist.begin();
-					for(;dwiter!=dwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
-					//// Debug info
-					synfig::info("------");
-					dwiter=dwplist.begin();
-					for(;dwiter!=dwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
 					// now let's remove those dash widthpoints that doesn't
 					// lie on a drawable place
 					// first prepare the widthpoint iterators
@@ -461,11 +431,6 @@ Advanced_Outline::sync()
 						witer=wnext;
 						wnext++;
 					}while(wnext!=wplist.end());
-					synfig::info("----after remove dash width points--");
-					dwiter=fdwplist.begin();
-					for(;dwiter!=fdwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after());
-					synfig::info("------");
 					// Now we need to remove the regular widthpoints that
 					// lie in a dash empty space.
 					// first prepare the dash widthpoint iterators
@@ -478,12 +443,8 @@ Advanced_Outline::sync()
 						for(witer=wplist.begin(); witer!=wplist.end();witer++)
 						{
 							Real witer_pos=witer->get_norm_position();
-							synfig::info("Compare iter % f, next %f, p %f", dwiter_pos, dwnext_pos, witer_pos);
 							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
-							{
-								synfig::info(".... adding %f", witer_pos);
 								fdwplist.push_back(*witer);
-							}
 						}
 						dwnext++;
 						dwiter=dwnext;
@@ -491,12 +452,6 @@ Advanced_Outline::sync()
 							break;
 						dwnext++;
 					}while(1);
-					dwiter=fdwplist.begin();
-					synfig::info("----after add the normal width points--");
-					for(;dwiter!=fdwplist.end();dwiter++)
-						synfig::info("P:%f W:%f B:%d A:%d D:%d", dwiter->get_position(), dwiter->get_width(), dwiter->get_side_type_before(), dwiter->get_side_type_after(), dwiter->get_dash());
-					synfig::info("------");
-
 				} // if dashes_length > EPSILON
 			} // if blinelength > EPSILON
 		} ////////////////////////////////////////////// if dash_enabled
@@ -512,10 +467,6 @@ Advanced_Outline::sync()
 			sort(wplist.begin(),wplist.end());
 			//////////////
 			witer=wplist.begin();
-			synfig::info("-------after filter and merge");
-			for(;witer!=wplist.end();witer++)
-				synfig::info("P:%f W:%f B:%d A:%d D%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after(), witer->get_dash());
-			synfig::info("------");
 		}
 		// Prepare the widthpoint iterators
 		// we start with the next withpoint being the first on the list.
@@ -556,22 +507,12 @@ Advanced_Outline::sync()
 		// have the start (end) dash item's corresponding tip.
 		if(dash_enabled)
 		{
-			synfig::info("blineloop and dash_enabled");
 			vector<WidthPoint>::iterator first(wplist.begin());
 			vector<WidthPoint>::iterator last(--wplist.end());
-			synfig::info("first type before = %d", first->get_side_type_before());
 			if(first->get_side_type_before() == WidthPoint::TYPE_INTERPOLATE)
-			{
-				synfig::info("setting first to before=%d", dstart_tip);
 				first->set_side_type_before(dstart_tip);
-			}
-			synfig::info("last type after = %d", last->get_side_type_after());
-			synfig::info("last position = %f", last->get_position());
 			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE)
-			{
-				synfig::info("setting last to after=%d", dend_tip);
 				last->set_side_type_after(dend_tip);
-			}
 		}
 
 		do ///////////////////////// Main loop
