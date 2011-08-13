@@ -62,6 +62,7 @@ private:
 	bool homogeneous_;
 	Real dash_offset_;
 	bool dash_enabled_;
+	bool old_version;
 
 public:
 	enum CuspType
@@ -79,6 +80,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
+	virtual bool set_version(const synfig::String &ver);
 	//! Connects the parameter to another Value Node. Implementation for this layer
 	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
 

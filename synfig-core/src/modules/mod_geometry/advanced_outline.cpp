@@ -66,7 +66,7 @@ SYNFIG_LAYER_INIT(Advanced_Outline);
 SYNFIG_LAYER_SET_NAME(Advanced_Outline,"advanced_outline");
 SYNFIG_LAYER_SET_LOCAL_NAME(Advanced_Outline,N_("Advanced Outline"));
 SYNFIG_LAYER_SET_CATEGORY(Advanced_Outline,N_("Geometry"));
-SYNFIG_LAYER_SET_VERSION(Advanced_Outline,"0.1");
+SYNFIG_LAYER_SET_VERSION(Advanced_Outline,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Advanced_Outline,"$Id$");
 /* === P R O C E D U R E S ================================================= */
 Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, const Vector& t2 );
@@ -82,6 +82,7 @@ Advanced_Outline::Advanced_Outline()
 	dash_offset_=0.0;
 	homogeneous_=false;
 	dash_enabled_=false;
+	old_version=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -248,7 +249,7 @@ Advanced_Outline::sync()
 					{
 						WidthPoint i(wpback);
 						WidthPoint n(wpfront);
-						if(!homogeneous)
+						if(!homogeneous && !old_version)
 						{
 							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -261,7 +262,7 @@ Advanced_Outline::sync()
 					{
 						WidthPoint i(wpback);
 						WidthPoint n(wpfront);
-						if(!homogeneous)
+						if(!homogeneous && !old_version)
 						{
 							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -552,7 +553,7 @@ Advanced_Outline::sync()
 					WidthPoint i(*cwiter);
 					WidthPoint n(*cwnext);
 					Real p(ipos);
-					if(!homogeneous)
+					if(!homogeneous && !old_version)
 					{
 						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -584,7 +585,7 @@ Advanced_Outline::sync()
 							WidthPoint i(*cwiter);
 							WidthPoint n(*cwnext);
 							Real p(ipos);
-							if(!homogeneous)
+							if(!homogeneous && !old_version)
 							{
 								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -677,7 +678,7 @@ Advanced_Outline::sync()
 					WidthPoint i(*cwiter);
 					WidthPoint n(*cwnext);
 					Real p(ipos);
-					if(!homogeneous)
+					if(!homogeneous && !old_version)
 					{
 						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -715,7 +716,7 @@ Advanced_Outline::sync()
 							WidthPoint i(*cwiter);
 							WidthPoint n(*cwnext);
 							Real p(ipos);
-							if(!homogeneous)
+							if(!homogeneous && !old_version)
 							{
 								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -746,7 +747,7 @@ Advanced_Outline::sync()
 					WidthPoint i(*cwiter);
 					WidthPoint n(*cwnext);
 					Real po(ipos);
-					if(!homogeneous)
+					if(!homogeneous && !old_version)
 					{
 						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -775,7 +776,7 @@ Advanced_Outline::sync()
 				WidthPoint i(*cwiter);
 				WidthPoint n(*cwnext);
 				Real po(ipos);
-				if(!homogeneous)
+				if(!homogeneous && !old_version)
 				{
 					i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
 					n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
@@ -857,6 +858,14 @@ Advanced_Outline::set_time(Context context, Time time, Vector pos)const
 {
 	const_cast<Advanced_Outline*>(this)->sync();
 	context.set_time(time,pos);
+}
+
+bool
+Advanced_Outline::set_version(const synfig::String &ver)
+{
+	if (ver=="0.1")
+		old_version = true;
+	return true;
 }
 
 ValueBase
