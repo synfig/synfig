@@ -2795,40 +2795,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon->show();
 	}
 
-       if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
-        {
-                Gtk::Image *icon;
-                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
-                futurekeyframebutton->remove();
-                futurekeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-		
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
-                pastkeyframebutton->remove();
-                pastkeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-
-
-        }
-        else if((mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
-        {
-                Gtk::Image *icon;
-                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
-                futurekeyframebutton->remove();
-                futurekeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-		
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
-                pastkeyframebutton->remove();
-                pastkeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-
-        }
-        else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
+       if((mode&synfigapp::MODE_ANIMATE_FUTURE))
         {
                 Gtk::Image *icon;
                 icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
@@ -2836,29 +2803,35 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
                 futurekeyframebutton->add(*icon);
                 icon->set_padding(0,0);
                 icon->show();
-		
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
-                pastkeyframebutton->remove();
-                pastkeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
+	}
 
-        }
-        else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
+       else
         {
                 Gtk::Image *icon;
-                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
+                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
                 futurekeyframebutton->remove();
                 futurekeyframebutton->add(*icon);
                 icon->set_padding(0,0);
                 icon->show();
+        }
 
+	if((mode&synfigapp::MODE_ANIMATE_PAST))		
+	{	
+		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
                 pastkeyframebutton->remove();
                 pastkeyframebutton->add(*icon);
                 icon->set_padding(0,0);
                 icon->show();
-
+        }
+        else
+	{	
+		Gtk::Image *icon;
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
+                pastkeyframebutton->remove();
+                pastkeyframebutton->add(*icon);
+                icon->set_padding(0,0);
+                icon->show();
         }
 
 	work_area->queue_draw();
