@@ -341,14 +341,14 @@ Advanced_Outline::sync()
 					{
 						after=dwplist.back();
 						// if the if the 'after' widthpoint passed 1.0
-						if(after.get_position() > 1.0)
+						if(after.get_position() >= 1.0)
 						{
 							// trim to 1.0
 							after.set_position(1.0);
 							dwplist.pop_back();
 							before=dwplist.back();
 							// then watch the before one and if it passeed 1.0
-							if(before.get_position() > 1.0)
+							if(before.get_position() >= 1.0)
 								// discard it (and also the 'after' one)
 								dwplist.pop_back();
 							else
@@ -397,14 +397,14 @@ Advanced_Outline::sync()
 					{
 						before=dwplist.front();
 						// if the dash is cutted in the middle then trim the 'before' widthpoint
-						if(before.get_position() < 0.0  )
+						if(before.get_position() <= 0.0  )
 						{
 							// trim it to 0.0
 							before.set_position(0.0);
 							dwplist.erase(dwplist.begin());
 							after=dwplist.front();
 							// then watch the after one and if it passed 0.0
-							if(after.get_position() < 0.0)
+							if(after.get_position() <= 0.0)
 								// discard the 'after' one (and the 'before' one too)
 								dwplist.erase(dwplist.begin());
 							else
@@ -478,8 +478,12 @@ Advanced_Outline::sync()
 						for(witer=wplist.begin(); witer!=wplist.end();witer++)
 						{
 							Real witer_pos=witer->get_norm_position();
+							synfig::info("Compare iter % f, next %f, p %f", dwiter_pos, dwnext_pos, witer_pos);
 							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
+							{
+								synfig::info(".... adding %f", witer_pos);
 								fdwplist.push_back(*witer);
+							}
 						}
 						dwnext++;
 						dwiter=dwnext;
@@ -540,34 +544,30 @@ Advanced_Outline::sync()
 		// have the same type of the layer's start (end) tip.
 		if(!blineloop)
 		{
-			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
-				wnext->set_side_type_before(start_tip_);
+			if(wnext->get_norm_position()==0.0 /*&& wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE*/)
+				wnext->set_side_type_before(dash_enabled?dstart_tip:start_tip_);
 			vector<WidthPoint>::iterator last=--wplist.end();
-			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
-				last->set_side_type_after(end_tip_);
+			if(last->get_norm_position()==1.0 /*&& last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE*/)
+				last->set_side_type_after(dash_enabled?dend_tip:end_tip_);
 		}
 		// If the first (last) widthpoint are interpolate before (after)
 		// and the last (first) widthpoint is not interpolate after (before)
 		// and we are doing dashes, then make the first (last) widthpoint to
 		// have the start (end) dash item's corresponding tip.
-		if(blineloop && dash_enabled)
+		if(dash_enabled)
 		{
 			synfig::info("blineloop and dash_enabled");
 			vector<WidthPoint>::iterator first(wplist.begin());
 			vector<WidthPoint>::iterator last(--wplist.end());
 			synfig::info("first type before = %d", first->get_side_type_before());
-			if(first->get_side_type_before() == WidthPoint::TYPE_INTERPOLATE
-			&&
-			last->get_side_type_after() != WidthPoint::TYPE_INTERPOLATE)
+			if(first->get_side_type_before() == WidthPoint::TYPE_INTERPOLATE)
 			{
 				synfig::info("setting first to before=%d", dstart_tip);
 				first->set_side_type_before(dstart_tip);
 			}
 			synfig::info("last type after = %d", last->get_side_type_after());
 			synfig::info("last position = %f", last->get_position());
-			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE
-			&&
-			first->get_side_type_before() != WidthPoint::TYPE_INTERPOLATE)
+			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE)
 			{
 				synfig::info("setting last to after=%d", dend_tip);
 				last->set_side_type_after(dend_tip);
