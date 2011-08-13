@@ -245,11 +245,29 @@ Advanced_Outline::sync()
 					// if it is not exactly at 0.0
 					if(wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					{
+						WidthPoint i(wpback);
+						WidthPoint n(wpfront);
+						if(!homogeneous)
+						{
+							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						}
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					}
 					// If it is not exactly at 1.0
 					if(wpback.get_norm_position()!=1.0)
 					// Add a fake widthpoint at position 1.0
-						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					{
+						WidthPoint i(wpback);
+						WidthPoint n(wpfront);
+						if(!homogeneous)
+						{
+							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						}
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(i, n, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					}
 				}
 			}
 			else
@@ -589,7 +607,18 @@ Advanced_Outline::sync()
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
 				if(wnext->get_dash())
-					wnext->set_width(widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+				{
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real p(ipos);
+					if(!homogeneous)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+					}
+					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
+				}
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -610,7 +639,18 @@ Advanced_Outline::sync()
 						vector<WidthPoint>::iterator last(--wplist.end());
 						// when doing dashed outlines, the above rule is not always true
 						if(first->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE || last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
-							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+						{
+							WidthPoint i(*cwiter);
+							WidthPoint n(*cwnext);
+							Real p(ipos);
+							if(!homogeneous)
+							{
+								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+								p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+							}
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+						}
 					}
 					// ... and get out of the main loop.
 					break;
@@ -693,7 +733,16 @@ Advanced_Outline::sync()
 				// for the intermediate blinepoints when looped
 				if(split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real p(ipos);
+					if(!homogeneous)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+					}
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				middle_corner=false;
 			}
@@ -721,7 +770,18 @@ Advanced_Outline::sync()
 					else
 					{
 						if(wnext->get_dash())
-						wnext->set_width(widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+						{
+							WidthPoint i(*cwiter);
+							WidthPoint n(*cwnext);
+							Real p(ipos);
+							if(!homogeneous)
+							{
+								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+								p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+							}
+							wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
+						}
 						ww=wnext->get_width();
 					}
 					const Real w(expand_+width_*0.5*ww);
@@ -742,7 +802,16 @@ Advanced_Outline::sync()
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 					const Vector d(deriv(q).perp().norm());
 					const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real po(ipos);
+					if(!homogeneous)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						po=std_to_hom(bline, po, wplist_.get_loop(), blineloop);
+					}
+					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -762,7 +831,16 @@ Advanced_Outline::sync()
 				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 				const Vector d(deriv(q).perp().norm());
 				const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
-				const Real w(expand_+width_*0.5*widthpoint_interpolate(*cwiter, *cwnext, ipos, smoothness_));
+				WidthPoint i(*cwiter);
+				WidthPoint n(*cwnext);
+				Real po(ipos);
+				if(!homogeneous)
+				{
+					i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+					n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+					po=std_to_hom(bline, po, wplist_.get_loop(), blineloop);
+				}
+				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
