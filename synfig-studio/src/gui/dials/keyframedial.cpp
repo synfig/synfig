@@ -71,6 +71,7 @@ KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 	icon->set_padding(0, 0);
 	icon->show();
 	button->set_relief(Gtk::RELIEF_NONE);
+	button->set_active();
 	button->show();
 
 	return button;
