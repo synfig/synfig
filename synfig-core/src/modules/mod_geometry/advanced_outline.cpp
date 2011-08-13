@@ -573,7 +573,9 @@ Advanced_Outline::sync()
 				if(wnext==wend)
 				{
 					// There is always a widthpoint at the end (and start)
-					// when it is blinelooped and interpolated on last blinepoint.
+					// when it is blinelooped and interpolated on last widthpoint.
+					// In other cases the interpolated width is zero so there is not corner
+					// rendered.
 					// ... let's make the last cusp...
 					cwnext=cwplist.begin();
 					cwiter=--cwplist.end();
@@ -655,12 +657,12 @@ Advanced_Outline::sync()
 				middle_corner=false;
 				continue;
 			}
-			// If we are exactly on the first blinepoint...
+			// If we stopped on an intermediate blinepoint (middle corner=true)...
 			sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
 			if(middle_corner==true)
 			{
-				// ... do cusp at ipos
-				// notice that if we are in the second blinepoint
+				// ... do cusp at ipos if tangents are splitted
+				// Notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
