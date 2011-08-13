@@ -2794,45 +2794,43 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon->set_padding(0,0);
 		icon->show();
 	}
-
-       if((mode&synfigapp::MODE_ANIMATE_FUTURE))
-        {
-                Gtk::Image *icon;
-                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
-                futurekeyframebutton->remove();
-                futurekeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
+	//Keyframe lock icons
+	if(mode&synfigapp::MODE_ANIMATE_FUTURE)
+	{
+		Gtk::Image *icon;
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
+		futurekeyframebutton->remove();
+		futurekeyframebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
 	}
-
-       else
-        {
-                Gtk::Image *icon;
-                icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
-                futurekeyframebutton->remove();
-                futurekeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-        }
-
-	if((mode&synfigapp::MODE_ANIMATE_PAST))		
+	else
+	{
+		Gtk::Image *icon;
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
+		futurekeyframebutton->remove();
+		futurekeyframebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+	}
+	if(mode&synfigapp::MODE_ANIMATE_PAST)		
 	{	
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
-                pastkeyframebutton->remove();
-                pastkeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-        }
-        else
+		pastkeyframebutton->remove();
+		pastkeyframebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+	}
+	else
 	{	
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
-                pastkeyframebutton->remove();
-                pastkeyframebutton->add(*icon);
-                icon->set_padding(0,0);
-                icon->show();
-        }
+		pastkeyframebutton->remove();
+		pastkeyframebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+	}
 
 	work_area->queue_draw();
 }
@@ -2846,66 +2844,25 @@ CanvasView::toggle_animatebutton()
 		set_mode(get_mode()|synfigapp::MODE_ANIMATE);
 }
 
-/*******************************************
-
-void
-CanvasView::on_keyframe_button_pressed()
-{
- 	synfigapp::CanvasInterface::Mode mode(get_mode());
-
-	//   future && past   -->             past
-	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
-		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	//             past   -->   future
-	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
-		set_mode((get_mode()-synfigapp::MODE_ANIMATE_PAST)|synfigapp::MODE_ANIMATE_FUTURE);
-	//   future           -->       (nothing)
-	else if((mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
-		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	//      (nothing)     -->   future && past
-	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
-		set_mode(get_mode()|synfigapp::MODE_ANIMATE_FUTURE|synfigapp::MODE_ANIMATE_PAST);
-}
-************************************************/
 void
 CanvasView::toggle_past_keyframe_button()
 {
 	synfigapp::CanvasInterface::Mode mode(get_mode());
-
-	//past && future --> future 
-	if((mode&synfigapp::MODE_ANIMATE_PAST) && (mode&synfigapp::MODE_ANIMATE_FUTURE))
+	if((mode&synfigapp::MODE_ANIMATE_PAST) )
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_PAST);
-	//future --> past && future
-	else if(!(mode&synfigapp::MODE_ANIMATE_PAST) && (mode&synfigapp::MODE_ANIMATE_FUTURE))
-		set_mode((get_mode()|synfigapp::MODE_ANIMATE_PAST)|synfigapp::MODE_ANIMATE_FUTURE);
-	//past --> nothing
-	else if((mode&synfigapp::MODE_ANIMATE_PAST) && !(mode&synfigapp::MODE_ANIMATE_FUTURE))
-		set_mode(get_mode()-synfigapp::MODE_ANIMATE_PAST);
-	//nothing --> past
-	else if(!(mode&synfigapp::MODE_ANIMATE_PAST) && !(mode&synfigapp::MODE_ANIMATE_FUTURE))
-		set_mode(get_mode()|synfigapp::MODE_ANIMATE_PAST);
+	else
+		set_mode((get_mode()|synfigapp::MODE_ANIMATE_PAST));
 }
 
 void
 CanvasView::toggle_future_keyframe_button()
 {
  	synfigapp::CanvasInterface::Mode mode(get_mode());
-
-
-	//past && future --> past
-	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_FUTURE))
+	if((mode&synfigapp::MODE_ANIMATE_FUTURE) )
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	//past --> past && future
-	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE))
-		set_mode(get_mode()|synfigapp::MODE_ANIMATE_PAST|synfigapp::MODE_ANIMATE_FUTURE);
-	//future --> nothing
-	else if(!(mode&synfigapp::MODE_ANIMATE_PAST) && (mode&synfigapp::MODE_ANIMATE_FUTURE))
-		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	//nothing --> future
-	else if(!(mode&synfigapp::MODE_ANIMATE_PAST) && (!(mode&synfigapp::MODE_ANIMATE_FUTURE)))
+	else
 		set_mode(get_mode()|synfigapp::MODE_ANIMATE_FUTURE);
 }
-
 
 bool
 CanvasView::duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name)
