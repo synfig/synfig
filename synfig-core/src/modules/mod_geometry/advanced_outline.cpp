@@ -298,7 +298,7 @@ Advanced_Outline::sync()
 			if(blinelength > EPSILON)
 			{
 				// Put dash_offset in the [-blinelength,blinelength] interval
-				if (fabs(dash_offset) > blinelength) dash_offset=fmod(blinelength, dash_offset);
+				if (fabs(dash_offset) > blinelength) dash_offset=fmod(dash_offset, blinelength);
 				Real dpos=dash_offset;
 				Real dashes_length(0.0);
 				vector<DashItem>::iterator diter(dilist.begin());
