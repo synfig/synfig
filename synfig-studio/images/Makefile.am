@@ -21,7 +21,7 @@ EXTRA_DIST = \
 	curves_icon.sif \
 	duplicate_icon.sif \
 	encapsulate_icon.sif \
-	keyframe_lock_icon.sif \
+	keyframe_lock_icons.sif \
 	logo.sif \
 	pastecanvas_icon.sif \
 	saveall_icon.sif \
@@ -178,10 +178,10 @@ IMAGES = \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
-	keyframe_lock_all.$(EXT) \
-	keyframe_lock_past.$(EXT) \
-	keyframe_lock_future.$(EXT) \
-	keyframe_lock_none.$(EXT) \
+	keyframe_lock_past_on_icon.$(EXT) \
+	keyframe_lock_past_off_icon.$(EXT) \
+	keyframe_lock_future_on_icon.$(EXT) \
+	keyframe_lock_future_off_icon.$(EXT) \
 	rename_icon.$(EXT) \
 	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
@@ -369,23 +369,23 @@ clean-local:
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_all.$(EXT): $(srcdir)/keyframe_lock_icon.sif
+keyframe_lock_past_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_past.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c PastOnly
+keyframe_lock_past_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_future.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c FutureOnly
+keyframe_lock_future_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c Disabled
+keyframe_lock_future_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
