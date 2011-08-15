@@ -22,6 +22,7 @@ EXTRA_DIST = \
 	duplicate_icon.sif \
 	encapsulate_icon.sif \
 	keyframe_lock_icons.sif \
+	framedial_icons.sif \
 	logo.sif \
 	pastecanvas_icon.sif \
 	saveall_icon.sif \
@@ -182,6 +183,16 @@ IMAGES = \
 	keyframe_lock_past_off_icon.$(EXT) \
 	keyframe_lock_future_on_icon.$(EXT) \
 	keyframe_lock_future_off_icon.$(EXT) \
+	\
+	animate_seek_next_keyframe_icon.$(EXT) \
+	animate_seek_prev_keyframe_icon.$(EXT) \
+	animate_seek_next_frame_icon.$(EXT) \
+	animate_seek_prev_frame_icon.$(EXT) \
+	animate_seek_begin_icon.$(EXT) \
+	animate_seek_end_icon.$(EXT) \
+	animate_play_icon.$(EXT) \
+	animate_stop_icon.$(EXT) \
+	\
 	rename_icon.$(EXT) \
 	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
@@ -388,6 +399,46 @@ keyframe_lock_future_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 3
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_next_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_prev_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_next_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_prev_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_begin_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 4
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_end_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_play_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 6
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_stop_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 7
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 if DEVELOPMENT_SNAPSHOT
 splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
