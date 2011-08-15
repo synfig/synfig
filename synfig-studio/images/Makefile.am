@@ -38,10 +38,6 @@ EXTRA_DIST = \
 	plant_icon.sif \
 	set_fill_color.sif \
 	set_outline_color.sif \
-	seek_begin.sif \
-	seek_end.sif \
-	seek_next_frame.sif \
-	seek_prev_frame.sif \
 	duck_position_icon.sif \
 	duck_vertex_icon.sif \
 	duck_tangent_icon.sif \
@@ -179,6 +175,7 @@ IMAGES = \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
+	\
 	keyframe_lock_past_on_icon.$(EXT) \
 	keyframe_lock_past_off_icon.$(EXT) \
 	keyframe_lock_future_on_icon.$(EXT) \
@@ -197,10 +194,6 @@ IMAGES = \
 	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
 	set_outline_color.$(EXT) \
-	seek_begin.$(EXT) \
-	seek_end.$(EXT) \
-	seek_next_frame.$(EXT) \
-	seek_prev_frame.$(EXT) \
 	duck_position_icon.$(EXT) \
 	duck_vertex_icon.$(EXT) \
 	duck_tangent_icon.$(EXT) \
