@@ -16,6 +16,7 @@ EXTRA_DIST = \
 	splash_screen-0.61.07.sif \
 	splash_screen_development.sif.in \
 	about_icon.sif \
+	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
 	curves_icon.sif \
@@ -189,6 +190,8 @@ IMAGES = \
 	animate_seek_end_icon.$(EXT) \
 	animate_play_icon.$(EXT) \
 	animate_stop_icon.$(EXT) \
+	animate_mode_off_icon.$(EXT) \
+	animate_mode_on_icon.$(EXT) \
 	\
 	rename_icon.$(EXT) \
 	plant_icon.$(EXT) \
@@ -430,6 +433,16 @@ animate_play_icon.$(EXT): $(srcdir)/framedial_icons.sif
 
 animate_stop_icon.$(EXT): $(srcdir)/framedial_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 7
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
