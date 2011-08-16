@@ -54,11 +54,11 @@ using namespace studio;
 FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 {
 	seek_begin =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin",_("Seek to begin"));
-	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Previous keyframe"));
-	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Previous frame"));
+	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Seek to previous keyframe"));
+	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Seek to previous frame"));
 	play_stop =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_play",_("Play"));
-	seek_next_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_frame",_("Next frame"));
-	seek_next_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe",_("Next keyframe"));
+	seek_next_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_frame",_("Seek to next frame"));
+	seek_next_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe",_("Seek to next keyframe"));
 	seek_end =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_end",_("Seek to end"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);

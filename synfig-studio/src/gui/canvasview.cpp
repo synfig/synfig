@@ -2801,6 +2801,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
+		tooltips.set_tip(*futurekeyframebutton,_("Unlock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2810,6 +2811,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
+		tooltips.set_tip(*futurekeyframebutton,_("Lock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2819,6 +2821,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
+		tooltips.set_tip(*pastkeyframebutton,_("Unlock past keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2828,6 +2831,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
+		tooltips.set_tip(*pastkeyframebutton,_("Lock past  keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
