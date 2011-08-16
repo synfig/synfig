@@ -986,7 +986,7 @@ CanvasView::create_time_bar()
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
 	animatebutton = Gtk::manage(new class Gtk::ToggleButton());
-	tooltips.set_tip(*animatebutton,_("Toggle animate editing mode"));
+	tooltips.set_tip(*animatebutton,_("Turn on animate editing mode"));
 	icon->set_padding(0,0);
 	icon->show();
 	animatebutton->add(*icon);
@@ -2780,7 +2780,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("In animate editing mode"));
+		tooltips.set_tip(*animatebutton,_("Turn off animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2790,7 +2790,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("Not in animate editing mode"));
+		tooltips.set_tip(*animatebutton,_("Turn on animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
