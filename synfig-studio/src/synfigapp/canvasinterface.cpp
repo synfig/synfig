@@ -875,13 +875,54 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 void
 CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& data)
 {
-	get_canvas()->set_meta_data(key,data);
+	if (get_canvas()->get_meta_data(key) == data)
+		return;
+
+    if (key=="guide_x" || key=="guide_y")
+	{
+		// Create an undoable action
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataSet"));
+
+		assert(action);
+		if(!action)
+			return;
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("key",key);
+		action->set_param("value",data);
+
+		get_instance()->perform_action(action);
+	}
+	else
+	{
+		get_canvas()->set_meta_data(key,data);
+	}
 }
 
 void
 CanvasInterface::erase_meta_data(const synfig::String& key)
 {
-	get_canvas()->erase_meta_data(key);
+	if (key=="guide_x" || key=="guide_y")
+	{
+		// Create an undoable action
+		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataErase"));
+
+		assert(action);
+		if(!action)
+			return;
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("key",key);
+
+		get_instance()->perform_action(action);
+	}
+	else
+	{
+		get_canvas()->erase_meta_data(key);
+	}
 }
 
 // this function goes with find_important_value_descs()

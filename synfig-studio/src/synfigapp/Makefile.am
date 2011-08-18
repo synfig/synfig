@@ -168,6 +168,8 @@ CANVAS_ACTION_HH = \
 	actions/canvasadd.h \
 	actions/canvasdescriptionset.h \
 	actions/canvasidset.h \
+	actions/canvasmetadataerase.h \
+	actions/canvasmetadataset.h \
 	actions/canvasnameset.h \
 	actions/canvasremove.h \
 	actions/canvasrenddescset.h
@@ -176,6 +178,8 @@ CANVAS_ACTION_CC = \
 	actions/canvasadd.cpp \
 	actions/canvasdescriptionset.cpp \
 	actions/canvasidset.cpp \
+	actions/canvasmetadataerase.cpp \
+	actions/canvasmetadataset.cpp \
 	actions/canvasnameset.cpp \
 	actions/canvasremove.cpp \
 	actions/canvasrenddescset.cpp
