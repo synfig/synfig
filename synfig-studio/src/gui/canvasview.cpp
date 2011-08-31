@@ -1038,7 +1038,7 @@ CanvasView::create_time_bar()
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
 
-	timebar = Gtk::manage(new class Gtk::Table(5, 3, false));
+	timebar = Gtk::manage(new class Gtk::Table(6, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -1049,6 +1049,9 @@ CanvasView::create_time_bar()
 	timeslider->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list->set_size_request(-1,header_height/3+1);
 
+	Gtk::VSeparator *separator1 = Gtk::manage(new class Gtk::VSeparator());
+        separator1->show();
+
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -1057,7 +1060,8 @@ CanvasView::create_time_bar()
 	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*keyframedial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*animatebutton, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*separator1, 4, 5, 0, 2, Gtk::FILL, Gtk::FILL);
+	timebar->attach(*animatebutton, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 	timebar->show();
