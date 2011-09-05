@@ -168,6 +168,10 @@ Advanced_Outline::sync()
 		bool first(true);
 		// Used to remember if in the next loop we should do a middle corner
 		bool middle_corner(false);
+		// Used to remember if we are adding a first(last) widthpoint when
+		// blinelooped and first(last) normal widthpoint is before(after) side
+		// type set to interpolate
+		bool inserted_first(false), inserted_last(false);
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
@@ -255,6 +259,7 @@ Advanced_Outline::sync()
 							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
 						}
 						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						inserted_first=true;
 					}
 					// If it is not exactly at 1.0
 					if(wpback.get_norm_position()!=1.0)
@@ -268,6 +273,7 @@ Advanced_Outline::sync()
 							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
 						}
 						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(i, n, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						inserted_last=true;
 					}
 				}
 			}
@@ -772,6 +778,18 @@ Advanced_Outline::sync()
 				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 				const Vector d(deriv(q).perp().norm());
 				const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
+				// if we inserted the widthpoints at start and end, don't consider them for interpolation.
+				if(cwiter->get_position() == 0.0 && cwnext->get_position()!=1.0 && inserted_first)
+				{
+					cwiter=cwplist.end();
+					cwiter--;
+					cwiter--;
+				}
+				if(cwnext->get_norm_position() == 1.0 && inserted_last)
+				{
+					cwnext=cwplist.begin();
+					cwnext++;
+				}
 				WidthPoint i(*cwiter);
 				WidthPoint n(*cwnext);
 				Real po(ipos);
