@@ -410,10 +410,6 @@ src/synfigapp/actions/waypointsetsmart.cpp
 src/synfigapp/actions/waypointsetsmart.h
 src/synfigapp/actions/waypointsimpleadd.cpp
 src/synfigapp/actions/waypointsimpleadd.h
-src/synfigapp/actions/wplistsethomogeneous.h
-src/synfigapp/actions/wplistsethomogeneous.cpp
-src/synfigapp/actions/wplistunsethomogeneous.h
-src/synfigapp/actions/wplistunsethomogeneous.cpp
 src/synfigapp/action_system.cpp
 src/synfigapp/action_system.h
 src/synfigapp/blineconvert.cpp
