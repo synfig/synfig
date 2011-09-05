@@ -1047,25 +1047,25 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
 	{
-		synfig::info("Not a list");
+		//synfig::info("Not a list");
 		return false;
 	}
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 	{
-		synfig::info("No blinepoints!");
+		//synfig::info("No blinepoints!");
 		return false;
 	}
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
 	if(iter==dynamic_param_list().end())
 	{
-		synfig::warning("WPList doesn't exist yet");
+		//synfig::warning("WPList doesn't exist yet");
 		return false;
 	}
 	ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
 	if(!wplist)
 	{
-		synfig::info("WPList is not ready: NULL");
+		//synfig::info("WPList is not ready: NULL");
 		return false;
 	}
 	if(!wplist->link_count())
@@ -1080,25 +1080,25 @@ Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
 	{
-		synfig::info("Not a list");
+		//synfig::info("Not a list");
 		return false;
 	}
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 	{
-		synfig::info("No blinepoints!");
+		//synfig::info("No blinepoints!");
 		return false;
 	}
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
 	if(iter==dynamic_param_list().end())
 	{
-		synfig::warning("DIList doesn't exist yet");
+		//synfig::warning("DIList doesn't exist yet");
 		return false;
 	}
 	ValueNode_DIList::Handle dilist(ValueNode_DIList::Handle::cast_dynamic(iter->second));
 	if(!dilist)
 	{
-		synfig::info("DIList is not ready: NULL");
+		//synfig::info("DIList is not ready: NULL");
 		return false;
 	}
 	if(!dilist->link_count())
