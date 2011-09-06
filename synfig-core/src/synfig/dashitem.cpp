@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widthpoint.cpp
-**	\brief Template File for a Width Point implementation
+/*!	\file dashitem.cpp
+**	\brief Template File for a Dash Item implementation
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2010 Carlos López
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,8 +30,7 @@
 #	include <config.h>
 #endif
 
-#include <math.h>
-#include "widthpoint.h"
+#include "dashitem.h"
 
 #endif
 
@@ -48,116 +47,81 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-WidthPoint::WidthPoint():
-	position_(0.0),
-	width_(0.01),
-	dash_(false)
+DashItem::DashItem():
+offset_(0.1),
+length_(0.1)
 {
-	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
+	side_type_[0] = side_type_[1] = TYPE_FLAT;
 }
 
-WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter, bool dash):
-	position_(position),
-	width_(width)
+
+DashItem::DashItem(Real offset, Real length, int sidebefore, int sideafter):
+	offset_(offset),
+	length_(length)
 {
 	side_type_[0]=sidebefore;
 	side_type_[1]=sideafter;
-	dash_=dash;
-}
-
-const Real&
-WidthPoint::get_position()const
-{
-	return position_;
-}
-
-Real
-WidthPoint::get_norm_position()const
-{
-	Real pos(get_position());
-	Real integer;
-	if(pos>=0.0 && pos <=1.0)
-		return pos;
-	else
-	{
-		Real ret(modf(pos, &integer));
-		return ret>=0.0?ret:(1.0+ret);
-	}
 }
 
 void
-WidthPoint::set_position(const Real& x)
+DashItem::set_length(Real x)
 {
-
-	position_=x;
+	length_=x;
 }
 
 const Real&
-WidthPoint::get_width()const
+DashItem::get_length()const
 {
-	return width_;
+	return length_;
 }
 
 void
-WidthPoint::set_width(Real x)
+DashItem::set_offset(Real x)
 {
-	width_=x;
+	offset_=x;
+}
+
+const Real&
+DashItem::get_offset()const
+{
+	return offset_;
 }
 
 int
-WidthPoint::get_side_type_before()const
+DashItem::get_side_type_before()const
 {
 	return side_type_[0];
 }
 
 void
-WidthPoint::set_side_type_before(int sidebefore)
+DashItem::set_side_type_before(int sidebefore)
 {
 	side_type_[0]=sidebefore;
 }
 
 int
-WidthPoint::get_side_type_after()const
+DashItem::get_side_type_after()const
 {
 	return side_type_[1];
 }
 
 void
-WidthPoint::set_side_type_after(int sideafter)
+DashItem::set_side_type_after(int sideafter)
 {
 	side_type_[1]=sideafter;
 }
 
 int
-WidthPoint::get_side_type(int i)const
+DashItem::get_side_type(int i)const
 {
 	return i>0? side_type_[1]: side_type_[0];
 }
 
-void
-WidthPoint::set_dash(bool l)
-{
-	dash_=l;
-}
-
 bool
-WidthPoint::get_dash()const
-{
-	return dash_;
-}
-
-
-bool
-WidthPoint::operator<(const WidthPoint& rhs)
-{
-	return get_norm_position() < rhs.get_norm_position();
-}
-
-bool
-WidthPoint::operator == (const WidthPoint& rhs)
+DashItem::operator == (const DashItem& rhs)
 {
 	return 	side_type_[0] == rhs.get_side_type(0) &&
 			side_type_[1] == rhs.get_side_type(1) &&
-			position_ == rhs.get_position() &&
-			width_ == rhs.get_width();
+			length_ == rhs.get_length() &&
+			offset_ == rhs.get_offset();
 }

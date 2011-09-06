@@ -1,13 +1,13 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_bline.h
-**	\brief Header file for implementation of the "BLine" valuenode conversion.
+**	\brief Header file for implementation of the "Dash Item List" valuenode
+**	conversion.
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2011 Carlos López
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_VALUENODE_BLINE_H
-#define __SYNFIG_VALUENODE_BLINE_H
+#ifndef __SYNFIG_VALUENODE_DILIST_H
+#define __SYNFIG_VALUENODE_DILIST_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 #include "valuenode.h"
 #include "time.h"
 #include "uniqueid.h"
-#include "blinepoint.h"
+#include "dashitem.h"
 #include "valuenode_dynamiclist.h"
 
 /* === M A C R O S ========================================================= */
@@ -43,67 +43,54 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+//! Converts a ValueNode_DIList into a DashItem list
+// TODO synfig::ValueBase convert_bline_to_DIList(const ValueBase& bline);
 
-
-//! Converts a list of bline points into a list of segments
-ValueBase convert_bline_to_segment_list(const ValueBase &bline);
-
-//! Converts a list of bline points into a list of widths
-ValueBase convert_bline_to_width_list(const ValueBase &bline);
-
-//! Finds the closest point to pos in bline
-Real find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point = 0);
-
-//! Converts from standard to homogeneous index (considers the length)
-Real std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
-
-//! Converts from homogeneous to standard index
-Real hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
-
-//! Returns the length of the bline
-Real bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths);
-
-
-/*! \class ValueNode_BLine
-**	\brief \writeme
+/*! \class ValueNode_DIList
+**	\brief This class implements a list of Dash Items
 */
-class ValueNode_BLine : public ValueNode_DynamicList
+class ValueNode_DIList : public ValueNode_DynamicList
 {
+private:
+	ValueNode::RHandle bline_;
 public:
 
-	typedef etl::handle<ValueNode_BLine> Handle;
-	typedef etl::handle<const ValueNode_BLine> ConstHandle;
-
-
-	ValueNode_BLine();
+	typedef etl::handle<ValueNode_DIList> Handle;
+	typedef etl::handle<const ValueNode_DIList> ConstHandle;
+	typedef etl::handle<const ValueNode_DIList> LooseHandle;
+	ValueNode_DIList();
 
 public:
-
-
 
  	virtual ValueBase operator()(Time t)const;
-
-	virtual ~ValueNode_BLine();
-
+	virtual ~ValueNode_DIList();
 	virtual String link_local_name(int i)const;
-
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-
+	//! Inserts a new entry between the previous found
+	//! dashitem and the one where the action was called
+	//! \param index the index of the entry wher the action is done
+	//! \param time the time when inserted in animation mode
+	//! \param origin unused. Always is in the middle.
+	//! \return the new List Entry
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
+	//! Gets the bline RHandle
+	ValueNode::LooseHandle get_bline()const;
+	//! Sets the bline RHandle
+	void set_bline(ValueNode::Handle b);
 
 protected:
 
 	LinkableValueNode* create_new()const;
 
 public:
-	//using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
-	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
-	virtual Vocab get_children_vocab_vfunc()const;
-}; // END of class ValueNode_BLine
 
-typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;
+	static bool check_type(ValueBase::Type type);
+	// Creates a Value Node Width Point List from another compatible list
+	static ValueNode_DIList* create(const ValueBase &x=ValueBase::TYPE_LIST);
+}; // END of class ValueNode_DIList
+
+typedef ValueNode_DIList::ListEntry::ActivepointList ActivepointList;
 
 }; // END of namespace synfig
 

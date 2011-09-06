@@ -45,6 +45,7 @@ class ValueNode_BLineCalcTangent : public LinkableValueNode
 	ValueNode::RHandle offset_;
 	ValueNode::RHandle scale_;
 	ValueNode::RHandle fixed_length_;
+	ValueNode::RHandle homogeneous_;
 
 	ValueNode_BLineCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 

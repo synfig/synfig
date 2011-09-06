@@ -46,6 +46,7 @@ private:
 	Real position_;
 	Real width_;
 	int side_type_[2]; // Before [0] and After[1] side types
+	bool dash_; // if true, widthpoint is used for dashed outlines
 
 public:
 
@@ -60,7 +61,7 @@ public:
 
 	WidthPoint();
 	WidthPoint(Real position, Real width, int sidebefore=TYPE_INTERPOLATE,
-		int sideafter=TYPE_INTERPOLATE);
+		int sideafter=TYPE_INTERPOLATE, bool dash_=false);
 
 	const Real& get_position()const;
 	void set_position(const Real& x);
@@ -75,6 +76,8 @@ public:
 	int get_side_type_after()const;
 	void set_side_type_after(int sideafter);
 	int get_side_type(int i)const;
+	bool get_dash()const;
+	void set_dash(bool l);
 	bool operator < (const WidthPoint& rhs);
 	bool operator == (const WidthPoint& rhs);
 

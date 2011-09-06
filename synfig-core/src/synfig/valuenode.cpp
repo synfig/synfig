@@ -57,6 +57,7 @@
 #include "valuenode_twotone.h"
 #include "valuenode_bline.h"
 #include "valuenode_wplist.h"
+#include "valuenode_dilist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
@@ -188,7 +189,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
 	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
 
-	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_62_03);
+	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
+	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2

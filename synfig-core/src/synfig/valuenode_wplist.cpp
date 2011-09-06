@@ -442,3 +442,4 @@ ValueNode_WPList::set_bline(ValueNode::Handle b)
 {
 	bline_=b;
 }
+
