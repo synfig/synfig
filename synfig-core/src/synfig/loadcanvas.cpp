@@ -1655,7 +1655,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			if ((version == "0.5" || version == "0.6" || version == "0.7") &&
 				(element->get_name() == "blinecalcvertex" || element->get_name() == "blinecalctangent" || element->get_name() == "blinecalcwidth") &&
 				value_node->link_name(i) == "homogeneous")
+			{
+				// old versions aren't homogeneous (new versions are homogeneous by default)
+				value_node->set_link("homogeneous", ValueNode_Const::create(bool(false)));
 				continue;
+			}
 
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),

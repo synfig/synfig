@@ -69,7 +69,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
 	set_link("scale",ValueNode_Const::create(Real(1.0)));
-	set_link("homogeneous",ValueNode_Const::create(bool(false)));
+	set_link("homogeneous",ValueNode_Const::create(bool(true)));
 }
 
 LinkableValueNode*

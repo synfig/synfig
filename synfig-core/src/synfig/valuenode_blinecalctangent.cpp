@@ -71,7 +71,7 @@ ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x)
 	set_link("offset",ValueNode_Const::create(Angle::deg(0)));
 	set_link("scale",ValueNode_Const::create(Real(1.0)));
 	set_link("fixed_length",ValueNode_Const::create(bool(false)));
-	set_link("homogeneous",ValueNode_Const::create(bool(false)));
+	set_link("homogeneous",ValueNode_Const::create(bool(true)));
 }
 
 LinkableValueNode*
