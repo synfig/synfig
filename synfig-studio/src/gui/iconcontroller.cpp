@@ -263,18 +263,27 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
 	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
 
-	INIT_STOCK_ICON(keyframe_lock_all,"keyframe_lock_all."IMAGE_EXT,_("All Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_past,"keyframe_lock_past."IMAGE_EXT,_("Past Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_future,"keyframe_lock_future."IMAGE_EXT,_("Future Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_none,"keyframe_lock_none."IMAGE_EXT,_("No Keyframes Locked"));
+	INIT_STOCK_ICON(keyframe_lock_past_off,"keyframe_lock_past_off_icon."IMAGE_EXT,_("Past keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_past_on,"keyframe_lock_past_on_icon."IMAGE_EXT,_("Past keyframes locked"));
+	INIT_STOCK_ICON(keyframe_lock_future_off,"keyframe_lock_future_off_icon."IMAGE_EXT,_("Future keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_future_on,"keyframe_lock_future_on_icon."IMAGE_EXT,_("Future keyframes locked"));
+
+	INIT_STOCK_ICON(animate_mode_off,"animate_mode_off_icon."IMAGE_EXT,_("Animate Mode Off"));
+	INIT_STOCK_ICON(animate_mode_on,"animate_mode_on_icon."IMAGE_EXT,_("Animate Mode On"));
 
 	INIT_STOCK_ICON(set_outline_color,"set_outline_color."IMAGE_EXT,_("Set as Outline"));
 	INIT_STOCK_ICON(set_fill_color,"set_fill_color."IMAGE_EXT,_("Set as Fill"));
 
-	INIT_STOCK_ICON(seek_begin,"seek_begin."IMAGE_EXT,_("Seek to Begin"));
-	INIT_STOCK_ICON(seek_prev_frame,"seek_prev_frame."IMAGE_EXT,_("Previous Frame"));
-	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
-	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
+	INIT_STOCK_ICON(animate_seek_begin,"animate_seek_begin_icon."IMAGE_EXT,_("Seek to begin"));
+	INIT_STOCK_ICON(animate_seek_prev_keyframe,"animate_seek_prev_keyframe_icon."IMAGE_EXT,_("Previous keyframe"));
+	INIT_STOCK_ICON(animate_seek_prev_frame,"animate_seek_prev_frame_icon."IMAGE_EXT,_("Previous frame"));
+	INIT_STOCK_ICON(animate_play,"animate_play_icon."IMAGE_EXT,_("Play"));
+	INIT_STOCK_ICON(animate_stop,"animate_stop_icon."IMAGE_EXT,_("Stop"));
+	INIT_STOCK_ICON(animate_seek_next_frame,"animate_seek_next_frame_icon."IMAGE_EXT,_("Next frame"));
+	INIT_STOCK_ICON(animate_seek_next_keyframe,"animate_seek_next_keyframe_icon."IMAGE_EXT,_("Next keyframe"));
+	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
+
+
 	INIT_STOCK_ICON(add_to_group,"action_add_to_group_icon."IMAGE_EXT,_("Add Layer to Group"));
 	INIT_STOCK_ICON(remove_from_group,"action_remove_from_group_icon."IMAGE_EXT,_("Remove Layer from Group"));
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
