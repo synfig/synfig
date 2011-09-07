@@ -103,6 +103,8 @@
 
 #include "actions/canvasdescriptionset.h"
 #include "actions/canvasidset.h"
+#include "actions/canvasmetadataerase.h"
+#include "actions/canvasmetadataset.h"
 #include "actions/canvasnameset.h"
 #include "actions/canvasrenddescset.h"
 #include "actions/canvasadd.h"
@@ -224,7 +226,9 @@ Action::Main::Main()
 
 	ADD_ACTION(Action::CanvasDescriptionSet);
 	ADD_ACTION(Action::CanvasIdSet);
-	ADD_ACTION(Action::CanvasNameSet);
+	ADD_ACTION(Action::CanvasNameSet)
+	ADD_ACTION(Action::CanvasMetadataErase);;
+	ADD_ACTION(Action::CanvasMetadataSet);
 	ADD_ACTION(Action::CanvasRendDescSet);
 	ADD_ACTION(Action::CanvasAdd);
 	ADD_ACTION(Action::CanvasRemove);
