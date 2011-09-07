@@ -45,6 +45,7 @@
 
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_dilist.h>
 #include <synfig/valuenode_composite.h>
 
 #endif
@@ -65,7 +66,7 @@ SYNFIG_LAYER_INIT(Advanced_Outline);
 SYNFIG_LAYER_SET_NAME(Advanced_Outline,"advanced_outline");
 SYNFIG_LAYER_SET_LOCAL_NAME(Advanced_Outline,N_("Advanced Outline"));
 SYNFIG_LAYER_SET_CATEGORY(Advanced_Outline,N_("Geometry"));
-SYNFIG_LAYER_SET_VERSION(Advanced_Outline,"0.1");
+SYNFIG_LAYER_SET_VERSION(Advanced_Outline,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Advanced_Outline,"$Id$");
 /* === P R O C E D U R E S ================================================= */
 Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, const Vector& t2 );
@@ -78,6 +79,10 @@ Advanced_Outline::Advanced_Outline()
 	width_=1.0f;
 	expand_=0;
 	smoothness_=0.5;
+	dash_offset_=0.0;
+	homogeneous_=false;
+	dash_enabled_=false;
+	old_version=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -104,6 +109,9 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_INTERPOLATE);
 	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_INTERPOLATE);
 	wplist_=wpoint_list;
+	vector<DashItem> ditem_list;
+	ditem_list.push_back(DashItem());
+	dilist_=ditem_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 }
@@ -125,7 +133,22 @@ Advanced_Outline::sync()
 	try
 	{
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
+		// This is the list of widthpoints coming form the WPList
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		// This is a copy of wplist once arranged properly
+		vector<WidthPoint> cwplist;
+		// This is the list of dash items
+		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
+		// This is the list of widthpoints created for the dashed outlines
+		vector<WidthPoint> dwplist;
+		// This is the temporarly filtered (removed unused) list of dash widthpoints
+		// it is a partial filtered of the previous dwplist and merged with wplist
+		// only allowing visible widthpoints.
+		vector<WidthPoint> fdwplist;
+		bool homogeneous(homogeneous_);
+		bool dash_enabled(dash_enabled_);
+		Real dash_offset(dash_offset_);
+		int dstart_tip, dend_tip;
 		const bool blineloop(bline_.get_loop());
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
@@ -135,11 +158,20 @@ Advanced_Outline::sync()
 		// witer: current widthpoint in cosideration
 		// wnext: next widthpoint in consideration
 		vector<WidthPoint>::iterator witer, wnext;
+		// those iterators will run only the copy of wplist.
+		vector<WidthPoint>::iterator cwiter, cwnext;
+		vector<WidthPoint>::iterator dwiter, dwnext;
 		// first tangent: used to remember the first tangent of the first bezier
 		// used to draw sharp cusp on the last step.
 		Vector first_tangent;
 		// Used to remember first tangent only once
-		bool first;
+		bool first(true);
+		// Used to remember if in the next loop we should do a middle corner
+		bool middle_corner(false);
+		// Used to remember if we are adding a first(last) widthpoint when
+		// blinelooped and first(last) normal widthpoint is before(after) side
+		// type set to interpolate
+		bool inserted_first(false), inserted_last(false);
 		// last tangent: used to remember second tangent of the previous bezier
 		// when doing the cusp at the first blinepoint of the current bezier
 		Vector last_tangent;
@@ -218,11 +250,31 @@ Advanced_Outline::sync()
 					// if it is not exactly at 0.0
 					if(wpfront.get_norm_position()!=0.0)
 					// Add a fake widthpoint at position 0.0
-						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(wpback, wpfront, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					{
+						WidthPoint i(wpback);
+						WidthPoint n(wpfront);
+						if(!homogeneous && !old_version)
+						{
+							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						}
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						inserted_first=true;
+					}
 					// If it is not exactly at 1.0
 					if(wpback.get_norm_position()!=1.0)
 					// Add a fake widthpoint at position 1.0
-						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(wpback, wpfront, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+					{
+						WidthPoint i(wpback);
+						WidthPoint n(wpfront);
+						if(!homogeneous && !old_version)
+						{
+							i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+							n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						}
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(i, n, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						inserted_last=true;
+					}
 				}
 			}
 			else
@@ -232,12 +284,11 @@ Advanced_Outline::sync()
 				wplist.push_back(WidthPoint(1.0, 1.0 , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 			}
 		}
-
 		// Sort the wplist again to place the two new widthpoints on place.
 		sort(wplist.begin(),wplist.end());
-		////////////////////////////////////////////////////////////////
+		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
-		//synfig::info("------");
+		//synfig::info("---wplist---");
 		//for(witer=wplist.begin();witer!=wplist.end();witer++)
 			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_norm_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
 		//synfig::info("------");
@@ -246,6 +297,184 @@ Advanced_Outline::sync()
 		// i.e.: where in the bline, and where in wplist so we could go
 		// faster or slower when needed.
 		Real step(1.0/SAMPLES/bline_size);
+		//////////////////// prepare the widhtpoints from the dash list
+		if(dash_enabled)
+		{
+			Real blinelength(bline_length(bline, blineloop, NULL));
+			if(blinelength > EPSILON)
+			{
+				// Put dash_offset in the [-blinelength,blinelength] interval
+				if (fabs(dash_offset) > blinelength) dash_offset=fmod(dash_offset, blinelength);
+				Real dpos=dash_offset;
+				Real dashes_length(0.0);
+				vector<DashItem>::iterator diter(dilist.begin());
+				vector<DashItem>::reverse_iterator rditer(dilist.rbegin());
+				WidthPoint before, after;
+				for(;diter!=dilist.end(); diter++)
+				{
+					dashes_length+=diter->get_length()+diter->get_offset();
+				}
+				diter=dilist.begin();
+				if(dashes_length>EPSILON)
+				{
+					// Insert the widthpoints from Dash Offset to 1.0
+					int inserted(0);
+					while(dpos < blinelength)
+					{
+						// dash widthpoints should have the same homogeneous or standard comparable positions.
+						Real before_pos=(dpos+diter->get_offset())/blinelength;
+						Real after_pos=(dpos+diter->get_offset()+diter->get_length())/blinelength;
+						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
+						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
+						before=WidthPoint(before_pos, 1.0, diter->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(after_pos, 1.0, WidthPoint::TYPE_INTERPOLATE, diter->get_side_type_after(), true);
+						dwplist.push_back(before);
+						dwplist.push_back(after);
+						dpos+=diter->get_offset() + diter->get_length();
+						diter++;
+						inserted++;
+						if(diter==dilist.end())
+							diter=dilist.begin();
+					};
+					// Correct the two last widthpoints triming its position to be <= 1.0
+					if(inserted)
+					{
+						after=dwplist.back();
+						// if the if the 'after' widthpoint passed 1.0
+						if(after.get_position() >= 1.0)
+						{
+							// trim to 1.0
+							after.set_position(1.0);
+							dwplist.pop_back();
+							before=dwplist.back();
+							// then watch the before one and if it passeed 1.0
+							if(before.get_position() >= 1.0)
+								// discard it (and also the 'after' one)
+								dwplist.pop_back();
+							else
+							// restore the 'after' widthpoint
+							{
+								dend_tip=after.get_side_type_after();
+								dwplist.push_back(after);
+							}
+						}
+					}
+					inserted=0;
+					//
+					// Now insert the widhtpoints from Dash Offset to 0.0
+					dpos=dash_offset;
+					while(dpos > 0.0)
+					{
+						// dash widthpoints should have the same homogeneous or standard comparable positions.
+						Real before_pos=(dpos-rditer->get_length())/blinelength;
+						Real after_pos=(dpos)/blinelength;
+						before_pos=homogeneous?before_pos:hom_to_std(bline, before_pos, wplist_.get_loop(), blineloop);
+						after_pos=homogeneous?after_pos:hom_to_std(bline, after_pos, wplist_.get_loop(), blineloop);
+						before=WidthPoint(before_pos, 1.0, rditer->get_side_type_before(), WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(after_pos, 1.0, WidthPoint::TYPE_INTERPOLATE, rditer->get_side_type_after(), true);
+						dwplist.insert(dwplist.begin(),after);
+						dwplist.insert(dwplist.begin(),before);
+						dpos-=rditer->get_offset() + rditer->get_length();
+						rditer++;
+						inserted++;
+						if(rditer==dilist.rend())
+							rditer=dilist.rbegin();
+					};
+					// Correct the two first widthpoints triming its position to be >= 0.0
+					if(inserted)
+					{
+						before=dwplist.front();
+						// if the dash is cutted in the middle then trim the 'before' widthpoint
+						if(before.get_position() <= 0.0  )
+						{
+							// trim it to 0.0
+							before.set_position(0.0);
+							dwplist.erase(dwplist.begin());
+							after=dwplist.front();
+							// then watch the after one and if it passed 0.0
+							if(after.get_position() <= 0.0)
+								// discard the 'after' one (and the 'before' one too)
+								dwplist.erase(dwplist.begin());
+							else
+								// restore the 'before' widthpoint
+							{
+								dstart_tip=before.get_side_type_before();
+								dwplist.insert(dwplist.begin(), before);
+							}
+						}
+					}
+					// now let's remove those dash widthpoints that doesn't
+					// lie on a drawable place
+					// first prepare the widthpoint iterators
+					wnext=wplist.begin();
+					if(blineloop)
+						witer=--wplist.end();
+					else
+						witer=wnext;
+					do
+					{
+						// grab the position of the next widthpoint
+						// and the position of the iter widthpoint
+						Real witer_pos(witer->get_norm_position());
+						Real wnext_pos(wnext->get_norm_position());
+						// if the current widthpoint interval is not empty
+						// then keep all the dash widthpoints that are in between
+						// or
+						// if we aren't in the first non blinelooped widthpoint
+						if((witer->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE ||
+						wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE))
+						{
+							dwiter=dwplist.begin();
+							// extract the dash widthpoints that are in a non empty interval
+							while(dwiter!=dwplist.end())
+							{
+								Real dwiter_pos=dwiter->get_norm_position();
+								if(dwiter_pos > witer_pos && dwiter_pos < wnext_pos)
+									fdwplist.push_back(*dwiter);
+								dwiter++;
+							}
+						}
+						witer=wnext;
+						wnext++;
+					}while(wnext!=wplist.end());
+					// Now we need to remove the regular widthpoints that
+					// lie in a dash empty space.
+					// first prepare the dash widthpoint iterators
+					dwiter=dwplist.begin();
+					dwnext=dwiter+1;
+					do
+					{
+						Real dwiter_pos=dwiter->get_position();
+						Real dwnext_pos=dwnext->get_position();
+						for(witer=wplist.begin(); witer!=wplist.end();witer++)
+						{
+							Real witer_pos=witer->get_norm_position();
+							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
+								fdwplist.push_back(*witer);
+						}
+						dwnext++;
+						dwiter=dwnext;
+						if(dwnext==dwplist.end())
+							break;
+						dwnext++;
+					}while(1);
+				} // if dashes_length > EPSILON
+			} // if blinelength > EPSILON
+		} ////////////////////////////////////////////// if dash_enabled
+		//Make a copy of the original wplist
+		cwplist.assign(wplist.begin(), wplist.end());
+		if(dash_enabled)
+		{
+			// now replace the original widthpoint list
+			// with the filtered one, inlcuding the visible dash withpoints and
+			// the visible regular widthpoints.
+			wplist.assign(fdwplist.begin(), fdwplist.end());
+			// sort again the wplist
+			sort(wplist.begin(),wplist.end());
+			//////////////
+			witer=wplist.begin();
+		}
+		// Prepare the widthpoint iterators
 		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
 		// then the current widthpoint would be the last one if blinelooped...
@@ -256,25 +485,47 @@ Advanced_Outline::sync()
 			// This allows to make the first tip without need to take any decision
 			// in the code. Later they are separated and works as expected.
 			witer=wnext;
+		// now let's prepare the copy of the iterators. They will be the same
+		// than the current one if the outline is not dashed
+		cwnext=cwplist.begin();
+		if(blineloop)
+			cwiter=--cwplist.end();
+		else
+			cwiter=cwnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
 		Real ipos(0.0);
+		Real sipos(0.0);
 		// Fix bug of bad render of start (end) tip when the first
 		// (last) widthpoint has side type before (after) set to
 		// interpolate and it is at 0.0 (1.0). User expects the tip to
 		// have the same type of the layer's start (end) tip.
 		if(!blineloop)
 		{
-			if(wnext->get_norm_position()==0.0 && wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE)
-				wnext->set_side_type_before(start_tip_);
+			if(wnext->get_norm_position()==0.0 /*&& wnext->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE*/)
+				wnext->set_side_type_before(dash_enabled?dstart_tip:start_tip_);
 			vector<WidthPoint>::iterator last=--wplist.end();
-			if(last->get_norm_position()==1.0 && last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
-				last->set_side_type_after(end_tip_);
+			if(last->get_norm_position()==1.0 /*&& last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE*/)
+				last->set_side_type_after(dash_enabled?dend_tip:end_tip_);
 		}
-		do // Main loop
+		// If the first (last) widthpoint are interpolate before (after)
+		// and the last (first) widthpoint is not interpolate after (before)
+		// and we are doing dashes, then make the first (last) widthpoint to
+		// have the start (end) dash item's corresponding tip.
+		if(dash_enabled)
+		{
+			vector<WidthPoint>::iterator first(wplist.begin());
+			vector<WidthPoint>::iterator last(--wplist.end());
+			if(first->get_side_type_before() == WidthPoint::TYPE_INTERPOLATE)
+				first->set_side_type_before(dstart_tip);
+			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE)
+				last->set_side_type_after(dend_tip);
+		}
+
+		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
-			bool split_flag(biter->get_split_tangent_flag());
+			bool split_flag(biter->get_split_tangent_flag() || (iter_t.mag()==0.0));
 			// Setup the bezier curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
@@ -296,11 +547,25 @@ Advanced_Outline::sync()
 			// if we are exactly on the next widthpoint...
 			if(ipos==wnext_pos)
 			{
+				sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
 				// .. do tips. (If withpoint is interpolate it doesn't do anything).
-				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
+				Real bezier_ipos(bline_to_bezier(sipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
+				if(wnext->get_dash())
+				{
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real p(ipos);
+					if(!homogeneous && !old_version)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+					}
+					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
+				}
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
 				// Update wplist iterators
 				witer=wnext;
@@ -309,11 +574,30 @@ Advanced_Outline::sync()
 				if(wnext==wend)
 				{
 					// There is always a widthpoint at the end (and start)
-					// when it is blinelooped and interpolated on last blinepoint.
+					// when it is blinelooped and interpolated on last widthpoint.
+					// In other cases the interpolated width is zero so there is not corner
+					// rendered.
 					// ... let's make the last cusp...
+					cwnext=cwplist.begin();
+					cwiter=--cwplist.end();
 					if(blineloop && bnext->get_split_tangent_flag())
 					{
-						add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+						vector<WidthPoint>::iterator first(wplist.begin());
+						vector<WidthPoint>::iterator last(--wplist.end());
+						// when doing dashed outlines, the above rule is not always true
+						if(first->get_side_type_before()==WidthPoint::TYPE_INTERPOLATE || last->get_side_type_after()==WidthPoint::TYPE_INTERPOLATE)
+						{
+							WidthPoint i(*cwiter);
+							WidthPoint n(*cwnext);
+							Real p(ipos);
+							if(!homogeneous && !old_version)
+							{
+								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+								p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+							}
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+						}
 					}
 					// ... and get out of the main loop.
 					break;
@@ -337,6 +621,13 @@ Advanced_Outline::sync()
 					//  interpolate before. Noticiable for the FLAT case
 					// or when the width is smaller than the step on the bezier.
 					ipos=ipos+EPSILON;
+					// Keep track of the interpolation withpoints
+					if(ipos > cwnext->get_norm_position())
+					{
+						cwiter=cwnext;
+						cwnext++;
+					}
+					middle_corner=false;
 					// continue with the main loop
 					continue;
 				}
@@ -355,8 +646,14 @@ Advanced_Outline::sync()
 				)
 			{
 				ipos=wnext_pos;
+				if(ipos > cwnext->get_norm_position())
+					{
+						cwiter=cwnext;
+						cwnext++;
+					}
 				// we need to consider if we are jumping any bezier too
-				while(ipos > bnext_pos && bnext+1!=bend)
+				sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
+				while(sipos > bnext_pos && bnext+1!=bend)
 				{
 					// keep track of last tangent
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
@@ -369,42 +666,71 @@ Advanced_Outline::sync()
 					bnext_pos=bindex*bezier_size;
 				}
 				// continue with the main loop
+				middle_corner=false;
 				continue;
 			}
-			// If we are exactly on the first blinepoint...
-			if(ipos==biter_pos)
+			// If we stopped on an intermediate blinepoint (middle corner=true)...
+			sipos=homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
+			if(middle_corner==true)
 			{
-				// ... do cusp at ipos
-				// notice that if we are in the second blinepoint
+				// ... do cusp at ipos if tangents are splitted
+				// Notice that if we are in the second blinepoint
 				// for the last bezier, we will be over a widthpoint
 				// artificially inserted, so here we only insert cusps
 				// for the intermediate blinepoints when looped
-				if(ipos==biter_pos && split_flag)
+				if(split_flag)
 				{
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real p(ipos);
+					if(!homogeneous && !old_version)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+					}
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 				}
+				middle_corner=false;
 			}
 			do // secondary loop. For interpolation steps.
 			{
 				// If during the interpolation travel, we passed a
 				// widhpoint...
-				if(ipos > wnext_pos && bnext_pos >= wnext_pos)
+				Real swnext_pos(homogeneous?hom_to_std(bline, wnext_pos, wplist_.get_loop(), blineloop):wnext_pos);
+				if(ipos > wnext_pos && bnext_pos >= swnext_pos)
 				{
 					// ... just stay on it and ...
 					ipos=wnext_pos;
+					sipos=swnext_pos;
 					// ... add interpolation for the last step
-					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
 					Real ww;
 					// last step has width of zero if the widthpoint is not interpolate
 					// on the before side.
 					if(wnext->get_side_type_before()!=WidthPoint::TYPE_INTERPOLATE)
 						ww=0.0;
 					else
+					{
+						if(wnext->get_dash())
+						{
+							WidthPoint i(*cwiter);
+							WidthPoint n(*cwnext);
+							Real p(ipos);
+							if(!homogeneous && !old_version)
+							{
+								i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+								n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+								p=std_to_hom(bline, p, wplist_.get_loop(), blineloop);
+							}
+							wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
+						}
 						ww=wnext->get_width();
+					}
 					const Real w(expand_+width_*0.5*ww);
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
@@ -413,15 +739,26 @@ Advanced_Outline::sync()
 					// bnext_pos
 					break;
 				}
-				else if(ipos > bnext_pos && bnext_pos < wnext_pos)
+				else if(sipos > bnext_pos && bnext_pos < swnext_pos)
 				{
-					ipos=bnext_pos;
-					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+					sipos=bnext_pos;
+					ipos=homogeneous?std_to_hom(bline, bnext_pos, wplist_.get_loop(), blineloop):bnext_pos;
+					middle_corner=true;
+					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+					const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
+					WidthPoint i(*cwiter);
+					WidthPoint n(*cwnext);
+					Real po(ipos);
+					if(!homogeneous && !old_version)
+					{
+						i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+						n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+						po=std_to_hom(bline, po, wplist_.get_loop(), blineloop);
+					}
+					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -436,15 +773,37 @@ Advanced_Outline::sync()
 					break;
 				}
 				// Add interpolation
-				Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
+				Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
 				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
 				const Vector d(deriv(q).perp().norm());
-				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
-				const Real w(expand_+width_*0.5*widthpoint_interpolate(*witer, *wnext, ipos, smoothness_));
+				const Vector p(curve(bline_to_bezier(sipos, biter_pos, bezier_size)));
+				// if we inserted the widthpoints at start and end, don't consider them for interpolation.
+				if(cwiter->get_position() == 0.0 && cwnext->get_position()!=1.0 && inserted_first)
+				{
+					cwiter=cwplist.end();
+					cwiter--;
+					cwiter--;
+				}
+				if(cwnext->get_norm_position() == 1.0 && inserted_last)
+				{
+					cwnext=cwplist.begin();
+					cwnext++;
+				}
+				WidthPoint i(*cwiter);
+				WidthPoint n(*cwnext);
+				Real po(ipos);
+				if(!homogeneous && !old_version)
+				{
+					i.set_position(std_to_hom(bline, i.get_position(), wplist_.get_loop(), blineloop));
+					n.set_position(std_to_hom(bline, n.get_position(), wplist_.get_loop(), blineloop));
+					po=std_to_hom(bline, po, wplist_.get_loop(), blineloop);
+				}
+				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
+				sipos = homogeneous?hom_to_std(bline, ipos, wplist_.get_loop(), blineloop):ipos;
 			} while (1); // secondary loop
 		} while(1); // main loop
 
@@ -478,16 +837,25 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(end_tip_, "end_tip");
 	IMPORT_AS(width_,"width");
 	IMPORT_AS(expand_, "expand");
+	IMPORT_AS(dash_offset_,"dash_offset");
+	IMPORT_AS(homogeneous_,"homogeneous");
+	IMPORT_AS(dash_enabled_, "dash_enabled");
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
 		else if(value < 0.0) smoothness_=0.0;
 		else smoothness_=value;
+		set_param_static("smoothness", value.get_static());
 		return true;
 	}
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
 	{
 		wplist_=value;
+		return true;
+	}
+	if(param=="dilist" && value.get_type()==ValueBase::TYPE_LIST)
+	{
+		dilist_=value;
 		return true;
 	}
 	if(param=="vector_list")
@@ -509,6 +877,14 @@ Advanced_Outline::set_time(Context context, Time time, Vector pos)const
 	context.set_time(time,pos);
 }
 
+bool
+Advanced_Outline::set_version(const synfig::String &ver)
+{
+	if (ver=="0.1")
+		old_version = true;
+	return true;
+}
+
 ValueBase
 Advanced_Outline::get_param(const String& param)const
 {
@@ -520,6 +896,10 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(end_tip_,"end_tip");
 	EXPORT_AS(width_, "width");
 	EXPORT_AS(wplist_, "wplist");
+	EXPORT_AS(dash_offset_,"dash_offset");
+	EXPORT_AS(dilist_, "dilist");
+	EXPORT_AS(homogeneous_, "homogeneous");
+	EXPORT_AS(dash_enabled_,"dash_enabled");
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -578,11 +958,32 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Smoothness"))
 		.set_description(_("Determines the interpolation between withpoints. (0) Linear (1) Smooth"))
 	);
+	ret.push_back(ParamDesc("homogeneous")
+		.set_local_name(_("Homogeneous"))
+		.set_description(_("When true, widthpoints positions are bline length based"))
+	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
 		.set_hint("width")
 		.set_origin("origin")
 		.set_description(_("List of width Points that defines the variable width"))
+	);
+	ret.push_back(ParamDesc("dash_enabled")
+		.set_local_name(_("Dashed Outline"))
+		.set_hint("dash")
+		.set_description(_("When checked outline is dashed"))
+	);
+	ret.push_back(ParamDesc("dilist")
+		.set_local_name(_("Dash Item List"))
+		.set_hint("dash")
+		.set_origin("origin")
+		.set_description(_("List of dash items that defines the dashed outline"))
+	);
+	ret.push_back(ParamDesc("dash_offset")
+		.set_local_name(_("Dash Items Offset"))
+		.set_is_distance()
+		.set_hint("dash")
+		.set_description(_("Distance to Offset the Dash Items"))
 	);
 	return ret;
 }
@@ -590,11 +991,11 @@ Advanced_Outline::get_param_vocab()const
 bool
 Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
 {
-	//synfig::info("attempting to connect %s", param.c_str());
 	if(param=="bline")
 	{
-		if(!connect_bline_to_wplist(x))
-			synfig::warning("Advanced Outline: WPList doesn't accept new bline");
+		connect_bline_to_wplist(x);
+		connect_bline_to_dilist(x);
+		return Layer::connect_dynamic_param(param, x);
 	}
 	if(param=="wplist")
 	{
@@ -602,21 +1003,29 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 		{
 			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
 			if(iter==dynamic_param_list().end())
-				{
-					synfig::warning("BLine doesn't exist yet!!");
-					return false;
-				}
-			else if(!connect_bline_to_wplist(iter->second))
-			{
-				synfig::warning("Advanced Outline: WPList doesn't accept new bline");
 				return false;
-			}
-			else
-				return true;
+			else if(!connect_bline_to_wplist(iter->second))
+				return false;
+			return true;
 		}
 		else
 			return false;
 	}
+	if(param=="dilist")
+	{
+		if(Layer::connect_dynamic_param(param, x))
+		{
+			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
+			if(iter==dynamic_param_list().end())
+				return false;
+			else if(!connect_bline_to_dilist(iter->second))
+				return false;
+			return true;
+		}
+		else
+			return false;
+	}
+
 	return Layer::connect_dynamic_param(param, x);
 }
 
@@ -624,32 +1033,35 @@ bool
 Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
-	{
-		synfig::info("Not a list");
 		return false;
-	}
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
-	{
-		synfig::info("No blinepoints!");
 		return false;
-	}
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
 	if(iter==dynamic_param_list().end())
-	{
-		synfig::warning("WPList doesn't exist yet");
 		return false;
-	}
 	ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(iter->second));
 	if(!wplist)
-	{
-		synfig::info("WPList is not ready: NULL");
 		return false;
-	}
-	if(!wplist->link_count())
-		synfig::warning("Advanced_Outline::connect_bline_to_wplist: WPList::link_count()=0");
 	wplist->set_bline(ValueNode::Handle(x));
-	//synfig::info("set bline success");
+	return true;
+}
+
+bool
+Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
+{
+	if(x->get_type() != ValueBase::TYPE_LIST)
+		return false;
+	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
+		return false;
+	ValueNode::LooseHandle vnode;
+	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
+	if(iter==dynamic_param_list().end())
+		return false;
+	ValueNode_DIList::Handle dilist(ValueNode_DIList::Handle::cast_dynamic(iter->second));
+	if(!dilist)
+		return false;
+	dilist->set_bline(ValueNode::Handle(x));
 	return true;
 }
 

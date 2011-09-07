@@ -500,7 +500,9 @@ Duckmatic::update_ducks()
 						synfig::Real radius = 0.0;
 						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
 						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
-
+						bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+						if(homogeneous)
+							amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
 
@@ -2114,17 +2116,33 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			return true;
 		}
-		else // Checnk for WPList
+		else // Check for WPList
 		if(value_desc.is_value_node() &&
 			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
 			ValueNode_WPList::Handle value_node;
+			bool homogeneous=true; // if we have an exported WPList without a layer consider it homogeneous
 			value_node=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
 			if(!value_node)
 			{
 				error("expected a ValueNode_WPList");
 				assert(0);
 			}
+			ValueNode::Handle bline(value_node->get_bline());
+			// it is not possible to place any widthpoint's duck if there is
+			// not associated bline.
+			if(!bline)
+				return false;
+			// Retrieve the homogeneous layer parameter
+			Layer::Handle layer_parent;
+			if(value_desc.parent_is_layer_param())
+				layer_parent=value_desc.get_layer();
+			if(layer_parent)
+				{
+					String layer_name(layer_parent->get_name());
+					if(layer_name=="advanced_outline")
+						homogeneous=layer_parent->get_param("homogeneous").get(bool());
+				}
 			int i;
 			for (i = 0; i < value_node->link_count(); i++)
 			{
@@ -2148,11 +2166,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// The position by amount and the amount by position
 					// has to be written considering the bline length too
 					// optionally
-					const ValueBase bline((*value_node->get_bline())(get_time()));
 					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
-					bline_calc_vertex->set_link("bline", value_node->get_bline());
+					bline_calc_vertex->set_link("bline", bline);
 					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
 					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(homogeneous));
 					pduck->set_point((*bline_calc_vertex)(get_time()));
 					// hack end
 					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));

@@ -203,7 +203,6 @@ public:
 	void save_settings();
 	void reset();
 	void increment_id();
-	//void on_user_click(synfig::Point point);
 
 	bool run_();
 	bool run();
@@ -212,7 +211,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -355,8 +354,6 @@ StateBLine_Context::increment_id()
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		// synfig::info("---------------- \"%s\"",str_number.c_str());
-
 		number=atoi(str_number.c_str());
 	}
 	else
@@ -414,8 +411,6 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_auto_export,					0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 	0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_feather,								1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//options_table.attach(button_make, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//button_make.signal_pressed().connect(sigc::mem_fun(*this,&StateBLine_Context::run));
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -436,8 +431,6 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateBLine_Context::on_user_click));
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
@@ -497,8 +490,6 @@ StateBLine_Context::~StateBLine_Context()
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
 
-//	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -508,18 +499,13 @@ StateBLine_Context::~StateBLine_Context()
 Smach::event_result
 StateBLine_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-//	synfig::info("STATE RotoBLine: Received Stop Event");
-//	run();
 	reset();
-//	throw Smach::egress_exception();
-//	get_canvas_view()->get_smach().pop_state();
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
 StateBLine_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-//	synfig::info("STATE RotoBLine: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -553,14 +539,13 @@ StateBLine_Context::run_()
 	next_duck=0;
 
 	// Now we need to generate it
-
 	if(bline_point_list.empty())
 	{
 		return false;
 	}
 	if(bline_point_list.size()<2)
 	{
-		//get_canvas_view()->get_ui_interface()->error(_("You need at least two (2) points to create a BLine"));
+		get_canvas_view()->get_ui_interface()->task(_("Information: You need at least two (2) points to create a BLine"));
 		return false;
 	}
 
@@ -608,7 +593,6 @@ StateBLine_Context::run_()
 		// Add the BLine to the canvas
 		if(get_auto_export_flag() && !get_canvas_interface()->add_value_node(value_node_bline,get_id()))
 		{
-			//get_canvas_view()->get_ui_interface()->error(_("Unable to add value node"));
 			group.cancel();
 			increment_id();
 			throw String(_("Unable to add value node"));
@@ -674,7 +658,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Gradient layer"));
 					return false;
@@ -737,7 +720,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Plant layer"));
 					return false;
@@ -760,7 +742,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Plant layer"));
 					return false;
@@ -808,7 +789,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 					group.cancel();
 					throw String(_("Unable to create Region layer"));
 					return false;
@@ -831,7 +811,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 					group.cancel();
 					throw String(_("Unable to create Region layer"));
 					return false;
@@ -876,7 +855,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Outline layer"));
 					return false;
@@ -899,7 +877,6 @@ StateBLine_Context::run_()
 
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
-					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 					group.cancel();
 					throw String(_("Unable to create Outline layer"));
 					return false;
@@ -978,9 +955,6 @@ StateBLine_Context::run_()
 		get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 		egress_on_selection_change=true;
 
-		//if(finish_bline_dialog.get_region_flag() || finish_bline_dialog.get_bline_flag())
-		//	get_canvas_interface()->signal_dirty_preview()();
-
 	} while(0);
 
 	reset();
@@ -995,7 +969,6 @@ StateBLine_Context::event_mouse_motion_handler(const Smach::event& x)
 
 	if(curr_duck)
 	{
-		//synfig::info("Moved Duck");
 		Point p(get_work_area()->snap_point_to_grid(event.pos));
 		curr_duck->set_trans_point(p);
 		if(next_duck)
@@ -1012,11 +985,9 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 {
 	if(curr_duck)
 	{
-		//synfig::info("Released current duck");
 		curr_duck->signal_edited()(curr_duck->get_point());
 		if(next_duck)
 		{
-			//synfig::info("grabbing next duck");
 			curr_duck=next_duck;
 			next_duck=0;
 		}
@@ -1028,7 +999,6 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	// synfig::info("STATE BLINE: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{
@@ -1037,39 +1007,12 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			// If we are already looped up, then don't try to add anything else
 			if(loop_)
 				return Smach::RESULT_OK;
-
 			BLinePoint bline_point;
-
 			bline_point.set_vertex(get_work_area()->snap_point_to_grid(event.pos));
-			//bline_point.set_width(synfigapp::Main::get_bline_width());
 			bline_point.set_width(1.0f);
 			bline_point.set_origin(0.5f);
 			bline_point.set_split_tangent_flag(false);
 			bline_point.set_tangent1(Vector(0,0));
-
-			// set the tangent
-			/*
-			if(bline_point_list.empty())
-			{
-				bline_point.set_tangent1(Vector(1,1));
-			}
-			else
-			{
-				const Vector t(event.pos-bline_point_list.back()->get_value().get(BLinePoint()).get_vertex());
-				bline_point.set_tangent1(t);
-			}
-
-			if(bline_point_list.size()>1)
-			{
-				std::list<synfig::ValueNode_Const::Handle>::iterator iter;
-				iter=bline_point_list.end();
-				iter--;iter--;
-				BLinePoint prev(bline_point_list.back()->get_value().get(BLinePoint()));
-				prev.set_tangent1(event.pos-(*iter)->get_value().get(BLinePoint()).get_vertex());
-				bline_point_list.back()->set_value(prev);
-			};
-			*/
-
 			bline_point_list.push_back(ValueNode_Const::create(bline_point));
 
 			refresh_ducks();
@@ -1101,7 +1044,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		ValueNode_Const::Handle value_node(*iter);
 		bline_point=(value_node->get_value().get(BLinePoint()));
 		assert(value_node);
-
 
 		// First add the duck associated with this vertex
 		duck=new WorkArea::Duck(bline_point.get_vertex());
@@ -1154,9 +1096,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 					value_node
 				)
 			);
-
-			//get_work_area()->add_duck(bezier->c1);
-			//get_work_area()->add_duck(bezier->c2);
 			get_work_area()->add_bezier(bezier);
 
 			bezier=0;
@@ -1165,11 +1104,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		// Now we see if we need to create a bezier
 		list<ValueNode_Const::Handle>::iterator next(iter);
 		next++;
-
-		// If our next iterator is the end, then we don't need
-		// to add a bezier.
-		//if(next==bline_point_list.end() && !loop_)
-		//	continue;
 
 		bezier=new WorkArea::Bezier();
 
@@ -1254,7 +1188,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 			)
 		);
 
-		//get_work_area()->add_duck(bezier->c1);
 		get_work_area()->add_bezier(bezier);
 	}
 	if(bezier && !loop_)
@@ -1275,7 +1208,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		bezier->c2=tduck;
 
 		get_work_area()->add_duck(bezier->p2);
-		//get_work_area()->add_duck(bezier->c2);
 		get_work_area()->add_bezier(bezier);
 
 		duck->set_guid(synfig::GUID());
@@ -1305,7 +1237,6 @@ StateBLine_Context::on_vertex_change(const synfig::Point &point, synfig::ValueNo
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_vertex(point);
 	value_node->set_value(bline_point);
-	//refresh_ducks();
 	return true;
 }
 
@@ -1315,7 +1246,6 @@ StateBLine_Context::on_tangent1_change(const synfig::Point &point, synfig::Value
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(point);
 	value_node->set_value(bline_point);
-	//refresh_ducks();
 	return true;
 }
 
@@ -1325,7 +1255,6 @@ StateBLine_Context::on_tangent2_change(const synfig::Point &point, synfig::Value
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent2(point);
 	value_node->set_value(bline_point);
-	//refresh_ducks();
 	return true;
 }
 
@@ -1423,14 +1352,6 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_split_tangent_flag(false);
 			bline_point.set_origin(origin);
-
-/*
-			bline_point.set_vertex((next_bline_point.get_vertex()+prev_bline_point.get_vertex())*0.5);
-			bline_point.set_width((next_bline_point.get_width()+prev_bline_point.get_width())*0.5);
-			bline_point.set_origin(origin);
-			bline_point.set_split_tangent_flag(false);
-			bline_point.set_tangent1((next_bline_point.get_vertex()-prev_bline_point.get_vertex())*0.5);
-*/
 
 			bline_point_list.insert(iter,ValueNode_Const::create(bline_point));
 			break;

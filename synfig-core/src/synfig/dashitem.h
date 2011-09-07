@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file releases.h
-**	\brief Define the synfig releases, for tying to features
+/*!	\file dashitem.h
+**	\brief Template Header for the implementation of a Dash Item
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2010, 2011 Carlos López
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,31 +23,51 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RELEASE_VERSION_H
-#define __SYNFIG_RELEASE_VERSION_H
+#ifndef __SYNFIG_DASHITEM_H
+#define __SYNFIG_DASHITEM_H
 
 /* === H E A D E R S ======================================================= */
 
+#include "uniqueid.h"
+#include "real.h"
+
 /* === M A C R O S ========================================================= */
+
+/* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
-	typedef enum
+class DashItem : public UniqueID
+{
+private:
+	Real offset_;
+	Real length_;
+	int side_type_[2]; // Before [0] and After[1] side types
+public:
+	enum SideType
 	{
-		RELEASE_VERSION_0_61_06,
-		RELEASE_VERSION_0_61_07,
-		RELEASE_VERSION_0_61_08,
-		RELEASE_VERSION_0_61_09,
-		RELEASE_VERSION_0_62_00,
-		RELEASE_VERSION_0_62_01,
-		RELEASE_VERSION_0_62_02,
-		RELEASE_VERSION_0_63_00,
-		RELEASE_VERSION_0_63_01,
+		TYPE_ROUNDED         =1,
+		TYPE_SQUARED         =2,
+		TYPE_PEAK            =3,
+		TYPE_FLAT            =4
+	};
+	DashItem();
+	DashItem(Real position, Real length, int sidebefore=TYPE_FLAT,
+		int sideafter=TYPE_FLAT);
 
-		RELEASE_VERSION_END
-	} ReleaseVersion;
+	const Real& get_length()const;
+	void set_length(Real x);
+	const Real& get_offset()const;
+	void set_offset(Real x);
+	int get_side_type_before()const;
+	void set_side_type_before(int sidebefore);
+	int get_side_type_after()const;
+	void set_side_type_after(int sideafter);
+	int get_side_type(int i)const;
+	bool operator == (const DashItem& rhs);
+}; // END of class DashItem
 
 }; // END of namespace synfig
 

@@ -51,6 +51,7 @@ private:
 
 	synfig::ValueBase bline_;
 	synfig::ValueBase wplist_;
+	synfig::ValueBase dilist_;
 	WidthPoint::SideType start_tip_;
 	WidthPoint::SideType end_tip_;
 	int cusp_type_;
@@ -58,6 +59,10 @@ private:
 	synfig::Real width_;
 	synfig::Real expand_;
 	Real smoothness_;
+	bool homogeneous_;
+	Real dash_offset_;
+	bool dash_enabled_;
+	bool old_version;
 
 public:
 	enum CuspType
@@ -75,12 +80,14 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
+	virtual bool set_version(const synfig::String &ver);
 	//! Connects the parameter to another Value Node. Implementation for this layer
 	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
 
 private:
 
 	bool connect_bline_to_wplist(etl::loose_handle<ValueNode> x);
+	bool connect_bline_to_dilist(etl::loose_handle<ValueNode> x);
 	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
 	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
 	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp);

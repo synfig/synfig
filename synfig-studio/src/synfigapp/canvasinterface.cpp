@@ -45,6 +45,7 @@
 #include <synfig/valuenode_stripes.h>
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_dilist.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -224,6 +225,9 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_fill_color());
+	// by default, new advanced outline layers are not homogeneous
+	if(name=="advanced_outline")
+		layer->set_param("homogeneous", false);
 
 	layer->set_param("width",synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
 	layer->set_param("gradient",synfigapp::Main::get_gradient());
@@ -268,6 +272,14 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 					{
 						value_node=LinkableValueNode::create("wplist",iter->second);
 						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
+					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+						if (iter2->get_type() != ValueBase::TYPE_DASHITEM)
+							break;
+					if (iter2 == list.end())
+					{
+						value_node=LinkableValueNode::create("dilist",iter->second);
+						ValueNode_DIList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 				}
 				// it has something else so just insert the dynamic list

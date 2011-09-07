@@ -101,9 +101,15 @@
  * 0.7: svn r2315
  *
  *      Added "loop" link to the "Random" ValueNode in svn r2315.
+ *
+ * 0.8: git 82baee2702a65a9866f3dc4a28ef163dcf43795a
+ *
+ *      Added "homogenous" link to "BLineCalcVertex", "BLineCalcTangent"
+ *      and "BLineCalcWidth" valuenodes.
+ *
  */
 
-#define CURRENT_CANVAS_VERSION "0.7"
+#define CURRENT_CANVAS_VERSION "0.8"
 
 /* === T Y P E D E F S ===================================================== */
 

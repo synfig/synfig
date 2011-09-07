@@ -409,6 +409,7 @@ Action::ValueDescSet::prepare()
 			// outside the range of 0-1, so make sure that the amount does
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
+
 			Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 			//fmod is called twice to avoid negative values
@@ -418,6 +419,9 @@ Action::ValueDescSet::prepare()
 		}
 		else
 			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+		if(homogeneous)
+			new_amount=std_to_hom((*bline)(time), new_amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
@@ -555,6 +559,24 @@ Action::ValueDescSet::prepare()
 					}
 					else
 						new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+					bool homogeneous=false;
+					// Retrieve the homogeneous layer parameter
+					Layer::Handle layer_parent;
+					std::set<Node*>::iterator iter;
+					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+						{
+							Layer::Handle layer;
+							layer=Layer::Handle::cast_dynamic(*iter);
+							if(layer && layer->get_name() == "advanced_outline")
+							{
+								homogeneous=layer->get_param("homogeneous").get(bool());
+								break;
+							}
+						}
+					if(homogeneous)
+					{
+						new_amount=std_to_hom((*bline)(time), new_amount, wplist->get_loop(), bline->get_loop() );
+					}
 					Action::Handle action(Action::create("ValueDescSet"));
 					if(!action)
 						throw Error(_("Unable to find action ValueDescSet (bug)"));
