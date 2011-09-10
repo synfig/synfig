@@ -477,7 +477,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 						{
 							// ... then update the values properly
 							synfig::WidthPoint wpoint((*wpvn)(get_canvas()->get_time()));
-							Real pos(wpoint.get_norm_position());
+							Real pos(wpoint.get_norm_position(wplist->get_loop()));
 							Real tpos(p1_pos+t*bezier_size);
 							// The factor of 20 can be modified by the user as a preference.
 							// The higher value the more local effect has the
