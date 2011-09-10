@@ -104,7 +104,7 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 	 * @return the interpolated width
 	*/
 Real
-synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const Real smoothness)
+synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const bool wplistbool, const Real smoothness)
 {
 	// Smoothness gives linear interpolation  between
 	// the result of the linear interpolation between the withpoints
@@ -120,8 +120,8 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 	Real pp, np;
 	Real nw, pw, rw(0.0);
 	const Real epsilon(0.0000001f);
-	np=next.get_norm_position();
-	pp=prev.get_norm_position();
+	np=next.get_norm_position(wplistbool);
+	pp=prev.get_norm_position(wplistbool);
 	nw=next.get_width();
 	pw=prev.get_width();
 	nsb=next.get_side_type_before();
@@ -255,9 +255,9 @@ ValueNode_WPList::create_list_entry(int index, Time time, Real /*origin*/)
 	synfig::WidthPoint curr, prev, inserted;
 	//ValueNode_Composite::Handle vnh(ValueNode_Composite::Handle::cast_dynamic(list[index].value_node));
 	curr=(*(list[index].value_node))(time).get(curr);
-	Real curr_pos(curr.get_norm_position());
+	Real curr_pos(curr.get_norm_position(get_loop()));
 	prev=find_prev_valid_entry_by_position(curr_pos, time);
-	Real prev_pos(prev.get_norm_position());
+	Real prev_pos(prev.get_norm_position(get_loop()));
 	inserted.set_position((prev_pos+curr_pos)/2);
 	Real prev_width(prev.get_width());
 	Real curr_width(curr.get_width());
@@ -317,7 +317,7 @@ ValueNode_WPList::operator()(Time t)const
 				catch(...) { on_time=Time::end(); }
 			}
 			// i_width is the interpolated width at current time given by fully 'on' surrounding width points
-			Real i_width(interpolated_width(curr.get_norm_position(), t));
+			Real i_width(interpolated_width(curr.get_norm_position(get_loop()), t));
 			Real curr_width(curr.get_width());
 			// linear interpolation by amount
 			curr.set_width(i_width*(1.0-amount)+(curr_width)*amount);
@@ -374,7 +374,7 @@ ValueNode_WPList::find_next_valid_entry_by_position(Real position, Time time)con
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		curr=(*iter->value_node)(time).get(curr);
-		Real curr_pos(curr.get_norm_position());
+		Real curr_pos(curr.get_norm_position(get_loop()));
 		bool status((*iter).status_at_time(time));
 		if((curr_pos > position) && (curr_pos < next_pos) && status)
 		{
@@ -396,7 +396,7 @@ ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time)con
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		curr=(*iter->value_node)(time).get(curr);
-		Real curr_pos(curr.get_norm_position());
+		Real curr_pos(curr.get_norm_position(get_loop()));
 		bool status((*iter).status_at_time(time));
 		if((curr_pos < position) && (curr_pos > prev_pos) && status)
 		{
@@ -427,7 +427,7 @@ ValueNode_WPList::interpolated_width(Real position, Time time)const
 	synfig::WidthPoint prev, next;
 	prev=find_prev_valid_entry_by_position(position, time);
 	next=find_next_valid_entry_by_position(position, time);
-	return widthpoint_interpolate(prev, next, position);
+	return widthpoint_interpolate(prev, next, position, get_loop());
 }
 
 

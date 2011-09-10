@@ -72,16 +72,21 @@ WidthPoint::get_position()const
 }
 
 Real
-WidthPoint::get_norm_position()const
+WidthPoint::get_norm_position(bool wplistloop)const
 {
 	Real pos(get_position());
-	if(pos>=0.0 && pos <=1.0)
-		return pos;
+	Real ret(pos);
+	if(wplistloop)
+	{
+		ret=fmod(pos, 1.0);
+		ret=ret>=0.0?ret:(1.0+ret);
+	}
 	else
 	{
-		Real ret(fmod(pos, 1.0));
-		return ret>=0.0?ret:(1.0+ret);
+		if (ret < 0.0) ret = 0.0;
+		if (ret > 1.0) ret = 1.0;
 	}
+	return ret;
 }
 
 void
@@ -149,7 +154,7 @@ WidthPoint::get_dash()const
 bool
 WidthPoint::operator<(const WidthPoint& rhs)
 {
-	return get_norm_position() < rhs.get_norm_position();
+	return get_position() < rhs.get_position();
 }
 
 bool
