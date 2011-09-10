@@ -173,7 +173,7 @@ Action::ValueDescBLineLink::prepare()
 
 	ValueNode::Handle loop_value_node(ValueNode_Const::create(loop));
 	ValueNode::Handle amount_value_node(ValueNode_Const::create(amount));
-	ValueNode::Handle homogeneous_value_node(ValueNode_Const::create(false));
+	ValueNode::Handle homogeneous_value_node(ValueNode_Const::create(true));
 
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
@@ -225,7 +225,7 @@ Action::ValueDescBLineLink::prepare()
 			calculated_value_node->set_link("bline",  bline_value_node);
 			calculated_value_node->set_link("loop",   ValueNode_Const::create(loop));
 			calculated_value_node->set_link("amount", ValueNode_Const::create(amount));
-			calculated_value_node->set_link("homogeneous", ValueNode_Const::create(false));
+			calculated_value_node->set_link("homogeneous", ValueNode_Const::create(true));
 
 			action = ValueNodeReplace::create();
 			action->set_param("canvas", get_canvas());
