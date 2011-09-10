@@ -736,7 +736,6 @@ initialize()
 	DEB_LIST_MINIMAL="\
 		build-essential \
 		autoconf automake \
-		autopoint \
 		shared-mime-info \
 		libltdl3-dev \
 		libtool \
@@ -787,6 +786,7 @@ initialize()
 			#env
 			sudo apt-get update || true
 			sudo apt-get install -y $PKG_LIST
+			sudo apt-get install -y autopoint || true # Ubuntu special case
 		fi
 	else
 		if [[ $MODE == 'package' ]]; then
