@@ -62,6 +62,8 @@ OPENGL=0
 DEBUG=0
 BREED=
 
+export EMAIL='root@synfig.org'
+
 LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
