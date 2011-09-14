@@ -532,7 +532,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))
-			.set_description(_("Defines the interpolation type of the dash item"))
+			.set_description(_("Defines the side type of the dash item"))
 			.set_hint("enum")
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
@@ -541,7 +541,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			);
 		ret.push_back(ParamDesc(ValueBase(),"side_after")
 			.set_local_name(_("Side Type After"))
-			.set_description(_("Defines the interpolation type of the dash item"))
+			.set_description(_("Defines the side type of the dash item"))
 			.set_hint("enum")
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
