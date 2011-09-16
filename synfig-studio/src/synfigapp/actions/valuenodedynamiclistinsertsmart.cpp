@@ -215,22 +215,24 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 
 			add_action(action);
 
-			action=Action::create("ActivepointSetOff");
+			// This commented code creates a 'off' Active Point at time.begin()
+			// that produces bugs like
+			//action=Action::create("ActivepointSetOff");
 
-			if(!action)
-				throw Error(_("Unable to find action \"ActivepointSetOff\""));
+			//if(!action)
+				//throw Error(_("Unable to find action \"ActivepointSetOff\""));
 
-			action->set_param("edit_mode",MODE_ANIMATE);
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",Time::begin());
-			action->set_param("origin",origin);
-			action->set_param("value_desc",ValueDesc(value_node,index));
+			//action->set_param("edit_mode",MODE_ANIMATE);
+			//action->set_param("canvas",get_canvas());
+			//action->set_param("canvas_interface",get_canvas_interface());
+			//action->set_param("time",Time::begin());
+			//action->set_param("origin",origin);
+			//action->set_param("value_desc",ValueDesc(value_node,index));
 
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
+			//if(!action->is_ready())
+				//throw Error(Error::TYPE_NOTREADY);
 
-			add_action(action);
+			//add_action(action);
 		}
 
 		// Now we set the activepoint up and then we'll be done
