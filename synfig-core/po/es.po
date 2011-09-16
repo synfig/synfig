@@ -2831,11 +2831,11 @@ msgstr "Transparentar"
 
 #: src/synfig/paramdesc.cpp:84
 msgid "Alpha Brighten"
-msgstr "Clarear transparencia"
+msgstr "Clarear transp."
 
 #: src/synfig/paramdesc.cpp:85
 msgid "Alpha Darken"
-msgstr "Oscurecer transparencia"
+msgstr "Oscurecer transp."
 
 #: src/synfig/render.cpp:245 src/synfig/render.cpp:246
 #: src/synfig/render.cpp:300 src/synfig/render.cpp:301
