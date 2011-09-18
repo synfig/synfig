@@ -257,7 +257,7 @@ Toolbox::Toolbox():
 
 #define SITE(title,page)											\
 	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
-		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org")+page)))
+		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org/cms")+page)))
 
 	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP, sigc::ptr_fun(studio::App::dialog_help)));
