@@ -2,18 +2,17 @@
 # Synfig Core 软件包的简体中文翻译.
 # Copyright (C) 2010 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
-# Yu Chen <jcomee@gmail.com>, 2010.
-#
+# Yu Chen <jcomee@gmail.com>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=144022&atid=757416\n"
-"POT-Creation-Date: 2011-09-14 20:15+0200\n"
-"PO-Revision-Date: 2011-09-14 18:17+0000\n"
-"Last-Translator: Yu Chen (jcome)<jcomee@gmail.com>\n"
-"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.MIME-"
-"Version: 1.0\n"
+"POT-Creation-Date: 2011-09-23 20:43+0200\n"
+"PO-Revision-Date: 2011-09-18 13:48+0000\n"
+"Last-Translator: jcome <jcomee@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -46,7 +45,7 @@ msgstr "颜色"
 #: src/modules/mod_geometry/rectangle.cpp:126
 #: src/synfig/layer_solidcolor.cpp:103
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "填充层的颜色"
 
 #: src/modules/mod_example/filledrect.cpp:125
 #: src/modules/mod_geometry/rectangle.cpp:130
@@ -57,7 +56,7 @@ msgstr "点1"
 #: src/modules/mod_example/filledrect.cpp:126
 #: src/modules/mod_geometry/rectangle.cpp:132
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "矩形的第一个角"
 
 #: src/modules/mod_example/filledrect.cpp:131
 #: src/modules/mod_geometry/rectangle.cpp:136
@@ -68,7 +67,7 @@ msgstr "点2"
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_geometry/rectangle.cpp:137
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "矩形的第二个角"
 
 #: src/modules/mod_example/filledrect.cpp:136
 msgid "Feather X"
@@ -85,15 +84,15 @@ msgstr "倒角"
 
 #: src/modules/mod_example/filledrect.cpp:145
 msgid "Use Bevel for the corners"
-msgstr ""
+msgstr "对拐角采用倒角"
 
 #: src/modules/mod_example/filledrect.cpp:149
 msgid "Keep Bevel Circular"
-msgstr "保持倒角圆"
+msgstr "保持倒角圆状"
 
 #: src/modules/mod_example/filledrect.cpp:150
 msgid "When checked the bevel is circular"
-msgstr ""
+msgstr "选上后倒角是圆状的"
 
 #: src/modules/mod_example/metaballs.cpp:56
 msgid "Metaballs"
@@ -151,7 +150,7 @@ msgstr "中心"
 #: src/modules/mod_example/simplecircle.cpp:113
 #: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:144
 msgid "Center of the circle"
-msgstr ""
+msgstr "圆心"
 
 #: src/modules/mod_example/simplecircle.cpp:117
 #: src/modules/lyr_std/sphere_distort.cpp:151
@@ -450,7 +449,7 @@ msgstr "夹子上限"
 
 #: src/modules/lyr_std/clamp.cpp:163
 msgid "When checked the Ceiling value is used"
-msgstr ""
+msgstr "选中后上限值启用"
 
 #: src/modules/lyr_std/clamp.cpp:167
 msgid "Ceiling"
@@ -491,7 +490,7 @@ msgstr "时间偏移"
 
 #: src/modules/lyr_std/import.cpp:222
 msgid "Time Offset to apply to the imported file"
-msgstr ""
+msgstr "对导入文件施用的时间偏移"
 
 #: src/modules/lyr_std/insideout.cpp:55
 msgid "Inside Out"
@@ -711,15 +710,15 @@ msgstr "位置"
 
 #: src/modules/lyr_std/sphere_distort.cpp:147
 msgid "Where the sphere distortion is centered"
-msgstr ""
+msgstr "球状变形的中点"
 
 #: src/modules/lyr_std/sphere_distort.cpp:154
 msgid "The size of the sphere distortion"
-msgstr ""
+msgstr "球状变形的大小"
 
 #: src/modules/lyr_std/sphere_distort.cpp:160
 msgid "The distortion intensity (negative values inverts effect)"
-msgstr ""
+msgstr "变形强度（负值为相反效果）"
 
 #: src/modules/lyr_std/sphere_distort.cpp:164 src/modules/lyr_std/warp.cpp:409
 msgid "Clip"
@@ -727,7 +726,7 @@ msgstr "修剪"
 
 #: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "When cheked, the area outside the Radius are not distorted"
-msgstr ""
+msgstr "选中后，半径之外的区域不做变形"
 
 #: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Distort Type"
@@ -751,11 +750,11 @@ msgstr "拉伸"
 
 #: src/modules/lyr_std/stretch.cpp:106
 msgid "Size of the stretch relative to its Center"
-msgstr ""
+msgstr "相对其中心的拉伸幅度"
 
 #: src/modules/lyr_std/stretch.cpp:111
 msgid "Where the stretch distortion is centered"
-msgstr ""
+msgstr "拉伸变形的中心"
 
 #: src/modules/lyr_std/stroboscope.cpp:59
 msgid "Stroboscope"
@@ -814,7 +813,7 @@ msgstr "确保透明(Alpha)安全"
 
 #: src/modules/lyr_std/supersample.cpp:238
 msgid "Avoid alpha artifacts when checked"
-msgstr ""
+msgstr "选中后避免产生alpha伪像"
 
 #: src/modules/lyr_std/timeloop.cpp:58 src/synfig/valuenode.cpp:165
 #: src/synfig/valuenode_timeloop.cpp:153
@@ -827,7 +826,7 @@ msgstr "链接时间"
 
 #: src/modules/lyr_std/timeloop.cpp:124
 msgid "Start time of the loop for the cycled context"
-msgstr ""
+msgstr "循环的起始时间"
 
 #: src/modules/lyr_std/timeloop.cpp:128 src/synfig/valuenode_timeloop.cpp:184
 msgid "Local Time"
@@ -835,7 +834,7 @@ msgstr "本地时间"
 
 #: src/modules/lyr_std/timeloop.cpp:129 src/synfig/valuenode_timeloop.cpp:185
 msgid "The time when the resulted loop starts"
-msgstr ""
+msgstr "促成循环启动的时间"
 
 #: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_step.cpp:202
 #: src/synfig/valuenode_timeloop.cpp:189
@@ -844,7 +843,7 @@ msgstr "持续"
 
 #: src/modules/lyr_std/timeloop.cpp:134 src/synfig/valuenode_timeloop.cpp:190
 msgid "Lenght of the loop"
-msgstr ""
+msgstr "循环的长度"
 
 #: src/modules/lyr_std/timeloop.cpp:138
 msgid "Only For Positive Duration"
@@ -852,7 +851,7 @@ msgstr "仅为正的持续时间"
 
 #: src/modules/lyr_std/timeloop.cpp:139
 msgid "When checked will loop only positive durations"
-msgstr ""
+msgstr "选中后将只循环正的周期"
 
 #: src/modules/lyr_std/timeloop.cpp:143
 msgid "Symmetrical"
@@ -860,7 +859,7 @@ msgstr "对称"
 
 #: src/modules/lyr_std/timeloop.cpp:144
 msgid "When checked, loops are mirrored centered at Local Time"
-msgstr ""
+msgstr "选中后，循环以本地时间为中点做镜像"
 
 #: src/modules/lyr_std/translate.cpp:54
 msgid "Translate"
@@ -876,15 +875,15 @@ msgstr "旋转"
 
 #: src/modules/lyr_std/twirl.cpp:125
 msgid "The number of rotations of the twirl effect"
-msgstr ""
+msgstr "旋扭的转动量"
 
 #: src/modules/lyr_std/twirl.cpp:131
 msgid "When checked, distorts inside the circle"
-msgstr ""
+msgstr "选中后，在圆环内变形"
 
 #: src/modules/lyr_std/twirl.cpp:136
 msgid "When checked, distorts outside the circle"
-msgstr ""
+msgstr "选中后，在圆环外变形"
 
 #: src/modules/lyr_std/warp.cpp:56
 msgid "Warp"
@@ -896,7 +895,7 @@ msgstr "左上角的源"
 
 #: src/modules/lyr_std/warp.cpp:376
 msgid "Top Left corner of the source to warp"
-msgstr ""
+msgstr "翘曲源的左上角"
 
 #: src/modules/lyr_std/warp.cpp:380
 msgid "Source BR"
@@ -904,7 +903,7 @@ msgstr "右下角的源"
 
 #: src/modules/lyr_std/warp.cpp:381
 msgid "Bottom Right corner of the source to warp"
-msgstr ""
+msgstr "翘曲源的右下角"
 
 #: src/modules/lyr_std/warp.cpp:385
 msgid "Dest TL"
@@ -912,7 +911,7 @@ msgstr "左上角 Dest"
 
 #: src/modules/lyr_std/warp.cpp:387
 msgid "Top Left corner of the destination"
-msgstr ""
+msgstr "目标左上角"
 
 #: src/modules/lyr_std/warp.cpp:391
 msgid "Dest TR"
@@ -920,7 +919,7 @@ msgstr "右上角 Dest"
 
 #: src/modules/lyr_std/warp.cpp:393
 msgid "Top Right corner of the destination"
-msgstr ""
+msgstr "目标右上角"
 
 #: src/modules/lyr_std/warp.cpp:397
 msgid "Dest BR"
@@ -928,7 +927,7 @@ msgstr "右下角 Dest"
 
 #: src/modules/lyr_std/warp.cpp:399
 msgid "Bottom Right corner of the destination"
-msgstr ""
+msgstr "目标右下角"
 
 #: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BL"
@@ -936,7 +935,7 @@ msgstr "左下角 Dest"
 
 #: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Left corner of the destination"
-msgstr ""
+msgstr "目标左下角"
 
 #: src/modules/lyr_std/warp.cpp:413
 msgid "Horizon"
@@ -944,7 +943,7 @@ msgstr "地平线"
 
 #: src/modules/lyr_std/warp.cpp:414
 msgid "Height that determines the horizon in perspectives"
-msgstr ""
+msgstr "决定水平透视的高度"
 
 #: src/modules/lyr_std/curvewarp.cpp:55
 msgid "Curve Warp"
@@ -952,7 +951,7 @@ msgstr "曲线翘曲"
 
 #: src/modules/lyr_std/curvewarp.cpp:390
 msgid "Position of the source line"
-msgstr ""
+msgstr "源线的位置"
 
 #: src/modules/lyr_std/curvewarp.cpp:395
 msgid "How much is expanded the result perpendicular to the source line"
@@ -1236,7 +1235,7 @@ msgstr "棋子颜色"
 
 #: src/modules/mod_geometry/checkerboard.cpp:127
 msgid "Center of the checkers"
-msgstr ""
+msgstr "棋子中点"
 
 #: src/modules/mod_geometry/checkerboard.cpp:131
 msgid "Size of checkers"
@@ -1248,7 +1247,7 @@ msgstr "圆形"
 
 #: src/modules/mod_geometry/circle.cpp:134
 msgid "Radius of the circle"
-msgstr ""
+msgstr "圆形的半径"
 
 #: src/modules/mod_geometry/circle.cpp:138 src/synfig/layer_shape.cpp:1205
 msgid "Feather"
@@ -1256,7 +1255,7 @@ msgstr "羽化"
 
 #: src/modules/mod_geometry/circle.cpp:140
 msgid "Amount of feather of the circle"
-msgstr ""
+msgstr "圆形的羽化量"
 
 #: src/modules/mod_geometry/circle.cpp:148
 msgid "Invert the circle"
@@ -1299,11 +1298,11 @@ msgstr "余弦"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:67
 msgid "Advanced Outline"
-msgstr ""
+msgstr "高级轮廓"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:130
 msgid "No vertices in bline "
-msgstr ""
+msgstr "BLine 没有顶点"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:923
 #: src/modules/mod_geometry/outline.cpp:814
@@ -1321,7 +1320,7 @@ msgstr "轮廓宽度"
 #: src/modules/mod_geometry/advanced_outline.cpp:928
 #: src/modules/mod_geometry/outline.cpp:829
 msgid "Global width of the outline"
-msgstr ""
+msgstr "轮廓的全局宽度"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:932
 #: src/modules/mod_geometry/outline.cpp:834
@@ -1331,15 +1330,15 @@ msgstr "外扩"
 #: src/modules/mod_geometry/advanced_outline.cpp:933
 #: src/modules/mod_geometry/outline.cpp:835
 msgid "Value to add to the global width"
-msgstr ""
+msgstr "添加到全局宽度的值"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:936
 msgid "Tip Type at Start"
-msgstr ""
+msgstr "起点的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:937
 msgid "Defines the Tip type of the first bline point when bline is unlooped"
-msgstr ""
+msgstr "定义未封闭的 BLine 的第一个 BLine 的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:939
 #: src/modules/mod_geometry/advanced_outline.cpp:948
@@ -1348,7 +1347,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:537
 #: src/synfig/valuenode_composite.cpp:546
 msgid "Rounded Stop"
-msgstr ""
+msgstr "圆的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:940
 #: src/modules/mod_geometry/advanced_outline.cpp:949
@@ -1357,7 +1356,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:538
 #: src/synfig/valuenode_composite.cpp:547
 msgid "Squared Stop"
-msgstr ""
+msgstr "方的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:941
 #: src/modules/mod_geometry/advanced_outline.cpp:950
@@ -1366,7 +1365,7 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:539
 #: src/synfig/valuenode_composite.cpp:548
 msgid "Peak Stop"
-msgstr ""
+msgstr "尖的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:942
 #: src/modules/mod_geometry/advanced_outline.cpp:951
@@ -1375,15 +1374,15 @@ msgstr ""
 #: src/synfig/valuenode_composite.cpp:540
 #: src/synfig/valuenode_composite.cpp:549
 msgid "Flat Stop"
-msgstr ""
+msgstr "平的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:945
 msgid "Tip Type at End"
-msgstr ""
+msgstr "未端的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:946
 msgid "Defines the Tip type of the last bline point when bline is unlooped"
-msgstr ""
+msgstr "定义未封闭 BLine 的最后一个BLine点的尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:954
 msgid "Cusps Type"
@@ -1396,19 +1395,19 @@ msgstr "决定尖端类型"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:957
 msgid "Sharp"
-msgstr ""
+msgstr "尖的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:958
 msgid "Rounded"
-msgstr ""
+msgstr "圆的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:962
 msgid "Smoothness"
-msgstr ""
+msgstr "平滑的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:963
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
-msgstr ""
+msgstr "决定宽度点之间的变化。(0)线性 (1)平滑"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:966
 #: src/modules/mod_geometry/outline.cpp:856
@@ -1419,39 +1418,39 @@ msgstr "单一性"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:967
 msgid "When true, widthpoints positions are bline length based"
-msgstr ""
+msgstr "设为真时，宽度点位置是按照BLine的长度计算的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:970
 msgid "Width Point List"
-msgstr ""
+msgstr "宽度点清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:973
 msgid "List of width Points that defines the variable width"
-msgstr ""
+msgstr "定义变化宽度的宽度点列表"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:976
 msgid "Dashed Outline"
-msgstr ""
+msgstr "虚线化的轮廓"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:978
 msgid "When checked outline is dashed"
-msgstr ""
+msgstr "选中后轮廓是虚线的"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:981
 msgid "Dash Item List"
-msgstr ""
+msgstr "虚线项目清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:984
 msgid "List of dash items that defines the dashed outline"
-msgstr ""
+msgstr "定义虚线化轮廓的虚线项目清单"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:987
 msgid "Dash Items Offset"
-msgstr ""
+msgstr "虚线项目偏移"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:990
 msgid "Distance to Offset the Dash Items"
-msgstr ""
+msgstr "偏移虚线项目的距离"
 
 #: src/modules/mod_geometry/outline.cpp:71
 msgid "Outline"
@@ -1484,7 +1483,7 @@ msgstr "松散"
 
 #: src/modules/mod_geometry/outline.cpp:857
 msgid "When checked the width takes the length of the spline to interpolate"
-msgstr ""
+msgstr "选中后宽度用Spline的长度作插值处理"
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
@@ -1578,22 +1577,22 @@ msgstr "渐变"
 #: src/modules/mod_gradient/spiralgradient.cpp:113
 #: src/modules/mod_noise/noise.cpp:260
 msgid "Gradient to apply"
-msgstr ""
+msgstr "要施用的渐变"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:115
 msgid "Center of the cone"
-msgstr ""
+msgstr "锥形的中心"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:121
 msgid "Rotation of the gradient around the center"
-msgstr ""
+msgstr "渐变围绕变化的中心参考点"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:126
 #: src/modules/mod_gradient/curvegradient.cpp:557
 #: src/modules/mod_gradient/lineargradient.cpp:204
 #: src/modules/mod_gradient/radialgradient.cpp:131
 msgid "When checked the gradient is looped"
-msgstr ""
+msgstr "选中后渐变是循环的"
 
 #: src/modules/mod_gradient/curvegradient.cpp:60
 msgid "Curve Gradient"
@@ -1602,11 +1601,11 @@ msgstr "曲线渐变"
 #: src/modules/mod_gradient/curvegradient.cpp:538
 #: src/modules/mod_particle/plant.cpp:399
 msgid "Offset for the Vertices List"
-msgstr ""
+msgstr "顶点清单的偏移"
 
 #: src/modules/mod_gradient/curvegradient.cpp:543
 msgid "Global width of the gradient"
-msgstr ""
+msgstr "渐变的全局宽度"
 
 #: src/modules/mod_gradient/curvegradient.cpp:556
 #: src/modules/mod_gradient/lineargradient.cpp:203
@@ -1639,11 +1638,11 @@ msgstr "线性渐变"
 
 #: src/modules/mod_gradient/lineargradient.cpp:192
 msgid "Start point of the gradient"
-msgstr ""
+msgstr "渐变起点"
 
 #: src/modules/mod_gradient/lineargradient.cpp:196
 msgid "End point of the gradient"
-msgstr ""
+msgstr "渐变终点"
 
 #: src/modules/mod_gradient/radialgradient.cpp:57
 msgid "Radial Gradient"
@@ -1652,7 +1651,7 @@ msgstr "径向渐变"
 #: src/modules/mod_gradient/radialgradient.cpp:119
 #: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center of the gradient"
-msgstr ""
+msgstr "渐变中心"
 
 #: src/modules/mod_gradient/spiralgradient.cpp:56
 msgid "Spiral Gradient"
