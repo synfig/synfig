@@ -4,6 +4,23 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+ 0.63.01 (git tag: "synfigstudio-0.63.01") - September 24, 2011 - Bub fixes, features
+
+  * Refactor duck creation for selected layers into duckmatic.
+  * Guides are saved now between sessions. Fix bug
+  * Guides are not dragged if not visible. Fix bug
+  * Add undo capability for guides.
+  * Snap to grid is now relative to zoom.
+  * OptionMenu (deprecatd) has been replaced by ComboBox.
+  * When change the Setup Dialog, spread it inmediately to the canvas's rules.
+  * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
+  * Linked to BLine has the option of be curve length based. On by default.
+  * New icons for canvas navigation, preview, render and animate mode buttons.
+  * Canvas window buttons rearranged.
+  * Imported canvases are now 'Children Locked' by default.
+  * New language support: Persian, Lituanian
+  * Updated existing translations.
+
  0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
 
   * Fix bug #31044763: fps rounding to integer.

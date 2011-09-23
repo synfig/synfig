@@ -4,6 +4,19 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+ 0.63.01 (git tag: "synfig-0.63.01") - September 24, 2011 - Bub fixes, features
+
+  * Fix bug 3147736: avoid zero or negative value for supersample layer' size parameter.
+  * Allow use the Joined List Convert type to file name parameter of the Import Image layers.
+  * If tangents are zero and are merged, then consider them as split to make corners.
+  * Width points can be placed in a curve length basis using Homogeneous parameter.
+  * Interpolated width is from now on homogeneous. Fixes some render artifacts.
+  * Fixed some interpolation errors produced by bad WPList loop interpretation.
+  * Add new Dash Item List and support for dashed outlines.
+  * Linked to BLine has the option of be curve length based. On by default.
+  * New languages support: Persian, Slovakian, Dutch and Lituanian.
+  * Updated existing translations
+
  0.63.00 (git tag: "synfig-0.63.00") - June 5, 2011 - Bug fixes, major features
 
   * Fix bug #3111032: Load and save settings must be locale independent.
