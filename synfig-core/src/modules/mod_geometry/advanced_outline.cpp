@@ -559,8 +559,22 @@ Advanced_Outline::sync()
 				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
 				if(wnext->get_dash())
 				{
-					WidthPoint i(*cwiter);
-					WidthPoint n(*cwnext);
+					vector<WidthPoint>::iterator ci(cwiter);
+					vector<WidthPoint>::iterator cn(cwnext);
+					// if we inserted the widthpoints at start and end, don't consider them for interpolation.
+					if(cwiter->get_position() == 0.0 && cwnext->get_position()!=1.0 && inserted_first)
+					{
+						ci=cwplist.end();
+						ci--;
+						if(inserted_last) ci--;
+					}
+					if(cwnext->get_position() == 1.0 && inserted_last)
+					{
+						cn=cwplist.begin();
+						if(inserted_first) cn++;
+					}
+					WidthPoint i(*ci);
+					WidthPoint n(*cn);
 					Real p(ipos);
 					if(!homogeneous && !old_version)
 					{
