@@ -64,6 +64,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/scale.h>
 #include <sigc++/connection.h>
+#include "widgets/widget_distance.h"
 
 #include "general.h"
 
@@ -144,8 +145,8 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::SpinButton  spin_min_pressure;
 	Gtk::CheckButton check_min_pressure;
 
-	Gtk::Adjustment	 adj_feather;
-	Gtk::SpinButton  spin_feather;
+	Widget_Distance *feather_size;
+
 
 	Gtk::Adjustment	 adj_globalthres;
 	Gtk::SpinButton  spin_globalthres;
@@ -185,8 +186,8 @@ public:
 	Real get_min_pressure() const { return adj_min_pressure.get_value(); }
 	void set_min_pressure(Real x) { return adj_min_pressure.set_value(x); }
 
-	Real get_feather() const { return adj_feather.get_value(); }
-	void set_feather(Real x) { return adj_feather.set_value(x); }
+	Real get_feather() const { return feather_size->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc()); }
+	void set_feather(Distance x) { return feather_size->set_value(x); }
 
 	Real get_gthres() const { return adj_globalthres.get_value(); }
 	void set_gthres(Real x) { return adj_globalthres.set_value(x); }
@@ -313,11 +314,9 @@ StateDraw_Context::load_settings()
 			set_min_pressure(0);
 
 		if(settings.get_value("draw.feather",value))
-		{
-			Real n = atof(value.c_str());
-			set_feather(n);
-		}else
-			set_feather(0);
+			set_feather(Distance(value.c_str()));
+		else
+			set_feather(Distance("0pt"));
 
 		if(settings.get_value("draw.gthreshold",value))
 		{
@@ -357,7 +356,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.outline",get_outline_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
-		settings.set_value("draw.feather",strprintf("%f",get_feather()));
+		settings.set_value("draw.feather",feather_size->get_value().get_string());
 		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
@@ -433,14 +432,17 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	adj_min_pressure(0,0,1,0.01,0.1),
 	spin_min_pressure(adj_min_pressure,0.1,3),
 	check_min_pressure(_("Min Pressure")),
-	adj_feather(0,0,10000,0.01,0.1),
-	spin_feather(adj_feather,0.01,4),
 	adj_globalthres(.70f,0.01,10000,0.01,0.1),
 	spin_globalthres(adj_globalthres,0.01,3),
 	adj_localthres(20,1,100000,0.1,1),
 	check_localerror(_("LocalError"))
 
 {
+	feather_size=manage(new Widget_Distance());
+	feather_size->show();
+	feather_size->set_digits(2);
+	feather_size->set_range(0,10000000);
+
 	nested=0;
 	load_settings();
 
@@ -464,7 +466,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_table.attach(spin_globalthres,							1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*feather_size,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
