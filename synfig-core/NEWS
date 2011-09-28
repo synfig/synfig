@@ -4,7 +4,12 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
- 0.63.01 (git tag: "synfig-0.63.01") - September 24, 2011 - Bub fixes, features
+ 0.63.02 (git tag: "synfig-0.63.02") - September 28, 2011 - Improvement
+
+  * Add new parameter 'Fast' to Advanced Outline to allow render faster but less
+    accurate.
+
+ 0.63.01 (git tag: "synfig-0.63.01") - September 24, 2011 - Bug fixes, features
 
   * Fix bug 3147736: avoid zero or negative value for supersample layer' size parameter.
   * Allow use the Joined List Convert type to file name parameter of the Import Image layers.
