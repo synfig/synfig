@@ -63,6 +63,7 @@ private:
 	Real dash_offset_;
 	bool dash_enabled_;
 	bool old_version;
+	bool fast_;
 
 public:
 	enum CuspType
