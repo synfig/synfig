@@ -137,6 +137,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
 	Gtk::CheckButton checkbutton_region;	  // whether to create regions
 	Gtk::CheckButton checkbutton_outline;	  // whether to create outlines
+	Gtk::CheckButton checkbutton_advanced_outline;
 	Gtk::CheckButton checkbutton_auto_export;
 	Gtk::Button button_fill_last_stroke;
 
@@ -157,6 +158,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
+	//synfigapp::WPListConverter wplistconv;
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -179,6 +181,9 @@ public:
 
 	bool get_outline_flag()const { return checkbutton_outline.get_active(); }
 	void set_outline_flag(bool x) { return checkbutton_outline.set_active(x); }
+
+	bool get_advanced_outline_flag()const { return checkbutton_advanced_outline.get_active(); }
+	void set_advanced_outline_flag(bool x) { return checkbutton_advanced_outline.set_active(x); }
 
 	bool get_auto_export_flag()const { return checkbutton_auto_export.get_active(); }
 	void set_auto_export_flag(bool x) { return checkbutton_auto_export.set_active(x); }
@@ -296,6 +301,11 @@ StateDraw_Context::load_settings()
 		else
 			set_outline_flag(true);
 
+		if(settings.get_value("draw.advanced_outline",value) && value=="0")
+			set_advanced_outline_flag(false);
+		else
+			set_advanced_outline_flag(true);
+
 		if(settings.get_value("draw.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
 		else
@@ -354,6 +364,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
 		settings.set_value("draw.region",get_region_flag()?"1":"0");
 		settings.set_value("draw.outline",get_outline_flag()?"1":"0");
+		settings.set_value("draw.advanced_outline",get_advanced_outline_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 		settings.set_value("draw.feather",feather_size->get_value().get_string());
@@ -425,8 +436,9 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_extend(_("Auto Extend")),
 	checkbutton_auto_link(_("Auto Link")),
-	checkbutton_region(_("Create Region BLine")),
-	checkbutton_outline(_("Create Outline BLine")),
+	checkbutton_region(_("Create Region")),
+	checkbutton_outline(_("Create Outline")),
+	checkbutton_advanced_outline(_("Create Advanced Outline")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
@@ -448,25 +460,26 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	UpdateErrorBox();
 
-	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,									0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_outline,						0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region,						0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop,						0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_extend,					0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_link,						0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_export,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_pressure_width,				0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(check_localerror,							0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,                                0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_outline,                     0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_advanced_outline,            0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region,                      0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_loop,                   0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_extend,                 0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_link,                   0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_export,                 0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_pressure_width,              0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_localerror,                        0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure,						0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure,							1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_min_pressure,                      0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_min_pressure,                       1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))),		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres,							1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Smooth"))),    0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_globalthres,                        1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*feather_size,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*feather_size,                           1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
@@ -475,7 +488,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	options_table.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	// Hide all tangent and width ducks
