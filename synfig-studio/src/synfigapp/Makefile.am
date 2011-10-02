@@ -246,6 +246,7 @@ SYNFIGAPPHH = \
 	action_param.h \
 	action_system.h \
 	blineconvert.h \
+	wplistconverter.h \
 	canvasinterface.h \
 	cvs.h \
 	inputdevice.h \
@@ -262,6 +263,7 @@ SYNFIGAPPCC = \
 	action_param.cpp \
 	action_system.cpp \
 	blineconvert.cpp \
+	wplistconverter.cpp \
 	canvasinterface.cpp \
 	cvs.cpp \
 	inputdevice.cpp \
