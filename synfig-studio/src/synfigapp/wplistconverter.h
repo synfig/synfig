@@ -47,12 +47,26 @@ class WPListConverter
 private:
 	//! Cache of points ready to be processed after remove duplicated
 	std::vector<synfig::Point> points;
-	//! Cache of widthd ready to be processed after remove duplicated
+	//! Cache of widths ready to be processed after remove duplicated
 	std::vector<synfig::Real> widths;
+	//! The processed result of the widthpoints
+	std::vector<synfig::WidthPoint> work_out;
 	//! Calculated cummulated distances to origin
 	std::vector<synfig::Real> distances;
 	//! Calculated cummulated distances to origin normalized
 	std::vector<synfig::Real> norm_distances;
+	//! The error value at each position: ek[k]=w[k]-wp_out.width[k]
+	std::vector<synfig::Real> ek;
+	//! The error value at each position: ek2=ek[k]*ek[k]
+	std::vector<synfig::Real> ek2;
+
+	//! This updates: ek, ek2 at the interval k1, k2, and returns the index where
+	//! ek2 is maximum. If 'e' (squared error) is passed (>=0) then it returns
+	//! the new squared error at 'e'
+	unsigned int calculate_ek2(unsigned int k1, unsigned int k2, synfig::Real &e);
+	//! Finds next/previous widthpoint with dash=false. Don't consider k itself.
+	unsigned int find_next(unsigned int k);
+	unsigned int find_prev(unsigned int k);
 
 	void clear();
 
