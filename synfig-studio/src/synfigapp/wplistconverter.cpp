@@ -60,8 +60,6 @@ WPListConverter::WPListConverter()
 void
 WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::list<synfig::Point> &p, const std::list<synfig::Real> &w)
 {
-	// number of data (points and widths)
-	unsigned int n;
 	// number of data (float format)
 	Real nf;
 	// indexes k1, k2 for the interval considered, kem where the error
@@ -112,7 +110,8 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	// Prepare the output
 	work_out.resize(n);
 	// Prepare the errors
-
+	ek.resize(n);
+	ek2.resize(n);
 	// Initially I insert all widthpoints with a dash set to true
 	// Why?: dash=true means that the widthpoint has to be discarded later
 	// Only setting dash to false will validate the widhtpoint based on the
@@ -120,39 +119,98 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	for(i=0; i<n; i++)
 		work_out[i]=WidthPoint(widths[i], norm_distances[i], WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE, true);
 	// Now let's insert the first two widthpoints:
-	work_out[0].set_dash(false);
-	work_out[n-1].set_dash(false);
+	k1=0;
+	k2=n-1;
+	work_out[k1].set_dash(false);
+	work_out[k2].set_dash(false);
+	// Make the squared error negative for the first time calculation
+	se=-1.0;
+	// Calculate kem, ek, ek2 for the first time.
+	kem=calculate_ek2(k1, k2, true);
+	while(se>err2max)
+	{
+		k1=find_prev(kem);
+		k2=find_next(kem);
+		if(k1==k2 || k1+1==k2)
+			break;
+		// Insert a width point at kem
+		work_out[kem].set_dash(false);
+		// Calculate the errors again
+		kem=calculate_ek2(k1, k2);
+	}
+	wp_out.assign(work_out.begin(), work_out.end());
 }
 
 unsigned int
-WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, Real &e)
+WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time)
 {
-	// remember: k2 is one more past the interval
+	// remember: k2 is at the interval end
 	unsigned int i;
-	Real g;
-	for(i=k1;i<k2;i++)
+	Real curr_max_err2(0);
+	unsigned int ret_kem;
+	WidthPoint wp_prev, wp_next;
+	if(!first_time)
+		se=se*n;
+	else
+		se=0.0;
+	Real g, gg;
+	if(k2 <= k1+1)
+		return k1; // Maybe throw something?
+	for(i=k1;i<=k2;i++)
 	{
-		WidthPoint wp_prev(work_out[find_prev(i)]);
-		WidthPoint wp_next(work_out[find_next(i)]);
-		g=ek[i]=widths[i]-widthpoint_interpolate(wp_prev, wp_next, norm_distances[i], false);
-		ek2[i]=g*g;
+		if(work_out[i].get_dash())
+		{
+			wp_prev=work_out[find_prev(i)];
+			wp_next=work_out[find_next(i)];
+			g=widths[i]-widthpoint_interpolate(wp_prev, wp_next, norm_distances[i], false);
+		}
+		else
+			g=widths[i]-work_out[i].get_width(); // should be zero.
+		gg=g*g;
+		if(!first_time)
+		{
+			se-=ek[i];
+			se+=gg;
+		}
+		else
+		{
+			se+=gg;
+		}
+		ek[i]=g;
+		ek2[i]=gg;
 	}
-	// work in progress...
-	return 0;
+	se=se/n;
+	for(i=0;i<n;i++)
+	{
+		if(curr_max_err2 < ek2[i])
+		{
+			ret_kem=i;
+			curr_max_err2=ek2[i];
+		}
+	}
+	return ret_kem;
 }
 
 unsigned int
 WPListConverter::find_next(unsigned int k)
 {
-	// work in progress...
-	return k;
+	if(k>=n-1) return n-1;
+	unsigned int i;
+	for (i=k+1; i<n; i++)
+		if(!work_out[i].get_dash())
+			break;
+	return i;
 }
 
 unsigned int
 WPListConverter::find_prev(unsigned int k)
 {
-	// work in progress...
-	return k;
+	if(k<1) return 0;
+	unsigned int i;
+	for (i=k-1; i>0; i--)
+		if(!work_out[i].get_dash())
+			break;
+	return i;
 }
 
 
@@ -166,6 +224,7 @@ WPListConverter::clear()
 	work_out.clear();
 	ek.clear();
 	ek2.clear();
+	n=0;
 }
 
 /* === E N T R Y P O I N T ================================================= */

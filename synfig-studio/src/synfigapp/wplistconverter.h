@@ -59,11 +59,15 @@ private:
 	std::vector<synfig::Real> ek;
 	//! The error value at each position: ek2=ek[k]*ek[k]
 	std::vector<synfig::Real> ek2;
+	//! The number of valid widths and points
+	unsigned int n;
+	//! The current squared error
+	synfig::Real se;
 
 	//! This updates: ek, ek2 at the interval k1, k2, and returns the index where
-	//! ek2 is maximum. If 'e' (squared error) is passed (>=0) then it returns
-	//! the new squared error at 'e'
-	unsigned int calculate_ek2(unsigned int k1, unsigned int k2, synfig::Real &e);
+	//! ek2 is maximum. If 'e' (squared error) is >=0 then it returns
+	//! the new squared error at 'e' if not it just fills the error vectors for the first time
+	unsigned int calculate_ek2(unsigned int k1, unsigned int k2, bool first_time=false);
 	//! Finds next/previous widthpoint with dash=false. Don't consider k itself.
 	unsigned int find_next(unsigned int k);
 	unsigned int find_prev(unsigned int k);
