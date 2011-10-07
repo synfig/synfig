@@ -183,7 +183,7 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 		gg=g*g;
 		if(!first_time)
 		{
-			se-=ek[i];
+			se-=ek2[i];
 			se+=gg;
 		}
 		else
