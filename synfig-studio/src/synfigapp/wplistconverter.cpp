@@ -139,9 +139,6 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	synfig::info("kem %d", kem);
 	while(se>err2max)
 	{
-		k1=find_prev(kem);
-		k2=find_next(kem);
-		synfig::info("new k1 %d, k2 %d", k1, k2);
 		if(k1==k2 || k1+1==k2)
 			break;
 		// Insert a width point at kem
@@ -149,6 +146,9 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		// Calculate the errors again
 		kem=calculate_ek2(k1, k2);
 		synfig::info("new kem %d", kem);
+		k1=find_prev(kem);
+		k2=find_next(kem);
+		synfig::info("new k1 %d, k2 %d", k1, k2);
 	}
 	wp_out.assign(work_out.begin(), work_out.end());
 }
