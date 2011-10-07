@@ -149,7 +149,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Widget_Distance *feather_size;
 
-
+	Gtk::Label threshold_label;
 	Gtk::Adjustment	 adj_globalthres;
 	Gtk::SpinButton  spin_globalthres;
 
@@ -476,7 +476,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_table.attach(check_min_pressure,                      0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_min_pressure,                       1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))),    0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(threshold_label,                         0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_globalthres,                        1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -523,11 +523,13 @@ void StateDraw_Context::UpdateErrorBox()
 {
 	if(get_local_error_flag())
 	{
+		threshold_label.set_label(_("BLine Local Error"));
 		spin_globalthres.set_adjustment(adj_localthres);
 		spin_globalthres.set_value(adj_localthres.get_value());
 		spin_globalthres.set_increments(0.1,1);
 	}else
 	{
+		threshold_label.set_label(_("BLine Smoothness"));
 		spin_globalthres.set_adjustment(adj_globalthres);
 		spin_globalthres.set_value(adj_globalthres.get_value());
 		spin_globalthres.set_increments(0.01,.1);
