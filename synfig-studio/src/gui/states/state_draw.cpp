@@ -53,6 +53,7 @@
 #include "toolbox.h"
 
 #include <synfigapp/blineconvert.h>
+#include <synfigapp/wplistconverter.h>
 #include <synfigapp/main.h>
 
 #include <ETL/gaussian>
@@ -158,7 +159,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
-	//synfigapp::WPListConverter wplistconv;
+	synfigapp::WPListConverter wplistconv;
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -700,6 +701,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	//refresh_ducks();
 
 	std::list<synfig::BLinePoint> bline;
+	std::list<synfig::WidthPoint> wplist;
 	bool loop_bline_flag(false);
 
 	//Changed by Adrian - use resident class :)
@@ -720,6 +722,16 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	}
 
 	blineconv(bline,*stroke_data,*width_data);
+	wplistconv(wplist, *stroke_data,*width_data);
+	// print out resutls
+	synfig::info("-----------widths");
+	std::list<synfig::WidthPoint>::iterator iter;
+	for(iter=wplist.begin();iter!=wplist.end();iter++)
+	{
+		if(!iter->get_dash())
+			synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
+	}
+	// results end
 
 	//Postprocess to require minimum pressure
 	if(get_min_pressure_flag())
