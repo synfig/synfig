@@ -153,9 +153,15 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::Adjustment	 adj_globalthres;
 	Gtk::SpinButton  spin_globalthres;
 
+	Gtk::Label width_max_error_label;
+	Gtk::Adjustment adj_width_max_error;
+	Gtk::SpinButton spin_width_max_error;
+
 	Gtk::Adjustment	 adj_localthres;
 	Gtk::CheckButton check_localerror;
 	void UpdateErrorBox();	//switches the stuff if need be :)
+	void UpdateUsePressure();
+	void UpdateCreateAdvancedOutline();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
@@ -200,6 +206,9 @@ public:
 
 	Real get_lthres() const { return adj_localthres.get_value(); }
 	void set_lthres(Real x) { return adj_localthres.set_value(x); }
+
+	Real get_width_max_error() const { return adj_width_max_error.get_value(); }
+	void set_width_max_error(Real x) { return adj_width_max_error.set_value(x); }
 
 	bool get_local_error_flag() const { return check_localerror.get_active(); }
 	void set_local_error_flag(bool x) { check_localerror.set_active(x); }
@@ -335,6 +344,12 @@ StateDraw_Context::load_settings()
 			set_gthres(n);
 		}
 
+		if(settings.get_value("draw.widthmaxerror",value))
+		{
+			Real n = atof(value.c_str());
+			set_width_max_error(n);
+		}
+
 		if(settings.get_value("draw.lthreshold",value))
 		{
 			Real n = atof(value.c_str());
@@ -371,6 +386,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.feather",feather_size->get_value().get_string());
 		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
+		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
 		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
 	}
@@ -447,6 +463,9 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	check_min_pressure(_("Min Pressure")),
 	adj_globalthres(.70f,0.01,10000,0.01,0.1),
 	spin_globalthres(adj_globalthres,0.01,3),
+	width_max_error_label(_("Max Width Error")),
+	adj_width_max_error(-.05f, 0.001, 1.0, 0.001,0.01),
+	spin_width_max_error(adj_width_max_error, 0.01, 4),
 	adj_localthres(20,1,100000,0.1,1),
 	check_localerror(_("LocalError"))
 
@@ -460,6 +479,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	load_settings();
 
 	UpdateErrorBox();
+	UpdateUsePressure();
+	UpdateCreateAdvancedOutline();
 
 	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id,                                0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -479,13 +500,18 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_table.attach(threshold_label,                         0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_globalthres,                        1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*feather_size,                           1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(width_max_error_label,                   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_width_max_error,                    1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*feather_size,                           1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
 	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
+	checkbutton_pressure_width.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateUsePressure));
+	checkbutton_advanced_outline.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateCreateAdvancedOutline));
 
 	options_table.show_all();
 	refresh_tool_options();
@@ -518,8 +544,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-
-void StateDraw_Context::UpdateErrorBox()
+void
+StateDraw_Context::UpdateErrorBox()
 {
 	if(get_local_error_flag())
 	{
@@ -536,6 +562,20 @@ void StateDraw_Context::UpdateErrorBox()
 	}
 
 	spin_globalthres.update();
+}
+
+void
+StateDraw_Context::UpdateUsePressure()
+{
+	bool status(get_pressure_width_flag());
+	check_min_pressure.set_sensitive(status);
+	spin_min_pressure.set_sensitive(status);
+}
+
+void
+StateDraw_Context::UpdateCreateAdvancedOutline()
+{
+	spin_width_max_error.set_sensitive(get_advanced_outline_flag());
 }
 
 void
