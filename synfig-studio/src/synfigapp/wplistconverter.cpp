@@ -150,7 +150,10 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		k2=find_next(kem);
 		synfig::info("new k1 %d, k2 %d", k1, k2);
 	}
-	wp_out.assign(work_out.begin(), work_out.end());
+	wp_out.clear();
+	for(i=0;i<n;i++)
+		if(!work_out[i].get_dash())
+			wp_out.push_back(work_out[i]);
 }
 
 unsigned int
@@ -241,6 +244,16 @@ WPListConverter::clear()
 	ek2.clear();
 	n=0;
 }
+
+void
+WPListConverter::EnforceMinWidth(std::list<synfig::WidthPoint> &wplist, synfig::Real min_pressure)
+{
+	std::list<synfig::WidthPoint>::iterator	i(wplist.begin()), end(wplist.end());
+	for(; i!= end; ++i)
+		if(i->get_width() < min_pressure)
+			i->set_width(min_pressure);
+}
+
 
 /* === E N T R Y P O I N T ================================================= */
 

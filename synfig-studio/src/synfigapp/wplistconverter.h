@@ -77,6 +77,7 @@ private:
 public:
 	synfig::Real err2max;
 	WPListConverter();
+	static void EnforceMinWidth(std::list<synfig::WidthPoint> &wplist, synfig::Real min_pressure);
 	void operator()(std::list<synfig::WidthPoint> &wp_out, const std::list<synfig::Point> &p, const std::list<synfig::Real> &w);
 };
 
