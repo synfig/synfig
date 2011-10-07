@@ -44,6 +44,7 @@
 #include "workarea.h"
 #include "app.h"
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_composite.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -119,8 +120,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	void fill_last_stroke();
 	Smach::event_result fill_last_stroke_and_unselect_other_layers();
 
-	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
-
+	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline, std::list<synfig::WidthPoint> wplist, bool loop_bline_flag,float radius);
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
 	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
@@ -764,7 +764,11 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	}
 
 	blineconv(bline,*stroke_data,*width_data);
-	wplistconv(wplist, *stroke_data,*width_data);
+	if(get_advanced_outline_flag())
+	{
+		wplistconv.err2max=get_width_max_error();
+		wplistconv(wplist, *stroke_data,*width_data);
+	}
 	// print out resutls
 	synfig::info("-----------widths");
 	std::list<synfig::WidthPoint>::iterator iter;
@@ -779,6 +783,8 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	if(get_min_pressure_flag())
 	{
 		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
+		if(get_advanced_outline_flag())
+			synfigapp::WPListConverter::EnforceMinWidth(wplist,get_min_pressure());
 	}
 
 	// If the start and end points are similar, then make them the same point
@@ -834,11 +840,11 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	if(region_flag)
 		return new_region(bline,radius);
 
-	return new_bline(bline,loop_bline_flag,radius);
+	return new_bline(bline,wplist,loop_bline_flag,radius);
 }
 
 Smach::event_result
-StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius)
+StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius)
 {
 	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
@@ -1092,20 +1098,20 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	{
 		// Create the layer(s)
-		Layer::Handle layer;
+		Layer::Handle layer, layer2, somelayer;
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		int depth(0);
 
 		// we are temporarily using the layer to hold something
-		layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
-		if(layer)
+		somelayer=get_canvas_view()->get_selection_manager()->get_selected_layer();
+		if(somelayer)
 		{
-			depth=layer->get_depth();
-			canvas=layer->get_canvas();
+			depth=somelayer->get_depth();
+			canvas=somelayer->get_canvas();
 		}
 
 		// fill_last_stroke() will take care of clearing the selection if we're calling it
-		if(get_outline_flag() && get_region_flag())
+		if((get_outline_flag() || get_advanced_outline_flag()) && get_region_flag())
 		{
 			if (fill_last_stroke_and_unselect_other_layers() == Smach::RESULT_ERROR)
 			{
@@ -1123,17 +1129,32 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		// if they're both defined, we'll add the region later
-		if(get_outline_flag())
+		if(get_outline_flag() || get_advanced_outline_flag())
 		{
-			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
-			if (!layer)
+			if(get_outline_flag())
 			{
-				get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
-				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-				group.cancel();
-				return Smach::RESULT_ERROR;
+				layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
+				if (!layer)
+				{
+					get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				layer->set_description(get_id()+_(" Outline"));
 			}
-			layer->set_description(get_id()+_(" Outline"));
+			if(get_advanced_outline_flag())
+			{
+				layer2=get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth);
+				if (!layer2)
+				{
+					get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				layer2->set_description(get_id()+_(" Advanced Outline"));
+			}
 		}
 		else
 		{
@@ -1150,42 +1171,96 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		if(get_feather())
 		{
-			layer->set_param("feather",get_feather());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+			if(layer)
+			{
+				layer->set_param("feather",get_feather());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+			}
+			if(get_advanced_outline_flag())
+			{
+				layer2->set_param("feather",get_feather());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"feather");
+			}
+
 		}
-		assert(layer);
+		if(get_outline_flag()) assert(layer);
+		if(get_advanced_outline_flag()) assert(layer2);
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		if (shift_origin)
+		{
 			get_canvas_interface()->
 			  change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
-
-		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-
-		assert(action);
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer);
-		if(!action->set_param("param",String("bline")))
-			synfig::error("LayerParamConnect didn't like \"param\"");
-		if(!action->set_param("value_node",ValueNode::Handle(value_node)))
-			synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-		if(!get_canvas_interface()->get_instance()->perform_action(action))
-		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			increment_id();
-			//refresh_ducks();
-			return Smach::RESULT_ERROR;
+		if(get_advanced_outline_flag())
+			get_canvas_interface()->
+			  change_value(synfigapp::ValueDesc(layer2,"origin"),shift_origin_vector);
 		}
-		layer_list.push_back(layer);
-		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
-		//refresh_ducks();
-	}
+			// Regular Outline or Region
+		if(layer)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			layer_list.push_back(layer);
+		}
+		// Advanced Outline
+		if(layer2)
+		{
+			synfigapp::Action::Handle action2(synfigapp::Action::create("LayerParamConnect"));
+			assert(action2);
+			ValueNode_WPList::Handle value_node_wplist;
+			value_node_wplist=ValueNode_WPList::create(synfig::ValueBase(wplist));
+			if(value_node_wplist) value_node_wplist->set_member_canvas(get_canvas());
+			action2->set_param("canvas",get_canvas());
+			action2->set_param("canvas_interface",get_canvas_interface());
+			action2->set_param("layer", layer2);
+			action2->set_param("param", String("wplist"));
+			action2->set_param("value_node", ValueNode::Handle(value_node_wplist));
+			if(!get_canvas_interface()->get_instance()->perform_action(action2))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			synfigapp::Action::Handle action3(synfigapp::Action::create("LayerParamConnect"));
+			assert(action3);
+			action3->set_param("canvas",get_canvas());
+			action3->set_param("canvas_interface",get_canvas_interface());
+			action3->set_param("layer", layer2);
+			if(!action3->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action3->set_param("value_node",ValueNode::Handle(value_node)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+			if(!get_canvas_interface()->get_instance()->perform_action(action3))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			layer_list.push_back(layer2);
+		}
+		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+	}
 	increment_id();
 	return Smach::RESULT_ACCEPT;
 }
