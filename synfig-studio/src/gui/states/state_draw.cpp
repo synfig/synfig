@@ -464,8 +464,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	adj_globalthres(.70f,0.01,10000,0.01,0.1),
 	spin_globalthres(adj_globalthres,0.01,3),
 	width_max_error_label(_("Max Width Error")),
-	adj_width_max_error(-.05f, 0.001, 1.0, 0.001,0.01),
-	spin_width_max_error(adj_width_max_error, 0.01, 4),
+	adj_width_max_error(1.0f, 0.01, 100.0, 0.1,1),
+	spin_width_max_error(adj_width_max_error, 0.01, 2),
 	adj_localthres(20,1,100000,0.1,1),
 	check_localerror(_("LocalError"))
 
@@ -766,7 +766,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	blineconv(bline,*stroke_data,*width_data);
 	if(get_advanced_outline_flag())
 	{
-		wplistconv.err2max=get_width_max_error();
+		wplistconv.err2max=get_width_max_error()/100;
 		wplistconv(wplist, *stroke_data,*width_data);
 		// returned widths are homogeneous position
 		// let's convert it to standard position
