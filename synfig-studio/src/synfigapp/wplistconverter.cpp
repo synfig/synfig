@@ -74,7 +74,6 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		return;
 	}
 	clear();
-	synfig::info("vectors cleared");
 	// Remove duplicated
 	std::list<synfig::Point>::const_iterator p_iter = p.begin(), end = p.end();
 	std::list<synfig::Real>::const_iterator	w_iter = w.begin();
@@ -82,15 +81,12 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	points.push_back(c);
 	widths.push_back(*w_iter);
 	p_iter++;
-	synfig::info("initial size: %d", p.size());
 	for(;p_iter != end; ++p_iter,++w_iter)
 		if (*p_iter != c)
 		{
 			points.push_back(c = *p_iter);
 			widths.push_back(*w_iter);
-			synfig::info("point x=%f y=%f   width %f", (*p_iter)[0], (*p_iter)[1], *w_iter);
 		}
-	synfig::info("after removed duplicated size: %d", points.size());
 	// once removed the duplicated then get the sizes of the work vectors
 	n=points.size();
 	nf=Real(n);
@@ -104,15 +100,10 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		d+=(p2-p1).mag();
 		distances.push_back(d);
 		p1=p2;
-		synfig::info("i=%d, cumulative distance=%f", i, d);
 	}
-	synfig::info("distances size = %d", distances.size());
 	// Calculate the normalized cumulative distances
 	for(i=0;i<n;i++)
-	{
 		norm_distances.push_back(distances[i]/distances[n-1]);
-		synfig::info("i=%d, norm dist = %f", i, norm_distances.back());
-	}
 	// Prepare the output
 	work_out.resize(n);
 	// Prepare the errors
@@ -123,34 +114,28 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	// Only setting dash to false will validate the widhtpoint based on the
 	// error rules.
 	for(i=0; i<n; i++)
-	{
 		work_out[i]=WidthPoint(norm_distances[i], widths[i], WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE, true);
-		synfig::info("initial %d : W=%f, P=%f", i, work_out[i].get_width(), work_out[i].get_position());
-	}
 	// Now let's insert the first two widthpoints:
 	k1=0;
 	k2=n-1;
 	work_out[k1].set_dash(false);
 	work_out[k2].set_dash(false);
-	// Make the squared error negative for the first time calculation
-	se=-1.0;
 	// Calculate kem, ek, ek2 for the first time.
 	kem=calculate_ek2(k1, k2, true);
-	synfig::info("kem %d", kem);
 	while(se>err2max)
 	{
 		if(k1==k2 || k1+1==k2)
 			break;
 		// Insert a width point at kem
 		work_out[kem].set_dash(false);
-		// Calculate the errors again
+		// Calculate kem, ek, & ek2 again
 		kem=calculate_ek2(k1, k2);
-		synfig::info("new kem %d", kem);
+		// calculate new k1 and k2 (boundaries of kem)
 		k1=find_prev(kem);
 		k2=find_next(kem);
-		synfig::info("new k1 %d, k2 %d", k1, k2);
 	}
 	wp_out.clear();
+	// Let's return the non dashed widthpoints only
 	for(i=0;i<n;i++)
 		if(!work_out[i].get_dash())
 			wp_out.push_back(work_out[i]);
@@ -164,7 +149,6 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 	Real curr_max_err2(0);
 	unsigned int ret_kem;
 	WidthPoint wp_prev, wp_next;
-	synfig::info("current se %f", se);
 	if(!first_time)
 		se=se*n;
 	else
@@ -182,7 +166,6 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 		}
 		else
 			g=widths[i]-work_out[i].get_width(); // should be zero.
-		synfig::info("g=%f", g);
 		gg=g*g;
 		if(!first_time)
 		{
@@ -205,7 +188,6 @@ WPListConverter::calculate_ek2(unsigned int k1, unsigned int k2, bool first_time
 			curr_max_err2=ek2[i];
 		}
 	}
-	synfig::info("new se %f", se);
 	return ret_kem;
 }
 
