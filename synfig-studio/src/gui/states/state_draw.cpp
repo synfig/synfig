@@ -768,6 +768,12 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	{
 		wplistconv.err2max=get_width_max_error();
 		wplistconv(wplist, *stroke_data,*width_data);
+		// returned widths are homogeneous position
+		// let's convert it to standard position
+		// as it is the default for new adv. outlines layers
+		std::list<synfig::WidthPoint>::iterator iter;
+		for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+			iter->set_position(hom_to_std(bline, iter->get_position(), false, false));
 	}
 	// print out resutls
 	synfig::info("-----------widths");
