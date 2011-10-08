@@ -738,10 +738,6 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		}
 	}
 
-	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
-	//stroke_list.push_back(event.stroke_data);
-	//refresh_ducks();
-
 	std::list<synfig::BLinePoint> bline;
 	std::list<synfig::WidthPoint> wplist;
 	bool loop_bline_flag(false);
@@ -805,9 +801,14 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		while (bline.size() > 2 &&
 			   (bline.front().get_vertex() - bline.back().get_vertex()).mag() <= radius)
 		{
+			Real size(Real(bline.size()));
 			tangent=bline.back().get_tangent1();
 			width=bline.back().get_width();
 			bline.pop_back();
+			std::list<synfig::WidthPoint>::iterator iter;
+			if(get_advanced_outline_flag())
+				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+					iter->set_position(iter->get_position()+1/size);
 		}
 
 		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
@@ -829,6 +830,13 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			Real tmp_width(bline.front().get_width()+width);
 			tmp_width=tmp_width<=1?tmp_width:1;
 			bline.front().set_width(tmp_width);
+			if(get_advanced_outline_flag())
+			{
+				Real width_front=wplist.front().get_width();
+				Real width_back=wplist.back().get_width();
+				wplist.front().set_width((width_front+width_back)/2.0);
+				wplist.pop_back();
+			}
 		}
 	}
 
