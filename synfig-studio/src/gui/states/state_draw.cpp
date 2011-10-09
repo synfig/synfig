@@ -808,7 +808,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			std::list<synfig::WidthPoint>::iterator iter;
 			if(get_advanced_outline_flag())
 				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
-					iter->set_position(iter->get_position()+1/size);
+					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
 		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
