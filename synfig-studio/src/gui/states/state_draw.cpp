@@ -1204,11 +1204,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 		if (shift_origin)
 		{
-			get_canvas_interface()->
-			  change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
-		if(get_advanced_outline_flag())
-			get_canvas_interface()->
-			  change_value(synfigapp::ValueDesc(layer2,"origin"),shift_origin_vector);
+			if(layer)
+				get_canvas_interface()->change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
+			if(layer2)
+				get_canvas_interface()->change_value(synfigapp::ValueDesc(layer2,"origin"),shift_origin_vector);
 		}
 			// Regular Outline or Region
 		if(layer)
