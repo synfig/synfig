@@ -516,7 +516,24 @@ Renderer_Ducks::render_vfunc(
 						}
 						else
 							new_value = synfig::find_closest_point((*bline)(time), p , radius, bline->get_loop());
-
+						bool homogeneous=false;
+						// Retrieve the homogeneous layer parameter
+						Layer::Handle layer_parent;
+						std::set<Node*>::iterator iter;
+						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+							{
+								Layer::Handle layer;
+								layer=Layer::Handle::cast_dynamic(*iter);
+								if(layer && layer->get_name() == "advanced_outline")
+								{
+									homogeneous=layer->get_param("homogeneous").get(bool());
+									break;
+								}
+							}
+						if(homogeneous)
+						{
+							new_value=std_to_hom((*bline)(time), new_value, wplist->get_loop(), bline->get_loop() );
+						}
 						cr->save();
 						layout->set_text(strprintf("%2.3f", new_value));
 
