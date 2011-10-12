@@ -561,10 +561,12 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"lower_bound")
-			.hidden()
+			.set_local_name(_("Lower Boundary"))
+			.set_description(_("Defines the position at start of the BLine"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"upper_bound")
-			.hidden()
+			.set_local_name(_("Upper Boundary"))
+			.set_description(_("Defines the position at end of the BLine"))
 		);
 		return ret;
 	case ValueBase::TYPE_DASHITEM:
