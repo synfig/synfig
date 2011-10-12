@@ -294,10 +294,16 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		return pos;
 	if(!bline_loop) size--;
 	if(size < 1) return Real();
+	Real int_pos((int)pos);
+	Real one(0.0);
 	if (index_loop)
 	{
-		pos = pos - int(pos);
-		if (pos < 0) pos++;
+		pos = pos - int_pos;
+		if (pos < 0)
+		{
+			pos++;
+			one=1.0;
+		}
 	}
 	else
 	{
@@ -328,7 +334,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// add the distance on the bezier we are on.
 	pl+=curve.find_distance(0.0, pos*size - from_vertex);
 	// and return the homogenous position
-	return pl/tl;
+	return int_pos+pl/tl-one;
 }
 
 Real
@@ -342,10 +348,16 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		return pos;
 	if(!bline_loop) size--;
 	if(size < 1) return Real();
+	Real int_pos=int(pos);
+	Real one(0.0);
 	if (index_loop)
 	{
-		pos = pos - int(pos);
-		if (pos < 0) pos++;
+		pos = pos - int_pos;
+		if (pos < 0)
+		{
+			pos++;
+			one=1.0;
+		}
 	}
 	else
 	{
@@ -417,7 +429,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	}while (error>max_error && max_iterations > iterations);
 	// convert the current standard index (s) to the bline's standard index
 	// and return it
-	return Real(from_vertex + sn)/size;
+	return int_pos+Real(from_vertex + sn)/size-one;
 }
 
 Real
