@@ -263,7 +263,7 @@ Advanced_Outline::sync()
 							i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
 							n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 						}
-						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, wplistloop, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 						inserted_first=true;
 					}
 					// If it is not exactly at 1.0
@@ -277,7 +277,7 @@ Advanced_Outline::sync()
 							i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
 							n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 						}
-						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(i, n, 1.0, wplistloop, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
+						wplist.push_back(WidthPoint(1.0, widthpoint_interpolate(i, n, 1.0, smoothness_) , WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE));
 						inserted_last=true;
 					}
 				}
@@ -293,10 +293,10 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
-		//synfig::info("---wplist---");
-		//for(witer=wplist.begin();witer!=wplist.end();witer++)
-			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		//synfig::info("------");
+		synfig::info("---wplist---");
+		for(witer=wplist.begin();witer!=wplist.end();witer++)
+			synfig::info("P:%f W:%f B:%d A:%d", witer->get_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
+		synfig::info("------");
 		////////////////////////////////////////////////////////////////
 		// TODO: step should be a function of the current situation
 		// i.e.: where in the bline, and where in wplist so we could go
@@ -583,7 +583,7 @@ Advanced_Outline::sync()
 						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 						p=std_to_hom(bline, p, wplistloop, blineloop);
 					}
-					wnext->set_width(widthpoint_interpolate(i, n, p, wplistloop, smoothness_));
+					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
 				// Update wplist iterators
@@ -615,7 +615,7 @@ Advanced_Outline::sync()
 								n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 								p=std_to_hom(bline, p, wplistloop, blineloop);
 							}
-							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, wplistloop, smoothness_));
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 						}
 					}
 					// ... and get out of the main loop.
@@ -708,7 +708,7 @@ Advanced_Outline::sync()
 						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 						p=std_to_hom(bline, p, wplistloop, blineloop);
 					}
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, wplistloop, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				middle_corner=false;
 			}
@@ -746,7 +746,7 @@ Advanced_Outline::sync()
 								n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 								p=std_to_hom(bline, p, wplistloop, blineloop);
 							}
-							wnext->set_width(widthpoint_interpolate(i, n, p, wplistloop, smoothness_));
+							wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 						}
 						ww=wnext->get_width();
 					}
@@ -777,7 +777,7 @@ Advanced_Outline::sync()
 						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 						po=std_to_hom(bline, po, wplistloop, blineloop);
 					}
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, wplistloop, smoothness_));
+					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -818,7 +818,7 @@ Advanced_Outline::sync()
 					n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
 					po=std_to_hom(bline, po, wplistloop, blineloop);
 				}
-				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, wplistloop, smoothness_));
+				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;

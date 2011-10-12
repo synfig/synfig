@@ -104,7 +104,7 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 	 * @return the interpolated width
 	*/
 Real
-synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const bool wplistbool, const Real smoothness)
+synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, const Real p, const Real smoothness)
 {
 	// Smoothness gives linear interpolation  between
 	// the result of the linear interpolation between the withpoints
@@ -120,8 +120,8 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 	Real pp, np;
 	Real nw, pw, rw(0.0);
 	const Real epsilon(0.0000001f);
-	np=next.get_norm_position(wplistbool);
-	pp=prev.get_norm_position(wplistbool);
+	np=next.get_position();
+	pp=prev.get_position();
 	nw=next.get_width();
 	pw=prev.get_width();
 	nsb=next.get_side_type_before();
@@ -427,7 +427,9 @@ ValueNode_WPList::interpolated_width(Real position, Time time)const
 	synfig::WidthPoint prev, next;
 	prev=find_prev_valid_entry_by_position(position, time);
 	next=find_next_valid_entry_by_position(position, time);
-	return widthpoint_interpolate(prev, next, position, get_loop());
+	prev.normalize(get_loop());
+	next.normalize(get_loop());
+	return widthpoint_interpolate(prev, next, position);
 }
 
 
