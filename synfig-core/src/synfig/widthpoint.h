@@ -47,6 +47,8 @@ private:
 	Real width_;
 	int side_type_[2]; // Before [0] and After[1] side types
 	bool dash_; // if true, widthpoint is used for dashed outlines
+	Real lower_bound_; // The lower boundary of the withpoint position
+	Real upper_bound_; // The upper boundary of the withpoint position
 
 public:
 
@@ -78,6 +80,10 @@ public:
 	int get_side_type(int i)const;
 	bool get_dash()const;
 	void set_dash(bool l);
+	Real get_lower_bound()const;
+	void set_lower_bound(Real lb);
+	Real get_upper_bound()const;
+	void set_upper_bound(Real ub);
 	bool operator < (const WidthPoint& rhs);
 	bool operator == (const WidthPoint& rhs);
 

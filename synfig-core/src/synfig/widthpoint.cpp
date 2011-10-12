@@ -51,7 +51,9 @@ using namespace synfig;
 WidthPoint::WidthPoint():
 	position_(0.0),
 	width_(0.01),
-	dash_(false)
+	dash_(false),
+	lower_bound_(0.0),
+	upper_bound_(1.0)
 {
 	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
 }
@@ -150,6 +152,29 @@ WidthPoint::get_dash()const
 	return dash_;
 }
 
+void
+WidthPoint::set_lower_bound(Real lb)
+{
+	lower_bound_=lb;
+}
+
+Real
+WidthPoint::get_lower_bound()const
+{
+	return lower_bound_;
+}
+
+void
+WidthPoint::set_upper_bound(Real ub)
+{
+	upper_bound_=ub;
+}
+
+Real
+WidthPoint::get_upper_bound()const
+{
+	return upper_bound_;
+}
 
 bool
 WidthPoint::operator<(const WidthPoint& rhs)
