@@ -90,8 +90,17 @@ WidthPoint::get_norm_position(bool wplistloop)const
 		if (ret < lower_bound_) ret = lower_bound_;
 		if (ret > upper_bound_) ret = upper_bound_;
 	}
+	// now canonicalize the position to be inside (0.0, 1.0)
+	ret=(ret-lower_bound_)/range;
 	return ret;
 }
+
+void
+WidthPoint::normalize(bool loop)
+{
+	set_position(get_norm_position(loop));
+}
+
 
 void
 WidthPoint::set_position(const Real& x)
