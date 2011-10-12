@@ -1660,6 +1660,24 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->set_link("homogeneous", ValueNode_Const::create(bool(false)));
 				continue;
 			}
+			// 'lower_bound' was added while canvas 0.8 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version=="0.8" || version =="0.7") &&
+				(element->get_name() == "composite") && value_node->link_name(i) =="lower_bound")
+			{
+				// old versions have lower boundary set to 0.0
+				value_node->set_link("lower_bound", ValueNode_Const::create(Real(0.0)));
+				continue;
+			}
+			// 'upper_bound' was added while canvas 0.8 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version=="0.8" || version =="0.7") &&
+				(element->get_name() == "composite") && value_node->link_name(i) =="upper_bound")
+			{
+				// old versions have lower boundary set to 1.0
+				value_node->set_link("upper_bound", ValueNode_Const::create(Real(1.0)));
+				continue;
+			}
 
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
