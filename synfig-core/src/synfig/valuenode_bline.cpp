@@ -289,6 +289,9 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	BLinePoint blinepoint0, blinepoint1;
 	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	int size = list.size(), from_vertex;
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
 	if(!bline_loop) size--;
 	if(size < 1) return Real();
 	if (index_loop)
@@ -301,9 +304,6 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		if (pos < 0) pos = 0;
 		if (pos > 1) pos = 1;
 	}
-	// trivial cases
-	if(pos == 0.0 || pos == 1.0)
-		return pos;
 	// Calculate the lengths and the total length
 	Real tl=0, pl=0;
 	std::vector<Real> lengths;
@@ -337,6 +337,9 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	BLinePoint blinepoint0, blinepoint1;
 	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	int size = list.size(), from_vertex(0);
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
 	if(!bline_loop) size--;
 	if(size < 1) return Real();
 	if (index_loop)
@@ -349,9 +352,6 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		if (pos < 0) pos = 0;
 		if (pos > 1) pos = 1;
 	}
-	// trivial cases
-	if(pos == 0.0 || pos == 1.0)
-		return pos;
 	// Calculate the lengths and the total length
 	Real tl(0), pl(0), mpl, bl;
 	std::vector<Real> lengths;
