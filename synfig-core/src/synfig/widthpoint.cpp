@@ -78,15 +78,17 @@ WidthPoint::get_norm_position(bool wplistloop)const
 {
 	Real pos(get_position());
 	Real ret(pos);
+	Real range(upper_bound_-lower_bound_);
 	if(wplistloop)
 	{
-		ret=fmod(pos, 1.0);
-		ret=ret>=0.0?ret:(1.0+ret);
+		ret=fmod(pos, range);
+		ret=ret>=0.0?ret:(range+ret);
+		ret+=lower_bound_;
 	}
 	else
 	{
-		if (ret < 0.0) ret = 0.0;
-		if (ret > 1.0) ret = 1.0;
+		if (ret < lower_bound_) ret = lower_bound_;
+		if (ret > upper_bound_) ret = upper_bound_;
 	}
 	return ret;
 }
