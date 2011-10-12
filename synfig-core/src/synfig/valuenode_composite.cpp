@@ -290,8 +290,32 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			}
 			if((i==4 || i==5) && x->get_type()==ValueBase(Real()).get_type())
 			{
-				components[i]=x;
-				return true;
+				if(ValueNode_Const::Handle::cast_dynamic(x))
+				{
+					if(i==4 && components[5])
+					{
+						if(i==4 && (*x)(0).get(Real()) < (*components[5])(0).get(Real()))
+						{
+							components[i]=x;
+							return true;
+						}
+						else
+							return false;
+					}
+					if(i==5 && components[4])
+					{
+						if((i==5 && (*x)(0).get(Real()) > (*components[4])(0).get(Real())))
+						{
+							components[i]=x;
+							return true;
+						}
+						else
+							return false;
+					}
+					components[i]=x;
+					return true;
+				}
+				return false;
 			}
 			break;
 		default:
