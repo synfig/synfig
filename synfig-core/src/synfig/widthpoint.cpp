@@ -65,6 +65,8 @@ WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter,
 	side_type_[0]=sidebefore;
 	side_type_[1]=sideafter;
 	dash_=dash;
+	lower_bound_=0.0;
+	upper_bound_=1.0;
 }
 
 const Real&
@@ -199,5 +201,8 @@ WidthPoint::operator == (const WidthPoint& rhs)
 	return 	side_type_[0] == rhs.get_side_type(0) &&
 			side_type_[1] == rhs.get_side_type(1) &&
 			position_ == rhs.get_position() &&
-			width_ == rhs.get_width();
+			width_ == rhs.get_width() &&
+			lower_bound_==rhs.get_lower_bound() &&
+			upper_bound_==rhs.get_upper_bound()
+			;
 }
