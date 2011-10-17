@@ -668,6 +668,31 @@ Action::ValueDescSet::prepare()
 			else
 				local_value=value_desc.get_value();
 		}
+	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
+	// then we are changing the value of a widthpoint boundary.
+	// It is needed to check that we aren't doing the boundary range zero
+
+	if(value_desc.parent_is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+	{
+		ValueNode_Composite::Handle parent_value_node;
+		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+		assert(parent_value_node);
+		int i=value_desc.get_index();
+		if(parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT && (i==4 || i==5))
+		{
+			ValueNode::Handle low(parent_value_node->get_link("lower_bound"));
+			ValueNode::Handle upp(parent_value_node->get_link("upper_bound"));
+			Real new_value(value.get(Real()));
+			Real lower = (*low)(Time(0.0)).get(Real());
+			Real upper = (*upp)(Time(0.0)).get(Real());
+			if( (i==4 && new_value > (upper- 0.00000001))
+			||  (i==5 && new_value < (lower+ 0.00000001)) )
+			{
+				throw Error(_("It is forbidden to set lower boundary equal or bigger than upper boundary"));
+				return;
+			}
+		}
+	}
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE && !local_value.get_static())
 	{
