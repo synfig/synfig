@@ -567,6 +567,7 @@ Action::ValueDescSet::prepare()
 						// outside the range of 0-1, so make sure that the position doesn't
 						// change drastically.
 						Real amount_old(wp.get_norm_position(wplistloop));
+						Real amount_old_b(wp.get_bound_position(wplistloop));
 						// If it is homogeneous then convert it to standard
 						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
 						// grab a new position given by duck's position on the bline
@@ -580,8 +581,10 @@ Action::ValueDescSet::prepare()
 						new_amount=amount_old+difference;
 						// restore the homogeneous value if needed
 						new_amount = homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
-						// convert the new_value in terms of current boundaries
-						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
+						// this is the difference between the new amount and the old amount inside the boundaries
+						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
+						// add the new diff to the current amount
+						new_amount = wp.get_position() + bound_diff;
 					}
 					else
 					{

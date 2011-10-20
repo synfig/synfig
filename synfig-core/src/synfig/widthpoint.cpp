@@ -78,7 +78,13 @@ WidthPoint::get_position()const
 Real
 WidthPoint::get_norm_position(bool wplistloop)const
 {
-	Real ret(get_position()-lower_bound_);
+	return (get_bound_position(wplistloop)-lower_bound_)/(upper_bound_-lower_bound_);
+}
+
+Real
+WidthPoint::get_bound_position(bool wplistloop)const
+{
+	Real ret(position_-lower_bound_);
 	Real range(upper_bound_-lower_bound_);
 	if(!wplistloop)
 	{
@@ -90,8 +96,9 @@ WidthPoint::get_norm_position(bool wplistloop)const
 		ret=fmod(ret, range);
 		ret=ret>=0.0?ret:(range+ret);
 	}
-	return ret/range;
+	return ret+lower_bound_;
 }
+
 
 void
 WidthPoint::normalize(bool loop)

@@ -524,6 +524,7 @@ Renderer_Ducks::render_vfunc(
 							// change drastically.
 							// First normalise the current position
 							Real value_old(wp.get_norm_position(wplistloop));
+							Real value_old_b(wp.get_bound_position(wplistloop));
 							// If it is homogeneous then convert it to standard
 							value_old=homogeneous?hom_to_std((*bline)(time), value_old, wplistloop, blineloop):value_old;
 							// grab a new position given by duck's position on the bline
@@ -537,8 +538,10 @@ Renderer_Ducks::render_vfunc(
 							new_value=value_old+difference;
 							// restore the homogeneous value if needed
 							new_value = homogeneous?std_to_hom((*bline)(time), new_value, wplistloop, blineloop):new_value;
-							// convert the new_value in terms of current boundaries
-							new_value = wp.get_lower_bound()+new_value*(wp.get_upper_bound()-wp.get_lower_bound());
+							// this is the difference between the new value and the old value inside the boundaries
+							Real bound_diff((wp.get_lower_bound() + new_value*(wp.get_upper_bound()-wp.get_lower_bound()))-value_old_b);
+							// add the new diff to the current value
+							new_value = wp.get_position() + bound_diff;
 						}
 						else
 						{
