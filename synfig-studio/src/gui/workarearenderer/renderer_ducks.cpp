@@ -500,22 +500,6 @@ Renderer_Ducks::render_vfunc(
 					wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 					if(bline && wpoint_composite)
 					{
-
-						if (wplist->get_loop())
-						{
-							// The wplist is looped. This may require a position parameter
-							// outside the range of 0-1, so make sure that the position doesn't
-							// change drastically.
-							Real value_old((*(wpoint_composite->get_link("position")))(time).get(Real()));
-							Real value_new = synfig::find_closest_point((*bline)(time), p , radius, bline->get_loop());
-							Real difference = fmod( fmod(value_new - value_old, 1.0) + 1.0 , 1.0);
-							//fmod is called twice to avoid negative values
-							if (difference > 0.5)
-								difference=difference-1.0;
-							new_value = value_old+difference;
-						}
-						else
-							new_value = synfig::find_closest_point((*bline)(time), p , radius, bline->get_loop());
 						bool homogeneous=false;
 						// Retrieve the homogeneous layer parameter
 						Layer::Handle layer_parent;
@@ -530,9 +514,39 @@ Renderer_Ducks::render_vfunc(
 									break;
 								}
 							}
-						if(homogeneous)
+						WidthPoint wp((*wpoint_composite)(time));
+						bool wplistloop(wplist->get_loop());
+						if(wplistloop)
 						{
-							new_value=std_to_hom((*bline)(time), new_value, wplist->get_loop(), bline->get_loop() );
+							// The wplist is looped. This may require a position parameter
+							// outside the range of 0-1, so make sure that the position doesn't
+							// change drastically.
+							// First normalise the current position
+							Real value_old(wp.get_norm_position(wplistloop));
+							// If it is homogeneous then convert it to standard
+							value_old=homogeneous?hom_to_std((*bline)(time), value_old, wplist->get_loop(), bline->get_loop()):value_old;
+							// grab a new position given by duck's position on the bline
+							Real value_new = synfig::find_closest_point((*bline)(time), p , radius, bline->get_loop());
+							// calculate the difference between old and new positions
+							Real difference = fmod( fmod(value_new - value_old, 1.0) + 1.0 , 1.0);
+							//fmod is called twice to avoid negative values
+							if (difference > 0.5)
+								difference=difference-1.0;
+							// calculate a new value for the position
+							new_value=value_old+difference;
+							// restore the homogeneous value if needed
+							new_value = homogeneous?std_to_hom((*bline)(time), new_value, wplist->get_loop(), bline->get_loop()):new_value;
+							// convert the new_value in terms of current boundaries
+							new_value = wp.get_lower_bound()+new_value*(wp.get_upper_bound()-wp.get_lower_bound());
+						}
+						else
+						{
+							// grab a new position given by duck's position on the bline
+							new_value = synfig::find_closest_point((*bline)(time), p , radius, bline->get_loop());
+							// if it is homogeneous then convert to it
+							new_value=homogeneous?std_to_hom((*bline)(time), new_value, wplist->get_loop(), bline->get_loop()):new_value;
+							// convert the value inside the boundaries
+							new_value = wp.get_lower_bound()+new_value*(wp.get_upper_bound()-wp.get_lower_bound());
 						}
 						cr->save();
 						layout->set_text(strprintf("%2.3f", new_value));
