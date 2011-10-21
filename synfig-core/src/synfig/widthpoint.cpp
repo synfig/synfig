@@ -106,6 +106,11 @@ WidthPoint::normalize(bool loop)
 	set_position(get_norm_position(loop));
 }
 
+void
+WidthPoint::reverse()
+{
+	position_=upper_bound_-(position_-lower_bound_);
+}
 
 void
 WidthPoint::set_position(const Real& x)

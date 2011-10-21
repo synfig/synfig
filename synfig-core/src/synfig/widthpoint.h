@@ -73,6 +73,8 @@ public:
 	Real get_bound_position(bool wplistloop)const;
 	// changes the widthpoint's position to be inside [0,1)
 	void normalize(bool loop);
+	// reverse its position inside boundaries
+	void reverse();
 
 	const Real& get_width()const;
 	void set_width(Real x);
