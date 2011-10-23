@@ -2065,6 +2065,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 			synfig::info("homogeneous is %d", homogeneous);
 			//
 			// Calculate the new boundaries for each width point on the old wplist
+			// and modify the boundaries on the old wplist
 			//
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
@@ -2089,23 +2090,24 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 					Real lb(wpi.get_lower_bound());
 					Real ub(wpi.get_upper_bound());
 					Real range(ub-lb);
-					Real lnew(inserted_length);
-					Real lold(value_node_length);
-					int snew(complete_loop?inserted_size-2:inserted_size-1);
-					int sold(value_node_size-1);
+					Real l1(inserted_length);
+					Real l2(value_node_length);
+					int s1(complete_loop?inserted_size-2:inserted_size-1);
+					int s2(value_node_size-1);
 					if(homogeneous)
 					{
-						lb_new=ub-(lnew+lold)*range/lold;
+						lb_new=ub-(l1+l2)*range/l2;
 					}
 					else
 					{
-						lb_new=ub-(snew+sold)*range/sold;
+						lb_new=ub-(s1+s2)*range/s2;
 					}
 					synfig::info("new lower boundary: %f", lb_new);
 				}
 				else
 				{
 					synfig::info("not composite");
+					group.cancel();
 					return Smach::RESULT_ERROR;
 				}
 				action->set_param("value_desc",value_desc);
@@ -2117,8 +2119,49 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 					return Smach::RESULT_ERROR;
 				}
 			}
-		}
-	}
+			//
+			// Calculate the new boundaries for each widthpoint of the inserted wplist
+			// and insert each one in the wplist form the layer.
+			// Don't add the widthpoint with position equal to 1.0
+			// to avoid conflicts with the first of the existing wplist.
+			//
+			for(witer=wplist.begin(); witer!=wplist.end();witer++)
+			{
+				if(witer->get_position() == 1.0)
+					continue;
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
+				assert(action);
+				synfigapp::ValueDesc value_desc(wplist_value_node,0);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc", value_desc);
+				// Prepare the time to insert
+				Real lb(witer->get_lower_bound());
+				Real ub(witer->get_upper_bound());
+				Real range(ub-lb);
+				Real l1(inserted_length);
+				Real l2(value_node_length);
+				int s1(complete_loop?inserted_size-2:inserted_size-1);
+				int s2(value_node_size-1);
+				if(homogeneous)
+				{
+					witer->set_upper_bound(lb+(l1+l2)*range/l1);
+				}
+				else
+				{
+					witer->set_upper_bound(lb+(s1+s2)*range/s1);
+				}
+				if(!action->set_param("item",ValueNode::Handle(ValueNode_Composite::create(*witer))))
+					synfig::error("ACTION didn't like \"item\"");
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+		} // endif wplist_value_node exists
+	} // endif is avanced outline
 
 	if (complete_loop)
 	{
@@ -2157,7 +2200,6 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
 			group.cancel();
-			//refresh_ducks();
 			return Smach::RESULT_ERROR;
 		}
 	}
