@@ -504,7 +504,6 @@ Renderer_Ducks::render_vfunc(
 						bool blineloop(bline->get_loop());
 						bool homogeneous=false;
 						// Retrieve the homogeneous layer parameter
-						Layer::Handle layer_parent;
 						std::set<Node*>::iterator iter;
 						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
 							{
