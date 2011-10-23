@@ -2028,8 +2028,6 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	// store the length of the inserted bline and the number of segments
 	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
 	int inserted_size(inserted_bline.size());
-	synfig::info("inserted size %d", inserted_size);
-	synfig::info("inserted length %f", inserted_length);
 	// Determine if the bline that the layer belongs to is a Advanced Outline
 	bool is_advanced_outline(false);
 	Layer::Handle layer_parent;
@@ -2040,7 +2038,6 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 		if(layer_parent && layer_parent->get_name() == "advanced_outline")
 		{
 			is_advanced_outline=true;
-			synfig::info("advanced outline extended!");
 			break;
 		}
 	}
@@ -2053,16 +2050,12 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 		ValueNode_WPList::Handle wplist_value_node(ValueNode_WPList::Handle::cast_dynamic(layer_parent->dynamic_param_list().find("wplist")->second));
 		if(wplist_value_node)
 		{
-			synfig::info("found wplist original");
 			// Calculate the number of blinepoints of the original bline
 			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
-			synfig::info("original bline size %d", value_node_size);
 			// Calculate the length of the original bline
 			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
-			synfig::info("original bline length %f", value_node_length);
 			// Retrieve the homogeneous parameter value form the layer
 			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
-			synfig::info("homogeneous is %d", homogeneous);
 			//
 			// Calculate the new boundaries for each width point on the old wplist
 			// and modify the boundaries on the old wplist
@@ -2080,7 +2073,6 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 				action->set_param("canvas_interface",get_canvas_interface());
 				synfigapp::ValueDesc value_desc;
 				Real lb_new;
-				// lower boundary
 				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(wplist_value_node->get_link(i)));
 				if(composite)
 				{
