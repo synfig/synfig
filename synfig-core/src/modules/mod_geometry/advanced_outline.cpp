@@ -293,10 +293,10 @@ Advanced_Outline::sync()
 		sort(wplist.begin(),wplist.end());
 		////////////////////// End preparing the WPlist ////////////////
 		//list the wplist
-		synfig::info("---wplist---");
-		for(witer=wplist.begin();witer!=wplist.end();witer++)
-			synfig::info("P:%f W:%f B:%d A:%d", witer->get_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		synfig::info("------");
+		//synfig::info("---wplist---");
+		//for(witer=wplist.begin();witer!=wplist.end();witer++)
+			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
+		//synfig::info("------");
 		////////////////////////////////////////////////////////////////
 		// TODO: step should be a function of the current situation
 		// i.e.: where in the bline, and where in wplist so we could go
