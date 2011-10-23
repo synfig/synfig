@@ -2124,10 +2124,14 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 			// and insert each one in the wplist form the layer.
 			// Don't add the widthpoint with position equal to 1.0
 			// to avoid conflicts with the first of the existing wplist.
+			// Don't add the widthpoint with position equal to 0.0 if doing
+			// complete loops.
 			//
 			for(witer=wplist.begin(); witer!=wplist.end();witer++)
 			{
 				if(witer->get_position() == 1.0)
+					continue;
+				if(complete_loop && witer->get_position() == 0.0)
 					continue;
 				synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
 				assert(action);
