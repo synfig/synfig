@@ -123,9 +123,10 @@ class studio::StateDraw_Context : public sigc::trackable
 	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline, std::list<synfig::WidthPoint> wplist, bool loop_bline_flag,float radius);
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
+	void reverse_wplist(std::list<synfig::WidthPoint> &wplist);
 
 	synfigapp::Settings& settings;
 
@@ -1041,13 +1042,14 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		if(start_duck_index==0)
 		{	// We need to reverse the BLine first.
 			reverse_bline(trans_bline);
-			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,complete_loop);
+			reverse_wplist(wplist);
+			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,wplist,complete_loop);
 			source=start_duck_value_node_bline->list.front();
 			target_offset=trans_bline.size();
 		}
 		else
 		{
-			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,complete_loop);
+			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,wplist,complete_loop);
 			source=start_duck_value_node_bline->list.back();
 		}
 
@@ -1068,14 +1070,14 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		trans_bline.pop_back();
 		if(finish_duck_index==0)
 		{
-			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline,false);
+			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline, wplist,false);
 			source=finish_duck_value_node_bline->list.front();
 			target_offset=trans_bline.size();
 		}
 		else
 		{	// We need to reverse the BLine first.
 			reverse_bline(trans_bline);
-			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline,false);
+			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline, wplist,false);
 			source=finish_duck_value_node_bline->list.back();
 		}
 
@@ -2011,10 +2013,112 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop)
 {
+
+	// Recreate the bline that is going to be inserted
+	// First copy the list of BlinePoints
+	std::list<synfig::BLinePoint> inserted_bline(bline.begin(), bline.end());
+	// Add at the end the first BLinePoint of the bline to extend (it is the place where it connects)
+	inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front());
+	// if doing complete loop then add at the start the last BLinePoint of the bline to extend
+	// (it is where the loop closes)
+	if(complete_loop)
+		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back());
+	// store the length of the inserted bline and the number of segments
+	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
+	int inserted_size(inserted_bline.size());
+	synfig::info("inserted size %d", inserted_size);
+	synfig::info("inserted length %f", inserted_length);
+	// Determine if the bline that the layer belongs to is a Advanced Outline
+	bool is_advanced_outline(false);
+	Layer::Handle layer_parent;
+	std::set<Node*>::iterator niter;
+	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
+	{
+		layer_parent=Layer::Handle::cast_dynamic(*niter);
+		if(layer_parent && layer_parent->get_name() == "advanced_outline")
+		{
+			is_advanced_outline=true;
+			synfig::info("advanced outline extended!");
+			break;
+		}
+	}
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+
+	if(is_advanced_outline)
+	{
+		ValueNode_WPList::Handle wplist_value_node(ValueNode_WPList::Handle::cast_dynamic(layer_parent->dynamic_param_list().find("wplist")->second));
+		if(wplist_value_node)
+		{
+			synfig::info("found wplist original");
+			// Calculate the number of blinepoints of the original bline
+			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
+			synfig::info("original bline size %d", value_node_size);
+			// Calculate the length of the original bline
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			synfig::info("original bline length %f", value_node_length);
+			// Retrieve the homogeneous parameter value form the layer
+			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
+			synfig::info("homogeneous is %d", homogeneous);
+			//
+			// Calculate the new boundaries for each width point on the old wplist
+			//
+			std::list<synfig::WidthPoint> old_wplist;
+			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
+			old_wplist.assign(wplist_value_base.get_list().begin(),wplist_value_base.get_list().end());
+			std::list<synfig::WidthPoint>::iterator witer;
+			int i;
+			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
+				assert(action);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				synfigapp::ValueDesc value_desc;
+				Real lb_new;
+				// lower boundary
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(wplist_value_node->get_link(i)));
+				if(composite)
+				{
+					value_desc=synfigapp::ValueDesc(composite,4);
+					assert(value_desc.is_valid());
+					WidthPoint wpi(*witer);
+					Real lb(wpi.get_lower_bound());
+					Real ub(wpi.get_upper_bound());
+					Real range(ub-lb);
+					Real lnew(inserted_length);
+					Real lold(value_node_length);
+					int snew(complete_loop?inserted_size-2:inserted_size-1);
+					int sold(value_node_size-1);
+					if(homogeneous)
+					{
+						lb_new=ub-(lnew+lold)*range/lold;
+					}
+					else
+					{
+						lb_new=ub-(snew+sold)*range/sold;
+					}
+					synfig::info("new lower boundary: %f", lb_new);
+				}
+				else
+				{
+					synfig::info("not composite");
+					return Smach::RESULT_ERROR;
+				}
+				action->set_param("value_desc",value_desc);
+				action->set_param("new_value", ValueBase(lb_new));
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to set lower boundary for wplist"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+		}
+	}
 
 	if (complete_loop)
 	{
@@ -2057,12 +2161,13 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 			return Smach::RESULT_ERROR;
 		}
 	}
+
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
@@ -2128,6 +2233,15 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 		eiter->reverse();
 	}
 }
+
+void
+StateDraw_Context::reverse_wplist(std::list<synfig::WidthPoint> &wplist)
+{
+	std::list<synfig::WidthPoint>::iterator iter;
+	for(iter=wplist.begin();iter!=wplist.end();iter++)
+		iter->reverse();
+}
+
 
 Smach::event_result
 StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
