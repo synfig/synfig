@@ -99,6 +99,13 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("width",ValueNode_Const::create(wpoint.get_width()));
 			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
+			ValueNode_Const::Handle value_node;
+			value_node=ValueNode_Const::create(wpoint.get_lower_bound());
+			value_node->set_static(true);
+			set_link("lower_bound",value_node);
+			value_node=ValueNode_Const::create(wpoint.get_upper_bound());
+			value_node->set_static(true);
+			set_link("upper_bound",value_node);
 			break;
 		}
 		case ValueBase::TYPE_DASHITEM:
@@ -185,11 +192,13 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		case ValueBase::TYPE_WIDTHPOINT:
 		{
 			WidthPoint ret;
-			assert(components[0] && components[1] && components[2] && components[3]);
+			assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5]);
 			ret.set_position((*components[0])(t).get(Real()));
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_side_type_before((*components[2])(t).get(int()));
 			ret.set_side_type_after((*components[3])(t).get(int()));
+			ret.set_lower_bound((*components[4])(t).get(Real()));
+			ret.set_upper_bound((*components[5])(t).get(Real()));
 			return ret;
 		}
 		case ValueBase::TYPE_DASHITEM:
@@ -279,6 +288,35 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				components[i]=x;
 				return true;
 			}
+			if((i==4 || i==5) && x->get_type()==ValueBase(Real()).get_type())
+			{
+				if(ValueNode_Const::Handle::cast_dynamic(x))
+				{
+					if(i==4 && components[5])
+					{
+						if(i==4 && (*x)(0).get(Real()) < (*components[5])(0).get(Real()))
+						{
+							components[i]=x;
+							return true;
+						}
+						else
+							return false;
+					}
+					if(i==5 && components[4])
+					{
+						if((i==5 && (*x)(0).get(Real()) > (*components[4])(0).get(Real())))
+						{
+							components[i]=x;
+							return true;
+						}
+						else
+							return false;
+					}
+					components[i]=x;
+					return true;
+				}
+				return false;
+			}
 			break;
 		default:
 			break;
@@ -367,6 +405,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
+		if(name=="lower_bound")
+			return 4;
+		if(name=="upper_bound")
+			return 5;
 	case ValueBase::TYPE_DASHITEM:
 		if(name=="offset")
 			return 0;
@@ -517,6 +559,14 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"lower_bound")
+			.set_local_name(_("Lower Boundary"))
+			.set_description(_("Defines the position at start of the BLine"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"upper_bound")
+			.set_local_name(_("Upper Boundary"))
+			.set_description(_("Defines the position at end of the BLine"))
 		);
 		return ret;
 	case ValueBase::TYPE_DASHITEM:

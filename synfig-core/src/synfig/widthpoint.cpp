@@ -51,7 +51,9 @@ using namespace synfig;
 WidthPoint::WidthPoint():
 	position_(0.0),
 	width_(0.01),
-	dash_(false)
+	dash_(false),
+	lower_bound_(0.0),
+	upper_bound_(1.0)
 {
 	side_type_[0] = side_type_[1] = TYPE_INTERPOLATE;
 }
@@ -63,6 +65,8 @@ WidthPoint::WidthPoint(Real position, Real width, int sidebefore, int sideafter,
 	side_type_[0]=sidebefore;
 	side_type_[1]=sideafter;
 	dash_=dash;
+	lower_bound_=0.0;
+	upper_bound_=1.0;
 }
 
 const Real&
@@ -74,19 +78,38 @@ WidthPoint::get_position()const
 Real
 WidthPoint::get_norm_position(bool wplistloop)const
 {
-	Real pos(get_position());
-	Real ret(pos);
-	if(wplistloop)
+	return (get_bound_position(wplistloop)-lower_bound_)/(upper_bound_-lower_bound_);
+}
+
+Real
+WidthPoint::get_bound_position(bool wplistloop)const
+{
+	Real ret(position_-lower_bound_);
+	Real range(upper_bound_-lower_bound_);
+	if(!wplistloop)
 	{
-		ret=fmod(pos, 1.0);
-		ret=ret>=0.0?ret:(1.0+ret);
+		if (ret < 0) ret = 0;
+		if (ret > range) ret = range;
 	}
 	else
 	{
-		if (ret < 0.0) ret = 0.0;
-		if (ret > 1.0) ret = 1.0;
+		ret=fmod(ret, range);
+		ret=ret>=0.0?ret:(range+ret);
 	}
-	return ret;
+	return ret+lower_bound_;
+}
+
+
+void
+WidthPoint::normalize(bool loop)
+{
+	set_position(get_norm_position(loop));
+}
+
+void
+WidthPoint::reverse()
+{
+	position_=upper_bound_-(position_-lower_bound_);
 }
 
 void
@@ -150,6 +173,29 @@ WidthPoint::get_dash()const
 	return dash_;
 }
 
+void
+WidthPoint::set_lower_bound(Real lb)
+{
+	lower_bound_=lb;
+}
+
+Real
+WidthPoint::get_lower_bound()const
+{
+	return lower_bound_;
+}
+
+void
+WidthPoint::set_upper_bound(Real ub)
+{
+	upper_bound_=ub;
+}
+
+Real
+WidthPoint::get_upper_bound()const
+{
+	return upper_bound_;
+}
 
 bool
 WidthPoint::operator<(const WidthPoint& rhs)
@@ -163,5 +209,8 @@ WidthPoint::operator == (const WidthPoint& rhs)
 	return 	side_type_[0] == rhs.get_side_type(0) &&
 			side_type_[1] == rhs.get_side_type(1) &&
 			position_ == rhs.get_position() &&
-			width_ == rhs.get_width();
+			width_ == rhs.get_width() &&
+			lower_bound_==rhs.get_lower_bound() &&
+			upper_bound_==rhs.get_upper_bound()
+			;
 }

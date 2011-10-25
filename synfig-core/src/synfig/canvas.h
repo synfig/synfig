@@ -109,7 +109,7 @@
  *
  */
 
-#define CURRENT_CANVAS_VERSION "0.8"
+#define CURRENT_CANVAS_VERSION "0.9"
 
 /* === T Y P E D E F S ===================================================== */
 

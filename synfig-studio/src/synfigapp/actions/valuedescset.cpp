@@ -538,29 +538,14 @@ Action::ValueDescSet::prepare()
 			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
 			if(wplist)
 			{
+				bool wplistloop(wplist->get_loop());
 				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
 				ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
-				if(wpoint_composite)
+				if(bline && wpoint_composite)
 				{
-					Real radius = 0.0;
-					ValueBase new_amount;
-					if (wplist->get_loop())
-					{
-						// The wplist is looped. Animation may require a position parameter
-						// outside the range of 0-1, so make sure that the position doesn't
-						// change drastically.
-						Real amount_old((*(wpoint_composite->get_link("position")))(time).get(Real()));
-						Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
-						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
-						//fmod is called twice to avoid negative values
-						if (difference > 0.5)
-							difference=difference-1.0;
-						new_amount = amount_old+difference;
-					}
-					else
-						new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
-					bool homogeneous=false;
+					bool blineloop(bline->get_loop());
 					// Retrieve the homogeneous layer parameter
+					bool homogeneous=false;
 					Layer::Handle layer_parent;
 					std::set<Node*>::iterator iter;
 					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
@@ -573,9 +558,42 @@ Action::ValueDescSet::prepare()
 								break;
 							}
 						}
-					if(homogeneous)
+					Real radius = 0.0;
+					ValueBase new_amount;
+					WidthPoint wp((*wpoint_composite)(time));
+					if (wplistloop)
 					{
-						new_amount=std_to_hom((*bline)(time), new_amount, wplist->get_loop(), bline->get_loop() );
+						// The wplist is looped. Animation may require a position parameter
+						// outside the range of 0-1, so make sure that the position doesn't
+						// change drastically.
+						Real amount_old(wp.get_norm_position(wplistloop));
+						Real amount_old_b(wp.get_bound_position(wplistloop));
+						// If it is homogeneous then convert it to standard
+						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
+						// grab a new position given by duck's position on the bline
+						Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, blineloop);
+						// calculate the difference between old and new amounts
+						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+						//fmod is called twice to avoid negative values
+						if (difference > 0.5)
+							difference=difference-1.0;
+						// calculate a new value for the position
+						new_amount=amount_old+difference;
+						// restore the homogeneous value if needed
+						new_amount = homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						// this is the difference between the new amount and the old amount inside the boundaries
+						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
+						// add the new diff to the current amount
+						new_amount = wp.get_position() + bound_diff;
+					}
+					else
+					{
+						// grab a new amount given by duck's position on the bline
+						new_amount = synfig::find_closest_point((*bline)(time), value , radius, blineloop);
+						// if it is homogeneous then convert to it
+						new_amount=homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						// convert the value inside the boundaries
+						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
 					}
 					Action::Handle action(Action::create("ValueDescSet"));
 					if(!action)
@@ -668,6 +686,31 @@ Action::ValueDescSet::prepare()
 			else
 				local_value=value_desc.get_value();
 		}
+	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
+	// then we are changing the value of a widthpoint boundary.
+	// It is needed to check that we aren't doing the boundary range zero
+
+	if(value_desc.parent_is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+	{
+		ValueNode_Composite::Handle parent_value_node;
+		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+		assert(parent_value_node);
+		int i=value_desc.get_index();
+		if(parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT && (i==4 || i==5))
+		{
+			ValueNode::Handle low(parent_value_node->get_link("lower_bound"));
+			ValueNode::Handle upp(parent_value_node->get_link("upper_bound"));
+			Real new_value(value.get(Real()));
+			Real lower = (*low)(Time(0.0)).get(Real());
+			Real upper = (*upp)(Time(0.0)).get(Real());
+			if( (i==4 && new_value > (upper- 0.00000001))
+			||  (i==5 && new_value < (lower+ 0.00000001)) )
+			{
+				throw Error(_("It is forbidden to set lower boundary equal or bigger than upper boundary"));
+				return;
+			}
+		}
+	}
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE && !local_value.get_static())
 	{

@@ -2168,8 +2168,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// optionally
 					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
 					bline_calc_vertex->set_link("bline", bline);
-					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
-					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					bline_calc_vertex->set_link("loop", ValueNode_Const::create(false));
+					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_norm_position(value_node->get_loop())));
 					bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(homogeneous));
 					pduck->set_point((*bline_calc_vertex)(get_time()));
 					// hack end

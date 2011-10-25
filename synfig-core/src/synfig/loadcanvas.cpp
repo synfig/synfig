@@ -924,6 +924,54 @@ CanvasParser::parse_width_point(xmlpp::Element *element)
 			}
 			ret.set_side_type_after(parse_integer(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
+		// Lower Boundary
+		if(child->get_name()=="lower_bound")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <lower_bound>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_lower_bound(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		// Upper Boundary
+		if(child->get_name()=="upper_bound")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <upper_bound>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_upper_bound(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
 		else
 			error_unexpected_element(child,child->get_name());
 	}
@@ -1658,6 +1706,24 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			{
 				// old versions aren't homogeneous (new versions are homogeneous by default)
 				value_node->set_link("homogeneous", ValueNode_Const::create(bool(false)));
+				continue;
+			}
+			// 'lower_bound' was added while canvas 0.8 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version=="0.8" || version =="0.7") &&
+				(element->get_name() == "composite") && value_node->link_name(i) =="lower_bound")
+			{
+				// old versions have lower boundary set to 0.0
+				value_node->set_link("lower_bound", ValueNode_Const::create(Real(0.0)));
+				continue;
+			}
+			// 'upper_bound' was added while canvas 0.8 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version=="0.8" || version =="0.7") &&
+				(element->get_name() == "composite") && value_node->link_name(i) =="upper_bound")
+			{
+				// old versions have lower boundary set to 1.0
+				value_node->set_link("upper_bound", ValueNode_Const::create(Real(1.0)));
 				continue;
 			}
 
