@@ -207,6 +207,12 @@ Advanced_Outline::sync()
 			hbline_pos.push_back(std_to_hom(bline, bline_pos.back(), wplistloop, blineloop));
 			bindex++;
 		}
+		// When bline is looped, it is needed one more position
+		if(blineloop)
+		{
+			bline_pos.push_back(1.0);
+			hbline_pos.push_back(1.0);
+		}
 		// debug
 		for(hbpiter=hbline_pos.begin(),bpiter=bline_pos.begin(); bpiter!=bline_pos.end(); bpiter++, hbpiter++)
 			synfig::info("blinepoint std pos: %f, hom_pos: %f", *bpiter, *hbpiter);
