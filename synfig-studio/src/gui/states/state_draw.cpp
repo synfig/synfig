@@ -773,13 +773,13 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			iter->set_position(hom_to_std(bline, iter->get_position(), false, false));
 	}
 	// print out resutls
-	synfig::info("-----------widths");
-	std::list<synfig::WidthPoint>::iterator iter;
-	for(iter=wplist.begin();iter!=wplist.end();iter++)
-	{
-		if(!iter->get_dash())
-			synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
-	}
+	//synfig::info("-----------widths");
+	//std::list<synfig::WidthPoint>::iterator iter;
+	//for(iter=wplist.begin();iter!=wplist.end();iter++)
+	//{
+		//if(!iter->get_dash())
+			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
+	//}
 	// results end
 
 	//Postprocess to require minimum pressure
