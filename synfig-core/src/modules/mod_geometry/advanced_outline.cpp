@@ -211,11 +211,13 @@ Advanced_Outline::sync()
 		for(hbpiter=hbline_pos.begin(),bpiter=bline_pos.begin(); bpiter!=bline_pos.end(); bpiter++, hbpiter++)
 			synfig::info("blinepoint std pos: %f, hom_pos: %f", *bpiter, *hbpiter);
 		// debug
-		// initialize the blinepoints positions iterator
+		// initialize the blinepoints positions iterators
+		hbpiter=hbline_pos.begin();
 		bpiter=bline_pos.begin();
-		Real biter_pos(*bpiter);
+		Real biter_pos(*bpiter), hbiter_pos(*hbpiter);
 		bpiter++;
-		Real bnext_pos(*bpiter);
+		hbpiter++;
+		Real bnext_pos(*bpiter), hbnext_pos(*hbpiter);
 		// side_a and side_b are the sides of the polygon
 		vector<Point> side_a, side_b;
 		// Normalize the wplist first and then use always get_position()
@@ -709,8 +711,11 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
+					hbiter_pos = hbnext_pos;
 					bpiter++;
+					hbpiter++;
 					bnext_pos=*bpiter;
+					hbnext_pos=*hbpiter;
 				}
 				// continue with the main loop
 				middle_corner=false;
@@ -789,7 +794,7 @@ Advanced_Outline::sync()
 				else if(sipos > bnext_pos && bnext_pos < swnext_pos)
 				{
 					sipos=bnext_pos;
-					ipos=homogeneous?std_to_hom(bline, bnext_pos, wplistloop, blineloop):bnext_pos;
+					ipos=homogeneous?hbnext_pos:bnext_pos;
 					middle_corner=true;
 					Real q(bline_to_bezier(sipos, biter_pos, bezier_size));
 					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
@@ -813,8 +818,11 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
+					hbiter_pos = hbnext_pos;
 					bpiter++;
+					hbpiter++;
 					bnext_pos=*bpiter;
+					hbnext_pos=*hbpiter;
 					// remember last tangent value
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					break;
