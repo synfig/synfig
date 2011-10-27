@@ -133,11 +133,23 @@ Advanced_Outline::sync()
 	}
 	try
 	{
+		// The list of blinepoints
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
+		// The list of blinepoints positions
+		vector<Real> bline_pos;
+		// The list of blinepoints homogeneous positions
+		vector<Real> hbline_pos;
 		// This is the list of widthpoints coming form the WPList
+		// Notice that wplist will contain the dash items if applicable
+		// and some of the widthpoints are removed when lies on empty space of the
+		// dash items.
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
-		// This is a copy of wplist once arranged properly
+		// This is the same than wplist but with homoegenous positions if applicable.
+		vector<WidthPoint> hwplist;
+		// This is a copy of wplist without dash items and with all the original widthpoints
 		vector<WidthPoint> cwplist;
+		// This is the same than above but with homoegeneous position
+		vector<WidthPoint> chwplist;
 		// This is the list of dash items
 		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
 		// This is the list of widthpoints created for the dashed outlines
@@ -157,11 +169,14 @@ Advanced_Outline::sync()
 		// biter: first blinepoint of the current bezier
 		// bnext: second blinepoint of the current bezier
 		vector<BLinePoint>::const_iterator biter,bnext(bline.begin());
-		// witer: current widthpoint in cosideration
-		// wnext: next widthpoint in consideration
-		vector<WidthPoint>::iterator witer, wnext;
+		// bpiter/hbpiter: first position of the current bezier
+		// bpnext/hbpnext: second position of the current bezier
+		vector<Real>::iterator bpiter, bpnext, hbpiter, hbpnext;
+		// witer/hwiter: current widthpoint in cosideration
+		// wnext/hwnext: next widthpoint in consideration
+		vector<WidthPoint>::iterator witer, wnext, hwiter, hwnext;
 		// those iterators will run only the copy of wplist.
-		vector<WidthPoint>::iterator cwiter, cwnext;
+		vector<WidthPoint>::iterator cwiter, cwnext, chwiter, chwnext;
 		vector<WidthPoint>::iterator dwiter, dwnext;
 		// first tangent: used to remember the first tangent of the first bezier
 		// used to draw sharp cusp on the last step.
@@ -180,14 +195,27 @@ Advanced_Outline::sync()
 		// Bezier size is differnt depending on whether the bline is looped or not.
 		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
-		// bindex is used to calculate the bnext_pos (bilinepoint's position
-		// of the second bilinepoint of each bezier) properly
+		const vector<BLinePoint>::const_iterator bend(bline.end());
+		// Fill the list of positions of the blinepoints
+		// bindex is used to calculate the position
+		// of the bilinepoint on the bline properly
 		// *multiply by index is better than sum an index of times*
 		Real bindex(0.0);
-		Real biter_pos(bindex*bezier_size);
-		bindex++;
-		Real bnext_pos(bindex*bezier_size);
-		const vector<BLinePoint>::const_iterator bend(bline.end());
+		for(biter=bline.begin(); biter!=bend; biter++)
+		{
+			bline_pos.push_back(bindex*bezier_size);
+			hbline_pos.push_back(std_to_hom(bline, bline_pos.back(), wplistloop, blineloop));
+			bindex++;
+		}
+		// debug
+		for(hbpiter=hbline_pos.begin(),bpiter=bline_pos.begin(); bpiter!=bline_pos.end(); bpiter++, hbpiter++)
+			synfig::info("blinepoint std pos: %f, hom_pos: %f", *bpiter, *hbpiter);
+		// debug
+		// initialize the blinepoints positions iterator
+		bpiter=bline_pos.begin();
+		Real biter_pos(*bpiter);
+		bpiter++;
+		Real bnext_pos(*bpiter);
 		// side_a and side_b are the sides of the polygon
 		vector<Point> side_a, side_b;
 		// Normalize the wplist first and then use always get_position()
@@ -681,8 +709,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bindex++;
-					bnext_pos=bindex*bezier_size;
+					bpiter++;
+					bnext_pos=*bpiter;
 				}
 				// continue with the main loop
 				middle_corner=false;
@@ -785,8 +813,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					bindex++;
-					bnext_pos=bindex*bezier_size;
+					bpiter++;
+					bnext_pos=*bpiter;
 					// remember last tangent value
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					break;
