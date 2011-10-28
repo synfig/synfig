@@ -135,21 +135,18 @@ Advanced_Outline::sync()
 	{
 		// The list of blinepoints
 		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
-		// The list of blinepoints positions
-		vector<Real> bline_pos;
-		// The list of blinepoints homogeneous positions
-		vector<Real> hbline_pos;
+		// The list of blinepoints standard and homogeneous positions
+		vector<Real> bline_pos, hbline_pos;
 		// This is the list of widthpoints coming form the WPList
 		// Notice that wplist will contain the dash items if applicable
 		// and some of the widthpoints are removed when lies on empty space of the
 		// dash items.
 		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
-		// This is the same than wplist but with homoegenous positions if applicable.
-		vector<WidthPoint> hwplist;
+		// This is the same than wplist but with standard positions.
+		vector<WidthPoint> swplist;
 		// This is a copy of wplist without dash items and with all the original widthpoints
-		vector<WidthPoint> cwplist;
-		// This is the same than above but with homoegeneous position
-		vector<WidthPoint> chwplist;
+		// standard and homogeneous ones
+		vector<WidthPoint> cwplist,scwplist;
 		// This is the list of dash items
 		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
 		// This is the list of widthpoints created for the dashed outlines
@@ -172,12 +169,9 @@ Advanced_Outline::sync()
 		// bpiter/hbpiter: first position of the current bezier
 		// bpnext/hbpnext: second position of the current bezier
 		vector<Real>::iterator bpiter, bpnext, hbpiter, hbpnext;
-		// witer/hwiter: current widthpoint in cosideration
-		// wnext/hwnext: next widthpoint in consideration
-		vector<WidthPoint>::iterator witer, wnext, hwiter, hwnext;
-		// those iterators will run only the copy of wplist.
-		vector<WidthPoint>::iterator cwiter, cwnext, chwiter, chwnext;
-		vector<WidthPoint>::iterator dwiter, dwnext;
+		// (s)(c)witer: current widthpoint in cosideration
+		// (s)(c)next: next widthpoint in consideration
+		vector<WidthPoint>::iterator witer, wnext, switer, swnext, cwiter, cwnext, scwiter, scwnext, dwiter, dwnext;
 		// first tangent: used to remember the first tangent of the first bezier
 		// used to draw sharp cusp on the last step.
 		Vector first_tangent;
@@ -214,6 +208,7 @@ Advanced_Outline::sync()
 			hbline_pos.push_back(1.0);
 		}
 		// debug
+		synfig::info("-----blinepoints");
 		for(hbpiter=hbline_pos.begin(),bpiter=bline_pos.begin(); bpiter!=bline_pos.end(); bpiter++, hbpiter++)
 			synfig::info("blinepoint std pos: %f, hom_pos: %f", *bpiter, *hbpiter);
 		// debug
@@ -351,6 +346,7 @@ Advanced_Outline::sync()
 				vector<DashItem>::iterator diter(dilist.begin());
 				vector<DashItem>::reverse_iterator rditer(dilist.rbegin());
 				WidthPoint before, after;
+				// Calculate the length of the defined dashes
 				for(;diter!=dilist.end(); diter++)
 				{
 					dashes_length+=diter->get_length()+diter->get_offset();
@@ -534,7 +530,9 @@ Advanced_Outline::sync()
 		else
 			cwiter=cwnext;
 		const vector<WidthPoint>::const_iterator wend(wplist.end());
+		// homogeneous or standard position
 		Real ipos(0.0);
+		// standard position
 		Real sipos(0.0);
 		// Fix bug of bad render of start (end) tip when the first
 		// (last) widthpoint has side type before (after) set to
