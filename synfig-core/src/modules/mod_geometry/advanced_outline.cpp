@@ -216,11 +216,6 @@ Advanced_Outline::sync()
 			hbline_pos.pop_back();
 			hbline_pos.push_back(1.0);
 		}
-		// debug
-		//synfig::info("-----blinepoints");
-		//for(hbpiter=hbline_pos.begin(),bpiter=bline_pos.begin(); bpiter!=bline_pos.end(); bpiter++, hbpiter++)
-			//synfig::info("blinepoint std pos: %f, hom_pos: %f", *bpiter, *hbpiter);
-		// debug
 		// initialize the blinepoints positions iterators
 		hbpiter=hbline_pos.begin();
 		bpiter=bline_pos.begin();
@@ -549,14 +544,6 @@ Advanced_Outline::sync()
 			for(witer=wplist.begin(); witer!=wplist.end();witer++)
 				witer->set_position(std_to_hom(bline, witer->get_position(), wplistloop, blineloop));
 		}
-		//synfig::info("---wplist---");
-		//for(witer=wplist.begin();witer!=wplist.end();witer++)
-			//synfig::info("P:%f W:%f B:%d A:%d", witer->get_position(), witer->get_width(), witer->get_side_type_before(), witer->get_side_type_after());
-		//synfig::info("------");
-		//synfig::info("---swplist---");
-		//for(switer=swplist.begin();switer!=swplist.end();switer++)
-			//synfig::info("P:%f W:%f B:%d A:%d", switer->get_position(), switer->get_width(), switer->get_side_type_before(), switer->get_side_type_after());
-		//synfig::info("------");
 		// Prepare the widthpoint iterators
 		// we start with the next withpoint being the first on the list.
 		wnext=wplist.begin();
@@ -647,9 +634,7 @@ Advanced_Outline::sync()
 			// if we are exactly on the next widthpoint...
 			if(ipos==swnext_pos)
 			{
-				//sipos=homogeneous?hom_to_std(bline, ipos, wplistloop, blineloop):ipos;
 				hipos=wnext_pos;
-				//synfig::info("exactly on a widthpoint s:%f, h:%f", ipos, hipos);
 				// .. do tips. (If withpoint is interpolate it doesn't do anything).
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
@@ -681,12 +666,6 @@ Advanced_Outline::sync()
 					Real p(ipos);
 					if(!fast_)
 						p=hipos;
-					/*if(!homogeneous && !fast_)
-					{
-						i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-						p=std_to_hom(bline, p, wplistloop, blineloop);
-					}*/
 					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
@@ -724,12 +703,6 @@ Advanced_Outline::sync()
 							Real p(ipos);
 							if(!fast_)
 								p=hipos;
-							/*if(!homogeneous && !fast_)
-							{
-								i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-								n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-								p=std_to_hom(bline, p, wplistloop, blineloop);
-							}*/
 							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 						}
 					}
@@ -763,6 +736,7 @@ Advanced_Outline::sync()
 						cwnext++;
 						scwnext++;
 					}
+					// If a widthpoint is over a blinepoint, don't render corners
 					middle_corner=false;
 					// continue with the main loop
 					continue;
@@ -790,7 +764,6 @@ Advanced_Outline::sync()
 						scwnext++;
 					}
 				// we need to consider if we are jumping any bezier too
-				//sipos=homogeneous?hom_to_std(bline, ipos, wplistloop, blineloop):ipos;
 				while(ipos > bnext_pos && bnext+1!=bend)
 				{
 					// keep track of last tangent
@@ -811,7 +784,6 @@ Advanced_Outline::sync()
 				continue;
 			}
 			// If we stopped on an intermediate blinepoint (middle corner=true)...
-			//hipos=std_to_hom(bline, ipos, wplistloop, blineloop);
 			if(middle_corner==true)
 			{
 				// ... do cusp at ipos if tangents are splitted
@@ -831,29 +803,17 @@ Advanced_Outline::sync()
 					Real p(ipos);
 					if(!fast_)
 						p=hipos;
-					/*if(!homogeneous && !fast_)
-					{
-						i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-						p=std_to_hom(bline, p, wplistloop, blineloop);
-					}*/
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				middle_corner=false;
 			}
 			do // secondary loop. For interpolation steps.
 			{
-				// If during the interpolation travel, we passed a
-				// widhpoint...
-				//Real swnext_pos(homogeneous?hom_to_std(bline, wnext_pos, wplistloop, blineloop):wnext_pos);
+				// If during the interpolation travel, we passed a widhpoint...
 				Real swnext_pos(swnext->get_position());
-				//synfig::info("swnext pos %1.20f", swnext_pos);
-				//synfig::info("bnext_pos  %1.20f", bnext_pos);
-				//synfig::info("ipos       %1.20f", ipos);
 				if(ipos > swnext_pos && bnext_pos >= swnext_pos)
 				{
 					// ... just stay on it and ...
-					//synfig::info("w, reseted ipos=%1.15f, bnext_pos=%1.15f, swnext_pos=%1.15f", ipos, bnext_pos, swnext_pos);
 					ipos=swnext_pos;
 					hipos=wnext_pos;
 					// ... add interpolation for the last step
@@ -881,12 +841,6 @@ Advanced_Outline::sync()
 							Real p(ipos);
 							if(!fast_)
 								p=hipos;
-							/*if(!homogeneous && !fast_)
-							{
-								i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-								n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-								p=std_to_hom(bline, p, wplistloop, blineloop);
-							}*/
 							wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 						}
 						ww=wnext->get_width();
@@ -901,9 +855,7 @@ Advanced_Outline::sync()
 				}
 				else if(ipos > bnext_pos && bnext_pos < swnext_pos)
 				{
-					//synfig::info("b, reseted ipos=%1.20f, bnext_pos=%1.20f swnext_pos=%1.20f dif= %1.20f", ipos, bnext_pos, swnext_pos, bnext_pos-swnext_pos);
 					hipos=hbnext_pos;
-					//ipos=homogeneous?hbnext_pos:bnext_pos;
 					ipos=bnext_pos;
 					middle_corner=true;
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
@@ -921,12 +873,6 @@ Advanced_Outline::sync()
 					Real po(ipos);
 					if(!fast_)
 						po=hipos;
-					/*if(!homogeneous && !fast_)
-					{
-						i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-						n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-						po=std_to_hom(bline, po, wplistloop, blineloop);
-					}*/
 					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
@@ -972,18 +918,10 @@ Advanced_Outline::sync()
 				Real po(ipos);
 				if(!fast_)
 					po=std_to_hom(bline, ipos, wplistloop, blineloop);
-				/*if(!homogeneous && !fast_)
-				{
-					i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
-					n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop));
-					po=std_to_hom(bline, po, wplistloop, blineloop);
-				}*/
 				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
-				//synfig::info("%f", ipos);
-				//hipos = std_to_hom(bline, ipos, wplistloop, blineloop);
 			} while (1); // secondary loop
 		} while(1); // main loop
 
