@@ -680,7 +680,7 @@ Advanced_Outline::sync()
 					WidthPoint n(*cn);
 					Real p(ipos);
 					if(!fast_)
-						p=std_to_hom(bline, ipos, wplistloop, blineloop);
+						p=hipos;
 					/*if(!homogeneous && !fast_)
 					{
 						i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
@@ -723,7 +723,7 @@ Advanced_Outline::sync()
 							}
 							Real p(ipos);
 							if(!fast_)
-								p=std_to_hom(bline, ipos, wplistloop, blineloop);
+								p=hipos;
 							/*if(!homogeneous && !fast_)
 							{
 								i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
@@ -830,7 +830,7 @@ Advanced_Outline::sync()
 					}
 					Real p(ipos);
 					if(!fast_)
-						p=std_to_hom(bline, ipos, wplistloop, blineloop);
+						p=hipos;
 					/*if(!homogeneous && !fast_)
 					{
 						i.set_position(std_to_hom(bline, i.get_position(), wplistloop, blineloop));
