@@ -491,7 +491,7 @@ Renderer_Ducks::render_vfunc(
 				ValueNode_Composite::Handle wpoint_composite=NULL;
 				Real radius=0.0;
 				Real new_value;
-				Point p((*iter)->get_trans_point());
+				Point p(sub_trans_point-sub_trans_origin);
 				if(value_desc.parent_is_value_node())
 					wplist=synfig::ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
 				if(wplist)
