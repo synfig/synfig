@@ -41,6 +41,7 @@
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_bline.h>
 
 #include <synfigapp/general.h>
 
@@ -168,6 +169,11 @@ Action::ValueDescBLineLink::prepare()
 	const std::vector<ValueBase> bline((*bline_value_node)(time).get_list());
 	int size = bline.size();
 	Real amount = (index + origin + loop_adjust) / (size + loop_adjust);
+	// This is the standard amount, let's calculate the homogeneous amount
+	// since by default, homogeneous is 'on' for new BLineLink
+	// Note: if bline is looped, then consider the loop option of
+	// BLineLink looped too.
+	amount=std_to_hom(ValueBase(bline), amount, loop, loop);
 	LinkableValueNode::Handle calculated_value_node;
 	Action::Handle action;
 
