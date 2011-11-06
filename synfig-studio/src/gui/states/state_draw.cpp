@@ -773,13 +773,13 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			iter->set_position(hom_to_std(bline, iter->get_position(), false, false));
 	}
 	// print out resutls
-	synfig::info("-----------widths");
-	std::list<synfig::WidthPoint>::iterator iter;
-	for(iter=wplist.begin();iter!=wplist.end();iter++)
-	{
-		if(!iter->get_dash())
-			synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
-	}
+	//synfig::info("-----------widths");
+	//std::list<synfig::WidthPoint>::iterator iter;
+	//for(iter=wplist.begin();iter!=wplist.end();iter++)
+	//{
+		//if(!iter->get_dash())
+			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
+	//}
 	// results end
 
 	//Postprocess to require minimum pressure
@@ -2278,11 +2278,11 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 					int s2(value_node_size-1);
 					if(homogeneous)
 					{
-						ub_new=lb+(l1+l2)*range/l1;
+						ub_new=lb+(l1+l2)*range/l2;
 					}
 					else
 					{
-						ub_new=lb+(s1+s2)*range/s1;
+						ub_new=lb+(s1+s2)*range/s2;
 					}
 				}
 				else
@@ -2329,11 +2329,11 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 				int s2(value_node_size-1);
 				if(homogeneous)
 				{
-					witer->set_lower_bound(ub-(l1+l2)*range/l2);
+					witer->set_lower_bound(ub-(l1+l2)*range/l1);
 				}
 				else
 				{
-					witer->set_lower_bound(ub-(s1+s2)*range/s2);
+					witer->set_lower_bound(ub-(s1+s2)*range/s1);
 				}
 				if(!action->set_param("item",ValueNode::Handle(ValueNode_Composite::create(*witer))))
 					synfig::error("ACTION didn't like \"item\"");
