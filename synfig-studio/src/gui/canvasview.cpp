@@ -137,7 +137,7 @@ using namespace sigc;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	button->set_relief(Gtk::RELIEF_NONE); \
@@ -149,7 +149,7 @@ using namespace sigc;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
@@ -972,8 +972,8 @@ CanvasView::create_time_bar()
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
 
-	tooltips.set_tip(*time_window_scroll,_("Moves the time window"));
-	tooltips.set_tip(*timeslider,_("Changes the current time"));
+	time_window_scroll->set_tooltip_text(_("Moves the time window"));
+	timeslider->set_tooltip_text(_("Changes the current time"));
 	time_window_scroll->show();
 	timeslider->show();
 	//time_window_scroll->set_flags(Gtk::CAN_FOCUS); // Uncomment this produce bad render of the HScroll
@@ -986,7 +986,7 @@ CanvasView::create_time_bar()
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
 	animatebutton = Gtk::manage(new class Gtk::ToggleButton());
-	tooltips.set_tip(*animatebutton,_("Turn on animate editing mode"));
+	animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
 	icon->set_padding(0,0);
 	icon->show();
 	animatebutton->add(*icon);
@@ -1014,7 +1014,7 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
-	tooltips.set_tip(*current_time_widget,_("Current time"));
+	current_time_widget->set_tooltip_text(_("Current time"));
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
@@ -1183,7 +1183,7 @@ CanvasView::create_display_bar()
 	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
 	quality_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
-	tooltips.set_tip(*quality_spin, _("Quality (lower is better)"));
+	quality_spin->set_tooltip_text( _("Quality (lower is better)"));
 	quality_spin->show();
 
 	// Set up the show grid toggle button
@@ -1195,7 +1195,7 @@ CanvasView::create_display_bar()
 	show_grid->add(*icon);
 	show_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
-	tooltips.set_tip(*show_grid, _("Show grid when enabled"));
+	show_grid->set_tooltip_text( _("Show grid when enabled"));
 	show_grid->set_relief(Gtk::RELIEF_NONE);
 	show_grid->show();
 
@@ -1208,7 +1208,7 @@ CanvasView::create_display_bar()
 	snap_grid->add(*icon2);
 	snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
-	tooltips.set_tip(*snap_grid, _("Snap grid when enabled"));
+	snap_grid->set_tooltip_text( _("Show grid when enabled"));
 	snap_grid->set_relief(Gtk::RELIEF_NONE);
 	snap_grid->show();
 
@@ -1221,7 +1221,7 @@ CanvasView::create_display_bar()
 	onion_skin->add(*icon3);
 	onion_skin->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
-	tooltips.set_tip(*onion_skin, _("Shows onion skin when enabled"));
+	onion_skin->set_tooltip_text( _("Shows onion skin when enabled"));
 	onion_skin->set_relief(Gtk::RELIEF_NONE);
 	onion_skin->show();
 
@@ -1229,14 +1229,14 @@ CanvasView::create_display_bar()
 	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
 	past_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-	tooltips.set_tip(*past_onion_spin, _("Past onion skins"));
+	past_onion_spin->set_tooltip_text( _("Past onion skins"));
 	past_onion_spin->show();
 
 	// Set up future onion skin spin button
 	future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
 	future_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
-	tooltips.set_tip(*future_onion_spin, _("Future onion skins"));
+	future_onion_spin->set_tooltip_text( _("Future onion skins"));
 	future_onion_spin->show();
 
 	// Setup render options dialog button
@@ -1247,7 +1247,7 @@ CanvasView::create_display_bar()
 	render_options_button->add(*icon4);
 	render_options_button->signal_clicked().connect(
 			sigc::mem_fun0(render_settings,&studio::RenderSettings::present));
-	tooltips.set_tip(*render_options_button, _("Shows the Render Settings Dialog"));
+	render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
 	render_options_button->set_relief(Gtk::RELIEF_NONE);
 	render_options_button->show();
 
@@ -1259,7 +1259,7 @@ CanvasView::create_display_bar()
 	preview_options_button->add(*icon5);
 	preview_options_button->signal_clicked().connect(
 			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-	tooltips.set_tip(*preview_options_button, _("Shows the Preview Settings Dialog"));
+	preview_options_button->set_tooltip_text( _("Shows the Preview Settings Dialog"));
 	preview_options_button->set_relief(Gtk::RELIEF_NONE);
 	preview_options_button->show();
 
@@ -2784,7 +2784,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("Turn off animate editing mode"));
+		animatebutton->set_tooltip_text(_("Turn off animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2794,7 +2794,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
-		tooltips.set_tip(*animatebutton,_("Turn on animate editing mode"));
+		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2805,7 +2805,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
-		tooltips.set_tip(*futurekeyframebutton,_("Unlock future keyframes"));
+		futurekeyframebutton->set_tooltip_text(_("Unlock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
@@ -2815,27 +2815,27 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
-		tooltips.set_tip(*futurekeyframebutton,_("Lock future keyframes"));
+		futurekeyframebutton->set_tooltip_text(_("Lock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
-	if(mode&synfigapp::MODE_ANIMATE_PAST)		
-	{	
+	if(mode&synfigapp::MODE_ANIMATE_PAST)
+	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
-		tooltips.set_tip(*pastkeyframebutton,_("Unlock past keyframes"));
+		pastkeyframebutton->set_tooltip_text(_("Unlock past keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
 	else
-	{	
+	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
-		tooltips.set_tip(*pastkeyframebutton,_("Lock past  keyframes"));
+		pastkeyframebutton->set_tooltip_text(_("Lock past  keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 	}

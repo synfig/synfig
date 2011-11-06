@@ -31,7 +31,7 @@
 
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/progressbar.h>
@@ -214,9 +214,6 @@ private:
 	sigc::connection				stopcon;
 
 	std::auto_ptr<UniversalScrubber> universal_scrubber;
-
-	//! Tooltip controller
-	Gtk::Tooltips tooltips;
 
 	// DEBUGPOINT_CLASS(4);
 
@@ -693,7 +690,7 @@ private:
 	void on_keyframe_button_pressed();
 	void toggle_past_keyframe_button();
 	void toggle_future_keyframe_button();
-	
+
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
 
