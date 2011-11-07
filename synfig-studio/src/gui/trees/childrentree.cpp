@@ -413,9 +413,14 @@ ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool /*keyboard_tooltip*/
 	Gtk::TreeModel::Path path;
 	Gtk::TreeViewColumn *column;
 	int cell_x, cell_y;
-	if(!tree_view.get_path_at_pos(x, y, path, column, cell_x,cell_y))
+	int bx, by;
+	get_tree_view().convert_widget_to_bin_window_coords(x, y, bx, by);
+	if(!get_tree_view().get_path_at_pos(bx, by, path, column, cell_x,cell_y))
 		return false;
-	Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
+	Gtk::TreeIter iter(get_tree_view().get_model()->get_iter(path));
+	if(!iter)
+		return false;
+	Gtk::TreeRow row = *(iter);
 	Glib::ustring tooltip_string(row[model.tooltip]);
 	if(tooltip_string.empty())
 		return false;
