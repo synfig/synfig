@@ -73,7 +73,7 @@ ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *stockid
 {
 	Gtk::ToggleButton *tbutton = manage(new class Gtk::ToggleButton());
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	tooltips.set_tip(*tbutton, tooltip);
+	tbutton->set_tooltip_text(tooltip);
 	tbutton->add(*icon);
 	icon->set_padding(0, 0);
 	icon->show();

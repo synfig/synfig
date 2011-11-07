@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/togglebutton.h>
 
@@ -47,8 +47,6 @@ namespace studio
 
 class KeyFrameDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::ToggleButton *toggle_keyframe_past;
 	Gtk::ToggleButton *toggle_keyframe_future;
 

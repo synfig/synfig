@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 
@@ -47,8 +47,6 @@ namespace studio
 
 class FrameDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::Button *seek_begin;
 	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_prev_frame;

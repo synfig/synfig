@@ -77,7 +77,7 @@ FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char 
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::Button *button = manage(new class Gtk::Button());
 	button->add(*icon);
-	tooltips.set_tip(*button, tooltip);
+	button->set_tooltip_text(tooltip);
 	icon->set_padding(0, 0);
 	icon->show();
 	button->set_relief(Gtk::RELIEF_NONE);
