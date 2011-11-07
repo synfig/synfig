@@ -31,7 +31,7 @@
 #include <gtkmm/table.h>
 #include <synfig/gradient.h>
 #include "widgets/widget_gradient.h"
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -78,8 +78,6 @@ class Widget_Defaults : public Gtk::Table
 
 	void opacity_refresh();
 	void on_opacity_changed();
-
-	Gtk::Tooltips tooltips_;
 
 public:
 
