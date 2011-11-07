@@ -30,7 +30,7 @@
 
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
 #include <gtkmm/adjustment.h>
@@ -79,10 +79,6 @@ public:
 
 private:
 
-	Gtk::Tooltips tooltips_;
-
-	Gtk::TreePath last_tooltip_path;
-
 	Gtk::TreeView tree_view;
 
 	Gtk::HBox *hbox;
@@ -123,6 +119,8 @@ private:
 	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
 	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&,int button);
+
+	bool on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip);
 
 	bool on_tree_event(GdkEvent *event);
 
