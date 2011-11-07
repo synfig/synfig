@@ -38,7 +38,7 @@
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/canvasview.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -169,7 +169,6 @@ class Widget_Preview : public Gtk::Table
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
 	Gtk::HScrollbar		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
-	Gtk::Tooltips		tooltips;
 
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;

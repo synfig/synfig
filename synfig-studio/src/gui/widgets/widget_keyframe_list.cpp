@@ -308,7 +308,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					synfig::String kf_name(kf.get_description().c_str());
 					ttip = kf_name.c_str();
 				}
-				tooltips.set_tip(*this, ttip);
+				set_tooltip_text(ttip);
 				dragging_=false;
 				queue_draw();
 				return true;

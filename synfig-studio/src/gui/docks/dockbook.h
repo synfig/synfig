@@ -29,7 +29,7 @@
 
 #include <gtkmm/notebook.h>
 #include <synfig/string.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,8 +49,6 @@ class DockBook : public Gtk::Notebook
 
 	sigc::signal<void> signal_empty_;
 	sigc::signal<void> signal_changed_;
-
-	Gtk::Tooltips tooltips_;
 
 	bool deleting_;
 

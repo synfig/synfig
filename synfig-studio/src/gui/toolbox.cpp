@@ -113,7 +113,7 @@ using namespace sigc;
 	button = manage(new class Gtk::ToggleButton());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->show();	\
 	button->show()
 
@@ -121,7 +121,7 @@ using namespace sigc;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->show();	\
 	button->show()
 
@@ -497,7 +497,7 @@ Toolbox::add_state(const Smach::state_base *state)
 
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
 	button->add(*icon);
-	tooltips.set_tip(*button,stock_item.get_label());
+	button->set_tooltip_text(stock_item.get_label());
 	icon->show();
 	button->show();
 

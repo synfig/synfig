@@ -346,7 +346,7 @@ Dockable::create_tab_label()
 		{
 			Gtk::Image* icon(manage(new Gtk::Image(stock_id,Gtk::IconSize(4))));
 			event_box->add(*icon);
-			tooltips_.set_tip(*event_box,get_local_name());
+			event_box->set_tooltip_text(get_local_name());
 			icon->show();
 		}
 		else

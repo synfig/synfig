@@ -291,7 +291,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 #define IMAGIFY_BUTTON(button,stockid,tooltip)					\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();
 

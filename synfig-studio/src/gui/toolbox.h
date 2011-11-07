@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/window.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/menu.h>
@@ -62,7 +62,6 @@ class Toolbox : public Gtk::Window
 
 	DialogSettings dialog_settings;
 
-	Gtk::Tooltips tooltips;
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
 
