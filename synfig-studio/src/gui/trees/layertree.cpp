@@ -65,7 +65,7 @@ using namespace studio;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
 	button->add(*icon);	\
-	tooltips_.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	button->set_relief(Gtk::RELIEF_NONE); \
@@ -77,7 +77,7 @@ using namespace studio;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
 	button->add(*icon);	\
-	tooltips_.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
@@ -164,7 +164,9 @@ LayerTree::LayerTree():
 	layer_amount_hscale->show();
 	blend_method_widget.show();
 
-	tooltips_.enable();
+	get_param_tree_view().set_has_tooltip();
+	get_layer_tree_view().set_has_tooltip();
+
 	disable_amount_changed_signal=false;
 
 	blend_method_widget.set_param_desc(ParamDesc(Color::BlendMethod(),"blend_method"));
@@ -249,6 +251,7 @@ LayerTree::create_layer_tree()
 	//get_layer_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
 	get_layer_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_event));
+	get_layer_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_view_query_tooltip));
 	get_layer_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
@@ -372,6 +375,7 @@ LayerTree::create_param_tree()
 	get_param_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
 	get_param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
+	get_param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
 	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
@@ -795,19 +799,19 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			if(cellrenderer_time_track==column->get_first_cell_renderer())
 				// Movement on TimeLine
 				return true;
-			else
+			//else
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-			{
-				tooltips_.unset_tip(*this);
-				Glib::ustring tooltips_string(row[layer_model.tooltip]);
-				last_tooltip_path=path;
-				if(!tooltips_string.empty())
-				{
-					tooltips_.set_tip(*this,tooltips_string);
-					tooltips_.force_window();
-				}
-			}
+			//if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
+			//{
+				//tooltips_.unset_tip(*this);
+				//Glib::ustring tooltips_string(row[layer_model.tooltip]);
+				//last_tooltip_path=path;
+				//if(!tooltips_string.empty())
+				//{
+					//tooltips_.set_tip(*this,tooltips_string);
+					//tooltips_.force_window();
+				//}
+			//}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
@@ -915,19 +919,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				//get_param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
-			else
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-			{
-				tooltips_.unset_tip(get_param_tree_view());
-				Glib::ustring tooltips_string(row[param_model.tooltip]);
-				last_tooltip_path=path;
-				if(!tooltips_string.empty())
-				{
-					tooltips_.set_tip(get_param_tree_view(),tooltips_string);
-					tooltips_.force_window();
-				}
-			}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
@@ -968,6 +960,49 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+}
+
+
+bool
+LayerTree::on_param_tree_view_query_tooltip(int x, int y, bool /*keyboard_tooltip*/, const Glib::RefPtr<Gtk::Tooltip>& tooltip)
+{
+	Gtk::TreeModel::Path path;
+	Gtk::TreeViewColumn *column;
+	int cell_x, cell_y;
+	int bx, by;
+	get_param_tree_view().convert_widget_to_bin_window_coords(x, y, bx, by);
+	if(!get_param_tree_view().get_path_at_pos(bx, by, path, column, cell_x,cell_y))
+		return false;
+	Gtk::TreeIter iter(get_param_tree_view().get_model()->get_iter(path));
+	if(!iter)
+		return false;
+	Gtk::TreeRow row = *(iter);
+	Glib::ustring tooltip_string(row[param_model.tooltip]);
+	if(tooltip_string.empty())
+		return false;
+	tooltip->set_text(tooltip_string);
+	return true;
+}
+
+bool
+LayerTree::on_layer_tree_view_query_tooltip(int x, int y, bool /*keyboard_tooltip*/, const Glib::RefPtr<Gtk::Tooltip>& tooltip)
+{
+	Gtk::TreeModel::Path path;
+	Gtk::TreeViewColumn *column;
+	int cell_x, cell_y;
+	int bx, by;
+	get_layer_tree_view().convert_widget_to_bin_window_coords(x, y, bx, by);
+	if(!get_layer_tree_view().get_path_at_pos(bx, by, path, column, cell_x,cell_y))
+		return false;
+	Gtk::TreeIter iter(get_param_tree_view().get_model()->get_iter(path));
+	if(!iter)
+		return false;
+	Gtk::TreeRow row = *(iter);
+	Glib::ustring tooltip_string(row[layer_model.tooltip]);
+	if(tooltip_string.empty())
+		return false;
+	tooltip->set_text(tooltip_string);
+	return true;
 }
 
 // void
