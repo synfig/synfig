@@ -30,10 +30,9 @@
 #include <ETL/handle>
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/tooltips.h>
 
 #include "renddesc.h"
 
@@ -50,8 +49,6 @@ namespace studio
 {
 class CanvasProperties  :  public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips;
-
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 	Gtk::Entry entry_id;
