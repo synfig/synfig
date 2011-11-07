@@ -38,7 +38,7 @@
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/widgets/widget_time.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 
@@ -201,7 +201,6 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;
-	Gtk::Tooltips tooltips_;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);
