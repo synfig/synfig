@@ -408,8 +408,10 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 }
 
 bool
-ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool /*keyboard_tooltip*/, const Glib::RefPtr<Gtk::Tooltip>& tooltip)
+ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip)
 {
+	if(keyboard_tooltip)
+		return false;
 	Gtk::TreeModel::Path path;
 	Gtk::TreeViewColumn *column;
 	int cell_x, cell_y;
@@ -425,6 +427,7 @@ ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool /*keyboard_tooltip*/
 	if(tooltip_string.empty())
 		return false;
 	tooltip->set_text(tooltip_string);
+	get_tree_view().set_tooltip_row(tooltip, path);
 	return true;
 }
 
