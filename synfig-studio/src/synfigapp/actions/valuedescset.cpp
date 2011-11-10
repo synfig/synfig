@@ -726,6 +726,11 @@ Action::ValueDescSet::prepare()
 			else
 				value=value_desc.get_value();
 			if(!value_node)value_node=ValueNode_Animated::create(value,time);
+			// Be sure that the newly created waypoint is set with the default
+			// interpolations.
+			synfig::ValueNode_Animated::WaypointList::iterator iter(value_node->find(time));
+			iter->set_before(synfigapp::Main::get_interpolation());
+			iter->set_after(synfigapp::Main::get_interpolation());
 			Action::Handle action;
 			if(!value_desc.is_value_node())
 			{
@@ -751,11 +756,22 @@ Action::ValueDescSet::prepare()
 		}
 		if(!value_node)
 			throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
+		synfig::ValueNode_Animated::WaypointList::iterator iter;
+		Waypoint waypoint;
 		Action::Handle action(WaypointSetSmart::create());
-		Waypoint waypoint(value_node->new_waypoint_at_time(time));
+		try
+		{
+			iter=value_node->find(time);
+			// value_node->find throws an exception
+			// when no waypoint is found at given time
+			waypoint=*iter;
+		}catch(Exception::NotFound)
+		{
+			waypoint=value_node->new_waypoint_at_time(time);
+			waypoint.set_before(synfigapp::Main::get_interpolation());
+			waypoint.set_after(synfigapp::Main::get_interpolation());
+		}
 		waypoint.set_value(value);
-		waypoint.set_before(synfigapp::Main::get_interpolation());
-		waypoint.set_after(synfigapp::Main::get_interpolation());
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle(value_node));
