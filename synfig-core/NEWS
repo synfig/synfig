@@ -20,10 +20,8 @@ http://synfig.org/en/news/releases
     set the parameter with the passed file name. This would allow to load and
     save Synfig's documents with paths for imported files badly adjusted but that user
     doesn't want to modify.
-
-
-
-
+  * Fix for compatibility with libpng 1.5. Patch #3427945 by SpeckFleck.
+  * Fix bug in Time Loop Layer. Patch ID: 3414729 by Ray Frederikson
 
  0.63.02 (git tag: "synfig-0.63.02") - September 28, 2011 - Improvement
 
