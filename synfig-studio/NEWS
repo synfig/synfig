@@ -4,6 +4,22 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+ 0.63.03 (git tag: "synfigstudio-0.63.03") - November XX, 2011 - Features, minor bug fixes.
+
+  * Use Widget::Distance for feather spin button on Draw Tool options.
+  * Enable tool tips for Tool Options dialogue buttons.
+  * Make Draw Tool options greyed when not usable.
+  * Support to create Advanced Outlines with the Draw Tool.
+  * Widthpoint position ducks shows a text with its value when mouse hovers.
+  * Don't stretch button in file selection widget. Use shorter text.
+  * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
+  * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fix tooltips for
+    Layer parameter panel.
+  * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
+  * Fix bug in Time Loop Layer. Patch ID: 3414729 by Ray Frederikson
+
+ 0.63.02 (git tag: "synfigstudio-0.63.03") - September 28, 2011 -No changes
+
  0.63.01 (git tag: "synfigstudio-0.63.01") - September 24, 2011 - Bub fixes, features
 
   * Refactor duck creation for selected layers into duckmatic.
