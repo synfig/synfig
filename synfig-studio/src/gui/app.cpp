@@ -2109,7 +2109,8 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-				.add_enum_value(synfig::RELEASE_VERSION_0_63_02, "0.63.02", strprintf("0.63.02 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_03, "0.63.03", strprintf("0.63.03 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_02, "0.63.02", "0.63.02")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_01, "0.63.01", "0.63.01")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_00, "0.63.00", "0.63.00")
 				.add_enum_value(synfig::RELEASE_VERSION_0_62_02, "0.62.02", "0.62.02")
