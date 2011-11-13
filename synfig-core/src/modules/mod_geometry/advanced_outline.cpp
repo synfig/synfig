@@ -115,6 +115,8 @@ Advanced_Outline::Advanced_Outline()
 	dilist_=ditem_list;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
+	set_param_static("fast", true);
+
 }
 
 
