@@ -122,6 +122,11 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				synfigapp::Action::Param param(synfigapp::ValueDesc(wpcompo, wpcompo->get_link_index_from_name("position")));
 				return set_param("value_desc", param);
 			}
+			if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				synfigapp::Action::Param param(synfigapp::ValueDesc(wpcompo, wpcompo->get_link_index_from_name("point")));
+				return set_param("value_desc", param);
+			}
 		}
 
 		if(value_desc.is_value_node() && value_desc.get_value_node()->is_exported())

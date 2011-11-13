@@ -723,19 +723,7 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*
 
 		if(!value_desc.is_valid())
 			continue;
-
-		if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
-		{
-			value_desc_list.push_back(
-				synfigapp::ValueDesc(
-					ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-					,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-                                                               ->get_link_index_from_name("point")
-				)
-			);
-		}
-		else
-			value_desc_list.push_back(value_desc);
+		value_desc_list.push_back(value_desc);
 	}
 
 	Gtk::Menu *menu=manage(new Gtk::Menu());
