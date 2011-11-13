@@ -974,8 +974,10 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	else
 		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
 
-	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	if((value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT || value_desc.get_value_type()==ValueBase::TYPE_WIDTHPOINT)
+	 && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
+		// the index=0 is position for widthpoint and vertex for blinepoint
 		value_desc=synfigapp::ValueDesc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),0);
 	}
 
