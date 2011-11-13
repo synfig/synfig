@@ -1270,6 +1270,23 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			continue;
 
 		ValueNode_Animated::Handle value_node;
+		// Check if we are dealing with a BLinePoint or a WidthPoint value desc
+		// If so, then change the value desc to be the position or the point.
+
+		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
+		{
+			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			{
+				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position"));
+				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("position")));
+			}
+			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point"));
+				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("point")));
+			}
+		}
 
 		// If this value isn't a ValueNode_Animated, but
 		// it is somewhat constant, then go ahead and convert
