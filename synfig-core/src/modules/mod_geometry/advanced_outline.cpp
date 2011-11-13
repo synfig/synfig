@@ -192,6 +192,10 @@ Advanced_Outline::sync()
 		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		const vector<BLinePoint>::const_iterator bend(bline.end());
+		// If we have only one blinepoint and it the bline is not looped
+		// then there is nothing to render
+		if(!blineloop && bline_size==1)
+			return;
 		// Fill the list of positions of the blinepoints
 		// bindex is used to calculate the position
 		// of the bilinepoint on the bline properly
