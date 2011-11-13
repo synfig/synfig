@@ -160,7 +160,7 @@ Advanced_Outline::sync()
 		bool homogeneous(homogeneous_);
 		bool dash_enabled(dash_enabled_);
 		Real dash_offset(dash_offset_);
-		int dstart_tip, dend_tip;
+		int dstart_tip(WidthPoint::TYPE_FLAT), dend_tip(WidthPoint::TYPE_FLAT);
 		const bool blineloop(bline_.get_loop());
 		const bool wplistloop(wplist_.get_loop());
 		int bline_size(bline.size());
