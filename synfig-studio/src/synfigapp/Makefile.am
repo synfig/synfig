@@ -47,7 +47,8 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedescexport.h \
 	actions/valuedesclink.h \
 	actions/valuedescblinelink.h \
-	actions/valuedescset.h
+	actions/valuedescset.h \
+	actions/valuedescremovesmart.h
 
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp \
@@ -56,7 +57,8 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescexport.cpp \
 	actions/valuedesclink.cpp \
 	actions/valuedescblinelink.cpp \
-	actions/valuedescset.cpp
+	actions/valuedescset.cpp \
+	actions/valuedescremovesmart.cpp
 
 
 VALUENODE_ACTION_HH = \

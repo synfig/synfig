@@ -116,10 +116,15 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		// If we are handling a Composite WidthPoint then use its position as param
 		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
 		{
-			synfig::ValueNode_Composite::Handle wpcompo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
-			if(wpcompo && wpcompo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
 			{
-				synfigapp::Action::Param param(synfigapp::ValueDesc(wpcompo, wpcompo->get_link_index_from_name("position")));
+				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position")));
+				return set_param("value_desc", param);
+			}
+			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point")));
 				return set_param("value_desc", param);
 			}
 		}
