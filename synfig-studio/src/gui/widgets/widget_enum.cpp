@@ -79,7 +79,22 @@ Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 			row[enum_model.value] = iter->value;
 			row[enum_model.local_name] = iter->local_name;
 		}
+	//pack_start(enum_model.icon);
 	refresh();
+}
+
+void
+Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const Glib::RefPtr<Gdk::Pixbuf> &icon)
+{
+	// check if the index is valid
+	if(index > enum_TreeModel->children().size()-1 )
+		return;
+	Glib::ustring path(strprintf("%d", index).c_str());
+	Gtk::TreeModel::Row row = *(enum_TreeModel->get_iter(path));
+	row[enum_model.icon]=icon;
+	Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
+	pack_start(*icon_cellrenderer,false);
+	add_attribute(icon_cellrenderer->property_pixbuf(), enum_model.icon);
 }
 
 void
