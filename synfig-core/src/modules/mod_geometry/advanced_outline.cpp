@@ -181,6 +181,8 @@ Advanced_Outline::sync()
 		bool first(true);
 		// Used to remember if in the next loop we should do a middle corner
 		bool middle_corner(false);
+		// Used to remember if we have just passed a widthpoint with tip
+		bool done_tip(false);
 		// Used to remember if we are adding a first(last) widthpoint when
 		// blinelooped and first(last) normal widthpoint is before(after) side
 		// type set to interpolate
@@ -640,12 +642,17 @@ Advanced_Outline::sync()
 			// if we are exactly on the next widthpoint...
 			if(ipos==swnext_pos)
 			{
+				Vector unitary;
 				hipos=wnext_pos;
 				// .. do tips. (If withpoint is interpolate it doesn't do anything).
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
-				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-				q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
+				if(q==0.0)
+					unitary=iter_t.norm();
+				else if(q==1.0)
+					unitary=next_t.norm();
+				else
+					unitary=deriv(q).norm();
 				if(wnext->get_dash())
 				{
 					vector<WidthPoint>::iterator ci(scwiter);
@@ -674,7 +681,7 @@ Advanced_Outline::sync()
 						p=hipos;
 					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
-				add_tip(side_a, side_b, curve(bezier_ipos), deriv(q).norm(), *wnext);
+				add_tip(side_a, side_b, curve(q), unitary, *wnext);
 				// Update wplist iterators
 				witer=wnext;
 				switer=swnext;
@@ -734,6 +741,11 @@ Advanced_Outline::sync()
 					//  interpolate before. Noticiable for the FLAT case
 					// or when the width is smaller than the step on the bezier.
 					ipos=ipos+EPSILON;
+					// If we have just done a tip width side tipe after not interpolate
+					if(witer->get_side_type_after()!=WidthPoint::TYPE_INTERPOLATE)
+						done_tip=true;
+					else
+						done_tip=false;
 					// Keep track of the interpolation withpoints
 					if(ipos > scwnext->get_position())
 					{
@@ -820,14 +832,19 @@ Advanced_Outline::sync()
 				if(ipos > swnext_pos && bnext_pos >= swnext_pos)
 				{
 					// ... just stay on it and ...
+					Vector unitary;
 					ipos=swnext_pos;
 					hipos=wnext_pos;
 					// ... add interpolation for the last step
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
-					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					if(q==0.0)
+						unitary=iter_t.norm();
+					else if(q==1.0)
+						unitary=next_t.norm();
+					else
+						unitary=deriv(q).norm();
+					const Vector d(unitary.perp());
+					const Vector p(curve(q));
 					Real ww;
 					// last step has width of zero if the widthpoint is not interpolate
 					// on the before side.
@@ -861,14 +878,19 @@ Advanced_Outline::sync()
 				}
 				else if(ipos > bnext_pos && bnext_pos < swnext_pos)
 				{
+					Vector unitary;
 					hipos=hbnext_pos;
 					ipos=bnext_pos;
 					middle_corner=true;
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-					q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
-					const Vector d(deriv(q).perp().norm());
-					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+					if(q==0.0)
+						unitary=iter_t.norm();
+					else if(q==1.0)
+						unitary=next_t.norm();
+					else
+						unitary=deriv(q).norm();
+					const Vector d(unitary.perp());
+					const Vector p(curve(q));
 					WidthPoint i(*scwiter);
 					WidthPoint n(*scwnext);
 					if(!fast_)
@@ -897,11 +919,16 @@ Advanced_Outline::sync()
 					break;
 				}
 				// Add interpolation
+				Vector unitary;
 				Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-				q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
-				q=q>1.0-CUSP_TANGENT_ADJUST?1-0-CUSP_TANGENT_ADJUST:q;
-				const Vector d(deriv(q).perp().norm());
-				const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
+				if(q==0.0)
+					unitary=iter_t.norm();
+				else if(q==1.0)
+					unitary=next_t.norm();
+				else
+					unitary=deriv(q).norm();
+				const Vector d(unitary.perp());
+				const Vector p(curve(q));
 				// if we inserted the widthpoints at start and end, don't consider them for interpolation.
 				if(cwiter->get_position() == 0.0 && cwnext->get_position()!=1.0 && inserted_first)
 				{
@@ -924,7 +951,11 @@ Advanced_Outline::sync()
 				Real po(ipos);
 				if(!fast_)
 					po=std_to_hom(bline, ipos, wplistloop, blineloop);
-				const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+				Real w;
+				if(done_tip)
+					w=0;
+				else
+					w=(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
