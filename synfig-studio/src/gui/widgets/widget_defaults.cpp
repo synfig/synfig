@@ -297,6 +297,10 @@ Widget_Defaults::Widget_Defaults()
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
+	widget_interpolation->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_constant"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 	attach(*widget_interpolation,0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 
