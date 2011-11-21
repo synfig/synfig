@@ -313,6 +313,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(preview_options,"preview_options_icon."IMAGE_EXT,_("Preview Options Dialog"));
 	INIT_STOCK_ICON(render_options,"render_options_icon."IMAGE_EXT,_("Render Options Dialog"));
 
+	INIT_STOCK_ICON(interpolation_type_tcb,"interpolation_type_tcb_icon."IMAGE_EXT,_("TCB interpolation"));
+	INIT_STOCK_ICON(interpolation_type_ease,"interpolation_type_ease_icon."IMAGE_EXT,_("Ease In/Out interpolation"));
+	INIT_STOCK_ICON(interpolation_type_const,"interpolation_type_const_icon."IMAGE_EXT,_("Const interpolation"));
+	INIT_STOCK_ICON(interpolation_type_linear,"interpolation_type_linear_icon."IMAGE_EXT,_("Linear interpolation"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));

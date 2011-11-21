@@ -67,6 +67,11 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
 	\
+	interpolation_type_tcb_icon.sif\
+	interpolation_type_ease_icon.sif\
+	interpolation_type_const_icon.sif\
+	interpolation_type_linear_icon.sif\
+	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
 	layer_blur_radial_icon.sif \
@@ -224,6 +229,11 @@ IMAGES = \
 	action_peak_interpolation_icon.$(EXT) \
 	action_rounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
+	\
+	interpolation_type_tcb_icon.$(EXT)\
+	interpolation_type_ease_icon.$(EXT)\
+	interpolation_type_const_icon.$(EXT)\
+	interpolation_type_linear_icon.$(EXT)\
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
