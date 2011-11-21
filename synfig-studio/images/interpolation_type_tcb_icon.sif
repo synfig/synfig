@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <canvas version="0.9" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="-3.245189 3.245189 3.245189 -3.245189" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Interpolation Type TCB icon</name>
-  <desc>Interpolation Type TCB icon. Copyright 2011 Carlos L&#xF3;pez. Released under GPL lincese.</desc>
+  <desc>Interpolation Type TCB icon. Copyright 2011 Carlos L&#xF3;pez. Released under GPL 2 lincese.</desc>
   <meta name="grid_show" content="0"/>
   <meta name="grid_size" content="0,405649 0,405649"/>
   <meta name="grid_snap" content="1"/>
