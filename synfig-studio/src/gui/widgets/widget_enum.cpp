@@ -57,6 +57,7 @@ Widget_Enum::Widget_Enum()
 {
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);
+	pack_start(enum_model.icon, false);
 	pack_start(enum_model.local_name);
 }
 
@@ -79,7 +80,6 @@ Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 			row[enum_model.value] = iter->value;
 			row[enum_model.local_name] = iter->local_name;
 		}
-	//pack_start(enum_model.icon);
 	refresh();
 }
 
@@ -92,9 +92,6 @@ Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const Glib::RefPtr
 	Glib::ustring path(strprintf("%d", index).c_str());
 	Gtk::TreeModel::Row row = *(enum_TreeModel->get_iter(path));
 	row[enum_model.icon]=icon;
-	Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-	pack_start(*icon_cellrenderer,false);
-	add_attribute(icon_cellrenderer->property_pixbuf(), enum_model.icon);
 }
 
 void
