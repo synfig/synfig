@@ -619,7 +619,9 @@ Advanced_Outline::sync()
 		{
 			Vector iter_t(biter->get_tangent2());
 			Vector next_t(bnext->get_tangent1());
-			bool split_flag(biter->get_split_tangent_flag() || (iter_t.mag()==0.0));
+			Real iter_t_mag(iter_t.mag());
+			Real next_t_mag(next_t.mag());
+			bool split_flag(biter->get_split_tangent_flag() || (iter_t_mag==0.0));
 			// Setup the bezier curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
@@ -628,10 +630,15 @@ Advanced_Outline::sync()
 				next_t
 			);
 			const derivative< hermite<Vector> > deriv(curve);
+			// if tangents are zero length then use the derivative.
+			if(iter_t_mag==0.0)
+				iter_t=deriv(CUSP_TANGENT_ADJUST);
+			if(next_t_mag==0.0)
+				next_t=deriv(1.0-CUSP_TANGENT_ADJUST);
 			// Remember the first tangent to use it on the last cusp
 			if(blineloop && first)
 			{
-				first_tangent=deriv(CUSP_TANGENT_ADJUST);
+				first_tangent=iter_t;
 				first=false;
 			}
 			// get the position of the next widhtpoint.
@@ -699,7 +706,8 @@ Advanced_Outline::sync()
 					cwiter=--cwplist.end();
 					scwnext=scwplist.begin();
 					scwiter=--scwplist.end();
-					if(blineloop && bnext->get_split_tangent_flag())
+					// if we are doing looped blines and it is tangent split or its tangent is zero
+					if(blineloop && (bnext->get_split_tangent_flag()|| bnext->get_tangent1().mag()==0.0))
 					{
 						vector<WidthPoint>::iterator first(wplist.begin());
 						vector<WidthPoint>::iterator last(--wplist.end());
@@ -785,6 +793,7 @@ Advanced_Outline::sync()
 				while(ipos > bnext_pos && bnext+1!=bend)
 				{
 					// keep track of last tangent
+					// NOTE: keep tangent here is silly, deriv is not updated!
 					last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 					// Update iterators
 					biter=bnext;
@@ -824,6 +833,8 @@ Advanced_Outline::sync()
 					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
 				}
 				middle_corner=false;
+				// This avoid to calculate derivative on q=0
+				ipos=ipos+EPSILON;
 			}
 			do // secondary loop. For interpolation steps.
 			{
@@ -878,19 +889,16 @@ Advanced_Outline::sync()
 				}
 				else if(ipos > bnext_pos && bnext_pos < swnext_pos)
 				{
-					Vector unitary;
 					hipos=hbnext_pos;
 					ipos=bnext_pos;
 					middle_corner=true;
+					//Note: Calculated q should be always equal to 1.0
+					// so I commented this code
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-					if(q==0.0)
-						unitary=iter_t.norm();
-					else if(q==1.0)
-						unitary=next_t.norm();
-					else
-						unitary=deriv(q).norm();
-					const Vector d(unitary.perp());
-					const Vector p(curve(q));
+					q=q>CUSP_TANGENT_ADJUST?q:CUSP_TANGENT_ADJUST;
+					q=q>1.0-CUSP_TANGENT_ADJUST?1.0-CUSP_TANGENT_ADJUST:q;
+					const Vector d(deriv(q).perp().norm());
+					const Vector p(curve(bline_to_bezier(ipos, biter_pos, bezier_size)));
 					WidthPoint i(*scwiter);
 					WidthPoint n(*scwnext);
 					if(!fast_)
@@ -953,7 +961,10 @@ Advanced_Outline::sync()
 					po=std_to_hom(bline, ipos, wplistloop, blineloop);
 				Real w;
 				if(done_tip)
+				{
 					w=0;
+					done_tip=false;
+				}
 				else
 					w=(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
 				side_a.push_back(p+d*w);
