@@ -364,7 +364,7 @@ playing(false)
 	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Stop")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
+	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::pause));
 	IMAGIFY_BUTTON(button,"synfig-animate_pause",_("Pause"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
@@ -640,7 +640,7 @@ bool studio::Widget_Preview::play_update()
 			{
 				time = adj_time_scrub.get_upper();
 				adj_time_scrub.set_value(time);
-				play_stop();
+				play_pause();
 				update();
 
 				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
@@ -671,7 +671,7 @@ void studio::Widget_Preview::slider_move()
 //for other things updating the value changed signal...
 void studio::Widget_Preview::scrub_updated(double t)
 {
-	stop();
+	pause();
 
 	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
 	//double oldt = t;
@@ -708,7 +708,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 	synfig::info("Setting preview");
 
 	//stop playing the mini animation...
-	stop();
+	pause();
 
 	if(preview)
 	{
@@ -792,18 +792,18 @@ void studio::Widget_Preview::play()
 
 }
 
-void studio::Widget_Preview::play_stop()
+void studio::Widget_Preview::play_pause()
 {
 	playing = false;
-	signal_stop()();
+	signal_pause()();
 	if(audio) audio->stop(); //!< stop the audio
 	//synfig::info("Stopping...");
 }
 
-void studio::Widget_Preview::stop()
+void studio::Widget_Preview::pause()
 {
 	//synfig::warning("stopping");
-	play_stop();
+	play_pause();
 	timecon.disconnect();
 }
 
@@ -815,7 +815,7 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 		{
 			if(event->button.button == 1 || event->button.button == 3)
 			{
-				stop();
+				pause();
 			}
 		}
 
@@ -845,7 +845,7 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 
 void studio::Widget_Preview::seek(float t)
 {
-	stop();
+	pause();
 	adj_time_scrub.set_value(t);
 }
 
@@ -854,7 +854,7 @@ void studio::Widget_Preview::repreview()
 	if(preview)
 	{
 		stoprender();
-		stop();
+		pause();
 		preview->get_canvasview()->preview_option();
 	}
 }
@@ -869,7 +869,7 @@ void studio::Widget_Preview::stoprender()
 
 #ifdef SINGLE_THREADED
 		if (preview->renderer->updating)
-			preview->renderer->stop();
+			preview->renderer->pause();
 		else
 #endif
 			preview->renderer.detach();
@@ -878,7 +878,7 @@ void studio::Widget_Preview::stoprender()
 
 void studio::Widget_Preview::eraseall()
 {
-	stop();
+	pause();
 	stoprender();
 
 	currentbuf.clear();

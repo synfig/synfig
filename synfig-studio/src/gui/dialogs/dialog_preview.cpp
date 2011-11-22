@@ -79,7 +79,7 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 void Dialog_Preview::on_hide()
 {
 	Dialog::on_hide();
-	preview.stop();
+	preview.pause();
 	preview.stoprender();
 }
 

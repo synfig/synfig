@@ -204,7 +204,7 @@ class Widget_Preview : public Gtk::Table
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
-	void play_stop();
+	void play_pause();
 	//bool play_frameupdate();
 	void update();
 
@@ -223,7 +223,7 @@ class Widget_Preview : public Gtk::Table
 	void preview_draw();
 
 	sigc::signal<void,float>	signal_play_;
-	sigc::signal<void>			signal_stop_;
+	sigc::signal<void>			signal_pause_;
 	sigc::signal<void,float>	signal_seek_;
 
 public:
@@ -239,13 +239,13 @@ public:
 	void clear();
 
 	void play();
-	void stop();
+	void pause();
 	void seek(float t);
 
 	void stoprender();
 
 	sigc::signal<void,float>	&signal_play() {return signal_play_;}
-	sigc::signal<void>	&signal_stop() {return signal_stop_;}
+	sigc::signal<void>	&signal_pause() {return signal_pause_;}
 	sigc::signal<void,float>	&signal_seek() {return signal_seek_;}
 
 	bool get_loop_flag() const {return b_loop.get_active();}
