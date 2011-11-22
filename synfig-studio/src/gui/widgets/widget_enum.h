@@ -48,8 +48,9 @@ class Model : public Gtk::TreeModel::ColumnRecord
 		public:
 
 		Model()
-		{ add(value); add(local_name); }
+		{ add(icon); add(value); add(local_name); }
 
+		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
 		Gtk::TreeModelColumn<int> value;
 		Gtk::TreeModelColumn<Glib::ustring> local_name;
 	};
@@ -62,6 +63,7 @@ public:
 	~Widget_Enum();
 
 	void set_param_desc(const synfig::ParamDesc &x);
+	void set_icon(Gtk::TreeNodeChildren::size_type index,const Glib::RefPtr<Gdk::Pixbuf> &icon);
 	void refresh();
 
 	void set_value(int data);
