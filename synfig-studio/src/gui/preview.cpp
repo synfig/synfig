@@ -357,23 +357,28 @@ playing(false)
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
-	button = manage(new Gtk::Button(/*_("Play")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-	IMAGIFY_BUTTON(button,"synfig-animate_play",_("Play"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	button = manage(new Gtk::Button());
+	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+	IMAGIFY_BUTTON(button, "synfig-animate_play", _("Play"));
+	hbox->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
-	button = manage(new Gtk::Button(/*_("Stop")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::pause));
-	IMAGIFY_BUTTON(button,"synfig-animate_pause",_("Pause"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+//	button = manage(new Gtk::Button(/*_("Play")*/));
+//	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
+//	IMAGIFY_BUTTON(button,"synfig-animate_play",_("Play"));
+//	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
+//	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+
+//	button = manage(new Gtk::Button(/*_("Stop")*/));
+//	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::pause));
+//	IMAGIFY_BUTTON(button,"synfig-animate_pause",_("Pause"));
+//	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
+//	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	//attack the stop render and erase all buttons to same line...
-	{
-		Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
-		hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
-	}
+	
+	Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
+	hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
+
 
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
@@ -805,6 +810,20 @@ void studio::Widget_Preview::pause()
 	//synfig::warning("stopping");
 	play_pause();
 	timecon.disconnect();
+}
+
+void studio::Widget_Preview::on_play_pause_pressed()
+{
+	bool play_flag;
+	if(!playing)
+	{
+		play_flag=true;
+	}
+	else
+	{
+		play_flag=false;
+	}
+	if(play_flag) play(); else pause();
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)

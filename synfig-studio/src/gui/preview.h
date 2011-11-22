@@ -242,6 +242,8 @@ public:
 	void pause();
 	void seek(float t);
 
+	void on_play_pause_pressed();
+
 	void stoprender();
 
 	sigc::signal<void,float>	&signal_play() {return signal_play_;}
