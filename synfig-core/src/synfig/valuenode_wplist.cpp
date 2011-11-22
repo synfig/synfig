@@ -253,15 +253,22 @@ ValueNode_WPList::create_list_entry(int index, Time time, Real /*origin*/)
 {
 	ValueNode_WPList::ListEntry ret;
 	synfig::WidthPoint curr, prev, inserted;
-	//ValueNode_Composite::Handle vnh(ValueNode_Composite::Handle::cast_dynamic(list[index].value_node));
-	curr=(*(list[index].value_node))(time).get(curr);
-	Real curr_pos(curr.get_norm_position(get_loop()));
-	prev=find_prev_valid_entry_by_position(curr_pos, time);
-	Real prev_pos(prev.get_norm_position(get_loop()));
-	inserted.set_position((prev_pos+curr_pos)/2);
-	Real prev_width(prev.get_width());
-	Real curr_width(curr.get_width());
-	inserted.set_width((prev_width+curr_width)/2);
+	if(link_count())
+	{
+		curr=(*(list[index].value_node))(time).get(curr);
+		Real curr_pos(curr.get_norm_position(get_loop()));
+		prev=find_prev_valid_entry_by_position(curr_pos, time);
+		Real prev_pos(prev.get_norm_position(get_loop()));
+		inserted.set_position((prev_pos+curr_pos)/2);
+		Real prev_width(prev.get_width());
+		Real curr_width(curr.get_width());
+		inserted.set_width((prev_width+curr_width)/2);
+	}
+	else
+	{
+		inserted.set_position(0.5);
+		inserted.set_width(1.0);
+	}
 	ret.index=0;
 	ret.set_parent_value_node(this);
 	ret.value_node=ValueNode_Composite::create(inserted);
