@@ -362,18 +362,6 @@ playing(false)
 	IMAGIFY_BUTTON(button, "synfig-animate_play", _("Play"));
 	hbox->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
-//	button = manage(new Gtk::Button(/*_("Play")*/));
-//	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-//	IMAGIFY_BUTTON(button,"synfig-animate_play",_("Play"));
-//	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-//	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-
-//	button = manage(new Gtk::Button(/*_("Stop")*/));
-//	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::pause));
-//	IMAGIFY_BUTTON(button,"synfig-animate_pause",_("Pause"));
-//	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-//	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-
 	//attack the stop render and erase all buttons to same line...
 	
 	Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
