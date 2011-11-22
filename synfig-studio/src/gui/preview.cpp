@@ -298,7 +298,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	icon->show();
 
 Widget_Preview::Widget_Preview()
-:Gtk::Table(5,5,false),
+:Gtk::Table(5,4,false),
 adj_time_scrub(0,0,1000,1,10,0),
 scr_time_scrub(adj_time_scrub),
 b_loop(/*_("Loop")*/),
@@ -408,11 +408,11 @@ playing(false)
 	hbox->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);
 	hbox->show_all();
 	attach(*hbox,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	//attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	//5th row
-	disp_sound.set_size_request(-1,32);
-	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	//disp_sound.set_size_request(-1,32);
+	//attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	show_all();
 
