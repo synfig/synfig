@@ -158,7 +158,7 @@ Advanced_Outline::sync()
 		// only allowing visible widthpoints.
 		vector<WidthPoint> fdwplist;
 		bool homogeneous(homogeneous_);
-		bool dash_enabled(dash_enabled_);
+		bool dash_enabled(dash_enabled_ && dilist.size());
 		Real dash_offset(dash_offset_);
 		int dstart_tip(WidthPoint::TYPE_FLAT), dend_tip(WidthPoint::TYPE_FLAT);
 		const bool blineloop(bline_.get_loop());
