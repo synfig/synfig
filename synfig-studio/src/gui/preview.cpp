@@ -357,10 +357,17 @@ playing(false)
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
-	button = manage(new Gtk::Button());
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
-	IMAGIFY_BUTTON(button, "synfig-animate_play", _("Play"));
-	hbox->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	//play pause button
+	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton = manage(new class Gtk::Button());
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon1->set_padding(0,0);
+	icon1->show();
+	play_pausebutton->add(*icon1);
+	play_pausebutton->set_relief(Gtk::RELIEF_NONE);
+	play_pausebutton->show();
+	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+	hbox->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
 
 	//attack the stop render and erase all buttons to same line...
 	
@@ -803,12 +810,28 @@ void studio::Widget_Preview::pause()
 void studio::Widget_Preview::on_play_pause_pressed()
 {
 	bool play_flag;
+	Gtk::Image *icon1;
+
 	if(!playing)
 	{
+		icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
+		play_pausebutton->remove();
+		play_pausebutton->add(*icon1);
+		play_pausebutton->set_tooltip_text(_("Pause"));
+		icon1->set_padding(0,0);
+		icon1->show();
+
 		play_flag=true;
 	}
 	else
 	{
+		icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+		play_pausebutton->remove();
+		play_pausebutton->add(*icon1);
+		play_pausebutton->set_tooltip_text(_("Play"));
+		icon1->set_padding(0,0);
+		icon1->show();
+
 		play_flag=false;
 	}
 	if(play_flag) play(); else pause();
