@@ -654,9 +654,9 @@ Advanced_Outline::sync()
 				// .. do tips. (If withpoint is interpolate it doesn't do anything).
 				Real bezier_ipos(bline_to_bezier(ipos, biter_pos, bezier_size));
 				Real q(bezier_ipos);
-				if(q==0.0)
+				if(q < EPSILON)
 					unitary=iter_t.norm();
-				else if(q==1.0)
+				else if(q > (1.0-EPSILON))
 					unitary=next_t.norm();
 				else
 					unitary=deriv(q).norm();
@@ -848,9 +848,9 @@ Advanced_Outline::sync()
 					hipos=wnext_pos;
 					// ... add interpolation for the last step
 					Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-					if(q==0.0)
+					if(q<EPSILON)
 						unitary=iter_t.norm();
-					else if(q==1.0)
+					else if(q>(1.0-EPSILON))
 						unitary=next_t.norm();
 					else
 						unitary=deriv(q).norm();
@@ -929,11 +929,11 @@ Advanced_Outline::sync()
 				// Add interpolation
 				Vector unitary;
 				Real q(bline_to_bezier(ipos, biter_pos, bezier_size));
-				if(q==0.0)
-					unitary=iter_t.norm();
-				else if(q==1.0)
-					unitary=next_t.norm();
-				else
+				//if(q==0.0)
+					//unitary=iter_t.norm();
+				//else if(q==1.0)
+					//unitary=next_t.norm();
+				//else
 					unitary=deriv(q).norm();
 				const Vector d(unitary.perp());
 				const Vector p(curve(q));
