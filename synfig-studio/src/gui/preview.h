@@ -223,7 +223,7 @@ class Widget_Preview : public Gtk::Table
 	void preview_draw();
 
 	sigc::signal<void,float>	signal_play_;
-	sigc::signal<void>			signal_pause_;
+	sigc::signal<void>		signal_pause_;
 	sigc::signal<void,float>	signal_seek_;
 
 public:

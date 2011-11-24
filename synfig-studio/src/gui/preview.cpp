@@ -765,7 +765,7 @@ void studio::Widget_Preview::clear()
 
 void studio::Widget_Preview::play()
 {
-	if(preview && !playing)
+	if(preview)
 	{
 		//synfig::info("Playing at %lf",adj_time_scrub.get_value());
 		//audiotime = adj_time_scrub.get_value();
@@ -789,7 +789,6 @@ void studio::Widget_Preview::play()
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
 	}
-
 }
 
 void studio::Widget_Preview::play_pause()
@@ -798,6 +797,15 @@ void studio::Widget_Preview::play_pause()
 	signal_pause()();
 	if(audio) audio->stop(); //!< stop the audio
 	//synfig::info("Stopping...");
+
+	Gtk::Image *icon;
+	icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton->remove();
+	play_pausebutton->add(*icon);
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon->set_padding(0,0);
+	icon->show();
+	
 }
 
 void studio::Widget_Preview::pause()
@@ -810,28 +818,25 @@ void studio::Widget_Preview::pause()
 void studio::Widget_Preview::on_play_pause_pressed()
 {
 	bool play_flag;
-	Gtk::Image *icon1;
+	float begin = preview->get_begintime();
+	float end = preview->get_endtime();
+	float current = adj_time_scrub.get_value();
+	Gtk::Image *icon;
 
 	if(!playing)
 	{
-		icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
 		play_pausebutton->remove();
-		play_pausebutton->add(*icon1);
+		if(current == end) adj_time_scrub.set_value(begin);
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
 		play_pausebutton->set_tooltip_text(_("Pause"));
-		icon1->set_padding(0,0);
-		icon1->show();
+		play_pausebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
 
 		play_flag=true;
 	}
 	else
 	{
-		icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
-		play_pausebutton->remove();
-		play_pausebutton->add(*icon1);
-		play_pausebutton->set_tooltip_text(_("Play"));
-		icon1->set_padding(0,0);
-		icon1->show();
-
 		play_flag=false;
 	}
 	if(play_flag) play(); else pause();
