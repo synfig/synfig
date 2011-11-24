@@ -365,7 +365,7 @@ playing(false)
 	hbox->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
 
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Toggle Looping"));
+	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Loop"));
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
