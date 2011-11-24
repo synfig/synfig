@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_metadata.h
+/*!	\file trees/metadatatree.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +23,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_METADATA_H
-#define __SYNFIG_STUDIO_DOCK_METADATA_H
+#ifndef __SYNFIG_STUDIO_METADATATREE_H
+#define __SYNFIG_STUDIO_METADATATREE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
 #include <gtkmm/treeview.h>
-#include "instance.h"
-#include "docks/dock_canvasspecific.h"
+#include <gtkmm/treestore.h>
+#include <synfigapp/canvasinterface.h>
+#include "trees/metadatatreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,25 +41,34 @@
 
 namespace studio {
 
-class CanvasView;
-class Instance;
-
-class Dock_MetaData : public Dock_CanvasSpecific
+class MetaDataTree : public Gtk::TreeView
 {
+public:
+	MetaDataTree();
+	virtual ~MetaDataTree();
+	MetaDataTreeStore::Model model;
 
-	void on_add_pressed();
-	void on_delete_pressed();
+private:
+	Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_;
+	Gtk::CellRendererText *cell_renderer_key;
+	Gtk::CellRendererText *cell_renderer_data;
+	sigc::signal<void,synfig::String> signal_edited_;
+	sigc::signal<void,synfig::String,synfig::String> signal_edited_data_;
+	bool editable_;
 
-protected:
-
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+private:
+	void on_edited_key(const Glib::ustring&path_string,synfig::String key);
+	void on_edited_data(const Glib::ustring&path_string,synfig::String data);
 
 public:
-
-	Dock_MetaData();
-	~Dock_MetaData();
-}; // END of Dock_MetaData
+	void set_model(Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_);
+	void set_editable(bool x=true);
+	bool get_editable()const { return editable_; }
+	//! Signal called when a metadata has been edited in any way
+	sigc::signal<void,synfig::String>& signal_edited() { return signal_edited_; }
+	//! Signal called when data has been edited.
+	sigc::signal<void,synfig::String,synfig::String>& signal_edited_data() { return signal_edited_data_; }
+}; // END of MetaDataTree
 
 }; // END of namespace studio
 
