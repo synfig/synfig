@@ -352,11 +352,6 @@ playing(false)
 	//2nd row
 	hbox = manage(new Gtk::HBox);
 
-	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Toggle Looping"));
-	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
-	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-
 	//play pause button
 	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
 	play_pausebutton = manage(new class Gtk::Button());
@@ -368,6 +363,11 @@ playing(false)
 	play_pausebutton->show();
 	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
 	hbox->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
+
+	button = &b_loop;
+	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Toggle Looping"));
+	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
+	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	//attack the stop render and erase all buttons to same line...
 	
