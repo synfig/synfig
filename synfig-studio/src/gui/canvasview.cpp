@@ -1224,8 +1224,6 @@ CanvasView::create_display_bar()
 	onion_skin->set_tooltip_text( _("Shows onion skin when enabled"));
 	onion_skin->set_relief(Gtk::RELIEF_NONE);
 	onion_skin->show();
-	work_area->signal_onion_skin_changed().connect(
-			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
 
 	// Set up past onion skin spin button
 	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
@@ -3154,8 +3152,7 @@ CanvasView::toggle_onion_skin()
 	toggling_onion_skin=true;
 	work_area->toggle_onion_skin();
 	// Update the toggle onion skin action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
-	action->set_active(work_area->get_onion_skin());
+	set_onion_skin_toggle(work_area->get_onion_skin());
 	// Update the toggle grid snap check button
 	onion_skin->set_active(work_area->get_onion_skin());
 	toggling_onion_skin=false;
