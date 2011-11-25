@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialogs/canvasproperties.h
+/*!	\file trees/metadatatree.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,19 +23,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_CANVASPROPERTIES_H
-#define __SYNFIG_GTKMM_CANVASPROPERTIES_H
+#ifndef __SYNFIG_STUDIO_METADATATREE_H
+#define __SYNFIG_STUDIO_METADATATREE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-
-#include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/entry.h>
-
-#include "renddesc.h"
+#include <gtkmm/treeview.h>
+#include <gtkmm/treestore.h>
+#include <synfigapp/canvasinterface.h>
+#include "trees/metadatatreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,40 +39,36 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class TreeView; };
-namespace synfigapp { class CanvasInterface; };
+namespace studio {
 
-namespace studio
+class MetaDataTree : public Gtk::TreeView
 {
-class CanvasProperties  :  public Gtk::Dialog
-{
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
-	Widget_RendDesc widget_rend_desc;
-	Gtk::Entry entry_id;
-	Gtk::Entry entry_name;
-	Gtk::Entry entry_description;
+public:
+	MetaDataTree();
+	virtual ~MetaDataTree();
+	MetaDataTreeStore::Model model;
 
-	bool dirty_rend_desc;
+private:
+	Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_;
+	Gtk::CellRendererText *cell_renderer_key;
+	Gtk::CellRendererText *cell_renderer_data;
+	sigc::signal<void,synfig::String> signal_edited_;
+	sigc::signal<void,synfig::String,synfig::String> signal_edited_data_;
+	bool editable_;
 
-	//Gtk::TreeView* meta_data_tree_view;
-	//void on_button_meta_data_add();
-	//void on_button_meta_data_delete();
+private:
+	void on_edited_key(const Glib::ustring&path_string,synfig::String key);
+	void on_edited_data(const Glib::ustring&path_string,synfig::String data);
 
 public:
-	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
-	~CanvasProperties();
-
-	void refresh();
-	void update_title();
-private:
-	void on_rend_desc_changed();
-
-	//Gtk::Widget& create_meta_data_view();
-
-	void on_ok_pressed();
-	void on_apply_pressed();
-	void on_cancel_pressed();
-}; // END of class CanvasProperties
+	void set_model(Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_);
+	void set_editable(bool x=true);
+	bool get_editable()const { return editable_; }
+	//! Signal called when a metadata has been edited in any way
+	sigc::signal<void,synfig::String>& signal_edited() { return signal_edited_; }
+	//! Signal called when data has been edited.
+	sigc::signal<void,synfig::String,synfig::String>& signal_edited_data() { return signal_edited_data_; }
+}; // END of MetaDataTree
 
 }; // END of namespace studio
 

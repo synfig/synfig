@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -39,6 +40,7 @@
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
 #include "trees/metadatatreestore.h"
+#include "trees/metadatatree.h"
 #include "canvasview.h"
 
 #include "general.h"
@@ -61,23 +63,8 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
-	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
-	tree_view(manage(new Gtk::TreeView()))
+	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data"))
 {
-	MetaDataTreeStore::Model model;
-
-	tree_view->append_column(_("Key"),model.key);
-	tree_view->append_column_editable(_("Data"),model.data);
-	tree_view->set_rules_hint();
-
-	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
-	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolledwindow->add(*tree_view);
-	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
-	scrolledwindow->show();
-
-	add(*scrolledwindow);
 
 	add_button(
 		Gtk::StockID("gtk-add"),
@@ -107,7 +94,13 @@ Dock_MetaData::~Dock_MetaData()
 void
 Dock_MetaData::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	canvas_view->set_tree_model(get_name(),MetaDataTreeStore::create(canvas_view->canvas_interface()));
+	Glib::RefPtr<MetaDataTreeStore> metadata_tree_store;
+	metadata_tree_store=MetaDataTreeStore::create(canvas_view->canvas_interface());
+	MetaDataTree* metadata_tree(new MetaDataTree());
+	metadata_tree->set_model(metadata_tree_store);
+	metadata_tree->set_editable(true);
+	canvas_view->set_tree_model(get_name(),metadata_tree_store);
+	canvas_view->set_ext_widget(get_name(),metadata_tree);
 }
 
 void
@@ -115,14 +108,12 @@ Dock_MetaData::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 {
 	if(canvas_view)
 	{
-		tree_view->set_model(canvas_view->get_tree_model(get_name()));
+		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
+		add(*tree_view);
 		tree_view->show();
 	}
 	else
-	{
-		tree_view->set_model(Glib::RefPtr<Gtk::TreeModel>());
-		tree_view->hide();
-	}
+		clear_previous();
 }
 
 void

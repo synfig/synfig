@@ -181,6 +181,7 @@ public:
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
+	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -339,6 +340,7 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 
 	Gtk::RadioButtonGroup quality_group;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
@@ -711,6 +713,8 @@ private:
 	bool on_audio_scrub();
 
 	void on_play_stop_pressed();
+
+	void on_meta_data_changed();
 
 protected:
 	bool close_instance_when_safe();

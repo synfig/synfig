@@ -1022,6 +1022,7 @@ WorkArea::load_meta_data()
 
 	meta_data_lock=false;
 	queue_draw();
+	signal_meta_data_changed()();
 }
 
 void
@@ -1032,7 +1033,6 @@ WorkArea::set_onion_skin(bool x)
 	onion_skin=x;
 	save_meta_data();
 	queue_render_preview();
-	signal_onion_skin_changed()();
 }
 
 bool

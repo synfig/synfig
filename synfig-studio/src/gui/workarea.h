@@ -323,22 +323,23 @@ private:
 	sigc::signal<void> signal_cursor_moved_;
 	sigc::signal<void> signal_rendering_;
 
-	sigc::signal<void> signal_onion_skin_changed_;
-
 	//! Signal for when the user clicks on a layer
 	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_;
 
 	sigc::signal<void> signal_view_window_changed_;
 
-public:
+	sigc::signal<void> signal_meta_data_changed_;
 
-	sigc::signal<void>& signal_onion_skin_changed() { return signal_onion_skin_changed_; }
+public:
 
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
 
 	sigc::signal<void>& signal_cursor_moved() { return signal_cursor_moved_; }
 
 	sigc::signal<void>& signal_view_window_changed() { return signal_view_window_changed_; }
+
+	sigc::signal<void>& signal_meta_data_changed() { return signal_meta_data_changed_; }
+
 	void view_window_changed() { signal_view_window_changed()(); }
 
 	sigc::signal<void,GdkDevice* >& signal_input_device_changed() { return signal_input_device_changed_; }
