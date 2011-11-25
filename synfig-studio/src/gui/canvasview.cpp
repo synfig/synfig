@@ -1224,6 +1224,8 @@ CanvasView::create_display_bar()
 	onion_skin->set_tooltip_text( _("Shows onion skin when enabled"));
 	onion_skin->set_relief(Gtk::RELIEF_NONE);
 	onion_skin->show();
+	work_area->signal_onion_skin_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
 
 	// Set up past onion skin spin button
 	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
@@ -1613,9 +1615,9 @@ CanvasView::init_menus()
 		action->set_active(work_area->get_low_resolution_flag());
 		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 
-		action = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
-		action->set_active(work_area->get_onion_skin());
-		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
+		onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
+		onion_skin_toggle->set_active(work_area->get_onion_skin());
+		action_group->add(onion_skin_toggle, sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
 	}
 
 	action_group->add( Gtk::Action::create("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit")),
