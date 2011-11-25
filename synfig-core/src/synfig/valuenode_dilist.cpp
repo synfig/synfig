@@ -107,8 +107,16 @@ ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 {
 	ValueNode_DIList::ListEntry ret;
 	synfig::DashItem inserted;
-	int new_index(find_prev_valid_entry(index, time));
-	ret.index=new_index;
+	int new_index;
+	if(link_count())
+	{
+		new_index=find_prev_valid_entry(index, time);
+		ret.index=new_index;
+	}
+	else
+	{
+		ret.index=index;
+	}
 	ret.set_parent_value_node(this);
 	ret.value_node=ValueNode_Composite::create(inserted);
 	ret.value_node->set_parent_canvas(get_parent_canvas());

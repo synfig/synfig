@@ -584,39 +584,33 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	ValueNode_BLine::ListEntry ret;
 
 	synfig::BLinePoint prev,next;
-
+	synfig::BLinePoint bline_point;
 	int prev_i,next_i;
 
-	index=index%link_count();
-
-	assert(index>=0);
+	if(link_count())
+	{
+		index=index%link_count();
+		assert(index>=0);
+		if(!list[index].status_at_time(time))
+			next_i=find_next_valid_entry(index,time);
+		else
+			next_i=index;
+		prev_i=find_prev_valid_entry(index,time);
+		next=(*list[next_i].value_node)(time);
+		prev=(*list[prev_i].value_node)(time);
+		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
+		etl::derivative< etl::hermite<Vector> > deriv(curve);
+		bline_point.set_vertex(curve(origin));
+		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
+		bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
+		bline_point.set_tangent2(bline_point.get_tangent1());
+		bline_point.set_split_tangent_flag(false);
+		bline_point.set_origin(origin);
+	}
 	ret.index=index;
 	ret.set_parent_value_node(this);
-
-	if(!list[index].status_at_time(time))
-		next_i=find_next_valid_entry(index,time);
-	else
-		next_i=index;
-	prev_i=find_prev_valid_entry(index,time);
-
-	//synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
-
-	next=(*list[next_i].value_node)(time);
-	prev=(*list[prev_i].value_node)(time);
-
-	etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
-
-	synfig::BLinePoint bline_point;
-	bline_point.set_vertex(curve(origin));
-	bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
-	bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
-	bline_point.set_tangent2(bline_point.get_tangent1());
-	bline_point.set_split_tangent_flag(false);
-	bline_point.set_origin(origin);
-
 	ret.value_node=ValueNode_Composite::create(bline_point);
-
+	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
 }
 
