@@ -789,6 +789,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	work_area->signal_layer_selected().connect(sigc::mem_fun(*this,&studio::CanvasView::workarea_layer_selected));
 	work_area->signal_input_device_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_input_device_changed));
+	work_area->signal_meta_data_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_meta_data_changed));
 
 	canvas_interface()->signal_canvas_added().connect(
 		sigc::hide(
@@ -3754,6 +3755,39 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		toggling_ducks_=false;
 	}
 	toggling_ducks_=false;
+}
+
+void
+CanvasView::on_meta_data_changed()
+{
+	// update the buttons and actions that are associated
+	toggling_show_grid=true;
+	toggling_snap_grid=true;
+	toggling_onion_skin=true;
+	try
+	{
+		// Update the toggle ducks actions
+		Glib::RefPtr<Gtk::ToggleAction> action;
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
+		action->set_active((bool)(work_area->get_onion_skin()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
+		action->set_active((bool)(work_area->grid_status()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
+		action->set_active((bool)(work_area->get_grid_snap()));
+		// Update the toggle buttons
+		onion_skin->set_active(work_area->get_onion_skin());
+		snap_grid->set_active(work_area->get_grid_snap());
+		show_grid->set_active(work_area->grid_status());
+	}
+	catch(...)
+	{
+		toggling_show_grid=false;
+		toggling_snap_grid=false;
+		toggling_onion_skin=false;
+	}
+	toggling_show_grid=false;
+	toggling_snap_grid=false;
+	toggling_onion_skin=false;
 }
 
 void

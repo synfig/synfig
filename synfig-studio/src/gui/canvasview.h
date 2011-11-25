@@ -714,6 +714,8 @@ private:
 
 	void on_play_stop_pressed();
 
+	void on_meta_data_changed();
+
 protected:
 	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
