@@ -299,7 +299,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 Widget_Preview::Widget_Preview()
 :Gtk::Table(5,4,false),
-adj_time_scrub(0,0,1000,1,10,0),
+adj_time_scrub(0,0,1000,0,10,0),
 scr_time_scrub(adj_time_scrub),
 b_loop(/*_("Loop")*/),
 currentindex(0),
@@ -315,6 +315,8 @@ playing(false)
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
+	
+	scr_time_scrub.set_draw_value(0);
 
 	disp_sound.set_time_adjustment(&adj_sound);
 	timedisp = -1;
