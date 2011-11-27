@@ -132,4 +132,18 @@ Dock_MetaData::on_add_pressed()
 void
 Dock_MetaData::on_delete_pressed()
 {
+	Gtk::TreeView* tree_view(static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name())));
+	if(tree_view)
+	{
+		Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
+		if(tree_view->get_selection()->count_selected_rows())
+		{
+			Gtk::TreeRow row(*iter);
+			Glib::RefPtr<Gtk::TreeModel> treemodel(get_canvas_view()->get_tree_model(get_name()));
+			Glib::RefPtr<studio::MetaDataTreeStore> meta_data_tree_store(Glib::RefPtr<studio::MetaDataTreeStore>::cast_dynamic(treemodel));
+			Glib::ustring key(row[meta_data_tree_store->model.key]);
+			if(get_canvas_interface())
+				get_canvas_interface()->erase_meta_data(key);
+		}
+	}
 }
