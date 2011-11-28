@@ -354,7 +354,22 @@ playing(false)
 	//2nd row
 	hbox = manage(new Gtk::HBox);
 
-	//play pause button
+	//prevframe play/pause nextframe buttons
+	
+	//prev rendered frame
+	Gtk::Button *prev_framebutton;
+	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
+	prev_framebutton = manage(new class Gtk::Button());
+	prev_framebutton->set_tooltip_text(_("Prev frame"));
+	icon0->set_padding(0,0);
+	icon0->show();
+	prev_framebutton->add(*icon0);
+	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
+	prev_framebutton->show();
+	prev_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::prev_frame));
+	hbox->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//play pause
 	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
 	play_pausebutton = manage(new class Gtk::Button());
 	play_pausebutton->set_tooltip_text(_("Play"));
@@ -366,6 +381,21 @@ playing(false)
 	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
 	hbox->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
 
+	//next rendered frame
+	Gtk::Button *next_framebutton;
+	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
+	next_framebutton = manage(new class Gtk::Button());
+	next_framebutton->set_tooltip_text(_("Next frame"));
+	icon2->set_padding(0,0);
+	icon2->show();
+	next_framebutton->add(*icon2);
+	next_framebutton->set_relief(Gtk::RELIEF_NONE);
+	next_framebutton->show();
+	next_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::next_frame));
+	hbox->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//space between next frame button and loop button
+        
 	button = &b_loop;
 	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Loop"));
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
@@ -842,6 +872,19 @@ void studio::Widget_Preview::on_play_pause_pressed()
 		play_flag=false;
 	}
 	if(play_flag) play(); else pause();
+}
+
+void studio::Widget_Preview::next_frame()
+{
+	float rate = preview->get_fps();
+	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate+1.000001)/rate);
+
+}
+
+void studio::Widget_Preview::prev_frame()
+{
+	float rate = preview->get_fps();
+	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate-0.99999)/rate);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
