@@ -51,7 +51,6 @@ class ValueNodeDynamicListInsert :
 private:
 
 	synfig::ValueNode_DynamicList::Handle value_node;
-	synfig::ValueNode_BLine::Handle value_node_bline;
 	synfig::ValueNode_DynamicList::ListEntry list_entry;
 	synfig::ValueNode::Handle item;
 	synfig::Time time;

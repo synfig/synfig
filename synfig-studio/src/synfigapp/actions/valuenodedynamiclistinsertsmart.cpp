@@ -97,9 +97,13 @@ Action::ValueNodeDynamicListInsertSmart::is_candidate(const ParamList &x)
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
-	return (value_desc.parent_is_value_node() &&
-			// We need a dynamic list.
-			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+	return ( (value_desc.parent_is_value_node() &&
+			// We need a Dynamic List parent.
+			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+			||
+			// Or a Dynamic List value node
+			(value_desc.is_value_node() &&
+			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node())) );
 }
 
 bool
@@ -110,15 +114,22 @@ Action::ValueNodeDynamicListInsertSmart::set_param(const synfig::String& name, c
 		ValueDesc value_desc(param.get_value_desc());
 
 		if(!value_desc.parent_is_value_node())
-			return false;
-
-		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-
+		{
+			if(value_desc.is_value_node())
+			{
+				value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node());
+				index=0;
+			}
+			else
+				return false;
+		}
+		else
+		{
+			value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			index=value_desc.get_index();
+		}
 		if(!value_node)
 			return false;
-
-		index=value_desc.get_index();
-
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)

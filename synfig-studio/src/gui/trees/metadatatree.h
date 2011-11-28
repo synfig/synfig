@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widgets/widget_enum.h
+/*!	\file trees/metadatatree.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,14 +23,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_WIDGET_ENUM_H
-#define __SYNFIG_STUDIO_WIDGET_ENUM_H
+#ifndef __SYNFIG_STUDIO_METADATATREE_H
+#define __SYNFIG_STUDIO_METADATATREE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/combobox.h>
-#include <gtkmm/liststore.h>
-#include <synfig/paramdesc.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/treestore.h>
+#include <synfigapp/canvasinterface.h>
+#include "trees/metadatatreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,38 +40,36 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-class Widget_Enum : public Gtk::ComboBox
+
+class MetaDataTree : public Gtk::TreeView
 {
-	synfig::ParamDesc param_desc;
-	int value;
-protected:
-class Model : public Gtk::TreeModel::ColumnRecord
-	{
-		public:
+public:
+	MetaDataTree();
+	virtual ~MetaDataTree();
+	MetaDataTreeStore::Model model;
 
-		Model()
-		{ add(icon); add(value); add(local_name); }
+private:
+	Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_;
+	Gtk::CellRendererText *cell_renderer_key;
+	Gtk::CellRendererText *cell_renderer_data;
+	sigc::signal<void,synfig::String> signal_edited_;
+	sigc::signal<void,synfig::String,synfig::String> signal_edited_data_;
+	bool editable_;
 
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
-		Gtk::TreeModelColumn<int> value;
-		Gtk::TreeModelColumn<Glib::ustring> local_name;
-	};
-	Model enum_model;
-	Glib::RefPtr<Gtk::ListStore> enum_TreeModel;
+private:
+	void on_edited_key(const Glib::ustring&path_string,synfig::String key);
+	void on_edited_data(const Glib::ustring&path_string,synfig::String data);
 
 public:
+	void set_model(Glib::RefPtr<MetaDataTreeStore> metadata_tree_store_);
+	void set_editable(bool x=true);
+	bool get_editable()const { return editable_; }
+	//! Signal called when a metadata has been edited in any way
+	sigc::signal<void,synfig::String>& signal_edited() { return signal_edited_; }
+	//! Signal called when data has been edited.
+	sigc::signal<void,synfig::String,synfig::String>& signal_edited_data() { return signal_edited_data_; }
+}; // END of MetaDataTree
 
-	Widget_Enum();
-	~Widget_Enum();
-
-	void set_param_desc(const synfig::ParamDesc &x);
-	void set_icon(Gtk::TreeNodeChildren::size_type index,const Glib::RefPtr<Gdk::Pixbuf> &icon);
-	void refresh();
-
-	void set_value(int data);
-	int get_value() const;
-	virtual void on_changed();
-}; // END of class Widget_Enum
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
