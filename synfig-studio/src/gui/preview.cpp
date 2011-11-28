@@ -876,12 +876,14 @@ void studio::Widget_Preview::on_play_pause_pressed()
 
 void studio::Widget_Preview::next_frame()
 {
+	if(playing) pause();
 	float rate = preview->get_fps();
 	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate+1.000001)/rate);
 }
 
 void studio::Widget_Preview::prev_frame()
 {
+	if(playing) pause();
 	float rate = preview->get_fps();
 	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate-0.99999)/rate);
 }
