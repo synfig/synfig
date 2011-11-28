@@ -878,7 +878,6 @@ void studio::Widget_Preview::next_frame()
 {
 	float rate = preview->get_fps();
 	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate+1.000001)/rate);
-
 }
 
 void studio::Widget_Preview::prev_frame()
