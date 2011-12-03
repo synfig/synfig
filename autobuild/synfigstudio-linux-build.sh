@@ -976,7 +976,7 @@ mkpackage()
 		fi
 		pushd $PACKAGES_BUILDROOT
 		cd synfig.git && git fetch && cd ..
-		[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
+		#[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
 		for FILE in \
 			atk-${ATK}.tar.bz2 \
 			glib-${GLIB}.tar.bz2 \
@@ -984,6 +984,7 @@ mkpackage()
 			cairo-${CAIRO}.tar.gz \
 			fontconfig-${FONTCONFIG}.tar.gz \
 			pango-${PANGO}.tar.bz2 \
+			git-$GITVERSION.tar.bz2 \
 			gtk\+-${GTK}.tar.bz2 \
 			glib-${GLIB}.tar.bz2 \
 			glibmm-${GLIBMM}.tar.bz2 \
