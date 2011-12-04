@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=144022&atid=757416\n"
-"POT-Creation-Date: 2011-09-23 20:49+0200\n"
+"POT-Creation-Date: 2011-12-03 11:23+0800\n"
 "PO-Revision-Date: 2011-09-23 17:33+0000\n"
 "Last-Translator: Alas <aldixuks@gmail.com.>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: src/gui/actionmanagers/groupactionmanager.cpp:175
 #: src/gui/actionmanagers/groupactionmanager.cpp:176
@@ -120,8 +120,9 @@ msgid "Visit the Synfig website"
 msgstr "Apsilankykite Synfig svetainėje"
 
 #: src/gui/dialogs/about.cpp:110
+#, fuzzy
 msgid ""
-"Copyright 2001-2010\n"
+"Copyright 2001-2011\n"
 "Robert B. Quattlebaum Jr.,\n"
 "Adrian Bentley and Synfig contributors"
 msgstr ""
@@ -237,10 +238,11 @@ msgstr "_Tinklelio dydis"
 #: src/synfigapp/actions/gradientset.cpp:83
 #: src/synfigapp/actions/keyframeduplicate.cpp:84
 #: src/synfigapp/actions/layerparamdisconnect.cpp:83
-#: src/synfigapp/actions/valuedescblinelink.cpp:89
+#: src/synfigapp/actions/valuedescblinelink.cpp:90
 #: src/synfigapp/actions/valuedescconvert.cpp:102
 #: src/synfigapp/actions/valuedescdisconnect.cpp:95
 #: src/synfigapp/actions/valuedescset.cpp:108
+#: src/synfigapp/actions/valuedescremovesmart.cpp:80
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
 #: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:81
@@ -259,7 +261,7 @@ msgid "Not yet implemented!"
 msgstr "Dar neįgyvendinta!"
 
 #: src/gui/dialogs/canvasoptions.cpp:151 src/gui/app.cpp:795
-#: src/gui/canvasview.cpp:1474
+#: src/gui/canvasview.cpp:1475
 msgid "Options"
 msgstr "Parinktys"
 
@@ -290,24 +292,6 @@ msgstr "_Pavadinimas"
 #: src/gui/dialogs/canvasproperties.cpp:104
 msgid "_Description"
 msgstr "_Aprašymas"
-
-#: src/gui/dialogs/canvasproperties.cpp:146 src/gui/docks/dock_metadata.cpp:69
-msgid "Key"
-msgstr "Raktas"
-
-#: src/gui/dialogs/canvasproperties.cpp:147 src/gui/docks/dock_metadata.cpp:70
-msgid "Data"
-msgstr "Duomenys"
-
-#: src/gui/dialogs/canvasproperties.cpp:182
-#: src/gui/docks/dock_metadata.cpp:134
-msgid "New MetaData Entry"
-msgstr "Naujas metaduomenų įrašas"
-
-#: src/gui/dialogs/canvasproperties.cpp:182
-#: src/gui/docks/dock_metadata.cpp:134
-msgid "Please enter the name of the key"
-msgstr "Prašome įvesti rakto pavadinimą"
 
 #: src/gui/dialogs/canvasproperties.cpp:197 src/gui/app.cpp:810
 msgid "Properties"
@@ -341,7 +325,7 @@ msgstr "Nustatyti kaip numatytąjį"
 msgid "Keyframe Dialog"
 msgstr "Atraminio kadro dialogas"
 
-#: src/gui/dialogs/dialog_preview.cpp:62 src/gui/canvasview.cpp:1588
+#: src/gui/dialogs/dialog_preview.cpp:62 src/gui/canvasview.cpp:1589
 msgid "Preview Window"
 msgstr "Peržiūros langas"
 
@@ -382,7 +366,7 @@ msgid "<b>Time Settings</b>"
 msgstr "<b>Laiko parametrai</b>"
 
 #: src/gui/dialogs/dialog_preview.cpp:171 src/gui/app.cpp:792
-#: src/gui/canvasview.cpp:1468
+#: src/gui/canvasview.cpp:1469
 msgid "Preview"
 msgstr "Peržiūra"
 
@@ -951,17 +935,25 @@ msgstr "Sluoksniai"
 msgid "Layer Ops"
 msgstr "Sluoksnio operacijos"
 
-#: src/gui/docks/dock_metadata.cpp:64
+#: src/gui/docks/dock_metadata.cpp:66
 msgid "Canvas MetaData"
 msgstr "Drobės metaduomenys"
 
-#: src/gui/docks/dock_metadata.cpp:84
+#: src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
 msgstr "Pridėti naują metaduomenų įrašą"
 
-#: src/gui/docks/dock_metadata.cpp:94
+#: src/gui/docks/dock_metadata.cpp:81
 msgid "Remove selected MetaData entry"
 msgstr "Pašalinti pasirinktus metaduomenų įrašus"
+
+#: src/gui/docks/dock_metadata.cpp:125
+msgid "New MetaData Entry"
+msgstr "Naujas metaduomenų įrašas"
+
+#: src/gui/docks/dock_metadata.cpp:125
+msgid "Please enter the name of the key"
+msgstr "Prašome įvesti rakto pavadinimą"
 
 #: src/gui/docks/dock_navigator.cpp:503 src/gui/iconcontroller.cpp:260
 msgid "Navigator"
@@ -972,7 +964,7 @@ msgid "Params"
 msgstr "Parametrai"
 
 #: src/gui/docks/dock_timetrack.cpp:84 src/gui/trees/layergrouptree.cpp:75
-#: src/gui/trees/layertree.cpp:208 src/gui/trees/layertree.cpp:278
+#: src/gui/trees/layertree.cpp:210 src/gui/trees/layertree.cpp:281
 #: src/synfigapp/actions/canvasnameset.cpp:82
 #: src/synfigapp/actions/valuedescexport.cpp:93
 #: src/synfigapp/actions/valuenodeadd.cpp:77
@@ -981,7 +973,7 @@ msgid "Name"
 msgstr "Pavadinimas"
 
 #: src/gui/docks/dock_timetrack.cpp:88 src/gui/trees/childrentree.cpp:140
-#: src/gui/trees/layertree.cpp:346 src/gui/iconcontroller.cpp:261
+#: src/gui/trees/layertree.cpp:349 src/gui/iconcontroller.cpp:261
 msgid "Time Track"
 msgstr "Laiko takelis"
 
@@ -1077,19 +1069,19 @@ msgstr "Failas jau egzistuoja"
 msgid "Choose a Palette to load"
 msgstr "Pasirinkite įkelti paletę "
 
-#: src/gui/modules/mod_palette/dock_paledit.cpp:300 src/gui/app.cpp:2519
+#: src/gui/modules/mod_palette/dock_paledit.cpp:300 src/gui/app.cpp:2521
 msgid "Unable to open file"
 msgstr "Nepavyko atidaryti failo"
 
 #: src/gui/states/state_bline.cpp:386 src/gui/states/state_circle.cpp:432
-#: src/gui/states/state_draw.cpp:429 src/gui/states/state_polygon.cpp:354
-#: src/gui/states/state_rectangle.cpp:371 src/gui/states/state_star.cpp:471
+#: src/gui/states/state_polygon.cpp:354 src/gui/states/state_rectangle.cpp:371
+#: src/gui/states/state_star.cpp:471
 msgid "Create Region BLine"
 msgstr "Sukurti regiono kreivę"
 
 #: src/gui/states/state_bline.cpp:387 src/gui/states/state_circle.cpp:433
-#: src/gui/states/state_draw.cpp:430 src/gui/states/state_polygon.cpp:355
-#: src/gui/states/state_rectangle.cpp:372 src/gui/states/state_star.cpp:472
+#: src/gui/states/state_polygon.cpp:355 src/gui/states/state_rectangle.cpp:372
+#: src/gui/states/state_star.cpp:472
 msgid "Create Outline BLine"
 msgstr "Sukurti kontūro kreivę"
 
@@ -1116,7 +1108,7 @@ msgstr "Sukurti kreivę su augalais"
 msgid "Link Origins"
 msgstr "Sujungti pradžias"
 
-#: src/gui/states/state_bline.cpp:392 src/gui/states/state_draw.cpp:431
+#: src/gui/states/state_bline.cpp:392 src/gui/states/state_draw.cpp:460
 msgid "Auto Export"
 msgstr "Auto eksportas"
 
@@ -1133,7 +1125,7 @@ msgstr "Valyti"
 msgid "BLine Tool"
 msgstr "Kreivės įrankis"
 
-#: src/gui/states/state_bline.cpp:412 src/gui/states/state_draw.cpp:466
+#: src/gui/states/state_bline.cpp:412 src/gui/states/state_draw.cpp:507
 #: src/gui/states/state_polygon.cpp:383
 msgid "Feather"
 msgstr "Ištempti"
@@ -1164,15 +1156,16 @@ msgstr "Nepavyko pridėti reikšmę mazgui"
 #: src/gui/states/state_bline.cpp:899 src/gui/states/state_circle.cpp:646
 #: src/gui/states/state_circle.cpp:712 src/gui/states/state_circle.cpp:784
 #: src/gui/states/state_circle.cpp:856 src/gui/states/state_circle.cpp:936
-#: src/gui/states/state_circle.cpp:1013 src/gui/states/state_draw.cpp:1045
-#: src/gui/states/state_draw.cpp:1064 src/gui/states/state_draw.cpp:1076
-#: src/gui/states/state_draw.cpp:1110 src/gui/states/state_draw.cpp:1801
-#: src/gui/states/state_gradient.cpp:429 src/gui/states/state_gradient.cpp:442
-#: src/gui/states/state_gradient.cpp:455 src/gui/states/state_gradient.cpp:471
-#: src/gui/states/state_polygon.cpp:561 src/gui/states/state_polygon.cpp:638
-#: src/gui/states/state_polygon.cpp:700 src/gui/states/state_polygon.cpp:762
-#: src/gui/states/state_polygon.cpp:832 src/gui/states/state_polygon.cpp:900
-#: src/gui/states/state_rectangle.cpp:540
+#: src/gui/states/state_circle.cpp:1013 src/gui/states/state_draw.cpp:1136
+#: src/gui/states/state_draw.cpp:1157 src/gui/states/state_draw.cpp:1169
+#: src/gui/states/state_draw.cpp:1182 src/gui/states/state_draw.cpp:1230
+#: src/gui/states/state_draw.cpp:1253 src/gui/states/state_draw.cpp:1270
+#: src/gui/states/state_draw.cpp:1960 src/gui/states/state_gradient.cpp:429
+#: src/gui/states/state_gradient.cpp:442 src/gui/states/state_gradient.cpp:455
+#: src/gui/states/state_gradient.cpp:471 src/gui/states/state_polygon.cpp:561
+#: src/gui/states/state_polygon.cpp:638 src/gui/states/state_polygon.cpp:700
+#: src/gui/states/state_polygon.cpp:762 src/gui/states/state_polygon.cpp:832
+#: src/gui/states/state_polygon.cpp:900 src/gui/states/state_rectangle.cpp:540
 #: src/gui/states/state_rectangle.cpp:573
 #: src/gui/states/state_rectangle.cpp:635
 #: src/gui/states/state_rectangle.cpp:697
@@ -1215,7 +1208,7 @@ msgid "Unable to create Plant layer"
 msgstr "Nepavyko sukurti augalo sluoksnio"
 
 #: src/gui/states/state_bline.cpp:767 src/gui/states/state_circle.cpp:861
-#: src/gui/states/state_draw.cpp:1080 src/gui/states/state_draw.cpp:2003
+#: src/gui/states/state_draw.cpp:1186 src/gui/states/state_draw.cpp:2448
 #: src/gui/states/state_polygon.cpp:767 src/gui/states/state_rectangle.cpp:702
 #: src/gui/states/state_star.cpp:898
 msgid " Region"
@@ -1223,7 +1216,7 @@ msgstr " Regionas"
 
 #: src/gui/states/state_bline.cpp:793 src/gui/states/state_bline.cpp:815
 #: src/gui/states/state_circle.cpp:893 src/gui/states/state_circle.cpp:916
-#: src/gui/states/state_draw.cpp:1827 src/gui/states/state_draw.cpp:2019
+#: src/gui/states/state_draw.cpp:1986 src/gui/states/state_draw.cpp:2464
 #: src/gui/states/state_polygon.cpp:793 src/gui/states/state_polygon.cpp:815
 #: src/gui/states/state_rectangle.cpp:729
 #: src/gui/states/state_rectangle.cpp:752 src/gui/states/state_star.cpp:924
@@ -1232,7 +1225,7 @@ msgid "Unable to create Region layer"
 msgstr "Nepavyko sukurti regiono sluoksnio"
 
 #: src/gui/states/state_bline.cpp:836 src/gui/states/state_circle.cpp:941
-#: src/gui/states/state_draw.cpp:1068 src/gui/states/state_polygon.cpp:837
+#: src/gui/states/state_draw.cpp:1161 src/gui/states/state_polygon.cpp:837
 #: src/gui/states/state_rectangle.cpp:774 src/gui/states/state_star.cpp:973
 msgid " Outline"
 msgstr " Kontūras"
@@ -1247,8 +1240,8 @@ msgid "Unable to create Outline layer"
 msgstr "Nepavyko sukurti  kontūro sluoksnio"
 
 #: src/gui/states/state_bline.cpp:902 src/gui/states/state_circle.cpp:1018
-#: src/gui/states/state_polygon.cpp:905 src/gui/states/state_rectangle.cpp:842
-#: src/gui/states/state_star.cpp:1046
+#: src/gui/states/state_draw.cpp:1173 src/gui/states/state_polygon.cpp:905
+#: src/gui/states/state_rectangle.cpp:842 src/gui/states/state_star.cpp:1046
 msgid " Advanced Outline"
 msgstr " Išplėstinis kontūras"
 
@@ -1329,8 +1322,8 @@ msgstr "Nustato sumažėjimo  funkciją ištempimui"
 msgid "Linear"
 msgstr "Linijinis"
 
-#: src/gui/states/state_circle.cpp:448 src/gui/instance.cpp:1065
-#: src/gui/instance.cpp:1154
+#: src/gui/states/state_circle.cpp:448 src/gui/instance.cpp:1067
+#: src/gui/instance.cpp:1156
 msgid "Squared"
 msgstr "Languotas"
 
@@ -1384,64 +1377,100 @@ msgstr "Naujas apskritimas"
 msgid "Unable to create Circle layer"
 msgstr "Nepavyko sukurti apskritimo sluoksnio"
 
-#: src/gui/states/state_draw.cpp:425
+#: src/gui/states/state_draw.cpp:453
 msgid "Pressure Width"
 msgstr "Slėgio plotis"
 
-#: src/gui/states/state_draw.cpp:426
+#: src/gui/states/state_draw.cpp:454
 msgid "Auto Loop"
 msgstr "Auto uždarymas"
 
-#: src/gui/states/state_draw.cpp:427
+#: src/gui/states/state_draw.cpp:455
 msgid "Auto Extend"
 msgstr "Auto išplėtimas"
 
-#: src/gui/states/state_draw.cpp:428
+#: src/gui/states/state_draw.cpp:456
 msgid "Auto Link"
 msgstr "Auto sujungimas"
 
-#: src/gui/states/state_draw.cpp:432 src/gui/states/state_draw.cpp:534
+#: src/gui/states/state_draw.cpp:457
+#, fuzzy
+msgid "Create Region"
+msgstr "Sukurti regiono kreivę"
+
+#: src/gui/states/state_draw.cpp:458
+#, fuzzy
+msgid "Create Outline"
+msgstr "Sukurti kontūro kreivę"
+
+#: src/gui/states/state_draw.cpp:459
+#, fuzzy
+msgid "Create Advanced Outline"
+msgstr " Išplėstinis kontūras"
+
+#: src/gui/states/state_draw.cpp:461 src/gui/states/state_draw.cpp:592
 msgid "Fill Last Stroke"
 msgstr "Užpildyti paskutinį brūkšnį"
 
-#: src/gui/states/state_draw.cpp:435
+#: src/gui/states/state_draw.cpp:464
 msgid "Min Pressure"
 msgstr "Min slėgis"
 
-#: src/gui/states/state_draw.cpp:441
+#: src/gui/states/state_draw.cpp:467
+msgid "Max Width Error"
+msgstr ""
+
+#: src/gui/states/state_draw.cpp:471
 msgid "LocalError"
 msgstr "Vidinė klaida"
 
-#: src/gui/states/state_draw.cpp:449 src/gui/states/state_draw.cpp:529
+#: src/gui/states/state_draw.cpp:486 src/gui/states/state_draw.cpp:587
 #: src/gui/iconcontroller.cpp:156
 msgid "Draw Tool"
 msgstr "Piešimo įrankis"
 
-#: src/gui/states/state_draw.cpp:463
-msgid "Smooth"
-msgstr "Glotninimas"
+#: src/gui/states/state_draw.cpp:553
+#, fuzzy
+msgid "BLine Local Error"
+msgstr "Vidinė klaida"
 
-#: src/gui/states/state_draw.cpp:778
+#: src/gui/states/state_draw.cpp:559
+#, fuzzy
+msgid "BLine Smoothness"
+msgstr "Vektoriaus mazgai:"
+
+#: src/gui/states/state_draw.cpp:867
 msgid "Sketch BLine"
 msgstr "Piešti vektorių"
 
-#: src/gui/states/state_draw.cpp:1294
+#: src/gui/states/state_draw.cpp:1453
 msgid "Define Region"
 msgstr "Apibrėžti regioną"
 
-#: src/gui/states/state_draw.cpp:1861 src/gui/states/state_draw.cpp:1912
+#: src/gui/states/state_draw.cpp:2047 src/gui/states/state_draw.cpp:2236
 msgid "Extend BLine"
 msgstr "Pratęsti vektorių"
 
-#: src/gui/states/state_draw.cpp:1874 src/gui/states/state_draw.cpp:1925
-msgid "Unable to set loop for bline"
+#: src/gui/states/state_draw.cpp:2108
+#, fuzzy
+msgid "Unable to set lower boundary for wplist"
 msgstr "Nepavyko uždaryti vektoriaus"
 
-#: src/gui/states/state_draw.cpp:1898 src/gui/states/state_draw.cpp:1949
+#: src/gui/states/state_draw.cpp:2153 src/gui/states/state_draw.cpp:2196
+#: src/gui/states/state_draw.cpp:2342 src/gui/states/state_draw.cpp:2385
 msgid "Unable to insert item"
 msgstr "Nepavyko įterpti elementą"
 
-#: src/gui/states/state_draw.cpp:1982
+#: src/gui/states/state_draw.cpp:2172 src/gui/states/state_draw.cpp:2361
+msgid "Unable to set loop for bline"
+msgstr "Nepavyko uždaryti vektoriaus"
+
+#: src/gui/states/state_draw.cpp:2297
+#, fuzzy
+msgid "Unable to set upper boundary for wplist"
+msgstr "Nepavyko uždaryti vektoriaus"
+
+#: src/gui/states/state_draw.cpp:2427
 msgid "Fill Stroke"
 msgstr "Užpildyti brūkšniu"
 
@@ -1757,7 +1786,7 @@ msgstr "Eskizo plotis"
 
 #: src/gui/trees/canvastreestore.cpp:206 src/gui/trees/canvastreestore.cpp:250
 #: src/gui/trees/childrentreestore.cpp:204 src/gui/iconcontroller.cpp:147
-#: src/gui/iconcontroller.cpp:175 src/synfigapp/action.cpp:497
+#: src/gui/iconcontroller.cpp:175 src/synfigapp/action.cpp:499
 msgid "Canvas"
 msgstr "Drobė"
 
@@ -1770,7 +1799,7 @@ msgstr " (Statiškas)"
 msgid "[Unnamed]"
 msgstr "[Be pavadinimo]"
 
-#: src/gui/trees/childrentree.cpp:113 src/gui/trees/layertree.cpp:333
+#: src/gui/trees/childrentree.cpp:113 src/gui/trees/layertree.cpp:336
 #: src/synfigapp/actions/valuedescconvert.cpp:97
 msgid "Type"
 msgstr "Tipas"
@@ -1809,7 +1838,7 @@ msgid "There are no keyframes in this canvas"
 msgstr "Šioje drobėje nėra atraminių kadrų"
 
 #: src/gui/trees/layergrouptree.cpp:64 src/gui/trees/layergrouptree.cpp:69
-#: src/gui/trees/layertree.cpp:190
+#: src/gui/trees/layertree.cpp:192
 msgid " "
 msgstr " "
 
@@ -1849,8 +1878,8 @@ msgstr "Nustatyti sluoksnio parametrus"
 
 #: src/gui/trees/layerparamtreestore.cpp:247
 #: src/gui/widgets/widget_canvaschooser.cpp:145
-#: src/gui/widgets/widget_canvaschooser.cpp:164 src/gui/app.cpp:2455
-#: src/gui/app.cpp:2460 src/gui/app.cpp:2465 src/gui/instance.cpp:441
+#: src/gui/widgets/widget_canvaschooser.cpp:164 src/gui/app.cpp:2457
+#: src/gui/app.cpp:2462 src/gui/app.cpp:2467 src/gui/instance.cpp:441
 #: src/gui/instance.cpp:457 src/gui/instance.cpp:469 src/gui/instance.cpp:480
 #: src/gui/instance.cpp:494 src/gui/instance.cpp:505 src/gui/instance.cpp:535
 #: src/gui/instance.cpp:546 src/gui/instance.cpp:562 src/gui/instance.cpp:571
@@ -1861,15 +1890,15 @@ msgstr "Klaida"
 msgid "Unable to set all layer parameters."
 msgstr "Nepavyko nustatyti visų sluoksnio parametrų."
 
-#: src/gui/trees/layertree.cpp:203
+#: src/gui/trees/layertree.cpp:205
 msgid "Icon"
 msgstr "Piktograma"
 
-#: src/gui/trees/layertree.cpp:226
+#: src/gui/trees/layertree.cpp:228
 msgid "Z Depth"
 msgstr "Z gylis"
 
-#: src/gui/trees/layertree.cpp:312
+#: src/gui/trees/layertree.cpp:315
 msgid "Value"
 msgstr "Reikšmė"
 
@@ -1997,21 +2026,17 @@ msgstr "Pastovus"
 msgid "Ease In/Out"
 msgstr "Lengva In / Out"
 
-#: src/gui/widgets/widget_defaults.cpp:301
+#: src/gui/widgets/widget_defaults.cpp:305
 msgid "Default Interpolation"
 msgstr "Numatytasis interpoliavimas"
 
-#: src/gui/widgets/widget_defaults.cpp:309
+#: src/gui/widgets/widget_defaults.cpp:313
 msgid "Default Opacity"
 msgstr "Numatytasis nepermatomumas"
 
-#: src/gui/widgets/widget_defaults.cpp:316
+#: src/gui/widgets/widget_defaults.cpp:320
 msgid "Default Gradient"
 msgstr "Numatytasis gradientas"
-
-#: src/gui/widgets/widget_filename.cpp:61
-msgid "Find"
-msgstr "Rasti"
 
 #: src/gui/widgets/widget_filename.cpp:132
 msgid "Choose File"
@@ -2174,7 +2199,7 @@ msgstr "Peržiūros kokybė"
 msgid "Low-Res Pixel Size"
 msgstr "Žemos raiškos pikselio dydis"
 
-#: src/gui/app.cpp:758 src/gui/canvasview.cpp:2539
+#: src/gui/app.cpp:758 src/gui/canvasview.cpp:2540
 #: src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
 msgstr "Naujas sluoksnis"
@@ -2200,11 +2225,11 @@ msgstr "Įrankis"
 msgid "Toolbox"
 msgstr "Įrankinė"
 
-#: src/gui/app.cpp:790 src/gui/canvasview.cpp:1462
+#: src/gui/app.cpp:790 src/gui/canvasview.cpp:1463
 msgid "Import"
 msgstr "Importuoti"
 
-#: src/gui/app.cpp:791 src/gui/canvasview.cpp:1465 src/gui/render.cpp:176
+#: src/gui/app.cpp:791 src/gui/canvasview.cpp:1466 src/gui/render.cpp:176
 msgid "Render"
 msgstr "Atvaizduoti"
 
@@ -2212,7 +2237,7 @@ msgstr "Atvaizduoti"
 msgid "Preview Dialog"
 msgstr "Peržiūros dialogas"
 
-#: src/gui/app.cpp:794 src/gui/canvasview.cpp:1471
+#: src/gui/app.cpp:794 src/gui/canvasview.cpp:1472
 msgid "Sound File"
 msgstr "Garso failas"
 
@@ -2220,55 +2245,55 @@ msgstr "Garso failas"
 msgid "Close View"
 msgstr "Uždaryti rodinį"
 
-#: src/gui/app.cpp:797 src/gui/canvasview.cpp:1480
+#: src/gui/app.cpp:797 src/gui/canvasview.cpp:1481
 msgid "Close Document"
 msgstr "Uždaryti dokumentą"
 
-#: src/gui/app.cpp:806 src/gui/canvasview.cpp:1495
+#: src/gui/app.cpp:806 src/gui/canvasview.cpp:1496
 msgid "Select All Ducks"
 msgstr "Parinkti visus valdiklius"
 
-#: src/gui/app.cpp:807 src/gui/canvasview.cpp:1499
+#: src/gui/app.cpp:807 src/gui/canvasview.cpp:1500
 msgid "Unselect All Ducks"
 msgstr "Atžymėti visus valdiklius"
 
-#: src/gui/app.cpp:808 src/gui/canvasview.cpp:1503
+#: src/gui/app.cpp:808 src/gui/canvasview.cpp:1504
 msgid "Select All Layers"
 msgstr "Parinkti visus sluoksnius"
 
-#: src/gui/app.cpp:809 src/gui/canvasview.cpp:1507
+#: src/gui/app.cpp:809 src/gui/canvasview.cpp:1508
 msgid "Unselect All Layers"
 msgstr "Atžymėti visus sluoksnius"
 
-#: src/gui/app.cpp:812 src/gui/canvasview.cpp:1678
+#: src/gui/app.cpp:812 src/gui/canvasview.cpp:1679
 msgid "Show Position Ducks"
 msgstr "Rodyti pozicijos valdiklius"
 
-#: src/gui/app.cpp:813 src/gui/canvasview.cpp:1680
+#: src/gui/app.cpp:813 src/gui/canvasview.cpp:1681
 msgid "Show Vertex Ducks"
 msgstr "Rodyti viršūnės valdiklius"
 
-#: src/gui/app.cpp:814 src/gui/canvasview.cpp:1679
+#: src/gui/app.cpp:814 src/gui/canvasview.cpp:1680
 msgid "Show Tangent Ducks"
 msgstr "Rodyti liestinės valdiklius"
 
-#: src/gui/app.cpp:815 src/gui/canvasview.cpp:1681
+#: src/gui/app.cpp:815 src/gui/canvasview.cpp:1682
 msgid "Show Radius Ducks"
 msgstr "Rodyti spindulio valdiklius"
 
-#: src/gui/app.cpp:816 src/gui/canvasview.cpp:1682
+#: src/gui/app.cpp:816 src/gui/canvasview.cpp:1683
 msgid "Show Width Ducks"
 msgstr "Rodyti pločio valdiklius"
 
-#: src/gui/app.cpp:817 src/gui/canvasview.cpp:1683
+#: src/gui/app.cpp:817 src/gui/canvasview.cpp:1684
 msgid "Show Angle Ducks"
 msgstr "Rodyti kampo valdiklius"
 
-#: src/gui/app.cpp:818 src/gui/canvasview.cpp:1684
+#: src/gui/app.cpp:818 src/gui/canvasview.cpp:1685
 msgid "Show WidthPoints Position Ducks"
 msgstr "Rodyti pločio žymeklio pozicijos valdiklius"
 
-#: src/gui/app.cpp:819 src/gui/canvasview.cpp:1526
+#: src/gui/app.cpp:819 src/gui/canvasview.cpp:1527
 msgid "Use Parametric Renderer"
 msgstr "Naudoti parametrinį atvaizdavimą"
 
@@ -2312,12 +2337,12 @@ msgstr "Naudoti kokybės lygį 9"
 msgid "Use Quality Level 10"
 msgstr "Naudoti kokybės lygį 10"
 
-#: src/gui/app.cpp:831 src/gui/canvasview.cpp:1560
+#: src/gui/app.cpp:831 src/gui/canvasview.cpp:1561
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Žemos-Rez pikselio dydis: %d"
 
-#: src/gui/app.cpp:834 src/gui/canvasview.cpp:1096
+#: src/gui/app.cpp:834 src/gui/canvasview.cpp:1097
 #: src/gui/iconcontroller.cpp:281 src/gui/preview.cpp:366
 msgid "Stop"
 msgstr "Sustabdyti"
@@ -2342,11 +2367,11 @@ msgstr "Perjungti kibimą prie gairių"
 msgid "Toggle Low-Res"
 msgstr "Perjungti į žemą raišką"
 
-#: src/gui/app.cpp:840 src/gui/canvasview.cpp:1576
+#: src/gui/app.cpp:840 src/gui/canvasview.cpp:1577
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Sumažinti žemos raiškos pikselio dydį"
 
-#: src/gui/app.cpp:841 src/gui/canvasview.cpp:1579
+#: src/gui/app.cpp:841 src/gui/canvasview.cpp:1580
 msgid "Increase Low-Res Pixel Size"
 msgstr "Padidinti Mažas ryškumo PITCH"
 
@@ -2354,35 +2379,35 @@ msgstr "Padidinti Mažas ryškumo PITCH"
 msgid "Toggle Onion Skin"
 msgstr "Perjungti Kalke"
 
-#: src/gui/app.cpp:849 src/gui/canvasview.cpp:1647
+#: src/gui/app.cpp:849 src/gui/canvasview.cpp:1648
 msgid "Jump to Next Keyframe"
 msgstr "Peršokti į kitą atraminį kadrą"
 
-#: src/gui/app.cpp:850 src/gui/canvasview.cpp:1650
+#: src/gui/app.cpp:850 src/gui/canvasview.cpp:1651
 msgid "Jump to Prev Keyframe"
 msgstr "Peršokti į ankstesnį dėžę"
 
-#: src/gui/app.cpp:851 src/gui/canvasview.cpp:1631
+#: src/gui/app.cpp:851 src/gui/canvasview.cpp:1632
 msgid "Next Frame"
 msgstr "Kitas kadras"
 
-#: src/gui/app.cpp:852 src/gui/canvasview.cpp:1633
+#: src/gui/app.cpp:852 src/gui/canvasview.cpp:1634
 msgid "Prev Frame"
 msgstr "Ankstesnis kadras"
 
-#: src/gui/app.cpp:853 src/gui/canvasview.cpp:1636
+#: src/gui/app.cpp:853 src/gui/canvasview.cpp:1637
 msgid "Seek Forward"
 msgstr "Kreiptis į priekį"
 
-#: src/gui/app.cpp:854 src/gui/canvasview.cpp:1638
+#: src/gui/app.cpp:854 src/gui/canvasview.cpp:1639
 msgid "Seek Backward"
 msgstr "Kreiptis į atgalinį"
 
-#: src/gui/app.cpp:855 src/gui/canvasview.cpp:1644
+#: src/gui/app.cpp:855 src/gui/canvasview.cpp:1645
 msgid "Seek to Begin"
 msgstr "Kreiptis į pradžią"
 
-#: src/gui/app.cpp:856 src/gui/canvasview.cpp:1641
+#: src/gui/app.cpp:856 src/gui/canvasview.cpp:1642
 msgid "Seek to End"
 msgstr "Kreiptis į pabaigą"
 
@@ -2601,27 +2626,27 @@ msgstr "Baigti užklausos išsiuntimą"
 msgid "current"
 msgstr "dabartinis"
 
-#: src/gui/app.cpp:2120
+#: src/gui/app.cpp:2122
 msgid "and older"
 msgstr "senesnis"
 
-#: src/gui/app.cpp:2124
+#: src/gui/app.cpp:2126
 msgid "File Format Version: "
 msgstr "Failo formato versija: "
 
-#: src/gui/app.cpp:2223
+#: src/gui/app.cpp:2225
 msgid "Feature not available"
 msgstr "Funkcija nepasiekiama"
 
-#: src/gui/app.cpp:2224
+#: src/gui/app.cpp:2226
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Atsiprašome, ši funkcija dar nėra įgyvendinta."
 
-#: src/gui/app.cpp:2309
+#: src/gui/app.cpp:2311
 msgid "Documentation"
 msgstr "Dokumentacija"
 
-#: src/gui/app.cpp:2310
+#: src/gui/app.cpp:2312
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
@@ -2631,41 +2656,41 @@ msgstr ""
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 
-#: src/gui/app.cpp:2311 src/gui/toolbox.cpp:293
+#: src/gui/app.cpp:2313 src/gui/toolbox.cpp:293
 msgid "Help"
 msgstr "Pagalba"
 
-#: src/gui/app.cpp:2321
+#: src/gui/app.cpp:2323
 msgid "No browser was found. Please load this website manually:"
 msgstr "Naršyklė nerasta. Prašome įkelti šį tinklalapį rankiniu būdu:"
 
-#: src/gui/app.cpp:2323
+#: src/gui/app.cpp:2325
 msgid "No browser found"
 msgstr "Naršyklė nerasta"
 
-#: src/gui/app.cpp:2432
+#: src/gui/app.cpp:2434
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr "Nepavyko įkelti \"%s\":\n"
 
-#: src/gui/app.cpp:2435 src/gui/canvasview.cpp:3629
-#: src/gui/canvasview.cpp:3770
+#: src/gui/app.cpp:2437 src/gui/canvasview.cpp:3629
+#: src/gui/canvasview.cpp:3803
 msgid "Warnings"
 msgstr "Įspėjimai"
 
-#: src/gui/app.cpp:2443
+#: src/gui/app.cpp:2445
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Nepavyko sukurti pavyzdžio \"%s\""
 
-#: src/gui/app.cpp:2449 src/gui/iconcontroller.cpp:317
+#: src/gui/app.cpp:2451 src/gui/iconcontroller.cpp:322
 #: src/gui/instance.cpp:519
 msgid "CVS Update"
 msgstr "Cvs atnaujinimas"
 
-#: src/gui/app.cpp:2449
+#: src/gui/app.cpp:2451
 msgid ""
 "There appears to be a newer version of this file available on the CVS "
 "repository.\n"
@@ -2675,7 +2700,7 @@ msgstr ""
 "\n"
 " Ar norite atnaujinti dabar? (Tai turbūt būtų gera idėja)"
 
-#: src/gui/app.cpp:2465
+#: src/gui/app.cpp:2467
 msgid "Uncaught error on file open (BUG)"
 msgstr "Nežinoma klaida atidarant failą (Bug)"
 
@@ -2692,144 +2717,140 @@ msgstr "KLAIDA"
 msgid "Feature not yet implemented"
 msgstr "Funkcija dar nėra įgyvendinta"
 
-#: src/gui/canvasview.cpp:975
+#: src/gui/canvasview.cpp:976
 msgid "Moves the time window"
 msgstr "Perkelia laiko langą"
 
-#: src/gui/canvasview.cpp:976
+#: src/gui/canvasview.cpp:977
 msgid "Changes the current time"
 msgstr "Pakeičia esamą laiką"
 
-#: src/gui/canvasview.cpp:989 src/gui/canvasview.cpp:2797
+#: src/gui/canvasview.cpp:990 src/gui/canvasview.cpp:2798
 msgid "Turn on animate editing mode"
 msgstr "Įjungti animacijos redagavimo režimą"
 
-#: src/gui/canvasview.cpp:1017
+#: src/gui/canvasview.cpp:1018
 msgid "Current time"
 msgstr "Dabartinis laikas"
 
-#: src/gui/canvasview.cpp:1097
+#: src/gui/canvasview.cpp:1098
 msgid "Refresh"
 msgstr "Atnaujinti"
 
-#: src/gui/canvasview.cpp:1186
+#: src/gui/canvasview.cpp:1187
 msgid "Quality (lower is better)"
 msgstr "Kokybė (mažesnė yra geriau)"
 
-#: src/gui/canvasview.cpp:1198
+#: src/gui/canvasview.cpp:1199 src/gui/canvasview.cpp:1212
 msgid "Show grid when enabled"
 msgstr "Rodyti tinklelį, kai įjungta"
 
-#: src/gui/canvasview.cpp:1211
-msgid "Snap grid when enabled"
-msgstr "Pritraukti tinklelį, kai įjungta"
-
-#: src/gui/canvasview.cpp:1224
+#: src/gui/canvasview.cpp:1225
 msgid "Shows onion skin when enabled"
 msgstr "Rodo kadro permatomumą, kai įjungta"
 
-#: src/gui/canvasview.cpp:1232
+#: src/gui/canvasview.cpp:1233
 msgid "Past onion skins"
 msgstr "Ankstesnio kadro permatomumas"
 
-#: src/gui/canvasview.cpp:1239
+#: src/gui/canvasview.cpp:1240
 msgid "Future onion skins"
 msgstr "Būsimo kadro permatomumas"
 
-#: src/gui/canvasview.cpp:1250
+#: src/gui/canvasview.cpp:1251
 msgid "Shows the Render Settings Dialog"
 msgstr "Rodo atvaizdavimo nustatymų dialogą"
 
-#: src/gui/canvasview.cpp:1262
+#: src/gui/canvasview.cpp:1263
 msgid "Shows the Preview Settings Dialog"
 msgstr "Rodo peržiūros nustatymų dialogą"
 
-#: src/gui/canvasview.cpp:1477
+#: src/gui/canvasview.cpp:1478
 msgid "Close Window"
 msgstr "Uždaryti langą"
 
-#: src/gui/canvasview.cpp:1483
+#: src/gui/canvasview.cpp:1484
 msgid "Quit"
 msgstr "Baigti"
 
-#: src/gui/canvasview.cpp:1535
+#: src/gui/canvasview.cpp:1536
 msgid " (best)"
 msgstr " (geriausia)"
 
-#: src/gui/canvasview.cpp:1536
+#: src/gui/canvasview.cpp:1537
 msgid " (fastest)"
 msgstr " (greičiausia)"
 
-#: src/gui/canvasview.cpp:1538
+#: src/gui/canvasview.cpp:1539
 #, c-format
 msgid "Set Quality to %d"
 msgstr "Nustatyti kokybę %d"
 
-#: src/gui/canvasview.cpp:1595 src/gui/iconcontroller.cpp:245
+#: src/gui/canvasview.cpp:1596 src/gui/iconcontroller.cpp:245
 msgid "Show Grid"
 msgstr "Rodyti tinklelį"
 
-#: src/gui/canvasview.cpp:1599
+#: src/gui/canvasview.cpp:1600
 msgid "Snap to Grid"
 msgstr "Pritraukti prie tinklelio"
 
-#: src/gui/canvasview.cpp:1603
+#: src/gui/canvasview.cpp:1604
 msgid "Show Guides"
 msgstr "Rodyti gaires"
 
-#: src/gui/canvasview.cpp:1607
+#: src/gui/canvasview.cpp:1608
 msgid "Snap to Guides"
 msgstr "Pritraukti prie gaires"
 
-#: src/gui/canvasview.cpp:1612
+#: src/gui/canvasview.cpp:1613
 msgid "Use Low-Res"
 msgstr "Žemesne raiška"
 
-#: src/gui/canvasview.cpp:1616
+#: src/gui/canvasview.cpp:1617
 msgid "Show Onion Skin"
 msgstr "Rodyti Kadro persidengimą"
 
-#: src/gui/canvasview.cpp:1659
+#: src/gui/canvasview.cpp:1660
 msgid "Zoom In on Timeline"
 msgstr "Padidinti laiko skalėje"
 
-#: src/gui/canvasview.cpp:1662
+#: src/gui/canvasview.cpp:1663
 msgid "Zoom Out on Timeline"
 msgstr "Sumažinti laiko skalėje"
 
-#: src/gui/canvasview.cpp:2069 src/gui/canvasview.cpp:2542
+#: src/gui/canvasview.cpp:2070 src/gui/canvasview.cpp:2543
 msgid "Select All Children"
 msgstr "Pasirinkti turinį"
 
-#: src/gui/canvasview.cpp:2355
+#: src/gui/canvasview.cpp:2356
 msgid "-MODIFIED"
 msgstr "-MODIFIKUOTAS"
 
-#: src/gui/canvasview.cpp:2357
+#: src/gui/canvasview.cpp:2358
 msgid "-UPDATED"
 msgstr "-ATNAUJINTAS"
 
-#: src/gui/canvasview.cpp:2362
+#: src/gui/canvasview.cpp:2363
 msgid " (Root)"
 msgstr " (Pagrindinis)"
 
-#: src/gui/canvasview.cpp:2787
+#: src/gui/canvasview.cpp:2788
 msgid "Turn off animate editing mode"
 msgstr "Išjungti animacijos redagavimo režimą"
 
-#: src/gui/canvasview.cpp:2808
+#: src/gui/canvasview.cpp:2809
 msgid "Unlock future keyframes"
 msgstr "Atrakinti būsimus atraminius kadrus"
 
-#: src/gui/canvasview.cpp:2818
+#: src/gui/canvasview.cpp:2819
 msgid "Lock future keyframes"
 msgstr "Užrakinti būsimus atraminius kadrus"
 
-#: src/gui/canvasview.cpp:2828
+#: src/gui/canvasview.cpp:2829
 msgid "Unlock past keyframes"
 msgstr "Atrakinti praeitus atraminius kadrus"
 
-#: src/gui/canvasview.cpp:2838
+#: src/gui/canvasview.cpp:2839
 msgid "Lock past  keyframes"
 msgstr "Užrakinti praeitus  atraminius kadrus"
 
@@ -2901,7 +2922,7 @@ msgstr "_Įeiti"
 msgid "_Out"
 msgstr "_Išeiti"
 
-#: src/gui/canvasview.cpp:3766 src/synfigapp/canvasinterface.cpp:592
+#: src/gui/canvasview.cpp:3799 src/synfigapp/canvasinterface.cpp:592
 msgid "Import Image"
 msgstr "Importuoti paveikslėlį"
 
@@ -3320,15 +3341,35 @@ msgid "Render Options Dialog"
 msgstr "Atvaizdavimo parinktys"
 
 #: src/gui/iconcontroller.cpp:316
+#, fuzzy
+msgid "TCB interpolation"
+msgstr "Interpoliacija"
+
+#: src/gui/iconcontroller.cpp:317
+#, fuzzy
+msgid "Ease In/Out interpolation"
+msgstr "_Interpoliuoti pabaigoje"
+
+#: src/gui/iconcontroller.cpp:318
+#, fuzzy
+msgid "Const interpolation"
+msgstr "_Interpoliuoti pradžioje"
+
+#: src/gui/iconcontroller.cpp:319
+#, fuzzy
+msgid "Linear interpolation"
+msgstr "_Interpoliuoti pradžioje"
+
+#: src/gui/iconcontroller.cpp:321
 msgid "CVS Add"
 msgstr "CVS Add"
 
-#: src/gui/iconcontroller.cpp:318 src/gui/instance.cpp:450
+#: src/gui/iconcontroller.cpp:323 src/gui/instance.cpp:450
 #: src/gui/instance.cpp:461
 msgid "CVS Commit"
 msgstr "CVS Commit"
 
-#: src/gui/iconcontroller.cpp:319 src/gui/instance.cpp:552
+#: src/gui/iconcontroller.cpp:324 src/gui/instance.cpp:552
 msgid "CVS Revert"
 msgstr "CVS Revert"
 
@@ -3448,59 +3489,59 @@ msgid ""
 "Would you like to commit these changes?"
 msgstr ""
 
-#: src/gui/instance.cpp:994
+#: src/gui/instance.cpp:996
 msgid "Edit Waypoint"
 msgstr "Redaguoti tarpinius taškus"
 
-#: src/gui/instance.cpp:1031 src/gui/instance.cpp:1120
+#: src/gui/instance.cpp:1033 src/gui/instance.cpp:1122
 msgid "Interpolate"
 msgstr "Interpoliuoti"
 
-#: src/gui/instance.cpp:1048 src/gui/instance.cpp:1137
+#: src/gui/instance.cpp:1050 src/gui/instance.cpp:1139
 msgid "Rounded"
 msgstr "Užapvalinimas"
 
-#: src/gui/instance.cpp:1082 src/gui/instance.cpp:1171
+#: src/gui/instance.cpp:1084 src/gui/instance.cpp:1173
 msgid "Peak"
 msgstr "Viršūnė"
 
-#: src/gui/instance.cpp:1099 src/gui/instance.cpp:1188
+#: src/gui/instance.cpp:1101 src/gui/instance.cpp:1190
 msgid "Flat"
 msgstr "Plokštuma"
 
-#: src/gui/instance.cpp:1110
+#: src/gui/instance.cpp:1112
 msgid "Set Side Before"
 msgstr ""
 
-#: src/gui/instance.cpp:1199
+#: src/gui/instance.cpp:1201
 msgid "Set Side After"
 msgstr ""
 
-#: src/gui/instance.cpp:1209
+#: src/gui/instance.cpp:1211
 msgid "Set width to zero"
 msgstr "Nustatyti nulinį plotį"
 
-#: src/gui/instance.cpp:1225
+#: src/gui/instance.cpp:1227
 msgid "Set width to default"
 msgstr "Pakeisti plotį į numatytą"
 
-#: src/gui/instance.cpp:1260
+#: src/gui/instance.cpp:1262
 msgid "Set Waypoints"
 msgstr "Nustatyti tarpinius taškus"
 
-#: src/gui/instance.cpp:1305
+#: src/gui/instance.cpp:1324
 msgid "Unable to convert to animated waypoint"
 msgstr "Negalima konvertuoti animuoto tarpinio tašką"
 
-#: src/gui/instance.cpp:1322
+#: src/gui/instance.cpp:1341
 msgid "Unable to find WaypointSetSmart action"
 msgstr ""
 
-#: src/gui/instance.cpp:1335
+#: src/gui/instance.cpp:1354
 msgid "Unable to set a specific waypoint"
 msgstr ""
 
-#: src/gui/instance.cpp:1363
+#: src/gui/instance.cpp:1382
 msgid "Edit Waypoints"
 msgstr "Redaguoti tarpinius taškus"
 
@@ -3889,11 +3930,11 @@ msgstr "Vizualizacija nepavyko"
 msgid "Rendering canvas %s..."
 msgstr ""
 
-#: src/synfigapp/action.cpp:498
+#: src/synfigapp/action.cpp:500
 msgid "Selected Canvas"
 msgstr ""
 
-#: src/synfigapp/action.cpp:502 src/synfigapp/action.cpp:503
+#: src/synfigapp/action.cpp:504 src/synfigapp/action.cpp:505
 msgid "Canvas Interface"
 msgstr ""
 
@@ -3915,6 +3956,7 @@ msgstr ""
 #: src/synfigapp/actions/valuedescexport.cpp:89
 #: src/synfigapp/actions/valuedescset.cpp:91
 #: src/synfigapp/actions/valuedescset.cpp:100
+#: src/synfigapp/actions/valuedescremovesmart.cpp:76
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
 #: src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
@@ -4546,19 +4588,20 @@ msgstr ""
 msgid "Move Time Points"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:59
+#: src/synfigapp/actions/valuedescblinelink.cpp:60
 msgid "Link to BLine"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:82
+#: src/synfigapp/actions/valuedescblinelink.cpp:83
 msgid "ValueDesc to link"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:86
+#: src/synfigapp/actions/valuedescblinelink.cpp:87
 msgid "ValueDesc on BLine to link to"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:93
+#: src/synfigapp/actions/valuedescblinelink.cpp:94
+#: src/synfigapp/actions/valuedescremovesmart.cpp:84
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:84
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
 #: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:85
@@ -4607,11 +4650,11 @@ msgstr ""
 msgid "The type of ValueNode that you want to be converted to"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:166
+#: src/synfigapp/actions/valuedescconvert.cpp:183
 msgid "Unable to decipher ValueDesc (Bug?)"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:171
+#: src/synfigapp/actions/valuedescconvert.cpp:188
 msgid "Unable to create new value node"
 msgstr ""
 
@@ -4639,15 +4682,15 @@ msgstr "Eksportuoti \"%s\" į \"%s\""
 msgid "The name that you want this value to be exported as"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescexport.cpp:166
+#: src/synfigapp/actions/valuedescexport.cpp:172
 msgid "Can only export Canvas when used as constant parameter"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescexport.cpp:207
+#: src/synfigapp/actions/valuedescexport.cpp:213
 msgid "ValueBase is already exported"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescexport.cpp:215
+#: src/synfigapp/actions/valuedescexport.cpp:221
 msgid "Unable to export parameter. (Bug?)"
 msgstr ""
 
@@ -4663,69 +4706,69 @@ msgstr ""
 msgid "ValueDesc to smart link"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:135
+#: src/synfigapp/actions/valuedesclink.cpp:140
 msgid "Cannot link two different exported values ('"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:136
+#: src/synfigapp/actions/valuedesclink.cpp:141
 msgid "' and '"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:137
+#: src/synfigapp/actions/valuedesclink.cpp:142
 msgid "')"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:143
+#: src/synfigapp/actions/valuedesclink.cpp:148
 msgid "Used exported ValueNode ('"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:143
+#: src/synfigapp/actions/valuedesclink.cpp:148
 msgid "')."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:150
+#: src/synfigapp/actions/valuedesclink.cpp:155
 msgid "Using the only available ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:164
-#: src/synfigapp/actions/valuedesclink.cpp:171
+#: src/synfigapp/actions/valuedesclink.cpp:169
+#: src/synfigapp/actions/valuedesclink.cpp:176
 msgid "Using the most referenced ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:179
-#: src/synfigapp/actions/valuedesclink.cpp:188
+#: src/synfigapp/actions/valuedesclink.cpp:184
+#: src/synfigapp/actions/valuedesclink.cpp:193
 msgid "There's a tie for most referenced; using the animated ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:201
-#: src/synfigapp/actions/valuedesclink.cpp:208
+#: src/synfigapp/actions/valuedesclink.cpp:206
+#: src/synfigapp/actions/valuedesclink.cpp:213
 msgid ""
 "There's a tie for most referenced, and both are animated; using the one with "
 "the most waypoints."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:221
-#: src/synfigapp/actions/valuedesclink.cpp:228
+#: src/synfigapp/actions/valuedesclink.cpp:226
+#: src/synfigapp/actions/valuedesclink.cpp:233
 msgid ""
 "There's a tie for most referenced, and both are linkable value node "
 "animated; using the one with the most waypoints."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:237
-#: src/synfigapp/actions/valuedesclink.cpp:244
+#: src/synfigapp/actions/valuedesclink.cpp:242
+#: src/synfigapp/actions/valuedesclink.cpp:249
 msgid "Everything is tied; using the least recently modified value."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:250
+#: src/synfigapp/actions/valuedesclink.cpp:255
 msgid "Absolutely everything is tied."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:258
+#: src/synfigapp/actions/valuedesclink.cpp:263
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:295
+#: src/synfigapp/actions/valuedesclink.cpp:300
 msgid "No ValueNodes were available, so one was created."
 msgstr ""
 
@@ -4749,11 +4792,11 @@ msgstr ""
 #: src/synfigapp/actions/valuedescset.cpp:482
 #: src/synfigapp/actions/valuedescset.cpp:501
 #: src/synfigapp/actions/valuedescset.cpp:519
-#: src/synfigapp/actions/valuedescset.cpp:582
-#: src/synfigapp/actions/valuedescset.cpp:615
-#: src/synfigapp/actions/valuedescset.cpp:634
-#: src/synfigapp/actions/valuedescset.cpp:647
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:184
+#: src/synfigapp/actions/valuedescset.cpp:600
+#: src/synfigapp/actions/valuedescset.cpp:633
+#: src/synfigapp/actions/valuedescset.cpp:652
+#: src/synfigapp/actions/valuedescset.cpp:665
+#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:195
 msgid "Unable to find action ValueDescSet (bug)"
 msgstr ""
 
@@ -4781,17 +4824,34 @@ msgstr ""
 msgid "Inverse manipulation of %s range values not implemented in core."
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:710
-#: src/synfigapp/actions/valuedescset.cpp:747
+#: src/synfigapp/actions/valuedescset.cpp:709
+msgid ""
+"It is forbidden to set lower boundary equal or bigger than upper boundary"
+msgstr ""
+
+#: src/synfigapp/actions/valuedescset.cpp:758
+#: src/synfigapp/actions/valuedescset.cpp:806
 msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:745
+#: src/synfigapp/actions/valuedescset.cpp:804
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:765
+#: src/synfigapp/actions/valuedescset.cpp:824
 msgid "Unsupported ValueDesc type"
+msgstr ""
+
+#: src/synfigapp/actions/valuedescremovesmart.cpp:50
+msgid "Remove Multiple Items(Smart)"
+msgstr ""
+
+#: src/synfigapp/actions/valuedescremovesmart.cpp:179
+#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:216
+#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:272
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:159
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:177
+msgid "Unable to find action (bug)"
 msgstr ""
 
 #: src/synfigapp/actions/valuenodeadd.cpp:49
@@ -4843,14 +4903,7 @@ msgstr ""
 msgid "Insert Item (Smart)"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:261
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:159
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:177
-msgid "Unable to find action (bug)"
-msgstr ""
-
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:242
+#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:253
 msgid "Unable to find action \"ActivepointSetOn\""
 msgstr ""
 
@@ -5231,3 +5284,18 @@ msgstr ""
 #: src/synfigapp/value_desc.cpp:90
 msgid "Exported ValueNode"
 msgstr "Eksportuoti mazgo reikšmes"
+
+#~ msgid "Key"
+#~ msgstr "Raktas"
+
+#~ msgid "Data"
+#~ msgstr "Duomenys"
+
+#~ msgid "Smooth"
+#~ msgstr "Glotninimas"
+
+#~ msgid "Find"
+#~ msgstr "Rasti"
+
+#~ msgid "Snap grid when enabled"
+#~ msgstr "Pritraukti tinklelį, kai įjungta"
