@@ -22,6 +22,12 @@ http://synfig.org/en/news/releases
     doesn't want to modify.
   * Fix for compatibility with libpng 1.5. Patch #3427945 by SpeckFleck.
   * Fix bug in Time Loop Layer. Patch ID: 3414729 by Ray Frederikson
+  * Avoid crash when there is only one blinepoint and the bline is not looped on Advanced Outlines.
+  * Fix some old render artifacts and new ones due to render optimization on Advanced Outlines.
+  * Avoid crash when DIList is empty on Advanced Outlines.
+  * Insert Item smart is allowed not over empty lists.
+  * New Greek language. Thanks to kiolalis
+  * Update for all the languages.
 
  0.63.02 (git tag: "synfig-0.63.02") - September 28, 2011 - Improvement
 

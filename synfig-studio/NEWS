@@ -15,6 +15,12 @@ http://synfig.org/en/news/releases
   * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
   * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
   * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
+  * Widhtpoint position ducks now allows 'Edit Waypoint' contextual menu.
+  * Add feature to delete multiple vertices at the same time on blines.
+  * Enum Widgets allows icons now. Add icons to Default Interpolation widget.
+  * Insert Item smart is allowed now over empty lists.
+  * Fix bug #1863133: Metadata doesn't work.
+  * Update for all the languages.
 
  0.63.02 (git tag: "synfigstudio-0.63.03") - September 28, 2011 -No changes
 
