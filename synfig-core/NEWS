@@ -1,10 +1,10 @@
               synfig releases
 
-More detailed notes are available on the releases page:
+More detailed notes are available on the news page:
 
-http://synfig.org/en/news/releases
+http://synfig.org/cms/en/news/
 
- 0.63.03 (git tag: "synfig-0.63.03") - November XX, 2011 - Features, minor bug fixes.
+ 0.63.03 (git tag: "synfig-0.63.03") - December 05, 2011 - Features, bug fixes.
 
   * Support to create Advanced Outlines with the Draw Tool.
   * Fixed script to generate synfig API.
@@ -15,17 +15,17 @@ http://synfig.org/en/news/releases
     As parameters they cannot be exported, converted or animated.
   * Render improvements for Advanced Outlines:
     With 'Fast' parameter disabled: 55% of reduction render time
-    WIth 'Fast' parameter enabled: 10% of reduction render time
+    With 'Fast' parameter enabled: 10% of reduction render time
   * For Importer layer, even if file is physically impossible to open,
     set the parameter with the passed file name. This would allow to load and
     save Synfig's documents with paths for imported files badly adjusted but that user
     doesn't want to modify.
   * Fix for compatibility with libpng 1.5. Patch #3427945 by SpeckFleck.
-  * Fix bug in Time Loop Layer. Patch ID: 3414729 by Ray Frederikson
+  * Fix bug in Time Loop Layer. Patch ID: #3414729 by Ray Frederikson
   * Avoid crash when there is only one blinepoint and the bline is not looped on Advanced Outlines.
   * Fix some old render artifacts and new ones due to render optimization on Advanced Outlines.
   * Avoid crash when DIList is empty on Advanced Outlines.
-  * Insert Item smart is allowed not over empty lists.
+  * Insert Item smart is allowed now over empty lists.
   * New Greek language. Thanks to kiolalis
   * Update for all the languages.
 

@@ -1,26 +1,27 @@
               synfigstudio releases
 
-More detailed notes are available on the releases page:
+More detailed notes are available on the news page:
 
-http://synfig.org/en/news/releases
+http://synfig.org/cms/en/news/
 
- 0.63.03 (git tag: "synfigstudio-0.63.03") - November XX, 2011 - Features, minor bug fixes.
+ 0.63.03 (git tag: "synfigstudio-0.63.03") - December 05, 2011 - Features, bug fixes.
 
   * Use Widget::Distance for feather spin button on Draw Tool options.
   * Enable tool tips for Tool Options dialogue buttons.
   * Make Draw Tool options greyed when not usable.
   * Full support to create Advanced Outlines with the Draw Tool. Stylus pressure used.
-  * Widthpoint position ducks shows a text with its value when mouse hovers.
+  * Widthpoint position duck shows a text with its value when mouse hovers.
   * Don't stretch button in file selection widget. Use shorter text. Patch by Konstantin Dmitriev
   * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
   * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
   * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
-  * Widhtpoint position ducks now allows 'Edit Waypoint' contextual menu.
-  * Add feature to delete multiple vertices at the same time on blines.
-  * Enum Widgets allows icons now. Add icons to Default Interpolation widget.
+  * Widhtpoint position duck now allows 'Edit Waypoint' contextual menu.
+  * Add feature to delete multiple vertices at the same time on blines and other list types.
+  * Enum Widget allows icons now. Add icons to Default Interpolation widget.
   * Insert Item smart is allowed now over empty lists.
   * Fix bug #1863133: Metadata doesn't work.
   * Update for all the languages.
+  * Update on the splash screen. Patch from Yu Chen.
 
  0.63.02 (git tag: "synfigstudio-0.63.03") - September 28, 2011 -No changes
 
