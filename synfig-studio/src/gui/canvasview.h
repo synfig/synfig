@@ -712,7 +712,7 @@ private:
 	//void on_audio_play();
 	bool on_audio_scrub();
 
-	void on_play_stop_pressed();
+	void on_play_pause_pressed();
 
 	void on_meta_data_changed();
 

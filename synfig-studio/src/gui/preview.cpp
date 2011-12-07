@@ -288,16 +288,18 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	signal_changed()();
 }
 
-#define IMAGIFY_BUTTON(button,stockid,tooltip)					\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->set_padding(0,0);\
+#define IMAGIFY_BUTTON(button,stockid,tooltip) \
+        icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_BUTTON)); \
+	button->set_tooltip_text(tooltip); \
+        button->add(*icon); \
+        button->set_relief(Gtk::RELIEF_NONE); \
+        button->show(); \
+	icon->set_padding(0,0); \
 	icon->show();
 
 Widget_Preview::Widget_Preview()
-:Gtk::Table(5,5,false),
-adj_time_scrub(0,0,1000,1,10,0),
+:Gtk::Table(5,4,false),
+adj_time_scrub(0,0,1000,0,10,0),
 scr_time_scrub(adj_time_scrub),
 b_loop(/*_("Loop")*/),
 currentindex(0),
@@ -313,6 +315,8 @@ playing(false)
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
+	
+	scr_time_scrub.set_draw_value(0);
 
 	disp_sound.set_time_adjustment(&adj_sound);
 	timedisp = -1;
@@ -350,28 +354,58 @@ playing(false)
 	//2nd row
 	hbox = manage(new Gtk::HBox);
 
+	//prevframe play/pause nextframe buttons
+	
+	//prev rendered frame
+	Gtk::Button *prev_framebutton;
+	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
+	prev_framebutton = manage(new class Gtk::Button());
+	prev_framebutton->set_tooltip_text(_("Prev frame"));
+	icon0->set_padding(0,0);
+	icon0->show();
+	prev_framebutton->add(*icon0);
+	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
+	prev_framebutton->show();
+	prev_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::prev_frame));
+	hbox->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//play pause
+	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton = manage(new class Gtk::Button());
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon1->set_padding(0,0);
+	icon1->show();
+	play_pausebutton->add(*icon1);
+	play_pausebutton->set_relief(Gtk::RELIEF_NONE);
+	play_pausebutton->show();
+	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+	hbox->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
+
+	//next rendered frame
+	Gtk::Button *next_framebutton;
+	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
+	next_framebutton = manage(new class Gtk::Button());
+	next_framebutton->set_tooltip_text(_("Next frame"));
+	icon2->set_padding(0,0);
+	icon2->show();
+	next_framebutton->add(*icon2);
+	next_framebutton->set_relief(Gtk::RELIEF_NONE);
+	next_framebutton->show();
+	next_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::next_frame));
+	hbox->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//space between next frame button and loop button
+        
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,_("Toggle Looping"));
+	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Loop"));
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
-	button = manage(new Gtk::Button(/*_("Play")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,_("Play"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-
-	button = manage(new Gtk::Button(/*_("Stop")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
-	IMAGIFY_BUTTON(button,Gtk::Stock::NO,_("Stop"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-
 	//attack the stop render and erase all buttons to same line...
-	{
-		Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
-		hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
-	}
+	
+	Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
+	hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
+
 
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
@@ -381,13 +415,13 @@ playing(false)
 
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,_("Re-Preview"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::EDIT,_("Re-Preview"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,0,2,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,_("Erase All"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::CLEAR,_("Erase All"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
@@ -406,11 +440,11 @@ playing(false)
 	hbox->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);
 	hbox->show_all();
 	attach(*hbox,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	//attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	//5th row
-	disp_sound.set_size_request(-1,32);
-	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	//disp_sound.set_size_request(-1,32);
+	//attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	show_all();
 
@@ -638,7 +672,7 @@ bool studio::Widget_Preview::play_update()
 			{
 				time = adj_time_scrub.get_upper();
 				adj_time_scrub.set_value(time);
-				play_stop();
+				play_pause();
 				update();
 
 				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
@@ -669,7 +703,7 @@ void studio::Widget_Preview::slider_move()
 //for other things updating the value changed signal...
 void studio::Widget_Preview::scrub_updated(double t)
 {
-	stop();
+	pause();
 
 	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
 	//double oldt = t;
@@ -706,7 +740,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 	synfig::info("Setting preview");
 
 	//stop playing the mini animation...
-	stop();
+	pause();
 
 	if(preview)
 	{
@@ -763,7 +797,7 @@ void studio::Widget_Preview::clear()
 
 void studio::Widget_Preview::play()
 {
-	if(preview && !playing)
+	if(preview)
 	{
 		//synfig::info("Playing at %lf",adj_time_scrub.get_value());
 		//audiotime = adj_time_scrub.get_value();
@@ -787,22 +821,71 @@ void studio::Widget_Preview::play()
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
 	}
-
 }
 
-void studio::Widget_Preview::play_stop()
+void studio::Widget_Preview::play_pause()
 {
 	playing = false;
-	signal_stop()();
+	signal_pause()();
 	if(audio) audio->stop(); //!< stop the audio
 	//synfig::info("Stopping...");
+
+	Gtk::Image *icon;
+	icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton->remove();
+	play_pausebutton->add(*icon);
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon->set_padding(0,0);
+	icon->show();
+	
 }
 
-void studio::Widget_Preview::stop()
+void studio::Widget_Preview::pause()
 {
 	//synfig::warning("stopping");
-	play_stop();
+	play_pause();
 	timecon.disconnect();
+}
+
+void studio::Widget_Preview::on_play_pause_pressed()
+{
+	bool play_flag;
+	float begin = preview->get_begintime();
+	float end = preview->get_endtime();
+	float current = adj_time_scrub.get_value();
+	Gtk::Image *icon;
+
+	if(!playing)
+	{
+		play_pausebutton->remove();
+		if(current == end) adj_time_scrub.set_value(begin);
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
+		play_pausebutton->set_tooltip_text(_("Pause"));
+		play_pausebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+
+		play_flag=true;
+	}
+	else
+	{
+		play_flag=false;
+	}
+	if(play_flag) play(); else pause();
+}
+
+void studio::Widget_Preview::next_frame()
+{
+	if(playing) pause();
+	float rate = preview->get_fps();
+	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate+1.000001)/rate);
+}
+
+void studio::Widget_Preview::prev_frame()
+{
+	if(playing) pause();
+	float rate = preview->get_fps();
+	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate-0.99999)/rate);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
@@ -813,7 +896,7 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 		{
 			if(event->button.button == 1 || event->button.button == 3)
 			{
-				stop();
+				pause();
 			}
 		}
 
@@ -843,7 +926,7 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 
 void studio::Widget_Preview::seek(float t)
 {
-	stop();
+	pause();
 	adj_time_scrub.set_value(t);
 }
 
@@ -852,7 +935,7 @@ void studio::Widget_Preview::repreview()
 	if(preview)
 	{
 		stoprender();
-		stop();
+		pause();
 		preview->get_canvasview()->preview_option();
 	}
 }
@@ -867,7 +950,7 @@ void studio::Widget_Preview::stoprender()
 
 #ifdef SINGLE_THREADED
 		if (preview->renderer->updating)
-			preview->renderer->stop();
+			preview->renderer->pause();
 		else
 #endif
 			preview->renderer.detach();
@@ -876,7 +959,7 @@ void studio::Widget_Preview::stoprender()
 
 void studio::Widget_Preview::eraseall()
 {
-	stop();
+	pause();
 	stoprender();
 
 	currentbuf.clear();
