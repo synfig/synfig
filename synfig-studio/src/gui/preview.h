@@ -245,8 +245,7 @@ public:
 
 	void on_play_pause_pressed();
 
-	void prev_frame();
-	void next_frame();
+	void seek_frame(int frames);
 
 	void stoprender();
 

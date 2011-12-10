@@ -366,7 +366,8 @@ playing(false)
 	prev_framebutton->add(*icon0);
 	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
 	prev_framebutton->show();
-	prev_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::prev_frame));
+	prev_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), -1));
+
 	hbox->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//play pause
@@ -391,7 +392,8 @@ playing(false)
 	next_framebutton->add(*icon2);
 	next_framebutton->set_relief(Gtk::RELIEF_NONE);
 	next_framebutton->show();
-	next_framebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::next_frame));
+	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame),1));
+
 	hbox->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//space between next frame button and loop button
@@ -874,18 +876,15 @@ void studio::Widget_Preview::on_play_pause_pressed()
 	if(play_flag) play(); else pause();
 }
 
-void studio::Widget_Preview::next_frame()
+void studio::Widget_Preview::seek_frame(int frames)
 {
-	if(playing) pause();
-	float rate = preview->get_fps();
-	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate+1.000001)/rate);
-}
-
-void studio::Widget_Preview::prev_frame()
-{
-	if(playing) pause();
-	float rate = preview->get_fps();
-	adj_time_scrub.set_value((adj_time_scrub.get_value()*rate-0.99999)/rate);
+//	if(!frames)	return;
+	float fps = preview->get_fps();
+	float currenttime = adj_time_scrub.get_value();
+	Time newtime(currenttime+(float)frames/fps);
+	newtime = newtime.round(fps);
+	
+	adj_time_scrub.set_value(newtime);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
