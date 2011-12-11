@@ -879,6 +879,9 @@ void studio::Widget_Preview::on_play_pause_pressed()
 void studio::Widget_Preview::seek_frame(int frames)
 {
 //	if(!frames)	return;
+
+	if(playing) pause();	//pause playing when seek frame called
+
 	float fps = preview->get_fps();
 	float currenttime = adj_time_scrub.get_value();
 	Time newtime(currenttime+(float)frames/fps);
