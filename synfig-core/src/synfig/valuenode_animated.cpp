@@ -302,7 +302,7 @@ public:
 			// Set up the positions
 			curve.first.set_rs(iter->get_time(), next->get_time());
 			curve.second.set_rs(iter->get_time(), next->get_time());
-
+			// Retrieve the interpolations
 			Waypoint::Interpolation iter_get_after(iter->get_after());
 			Waypoint::Interpolation next_get_after(next->get_after());
 			Waypoint::Interpolation iter_get_before(iter->get_before());
@@ -324,6 +324,11 @@ public:
 			{
 				curve.second.p1()=iter->get_value().get(T());
 				curve.second.p2()=next->get_value().get(T());
+				///
+				/// ANY/CONSTANT ------ ANY/ANY
+				///               or
+				/// ANY/ANY-------------CONSTANT/ANY
+				///
 				if(iter_get_after==INTERPOLATION_CONSTANT || next_get_before==INTERPOLATION_CONSTANT)
 				{
 					// Sections must be constant on both sides.
@@ -340,7 +345,10 @@ public:
 				}
 				else
 				{
-					if(iter_get_after==INTERPOLATION_TCB && iter!=waypoint_list_.begin() && !is_angle())
+					/// iter             next
+					/// ANY/TCB -------- ANY/ANY and iter is middle waypoint
+					///
+				    if(iter_get_after==INTERPOLATION_TCB && iter!=waypoint_list_.begin() && !is_angle())
 					{
 						if(iter->get_before()!=INTERPOLATION_TCB && !curve_list.empty())
 						{
@@ -351,49 +359,48 @@ public:
 							const Real& t(iter->get_tension());		// Tension
 							const Real& c(iter->get_continuity());	// Continuity
 							const Real& b(iter->get_bias());		// Bias
-
 							// The following line works where the previous line fails.
 							value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
-
 							const value_type& Pc(curve.second.p1());	// P_i
 							const value_type& Pn(curve.second.p2());	// P_{i+1}
 
-							// TCB
+							/// TCB calculation
 							value_type vect(static_cast<value_type>
 											(subtract_func(Pc,Pp) *
 											           (((1.0-t) * (1.0+c) * (1.0+b)) / 2.0) +
 											 (Pn-Pc) * (((1.0-t) * (1.0-c) * (1.0-b)) / 2.0)));
-
-							// Tension Only
-							//value_type vect=(value_type)((Pn-Pp)*(1.0-t));
-
-							// Linear
-							//value_type vect=(value_type)(Pn-Pc);
-
-							// Debugging stuff
-							//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
-
-							// Adjust for time
-							//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
-							//vect=value_type(vect*(curve.second.get_dt())/(curve_list.back().second.get_dt()));
-
 							curve.second.t1()=vect;
 						}
 					}
-					else if(
+					else
+						///
+						/// ANY/LINEAR ------- ANY/ANY
+						///            or
+						/// ANY/EASE -------- ANY/ANY
+						///            or
+						/// ANY/TCB -------- ANY/ANY and iter is first.
+					    if(
 						iter_get_after==INTERPOLATION_LINEAR || iter_get_after==INTERPOLATION_HALT ||
 						(iter_get_after==INTERPOLATION_TCB && iter==waypoint_list_.begin()))
 					{
+						/// t1 = p2 - p1
 						curve.second.t1()=subtract_func(curve.second.p2(),curve.second.p1());
 					}
-
+					///
+					/// TCB/!TCB and list not empty
+					///
 					if(iter_get_before==INTERPOLATION_TCB && iter->get_after()!=INTERPOLATION_TCB && !curve_list.empty())
 					{
+						/// It means that there is one previous waypoint
+						/// that is at cuerve_list.back()
+						/// then its second tangent must be the same than
+						/// our first one for continuity of the tangents.
 						curve_list.back().second.t2()=curve.second.t1();
 						curve_list.back().second.sync();
 					}
-
-
+					/// iter          next          after-next
+					/// ANY/ANY ------TCB/ANY ----- ANY/ANY
+					///
 					if(next_get_before==INTERPOLATION_TCB && after_next!=waypoint_list_.end()  && !is_angle())
 					{
 						const Real &t(next->get_tension());		// Tension
@@ -403,39 +410,39 @@ public:
 						const value_type &Pc(curve.second.p2());	// P_i
 						value_type Pn; Pn=after_next->get_value().get(T());	// P_{i+1}
 
-						// TCB
+						/// TCB calculation
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
 																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
-
-						// Tension Only
-						//value_type vect((value_type)((Pn-Pp)*(1.0-t)));
-
-						// Linear
-						//value_type vect=(value_type)(Pc-Pp);
-
-						// Debugging stuff
-						//synfig::info("%d:t2: %s",i,tangent_info(Pp,Pn,vect).c_str());
-
-						// Adjust for time
-						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+(after_next->get_time()-next->get_time())));
-						//vect=value_type(vect*(curve.second.get_dt()/((after_next->get_time()-next->get_time()))));
-
 						curve.second.t2()=vect;
 					}
-					else if(
+					else
+						/// iter          next
+						/// ANY/ANY ----- LINEAR/ANY
+						///           or
+						/// ANY/ANY ----- EASE/ANY
+						///           or
+						/// ANY/ANY -----TCB/ANY ---- END
+					    if(
 						next_get_before==INTERPOLATION_LINEAR || next_get_before==INTERPOLATION_HALT ||
 						(next_get_before==INTERPOLATION_TCB && after_next==waypoint_list_.end()))
 					{
+						/// t2 = p2 - p1
 						curve.second.t2()=subtract_func(curve.second.p2(),curve.second.p1());
 					}
 
 					// Adjust for time
 					const float timeadjust(0.5);
-
+					/// iter           next
+					/// ANY/EASE ------ANY/ANY
+					///
 					if(iter_get_after==INTERPOLATION_HALT)
 						curve.second.t1()*=0;
 					// if this isn't the first curve
-					else if(iter_get_after != INTERPOLATION_LINEAR && !curve_list.empty())
+					else
+					/// prev         iter              next
+					/// ANY/ANY -----ANY/!LINEAR ----- ANY/ANY
+					///
+					if(iter_get_after != INTERPOLATION_LINEAR && !curve_list.empty())
 						// adjust it for the curve that came before it
 						curve.second.t1() = static_cast<T>(curve.second.t1() * // cast to prevent warning
 							//                  (time span of this curve) * 1.5
@@ -443,11 +450,17 @@ public:
 							// ((time span of this curve) * 0.5) + (time span of previous curve)
 							  (curve.second.get_dt()*(timeadjust+1)) /
 							  (curve.second.get_dt()*timeadjust + curve_list.back().second.get_dt()));
-
+					/// iter           next
+					/// ANY/ANY ------EASE/ANY
+					///
 					if(next_get_before==INTERPOLATION_HALT)
 						curve.second.t2()*=0;
 					// if this isn't the last curve
-					else if(next_get_before != INTERPOLATION_LINEAR && after_next!=waypoint_list_.end())
+					else
+					/// iter           next               after_next
+					/// ANY/ANY ----- !LINEAR/ANY ------- ANY/ANY
+					///
+					if(next_get_before != INTERPOLATION_LINEAR && after_next!=waypoint_list_.end())
 						// adjust it for the curve that came after it
 						curve.second.t2() = static_cast<T>(curve.second.t2() * // cast to prevent warning
 							//                (time span of this curve) * 1.5
