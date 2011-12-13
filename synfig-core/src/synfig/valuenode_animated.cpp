@@ -199,16 +199,8 @@ private:
 
 			return second(first(t));
 		}
-	};
-	typedef vector <
-		PathSegment
-		/*
-		pair <
-			hermite<Time,Time>,
-			hermite<value_type,Time>
-		>
-		*/
-	> curve_list_type;
+	}; // END of struct PathSegment
+	typedef vector<PathSegment> curve_list_type;
 
 	curve_list_type curve_list;
 
@@ -297,7 +289,7 @@ public:
 
 		WaypointList::iterator prev,iter,next=waypoint_list_.begin();
 		int i=0;
-
+		// The curve list must be calculated because we sorted the waypoints.
 		for(iter=next++;iter!=waypoint_list_.end() && next!=waypoint_list_.end();prev=iter,iter=next++,i++)
 		{
 			typename curve_list_type::value_type curve;
@@ -502,7 +494,7 @@ public:
 			return waypoint_list_.back().get_value(t);
 		return iter->resolve(t);
 	}
-};
+}; // END of class _Hermite
 
 
 template<typename T>
@@ -602,7 +594,7 @@ public:
 
 		return iter->get_value(t);
 	}
-};
+}; // END of class _Constant
 
 class _AnimBool : public synfig::ValueNode_Animated
 {
@@ -707,7 +699,7 @@ public:
 			return iter->get_value(t).get(bool()) || next->get_value(t).get(bool());
 		return iter->get_value(t);
 	}
-};
+}; // END of class _AnimBool
 
 /* === M E T H O D S ======================================================= */
 
