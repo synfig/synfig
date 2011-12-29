@@ -325,21 +325,6 @@ Widget_Preview::Widget_Preview():
 	disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
 	disp_sound.signal_scrub().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
 
-	/*
-	---------------------------------
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	---------------------------------
-	|loop|play|stop					| hbox
-	|lastl|lastt|rerender|haltrend	| hbox
-	|
-	|sound							|
-	*/
 
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
