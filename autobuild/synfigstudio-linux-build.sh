@@ -49,7 +49,11 @@ RELEASE=8
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
+f [ -z $BUILDROOT ]; then
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
+else
+PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
+fi
 BUILDROOT_VERSION=7
 MAKE_THREADS=4					#count of threads for make
 
