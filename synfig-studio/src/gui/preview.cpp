@@ -404,21 +404,21 @@ Widget_Preview::Widget_Preview():
 	//halt render
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,_("Halt Render"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,_("Halt render"));
 
 	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
 
 	//re-preview
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::EDIT,_("Re-Preview"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::EDIT,_("Re-preview"));
 
 	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
 
 	//erase all
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CLEAR,_("Erase All"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::CLEAR,_("Erase all rendered frame(s)"));
 
 	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
 
@@ -426,7 +426,7 @@ Widget_Preview::Widget_Preview():
 
 	//3rd row: last rendered frame
 	Gtk::HBox *lastrendered = manage(new Gtk::HBox);
-	Gtk::Label *label = manage(new Gtk::Label(_("Last Rendered: ")));
+	Gtk::Label *label = manage(new Gtk::Label(_("Last rendered: ")));
 	lastrendered->pack_start(*label,Gtk::PACK_SHRINK,10);
 	//l_lasttime.show();
 	lastrendered->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);
