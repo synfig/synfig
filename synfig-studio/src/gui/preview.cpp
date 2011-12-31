@@ -298,13 +298,13 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	icon->show();
 
 Widget_Preview::Widget_Preview():
-	Gtk::Table(5, 4, false),
-	adj_time_scrub(0,0,1000,0,10,0),
+	Gtk::Table(1, 5, false),
+	adj_time_scrub(0, 0, 1000, 0, 10, 0),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
 	currentindex(0),
 	audiotime(0),
-	adj_sound(0,0,4),
+	adj_sound(0, 0, 4),
 	l_lasttime("0s"),
 	playing(false)
 {
@@ -371,50 +371,55 @@ Widget_Preview::Widget_Preview():
 	next_framebutton->add(*icon2);
 	next_framebutton->set_relief(Gtk::RELIEF_NONE);
 	next_framebutton->show();
-	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame),1));
+	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), 1));
 
 	controller->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
-	//todo: add a space between next frame button and loop button
-        
+	//separator
+        Gtk::VSeparator *vsep1 = manage(new Gtk::VSeparator);
+//	vsep1->set_visible(false);
+	controller->pack_start(*vsep1,Gtk::PACK_SHRINK, 4);
+	vsep1->set_visible(Gtk::VISIBILITY_NONE);
+
+	//loop
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop",_("Loop"));
-	controller->pack_start(b_loop,Gtk::PACK_SHRINK,0);
+	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
+	controller->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	// separator
 	Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
 
-	controller->pack_start(*vsep,Gtk::PACK_SHRINK,0);
+	controller->pack_start(*vsep,Gtk::PACK_SHRINK, 12);
 
 	//halt render
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,_("Halt render"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Halt render"));
 
-	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
+	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::EDIT,_("Re-preview"));
+	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Re-preview"));
 
-	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
+	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//erase all
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CLEAR,_("Erase all rendered frame(s)"));
+	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frame(s)"));
 
-	controller->pack_start(*button,Gtk::PACK_SHRINK,0);
+	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	controller->show_all();
 
 	//3rd row: last rendered frame
 	Gtk::HBox *lastrendered = manage(new Gtk::HBox);
 	Gtk::Label *label = manage(new Gtk::Label(_("Last rendered: ")));
-	lastrendered->pack_start(*label,Gtk::PACK_SHRINK,10);
+	lastrendered->pack_start(*label, Gtk::PACK_SHRINK, 10);
 	//l_lasttime.show();
-	lastrendered->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);
+	lastrendered->pack_start(l_lasttime, Gtk::PACK_SHRINK, 0);
 	lastrendered->show_all();
 
 	//5th row: sound track
@@ -423,8 +428,8 @@ Widget_Preview::Widget_Preview():
 	// attach all widgets	
 	attach(draw_area, 0, 1, 0, 1);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	attach(*controller,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	attach(*lastrendered,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(*lastrendered, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 //	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	show_all();
 
