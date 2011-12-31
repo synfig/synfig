@@ -59,10 +59,14 @@ using namespace Gtk;
 
 //dialog_preview stuff...
 Dialog_Preview::Dialog_Preview()
-:Dialog(_("Preview Window"),false,true),
+:preview_table(1, 1, true),
 settings(this,"preview")
 {
-	get_vbox()->pack_start(preview);
+	set_title(_("Preview Window"));
+	add(preview_table);
+	preview_table.attach(preview, 0, 1, 0, 1);
+	show_all_children();
+	
 }
 
 Dialog_Preview::~Dialog_Preview()
@@ -78,7 +82,7 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 
 void Dialog_Preview::on_hide()
 {
-	Dialog::on_hide();
+	Window::on_hide();
 	preview.pause();
 	preview.stoprender();
 }
