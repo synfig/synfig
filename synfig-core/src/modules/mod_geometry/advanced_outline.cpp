@@ -351,9 +351,6 @@ Advanced_Outline::sync()
 			Real blinelength(bline_length(bline, blineloop, NULL));
 			if(blinelength > EPSILON)
 			{
-				// Put dash_offset in the [-blinelength,blinelength] interval
-				if (fabs(dash_offset) > blinelength) dash_offset=fmod(dash_offset, blinelength);
-				Real dpos=dash_offset;
 				Real dashes_length(0.0);
 				vector<DashItem>::iterator diter(dilist.begin());
 				vector<DashItem>::reverse_iterator rditer(dilist.rbegin());
@@ -363,11 +360,15 @@ Advanced_Outline::sync()
 				{
 					dashes_length+=diter->get_length()+diter->get_offset();
 				}
-				diter=dilist.begin();
 				if(dashes_length>EPSILON)
 				{
-					// Insert the widthpoints from Dash Offset to 1.0
-					int inserted(0);
+					// Put dash_offset in the [-dashes_length,dashes_length] interval
+					if (fabs(dash_offset) > dashes_length) dash_offset=fmod(dash_offset, dashes_length);
+					// dpos is always >= 0
+					Real dpos=dash_offset>=0?dash_offset:(dashes_length+dash_offset);
+					diter=dilist.begin();
+					// Insert the widthpoints from Dash Offset to blinelength
+					int inserted_to_blinelength(0);
 					while(dpos < blinelength)
 					{
 						// dash widthpoints should have the same homogeneous or standard comparable positions.
@@ -381,12 +382,12 @@ Advanced_Outline::sync()
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
 						diter++;
-						inserted++;
+						inserted_to_blinelength++;
 						if(diter==dilist.end())
 							diter=dilist.begin();
 					};
 					// Correct the two last widthpoints triming its position to be <= 1.0
-					if(inserted)
+					if(inserted_to_blinelength)
 					{
 						after=dwplist.back();
 						// if the if the 'after' widthpoint passed 1.0
@@ -398,8 +399,12 @@ Advanced_Outline::sync()
 							before=dwplist.back();
 							// then watch the before one and if it passeed 1.0
 							if(before.get_position() >= 1.0)
+							{
 								// discard it (and also the 'after' one)
 								dwplist.pop_back();
+								// and decrease the number of inserted dash items
+								inserted_to_blinelength--;
+							}
 							else
 							// restore the 'after' widthpoint
 							{
@@ -408,10 +413,10 @@ Advanced_Outline::sync()
 							}
 						}
 					}
-					inserted=0;
+					int inserted_to_zero(0);
 					//
 					// Now insert the widhtpoints from Dash Offset to 0.0
-					dpos=dash_offset;
+					dpos=dash_offset>=0?dash_offset:dashes_length+dash_offset;;
 					while(dpos > 0.0)
 					{
 						// dash widthpoints should have the same homogeneous or standard comparable positions.
@@ -425,12 +430,12 @@ Advanced_Outline::sync()
 						dwplist.insert(dwplist.begin(),before);
 						dpos-=rditer->get_offset() + rditer->get_length();
 						rditer++;
-						inserted++;
+						inserted_to_zero++;
 						if(rditer==dilist.rend())
 							rditer=dilist.rbegin();
 					};
 					// Correct the two first widthpoints triming its position to be >= 0.0
-					if(inserted)
+					if(inserted_to_zero)
 					{
 						before=dwplist.front();
 						// if the dash is cutted in the middle then trim the 'before' widthpoint
@@ -442,8 +447,12 @@ Advanced_Outline::sync()
 							after=dwplist.front();
 							// then watch the after one and if it passed 0.0
 							if(after.get_position() <= 0.0)
+							{
 								// discard the 'after' one (and the 'before' one too)
 								dwplist.erase(dwplist.begin());
+								// and decrease the number of inserted dash items
+								inserted_to_zero--;
+							}
 							else
 								// restore the 'before' widthpoint
 							{
@@ -451,6 +460,19 @@ Advanced_Outline::sync()
 								dwplist.insert(dwplist.begin(), before);
 							}
 						}
+					}
+					// Let's check that we have one dash widthpoint at last
+					// inside the bline interval
+					if(inserted_to_blinelength == 0 && inserted_to_zero==0)
+					{
+						// all the dash items widthpoints were outside the bline
+						// so the bline is an empty interval
+						// let's insert two dash widthpoints that would
+						// 'clean' the bline area
+						before=WidthPoint(0.5, 1.0, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(0.5, 1.0, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT, true);
+						dwplist.push_back(before);
+						dwplist.push_back(after);
 					}
 					// now let's remove those dash widthpoints that doesn't
 					// lie on a drawable place
