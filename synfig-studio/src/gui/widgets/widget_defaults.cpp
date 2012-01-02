@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2008 Carlos López
+**  Copyright (c) 2008, 2011, 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -296,11 +296,13 @@ Widget_Defaults::Widget_Defaults()
 			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
 	);
 	widget_interpolation->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	// TODO: add icon for Clamped
 	attach(*widget_interpolation,0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 

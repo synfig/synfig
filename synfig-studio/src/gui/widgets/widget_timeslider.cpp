@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2012, Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -79,6 +80,10 @@ Gdk::Color get_interp_color(synfig::Interpolation x)
 
 	case INTERPOLATION_MANUAL:
 		return Gdk::Color("#B000B0");
+		break;
+
+	case INTERPOLATION_CLAMPED:
+		return Gdk::Color("#c08000");
 		break;
 
 	case INTERPOLATION_UNDEFINED: default:
@@ -200,6 +205,16 @@ studio::render_time_point_to_window(
 		window->draw_lines(gc,points);
 		break;
 
+	case INTERPOLATION_CLAMPED:
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()/2));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
+		window->draw_polygon(gc,true,points);
+		gc->set_rgb_fg_color(black);
+		window->draw_lines(gc,points);
+		break;
+
 	case INTERPOLATION_UNDEFINED: default:
 		points.clear();
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
@@ -288,6 +303,16 @@ studio::render_time_point_to_window(
 		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()/2));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
+		window->draw_polygon(gc,true,points);
+		gc->set_rgb_fg_color(black);
+		window->draw_lines(gc,points);
+		break;
+
+	case INTERPOLATION_CLAMPED:
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		window->draw_polygon(gc,true,points);
 		gc->set_rgb_fg_color(black);
