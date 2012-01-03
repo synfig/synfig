@@ -114,6 +114,8 @@ public:
 
 	Color operator()(const Real &x, float supersample=0)const;
 
+	Real mag()const;
+
 	//! Returns the iterator of the CPoint closest to \a x
 	iterator proximity(const Real &x);
 

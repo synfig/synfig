@@ -290,6 +290,19 @@ synfig::Gradient::operator/=(const float    &rhs)
 	return *this;
 }
 
+Real
+synfig::Gradient::mag()const
+{
+	Real ret(0);
+	for (const_iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+		{
+			Real cm=(*iter).color.get_y();
+			ret+=cm*cm;
+		}
+	ret=sqrt(ret);
+	return ret;
+}
+
 Color
 synfig::Gradient::operator()(const Real &x,float supersample)const
 {
