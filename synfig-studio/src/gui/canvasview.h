@@ -43,6 +43,7 @@
 #include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/alignment.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
