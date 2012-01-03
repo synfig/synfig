@@ -138,62 +138,101 @@ ValueNode_DynamicList::ListEntry
 ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 {
 	ValueNode_DynamicList::ListEntry ret;
-
-
+	int c(link_count());
 	synfig::ValueBase prev,next;
 
-	index=index%link_count();
+	if(c)
+		index=index%c;
+	else
+		index=0;
 
 	assert(index>=0);
 
 	ret.index=index;
 	ret.set_parent_value_node(this);
 
-	next=(*list[index].value_node)(time);
-
-	if(index!=0)
-		prev=(*list[index-1].value_node)(time);
-	else
+	if(c)
 	{
-		if(get_loop())
-			prev=(*list[link_count()-1].value_node)(time);
+		next=(*list[index].value_node)(time);
+
+		if(index!=0)
+			prev=(*list[index-1].value_node)(time);
 		else
 		{
-			prev=next;
+			if(get_loop())
+			prev=(*list[link_count()-1].value_node)(time);
+			else
+			{
+				prev=next;
+			}
 		}
 	}
-
 
 	switch(get_contained_type())
 	{
 	case ValueBase::TYPE_VECTOR:
 	{
-		Vector a(prev.get(Vector())), b(next.get(Vector()));
-		ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		if(c)
+		{
+			Vector a(prev.get(Vector())), b(next.get(Vector()));
+			ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		}
+		else
+		{
+			ret.value_node=ValueNode_Const::create(Vector());
+		}
 		break;
 	}
 	case ValueBase::TYPE_REAL:
 	{
-		Real a(prev.get(Real())), b(next.get(Real()));
-		ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		if(c)
+		{
+			Real a(prev.get(Real())), b(next.get(Real()));
+			ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		}
+		else
+		{
+			ret.value_node=ValueNode_Const::create(Real());
+		}
 		break;
 	}
 	case ValueBase::TYPE_COLOR:
 	{
-		Color a(prev.get(Color())), b(next.get(Color()));
-		ret.value_node=ValueNode_Composite::create((b-a)*origin+a);
+		if(c)
+		{
+			Color a(prev.get(Color())), b(next.get(Color()));
+			ret.value_node=ValueNode_Composite::create((b-a)*origin+a);
+		}
+		else
+		{
+			ret.value_node=ValueNode_Const::create(Color());
+		}
 		break;
 	}
 	case ValueBase::TYPE_ANGLE:
 	{
-		Angle a(prev.get(Angle())), b(next.get(Angle()));
-		ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		if(c)
+		{
+			Angle a(prev.get(Angle())), b(next.get(Angle()));
+			ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		}
+		else
+		{
+			ret.value_node=ValueNode_Const::create(Angle());
+		}
 		break;
 	}
 	case ValueBase::TYPE_TIME:
 	{
-		Time a(prev.get(Time())), b(next.get(Time()));
-		ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		if(c)
+		{
+			Time a(prev.get(Time())), b(next.get(Time()));
+			ret.value_node=ValueNode_Const::create((b-a)*origin+a);
+		}
+		else
+		{
+			ret.value_node=ValueNode_Const::create(Time());
+		}
 		break;
 	}
 	default:
