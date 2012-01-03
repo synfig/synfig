@@ -456,7 +456,6 @@ public:
 						}
 						else // P3 == P1
 							t=0.0;
-						synfig::info("iter ->t=%f", t);
 						// TCB tangent calculation
 						value_type vect(static_cast<value_type>
 										(subtract_func(Pc,Pp) *
@@ -565,8 +564,6 @@ public:
 						}
 						else // P3 == P1
 							t=0.0;
-						synfig::info("next ->t=%f", t);
-						synfig::info("----------------");
 						/// TCB calculation
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
 																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
