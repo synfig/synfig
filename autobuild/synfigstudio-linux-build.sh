@@ -772,6 +772,20 @@ initialize()
 			echo "Running yum (you need root privelegies to do that)..."
 			su -c "yum install $PKG_LIST"
 		fi
+	elif which zypper >/dev/null; then
+		PKG_LIST="git"
+		if [[ $MODE == 'package' ]]; then
+			PKG_LIST="${PKG_LIST} \
+				debootstrap \
+				rsync"
+		else
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
+			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
+		fi
+		if ! ( rpm -qv $PKG_LIST ); then
+			echo "Running zypper (you need root privelegies to do that)..."
+			su -c "zypper install $PKG_LIST" || true
+		fi
 	elif which apt-get >/dev/null; then
 		PKG_LIST="git-core"
 		if [[ $MODE == 'package' ]]; then
@@ -801,7 +815,9 @@ initialize()
 				exit;
 			fi
 		else
-			echo "WARNING: This build script does not works with package mangement systems other than rpm/yum or apt/dpkg! You should install dependent packages manually."
+			echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
+			echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
+			echo ""
 			read
 		fi
 	fi
@@ -880,9 +896,9 @@ initialize()
 	fi
 
 	#export PREFIX=/opt/synfig
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/local/lib/pkgconfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig
 	export PATH=${PREFIX}/bin:$PATH
-	export LD_LIBRARY_PATH=${PREFIX}/lib:/usr/local/lib:$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
 }
 
