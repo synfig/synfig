@@ -39,6 +39,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
+#include <gtkmm/alignment.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -165,6 +166,7 @@ public:
 
 class Widget_Preview : public Gtk::Table
 {
+	Gtk::Alignment		align_preview;
 	Gtk::DrawingArea	draw_area;
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
 //	Gtk::HScrollbar		scr_time_scrub;

@@ -298,7 +298,8 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	icon->show();
 
 Widget_Preview::Widget_Preview():
-	Gtk::Table(1, 5, false),
+	Gtk::Table(1, 5),
+	align_preview(0.5, 0.5, 0.8, 0.8),
 	adj_time_scrub(0, 0, 1000, 0, 10, 0),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
@@ -375,21 +376,22 @@ Widget_Preview::Widget_Preview():
 
 	controller->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
-	//separator
-        Gtk::VSeparator *vsep1 = manage(new Gtk::VSeparator);
-//	vsep1->set_visible(false);
-	controller->pack_start(*vsep1,Gtk::PACK_SHRINK, 4);
-	vsep1->set_visible(Gtk::VISIBILITY_NONE);
+	//spacing
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	space->set_size_request(8);
+	controller->pack_start(*space, false, true);
+
 
 	//loop
 	button = &b_loop;
 	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
 	controller->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
-	// separator
-	Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
+	//spacing
+	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
+        space1->set_size_request(24);
+        controller->pack_start(*space1, false, true);
 
-	controller->pack_start(*vsep,Gtk::PACK_SHRINK, 12);
 
 	//halt render
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
@@ -426,7 +428,8 @@ Widget_Preview::Widget_Preview():
 	disp_sound.set_size_request(-1,32);
 
 	// attach all widgets	
-	attach(draw_area, 0, 1, 0, 1);
+	attach(align_preview, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 8);
+	align_preview.add(draw_area);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*lastrendered, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
@@ -601,8 +604,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		{
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
-															.get_string(preview->get_global_fps(),
-																			App::get_time_format()));
+			.get_string(preview->get_global_fps(),
+			App::get_time_format()));
 			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
 
 			cr->save();
