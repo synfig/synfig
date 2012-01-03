@@ -131,6 +131,15 @@ struct magnitude<Color> : public std::unary_function<float, Color>
 	}
 };
 
+template <>
+struct magnitude<Gradient> : public std::unary_function<float, Gradient>
+{
+	float operator()(const Gradient &a)const
+	{
+		return a.mag();
+	}
+};
+
 template <class T>
 struct is_angle_type
 {
@@ -373,18 +382,87 @@ public:
 						}
 					}
 					else
+					{
 						///
-						/// ANY/LINEAR ------- ANY/ANY
+						/// ANY/LINEAR ----- ANY/ANY
 						///            or
-						/// ANY/EASE -------- ANY/ANY
+						/// ANY/EASE ------- ANY/ANY
 						///            or
 						/// ANY/TCB -------- ANY/ANY and iter is first.
+						///            or
+						/// ANY/CLAMPED ---- ANT/ANY and iter is first
 					    if(
 						iter_get_after==INTERPOLATION_LINEAR || iter_get_after==INTERPOLATION_HALT ||
-						(iter_get_after==INTERPOLATION_TCB && iter==waypoint_list_.begin()))
+						(iter_get_after==INTERPOLATION_TCB && iter==waypoint_list_.begin()) ||
+						(iter_get_after==INTERPOLATION_CLAMPED && iter==waypoint_list_.begin())
+						)
+						{
+							/// t1 = p2 - p1
+							curve.second.t1()=subtract_func(curve.second.p2(),curve.second.p1());
+						}
+					}
+					/// iter             next
+					/// ANY/CLAMPED ---- ANY/ANY and iter is middle waypoint
+					if(iter_get_after == INTERPOLATION_CLAMPED && iter!=waypoint_list_.begin() && !is_angle())
 					{
-						/// t1 = p2 - p1
-						curve.second.t1()=subtract_func(curve.second.p2(),curve.second.p1());
+						// Default TCB values
+						Real t(0.0);          // Tension
+						const Real& c(0.0);   // Continuity
+						const Real& b(0.0);   // Bias
+						value_type Pp; Pp=curve_list.back().second.p1(); // P_{i-1}
+						const value_type& Pc(curve.second.p1());         // P_i
+						const value_type& Pn(curve.second.p2());         // P_{i+1}
+						Real P1(magnitude_func(Pp));
+						Real P2(magnitude_func(Pc));
+						Real P3(magnitude_func(Pn));
+						Time T1(curve_list.back().first.p1());
+						Time T2(iter->get_time());
+						Time T3(next->get_time());
+						Real Pa;
+						Real Pb;
+						if(P3 > P1)
+						{
+							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
+							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
+							if(P2 >= Pa)
+							{
+								t=(P2-Pa)/(P3-Pa);
+								if(t>1.0) t=1.0;
+							}
+							else if(Pa >= P2 && P2 >= Pb)
+								t=0.0;
+							else // (Pb > P2)
+							{
+								t=(Pb-P2)/(Pb-P1);
+								if(t>1.0) t=1.0;
+							}
+						}
+						else if(P3 < P1)
+						{
+							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
+							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
+							if(P2 >= Pa)
+							{
+								t=(P2-Pa)/(P1-Pa);
+								if(t>1.0) t=1.0;
+							}
+							else if(Pa >= P2 && P2 >= Pb)
+								t=0.0;
+							else // (Pb > P2)
+							{
+								t=(Pb-P2)/(Pb-P3);
+								if(t>1.0) t=1.0;
+							}
+						}
+						else // P3 == P1
+							t=0.0;
+						synfig::info("iter ->t=%f", t);
+						// TCB tangent calculation
+						value_type vect(static_cast<value_type>
+										(subtract_func(Pc,Pp) *
+										           (((1.0-t) * (1.0+c) * (1.0+b)) / 2.0) +
+										 (Pn-Pc) * (((1.0-t) * (1.0-c) * (1.0-b)) / 2.0)));
+						curve.second.t1()=vect;
 					}
 					///
 					/// TCB/!TCB and list not empty
@@ -398,17 +476,17 @@ public:
 						curve_list.back().second.t2()=curve.second.t1();
 						curve_list.back().second.sync();
 					}
-					/// iter          next          after-next
+					/// iter          next          after_next
 					/// ANY/ANY ------TCB/ANY ----- ANY/ANY
 					///
 					if(next_get_before==INTERPOLATION_TCB && after_next!=waypoint_list_.end()  && !is_angle())
 					{
-						const Real &t(next->get_tension());		// Tension
-						const Real &c(next->get_continuity());	// Continuity
-						const Real &b(next->get_bias());			// Bias
-						const value_type &Pp(curve.second.p1());	// P_{i-1}
-						const value_type &Pc(curve.second.p2());	// P_i
-						value_type Pn; Pn=after_next->get_value().get(T());	// P_{i+1}
+						const Real &t(next->get_tension());       // Tension
+						const Real &c(next->get_continuity());    // Continuity
+						const Real &b(next->get_bias());          // Bias
+						const value_type &Pp(curve.second.p1());  // P_{i-1}
+						const value_type &Pc(curve.second.p2());  // P_i
+						value_type Pn; Pn=after_next->get_value().get(T()); // P_{i+1}
 
 						/// TCB calculation
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
@@ -421,15 +499,79 @@ public:
 						///           or
 						/// ANY/ANY ----- EASE/ANY
 						///           or
-						/// ANY/ANY -----TCB/ANY ---- END
+						/// ANY/ANY ----- TCB/ANY ---- END
+						///           or
+						/// ANY/ANY ----- CLAMPED/ANY ----END
 					    if(
 						next_get_before==INTERPOLATION_LINEAR || next_get_before==INTERPOLATION_HALT ||
-						(next_get_before==INTERPOLATION_TCB && after_next==waypoint_list_.end()))
+						(next_get_before==INTERPOLATION_TCB && after_next==waypoint_list_.end()) ||
+						(next_get_before==INTERPOLATION_CLAMPED && after_next==waypoint_list_.end())
+						)
 					{
 						/// t2 = p2 - p1
 						curve.second.t2()=subtract_func(curve.second.p2(),curve.second.p1());
 					}
-
+					/// iter             next         after_next
+					/// ANY/ANY ---- CLAMPED/ANY      ANY/ANY
+					if(next_get_before == INTERPOLATION_CLAMPED && after_next!=waypoint_list_.end()  && !is_angle())
+					{
+						Real t(0.0);         // Tension
+						const Real &c(0.0);  // Continuity
+						const Real &b(0.0);  // Bias
+						const value_type &Pp(curve.second.p1());            // P_{i-1}
+						const value_type &Pc(curve.second.p2());            // P_i
+						value_type Pn; Pn=after_next->get_value().get(T()); // P_{i+1}
+						Real P1(magnitude_func(Pp));
+						Real P2(magnitude_func(Pc));
+						Real P3(magnitude_func(Pn));
+						Time T1(iter->get_time());
+						Time T2(next->get_time());
+						Time T3(after_next->get_time());
+						Real Pa;
+						Real Pb;
+						if(P3 > P1)
+						{
+							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
+							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
+							if(P2 >= Pa)
+							{
+								t=(P2-Pa)/(P3-Pa);
+								if(t>1.0) t=1.0;
+							}
+							else if(Pa >= P2 && P2 >= Pb)
+								t=0.0;
+							else // (Pb > P2)
+							{
+								t=(Pb-P2)/(Pb-P1);
+								if(t>1.0) t=1.0;
+							}
+						}
+						else if(P3 < P1)
+						{
+							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
+							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
+							if(P2 >= Pa)
+							{
+								t=(P2-Pa)/(P1-Pa);
+								if(t>1.0) t=1.0;
+							}
+							else if(Pa >= P2 && P2 >= Pb)
+								t=0.0;
+							else // (Pb > P2)
+							{
+								t=(Pb-P2)/(Pb-P3);
+								if(t>1.0) t=1.0;
+							}
+						}
+						else // P3 == P1
+							t=0.0;
+						synfig::info("next ->t=%f", t);
+						synfig::info("----------------");
+						/// TCB calculation
+						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
+																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
+						curve.second.t2()=vect;
+					}
 					// Adjust for time
 					const float timeadjust(0.5);
 					/// iter           next
