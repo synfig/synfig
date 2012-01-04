@@ -293,12 +293,21 @@ synfig::Gradient::operator/=(const float    &rhs)
 Real
 synfig::Gradient::mag()const
 {
-	Real ret(0);
-	for (const_iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+	Real ret(0), cm, prev_pos;
+	const_iterator iter, next;
+	if(!cpoints.size())
+		return 0.0;
+	next=cpoints.begin();
+	iter=next++;
+	prev_pos=0.0;
+	for (; next!=cpoints.end(); iter++, next++)
 		{
-			Real cm=(*iter).color.get_y();
+			cm=iter->color.get_y()*((next->pos-iter->pos)/2 - prev_pos) ;
 			ret+=cm*cm;
+			prev_pos = (next->pos-iter->pos)/2;
 		}
+		cm=next->color.get_y()*(1.0 - prev_pos);
+		ret+=cm*cm;
 	ret=sqrt(ret);
 	return ret;
 }
