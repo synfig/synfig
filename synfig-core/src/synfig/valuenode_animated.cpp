@@ -420,42 +420,56 @@ public:
 						Time T3(next->get_time());
 						Real Pa;
 						Real Pb;
+						synfig::info("iter after");
 						if(P3 > P1)
 						{
+							synfig::info("P3 > P1");
 							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
 							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
 							if(P2 >= Pa)
 							{
+								synfig::info("P2 >= Pa");
 								t=(P2-Pa)/(P3-Pa);
 								if(t>1.0) t=1.0;
 							}
 							else if(Pa >= P2 && P2 >= Pb)
+							{
+								synfig::info("Pa >= P2 >= Pb");
 								t=0.0;
+							}
 							else // (Pb > P2)
 							{
+								synfig::info("P2 < Pb");
 								t=(Pb-P2)/(Pb-P1);
 								if(t>1.0) t=1.0;
 							}
 						}
 						else if(P3 < P1)
 						{
+							synfig::info("P3 < P1");
 							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
 							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
 							if(P2 >= Pa)
 							{
+								synfig::info("P2 >= Pa");
 								t=(P2-Pa)/(P1-Pa);
 								if(t>1.0) t=1.0;
 							}
 							else if(Pa >= P2 && P2 >= Pb)
+							{
+								synfig::info("Pa >= P2 >= Pb");
 								t=0.0;
+							}
 							else // (Pb > P2)
 							{
+								synfig::info("P2 < Pb");
 								t=(Pb-P2)/(Pb-P3);
 								if(t>1.0) t=1.0;
 							}
 						}
 						else // P3 == P1
 							t=0.0;
+						synfig::info("calculated t=%f", t);
 						// TCB tangent calculation
 						value_type vect(static_cast<value_type>
 										(subtract_func(Pc,Pp) *
@@ -528,42 +542,57 @@ public:
 						Time T3(after_next->get_time());
 						Real Pa;
 						Real Pb;
+						synfig::info("next before");
 						if(P3 > P1)
 						{
+							synfig::info("P3 > P1");
 							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
 							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
 							if(P2 >= Pa)
 							{
+								synfig::info("P2 >= Pa");
 								t=(P2-Pa)/(P3-Pa);
 								if(t>1.0) t=1.0;
 							}
 							else if(Pa >= P2 && P2 >= Pb)
+							{
+								synfig::info("Pa >= P2 >= Pb");
 								t=0.0;
+							}
 							else // (Pb > P2)
 							{
+								synfig::info("P2 < Pb");
 								t=(Pb-P2)/(Pb-P1);
 								if(t>1.0) t=1.0;
 							}
 						}
 						else if(P3 < P1)
 						{
+							synfig::info("P3 < P1");
 							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
 							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
 							if(P2 >= Pa)
 							{
+								synfig::info("P2 >= Pa");
 								t=(P2-Pa)/(P1-Pa);
 								if(t>1.0) t=1.0;
 							}
 							else if(Pa >= P2 && P2 >= Pb)
+							{
+								synfig::info("Pa >= P2 >= Pb");
 								t=0.0;
+							}
 							else // (Pb > P2)
 							{
+								synfig::info("P2 < Pb");
 								t=(Pb-P2)/(Pb-P3);
 								if(t>1.0) t=1.0;
 							}
 						}
 						else // P3 == P1
 							t=0.0;
+						synfig::info("tangent 2 calculated t=%f", t);
+						synfig::info("--------");
 						/// TCB calculation
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
 																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
