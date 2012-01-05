@@ -166,7 +166,7 @@ ValueNode_BLineCalcWidth::set_link_vfunc(int i,ValueNode::Handle value)
 	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
 	case 3: CHECK_TYPE_AND_SET_VALUE(scale_,  ValueBase::TYPE_REAL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(scale_,  ValueBase::TYPE_BOOL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(homogeneous_,  ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -223,7 +223,7 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
-		.set_local_name(_("Scale"))
+		.set_local_name(_("Homogeneous"))
 		.set_description(_("When checked, the width is BLine length based"))
 	);
 	return ret;
