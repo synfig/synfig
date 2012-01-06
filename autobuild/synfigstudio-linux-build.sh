@@ -770,7 +770,7 @@ initialize()
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
 			echo "Running yum (you need root privelegies to do that)..."
-			su -c "yum install $PKG_LIST"
+			su -c "yum install $PKG_LIST" || true
 		fi
 	elif which zypper >/dev/null; then
 		PKG_LIST="git"
