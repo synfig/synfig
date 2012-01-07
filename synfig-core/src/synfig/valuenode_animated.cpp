@@ -160,6 +160,120 @@ struct is_angle_type<Angle>
 };
 #endif	// ANGLES_USE_LINEAR_INTERPOLATION
 
+template<class T>
+T
+clamped_tangent(T p1, T p2, T p3, Time t1, Time t2, Time t3)
+{
+	Real bias=0.0;
+	T tangent(p3*0.0);
+	T pm=p1+(p3-p1)*(t2-t1)/(t3-t1);
+	if(p3 > p1)
+	{
+		if(p2 >= p3 || p2 <= p1)
+			tangent = tangent*0.0;
+		else
+		{
+			if(p2 > pm)
+			{
+				bias=(pm-p2)/(p3-pm);
+			}
+			else if (p2 < pm)
+			{
+				bias=(pm-p2)/(pm-p1);
+			}
+			else
+				bias=0.0;
+			tangent =( (p2-p1)*(1.0+bias)/2.0 + (p3-p2)*(1.0-bias)/2.0 );
+		}
+	}
+	else if (p1 > p3)
+	{
+		if(p2 >= p1 || p2 <= p3)
+			tangent = tangent*0.0;
+		else
+		{
+			if(p2 > pm)
+			{
+				bias=(pm-p2)/(pm-p1);
+			}
+			else if (p2 < pm)
+			{
+				bias=(pm-p2)/(p3-pm);
+			}
+			else
+				bias=0.0;
+			tangent =( (p2-p1)*(1.0+bias)/2.0 + (p3-p2)*(1.0-bias)/2.0 );
+		}
+	}
+	else
+	{
+		tangent= tangent * 0;
+	}
+	return tangent;
+};
+
+template<>
+Vector
+clamped_tangent<Vector>(Vector p1, Vector p2, Vector p3, Time t1, Time t2, Time t3)
+{
+	return Vector(clamped_tangent(p1[0],p2[0],p3[0],t1,t2,t3), clamped_tangent(p1[1],p2[1],p3[1],t1,t2,t3));
+};
+
+template<>
+Angle
+clamped_tangent<Angle>(Angle p1, Angle p2, Angle p3, Time t1, Time t2, Time t3)
+{
+	Real r1(Angle::rad(p1).get());
+	Real r2(Angle::rad(p2).get());
+	Real r3(Angle::rad(p3).get());
+	return Angle::rad(clamped_tangent(r1, r2, r3, t1, t2, t3));
+};
+
+template<>
+Time
+clamped_tangent<Time>(Time p1, Time p2, Time p3, Time t1, Time t2, Time t3)
+{
+	return Time(clamped_tangent(double(p1), double(p2), double(p3), t1, t2, t3));
+};
+
+template<>
+int
+clamped_tangent<int>(int p1, int p2, int p3, Time t1, Time t2, Time t3)
+{
+	return int(clamped_tangent(Real(p1), Real(p2), Real(p3), t1, t2, t3));
+};
+
+template<>
+Color
+clamped_tangent<Color>(Color p1, Color p2, Color p3, Time t1, Time t2, Time t3)
+{
+	Color ret;
+	ret.set_r(clamped_tangent(p1.get_r(), p2.get_r(), p3.get_r(), t1, t2, t3));
+	ret.set_g(clamped_tangent(p1.get_g(), p2.get_g(), p3.get_g(), t1, t2, t3));
+	ret.set_b(clamped_tangent(p1.get_b(), p2.get_b(), p3.get_b(), t1, t2, t3));
+	ret.set_a(clamped_tangent(p1.get_a(), p2.get_a(), p3.get_a(), t1, t2, t3));
+	return ret;
+};
+
+template<>
+Gradient
+clamped_tangent<Gradient>(Gradient p1, Gradient p2, Gradient p3, Time t1, Time t2, Time t3)
+{
+	Color c1, c2, c3;
+	Gradient::CPoint cp;
+	Gradient::const_iterator iter;
+	Gradient ret;
+	for(iter=p2.begin();iter!=p2.end();iter++)
+	{
+		cp=*iter;
+		c1=p1(cp.pos);
+		c2=cp.color;
+		c3=p3(cp.pos);
+		ret.push_back(Gradient::CPoint(cp.pos, clamped_tangent(c1, c2, c3, t1, t2, t3)));
+	}
+	return ret;
+};
+
 /* === G L O B A L S ======================================================= */
 
 /* === C L A S S E S ======================================================= */
@@ -405,76 +519,13 @@ public:
 					/// ANY/CLAMPED ---- ANY/ANY and iter is middle waypoint
 					if(iter_get_after == INTERPOLATION_CLAMPED && iter!=waypoint_list_.begin() && !is_angle())
 					{
-						// Default TCB values
-						Real t(0.0);          // Tension
-						const Real& c(0.0);   // Continuity
-						const Real& b(0.0);   // Bias
 						value_type Pp; Pp=curve_list.back().second.p1(); // P_{i-1}
 						const value_type& Pc(curve.second.p1());         // P_i
 						const value_type& Pn(curve.second.p2());         // P_{i+1}
-						Real P1(magnitude_func(Pp));
-						Real P2(magnitude_func(Pc));
-						Real P3(magnitude_func(Pn));
 						Time T1(curve_list.back().first.p1());
 						Time T2(iter->get_time());
 						Time T3(next->get_time());
-						Real Pa;
-						Real Pb;
-						synfig::info("iter after");
-						if(P3 > P1)
-						{
-							synfig::info("P3 > P1");
-							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
-							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
-							if(P2 >= Pa)
-							{
-								synfig::info("P2 >= Pa");
-								t=(P2-Pa)/(P3-Pa);
-								if(t>1.0) t=1.0;
-							}
-							else if(Pa >= P2 && P2 >= Pb)
-							{
-								synfig::info("Pa >= P2 >= Pb");
-								t=0.0;
-							}
-							else // (Pb > P2)
-							{
-								synfig::info("P2 < Pb");
-								t=(Pb-P2)/(Pb-P1);
-								if(t>1.0) t=1.0;
-							}
-						}
-						else if(P3 < P1)
-						{
-							synfig::info("P3 < P1");
-							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
-							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
-							if(P2 >= Pa)
-							{
-								synfig::info("P2 >= Pa");
-								t=(P2-Pa)/(P1-Pa);
-								if(t>1.0) t=1.0;
-							}
-							else if(Pa >= P2 && P2 >= Pb)
-							{
-								synfig::info("Pa >= P2 >= Pb");
-								t=0.0;
-							}
-							else // (Pb > P2)
-							{
-								synfig::info("P2 < Pb");
-								t=(Pb-P2)/(Pb-P3);
-								if(t>1.0) t=1.0;
-							}
-						}
-						else // P3 == P1
-							t=0.0;
-						synfig::info("calculated t=%f", t);
-						// TCB tangent calculation
-						value_type vect(static_cast<value_type>
-										(subtract_func(Pc,Pp) *
-										           (((1.0-t) * (1.0+c) * (1.0+b)) / 2.0) +
-										 (Pn-Pc) * (((1.0-t) * (1.0-c) * (1.0-b)) / 2.0)));
+						value_type vect(clamped_tangent(Pp, Pc, Pn, T1, T2, T3));
 						curve.second.t1()=vect;
 					}
 					///
@@ -528,74 +579,13 @@ public:
 					/// ANY/ANY ---- CLAMPED/ANY      ANY/ANY
 					if(next_get_before == INTERPOLATION_CLAMPED && after_next!=waypoint_list_.end()  && !is_angle())
 					{
-						Real t(0.0);         // Tension
-						const Real &c(0.0);  // Continuity
-						const Real &b(0.0);  // Bias
 						const value_type &Pp(curve.second.p1());            // P_{i-1}
 						const value_type &Pc(curve.second.p2());            // P_i
 						value_type Pn; Pn=after_next->get_value().get(T()); // P_{i+1}
-						Real P1(magnitude_func(Pp));
-						Real P2(magnitude_func(Pc));
-						Real P3(magnitude_func(Pn));
 						Time T1(iter->get_time());
 						Time T2(next->get_time());
 						Time T3(after_next->get_time());
-						Real Pa;
-						Real Pb;
-						synfig::info("next before");
-						if(P3 > P1)
-						{
-							synfig::info("P3 > P1");
-							Pa=P3-(P3-P1)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
-							Pb=P1+(P3-P1)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
-							if(P2 >= Pa)
-							{
-								synfig::info("P2 >= Pa");
-								t=(P2-Pa)/(P3-Pa);
-								if(t>1.0) t=1.0;
-							}
-							else if(Pa >= P2 && P2 >= Pb)
-							{
-								synfig::info("Pa >= P2 >= Pb");
-								t=0.0;
-							}
-							else // (Pb > P2)
-							{
-								synfig::info("P2 < Pb");
-								t=(Pb-P2)/(Pb-P1);
-								if(t>1.0) t=1.0;
-							}
-						}
-						else if(P3 < P1)
-						{
-							synfig::info("P3 < P1");
-							Pa=P1-(P1-P3)*0.7*(T2-T1)*(T2-T1)/((T3-T1)*(T3-T1));
-							Pb=P3+(P1-P3)*1.3*(T3-T2)*(T3-T2)/((T3-T1)*(T3-T1));
-							if(P2 >= Pa)
-							{
-								synfig::info("P2 >= Pa");
-								t=(P2-Pa)/(P1-Pa);
-								if(t>1.0) t=1.0;
-							}
-							else if(Pa >= P2 && P2 >= Pb)
-							{
-								synfig::info("Pa >= P2 >= Pb");
-								t=0.0;
-							}
-							else // (Pb > P2)
-							{
-								synfig::info("P2 < Pb");
-								t=(Pb-P2)/(Pb-P3);
-								if(t>1.0) t=1.0;
-							}
-						}
-						else // P3 == P1
-							t=0.0;
-						synfig::info("tangent 2 calculated t=%f", t);
-						synfig::info("--------");
-						/// TCB calculation
-						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
-																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
+						value_type vect(clamped_tangent(Pp, Pc, Pn, T1, T2, T3));
 						curve.second.t2()=vect;
 					}
 					// Adjust for time
