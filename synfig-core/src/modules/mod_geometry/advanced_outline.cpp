@@ -501,7 +501,9 @@ Advanced_Outline::sync()
 							{
 								Real dwiter_pos=dwiter->get_position();
 								if(dwiter_pos > witer_pos && dwiter_pos < wnext_pos)
+								{
 									fdwplist.push_back(*dwiter);
+								}
 								dwiter++;
 							}
 						}
@@ -521,7 +523,9 @@ Advanced_Outline::sync()
 						{
 							Real witer_pos=witer->get_position();
 							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
+							{
 								fdwplist.push_back(*witer);
+							}
 						}
 						dwnext++;
 						dwiter=dwnext;
@@ -559,6 +563,15 @@ Advanced_Outline::sync()
 			sort(wplist.begin(),wplist.end());
 			//////////////
 			witer=wplist.begin();
+		}
+		// if at this point, the wplist size is zero, all the regular
+		//and dash points have been removed, so there is nothing to draw
+		// I insert a single widthpoint that renders nothing.
+		// If I just return here, it crashes when played on canvas view.
+		//
+		if(wplist.size() == 0)
+		{
+			wplist.push_back(WidthPoint(0.5, 1.0, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_FLAT, true));
 		}
 		// Make a copy of the work widthpoints to the standard list
 		swplist.assign(wplist.begin(), wplist.end());
@@ -624,6 +637,8 @@ Advanced_Outline::sync()
 			if(last->get_position()==1.0)
 				last->set_side_type_after(dash_enabled?dend_tip:end_tip_);
 		}
+
+
 		// If the first (last) widthpoint is interpolate before (after)
 		// and we are doing dashes, then make the first (last) widthpoint to
 		// have the start (end) dash item's corresponding tip.
@@ -636,7 +651,6 @@ Advanced_Outline::sync()
 			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(dend_tip);
 		}
-
 		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
