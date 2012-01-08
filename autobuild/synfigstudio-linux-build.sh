@@ -797,7 +797,7 @@ initialize()
 				PKG_LIST="${PKG_LIST} debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev"
+			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev"
 		fi
 		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
 			echo "Running apt-get (you need root privelegies to do that)..."
