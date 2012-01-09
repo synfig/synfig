@@ -593,7 +593,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		Gdk::Cairo::set_source_pixbuf(
 			cr, //cairo context
 			pxnew, //pixbuf
-			0, 0 //coordinates to place upper left corner of pixbuf
+			//coordinates to place center of the preview window
+			(draw_area.get_width() - nw) / 2, (draw_area.get_height() - nh) / 2
 			);
 		cr->paint();
 		cr->restore();
