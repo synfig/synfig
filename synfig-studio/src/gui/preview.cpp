@@ -299,7 +299,6 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 Widget_Preview::Widget_Preview():
 	Gtk::Table(1, 5),
-	align_preview(0.5, 0.5, 0.8, 0.8),
 	adj_time_scrub(0, 0, 1000, 0, 10, 0),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
@@ -428,8 +427,7 @@ Widget_Preview::Widget_Preview():
 	disp_sound.set_size_request(-1,32);
 
 	// attach all widgets	
-	attach(align_preview, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 8);
-	align_preview.add(draw_area);
+	attach(draw_area, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*lastrendered, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
