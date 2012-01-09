@@ -69,27 +69,39 @@ Widget_WaypointModel::Widget_WaypointModel():
 	checkbutton_bias(_("Bias:")),
 	checkbutton_temporal_tension(_("Temporal Tension:"))
 {
-	before_options=manage(new class Gtk::Menu());
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB Smooth")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Constant")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Linear")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ease In")));
-	// before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Manual")));
+	before_options=manage(new Widget_Enum());
+	before_options->show();
+	before_options->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+	);
+	before_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
 
-	after_options=manage(new class Gtk::Menu());
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB Smooth")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Constant")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Linear")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ease Out")));
-	// after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Manual")));
-
-	before=manage(new class Gtk::OptionMenu());
-	before->show();
-	before->set_menu(*before_options);
-
-	after=manage(new class Gtk::OptionMenu());
-	after->show();
-	after->set_menu(*after_options);
+	after_options=manage(new Widget_Enum());
+	after_options->show();
+	after_options->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+	);
+	after_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));
 	spin_tension->show();
@@ -112,13 +124,13 @@ Widget_WaypointModel::Widget_WaypointModel():
 	adj_bias.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	adj_temporal_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
-	before->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	after->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	before_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	after_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
 	attach(checkbutton_before, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*before, 1, 2, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	attach(*before_options, 1, 2, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	attach(checkbutton_after, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*after, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	attach(*after_options, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	attach(checkbutton_tension, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*spin_tension, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -141,8 +153,8 @@ Widget_WaypointModel::on_change()
 	if(updating)
 		return;
 
-	waypoint_model.set_before((Waypoint::Interpolation)before->get_history());
-	waypoint_model.set_after((Waypoint::Interpolation)after->get_history());
+	waypoint_model.set_before((Waypoint::Interpolation)before_options->get_value());
+	waypoint_model.set_after((Waypoint::Interpolation)after_options->get_value());
 
 	waypoint_model.set_tension(adj_tension.get_value());
 	waypoint_model.set_continuity(adj_continuity.get_value());
@@ -156,36 +168,11 @@ Widget_WaypointModel::on_change()
 	waypoint_model.set_bias_flag(checkbutton_bias.get_active());
 	waypoint_model.set_temporal_tension_flag(checkbutton_temporal_tension.get_active());
 
-	before->set_sensitive(checkbutton_before.get_active());
-	after->set_sensitive(checkbutton_after.get_active());
+	before_options->set_sensitive(checkbutton_before.get_active());
+	after_options->set_sensitive(checkbutton_after.get_active());
 	spin_tension->set_sensitive(checkbutton_tension.get_active());
 	spin_continuity->set_sensitive(checkbutton_continuity.get_active());
 	spin_bias->set_sensitive(checkbutton_bias.get_active());
 	spin_temporal_tension->set_sensitive(checkbutton_temporal_tension.get_active());
 }
 
-void
-Widget_WaypointModel::set_waypoint_model(synfig::Waypoint::Model &x)
-{
-	waypoint_model=x;
-	updating=true;
-
-	before->set_history((int)waypoint_model.get_before());
-	after->set_history((int)waypoint_model.get_after());
-
-	adj_tension.set_value(waypoint_model.get_tension());
-	adj_continuity.set_value(waypoint_model.get_continuity());
-	adj_bias.set_value(waypoint_model.get_bias());
-	adj_temporal_tension.set_value(waypoint_model.get_temporal_tension());
-
-	checkbutton_before.set_active(waypoint_model.get_before_flag());
-	checkbutton_after.set_active(waypoint_model.get_after_flag());
-	checkbutton_tension.set_active(waypoint_model.get_tension_flag());
-	checkbutton_continuity.set_active(waypoint_model.get_continuity_flag());
-	checkbutton_bias.set_active(waypoint_model.get_bias_flag());
-	checkbutton_temporal_tension.set_active(waypoint_model.get_temporal_tension_flag());
-
-	updating=false;
-
-	on_change();
-}
