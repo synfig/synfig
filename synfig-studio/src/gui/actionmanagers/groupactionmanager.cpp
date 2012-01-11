@@ -271,5 +271,4 @@ GroupActionManager::on_action_add()
 	Gtk::TreePath path(group_tree_->get_model()->on_group_added(group_name));
 
 	group_tree_->expand_to_path(path);
-	group_tree_->set_cursor(path,true);
 }

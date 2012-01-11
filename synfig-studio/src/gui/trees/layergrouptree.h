@@ -76,9 +76,6 @@ private:
 
 	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
 
-//	sigc::signal<void,LayerList> signal_select_layers_;
-	Gtk::TreeView::Column* label_column;
-
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -103,7 +100,6 @@ public:
 
 	LayerGroupTree();
 	~LayerGroupTree();
-	void set_cursor(const Gtk::TreeModel::Path& path, bool start_editing=false);
 
 	Glib::RefPtr<LayerGroupTreeStore> get_model() { return layer_group_tree_store_; }
 

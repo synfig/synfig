@@ -349,9 +349,3 @@ LayerGroupTree::get_selected_layers()const
 
 	return ret;
 }
-
-void
-LayerGroupTree::set_cursor(const Gtk::TreeModel::Path& path, bool start_editing)
-{
-	Gtk::TreeView::set_cursor(path, *label_column, start_editing);
-}
