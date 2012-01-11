@@ -92,6 +92,7 @@ private:
 private:
 
 	bool on_event(GdkEvent *event);
+	void on_toggle(const Glib::ustring& path_string);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

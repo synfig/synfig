@@ -60,9 +60,14 @@ LayerGroupTree::LayerGroupTree()
 
 
 	{	// --- O N / O F F ----------------------------------------------------
-		int index;
-		index=append_column_editable(_(" "),model.active);
-		//Gtk::TreeView::Column* column = get_column(index-1);
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
+
+		// Set up the on/off cell-renderer
+		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
+		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerGroupTree::on_toggle));
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_active(), model.active);
+		append_column(*column);
 	}
 	{	// --- I C O N --------------------------------------------------------
 		int index;
@@ -268,6 +273,18 @@ LayerGroupTree::on_event(GdkEvent *event)
 	return Gtk::TreeView::on_event(event);
 	//return false;
 }
+
+
+void
+LayerGroupTree::on_toggle(const Glib::ustring& path_string)
+{
+	Gtk::TreePath path(path_string);
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	bool active=static_cast<bool>(row[model.active]);
+	row[model.active]=!active;
+}
+
+
 
 static inline void __group_grabber(const Gtk::TreeModel::iterator& iter, std::list<synfig::String>* ret)
 {
