@@ -93,6 +93,7 @@ private:
 
 	bool on_event(GdkEvent *event);
 	void on_toggle(const Glib::ustring& path_string);
+	void on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

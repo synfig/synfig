@@ -76,20 +76,15 @@ LayerGroupTree::LayerGroupTree()
 		set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------
-		int index;
-		index=append_column_editable(_("Name"),model.label);
-		label_column = get_column(index-1);
-
-		//column->set_sort_column(layer_model.index);
-
-		//set_expander_column(*column);
-		//column->set_reorderable();
-		//column->set_resizable();
-		//column->set_clickable(false);
-
-		//Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-		//column->pack_start(*icon_cellrenderer,false);
-		//column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
+		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_text(), model.label);
+		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerGroupTree::on_layer_renamed));
+		cellrenderer->property_editable()=true;
+		column->set_resizable();
+		column->set_clickable(false);
+		append_column(*column);
 	}
 
 	set_enable_search(true);
@@ -284,6 +279,17 @@ LayerGroupTree::on_toggle(const Glib::ustring& path_string)
 	row[model.active]=!active;
 }
 
+void
+LayerGroupTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value)
+{
+	Gtk::TreePath path(path_string);
+
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	if(!row)
+		return;
+	row[model.label]=value;
+	columns_autosize();
+}
 
 
 static inline void __group_grabber(const Gtk::TreeModel::iterator& iter, std::list<synfig::String>* ret)
