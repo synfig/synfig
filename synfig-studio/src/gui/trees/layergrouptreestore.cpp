@@ -277,7 +277,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 				if((*child_iter)[model.active])
 					activecount++;
 			}
-			x.set(activecount>total/2);
+			x.set(activecount>0);
 		}
 		else
 			x.set(false);
