@@ -101,12 +101,6 @@ LayerGroupTree::LayerGroupTree()
 
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	//set_flags(get_flags()|Gtk::RECEIVES_DEFAULT|Gtk::HAS_GRAB);
-
-	//std::list<Gtk::TargetEntry> listTargets;
-	//listTargets.push_back( Gtk::TargetEntry("LAYER") );
-	//listTargets.push_back( Gtk::TargetEntry("GROUP") );
-	//drag_dest_set(listTargets);
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -119,19 +113,7 @@ void
 LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store)
 {
 	layer_group_tree_store_=layer_group_tree_store;
-	LayerGroupTreeStore::Model model;
-
-#if 0
-	{
-		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(layer_group_tree_store_));
-		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
-		sorted_store->set_sort_func(model.time.index(),sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
-		sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
-		Gtk::TreeView::set_model(sorted_store);
-	}
-#else
-		Gtk::TreeView::set_model(layer_group_tree_store);
-#endif
+	Gtk::TreeView::set_model(layer_group_tree_store);
 }
 
 void
