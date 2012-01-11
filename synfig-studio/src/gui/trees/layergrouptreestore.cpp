@@ -380,8 +380,6 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				}
 				new_group+=x.get();
 
-				synfig::info("Renaming group \"%s\" to \"%s\"...",group.c_str(),new_group.c_str());
-
 				// Check to see if this group is real or not.
 				// If it isn't real, then renaming it is a cinch.
 				// We know it isn't real if it doesn't have any
