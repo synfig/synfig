@@ -1319,6 +1319,8 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				}
 				else
 					waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
+				if(PlaceholderValueNode::Handle::cast_dynamic(waypoint_value_node))
+					error(child, strprintf(_("Unknown ID (%s) referenced in waypoint"),child->get_attribute("use")->get_value().c_str()));
 			}
 			else
 			{
@@ -1547,6 +1549,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				}
 
 				c[index] = canvas->surefind_value_node(id);
+				if(PlaceholderValueNode::Handle::cast_dynamic(c[index]))
+						throw Exception::IDNotFound("parse_linkable_value_noode()");
 
 				if (!c[index])
 				{
@@ -1953,6 +1957,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				try
 				{
 					list_entry.value_node=canvas->surefind_value_node(id);
+					if(PlaceholderValueNode::Handle::cast_dynamic(list_entry.value_node))
+						throw Exception::IDNotFound("parse_dynamic_list()");
 				}
 				catch(Exception::IDNotFound)
 				{
@@ -2208,6 +2214,8 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				try
 				{
 					handle<ValueNode> value_node=canvas->surefind_value_node(str);
+					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
+						throw Exception::IDNotFound("parse_layer()");
 
 					// Assign the value_node to the dynamic parameter list
 					if (param_name == "segment_list" && (layer->get_name() == "region" || layer->get_name() == "outline"))
@@ -2220,7 +2228,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
     			}
 				catch(Exception::IDNotFound)
 				{
-					error(child,strprintf(_("Unknown ID (%s) referenced in <param>"),str.c_str()));
+					error(child,strprintf(_("Unknown ID (%s) referenced in parameter \"%s\""),str.c_str(), param_name.c_str()));
 				}
 
 				continue;
