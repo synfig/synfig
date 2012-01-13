@@ -1547,9 +1547,10 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 											element->get_name().c_str()));
 					continue;
 				}
-
+				int placeholders(canvas->value_node_list().placeholder_count());
 				c[index] = canvas->surefind_value_node(id);
-				if(PlaceholderValueNode::Handle::cast_dynamic(c[index]))
+				if(placeholders == canvas->value_node_list().placeholder_count())
+					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
 						throw Exception::IDNotFound("parse_linkable_value_noode()");
 
 				if (!c[index])
