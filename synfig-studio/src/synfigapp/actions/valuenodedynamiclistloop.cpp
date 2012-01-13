@@ -6,7 +6,8 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -34,6 +35,7 @@
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/general.h>
+#include <synfig/valuenode_composite.h>
 
 #endif
 
@@ -68,11 +70,9 @@ Action::ParamVocab
 Action::ValueNodeDynamicListLoop::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode"))
 	);
-
 	return ret;
 }
 
@@ -81,15 +81,30 @@ Action::ValueNodeDynamicListLoop::is_candidate(const ParamList &x)
 {
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
-
 	ValueNode::Handle value_node;
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-
 	if(value_desc.parent_is_value_node())
+	{
 		value_node = value_desc.get_parent_value_node();
+		// let's check if the parent is a composite (if user clicked on tangent duck)
+		if(ValueNode_Composite::Handle::cast_dynamic(value_node))
+		{
+			ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_node));
+			ValueNode_BLine::Handle bline=NULL;
+			std::set<Node*>::iterator iter;
+			// now check if the grand parent is a dynamic list 'bline' type
+			for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
+				{
+					bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
+					if(bline)
+						break;
+				}
+			if(bline)
+				value_node=bline;
+		}
+	}
 	else
 		value_node = x.find("value_node")->second.get_value_node();
-
 	// We need a dynamic list.
 	return (ValueNode_DynamicList::Handle::cast_dynamic(value_node) &&
 			// We need the list not to be looped.
@@ -102,28 +117,40 @@ Action::ValueNodeDynamicListLoop::set_param(const synfig::String& name, const Ac
 	if(!value_node && name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-
 		if(!value_desc.parent_is_value_node())
 			return false;
-
+		// Let's check if it is a dynamic list
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-
 		if (!value_node)
+		{
+			// we didn't found a dynamic list, let's check wheter the parent is a composite
+			if(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+			{
+				ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+				ValueNode_BLine::Handle bline=NULL;
+				std::set<Node*>::iterator iter;
+				// now check if the grand parent is a 'bline' type
+				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
+					{
+						bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
+						if(bline)
+							break;
+					}
+				if(bline)
+					value_node=bline;
+			}
+		}
+		if(!value_node)
 			return false;
-
 		return true;
 	}
-
 	if(!value_node && name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(param.get_value_node());
-
 		if(!value_node)
 			return false;
-
 		return true;
 	}
-
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -139,7 +166,6 @@ void
 Action::ValueNodeDynamicListLoop::perform()
 {
 	old_loop_value=value_node->get_loop();
-
 	if(old_loop_value==true)
 	{
 		set_dirty(false);
@@ -147,13 +173,7 @@ Action::ValueNodeDynamicListLoop::perform()
 	}
 	set_dirty(true);
 	value_node->set_loop(true);
-
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
 }
 
 void
@@ -166,11 +186,5 @@ Action::ValueNodeDynamicListLoop::undo()
 	}
 	set_dirty(true);
 	value_node->set_loop(old_loop_value);
-
 	value_node->changed();
-/*_if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
-	}
-	else synfig::warning("CanvasInterface not set on action");*/
 }
