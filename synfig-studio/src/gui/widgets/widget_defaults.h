@@ -31,6 +31,7 @@
 #include <gtkmm/table.h>
 #include <synfig/gradient.h>
 #include "widgets/widget_gradient.h"
+#include "widgets/widget_distance.h"
 #include <gtkmm/tooltip.h>
 
 /* === M A C R O S ========================================================= */
@@ -45,7 +46,6 @@ namespace studio {
 
 class Widget_Brush;
 class Widget_Color;
-class Widget_Distance;
 class Widget_Enum;
 
 class Widget_Defaults : public Gtk::Table
@@ -82,6 +82,7 @@ class Widget_Defaults : public Gtk::Table
 public:
 
 	Widget_Defaults();
+	Widget_Distance* get_widget_bline_width()const;
 
 	~Widget_Defaults();
 

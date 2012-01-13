@@ -42,7 +42,6 @@
 #include <synfig/exception.h>
 #include <synfigapp/main.h>
 #include "canvasview.h"
-#include "widgets/widget_distance.h"
 #include "widgets/widget_enum.h"
 
 #include "general.h"
@@ -474,6 +473,13 @@ Widget_Defaults::on_gradient_clicked()
 	App::dialog_gradient->set_default_button_set_sensitive(false);
 	App::dialog_gradient->present();
 }
+
+Widget_Distance*
+Widget_Defaults::get_widget_bline_width()const
+{
+	return widget_bline_width;
+}
+
 
 /*
 bool

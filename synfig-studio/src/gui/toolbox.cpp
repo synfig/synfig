@@ -328,7 +328,7 @@ Toolbox::Toolbox():
 	handle_tools->set_handle_position(Gtk::POS_TOP);
 	handle_tools->set_snap_edge(Gtk::POS_TOP);
 
-	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
+	widget_defaults=manage(new Widget_Defaults());
 	widget_defaults->show();
 	Gtk::HandleBox* handle_defaults(manage(new Gtk::HandleBox()));
 	handle_defaults->add(*widget_defaults);
@@ -387,6 +387,8 @@ Toolbox::Toolbox():
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Toolbox::present));
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Toolbox::on_key_press_event), false);
+	signal_key_release_event().connect(sigc::mem_fun(*this, &Toolbox::on_key_release_event), false);
 }
 
 Toolbox::~Toolbox()
@@ -635,6 +637,23 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 	// Finish the drag
 	context->drag_finish(success, false, time);
 }
+
+bool
+Toolbox::on_key_press_event(GdkEventKey* event)
+{
+	if(widget_defaults->get_widget_bline_width()->is_focus())
+		return widget_defaults->get_widget_bline_width()->on_key_press_event(event);
+	return Gtk::Window::on_key_press_event(event);
+}
+
+bool
+Toolbox::on_key_release_event(GdkEventKey* event)
+{
+	if(widget_defaults->get_widget_bline_width()->is_focus())
+		return widget_defaults->get_widget_bline_width()->on_key_release_event(event);
+	return Gtk::Window::on_key_release_event(event);
+}
+
 
 void
 Toolbox::dockable_registered(Dockable* x)

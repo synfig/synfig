@@ -39,6 +39,7 @@
 #include "smach.h"
 #include <map>
 #include "dialogsettings.h"
+#include "widgets/widget_defaults.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -64,6 +65,7 @@ class Toolbox : public Gtk::Window
 
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
+	Widget_Defaults *widget_defaults;
 
 	Gtk::Table *tool_table;
 
@@ -77,6 +79,8 @@ class Toolbox : public Gtk::Window
 
 	void on_recent_files_changed();
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
 
 	void change_state_(const Smach::state_base *state);
 
