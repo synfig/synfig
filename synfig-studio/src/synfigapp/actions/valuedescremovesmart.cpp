@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2011, 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -98,11 +98,11 @@ Action::ValueDescRemoveSmart::is_candidate(const ParamList &x)
 	for(it=x.equal_range("value_desc").first; it!=x.equal_range("value_desc").second; ++it)
 	{
 		ValueDesc value_desc(it->second.get_value_desc());
-		// if any of the value descs is not Dynamic List parent then return false
+		// if any of the value descs is not Dynamic List parent then ...
 		if(!(value_desc.parent_is_value_node() &&
 			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())))
 		{
-			// Let's check if we are selecting a tangent value desc
+			// ... Let's check if we are selecting a composite child...
 			if(value_desc.parent_is_value_node())
 			{
 				ValueNode::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
@@ -110,7 +110,7 @@ Action::ValueDescRemoveSmart::is_candidate(const ParamList &x)
 				{
 					ValueNode_DynamicList::Handle parent_list=NULL;
 					std::set<Node*>::iterator iter;
-					// now check if the grand parent is a dynamic list 'bline' type
+					// and if the composite parent is a dynamic list type
 					for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
 						{
 							parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
@@ -121,7 +121,7 @@ Action::ValueDescRemoveSmart::is_candidate(const ParamList &x)
 						continue;
 				}
 			}
-		return false;
+			return false;
 		}
 	}
 	return true;
@@ -144,7 +144,7 @@ Action::ValueDescRemoveSmart::set_param(const synfig::String& name, const Action
 			{
 				ValueNode_DynamicList::Handle parent_list=NULL;
 				std::set<Node*>::iterator iter;
-				// now check if the grand parent is a dynamic list 'bline' type
+				// now check if the composite's parent is a dynamic list type
 				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
 					{
 						parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
