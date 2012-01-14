@@ -159,6 +159,11 @@ Layer_PasteCanvas::get_param_vocab()const
 	//	.set_invisible_duck()
 	);
 
+	ret.push_back(ParamDesc("outline_grow")
+		.set_local_name(_("Outline Grow"))
+		.set_description(_("Exponential value to grow the children Outlines widths"))
+	);
+
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
 	// 'curr_time' member wasn't being copied, so I've added it as a
@@ -211,6 +216,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(children_lock);
 	IMPORT(zoom);
+	IMPORT(outline_grow);
 	IMPORT(curr_time);
 
 	return Layer_Composite::set_param(param,value);
@@ -295,6 +301,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT(zoom);
 	EXPORT(time_offset);
 	EXPORT(children_lock);
+	EXPORT(outline_grow);
 	EXPORT(curr_time);
 
 	EXPORT_NAME();
