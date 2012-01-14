@@ -387,8 +387,6 @@ Toolbox::Toolbox():
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Toolbox::present));
-	signal_key_press_event().connect(sigc::mem_fun(*this, &Toolbox::on_key_press_event), false);
-	signal_key_release_event().connect(sigc::mem_fun(*this, &Toolbox::on_key_release_event), false);
 }
 
 Toolbox::~Toolbox()
