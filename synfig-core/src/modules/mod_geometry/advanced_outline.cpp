@@ -47,6 +47,7 @@
 #include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_dilist.h>
 #include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_const.h>
 
 #endif
 
@@ -84,6 +85,7 @@ Advanced_Outline::Advanced_Outline()
 	dash_enabled_=false;
 	old_version=false;
 	fast_=false;
+	width_grow_=0.0f;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -163,6 +165,7 @@ Advanced_Outline::sync()
 		int dstart_tip(WidthPoint::TYPE_FLAT), dend_tip(WidthPoint::TYPE_FLAT);
 		const bool blineloop(bline_.get_loop());
 		const bool wplistloop(wplist_.get_loop());
+		const Real multiplier(exp(width_grow_.get(Real())));
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
 		// biter: first blinepoint of the current bezier
@@ -724,7 +727,7 @@ Advanced_Outline::sync()
 						p=hipos;
 					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
-				add_tip(side_a, side_b, curve(q), unitary, *wnext);
+				add_tip(side_a, side_b, curve(q), unitary, *wnext, multiplier);
 				// Update wplist iterators
 				witer=wnext;
 				switer=swnext;
@@ -760,7 +763,7 @@ Advanced_Outline::sync()
 							Real p(ipos);
 							if(!fast_)
 								p=hipos;
-							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 						}
 					}
 					// ... and get out of the main loop.
@@ -866,7 +869,7 @@ Advanced_Outline::sync()
 					Real p(ipos);
 					if(!fast_)
 						p=hipos;
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 				}
 				middle_corner=false;
 				// This avoid to calculate derivative on q=0
@@ -915,7 +918,7 @@ Advanced_Outline::sync()
 						}
 						ww=wnext->get_width();
 					}
-					const Real w(expand_+width_*0.5*ww);
+					const Real w(multiplier*(expand_+width_*0.5*ww));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// if we haven't passed the position of the second blinepoint
@@ -945,7 +948,7 @@ Advanced_Outline::sync()
 					Real po(ipos);
 					if(!fast_)
 						po=hipos;
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					const Real w(multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -1002,7 +1005,7 @@ Advanced_Outline::sync()
 					done_tip=false;
 				}
 				else
-					w=(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					w=(multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -1043,6 +1046,13 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(homogeneous_,"homogeneous");
 	IMPORT_AS(dash_enabled_, "dash_enabled");
 	IMPORT_AS(fast_, "fast");
+	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
+	{
+		connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+		width_grow_=value;
+		return true;
+	}
+
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
@@ -1104,6 +1114,8 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(homogeneous_, "homogeneous");
 	EXPORT_AS(dash_enabled_,"dash_enabled");
 	EXPORT_AS(fast_, "fast");
+	EXPORT_AS(width_grow_, "width_grow");
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -1192,6 +1204,12 @@ Advanced_Outline::get_param_vocab()const
 		.set_is_distance()
 		.set_hint("dash")
 		.set_description(_("Distance to Offset the Dash Items"))
+	);
+	ret.push_back(ParamDesc("width_grow")
+		.set_local_name(_("Width Grow"))
+		.set_description(_("Increases width value logaritmically"))
+		.not_critical()
+		.hidden()
 	);
 	return ret;
 }
@@ -1288,9 +1306,9 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 }
 
 void
-Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
+Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, Real m)
 {
-	Real w(expand_+width_*0.5*wp.get_width());
+	Real w(m*(expand_+width_*0.5*wp.get_width()));
 	// Side Before
 	switch (wp.get_side_type_before())
 	{

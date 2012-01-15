@@ -33,6 +33,7 @@
 #include "context.h"
 #include "layer.h"
 #include "layer_composite.h"
+#include "modules/mod_geometry/outline.h"
 #include "string.h"
 #include "vector.h"
 #include "color.h"
@@ -359,6 +360,31 @@ Context::set_time(Time time)const
 		// Sets the dirty time the current calling time
 		(*context)->dirty_time_=time;
 
+	}
+}
+
+void
+Context::set_outline_grow(Real grow)
+{
+	Context context(*this);
+	while(!(context)->empty())
+	{
+		// If this layer is active, and
+		if((*context)->active())
+		{
+			// it's a outline layer,
+			if((*context)->get_name() == "outline"
+			   ||
+			   (*context)->get_name() == "advanced_outline"
+			  )
+			{
+				// Set up a writer lock
+				RWLock::WriterLock lock((*context)->get_rw_lock());
+				if(!(*context)->set_param("width_grow", grow))
+					synfig::error("Context::set_outline_grow(): %s didn't accept param width_grow", (*context)->get_name().c_str());
+			}
+		}
+		++context;
 	}
 }
 
