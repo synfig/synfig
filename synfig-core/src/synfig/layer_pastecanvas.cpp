@@ -90,6 +90,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	time_offset(0),
 	extra_reference(false)
 {
+	outline_grow=0;
 	children_lock=false;
 	muck_with_time_=true;
 	curr_time=Time::begin();
@@ -316,11 +317,12 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
 	curr_time=time;
 
+	// pass the outline grow parameter to the context
+	canvas->get_context().set_outline_grow(outline_grow);
 	context.set_time(time);
 	if(canvas)
 	{
 		canvas->set_time(time+time_offset);
-
 		bounds=(canvas->get_context().get_full_bounding_rect()-focus)*exp(zoom)+origin+focus;
 	}
 	else
@@ -397,7 +399,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
-
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 
