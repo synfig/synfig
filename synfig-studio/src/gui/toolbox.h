@@ -39,7 +39,6 @@
 #include "smach.h"
 #include <map>
 #include "dialogsettings.h"
-#include "widgets/widget_defaults.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -65,7 +64,6 @@ class Toolbox : public Gtk::Window
 
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
-	Widget_Defaults *widget_defaults;
 
 	Gtk::Table *tool_table;
 
