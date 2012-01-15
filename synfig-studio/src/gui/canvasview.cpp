@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2009, 2011 Carlos López
+**	Copyright (c) 2009, 2011, 2012 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
@@ -3466,6 +3466,16 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_CONSTANT);
 			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+			model.reset(); model.set_before(INTERPOLATION_CLAMPED);
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.reset(); model.set_after(INTERPOLATION_CLAMPED);
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.set_before(INTERPOLATION_CLAMPED);
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 		}
 

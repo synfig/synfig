@@ -9,7 +9,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
 **	Copyright (c) 2009 Nikita Kitaev
-**  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2011, 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -1411,6 +1411,8 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					waypoint->set_before(INTERPOLATION_MANUAL);
 				else if(val=="auto")
 					waypoint->set_before(INTERPOLATION_TCB);
+				else if(val=="clamped")
+					waypoint->set_before(INTERPOLATION_CLAMPED);
 				else
 					error(child,strprintf(_("\"%s\" not a valid value for attribute \"%s\" in <%s>"),val.c_str(),"before","waypoint"));
 			}
@@ -1428,6 +1430,8 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					waypoint->set_after(INTERPOLATION_MANUAL);
 				else if(val=="auto")
 					waypoint->set_after(INTERPOLATION_TCB);
+				else if(val=="clamped")
+					waypoint->set_after(INTERPOLATION_CLAMPED);
 				else
 					error(child,strprintf(_("\"%s\" not a valid value for attribute \"%s\" in <%s>"),val.c_str(),"before","waypoint"));
 			}
