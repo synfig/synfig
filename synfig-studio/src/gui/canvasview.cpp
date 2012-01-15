@@ -2412,6 +2412,24 @@ CanvasView::on_focus_out_event(GdkEventFocus*x)
 	return Gtk::Window::on_focus_out_event(x);
 }
 
+bool
+CanvasView::on_key_press_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_press_event(event);
+}
+
+bool
+CanvasView::on_key_release_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_release_event(event);
+}
+
 void
 CanvasView::refresh_tables()
 {

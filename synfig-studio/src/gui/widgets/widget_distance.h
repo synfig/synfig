@@ -58,7 +58,8 @@ protected:
 
 public:
 	//sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
-
+	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
 	void set_value(const synfig::Distance &data);
 	synfig::Distance get_value()const;
 	Widget_Distance();

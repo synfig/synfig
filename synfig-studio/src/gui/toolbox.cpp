@@ -346,8 +346,6 @@ Toolbox::Toolbox():
 	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
 
-
-
 	// Set the parameters for this window
 	add(*table1);
 	set_title(_("Synfig Studio"));
@@ -355,8 +353,6 @@ Toolbox::Toolbox():
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
 	signal_delete_event().connect(sigc::ptr_fun(App::shutdown_request));
 	set_resizable(false);
-
-
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
@@ -635,6 +631,25 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 	// Finish the drag
 	context->drag_finish(success, false, time);
 }
+
+bool
+Toolbox::on_key_press_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_press_event(event);
+}
+
+bool
+Toolbox::on_key_release_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_release_event(event);
+}
+
 
 void
 Toolbox::dockable_registered(Dockable* x)
