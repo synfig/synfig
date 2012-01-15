@@ -187,9 +187,6 @@ GroupActionManager::refresh()
 		LayerGroupTree::LayerList selected_layers(group_tree_->get_selected_layers());
 		std::list<synfig::String> selected_groups(group_tree_->get_selected_groups());
 
-		synfig::info("selected_layers.size()=%d",selected_layers.size());
-		synfig::info("selected_groups.size()=%d",selected_groups.size());
-
 		{
 			bool canvas_set(false);
 			synfigapp::Action::ParamList param_list;
@@ -271,5 +268,4 @@ GroupActionManager::on_action_add()
 	Gtk::TreePath path(group_tree_->get_model()->on_group_added(group_name));
 
 	group_tree_->expand_to_path(path);
-	group_tree_->set_cursor(path,true);
 }
