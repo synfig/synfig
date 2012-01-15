@@ -49,7 +49,7 @@
 #include <vector>
 
 #include <synfig/valuenode_bline.h>
-
+#include <synfig/valuenode_const.h>
 #endif
 
 using namespace etl;
@@ -86,33 +86,24 @@ Point line_intersection(
 {
 	const float& x0(p1[0]);
 	const float& y0(p1[1]);
-
 	const float x1(p1[0]+t1[0]);
 	const float y1(p1[1]+t1[1]);
-
 	const float& x2(p2[0]);
 	const float& y2(p2[1]);
-
 	const float x3(p2[0]+t2[0]);
 	const float y3(p2[1]+t2[1]);
-
 	const float near_infinity((float)1e+10);
-
 	float m1,m2;    // the slopes of each line
-
 	// compute slopes, note the kluge for infinity, however, this will
 	// be close enough
-
 	if ((x1-x0)!=0)
-	   m1 = (y1-y0)/(x1-x0);
+		m1 = (y1-y0)/(x1-x0);
 	else
-	   m1 = near_infinity;
-
+		m1 = near_infinity;
 	if ((x3-x2)!=0)
-	   m2 = (y3-y2)/(x3-x2);
+		m2 = (y3-y2)/(x3-x2);
 	else
-	   m2 = near_infinity;
-
+		m2 = near_infinity;
 	// compute constants
 	const float& a1(m1);
 	const float& a2(m2);
@@ -120,10 +111,8 @@ Point line_intersection(
 	const float b2(-1.0f);
 	const float c1(y0-m1*x0);
 	const float c2(y2-m2*x2);
-
 	// compute the inverse of the determinate
 	const float det_inv(1.0f/(a1*b2 - a2*b1));
-
 	// use Kramers rule to compute the intersection
 	return Point(
 		((b1*c2 - b2*c1)*det_inv),
@@ -144,8 +133,8 @@ Outline::Outline()
 	loopyness=1.0f;
 	expand=0;
 	homogeneous_width=true;
+	width_grow=0.0f;
 	clear();
-
 	vector<BLinePoint> bline_point_list;
 	bline_point_list.push_back(BLinePoint());
 	bline_point_list.push_back(BLinePoint());
@@ -160,11 +149,10 @@ Outline::Outline()
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
 	bline=bline_point_list;
-
 	needs_sync=true;
-
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
+	set_param_static("width_grow", true);
 }
 
 
@@ -176,52 +164,41 @@ void
 Outline::sync()
 {
 	clear();
-
 	if (!bline.get_list().size())
 	{
 		synfig::warning(string("Outline::sync():")+N_("No vertices in outline " + string("\"") + get_description() + string("\"")));
 		return;
 	}
-
 	try {
 #if 1
-
 	const bool loop(bline.get_loop());
-
+	const Real multiplier=exp(width_grow);
 	ValueNode_BLine::Handle bline_valuenode;
 	if (bline.get_contained_type() == ValueBase::TYPE_SEGMENT)
 	{
 		bline_valuenode = ValueNode_BLine::create(bline);
 		bline = (*bline_valuenode)(0);
 	}
-
 	const vector<synfig::BLinePoint> bline_(bline.get_list().begin(),bline.get_list().end());
 #define bline bline_
-
 	vector<BLinePoint>::const_iterator
 		iter,
 		next(bline.begin());
-
 	const vector<BLinePoint>::const_iterator
 		end(bline.end());
-
 	vector<Point>
 		side_a,
 		side_b;
-
 	if(loop)
 		iter=--bline.end();
 	else
 		iter=next++;
-
 	// 				iter	next
 	//				----	----
 	// looped		nth		1st
 	// !looped		1st		2nd
-
 	Vector first_tangent=bline.front().get_tangent2();
 	Vector last_tangent=iter->get_tangent1();
-
 	// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
 	if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()))
 	{
@@ -229,28 +206,22 @@ Outline::sync()
 		const derivative< hermite<Vector> > deriv(curve);
 		last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 	}
-
 	// `first' is for making the cusps; don't do that for the first point if we're not looped
 	for(bool first=!loop; next!=end; iter=next++)
 	{
 		Vector prev_t(iter->get_tangent1());
 		Vector iter_t(iter->get_tangent2());
 		Vector next_t(next->get_tangent1());
-
 		bool split_flag(iter->get_split_tangent_flag());
-
 		// if iter.t2 == 0 and next.t1 == 0, this is a straight line
 		if(iter_t.is_equal_to(Vector::zero()) && next_t.is_equal_to(Vector::zero()))
 		{
 			iter_t=next_t=next->get_vertex()-iter->get_vertex();
-			// split_flag=true;
-
 			// if the two points are on top of each other, ignore this segment
 			// leave `first' true if was before
 			if (iter_t.is_equal_to(Vector::zero()))
 				continue;
 		}
-
 		// Setup the curve
 		hermite<Vector> curve(
 			iter->get_vertex(),
@@ -258,54 +229,43 @@ Outline::sync()
 			iter_t,
 			next_t
 		);
-
 		const float
-			iter_w((iter->get_width()*width)*0.5f+expand),
-			next_w((next->get_width()*width)*0.5f+expand);
-
+			iter_w(multiplier*((iter->get_width()*width)*0.5f+expand)),
+			next_w(multiplier*((next->get_width()*width)*0.5f+expand));
 		const derivative< hermite<Vector> > deriv(curve);
-
 		if (first)
 			first_tangent = deriv(CUSP_TANGENT_ADJUST);
-
 		// Make cusps as necessary
 		if(!first && sharp_cusps && split_flag && (!prev_t.is_equal_to(iter_t) || iter_t.is_equal_to(Vector::zero())) && !last_tangent.is_equal_to(Vector::zero()))
 		{
 			Vector curr_tangent(deriv(CUSP_TANGENT_ADJUST));
-
 			const Vector t1(last_tangent.perp().norm());
 			const Vector t2(curr_tangent.perp().norm());
-
 			Real cross(t1*t2.perp());
 			Real perp((t1-t2).mag());
 			if(cross>CUSP_THRESHOLD)
 			{
 				const Point p1(iter->get_vertex()+t1*iter_w);
 				const Point p2(iter->get_vertex()+t2*iter_w);
-
 				side_a.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
 			}
 			else if(cross<-CUSP_THRESHOLD)
 			{
 				const Point p1(iter->get_vertex()-t1*iter_w);
 				const Point p2(iter->get_vertex()-t2*iter_w);
-
 				side_b.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
 			}
 			else if(cross>0 && perp>1)
 			{
 				float amount(max(0.0f,(float)(cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-
 				side_a.push_back(iter->get_vertex()+(t1+t2).norm()*iter_w*amount);
 			}
 			else if(cross<0 && perp>1)
 			{
 				float amount(max(0.0f,(float)(-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1);
-
 				side_b.push_back(iter->get_vertex()-(t1+t2).norm()*iter_w*amount);
 			}
 		}
-
 		// Make the outline
 		if(homogeneous_width)
 		{
@@ -316,15 +276,11 @@ Outline::sync()
 			{
 				const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
 				const Vector p(curve(n));
-
 				if(n)
 					dist+=(p-lastpoint).mag();
-
 				const float w(((next_w-iter_w)*(dist/length)+iter_w));
-
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
-
 				lastpoint=p;
 			}
 		}
@@ -341,10 +297,8 @@ Outline::sync()
 		last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		side_a.push_back(curve(1.0)+last_tangent.perp().norm()*next_w);
 		side_b.push_back(curve(1.0)-last_tangent.perp().norm()*next_w);
-
 		first=false;
 	}
-
 	if(loop)
 	{
 		reverse(side_b.begin(),side_b.end());
@@ -352,57 +306,44 @@ Outline::sync()
 		add_polygon(side_b);
 		return;
 	}
-
 	// Insert code for adding end tip
 	if(round_tip[1] && !loop && side_a.size())
 	{
 		// remove the last point
 		side_a.pop_back();
-
 		const Point vertex(bline.back().get_vertex());
 		const Vector tangent(last_tangent.norm());
-		const float w((bline.back().get_width()*width)*0.5f+expand);
-
+		const float w(multiplier*((bline.back().get_width()*width)*0.5f+expand));
 		hermite<Vector> curve(
 			vertex+tangent.perp()*w,
 			vertex-tangent.perp()*w,
 			tangent*w*ROUND_END_FACTOR,
 			-tangent*w*ROUND_END_FACTOR
 		);
-
 		for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			side_a.push_back(curve(n));
 	}
-
 	for(;!side_b.empty();side_b.pop_back())
 		side_a.push_back(side_b.back());
-
 	// Insert code for adding begin tip
 	if(round_tip[0] && !loop && side_a.size())
 	{
 		// remove the last point
 		side_a.pop_back();
-
 		const Point vertex(bline.front().get_vertex());
 		const Vector tangent(first_tangent.norm());
-		const float w((bline.front().get_width()*width)*0.5f+expand);
-
+		const float w(multiplier*((bline.front().get_width()*width)*0.5f+expand));
 		hermite<Vector> curve(
 			vertex-tangent.perp()*w,
 			vertex+tangent.perp()*w,
 			-tangent*w*ROUND_END_FACTOR,
 			tangent*w*ROUND_END_FACTOR
 		);
-
 		for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			side_a.push_back(curve(n));
 	}
-
 	add_polygon(side_a);
-
-
-#else /* 1 */
-
+#else /* 1 */ // TODO: This section should be removed at some time
 	bool loop_;
 	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
 	{
@@ -424,17 +365,12 @@ Outline::sync()
 		clear();
 		return;
 	}
-
-
-
 	if(segment_list.empty())
 	{
 		synfig::warning("Outline: segment_list is empty, layer disabled");
 		clear();
 		return;
 	}
-
-
 	// Repair the width list if we need to
 	{
 		Real default_width;
@@ -449,7 +385,6 @@ Outline::sync()
 			width_list.pop_back();
 
 	}
-
 	// Repair the zero tangents (if any)
 	{
 		vector<Segment>::iterator iter;
@@ -459,23 +394,19 @@ Outline::sync()
 				iter->t1=iter->t2=iter->p2-iter->p1;
 		}
 	}
-
 	vector<Real>::iterator iter;
 	vector<Real> scaled_width_list;
 	for(iter=width_list.begin();iter!=width_list.end();++iter)
 	{
 		scaled_width_list.push_back((*iter*width+expand)*0.5f);
 	}
-
 	Vector::value_type n;
 	etl::hermite<Vector> curve;
 	vector<Point> vector_list;
 	Vector last_tangent(segment_list.back().t2);
 	clear();
-
 	if(!loop_)
 		last_tangent=NO_LOOP_COOKIE;
-
 	{
 		vector<Segment>::iterator iter;
 		vector<Real>::iterator witer;
@@ -499,24 +430,18 @@ Outline::sync()
 				curve.p2()=iter->p2;
 				curve.t2()=iter->t2;
 				curve.sync();
-
 				etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 				// without this if statement, the broken tangents would
 				// have boxed edges
 				if(sharp_cusps && last_tangent!=NO_LOOP_COOKIE && !last_tangent.is_equal_to(iter->t1))
 				{
 					//Vector curr_tangent(iter->t1);
 					Vector curr_tangent(deriv(CUSP_TANGENT_ADJUST));
-
 					const Vector t1(last_tangent.perp().norm());
 					const Vector t2(curr_tangent.perp().norm());
-
 					Point p1(iter->p1+t1*witer[0]);
 					Point p2(iter->p1+t2*witer[0]);
-
 					Real cross(t1*t2.perp());
-
 					if(cross>CUSP_THRESHOLD)
 						vector_list.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
 					else if(cross>0)
@@ -530,11 +455,9 @@ Outline::sync()
 				}
 				//last_tangent=iter->t2;
 				last_tangent=deriv(1.0f-CUSP_TANGENT_ADJUST);
-
 				for(n=0.0f;n<1.0f;n+=1.0f/SAMPLES)
 					vector_list.push_back(curve(n)+deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm()*((witer[1]-witer[0])*n+witer[0]) );
 				vector_list.push_back(curve(1.0)+deriv(1.0-CUSP_TANGENT_ADJUST).perp().norm()*witer[1]);
-
 			}
 		}
 		if(round_tip[1] && !loop_/* && (!sharp_cusps || segment_list.front().p1!=segment_list.back().p2)*/)
@@ -555,7 +478,6 @@ Outline::sync()
 			vector_list.pop_back();
 		}
 	}
-
 	if(!loop_)
 		last_tangent=NO_LOOP_COOKIE;
 	else
@@ -564,10 +486,6 @@ Outline::sync()
 		vector_list.clear();
 		last_tangent=segment_list.front().t1;
 	}
-
-	//else
-	//	last_tangent=segment_list.back().t2;
-
 	{
 		vector<Segment>::reverse_iterator iter;
 		vector<Real>::reverse_iterator witer;
@@ -577,7 +495,6 @@ Outline::sync()
 			!(iter==segment_list.rend());
 			++iter,++witer)
 		{
-
 			if(iter->t1.mag_squared()<=EPSILON && iter->t2.mag_squared()<=EPSILON)
 			{
 				vector_list.push_back(iter->p2+(iter->p2-iter->p1).perp().norm()*witer[0]);
@@ -592,24 +509,18 @@ Outline::sync()
 				curve.p2()=iter->p2;
 				curve.t2()=iter->t2;
 				curve.sync();
-
 				etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 				// without this if statement, the broken tangents would
 				// have boxed edges
 				if(sharp_cusps && last_tangent!=NO_LOOP_COOKIE && !last_tangent.is_equal_to(iter->t2))
 				{
 					//Vector curr_tangent(iter->t2);
 					Vector curr_tangent(deriv(1.0f-CUSP_TANGENT_ADJUST));
-
 					const Vector t1(last_tangent.perp().norm());
 					const Vector t2(curr_tangent.perp().norm());
-
 					Point p1(iter->p2-t1*witer[-1]);
 					Point p2(iter->p2-t2*witer[-1]);
-
 					Real cross(t1*t2.perp());
-
 					//if(last_tangent.perp().norm()*curr_tangent.norm()<-CUSP_THRESHOLD)
 					if(cross>CUSP_THRESHOLD)
 						vector_list.push_back(line_intersection(p1,last_tangent,p2,curr_tangent));
@@ -624,7 +535,6 @@ Outline::sync()
 				}
 				//last_tangent=iter->t1;
 				last_tangent=deriv(CUSP_TANGENT_ADJUST);
-
 				for(n=1.0f;n>CUSP_TANGENT_ADJUST;n-=1.0f/SAMPLES)
 					vector_list.push_back(curve(n)-deriv(1-n>CUSP_TANGENT_ADJUST?n:1-CUSP_TANGENT_ADJUST).perp().norm()*((witer[-1]-witer[0])*n+witer[0]) );
 				vector_list.push_back(curve(0.0f)-deriv(CUSP_TANGENT_ADJUST).perp().norm()*witer[0]);
@@ -636,23 +546,16 @@ Outline::sync()
 			vector_list.pop_back();
 			iter--;
 			witer--;
-
 			curve.p1()=iter->p1+Vector(last_tangent[1],-last_tangent[0]).norm()*(*witer);
 			curve.p2()=iter->p1-(Vector(last_tangent[1],-last_tangent[0]).norm()*(*witer));
 			curve.t1()=-(curve.t2()=last_tangent/last_tangent.mag()*(*witer)*ROUND_END_FACTOR);
 			curve.sync();
-
 			for(n=1.0;n>0.0;n-=1.0/SAMPLES)
 				vector_list.push_back(curve(n));
-
 			// remove the last point
 			vector_list.pop_back();
 		}
 	}
-
-	//if(loop_)
-	//	reverse(vector_list.begin(),vector_list.end());
-
 #ifdef _DEBUG
 	{
 		vector<Point>::iterator iter;
@@ -664,10 +567,7 @@ Outline::sync()
 		//synfig::info("BLEHH__________--- x:%f, y:%f",vector_list.front()[0],vector_list.front()[1]);
 	}
 #endif /* _DEBUG */
-
 	add_polygon(vector_list);
-
-
 #endif /* 1 */
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
@@ -688,67 +588,11 @@ Outline::set_param(const String & param, const ValueBase &value)
 		else
 			synfig::warning("Outline::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
-
 	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)
 	{
-		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
-		//	return false;
-
 		bline=value;
-
 		return true;
 	}
-	/*
-	if(	param=="seg" && value.get_type()==ValueBase::TYPE_SEGMENT)
-	{
-		if(!segment_list.empty())
-			segment_list.clear();
-
-		segment_list.push_back(value.get(Segment()));
-		loop_=false;
-		//sync();
-		return true;
-	}
-	if(	param=="w[0]" && value.get_type()==ValueBase::TYPE_REAL)
-	{
-		if(width_list.size()<2)
-		{
-			width_list.push_back(value.get(Real()));
-			width_list.push_back(value.get(Real()));
-		}
-		else
-		{
-			width_list[0]=value.get(Real());
-		}
-		width=1;
-		//sync();
-		return true;
-	}
-
-	if(	param=="w[1]" && value.get_type()==ValueBase::TYPE_REAL)
-	{
-		if(width_list.size()<2)
-		{
-			width_list.push_back(value.get(Real()));
-			width_list.push_back(value.get(Real()));
-		}
-		else
-		{
-			width_list[1]=value.get(Real());
-		}
-		width=1;
-		//sync();
-		return true;
-	}
-
-	if(	param=="width_list" && value.same_type_as(width_list))
-	{
-		width_list=value;
-		//sync();
-		return true;
-	}
-	*/
-
 	IMPORT(round_tip[0]);
 	IMPORT(round_tip[1]);
 	IMPORT(sharp_cusps);
@@ -756,10 +600,15 @@ Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT(loopyness);
 	IMPORT(expand);
 	IMPORT(homogeneous_width);
+	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
+	{
+		connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+		width_grow=value;
+		return true;
+	}
 
 	if(param!="vector_list")
 		return Layer_Polygon::set_param(param,value);
-
 	return false;
 }
 
@@ -782,18 +631,15 @@ Outline::get_param(const String& param)const
 {
 	EXPORT(bline);
 	EXPORT(expand);
-	//EXPORT(width_list);
-	//EXPORT(segment_list);
 	EXPORT(homogeneous_width);
 	EXPORT(round_tip[0]);
 	EXPORT(round_tip[1]);
 	EXPORT(sharp_cusps);
 	EXPORT(width);
 	EXPORT(loopyness);
-
+	EXPORT(width_grow);
 	EXPORT_NAME();
 	EXPORT_VERSION();
-
 	if(param!="vector_list")
 		return Layer_Polygon::get_param(param);
 	return ValueBase();
@@ -803,48 +649,32 @@ Layer::Vocab
 Outline::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Polygon::get_param_vocab());
-
 	// Pop off the polygon parameter from the polygon vocab
 	ret.pop_back();
-
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
 		.set_hint("width")
 		.set_description(_("A list of BLine Points"))
 	);
-
-	/*
-	ret.push_back(ParamDesc("width_list")
-		.set_local_name(_("Point Widths"))
-		.set_origin("segment_list")
-		.hidden()
-		.not_critical()
-	);
-	*/
-
 	ret.push_back(ParamDesc("width")
 		.set_is_distance()
 		.set_local_name(_("Outline Width"))
 		.set_description(_("Global width of the outline"))
 	);
-
 	ret.push_back(ParamDesc("expand")
 		.set_is_distance()
 		.set_local_name(_("Expand"))
 		.set_description(_("Value to add to the global width"))
 	);
-
 	ret.push_back(ParamDesc("sharp_cusps")
 		.set_local_name(_("Sharp Cusps"))
 		.set_description(_("Determines cusp type"))
 	);
-
 	ret.push_back(ParamDesc("round_tip[0]")
 		.set_local_name(_("Rounded Begin"))
 		.set_description(_("Round off the tip"))
 	);
-
 	ret.push_back(ParamDesc("round_tip[1]")
 		.set_local_name(_("Rounded End"))
 		.set_description(_("Round off the tip"))
@@ -856,6 +686,11 @@ Outline::get_param_vocab()const
 		.set_local_name(_("Homogeneous"))
 		.set_description(_("When checked the width takes the length of the spline to interpolate"))
 	);
-
+	ret.push_back(ParamDesc("width_grow")
+		.set_local_name(_("Width Grow"))
+		.set_description(_("Increases width value logaritmically"))
+		.not_critical()
+		.hidden()
+	);
 	return ret;
 }
