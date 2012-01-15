@@ -172,7 +172,7 @@ Outline::sync()
 	try {
 #if 1
 	const bool loop(bline.get_loop());
-	const Real multiplier=exp(width_grow);
+	const Real multiplier(exp(width_grow.get(Real())));
 	ValueNode_BLine::Handle bline_valuenode;
 	if (bline.get_contained_type() == ValueBase::TYPE_SEGMENT)
 	{

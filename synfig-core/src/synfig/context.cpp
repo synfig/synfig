@@ -373,12 +373,15 @@ Context::set_outline_grow(Real grow)
 		if((*context)->active())
 		{
 			// it's a outline layer,
-			if((*context)->get_name() == "outline")
+			if((*context)->get_name() == "outline"
+			   ||
+			   (*context)->get_name() == "advanced_outline"
+			  )
 			{
 				// Set up a writer lock
 				RWLock::WriterLock lock((*context)->get_rw_lock());
 				if(!(*context)->set_param("width_grow", grow))
-					synfig::error("Context::set_outline_grow(): outline didn't accept param width_grow");
+					synfig::error("Context::set_outline_grow(): %s didn't accept param width_grow", (*context)->get_name().c_str());
 			}
 		}
 		++context;
