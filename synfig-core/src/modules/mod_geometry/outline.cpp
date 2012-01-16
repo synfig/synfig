@@ -602,7 +602,18 @@ Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT(homogeneous_width);
 	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
 	{
-		connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+		Layer::DynamicParamList dynparam(dynamic_param_list());
+		ValueNode::Handle previous(dynparam["width_grow"]);
+		if(!previous)
+			connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+		else
+			{
+				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(previous));
+				if(value_node)
+					value_node->set_value(value);
+				else
+					connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+			}
 		width_grow=value;
 		return true;
 	}
