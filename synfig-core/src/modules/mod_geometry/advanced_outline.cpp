@@ -118,7 +118,8 @@ Advanced_Outline::Advanced_Outline()
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 	set_param_static("fast", true);
-
+	connect_dynamic_param("width_grow", ValueNode_Const::create(0.0));
+	set_param_static("width_grow", true);
 }
 
 
@@ -1048,7 +1049,9 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(fast_, "fast");
 	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
 	{
-		connect_dynamic_param("width_grow", ValueNode_Const::create(value));
+		ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(dynamic_param_list().find("width_grow")->second));
+		if(value_node)
+			value_node->set_value(value);
 		width_grow_=value;
 		return true;
 	}
