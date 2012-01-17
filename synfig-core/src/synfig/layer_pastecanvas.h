@@ -66,6 +66,9 @@ private:
 	Time time_offset;
 	//! Outline Grow parameter of the paste canvas layer
 	Real outline_grow;
+	//! Width Grow parameter: it is the parameter of outline grow that
+	//!  the paste canvas layer receive from other paste canvas layer
+	Real width_grow;
 	//! Current time of the paste canvas layer. \see set_time
 	mutable Time curr_time;
 	//! \todo writeme! Not a parameter
