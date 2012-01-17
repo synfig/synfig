@@ -152,6 +152,7 @@ Outline::Outline()
 	needs_sync=true;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
+	connect_dynamic_param("width_grow", ValueNode_Const::create(0.0));
 	set_param_static("width_grow", true);
 }
 
@@ -602,20 +603,12 @@ Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT(homogeneous_width);
 	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
 	{
-		Layer::DynamicParamList dynparam(dynamic_param_list());
-		ValueNode::Handle previous(dynparam["width_grow"]);
-		if(!previous)
-			connect_dynamic_param("width_grow", ValueNode_Const::create(value));
-		else
-			{
-				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(previous));
-				if(value_node)
-					value_node->set_value(value);
-				else
-					connect_dynamic_param("width_grow", ValueNode_Const::create(value));
-			}
+		ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(dynamic_param_list().find("width_grow")->second));
+		if(value_node)
+			value_node->set_value(value);
 		width_grow=value;
 		return true;
+
 	}
 
 	if(param!="vector_list")
