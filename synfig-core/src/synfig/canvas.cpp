@@ -295,7 +295,7 @@ Canvas::set_time(Time t)const
 
 		is_dirty_=false;
 		if(is_root())
-			get_context().set_outline_grow(0.0);
+			get_context().set_context_param("width_grow", 0.0);
 		get_context().set_time(t);
 	}
 	is_dirty_=false;

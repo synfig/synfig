@@ -364,7 +364,7 @@ Context::set_time(Time time)const
 }
 
 void
-Context::set_outline_grow(Real grow)
+Context::set_context_param(const String &param, const ValueBase &value)
 {
 	Context context(*this);
 	while(!(context)->empty())
@@ -372,15 +372,10 @@ Context::set_outline_grow(Real grow)
 		// If this layer is active, and
 		if((*context)->active())
 		{
-			// it's a outline layer,
-			if((*context)->get_name() == "outline"
-			   ||
-			   (*context)->get_name() == "advanced_outline"
-			  )
-			{
-				if(!(*context)->set_param("width_grow", grow))
-					synfig::error("Context::set_outline_grow(): %s didn't accept param width_grow", (*context)->get_name().c_str());
-			}
+			String name((*context)->get_name());
+			if(name == "outline" || name == "advanced_outline" || name =="PasteCanvas")
+				if(!(*context)->set_param(param, value))
+					synfig::error("Context::set_context_param(): %s didn't accept param %s", (*context)->get_name().c_str(), param.c_str());
 		}
 		++context;
 	}
