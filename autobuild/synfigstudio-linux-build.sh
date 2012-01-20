@@ -523,10 +523,10 @@ do
   	cp -f $n ${PREFIX}
 done
 
-if [ -e synfigstudio-cph-monitor ]; then
-	cp -f synfigstudio-cph-monitor ${PREFIX}/bin/
-	chmod a+x ${PREFIX}/bin/synfigstudio-cph-monitor
-fi
+#if [ -e synfigstudio-cph-monitor ]; then
+#	cp -f synfigstudio-cph-monitor ${PREFIX}/bin/
+#	chmod a+x ${PREFIX}/bin/synfigstudio-cph-monitor
+#fi
 
 popd
 }
@@ -656,21 +656,21 @@ mkdir -p \$RPM_BUILD_ROOT/usr/bin
 mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfig \$RPM_BUILD_ROOT/usr/bin/
 mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 
-if [ -e \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor ]; then
-mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor \$RPM_BUILD_ROOT/usr/bin/
-cat > \$RPM_BUILD_ROOT/usr/share/applications/synfigstudio-cph-monitor.desktop << EOD
-[Desktop Entry]
-Encoding=UTF-8
-Name=Synfig Studio CPH monitor
-Comment=This application collecting statistics about synfig crashes
-Exec=synfigstudio-cph-monitor
-Icon=terminal.png
-Terminal=true
-Type=Application
-Categories=Graphics;Application;
-X-Desktop-File-Install-Version=0.15
-EOD
-fi
+#if [ -e \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor ]; then
+#mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor \$RPM_BUILD_ROOT/usr/bin/
+#cat > \$RPM_BUILD_ROOT/usr/share/applications/synfigstudio-cph-monitor.desktop << EOD
+#[Desktop Entry]
+#Encoding=UTF-8
+#Name=Synfig Studio CPH monitor
+#Comment=This application collecting statistics about synfig crashes
+#Exec=synfigstudio-cph-monitor
+#Icon=terminal.png
+#Terminal=true
+#Type=Application
+#Categories=Graphics;Application;
+#X-Desktop-File-Install-Version=0.15
+#EOD
+#fi
 
 #cleaning devel stuff
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.la
