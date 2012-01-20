@@ -978,6 +978,8 @@ mkpackage()
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
+		#resolv.conf
+		cp -f /etc/resolv.conf $PACKAGES_BUILDROOT.$ARCH/etc/resolv.conf
 		#keep proxy settings
 		if ! [ -z $http_proxy ]; then
 			#echo "export http_proxy=\"$http_proxy\";" >> $PACKAGES_BUILDROOT.$ARCH/root/.bashrc
