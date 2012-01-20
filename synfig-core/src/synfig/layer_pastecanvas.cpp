@@ -41,6 +41,7 @@
 #include "value.h"
 #include "valuenode.h"
 #include "canvas.h"
+#include "valuenode_const.h"
 
 #endif
 
@@ -90,12 +91,16 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	time_offset(0),
 	extra_reference(false)
 {
+	outline_grow=0.0f;
+	width_grow=0.0f;
 	children_lock=false;
 	muck_with_time_=true;
 	curr_time=Time::begin();
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 	set_param_static("children_lock", true);
+	connect_dynamic_param("width_grow", ValueNode_Const::create(0.0));
+	set_param_static("width_grow", true);
 }
 
 Layer_PasteCanvas::~Layer_PasteCanvas()
@@ -159,6 +164,18 @@ Layer_PasteCanvas::get_param_vocab()const
 	//	.set_invisible_duck()
 	);
 
+	ret.push_back(ParamDesc("outline_grow")
+		.set_local_name(_("Outline Grow"))
+		.set_description(_("Exponential value to grow the children Outlines widths"))
+	);
+
+	ret.push_back(ParamDesc("width_grow")
+		.set_local_name(_("Width Grow"))
+		.set_description(_("Increases width value logaritmically"))
+		.not_critical()
+		.hidden()
+	);
+
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
 	// 'curr_time' member wasn't being copied, so I've added it as a
@@ -211,8 +228,17 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(children_lock);
 	IMPORT(zoom);
+	IMPORT(outline_grow);
 	IMPORT(curr_time);
+	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
+	{
+		ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(dynamic_param_list().find("width_grow")->second));
+		if(value_node)
+			value_node->set_value(value);
+		width_grow=value;
+		return true;
 
+	}
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -295,6 +321,8 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT(zoom);
 	EXPORT(time_offset);
 	EXPORT(children_lock);
+	EXPORT(outline_grow);
+	EXPORT(width_grow);
 	EXPORT(curr_time);
 
 	EXPORT_NAME();
@@ -312,8 +340,9 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 	context.set_time(time);
 	if(canvas)
 	{
+		//synfig::info("passing the grow values og=%f wg=%f", outline_grow, width_grow);
+		canvas->get_context().set_context_param("width_grow", ValueBase(outline_grow + width_grow));
 		canvas->set_time(time+time_offset);
-
 		bounds=(canvas->get_context().get_full_bounding_rect()-focus)*exp(zoom)+origin+focus;
 	}
 	else
@@ -390,7 +419,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
-
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 

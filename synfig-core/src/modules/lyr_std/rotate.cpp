@@ -256,6 +256,11 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	Surface::pen pen(surface->begin());
 
+	// There is not need to supersample when the rotation is 90 or -90
+	// There is a one to one pixel correspondence.
+	if(amount.dist(Angle::deg(90))== Angle::deg(0.0) || amount.dist(Angle::deg(-90))== Angle::deg(0.0))
+		quality = 7;
+
 	if(quality<=4)
 	{
 		// CUBIC

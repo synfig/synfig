@@ -140,7 +140,7 @@ public:
 protected:
 	ValueNode_Animated();
 
-	//! Sets thee type of the Animated Value Node
+	//! Sets the type of the Animated Value Node
 	void set_type(ValueBase::Type t);
 	//!	Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points. Time Point is like Waypoint but
