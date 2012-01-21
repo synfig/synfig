@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -484,6 +485,8 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				LinkableValueNode::Vocab::iterator iter(vocab.begin());
 				for(int i=0;i<linkable->link_count();i++, iter++)
 				{
+					if(iter->get_hidden())
+						continue;
 					Gtk::TreeRow child_row=*(append(row.children()));
 					child_row[model.link_id] = i;
 					child_row[model.canvas] = static_cast<Canvas::Handle>(row[model.canvas]);

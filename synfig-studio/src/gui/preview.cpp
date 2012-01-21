@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,6 +36,7 @@
 #include "audiocontainer.h"
 #include <gtkmm/stock.h>
 #include <gtkmm/separator.h>
+#include <gdkmm/general.h>
 
 #include <synfig/target_scanline.h>
 #include <synfig/surface.h>
@@ -551,18 +553,10 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	//synfig::info("Now to draw to the window...");
 	//copy to window
 	Glib::RefPtr<Gdk::Window>	wind = draw_area.get_window();
-	Glib::RefPtr<Gdk::Drawable> surf = Glib::RefPtr<Gdk::Drawable>::cast_static(wind);
-	Glib::RefPtr<Gdk::GC>		gc = Gdk::GC::create(wind);
-
-	{
-		Gdk::Rectangle r(0,0,draw_area.get_width(),draw_area.get_height());
-		draw_area.get_window()->begin_paint_rect(r);
-	}
+	Cairo::RefPtr<Cairo::Context> cr = wind->create_cairo_context();
 
 	if(!wind) synfig::warning("The destination window is broken...");
-	if(!surf) synfig::warning("The destination is not drawable...");
 
-	if(surf)
 	{
 		/* Options for drawing...
 			1) store with alpha, then clear and render with alpha every frame
@@ -575,15 +569,14 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		*/
 		//px->composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const
 
-		surf->draw_pixbuf(
-			gc, //GC
+		cr->save();
+		Gdk::Cairo::set_source_pixbuf(
+			cr, //cairo context
 			pxnew, //pixbuf
-			0, 0,	// Source X and Y
-			0, 0,	// Dest X and Y
-			-1,-1,	// Width and Height
-			Gdk::RGB_DITHER_NONE, // RgbDither
-			0, 0 // Dither offset X and Y
-		);
+			0, 0 //coordinates to place upper left corner of pixbuf
+			);
+		cr->paint();
+		cr->restore();
 
 		if(timedisp >= 0)
 		{
@@ -593,13 +586,18 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 																			App::get_time_format()));
 			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
 
-			gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
+			cr->save();
+
 			layout->set_text(timecode);
-			surf->draw_layout(gc,4,4,layout);
+
+			cr->set_source_rgb(1,0,0);
+			cr->move_to(4,4);
+			layout->show_in_cairo_context(cr);
+			cr->stroke();
+
+			cr->restore();
 		}
 	}
-
-	draw_area.get_window()->end_paint();
 
 	//synfig::warning("Refresh the draw area");
 	//make sure the widget refreshes

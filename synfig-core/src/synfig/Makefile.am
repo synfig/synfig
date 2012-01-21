@@ -119,7 +119,8 @@ VALUENODEHEADERS = \
 	valuenode_boneinfluence.h \
 	valuenode_staticlist.h \
 	valuenode_bone.h \
-	valuenode_boneweightpair.h
+	valuenode_boneweightpair.h\
+	valuenode_wplist.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -176,15 +177,18 @@ VALUENODESOURCES = \
 	valuenode_boneinfluence.cpp \
 	valuenode_staticlist.cpp \
 	valuenode_bone.cpp \
-	valuenode_boneweightpair.cpp
+	valuenode_boneweightpair.cpp\
+	valuenode_wplist.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \
+	widthpoint.h \
 	gradient.h \
 	value.h
 
 VALUESOURCES = \
 	blinepoint.cpp \
+	widthpoint.cpp \
 	gradient.cpp \
 	value.cpp
 

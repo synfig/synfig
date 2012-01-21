@@ -7,8 +7,8 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2009 Carlos López
-**	Copyright (c) 2009 Nikita Kitaev
+**	Copyright (c) 2009, 2011 Carlos López
+**	Copyright (c) 2009, 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -1601,7 +1601,12 @@ CanvasView::init_menus()
 
 		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
 		action->set_active(work_area->get_show_guides());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_show_guides));
+
+		action = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
+		action->set_active(work_area->get_guide_snap());
 		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_guide_snap));
+
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
@@ -1679,6 +1684,7 @@ CanvasView::init_menus()
 		action_mask_bone_setup_ducks = action;
 		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Ducks"));
 		action_mask_bone_recursive_ducks = action;
+		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Ducks"));
 
 #undef DUCK_MASK
 
@@ -3861,6 +3867,8 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	if(toggling_ducks_)
 		return;
 	toggling_ducks_=true;
+	if(type & Duck::TYPE_WIDTH)
+		type=type|Duck::TYPE_WIDTHPOINT_POSITION;
 	bool is_currently_on(work_area->get_type_mask()&type);
 
 	if(is_currently_on)

@@ -45,12 +45,13 @@
 # = TODO =
 # - debuginfo packages
 
-RELEASE=1
+RELEASE=7
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
-PACKAGES_BUILDROOT=/tmp/synfig-buildroot	# path of for build infrastructure
-MAKE_THREADS=2					#count of threads for make
+PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
+BUILDROOT_VERSION=7
+MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -61,21 +62,27 @@ OPENGL=0
 DEBUG=0
 BREED=
 
-LIBSIGCPP=2.0.17
+LIBSIGCPP=2.0.18
 GLEW=1.5.1
-CAIROMM=1.2.4
+CAIROMM=1.8.0
 IMAGEMAGICK=6.4.0
-#GTKMM=2.10.9
-GTKMM=2.8.12
+PANGOMM=2.24.0
+GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
 FTGL=2.1.2
 FREEGLUT=2.4.0
 GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
-#LIBXMLPP=2.14.0
-LIBXMLPP=2.20.0
-#LIBXMLPP=2.23.2
-GLIBMM=2.12.8
-#GLIBMM=2.18.1
+LIBXMLPP=2.22.0
+GLIBMM=2.18.2 #!!! >= 2.18.0
+
+ATK=1.25.2
+GLIB=2.20.5
+GTK=2.16.6
+PIXMAN=0.12.0
+CAIRO=1.8.8
+PANGO=1.24.5
+FONTCONFIG=2.5.0
+
 GITVERSION=1.7.0   # git version for chroot environment
 
 SYNFIG_REPO_DIR=''
@@ -96,13 +103,43 @@ fi
 
 mklibsigcpp()
 {
-if [ ! -d ${PREFIX}/include/sigc++-2.0 ]; then
+if ! pkg-config sigc\+\+-2.0 --exact-version=${SIGCPP}  --print-errors; then
 	pushd /source
-	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2
+	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
-	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkglib()
+{
+if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
+	pushd /source
+	[ ! -d glib-${GLIB} ] && tar -xjf glib-${GLIB}.tar.bz2
+	cd glib-${GLIB}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkatk()
+{
+if ! pkg-config atk --exact-version=${ATK}  --print-errors; then
+	pushd /source
+	[ ! -d atk-${ATK} ] && tar -xjf atk-${ATK}.tar.bz2
+	cd atk-${ATK}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -111,13 +148,13 @@ fi
 
 mkglibmm()
 {
-if [ ! -d ${PREFIX}/include/glibmm-2.4 ]; then
+if ! pkg-config glibmm-2.4 --exact-version=${GLIBMM}  --print-errors; then
 	pushd /source
 	[ ! -d glibmm-${GLIBMM} ] && tar -xjf glibmm-${GLIBMM}.tar.bz2
 	cd glibmm-${GLIBMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-fulldocs 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-fulldocs
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -126,13 +163,13 @@ fi
 
 mklibxmlpp()
 {
-if [ ! -d ${PREFIX}/include/libxml++-2.6 ]; then
+if ! pkg-config libxml\+\+-2.6 --exact-version=${LIBXMLPP}  --print-errors; then
 	pushd /source
 	[ ! -d libxml++-${LIBXMLPP} ] && tar -xjf libxml++-${LIBXMLPP}.tar.bz2
 	cd libxml++-${LIBXMLPP}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -141,7 +178,7 @@ fi
 
 mkimagemagick()
 {
-if [ ! -d ${PREFIX}/include/ImageMagick ]; then
+if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 	pushd /source
 	[ ! -d ImageMagick-${IMAGEMAGICK} ] && tar -xjf ImageMagick-${IMAGEMAGICK}-10.tar.bz2 && cd ImageMagick-${IMAGEMAGICK} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
 	cd ImageMagick-${IMAGEMAGICK}
@@ -171,7 +208,7 @@ if [ ! -d ${PREFIX}/include/ImageMagick ]; then
 		--without-openexr
 	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-	make -j$MAKE_THREADS 
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -191,23 +228,116 @@ mkglew()
 	popd
 }
 
-mkcairomm()
+mkfontconfig()
 {
-if [ ! -d ${PREFIX}/include/cairomm-1.0 ]; then
+if ! pkg-config fontconfig --exact-version=${FONTCONFIG}  --print-errors; then
 	pushd /source
-	[ ! -d cairomm-${CAIROMM} ] && tar -xzf cairomm-${CAIROMM}.tar.gz
-	cd cairomm-${CAIROMM}
+	[ ! -d fontconfig-${FONTCONFIG} ] && tar -xzf fontconfig-${FONTCONFIG}.tar.gz
+	cd fontconfig-${FONTCONFIG}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-docs=no
-	make -j$MAKE_THREADS 
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 fi
 }
 
+mkpixman()
+{
+if ! pkg-config pixman-1 --exact-version=${PIXMAN}  --print-errors; then
+	pushd /source
+	[ ! -d pixman-${PIXMAN} ] && tar -xzf pixman-${PIXMAN}.tar.gz
+	cd pixman-${PIXMAN}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+fi
+}
+
+mkcairo()
+{
+if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
+	pushd /source
+	[ ! -d cairo-${CAIRO} ] && tar -xzf cairo-${CAIRO}.tar.gz
+	cd cairo-${CAIRO}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure \
+		--disable-static 	\
+		--enable-warnings 	\
+		--enable-xlib 		\
+		--enable-freetype 	\
+	    --enable-gobject    \
+		--disable-gtk-doc
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+fi
+}
+
+mkcairomm()
+{
+if ! pkg-config cairomm-1.0 --exact-version=${CAIROMM}  --print-errors; then
+	pushd /source
+	[ ! -d cairomm-${CAIROMM} ] && tar -xzf cairomm-${CAIROMM}.tar.gz
+	cd cairomm-${CAIROMM}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-docs=no
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+fi
+}
+
+mkpango()
+{
+if ! pkg-config pango --exact-version=${PANGO}  --print-errors; then
+	pushd /source
+	[ ! -d pango-${PANGO} ] && tar -xjf pango-${PANGO}.tar.bz2
+	cd pango-${PANGO}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure  --disable-static --enable-shared
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkpangomm()
+{
+if ! pkg-config pangomm-1.4 --exact-version=${PANGOMM}  --print-errors; then
+	pushd /source
+	[ ! -d pangomm-${PANGOMM} ] && tar -xjf pangomm-${PANGOMM}.tar.bz2
+	cd pangomm-${PANGOMM}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-docs
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
+mkgtk()
+{
+if ! pkg-config gtk\+-2.0 --exact-version=${GTK}  --print-errors; then
+	pushd /source
+	[ ! -d gtk\+-${GTK} ] && tar -xjf gtk\+-${GTK}.tar.bz2
+	cd gtk\+-${GTK}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared --disable-examples --disable-demos --disable-docs
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkgtkmm()
 {
-if [ ! -d ${PREFIX}/include/gtkmm-2.4 ]; then
+if ! pkg-config gtkmm-2.4 --exact-version=${GTKMM}  --print-errors; then
 	pushd /source
 	[ ! -d gtkmm-${GTKMM} ] && tar -xjf gtkmm-${GTKMM}.tar.bz2
 	cd gtkmm-${GTKMM}
@@ -226,7 +356,7 @@ mkfreeglut()
 	[ ! -d freeglut-${FREEGLUT} ] && tar -xzf freeglut-${FREEGLUT}.tar.gz
 	cd freeglut-${FREEGLUT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static  --disable-warnings --enable-shared 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static  --disable-warnings --enable-shared
 	make -j$MAKE_THREADS
 	make install
 	cd ..
@@ -250,7 +380,7 @@ mkftgl()
 	cd FTGL
 	cd unix
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-gl-inc=${PREFIX}/include  --with-gl-lib=${PREFIX}/lib  --with-glut-inc=${PREFIX}/include  --with-glut-lib=${PREFIX}/lib  --with-x 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-gl-inc=${PREFIX}/include  --with-gl-lib=${PREFIX}/lib  --with-glut-inc=${PREFIX}/include  --with-glut-lib=${PREFIX}/lib  --with-x
 	make all -j$MAKE_THREADS
 	make install
 	cd ..
@@ -263,8 +393,8 @@ mkgtkglext()
 	[ ! -d gtkglext-${GTKGLEXT} ] && tar -xjf gtkglext-${GTKGLEXT}.tar.bz2
 	cd gtkglext-${GTKGLEXT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-gtk-doc --disable-static  --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-gtk-doc --disable-static  --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -276,8 +406,8 @@ mkgtkglextmm()
 	[ ! -d gtkglextmm-${GTKGLEXTMM} ] && tar -xjf gtkglextmm-${GTKGLEXTMM}.tar.bz2 && cd gtkglextmm-${GTKGLEXTMM} && patch -p1 < gtkglextmm-1.2.0-aclocal.diff && cd ..
 	cd gtkglextmm-${GTKGLEXTMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-dependency-tracking --disable-static  --enable-shared 
-	make -j$MAKE_THREADS 
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-dependency-tracking --disable-static  --enable-shared
+	make -j$MAKE_THREADS
 	make install
 	popd
 cd ..
@@ -314,7 +444,7 @@ if [[ $MODE != 'quick' ]]; then
 	echo "Going to configure..."
 	rm -f aclocal.m4
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG
 fi
 
 make -j$MAKE_THREADS
@@ -340,7 +470,7 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -370,9 +500,13 @@ fi
 
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
+if [[ $MODE == 'package' ]]; then
+	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
+fi
+
 if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
 make -j$MAKE_THREADS
@@ -394,19 +528,19 @@ popd
 mkpack()
 {
 	[ -d /packages ] || mkdir /packages
-	
+
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
 	mkdir -p $TBZPREFIX
 	cp -r  ${PREFIX}/* $TBZPREFIX
-	
+
 	if [[ $DEBUG == '--enable-debug' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \$@ || "
 	else
 		GDB=''
 	fi
-	
+
 	#binaries
 	cat > $TBZPREFIX/synfig <<EOF
 #!/bin/sh
@@ -437,42 +571,43 @@ $GDB\$PREFIX/bin/synfigstudio \$@
 EOF
 	chmod a+x $TBZPREFIX/synfig
 	chmod a+x $TBZPREFIX/synfigstudio
-	
+
 	#cleaning devel stuff
 	mkdir $TBZPREFIX/bin.tmp
 	mv $TBZPREFIX/bin/synfig $TBZPREFIX/bin.tmp/synfig
 	mv $TBZPREFIX/bin/synfigstudio $TBZPREFIX/bin.tmp/synfigstudio
 	rm -rf $TBZPREFIX/bin
 	mv $TBZPREFIX/bin.tmp $TBZPREFIX/bin
-	
+
 	rm -f $TBZPREFIX/lib/*.la
 	rm -f $TBZPREFIX/lib/*.a
 	rm -rf $TBZPREFIX/include
 	rm -rf $TBZPREFIX/lib/gdkmm-2.4
 	rm -rf $TBZPREFIX/lib/libxml++-2.6
 	rm -rf $TBZPREFIX/lib/glibmm-2.4
+	rm -rf $TBZPREFIX/lib/pangomm-1.4
 	rm -rf $TBZPREFIX/lib/gtkmm-2.4
 	rm -rf $TBZPREFIX/lib/pkgconfig
 	rm -rf $TBZPREFIX/lib/sigc++-2.0
 	rm -rf $TBZPREFIX/share/doc
+	rm -rf $TBZPREFIX/share/devhelp
 	rm -rf $TBZPREFIX/share/aclocal
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
-	
+
 	rm -f /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2
 	pushd $TBZPREFIX/../
 	tar cjf /packages/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}.tar.bz2 synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	popd
 	rm -rf $TBZPREFIX
-	
+
 	#== rpm ==
-	RPMREVISION=`echo $REVISION.$BREED | sed s/-/_/`
     cat > synfigstudio.spec << EOF
 %define __spec_install_post /bin/true
 
 Name:           synfigstudio
 Version:        ${VERSION}
-Release:        ${RPMREVISION}.${RELEASE}
+Release:        ${REVISION}.${BREED}.${RELEASE}
 Summary:        Film-Quality 2D Vector Animation package
 Group:          Applications/Graphics
 License:        GPL
@@ -486,11 +621,10 @@ AutoReqProv: no
 Synfig Animation Studio is a powerful, industrial-strength vector-based
 2D animation software, designed from the ground-up for producing
 feature-film quality animation with fewer people and resources.
-It is designed to be capable of producing feature-film quality
-animation. It eliminates the need for tweening, preventing the
-need to hand-draw each frame. Synfig features spatial and temporal
-resolution independence (sharp and smoothat any resolution or framerate),
-high dynamic range images, and a flexible plugin system.
+It eliminates the need for tweening, preventing the need to hand-draw
+each frame. Synfig features spatial and temporal resolution independence
+(sharp and smooth at any resolution or framerate), high dynamic range
+images, and a flexible plugin system.
 
 
 %prep
@@ -505,6 +639,7 @@ cp -r  ${PREFIX}/* \$RPM_BUILD_ROOT/${PREFIX}
 mkdir -p \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/${PREFIX}/share/applications \$RPM_BUILD_ROOT/usr/share
 mv \$RPM_BUILD_ROOT/${PREFIX}/share/icons \$RPM_BUILD_ROOT/usr/share
+mv \$RPM_BUILD_ROOT/${PREFIX}/share/mime \$RPM_BUILD_ROOT/usr/share
 mkdir -p \$RPM_BUILD_ROOT/usr/share/mime-info
 ln -sf ${PREFIX}/share/mime-info/synfigstudio.keys \$RPM_BUILD_ROOT/usr/share/mime-info/synfigstudio.keys
 ln -sf ${PREFIX}/share/mime-info/synfigstudio.mime \$RPM_BUILD_ROOT/usr/share/mime-info/synfigstudio.mime
@@ -540,9 +675,11 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/libxml++-2.6
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/glibmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gtkmm-2.4
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pangomm-1.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pkgconfig
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/sigc++-2.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/doc
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/devhelp
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/aclocal
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/ImageMagick-6.4.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
@@ -552,8 +689,16 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
 rm -rf \$RPM_BUILD_ROOT
 
 %post
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+update-desktop-database
 
 %postun
+if [ -x /usr/bin/update-mime-database ]; then
+  update-mime-database /usr/share/mime
+fi
+update-desktop-database
 
 %files
 %defattr(-,root,root,-)
@@ -571,11 +716,11 @@ $PREFIX
 
 EOF
     rpmbuild -bb synfigstudio.spec
-    
-    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm ../
-    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm /packages/
+
+    #cp /usr/src/redhat/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm ../
+    cp /usr/src/rpm/RPMS/$ARCH/synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm /packages/
     pushd /packages/
-    alien -k synfigstudio-${VERSION}-${RPMREVISION}.$RELEASE.${ARCH}.rpm
+    alien -k --scripts synfigstudio-${VERSION}-${REVISION}.${BREED}.$RELEASE.${ARCH}.rpm
     rm -rf synfigstudio-${VERSION}
     popd
 }
@@ -584,13 +729,33 @@ initialize()
 {
 	# Make sure we have all dependencies installed
 	echo "Checking dependencies..."
-	DEB_LIST_MINIMAL="build-essential autoconf automake libltdl3-dev libtool gettext cvs libpng12-dev libjpeg62-dev libfreetype6-dev libfontconfig1-dev libgtk2.0-dev libxml2-dev bzip2"
+	DEB_LIST_MINIMAL="\
+		build-essential \
+		autoconf automake \
+		shared-mime-info \
+		libltdl3-dev \
+		libtool \
+		gettext \
+		cvs \
+		libpng12-dev \
+		libjpeg62-dev \
+		fontconfig \
+		libfreetype6-dev \
+		libfontconfig1-dev \
+		libxml2-dev \
+		libtiff4-dev \
+		libjasper-dev \
+		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+		libatk1.0-dev \
+		bzip2"
 	if which yum >/dev/null; then
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
-			PKG_LIST="${PKG_LIST} debootstrap rsync"
+			PKG_LIST="${PKG_LIST} \
+				debootstrap \
+				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -600,7 +765,7 @@ initialize()
 	elif which apt-get >/dev/null; then
 		PKG_LIST="git-core"
 		if [[ $MODE == 'package' ]]; then
-			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 				#we are inside of chroot
 				PKG_LIST="$DEB_LIST_MINIMAL rpm alien xsltproc wget python"
 			else
@@ -612,7 +777,7 @@ initialize()
 		fi
 		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
 			echo "Running apt-get (you need root privelegies to do that)..."
-			echo 
+			echo
 			#echo "http_proxy =====" $http_proxy
 			#env
 			sudo apt-get update || true
@@ -630,21 +795,21 @@ initialize()
 		fi
 	fi
 	echo "Done."
-	
+
 	if [[ $DEBUG == 1 ]]; then
 		DEBUG='--enable-debug'
 	else
 		DEBUG=''
 	fi
-	
-	
-	
-	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+
+
+
+	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		SYNFIG_REPO_DIR="/source/synfig.git"
 		PREFIX="/opt/synfig"
-		
+
 		which git || mkgit
-		
+
 		pushd $SYNFIG_REPO_DIR
 		git fetch
 		git reset --hard HEAD
@@ -673,9 +838,9 @@ initialize()
 			fi
 			VERSION=${VERSION%%-*}
 		fi
-		[[ $DEBUG == 1 ]] && BREED=${BREED}_debug
-		REVISION=`git show --pretty=medium $SELECTEDREVISION | head -n 3 |tail -n 1 | sed 's/Date: *//' | sed 's/ +.*//'`
-		REVISION=`date --date="${REVISION}" +%Y%m%d`
+		[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
+		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+		REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 		echo
 		echo
 		echo "BUILDING synfigstudio-$VERSION-$REVISION.$BREED.$RELEASE"
@@ -683,7 +848,7 @@ initialize()
 		echo
 		sleep 5
 		popd
-		
+
 		#Trick to detect arch under chroot
 		#ARCH=`rpm -q --queryformat='%{arch}\n' e2fsprogs`
 		MACHINE_TYPE=`uname -m`
@@ -702,10 +867,11 @@ initialize()
 			WORKDIR_IS_REPO=1
 		fi
 	fi
-	
-	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
+
+	#export PREFIX=/opt/synfig
+	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/local/lib/pkgconfig
 	export PATH=${PREFIX}/bin:$PATH
-	export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=${PREFIX}/lib:/usr/local/lib:$LD_LIBRARY_PATH
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
 }
 
@@ -715,7 +881,7 @@ mk()
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
 		git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig ${SYNFIG_REPO_DIR}
 	fi
-	
+
 	mkETL
 	mksynfig
 	mksynfigstudio
@@ -724,15 +890,23 @@ mk()
 mkpackage()
 {
 	#check if we already in chroot
-	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
+	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		echo "We are in chroot now."
-		
+
 		echo "[user]"  > /root/.gitconfig
 		echo "email = packages@synfig.org"  >> /root/.gitconfig
 		echo "name = Synfig Packager" >> /root/.gitconfig
-		
-		
-		
+
+		#system libs
+		mkglib
+		mkfontconfig
+		mkatk
+		mkpixman
+		mkcairo
+		mkpango
+		mkgtk
+
+
 		#synfig-core deps
 		mklibsigcpp
 		mkglibmm
@@ -741,8 +915,10 @@ mkpackage()
 			mkglew
 		fi
 		mkimagemagick
+
 		#synfig-studio deps
 		mkcairomm
+		mkpangomm
 		mkgtkmm
 		if [[ $OPENGL == 1 ]]; then
 			mkfreeglut
@@ -750,29 +926,33 @@ mkpackage()
 			mkgtkglext
 			mkgtkglextmm
 		fi
-		
+
 		mkETL
 		mksynfig
 		mksynfigstudio
-		
+
 		mkpack
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
 		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk2.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
-		for ARCH in amd64 i386; do
+		for ARCH in i386 amd64; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'
 		else
 			SETARCH='linux64'
 		fi
-		if ! [ -e $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id ]; then
+		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id` != "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/
+			fi
 			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
-		echo "Synfig Packages Buildroot" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
+		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
 		#keep proxy settings
-		if ! [ -z $http_proxy ]; then 
+		if ! [ -z $http_proxy ]; then
 			#echo "export http_proxy=\"$http_proxy\";" >> $PACKAGES_BUILDROOT.$ARCH/root/.bashrc
 			#echo "echo 'proxy export done';" >> $PACKAGES_BUILDROOT.$ARCH/root/.bashrc
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
@@ -791,10 +971,20 @@ mkpackage()
 		cd synfig.git && git fetch && cd ..
 		[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
 		for FILE in \
-			cairomm-${CAIROMM}.tar.gz \
+			atk-${ATK}.tar.bz2 \
+			glib-${GLIB}.tar.bz2 \
+			pixman-${PIXMAN}.tar.gz \
+			cairo-${CAIRO}.tar.gz \
+			fontconfig-${FONTCONFIG}.tar.gz \
+			pango-${PANGO}.tar.bz2 \
+			gtk\+-${GTK}.tar.bz2 \
+			glib-${GLIB}.tar.bz2 \
 			glibmm-${GLIBMM}.tar.bz2 \
+			cairomm-${CAIROMM}.tar.gz \
+			pangomm-${PANGOMM}.tar.bz2 \
 			gtkmm-${GTKMM}.tar.bz2 \
 			libsigc++-${LIBSIGCPP}.tar.bz2 \
+			libsigc++-2.0_2.0.18-2.diff \
 			libxml++-${LIBXMLPP}.tar.bz2 \
 			ImageMagick-6.3.8-invalid-gerror-use.patch \
 			ImageMagick-${IMAGEMAGICK}-10.tar.bz2 \

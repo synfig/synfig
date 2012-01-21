@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -85,43 +86,9 @@ Renderer_Timecode::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	//const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
-	//std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
-
-	// Calculate the window coordinates of the top-left
-	// corner of the canvas.
-//	const synfig::Vector::value_type
-//		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
-//		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
-
-	/*const synfig::Vector::value_type window_startx(window_tl[0]);
-	const synfig::Vector::value_type window_endx(window_br[0]);
-	const synfig::Vector::value_type window_starty(window_tl[1]);
-	const synfig::Vector::value_type window_endy(window_br[1]);
-	*/
-//	const int
-//		tile_w(get_work_area()->get_tile_w()),
-//		tile_h(get_work_area()->get_tile_h());
-
-//	const int
-//		w(get_w()),
-//		h(get_h());
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-
-	//const synfig::Vector grid_size(get_grid_size());
-
-//	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-//	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
-//	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-//	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
-//	const float pw(get_pw()),ph(get_ph());
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	synfig::Time cur_time(canvas->get_time());
@@ -130,23 +97,6 @@ Renderer_Timecode::render_vfunc(
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
-/*		Glib::ustring timecode(cur_time.get_string(rend_desc.get_frame_rate(),App::get_time_format()));
-
-		try
-		{
-			timecode+="\n"+canvas->keyframe_list().find(cur_time)->get_description();
-			gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-		}
-		catch(synfig::Exception::NotFound)
-		{
-			return;
-			gc->set_rgb_fg_color(Gdk::Color("#000000"));
-		}
-
-		layout->set_text(timecode);
-*/
-
-		gc->set_rgb_fg_color(Gdk::Color("#5f0000"));
 		try
 		{
 			int w, h;
@@ -164,6 +114,12 @@ Renderer_Timecode::render_vfunc(
 			assert(0);
 		}
 
-		drawable->draw_layout(gc, timecode_x, timecode_y, layout);
+		cr->save();
+
+		cr->set_source_rgb(95.0/255.0,0,0);
+		cr->move_to(4,4);
+		layout->show_in_cairo_context(cr);
+
+		cr->restore();
 	}
 }

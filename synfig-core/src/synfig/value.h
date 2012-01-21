@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,6 +39,7 @@
 #include "general.h"
 #include "blinepoint.h"
 #include "bone.h"
+#include "widthpoint.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -61,6 +63,7 @@ class Time;
 class Segment;
 class Gradient;
 class BLinePoint;
+class WidthPoint;
 class Color;
 class Bone;
 class ValueNode_Bone;
@@ -100,6 +103,7 @@ public:
 		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
 		TYPE_MATRIX,		//!< Matrix
 		TYPE_BONE_WEIGHT_PAIR,	//!< pair<Bone,Real>
+		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), Cup Type (int enum)
 
 		// All types after this point require construction/destruction
 
@@ -349,6 +353,7 @@ public:
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
 	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
 	static Type get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
+	static Type get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
@@ -382,6 +387,7 @@ public:
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
 	operator const Matrix&()const { return get(Matrix()); }
+	operator const WidthPoint&()const {  return get(WidthPoint()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }

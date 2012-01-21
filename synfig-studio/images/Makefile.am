@@ -6,7 +6,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
-	splash_screen-0.62.02.sif\
+	splash_screen-0.63.00.sif \
+	splash_screen-0.62.02.sif \
 	splash_screen-0.62.01.sif \
 	splash_screen-0.62.01-2.sif \
 	splash_screen-0.62.00.sif \
@@ -58,6 +59,11 @@ EXTRA_DIST = \
 	action_remove_from_group_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
+	action_flat_interpolation_icon.sif \
+	action_interpolate_interpolation_icon.sif \
+	action_peak_interpolation_icon.sif \
+	action_rounded_interpolation_icon.sif \
+	action_squared_interpolation_icon.sif \
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -82,6 +88,7 @@ EXTRA_DIST = \
 	layer_geometry_checkerboard_icon.sif \
 	layer_geometry_circle_icon.sif \
 	layer_geometry_outline_icon.sif \
+	layer_geometry_advanced_outline.sif \
 	layer_geometry_polygon_icon.sif \
 	layer_geometry_rectangle_icon.sif \
 	layer_geometry_region_icon.sif \
@@ -201,6 +208,11 @@ IMAGES = \
 	action_remove_from_group_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
+	action_flat_interpolation_icon.$(EXT) \
+	action_interpolate_interpolation_icon.$(EXT) \
+	action_peak_interpolation_icon.$(EXT) \
+	action_rounded_interpolation_icon.$(EXT) \
+	action_squared_interpolation_icon.$(EXT) \
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
@@ -225,6 +237,7 @@ IMAGES = \
 	layer_geometry_checkerboard_icon.$(EXT) \
 	layer_geometry_circle_icon.$(EXT) \
 	layer_geometry_outline_icon.$(EXT) \
+	layer_geometry_advanced_outline_icon.$(EXT) \
 	layer_geometry_polygon_icon.$(EXT) \
 	layer_geometry_rectangle_icon.$(EXT) \
 	layer_geometry_region_icon.$(EXT) \
@@ -318,7 +331,8 @@ CLEANDIRS = \
 	32x32 \
 	48x48 \
 	64x64 \
-	128x128
+	128x128 \
+	256x256
 
 image_DATA = $(IMAGES)
 
@@ -381,12 +395,17 @@ splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
 	export commit_date=`git show --pretty=format:%ci HEAD |  head -c 10` && \
 	export branch=`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//` && \
 	export branch=`echo $$branch | egrep origin/master > /dev/null && echo master || echo $$branch | cut -d ' ' -f 1 | sed -e 's/.*\///'` && \
-	sed "s|%branch%|$$branch|" $< | sed "s|%commit_date%|$$commit_date|" | sed "s|%commit_id%|$$commit_id|" > $@
-splash_screen.$(EXT): $(srcdir)/splash_screen_development.sif
+	sed "s|%branch%|$$branch|" $< | sed "s|%commit_date%|$$commit_date|" | sed "s|%commit_id%|$$commit_id|" | sed "s|synfig_icon.sif#|$(srcdir)/synfig_icon.sif#|" > $@
+splash_screen.$(EXT): splash_screen_development.sif
 	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+.PHONY: splash_screen_development.sif
 else
 splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
 	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 endif
 
 if !WIN32_PKG
@@ -440,6 +459,13 @@ icons64_DATA = 64x64/synfig_icon.$(EXT)
 
 icons128dir = $(datadir)/icons/hicolor/128x128/apps
 icons128_DATA = 128x128/synfig_icon.$(EXT)
+
+256x256/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 256x256
+	$(SYNFIG) -q $< -o $@ --time 0 -w 256 -h 256
+
++icons256dir = $(datadir)/icons/hicolor/256x256/apps
++icons256_DATA = 256x256/synfig_icon.$(EXT)
 
 iconsscalabledir = $(datadir)/icons/hicolor/scalable/apps
 iconsscalable_DATA = synfig_icon.svg

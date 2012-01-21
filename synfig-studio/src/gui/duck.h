@@ -101,6 +101,7 @@ public:
 		TYPE_VERTEX		=	(1<<5),	// 32
 		TYPE_BONE_SETUP	=	(1<<6),	// 64
 		TYPE_BONE_RECURSIVE	=	(1<<7),	// 128
+		TYPE_WIDTHPOINT_POSITION	= (1<<8), //256
 
 		TYPE_ALL		=	(~0),
 
@@ -227,7 +228,7 @@ public:
 	 *  so that the duck can me rotated more than 180 degrees
 	 */
 	synfig::Angle get_rotations()const { return rotations; };
-	
+
 	//! Sets the rotations of the duck
 	void set_rotations(const synfig::Angle &x) { rotations=x; };
 

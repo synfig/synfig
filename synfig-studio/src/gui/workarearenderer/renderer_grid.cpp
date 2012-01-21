@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -78,35 +79,10 @@ Renderer_Grid::render_vfunc(
 	if(!get_work_area())
 		return;
 
-//	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
-//	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-
-	// Calculate the window coordinates of the top-left
-	// corner of the canvas.
-//	const synfig::Vector::value_type
-//		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
-//		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
-
-	/*const synfig::Vector::value_type window_startx(window_tl[0]);
-	const synfig::Vector::value_type window_endx(window_br[0]);
-	const synfig::Vector::value_type window_starty(window_tl[1]);
-	const synfig::Vector::value_type window_endy(window_br[1]);
-	*/
-//	const int
-//		tile_w(get_work_area()->get_tile_w()),
-//		tile_h(get_work_area()->get_tile_h());
-
-//	const int
-//		w(get_w()),
-//		h(get_h());
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 
 	const synfig::Vector grid_size(get_grid_size());
 
@@ -116,6 +92,7 @@ Renderer_Grid::render_vfunc(
 	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
+
 	// Draw out the grid
 	if(grid_size[0]>pw*3.5 && grid_size[1]>ph*3.5)
 	{
@@ -124,50 +101,71 @@ Renderer_Grid::render_vfunc(
 		x=floor(window_startx/grid_size[0])*grid_size[0];
 		y=floor(window_starty/grid_size[1])*grid_size[1];
 
-		gc->set_function(Gdk::COPY);
-		gc->set_rgb_fg_color(Gdk::Color("#9f9f9f"));
-		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+		cr->save();
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->set_line_width(1.0);
+		cr->set_source_rgb(159.0/255.0,159.0/255.0,159.0/255.0);
+		std::valarray<double> dashes(2);
+		dashes[0]=4.0;
+		dashes[1]=4.0;
+		cr->set_dash(dashes, 0);
 
 		if(x<window_endx)
 			for(;x<window_endx;x+=grid_size[0])
 			{
-				drawable->draw_line(gc,
+				cr->move_to(
 					round_to_int((x-window_startx)/pw),
-					0,
+					0
+					);
+				cr->line_to(
 					round_to_int((x-window_startx)/pw),
 					drawable_h
 				);
+				cr->stroke();
 			}
 		else
 			for(;x>window_endx;x-=grid_size[0])
 			{
-				drawable->draw_line(gc,
+				cr->move_to(
 					round_to_int((x-window_startx)/pw),
-					0,
+					0
+					);
+				cr->line_to(
 					round_to_int((x-window_startx)/pw),
 					drawable_h
 				);
+				cr->stroke();
 			}
 
 		if(y<window_endy)
 			for(;y<window_endy;y+=grid_size[1])
 			{
-				drawable->draw_line(gc,
+				cr->move_to(
 					0,
-					round_to_int((y-window_starty)/ph),
+					round_to_int((y-window_starty)/ph)
+					);
+				cr->line_to(
 					drawable_w,
 					round_to_int((y-window_starty)/ph)
 				);
+				cr->stroke();
 			}
 		else
 			for(;y>window_endy;y-=grid_size[1])
 			{
-				drawable->draw_line(gc,
+				cr->move_to(
 					0,
-					round_to_int((y-window_starty)/ph),
+					round_to_int((y-window_starty)/ph)
+					);
+				cr->line_to(
 					drawable_w,
 					round_to_int((y-window_starty)/ph)
 				);
+				cr->stroke();
 			}
+		cr->restore();
 	}
 }

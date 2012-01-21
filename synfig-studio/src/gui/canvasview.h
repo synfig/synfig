@@ -427,8 +427,6 @@ private:
 
 	void refresh_rend_desc();
 
-	void toggle_duck_mask(Duckmatic::Type type);
-
 	void mask_bone_ducks();
 
 	Gtk::Widget *create_work_area();
@@ -636,7 +634,7 @@ public:
 
 	void update_quality();
 
-
+	void toggle_duck_mask(Duckmatic::Type type);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

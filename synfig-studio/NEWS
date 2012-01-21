@@ -4,6 +4,33 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+ 0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
+
+  * Fix bug #31044763: fps rounding to integer.
+  * Fix bug: Change default bline width spin button widthout first focus a canvas
+    produces undesired changes to the width size.
+  * Fix tool tips for layer parameters and add tool tip support for linkable
+    value node parameters.
+  * New cairo renderer for ducks, timecode, preview, navigator, grid and guides.
+  * New beizer dragging system pulling from the bezier itself.
+  * Fix workarea guides usage.
+  * New advanced outline layer. Slidable variable width support and other features.
+  * Fix Width Tool adding influence radius feedback and duck influence position visibility.
+  * Fix bug: Avoid Crash when reversed manipulation for certain converted types.
+  * Fix bug #3000536: Press ALT+5 when using Width Tool causes Studio to hang.
+  * Fix bug #3000535: ALT+2 when using Draw Tool causes Studio to hang.
+  * New languages support: Portuguese (Brazilian) and Slovakian
+  * Updates for Spanish, French, Italian, Chinese and German.
+  * Updates and fixes for autobuild script.
+  * Added support for 256x256 icons needed by Gnome 3.
+  * Set priorities for duck selection with mouse when they are at the same place.
+  * Fix #2175043: Crash when rendering in directory without write permission.
+  * Use high resolution by default at the work area.
+  * Enable restrict radius duck to top right quadrant by default.
+  * Install freedesktop.org mime info.
+  * Combine Name column with Icon column to clean up layer dock.
+  * Don't show debug info in about dialog for stable releases.
+  * Various fixes in the windows NSIS installer scripts.
 
  0.62.02 (git tag: "synfigstudio-0.62.02") - November 13, 2010 - Features
 

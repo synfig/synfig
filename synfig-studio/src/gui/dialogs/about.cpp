@@ -166,6 +166,7 @@ About::About()
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Aurore D (rore)");
 	artists.push_back("Bertrand Grégoire (berteh)");
+	artists.push_back("Carl-Christian Gehl (Razputin)");
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");

@@ -71,9 +71,9 @@ class studio::StateZoom_Context : public sigc::trackable
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	Point p1,p2;
+	WorkArea::PushState push_state;
 
-	bool prev_workarea_layer_status_;
+	Point p1,p2;
 
 public:
 
@@ -117,26 +117,15 @@ StateZoom::~StateZoom()
 StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks())
+	push_state(get_work_area())
 {
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
-	// clear out the ducks
-	get_work_area()->clear_ducks(); //???
+	// Hide all ducks
+	get_work_area()->set_type_mask(Duck::TYPE_NONE);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
-	// Refresh the work area
-	get_work_area()->queue_draw();
-
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateZoom_Context::on_user_click));
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
@@ -144,22 +133,10 @@ StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 
 StateZoom_Context::~StateZoom_Context()
 {
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-	get_work_area()->reset_cursor();
-
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
 	App::toolbox->refresh();
-
-	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 }
 
 Smach::event_result

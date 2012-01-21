@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -114,6 +115,9 @@ class WorkArea : public Gtk::Table, public Duckmatic
 
 public:
 
+	class PushState;
+	friend class PushState;
+
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
 	void erase_renderer(const etl::handle<WorkAreaRenderer> &x);
@@ -125,7 +129,8 @@ public:
 		DRAG_WINDOW,
 		DRAG_DUCK,
 		DRAG_GUIDE,
-		DRAG_BOX
+		DRAG_BOX,
+		DRAG_BEZIER
 	};
 
 	/*
@@ -241,6 +246,7 @@ private:
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 	bool allow_duck_clicks;
+	bool allow_bezier_clicks;
 	bool allow_layer_clicks;
 	bool cancel;
 	bool curr_guide_is_x;
@@ -277,6 +283,9 @@ public:
 
 	bool get_allow_duck_clicks() { return allow_duck_clicks; }
 	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
+
+	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
+	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
 	// used in renderer_ducks.cpp
 	bool solid_lines;
@@ -400,6 +409,7 @@ public:
 	bool get_show_guides()const { return show_guides; }
 	void set_show_guides(bool x);
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
+	void toggle_guide_snap() { Duckmatic::toggle_guide_snap(); }
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
@@ -510,6 +520,25 @@ private:
 	static gboolean __render_preview(gpointer data);
 
 }; // END of class WorkArea
+
+/*! \class WorkArea::PushState
+**	Saves the current duck view and editing options
+**  Should be used by tools that hide ducks or change clickability settings */
+class WorkArea::PushState
+{
+	WorkArea *workarea_;
+	Type type_mask;
+	bool allow_duck_clicks;
+	bool allow_bezier_clicks;
+	bool allow_layer_clicks;
+
+	bool needs_restore;
+
+public:
+	PushState(WorkArea *workarea_);
+	~PushState();
+	void restore();
+}; // END of class WorkArea::PushState
 
 }; // END of namespace studio
 

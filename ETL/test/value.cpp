@@ -4,6 +4,7 @@
 ** $Id$
 **
 ** Copyright (c) 2002 Adrian Bentley
+** Copyright (c) 2010 Nikita Kitaev
 **
 ** This package is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License as

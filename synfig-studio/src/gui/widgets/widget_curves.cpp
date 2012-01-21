@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Gerco Ballintijn
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -219,6 +220,14 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.back().name="t2.y";
 				channels.back().color=Gdk::Color("#7f7f00");
 				break;
+			case ValueBase::TYPE_WIDTHPOINT:
+				channels.push_back(Channel());
+				channels.back().name="position";
+				channels.back().color=Gdk::Color("#ff0000");
+				channels.push_back(Channel());
+				channels.back().name="width";
+				channels.back().color=Gdk::Color("#00ff00");
+				break;
 			default:
 				throw synfig::Exception::BadType("Bad type for curves");
 		}
@@ -283,6 +292,10 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels[6].values[time]=value.get(BLinePoint()).get_tangent1()[1];
 				channels[7].values[time]=value.get(BLinePoint()).get_tangent2()[0];
 				channels[8].values[time]=value.get(BLinePoint()).get_tangent2()[1];
+				break;
+			case ValueBase::TYPE_WIDTHPOINT:
+				channels[0].values[time]=value.get(WidthPoint()).get_position();
+				channels[1].values[time]=value.get(WidthPoint()).get_width();
 				break;
 			default:
 				return 0;

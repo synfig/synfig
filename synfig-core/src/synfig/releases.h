@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2010, 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -42,6 +43,7 @@ namespace synfig {
 		RELEASE_VERSION_0_62_00,
 		RELEASE_VERSION_0_62_01,
 		RELEASE_VERSION_0_62_02,
+		RELEASE_VERSION_0_62_03,
 
 		RELEASE_VERSION_END
 	} ReleaseVersion;

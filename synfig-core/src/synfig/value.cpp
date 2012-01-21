@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -86,6 +87,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
 	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
 	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
+	case TYPE_WIDTHPOINT:	data=static_cast<void*>(new WidthPoint());			break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
@@ -131,6 +133,7 @@ ValueBase::get_string() const
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%f, %f)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
 	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
 	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
+	case TYPE_WIDTHPOINT:	return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
 
 		// All types after this point require construction/destruction
 
@@ -265,6 +268,7 @@ ValueBase::clear()
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
 		case TYPE_MATRIX:		delete static_cast<Matrix*>(data);		break;
 		case TYPE_BONE_WEIGHT_PAIR:	delete static_cast<BoneWeightPair*>(data);	break;
+		case TYPE_WIDTHPOINT:	delete static_cast<WidthPoint*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
@@ -321,6 +325,7 @@ ValueBase::type_name(Type id)
 	case TYPE_MATRIX:		return N_("matrix");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BONE_WEIGHT_PAIR:	return N_("bone_weight_pair");
+	case TYPE_WIDTHPOINT:	return N_("width_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_LIST:			return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -424,6 +429,8 @@ ValueBase::ident_type(const String &str)
 			str=="blinepoint")	return TYPE_BLINEPOINT;
 	else if(str=="matrix")		return TYPE_MATRIX;
 	else if(str=="bone_weight_pair")	return TYPE_BONE_WEIGHT_PAIR;
+	else if(str=="width_point" ||
+			str=="widthpoint")	return TYPE_WIDTHPOINT;
 
 	return TYPE_NIL;
 }
@@ -455,6 +462,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
 	case TYPE_MATRIX:		// return get(Matrix())==rhs.get(Matrix());
 	case TYPE_BONE_WEIGHT_PAIR:	// return get(BoneWeightPair())==rhs.get(BoneWeightPair());
+	case TYPE_WIDTHPOINT:
 	case TYPE_NIL:
 	default:				   return false;
 	}

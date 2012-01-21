@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2008 Carlos López
+**  Copyright (c) 2008, 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -60,6 +60,7 @@
 #include "valuenode_twotone.h"
 #include "valuenode_bline.h"
 #include "valuenode_staticlist.h"
+#include "valuenode_wplist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
@@ -196,6 +197,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); // SVN r2???
 	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); // SVN r2???
 	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); // SVN r2???
+	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_62_03);
 
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE

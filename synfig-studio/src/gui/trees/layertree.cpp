@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -195,16 +196,13 @@ LayerTree::create_layer_tree()
 		column->add_attribute(cellrenderer->property_active(), layer_model.active);
 		get_layer_tree_view().append_column(*column);
 	}
-
-	{	// --- I C O N --------------------------------------------------------
-		int index;
-		// Set up the icon cell-renderer
-		index=get_layer_tree_view().append_column(_("Icon"),layer_model.icon);
-		Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
-		get_layer_tree_view().set_expander_column(*column);
-	}
 	{	// --- N A M E --------------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
+
+		// Set up the icon cell-renderer
+		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage ( new Gtk::CellRendererPixbuf() );
+		column->pack_start(*icon_cellrenderer,false);
+		column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
 
 		// Set up the Layer label cell-renderer
 		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
@@ -219,6 +217,7 @@ LayerTree::create_layer_tree()
 		column->set_sort_column(layer_model.label);
 
 		get_layer_tree_view().append_column(*column);
+		get_layer_tree_view().set_expander_column(*column);
 	}
 	{	// --- Z D E P T H ----------------------------------------------------
 		int index;

@@ -8,8 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008 Gerald Young
-**  Copyright (c) 2008 Carlos López
-**	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2008, 2010, 2011 Carlos López
+**	Copyright (c) 2009, 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -277,7 +277,7 @@ bool studio::App::use_colorspace_gamma=true;
 	bool studio::App::single_threaded=false;
 	#endif // WIN32
 #endif  // SINGLE THREADED
-bool studio::App::restrict_radius_ducks=false;
+bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
@@ -818,6 +818,7 @@ init_ui_manager()
 	DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Ducks"));
 	DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Ducks"));
 	DEFINE_ACTION("mask-bone-ducks", _("Next Bone Ducks"));
+	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Ducks"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -837,6 +838,7 @@ init_ui_manager()
 	DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
 	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
+	DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
 	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
 	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
 	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
@@ -923,6 +925,7 @@ init_ui_manager()
 "			<menuitem action='mask-bone-setup-ducks' />"
 "			<menuitem action='mask-bone-recursive-ducks' />"
 "			<menuitem action='mask-bone-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -957,6 +960,7 @@ init_ui_manager()
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
+"		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<separator name='bleh10'/>"
@@ -1092,6 +1096,7 @@ init_ui_manager()
 	ACCEL("<Mod1>7",													"<Actions>/canvasview/mask-bone-setup-ducks"			);
 	ACCEL("<Mod1>8",													"<Actions>/canvasview/mask-bone-recursive-ducks"		);
 	ACCEL("<Mod1>9",													"<Actions>/canvasview/mask-bone-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
@@ -1846,7 +1851,7 @@ App::reset_initial_preferences()
 #ifdef SINGLE_THREADED
 	synfigapp::Main::settings().set_value("pref.single_threaded","1");
 #endif
-	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");

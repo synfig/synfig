@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -43,6 +44,7 @@
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -218,7 +220,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	// Apply some defaults
 	if(layer->set_param("fg",synfigapp::Main::get_outline_color()))
 		layer->set_param("bg",synfigapp::Main::get_fill_color());
-	else if (name == "outline")
+	else if (name == "outline" || name == "advanced_outline")
 		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_fill_color());
@@ -246,7 +248,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 			// bline
 			if(iter->second.get_type()==ValueBase::TYPE_LIST)
 			{
-				// check whether it's a list of blinepoints only
+				// check whether it's a list of blinepoints or widthpoints only
 				vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
@@ -289,8 +291,16 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 							}
 						}
 					}
+					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+						if (iter2->get_type() != ValueBase::TYPE_WIDTHPOINT)
+							break;
+					if (iter2 == list.end())
+					{
+						value_node=LinkableValueNode::create("wplist",iter->second, canvas);
+						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
 				}
-
+				// it has something else so just insert the dynamic list
 				if (!value_node)
 					value_node=LinkableValueNode::create("dynamic_list",iter->second,canvas);
 			}

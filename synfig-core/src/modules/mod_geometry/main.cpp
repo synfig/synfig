@@ -41,6 +41,7 @@
 #include "circle.h"
 #include "region.h"
 #include "outline.h"
+#include "advanced_outline.h"
 #include "star.h"
 #include "rectangle.h"
 
@@ -62,6 +63,7 @@ MODULE_INVENTORY_BEGIN(libmod_geometry)
 		LAYER(Circle)
 		LAYER(Region)
 		LAYER(Outline)
+		LAYER(Advanced_Outline)
 		LAYER(Star)
 		LAYER(Rectangle)
 

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -485,6 +486,9 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=(Glib::ustring)(name);
 		break;
 	}
+	case ValueBase::TYPE_WIDTHPOINT:
+		property_text()=(Glib::ustring)_("Width Point");
+		break;
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
 		break;

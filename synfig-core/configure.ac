@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.62.02],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
+AC_INIT([Synfig Core],[0.63.00],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -395,14 +395,14 @@ if test $with_jpeg = "no" ; then {
 
 AC_LIB_LTDL
 
-ALL_LINGUAS="es fr it ru de en_GB zh_CN"
+ALL_LINGUAS="es fr it ru de en_GB zh_CN ro no_NO pt_BR pl_PL"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.13],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.13 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.14],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.14 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
