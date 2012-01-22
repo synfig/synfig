@@ -35,6 +35,7 @@
 #include <synfig/valuenode_animated.h>
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
+#include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
 
@@ -350,6 +351,8 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 				{
 					waypoint.set_time(new_time);
 					waypoint.set_value((*value_node_animated)(old_time));
+					waypoint.set_before(synfigapp::Main::get_interpolation());
+					waypoint.set_after(synfigapp::Main::get_interpolation());
 				}
 				action->set_param("waypoint",waypoint);
 
