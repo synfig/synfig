@@ -246,6 +246,24 @@ DockDialog::prepend_dock_book()
 	return last_dock_book;
 }
 
+bool
+DockDialog::on_key_press_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_press_event(event);
+}
+
+bool
+DockDialog::on_key_release_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget->event((GdkEvent*)event))
+		return true;
+	return Gtk::Window::on_key_release_event(event);
+}
+
 DockBook*
 DockDialog::append_dock_book()
 {
