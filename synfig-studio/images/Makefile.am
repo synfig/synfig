@@ -71,6 +71,7 @@ EXTRA_DIST = \
 	interpolation_type_ease_icon.sif\
 	interpolation_type_const_icon.sif\
 	interpolation_type_linear_icon.sif\
+	interpolation_type_clamped_icon.sif\
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -234,6 +235,7 @@ IMAGES = \
 	interpolation_type_ease_icon.$(EXT)\
 	interpolation_type_const_icon.$(EXT)\
 	interpolation_type_linear_icon.$(EXT)\
+	interpolation_type_clamped_icon.$(EXT)\
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \

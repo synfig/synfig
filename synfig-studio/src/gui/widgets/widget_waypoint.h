@@ -27,19 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include <gtk/gtk.h>
-//#include <gtkmm/arrow.h>
-//#include <gtkmm/image.h>
-//#include <gdkmm/pixbufloader.h>
-//#include <gtkmm/viewport.h>
 #include <gtkmm/adjustment.h>
-//#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
-//#include <gtkmm/progressbar.h>
-//#include <gtkmm/paned.h>
 #include <gtkmm/box.h>
-//#include <gtkmm/scrollbar.h>
 #include <gtkmm/combo.h>
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/spinbutton.h>
@@ -47,9 +38,10 @@
 
 #include <synfigapp/value_desc.h>
 #include <synfig/waypoint.h>
-//#include <synfig/valuenode_dynamiclist.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
+#include "widgets/widget_enum.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -72,15 +64,11 @@ class Widget_Waypoint : public Gtk::Alignment
 	Widget_Time *time_widget;
 	mutable synfig::Waypoint waypoint;
 	synfig::Canvas::Handle canvas;
-	//Gtk::Adjustment time_adjustment;
 
-	Gtk::Combo *in,*out;
-	Gtk::OptionMenu *before, *after;
-	Gtk::Menu *before_options,*after_options;
+	Widget_Enum *before_options,*after_options;
 
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
 	Gtk::Adjustment adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
-//	Gtk::ComboDropDownItem item;
 
 public:
 	Widget_Waypoint(etl::handle<synfig::Canvas> canvas);
