@@ -341,7 +341,8 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 	if(canvas)
 	{
 		//synfig::info("passing the grow values og=%f wg=%f", outline_grow, width_grow);
-		canvas->get_context().set_context_param("width_grow", ValueBase(outline_grow + width_grow));
+		if(canvas->is_inline())
+			canvas->get_context().set_context_param("width_grow", ValueBase(outline_grow + width_grow));
 		canvas->set_time(time+time_offset);
 		bounds=(canvas->get_context().get_full_bounding_rect()-focus)*exp(zoom)+origin+focus;
 	}
