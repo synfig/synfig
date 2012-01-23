@@ -47,46 +47,32 @@ class Outline : public synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-
+	//! Parameters
 	synfig::ValueBase bline;
-
+	synfig::Real width;
+	synfig::Real expand;
+	bool sharp_cusps;
+	bool round_tip[2];
+	Real loopyness;
+	bool homogeneous_width;
+	synfig::ValueBase width_grow; // hidden, not critical
+	//! Non Parameters
+	bool loop_;
+	bool old_version;
+	bool needs_sync;
 	std::vector<synfig::Segment> segment_list;
 	std::vector<synfig::Real> width_list;
-
-	bool round_tip[2];
-
-	bool sharp_cusps;
-
-	bool loop_;
-
-	synfig::Real width;
-
-	synfig::Real expand;
-
-	Real loopyness;
-	bool old_version;
-
-	bool needs_sync;
-
-	bool homogeneous_width;
-
 public:
-
 	Outline();
-
 	//! Updates the polygon data to match the parameters.
 	void sync();
-
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}
 	virtual void reset_version(){old_version=false;}
-
 };
 
 /* === E N D =============================================================== */
