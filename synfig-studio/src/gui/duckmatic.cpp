@@ -1920,9 +1920,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						// if the bline is a layer's parameter, scale the width duck by the layer's "width" parameter
 						if (param_desc)
 						{
-							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
+							ValueBase grow(synfigapp::ValueDesc(value_desc.get_layer(),"width_grow").get_value(get_time()));
+							Real grow_value=0.0;
+							if(grow.same_type_as(synfig::Real()))
+								grow_value=grow.get(Real());
 							if(value.same_type_as(synfig::Real()))
-								width->set_scalar(value.get(synfig::Real())*0.5f);
+								width->set_scalar(exp(grow_value)*value.get(synfig::Real())*0.5f);
 							// if it doesn't have a "width" parameter, scale by 0.5f instead
 							else
 								width->set_scalar(0.5f);
@@ -2210,8 +2214,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						if (param_desc)
 						{
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
+							ValueBase grow(synfigapp::ValueDesc(value_desc.get_layer(),"width_grow").get_value(get_time()));
+							Real grow_value=0.0;
+							if(grow.same_type_as(synfig::Real()))
+								grow_value=grow.get(Real());
 							if(value.same_type_as(synfig::Real()))
-								wduck->set_scalar(value.get(synfig::Real())*0.5f);
+								wduck->set_scalar(exp(grow_value)*value.get(synfig::Real())*0.5f);
 							// if it doesn't have a "width" parameter, scale by 0.5f instead
 							else
 								wduck->set_scalar(0.5f);

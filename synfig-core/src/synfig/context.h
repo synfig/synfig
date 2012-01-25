@@ -29,6 +29,8 @@
 
 #include "canvasbase.h"
 #include "rect.h"
+#include "string.h"
+#include "value.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -73,10 +75,13 @@ public:
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//! Sets the context to the Time \time. It is done recursively.
-   	void set_time(Time time)const;
+	void set_time(Time time)const;
 
 	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
-   	void set_time(Time time,const Vector &pos)const;
+	void set_time(Time time,const Vector &pos)const;
+
+	//! Sets the given param value to the context. It is done for any outline type layer.
+	void set_context_param(const synfig::String &param, const synfig::ValueBase &value);
 
 	//! Returns the bounding rectangle of all the context.
 	//! It is the union of all the layers's bounding rectangle.

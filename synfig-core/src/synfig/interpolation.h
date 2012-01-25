@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2012, Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,13 +39,14 @@ namespace synfig {
 
 enum Interpolation
 {
-	INTERPOLATION_TCB,			// 0
-	INTERPOLATION_CONSTANT,		// 1
-	INTERPOLATION_LINEAR,		// 2
-	INTERPOLATION_HALT,			// 3
-	INTERPOLATION_MANUAL,		// 4
-	INTERPOLATION_UNDEFINED,	// 5
-	INTERPOLATION_NIL			// 6
+	INTERPOLATION_TCB,          // 0
+	INTERPOLATION_CONSTANT,     // 1
+	INTERPOLATION_LINEAR,       // 2
+	INTERPOLATION_HALT,         // 3
+	INTERPOLATION_MANUAL,       // 4
+	INTERPOLATION_UNDEFINED,    // 5
+	INTERPOLATION_NIL,          // 6
+	INTERPOLATION_CLAMPED       // 7
 }; // END enum Interpolation
 
 }; // END of namespace synfig

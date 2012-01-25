@@ -47,6 +47,7 @@
 #include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_dilist.h>
 #include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_const.h>
 
 #endif
 
@@ -84,6 +85,7 @@ Advanced_Outline::Advanced_Outline()
 	dash_enabled_=false;
 	old_version=false;
 	fast_=false;
+	width_grow_=0.0f;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -116,7 +118,8 @@ Advanced_Outline::Advanced_Outline()
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 	set_param_static("fast", true);
-
+	connect_dynamic_param("width_grow", ValueNode_Const::create(0.0));
+	set_param_static("width_grow", true);
 }
 
 
@@ -163,6 +166,7 @@ Advanced_Outline::sync()
 		int dstart_tip(WidthPoint::TYPE_FLAT), dend_tip(WidthPoint::TYPE_FLAT);
 		const bool blineloop(bline_.get_loop());
 		const bool wplistloop(wplist_.get_loop());
+		const Real multiplier(exp(width_grow_.get(Real())));
 		int bline_size(bline.size());
 		int wplist_size(wplist.size());
 		// biter: first blinepoint of the current bezier
@@ -351,9 +355,6 @@ Advanced_Outline::sync()
 			Real blinelength(bline_length(bline, blineloop, NULL));
 			if(blinelength > EPSILON)
 			{
-				// Put dash_offset in the [-blinelength,blinelength] interval
-				if (fabs(dash_offset) > blinelength) dash_offset=fmod(dash_offset, blinelength);
-				Real dpos=dash_offset;
 				Real dashes_length(0.0);
 				vector<DashItem>::iterator diter(dilist.begin());
 				vector<DashItem>::reverse_iterator rditer(dilist.rbegin());
@@ -363,11 +364,15 @@ Advanced_Outline::sync()
 				{
 					dashes_length+=diter->get_length()+diter->get_offset();
 				}
-				diter=dilist.begin();
 				if(dashes_length>EPSILON)
 				{
-					// Insert the widthpoints from Dash Offset to 1.0
-					int inserted(0);
+					// Put dash_offset in the [-dashes_length,dashes_length] interval
+					if (fabs(dash_offset) > dashes_length) dash_offset=fmod(dash_offset, dashes_length);
+					// dpos is always >= 0
+					Real dpos=dash_offset>=0?dash_offset:(dashes_length+dash_offset);
+					diter=dilist.begin();
+					// Insert the widthpoints from Dash Offset to blinelength
+					int inserted_to_blinelength(0);
 					while(dpos < blinelength)
 					{
 						// dash widthpoints should have the same homogeneous or standard comparable positions.
@@ -381,12 +386,12 @@ Advanced_Outline::sync()
 						dwplist.push_back(after);
 						dpos+=diter->get_offset() + diter->get_length();
 						diter++;
-						inserted++;
+						inserted_to_blinelength++;
 						if(diter==dilist.end())
 							diter=dilist.begin();
 					};
 					// Correct the two last widthpoints triming its position to be <= 1.0
-					if(inserted)
+					if(inserted_to_blinelength)
 					{
 						after=dwplist.back();
 						// if the if the 'after' widthpoint passed 1.0
@@ -398,8 +403,12 @@ Advanced_Outline::sync()
 							before=dwplist.back();
 							// then watch the before one and if it passeed 1.0
 							if(before.get_position() >= 1.0)
+							{
 								// discard it (and also the 'after' one)
 								dwplist.pop_back();
+								// and decrease the number of inserted dash items
+								inserted_to_blinelength--;
+							}
 							else
 							// restore the 'after' widthpoint
 							{
@@ -408,10 +417,10 @@ Advanced_Outline::sync()
 							}
 						}
 					}
-					inserted=0;
+					int inserted_to_zero(0);
 					//
 					// Now insert the widhtpoints from Dash Offset to 0.0
-					dpos=dash_offset;
+					dpos=dash_offset>=0?dash_offset:dashes_length+dash_offset;;
 					while(dpos > 0.0)
 					{
 						// dash widthpoints should have the same homogeneous or standard comparable positions.
@@ -425,12 +434,12 @@ Advanced_Outline::sync()
 						dwplist.insert(dwplist.begin(),before);
 						dpos-=rditer->get_offset() + rditer->get_length();
 						rditer++;
-						inserted++;
+						inserted_to_zero++;
 						if(rditer==dilist.rend())
 							rditer=dilist.rbegin();
 					};
 					// Correct the two first widthpoints triming its position to be >= 0.0
-					if(inserted)
+					if(inserted_to_zero)
 					{
 						before=dwplist.front();
 						// if the dash is cutted in the middle then trim the 'before' widthpoint
@@ -442,8 +451,12 @@ Advanced_Outline::sync()
 							after=dwplist.front();
 							// then watch the after one and if it passed 0.0
 							if(after.get_position() <= 0.0)
+							{
 								// discard the 'after' one (and the 'before' one too)
 								dwplist.erase(dwplist.begin());
+								// and decrease the number of inserted dash items
+								inserted_to_zero--;
+							}
 							else
 								// restore the 'before' widthpoint
 							{
@@ -451,6 +464,19 @@ Advanced_Outline::sync()
 								dwplist.insert(dwplist.begin(), before);
 							}
 						}
+					}
+					// Let's check that we have one dash widthpoint at last
+					// inside the bline interval
+					if(inserted_to_blinelength == 0 && inserted_to_zero==0)
+					{
+						// all the dash items widthpoints were outside the bline
+						// so the bline is an empty interval
+						// let's insert two dash widthpoints that would
+						// 'clean' the bline area
+						before=WidthPoint(0.5, 1.0, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE, true);
+						after=WidthPoint(0.5, 1.0, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT, true);
+						dwplist.push_back(before);
+						dwplist.push_back(after);
 					}
 					// now let's remove those dash widthpoints that doesn't
 					// lie on a drawable place
@@ -479,7 +505,9 @@ Advanced_Outline::sync()
 							{
 								Real dwiter_pos=dwiter->get_position();
 								if(dwiter_pos > witer_pos && dwiter_pos < wnext_pos)
+								{
 									fdwplist.push_back(*dwiter);
+								}
 								dwiter++;
 							}
 						}
@@ -499,7 +527,9 @@ Advanced_Outline::sync()
 						{
 							Real witer_pos=witer->get_position();
 							if(witer_pos <= dwnext_pos && witer_pos >= dwiter_pos)
+							{
 								fdwplist.push_back(*witer);
+							}
 						}
 						dwnext++;
 						dwiter=dwnext;
@@ -537,6 +567,15 @@ Advanced_Outline::sync()
 			sort(wplist.begin(),wplist.end());
 			//////////////
 			witer=wplist.begin();
+		}
+		// if at this point, the wplist size is zero, all the regular
+		//and dash points have been removed, so there is nothing to draw
+		// I insert a single widthpoint that renders nothing.
+		// If I just return here, it crashes when played on canvas view.
+		//
+		if(wplist.size() == 0)
+		{
+			wplist.push_back(WidthPoint(0.5, 1.0, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_FLAT, true));
 		}
 		// Make a copy of the work widthpoints to the standard list
 		swplist.assign(wplist.begin(), wplist.end());
@@ -602,6 +641,8 @@ Advanced_Outline::sync()
 			if(last->get_position()==1.0)
 				last->set_side_type_after(dash_enabled?dend_tip:end_tip_);
 		}
+
+
 		// If the first (last) widthpoint is interpolate before (after)
 		// and we are doing dashes, then make the first (last) widthpoint to
 		// have the start (end) dash item's corresponding tip.
@@ -614,7 +655,6 @@ Advanced_Outline::sync()
 			if(last->get_side_type_after() == WidthPoint::TYPE_INTERPOLATE)
 				last->set_side_type_after(dend_tip);
 		}
-
 		do ///////////////////////// Main loop
 		{
 			Vector iter_t(biter->get_tangent2());
@@ -688,7 +728,7 @@ Advanced_Outline::sync()
 						p=hipos;
 					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
-				add_tip(side_a, side_b, curve(q), unitary, *wnext);
+				add_tip(side_a, side_b, curve(q), unitary, *wnext, multiplier);
 				// Update wplist iterators
 				witer=wnext;
 				switer=swnext;
@@ -724,7 +764,7 @@ Advanced_Outline::sync()
 							Real p(ipos);
 							if(!fast_)
 								p=hipos;
-							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 						}
 					}
 					// ... and get out of the main loop.
@@ -830,7 +870,7 @@ Advanced_Outline::sync()
 					Real p(ipos);
 					if(!fast_)
 						p=hipos;
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 				}
 				middle_corner=false;
 				// This avoid to calculate derivative on q=0
@@ -879,7 +919,7 @@ Advanced_Outline::sync()
 						}
 						ww=wnext->get_width();
 					}
-					const Real w(expand_+width_*0.5*ww);
+					const Real w(multiplier*(expand_+width_*0.5*ww));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// if we haven't passed the position of the second blinepoint
@@ -909,7 +949,7 @@ Advanced_Outline::sync()
 					Real po(ipos);
 					if(!fast_)
 						po=hipos;
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					const Real w(multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -966,7 +1006,7 @@ Advanced_Outline::sync()
 					done_tip=false;
 				}
 				else
-					w=(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					w=(multiplier*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -1007,6 +1047,15 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(homogeneous_,"homogeneous");
 	IMPORT_AS(dash_enabled_, "dash_enabled");
 	IMPORT_AS(fast_, "fast");
+	if(param=="width_grow" && value.get_type() == ValueBase::TYPE_REAL)
+	{
+		ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(dynamic_param_list().find("width_grow")->second));
+		if(value_node)
+			value_node->set_value(value);
+		width_grow_=value;
+		return true;
+	}
+
 	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		if(value > 1.0) smoothness_=1.0;
@@ -1068,6 +1117,8 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_AS(homogeneous_, "homogeneous");
 	EXPORT_AS(dash_enabled_,"dash_enabled");
 	EXPORT_AS(fast_, "fast");
+	EXPORT_AS(width_grow_, "width_grow");
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -1156,6 +1207,12 @@ Advanced_Outline::get_param_vocab()const
 		.set_is_distance()
 		.set_hint("dash")
 		.set_description(_("Distance to Offset the Dash Items"))
+	);
+	ret.push_back(ParamDesc("width_grow")
+		.set_local_name(_("Width Grow"))
+		.set_description(_("Increases width value logaritmically"))
+		.not_critical()
+		.hidden()
 	);
 	return ret;
 }
@@ -1252,9 +1309,9 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 }
 
 void
-Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
+Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, Real m)
 {
-	Real w(expand_+width_*0.5*wp.get_width());
+	Real w(m*(expand_+width_*0.5*wp.get_width()));
 	// Side Before
 	switch (wp.get_side_type_before())
 	{

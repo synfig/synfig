@@ -457,6 +457,7 @@ private:
 
 	void toggle_animatebutton();
 
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
@@ -716,6 +717,10 @@ private:
 	void on_play_pause_pressed();
 
 	void on_meta_data_changed();
+
+	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
+
 
 protected:
 	bool close_instance_when_safe();

@@ -294,6 +294,8 @@ Canvas::set_time(Time t)const
 		const_cast<Canvas&>(*this).cur_time_=t;
 
 		is_dirty_=false;
+		if(is_root())
+			get_context().set_context_param("width_grow", 0.0);
 		get_context().set_time(t);
 	}
 	is_dirty_=false;
@@ -537,7 +539,10 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		if(!is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
-
+		// Before look up the external canvases
+		// let's check if this is the current canvas
+		if(get_file_name() == file_name)
+			return this;
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];

@@ -1278,7 +1278,6 @@ void
 StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
-
 	if(loop_)
 	{
 		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
@@ -1289,14 +1288,29 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
 	}
-
+	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Delete Vertex"),
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
 			value_node
 		)
 	));
-
+	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
+	if(bline_point.get_split_tangent_flag())
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
+			sigc::bind(
+				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
+				value_node
+			)
+		));
+	else
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Split Tangents"),
+			sigc::bind(
+				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_detach_handle),
+				value_node
+			)
+		));
 	menu.popup(0,0);
 }
 
@@ -1304,7 +1318,6 @@ void
 StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
-
 	menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Insert Vertex"),
 		sigc::bind(
 			sigc::bind(
@@ -1314,7 +1327,17 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 			value_node
 		)
 	));
-
+	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	if(loop_)
+	{
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
+				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
+		));
+	} else {
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
+				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
+		));
+	}
 	menu.popup(0,0);
 }
 
@@ -1405,7 +1428,24 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 				value_node
 			)
 		));
-
+	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	if(loop_)
+	{
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
+				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
+		));
+	} else {
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
+				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
+		));
+	}
+	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Delete Vertex"),
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
+			value_node
+		)
+	));
 	menu.popup(0,0);
 }
 

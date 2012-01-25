@@ -79,17 +79,7 @@ Action::GroupRemove::get_param_vocab()
 bool
 Action::GroupRemove::is_candidate(const ParamList &x)
 {
-	bool ret(candidate_check(get_param_vocab(),x));
-	if(!ret)
-	{
-		synfig::info("Action::GroupRemove::is_candidate(): failed candidate check");
-		ParamList::const_iterator iter;
-		for(iter=x.begin();iter!=x.end();++iter)
-		{
-			synfig::info("PARAM: %s",iter->first.c_str());
-		}
-	}
-	return ret;
+	return candidate_check(get_param_vocab(),x);
 }
 
 bool
