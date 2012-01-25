@@ -39,6 +39,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
+#include <gtkmm/alignment.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
