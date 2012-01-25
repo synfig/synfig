@@ -318,6 +318,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(interpolation_type_ease,"interpolation_type_ease_icon."IMAGE_EXT,_("Ease In/Out interpolation"));
 	INIT_STOCK_ICON(interpolation_type_const,"interpolation_type_const_icon."IMAGE_EXT,_("Const interpolation"));
 	INIT_STOCK_ICON(interpolation_type_linear,"interpolation_type_linear_icon."IMAGE_EXT,_("Linear interpolation"));
+	INIT_STOCK_ICON(interpolation_type_clamped,"interpolation_type_clamped_icon."IMAGE_EXT,_("Clamped interpolation"));
 
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));

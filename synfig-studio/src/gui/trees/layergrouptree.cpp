@@ -60,9 +60,14 @@ LayerGroupTree::LayerGroupTree()
 
 
 	{	// --- O N / O F F ----------------------------------------------------
-		int index;
-		index=append_column_editable(_(" "),model.active);
-		//Gtk::TreeView::Column* column = get_column(index-1);
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
+
+		// Set up the on/off cell-renderer
+		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
+		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerGroupTree::on_toggle));
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_active(), model.active);
+		append_column(*column);
 	}
 	{	// --- I C O N --------------------------------------------------------
 		int index;
@@ -71,20 +76,15 @@ LayerGroupTree::LayerGroupTree()
 		set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------
-		int index;
-		index=append_column_editable(_("Name"),model.label);
-		label_column = get_column(index-1);
-
-		//column->set_sort_column(layer_model.index);
-
-		//set_expander_column(*column);
-		//column->set_reorderable();
-		//column->set_resizable();
-		//column->set_clickable(false);
-
-		//Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-		//column->pack_start(*icon_cellrenderer,false);
-		//column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
+		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_text(), model.label);
+		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerGroupTree::on_layer_renamed));
+		cellrenderer->property_editable()=true;
+		column->set_resizable();
+		column->set_clickable(false);
+		append_column(*column);
 	}
 
 	set_enable_search(true);
@@ -101,12 +101,6 @@ LayerGroupTree::LayerGroupTree()
 
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	//set_flags(get_flags()|Gtk::RECEIVES_DEFAULT|Gtk::HAS_GRAB);
-
-	//std::list<Gtk::TargetEntry> listTargets;
-	//listTargets.push_back( Gtk::TargetEntry("LAYER") );
-	//listTargets.push_back( Gtk::TargetEntry("GROUP") );
-	//drag_dest_set(listTargets);
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -119,19 +113,7 @@ void
 LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store)
 {
 	layer_group_tree_store_=layer_group_tree_store;
-	LayerGroupTreeStore::Model model;
-
-#if 0
-	{
-		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(layer_group_tree_store_));
-		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
-		sorted_store->set_sort_func(model.time.index(),sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
-		sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
-		Gtk::TreeView::set_model(sorted_store);
-	}
-#else
-		Gtk::TreeView::set_model(layer_group_tree_store);
-#endif
+	Gtk::TreeView::set_model(layer_group_tree_store);
 }
 
 void
@@ -269,6 +251,29 @@ LayerGroupTree::on_event(GdkEvent *event)
 	//return false;
 }
 
+
+void
+LayerGroupTree::on_toggle(const Glib::ustring& path_string)
+{
+	Gtk::TreePath path(path_string);
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	bool active=static_cast<bool>(row[model.active]);
+	row[model.active]=!active;
+}
+
+void
+LayerGroupTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value)
+{
+	Gtk::TreePath path(path_string);
+
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	if(!row)
+		return;
+	row[model.label]=value;
+	columns_autosize();
+}
+
+
 static inline void __group_grabber(const Gtk::TreeModel::iterator& iter, std::list<synfig::String>* ret)
 {
 	const LayerGroupTreeStore::Model model;
@@ -325,10 +330,4 @@ LayerGroupTree::get_selected_layers()const
 	);
 
 	return ret;
-}
-
-void
-LayerGroupTree::set_cursor(const Gtk::TreeModel::Path& path, bool start_editing)
-{
-	Gtk::TreeView::set_cursor(path, *label_column, start_editing);
 }

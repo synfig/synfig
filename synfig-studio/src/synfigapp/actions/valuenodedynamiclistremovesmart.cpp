@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,6 +36,7 @@
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/general.h>
+#include <synfig/valuenode_composite.h>
 
 #endif
 
@@ -96,10 +98,33 @@ Action::ValueNodeDynamicListRemoveSmart::is_candidate(const ParamList &x)
 		return false;
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-
-	return (value_desc.parent_is_value_node() &&
-			// We need a dynamic list.
-			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+	bool parent_is_dynamic_list(
+			value_desc.parent_is_value_node() &&
+			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())
+			);
+	if(!parent_is_dynamic_list)
+	{
+		// Let's check if we are selecting a composite child
+		if(value_desc.parent_is_value_node())
+		{
+			ValueNode::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+			if(compo)
+			{
+				ValueNode_DynamicList::Handle parent_list=NULL;
+				std::set<Node*>::iterator iter;
+				// now check if the composite parent is a dynamic list type
+				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
+					{
+						parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
+						if(parent_list)
+							break;
+					}
+				if(parent_list)
+					parent_is_dynamic_list=true;
+			}
+		}
+	}
+	return (parent_is_dynamic_list);
 }
 
 bool
@@ -108,32 +133,57 @@ Action::ValueNodeDynamicListRemoveSmart::set_param(const synfig::String& name, c
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-
 		if(!value_desc.parent_is_value_node())
 			return false;
-
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-
 		if(!value_node)
-			return false;
-
+		{
+			ValueNode::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+			if(compo)
+			{
+				ValueNode_DynamicList::Handle parent_list=NULL;
+				std::set<Node*>::iterator iter;
+				// now check if the composite's parent is a dynamic list type
+				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
+					{
+						parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
+						if(parent_list)
+						{
+							value_node=parent_list;
+							// Now we need to find the index of this composite item
+							// on the dynamic list
+							int i;
+							for(i=0;i<value_node->link_count();i++)
+								if(compo->get_guid()==value_node->get_link(i)->get_guid())
+									break;
+							if(i<value_node->link_count())
+								value_desc=synfigapp::ValueDesc(value_node, i);
+							else
+								return false;
+							break;
+						}
+					}
+				if(!value_node)
+					return false;
+			}
+			else
+				return false;
+			if(!value_node)
+				return false;
+		}
 		index=value_desc.get_index();
-
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-
 		return true;
 	}
 	if(name=="origin" && param.get_type()==Param::TYPE_REAL)
 	{
 		origin=param.get_real();
-
 		return true;
 	}
-
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
