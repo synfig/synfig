@@ -63,6 +63,7 @@ Dialog_Preview::Dialog_Preview()
 settings(this,"preview")
 {
 	set_title(_("Preview Window"));
+	set_keep_above();
 	add(preview_table);
 	preview_table.attach(preview, 0, 1, 0, 1);
 	show_all_children();
