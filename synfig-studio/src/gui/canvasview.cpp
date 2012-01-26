@@ -1267,18 +1267,18 @@ CanvasView::create_display_bar()
 
 
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
 	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
 	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator3, 5, 6, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator3, 5, 6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
 	displaybar->attach(*show_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*snap_grid, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator4, 8, 9, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator4, 8, 9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
 	displaybar->attach(*past_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*onion_skin, 10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*future_onion_spin, 11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator5, 12, 13, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator5, 12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
 	displaybar->attach(*render_options_button, 13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*preview_options_button, 14, 15, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
