@@ -33,7 +33,6 @@
 #include "context.h"
 #include "layer.h"
 #include "layer_composite.h"
-#include "modules/mod_geometry/outline.h"
 #include "string.h"
 #include "vector.h"
 #include "color.h"
@@ -360,24 +359,6 @@ Context::set_time(Time time)const
 		// Sets the dirty time the current calling time
 		(*context)->dirty_time_=time;
 
-	}
-}
-
-void
-Context::set_context_param(const String &param, const ValueBase &value)
-{
-	Context context(*this);
-	while(!(context)->empty())
-	{
-		// If this layer is active, and
-		if((*context)->active())
-		{
-			String name((*context)->get_name());
-			if(name == "outline" || name == "advanced_outline" || name =="PasteCanvas")
-				if(!(*context)->set_param(param, value))
-					synfig::error("Context::set_context_param(): %s didn't accept param %s", (*context)->get_name().c_str(), param.c_str());
-		}
-		++context;
 	}
 }
 

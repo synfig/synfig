@@ -48,25 +48,22 @@ class Advanced_Outline : public synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	// Parameters
+
 	synfig::ValueBase bline_;
-	synfig::Real width_;
-	synfig::Real expand_;
+	synfig::ValueBase wplist_;
+	synfig::ValueBase dilist_;
 	WidthPoint::SideType start_tip_;
 	WidthPoint::SideType end_tip_;
 	int cusp_type_;
+	bool loop_;
+	synfig::Real width_;
+	synfig::Real expand_;
 	Real smoothness_;
 	bool homogeneous_;
-	synfig::ValueBase wplist_;
-	bool fast_;
-	bool dash_enabled_;
-	synfig::ValueBase dilist_;
 	Real dash_offset_;
-	synfig::ValueBase width_grow_; // hidden, not critical
-	//
-	bool loop_;
+	bool dash_enabled_;
 	bool old_version;
-
+	bool fast_;
 
 public:
 	enum CuspType
@@ -94,7 +91,7 @@ private:
 	bool connect_bline_to_dilist(etl::loose_handle<ValueNode> x);
 	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
 	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
-	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, Real m=1.0);
+	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp);
 	void add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real width);
 };
 
