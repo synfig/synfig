@@ -72,6 +72,10 @@ public:
 
 	//child widgets:
 
+private:
+	bool on_key_pressed(GdkEventKey*);
+	void close_window_handler();
+
 protected:
 	Gtk::Table preview_table;
 

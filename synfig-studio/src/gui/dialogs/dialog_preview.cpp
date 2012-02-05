@@ -67,7 +67,9 @@ settings(this,"preview")
 	add(preview_table);
 	preview_table.attach(preview, 0, 1, 0, 1);
 	show_all_children();
-	
+
+	//catch key press event
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));	
 }
 
 Dialog_Preview::~Dialog_Preview()
@@ -86,6 +88,28 @@ void Dialog_Preview::on_hide()
 	Window::on_hide();
 	preview.pause();
 	preview.stoprender();
+}
+
+//press escape key to close window
+bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
+{
+	if (ev->keyval == GDK_KEY_Escape)
+	{
+		close_window_handler();
+		return true;
+	}
+
+	return false;
+}
+
+void Dialog_Preview::close_window_handler()
+{
+	if ((get_window()->get_state() & Gdk::WINDOW_STATE_MAXIMIZED) != 0)
+	{
+	unmaximize();
+	}
+
+	hide();
 }
 
 //dialog_previewoptions stuff
