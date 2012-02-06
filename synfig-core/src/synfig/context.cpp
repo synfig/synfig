@@ -363,6 +363,31 @@ Context::set_time(Time time)const
 }
 
 void
+Context::set_dirty_outlines()
+{
+	Context context(*this);
+	while(!(context)->empty())
+	{
+		if( (*context)->active() &&
+			(
+			(*context)->get_name() == "outline" ||
+			(*context)->get_name() == "advanced_outline" ||
+			(*context)->get_name() == "PasteCanvas"
+			)
+		  )
+			{
+				// Set up a writer lock
+				//RWLock::WriterLock lock((*context)->get_rw_lock());
+				{
+					(*context)->dirty_time_=Time::end();
+				}
+			}
+		++context;
+	}
+}
+
+
+void
 Context::set_time(Time time,const Vector &/*pos*/)const
 {
 	set_time(time);

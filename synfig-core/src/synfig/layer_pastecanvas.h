@@ -66,6 +66,8 @@ private:
 	Time time_offset;
 	//! Current time of the paste canvas layer. \see set_time
 	mutable Time curr_time;
+	//! The value to grow the children outline layers
+	Real outline_grow;
 	//! \todo writeme! Not a parameter
 	bool muck_with_time_;
 	//! Parameter that avoid hit check to go depth into the children.
