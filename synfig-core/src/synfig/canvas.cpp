@@ -1171,7 +1171,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			if(paste_sub_canvas)
 			{
 				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
-				if(paste_canvas->get_canvas()->is_inline())
+				if(paste_sub_canvas->is_inline())
 					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
 				else
 					paste_sub_canvas->set_grow_value(0.0);
