@@ -40,6 +40,7 @@
 #include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/alignment.h>
+#include <gtkmm/comboboxentrytext.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -171,7 +172,7 @@ class Widget_Preview : public Gtk::Table
 //	Gtk::HScrollbar		scr_time_scrub;
 	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
-
+//	Gtk::ComboBoxEntry	zoom_preview;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
 	int							currentindex;
@@ -256,6 +257,28 @@ public:
 
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
+
+protected:
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+
+		ModelColumns()
+		{ 
+			add(factor_id); 
+			add(factor_value);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> factor_id;
+		Gtk::TreeModelColumn<Glib::ustring> factor_value;
+
+	};
+
+	ModelColumns factors;
+
+	Gtk::ComboBoxEntry zoom_preview; 
+	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
+	
 
 private:
 

@@ -413,6 +413,40 @@ Widget_Preview::Widget_Preview():
 
 	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
+	//zoom preview
+	factor_refTreeModel = Gtk::ListStore::create(factors);
+	zoom_preview.set_model(factor_refTreeModel);
+	zoom_preview.property_has_frame() = true;
+	zoom_preview.signal_changed().connect(sigc::mem_fun(*this, &Widget_Preview::preview_draw));
+
+	Gtk::TreeModel::Row row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "1";
+	row[factors.factor_value] = "25%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "2";
+	row[factors.factor_value] = "50%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "3";
+	row[factors.factor_value] = "100%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "4";
+	row[factors.factor_value] = "200%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "5";
+	row[factors.factor_value] = "Fit";
+	//set 100% as default zoom factor
+	zoom_preview.set_text_column(factors.factor_value);
+	zoom_preview.get_entry()->set_text("100%");
+	//set the zoom widget width
+	zoom_preview.set_size_request(84, -1);
+
+	controller->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
+
+
 	controller->show_all();
 
 	//3rd row: last rendered frame
@@ -551,24 +585,47 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	//figure out the scaling factors...
 	float sx, sy;
-	int nw,nh;
+	float q = 1 / preview->get_zoom();
+	int nw, nh;
 
-	sx = draw_area.get_width() / (float)px->get_width();
-	sy = draw_area.get_height() / (float)px->get_height();
+	Gtk::Entry* entry = zoom_preview.get_entry();
 
-	//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+	Glib::ustring text = entry->get_text();
+	locale_from_utf8 (text);
+	const char *c = text.c_str();
 
-	//round to smallest scale (fit entire thing in window without distortion)
-	if(sx > sy) sx = sy;
-	//else sy = sx;
+	if (text == "Fit" || text == "fit")
+	{
+		sx = draw_area.get_width() / (float)px->get_width();
+		sy = draw_area.get_height() / (float)px->get_height();
+
+		//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+
+		//round to smallest scale (fit entire thing in window without distortion)
+		if(sx > sy) sx = sy;
+	}
+
+	//limit zoom level from 0.01 to 10 times
+	else if (atof(c) > 1000)
+	{
+		sx = sy = 10 * q;
+		entry->set_text("1000");
+	}
+
+	else if (atof(c) < 10 & atof(c) != NULL)
+	{
+		sx = sy = 0.1 * q ;
+	}
+
+	else sx = sy = atof(c) / 100 * q;
 
 	//scale to a new pixmap and then copy over to the window
-	nw = (int)(px->get_width()*sx);
-	nh = (int)(px->get_height()*sx);
+	nw = (int)(px->get_width() * sx);
+	nh = (int)(px->get_height() * sx);
 
 	if(nw == 0 || nh == 0)return true;
 
-	pxnew = px->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
+	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
 	//synfig::info("Now to draw to the window...");
 	//copy to window
