@@ -291,7 +291,6 @@ Canvas::set_grow_value(Real x)
 Real
 Canvas::get_grow_value()const
 {
-	//synfig::info("returning grow value of %f", grow_value);
 	return grow_value;
 }
 
@@ -1172,7 +1171,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			if(paste_sub_canvas)
 			{
 				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
-				paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
+				if(paste_canvas->get_canvas()->is_inline())
+					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
+				else
+					paste_sub_canvas->set_grow_value(0.0);
 				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
 			}
 
@@ -1288,7 +1290,6 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	op_canvas->op_flag_=true;
 	if(!context->empty() && (*context)->get_canvas())
 	{
-		//synfig::info("optimize layers passing grow value %f", (*context)->get_canvas()->get_grow_value());
 		op_canvas->set_grow_value((*context)->get_canvas()->get_grow_value());
 	}
 }

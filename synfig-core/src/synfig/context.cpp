@@ -376,8 +376,6 @@ Context::set_dirty_outlines()
 			)
 		  )
 			{
-				// Set up a writer lock
-				//RWLock::WriterLock lock((*context)->get_rw_lock());
 				{
 					(*context)->dirty_time_=Time::end();
 				}
