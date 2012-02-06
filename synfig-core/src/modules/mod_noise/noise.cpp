@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -256,12 +257,15 @@ Noise::get_param_vocab()const
 
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
+		.set_description(_("Gradient to apply"))
 	);
 	ret.push_back(ParamDesc("seed")
 		.set_local_name(_("RandomNoise Seed"))
+		.set_description(_("Change to modify the random seed of the noise"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
+		.set_description(_("Size of the noise"))
 	);
 	ret.push_back(ParamDesc("smooth")
 		.set_local_name(_("Interpolation"))
@@ -275,18 +279,23 @@ Noise::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("detail")
 		.set_local_name(_("Detail"))
+		.set_description(_("Increase to obtain fine details of the noise"))
 	);
 	ret.push_back(ParamDesc("speed")
 		.set_local_name(_("Animation Speed"))
+		.set_description(_("In cycles per second"))
 	);
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
+		.set_description(_("When checked produces turbulent noise"))
 	);
 	ret.push_back(ParamDesc("do_alpha")
 		.set_local_name(_("Do Alpha"))
+		.set_description(_("Uses transparency"))
 	);
 	ret.push_back(ParamDesc("super_sample")
 		.set_local_name(_("Super Sampling"))
+		.set_description(_("When checked the gradient is supersampled"))
 	);
 
 	return ret;

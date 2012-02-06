@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -142,10 +143,12 @@ Layer_PasteCanvas::get_param_vocab()const
 
 	ret.push_back(ParamDesc("time_offset")
 		.set_local_name(_("Time Offset"))
+		.set_description(_("Time Offset to apply to the context"))
 	);
 
 	ret.push_back(ParamDesc("children_lock")
 		.set_local_name(_("Children Lock"))
+		.set_description(_("When checked prevents to select the children using the mouse click"))
 	);
 
 	ret.push_back(ParamDesc("focus")

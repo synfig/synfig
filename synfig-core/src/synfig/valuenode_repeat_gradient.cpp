@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,6 +56,8 @@ using namespace synfig;
 
 synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("gradient",ValueNode_Const::create(x));
 	set_link("count",count_=ValueNode_Const::create(int(3)));
 	set_link("width",ValueNode_Const::create(0.5));
@@ -170,61 +173,6 @@ ValueNode_Repeat_Gradient::get_link_vfunc(int i)const
 	}
 }
 
-int
-ValueNode_Repeat_Gradient::link_count()const
-{
-	return 7;
-}
-
-String
-ValueNode_Repeat_Gradient::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:  return _("Gradient");
-		case 1:  return _("Count");
-		case 2:  return _("Width");
-		case 3:  return _("Specify Start");
-		case 4:  return _("Specify End");
-		case 5:  return _("Start Color");
-		case 6:  return _("End Color");
-		default: return String();
-	}
-}
-
-String
-ValueNode_Repeat_Gradient::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:  return "gradient";
-		case 1:  return "count";
-		case 2:  return "width";
-		case 3:  return "specify_start";
-		case 4:  return "specify_end";
-		case 5:  return "start_color";
-		case 6:  return "end_color";
-		default: return String();
-	}
-}
-
-int
-ValueNode_Repeat_Gradient::get_link_index_from_name(const String &name)const
-{
-	if(name=="gradient") return 0;
-	if(name=="count")    return 1;
-	if(name=="width")    return 2;
-	if(name=="specify_start") return 3;
-	if(name=="specify_end")   return 4;
-	if(name=="start_color")   return 5;
-	if(name=="end_color")     return 6;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_Repeat_Gradient::get_name()const
 {
@@ -241,4 +189,50 @@ bool
 ValueNode_Repeat_Gradient::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Repeat_Gradient::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"gradient")
+		.set_local_name(_("Gradient"))
+		.set_description(_("The source gradient to repeat"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"count")
+		.set_local_name(_("Count"))
+		.set_description(_("The number of repetition of the gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Specifies how much biased is the source gradeint in the repetition [0,1]"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"specify_start")
+		.set_local_name(_("Specify Start"))
+		.set_description(_("When checked, 'Start Color' is used as the start of the resulting gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"specify_end")
+		.set_local_name(_("Specify End"))
+		.set_description(_("When checked, 'End Color' is used as the start of the resulting gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"start_color")
+		.set_local_name(_("Start Color"))
+		.set_description(_("Used as the start of the resulting gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"end_color")
+		.set_local_name(_("End Color"))
+		.set_description(_("Used as the end of the resulting gradient"))
+	);
+
+	return ret;
 }

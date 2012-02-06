@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -53,6 +54,16 @@ ValueBase convert_bline_to_width_list(const ValueBase &bline);
 //! Finds the closest point to pos in bline
 Real find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point = 0);
 
+//! Converts from standard to homogeneous index (considers the length)
+Real std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
+
+//! Converts from homogeneous to standard index
+Real hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);
+
+//! Returns the length of the bline
+Real bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths);
+
+
 /*! \class ValueNode_BLine
 **	\brief \writeme
 */
@@ -89,6 +100,7 @@ public:
 	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -372,30 +373,36 @@ Warp::get_param_vocab()const
 	ret.push_back(ParamDesc("src_tl")
 		.set_local_name(_("Source TL"))
 		.set_box("src_br")
+		.set_description(_("Top Left corner of the source to warp"))
 	);
 
 	ret.push_back(ParamDesc("src_br")
 		.set_local_name(_("Source BR"))
+		.set_description(_("Bottom Right corner of the source to warp"))
 	);
 
 	ret.push_back(ParamDesc("dest_tl")
 		.set_local_name(_("Dest TL"))
 		.set_connect("dest_tr")
+		.set_description(_("Top Left corner of the destination"))
 	);
 
 	ret.push_back(ParamDesc("dest_tr")
 		.set_local_name(_("Dest TR"))
 		.set_connect("dest_br")
+		.set_description(_("Top Right corner of the destination"))
 	);
 
 	ret.push_back(ParamDesc("dest_br")
 		.set_local_name(_("Dest BR"))
 		.set_connect("dest_bl")
+		.set_description(_("Bottom Right corner of the destination"))
 	);
 
 	ret.push_back(ParamDesc("dest_bl")
 		.set_local_name(_("Dest BL"))
 		.set_connect("dest_tl")
+		.set_description(_("Bottom Left corner of the destination"))
 	);
 
 	ret.push_back(ParamDesc("clip")
@@ -404,6 +411,7 @@ Warp::get_param_vocab()const
 
 	ret.push_back(ParamDesc("horizon")
 		.set_local_name(_("Horizon"))
+		.set_description(_("Height that determines the horizon in perspectives"))
 	);
 
 	return ret;

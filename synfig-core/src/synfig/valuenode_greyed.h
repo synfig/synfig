@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,7 +51,7 @@ protected:
 
 public:
 	static ValueNode_Greyed* create(const ValueBase &x);
-
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Greyed
 
 }; // END of namespace synfig

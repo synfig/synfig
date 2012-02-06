@@ -41,7 +41,8 @@
 
 #include "general.h"
 
-#include <fstream>
+#include <ETL/stringf>
+#include <errno.h>
 
 #endif
 
@@ -308,12 +309,10 @@ RenderSettings::on_render_pressed()
 		canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+filename);
 		return;
 	}
-	// This is the only way I've found to avoid send a non writable
-	// filename path to the renderer.
-	fstream filetest (filename.c_str(), fstream::out);
-	if (filetest.fail())
+	// Test whether the output file is writable (path exists or has write permit)
+	if (access(dirname(filename).c_str(),W_OK) == -1)
 	{
-		canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+filename);
+		canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+filename+": "+strerror( errno ));
 		return;
 	}
 

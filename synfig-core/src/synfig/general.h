@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -69,16 +70,20 @@
 namespace synfig {
 
 class ChangeLocale {
-    const String previous;
-    const int category;
+	const String previous;
+	const int category;
 public:
-    ChangeLocale(int category, const char *locale):
-        previous(setlocale(category,locale)),category(category)
-    {
-    }
-    ~ChangeLocale() {
-        setlocale(category,previous.c_str());
-    }
+	ChangeLocale(int category, const char *locale):
+	// This backups the old locale
+	previous(setlocale(category,NULL)),category(category)
+	{
+		// This effectively changes the locale
+		setlocale(category, locale);
+	}
+	~ChangeLocale() {
+		// This restores the locale
+		setlocale(category,previous.c_str());
+	}
 };
 
 /*!	\class ProgressCallback

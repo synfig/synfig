@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -112,6 +113,32 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
+class BezierDrag_Base : public etl::shared_object
+{
+public:
+	virtual void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos)=0;
+	virtual bool end_bezier_drag(Duckmatic* duckmatic)=0;
+	virtual void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector)=0;
+};
+
+class BezierDrag_Default : public BezierDrag_Base
+{
+	synfig::Vector last_translate_;
+	synfig::Vector drag_offset_;
+	float click_pos_;
+	synfig::Vector c1_initial;
+	synfig::Vector c2_initial;
+	float c1_ratio;
+	float c2_ratio;
+	bool c1_selected;
+	bool c2_selected;
+
+public:
+	void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos);
+	bool end_bezier_drag(Duckmatic* duckmatic);
+	void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
+};
+
 /*! \class Duckmatic
 **
 **	This class helps organize any of the devices displayed in
@@ -181,6 +208,8 @@ private:
 
 	etl::handle<DuckDrag_Base> duck_dragger_;
 
+	etl::handle<BezierDrag_Base> bezier_dragger_;
+
 	sigc::signal<void> signal_duck_selection_changed_;
 
 	sigc::signal<void> signal_strokes_changed_;
@@ -193,6 +222,10 @@ private:
 	GuideList guide_list_y_;
 
 	mutable synfig::String sketch_filename_;
+
+	synfig::TransformStack curr_transform_stack;
+	bool curr_transform_stack_set;
+	std::list<sigc::connection> duck_changed_connections;
 
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
@@ -214,6 +247,9 @@ protected:
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
+
+	float zoom;					//!< Zoom factor
+	float prev_zoom;			//!< Previous Zoom factor
 
 	bool show_persistent_strokes;
 
@@ -266,7 +302,7 @@ public:
 
 	void toggle_grid_snap() { set_grid_snap(!grid_snap); }
 
-	synfig::Point snap_point_to_grid(const synfig::Point& x, float radius=0.1)const;
+	synfig::Point snap_point_to_grid(const synfig::Point& x)const;
 
 	bool get_show_persistent_strokes()const { return show_persistent_strokes; }
 	void set_show_persistent_strokes(bool x);
@@ -323,6 +359,13 @@ public:
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
+	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
+
+	inline void clear_curr_transform_stack() { curr_transform_stack.clear(); curr_transform_stack_set=false; }
+
+
+	etl::handle<Bezier> get_selected_bezier()const;
+
 	//! Begin dragging ducks
 	/*! \param offset Canvas coordinates of the mouse when the drag began */
 	void start_duck_drag(const synfig::Vector& offset);
@@ -339,8 +382,21 @@ public:
 	//! Ends the duck drag
 	bool end_duck_drag();
 
+	//! \todo writeme
+	// bezier drags (similar to duck drags)
+	void start_bezier_drag(const synfig::Vector& offset, float bezier_click_pos);
+
+	void translate_selected_bezier(const synfig::Vector& vector);
+
+	bool end_bezier_drag();
+
+
 	//! Signals to each selected duck that it has been clicked
 	void signal_user_click_selected_ducks(int button);
+
+	//! Calls a single duck's edited signal
+	/*! Updates the corresponding valuenodes after a drag */
+	void signal_edited_duck(const etl::handle<Duck> &duck);
 
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
@@ -390,6 +446,8 @@ public:
 
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
 
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
+
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
@@ -410,6 +468,11 @@ public:
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
 	void clear_duck_dragger() { duck_dragger_=new DuckDrag_Translate(); }
+
+
+	void set_bezier_dragger(etl::handle<BezierDrag_Base> x) { bezier_dragger_=x; }
+	etl::handle<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
+	void clear_bezier_dragger() { bezier_dragger_=new BezierDrag_Default(); }
 }; // END of class Duckmatic
 
 

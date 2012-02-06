@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -158,18 +159,34 @@ StateRotate::~StateRotate()
 void
 StateRotate_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	if(settings.get_value("rotate.scale",value) && value=="0")
-		set_scale_flag(false);
-	else
-		set_scale_flag(true);
+		if(settings.get_value("rotate.scale",value) && value=="0")
+			set_scale_flag(false);
+		else
+			set_scale_flag(true);
+	}
+	catch(...)
+	{
+		synfig::warning("State Rotate: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateRotate_Context::save_settings()
 {
-	settings.set_value("rotate.scale",get_scale_flag()?"1":"0");
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("rotate.scale",get_scale_flag()?"1":"0");
+	}
+	catch(...)
+	{
+		synfig::warning("State Rotate: Caught exception when attempting to save settings.");
+	}
 }
 
 StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):

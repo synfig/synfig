@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -104,10 +105,12 @@ SimpleCircle::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
+		.set_description(_("Fill color of the layer"))
 	);
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
+		.set_description(_("Center of the circle"))
 	);
 
 	ret.push_back(ParamDesc("radius")

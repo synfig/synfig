@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,8 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase::Type &x):
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("from", ValueNode_Const::create(Real(1.0)));
 	set_link("to",   ValueNode_Const::create(x.get(Real())));
 	set_link("step", ValueNode_Const::create(Real(1.0)));
@@ -105,44 +108,6 @@ ValueNode_Duplicate::get_link_vfunc(int i)const
 	if(i==2) return step_;
 
 	return 0;
-}
-
-int
-ValueNode_Duplicate::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Duplicate::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("From");
-	if(i==1) return _("To");
-	if(i==2) return _("Step");
-	return String();
-}
-
-String
-ValueNode_Duplicate::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "from";
-	if(i==1) return "to";
-	if(i==2) return "step";
-	return String();
-}
-
-int
-ValueNode_Duplicate::get_link_index_from_name(const String &name)const
-{
-	if(name=="from") return 0;
-	if(name=="to")   return 1;
-	if(name=="step") return 2;
-
-	throw Exception::BadLinkName(name);
 }
 
 void
@@ -214,4 +179,30 @@ ValueNode_Duplicate::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
 	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
 	return false;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Duplicate::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"from")
+		.set_local_name(_("From"))
+		.set_description(_("Initial value of the index "))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"to")
+		.set_local_name(_("To"))
+		.set_description(_("Final value of the index"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"step")
+		.set_local_name(_("Step"))
+		.set_description(_("Amount increment of the index"))
+	);
+
+	return ret;
 }

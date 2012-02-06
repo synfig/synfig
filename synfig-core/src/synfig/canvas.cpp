@@ -537,7 +537,10 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		if(!is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
-
+		// Before look up the external canvases
+		// let's check if this is the current canvas
+		if(get_file_name() == file_name)
+			return this;
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
@@ -714,7 +717,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 	Layer::LooseHandle loose_layer(x);
 
 	add_connection(loose_layer,
-				   sigc::connection::connection(
+				   sigc::connection(
 					   x->signal_added_to_group().connect(
 						   sigc::bind(
 							   sigc::mem_fun(
@@ -722,7 +725,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 								   &Canvas::add_group_pair),
 							   loose_layer))));
 	add_connection(loose_layer,
-				   sigc::connection::connection(
+				   sigc::connection(
 					   x->signal_removed_from_group().connect(
 						   sigc::bind(
 							   sigc::mem_fun(

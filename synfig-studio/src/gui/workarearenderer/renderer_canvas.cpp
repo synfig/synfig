@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,6 +34,7 @@
 #include "renderer_canvas.h"
 #include "workarea.h"
 #include <ETL/misc>
+#include <gdkmm/general.h>
 
 #include "general.h"
 
@@ -130,6 +132,7 @@ Renderer_Canvas::render_vfunc(
 		h(get_h());
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	if(!tile_book.empty())
 	{
@@ -137,6 +140,15 @@ Renderer_Canvas::render_vfunc(
 		{
 			if(tile_book[0].first)
 			{
+				cr->save();
+				Gdk::Cairo::set_source_pixbuf(
+					cr, //cairo context
+					tile_book[0].first, //pixbuf
+					round_to_int(x), round_to_int(y) //coordinates to place upper left corner of pixbuf
+					);
+				cr->paint();
+				cr->restore();
+/*
 				drawable->draw_pixbuf(
 					gc, //GC
 					tile_book[0].first, //pixbuf
@@ -146,6 +158,7 @@ Renderer_Canvas::render_vfunc(
 					Gdk::RGB_DITHER_MAX,		// RgbDither
 					2, 2 // Dither offset X and Y
 					);
+*/
 			}
 			if(tile_book[0].second!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
 				get_work_area()->async_update_preview();
@@ -180,6 +193,16 @@ Renderer_Canvas::render_vfunc(
 						tx=u*tile_w;
 						ty=v*tile_w;
 
+						cr->save();
+						Gdk::Cairo::set_source_pixbuf(
+							cr, //cairo context
+							tile_book[index].first, //pixbuf
+							round_to_int(x)+tx, round_to_int(y)+ty //coordinates to place upper left corner of pixbuf
+							);
+						cr->paint();
+						cr->restore();
+/*
+
 						drawable->draw_pixbuf(
 							gc, //GC
 							tile_book[index].first, //pixbuf
@@ -189,6 +212,7 @@ Renderer_Canvas::render_vfunc(
 							Gdk::RGB_DITHER_MAX,		// RgbDither
 							2, 2 // Dither offset X and Y
 							);
+*/
 					}
 					if(tile_book[index].second!=get_refreshes())
 						needs_refresh=true;
@@ -207,13 +231,22 @@ Renderer_Canvas::render_vfunc(
 
 	// Draw the border around the rendered region
 	{
-		gc->set_rgb_fg_color(Gdk::Color("#000000"));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		drawable->draw_rectangle(
-			gc,
-			false,	// Fill?
-			round_to_int(x),round_to_int(y),	// x,y
-			w,h	//w,h
-		);
+		cr->save();
+
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->set_line_width(1.0);
+		cr->set_source_rgb(0,0,0);
+
+		cr->rectangle(
+			round_to_int(x), round_to_int(y),
+			w, h
+			);
+
+		cr->stroke();
+
+		cr->restore();
 	}
 }

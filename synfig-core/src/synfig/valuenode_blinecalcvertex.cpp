@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,8 @@ using namespace synfig;
 ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
@@ -65,6 +68,7 @@ ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 	set_link("bline",value_node);
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
+	set_link("homogeneous", ValueNode_Const::create(bool(true)));
 }
 
 LinkableValueNode*
@@ -95,7 +99,12 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
+	bool homogeneous((*homogeneous_)(t).get(bool()));
 	Real amount((*amount_)(t).get(Real()));
+	if(homogeneous)
+	{
+		amount=hom_to_std(bline, amount, loop, looped);
+	}
 	BLinePoint blinepoint0, blinepoint1;
 
 	if (!looped) size--;
@@ -153,6 +162,7 @@ ValueNode_BLineCalcVertex::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
 	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(homogeneous_, ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -167,56 +177,44 @@ ValueNode_BLineCalcVertex::get_link_vfunc(int i)const
 		case 0: return bline_;
 		case 1: return loop_;
 		case 2: return amount_;
+		case 3: return homogeneous_;
 	}
 
 	return 0;
-}
-
-int
-ValueNode_BLineCalcVertex::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_BLineCalcVertex::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "bline";
-		case 1: return "loop";
-		case 2: return "amount";
-	}
-	return String();
-}
-
-String
-ValueNode_BLineCalcVertex::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("BLine");
-		case 1: return _("Loop");
-		case 2: return _("Amount");
-	}
-	return String();
-}
-
-int
-ValueNode_BLineCalcVertex::get_link_index_from_name(const String &name)const
-{
-	if(name=="bline")  return 0;
-	if(name=="loop")   return 1;
-	if(name=="amount") return 2;
-	throw Exception::BadLinkName(name);
 }
 
 bool
 ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_VECTOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"bline")
+		.set_local_name(_("BLine"))
+		.set_description(_("The BLine where the vertex is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop"))
+		.set_description(_("When checked, the amount would loop"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked vertex on the BLine (0,1]"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
+		.set_local_name(_("Homogeneous"))
+		.set_description(_("When checked, the position is BLine length based"))
+	);
+	return ret;
 }

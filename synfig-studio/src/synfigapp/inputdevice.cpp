@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -60,56 +61,63 @@ public:
 
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
-		if(key=="state")
+		try
 		{
-			value=input_device->get_state();
-			return true;
-		}
-		if(key=="bline_width")
-		{
-			value=strprintf("%s",input_device->get_bline_width().get_string().c_str());
-			return true;
-		}
-		if(key=="opacity")
-		{
-			value=strprintf("%f",(float)input_device->get_opacity());
-			return true;
-		}
-		if(key=="blend_method")
-		{
-			value=strprintf("%i",(int)input_device->get_blend_method());
-			return true;
-		}
-		if(key=="outline_color")
-		{
-			Color c(input_device->get_outline_color());
-			value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="state")
+			{
+				value=input_device->get_state();
+				return true;
+			}
+			if(key=="bline_width")
+			{
+				value=strprintf("%s",input_device->get_bline_width().get_string().c_str());
+				return true;
+			}
+			if(key=="opacity")
+			{
+				value=strprintf("%f",(float)input_device->get_opacity());
+				return true;
+			}
+			if(key=="blend_method")
+			{
+				value=strprintf("%i",(int)input_device->get_blend_method());
+				return true;
+			}
+			if(key=="outline_color")
+			{
+				Color c(input_device->get_outline_color());
+				value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
 
-			return true;
-		}
-		if(key=="fill_color")
-		{
-			Color c(input_device->get_fill_color());
-			value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
+				return true;
+			}
+			if(key=="fill_color")
+			{
+				Color c(input_device->get_fill_color());
+				value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
 
-			return true;
+				return true;
+			}
+			if(key=="mode")
+			{
+				get_mode_value(value);
+				return true;
+			}
+			if(key=="axes")
+			{
+				get_axes_value(value);
+				return true;
+			}
+			if(key=="keys")
+			{
+				get_keys_value(value);
+				return true;
+			}
 		}
-		if(key=="mode")
+		catch(...)
 		{
-			get_mode_value(value);
-			return true;
+			synfig::warning("DeviceSettings: Caught exception when attempting to get value.");
 		}
-		if(key=="axes")
-		{
-			get_axes_value(value);
-			return true;
-		}
-		if(key=="keys")
-		{
-			get_keys_value(value);
-			return true;
-		}
-
 		return Settings::get_value(key, value);
 	}
 
@@ -143,58 +151,65 @@ public:
 
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
-		if(key=="state")
+		try
 		{
-			input_device->set_state(value);
-			return true;
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="state")
+			{
+				input_device->set_state(value);
+				return true;
+			}
+			if(key=="bline_width")
+			{
+				input_device->set_bline_width(synfig::Distance(value));
+				return true;
+			}
+			if(key=="opacity")
+			{
+				input_device->set_opacity(atof(value.c_str()));
+				return true;
+			}
+			if(key=="blend_method")
+			{
+				input_device->set_blend_method(Color::BlendMethod(atoi(value.c_str())));
+				return true;
+			}
+			if(key=="outline_color")
+			{
+				float r=0,g=0,b=0,a=1;
+				if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
+					return false;
+				input_device->set_outline_color(synfig::Color(r,g,b,a));
+				return true;
+			}
+			if(key=="fill_color")
+			{
+				float r=0,g=0,b=0,a=1;
+				if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
+					return false;
+				input_device->set_fill_color(synfig::Color(r,g,b,a));
+				return true;
+			}
+			if(key=="mode")
+			{
+				set_mode_value(value);
+				return true;
+			}
+			if(key=="axes")
+			{
+				set_axes_value(value);
+				return true;
+			}
+			if(key=="keys")
+			{
+				set_keys_value(value);
+				return true;
+			}
 		}
-		if(key=="bline_width")
+		catch(...)
 		{
-			input_device->set_bline_width(synfig::Distance(value));
-			return true;
+			synfig::warning("DeviceSettings: Caught exception when attempting to set value.");
 		}
-		if(key=="opacity")
-		{
-			input_device->set_opacity(atof(value.c_str()));
-			return true;
-		}
-		if(key=="blend_method")
-		{
-			input_device->set_blend_method(Color::BlendMethod(atoi(value.c_str())));
-			return true;
-		}
-		if(key=="outline_color")
-		{
-			float r=0,g=0,b=0,a=1;
-			if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
-				return false;
-			input_device->set_outline_color(synfig::Color(r,g,b,a));
-			return true;
-		}
-		if(key=="fill_color")
-		{
-			float r=0,g=0,b=0,a=1;
-			if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
-				return false;
-			input_device->set_fill_color(synfig::Color(r,g,b,a));
-			return true;
-		}
-		if(key=="mode")
-		{
-			set_mode_value(value);
-			return true;
-		}
-		if(key=="axes")
-		{
-			set_axes_value(value);
-			return true;
-		}
-		if(key=="keys")
-		{
-			set_keys_value(value);
-			return true;
-		}
-
 		return Settings::set_value(key, value);
 	}
 
@@ -280,7 +295,7 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 	fill_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
 	opacity_(1.0f),
-	blend_method_(Color::BLEND_COMPOSITE),
+	blend_method_(Color::BLEND_BY_LAYER),
 	mode_(MODE_DISABLED)
 {
 	device_settings=new DeviceSettings(this);

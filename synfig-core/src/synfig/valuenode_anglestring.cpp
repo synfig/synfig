@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -54,6 +55,8 @@ using namespace synfig;
 ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
@@ -95,13 +98,14 @@ ValueNode_AngleString::operator()(Time t)const
 	int precision((*precision_)(t).get(int()));
 	int zero_pad((*zero_pad_)(t).get(bool()));
 
+	if(precision<0) precision=0;
 	switch (get_type())
 	{
 	case ValueBase::TYPE_STRING:
 		return strprintf(strprintf("%%%s%d.%df",
 								   zero_pad ? "0" : "",
 								   width,
-								   precision).c_str(), angle);
+								   precision).c_str(), angle)+"°";
 	default:
 		break;
 	}
@@ -153,56 +157,37 @@ ValueNode_AngleString::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_AngleString::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_AngleString::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "angle";
-		case 1: return "width";
-		case 2: return "precision";
-		case 3: return "zero_pad";
-	}
-	return String();
-}
-
-String
-ValueNode_AngleString::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Angle");
-		case 1: return _("Width");
-		case 2: return _("Precision");
-		case 3: return _("Zero Padded");
-	}
-	return String();
-}
-
-int
-ValueNode_AngleString::get_link_index_from_name(const String &name)const
-{
-	if (name=="angle") return 0;
-	if (name=="width") return 1;
-	if (name=="precision") return 2;
-	if (name=="zero_pad") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_AngleString::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_STRING;
+}
+
+LinkableValueNode::Vocab
+ValueNode_AngleString::get_children_vocab_vfunc()const
+{
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"angle")
+		.set_local_name(_("Angle"))
+		.set_description(_("Value to convert to string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Width of the string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"precision")
+		.set_local_name(_("Precision"))
+		.set_description(_("Number of decimal places"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"zero_pad")
+		.set_local_name(_("Zero Padded"))
+		.set_description(_("When checked, the string is left filled with zeros to match the width"))
+	);
+
+	return ret;
 }

@@ -4,6 +4,7 @@
 ** $Id$
 **
 ** Copyright (c) 2002 Adrian Bentley
+** Copyright (c) 2010 Nikita Kitaev
 **
 ** This package is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License as
@@ -57,11 +58,13 @@ struct stupidp
 	}
 };
 
+#if 0
 template <>
 class etl::value_store_type<stupidp>
 {
 	typedef stupidv	value_type;
 };
+#endif
 
 int main()
 {

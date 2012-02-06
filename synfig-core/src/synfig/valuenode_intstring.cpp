@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -54,6 +55,8 @@ using namespace synfig;
 ValueNode_IntString::ValueNode_IntString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
@@ -148,53 +151,35 @@ ValueNode_IntString::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_IntString::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_IntString::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "int";
-		case 1: return "width";
-		case 2: return "zero_pad";
-	}
-	return String();
-}
-
-String
-ValueNode_IntString::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Int");
-		case 1: return _("Width");
-		case 2: return _("Zero Padded");
-	}
-	return String();
-}
-
-int
-ValueNode_IntString::get_link_index_from_name(const String &name)const
-{
-	if (name=="int") return 0;
-	if (name=="width") return 1;
-	if (name=="zero_pad") return 2;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_IntString::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_STRING;
+}
+
+LinkableValueNode::Vocab
+ValueNode_IntString::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"int")
+		.set_local_name(_("Int"))
+		.set_description(_("Value to convert to string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"width")
+		.set_local_name(_("Width"))
+		.set_description(_("Width of the string"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"zero_pad")
+		.set_local_name(_("Zero Padded"))
+		.set_description(_("When checked, the string is left filled with zeros to match the width"))
+	);
+
+	return ret;
 }

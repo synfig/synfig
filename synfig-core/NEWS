@@ -1,12 +1,92 @@
               synfig releases
 
-More detailed notes are available on the releases page:
+More detailed notes are available on the news page:
 
-http://synfig.org/wiki/Releases
+http://synfig.org/cms/en/news/
 
- 0.62.xx (git tag: "synfig-0.62.xx") - Month day, 2010
+ 0.63.03 (git tag: "synfig-0.63.03") - December 05, 2011 - Features, bug fixes.
+
+  * Support to create Advanced Outlines with the Draw Tool.
+  * Fixed script to generate synfig API.
+  * Added two new parameters to the WidthPoint class. Lower Boundary and Upper Boundary
+    They define the lower and upper boundaries value of the widhtpoint position
+    When placed at start and end of the BLine. By default lower = 0.0 and upper = 1.0
+    Lower boundary must be always smaller than Upper boundary.
+    As parameters they cannot be exported, converted or animated.
+  * Render improvements for Advanced Outlines:
+    With 'Fast' parameter disabled: 55% of reduction render time
+    With 'Fast' parameter enabled: 10% of reduction render time
+  * For Importer layer, even if file is physically impossible to open,
+    set the parameter with the passed file name. This would allow to load and
+    save Synfig's documents with paths for imported files badly adjusted but that user
+    doesn't want to modify.
+  * Fix for compatibility with libpng 1.5. Patch #3427945 by SpeckFleck.
+  * Fix bug in Time Loop Layer. Patch ID: #3414729 by Ray Frederikson
+  * Avoid crash when there is only one blinepoint and the bline is not looped on Advanced Outlines.
+  * Fix some old render artifacts and new ones due to render optimization on Advanced Outlines.
+  * Avoid crash when DIList is empty on Advanced Outlines.
+  * Insert Item smart is allowed now over empty lists.
+  * New Greek language. Thanks to kiolalis
+  * Update for all the languages.
+
+ 0.63.02 (git tag: "synfig-0.63.02") - September 28, 2011 - Improvement
+
+  * Add new parameter 'Fast' to Advanced Outline to allow render faster but less
+    accurate.
+
+ 0.63.01 (git tag: "synfig-0.63.01") - September 24, 2011 - Bug fixes, features
+
+  * Fix bug 3147736: avoid zero or negative value for supersample layer' size parameter.
+  * Allow use the Joined List Convert type to file name parameter of the Import Image layers.
+  * If tangents are zero and are merged, then consider them as split to make corners.
+  * Width points can be placed in a curve length basis using Homogeneous parameter.
+  * Interpolated width is from now on homogeneous. Fixes some render artifacts.
+  * Fixed some interpolation errors produced by bad WPList loop interpretation.
+  * Add new Dash Item List and support for dashed outlines.
+  * Linked to BLine has the option of be curve length based. On by default.
+  * New languages support: Persian, Slovakian, Dutch and Lituanian.
+  * Updated existing translations
+
+ 0.63.00 (git tag: "synfig-0.63.00") - June 5, 2011 - Bug fixes, major features
+
+  * Fix bug #3111032: Load and save settings must be locale independent.
+  * Added missing descriptions for several parameters.
+  * Fix bug: Avoid negative precision to produce always good strings from angle.
+  * Use º instead of DEG.
+  * Added new descriptions for linkable value node parameters.
+  * New advanced outline layer. Slidable variable width support and other features
+  * New languages support: Portuguese (Brazilian), Polish (Poland), Romanian and Norwegian
+  * Updates for Spanish, French and Italian.
+  * Rename Vertices parameter for Polygon layer.
+  * Fix bug #2175043: Crash when rendering in directory without write permission
+
+ 0.62.02 (git tag: "synfig-0.62.02") - November 13, 2010- Bug fixes, features
 
   * Fix load and save palette feature.
+  * Code documentation. Not full yet.
+  * Adapt api.sh script to run as a cron job at tuxfamily servers.
+    Now API is updated at http://download.tuxfamily.org/synfig/api/index.html
+  * Rename secondary layer's Z column to "Icon" and make it not reorderable.
+    Make "Name" column resizable.
+  * Britain English translation. Robert Readman.
+  * Fix Bug #3029832 Time Offset parameter fails for multiple times imported files
+  * Simplified Chinese translation. Yu Chen
+  * New "By Layer Default" blend method.
+    Now some layers define its own blend method instead of Composite or
+    the selected by user. For example Shade->Behind
+  * Fix bug #2958077. Incorrect fps in ListImporter
+  * New Stroboscope Layer. Ray Fredesikson
+  * Added "Static" option for individual parameters.
+    If "Static" is on, then in animation mode it is no created any waypoint
+    when modified. Only valid for layer parameters and constant value nodes.
+  * Fix bug #3060560. Link two tangents and one is animated, the animated is not used.
+  * Smart linking bline tangents implementation. Now all tangents are yellow ducks.
+  * Move reverse manipulation code to Value Desc.
+    This allows recursive reverse manipulation for valuenodes which has
+    inverse manipulation implemented.
+  * Assume frames when no unit is provided in a time field. Apply feature request #2879693
+  * Spanish translation update.
+  * New Simplified Chinese translation. Yu Chen
 
  0.62.01 (git tag: "synfig-0.62.01") - May 31, 2010 - Bug fixes, features.
 

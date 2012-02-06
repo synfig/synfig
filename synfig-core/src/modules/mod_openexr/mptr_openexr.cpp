@@ -72,7 +72,7 @@ exr_mptr::~exr_mptr()
 }
 
 bool
-exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &renddesc, Time, synfig::ProgressCallback *cb)
+exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback *cb)
 {
     try
     {

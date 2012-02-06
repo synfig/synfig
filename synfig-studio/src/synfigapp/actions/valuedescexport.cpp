@@ -119,6 +119,12 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 		{
 			return false;
 		}
+	// Don't allow to export lower and upper boundaries of the WidhtPoint
+		if(value_desc.parent_is_linkable_value_node()
+			&& value_desc.get_parent_value_node()->get_name()=="composite"
+			&& value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_WIDTHPOINT
+			&& (value_desc.get_index()==4 || value_desc.get_index()==5))
+			return false;
 		return true;
 	}
 	return false;

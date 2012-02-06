@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -419,6 +420,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
 	canvas_view->set_ext_widget(get_name(),tree_view);
+	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::Dock_Timetrack::refresh_rend_desc));
 }
 
 void
@@ -441,6 +443,15 @@ Dock_Timetrack::refresh_selected_param()
 		get_canvas_view()->work_area->set_selected_value_node(0);
 	}
 */
+}
+
+void
+Dock_Timetrack::refresh_rend_desc()
+{
+	if(App::get_selected_canvas_view())
+	{
+		widget_timeslider_->set_global_fps(App::get_selected_canvas_view()->get_canvas()->rend_desc().get_frame_rate());
+	}
 }
 
 void

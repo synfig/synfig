@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -188,18 +189,23 @@ LinearGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("p1")
 		.set_local_name(_("Point 1"))
 		.set_connect("p2")
+		.set_description(_("Start point of the gradient"))
 	);
 	ret.push_back(ParamDesc("p2")
 		.set_local_name(_("Point 2"))
+		.set_description(_("End point of the gradient"))
 	);
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
+		.set_description(_("Gradient to apply"))
 	);
 	ret.push_back(ParamDesc("loop")
 		.set_local_name(_("Loop"))
+		.set_description(_("When checked the gradient is looped"))
 	);
 	ret.push_back(ParamDesc("zigzag")
 		.set_local_name(_("ZigZag"))
+		.set_description(_("When checked the gradient is summetrical at the center"))
 	);
 
 	return ret;

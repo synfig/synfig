@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -52,13 +53,6 @@ public:
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
-	virtual int link_count()const;
-
-	virtual String link_name(int i)const;
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
-
 	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_Reference();
@@ -76,6 +70,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Reference* create(const ValueBase &x);
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Reference
 
 }; // END of namespace synfig

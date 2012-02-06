@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,6 +56,8 @@ using namespace synfig;
 synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
@@ -127,21 +130,6 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 	}
 }
 
-int
-ValueNode_RadialComposite::link_count()const
-{
-	switch(get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
-		return 2;
-	case ValueBase::TYPE_COLOR:
-		return 4;
-	default:
-		synfig::warning(string("ValueNode_RadialComposite::component_count():")+_("Bad type for radialcomposite"));
-		return 1;
-	}
-}
-
 bool
 ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 {
@@ -189,43 +177,6 @@ ValueNode_RadialComposite::get_link_vfunc(int i)const
 }
 
 String
-ValueNode_RadialComposite::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(get_type())
-	{
-		case ValueBase::TYPE_VECTOR:
-			if(i==0)
-				return _("Radius");
-			else if(i==1)
-				return _("Theta");
-			break;
-
-		case ValueBase::TYPE_COLOR:
-			if(i==0)
-				return _("Luma");
-			else if(i==1)
-				return _("Saturation");
-			else if(i==2)
-				return _("Hue");
-			else if(i==3)
-				return _("Alpha");
-			break;
-
-		default:
-			break;
-	}
-
-	assert(0);
-	// notice that Composite counts from 1 and Radial Composite counts
-	// from 0!  we need to keep it like that to correctly load old
-	// animations, but let's not save "c%d" format link names in future
-	return etl::strprintf(_("C%d"),i);
-}
-
-
-String
 ValueNode_RadialComposite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
@@ -233,38 +184,15 @@ ValueNode_RadialComposite::link_name(int i)const
 	if (get_file_version() < RELEASE_VERSION_0_61_08)
 		return strprintf("c%d",i);
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_COLOR:
-		switch(i)
-		{
-		case 0: return "y_luma"; // the 'luma' attribute is recognised by the fact that it starts with a 'y'
-		case 1: return "saturation";
-		case 2: return "hue";
-		case 3: return "alpha";
-		}
-		break;
-	case ValueBase::TYPE_VECTOR:
-		switch(i)
-		{
-		case 0: return "radius";
-		case 1: return "theta";
-		}
-		break;
-	default:
-		break;
-	}
-
-	assert(0);
-	// notice that Composite counts from 1 and Radial Composite counts
-	// from 0!  we need to keep it like that to correctly load old
-	// animations, but let's not save "c%d" format link names in future
-	return strprintf("c%d",i);
+	return LinkableValueNode::link_name(i);
 }
 
 int
 ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
 {
+	// Here we don't use the LinkableValueNode::get_link_index_from_name
+	// due to the particularities of the link index from name for old files.
+	// So we keep this alive to maintain old file compatibilities.
 	if(name.empty())
 		throw Exception::BadLinkName(name);
 
@@ -312,4 +240,47 @@ ValueNode_RadialComposite::check_type(ValueBase::Type type)
 	return
 		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_COLOR;
+}
+
+LinkableValueNode::Vocab
+ValueNode_RadialComposite::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		ret.push_back(ParamDesc(ValueBase(),"y_luma")
+		.set_local_name(_("Luma"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"saturation")
+		.set_local_name(_("Saturation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"hue")
+		.set_local_name(_("Hue"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"alpha")
+		.set_local_name(_("Saturation"))
+		);
+		return ret;
+		break;
+	case ValueBase::TYPE_VECTOR:
+		ret.push_back(ParamDesc(ValueBase(),"radius")
+		.set_local_name(_("Radius"))
+		.set_description(_("The length of the vector"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"theta")
+		.set_local_name(_("Theta"))
+		.set_description(_("The angle of the vector with the X axis"))
+		);
+		return ret;
+		break;
+	default:
+		break;
+	}
+
+	return ret;
 }

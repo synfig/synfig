@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
+**	Copyright (c) 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,6 +42,7 @@
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/general.h>
+#include <synfig/valuenode_radialcomposite.h>
 
 #endif
 
@@ -83,15 +85,12 @@ Action::ParamVocab
 Action::BLinePointTangentSplit::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode of BLinePoint"))
 	);
-
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
 	);
-
 	return ret;
 }
 
@@ -102,6 +101,30 @@ Action::BLinePointTangentSplit::is_candidate(const ParamList &x)
 	{
 		ValueNode_Composite::Handle value_node;
 		value_node=ValueNode_Composite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
+		if(!value_node || value_node->get_type()!=ValueBase::TYPE_BLINEPOINT)
+		{
+			// Before return false, let's check whether the value_node
+			// is radial composite and vector type
+			ValueNode_RadialComposite::Handle radial_value_node;
+			radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());
+			if(radial_value_node && radial_value_node->get_type()==ValueBase::TYPE_VECTOR)
+			// value_node is radial composite and vector (user rigth click on a tangent)
+			{
+				ValueNode_Composite::Handle blinepoint=NULL;
+				std::set<Node*>::iterator iter;
+				// now check if the parent of radial_value_node is a blinepoint type
+				for(iter=radial_value_node->parent_set.begin();iter!=radial_value_node->parent_set.end();++iter)
+					{
+						blinepoint=ValueNode_Composite::Handle::cast_dynamic(*iter);
+						if(blinepoint && blinepoint->get_type()==ValueBase::TYPE_BLINEPOINT)
+							break;
+					}
+				if(blinepoint)
+					value_node=blinepoint;
+			}
+		}
+		// at this point we should have a value node and it should be blinepoint
+		// if we haven't, then return false
 		if(!value_node || value_node->get_type()!=ValueBase::TYPE_BLINEPOINT)
 			return false;
 		synfig::Time time(x.find("time")->second.get_time());
@@ -118,16 +141,34 @@ Action::BLinePointTangentSplit::set_param(const synfig::String& name, const Acti
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=value_node.cast_dynamic(param.get_value_node());
-
-		return (bool)(value_node);
+		if(value_node && value_node->get_type()==ValueBase::TYPE_BLINEPOINT)
+			return true;
+		ValueNode_RadialComposite::Handle radial_value_node;
+		radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
+		if(radial_value_node && radial_value_node->get_type()==ValueBase::TYPE_VECTOR)
+		// value_node is radial composite and vector (user rigth click on a tangent)
+		{
+			ValueNode_Composite::Handle blinepoint;
+			std::set<Node*>::iterator iter;
+			// now check if the parent of value_node is a blinepoint type
+			for(iter=radial_value_node->parent_set.begin();iter!=radial_value_node->parent_set.end();++iter)
+				{
+					blinepoint=ValueNode_Composite::Handle::cast_dynamic(*iter);
+					if(blinepoint && blinepoint->get_type()==ValueBase::TYPE_BLINEPOINT)
+					{
+						value_node=blinepoint;
+						return true;
+					}
+				}
+			return false;
+		}
+		return false;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-
 		return true;
 	}
-
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -136,10 +177,8 @@ Action::BLinePointTangentSplit::is_ready()const
 {
 	if(!value_node)
 		synfig::error("Missing or bad value_node");
-
 	if(time==(Time::begin()-1))
 		synfig::error("Missing time");
-
 	if(!value_node || time==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
@@ -149,22 +188,17 @@ void
 Action::BLinePointTangentSplit::prepare()
 {
 	clear();
-
 	Action::Handle action;
-
 	action=Action::create("ValueDescSet");
 	if(!action)
 		throw Error(_("Couldn't find action \"ValueDescSet\""));
-
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
 	action->set_param("value_desc",ValueDesc(value_node,value_node->get_link_index_from_name("split")));
 	action->set_param("time",time);
 	action->set_param("new_value",synfig::ValueBase(true));
-
 	assert(action->is_ready());
 	if(!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);
-
 	add_action(action);
 }

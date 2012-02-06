@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -53,6 +54,8 @@ using namespace synfig;
 ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
@@ -136,43 +139,20 @@ ValueNode_Atan2::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Atan2::link_count()const
+LinkableValueNode::Vocab
+ValueNode_Atan2::get_children_vocab_vfunc()const
 {
-	return 2;
-}
+	LinkableValueNode::Vocab ret;
 
-String
-ValueNode_Atan2::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
+	ret.push_back(ParamDesc(ValueBase(),"x")
+		.set_local_name(_("X"))
+		.set_description(_("Cosine of the angle"))
+	);
 
-	if(i==0)
-		return "x";
-	if(i==1)
-		return "y";
-	return String();
-}
+	ret.push_back(ParamDesc(ValueBase(),"y")
+		.set_local_name(_("Y"))
+		.set_description(_("Sine of the angle"))
+	);
 
-String
-ValueNode_Atan2::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("X");
-	if(i==1)
-		return _("Y");
-	return String();
-}
-
-int
-ValueNode_Atan2::get_link_index_from_name(const String &name)const
-{
-	if(name=="x")
-		return 0;
-	if(name=="y")
-		return 1;
-
-	throw Exception::BadLinkName(name);
+	return ret;
 }

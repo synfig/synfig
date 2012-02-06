@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/combobox.h>
+#include <gtkmm/liststore.h>
 #include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
@@ -37,29 +37,39 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Menu; };
-
 namespace studio {
-
-class Widget_Enum : public Gtk::OptionMenu
+class Widget_Enum : public Gtk::ComboBox
 {
-	Gtk::Menu *enum_menu;
 	synfig::ParamDesc param_desc;
-
 	int value;
-	void set_value_(int data);
+protected:
+class Model : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+
+		Model()
+		{ add(icon); add(value); add(local_name); }
+
+		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<int> value;
+		Gtk::TreeModelColumn<Glib::ustring> local_name;
+	};
+	Model enum_model;
+	Glib::RefPtr<Gtk::ListStore> enum_TreeModel;
+
 public:
 
 	Widget_Enum();
 	~Widget_Enum();
 
 	void set_param_desc(const synfig::ParamDesc &x);
+	void set_icon(Gtk::TreeNodeChildren::size_type index,const Glib::RefPtr<Gdk::Pixbuf> &icon);
 	void refresh();
 
 	void set_value(int data);
 	int get_value() const;
+	virtual void on_changed();
 }; // END of class Widget_Enum
-
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

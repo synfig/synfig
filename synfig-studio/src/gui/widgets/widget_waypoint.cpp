@@ -45,7 +45,9 @@
 #include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
+#include "widgets/widget_enum.h"
 #include "general.h"
+//#include <synfig/interpolation.h>
 
 #endif
 
@@ -79,31 +81,40 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 
 	time_widget=manage(new Widget_Time());
 	time_widget->set_fps(canvas->rend_desc().get_frame_rate());
-	//spinbutton=manage(new Gtk::SpinButton(time_adjustment,0.05,3));
-	//spinbutton->set_update_policy(Gtk::UPDATE_ALWAYS);
-	//spinbutton->show();
 
-	before_options=manage(new class Gtk::Menu());
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB Smooth")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Constant")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Linear")));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ease In")));
-	// before_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Manual")));
+	before_options=manage(new class Widget_Enum());
+	before_options->show();
+	before_options->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+	);
+	before_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	before_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 
-	after_options=manage(new class Gtk::Menu());
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB Smooth")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Constant")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Linear")));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ease Out")));
-	// after_options->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Manual")));
-
-	before=manage(new class Gtk::OptionMenu());
-	before->show();
-	before->set_menu(*before_options);
-
-	after=manage(new class Gtk::OptionMenu());
-	after->show();
-	after->set_menu(*after_options);
+	after_options=manage(new class Widget_Enum());
+	after_options->show();
+	after_options->set_param_desc(
+		ParamDesc("interpolation")
+			.set_hint("enum")
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+	);
+	after_options->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	after_options->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));
 	spin_tension->show();
@@ -162,15 +173,15 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 
 	Gtk::Label *interpolationInLabel = manage(new Gtk::Label(_("_In Interpolation"), true));
 	interpolationInLabel->set_alignment(0, 0.5);
-	interpolationInLabel->set_mnemonic_widget(*before);
+	interpolationInLabel->set_mnemonic_widget(*before_options);
 	interpolationTable->attach(*interpolationInLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	interpolationTable->attach(*before, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	interpolationTable->attach(*before_options, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("_Out Interpolation"), true));
 	interpolationOutLabel->set_alignment(0, 0.5);
-	interpolationOutLabel->set_mnemonic_widget(*after);
+	interpolationOutLabel->set_mnemonic_widget(*after_options);
 	interpolationTable->attach(*interpolationOutLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	interpolationTable->attach(*after, 1, 2, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	interpolationTable->attach(*after_options, 1, 2, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Frame *tcbFrame = manage(new Gtk::Frame(_("TCB Parameters")));
 	tcbFrame->set_shadow_type(Gtk::SHADOW_NONE);
@@ -216,7 +227,6 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 
 	show_all();
 	hide();
-	//attach(*hbox, 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	set_canvas(canvas);
 }
 
@@ -252,8 +262,8 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 
 	time_widget->set_value(waypoint.get_time());
 
-	before->set_history((int)waypoint.get_before());
-	after->set_history((int)waypoint.get_after());
+	before_options->set_value((Waypoint::Interpolation)waypoint.get_before());
+	after_options->set_value((Waypoint::Interpolation)waypoint.get_after());
 
 	adj_tension.set_value(waypoint.get_tension());
 	adj_continuity.set_value(waypoint.get_continuity());
@@ -268,10 +278,9 @@ Widget_Waypoint::get_waypoint()const
 	waypoint.set_time(time_widget->get_value());
 	if(waypoint.is_static())
 		waypoint.set_value(value_widget->get_value());
-	//int i;
 
-	waypoint.set_before((synfig::Waypoint::Interpolation)before->get_history());
-	waypoint.set_after((synfig::Waypoint::Interpolation)after->get_history());
+	waypoint.set_before((Waypoint::Interpolation)before_options->get_value());
+	waypoint.set_after((Waypoint::Interpolation)after_options->get_value());
 
 	waypoint.set_tension(adj_tension.get_value());
 	waypoint.set_continuity(adj_continuity.get_value());
@@ -279,3 +288,6 @@ Widget_Waypoint::get_waypoint()const
 	waypoint.set_temporal_tension(adj_temporal_tension.get_value());
 	return waypoint;
 }
+
+
+

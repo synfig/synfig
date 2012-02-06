@@ -14,7 +14,8 @@
 # Adapt the following macros to the proper directories values.
 
 export HTMLDIR=$HOME/synfig/synfig-repository/api
-export SOURCEDIR=$HOME/synfig/synfig-repository/code/synfig
+#export SOURCEDIR=$HOME/synfig/synfig-repository/code/synfig
+export SOURCEDIR=$HOME/synfig/synfig-repository/api/tmp/synfig
 
 set -e
 
@@ -39,6 +40,7 @@ mkdir -p $HTMLDIR
 
 cd $SOURCEDIR
 git fetch
+git reset --hard
 git checkout remotes/origin/master
 
 #generating api to htmldir

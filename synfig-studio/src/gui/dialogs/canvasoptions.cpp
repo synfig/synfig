@@ -166,7 +166,7 @@ CanvasOptions::refresh()
 
 	vector_grid_size.set_value(canvas_view_->work_area->get_grid_size());
 
-	tooltips.set_tip(toggle_time_snap,_("Not yet implemented"));
+	toggle_time_snap.set_tooltip_text(_("Not yet implemented"));
 	toggle_time_snap.set_sensitive(false);
 
 	update_title();

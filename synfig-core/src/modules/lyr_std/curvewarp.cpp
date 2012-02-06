@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007-2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -385,28 +386,33 @@ CurveWarp::get_param_vocab()const
 	Layer::Vocab ret;
 
 	ret.push_back(ParamDesc("origin")
-				  .set_local_name(_("Origin")));
-
+				  .set_local_name(_("Origin"))
+				  .set_description(_("Position of the source line"))
+	);
 	ret.push_back(ParamDesc("perp_width")
 				  .set_local_name(_("Width"))
-				  .set_origin("start_point"));
-
+				  .set_origin("start_point")
+				  .set_description(_("How much is expanded the result perpendicular to the source line"))
+	);
 	ret.push_back(ParamDesc("start_point")
 				  .set_local_name(_("Start Point"))
-				  .set_connect("end_point"));
-
+				  .set_connect("end_point")
+				  .set_description(_("First point of the source line"))
+	);
 	ret.push_back(ParamDesc("end_point")
-				  .set_local_name(_("End Point")));
-
+				  .set_local_name(_("End Point"))
+				  .set_description(_("Final point of the source line"))
+	);
 	ret.push_back(ParamDesc("bline")
 				  .set_local_name(_("Vertices"))
 				  .set_origin("origin")
 				  .set_hint("width")
-				  .set_description(_("A list of BLine Points")));
-
+				  .set_description(_("List of BLine Points where the source line is curved to"))
+	);
 	ret.push_back(ParamDesc("fast")
-				  .set_local_name(_("Fast")));
-
+				  .set_local_name(_("Fast"))
+				  .set_description(_("When checked, renders quickly but with artifacts"))
+	);
 	return ret;
 }
 

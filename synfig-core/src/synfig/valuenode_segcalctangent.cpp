@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,8 @@ using namespace synfig;
 ValueNode_SegCalcTangent::ValueNode_SegCalcTangent(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
@@ -135,49 +138,28 @@ ValueNode_SegCalcTangent::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_SegCalcTangent::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_SegCalcTangent::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return "segment";
-	if(i==1)
-		return "amount";
-	return String();
-}
-
-String
-ValueNode_SegCalcTangent::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0)
-		return _("Segment");
-	if(i==1)
-		return _("Amount");
-	return String();
-}
-
-int
-ValueNode_SegCalcTangent::get_link_index_from_name(const String &name)const
-{
-	if(name=="segment")
-		return 0;
-	if(name=="amount")
-		return 1;
-
-	throw Exception::BadLinkName(name);
-}
-
 LinkableValueNode*
 ValueNode_SegCalcTangent::create_new()const
 {
 	return new ValueNode_SegCalcTangent(ValueBase::TYPE_VECTOR);
+}
+
+LinkableValueNode::Vocab
+ValueNode_SegCalcTangent::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"segment")
+		.set_local_name(_("Segment"))
+		.set_description(_("The Segment where the tangent is linked to"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("The position of the linked tangent on the Segment (0,1]"))
+	);
+	return ret;
 }

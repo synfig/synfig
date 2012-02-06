@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -147,18 +148,34 @@ StateScale::~StateScale()
 void
 StateScale_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	if(settings.get_value("scale.lock_aspect",value) && value=="0")
-		set_aspect_lock_flag(false);
-	else
-		set_aspect_lock_flag(true);
+		if(settings.get_value("scale.lock_aspect",value) && value=="0")
+			set_aspect_lock_flag(false);
+		else
+			set_aspect_lock_flag(true);
+	}
+	catch(...)
+	{
+		synfig::warning("State Scale: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateScale_Context::save_settings()
 {
-	settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+	}
+	catch(...)
+	{
+		synfig::warning("State Scale: Caught exception when attempting to save settings.");
+	}
 }
 
 StateScale_Context::StateScale_Context(CanvasView* canvas_view):

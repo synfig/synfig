@@ -8,8 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008 Gerald Young
-**  Copyright (c) 2008 Carlos López
-**	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2008, 2010, 2011 Carlos López
+**	Copyright (c) 2009, 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -277,7 +277,7 @@ bool studio::App::use_colorspace_gamma=true;
 	bool studio::App::single_threaded=false;
 	#endif // WIN32
 #endif  // SINGLE THREADED
-bool studio::App::restrict_radius_ducks=false;
+bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
@@ -498,202 +498,216 @@ class Preferences : public synfigapp::Settings
 public:
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
-		if(key=="gamma")
+		try
 		{
-			value=strprintf("%f %f %f %f",
-				App::gamma.get_gamma_r(),
-				App::gamma.get_gamma_g(),
-				App::gamma.get_gamma_b(),
-				App::gamma.get_black_level()
-			);
-			return true;
-		}
-		if(key=="time_format")
-		{
-			value=strprintf("%i",App::get_time_format());
-			return true;
-		}
-		if(key=="file_history.size")
-		{
-			value=strprintf("%i",App::get_max_recent_files());
-			return true;
-		}
-		if(key=="use_colorspace_gamma")
-		{
-			value=strprintf("%i",(int)App::use_colorspace_gamma);
-			return true;
-		}
-		if(key=="distance_system")
-		{
-			value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
-			return true;
-		}
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="gamma")
+			{
+				value=strprintf("%f %f %f %f",
+					App::gamma.get_gamma_r(),
+					App::gamma.get_gamma_g(),
+					App::gamma.get_gamma_b(),
+					App::gamma.get_black_level()
+				);
+				return true;
+			}
+			if(key=="time_format")
+			{
+				value=strprintf("%i",App::get_time_format());
+				return true;
+			}
+			if(key=="file_history.size")
+			{
+				value=strprintf("%i",App::get_max_recent_files());
+				return true;
+			}
+			if(key=="use_colorspace_gamma")
+			{
+				value=strprintf("%i",(int)App::use_colorspace_gamma);
+				return true;
+			}
+			if(key=="distance_system")
+			{
+				value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
+				return true;
+			}
 #ifdef SINGLE_THREADED
-		if(key=="single_threaded")
-		{
-			value=strprintf("%i",(int)App::single_threaded);
-			return true;
-		}
+			if(key=="single_threaded")
+			{
+				value=strprintf("%i",(int)App::single_threaded);
+				return true;
+			}
 #endif
-		if(key=="auto_recover_backup_interval")
-		{
-			value=strprintf("%i",App::auto_recover->get_timeout());
-			return true;
+			if(key=="auto_recover_backup_interval")
+			{
+				value=strprintf("%i",App::auto_recover->get_timeout());
+				return true;
+			}
+			if(key=="restrict_radius_ducks")
+			{
+				value=strprintf("%i",(int)App::restrict_radius_ducks);
+				return true;
+			}
+			if(key=="resize_imported_images")
+			{
+				value=strprintf("%i",(int)App::resize_imported_images);
+				return true;
+			}
+			if(key=="browser_command")
+			{
+				value=App::browser_command;
+				return true;
+			}
+			if(key=="custom_filename_prefix")
+			{
+				value=App::custom_filename_prefix;
+				return true;
+			}
+			if(key=="preferred_x_size")
+			{
+				value=strprintf("%i",App::preferred_x_size);
+				return true;
+			}
+			if(key=="preferred_y_size")
+			{
+				value=strprintf("%i",App::preferred_y_size);
+				return true;
+			}
+			if(key=="predefined_size")
+			{
+				value=strprintf("%s",App::predefined_size.c_str());
+				return true;
+			}
+			if(key=="preferred_fps")
+			{
+				value=strprintf("%f",App::preferred_fps);
+				return true;
+			}
+			if(key=="predefined_fps")
+			{
+				value=strprintf("%s",App::predefined_fps.c_str());
+				return true;
+			}
 		}
-		if(key=="restrict_radius_ducks")
+		catch(...)
 		{
-			value=strprintf("%i",(int)App::restrict_radius_ducks);
-			return true;
+			synfig::warning("Preferences: Caught exception when attempting to get value.");
 		}
-		if(key=="resize_imported_images")
-		{
-			value=strprintf("%i",(int)App::resize_imported_images);
-			return true;
-		}
-		if(key=="browser_command")
-		{
-			value=App::browser_command;
-			return true;
-		}
-		if(key=="custom_filename_prefix")
-		{
-			value=App::custom_filename_prefix;
-			return true;
-		}
-		if(key=="preferred_x_size")
-		{
-			value=strprintf("%i",App::preferred_x_size);
-			return true;
-		}
-		if(key=="preferred_y_size")
-		{
-			value=strprintf("%i",App::preferred_y_size);
-			return true;
-		}
-		if(key=="predefined_size")
-		{
-			value=strprintf("%s",App::predefined_size.c_str());
-			return true;
-		}
-		if(key=="preferred_fps")
-		{
-			value=strprintf("%f",App::preferred_fps);
-			return true;
-		}
-		if(key=="predefined_fps")
-		{
-			value=strprintf("%s",App::predefined_fps.c_str());
-			return true;
-		}
-
 		return synfigapp::Settings::get_value(key,value);
 	}
 
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
-		if(key=="gamma")
+		try
 		{
-			float r,g,b,blk;
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			if(key=="gamma")
+			{
+				float r,g,b,blk;
 
-			strscanf(value,"%f %f %f %f",
-				&r,
-				&g,
-				&b,
-				&blk
-			);
+				strscanf(value,"%f %f %f %f",
+					&r,
+					&g,
+					&b,
+					&blk
+				);
 
-			App::gamma.set_all(r,g,b,blk);
+				App::gamma.set_all(r,g,b,blk);
 
-			return true;
-		}
-		if(key=="time_format")
-		{
-			int i(atoi(value.c_str()));
-			App::set_time_format(static_cast<synfig::Time::Format>(i));
-			return true;
-		}
-		if(key=="auto_recover_backup_interval")
-		{
-			int i(atoi(value.c_str()));
-			App::auto_recover->set_timeout(i);
-			return true;
-		}
-		if(key=="file_history.size")
-		{
-			int i(atoi(value.c_str()));
-			App::set_max_recent_files(i);
-			return true;
-		}
-		if(key=="use_colorspace_gamma")
-		{
-			int i(atoi(value.c_str()));
-			App::use_colorspace_gamma=i;
-			return true;
-		}
-		if(key=="distance_system")
-		{
-			App::distance_system=Distance::ident_system(value);;
-			return true;
-		}
+				return true;
+			}
+			if(key=="time_format")
+			{
+				int i(atoi(value.c_str()));
+				App::set_time_format(static_cast<synfig::Time::Format>(i));
+				return true;
+			}
+			if(key=="auto_recover_backup_interval")
+			{
+				int i(atoi(value.c_str()));
+				App::auto_recover->set_timeout(i);
+				return true;
+			}
+			if(key=="file_history.size")
+			{
+				int i(atoi(value.c_str()));
+				App::set_max_recent_files(i);
+				return true;
+			}
+			if(key=="use_colorspace_gamma")
+			{
+				int i(atoi(value.c_str()));
+				App::use_colorspace_gamma=i;
+				return true;
+			}
+			if(key=="distance_system")
+			{
+				App::distance_system=Distance::ident_system(value);;
+				return true;
+			}
 #ifdef SINGLE_THREADED
-		if(key=="single_threaded")
-		{
-			int i(atoi(value.c_str()));
-			App::single_threaded=i;
-			return true;
-		}
+			if(key=="single_threaded")
+			{
+				int i(atoi(value.c_str()));
+				App::single_threaded=i;
+				return true;
+			}
 #endif
-		if(key=="restrict_radius_ducks")
-		{
-			int i(atoi(value.c_str()));
-			App::restrict_radius_ducks=i;
-			return true;
+			if(key=="restrict_radius_ducks")
+			{
+				int i(atoi(value.c_str()));
+				App::restrict_radius_ducks=i;
+				return true;
+			}
+			if(key=="resize_imported_images")
+			{
+				int i(atoi(value.c_str()));
+				App::resize_imported_images=i;
+				return true;
+			}
+			if(key=="browser_command")
+			{
+				App::browser_command=value;
+				return true;
+			}
+			if(key=="custom_filename_prefix")
+			{
+				App::custom_filename_prefix=value;
+				return true;
+			}
+			if(key=="preferred_x_size")
+			{
+				int i(atoi(value.c_str()));
+				App::preferred_x_size=i;
+				return true;
+			}
+			if(key=="preferred_y_size")
+			{
+				int i(atoi(value.c_str()));
+				App::preferred_y_size=i;
+				return true;
+			}
+			if(key=="predefined_size")
+			{
+				App::predefined_size=value;
+				return true;
+			}
+			if(key=="preferred_fps")
+			{
+				float i(atof(value.c_str()));
+				App::preferred_fps=i;
+				return true;
+			}
+			if(key=="predefined_fps")
+			{
+				App::predefined_fps=value;
+				return true;
+			}
 		}
-		if(key=="resize_imported_images")
+		catch(...)
 		{
-			int i(atoi(value.c_str()));
-			App::resize_imported_images=i;
-			return true;
+			synfig::warning("Preferences: Caught exception when attempting to set value.");
 		}
-		if(key=="browser_command")
-		{
-			App::browser_command=value;
-			return true;
-		}
-		if(key=="custom_filename_prefix")
-		{
-			App::custom_filename_prefix=value;
-			return true;
-		}
-		if(key=="preferred_x_size")
-		{
-			int i(atoi(value.c_str()));
-			App::preferred_x_size=i;
-			return true;
-		}
-		if(key=="preferred_y_size")
-		{
-			int i(atoi(value.c_str()));
-			App::preferred_y_size=i;
-			return true;
-		}
-		if(key=="predefined_size")
-		{
-			App::predefined_size=value;
-			return true;
-		}
-		if(key=="preferred_fps")
-		{
-			float i(atof(value.c_str()));
-			App::preferred_fps=i;
-			return true;
-		}
-		if(key=="predefined_fps")
-		{
-			App::predefined_fps=value;
-			return true;
-		}
-
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -801,6 +815,7 @@ init_ui_manager()
 	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Ducks"));
 	DEFINE_ACTION("mask-width-ducks", _("Show Width Ducks"));
 	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Ducks"));
+	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Ducks"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -820,6 +835,7 @@ init_ui_manager()
 	DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
 	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
+	DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
 	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
 	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
 	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
@@ -903,6 +919,7 @@ init_ui_manager()
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -937,6 +954,7 @@ init_ui_manager()
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
+"		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<separator name='bleh10'/>"
@@ -1069,6 +1087,7 @@ init_ui_manager()
 	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
 	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
@@ -1308,6 +1327,13 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Settings..."));
 		load_settings();
 		device_tracker->load_preferences();
+		// If the default bline width is modified before focus a canvas
+		// window, the Distance widget doesn't understand the given value
+		// and produces this message:
+		// Distance::ident_system(): Unknown distance system ".00pt"
+		// setting the default bline width to 1 unit.
+		// This line fixes that.
+		synfigapp::Main::set_bline_width(synfigapp::Main::get_selected_input_device()->get_bline_width());
 
 		studio_init_cb.task(_("Checking auto-recover..."));
 
@@ -1600,11 +1626,9 @@ App::set_time_format(synfig::Time::Format x)
 void
 App::save_settings()
 {
-	char * old_locale;
 	try
 	{
-	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
-	setlocale(LC_NUMERIC, "C");
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::save(filename);
@@ -1644,7 +1668,7 @@ App::save_settings()
 		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
-	setlocale(LC_NUMERIC,old_locale);
+
 	}
 	catch(...)
 	{
@@ -1655,11 +1679,9 @@ App::save_settings()
 void
 App::load_settings()
 {
-	char  * old_locale;
 	try
 	{
-	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
-	setlocale(LC_NUMERIC, "C");
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
@@ -1715,7 +1737,7 @@ App::load_settings()
 				reset_initial_window_configuration();
 			}
 		}
-	setlocale(LC_NUMERIC,old_locale);
+
 	}
 	catch(...)
 	{
@@ -1819,7 +1841,7 @@ App::reset_initial_preferences()
 #ifdef SINGLE_THREADED
 	synfigapp::Main::settings().set_value("pref.single_threaded","1");
 #endif
-	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
@@ -2087,12 +2109,18 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_62_01, "0.62.01", strprintf("0.62.01 (%s)", _("current")))
-									   .add_enum_value(synfig::RELEASE_VERSION_0_62_00, "0.62.00", "0.61.00")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_61_09, "0.61.09", "0.61.09")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_61_08, "0.61.08", "0.61.08")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_04, "0.63.04", strprintf("0.63.04 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_03, "0.63.03", "0.63.03")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_02, "0.63.02", "0.63.02")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_01, "0.63.01", "0.63.01")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_00, "0.63.00", "0.63.00")
+				.add_enum_value(synfig::RELEASE_VERSION_0_62_02, "0.62.02", "0.62.02")
+				.add_enum_value(synfig::RELEASE_VERSION_0_62_01, "0.62.01", "0.62.01")
+				.add_enum_value(synfig::RELEASE_VERSION_0_62_00, "0.62.00", "0.61.00")
+				.add_enum_value(synfig::RELEASE_VERSION_0_61_09, "0.61.09", "0.61.09")
+				.add_enum_value(synfig::RELEASE_VERSION_0_61_08, "0.61.08", "0.61.08")
+				.add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")
+				.add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
 		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
 
 		Gtk::HBox *hbox = manage(new Gtk::HBox);
@@ -2584,4 +2612,19 @@ synfig::String
 studio::App::get_base_path()
 {
 	return app_base_path_;
+}
+
+void
+studio::App::setup_changed()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
+	{
+		std::list< etl::handle<synfigapp::CanvasInterface> >::iterator citer;
+		std::list< etl::handle<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
+		for(citer=cilist.begin();citer!=cilist.end();++citer)
+			{
+				(*citer)->signal_rend_desc_changed()();
+			}
+	}
 }

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -367,12 +368,6 @@ public:
 	//! \see DynamicParamList
 	const DynamicParamList &dynamic_param_list()const { return dynamic_param_list_; }
 
-	//! Connects the parameter to another Value Node
-	bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode>);
-
-	//! Disconnects the parameter from any Value Node
-	bool disconnect_dynamic_param(const String& param);
-
 	//! Enables the layer for rendering (Making it \em active)
 	void enable() { set_active(true); }
 
@@ -541,6 +536,13 @@ public:
 
 	//! Duplicates the Layer without duplicating the value nodes
 	virtual Handle simple_clone()const;
+
+	//! Connects the parameter to another Value Node
+	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode>);
+
+	//! Disconnects the parameter from any Value Node
+	virtual bool disconnect_dynamic_param(const String& param);
+
 
 protected:
 

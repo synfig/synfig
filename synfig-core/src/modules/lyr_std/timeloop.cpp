@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,6 +42,7 @@
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
+#include <synfig/canvas.h>
 
 #endif
 
@@ -120,22 +122,27 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("link_time")
 		.set_local_name(_("Link Time"))
+		.set_description(_("Start time of the loop for the cycled context"))
 	);
 
 	ret.push_back(ParamDesc("local_time")
 		.set_local_name(_("Local Time"))
+		.set_description(_("The time when the resulted loop starts"))
 	);
 
 	ret.push_back(ParamDesc("duration")
 		.set_local_name(_("Duration"))
+		.set_description(_("Lenght of the loop"))
 	);
 
 	ret.push_back(ParamDesc("only_for_positive_duration")
 		.set_local_name(_("Only For Positive Duration"))
+		.set_description(_("When checked will loop only positive durations"))
 	);
 
 	ret.push_back(ParamDesc("symmetrical")
 		.set_local_name(_("Symmetrical"))
+		.set_description(_("When checked, loops are mirrored centered at Local Time"))
 	);
 
 	return ret;
@@ -215,29 +222,41 @@ void
 Layer_TimeLoop::set_time(Context context, Time t)const
 {
 	Time time = t;
-
+	float document_fps=get_canvas()->rend_desc().get_frame_rate();
 	if (!only_for_positive_duration || duration > 0)
 	{
 		if (duration == 0)
 			t = link_time;
-		else if (duration > 0)
-		{
-			t -= local_time;
-			t -= floor(t / duration) * duration;
-			t  = link_time + t;
+		else {
+			float t_frames = round(t*document_fps);
+			float duration_frames = round(duration*document_fps);
+			if (duration > 0)
+			{
+				t -= local_time;
+				// Simple formula looks like this:
+				// t -= floor(t / duration) * duration;
+				// but we should make all calculations in frames to avoid round errors
+				t_frames -= floor(t_frames / duration_frames) * duration_frames;
+				// converting back to seconds:
+				t = t_frames / document_fps;
+				t = link_time + t;
+			}
+			else
+			{
+				t -= local_time;
+				// Simple formula looks like this:
+				// t -= floor(t / -duration) * -duration;
+				// but we should make all calculations in frames to avoid round errors
+				t_frames -= floor(t_frames / -duration_frames) * -duration_frames;
+				// converting back to seconds:
+				t = t_frames / document_fps;
+				t = link_time - t;
+			}
 		}
-		else
-		{
-			t -= local_time;
-			t -= floor(t / -duration) * -duration;
-			t  = link_time - t;
-		}
-
 		// for compatibility with v0.1 layers; before local_time is reached, take a step back
 		if (!symmetrical && time < local_time)
 			t -= duration;
 	}
-
 	context.set_time(t);
 }
 

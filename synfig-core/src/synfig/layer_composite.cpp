@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -154,9 +155,11 @@ Layer_Composite::get_param_vocab()const
 	//! Now inserts the two parameters that this layer knows.
 	ret.push_back(ParamDesc(amount,"amount")
 		.set_local_name(_("Amount"))
+		.set_description(_("Alpha channel of the layer"))
 	);
 	ret.push_back(ParamDesc(blend_method,"blend_method")
 		.set_local_name(_("Blend Method"))
+		.set_description(_("The blending method used to composite on the layers below"))
 	);
 
 	return ret;

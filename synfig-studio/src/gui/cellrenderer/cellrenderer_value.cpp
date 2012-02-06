@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -197,6 +198,12 @@ public:
 			valuewidget->set_param_desc(data);
 	}
 
+	void set_child_param_desc(const synfig::ParamDesc &data)
+	{
+		if(valuewidget)
+			valuewidget->set_child_param_desc(data);
+	}
+
 	const synfig::ValueBase &get_value()
 	{
 		if(valuewidget)
@@ -265,7 +272,8 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Gtk::CellRendererText	(),
 	property_value_	(*this,"value",synfig::ValueBase()),
 	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
-	property_param_desc_(*this,"param_desc",synfig::ParamDesc())
+	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
+	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc())
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 	value_entry=new ValueBase_Entry();
@@ -359,31 +367,39 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=(Glib::ustring)strprintf("%.2fᵒ",(Real)Angle::deg(data.get(Angle())).get());
 		break;
 	case ValueBase::TYPE_INTEGER:
-		if(((synfig::ParamDesc)property_param_desc_).get_hint()!="enum")
 		{
-			property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
+			String param_hint, child_param_hint;
+			param_hint=get_param_desc().get_hint();
+			child_param_hint=get_child_param_desc().get_hint();
+			if(param_hint!="enum" && child_param_hint!="enum")
+			{
+				property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
+			}
+			else
+			{
+				property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
+				std::list<synfig::ParamDesc::EnumData> enum_list;
+				if(param_hint=="enum")
+					enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
+				else if(child_param_hint=="enum")
+					enum_list=((synfig::ParamDesc)property_child_param_desc_).get_enum_list();
+				std::list<synfig::ParamDesc::EnumData>::iterator iter;
+				for(iter=enum_list.begin();iter!=enum_list.end();iter++)
+					if(iter->value==data.get(int()))
+					{
+						// don't show the key_board s_hortcut under_scores
+						String local_name = iter->local_name;
+						String::size_type pos = local_name.find_first_of('_');
+						if (pos != String::npos)
+							property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
+						else
+							property_text() = local_name;
+						break;
+					}
+			}
 		}
-		else
-		{
-			property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
-			std::list<synfig::ParamDesc::EnumData> enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
-			std::list<synfig::ParamDesc::EnumData>::iterator iter;
-
-			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
-				if(iter->value==data.get(int()))
-				{
-					// don't show the key_board s_hortcut under_scores
-					String local_name = iter->local_name;
-					String::size_type pos = local_name.find_first_of('_');
-					if (pos != String::npos)
-						property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
-					else
-						property_text() = local_name;
-					break;
-				}
-		}
-
 		break;
+
 	case ValueBase::TYPE_VECTOR:
 		{
 			Vector vector=data.get(Vector());
@@ -449,6 +465,12 @@ CellRenderer_ValueBase::render_vfunc(
 		break;
 	case ValueBase::TYPE_BLINEPOINT:
 		property_text()=(Glib::ustring)_("BLine Point");
+		break;
+	case ValueBase::TYPE_WIDTHPOINT:
+		property_text()=(Glib::ustring)_("Width Point");
+		break;
+	case ValueBase::TYPE_DASHITEM:
+		property_text()=(Glib::ustring)_("Dash Item");
 		break;
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
@@ -570,6 +592,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			value_entry->set_path(path);
 			value_entry->set_canvas(get_canvas());
 			value_entry->set_param_desc(get_param_desc());
+			value_entry->set_child_param_desc(get_child_param_desc());
 			value_entry->set_value(data);
 			value_entry->set_parent(&widget);
 			value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));

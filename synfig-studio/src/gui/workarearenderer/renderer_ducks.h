@@ -41,6 +41,7 @@
 #define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000")
 #define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00")
 #define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff")
+#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::Color("#d3afff")
 #define DUCK_COLOR_OTHER		Gdk::Color("#00ff00")
 
 #define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck

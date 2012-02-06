@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -89,6 +90,8 @@ public:
 	{
 		friend class ValueNode_DynamicList;
 		friend class ValueNode_BLine;
+		friend class ValueNode_WPList;
+		friend class ValueNode_DIList;
 	public:
 		typedef synfig::Activepoint Activepoint;
 
@@ -236,6 +239,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_DynamicList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_DynamicList
 
 typedef ValueNode_DynamicList::ListEntry::Activepoint Activepoint;

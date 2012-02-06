@@ -168,7 +168,7 @@ public:
 				temporal_tension_flag
 			);
 		}
-	};
+	}; // END of class Model
 
 	enum Side
 	{

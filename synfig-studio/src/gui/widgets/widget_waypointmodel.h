@@ -27,15 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include <gtk/gtk.h>
-//#include <gtkmm/arrow.h>
-//#include <gtkmm/image.h>
-//#include <gdkmm/pixbufloader.h>
-//#include <gtkmm/viewport.h>
-//#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
-//#include <gtkmm/progressbar.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/combo.h>
@@ -47,6 +40,8 @@
 #include <synfig/waypoint.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
+#include "widgets/widget_enum.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -66,9 +61,7 @@ class Widget_WaypointModel : public Gtk::Table
 
 	bool updating;
 
-	Gtk::Combo *in,*out;
-	Gtk::OptionMenu *before, *after;
-	Gtk::Menu *before_options,*after_options;
+	Widget_Enum *before_options,*after_options;
 
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
 	Gtk::Adjustment adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
@@ -84,7 +77,6 @@ class Widget_WaypointModel : public Gtk::Table
 
 public:
 	Widget_WaypointModel();
-	void set_waypoint_model(synfig::Waypoint::Model &x);
 	const synfig::Waypoint::Model &get_waypoint_model()const { return waypoint_model; }
 }; // END of class Widget_WaypointModel
 

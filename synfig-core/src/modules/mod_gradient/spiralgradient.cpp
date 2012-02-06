@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -109,10 +110,12 @@ SpiralGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
+		.set_description(_("Gradient to apply"))
 	);
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
+		.set_description(_("Center of the gradient"))
 	);
 
 	ret.push_back(ParamDesc("radius")
@@ -124,11 +127,13 @@ SpiralGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
+		.set_description(_("Rotation of the spiral"))
 		.set_origin("center")
 	);
 
 	ret.push_back(ParamDesc("clockwise")
 		.set_local_name(_("Clockwise"))
+		.set_description(_("When checked the spiral turns clockwise"))
 	);
 
 	return ret;

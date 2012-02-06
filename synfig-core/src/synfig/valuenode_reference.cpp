@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,8 @@ ValueNode_Reference::ValueNode_Reference(const ValueBase::Type &x):
 ValueNode_Reference::ValueNode_Reference(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("link",x);
 }
 
@@ -98,45 +101,6 @@ ValueNode_Reference::get_link_vfunc(int i __attribute__ ((unused)))const
 	return link_;
 }
 
-int
-ValueNode_Reference::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_Reference::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	}
-	return String();
-}
-
-String
-ValueNode_Reference::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	}
-	return String();
-}
-
-int
-ValueNode_Reference::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Reference::operator()(Time t)const
 {
@@ -165,4 +129,20 @@ ValueNode_Reference::check_type(ValueBase::Type type)
 	if(type)
 		return true;
 	return false;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Reference::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The referenced value"))
+	);
+
+	return ret;
 }

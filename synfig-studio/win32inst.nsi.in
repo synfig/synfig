@@ -60,7 +60,7 @@ Section "Synfig Studio"
 
   SetOutPath "$INSTDIR\bin"
   File "src\synfigapp\.libs\libsynfigapp-0.dll"
-  File "src\gtkmm\.libs\synfigstudio.exe"
+  File "src\gui\.libs\synfigstudio.exe"
 
 	FileOpen $0 $PROFILE\.gtkrc-2.0 a
 	FileSeek $0 0 END

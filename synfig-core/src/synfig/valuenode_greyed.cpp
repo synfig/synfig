@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -54,6 +55,8 @@ ValueNode_Greyed::ValueNode_Greyed(const ValueBase::Type &x):
 ValueNode_Greyed::ValueNode_Greyed(const ValueNode::Handle &x):
 	ValueNode_Reference(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("link",x);
 }
 
@@ -79,4 +82,20 @@ String
 ValueNode_Greyed::get_local_name()const
 {
 	return _("Greyed");
+}
+
+LinkableValueNode::Vocab
+ValueNode_Greyed::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The greyed value"))
+	);
+
+	return ret;
 }

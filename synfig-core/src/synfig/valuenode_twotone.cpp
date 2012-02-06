@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,6 +56,8 @@ using namespace synfig;
 
 synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_GRADIENT:
@@ -120,54 +123,6 @@ ValueNode_TwoTone::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_TwoTone::link_count()const
-{
-	return 2;
-}
-
-String
-ValueNode_TwoTone::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return _("Color1");
-		case 1:
-			return _("Color2");
-		default:
-			return String();
-	}
-}
-
-String
-ValueNode_TwoTone::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0:
-			return "color1";
-		case 1:
-			return "color2";
-		default:
-			return String();
-	}
-}
-
-int
-ValueNode_TwoTone::get_link_index_from_name(const String &name)const
-{
-	if(name=="color1")
-		return 0;
-	if(name=="color2")
-		return 1;
-	throw Exception::BadLinkName(name);
-}
-
 String
 ValueNode_TwoTone::get_name()const
 {
@@ -184,4 +139,25 @@ bool
 ValueNode_TwoTone::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
+}
+
+LinkableValueNode::Vocab
+ValueNode_TwoTone::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"color1")
+		.set_local_name(_("Color 1"))
+		.set_description(_("The start color of the gradient"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"color2")
+		.set_local_name(_("Color 2"))
+		.set_description(_("The end color of the gradient"))
+	);
+
+	return ret;
 }

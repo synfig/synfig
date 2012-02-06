@@ -44,6 +44,8 @@
 #include <ETL/misc>
 #include "general.h"
 
+#include <synfigapp/canvasinterface.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -224,19 +226,19 @@ Dialog_Setup::Dialog_Setup():
 	// Document - Preferred file name prefix
 	attach_label(document_table, _("New Document filename prefix"), 0, xpadding, ypadding);
 	document_table->attach(textbox_custom_filename_prefix, 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	tooltips_.set_tip(textbox_custom_filename_prefix, _("File name prefix for the new created document"));
+	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 
 	// Document - New Document X size
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
 	attach_label(document_table, _("New Document X size"),1, xpadding, ypadding);
 	document_table->attach(*pref_x_size_spinbutton, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	tooltips_.set_tip(*pref_x_size_spinbutton, _("Width in pixels of the new created document"));
+	pref_x_size_spinbutton->set_tooltip_text(_("Width in pixels of the new created document"));
 
 	// Document - New Document Y size
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
 	attach_label(document_table,_("New Document Y size"), 2, xpadding, ypadding);
 	document_table->attach(*pref_y_size_spinbutton, 1, 2, 2, 3,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	tooltips_.set_tip(*pref_y_size_spinbutton, _("High in pixels of the new created document"));
+	pref_y_size_spinbutton->set_tooltip_text(_("High in pixels of the new created document"));
 
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
@@ -287,7 +289,7 @@ Dialog_Setup::Dialog_Setup():
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	attach_label(document_table,_("New Document FPS"), 4, xpadding, ypadding);
 	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-	tooltips_.set_tip(*pref_fps_spinbutton, _("Frames per second of the new created document"));
+	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 
 	show_all_children();
 }
@@ -354,6 +356,9 @@ Dialog_Setup::on_apply_pressed()
 	App::preferred_fps=Real(adj_pref_fps.get_value());
 
 	App::save_settings();
+
+	App::setup_changed();
+
 }
 
 void

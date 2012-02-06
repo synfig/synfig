@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -54,6 +55,8 @@ using namespace synfig;
 ValueNode_Compare::ValueNode_Compare(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	bool value(x.get(bool()));
 
 	set_link("lhs",          ValueNode_Const::create(Real(0)));
@@ -112,50 +115,6 @@ ValueNode_Compare::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Compare::link_count()const
-{
-	return 5;
-}
-
-String
-ValueNode_Compare::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("LHS");
-	if(i==1) return _("RHS");
-	if(i==2) return _("Greater Than");
-	if(i==3) return _("Equal to");
-	if(i==4) return _("Less Than");
-	return String();
-}
-
-String
-ValueNode_Compare::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "lhs";
-	if(i==1) return "rhs";
-	if(i==2) return "greater";
-	if(i==3) return "equal";
-	if(i==4) return "less";
-	return String();
-}
-
-int
-ValueNode_Compare::get_link_index_from_name(const String &name)const
-{
-	if(name=="lhs")     return 0;
-	if(name=="rhs")     return 1;
-	if(name=="greater") return 2;
-	if(name=="equal")   return 3;
-	if(name=="less")    return 4;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Compare::operator()(Time t)const
 {
@@ -194,4 +153,40 @@ bool
 ValueNode_Compare::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_BOOL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Compare::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"lhs")
+		.set_local_name(_("LHS"))
+		.set_description(_("The left side of the comparison"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"rhs")
+		.set_local_name(_("RHS"))
+		.set_description(_("The right side of the comparison"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"greater")
+		.set_local_name(_("Greater"))
+		.set_description(_("When checked, returns true if LHS > RHS"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"equal")
+		.set_local_name(_("Equal"))
+		.set_description(_("When checked, returns true if LHS = RHS"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"less")
+		.set_local_name(_("Less"))
+		.set_description(_("When checked, returns true if LHS < RHS"))
+	);
+
+	return ret;
 }

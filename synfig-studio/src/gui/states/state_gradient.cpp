@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -174,34 +175,50 @@ StateGradient::~StateGradient()
 void
 StateGradient_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	if(settings.get_value("gradient.id",value))
-		set_id(value);
-	else
-		set_id("Gradient");
+		if(settings.get_value("gradient.id",value))
+			set_id(value);
+		else
+			set_id("Gradient");
 
-	if(settings.get_value("gradient.type",value))
-		set_type(atoi(value.c_str()));
-	else
-		set_type(GRADIENT_INTERPOLATION_LINEAR);
+		if(settings.get_value("gradient.type",value))
+			set_type(atoi(value.c_str()));
+		else
+			set_type(GRADIENT_INTERPOLATION_LINEAR);
 
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	if(settings.get_value("gradient.blend",value))
-		set_blend(atoi(value.c_str()));
-	else
-		set_blend(Color::BLEND_COMPOSITE);
+		if(settings.get_value("gradient.blend",value))
+			set_blend(atoi(value.c_str()));
+		else
+			set_blend(Color::BLEND_COMPOSITE);
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	}
+	catch(...)
+	{
+		synfig::warning("State Gradient: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateGradient_Context::save_settings()
 {
-	settings.set_value("gradient.id",get_id().c_str());
-	settings.set_value("gradient.type",strprintf("%d",get_type()));
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("gradient.id",get_id().c_str());
+		settings.set_value("gradient.type",strprintf("%d",get_type()));
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	settings.set_value("gradient.blend",strprintf("%d",get_blend()));
+		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	}
+	catch(...)
+	{
+		synfig::warning("State Gradient: Caught exception when attempting to save settings.");
+	}
 }
 
 void
@@ -398,7 +415,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
 	}
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 

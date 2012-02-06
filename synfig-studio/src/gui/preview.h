@@ -38,7 +38,8 @@
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/canvasview.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
+#include <gtkmm/alignment.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -167,9 +168,9 @@ class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-	Gtk::HScrollbar		scr_time_scrub;
+//	Gtk::HScrollbar		scr_time_scrub;
+	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
-	Gtk::Tooltips		tooltips;
 
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
@@ -205,7 +206,7 @@ class Widget_Preview : public Gtk::Table
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
-	void play_stop();
+	void play_pause();
 	//bool play_frameupdate();
 	void update();
 
@@ -224,7 +225,7 @@ class Widget_Preview : public Gtk::Table
 	void preview_draw();
 
 	sigc::signal<void,float>	signal_play_;
-	sigc::signal<void>			signal_stop_;
+	sigc::signal<void>		signal_pause_;
 	sigc::signal<void,float>	signal_seek_;
 
 public:
@@ -240,17 +241,25 @@ public:
 	void clear();
 
 	void play();
-	void stop();
+	void pause();
 	void seek(float t);
+
+	void on_play_pause_pressed();
+
+	void seek_frame(int frames);
 
 	void stoprender();
 
 	sigc::signal<void,float>	&signal_play() {return signal_play_;}
-	sigc::signal<void>	&signal_stop() {return signal_stop_;}
+	sigc::signal<void>	&signal_pause() {return signal_pause_;}
 	sigc::signal<void,float>	&signal_seek() {return signal_seek_;}
 
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
+
+private:
+
+	Gtk::Button *play_pausebutton;
 };
 
 }; // END of namespace studio

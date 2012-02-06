@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -159,14 +160,17 @@ Layer_Clamp::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clamp_ceiling")
 		.set_local_name(_("Clamp Ceiling"))
+		.set_description(_("When checked the Ceiling value is used"))
 	);
 
 	ret.push_back(ParamDesc("ceiling")
 		.set_local_name(_("Ceiling"))
+		.set_description(_("Upper boundary of the clamping"))
 	);
 
 	ret.push_back(ParamDesc("floor")
 		.set_local_name(_("Floor"))
+		.set_description(_("Lower boundary of the clamping"))
 	);
 
 	return ret;

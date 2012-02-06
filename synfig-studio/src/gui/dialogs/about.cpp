@@ -107,7 +107,7 @@ About::About()
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright 2001-2010\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
+	set_copyright(_("Copyright 2001-2011\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -166,6 +166,7 @@ About::About()
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Aurore D (rore)");
 	artists.push_back("Bertrand Grégoire (berteh)");
+	artists.push_back("Carl-Christian Gehl (Razputin)");
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
@@ -177,7 +178,7 @@ About::About()
 	artists.push_back("Madeleine Crubellier (mad0)");
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 	artists.push_back("Thimotee Guiet (satrip)");
-
+	artists.push_back("Yu Chen (jcome)");
 	set_artists(artists);
 
 	// TRANSLATORS: change this to your name, separate multiple names with \n

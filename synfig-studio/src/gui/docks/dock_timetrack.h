@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2009 Carlos López
+**  Copyright (c) 2009, 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -56,6 +56,7 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 	void refresh_selected_param();
+	void refresh_rend_desc();
 
 public:
 

@@ -123,7 +123,7 @@ Widget_ValueBase::Widget_ValueBase():
 
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	enum_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	enum_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	real_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -221,7 +221,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		vector_widget->show();
 		break;
 	case ValueBase::TYPE_REAL:
-		if(param_desc.get_is_distance() && canvas)
+		if(( child_param_desc.get_is_distance() || param_desc.get_is_distance() )&& canvas)
 		{
 			Distance dist(value.get(Real()),Distance::SYSTEM_UNITS);
 			dist.convert(App::distance_system,canvas->rend_desc());
@@ -244,16 +244,23 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		angle_widget->show();
 		break;
 	case ValueBase::TYPE_INTEGER:
-		if(param_desc.get_hint()!="enum")
 		{
-			integer_widget->set_value(value.get(int()));
-			integer_widget->show();
-		}
-		else
-		{
-			enum_widget->set_param_desc(param_desc);
-			enum_widget->set_value(value.get(int()));
-			enum_widget->show();
+			String child_param_hint(child_param_desc.get_hint());
+			String param_hint(param_desc.get_hint());
+			if(child_param_hint!="enum" && param_hint!="enum")
+			{
+				integer_widget->set_value(value.get(int()));
+				integer_widget->show();
+			}
+			else
+			{
+				if(child_param_hint=="enum")
+					enum_widget->set_param_desc(child_param_desc);
+				else
+					enum_widget->set_param_desc(param_desc);
+				enum_widget->set_value(value.get(int()));
+				enum_widget->show();
+			}
 		}
 		break;
 	case ValueBase::TYPE_CANVAS:
@@ -267,7 +274,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		bool_widget->show();
 		break;
 	case ValueBase::TYPE_STRING:
-		if(param_desc.get_hint()!="filename")
+		if(child_param_desc.get_hint()!="filename" && param_desc.get_hint()!="filename")
 		{
 			string_widget->set_text(value.get(string()));
 			string_widget->show();
@@ -309,7 +316,7 @@ Widget_ValueBase::get_value()
 		value=vector_widget->get_value();
 		break;
 	case ValueBase::TYPE_REAL:
-		if(param_desc.get_is_distance() && canvas)
+		if((child_param_desc.get_is_distance() || param_desc.get_is_distance()) && canvas)
 			value=distance_widget->get_value().units(canvas->rend_desc());
 		else
 			value=real_widget->get_value();
@@ -324,7 +331,7 @@ Widget_ValueBase::get_value()
 		value=canvas_widget->get_value();
 		break;
 	case ValueBase::TYPE_INTEGER:
-		if(param_desc.get_hint()!="enum")
+		if(child_param_desc.get_hint()!="enum" && param_desc.get_hint()!="enum")
 		{
 			value=integer_widget->get_value_as_int();
 		}
@@ -395,7 +402,7 @@ Widget_ValueBase::on_grab_focus()
 		canvas_widget->grab_focus();
 		break;
 	case ValueBase::TYPE_INTEGER:
-		if(param_desc.get_hint()!="enum")
+		if(child_param_desc.get_hint()!="enum" && param_desc.get_hint()!="enum")
 		{
 			integer_widget->grab_focus();
 		}

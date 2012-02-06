@@ -8,6 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008 Gerald Young
+**  Copyright (c) 2011 Nikita Kitaev
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,6 +40,9 @@
 #include <ETL/misc>
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_composite.h>
 #include "app.h"
 
 #include "general.h"
@@ -92,48 +97,44 @@ Renderer_Ducks::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
-
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-
-
-	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-
+	const synfig::Point window_start(get_work_area()->get_window_tl());
 	const float pw(get_pw()),ph(get_ph());
 
-	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
 	const bool solid_lines(get_work_area()->solid_lines);
 
+	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
-
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
+
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+
+	cr->save();
+	cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+	cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 	// Render the strokes
 	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
-		Point window_start(window_startx,window_starty);
-		vector<Gdk::Point> points;
-		std::list<synfig::Point>::iterator iter2;
-		Point holder;
+		cr->save();
 
+		std::list<synfig::Point>::iterator iter2;
 		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
 		{
-			holder=*iter2-window_start;
-			holder[0]/=pw;holder[1]/=ph;
-			points.push_back(Gdk::Point(round_to_int(holder[0]),round_to_int(holder[1])));
+			cr->line_to(
+				((*iter2)[0]-window_start[0])/pw,
+				((*iter2)[1]-window_start[1])/ph
+				);
 		}
 
-		gc->set_rgb_fg_color(colorconv_synfig2gdk((*iter)->color));
-		gc->set_function(Gdk::COPY);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+		cr->set_line_width(1.0);
+		cr->set_source_rgb(
+			colorconv_synfig2gdk((*iter)->color).get_red_p(),
+			colorconv_synfig2gdk((*iter)->color).get_green_p(),
+			colorconv_synfig2gdk((*iter)->color).get_blue_p()
+			);
+		cr->stroke();
 
-		// Draw the stroke
-  		drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+		cr->restore();
 	}
 
 
@@ -141,7 +142,6 @@ Renderer_Ducks::render_vfunc(
 	// Render the beziers
 	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
 	{
-		Point window_start(window_startx,window_starty);
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
@@ -150,51 +150,45 @@ Renderer_Ducks::render_vfunc(
 		p2[0]/=pw;p2[1]/=ph;
 		c1[0]/=pw;c1[1]/=ph;
 		c2[0]/=pw;c2[1]/=ph;
-		bezier<Point> curve(p1,c1,c2,p2);
-		vector<Gdk::Point> points;
 
-		float f;
-		Point pt;
-		for(f=0;f<1.0;f+=1.0/17.0)
-		{
-			pt=curve(f);
-			points.push_back(Gdk::Point(round_to_int(pt[0]),round_to_int(pt[1])));
-		}
-		points.push_back(Gdk::Point(round_to_int(p2[0]),round_to_int(p2[1])));
+		cr->save();
 
-		// Draw the curve
-/*		if(solid_lines)
+		cr->move_to(p1[0], p1[1]);
+		cr->curve_to(c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]);
+
+/*
+		if (solid_lines)
 		{
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_1);
-			gc->set_function(Gdk::COPY);
-			gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_2);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->set_line_width(3.0);
+			cr->stroke_preserve();
+
+			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			cr->set_line_width(1.0);
+			cr->stroke();
 		}
 		else
 */
 		{
-//			gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-//			gc->set_function(Gdk::INVERT);
-//			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-//			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_1);
-			gc->set_function(Gdk::COPY);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
-			gc->set_rgb_fg_color(DUCK_COLOR_BEZIER_2);
-			gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points));
+			//Solid line background
+			cr->set_line_width(1.0);
+			cr->set_source_rgb(0,0,0); // DUCK_COLOR_BEZIER_1
+			cr->stroke_preserve();
 
+			//Dashes
+			cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0); //DUCK_COLOR_BEZIER_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			cr->stroke();
 		}
+		cr->restore();
 	}
 
 
 	const DuckList duck_list(get_work_area()->get_duck_list());
-	//Gtk::StateType state = Gtk::STATE_ACTIVE;
-	Gtk::ShadowType shadow=Gtk::SHADOW_OUT;
+
 	std::list<ScreenDuck> screen_duck_list;
 	const float radius((abs(pw)+abs(ph))*4);
 
@@ -208,8 +202,6 @@ Renderer_Ducks::render_vfunc(
 		if((*iter)->get_type() && (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
 			continue;
 
-//		Real x,y;
-	//	Gdk::Rectangle area;
 		Point sub_trans_point((*iter)->get_sub_trans_point());
 		Point sub_trans_origin((*iter)->get_sub_trans_origin());
 
@@ -225,8 +217,8 @@ Renderer_Ducks::render_vfunc(
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
-		point[0]=(point[0]-window_startx)/pw;
-		point[1]=(point[1]-window_starty)/ph;
+		point[0]=(point[0]-window_start[0])/pw;
+		point[1]=(point[1]-window_start[1])/ph;
 
 		bool has_connect(false);
 		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
@@ -239,13 +231,11 @@ Renderer_Ducks::render_vfunc(
 			origin=(*iter)->get_connect_duck()->get_trans_point();
 		}
 
-		origin[0]=(origin[0]-window_startx)/pw;
-		origin[1]=(origin[1]-window_starty)/ph;
+		origin[0]=(origin[0]-window_start[0])/pw;
+		origin[1]=(origin[1]-window_start[1])/ph;
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
 		bool hover(*iter==hover_duck || (*iter)->get_hover());
-
-		shadow = selected?Gtk::SHADOW_IN:Gtk::SHADOW_OUT;
 
 		if(get_work_area()->get_selected_value_node())
 		{
@@ -254,17 +244,20 @@ Renderer_Ducks::render_vfunc(
 				((value_desc.is_value_node()		&& get_work_area()->get_selected_value_node() == value_desc.get_value_node()) ||
 				 (value_desc.parent_is_value_node()	&& get_work_area()->get_selected_value_node() == value_desc.get_parent_value_node())))
 			{
-				gc->set_function(Gdk::COPY);
-				gc->set_rgb_fg_color(DUCK_COLOR_SELECTED);
-				//gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_line_attributes(2,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+				cr->save();
 
-				drawable->draw_rectangle(gc,false,
+				cr->rectangle(
 					round_to_int(point[0]-5),
 					round_to_int(point[1]-5),
 					10,
 					10
-				);
+					);
+
+				cr->set_line_width(2.0);
+				cr->set_source_rgb(1, 0, 0); //DUCK_COLOR_SELECTED
+				cr->stroke();
+
+				cr->restore();
 			}
 
 		}
@@ -272,28 +265,33 @@ Renderer_Ducks::render_vfunc(
 		if((*iter)->get_box_duck())
 		{
 			Point boxpoint((*iter)->get_box_duck()->get_trans_point());
-			boxpoint[0]=(boxpoint[0]-window_startx)/pw;
-			boxpoint[1]=(boxpoint[1]-window_starty)/ph;
+			boxpoint[0]=(boxpoint[0]-window_start[0])/pw;
+			boxpoint[1]=(boxpoint[1]-window_start[1])/ph;
 			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
 
-			gc->set_function(Gdk::COPY);
-			gc->set_rgb_fg_color(DUCK_COLOR_BOX_1);
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_rectangle(gc,false,
+			cr->save();
+
+			cr->rectangle(
 				round_to_int(tl[0]),
 				round_to_int(tl[1]),
 				round_to_int(abs(boxpoint[0]-point[0])),
 				round_to_int(abs(boxpoint[1]-point[1]))
-			);
-			gc->set_function(Gdk::COPY);
-			gc->set_rgb_fg_color(DUCK_COLOR_BOX_2);
-			gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			drawable->draw_rectangle(gc,false,
-				round_to_int(tl[0]),
-				round_to_int(tl[1]),
-				round_to_int(abs(boxpoint[0]-point[0])),
-				round_to_int(abs(boxpoint[1]-point[1]))
-			);
+				);
+
+			// Solid white box
+			cr->set_line_width(1.0);
+			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->stroke_preserve();
+
+			// Dashes
+			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			cr->stroke();
+
+			cr->restore();
 		}
 
 		ScreenDuck screen_duck;
@@ -345,6 +343,8 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)
 			screen_duck.color=(DUCK_COLOR_ANGLE);
+		else if((*iter)->get_type()&Duck::TYPE_WIDTHPOINT_POSITION)
+			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else
 			screen_duck.color=DUCK_COLOR_OTHER;
 
@@ -352,72 +352,83 @@ Renderer_Ducks::render_vfunc(
 
 		if(has_connect)
 		{
+			cr->save();
+
+			cr->move_to(origin[0], origin[1]);
+			cr->line_to(point[0], point[1]);
+
 			if(solid_lines)
 			{
-				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
-				gc->set_function(Gdk::COPY);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+				// Outside
+				cr->set_line_width(3.0);
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->stroke_preserve();
+
+				// Inside
+				cr->set_line_width(1.0);
+				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				cr->stroke();
 			}
 			else
 			{
-//				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-//				gc->set_function(Gdk::INVERT);
-//				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
-				gc->set_function(Gdk::COPY);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
-				gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
-				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
+				// White background
+				cr->set_line_width(1.0);
+				cr->set_source_rgb(0,0,0); //DUCK_COLOR_CONNECT_OUTSIDE
+				cr->stroke_preserve();
+
+				// Dashes on top of the background
+				cr->set_source_rgb(159.0/255,239.0/255,239.0/255); //DUCK_COLOR_CONNECT_INSIDE
+				std::valarray<double> dashes(2);
+				dashes[0]=5.0;
+				dashes[1]=5.0;
+				cr->set_dash(dashes, 0);
+				cr->stroke();
 			}
+
+			cr->restore();
 		}
 
 		if((*iter)->is_radius())
 		{
 			const Real mag((point-origin).mag());
-			const int d(round_to_int(mag*2));
-			const int x(round_to_int(origin[0]-mag));
-			const int y(round_to_int(origin[1]-mag));
+
+			cr->save();
+
+			cr->arc(
+				origin[0],
+				origin[1],
+				mag,
+				0,
+				M_PI*2
+				);
 
 			if(solid_lines)
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
-				gc->set_function(Gdk::COPY);
-				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				drawable->draw_arc(
-					gc,
-					false,
-					x,
-					y,
-					d,
-					d,
-					0,
-					360*64
-				);
-				gc->set_rgb_fg_color(Gdk::Color("#afafaf"));
+				cr->set_line_width(3.0);
+				cr->set_source_rgb(0,0,0);
+				cr->stroke_preserve();
+
+				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
 			}
 			else
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-				gc->set_function(Gdk::INVERT);
-			}
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+				cr->set_source_rgb(1.0,1.0,1.0);
 
-			drawable->draw_arc(
-				gc,
-				false,
-				x,
-				y,
-				d,
-				d,
-				0,
-				360*64
-			);
+				// Operator difference was added in Cairo 1.9.4
+				// It currently isn't supported by Cairomm
+#if CAIRO_VERSION >= 10904
+				cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+#else
+				// Fallback: set color to black
+				cr->set_source_rgb(0,0,0);
+#endif
+
+			}
+
+			cr->set_line_width(1.0);
+			cr->stroke();
+
+			cr->restore();
 
 			if(hover)
 			{
@@ -442,24 +453,128 @@ Renderer_Ducks::render_vfunc(
 
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
+
+				cr->save();
+
 				layout->set_text(real_mag.get_string());
 
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_1);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+1+6,
-					round_to_int(point[1])+1-8,
-					layout
-				);
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_2);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+6,
-					round_to_int(point[1])-8,
-					layout
-				);
+				cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+				cr->move_to(
+					point[0]+1+6,
+					point[1]+1-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+
+				cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+				cr->move_to(
+					point[0]+6,
+					point[1]-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->restore();
 			}
 
+		}
+
+		if((*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
+		{
+			if(hover)
+			{
+				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+				synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
+				synfig::ValueNode_WPList::Handle wplist=NULL;
+				ValueNode_Composite::Handle wpoint_composite=NULL;
+				Real radius=0.0;
+				Real new_value;
+				Point p(sub_trans_point-sub_trans_origin);
+				if(value_desc.parent_is_value_node())
+					wplist=synfig::ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+				if(wplist)
+				{
+					bool wplistloop(wplist->get_loop());
+					synfig::ValueNode_BLine::Handle bline(synfig::ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+					wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+					if(bline && wpoint_composite)
+					{
+						bool blineloop(bline->get_loop());
+						bool homogeneous=false;
+						// Retrieve the homogeneous layer parameter
+						std::set<Node*>::iterator iter;
+						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+							{
+								Layer::Handle layer;
+								layer=Layer::Handle::cast_dynamic(*iter);
+								if(layer && layer->get_name() == "advanced_outline")
+								{
+									homogeneous=layer->get_param("homogeneous").get(bool());
+									break;
+								}
+							}
+						WidthPoint wp((*wpoint_composite)(time));
+						if(wplistloop)
+						{
+							// The wplist is looped. This may require a position parameter
+							// outside the range of 0-1, so make sure that the position doesn't
+							// change drastically.
+							// First normalise the current position
+							Real value_old(wp.get_norm_position(wplistloop));
+							Real value_old_b(wp.get_bound_position(wplistloop));
+							// If it is homogeneous then convert it to standard
+							value_old=homogeneous?hom_to_std((*bline)(time), value_old, wplistloop, blineloop):value_old;
+							// grab a new position given by duck's position on the bline
+							Real value_new = synfig::find_closest_point((*bline)(time), p , radius, blineloop);
+							// calculate the difference between old and new positions
+							Real difference = fmod( fmod(value_new - value_old, 1.0) + 1.0 , 1.0);
+							//fmod is called twice to avoid negative values
+							if (difference > 0.5)
+								difference=difference-1.0;
+							// calculate a new value for the position
+							new_value=value_old+difference;
+							// restore the homogeneous value if needed
+							new_value = homogeneous?std_to_hom((*bline)(time), new_value, wplistloop, blineloop):new_value;
+							// this is the difference between the new value and the old value inside the boundaries
+							Real bound_diff((wp.get_lower_bound() + new_value*(wp.get_upper_bound()-wp.get_lower_bound()))-value_old_b);
+							// add the new diff to the current value
+							new_value = wp.get_position() + bound_diff;
+						}
+						else
+						{
+							// grab a new position given by duck's position on the bline
+							new_value = synfig::find_closest_point((*bline)(time), p , radius, blineloop);
+							// if it is homogeneous then convert to it
+							new_value=homogeneous?std_to_hom((*bline)(time), new_value, wplistloop, blineloop):new_value;
+							// convert the value inside the boundaries
+							new_value = wp.get_lower_bound()+new_value*(wp.get_upper_bound()-wp.get_lower_bound());
+						}
+						cr->save();
+						layout->set_text(strprintf("%2.3f", new_value));
+
+						cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+						cr->move_to(
+							point[0]+1+6,
+							point[1]+1-18
+							);
+						layout->show_in_cairo_context(cr);
+						cr->stroke();
+
+
+						cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+						cr->move_to(
+							point[0]+6,
+							point[1]-18
+							);
+						layout->show_in_cairo_context(cr);
+						cr->stroke();
+
+						cr->restore();
+					}
+				}
+			}
 		}
 
 	}
@@ -467,9 +582,18 @@ Renderer_Ducks::render_vfunc(
 
 	for(;screen_duck_list.size();screen_duck_list.pop_front())
 	{
-		int radius=4;
-		int outline=1;
 		Gdk::Color color(screen_duck_list.front().color);
+		double radius = 4;
+		double outline = 1;
+
+		// Draw the hovered duck last (on top of everything)
+		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
+		{
+			screen_duck_list.push_back(screen_duck_list.front());
+			continue;
+		}
+
+		cr->save();
 
 		if(!screen_duck_list.front().selected)
 		{
@@ -478,44 +602,31 @@ Renderer_Ducks::render_vfunc(
 			color.set_blue(color.get_blue()*2/3);
 		}
 
-		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
-		{
-			screen_duck_list.push_back(screen_duck_list.front());
-			continue;
-		}
-
 		if(screen_duck_list.front().hover)
 		{
-			radius+=2;
-			outline++;
+			radius += 1;
+			outline += 1;
 		}
 
-		gc->set_function(Gdk::COPY);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		gc->set_rgb_fg_color(DUCK_COLOR_OUTLINE);
-		drawable->draw_arc(
-			gc,
-			true,
-			round_to_int(screen_duck_list.front().pos[0]-radius),
-			round_to_int(screen_duck_list.front().pos[1]-radius),
-			radius*2,
-			radius*2,
+		cr->arc(
+			screen_duck_list.front().pos[0],
+			screen_duck_list.front().pos[1],
+			radius,
 			0,
-			360*64
-		);
+			M_PI*2
+			);
 
+		cr->set_source_rgb(
+			color.get_red_p(),
+			color.get_green_p(),
+			color.get_blue_p()
+			);
+		cr->fill_preserve();
 
-		gc->set_rgb_fg_color(color);
+		cr->set_line_width(outline);
+		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
+		cr->stroke();
 
-		drawable->draw_arc(
-			gc,
-			true,
-			round_to_int(screen_duck_list.front().pos[0]-radius+outline),
-			round_to_int(screen_duck_list.front().pos[1]-radius+outline),
-			radius*2-outline*2,
-			radius*2-outline*2,
-			0,
-			360*64
-		);
+		cr->restore();
 	}
 }

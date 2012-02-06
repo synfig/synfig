@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/window.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/menu.h>
@@ -62,7 +62,6 @@ class Toolbox : public Gtk::Window
 
 	DialogSettings dialog_settings;
 
-	Gtk::Tooltips tooltips;
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
 
@@ -78,6 +77,8 @@ class Toolbox : public Gtk::Window
 
 	void on_recent_files_changed();
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
 
 	void change_state_(const Smach::state_base *state);
 

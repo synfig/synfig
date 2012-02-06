@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,6 +56,8 @@ using namespace synfig;
 ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	random.set_seed(time(NULL));
 
 	set_link("radius",ValueNode_Const::create(Real(1)));
@@ -214,58 +217,6 @@ ValueNode_Random::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Random::link_count()const
-{
-	return 6;
-}
-
-String
-ValueNode_Random::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	case 1: return "radius";
-	case 2: return "seed";
-	case 3: return "speed";
-	case 4: return "smooth";
-	case 5: return "loop";
-	}
-	return String();
-}
-
-String
-ValueNode_Random::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	case 1: return _("Radius");
-	case 2: return _("Seed");
-	case 3: return _("Animation Speed");
-	case 4: return _("Interpolation");
-	case 5: return _("Loop Time");
-	}
-	return String();
-}
-
-int
-ValueNode_Random::get_link_index_from_name(const String &name)const
-{
-	if(name=="link"  ) return 0;
-	if(name=="radius") return 1;
-	if(name=="seed"  ) return 2;
-	if(name=="speed" ) return 3;
-	if(name=="smooth") return 4;
-	if(name=="loop"  ) return 5;
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Random::check_type(ValueBase::Type type)
 {
@@ -299,4 +250,51 @@ ValueNode_Random::randomize_seed()
 		random.set_seed(seed);
 		set_link(i, ValueNode_Const::create(seed));
 	}
+}
+
+LinkableValueNode::Vocab
+ValueNode_Random::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
+		.set_description(_("The value node source that provides the central value"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"radius")
+		.set_local_name(_("Radius"))
+		.set_description(_("The value of the maximum random difference"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"seed")
+		.set_local_name(_("Seed"))
+		.set_description(_("Seeds the random number generator"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"speed")
+		.set_local_name(_("Speed"))
+		.set_description(_("Defines how often a new random value is chosen (in choices per second) "))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"smooth")
+		.set_local_name(_("Interpolation"))
+		.set_description(_("Determines how the value is interpolated from one random choice to the next"))
+		.set_hint("enum")
+		.add_enum_value(RandomNoise::SMOOTH_DEFAULT,"default",_("No interpolation"))
+		.add_enum_value(RandomNoise::SMOOTH_LINEAR,"linear",_("Linear"))
+		.add_enum_value(RandomNoise::SMOOTH_COSINE,"cosine",_("Cosine"))
+		.add_enum_value(RandomNoise::SMOOTH_SPLINE,"spline",_("Spline"))
+		.add_enum_value(RandomNoise::SMOOTH_CUBIC,"cubic",_("Cubic"))
+	);
+
+
+	ret.push_back(ParamDesc(ValueBase(),"loop")
+		.set_local_name(_("Loop Time"))
+		.set_description(_("Makes the random value repeat after the given time"))
+	);
+	return ret;
 }

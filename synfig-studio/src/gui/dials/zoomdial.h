@@ -28,7 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 
@@ -43,8 +43,6 @@ namespace studio
 
 class ZoomDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::Button *zoom_in;
 	Gtk::Button *zoom_out;
 	Gtk::Button *zoom_fit;

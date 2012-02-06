@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 
@@ -47,27 +47,27 @@ namespace studio
 
 class FrameDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::Button *seek_begin;
+	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_prev_frame;
-	Gtk::Button *play_stop;
+	Gtk::Button *play_pause;
 	Gtk::Button *seek_next_frame;
+	Gtk::Button *seek_next_keyframe;
 	Gtk::Button *seek_end;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
-			const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 	FrameDial();
-
 	Glib::SignalProxy0<void> signal_seek_begin()		{ return seek_begin->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_keyframe()	{ return seek_prev_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_frame()	{ return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play_stop()			{ return play_stop->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_play_pause()		{ return play_pause->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_next_frame()	{ return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()			{ return seek_end->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_next_keyframe()	{ return seek_next_keyframe->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_end()		{ return seek_end->signal_clicked(); }
 
-	Gtk::Button *get_play_button() { return play_stop; }
+	Gtk::Button *get_play_button() { return play_pause; }
 
 }; // END of class FrameDial
 

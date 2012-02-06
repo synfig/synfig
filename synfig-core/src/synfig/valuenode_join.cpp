@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,6 +56,8 @@ using namespace synfig;
 ValueNode_Join::ValueNode_Join(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
@@ -63,11 +66,11 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 
 		// "insert item (smart)" inserts before the selected entry, making it hard to append to the end
 		// add an extra element at the end to allow the easy insertion of text after the given value's string
-		v.push_back("...");
+		v.push_back("");
 
 		set_link("strings",ValueNode_DynamicList::create_from(v));
 		set_link("before",ValueNode_Const::create(String("")));
-		set_link("separator",ValueNode_Const::create(String(" ")));
+		set_link("separator",ValueNode_Const::create(String("")));
 		set_link("after",ValueNode_Const::create(String("")));
 		break;
 	}
@@ -172,56 +175,40 @@ ValueNode_Join::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Join::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Join::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return "strings";
-		case 1: return "before";
-		case 2: return "separator";
-		case 3: return "after";
-	}
-	return String();
-}
-
-String
-ValueNode_Join::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-		case 0: return _("Strings");
-		case 1: return _("Before");
-		case 2: return _("Separator");
-		case 3: return _("After");
-	}
-	return String();
-}
-
-int
-ValueNode_Join::get_link_index_from_name(const String &name)const
-{
-	if (name=="strings") return 0;
-	if (name=="before") return 1;
-	if (name=="separator") return 2;
-	if (name=="after") return 3;
-
-	throw Exception::BadLinkName(name);
-}
-
 bool
 ValueNode_Join::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_STRING;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Join::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"strings")
+		.set_local_name(_("Strings"))
+		.set_description(_("The List of strings to join"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"before")
+		.set_local_name(_("Before"))
+		.set_description(_("The string to place before the joined strings"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"separator")
+		.set_local_name(_("Separator"))
+		.set_description(_("The string to place between each string joined"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"after")
+		.set_local_name(_("After"))
+		.set_description(_("The string to place after the joined strings"))
+	);
+
+	return ret;
 }

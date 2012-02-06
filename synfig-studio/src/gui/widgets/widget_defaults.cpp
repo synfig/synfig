@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2008 Carlos López
+**  Copyright (c) 2008, 2011, 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -42,8 +42,8 @@
 #include <synfig/exception.h>
 #include <synfigapp/main.h>
 #include "canvasview.h"
-#include "widgets/widget_distance.h"
 #include "widgets/widget_enum.h"
+#include "widgets/widget_distance.h"
 
 #include "general.h"
 
@@ -212,7 +212,7 @@ Widget_Defaults::Widget_Defaults()
 		widget_otln_color->set_size_request(16,16);
 		widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
 		subtable->attach(*widget_otln_color, 0, 4, 0, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*widget_otln_color,_("Outline Color"));
+		widget_otln_color->set_tooltip_text(_("Outline Color"));
 
 		// Fill Color
 		widget_fill_color=manage(new Widget_Color());
@@ -220,7 +220,7 @@ Widget_Defaults::Widget_Defaults()
 		widget_fill_color->set_size_request(16,16);
 		widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
 		subtable->attach(*widget_fill_color, 3, 7, 3, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*widget_fill_color,_("Fill Color"));
+		widget_fill_color->set_tooltip_text(_("Fill Color"));
 
 		Gtk::Image* icon;
 
@@ -237,7 +237,7 @@ Widget_Defaults::Widget_Defaults()
 		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_padding(0,0);
 		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
 		subtable->attach(*button_swap, 4, 7, 0, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*button_swap,_("Swap Fill and\nOutline Colors"));
+		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
 		// Reset button
 		Gtk::Button* button_reset(manage(new Gtk::Button()));
@@ -251,7 +251,7 @@ Widget_Defaults::Widget_Defaults()
 		//button_reset->set_size_request(16/3,16/3);
 		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
 		subtable->attach(*button_reset, 0, 3, 4, 7, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*button_reset,_("Reset Colors to Black and White"));
+		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
 
 		attach(*subtable, 0, 1, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 1, 1);
@@ -263,7 +263,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_brush->show();
 	widget_brush->set_size_request(36,36);
 	attach(*widget_brush,1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 1, 1);
-	tooltips_.set_tip(*widget_brush,_("Brush Preview"));
+	widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	widget_bline_width=manage(new Widget_Distance());
 	widget_bline_width->show();
@@ -273,32 +273,40 @@ Widget_Defaults::Widget_Defaults()
 	widget_bline_width->set_size_request(24,-1);
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_bline_width_changed));
 	attach(*widget_bline_width,1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	tooltips_.set_tip(*widget_bline_width,_("Brush Size"));
+	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
 
 	widget_blend_method=manage(new Widget_Enum());
 	widget_blend_method->show();
-	widget_blend_method->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
+	widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
 	widget_blend_method->set_param_desc(
 		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
 	);
 	attach(*widget_blend_method,0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
-	tooltips_.set_tip(*widget_blend_method,_("Default Blend Method"));
+	widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	widget_interpolation=manage(new Widget_Enum());
 	widget_interpolation->show();
-	widget_interpolation->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_interpolation_changed));
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_interpolation_changed));
 	widget_interpolation->set_param_desc(
 		ParamDesc("interpolation")
 			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("_TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("_Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("_Ease In/Out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("_Linear"))
+			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
+	widget_interpolation->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
+
 	attach(*widget_interpolation,0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
-	tooltips_.set_tip(*widget_interpolation,_("Default Interpolation"));
+	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 
 	widget_opacity=manage(new Gtk::HScale(0.0f,1.01f,0.01f));
 	widget_opacity->show();
@@ -306,14 +314,14 @@ Widget_Defaults::Widget_Defaults()
 	widget_opacity->set_value_pos(Gtk::POS_LEFT);
 	widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));
 	attach(*widget_opacity,0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
-	tooltips_.set_tip(*widget_opacity,_("Default Opacity"));
+	widget_opacity->set_tooltip_text(_("Default Opacity"));
 
 	widget_gradient=manage(new Widget_Gradient());
 	widget_gradient->show();
 	widget_gradient->set_size_request(-1,GRADIENT_HEIGHT);
 	widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
 	attach(*widget_gradient,0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
-	tooltips_.set_tip(*widget_gradient,_("Default Gradient"));
+	widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 
 	// Signals
@@ -470,6 +478,7 @@ Widget_Defaults::on_gradient_clicked()
 	App::dialog_gradient->set_default_button_set_sensitive(false);
 	App::dialog_gradient->present();
 }
+
 
 /*
 bool

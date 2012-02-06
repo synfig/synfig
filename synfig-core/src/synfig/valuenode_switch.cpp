@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,8 @@ ValueNode_Switch::ValueNode_Switch(const ValueBase::Type &x):
 ValueNode_Switch::ValueNode_Switch(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	set_link("link_off",x);
 	set_link("link_on",x);
 	set_link("switch",ValueNode_Const::create(bool(false)));
@@ -108,49 +111,6 @@ ValueNode_Switch::get_link_vfunc(int i)const
 	return 0;
 }
 
-int
-ValueNode_Switch::link_count()const
-{
-	return 3;
-}
-
-String
-ValueNode_Switch::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link_off";
-	case 1: return "link_on";
-	case 2: return "switch";
-	}
-	return String();
-}
-
-String
-ValueNode_Switch::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "Link Off";
-	case 1: return "Link On";
-	case 2: return "Switch";
-	}
-	return String();
-}
-
-int
-ValueNode_Switch::get_link_index_from_name(const String &name)const
-{
-	if(name=="link_off") return 0;
-	if(name=="link_on" ) return 1;
-	if(name=="switch"  ) return 2;
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_Switch::operator()(Time t)const
 {
@@ -179,4 +139,30 @@ ValueNode_Switch::check_type(ValueBase::Type type)
 	if(type)
 		return true;
 	return false;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Switch::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"link_off")
+		.set_local_name(_("Link Off"))
+		.set_description(_("The value node returned when the switch is off"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"link_on")
+		.set_local_name(_("Link On"))
+		.set_description(_("The value node returned when the switch is on"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"switch")
+		.set_local_name(_("Switch"))
+		.set_description(_("When checked, returns 'Link On', otherwise returns 'Link Off'"))
+	);
+
+	return ret;
 }

@@ -32,7 +32,7 @@
 #include "dialogsettings.h"
 #include <synfig/string.h>
 #include <gtkmm/table.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/handlebox.h>
@@ -71,7 +71,6 @@ private:
 
 	synfig::String name_;
 	synfig::String local_name_;
-	Gtk::Tooltips tooltips_;
 	Gtk::Frame frame_;
 	Gtk::Label title_label_;
 	//Gtk::HBox button_box_;
@@ -109,8 +108,6 @@ public:
 	void set_local_name(const synfig::String&);
 
 	void clear();
-
-	Gtk::Tooltips& get_tooltips() { return tooltips_; }
 
 	//DialogSettings& settings() { return dialog_settings; }
 	//const DialogSettings& settings()const { return dialog_settings; }

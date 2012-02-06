@@ -83,6 +83,8 @@ src/modules/mod_geometry/checkerboard.h
 src/modules/mod_geometry/circle.cpp
 src/modules/mod_geometry/circle.h
 src/modules/mod_geometry/main.cpp
+src/modules/mod_geometry/advanced_outline.cpp
+src/modules/mod_geometry/advanced_outline.h
 src/modules/mod_geometry/outline.cpp
 src/modules/mod_geometry/outline.h
 src/modules/mod_geometry/rectangle.cpp
@@ -359,10 +361,22 @@ src/synfig/valuenode_timestring.cpp
 src/synfig/valuenode_timestring.h
 src/synfig/valuenode_twotone.cpp
 src/synfig/valuenode_twotone.h
+src/synfig/valuenode_vectorangle.cpp
+src/synfig/valuenode_vectorangle.h
+src/synfig/valuenode_vectorlength.cpp
+src/synfig/valuenode_vectorlength.h
+src/synfig/valuenode_vectorx.cpp
+src/synfig/valuenode_vectorx.h
+src/synfig/valuenode_vectory.cpp
+src/synfig/valuenode_vectory.h
+src/synfig/valuenode_wplist.cpp
+src/synfig/valuenode_wplist.h
 src/synfig/vector.h
 src/synfig/version.h
 src/synfig/waypoint.cpp
 src/synfig/waypoint.h
+src/synfig/widthpoint.cpp
+src/synfig/widthpoint.h
 # Disabled because they are not built
 # src/template.cpp
 # src/template.h

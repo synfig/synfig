@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -282,6 +283,180 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 
 }
 
+Real
+synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size = list.size(), from_vertex;
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
+	if(!bline_loop) size--;
+	if(size < 1) return Real();
+	Real int_pos((int)pos);
+	Real one(0.0);
+	if (index_loop)
+	{
+		pos = pos - int_pos;
+		if (pos < 0)
+		{
+			pos++;
+			one=1.0;
+		}
+	}
+	else
+	{
+		if (pos < 0) pos = 0;
+		if (pos > 1) pos = 1;
+	}
+	// Calculate the lengths and the total length
+	Real tl=0, pl=0;
+	std::vector<Real> lengths;
+	vector<BLinePoint>::const_iterator iter, next;
+	tl=bline_length(bline, bline_loop, &lengths);
+	// If the total length of the bline is zero return pos
+	if(tl==0.0) return pos;
+	from_vertex = int(pos*size);
+	// Calculate the partial length until the bezier that holds the current
+	std::vector<Real>::const_iterator liter(lengths.begin());
+	for(int i=0;i<from_vertex; i++, liter++)
+		pl+=*liter;
+	// Calculate the remaining length of the position over current bezier
+	// Setup the curve of the current bezier.
+	next=list.begin();
+	iter = bline_loop ? --list.end() : next++;
+	if (from_vertex > size-1) from_vertex = size-1; // if we are at the end of the last bezier
+	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
+	blinepoint1 = *(next+from_vertex);
+	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+	// add the distance on the bezier we are on.
+	pl+=curve.find_distance(0.0, pos*size - from_vertex);
+	// and return the homogenous position
+	return int_pos+pl/tl-one;
+}
+
+Real
+synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size = list.size(), from_vertex(0);
+	// trivial cases
+	if(pos == 0.0 || pos == 1.0)
+		return pos;
+	if(!bline_loop) size--;
+	if(size < 1) return Real();
+	Real int_pos=int(pos);
+	Real one(0.0);
+	if (index_loop)
+	{
+		pos = pos - int_pos;
+		if (pos < 0)
+		{
+			pos++;
+			one=1.0;
+		}
+	}
+	else
+	{
+		if (pos < 0) pos = 0;
+		if (pos > 1) pos = 1;
+	}
+	// Calculate the lengths and the total length
+	Real tl(0), pl(0), mpl, bl;
+	std::vector<Real> lengths;
+	vector<BLinePoint>::const_iterator iter, next;
+	tl=bline_length(bline, bline_loop,&lengths);
+	// Calculate the my partial length (the length where pos is)
+	mpl=pos*tl;
+	next=list.begin();
+	iter = bline_loop ? --list.end() : next++;
+	std::vector<Real>::const_iterator liter(lengths.begin());
+	// Find the previous bezier where we pos is placed and the sum
+	// of lengths to it (pl)
+	// also remember the bezier's length where we stop
+	while(mpl > pl && next!=list.end())
+	{
+		pl+=*liter;
+		bl=*liter;
+		iter=next;
+		next++;
+		liter++;
+		from_vertex++;
+	}
+	// correct the iters and partial length in case we passed over
+	if(pl > mpl)
+	{
+		liter--;
+		next--;
+		if(next==list.begin())
+			iter=--list.end();
+		else
+			iter--;
+		pl-=*liter;
+		from_vertex--;
+	}
+	// set up the cureve
+	blinepoint0 = *iter;
+	blinepoint1 = *next;
+	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+	// Find the solution to which is the standard postion which matches the current
+	// homogenous position
+	// Secant method: http://en.wikipedia.org/wiki/Secant_method
+	Real sn(0.0); // the standard position on current bezier
+	Real sn1(0.0), sn2(1.0);
+	Real t0((mpl-pl)/bl); // the homogenous position on the current bezier
+	int iterations=0;
+	int max_iterations=100;
+	Real max_error(0.00001);
+	Real error;
+	Real fsn1(t0-curve.find_distance(0.0,sn1)/bl);
+	Real fsn2(t0-curve.find_distance(0.0,sn2)/bl);
+	Real fsn;
+	do
+	{
+		sn=sn1-fsn1*((sn1-sn2)/(fsn1-fsn2));
+		fsn=t0-curve.find_distance(0.0, sn)/bl;
+		sn2=sn1;
+		sn1=sn;
+		fsn2=fsn1;
+		fsn1=fsn;
+		error=fabs(fsn2-fsn1);
+		iterations++;
+	}while (error>max_error && max_iterations > iterations);
+	// convert the current standard index (s) to the bline's standard index
+	// and return it
+	return int_pos+Real(from_vertex + sn)/size-one;
+}
+
+Real
+synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths)
+{
+	BLinePoint blinepoint0, blinepoint1;
+	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	int size(list.size());
+	if(!bline_loop) size--;
+	if(size < 1) return Real();
+	// Calculate the lengths and the total length
+	Real tl(0), l;
+	vector<BLinePoint>::const_iterator iter, next(list.begin());
+	iter = bline_loop ? --list.end() : next++;
+	for(;next!=list.end(); next++)
+	{
+		blinepoint0 = *iter;
+		blinepoint1 = *next;
+		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
+		l=curve.length();
+		if(lengths) lengths->push_back(l);
+		tl+=l;
+		iter=next;
+	}
+	return tl;
+}
 /* === M E T H O D S ======================================================= */
 
 
@@ -409,39 +584,33 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	ValueNode_BLine::ListEntry ret;
 
 	synfig::BLinePoint prev,next;
-
+	synfig::BLinePoint bline_point;
 	int prev_i,next_i;
 
-	index=index%link_count();
-
-	assert(index>=0);
+	if(link_count())
+	{
+		index=index%link_count();
+		assert(index>=0);
+		if(!list[index].status_at_time(time))
+			next_i=find_next_valid_entry(index,time);
+		else
+			next_i=index;
+		prev_i=find_prev_valid_entry(index,time);
+		next=(*list[next_i].value_node)(time);
+		prev=(*list[prev_i].value_node)(time);
+		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
+		etl::derivative< etl::hermite<Vector> > deriv(curve);
+		bline_point.set_vertex(curve(origin));
+		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
+		bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
+		bline_point.set_tangent2(bline_point.get_tangent1());
+		bline_point.set_split_tangent_flag(false);
+		bline_point.set_origin(origin);
+	}
 	ret.index=index;
 	ret.set_parent_value_node(this);
-
-	if(!list[index].status_at_time(time))
-		next_i=find_next_valid_entry(index,time);
-	else
-		next_i=index;
-	prev_i=find_prev_valid_entry(index,time);
-
-	//synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
-
-	next=(*list[next_i].value_node)(time);
-	prev=(*list[prev_i].value_node)(time);
-
-	etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
-
-	synfig::BLinePoint bline_point;
-	bline_point.set_vertex(curve(origin));
-	bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
-	bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
-	bline_point.set_tangent2(bline_point.get_tangent1());
-	bline_point.set_split_tangent_flag(false);
-	bline_point.set_origin(origin);
-
 	ret.value_node=ValueNode_Composite::create(bline_point);
-
+	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
 }
 
@@ -842,4 +1011,18 @@ bool
 ValueNode_BLine::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_LIST;
+}
+
+LinkableValueNode::Vocab
+ValueNode_BLine::get_children_vocab_vfunc()const
+{
+	LinkableValueNode::Vocab ret;
+	for(unsigned int i=0; i<list.size();i++)
+	{
+		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
+			.set_local_name(etl::strprintf(_("Vertex %03d"),i+1))
+		);
+	}
+
+	return ret;
 }

@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -155,18 +156,34 @@ StateSmoothMove::~StateSmoothMove()
 void
 StateSmoothMove_Context::load_settings()
 {
-	String value;
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		String value;
 
-	if(settings.get_value("smooth_move.radius",value))
-		set_radius(atof(value.c_str()));
-	else
-		set_radius(1.0f);
+		if(settings.get_value("smooth_move.radius",value))
+			set_radius(atof(value.c_str()));
+		else
+			set_radius(1.0f);
+	}
+	catch(...)
+	{
+		synfig::warning("State SmothMove: Caught exception when attempting to load settings.");
+	}
 }
 
 void
 StateSmoothMove_Context::save_settings()
 {
-	settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+	try
+	{
+	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+	}
+	catch(...)
+	{
+		synfig::warning("State SmoothMove: Caught exception when attempting to save settings.");
+	}
 }
 
 StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):

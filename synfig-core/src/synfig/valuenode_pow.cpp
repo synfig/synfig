@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -54,6 +55,8 @@ using namespace synfig;
 ValueNode_Pow::ValueNode_Pow(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
+	Vocab ret(get_children_vocab());
+	set_children_vocab(ret);
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -106,47 +109,6 @@ ValueNode_Pow::get_link_vfunc(int i)const
 	if(i==2) return epsilon_;
 	if(i==3) return infinite_;
 	return 0;
-}
-
-int
-ValueNode_Pow::link_count()const
-{
-	return 4;
-}
-
-String
-ValueNode_Pow::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return _("Base");
-	if(i==1) return _("Power");
-	if(i==2) return _("Epsilon");
-	if(i==3) return _("Infinite");
-	return String();
-}
-
-String
-ValueNode_Pow::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	if(i==0) return "base";
-	if(i==1) return "power";
-	if(i==2) return "epsilon";
-	if(i==3) return "infinite";
-	return String();
-}
-
-int
-ValueNode_Pow::get_link_index_from_name(const String &name)const
-{
-	if(name=="base")     return 0;
-	if(name=="power")    return 1;
-	if(name=="epsilon")  return 2;
-	if(name=="infinite") return 3;
-
-	throw Exception::BadLinkName(name);
 }
 
 ValueBase
@@ -204,4 +166,35 @@ bool
 ValueNode_Pow::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_REAL;
+}
+
+LinkableValueNode::Vocab
+ValueNode_Pow::get_children_vocab_vfunc()const
+{
+	if(children_vocab.size())
+		return children_vocab;
+
+	LinkableValueNode::Vocab ret;
+
+	ret.push_back(ParamDesc(ValueBase(),"base")
+		.set_local_name(_("Base"))
+		.set_description(_("The base to be raised to the power"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"power")
+		.set_local_name(_("Power"))
+		.set_description(_("The power used to raise the base"))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		.set_local_name(_("Epsilon"))
+		.set_description(_("Value used to compare base or power with zero "))
+	);
+
+		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		.set_local_name(_("Infinite"))
+		.set_description(_("Returned value when result tends to infinite"))
+	);
+
+	return ret;
 }
