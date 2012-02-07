@@ -609,6 +609,9 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 		//round to smallest scale (fit entire thing in window without distortion)
 		if(sx > sy) sx = sy;
+
+		//cleanup previous size request
+		draw_area.set_size_request();
 	}
 
 	//limit zoom level from 0.01 to 10 times
