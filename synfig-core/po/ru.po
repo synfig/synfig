@@ -1,27 +1,25 @@
 # Translation of ru to Russian for Synfig.
-# Copyright (C) 2011 Synfig Contributors
+# Copyright (C) 2012 Synfig Contributors
 # This file is distributed under the same license as the Synfig package.
 #
 # Translators:
 # Александр Прокудин <alexandre.prokoudine@gmail.com>, 2010.
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011.
-# morevnaproject <ksee.zelgadis@gmail.com>, 2011.
+# Konstantin Dmitriev <ksee.zelgadis@gmail.com>, 2011, 2012.
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
-"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
-"group_id=144022&atid=757416\n"
-"POT-Creation-Date: 2011-12-03 10:59+0800\n"
-"PO-Revision-Date: 2011-11-12 13:27+0000\n"
-"Last-Translator: Pierrot <Retro47@Yandex.ru>, 2011\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
+"POT-Creation-Date: 2012-01-27 20:04+0100\n"
+"PO-Revision-Date: 2012-01-30 07:34+0000\n"
+"Last-Translator: Konstantin Dmitriev <ksee.zelgadis@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #: src/modules/mod_example/filledrect.cpp:58
 msgid "Filled Rectangle"
@@ -83,7 +81,7 @@ msgid "Feather Y"
 msgstr "Растушёвка по Y"
 
 #: src/modules/mod_example/filledrect.cpp:144 src/modules/lyr_std/bevel.cpp:67
-#: src/modules/mod_geometry/advanced_outline.cpp:1123
+#: src/modules/mod_geometry/advanced_outline.cpp:1159
 msgid "Bevel"
 msgstr "Фаска"
 
@@ -356,7 +354,7 @@ msgstr "Недопустимая многобайтовая последоват
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Can't parse multibyte character.\n"
-msgstr "Невозможно разобрать многобайтовый символ.\n"
+msgstr "Невозможно разобрать многобайтовый символ.\\n"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
@@ -980,7 +978,7 @@ msgid "Final point of the source line"
 msgstr "Последняя точка линии источника"
 
 #: src/modules/lyr_std/curvewarp.cpp:407
-#: src/modules/mod_geometry/advanced_outline.cpp:1085
+#: src/modules/mod_geometry/advanced_outline.cpp:1121
 #: src/modules/mod_geometry/outline.cpp:811
 #: src/modules/mod_geometry/region.cpp:233
 #: src/modules/mod_gradient/curvegradient.cpp:546
@@ -993,7 +991,7 @@ msgid "List of BLine Points where the source line is curved to"
 msgstr "Список точек Би-Линии, куда изогнута линия источника"
 
 #: src/modules/lyr_std/curvewarp.cpp:413
-#: src/modules/mod_geometry/advanced_outline.cpp:1140
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
 #: src/modules/mod_gradient/curvegradient.cpp:567
 msgid "Fast"
 msgstr "Быстро"
@@ -1091,11 +1089,11 @@ msgstr "Не удалось записать информационный заг
 msgid "Unable to open pipe to encodedv"
 msgstr ""
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:199
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:206
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:216
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:270
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:288
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
 msgid "Unable to open pipe to ffmpeg"
 msgstr ""
 
@@ -1311,7 +1309,7 @@ msgstr ""
 msgid "No vertices in bline "
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1087
+#: src/modules/mod_geometry/advanced_outline.cpp:1123
 #: src/modules/mod_geometry/outline.cpp:814
 #: src/modules/mod_geometry/region.cpp:235
 #: src/modules/mod_gradient/curvegradient.cpp:549
@@ -1319,36 +1317,36 @@ msgstr ""
 msgid "A list of BLine Points"
 msgstr "Список узлов кривой Безье"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1091
+#: src/modules/mod_geometry/advanced_outline.cpp:1127
 #: src/modules/mod_geometry/outline.cpp:828
 msgid "Outline Width"
 msgstr "Толщина контура"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1092
+#: src/modules/mod_geometry/advanced_outline.cpp:1128
 #: src/modules/mod_geometry/outline.cpp:829
 msgid "Global width of the outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1096
+#: src/modules/mod_geometry/advanced_outline.cpp:1132
 #: src/modules/mod_geometry/outline.cpp:834
 msgid "Expand"
 msgstr "Расширение"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1097
+#: src/modules/mod_geometry/advanced_outline.cpp:1133
 #: src/modules/mod_geometry/outline.cpp:835
 msgid "Value to add to the global width"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1100
+#: src/modules/mod_geometry/advanced_outline.cpp:1136
 msgid "Tip Type at Start"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1101
+#: src/modules/mod_geometry/advanced_outline.cpp:1137
 msgid "Defines the Tip type of the first bline point when bline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1103
-#: src/modules/mod_geometry/advanced_outline.cpp:1112
+#: src/modules/mod_geometry/advanced_outline.cpp:1139
+#: src/modules/mod_geometry/advanced_outline.cpp:1148
 #: src/synfig/valuenode_composite.cpp:548
 #: src/synfig/valuenode_composite.cpp:558
 #: src/synfig/valuenode_composite.cpp:587
@@ -1356,8 +1354,8 @@ msgstr ""
 msgid "Rounded Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1104
-#: src/modules/mod_geometry/advanced_outline.cpp:1113
+#: src/modules/mod_geometry/advanced_outline.cpp:1140
+#: src/modules/mod_geometry/advanced_outline.cpp:1149
 #: src/synfig/valuenode_composite.cpp:549
 #: src/synfig/valuenode_composite.cpp:559
 #: src/synfig/valuenode_composite.cpp:588
@@ -1365,8 +1363,8 @@ msgstr ""
 msgid "Squared Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1105
-#: src/modules/mod_geometry/advanced_outline.cpp:1114
+#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/advanced_outline.cpp:1150
 #: src/synfig/valuenode_composite.cpp:550
 #: src/synfig/valuenode_composite.cpp:560
 #: src/synfig/valuenode_composite.cpp:589
@@ -1374,8 +1372,8 @@ msgstr ""
 msgid "Peak Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1106
-#: src/modules/mod_geometry/advanced_outline.cpp:1115
+#: src/modules/mod_geometry/advanced_outline.cpp:1142
+#: src/modules/mod_geometry/advanced_outline.cpp:1151
 #: src/synfig/valuenode_composite.cpp:551
 #: src/synfig/valuenode_composite.cpp:561
 #: src/synfig/valuenode_composite.cpp:590
@@ -1383,83 +1381,84 @@ msgstr ""
 msgid "Flat Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1109
+#: src/modules/mod_geometry/advanced_outline.cpp:1145
 msgid "Tip Type at End"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1110
+#: src/modules/mod_geometry/advanced_outline.cpp:1146
 msgid "Defines the Tip type of the last bline point when bline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1118
+#: src/modules/mod_geometry/advanced_outline.cpp:1154
 msgid "Cusps Type"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1119
+#: src/modules/mod_geometry/advanced_outline.cpp:1155
 #: src/modules/mod_geometry/outline.cpp:840
 msgid "Determines cusp type"
 msgstr "Определяет тип пиков"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1121
+#: src/modules/mod_geometry/advanced_outline.cpp:1157
 msgid "Sharp"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1122
+#: src/modules/mod_geometry/advanced_outline.cpp:1158
 msgid "Rounded"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1126
+#: src/modules/mod_geometry/advanced_outline.cpp:1162
 msgid "Smoothness"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1127
+#: src/modules/mod_geometry/advanced_outline.cpp:1163
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1130
+#: src/modules/mod_geometry/advanced_outline.cpp:1166
 #: src/modules/mod_geometry/outline.cpp:856
 #: src/synfig/valuenode_blinecalctangent.cpp:271
 #: src/synfig/valuenode_blinecalcvertex.cpp:216
+#: src/synfig/valuenode_blinecalcwidth.cpp:226
 msgid "Homogeneous"
 msgstr "Однородность"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1131
+#: src/modules/mod_geometry/advanced_outline.cpp:1167
 msgid "When true, widthpoints positions are bline length based"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1134
+#: src/modules/mod_geometry/advanced_outline.cpp:1170
 msgid "Width Point List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1137
+#: src/modules/mod_geometry/advanced_outline.cpp:1173
 msgid "List of width Points that defines the variable width"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/advanced_outline.cpp:1177
 msgid "When checked outline renders faster, but less accurate"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1144
+#: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "Dashed Outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1146
+#: src/modules/mod_geometry/advanced_outline.cpp:1182
 msgid "When checked outline is dashed"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1149
+#: src/modules/mod_geometry/advanced_outline.cpp:1185
 msgid "Dash Item List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1152
+#: src/modules/mod_geometry/advanced_outline.cpp:1188
 msgid "List of dash items that defines the dashed outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1155
+#: src/modules/mod_geometry/advanced_outline.cpp:1191
 msgid "Dash Items Offset"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1158
+#: src/modules/mod_geometry/advanced_outline.cpp:1194
 msgid "Distance to Offset the Dash Items"
 msgstr ""
 
@@ -1743,7 +1742,7 @@ msgstr "Смещение"
 
 #: src/modules/mod_noise/distort.cpp:206
 msgid "How big the distortion displaces the context"
-msgstr ""
+msgstr "Величина искажения"
 
 #: src/modules/mod_noise/distort.cpp:211
 msgid "The distance between distortions"
@@ -1819,7 +1818,7 @@ msgstr "Градиентный шум"
 
 #: src/modules/mod_noise/noise.cpp:268
 msgid "Size of the noise"
-msgstr ""
+msgstr "Размер шума"
 
 #: src/modules/mod_noise/noise.cpp:293
 msgid "Do Alpha"
@@ -1867,7 +1866,8 @@ msgid "Speed"
 msgstr "Скорость"
 
 #: src/modules/mod_noise/valuenode_random.cpp:280
-msgid "Defines how often a new random value is chosen (in choices per second) "
+msgid ""
+"Defines how often a new random value is chosen (in choices per second) "
 msgstr ""
 
 #: src/modules/mod_noise/valuenode_random.cpp:285
@@ -1877,7 +1877,7 @@ msgstr ""
 
 #: src/modules/mod_noise/valuenode_random.cpp:287
 msgid "No interpolation"
-msgstr ""
+msgstr "Без интерполяции"
 
 #: src/modules/mod_noise/valuenode_random.cpp:296
 msgid "Loop Time"
@@ -1925,7 +1925,8 @@ msgstr "Скорость по перпендикуляру"
 
 #: src/modules/mod_particle/plant.cpp:425
 msgid ""
-"Amount to which shoots tend to grow perpendicular to the tangent to the BLine"
+"Amount to which shoots tend to grow perpendicular to the tangent to the "
+"BLine"
 msgstr "Число, до которого побеги растут перпендикулярно кривой Безье"
 
 #: src/modules/mod_particle/plant.cpp:429
@@ -2015,8 +2016,8 @@ msgstr ""
 msgid "%s was not in PPM format"
 msgstr "%s был не в формате PPM"
 
-#: src/synfig/canvas.cpp:777 src/synfig/canvas.cpp:842
-#: src/synfig/canvas.cpp:865
+#: src/synfig/canvas.cpp:780 src/synfig/canvas.cpp:845
+#: src/synfig/canvas.cpp:868
 msgid "in line"
 msgstr ""
 
@@ -2337,235 +2338,240 @@ msgid ""
 msgstr ""
 "У <waypoint> найден заполненный атрибут \"use\". Содержимое игнорируется..."
 
-#: src/synfig/loadcanvas.cpp:1327 src/synfig/loadcanvas.cpp:1339
+#: src/synfig/loadcanvas.cpp:1323
+#, c-format
+msgid "Unknown ID (%s) referenced in waypoint"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:1329 src/synfig/loadcanvas.cpp:1341
 #, c-format
 msgid "<%s> is missing its data"
 msgstr "В <%s> отсутствуют данные"
 
-#: src/synfig/loadcanvas.cpp:1356
+#: src/synfig/loadcanvas.cpp:1358
 msgid "Bad data for <waypoint>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1371
+#: src/synfig/loadcanvas.cpp:1373
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1413 src/synfig/loadcanvas.cpp:1430
+#: src/synfig/loadcanvas.cpp:1417 src/synfig/loadcanvas.cpp:1436
 #, c-format
 msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1491
+#: src/synfig/loadcanvas.cpp:1497
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1499
+#: src/synfig/loadcanvas.cpp:1505
 #, c-format
 msgid "Bad type in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1508
+#: src/synfig/loadcanvas.cpp:1514
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1517
+#: src/synfig/loadcanvas.cpp:1523
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1543 src/synfig/loadcanvas.cpp:1611
+#: src/synfig/loadcanvas.cpp:1549 src/synfig/loadcanvas.cpp:1620
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr "'%s' уже определено в <%s>"
 
-#: src/synfig/loadcanvas.cpp:1553
+#: src/synfig/loadcanvas.cpp:1562
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1562
+#: src/synfig/loadcanvas.cpp:1571
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1586
+#: src/synfig/loadcanvas.cpp:1595
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1626
+#: src/synfig/loadcanvas.cpp:1635
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr "у элемента <%s> нет содержимого"
 
-#: src/synfig/loadcanvas.cpp:1635
+#: src/synfig/loadcanvas.cpp:1644
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr "Разбор '%s' завершился неудачей"
 
-#: src/synfig/loadcanvas.cpp:1642
+#: src/synfig/loadcanvas.cpp:1651
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1660
+#: src/synfig/loadcanvas.cpp:1669
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1730
+#: src/synfig/loadcanvas.cpp:1739
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1824
+#: src/synfig/loadcanvas.cpp:1833
 msgid "Unable to create <dynamic_list>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1974
+#: src/synfig/loadcanvas.cpp:1985
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2019
+#: src/synfig/loadcanvas.cpp:2030
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Некорректные данные в <%s>"
 
-#: src/synfig/loadcanvas.cpp:2057
+#: src/synfig/loadcanvas.cpp:2068
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2078
+#: src/synfig/loadcanvas.cpp:2089
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Некорректный ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:2083
+#: src/synfig/loadcanvas.cpp:2094
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2088
+#: src/synfig/loadcanvas.cpp:2099
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2123
+#: src/synfig/loadcanvas.cpp:2134
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2142
+#: src/synfig/loadcanvas.cpp:2153
 msgid "Installed layer version is smaller than layer version in file"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2162
+#: src/synfig/loadcanvas.cpp:2173
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2165
+#: src/synfig/loadcanvas.cpp:2176
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2173
+#: src/synfig/loadcanvas.cpp:2184
 msgid "Missing \"name\" attribute for <param>."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2190
+#: src/synfig/loadcanvas.cpp:2201
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2195
+#: src/synfig/loadcanvas.cpp:2206
 msgid "Empty use=\"\" value in <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2201
+#: src/synfig/loadcanvas.cpp:2212
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2203
+#: src/synfig/loadcanvas.cpp:2214
 msgid "Layer rejected canvas link"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2223
+#: src/synfig/loadcanvas.cpp:2236
 #, c-format
-msgid "Unknown ID (%s) referenced in <param>"
+msgid "Unknown ID (%s) referenced in parameter \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2239
+#: src/synfig/loadcanvas.cpp:2252
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2251 src/synfig/loadcanvas.cpp:2271
+#: src/synfig/loadcanvas.cpp:2264 src/synfig/loadcanvas.cpp:2284
 msgid "Bad data for <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2259
+#: src/synfig/loadcanvas.cpp:2272
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2282
+#: src/synfig/loadcanvas.cpp:2295
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2355 src/synfig/loadcanvas.cpp:2363
+#: src/synfig/loadcanvas.cpp:2368 src/synfig/loadcanvas.cpp:2376
 msgid "Canvas with width or height less than one is not allowed"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2449
+#: src/synfig/loadcanvas.cpp:2462
 msgid "Inline canvas cannot have a <defs> section"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2457
+#: src/synfig/loadcanvas.cpp:2470
 msgid "Inline canvas cannot have keyframes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2469
+#: src/synfig/loadcanvas.cpp:2482
 msgid "Inline canvases cannot have metadata"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2477
+#: src/synfig/loadcanvas.cpp:2490
 msgid "<meta> must have a name"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2483
+#: src/synfig/loadcanvas.cpp:2496
 msgid "<meta> must have content"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2495
+#: src/synfig/loadcanvas.cpp:2508
 msgid "blank \"name\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2510
+#: src/synfig/loadcanvas.cpp:2523
 msgid "blank \"desc\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2525
+#: src/synfig/loadcanvas.cpp:2538
 msgid "blank \"author\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2557
+#: src/synfig/loadcanvas.cpp:2570
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2559 src/synfig/valuenode.cpp:351
+#: src/synfig/loadcanvas.cpp:2572 src/synfig/valuenode.cpp:351
 msgid "ValueNode"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2559
+#: src/synfig/loadcanvas.cpp:2572
 msgid "ValueNodes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2639 src/synfig/loadcanvas.cpp:2695
+#: src/synfig/loadcanvas.cpp:2652 src/synfig/loadcanvas.cpp:2708
 msgid "Can't open file"
 msgstr "Не удалось открыть файл"
 
@@ -2826,7 +2832,7 @@ msgstr ""
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr ""
 
-#: src/synfig/savecanvas.cpp:536
+#: src/synfig/savecanvas.cpp:542
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr ""
@@ -2884,82 +2890,98 @@ msgid ""
 "SECONDS"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:277 src/synfig/value.cpp:336
 msgid "bool"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:279 src/synfig/value.cpp:334
 msgid "integer"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:281
 msgid "angle"
 msgstr "угол"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:283 src/synfig/value.cpp:328
 msgid "time"
 msgstr "время"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:285 src/synfig/value.cpp:331
 msgid "real"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:287
 msgid "vector"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:289
 msgid "color"
 msgstr "цвет"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:291
 msgid "segment"
 msgstr "сегмент"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:293
 msgid "bline_point"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:295
 msgid "width_point"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:297
 msgid "dash_item"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:299
 msgid "list"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:301
 msgid "canvas"
 msgstr "холст"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:303
 msgid "string"
 msgstr ""
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:305
 msgid "gradient"
 msgstr "градиент"
 
-#. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:307
 msgid "nil"
 msgstr ""
@@ -2974,7 +2996,6 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:142 src/synfig/valuenode_blinecalctangent.cpp:261
 #: src/synfig/valuenode_blinecalcwidth.cpp:221
-#: src/synfig/valuenode_blinecalcwidth.cpp:226
 #: src/synfig/valuenode_exp.cpp:155 src/synfig/valuenode_scale.cpp:226
 msgid "Scale"
 msgstr ""
@@ -3003,7 +3024,7 @@ msgstr ""
 msgid "BLine"
 msgstr "Кривая"
 
-#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_dynamiclist.cpp:716
+#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_dynamiclist.cpp:755
 msgid "Dynamic List"
 msgstr "динамический список"
 
@@ -3060,7 +3081,7 @@ msgstr ""
 
 #: src/synfig/valuenode.cpp:166 src/synfig/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
-msgstr "Обратное значени"
+msgstr "Обратное значение"
 
 #: src/synfig/valuenode.cpp:168 src/synfig/valuenode_integer.cpp:157
 msgid "From Integer"
@@ -3226,27 +3247,27 @@ msgstr "Связь 2"
 msgid "Second operand of the AND operation"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:240 src/synfig/valuenode_animated.cpp:264
-#: src/synfig/valuenode_animated.cpp:540 src/synfig/valuenode_animated.cpp:558
-#: src/synfig/valuenode_animated.cpp:638 src/synfig/valuenode_animated.cpp:657
+#: src/synfig/valuenode_animated.cpp:355 src/synfig/valuenode_animated.cpp:379
+#: src/synfig/valuenode_animated.cpp:703 src/synfig/valuenode_animated.cpp:721
+#: src/synfig/valuenode_animated.cpp:801 src/synfig/valuenode_animated.cpp:820
 msgid "A waypoint already exists at this point in time"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:971
+#: src/synfig/valuenode_animated.cpp:1134
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:1006
+#: src/synfig/valuenode_animated.cpp:1169
 msgid "Animated"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:977 src/synfig/valuenode_dynamiclist.cpp:622
+#: src/synfig/valuenode_bline.cpp:977 src/synfig/valuenode_dynamiclist.cpp:661
 #: src/synfig/valuenode_wplist.cpp:336
 msgid "No entries in list"
 msgstr "Нет записей в списке"
 
-#: src/synfig/valuenode_bline.cpp:980 src/synfig/valuenode_dynamiclist.cpp:625
+#: src/synfig/valuenode_bline.cpp:980 src/synfig/valuenode_dynamiclist.cpp:664
 #: src/synfig/valuenode_wplist.cpp:339
 msgid "No entries in ret_list"
 msgstr "Нет записей в ret_list"
@@ -3573,12 +3594,12 @@ msgstr ""
 msgid "Amount increment of the index"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:616
+#: src/synfig/valuenode_dynamiclist.cpp:655
 msgid "List type/item type mismatch, throwing away mismatch"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:664
-#: src/synfig/valuenode_dynamiclist.cpp:918
+#: src/synfig/valuenode_dynamiclist.cpp:703
+#: src/synfig/valuenode_dynamiclist.cpp:957
 #, c-format
 msgid "Item %03d"
 msgstr ""
@@ -3781,7 +3802,8 @@ msgstr ""
 
 #: src/synfig/valuenode_reciprocal.cpp:171
 msgid ""
-"The value used to decide whether 'Link' is too small to obtain its reciprocal"
+"The value used to decide whether 'Link' is too small to obtain its "
+"reciprocal"
 msgstr ""
 
 #: src/synfig/valuenode_reciprocal.cpp:176
@@ -4449,3 +4471,5 @@ msgstr "Визуализация..."
 #: src/tool/main.cpp:1343
 msgid "Done."
 msgstr "Готово"
+
+
