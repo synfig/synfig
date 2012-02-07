@@ -5,13 +5,13 @@
 # This file is distributed under the same license as the Synfig Core package.
 #
 # Translators:
-# Bottero Ermanno <bottye@gmail.com>, 2010, 2011
+# Bottero Ermanno <bottye@gmail.com>, 2010, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
 "POT-Creation-Date: 2012-01-27 20:04+0100\n"
-"PO-Revision-Date: 2012-01-27 19:11+0000\n"
+"PO-Revision-Date: 2012-02-07 13:30+0000\n"
 "Last-Translator: bottye <bottye@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2365,7 +2365,7 @@ msgstr ""
 #: src/synfig/loadcanvas.cpp:1323
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
-msgstr ""
+msgstr "ID Sconosciuto (%s) riferito nella visuale"
 
 #: src/synfig/loadcanvas.cpp:1329 src/synfig/loadcanvas.cpp:1341
 #, c-format
@@ -2536,7 +2536,7 @@ msgstr "Il piano ha respinto il collegamento della tela"
 #: src/synfig/loadcanvas.cpp:2236
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
-msgstr ""
+msgstr "ID Sconosciuto (%s) riferito nel parametro \"%s\""
 
 #: src/synfig/loadcanvas.cpp:2252
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
