@@ -354,7 +354,7 @@ msgstr "Недопустимая многобайтовая последоват
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Can't parse multibyte character.\n"
-msgstr "Невозможно разобрать многобайтовый символ.\\n"
+msgstr "Невозможно разобрать многобайтовый символ.\n"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
