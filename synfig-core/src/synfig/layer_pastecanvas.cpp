@@ -165,6 +165,11 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_description(_("Exponential value to grow children Outline layers width"))
 	);
 
+	if(canvas && !(canvas->is_inline()))
+	{
+		ret.back().hidden();
+	}
+
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
 	// 'curr_time' member wasn't being copied, so I've added it as a
