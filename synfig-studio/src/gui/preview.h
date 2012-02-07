@@ -172,13 +172,13 @@ class Widget_Preview : public Gtk::Table
 //	Gtk::HScrollbar		scr_time_scrub;
 	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
-//	Gtk::ComboBoxEntry	zoom_preview;
+	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
-	int							currentindex;
-	//double						timeupdate;
-	double						timedisp;
-	double						audiotime;
+	int				currentindex;
+	//double			timeupdate;
+	double				timedisp;
+	double				audiotime;
 
 	//sound stuff
 	etl::handle<AudioContainer>	audio;
@@ -188,12 +188,12 @@ class Widget_Preview : public Gtk::Table
 
 	//preview encapsulation
 	etl::handle<Preview>	preview;
-	sigc::connection		prevchanged;
+	sigc::connection	prevchanged;
 
-	Widget_Sound			disp_sound;
-	Gtk::Adjustment			adj_sound;
+	Widget_Sound		disp_sound;
+	Gtk::Adjustment		adj_sound;
 
-	Gtk::Label				l_lasttime;
+	Gtk::Label		l_lasttime;
 
 	//only for internal stuff, doesn't set anything
 	bool 	playing;
@@ -259,6 +259,7 @@ public:
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
 
 protected:
+
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord
 	{
 	public:

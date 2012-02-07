@@ -312,6 +312,12 @@ Widget_Preview::Widget_Preview():
 	//signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Preview::redraw));
 
 	//manage all the change in values etc...
+
+	//1st row: preview content
+	preview_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	//pack preview content into scrolled window
+	preview_window.add(draw_area);
+
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
@@ -461,7 +467,7 @@ Widget_Preview::Widget_Preview():
 	disp_sound.set_size_request(-1,32);
 
 	// attach all widgets	
-	attach(draw_area, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
+	attach(preview_window, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*lastrendered, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
@@ -626,6 +632,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	if(nw == 0 || nh == 0)return true;
 
 	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
+
+	draw_area.set_size_request(nw, nh);
 
 	//synfig::info("Now to draw to the window...");
 	//copy to window
