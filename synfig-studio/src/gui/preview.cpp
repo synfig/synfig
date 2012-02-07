@@ -633,7 +633,11 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
-	draw_area.set_size_request(nw, nh);
+	//except "Fit" or "fit", we need to set size request for scrolled window
+	if (text != "Fit" & text != "fit")
+	{
+		draw_area.set_size_request(nw, nh);
+	}
 
 	//synfig::info("Now to draw to the window...");
 	//copy to window
