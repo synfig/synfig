@@ -1,0 +1,13 @@
+[main]
+host = https://www.transifex.net
+
+[synfig.synfig-core]
+file_filter = synfig-core/po/<lang>.po
+source_file = synfig-core/po/synfig.pot
+source_lang = en
+
+[synfig.synfig-studio]
+file_filter = synfig-studio/po/<lang>.po
+source_file = synfig-studio/po/synfigstudio.pot
+source_lang = en
+

@@ -283,7 +283,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(animate_seek_next_frame,"animate_seek_next_frame_icon."IMAGE_EXT,_("Next frame"));
 	INIT_STOCK_ICON(animate_seek_next_keyframe,"animate_seek_next_keyframe_icon."IMAGE_EXT,_("Next keyframe"));
 	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
-	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Aniamte Loop"));
+	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
 
 	INIT_STOCK_ICON(add_to_group,"action_add_to_group_icon."IMAGE_EXT,_("Add Layer to Group"));
 	INIT_STOCK_ICON(remove_from_group,"action_remove_from_group_icon."IMAGE_EXT,_("Remove Layer from Group"));
