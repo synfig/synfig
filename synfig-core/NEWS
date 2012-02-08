@@ -4,6 +4,17 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.63.04 (git tag: "synfig-0.63.04") - February 08, 2012 - Features, bug fixes.
+
+  * Fix crash when inserting an item on a generic empty dynamic list.
+  * Fix broken ffmpeg target that doesn't work for some non dot decimal points numeric locale settings.
+  * Fix several bugs and crashes related to dashed outlines
+  * Fix bug: http://www.pivotaltracker.com/story/show/23017929
+  * Fix bug http://www.pivotaltracker.com/story/show/23212095. If two rotations of 90 and -90 are consecutive the program crashes.
+  * Fix bug http://www.pivotaltracker.com/story/show/23342471.
+  * New interpolation type "Clamped"
+
+
  0.63.03 (git tag: "synfig-0.63.03") - December 05, 2011 - Features, bug fixes.
 
   * Support to create Advanced Outlines with the Draw Tool.
