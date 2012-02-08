@@ -2,8 +2,8 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.63.04-RC1],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
+AC_INIT([Synfig Studio],[0.63.04],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
