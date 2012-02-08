@@ -93,7 +93,7 @@ void Dialog_Preview::on_hide()
 //press escape key to close window
 bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
 {
-	if (ev->keyval == GDK_Escape)
+	if (ev->keyval == gdk_keyval_from_name("Escape") )
 	{
 		close_window_handler();
 		return true;
