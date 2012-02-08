@@ -69,7 +69,7 @@ settings(this,"preview")
 	show_all_children();
 
 	//catch key press event
-	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));	
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));
 }
 
 Dialog_Preview::~Dialog_Preview()
@@ -93,7 +93,7 @@ void Dialog_Preview::on_hide()
 //press escape key to close window
 bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
 {
-	if (ev->keyval == GDK_KEY_Escape)
+	if (ev->keyval == GDK_Escape)
 	{
 		close_window_handler();
 		return true;
