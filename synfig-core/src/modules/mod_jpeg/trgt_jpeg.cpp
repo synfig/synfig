@@ -57,7 +57,7 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 jpeg_trgt::jpeg_trgt(const char *Filename,
-					 const synfig::TargetParam& /* params */)
+					 const synfig::TargetParam&  params)
 {
 	file=NULL;
 	filename=Filename;
@@ -66,6 +66,7 @@ jpeg_trgt::jpeg_trgt(const char *Filename,
 	quality=95;
 	color_buffer=0;
 	set_remove_alpha();
+	sequence_separator=params.sequence_separator;
 }
 
 jpeg_trgt::~jpeg_trgt()
@@ -110,7 +111,8 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 	else if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
-						   etl::strprintf(".%04d",imagecount) +
+						   sequence_separator +
+						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);
