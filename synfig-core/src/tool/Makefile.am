@@ -24,7 +24,8 @@ synfig_SOURCES = \
 synfig_LDADD = \
 	../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
-	@OPENEXR_HALF_LIBS@
+	@OPENEXR_HALF_LIBS@ \
+	-lboost_program_options
 
 synfig_CXXFLAGS = \
 	@SYNFIG_CFLAGS@
