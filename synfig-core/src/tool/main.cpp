@@ -81,6 +81,42 @@ int verbosity=0;
 bool be_quiet=false;
 bool print_benchmarks=false;
 
+//! Allowed video codecs
+/*! \warning This variable is linked to allowed_video_codecs_description,
+ *  if you change this you must change the other acordingly.
+ *  \warning These codecs are linked to the filename extensions for
+ *  mod_ffmpeg. If you change this you must change the others acordingly.
+ */
+const char* allowed_video_codecs[] =
+{
+	"flv", "h263p", "huffyuv", "libtheora", "libx264",
+	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
+	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
+};
+
+//! Allowed video codecs description.
+/*! \warning This variable is linked to allowed_video_codecs,
+ *  if you change this you must change the other acordingly.
+ */
+const char* allowed_video_codecs_description[] =
+{
+	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
+	"H.263+ / H.263-1998 / H.263 version 2.",
+	"Huffyuv / HuffYUV.",
+	"libtheora Theora.",
+	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
+	"MJPEG (Motion JPEG).",
+	"raw MPEG-1 video.",
+	"raw MPEG-2 video.",
+	"MPEG-4 part 2. (XviD/DivX)",
+	"MPEG-4 part 2 Microsoft variant version 3.",
+	"MPEG-4 part 2 Microsoft variant version 1.",
+	"MPEG-4 part 2 Microsoft variant version 2.",
+	"Windows Media Video 7.",
+	"Windows Media Video 8.",
+	NULL
+};
+
 /* === M E T H O D S ================================================ */
 
 #ifdef _DEBUG
@@ -119,6 +155,15 @@ void print_usage ()
 	cout << "Synfig " << VERSION << endl
 		 << "Usage: " << progname
 		 << " [options] ([sif file] [specific options])" << endl;
+}
+
+void print_target_video_codecs_help ()
+{
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		cout << " " << allowed_video_codecs[i] << ":   \t"
+			 << allowed_video_codecs_description[i]
+			 << endl;
 }
 
 int main(int ac, char* av[])
@@ -333,6 +378,12 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 
+		if (vm.count("target-video-codecs"))
+		{
+			print_target_video_codecs_help();
+
+			return SYNFIGTOOL_HELP;
+		}
 
 		return SYNFIGTOOL_OK;
 
