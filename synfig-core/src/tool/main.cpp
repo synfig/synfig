@@ -385,6 +385,63 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 
+		// TODO: Optional load of main only if needed. i.e. not needed to display help
+		// Synfig Main initialization needs to be after verbose and
+		// before any other where it's used
+		Progress p(progname);
+		synfig::Main synfig_main(dirname(progname), &p);
+
+		if (vm.count("layers"))
+		{
+			synfig::Layer::Book::iterator iter =
+				synfig::Layer::book().begin();
+			for(; iter != synfig::Layer::book().end(); iter++)
+				if (iter->second.category != CATEGORY_DO_NOT_USE)
+					cout << iter->first << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+		
+		if (vm.count("modules"))
+		{
+			synfig::Module::Book::iterator iter =
+				synfig::Module::book().begin();
+			for(; iter != synfig::Module::book().end(); iter++)
+				cout << iter->first << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+
+		if (vm.count("targets"))
+		{
+			synfig::Target::Book::iterator iter =
+				synfig::Target::book().begin();
+			for(; iter != synfig::Target::book().end(); iter++)
+				cout << iter->first << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+
+		if (vm.count("valuenodes"))
+		{
+			synfig::LinkableValueNode::Book::iterator iter =
+				synfig::LinkableValueNode::book().begin();
+			for(; iter != synfig::LinkableValueNode::book().end(); iter++)
+				cout << iter->first << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+
+		if (vm.count("importers"))
+		{
+			synfig::Importer::Book::iterator iter =
+				synfig::Importer::book().begin();
+			for(; iter != synfig::Importer::book().end(); iter++)
+				cout << iter->first << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+
 		return SYNFIGTOOL_OK;
 
     }
