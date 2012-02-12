@@ -777,8 +777,83 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_OK;
 		}
 
+		// Setup Job list ----------------------------------------------
+		
+		list<Job> job_list;
+		
+		// ...
+		
+		// Process Job list --------------------------------------------
+		
+		if(!job_list.size())
+		{
+			cerr << _("Nothing to do!") << endl;
+			return SYNFIGTOOL_BORED;
+		}
 
+		for(; job_list.size(); job_list.pop_front())
+		{
+			VERBOSE_OUT(3) << job_list.front().filename << " -- " << endl;
+			VERBOSE_OUT(3) << '\t'
+						   <<
+				strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
+					job_list.front().desc.get_w(),
+					job_list.front().desc.get_h(),
+					job_list.front().desc.get_antialias(),
+					job_list.front().desc.get_pixel_aspect(),
+					job_list.front().desc.get_image_aspect(),
+					job_list.front().desc.get_span()
+					)
+				<< endl;
 
+			VERBOSE_OUT(3) << '\t'
+						   <<
+				strprintf("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]",
+					job_list.front().desc.get_tl()[0],
+					job_list.front().desc.get_tl()[1],
+					job_list.front().desc.get_br()[0],
+					job_list.front().desc.get_br()[1],
+					job_list.front().desc.get_focus()[0],
+					job_list.front().desc.get_focus()[1]
+					)
+					<< endl;
+
+			RenderProgress p;
+			p.task(job_list.front().filename + " ==> " +
+				   job_list.front().outfilename);
+			if(job_list.front().sifout)
+			{
+				if(!save_canvas(job_list.front().outfilename,
+								job_list.front().canvas))
+				{
+					cerr << _("Render Failure.") << endl;
+					return SYNFIGTOOL_RENDERFAILURE;
+				}
+			}
+			else
+			{
+				VERBOSE_OUT(1) << _("Rendering...") << endl;
+				etl::clock timer;
+				timer.reset();
+
+				// Call the render member of the target
+				if(!job_list.front().target->render(&p))
+				{
+					cerr << _("Render Failure.") << endl;
+					return SYNFIGTOOL_RENDERFAILURE;
+				}
+
+				if(print_benchmarks)
+					cout << job_list.front().filename
+						 << _(": Rendered in ") << timer()
+						 << _(" seconds.") << endl;
+			}
+		}
+
+		job_list.clear();
+
+		VERBOSE_OUT(1) << _("Done.") << endl;
+		
 		return SYNFIGTOOL_OK;
 
     }
