@@ -402,6 +402,36 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 		
+		if (vm.count("layer-info"))
+		{
+			Layer::Handle layer =
+				synfig::Layer::create(vm["layer-info"].as<string>());
+
+			cout << "Layer Name: " << layer->get_name() << endl;
+			cout << "Localized Layer Name: " << layer->get_local_name() << endl;
+			cout << "Version: " << layer->get_version() << endl;
+
+			Layer::Vocab vocab = layer->get_param_vocab();
+			for(; !vocab.empty(); vocab.pop_front())
+			{
+				cout << "param - " << vocab.front().get_name();
+				if(!vocab.front().get_critical())
+					cout << " (not critical)";
+				cout << endl << "\tLocalized Name: "
+					 << vocab.front().get_local_name() << endl;
+
+				if(!vocab.front().get_description().empty())
+					cout << "\tDescription: "
+						 << vocab.front().get_description() << endl;
+
+				if(!vocab.front().get_hint().empty())
+					cout << "\tHint: "
+						 << vocab.front().get_hint() << endl;
+			}
+
+			return SYNFIGTOOL_HELP;
+		}
+		
 		if (vm.count("modules"))
 		{
 			synfig::Module::Book::iterator iter =
