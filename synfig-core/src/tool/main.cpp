@@ -179,6 +179,265 @@ void print_child_canvases(string prefix, Canvas::Handle canvas)
 	}
 }
 
+void print_canvas_info(Job job)
+{
+	Canvas::Handle canvas(job.canvas);
+	const RendDesc &rend_desc(canvas->rend_desc());
+
+	if (job.canvas_info_all || job.canvas_info_time_start)
+	{
+		cout << endl << "# " << _("Start Time") << endl;
+		cout << "time_start" << "="
+			 << rend_desc.get_time_start().get_string().c_str() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_time_end)
+	{
+		cout << endl << "# " << _("End Time") << endl;
+		cout << "time_end" << "="
+			 << rend_desc.get_time_end().get_string().c_str() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_frame_rate)
+	{
+		cout << endl << "# " << _("Frame Rate") << endl;
+		cout << "frame_rate" << "="
+			 << rend_desc.get_frame_rate() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_frame_start)
+	{
+		cout << endl << "# " << _("Start Frame") << endl;
+		cout << "frame_start" << "="
+			 << rend_desc.get_frame_start() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_frame_end)
+	{
+		cout << endl << "# " << _("End Frame") << endl;
+		cout << "frame_end"	<< "="
+			 << rend_desc.get_frame_end() << endl;
+	}
+
+	if (job.canvas_info_all)
+		cout << endl;
+
+	if (job.canvas_info_all || job.canvas_info_w)
+	{
+		cout << endl << "# " << _("Width") << endl;
+		cout << "w"	<< "=" << rend_desc.get_w() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_h)
+	{
+		cout << endl << "# " << _("Height") << endl;
+		cout << "h"	<< "=" << rend_desc.get_h() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_image_aspect)
+	{
+		cout << endl << "# " << _("Image Aspect Ratio") << endl;
+		cout << "image_aspect" << "="
+			 << rend_desc.get_image_aspect() << endl;
+	}
+
+	if (job.canvas_info_all)
+		cout << endl;
+
+	if (job.canvas_info_all || job.canvas_info_pw)
+	{
+		cout << endl << "# " << _("Pixel Width") << endl;
+		cout << "pw" << "="
+			 << rend_desc.get_pw() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_ph)
+	{
+		cout << endl << "# " << _("Pixel Height") << endl;
+		cout << "ph" << "="
+			 << rend_desc.get_ph() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_pixel_aspect)
+	{
+		cout << endl << "# " << _("Pixel Aspect Ratio") << endl;
+		cout << "pixel_aspect" << "="
+			 << rend_desc.get_pixel_aspect() << endl;
+	}
+
+	if (job.canvas_info_all)
+		cout << endl;
+
+	if (job.canvas_info_all || job.canvas_info_tl)
+	{
+		cout << endl << "# " << _("Top Left") << endl;
+		cout << "tl" << "=" << rend_desc.get_tl()[0]
+			 << " " << rend_desc.get_tl()[1] << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_br)
+	{
+		cout << endl << "# " << _("Bottom Right") << endl;
+		cout << "br" << "=" << rend_desc.get_br()[0]
+			 << " " << rend_desc.get_br()[1] << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_physical_w)
+	{
+		cout << endl << "# " << _("Physical Width") << endl;
+		cout << "physical_w" << "="
+			 << rend_desc.get_physical_w() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_physical_h)
+	{
+		cout << endl << "# " << _("Physical Height") << endl;
+		cout << "physical_h" << "="
+			 << rend_desc.get_physical_h() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_x_res)
+	{
+		cout << endl << "# " << _("X Resolution") << endl;
+		cout << "x_res"	<< "=" << rend_desc.get_x_res() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_y_res)
+	{
+		cout << endl << "# " << _("Y Resolution") << endl;
+		cout << "y_res"	<< "=" << rend_desc.get_y_res() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_span)
+	{
+		cout << endl << "# " << _("Diagonal Image Span") << endl;
+		cout << "span" << "=" << rend_desc.get_span() << endl;
+	}
+
+	if (job.canvas_info_all)
+		cout << endl;
+
+	if (job.canvas_info_all || job.canvas_info_interlaced)
+	{
+		cout << endl << "# " << _("Interlaced") << endl;
+		cout << "interlaced" << "="
+			 << rend_desc.get_interlaced() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_antialias)
+	{
+		cout << endl << "# " << _("Antialias") << endl;
+		cout << "antialias"	<< "="
+			 << rend_desc.get_antialias() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_clamp)
+	{
+		cout << endl << "# " << _("Clamp") << endl;
+		cout << "clamp"
+			 << "=" << rend_desc.get_clamp() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_flags)
+	{
+		cout << endl << "# " << _("Flags") << endl;
+		cout << "flags"
+			 << "=" << rend_desc.get_flags() << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_focus)
+	{
+		cout << endl << "# " << _("Focus") << endl;
+		cout << "focus"	<< "=" << rend_desc.get_focus()[0]
+			 << " " << rend_desc.get_focus()[1] << endl;
+	}
+
+	if (job.canvas_info_all || job.canvas_info_bg_color)
+	{
+		cout << endl << "# " << _("Background Color") << endl;
+		cout << "bg_color" << "="
+			 << rend_desc.get_bg_color().get_string().c_str() << endl;
+	}
+
+	if (job.canvas_info_all)
+		cout << endl;
+
+	if (job.canvas_info_all || job.canvas_info_metadata)
+	{
+		std::list<String> keys(canvas->get_meta_data_keys());
+		cout << endl << "# " << _("Metadata") << endl;
+
+		for (std::list<String>::iterator key = keys.begin();
+			 key != keys.end(); key++)
+			cout << *key << "=" << canvas->get_meta_data(*key) << endl;
+	}
+}
+
+void extract_canvas_info(Job& job, string values)
+{
+	job.canvas_info = true;
+	string value;
+
+	std::string::size_type pos;
+	while (!values.empty())
+	{
+		pos = values.find_first_of(',');
+		if (pos == std::string::npos)
+		{
+			value = values;
+			values = "";
+		}
+		else
+		{
+			value = values.substr(0, pos);
+			values = values.substr(pos+1);
+		}
+		if (value == "all")
+		{
+			job.canvas_info_all = true;
+			return;
+		}
+
+		if (value == "time_start")			job.canvas_info_time_start		= true;
+		else if (value == "time_end")		job.canvas_info_time_end		= true;
+		else if (value == "frame_rate")		job.canvas_info_frame_rate		= true;
+		else if (value == "frame_start")	job.canvas_info_frame_start		= true;
+		else if (value == "frame_end")		job.canvas_info_frame_end		= true;
+		else if (value == "w")				job.canvas_info_w				= true;
+		else if (value == "h")				job.canvas_info_h				= true;
+		else if (value == "image_aspect")	job.canvas_info_image_aspect	= true;
+		else if (value == "pw")				job.canvas_info_pw				= true;
+		else if (value == "ph")				job.canvas_info_ph				= true;
+		else if (value == "pixel_aspect")	job.canvas_info_pixel_aspect	= true;
+		else if (value == "tl")				job.canvas_info_tl				= true;
+		else if (value == "br")				job.canvas_info_br				= true;
+		else if (value == "physical_w")		job.canvas_info_physical_w		= true;
+		else if (value == "physical_h")		job.canvas_info_physical_h		= true;
+		else if (value == "x_res")			job.canvas_info_x_res			= true;
+		else if (value == "y_res")			job.canvas_info_y_res			= true;
+		else if (value == "span")			job.canvas_info_span			= true;
+		else if (value == "interlaced")		job.canvas_info_interlaced		= true;
+		else if (value == "antialias")		job.canvas_info_antialias		= true;
+		else if (value == "clamp")			job.canvas_info_clamp			= true;
+		else if (value == "flags")			job.canvas_info_flags			= true;
+		else if (value == "focus")			job.canvas_info_focus			= true;
+		else if (value == "bg_color")		job.canvas_info_bg_color		= true;
+		else if (value == "metadata")		job.canvas_info_metadata		= true;
+		else
+		{
+			cerr<<_("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
+			cerr<<_("Recognized variables are:") << endl <<
+				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
+				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
+				"  x_res, y_res, span, interlaced, antialias, clamp, flags," << endl <<
+				"  focus, bg_color, metadata" << endl;
+		}
+
+		if (pos == std::string::npos)
+			break;
+	};
+}
+
 int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
@@ -490,31 +749,31 @@ int main(int ac, char* av[])
 		if (vm.count("list-canvases"))
 		{
 			Job job;
-			job.filename = vm["input-file"].as<string>();
-
-			// Open the composition
-			String errors, warnings;
-			try
-			{
-				job.root=open_canvas(job.filename, errors, warnings);
-			}
-			catch(runtime_error x)
-			{
-				job.root = 0;
-			}
-
-			if(!job.root)
-			{
-				cerr << _("Unable to load '") << job.filename << "'." 
-					 << endl;
-
-				return SYNFIGTOOL_FILENOTFOUND;
-			}
+			int ret;
+			ret = job.load_file(vm["input-file"].as<string>());
+			
+			if (ret != SYNFIGTOOL_OK)
+				return ret;
 
 			print_child_canvases(job.filename + "#",job.root);
 
 			cerr << endl;
 
+			return SYNFIGTOOL_OK;
+		}
+		
+		if (vm.count("canvas-info"))
+		{
+			Job job;
+			int ret;
+			ret = job.load_file(vm["input-file"].as<string>());
+			
+			if (ret != SYNFIGTOOL_OK)
+				return ret;
+
+			extract_canvas_info(job, vm["canvas-info"].as<string>());
+			print_canvas_info(job);
+			
 			return SYNFIGTOOL_OK;
 		}
 
