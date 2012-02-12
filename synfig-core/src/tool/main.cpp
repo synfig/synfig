@@ -166,6 +166,19 @@ void print_target_video_codecs_help ()
 			 << endl;
 }
 
+/// Print canvases' children IDs in cascade
+void print_child_canvases(string prefix, Canvas::Handle canvas)
+{
+	Canvas::Children children(canvas->children());
+	for (Canvas::Children::iterator child_canvas = children.begin();
+		 child_canvas != children.end(); child_canvas++)
+	{
+		cout << prefix << ":" << (*child_canvas)->get_id() << endl;
+		print_child_canvases(prefix + ":" + (*child_canvas)->get_id(),
+							*child_canvas);
+	}
+}
+
 int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
@@ -471,6 +484,41 @@ int main(int ac, char* av[])
 
 			return SYNFIGTOOL_HELP;
 		}
+
+		//FIXME: append has to be before list-canvases
+
+		if (vm.count("list-canvases"))
+		{
+			Job job;
+			job.filename = vm["input-file"].as<string>();
+
+			// Open the composition
+			String errors, warnings;
+			try
+			{
+				job.root=open_canvas(job.filename, errors, warnings);
+			}
+			catch(runtime_error x)
+			{
+				job.root = 0;
+			}
+
+			if(!job.root)
+			{
+				cerr << _("Unable to load '") << job.filename << "'." 
+					 << endl;
+
+				return SYNFIGTOOL_FILENOTFOUND;
+			}
+
+			print_child_canvases(job.filename + "#",job.root);
+
+			cerr << endl;
+
+			return SYNFIGTOOL_OK;
+		}
+
+
 
 		return SYNFIGTOOL_OK;
 
