@@ -81,6 +81,39 @@ int verbosity=0;
 bool be_quiet=false;
 bool print_benchmarks=false;
 
+/* === M E T H O D S ================================================ */
+
+#ifdef _DEBUG
+
+void guid_test()
+{
+	cout << "GUID Test" << endl;
+	for(int i = 20; i; i--)
+		cout << synfig::GUID().get_string() << ' '
+			 << synfig::GUID().get_string() << endl;
+}
+
+void signal_test_func()
+{
+	cout << "**SIGNAL CALLED**" << endl;
+}
+
+void signal_test()
+{
+	sigc::signal<void> sig;
+	sigc::connection conn;
+	cout << "Signal Test" << endl;
+	conn = sig.connect(sigc::ptr_fun(signal_test_func));
+	cout << "Next line should exclaim signal called." << endl;
+	sig();
+	conn.disconnect();
+	cout << "Next line should NOT exclaim signal called." << endl;
+	sig();
+	cout << "done."<<endl;
+}
+
+#endif
+
 void print_usage ()
 {
 	cout << "Synfig " << VERSION << endl
@@ -189,10 +222,22 @@ int main(int ac, char* av[])
             ("version", _("Print out version information"))
             ;
 
+#ifdef _DEBUG
+        po::options_description debug(_("Synfig debug flags"));
+        debug.add_options()
+            ("guid-test", _("Test GUID generation"))
+			("signal-test", _("Test signal implementation"))
+            ;
+#endif
+
         // Declare an options description instance which will include
         // all the options
         po::options_description all("");
         all.add(settings).add(switchopts).add(misc).add(info);
+
+#ifdef _DEBUG
+		all.add(debug);
+#endif
 
         // Declare an options description instance which will be shown
         // to the user
@@ -220,6 +265,21 @@ int main(int ac, char* av[])
 			be_quiet=true;
 
 
+
+#ifdef _DEBUG
+		// DEBUG options ----------------------------------------------
+		if (vm.count("signal-test"))
+		{
+			signal_test();
+			return SYNFIGTOOL_HELP;
+		}
+
+		if (vm.count("guid-test"))
+		{
+			guid_test();
+			return SYNFIGTOOL_HELP;
+		}
+#endif
 
 
         // Info options -----------------------------------------------
