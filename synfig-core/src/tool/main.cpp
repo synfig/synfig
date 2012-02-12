@@ -290,6 +290,48 @@ int main(int ac, char* av[])
 
             return SYNFIGTOOL_HELP;
         }
+        
+        if (vm.count("info"))
+        {
+			cout << PACKAGE "-" VERSION << endl;
+#ifdef DEVEL_VERSION
+				cout << endl << DEVEL_VERSION << endl << endl;
+#endif
+			cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
+#ifdef __GNUC__
+			cout << " with GCC " << __VERSION__;
+#endif
+#ifdef _MSC_VER
+			cout << " with Microsoft Visual C++ "
+				 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
+#endif
+#ifdef __TCPLUSPLUS__
+			cout << " with Borland Turbo C++ "
+				 << (__TCPLUSPLUS__>>8) << '.'
+				 << ((__TCPLUSPLUS__&255)>>4) << '.'
+				 << (__TCPLUSPLUS__&15);
+#endif
+			cout << endl << SYNFIG_COPYRIGHT << endl;
+			cout << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+		
+		if (vm.count("version"))
+		{
+			cerr << PACKAGE << " " << VERSION << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
+
+		if (vm.count("license"))
+		{
+			cerr << PACKAGE << " " << VERSION << endl;
+			cout << SYNFIG_COPYRIGHT << endl << endl;
+			cerr << SYNFIG_LICENSE << endl << endl;
+
+			return SYNFIGTOOL_HELP;
+		}
 
 
 		return SYNFIGTOOL_OK;

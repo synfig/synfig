@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -59,7 +60,15 @@ enum exit_code
 #endif
 
 #define DEFAULT_QUALITY		2
-#define VERBOSE_OUT(x) if(verbosity>=(x))std::cerr
+#define VERBOSE_OUT(x) if (verbosity >= (x)) std::cerr
+
+#define SYNFIG_LICENSE "\
+**	This package is free software; you can redistribute it and/or\n\
+**	modify it under the terms of the GNU General Public License as\n\
+**	published by the Free Software Foundation; either version 2 of\n\
+**	the License, or (at your option) any later version.\n\
+**\n\
+**	"
 
 /* === G L O B A L S ======================================================= */
 
