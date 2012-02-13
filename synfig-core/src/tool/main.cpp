@@ -441,6 +441,8 @@ int main(int ac, char* av[])
 		Progress p(progname);
 		synfig::Main synfig_main(dirname(progname), &p);
 
+		list<Job> job_list;
+
 		if (vm.count("layers"))
 		{
 			synfig::Layer::Book::iterator iter =
@@ -522,7 +524,55 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 
-		//FIXME: append has to be before list-canvases
+		// WARNING: canvas must be before append
+
+		if (vm.count("canvas"))
+		{
+			Job job;
+			bool correct_job = true;
+			int ret;
+			ret = job.load_file(vm["input-file"].as<string>());
+
+			if (ret != SYNFIGTOOL_OK)
+				return ret;
+
+			job.root()->set_time(0);
+
+			string canvasid;
+			canvasid = vm["canvas"].as<string>();
+
+			try
+			{
+				string warnings;
+				job.canvas = job.root()->find_canvas(canvasid, warnings);
+			}
+			catch(Exception::IDNotFound)
+			{
+				cerr << _("Unable to find canvas with ID \"")
+					 << canvasid << _("\" in ") << job.filename() << "."
+					 << endl;
+				cerr << _("Throwing out job...") << endl;
+				correct_job = false;
+			}
+			catch(Exception::BadLinkName)
+			{
+				cerr << _("Invalid canvas name \"") << canvasid
+					 << _("\" in ") << job.filename() << "." << endl;
+				cerr << _("Throwing out job...") << endl;
+				correct_job = false;
+			}
+
+			// Later we need to set the other parameters for the jobs
+			if (correct_job)
+				job_list.push_front(job);
+		}
+
+		// WARNING: append must be before list-canvases
+
+		if (vm.count("append"))
+		{
+
+		}
 
 		if (vm.count("list-canvases"))
 		{
@@ -556,13 +606,13 @@ int main(int ac, char* av[])
 		}
 
 		// Setup Job list ----------------------------------------------
-		
-		list<Job> job_list;
-		
+
+		//list<Job> job_list;
+
 		// ...
-		
+
 		// Process Job list --------------------------------------------
-		
+
 		if(!job_list.size())
 		{
 			cerr << _("Nothing to do!") << endl;
