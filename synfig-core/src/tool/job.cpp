@@ -54,6 +54,9 @@ Job::Job()
       canvas_info_antialias = canvas_info_clamp =  canvas_info_flags =
       canvas_info_focus = canvas_info_bg_color = canvas_info_metadata
       = false;
+
+    quality = DEFAULT_QUALITY;
+    sifout = false;
 }
 
 int Job::load_file (string _filename)
