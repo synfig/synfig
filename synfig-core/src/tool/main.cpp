@@ -404,7 +404,7 @@ bool flag_requires_value(String flag)
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
-			flag=="--time"		|| flag=="-vc"			|| flag=="-vb");
+			flag=="--time"		|| flag=="-vc"			|| flag=="-vb"			|| flag=="-ss");
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -649,6 +649,11 @@ int extract_target_params(arg_list_t& arg_list,
 			params.bitrate =
 				atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Target bitrate set to %dk"),params.bitrate)<<endl;
+		}
+		else if(*iter=="-ss")
+		{
+			params.sequence_separator = extract_parameter(arg_list, iter, next);
+			VERBOSE_OUT(1)<<strprintf(_("Target sequence separator set to %s"),params.sequence_separator.c_str())<<endl;
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
@@ -1195,7 +1200,8 @@ int main(int argc, char *argv[])
 					return SYNFIGTOOL_MISSINGARGUMENT;
 				}
 			}
-
+			else
+				extract_target_params(imageargs, target_parameters);
 			// If the target type is STILL not yet defined, then
 			// set it to a some sort of default
 			if(target_name.empty())
