@@ -71,6 +71,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_single_frame(_("Use _current frame"), true),
 	tparam("mpeg4",200)
 {
+	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
 	widget_rend_desc.set_rend_desc(canvas_interface_->get_canvas()->rend_desc());

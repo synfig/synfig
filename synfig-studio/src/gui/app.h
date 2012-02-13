@@ -206,6 +206,7 @@ public:
 	static synfig::String predefined_size;
 	static synfig::String predefined_fps;
 	static float preferred_fps;
+	static synfig::String sequence_separator;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/

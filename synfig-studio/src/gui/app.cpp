@@ -290,6 +290,7 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
+String studio::App::sequence_separator(".");
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -588,6 +589,11 @@ public:
 				value=strprintf("%s",App::predefined_fps.c_str());
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				value=App::sequence_separator;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -703,6 +709,10 @@ public:
 				App::predefined_fps=value;
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				App::sequence_separator=value;
+			}
 		}
 		catch(...)
 		{
@@ -732,6 +742,7 @@ public:
 		ret.push_back("predefined_size");
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
+		ret.push_back("sequence_separator");
 		return ret;
 	}
 };
@@ -1849,7 +1860,7 @@ App::reset_initial_preferences()
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
-
+	synfigapp::Main::settings().set_value("sequence_separator", ".");
 }
 
 bool
