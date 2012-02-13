@@ -76,5 +76,7 @@ extern const char *progname;
 extern int verbosity;
 extern bool be_quiet;
 extern bool print_benchmarks;
+extern const char* allowed_video_codecs[];
+extern const char* allowed_video_codecs_description[];
 
 #endif
