@@ -25,14 +25,16 @@
 #ifndef __SYNFIG_JOB_H
 #define __SYNFIG_JOB_H
 
-struct Job
+class Job
 {
-	std::string filename;
+	std::string _filename;
+	synfig::Canvas::Handle _root;
+
+public:
 	std::string outfilename;
 
 	synfig::RendDesc desc;
 
-	synfig::Canvas::Handle root;
 	synfig::Canvas::Handle canvas;
 	synfig::Target::Handle target;
 
@@ -55,6 +57,10 @@ struct Job
     Job();
 
 	int load_file (std::string filename);
+
+	std::string filename() const;
+
+	synfig::Canvas::Handle root() const;
 };
 
 #endif

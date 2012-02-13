@@ -59,23 +59,23 @@ Job::Job()
     sifout = false;
 }
 
-int Job::load_file (string _filename)
+int Job::load_file (string filename)
 {
-	filename = _filename;
+	_filename = filename;
 	// Open the composition
 	string errors, warnings;
 	try
 	{
-		root=open_canvas(filename, errors, warnings);
+		_root = open_canvas(_filename, errors, warnings);
 	}
 	catch(runtime_error x)
 	{
-		root = 0;
+		_root = 0;
 	}
 
 	// By default, the canvas to render is the root canvas
 	// This can be changed through --canvas option
-	canvas = root;
+	canvas = _root;
 
 	if(!canvas)
 	{
@@ -86,4 +86,14 @@ int Job::load_file (string _filename)
 	}
 
 	return SYNFIGTOOL_OK;
+}
+
+string Job::filename () const
+{
+	return _filename;
+}
+
+Canvas::Handle Job::root () const
+{
+	return _root;
 }
