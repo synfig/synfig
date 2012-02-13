@@ -533,7 +533,7 @@ int main(int ac, char* av[])
 			if (ret != SYNFIGTOOL_OK)
 				return ret;
 
-			print_child_canvases(job.filename + "#",job.root);
+			print_child_canvases(job.filename() + "#",job.root());
 
 			cerr << endl;
 
@@ -571,7 +571,7 @@ int main(int ac, char* av[])
 
 		for(; job_list.size(); job_list.pop_front())
 		{
-			VERBOSE_OUT(3) << job_list.front().filename << " -- " << endl;
+			VERBOSE_OUT(3) << job_list.front().filename() << " -- " << endl;
 			VERBOSE_OUT(3) << '\t'
 						   <<
 				strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
@@ -597,7 +597,7 @@ int main(int ac, char* av[])
 					<< endl;
 
 			RenderProgress p;
-			p.task(job_list.front().filename + " ==> " +
+			p.task(job_list.front().filename() + " ==> " +
 				   job_list.front().outfilename);
 			if(job_list.front().sifout)
 			{
@@ -622,7 +622,7 @@ int main(int ac, char* av[])
 				}
 
 				if(print_benchmarks)
-					cout << job_list.front().filename
+					cout << job_list.front().filename()
 						 << _(": Rendered in ") << timer()
 						 << _(" seconds.") << endl;
 			}
