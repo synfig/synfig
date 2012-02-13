@@ -70,6 +70,8 @@ int Job::load_file (string _filename)
 		root = 0;
 	}
 
+	// By default, the canvas to render is the root canvas
+	// This can be changed through --canvas option
 	canvas = root;
 
 	if(!canvas)
