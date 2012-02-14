@@ -939,10 +939,10 @@ void studio::Widget_Preview::seek_frame(int frames)
 
 	if(playing) pause();	//pause playing when seek frame called
 
-	float fps = preview->get_fps();
-	float currenttime = adj_time_scrub.get_value();
-	Time newtime(currenttime+(float)frames/fps);
-	newtime = newtime.round(fps);
+	double fps = preview->get_fps();
+	double currenttime = adj_time_scrub.get_value();
+	int previewedframes = (currenttime * fps);
+	Time newtime(double((previewedframes + frames + 0.5) / fps));
 	
 	adj_time_scrub.set_value(newtime);
 }
