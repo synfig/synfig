@@ -941,8 +941,8 @@ void studio::Widget_Preview::seek_frame(int frames)
 
 	double fps = preview->get_fps();
 	double currenttime = adj_time_scrub.get_value();
-	int previewedframes = (currenttime * fps);
-	Time newtime(double((previewedframes + frames + 0.5) / fps));
+	int currentframe = (int)floor(currenttime * fps);
+	Time newtime(double((currentframe + frames + 0.5) / fps));
 	
 	adj_time_scrub.set_value(newtime);
 }
