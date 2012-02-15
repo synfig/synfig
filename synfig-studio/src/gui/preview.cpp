@@ -302,7 +302,7 @@ Widget_Preview::Widget_Preview():
 	adj_time_scrub(0, 0, 1000, 0, 10, 0),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
-	currentindex(0),
+	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	audiotime(0),
 	adj_sound(0, 0, 4),
 	l_lasttime("0s"),
@@ -671,25 +671,33 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		cr->paint();
 		cr->restore();
 
+		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
+		Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
+		.get_string(preview->get_global_fps(),
+		App::get_time_format()));
+		//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
+
+		cr->save();
+
+		layout->set_text(timecode);
+
+		//positive time code in red
 		if(timedisp >= 0)
 		{
-			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
-			.get_string(preview->get_global_fps(),
-			App::get_time_format()));
-			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
-
-			cr->save();
-
-			layout->set_text(timecode);
-
-			cr->set_source_rgb(1,0,0);
-			cr->move_to(4,4);
-			layout->show_in_cairo_context(cr);
-			cr->stroke();
-
-			cr->restore();
+			cr->set_source_rgb(1, 0, 0);
 		}
+
+		//negative time code in blue
+		else
+		{
+			cr->set_source_rgb(0, 0, 1);
+		}
+
+		cr->move_to(4,4);
+		layout->show_in_cairo_context(cr);
+		cr->stroke();
+
+		cr->restore();
 	}
 
 	//synfig::warning("Refresh the draw area");
