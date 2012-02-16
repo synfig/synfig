@@ -209,12 +209,12 @@ void studio::Preview::render()
 
 		if(overbegin)
 		{
-			desc.set_time_start(std::max(begintime,(float)desc.get_time_start()));
+			desc.set_time_start(begintime);
 			//synfig::warning("Set start time to %.2f...",(float)desc.get_time_start());
 		}
 		if(overend)
 		{
-			desc.set_time_end(std::min(endtime,(float)desc.get_time_end()));
+			desc.set_time_end(endtime);
 			//synfig::warning("Set end time to %.2f...",(float)desc.get_time_end());
 		}
 
