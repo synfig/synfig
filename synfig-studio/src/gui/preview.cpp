@@ -681,16 +681,17 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 		layout->set_text(timecode);
 
-		//positive time code in red
-		if(timedisp >= 0)
-		{
-			cr->set_source_rgb(1, 0, 0);
-		}
-
-		//negative time code in blue
-		else
+		//numbering frames which inside duration of canvas in bule
+		if(timedisp >= preview->get_canvas()->rend_desc().get_time_start() 
+			&& timedisp <= preview->get_canvas()->rend_desc().get_time_end())
 		{
 			cr->set_source_rgb(0, 0, 1);
+		}
+
+		//numbering frames which outside duration of canvas in red
+		else
+		{
+			cr->set_source_rgb(1, 0, 0);
 		}
 
 		cr->move_to(4,4);
