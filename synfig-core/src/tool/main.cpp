@@ -459,25 +459,26 @@ int main(int ac, char* av[])
 			Layer::Handle layer =
 				synfig::Layer::create(vm["layer-info"].as<string>());
 
-			cout << "Layer Name: " << layer->get_name() << endl;
-			cout << "Localized Layer Name: " << layer->get_local_name() << endl;
-			cout << "Version: " << layer->get_version() << endl;
+			cout << _("Layer Name: ") << layer->get_name() << endl;
+			cout << _("Localized Layer Name: ")
+				 << layer->get_local_name() << endl;
+			cout << _("Version: ") << layer->get_version() << endl;
 
 			Layer::Vocab vocab = layer->get_param_vocab();
 			for(; !vocab.empty(); vocab.pop_front())
 			{
-				cout << "param - " << vocab.front().get_name();
+				cout << _("param - ") << vocab.front().get_name();
 				if(!vocab.front().get_critical())
-					cout << " (not critical)";
-				cout << endl << "\tLocalized Name: "
+					cout << _(" (not critical)");
+				cout << endl << _("\tLocalized Name: ")
 					 << vocab.front().get_local_name() << endl;
 
 				if(!vocab.front().get_description().empty())
-					cout << "\tDescription: "
+					cout << _("\tDescription: ")
 						 << vocab.front().get_description() << endl;
 
 				if(!vocab.front().get_hint().empty())
-					cout << "\tHint: "
+					cout << _("\tHint: ")
 						 << vocab.front().get_hint() << endl;
 			}
 
