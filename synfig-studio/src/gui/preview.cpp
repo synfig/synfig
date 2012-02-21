@@ -455,13 +455,14 @@ Widget_Preview::Widget_Preview():
 
 	controller->show_all();
 
-	//3rd row: last rendered frame
-	Gtk::HBox *lastrendered = manage(new Gtk::HBox);
-	Gtk::Label *label = manage(new Gtk::Label(_("Last rendered: ")));
-	lastrendered->pack_start(*label, Gtk::PACK_SHRINK, 10);
-	//l_lasttime.show();
-	lastrendered->pack_start(l_lasttime, Gtk::PACK_SHRINK, 0);
-	lastrendered->show_all();
+	//3rd row: previewing frame numbering and rendered frame numbering
+	Gtk::HBox *status = manage(new Gtk::HBox);
+	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
+	Gtk::Label *label = manage(new Gtk::Label(_("/")));
+	status->pack_start(*label, Gtk::PACK_SHRINK, 5);
+	status->pack_start(l_lasttime, Gtk::PACK_SHRINK, 5);
+
+	status->show_all();
 
 	//5th row: sound track
 	disp_sound.set_size_request(-1,32);
@@ -470,7 +471,7 @@ Widget_Preview::Widget_Preview():
 	attach(preview_window, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	attach(*lastrendered, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	attach(*status, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 //	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	show_all();
 
@@ -574,6 +575,12 @@ void studio::Widget_Preview::update()
 		disp_sound.set_position(time);
 		disp_sound.queue_draw();
 	}
+
+	//current frame in previewing
+	Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
+                .get_string(preview->get_global_fps(), App::get_time_format()));
+	l_currenttime.set_text(timecode);
+
 }
 void studio::Widget_Preview::preview_draw()
 {
@@ -669,35 +676,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 			(draw_area.get_width() - nw) / 2, (draw_area.get_height() - nh) / 2
 			);
 		cr->paint();
-		cr->restore();
-
-		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-		Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
-		.get_string(preview->get_global_fps(),
-		App::get_time_format()));
-		//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
-
-		cr->save();
-
-		layout->set_text(timecode);
-
-		//numbering frames which inside duration of canvas in bule
-		if(timedisp >= preview->get_canvas()->rend_desc().get_time_start() 
-			&& timedisp <= preview->get_canvas()->rend_desc().get_time_end())
-		{
-			cr->set_source_rgb(0, 0, 1);
-		}
-
-		//numbering frames which outside duration of canvas in red
-		else
-		{
-			cr->set_source_rgb(1, 0, 0);
-		}
-
-		cr->move_to(4,4);
-		layout->show_in_cairo_context(cr);
-		cr->stroke();
-
 		cr->restore();
 	}
 

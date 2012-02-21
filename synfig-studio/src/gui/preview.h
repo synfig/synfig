@@ -194,6 +194,7 @@ class Widget_Preview : public Gtk::Table
 	Gtk::Adjustment		adj_sound;
 
 	Gtk::Label		l_lasttime;
+	Gtk::Label		l_currenttime;
 
 	//only for internal stuff, doesn't set anything
 	bool 	playing;
