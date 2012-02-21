@@ -318,6 +318,14 @@ Widget_Preview::Widget_Preview():
 	//pack preview content into scrolled window
 	preview_window.add(draw_area);
 
+	//preview window background color
+	Gdk::Color bg_color;
+	bg_color.set_red(54*256);
+	bg_color.set_blue(59*256);
+	bg_color.set_green(59*256);
+	draw_area.modify_bg(Gtk::STATE_NORMAL, bg_color);
+
+
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
