@@ -466,8 +466,8 @@ Widget_Preview::Widget_Preview():
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::HBox *status = manage(new Gtk::HBox);
 	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
-	Gtk::Label *label = manage(new Gtk::Label(_("/")));
-	status->pack_start(*label, Gtk::PACK_SHRINK, 5);
+	Gtk::Label *separator = manage(new Gtk::Label(_(" / ")));
+	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);
 	status->pack_start(l_lasttime, Gtk::PACK_SHRINK, 5);
 
 	status->show_all();
