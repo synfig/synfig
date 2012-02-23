@@ -308,6 +308,9 @@ Widget_Preview::Widget_Preview():
 	l_lasttime("0s"),
 	playing(false)
 {
+	//catch key press event for shortcut keys
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
+
 	//connect to expose events
 	//signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Preview::redraw));
 
@@ -1025,4 +1028,43 @@ void studio::Widget_Preview::eraseall()
 	{
 		preview->clear();
 	}
+}
+
+
+//shortcut keys TODO: customizable shortcut keys would be awesome.
+
+bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
+{
+	//previous rendered frame
+	if (ev->keyval == gdk_keyval_from_name("a"))
+	{
+		if(playing) pause();
+		seek_frame(-1);
+		return true;
+	}
+
+	//play/pause
+	if (ev->keyval == gdk_keyval_from_name("s"))
+	{
+		on_play_pause_pressed();
+		return true;
+	}
+
+	//next render frame
+	if (ev->keyval == gdk_keyval_from_name("d"))
+	{
+		if(playing) pause();
+		seek_frame(+1);
+		return true;
+	}
+
+	//loop
+	if (ev->keyval == gdk_keyval_from_name("f"))
+	{
+		if(get_loop_flag()) set_loop_flag(false);
+		else set_loop_flag(true);
+		return true;
+	}
+
+	return false;
 }
