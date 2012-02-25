@@ -572,7 +572,51 @@ int main(int ac, char* av[])
 
 		if (vm.count("append"))
 		{
+			// To append, if we have already selected canvas, the file would
+			// already be loaded, so we should append to the job in the list
+			// instead of loading the file again
+			if (!vm.count("canvas"))
+			{
+				// Load the input file if no canvas was selected
+				Job job;
+				int ret;
+				ret = job.load_file(vm["input-file"].as<string>());
 
+				if (ret != SYNFIGTOOL_OK)
+					return ret;
+
+				job.root()->set_time(0);
+
+				// Later we need to set the other parameters for the jobs
+				job_list.push_front(job);
+
+				// ELSE: won't load again but refer to the job already in the
+				// list loaded by canvas parameter
+			}
+
+			// TODO: Enable multi appending. Disabled in the previous CLI version
+			string composite_file;
+			composite_file = vm["append"].as<string>();
+
+			string errors, warnings;
+			Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
+			if(!composite)
+			{
+				cerr << _("Unable to append '") << composite_file
+					 << "'." << endl;
+			}
+			else
+			{
+				Canvas::reverse_iterator iter;
+				for(iter=composite->rbegin(); iter!=composite->rend(); ++iter)
+				{
+					Layer::Handle layer(*iter);
+					if(layer->active())
+						job_list.front().canvas->push_front(layer->clone());
+				}
+			}
+
+			VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
 		}
 
 		if (vm.count("list-canvases"))
