@@ -525,12 +525,10 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 
-		// WARNING: canvas must be before append
-
-		if (vm.count("canvas"))
+		// Common input file loading
+		if (vm.count("input-file"))
 		{
 			Job job;
-			bool correct_job = true;
 			int ret;
 			ret = job.load_file(vm["input-file"].as<string>());
 
@@ -538,62 +536,46 @@ int main(int ac, char* av[])
 				return ret;
 
 			job.root()->set_time(0);
+			job_list.push_front(job);
+		}
 
+		// WARNING: canvas must be before append
+
+		if (vm.count("canvas"))
+		{
 			string canvasid;
 			canvasid = vm["canvas"].as<string>();
 
 			try
 			{
 				string warnings;
-				job.canvas = job.root()->find_canvas(canvasid, warnings);
+				job_list.front().canvas =
+					job_list.front().root()->find_canvas(canvasid, warnings);
 			}
 			catch(Exception::IDNotFound)
 			{
 				cerr << _("Unable to find canvas with ID \"")
-					 << canvasid << _("\" in ") << job.filename() << "."
-					 << endl;
+					 << canvasid << _("\" in ") << job_list.front().filename()
+					 << "." << endl;
 				cerr << _("Throwing out job...") << endl;
-				correct_job = false;
+				job_list.pop_front();
 			}
 			catch(Exception::BadLinkName)
 			{
 				cerr << _("Invalid canvas name \"") << canvasid
-					 << _("\" in ") << job.filename() << "." << endl;
+					 << _("\" in ") << job_list.front().filename() << "."
+					 << endl;
 				cerr << _("Throwing out job...") << endl;
-				correct_job = false;
+				job_list.pop_front();
 			}
 
 			// Later we need to set the other parameters for the jobs
-			if (correct_job)
-				job_list.push_front(job);
 		}
 
 		// WARNING: append must be before list-canvases
 
 		if (vm.count("append"))
 		{
-			// To append, if we have already selected canvas, the file would
-			// already be loaded, so we should append to the job in the list
-			// instead of loading the file again
-			if (!vm.count("canvas"))
-			{
-				// Load the input file if no canvas was selected
-				Job job;
-				int ret;
-				ret = job.load_file(vm["input-file"].as<string>());
-
-				if (ret != SYNFIGTOOL_OK)
-					return ret;
-
-				job.root()->set_time(0);
-
-				// Later we need to set the other parameters for the jobs
-				job_list.push_front(job);
-
-				// ELSE: won't load again but refer to the job already in the
-				// list loaded by canvas parameter
-			}
-
 			// TODO: Enable multi appending. Disabled in the previous CLI version
 			string composite_file;
 			composite_file = vm["append"].as<string>();
@@ -621,32 +603,20 @@ int main(int ac, char* av[])
 
 		if (vm.count("list-canvases"))
 		{
-			Job job;
-			int ret;
-			ret = job.load_file(vm["input-file"].as<string>());
-			
-			if (ret != SYNFIGTOOL_OK)
-				return ret;
-
-			print_child_canvases(job.filename() + "#",job.root());
+			print_child_canvases(job_list.front().filename() + "#",
+								 job_list.front().root());
 
 			cerr << endl;
 
 			return SYNFIGTOOL_OK;
 		}
-		
+
 		if (vm.count("canvas-info"))
 		{
-			Job job;
-			int ret;
-			ret = job.load_file(vm["input-file"].as<string>());
-			
-			if (ret != SYNFIGTOOL_OK)
-				return ret;
+			extract_canvas_info(job_list.front(),
+								vm["canvas-info"].as<string>());
+			print_canvas_info(job_list.front());
 
-			extract_canvas_info(job, vm["canvas-info"].as<string>());
-			print_canvas_info(job);
-			
 			return SYNFIGTOOL_OK;
 		}
 
