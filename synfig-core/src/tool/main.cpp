@@ -241,74 +241,74 @@ int main(int ac, char* av[])
 	}
 
     try {
-		named_type<string>* target = new named_type<string>("module");
-		named_type<int>* width = new named_type<int>("NUM");
-		named_type<int>* height = new named_type<int>("NUM");
-		named_type<int>* span = new named_type<int>("NUM");
-		named_type<int>* antialias = new named_type<int>("1..30");
-		named_type<int>* quality = new named_type<int>("0..10");
-		named_type<float>* gamma = new named_type<float>("NUM (=2.2)");
-		named_type<int>* threads = new named_type<int>("NUM");
-		named_type<string>* canvas = new named_type<string>("canvas-id");
-		named_type<string>* output_file = new named_type<string>("filename");
-		named_type<string>* input_file = new named_type<string>("filename");
-		named_type<int>* fps = new named_type<int>("NUM");
-		named_type<int>* time = new named_type<int>("seconds");
-		named_type<int>* begin_time = new named_type<int>("seconds");
-		named_type<int>* start_time = new named_type<int>("seconds");
-		named_type<int>* end_time = new named_type<int>("seconds");
-		named_type<int>* dpi = new named_type<int>("NUM");
-		named_type<int>* dpi_x = new named_type<int>("NUM");
-		named_type<int>* dpi_y = new named_type<int>("NUM");
-		named_type<string>* append_filename = new named_type<string>("filename");
-		named_type<string>* canvas_info_fields = new named_type<string>("fields");
-		named_type<string>* layer_info_field = new named_type<string>("layer-name");
+		named_type<string>* target_arg_desc = new named_type<string>("module");
+		named_type<int>* width_arg_desc = new named_type<int>("NUM");
+		named_type<int>* height_arg_desc = new named_type<int>("NUM");
+		named_type<int>* span_arg_desc = new named_type<int>("NUM");
+		named_type<int>* antialias_arg_desc = new named_type<int>("1..30");
+		named_type<int>* quality_arg_desc = new named_type<int>("0..10");
+		named_type<float>* gamma_arg_desc = new named_type<float>("NUM (=2.2)");
+		named_type<int>* threads_arg_desc = new named_type<int>("NUM");
+		named_type<string>* canvas_arg_desc = new named_type<string>("canvas-id");
+		named_type<string>* output_file_arg_desc = new named_type<string>("filename");
+		named_type<string>* input_file_arg_desc = new named_type<string>("filename");
+		named_type<int>* fps_arg_desc = new named_type<int>("NUM");
+		named_type<int>* time_arg_desc = new named_type<int>("seconds");
+		named_type<int>* begin_time_arg_desc = new named_type<int>("seconds");
+		named_type<int>* start_time_arg_desc = new named_type<int>("seconds");
+		named_type<int>* end_time_arg_desc = new named_type<int>("seconds");
+		named_type<int>* dpi_arg_desc = new named_type<int>("NUM");
+		named_type<int>* dpi_x_arg_desc = new named_type<int>("NUM");
+		named_type<int>* dpi_y_arg_desc = new named_type<int>("NUM");
+		named_type<string>* append_filename_arg_desc = new named_type<string>("filename");
+		named_type<string>* canvas_info_fields_arg_desc = new named_type<string>("fields");
+		named_type<string>* layer_info_field_arg_desc = new named_type<string>("layer-name");
 
 
-        po::options_description settings(_("Settings"));
-        settings.add_options()
-			("target,t", target, _("Specify output target (Default:unknown)"))
-            ("width,w", width, _("Set the image width (Use zero for file default)"))
-            ("height,h", height, _("Set the image height (Use zero for file default)"))
-            ("span,s", span, _("Set the diagonal size of image window (Span)"))
-            ("antialias,a", antialias, _("Set antialias amount for parametric renderer."))
-            ("quality,Q", quality->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
-            ("gamma,g", gamma->default_value(2.2), _("Gamma"))
-            ("threads,T", threads, _("Enable multithreaded renderer using specified # of threads"))
-            ("canvas,c", canvas, _("Render the canvas with the given id instead of the root."))
-            ("output-file,o", output_file, _("Specify output filename"))
-            ("input-file", input_file, _("Specify input filename"))
-            ("fps",  fps, _("Set the frame rate"))
-			("time",  time, _("Render a single frame at <seconds>"))
-			("begin-time",  begin_time, _("Set the starting time"))
-			("start-time",  start_time, _("Set the starting time"))
-			("end-time",  end_time, _("Set the ending time"))
-			("dpi",  dpi, _("Set the physical resolution (dots-per-inch)"))
-			("dpi-x",  dpi_x, _("Set the physical X resolution (dots-per-inch)"))
-			("dpi-y",  dpi_y, _("Set the physical Y resolution (dots-per-inch)"))
+        po::options_description po_settings(_("Settings"));
+        po_settings.add_options()
+			("target,t", target_arg_desc, _("Specify output target (Default:unknown)"))
+            ("width,w", width_arg_desc, _("Set the image width (Use zero for file default)"))
+            ("height,h", height_arg_desc, _("Set the image height (Use zero for file default)"))
+            ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
+            ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
+            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
+            ("gamma,g", gamma_arg_desc->default_value(2.2), _("Gamma"))
+            ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using specified # of threads"))
+            ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
+            ("output-file,o", output_file_arg_desc, _("Specify output filename"))
+            ("input-file", input_file_arg_desc, _("Specify input filename"))
+            ("fps", fps_arg_desc, _("Set the frame rate"))
+			("time", time_arg_desc, _("Render a single frame at <seconds>"))
+			("begin-time", begin_time_arg_desc, _("Set the starting time"))
+			("start-time", start_time_arg_desc, _("Set the starting time"))
+			("end-time", end_time_arg_desc, _("Set the ending time"))
+			("dpi", dpi_arg_desc, _("Set the physical resolution (dots-per-inch)"))
+			("dpi-x", dpi_x_arg_desc, _("Set the physical X resolution (dots-per-inch)"))
+			("dpi-y", dpi_y_arg_desc, _("Set the physical Y resolution (dots-per-inch)"))
             ;
 
-        po::options_description switchopts(_("Switch options"));
-        switchopts.add_options()
+        po::options_description po_switchopts(_("Switch options"));
+        po_switchopts.add_options()
             ("verbose,v", po::value<int>(), _("Output verbosity level"))
             ("quiet,q", _("Quiet mode (No progress/time-remaining display)"))
             ("benchmarks,b", _("Print benchmarks"))
             ;
 
-        po::options_description misc(_("Misc options"));
-        misc.add_options()
-			("append", append_filename, _("Append layers in <filename> to composition"))
-            ("canvas-info", canvas_info_fields, _("Print out specified details of the root canvas"))
+        po::options_description po_misc(_("Misc options"));
+        po_misc.add_options()
+			("append", append_filename_arg_desc, _("Append layers in <filename> to composition"))
+            ("canvas-info", canvas_info_fields_arg_desc, _("Print out specified details of the root canvas"))
             ("list-canvases", _("List the exported canvases in the composition"))
             ;
 
-        po::options_description info("Synfig info options");
-        info.add_options()
+        po::options_description po_info("Synfig info options");
+        po_info.add_options()
 			("help", _("produce a help message"))
             ("importers", _("Print out the list of available importers"))
 			("info", _("Print out misc build information"))
             ("layers", _("Print out the list of available layers"))
-            ("layer-info", layer_info_field, _("Print out layer's description, parameter info, etc."))
+            ("layer-info", layer_info_field_arg_desc, _("Print out layer's description, parameter info, etc."))
             ("license", _("Print out license information"))
             ("modules", _("Print out the list of loaded modules"))
             ("targets", _("Print out the list of available targets"))
@@ -318,8 +318,8 @@ int main(int ac, char* av[])
             ;
 
 #ifdef _DEBUG
-        po::options_description debug(_("Synfig debug flags"));
-        debug.add_options()
+        po::options_description po_debug(_("Synfig debug flags"));
+        po_debug.add_options()
             ("guid-test", _("Test GUID generation"))
 			("signal-test", _("Test signal implementation"))
             ;
@@ -327,21 +327,21 @@ int main(int ac, char* av[])
 
         // Declare an options description instance which will include
         // all the options
-        po::options_description all("");
-        all.add(settings).add(switchopts).add(misc).add(info);
+        po::options_description po_all("");
+        po_all.add(po_settings).add(po_switchopts).add(po_misc).add(po_info);
 
 #ifdef _DEBUG
-		all.add(debug);
+		po_all.add(po_debug);
 #endif
 
         // Declare an options description instance which will be shown
         // to the user
-        po::options_description visible("");
-        visible.add(settings).add(switchopts).add(misc).add(info);
+        po::options_description po_visible("");
+        po_visible.add(po_settings).add(po_switchopts).add(po_misc).add(po_info);
 
 
         po::variables_map vm;
-        po::store(po::command_line_parser(ac, av).options(all).run(), vm);
+        po::store(po::command_line_parser(ac, av).options(po_all).run(), vm);
 
 
 
@@ -381,7 +381,7 @@ int main(int ac, char* av[])
         if (vm.count("help"))
         {
 			print_usage();
-            cout << visible;
+            cout << po_visible;
 
             return SYNFIGTOOL_HELP;
         }
