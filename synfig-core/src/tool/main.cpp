@@ -643,9 +643,53 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_OK;
 		}
 
+
 		// Setup Job list ----------------------------------------------
 
-		//list<Job> job_list;
+		VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << endl;
+
+		// If the target type is not yet defined,
+		// try to figure it out from the outfile.
+		if(!vm.count("target") && !job_list.front().outfilename.empty())
+		{
+			VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
+						   << endl;
+			string ext = filename_extension(job_list.front().outfilename);
+			if (ext.length())
+				ext = ext.substr(1);
+
+			if(Target::ext_book().count(ext))
+			{
+				target_name = Target::ext_book()[ext];
+				info("target name not specified - using %s", target_name.c_str());
+			}
+			else
+			{
+				string lower_ext(ext);
+
+				for(unsigned int i = 0; i < ext.length(); i++)
+					lower_ext[i] = tolower(ext[i]);
+
+				if(Target::ext_book().count(lower_ext))
+				{
+					target_name=Target::ext_book()[lower_ext];
+					info("target name not specified - using %s", target_name.c_str());
+				}
+				else
+					target_name=ext;
+			}
+		}
+
+		// If the target type is STILL not yet defined, then
+		// set it to a some sort of default
+		if(target_name.empty())
+		{
+			VERBOSE_OUT(2) << _("Defaulting to PNG target...") << endl;
+			target_name = "png";
+		}
+
+		// TODO: Add ffmpeg target parameters support
+		TargetParam target_parameters;
 
 		// ...
 
