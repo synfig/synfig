@@ -525,6 +525,9 @@ int main(int ac, char* av[])
 			return SYNFIGTOOL_HELP;
 		}
 
+
+		// Processing options --------------------------------------------------
+		string target_name;
 		// Common input file loading
 		if (vm.count("input-file"))
 		{
@@ -537,6 +540,11 @@ int main(int ac, char* av[])
 
 			job.root()->set_time(0);
 			job_list.push_front(job);
+		}
+
+		if (vm.count("target"))
+		{
+			target_name = vm["target"].as<string>();
 		}
 
 		// WARNING: canvas must be before append
