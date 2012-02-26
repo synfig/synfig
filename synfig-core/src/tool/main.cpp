@@ -720,6 +720,41 @@ int main(int ac, char* av[])
 			cerr << _("Throwing out job...") << endl;
 		}
 
+		VERBOSE_OUT(4) << _("Creating the target...") << endl;
+		job_list.front().target =
+			synfig::Target::create(target_name,
+								   job_list.front().outfilename,
+								   target_parameters);
+
+		if(target_name == "sif")
+			job_list.front().sifout=true;
+		else
+		{
+			if(!job_list.front().target)
+			{
+				cerr << _("Unknown target for ") << job_list.front().filename()
+					 << ": " << target_name << endl;
+				cerr << _("Throwing out job...") << endl;
+				job_list.pop_front();
+			}
+			job_list.front().sifout=false;
+		}
+
+		// Set the Canvas on the Target
+		if(job_list.front().target)
+		{
+			VERBOSE_OUT(4) << _("Setting the canvas on the target...") << endl;
+			job_list.front().target->set_canvas(job_list.front().canvas);
+
+			VERBOSE_OUT(4) << _("Setting the quality of the target...") << endl;
+			job_list.front().target->set_quality(job_list.front().quality);
+		}
+
+		// Set the threads for the target
+		if (job_list.front().target &&
+			Target_Scanline::Handle::cast_dynamic(job_list.front().target))
+			Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
+
 
 		// Process Job list --------------------------------------------
 
