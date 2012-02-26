@@ -549,6 +549,11 @@ int main(int ac, char* av[])
 			target_name = vm["target"].as<string>();
 		}
 
+		// Determine output
+		if (vm.count("output-file"))
+		{
+			job_list.front().outfilename = vm["output-file"].as<string>();
+		}
 
 		if (vm.count("threads"))
 			threads = vm["threads"].as<int>();
