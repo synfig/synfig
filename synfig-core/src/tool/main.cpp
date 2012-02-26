@@ -691,7 +691,35 @@ int main(int ac, char* av[])
 		// TODO: Add ffmpeg target parameters support
 		TargetParam target_parameters;
 
-		// ...
+		// If no output filename was provided, then create a output filename
+		// based on the given input filename and the selected target.
+		// (ie: change the extension)
+		if(job_list.front().outfilename.empty())
+		{
+			job_list.front().outfilename =
+				filename_sans_extension(job_list.front().filename()) + '.';
+
+			if(Target::book().count(target_name))
+				job_list.front().outfilename +=
+					Target::book()[target_name].filename;
+			else
+				job_list.front().outfilename += target_name;
+		}
+
+		VERBOSE_OUT(4) << "Target name = " << target_name << endl;
+		VERBOSE_OUT(4) << "Outfilename = " << job_list.front().outfilename
+					   << endl;
+
+		// Check permissions
+		if (access(dirname(job_list.front().outfilename).c_str(), W_OK) == -1)
+		{
+			cerr << _("Unable to create ouput for ")
+				 << job_list.front().outfilename + ": " + strerror(errno)
+				 << endl;
+			job_list.pop_front();
+			cerr << _("Throwing out job...") << endl;
+		}
+
 
 		// Process Job list --------------------------------------------
 
