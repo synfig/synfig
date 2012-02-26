@@ -528,6 +528,8 @@ int main(int ac, char* av[])
 
 		// Processing options --------------------------------------------------
 		string target_name;
+		int threads;
+
 		// Common input file loading
 		if (vm.count("input-file"))
 		{
@@ -546,6 +548,14 @@ int main(int ac, char* av[])
 		{
 			target_name = vm["target"].as<string>();
 		}
+
+
+		if (vm.count("threads"))
+			threads = vm["threads"].as<int>();
+		else
+			threads = 1;
+
+		VERBOSE_OUT(1) << _("Threads set to ") << threads << endl;
 
 		// WARNING: canvas must be before append
 
