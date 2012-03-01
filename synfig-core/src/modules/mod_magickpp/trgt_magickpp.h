@@ -58,7 +58,7 @@ public:
 
 	magickpp_trgt(const char *filename,
 				  const synfig::TargetParam& params) :
-		filename(filename): sequence_separator(params.sequence_separator) { }
+		filename(filename), sequence_separator(params.sequence_separator) { }
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
