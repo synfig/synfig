@@ -494,7 +494,7 @@ Action::ValueDescSet::prepare()
 		case ValueBase::TYPE_ANGLE:
 		{
 			Angle old_angle = (*bline_tangent)(time).get(Angle());
-			Angle new_angle = value.get(Vector()).angle();
+			Angle new_angle = value.get(Angle());
 			Angle old_offset((*(bline_tangent->get_link("offset")))(time).get(Angle()));
 			Action::Handle action(Action::create("ValueDescSet"));
 			if(!action)
