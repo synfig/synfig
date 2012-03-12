@@ -325,6 +325,10 @@ int main(int ac, char* av[])
             ;
 #endif
 
+		// The first positional option will be treated as the input file
+		po::positional_options_description po_positional;
+		po_positional.add("input-file", 1);
+
         // Declare an options description instance which will include
         // all the options
         po::options_description po_all("");
@@ -341,7 +345,8 @@ int main(int ac, char* av[])
 
 
         po::variables_map vm;
-        po::store(po::command_line_parser(ac, av).options(po_all).run(), vm);
+        po::store(po::command_line_parser(ac, av).options(po_all).
+				  positional(po_positional).run(), vm);
 
 
 
