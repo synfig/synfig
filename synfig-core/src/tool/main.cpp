@@ -547,6 +547,7 @@ int main(int ac, char* av[])
 		if (vm.count("target"))
 		{
 			target_name = vm["target"].as<string>();
+			VERBOSE_OUT(1) << _("Target set to ") << target_name << endl;
 		}
 
 		// Determine output
