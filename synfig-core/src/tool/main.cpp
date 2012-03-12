@@ -249,6 +249,7 @@ int main(int ac, char* av[])
 		named_type<int>* quality_arg_desc = new named_type<int>("0..10");
 		named_type<float>* gamma_arg_desc = new named_type<float>("NUM (=2.2)");
 		named_type<int>* threads_arg_desc = new named_type<int>("NUM");
+		named_type<int>* verbosity_arg_desc = new named_type<int>("NUM");
 		named_type<string>* canvas_arg_desc = new named_type<string>("canvas-id");
 		named_type<string>* output_file_arg_desc = new named_type<string>("filename");
 		named_type<string>* input_file_arg_desc = new named_type<string>("filename");
@@ -290,7 +291,7 @@ int main(int ac, char* av[])
 
         po::options_description po_switchopts(_("Switch options"));
         po_switchopts.add_options()
-            ("verbose,v", po::value<int>(), _("Output verbosity level"))
+            ("verbose,v", verbosity_arg_desc, _("Output verbosity level"))
             ("quiet,q", _("Quiet mode (No progress/time-remaining display)"))
             ("benchmarks,b", _("Print benchmarks"))
             ;
