@@ -555,6 +555,14 @@ int main(int ac, char* av[])
 			job_list.front().outfilename = vm["output-file"].as<string>();
 		}
 
+		if (vm.count("quality"))
+			job_list.front().quality = vm["quality"].as<int>();
+		else
+			job_list.front().quality = DEFAULT_QUALITY;
+
+		VERBOSE_OUT(1) << _("Quality set to ") << job_list.front().quality
+					   << endl;
+
 		if (vm.count("threads"))
 			threads = vm["threads"].as<int>();
 		else
