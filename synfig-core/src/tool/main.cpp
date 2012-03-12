@@ -203,8 +203,8 @@ void extract_canvas_info(Job& job, string values)
 		else if (value == "metadata")		job.canvas_info_metadata		= true;
 		else
 		{
-			cerr<<_("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
-			cerr<<_("Recognized variables are:") << endl <<
+			cerr << _("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
+			cerr << _("Recognized variables are:") << endl <<
 				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
 				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
 				"  x_res, y_res, span, interlaced, antialias, clamp, flags," << endl <<
@@ -359,8 +359,6 @@ int main(int ac, char* av[])
 		if (vm.count("quiet"))
 			be_quiet=true;
 
-
-
 #ifdef _DEBUG
 		// DEBUG options ----------------------------------------------
 		if (vm.count("signal-test"))
@@ -385,7 +383,7 @@ int main(int ac, char* av[])
 
             return SYNFIGTOOL_HELP;
         }
-        
+
         if (vm.count("info"))
         {
 			cout << PACKAGE "-" VERSION << endl;
@@ -411,7 +409,7 @@ int main(int ac, char* av[])
 
 			return SYNFIGTOOL_HELP;
 		}
-		
+
 		if (vm.count("version"))
 		{
 			cerr << PACKAGE << " " << VERSION << endl;
@@ -453,7 +451,7 @@ int main(int ac, char* av[])
 
 			return SYNFIGTOOL_HELP;
 		}
-		
+
 		if (vm.count("layer-info"))
 		{
 			Layer::Handle layer =
@@ -484,7 +482,7 @@ int main(int ac, char* av[])
 
 			return SYNFIGTOOL_HELP;
 		}
-		
+
 		if (vm.count("modules"))
 		{
 			synfig::Module::Book::iterator iter =
@@ -835,7 +833,7 @@ int main(int ac, char* av[])
 		job_list.clear();
 
 		VERBOSE_OUT(1) << _("Done.") << endl;
-		
+
 		return SYNFIGTOOL_OK;
 
     }
