@@ -122,6 +122,13 @@ namespace synfig {
 
 class Context;
 class GUID;
+class Canvas;
+
+typedef        etl::handle<Canvas>     CanvasHandle;
+
+//! Optimize layers based on its calculated Z depth to perform a quick
+//! render of the layers to the output.
+void optimize_layers(Time, Context, CanvasHandle, bool seen_motion_blur=false);
 
 /*!	\class Canvas
 **	\brief Canvas is a double ended queue of Layers. It is the base class
@@ -625,11 +632,6 @@ protected:
 	//! \see Node::get_times()
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class Canvas
-
-	//! Optimize layers based on its calculated Z depth to perform a quick
-	//! render of the layers to the output.
-void optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
-
 
 }; // END of namespace synfig
 
