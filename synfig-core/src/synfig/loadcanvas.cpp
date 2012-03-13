@@ -1507,7 +1507,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type);
- 	handle<ValueNode> c[value_node->link_count()];
+ 	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
+	std::vector<handle<ValueNode> > c(value_node->link_count());
 
 	if(!value_node)
 	{
