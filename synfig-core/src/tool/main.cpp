@@ -663,13 +663,33 @@ int main(int ac, char* av[])
 		if (vm.count("input-file"))
 		{
 			Job job;
-			int ret;
-			ret = job.load_file(vm["input-file"].as<string>());
 
-			if (ret != SYNFIGTOOL_OK)
-				return ret;
+			job.filename = vm["input-file"].as<string>();
 
-			job.root()->set_time(0);
+			// Open the composition
+			string errors, warnings;
+			try
+			{
+				job.root = open_canvas(job.filename, errors, warnings);
+			}
+			catch(runtime_error x)
+			{
+				job.root = 0;
+			}
+
+			// By default, the canvas to render is the root canvas
+			// This can be changed through --canvas option
+			job.canvas = job.root;
+
+			if(!job.canvas)
+			{
+				cerr << _("Unable to load '") << job.filename << "'."
+					 << endl;
+
+				return SYNFIGTOOL_FILENOTFOUND;
+			}
+
+			job.root->set_time(0);
 			job_list.push_front(job);
 		}
 
@@ -711,12 +731,12 @@ int main(int ac, char* av[])
 			{
 				string warnings;
 				job_list.front().canvas =
-					job_list.front().root()->find_canvas(canvasid, warnings);
+					job_list.front().root->find_canvas(canvasid, warnings);
 			}
 			catch(Exception::IDNotFound)
 			{
 				cerr << _("Unable to find canvas with ID \"")
-					 << canvasid << _("\" in ") << job_list.front().filename()
+					 << canvasid << _("\" in ") << job_list.front().filename
 					 << "." << endl;
 				cerr << _("Throwing out job...") << endl;
 				job_list.pop_front();
@@ -724,7 +744,7 @@ int main(int ac, char* av[])
 			catch(Exception::BadLinkName)
 			{
 				cerr << _("Invalid canvas name \"") << canvasid
-					 << _("\" in ") << job_list.front().filename() << "."
+					 << _("\" in ") << job_list.front().filename << "."
 					 << endl;
 				cerr << _("Throwing out job...") << endl;
 				job_list.pop_front();
@@ -764,8 +784,8 @@ int main(int ac, char* av[])
 
 		if (vm.count("list-canvases"))
 		{
-			print_child_canvases(job_list.front().filename() + "#",
-								 job_list.front().root());
+			print_child_canvases(job_list.front().filename + "#",
+								 job_list.front().root);
 
 			cerr << endl;
 
@@ -838,7 +858,7 @@ int main(int ac, char* av[])
 		if(job_list.front().outfilename.empty())
 		{
 			job_list.front().outfilename =
-				filename_sans_extension(job_list.front().filename()) + '.';
+				filename_sans_extension(job_list.front().filename) + '.';
 
 			if(Target::book().count(target_name))
 				job_list.front().outfilename +=
@@ -873,7 +893,7 @@ int main(int ac, char* av[])
 		{
 			if(!job_list.front().target)
 			{
-				cerr << _("Unknown target for ") << job_list.front().filename()
+				cerr << _("Unknown target for ") << job_list.front().filename
 					 << ": " << target_name << endl;
 				cerr << _("Throwing out job...") << endl;
 				job_list.pop_front();
@@ -907,7 +927,7 @@ int main(int ac, char* av[])
 
 		for(; job_list.size(); job_list.pop_front())
 		{
-			VERBOSE_OUT(3) << job_list.front().filename() << " -- " << endl;
+			VERBOSE_OUT(3) << job_list.front().filename << " -- " << endl;
 			VERBOSE_OUT(3) << '\t'
 						   <<
 				strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
@@ -933,7 +953,7 @@ int main(int ac, char* av[])
 					<< endl;
 
 			RenderProgress p;
-			p.task(job_list.front().filename() + " ==> " +
+			p.task(job_list.front().filename + " ==> " +
 				   job_list.front().outfilename);
 			if(job_list.front().sifout)
 			{
@@ -958,7 +978,7 @@ int main(int ac, char* av[])
 				}
 
 				if(print_benchmarks)
-					cout << job_list.front().filename()
+					cout << job_list.front().filename
 						 << _(": Rendered in ") << timer()
 						 << _(" seconds.") << endl;
 			}

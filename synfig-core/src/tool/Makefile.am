@@ -19,7 +19,6 @@ synfig_SOURCES = \
 	progress.h \
 	renderprogress.h \
 	job.h \
-	job.cpp \
 	printing_functions.h \
 	printing_functions.cpp \
 	main.cpp
