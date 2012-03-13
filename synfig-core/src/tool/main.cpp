@@ -317,10 +317,10 @@ void extract_RendDesc(const po::variables_map& vm, RendDesc& desc)
 	}
 	if (vm.count("gamma"))
 	{
-			synfig::warning(_("Gamma argument is currently ignored"));
-			//int gamma;
-			//gamma = vm["gamma"].as<int>();
-			//desc.set_gamma(Gamma(gamma));
+		synfig::warning(_("Gamma argument is currently ignored"));
+		//int gamma;
+		//gamma = vm["gamma"].as<int>();
+		//desc.set_gamma(Gamma(gamma));
 	}
 
 	if (w||h)
@@ -399,7 +399,7 @@ int main(int ac, char* av[])
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
             ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
-            ("gamma,g", gamma_arg_desc->default_value(2.2), _("Gamma"))
+            ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using specified # of threads"))
             ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
             ("output-file,o", output_file_arg_desc, _("Specify output filename"))
