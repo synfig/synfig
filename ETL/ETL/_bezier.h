@@ -563,8 +563,8 @@ public:
 			for(;i;i--)
 			{
 				// compare 33% of the way between r and s with 67% of the way between r and s
-				if(dist(operator()((s-r)*(1.0/3.0)+r), x) <
-				   dist(operator()((s-r)*(2.0/3.0)+r), x))
+				if(dist(this->operator()((s-r)*(1.0/3.0)+r), x) <
+				   dist(this->operator()((s-r)*(2.0/3.0)+r), x))
 					s=t;
 				else
 					r=t;
@@ -579,15 +579,15 @@ public:
 		const time_type inc((s-r)/steps);
 		if (!inc) return 0;
 		distance_type ret(0);
-		value_type last(operator()(r));
+		value_type last(this->operator()(r));
 
 		for(r+=inc;r<s;r+=inc)
 		{
-			const value_type n(operator()(r));
+			const value_type n(this->operator()(r));
 			ret+=dist.uncook(dist(last,n));
 			last=n;
 		}
-		ret+=dist.uncook(dist(last,operator()(r)))*(s-(r-inc))/inc;
+		ret+=dist.uncook(dist(last,this->operator()(r)))*(s-(r-inc))/inc;
 
 		return ret;
 	}
@@ -623,16 +623,16 @@ public:
 		rt[3] = d;
 
 		//2nd stage calc
-		lt[1] = affine_func(a,b,t);
-		temp = affine_func(b,c,t);
-		rt[2] = affine_func(c,d,t);
+		lt[1] = this->affine_func(a,b,t);
+		temp = this->affine_func(b,c,t);
+		rt[2] = this->affine_func(c,d,t);
 
 		//3rd stage calc
-		lt[2] = affine_func(lt[1],temp,t);
-		rt[1] = affine_func(temp,rt[2],t);
+		lt[2] = this->affine_func(lt[1],temp,t);
+		rt[1] = this->affine_func(temp,rt[2],t);
 
 		//last stage calc
-		lt[3] = rt[0] = affine_func(lt[2],rt[1],t);
+		lt[3] = rt[0] = this->affine_func(lt[2],rt[1],t);
 
 		//set the time range for l,r (the inside values should be 1, 0 respectively)
 		lt.set_r(get_r());
