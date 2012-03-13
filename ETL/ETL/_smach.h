@@ -582,7 +582,13 @@ public:
 
 			return ret;
 		}
-		catch(egress_exception) { return egress()?RESULT_ACCEPT:RESULT_ERROR; }
+		catch(egress_exception) {
+			if (egress()) {
+				RESULT_ACCEPT;
+			} else {
+				RESULT_ERROR;
+			}
+		}
 		catch(pop_exception) { pop_state(); return RESULT_ACCEPT; }
 		catch(const state_base* state) { return enter(state)?RESULT_ACCEPT:RESULT_ERROR; }
 	}
