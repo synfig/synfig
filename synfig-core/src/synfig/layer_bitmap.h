@@ -58,7 +58,7 @@ public:
 
 	Layer_Bitmap();
 
-	virtual bool set_param(const String & param, ValueBase value);
+	virtual bool set_param(const String & param, const ValueBase & value);
 
 	virtual ValueBase get_param(const String & param)const;
 
