@@ -310,7 +310,7 @@ ValueNode::on_changed()
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
-		while (parent_canvas = parent_canvas->parent());
+		while ( (parent_canvas = parent_canvas->parent()) );
 	else if(get_root_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
 
