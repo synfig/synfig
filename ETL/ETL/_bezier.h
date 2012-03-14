@@ -135,7 +135,7 @@ public:
 	const time_type &get_s()const { return s; }
 	time_type get_dt()const { return s-r; }
 
-	bool intersect_hull(const bezier_base<value_type,time_type> &x)const
+	bool intersect_hull(const bezier_base<value_type,time_type> &/*x*/)const
 	{
 		return 0;
 	}
@@ -161,7 +161,7 @@ public:
 	**	For now, this function is BROKEN. (although it works
 	**	for the floating-point specializations, using newton's method)
 	*/
-	time_type intersect(const bezier_base<value_type,time_type> &x, time_type near=0.0)const
+	time_type intersect(const bezier_base<value_type,time_type> &/*x*/, time_type /*near=0.0*/)const
 	{
 		return 0;
 	}
