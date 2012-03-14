@@ -146,7 +146,7 @@ settings(this,"prevoptions")
 	generalTable->set_col_spacings(12);
 	generalPadding->add(*generalTable);
 
-	Gtk::Label *zoomLabel = manage(new Gtk::Label(_("_Zoom")));
+	Gtk::Label *zoomLabel = manage(new Gtk::Label(_("_Quality")));
 	zoomLabel->set_alignment(0, 0.5);
 	zoomLabel->set_use_underline(TRUE);
 	Gtk::SpinButton *zoomSpinner = manage(new Gtk::SpinButton(adj_zoom, 0.1, 2));
