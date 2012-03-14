@@ -169,7 +169,6 @@ class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-//	Gtk::HScrollbar		scr_time_scrub;
 	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
 	Gtk::ScrolledWindow	preview_window;
