@@ -675,6 +675,12 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 }
 
 String
+LinkableValueNode::get_description(bool show_exported_name)const
+{
+	return get_description(-1, show_exported_name);
+}
+
+String
 LinkableValueNode::link_name(int i)const
 {
 	Vocab vocab(get_children_vocab());
