@@ -75,7 +75,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 }
 
 bool
-synfig::Layer_Bitmap::set_param(const String & param, ValueBase value)
+synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 {
 	IMPORT(tl);
 	IMPORT(br);

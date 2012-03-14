@@ -60,7 +60,7 @@ namespace synfig {
 class Canvas;
 class Vector;
 class Time;
-class Segment;
+struct Segment;
 class Gradient;
 class BLinePoint;
 class WidthPoint;
