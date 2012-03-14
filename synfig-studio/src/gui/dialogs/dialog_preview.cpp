@@ -155,7 +155,7 @@ settings(this,"prevoptions")
 	generalTable->attach(*zoomLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	generalTable->attach(*zoomSpinner, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Label *fpsLabel = manage(new Gtk::Label(_("_Frames per second")));
+	Gtk::Label *fpsLabel = manage(new Gtk::Label(_("_FPS")));
 	fpsLabel->set_alignment(0, 0.5);
 	fpsLabel->set_use_underline(TRUE);
 	Gtk::SpinButton *fpsSpinner = manage(new Gtk::SpinButton(adj_fps, 1, 1));
