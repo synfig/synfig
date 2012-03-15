@@ -636,12 +636,13 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	else if (atof(c) > 1000)
 	{
 		sx = sy = 10 * q;
-		entry->set_text("1000");
+//		entry->set_text("1000%");
 	}
 
-	else if (atof(c) < 10 & atof(c) != NULL)
+	else if (atof(c) <= 0 )
 	{
-		sx = sy = 0.1 * q ;
+		sx = sy = 0 ;
+		draw_area.set_size_request(0, 0);
 	}
 
 	else sx = sy = atof(c) / 100 * q;
