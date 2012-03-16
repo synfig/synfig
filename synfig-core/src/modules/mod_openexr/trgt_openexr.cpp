@@ -62,7 +62,7 @@ exr_trgt::ready()
 }
 
 exr_trgt::exr_trgt(const char *Filename,
-				   const synfig::TargetParam& /* params */):
+				   const synfig::TargetParam&  params):
 	multi_image(false),
 	imagecount(0),
 	filename(Filename),
@@ -75,6 +75,7 @@ exr_trgt::exr_trgt(const char *Filename,
 
 	// OpenEXR uses linear gamma
 	gamma().set_gamma(1.0);
+	sequence_separator=params.sequence_separator;
 }
 
 exr_trgt::~exr_trgt()
@@ -113,7 +114,8 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	if(multi_image)
 	{
 		frame_name = (filename_sans_extension(filename) +
-					  etl::strprintf(".%04d",imagecount) +
+					  sequence_separator +
+					  etl::strprintf("%04d",imagecount) +
 					  filename_extension(filename));
 		if(cb)cb->task(frame_name);
 	}

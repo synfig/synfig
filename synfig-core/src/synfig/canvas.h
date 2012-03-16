@@ -107,6 +107,9 @@
  *      Added "homogenous" link to "BLineCalcVertex", "BLineCalcTangent"
  *      and "BLineCalcWidth" valuenodes.
  *
+ * 0.9 git
+ *
+ *      Added a canvas component called
  */
 
 #define CURRENT_CANVAS_VERSION "0.9"
@@ -230,6 +233,11 @@ private:
 
 	//! Layer Signal Connection database. Seems to be unused.
 	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
+
+	//! Value to store temporarly the grow value for the child outline type layers
+	/*! \see get_grow_value set_grow_value */
+	Real grow_value;
+
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -594,6 +602,9 @@ public:
 	Handle clone(const GUID& deriv_guid=GUID())const;
 	//! Stores the external canvas by its file name and the Canvas handle
 	void register_external_canvas(String file, Handle canvas);
+	//! Set/Get members for the grow value
+	Real get_grow_value()const;
+	void set_grow_value(Real x);
 
 #ifdef _DEBUG
 	void show_externals(String file, int line, String text) const;

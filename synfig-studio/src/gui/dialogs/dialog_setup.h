@@ -201,6 +201,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;
+
+	Gtk::Entry image_sequence_separator;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

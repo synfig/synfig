@@ -91,7 +91,7 @@ private:
 	bool connect_bline_to_dilist(etl::loose_handle<ValueNode> x);
 	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
 	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
-	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp);
+	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, const Real gv);
 	void add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real width);
 };
 

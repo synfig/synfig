@@ -206,6 +206,7 @@ public:
 	static synfig::String predefined_size;
 	static synfig::String predefined_fps;
 	static float preferred_fps;
+	static synfig::String sequence_separator;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -336,7 +337,7 @@ public:
 
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 
-	static void dialog_warning_blocking(const std::string &title, const std::string &message);
+	static void dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id=Gtk::Stock::DIALOG_WARNING);
 
 	static bool dialog_entry(const std::string &title, const std::string &message,std::string &text);
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);

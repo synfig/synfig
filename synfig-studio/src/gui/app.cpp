@@ -290,6 +290,7 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
+String studio::App::sequence_separator(".");
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -588,6 +589,11 @@ public:
 				value=strprintf("%s",App::predefined_fps.c_str());
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				value=App::sequence_separator;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -703,6 +709,10 @@ public:
 				App::predefined_fps=value;
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				App::sequence_separator=value;
+			}
 		}
 		catch(...)
 		{
@@ -732,6 +742,7 @@ public:
 		ret.push_back("predefined_size");
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
+		ret.push_back("sequence_separator");
 		return ret;
 	}
 };
@@ -1849,7 +1860,7 @@ App::reset_initial_preferences()
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
-
+	synfigapp::Main::settings().set_value("sequence_separator", ".");
 }
 
 bool
@@ -2168,18 +2179,25 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 void
 App::dialog_error_blocking(const std::string &title, const std::string &message)
 {
-	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_title(title);
-	dialog.show();
-	dialog.run();
+	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
 }
 
 void
-App::dialog_warning_blocking(const std::string &title, const std::string &message)
+App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
 {
-	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_title(title);
-	dialog.show();
+	Gtk::Dialog dialog(title, true, true);
+	Gtk::ScrolledWindow scrolled;
+	Gtk::Label label(message);
+	scrolled.add(label);
+	scrolled.set_shadow_type(Gtk::SHADOW_NONE);
+	Gtk::Table table(2, 2);
+	Gtk::Image image(stock_id, Gtk::IconSize(Gtk::ICON_SIZE_DIALOG));
+	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	table.attach(scrolled, 1, 2, 0, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+	dialog.get_vbox()->pack_start(table);
+	dialog.add_button(Gtk::StockID("gtk-close"),1);
+	dialog.set_default_size(450, 250);
+	dialog.show_all();
 	dialog.run();
 }
 

@@ -38,7 +38,7 @@ struct TargetParam
 	 *  passing them to the target module, it would override them with
 	 *  its own valid default settings.
 	 */
-	TargetParam (): video_codec("none"), bitrate(-1) { }
+	TargetParam (): video_codec("none"), bitrate(-1), sequence_separator(".") { }
 
 	TargetParam (const std::string& Video_codec, int Bitrate):
 		video_codec(Video_codec), bitrate(Bitrate)
@@ -46,6 +46,7 @@ struct TargetParam
 
 	std::string video_codec;
 	int bitrate;
+	std::string sequence_separator;
 };
 
 }; // END of namespace synfig

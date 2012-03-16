@@ -188,7 +188,7 @@ magickpp_trgt::~magickpp_trgt()
 			// include '%04d' in the filename, so the files will be numbered
 			// with a fixed width, '0'-padded number
 			synfig::info("can't join images of this type - numbering instead");
-			filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
+			filename = (filename_sans_extension(filename) + sequence_separator + "%04d" + filename_extension(filename));
 		}
 
 		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.c_str());
