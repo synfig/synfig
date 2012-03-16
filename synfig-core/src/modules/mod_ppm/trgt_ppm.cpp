@@ -55,13 +55,14 @@ SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename, const synfig::TargetParam& /* params */)
+ppm::ppm(const char *Filename, const synfig::TargetParam&  params )
 {
 	filename=Filename;
 	multi_image=false;
 	buffer=NULL;
 	color_buffer=0;
 	set_remove_alpha();
+	sequence_separator=params.sequence_separator;
 }
 
 ppm::~ppm()
@@ -102,7 +103,8 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 	else if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
-						   etl::strprintf(".%04d",imagecount) +
+						   sequence_separator +
+						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=SmartFILE(fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(newfilename);

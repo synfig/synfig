@@ -66,7 +66,7 @@ MagickLib::Image* copy_image_list(Container& container)
 
 		try
 		{
-			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+			current = CloneImage(iter->image(), 0, 0, MagickTrue, &exceptionInfo);
 
 			if (!first) first = current;
 
@@ -101,7 +101,7 @@ magickpp_trgt::~magickpp_trgt()
 			image.fileName(filename);
 			try
 			{
-				SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
+				SetImageInfo(image.imageInfo(),MagickTrue,&exceptionInfo);
 				can_adjoin = image.adjoin();
 			}
 			catch(Magick::Warning warning) {
@@ -188,7 +188,7 @@ magickpp_trgt::~magickpp_trgt()
 			// include '%04d' in the filename, so the files will be numbered
 			// with a fixed width, '0'-padded number
 			synfig::info("can't join images of this type - numbering instead");
-			filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
+			filename = (filename_sans_extension(filename) + sequence_separator + "%04d" + filename_extension(filename));
 		}
 
 		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.c_str());

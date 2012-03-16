@@ -1998,9 +1998,17 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			y -= 2*hruler->property_max_size();
 
-			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[1];
-
-			queue_draw();
+			// place the recalculated y coordinate back on the event
+			if(event->button.axes)
+			{
+				event->button.axes[1]=y;
+			}
+			else
+			{
+				event->button.y=y;
+			}
+			// call the on drawing area event to refresh eveything.
+			on_drawing_area_event(event);
 		}
 		return true;
 		break;
@@ -2058,9 +2066,17 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			x -= 2*vruler->property_max_size();
 
-			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[0];
-
-			queue_draw();
+			// place the recalculated x coordinate back on the event
+			if(event->button.axes)
+			{
+				event->button.axes[0]=x;
+			}
+			else
+			{
+				event->button.x=x;
+			}
+			// call the on drawing area event to refresh everything.
+			on_drawing_area_event(event);
 		}
 		return true;
 		break;

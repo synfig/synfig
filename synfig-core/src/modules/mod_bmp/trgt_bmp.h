@@ -50,6 +50,7 @@ private:
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 	synfig::PixelFormat pf;
+	synfig::String sequence_separator;
 
 public:
 	bmp(const char *filename, const synfig::TargetParam& /* params */);
