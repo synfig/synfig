@@ -107,6 +107,9 @@
  *      Added "homogenous" link to "BLineCalcVertex", "BLineCalcTangent"
  *      and "BLineCalcWidth" valuenodes.
  *
+ * 0.9 git
+ *
+ *      Added a canvas component called
  */
 
 #define CURRENT_CANVAS_VERSION "0.9"
@@ -119,6 +122,13 @@ namespace synfig {
 
 class Context;
 class GUID;
+class Canvas;
+
+typedef        etl::handle<Canvas>     CanvasHandle;
+
+//! Optimize layers based on its calculated Z depth to perform a quick
+//! render of the layers to the output.
+void optimize_layers(Time, Context, CanvasHandle, bool seen_motion_blur=false);
 
 /*!	\class Canvas
 **	\brief Canvas is a double ended queue of Layers. It is the base class
@@ -223,6 +233,11 @@ private:
 
 	//! Layer Signal Connection database. Seems to be unused.
 	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
+
+	//! Value to store temporarly the grow value for the child outline type layers
+	/*! \see get_grow_value set_grow_value */
+	Real grow_value;
+
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -587,6 +602,9 @@ public:
 	Handle clone(const GUID& deriv_guid=GUID())const;
 	//! Stores the external canvas by its file name and the Canvas handle
 	void register_external_canvas(String file, Handle canvas);
+	//! Set/Get members for the grow value
+	Real get_grow_value()const;
+	void set_grow_value(Real x);
 
 #ifdef _DEBUG
 	void show_externals(String file, int line, String text) const;
@@ -614,11 +632,6 @@ protected:
 	//! \see Node::get_times()
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class Canvas
-
-	//! Optimize layers based on its calculated Z depth to perform a quick
-	//! render of the layers to the output.
-void optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
-
 
 }; // END of namespace synfig
 

@@ -48,6 +48,9 @@ class GUIDSet : public
 #ifdef HASH_SET_H
 std::set<synfig::GUID>
 #else
+#ifndef HAS_SET_CLASS
+#define HASH_SET_CLASS HASH_SET_NAMESPACE::hash_set
+#endif
 HASH_SET_CLASS<synfig::GUID,synfig::GUIDHash>
 #endif
 {

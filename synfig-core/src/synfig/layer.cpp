@@ -648,3 +648,19 @@ Layer::get_param_local_name(const String &param_name)const
 			return iter->get_local_name();
 	return String();
 }
+
+Real
+Layer::get_parent_canvas_grow_value()const
+{
+	Canvas::Handle parent_canvas(get_canvas());
+	Real ret;
+	if(parent_canvas)
+	{
+		ret=parent_canvas->get_grow_value();
+	}
+	else
+	{
+		ret=0.0;
+	}
+	return ret;
+}

@@ -201,7 +201,7 @@ synfig::ValueNode_Range::get_inverse(Time t, const synfig::Angle &target_value) 
 {
 	Angle minimum = (* min_)(t).get(Angle());
 	Angle maximum = (* max_)(t).get(Angle());
-	Angle link = (*link_)(t).get(Angle());
+	// Angle link = (*link_)(t).get(Angle());
 		switch (get_type())
 		{
 			default:

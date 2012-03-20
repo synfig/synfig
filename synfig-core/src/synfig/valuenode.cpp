@@ -310,7 +310,7 @@ ValueNode::on_changed()
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
-		while (parent_canvas = parent_canvas->parent());
+		while ( (parent_canvas = parent_canvas->parent()) );
 	else if(get_root_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
 
@@ -675,12 +675,18 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 }
 
 String
+LinkableValueNode::get_description(bool show_exported_name)const
+{
+	return get_description(-1, show_exported_name);
+}
+
+String
 LinkableValueNode::link_name(int i)const
 {
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(; iter!=vocab.end() && j<i; iter++, j++);
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -690,7 +696,7 @@ LinkableValueNode::link_local_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(; iter!=vocab.end() && j<i; iter++, j++);
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 
