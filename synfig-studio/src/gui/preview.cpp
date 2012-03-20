@@ -459,10 +459,9 @@ Widget_Preview::Widget_Preview():
 	zoom_preview.set_text_column(factors.factor_value);
 	zoom_preview.get_entry()->set_text("100%");
 	//set the zoom widget width
-	zoom_preview.set_size_request(84, -1);
+	zoom_preview.set_size_request(100, -1);
 
 	controller->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
-
 
 	controller->show_all();
 
@@ -613,6 +612,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	int nw, nh;
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
+	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
 
 	Glib::ustring text = entry->get_text();
 	locale_from_utf8 (text);
