@@ -285,6 +285,7 @@ private:
 
 	Gtk::Button *play_pausebutton;
 	bool on_key_pressed(GdkEventKey*);
+	void on_zoom_entry_activated();
 };
 
 }; // END of namespace studio

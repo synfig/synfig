@@ -455,9 +455,13 @@ Widget_Preview::Widget_Preview():
 	row = *(factor_refTreeModel->append());
 	row[factors.factor_id] = "5";
 	row[factors.factor_value] = "Fit";
-	//set 100% as default zoom factor
 	zoom_preview.set_text_column(factors.factor_value);
-	zoom_preview.get_entry()->set_text("100%");
+
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	entry->set_text("100%"); //default zoom level
+	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
+	entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::on_zoom_entry_activated));
+
 	//set the zoom widget width
 	zoom_preview.set_size_request(100, -1);
 
@@ -612,8 +616,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	int nw, nh;
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
-	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
-
 	Glib::ustring text = entry->get_text();
 	locale_from_utf8 (text);
 	const char *c = text.c_str();
@@ -1032,6 +1034,23 @@ void studio::Widget_Preview::eraseall()
 }
 
 
+void Widget_Preview::on_zoom_entry_activated()
+{
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	Glib::ustring text = entry->get_text();
+	locale_from_utf8 (text);
+	const std::string c = text.c_str();
+
+        if (text == "Fit" || text == "fit")
+	{
+		entry->set_text("Fit");
+	}
+
+	else
+	{
+		entry->set_text(c + "%");
+	}
+}
 //shortcut keys TODO: customizable shortcut keys would be awesome.
 
 bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
