@@ -1086,5 +1086,55 @@ bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 		return true;
 	}
 
+	//zoom level switching
+	//zoom to 25%
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	Glib::ustring text = entry->get_text();
+
+	if (ev->keyval == gdk_keyval_from_name("1"))
+	{
+		if(entry->get_text() != "25%")
+		{
+			entry->set_text("25%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("2"))
+	{
+		if(entry->get_text() != "50%")
+		{
+			entry->set_text("50%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("3"))
+	{
+		if(entry->get_text() != "100%")
+		{
+			entry->set_text("100%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("4"))
+	{
+		if(entry->get_text() != "200%")
+		{
+			entry->set_text("200%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("5"))
+	{
+		if(entry->get_text() != _("Fit"))
+		{
+			entry->set_text(_("Fit"));
+		}
+		return true;
+	}
+
 	return false;
 }
