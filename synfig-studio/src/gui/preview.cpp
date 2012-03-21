@@ -454,7 +454,7 @@ Widget_Preview::Widget_Preview():
 
 	row = *(factor_refTreeModel->append());
 	row[factors.factor_id] = "5";
-	row[factors.factor_value] = "Fit";
+	row[factors.factor_value] = _("Fit");
 	zoom_preview.set_text_column(factors.factor_value);
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
@@ -472,7 +472,7 @@ Widget_Preview::Widget_Preview():
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::HBox *status = manage(new Gtk::HBox);
 	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
-	Gtk::Label *separator = manage(new Gtk::Label(_(" / ")));
+	Gtk::Label *separator = manage(new Gtk::Label(" / "));
 	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);
 	status->pack_start(l_lasttime, Gtk::PACK_SHRINK, 5);
 
@@ -620,7 +620,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	locale_from_utf8 (text);
 	const char *c = text.c_str();
 
-	if (text == "Fit" || text == "fit")
+	if (text == _("Fit") || text == "Fit" || text == "fit")
 	{
 		sx = draw_area.get_width() / (float)px->get_width();
 		sy = draw_area.get_height() / (float)px->get_height();
@@ -658,7 +658,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
 	//except "Fit" or "fit", we need to set size request for scrolled window
-	if (text != "Fit" & text != "fit")
+	if (text != _("Fit") & text != "Fit" & text != "fit")
 	{
 		draw_area.set_size_request(nw, nh);
 	}
@@ -1041,9 +1041,9 @@ void Widget_Preview::on_zoom_entry_activated()
 	locale_from_utf8 (text);
 	const std::string c = text.c_str();
 
-        if (text == "Fit" || text == "fit")
+        if (text == _("Fit") || text == "Fit" || text == "fit")
 	{
-		entry->set_text("Fit");
+		entry->set_text(_("Fit"));
 	}
 
 	else
