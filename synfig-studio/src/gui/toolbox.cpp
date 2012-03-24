@@ -650,6 +650,13 @@ Toolbox::on_key_release_event(GdkEventKey* event)
 	return Gtk::Window::on_key_release_event(event);
 }
 
+bool
+Toolbox::focused_widget_has_priority(Gtk::Widget * focused)
+{
+	if(dynamic_cast<Gtk::Entry*>(focused))
+		return true;
+	return false;
+}
 
 void
 Toolbox::dockable_registered(Dockable* x)
