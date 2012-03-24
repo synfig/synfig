@@ -255,7 +255,10 @@ DockDialog::on_key_press_event(GdkEventKey* event)
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	return Gtk::Window::on_key_press_event(event);
+	else if(Gtk::Window::on_key_press_event(event))
+		return true;
+	else return focused_widget->event((GdkEvent*)event);
+	return false;
 }
 
 bool
@@ -267,7 +270,10 @@ DockDialog::on_key_release_event(GdkEventKey* event)
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	return Gtk::Window::on_key_release_event(event);
+	else if(Gtk::Window::on_key_press_event(event))
+		return true;
+	else return focused_widget->event((GdkEvent*)event);
+	return false;
 }
 
 bool
