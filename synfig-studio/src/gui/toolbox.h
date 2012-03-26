@@ -79,6 +79,7 @@ class Toolbox : public Gtk::Window
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 	bool on_key_press_event(GdkEventKey* event);
 	bool on_key_release_event(GdkEventKey* event);
+	bool focused_widget_has_priority(Gtk::Widget * focused);
 
 	void change_state_(const Smach::state_base *state);
 
