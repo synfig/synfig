@@ -47,7 +47,14 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define PALETTE_FILE_COOKIE	"SYNFIGPAL1.0"
+#define PALETTE_SYNFIG_FILE_COOKIE	"SYNFIGPAL1.0"
+#define PALETTE_SYNFIG_EXT ".spal"
+#define PALETTE_GIMP_FILE_COOKIE "GIMP Palette"
+#define PALETTE_GIMP_EXT ".gpl"
+
+/* gamma correction factor. theoretical default is 2.2,
+   no correction is 1, personal best visual result is 3. */
+#define GAMMA_CORRECTION_FACTOR_GPL2SPAL 2.2
 
 /* === G L O B A L S ======================================================= */
 
@@ -300,7 +307,7 @@ Palette::save_to_file(const synfig::String& filename)const
 	if(!file)
 		throw strprintf(_("Unable to open %s for write"),filename.c_str());
 
-	file<<PALETTE_FILE_COOKIE<<endl;
+	file<<PALETTE_SYNFIG_FILE_COOKIE<<endl;
 	file<<name_<<endl;
 	for(iter=begin();iter!=end();++iter)
 	{
@@ -323,29 +330,96 @@ Palette::load_from_file(const synfig::String& filename)
 		throw strprintf(_("Unable to open %s for read"),filename.c_str());
 
 	Palette ret;
-	String line;
+	String line("");
+	String ext(filename_extension(filename));
 
-	getline(file,line);
 
-	if(line!=PALETTE_FILE_COOKIE)
-		throw strprintf(_("%s does not appear to be a palette file"),filename.c_str());
-
-	getline(file,ret.name_);
-
-	while(!file.eof())
+	if (ext==PALETTE_SYNFIG_EXT)
 	{
-		PaletteItem item;
-		String n;
-		float r, g, b, a;
-		getline(file,item.name);
-		file>>r>>g>>b>>a;
-		item.color.set_r(r);
-		item.color.set_g(g);
-		item.color.set_b(b);
-		item.color.set_a(a);
-		if(file.eof()) break;
-		ret.push_back(item);
+		getline(file,line);
+
+		if(line!=PALETTE_SYNFIG_FILE_COOKIE)
+			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"Synfig");
+
+		getline(file,ret.name_);
+
+		while(!file.eof())
+		{
+			PaletteItem item;
+			String n;
+			float r, g, b, a;
+			getline(file,item.name);
+			file >> r >> g >> b >> a;
+			item.color.set_r(r);
+			item.color.set_g(g);
+			item.color.set_b(b);
+			item.color.set_a(a);
+
+			// file ends in new line
+			if (!file.eof())
+				ret.push_back(item);
+		}
 	}
+	else if (ext==PALETTE_GIMP_EXT)
+	{
+		/*
+		file format: GPL (GIMP Palette) file should have the following layout:
+		GIMP Palette
+		Name: <palette name>
+		<more header text> ...
+		#
+		# comments
+		#
+		<value R> <value G> <value B> <swatch name>
+		<value R> <value G> <value B> <swatch name>
+		... ...
+		<new line>
+		*/
+
+		// drops empty first header lines in malformed files
+		while (!file.eof() && line=="")
+			getline(file,line);
+
+		if (line!=PALETTE_GIMP_FILE_COOKIE)
+			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
+
+		getline(file,line);
+		// drops 6 first chars from line (ie 'Name: ')
+		ret.name_ = String(line.substr(6));
+
+		getline(file,line);
+		// drops remaining header lines
+		while (!file.eof() && line.substr(0,1)!="#")
+			getline(file,line);
+
+		// drops comments
+		while (!file.eof() && line.substr(0,1)=="#")
+			getline(file,line);
+
+		// line contains the first color so we put it back in
+		for (int i = line.length(); i; i--) file.unget();
+
+		while(!file.eof())
+		{
+			PaletteItem item;
+			float r, g, b;
+
+			file >> r >> g >> b;
+			getline(file, item.name);
+
+			item.color.set_r(pow(r/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
+			item.color.set_g(pow(g/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
+			item.color.set_b(pow(b/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
+			// Alpha is 1 by default
+			item.color.set_a(1);
+
+			// file ends in new line
+			if(!file.eof())
+				ret.push_back(item);
+		}
+	}
+	else
+		throw strprintf(_("%s does not appear to be a supported palette file"),filename.c_str());
 
 	return ret;
 }
