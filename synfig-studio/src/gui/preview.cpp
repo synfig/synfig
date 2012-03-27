@@ -359,7 +359,7 @@ Widget_Preview::Widget_Preview():
 	#if 1
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all  
-	Gtk::HBox *controller = manage(new Gtk::HBox);
+	controller = Gtk::manage(new class Gtk::HBox(false, 0));
 
 	//prev rendered frame
 	Gtk::Button *prev_framebutton;
@@ -477,7 +477,7 @@ Widget_Preview::Widget_Preview():
 
 	controller->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
 
-	controller->show_all();
+	show_controller();
 
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::HBox *status = manage(new Gtk::HBox);
@@ -635,7 +635,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	if (text == _("Fit") || text == "fit")
 	{
 		sx = draw_area.get_width() / (float)px->get_width();
-		sy = draw_area.get_height() / (float)px->get_height();
+		sy = draw_area.get_height()/ (float)px->get_height();
 
 		//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 
@@ -1070,10 +1070,31 @@ void Widget_Preview::on_zoom_entry_activated()
 
 	entry->set_position(-1);
 }
+
+void Widget_Preview::hide_controller()
+{
+	controller->hide();
+	controllerisshown = 0;
+}
+
+void Widget_Preview::show_controller()
+{
+	controller->show();
+	controllerisshown = 1;
+}
+
 //shortcut keys TODO: customizable shortcut keys would be awesome.
 
 bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 {
+	//hide and show controller
+	if (ev->keyval == gdk_keyval_from_name("h"))
+	{
+		if (controllerisshown) hide_controller();
+		else show_controller();
+		return true;
+	}
+
 	//previous rendered frame
 	if (ev->keyval == gdk_keyval_from_name("a"))
 	{
