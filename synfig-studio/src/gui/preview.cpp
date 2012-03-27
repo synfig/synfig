@@ -46,6 +46,14 @@
 
 #include "general.h"
 
+#include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <cstdio>
+#include <ctype.h>
+#include <math.h>
+#include <synfig/string_decl.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -54,6 +62,8 @@ using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
+
+#define tolower ::tolower
 
 /* === M A C R O S ========================================================= */
 
@@ -616,11 +626,13 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	int nw, nh;
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
-	Glib::ustring text = entry->get_text();
+	String str(entry->get_text());
+	std::transform(str.begin(),str.end(),str.begin(),&tolower);
+	Glib::ustring text = str;
 	locale_from_utf8 (text);
 	const char *c = text.c_str();
 
-	if (text == _("Fit") || text == "Fit" || text == "fit")
+	if (text == _("Fit") || text == "fit")
 	{
 		sx = draw_area.get_width() / (float)px->get_width();
 		sy = draw_area.get_height() / (float)px->get_height();
@@ -638,7 +650,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	else if (atof(c) > 1000)
 	{
 		sx = sy = 10 * q;
-//		entry->set_text("1000%");
 	}
 
 	else if (atof(c) <= 0 )
@@ -658,7 +669,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
 	//except "Fit" or "fit", we need to set size request for scrolled window
-	if (text != _("Fit") & text != "Fit" & text != "fit")
+	if (text != _("Fit") & text != "fit")
 	{
 		draw_area.set_size_request(nw, nh);
 	}
@@ -1037,19 +1048,27 @@ void studio::Widget_Preview::eraseall()
 void Widget_Preview::on_zoom_entry_activated()
 {
 	Gtk::Entry* entry = zoom_preview.get_entry();
-	Glib::ustring text = entry->get_text();
+	String str(entry->get_text());
+	std::transform(str.begin(),str.end(),str.begin(),&tolower);
+	Glib::ustring text = str;
 	locale_from_utf8 (text);
 	const std::string c = text.c_str();
 
-        if (text == _("Fit") || text == "Fit" || text == "fit")
+        if (text == _("Fit") || text == "fit")
 	{
 		entry->set_text(_("Fit"));
 	}
 
 	else
 	{
-		entry->set_text(c + "%");
+	//	unsigned int pos=0;
+	//	int read;
+	//	float amount;
+
+	//	entry->set_text(c + "%");
 	}
+
+	entry->set_position(-1);
 }
 //shortcut keys TODO: customizable shortcut keys would be awesome.
 
