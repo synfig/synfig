@@ -1044,29 +1044,34 @@ void studio::Widget_Preview::eraseall()
 	}
 }
 
-
 void Widget_Preview::on_zoom_entry_activated()
 {
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
-	std::transform(str.begin(),str.end(),str.begin(),&tolower);
-	Glib::ustring text = str;
-	locale_from_utf8 (text);
-	const std::string c = text.c_str();
+	string digi = "0123456789";
+	int first = str.find_first_of(digi);
 
-        if (text == _("Fit") || text == "fit")
+	if (first == string::npos)
 	{
 		entry->set_text(_("Fit"));
+		entry->set_position(-1);
+
+		return ;
 	}
 
-	else
+	int last = str.find_first_not_of(digi);
+
+	if (last == string::npos)
 	{
-	//	unsigned int pos=0;
-	//	int read;
-	//	float amount;
-
-	//	entry->set_text(c + "%");
+		last = str.find_last_of(digi) + 1;
 	}
+
+	if (first > last)
+	{
+		entry->set_text (_("Fit"));
+	}
+
+	else entry->set_text(str.substr(first, last - first) + "%");
 
 	entry->set_position(-1);
 }
