@@ -359,7 +359,7 @@ Widget_Preview::Widget_Preview():
 	#if 1
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all  
-	controller = Gtk::manage(new class Gtk::HBox(false, 0));
+	toolbar = Gtk::manage(new class Gtk::HBox(false, 0));
 
 	//prev rendered frame
 	Gtk::Button *prev_framebutton;
@@ -373,7 +373,7 @@ Widget_Preview::Widget_Preview():
 	prev_framebutton->show();
 	prev_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), -1));
 
-	controller->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//play pause
 	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
@@ -386,7 +386,7 @@ Widget_Preview::Widget_Preview():
 	play_pausebutton->show();
 	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
 
-	controller->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
 
 	//next rendered frame
 	Gtk::Button *next_framebutton;
@@ -400,23 +400,23 @@ Widget_Preview::Widget_Preview():
 	next_framebutton->show();
 	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), 1));
 
-	controller->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//spacing
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
 	space->set_size_request(8);
-	controller->pack_start(*space, false, true);
+	toolbar->pack_start(*space, false, true);
 
 
 	//loop
 	button = &b_loop;
 	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
-	controller->pack_start(b_loop, Gtk::PACK_SHRINK,0);
+	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	//spacing
 	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
         space1->set_size_request(24);
-        controller->pack_start(*space1, false, true);
+        toolbar->pack_start(*space1, false, true);
 
 
 	//halt render
@@ -424,21 +424,21 @@ Widget_Preview::Widget_Preview():
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
 	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Halt render"));
 
-	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
 	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Re-preview"));
 
-	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//erase all
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
 	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frame(s)"));
 
-	controller->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//zoom preview
 	factor_refTreeModel = Gtk::ListStore::create(factors);
@@ -475,9 +475,9 @@ Widget_Preview::Widget_Preview():
 	//set the zoom widget width
 	zoom_preview.set_size_request(100, -1);
 
-	controller->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
+	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
 
-	show_controller();
+	show_toolbar();
 
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::HBox *status = manage(new Gtk::HBox);
@@ -494,7 +494,7 @@ Widget_Preview::Widget_Preview():
 	// attach all widgets	
 	attach(preview_window, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	attach(*controller, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(*toolbar, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*status, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 //	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	show_all();
@@ -1076,31 +1076,31 @@ void Widget_Preview::on_zoom_entry_activated()
 	entry->set_position(-1);
 }
 
-void Widget_Preview::hide_controller()
+void Widget_Preview::hide_toolbar()
 {
-	controller->hide();
-	controllerisshown = 0;
+	toolbar->hide();
+	toolbarisshown = 0;
 
 	preview_window.grab_focus();
 }
 
-void Widget_Preview::show_controller()
+void Widget_Preview::show_toolbar()
 {
-	controller->show();
-	controllerisshown = 1;
+	toolbar->show();
+	toolbarisshown = 1;
 
-	controller->grab_focus();
+	toolbar->grab_focus();
 }
 
 //shortcut keys TODO: customizable shortcut keys would be awesome.
 
 bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 {
-	//hide and show controller
+	//hide and show toolbar
 	if (ev->keyval == gdk_keyval_from_name("h"))
 	{
-		if (controllerisshown) hide_controller();
-		else show_controller();
+		if (toolbarisshown) hide_toolbar();
+		else show_toolbar();
 		return true;
 	}
 

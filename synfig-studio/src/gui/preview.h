@@ -198,7 +198,7 @@ class Widget_Preview : public Gtk::Table
 	//only for internal stuff, doesn't set anything
 	bool 	playing;
 	bool	singleframe;
-	bool	controllerisshown;
+	bool	toolbarisshown;
 
 	//for accurate time tracking
 	etl::clock	timer;
@@ -226,8 +226,8 @@ class Widget_Preview : public Gtk::Table
 	bool redraw(GdkEventExpose *heh = 0);
 	void preview_draw();
 
-	void hide_controller();
-	void show_controller();
+	void hide_toolbar();
+	void show_toolbar();
 
 	sigc::signal<void,float>	signal_play_;
 	sigc::signal<void>		signal_pause_;
@@ -287,7 +287,7 @@ protected:
 
 private:
 
-	Gtk::HBox *controller;
+	Gtk::HBox *toolbar;
 	Gtk::Button *play_pausebutton;
 	bool on_key_pressed(GdkEventKey*);
 	void on_zoom_entry_activated();
