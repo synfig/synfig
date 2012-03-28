@@ -34,6 +34,7 @@
 #include "palette.h"
 #include "surface.h"
 #include "general.h"
+#include "gamma.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -52,10 +53,6 @@ using namespace synfig;
 #define PALETTE_SYNFIG_EXT ".spal"
 #define PALETTE_GIMP_FILE_COOKIE "GIMP Palette"
 #define PALETTE_GIMP_EXT ".gpl"
-
-/* gamma correction factor. theoretical default is 2.2,
-   no correction is 1, personal best visual result is 3. */
-#define GAMMA_CORRECTION_FACTOR_GPL2SPAL 2.2
 
 /* === G L O B A L S ======================================================= */
 
@@ -384,13 +381,13 @@ Palette::load_from_file(const synfig::String& filename)
 		if (line != PALETTE_GIMP_FILE_COOKIE)
 			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
 
-			
+
 		bool has_color = false;
 
 		do
-		{			
+		{
 			getline(file, line);
-			
+
 			if (!line.empty() && line.substr(0,5) == "Name:")
 				ret.name_ = String(line.substr(6));
 			else if (!line.empty() && line.substr(0,8) == "Columns:")
@@ -407,6 +404,10 @@ Palette::load_from_file(const synfig::String& filename)
 			}
 		} while (!file.eof() && !has_color);
 
+		// Gamma color conversion.
+		// In the importing case, gamma factor is 1, as default
+		Gamma gamma;
+
 		while(!file.eof() && has_color)
 		{
 			PaletteItem item;
@@ -418,13 +419,13 @@ Palette::load_from_file(const synfig::String& filename)
 			if (!line.empty())
 			{
 				ss << line;
-				
+
 			 	ss >> r >> g >> b;
 				getline(ss, item.name);
 
-				item.color.set_r(pow(r/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
-				item.color.set_g(pow(g/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
-				item.color.set_b(pow(b/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
+				item.color.set_r(gamma.r_F32_to_F32(r/255));
+				item.color.set_g(gamma.g_F32_to_F32(g/255));
+				item.color.set_b(gamma.b_F32_to_F32(b/255));
 				// Alpha is 1 by default
 				item.color.set_a(1);
 
