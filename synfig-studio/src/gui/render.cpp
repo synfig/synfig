@@ -68,7 +68,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	entry_quality(adjustment_quality,1,0),
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
-	toggle_single_frame(_("Use _current frame"), true),
+	toggle_single_frame(_("Render _current frame only"), true),
 	tparam("mpeg4",200)
 {
 	tparam.sequence_separator=App::sequence_separator;

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file zoom.cpp
-**	\brief Implementation of the "Zoom" layer
+**	\brief Implementation of the "Zoom" layer, aka "Scale"
 **
 **	$Id$
 **
@@ -48,7 +48,7 @@
 
 SYNFIG_LAYER_INIT(Zoom);
 SYNFIG_LAYER_SET_NAME(Zoom,"zoom");
-SYNFIG_LAYER_SET_LOCAL_NAME(Zoom,N_("Zoom"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Zoom,N_("Scale"));
 SYNFIG_LAYER_SET_CATEGORY(Zoom,N_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Zoom,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id$");
@@ -96,12 +96,12 @@ Zoom::get_param_vocab()const
 
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
-		.set_description(_("Amount to zoom in"))
+		.set_description(_("Amount to scale to"))
 	);
 
 	ret.push_back(ParamDesc("center")
-		.set_local_name(_("Center"))
-		.set_description(_("Point to zoom in to"))
+		.set_local_name(_("Origin"))
+		.set_description(_("Point to scale from"))
 	);
 
 	return ret;
@@ -162,3 +162,4 @@ Zoom::get_full_bounding_rect(synfig::Context context)const
 {
 	return (context.get_full_bounding_rect()-center)*exp(amount)+center;
 }
+
