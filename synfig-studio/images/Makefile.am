@@ -120,8 +120,8 @@ EXTRA_DIST = \
 	layer_stylize_bevel_icon.sif \
 	layer_stylize_shade_icon.sif \
 	layer_transform_rotate_icon.sif \
+	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
-	layer_transform_zoom_icon.sif \
 	\
 	tool_bline_icon.sif \
 	tool_circle_icon.sif \
@@ -286,8 +286,8 @@ IMAGES = \
 	layer_stylize_bevel_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
 	layer_transform_rotate_icon.$(EXT) \
+	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
-	layer_transform_zoom_icon.$(EXT) \
 	\
 	tool_bline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
@@ -559,3 +559,4 @@ iconsscalable_DATA = synfig_icon.svg
 
 endif
 endif
+
