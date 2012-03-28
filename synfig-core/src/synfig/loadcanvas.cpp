@@ -2598,7 +2598,7 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 	{
 		synfig::String first(iter->first);
 		etl::loose_handle<Canvas> second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");
 }
