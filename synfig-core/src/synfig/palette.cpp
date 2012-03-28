@@ -34,8 +34,10 @@
 #include "palette.h"
 #include "surface.h"
 #include "general.h"
+#include "gamma.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #endif
 
@@ -51,10 +53,6 @@ using namespace synfig;
 #define PALETTE_SYNFIG_EXT ".spal"
 #define PALETTE_GIMP_FILE_COOKIE "GIMP Palette"
 #define PALETTE_GIMP_EXT ".gpl"
-
-/* gamma correction factor. theoretical default is 2.2,
-   no correction is 1, personal best visual result is 3. */
-#define GAMMA_CORRECTION_FACTOR_GPL2SPAL 2.2
 
 /* === G L O B A L S ======================================================= */
 
@@ -366,56 +364,73 @@ Palette::load_from_file(const synfig::String& filename)
 		file format: GPL (GIMP Palette) file should have the following layout:
 		GIMP Palette
 		Name: <palette name>
-		<more header text> ...
-		#
-		# comments
-		#
+		[Columns: <number>]
+		[#]
+		[# Optional comments]
+		[#]
 		<value R> <value G> <value B> <swatch name>
 		<value R> <value G> <value B> <swatch name>
 		... ...
-		<new line>
+		[<new line>]
 		*/
 
-		// drops empty first header lines in malformed files
-		while (!file.eof() && line=="")
+		do {
 			getline(file,line);
+		} while (!file.eof() && line != PALETTE_GIMP_FILE_COOKIE);
 
-		if (line!=PALETTE_GIMP_FILE_COOKIE)
+		if (line != PALETTE_GIMP_FILE_COOKIE)
 			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
 
-		getline(file,line);
-		// drops 6 first chars from line (ie 'Name: ')
-		ret.name_ = String(line.substr(6));
 
-		getline(file,line);
-		// drops remaining header lines
-		while (!file.eof() && line.substr(0,1)!="#")
-			getline(file,line);
+		bool has_color = false;
 
-		// drops comments
-		while (!file.eof() && line.substr(0,1)=="#")
-			getline(file,line);
+		do
+		{
+			getline(file, line);
 
-		// line contains the first color so we put it back in
-		for (int i = line.length(); i; i--) file.unget();
+			if (!line.empty() && line.substr(0,5) == "Name:")
+				ret.name_ = String(line.substr(6));
+			else if (!line.empty() && line.substr(0,8) == "Columns:")
+				; // Ignore columns
+			else if (!line.empty() && line.substr(0,1) == "#")
+				; // Ignore comments
+			else if (!line.empty())
+			{
+				// not empty line not part of the header => color
+				has_color = true;
+				// line contains the first color so we put it back in (including \n)
+				for (int i = line.length()+1; i; i--)
+					file.unget();
+			}
+		} while (!file.eof() && !has_color);
 
-		while(!file.eof())
+		// Gamma color conversion.
+		// In the importing case, gamma factor is 1, as default
+		Gamma gamma;
+
+		while(!file.eof() && has_color)
 		{
 			PaletteItem item;
 			float r, g, b;
 
-			file >> r >> g >> b;
-			getline(file, item.name);
+			stringstream ss;
+			getline (file, line);
 
-			item.color.set_r(pow(r/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
-			item.color.set_g(pow(g/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
-			item.color.set_b(pow(b/255, GAMMA_CORRECTION_FACTOR_GPL2SPAL));
-			// Alpha is 1 by default
-			item.color.set_a(1);
+			if (!line.empty())
+			{
+				ss << line;
 
-			// file ends in new line
-			if(!file.eof())
+			 	ss >> r >> g >> b;
+				getline(ss, item.name);
+
+				item.color.set_r(gamma.r_F32_to_F32(r/255));
+				item.color.set_g(gamma.g_F32_to_F32(g/255));
+				item.color.set_b(gamma.b_F32_to_F32(b/255));
+				// Alpha is 1 by default
+				item.color.set_a(1);
+
 				ret.push_back(item);
+			}
 		}
 	}
 	else
