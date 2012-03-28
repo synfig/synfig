@@ -1080,12 +1080,16 @@ void Widget_Preview::hide_controller()
 {
 	controller->hide();
 	controllerisshown = 0;
+
+	preview_window.grab_focus();
 }
 
 void Widget_Preview::show_controller()
 {
 	controller->show();
 	controllerisshown = 1;
+
+	controller->grab_focus();
 }
 
 //shortcut keys TODO: customizable shortcut keys would be awesome.
