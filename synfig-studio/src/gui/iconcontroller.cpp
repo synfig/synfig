@@ -235,7 +235,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// Transform Layers
 	INIT_STOCK_ICON(layer_transform_rotate,"layer_transform_rotate_icon."IMAGE_EXT,_("Rotate Layer"));
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
-	INIT_STOCK_ICON(layer_transform_zoom,"layer_transform_zoom_icon."IMAGE_EXT,_("Zoom Layer"));
+	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -604,7 +604,7 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="translate")
 		return Gtk::StockID("synfig-layer_transform_translate");
 	else if(layer=="zoom")
-		return Gtk::StockID("synfig-layer_transform_zoom");
+		return Gtk::StockID("synfig-layer_transform_scale");
 	else
 		return Gtk::StockID("synfig-layer");
 }
@@ -614,3 +614,4 @@ studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
 	return Gtk::Button().render_icon(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
+

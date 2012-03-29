@@ -97,6 +97,8 @@ private:
 	bool on_key_press_event(GdkEventKey* event);
 	bool on_key_release_event(GdkEventKey* event);
 
+	bool focused_widget_has_priority(Gtk::Widget* focused);
+
 
 public:
 
