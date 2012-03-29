@@ -200,7 +200,7 @@ Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selection
 	Dockable* tmp(this);
 	dnd_success_=true;
 
-	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), 4);
+	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), sizeof(Dockable**));
 }
 
 void
