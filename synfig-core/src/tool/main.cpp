@@ -178,6 +178,7 @@ void display_help(bool full)
 		display_help_option("--dpi", "<res>", _("Set the physical resolution (dots-per-inch)"));
 		display_help_option("--dpi-x", "<res>", _("Set the physical X resolution (dots-per-inch)"));
 		display_help_option("--dpi-y", "<res>", _("Set the physical Y resolution (dots-per-inch)"));
+		display_help_option("--sequence-separator", "<string>", _("Output file sequence separator string (no blanks)"));
 
 		display_help_option("--list-canvases", NULL, _("List the exported canvases in the composition"));
 		display_help_option("--canvas-info", "<fields>", _("Print out specified details of the root canvas"));
@@ -404,7 +405,7 @@ bool flag_requires_value(String flag)
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
-			flag=="--time"		|| flag=="-vc"			|| flag=="-vb"			|| flag=="-ss");
+			flag=="--time"		|| flag=="-vc"			|| flag=="-vb"			|| flag=="--sequence-separator");
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -650,10 +651,10 @@ int extract_target_params(arg_list_t& arg_list,
 				atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Target bitrate set to %dk"),params.bitrate)<<endl;
 		}
-		else if(*iter=="-ss")
+		else if(*iter=="--sequence-separator")
 		{
 			params.sequence_separator = extract_parameter(arg_list, iter, next);
-			VERBOSE_OUT(1)<<strprintf(_("Target sequence separator set to %s"),params.sequence_separator.c_str())<<endl;
+			VERBOSE_OUT(1)<<strprintf(_("Output file sequence separator set to %s"),params.sequence_separator.c_str())<<endl;
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
