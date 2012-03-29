@@ -1055,7 +1055,9 @@ void Widget_Preview::on_zoom_entry_activated()
 	if (first == string::npos)
 	{
 		entry->set_text(_("Fit"));
-		entry->set_position(-1);
+
+		//release the focus to enable accelerator keys
+		preview_window.grab_focus();
 
 		return ;
 	}
@@ -1074,7 +1076,8 @@ void Widget_Preview::on_zoom_entry_activated()
 
 	else entry->set_text(str.substr(first, last - first) + "%");
 
-	entry->set_position(-1);
+	//release the focus to enable accelerator keys
+	preview_window.grab_focus();
 }
 
 void Widget_Preview::hide_toolbar()
@@ -1082,6 +1085,7 @@ void Widget_Preview::hide_toolbar()
 	toolbar->hide();
 	toolbarisshown = 0;
 
+	//release the focus to enable accelerator keys
 	preview_window.grab_focus();
 }
 
@@ -1094,7 +1098,6 @@ void Widget_Preview::show_toolbar()
 }
 
 //shortcut keys TODO: customizable shortcut keys would be awesome.
-
 bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 {
 	//hide and show toolbar
