@@ -2187,16 +2187,19 @@ App::dialog_warning_blocking(const std::string &title, const std::string &messag
 {
 	Gtk::Dialog dialog(title, true, true);
 	Gtk::ScrolledWindow scrolled;
-	Gtk::Label label(message);
+	Gtk::Label label(message, 0, 0);
+	label.set_line_wrap();
 	scrolled.add(label);
+	scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolled.set_shadow_type(Gtk::SHADOW_NONE);
 	Gtk::Table table(2, 2);
+	table.set_col_spacings(10);
 	Gtk::Image image(stock_id, Gtk::IconSize(Gtk::ICON_SIZE_DIALOG));
-	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 1, 1);
 	table.attach(scrolled, 1, 2, 0, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 	dialog.get_vbox()->pack_start(table);
 	dialog.add_button(Gtk::StockID("gtk-close"),1);
-	dialog.set_default_size(450, 250);
+	dialog.set_default_size(450, 200);
 	dialog.show_all();
 	dialog.run();
 }

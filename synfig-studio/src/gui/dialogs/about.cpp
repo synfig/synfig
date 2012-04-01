@@ -160,6 +160,7 @@ About::About()
 	authors.push_back("Ralf Corsepius");
 	authors.push_back("Ray Frederikson");
 	authors.push_back("Timo Paulssen (timonator)");
+	authors.push_back("Yu Chen (jcome)");
 	authors.push_back("Yue Shi Lai");
 	set_authors(authors);
 
