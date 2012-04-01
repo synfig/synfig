@@ -95,7 +95,6 @@ private:
 	void drop_on_prepend(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 
 	bool on_key_press_event(GdkEventKey* event);
-	bool on_key_release_event(GdkEventKey* event);
 
 	bool focused_widget_has_priority(Gtk::Widget* focused);
 
