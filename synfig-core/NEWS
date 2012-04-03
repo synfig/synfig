@@ -4,6 +4,16 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.63.05 (git tag "synfig-0.63.05") - April XX 2012 - Features, bug fixes.
+
+ * Roll back fix bug ID 3405011 because it produced other worse bug.
+ * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
+ * Add new parameter to the CLI '--sequence-separator' option for separator string on image sequence render. Default is a dot '.' Forbidden space character.
+ * Fix bug: ValueNode_BLineCalcTangent is broken for Angle types.
+ * Additional fix for be able to build on Ubuntu 12.04. Patch thanks to Denis Washington (denis_w)
+ * Apply partially patch #3424218. Fix compiling issues with clang compiler. Thanks to Hisashi Todd Fujinaka
+ * Commented out unused variables. Additional compiler warning fixed
+
  0.63.04 (git tag: "synfig-0.63.04") - February 08, 2012 - Features, bug fixes.
 
   * Fix crash when inserting an item on a generic empty dynamic list.
