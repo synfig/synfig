@@ -4,7 +4,7 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
- 0.63.05 (git tag: "synfigstudio-0.63.05") - April XX, 2012 - Features, bug fixes.
+ 0.63.05 (git tag: "synfigstudio-0.63.05") - April XX, 2012 - Feaures, bug fixes.
 
  * Fix bug ID: 3486075. Add new panel on Preferences Dialog ('Render') and include one option for separator string on image sequence render. Default is a dot '.'.
  * Fix bug  ID: 3486412 Shortcut inconsistence.
@@ -16,13 +16,13 @@ http://synfig.org/cms/en/news/
  * Fix bug: When grid size is negative, use its positive value.
  * Rework of the Preview window (thanks to Yu Chen aka jcome):
  ** Artwork content can be zoomed in/out
- ** Add a zoom widget, so that user can select zoom factor from a dropdown list or type the a specified value the user prefers
+ ** Add a zoom widget, so that user can change zoom factor from a dropdown list to select a factor or type the a specified value the user prefers
  ** Scrollbars are size of artwork content and window sensitived now
  ** Toolbar can be hidden to have a simpler UI
  ** A set of accelerator keys (hard-coded at the moment):
     a) a-prev frame, s-play/pause, d-next frame,
     b) h-show/hide toolbar
-    c) 1,2,3,4,5 mapped to zoom factors: 25%, 50%, 100%, 200%, Fit
+    c) 1,2,3,4,5 mapped to zoom factors: 25%, 50% ,100%, 200%, Fit
  ** Dark background for preview window (hard-coded at the moment)
  ** Rewording some UI strings
  * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.

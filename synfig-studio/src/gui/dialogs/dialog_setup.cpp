@@ -296,7 +296,7 @@ Dialog_Setup::Dialog_Setup():
 	notebook->append_page(*render_table, _("Render"));
 
 	// Render - Image sequence separator
-	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
+	attach_label(render_table, _("Image Sequence Separator String:"), 0, xpadding, ypadding);
 	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	show_all_children();
