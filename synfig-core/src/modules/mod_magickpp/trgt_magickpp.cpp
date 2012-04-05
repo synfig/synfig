@@ -66,7 +66,7 @@ MagickLib::Image* copy_image_list(Container& container)
 
 		try
 		{
-			current = CloneImage(iter->image(), 0, 0, MagickTrue, &exceptionInfo);
+			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
 
 			if (!first) first = current;
 
@@ -101,7 +101,7 @@ magickpp_trgt::~magickpp_trgt()
 			image.fileName(filename);
 			try
 			{
-				SetImageInfo(image.imageInfo(),MagickTrue,&exceptionInfo);
+				SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
 				can_adjoin = image.adjoin();
 			}
 			catch(Magick::Warning warning) {
