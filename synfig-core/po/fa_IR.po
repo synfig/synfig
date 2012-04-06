@@ -1,4 +1,4 @@
-Iranian (Persian) trsanlation for Synfig Core.
+# Iranian (Persian) trsanlation for Synfig Core.
 # Copyright (C) 2012 Synfig Contributors
 # This file is distributed under the same license as the PACKAGE package.
 #
