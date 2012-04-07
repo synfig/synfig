@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the Synfig Studio package.
 #
 # Translators:
-# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2010.
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011.
 # Konstantin Dmitriev <ksee.zelgadis@gmail.com>, 2011, 2012.
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011.
+# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
 "POT-Creation-Date: 2012-04-06 18:00+0700\n"
-"PO-Revision-Date: 2012-04-06 09:01+0000\n"
+"PO-Revision-Date: 2012-04-07 16:39+0000\n"
 "Last-Translator: Konstantin Dmitriev <ksee.zelgadis@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3154,7 +3154,7 @@ msgstr "Слой перемещения"
 
 #: src/gui/iconcontroller.cpp:238
 msgid "Scale Layer"
-msgstr ""
+msgstr "Масштаб"
 
 #: src/gui/iconcontroller.cpp:242
 msgid "Info Tool"
@@ -3312,19 +3312,19 @@ msgstr "Параметры визуализации"
 
 #: src/gui/iconcontroller.cpp:317
 msgid "TCB interpolation"
-msgstr ""
+msgstr "TCB-интерполяция"
 
 #: src/gui/iconcontroller.cpp:318
 msgid "Ease In/Out interpolation"
-msgstr ""
+msgstr "Интерполяция с замедлением/ускорением"
 
 #: src/gui/iconcontroller.cpp:319
 msgid "Const interpolation"
-msgstr ""
+msgstr "Постоянная интерполяция"
 
 #: src/gui/iconcontroller.cpp:320
 msgid "Linear interpolation"
-msgstr ""
+msgstr "Линейная интерполяция"
 
 #: src/gui/iconcontroller.cpp:321
 msgid "Clamped interpolation"
@@ -3560,7 +3560,7 @@ msgstr ""
 #: src/gui/preview.cpp:1057 src/gui/preview.cpp:1074 src/gui/preview.cpp:1185
 #: src/gui/preview.cpp:1187
 msgid "Fit"
-msgstr ""
+msgstr "Уместить"
 
 #: src/gui/renddesc.cpp:96
 msgid "Image"
@@ -4486,11 +4486,11 @@ msgstr "Поднимаемый слой"
 #: src/synfigapp/actions/layerremove.cpp:50
 #: src/synfigapp/actions/layerremove.cpp:70
 msgid "Delete Layer"
-msgstr ""
+msgstr "Удалить слой"
 
 #: src/synfigapp/actions/layerremove.cpp:70
 msgid "Delete Layers"
-msgstr ""
+msgstr "Удалить слои"
 
 #: src/synfigapp/actions/layerremove.cpp:80
 msgid "Layer to be deleted"
