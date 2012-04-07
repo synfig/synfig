@@ -4661,7 +4661,7 @@
                   <real value="0.0000000000"/>
                 </param>
                 <param name="amount">
-                  <real value="1.0000000000"/>
+                  <real value="1.5000000000"/>
                 </param>
                 <param name="blend_method">
                   <integer value="12"/>
