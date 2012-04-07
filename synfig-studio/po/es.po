@@ -2,7 +2,7 @@
 # Spanish translations for Synfig Studio package
 # Traducciones al español para el paquete Synfig Studio.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 #
 # Translators:
 # Franco Iacomella <yaco@gnu.org>, 2008.

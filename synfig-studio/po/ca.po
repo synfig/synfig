@@ -2,7 +2,7 @@
 # Carlos López González <carloslopezgonzalez@yahoo.es>, 2008.
 # Miguel Gea Milvaques <xerakko@debian.org>, 2008.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
 # Miguel Gea Milvaques <xerakko@debian.org>, 2008, 2010.

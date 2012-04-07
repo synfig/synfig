@@ -1,6 +1,6 @@
 # translation of de.po to German
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
 #   <cyborgx7@gmail.com>, 2011.

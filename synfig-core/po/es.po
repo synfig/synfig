@@ -2,7 +2,7 @@
 # Spanish translations for Synfig Core package
 # Traducciones al español para el paquete Synfig Core.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig package.
 #
 # Translators:
 # Carlos López González <genetita@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012.

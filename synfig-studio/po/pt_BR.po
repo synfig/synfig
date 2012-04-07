@@ -1,6 +1,6 @@
 # Translation of pt_BR to Brazilian.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 #
 # Translators:
 # Gabriel Menor <confusosk8@gmail.com>, 2011.

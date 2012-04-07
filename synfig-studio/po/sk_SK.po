@@ -1,6 +1,6 @@
 # Translation of sk_SK to Slovekian.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 #
 # Translators:
 # beki <sv.betka@gmail.com>, 2011.

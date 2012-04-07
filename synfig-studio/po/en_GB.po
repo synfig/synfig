@@ -1,6 +1,6 @@
 # English (United Kingdom) translation for Synfig Studio.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
 # Robert Readman <robert_readman@hotmail.com>, 2010.

@@ -1,7 +1,7 @@
 # Translation of zh_CN to Chinese
 # Chinese translations for Synfig Studio package
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Studio package.
 #
 # Translators:
 # Yu Chen <jcomee@gmail.com>, 2010, 2011.

@@ -1,6 +1,6 @@
 # Norwegian translation for Synfig Core.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig package.
 #
 # Translators:
 #   <blenderkurs@gmail.com>, 2011.

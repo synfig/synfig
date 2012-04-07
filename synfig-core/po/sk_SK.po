@@ -1,7 +1,7 @@
 # Translation of sk_SK.po to Slovak (Slovakia)
 # Slovakian translations for Synfig Core package
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig package.
 #
 # Translators:
 # Marek Lach <marek.brohatwack.lach@gmail.com>, 2011.

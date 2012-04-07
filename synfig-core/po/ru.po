@@ -1,6 +1,6 @@
 # Translation of ru to Russian for Synfig.
 # Copyright (C) 2012 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig package.
 #
 # Translators:
 # Александр Прокудин <alexandre.prokoudine@gmail.com>, 2010.
