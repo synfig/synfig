@@ -628,7 +628,6 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
-	std::transform(str.begin(),str.end(),str.begin(),&tolower);
 	Glib::ustring text = str;
 	locale_from_utf8 (text);
 	const char *c = text.c_str();
