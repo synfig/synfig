@@ -4,7 +4,7 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
- 0.63.05 (git tag "synfig-0.63.05") - April XX 2012 - Features, bug fixes.
+ 0.63.05 (git tag "synfig-0.63.05") - April 09 2012 - Features, bug fixes.
 
  * Roll back fix bug ID 3405011 because it produced other worse bug.
  * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
