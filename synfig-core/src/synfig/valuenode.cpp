@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2008 Carlos López
+**  Copyright (c) 2008, 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -56,6 +56,8 @@
 #include "valuenode_timedswap.h"
 #include "valuenode_twotone.h"
 #include "valuenode_bline.h"
+#include "valuenode_wplist.h"
+#include "valuenode_dilist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
@@ -187,6 +189,9 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
 	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
 
+	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
+	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
+
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
 
@@ -305,7 +310,7 @@ ValueNode::on_changed()
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
-		while (parent_canvas = parent_canvas->parent());
+		while ( (parent_canvas = parent_canvas->parent()) );
 	else if(get_root_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
 
@@ -670,12 +675,18 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 }
 
 String
+LinkableValueNode::get_description(bool show_exported_name)const
+{
+	return get_description(-1, show_exported_name);
+}
+
+String
 LinkableValueNode::link_name(int i)const
 {
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(; iter!=vocab.end() && j<i; iter++, j++);
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -685,7 +696,7 @@ LinkableValueNode::link_local_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(; iter!=vocab.end() && j<i; iter++, j++);
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 

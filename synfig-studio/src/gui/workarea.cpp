@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2006 Yue Shi Lai
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -676,14 +677,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	curr_input_device=0;
 	full_frame=false;
 	allow_duck_clicks=true;
+	allow_bezier_clicks=true;
 	allow_layer_clicks=true;
 	render_idle_func_id=0;
-	zoom=prev_zoom=1.0;
 	quality=10;
 	low_res_pixel_size=2;
 	rendering=false;
 	canceled_=false;
-	low_resolution=true;
+	low_resolution=false;
 	pw=0.001;
 	ph=0.001;
 	last_focus_point=Point(0,0);
@@ -897,6 +898,8 @@ WorkArea::save_meta_data()
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide_x",data);
+		else if (!canvas->get_meta_data("guide_x").empty())
+			canvas_interface->erase_meta_data("guide_x");
 
 		data.clear();
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
@@ -907,6 +910,8 @@ WorkArea::save_meta_data()
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide_y",data);
+		else if (!canvas->get_meta_data("guide_y").empty())
+			canvas_interface->erase_meta_data("guide_y");
 	}
 
 	if(get_sketch_filename().size())
@@ -1027,6 +1032,7 @@ WorkArea::load_meta_data()
 
 	meta_data_lock=false;
 	queue_draw();
+	signal_meta_data_changed()();
 }
 
 void
@@ -1037,7 +1043,6 @@ WorkArea::set_onion_skin(bool x)
 	onion_skin=x;
 	save_meta_data();
 	queue_render_preview();
-	signal_onion_skin_changed()();
 }
 
 bool
@@ -1383,9 +1388,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//else
 			//	clear_selected_ducks();
 
+			if(allow_bezier_clicks)
+			{
+				selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
+			}
+			else
+			{
+				selected_bezier=0;
+			}
 
-
-			selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
 			if(duck)
 			{
 				if (!duck->get_editable())
@@ -1435,25 +1446,43 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				get_canvas_view()->reset_cancel_status();
 				return true;
 			}
+			else
+			if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+			{
+				if (selected_bezier)
+				{
+					synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
+					synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
+					if( distance_1.mag() > radius*2
+					    && distance_2.mag() > radius*2
+						)
+					// If we click a selected bezier
+					// not too close to the endpoints
+					{
+						// We give the states first priority to process the
+						// event so as not to interfere with the bline tool
+						dragging=DRAG_BEZIER;
+						drag_point=mouse_pos;
+						start_bezier_drag(mouse_pos, bezier_click_pos);
+						return true;
+					}
+				}
 // I commented out this section because
 // it was causing issues when rotoscoping.
 // At the moment, we don't need it, so
 // this was the easiest way to fix the problem.
 /*
-			else
-			if(selected_bezier)
-			{
-				selected_duck=0;
-				selected_bezier->signal_user_click(0)(bezier_click_pos);
-			}
-*/
-			else
-			{
-				//clear_selected_ducks();
-				selected_bezier=0;
-				if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK)
+				else
+				if(selected_bezier)
 				{
-					// Check for a guide click
+					selected_duck=0;
+					selected_bezier->signal_user_click(0)(bezier_click_pos);
+				}
+*/
+
+				// Check for a guide click
+				if (show_guides)
+				{
 					GuideList::iterator iter;
 
 					iter=find_guide_x(mouse_pos,radius);
@@ -1470,14 +1499,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						curr_guide=iter;
 						return true;
 					}
-
-
-					// All else fails, try making a selection box
-					dragging=DRAG_BOX;
-					curr_point=drag_point=mouse_pos;
-					return true;
 				}
+				// All else fails, try making a selection box
+				dragging=DRAG_BOX;
+				curr_point=drag_point=mouse_pos;
+				return true;
 			}
+			selected_bezier=0;
 			break;
 		}
 		case 2:	// Attempt to drag and move the window
@@ -1607,6 +1635,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			drawing_area->queue_draw();
 		}
+		if(dragging==DRAG_BEZIER)
+		{
+			if(canvas_view->get_cancel_status())
+			{
+				dragging=DRAG_NONE;
+				canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+
+			translate_selected_bezier(mouse_pos);
+
+			drawing_area->queue_draw();
+		}
 
 		if(dragging==DRAG_BOX)
 		{
@@ -1731,6 +1772,43 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			ret=true;
 		}
+		else
+		if(dragging==DRAG_BEZIER)
+		{
+			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
+			dragging=DRAG_NONE;
+			//translate_selected_ducks(mouse_pos);
+			set_axis_lock(false);
+
+			try{
+			get_canvas_view()->duck_refresh_flag=false;
+			get_canvas_view()->duck_refresh_needed=false;
+			const bool drag_did_anything(end_bezier_drag());
+			get_canvas_view()->duck_refresh_flag=true;
+			if(!drag_did_anything)
+			{
+				// We didn't move the bezier, just clicked on it
+				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
+				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_UP,BUTTON_LEFT,mouse_pos,pressure,modifier));
+			}
+			else
+			{
+				if(canvas_view->duck_refresh_needed)
+					canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+			}catch(String)
+			{
+				canvas_view->duck_refresh_flag=true;
+				canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+			//queue_draw();
+			clicked_duck=0;
+
+			ret=true;
+		}
+		else
 
 		if(dragging==DRAG_BOX)
 		{
@@ -1898,7 +1976,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE)
+		if(dragging==DRAG_NONE && show_guides)
 		{
 			dragging=DRAG_GUIDE;
 			curr_guide=get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
@@ -1930,9 +2008,17 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			y -= 2*hruler->property_max_size();
 
-			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[1];
-
-			queue_draw();
+			// place the recalculated y coordinate back on the event
+			if(event->button.axes)
+			{
+				event->button.axes[1]=y;
+			}
+			else
+			{
+				event->button.y=y;
+			}
+			// call the on drawing area event to refresh eveything.
+			on_drawing_area_event(event);
 		}
 		return true;
 		break;
@@ -1941,6 +2027,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
 			dragging=DRAG_NONE;
+			save_meta_data();
 //			get_guide_list_y().erase(curr_guide);
 		}
 		break;
@@ -1957,7 +2044,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		if(dragging==DRAG_NONE)
+		if(dragging==DRAG_NONE && show_guides)
 		{
 			dragging=DRAG_GUIDE;
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
@@ -1989,9 +2076,17 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			x -= 2*vruler->property_max_size();
 
-			*curr_guide=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)))[0];
-
-			queue_draw();
+			// place the recalculated x coordinate back on the event
+			if(event->button.axes)
+			{
+				event->button.axes[0]=x;
+			}
+			else
+			{
+				event->button.x=x;
+			}
+			// call the on drawing area event to refresh everything.
+			on_drawing_area_event(event);
 		}
 		return true;
 		break;
@@ -2000,6 +2095,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
 			dragging=DRAG_NONE;
+			save_meta_data();
 //			get_guide_list_x().erase(curr_guide);
 		}
 		break;
@@ -2199,8 +2295,6 @@ WorkArea::refresh(GdkEventExpose*event)
 	//const synfig::Vector::value_type window_starty(window_tl[1]);
 	//const synfig::Vector::value_type window_endy(window_br[1]);
 
-	Glib::RefPtr<Gdk::GC> gc=Gdk::GC::create(drawing_area->get_window());
-
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
@@ -2213,13 +2307,20 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 #else
 		// So let's do it in a more primitive fashion.
-		gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		drawing_area->get_window()->draw_rectangle(
-			gc,
-			false,	// Fill?
-			0,0,	// x,y
-			drawing_area->get_width()-1,drawing_area->get_height()-1); // w,h
+		Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
+		cr->save();
+
+		cr->set_source_rgb(1,0,0);
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+		cr->set_line_join(Cairo::LINE_JOIN_MITER);
+		cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
+		cr->rectangle(
+			0,0, // x,y
+			drawing_area->get_width(),drawing_area->get_height() //w,h
+			);
+		cr->stroke();
+		cr->restore();
 #endif
 	}
 #ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
@@ -2861,4 +2962,32 @@ WorkArea::resort_render_set()
 	);
 	renderer_set_.swap(tmp);
 	queue_draw();
+}
+
+WorkArea::PushState::PushState(WorkArea *workarea_):
+	workarea_(workarea_)
+{
+	type_mask=workarea_->get_type_mask();
+	allow_duck_clicks=workarea_->get_allow_duck_clicks();
+	allow_bezier_clicks=workarea_->get_allow_bezier_clicks();
+	allow_layer_clicks=workarea_->get_allow_layer_clicks();
+	needs_restore=true;
+}
+
+WorkArea::PushState::~PushState()
+{
+	if(needs_restore)
+		restore();
+}
+
+void
+WorkArea::PushState::restore()
+{
+	workarea_->set_type_mask(type_mask);
+	// update the toggle buttons for the duck types
+	workarea_->get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	workarea_->set_allow_duck_clicks(allow_duck_clicks);
+	workarea_->set_allow_bezier_clicks(allow_bezier_clicks);
+	workarea_->set_allow_layer_clicks(allow_layer_clicks);
+	needs_restore=false;
 }

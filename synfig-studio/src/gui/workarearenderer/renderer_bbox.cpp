@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -104,9 +105,14 @@ Renderer_BBox::render_vfunc(
 		cr->set_line_width(1.0);
 		cr->set_source_rgb(1.0,1.0,1.0);
 
-		// OPERATOR_DIFFERENCE does not currently have a C++ wrapper
-		//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
+		// Operator difference was added in Cairo 1.9.4
+		// It currently isn't supported by Cairomm
+#if CAIRO_VERSION >= 10904
 		cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+#else
+		// Fallback: set color to black
+        cr->set_source_rgb(0,0,0);
+#endif
 
 		cr->rectangle(
 			tl[0],

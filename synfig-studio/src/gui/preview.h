@@ -38,7 +38,9 @@
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/canvasview.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
+#include <gtkmm/alignment.h>
+#include <gtkmm/comboboxentrytext.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -167,16 +169,15 @@ class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-	Gtk::HScrollbar		scr_time_scrub;
+	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
-	Gtk::Tooltips		tooltips;
-
+	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
-	int							currentindex;
-	//double						timeupdate;
-	double						timedisp;
-	double						audiotime;
+	int				currentindex;
+	//double			timeupdate;
+	double				timedisp;
+	double				audiotime;
 
 	//sound stuff
 	etl::handle<AudioContainer>	audio;
@@ -186,16 +187,18 @@ class Widget_Preview : public Gtk::Table
 
 	//preview encapsulation
 	etl::handle<Preview>	preview;
-	sigc::connection		prevchanged;
+	sigc::connection	prevchanged;
 
-	Widget_Sound			disp_sound;
-	Gtk::Adjustment			adj_sound;
+	Widget_Sound		disp_sound;
+	Gtk::Adjustment		adj_sound;
 
-	Gtk::Label				l_lasttime;
+	Gtk::Label		l_lasttime;
+	Gtk::Label		l_currenttime;
 
 	//only for internal stuff, doesn't set anything
 	bool 	playing;
 	bool	singleframe;
+	bool	toolbarisshown;
 
 	//for accurate time tracking
 	etl::clock	timer;
@@ -205,7 +208,7 @@ class Widget_Preview : public Gtk::Table
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
-	void play_stop();
+	void play_pause();
 	//bool play_frameupdate();
 	void update();
 
@@ -223,8 +226,11 @@ class Widget_Preview : public Gtk::Table
 	bool redraw(GdkEventExpose *heh = 0);
 	void preview_draw();
 
+	void hide_toolbar();
+	void show_toolbar();
+
 	sigc::signal<void,float>	signal_play_;
-	sigc::signal<void>			signal_stop_;
+	sigc::signal<void>		signal_pause_;
 	sigc::signal<void,float>	signal_seek_;
 
 public:
@@ -240,17 +246,51 @@ public:
 	void clear();
 
 	void play();
-	void stop();
+	void pause();
 	void seek(float t);
+
+	void on_play_pause_pressed();
+
+	void seek_frame(int frames);
 
 	void stoprender();
 
 	sigc::signal<void,float>	&signal_play() {return signal_play_;}
-	sigc::signal<void>	&signal_stop() {return signal_stop_;}
+	sigc::signal<void>	&signal_pause() {return signal_pause_;}
 	sigc::signal<void,float>	&signal_seek() {return signal_seek_;}
 
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
+
+protected:
+
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+
+		ModelColumns()
+		{ 
+			add(factor_id); 
+			add(factor_value);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> factor_id;
+		Gtk::TreeModelColumn<Glib::ustring> factor_value;
+
+	};
+
+	ModelColumns factors;
+
+	Gtk::ComboBoxEntry zoom_preview; 
+	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
+	
+
+private:
+
+	Gtk::HBox *toolbar;
+	Gtk::Button *play_pausebutton;
+	bool on_key_pressed(GdkEventKey*);
+	void on_zoom_entry_activated();
 };
 
 }; // END of namespace studio

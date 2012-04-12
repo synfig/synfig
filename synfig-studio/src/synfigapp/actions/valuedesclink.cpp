@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2010 Carlos López
+**	Copyright (c) 2010, 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -36,6 +36,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/valuenode_scale.h>
+#include <synfig/valuenode_composite.h>
 
 #include <synfigapp/general.h>
 
@@ -112,6 +113,21 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
+		// If we are handling a Composite WidthPoint then use its position as param
+		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
+		{
+			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			{
+				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position")));
+				return set_param("value_desc", param);
+			}
+			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point")));
+				return set_param("value_desc", param);
+			}
+		}
 
 		if(value_desc.is_value_node() && value_desc.get_value_node()->is_exported())
 		{

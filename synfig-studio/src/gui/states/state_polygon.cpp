@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -99,6 +100,7 @@ class studio::StatePolygon_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_polygon;
 	Gtk::CheckButton checkbutton_layer_region;
 	Gtk::CheckButton checkbutton_layer_outline;
+	Gtk::CheckButton checkbutton_layer_advanced_outline;
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
 	Gtk::CheckButton checkbutton_layer_plant;
 	Gtk::CheckButton checkbutton_layer_link_origins;
@@ -115,6 +117,7 @@ public:
 			get_layer_polygon_flag() +
 			get_layer_region_flag() +
 			get_layer_outline_flag() +
+			get_layer_advanced_outline_flag() +
 			get_layer_curve_gradient_flag() +
 			get_layer_plant_flag();
 	}
@@ -133,6 +136,9 @@ public:
 
 	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
 	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
+
+	bool get_layer_advanced_outline_flag()const { return checkbutton_layer_advanced_outline.get_active(); }
+	void set_layer_advanced_outline_flag(bool x) { return checkbutton_layer_advanced_outline.set_active(x); }
 
 	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
 	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
@@ -172,7 +178,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -229,6 +235,11 @@ StatePolygon_Context::load_settings()
 		else
 			set_layer_outline_flag(false);
 
+		if(settings.get_value("polygon.layer_advanced_outline",value) && value=="1")
+			set_layer_advanced_outline_flag(true);
+		else
+			set_layer_advanced_outline_flag(false);
+
 		if(settings.get_value("polygon.layer_curve_gradient",value) && value=="1")
 			set_layer_curve_gradient_flag(true);
 		else
@@ -266,6 +277,7 @@ StatePolygon_Context::save_settings()
 		settings.set_value("polygon.invert",get_invert()?"1":"0");
 		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
 		settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("polygon.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
 		settings.set_value("polygon.layer_region",get_layer_region_flag()?"1":"0");
 		settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 		settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
@@ -341,6 +353,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	checkbutton_layer_polygon(_("Create Polygon Layer")),
 	checkbutton_layer_region(_("Create Region BLine")),
 	checkbutton_layer_outline(_("Create Outline BLine")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
 	checkbutton_layer_link_origins(_("Link Origins")),
@@ -357,17 +370,18 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	options_table.attach(checkbutton_layer_polygon,						0, 2, 2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_outline,						0, 2, 3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_region,						0, 2, 4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_plant,						0, 2, 5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_curve_gradient,				0, 2, 6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_link_origins,				0, 2, 7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_advanced_outline,			0, 2, 4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,						0, 2, 5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_plant,						0, 2, 6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,				0, 2, 7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_origins,				0, 2, 8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//invert flag
-	options_table.attach(checkbutton_invert,							0, 2, 8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert,							0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//feather stuff
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,									1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1,10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,									1, 2,10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
@@ -393,9 +407,6 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_user_click));
 
 	App::toolbox->refresh();
 }
@@ -464,8 +475,6 @@ StatePolygon_Context::~StatePolygon_Context()
 Smach::event_result
 StatePolygon_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoPolygon: Received Stop Event");
-	//throw Smach::egress_exception();
 	reset();
 	return Smach::RESULT_ACCEPT;
 
@@ -474,7 +483,6 @@ StatePolygon_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StatePolygon_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoPolygon: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -510,7 +518,7 @@ StatePolygon_Context::run()
 	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
 		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 
 	std::vector<BLinePoint> new_list;
 	std::list<synfig::Point>::iterator iter;
@@ -649,7 +657,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -672,7 +679,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -713,7 +719,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -736,7 +741,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -785,7 +789,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -808,7 +811,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -822,6 +824,8 @@ StatePolygon_Context::run()
 
 	if (get_layer_outline_flag())
 	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
 		if (!layer)
 		{
@@ -853,7 +857,6 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -876,9 +879,76 @@ StatePolygon_Context::run()
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
+				return;
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//   A D V A N C E D   O U T L I N E
+	///////////////////////////////////////////////////////////////////////////
+
+	if (get_layer_advanced_outline_flag())
+	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Advanced Outline"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				group.cancel();
+				throw String(_("Unable to create Advanced Outline layer"));
+				return;
+			}
+		}
+
+		// only link the advanced outline's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("origin")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				group.cancel();
+				throw String(_("Unable to create Advanced Outline layer"));
 				return;
 			}
 		}
@@ -897,7 +967,6 @@ StatePolygon_Context::run()
 Smach::event_result
 StatePolygon_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	synfig::info("STATE ROTOPOLYGON: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -689,4 +690,20 @@ Layer::get_param_local_name(const String &param_name)const
 		if (iter->get_name() == param_name)
 			return iter->get_local_name();
 	return String();
+}
+
+Real
+Layer::get_parent_canvas_grow_value()const
+{
+	Canvas::Handle parent_canvas(get_canvas());
+	Real ret;
+	if(parent_canvas)
+	{
+		ret=parent_canvas->get_grow_value();
+	}
+	else
+	{
+		ret=0.0;
+	}
+	return ret;
 }

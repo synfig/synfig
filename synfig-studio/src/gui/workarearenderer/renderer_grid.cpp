@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -83,7 +84,9 @@ Renderer_Grid::render_vfunc(
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
-	const synfig::Vector grid_size(get_grid_size());
+	synfig::Vector grid_size(get_grid_size());
+	if(grid_size[0] < 0) grid_size[0] = -grid_size[0];
+	if(grid_size[1] < 0) grid_size[1] = -grid_size[1];
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
 	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);

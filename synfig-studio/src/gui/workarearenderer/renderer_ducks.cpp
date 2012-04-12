@@ -8,6 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008 Gerald Young
+**  Copyright (c) 2011 Nikita Kitaev
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,6 +40,9 @@
 #include <ETL/misc>
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_composite.h>
 #include "app.h"
 
 #include "general.h"
@@ -101,8 +106,6 @@ Renderer_Ducks::render_vfunc(
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	cr->save();
@@ -340,6 +343,8 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)
 			screen_duck.color=(DUCK_COLOR_ANGLE);
+		else if((*iter)->get_type()&Duck::TYPE_WIDTHPOINT_POSITION)
+			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else
 			screen_duck.color=DUCK_COLOR_OTHER;
 
@@ -408,9 +413,16 @@ Renderer_Ducks::render_vfunc(
 			else
 			{
 				cr->set_source_rgb(1.0,1.0,1.0);
-				// OPERATOR_DIFFERENCE does not currently have a C++ wrapper
-				//cr->set_operator(Cairo::OPERATOR_DIFFERENCE);
+
+				// Operator difference was added in Cairo 1.9.4
+				// It currently isn't supported by Cairomm
+#if CAIRO_VERSION >= 10904
 				cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+#else
+				// Fallback: set color to black
+				cr->set_source_rgb(0,0,0);
+#endif
+
 			}
 
 			cr->set_line_width(1.0);
@@ -441,24 +453,128 @@ Renderer_Ducks::render_vfunc(
 
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
+
+				cr->save();
+
 				layout->set_text(real_mag.get_string());
 
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_1);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+1+6,
-					round_to_int(point[1])+1-8,
-					layout
-				);
-				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_2);
-				drawable->draw_layout(
-					gc,
-					round_to_int(point[0])+6,
-					round_to_int(point[1])-8,
-					layout
-				);
+				cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+				cr->move_to(
+					point[0]+1+6,
+					point[1]+1-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+
+				cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+				cr->move_to(
+					point[0]+6,
+					point[1]-8
+					);
+				layout->show_in_cairo_context(cr);
+				cr->stroke();
+
+				cr->restore();
 			}
 
+		}
+
+		if((*iter)->get_type()&&Duck::TYPE_WIDTHPOINT_POSITION)
+		{
+			if(hover)
+			{
+				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+				synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
+				synfig::ValueNode_WPList::Handle wplist=NULL;
+				ValueNode_Composite::Handle wpoint_composite=NULL;
+				Real radius=0.0;
+				Real new_value;
+				Point p(sub_trans_point-sub_trans_origin);
+				if(value_desc.parent_is_value_node())
+					wplist=synfig::ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+				if(wplist)
+				{
+					bool wplistloop(wplist->get_loop());
+					synfig::ValueNode_BLine::Handle bline(synfig::ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+					wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+					if(bline && wpoint_composite)
+					{
+						bool blineloop(bline->get_loop());
+						bool homogeneous=false;
+						// Retrieve the homogeneous layer parameter
+						std::set<Node*>::iterator iter;
+						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+							{
+								Layer::Handle layer;
+								layer=Layer::Handle::cast_dynamic(*iter);
+								if(layer && layer->get_name() == "advanced_outline")
+								{
+									homogeneous=layer->get_param("homogeneous").get(bool());
+									break;
+								}
+							}
+						WidthPoint wp((*wpoint_composite)(time));
+						if(wplistloop)
+						{
+							// The wplist is looped. This may require a position parameter
+							// outside the range of 0-1, so make sure that the position doesn't
+							// change drastically.
+							// First normalise the current position
+							Real value_old(wp.get_norm_position(wplistloop));
+							Real value_old_b(wp.get_bound_position(wplistloop));
+							// If it is homogeneous then convert it to standard
+							value_old=homogeneous?hom_to_std((*bline)(time), value_old, wplistloop, blineloop):value_old;
+							// grab a new position given by duck's position on the bline
+							Real value_new = synfig::find_closest_point((*bline)(time), p , radius, blineloop);
+							// calculate the difference between old and new positions
+							Real difference = fmod( fmod(value_new - value_old, 1.0) + 1.0 , 1.0);
+							//fmod is called twice to avoid negative values
+							if (difference > 0.5)
+								difference=difference-1.0;
+							// calculate a new value for the position
+							new_value=value_old+difference;
+							// restore the homogeneous value if needed
+							new_value = homogeneous?std_to_hom((*bline)(time), new_value, wplistloop, blineloop):new_value;
+							// this is the difference between the new value and the old value inside the boundaries
+							Real bound_diff((wp.get_lower_bound() + new_value*(wp.get_upper_bound()-wp.get_lower_bound()))-value_old_b);
+							// add the new diff to the current value
+							new_value = wp.get_position() + bound_diff;
+						}
+						else
+						{
+							// grab a new position given by duck's position on the bline
+							new_value = synfig::find_closest_point((*bline)(time), p , radius, blineloop);
+							// if it is homogeneous then convert to it
+							new_value=homogeneous?std_to_hom((*bline)(time), new_value, wplistloop, blineloop):new_value;
+							// convert the value inside the boundaries
+							new_value = wp.get_lower_bound()+new_value*(wp.get_upper_bound()-wp.get_lower_bound());
+						}
+						cr->save();
+						layout->set_text(strprintf("%2.3f", new_value));
+
+						cr->set_source_rgb(0,0,0); // DUCK_COLOR_WIDTH_TEXT_1
+						cr->move_to(
+							point[0]+1+6,
+							point[1]+1-18
+							);
+						layout->show_in_cairo_context(cr);
+						cr->stroke();
+
+
+						cr->set_source_rgb(1,0,1); // DUCK_COLOR_WIDTH_TEXT_2
+						cr->move_to(
+							point[0]+6,
+							point[1]-18
+							);
+						layout->show_in_cairo_context(cr);
+						cr->stroke();
+
+						cr->restore();
+					}
+				}
+			}
 		}
 
 	}

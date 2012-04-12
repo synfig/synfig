@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -409,7 +410,7 @@ StateText_Context::make_text(const Point& _point)
 	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
 		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point point(transform.unperform(_point));
 
 	String text;

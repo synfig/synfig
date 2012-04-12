@@ -59,6 +59,7 @@ private:
 #endif
 
 	bool ready();
+	synfig::String sequence_separator;
 public:
 	exr_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~exr_trgt();

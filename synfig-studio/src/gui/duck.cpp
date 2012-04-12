@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,6 +36,7 @@
 #include <ETL/misc>
 
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -224,7 +226,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 			(new_halves > 1 || new_halves < -1 ||
 			 old_halves > 1 || old_halves < -1))
 			synfig::info("rotation: %.2f turns", new_halves/2.0)*/;
-	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION)
+	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION || get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
 	{
 		set_point((x-get_sub_trans_origin())/get_scalar());
 
@@ -247,6 +249,27 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 				&closest_point);
 			set_point(closest_point);
 		}
+		ValueNode_Composite::Handle wpoint_composite;
+		ValueNode_WPList::Handle wplist;
+		wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(get_value_desc().get_value_node());
+		if(wpoint_composite && wpoint_composite->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			if(get_value_desc().parent_is_value_node())
+			{
+				wplist=ValueNode_WPList::Handle::cast_dynamic(get_value_desc().get_parent_value_node());
+				if(wplist)
+				{
+					ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+					synfig::Point closest_point = get_point();
+					synfig::Real radius = 0.0;
+					synfig::find_closest_point(
+						(*bline)(time),
+						get_point(),
+						radius,
+						bline->get_loop(),
+						&closest_point);
+					set_point(closest_point);
+				}
+			}
 	}
 	else set_point((x-get_sub_trans_origin())/get_scalar());
 }
@@ -291,6 +314,7 @@ Duck::type_name(Type id)
 	if (id & TYPE_WIDTH	  ) { if (!ret.empty()) ret += ", "; ret += "width"   ; }
 	if (id & TYPE_ANGLE	  ) { if (!ret.empty()) ret += ", "; ret += "angle"   ; }
 	if (id & TYPE_VERTEX  ) { if (!ret.empty()) ret += ", "; ret += "vertex"  ; }
+	if (id & TYPE_WIDTHPOINT_POSITION  ) { if (!ret.empty()) ret += ", "; ret += "widthpoint position"  ; }
 
 	if (ret.empty())
 		ret = "none";

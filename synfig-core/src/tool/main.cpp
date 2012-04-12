@@ -37,6 +37,7 @@
 #include <ETL/clock>
 #include <algorithm>
 #include <cstring>
+#include <errno.h>
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
@@ -178,6 +179,7 @@ void display_help(bool full)
 		display_help_option("--dpi", "<res>", _("Set the physical resolution (dots-per-inch)"));
 		display_help_option("--dpi-x", "<res>", _("Set the physical X resolution (dots-per-inch)"));
 		display_help_option("--dpi-y", "<res>", _("Set the physical Y resolution (dots-per-inch)"));
+		display_help_option("--sequence-separator", "<string>", _("Output file sequence separator string (no blanks)"));
 
 		display_help_option("--list-canvases", NULL, _("List the exported canvases in the composition"));
 		display_help_option("--canvas-info", "<fields>", _("Print out specified details of the root canvas"));
@@ -404,7 +406,7 @@ bool flag_requires_value(String flag)
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-r"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
-			flag=="--time"		|| flag=="-vc"			|| flag=="-vb");
+			flag=="--time"		|| flag=="-vc"			|| flag=="-vb"			|| flag=="--sequence-separator");
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -690,6 +692,11 @@ int extract_target_params(arg_list_t& arg_list,
 			params.bitrate =
 				atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Target bitrate set to %dk"),params.bitrate)<<endl;
+		}
+		else if(*iter=="--sequence-separator")
+		{
+			params.sequence_separator = extract_parameter(arg_list, iter, next);
+			VERBOSE_OUT(1)<<strprintf(_("Output file sequence separator set to %s"),params.sequence_separator.c_str())<<endl;
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
@@ -1238,7 +1245,8 @@ int main(int argc, char *argv[])
 					return SYNFIGTOOL_MISSINGARGUMENT;
 				}
 			}
-
+			else
+				extract_target_params(imageargs, target_parameters);
 			// If the target type is STILL not yet defined, then
 			// set it to a some sort of default
 			if(target_name.empty())
@@ -1261,7 +1269,12 @@ int main(int argc, char *argv[])
 
 			VERBOSE_OUT(4)<<"target_name="<<target_name<<endl;
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
-
+			if (access(dirname(job_list.front().outfilename).c_str(),W_OK) == -1)
+				{
+					cerr<<(_("Unable to create ouput for ")+job_list.front().outfilename+": "+strerror(errno))<<endl;
+					job_list.pop_front();
+					continue;
+				}
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
 			job_list.front().target =
 				synfig::Target::create(target_name,

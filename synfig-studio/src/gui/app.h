@@ -206,6 +206,7 @@ public:
 	static synfig::String predefined_size;
 	static synfig::String predefined_fps;
 	static float preferred_fps;
+	static synfig::String sequence_separator;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -336,7 +337,7 @@ public:
 
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 
-	static void dialog_warning_blocking(const std::string &title, const std::string &message);
+	static void dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id=Gtk::Stock::DIALOG_WARNING);
 
 	static bool dialog_entry(const std::string &title, const std::string &message,std::string &text);
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
@@ -353,6 +354,10 @@ public:
 
 	static synfig::String get_user_app_directory();
 	static synfig::String get_config_file(const synfig::String& file);
+	// This will spread the changes made in preferences.
+	// (By now it updates the System Units or Time Format for all the canvases).
+	// This fixes bug 1890020
+	static void setup_changed();
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

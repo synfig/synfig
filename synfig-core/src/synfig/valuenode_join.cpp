@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -65,11 +66,11 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 
 		// "insert item (smart)" inserts before the selected entry, making it hard to append to the end
 		// add an extra element at the end to allow the easy insertion of text after the given value's string
-		v.push_back("...");
+		v.push_back("");
 
 		set_link("strings",ValueNode_DynamicList::create_from(v));
 		set_link("before",ValueNode_Const::create(String("")));
-		set_link("separator",ValueNode_Const::create(String(" ")));
+		set_link("separator",ValueNode_Const::create(String("")));
 		set_link("after",ValueNode_Const::create(String("")));
 		break;
 	}

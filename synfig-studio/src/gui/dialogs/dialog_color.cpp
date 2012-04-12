@@ -96,7 +96,7 @@ Dialog_Color::create_set_color_button(const char *stock_id,
 			Gtk::IconSize(Gtk::ICON_SIZE_BUTTON)));
 	set_color_button->add(*set_color_icon);
 	set_color_icon->show();
-	tooltips.set_tip(*set_color_button, tip_text);
+	set_color_button->set_tooltip_text(tip_text);
 	set_color_button->show();
 	add_action_widget(*set_color_button, index);
 	set_color_button->signal_clicked().connect(callback);

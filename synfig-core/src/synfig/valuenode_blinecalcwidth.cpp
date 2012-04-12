@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -68,6 +69,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
 	set_link("scale",ValueNode_Const::create(Real(1.0)));
+	set_link("homogeneous",ValueNode_Const::create(bool(true)));
 }
 
 LinkableValueNode*
@@ -98,7 +100,12 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
+	bool homogeneous((*homogeneous_)(t).get(bool()));
 	Real scale((*scale_)(t).get(Real()));
+	if(homogeneous)
+	{
+		amount=hom_to_std(bline, amount, loop, looped);
+	}
 	BLinePoint blinepoint0, blinepoint1;
 
 	if (!looped) size--;
@@ -159,6 +166,7 @@ ValueNode_BLineCalcWidth::set_link_vfunc(int i,ValueNode::Handle value)
 	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
 	case 3: CHECK_TYPE_AND_SET_VALUE(scale_,  ValueBase::TYPE_REAL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(homogeneous_,  ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -174,6 +182,7 @@ ValueNode_BLineCalcWidth::get_link_vfunc(int i)const
 		case 1: return loop_;
 		case 2: return amount_;
 		case 3: return scale_;
+		case 4: return homogeneous_;
 	}
 
 	return 0;
@@ -213,6 +222,10 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 		.set_description(_("Scale of the width"))
 	);
 
+	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
+		.set_local_name(_("Homogeneous"))
+		.set_description(_("When checked, the width is BLine length based"))
+	);
 	return ret;
 }
 

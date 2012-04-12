@@ -77,7 +77,7 @@ class Surface;
 class RendDesc;
 class Canvas;
 class ProgressCallback;
-class TargetParam;
+struct TargetParam;
 
 //! Available rendering methods
 enum RenderMethod {

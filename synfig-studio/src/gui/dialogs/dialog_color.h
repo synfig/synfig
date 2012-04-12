@@ -29,7 +29,7 @@
 
 #include <gtk/gtk.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <sigc++/functors/slot.h>
 
 #include "widgets/widget_coloredit.h"
@@ -48,7 +48,6 @@ class Widget_Color;
 class Dialog_Color : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;
-	Gtk::Tooltips tooltips;
 
 	Widget_ColorEdit* color_edit_widget;
 

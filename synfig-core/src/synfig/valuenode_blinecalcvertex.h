@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -40,6 +41,7 @@ class ValueNode_BLineCalcVertex : public LinkableValueNode
 	ValueNode::RHandle bline_;
 	ValueNode::RHandle loop_;
 	ValueNode::RHandle amount_;
+	ValueNode::RHandle homogeneous_;
 
 	ValueNode_BLineCalcVertex(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 

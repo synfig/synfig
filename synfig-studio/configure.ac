@@ -2,8 +2,8 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.62.02],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
+AC_INIT([Synfig Studio],[0.63.05],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -67,7 +67,7 @@ AC_LIBTOOL_PATCH
 ## FIXME: add i18n for .desktop and other non-compiled files
 ## AM_GLIB_GNU_GETTEXT([external])
 ## AC_PROG_INTLTOOL(0.11)
-ALL_LINGUAS="ca fr es it ru de en_GB zh_CN"
+ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR fa_IR lt da cs"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
@@ -87,6 +87,7 @@ case "$host" in
 		AM_CONDITIONAL(MACOSX_PKG, false)
 	;;
 esac
+
 # -- L I B R A R I E S ----------------------------------------
 
 PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
@@ -136,8 +137,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.62.02] [ETL >= 0.04.13] sigc++-2.0,,[
-	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.62.02, ETL >= 0.04.13)])
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.63.05] [ETL >= 0.04.15] sigc++-2.0,,[
+	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.63.05, ETL >= 0.04.15)])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
@@ -265,6 +266,13 @@ AC_SUBST(imageext)
 
 imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
+
+AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
+AC_ARG_ENABLE(update-mimedb,
+   AC_HELP_STRING([--disable-update-mimedb],
+                   [disable the update-mime-database after install [default=no]]),,
+    enable_update_mimedb=yes)
+AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, (test x$enable_update_mimedb = xyes) && (test x$UPDATE_MIME_DATABASE != xno))
 
 AC_CONFIG_FILES([Makefile
 build_tools/Makefile

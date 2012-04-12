@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -36,6 +37,8 @@
 #include <ETL/bezier>
 
 #include <synfig/valuenode_dynamiclist.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_composite.h>
 #include <synfigapp/action_system.h>
 
 #include "state_width.h"
@@ -49,6 +52,7 @@
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "docks/dialog_tooloptions.h"
+#include "widgets/widget_distance.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
 
@@ -83,7 +87,6 @@ class studio::StateWidth_Context : public sigc::trackable
 	CanvasView::IsWorking is_working;
 
 	//Point mouse_pos;
-
 	handle<Duck> center;
 	handle<Duck> radius;
 	handle<Duck> closestpoint;
@@ -97,9 +100,7 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	void refresh_ducks();
 
-	bool prev_workarea_layer_clicking;
-	bool prev_workarea_duck_clicking;
-	Duckmatic::Type old_duckmask;
+	WorkArea::PushState push_state;
 
 	//Toolbox settings
 	synfigapp::Settings& settings;
@@ -110,8 +111,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	Gtk::Adjustment	adj_delta;
 	Gtk::SpinButton	spin_delta;
 
-	Gtk::Adjustment	adj_radius;
-	Gtk::SpinButton	spin_radius;
+	Widget_Distance *influence_radius;
 
 	Gtk::CheckButton check_relative;
 
@@ -122,8 +122,8 @@ public:
 	Real get_delta()const { return adj_delta.get_value(); }
 	void set_delta(Real f) { adj_delta.set_value(f); }
 
-	Real get_radius()const { return adj_radius.get_value(); }
-	void set_radius(Real f) { adj_radius.set_value(f); }
+	Real get_radius()const { return influence_radius->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc());}
+	void set_radius(Distance f) { influence_radius->set_value(f); }
 
 	bool get_relative() const { return check_relative.get_active(); }
 	void set_relative(bool r) { check_relative.set_active(r); }
@@ -185,9 +185,9 @@ StateWidth_Context::load_settings()
 			set_delta(6);
 
 		if(settings.get_value("width.radius",value))
-			set_radius(atof(value.c_str()));
+			set_radius(Distance(value.c_str()));
 		else
-			set_radius(15);
+			set_radius(Distance("60pt"));
 
 		//defaults to false
 		if(settings.get_value("width.relative",value) && value == "1")
@@ -208,7 +208,7 @@ StateWidth_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("width.delta",strprintf("%f",get_delta()));
-		settings.set_value("width.radius",strprintf("%f",get_radius()));
+		settings.set_value("width.radius",influence_radius->get_value().get_string());
 		settings.set_value("width.relative",get_relative()?"1":"0");
 	}
 	catch(...)
@@ -226,20 +226,22 @@ StateWidth_Context::reset()
 StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_clicking(get_work_area()->get_allow_layer_clicks()),
-	prev_workarea_duck_clicking(get_work_area()->get_allow_duck_clicks()),
-	old_duckmask(get_work_area()->get_type_mask()),
+
+	push_state(get_work_area()),
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
 	adj_delta(6,0,20,0.01,0.1),
 	spin_delta(adj_delta,0.01,3),
 
-	adj_radius(200,0,1e50,1,10),
-	spin_radius(adj_radius,1,1),
-
 	check_relative(_("Relative Growth"))
 {
+	influence_radius=manage(new Widget_Distance());
+	influence_radius->show();
+	influence_radius->set_digits(0);
+	influence_radius->set_range(0,10000000);
+	influence_radius->set_size_request(24,-1);
+
 	load_settings();
 
 	// Set up the tool options dialog
@@ -248,36 +250,25 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	//expand stuff
 	options_table.attach(*manage(new Gtk::Label(_("Growth:"))),		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_delta,								1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 	options_table.attach(*manage(new Gtk::Label(_("Radius:"))),		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_radius,								1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
+	options_table.attach(*influence_radius,								1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(check_relative,							0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
-
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
-
-	// clear out the ducks
-	//get_work_area()->clear_ducks();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
-
 	//Create the new ducks
 	added = false;
-
 	if(!center)
 	{
 		center = new Duck();
 		center->set_name("p1");
 		center->set_type(Duck::TYPE_POSITION);
 	}
-
 	if(!radius)
 	{
 		radius = new Duck();
@@ -285,31 +276,23 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 		radius->set_radius(true);
 		radius->set_type(Duck::TYPE_RADIUS);
 		radius->set_name("radius");
+		radius->set_point(Point(1.0,0.0));
 	}
-
 	if(!closestpoint)
 	{
 		closestpoint = new Duck();
 		closestpoint->set_name("closest");
 		closestpoint->set_type(Duck::TYPE_POSITION);
 	}
-
 	//Disable duck clicking for the maximum coolness :)
 	get_work_area()->set_allow_duck_clicks(false);
-	get_work_area()->set_type_mask((Duck::Type)((int)Duck::TYPE_WIDTH + (int)Duck::TYPE_RADIUS));
+	// Hide all tangent, vertex and angle ducks and show the width and
+	// radius ducks
+	get_work_area()->set_type_mask((get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_VERTEX-Duck::TYPE_ANGLE) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateWidth_Context::on_user_click));
 
 	App::toolbox->refresh();
 }
@@ -333,7 +316,6 @@ StateWidth_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 StateWidth_Context::~StateWidth_Context()
 {
 	save_settings();
-
 	//remove ducks if need be
 	if(added)
 	{
@@ -343,27 +325,8 @@ StateWidth_Context::~StateWidth_Context()
 		added = false;
 	}
 
-	// Restore Duck clicking
-	get_work_area()->set_allow_duck_clicks(prev_workarea_duck_clicking);
-
-	// Restore layer clicking
-	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_clicking);
-
-	// Restore the mouse pointer
-	get_work_area()->reset_cursor();
-
-	// Restore duck masking
-	get_work_area()->set_type_mask(old_duckmask);
-
 	// Tool options be rid of ye!!
 	App::dialog_tool_options->clear();
-
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -373,7 +336,6 @@ StateWidth_Context::~StateWidth_Context()
 Smach::event_result
 StateWidth_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -390,19 +352,13 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 {
 	//Leave the function if there is no curve
 	if(!c)return;
-
 	Real amount1=0,amount2=0;
-
 	//decide how much to change each width
 	/*
 	t \in [0,1]
-
 	both pressure and multiply amount are in mult
 		(may want to change this to allow different types of falloff)
-
 	rsq is the squared distance from the point on the curve (also part of the falloff)
-
-
 	*/
 	//may want to provide a different falloff function...
 	if(t <= 0.2)
@@ -411,28 +367,25 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		amount2 = mult;
 	else
 	{
-		t = (t-0.2)/0.6;
-		amount1 = (1-t)*mult;
-		amount2 = t*mult;
+		float u = (t-0.2)/0.6;
+		amount1 = (1-u)*mult;
+		amount2 = u*mult;
 	}
-
+	// change sign if we are decreasing widths
 	if(invert)
 	{
 		amount1 *= -1;
 		amount2 *= -1;
 	}
-
+	// ducks for the bezier vertexes
 	handle<Duck>	p1 = c->p1;
 	handle<Duck>	p2 = c->p2;
-
+	// ducks for the widths of the bezier vertexes
 	handle<Duck>	w1,w2;
-
 	//find w1,w2
 	{
 		const DuckList dl = get_work_area()->get_duck_list();
-
 		DuckList::const_iterator i = dl.begin();
-
 		for(;i != dl.end(); ++i)
 		{
 			if((*i)->get_type() == Duck::TYPE_WIDTH)
@@ -441,7 +394,6 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 				{
 					w1 = *i;
 				}
-
 				if((*i)->get_origin_duck() == p2)
 				{
 					w2 = *i;
@@ -449,29 +401,98 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 			}
 		}
 	}
-
+	// change the widths of the affected BLine of Outlines
 	if(amount1 != 0 && w1)
 	{
 		Real width = w1->get_point().mag();
-
 		width += amount1;
 		w1->set_point(Vector(width,0));
-
 		//log in the list of changes...
 		//to truly be changed after everything is said and done
 		changetable[w1] = width;
 	}
-
 	if(amount2 != 0 && w2)
 	{
 		Real width = w2->get_point().mag();
-
 		width += amount2;
 		w2->set_point(Vector(width,0));
-
 		//log in the list of changes...
 		//to truly be changed after everything is said and done
 		changetable[w2] = width;
+	}
+	///////
+	// Change the widths of the affected BLine of Advance Outlines
+	// Parents value nodes of the value node of the p1 and p2 ducks.
+	synfig::ValueNode::Handle p1pvn(p1->get_value_desc().get_parent_value_node());
+	synfig::ValueNode::Handle p2pvn(p2->get_value_desc().get_parent_value_node());
+	// if the bezier position ducks are linkable valuenode children
+	if(p1pvn && p2pvn && p1pvn==p2pvn)
+	{
+		// we guess that the parent value node is a bline value node
+		synfig::ValueNode::Handle bezier_bline=p1pvn;
+		// Positions of the points on the bline
+		Real p1_pos, bezier_size;
+		// index of the first point on the bezier
+		int p1_i;
+		// retrieve the number of blinepoints on the bline and the loop of the bline
+		int bline_size((*(bezier_bline))(get_canvas()->get_time()).get_list().size());
+		bool loop((*(bezier_bline))(get_canvas()->get_time()).get_loop());
+		p1_i = p1->get_value_desc().get_index();
+		// bezier size depends on loop status
+		bezier_size = 1.0/(loop?bline_size:(bline_size-1));
+		if(loop)
+		{
+			// if looped and the we are in the first bezier
+			if(p1_i == (bline_size -1))
+				p1_i = 0;
+			else
+				p1_i++;
+		}
+		// the position is based on the index and the bezier size
+		p1_pos = Real(p1_i)*bezier_size;
+		// find all the widthpoints
+		const DuckList dl = get_work_area()->get_duck_list();
+		DuckList::const_iterator i = dl.begin();
+		for(;i != dl.end(); ++i)
+		{
+			handle<Duck> iduck(*i);
+			handle<Duck> iduck_origin(iduck->get_origin_duck());
+			// If we find a width duck
+			if(iduck->get_type() == Duck::TYPE_WIDTH && iduck_origin)
+			{
+				// if it has an origin duck
+				synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
+				ValueNode::Handle wpvn(ValueNode::Handle::cast_dynamic(origin_value_desc.get_value_node()));
+				// if the origin duck is widthpoint type and it belongs to a list
+				if(wpvn && wpvn->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
+				{
+					// and if the width point list that it belongs to...
+					ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
+					if(wplist)
+					{
+						// ... has a bline valid and is the same as the bline
+						// we found for the bezier previously catched...
+						ValueNode::Handle bline(wplist->get_bline());
+						if(bline && (bline==bezier_bline))
+						{
+							// ... then update the values properly
+							synfig::WidthPoint wpoint((*wpvn)(get_canvas()->get_time()));
+							Real pos(wpoint.get_norm_position(wplist->get_loop()));
+							Real tpos(p1_pos+t*bezier_size);
+							// The factor of 20 can be modified by the user as a preference.
+							// The higher value the more local effect has the
+							// Width Tool around the widths points.
+							Real amount(mult*exp(-20.0*(fabs(pos-tpos)+0.000001)));
+							amount*=invert?-1.0:1.0;
+							Real width = iduck->get_point().mag();
+							width += amount;
+							iduck->set_point(Vector(width,0));
+							changetable[iduck] = width;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -505,27 +526,18 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		}
 		clocktime.reset();
 
-		//make way for new ducks
-		//get_work_area()->clear_ducks();
-
-		//update positions
-		//mouse_pos = event.pos;
-
 		center->set_point(event.pos);
 		if(!added)get_work_area()->add_duck(center);
 
 		radius->set_scalar(rad);
 		if(!added)get_work_area()->add_duck(radius);
-
 		//the other duck is at the current duck
 		closestpoint->set_point(event.pos);
 		if(!added)get_work_area()->add_duck(closestpoint);
-
 		//get the closest curve...
 		handle<Duckmatic::Bezier>	c;
 		if(event.pressure >= threshold)
 			c = get_work_area()->find_bezier(event.pos,scale*8,rad,&t);
-
 		//run algorithm on event.pos to get 2nd placement
 		if(!c.empty())
 		{
@@ -536,30 +548,23 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			curve[1] = c->c1->get_trans_point();
 			curve[2] = c->c2->get_trans_point();
 			curve[3] = c->p2->get_trans_point();
-
+			curve.sync();
 			p = curve(t);
 			rsq = (p-event.pos).mag_squared();
-
 			const Real r = rad*rad;
-
 			if(rsq < r)
 			{
-				closestpoint->set_point(curve(t));
-
+				closestpoint->set_point(p);
 				//adjust the width...
 				//squared falloff for radius... [0,1]
-
 				Real ri = (r - rsq)/r;
 				AdjustWidth(c,t,ri*event.pressure*get_delta()*dtime,invert);
 			}
 		}
-
 		//the points have been added
 		added = true;
-
 		//draw where it is yo!
 		get_work_area()->queue_draw();
-
 		return Smach::RESULT_ACCEPT;
 	}
 
@@ -572,16 +577,13 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			get_work_area()->erase_duck(closestpoint);
 			added = false;
 		}
-
 		//Affect the width changes here...
 		map<handle<Duck>,Real>::iterator i = changetable.begin();
-
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width"));
 		for(; i != changetable.end(); ++i)
 		{
 			//for each duck modify IT!!!
 			ValueDesc desc = i->first->get_value_desc();
-
 			if(	desc.get_value_type() == ValueBase::TYPE_REAL )
 			{
 				Action::Handle action(Action::create("ValueDescSet"));
@@ -604,9 +606,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		}
 
 		changetable.clear();
-
 		get_work_area()->queue_draw();
-
 		return Smach::RESULT_ACCEPT;
 	}
 

@@ -166,6 +166,8 @@ ffmpeg_trgt::init()
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
+	// this should avoid conflicts with locale settings
+	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 

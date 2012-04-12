@@ -29,7 +29,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/window.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 
@@ -48,7 +48,6 @@ class Widget_WaypointModel;
 
 class Dialog_Keyframe : public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
 	synfig::Keyframe keyframe_;

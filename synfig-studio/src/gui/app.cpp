@@ -8,8 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008 Gerald Young
-**  Copyright (c) 2008 Carlos López
-**	Copyright (c) 2009 Nikita Kitaev
+**  Copyright (c) 2008, 2010, 2011 Carlos López
+**	Copyright (c) 2009, 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -277,7 +277,7 @@ bool studio::App::use_colorspace_gamma=true;
 	bool studio::App::single_threaded=false;
 	#endif // WIN32
 #endif  // SINGLE THREADED
-bool studio::App::restrict_radius_ducks=false;
+bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
@@ -290,6 +290,7 @@ String studio::App::browser_command("open"); // MacOS only
 #else
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
+String studio::App::sequence_separator(".");
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -588,6 +589,11 @@ public:
 				value=strprintf("%s",App::predefined_fps.c_str());
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				value=App::sequence_separator;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -703,6 +709,10 @@ public:
 				App::predefined_fps=value;
 				return true;
 			}
+			if(key=="sequence_separator")
+			{
+				App::sequence_separator=value;
+			}
 		}
 		catch(...)
 		{
@@ -732,6 +742,7 @@ public:
 		ret.push_back("predefined_size");
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
+		ret.push_back("sequence_separator");
 		return ret;
 	}
 };
@@ -815,6 +826,7 @@ init_ui_manager()
 	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Ducks"));
 	DEFINE_ACTION("mask-width-ducks", _("Show Width Ducks"));
 	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Ducks"));
+	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Ducks"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -918,6 +930,7 @@ init_ui_manager()
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
+"			<menuitem action='mask-widthpoint-position-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -1085,6 +1098,7 @@ init_ui_manager()
 	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
 	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
@@ -1838,7 +1852,7 @@ App::reset_initial_preferences()
 #ifdef SINGLE_THREADED
 	synfigapp::Main::settings().set_value("pref.single_threaded","1");
 #endif
-	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
@@ -1846,7 +1860,7 @@ App::reset_initial_preferences()
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
-
+	synfigapp::Main::settings().set_value("sequence_separator", ".");
 }
 
 bool
@@ -2106,7 +2120,13 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-				.add_enum_value(synfig::RELEASE_VERSION_0_62_02, "0.62.02", strprintf("0.62.02 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_05, "0.63.05", strprintf("0.63.05 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_04, "0.63.04", "0.63.04")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_03, "0.63.03", "0.63.03")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_02, "0.63.02", "0.63.02")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_01, "0.63.01", "0.63.01")
+				.add_enum_value(synfig::RELEASE_VERSION_0_63_00, "0.63.00", "0.63.00")
+				.add_enum_value(synfig::RELEASE_VERSION_0_62_02, "0.62.02", "0.62.02")
 				.add_enum_value(synfig::RELEASE_VERSION_0_62_01, "0.62.01", "0.62.01")
 				.add_enum_value(synfig::RELEASE_VERSION_0_62_00, "0.62.00", "0.61.00")
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_09, "0.61.09", "0.61.09")
@@ -2160,18 +2180,28 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 void
 App::dialog_error_blocking(const std::string &title, const std::string &message)
 {
-	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_title(title);
-	dialog.show();
-	dialog.run();
+	dialog_warning_blocking(title, message, Gtk::Stock::DIALOG_ERROR);
 }
 
 void
-App::dialog_warning_blocking(const std::string &title, const std::string &message)
+App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
 {
-	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_title(title);
-	dialog.show();
+	Gtk::Dialog dialog(title, true, true);
+	Gtk::ScrolledWindow scrolled;
+	Gtk::Label label(message, 0, 0);
+	label.set_line_wrap();
+	scrolled.add(label);
+	scrolled.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	scrolled.set_shadow_type(Gtk::SHADOW_NONE);
+	Gtk::Table table(2, 2);
+	table.set_col_spacings(10);
+	Gtk::Image image(stock_id, Gtk::IconSize(Gtk::ICON_SIZE_DIALOG));
+	table.attach(image, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 1, 1);
+	table.attach(scrolled, 1, 2, 0, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+	dialog.get_vbox()->pack_start(table);
+	dialog.add_button(Gtk::StockID("gtk-close"),1);
+	dialog.set_default_size(450, 200);
+	dialog.show_all();
 	dialog.run();
 }
 
@@ -2604,4 +2634,19 @@ synfig::String
 studio::App::get_base_path()
 {
 	return app_base_path_;
+}
+
+void
+studio::App::setup_changed()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
+	{
+		std::list< etl::handle<synfigapp::CanvasInterface> >::iterator citer;
+		std::list< etl::handle<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
+		for(citer=cilist.begin();citer!=cilist.end();++citer)
+			{
+				(*citer)->signal_rend_desc_changed()();
+			}
+	}
 }

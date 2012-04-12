@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/checkbutton.h>
 #include "duckmatic.h"
@@ -49,8 +49,6 @@ namespace studio
 
 class ResolutionDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::Button *increase_resolution;
 	Gtk::Button *decrease_resolution;
 	Gtk::CheckButton *use_low_resolution;

@@ -9,7 +9,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008 Paul Wise
 **  Copyright (c) 2009 Gerco Ballintijn
-**	Copyright (c) 2009 Carlos López
+**	Copyright (c) 2009, 2011 Carlos López
 **	Copyright (c) 2009 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
@@ -207,6 +207,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_geometry_checkerboard,"layer_geometry_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle,"layer_geometry_circle_icon."IMAGE_EXT,_("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline,"layer_geometry_outline_icon."IMAGE_EXT,_("Outline Layer"));
+	INIT_STOCK_ICON(layer_geometry_advanced_outline,"layer_geometry_advanced_outline_icon."IMAGE_EXT,_("Advanced Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_polygon,"layer_geometry_polygon_icon."IMAGE_EXT,_("Polygon Layer"));
 	INIT_STOCK_ICON(layer_geometry_rectangle,"layer_geometry_rectangle_icon."IMAGE_EXT,_("Rectangle Layer"));
 	INIT_STOCK_ICON(layer_geometry_region,"layer_geometry_region_icon."IMAGE_EXT,_("Region Layer"));
@@ -234,7 +235,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// Transform Layers
 	INIT_STOCK_ICON(layer_transform_rotate,"layer_transform_rotate_icon."IMAGE_EXT,_("Rotate Layer"));
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
-	INIT_STOCK_ICON(layer_transform_zoom,"layer_transform_zoom_icon."IMAGE_EXT,_("Zoom Layer"));
+	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -262,23 +263,38 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
 	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
 
-	INIT_STOCK_ICON(keyframe_lock_all,"keyframe_lock_all."IMAGE_EXT,_("All Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_past,"keyframe_lock_past."IMAGE_EXT,_("Past Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_future,"keyframe_lock_future."IMAGE_EXT,_("Future Keyframes Locked"));
-	INIT_STOCK_ICON(keyframe_lock_none,"keyframe_lock_none."IMAGE_EXT,_("No Keyframes Locked"));
+	INIT_STOCK_ICON(keyframe_lock_past_off,"keyframe_lock_past_off_icon."IMAGE_EXT,_("Past keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_past_on,"keyframe_lock_past_on_icon."IMAGE_EXT,_("Past keyframes locked"));
+	INIT_STOCK_ICON(keyframe_lock_future_off,"keyframe_lock_future_off_icon."IMAGE_EXT,_("Future keyframes unlocked"));
+	INIT_STOCK_ICON(keyframe_lock_future_on,"keyframe_lock_future_on_icon."IMAGE_EXT,_("Future keyframes locked"));
+
+	INIT_STOCK_ICON(animate_mode_off,"animate_mode_off_icon."IMAGE_EXT,_("Animate Mode Off"));
+	INIT_STOCK_ICON(animate_mode_on,"animate_mode_on_icon."IMAGE_EXT,_("Animate Mode On"));
 
 	INIT_STOCK_ICON(set_outline_color,"set_outline_color."IMAGE_EXT,_("Set as Outline"));
 	INIT_STOCK_ICON(set_fill_color,"set_fill_color."IMAGE_EXT,_("Set as Fill"));
 
-	INIT_STOCK_ICON(seek_begin,"seek_begin."IMAGE_EXT,_("Seek to Begin"));
-	INIT_STOCK_ICON(seek_prev_frame,"seek_prev_frame."IMAGE_EXT,_("Previous Frame"));
-	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
-	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
+	INIT_STOCK_ICON(animate_seek_begin,"animate_seek_begin_icon."IMAGE_EXT,_("Seek to begin"));
+	INIT_STOCK_ICON(animate_seek_prev_keyframe,"animate_seek_prev_keyframe_icon."IMAGE_EXT,_("Previous keyframe"));
+	INIT_STOCK_ICON(animate_seek_prev_frame,"animate_seek_prev_frame_icon."IMAGE_EXT,_("Previous frame"));
+	INIT_STOCK_ICON(animate_play,"animate_play_icon."IMAGE_EXT,_("Play"));
+	INIT_STOCK_ICON(animate_stop,"animate_stop_icon."IMAGE_EXT,_("Stop"));
+	INIT_STOCK_ICON(animate_pause,"animate_pause_icon."IMAGE_EXT,_("Pause"));
+	INIT_STOCK_ICON(animate_seek_next_frame,"animate_seek_next_frame_icon."IMAGE_EXT,_("Next frame"));
+	INIT_STOCK_ICON(animate_seek_next_keyframe,"animate_seek_next_keyframe_icon."IMAGE_EXT,_("Next keyframe"));
+	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
+	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
+
 	INIT_STOCK_ICON(add_to_group,"action_add_to_group_icon."IMAGE_EXT,_("Add Layer to Group"));
 	INIT_STOCK_ICON(remove_from_group,"action_remove_from_group_icon."IMAGE_EXT,_("Remove Layer from Group"));
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));
+	INIT_STOCK_ICON(flat_interpolation,"action_flat_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Flat"));
+	INIT_STOCK_ICON(interpolate_interpolation,"action_interpolate_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Interpolate"));
+	INIT_STOCK_ICON(peak_interpolation,"action_peak_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Peak"));
+	INIT_STOCK_ICON(rounded_interpolation,"action_rounded_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Rounded"));
+	INIT_STOCK_ICON(squared_interpolation,"action_squared_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Squared"));
 
 	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position ducks"));
 	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex ducks"));
@@ -297,6 +313,12 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	INIT_STOCK_ICON(preview_options,"preview_options_icon."IMAGE_EXT,_("Preview Options Dialog"));
 	INIT_STOCK_ICON(render_options,"render_options_icon."IMAGE_EXT,_("Render Options Dialog"));
+
+	INIT_STOCK_ICON(interpolation_type_tcb,"interpolation_type_tcb_icon."IMAGE_EXT,_("TCB interpolation"));
+	INIT_STOCK_ICON(interpolation_type_ease,"interpolation_type_ease_icon."IMAGE_EXT,_("Ease In/Out interpolation"));
+	INIT_STOCK_ICON(interpolation_type_const,"interpolation_type_const_icon."IMAGE_EXT,_("Const interpolation"));
+	INIT_STOCK_ICON(interpolation_type_linear,"interpolation_type_linear_icon."IMAGE_EXT,_("Linear interpolation"));
+	INIT_STOCK_ICON(interpolation_type_clamped,"interpolation_type_clamped_icon."IMAGE_EXT,_("Clamped interpolation"));
 
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
@@ -529,6 +551,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_geometry_circle");
 	else if(layer=="outline")
 		return Gtk::StockID("synfig-layer_geometry_outline");
+	else if(layer=="advanced_outline")
+		return Gtk::StockID("synfig-layer_geometry_advanced_outline");
 	else if(layer=="polygon")
 		return Gtk::StockID("synfig-layer_geometry_polygon");
 	else if(layer=="rectangle")
@@ -580,7 +604,7 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="translate")
 		return Gtk::StockID("synfig-layer_transform_translate");
 	else if(layer=="zoom")
-		return Gtk::StockID("synfig-layer_transform_zoom");
+		return Gtk::StockID("synfig-layer_transform_scale");
 	else
 		return Gtk::StockID("synfig-layer");
 }
@@ -590,3 +614,4 @@ studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
 	return Gtk::Button().render_icon(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
+

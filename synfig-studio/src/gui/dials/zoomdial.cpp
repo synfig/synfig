@@ -70,7 +70,7 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 	Gtk::Button *button = manage(new class Gtk::Button());
 	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
 	button->add(*icon);
-	tooltips.set_tip(*button, tooltip);
+	button->set_tooltip_text(tooltip);
 	icon->set_padding(0, 0);
 	icon->show();
 	button->set_relief(Gtk::RELIEF_NONE);

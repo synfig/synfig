@@ -52,6 +52,7 @@ private:
 	synfig::String filename;
 	synfig::Color *color_buffer;
 	unsigned char *buffer;
+	synfig::String sequence_separator;
 public:
 	ppm(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~ppm();

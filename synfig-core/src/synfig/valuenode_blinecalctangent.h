@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -44,6 +45,7 @@ class ValueNode_BLineCalcTangent : public LinkableValueNode
 	ValueNode::RHandle offset_;
 	ValueNode::RHandle scale_;
 	ValueNode::RHandle fixed_length_;
+	ValueNode::RHandle homogeneous_;
 
 	ValueNode_BLineCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 

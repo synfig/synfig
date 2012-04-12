@@ -58,7 +58,7 @@ using namespace studio;
 Widget_Filename::Widget_Filename()
 {
 	entry_filename=manage(new Gtk::Entry());
-	label_find= manage(new Gtk::Label(_("Find")));
+	label_find= manage(new Gtk::Label(" . . . "));
 	button_choose=manage(new Gtk::Button());
 	Pango::AttrList attr_list;
 	{
@@ -72,7 +72,7 @@ Widget_Filename::Widget_Filename()
 	button_choose->add(*label_find);
 
 	pack_start(*entry_filename);
-	pack_start(*button_choose);
+	pack_start(*button_choose, false, false);
 	entry_filename->show();
 	button_choose->show();
 	label_find->show();

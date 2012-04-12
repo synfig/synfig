@@ -63,6 +63,8 @@ extern "C" { int _isnan(double x); }
 inline bool isnan(double x) { return x != x; }
 inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
+#else
+#define isnan std::isnan
 #endif
 
 namespace synfig {
@@ -786,7 +788,7 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 	if(FLAGS(pf,PF_ZA|PF_A_START|PF_Z_START))
 	{
 		if(FLAGS(pf,PF_Z_START))
-			*out++/*=(unsigned char)(color.GetZ()*255.0f)*/;
+			out++;
 		if(FLAGS(pf,PF_A_START))
 			*out++=static_cast<unsigned char>(alpha);
 	}
@@ -795,8 +797,7 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 		if(FLAGS(pf,PF_A_START))
 			*out++=static_cast<unsigned char>(alpha);
 		if(FLAGS(pf,PF_Z_START))
-			*out++/*=(unsigned char)(color.GetZ()*255.0f)*/;
-
+			out++;
 	}
 
 	if(FLAGS(pf,PF_GRAY))
@@ -820,14 +821,14 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 	if(FLAGS(pf,PF_ZA))
 	{
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))
-			out++;//*out++=(unsigned char)(color.GetZ()*255.0f);
+			out++;
 		if(!FLAGS(pf,PF_A_START) && FLAGS(pf,PF_A))
 			*out++=static_cast<unsigned char>(alpha);
 	}
 	else
 	{
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))
-			out++;//*out++=(unsigned char)(color.GetZ()*255.0f);
+			out++;
 		if(!FLAGS(pf,PF_A_START) && FLAGS(pf,PF_A))
 			*out++=static_cast<unsigned char>(alpha);
 	}
@@ -848,7 +849,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 	if(FLAGS(pf,PF_ZA|PF_A_START|PF_Z_START))
 	{
 		if(FLAGS(pf,PF_Z_START))
-			out++;//color.SetZ((Color::value_type)*out++/255.0f);
+			out++;
 		if(FLAGS(pf,PF_A_START))
 			color.set_a((float)*out++/255);
 	}
@@ -857,7 +858,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 		if(FLAGS(pf,PF_A_START))
 			color.set_a((float)*out++/255);
 		if(FLAGS(pf,PF_Z_START))
-			out++;//color.SetZ((Color::value_type)*out++/255.0f);
+			out++;
 	}
 
 	if(FLAGS(pf,PF_GRAY))
@@ -881,7 +882,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 	if(FLAGS(pf,PF_ZA))
 	{
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))
-			out++;//color.SetZ((Color::value_type)*out++/255.0f);
+			out++;
 		if(!FLAGS(pf,PF_A_START) && FLAGS(pf,PF_A))
 			color.set_a((float)*out++/255);
 	}
@@ -890,7 +891,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 		if(!FLAGS(pf,PF_A_START) && FLAGS(pf,PF_A))
 			color.set_a((float)*out++/255);
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))
-			out++;//color.SetZ((Color::value_type)*out++/255.0f);
+			out++;
 	}
 	return out;
 }

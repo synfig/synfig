@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -72,9 +73,16 @@ SuperSample::SuperSample():width(2),height(2)
 bool
 SuperSample::set_param(const String & param, const ValueBase &value)
 {
-
-	IMPORT(width);
-	IMPORT(height);
+	IMPORT_PLUS(width,
+		if(value.get(int()) < 1) width = 1;
+		else width=value.get(int());
+		return true;
+		)
+	IMPORT_PLUS(height,
+		if(value.get(int()) < 1) height = 1;
+		else height=value.get(int());
+		return true;
+		)
 	IMPORT(scanline);
 	IMPORT(alpha_aware);
 

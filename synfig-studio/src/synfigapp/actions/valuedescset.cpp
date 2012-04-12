@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,6 +39,7 @@
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
@@ -163,73 +165,57 @@ Action::ValueDescSet::prepare()
 	if(	value_desc.parent_is_value_node() &&
 		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
 		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2") &&
-		//(value_desc.get_index()==4 || value_desc.get_index()==5) &&
 		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
 	{
 		{
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 			assert(parent_value_node);
-
 			Vector t1((*parent_value_node->get_link("t1"))(time));
 			Vector t2((*parent_value_node->get_link("t2"))(time));
 		}
-
-		//if (value_desc.get_index()==4) {
 		if (value_desc.get_name()=="t1") {
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-
 			assert(parent_value_node);
-
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",value);
 			action->set_param("value_desc",ValueDesc(parent_value_node, parent_value_node->get_link_index_from_name("t2")));
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 		}
 	}
-
 	// If we are a reference value node, then
 	// we need to distribute the changes to the
 	// referenced value node
 	if(value_desc.is_value_node() && ValueNode_Reference::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueDesc reference_value_desc(ValueNode_Reference::Handle::cast_dynamic(value_desc.get_value_node()),0);
-
 		Action::Handle action(Action::create("ValueDescSet"));
-
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",value);
 		action->set_param("value_desc",reference_value_desc);
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
-
 		return;
 	}
-
 	// If we are a composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
-	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	// except if we are TYPE WIDTHPOINT which is handled individually
+	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT)
 	{
 		ValueBase components[6];
 		int n_components(0);
@@ -255,47 +241,38 @@ Action::ValueDescSet::prepare()
 			n_components=4;
 			break;
 		case ValueBase::TYPE_BLINEPOINT:
-		{
-			BLinePoint bline_point(value);
-			components[0]=bline_point.get_vertex();
-			components[1]=bline_point.get_width();
-			components[2]=bline_point.get_origin();
-			components[3]=bline_point.get_split_tangent_flag();
-			components[4]=bline_point.get_tangent1();
-			components[5]=bline_point.get_tangent2();
-			n_components=6;
-			break;
-		}
+			{
+				BLinePoint bline_point(value);
+				components[0]=bline_point.get_vertex();
+				components[1]=bline_point.get_width();
+				components[2]=bline_point.get_origin();
+				components[3]=bline_point.get_split_tangent_flag();
+				components[4]=bline_point.get_tangent1();
+				components[5]=bline_point.get_tangent2();
+				n_components=6;
+				break;
+			}
 		default:
 			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
 		}
-
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
-
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
 			action->set_param("value_desc",component_value_desc);
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 		}
-
 		return;
 	}
-
-
 	// If we are a RADIAL composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
@@ -332,24 +309,18 @@ Action::ValueDescSet::prepare()
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(ValueNode_RadialComposite::Handle::cast_dynamic(value_desc.get_value_node()),i);
-
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
 			action->set_param("value_desc",component_value_desc);
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 		}
-
 		return;
 	}
 
@@ -364,91 +335,67 @@ Action::ValueDescSet::prepare()
 			synfig::warning(_("Attempt to edit scale ValueNode with a scale factor of zero."));
 			return;
 		}
-
 		ValueBase new_value;
-
 		if (value.get_type() == ValueBase::TYPE_ANGLE)
 			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
-		else if (value.get_type() == ValueBase::TYPE_REAL)
-			throw Error(_("Inverse manipulation of real scale values not implemented in core."));
-		else
+		else if(value.get_type() == ValueBase::TYPE_VECTOR)
 			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
-
+		else
+			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
-
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(scale_value_node, scale_value_node->get_link_index_from_name("link")));
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
 		return;
 	}
-
     // Range: disallow values outside the range
 	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueBase new_value;
-
 		if (value.get_type() == ValueBase::TYPE_ANGLE)
 			new_value = range_value_node->get_inverse(time, value.get(Angle()));
-		else if (value.get_type() == ValueBase::TYPE_REAL)
-			throw Error(_("Inverse manipulation of real range values not implemented in core."));
 		else
-			new_value = range_value_node->get_inverse(time, value.get(Vector()));
-
+			throw Error(_("Inverse manipulation of %s range values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
-
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
 		return;
 	}
-
 	// BlineCalcWidth: modify the scale value node
 	// so that the target width is achieved
 	if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		Real old_width((*bline_width)(time).get(Real()));
 		Real scale((*(bline_width->get_link("scale")))(time).get(Real()));
-
 		ValueBase new_width(value.get(Real()) * scale / old_width);
-
 		Action::Handle action(Action::create("ValueDescSet"));
-
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",new_width);
 		action->set_param("value_desc",ValueDesc(bline_width, bline_width->get_link_index_from_name("scale")));
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
 		return;
 	}
-
 	// BLineCalcVertex: snap the point to the nearest
 	// allowed position.
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -456,40 +403,38 @@ Action::ValueDescSet::prepare()
 		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
 		Real radius = 0.0;
 		ValueBase new_amount;
-		if (((*(bline_vertex->get_link("loop")))(time).get(bool()))){
+		if (((*(bline_vertex->get_link("loop")))(time).get(bool())))
+		{
 			// The bline is looped. Animation may require an amount parameter
 			// outside the range of 0-1, so make sure that the amount does
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
+
 			Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
-							//fmod is called twice to avoid negative values
-			if (difference > 0.5) difference=difference-1.0;
-
+			//fmod is called twice to avoid negative values
+			if (difference > 0.5)
+				difference=difference-1.0;
 			new_amount = amount_old+difference;
-		} else {
-			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
 		}
-
+		else
+			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+		if(homogeneous)
+			new_amount=std_to_hom((*bline)(time), new_amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 		Action::Handle action(Action::create("ValueDescSet"));
-
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",new_amount);
 		action->set_param("value_desc",ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
 		return;
 	}
-
-
 	// BLineCalcTangent: adjust scale and offset
 	// to achieve the desired tangent
 	if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -497,7 +442,6 @@ Action::ValueDescSet::prepare()
 		ValueBase new_scale;
 		ValueDesc scale_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("scale"));
 		ValueDesc offset_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("offset"));
-
 		switch(value_desc.get_value_type())
 		{
 		case ValueBase::TYPE_REAL:
@@ -506,7 +450,6 @@ Action::ValueDescSet::prepare()
 			Real new_length = value.get(Vector()).mag();
 			Real scale((*(bline_tangent->get_link("scale")))(time).get(Real()));
 			bool fixed_length((*(bline_tangent->get_link("fixed_length")))(time).get(bool()));
-
 			if (fixed_length)
 			{
 				new_scale = new_length;
@@ -516,7 +459,6 @@ Action::ValueDescSet::prepare()
 				return;
 			new_scale = new_length * scale / old_length;
 		}
-
 		case ValueBase::TYPE_VECTOR:
 		{
 			Vector old_tangent = (*bline_tangent)(time).get(Vector());
@@ -535,80 +477,142 @@ Action::ValueDescSet::prepare()
 			if (old_length != 0)
 			{
 				new_scale = new_length * scale / old_length;
-
-
 				Action::Handle action(Action::create("ValueDescSet"));
-
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
 				action->set_param("value_desc",offset_value_desc);
-
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-
 				add_action(action);
 			}
 		}
 		break;
-
 		case ValueBase::TYPE_ANGLE:
 		{
 			Angle old_angle = (*bline_tangent)(time).get(Angle());
-			Angle new_angle = value.get(Vector()).angle();
+			Angle new_angle = value.get(Angle());
 			Angle old_offset((*(bline_tangent->get_link("offset")))(time).get(Angle()));
-
-
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
 			action->set_param("value_desc",offset_value_desc);
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 			return;
 		}
-
 		default:
 			break;
 		}
-
 		if (new_scale)
 		{
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",new_scale);
 			action->set_param("value_desc",scale_value_desc);
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 		}
 		return;
 	}
-	
+	// WidthPoint Composite: adjust the width point position
+	// to achieve the desired point on bline
+	// (Code copied from BLineCalcVertex above)
+	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_LIST)
+	{
+		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == ValueBase::TYPE_WIDTHPOINT)
+		{
+			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			if(wplist)
+			{
+				bool wplistloop(wplist->get_loop());
+				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+				ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+				if(bline && wpoint_composite)
+				{
+					bool blineloop(bline->get_loop());
+					// Retrieve the homogeneous layer parameter
+					bool homogeneous=false;
+					Layer::Handle layer_parent;
+					std::set<Node*>::iterator iter;
+					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+						{
+							Layer::Handle layer;
+							layer=Layer::Handle::cast_dynamic(*iter);
+							if(layer && layer->get_name() == "advanced_outline")
+							{
+								homogeneous=layer->get_param("homogeneous").get(bool());
+								break;
+							}
+						}
+					Real radius = 0.0;
+					ValueBase new_amount;
+					WidthPoint wp((*wpoint_composite)(time));
+					if (wplistloop)
+					{
+						// The wplist is looped. Animation may require a position parameter
+						// outside the range of 0-1, so make sure that the position doesn't
+						// change drastically.
+						Real amount_old(wp.get_norm_position(wplistloop));
+						Real amount_old_b(wp.get_bound_position(wplistloop));
+						// If it is homogeneous then convert it to standard
+						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
+						// grab a new position given by duck's position on the bline
+						Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, blineloop);
+						// calculate the difference between old and new amounts
+						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+						//fmod is called twice to avoid negative values
+						if (difference > 0.5)
+							difference=difference-1.0;
+						// calculate a new value for the position
+						new_amount=amount_old+difference;
+						// restore the homogeneous value if needed
+						new_amount = homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						// this is the difference between the new amount and the old amount inside the boundaries
+						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
+						// add the new diff to the current amount
+						new_amount = wp.get_position() + bound_diff;
+					}
+					else
+					{
+						// grab a new amount given by duck's position on the bline
+						new_amount = synfig::find_closest_point((*bline)(time), value , radius, blineloop);
+						// if it is homogeneous then convert to it
+						new_amount=homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						// convert the value inside the boundaries
+						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
+					}
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",new_amount);
+					action->set_param("value_desc",ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+					return;
+				}
+			}
+		}
+	}
+
 	// end reverse manipulations
-
-
 
 	// If we are merging the tangents of a BLinePoint,
 	// we must also set the second tangent for things
@@ -619,96 +623,60 @@ Action::ValueDescSet::prepare()
 	{
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-
 		assert(parent_value_node);
-
 		// are we splitting or merging the tangents?
 	    if (value.get(bool()))
 	    {
 			// we are splitting tangents
-
 			Action::Handle action(Action::create("ValueDescSet"));
-
 			if(!action)
 				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
 			action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action(action);
 	    }
 	    else
 	    {
 			// we are merging tangents
-
 			// the merged tangent should be the average of the 2 tangents we're merging
 			ValueBase average(((Vector)((*parent_value_node->get_link("t1"))(time)) +
 							   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
-
 			{
 				Action::Handle action(Action::create("ValueDescSet"));
-
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",average);
 				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
-
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-
 				add_action(action);
 			}
-
 			{
 				Action::Handle action(Action::create("ValueDescSet"));
-
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
-
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",average);
 				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
-
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-
 				add_action(action);
 			}
 	    }
 
 	}
-
-/*	DEBUGPOINT();
-	if(	value_desc.parent_is_value_node())
-	{
-		DEBUGPOINT();
-		if(value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT)
-		{
-			DEBUGPOINT();
-			if(value_desc.get_index()==4)
-			{
-				DEBUGPOINT();
-				if((*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
-				{
-					DEBUGPOINT();
-				}
-			}
-		}
-	}
-*/
-
+	// if the value desc is layer param or Value Node Const then use local_value
+	// to store the static option to eventually avoid the animation mode.
 	ValueBase local_value;
 	local_value.set_static(false);
 		if(!value_desc.is_value_node() || ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -718,12 +686,35 @@ Action::ValueDescSet::prepare()
 			else
 				local_value=value_desc.get_value();
 		}
+	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
+	// then we are changing the value of a widthpoint boundary.
+	// It is needed to check that we aren't doing the boundary range zero
+
+	if(value_desc.parent_is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+	{
+		ValueNode_Composite::Handle parent_value_node;
+		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+		assert(parent_value_node);
+		int i=value_desc.get_index();
+		if(parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT && (i==4 || i==5))
+		{
+			ValueNode::Handle low(parent_value_node->get_link("lower_bound"));
+			ValueNode::Handle upp(parent_value_node->get_link("upper_bound"));
+			Real new_value(value.get(Real()));
+			Real lower = (*low)(Time(0.0)).get(Real());
+			Real upper = (*upp)(Time(0.0)).get(Real());
+			if( (i==4 && new_value > (upper- 0.00000001))
+			||  (i==5 && new_value < (lower+ 0.00000001)) )
+			{
+				throw Error(_("It is forbidden to set lower boundary equal or bigger than upper boundary"));
+				return;
+			}
+		}
+	}
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE && !local_value.get_static())
 	{
-
 		ValueNode_Animated::Handle& value_node(value_node_animated);
-
 		// If this value isn't a ValueNode_Animated, but
 		// it is somewhat constant, then go ahead and convert
 		// it to a ValueNode_Animated.
@@ -734,12 +725,13 @@ Action::ValueDescSet::prepare()
 				value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
 			else
 				value=value_desc.get_value();
-
 			if(!value_node)value_node=ValueNode_Animated::create(value,time);
-			//if(!value_node)value_node=ValueNode_Animated::create(value.get_type());
-
+			// Be sure that the newly created waypoint is set with the default
+			// interpolations.
+			synfig::ValueNode_Animated::WaypointList::iterator iter(value_node->find(time));
+			iter->set_before(synfigapp::Main::get_interpolation());
+			iter->set_after(synfigapp::Main::get_interpolation());
 			Action::Handle action;
-
 			if(!value_desc.is_value_node())
 			{
 				action=(ValueDescConnect::create());
@@ -752,46 +744,44 @@ Action::ValueDescSet::prepare()
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
-
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action_front(action);
 		}
 		else
 		{
 			value_node=value_node.cast_dynamic(value_desc.get_value_node());
 		}
-
 		if(!value_node)
 			throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
-
+		synfig::ValueNode_Animated::WaypointList::iterator iter;
+		Waypoint waypoint;
 		Action::Handle action(WaypointSetSmart::create());
-
-		//Waypoint waypoint(value,time);
-
-		Waypoint waypoint(value_node->new_waypoint_at_time(time));
+		try
+		{
+			iter=value_node->find(time);
+			// value_node->find throws an exception
+			// when no waypoint is found at given time
+			waypoint=*iter;
+		}catch(Exception::NotFound)
+		{
+			waypoint=value_node->new_waypoint_at_time(time);
+			waypoint.set_before(synfigapp::Main::get_interpolation());
+			waypoint.set_after(synfigapp::Main::get_interpolation());
+		}
 		waypoint.set_value(value);
-
-		waypoint.set_before(synfigapp::Main::get_interpolation());
-		waypoint.set_after(synfigapp::Main::get_interpolation());
-
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle(value_node));
 		action->set_param("waypoint",waypoint);
-
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-
 		add_action(action);
-
 		return;
 	}
-	else
+	else // Not in animation mode
 	{
 		if(value_desc.is_value_node())
 		{
@@ -804,10 +794,8 @@ Action::ValueDescSet::prepare()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",value_desc.get_value_node());
 				action->set_param("new_value",value);
-
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-
 				add_action_front(action);
 				return;
 			}
@@ -828,14 +816,11 @@ Action::ValueDescSet::prepare()
 			layer_param_set->set_param("layer",value_desc.get_layer());
 			layer_param_set->set_param("param",value_desc.get_param_name());
 			layer_param_set->set_param("new_value",value);
-
 			if(!layer_param_set->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-
 			add_action_front(layer_param_set);
 			return;
 		}
-
 		throw Error(_("Unsupported ValueDesc type"));
 	}
 }

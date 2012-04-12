@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -171,7 +172,7 @@ Layer_Polygon::get_param_vocab()const
 	Layer::Vocab ret(Layer_Shape::get_param_vocab());
 
 	ret.push_back(ParamDesc("vector_list")
-		.set_local_name(_("Vector List"))
+		.set_local_name(_("Vertices List"))
 		.set_description(_("Define the corners of the polygon"))
 		.set_origin("origin")
 	);

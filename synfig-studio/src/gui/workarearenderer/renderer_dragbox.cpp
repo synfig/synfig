@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2011 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -90,7 +91,6 @@ Renderer_Dragbox::render_vfunc(
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);

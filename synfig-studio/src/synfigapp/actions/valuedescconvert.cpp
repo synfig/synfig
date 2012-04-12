@@ -108,7 +108,24 @@ Action::ValueDescConvert::get_param_vocab()
 bool
 Action::ValueDescConvert::is_candidate(const ParamList &x)
 {
-	return candidate_check(get_param_vocab(),x);
+	if(candidate_check(get_param_vocab(),x))
+	{
+		ValueDesc value_desc=x.find("value_desc")->second.get_value_desc();
+		if(!value_desc)
+			return false;
+		// Don't allow to export lower and upper boundaries of the WidhtPoint
+		if(value_desc.parent_is_linkable_value_node()
+			&& value_desc.get_parent_value_node()->get_name()=="composite"
+			&& value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_WIDTHPOINT
+			&& (value_desc.get_index()==4 || value_desc.get_index()==5))
+		{
+			synfig::info("it is not candidate!");
+			return false;
+		}
+		synfig::info("it is candidate!");
+		return true;
+	}
+	return false;
 }
 
 bool

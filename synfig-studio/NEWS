@@ -1,9 +1,111 @@
               synfigstudio releases
 
-More detailed notes are available on the releases page:
+More detailed notes are available on the news page:
 
-http://synfig.org/en/news/releases
+http://synfig.org/cms/en/news/
 
+ 0.63.05 (git tag: "synfigstudio-0.63.05") - April 09, 2012 - Feaures, bug fixes.
+
+ * Fix bug ID: 3486075. Add new panel on Preferences Dialog ('Render') and include one option for separator string on image sequence render. Default is a dot '.'.
+ * Fix bug  ID: 3486412 Shortcut inconsistence.
+ * Fix typos and misspelling on various messages. Patch thanks to Bertrand Gregoire
+ * Fix bug 3512887: Crash when drag and drop panels on OSX Lion
+ * Fix bug 3475624: Startup crash on Ubuntu 12.04. Patch thanks to Denis Washington (denis_w)
+ * Fix bug: Warning dialogs hangs if the message is to long. It uses a scrolled window when needed.
+ * Fix bug ID: 3486723: Info Panel not updated when Guides dragged to Canvas WindowInfo.
+ * Fix bug: When grid size is negative, use its positive value.
+ * Rework of the Preview window (thanks to Yu Chen aka jcome):
+ ** Artwork content can be zoomed in/out
+ ** Add a zoom widget, so that user can change zoom factor from a dropdown list to select a factor or type the a specified value the user prefers
+ ** Scrollbars are size of artwork content and window sensitived now
+ ** Toolbar can be hidden to have a simpler UI
+ ** A set of accelerator keys (hard-coded at the moment):
+    a) a-prev frame, s-play/pause, d-next frame,
+    b) h-show/hide toolbar
+    c) 1,2,3,4,5 mapped to zoom factors: 25%, 50% ,100%, 200%, Fit
+ ** Dark background for preview window (hard-coded at the moment)
+ ** Rewording some UI strings
+ * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
+ * Support for load Gimp palettes. Patch thanks to Bretrand Gregoire.
+ * Improve constrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
+ * Rename icon source from zoom to scale. Patch thanks to Bertrand Gregoire
+
+ 0.63.04 (git tag: "synfigstudio-0.63.04") - February 08, 2012 - Features, bug fixes.
+
+  * Fix bug 3472549. When editing the parameter don't parse the keyboard shortcuts.
+  * Fix several bugs in the Groups Panel
+  * Allow Loop and Unloop actions when value description is a Tangent of a BLine Point.
+  * Allow merge and split tangents when using a tangent as value node.
+  * Allow split/merge tangents loop/unloop bline and delete vertex every where possible in the BLine Tool.
+  * Include any of the sub parameters of the Composite Value Node to the candidates of remove multiple items smart.
+  * Allow remove item smart when a child of a composite value node is selected and the composite is child of a dynamic list.
+  * Redesign of the preview window updating the slider widget, adding new start/stop button and a new toggle loop button. Close button for Gnome 3 users is also included.
+
+ 0.63.03 (git tag: "synfigstudio-0.63.03") - December 05, 2011 - Features, bug fixes.
+
+  * Use Widget::Distance for feather spin button on Draw Tool options.
+  * Enable tool tips for Tool Options dialogue buttons.
+  * Make Draw Tool options greyed when not usable.
+  * Full support to create Advanced Outlines with the Draw Tool. Stylus pressure used.
+  * Widthpoint position duck shows a text with its value when mouse hovers.
+  * Don't stretch button in file selection widget. Use shorter text. Patch by Konstantin Dmitriev
+  * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
+  * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
+  * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
+  * Widhtpoint position duck now allows 'Edit Waypoint' contextual menu.
+  * Add feature to delete multiple vertices at the same time on blines and other list types.
+  * Enum Widget allows icons now. Add icons to Default Interpolation widget.
+  * Insert Item smart is allowed now over empty lists.
+  * Fix bug #1863133: Metadata doesn't work.
+  * Update for all the languages.
+  * Update on the splash screen. Patch from Yu Chen.
+
+ 0.63.02 (git tag: "synfigstudio-0.63.03") - September 28, 2011 -No changes
+
+ 0.63.01 (git tag: "synfigstudio-0.63.01") - September 24, 2011 - Bub fixes, features
+
+  * Refactor duck creation for selected layers into duckmatic.
+  * Guides are saved now between sessions. Fix bug
+  * Guides are not dragged if not visible. Fix bug
+  * Add undo capability for guides.
+  * Snap to guides is now relative to zoom.
+  * OptionMenu (deprecatd) has been replaced by ComboBox.
+  * When change the Setup Dialog, spread it inmediately to the canvas's rules.
+  * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
+  * Linked to BLine has the option of be curve length based. On by default.
+  * New icons for canvas navigation, preview, render and animate mode buttons.
+  * Canvas window buttons rearranged.
+  * Imported canvases are now 'Children Locked' by default.
+  * New language support: Persian, Lituanian
+  * Updated existing translations.
+
+ 0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
+
+  * Fix bug #31044763: fps rounding to integer.
+  * Fix bug: Change default bline width spin button widthout first focus a canvas
+    produces undesired changes to the width size.
+  * Fix tool tips for layer parameters and add tool tip support for linkable
+    value node parameters.
+  * New cairo renderer for ducks, timecode, preview, navigator, grid and guides.
+  * New beizer dragging system pulling from the bezier itself.
+  * Fix workarea guides usage.
+  * New advanced outline layer. Slidable variable width support and other features.
+  * Fix Width Tool adding influence radius feedback and duck influence position visibility.
+  * Fix bug: Avoid Crash when reversed manipulation for certain converted types.
+  * Fix bug #3000536: Press ALT+5 when using Width Tool causes Studio to hang.
+  * Fix bug #3000535: ALT+2 when using Draw Tool causes Studio to hang.
+  * New languages support: Portuguese (Brazilian) and Slovakian
+  * Updates for Spanish, French, Italian, Chinese and German.
+  * Updates and fixes for autobuild script.
+  * Added support for 256x256 icons needed by Gnome 3.
+  * Set priorities for duck selection with mouse when they are at the same place.
+  * Fix #2175043: Crash when rendering in directory without write permission.
+  * Use high resolution by default at the work area.
+  * Enable restrict radius duck to top right quadrant by default.
+  * Install freedesktop.org mime info.
+  * Combine Name column with Icon column to clean up layer dock.
+  * Don't show debug info in about dialog for stable releases.
+  * Various fixes in the windows NSIS installer scripts.
 
  0.62.02 (git tag: "synfigstudio-0.62.02") - November 13, 2010 - Features
 

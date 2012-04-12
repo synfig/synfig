@@ -57,6 +57,7 @@ private:
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
+	synfig::String sequence_separator;
 public:
 	png_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt();

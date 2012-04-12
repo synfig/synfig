@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -395,6 +396,9 @@ public:
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
 	//! Return a full description of the linked ValueNode given by the index
 	String get_description(int index = -1, bool show_exported_name = true)const;
+	//! Return a full description of the linked ValueNode given by the index
+	//! Proper overload of the inherited function
+	String get_description(bool show_exported_name = true)const;
 
 	//! Gets the children vocabulary for linkable value nodes
 	virtual Vocab get_children_vocab()const;

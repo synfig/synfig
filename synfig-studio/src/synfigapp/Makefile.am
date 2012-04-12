@@ -47,7 +47,8 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedescexport.h \
 	actions/valuedesclink.h \
 	actions/valuedescblinelink.h \
-	actions/valuedescset.h
+	actions/valuedescset.h \
+	actions/valuedescremovesmart.h
 
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp \
@@ -56,7 +57,8 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescexport.cpp \
 	actions/valuedesclink.cpp \
 	actions/valuedescblinelink.cpp \
-	actions/valuedescset.cpp
+	actions/valuedescset.cpp \
+	actions/valuedescremovesmart.cpp
 
 
 VALUENODE_ACTION_HH = \
@@ -168,6 +170,8 @@ CANVAS_ACTION_HH = \
 	actions/canvasadd.h \
 	actions/canvasdescriptionset.h \
 	actions/canvasidset.h \
+	actions/canvasmetadataerase.h \
+	actions/canvasmetadataset.h \
 	actions/canvasnameset.h \
 	actions/canvasremove.h \
 	actions/canvasrenddescset.h
@@ -176,6 +180,8 @@ CANVAS_ACTION_CC = \
 	actions/canvasadd.cpp \
 	actions/canvasdescriptionset.cpp \
 	actions/canvasidset.cpp \
+	actions/canvasmetadataerase.cpp \
+	actions/canvasmetadataset.cpp \
 	actions/canvasnameset.cpp \
 	actions/canvasremove.cpp \
 	actions/canvasrenddescset.cpp
@@ -242,6 +248,7 @@ SYNFIGAPPHH = \
 	action_param.h \
 	action_system.h \
 	blineconvert.h \
+	wplistconverter.h \
 	canvasinterface.h \
 	cvs.h \
 	inputdevice.h \
@@ -258,6 +265,7 @@ SYNFIGAPPCC = \
 	action_param.cpp \
 	action_system.cpp \
 	blineconvert.cpp \
+	wplistconverter.cpp \
 	canvasinterface.cpp \
 	cvs.cpp \
 	inputdevice.cpp \

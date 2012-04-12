@@ -54,6 +54,7 @@ private:
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 	synfig::PixelFormat pf; // \todo Is this needed?
+	synfig::String sequence_separator;
 public:
 	imagemagick_trgt(const char *filename,
 					 const synfig::TargetParam& /* params */);

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2011 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,6 +42,7 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
+#include <synfig/canvas.h>
 
 #include <ETL/calculus>
 #include <ETL/bezier>
@@ -220,7 +222,8 @@ Outline::sync()
 
 	Vector first_tangent=bline.front().get_tangent2();
 	Vector last_tangent=iter->get_tangent1();
-
+	// Retrieve the parent canvas grow value
+	Real gv(exp(get_parent_canvas_grow_value()));
 	// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
 	if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()))
 	{
@@ -259,8 +262,8 @@ Outline::sync()
 		);
 
 		const float
-			iter_w((iter->get_width()*width)*0.5f+expand),
-			next_w((next->get_width()*width)*0.5f+expand);
+			iter_w(gv*((iter->get_width()*width)*0.5f+expand)),
+			next_w(gv*((next->get_width()*width)*0.5f+expand));
 
 		const derivative< hermite<Vector> > deriv(curve);
 
@@ -360,7 +363,7 @@ Outline::sync()
 
 		const Point vertex(bline.back().get_vertex());
 		const Vector tangent(last_tangent.norm());
-		const float w((bline.back().get_width()*width)*0.5f+expand);
+		const float w(gv*((bline.back().get_width()*width)*0.5f+expand));
 
 		hermite<Vector> curve(
 			vertex+tangent.perp()*w,
@@ -384,7 +387,7 @@ Outline::sync()
 
 		const Point vertex(bline.front().get_vertex());
 		const Vector tangent(first_tangent.norm());
-		const float w((bline.front().get_width()*width)*0.5f+expand);
+		const float w(gv*((bline.front().get_width()*width)*0.5f+expand));
 
 		hermite<Vector> curve(
 			vertex-tangent.perp()*w,

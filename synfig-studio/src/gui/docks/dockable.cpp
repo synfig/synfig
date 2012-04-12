@@ -200,7 +200,7 @@ Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selection
 	Dockable* tmp(this);
 	dnd_success_=true;
 
-	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), 4);
+	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), sizeof(Dockable**));
 }
 
 void
@@ -294,26 +294,11 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 	if(!toolbar_)
 		set_toolbar(*manage(new Gtk::Toolbar));
 
-	//Gtk::IconSize iconsize(4);
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
-
 	Gtk::ToolButton* ret(manage(new Gtk::ToolButton(stock_id)));
-	//Gtk::Image* icon(manage(new Gtk::Image(stock_id,iconsize)));
-	//ret->add(*icon);
-	//ret->set_relief(Gtk::RELIEF_HALF);
-	//ret->set_relief(Gtk::RELIEF_NONE);
-	ret->set_label(tooltip);
-	if (toolbar_->get_tooltips_object())
-		toolbar_->get_tooltips_object()->set_tip(*ret,tooltip);
-
+	ret->set_tooltip_text(tooltip);
 	ret->show();
-	//icon->show();
-	toolbar_->set_tooltips(true);
-
+	toolbar_->set_has_tooltip();
 	toolbar_->append(*ret);
-	//button_box_.pack_start(*ret,false,false);
-	//get_action_area()->pack_start(*ret,false,false);
-	//add_action_widget(*ret,1);
 	return ret;
 }
 
@@ -361,7 +346,7 @@ Dockable::create_tab_label()
 		{
 			Gtk::Image* icon(manage(new Gtk::Image(stock_id,Gtk::IconSize(4))));
 			event_box->add(*icon);
-			tooltips_.set_tip(*event_box,get_local_name());
+			event_box->set_tooltip_text(get_local_name());
 			icon->show();
 		}
 		else

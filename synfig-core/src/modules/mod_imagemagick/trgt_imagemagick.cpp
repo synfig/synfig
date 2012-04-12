@@ -79,7 +79,7 @@ SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 imagemagick_trgt::imagemagick_trgt(const char *Filename,
-								   const synfig::TargetParam& /* params */)
+								   const synfig::TargetParam& params)
 {
 	pid=-1;
 	file=NULL;
@@ -87,6 +87,7 @@ imagemagick_trgt::imagemagick_trgt(const char *Filename,
 	multi_image=false;
 	buffer=NULL;
 	color_buffer=0;
+	sequence_separator=params.sequence_separator;
 }
 
 imagemagick_trgt::~imagemagick_trgt()
@@ -159,7 +160,8 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 
 	if (multi_image)
 		newfilename = (filename_sans_extension(filename) +
-					   etl::strprintf(".%04d",imagecount) +
+					   sequence_separator +
+					   etl::strprintf("%04d",imagecount) +
 					   filename_extension(filename));
 	else
 		newfilename = filename;

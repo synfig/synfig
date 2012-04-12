@@ -59,10 +59,17 @@ using namespace Gtk;
 
 //dialog_preview stuff...
 Dialog_Preview::Dialog_Preview()
-:Dialog(_("Preview Window"),false,true),
+:preview_table(1, 1, true),
 settings(this,"preview")
 {
-	get_vbox()->pack_start(preview);
+	set_title(_("Preview Window"));
+	set_keep_above();
+	add(preview_table);
+	preview_table.attach(preview, 0, 1, 0, 1);
+	show_all_children();
+
+	//catch key press event
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));
 }
 
 Dialog_Preview::~Dialog_Preview()
@@ -78,9 +85,31 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 
 void Dialog_Preview::on_hide()
 {
-	Dialog::on_hide();
-	preview.stop();
+	Window::on_hide();
+	preview.pause();
 	preview.stoprender();
+}
+
+//press escape key to close window
+bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
+{
+	if (ev->keyval == gdk_keyval_from_name("Escape") )
+	{
+		close_window_handler();
+		return true;
+	}
+
+	return false;
+}
+
+void Dialog_Preview::close_window_handler()
+{
+	if ((get_window()->get_state() & Gdk::WINDOW_STATE_MAXIMIZED) != 0)
+	{
+	unmaximize();
+	}
+
+	hide();
 }
 
 //dialog_previewoptions stuff
@@ -88,8 +117,8 @@ Dialog_PreviewOptions::Dialog_PreviewOptions()
 :Dialog(_("Preview Options"),false,true),
 adj_zoom(0.5,0.1,5.0,0.1,0.2),
 adj_fps(15,1,120,1,5),
-check_overbegin(_("_Begin Time"),false),
-check_overend(_("_End Time"),false),
+check_overbegin(_("_Begin time"),false),
+check_overend(_("_End time"),false),
 settings(this,"prevoptions")
 {
 	//framerate = 15.0f;
@@ -103,9 +132,9 @@ settings(this,"prevoptions")
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
 	dialogPadding->add(*dialogBox);
 
-	Gtk::Frame *generalFrame = manage(new Gtk::Frame(_("General Settings")));
+	Gtk::Frame *generalFrame = manage(new Gtk::Frame(_("General settings")));
 	generalFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) generalFrame->get_label_widget())->set_markup(_("<b>General Settings</b>"));
+	((Gtk::Label *) generalFrame->get_label_widget())->set_markup(_("<b>General settings</b>"));
 	dialogBox->pack_start(*generalFrame, false, false, 0);
 
 	Gtk::Alignment *generalPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
@@ -117,7 +146,7 @@ settings(this,"prevoptions")
 	generalTable->set_col_spacings(12);
 	generalPadding->add(*generalTable);
 
-	Gtk::Label *zoomLabel = manage(new Gtk::Label(_("_Zoom")));
+	Gtk::Label *zoomLabel = manage(new Gtk::Label(_("_Quality")));
 	zoomLabel->set_alignment(0, 0.5);
 	zoomLabel->set_use_underline(TRUE);
 	Gtk::SpinButton *zoomSpinner = manage(new Gtk::SpinButton(adj_zoom, 0.1, 2));
@@ -126,7 +155,7 @@ settings(this,"prevoptions")
 	generalTable->attach(*zoomLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	generalTable->attach(*zoomSpinner, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Label *fpsLabel = manage(new Gtk::Label(_("_Frames per second")));
+	Gtk::Label *fpsLabel = manage(new Gtk::Label(_("_FPS")));
 	fpsLabel->set_alignment(0, 0.5);
 	fpsLabel->set_use_underline(TRUE);
 	Gtk::SpinButton *fpsSpinner = manage(new Gtk::SpinButton(adj_fps, 1, 1));
@@ -135,9 +164,9 @@ settings(this,"prevoptions")
 	generalTable->attach(*fpsLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	generalTable->attach(*fpsSpinner, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Frame *timeFrame = manage(new Gtk::Frame(_("Time Settings")));
+	Gtk::Frame *timeFrame = manage(new Gtk::Frame(_("Time settings")));
 	timeFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) timeFrame->get_label_widget())->set_markup(_("<b>Time Settings</b>"));
+	((Gtk::Label *) timeFrame->get_label_widget())->set_markup(_("<b>Time settings</b>"));
 	dialogBox->pack_start(*timeFrame, false, false, 0);
 
 	Gtk::Alignment *timePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
