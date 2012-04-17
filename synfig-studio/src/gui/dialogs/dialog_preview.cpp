@@ -59,8 +59,8 @@ using namespace Gtk;
 
 //dialog_preview stuff...
 Dialog_Preview::Dialog_Preview()
-:preview_table(1, 1, true),
-settings(this,"preview")
+:settings(this,"preview"),preview_table(1, 1, true)
+
 {
 	set_title(_("Preview Window"));
 	set_keep_above();
