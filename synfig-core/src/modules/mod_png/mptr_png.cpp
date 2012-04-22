@@ -424,7 +424,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 }
 
 bool
-png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time,
+png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time,
 					bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
 					synfig::ProgressCallback */*cb*/)
 {

@@ -686,7 +686,7 @@ LinkableValueNode::link_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end() && j<i; iter++, j++);
+	for(;iter!=vocab.end() && j<i; iter++, j++) {};
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -696,7 +696,7 @@ LinkableValueNode::link_local_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end() && j<i; iter++, j++);
+	for(;iter!=vocab.end() && j<i; iter++, j++){};
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 

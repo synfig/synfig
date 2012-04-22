@@ -1059,7 +1059,7 @@ void Widget_Preview::on_zoom_entry_activated()
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
 	string digi = "0123456789";
-	int first = str.find_first_of(digi);
+	size_t first = str.find_first_of(digi);
 
 	if (first == string::npos)
 	{
@@ -1071,7 +1071,7 @@ void Widget_Preview::on_zoom_entry_activated()
 		return ;
 	}
 
-	int last = str.find_first_not_of(digi);
+	size_t last = str.find_first_not_of(digi);
 
 	if (last == string::npos)
 	{

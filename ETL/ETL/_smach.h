@@ -584,13 +584,14 @@ public:
 		}
 		catch(egress_exception) {
 			if (egress()) {
-				RESULT_ACCEPT;
+				ret=RESULT_ACCEPT;
 			} else {
-				RESULT_ERROR;
+				ret=RESULT_ERROR;
 			}
 		}
 		catch(pop_exception) { pop_state(); return RESULT_ACCEPT; }
 		catch(const state_base* state) { return enter(state)?RESULT_ACCEPT:RESULT_ERROR; }
+		return ret;
 	}
 
 }; // END of template class smach
