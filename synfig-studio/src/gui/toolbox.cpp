@@ -113,7 +113,7 @@ using namespace sigc;
 	button = manage(new class Gtk::ToggleButton());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->show();	\
 	button->show()
 
@@ -121,7 +121,7 @@ using namespace sigc;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
 	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(tooltip);	\
 	icon->show();	\
 	button->show()
 
@@ -257,7 +257,7 @@ Toolbox::Toolbox():
 
 #define SITE(title,page)											\
 	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
-		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org")+page)))
+		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org/cms")+page)))
 
 	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP, sigc::ptr_fun(studio::App::dialog_help)));
@@ -346,8 +346,6 @@ Toolbox::Toolbox():
 	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
 
-
-
 	// Set the parameters for this window
 	add(*table1);
 	set_title(_("Synfig Studio"));
@@ -355,8 +353,6 @@ Toolbox::Toolbox():
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
 	signal_delete_event().connect(sigc::ptr_fun(App::shutdown_request));
 	set_resizable(false);
-
-
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
@@ -497,7 +493,7 @@ Toolbox::add_state(const Smach::state_base *state)
 
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
 	button->add(*icon);
-	tooltips.set_tip(*button,stock_item.get_label());
+	button->set_tooltip_text(stock_item.get_label());
 	icon->show();
 	button->show();
 
@@ -634,6 +630,29 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 
 	// Finish the drag
 	context->drag_finish(success, false, time);
+}
+
+bool
+Toolbox::on_key_press_event(GdkEventKey* event)
+{
+	Gtk::Widget* focused_widget = get_focus();
+	if(focused_widget_has_priority(focused_widget))
+	{
+		if(focused_widget->event((GdkEvent*)event))
+		return true;
+	}
+	else if(Gtk::Window::on_key_press_event(event))
+		return true;
+	else return focused_widget->event((GdkEvent*)event);
+	return false;
+}
+
+bool
+Toolbox::focused_widget_has_priority(Gtk::Widget * focused)
+{
+	if(dynamic_cast<Gtk::Entry*>(focused))
+		return true;
+	return false;
 }
 
 void

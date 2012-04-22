@@ -165,6 +165,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 	// if there are cpoints in both gradients run through both until one runs out
 	if (iter1 != end() && iter2 != rhs.end())
 		while(true)
+		{
 			// if the left one has the first cpoint
 			if (left.pos < right.pos)
 			{
@@ -239,6 +240,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 				right = *iter2;
 				if (iter1 == end()) break;
 			}
+		}
 
 	// one of the gradients has run out of points
 	// does the left one have points left?
@@ -288,6 +290,28 @@ synfig::Gradient::operator/=(const float    &rhs)
 	for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
 		(*iter).color /= rhs;
 	return *this;
+}
+
+Real
+synfig::Gradient::mag()const
+{
+	Real ret(0), cm, prev_pos;
+	const_iterator iter, next;
+	if(!cpoints.size())
+		return 0.0;
+	next=cpoints.begin();
+	iter=next++;
+	prev_pos=0.0;
+	for (; next!=cpoints.end(); iter++, next++)
+		{
+			cm=iter->color.get_y()*((next->pos-iter->pos)/2 - prev_pos) ;
+			ret+=cm*cm;
+			prev_pos = (next->pos-iter->pos)/2;
+		}
+		cm=next->color.get_y()*(1.0 - prev_pos);
+		ret+=cm*cm;
+	ret=sqrt(ret);
+	return ret;
 }
 
 Color

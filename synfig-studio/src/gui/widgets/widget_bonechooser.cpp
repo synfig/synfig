@@ -71,7 +71,7 @@ Widget_BoneChooser::set_parent_canvas(synfig::Canvas::Handle x)
 void
 Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 {
-	printf("%s:%d Widget_BoneChooser::set_value_ data = %lx\n", __FILE__, __LINE__, ulong(data.get()));
+	printf("%s:%d Widget_BoneChooser::set_value_ data = %lx\n", __FILE__, __LINE__, uintptr_t(data.get()));
 	set_value(data);
 	activate();
 }
@@ -79,7 +79,7 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
-	printf("%s:%d Widget_BoneChooser::set_value data = %lx\n", __FILE__, __LINE__, ulong(data.get()));
+	printf("%s:%d Widget_BoneChooser::set_value data = %lx\n", __FILE__, __LINE__, uintptr_t(data.get()));
 	assert(parent_canvas);
 	bone=data;
 

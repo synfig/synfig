@@ -6,7 +6,13 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
+	splash_screen-0.63.05.sif \
+	splash_screen-0.63.04.sif \
+	splash_screen-0.63.03.sif \
+	splash_screen-0.63.02.sif \
+	splash_screen-0.63.01.sif \
 	splash_screen-0.63.00.sif \
+	splash_screen-0.63.sif \
 	splash_screen-0.62.02.sif \
 	splash_screen-0.62.01.sif \
 	splash_screen-0.62.01-2.sif \
@@ -16,12 +22,14 @@ EXTRA_DIST = \
 	splash_screen-0.61.07.sif \
 	splash_screen_development.sif.in \
 	about_icon.sif \
+	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
 	curves_icon.sif \
 	duplicate_icon.sif \
 	encapsulate_icon.sif \
-	keyframe_lock_icon.sif \
+	keyframe_lock_icons.sif \
+	framedial_icons.sif \
 	logo.sif \
 	pastecanvas_icon.sif \
 	saveall_icon.sif \
@@ -37,10 +45,6 @@ EXTRA_DIST = \
 	plant_icon.sif \
 	set_fill_color.sif \
 	set_outline_color.sif \
-	seek_begin.sif \
-	seek_end.sif \
-	seek_next_frame.sif \
-	seek_prev_frame.sif \
 	duck_position_icon.sif \
 	duck_vertex_icon.sif \
 	duck_tangent_icon.sif \
@@ -65,6 +69,12 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
 	\
+	interpolation_type_tcb_icon.sif\
+	interpolation_type_ease_icon.sif\
+	interpolation_type_const_icon.sif\
+	interpolation_type_linear_icon.sif\
+	interpolation_type_clamped_icon.sif\
+	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
 	layer_blur_radial_icon.sif \
@@ -88,7 +98,7 @@ EXTRA_DIST = \
 	layer_geometry_checkerboard_icon.sif \
 	layer_geometry_circle_icon.sif \
 	layer_geometry_outline_icon.sif \
-	layer_geometry_advanced_outline.sif \
+	layer_geometry_advanced_outline_icon.sif \
 	layer_geometry_polygon_icon.sif \
 	layer_geometry_rectangle_icon.sif \
 	layer_geometry_region_icon.sif \
@@ -111,8 +121,8 @@ EXTRA_DIST = \
 	layer_stylize_bevel_icon.sif \
 	layer_stylize_shade_icon.sif \
 	layer_transform_rotate_icon.sif \
+	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
-	layer_transform_zoom_icon.sif \
 	\
 	tool_bline_icon.sif \
 	tool_circle_icon.sif \
@@ -178,18 +188,29 @@ IMAGES = \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
-	keyframe_lock_all.$(EXT) \
-	keyframe_lock_past.$(EXT) \
-	keyframe_lock_future.$(EXT) \
-	keyframe_lock_none.$(EXT) \
+	\
+	keyframe_lock_past_on_icon.$(EXT) \
+	keyframe_lock_past_off_icon.$(EXT) \
+	keyframe_lock_future_on_icon.$(EXT) \
+	keyframe_lock_future_off_icon.$(EXT) \
+	\
+	animate_seek_next_keyframe_icon.$(EXT) \
+	animate_seek_prev_keyframe_icon.$(EXT) \
+	animate_seek_next_frame_icon.$(EXT) \
+	animate_seek_prev_frame_icon.$(EXT) \
+	animate_seek_begin_icon.$(EXT) \
+	animate_seek_end_icon.$(EXT) \
+	animate_play_icon.$(EXT) \
+	animate_stop_icon.$(EXT) \
+	animate_pause_icon.$(EXT) \
+	animate_loop_icon.$(EXT) \
+	animate_mode_off_icon.$(EXT) \
+	animate_mode_on_icon.$(EXT) \
+	\
 	rename_icon.$(EXT) \
 	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
 	set_outline_color.$(EXT) \
-	seek_begin.$(EXT) \
-	seek_end.$(EXT) \
-	seek_next_frame.$(EXT) \
-	seek_prev_frame.$(EXT) \
 	duck_position_icon.$(EXT) \
 	duck_vertex_icon.$(EXT) \
 	duck_tangent_icon.$(EXT) \
@@ -213,6 +234,12 @@ IMAGES = \
 	action_peak_interpolation_icon.$(EXT) \
 	action_rounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
+	\
+	interpolation_type_tcb_icon.$(EXT)\
+	interpolation_type_ease_icon.$(EXT)\
+	interpolation_type_const_icon.$(EXT)\
+	interpolation_type_linear_icon.$(EXT)\
+	interpolation_type_clamped_icon.$(EXT)\
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
@@ -260,8 +287,8 @@ IMAGES = \
 	layer_stylize_bevel_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
 	layer_transform_rotate_icon.$(EXT) \
+	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
-	layer_transform_zoom_icon.$(EXT) \
 	\
 	tool_bline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
@@ -369,25 +396,86 @@ clean-local:
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_all.$(EXT): $(srcdir)/keyframe_lock_icon.sif
+keyframe_lock_past_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_past.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c PastOnly
+keyframe_lock_past_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_future.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c FutureOnly
+keyframe_lock_future_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -c Disabled
+keyframe_lock_future_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_next_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_prev_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_next_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_prev_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_begin_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 4
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_seek_end_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_play_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 6
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_stop_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 7
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_pause_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 8
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_loop_icon.$(EXT): $(srcdir)/framedial_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 9
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+
+animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 if DEVELOPMENT_SNAPSHOT
 splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
@@ -472,3 +560,4 @@ iconsscalable_DATA = synfig_icon.svg
 
 endif
 endif
+

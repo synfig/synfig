@@ -56,7 +56,7 @@ using namespace studio;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
 	button->add(*icon);	\
-	tooltips_.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(,tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	button->set_relief(Gtk::RELIEF_NONE); \
@@ -68,7 +68,7 @@ using namespace studio;
 	button = manage(new class Gtk::Button());	\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
 	button->add(*icon);	\
-	tooltips_.set_tip(*button,tooltip);	\
+	button->set_tooltip_text(,tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	\
 	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
@@ -163,6 +163,7 @@ ChildrenTree::ChildrenTree()
 	tree_view.add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
 	tree_view.signal_event().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_tree_event));
+	tree_view.signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_tree_view_query_tooltip));
 
 	// Create a scrolled window for that tree
 	Gtk::ScrolledWindow *scroll_children_tree = manage(new class Gtk::ScrolledWindow());
@@ -217,7 +218,7 @@ ChildrenTree::ChildrenTree()
 	hbox->show();
 	tree_view.show();
 
-	tooltips_.enable();
+	tree_view.set_has_tooltip();
 
 	//get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 }
@@ -368,18 +369,6 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
-			else
-			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-			{
-				tooltips_.unset_tip(*this);
-				Glib::ustring tooltips_string(row[model.tooltip]);
-				last_tooltip_path=path;
-				if(!tooltips_string.empty())
-				{
-					tooltips_.set_tip(*this,tooltips_string);
-					tooltips_.force_window();
-				}
-			}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
@@ -417,6 +406,30 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+}
+
+bool
+ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip)
+{
+	if(keyboard_tooltip)
+		return false;
+	Gtk::TreeModel::Path path;
+	Gtk::TreeViewColumn *column;
+	int cell_x, cell_y;
+	int bx, by;
+	get_tree_view().convert_widget_to_bin_window_coords(x, y, bx, by);
+	if(!get_tree_view().get_path_at_pos(bx, by, path, column, cell_x,cell_y))
+		return false;
+	Gtk::TreeIter iter(get_tree_view().get_model()->get_iter(path));
+	if(!iter)
+		return false;
+	Gtk::TreeRow row = *(iter);
+	Glib::ustring tooltip_string(row[model.tooltip]);
+	if(tooltip_string.empty())
+		return false;
+	tooltip->set_text(tooltip_string);
+	get_tree_view().set_tooltip_row(tooltip, path);
+	return true;
 }
 
 void

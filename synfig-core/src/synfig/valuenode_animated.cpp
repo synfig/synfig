@@ -132,6 +132,15 @@ struct magnitude<Color> : public std::unary_function<float, Color>
 	}
 };
 
+template <>
+struct magnitude<Gradient> : public std::unary_function<float, Gradient>
+{
+	float operator()(const Gradient &a)const
+	{
+		return a.mag();
+	}
+};
+
 template <class T>
 struct is_angle_type
 {
@@ -151,6 +160,120 @@ struct is_angle_type<Angle>
 	}
 };
 #endif	// ANGLES_USE_LINEAR_INTERPOLATION
+
+template<class T>
+T
+clamped_tangent(T p1, T p2, T p3, Time t1, Time t2, Time t3)
+{
+	Real bias=0.0;
+	T tangent(p3*0.0);
+	T pm=p1+(p3-p1)*(t2-t1)/(t3-t1);
+	if(p3 > p1)
+	{
+		if(p2 >= p3 || p2 <= p1)
+			tangent = tangent*0.0;
+		else
+		{
+			if(p2 > pm)
+			{
+				bias=(pm-p2)/(p3-pm);
+			}
+			else if (p2 < pm)
+			{
+				bias=(pm-p2)/(pm-p1);
+			}
+			else
+				bias=0.0;
+			tangent =( (p2-p1)*(1.0+bias)/2.0 + (p3-p2)*(1.0-bias)/2.0 );
+		}
+	}
+	else if (p1 > p3)
+	{
+		if(p2 >= p1 || p2 <= p3)
+			tangent = tangent*0.0;
+		else
+		{
+			if(p2 > pm)
+			{
+				bias=(pm-p2)/(pm-p1);
+			}
+			else if (p2 < pm)
+			{
+				bias=(pm-p2)/(p3-pm);
+			}
+			else
+				bias=0.0;
+			tangent =( (p2-p1)*(1.0+bias)/2.0 + (p3-p2)*(1.0-bias)/2.0 );
+		}
+	}
+	else
+	{
+		tangent= tangent * 0;
+	}
+	return tangent;
+};
+
+template<>
+Vector
+clamped_tangent<Vector>(Vector p1, Vector p2, Vector p3, Time t1, Time t2, Time t3)
+{
+	return Vector(clamped_tangent(p1[0],p2[0],p3[0],t1,t2,t3), clamped_tangent(p1[1],p2[1],p3[1],t1,t2,t3));
+};
+
+template<>
+Angle
+clamped_tangent<Angle>(Angle p1, Angle p2, Angle p3, Time t1, Time t2, Time t3)
+{
+	Real r1(Angle::rad(p1).get());
+	Real r2(Angle::rad(p2).get());
+	Real r3(Angle::rad(p3).get());
+	return Angle::rad(clamped_tangent(r1, r2, r3, t1, t2, t3));
+};
+
+template<>
+Time
+clamped_tangent<Time>(Time p1, Time p2, Time p3, Time t1, Time t2, Time t3)
+{
+	return Time(clamped_tangent(double(p1), double(p2), double(p3), t1, t2, t3));
+};
+
+template<>
+int
+clamped_tangent<int>(int p1, int p2, int p3, Time t1, Time t2, Time t3)
+{
+	return int(clamped_tangent(Real(p1), Real(p2), Real(p3), t1, t2, t3));
+};
+
+template<>
+Color
+clamped_tangent<Color>(Color p1, Color p2, Color p3, Time t1, Time t2, Time t3)
+{
+	Color ret;
+	ret.set_r(clamped_tangent(p1.get_r(), p2.get_r(), p3.get_r(), t1, t2, t3));
+	ret.set_g(clamped_tangent(p1.get_g(), p2.get_g(), p3.get_g(), t1, t2, t3));
+	ret.set_b(clamped_tangent(p1.get_b(), p2.get_b(), p3.get_b(), t1, t2, t3));
+	ret.set_a(clamped_tangent(p1.get_a(), p2.get_a(), p3.get_a(), t1, t2, t3));
+	return ret;
+};
+
+template<>
+Gradient
+clamped_tangent<Gradient>(Gradient p1, Gradient p2, Gradient p3, Time t1, Time t2, Time t3)
+{
+	Color c1, c2, c3;
+	Gradient::CPoint cp;
+	Gradient::const_iterator iter;
+	Gradient ret;
+	for(iter=p2.begin();iter!=p2.end();iter++)
+	{
+		cp=*iter;
+		c1=p1(cp.pos);
+		c2=cp.color;
+		c3=p3(cp.pos);
+		ret.push_back(Gradient::CPoint(cp.pos, clamped_tangent(c1, c2, c3, t1, t2, t3)));
+	}
+	return ret;
+};
 
 /* === G L O B A L S ======================================================= */
 
@@ -200,16 +323,8 @@ private:
 
 			return second(first(t));
 		}
-	};
-	typedef vector <
-		PathSegment
-		/*
-		pair <
-			hermite<Time,Time>,
-			hermite<value_type,Time>
-		>
-		*/
-	> curve_list_type;
+	}; // END of struct PathSegment
+	typedef vector<PathSegment> curve_list_type;
 
 	curve_list_type curve_list;
 
@@ -302,7 +417,7 @@ public:
 
 		WaypointList::iterator prev,iter,next=waypoint_list_.begin();
 		int i=0;
-
+		// The curve list must be calculated because we sorted the waypoints.
 		for(iter=next++;iter!=waypoint_list_.end() && next!=waypoint_list_.end();prev=iter,iter=next++,i++)
 		{
 			typename curve_list_type::value_type curve;
@@ -315,7 +430,7 @@ public:
 			// Set up the positions
 			curve.first.set_rs(iter->get_time(), next->get_time());
 			curve.second.set_rs(iter->get_time(), next->get_time());
-
+			// Retrieve the interpolations
 			Waypoint::Interpolation iter_get_after(iter->get_after());
 			Waypoint::Interpolation next_get_after(next->get_after());
 			Waypoint::Interpolation iter_get_before(iter->get_before());
@@ -337,6 +452,11 @@ public:
 			{
 				curve.second.p1()=iter->get_value().get(T());
 				curve.second.p2()=next->get_value().get(T());
+				///
+				/// ANY/CONSTANT ------ ANY/ANY
+				///               or
+				/// ANY/ANY-------------CONSTANT/ANY
+				///
 				if(iter_get_after==INTERPOLATION_CONSTANT || next_get_before==INTERPOLATION_CONSTANT)
 				{
 					// Sections must be constant on both sides.
@@ -353,7 +473,10 @@ public:
 				}
 				else
 				{
-					if(iter_get_after==INTERPOLATION_TCB && iter!=waypoint_list_.begin() && !is_angle())
+					/// iter             next
+					/// ANY/TCB -------- ANY/ANY and iter is middle waypoint
+					///
+				    if(iter_get_after==INTERPOLATION_TCB && iter!=waypoint_list_.begin() && !is_angle())
 					{
 						if(iter->get_before()!=INTERPOLATION_TCB && !curve_list.empty())
 						{
@@ -364,91 +487,125 @@ public:
 							const Real& t(iter->get_tension());		// Tension
 							const Real& c(iter->get_continuity());	// Continuity
 							const Real& b(iter->get_bias());		// Bias
-
 							// The following line works where the previous line fails.
 							value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
-
 							const value_type& Pc(curve.second.p1());	// P_i
 							const value_type& Pn(curve.second.p2());	// P_{i+1}
 
-							// TCB
+							/// TCB calculation
 							value_type vect(static_cast<value_type>
 											(subtract_func(Pc,Pp) *
 											           (((1.0-t) * (1.0+c) * (1.0+b)) / 2.0) +
 											 (Pn-Pc) * (((1.0-t) * (1.0-c) * (1.0-b)) / 2.0)));
-
-							// Tension Only
-							//value_type vect=(value_type)((Pn-Pp)*(1.0-t));
-
-							// Linear
-							//value_type vect=(value_type)(Pn-Pc);
-
-							// Debugging stuff
-							//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
-
-							// Adjust for time
-							//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
-							//vect=value_type(vect*(curve.second.get_dt())/(curve_list.back().second.get_dt()));
-
 							curve.second.t1()=vect;
 						}
 					}
-					else if(
-						iter_get_after==INTERPOLATION_LINEAR || iter_get_after==INTERPOLATION_HALT ||
-						(iter_get_after==INTERPOLATION_TCB && iter==waypoint_list_.begin()))
+					else
 					{
-						curve.second.t1()=subtract_func(curve.second.p2(),curve.second.p1());
+						///
+						/// ANY/LINEAR ----- ANY/ANY
+						///            or
+						/// ANY/EASE ------- ANY/ANY
+						///            or
+						/// ANY/TCB -------- ANY/ANY and iter is first.
+						///            or
+						/// ANY/CLAMPED ---- ANT/ANY and iter is first
+					    if(
+						iter_get_after==INTERPOLATION_LINEAR || iter_get_after==INTERPOLATION_HALT ||
+						(iter_get_after==INTERPOLATION_TCB && iter==waypoint_list_.begin()) ||
+						(iter_get_after==INTERPOLATION_CLAMPED && iter==waypoint_list_.begin())
+						)
+						{
+							/// t1 = p2 - p1
+							curve.second.t1()=subtract_func(curve.second.p2(),curve.second.p1());
+						}
 					}
-
+					/// iter             next
+					/// ANY/CLAMPED ---- ANY/ANY and iter is middle waypoint
+					if(iter_get_after == INTERPOLATION_CLAMPED && iter!=waypoint_list_.begin() && !is_angle())
+					{
+						value_type Pp; Pp=curve_list.back().second.p1(); // P_{i-1}
+						const value_type& Pc(curve.second.p1());         // P_i
+						const value_type& Pn(curve.second.p2());         // P_{i+1}
+						Time T1(curve_list.back().first.p1());
+						Time T2(iter->get_time());
+						Time T3(next->get_time());
+						value_type vect(clamped_tangent(Pp, Pc, Pn, T1, T2, T3));
+						curve.second.t1()=vect;
+					}
+					///
+					/// TCB/!TCB and list not empty
+					///
 					if(iter_get_before==INTERPOLATION_TCB && iter->get_after()!=INTERPOLATION_TCB && !curve_list.empty())
 					{
+						/// It means that there is one previous waypoint
+						/// that is at cuerve_list.back()
+						/// then its second tangent must be the same than
+						/// our first one for continuity of the tangents.
 						curve_list.back().second.t2()=curve.second.t1();
 						curve_list.back().second.sync();
 					}
-
-
+					/// iter          next          after_next
+					/// ANY/ANY ------TCB/ANY ----- ANY/ANY
+					///
 					if(next_get_before==INTERPOLATION_TCB && after_next!=waypoint_list_.end()  && !is_angle())
 					{
-						const Real &t(next->get_tension());		// Tension
-						const Real &c(next->get_continuity());	// Continuity
-						const Real &b(next->get_bias());			// Bias
-						const value_type &Pp(curve.second.p1());	// P_{i-1}
-						const value_type &Pc(curve.second.p2());	// P_i
-						value_type Pn; Pn=after_next->get_value().get(T());	// P_{i+1}
+						const Real &t(next->get_tension());       // Tension
+						const Real &c(next->get_continuity());    // Continuity
+						const Real &b(next->get_bias());          // Bias
+						const value_type &Pp(curve.second.p1());  // P_{i-1}
+						const value_type &Pc(curve.second.p2());  // P_i
+						value_type Pn; Pn=after_next->get_value().get(T()); // P_{i+1}
 
-						// TCB
+						/// TCB calculation
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
 																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
-
-						// Tension Only
-						//value_type vect((value_type)((Pn-Pp)*(1.0-t)));
-
-						// Linear
-						//value_type vect=(value_type)(Pc-Pp);
-
-						// Debugging stuff
-						//synfig::info("%d:t2: %s",i,tangent_info(Pp,Pn,vect).c_str());
-
-						// Adjust for time
-						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+(after_next->get_time()-next->get_time())));
-						//vect=value_type(vect*(curve.second.get_dt()/((after_next->get_time()-next->get_time()))));
-
 						curve.second.t2()=vect;
 					}
-					else if(
+					else
+						/// iter          next
+						/// ANY/ANY ----- LINEAR/ANY
+						///           or
+						/// ANY/ANY ----- EASE/ANY
+						///           or
+						/// ANY/ANY ----- TCB/ANY ---- END
+						///           or
+						/// ANY/ANY ----- CLAMPED/ANY ----END
+					    if(
 						next_get_before==INTERPOLATION_LINEAR || next_get_before==INTERPOLATION_HALT ||
-						(next_get_before==INTERPOLATION_TCB && after_next==waypoint_list_.end()))
+						(next_get_before==INTERPOLATION_TCB && after_next==waypoint_list_.end()) ||
+						(next_get_before==INTERPOLATION_CLAMPED && after_next==waypoint_list_.end())
+						)
 					{
+						/// t2 = p2 - p1
 						curve.second.t2()=subtract_func(curve.second.p2(),curve.second.p1());
 					}
-
+					/// iter             next         after_next
+					/// ANY/ANY ---- CLAMPED/ANY      ANY/ANY
+					if(next_get_before == INTERPOLATION_CLAMPED && after_next!=waypoint_list_.end()  && !is_angle())
+					{
+						const value_type &Pp(curve.second.p1());            // P_{i-1}
+						const value_type &Pc(curve.second.p2());            // P_i
+						value_type Pn; Pn=after_next->get_value().get(T()); // P_{i+1}
+						Time T1(iter->get_time());
+						Time T2(next->get_time());
+						Time T3(after_next->get_time());
+						value_type vect(clamped_tangent(Pp, Pc, Pn, T1, T2, T3));
+						curve.second.t2()=vect;
+					}
 					// Adjust for time
 					const float timeadjust(0.5);
-
+					/// iter           next
+					/// ANY/EASE ------ANY/ANY
+					///
 					if(iter_get_after==INTERPOLATION_HALT)
 						curve.second.t1()*=0;
 					// if this isn't the first curve
-					else if(iter_get_after != INTERPOLATION_LINEAR && !curve_list.empty())
+					else
+					/// prev         iter              next
+					/// ANY/ANY -----ANY/!LINEAR ----- ANY/ANY
+					///
+					if(iter_get_after != INTERPOLATION_LINEAR && !curve_list.empty())
 						// adjust it for the curve that came before it
 						curve.second.t1() = static_cast<T>(curve.second.t1() * // cast to prevent warning
 							//                  (time span of this curve) * 1.5
@@ -456,11 +613,17 @@ public:
 							// ((time span of this curve) * 0.5) + (time span of previous curve)
 							  (curve.second.get_dt()*(timeadjust+1)) /
 							  (curve.second.get_dt()*timeadjust + curve_list.back().second.get_dt()));
-
+					/// iter           next
+					/// ANY/ANY ------EASE/ANY
+					///
 					if(next_get_before==INTERPOLATION_HALT)
 						curve.second.t2()*=0;
 					// if this isn't the last curve
-					else if(next_get_before != INTERPOLATION_LINEAR && after_next!=waypoint_list_.end())
+					else
+					/// iter           next               after_next
+					/// ANY/ANY ----- !LINEAR/ANY ------- ANY/ANY
+					///
+					if(next_get_before != INTERPOLATION_LINEAR && after_next!=waypoint_list_.end())
 						// adjust it for the curve that came after it
 						curve.second.t2() = static_cast<T>(curve.second.t2() * // cast to prevent warning
 							//                (time span of this curve) * 1.5
@@ -507,7 +670,7 @@ public:
 			return waypoint_list_.back().get_value(t);
 		return iter->resolve(t);
 	}
-};
+}; // END of class _Hermite
 
 
 template<typename T>
@@ -611,7 +774,7 @@ public:
 
 		return iter->get_value(t);
 	}
-};
+}; // END of class _Constant
 
 class _AnimBool : public synfig::ValueNode_Animated
 {
@@ -720,7 +883,7 @@ public:
 			return iter->get_value(t).get(bool()) || next->get_value(t).get(bool());
 		return iter->get_value(t);
 	}
-};
+}; // END of class _AnimBool
 
 /* === M E T H O D S ======================================================= */
 
@@ -946,7 +1109,7 @@ ValueNode_Animated::waypoint_is_only_use_of_valuenode(Waypoint &waypoint)
 void
 ValueNode_Animated::erase(const UniqueID &x)
 {
-	printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, ulong(this));
+	printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, uintptr_t(this));
 	WaypointList::iterator iter(find(x));
 	Waypoint waypoint(*iter);
 	assert(waypoint.get_value_node());

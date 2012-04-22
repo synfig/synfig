@@ -7,7 +7,8 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
-**  Copyright (c) 2011 Nikita Kitaev
+**	Copyright (c) 2011 Nikita Kitaev
+**	Coypright (c) 2012 Yu Chen
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -46,6 +47,14 @@
 
 #include "general.h"
 
+#include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <cstdio>
+#include <ctype.h>
+#include <math.h>
+#include <synfig/string_decl.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -54,6 +63,8 @@ using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
+
+#define tolower ::tolower
 
 /* === M A C R O S ========================================================= */
 
@@ -209,12 +220,12 @@ void studio::Preview::render()
 
 		if(overbegin)
 		{
-			desc.set_time_start(std::max(begintime,(float)desc.get_time_start()));
+			desc.set_time_start(begintime);
 			//synfig::warning("Set start time to %.2f...",(float)desc.get_time_start());
 		}
 		if(overend)
 		{
-			desc.set_time_end(std::min(endtime,(float)desc.get_time_end()));
+			desc.set_time_end(endtime);
 			//synfig::warning("Set end time to %.2f...",(float)desc.get_time_end());
 		}
 
@@ -288,31 +299,52 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	signal_changed()();
 }
 
-#define IMAGIFY_BUTTON(button,stockid,tooltip)					\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
-	button->add(*icon);	\
-	tooltips.set_tip(*button,tooltip);	\
-	icon->set_padding(0,0);\
+#define IMAGIFY_BUTTON(button,stockid,tooltip) \
+        icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_BUTTON)); \
+	button->set_tooltip_text(tooltip); \
+        button->add(*icon); \
+        button->set_relief(Gtk::RELIEF_NONE); \
+        button->show(); \
+	icon->set_padding(0,0); \
 	icon->show();
 
-Widget_Preview::Widget_Preview()
-:Gtk::Table(5,5,false),
-adj_time_scrub(0,0,1000,1,10,0),
-scr_time_scrub(adj_time_scrub),
-b_loop(/*_("Loop")*/),
-currentindex(0),
-audiotime(0),
-adj_sound(0,0,4),
-l_lasttime("0s"),
-playing(false)
+Widget_Preview::Widget_Preview():
+	Gtk::Table(1, 5),
+	adj_time_scrub(0, 0, 1000, 0, 10, 0),
+	scr_time_scrub(adj_time_scrub),
+	b_loop(/*_("Loop")*/),
+	currentindex(-100000),//TODO get the value from canvas setting or preview option
+	audiotime(0),
+	adj_sound(0, 0, 4),
+	l_lasttime("0s"),
+	playing(false)
 {
+	//catch key press event for shortcut keys
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
+
 	//connect to expose events
 	//signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Preview::redraw));
 
 	//manage all the change in values etc...
+
+	//1st row: preview content
+	preview_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	//pack preview content into scrolled window
+	preview_window.add(draw_area);
+
+	//preview window background color
+	Gdk::Color bg_color;
+	bg_color.set_red(54*256);
+	bg_color.set_blue(59*256);
+	bg_color.set_green(59*256);
+	draw_area.modify_bg(Gtk::STATE_NORMAL, bg_color);
+
+
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
+	
+	scr_time_scrub.set_draw_value(0);
 
 	disp_sound.set_time_adjustment(&adj_sound);
 	timedisp = -1;
@@ -321,97 +353,151 @@ playing(false)
 	disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
 	disp_sound.signal_scrub().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
 
-	/*
-	---------------------------------
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	|								|
-	---------------------------------
-	|loop|play|stop					| hbox
-	|lastl|lastt|rerender|haltrend	| hbox
-	|
-	|sound							|
-	*/
 
-	Gtk::HBox *hbox = 0;
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
 
-	//should set up the dialog using attach etc.
-	attach(draw_area, 0, 1, 0, 1);
-	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-
 	#if 1
 
-	//2nd row
-	hbox = manage(new Gtk::HBox);
+	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all  
+	toolbar = Gtk::manage(new class Gtk::HBox(false, 0));
 
+	//prev rendered frame
+	Gtk::Button *prev_framebutton;
+	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
+	prev_framebutton = manage(new class Gtk::Button());
+	prev_framebutton->set_tooltip_text(_("Prev frame"));
+	icon0->set_padding(0,0);
+	icon0->show();
+	prev_framebutton->add(*icon0);
+	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
+	prev_framebutton->show();
+	prev_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), -1));
+
+	toolbar->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//play pause
+	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton = manage(new class Gtk::Button());
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon1->set_padding(0,0);
+	icon1->show();
+	play_pausebutton->add(*icon1);
+	play_pausebutton->set_relief(Gtk::RELIEF_NONE);
+	play_pausebutton->show();
+	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+
+	toolbar->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
+
+	//next rendered frame
+	Gtk::Button *next_framebutton;
+	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
+	next_framebutton = manage(new class Gtk::Button());
+	next_framebutton->set_tooltip_text(_("Next frame"));
+	icon2->set_padding(0,0);
+	icon2->show();
+	next_framebutton->add(*icon2);
+	next_framebutton->set_relief(Gtk::RELIEF_NONE);
+	next_framebutton->show();
+	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&Widget_Preview::seek_frame), 1));
+
+	toolbar->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
+
+	//spacing
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	space->set_size_request(8);
+	toolbar->pack_start(*space, false, true);
+
+
+	//loop
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,_("Toggle Looping"));
-	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
-	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
+	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
-	button = manage(new Gtk::Button(/*_("Play")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,_("Play"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	//spacing
+	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
+        space1->set_size_request(24);
+        toolbar->pack_start(*space1, false, true);
 
-	button = manage(new Gtk::Button(/*_("Stop")*/));
-	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
-	IMAGIFY_BUTTON(button,Gtk::Stock::NO,_("Stop"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
-	//attack the stop render and erase all buttons to same line...
-	{
-		Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
-		hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
-	}
-
+	//halt render
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,_("Halt Render"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,2,3,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Halt render"));
 
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+
+	//re-preview
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,_("Re-Preview"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,0,2,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Re-preview"));
 
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+
+	//erase all
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,_("Erase All"));
-	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
-	//attach(*button,2,3,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frame(s)"));
 
-	hbox->show_all();
-	attach(*hbox,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
-	//3rd row
-	hbox = manage(new Gtk::HBox);
-	{
-		Gtk::Label *label = manage(new Gtk::Label(_("Last Rendered: ")));
-		//label->show();
-		hbox->pack_start(*label,Gtk::PACK_SHRINK,10);
-		//attach(*manage(new Gtk::Label(_("Last Rendered: "))),0,1,3,4,Gtk::SHRINK,Gtk::SHRINK);
-	}
-	//l_lasttime.show();
-	hbox->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);
-	hbox->show_all();
-	attach(*hbox,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	//attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
+	//zoom preview
+	factor_refTreeModel = Gtk::ListStore::create(factors);
+	zoom_preview.set_model(factor_refTreeModel);
+	zoom_preview.property_has_frame() = true;
+	zoom_preview.signal_changed().connect(sigc::mem_fun(*this, &Widget_Preview::preview_draw));
 
-	//5th row
+	Gtk::TreeModel::Row row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "1";
+	row[factors.factor_value] = "25%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "2";
+	row[factors.factor_value] = "50%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "3";
+	row[factors.factor_value] = "100%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "4";
+	row[factors.factor_value] = "200%";
+
+	row = *(factor_refTreeModel->append());
+	row[factors.factor_id] = "5";
+	row[factors.factor_value] = _("Fit");
+	zoom_preview.set_text_column(factors.factor_value);
+
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	entry->set_text("100%"); //default zoom level
+	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
+	entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::on_zoom_entry_activated));
+
+	//set the zoom widget width
+	zoom_preview.set_size_request(100, -1);
+
+	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
+
+	show_toolbar();
+
+	//3rd row: previewing frame numbering and rendered frame numbering
+	Gtk::HBox *status = manage(new Gtk::HBox);
+	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
+	Gtk::Label *separator = manage(new Gtk::Label(" / "));
+	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);
+	status->pack_start(l_lasttime, Gtk::PACK_SHRINK, 5);
+
+	status->show_all();
+
+	//5th row: sound track
 	disp_sound.set_size_request(-1,32);
-	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
+	// attach all widgets	
+	attach(preview_window, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0);
+	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	attach(*toolbar, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(*status, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+//	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	show_all();
 
 	//if(draw_area.get_window()) gc_area = Gdk::GC::create(draw_area.get_window());
@@ -514,6 +600,12 @@ void studio::Widget_Preview::update()
 		disp_sound.set_position(time);
 		disp_sound.queue_draw();
 	}
+
+	//current frame in previewing
+	Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
+                .get_string(preview->get_global_fps(), App::get_time_format()));
+	l_currenttime.set_text(timecode);
+
 }
 void studio::Widget_Preview::preview_draw()
 {
@@ -531,24 +623,56 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	//figure out the scaling factors...
 	float sx, sy;
-	int nw,nh;
+	float q = 1 / preview->get_zoom();
+	int nw, nh;
 
-	sx = draw_area.get_width() / (float)px->get_width();
-	sy = draw_area.get_height() / (float)px->get_height();
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	String str(entry->get_text());
+	Glib::ustring text = str;
+	locale_from_utf8 (text);
+	const char *c = text.c_str();
 
-	//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+	if (text == _("Fit") || text == "fit")
+	{
+		sx = draw_area.get_width() / (float)px->get_width();
+		sy = draw_area.get_height()/ (float)px->get_height();
 
-	//round to smallest scale (fit entire thing in window without distortion)
-	if(sx > sy) sx = sy;
-	//else sy = sx;
+		//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+
+		//round to smallest scale (fit entire thing in window without distortion)
+		if(sx > sy) sx = sy;
+
+		//cleanup previous size request
+		draw_area.set_size_request();
+	}
+
+	//limit zoom level from 0.01 to 10 times
+	else if (atof(c) > 1000)
+	{
+		sx = sy = 10 * q;
+	}
+
+	else if (atof(c) <= 0 )
+	{
+		sx = sy = 0 ;
+		draw_area.set_size_request(0, 0);
+	}
+
+	else sx = sy = atof(c) / 100 * q;
 
 	//scale to a new pixmap and then copy over to the window
-	nw = (int)(px->get_width()*sx);
-	nh = (int)(px->get_height()*sx);
+	nw = (int)(px->get_width() * sx);
+	nh = (int)(px->get_height() * sx);
 
 	if(nw == 0 || nh == 0)return true;
 
-	pxnew = px->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
+	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
+
+	//except "Fit" or "fit", we need to set size request for scrolled window
+	if (text != _("Fit") & text != "fit")
+	{
+		draw_area.set_size_request(nw, nh);
+	}
 
 	//synfig::info("Now to draw to the window...");
 	//copy to window
@@ -573,30 +697,11 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 		Gdk::Cairo::set_source_pixbuf(
 			cr, //cairo context
 			pxnew, //pixbuf
-			0, 0 //coordinates to place upper left corner of pixbuf
+			//coordinates to place center of the preview window
+			(draw_area.get_width() - nw) / 2, (draw_area.get_height() - nh) / 2
 			);
 		cr->paint();
 		cr->restore();
-
-		if(timedisp >= 0)
-		{
-			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
-															.get_string(preview->get_global_fps(),
-																			App::get_time_format()));
-			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
-
-			cr->save();
-
-			layout->set_text(timecode);
-
-			cr->set_source_rgb(1,0,0);
-			cr->move_to(4,4);
-			layout->show_in_cairo_context(cr);
-			cr->stroke();
-
-			cr->restore();
-		}
 	}
 
 	//synfig::warning("Refresh the draw area");
@@ -638,7 +743,7 @@ bool studio::Widget_Preview::play_update()
 			{
 				time = adj_time_scrub.get_upper();
 				adj_time_scrub.set_value(time);
-				play_stop();
+				play_pause();
 				update();
 
 				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
@@ -669,7 +774,7 @@ void studio::Widget_Preview::slider_move()
 //for other things updating the value changed signal...
 void studio::Widget_Preview::scrub_updated(double t)
 {
-	stop();
+	pause();
 
 	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
 	//double oldt = t;
@@ -706,7 +811,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 	synfig::info("Setting preview");
 
 	//stop playing the mini animation...
-	stop();
+	pause();
 
 	if(preview)
 	{
@@ -763,7 +868,7 @@ void studio::Widget_Preview::clear()
 
 void studio::Widget_Preview::play()
 {
-	if(preview && !playing)
+	if(preview)
 	{
 		//synfig::info("Playing at %lf",adj_time_scrub.get_value());
 		//audiotime = adj_time_scrub.get_value();
@@ -787,22 +892,71 @@ void studio::Widget_Preview::play()
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
 	}
-
 }
 
-void studio::Widget_Preview::play_stop()
+void studio::Widget_Preview::play_pause()
 {
 	playing = false;
-	signal_stop()();
+	signal_pause()();
 	if(audio) audio->stop(); //!< stop the audio
 	//synfig::info("Stopping...");
+
+	Gtk::Image *icon;
+	icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+	play_pausebutton->remove();
+	play_pausebutton->add(*icon);
+	play_pausebutton->set_tooltip_text(_("Play"));
+	icon->set_padding(0,0);
+	icon->show();
+	
 }
 
-void studio::Widget_Preview::stop()
+void studio::Widget_Preview::pause()
 {
 	//synfig::warning("stopping");
-	play_stop();
+	play_pause();
 	timecon.disconnect();
+}
+
+void studio::Widget_Preview::on_play_pause_pressed()
+{
+	bool play_flag;
+	float begin = preview->get_begintime();
+	float end = preview->get_endtime();
+	float current = adj_time_scrub.get_value();
+	Gtk::Image *icon;
+
+	if(!playing)
+	{
+		play_pausebutton->remove();
+		if(current == end) adj_time_scrub.set_value(begin);
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
+		play_pausebutton->set_tooltip_text(_("Pause"));
+		play_pausebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+
+		play_flag=true;
+	}
+	else
+	{
+		play_flag=false;
+	}
+	if(play_flag) play(); else pause();
+}
+
+void studio::Widget_Preview::seek_frame(int frames)
+{
+//	if(!frames)	return;
+
+	if(playing) pause();	//pause playing when seek frame called
+
+	double fps = preview->get_fps();
+	double currenttime = adj_time_scrub.get_value();
+	int currentframe = (int)floor(currenttime * fps);
+	Time newtime(double((currentframe + frames + 0.5) / fps));
+	
+	adj_time_scrub.set_value(newtime);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
@@ -813,7 +967,7 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 		{
 			if(event->button.button == 1 || event->button.button == 3)
 			{
-				stop();
+				pause();
 			}
 		}
 
@@ -843,7 +997,7 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 
 void studio::Widget_Preview::seek(float t)
 {
-	stop();
+	pause();
 	adj_time_scrub.set_value(t);
 }
 
@@ -852,7 +1006,7 @@ void studio::Widget_Preview::repreview()
 	if(preview)
 	{
 		stoprender();
-		stop();
+		pause();
 		preview->get_canvasview()->preview_option();
 	}
 }
@@ -867,7 +1021,7 @@ void studio::Widget_Preview::stoprender()
 
 #ifdef SINGLE_THREADED
 		if (preview->renderer->updating)
-			preview->renderer->stop();
+			preview->renderer->pause();
 		else
 #endif
 			preview->renderer.detach();
@@ -876,7 +1030,7 @@ void studio::Widget_Preview::stoprender()
 
 void studio::Widget_Preview::eraseall()
 {
-	stop();
+	pause();
 	stoprender();
 
 	currentbuf.clear();
@@ -888,4 +1042,151 @@ void studio::Widget_Preview::eraseall()
 	{
 		preview->clear();
 	}
+}
+
+void Widget_Preview::on_zoom_entry_activated()
+{
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	String str(entry->get_text());
+	string digi = "0123456789";
+	size_t first = str.find_first_of(digi);
+
+	if (first == string::npos)
+	{
+		entry->set_text(_("Fit"));
+
+		//release the focus to enable accelerator keys
+		preview_window.grab_focus();
+
+		return ;
+	}
+
+	size_t last = str.find_first_not_of(digi);
+
+	if (last == string::npos)
+	{
+		last = str.find_last_of(digi) + 1;
+	}
+
+	if (first > last)
+	{
+		entry->set_text (_("Fit"));
+	}
+
+	else entry->set_text(str.substr(first, last - first) + "%");
+
+	//release the focus to enable accelerator keys
+	preview_window.grab_focus();
+}
+
+void Widget_Preview::hide_toolbar()
+{
+	toolbar->hide();
+	toolbarisshown = 0;
+
+	//release the focus to enable accelerator keys
+	preview_window.grab_focus();
+}
+
+void Widget_Preview::show_toolbar()
+{
+	toolbar->show();
+	toolbarisshown = 1;
+
+	toolbar->grab_focus();
+}
+
+//shortcut keys TODO: customizable shortcut keys would be awesome.
+bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
+{
+	//hide and show toolbar
+	if (ev->keyval == gdk_keyval_from_name("h"))
+	{
+		if (toolbarisshown) hide_toolbar();
+		else show_toolbar();
+		return true;
+	}
+
+	//previous rendered frame
+	if (ev->keyval == gdk_keyval_from_name("a"))
+	{
+		if(playing) pause();
+		seek_frame(-1);
+		return true;
+	}
+
+	//play/pause
+	if (ev->keyval == gdk_keyval_from_name("s"))
+	{
+		on_play_pause_pressed();
+		return true;
+	}
+
+	//next render frame
+	if (ev->keyval == gdk_keyval_from_name("d"))
+	{
+		if(playing) pause();
+		seek_frame(+1);
+		return true;
+	}
+
+	//loop
+	if (ev->keyval == gdk_keyval_from_name("f"))
+	{
+		if(get_loop_flag()) set_loop_flag(false);
+		else set_loop_flag(true);
+		return true;
+	}
+
+	//zoom level switching
+	//zoom to 25%
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	Glib::ustring text = entry->get_text();
+
+	if (ev->keyval == gdk_keyval_from_name("1"))
+	{
+		if(entry->get_text() != "25%")
+		{
+			entry->set_text("25%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("2"))
+	{
+		if(entry->get_text() != "50%")
+		{
+			entry->set_text("50%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("3"))
+	{
+		if(entry->get_text() != "100%")
+		{
+			entry->set_text("100%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("4"))
+	{
+		if(entry->get_text() != "200%")
+		{
+			entry->set_text("200%");
+		}
+		return true;
+	}
+
+	if (ev->keyval == gdk_keyval_from_name("5"))
+	{
+		if(entry->get_text() != _("Fit"))
+		{
+			entry->set_text(_("Fit"));
+		}
+		return true;
+	}
+
+	return false;
 }

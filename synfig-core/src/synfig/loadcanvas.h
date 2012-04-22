@@ -201,6 +201,8 @@ private:
 
 	//! Width Point Value Base Parsing Function
 	WidthPoint parse_width_point(xmlpp::Element *node);
+	//! Dash Item Value Base Parsing Function
+	DashItem parse_dash_item(xmlpp::Element *node);
 
 	//! Keyframe Parsing Function
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);

@@ -41,6 +41,7 @@
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_bline.h>
 
 #include <synfigapp/general.h>
 
@@ -168,11 +169,17 @@ Action::ValueDescBLineLink::prepare()
 	const std::vector<ValueBase> bline((*bline_value_node)(time).get_list());
 	int size = bline.size();
 	Real amount = (index + origin + loop_adjust) / (size + loop_adjust);
+	// This is the standard amount, let's calculate the homogeneous amount
+	// since by default, homogeneous is 'on' for new BLineLink
+	// Note: if bline is looped, then consider the loop option of
+	// BLineLink looped too.
+	amount=std_to_hom(ValueBase(bline), amount, loop, loop);
 	LinkableValueNode::Handle calculated_value_node;
 	Action::Handle action;
 
 	ValueNode::Handle loop_value_node(ValueNode_Const::create(loop));
 	ValueNode::Handle amount_value_node(ValueNode_Const::create(amount));
+	ValueNode::Handle homogeneous_value_node(ValueNode_Const::create(true));
 
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
@@ -224,6 +231,7 @@ Action::ValueDescBLineLink::prepare()
 			calculated_value_node->set_link("bline",  bline_value_node);
 			calculated_value_node->set_link("loop",   ValueNode_Const::create(loop));
 			calculated_value_node->set_link("amount", ValueNode_Const::create(amount));
+			calculated_value_node->set_link("homogeneous", ValueNode_Const::create(true));
 
 			action = ValueNodeReplace::create();
 			action->set_param("canvas", get_canvas());
@@ -261,6 +269,7 @@ Action::ValueDescBLineLink::prepare()
 		calculated_value_node->set_link("bline",  bline_value_node );
 		calculated_value_node->set_link("loop",   loop_value_node  );
 		calculated_value_node->set_link("amount", amount_value_node);
+		calculated_value_node->set_link("homogeneous", homogeneous_value_node);
 
 		action->set_param("canvas", get_canvas());
 		action->set_param("canvas_interface", get_canvas_interface());

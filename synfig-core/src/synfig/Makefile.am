@@ -79,6 +79,7 @@ VALUENODEHEADERS = \
 	valuenode_composite.h \
 	valuenode_const.h \
 	valuenode_cos.h \
+	valuenode_dilist.h \
 	valuenode_dotproduct.h \
 	valuenode_duplicate.h \
 	valuenode_dynamiclist.h \
@@ -137,6 +138,7 @@ VALUENODESOURCES = \
 	valuenode_composite.cpp \
 	valuenode_const.cpp \
 	valuenode_cos.cpp \
+	valuenode_dilist.cpp \
 	valuenode_dotproduct.cpp \
 	valuenode_duplicate.cpp \
 	valuenode_dynamiclist.cpp \
@@ -183,12 +185,14 @@ VALUENODESOURCES = \
 VALUEHEADERS = \
 	blinepoint.h \
 	widthpoint.h \
+	dashitem.h \
 	gradient.h \
 	value.h
 
 VALUESOURCES = \
 	blinepoint.cpp \
 	widthpoint.cpp \
+	dashitem.cpp \
 	gradient.cpp \
 	value.cpp
 

@@ -51,7 +51,7 @@ struct PreviewInfo
 	bool overbegin,overend;
 };
 
-class Dialog_Preview : public Gtk::Dialog
+class Dialog_Preview : public Gtk::Window
 {
 	Widget_Preview 	preview;
 	DialogSettings	settings;
@@ -69,6 +69,16 @@ public:
 
 	virtual void on_hide();
 	//other forwarding functions...
+
+	//child widgets:
+
+private:
+	bool on_key_pressed(GdkEventKey*);
+	void close_window_handler();
+
+protected:
+	Gtk::Table preview_table;
+
 }; // END of Dialog_Preview
 
 class Dialog_PreviewOptions : public Gtk::Dialog

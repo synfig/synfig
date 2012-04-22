@@ -100,7 +100,7 @@ DeviceTracker::save_preferences()
 		GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
 
 		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(gdk_device->name);
-		if (synfig_device == NULL)
+		if (!synfig_device)
 			continue;
 
 		synfig_device->set_mode(InputDevice::Mode(gdk_device->mode));
@@ -133,7 +133,7 @@ DeviceTracker::load_preferences()
 		GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
 
 		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(gdk_device->name);
-		if (synfig_device == NULL)
+		if (!synfig_device)
 			continue;
 
 		gdk_device_set_mode(gdk_device, GdkInputMode(synfig_device->get_mode()));

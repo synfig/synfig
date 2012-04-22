@@ -29,13 +29,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/tooltips.h>
 #include <gtkmm/optionmenu.h>
 
 #include <synfig/string.h>
@@ -57,8 +56,6 @@ class AsyncRenderer;
 
 class RenderSettings : public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips;
-
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 

@@ -368,6 +368,8 @@ src/synfigapp/actions/valuedesclink.cpp
 src/synfigapp/actions/valuedesclink.h
 src/synfigapp/actions/valuedescset.cpp
 src/synfigapp/actions/valuedescset.h
+src/synfigapp/actions/valuedescremovesmart.cpp
+src/synfigapp/actions/valuedescremovesmart.h
 src/synfigapp/actions/valuenodeadd.cpp
 src/synfigapp/actions/valuenodeadd.h
 src/synfigapp/actions/valuenodeconstset.cpp

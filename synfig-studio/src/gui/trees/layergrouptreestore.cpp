@@ -277,7 +277,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 				if((*child_iter)[model.active])
 					activecount++;
 			}
-			x.set(activecount>total/2);
+			x.set(activecount>0);
 		}
 		else
 			x.set(false);
@@ -379,8 +379,6 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 					group_name=Glib::ustring(group_name,group_name.find(GROUP_NEST_CHAR)+1,Glib::ustring::npos);
 				}
 				new_group+=x.get();
-
-				synfig::info("Renaming group \"%s\" to \"%s\"...",group.c_str(),new_group.c_str());
 
 				// Check to see if this group is real or not.
 				// If it isn't real, then renaming it is a cinch.

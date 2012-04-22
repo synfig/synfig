@@ -42,6 +42,7 @@
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
+#include <synfig/canvas.h>
 
 #endif
 
@@ -221,29 +222,41 @@ void
 Layer_TimeLoop::set_time(Context context, Time t)const
 {
 	Time time = t;
-
+	float document_fps=get_canvas()->rend_desc().get_frame_rate();
 	if (!only_for_positive_duration || duration > 0)
 	{
 		if (duration == 0)
 			t = link_time;
-		else if (duration > 0)
-		{
-			t -= local_time;
-			t -= floor(t / duration) * duration;
-			t  = link_time + t;
+		else {
+			float t_frames = round(t*document_fps);
+			float duration_frames = round(duration*document_fps);
+			if (duration > 0)
+			{
+				t -= local_time;
+				// Simple formula looks like this:
+				// t -= floor(t / duration) * duration;
+				// but we should make all calculations in frames to avoid round errors
+				t_frames -= floor(t_frames / duration_frames) * duration_frames;
+				// converting back to seconds:
+				t = t_frames / document_fps;
+				t = link_time + t;
+			}
+			else
+			{
+				t -= local_time;
+				// Simple formula looks like this:
+				// t -= floor(t / -duration) * -duration;
+				// but we should make all calculations in frames to avoid round errors
+				t_frames -= floor(t_frames / -duration_frames) * -duration_frames;
+				// converting back to seconds:
+				t = t_frames / document_fps;
+				t = link_time - t;
+			}
 		}
-		else
-		{
-			t -= local_time;
-			t -= floor(t / -duration) * -duration;
-			t  = link_time - t;
-		}
-
 		// for compatibility with v0.1 layers; before local_time is reached, take a step back
 		if (!symmetrical && time < local_time)
 			t -= duration;
 	}
-
 	context.set_time(t);
 }
 

@@ -892,7 +892,7 @@ void
 Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location, bool bezier)
 {
 	Gtk::Menu& parammenu(*menu);
-
+	synfigapp::ValueDesc value_desc2(value_desc);
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
 
 	if(!canvas_interface)
@@ -974,14 +974,16 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	else
 		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
 
-	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	if((value_desc2.get_value_type()==ValueBase::TYPE_BLINEPOINT || value_desc2.get_value_type()==ValueBase::TYPE_WIDTHPOINT)
+	 && value_desc2.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc2.get_value_node()))
 	{
-		value_desc=synfigapp::ValueDesc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),0);
+		// the index=0 is position for widthpoint and vertex for blinepoint
+		value_desc2=synfigapp::ValueDesc(ValueNode_Composite::Handle::cast_dynamic(value_desc2.get_value_node()),0);
 	}
 
-	if(value_desc.is_value_node() && ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()))
+	if(value_desc2.is_value_node() && ValueNode_Animated::Handle::cast_dynamic(value_desc2.get_value_node()))
 	{
-		ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
+		ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_desc2.get_value_node()));
 
 		try
 		{
@@ -1000,7 +1002,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 						),
 						waypoint_set
 					),
-					value_desc
+					value_desc2
 				)
 			));
 		}
@@ -1268,6 +1270,23 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			continue;
 
 		ValueNode_Animated::Handle value_node;
+		// Check if we are dealing with a BLinePoint or a WidthPoint value desc
+		// If so, then change the value desc to be the position or the point.
+
+		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
+		{
+			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
+			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			{
+				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position"));
+				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("position")));
+			}
+			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point"));
+				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("point")));
+			}
+		}
 
 		// If this value isn't a ValueNode_Animated, but
 		// it is somewhat constant, then go ahead and convert

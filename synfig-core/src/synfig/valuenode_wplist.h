@@ -64,6 +64,7 @@ class ValueNode_WPList : public ValueNode_DynamicList
 {
 private:
 	ValueNode::RHandle bline_;
+
 public:
 
 	typedef etl::handle<ValueNode_WPList> Handle;

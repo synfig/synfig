@@ -88,6 +88,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
 	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
 	case TYPE_WIDTHPOINT:	data=static_cast<void*>(new WidthPoint());			break;
+	case TYPE_DASHITEM:		data=static_cast<void*>(new DashItem());			break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
@@ -134,6 +135,7 @@ ValueBase::get_string() const
 	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
 	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
 	case TYPE_WIDTHPOINT:	return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
+	case TYPE_DASHITEM:		return strprintf("DashItem (%s)", get(DashItem()).get_offset(), get(DashItem()).get_length());
 
 		// All types after this point require construction/destruction
 
@@ -269,6 +271,7 @@ ValueBase::clear()
 		case TYPE_MATRIX:		delete static_cast<Matrix*>(data);		break;
 		case TYPE_BONE_WEIGHT_PAIR:	delete static_cast<BoneWeightPair*>(data);	break;
 		case TYPE_WIDTHPOINT:	delete static_cast<WidthPoint*>(data);	break;
+		case TYPE_DASHITEM:		delete static_cast<DashItem*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
@@ -326,6 +329,8 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BONE_WEIGHT_PAIR:	return N_("bone_weight_pair");
 	case TYPE_WIDTHPOINT:	return N_("width_point");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_DASHITEM:		return N_("dash_item");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_LIST:			return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -431,6 +436,8 @@ ValueBase::ident_type(const String &str)
 	else if(str=="bone_weight_pair")	return TYPE_BONE_WEIGHT_PAIR;
 	else if(str=="width_point" ||
 			str=="widthpoint")	return TYPE_WIDTHPOINT;
+	else if(str=="dash_item" ||
+			str=="dashitem")	return TYPE_DASHITEM;
 
 	return TYPE_NIL;
 }
@@ -456,6 +463,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_CANVAS:		   return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
 	case TYPE_LIST:			   return get_list()==rhs.get_list();
 	case TYPE_VALUENODE_BONE:  return get(ValueNode_Bone::Handle())==rhs.get(ValueNode_Bone::Handle());
+	case TYPE_DASHITEM:        return get(DashItem())==rhs.get(DashItem());
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
 	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
@@ -464,7 +472,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_BONE_WEIGHT_PAIR:	// return get(BoneWeightPair())==rhs.get(BoneWeightPair());
 	case TYPE_WIDTHPOINT:
 	case TYPE_NIL:
-	default:				   return false;
+	default:                   return false;
 	}
 	return false;
 }

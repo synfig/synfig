@@ -254,8 +254,8 @@ Node::add_child(Node*x)
 {
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
 		printf("%s:%d adding %lx (%s) as parent of %lx (%s) (%zd -> ", __FILE__, __LINE__,
-			   ulong(this), get_string().c_str(),
-			   ulong(x), x->get_string().c_str(),
+			   uintptr_t(this), get_string().c_str(),
+			   uintptr_t(x), x->get_string().c_str(),
 			   x->parent_set.size());
 
 	x->parent_set.insert(this);
@@ -271,16 +271,16 @@ Node::remove_child(Node*x)
 	{
 		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
 			printf("%s:%d %lx (%s) isn't in parent set of %lx (%s)\n", __FILE__, __LINE__,
-				   ulong(this), get_string().c_str(),
-				   ulong(x), x->get_string().c_str());
+				   uintptr_t(this), get_string().c_str(),
+				   uintptr_t(x), x->get_string().c_str());
 
 		return;
 	}
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
 		printf("%s:%d removing %lx (%s) from parent set of %lx (%s) (%zd -> ", __FILE__, __LINE__,
-			   ulong(this), get_string().c_str(),
-			   ulong(x), x->get_string().c_str(),
+			   uintptr_t(this), get_string().c_str(),
+			   uintptr_t(x), x->get_string().c_str(),
 			   x->parent_set.size());
 
 	x->parent_set.erase(this);
@@ -323,8 +323,8 @@ Node::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 	{
-		printf("%s:%d Node::on_changed() for %lx (%s); signalling these %zd parents:\n", __FILE__, __LINE__, ulong(this), get_string().c_str(), parent_set.size());
-		for (set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++) printf(" %lx (%s)\n", ulong(*iter), (*iter)->get_string().c_str());
+		printf("%s:%d Node::on_changed() for %lx (%s); signalling these %zd parents:\n", __FILE__, __LINE__, uintptr_t(this), get_string().c_str(), parent_set.size());
+		for (set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++) printf(" %lx (%s)\n", uintptr_t(*iter), (*iter)->get_string().c_str());
 		printf("\n");
 	}
 

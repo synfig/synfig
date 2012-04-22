@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.63.00],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
+AC_INIT([Synfig Studio],[0.63.05],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 AC_REVISION
 
@@ -67,7 +67,7 @@ AC_LIBTOOL_PATCH
 ## FIXME: add i18n for .desktop and other non-compiled files
 ## AM_GLIB_GNU_GETTEXT([external])
 ## AC_PROG_INTLTOOL(0.11)
-ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR"
+ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR fa_IR lt da cs"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
@@ -137,8 +137,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.63.00] [ETL >= 0.04.14] sigc++-2.0,,[
-	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.63.00, ETL >= 0.04.14)])
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.63.05] [ETL >= 0.04.15] sigc++-2.0,,[
+	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.63.05, ETL >= 0.04.15)])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)

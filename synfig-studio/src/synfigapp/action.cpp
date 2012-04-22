@@ -80,6 +80,7 @@
 #include "actions/valuedescdisconnect.h"
 #include "actions/valuedesclink.h"
 #include "actions/valuedescblinelink.h"
+#include "actions/valuedescremovesmart.h"
 
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
@@ -110,6 +111,8 @@
 
 #include "actions/canvasdescriptionset.h"
 #include "actions/canvasidset.h"
+#include "actions/canvasmetadataerase.h"
+#include "actions/canvasmetadataset.h"
 #include "actions/canvasnameset.h"
 #include "actions/canvasrenddescset.h"
 #include "actions/canvasadd.h"
@@ -212,6 +215,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescLink);
 	ADD_ACTION(Action::ValueDescLinkOpposite);
 	ADD_ACTION(Action::ValueDescBLineLink);
+	ADD_ACTION(Action::ValueDescRemoveSmart);
 
 	ADD_ACTION(Action::WaypointAdd);
 	ADD_ACTION(Action::WaypointSet);
@@ -238,7 +242,9 @@ Action::Main::Main()
 
 	ADD_ACTION(Action::CanvasDescriptionSet);
 	ADD_ACTION(Action::CanvasIdSet);
-	ADD_ACTION(Action::CanvasNameSet);
+	ADD_ACTION(Action::CanvasNameSet)
+	ADD_ACTION(Action::CanvasMetadataErase);;
+	ADD_ACTION(Action::CanvasMetadataSet);
 	ADD_ACTION(Action::CanvasRendDescSet);
 	ADD_ACTION(Action::CanvasAdd);
 	ADD_ACTION(Action::CanvasRemove);
@@ -587,7 +593,7 @@ void
 Undoable::ref()const
 {
 	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, ulong(this), (count()*2), "", count()+1);
+		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	Base::ref();
 }
@@ -596,7 +602,7 @@ bool
 Undoable::unref()const
 {
 	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, ulong(this), ((count()-1)*2), "", count()-1);
+		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return Base::unref();
 }

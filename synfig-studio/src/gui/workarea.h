@@ -167,8 +167,7 @@ private:
 	synfig::Real	canvasheight;	//!< Height of the canvas
 	synfig::Real	pw;				//!< The width of a pixel
 	synfig::Real	ph;				//!< The height of a pixel
-	float zoom;					//!< Zoom factor
-	float prev_zoom;			//!< Previous Zoom factor
+	// float zoom, prev_zoom are declared in Duckmatic
 	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
 	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
 
@@ -327,22 +326,23 @@ private:
 	sigc::signal<void> signal_cursor_moved_;
 	sigc::signal<void> signal_rendering_;
 
-	sigc::signal<void> signal_onion_skin_changed_;
-
 	//! Signal for when the user clicks on a layer
 	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_;
 
 	sigc::signal<void> signal_view_window_changed_;
 
-public:
+	sigc::signal<void> signal_meta_data_changed_;
 
-	sigc::signal<void>& signal_onion_skin_changed() { return signal_onion_skin_changed_; }
+public:
 
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
 
 	sigc::signal<void>& signal_cursor_moved() { return signal_cursor_moved_; }
 
 	sigc::signal<void>& signal_view_window_changed() { return signal_view_window_changed_; }
+
+	sigc::signal<void>& signal_meta_data_changed() { return signal_meta_data_changed_; }
+
 	void view_window_changed() { signal_view_window_changed()(); }
 
 	sigc::signal<void,GdkDevice* >& signal_input_device_changed() { return signal_input_device_changed_; }

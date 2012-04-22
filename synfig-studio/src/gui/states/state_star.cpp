@@ -118,6 +118,7 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_star;
 	Gtk::CheckButton checkbutton_layer_region;
 	Gtk::CheckButton checkbutton_layer_outline;
+	Gtk::CheckButton checkbutton_layer_advanced_outline;
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
 	Gtk::CheckButton checkbutton_layer_plant;
 	Gtk::CheckButton checkbutton_layer_link_origins;
@@ -132,6 +133,7 @@ public:
 			(get_layer_star_flag() && get_layer_origins_at_center_flag()) +
 			get_layer_region_flag() +
 			get_layer_outline_flag() +
+			get_layer_advanced_outline_flag() +
 			get_layer_curve_gradient_flag() +
 			get_layer_plant_flag();
 	}
@@ -178,6 +180,9 @@ public:
 	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
 	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
 
+	bool get_layer_advanced_outline_flag()const { return checkbutton_layer_advanced_outline.get_active(); }
+	void set_layer_advanced_outline_flag(bool x) { return checkbutton_layer_advanced_outline.set_active(x); }
+
 	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
 	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
 
@@ -217,7 +222,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw &state_normal; //throw Smach::egress_exception();
+			throw &state_normal;
 		return Smach::RESULT_OK;
 	}
 
@@ -323,6 +328,11 @@ StateStar_Context::load_settings()
 		else
 			set_layer_outline_flag(false);
 
+		if(settings.get_value("star.layer_advanced_outline",value) && value=="1")
+			set_layer_advanced_outline_flag(true);
+		else
+			set_layer_advanced_outline_flag(false);
+
 		if(settings.get_value("star.layer_curve_gradient",value) && value=="1")
 			set_layer_curve_gradient_flag(true);
 		else
@@ -368,6 +378,7 @@ StateStar_Context::save_settings()
 		settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
 		settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
 		settings.set_value("star.layer_outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("star.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
 		settings.set_value("star.layer_region",get_layer_region_flag()?"1":"0");
 		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 		settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
@@ -459,6 +470,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	checkbutton_layer_star(_("Create Star Layer")),
 	checkbutton_layer_region(_("Create Region BLine")),
 	checkbutton_layer_outline(_("Create Outline BLine")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
 	checkbutton_layer_link_origins(_("Link Origins")),
@@ -473,37 +485,38 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(entry_id,											0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_star,							0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_outline,							0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_region,							0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_plant,							0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_curve_gradient,					0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_link_origins,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_origins_at_center,				0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_invert,								0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_regular_polygon,						0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_advanced_outline,				0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,							0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_plant,							0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_origins,					0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_origins_at_center,				0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert,								0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_regular_polygon,						0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),			0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,										1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),			0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,										1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_number_of_points,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_number_of_points,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Inner Tangent:"))),		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_inner_tangent,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Inner Tangent:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_inner_tangent,								1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_outer_tangent,								1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_outer_tangent,								1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Inner Width:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_inner_width,									1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Inner Width:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_inner_width,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Outer Width:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_outer_width,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Outer Width:"))),		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_outer_width,									1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Radius Ratio:"))),		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_radius_ratio,									1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Radius Ratio:"))),		0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_radius_ratio,									1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_angle_offset,									1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 19, 20, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_angle_offset,									1, 2, 19, 20, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -519,15 +532,6 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
-	// Disable the time bar
-	//get_canvas_view()->set_sensitive_timebar(false);
-
-	// Connect a signal
-	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateStar_Context::on_user_click));
 	get_work_area()->set_cursor(Gdk::STAR);
 
 	App::toolbox->refresh();
@@ -559,12 +563,6 @@ StateStar_Context::~StateStar_Context()
 
 	App::dialog_tool_options->clear();
 
-	// Enable the time bar
-	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -576,7 +574,6 @@ StateStar_Context::~StateStar_Context()
 Smach::event_result
 StateStar_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	//throw Smach::egress_exception();
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -611,7 +608,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
 		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
@@ -735,7 +732,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Star layer"));
 				group.cancel();
 				throw String(_("Unable to create Star layer"));
 				return;
@@ -804,7 +800,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Gradient layer"));
 				return;
@@ -850,7 +845,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -873,7 +867,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Plant layer"));
 				return;
@@ -927,7 +920,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -950,7 +942,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 				group.cancel();
 				throw String(_("Unable to create Region layer"));
 				return;
@@ -969,6 +960,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 	if (get_layer_outline_flag())
 	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
 		if (!layer)
 		{
@@ -1000,7 +993,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -1023,7 +1015,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
 				group.cancel();
 				throw String(_("Unable to create Outline layer"));
 				return;
@@ -1036,6 +1027,78 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	//   A D V A N C E D   O U T L I N E
+	///////////////////////////////////////////////////////////////////////////
+
+	if (get_layer_advanced_outline_flag())
+	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Advanced Outline"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				group.cancel();
+				throw String(_("Unable to create Advanced Outline layer"));
+				return;
+			}
+		}
+
+		// only link the advanced_outline's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("origin")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				group.cancel();
+				throw String(_("Unable to create Advanced Outline layer"));
+				return;
+			}
+		}
+		else
+		{
+			layer->set_param("origin",origin);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
+		}
+	}
 	egress_on_selection_change=false;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);

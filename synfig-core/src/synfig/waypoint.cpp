@@ -106,7 +106,7 @@ void
 Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 {
 
-	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, ulong(this), ulong(x), x->get_string().c_str());
+	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x), x->get_string().c_str());
 
 	//! If the value node is not set and we are seting the value
 	//! of an angle, then set both interpolation to linear... why?
@@ -142,7 +142,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 void
 Waypoint::set_parent_value_node(const etl::loose_handle<ValueNode> &x)
 {
-	// printf("%s:%d Waypoint::set_parent_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, ulong(this), ulong(x.get()), x->get_string().c_str());
+	// printf("%s:%d Waypoint::set_parent_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()), x->get_string().c_str());
 	assert(get_value_node());
 
 	if (parent_ == x)

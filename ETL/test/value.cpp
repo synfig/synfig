@@ -58,13 +58,12 @@ struct stupidp
 	}
 };
 
-#if 0
 template <>
-class etl::value_store_type<stupidp>
+class value_store_type<stupidp>
 {
+	public:
 	typedef stupidv	value_type;
 };
-#endif
 
 int main()
 {

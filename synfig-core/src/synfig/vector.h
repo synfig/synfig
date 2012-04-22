@@ -52,6 +52,8 @@ extern "C" { int _isnan(double x); }
 inline bool isnan(double x) { return x != x; }
 inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
+#else
+#define isnan std::isnan
 #endif
 
 

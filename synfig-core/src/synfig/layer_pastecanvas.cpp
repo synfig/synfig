@@ -93,6 +93,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	children_lock=false;
 	muck_with_time_=true;
 	curr_time=Time::begin();
+	outline_grow=0.0;
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
 	set_param_static("children_lock", true);
@@ -159,6 +160,16 @@ Layer_PasteCanvas::get_param_vocab()const
 	//	.set_invisible_duck()
 	);
 
+	ret.push_back(ParamDesc("outline_grow")
+		.set_local_name(_("Outline Grow"))
+		.set_description(_("Exponential value to grow children Outline layers width"))
+	);
+
+	if(canvas && !(canvas->is_inline()))
+	{
+		ret.back().hidden();
+	}
+
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
 	// 'curr_time' member wasn't being copied, so I've added it as a
@@ -212,7 +223,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	IMPORT(children_lock);
 	IMPORT(zoom);
 	IMPORT(curr_time);
-
+	IMPORT(outline_grow);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -296,6 +307,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT(time_offset);
 	EXPORT(children_lock);
 	EXPORT(curr_time);
+	EXPORT(outline_grow);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -387,6 +399,9 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	}
 	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
+
+	Real grow_value(get_parent_canvas_grow_value());
+	canvas->set_grow_value(outline_grow+grow_value);
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
@@ -585,3 +600,4 @@ Layer_PasteCanvas::get_param_static(const String &param) const
 {
 	return Layer_Composite::get_param_static(param);
 }
+

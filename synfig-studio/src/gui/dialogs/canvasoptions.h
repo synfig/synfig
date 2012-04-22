@@ -28,10 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/tooltips.h>
 #include "widgets/widget_value.h"
 #include "widgets/widget_vector.h"
 
@@ -48,8 +47,6 @@ class CanvasView;
 
 class CanvasOptions  :  public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips;
-
 	etl::loose_handle<CanvasView> canvas_view_;
 
 	Gtk::CheckButton toggle_grid_snap;

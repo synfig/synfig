@@ -52,12 +52,13 @@ private:
 	bool transparent;
 	synfig::Color *color_buffer;
 	std::vector<Magick::Image> images;
+	synfig::String sequence_separator;
 
 public:
 
 	magickpp_trgt(const char *filename,
-				  const synfig::TargetParam& /* params */) :
-		filename(filename) { }
+				  const synfig::TargetParam& params) :
+		filename(filename), sequence_separator(params.sequence_separator) { }
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

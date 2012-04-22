@@ -137,7 +137,7 @@ Bone::get_string()const
 					 origin0_[0], origin0_[1],
 					 Angle::deg(angle_).get(),
 					 Angle::deg(angle0_).get(),
-					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, setup_, ulong(parent_));
+					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, setup_, uintptr_t(parent_));
 }
 
 bool

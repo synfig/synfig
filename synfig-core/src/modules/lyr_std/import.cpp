@@ -160,6 +160,9 @@ Import::set_param(const String & param, const ValueBase &value)
 			if(!newimporter)
 			{
 				synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+				importer=0;
+				filename=newfilename;
+				abs_filename=absolute_path(filename_with_path);
 				surface.clear();
 				return false;
 			}

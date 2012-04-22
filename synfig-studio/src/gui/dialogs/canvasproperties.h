@@ -30,10 +30,9 @@
 #include <ETL/handle>
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/tooltips.h>
 
 #include "renddesc.h"
 
@@ -50,8 +49,6 @@ namespace studio
 {
 class CanvasProperties  :  public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips;
-
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 	Gtk::Entry entry_id;
@@ -60,9 +57,9 @@ class CanvasProperties  :  public Gtk::Dialog
 
 	bool dirty_rend_desc;
 
-	Gtk::TreeView* meta_data_tree_view;
-	void on_button_meta_data_add();
-	void on_button_meta_data_delete();
+	//Gtk::TreeView* meta_data_tree_view;
+	//void on_button_meta_data_add();
+	//void on_button_meta_data_delete();
 
 public:
 	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
@@ -73,7 +70,7 @@ public:
 private:
 	void on_rend_desc_changed();
 
-	Gtk::Widget& create_meta_data_view();
+	//Gtk::Widget& create_meta_data_view();
 
 	void on_ok_pressed();
 	void on_apply_pressed();

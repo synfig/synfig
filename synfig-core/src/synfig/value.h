@@ -40,6 +40,7 @@
 #include "blinepoint.h"
 #include "bone.h"
 #include "widthpoint.h"
+#include "dashitem.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -60,10 +61,11 @@ namespace synfig {
 class Canvas;
 class Vector;
 class Time;
-class Segment;
+struct Segment;
 class Gradient;
 class BLinePoint;
 class WidthPoint;
+class DashItem;
 class Color;
 class Bone;
 class ValueNode_Bone;
@@ -103,7 +105,8 @@ public:
 		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
 		TYPE_MATRIX,		//!< Matrix
 		TYPE_BONE_WEIGHT_PAIR,	//!< pair<Bone,Real>
-		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), Cup Type (int enum)
+		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), 2xSide Type (int enum)
+		TYPE_DASHITEM,		//!< DashItem Offset (Real distance), Length (Real distance), 2xSide Type (int enum)
 
 		// All types after this point require construction/destruction
 
@@ -354,6 +357,7 @@ public:
 	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
 	static Type get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
 	static Type get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
+	static Type get_type(const DashItem&) { return TYPE_DASHITEM; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
@@ -388,6 +392,7 @@ public:
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
 	operator const Matrix&()const { return get(Matrix()); }
 	operator const WidthPoint&()const {  return get(WidthPoint()); }
+	operator const DashItem&()const {  return get(DashItem()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }

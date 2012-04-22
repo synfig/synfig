@@ -45,6 +45,7 @@
 #include <synfig/valuenode_stripes.h>
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_dilist.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -224,6 +225,9 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_fill_color());
+	// by default, new advanced outline layers are not homogeneous
+	if(name=="advanced_outline")
+		layer->set_param("homogeneous", false);
 
 	layer->set_param("width",synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
 	layer->set_param("gradient",synfigapp::Main::get_gradient());
@@ -298,6 +302,14 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 					{
 						value_node=LinkableValueNode::create("wplist",iter->second, canvas);
 						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
+					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+						if (iter2->get_type() != ValueBase::TYPE_DASHITEM)
+							break;
+					if (iter2 == list.end())
+					{
+						value_node=LinkableValueNode::create("dilist",iter->second, canvas);
+						ValueNode_DIList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 				}
 				// it has something else so just insert the dynamic list
@@ -660,6 +672,8 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw String(_("Unable to create \"Paste Canvas\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))
 			throw int();
+		if(!layer->set_param("children_lock",true))
+			throw String(_("Could not set children lock of imported canvas"));
 		get_canvas()->register_external_canvas(filename, outside_canvas);
 
 		//layer->set_description(basename(filename));
@@ -905,9 +919,55 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 void
 CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& data)
 {
-	get_canvas()->set_meta_data(key,data);
+	if (get_canvas()->get_meta_data(key) == data)
+		return;
+
+    if (key=="guide_x" || key=="guide_y")
+	{
+		// Create an undoable action
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataSet"));
+
+		assert(action);
+		if(!action)
+			return;
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("key",key);
+		action->set_param("value",data);
+
+		get_instance()->perform_action(action);
+	}
+	else
+	{
+		get_canvas()->set_meta_data(key,data);
+	}
 }
 
+void
+CanvasInterface::erase_meta_data(const synfig::String& key)
+{
+	if (key=="guide_x" || key=="guide_y")
+	{
+		// Create an undoable action
+		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataErase"));
+
+		assert(action);
+		if(!action)
+			return;
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("key",key);
+
+		get_instance()->perform_action(action);
+	}
+	else
+	{
+		get_canvas()->erase_meta_data(key);
+	}
+}
 
 // this function goes with find_important_value_descs()
 static int

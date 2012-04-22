@@ -30,7 +30,7 @@
 
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
 #include <gtkmm/adjustment.h>
@@ -101,9 +101,6 @@ public:
 	*/
 
 private:
-
-	Gtk::Tooltips tooltips_;
-	Gtk::TreePath last_tooltip_path;
 
 	Gtk::TreeView* layer_tree_view_;
 
@@ -181,6 +178,10 @@ private:
 	bool on_layer_tree_event(GdkEvent *event);
 
 	bool on_param_tree_event(GdkEvent *event);
+
+	bool on_param_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip);
+
+	bool on_layer_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip);
 
 	void on_selection_changed();
 

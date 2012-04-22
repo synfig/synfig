@@ -41,6 +41,7 @@ class ValueNode_BLineCalcVertex : public LinkableValueNode
 	ValueNode::RHandle bline_;
 	ValueNode::RHandle loop_;
 	ValueNode::RHandle amount_;
+	ValueNode::RHandle homogeneous_;
 
 	ValueNode_BLineCalcVertex(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 

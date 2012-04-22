@@ -31,7 +31,7 @@
 
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/progressbar.h>
@@ -43,6 +43,7 @@
 #include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/alignment.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
@@ -181,6 +182,7 @@ public:
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
+	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -191,9 +193,6 @@ public:
 
 	WorkArea* get_work_area() { return work_area.get(); }
 private:
-
-	synfig::TransformStack curr_transform_stack;
-	bool curr_transform_stack_set;
 
 	synfig::Rect bbox;
 
@@ -217,9 +216,6 @@ private:
 	sigc::connection				stopcon;
 
 	std::auto_ptr<UniversalScrubber> universal_scrubber;
-
-	//! Tooltip controller
-	Gtk::Tooltips tooltips;
 
 	// DEBUGPOINT_CLASS(4);
 
@@ -268,8 +264,10 @@ private:
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
 	Gtk::Table *displaybar;
-	Gtk::Button *animatebutton;
+	Gtk::ToggleButton *animatebutton;
 	Gtk::Button *keyframebutton;
+	Gtk::ToggleButton *pastkeyframebutton;
+	Gtk::ToggleButton *futurekeyframebutton;
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
 	bool toggling_ducks_;
@@ -343,6 +341,7 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 
 	Gtk::RadioButtonGroup quality_group;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
@@ -451,8 +450,6 @@ private:
 	//! Rebuilds the "new layer" menu
 	void build_new_layer_menu(Gtk::Menu &menu);
 
-	void rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list);
-
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
@@ -462,14 +459,15 @@ private:
 	void toggle_snap_grid();
 	void toggle_onion_skin();
 
+	void toggle_animatebutton();
+
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
 public:
-	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
-
-	const synfig::Rect& get_bbox()const { return bbox; }
+	synfig::Rect& get_bbox() { return bbox; }
 
 	Glib::RefPtr<Glib::ObjectBase> get_ref_obj(const synfig::String& x);
 	Glib::RefPtr<const Glib::ObjectBase> get_ref_obj(const synfig::String& x)const;
@@ -698,6 +696,8 @@ private:
 	void on_animate_button_pressed();
 
 	void on_keyframe_button_pressed();
+	void toggle_past_keyframe_button();
+	void toggle_future_keyframe_button();
 
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
@@ -718,7 +718,13 @@ private:
 	//void on_audio_play();
 	bool on_audio_scrub();
 
-	void on_play_stop_pressed();
+	void on_play_pause_pressed();
+
+	void on_meta_data_changed();
+
+	bool on_key_press_event(GdkEventKey* event);
+	bool focused_widget_has_priority(Gtk::Widget * focused);
+
 
 protected:
 	bool close_instance_when_safe();

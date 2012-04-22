@@ -44,6 +44,7 @@
 #include "workarea.h"
 #include "app.h"
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_composite.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -53,6 +54,7 @@
 #include "toolbox.h"
 
 #include <synfigapp/blineconvert.h>
+#include <synfigapp/wplistconverter.h>
 #include <synfigapp/main.h>
 
 #include <ETL/gaussian>
@@ -64,6 +66,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/scale.h>
 #include <sigc++/connection.h>
+#include "widgets/widget_distance.h"
 
 #include "general.h"
 
@@ -117,13 +120,13 @@ class studio::StateDraw_Context : public sigc::trackable
 	void fill_last_stroke();
 	Smach::event_result fill_last_stroke_and_unselect_other_layers();
 
-	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
-
+	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline, std::list<synfig::WidthPoint> wplist, bool loop_bline_flag,float radius);
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
+	void reverse_wplist(std::list<synfig::WidthPoint> &wplist);
 
 	synfigapp::Settings& settings;
 
@@ -136,6 +139,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
 	Gtk::CheckButton checkbutton_region;	  // whether to create regions
 	Gtk::CheckButton checkbutton_outline;	  // whether to create outlines
+	Gtk::CheckButton checkbutton_advanced_outline;
 	Gtk::CheckButton checkbutton_auto_export;
 	Gtk::Button button_fill_last_stroke;
 
@@ -144,18 +148,25 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::SpinButton  spin_min_pressure;
 	Gtk::CheckButton check_min_pressure;
 
-	Gtk::Adjustment	 adj_feather;
-	Gtk::SpinButton  spin_feather;
+	Widget_Distance *feather_size;
 
+	Gtk::Label threshold_label;
 	Gtk::Adjustment	 adj_globalthres;
 	Gtk::SpinButton  spin_globalthres;
+
+	Gtk::Label width_max_error_label;
+	Gtk::Adjustment adj_width_max_error;
+	Gtk::SpinButton spin_width_max_error;
 
 	Gtk::Adjustment	 adj_localthres;
 	Gtk::CheckButton check_localerror;
 	void UpdateErrorBox();	//switches the stuff if need be :)
+	void UpdateUsePressure();
+	void UpdateCreateAdvancedOutline();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
+	synfigapp::WPListConverter wplistconv;
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -179,20 +190,26 @@ public:
 	bool get_outline_flag()const { return checkbutton_outline.get_active(); }
 	void set_outline_flag(bool x) { return checkbutton_outline.set_active(x); }
 
+	bool get_advanced_outline_flag()const { return checkbutton_advanced_outline.get_active(); }
+	void set_advanced_outline_flag(bool x) { return checkbutton_advanced_outline.set_active(x); }
+
 	bool get_auto_export_flag()const { return checkbutton_auto_export.get_active(); }
 	void set_auto_export_flag(bool x) { return checkbutton_auto_export.set_active(x); }
 
 	Real get_min_pressure() const { return adj_min_pressure.get_value(); }
 	void set_min_pressure(Real x) { return adj_min_pressure.set_value(x); }
 
-	Real get_feather() const { return adj_feather.get_value(); }
-	void set_feather(Real x) { return adj_feather.set_value(x); }
+	Real get_feather() const { return feather_size->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc()); }
+	void set_feather(Distance x) { return feather_size->set_value(x); }
 
 	Real get_gthres() const { return adj_globalthres.get_value(); }
 	void set_gthres(Real x) { return adj_globalthres.set_value(x); }
 
 	Real get_lthres() const { return adj_localthres.get_value(); }
 	void set_lthres(Real x) { return adj_localthres.set_value(x); }
+
+	Real get_width_max_error() const { return adj_width_max_error.get_value(); }
+	void set_width_max_error(Real x) { return adj_width_max_error.set_value(x); }
 
 	bool get_local_error_flag() const { return check_localerror.get_active(); }
 	void set_local_error_flag(bool x) { check_localerror.set_active(x); }
@@ -295,6 +312,11 @@ StateDraw_Context::load_settings()
 		else
 			set_outline_flag(true);
 
+		if(settings.get_value("draw.advanced_outline",value) && value=="0")
+			set_advanced_outline_flag(false);
+		else
+			set_advanced_outline_flag(true);
+
 		if(settings.get_value("draw.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
 		else
@@ -313,16 +335,20 @@ StateDraw_Context::load_settings()
 			set_min_pressure(0);
 
 		if(settings.get_value("draw.feather",value))
-		{
-			Real n = atof(value.c_str());
-			set_feather(n);
-		}else
-			set_feather(0);
+			set_feather(Distance(value.c_str()));
+		else
+			set_feather(Distance("0pt"));
 
 		if(settings.get_value("draw.gthreshold",value))
 		{
 			Real n = atof(value.c_str());
 			set_gthres(n);
+		}
+
+		if(settings.get_value("draw.widthmaxerror",value))
+		{
+			Real n = atof(value.c_str());
+			set_width_max_error(n);
 		}
 
 		if(settings.get_value("draw.lthreshold",value))
@@ -355,11 +381,13 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
 		settings.set_value("draw.region",get_region_flag()?"1":"0");
 		settings.set_value("draw.outline",get_outline_flag()?"1":"0");
+		settings.set_value("draw.advanced_outline",get_advanced_outline_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
-		settings.set_value("draw.feather",strprintf("%f",get_feather()));
+		settings.set_value("draw.feather",feather_size->get_value().get_string());
 		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
+		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
 		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
 	}
@@ -426,54 +454,68 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_extend(_("Auto Extend")),
 	checkbutton_auto_link(_("Auto Link")),
-	checkbutton_region(_("Create Region BLine")),
-	checkbutton_outline(_("Create Outline BLine")),
+	checkbutton_region(_("Create Region")),
+	checkbutton_outline(_("Create Outline")),
+	checkbutton_advanced_outline(_("Create Advanced Outline")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
 	spin_min_pressure(adj_min_pressure,0.1,3),
 	check_min_pressure(_("Min Pressure")),
-	adj_feather(0,0,10000,0.01,0.1),
-	spin_feather(adj_feather,0.01,4),
 	adj_globalthres(.70f,0.01,10000,0.01,0.1),
 	spin_globalthres(adj_globalthres,0.01,3),
+	width_max_error_label(_("Max Width Error")),
+	adj_width_max_error(1.0f, 0.01, 100.0, 0.1,1),
+	spin_width_max_error(adj_width_max_error, 0.01, 2),
 	adj_localthres(20,1,100000,0.1,1),
 	check_localerror(_("LocalError"))
 
 {
+	feather_size=manage(new Widget_Distance());
+	feather_size->show();
+	feather_size->set_digits(2);
+	feather_size->set_range(0,10000000);
+
 	nested=0;
 	load_settings();
 
 	UpdateErrorBox();
+	UpdateUsePressure();
+	UpdateCreateAdvancedOutline();
 
-	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,									0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_outline,						0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region,						0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop,						0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_extend,					0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_link,						0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_export,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_pressure_width,				0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(check_localerror,							0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,                                0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_outline,                     0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_advanced_outline,            0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region,                      0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_loop,                   0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_extend,                 0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_link,                   0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_export,                 0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_pressure_width,              0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_localerror,                        0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure,						0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure,							1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_min_pressure,                      0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_min_pressure,                       1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))),		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres,							1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(threshold_label,                         0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_globalthres,                        1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(width_max_error_label,                   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_width_max_error,                    1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*feather_size,                           1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
 	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
+	checkbutton_pressure_width.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateUsePressure));
+	checkbutton_advanced_outline.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateCreateAdvancedOutline));
 
 	options_table.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	// Hide all tangent and width ducks
@@ -503,22 +545,38 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-
-void StateDraw_Context::UpdateErrorBox()
+void
+StateDraw_Context::UpdateErrorBox()
 {
 	if(get_local_error_flag())
 	{
+		threshold_label.set_label(_("BLine Local Error"));
 		spin_globalthres.set_adjustment(adj_localthres);
 		spin_globalthres.set_value(adj_localthres.get_value());
 		spin_globalthres.set_increments(0.1,1);
 	}else
 	{
+		threshold_label.set_label(_("BLine Smoothness"));
 		spin_globalthres.set_adjustment(adj_globalthres);
 		spin_globalthres.set_value(adj_globalthres.get_value());
 		spin_globalthres.set_increments(0.01,.1);
 	}
 
 	spin_globalthres.update();
+}
+
+void
+StateDraw_Context::UpdateUsePressure()
+{
+	bool status(get_pressure_width_flag());
+	check_min_pressure.set_sensitive(status);
+	spin_min_pressure.set_sensitive(status);
+}
+
+void
+StateDraw_Context::UpdateCreateAdvancedOutline()
+{
+	spin_width_max_error.set_sensitive(get_advanced_outline_flag());
 }
 
 void
@@ -681,11 +739,8 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		}
 	}
 
-	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
-	//stroke_list.push_back(event.stroke_data);
-	//refresh_ducks();
-
 	std::list<synfig::BLinePoint> bline;
+	std::list<synfig::WidthPoint> wplist;
 	bool loop_bline_flag(false);
 
 	//Changed by Adrian - use resident class :)
@@ -706,11 +761,33 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	}
 
 	blineconv(bline,*stroke_data,*width_data);
+	if(get_advanced_outline_flag())
+	{
+		wplistconv.err2max=get_width_max_error()/100;
+		wplistconv(wplist, *stroke_data,*width_data);
+		// returned widths are homogeneous position
+		// let's convert it to standard position
+		// as it is the default for new adv. outlines layers
+		std::list<synfig::WidthPoint>::iterator iter;
+		for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+			iter->set_position(hom_to_std(bline, iter->get_position(), false, false));
+	}
+	// print out resutls
+	//synfig::info("-----------widths");
+	//std::list<synfig::WidthPoint>::iterator iter;
+	//for(iter=wplist.begin();iter!=wplist.end();iter++)
+	//{
+		//if(!iter->get_dash())
+			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
+	//}
+	// results end
 
 	//Postprocess to require minimum pressure
 	if(get_min_pressure_flag())
 	{
 		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
+		if(get_advanced_outline_flag())
+			synfigapp::WPListConverter::EnforceMinWidth(wplist,get_min_pressure());
 	}
 
 	// If the start and end points are similar, then make them the same point
@@ -725,9 +802,14 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		while (bline.size() > 2 &&
 			   (bline.front().get_vertex() - bline.back().get_vertex()).mag() <= radius)
 		{
+			Real size(Real(bline.size()));
 			tangent=bline.back().get_tangent1();
 			width=bline.back().get_width();
 			bline.pop_back();
+			std::list<synfig::WidthPoint>::iterator iter;
+			if(get_advanced_outline_flag())
+				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
 		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
@@ -749,6 +831,13 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			Real tmp_width(bline.front().get_width()+width);
 			tmp_width=tmp_width<=1?tmp_width:1;
 			bline.front().set_width(tmp_width);
+			if(get_advanced_outline_flag())
+			{
+				Real width_front=wplist.front().get_width();
+				Real width_back=wplist.back().get_width();
+				wplist.front().set_width((width_front+width_back)/2.0);
+				wplist.pop_back();
+			}
 		}
 	}
 
@@ -766,11 +855,11 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	if(region_flag)
 		return new_region(bline,radius);
 
-	return new_bline(bline,loop_bline_flag,radius);
+	return new_bline(bline,wplist,loop_bline_flag,radius);
 }
 
 Smach::event_result
-StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius)
+StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius)
 {
 	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
@@ -907,7 +996,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	{
 		std::list<synfig::BLinePoint>::iterator iter;
-		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+		const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
@@ -953,13 +1042,14 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		if(start_duck_index==0)
 		{	// We need to reverse the BLine first.
 			reverse_bline(trans_bline);
-			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,complete_loop);
+			reverse_wplist(wplist);
+			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,wplist,complete_loop);
 			source=start_duck_value_node_bline->list.front();
 			target_offset=trans_bline.size();
 		}
 		else
 		{
-			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,complete_loop);
+			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,wplist,complete_loop);
 			source=start_duck_value_node_bline->list.back();
 		}
 
@@ -980,14 +1070,15 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		trans_bline.pop_back();
 		if(finish_duck_index==0)
 		{
-			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline,false);
+			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline, wplist,false);
 			source=finish_duck_value_node_bline->list.front();
 			target_offset=trans_bline.size();
 		}
 		else
 		{	// We need to reverse the BLine first.
 			reverse_bline(trans_bline);
-			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline,false);
+			reverse_wplist(wplist);
+			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline, wplist,false);
 			source=finish_duck_value_node_bline->list.back();
 		}
 
@@ -1024,20 +1115,20 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	{
 		// Create the layer(s)
-		Layer::Handle layer;
+		Layer::Handle layer, layer2, somelayer;
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		int depth(0);
 
 		// we are temporarily using the layer to hold something
-		layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
-		if(layer)
+		somelayer=get_canvas_view()->get_selection_manager()->get_selected_layer();
+		if(somelayer)
 		{
-			depth=layer->get_depth();
-			canvas=layer->get_canvas();
+			depth=somelayer->get_depth();
+			canvas=somelayer->get_canvas();
 		}
 
 		// fill_last_stroke() will take care of clearing the selection if we're calling it
-		if(get_outline_flag() && get_region_flag())
+		if((get_outline_flag() || get_advanced_outline_flag()) && get_region_flag())
 		{
 			if (fill_last_stroke_and_unselect_other_layers() == Smach::RESULT_ERROR)
 			{
@@ -1055,17 +1146,32 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		// if they're both defined, we'll add the region later
-		if(get_outline_flag())
+		if(get_outline_flag() || get_advanced_outline_flag())
 		{
-			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
-			if (!layer)
+			if(get_outline_flag())
 			{
-				get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
-				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-				group.cancel();
-				return Smach::RESULT_ERROR;
+				layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
+				if (!layer)
+				{
+					get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				layer->set_description(get_id()+_(" Outline"));
 			}
-			layer->set_description(get_id()+_(" Outline"));
+			if(get_advanced_outline_flag())
+			{
+				layer2=get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth);
+				if (!layer2)
+				{
+					get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				layer2->set_description(get_id()+_(" Advanced Outline"));
+			}
 		}
 		else
 		{
@@ -1082,42 +1188,95 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		if(get_feather())
 		{
-			layer->set_param("feather",get_feather());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+			if(layer)
+			{
+				layer->set_param("feather",get_feather());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+			}
+			if(get_advanced_outline_flag())
+			{
+				layer2->set_param("feather",get_feather());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"feather");
+			}
+
 		}
-		assert(layer);
+		if(get_outline_flag()) assert(layer);
+		if(get_advanced_outline_flag()) assert(layer2);
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		if (shift_origin)
-			get_canvas_interface()->
-			  change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
-
-		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
-
-		assert(action);
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",layer);
-		if(!action->set_param("param",String("bline")))
-			synfig::error("LayerParamConnect didn't like \"param\"");
-		if(!action->set_param("value_node",ValueNode::Handle(value_node)))
-			synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
-			group.cancel();
-			increment_id();
-			//refresh_ducks();
-			return Smach::RESULT_ERROR;
+			if(layer)
+				get_canvas_interface()->change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
+			if(layer2)
+				get_canvas_interface()->change_value(synfigapp::ValueDesc(layer2,"origin"),shift_origin_vector);
 		}
-		layer_list.push_back(layer);
-		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
-		//refresh_ducks();
-	}
+			// Regular Outline or Region
+		if(layer)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+			assert(action);
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			layer_list.push_back(layer);
+		}
+		// Advanced Outline
+		if(layer2)
+		{
+			synfigapp::Action::Handle action2(synfigapp::Action::create("LayerParamConnect"));
+			assert(action2);
+			ValueNode_WPList::Handle value_node_wplist;
+			value_node_wplist=ValueNode_WPList::create(synfig::ValueBase(wplist));
+			if(value_node_wplist) value_node_wplist->set_member_canvas(get_canvas());
+			action2->set_param("canvas",get_canvas());
+			action2->set_param("canvas_interface",get_canvas_interface());
+			action2->set_param("layer", layer2);
+			action2->set_param("param", String("wplist"));
+			action2->set_param("value_node", ValueNode::Handle(value_node_wplist));
+			if(!get_canvas_interface()->get_instance()->perform_action(action2))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			synfigapp::Action::Handle action3(synfigapp::Action::create("LayerParamConnect"));
+			assert(action3);
+			action3->set_param("canvas",get_canvas());
+			action3->set_param("canvas_interface",get_canvas_interface());
+			action3->set_param("layer", layer2);
+			if(!action3->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action3->set_param("value_node",ValueNode::Handle(value_node)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+			if(!get_canvas_interface()->get_instance()->perform_action(action3))
+			{
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				increment_id();
+				//refresh_ducks();
+				return Smach::RESULT_ERROR;
+			}
+			layer_list.push_back(layer2);
+		}
+		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+	}
 	increment_id();
 	return Smach::RESULT_ACCEPT;
 }
@@ -1857,10 +2016,149 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop)
 {
+
+	// Recreate the bline that is going to be inserted
+	// First copy the list of BlinePoints
+	std::list<synfig::BLinePoint> inserted_bline(bline.begin(), bline.end());
+	// Add at the end the first BLinePoint of the bline to extend (it is the place where it connects)
+	inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front());
+	// if doing complete loop then add at the start the last BLinePoint of the bline to extend
+	// (it is where the loop closes)
+	if(complete_loop)
+		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back());
+	// store the length of the inserted bline and the number of segments
+	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
+	int inserted_size(inserted_bline.size());
+	// Determine if the bline that the layer belongs to is a Advanced Outline
+	bool is_advanced_outline(false);
+	Layer::Handle layer_parent;
+	std::set<Node*>::iterator niter;
+	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
+	{
+		layer_parent=Layer::Handle::cast_dynamic(*niter);
+		if(layer_parent && layer_parent->get_name() == "advanced_outline")
+		{
+			is_advanced_outline=true;
+			break;
+		}
+	}
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+
+	if(is_advanced_outline)
+	{
+		ValueNode_WPList::Handle wplist_value_node(ValueNode_WPList::Handle::cast_dynamic(layer_parent->dynamic_param_list().find("wplist")->second));
+		if(wplist_value_node)
+		{
+			// Calculate the number of blinepoints of the original bline
+			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
+			// Calculate the length of the original bline
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			// Retrieve the homogeneous parameter value form the layer
+			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
+			//
+			// Calculate the new boundaries for each width point on the old wplist
+			// and modify the boundaries on the old wplist
+			//
+			std::list<synfig::WidthPoint> old_wplist;
+			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
+			old_wplist.assign(wplist_value_base.get_list().begin(),wplist_value_base.get_list().end());
+			std::list<synfig::WidthPoint>::iterator witer;
+			int i;
+			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
+				assert(action);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				synfigapp::ValueDesc value_desc;
+				Real lb_new;
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(wplist_value_node->get_link(i)));
+				if(composite)
+				{
+					value_desc=synfigapp::ValueDesc(composite,4);
+					assert(value_desc.is_valid());
+					WidthPoint wpi(*witer);
+					Real lb(wpi.get_lower_bound());
+					Real ub(wpi.get_upper_bound());
+					Real range(ub-lb);
+					Real l1(inserted_length);
+					Real l2(value_node_length);
+					int s1(complete_loop?inserted_size-2:inserted_size-1);
+					int s2(value_node_size-1);
+					if(homogeneous)
+					{
+						lb_new=ub-(l1+l2)*range/l2;
+					}
+					else
+					{
+						lb_new=ub-(s1+s2)*range/s2;
+					}
+				}
+				else
+				{
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				action->set_param("value_desc",value_desc);
+				action->set_param("new_value", ValueBase(lb_new));
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to set lower boundary for wplist"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+			//
+			// Calculate the new boundaries for each widthpoint of the inserted wplist
+			// and insert each one in the wplist form the layer.
+			// Don't add the widthpoint with position equal to 1.0
+			// to avoid conflicts with the first of the existing wplist.
+			// Don't add the widthpoint with position equal to 0.0 if doing
+			// complete loops.
+			//
+			for(witer=wplist.begin(); witer!=wplist.end();witer++)
+			{
+				if(witer->get_position() == 1.0)
+					continue;
+				if(complete_loop && witer->get_position() == 0.0)
+					continue;
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
+				assert(action);
+				synfigapp::ValueDesc value_desc(wplist_value_node,0);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc", value_desc);
+				// Prepare the time to insert
+				Real lb(witer->get_lower_bound());
+				Real ub(witer->get_upper_bound());
+				Real range(ub-lb);
+				Real l1(inserted_length);
+				Real l2(value_node_length);
+				int s1(complete_loop?inserted_size-2:inserted_size-1);
+				int s2(value_node_size-1);
+				if(homogeneous)
+				{
+					witer->set_upper_bound(lb+(l1+l2)*range/l1);
+				}
+				else
+				{
+					witer->set_upper_bound(lb+(s1+s2)*range/s1);
+				}
+				if(!action->set_param("item",ValueNode::Handle(ValueNode_Composite::create(*witer))))
+					synfig::error("ACTION didn't like \"item\"");
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+		} // endif wplist_value_node exists
+	} // endif is avanced outline
 
 	if (complete_loop)
 	{
@@ -1899,19 +2197,157 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
 			group.cancel();
-			//refresh_ducks();
 			return Smach::RESULT_ERROR;
 		}
 	}
+
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop)
 {
+	// Recreate the bline that is going to be inserted
+	// First copy the list of BlinePoints
+	std::list<synfig::BLinePoint> inserted_bline(bline.begin(), bline.end());
+	// Add at the start, the last BLinePoint of the bline to extend (it is the place where it connects)
+	inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back());
+	// if doing complete loop then add at the end the last BLinePoint of the bline to extend
+	// (it is where the loop closes)
+	if(complete_loop)
+		inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front());
+	// store the length of the inserted bline and the number of segments
+	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
+	int inserted_size(inserted_bline.size());
+	// Determine if the bline that the layer belongs to is a Advanced Outline
+	bool is_advanced_outline(false);
+	Layer::Handle layer_parent;
+	std::set<Node*>::iterator niter;
+	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
+	{
+		layer_parent=Layer::Handle::cast_dynamic(*niter);
+		if(layer_parent && layer_parent->get_name() == "advanced_outline")
+		{
+			is_advanced_outline=true;
+			break;
+		}
+	}
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+
+	if(is_advanced_outline)
+	{
+		ValueNode_WPList::Handle wplist_value_node(ValueNode_WPList::Handle::cast_dynamic(layer_parent->dynamic_param_list().find("wplist")->second));
+		if(wplist_value_node)
+		{
+			// Calculate the number of blinepoints of the original bline
+			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
+			// Calculate the length of the original bline
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			// Retrieve the homogeneous parameter value form the layer
+			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
+			//
+			// Calculate the new boundaries for each width point on the old wplist
+			// and modify the boundaries on the old wplist
+			//
+			std::list<synfig::WidthPoint> old_wplist;
+			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
+			old_wplist.assign(wplist_value_base.get_list().begin(),wplist_value_base.get_list().end());
+			std::list<synfig::WidthPoint>::iterator witer;
+			int i;
+			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
+				assert(action);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				synfigapp::ValueDesc value_desc;
+				Real ub_new;
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(wplist_value_node->get_link(i)));
+				if(composite)
+				{
+					value_desc=synfigapp::ValueDesc(composite,5);
+					assert(value_desc.is_valid());
+					WidthPoint wpi(*witer);
+					Real lb(wpi.get_lower_bound());
+					Real ub(wpi.get_upper_bound());
+					Real range(ub-lb);
+					Real l1(inserted_length);
+					Real l2(value_node_length);
+					int s1(complete_loop?inserted_size-2:inserted_size-1);
+					int s2(value_node_size-1);
+					if(homogeneous)
+					{
+						ub_new=lb+(l1+l2)*range/l2;
+					}
+					else
+					{
+						ub_new=lb+(s1+s2)*range/s2;
+					}
+				}
+				else
+				{
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+				action->set_param("value_desc",value_desc);
+				action->set_param("new_value", ValueBase(ub_new));
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to set upper boundary for wplist"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+			//
+			// Calculate the new boundaries for each widthpoint of the inserted wplist
+			// and insert each one in the wplist form the layer.
+			// Don't add the widthpoint with position equal to 1.0
+			// to avoid conflicts with the first of the existing wplist.
+			// Don't add the widthpoint with position equal to 0.0 if doing
+			// complete loops.
+			//
+			for(witer=wplist.begin(); witer!=wplist.end();witer++)
+			{
+				if(witer->get_position() == 0.0)
+					continue;
+				if(complete_loop && witer->get_position() == 1.0)
+					continue;
+				synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
+				assert(action);
+				synfigapp::ValueDesc value_desc(wplist_value_node,0);
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc", value_desc);
+				// Prepare the time to insert
+				Real lb(witer->get_lower_bound());
+				Real ub(witer->get_upper_bound());
+				Real range(ub-lb);
+				Real l1(inserted_length);
+				Real l2(value_node_length);
+				int s1(complete_loop?inserted_size-2:inserted_size-1);
+				int s2(value_node_size-1);
+				if(homogeneous)
+				{
+					witer->set_lower_bound(ub-(l1+l2)*range/l1);
+				}
+				else
+				{
+					witer->set_lower_bound(ub-(s1+s2)*range/s1);
+				}
+				if(!action->set_param("item",ValueNode::Handle(ValueNode_Composite::create(*witer))))
+					synfig::error("ACTION didn't like \"item\"");
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
+					group.cancel();
+					return Smach::RESULT_ERROR;
+				}
+			}
+		} // endif wplist_value_node exists
+	} // endif is avanced outline
 
 	if (complete_loop)
 	{
@@ -1974,6 +2410,15 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 		eiter->reverse();
 	}
 }
+
+void
+StateDraw_Context::reverse_wplist(std::list<synfig::WidthPoint> &wplist)
+{
+	std::list<synfig::WidthPoint>::iterator iter;
+	for(iter=wplist.begin();iter!=wplist.end();iter++)
+		iter->reverse();
+}
+
 
 Smach::event_result
 StateDraw_Context::fill_last_stroke_and_unselect_other_layers()

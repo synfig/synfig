@@ -61,7 +61,7 @@ SYNFIG_TARGET_SET_CVS_ID(png_trgt,"$Id$");
 void
 png_trgt::png_out_error(png_struct *png_data,const char *msg)
 {
-	png_trgt *me=(png_trgt*)png_data->error_ptr;
+	png_trgt *me=(png_trgt*)png_get_error_ptr(png_data);
 	synfig::error(strprintf("png_trgt: error: %s",msg));
 	me->ready=false;
 }
@@ -69,7 +69,7 @@ png_trgt::png_out_error(png_struct *png_data,const char *msg)
 void
 png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 {
-	png_trgt *me=(png_trgt*)png_data->error_ptr;
+	png_trgt *me=(png_trgt*)png_get_error_ptr(png_data);
 	synfig::warning(strprintf("png_trgt: warning: %s",msg));
 	me->ready=false;
 }
@@ -78,13 +78,14 @@ png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
 png_trgt::png_trgt(const char *Filename,
-				   const synfig::TargetParam& /* params */)
+				   const synfig::TargetParam&  params )
 {
 	file=NULL;
 	filename=Filename;
 	buffer=NULL;
 	ready=false;
 	color_buffer=0;
+	sequence_separator=params.sequence_separator;
 }
 
 png_trgt::~png_trgt()
@@ -140,7 +141,8 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	else if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
-						   etl::strprintf(".%04d",imagecount) +
+						   sequence_separator +
+						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);

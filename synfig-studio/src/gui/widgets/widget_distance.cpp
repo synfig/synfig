@@ -84,6 +84,19 @@ Widget_Distance::on_output()
 	return true;
 }
 
+bool
+Widget_Distance::on_key_press_event(GdkEventKey* event)
+{
+	return SpinButton::on_key_press_event(event);
+}
+
+bool
+Widget_Distance::on_key_release_event(GdkEventKey* event)
+{
+	return SpinButton::on_key_release_event(event);
+}
+
+
 void
 Widget_Distance::set_value(const synfig::Distance &data)
 {

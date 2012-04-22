@@ -76,7 +76,8 @@ Canvas::Canvas(const String &id):
 	cur_time_	(0),
 	is_inline_	(false),
 	is_dirty_	(true),
-	op_flag_	(false)
+	op_flag_	(false),
+	grow_value	(0.0)
 {
 	_CanvasCounter::counter++;
 	clear();
@@ -280,6 +281,23 @@ Canvas::set_description(const String &x)
 }
 
 void
+Canvas::set_grow_value(Real x)
+{
+	if(grow_value!=x)
+	{
+		grow_value=x;
+		get_context().set_dirty_outlines();
+	}
+
+}
+
+Real
+Canvas::get_grow_value()const
+{
+	return grow_value;
+}
+
+void
 Canvas::set_time(Time t)const
 {
 	if(is_dirty_ || !get_time().is_equal(t))
@@ -305,10 +323,10 @@ Canvas::set_time(Time t)const
 Canvas::LooseHandle
 Canvas::get_root()const
 {
-	// printf("root(%lx) = ", ulong(this));
+	// printf("root(%lx) = ", uintptr_t(this));
 	if (parent_)
 		return parent_->get_root();
-	// printf("%lx\n", ulong(this));
+	// printf("%lx\n", uintptr_t(this));
 	return const_cast<synfig::Canvas *>(this);
 }
 
@@ -561,7 +579,10 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		if(!is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
-
+		// Before look up the external canvases
+		// let's check if this is the current canvas
+		if(get_file_name() == file_name)
+			return this;
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
@@ -817,7 +838,7 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 		// this was causing bug 1838132, where cloning an inline canvas that contains an imported image fails
 		// it was failing to ascertain the absolute pathname of the imported image, since it needs the pathname
 		// of the canvas to get that, which is stored in the parent canvas
-//		printf("%s:%d clone: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, ulong(canvas.get()), ulong(parent().get()));
+//		printf("%s:%d clone: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(parent().get()));
 		canvas->parent_=parent();
 //		show_canvas_ancestry(__FILE__, __LINE__, "clone(): old");
 //		canvas->show_canvas_ancestry(__FILE__, __LINE__, "clone(): new");
@@ -868,7 +889,7 @@ Canvas::set_inline(LooseHandle parent)
 
 	id_=_("in line");
 	is_inline_=true;
-//	printf("%s:%d set_inline: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(parent.get()));
+//	printf("%s:%d set_inline: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(parent.get()));
 	parent_=parent;
 //	show_canvas_ancestry(__FILE__, __LINE__, "set_inline()");
 
@@ -907,7 +928,7 @@ Canvas::new_child_canvas()
 	children().push_back(create());
 	Canvas::Handle canvas(children().back());
 
-//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, ulong(canvas.get()), ulong(this));
+//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
 	canvas->parent_=this;
 //	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
 
@@ -928,7 +949,7 @@ Canvas::new_child_canvas(const String &id)
 	Canvas::Handle canvas(children().back());
 
 	canvas->set_id(id);
-//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, ulong(canvas.get()), ulong(this));
+//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
 	canvas->parent_=this;
 //	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
 	canvas->rend_desc()=rend_desc();
@@ -960,7 +981,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 			child_canvas->is_inline_=false;
 		child_canvas->id_=id;
 		children().push_back(child_canvas);
-//		printf("%s:%d add_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, ulong(child_canvas.get()), ulong(this));
+//		printf("%s:%d add_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()), uintptr_t(this));
 		child_canvas->parent_=this;
 //		child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "add_child_canvas");
 	}
@@ -982,7 +1003,7 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 
 	children().remove(child_canvas);
 
-//	printf("%s:%d remove_child_canvas: setting parent_ of %lx to 0\n", __FILE__, __LINE__, ulong(child_canvas.get()));
+//	printf("%s:%d remove_child_canvas: setting parent_ of %lx to 0\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()));
 	child_canvas->parent_=0;
 //	child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "remove_child_canvas");
 }
@@ -1185,7 +1206,14 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
+			{
+				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
+				if(paste_sub_canvas->is_inline())
+					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
+				else
+					paste_sub_canvas->set_grow_value(0.0);
 				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
 // #define SYNFIG_OPTIMIZE_PASTE_CANVAS
@@ -1197,8 +1225,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				paste_canvas->get_amount()			== 1.0f						&&
 				paste_canvas->get_zoom()			== 0						&&
 				paste_canvas->get_time_offset()		== 0						&&
-				paste_canvas->get_origin()			== Point(0,0)				)
+				paste_canvas->get_origin()			== Point(0,0)				&&
+				//paste_canvas->get_param("outline_grow").get(Real()) == 0.0
+				)
 				try {
+					//synfig::info("outline grow is 0.0----------------");
 					for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
 					{
 						Layer* layer=sub_iter->get();
@@ -1294,6 +1325,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	for(iter2=sort_list.begin();iter2!=sort_list.end();++iter2)
 		op_canvas->push_back_simple(iter2->second);
 	op_canvas->op_flag_=true;
+	if(!context->empty() && (*context)->get_canvas())
+	{
+		op_canvas->set_grow_value((*context)->get_canvas()->get_grow_value());
+	}
 }
 
 void
@@ -1430,13 +1465,13 @@ Canvas::register_external_canvas(String file_name, Handle canvas)
 void
 Canvas::show_externals(String file, int line, String text) const
 {
-	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", ulong(this), get_name().c_str(), file.c_str(), line, text.c_str());
+	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", uintptr_t(this), get_name().c_str(), file.c_str(), line, text.c_str());
 	std::map<String, Handle>::iterator iter;
 	for (iter = externals_.begin(); iter != externals_.end(); iter++)
 	{
 		synfig::String first(iter->first);
 		etl::loose_handle<Canvas> second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");
 }
@@ -1453,7 +1488,7 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);
 #ifdef DEBUG_INVOKE_SVNCR
-	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, ulong(canvas.get()), canvas->parent_set.size());
+	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_set.size());
 #endif
 	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
 	{
@@ -1461,7 +1496,7 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 		{
 			Layer* layer(dynamic_cast<Layer*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
-			printf("it's a layer %lx\n", ulong(layer));
+			printf("it's a layer %lx\n", uintptr_t(layer));
 			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
 #endif
 			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
@@ -1469,12 +1504,12 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 				{
 					Canvas* canvas(dynamic_cast<Canvas*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
-					printf("it's a canvas %lx\n", ulong(canvas));
+					printf("it's a canvas %lx\n", uintptr_t(canvas));
 #endif
 					if (canvas->get_non_inline_ancestor())
 					{
 #ifdef DEBUG_INVOKE_SVNCR
-						printf("%s:%d recursively invoking signal vn child removed on non_inline_ancestor %lx\n", __FILE__, __LINE__, ulong(canvas->get_non_inline_ancestor().get()));
+						printf("%s:%d recursively invoking signal vn child removed on non_inline_ancestor %lx\n", __FILE__, __LINE__, uintptr_t(canvas->get_non_inline_ancestor().get()));
 #endif
 						canvas->get_non_inline_ancestor()->invoke_signal_value_node_child_removed(container, content);
 					}
@@ -1518,7 +1553,7 @@ Canvas::show_canvas_ancestry()const
 	}
 
 	printf("  canvas %lx %6s parent %7lx layer %-10s id %8s name '%8s' desc '%8s'\n",
-		   ulong(this), is_inline_?"inline":"", ulong(parent_.get()),
+		   uintptr_t(this), is_inline_?"inline":"", uintptr_t(parent_.get()),
 		   layer.c_str(),
 		   get_id().c_str(), get_name().c_str(), get_description().c_str());
 	if (parent_) parent_->show_canvas_ancestry();

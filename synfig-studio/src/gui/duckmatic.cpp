@@ -38,6 +38,9 @@
 #include <ETL/hermite>
 
 #include "duckmatic.h"
+#include "ducktransform_scale.h"
+#include "ducktransform_translate.h"
+#include "ducktransform_rotate.h"
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/general.h>
@@ -113,6 +116,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	drag_offset_=Point(0,0);
 	clear_duck_dragger();
 	clear_bezier_dragger();
+	zoom=prev_zoom=1.0;
 }
 
 Duckmatic::~Duckmatic()
@@ -129,6 +133,8 @@ Duckmatic::~Duckmatic()
 void
 Duckmatic::clear_ducks()
 {
+	for(;!duck_changed_connections.empty();duck_changed_connections.pop_back())duck_changed_connections.back().disconnect();
+
 	duck_data_share_map.clear();
 	duck_map.clear();
 
@@ -503,7 +509,9 @@ Duckmatic::update_ducks()
 						synfig::Real radius = 0.0;
 						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
 						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
-
+						bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
+						if(homogeneous)
+							amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
 						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
 
@@ -575,9 +583,10 @@ Duckmatic::end_bezier_drag()
 }
 
 Point
-Duckmatic::snap_point_to_grid(const synfig::Point& x, float radius)const
+Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 {
 	Point ret(x);
+	float radius(0.1/zoom);
 
 	GuideList::const_iterator guide_x,guide_y;
 	bool has_guide_x(false), has_guide_y(false);
@@ -1349,6 +1358,100 @@ Duckmatic::create_duck_from(const synfigapp::ValueDesc& value_desc,etl::handle<C
 }
 */
 
+void
+Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack)
+{
+	int transforms(0);
+	String layer_name;
+
+#define QUEUE_REBUILD_DUCKS		sigc::mem_fun(*canvas_view,&CanvasView::queue_rebuild_ducks)
+
+	if(!canvas)
+	{
+		synfig::warning("Duckmatic::add_ducks_layers(): Layer doesn't have canvas set");
+		return;
+	}
+	for(Canvas::iterator iter(canvas->begin());iter!=canvas->end();++iter)
+	{
+		Layer::Handle layer(*iter);
+
+		if(selected_layer_set.count(layer))
+		{
+			if(!curr_transform_stack_set)
+			{
+				curr_transform_stack_set=true;
+				curr_transform_stack=transform_stack;
+			}
+
+			// This layer is currently selected.
+			duck_changed_connections.push_back(layer->signal_changed().connect(QUEUE_REBUILD_DUCKS));
+
+			// do the bounding box thing
+			synfig::Rect& bbox = canvas_view->get_bbox();
+			bbox|=transform_stack.perform(layer->get_bounding_rect());
+
+			// Grab the layer's list of parameters
+			Layer::ParamList paramlist(layer->get_param_list());
+
+			// Grab the layer vocabulary
+			Layer::Vocab vocab=layer->get_param_vocab();
+			Layer::Vocab::iterator iter;
+
+			for(iter=vocab.begin();iter!=vocab.end();iter++)
+			{
+				if(!iter->get_hidden() && !iter->get_invisible_duck())
+				{
+					synfigapp::ValueDesc value_desc(layer,iter->get_name());
+					add_to_ducks(value_desc,canvas_view,transform_stack,&*iter);
+					if(value_desc.is_value_node())
+						duck_changed_connections.push_back(value_desc.get_value_node()->signal_changed().connect(QUEUE_REBUILD_DUCKS));
+				}
+			}
+		}
+
+		layer_name=layer->get_name();
+
+		if(layer->active())
+		{
+			Transform::Handle trans(layer->get_transform());
+			if(trans)
+			{
+				transform_stack.push(trans);
+				transforms++;
+			}
+		}
+
+		// If this is a paste canvas layer, then we need to
+		// descend into it
+		if(layer_name=="PasteCanvas")
+		{
+			Vector scale;
+			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));
+			Vector origin(layer->get_param("origin").get(Vector()));
+
+			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
+			Vector focus(layer->get_param("focus").get(Vector()));
+
+			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.push(new Transform_Scale(layer->get_guid(), scale,origin+focus));
+			if(!origin.is_equal_to(Vector(0,0)))
+				transform_stack.push(new Transform_Translate(layer->get_guid(), origin));
+
+			add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
+
+			if(!origin.is_equal_to(Vector(0,0)))
+				transform_stack.pop();
+			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.pop();
+		}
+	}
+	// Remove all of the transforms we have added
+	while(transforms--) { transform_stack.pop(); }
+
+#undef QUEUE_REBUILD_DUCKS
+}
+
+
 bool
 Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc, int multiple)
 {
@@ -1941,8 +2044,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						if (param_desc)
 						{
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
+							Real gv(value_desc.get_layer()->get_parent_canvas_grow_value());
 							if(value.same_type_as(synfig::Real()))
-								width->set_scalar(value.get(synfig::Real())*0.5f);
+								width->set_scalar(exp(gv)*value.get(synfig::Real())*0.5f);
 							// if it doesn't have a "width" parameter, scale by 0.5f instead
 							else
 								width->set_scalar(0.5f);
@@ -2228,6 +2332,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			return true;
 		}
+
 		else // Check for StaticList
 		if(value_desc.is_value_node() &&
 			ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -2339,17 +2444,34 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				return false;
 			}
 		}
+
 		else // Check for WPList
 		if(value_desc.is_value_node() &&
 			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
 			ValueNode_WPList::Handle value_node;
+			bool homogeneous=true; // if we have an exported WPList without a layer consider it homogeneous
 			value_node=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
 			if(!value_node)
 			{
 				error("expected a ValueNode_WPList");
 				assert(0);
 			}
+			ValueNode::Handle bline(value_node->get_bline());
+			// it is not possible to place any widthpoint's duck if there is
+			// not associated bline.
+			if(!bline)
+				return false;
+			// Retrieve the homogeneous layer parameter
+			Layer::Handle layer_parent;
+			if(value_desc.parent_is_layer_param())
+				layer_parent=value_desc.get_layer();
+			if(layer_parent)
+				{
+					String layer_name(layer_parent->get_name());
+					if(layer_name=="advanced_outline")
+						homogeneous=layer_parent->get_param("homogeneous").get(bool());
+				}
 			int i;
 			for (i = 0; i < value_node->link_count(); i++)
 			{
@@ -2373,11 +2495,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// The position by amount and the amount by position
 					// has to be written considering the bline length too
 					// optionally
-					const ValueBase bline((*value_node->get_bline())(get_time()));
 					ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
-					bline_calc_vertex->set_link("bline", value_node->get_bline());
-					bline_calc_vertex->set_link("loop", ValueNode_Const::create(value_node->get_loop()));
-					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_position()));
+					bline_calc_vertex->set_link("bline", bline);
+					bline_calc_vertex->set_link("loop", ValueNode_Const::create(false));
+					bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_norm_position(value_node->get_loop())));
+					bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(homogeneous));
 					pduck->set_point((*bline_calc_vertex)(get_time()));
 					// hack end
 					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));
@@ -2417,8 +2539,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						if (param_desc)
 						{
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),"width").get_value(get_time()));
+							Real gv(value_desc.get_layer()->get_parent_canvas_grow_value());
 							if(value.same_type_as(synfig::Real()))
-								wduck->set_scalar(value.get(synfig::Real())*0.5f);
+								wduck->set_scalar(exp(gv)*(value.get(synfig::Real())*0.5f));
 							// if it doesn't have a "width" parameter, scale by 0.5f instead
 							else
 								wduck->set_scalar(0.5f);

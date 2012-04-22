@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/togglebutton.h>
 #include "duckmatic.h"
@@ -49,8 +49,6 @@ namespace studio
 
 class ToggleDucksDial : public Gtk::Table
 {
-	Gtk::Tooltips tooltips;
-
 	Gtk::ToggleButton *ducks_position;
 	Gtk::ToggleButton *ducks_vertex;
 	Gtk::ToggleButton *ducks_tangent;

@@ -662,4 +662,21 @@ String
 Layer::get_string()const
 {
 	return String("Layer: ") + get_non_empty_description();
+
+}
+
+Real
+Layer::get_parent_canvas_grow_value()const
+{
+	Canvas::Handle parent_canvas(get_canvas());
+	Real ret;
+	if(parent_canvas)
+	{
+		ret=parent_canvas->get_grow_value();
+	}
+	else
+	{
+		ret=0.0;
+	}
+	return ret;
 }

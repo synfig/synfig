@@ -304,12 +304,21 @@ png_mptr::png_mptr(const char *file_name)
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
-				float r=gamma().r_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].red);
-				float g=gamma().g_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].green);
-				float b=gamma().b_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].blue);
+				png_colorp palette;
+				int num_palette;
+				png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
+				float r=gamma().r_U8_to_F32((unsigned char)palette[row_pointers[y][x]].red);
+				float g=gamma().g_U8_to_F32((unsigned char)palette[row_pointers[y][x]].green);
+				float b=gamma().b_U8_to_F32((unsigned char)palette[row_pointers[y][x]].blue);
 				float a=1.0;
-				if(info_ptr->valid & PNG_INFO_tRNS)
-				    a = (float)(unsigned char)png_ptr->trans[row_pointers[y][x]]*(1.0/255.0);
+				if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+				{
+					png_bytep trans_alpha;
+					int num_trans;
+					png_color_16p trans_color;
+					png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, &trans_color);
+					a = (float)(unsigned char)trans_alpha[row_pointers[y][x]]*(1.0/255.0);
+				}
 				surface_buffer[y][x]=Color(
 					r,
 					g,
@@ -415,7 +424,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 }
 
 bool
-png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time,
+png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time,
 					bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
 					synfig::ProgressCallback */*cb*/)
 {

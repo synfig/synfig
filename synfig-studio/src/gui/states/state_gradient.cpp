@@ -415,7 +415,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
 	}
-	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 

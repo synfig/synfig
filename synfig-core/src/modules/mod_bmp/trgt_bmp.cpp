@@ -108,7 +108,7 @@ inline short little_endian_short(const short &x)
 #define little_endian_short(x)	(x)
 #endif
 
-bmp::bmp(const char *Filename, const synfig::TargetParam& /* params */)
+bmp::bmp(const char *Filename, const synfig::TargetParam& params)
 {
 	file=NULL;
 	filename=Filename;
@@ -116,7 +116,7 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& /* params */)
 	buffer=0;
 	color_buffer=0;
 	set_remove_alpha();
-
+	sequence_separator=params.sequence_separator;
 }
 
 bmp::~bmp()
@@ -177,7 +177,8 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
-						   etl::strprintf(".%04d",imagecount) +
+						   sequence_separator +
+						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename+_(" (animated)"));

@@ -94,6 +94,11 @@ private:
 	void drop_on_append(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 	void drop_on_prepend(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 
+	bool on_key_press_event(GdkEventKey* event);
+
+	bool focused_widget_has_priority(Gtk::Widget* focused);
+
+
 public:
 
 	const std::vector<int>&	get_dock_book_sizes()const { return dock_book_sizes_;}

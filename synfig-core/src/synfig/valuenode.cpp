@@ -61,6 +61,7 @@
 #include "valuenode_bline.h"
 #include "valuenode_staticlist.h"
 #include "valuenode_wplist.h"
+#include "valuenode_dilist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
@@ -192,13 +193,16 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Not,		      "not",			  _("Not"),				 RELEASE_VERSION_0_62_00); // SVN r2364
 	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
 	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
-	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_62_00); // SVN r2???
-	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_62_00); // SVN r2???
-	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); // SVN r2???
-	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); // SVN r2???
-	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); // SVN r2???
-	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_62_03);
 
+	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); 
+
+	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
+	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
+	
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
@@ -324,7 +328,7 @@ ValueNode::on_changed()
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
-		while (parent_canvas = parent_canvas->parent());
+		while ( (parent_canvas = parent_canvas->parent()) );
 	else if(get_root_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
 
@@ -616,7 +620,7 @@ etl::loose_handle<Canvas>
 ValueNode::get_parent_canvas()const
 {
 	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_parent_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas_.get()));
+		printf("%s:%d get_parent_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas_.get()));
 
 	return canvas_;
 }
@@ -625,7 +629,7 @@ etl::loose_handle<Canvas>
 ValueNode::get_root_canvas()const
 {
 	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_root_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(root_canvas_.get()));
+		printf("%s:%d get_root_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(root_canvas_.get()));
 
 	return root_canvas_;
 }
@@ -640,7 +644,7 @@ ValueNode::get_non_inline_ancestor_canvas()const
 		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
 
 		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-			printf("%s:%d get_non_inline_ancestor_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(ret.get()));
+			printf("%s:%d get_non_inline_ancestor_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(ret.get()));
 
 		return ret;
 	}
@@ -652,12 +656,12 @@ void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+		printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
 
 	canvas_=x;
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d now %lx\n", __FILE__, __LINE__, ulong(canvas_.get()));
+		printf("%s:%d now %lx\n", __FILE__, __LINE__, uintptr_t(canvas_.get()));
 
 	if(x) set_root_canvas(x);
 }
@@ -666,12 +670,12 @@ void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+		printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
 
 	root_canvas_=x->get_root();
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("now %lx\n", ulong(root_canvas_.get()));
+		printf("now %lx\n", uintptr_t(root_canvas_.get()));
 }
 
 String
@@ -765,12 +769,18 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 }
 
 String
+LinkableValueNode::get_description(bool show_exported_name)const
+{
+	return get_description(-1, show_exported_name);
+}
+
+String
 LinkableValueNode::link_name(int i)const
 {
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(;iter!=vocab.end() && j<i; iter++, j++) {};
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -780,7 +790,7 @@ LinkableValueNode::link_local_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(), j<i; iter++, j++);
+	for(;iter!=vocab.end() && j<i; iter++, j++){};
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 

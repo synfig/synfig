@@ -223,6 +223,10 @@ private:
 
 	mutable synfig::String sketch_filename_;
 
+	synfig::TransformStack curr_transform_stack;
+	bool curr_transform_stack_set;
+	std::list<sigc::connection> duck_changed_connections;
+
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
 	*/
@@ -243,6 +247,9 @@ protected:
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
+
+	float zoom;					//!< Zoom factor
+	float prev_zoom;			//!< Previous Zoom factor
 
 	bool show_persistent_strokes;
 
@@ -295,7 +302,7 @@ public:
 
 	void toggle_grid_snap() { set_grid_snap(!grid_snap); }
 
-	synfig::Point snap_point_to_grid(const synfig::Point& x, float radius=0.1)const;
+	synfig::Point snap_point_to_grid(const synfig::Point& x)const;
 
 	bool get_show_persistent_strokes()const { return show_persistent_strokes; }
 	void set_show_persistent_strokes(bool x);
@@ -351,6 +358,11 @@ public:
 	void select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
 
 	void unselect_duck(const etl::handle<Duck> &duck);
+
+	const synfig::TransformStack& get_curr_transform_stack()const { return curr_transform_stack; }
+
+	inline void clear_curr_transform_stack() { curr_transform_stack.clear(); curr_transform_stack_set=false; }
+
 
 	etl::handle<Bezier> get_selected_bezier()const;
 
@@ -433,6 +445,8 @@ public:
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
 
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
+
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack);
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
 

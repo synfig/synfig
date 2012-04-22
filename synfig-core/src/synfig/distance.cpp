@@ -101,6 +101,9 @@ Distance::operator=(const synfig::String& str)
 
 	if(sys.size())
 		system_=ident_system(sys);
+	else
+	// this would throw BadSystem if system_ was not previously provided
+		sys=system_name(system_);
 	return *this;
 }
 
