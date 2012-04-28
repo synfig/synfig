@@ -45,8 +45,6 @@ class Target_Scanline : public Target
 {
 	//! Number of threads to use
 	int threads_;
-	//! Current frame being rendered
-	int curr_frame_;
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;

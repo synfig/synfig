@@ -54,8 +54,6 @@ class Target_Tile : public Target
 	int tile_h_;
 	//! The current tile being rendered
 	int curr_tile_;
-	//! The current frame being rendered
-	int curr_frame_;
 	//! Determines if the tiles should be clipped to the redener description
 	//! or not
 	bool clipping_;

@@ -169,6 +169,9 @@ public:
 
 	//! When set to true, the target doesn't sync to canvas time.
 	bool avoid_time_sync_;
+	
+	//! The current frame being rendered
+	int curr_frame_;
 
 protected:
 	//! Default constructor
@@ -215,6 +218,7 @@ public:
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename,
 						 synfig::TargetParam params);
+	virtual int	next_frame(Time& time);
 }; // END of class Target
 
 }; // END of namespace synfig
