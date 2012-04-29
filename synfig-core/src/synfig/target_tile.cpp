@@ -83,45 +83,6 @@ int
 Target_Tile::next_frame(Time& time)
 {
 	return Target::next_frame(time);
-	
-//	int
-//		total_frames(1),
-//		frame_start(0),
-//		frame_end(0);
-//	Time
-//		time_start(0),
-//		time_end(0);
-//
-//	// If the description's end frame is equal to
-//	// the start frame, then it is assumed that we
-//	// are rendering only one frame. Correct it.
-//	if(desc.get_frame_end()==desc.get_frame_start())
-//		desc.set_frame_end(desc.get_frame_start()+1);
-//
-//	frame_start=desc.get_frame_start();
-//	frame_end=desc.get_frame_end();
-//	time_start=desc.get_time_start();
-//	time_end=desc.get_time_end();
-//
-//	// Calculate the number of frames
-//	total_frames=frame_end-frame_start;
-//	if(total_frames<=0)total_frames=1;
-//
-//	//RendDesc rend_desc=desc;
-//	//rend_desc.set_gamma(1);
-//
-////	int total_tiles(total_tiles());
-//	time=(time_end-time_start)*curr_frame_/total_frames+time_start;
-//	curr_frame_++;
-//
-///*	synfig::info("curr_frame_: %d",curr_frame_);
-//	synfig::info("total_frames: %d",total_frames);
-//	synfig::info("time_end: %s",time_end.get_string().c_str());
-//	synfig::info("time_start: %s",time_start.get_string().c_str());
-//*/
-////	synfig::info("time: %s",time.get_string().c_str());
-//
-//	return total_frames- curr_frame_+1;
 }
 
 int
@@ -305,14 +266,12 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 {
 	SuperCallback super_cb;
 	int
-		i=0,
+		frames=0,
 		total_frames,
 		frame_start,
 		frame_end;
 	Time
-		t=0,
-		time_start,
-		time_end;
+		t=0;
 
 	assert(canvas);
 	curr_frame_=0;
@@ -322,38 +281,27 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		return false;
 	}
 
-
-	// If the description's end frame is equal to
-	// the start frame, then it is assumed that we
-	// are rendering only one frame. Correct it.
-	if(desc.get_frame_end()==desc.get_frame_start())
-		desc.set_frame_end(desc.get_frame_start()+1);
-
 	frame_start=desc.get_frame_start();
 	frame_end=desc.get_frame_end();
-	time_start=desc.get_time_start();
-	time_end=desc.get_time_end();
 
 	// Calculate the number of frames
-	total_frames=frame_end-frame_start;
-
-
+	total_frames=frame_end-frame_start+1;
+	if(total_frames<=0)total_frames=1;
 
 	try {
-		// Grab the time
-		i=next_frame(t);
 
-		//synfig::info("1time_set_to %s",t.get_string().c_str());
-
-		if(i>=1)
+		if(total_frames>=1)
 		{
 		do
-		{
+		{		
+			// Grab the time
+			frames=next_frame(t);
+
 			curr_tile_=0;
 
 			// If we have a callback, and it returns
 			// false, go ahead and bail. (maybe a use cancel)
-			if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
+			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
 				return false;
 
 			if(!start_frame(cb))
@@ -400,7 +348,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			if(!render_frame_(context,0))
 				return false;
 			end_frame();
-		}while((i=next_frame(t)));
+		}while(frames);
 		//synfig::info("tilerenderer: i=%d, t=%s",i,t.get_string().c_str());
 		}
 		else

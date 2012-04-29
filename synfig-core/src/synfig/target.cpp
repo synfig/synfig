@@ -131,36 +131,39 @@ Target::next_frame(Time& time)
 	Time
 	time_start(0),
 	time_end(0);
-	
-	// If the description's end frame is equal to
-	// the start frame, then it is assumed that we
-	// are rendering only one frame. Correct it.
-	if(desc.get_frame_end()==desc.get_frame_start())
-		desc.set_frame_end(desc.get_frame_start()+1);
-	
+		
 	frame_start=desc.get_frame_start();
 	frame_end=desc.get_frame_end();
 	time_start=desc.get_time_start();
 	time_end=desc.get_time_end();
-	
+	// TODO: Add option to exclude last frame
+	// If user wants to recover the last buggy behavior then 
+	// expose this option to the interface using the target params.
+	// At the moment it is set to false.
+	bool exclude_last_frame(false);
 	// Calculate the number of frames
-	total_frames=frame_end-frame_start;
+	total_frames=frame_end-frame_start+(exclude_last_frame?0:1);
 	if(total_frames<=0)total_frames=1;
-	
-	//RendDesc rend_desc=desc;
-	//rend_desc.set_gamma(1);
-	
-	//	int total_tiles(total_tiles());
-	time=(time_end-time_start)*curr_frame_/total_frames+time_start;
+
+	if(total_frames == 1)
+	{
+		time=time_start;
+	}
+	else
+	{
+		time=(time_end-time_start)*curr_frame_/(total_frames-(exclude_last_frame?0:1))+time_start;
+	}
+
+//	synfig::info("before curr_frame_: %d",curr_frame_);
 	curr_frame_++;
 	
-	/*	synfig::info("curr_frame_: %d",curr_frame_);
-	 synfig::info("total_frames: %d",total_frames);
-	 synfig::info("time_end: %s",time_end.get_string().c_str());
-	 synfig::info("time_start: %s",time_start.get_string().c_str());
-	 */
-	//	synfig::info("time: %s",time.get_string().c_str());
-	
-	return total_frames- curr_frame_+1;
+//	synfig::info("before curr_frame_: %d",curr_frame_);
+//	synfig::info("total_frames: %d",total_frames);
+//	synfig::info("time_end: %s",time_end.get_string().c_str());
+//	synfig::info("time_start: %s",time_start.get_string().c_str());
+//	synfig::info("time: %s",time.get_string().c_str());
+//	synfig::info("remaining frames %d", total_frames-curr_frame_);
+
+	return total_frames- curr_frame_;
 }
 

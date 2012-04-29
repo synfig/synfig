@@ -75,12 +75,9 @@ public:
 	**		there are no more tiles to render and that any value
 	**		in \a x or \a y should be disregarded. */
 	virtual int next_tile(int& x, int& y);
+	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
-	/*! \todo Fix the calculation of frames to really render the last frame
-	** When start frame= 1f and end frame = 1f it just render one frame (at 1f)
-	** When start frame= 1f and end frame = 2f it just render one frame (at 1f)
-	** which is a bug.*/
 	virtual int next_frame(Time& time);
 
 	//! Adds the tile at \a x , \a y contained in \a surface

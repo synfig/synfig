@@ -218,6 +218,14 @@ public:
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename,
 						 synfig::TargetParam params);
+	
+	//!	Sets the time for the next frame at \a time
+	/*!	\param time The time reference to be modified
+	 **	\return The number of remainig frames to render
+	 **	It modifies the curr_frame_ member which has to be set to zero 
+	 ** when next_frame is called for the first time
+	 **	\sa curr_frame_
+	*/
 	virtual int	next_frame(Time& time);
 }; // END of class Target
 
