@@ -292,64 +292,64 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 		if(total_frames>=1)
 		{
-		do
-		{		
-			// Grab the time
-			frames=next_frame(t);
+			do
+			{		
+				// Grab the time
+				frames=next_frame(t);
 
-			curr_tile_=0;
+				curr_tile_=0;
 
-			// If we have a callback, and it returns
-			// false, go ahead and bail. (maybe a use cancel)
-			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
-				return false;
+				// If we have a callback, and it returns
+				// false, go ahead and bail. (maybe a use cancel)
+				if(cb && !cb->amount_complete(total_frames-frames,total_frames))
+					return false;
 
-			if(!start_frame(cb))
-				return false;
+				if(!start_frame(cb))
+					return false;
 
-			// Set the time that we wish to render
-			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				canvas->set_time(t);
+				// Set the time that we wish to render
+				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
+					canvas->set_time(t);
 
-			Context context;
+				Context context;
 
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas;
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-			{
-				op_canvas = Canvas::create();
+	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+				Canvas::Handle op_canvas;
+				if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+				{
+					op_canvas = Canvas::create();
+					op_canvas->set_file_name(canvas->get_file_name());
+					optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+					context=op_canvas->get_context();
+				}
+				else
+					context=canvas->get_context();
+	#else
+				context=canvas->get_context();
+	#endif
+
+	/*
+				#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+				Context context;
+				Canvas::Handle op_canvas(Canvas::create());
 				op_canvas->set_file_name(canvas->get_file_name());
+				// Set the time that we wish to render
+				canvas->set_time(t);
 				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 				context=op_canvas->get_context();
-			}
-			else
+				#else
+				Context context;
+				// Set the time that we wish to render
+				canvas->set_time(t);
 				context=canvas->get_context();
-#else
-			context=canvas->get_context();
-#endif
+				#endif
+	*/
 
-/*
-			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Context context;
-			Canvas::Handle op_canvas(Canvas::create());
-			op_canvas->set_file_name(canvas->get_file_name());
-			// Set the time that we wish to render
-			canvas->set_time(t);
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-			#else
-			Context context;
-			// Set the time that we wish to render
-			canvas->set_time(t);
-			context=canvas->get_context();
-			#endif
-*/
-
-			if(!render_frame_(context,0))
-				return false;
-			end_frame();
-		}while(frames);
-		//synfig::info("tilerenderer: i=%d, t=%s",i,t.get_string().c_str());
+				if(!render_frame_(context,0))
+					return false;
+				end_frame();
+			}while(frames);
+			//synfig::info("tilerenderer: i=%d, t=%s",i,t.get_string().c_str());
 		}
 		else
 		{
