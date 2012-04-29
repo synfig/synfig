@@ -59,10 +59,6 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::Adjustment adjustment_phy_width;
 	Gtk::Adjustment adjustment_phy_height;
 	Gtk::Adjustment adjustment_fps;
-	//Gtk::Adjustment adjustment_start_time;
-	//Gtk::Adjustment adjustment_end_time;
-	//Gtk::Adjustment adjustment_start_frame;
-	//Gtk::Adjustment adjustment_end_frame;
 	Gtk::Adjustment adjustment_span;
 
 	Gtk::SpinButton *entry_width;
@@ -72,10 +68,6 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_phy_width;
 	Gtk::SpinButton *entry_phy_height;
 	Gtk::SpinButton *entry_fps;
-//	Gtk::SpinButton *entry_start_time;
-//	Gtk::SpinButton *entry_end_time;
-//	Gtk::SpinButton *entry_start_frame;
-//	Gtk::SpinButton *entry_end_frame;
 	Gtk::SpinButton *entry_span;
 
 	Gtk::CheckButton *toggle_px_aspect;
@@ -87,7 +79,6 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::CheckButton *toggle_im_height;
 	Gtk::CheckButton *toggle_im_span;
 
-	/* Gtk::Table *time_table; */
 	Gtk::Frame *time_frame;
 
 	Widget_Vector *entry_tl;
@@ -97,6 +88,7 @@ class Widget_RendDesc : public Gtk::Notebook
 
 	Widget_Time *entry_start_time;
 	Widget_Time *entry_end_time;
+	Widget_Time *entry_duration;
 
 	mutable int update_lock;
 
@@ -141,8 +133,7 @@ private:
 	void on_fps_changed();
 	void on_start_time_changed();
 	void on_end_time_changed();
-	//void on_start_frame_changed();
-	//void on_end_frame_changed();
+	void on_duration_changed();
 	void on_lock_changed();
 	void on_focus_changed();
 	void on_span_changed();
