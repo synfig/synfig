@@ -555,3 +555,25 @@ RendDesc::set_subwindow(int x, int y, int w, int h)
 
 	return *this;
 }
+
+RendDesc &
+RendDesc::set_duration(Time duration)
+{
+	if(get_frame_rate())
+	{
+		if(duration > Time(0.0))
+			set_time_end(get_time_start() + duration  - Time(1/get_frame_rate()));
+		else
+			set_time_end(get_time_start());
+	}
+		
+	return *this;
+}
+
+const Time
+RendDesc::get_duration()
+{
+	if(get_frame_rate())		
+		return (get_time_end() - get_time_start() + Time(1/get_frame_rate()));
+	return Time(0.0);
+}
