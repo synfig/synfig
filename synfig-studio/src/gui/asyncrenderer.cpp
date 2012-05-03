@@ -225,7 +225,7 @@ public:
 
 				if(!tile_queue.empty() && alive_flag)
 				{
-					if(!cond_tile_queue_empty.timed_wait(mutex,end_time))
+					if(cond_tile_queue_empty.timed_wait(mutex,end_time))
 						break;
 				}
 				else
@@ -339,7 +339,7 @@ public:
 
 			while(alive_flag && !ready_next)
 			{
-				if(!cond_frame_queue_empty.timed_wait(mutex, end_time))
+				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
 					break;
 			}
 		}
