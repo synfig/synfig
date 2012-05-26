@@ -74,59 +74,21 @@ Target_Scanline::Target_Scanline():
 int
 Target_Scanline::next_frame(Time& time)
 {
-	int
-		total_frames(1),
-		frame_start(0),
-		frame_end(0);
-	Time
-		time_start(0),
-		time_end(0);
-
-	// If the description's end frame is equal to
-	// the start frame, then it is assumed that we
-	// are rendering only one frame. Correct it.
-	if(desc.get_frame_end()==desc.get_frame_start())
-		desc.set_frame_end(desc.get_frame_start()+1);
-
-	frame_start=desc.get_frame_start();
-	frame_end=desc.get_frame_end();
-	time_start=desc.get_time_start();
-	time_end=desc.get_time_end();
-
-	// Calculate the number of frames
-	total_frames=frame_end-frame_start;
-	if(total_frames<=0)total_frames=1;
-
-	//RendDesc rend_desc=desc;
-	//rend_desc.set_gamma(1);
-
-//	int total_tiles(total_tiles());
-	time=(time_end-time_start)*curr_frame_/total_frames+time_start;
-	curr_frame_++;
-
-/*	synfig::info("curr_frame_: %d",curr_frame_);
-	synfig::info("total_frames: %d",total_frames);
-	synfig::info("time_end: %s",time_end.get_string().c_str());
-	synfig::info("time_start: %s",time_start.get_string().c_str());
-*/
-//	synfig::info("time: %s",time.get_string().c_str());
-
-	return total_frames- curr_frame_+1;
+	return Target::next_frame(time);
 }
+
 bool
 synfig::Target_Scanline::render(ProgressCallback *cb)
 {
 	SuperCallback super_cb;
 	int
-//		i=0,
+		frames=0,
 		total_frames,
 		quality=get_quality(),
 		frame_start,
 		frame_end;
 	Time
-		t=0,
-		time_start,
-		time_end;
+		t=0;
 
 	assert(canvas);
 	curr_frame_=0;
@@ -136,182 +98,169 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		return false;
 	}
 
-	// If the description's end frame is equal to
-	// the start frame, then it is assumed that we
-	// are rendering only one frame. Correct it.
-	if(desc.get_frame_end()==desc.get_frame_start())
-		desc.set_frame_end(desc.get_frame_start()+1);
-
 	frame_start=desc.get_frame_start();
 	frame_end=desc.get_frame_end();
-	time_start=desc.get_time_start();
-	time_end=desc.get_time_end();
 
 	// Calculate the number of frames
-	total_frames=frame_end-frame_start;
-
-
-	//RendDesc rend_desc=desc;
+	total_frames=frame_end-frame_start+1;
+	if(total_frames<=0)total_frames=1;
 
 	try {
-	// Grab the time
-	int i=next_frame(t);
 
 	//synfig::info("1time_set_to %s",t.get_string().c_str());
 
-	if(i>1)
-	do{
+	if(total_frames>=1)
+	{
+		do{
+			// Grab the time
+			frames=next_frame(t);
 
-	//if(total_frames>1)
-	//for(i=0,t=time_start;i<total_frames;i++)
-	//{
-		//t=((time_end-time_start)*((Real)i/(Real)total_frames)).round(desc.get_frame_rate())+time_start;
+			// If we have a callback, and it returns
+			// false, go ahead and bail. (it may be a user cancel)
+			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
+				return false;
 
-		// If we have a callback, and it returns
-		// false, go ahead and bail. (it may be a user cancel)
-		if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
-			return false;
+			// Set the time that we wish to render
+			if(!get_avoid_time_sync() || canvas->get_time()!=t)
+				canvas->set_time(t);
 
-		// Set the time that we wish to render
-		if(!get_avoid_time_sync() || canvas->get_time()!=t)
-			canvas->set_time(t);
+			Context context;
 
-		Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-		Canvas::Handle op_canvas;
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-		{
-			op_canvas = Canvas::create();
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-		}
-		else
-			context=canvas->get_context();
-#else
-		context=canvas->get_context();
-#endif
-
-		// If the quality is set to zero, then we
-		// use the parametric scanline-renderer.
-		if(quality==0)
-		{
-			if(threads_<=0)
+	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+			Canvas::Handle op_canvas;
+			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
 			{
-				if(!synfig::render(context,this,desc,0))
-					return false;
+				op_canvas = Canvas::create();
+				op_canvas->set_file_name(canvas->get_file_name());
+				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+				context=op_canvas->get_context();
 			}
 			else
+				context=canvas->get_context();
+	#else
+			context=canvas->get_context();
+	#endif
+
+			// If the quality is set to zero, then we
+			// use the parametric scanline-renderer.
+			if(quality==0)
 			{
-				if(!synfig::render_threaded(context,this,desc,0,threads_))
-					return false;
-			}
-		}
-		else // If quality is set otherwise, then we use the accelerated renderer
-		{
-			#if USE_PIXELRENDERING_LIMIT
-			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-			{
-				Surface surface;
-				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
-				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
-				int rows = desc.get_h()/rowheight;
-				int lastrowheight = desc.get_h() - rows*rowheight;
-
-				rows++;
-
-				synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
-							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
-
-				// loop through all the full rows
-				if(!start_frame())
+				if(threads_<=0)
 				{
-					throw(string("add_frame(): target panic on start_frame()"));
-					return false;
-				}
-
-				for(int i=0; i < rows; ++i)
-				{
-					RendDesc	blockrd = desc;
-
-					//render the strip at the normal size unless it's the last one...
-					if(i == rows-1)
-					{
-						if(!lastrowheight) break;
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
-					}
-					else
-					{
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
-					}
-
-					if(!context.accelerated_render(&surface,quality,blockrd,0))
-					{
-						if(cb)cb->error(_("Accelerated Renderer Failure"));
+					if(!synfig::render(context,this,desc,0))
 						return false;
-					}else
-					{
-						int y;
-						int rowspan=sizeof(Color)*surface.get_w();
-						Surface::pen pen = surface.begin();
-
-						int yoff = i*rowheight;
-
-						for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
-						{
-							Color *colordata= start_scanline(y + yoff);
-							if(!colordata)
-							{
-								throw(string("add_frame(): call to start_scanline(y) returned NULL"));
-								return false;
-							}
-
-							if(get_remove_alpha())
-							{
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
-							}
-							else
-								memcpy(colordata,surface[y],rowspan);
-
-							if(!end_scanline())
-							{
-								throw(string("add_frame(): target panic on end_scanline()"));
-								return false;
-							}
-						}
-					}
-				}
-
-				end_frame();
-
-			}else //use normal rendering...
-			{
-			#endif
-				Surface surface;
-
-				if(!context.accelerated_render(&surface,quality,desc,0))
-				{
-					// For some reason, the accelerated renderer failed.
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
 				}
 				else
 				{
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(&surface))
+					if(!synfig::render_threaded(context,this,desc,0,threads_))
+						return false;
+				}
+			}
+			else // If quality is set otherwise, then we use the accelerated renderer
+			{
+				#if USE_PIXELRENDERING_LIMIT
+				if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
+				{
+					Surface surface;
+					int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
+					if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
+					int rows = desc.get_h()/rowheight;
+					int lastrowheight = desc.get_h() - rows*rowheight;
+
+					rows++;
+
+					synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
+								 rows-1, rows==2?"":"s", rowheight, lastrowheight);
+
+					// loop through all the full rows
+					if(!start_frame())
 					{
-						if(cb)cb->error(_("Unable to put surface on target"));
+						throw(string("add_frame(): target panic on start_frame()"));
 						return false;
 					}
+
+					for(int i=0; i < rows; ++i)
+					{
+						RendDesc	blockrd = desc;
+
+						//render the strip at the normal size unless it's the last one...
+						if(i == rows-1)
+						{
+							if(!lastrowheight) break;
+							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
+						}
+						else
+						{
+							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
+						}
+
+						if(!context.accelerated_render(&surface,quality,blockrd,0))
+						{
+							if(cb)cb->error(_("Accelerated Renderer Failure"));
+							return false;
+						}else
+						{
+							int y;
+							int rowspan=sizeof(Color)*surface.get_w();
+							Surface::pen pen = surface.begin();
+
+							int yoff = i*rowheight;
+
+							for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
+							{
+								Color *colordata= start_scanline(y + yoff);
+								if(!colordata)
+								{
+									throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+									return false;
+								}
+
+								if(get_remove_alpha())
+								{
+									for(int i = 0; i < surface.get_w(); i++)
+										colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+								}
+								else
+									memcpy(colordata,surface[y],rowspan);
+
+								if(!end_scanline())
+								{
+									throw(string("add_frame(): target panic on end_scanline()"));
+									return false;
+								}
+							}
+						}
+					}
+
+					end_frame();
+
+				}else //use normal rendering...
+				{
+				#endif
+					Surface surface;
+
+					if(!context.accelerated_render(&surface,quality,desc,0))
+					{
+						// For some reason, the accelerated renderer failed.
+						if(cb)cb->error(_("Accelerated Renderer Failure"));
+						return false;
+					}
+					else
+					{
+						// Put the surface we renderer
+						// onto the target.
+						if(!add_frame(&surface))
+						{
+							if(cb)cb->error(_("Unable to put surface on target"));
+							return false;
+						}
+					}
+				#if USE_PIXELRENDERING_LIMIT
 				}
-			#if USE_PIXELRENDERING_LIMIT
+				#endif
 			}
-			#endif
-		}
-	}while((i=next_frame(t)));
+		}while(frames);
+	}
     else
     {
 		// Set the time that we wish to render

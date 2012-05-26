@@ -45,8 +45,6 @@ class Target_Scanline : public Target
 {
 	//! Number of threads to use
 	int threads_;
-	//! Current frame being rendered
-	int curr_frame_;
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;
@@ -63,13 +61,9 @@ public:
 	**	\see end_frame(), start_scanline()
 	*/
 	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
+	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
-	/*! \todo Fix the calculation of frames to really render the last frame
-	** When start frame= 1f and end frame = 1f it just render one frame (at 1f)
-	** When start frame= 1f and end frame = 2f it just render one frame (at 1f)
-	** which is a bug.
-	* */
 	virtual int next_frame(Time& time);
 
 	//! Marks the end of a frame

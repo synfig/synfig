@@ -293,6 +293,11 @@ public:
 	Real get_ph()const;
 	//! Sets viewport to represent the screen at the given pixel coordinates
 	RendDesc &set_subwindow(int x, int y, int w, int h);
+	//! Sets the duration of the animation. 
+	// Keeps the start time and modifies the end time to match the duration
+	RendDesc &set_duration(Time t);
+	//! Gets the duration of the animation
+	const Time get_duration();
 };	// END of class RendDesc
 
 //! This operator allows the combining of RendDesc::Lock flags using the '|' operator
