@@ -126,27 +126,6 @@ Color::get_string(void)const
 	return String(o.str().c_str());
 }
 
-#if 0
-Color&
-Color::rotate_uv(const Angle& theta)const
-{
-/*/
-	Color ret(*this);
-	ret.set_hue(ret.get_hue()+theta);
-	return ret;
-/*/
-	const float
-		a(angle::sin(theta).get()),
-		b(angle::cos(theta).get());
-	const float
-		u(get_u()),
-		v(get_v());
-
-	return set_uv(b*u-a*v,a*u+b*v);
-	//return YUV(get_y(),b*u-a*v,a*u+b*v,get_a());
-//*/
-}
-#endif
 
 Color
 Color::clamped_negative()const

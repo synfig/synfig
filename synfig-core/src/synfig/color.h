@@ -101,7 +101,7 @@ class ColorAccumulator;
 
 
 /*!	\class Color
-**	\todo Writeme
+**	\ ARGB 128 bits Color class implementation 
 **	Future optimizations: lookup table for sqrt()?
 */
 class Color
@@ -548,6 +548,292 @@ public:
 	}
 */
 }; // END of class Color
+
+	
+/*!  \class CairoColor
+** \ ARGB 32 bits Color class implementation
+** \ for Cairo Image usage.
+** \ Color channels are one byte length (unsigned char)
+** \ Operations over color channels
+** \ that overflow or underflow the unsigned char value
+** \ (get the value out of 0-255) aren't allowed and the
+** \ value will remain at 0 or 255. Otherwise, there could
+** \ be color cycling what will produce artifacts, since 
+** \ values outside 0-255 aren't allowed.
+** 
+** \ In this class color channels aren't alpha premultiplied
+** \ When used on a alpha premultiplied surface the premultiplication
+** \ and demultiplication has to be explicitly done by the user before 
+** \ and after being used on the surface.
+*/
+class CairoColor
+{
+
+private:
+	unsigned char a_, r_, g_, b_;
+
+	// Operators
+public:
+	inline unsigned char ceil_clamp(int x)
+	{
+		if(x>255) return 255;
+		else return (unsigned char)(x);
+	}
+	inline unsigned char floor_clamp(int x)
+	{
+		if(x<0) return 0;
+		else return (unsigned char)(x);
+	}
+	inline unsigned char clamp(int x)
+	{
+		if(x > 255) return 255;
+		else if (x < 0) return 0;
+		else return (unsigned char)(x);
+	}
+	inline unsigned char clamp(float x)
+	{
+		return clamp((int) (x));
+	}
+
+	CairoColor&
+	operator+=(const CairoColor &rhs)
+	{		
+		r_=ceil_clamp((int)(r_) + rhs.r_);
+		g_=ceil_clamp((int)(g_) + rhs.g_);
+		r_=ceil_clamp((int)(b_) + rhs.b_);
+		r_=ceil_clamp((int)(a_) + rhs.a_);
+		return *this;
+	}
+
+	CairoColor&
+	operator-=(const CairoColor &rhs)
+	{		
+		r_=floor_clamp((int)(r_) - rhs.r_);
+		g_=floor_clamp((int)(g_) - rhs.g_);
+		r_=floor_clamp((int)(b_) - rhs.b_);
+		r_=floor_clamp((int)(a_) - rhs.a_);
+		return *this;
+	}
+	
+	CairoColor &
+	operator*=(const float &rhs)
+	{
+		r_=clamp(r_*rhs);
+		g_=clamp(g_*rhs);
+		b_=clamp(b_*rhs);
+		a_=clamp(a_*rhs);
+		return *this;
+	}
+
+	CairoColor &
+	operator/=(const float &rhs)
+	{
+		const float temp(1.0f/rhs);
+		r_=clamp(r_*temp);
+		g_=clamp(g_*temp);
+		b_=clamp(b_*temp);
+		a_=clamp(a_*temp);
+		return *this;
+	}
+
+	CairoColor
+	operator+(const CairoColor &rhs)const
+	{ return CairoColor(*this)+=rhs; }
+	
+	CairoColor
+	operator-(const CairoColor &rhs)const
+	{ return CairoColor(*this)-=rhs; }
+	
+	CairoColor
+	operator*(const float &rhs)const
+	{ return CairoColor(*this)*=rhs; }
+	
+	CairoColor
+	operator/(const float &rhs)const
+	{ return CairoColor(*this)/=rhs; }
+	
+	bool
+	operator==(const CairoColor &rhs)const
+	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
+	
+	bool
+	operator!=(const CairoColor &rhs)const
+	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
+
+// Not suitable for unsigned char
+//	CairoColor
+//	operator-()const
+//	{ return CairoColor(-r_,-g_,-b_,-a_); }
+
+	CairoColor
+	operator~()const
+	{ return CairoColor(255-r_,255-g_,255-b_,a_); }
+
+	
+	CairoColor premult_alpha() const
+	{
+		return CairoColor (r_*a_, g_*a_, b_*a_, a_);
+	}
+	
+	CairoColor demult_alpha() const
+	{
+		if(a_)
+		{
+			const float inva = 1.0f/a_;
+			return CairoColor (r_*inva, g_*inva, b_*inva, a_);
+		}else return alpha();
+	}
+
+	// Constructors
+public:
+	CairoColor() :a_(0), r_(0), g_(0), b_(0) { }
+	CairoColor(const unsigned char u) :a_(u),r_(u), g_(u), b_(u) { }
+	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
+	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=1):
+	a_(A),	r_(R),	g_(G),	b_(B) { }
+	CairoColor(const CairoColor& c, const unsigned char A):
+	a_(A), r_(c.r_), g_(c.g_), b_(c.b_) { }
+	CairoColor(const CairoColor& c): a_(c.a_), r_(c.r_), g_(c.g_), b_(c.b_) { }
+	const unsigned char get_r()const { return r_; }
+	const unsigned char get_g()const { return g_; }
+	const unsigned char get_b()const { return b_; }
+	const unsigned char get_a()const { return a_; }
+	const unsigned char get_alpha()const { return a_; }
+
+	CairoColor& set_r(const unsigned char x) {r_ = x; return *this; }
+	CairoColor& set_g(const unsigned char x) {g_ = x; return *this; }
+	CairoColor& set_b(const unsigned char x) {b_ = x; return *this; }
+	CairoColor& set_a(const unsigned char x) {a_ = x; return *this; }
+	CairoColor& set_alpha(const unsigned char x) { return set_a(x); }
+	
+	float
+	get_y() const
+	{
+		return
+		(float)get_r()*EncodeYUV[0][0]+
+		(float)get_g()*EncodeYUV[0][1]+
+		(float)get_b()*EncodeYUV[0][2];
+	}
+
+	float
+	get_u() const
+	{
+		return
+		(float)get_r()*EncodeYUV[1][0]+
+		(float)get_g()*EncodeYUV[1][1]+
+		(float)get_b()*EncodeYUV[1][2];
+	}
+
+	float
+	get_v() const
+	{
+		return
+		(float)get_r()*EncodeYUV[2][0]+
+		(float)get_g()*EncodeYUV[2][1]+
+		(float)get_b()*EncodeYUV[2][2];
+	}
+
+	float
+	get_s() const
+	{
+		const float u(get_u()), v(get_v());
+		return sqrt(u*u+v*v);
+	}
+	
+	CairoColor&
+	set_yuv(const float &y, const float &u, const float &v)
+	{
+		set_r(y*DecodeYUV[0][0]+u*DecodeYUV[0][1]+v*DecodeYUV[0][2]);
+		set_g(y*DecodeYUV[1][0]+u*DecodeYUV[1][1]+v*DecodeYUV[1][2]);
+		set_b(y*DecodeYUV[2][0]+u*DecodeYUV[2][1]+v*DecodeYUV[2][2]);
+		return *this;
+	}
+	
+	CairoColor& set_y(const float &y) { return set_yuv(y,get_u(),get_v()); }
+	
+	CairoColor& set_u(const float &u) { return set_yuv(get_y(),u,get_v()); }
+	
+	CairoColor& set_v(const float &v) { return set_yuv(get_y(),get_u(),v); }
+	
+	CairoColor& set_uv(const float& u, const float& v) { return set_yuv(get_y(),u,v); }
+	
+	CairoColor&	set_s(const float &x)
+	{
+		float u(get_u()), v(get_v());
+		const float s(sqrt(u*u+v*v));
+		if(s)
+		{
+			u=(u/s)*x;
+			v=(v/s)*x;
+			return set_uv(u,v);
+		}
+		return *this;
+	}
+
+	static CairoColor YUV(const float& y, const float& u, const float& v, const unsigned char a=255)
+	{ return CairoColor().set_yuv(y,u,v).set_a(a); }
+	
+	Angle get_hue() const	{ return Angle::tan(get_u(),get_v()); }
+	
+	Angle get_uv_angle() const { return get_hue(); }
+	
+	CairoColor& set_hue(const Angle& theta)
+	{
+		const float s(get_s());
+		const float
+		u(s*(float)Angle::sin(theta).get()),
+		v(s*(float)Angle::cos(theta).get());
+		return set_uv(u,v);
+	}
+	
+	CairoColor& set_uv_angle(const Angle& theta) { return set_hue(theta); }
+	
+	CairoColor& rotate_uv(const Angle& theta)
+	{
+		const float	a(Angle::sin(theta).get()),	b(Angle::cos(theta).get());
+		const float	u(get_u()),	v(get_v());
+		return set_uv(b*u-a*v,a*u+b*v);
+	}
+
+	CairoColor& set_yuv(const float& y, const float& s, const Angle& theta)
+	{
+		return
+		set_yuv(
+				y,
+				s*(float)Angle::sin(theta).get(),
+				s*(float)Angle::cos(theta).get()
+				);
+	}
+	
+	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=255)
+	{ return CairoColor().set_yuv(y,s,theta).set_a(a); }
+
+	static inline CairoColor alpha() { return CairoColor(0,0,0,0); }
+	static inline CairoColor black() { return CairoColor(0,0,0); }
+	static inline CairoColor white() { return CairoColor(255,255,255); }
+	static inline CairoColor gray() { return CairoColor(128,128,128); }
+	static inline CairoColor magenta() { return CairoColor(255,0,255); }
+	static inline CairoColor red() { return CairoColor(255,0,0); }
+	static inline CairoColor green() { return CairoColor(0,255,0); }
+	static inline CairoColor blue() { return CairoColor(0,0,255); }
+	static inline CairoColor cyan() { return CairoColor(0,255,255); }
+	static inline CairoColor yellow() { return CairoColor(255,255,0); }
+
+		// Use Color::BlenMethods for the enum value
+	static CairoColor blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type=Color::BLEND_COMPOSITE);
+
+	static bool is_onto(Color::BlendMethod x)
+	{
+		return Color::is_onto(x);
+	}
+	
+	static bool is_straight(Color::BlendMethod x)
+	{
+		return Color::is_straight(x);
+	}
+	
+}; // End of CairoColor class
+
 
 #ifndef USE_HALF_TYPE
 typedef Color ColorAccumulator;
