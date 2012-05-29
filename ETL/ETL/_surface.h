@@ -110,6 +110,13 @@ public:
 		w_(w),h_(h),
 		deletable_(deletable) { }
 
+	surface(value_type* data, int w, int h, typename difference_type::value_type pitch, bool deletable=false):
+		data_(data),
+		zero_pos_(data),
+		pitch_(pitch),
+		w_(w),h_(h),
+		deletable_(deletable) { }
+	
 	surface(const typename size_type::value_type &w, const typename size_type::value_type &h):
 		data_(new value_type[w*h]),
 		zero_pos_(data_),
