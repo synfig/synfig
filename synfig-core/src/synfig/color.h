@@ -578,22 +578,29 @@ class CairoColor
 private:
 	unsigned char a_, r_, g_, b_;
 
+public:
+	static const unsigned char ceil()
+	{ return (unsigned char)(255);}
+	
+	static const unsigned char floor()
+	{ return (unsigned char)(0);}
+
 	// Operators
 public:
 	inline unsigned char ceil_clamp(int x)
 	{
-		if(x>255) return 255;
+		if(x>ceil()) return ceil();
 		else return (unsigned char)(x);
 	}
 	inline unsigned char floor_clamp(int x)
 	{
-		if(x<0) return 0;
+		if(x<floor()) return floor();
 		else return (unsigned char)(x);
 	}
 	inline unsigned char clamp(int x)
 	{
-		if(x > 255) return 255;
-		else if (x < 0) return 0;
+		if(x > ceil()) return ceil();
+		else if (x < floor()) return floor();
 		else return (unsigned char)(x);
 	}
 	inline unsigned char clamp(float x)
@@ -673,7 +680,10 @@ public:
 
 	CairoColor
 	operator~()const
-	{ return CairoColor(255-r_,255-g_,255-b_,a_); }
+	{ return CairoColor(ceil()-r_,ceil()-g_,ceil()-b_,a_); }
+
+	bool is_valid()const
+	{ return true; }
 
 	
 	CairoColor premult_alpha() const
@@ -776,7 +786,7 @@ public:
 		return *this;
 	}
 
-	static CairoColor YUV(const float& y, const float& u, const float& v, const unsigned char a=255)
+	static CairoColor YUV(const float& y, const float& u, const float& v, const unsigned char a=ceil())
 	{ return CairoColor().set_yuv(y,u,v).set_a(a); }
 	
 	Angle get_hue() const	{ return Angle::tan(get_u(),get_v()); }
@@ -814,18 +824,18 @@ public:
 	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=255)
 	{ return CairoColor().set_yuv(y,s,theta).set_a(a); }
 
-	static inline CairoColor alpha() { return CairoColor(0,0,0,0); }
-	static inline CairoColor black() { return CairoColor(0,0,0); }
-	static inline CairoColor white() { return CairoColor(255,255,255); }
-	static inline CairoColor gray() { return CairoColor(128,128,128); }
-	static inline CairoColor magenta() { return CairoColor(255,0,255); }
-	static inline CairoColor red() { return CairoColor(255,0,0); }
-	static inline CairoColor green() { return CairoColor(0,255,0); }
-	static inline CairoColor blue() { return CairoColor(0,0,255); }
-	static inline CairoColor cyan() { return CairoColor(0,255,255); }
-	static inline CairoColor yellow() { return CairoColor(255,255,0); }
+	static inline CairoColor alpha() { return CairoColor(floor(),floor(),floor(),floor()); }
+	static inline CairoColor black() { return CairoColor(floor(),floor(),floor()); }
+	static inline CairoColor white() { return CairoColor(ceil(),ceil(),ceil()); }
+	static inline CairoColor gray() { return CairoColor(ceil()/2,ceil()/2,ceil()/2); }
+	static inline CairoColor magenta() { return CairoColor(ceil(),floor(),ceil()); }
+	static inline CairoColor red() { return CairoColor(ceil(),floor(), floor()); }
+	static inline CairoColor green() { return CairoColor(floor(), ceil(),floor()); }
+	static inline CairoColor blue() { return CairoColor(floor(),floor(),ceil()); }
+	static inline CairoColor cyan() { return CairoColor(floor(),ceil(),ceil()); }
+	static inline CairoColor yellow() { return CairoColor(ceil(),ceil(),floor()); }
 
-		// Use Color::BlenMethods for the enum value
+	// Use Color::BlenMethods for the enum value
 	static CairoColor blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type=Color::BLEND_COMPOSITE);
 
 	static bool is_onto(Color::BlendMethod x)
