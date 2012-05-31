@@ -331,7 +331,7 @@ public:
 		else
 #endif
 		{
-			Glib::Mutex::Lock lock(mutex);
+
 			Glib::TimeVal end_time;
 
 			end_time.assign_current_time();
@@ -339,6 +339,7 @@ public:
 
 			while(alive_flag && !ready_next)
 			{
+				Glib::Mutex::Lock lock(mutex);
 				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
 					break;
 			}
