@@ -113,7 +113,13 @@ private:
 	value_type a_, r_, g_, b_;
 
 public:
-
+	
+	static const value_type ceil()
+	{ return (value_type)(1);}
+	
+	static const value_type floor()
+	{ return (value_type)(0);}
+	
 	const String get_string(void)const;
 
 	Color &

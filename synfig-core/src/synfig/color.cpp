@@ -214,6 +214,7 @@ blendfunc_COMPOSITE(C &src,C &dest,float amount)
 
 	float a_src=src.get_a()*amount;
 	float a_dest=dest.get_a();
+	const float one(C::ceil()); 
 
 	// if a_arc==0.0
 	//if(fabsf(a_src)<COLOR_EPSILON) return dest;
@@ -222,9 +223,9 @@ blendfunc_COMPOSITE(C &src,C &dest,float amount)
 	src*=a_src;
 	dest*=a_dest;
 
-	dest=src + dest*(1.0f-a_src);
+	dest=src + dest*(one-a_src);
 
-	a_dest=a_src + a_dest*(1.0f-a_src);
+	a_dest=a_src + a_dest*(one-a_src);
 
 	// if a_dest!=0.0
 	if(fabsf(a_dest)>COLOR_EPSILON)
@@ -273,7 +274,8 @@ static C
 blendfunc_ONTO(C &a,C &b,float amount)
 {
 	float alpha(b.get_a());
-	return blendfunc_COMPOSITE(a,b.set_a(1.0f),amount).set_a(alpha);
+	const float one(C::ceil());
+	return blendfunc_COMPOSITE(a,b.set_a(one),amount).set_a(alpha);
 }
 
 template <class C>
@@ -307,15 +309,16 @@ static C
 blendfunc_DARKEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
+	const float one(C::ceil());
+	
+	if(b.get_r()>(a.get_r()-one)*alpha+one)
+		b.set_r((a.get_r()-one)*alpha+one);
 
-	if(b.get_r()>(a.get_r()-1.0f)*alpha+1.0f)
-		b.set_r((a.get_r()-1.0f)*alpha+1.0f);
+	if(b.get_g()>(a.get_g()-one)*alpha+one)
+		b.set_g((a.get_g()-one)*alpha+one);
 
-	if(b.get_g()>(a.get_g()-1.0f)*alpha+1.0f)
-		b.set_g((a.get_g()-1.0f)*alpha+1.0f);
-
-	if(b.get_b()>(a.get_b()-1.0f)*alpha+1.0f)
-		b.set_b((a.get_b()-1.0f)*alpha+1.0f);
+	if(b.get_b()>(a.get_b()-one)*alpha+one)
+		b.set_b((a.get_b()-one)*alpha+one);
 
 
 	return b;
@@ -431,8 +434,10 @@ template <class C>
 static C
 blendfunc_BEHIND(C &a,C &b,float amount)
 {
-	if(a.get_a()==0)a.set_a(COLOR_EPSILON);		//!< \todo this is a hack
-	a.set_a(a.get_a()*amount);
+	if(a.get_a()==0)
+		a.set_a(COLOR_EPSILON*amount);		//!< \todo this is a hack
+	else
+		a.set_a(a.get_a()*amount);
 	return blendfunc_COMPOSITE(b,a,1.0);
 }
 
@@ -460,11 +465,12 @@ template <class C>
 static C
 blendfunc_SCREEN(C &a,C &b,float amount)
 {
+	const float one(C::ceil());
 	if(amount<0) a=~a, amount=-amount;
 
-	a.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
-	a.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
-	a.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
+	a.set_r(one-(one-a.get_r())*(one-b.get_r()));
+	a.set_g(one-(one-a.get_g())*(one-b.get_g()));
+	a.set_b(one-(one-a.get_b())*(one-b.get_b()));
 
 	return blendfunc_ONTO(a,b,amount);
 }
@@ -473,6 +479,7 @@ template <class C>
 static C
 blendfunc_OVERLAY(C &a,C &b,float amount)
 {
+	const float one(C::ceil());
 	if(amount<0) a=~a, amount=-amount;
 
 	C rm;
@@ -481,15 +488,15 @@ blendfunc_OVERLAY(C &a,C &b,float amount)
 	rm.set_b(b.get_b()*a.get_b());
 
 	C rs;
-	rs.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
-	rs.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
-	rs.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
+	rs.set_r(one-(one-a.get_r())*(one-b.get_r()));
+	rs.set_g(one-(one-a.get_g())*(one-b.get_g()));
+	rs.set_b(one-(one-a.get_b())*(one-b.get_b()));
 
 	C& ret(a);
 
-	ret.set_r(a.get_r()*rs.get_r() + (1.0-a.get_r())*rm.get_r());
-	ret.set_g(a.get_g()*rs.get_g() + (1.0-a.get_g())*rm.get_g());
-	ret.set_b(a.get_b()*rs.get_b() + (1.0-a.get_b())*rm.get_b());
+	ret.set_r(a.get_r()*rs.get_r() + (one-a.get_r())*rm.get_r());
+	ret.set_g(a.get_g()*rs.get_g() + (one-a.get_g())*rm.get_g());
+	ret.set_b(a.get_b()*rs.get_b() + (one-a.get_b())*rm.get_b());
 
 	return blendfunc_ONTO(ret,b,amount);
 }
@@ -498,14 +505,16 @@ template <class C>
 static C
 blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 {
+	const float one(C::ceil());
+	const float half((one-C::floor())/2);
 	if(amount<0) a=~a, amount=-amount;
 
-	if(a.get_r()>0.5f)	a.set_r(1.0-(1.0f-(a.get_r()*2.0f-1.0f))*(1.0f-b.get_r()));
-	else				a.set_r(b.get_r()*(a.get_r()*2.0f));
-	if(a.get_g()>0.5f)	a.set_g(1.0-(1.0f-(a.get_g()*2.0f-1.0f))*(1.0f-b.get_g()));
-	else				a.set_g(b.get_g()*(a.get_g()*2.0f));
-	if(a.get_b()>0.5f)	a.set_b(1.0-(1.0f-(a.get_b()*2.0f-1.0f))*(1.0f-b.get_b()));
-	else				a.set_b(b.get_b()*(a.get_b()*2.0f));
+	if(a.get_r()>half)	a.set_r(one-(one-(a.get_r()*2*one-one))*(one-b.get_r()));
+	else				a.set_r(b.get_r()*(a.get_r()*2*one));
+	if(a.get_g()>half)	a.set_g(one-(one-(a.get_g()*2*one-one))*(one-b.get_g()));
+	else				a.set_g(b.get_g()*(a.get_g()*2*one));
+	if(a.get_b()>half)	a.set_b(one-(one-(a.get_b()*2*one-one))*(one-b.get_b()));
+	else				a.set_b(b.get_b()*(a.get_b()*2*one));
 
 	return blendfunc_ONTO(a,b,amount);
 }
@@ -514,10 +523,11 @@ template <class C>
 static C
 blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
+	const float one(C::ceil());
 	C rm(b);
 
 	//multiply the inverse alpha channel with the one below us
-	rm.set_a((1-a.get_a())*b.get_a());
+	rm.set_a((one-a.get_a())*b.get_a());
 
 	return blendfunc_STRAIGHT(rm,b,amount);
 }
