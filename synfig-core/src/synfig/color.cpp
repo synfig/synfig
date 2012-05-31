@@ -205,8 +205,9 @@ Color::clamped()const
 
 typedef Color (*blendfunc)(Color &,Color &,float);
 
-static Color
-blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
+template <class C>
+static C
+blendfunc_COMPOSITE(C &src,C &dest,float amount)
 {
 	//c_dest'=c_src+(1.0-a_src)*c_dest
 	//a_dest'=a_src+(1.0-a_src)*a_dest
@@ -233,14 +234,15 @@ blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
 	}
 	else
 	{
-		dest=Color::alpha();
+		dest=C::alpha();
 	}
 	assert(dest.is_valid());
 	return dest;
 }
 
-static Color
-blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
+template <class C>
+static C
+blendfunc_STRAIGHT(C &src,C &bg,float amount)
 {
 	//a_out'=(a_src-a_bg)*amount+a_bg
 	//c_out'=(((c_src*a_src)-(c_bg*a_bg))*amount+(c_bg*a_bg))/a_out'
@@ -248,7 +250,7 @@ blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
 	// ie: if(amount==1.0)
 	//if(fabsf(amount-1.0f)<COLOR_EPSILON)return src;
 
-	Color out;
+	C out;
 
 	float a_out((src.get_a()-bg.get_a())*amount+bg.get_a());
 
@@ -260,28 +262,31 @@ blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
 		out.set_a(a_out);
 	}
 	else
-		out=Color::alpha();
+		out=C::alpha();
 
 	assert(out.is_valid());
 	return out;
 }
 
-static Color
-blendfunc_ONTO(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ONTO(C &a,C &b,float amount)
 {
 	float alpha(b.get_a());
 	return blendfunc_COMPOSITE(a,b.set_a(1.0f),amount).set_a(alpha);
 }
 
-static Color
-blendfunc_STRAIGHT_ONTO(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
 {
 	a.set_a(a.get_a()*b.get_a());
 	return blendfunc_STRAIGHT(a,b,amount);
 }
 
-static Color
-blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_BRIGHTEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -297,8 +302,9 @@ blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DARKEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_DARKEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -315,8 +321,9 @@ blendfunc_DARKEN(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_ADD(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ADD(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -327,8 +334,9 @@ blendfunc_ADD(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_SUBTRACT(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_SUBTRACT(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -339,8 +347,9 @@ blendfunc_SUBTRACT(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DIFFERENCE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_DIFFERENCE(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -351,8 +360,9 @@ blendfunc_DIFFERENCE(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_MULTIPLY(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_MULTIPLY(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -363,8 +373,9 @@ blendfunc_MULTIPLY(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DIVIDE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_DIVIDE(C &a,C &b,float amount)
 {
 	amount*=a.get_a();
 
@@ -380,48 +391,54 @@ blendfunc_DIVIDE(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_COLOR(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_COLOR(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_uv(a.get_u(),a.get_v());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_HUE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_HUE(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_hue(a.get_hue());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_SATURATION(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_SATURATION(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_s(a.get_s());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_LUMINANCE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_LUMINANCE(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_y(a.get_y());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_BEHIND(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_BEHIND(C &a,C &b,float amount)
 {
 	if(a.get_a()==0)a.set_a(COLOR_EPSILON);		//!< \todo this is a hack
 	a.set_a(a.get_a()*amount);
 	return blendfunc_COMPOSITE(b,a,1.0);
 }
 
-static Color
-blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 {
 	// \todo can this be right, multiplying amount by *b*'s alpha?
 	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
@@ -430,16 +447,18 @@ blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_ALPHA_DARKEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 {
 	if(a.get_a()*amount > b.get_a())
 		return a.set_a(a.get_a()*amount);
 	return b;
 }
 
-static Color
-blendfunc_SCREEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_SCREEN(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -450,22 +469,23 @@ blendfunc_SCREEN(Color &a,Color &b,float amount)
 	return blendfunc_ONTO(a,b,amount);
 }
 
-static Color
-blendfunc_OVERLAY(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_OVERLAY(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
-	Color rm;
+	C rm;
 	rm.set_r(b.get_r()*a.get_r());
 	rm.set_g(b.get_g()*a.get_g());
 	rm.set_b(b.get_b()*a.get_b());
 
-	Color rs;
+	C rs;
 	rs.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
 	rs.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
 	rs.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
 
-	Color& ret(a);
+	C& ret(a);
 
 	ret.set_r(a.get_r()*rs.get_r() + (1.0-a.get_r())*rm.get_r());
 	ret.set_g(a.get_g()*rs.get_g() + (1.0-a.get_g())*rm.get_g());
@@ -474,8 +494,9 @@ blendfunc_OVERLAY(Color &a,Color &b,float amount)
 	return blendfunc_ONTO(ret,b,amount);
 }
 
-static Color
-blendfunc_HARD_LIGHT(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -489,10 +510,11 @@ blendfunc_HARD_LIGHT(Color &a,Color &b,float amount)
 	return blendfunc_ONTO(a,b,amount);
 }
 
-static Color
-blendfunc_ALPHA_OVER(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
-	Color rm(b);
+	C rm(b);
 
 	//multiply the inverse alpha channel with the one below us
 	rm.set_a((1-a.get_a())*b.get_a());
@@ -550,28 +572,28 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE,	// 0
-		blendfunc_STRAIGHT,
-		blendfunc_BRIGHTEN,
-		blendfunc_DARKEN,
-		blendfunc_ADD,
-		blendfunc_SUBTRACT,		// 5
-		blendfunc_MULTIPLY,
-		blendfunc_DIVIDE,
-		blendfunc_COLOR,
-		blendfunc_HUE,
-		blendfunc_SATURATION,	// 10
-		blendfunc_LUMINANCE,
-		blendfunc_BEHIND,
-		blendfunc_ONTO,
-		blendfunc_ALPHA_BRIGHTEN,
-		blendfunc_ALPHA_DARKEN,	// 15
-		blendfunc_SCREEN,
-		blendfunc_HARD_LIGHT,
-		blendfunc_DIFFERENCE,
-		blendfunc_ALPHA_OVER,
-		blendfunc_OVERLAY,		// 20
-		blendfunc_STRAIGHT_ONTO,
+		blendfunc_COMPOSITE<Color>,	// 0
+		blendfunc_STRAIGHT<Color>,
+		blendfunc_BRIGHTEN<Color>,
+		blendfunc_DARKEN<Color>,
+		blendfunc_ADD<Color>,
+		blendfunc_SUBTRACT<Color>,		// 5
+		blendfunc_MULTIPLY<Color>,
+		blendfunc_DIVIDE<Color>,
+		blendfunc_COLOR<Color>,
+		blendfunc_HUE<Color>,
+		blendfunc_SATURATION<Color>,	// 10
+		blendfunc_LUMINANCE<Color>,
+		blendfunc_BEHIND<Color>,
+		blendfunc_ONTO<Color>,
+		blendfunc_ALPHA_BRIGHTEN<Color>,
+		blendfunc_ALPHA_DARKEN<Color>,	// 15
+		blendfunc_SCREEN<Color>,
+		blendfunc_HARD_LIGHT<Color>,
+		blendfunc_DIFFERENCE<Color>,
+		blendfunc_ALPHA_OVER<Color>,
+		blendfunc_OVERLAY<Color>,		// 20
+		blendfunc_STRAIGHT_ONTO<Color>,
 	};
 
 	return vtable[type](a,b,amount);
