@@ -710,6 +710,14 @@ public:
 	CairoColor(const CairoColor& c, const unsigned char A):
 	a_(A), r_(c.r_), g_(c.g_), b_(c.b_) { }
 	CairoColor(const CairoColor& c): a_(c.a_), r_(c.r_), g_(c.g_), b_(c.b_) { }
+	// Conversor constructor
+	CairoColor(Color& c)
+	{
+		set_r((ceil()-floor())*c.get_r()/(Color::ceil()-Color::floor()));
+		set_g((ceil()-floor())*c.get_g()/(Color::ceil()-Color::floor()));
+		set_b((ceil()-floor())*c.get_b()/(Color::ceil()-Color::floor()));
+		set_a((ceil()-floor())*c.get_a()/(Color::ceil()-Color::floor()));
+	}
 	const unsigned char get_r()const { return r_; }
 	const unsigned char get_g()const { return g_; }
 	const unsigned char get_b()const { return b_; }
