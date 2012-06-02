@@ -192,33 +192,37 @@ bool
 studio::Instance::run_plugin()
 {
 	
-	// Trying to replace canvas for current instance...
-	
 	OneMoment one_moment;
-	String errors, warnings;
+	//String errors, warnings;
 
 	// TODO: (Plugins) Should be different filename
-	String filename("/home/zelgadis/projects/dropbox/morevna/lib/stickman.sif");
-
+	String filename(this->get_file_name());
+	//String filename("/home/zelgadis/projects/dropbox/morevna/lib/stickman.sif");
+	
+	//Canvas::Handle canvas(instance->get_canvas());
 	Canvas::Handle canvas(this->get_canvas());
 	
-	std::string as("123");
+	// TODO: (Plugins) Save as operation here
+	// ...
 	
-	canvas = open_canvas_as(filename,as,errors,warnings);
+	//std::string as("123");
+	//canvas = open_canvas_as(filename,as,errors,warnings);
+	//refresh_canvas_tree();
+
+	this->close();
+
+	if(canvas->count()!=1)
+	{
+		one_moment.hide();
+		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
+		one_moment.show();
+	}
+	canvas=0;
 	
-	refresh_canvas_tree();
+	// TODO: (Plugins) Call plugin process here
+	// ...
 
-	//instance->close();
-
-	//if(canvas->count()!=1)
-	//{
-	//	one_moment.hide();
-	//	App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
-	//	one_moment.show();
-	//}
-	//canvas=0;
-
-	//App::open(filename);
+	App::open(filename);
 }
 
 
