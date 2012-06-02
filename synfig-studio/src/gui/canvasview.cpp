@@ -1519,8 +1519,13 @@ CanvasView::init_menus()
 		SLOT_EVENT(EVENT_REFRESH)
 	);
 
-	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
+	action_group->add( Gtk::Action::create("properties", _("Unselect All Layers")),
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
+	);
+	
+	// TODO: (Plugins) Menu actions should be created dynamically
+	action_group->add( Gtk::Action::create("simple-skeleton", _("Simple Skeleton")),
+		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin))
 	);
 
 	// Preview Quality Menu

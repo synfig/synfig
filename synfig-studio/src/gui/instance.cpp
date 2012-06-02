@@ -44,6 +44,7 @@
 #include <sigc++/adaptors/hide.h>
 #include "toolbox.h"
 #include "onemoment.h"
+#include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 
 #include "autorecover.h"
@@ -186,6 +187,40 @@ Instance::set_redo_status(bool x)
 	App::toolbox->update_undo_redo();
 	signal_undo_redo_status_changed()();
 }
+
+bool
+studio::Instance::run_plugin()
+{
+	
+	// Trying to replace canvas for current instance...
+	
+	OneMoment one_moment;
+	String errors, warnings;
+
+	// TODO: (Plugins) Should be different filename
+	String filename("/home/zelgadis/projects/dropbox/morevna/lib/stickman.sif");
+
+	Canvas::Handle canvas(this->get_canvas());
+	
+	std::string as("123");
+	
+	canvas = open_canvas_as(filename,as,errors,warnings);
+	
+	refresh_canvas_tree();
+
+	//instance->close();
+
+	//if(canvas->count()!=1)
+	//{
+	//	one_moment.hide();
+	//	App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
+	//	one_moment.show();
+	//}
+	//canvas=0;
+
+	//App::open(filename);
+}
+
 
 bool
 studio::Instance::save_as(const synfig::String &file_name)

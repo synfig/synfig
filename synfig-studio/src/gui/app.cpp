@@ -771,6 +771,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-group", _("Set")) );
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
+	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")) );
 
 	// Add the synfigapp actions...
 	synfigapp::Action::Book::iterator iter;
@@ -872,6 +873,9 @@ init_ui_manager()
 
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
+	
+	// TODO: (Plugins) Menu actions should be created dynamically
+	DEFINE_ACTION("simple-skeleton", _("Simple Skeleton"));
 
 #undef DEFINE_ACTION
 #undef DEFINE_ACTION_2
@@ -1005,6 +1009,10 @@ init_ui_manager()
 "	</menu>"
 "	<menu action='menu-keyframe'>"
 "		<menuitem action='keyframe-properties'/>"
+"	</menu>"
+"	<menu action='menu-plugins'>"
+// TODO: (Plugins) Menu items should be created dynamically
+"		<menuitem action='simple-skeleton'/>"
 "	</menu>"
 "	</popup>"
 
