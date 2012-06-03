@@ -195,15 +195,19 @@ studio::Instance::run_plugin()
 	OneMoment one_moment;
 	//String errors, warnings;
 
-	// TODO: (Plugins) Should be different filename
 	String filename(this->get_file_name());
+	// TODO: (Plugins) Should be random-generated
+	String tmp_filename;
+	tmp_filename = filename+".zzz";
 	//String filename("/home/zelgadis/projects/dropbox/morevna/lib/stickman.sif");
 	
 	//Canvas::Handle canvas(instance->get_canvas());
 	Canvas::Handle canvas(this->get_canvas());
 	
 	// TODO: (Plugins) Save as operation here
-	// ...
+	//synfigapp::Instance::save_copy(tmp_filename);
+	bool ret;
+	ret=save_canvas(tmp_filename,canvas);
 	
 	//std::string as("123");
 	//canvas = open_canvas_as(filename,as,errors,warnings);
@@ -217,12 +221,19 @@ studio::Instance::run_plugin()
 		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
 	}
-	canvas=0;
-	
-	// TODO: (Plugins) Call plugin process here
+	// TODO: (Plugins) Else: Call plugin process here
 	// ...
+	
+	canvas=0;
 
-	App::open(filename);
+	App::open_as(tmp_filename,filename);
+	
+	// TODO: (Plugins) Remove temp file
+	// ...
+	
+	// TODO: (Plugins) Setmodified flag
+	
+	return 0;
 }
 
 
