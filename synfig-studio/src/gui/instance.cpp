@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <stdio.h>
+
 #include "instance.h"
 #include <cassert>
 #include <gtkmm/stock.h>
@@ -200,14 +202,16 @@ studio::Instance::run_plugin()
 	
 	OneMoment one_moment;
 	//String errors, warnings;
-
+	
+	String filename;
+	String tmp_filename;
+	// TODO: (Plugins) Should be random-generated
 	if (!has_real_filename())
 	{
-		
+		filename = this->get_file_name();
+		tmp_filename = filename+".zzz";
 	} else {
-		String filename(this->get_file_name());
-		// TODO: (Plugins) Should be random-generated
-		String tmp_filename;
+		filename = this->get_file_name();
 		tmp_filename = filename+".zzz";
 	}
 	
@@ -234,7 +238,17 @@ studio::Instance::run_plugin()
 		// TODO: (Plugins) Plugin name/path should be dynamic
 		String command;
 		command = "python /home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/simple-skeleton/main.py "+tmp_filename;
-		system(command.c_str());
+		//system(command.c_str());
+		FILE* pipe = popen(command.c_str(), "r");
+		if (!pipe) return "ERROR";
+		char buffer[128];
+		std::string result = "";
+		while(!feof(pipe)) {
+			if(fgets(buffer, 128, pipe) != NULL)
+					result += buffer;
+		}
+		pclose(pipe);
+		synfig::info(result);
 	}
 	
 	canvas=0;
