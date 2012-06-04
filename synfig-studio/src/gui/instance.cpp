@@ -44,7 +44,6 @@
 #include <sigc++/adaptors/hide.h>
 #include "toolbox.h"
 #include "onemoment.h"
-#include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 
 #include "autorecover.h"
@@ -191,15 +190,26 @@ Instance::set_redo_status(bool x)
 bool
 studio::Instance::run_plugin()
 {
+	// TODO: (Plugins) Warn about undo cleanup
+	//string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
+	//int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+	//if(answer==synfigapp::UIInterface::RESPONSE_YES)
+	//	dialog_cvs_commit();
+	//if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
+	//	return false;
 	
 	OneMoment one_moment;
 	//String errors, warnings;
 
-	String filename(this->get_file_name());
-	// TODO: (Plugins) Should be random-generated
-	String tmp_filename;
-	tmp_filename = filename+".zzz";
-	//String filename("/home/zelgadis/projects/dropbox/morevna/lib/stickman.sif");
+	if (!has_real_filename())
+	{
+		
+	} else {
+		String filename(this->get_file_name());
+		// TODO: (Plugins) Should be random-generated
+		String tmp_filename;
+		tmp_filename = filename+".zzz";
+	}
 	
 	//Canvas::Handle canvas(instance->get_canvas());
 	Canvas::Handle canvas(this->get_canvas());
@@ -220,9 +230,12 @@ studio::Instance::run_plugin()
 		one_moment.hide();
 		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
+	} else {
+		// TODO: (Plugins) Plugin name/path should be dynamic
+		String command;
+		command = "python /home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/simple-skeleton/main.py "+tmp_filename;
+		system(command.c_str());
 	}
-	// TODO: (Plugins) Else: Call plugin process here
-	// ...
 	
 	canvas=0;
 
