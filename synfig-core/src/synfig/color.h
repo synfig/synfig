@@ -723,6 +723,14 @@ public:
 	const unsigned char get_b()const { return b_; }
 	const unsigned char get_a()const { return a_; }
 	const unsigned char get_alpha()const { return a_; }
+	
+	const String get_string(void)const;
+
+	static const String char2hex(unsigned char c);
+	static unsigned char hex2char(String s);
+	
+	void set_hex( String& str);
+	const String get_hex()const { return String(char2hex(r_)+char2hex(g_)+char2hex(b_)); }
 
 	CairoColor& set_r(const unsigned char x) {r_ = x; return *this; }
 	CairoColor& set_g(const unsigned char x) {g_ = x; return *this; }

@@ -66,6 +66,13 @@ Color::hex2real(String s)
 	return n / 255.0f;
 }
 
+unsigned char
+CairoColor::hex2char(String s)
+{
+	ColorReal cr(Color::hex2real(s));
+	return (unsigned char)(cr*255.0f);
+}
+
 const String
 Color::real2hex(ColorReal c)
 {
@@ -76,6 +83,13 @@ Color::real2hex(ColorReal c)
 	if (c>1) c = 1;
 	o << hex << int(c*255.0f);
 	return o.str();
+}
+
+const String
+CairoColor::char2hex(unsigned char c)
+{
+	String s(Color::real2hex((ColorReal)(c/((float)ceil()))));
+	return s.c_str();
 }
 
 void
@@ -118,6 +132,16 @@ Color::set_hex(String& str)
 	}
 }
 
+void 
+CairoColor::set_hex(String& str)
+{
+	CairoColor ret(*this);
+	Color c;
+	c.set_hex(str);
+	c=c.clamped();
+	ret=CairoColor(c);
+}
+
 const String
 Color::get_string(void)const
 {
@@ -126,6 +150,13 @@ Color::get_string(void)const
 	return String(o.str().c_str());
 }
 
+const String
+CairoColor::get_string(void)const
+{
+	std::ostringstream o;
+	o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << a_;
+	return String(o.str().c_str());
+}
 
 Color
 Color::clamped_negative()const
