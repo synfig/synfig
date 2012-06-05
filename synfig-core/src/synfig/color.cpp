@@ -235,6 +235,7 @@ Color::clamped()const
 }
 
 typedef Color (*blendfunc)(Color &,Color &,float);
+typedef CairoColor (*cairoblendfunc)(CairoColor&, CairoColor&, float);
 
 template <class C>
 static C
@@ -598,6 +599,46 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 		blendfunc_ALPHA_OVER<Color>,
 		blendfunc_OVERLAY<Color>,		// 20
 		blendfunc_STRAIGHT_ONTO<Color>,
+	};
+
+	return vtable[type](a,b,amount);
+}
+
+
+CairoColor
+CairoColor::blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type)
+{
+	// No matter what blend method is being used,
+	// if the amount is equal to zero, then only B
+	// will shine through
+	if(fabsf(amount)<=COLOR_EPSILON)return b;
+
+	assert(type<Color::BLEND_END);
+
+	const static cairoblendfunc vtable[Color::BLEND_END]=
+	{
+		blendfunc_COMPOSITE<CairoColor>,	// 0
+		blendfunc_STRAIGHT<CairoColor>,
+		blendfunc_BRIGHTEN<CairoColor>,
+		blendfunc_DARKEN<CairoColor>,
+		blendfunc_ADD<CairoColor>,
+		blendfunc_SUBTRACT<CairoColor>,		// 5
+		blendfunc_MULTIPLY<CairoColor>,
+		blendfunc_DIVIDE<CairoColor>,
+		blendfunc_COLOR<CairoColor>,
+		blendfunc_HUE<CairoColor>,
+		blendfunc_SATURATION<CairoColor>,	// 10
+		blendfunc_LUMINANCE<CairoColor>,
+		blendfunc_BEHIND<CairoColor>,
+		blendfunc_ONTO<CairoColor>,
+		blendfunc_ALPHA_BRIGHTEN<CairoColor>,
+		blendfunc_ALPHA_DARKEN<CairoColor>,	// 15
+		blendfunc_SCREEN<CairoColor>,
+		blendfunc_HARD_LIGHT<CairoColor>,
+		blendfunc_DIFFERENCE<CairoColor>,
+		blendfunc_ALPHA_OVER<CairoColor>,
+		blendfunc_OVERLAY<CairoColor>,		// 20
+		blendfunc_STRAIGHT_ONTO<CairoColor>,
 	};
 
 	return vtable[type](a,b,amount);
