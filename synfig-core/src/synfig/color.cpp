@@ -536,43 +536,6 @@ blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 Color
 Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 {
-#if 0
-	if(isnan(a.get_r()) || isnan(a.get_g()) || isnan(a.get_b()))
-	{
-#ifdef _DEBUG
-		a=magenta().set_a(a.get_a());
-#else
-		a=black().set_a(a.get_a());
-#endif
-	}
-
-	if(isnan(b.get_r()) || isnan(b.get_g()) || isnan(b.get_b()))
-	{
-#ifdef _DEBUG
-		b=magenta().set_a(b.get_a());
-#else
-		b=black().set_a(b.get_a());
-#endif
-	}
-#endif
-
-/*
-	if(!a.is_valid()&&b.is_valid())
-		return b;
-
-	if(a.is_valid()&&!b.is_valid())
-		return a;
-
-	if(!a.is_valid()||!b.is_valid())
-	{
-#ifdef _DEBUG
-		return magenta();
-#else
-		return black();
-#endif
-	}
-*/
-
 	// No matter what blend method is being used,
 	// if the amount is equal to zero, then only B
 	// will shine through
