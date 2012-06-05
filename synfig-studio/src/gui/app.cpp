@@ -285,6 +285,7 @@ int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
+String studio::App::test("123");
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -873,13 +874,7 @@ init_ui_manager()
 
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
-	
-	// TODO: (Plugins) Menu actions should be created dynamically
-	DEFINE_ACTION("simple-skeleton", _("Simple Skeleton"));
 
-#undef DEFINE_ACTION
-#undef DEFINE_ACTION_2
-#undef DEFINE_ACTION_SIG
 
     Glib::ustring ui_info =
 "<ui>"
@@ -1011,13 +1006,31 @@ init_ui_manager()
 "		<menuitem action='keyframe-properties'/>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
-// TODO: (Plugins) Menu items should be created dynamically
-"		<menuitem action='simple-skeleton'/>"
+;
+
+	// TODO: (Plugins) Menu items should be created dynamically
+	// TODO: (Plugins) group menu items
+	std::string plugin_id;
+	std::string plugin_name;
+	
+	plugin_id="simple-skeleton";
+	//TODO: (Plugins) Enable localization with gettext
+	plugin_name="Simple Skeleton";
+	
+	DEFINE_ACTION(plugin_id, plugin_name);
+	ui_info += strprintf("		<menuitem action='%s'/>", plugin_id.c_str());
+
+	ui_info +=
 "	</menu>"
 "	</popup>"
 
 "</ui>"
 ;
+
+	#undef DEFINE_ACTION
+	#undef DEFINE_ACTION_2
+	#undef DEFINE_ACTION_SIG
+
 /*		"<ui>"
         "  <menubar name='MenuBar'>"
         "    <menu action='MenuFile'>"

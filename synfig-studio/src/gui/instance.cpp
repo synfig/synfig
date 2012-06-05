@@ -189,8 +189,8 @@ Instance::set_redo_status(bool x)
 	signal_undo_redo_status_changed()();
 }
 
-bool
-studio::Instance::run_plugin()
+void
+studio::Instance::run_plugin(std::string plugin_path)
 {
 	// TODO: (Plugins) Warn about undo cleanup
 	//string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
@@ -237,10 +237,10 @@ studio::Instance::run_plugin()
 	} else {
 		// TODO: (Plugins) Plugin name/path should be dynamic
 		String command;
-		command = "python /home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/simple-skeleton/main.py "+tmp_filename;
+		command = "python "+plugin_path+" "+tmp_filename;
 		//system(command.c_str());
 		FILE* pipe = popen(command.c_str(), "r");
-		if (!pipe) return "ERROR";
+		if (!pipe) return; // TODO: (Plugins) Error
 		char buffer[128];
 		std::string result = "";
 		while(!feof(pipe)) {
@@ -260,7 +260,7 @@ studio::Instance::run_plugin()
 	
 	// TODO: (Plugins) Setmodified flag
 	
-	return 0;
+	return;
 }
 
 

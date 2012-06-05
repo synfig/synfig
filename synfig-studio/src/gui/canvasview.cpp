@@ -1524,9 +1524,21 @@ CanvasView::init_menus()
 	);
 	
 	// TODO: (Plugins) Menu actions should be created dynamically
-	action_group->add( Gtk::Action::create("simple-skeleton", _("Simple Skeleton")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin))
+	std::string plugin_id;
+	std::string plugin_name;
+	std::string plugin_path;
+	
+	plugin_id="simple-skeleton";
+	plugin_name="Simple Skeleton";
+	plugin_path="/home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/add-simple-skeleton/add-simple-skeleton.py";
+	
+	action_group->add( Gtk::Action::create(plugin_id, plugin_name),
+			sigc::bind(
+				sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin),
+				plugin_path
+			)
 	);
+	synfig::info(App::test);
 
 	// Preview Quality Menu
 	{

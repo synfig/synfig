@@ -176,7 +176,7 @@ public:
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 	
-	bool run_plugin();
+	void run_plugin(std::string plugin_path);
 
 	bool save_as(const synfig::String &filename);
 
