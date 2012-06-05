@@ -68,6 +68,19 @@ public:
 	}
 };
 
+class CairoColorPrep
+{
+public:
+	CairoColor cook(CairoColor x)const
+	{
+		return x.premult_alpha();
+	}
+	CairoColor uncook(CairoColor x)const
+	{
+		return x.demult_alpha();
+	}
+};
+
 /*!	\class Surface
 **	\brief Bitmap Surface
 **	\todo writeme
