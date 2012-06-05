@@ -50,6 +50,12 @@ EXTRA_DIST = \
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
 
+pluginsdir=$(prefix)/share/synfig/plugins
+plugins_DATA=\
+	src/plugins/add-simple-skeleton/plugin.xml \
+	src/plugins/add-simple-skeleton/add-simple-skeleton.py \
+	src/plugins/add-simple-skeleton/stickman.sif
+
 # Desktop entry
 desktopdir = $(prefix)/share/applications
 desktop_DATA = synfigstudio.desktop
