@@ -285,7 +285,7 @@ int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
-String studio::App::test("123");
+std::list< App::plugin > studio::App::plugins_list;
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -751,6 +751,17 @@ public:
 static ::Preferences _preferences;
 
 void
+load_plugins()
+{
+	studio::App::plugin p;
+	p.id="add-simple-skeleton";
+	// TODO: (Plugins) Use gettext for localization
+	p.name="Simple Skeleton";
+	p.path="/home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/add-simple-skeleton/add-simple-skeleton.py";
+	studio::App::plugins_list.push_back(p);
+}
+
+void
 init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
@@ -1008,17 +1019,15 @@ init_ui_manager()
 "	<menu action='menu-plugins'>"
 ;
 
-	// TODO: (Plugins) Menu items should be created dynamically
-	// TODO: (Plugins) group menu items
-	std::string plugin_id;
-	std::string plugin_name;
-	
-	plugin_id="simple-skeleton";
-	//TODO: (Plugins) Enable localization with gettext
-	plugin_name="Simple Skeleton";
-	
-	DEFINE_ACTION(plugin_id, plugin_name);
-	ui_info += strprintf("		<menuitem action='%s'/>", plugin_id.c_str());
+	for(list<App::plugin>::iterator p=studio::App::plugins_list.begin();p!=studio::App::plugins_list.end();++p) {
+
+		// TODO: (Plugins) Arrange menu items into groups
+
+		App::plugin plugin = *p;
+		
+		DEFINE_ACTION(plugin.id, plugin.name);
+		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+	}
 
 	ui_info +=
 "	</menu>"
@@ -1235,6 +1244,9 @@ App::App(int *argc, char ***argv):
 
 	try
 	{
+		studio_init_cb.task(_("Loading Plugins..."));
+		load_plugins();
+		
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();

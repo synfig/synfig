@@ -198,8 +198,13 @@ public:
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
-
-	static synfig::String test;
+	
+	struct plugin{
+		std::string id;
+		std::string name;
+		std::string path;
+	};
+	static std::list< App::plugin > plugins_list;
 	
 	static synfig::String browser_command;
 	static synfig::String custom_filename_prefix;
