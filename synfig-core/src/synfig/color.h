@@ -707,13 +707,13 @@ public:
 	CairoColor() :a_(0), r_(0), g_(0), b_(0) { }
 	CairoColor(const unsigned char u) :a_(u),r_(u), g_(u), b_(u) { }
 	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
-	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=1):
+	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil()):
 	a_(A),	r_(R),	g_(G),	b_(B) { }
 	CairoColor(const CairoColor& c, const unsigned char A):
 	a_(A), r_(c.r_), g_(c.g_), b_(c.b_) { }
 	CairoColor(const CairoColor& c): a_(c.a_), r_(c.r_), g_(c.g_), b_(c.b_) { }
 	// Conversor constructor
-	CairoColor(Color& c)
+	CairoColor(const Color& c)
 	{
 		set_r((ceil()-floor())*c.get_r()/(Color::ceil()-Color::floor()));
 		set_g((ceil()-floor())*c.get_g()/(Color::ceil()-Color::floor()));
