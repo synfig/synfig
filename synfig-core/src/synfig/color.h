@@ -98,7 +98,7 @@ class ColorAccumulator;
 #endif
 
 
-
+class CairoColor;
 
 /*!	\class Color
 **	\ ARGB 128 bits Color class implementation 
@@ -240,7 +240,6 @@ public:
 		g_(c.g_),
 		b_(c.b_) { }
 
-
 	//!	Copy constructor
 	Color(const Color& c):
 		a_(c.a_),
@@ -248,6 +247,9 @@ public:
 		g_(c.g_),
 		b_(c.b_) { }
 
+	//! Convert from CairoColor to Color
+	Color(const CairoColor& c);
+	
 #ifdef USE_HALF_TYPE
 	friend class ColorAccumulator;
 	//!	Convert constructor

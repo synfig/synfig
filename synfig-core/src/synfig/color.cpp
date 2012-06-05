@@ -234,6 +234,15 @@ Color::clamped()const
 	return(ret);
 }
 
+Color::Color(const CairoColor& c)
+	{
+		set_r((ceil()-floor())*c.get_r()/(CairoColor::ceil()-CairoColor::floor()));
+		set_g((ceil()-floor())*c.get_g()/(CairoColor::ceil()-CairoColor::floor()));
+		set_b((ceil()-floor())*c.get_b()/(CairoColor::ceil()-CairoColor::floor()));
+		set_a((ceil()-floor())*c.get_a()/(CairoColor::ceil()-CairoColor::floor()));
+	}
+
+
 typedef Color (*blendfunc)(Color &,Color &,float);
 typedef CairoColor (*cairoblendfunc)(CairoColor&, CairoColor&, float);
 
