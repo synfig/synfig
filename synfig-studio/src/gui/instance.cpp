@@ -212,17 +212,20 @@ studio::Instance::run_plugin(std::string plugin_path)
 		tmp_filename = this->get_file_name();
 	}
 	
+	// make random filename and ensure there's no file with such name
 	static string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-	std::string result;
+	std::string rsuffix;
 	int length = 8;
-	result.resize(length);
-	srand(time(NULL));
+	rsuffix.resize(length);
     
-	for (int i = 0; i < length; i++)
-		result[i] = charset[rand() % charset.length()];
+	srand(time(NULL));
+	struct stat buf;
 	
-	// TODO: (Plugins) Check if exists
-	tmp_filename = tmp_filename+"."+result;
+	do {
+		for (int i = 0; i < length; i++)
+			rsuffix[i] = charset[rand() % charset.length()];
+		tmp_filename = tmp_filename+"."+rsuffix;
+	} while (stat(tmp_filename.c_str(), &buf) != -1);
 	
 	Canvas::Handle canvas(this->get_canvas());
 	
