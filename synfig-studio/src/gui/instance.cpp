@@ -192,13 +192,10 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_path)
 {
-	// TODO: (Plugins) Warn about undo cleanup
-	//string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
-	//int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
-	//if(answer==synfigapp::UIInterface::RESPONSE_YES)
-	//	dialog_cvs_commit();
-	//if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
-	//	return false;
+	handle<synfigapp::UIInterface> uim=find_canvas_view(get_canvas())->get_ui_interface();
+	string str=strprintf(_("This operation cannot be undone and all undo history will be cleared.\nDo you really want to proceed?"));
+	int answer=uim->yes_no(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+	if(answer==synfigapp::UIInterface::RESPONSE_YES){
 	
 	OneMoment one_moment;
 	
@@ -237,7 +234,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	if(canvas->count()!=1)
 	{
 		one_moment.hide();
-		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
+		App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
 	} else {
 		String command;
@@ -263,6 +260,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	
 	// This file isn't saved! mark it as such
 	App::instance_list.back()->inc_action_count();
+	}
 	return;
 }
 
