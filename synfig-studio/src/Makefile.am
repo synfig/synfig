@@ -8,4 +8,5 @@ EXTRA_DIST = \
 
 SUBDIRS = \
 	synfigapp \
+	plugins \
 	gui
