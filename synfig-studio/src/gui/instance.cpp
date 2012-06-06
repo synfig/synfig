@@ -205,15 +205,15 @@ studio::Instance::run_plugin(std::string plugin_path)
 	
 	String filename;
 	String tmp_filename;
-	// TODO: (Plugins) Should be random-generated
 	if (!has_real_filename())
 	{
-		filename = this->get_file_name();
-		tmp_filename = filename+".zzz";
+		filename = Glib::build_filename(App::get_user_app_directory(),"tmp",this->get_file_name());
 	} else {
 		filename = this->get_file_name();
-		tmp_filename = filename+".zzz";
 	}
+	// TODO: (Plugins) Should be random-generated
+	// TODO: (Plugins) Check if exists
+	tmp_filename = filename+".zzz";
 	
 	//Canvas::Handle canvas(instance->get_canvas());
 	Canvas::Handle canvas(this->get_canvas());
@@ -237,7 +237,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	} else {
 		// TODO: (Plugins) Plugin name/path should be dynamic
 		String command;
-		command = "python "+plugin_path+" "+tmp_filename;
+		command = "python "+plugin_path+" \""+tmp_filename+"\"";
 		//system(command.c_str());
 		FILE* pipe = popen(command.c_str(), "r");
 		if (!pipe) return; // TODO: (Plugins) Error
