@@ -205,15 +205,16 @@ studio::Instance::run_plugin(std::string plugin_path)
 	
 	String filename;
 	String tmp_filename;
+	filename = this->get_file_name();
 	if (!has_real_filename())
 	{
-		filename = Glib::build_filename(App::get_user_app_directory(),"tmp",this->get_file_name());
+		tmp_filename = Glib::build_filename(App::get_user_app_directory(),"tmp",this->get_file_name());
 	} else {
-		filename = this->get_file_name();
+		tmp_filename = this->get_file_name();
 	}
 	// TODO: (Plugins) Should be random-generated
 	// TODO: (Plugins) Check if exists
-	tmp_filename = filename+".zzz";
+	tmp_filename = tmp_filename+".zzz";
 	
 	//Canvas::Handle canvas(instance->get_canvas());
 	Canvas::Handle canvas(this->get_canvas());
