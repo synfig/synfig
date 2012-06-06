@@ -225,6 +225,11 @@ studio::Instance::run_plugin(std::string plugin_path)
 	} while (stat(tmp_filename.c_str(), &buf) != -1);
 	
 	Canvas::Handle canvas(this->get_canvas());
+	Time cur_time;
+	cur_time = canvas->get_time();
+	std::string frame;
+	frame = cur_time.get_string(canvas->rend_desc().get_frame_rate(), Time::FORMAT_FRAMES);
+	frame = frame.substr(0, frame.size()-1);
 	
 	bool ret;
 	ret=save_canvas(tmp_filename,canvas);
@@ -238,7 +243,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 		one_moment.show();
 	} else {
 		String command;
-		command = "python "+plugin_path+" \""+tmp_filename+"\"";
+		command = "python "+plugin_path+" \""+tmp_filename+"\" "+frame;
 		//system(command.c_str());
 		FILE* pipe = popen(command.c_str(), "r");
 		if (!pipe) return; // TODO: (Plugins) Error
