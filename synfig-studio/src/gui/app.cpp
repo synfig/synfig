@@ -770,7 +770,10 @@ load_plugins()
 	DIR *dir;
 	struct dirent *entry;
 	
+	std::list<std::string> pluginpaths;
 	std::string pluginsprefix;
+	
+	// system plugins path
 #ifdef WIN32
 	pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
 #else
@@ -786,15 +789,19 @@ load_plugins()
 		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
 		pluginsprefix+="plugins";
 	}
-
-	synfig::info(pluginsprefix);
+	pluginpaths.push_back(pluginsprefix);
+	
+	// user plugins path
+	pluginsprefix=Glib::build_filename(App::get_user_app_directory(),"plugins");
+	pluginpaths.push_back(pluginsprefix);
+	
+	for(std::list<std::string>::iterator ppath = pluginpaths.begin(); ppath != pluginpaths.end(); ++ppath){
+	
+	pluginsprefix = *ppath;
+	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
 	
 	dir = opendir(pluginsprefix.c_str());
-	if(!dir) {
-		synfig::warning("Can't open plugins directory");
-		return;
-	}
-	
+	if(dir) {
 	while ( (entry = readdir(dir)) != NULL) {
 		if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
 			std::string pluginpath;
@@ -818,7 +825,7 @@ load_plugins()
 						std::string pluginfilepath;
 						pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
 						
-						synfig::info("Found plugin - %s.", entry->d_name);
+						synfig::info("Loading plugin: %s", entry->d_name);
 						
 						studio::App::plugin p;
 						p.id=entry->d_name;
@@ -892,7 +899,8 @@ load_plugins()
 	};
 	
 	closedir(dir);
-	
+	}
+	}
 }
 
 void
