@@ -259,9 +259,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	canvas=0;
 
 	App::open_as(tmp_filename,filename);
-	
-	// TODO: (Plugins) Remove temp file
-	// ...
+	remove( tmp_filename.c_str() );
 	
 	// TODO: (Plugins) Setmodified flag
 	
