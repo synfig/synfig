@@ -58,6 +58,8 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 
+#include <libxml++/libxml++.h>
+
 #include <gtk/gtk.h>
 
 #include <gdkmm/general.h>
@@ -121,6 +123,7 @@
 #include "modules/mod_palette/mod_palette.h"
 
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include "ipc.h"
 
@@ -753,12 +756,117 @@ static ::Preferences _preferences;
 void
 load_plugins()
 {
-	studio::App::plugin p;
-	p.id="add-simple-skeleton";
-	// TODO: (Plugins) Use gettext for localization
-	p.name="Simple Skeleton";
-	p.path="/home/zelgadis/projects/synfig/source-github/synfig-studio/src/plugins/add-simple-skeleton/add-simple-skeleton.py";
-	studio::App::plugins_list.push_back(p);
+	DIR *dir;
+	struct dirent *entry;
+	
+	std::string pluginsprefix;
+	pluginsprefix = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"plugins";
+	synfig::info(pluginsprefix);
+	
+	dir = opendir(pluginsprefix.c_str());
+	if(!dir) {
+		synfig::warning("Can't open plugins directory");
+		return;
+	}
+	
+	while ( (entry = readdir(dir)) != NULL) {
+		if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
+			std::string pluginpath;
+			pluginpath = pluginsprefix+"/"+entry->d_name;
+			struct stat sb;
+			int rc = stat(pluginpath.c_str(), &sb);
+			// error handling if stat failed
+			if (S_ISDIR(sb.st_mode)) {
+				// checking if directory contains a plugin...
+				DIR *plugindir;
+				struct dirent *plugindirentry;
+				
+				plugindir = opendir(pluginpath.c_str());
+				if(!plugindir) {
+					synfig::warning("Can't read plugin directory!");
+					return;
+				}
+				
+				while ( (plugindirentry = readdir(plugindir)) != NULL) {
+					if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
+						std::string pluginfilepath;
+						pluginfilepath = pluginpath+"/"+plugindirentry->d_name;
+						
+						synfig::info("Found plugin - %s.", entry->d_name);
+						
+						studio::App::plugin p;
+						p.id=entry->d_name;
+						
+						// parse xml file
+						try
+						{
+							xmlpp::DomParser parser;
+							//parser.set_validate();
+							parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
+							parser.parse_file(pluginfilepath);
+							if(parser)
+							{
+								//Walk the tree:
+								const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
+								if ( std::string(pNode->get_name()) == std::string("plugin") ){
+									//Recurse through child nodes:
+									xmlpp::Node::NodeList list = pNode->get_children();
+									for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+									{
+										const xmlpp::Node* node = *iter;
+										if ( std::string(node->get_name()) == std::string("name") ) {
+											
+											xmlpp::Node::NodeList l = node->get_children();
+											xmlpp::Node::NodeList::iterator i = l.begin();
+											xmlpp::Node* n = *i;
+											
+											const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
+											
+											if(nodeText)
+											{
+												// TODO: (Plugins) Use gettext & intltool for localization of xml files
+												p.name=nodeText->get_content();
+											}
+											
+										} else if ( std::string(node->get_name()) == std::string("exec") ) {
+											
+											xmlpp::Node::NodeList l = node->get_children();
+											xmlpp::Node::NodeList::iterator i = l.begin();
+											xmlpp::Node* n = *i;
+											
+											const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
+											
+											if(nodeText)
+											{
+												p.path=pluginpath+"/"+nodeText->get_content();
+											}
+										}
+									}
+								} else {
+									synfig::info("Invalid plugin.xml file.");
+								}
+							}
+						}
+						catch(const std::exception& ex)
+						{
+							std::cout << "Exception caught: " << ex.what() << std::endl;
+						}
+						
+						if ( p.id != "" && p.name != "" && p.path != ""){
+							studio::App::plugins_list.push_back(p);
+						} else {
+							synfig::warning("Invalid plugin.xml file!");
+						}
+					}
+				}
+				
+			}
+		}
+
+	};
+	
+	closedir(dir);
+	
 }
 
 void
