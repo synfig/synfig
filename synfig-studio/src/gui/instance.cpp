@@ -261,8 +261,8 @@ studio::Instance::run_plugin(std::string plugin_path)
 	App::open_as(tmp_filename,filename);
 	remove( tmp_filename.c_str() );
 	
-	// TODO: (Plugins) Setmodified flag
-	
+	// This file isn't saved! mark it as such
+	App::instance_list.back()->inc_action_count();
 	return;
 }
 
