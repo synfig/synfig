@@ -201,7 +201,6 @@ studio::Instance::run_plugin(std::string plugin_path)
 	//	return false;
 	
 	OneMoment one_moment;
-	//String errors, warnings;
 	
 	String filename;
 	String tmp_filename;
@@ -212,21 +211,23 @@ studio::Instance::run_plugin(std::string plugin_path)
 	} else {
 		tmp_filename = this->get_file_name();
 	}
-	// TODO: (Plugins) Should be random-generated
-	// TODO: (Plugins) Check if exists
-	tmp_filename = tmp_filename+".zzz";
 	
-	//Canvas::Handle canvas(instance->get_canvas());
+	static string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	std::string result;
+	int length = 8;
+	result.resize(length);
+	srand(time(NULL));
+    
+	for (int i = 0; i < length; i++)
+		result[i] = charset[rand() % charset.length()];
+	
+	// TODO: (Plugins) Check if exists
+	tmp_filename = tmp_filename+"."+result;
+	
 	Canvas::Handle canvas(this->get_canvas());
 	
-	// TODO: (Plugins) Save as operation here
-	//synfigapp::Instance::save_copy(tmp_filename);
 	bool ret;
 	ret=save_canvas(tmp_filename,canvas);
-	
-	//std::string as("123");
-	//canvas = open_canvas_as(filename,as,errors,warnings);
-	//refresh_canvas_tree();
 
 	this->close();
 
@@ -236,7 +237,6 @@ studio::Instance::run_plugin(std::string plugin_path)
 		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
 	} else {
-		// TODO: (Plugins) Plugin name/path should be dynamic
 		String command;
 		command = "python "+plugin_path+" \""+tmp_filename+"\"";
 		//system(command.c_str());
@@ -250,6 +250,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 		}
 		pclose(pipe);
 		synfig::info(result);
+		// TODO: (Plugins) Show output window on error
 	}
 	
 	canvas=0;
