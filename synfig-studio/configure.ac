@@ -267,6 +267,9 @@ AC_SUBST(imageext)
 imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
 
+plugindir="${datadir}/synfig/plugins"
+AC_SUBST(plugindir)
+
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
    AC_HELP_STRING([--disable-update-mimedb],
@@ -289,6 +292,8 @@ src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-studio.info
+src/plugins/Makefile
+src/plugins/add-simple-skeleton/Makefile
 ])
 AC_OUTPUT
 

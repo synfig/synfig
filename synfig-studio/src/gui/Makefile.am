@@ -115,4 +115,5 @@ synfigstudio_CXXFLAGS = \
 	@GTKMM_CFLAGS@ \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
+	-DPLUGIN_DIR=\"$(plugindir)\" \
 	"-DLOCALEDIR=\"$(localedir)\""

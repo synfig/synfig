@@ -180,6 +180,17 @@ using namespace studio;
 #	define IMAGE_EXT	"tif"
 #endif
 
+#ifdef WIN32
+#	ifdef PLUGIN_DIR
+#		undef PLUGIN_DIR
+#		define PLUGIN_DIR "share\\synfig\\plugins"
+#	endif
+#endif
+
+#ifndef PLUGIN_DIR
+#	define PLUGIN_DIR "/usr/local/share/synfig/plugins"
+#endif
+
 #include <synfigapp/main.h>
 
 /* === S I G N A L S ======================================================= */
@@ -760,7 +771,22 @@ load_plugins()
 	struct dirent *entry;
 	
 	std::string pluginsprefix;
-	pluginsprefix = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"plugins";
+#ifdef WIN32
+	pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
+#else
+	pluginsprefix=PLUGIN_DIR;
+#endif
+	char* synfig_root=getenv("SYNFIG_ROOT");
+	if(synfig_root) {
+		pluginsprefix=synfig_root;
+		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
+		pluginsprefix+="share";
+		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
+		pluginsprefix+="synfig";
+		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
+		pluginsprefix+="plugins";
+	}
+
 	synfig::info(pluginsprefix);
 	
 	dir = opendir(pluginsprefix.c_str());
@@ -772,7 +798,7 @@ load_plugins()
 	while ( (entry = readdir(dir)) != NULL) {
 		if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
 			std::string pluginpath;
-			pluginpath = pluginsprefix+"/"+entry->d_name;
+			pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
 			struct stat sb;
 			int rc = stat(pluginpath.c_str(), &sb);
 			// error handling if stat failed
@@ -790,7 +816,7 @@ load_plugins()
 				while ( (plugindirentry = readdir(plugindir)) != NULL) {
 					if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
 						std::string pluginfilepath;
-						pluginfilepath = pluginpath+"/"+plugindirentry->d_name;
+						pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
 						
 						synfig::info("Found plugin - %s.", entry->d_name);
 						
@@ -838,7 +864,7 @@ load_plugins()
 											
 											if(nodeText)
 											{
-												p.path=pluginpath+"/"+nodeText->get_content();
+												p.path=pluginpath+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
 											}
 										}
 									}
