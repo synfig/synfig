@@ -514,30 +514,32 @@ public:
 class CairoColor : public synfig::ColorBase<unsigned char>
 {
 public:
-	static const unsigned char ceil()
-	{ return (unsigned char)(255);}
+	typedef unsigned char value_type;
+
+	static const value_type ceil()
+	{ return (value_type)(255);}
 	
-	static const unsigned char floor()
-	{ return (unsigned char)(0);}
+	static const value_type floor()
+	{ return (value_type)(0);}
 
 	// Operators
-	inline unsigned char ceil_clamp(int x)
+	inline value_type ceil_clamp(int x)
 	{
 		if(x>ceil()) return ceil();
-		else return (unsigned char)(x);
+		else return (value_type)(x);
 	}
-	inline unsigned char floor_clamp(int x)
+	inline value_type floor_clamp(int x)
 	{
 		if(x<floor()) return floor();
-		else return (unsigned char)(x);
+		else return (value_type)(x);
 	}
-	inline unsigned char clamp(int x)
+	inline value_type clamp(int x)
 	{
 		if(x > ceil()) return ceil();
 		else if (x < floor()) return floor();
-		else return (unsigned char)(x);
+		else return (value_type)(x);
 	}
-	inline unsigned char clamp(float x)
+	inline value_type clamp(float x)
 	{
 		return clamp((int) (x));
 	}
@@ -636,16 +638,16 @@ public:
 
 	// Constructors
 public:
-	CairoColor() : ColorBase<unsigned char>() { }
-	CairoColor(const unsigned char u) : ColorBase<unsigned char>(u) { }
+	CairoColor() : ColorBase<value_type>() { }
+	CairoColor(const value_type u) : ColorBase<value_type>(u) { }
 	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
-	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil()):
-		ColorBase<unsigned char>(R, G, B, A) { }
-	CairoColor(const CairoColor& c, const unsigned char A):
-		ColorBase<unsigned char>(c.r_, c.g_, c.b_, A) { }
-	CairoColor(const CairoColor& c) : ColorBase<unsigned char>(c.r_, c.g_, c.b_, c.a_) { }
+	CairoColor(const value_type R, const value_type G, const value_type B, const value_type A=ceil()):
+		ColorBase<value_type>(R, G, B, A) { }
+	CairoColor(const CairoColor& c, const value_type A):
+		ColorBase<value_type>(c.r_, c.g_, c.b_, A) { }
+	CairoColor(const CairoColor& c) : ColorBase<value_type>(c.r_, c.g_, c.b_, c.a_) { }
 	// Conversor constructor
-	CairoColor(const Color& c) : ColorBase<unsigned char>()
+	CairoColor(const Color& c) : ColorBase<value_type>()
 	{
 		set_r((ceil()-floor())*c.get_r()/(Color::ceil()-Color::floor()));
 		set_g((ceil()-floor())*c.get_g()/(Color::ceil()-Color::floor()));
@@ -655,8 +657,8 @@ public:
 	
 	const String get_string(void)const;
 
-	static const String char2hex(unsigned char c);
-	static unsigned char hex2char(String s);
+	static const String char2hex(value_type c);
+	static value_type hex2char(String s);
 	
 	void set_hex( String& str);
 	const String get_hex()const { return String(char2hex(r_)+char2hex(g_)+char2hex(b_)); }
@@ -725,7 +727,7 @@ public:
 		return *this;
 	}
 
-	static CairoColor YUV(const float& y, const float& u, const float& v, const unsigned char a=ceil())
+	static CairoColor YUV(const float& y, const float& u, const float& v, const value_type a=ceil())
 	{
 		CairoColor c;
 		c.set_yuv(y,u,v);
@@ -765,7 +767,7 @@ public:
 				);
 	}
 	
-	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=255)
+	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const value_type a=ceil())
 	{
 		CairoColor c;
 		c.set_yuv(y,s,theta);
