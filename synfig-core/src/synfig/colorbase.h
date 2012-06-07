@@ -25,8 +25,6 @@
 #ifndef __SYNFIG_COLORBASE_H
 #define __SYNFIG_COLORBASE_H
 
-#include <limits>
-
 namespace synfig {
 
 template<typename T>
@@ -46,7 +44,7 @@ public:
 	**	\param G Green
 	**	\param B Blue
 	**	\param A Opacity(alpha) */
-	ColorBase(const T& R, const T& G, const T& B, const T& A=std::numeric_limits<T>::max()):
+	ColorBase(const T& R, const T& G, const T& B, const T& A):
 		a_(A),
 		r_(R),
 		g_(G),
