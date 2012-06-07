@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,6 +33,7 @@
 #include <math.h>
 #include <cassert>
 #include "gamma.h"
+#include "colorbase.h"
 #include <synfig/string.h>
 # include "angle.h"
 
@@ -104,13 +106,10 @@ class CairoColor;
 **	\ ARGB 128 bits Color class implementation 
 **	Future optimizations: lookup table for sqrt()?
 */
-class Color
+class Color : public synfig::ColorBase<ColorReal>
 {
 public:
 	typedef ColorReal value_type;
-
-private:
-	value_type a_, r_, g_, b_;
 
 public:
 	
@@ -218,34 +217,25 @@ public:
 	//   SR1=SR2=SR3=typename T::value_type();
 	// and expects that to give it initialized colors
 	// Otherwise the 'gaussian' blur type is random.
-	Color() :a_(0), r_(0), g_(0), b_(0) { }
-	Color(const value_type &f) :a_(f),r_(f), g_(f), b_(f) { }
-	Color(int f) :a_(f),r_(f), g_(f), b_(f) { }
+	Color() :ColorBase<value_type>() { }
+	Color(const value_type &f) :ColorBase<value_type>(f) { }
+	Color(int f) :ColorBase<value_type>(f,f,f,f) { }
 
 	/*!	\param R Red
 	**	\param G Green
 	**	\param B Blue
 	**	\param A Opacity(alpha) */
 	Color(const value_type& R, const value_type& G, const value_type& B, const value_type& A=1):
-		a_(A),
-		r_(R),
-		g_(G),
-		b_(B) { }
+		ColorBase<value_type>(R, G, B, A) { }
 
 	/*!	\param c Source for color components
 	**	\param A Opacity(alpha) */
 	Color(const Color& c, const value_type& A):
-		a_(A),
-		r_(c.r_),
-		g_(c.g_),
-		b_(c.b_) { }
+		ColorBase<value_type> (c.r_, c.g_, c.b_, A) { }
 
 	//!	Copy constructor
 	Color(const Color& c):
-		a_(c.a_),
-		r_(c.r_),
-		g_(c.g_),
-		b_(c.b_) { }
+		ColorBase<value_type> (c.r_, c.g_, c.b_, c.a_) { }
 
 	//! Convert from CairoColor to Color
 	Color(const CairoColor& c);
@@ -266,21 +256,6 @@ public:
 	}*/
 	//Color& operator=(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); return *this; }
 
-	//! Returns the RED component
-	const value_type& get_r()const { return r_; }
-
-	//! Returns the GREEN component
-	const value_type& get_g()const { return g_; }
-
-	//! Returns the BLUE component
-	const value_type& get_b()const { return b_; }
-
-	//! Returns the amount of opacity (alpha)
-	const value_type& get_a()const { return a_; }
-
-	//! Synonym for get_a(). \see get_a()
-	const value_type& get_alpha()const { return get_a(); }
-
 	//! Converts a 2 character hex string \a s (00-ff) into a ColorReal (0.0-1.0)
 	static ColorReal hex2real(String s);
 
@@ -292,21 +267,6 @@ public:
 
 	//! Sets the color's R, G, and B from a 3 or 6 character hex string
 	void set_hex(String& hex);
-
-	//! Sets the RED component to \a x
-	Color& set_r(const value_type& x) { r_ = x; return *this; }
-
-	//! Sets the GREEN component to \a x
-	Color& set_g(const value_type& x) { g_ = x; return *this; }
-
-	//! Sets the BLUE component to \a x
-	Color& set_b(const value_type& x) { b_ = x; return *this; }
-
-	//! Sets the opacity (alpha) to \a x
-	Color& set_a(const value_type& x) { a_ = x; return *this; }
-
-	//! Synonym for set_a(). \see set_a()
-	Color& set_alpha(const value_type& x) { return set_a(x); }
 
 	//! Returns color's luminance
 	float
@@ -390,7 +350,12 @@ public:
 
 	//! YUV Color constructor
 	static Color YUV(const float& y, const float& u, const float& v, const value_type& a=1)
-		{ return Color().set_yuv(y,u,v).set_a(a); }
+	{
+		Color c;
+		c.set_yuv(y,u,v);
+		c.set_a(a);
+		return c;
+	}
 
 	//! Returns the hue of the chromanance
 	/*!	This is the angle of the U and V components.
@@ -446,8 +411,12 @@ public:
 	**	\param theta Hue
 	**	\param a Opacity (alpha) */
 	static Color YUV(const float& y, const float& s, const Angle& theta, const value_type& a=1)
-		{ return Color().set_yuv(y,s,theta).set_a(a); }
-
+	{
+		Color c;
+		c.set_yuv(y, s, theta);
+		c.set_a(a);
+		return c;
+	}
 
 	//! Clamps a color so that its values are in range. Ignores attempting to visualize negative colors.
 	Color clamped()const;
@@ -474,38 +443,6 @@ public:
 	static inline Color cyan() { return Color(0,1,1); }
 	static inline Color yellow() { return Color(1,1,0); }
 	//@}
-
-	//! \writeme
-	enum BlendMethod
-	{
-		BLEND_COMPOSITE=0,			//!< Color A is composited onto B (Taking A's alpha into account)
-		BLEND_STRAIGHT=1,			//!< Straight linear interpolation from A->B (Alpha ignored)
-		BLEND_ONTO=13,				//!< Similar to BLEND_COMPOSITE, except that B's alpha is maintained
-		BLEND_STRAIGHT_ONTO=21,		//!< \deprecated \writeme
-		BLEND_BEHIND=12,			//!< Similar to BLEND_COMPOSITE, except that B is composited onto A.
-		BLEND_SCREEN=16,			//!< \writeme
-		BLEND_OVERLAY=20,			//!< \writeme
-		BLEND_HARD_LIGHT=17,		//!< \writeme
-		BLEND_MULTIPLY=6,			//!< Simple A*B.
-		BLEND_DIVIDE=7,				//!< Simple B/A
-		BLEND_ADD=4,				//!< Simple A+B.
-		BLEND_SUBTRACT=5,			//!< Simple A-B.
-		BLEND_DIFFERENCE=18,		//!< Simple |A-B|.
-		BLEND_BRIGHTEN=2,			//!< If composite is brighter than B, use composite. B otherwise.
-		BLEND_DARKEN=3,				//!< If composite is darker than B, use composite. B otherwise.
-		BLEND_COLOR=8,				//!< Preserves the U and V channels of color A
-		BLEND_HUE=9,				//!< Preserves the angle of the UV vector of color A
-		BLEND_SATURATION=10,		//!< Preserves the magnitude of the UV Vector of color A
-		BLEND_LUMINANCE=11,			//!< Preserves the Y channel of color A
-
-		BLEND_ALPHA_BRIGHTEN=14,	//!< \deprecated If A is less opaque than B, use A
-		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
-		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
-
-		BLEND_END=22,				//!< \internal
-		BLEND_BY_LAYER=999			//! Used to let the layer decides what Blend Method use by
-									//! default when the layer is created
-	};
 
 	/* Other */
 	static Color blend(Color a, Color b,float amount,BlendMethod type=BLEND_COMPOSITE);
@@ -574,12 +511,8 @@ public:
 ** \ and demultiplication has to be explicitly done by the user before 
 ** \ and after being used on the surface.
 */
-class CairoColor
+class CairoColor : public synfig::ColorBase<unsigned char>
 {
-
-private:
-	unsigned char a_, r_, g_, b_;
-
 public:
 	static const unsigned char ceil()
 	{ return (unsigned char)(255);}
@@ -588,7 +521,6 @@ public:
 	{ return (unsigned char)(0);}
 
 	// Operators
-public:
 	inline unsigned char ceil_clamp(int x)
 	{
 		if(x>ceil()) return ceil();
@@ -612,7 +544,7 @@ public:
 
 	CairoColor&
 	operator+=(const CairoColor &rhs)
-	{		
+	{
 		r_=ceil_clamp((int)(r_) + rhs.r_);
 		g_=ceil_clamp((int)(g_) + rhs.g_);
 		r_=ceil_clamp((int)(b_) + rhs.b_);
@@ -622,7 +554,7 @@ public:
 
 	CairoColor&
 	operator-=(const CairoColor &rhs)
-	{		
+	{
 		r_=floor_clamp((int)(r_) - rhs.r_);
 		g_=floor_clamp((int)(g_) - rhs.g_);
 		r_=floor_clamp((int)(b_) - rhs.b_);
@@ -654,23 +586,23 @@ public:
 	CairoColor
 	operator+(const CairoColor &rhs)const
 	{ return CairoColor(*this)+=rhs; }
-	
+
 	CairoColor
 	operator-(const CairoColor &rhs)const
 	{ return CairoColor(*this)-=rhs; }
-	
+
 	CairoColor
 	operator*(const float &rhs)const
 	{ return CairoColor(*this)*=rhs; }
-	
+
 	CairoColor
 	operator/(const float &rhs)const
 	{ return CairoColor(*this)/=rhs; }
-	
+
 	bool
 	operator==(const CairoColor &rhs)const
 	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
-	
+
 	bool
 	operator!=(const CairoColor &rhs)const
 	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
@@ -687,12 +619,12 @@ public:
 	bool is_valid()const
 	{ return true; }
 
-	
+
 	CairoColor premult_alpha() const
 	{
 		return CairoColor (r_*a_, g_*a_, b_*a_, a_);
 	}
-	
+
 	CairoColor demult_alpha() const
 	{
 		if(a_)
@@ -704,27 +636,22 @@ public:
 
 	// Constructors
 public:
-	CairoColor() :a_(0), r_(0), g_(0), b_(0) { }
-	CairoColor(const unsigned char u) :a_(u),r_(u), g_(u), b_(u) { }
+	CairoColor() : ColorBase<unsigned char>() { }
+	CairoColor(const unsigned char u) : ColorBase<unsigned char>(u) { }
 	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
 	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil()):
-	a_(A),	r_(R),	g_(G),	b_(B) { }
+		ColorBase<unsigned char>(R, G, B, A) { }
 	CairoColor(const CairoColor& c, const unsigned char A):
-	a_(A), r_(c.r_), g_(c.g_), b_(c.b_) { }
-	CairoColor(const CairoColor& c): a_(c.a_), r_(c.r_), g_(c.g_), b_(c.b_) { }
+		ColorBase<unsigned char>(c.r_, c.g_, c.b_, A) { }
+	CairoColor(const CairoColor& c) : ColorBase<unsigned char>(c.r_, c.g_, c.b_, c.a_) { }
 	// Conversor constructor
-	CairoColor(const Color& c)
+	CairoColor(const Color& c) : ColorBase<unsigned char>()
 	{
 		set_r((ceil()-floor())*c.get_r()/(Color::ceil()-Color::floor()));
 		set_g((ceil()-floor())*c.get_g()/(Color::ceil()-Color::floor()));
 		set_b((ceil()-floor())*c.get_b()/(Color::ceil()-Color::floor()));
 		set_a((ceil()-floor())*c.get_a()/(Color::ceil()-Color::floor()));
 	}
-	const unsigned char get_r()const { return r_; }
-	const unsigned char get_g()const { return g_; }
-	const unsigned char get_b()const { return b_; }
-	const unsigned char get_a()const { return a_; }
-	const unsigned char get_alpha()const { return a_; }
 	
 	const String get_string(void)const;
 
@@ -734,12 +661,6 @@ public:
 	void set_hex( String& str);
 	const String get_hex()const { return String(char2hex(r_)+char2hex(g_)+char2hex(b_)); }
 
-	CairoColor& set_r(const unsigned char x) {r_ = x; return *this; }
-	CairoColor& set_g(const unsigned char x) {g_ = x; return *this; }
-	CairoColor& set_b(const unsigned char x) {b_ = x; return *this; }
-	CairoColor& set_a(const unsigned char x) {a_ = x; return *this; }
-	CairoColor& set_alpha(const unsigned char x) { return set_a(x); }
-	
 	float
 	get_y() const
 	{
@@ -805,7 +726,12 @@ public:
 	}
 
 	static CairoColor YUV(const float& y, const float& u, const float& v, const unsigned char a=ceil())
-	{ return CairoColor().set_yuv(y,u,v).set_a(a); }
+	{
+		CairoColor c;
+		c.set_yuv(y,u,v);
+		c.set_a(a);
+		return c;
+	}
 	
 	Angle get_hue() const	{ return Angle::tan(get_u(),get_v()); }
 	
@@ -840,7 +766,12 @@ public:
 	}
 	
 	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=255)
-	{ return CairoColor().set_yuv(y,s,theta).set_a(a); }
+	{
+		CairoColor c;
+		c.set_yuv(y,s,theta);
+		c.set_a(a);
+		return c;
+	}
 
 	static inline CairoColor alpha() { return CairoColor(floor(),floor(),floor(),floor()); }
 	static inline CairoColor black() { return CairoColor(floor(),floor(),floor()); }

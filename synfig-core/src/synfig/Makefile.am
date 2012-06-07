@@ -209,6 +209,8 @@ SYNFIGHEADERS = \
 	activepoint.h \
 	blur.h \
 	canvas.h \
+	colorbase.h \
+	colorblender.h \
 	color.h \
 	context.h \
 	curve_helper.h \
