@@ -281,7 +281,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 	App::open_as(tmp_filename,filename);
 	remove( tmp_filename.c_str() );
-	
+	remove( tmp_filename_orig.c_str() );
 	
 	etl::handle<Instance> new_instance = App::instance_list.back();
 	new_instance->inc_action_count(); // This file isn't saved! mark it as such
