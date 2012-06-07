@@ -765,12 +765,121 @@ public:
 static ::Preferences _preferences;
 
 void
-load_plugins()
+load_plugins_from_dir(const std::string &pluginsprefix, const std::string &suffix)
 {
+	// TODO: (Plugins) Set suffix for plugin id depending on the loation
+	
+	//pluginsprefix = *ppath;
+	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
+	
 	DIR *dir;
 	struct dirent *entry;
 	
-	std::list<std::string> pluginpaths;
+	dir = opendir(pluginsprefix.c_str());
+	if(dir) {
+		while ( (entry = readdir(dir)) != NULL) {
+			if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
+				std::string pluginpath;
+				pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
+				struct stat sb;
+				int rc = stat(pluginpath.c_str(), &sb);
+				// error handling if stat failed
+				if (S_ISDIR(sb.st_mode)) {
+					// checking if directory contains a plugin...
+					DIR *plugindir;
+					struct dirent *plugindirentry;
+					
+					plugindir = opendir(pluginpath.c_str());
+					if(!plugindir) {
+						synfig::warning("Can't read plugin directory!");
+						return;
+					}
+					
+					while ( (plugindirentry = readdir(plugindir)) != NULL) {
+						if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
+							std::string pluginfilepath;
+							pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
+							
+							synfig::info("Loading plugin: %s", entry->d_name);
+							
+							studio::App::plugin p;
+							p.id=std::string(entry->d_name)+"-"+suffix;
+							
+							// parse xml file
+							try
+							{
+								xmlpp::DomParser parser;
+								//parser.set_validate();
+								parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
+								parser.parse_file(pluginfilepath);
+								if(parser)
+								{
+									//Walk the tree:
+									const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
+									if ( std::string(pNode->get_name()) == std::string("plugin") ){
+										//Recurse through child nodes:
+										xmlpp::Node::NodeList list = pNode->get_children();
+										for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+										{
+											const xmlpp::Node* node = *iter;
+											if ( std::string(node->get_name()) == std::string("name") ) {
+												
+												xmlpp::Node::NodeList l = node->get_children();
+												xmlpp::Node::NodeList::iterator i = l.begin();
+												xmlpp::Node* n = *i;
+												
+												const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
+												
+												if(nodeText)
+												{
+													// TODO: (Plugins) Use gettext & intltool for localization of xml files
+													p.name=nodeText->get_content();
+												}
+												
+											} else if ( std::string(node->get_name()) == std::string("exec") ) {
+												
+												xmlpp::Node::NodeList l = node->get_children();
+												xmlpp::Node::NodeList::iterator i = l.begin();
+												xmlpp::Node* n = *i;
+												
+												const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
+												
+												if(nodeText)
+												{
+													p.path=pluginpath+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
+												}
+											}
+										}
+									} else {
+										synfig::info("Invalid plugin.xml file.");
+									}
+								}
+							}
+							catch(const std::exception& ex)
+							{
+								std::cout << "Exception caught: " << ex.what() << std::endl;
+							}
+							
+							if ( p.id != "" && p.name != "" && p.path != ""){
+								studio::App::plugins_list.push_back(p);
+							} else {
+								synfig::warning("Invalid plugin.xml file!");
+							}
+						}
+					}
+					
+				}
+			}
+
+		};
+		
+		closedir(dir);
+	}
+}
+
+void
+load_plugins()
+{
 	std::string pluginsprefix;
 	
 	// system plugins path
@@ -789,118 +898,12 @@ load_plugins()
 		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
 		pluginsprefix+="plugins";
 	}
-	pluginpaths.push_back(pluginsprefix);
+	load_plugins_from_dir(pluginsprefix,"system");
 	
 	// user plugins path
 	pluginsprefix=Glib::build_filename(App::get_user_app_directory(),"plugins");
-	pluginpaths.push_back(pluginsprefix);
+	load_plugins_from_dir(pluginsprefix,"user");
 	
-	for(std::list<std::string>::iterator ppath = pluginpaths.begin(); ppath != pluginpaths.end(); ++ppath){
-	
-	pluginsprefix = *ppath;
-	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
-	
-	dir = opendir(pluginsprefix.c_str());
-	if(dir) {
-	while ( (entry = readdir(dir)) != NULL) {
-		if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
-			std::string pluginpath;
-			pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
-			struct stat sb;
-			int rc = stat(pluginpath.c_str(), &sb);
-			// error handling if stat failed
-			if (S_ISDIR(sb.st_mode)) {
-				// checking if directory contains a plugin...
-				DIR *plugindir;
-				struct dirent *plugindirentry;
-				
-				plugindir = opendir(pluginpath.c_str());
-				if(!plugindir) {
-					synfig::warning("Can't read plugin directory!");
-					return;
-				}
-				
-				while ( (plugindirentry = readdir(plugindir)) != NULL) {
-					if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
-						std::string pluginfilepath;
-						pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
-						
-						synfig::info("Loading plugin: %s", entry->d_name);
-						
-						studio::App::plugin p;
-						p.id=entry->d_name;
-						
-						// parse xml file
-						try
-						{
-							xmlpp::DomParser parser;
-							//parser.set_validate();
-							parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
-							parser.parse_file(pluginfilepath);
-							if(parser)
-							{
-								//Walk the tree:
-								const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
-								if ( std::string(pNode->get_name()) == std::string("plugin") ){
-									//Recurse through child nodes:
-									xmlpp::Node::NodeList list = pNode->get_children();
-									for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
-									{
-										const xmlpp::Node* node = *iter;
-										if ( std::string(node->get_name()) == std::string("name") ) {
-											
-											xmlpp::Node::NodeList l = node->get_children();
-											xmlpp::Node::NodeList::iterator i = l.begin();
-											xmlpp::Node* n = *i;
-											
-											const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-											
-											if(nodeText)
-											{
-												// TODO: (Plugins) Use gettext & intltool for localization of xml files
-												p.name=nodeText->get_content();
-											}
-											
-										} else if ( std::string(node->get_name()) == std::string("exec") ) {
-											
-											xmlpp::Node::NodeList l = node->get_children();
-											xmlpp::Node::NodeList::iterator i = l.begin();
-											xmlpp::Node* n = *i;
-											
-											const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-											
-											if(nodeText)
-											{
-												p.path=pluginpath+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
-											}
-										}
-									}
-								} else {
-									synfig::info("Invalid plugin.xml file.");
-								}
-							}
-						}
-						catch(const std::exception& ex)
-						{
-							std::cout << "Exception caught: " << ex.what() << std::endl;
-						}
-						
-						if ( p.id != "" && p.name != "" && p.path != ""){
-							studio::App::plugins_list.push_back(p);
-						} else {
-							synfig::warning("Invalid plugin.xml file!");
-						}
-					}
-				}
-				
-			}
-		}
-
-	};
-	
-	closedir(dir);
-	}
-	}
 }
 
 void
