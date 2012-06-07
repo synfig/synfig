@@ -237,23 +237,30 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				}else //use normal rendering...
 				{
 				#endif
-					Surface surface;
-
-					if(!context.accelerated_render(&surface,quality,desc,0))
+					Surface* surface(create_surface());
+					if(surface)
 					{
-						// For some reason, the accelerated renderer failed.
-						if(cb)cb->error(_("Accelerated Renderer Failure"));
-						return false;
+						if(!context.accelerated_render(surface,quality,desc,0))
+						{
+							// For some reason, the accelerated renderer failed.
+							if(cb)cb->error(_("Accelerated Renderer Failure"));
+							return false;
+						}
+						else
+						{
+							// Put the surface we renderer
+							// onto the target.
+							if(!add_frame(surface))
+							{
+								if(cb)cb->error(_("Unable to put surface on target"));
+								return false;
+							}
+						}
 					}
 					else
 					{
-						// Put the surface we renderer
-						// onto the target.
-						if(!add_frame(&surface))
-						{
-							if(cb)cb->error(_("Unable to put surface on target"));
-							return false;
-						}
+						if(cb)cb->error(_("Not supported render method"));
+						return false;						
 					}
 				#if USE_PIXELRENDERING_LIMIT
 				}
@@ -385,23 +392,31 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			}else
 			{
 			#endif
-				Surface surface;
-
-				if(!context.accelerated_render(&surface,quality,desc,cb))
+				Surface* surface(create_surface());
+				if(surface)
 				{
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
+					if(!context.accelerated_render(surface,quality,desc,cb))
+					{
+						if(cb)cb->error(_("Accelerated Renderer Failure"));
+						return false;
+					}
+					else
+					{
+						// Put the surface we renderer
+						// onto the target.
+						if(!add_frame(surface))
+						{
+							if(cb)cb->error(_("Unable to put surface on target"));
+							return false;
+						}
+					}
 				}
 				else
 				{
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(&surface))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
+					if(cb)cb->error(_("Not supported render method"));
+					return false;						
 				}
+
 			#if USE_PIXELRENDERING_LIMIT
 			}
 			#endif
@@ -425,6 +440,21 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		throw;
 	}
 	return true;
+}
+
+Surface*
+Target_Scanline::create_surface()
+{
+	RenderMethod m(get_render_method());
+	switch(m)
+	{
+		case SOFTWARE:
+			return new Surface;
+		break;
+		default:
+			return NULL;
+		break;
+	}
 }
 
 bool
