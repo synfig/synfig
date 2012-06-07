@@ -201,6 +201,11 @@ studio::Instance::run_plugin(std::string plugin_path)
 	
 	String filename;
 	String tmp_filename;
+	// We need tmp_filename_orig in case of plugin execation will fail.
+	// The tmp_filename_orig will store original unmodified version of file
+	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
+	// tmp_filename_orig instead.
+	String tmp_filename_orig;
 	filename = this->get_file_name();
 	if (!has_real_filename())
 	{
@@ -208,6 +213,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	} else {
 		tmp_filename = this->get_file_name();
 	}
+	tmp_filename_orig = tmp_filename;
 	
 	// make random filename and ensure there's no file with such name
 	static string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -224,6 +230,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 		tmp_filename = tmp_filename+"."+rsuffix;
 	} while (stat(tmp_filename.c_str(), &buf) != -1);
 	
+	do {
+		for (int i = 0; i < length; i++)
+			rsuffix[i] = charset[rand() % charset.length()];
+		tmp_filename_orig = tmp_filename+"."+rsuffix;
+	} while (stat(tmp_filename_orig.c_str(), &buf) != -1);
+	
 	Canvas::Handle canvas(this->get_canvas());
 	Time cur_time;
 	cur_time = canvas->get_time();
@@ -232,6 +244,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	frame = frame.substr(0, frame.size()-1);
 	
 	bool ret;
+	ret=save_canvas(tmp_filename_orig,canvas);
 	ret=save_canvas(tmp_filename,canvas);
 
 	this->close();
@@ -243,9 +256,10 @@ studio::Instance::run_plugin(std::string plugin_path)
 		one_moment.show();
 	} else {
 		String command;
-		command = "python "+plugin_path+" \""+tmp_filename+"\" "+frame;
+		command = "python "+plugin_path+" \""+tmp_filename+"\" "+frame+" 2>&1";
 		//system(command.c_str());
 		FILE* pipe = popen(command.c_str(), "r");
+		int exitcode;
 		if (!pipe) return; // TODO: (Plugins) Error
 		char buffer[128];
 		std::string result = "";
@@ -253,9 +267,14 @@ studio::Instance::run_plugin(std::string plugin_path)
 			if(fgets(buffer, 128, pipe) != NULL)
 					result += buffer;
 		}
-		pclose(pipe);
-		synfig::info(result);
-		// TODO: (Plugins) Show output window on error
+		
+		exitcode=pclose(pipe);
+		if (0!=exitcode){
+			one_moment.hide();
+			App::dialog_error_blocking(_("Plugin Error"), result);
+			one_moment.show();
+			tmp_filename = tmp_filename_orig; // restore original unmodified version
+		}
 	}
 	
 	canvas=0;
