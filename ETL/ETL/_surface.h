@@ -151,7 +151,7 @@ public:
 	}
 
 	surface(const surface &s):
-		data_(s.data_?new value_type[s.w_*s.h_]:0),
+		data_(s.data_?(pointer)(new char[s.pitch_*s.h_]):0),
 		zero_pos_(data_+(s.zero_pos_-s.data_)),
 		pitch_(s.pitch_),
 		w_(s.w_),
