@@ -112,13 +112,10 @@ public:
 	typedef ColorReal value_type;
 
 public:
-	
-	static const value_type ceil()
-	{ return (value_type)(1);}
-	
-	static const value_type floor()
-	{ return (value_type)(0);}
-	
+
+	static const value_type ceil = 1;
+	static const value_type floor = 0;
+
 	const String get_string(void)const;
 
 	Color &
@@ -516,27 +513,24 @@ class CairoColor : public synfig::ColorBase<unsigned char>
 public:
 	typedef unsigned char value_type;
 
-	static const value_type ceil()
-	{ return (value_type)(255);}
-	
-	static const value_type floor()
-	{ return (value_type)(0);}
+	static const value_type ceil = 255;
+	static const value_type floor = 0;
 
 	// Operators
 	inline value_type ceil_clamp(int x)
 	{
-		if(x>ceil()) return ceil();
+		if(x>ceil) return ceil;
 		else return (value_type)(x);
 	}
 	inline value_type floor_clamp(int x)
 	{
-		if(x<floor()) return floor();
+		if(x<floor) return floor;
 		else return (value_type)(x);
 	}
 	inline value_type clamp(int x)
 	{
-		if(x > ceil()) return ceil();
-		else if (x < floor()) return floor();
+		if(x > ceil) return ceil;
+		else if (x < floor) return floor;
 		else return (value_type)(x);
 	}
 	inline value_type clamp(float x)
@@ -616,7 +610,7 @@ public:
 
 	CairoColor
 	operator~()const
-	{ return CairoColor(ceil()-r_,ceil()-g_,ceil()-b_,a_); }
+	{ return CairoColor(ceil-r_,ceil-g_,ceil-b_,a_); }
 
 	bool is_valid()const
 	{ return true; }
@@ -641,7 +635,7 @@ public:
 	CairoColor() : ColorBase<value_type>() { }
 	CairoColor(const value_type u) : ColorBase<value_type>(u) { }
 	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
-	CairoColor(const value_type R, const value_type G, const value_type B, const value_type A=ceil()):
+	CairoColor(const value_type R, const value_type G, const value_type B, const value_type A=ceil):
 		ColorBase<value_type>(R, G, B, A) { }
 	CairoColor(const CairoColor& c, const value_type A):
 		ColorBase<value_type>(c.r_, c.g_, c.b_, A) { }
@@ -649,10 +643,10 @@ public:
 	// Conversor constructor
 	CairoColor(const Color& c) : ColorBase<value_type>()
 	{
-		set_r((ceil()-floor())*c.get_r()/(Color::ceil()-Color::floor()));
-		set_g((ceil()-floor())*c.get_g()/(Color::ceil()-Color::floor()));
-		set_b((ceil()-floor())*c.get_b()/(Color::ceil()-Color::floor()));
-		set_a((ceil()-floor())*c.get_a()/(Color::ceil()-Color::floor()));
+		set_r((ceil-floor)*c.get_r()/(Color::ceil-Color::floor));
+		set_g((ceil-floor)*c.get_g()/(Color::ceil-Color::floor));
+		set_b((ceil-floor)*c.get_b()/(Color::ceil-Color::floor));
+		set_a((ceil-floor)*c.get_a()/(Color::ceil-Color::floor));
 	}
 	
 	const String get_string(void)const;
@@ -727,7 +721,7 @@ public:
 		return *this;
 	}
 
-	static CairoColor YUV(const float& y, const float& u, const float& v, const value_type a=ceil())
+	static CairoColor YUV(const float& y, const float& u, const float& v, const value_type a=ceil)
 	{
 		CairoColor c;
 		c.set_yuv(y,u,v);
@@ -767,7 +761,7 @@ public:
 				);
 	}
 	
-	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const value_type a=ceil())
+	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const value_type a=ceil)
 	{
 		CairoColor c;
 		c.set_yuv(y,s,theta);
@@ -775,16 +769,16 @@ public:
 		return c;
 	}
 
-	static inline CairoColor alpha() { return CairoColor(floor(),floor(),floor(),floor()); }
-	static inline CairoColor black() { return CairoColor(floor(),floor(),floor()); }
-	static inline CairoColor white() { return CairoColor(ceil(),ceil(),ceil()); }
-	static inline CairoColor gray() { return CairoColor(ceil()/2,ceil()/2,ceil()/2); }
-	static inline CairoColor magenta() { return CairoColor(ceil(),floor(),ceil()); }
-	static inline CairoColor red() { return CairoColor(ceil(),floor(), floor()); }
-	static inline CairoColor green() { return CairoColor(floor(), ceil(),floor()); }
-	static inline CairoColor blue() { return CairoColor(floor(),floor(),ceil()); }
-	static inline CairoColor cyan() { return CairoColor(floor(),ceil(),ceil()); }
-	static inline CairoColor yellow() { return CairoColor(ceil(),ceil(),floor()); }
+	static inline CairoColor alpha() { return CairoColor(floor,floor,floor,floor); }
+	static inline CairoColor black() { return CairoColor(floor,floor,floor); }
+	static inline CairoColor white() { return CairoColor(ceil,ceil,ceil); }
+	static inline CairoColor gray() { return CairoColor(ceil/2,ceil/2,ceil/2); }
+	static inline CairoColor magenta() { return CairoColor(ceil,floor,ceil); }
+	static inline CairoColor red() { return CairoColor(ceil,floor, floor); }
+	static inline CairoColor green() { return CairoColor(floor, ceil,floor); }
+	static inline CairoColor blue() { return CairoColor(floor,floor,ceil); }
+	static inline CairoColor cyan() { return CairoColor(floor,ceil,ceil); }
+	static inline CairoColor yellow() { return CairoColor(ceil,ceil,floor); }
 
 	// Use Color::BlenMethods for the enum value
 	static CairoColor blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type=Color::BLEND_COMPOSITE);
