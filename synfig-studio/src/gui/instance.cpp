@@ -282,8 +282,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 	App::open_as(tmp_filename,filename);
 	remove( tmp_filename.c_str() );
 	
-	// This file isn't saved! mark it as such
-	App::instance_list.back()->inc_action_count();
+	
+	etl::handle<Instance> new_instance = App::instance_list.back();
+	new_instance->inc_action_count(); // This file isn't saved! mark it as such
+	canvas = App::instance_list.back()->get_canvas();
+	etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+	new_canvas_interface->set_time(cur_time);
 	}
 	return;
 }
