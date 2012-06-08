@@ -33,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <stdio.h>
-
 #include "instance.h"
 #include <cassert>
 #include <gtkmm/stock.h>
