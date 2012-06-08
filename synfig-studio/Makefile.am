@@ -28,6 +28,7 @@ SUBDIRS = \
 	build_tools \
 	src \
 	images \
+	plugins \
 	po
 
 EXTRA_DIST = \

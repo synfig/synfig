@@ -292,8 +292,8 @@ src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-studio.info
-src/plugins/Makefile
-src/plugins/add-simple-skeleton/Makefile
+plugins/Makefile
+plugins/add-simple-skeleton/Makefile
 ])
 AC_OUTPUT
 
