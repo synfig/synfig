@@ -297,6 +297,7 @@ win32inst.nsi
 pkg-info/macosx/synfig-studio.info
 plugins/Makefile
 plugins/add-simple-skeleton/Makefile
+plugins/view-unhide-all-layers/Makefile
 ])
 AC_OUTPUT
 
