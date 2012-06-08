@@ -243,7 +243,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	do {
 		for (int i = 0; i < length; i++)
 			rsuffix[i] = charset[rand() % charset.length()];
-		tmp_filename_orig = tmp_filename+"."+rsuffix;
+		tmp_filename_orig = tmp_filename_orig+"."+rsuffix;
 	} while (stat(tmp_filename_orig.c_str(), &buf) != -1);
 	
 	Canvas::Handle canvas(this->get_canvas());
