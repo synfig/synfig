@@ -74,6 +74,17 @@ using namespace sigc;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef WIN32
+#	ifdef PYTHON_BINARY
+#		undef PYTHON_BINARY
+#		define PYTHON_BINARY "python\\python.exe"
+#	endif
+#endif
+
+#ifndef PYTHON_BINARY
+#	define PYTHON_BINARY "python"
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 int studio::Instance::instance_count_=0;
@@ -255,8 +266,26 @@ studio::Instance::run_plugin(std::string plugin_path)
 		App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
 	} else {
+		
+		// Set path to python binary dependin on the os type.
+		// For Windows case Python binary is expected
+		// at INSTALL_PREFIX/python/python.exe
 		String command;
-		command = "python "+plugin_path+" \""+tmp_filename+"\" "+frame+" 2>&1";
+#ifdef WIN32
+		command = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
+#else
+		command = PYTHON_BINARY;
+#endif
+		// Path to python binary can be overriden
+		// with SYNFIG_PYTHON_BINARY env variable:
+		char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
+		if(custom_python_binary) {
+			command=custom_python_binary;
+		}
+		
+		// Construct the full command:
+		command = command+" "+plugin_path+" \""+tmp_filename+"\" "+frame+" 2>&1";
+		
 		//system(command.c_str());
 		FILE* pipe = popen(command.c_str(), "r");
 		int exitcode;
