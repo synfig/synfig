@@ -135,6 +135,7 @@ private:
 	void set_redo_status(bool x);
 
 	static void _revert(Instance *);
+	static void _run_plugin(Instance *, std::string &plugin_path);
 
 protected:
 

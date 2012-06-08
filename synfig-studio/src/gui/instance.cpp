@@ -202,9 +202,26 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_path)
 {
-	handle<synfigapp::UIInterface> uim=find_canvas_view(get_canvas())->get_ui_interface();
+	// Schedule a plugin to run in a few moments
+	Glib::signal_timeout().connect(
+		sigc::bind_return(
+			sigc::bind(
+				sigc::ptr_fun(&Instance::_run_plugin),
+				this,
+				plugin_path
+			),
+			false
+		)
+		,500
+	);
+}
+
+void
+Instance::_run_plugin(Instance *instance, std::string &plugin_path)
+{
+	handle<synfigapp::UIInterface> uim=instance->find_canvas_view(instance->get_canvas())->get_ui_interface();
 	string str=strprintf(_("This operation cannot be undone and all undo history will be cleared.\nDo you really want to proceed?"));
-	int answer=uim->yes_no(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+	int answer=uim->yes_no(instance->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
 	if(answer==synfigapp::UIInterface::RESPONSE_YES){
 	
 	OneMoment one_moment;
@@ -216,12 +233,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
 	// tmp_filename_orig instead.
 	String tmp_filename_orig;
-	filename = this->get_file_name();
-	if (!has_real_filename())
+	filename = instance->get_file_name();
+	if (!instance->has_real_filename())
 	{
-		tmp_filename = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
+		tmp_filename = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+instance->get_file_name();
 	} else {
-		tmp_filename = this->get_file_name();
+		tmp_filename = instance->get_file_name();
 	}
 	tmp_filename_orig = tmp_filename;
 	
@@ -246,7 +263,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 		tmp_filename_orig = tmp_filename_orig+"."+rsuffix;
 	} while (stat(tmp_filename_orig.c_str(), &buf) != -1);
 	
-	Canvas::Handle canvas(this->get_canvas());
+	Canvas::Handle canvas(instance->get_canvas());
 	Time cur_time;
 	cur_time = canvas->get_time();
 	std::string frame;
@@ -257,7 +274,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	ret=save_canvas(tmp_filename_orig,canvas);
 	ret=save_canvas(tmp_filename,canvas);
 
-	this->close();
+	instance->close();
 
 	if(canvas->count()!=1)
 	{
