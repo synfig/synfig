@@ -296,6 +296,10 @@ studio::Instance::run_plugin(std::string plugin_path)
 					result += buffer;
 		}
 		
+		if (result != "" ){
+			synfig::info(result);
+		}
+		
 		exitcode=pclose(pipe);
 		if (0!=exitcode){
 			one_moment.hide();
