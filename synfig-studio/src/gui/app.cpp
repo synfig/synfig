@@ -10,6 +10,7 @@
 **	Copyright (c) 2008 Gerald Young
 **  Copyright (c) 2008, 2010, 2011 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
