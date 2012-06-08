@@ -219,7 +219,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	filename = this->get_file_name();
 	if (!has_real_filename())
 	{
-		tmp_filename = Glib::build_filename(App::get_user_app_directory(),"tmp",this->get_file_name());
+		tmp_filename = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
 	} else {
 		tmp_filename = this->get_file_name();
 	}
