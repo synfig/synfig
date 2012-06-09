@@ -117,13 +117,34 @@ public:
 	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
 };	// END of class Surface
 
+
+/*!	\class CairoSurface
+ **	\brief Generic Cairo backed surface. It allows to create a image surface
+ ** equivalent to the current backend for custom modifications purposes.
+ **	\todo writeme
+ */
+class CairoSurface : public etl::surface<CairoColor, CairoColor, CairoColorPrep>
+{
+public:
+	typedef CairoColor value_type;
+	class alpha_pen;
+	
+	CairoSurface() { }
+		
+	void clear();
+	
+	void set_wh(int w, int h, int pitch=0);
+	
+};	// END of class Surface
+
+
 #ifndef DOXYGEN_SKIP
 
 /*! \internal Used by Pen_Alpha */
 template <class C, typename A=Color::value_type>
 struct _BlendFunc
 {
-	typename C::BlendMethod blend_method;
+	Color::BlendMethod blend_method;
 
 	_BlendFunc(typename Color::BlendMethod b= Color::BLEND_COMPOSITE):blend_method(b) { }
 
@@ -162,6 +183,38 @@ public:
 	//! Returns the blend method being used for this pen
 	Color::BlendMethod get_blend_method()const { return affine_func_.blend_method; }
 };	// END of class Surface::alpha_pen
+
+
+
+/*!	\class CairoSurface::alpha_pen
+ **	\brief Alpha-Blending Pen
+ **
+ **	This pen works like a normal alpha pen, except that it supports
+ **	a variety of blending methods. Use set_blend_method() to select
+ **	which blending method you want to use.
+ **	The default blending method is Color::BLEND_COMPOSITE.
+ **	\see Color::BlendMethod
+ */
+class CairoSurface::alpha_pen : public etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >
+{
+public:
+	alpha_pen() { }
+	alpha_pen(const etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> > &x):
+	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >(x)
+	{ }
+	
+	alpha_pen(const etl::generic_pen<CairoColor, CairoColor>& pen, const float &a = 1, const _BlendFunc<CairoColor> &func = _BlendFunc<CairoColor>()):
+	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >(pen,a,func)
+	{ }
+	
+	//! Sets the blend method to that described by \a method
+	void set_blend_method(Color::BlendMethod method) { affine_func_.blend_method=method; }
+	
+	//! Returns the blend method being used for this pen
+	Color::BlendMethod get_blend_method()const { return affine_func_.blend_method; }
+};	// END of class CairoSurface::alpha_pen
+
+
 
 //! Creates a target that will render to \a surface
 etl::handle<Target_Scanline> surface_target(Surface *surface);
