@@ -208,7 +208,7 @@ public:
 	}
 
 	virtual void
-	set_wh(typename size_type::value_type w, typename size_type::value_type h)
+	set_wh(typename size_type::value_type w, typename size_type::value_type h, const typename size_type::value_type &pitch=0)
 	{
 		if(data_)
 		{
@@ -220,8 +220,11 @@ public:
 
 		w_=w;
 		h_=h;
-		pitch_=sizeof(value_type)*w_;
-		zero_pos_=data_=new value_type[h_*w_];
+		if(pitch)
+			pitch_=pitch;
+		else
+			pitch_=sizeof(value_type)*w_;
+		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
 		deletable_=true;
 	}
 
