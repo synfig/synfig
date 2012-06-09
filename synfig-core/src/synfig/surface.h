@@ -120,15 +120,16 @@ public:
 #ifndef DOXYGEN_SKIP
 
 /*! \internal Used by Pen_Alpha */
+template <class C, typename A=Color::value_type>
 struct _BlendFunc
 {
-	Color::BlendMethod blend_method;
+	typename C::BlendMethod blend_method;
 
-	_BlendFunc(Color::BlendMethod b= Color::BLEND_COMPOSITE):blend_method(b) { }
+	_BlendFunc(typename Color::BlendMethod b= Color::BLEND_COMPOSITE):blend_method(b) { }
 
-	Color operator()(const Color &a,const Color &b,const Color::value_type &t)const
+	C operator()(const C &a,const C &b,const A &t)const
 	{
-		return Color::blend(b,a,t,blend_method);
+		return C::blend(b,a,t,blend_method);
 	}
 };	// END of class _BlendFunc
 
@@ -143,16 +144,16 @@ struct _BlendFunc
 **	The default blending method is Color::BLEND_COMPOSITE.
 **	\see Color::BlendMethod
 */
-class Surface::alpha_pen : public etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc >
+class Surface::alpha_pen : public etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >
 {
 public:
 	alpha_pen() { }
-	alpha_pen(const etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc > &x):
-		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc >(x)
+	alpha_pen(const etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> > &x):
+		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >(x)
 	{ }
 
-	alpha_pen(const etl::generic_pen<Color, ColorAccumulator>& pen, const Color::value_type &a = 1, const _BlendFunc &func = _BlendFunc()):
-		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc >(pen,a,func)
+	alpha_pen(const etl::generic_pen<Color, ColorAccumulator>& pen, const Color::value_type &a = 1, const _BlendFunc<Color> &func = _BlendFunc<Color>()):
+		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >(pen,a,func)
 	{ }
 
 	//! Sets the blend method to that described by \a method

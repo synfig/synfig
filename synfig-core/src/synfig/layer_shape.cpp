@@ -2159,7 +2159,7 @@ void Layer_Shape::curve_to_smooth(Real x2, Real y2, Real x, Real y)		//x1,y1 der
 bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 								Color::BlendMethod got_blend_method, Color::value_type got_amount) const
 {
-	Surface::alpha_pen p(surface->begin(),got_amount,_BlendFunc(got_blend_method));
+	Surface::alpha_pen p(surface->begin(),got_amount,got_blend_method);
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
 	PolySpan::cover_array::iterator end_mark = polyspan.covers.end();
 

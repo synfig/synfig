@@ -512,7 +512,7 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 					return false;
 				}
 
-				Surface::alpha_pen p(surface->begin(),get_amount(),_BlendFunc(get_blend_method()));
+				Surface::alpha_pen p(surface->begin(),get_amount(),get_blend_method());
 
 				p.set_value(color);
 				p.put_block(h,w);
