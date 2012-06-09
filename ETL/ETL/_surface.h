@@ -207,7 +207,7 @@ public:
 		return *this;
 	}
 
-	void
+	virtual void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h)
 	{
 		if(data_)
