@@ -33,9 +33,9 @@
 #include <math.h>
 #include <cassert>
 #include "gamma.h"
+#include "angle.h"
 #include "colorbase.h"
 #include <synfig/string.h>
-# include "angle.h"
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -76,20 +76,6 @@ typedef half ColorReal;
 #else
 typedef float ColorReal;
 #endif
-
-static const float EncodeYUV[3][3]=
-{
-	{ 0.299f, 0.587f, 0.114f },
-	{ -0.168736f, -0.331264f, 0.5f },
-	{ 0.5f, -0.418688f, -0.081312f }
-};
-
-static const float DecodeYUV[3][3]=
-{
-	{ 1.0f, 0.0f, 1.402f },
-	{ 1.0f, -0.344136f, -0.714136f },
-	{ 1.0f, 1.772f, 0.0f }
-};
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -175,14 +161,6 @@ public:
 	operator/(const float &rhs)const
 	{ return Color(*this)/=rhs; }
 
-	bool
-	operator==(const Color &rhs)const
-	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
-
-	bool
-	operator!=(const Color &rhs)const
-	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
-
 	Color
 	operator-()const
 	{ return Color(-r_,-g_,-b_,-a_); }
@@ -265,48 +243,6 @@ public:
 	//! Sets the color's R, G, and B from a 3 or 6 character hex string
 	void set_hex(String& hex);
 
-	//! Returns color's luminance
-	float
-	get_y() const
-	{
-		return
-			(float)get_r()*EncodeYUV[0][0]+
-			(float)get_g()*EncodeYUV[0][1]+
-			(float)get_b()*EncodeYUV[0][2];
-	}
-
-
-	//! Returns U component of chromanance
-	float
-	get_u() const
-	{
-		return
-			(float)get_r()*EncodeYUV[1][0]+
-			(float)get_g()*EncodeYUV[1][1]+
-			(float)get_b()*EncodeYUV[1][2];
-	}
-
-
-	//! Returns V component of chromanance
-	float
-	get_v() const
-	{
-		return
-			(float)get_r()*EncodeYUV[2][0]+
-			(float)get_g()*EncodeYUV[2][1]+
-			(float)get_b()*EncodeYUV[2][2];
-	}
-
-	//! Returns the color's saturation
-	/*!	This is is the magnitude of the U and V components.
-	**	\see set_s() */
-	float
-	get_s() const
-	{
-		const float u(get_u()), v(get_v());
-		return sqrt(u*u+v*v);
-	}
-
 	//! Sets the luminance (\a y) and chromanance (\a u and \a v)
 	Color&
 	set_yuv(const float &y, const float &u, const float &v)
@@ -353,16 +289,6 @@ public:
 		c.set_a(a);
 		return c;
 	}
-
-	//! Returns the hue of the chromanance
-	/*!	This is the angle of the U and V components.
-	**	\see set_hue() */
-	Angle
-	get_hue() const
-		{ return Angle::tan(get_u(),get_v()); }
-
-	//! Synonym for get_hue(). \see get_hue()
-	Angle get_uv_angle() const { return get_hue(); }
 
 	//! Sets the color's hue
 	/*!	\see get_hue() */
@@ -444,35 +370,6 @@ public:
 	/* Other */
 	static Color blend(Color a, Color b,float amount,BlendMethod type=BLEND_COMPOSITE);
 
-	static bool is_onto(BlendMethod x)
-	{
-		return x==BLEND_BRIGHTEN
-			|| x==BLEND_DARKEN
-			|| x==BLEND_ADD
-			|| x==BLEND_SUBTRACT
-			|| x==BLEND_MULTIPLY
-			|| x==BLEND_DIVIDE
-			|| x==BLEND_COLOR
-			|| x==BLEND_HUE
-			|| x==BLEND_SATURATION
-			|| x==BLEND_LUMINANCE
-			|| x==BLEND_ONTO
-			|| x==BLEND_STRAIGHT_ONTO
-			|| x==BLEND_SCREEN
-			|| x==BLEND_OVERLAY
-			|| x==BLEND_DIFFERENCE
-			|| x==BLEND_HARD_LIGHT
-		;
-	}
-
-	//! a blending method is considered 'straight' if transparent pixels in the upper layer can affect the result of the blend
-	static bool is_straight(BlendMethod x)
-	{
-		return x==BLEND_STRAIGHT
-			|| x==BLEND_STRAIGHT_ONTO
-			|| x==BLEND_ALPHA_BRIGHTEN
-		;
-	}
 /*protected:
 
 	value_type& operator[](const int i)
@@ -595,14 +492,6 @@ public:
 	operator/(const float &rhs)const
 	{ return CairoColor(*this)/=rhs; }
 
-	bool
-	operator==(const CairoColor &rhs)const
-	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
-
-	bool
-	operator!=(const CairoColor &rhs)const
-	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
-
 // Not suitable for unsigned char
 //	CairoColor
 //	operator-()const
@@ -657,40 +546,6 @@ public:
 	void set_hex( String& str);
 	const String get_hex()const { return String(char2hex(r_)+char2hex(g_)+char2hex(b_)); }
 
-	float
-	get_y() const
-	{
-		return
-		(float)get_r()*EncodeYUV[0][0]+
-		(float)get_g()*EncodeYUV[0][1]+
-		(float)get_b()*EncodeYUV[0][2];
-	}
-
-	float
-	get_u() const
-	{
-		return
-		(float)get_r()*EncodeYUV[1][0]+
-		(float)get_g()*EncodeYUV[1][1]+
-		(float)get_b()*EncodeYUV[1][2];
-	}
-
-	float
-	get_v() const
-	{
-		return
-		(float)get_r()*EncodeYUV[2][0]+
-		(float)get_g()*EncodeYUV[2][1]+
-		(float)get_b()*EncodeYUV[2][2];
-	}
-
-	float
-	get_s() const
-	{
-		const float u(get_u()), v(get_v());
-		return sqrt(u*u+v*v);
-	}
-	
 	CairoColor&
 	set_yuv(const float &y, const float &u, const float &v)
 	{
@@ -728,10 +583,6 @@ public:
 		c.set_a(a);
 		return c;
 	}
-	
-	Angle get_hue() const	{ return Angle::tan(get_u(),get_v()); }
-	
-	Angle get_uv_angle() const { return get_hue(); }
 	
 	CairoColor& set_hue(const Angle& theta)
 	{
@@ -782,16 +633,6 @@ public:
 
 	// Use Color::BlenMethods for the enum value
 	static CairoColor blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type=Color::BLEND_COMPOSITE);
-
-	static bool is_onto(Color::BlendMethod x)
-	{
-		return Color::is_onto(x);
-	}
-	
-	static bool is_straight(Color::BlendMethod x)
-	{
-		return Color::is_straight(x);
-	}
 	
 }; // End of CairoColor class
 

@@ -27,6 +27,20 @@
 
 namespace synfig {
 
+static const float EncodeYUV[3][3]=
+{
+	{ 0.299f, 0.587f, 0.114f },
+	{ -0.168736f, -0.331264f, 0.5f },
+	{ 0.5f, -0.418688f, -0.081312f }
+};
+
+static const float DecodeYUV[3][3]=
+{
+	{ 1.0f, 0.0f, 1.402f },
+	{ 1.0f, -0.344136f, -0.714136f },
+	{ 1.0f, 1.772f, 0.0f }
+};
+
 template<typename T>
 class ColorBase
 {
@@ -95,6 +109,56 @@ public:
 	//! Synonym for set_a(). \see set_a()
 	ColorBase<T>& set_alpha(const T& x) { return set_a(x); }
 
+	//! Returns color's luminance
+	float
+	get_y() const
+	{
+		return
+			(float)get_r()*EncodeYUV[0][0]+
+			(float)get_g()*EncodeYUV[0][1]+
+			(float)get_b()*EncodeYUV[0][2];
+	}
+
+
+	//! Returns U component of chromanance
+	float
+	get_u() const
+	{
+		return
+			(float)get_r()*EncodeYUV[1][0]+
+			(float)get_g()*EncodeYUV[1][1]+
+			(float)get_b()*EncodeYUV[1][2];
+	}
+
+
+	//! Returns V component of chromanance
+	float
+	get_v() const
+	{
+		return
+			(float)get_r()*EncodeYUV[2][0]+
+			(float)get_g()*EncodeYUV[2][1]+
+			(float)get_b()*EncodeYUV[2][2];
+	}
+
+	//! Returns the color's saturation
+	/*!	This is is the magnitude of the U and V components.
+	**	\see set_s() */
+	float
+	get_s() const
+	{
+		const float u(get_u()), v(get_v());
+		return sqrt(u*u+v*v);
+	}
+
+	//! Returns the hue of the chromanance
+	/*!	This is the angle of the U and V components.
+	**	\see set_hue() */
+	Angle get_hue() const	{ return Angle::tan(get_u(),get_v()); }
+
+	//! Synonym for get_hue(). \see get_hue()
+	Angle get_uv_angle() const { return get_hue(); }
+
 	//! \writeme
 	enum BlendMethod
 	{
@@ -127,8 +191,41 @@ public:
 									//! default when the layer is created
 	};
 
+	static bool is_onto(BlendMethod x)
+	{
+		return x==BLEND_BRIGHTEN
+			|| x==BLEND_DARKEN
+			|| x==BLEND_ADD
+			|| x==BLEND_SUBTRACT
+			|| x==BLEND_MULTIPLY
+			|| x==BLEND_DIVIDE
+			|| x==BLEND_COLOR
+			|| x==BLEND_HUE
+			|| x==BLEND_SATURATION
+			|| x==BLEND_LUMINANCE
+			|| x==BLEND_ONTO
+			|| x==BLEND_STRAIGHT_ONTO
+			|| x==BLEND_SCREEN
+			|| x==BLEND_OVERLAY
+			|| x==BLEND_DIFFERENCE
+			|| x==BLEND_HARD_LIGHT
+		;
+	}
 
-	virtual ColorBase<T> blend(ColorBase<T> a, ColorBase<T> b, float amount, BlendMethod type) {}
+	//! a blending method is considered 'straight' if transparent pixels in the upper layer can affect the result of the blend
+	static bool is_straight(BlendMethod x)
+	{
+		return x==BLEND_STRAIGHT
+			|| x==BLEND_STRAIGHT_ONTO
+			|| x==BLEND_ALPHA_BRIGHTEN
+		;
+	}
+
+	bool operator==(const ColorBase<T>& rhs) const
+	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
+
+	bool operator!=(const ColorBase<T>& rhs) const
+	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
 
 	virtual ~ColorBase() {}
 };
