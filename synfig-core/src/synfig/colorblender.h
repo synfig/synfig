@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file colorblender.h
 **	\brief Generic color blending class
+**	It can be applied to Color and CairoColor
 **
 **	$Id$
 **
@@ -27,79 +28,58 @@
 
 namespace synfig {
 
+template <class C>
 class ColorBlender
 {
 private:
 	ColorBlender() {}
+
 public:
 
-	template <class C>
 	static C blendfunc_COMPOSITE(C &src,C &dest,float amount);
 
-	template <class C>
 	static C blendfunc_STRAIGHT(C &src,C &bg,float amount);
 
-	template <class C>
 	static C blendfunc_ONTO(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_BRIGHTEN(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_DARKEN(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_ADD(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_SUBTRACT(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_DIFFERENCE(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_MULTIPLY(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_DIVIDE(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_COLOR(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_HUE(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_SATURATION(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_LUMINANCE(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_BEHIND(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_ALPHA_DARKEN(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_SCREEN(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_OVERLAY(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_HARD_LIGHT(C &a,C &b,float amount);
 
-	template <class C>
 	static C blendfunc_ALPHA_OVER(C &a,C &b,float amount);
 
-	template <class C>
 	static C blend(C a, C b, float amount, Color::BlendMethod type);
 
 };

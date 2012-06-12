@@ -244,11 +244,11 @@ Color::Color(const CairoColor& c): ColorBase<value_type>()
 Color
 Color::blend(Color a, Color b, float amount, ColorBase::BlendMethod type)
 {
-	return ColorBlender::blend(a, b, amount, type);
+	return ColorBlender<Color>::blend(a, b, amount, type);
 }
 
 CairoColor
 CairoColor::blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type)
 {
-	return ColorBlender::blend(a, b, amount, type);
+	return ColorBlender<CairoColor>::blend(a, b, amount, type);
 }

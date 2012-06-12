@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file colorblender.cpp
-**	\brief Generic color blending class
+**	\brief Generic color blending class.
+**	It can be applied to Color or CairoColor
 **
 **	$Id$
 **
@@ -24,8 +25,9 @@
 
 #define COLOR_EPSILON	(0.000001f)
 
+
 template <class C>
-C ColorBlender::blendfunc_COMPOSITE(C &src,C &dest,float amount)
+C ColorBlender<C>::blendfunc_COMPOSITE(C &src,C &dest,float amount)
 {
 	//c_dest'=c_src+(1.0-a_src)*c_dest
 	//a_dest'=a_src+(1.0-a_src)*a_dest
@@ -60,7 +62,7 @@ C ColorBlender::blendfunc_COMPOSITE(C &src,C &dest,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_STRAIGHT(C &src,C &bg,float amount)
+C ColorBlender<C>::blendfunc_STRAIGHT(C &src,C &bg,float amount)
 {
 	//a_out'=(a_src-a_bg)*amount+a_bg
 	//c_out'=(((c_src*a_src)-(c_bg*a_bg))*amount+(c_bg*a_bg))/a_out'
@@ -87,7 +89,7 @@ C ColorBlender::blendfunc_STRAIGHT(C &src,C &bg,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_ONTO(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_ONTO(C &a,C &b,float amount)
 {
 	float alpha(b.get_a());
 	const float one(C::ceil);
@@ -98,14 +100,14 @@ C ColorBlender::blendfunc_ONTO(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
 {
 	a.set_a(a.get_a()*b.get_a());
 	return blendfunc_STRAIGHT(a,b,amount);
 }
 
 template <class C>
-C ColorBlender::blendfunc_BRIGHTEN(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_BRIGHTEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -122,7 +124,7 @@ C ColorBlender::blendfunc_BRIGHTEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_DARKEN(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_DARKEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 	const float one(C::ceil);
@@ -141,7 +143,7 @@ C ColorBlender::blendfunc_DARKEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_ADD(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_ADD(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -153,7 +155,7 @@ C ColorBlender::blendfunc_ADD(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_SUBTRACT(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_SUBTRACT(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -165,7 +167,7 @@ C ColorBlender::blendfunc_SUBTRACT(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_DIFFERENCE(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_DIFFERENCE(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -177,7 +179,7 @@ C ColorBlender::blendfunc_DIFFERENCE(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_MULTIPLY(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_MULTIPLY(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -189,7 +191,7 @@ C ColorBlender::blendfunc_MULTIPLY(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_DIVIDE(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_DIVIDE(C &a,C &b,float amount)
 {
 	amount*=a.get_a();
 
@@ -206,7 +208,7 @@ C ColorBlender::blendfunc_DIVIDE(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_COLOR(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_COLOR(C &a,C &b,float amount)
 {
 	C temp(b);
 	temp.set_uv(a.get_u(),a.get_v());
@@ -214,7 +216,7 @@ C ColorBlender::blendfunc_COLOR(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_HUE(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_HUE(C &a,C &b,float amount)
 {
 	C temp(b);
 	temp.set_hue(a.get_hue());
@@ -222,7 +224,7 @@ C ColorBlender::blendfunc_HUE(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_SATURATION(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_SATURATION(C &a,C &b,float amount)
 {
 	C temp(b);
 	temp.set_s(a.get_s());
@@ -230,7 +232,7 @@ C ColorBlender::blendfunc_SATURATION(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_LUMINANCE(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_LUMINANCE(C &a,C &b,float amount)
 {
 	C temp(b);
 	temp.set_y(a.get_y());
@@ -238,7 +240,7 @@ C ColorBlender::blendfunc_LUMINANCE(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_BEHIND(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_BEHIND(C &a,C &b,float amount)
 {
 	if(a.get_a()==0)
 		a.set_a(COLOR_EPSILON*amount);		//!< \todo this is a hack
@@ -248,7 +250,7 @@ C ColorBlender::blendfunc_BEHIND(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 {
 	// \todo can this be right, multiplying amount by *b*'s alpha?
 	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
@@ -261,7 +263,7 @@ C ColorBlender::blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 {
 	if(a.get_a()*amount > b.get_a()){
 		a.set_a(a.get_a()*amount);
@@ -271,7 +273,7 @@ C ColorBlender::blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_SCREEN(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_SCREEN(C &a,C &b,float amount)
 {
 	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
@@ -284,7 +286,7 @@ C ColorBlender::blendfunc_SCREEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_OVERLAY(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_OVERLAY(C &a,C &b,float amount)
 {
 	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
@@ -309,7 +311,7 @@ C ColorBlender::blendfunc_OVERLAY(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_HARD_LIGHT(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 {
 	const float one(C::ceil);
 	const float half((one-C::floor)/2);
@@ -326,7 +328,7 @@ C ColorBlender::blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 }
 
 template <class C>
-C ColorBlender::blendfunc_ALPHA_OVER(C &a,C &b,float amount)
+C ColorBlender<C>::blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
 	const float one(C::ceil);
 	C rm(b);
@@ -337,9 +339,8 @@ C ColorBlender::blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 	return blendfunc_STRAIGHT(rm,b,amount);
 }
 
-
 template <class C>
-C ColorBlender::blend(C a, C b, float amount, Color::BlendMethod type)
+C ColorBlender<C>::blend(C a, C b, float amount, Color::BlendMethod type)
 {
 	// No matter what blend method is being used,
 	// if the amount is equal to zero, then only B
@@ -353,31 +354,29 @@ C ColorBlender::blend(C a, C b, float amount, Color::BlendMethod type)
 
 	const static blendfunction vtable[Color::BLEND_END]=
 	{
-		blendfunc_COMPOSITE<C>,	// 0
-		blendfunc_STRAIGHT<C>,
-		blendfunc_BRIGHTEN<C>,
-		blendfunc_DARKEN<C>,
-		blendfunc_ADD<C>,
-		blendfunc_SUBTRACT<C>,		// 5
-		blendfunc_MULTIPLY<C>,
-		blendfunc_DIVIDE<C>,
-		blendfunc_COLOR<C>,
-		blendfunc_HUE<C>,
-		blendfunc_SATURATION<C>,	// 10
-		blendfunc_LUMINANCE<C>,
-		blendfunc_BEHIND<C>,
-		blendfunc_ONTO<C>,
-		blendfunc_ALPHA_BRIGHTEN<C>,
-		blendfunc_ALPHA_DARKEN<C>,	// 15
-		blendfunc_SCREEN<C>,
-		blendfunc_HARD_LIGHT<C>,
-		blendfunc_DIFFERENCE<C>,
-		blendfunc_ALPHA_OVER<C>,
-		blendfunc_OVERLAY<C>,		// 20
-		blendfunc_STRAIGHT_ONTO<C>,
+		ColorBlender<C>::blendfunc_COMPOSITE,	// 0
+		ColorBlender<C>::blendfunc_STRAIGHT,
+		ColorBlender<C>::blendfunc_BRIGHTEN,
+		ColorBlender<C>::blendfunc_DARKEN,
+		ColorBlender<C>::blendfunc_ADD,
+		ColorBlender<C>::blendfunc_SUBTRACT,		// 5
+		ColorBlender<C>::blendfunc_MULTIPLY,
+		ColorBlender<C>::blendfunc_DIVIDE,
+		ColorBlender<C>::blendfunc_COLOR,
+		ColorBlender<C>::blendfunc_HUE,
+		ColorBlender<C>::blendfunc_SATURATION,	// 10
+		ColorBlender<C>::blendfunc_LUMINANCE,
+		ColorBlender<C>::blendfunc_BEHIND,
+		ColorBlender<C>::blendfunc_ONTO,
+		ColorBlender<C>::blendfunc_ALPHA_BRIGHTEN,
+		ColorBlender<C>::blendfunc_ALPHA_DARKEN,	// 15
+		ColorBlender<C>::blendfunc_SCREEN,
+		ColorBlender<C>::blendfunc_HARD_LIGHT,
+		ColorBlender<C>::blendfunc_DIFFERENCE,
+		ColorBlender<C>::blendfunc_ALPHA_OVER,
+		ColorBlender<C>::blendfunc_OVERLAY,		// 20
+		ColorBlender<C>::blendfunc_STRAIGHT_ONTO,
 	};
 
 	return vtable[type](a,b,amount);
 }
-
-
