@@ -112,8 +112,28 @@ public:
 	generic_pen_row_iterator():data_(NULL) { }
 };
 
+
+class generic_pen_base
+{
+protected:
+	int x_,y_;
+	int w_,h_;
+
+public:
+	generic_pen_base(){}
+	generic_pen_base(int w, int h): x_(0), y_(0), w_(w), h_(h) { }
+	
+	struct difference_type
+	{
+		typedef int value_type;
+		value_type x,y;
+		difference_type(value_type x, value_type y):x(x),y(y) { }
+		value_type operator[](int i)const { return i?y:x; }
+	};
+};
+
 template<typename T, typename AT=T>
-class generic_pen
+class generic_pen: public generic_pen_base
 {
 public:
 	typedef T value_type;
@@ -129,17 +149,6 @@ public:
 	typedef generic_pen_row_iterator<value_type> iterator_y;
 	typedef generic_pen_row_iterator<const value_type> const_iterator_y;
 
-	struct difference_type
-	{
-		typedef int value_type;
-		value_type x,y;
-		difference_type(value_type x, value_type y):x(x),y(y) { }
-		value_type &operator[](int i)const { return i?y:x; }
-	};
-
-protected:
-	int x_,y_;
-	int w_,h_;
 private:
 	int pitch_;
 	value_type value_;
@@ -159,21 +168,13 @@ private:
 
 public:
 
-	generic_pen(value_type *data, int w, int h, int pitch):
-		x_(0),
-		y_(0),
-		w_(w),
-		h_(h),
+	generic_pen(value_type *data, int w, int h, int pitch): generic_pen_base(w, h),
 		pitch_(pitch),
 		data_(data)
 	{
 	}
 
-	generic_pen(value_type *data, int w, int h):
-		x_(0),
-		y_(0),
-		w_(w),
-		h_(h),
+	generic_pen(value_type *data, int w, int h): generic_pen_base(w,h),
 		pitch_(sizeof(value_type)*w),
 		data_(data)
 	{
