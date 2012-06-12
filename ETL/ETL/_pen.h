@@ -118,10 +118,11 @@ class generic_pen_base
 protected:
 	int x_,y_;
 	int w_,h_;
-
+	int pitch_;
 public:
 	generic_pen_base(){}
 	generic_pen_base(int w, int h): x_(0), y_(0), w_(w), h_(h) { }
+	generic_pen_base(int w, int h, int pitch): x_(0), y_(0), w_(w), h_(h), pitch_(pitch) { }
 	
 	struct difference_type
 	{
@@ -150,7 +151,6 @@ public:
 	typedef generic_pen_row_iterator<const value_type> const_iterator_y;
 
 private:
-	int pitch_;
 	value_type value_;
 	value_type *data_;
 
@@ -168,14 +168,12 @@ private:
 
 public:
 
-	generic_pen(value_type *data, int w, int h, int pitch): generic_pen_base(w, h),
-		pitch_(pitch),
+	generic_pen(value_type *data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
 		data_(data)
 	{
 	}
 
-	generic_pen(value_type *data, int w, int h): generic_pen_base(w,h),
-		pitch_(sizeof(value_type)*w),
+	generic_pen(value_type *data, int w, int h): generic_pen_base(w,h,sizeof(value_type)*w),
 		data_(data)
 	{
 	}
