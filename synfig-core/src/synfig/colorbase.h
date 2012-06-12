@@ -113,27 +113,27 @@ public:
 	float get_y() const
 	{
 		return
-			(float)get_r()*EncodeYUV[0][0]+
-			(float)get_g()*EncodeYUV[0][1]+
-			(float)get_b()*EncodeYUV[0][2];
+			(float)r_*EncodeYUV[0][0]+
+			(float)g_*EncodeYUV[0][1]+
+			(float)b_*EncodeYUV[0][2];
 	}
 
 	//! Returns U component of chromanance
 	float get_u() const
 	{
 		return
-			(float)get_r()*EncodeYUV[1][0]+
-			(float)get_g()*EncodeYUV[1][1]+
-			(float)get_b()*EncodeYUV[1][2];
+			(float)r_*EncodeYUV[1][0]+
+			(float)g_*EncodeYUV[1][1]+
+			(float)b_*EncodeYUV[1][2];
 	}
 
 	//! Returns V component of chromanance
 	float get_v() const
 	{
 		return
-			(float)get_r()*EncodeYUV[2][0]+
-			(float)get_g()*EncodeYUV[2][1]+
-			(float)get_b()*EncodeYUV[2][2];
+			(float)r_*EncodeYUV[2][0]+
+			(float)g_*EncodeYUV[2][1]+
+			(float)b_*EncodeYUV[2][2];
 	}
 
 	//! Returns the color's saturation
