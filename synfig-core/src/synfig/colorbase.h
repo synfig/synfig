@@ -110,8 +110,7 @@ public:
 	ColorBase<T>& set_alpha(const T& x) { return set_a(x); }
 
 	//! Returns color's luminance
-	float
-	get_y() const
+	float get_y() const
 	{
 		return
 			(float)get_r()*EncodeYUV[0][0]+
@@ -119,10 +118,8 @@ public:
 			(float)get_b()*EncodeYUV[0][2];
 	}
 
-
 	//! Returns U component of chromanance
-	float
-	get_u() const
+	float get_u() const
 	{
 		return
 			(float)get_r()*EncodeYUV[1][0]+
@@ -130,10 +127,8 @@ public:
 			(float)get_b()*EncodeYUV[1][2];
 	}
 
-
 	//! Returns V component of chromanance
-	float
-	get_v() const
+	float get_v() const
 	{
 		return
 			(float)get_r()*EncodeYUV[2][0]+
@@ -144,8 +139,7 @@ public:
 	//! Returns the color's saturation
 	/*!	This is is the magnitude of the U and V components.
 	**	\see set_s() */
-	float
-	get_s() const
+	float get_s() const
 	{
 		const float u(get_u()), v(get_v());
 		return sqrt(u*u+v*v);
