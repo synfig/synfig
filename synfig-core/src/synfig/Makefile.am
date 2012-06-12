@@ -211,6 +211,7 @@ SYNFIGHEADERS = \
 	canvas.h \
 	colorbase.h \
 	colorblender.h \
+	colorblender.hpp \
 	color.h \
 	context.h \
 	curve_helper.h \

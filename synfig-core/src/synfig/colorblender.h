@@ -84,7 +84,7 @@ public:
 
 };
 
-#include "colorblender.cpp"
+#include "colorblender.hpp"
 
 } /* namespace synfig */
 
