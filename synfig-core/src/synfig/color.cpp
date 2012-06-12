@@ -53,8 +53,6 @@ using namespace std;
 
 /* === M E T H O D S ======================================================= */
 
-
-
 ColorReal
 Color::hex2real(String s)
 {
@@ -88,7 +86,7 @@ Color::real2hex(ColorReal c)
 const String
 CairoColor::char2hex(unsigned char c)
 {
-	String s(Color::real2hex((ColorReal)(c/((float)ceil()))));
+	String s(Color::real2hex((ColorReal)(c/((float)ceil))));
 	return s.c_str();
 }
 
@@ -236,10 +234,10 @@ Color::clamped()const
 
 Color::Color(const CairoColor& c): ColorBase<value_type>()
 	{
-		set_r((ceil()-floor())*c.get_r()/(CairoColor::ceil()-CairoColor::floor()));
-		set_g((ceil()-floor())*c.get_g()/(CairoColor::ceil()-CairoColor::floor()));
-		set_b((ceil()-floor())*c.get_b()/(CairoColor::ceil()-CairoColor::floor()));
-		set_a((ceil()-floor())*c.get_a()/(CairoColor::ceil()-CairoColor::floor()));
+		set_r((ceil-floor)*c.get_r()/(CairoColor::ceil-CairoColor::floor));
+		set_g((ceil-floor)*c.get_g()/(CairoColor::ceil-CairoColor::floor));
+		set_b((ceil-floor)*c.get_b()/(CairoColor::ceil-CairoColor::floor));
+		set_a((ceil-floor)*c.get_a()/(CairoColor::ceil-CairoColor::floor));
 	}
 
 
