@@ -120,10 +120,10 @@ protected:
 	int x_,y_;
 	int w_,h_;
 	int pitch_;
+	char *data_;
 public:
-	generic_pen_base(){}
-	generic_pen_base(int w, int h): x_(0), y_(0), w_(w), h_(h) { }
-	generic_pen_base(int w, int h, int pitch): x_(0), y_(0), w_(w), h_(h), pitch_(pitch) { }
+	generic_pen_base(): data_(NULL){}
+	generic_pen_base(char* data, int w, int h, int pitch): data_(data), x_(0), y_(0), w_(w), h_(h), pitch_(pitch) { }
 	
 	struct difference_type
 	{
@@ -153,7 +153,6 @@ public:
 
 private:
 	value_type value_;
-	char *data_;
 
 	typedef generic_pen<T,AT> self_type;
 
@@ -169,22 +168,12 @@ private:
 
 public:
 
-	generic_pen(char *data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
-		data_(data)
-	{
-	}
-
-	generic_pen(pointer data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
-	data_((char*)(data))
-	{
-	}
+	generic_pen(char *data, int w, int h, int pitch): generic_pen_base(data, w, h, pitch) { }
+	generic_pen(pointer data, int w, int h, int pitch): generic_pen_base((char*)data, w, h, pitch) { }
 	
-	generic_pen(char *data, int w, int h): generic_pen_base(w,h,sizeof(value_type)*w),
-		data_(data)
-	{
-	}
+	generic_pen(char *data, int w, int h): generic_pen_base(data, w,h,sizeof(value_type)*w)	{ }
 
-	generic_pen():data_(NULL) { }
+	generic_pen(): generic_pen_base() { }
 
 	self_type& move(int a, int b)
 	{
