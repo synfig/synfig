@@ -54,18 +54,18 @@ public:
 
 	typedef generic_pen_row_iterator<value_type> self_type;
 
-	pointer data_;
+	char* data_;
 	int pitch_;
 
-	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
-	reference operator*()const { assert(data_); return *data_; }
+	reference operator[](int i)const { assert(data_); return *(pointer)( data_+pitch_*i ); }
+	reference operator*()const { assert(data_); return *(pointer)(data_); }
 	pointer operator->() const { assert(data_); return &(operator*()); }
 
-	void inc() { assert(data_); data_ = (pointer)((char*)data_ + pitch_); }
-	void inc(int n) { assert(data_); data_ = (pointer)((char*)data_ + n*pitch_); }
+	void inc() { assert(data_); data_ = (data_ + pitch_); }
+	void inc(int n) { assert(data_); data_ = (data_ + n*pitch_); }
 
-	void dec() { assert(data_); data_ = (pointer)((char*)data_ - pitch_); }
-	void dec(int n) { assert(data_); data_ = (pointer)((char*)data_ - n*pitch_); }
+	void dec() { assert(data_); data_ = (data_ - pitch_); }
+	void dec(int n) { assert(data_); data_ = (data_ - n*pitch_); }
 
 	const self_type &operator++() { assert(data_); inc(); return *this; }
 	const self_type &operator--() { assert(data_); dec(); return *this; }
@@ -82,7 +82,7 @@ public:
 		{ return data_!=rhs.data_; }
 
 	difference_type operator-(const self_type &rhs)const
-		{ assert(data_); return ((char*)data_-(char*)rhs.data_-1)/pitch_+1; }
+		{ assert(data_); return (data_-rhs.data_-1)/pitch_+1; }
 
 	self_type operator+(const difference_type &rhs)const
 	{
@@ -108,7 +108,8 @@ public:
 	operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
 
-	generic_pen_row_iterator(pointer data, int pitch):data_(data),pitch_(pitch) { }
+	generic_pen_row_iterator(pointer data, int pitch):data_((char*)data),pitch_(pitch) { }
+	generic_pen_row_iterator(char* data, int pitch):data_(data),pitch_(pitch) { }
 	generic_pen_row_iterator():data_(NULL) { }
 };
 
@@ -152,28 +153,33 @@ public:
 
 private:
 	value_type value_;
-	value_type *data_;
+	char *data_;
 
 	typedef generic_pen<T,AT> self_type;
 
 	void addptr(int nbytes)
 	{
-		data_ = (pointer)((char*)data_ + nbytes);
+		data_ = (data_ + nbytes);
 	}
 
 	void subptr(int nbytes)
 	{
-		data_ = (pointer)((char*)data_ - nbytes);
+		data_ = (data_ - nbytes);
 	}
 
 public:
 
-	generic_pen(value_type *data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
+	generic_pen(char *data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
 		data_(data)
 	{
 	}
 
-	generic_pen(value_type *data, int w, int h): generic_pen_base(w,h,sizeof(value_type)*w),
+	generic_pen(pointer data, int w, int h, int pitch): generic_pen_base(w, h, pitch),
+	data_((char*)(data))
+	{
+	}
+	
+	generic_pen(char *data, int w, int h): generic_pen_base(w,h,sizeof(value_type)*w),
 		data_(data)
 	{
 	}
@@ -190,30 +196,30 @@ public:
 	self_type& move_to(int x, int y) { assert(data_); return move(x - x_,y - y_);}
 	void set_value(const value_type &v) { value_=v; }
 
-	void inc_x() { assert(data_); x_++; data_++; }
-	void dec_x() { assert(data_); x_--; data_--; }
+	void inc_x() { assert(data_); x_++; addptr(sizeof(value_type)); }
+	void dec_x() { assert(data_); x_--; subptr(sizeof(value_type)); }
 	void inc_y() { assert(data_); y_++; addptr(pitch_); }
 	void dec_y() { assert(data_); y_--; subptr(pitch_); }
 
-	void inc_x(int n) { assert(data_); x_+=n; data_+=n; }
-	void dec_x(int n) { assert(data_); x_-=n; data_-=n; }
-	void inc_y(int n) { assert(data_); y_+=n; data_ = (pointer)((char*)data_ + pitch_*n); }
-	void dec_y(int n) { assert(data_); y_-=n; data_ = (pointer)((char*)data_ - pitch_*n); }
+	void inc_x(int n) { assert(data_); x_+=n; addptr(n*sizeof(value_type)); }
+	void dec_x(int n) { assert(data_); x_-=n; subptr(n*sizeof(value_type)); }
+	void inc_y(int n) { assert(data_); y_+=n; addptr(n*pitch_); }
+	void dec_y(int n) { assert(data_); y_-=n; subptr(n*pitch_); }
 
-	void put_value(const value_type &v)const { assert(data_); *data_=v; }
+	void put_value(const value_type &v)const { assert(data_); *(pointer)(data_)=v; }
 	void put_value()const { assert(data_); put_value(value_); }
 
 	void put_value_clip(const value_type &v)const
 		{ if(!clipped()) put_value(v); }
 	void put_value_clip()const { put_value_clip(value_); }
 
-	const_reference get_value()const { assert(data_); return *data_; }
+	const_reference get_value()const { assert(data_); return *((pointer)(data_)); }
 
-	const_reference get_value_at(int x, int y)const { assert(data_); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
+	const_reference get_value_at(int x, int y)const { assert(data_); return ((pointer)(data_+y*pitch_))[x]; }
 
-	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
+	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return get_value_at(x,y); }
 
-	const value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return *data_; }
+	const value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return get_value(); }
 
 	const value_type get_pen_value()const { return value_; }
 
@@ -263,15 +269,15 @@ public:
 	void put_block_clip(int h, int w) { put_block(h,w,value_); }
 
 
-	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+i*pitch_); }
+	iterator_x operator[](int i)const { assert(data_); return (pointer)(data_+i*pitch_); }
 
-	iterator_x x() { assert(data_); return data_; }
-	iterator_x begin_x() { assert(data_); return data_-x_; }
-	iterator_x end_x() { assert(data_); return data_-x_+w_; }
+	iterator_x x() { assert(data_); return (pointer)data_; }
+	iterator_x begin_x() { assert(data_); return (pointer)(data_)-x_; }
+	iterator_x end_x() { assert(data_); return (pointer)(data_)-x_+w_; }
 
 	iterator_y y() { assert(data_); return iterator_y(data_,pitch_); }
-	iterator_y begin_y() { assert(data_); return iterator_y((pointer)((char*)data_ - y_*pitch_),pitch_); }
-	iterator_y end_y() { assert(data_); return iterator_y((pointer)((char*)data_ + (h_-y_)*pitch_),pitch_); }
+	iterator_y begin_y() { assert(data_); return iterator_y((data_ - y_*pitch_),pitch_); }
+	iterator_y end_y() { assert(data_); return iterator_y((data_ + (h_-y_)*pitch_),pitch_); }
 
 	operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
@@ -284,7 +290,7 @@ public:
 	{
 		assert(data_);
 		assert(pitch_==rhs.pitch_);
-		int ptr_diff=(char*)data_-(char*)rhs.data_-1;
+		int ptr_diff=data_-rhs.data_-1;
 		return difference_type(ptr_diff%pitch_/sizeof(value_type)+1,ptr_diff/pitch_);
 	}
 
