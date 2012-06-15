@@ -117,10 +117,10 @@ public:
 class generic_pen_base
 {
 protected:
+	char *data_;
 	int x_,y_;
 	int w_,h_;
 	int pitch_;
-	char *data_;
 public:
 	generic_pen_base(): data_(NULL){}
 	generic_pen_base(char* data, int w, int h, int pitch): data_(data), x_(0), y_(0), w_(w), h_(h), pitch_(pitch) { }
