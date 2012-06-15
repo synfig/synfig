@@ -79,7 +79,7 @@ public:
 private:
 	char *data_;
 	char *zero_pos_;
-	typename difference_type::value_type pitch_;
+	int pitch_;
 	int w_, h_;
 	bool deletable_;
 
