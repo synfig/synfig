@@ -77,8 +77,8 @@ public:
 	typedef typename pen::const_iterator_y const_iterator_y;
 
 private:
-	value_type *data_;
-	value_type *zero_pos_;
+	char *data_;
+	char *zero_pos_;
 	typename difference_type::value_type pitch_;
 	int w_, h_;
 	bool deletable_;
@@ -104,28 +104,28 @@ public:
 		deletable_(false) { }
 
 	surface(value_type* data, int w, int h, bool deletable=false):
-		data_(data),
-		zero_pos_(data),
+		data_((char*)data),
+		zero_pos_((char*)data),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 
 	surface(value_type* data, int w, int h, typename difference_type::value_type pitch, bool deletable=false):
-		data_(data),
-		zero_pos_(data),
+		data_((char*)data),
+		zero_pos_((char*)data),
 		pitch_(pitch),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 	
 	surface(const typename size_type::value_type &w, const typename size_type::value_type &h):
-		data_(new value_type[w*h]),
+		data_(new char[sizeof(value_type)*w*h]),
 		zero_pos_(data_),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(true) { }
 
 	surface(const size_type &s):
-		data_(new value_type[s.x*s.y]),
+		data_(new char[sizeof(value_type)*s.x*s.y]),
 		zero_pos_(data_),
 		pitch_(sizeof(value_type)*s.x),
 		w_(s.x),h_(s.y),
@@ -136,7 +136,7 @@ public:
 	{
 		typename _pen::difference_type size=_end-_begin;
 
-		data_=new value_type[size.x*size.y];
+		data_=new char[sizeof(value_type)*size.x*size.y];
 		w_=size.x;
 		h_=size.y;
 		zero_pos_=data_;
@@ -151,7 +151,7 @@ public:
 	}
 
 	surface(const surface &s):
-		data_(s.data_?(pointer)(new char[s.pitch_*s.h_]):0),
+		data_(s.data_?new char[s.pitch_*s.h_]:0),
 		zero_pos_(data_+(s.zero_pos_-s.data_)),
 		pitch_(s.pitch_),
 		w_(s.w_),
@@ -224,7 +224,7 @@ public:
 			pitch_=pitch;
 		else
 			pitch_=sizeof(value_type)*w_;
-		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
+		zero_pos_=data_=new char[pitch_*h_];
 		deletable_=true;
 	}
 
@@ -322,7 +322,7 @@ public:
 
 	iterator_x
 	operator[](const int &y)
-	{ assert(data_); return (pointer)(((char*)zero_pos_)+y*pitch_); }
+	{ assert(data_); return (pointer)(zero_pos_+y*pitch_); }
 
 	const_iterator_x
 	operator[](const int &y)const
@@ -333,7 +333,7 @@ public:
 	{
 		assert(data_);
 
-		zero_pos_=(pointer)(((char*)zero_pos_)+pitch_*h_);
+		zero_pos_=(zero_pos_+pitch_*h_);
 
 		pitch_=-pitch_;
 	}
