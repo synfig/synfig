@@ -29,6 +29,7 @@
 
 #include "color.h"
 #include "renddesc.h"
+#include "target.h"
 #include <ETL/pen>
 #include <ETL/surface>
 #include <ETL/handle>
@@ -87,21 +88,23 @@ public:
 */
 class Surface : public etl::surface<Color, ColorAccumulator, ColorPrep>
 {
+private: 
+	RenderMethod method_;
 public:
 	typedef Color value_type;
 	class alpha_pen;
 
-	Surface() { }
+	Surface():method_(SOFTWARE) { }
 
-	Surface(const size_type::value_type &w, const size_type::value_type &h):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(w,h) { }
+	Surface(const size_type::value_type &w, const size_type::value_type &h, RenderMethod m=SOFTWARE):
+		etl::surface<Color, ColorAccumulator,ColorPrep>(w,h), method_(m) { }
 
-	Surface(const size_type &s):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(s) { }
+	Surface(const size_type &s, RenderMethod m=SOFTWARE):
+		etl::surface<Color, ColorAccumulator,ColorPrep>(s), method_(m) { }
 
 	template <typename _pen>
-	Surface(const _pen &_begin, const _pen &_end):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(_begin,_end) { }
+	Surface(const _pen &_begin, const _pen &_end, RenderMethod m=SOFTWARE):
+		etl::surface<Color, ColorAccumulator,ColorPrep>(_begin,_end), method_(m) { }
 
 	template <class _pen> void blit_to(_pen &pen)
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
@@ -115,6 +118,8 @@ public:
 	void clear();
 
 	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
+
+	RenderMethod get_render_method(){ return method_; }
 };	// END of class Surface
 
 
