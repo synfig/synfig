@@ -52,8 +52,25 @@ public:
 	value_type uncook(const accumulator_type& x)const { return (value_type)x; }
 };
 
+
+class surface_base
+{
+protected:
+	char *data_;
+	char *zero_pos_;
+	int pitch_;
+	int w_, h_;
+	bool deletable_;
+public:
+	surface_base():data_(0),zero_pos_(0),pitch_(0), w_(0),h_(0),deletable_(false)
+	{ }
+	surface_base(char* data, int w, int h, int pitch, bool deletable=false):
+		data_(data), zero_pos_(data), pitch_(pitch), w_(w), h_(h), deletable_(deletable)
+	{ }
+};
+
 template <typename T, typename AT=T, class VP=value_prep<T,AT> >
-class surface
+class surface: public surface_base
 {
 public:
 	typedef T value_type;
@@ -77,11 +94,6 @@ public:
 	typedef typename pen::const_iterator_y const_iterator_y;
 
 private:
-	char *data_;
-	char *zero_pos_;
-	int pitch_;
-	int w_, h_;
-	bool deletable_;
 
 	value_prep_type cooker_;
 
@@ -96,43 +108,26 @@ private:
 	}
 
 public:
-	surface():
-		data_(0),
-		zero_pos_(data_),
-		pitch_(0),
-		w_(0),h_(0),
-		deletable_(false) { }
+	surface():surface_base() { }
 
 	surface(value_type* data, int w, int h, bool deletable=false):
-		data_((char*)data),
-		zero_pos_((char*)data),
-		pitch_(sizeof(value_type)*w),
-		w_(w),h_(h),
-		deletable_(deletable) { }
+		surface_base((char*)data, w, h, sizeof(value_type)*w, deletable)
+	{ }
 
 	surface(value_type* data, int w, int h, typename difference_type::value_type pitch, bool deletable=false):
-		data_((char*)data),
-		zero_pos_((char*)data),
-		pitch_(pitch),
-		w_(w),h_(h),
-		deletable_(deletable) { }
+		surface_base((char*)data, w, h, pitch, deletable)
+	{ }
 	
 	surface(const typename size_type::value_type &w, const typename size_type::value_type &h):
-		data_(new char[sizeof(value_type)*w*h]),
-		zero_pos_(data_),
-		pitch_(sizeof(value_type)*w),
-		w_(w),h_(h),
-		deletable_(true) { }
+		surface_base(new char[sizeof(value_type)*w*h], w, h, sizeof(value_type)*w, true)
+	{ }
 
 	surface(const size_type &s):
-		data_(new char[sizeof(value_type)*s.x*s.y]),
-		zero_pos_(data_),
-		pitch_(sizeof(value_type)*s.x),
-		w_(s.x),h_(s.y),
-		deletable_(true) { }
+		surface_base(new char[sizeof(value_type)*s.x*s.y], s.x, s.y, sizeof(value_type)*s.x, true)
+	{ }
 
 	template <typename _pen>
-	surface(const _pen &_begin, const _pen &_end)
+	surface(const _pen &_begin, const _pen &_end): surface_base()
 	{
 		typename _pen::difference_type size=_end-_begin;
 
@@ -151,13 +146,9 @@ public:
 	}
 
 	surface(const surface &s):
-		data_(s.data_?new char[s.pitch_*s.h_]:0),
-		zero_pos_(data_+(s.zero_pos_-s.data_)),
-		pitch_(s.pitch_),
-		w_(s.w_),
-		h_(s.h_),
-		deletable_(s.data_?true:false)
+		surface_base(s.data_?new char[s.pitch_*s.h_]:0,s.w_, s.h_, s.pitch_, s.data_?true:false)
 	{
+		zero_pos_=data_+(s.zero_pos_-s.data_);
 		assert(&s);
 		if(s.data_)
 		{
