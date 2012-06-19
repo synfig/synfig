@@ -130,10 +130,26 @@ public:
 	class alpha_pen;
 	
 	CairoSurface() { }
-		
-	void clear();
+	CairoSurface(const size_type::value_type &w, const size_type::value_type &h):
+	etl::surface<CairoColor, CairoColor,CairoColorPrep>(w,h) { }
+
+	CairoSurface(const size_type &s):
+	etl::surface<CairoColor, CairoColor, CairoColorPrep>(s) { }
 	
-	void set_wh(int w, int h, int pitch=0);
+	template <typename _pen>
+	CairoSurface(const _pen &_begin, const _pen &_end):
+	etl::surface<CairoColor, CairoColor, CairoColorPrep>(_begin,_end) { }
+	
+	template <class _pen> void blit_to(_pen &pen)
+	{ return blit_to(pen,0,0, get_w(),get_h()); }
+	
+	template <class _pen> void
+	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h)
+	{ etl::surface<CairoColor, CairoColor, CairoColorPrep>::blit_to(DEST_PEN,x,y,w,h);
+	}
+	// TODO: Define set_wh
+	//void set_wh(int w, int h, int pitch=0);
+	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
 	
 };	// END of class Surface
 

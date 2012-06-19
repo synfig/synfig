@@ -238,3 +238,48 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 	etl::surface<Color, ColorAccumulator, ColorPrep>::blit_to(pen,x,y,w,h);
 }
 
+void
+synfig::CairoSurface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
+{
+	static const float epsilon(0.00001);
+	const float alpha(pen.get_alpha());
+	if(	pen.get_blend_method()==Color::BLEND_STRAIGHT && fabs(alpha-1.0f)<epsilon )
+	{
+		if(x>=get_w() || y>=get_w())
+			return;
+		
+		//clip source origin
+		if(x<0)
+		{
+			w+=x;	//decrease
+			x=0;
+		}
+		
+		if(y<0)
+		{
+			h+=y;	//decrease
+			y=0;
+		}
+		
+		//clip width against dest width
+		w = min((long)w,(long)(pen.end_x()-pen.x()));
+		h = min((long)h,(long)(pen.end_y()-pen.y()));
+		
+		//clip width against src width
+		w = min(w,get_w()-x);
+		h = min(h,get_h()-y);
+		
+		if(w<=0 || h<=0)
+			return;
+		
+		for(int i=0;i<h;i++)
+		{
+			char* src(static_cast<char*>(static_cast<void*>(operator[](y)+x))+i*get_w()*sizeof(Color));
+			char* dest(static_cast<char*>(static_cast<void*>(pen.x()))+i*pen.get_width()*sizeof(Color));
+			memcpy(dest,src,w*sizeof(Color));
+		}
+		return;
+	}
+	else
+		etl::surface<CairoColor, CairoColor, CairoColorPrep>::blit_to(pen,x,y,w,h);
+}
