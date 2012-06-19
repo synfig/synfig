@@ -88,7 +88,7 @@ Color::real2hex(ColorReal c)
 const String
 CairoColor::char2hex(unsigned char c)
 {
-	String s(Color::real2hex((ColorReal)(c/((float)ceil()))));
+	String s(Color::real2hex((ColorReal)(c/((float)ceil))));
 	return s.c_str();
 }
 
@@ -236,10 +236,10 @@ Color::clamped()const
 
 Color::Color(const CairoColor& c)
 	{
-		set_r((ceil()-floor())*c.get_r()/(CairoColor::ceil()-CairoColor::floor()));
-		set_g((ceil()-floor())*c.get_g()/(CairoColor::ceil()-CairoColor::floor()));
-		set_b((ceil()-floor())*c.get_b()/(CairoColor::ceil()-CairoColor::floor()));
-		set_a((ceil()-floor())*c.get_a()/(CairoColor::ceil()-CairoColor::floor()));
+		set_r((ceil-floor)*c.get_r()/(CairoColor::ceil-CairoColor::floor));
+		set_g((ceil-floor)*c.get_g()/(CairoColor::ceil-CairoColor::floor));
+		set_b((ceil-floor)*c.get_b()/(CairoColor::ceil-CairoColor::floor));
+		set_a((ceil-floor)*c.get_a()/(CairoColor::ceil-CairoColor::floor));
 	}
 
 
@@ -255,7 +255,7 @@ blendfunc_COMPOSITE(C &src,C &dest,float amount)
 
 	float a_src=src.get_a()*amount;
 	float a_dest=dest.get_a();
-	const float one(C::ceil()); 
+	const float one(C::ceil); 
 
 	// if a_arc==0.0
 	//if(fabsf(a_src)<COLOR_EPSILON) return dest;
@@ -315,7 +315,7 @@ static C
 blendfunc_ONTO(C &a,C &b,float amount)
 {
 	float alpha(b.get_a());
-	const float one(C::ceil());
+	const float one(C::ceil);
 	return blendfunc_COMPOSITE(a,b.set_a(one),amount).set_a(alpha);
 }
 
@@ -350,7 +350,7 @@ static C
 blendfunc_DARKEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
-	const float one(C::ceil());
+	const float one(C::ceil);
 	
 	if(b.get_r()>(a.get_r()-one)*alpha+one)
 		b.set_r((a.get_r()-one)*alpha+one);
@@ -506,7 +506,7 @@ template <class C>
 static C
 blendfunc_SCREEN(C &a,C &b,float amount)
 {
-	const float one(C::ceil());
+	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
 
 	a.set_r(one-(one-a.get_r())*(one-b.get_r()));
@@ -520,7 +520,7 @@ template <class C>
 static C
 blendfunc_OVERLAY(C &a,C &b,float amount)
 {
-	const float one(C::ceil());
+	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
 
 	C rm;
@@ -546,8 +546,8 @@ template <class C>
 static C
 blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 {
-	const float one(C::ceil());
-	const float half((one-C::floor())/2);
+	const float one(C::ceil);
+	const float half((one-C::floor)/2);
 	if(amount<0) a=~a, amount=-amount;
 
 	if(a.get_r()>half)	a.set_r(one-(one-(a.get_r()*2*one-one))*(one-b.get_r()));
@@ -564,7 +564,7 @@ template <class C>
 static C
 blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
-	const float one(C::ceil());
+	const float one(C::ceil);
 	C rm(b);
 
 	//multiply the inverse alpha channel with the one below us
