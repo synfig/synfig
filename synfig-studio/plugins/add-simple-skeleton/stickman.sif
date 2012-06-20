@@ -63,6 +63,13 @@
     <angle value="-7.152278" id="(stk)-head-t"/>
     <real value="1.0457836598" id="(stk)-head-r"/>
     <real value="1.0000000000" id="(stk)-fillers-amount"/>
+    <color id="(stk)-color">
+      <r>0.265699</r>
+      <g>0.265699</g>
+      <b>0.265699</b>
+      <a>1.000000</a>
+    </color>
+    <bool value="false" id="(stk)-children-lock"/>
   </defs>
   <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)">
     <param name="z_depth">
@@ -126,14 +133,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -473,9 +473,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -530,14 +528,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -895,9 +886,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -952,14 +941,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -1379,9 +1361,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -1436,14 +1416,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -1783,9 +1756,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -1840,14 +1811,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -2205,9 +2169,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -2262,14 +2224,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -2689,9 +2644,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -2746,14 +2699,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -3450,9 +3396,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -3507,14 +3451,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -3833,9 +3770,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -3890,14 +3825,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -4219,9 +4147,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -4276,14 +4202,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -4623,9 +4542,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -4680,14 +4597,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -5089,9 +4999,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -5146,14 +5054,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -5475,9 +5376,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -5532,14 +5431,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -5879,9 +5771,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
@@ -5936,14 +5826,7 @@
                       <param name="blend_method">
                         <integer value="0"/>
                       </param>
-                      <param name="color">
-                        <color>
-                          <r>0.265699</r>
-                          <g>0.265699</g>
-                          <b>0.265699</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
+                      <param name="color" use=":(stk)-color"/>
                       <param name="origin">
                         <vector>
                           <x>0.0000000000</x>
@@ -6345,9 +6228,7 @@
           <param name="time_offset">
             <time value="0s"/>
           </param>
-          <param name="children_lock">
-            <bool value="false"/>
-          </param>
+          <param name="children_lock" use=":(stk)-children-lock"/>
           <param name="focus">
             <vector>
               <x>0.0000000000</x>
