@@ -246,6 +246,16 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 		return ret;
 
 	ret.set_description(element->get_child_text()->get_content());
+	
+	bool active=true;
+	if(element->get_attribute("active")) 
+	{
+		string val=element->get_attribute("active")->get_value();
+		if(val=="false" || val=="0")
+			active=false;
+	}
+	ret.set_active(active);
+		
 
 	return ret;
 }

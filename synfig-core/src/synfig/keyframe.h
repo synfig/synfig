@@ -45,11 +45,16 @@ namespace synfig {
 //! \writeme
 class Keyframe :  public UniqueID
 {
-public:
+private:
 
 	Time time_;
 	String desc_;
 	GUID guid_;
+
+	/*! \c true if the keyframe is active, \c false if it is to be skipped (marker)
+	**	\see set_active(), enable(), disable, active()
+	*/
+	bool active_;
 
 public:
 
@@ -69,6 +74,20 @@ public:
 
 	const GUID& get_guid()const { return guid_; }
 	void set_guid(const GUID& x) { guid_=x; }
+
+	//! Enables the keframe (Making it \em active)
+	void enable() { set_active(true); }
+
+	//! Disables the keyframe  (Making it \em inactive)
+	/*! When keyframe is disabled, it will be acting as time marker. */
+	void disable() { set_active(false); }
+	
+	//! Sets the 'active' flag for the LaKeyframe to the state described by \a x
+	/*! When keyframe is disabled, it will be acting as time marker. */
+	void set_active(bool x);
+
+	//! Returns the status of the 'active' flag
+	bool active()const { return active_; }
 
 	using UniqueID::operator<;
 	using UniqueID::operator==;

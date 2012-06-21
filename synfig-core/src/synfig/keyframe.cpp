@@ -64,6 +64,15 @@ Keyframe::Keyframe(const Time &time):
 {
 }
 
+void
+Keyframe::set_active(bool x)
+{
+	if(active_!=x)
+	{
+		active_=x;
+	}
+}
+
 Keyframe::~Keyframe()
 {
 }
