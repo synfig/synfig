@@ -274,9 +274,9 @@ synfig::CairoSurface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		
 		for(int i=0;i<h;i++)
 		{
-			char* src(static_cast<char*>(static_cast<void*>(operator[](y)+x))+i*get_w()*sizeof(Color));
-			char* dest(static_cast<char*>(static_cast<void*>(pen.x()))+i*pen.get_width()*sizeof(Color));
-			memcpy(dest,src,w*sizeof(Color));
+			char* src(static_cast<char*>(static_cast<void*>(operator[](y)+x))+i*get_w()*sizeof(CairoColor));
+			char* dest(static_cast<char*>(static_cast<void*>(pen.x()))+i*pen.get_width()*sizeof(CairoColor));
+			memcpy(dest,src,w*sizeof(CairoColor));
 		}
 		return;
 	}
