@@ -134,8 +134,6 @@ private:
 	void set_undo_status(bool x);
 	void set_redo_status(bool x);
 
-	static void _revert(Instance *);
-
 protected:
 
 	Instance(synfig::Canvas::Handle);

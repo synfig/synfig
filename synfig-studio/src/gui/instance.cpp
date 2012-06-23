@@ -711,15 +711,15 @@ Instance::dialog_cvs_revert()
 }
 
 void
-Instance::_revert(Instance *instance)
+Instance::revert()
 {
 	OneMoment one_moment;
 
-	String filename(instance->get_file_name());
+	String filename(get_file_name());
 
-	Canvas::Handle canvas(instance->get_canvas());
+	Canvas::Handle canvas(get_canvas());
 
-	instance->close();
+	close();
 
 	if(canvas->count()!=1)
 	{
@@ -730,22 +730,6 @@ Instance::_revert(Instance *instance)
 	canvas=0;
 
 	App::open(filename);
-}
-
-void
-Instance::revert()
-{
-	// Schedule a revert to occur in a few moments
-	Glib::signal_timeout().connect(
-		sigc::bind_return(
-			sigc::bind(
-				sigc::ptr_fun(&Instance::_revert),
-				this
-			),
-			false
-		)
-		,500
-	);
 }
 
 bool
