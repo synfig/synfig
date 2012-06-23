@@ -49,6 +49,7 @@ class KeyframeToggl :
 private:
 
 	synfig::Keyframe keyframe;
+	bool new_status;
 
 public:
 

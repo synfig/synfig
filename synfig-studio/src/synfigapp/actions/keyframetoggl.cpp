@@ -49,7 +49,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::KeyframeToggl);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::KeyframeToggl);
 ACTION_SET_NAME(Action::KeyframeToggl,"KeyframeToggl");
 ACTION_SET_LOCAL_NAME(Action::KeyframeToggl,N_("Activate/Deactivate Keyframe"));
 ACTION_SET_TASK(Action::KeyframeToggl,"disconnect");
@@ -70,6 +70,19 @@ Action::KeyframeToggl::KeyframeToggl()
 	set_dirty(true);
 }
 
+synfig::String
+Action::KeyframeToggl::get_local_name()const
+{
+	if(keyframe.get_time()==(Time::begin()-1))
+		return _("Activate Keyframe");
+
+	return strprintf("%s at %d",
+					 new_status
+					 ? _("Activate Keyframe")
+					 : _("Deactivate Keyframe"),
+					 keyframe.get_time());
+}
+
 Action::ParamVocab
 Action::KeyframeToggl::get_param_vocab()
 {
@@ -78,6 +91,11 @@ Action::KeyframeToggl::get_param_vocab()
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("Keyframe"))
 		.set_desc(_("Keyframe to be activated or deactivated"))
+	);
+
+	ret.push_back(ParamDesc("new_status",Param::TYPE_BOOL)
+		.set_local_name(_("New Status"))
+		.set_desc(_("The new status of the keyframe"))
 	);
 
 	return ret;
@@ -95,6 +113,13 @@ Action::KeyframeToggl::set_param(const synfig::String& name, const Action::Param
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
+
+		return true;
+	}
+
+	if(name=="new_status" && param.get_type()==Param::TYPE_BOOL)
+	{
+		new_status=param.get_bool();
 
 		return true;
 	}
@@ -127,19 +152,21 @@ void
 Action::KeyframeToggl::perform()
 {
 	Action::Super::perform();
+	
+	if(keyframe.active())
+	{
+		keyframe.enable();
+	} else {
+		keyframe.disable();
+	}
+	
+	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
 
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_changed()(keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
-
-	if(keyframe.active())
-	{
-		keyframe.disable();
-	} else {
-		keyframe.enable();
-	}
 }
 
 void

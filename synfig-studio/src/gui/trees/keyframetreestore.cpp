@@ -437,6 +437,25 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 
 			canvas_interface()->get_instance()->perform_action(action);
 		}
+		else if(column==model.active.index())
+		{
+			Glib::Value<bool> x;
+			g_value_init(x.gobj(),model.active.type());
+			g_value_copy(value.gobj(),x.gobj());
+			synfig::Keyframe keyframe(*iter->iter);
+			keyframe.set_active(x.get());
+			
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+
+			if(!action)
+				return;
+			action->set_param("canvas",canvas_interface()->get_canvas());
+			action->set_param("canvas_interface",canvas_interface());
+			action->set_param("keyframe",keyframe);
+			action->set_param("new_status",bool(x.get()));
+
+			canvas_interface()->get_instance()->perform_action(action);
+		}
 		else if(column==model.keyframe.index())
 		{
 			g_warning("KeyframeTreeStore::set_value_impl: This column is read-only");
@@ -779,6 +798,16 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 		return;
+	}
+	case 4:		// Active
+	{
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(iter->iter->active());
+
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
 	}
 	default:
 		break;
