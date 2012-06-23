@@ -55,12 +55,14 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 Keyframe::Keyframe():
-	time_(0)
+	time_(0),
+	active_(true)
 {
 }
 
 Keyframe::Keyframe(const Time &time):
-	time_(time)
+	time_(time),
+	active_(true)
 {
 }
 
