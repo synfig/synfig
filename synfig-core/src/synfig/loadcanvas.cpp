@@ -239,13 +239,9 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 	Keyframe ret(Time(element->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 
-	if(element->get_children().empty())
-		return ret;
-
-	if(element->get_child_text()->get_content().empty())
-		return ret;
-
-	ret.set_description(element->get_child_text()->get_content());
+	if(!element->get_children().empty())
+		if(!element->get_child_text()->get_content().empty())
+			ret.set_description(element->get_child_text()->get_content());
 	
 	bool active=true;
 	if(element->get_attribute("active")) 
