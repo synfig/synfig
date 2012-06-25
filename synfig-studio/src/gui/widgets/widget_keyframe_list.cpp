@@ -426,6 +426,20 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 				)
 			)
 		);
+		canvas_interface_->signal_keyframe_changed().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
+		canvas_interface_->signal_keyframe_removed().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
 	}
 }
 

@@ -815,7 +815,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 }
 
 Gtk::TreeModel::Row
-KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
+KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe, bool use_old_keyframe_list)
 {
 	Gtk::TreeModel::Row row(*(children().begin()));
 	dump_iterator(row,"find_row,begin");
@@ -825,7 +825,12 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
 
-	synfig::KeyframeList &keyframe_list(canvas_interface()->get_canvas()->keyframe_list());
+	synfig::KeyframeList keyframe_list;
+	if (use_old_kf_list){
+		keyframe_list = old_keyframe_list;
+	} else {
+		keyframe_list = canvas_interface()->get_canvas()->keyframe_list();
+	}
 	if(keyframe_list.empty())
 		throw std::runtime_error(_("There are no keyframes in this canvas"));
 
@@ -845,7 +850,7 @@ KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 {
 	try
 	{
-		Gtk::TreeRow row(find_row(keyframe));
+		Gtk::TreeRow row(find_row(keyframe, false));
 		dump_iterator(row.gobj(),"add_keyframe,row");
 		Gtk::TreePath path(get_path(row));
 
@@ -868,7 +873,7 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	{
 		if(1)
 		{
-			Gtk::TreeRow row(find_row(keyframe));
+			Gtk::TreeRow row(find_row(keyframe, true));
 			dump_iterator(row,"remove_keyframe,row");
 			Gtk::TreePath path(get_path(row));
 			row_deleted(path);
@@ -891,7 +896,7 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 {
 	try
 	{
-		Gtk::TreeRow row(find_row(keyframe));
+		Gtk::TreeRow row(find_row(keyframe, false));
 
 		unsigned int new_index(get_index_from_model_iter(row));
 		unsigned int old_index(0);
@@ -917,7 +922,7 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 			}
 			old_keyframe_list=get_canvas()->keyframe_list();
 
-			row=find_row(keyframe);
+			row=find_row(keyframe, false);
 		}
 
 		dump_iterator(row,"change_keyframe,row");
