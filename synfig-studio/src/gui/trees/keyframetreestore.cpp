@@ -826,7 +826,7 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe, bool use_old_keyfr
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
 
 	synfig::KeyframeList keyframe_list;
-	if (use_old_kf_list){
+	if (use_old_keyframe_list){
 		keyframe_list = old_keyframe_list;
 	} else {
 		keyframe_list = canvas_interface()->get_canvas()->keyframe_list();
