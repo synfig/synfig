@@ -67,7 +67,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;
 	set_size_request(-1,64);
 	//!This signal is called when the widget need to be redrawn
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw));
+	signal_expose_event().connect(sigc::hide(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw)));
 	//! The widget respond to mouse button press and release and to
 	//! left button motion
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
@@ -82,7 +82,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 }
 
 bool
-Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
+Widget_Keyframe_List::redraw()
 {
 
 	const int h(get_height());
@@ -419,6 +419,13 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 	{
 		set_fps(canvas_interface_->get_canvas()->rend_desc().get_frame_rate());
 		set_kf_list(&canvas_interface_->get_canvas()->keyframe_list());
+		canvas_interface_->signal_keyframe_added().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
 	}
 }
 
