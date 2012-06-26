@@ -130,10 +130,10 @@ Action::KeyframeSet::prepare()
 	catch(...) { }
 
 
-	// If the times are different, then we
+	// If the times are different and keyframe is not disabled, then we
 	// will need to romp through the valuenodes
 	// and add actions to update their values.
-	if(new_time!=old_time)
+	if(new_time!=old_time && keyframe.active())
 	{
 		std::vector<synfigapp::ValueDesc> value_desc_list;
 		get_canvas_interface()->find_important_value_descs(value_desc_list);
@@ -409,7 +409,7 @@ Action::KeyframeSet::perform()
 		throw;
 	}
 
-	// Signal that a layer has been inserted
+	// Signal that a keyframe was changed
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_changed()(keyframe);
