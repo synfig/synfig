@@ -121,16 +121,16 @@ public:
 	iterator find(const Time &x);
 
 	//! Finds the keyframe after that point in time
-	iterator find_next(const Time &x);
+	iterator find_next(const Time &x, bool ignore_disabled = true);
 
 	//! Finds the keyframe before that point in time
-	iterator find_prev(const Time &x);
+	iterator find_prev(const Time &x, bool ignore_disabled = true);
 
 	const_iterator find(const Time &x)const;
-	const_iterator find_next(const Time &x)const;
-	const_iterator find_prev(const Time &x)const;
+	const_iterator find_next(const Time &x, bool ignore_disabled = true)const;
+	const_iterator find_prev(const Time &x, bool ignore_disabled = true)const;
 
-	void find_prev_next(const Time& time, Time &prev, Time &next)const;
+	void find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled = true)const;
 
 	void insert_time(const Time& location, const Time& delta);
 

@@ -154,13 +154,18 @@ KeyframeList::find(const Time &x)
 }
 
 KeyframeList::iterator
-KeyframeList::find_next(const Time &x)
+KeyframeList::find_next(const Time &x, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
 	while (iter!=end())
 	{
-		if(iter->get_time().is_more_than(x) && iter->active() )
+		if 
+		(
+			iter->get_time().is_more_than(x)
+			&& 
+			( !ignore_disabled || iter->active() )
+		)
 			return iter;
 		++iter;
 	}
@@ -170,7 +175,7 @@ KeyframeList::find_next(const Time &x)
 
 
 KeyframeList::iterator
-KeyframeList::find_prev(const Time &x)
+KeyframeList::find_prev(const Time &x, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
@@ -178,10 +183,22 @@ KeyframeList::find_prev(const Time &x)
 	{
 		while(iter!=begin())
 		{
-			--iter;
-			if( iter->get_time().is_less_than(x) && iter->active() )
+			if
+			( 
+				iter->get_time().is_less_than(x)
+				&&
+				( !ignore_disabled || iter->active() ) 
+			)
 				return iter;
+			--iter;
 		};
+		if
+		( 
+			iter->get_time().is_less_than(x)
+			&&
+			( !ignore_disabled || iter->active() ) 
+		)
+			return iter;
 	}
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
 
@@ -197,26 +214,26 @@ KeyframeList::find(const Time &x)const
 
 
 KeyframeList::const_iterator
-KeyframeList::find_next(const Time &x)const
+KeyframeList::find_next(const Time &x, bool ignore_disabled)const
 {
-	return const_cast<KeyframeList*>(this)->find_next(x);
+	return const_cast<KeyframeList*>(this)->find_next(x, ignore_disabled);
 
 }
 
 
 KeyframeList::const_iterator
-KeyframeList::find_prev(const Time &x)const
+KeyframeList::find_prev(const Time &x, bool ignore_disabled)const
 {
-	return const_cast<KeyframeList*>(this)->find_prev(x);
+	return const_cast<KeyframeList*>(this)->find_prev(x, ignore_disabled);
 
 }
 
 void
-KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next)const
+KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled)const
 {
-	try { prev=find_prev(time)->get_time(); }
+	try { prev=find_prev(time, ignore_disabled)->get_time(); }
 	catch(...) { prev=Time::begin(); }
-	try { next=find_next(time)->get_time(); }
+	try { next=find_next(time, ignore_disabled)->get_time(); }
 	catch(...) { next=Time::end(); }
 }
 

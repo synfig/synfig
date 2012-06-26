@@ -323,7 +323,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			if(editable_)
 			{
 				synfig::Time prev_t,next_t;
-				kf_list_->find_prev_next(t, prev_t, next_t);
+				kf_list_->find_prev_next(t, prev_t, next_t, false);
 				if( (prev_t==Time::begin() 	&& 	next_t==Time::end())
 				||
 				((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
@@ -335,13 +335,13 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
-					set_selected_keyframe(*(kf_list_->find_prev(t)));
+					set_selected_keyframe(*(kf_list_->find_prev(t, false)));
 					queue_draw();
 					selected_=true;
 				}
 				else
 				{
-					set_selected_keyframe(*(kf_list_->find_next(t)));
+					set_selected_keyframe(*(kf_list_->find_next(t, false)));
 					queue_draw();
 					selected_=true;
 				}
