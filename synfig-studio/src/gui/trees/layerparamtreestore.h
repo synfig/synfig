@@ -126,6 +126,7 @@ private:
 	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
 	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 
+	void on_keyframe_changed(synfig::Keyframe keyframe);
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
