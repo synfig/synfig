@@ -158,20 +158,11 @@ KeyframeList::find_next(const Time &x)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
-	if(iter!=end())
+	while (iter!=end())
 	{
-		if(iter->get_time().is_more_than(x))
+		if(iter->get_time().is_more_than(x) && iter->active() )
 			return iter;
 		++iter;
-		if(iter!=end())
-		{
-			if(iter->get_time().is_more_than(x))
-				return iter;
-/*			++iter;
-			if(iter!=end() && iter->get_time().is_more_than(x))
-				return iter;
-*/
-		}
 	}
 
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
@@ -185,10 +176,12 @@ KeyframeList::find_prev(const Time &x)
 
 	if(iter!=end())
 	{
-		if(iter->get_time()+Time::epsilon()<x)
-			return iter;
-		if(iter!=begin() && (--iter)->get_time()+Time::epsilon()<x)
-			return iter;
+		while(iter!=begin())
+		{
+			--iter;
+			if( iter->get_time().is_less_than(x) && iter->active() )
+				return iter;
+		};
 	}
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
 
