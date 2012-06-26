@@ -897,7 +897,7 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	try
 	{
 		Gtk::TreeRow row(find_row(keyframe, false));
-
+		
 		unsigned int new_index(get_index_from_model_iter(row));
 		unsigned int old_index(0);
 		synfig::KeyframeList::iterator iter;
@@ -927,6 +927,12 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 
 		dump_iterator(row,"change_keyframe,row");
 		row_changed(get_path(row),row);
+
+		// Previous row should be updated too (length value)
+		synfig::Keyframe keyframe_prev = *(get_canvas()->keyframe_list().find_prev(keyframe.get_time(),false));
+		Gtk::TreeRow row_prev(find_row(keyframe_prev, false));
+		dump_iterator(row_prev,"change_keyframe,row_prev");
+		row_changed(get_path(row_prev),row_prev);
 	}
 	catch(std::exception x)
 	{
