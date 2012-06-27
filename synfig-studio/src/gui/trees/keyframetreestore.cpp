@@ -208,6 +208,8 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 	canvas_interface()->signal_keyframe_added().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::add_keyframe));
 	canvas_interface()->signal_keyframe_removed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::remove_keyframe));
 	canvas_interface()->signal_keyframe_changed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::change_keyframe));
+	
+	old_keyframe_list=canvas_interface_->get_canvas()->keyframe_list();
 }
 
 KeyframeTreeStore::~KeyframeTreeStore()
