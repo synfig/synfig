@@ -2055,6 +2055,7 @@ App::quit()
 {
 	if(shutdown_in_progress)return;
 
+	shutdown_in_progress=true;
 
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
@@ -2117,8 +2118,6 @@ App::quit()
 		// This next line causes things to crash for some reason
 		//(*iter)->close();
 	}
-
-	shutdown_in_progress=true;
 
 	instance_list.clear();
 
@@ -2757,7 +2756,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 	if(canvas_view)
 	{
 		selected_instance=canvas_view->get_instance();
-		signal_instance_selected()(canvas_view->get_instance());
+		signal_instance_selected()(selected_instance);
 	}
 /*
 	if(get_selected_canvas_view()==canvas_view)
