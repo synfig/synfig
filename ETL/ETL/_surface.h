@@ -229,7 +229,7 @@ public:
 	}
 
 	virtual void
-	set_wh(typename size_type::value_type w, typename size_type::value_type h, value_type* newdata, const typename size_type::value_type &pitch)
+	set_wh(typename size_type::value_type w, typename size_type::value_type h, unsigned char* newdata, const typename size_type::value_type &pitch)
 	{
 		if(data_ && deletable_)
 		{
@@ -237,7 +237,7 @@ public:
 		}
 		w_=w;
 		h_=h;
-		zero_pos_=data_=newdata;
+		zero_pos_=data_=(pointer)newdata;
 		pitch_=pitch;
 		deletable_=false;	
 	}
