@@ -160,6 +160,7 @@ class ValueNode;
 class ValueBase;
 class Time;
 class Surface;
+class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Context;
@@ -513,6 +514,7 @@ public:
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_render(Context context,CairoSurface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.

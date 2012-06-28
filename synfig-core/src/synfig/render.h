@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "target_scanline.h"
+#include "target_cairo.h"
 #include "vector.h"
 #include "color.h"
 #include "renddesc.h"

@@ -34,6 +34,7 @@
 #include "canvas.h"
 #include "surface.h"
 #include "target_scanline.h"
+#include "target_cairo.h"
 #include "general.h"
 
 #ifdef HAS_VIMAGE
@@ -115,6 +116,62 @@ target2surface::end_scanline()
 	return true;
 }
 
+class target2cairosurface: public synfig::Target_Cairo
+{ 
+
+	CairoSurface * surface_;
+public:
+	target2cairosurface(CairoSurface *surface);
+	virtual ~target2cairosurface();
+	
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
+	
+	virtual bool start_frame(synfig::ProgressCallback *cb);
+	
+	virtual void end_frame();
+
+	virtual CairoSurface* obtain_surface();
+};
+
+target2cairosurface::target2cairosurface(CairoSurface *surface):surface_(surface)
+{
+}
+
+target2cairosurface::~target2cairosurface()
+{
+}
+
+bool
+target2cairosurface::set_rend_desc(synfig::RendDesc *newdesc)
+{
+	assert(newdesc);
+	desc=*newdesc;
+	return synfig::Target_Cairo::set_rend_desc(newdesc);
+}
+
+
+CairoSurface*
+target2cairosurface::obtain_surface()
+{
+	return surface_;
+}
+
+bool
+target2cairosurface::start_frame(synfig::ProgressCallback */*cb*/)
+{
+
+	if(!surface_->map_cairo_image())
+		return false;
+	if(surface_->get_w() != desc.get_w() || surface_->get_h() != desc.get_h())
+		return false;
+	return true;
+}
+
+void
+target2cairosurface::end_frame()
+{
+	surface_->unmap_cairo_image();
+}
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -123,6 +180,14 @@ Target_Scanline::Handle
 synfig::surface_target(Surface *surface)
 {
 	return Target_Scanline::Handle(new target2surface(surface));
+}
+
+Target_Cairo::Handle
+synfig::cairosurface_target(CairoSurface *surface)
+{
+	if(surface->get_cairo_surface()==NULL)
+		return NULL;
+	return Target_Cairo::Handle(new target2cairosurface(surface));
 }
 
 void
@@ -283,3 +348,77 @@ synfig::CairoSurface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 	else
 		etl::surface<CairoColor, CairoColor, CairoColorPrep>::blit_to(pen,x,y,w,h);
 }
+
+void
+CairoSurface::set_wh(int /*w*/, int /*h*/, int /*pitch*/)
+{
+	// I shouldn't reach this code never but I'll write it down to verify I don't 
+	// call any set_wh when copying the software redner code
+	synfig::error("Cannot resize a CairoImage directly. Use its Target_Cairo instance");
+	assert(0);
+}
+
+void 
+CairoSurface::set_cairo_surface(cairo_surface_t *cs)
+{
+	if(cs==NULL)
+	{
+		synfig::error("CairoSruface received a NULL cairo_surface_t");
+		return;
+	}
+	if(cairo_surface_status(cs))
+	{
+		synfig::error("CairoSurface received a non valid cairo_surface_t");
+		return;
+	}
+	else
+	{
+		if(cs_!=NULL)
+			cairo_surface_destroy(cs_);
+		cs_=cairo_surface_reference(cs);
+	}
+}
+
+cairo_surface_t* 
+CairoSurface::get_cairo_surface()const
+{
+	assert(cs_);
+	return cairo_surface_reference(cs_);
+}
+
+bool
+CairoSurface::map_cairo_image()
+{
+	assert(cs_);
+	cairo_surface_flush(cs_);
+	cs_image_=cairo_surface_map_to_image (cs_, NULL);
+	if(cs_image_!=NULL)
+	{
+		cairo_format_t t=cairo_image_surface_get_format(cs_image_);
+		if(t==CAIRO_FORMAT_ARGB32 || t==CAIRO_FORMAT_RGB24)
+		{
+			unsigned char* data(cairo_image_surface_get_data(cs_image_));
+			int w(cairo_image_surface_get_width(cs_image_));
+			int h(cairo_image_surface_get_height(cs_image_));
+			int stride(cairo_image_surface_get_stride(cs_image_));
+			set_wh(w, h, data, stride);
+			return true;
+		}
+		return false;	
+	}
+	return false;
+}
+
+void
+CairoSurface::unmap_cairo_image()
+{
+	assert(cs_image_);
+	assert(cs_);
+	cairo_surface_unmap_image(cs_, cs_image_);
+	cairo_surface_mark_dirty(cs_);
+}
+
+
+
+
+

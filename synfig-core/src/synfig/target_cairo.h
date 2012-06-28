@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file target_scanline.h
-**	\brief Template Header for the Target Scanline class
+/*!	\file target_cairo.h
+**	\brief Template Header for the Target Cairo class
 **
 **	$Id$
 **
@@ -22,12 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TARGET_SCANLINE_H
-#define __SYNFIG_TARGET_SCANLINE_H
+#ifndef __SYNFIG_TARGET_CAIRO_H
+#define __SYNFIG_TARGET_CAIRO_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "target.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -37,21 +38,23 @@
 
 namespace synfig {
 
-/*!	\class Target_Scanline
+class CairoSurface;
+
+/*!	\class Target_Cairo
 **	\brief This is a Target class that implements the render fucntion
-* for a line by line render procedure
+* for a CairoSurface
 */
-class Target_Scanline : public Target
+class Target_Cairo : public Target
 {
 	//! Number of threads to use
 	int threads_;
 
 public:
-	typedef etl::handle<Target_Scanline> Handle;
-	typedef etl::loose_handle<Target_Scanline> LooseHandle;
-	typedef etl::handle<const Target_Scanline> ConstHandle;
-	//! Default constructor (threads = 2 current frame = 0)
-	Target_Scanline();
+	typedef etl::handle<Target_Cairo> Handle;
+	typedef etl::loose_handle<Target_Cairo> LooseHandle;
+	typedef etl::handle<const Target_Cairo> ConstHandle;
+	//! Default constructor (current frame = 0)
+	Target_Cairo();
 
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
@@ -59,11 +62,11 @@ public:
 	//! Obtain a surface pointer based on the render method
 	//! this function has to be overrrided by the derived targets 
 	//! to create the proper Cairo backend surface for each target type.
-	virtual Surface* create_surface(); 
+	virtual CairoSurface* obtain_surface()=0; 
 
 	//! Marks the start of a frame
 	/*! \return \c true on success, \c false upon an error.
-	**	\see end_frame(), start_scanline()
+	**	\see end_frame(), start_Cairo()
 	*/
 	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
 	
@@ -75,30 +78,10 @@ public:
 	/*! \see start_frame() */
 	virtual void end_frame()=0;
 
-	//! Marks the start of a scanline
-	/*!	\param scanline Which scanline is going to be rendered.
-	**	\return The address where the target wants the scanline
-	**		to be written.
-	**	\warning Must be called after start_frame()
-	**	\see end_scanline(), start_frame()
-	*/
-	virtual Color * start_scanline(int scanline)=0;
-
-	//! Marks the end of a scanline
-	/*! Takes the data that was put at the address returned to by start_scanline()
-	**	and does whatever it is supposed to do with it.
-	**	\return \c true on success, \c false on failure.
-	**	\see start_scanline()
-	*/
-	virtual bool end_scanline()=0;
-	//! Sets the number of threads
-	void set_threads(int x) { threads_=x; }
-	//! Gets the number of threads
-	int get_threads()const { return threads_; }
 	//! Puts the rendered surface onto the target.
-	bool add_frame(const synfig::Surface *surface);
+	bool add_frame(const synfig::CairoSurface *surface);
 private:
-}; // END of class Target_Scanline
+}; // END of class Target_Cairo
 
 }; // END of namespace synfig
 

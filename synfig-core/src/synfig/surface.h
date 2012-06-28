@@ -33,6 +33,9 @@
 #include <ETL/surface>
 #include <ETL/handle>
 
+#include "cairo.h"
+#include "cairomm/cairomm.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -43,6 +46,7 @@ namespace synfig {
 
 class Target;
 class Target_Scanline;
+class Target_Cairo;
 
 class ColorPrep
 {
@@ -125,31 +129,45 @@ public:
  */
 class CairoSurface : public etl::surface<CairoColor, CairoColor, CairoColorPrep>
 {
+	// This is the Cairo surface pointer
+	// It is NULL if the not initialized
+	cairo_surface_t *cs_;
+	// This pointer is used when map and unmap the cairo_surface to a cairo_image_surface
+	// see map_cairo_surface() unmap_cairo_surface();
+	cairo_surface_t *cs_image_;
+	
 public:
 	typedef CairoColor value_type;
 	class alpha_pen;
 	
-	CairoSurface() { }
-	CairoSurface(const size_type::value_type &w, const size_type::value_type &h):
-	etl::surface<CairoColor, CairoColor,CairoColorPrep>(w,h) { }
+	CairoSurface():cs_(NULL) {  }
+	CairoSurface(cairo_surface_t *cs) { set_cairo_surface(cs); }
+	~CairoSurface() { if(cs_!= NULL) cairo_surface_destroy(cs_); }
+	
 
-	CairoSurface(const size_type &s):
-	etl::surface<CairoColor, CairoColor, CairoColorPrep>(s) { }
-	
-	template <typename _pen>
-	CairoSurface(const _pen &_begin, const _pen &_end):
-	etl::surface<CairoColor, CairoColor, CairoColorPrep>(_begin,_end) { }
-	
-	template <class _pen> void blit_to(_pen &pen)
-	{ return blit_to(pen,0,0, get_w(),get_h()); }
-	
-	template <class _pen> void
-	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h)
-	{ etl::surface<CairoColor, CairoColor, CairoColorPrep>::blit_to(DEST_PEN,x,y,w,h);
-	}
-	// TODO: Define set_wh
-	//void set_wh(int w, int h, int pitch=0);
+	// TODO: remove set_wh() once it is clear it is not called anyhere.
+	void set_wh(int w, int h, int pitch=0);
+	void set_wh(int w, int h, unsigned char* data, int pitch)
+	{ etl::surface<CairoColor, CairoColor, CairoColorPrep>::set_wh(w, h, data, pitch); }
+	// specialization of etl::surface::blit_to that considers the possibility of
+	// don't blend colors when blend method is straight and alpha is 1.0
 	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
+	
+	// Use this function to reference one given generic cairo_surface 
+	// by this surface class.
+	// When the CairoSurface instance is destructed the reference counter of the
+	// cairo_surface_t shoud be decreased.
+	void set_cairo_surface(cairo_surface_t *cs);
+	// Returns an increased reference pointer of the surface. The receiver is responsible
+	// of destroy the surface once referenced.
+	cairo_surface_t* get_cairo_surface()const;
+	// Maps cs_ to cs_image_ and extract the *data to etl::surface::data for further modifications
+	// It will flush any remaining painting operation to the cs_
+	// returns true on success or false if something failed
+	bool map_cairo_image();
+	// Unmap the cs_image_ to cs_ after external modification has been done via *data
+	// It will mark cs_ as dirty
+	void unmap_cairo_image();
 	
 };	// END of class Surface
 
@@ -234,6 +252,7 @@ public:
 
 //! Creates a target that will render to \a surface
 etl::handle<Target_Scanline> surface_target(Surface *surface);
+etl::handle<Target_Cairo> cairosurface_target(CairoSurface * surface);
 
 }; // END of namespace synfig
 

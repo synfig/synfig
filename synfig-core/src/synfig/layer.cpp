@@ -39,6 +39,7 @@
 #include "layer_mime.h"
 #include "context.h"
 #include "paramdesc.h"
+#include "surface.h"
 
 #include "layer_solidcolor.h"
 #include "layer_polygon.h"
@@ -563,6 +564,33 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 	return render(context,target,desc,cb);
 	//return render_threaded(context,target,desc,cb,2);
 }
+
+bool
+Layer::accelerated_render(Context context, CairoSurface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
+{
+	handle<Target> target=cairosurface_target(surface);
+	if(!target)
+	{
+		if(cb)cb->error(_("Unable to create surface target"));
+		return false;
+	}
+	RendDesc desc=renddesc;
+	if(!target->set_rend_desc(&desc))
+		return false;
+	
+	// When we render, we want to
+	// make sure that we are rendered too...
+	// Since the context iterator is for
+	// the layer after us, we need to back up.
+	// This could be considered a hack, as
+	// it is a possibility that we are indeed
+	// not the previous layer.
+	--context;
+	
+	return render(context,target,desc,cb);
+	//return render_threaded(context,target,desc,cb,2);
+}
+
 
 String
 Layer::get_name()const

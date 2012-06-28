@@ -44,6 +44,7 @@ TARGETHEADERS = \
 	target_null.h \
 	target_null_tile.h \
 	target_scanline.h \
+	target_cairo.h \
 	target_tile.h \
 	targetparam.h
 
@@ -52,6 +53,7 @@ TARGETSOURCES = \
 	target_null.cpp \
 	target_null_tile.cpp \
 	target_scanline.cpp \
+	target_cairo.cpp \
 	target_tile.cpp
 
 
