@@ -227,6 +227,19 @@ public:
 		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
 		deletable_=true;
 	}
+	
+	set_wh(typename size_type::value_type w, typename size_type::value_type h, value_type* newdata, const typename size_type::value_type &pitch)
+	{
+		if(data_ && deletable_)
+		{
+			delete [] data_;
+		}
+		w_=w;
+		h_=h
+		zero_pos_=data_=newdata;
+		pitch_=pitch;
+		deletable_=false;	
+	}
 
 	void
 	fill(value_type v, int x, int y, int w, int h)
