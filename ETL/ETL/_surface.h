@@ -207,7 +207,7 @@ public:
 		return *this;
 	}
 
-	virtual void
+	void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, const typename size_type::value_type &pitch=0)
 	{
 		if(data_)
@@ -227,7 +227,8 @@ public:
 		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
 		deletable_=true;
 	}
-	
+
+	virtual void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, value_type* newdata, const typename size_type::value_type &pitch)
 	{
 		if(data_ && deletable_)
@@ -235,7 +236,7 @@ public:
 			delete [] data_;
 		}
 		w_=w;
-		h_=h
+		h_=h;
 		zero_pos_=data_=newdata;
 		pitch_=pitch;
 		deletable_=false;	
