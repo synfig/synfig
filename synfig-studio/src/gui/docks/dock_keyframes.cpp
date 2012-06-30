@@ -79,7 +79,6 @@ Dock_Keyframes::Dock_Keyframes():
 	"	<toolitem action='action-KeyframeDuplicate' />"
 	"	<toolitem action='action-KeyframeRemove' />"
 	"	<toolitem action='keyframe-properties' />"
-	"	<toolitem action='action-KeyframeToggl' />"
 	"	</toolbar>"
 	"</ui>"
 	;
