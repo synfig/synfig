@@ -49,7 +49,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Plant : public synfig::Layer_Composite
+class Plant : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
