@@ -922,10 +922,12 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 
 				rows_reordered (Path(), iterator(), &new_order[0]);
 			}
-			old_keyframe_list=get_canvas()->keyframe_list();
-
-			row=find_row(keyframe, false);
+			
 		}
+		
+		old_keyframe_list=get_canvas()->keyframe_list();
+
+		row=find_row(keyframe, false);
 
 		dump_iterator(row,"change_keyframe,row");
 		row_changed(get_path(row),row);
