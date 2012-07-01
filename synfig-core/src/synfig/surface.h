@@ -140,13 +140,19 @@ public:
 	typedef CairoColor value_type;
 	class alpha_pen;
 	
-	CairoSurface():cs_(NULL) {  }
+	CairoSurface():cs_(NULL), cs_image_(NULL) {  }
 	CairoSurface(cairo_surface_t *cs) { set_cairo_surface(cs); }
-	~CairoSurface() { if(cs_!= NULL) cairo_surface_destroy(cs_); }
+	~CairoSurface() { 
+	if(cs_!= NULL) cairo_surface_destroy(cs_);
+	if(cs_image_!=NULL) cairo_surface_destroy(cs_image_); }
 	
 
-	// TODO: remove set_wh() once it is clear it is not called anyhere.
+	// If cs_ is set then the set_wh does nothing
+	// If cs_ is not set then set_wh creates a cairo_surface_image on cs_image_
+	// of size wxh
 	void set_wh(int w, int h, int pitch=0);
+	// Use whits version of set_wh to directly give to the etl::surface the 
+	// pointer to data, the width, height and pitch (stride) between rows 
 	void set_wh(int w, int h, unsigned char* data, int pitch)
 	{ etl::surface<CairoColor, CairoColor, CairoColorPrep>::set_wh(w, h, data, pitch); }
 	// specialization of etl::surface::blit_to that considers the possibility of

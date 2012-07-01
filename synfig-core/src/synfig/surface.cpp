@@ -350,12 +350,30 @@ synfig::CairoSurface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 }
 
 void
-CairoSurface::set_wh(int /*w*/, int /*h*/, int /*pitch*/)
+CairoSurface::set_wh(int w, int h, int /*pitch*/)
 {
-	// I shouldn't reach this code never but I'll write it down to verify I don't 
-	// call any set_wh when copying the software redner code
-	synfig::error("Cannot resize a CairoImage directly. Use its Target_Cairo instance");
-	assert(0);
+	// If cs_ has been set then don't resize it.
+	// Only the target which created the specific cairo surface can do that. 
+	if(cs_!= NULL)
+	{
+		synfig::warning("Cannot resize a Cairo Surface directly. Use its Target_Cairo instance");
+		return;
+	}
+	// decrease reference counter in case we have a valid cs_image_
+	if(cs_image_!=NULL)
+		cairo_surface_destroy(cs_image_);
+	// create a new cairo_surface image type
+	cs_image_=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+	// check wheter the new cairo surface is sane
+	if(!cairo_surface_status(cs_image_))
+	{
+		int stride(cairo_image_surface_get_stride(cs_image_));
+		unsigned char* data(cairo_image_surface_get_data(cs_image_));
+		// pass the infromation to the etl::surface to be used directly.
+		set_wh(w, h, data, stride);
+	}
+	else
+		synfig::warning("CairoSurface::set_wh failed");
 }
 
 void 
