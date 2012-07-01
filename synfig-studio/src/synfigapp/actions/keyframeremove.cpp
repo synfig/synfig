@@ -94,7 +94,9 @@ Action::KeyframeRemove::set_param(const synfig::String& name, const Action::Para
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
-
+		// For some reason the state of the keyframe is not always passed correctly
+		// Make sure to get it right:
+		keyframe.set_active(get_canvas()->keyframe_list().find(keyframe)->active());
 		return true;
 	}
 
