@@ -43,6 +43,7 @@ namespace studio {
 class Dock_Params : public Dock_CanvasSpecific
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Gtk::TreeView *tree_view;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
