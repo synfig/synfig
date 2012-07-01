@@ -92,9 +92,10 @@ LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInte
 	canvas_interface()->signal_value_node_child_added().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_child_added));
 	canvas_interface()->signal_value_node_child_removed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_child_removed));
 
-	// This is for updating timetrack when empty/disabled keyframe is moved
+	// This is for updating timetrack when empty/disabled keyframe is moved/deleted
 	// Looks a bit hackish, but I don't know the other way to do that. --KD
 	canvas_interface()->signal_keyframe_changed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_keyframe_changed));
+	canvas_interface()->signal_keyframe_removed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_keyframe_changed));
 
 
 	layer_tree->get_selection()->signal_changed().connect(sigc::mem_fun(*this,&LayerParamTreeStore::queue_rebuild));
