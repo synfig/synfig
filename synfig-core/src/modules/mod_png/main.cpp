@@ -33,6 +33,7 @@
 #	include <config.h>
 #endif
 
+#include "png.h"
 #include <synfig/module.h>
 #include "trgt_png.h"
 #include "mptr_png.h"

@@ -29,10 +29,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <png.h>
 #include <synfig/importer.h>
 #include <synfig/string.h>
 #include <synfig/surface.h>
-#include <png.h>
 
 /* === M A C R O S ========================================================= */
 

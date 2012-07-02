@@ -29,11 +29,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <png.h>
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
 #include <cstdio>
-#include <png.h>
 
 /* === M A C R O S ========================================================= */
 
