@@ -75,7 +75,6 @@ Target_Cairo::next_frame(Time& time)
 bool
 synfig::Target_Cairo::render(ProgressCallback *cb)
 {
-	SuperCallback super_cb;
 	int
 		frames=0,
 		total_frames,
@@ -133,10 +132,11 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 	#else
 			context=canvas->get_context();
 	#endif
+			// Obtain a pointer to the CairoSurface given by the Target instance.
 			CairoSurface* surface(obtain_surface());
 			if(surface)
 			{
-				if(!context.accelerated_render(surface,quality,desc,0))
+				if(!context.accelerated_render(surface,quality,desc,cb))
 				{
 					// For some reason, the accelerated renderer failed.
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -144,9 +144,8 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 				}
 				else
 				{
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(surface))
+					// Put the surface we renderer onto the target's device.
+					if(!add_frame(surface, cb))
 					{
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
@@ -179,12 +178,23 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 }
 
 bool
-Target_Cairo::add_frame(const CairoSurface *surface)
+Target_Cairo::add_frame(const CairoSurface *surface, ProgressCallback *cb)
 {
 	assert(surface);
 	cairo_surface_t* cs=surface->get_cairo_surface();
 	if(cairo_surface_status(cs))
+	{
+		if(cb) cb->error(_("Cairo Surface bad status"));
 		return false;
+	}	
+	if(!start_frame(cb))
+	{
+		if(cb) cb->error(_("Target Cairo start frame faliure"));
+		return false;
+	}
 	cairo_surface_flush(cs);
+	end_frame();
+	// as we obrained an extra reference of the surface we need to dedstroy it.
+	cairo_surface_destroy(cs);
 	return true;
 }

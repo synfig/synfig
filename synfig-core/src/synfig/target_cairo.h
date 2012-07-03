@@ -79,7 +79,7 @@ public:
 	virtual void end_frame()=0;
 
 	//! Puts the rendered surface onto the target.
-	bool add_frame(const synfig::CairoSurface *surface);
+	bool add_frame(const synfig::CairoSurface *surface, ProgressCallback *cb=NULL);
 private:
 }; // END of class Target_Cairo
 
