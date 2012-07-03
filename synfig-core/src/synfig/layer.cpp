@@ -543,7 +543,7 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 bool
 Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	handle<Target> target=surface_target(surface);
+	handle<Target_Scanline> target=surface_target(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -568,7 +568,7 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 bool
 Layer::accelerated_render(Context context, CairoSurface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	handle<Target> target=cairosurface_target(surface);
+	handle<Target_Cairo> target=cairosurface_target(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -588,7 +588,6 @@ Layer::accelerated_render(Context context, CairoSurface *surface,int /*quality*/
 	--context;
 	
 	return render(context,target,desc,cb);
-	//return render_threaded(context,target,desc,cb,2);
 }
 
 

@@ -316,6 +316,142 @@ synfig::render(
 	return(true);
 }
 
+//////////
+// Cairo_Target needs to have its RendDesc already set.
+bool
+synfig::render(
+			   Context context,
+			   Target_Cairo::Handle target,
+			   const RendDesc &desc,
+			   ProgressCallback *callback)
+{
+	Point::value_type
+	u,v,		// Current location in image
+	su,sv,		// Starting locations
+	du, dv,		// Distance between pixels
+	dsu,dsv;	// Distance between subpixels
+	
+	bool
+	no_clamp=!desc.get_clamp();
+	
+	int
+	w(desc.get_w()),
+	h(desc.get_h()),
+	a(desc.get_antialias());
+	
+	Point
+	tl(desc.get_tl()),
+	br(desc.get_br());
+	
+	//Gamma
+	//	gamma(desc.get_gamma());
+	
+	int
+	x,y,		// Current location on output bitmap
+	x2,y2;		// Subpixel counters
+	
+	Color::value_type
+	pool;		// Alpha pool (for correct alpha antialiasing)
+	
+	// why to assert if we can return gracefully?
+	//assert(target);
+	
+	// If we do not have a target then bail
+	if(!target)
+		return false;
+	
+	// Calculate the number of channels
+	//chan=channels(desc.get_pixel_format());
+	
+	// Calculate the distance between pixels
+	du=(br[0]-tl[0])/(Point::value_type)w;
+	dv=(br[1]-tl[1])/(Point::value_type)h;
+	
+	// Calculate the distance between sub pixels
+	dsu=du/(Point::value_type)a;
+	dsv=dv/(Point::value_type)a;
+	
+	// Calculate the starting points
+	su=tl[0]+(du-dsu)/(Point::value_type)2.0;
+	sv=tl[1]-(dv-dsv)/(Point::value_type)2.0;
+	
+	// Mark the start of a new frame. This will map cairo_surface_t to etl::surface
+	if(!target->start_frame(callback))
+		return false;
+	// Get the CairoSurface with its etl::surface already set.
+	CairoSurface *surface(target->obtain_surface());
+	
+	// Loop through all horizontal lines
+	for(y=0,v=sv;y<h;y++,v+=dv)
+	{
+		// If we have a callback that we need
+		// to report to, do so now.
+		if(callback)
+			if( callback->amount_complete(y,h) == false )
+			{
+				// If the callback returns false,
+				// then the render has been aborted.
+				// Exit gracefully.				
+				target->end_frame();
+				return false;
+			}
+		// Loop through every pixel in row
+		for(x=0,u=su;x<w;x++,u+=du)
+		{
+			Color c(Color::alpha());
+			
+			// Loop through all subpixels
+			for(y2=0,pool=0;y2<a;y2++)
+				for(x2=0;x2<a;x2++)
+				{
+					//Notice that we will use Color instead of CairoColor
+					// because get_color for layers are at the moment defined for Color
+					// So I need to convert Color to CairoColor before place it on the 
+					// CairoSurface of target.
+					Color color=context.get_color(
+												  Point(
+														u+(Point::value_type)(x2)*dsu,
+														v+(Point::value_type)(y2)*dsv
+														)
+												  );
+					if(!no_clamp)
+					{
+						color=color.clamped();
+						c+=color*color.get_a();
+						pool+=color.get_a();
+					}
+					else
+					{
+						c+=color*color.get_a();
+						pool+=color.get_a();
+					}
+				}
+			if(pool)
+				c/=pool;
+			// Once the pixel is subsampled then I premultiply by alpha and pass
+			// it to the CairoSurface
+			(*surface)[y][x]=CairoColor(c).premult_alpha();
+		}
+	}
+	// Finish up the target's frame. This will unmap the etl::surface to the cairo_surface_t
+	target->end_frame();
+	
+	// Give the callback one more last call,
+	// this time with the full height as the
+	// current line
+	if(callback)
+		callback->amount_complete(h,h);
+	
+	// Report our success
+	return(true);
+}
+
+
+////////
+
+
+
+
 bool
 synfig::render_threaded(
 	Context context,
