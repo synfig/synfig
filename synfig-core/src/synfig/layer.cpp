@@ -531,6 +531,13 @@ Layer::get_color(Context context, const Point &pos)const
 	return context.get_color(pos);
 }
 
+CairoColor
+Layer::get_cairocolor(Context context, const Point &pos)const
+{
+	return context.get_cairocolor(pos);
+}
+
+
 synfig::Layer::Handle
 Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 {

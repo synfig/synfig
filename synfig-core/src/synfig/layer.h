@@ -165,6 +165,7 @@ class RendDesc;
 class ProgressCallback;
 class Context;
 class Color;
+class CairoColor;
 class Transform;
 class Rect;
 class GUID;
@@ -503,6 +504,7 @@ public:
 	**	\see Context::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	/*!	\param context		Context iterator referring to next Layer.

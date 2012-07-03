@@ -108,6 +108,33 @@ Context::get_color(const Point &pos)const
 	return (*context)->get_color(context+1, pos);
 }
 
+CairoColor
+Context::get_cairocolor(const Point &pos)const
+{
+	Context context(*this);
+	
+	while(!context->empty())
+	{
+		// If this layer is active, then go
+		// ahead and break out of the loop
+		if((*context)->active())
+			break;
+		
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+	
+	// If this layer isn't defined, return alpha
+	if((context)->empty()) return CairoColor::alpha();
+	
+	RWLock::ReaderLock lock((*context)->get_rw_lock());
+	
+	return (*context)->get_cairocolor(context+1, pos);
+}
+
+
 Rect
 Context::get_full_bounding_rect()const
 {

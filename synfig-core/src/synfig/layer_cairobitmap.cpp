@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_bitmap.cpp
+/*!	\file layer_cairobitmap.cpp
 **	\brief Template Header
 **
 **	$Id$
@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "layer_bitmap.h"
+#include "layer_cairobitmap.h"
 #include "layer.h"
 #include "time.h"
 #include "string.h"
@@ -60,12 +60,12 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::Layer_Bitmap::Layer_Bitmap():
+synfig::Layer_CairoBitmap::Layer_CairoBitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	tl				(-0.5,0.5),
 	br				(0.5,-0.5),
 	c				(1),
-	surface			(128,128),
+	surface			(),
 	trimmed			(false),
 	gamma_adjust	(1.0)
 {
@@ -75,7 +75,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 }
 
 bool
-synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
+synfig::Layer_CairoBitmap::set_param(const String & param, const ValueBase & value)
 {
 	IMPORT(tl);
 	IMPORT(br);
@@ -84,7 +84,6 @@ synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 	{
 		set_param_static(param, value.get_static());
 		gamma_adjust=1.0/value.get(Real());
-		//gamma_adjust.set_gamma(1.0/value.get(Real()));
 		return true;
 	}
 
@@ -92,7 +91,7 @@ synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 }
 
 ValueBase
-synfig::Layer_Bitmap::get_param(const String & param)const
+synfig::Layer_CairoBitmap::get_param(const String & param)const
 {
 	EXPORT(tl);
 	EXPORT(br);
@@ -129,7 +128,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 }
 
 Layer::Vocab
-Layer_Bitmap::get_param_vocab()const
+Layer_CairoBitmap::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
@@ -161,7 +160,7 @@ Layer_Bitmap::get_param_vocab()const
 }
 
 synfig::Layer::Handle
-Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
+Layer_CairoBitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	Point surface_pos;
 	surface_pos=pos-tl;
@@ -172,7 +171,7 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
-			return const_cast<Layer_Bitmap*>(this);
+			return const_cast<Layer_CairoBitmap*>(this);
 		}
 	}
 
@@ -180,8 +179,8 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 }
 
 inline
-const Color&
-synfig::Layer_Bitmap::filter(Color& x)const
+const CairoColor&
+synfig::Layer_CairoBitmap::filter(CairoColor& x)const
 {
 	if(gamma_adjust!=1.0)
 	{
@@ -192,13 +191,13 @@ synfig::Layer_Bitmap::filter(Color& x)const
 	return x;
 }
 
-Color
-synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
+CairoColor
+synfig::Layer_CairoBitmap::get_cairocolor(Context context, const Point &pos)const
 {
 	Point surface_pos;
 
 	if(!get_amount())
-		return context.get_color(pos);
+		return context.get_cairocolor(pos);
 
 	surface_pos=pos-tl;
 
@@ -214,7 +213,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				surface_pos[1]*=height;
 
 				if (surface_pos[0] > left+surface.get_w() || surface_pos[0] < left || surface_pos[1] > top+surface.get_h() || surface_pos[1] < top)
-					return context.get_color(pos);
+					return context.get_cairocolor(pos);
 
 				surface_pos[0] -= left;
 				surface_pos[1] -= top;
@@ -225,7 +224,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				surface_pos[1]*=surface.get_h();
 			}
 
-			Color ret(Color::alpha());
+			CairoColor ret(CairoColor::alpha());
 
 			switch(c)
 			{
@@ -257,25 +256,21 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
 				return ret;
 			else
-				return Color::blend(ret,context.get_color(pos),get_amount(),get_blend_method());
+				return CairoColor::blend(ret,context.get_cairocolor(pos),get_amount(),get_blend_method());
 		}
 	}
 
-	return context.get_color(pos);
+	return context.get_cairocolor(pos);
 }
 
 bool
-Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
+Layer_CairoBitmap::accelerated_render(Context context,CairoSurface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
 	int interp=c;
 	if(quality>=10)
 		interp=0;
 	else if(quality>=5 && interp>1)
 		interp=1;
-
-	// We can only handle NN and Linear at the moment
-	//if(interp>1)
-	//	return Layer_Composite::accelerated_render(context,out_surface,quality,renddesc,cb);
 
 	//if we don't actually have a valid surface just skip us
 	if(!surface.is_valid())
@@ -313,9 +308,6 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	Point	obr	= renddesc.get_br(),
 			otl = renddesc.get_tl();
-
-	//Vector::value_type pw=renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	//Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
 
 	//A = representation of input (just tl,br) 	//just a scaling right now
 	//B = representation of output (just tl,br)	//just a scaling right now
@@ -389,7 +381,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	//start drawing at the start of the bitmap (either origin or corner of input...)
 	//and get other info
-	Surface::alpha_pen pen(out_surface->get_pen(x_start,y_start));
+	CairoSurface::alpha_pen pen(out_surface->get_pen(x_start,y_start));
 	pen.set_alpha(get_amount());
 	pen.set_blend_method(get_blend_method());
 
@@ -418,27 +410,20 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				inx = inx_start;//+0.5f;
 				for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 				{
-					Color rc = surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
+					CairoColor rc = surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
 					pen.put_value(filter(rc));
 				}
 				pen.dec_x(x_end-x_start);
 			}
-
-			//Color c = (*out_surface)[0][0];
-			//synfig::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
-
 			return true;
 		}
 	}
 
-	//perform normal interpolation
-	if(interp==0)
+	// do the intrpolation
 	{
-		//synfig::info("Decided to do nearest neighbor");
 		float iny, inx;
 		int x,y;
-
-		//Point sample - truncate
+		
 		iny = iny_start;//+0.5f;
 		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
 		{
@@ -446,96 +431,33 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			int yclamp = min(inh-1, max(0, round_to_int(iny)));
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
+				CairoColor c;
 				int xclamp = min(inw-1, max(0, round_to_int(inx)));
-				Color c = filter(surface[yclamp][xclamp]);
-				pen.put_value(c); //must get rid of the clip
+				switch (interp)
+				{
+					case 0:
+					c = surface[yclamp][xclamp];
+					break;
+					case 1:
+					c= surface.linear_sample(inx,iny);
+					break;
+					case 2:
+					c= surface.cosine_sample(inx,iny);
+					break;
+					default:
+					c= surface.cubic_sample(inx, iny);
+					break;
+				}
+				pen.put_value(filter(c));
 			}
 			pen.dec_x(x_end-x_start);
 		}
 	}
-	else
-	if(interp==1)
-	{
-		//bilinear filtering
-
-		//float 	xmf,xpf,ymf,ypf;
-		//int		xm,xp,ym,yp;
-		float 	inx,iny;
-		int		x,y;
-
-		//can probably buffer for x values...
-
-		//loop and based on inx,iny sample input image
-		iny = iny_start;
-		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
-		{
-			inx = inx_start;
-			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-			{
-				Color col(surface.linear_sample(inx,iny));
-				pen.put_value(filter(col));
-			}
-			pen.dec_x(x_end-x_start);
-
-		}
-	}
-	else
-	if(interp==2)
-	{
-		//cosine filtering
-
-		//float 	xmf,xpf,ymf,ypf;
-		//int		xm,xp,ym,yp;
-		float 	inx,iny;
-		int		x,y;
-
-		//can probably buffer for x values...
-
-		//loop and based on inx,iny sample input image
-		iny = iny_start;
-		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
-		{
-			inx = inx_start;
-			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-			{
-				Color col(surface.cosine_sample(inx,iny));
-				pen.put_value(filter(col));
-			}
-			pen.dec_x(x_end-x_start);
-
-		}
-	}
-	else
-	{
-		//cubic filtering
-
-		//float 	xmf,xpf,ymf,ypf;
-		//int		xm,xp,ym,yp;
-		float 	inx,iny;
-		int		x,y;
-
-		//can probably buffer for x values...
-
-		//loop and based on inx,iny sample input image
-		iny = iny_start;
-		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
-		{
-			inx = inx_start;
-			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-			{
-				Color col(surface.cubic_sample(inx,iny));
-				pen.put_value(filter(col));
-			}
-			pen.dec_x(x_end-x_start);
-
-		}
-	}
-
 	return true;
 }
 
 Rect
-Layer_Bitmap::get_bounding_rect()const
+Layer_CairoBitmap::get_bounding_rect()const
 {
 	return Rect(tl,br);
 }

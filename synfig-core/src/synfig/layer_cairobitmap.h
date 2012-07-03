@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_bitmap.h
+/*!	\file layer_cairobitmap.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_BITMAP_H
-#define __SYNFIG_LAYER_BITMAP_H
+#ifndef __SYNFIG_LAYER_CAIROBITMAP_H
+#define __SYNFIG_LAYER_CAIROBITMAP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,40 +39,40 @@
 
 namespace synfig {
 
-/*!	\class Layer_Bitmap
+/*!	\class Layer_CairoBitmap
 **	\todo writeme
 */
-class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
+class Layer_CairoBitmap : public Layer_Composite, public Layer_NoDeform
 {
-	const Color& filter(Color& c)const;
+	const CairoColor& filter(CairoColor& c)const;
 public:
-	typedef etl::handle<Layer_Bitmap> Handle;
+	typedef etl::handle<Layer_CairoBitmap> Handle;
 
 	Point tl;
 	Point br;
 	int c;
-	mutable Surface surface;
+	mutable CairoSurface surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
 	Real gamma_adjust;
 
-	Layer_Bitmap();
+	Layer_CairoBitmap();
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 
 	virtual ValueBase get_param(const String & param)const;
 
-	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	virtual Vocab get_param_vocab()const;
 
 	virtual Rect get_bounding_rect()const;
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_render(Context context,CairoSurface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-}; // END of class Layer_Bitmap
+}; // END of class Layer_CairoBitmap
 
 }; // END of namespace synfig
 

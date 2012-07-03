@@ -18,6 +18,7 @@ EXTRA_DIST = \
 
 LAYERHEADERS = \
 	layer_bitmap.h \
+	layer_cairobitmap.h \
 	layer_composite.h \
 	layer_duplicate.h \
 	layer_mime.h \
@@ -29,6 +30,7 @@ LAYERHEADERS = \
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
+	layer_cairobitmap.cpp \
 	layer_composite.cpp \
 	layer_duplicate.cpp \
 	layer_mime.cpp \
