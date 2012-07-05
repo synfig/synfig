@@ -116,62 +116,6 @@ target2surface::end_scanline()
 	return true;
 }
 
-class target2cairosurface: public synfig::Target_Cairo
-{ 
-
-	CairoSurface * surface_;
-public:
-	target2cairosurface(CairoSurface *surface);
-	virtual ~target2cairosurface();
-	
-	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
-	
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	
-	virtual void end_frame();
-
-	virtual CairoSurface* obtain_surface();
-};
-
-target2cairosurface::target2cairosurface(CairoSurface *surface):surface_(surface)
-{
-}
-
-target2cairosurface::~target2cairosurface()
-{
-}
-
-bool
-target2cairosurface::set_rend_desc(synfig::RendDesc *newdesc)
-{
-	assert(newdesc);
-	desc=*newdesc;
-	return synfig::Target_Cairo::set_rend_desc(newdesc);
-}
-
-
-CairoSurface*
-target2cairosurface::obtain_surface()
-{
-	return surface_;
-}
-
-bool
-target2cairosurface::start_frame(synfig::ProgressCallback */*cb*/)
-{
-
-	if(!surface_->map_cairo_image())
-		return false;
-	if(surface_->get_w() != desc.get_w() || surface_->get_h() != desc.get_h())
-		return false;
-	return true;
-}
-
-void
-target2cairosurface::end_frame()
-{
-	surface_->unmap_cairo_image();
-}
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -180,14 +124,6 @@ Target_Scanline::Handle
 synfig::surface_target(Surface *surface)
 {
 	return Target_Scanline::Handle(new target2surface(surface));
-}
-
-Target_Cairo::Handle
-synfig::cairosurface_target(CairoSurface *surface)
-{
-	if(surface->get_cairo_surface()==NULL)
-		return NULL;
-	return Target_Cairo::Handle(new target2cairosurface(surface));
 }
 
 void

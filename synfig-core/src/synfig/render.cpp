@@ -319,9 +319,9 @@ synfig::render(
 //////////
 // Cairo_Target needs to have its RendDesc already set.
 bool
-synfig::render(
+synfig::cairorender(
 			   Context context,
-			   Target_Cairo::Handle target,
+			   cairo_surface_t* surface,
 			   const RendDesc &desc,
 			   ProgressCallback *callback)
 {
@@ -353,13 +353,6 @@ synfig::render(
 	Color::value_type
 	pool;		// Alpha pool (for correct alpha antialiasing)
 	
-	// why to assert if we can return gracefully?
-	//assert(target);
-	
-	// If we do not have a target then bail
-	if(!target)
-		return false;
-	
 	// Calculate the number of channels
 	//chan=channels(desc.get_pixel_format());
 	
@@ -375,12 +368,10 @@ synfig::render(
 	su=tl[0]+(du-dsu)/(Point::value_type)2.0;
 	sv=tl[1]-(dv-dsv)/(Point::value_type)2.0;
 	
-	// Mark the start of a new frame. This will map cairo_surface_t to etl::surface
-	if(!target->start_frame(callback))
-		return false;
-	// Get the CairoSurface with its etl::surface already set.
-	CairoSurface *surface(target->obtain_surface());
-	
+	// Create a CairoSurface from the cairo_surface_t
+	CairoSurface csurface(surface);
+	// map the cairo_surface_t to the etl::surface
+	csurface.map_cairo_image();
 	// Loop through all horizontal lines
 	for(y=0,v=sv;y<h;y++,v+=dv)
 	{
@@ -391,8 +382,8 @@ synfig::render(
 			{
 				// If the callback returns false,
 				// then the render has been aborted.
-				// Exit gracefully.				
-				target->end_frame();
+				// Exit gracefully.
+				csurface.unmap_cairo_image();
 				return false;
 			}
 		// Loop through every pixel in row
@@ -404,7 +395,7 @@ synfig::render(
 			for(y2=0,pool=0;y2<a;y2++)
 				for(x2=0;x2<a;x2++)
 				{
-					//Notice that we will use Color instead of CairoColor
+					// Notice that we will use Color instead of CairoColor
 					// because get_color for layers are at the moment defined for Color
 					// So I need to convert Color to CairoColor before place it on the 
 					// CairoSurface of target.
@@ -430,11 +421,11 @@ synfig::render(
 				c/=pool;
 			// Once the pixel is subsampled then I premultiply by alpha and pass
 			// it to the CairoSurface
-			(*surface)[y][x]=CairoColor(c).premult_alpha();
+			csurface[y][x]=CairoColor(c).premult_alpha();
 		}
 	}
-	// Finish up the target's frame. This will unmap the etl::surface to the cairo_surface_t
-	target->end_frame();
+	// unmap the rendered surface to the cairo_surface_t
+	csurface.unmap_cairo_image();
 	
 	// Give the callback one more last call,
 	// this time with the full height as the

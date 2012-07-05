@@ -573,18 +573,8 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 }
 
 bool
-Layer::accelerated_render(Context context, CairoSurface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
-{
-	handle<Target_Cairo> target=cairosurface_target(surface);
-	if(!target)
-	{
-		if(cb)cb->error(_("Unable to create surface target"));
-		return false;
-	}
-	RendDesc desc=renddesc;
-	if(!target->set_rend_desc(&desc))
-		return false;
-	
+Layer::accelerated_cairorender(Context context, cairo_surface_t *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
+{	
 	// When we render, we want to
 	// make sure that we are rendered too...
 	// Since the context iterator is for
@@ -594,7 +584,7 @@ Layer::accelerated_render(Context context, CairoSurface *surface,int /*quality*/
 	// not the previous layer.
 	--context;
 	
-	return render(context,target,desc,cb);
+	return cairorender(context,surface,renddesc,cb);
 }
 
 

@@ -258,7 +258,6 @@ public:
 
 //! Creates a target that will render to \a surface
 etl::handle<Target_Scanline> surface_target(Surface *surface);
-etl::handle<Target_Cairo> cairosurface_target(CairoSurface * surface);
 
 }; // END of namespace synfig
 

@@ -28,6 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "target.h"
+#include "cairo.h"
+#include "cairomm/cairomm.h"
 
 
 /* === M A C R O S ========================================================= */
@@ -62,24 +64,14 @@ public:
 	//! Obtain a surface pointer based on the render method
 	//! this function has to be overrrided by the derived targets 
 	//! to create the proper Cairo backend surface for each target type.
-	virtual CairoSurface* obtain_surface()=0; 
-
-	//! Marks the start of a frame
-	/*! \return \c true on success, \c false upon an error.
-	**	\see end_frame(), start_Cairo()
-	*/
-	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
+	virtual bool obtain_surface(cairo_surface_t*)=0; 
 	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.
 	virtual int next_frame(Time& time);
 
-	//! Marks the end of a frame
-	/*! \see start_frame() */
-	virtual void end_frame()=0;
-
 	//! Puts the rendered surface onto the target.
-	bool add_frame(const synfig::CairoSurface *surface, ProgressCallback *cb=NULL);
+	virtual bool put_surface(cairo_surface_t *surface, ProgressCallback *cb=NULL);
 private:
 }; // END of class Target_Cairo
 
