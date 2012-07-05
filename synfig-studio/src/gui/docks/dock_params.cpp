@@ -75,7 +75,9 @@ Dock_Params::~Dock_Params()
 void
 Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	tree_view=static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()));
+	Gtk::TreeView* tree_view(
+		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()))
+	);
 
 	if(tree_view)
 	{
@@ -91,6 +93,9 @@ Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 void
 Dock_Params::refresh_selected_param()
 {
+	Gtk::TreeView* tree_view(
+		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
+	);
 	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
 
 	if(iter)
@@ -111,13 +116,11 @@ Dock_Params::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 {
 	if(canvas_view)
 	{
-		tree_view=static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()));
-		
+		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
+
 		add(*tree_view);
 		tree_view->show();
 		show_all();
-	} else {
-		tree_view->hide();
-		clear_previous();
 	}
+	else clear_previous();
 }
