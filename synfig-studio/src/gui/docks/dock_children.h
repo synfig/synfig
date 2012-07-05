@@ -31,7 +31,6 @@
 #include <gtkmm/treeview.h>
 #include "instance.h"
 #include "docks/dock_canvasspecific.h"
-#include "trees/childrentree.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +42,6 @@ namespace studio {
 
 class Dock_Children : public Dock_CanvasSpecific
 {
-	ChildrenTree *tree_view;
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);

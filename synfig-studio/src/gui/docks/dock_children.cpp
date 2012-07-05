@@ -83,13 +83,13 @@ Dock_Children::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	Glib::RefPtr<ChildrenTreeStore> children_tree_store;
 	children_tree_store=ChildrenTreeStore::create(canvas_view->canvas_interface());
 
-	tree_view = new ChildrenTree();
-	tree_view->set_model(children_tree_store);
-	tree_view->set_time_adjustment(canvas_view->time_adjustment());
+	ChildrenTree* children_tree(new ChildrenTree());
+	children_tree->set_model(children_tree_store);
+	children_tree->set_time_adjustment(canvas_view->time_adjustment());
 
 
 	canvas_view->set_tree_model(get_name(),children_tree_store);
-	canvas_view->set_ext_widget(get_name(),tree_view);
+	canvas_view->set_ext_widget(get_name(),children_tree);
 }
 
 void
@@ -97,13 +97,11 @@ Dock_Children::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 {
 	if(canvas_view)
 	{
-		tree_view=static_cast<studio::ChildrenTree*>(canvas_view->get_ext_widget(get_name()));
+		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
 
 		add(*tree_view);
 		tree_view->show();
-	} else {
-		tree_view->hide();
-		clear_previous();
 	}
+	else clear_previous();
 
 }
