@@ -580,6 +580,7 @@ private:
 public:
 	static const unsigned char ceil=255;	
 	static const unsigned char floor=0;
+	static const unsigned char range=ceil-floor;
 
 	// Operators
 public:
@@ -684,14 +685,15 @@ public:
 	
 	CairoColor premult_alpha() const
 	{
-		return CairoColor (r_*a_, g_*a_, b_*a_, a_);
+		const float a(a_/range);
+		return CairoColor (r_*a, g_*a, b_*a, a_);
 	}
 	
 	CairoColor demult_alpha() const
 	{
 		if(a_)
 		{
-			const float inva = 1.0f/a_;
+			const float inva = range/a_;
 			return CairoColor (r_*inva, g_*inva, b_*inva, a_);
 		}else return alpha();
 	}
