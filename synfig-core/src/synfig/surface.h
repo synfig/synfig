@@ -141,7 +141,7 @@ public:
 	class alpha_pen;
 	
 	CairoSurface():cs_(NULL), cs_image_(NULL) {  }
-	CairoSurface(cairo_surface_t *cs):cs_(NULL) { set_cairo_surface(cs); }
+	CairoSurface(cairo_surface_t *cs):cs_(NULL), cs_image_(NULL) { set_cairo_surface(cs); }
 	~CairoSurface() { 
 	if(cs_!= NULL) cairo_surface_destroy(cs_);
 	if(cs_image_!=NULL) cairo_surface_destroy(cs_image_); }

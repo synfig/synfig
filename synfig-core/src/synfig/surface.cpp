@@ -344,6 +344,7 @@ bool
 CairoSurface::map_cairo_image()
 {
 	assert(cs_);
+	assert(cs_image_ == NULL);
 	cairo_surface_flush(cs_);
 	if(cairo_surface_get_type(cs_) != CAIRO_SURFACE_TYPE_IMAGE)
 	{
@@ -392,6 +393,7 @@ CairoSurface::unmap_cairo_image()
 	else
 	{
 		cairo_surface_destroy(cs_image_);
+		cs_image_ = NULL;
 		cairo_surface_mark_dirty(cs_);
 	}
 }
