@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt_png.h
+/*!	\file trgt_cairo_png.h
 **	\brief Template Header
 **
 **	$Id$
@@ -24,15 +24,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TRGT_PNG_H
-#define __SYNFIG_TRGT_PNG_H
+#ifndef __SYNFIG_TRGT_CAIRO_PNG_H
+#define __SYNFIG_TRGT_CAIRO_PNG_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <png.h>
-#include <synfig/target_scanline.h>
+#include <synfig/target_cairo.h>
+#include <synfig/surface.h>
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
+#include <cairo.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -41,33 +42,26 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class png_trgt : public synfig::Target_Scanline
+class cairo_png_trgt : public synfig::Target_Cairo
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
-	FILE *file;
 	int w,h;
-	png_structp png_ptr;
-	png_infop info_ptr;
 
-	static void png_out_error(png_struct *png,const char *msg);
-	static void png_out_warning(png_struct *png,const char *msg);
-	bool multi_image,ready;
+	bool multi_image;
 	int imagecount;
 	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	synfig::String base_filename;
+
 	synfig::String sequence_separator;
 public:
-	png_trgt(const char *filename, const synfig::TargetParam& /* params */);
-	virtual ~png_trgt();
+	cairo_png_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	virtual ~cairo_png_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	virtual bool obtain_surface(cairo_surface_t *&surface);
+	virtual bool put_surface(cairo_surface_t *surface, synfig::ProgressCallback *cb=NULL);
 };
 
 /* === E N D =============================================================== */

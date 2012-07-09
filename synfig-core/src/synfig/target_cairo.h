@@ -64,7 +64,7 @@ public:
 	//! Obtain a surface pointer based on the render method
 	//! this function has to be overrrided by the derived targets 
 	//! to create the proper Cairo backend surface for each target type.
-	virtual bool obtain_surface(cairo_surface_t*)=0; 
+	virtual bool obtain_surface(cairo_surface_t*&)=0; 
 	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.

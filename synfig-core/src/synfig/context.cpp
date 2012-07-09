@@ -528,12 +528,9 @@ Context::accelerated_cairorender(cairo_surface_t *surface,int quality, const Ren
 #endif	// SYNFIG_DEBUG_LAYERS
 		// clear the surface
 		cairo_t* cr=cairo_create(surface);
-		double width(renddesc.get_h());
-		double height(renddesc.get_w());
-		cairo_device_to_user_distance(cr, &width, &height);
-		cairo_set_source_rgba(cr,0,0,0,0);
-		cairo_rectangle(cr, 0, 0, width, height);
-		cairo_fill(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_set_source_rgba(cr, 0, 0, 0, 0); // TODO: this line may be unnecessary
+		cairo_paint(cr);
 		cairo_destroy(cr);
 #ifdef SYNFIG_PROFILE_LAYERS
 		profile_timer.reset();
@@ -564,13 +561,9 @@ Context::accelerated_cairorender(cairo_surface_t *surface,int quality, const Ren
 			if ((ret = Context((context+1)).accelerated_cairorender(surface,quality,renddesc,cb)))
 			{
 				cairo_t* cr=cairo_create(surface);
-				double width(renddesc.get_h());
-				double height(renddesc.get_w());
-				cairo_device_to_user_distance(cr, &width, &height);
-				cairo_set_source_rgba(cr, 0,0,0,0);
-				cairo_rectangle(cr, 0, 0, width, height);
-				cairo_set_operator(cr, CAIRO_OPERATOR_IN); // TODO this should have one correspondence to cairo operators.
-				cairo_fill(cr);
+				cairo_set_source_rgba(cr, 0, 0, 0, composite->get_amount()); // TODO: handle amount values outside of the range 0.0-1.0
+				cairo_set_operator(cr, CAIRO_OPERATOR_IN);
+				cairo_paint(cr);
 				cairo_destroy(cr);
 			}
 		}

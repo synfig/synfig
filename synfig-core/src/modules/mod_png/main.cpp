@@ -33,8 +33,10 @@
 #	include <config.h>
 #endif
 
+#include "png.h"
 #include <synfig/module.h>
 #include "trgt_png.h"
+#include "trgt_cairo_png.h"
 #include "mptr_png.h"
 #endif
 
@@ -50,6 +52,7 @@ MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(mod_png)
 	BEGIN_TARGETS
+		TARGET(cairo_png_trgt)
 		TARGET(png_trgt)
 	END_TARGETS
 	BEGIN_IMPORTERS
