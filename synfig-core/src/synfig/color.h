@@ -558,7 +558,8 @@ public:
 /*!  \class CairoColor
 ** \ ARGB 32 bits Color class implementation
 ** \ for Cairo Image usage.
-** \ Color channels are one byte length (unsigned char)
+** \ Color channels are stored in a 32 bits value native endian aligened
+** \ with this order A, R, G, B
 ** \ Operations over color channels
 ** \ that overflow or underflow the unsigned char value
 ** \ (get the value out of 0-255) aren't allowed and the
@@ -569,18 +570,24 @@ public:
 ** \ In this class color channels aren't alpha premultiplied
 ** \ When used on a alpha premultiplied surface the premultiplication
 ** \ and demultiplication has to be explicitly done by the user before 
-** \ and after being used on the surface.
+** \ and after being used on the Cairo Image surface.
 */
 class CairoColor
 {
+public:
+	typedef uint32_t value_type;
 
 private:
-	unsigned char a_, r_, g_, b_;
+	value_type pixel;
 
 public:
 	static const unsigned char ceil=255;	
 	static const unsigned char floor=0;
 	static const unsigned char range=ceil-floor;
+	static const value_type amask=0xFF<<24;
+	static const value_type rmask=0xFF<<16;
+	static const value_type gmask=0xFF<<8;
+	static const value_type bmask=0xFF;
 
 	// Operators
 public:
@@ -608,30 +615,30 @@ public:
 	CairoColor&
 	operator+=(const CairoColor &rhs)
 	{		
-		r_=ceil_clamp((int)(r_) + rhs.r_);
-		g_=ceil_clamp((int)(g_) + rhs.g_);
-		r_=ceil_clamp((int)(b_) + rhs.b_);
-		r_=ceil_clamp((int)(a_) + rhs.a_);
+		set_r(ceil_clamp((int)(get_r()) + rhs.get_r()));
+		set_g(ceil_clamp((int)(get_g()) + rhs.get_g()));
+		set_b(ceil_clamp((int)(get_b()) + rhs.get_b()));
+		set_a(ceil_clamp((int)(get_a()) + rhs.get_a()));
 		return *this;
 	}
 
 	CairoColor&
 	operator-=(const CairoColor &rhs)
 	{		
-		r_=floor_clamp((int)(r_) - rhs.r_);
-		g_=floor_clamp((int)(g_) - rhs.g_);
-		r_=floor_clamp((int)(b_) - rhs.b_);
-		r_=floor_clamp((int)(a_) - rhs.a_);
+		set_r(floor_clamp((int)(get_r()) - rhs.get_r()));
+		set_g(floor_clamp((int)(get_g()) - rhs.get_g()));
+		set_b(floor_clamp((int)(get_b()) - rhs.get_b()));
+		set_a(floor_clamp((int)(get_a()) - rhs.get_a()));
 		return *this;
 	}
 	
 	CairoColor &
 	operator*=(const float &rhs)
 	{
-		r_=clamp(r_*rhs);
-		g_=clamp(g_*rhs);
-		b_=clamp(b_*rhs);
-		a_=clamp(a_*rhs);
+		set_r(clamp(get_r()*rhs));
+		set_g(clamp(get_g()*rhs));
+		set_b(clamp(get_b()*rhs));
+		set_a(clamp(get_a()*rhs));
 		return *this;
 	}
 
@@ -639,10 +646,10 @@ public:
 	operator/=(const float &rhs)
 	{
 		const float temp(1.0f/rhs);
-		r_=clamp(r_*temp);
-		g_=clamp(g_*temp);
-		b_=clamp(b_*temp);
-		a_=clamp(a_*temp);
+		set_r(clamp(get_r()*temp));
+		set_g(clamp(get_g()*temp));
+		set_b(clamp(get_b()*temp));
+		set_a(clamp(get_a()*temp));
 		return *this;
 	}
 
@@ -664,20 +671,25 @@ public:
 	
 	bool
 	operator==(const CairoColor &rhs)const
-	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
+	{ return get_r()==rhs.get_r()
+          && get_g()==rhs.get_g()
+		  && get_b()==rhs.get_b()
+		  && get_a()==rhs.get_a(); }
 	
 	bool
 	operator!=(const CairoColor &rhs)const
-	{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
+	{ return get_r()!=rhs.get_r()
+		  || get_g()!=rhs.get_g()
+		  || get_b()!=rhs.get_b()
+		  || get_a()!=rhs.get_a(); }
 
-// Not suitable for unsigned char
-//	CairoColor
+// Not suitable for CairoColor
 //	operator-()const
 //	{ return CairoColor(-r_,-g_,-b_,-a_); }
 
 	CairoColor
 	operator~()const
-	{ return CairoColor(ceil-r_,ceil-g_,ceil-b_,a_); }
+	{ return CairoColor(ceil-get_r(),ceil-get_g(),ceil-get_b(),get_a()); }
 
 	bool is_valid()const
 	{ return true; }
@@ -685,29 +697,29 @@ public:
 	
 	CairoColor premult_alpha() const
 	{
-		const float a(a_/range);
-		return CairoColor (r_*a, g_*a, b_*a, a_);
+		const float a(get_a()/range);
+		return CairoColor (get_r()*a, get_g()*a, get_b()*a, get_a());
 	}
 	
 	CairoColor demult_alpha() const
 	{
-		if(a_)
+		if(get_a())
 		{
-			const float inva = range/a_;
-			return CairoColor (r_*inva, g_*inva, b_*inva, a_);
+			const float inva = range/get_a();
+			return CairoColor (get_r()*inva, get_g()*inva, get_b()*inva, get_a());
 		}else return alpha();
 	}
 
 	// Constructors
 public:
-	CairoColor() :a_(0), r_(0), g_(0), b_(0) { }
-	CairoColor(const unsigned char u) :a_(u),r_(u), g_(u), b_(u) { }
+	CairoColor() :pixel(0x0) { }
+	CairoColor(const unsigned char u): pixel((u<<24)|(u<<16)|(u<<8)|(u)) { }
 	//CairoColor(int f) :a_(f),r_(f), g_(f), b_(f) { }
 	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil):
-	a_(A),	r_(R),	g_(G),	b_(B) { }
+	pixel((A<<24)|(R<<16)|(G<<8)|(B)) { }
 	CairoColor(const CairoColor& c, const unsigned char A):
-	a_(A), r_(c.r_), g_(c.g_), b_(c.b_) { }
-	CairoColor(const CairoColor& c): a_(c.a_), r_(c.r_), g_(c.g_), b_(c.b_) { }
+	pixel(c.get_pixel()) { set_a(A); }
+	CairoColor(const CairoColor& c): pixel(c.get_pixel()) { }
 	// Conversor constructor
 	CairoColor(const Color& c)
 	{
@@ -716,11 +728,13 @@ public:
 		set_b((ceil-floor)*c.get_b()/(Color::ceil-Color::floor));
 		set_a((ceil-floor)*c.get_a()/(Color::ceil-Color::floor));
 	}
-	const unsigned char get_r()const { return r_; }
-	const unsigned char get_g()const { return g_; }
-	const unsigned char get_b()const { return b_; }
-	const unsigned char get_a()const { return a_; }
-	const unsigned char get_alpha()const { return a_; }
+	
+	const value_type get_pixel()const {return pixel; }
+	const unsigned char get_a()const { return pixel>>24; }
+	const unsigned char get_r()const { return pixel>>16; }
+	const unsigned char get_g()const { return pixel>>8; }
+	const unsigned char get_b()const { return pixel; }
+	const unsigned char get_alpha()const { return get_a(); }
 	
 	const String get_string(void)const;
 
@@ -728,12 +742,12 @@ public:
 	static unsigned char hex2char(String s);
 	
 	void set_hex( String& str);
-	const String get_hex()const { return String(char2hex(r_)+char2hex(g_)+char2hex(b_)); }
+	const String get_hex()const { return String(char2hex(get_r())+char2hex(get_g())+char2hex(get_b())); }
 
-	CairoColor& set_r(const unsigned char x) {r_ = x; return *this; }
-	CairoColor& set_g(const unsigned char x) {g_ = x; return *this; }
-	CairoColor& set_b(const unsigned char x) {b_ = x; return *this; }
-	CairoColor& set_a(const unsigned char x) {a_ = x; return *this; }
+	CairoColor& set_r(const unsigned char x) {pixel &= ~rmask; pixel |=(x<<16); return *this; }
+	CairoColor& set_g(const unsigned char x) {pixel &= ~gmask; pixel |=(x<<8 ); return *this; }
+	CairoColor& set_b(const unsigned char x) {pixel &= ~bmask; pixel |=(x    ); return *this; }
+	CairoColor& set_a(const unsigned char x) {pixel &= ~amask; pixel |=(x<<24); return *this; }
 	CairoColor& set_alpha(const unsigned char x) { return set_a(x); }
 	
 	float
@@ -835,7 +849,7 @@ public:
 				);
 	}
 	
-	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=255)
+	static CairoColor YUV(const float& y, const float& s, const Angle& theta, const unsigned char a=ceil)
 	{ return CairoColor().set_yuv(y,s,theta).set_a(a); }
 
 	static inline CairoColor alpha() { return CairoColor(floor,floor,floor,floor); }
