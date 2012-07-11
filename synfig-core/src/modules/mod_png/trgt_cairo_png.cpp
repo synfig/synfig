@@ -111,6 +111,7 @@ cairo_png_trgt::obtain_surface(cairo_surface_t *&surface)
 bool
 cairo_png_trgt::put_surface(cairo_surface_t *surface, synfig::ProgressCallback *cb)
 {
+	gamma_filter(surface);
 	if(cairo_surface_status(surface))
 	{
 		if(cb) cb->error(_("Cairo Surface bad status"));
@@ -122,4 +123,27 @@ cairo_png_trgt::put_surface(cairo_surface_t *surface, synfig::ProgressCallback *
 
 	cairo_surface_destroy(surface);
 	return true;
+}
+
+void
+cairo_png_trgt::gamma_filter(cairo_surface_t *surface)
+{
+	CairoSurface temp(surface);
+	temp.map_cairo_image();
+	int x, y, w, h;
+	float range(CairoColor::range);
+	w=temp.get_w();
+	h=temp.get_h();
+	for(y=0;y<h; y++)
+		for(x=0;x<w; x++)
+		{
+			CairoColor c(temp[y][x]);
+			c=c.demult_alpha();
+			c.set_r(gamma_in(c.get_r()/range)*range);
+			c.set_g(gamma_in(c.get_g()/range)*range);
+			c.set_b(gamma_in(c.get_b()/range)*range);
+			c=c.premult_alpha();
+			temp[y][x]=c;
+		}
+	temp.unmap_cairo_image();
 }
