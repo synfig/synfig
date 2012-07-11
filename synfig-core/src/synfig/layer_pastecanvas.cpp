@@ -561,6 +561,220 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	return true;
 }
 
+///////
+
+bool
+Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(cb && !cb->amount_complete(0,10000)) return false;
+	
+	if(depth==MAX_DEPTH)
+		// if we are at the extent of our depth,
+		// then we should just return whatever is under us.
+		return context.accelerated_cairorender(surface,quality,renddesc,cb);
+	
+	depth_counter counter(depth);
+	
+	if(!canvas || !get_amount())
+		return context.accelerated_cairorender(surface,quality,renddesc,cb);
+	
+	SuperCallback stageone(cb,0,4500,10000);
+	SuperCallback stagetwo(cb,4500,9000,10000);
+	SuperCallback stagethree(cb,9000,9999,10000);
+	
+	RendDesc desc(renddesc);
+	Vector::value_type zoomfactor=1.0/exp(zoom);
+	desc.clear_flags();
+	desc.set_tl((desc.get_tl()-focus-origin)*zoomfactor+focus);
+	desc.set_br((desc.get_br()-focus-origin)*zoomfactor+focus);
+	desc.set_flags(RendDesc::PX_ASPECT);
+	
+	if (is_solid_color() || context->empty())
+	{
+		// clear the surface
+		cairo_t* cr=cairo_create(surface);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint(cr);
+		cairo_destroy(cr);
+	}
+	else if (!context.accelerated_cairorender(surface,quality,renddesc,&stageone))
+		return false;
+	
+	Real grow_value(get_parent_canvas_grow_value());
+	canvas->set_grow_value(outline_grow+grow_value);
+	
+	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
+		canvas->set_time(curr_time+time_offset);
+	
+	Color::BlendMethod blend_method(get_blend_method());
+	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
+	
+	bool blend_using_straight = false; // use 'straight' just for the central blit
+	
+	// sometimes the user changes the parameters while we're
+	// rendering, causing our pasted canvas' bounding box to shrink
+	// and no longer overlap with our tile.  if that has happened,
+	// let's just stop now - we'll be refreshing soon anyway
+	//! \todo shouldn't a mutex ensure this isn't needed?
+	// http://synfig.org/images/d/d2/Bbox-change.sifz is an example
+	// that shows this happening - open the encapsulation, select the
+	// 'shade', and toggle the 'invert' parameter quickly.
+	// Occasionally you'll see:
+	//   error: Context::accelerated_render(): Layer "shade" threw a bad_alloc exception!
+	// where the shade layer tries to allocate itself a canvas of
+	// negative proportions, due to changing bounding boxes.
+	if (!etl::intersect(desc.get_rect(), full_bounding_rect))
+	{
+		warning("%s:%d bounding box shrank while rendering?", __FILE__, __LINE__);
+		return true;
+	}
+	
+	// we have rendered what's under us, if necessary
+	if(context->empty())
+	{
+		// if there's nothing under us, and we're blending 'onto', then we've finished
+		if (Color::is_onto(blend_method)) return true;
+		
+		// there's nothing under us, so using straight blending is
+		// faster than and equivalent to using composite, but we don't
+		// want to blank the surrounding areas
+		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
+	}
+	
+	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-focus)*exp(zoom)+origin+focus))
+	{
+		// if there's no intersection between the context and our
+		// surface, and we're rendering 'onto', then we're done
+		if (Color::is_onto(blend_method) && !Color::is_straight(blend_method))
+			return true;
+		
+		/* 'straight' is faster than 'composite' and has the same
+		 * effect if the affected area of the lower layer is
+		 * transparent;  however, if we're not clipping the blit to
+		 * just the bounding rectangle, the affected area is the whole
+		 * tile, so we can't use this optimisation.  if we are
+		 * clipping, then we can use 'straight' to blit the clipped
+		 * rectangle, but we shouldn't set blend_method to 'straight',
+		 * or the surrounding areas will be blanked, which we don't
+		 * want.
+		 */
+//#ifdef SYNFIG_CLIP_PASTECANVAS
+//		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
+//#endif	// SYNFIG_CLIP_PASTECANVAS
+	}
+
+//#ifdef SYNFIG_CLIP_PASTECANVAS
+//	Rect area(desc.get_rect() & full_bounding_rect);
+//	
+//	Point min(area.get_min());
+//	Point max(area.get_max());
+//	
+//	if (desc.get_tl()[0] > desc.get_br()[0]) swap(min[0], max[0]);
+//	if (desc.get_tl()[1] > desc.get_br()[1]) swap(min[1], max[1]);
+//	
+//	const int x(floor_to_int((min[0] - desc.get_tl()[0]) / desc.get_pw()));
+//	const int y(floor_to_int((min[1] - desc.get_tl()[1]) / desc.get_ph()));
+//	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
+//	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
+//	
+//	const int tw = desc.get_w();
+//	const int th = desc.get_h();
+//	
+//	desc.set_subwindow(x,y,w,h);
+//	
+//	// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
+//	//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
+//	if(desc.get_w()==0 || desc.get_h()==0)
+//	{
+//		if(cb && !cb->amount_complete(10000,10000)) return false;
+//		return true;
+//	}
+//	
+//	// SYNFIG_CLIP_PASTECANVAS is defined, so we are only touching the
+//	// pixels within the affected rectangle.  If the blend method is
+//	// 'straight', then we need to blend transparent pixels with the
+//	// clipped areas of this tile, because with the 'straight' blend
+//	// method, even transparent pixels have an effect on the layers below
+//	if (Color::is_straight(blend_method))
+//	{
+//		Surface clearsurface;
+//		
+//		Surface::alpha_pen apen(surface->begin());
+//		apen.set_alpha(get_amount());
+//		
+//		// the area we're about to blit is transparent, so it doesn't
+//		// matter whether we use 'straight' or 'straight onto' here
+//		if (blend_method == Color::BLEND_ALPHA_BRIGHTEN)
+//			apen.set_blend_method(blend_method);
+//		else
+//			apen.set_blend_method(Color::BLEND_STRAIGHT);
+//		
+//		/* This represents the area we're pasting into the tile,
+//		 * within the tile as a whole.	Areas (A), (B), (C) and (D)
+//		 * need blending with the underlying context if they're not
+//		 * zero-sized:
+//		 *
+//		 *		 0	   x		 x+w	  tw
+//		 *	 0	 +------------------------+
+//		 *		 |						  |
+//		 *		 |			(A)			  |
+//		 *		 |						  |
+//		 *	 y	 | - - +----------+ - - - |
+//		 *		 |	   |		  |		  |
+//		 *		 | (C) |  w by h  |	 (D)  |
+//		 *		 |	   |		  |		  |
+//		 *	 y+h | - - +----------+ - - - |
+//		 *		 |						  |
+//		 *		 |			(B)			  |
+//		 *		 |						  |
+//		 *	 tw	 +------------------------+
+//		 */
+//		
+//		if (y > 0)				// draw the full-width strip above the rectangle (A)
+//		{ apen.move_to(0,0);   clearsurface.set_wh(tw,y);        clearsurface.clear(); clearsurface.blit_to(apen); }
+//		if (y+h < th)			// draw the full-width strip below the rectangle (B)
+//		{ apen.move_to(0,y+h); clearsurface.set_wh(tw,th-(y+h)); clearsurface.clear(); clearsurface.blit_to(apen); }
+//		if (x > 0)				// draw the box directly left of the rectangle (C)
+//		{ apen.move_to(0,y);   clearsurface.set_wh(x,h);         clearsurface.clear(); clearsurface.blit_to(apen); }
+//		if (x+w < tw)			// draw the box directly right of the rectangle (D)
+//		{ apen.move_to(x+w,y); clearsurface.set_wh(tw-(x+w),h);  clearsurface.clear(); clearsurface.blit_to(apen); }
+//	}
+//#endif	// SYNFIG_CLIP_PASTECANVAS
+	
+	// render the canvas to be pasted onto pastesurface
+	cairo_surface_t* pastesurface=cairo_surface_create_similar_image(surface, CAIRO_FORMAT_ARGB32, desc.get_w(), desc.get_h());
+	if(!canvas->get_context().accelerated_cairorender(pastesurface,quality,desc,&stagetwo))
+		return false;
+	
+//#ifdef SYNFIG_CLIP_PASTECANVAS
+//	Surface::alpha_pen apen(surface->get_pen(x,y));
+//#else  // SYNFIG_CLIP_PASTECANVAS
+//	Surface::alpha_pen apen(surface->begin());
+//#endif	// SYNFIG_CLIP_PASTECANVAS
+	///////////////////////////////////
+//	apen.set_alpha(get_amount());
+//	apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
+//	pastesurface.blit_to(apen);
+
+	cairo_t *cr = cairo_create(surface);
+	
+	// TODO set the operator. At the moment it only supports Composite (OVER in Cairo language)
+	
+	cairo_set_source_surface(cr, pastesurface, 0, 0);
+	cairo_paint(cr);
+	cairo_destroy(cr);
+	
+	if(cb && !cb->amount_complete(10000,10000)) return false;
+	
+	return true;
+}
+
+
+///////
+
+
+
+
 Rect
 Layer_PasteCanvas::get_bounding_rect()const
 {
