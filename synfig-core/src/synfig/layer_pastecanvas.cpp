@@ -658,108 +658,15 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		 * or the surrounding areas will be blanked, which we don't
 		 * want.
 		 */
-//#ifdef SYNFIG_CLIP_PASTECANVAS
-//		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
-//#endif	// SYNFIG_CLIP_PASTECANVAS
 	}
-
-//#ifdef SYNFIG_CLIP_PASTECANVAS
-//	Rect area(desc.get_rect() & full_bounding_rect);
-//	
-//	Point min(area.get_min());
-//	Point max(area.get_max());
-//	
-//	if (desc.get_tl()[0] > desc.get_br()[0]) swap(min[0], max[0]);
-//	if (desc.get_tl()[1] > desc.get_br()[1]) swap(min[1], max[1]);
-//	
-//	const int x(floor_to_int((min[0] - desc.get_tl()[0]) / desc.get_pw()));
-//	const int y(floor_to_int((min[1] - desc.get_tl()[1]) / desc.get_ph()));
-//	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
-//	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
-//	
-//	const int tw = desc.get_w();
-//	const int th = desc.get_h();
-//	
-//	desc.set_subwindow(x,y,w,h);
-//	
-//	// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
-//	//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
-//	if(desc.get_w()==0 || desc.get_h()==0)
-//	{
-//		if(cb && !cb->amount_complete(10000,10000)) return false;
-//		return true;
-//	}
-//	
-//	// SYNFIG_CLIP_PASTECANVAS is defined, so we are only touching the
-//	// pixels within the affected rectangle.  If the blend method is
-//	// 'straight', then we need to blend transparent pixels with the
-//	// clipped areas of this tile, because with the 'straight' blend
-//	// method, even transparent pixels have an effect on the layers below
-//	if (Color::is_straight(blend_method))
-//	{
-//		Surface clearsurface;
-//		
-//		Surface::alpha_pen apen(surface->begin());
-//		apen.set_alpha(get_amount());
-//		
-//		// the area we're about to blit is transparent, so it doesn't
-//		// matter whether we use 'straight' or 'straight onto' here
-//		if (blend_method == Color::BLEND_ALPHA_BRIGHTEN)
-//			apen.set_blend_method(blend_method);
-//		else
-//			apen.set_blend_method(Color::BLEND_STRAIGHT);
-//		
-//		/* This represents the area we're pasting into the tile,
-//		 * within the tile as a whole.	Areas (A), (B), (C) and (D)
-//		 * need blending with the underlying context if they're not
-//		 * zero-sized:
-//		 *
-//		 *		 0	   x		 x+w	  tw
-//		 *	 0	 +------------------------+
-//		 *		 |						  |
-//		 *		 |			(A)			  |
-//		 *		 |						  |
-//		 *	 y	 | - - +----------+ - - - |
-//		 *		 |	   |		  |		  |
-//		 *		 | (C) |  w by h  |	 (D)  |
-//		 *		 |	   |		  |		  |
-//		 *	 y+h | - - +----------+ - - - |
-//		 *		 |						  |
-//		 *		 |			(B)			  |
-//		 *		 |						  |
-//		 *	 tw	 +------------------------+
-//		 */
-//		
-//		if (y > 0)				// draw the full-width strip above the rectangle (A)
-//		{ apen.move_to(0,0);   clearsurface.set_wh(tw,y);        clearsurface.clear(); clearsurface.blit_to(apen); }
-//		if (y+h < th)			// draw the full-width strip below the rectangle (B)
-//		{ apen.move_to(0,y+h); clearsurface.set_wh(tw,th-(y+h)); clearsurface.clear(); clearsurface.blit_to(apen); }
-//		if (x > 0)				// draw the box directly left of the rectangle (C)
-//		{ apen.move_to(0,y);   clearsurface.set_wh(x,h);         clearsurface.clear(); clearsurface.blit_to(apen); }
-//		if (x+w < tw)			// draw the box directly right of the rectangle (D)
-//		{ apen.move_to(x+w,y); clearsurface.set_wh(tw-(x+w),h);  clearsurface.clear(); clearsurface.blit_to(apen); }
-//	}
-//#endif	// SYNFIG_CLIP_PASTECANVAS
 	
 	// render the canvas to be pasted onto pastesurface
 	cairo_surface_t* pastesurface=cairo_surface_create_similar_image(surface, CAIRO_FORMAT_ARGB32, desc.get_w(), desc.get_h());
 	if(!canvas->get_context().accelerated_cairorender(pastesurface,quality,desc,&stagetwo))
 		return false;
-	
-//#ifdef SYNFIG_CLIP_PASTECANVAS
-//	Surface::alpha_pen apen(surface->get_pen(x,y));
-//#else  // SYNFIG_CLIP_PASTECANVAS
-//	Surface::alpha_pen apen(surface->begin());
-//#endif	// SYNFIG_CLIP_PASTECANVAS
-	///////////////////////////////////
-//	apen.set_alpha(get_amount());
-//	apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
-//	pastesurface.blit_to(apen);
 
 	cairo_t *cr = cairo_create(surface);
-	
 	// TODO set the operator. At the moment it only supports Composite (OVER in Cairo language)
-	
 	cairo_set_source_surface(cr, pastesurface, 0, 0);
 	cairo_paint(cr);
 	cairo_destroy(cr);
