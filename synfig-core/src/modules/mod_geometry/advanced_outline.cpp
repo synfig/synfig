@@ -1244,6 +1244,8 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
 		return false;
+	if((*x)(Time(0)).empty())
+		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;
 	ValueNode::LooseHandle vnode;
@@ -1261,6 +1263,8 @@ bool
 Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
+		return false;
+	if((*x)(Time(0)).empty())
 		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;
