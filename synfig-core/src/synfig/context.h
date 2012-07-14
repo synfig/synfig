@@ -94,6 +94,9 @@ public:
 
 	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
 	void set_dirty_outlines();
+	
+	// Set Render Method. Passes the information of the render method to use to the layers
+	void set_render_method(RenderMethod x);
 
 }; // END of class Context
 

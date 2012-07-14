@@ -39,6 +39,7 @@
 #include "node.h"
 #include "time.h"
 #include "guid.h"
+#include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
 #include "cairomm/cairomm.h"
@@ -509,6 +510,9 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
+	//! Sets the render method to the layer. Not all layers uses this virtual member
+	virtual void set_render_method(Context context, RenderMethod x);
+	
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param surface		Pointer to Surface to render to.

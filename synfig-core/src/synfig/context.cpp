@@ -258,7 +258,15 @@ Context::set_dirty_outlines()
 	}
 }
 
+void
+Context::set_render_method(RenderMethod x)
+{
+	Context context(*this);
 
+	if((context)->empty()) return;
+	
+	(*context)->set_render_method(context+1, x);
+}
 void
 Context::set_time(Time time,const Vector &/*pos*/)const
 {

@@ -525,6 +525,12 @@ Layer::set_time(Context context, Time time, const Point &pos)const
 	dirty_time_=time;
 }
 
+void
+Layer::set_render_method(Context context, RenderMethod x)
+{
+	context.set_render_method(x);
+}
+
 Color
 Layer::get_color(Context context, const Point &pos)const
 {
