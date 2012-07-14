@@ -62,6 +62,7 @@ using namespace etl;
 
 synfig::Layer_Bitmap::Layer_Bitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
+	method			(SOFTWARE),
 	tl				(-0.5,0.5),
 	br				(0.5,-0.5),
 	c				(1),
@@ -108,7 +109,17 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	{
 		ValueBase ret1(ValueBase::TYPE_INTEGER);
 		ret1=int(width);
-		ValueBase ret2(surface.get_w());
+		ValueBase ret2(ValueBase::TYPE_INTEGER);
+		switch (method)
+		{
+				case SOFTWARE:
+				ret2=int(surface.get_w());
+				break;
+				case CAIRO:
+				default:
+				ret2=int(cairosurface.get_w());
+				break;
+		}
 		ret1.set_static(get_param_static(param));
 		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
@@ -118,7 +129,17 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	{
 		ValueBase ret1(ValueBase::TYPE_INTEGER);
 		ret1=int(height);
-		ValueBase ret2(surface.get_h());
+		ValueBase ret2(ValueBase::TYPE_INTEGER);
+		switch (method)
+		{
+			case SOFTWARE:
+				ret2=int(surface.get_h());
+				break;
+			case CAIRO:
+			default:
+				ret2=int(cairosurface.get_h());
+				break;
+		}
 		ret1.set_static(get_param_static(param));
 		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
@@ -177,6 +198,13 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 	}
 
 	return context.hit_check(pos);
+}
+
+void
+synfig::Layer_Bitmap::set_render_method(Context context, RenderMethod x)
+{
+	set_method(x);
+	context.set_render_method(x);
 }
 
 inline

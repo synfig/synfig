@@ -247,3 +247,16 @@ Import::set_time(Context context, Time time, const Point &pos)const
 
 	context.set_time(time,pos);
 }
+
+void
+Import::set_render_method(Context context, RenderMethod x)
+{
+	if(get_method() != x) // if the method is different
+	{
+		Layer_Bitmap::set_render_method(context, x); // set the method (and pass to the other layers)
+		importer=0; // invalidate the importer
+		set_param("filename", filename); // this will update the importer to the new type
+	}
+	else
+		context.set_render_method(x); // pass it down.
+}

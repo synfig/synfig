@@ -31,6 +31,7 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/importer.h>
+#include <synfig/target.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -65,6 +66,8 @@ public:
 	virtual void set_time(synfig::Context context, synfig::Time time)const;
 
 	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
+	
+	virtual void set_render_method(synfig::Context context, synfig::RenderMethod x);
 };
 
 /* === E N D =============================================================== */
