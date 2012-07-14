@@ -555,7 +555,6 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 {
 
 	CairoSurface cout_surface(out_surface);
-	cout_surface.map_cairo_image();
 	
 	int interp=c;
 	if(quality>=10)
@@ -582,11 +581,14 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 		if(cairosurface.get_w()==renddesc.get_w() && cairosurface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
 		{
 			if(cb && !cb->amount_complete(0,100)) return false;
-			cout_surface=cairosurface;
+			{
+				cout_surface.map_cairo_image();
+				cout_surface=cairosurface;
+				cout_surface.unmap_cairo_image();
+			}
 			if(cb && !cb->amount_complete(100,100)) return false;
 			return true;
 		}
-		//cout_surface.set_wh(renddesc.get_w(),renddesc.get_h());
 	}
 	else
 	{
@@ -672,6 +674,8 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	
 	//start drawing at the start of the bitmap (either origin or corner of input...)
 	//and get other info
+
+	cout_surface.map_cairo_image();
 	CairoSurface::alpha_pen pen(cout_surface.get_pen(x_start,y_start));
 	pen.set_alpha(get_amount());
 	pen.set_blend_method(get_blend_method());
