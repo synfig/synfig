@@ -238,31 +238,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-elbow2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-elbow2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -282,6 +257,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-elbow2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-elbow2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="elbow2" group="(stk)-stretches">
@@ -633,31 +633,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-wrist2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-wrist2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -677,6 +652,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-wrist2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-wrist2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="wrist2" group="(stk)-stretches">
@@ -1046,31 +1046,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-palm2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-palm2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -1090,6 +1065,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-palm2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-palm2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="palm2" group="(stk)-stretches">
@@ -1521,31 +1521,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-elbow1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-elbow1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -1565,6 +1540,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-elbow1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-elbow1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="elbow1" group="(stk)-stretches">
@@ -1916,31 +1916,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-wrist1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-wrist1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -1960,6 +1935,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-wrist1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-wrist1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="wrist1" group="(stk)-stretches">
@@ -2329,31 +2329,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-palm1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-palm1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -2373,6 +2348,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-palm1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-palm1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="palm1" group="(stk)-stretches">
@@ -3233,38 +3233,6 @@
                         <bool value="true"/>
                       </param>
                     </layer>
-                    <layer type="zoom" active="true" version="0.1" desc="compensator-head" group="(stk)-stretches">
-                      <param name="amount">
-                        <scale type="real">
-                          <link>
-                            <logarithm type="real" guid="08F84E68F19EC2EC3DB7557C469B0381">
-                              <link>
-                                <scale type="real" link=":(stk)-head-r">
-                                  <scalar>
-                                    <real value="0.9657341500"/>
-                                  </scalar>
-                                </scale>
-                              </link>
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </logarithm>
-                          </link>
-                          <scalar>
-                            <real value="-1.0000000000"/>
-                          </scalar>
-                        </scale>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -3284,6 +3252,38 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="zoom" active="true" version="0.1" desc="compensator-head" group="(stk)-stretches">
+                <param name="amount">
+                  <scale type="real">
+                    <link>
+                      <logarithm type="real" guid="08F84E68F19EC2EC3DB7557C469B0381">
+                        <link>
+                          <scale type="real" link=":(stk)-head-r">
+                            <scalar>
+                              <real value="0.9657341500"/>
+                            </scalar>
+                          </scale>
+                        </link>
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </logarithm>
+                    </link>
+                    <scalar>
+                      <real value="-1.0000000000"/>
+                    </scalar>
+                  </scale>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="zoom" active="true" version="0.1" desc="head" group="(stk)-stretches">
@@ -3556,31 +3556,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-body" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-body-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -3600,6 +3575,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-body" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-body-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="body" group="(stk)-stretches">
@@ -3930,31 +3930,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-knee1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-knee1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -3974,6 +3949,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-knee1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-knee1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="knee1" group="(stk)-stretches">
@@ -4307,31 +4307,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-foot1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-heel1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -4351,6 +4326,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-foot1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-heel1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="foot1" group="(stk)-stretches">
@@ -4702,31 +4702,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-toe1" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-toe1-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -4746,6 +4721,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-toe1" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-toe1-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="toe1" group="(stk)-stretches">
@@ -5159,31 +5159,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-knee2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-knee2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -5203,6 +5178,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-knee2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-knee2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="knee2" group="(stk)-stretches">
@@ -5536,31 +5536,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-foot2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-heel2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -5580,6 +5555,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-foot2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-heel2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="foot2" group="(stk)-stretches">
@@ -5931,31 +5931,6 @@
                         </bline>
                       </param>
                     </layer>
-                    <layer type="stretch" active="true" version="0.1" desc="compensator-toe2" group="(stk)-stretches">
-                      <param name="amount">
-                        <composite type="vector">
-                          <x>
-                            <reciprocal type="real" link=":(stk)-toe2-r">
-                              <epsilon>
-                                <real value="0.0000010000"/>
-                              </epsilon>
-                              <infinite>
-                                <real value="999999.0000000000"/>
-                              </infinite>
-                            </reciprocal>
-                          </x>
-                          <y>
-                            <real value="1.0000000000"/>
-                          </y>
-                        </composite>
-                      </param>
-                      <param name="center">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                    </layer>
                   </canvas>
                 </param>
                 <param name="zoom">
@@ -5975,6 +5950,31 @@
                 </param>
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
+                </param>
+              </layer>
+              <layer type="stretch" active="true" version="0.1" desc="compensator-toe2" group="(stk)-stretches">
+                <param name="amount">
+                  <composite type="vector">
+                    <x>
+                      <reciprocal type="real" link=":(stk)-toe2-r">
+                        <epsilon>
+                          <real value="0.0000010000"/>
+                        </epsilon>
+                        <infinite>
+                          <real value="999999.0000000000"/>
+                        </infinite>
+                      </reciprocal>
+                    </x>
+                    <y>
+                      <real value="1.0000000000"/>
+                    </y>
+                  </composite>
+                </param>
+                <param name="center">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
                 </param>
               </layer>
               <layer type="stretch" active="true" version="0.1" desc="toe2" group="(stk)-stretches">
