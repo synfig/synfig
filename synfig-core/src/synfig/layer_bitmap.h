@@ -65,6 +65,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	virtual Vocab get_param_vocab()const;
 

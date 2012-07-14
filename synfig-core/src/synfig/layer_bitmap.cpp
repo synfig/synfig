@@ -278,6 +278,80 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 	return context.get_color(pos);
 }
 
+
+CairoColor
+synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
+{
+	Point surface_pos;
+	
+	if(!get_amount())
+		return context.get_cairocolor(pos);
+	
+	surface_pos=pos-tl;
+	
+	surface_pos[0]/=br[0]-tl[0];
+	if(surface_pos[0]<=1.0 && surface_pos[0]>=0.0)
+	{
+		surface_pos[1]/=br[1]-tl[1];
+		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
+		{
+			if (trimmed)
+			{
+				surface_pos[0]*=width;
+				surface_pos[1]*=height;
+				
+				if (surface_pos[0] > left+surface.get_w() || surface_pos[0] < left || surface_pos[1] > top+surface.get_h() || surface_pos[1] < top)
+					return context.get_cairocolor(pos);
+				
+				surface_pos[0] -= left;
+				surface_pos[1] -= top;
+			}
+			else
+			{
+				surface_pos[0]*=surface.get_w();
+				surface_pos[1]*=surface.get_h();
+			}
+			
+			CairoColor ret(CairoColor::alpha());
+			
+			switch(c)
+			{
+				case 6:	// Undefined
+				case 5:	// Undefined
+				case 4:	// Undefined
+				case 3:	// Cubic
+					ret=cairosurface.cubic_sample(surface_pos[0],surface_pos[1]);
+					break;
+					
+				case 2:	// Cosine
+					ret=cairosurface.cosine_sample(surface_pos[0],surface_pos[1]);
+					break;
+				case 1:	// Linear
+					ret=cairosurface.linear_sample(surface_pos[0],surface_pos[1]);
+					break;
+				case 0:	// Nearest Neighbor
+				default:
+				{
+					int x(min(cairosurface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
+					int y(min(cairosurface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
+					ret= cairosurface[y][x];
+				}
+					break;
+			}
+			
+			ret=filter(ret);
+			
+			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
+				return ret;
+			else
+				return CairoColor::blend(ret,context.get_cairocolor(pos),get_amount(),get_blend_method());
+		}
+	}
+	
+	return context.get_cairocolor(pos);
+}
+
+
 bool
 Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
