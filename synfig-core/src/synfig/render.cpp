@@ -399,6 +399,9 @@ synfig::cairorender(
 					// because get_color for layers are at the moment defined for Color
 					// So I need to convert Color to CairoColor before place it on the 
 					// CairoSurface of target.
+					// Later, when all layers have its own get_cairocolor, I'll change this.
+					// It is mandatory to have get_cairocolor enabled for LayerBitmap
+					// because it uses cairosurface to get the (subsampled) color
 					Color color=context.get_color(
 												  Point(
 														u+(Point::value_type)(x2)*dsu,
