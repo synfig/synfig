@@ -54,7 +54,7 @@ public:
 	Point br;
 	int c;
 	mutable Surface surface;
-	mutable CairoSurface cairosurface;
+	mutable cairo_surface_t* cairosurface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 

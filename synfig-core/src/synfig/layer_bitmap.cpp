@@ -117,7 +117,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 				case CAIRO:
 				default:
-				ret2=int(cairosurface.get_w());
+				ret2=int(cairo_image_surface_get_width(cairosurface));
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -137,7 +137,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 			case CAIRO:
 			default:
-				ret2=int(cairosurface.get_h());
+				ret2=int(cairo_image_surface_get_height(cairosurface));
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -310,6 +310,9 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 CairoColor
 synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 {
+	CairoSurface c_surface(cairosurface);
+	c_surface.map_cairo_image();
+
 	Point surface_pos;
 	
 	if(!get_amount())
@@ -348,21 +351,21 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 				case 5:	// Undefined
 				case 4:	// Undefined
 				case 3:	// Cubic
-					ret=cairosurface.cubic_sample(surface_pos[0],surface_pos[1]);
+					ret=c_surface.cubic_sample(surface_pos[0],surface_pos[1]);
 					break;
 					
 				case 2:	// Cosine
-					ret=cairosurface.cosine_sample(surface_pos[0],surface_pos[1]);
+					ret=c_surface.cosine_sample(surface_pos[0],surface_pos[1]);
 					break;
 				case 1:	// Linear
-					ret=cairosurface.linear_sample(surface_pos[0],surface_pos[1]);
+					ret=c_surface.linear_sample(surface_pos[0],surface_pos[1]);
 					break;
 				case 0:	// Nearest Neighbor
 				default:
 				{
-					int x(min(cairosurface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
-					int y(min(cairosurface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
-					ret= cairosurface[y][x];
+					int x(min(c_surface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
+					int y(min(c_surface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
+					ret= c_surface[y][x];
 				}
 					break;
 			}
@@ -375,7 +378,7 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 				return CairoColor::blend(ret,context.get_cairocolor(pos),get_amount(),get_blend_method());
 		}
 	}
-	
+	c_surface.unmap_cairo_image();
 	return context.get_cairocolor(pos);
 }
 
@@ -655,8 +658,6 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 bool
 Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-
-	CairoSurface cout_surface(out_surface);
 	
 	int interp=c;
 	if(quality>=10)
@@ -665,193 +666,92 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 		interp=1;
 	
 	//if we don't actually have a valid surface just skip us
-	if(!cairosurface.is_valid())
+	if(cairo_surface_status(cairosurface) && cairo_surface_get_type(cairosurface)!=CAIRO_SURFACE_TYPE_IMAGE)
 	{
 		// Render what is behind us
 		return context.accelerated_cairorender(out_surface,quality,renddesc,cb);
 	}
 	
 	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
+
+	Point	obr	= renddesc.get_br();
+	Point   otl = renddesc.get_tl();
+
+	int		outw = renddesc.get_w();
+	int		outh = renddesc.get_h();
+
+	int		inw = cairo_image_surface_get_width(cairosurface);
+	int		inh = cairo_image_surface_get_height(cairosurface);
 	
-	if(	get_amount()==1 &&
-	   get_blend_method()==Color::BLEND_STRAIGHT &&
-	   !trimmed &&
-	   renddesc.get_tl()==tl &&
-	   renddesc.get_br()==br)
+	
+	if(	get_amount()==1 && // our bitmap is full opaque
+	   get_blend_method()==Color::BLEND_STRAIGHT && // and it doesn't draw the context
+	   otl==tl &&
+	   obr==br) // and the tl and br are the same ...
 	{
-		// Check for the trivial case
-		if(cairosurface.get_w()==renddesc.get_w() && cairosurface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
+		// Check for the trivial case: the Bitmap and the destiny surface have same dimensions and there is not gamma adjust
+		if(inw==outw && inh==outh && gamma_adjust==1.0f)
 		{
 			if(cb && !cb->amount_complete(0,100)) return false;
 			{
-				cout_surface.map_cairo_image();
-				cout_surface=cairosurface;
-				cout_surface.unmap_cairo_image();
+				cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
+				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
+				cairo_set_source_surface(cr, cairosurface, 0, 0); // set the source our cairosurface 
+				cairo_paint(cr); // paint on the destiny
+				cairo_destroy(cr); // finaly destroy the cairo context pointer
 			}
 			if(cb && !cb->amount_complete(100,100)) return false;
 			return true;
 		}
 	}
-	else
+	else // It is not the trivial case
 	{
-		// Render what is behind us
+		// Render what is behind us...
 		if(!context.accelerated_cairorender(out_surface,quality,renddesc,&subcb))
 			return false;
 	}
 	
 	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
 	
-	Point	obr	= renddesc.get_br(),
-	otl = renddesc.get_tl();
-	
-	//A = representation of input (just tl,br) 	//just a scaling right now
-	//B = representation of output (just tl,br)	//just a scaling right now
-	//sa = scaling for input (0,1) -> (0,w/h)
-	//sb = scaling for output (0,1) -> (0,w/h)
-	
-	float	outwf = obr[0] - otl[0];
-	float	outhf = obr[1] - otl[1];
-	
-	int		inw = surface.get_w();
-	int		inh = surface.get_h();
-	
-	int		outw = renddesc.get_w();
-	int		outh = renddesc.get_h();
-	
-	float	inwf, inhf;
-	Point	itl, ibr;
-	
-	if (trimmed)
-	{
-		inwf = (br[0] - tl[0])*surface.get_w()/width;
-		inhf = (br[1] - tl[1])*surface.get_h()/height;
-		itl = Point(tl[0] + (br[0]-tl[0])*left/width,
-					tl[1] + (br[1]-tl[1])*top/height);
-		ibr = Point(tl[0] + (br[0]-tl[0])*(left+inw)/width,
-					tl[1] + (br[1]-tl[1])*(top+inh)/height);
-	}
-	else
-	{
-		inwf = br[0] - tl[0];
-		inhf = br[1] - tl[1];
-		itl = tl;
-		ibr = br;
-	}
-	
-	//need to get the input coords in output space, so we can clip
-	
-	//get the desired corners of the bitmap (in increasing order) in integers
-	//floating point corners
-	float x1f = (itl[0] - otl[0])*outw/outwf;
-	float x2f = (ibr[0] - otl[0])*outw/outwf;
-	float y1f = (itl[1] - otl[1])*outh/outhf;
-	float y2f = (ibr[1] - otl[1])*outh/outhf;
-	
-	if(x1f > x2f) swap(x1f,x2f);
-	if(y1f > y2f) swap(y1f,y2f);
-	
-	int x_start = max(0,(int)floor(x1f));	//probably floor
-	int x_end 	= min(outw,(int)ceil(x2f));	//probably ceil
-	int y_start = max(0,(int)floor(y1f));	//probably floor
-	int y_end	= min(outh,(int)ceil(y2f));	//probably ceil
-	
-	//need to get the x,y,dx,dy values from output space to input, so we can do fast interpolation
-	
-	//get the starting position in input space... for interpolating
-	
-	// in int -> out float:
-	// Sb(B^-1)A(Sa^-1) x
-	float inx_start = (((x_start/*+0.5f*/)*outwf/outw + otl[0]) - itl[0])*inw/inwf; //may want to bias this (center of pixel)???
-	float iny_start = (((y_start/*+0.5f*/)*outhf/outh + otl[1]) - itl[1])*inh/inhf; //may want to bias this (center of pixel)???
-	
-	//calculate the delta values in input space for one pixel movement in output space
-	//same matrix but with a vector instead of a point...
-	float indx = outwf*(inw)/((outw)*inwf);		//translations died
-	float indy = outhf*(inh)/((outh)*inhf);		//translations died
-	
-	//perhaps use a DDA algorithm... if faster...
-	//   will still want pixel fractions to be floating point since colors are
-	
-	//synfig::info("xstart:%d ystart:%d xend:%d yend:%d",x_start,y_start,x_end,y_end);
-	
-	//start drawing at the start of the bitmap (either origin or corner of input...)
-	//and get other info
 
-	cout_surface.map_cairo_image();
-	CairoSurface::alpha_pen pen(cout_surface.get_pen(x_start,y_start));
-	pen.set_alpha(get_amount());
-	pen.set_blend_method(get_blend_method());
-	
-	//check if we should use the downscale filtering
-	if(quality <= 7)
+	// Calculate the width and height in pixels of the bitmap in the output surface
+	float wp=(br[0]-tl[0])/renddesc.get_ph();
+	float hp=(br[1]-tl[1])/renddesc.get_pw();
+	// So we need to scale the bitmap by wp/inw in horizontal and hp/inh in vertical. 
+	float scalex=wp/inw;
+	float scaley=hp/inh;
+	// Now let's calculate the displacement of the image in the output surface.
+	Point disp=tl-otl;
+	// Calculate the cairo interpolation to do by the interpolation parameter c
+	cairo_filter_t filter;
+	switch(c)
 	{
-		//the stride of the value should be inverted because we want to downsample
-		//when the stride is small, not big
-		//int multw = (int)ceil(indx);
-		//int multh = (int)ceil(indy);
-		
-		if(indx > 1.7 || indy > 1.7)
-		{
-			/*synfig::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)",
-			 indx, indy, multw, multh);	*/
-			
-			//use sample rect here...
-			
-			float iny, inx;
-			int x,y;
-			
-			//Point sample - truncate
-			iny = iny_start;//+0.5f;
-			for(y = y_start; y < y_end; ++y, pen.inc_y(), iny += indy)
-			{
-				inx = inx_start;//+0.5f;
-				for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-				{
-					CairoColor rc = cairosurface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
-					pen.put_value(filter(rc));
-				}
-				pen.dec_x(x_end-x_start);
-			}
-			return true;
-		}
+	case 3:	// Cubic
+		filter=CAIRO_FILTER_BEST;
+		break;
+	case 2:	// Cosine
+		filter=CAIRO_FILTER_GOOD;
+		break;
+	case 1:	// Linear
+		filter=CAIRO_FILTER_FAST;
+		break;
+	case 0:	// Nearest Neighbor
+	default:
+		filter=CAIRO_FILTER_NEAREST;
+		break;
 	}
+	// TODO: filter the image with gamma_adjust!!
+	cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
+	cairo_set_source_surface(cr, cairosurface, 0,0);
+	cairo_pattern_set_filter(cairo_get_source(cr), filter);
 	
-	// do the intrpolation
-	{
-		float iny, inx;
-		int x,y;
-		
-		iny = iny_start;//+0.5f;
-		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
-		{
-			inx = inx_start;//+0.5f;
-			int yclamp = min(inh-1, max(0, round_to_int(iny)));
-			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
-			{
-				CairoColor c;
-				int xclamp = min(inw-1, max(0, round_to_int(inx)));
-				switch (interp)
-				{
-					case 0:
-						c = cairosurface[yclamp][xclamp];
-						break;
-					case 1:
-						c= cairosurface.linear_sample(inx,iny);
-						break;
-					case 2:
-						c= cairosurface.cosine_sample(inx,iny);
-						break;
-					default:
-						c= cairosurface.cubic_sample(inx, iny);
-						break;
-				}
-				pen.put_value(filter(c));
-			}
-			pen.dec_x(x_end-x_start);
-		}
-	}
-	// unmap the rendered result to the cairo_surface_t
-	cout_surface.unmap_cairo_image();
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be a custom operator
+
+	cairo_translate(cr, disp[0], disp[1]);
+	cairo_scale(cr, scalex, scaley);
+	
+	cairo_paint(cr); 
+	
 	return true;
 }
 
