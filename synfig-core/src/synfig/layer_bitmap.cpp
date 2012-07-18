@@ -117,7 +117,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 				case CAIRO:
 				default:
-				ret2=int(cairo_image_surface_get_width(cairosurface));
+				ret2=int(cairo_image_surface_get_width(cs_));
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -137,7 +137,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 			case CAIRO:
 			default:
-				ret2=int(cairo_image_surface_get_height(cairosurface));
+				ret2=int(cairo_image_surface_get_height(cs_));
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -310,7 +310,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 CairoColor
 synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 {
-	CairoSurface c_surface(cairosurface);
+	CairoSurface c_surface(cs_); // TODO: don't map/unmap everytime! It is very time consuming!
 	c_surface.map_cairo_image();
 
 	Point surface_pos;
@@ -666,7 +666,7 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 		interp=1;
 	
 	//if we don't actually have a valid surface just skip us
-	if(cairo_surface_status(cairosurface) && cairo_surface_get_type(cairosurface)!=CAIRO_SURFACE_TYPE_IMAGE)
+	if(cairo_surface_status(cs_) && cairo_surface_get_type(cs_)!=CAIRO_SURFACE_TYPE_IMAGE)
 	{
 		// Render what is behind us
 		return context.accelerated_cairorender(out_surface,quality,renddesc,cb);
@@ -680,8 +680,8 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
 
-	int		inw = cairo_image_surface_get_width(cairosurface);
-	int		inh = cairo_image_surface_get_height(cairosurface);
+	int		inw = cairo_image_surface_get_width(cs_);
+	int		inh = cairo_image_surface_get_height(cs_);
 	
 	
 	if(	get_amount()==1 && // our bitmap is full opaque
@@ -696,7 +696,7 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 			{
 				cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
 				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
-				cairo_set_source_surface(cr, cairosurface, 0, 0); // set the source our cairosurface 
+				cairo_set_source_surface(cr, cs_, 0, 0); // set the source our cairosurface 
 				cairo_paint(cr); // paint on the destiny
 				cairo_destroy(cr); // finaly destroy the cairo context pointer
 			}
@@ -742,7 +742,7 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	}
 	// TODO: filter the image with gamma_adjust!!
 	cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
-	cairo_set_source_surface(cr, cairosurface, 0,0);
+	cairo_set_source_surface(cr, cs_, 0,0);
 	cairo_pattern_set_filter(cairo_get_source(cr), filter);
 	
 	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be a custom operator
@@ -763,3 +763,33 @@ Layer_Bitmap::get_bounding_rect()const
 {
 	return Rect(tl,br);
 }
+
+
+void 
+Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
+{
+	if(cs==NULL)
+	{
+		synfig::error("Layer_Bitmap received a NULL cairo_surface_t");
+		return;
+	}
+	if(cairo_surface_status(cs))
+	{
+		synfig::error("Layer_Bitmap received a non valid cairo_surface_t");
+		return;
+	}
+	else
+	{
+		if(cs_!=NULL)
+			cairo_surface_destroy(cs_);
+		cs_=cairo_surface_reference(cs);
+	}
+}
+
+cairo_surface_t* 
+Layer_Bitmap::get_cairo_surface()const
+{
+	assert(cs_);
+	return cairo_surface_reference(cs_);
+}
+

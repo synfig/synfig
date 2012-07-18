@@ -395,36 +395,20 @@ synfig::cairorender(
 			for(y2=0,pool=0;y2<a;y2++)
 				for(x2=0;x2<a;x2++)
 				{
-					// Notice that we will use Color instead of CairoColor
-					// because get_color for layers are at the moment defined for Color
-					// So I need to convert Color to CairoColor before place it on the 
-					// CairoSurface of target.
-					// Later, when all layers have its own get_cairocolor, I'll change this.
-					// It is mandatory to have get_cairocolor enabled for LayerBitmap
-					// because it uses cairosurface to get the (subsampled) color
-					Color color=context.get_color(
+					CairoColor color=context.get_cairocolor(
 												  Point(
 														u+(Point::value_type)(x2)*dsu,
 														v+(Point::value_type)(y2)*dsv
 														)
 												  );
-					if(!no_clamp)
-					{
-						color=color.clamped();
-						c+=color*color.get_a();
-						pool+=color.get_a();
-					}
-					else
-					{
-						c+=color*color.get_a();
-						pool+=color.get_a();
-					}
+					c+=color*color.get_a();
+					pool+=color.get_a();
 				}
 			if(pool)
 				c/=pool;
 			// Once the pixel is subsampled then I premultiply by alpha and pass
 			// it to the CairoSurface
-			csurface[y][x]=CairoColor(c).premult_alpha();
+			csurface[y][x]=c.premult_alpha();
 		}
 	}
 	// unmap the rendered surface to the cairo_surface_t
