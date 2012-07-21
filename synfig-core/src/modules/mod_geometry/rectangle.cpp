@@ -608,9 +608,6 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 
 	Point inter_min(inter.get_min());
 	Point inter_max(inter.get_max());
-	//
-	//synfig::info("intermin=%f, %f     intermax=%f, %f", inter_min[0], inter_min[1], inter_max[0], inter_max[1]);
-	//
 	if(invert)
 	{
 		if(is_solid_color())
@@ -637,8 +634,6 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			desc.set_br(Point(inter.get_max()[0], inter.get_min()[1]));
 			// create a new similar surface with the wxh dimensions
 			cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(), desc.get_h());
-			synfig::info("w=%d, h=%d", desc.get_w(), desc.get_h());
-			synfig::info("tl=%f,%f br=%f,%f", desc.get_tl()[0], desc.get_tl()[1], desc.get_br()[0], desc.get_br()[1] );
 			// Render what is behind us
 			if(!context.accelerated_cairorender(subimage,quality,desc,cb))
 			{
@@ -656,11 +651,11 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			double ty((br[1]-tl[1])/2/ph);
 			double sx(1/pw);
 			double sy(1/ph);  
+			cairo_set_source_surface(cr, subimage, (inter_min[0]-tl[0])/pw, (inter_max[1]-tl[1])/ph);
 			cairo_translate(cr, tx , ty);
 			cairo_scale(cr, sx, sy);
 			cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
 			cairo_clip(cr);
-			cairo_set_source_surface(cr, subimage, 0, 0 /*inter_min[0], inter_min[1]*/);
 			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 			cairo_paint(cr);
 			cairo_restore(cr);
