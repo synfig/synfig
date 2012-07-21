@@ -680,9 +680,19 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			cairo_set_source_rgba(subcr, r, g, b, a);
 			cairo_paint(subcr);
 			// now remove the area of the intersection rectangle
-			cairo_rectangle(subcr, inter_min[0], inter_min[1], inter_max[0]-inter_min[0], inter_max[1]-inter_min[1]);
+			cairo_save(subcr);
+			double width (inter_max[0]-inter_min[0]);
+			double height(inter_max[1]-inter_min[1]);
+			double tx((br[0]-tl[0])/2/pw);
+			double ty((br[1]-tl[1])/2/ph);
+			double sx(1/pw);
+			double sy(1/ph);  
+			cairo_translate(subcr, tx , ty);
+			cairo_scale(subcr, sx, sy);
+			cairo_rectangle(subcr, inter_min[0], inter_min[1], width, height);
 			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
-			cairo_fill(cr);
+			cairo_fill(subcr);
+			cairo_restore(subcr);
 			// now let's paint the inverted rectangle with the hole on the rendered context 
 			cairo_save(cr);
 			cairo_set_source_surface(cr, subimage, 0, 0);
