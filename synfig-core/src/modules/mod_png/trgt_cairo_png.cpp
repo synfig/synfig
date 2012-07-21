@@ -118,7 +118,7 @@ cairo_png_trgt::put_surface(cairo_surface_t *surface, synfig::ProgressCallback *
 		return false;
 	}
 	cairo_status_t status = cairo_surface_write_to_png(surface, filename.c_str());
-	synfig::info(cairo_status_to_string(status));
+	if(status!=CAIRO_STATUS_SUCCESS) synfig::warning(cairo_status_to_string(status));
 	imagecount++;
 
 	cairo_surface_destroy(surface);
