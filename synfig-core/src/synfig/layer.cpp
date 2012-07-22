@@ -540,7 +540,10 @@ Layer::get_color(Context context, const Point &pos)const
 CairoColor
 Layer::get_cairocolor(Context context, const Point &pos)const
 {
-	return context.get_cairocolor(pos);
+	// When the layer doesn't define its own get_cairocolor
+	// then the normal get_cairo color will be used and 
+	// a Color to CairoColor conversion will be done. 
+	return CairoColor(context.get_color(pos));
 }
 
 
