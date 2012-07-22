@@ -61,6 +61,8 @@ public:
 	Real gamma_adjust;
 
 	Layer_Bitmap();
+	~Layer_Bitmap()	{ 
+	if(cs_!=NULL) cairo_surface_destroy(cs_); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 

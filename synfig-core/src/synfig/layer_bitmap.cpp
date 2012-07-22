@@ -63,6 +63,7 @@ using namespace etl;
 synfig::Layer_Bitmap::Layer_Bitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	method			(SOFTWARE),
+	cs_				(NULL),
 	tl				(-0.5,0.5),
 	br				(0.5,-0.5),
 	c				(1),
