@@ -389,7 +389,7 @@ synfig::cairorender(
 		// Loop through every pixel in row
 		for(x=0,u=su;x<w;x++,u+=du)
 		{
-			Color c(Color::alpha());
+			CairoColor c(Color::alpha());
 			
 			// Loop through all subpixels
 			for(y2=0,pool=0;y2<a;y2++)
