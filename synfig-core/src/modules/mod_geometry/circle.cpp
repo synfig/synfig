@@ -848,8 +848,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 			// Now clear a hole on the surface with out_radius
 			cairo_save(cr);
 			// This is the scale and translation values
-			double tx((br[0]-tl[0])/2/pw);
-			double ty((br[1]-tl[1])/2/ph);
+			double tx(-tl[0]/pw);
+			double ty(-tl[1]/ph);
 			double sx(1/pw);
 			double sy(1/ph);
 			
@@ -888,8 +888,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				double width (inter_max[0]-inter_min[0]);
 				double height(inter_max[1]-inter_min[1]);
 				// This is the scale and translation values
-				double tx((br[0]-tl[0])/2/pw);
-				double ty((br[1]-tl[1])/2/ph);
+				double tx(-tl[0]/pw);
+				double ty(-tl[1]/ph);
 				double sx(1/pw);
 				double sy(1/ph);
 				

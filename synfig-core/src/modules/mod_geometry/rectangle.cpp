@@ -628,7 +628,7 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			// Modify the Render Description to render on the intersection.
 			// this will modify the w and h values in pixels.
 			RendDesc desc(renddesc);
-			//desc.set_flags(0);
+			desc.set_flags(0);
 			desc.set_tl(Point(inter.get_min()[0], inter.get_max()[1]));
 			desc.set_br(Point(inter.get_max()[0], inter.get_min()[1]));
 			// create a new similar surface with the wxh dimensions
@@ -646,8 +646,8 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			cairo_save(cr);
 			double width (inter_max[0]-inter_min[0]);
 			double height(inter_max[1]-inter_min[1]);
-			double tx((br[0]-tl[0])/2/pw);
-			double ty((br[1]-tl[1])/2/ph);
+			double tx(-tl[0]/pw);
+			double ty(-tl[1]/ph);
 			double sx(1/pw);
 			double sy(1/ph);  
 			cairo_set_source_surface(cr, subimage, (inter_min[0]-tl[0])/pw, (inter_max[1]-tl[1])/ph);
@@ -682,8 +682,8 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			cairo_save(subcr);
 			double width (inter_max[0]-inter_min[0]);
 			double height(inter_max[1]-inter_min[1]);
-			double tx((br[0]-tl[0])/2/pw);
-			double ty((br[1]-tl[1])/2/ph);
+			double tx(-tl[0]/pw);
+			double ty(-tl[1]/ph);
 			double sx(1/pw);
 			double sy(1/ph);  
 			cairo_translate(subcr, tx , ty);
@@ -732,8 +732,8 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	cairo_set_source_rgba(cr, r, g, b, a);
 	double width (inter_max[0]-inter_min[0]);
 	double height(inter_max[1]-inter_min[1]);
-	double tx((br[0]-tl[0])/2/pw);
-	double ty((br[1]-tl[1])/2/ph);
+	double tx(-tl[0]/pw);
+	double ty(-tl[1]/ph);
 	double sx(1/pw);
 	double sy(1/ph);  
 	cairo_translate(cr, tx , ty);
