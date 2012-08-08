@@ -860,7 +860,7 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 			cairo_paint(cr);
 			cairo_restore(cr);
-			// ADD feather here
+			// and add the feather
 			///////////////////
 			if(!is_solid_color())  // this means that it is just opaque.
 			{
@@ -902,9 +902,52 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_set_operator(cr, CAIRO_OPERATOR_DEST_OVER);
 				cairo_paint(cr);
 				cairo_restore(cr);
-				cairo_restore(cr);
 			}
 
+			cairo_destroy(cr);
+			return true;
+		}
+		else // inverted but semitransparent
+		{
+			// Initially render what's behind us
+			if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+			{
+				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+				cairo_destroy(cr);
+				return false;
+			}
+			// Now let's render the inverted circle in other surface
+			// Initially I'll fill it completely with the alpha color
+			// Create a similar image with the same dimensions than the current renddesc
+			cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
+			cairo_t* subcr=cairo_create(subimage);
+			cairo_set_source_rgba(subcr, r, g, b, a);
+			cairo_paint(subcr);
+			// now remove the area of the intersection circle
+			cairo_save(subcr);
+			// This is the scale and translation values
+			double tx(-tl[0]/pw);
+			double ty(-tl[1]/ph);
+			double sx(1/pw);
+			double sy(1/ph);
+			
+			cairo_translate(subcr, tx , ty);
+			cairo_scale(subcr, sx, sy);
+			cairo_arc(subcr, origin[0], origin[1], out_radius, 0., 2*M_PI);
+			cairo_clip(subcr);
+			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(subcr);
+			cairo_restore(subcr);
+			// add the feather here
+			///////////////////////
+			// now let's paint the inverted circle with the hole on the rendered context
+			cairo_save(cr);
+			cairo_set_source_surface(cr, subimage, 0, 0);
+			cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
+			cairo_paint_with_alpha(cr, get_amount());
+			cairo_restore(cr);
+			cairo_surface_destroy(subimage);
+			cairo_destroy(subcr);
 			cairo_destroy(cr);
 			return true;
 		}
