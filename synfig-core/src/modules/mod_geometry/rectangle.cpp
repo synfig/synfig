@@ -567,11 +567,10 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	if(is_disabled())
 		return context.accelerated_cairorender(surface,quality,renddesc,cb);
 	
-	Color dcolor(color/*.premult_alpha()*/);
-	const float r(dcolor.get_r());
-	const float g(dcolor.get_g());
-	const float b(dcolor.get_b());
-	const float a(dcolor.get_a());
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
 	
 	const Point	tl(renddesc.get_tl());
 	const Point br(renddesc.get_br());
