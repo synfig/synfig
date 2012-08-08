@@ -825,22 +825,27 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	
 	if(invert)
 	{
-		if(is_solid_color())
+		if(
+		   is_solid_color()
+		   ||
+		   (get_blend_method() == Color::BLEND_COMPOSITE &&
+		   get_amount() == 1.0f &&
+		   color.get_a() == 1.0f)
+		   )
 		{
-			// The circle is inverted and is solid color
-			// Then fill the surface with the color intially
+			// Fill the surface with the color intially
 			cairo_save(cr);
 			cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
 			cairo_paint(cr);
 			cairo_restore(cr);
 			
-			// Check for the case where there is nothing to render
+			// Check for the case where there is nothing else to render
 			if (degenerated)
 			{
 				cairo_destroy(cr);
 				return true;
 			}
-			// Since it is solid color it means that we don't need to render the context
+			// Now clear a hole on the surface with out_radius
 			cairo_save(cr);
 			// This is the scale and translation values
 			double tx((br[0]-tl[0])/2/pw);
@@ -855,10 +860,53 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 			cairo_paint(cr);
 			cairo_restore(cr);
-			cairo_destroy(cr);
 			// ADD feather here
-			return true;
+			///////////////////
+			if(!is_solid_color())  // this means that it is just opaque.
+			{
+				// Since it is opaque it means that we don't need to render the context
+				// beyond the outer radius
+				// First modify the Render Description to render on the intersection only.
+				// this will modify the w and h values in pixels.
+				RendDesc desc(renddesc);
+				//desc.set_flags(0);
+				desc.set_tl(Point(inter.get_min()[0], inter.get_max()[1]));
+				desc.set_br(Point(inter.get_max()[0], inter.get_min()[1]));
+				// create a new similar surface with the wxh dimensions
+				cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(), desc.get_h());
+				// Render what is behind us
+				if(!context.accelerated_cairorender(subimage,quality,desc,cb))
+				{
+					if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+					{
+						cairo_surface_destroy(subimage);
+						cairo_destroy(cr);
+						return false;
+					}
+				}
+				
+				double width (inter_max[0]-inter_min[0]);
+				double height(inter_max[1]-inter_min[1]);
+				// This is the scale and translation values
+				double tx((br[0]-tl[0])/2/pw);
+				double ty((br[1]-tl[1])/2/ph);
+				double sx(1/pw);
+				double sy(1/ph);
+				
+				cairo_save(cr);
+				cairo_set_source_surface(cr, subimage, (inter_min[0]-tl[0])/pw, (inter_max[1]-tl[1])/ph);
+				cairo_translate(cr, tx , ty);
+				cairo_scale(cr, sx, sy);
+				cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+				cairo_clip(cr);
+				cairo_set_operator(cr, CAIRO_OPERATOR_DEST_OVER);
+				cairo_paint(cr);
+				cairo_restore(cr);
+				cairo_restore(cr);
+			}
 
+			cairo_destroy(cr);
+			return true;
 		}
 		
 	}
