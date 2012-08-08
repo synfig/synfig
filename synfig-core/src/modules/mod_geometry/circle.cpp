@@ -412,10 +412,10 @@ Circle::get_color(Context context, const Point &point)const
 	}
 }
 
-Color NormalBlend(Color a, Color b, float amount)
-{
-	return (b-a)*amount+a;
-}
+//Color NormalBlend(Color a, Color b, float amount)
+//{
+//	return (b-a)*amount+a;
+//}
 
 
 bool
@@ -751,6 +751,132 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	return true;
 }
+
+///////////
+
+bool
+Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// trivial case
+	if(is_disabled() || (radius==0 && invert==false && !feather))
+		return context.accelerated_cairorender(surface,quality, renddesc, cb);
+
+	// Grab the rgba values
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+	
+	// Another trivial case
+	if(invert && radius==0 && is_solid_color())
+	{
+		cairo_t* cr=cairo_create(surface);
+		cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
+		cairo_paint(cr);
+		cairo_restore(cr);
+		cairo_destroy(cr);
+		if(cb && !cb->amount_complete(10000,10000))
+			return false;
+		return true;
+	}
+	
+	// Window Boundaries
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+		
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	// True if circle is degenerated (in_radius <0)
+	bool degenerated(false);
+	
+	// Don't render feathering at all when quality is 10
+	// Cairo will take care of the anti-aliased appaerance
+	const Real newfeather = (quality == 10) ? 0 : feather;
+
+	const Real in_radius=radius-newfeather>0?radius-newfeather:0;
+	const Real out_radius=radius+newfeather;
+	const Point
+			out_bl(origin-Point(out_radius, out_radius)),
+			out_tr(origin+Point(out_radius, out_radius)),
+			in_bl(origin-Point(in_radius, in_radius)),
+			in_tr(origin+Point(in_radius, in_radius));
+	
+	// if tr and bl are swaped then the circle is degenerated
+	if(out_bl[0] > out_tr[0] || out_bl[1]>out_tr[1]) degenerated=true;
+	
+	cairo_t* cr=cairo_create(surface);
+	// This is a rectangle with the same dimensions of the outer circle
+	const Rect shape(out_bl, out_tr);
+	// This is a rectangle with the same dimensions of the canvas
+	const Rect dest(tl, br);
+	Rect inter(dest);
+	// inter holds the intersection rectangle of canvas and circle.
+	inter&=shape;
+	
+	Point inter_min(inter.get_min());
+	Point inter_max(inter.get_max());
+
+	//let the rendering begin
+	SuperCallback supercb(cb,0,9000,10000);
+	
+	if(invert)
+	{
+		if(is_solid_color())
+		{
+			// The circle is inverted and is solid color
+			// Then fill the surface with the color intially
+			cairo_save(cr);
+			cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
+			cairo_paint(cr);
+			cairo_restore(cr);
+			
+			// Check for the case where there is nothing to render
+			if (degenerated)
+			{
+				cairo_destroy(cr);
+				return true;
+			}
+			// Since it is solid color it means that we don't need to render the context
+			cairo_save(cr);
+			// This is the scale and translation values
+			double tx((br[0]-tl[0])/2/pw);
+			double ty((br[1]-tl[1])/2/ph);
+			double sx(1/pw);
+			double sy(1/ph);
+			
+			cairo_translate(cr, tx , ty);
+			cairo_scale(cr, sx, sy);
+			cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
+			cairo_clip(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(cr);
+			cairo_restore(cr);
+			cairo_destroy(cr);
+			// ADD feather here
+			return true;
+
+		}
+		
+	}
+	else // not inverted
+	{
+		
+	}
+	
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+	
+	return true;
+}
+
+
+///////////
+
 
 Rect
 Circle::get_bounding_rect()const
