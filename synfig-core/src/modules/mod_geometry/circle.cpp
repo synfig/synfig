@@ -1004,8 +1004,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				   cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
 				   cairo_clip(cr);
 				   cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
-				   cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
-				   cairo_paint(cr);
+				   cairo_set_source_rgba(cr, r, g, b, a);
+				   cairo_paint_with_alpha(cr, get_amount());
 				   cairo_restore(cr);
 				   cairo_destroy(cr);
 				   return true;
