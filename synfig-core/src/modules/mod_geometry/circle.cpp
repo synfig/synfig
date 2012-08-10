@@ -775,8 +775,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 		cairo_paint(cr);
 		cairo_restore(cr);
 		cairo_destroy(cr);
-		if(cb && !cb->amount_complete(10000,10000))
-			return false;
 		return true;
 	}
 	
@@ -911,9 +909,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					cairo_restore(cr);
 				}
 				cairo_destroy(cr);
-				// Mark our progress as finished
-				if(cb && !cb->amount_complete(10000,10000))
-					return false;
 				return true;
 			}
 			else // inverted but semitransparent
@@ -956,9 +951,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_surface_destroy(subimage);
 				cairo_destroy(subcr);
 				cairo_destroy(cr);
-				// Mark our progress as finished
-				if(cb && !cb->amount_complete(10000,10000))
-					return false;
 				return true;
 			}
 			
@@ -1016,9 +1008,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				   cairo_paint(cr);
 				   cairo_restore(cr);
 				   cairo_destroy(cr);
-				   // Mark our progress as finished
-				   if(cb && !cb->amount_complete(10000,10000))
-					   return false;
 				   return true;
    			   }
 		}
@@ -1027,11 +1016,7 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	{
 		
 	}
-	
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
+	cairo_destroy(cr);
 	return true;
 }
 
