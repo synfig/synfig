@@ -788,7 +788,7 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
 	
-	// True if circle is degenerated (in_radius <0)
+	// True if circle is degenerated (out_radius <0)
 	bool degenerated(false);
 	
 	// Don't render feathering at all when quality is 10
@@ -1014,6 +1014,36 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	}
 	else // feathered circle
 	{
+		if(invert)
+		{
+			// Draw the inverted feathered circle
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
+				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, a);
+				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, 0);
+				// Now draw the circle with the out_radius
+				cairo_save(cr);
+				// This is the scale and translation values
+				double tx(-tl[0]/pw);
+				double ty(-tl[1]/ph);
+				double sx(1/pw);
+				double sy(1/ph);
+				
+				cairo_translate(cr, tx , ty);
+				cairo_scale(cr, sx, sy);
+				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+				cairo_set_source(cr, gradient);
+				cairo_paint_with_alpha(cr, get_amount());
+				cairo_restore(cr);
+				cairo_pattern_destroy(gradient);
+				cairo_destroy(cr);
+				return true;
+
+			
+		}
+		else
+		{
+			
+		}
 		
 	}
 	cairo_destroy(cr);
