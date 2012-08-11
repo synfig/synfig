@@ -1016,11 +1016,18 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	{
 		if(invert)
 		{
-			// Draw the inverted feathered circle
+			if(
+			   is_solid_color()
+			   ||
+			   (get_blend_method() == Color::BLEND_COMPOSITE &&
+				get_amount() == 1.0f &&
+				color.get_a() == 1.0f)
+			   )
+			{
+				// Draw the inverted feathered circle
 				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
-				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, a);
-				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, 0);
-				// Now draw the circle with the out_radius
+				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
+				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
 				cairo_save(cr);
 				// This is the scale and translation values
 				double tx(-tl[0]/pw);
@@ -1032,17 +1039,153 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_scale(cr, sx, sy);
 				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 				cairo_set_source(cr, gradient);
-				cairo_paint_with_alpha(cr, get_amount());
+				cairo_paint(cr);
+				cairo_pattern_destroy(gradient); // Not needed more
 				cairo_restore(cr);
-				cairo_pattern_destroy(gradient);
+				// Check for the case where there is nothing else to render
+				if (degenerated)
+				{
+					cairo_destroy(cr);
+					return true;
+				}
+				if(!is_solid_color())  // this means that it is just opaque.
+				{
+					// Since it is opaque it means that we don't
+					// need to render the context beyond the outer radius
+					// So first, modify the Render Description to render on
+					// the intersection only.
+					RendDesc desc(renddesc);
+					//desc.set_flags(0);
+					// this will modify the w and h values in pixels.
+					desc.set_tl(Point(inter_out_min[0], inter_out_max[1]));
+					desc.set_br(Point(inter_out_max[0], inter_out_min[1]));
+					// create a new similar surface with the wxh dimensions
+					cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(), desc.get_h());
+					// Render what is behind us
+					if(!context.accelerated_cairorender(subimage,quality,desc,cb))
+					{
+						if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+						{
+							cairo_surface_destroy(subimage);
+							cairo_destroy(cr);
+							return false;
+						}
+					}
+					// Now, place the rendered surface behind the inverted circle.
+					// remember that the circle has Composite blend method at
+					// this point
+					double width (inter_out_max[0]-inter_out_min[0]);
+					double height(inter_out_max[1]-inter_out_min[1]);
+					// This is the scale and translation values
+					double tx(-tl[0]/pw);
+					double ty(-tl[1]/ph);
+					double sx(1/pw);
+					double sy(1/ph);
+					
+					cairo_save(cr);
+					cairo_set_source_surface(cr, subimage, (inter_out_min[0]-tl[0])/pw, (inter_out_max[1]-tl[1])/ph);
+					cairo_translate(cr, tx , ty);
+					cairo_scale(cr, sx, sy);
+					cairo_rectangle(cr, inter_out_min[0], inter_out_min[1], width, height);
+					cairo_clip(cr);
+					cairo_set_operator(cr, CAIRO_OPERATOR_DEST_OVER);
+					cairo_paint(cr);
+					cairo_restore(cr);
+					cairo_surface_destroy(subimage);
+					cairo_pattern_destroy(gradient);
+					cairo_destroy(cr);
+					return true;
+				}
+			}
+			else //inverted and semi transparent
+			{
+				// Initially render what's behind us
+				if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+				{
+					if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+					cairo_destroy(cr);
+					return false;
+				}
+				// Draw the inverted feathered circle
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
+				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
+				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
+				cairo_save(cr);
+				// This is the scale and translation values
+				double tx(-tl[0]/pw);
+				double ty(-tl[1]/ph);
+				double sx(1/pw);
+				double sy(1/ph);
+				
+				cairo_translate(cr, tx , ty);
+				cairo_scale(cr, sx, sy);
+				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+				cairo_set_source(cr, gradient);
+				cairo_paint_with_alpha(cr, get_amount());
+				cairo_pattern_destroy(gradient); // Not needed more
+				cairo_restore(cr);
 				cairo_destroy(cr);
 				return true;
-
+			}
 			
 		}
-		else
+		else // not inverted
 		{
-			
+			// check if the circle covers completely the canvas
+			// and it is full opaque
+			if(
+			   (
+				is_solid_color()
+				||
+				(get_blend_method() == Color::BLEND_COMPOSITE &&
+				 get_amount() == 1.0f &&
+				 color.get_a() == 1.0f)
+				)
+			   &&
+			   inter_in==dest
+			   )
+			{
+				// Fill the surface with the color
+				cairo_save(cr);
+				cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
+				cairo_paint(cr);
+				cairo_restore(cr);
+				cairo_destroy(cr);
+				// Mark our progress as finished
+				if(cb && !cb->amount_complete(10000,10000))
+					return false;
+				return true;	
+			}
+			else
+			{
+				// Initially render what's behind us
+				if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+				{
+					if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+					cairo_destroy(cr);
+					return false;
+				}
+				// Draw the feathered circle
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
+				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
+				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
+				cairo_save(cr);
+				// This is the scale and translation values
+				double tx(-tl[0]/pw);
+				double ty(-tl[1]/ph);
+				double sx(1/pw);
+				double sy(1/ph);
+				
+				cairo_translate(cr, tx , ty);
+				cairo_scale(cr, sx, sy);
+				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+				cairo_set_source(cr, gradient);
+				cairo_paint_with_alpha(cr, get_amount());
+				cairo_pattern_destroy(gradient); // Not needed more
+				cairo_restore(cr);
+				cairo_destroy(cr);
+				return true;
+			}
 		}
 		
 	}
