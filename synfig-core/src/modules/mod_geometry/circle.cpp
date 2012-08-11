@@ -787,6 +787,12 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	// Width and Height of a pixel
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
+
+	// These are the scale and translation values
+	const double tx(-tl[0]/pw);
+	const double ty(-tl[1]/ph);
+	const double sx(1/pw);
+	const double sy(1/ph);
 	
 	// True if circle is degenerated (out_radius <0)
 	bool degenerated(false);
@@ -851,12 +857,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				}
 				// Now clear a hole on the surface with out_radius
 				cairo_save(cr);
-				// This is the scale and translation values
-				double tx(-tl[0]/pw);
-				double ty(-tl[1]/ph);
-				double sx(1/pw);
-				double sy(1/ph);
-				
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
 				cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
@@ -892,12 +892,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					// this point
 					double width (inter_out_max[0]-inter_out_min[0]);
 					double height(inter_out_max[1]-inter_out_min[1]);
-					// This is the scale and translation values
-					double tx(-tl[0]/pw);
-					double ty(-tl[1]/ph);
-					double sx(1/pw);
-					double sy(1/ph);
-					
 					cairo_save(cr);
 					cairo_set_source_surface(cr, subimage, (inter_out_min[0]-tl[0])/pw, (inter_out_max[1]-tl[1])/ph);
 					cairo_translate(cr, tx , ty);
@@ -929,12 +923,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_paint(subcr);
 				// now remove the area of the intersection circle
 				cairo_save(subcr);
-				// This is the scale and translation values
-				double tx(-tl[0]/pw);
-				double ty(-tl[1]/ph);
-				double sx(1/pw);
-				double sy(1/ph);
-				
 				cairo_translate(subcr, tx , ty);
 				cairo_scale(subcr, sx, sy);
 				cairo_arc(subcr, origin[0], origin[1], out_radius, 0., 2*M_PI);
@@ -993,12 +981,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				   }
 				   // Now draw the circle with the out_radius
 				   cairo_save(cr);
-				   // This is the scale and translation values
-				   double tx(-tl[0]/pw);
-				   double ty(-tl[1]/ph);
-				   double sx(1/pw);
-				   double sy(1/ph);
-				   
 				   cairo_translate(cr, tx , ty);
 				   cairo_scale(cr, sx, sy);
 				   cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
@@ -1029,12 +1011,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
 				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
 				cairo_save(cr);
-				// This is the scale and translation values
-				double tx(-tl[0]/pw);
-				double ty(-tl[1]/ph);
-				double sx(1/pw);
-				double sy(1/ph);
-				
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
 				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
@@ -1076,12 +1052,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					// this point
 					double width (inter_out_max[0]-inter_out_min[0]);
 					double height(inter_out_max[1]-inter_out_min[1]);
-					// This is the scale and translation values
-					double tx(-tl[0]/pw);
-					double ty(-tl[1]/ph);
-					double sx(1/pw);
-					double sy(1/ph);
-					
 					cairo_save(cr);
 					cairo_set_source_surface(cr, subimage, (inter_out_min[0]-tl[0])/pw, (inter_out_max[1]-tl[1])/ph);
 					cairo_translate(cr, tx , ty);
@@ -1111,12 +1081,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
 				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
 				cairo_save(cr);
-				// This is the scale and translation values
-				double tx(-tl[0]/pw);
-				double ty(-tl[1]/ph);
-				double sx(1/pw);
-				double sy(1/ph);
-				
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
 				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
@@ -1170,12 +1134,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
 				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
 				cairo_save(cr);
-				// This is the scale and translation values
-				double tx(-tl[0]/pw);
-				double ty(-tl[1]/ph);
-				double sx(1/pw);
-				double sy(1/ph);
-				
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
 				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
@@ -1186,8 +1144,7 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_destroy(cr);
 				return true;
 			}
-		}
-		
+		}		
 	}
 	cairo_destroy(cr);
 	return true;
