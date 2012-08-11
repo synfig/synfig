@@ -115,6 +115,7 @@ public:
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
+	void compile_gradient(cairo_pattern_t* gradient, CircleDataCache cache, FALLOFF_FUNC *func)const;
 };
 
 /* -- E X T E R N S --------------------------------------------------------- */

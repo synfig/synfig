@@ -803,6 +803,26 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 
 	const Real in_radius=radius-newfeather>0?radius-newfeather:0;
 	const Real out_radius=radius+newfeather;
+
+	const Real inner_radius = radius-newfeather>0 ? radius-newfeather : 0;
+	const Real outer_radius = radius+newfeather;
+	
+	const Real inner_radius_sqd = inner_radius*inner_radius;
+	const Real outer_radius_sqd = outer_radius*outer_radius;
+	
+	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,radius);//4.0*radius*newfeather;
+	const Real double_feather = newfeather * 2.0;
+	
+	//Compile the temporary cache for the falloff calculations
+	FALLOFF_FUNC *func = GetFalloffFunc();
+	
+	const CircleDataCache cache =
+	{
+		inner_radius,outer_radius,
+		inner_radius_sqd,outer_radius_sqd,
+		diff_radii_sqd,double_feather
+	};
+	
 	const Point
 			out_bl(origin-Point(out_radius, out_radius)),
 			out_tr(origin+Point(out_radius, out_radius)),
@@ -1007,9 +1027,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 			   )
 			{
 				// Draw the inverted feathered circle
-				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
-				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
-				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], in_radius, origin[0], origin[1], out_radius);
+				compile_gradient(gradient, cache, func);
 				cairo_save(cr);
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
@@ -1077,9 +1096,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					return false;
 				}
 				// Draw the inverted feathered circle
-				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
-				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
-				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], in_radius, origin[0], origin[1], out_radius);
+				compile_gradient(gradient, cache, func);
 				cairo_save(cr);
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
@@ -1130,9 +1148,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					return false;
 				}
 				// Draw the feathered circle
-				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], out_radius, origin[0], origin[1], in_radius);
-				cairo_pattern_add_color_stop_rgba(gradient, 0.0, r, g, b, falloff_func(cache,out_radius*out_radius));
-				cairo_pattern_add_color_stop_rgba(gradient, 1.0, r, g, b, falloff_func(cache,in_radius*in_radius));
+				cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], in_radius, origin[0], origin[1], out_radius);
+				compile_gradient(gradient, cache, func);
 				cairo_save(cr);
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
@@ -1150,6 +1167,24 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	return true;
 }
 
+
+void
+Circle::compile_gradient(cairo_pattern_t* gradient, CircleDataCache mycache, FALLOFF_FUNC *func)const
+{
+	double index;
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+	for(index=0.0;index<=1.0;index+=0.1)
+	{
+		double radius=mycache.inner_radius+index*(mycache.outer_radius-mycache.inner_radius);
+		double alpha=func(mycache, radius*radius);
+		if(alpha>1.0) alpha =1.0;
+		if(alpha<0.0) alpha =0.0;
+		cairo_pattern_add_color_stop_rgba(gradient, index, r, g, b, a*alpha);
+	}
+}
 
 ///////////
 
