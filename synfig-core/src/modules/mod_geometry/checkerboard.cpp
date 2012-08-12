@@ -230,9 +230,11 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
 
-	// These are translation values
+	// These are translation and scale values
 	const double tx(-tl[0]/pw);
 	const double ty(-tl[1]/ph);
+	const double sx(1/pw);
+	const double sy(1/ph);
 	
 	Point newsize(size);
 	if(newsize[0] <0.0) newsize[0]=-newsize[0];
@@ -256,7 +258,7 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	cairo_translate(subcr, subtx , subty);
 	cairo_scale(subcr, subsx, subsy);
 	cairo_set_source_rgba(subcr, r, g, b, a);
-	cairo_rectangle(subcr, origin[0]-newsize[0], origin[1]-newsize[1], newsize[0], newsize[1]);
+	cairo_rectangle(subcr, origin[0]-newsize[0], origin[1], newsize[0], newsize[1]);
 	cairo_clip(subcr);
 	cairo_paint_with_alpha(subcr, get_amount());
 	cairo_restore(subcr);
@@ -264,14 +266,14 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	cairo_translate(subcr, subtx , subty);
 	cairo_scale(subcr, subsx, subsy);
 	cairo_set_source_rgba(subcr, r, g, b, a);
-	cairo_rectangle(subcr, origin[0], origin[1], newsize[0], newsize[1]);
+	cairo_rectangle(subcr, origin[0], origin[1]-newsize[1], newsize[0], newsize[1]);
 	cairo_clip(subcr);
 	cairo_paint_with_alpha(subcr, get_amount());
 	cairo_restore(subcr);
 	
 	cairo_t* cr=cairo_create(surface);
 	cairo_save(cr);
-	cairo_translate(cr, tx , ty);
+	cairo_translate(cr, tx+origin[0]*sx , ty+origin[1]*sy);
 	cairo_pattern_t* pattern=cairo_pattern_create_for_surface(subimage);
 	cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
 	cairo_set_source(cr, pattern);
@@ -280,7 +282,7 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	else
 		cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
 	cairo_paint_with_alpha(cr, get_amount());
-	
+	cairo_restore(cr);
 	cairo_surface_destroy(subimage);
 	cairo_pattern_destroy(pattern);
 	cairo_destroy(subcr);
