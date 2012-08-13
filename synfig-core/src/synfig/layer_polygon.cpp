@@ -245,6 +245,8 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 		cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_EVEN_ODD);
 		break;
 	}
+	if(!antialias)
+		cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
 	cairo_fill(subcr);
 	cairo_restore(subcr);
 	
