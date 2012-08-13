@@ -62,9 +62,9 @@ private:
 	//internal caching
 	struct Intersector;
 	Intersector	*edge_table;
-
+protected:
 	//exported data
-	Color 					color;
+	Color 	color;
 
 	Point 	origin;
 	bool	invert;
@@ -73,7 +73,7 @@ private:
 	int		blurtype;
 	Real	feather;
 	WindingStyle winding_style;
-
+private:
 	std::vector< char > 	bytestream;
 
 	//for use in creating the bytestream

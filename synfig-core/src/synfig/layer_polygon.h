@@ -88,6 +88,8 @@ public:
 private:
 	class 		PolySpan;
 	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;
+	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 }; // END of Layer_Polygon
 
 }; // END of namespace synfig

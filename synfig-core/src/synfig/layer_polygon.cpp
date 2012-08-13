@@ -179,3 +179,89 @@ Layer_Polygon::get_param_vocab()const
 
 	return ret;
 }
+
+
+/////////
+bool
+Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	synfig::info("rendering Cairo polygon");
+
+	// Grab the rgba values
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+
+	// Window Boundaries
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	// These are the scale and translation values
+	const double sx(1/pw);
+	const double sy(1/ph);
+	const double tx((-tl[0]+origin[0])*sx);
+	const double ty((-tl[1]+origin[1])*sy);
+
+	cairo_t* cr=cairo_create(surface);
+	// Let's render the polygon in other surface
+	// Initially I'll fill it completely with the alpha color
+	// Create a similar image with the same dimensions than the current renddesc
+	cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
+	cairo_t* subcr=cairo_create(subimage);
+	cairo_save(subcr);
+	cairo_set_source_rgba(subcr, r, g, b, a);
+	// Now let's check if it is inverted
+	if(invert)
+	{
+		cairo_paint(subcr);
+	}
+	// Draw the polygon
+	cairo_save(subcr);
+	cairo_translate(subcr, tx , ty);
+	cairo_scale(subcr, sx, sy);
+	int i,pointcount=vector_list.size();
+	for(i=0;i<pointcount; i++)
+	{
+		cairo_line_to(subcr, vector_list[i][0], vector_list[i][1]);
+	}
+	cairo_close_path(subcr);
+	if(invert)
+		cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+	else
+		cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
+
+	cairo_fill(subcr);
+	cairo_restore(subcr);
+	
+	// ADD FEATHER HERE
+	
+	// Put the polygon on the surface
+	if(!is_solid_color()) // we need to render the context before
+		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+		{
+			if(cb)
+				cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			cairo_destroy(cr);
+			cairo_destroy(subcr);
+			cairo_surface_destroy(subimage);
+			return false;
+		}
+	cairo_set_source_surface(cr, subimage, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+	cairo_paint_with_alpha(cr, get_amount());
+	cairo_restore(cr);
+	cairo_surface_destroy(subimage);
+	cairo_destroy(subcr);
+	cairo_destroy(cr);
+
+	return true;
+}
+
+/////////
