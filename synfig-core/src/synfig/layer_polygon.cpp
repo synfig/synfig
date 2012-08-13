@@ -212,8 +212,58 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 	cairo_t* cr=cairo_create(surface);
 	// Let's render the polygon in other surface
 	// Initially I'll fill it completely with the alpha color
-	// Create a similar image with the same dimensions than the current renddesc
-	cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
+	cairo_surface_t* subimage;
+	// Let's calculate the subimage dimensions based on the feather value
+	//so make a separate surface
+	RendDesc	workdesc(renddesc);
+	int halfsizex(0), halfsizey(0);
+	if(feather && quality != 10)
+	{
+		//the expanded size = 1/2 the size in each direction rounded up
+		halfsizex = (int) (abs(feather*.5/pw) + 3),
+		halfsizey = (int) (abs(feather*.5/ph) + 3);
+		
+		//expand by 1/2 size in each direction on either side
+		switch(blurtype)
+		{
+			case Blur::DISC:
+			case Blur::BOX:
+			case Blur::CROSS:
+			{
+				workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+				break;
+			}
+			case Blur::FASTGAUSSIAN:
+			{
+				if(quality < 4)
+				{
+					halfsizex*=2;
+					halfsizey*=2;
+				}
+				workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+				break;
+			}
+			case Blur::GAUSSIAN:
+			{
+#define GAUSSIAN_ADJUSTMENT		(0.05)
+				Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+				Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+				
+				pw=pw*pw;
+				ph=ph*ph;
+				
+				halfsizex = (int)(abs(pw)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+				halfsizey = (int)(abs(ph)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+				
+				halfsizex = (halfsizex + 1)/2;
+				halfsizey = (halfsizey + 1)/2;
+				workdesc.set_subwindow( -halfsizex, -halfsizey, w+2*halfsizex, h+2*halfsizey );
+				break;
+#undef GAUSSIAN_ADJUSTMENT
+			}
+		}
+	}
+	subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, workdesc.get_w(), workdesc.get_h());
 	cairo_t* subcr=cairo_create(subimage);
 	cairo_save(subcr);
 	cairo_set_source_rgba(subcr, r, g, b, a);
@@ -247,12 +297,42 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 	}
 	if(!antialias)
 		cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
+
 	cairo_fill(subcr);
 	cairo_restore(subcr);
+	if(feather && quality!=10)
+	{
+		etl::surface<float>	shapesurface;
+		shapesurface.set_wh(workdesc.get_w(),workdesc.get_h());
+		shapesurface.clear();
+
+		CairoSurface cairosubimage(subimage);
+		if(!cairosubimage.map_cairo_image())
+		{
+			synfig::info("map cairo image failed");
+			return false;
+		}
+		// Extract the alpha values:
+		int x, y;
+		int wh(workdesc.get_h()), ww(workdesc.get_w());
+		for(y=0; y<wh; y++)
+			for(x=0;x<ww;x++)
+				shapesurface[y][x]=cairosubimage[y][x].get_a()/CairoColor::ceil;
+		// Blue the alpha values
+		Blur(feather,feather,blurtype,cb)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
+		// repaint the cairosubimage with the result
+		CairoColor ccolor(color);
+		for(y=0; y<wh; y++)
+			for(x=0;x<ww;x++)
+			{
+				float a=shapesurface[y][x];
+				cairosubimage[y][x]=(ccolor*a).set_a((unsigned char)a/Color::ceil);
+			}
+		
+		cairosubimage.unmap_cairo_image();
+	}
 	
-	// ADD FEATHER HERE
-	
-	// Put the polygon on the surface
+	// Put the (feathered) polygon on the surface
 	if(!is_solid_color()) // we need to render the context before
 		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
 		{
@@ -263,7 +343,9 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 			cairo_surface_destroy(subimage);
 			return false;
 		}
-	cairo_set_source_surface(cr, subimage, 0, 0);
+	double px(tl[0]-workdesc.get_tl()[0]);
+	double py(tl[1]-workdesc.get_tl()[1]);
+	cairo_set_source_surface(cr, subimage, px, py );
 	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 	cairo_paint_with_alpha(cr, get_amount());
 	cairo_restore(cr);
