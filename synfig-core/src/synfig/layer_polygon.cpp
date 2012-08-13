@@ -236,7 +236,15 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 		cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
 	else
 		cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
-
+	switch(winding_style)
+	{
+		case WINDING_NON_ZERO:
+		cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_WINDING);
+		break;
+		default:
+		cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_EVEN_ODD);
+		break;
+	}
 	cairo_fill(subcr);
 	cairo_restore(subcr);
 	
