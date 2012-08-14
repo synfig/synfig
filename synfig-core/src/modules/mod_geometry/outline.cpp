@@ -867,5 +867,228 @@ Outline::get_param_vocab()const
 bool
 Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	if(quality>6)
+	{
+		synfig::info("rendering Cairo Outline");
+		std::vector<synfig::Segment> segments;
+		
+		// Grab the rgba values
+		const float r(color.get_r());
+		const float g(color.get_g());
+		const float b(color.get_b());
+		const float a(color.get_a());
+		
+		// Window Boundaries
+		const Point	tl(renddesc.get_tl());
+		const Point br(renddesc.get_br());
+		const int	w(renddesc.get_w());
+		const int	h(renddesc.get_h());
+		
+		// Width and Height of a pixel
+		const Real pw = (br[0] - tl[0]) / w;
+		const Real ph = (br[1] - tl[1]) / h;
+		
+		// These are the scale and translation values
+		const double sx(1/pw);
+		const double sy(1/ph);
+		const double tx((-tl[0]+origin[0])*sx);
+		const double ty((-tl[1]+origin[1])*sy);
+		
+		if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
+			segments=convert_bline_to_segment_list(bline);
+		else if(bline.get_contained_type()==ValueBase::TYPE_SEGMENT)
+			segments=vector<synfig::Segment>(bline.get_list().begin(), bline.get_list().end());
+		else
+		{
+			synfig::warning("Region: incorrect type on bline, layer disabled");
+			return false;
+		}
+		
+		if(segments.empty())
+		{
+			synfig::warning("Region: segment_list is empty, layer disabled");
+			return false;
+		}
+		
+		cairo_t* cr=cairo_create(surface);
+		// Let's render the region in other surface
+		// Initially I'll fill it completely with the alpha color
+		cairo_surface_t* subimage;
+		// Let's calculate the subimage dimensions based on the feather value
+		//so make a separate surface
+		RendDesc	workdesc(renddesc);
+		int halfsizex(0), halfsizey(0);
+		if(feather && quality != 10)
+		{
+			//the expanded size = 1/2 the size in each direction rounded up
+			halfsizex = (int) (abs(feather*.5/pw) + 3),
+			halfsizey = (int) (abs(feather*.5/ph) + 3);
+			
+			//expand by 1/2 size in each direction on either side
+			switch(blurtype)
+			{
+				case Blur::DISC:
+				case Blur::BOX:
+				case Blur::CROSS:
+				{
+					workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+					break;
+				}
+				case Blur::FASTGAUSSIAN:
+				{
+					if(quality < 4)
+					{
+						halfsizex*=2;
+						halfsizey*=2;
+					}
+					workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+					break;
+				}
+				case Blur::GAUSSIAN:
+				{
+	#define GAUSSIAN_ADJUSTMENT		(0.05)
+					Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+					Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+					
+					pw=pw*pw;
+					ph=ph*ph;
+					
+					halfsizex = (int)(abs(pw)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+					halfsizey = (int)(abs(ph)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+					
+					halfsizex = (halfsizex + 1)/2;
+					halfsizey = (halfsizey + 1)/2;
+					workdesc.set_subwindow( -halfsizex, -halfsizey, w+2*halfsizex, h+2*halfsizey );
+					break;
+	#undef GAUSSIAN_ADJUSTMENT
+				}
+			}
+		}
+		subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, workdesc.get_w(), workdesc.get_h());
+		cairo_t* subcr=cairo_create(subimage);
+		cairo_save(subcr);
+		cairo_set_source_rgba(subcr, r, g, b, a);
+		// Now let's check if it is inverted
+		if(invert)
+		{
+			cairo_paint(subcr);
+		}
+		// Draw the region
+		cairo_translate(subcr, tx , ty);
+		cairo_scale(subcr, sx, sy);
+		
+		vector<Segment>::const_iterator iter=segments.begin();
+		double t1x;
+		double t1y;
+		double t2x;
+		double t2y;
+		double p2x;
+		double p2y;
+		double p1x=iter->p1[0];
+		double p1y=iter->p1[1];
+		cairo_move_to(subcr, p1x, p1y);
+		for(;iter!=segments.end();++iter)
+		{
+			t1x=iter->t1[0];
+			t1y=iter->t1[1];
+			t2x=iter->t2[0];
+			t2y=iter->t2[1];
+			p1x=iter->p1[0];
+			p1y=iter->p1[1];
+			p2x=iter->p2[0];
+			p2y=iter->p2[1];
+			cairo_curve_to(subcr, p1x+t1x/3, p1y+t1y/3, p2x-t2x/3, p2y-t2y/3, p2x, p2y);
+		}
+		
+		if(loop_) cairo_close_path(subcr);
+		if(invert)
+			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+		else
+			cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
+		switch(winding_style)
+		{
+			case WINDING_NON_ZERO:
+				cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_WINDING);
+				break;
+			default:
+				cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_EVEN_ODD);
+				break;
+		}
+		if(!antialias)
+			cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
+		
+		cairo_set_line_width(subcr, width+expand);
+		if(sharp_cusps)
+			cairo_set_line_join(subcr, CAIRO_LINE_JOIN_MITER);
+		else
+			cairo_set_line_join(subcr, CAIRO_LINE_JOIN_BEVEL);
+
+		if(round_tip[0] || round_tip[1])
+			cairo_set_line_cap(subcr, CAIRO_LINE_CAP_ROUND);
+		else
+			cairo_set_line_cap(subcr, CAIRO_LINE_CAP_BUTT);
+
+		cairo_stroke(subcr);
+		cairo_restore(subcr);
+		if(feather && quality!=10)
+		{
+			etl::surface<float>	shapesurface;
+			shapesurface.set_wh(workdesc.get_w(),workdesc.get_h());
+			shapesurface.clear();
+			
+			CairoSurface cairosubimage(subimage);
+			if(!cairosubimage.map_cairo_image())
+			{
+				synfig::info("map cairo image failed");
+				return false;
+			}
+			// Extract the alpha values:
+			int x, y;
+			int wh(workdesc.get_h()), ww(workdesc.get_w());
+			for(y=0; y<wh; y++)
+				for(x=0;x<ww;x++)
+					shapesurface[y][x]=cairosubimage[y][x].get_a()/CairoColor::ceil;
+			// Blue the alpha values
+			Blur(feather,feather,blurtype,cb)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
+			// repaint the cairosubimage with the result
+			Color ccolor(color);
+			for(y=0; y<wh; y++)
+				for(x=0;x<ww;x++)
+				{
+					float a=shapesurface[y][x];
+					ccolor.set_a(a);
+					ccolor.clamped();
+					cairosubimage[y][x]=CairoColor(ccolor).premult_alpha();
+				}
+			
+			cairosubimage.unmap_cairo_image();
+		}
+		
+		// Put the (feathered) region on the surface
+		if(!is_solid_color()) // we need to render the context before
+			if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+			{
+				if(cb)
+					cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+				cairo_destroy(cr);
+				cairo_destroy(subcr);
+				cairo_surface_destroy(subimage);
+				return false;
+			}
+		double px(tl[0]-workdesc.get_tl()[0]);
+		double py(tl[1]-workdesc.get_tl()[1]);
+		cairo_save(cr);
+		cairo_set_source_surface(cr, subimage, px, py );
+		cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+		cairo_paint_with_alpha(cr, get_amount());
+		cairo_restore(cr);
+		cairo_surface_destroy(subimage);
+		cairo_destroy(subcr);
+		cairo_destroy(cr);
+		
+		return true;
+	}
+
+
 	return Layer_Polygon::accelerated_cairorender(context, surface, quality, renddesc, cb);
 }
