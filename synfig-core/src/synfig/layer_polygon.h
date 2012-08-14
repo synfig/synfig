@@ -69,6 +69,9 @@ public:
 	**		points that define the polygon's parameter.
 	*/
 	void add_polygon(const std::vector<Point> &point_list);
+	
+	// Places the point_list on the vector_list, for later render as polygon.
+	void upload_polygon(const std::vector<Point> &point_list);
 
 	//! Clears out any polygon data
 	/*!	Also clears out the EdgeTable, so there is no

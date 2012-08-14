@@ -134,6 +134,18 @@ Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 }
 
 void
+Layer_Polygon::upload_polygon(const std::vector<Point> &point_list)
+{
+	vector_list.clear();
+	int i,pointcount=point_list.size();
+	for(i = 0;i < pointcount; i++)
+	{
+		vector_list.push_back(point_list[i]);
+	}
+	
+}
+
+void
 Layer_Polygon::clear()
 {
 	Layer_Shape::clear();
