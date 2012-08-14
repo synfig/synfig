@@ -321,12 +321,14 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 		// Blue the alpha values
 		Blur(feather,feather,blurtype,cb)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
 		// repaint the cairosubimage with the result
-		CairoColor ccolor(color);
+		Color ccolor(color);
 		for(y=0; y<wh; y++)
 			for(x=0;x<ww;x++)
 			{
 				float a=shapesurface[y][x];
-				cairosubimage[y][x]=(ccolor*a).set_a((unsigned char)a/Color::ceil);
+				ccolor.set_a(a);
+				ccolor.clamped();
+				cairosubimage[y][x]=CairoColor(ccolor).premult_alpha();
 			}
 		
 		cairosubimage.unmap_cairo_image();
