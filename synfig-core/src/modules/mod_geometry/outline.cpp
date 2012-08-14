@@ -401,6 +401,7 @@ Outline::sync()
 	}
 
 	add_polygon(side_a);
+	Layer_Polygon::upload_polygon(side_a);
 
 
 #else /* 1 */
@@ -860,4 +861,11 @@ Outline::get_param_vocab()const
 	);
 
 	return ret;
+}
+
+
+bool
+Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	return Layer_Polygon::accelerated_cairorender(context, surface, quality, renddesc, cb);
 }
