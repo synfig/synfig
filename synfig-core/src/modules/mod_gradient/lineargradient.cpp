@@ -268,3 +268,121 @@ LinearGradient::accelerated_render(Context context,Surface *surface,int quality,
 
 	return true;
 }
+bool
+LinearGradient::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	const double tx(-tl[0]/pw);
+	const double ty(-tl[1]/ph);
+	const double sx(1/pw);
+	const double sy(1/ph);
+
+	cairo_t* cr=cairo_create(surface);
+	cairo_save(cr);
+	cairo_pattern_t* pattern=cairo_pattern_create_linear(p1[0], p1[1], p2[0], p2[1]);
+	bool cpoints_all_opaque=compile_gradient(pattern, gradient);
+	if(loop)
+		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
+	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
+	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
+	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
+	if(
+	   !
+	   (is_solid_color() ||
+	   cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+	)
+	{
+		// Initially render what's behind us
+		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			cairo_destroy(cr);
+			return false;
+		}
+	}
+	cairo_translate(cr, tx , ty);
+	cairo_scale(cr, sx, sy);
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+	cairo_set_source(cr, pattern);
+	cairo_paint_with_alpha(cr, get_amount());
+	
+	cairo_pattern_destroy(pattern); // Not needed more
+	cairo_restore(cr);
+	cairo_destroy(cr);
+
+}
+
+bool
+LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
+{
+	bool cpoints_all_opaque=true;
+	Gradient::const_iterator iter;
+	mygradient.sort();
+	if(zigzag)
+	{
+		Gradient zgradient;
+		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+		{
+			Gradient::CPoint cp=*iter;
+			cp.pos=cp.pos/2;
+			zgradient.push_back(cp);
+		}
+		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+		{
+			Gradient::CPoint cp=*iter;
+			cp.pos=1.0-cp.pos/2;
+			zgradient.push_back(cp);
+		}
+		mygradient=zgradient;
+	}
+	if(loop)
+	{
+		Gradient::CPoint cp=*(--mygradient.end());
+		float a=cp.color.get_a();
+		float r=cp.color.get_r();
+		float g=cp.color.get_g();
+		float b=cp.color.get_b();
+		cairo_pattern_add_color_stop_rgba(pattern, 0.0, r, g, b, a);
+		cp=*mygradient.begin();
+		a=cp.color.get_a();
+		r=cp.color.get_r();
+		g=cp.color.get_g();
+		b=cp.color.get_b();
+		cairo_pattern_add_color_stop_rgba(pattern, 0.0, r, g, b, a);
+	}
+	for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+	{
+		Gradient::CPoint cp=*iter;
+		float a=cp.color.get_a();
+		float r=cp.color.get_r();
+		float g=cp.color.get_g();
+		float b=cp.color.get_b();
+		cairo_pattern_add_color_stop_rgba(pattern, cp.pos, r, g, b, a);
+		if(a!=1.0) cpoints_all_opaque=false;
+	}
+	if(loop)
+	{
+		Gradient::CPoint cp=*(--mygradient.end());
+		float a=cp.color.get_a();
+		float r=cp.color.get_r();
+		float g=cp.color.get_g();
+		float b=cp.color.get_b();
+		cairo_pattern_add_color_stop_rgba(pattern, 1.0, r, g, b, a);
+		cp=*mygradient.begin();
+		a=cp.color.get_a();
+		r=cp.color.get_r();
+		g=cp.color.get_g();
+		b=cp.color.get_b();
+		cairo_pattern_add_color_stop_rgba(pattern, 1.0, r, g, b, a);
+	}
+	return cpoints_all_opaque;
+}

@@ -61,6 +61,7 @@ private:
 	synfig::Color color_func(const synfig::Point &x, float supersample=0)const;
 
 	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
+	bool compile_gradient(cairo_pattern_t* pattern, Gradient gradient)const;
 
 public:
 	LinearGradient();
@@ -69,6 +70,8 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
