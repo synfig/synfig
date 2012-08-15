@@ -325,6 +325,8 @@ bool
 LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
 {
 	bool cpoints_all_opaque=true;
+	float a,r,g,b;
+	Gradient::CPoint cp;
 	Gradient::const_iterator iter;
 	mygradient.sort();
 	if(zigzag)
@@ -332,26 +334,21 @@ LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)c
 		Gradient zgradient;
 		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
 		{
-			Gradient::CPoint cp=*iter;
+			cp=*iter;
 			cp.pos=cp.pos/2;
 			zgradient.push_back(cp);
 		}
 		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
 		{
-			Gradient::CPoint cp=*iter;
+			cp=*iter;
 			cp.pos=1.0-cp.pos/2;
 			zgradient.push_back(cp);
 		}
 		mygradient=zgradient;
 	}
+	mygradient.sort();
 	if(loop)
 	{
-		Gradient::CPoint cp=*(--mygradient.end());
-		float a=cp.color.get_a();
-		float r=cp.color.get_r();
-		float g=cp.color.get_g();
-		float b=cp.color.get_b();
-		cairo_pattern_add_color_stop_rgba(pattern, 0.0, r, g, b, a);
 		cp=*mygradient.begin();
 		a=cp.color.get_a();
 		r=cp.color.get_r();
@@ -361,23 +358,17 @@ LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)c
 	}
 	for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
 	{
-		Gradient::CPoint cp=*iter;
-		float a=cp.color.get_a();
-		float r=cp.color.get_r();
-		float g=cp.color.get_g();
-		float b=cp.color.get_b();
+		cp=*iter;
+		a=cp.color.get_a();
+		r=cp.color.get_r();
+		g=cp.color.get_g();
+		b=cp.color.get_b();
 		cairo_pattern_add_color_stop_rgba(pattern, cp.pos, r, g, b, a);
 		if(a!=1.0) cpoints_all_opaque=false;
 	}
 	if(loop)
 	{
-		Gradient::CPoint cp=*(--mygradient.end());
-		float a=cp.color.get_a();
-		float r=cp.color.get_r();
-		float g=cp.color.get_g();
-		float b=cp.color.get_b();
-		cairo_pattern_add_color_stop_rgba(pattern, 1.0, r, g, b, a);
-		cp=*mygradient.begin();
+		cp=*(--mygradient.end());
 		a=cp.color.get_a();
 		r=cp.color.get_r();
 		g=cp.color.get_g();
