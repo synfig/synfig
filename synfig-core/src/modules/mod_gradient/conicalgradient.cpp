@@ -289,3 +289,182 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 
 	return true;
 }
+
+/////////
+bool
+ConicalGradient::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(!is_solid_color() && !gradient.size())
+		return context.accelerated_cairorender(surface,quality,renddesc,cb);
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const Point tr(Point(tl[1], br[0]));
+	const Point bl(Point(tl[0], br[1]));
+	
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	const double tx((center[0]-tl[0])/pw);
+	const double ty((center[1]-tl[1])/ph);
+	const double sx(1/pw);
+	const double sy(1/ph);
+	
+	cairo_t* cr=cairo_create(surface);
+	cairo_save(cr);
+	cairo_pattern_t* pattern=cairo_pattern_create_mesh();
+	// Calculate the outer radius of the mesh pattern. It has to
+	// cover the whole render desc
+	Real c1=(tl-center).mag_squared();
+	Real c2=(br-center).mag_squared();
+	Real c3=(bl-center).mag_squared();
+	Real c4=(tr-center).mag_squared();
+	Real radius(max(max(max(c1,c2),c3),c4));
+	radius=sqrt(radius);
+	synfig::info("radius=%f", radius);
+	bool cpoints_all_opaque=compile_mesh(pattern, gradient, radius);
+	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
+	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
+	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
+	if(
+	   !
+	   (is_solid_color() ||
+		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+	   )
+	{
+		// Initially render what's behind us
+		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			cairo_destroy(cr);
+			return false;
+		}
+	}
+	cairo_translate(cr, tx , ty);
+	cairo_scale(cr, sx, sy);
+	//cairo_rotate(cr,Angle::rad(angle).get());
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+	cairo_set_source(cr, pattern);
+	cairo_paint_with_alpha(cr, get_amount());
+	
+	cairo_pattern_destroy(pattern); // Not needed more
+	cairo_restore(cr);
+	cairo_destroy(cr);
+	return true;
+	
+}
+////////
+
+bool
+ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Real radius)const
+{
+	bool cpoints_all_opaque=true;
+	float a1, r1, g1, b1, a2, r2, g2, b2;
+	Gradient::CPoint cp;
+	Gradient::const_iterator iter, iter2;
+	mygradient.sort();
+	// Handle symmetric conical gradients
+	if(symmetric)
+	{
+		Gradient sgradient;
+		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+		{
+			cp=*iter;
+			cp.pos=cp.pos/2;
+			sgradient.push_back(cp);
+		}
+		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+		{
+			cp=*iter;
+			cp.pos=1.0-cp.pos/2;
+			sgradient.push_back(cp);
+		}
+		mygradient=sgradient;
+	}
+	mygradient.sort();
+	// Complete the gradient to be sure that always there is a color
+	// stop at start and end of gradient.
+	cp=*mygradient.begin();
+	if(cp.pos!=0.0)
+		mygradient.push_back(GradientCPoint(0.0, cp.color));
+	cp=*(--mygradient.end());
+	if(cp.pos!=1.0)
+		mygradient.push_back(GradientCPoint(1.0, cp.color));
+	mygradient.sort();
+	Gradient cgradient=mygradient;
+	for(iter=cgradient.begin();iter!=cgradient.end(); iter++)
+	{
+		iter2=iter+1;
+		if(iter2==cgradient.end()) break;
+		Real pos1(iter->pos);
+		Real pos2(iter2->pos);
+		if(fabs(pos2-pos1)>=0.5)
+		{
+			Real pos((pos1+pos2)/2.0);
+			mygradient.push_back(GradientCPoint(pos, cgradient(pos)));
+		}
+	}
+	mygradient.sort();
+	mygradient.sort();
+	//// Debug
+	{
+		int i = 0;
+		for (Gradient::const_iterator iter = mygradient.begin(); iter != mygradient.end(); iter++)
+			printf("%3d : %.3f %s\n", i++, (*iter).pos, (*iter).color.get_string().c_str());
+	}
+	////
+	// Now insert the mesh patches
+	Color c1, c2;
+	Angle beta, beta1, beta2;
+	Real t;
+	Real v1x,v1y,t1x,t1y;
+	Real v2x,v2y,t2x,t2y;
+	for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
+	{
+		iter2=iter+1;
+		if(iter2==mygradient.end()) break;
+		c1=iter->color;
+		c2=iter2->color;
+		beta1=(Angle::deg(-360.0*(iter->pos)))+angle;
+		beta2=(Angle::deg(-360.0*(iter2->pos)))+angle;
+		beta=beta2-beta1;
+		t=(4 * ( (mygradient.size() == 3)
+				? 1
+				:((2 * Angle::cos((beta)/2).get() - Angle::cos(beta).get() - 1) / Angle::sin(beta).get())
+				));
+		v1x=(radius*Angle::cos(beta1).get());
+		v1y=(radius*Angle::sin(beta1).get());
+		v2x=(radius*Angle::cos(beta2).get());
+		v2y=(radius*Angle::sin(beta2).get());
+		t1x=(-radius*t*Angle::sin(beta1).get());
+		t1y=(+radius*t*Angle::cos(beta1).get());
+		t2x=(+radius*t*Angle::sin(beta2).get());
+		t2y=(-radius*t*Angle::cos(beta2).get());
+		a1=iter->color.get_a();
+		r1=iter->color.get_r();
+		g1=iter->color.get_g();
+		b1=iter->color.get_b();
+		a2=iter2->color.get_a();
+		r2=iter2->color.get_r();
+		g2=iter2->color.get_g();
+		b2=iter2->color.get_b();
+		// Do the patch!
+		cairo_mesh_pattern_begin_patch(pattern);
+		cairo_mesh_pattern_move_to(pattern, 0.0, 0.0);
+		cairo_mesh_pattern_line_to(pattern, v1x, v1y);
+		cairo_mesh_pattern_curve_to(pattern, v1x+t1x/3, v1y+t1y/3, v2x+t2x/3, v2y+t2y/3, v2x, v2y);
+		cairo_mesh_pattern_line_to(pattern, 0.0, 0.0);
+		cairo_mesh_pattern_line_to(pattern, 0.0, 0.0);
+		cairo_mesh_pattern_set_corner_color_rgba(pattern, 0, r1, g1, b1, a1);
+		cairo_mesh_pattern_set_corner_color_rgba(pattern, 1, r1, g1, b1, a1);
+		cairo_mesh_pattern_set_corner_color_rgba(pattern, 2, r2, g2, b2, a2);
+		cairo_mesh_pattern_set_corner_color_rgba(pattern, 3, r2, g2, b2, a2);
+		cairo_mesh_pattern_end_patch(pattern);
+		
+		if(a1!=1.0 && a2!=0.0) cpoints_all_opaque=false;
+	}
+	return cpoints_all_opaque;
+}
