@@ -345,7 +345,6 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	}
 	cairo_translate(cr, tx , ty);
 	cairo_scale(cr, sx, sy);
-	//cairo_rotate(cr,Angle::rad(angle).get());
 	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 	cairo_set_source(cr, pattern);
 	cairo_paint_with_alpha(cr, get_amount());
@@ -416,6 +415,7 @@ ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Rea
 	mygradient.sort();
 	mygradient.sort();
 	//// Debug
+	if(0)
 	{
 		int i = 0;
 		for (Gradient::const_iterator iter = mygradient.begin(); iter != mygradient.end(); iter++)
