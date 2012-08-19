@@ -428,6 +428,7 @@ ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Rea
 		if(iter2==mygradient.end()) break;
 		c1=iter->color;
 		c2=iter2->color;
+		if(iter->pos == iter2->pos) continue;
 		beta1=(Angle::deg(-360.0*(iter->pos)))+angle;
 		beta2=(Angle::deg(-360.0*(iter2->pos)))+angle;
 		beta=beta2-beta1;
