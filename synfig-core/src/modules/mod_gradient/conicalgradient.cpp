@@ -326,9 +326,9 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	radius=sqrt(radius);
 	synfig::info("radius=%f", radius);
 	bool cpoints_all_opaque=compile_mesh(pattern, gradient, radius);
-	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
-	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
-	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
+	if(quality>8) cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+	else if(quality>=4) cairo_set_antialias(cr, CAIRO_ANTIALIAS_GOOD);
+	else cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
 	if(
 	   !
 	   (is_solid_color() ||
