@@ -323,8 +323,8 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	Real c3=(bl-center).mag_squared();
 	Real c4=(tr-center).mag_squared();
 	Real radius(max(max(max(c1,c2),c3),c4));
-	radius=sqrt(radius);
-	synfig::info("radius=%f", radius);
+	radius=sqrt(radius)*1.20;
+	//synfig::info("radius=%f", radius);
 	bool cpoints_all_opaque=compile_mesh(pattern, gradient, radius);
 	if(quality>8) cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
 	else if(quality>=4) cairo_set_antialias(cr, CAIRO_ANTIALIAS_GOOD);
