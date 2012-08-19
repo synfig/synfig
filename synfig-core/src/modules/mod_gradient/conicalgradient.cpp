@@ -389,10 +389,16 @@ ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Rea
 	// stop at start and end of gradient.
 	cp=*mygradient.begin();
 	if(cp.pos!=0.0)
+	{
 		mygradient.push_back(GradientCPoint(0.0, cp.color));
+		mygradient.sort();
+	}
 	cp=*(--mygradient.end());
 	if(cp.pos!=1.0)
+	{
 		mygradient.push_back(GradientCPoint(1.0, cp.color));
+		mygradient.sort();
+	}
 	mygradient.sort();
 	Gradient cgradient=mygradient;
 	for(iter=cgradient.begin();iter!=cgradient.end(); iter++)
