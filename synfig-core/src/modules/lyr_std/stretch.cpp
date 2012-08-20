@@ -182,6 +182,37 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 	return context.accelerated_render(surface,quality,desc,cb);
 }
 
+//////
+bool
+Layer_Stretch::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if (amount[0] == 0 || amount[1] == 0)
+	{
+		cairo_t* cr=cairo_create(surface);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_fill(cr);
+		return true;
+	}
+	
+	RendDesc desc(renddesc);
+	desc.clear_flags();
+    // Adjust the top_left and bottom_right points
+	// for our zoom amount
+	Point npos;
+	npos[0]=(desc.get_tl()[0]-center[0])/amount[0]+center[0];
+	npos[1]=(desc.get_tl()[1]-center[1])/amount[1]+center[1];
+	desc.set_tl(npos);
+	npos[0]=(desc.get_br()[0]-center[0])/amount[0]+center[0];
+	npos[1]=(desc.get_br()[1]-center[1])/amount[1]+center[1];
+	desc.set_br(npos);
+	
+	// Render the scene
+	return context.accelerated_cairorender(surface,quality,desc,cb);
+}
+
+/////
+
+
 Rect
 Layer_Stretch::get_full_bounding_rect(Context context)const
 {
