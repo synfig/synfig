@@ -197,7 +197,7 @@ Layer_Polygon::get_param_vocab()const
 bool
 Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	synfig::info("rendering Cairo polygon");
+	//synfig::info("rendering Cairo polygon");
 
 	// Grab the rgba values
 	const float r(color.get_r());

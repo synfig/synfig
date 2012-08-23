@@ -256,7 +256,7 @@ Region::set_time(Context context, Time time, Vector pos)const
 bool
 Region::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	synfig::info("rendering Cairo Region");
+//	synfig::info("rendering Cairo Region");
 	std::vector<synfig::Segment> segments;
 
 	// Grab the rgba values
