@@ -967,22 +967,22 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	cairo_set_source_rgba(cr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
 	cairo_move_to(cr, tx, ty);
 	int total_lines=pango_layout_get_line_count(layout), i;
-	synfig::info("total lines %d", total_lines);
+	//synfig::info("total lines %d", total_lines);
 	PangoLayoutIter* layoutiter(pango_layout_get_iter(layout));
 	int sup=0, inf, wdiff, baseline;
 	for(i=0;i<total_lines; i++)
 	{
-		synfig::info("i=%d", i);
+		//synfig::info("i=%d", i);
 		pango_layout_iter_get_line_extents(layoutiter, &ink_rect, &logical_rect);
 		pango_extents_to_pixels(&ink_rect, NULL);
 		pango_extents_to_pixels(&logical_rect, NULL);
 		sup=ink_rect.y-logical_rect.y;
 		wdiff=logical_rect.height-ink_rect.height;
 		inf=wdiff-sup;
-		synfig::info("sup=%d", sup);
-		synfig::info("inf=%d", inf);
+		//synfig::info("sup=%d", sup);
+		//synfig::info("inf=%d", inf);
 		baseline=pango_layout_iter_get_baseline(layoutiter);
-		synfig::info("baseline=%d", baseline);
+		//synfig::info("baseline=%d", baseline);
 		cairo_move_to(cr, tx, ty+baseline/PANGO_SCALE);
 		cairo_rel_move_to(cr, 0, -ink_rect.y+logical_rect.y);
 		pango_cairo_show_layout_line(cr, pango_layout_get_line_readonly(layout, i));
@@ -993,7 +993,7 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 //	cairo_move_to (cr, tx-ink_rect.x+logical_rect.x-ink_rect.width*orient[0], ty-ink_rect.y+logical_rect.y-ink_rect.height*orient[1]);
 //	pango_cairo_show_layout (cr, layout);
 	cairo_restore(cr);
-	if(1)
+	if(0)
 	{
 		pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);	
 		// Render logical and ink rectangles
