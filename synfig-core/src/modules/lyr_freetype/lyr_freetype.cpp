@@ -932,15 +932,20 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	const double tx((-tl[0]+origin[0])*sx);
 	const double ty((-tl[1]+origin[1])*sy);
 
-	// Initially render what's behind us
-	if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+	if(!is_solid_color())
 	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-		return false;
+		// Initially render what's behind us
+		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
 	}
 
 	// Cairo context
-	cairo_t* cr=cairo_create(surface);
+	cairo_surface_t* subimage;
+	subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
+	cairo_t* subcr=cairo_create(subimage);
 
 	// Pango
 	PangoLayout *layout;
@@ -950,69 +955,73 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	pango_font_description_set_family (font_description, font.c_str());
 	pango_font_description_set_weight (font_description, PangoWeight(weight));
 	pango_font_description_set_style (font_description, PangoStyle(style));
+	// The size is scaled to match Software render size (remove the scale?)
 	float sizex=1.75*size[0]*sx;
 	pango_font_description_set_absolute_size (font_description, sizex * PANGO_SCALE );
 	//Pango Layout
-	layout = pango_cairo_create_layout (cr);
+	layout = pango_cairo_create_layout (subcr);
 	pango_layout_set_font_description (layout, font_description);
 	pango_layout_set_text (layout, text.c_str(), -1);
 	pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
 	pango_layout_set_single_paragraph_mode(layout, false);
-	PangoRectangle ink_rect;
-	PangoRectangle logical_rect;
-	pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);
+	PangoRectangle ink_layout, logical_layout;
+	PangoRectangle ink_rect, logical_rect;
+	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
 	
 	// Render text
-	cairo_save(cr);
-	cairo_set_source_rgba(cr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
-	cairo_move_to(cr, tx, ty);
+	cairo_save(subcr);
+	cairo_set_source_rgba(subcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
+	cairo_move_to(subcr, tx, ty);
 	int total_lines=pango_layout_get_line_count(layout), i;
-	//synfig::info("total lines %d", total_lines);
 	PangoLayoutIter* layoutiter(pango_layout_get_iter(layout));
-	int sup=0, inf, wdiff, baseline;
+	int baseline;
 	for(i=0;i<total_lines; i++)
 	{
-		//synfig::info("i=%d", i);
 		pango_layout_iter_get_line_extents(layoutiter, &ink_rect, &logical_rect);
 		pango_extents_to_pixels(&ink_rect, NULL);
 		pango_extents_to_pixels(&logical_rect, NULL);
-		sup=ink_rect.y-logical_rect.y;
-		wdiff=logical_rect.height-ink_rect.height;
-		inf=wdiff-sup;
-		//synfig::info("sup=%d", sup);
-		//synfig::info("inf=%d", inf);
 		baseline=pango_layout_iter_get_baseline(layoutiter);
-		//synfig::info("baseline=%d", baseline);
-		cairo_move_to(cr, tx, ty+baseline/PANGO_SCALE);
-		cairo_rel_move_to(cr, 0, -ink_rect.y+logical_rect.y);
-		pango_cairo_show_layout_line(cr, pango_layout_get_line_readonly(layout, i));
-		//cairo_rel_move_to(cr, 0, inf);
+		// this will move the line to the text origin plus its baseline
+		cairo_move_to(subcr, tx, ty+baseline/PANGO_SCALE);
+		// these two will move horizontally and vertically the needed amount given by the orientation parameter
+		cairo_rel_move_to(subcr, -ink_layout.x+logical_layout.x-ink_rect.width*orient[0], 0);
+		cairo_rel_move_to(subcr, 0, -ink_layout.y+logical_layout.y-ink_layout.height*orient[1]);
+		// render the layout line on cairo context
+		pango_cairo_show_layout_line(subcr, pango_layout_get_line_readonly(layout, i));
+		// iter for the next line, break if reached the end of lines
 		if(!pango_layout_iter_next_line(layoutiter))
 			break;
 	}
-//	cairo_move_to (cr, tx-ink_rect.x+logical_rect.x-ink_rect.width*orient[0], ty-ink_rect.y+logical_rect.y-ink_rect.height*orient[1]);
-//	pango_cairo_show_layout (cr, layout);
+	// Render the text on the target surface with the proper operator
+	cairo_restore(subcr);
+	cairo_t* cr=cairo_create(surface);
+	cairo_save(cr);
+	cairo_set_source_surface(cr, subimage, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+	cairo_paint_with_alpha(cr, get_amount());
 	cairo_restore(cr);
+	// Debug ink and logical lines
 	if(0)
 	{
 		pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);	
 		// Render logical and ink rectangles
-		cairo_save(cr);
-		cairo_set_source_rgb(cr, 0.0, 1.0, 0.0);
-		cairo_set_line_width(cr, 1.0);
-		cairo_rectangle(cr, tx+ink_rect.x-0.5, ty+ink_rect.y-0.5, ink_rect.width, ink_rect.height);
-		cairo_stroke(cr);
-		cairo_restore(cr);
+		cairo_save(subcr);
+		cairo_set_source_rgb(subcr, 0.0, 1.0, 0.0);
+		cairo_set_line_width(subcr, 1.0);
+		cairo_rectangle(subcr, tx+ink_rect.x-0.5, ty+ink_rect.y-0.5, ink_rect.width, ink_rect.height);
+		cairo_stroke(subcr);
+		cairo_restore(subcr);
 
-		cairo_save(cr);
-		cairo_set_line_width(cr, 1.0);
-		cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);
-		cairo_rectangle(cr, tx+logical_rect.x-0.5, ty+logical_rect.y-0.5, logical_rect.width, logical_rect.height);
-		cairo_stroke(cr);
-		cairo_restore(cr);
+		cairo_save(subcr);
+		cairo_set_line_width(subcr, 1.0);
+		cairo_set_source_rgb(subcr, 0.0, 0.0, 1.0);
+		cairo_rectangle(subcr, tx+logical_rect.x-0.5, ty+logical_rect.y-0.5, logical_rect.width, logical_rect.height);
+		cairo_stroke(subcr);
+		cairo_restore(subcr);
 	}
 	// Destroy and return
 	pango_layout_iter_free(layoutiter);
+	cairo_destroy(subcr);
 	cairo_destroy(cr);
 	g_object_unref (layout);
 	pango_font_description_free (font_description);
