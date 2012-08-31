@@ -975,7 +975,7 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 		
 	pango_layout_set_single_paragraph_mode(layout, false);
 
-	// Calculate the logical and ink rectangles of the layout
+	// Calculate the logical and ink rectangles of the layout before add spacing
 	PangoRectangle ink_layout, logical_layout;
 	PangoRectangle ink_rect, logical_rect;
 	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
@@ -987,7 +987,7 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	PangoAttribute* spacing=pango_attr_letter_spacing_new(hspace*PANGO_SCALE);
 	pango_attr_list_insert_before(attrlist, spacing);
 	pango_layout_set_attributes(layout, attrlist);
-
+	
 	// Vertical
 	int total_lines=pango_layout_get_line_count(layout);
 	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
@@ -995,7 +995,10 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	if(total_lines>1)
 		vspace=vspace_total/(total_lines-1);
 	pango_layout_set_spacing(layout, vspace*PANGO_SCALE);
-	
+
+	// Recalculate extents due to spacing changes
+	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
+
 	// Render text
 	cairo_save(subcr);
 	cairo_set_source_rgba(subcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
@@ -1026,6 +1029,9 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 							logical_rect.width,
 							logical_rect.height);
 		cairo_stroke(subcr);
+		cairo_move_to(subcr, tx+2, ty);
+		cairo_arc(subcr, tx, ty, 2.0, 0, 2*3.141516);
+		cairo_fill(subcr);
 		cairo_restore(subcr);
 	}
 
