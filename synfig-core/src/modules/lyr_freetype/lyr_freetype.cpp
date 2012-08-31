@@ -957,9 +957,13 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	pango_font_description_set_style (font_description, PangoStyle(style));
 	// The size is scaled to match Software render size (remove the scale?)
 	float sizex=1.75*size[0]*sx;
+	float sizey=1.75*size[1]*fabs(sy);
+	float vscale=sizey/sizex;
 	pango_font_description_set_absolute_size (font_description, sizex * PANGO_SCALE );
+	
 	//Pango Layout
 	layout = pango_cairo_create_layout (subcr);
+	
 	pango_layout_set_font_description (layout, font_description);
 	pango_layout_set_text (layout, text.c_str(), -1);
 	if(orient[0]<0.4)
@@ -971,6 +975,7 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 		
 	pango_layout_set_single_paragraph_mode(layout, false);
 
+	// Calculate the logical and ink rectangles of the layout
 	PangoRectangle ink_layout, logical_layout;
 	PangoRectangle ink_rect, logical_rect;
 	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
@@ -984,8 +989,8 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	pango_layout_set_attributes(layout, attrlist);
 
 	// Vertical
-	int total_lines=pango_layout_get_line_count(layout), i;
-	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.5*logical_layout.height*(vcompress-1.0):0;
+	int total_lines=pango_layout_get_line_count(layout);
+	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
 	float vspace;
 	if(total_lines>1)
 		vspace=vspace_total/(total_lines-1);
@@ -994,7 +999,9 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	// Render text
 	cairo_save(subcr);
 	cairo_set_source_rgba(subcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
-	cairo_move_to(subcr, tx-logical_layout.width*orient[0], ty-(logical_layout.height+vspace_total)*orient[1]);
+	cairo_scale(subcr, 1.0, vscale);
+	pango_cairo_update_layout(subcr, layout);
+	cairo_move_to(subcr, tx-logical_layout.width*orient[0], (ty-(logical_layout.height+vspace_total)*vscale*orient[1])/vscale);
 	pango_cairo_show_layout(subcr, layout);
 
 	if(0) // Debug
