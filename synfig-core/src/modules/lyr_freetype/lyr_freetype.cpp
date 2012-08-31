@@ -962,49 +962,66 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	layout = pango_cairo_create_layout (subcr);
 	pango_layout_set_font_description (layout, font_description);
 	pango_layout_set_text (layout, text.c_str(), -1);
-	pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
-	pango_layout_set_single_paragraph_mode(layout, false);
-	
-	// Character spacing
-	PangoAttrList* attrlist=pango_attr_list_new();
-	// This is a hack to emulate the space separation like sotware does
-	// ugly for values of compress less than 0.5
-	float space=compress>1.0?0.4*sizex*(compress-1.0):(compress<1.0)?0.5*sizex*(compress-1.0):0;
-	PangoAttribute* spacing=pango_attr_letter_spacing_new(space*PANGO_SCALE);
-	pango_attr_list_insert_before(attrlist, spacing);
-	pango_layout_set_attributes(layout, attrlist);
+	if(orient[0]<0.4)
+		pango_layout_set_alignment(layout, PANGO_ALIGN_LEFT);
+	else if(orient[0]>0.6)
+		pango_layout_set_alignment(layout, PANGO_ALIGN_RIGHT);
+	else
+		pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
 		
+	pango_layout_set_single_paragraph_mode(layout, false);
+
 	PangoRectangle ink_layout, logical_layout;
 	PangoRectangle ink_rect, logical_rect;
 	pango_layout_get_pixel_extents(layout, &ink_layout, &logical_layout);
-		
+
+	// Spacing
+	// Horizontal
+	PangoAttrList* attrlist=pango_attr_list_new();
+	float hspace=compress>1.0?0.4*sizex*(compress-1.0):(compress<1.0)?0.5*sizex*(compress-1.0):0;
+	PangoAttribute* spacing=pango_attr_letter_spacing_new(hspace*PANGO_SCALE);
+	pango_attr_list_insert_before(attrlist, spacing);
+	pango_layout_set_attributes(layout, attrlist);
+
+	// Vertical
+	int total_lines=pango_layout_get_line_count(layout), i;
+	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.5*logical_layout.height*(vcompress-1.0):0;
+	float vspace;
+	if(total_lines>1)
+		vspace=vspace_total/(total_lines-1);
+	pango_layout_set_spacing(layout, vspace*PANGO_SCALE);
+	
 	// Render text
 	cairo_save(subcr);
 	cairo_set_source_rgba(subcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
-	cairo_move_to(subcr, tx, ty);
-	int total_lines=pango_layout_get_line_count(layout), i;
-	PangoLayoutIter* layoutiter(pango_layout_get_iter(layout));
-	int baseline;
-	int previous_linespace=0;
-	for(i=0;i<total_lines; i++)
+	cairo_move_to(subcr, tx-logical_layout.width*orient[0], ty-(logical_layout.height+vspace_total)*orient[1]);
+	pango_cairo_show_layout(subcr, layout);
+
+	if(0) // Debug
 	{
-		pango_layout_iter_get_line_extents(layoutiter, &ink_rect, &logical_rect);
-		pango_extents_to_pixels(&ink_rect, NULL);
-		pango_extents_to_pixels(&logical_rect, NULL);
-		baseline=pango_layout_iter_get_baseline(layoutiter);
-		// this will move the line to the text origin plus its baseline
-		cairo_move_to(subcr, tx, ty+baseline/PANGO_SCALE+previous_linespace);
-		// these two will move horizontally and vertically the needed amount given by the orientation parameter
-		cairo_rel_move_to(subcr, -ink_layout.x+logical_layout.x-ink_rect.width*orient[0], 0);
-		cairo_rel_move_to(subcr, 0, -ink_layout.y+logical_layout.y-ink_layout.height*orient[1]);
-		// render the layout line on cairo context
-		pango_cairo_show_layout_line(subcr, pango_layout_get_line_readonly(layout, i));
-		// Another hack to emulate line spacing... it simply works
-		previous_linespace=logical_rect.height*(vcompress-1.0);
-		// iter for the next line, break if reached the end of lines
-		if(!pango_layout_iter_next_line(layoutiter))
-			break;
+		pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);	
+		// Render logical and ink rectangles
+		cairo_save(subcr);
+		cairo_set_source_rgb(subcr, 0.0, 1.0, 0.0);
+		cairo_set_line_width(subcr, 1.0);
+		cairo_rectangle(subcr, tx+ink_rect.x-0.5-logical_layout.width*orient[0],
+							ty+ink_rect.y-0.5-(logical_layout.height+vspace_total)*orient[1],
+							ink_rect.width,
+							ink_rect.height);
+		cairo_stroke(subcr);
+		cairo_restore(subcr);
+
+		cairo_save(subcr);
+		cairo_set_line_width(subcr, 1.0);
+		cairo_set_source_rgb(subcr, 0.0, 0.0, 1.0);
+		cairo_rectangle(subcr, tx+logical_rect.x-0.5-logical_layout.width*orient[0],
+							ty+logical_rect.y-0.5-(logical_layout.height+vspace_total)*orient[1],
+							logical_rect.width,
+							logical_rect.height);
+		cairo_stroke(subcr);
+		cairo_restore(subcr);
 	}
+
 	// Render the text on the target surface with the proper operator
 	cairo_restore(subcr);
 	cairo_t* cr=cairo_create(surface);
@@ -1014,26 +1031,8 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	cairo_paint_with_alpha(cr, get_amount());
 	cairo_restore(cr);
 	// Debug ink and logical lines
-	if(0)
-	{
-		pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);	
-		// Render logical and ink rectangles
-		cairo_save(subcr);
-		cairo_set_source_rgb(subcr, 0.0, 1.0, 0.0);
-		cairo_set_line_width(subcr, 1.0);
-		cairo_rectangle(subcr, tx+ink_rect.x-0.5, ty+ink_rect.y-0.5, ink_rect.width, ink_rect.height);
-		cairo_stroke(subcr);
-		cairo_restore(subcr);
 
-		cairo_save(subcr);
-		cairo_set_line_width(subcr, 1.0);
-		cairo_set_source_rgb(subcr, 0.0, 0.0, 1.0);
-		cairo_rectangle(subcr, tx+logical_rect.x-0.5, ty+logical_rect.y-0.5, logical_rect.width, logical_rect.height);
-		cairo_stroke(subcr);
-		cairo_restore(subcr);
-	}
 	// Destroy and return
-	pango_layout_iter_free(layoutiter);
 	cairo_destroy(subcr);
 	cairo_destroy(cr);
 	pango_attr_list_unref(attrlist);
