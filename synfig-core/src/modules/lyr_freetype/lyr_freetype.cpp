@@ -956,8 +956,8 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	pango_font_description_set_weight (font_description, PangoWeight(weight));
 	pango_font_description_set_style (font_description, PangoStyle(style));
 	// The size is scaled to match Software render size (remove the scale?)
-	float sizex=1.75*size[0]*sx;
-	float sizey=1.75*size[1]*fabs(sy);
+	float sizex=1.75*fabs(size[0])*fabs(sx);
+	float sizey=1.75*fabs(size[1])*fabs(sy);
 	float vscale=sizey/sizex;
 	pango_font_description_set_absolute_size (font_description, sizex * PANGO_SCALE );
 	
