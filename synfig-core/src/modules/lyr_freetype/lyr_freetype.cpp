@@ -944,8 +944,17 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 
 	// Cairo context
 	cairo_surface_t* subimage;
+	cairo_surface_t* inverted;
 	subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
 	cairo_t* subcr=cairo_create(subimage);
+	cairo_t* invertcr;
+	if(invert)
+	{
+		inverted=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
+		invertcr=cairo_create(inverted);
+		cairo_set_source_rgba(invertcr, color.get_r(), color.get_g(), color.get_b(), color.get_a());
+		cairo_paint_with_alpha(invertcr, get_amount());
+	}
 
 	// Pango
 	PangoLayout *layout;
@@ -1007,7 +1016,8 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 	cairo_move_to(subcr, tx-logical_layout.width*orient[0], (ty-(logical_layout.height+vspace_total)*vscale*orient[1])/vscale);
 	pango_cairo_show_layout(subcr, layout);
 
-	if(0) // Debug
+	// Debug ink and logical lines
+	if(0)
 	{
 		pango_layout_get_pixel_extents(layout, &ink_rect, &logical_rect);	
 		// Render logical and ink rectangles
@@ -1037,16 +1047,30 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 
 	// Render the text on the target surface with the proper operator
 	cairo_restore(subcr);
+	if(invert)
+	{
+		cairo_set_source_surface(invertcr, subimage, 0,0);
+		cairo_set_operator(invertcr, CAIRO_OPERATOR_DEST_OUT);
+		cairo_paint_with_alpha(invertcr, get_amount());
+	}
 	cairo_t* cr=cairo_create(surface);
 	cairo_save(cr);
-	cairo_set_source_surface(cr, subimage, 0, 0);
+	if(invert)
+		cairo_set_source_surface(cr, inverted, 0, 0);
+	else
+		cairo_set_source_surface(cr, subimage, 0, 0);
 	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 	cairo_paint_with_alpha(cr, get_amount());
 	cairo_restore(cr);
-	// Debug ink and logical lines
 
 	// Destroy and return
+	cairo_surface_destroy(subimage);
 	cairo_destroy(subcr);
+	if(invert)
+	{
+		cairo_surface_destroy(inverted);
+		cairo_destroy(invertcr);
+	}
 	cairo_destroy(cr);
 	pango_attr_list_unref(attrlist);
 	g_object_unref (layout);
