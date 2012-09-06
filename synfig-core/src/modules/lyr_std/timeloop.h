@@ -38,21 +38,24 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+using namespace synfig;
+using namespace std;
+using namespace etl;
 
-class Layer_TimeLoop : public synfig::Layer
+class Layer_TimeLoop : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	synfig::Time	link_time;
-	synfig::Time	local_time;
-	synfig::Time	duration;
+	Time	link_time;
+	Time	local_time;
+	Time	duration;
 
-	synfig::Time	start_time;
-	synfig::Time	end_time;
-	bool			old_version;
-	bool			only_for_positive_duration;
-	bool			symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
+	Time	start_time;
+	Time	end_time;
+	bool	old_version;
+	bool	only_for_positive_duration;
+	bool	symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
 
 protected:
 	Layer_TimeLoop();
@@ -60,17 +63,18 @@ protected:
 public:
 	~Layer_TimeLoop();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const synfig::String &ver);
+	virtual bool set_version(const String &ver);
 	virtual void reset_version();
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual void set_time(synfig::Context context, synfig::Time time)const;
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	virtual void set_time(Context context, Time time)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */
