@@ -389,18 +389,18 @@ synfig::cairorender(
 		// Loop through every pixel in row
 		for(x=0,u=su;x<w;x++,u+=du)
 		{
-			CairoColor c(Color::alpha());
-			
+			Color c(Color::alpha());
 			// Loop through all subpixels
 			for(y2=0,pool=0;y2<a;y2++)
 				for(x2=0;x2<a;x2++)
 				{
-					CairoColor color=context.get_cairocolor(
+					Color color=context.get_color(
 												  Point(
 														u+(Point::value_type)(x2)*dsu,
 														v+(Point::value_type)(y2)*dsv
 														)
 												  );
+					color=color.clamped();
 					c+=color*color.get_a();
 					pool+=color.get_a();
 				}
@@ -408,7 +408,7 @@ synfig::cairorender(
 				c/=pool;
 			// Once the pixel is subsampled then I premultiply by alpha and pass
 			// it to the CairoSurface
-			csurface[y][x]=c.premult_alpha();
+			csurface[y][x]=CairoColor(c).premult_alpha();
 		}
 	}
 	// unmap the rendered surface to the cairo_surface_t
