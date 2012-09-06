@@ -398,6 +398,32 @@ public:
 		return cooker_.uncook(ret);
 	}
 
+	//! Linear sample for already "cooked" surfaces
+	value_type linear_sample_cooked(const float x, const float y)const
+	{
+		int u(floor_to_int(x)), v(floor_to_int(y));
+		float a, b;
+		static const float epsilon(1.0e-6);
+		
+		if(x<0.0f)u=0,a=0.0f;
+		else if(x>w_-1)u=w_-1,a=0.0f;
+		else a=x-u;
+		
+		if(y<0.0f)v=0,b=0.0f;
+		else if(y>h_-1)v=h_-1,b=0.0f;
+		else b=y-v;
+		
+		const float
+		c(1.0f-a), d(1.0f-b),
+		e(a*d),f(c*b),g(a*b);
+		
+		accumulator_type ret((*this)[v][u]*(c*d));
+		if(e>=epsilon)ret+=(*this)[v][u+1]*e;
+		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
+		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
+		return ret;
+	}
+
 	//! Cosine sample
 	value_type cosine_sample(const float x, const float y)const
 	{
@@ -426,6 +452,36 @@ public:
 		if(g>=epsilon)ret+=cooker_.cook((*this)[v+1][u+1])*g;
 
 		return cooker_.uncook(ret);
+	}
+
+	//! Cosine sample for already "cooked" surfaces
+	value_type cosine_sample_cooked(const float x, const float y)const
+	{
+		int u(floor_to_int(x)), v(floor_to_int(y));
+		float a, b;
+		static const float epsilon(1.0e-6);
+		
+		if(x<0.0f)u=0,a=0.0f;
+		else if(x>w_-1)u=w_-1,a=0.0f;
+		else a=x-u;
+		
+		if(y<0.0f)v=0,b=0.0f;
+		else if(y>h_-1)v=h_-1,b=0.0f;
+		else b=y-v;
+		
+		a=(1.0f-cos(a*3.1415927f))*0.5f;
+		b=(1.0f-cos(b*3.1415927f))*0.5f;
+		
+		const float
+		c(1.0f-a), d(1.0f-b),
+		e(a*d),f(c*b),g(a*b);
+		
+		accumulator_type ret((*this)[v][u]*(c*d));
+		if(e>=epsilon)ret+=(*this)[v][u+1]*e;
+		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
+		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
+		
+		return ret;
 	}
 
 	//! Cubic sample
@@ -511,6 +567,53 @@ public:
 #endif
 	}
 
+	//! Cubic sample for already "cooked" surfaces
+	value_type cubic_sample_cooked(float x, float y)const
+	{
+#define f(j,i)	(((*this)[j][i]))
+		//Using catmull rom interpolation because it doesn't blur at all
+		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
+		accumulator_type xfa [4];
+		
+		//precalculate indices (all clamped) and offset
+		const int xi = x > 0 ? (x < w_ ? (int)floor(x) : w_-1) : 0;
+		const int xa[] = {std::max(0,xi-1),xi,std::min(w_-1,xi+1),std::min(w_-1,xi+2)};
+		
+		const int yi = y > 0 ? (y < h_ ? (int)floor(y) : h_-1) : 0;
+		const int ya[] = {std::max(0,yi-1),yi,std::min(h_-1,yi+1),std::min(h_-1,yi+2)};
+		
+		const float xf = x-xi;
+		const float yf = y-yi;
+		
+		//figure polynomials for each point
+		const float txf[] =
+		{
+			0.5*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
+			0.5*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
+			0.5*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
+			0.5*xf*xf*(xf-1)				//-t^2 + t^3
+		};
+		
+		const float tyf[] =
+		{
+			0.5*yf*(yf*(yf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
+			0.5*(yf*(yf*(3*yf - 5)) + 2), 	//2 - 5t^2 + 3t^3
+			0.5*yf*(yf*(-3*yf + 4) + 1),	//t + 4t^2 - 3t^3
+			0.5*yf*yf*(yf-1)				//-t^2 + t^3
+		};
+		
+		//evaluate polynomial for each row
+		for(int i = 0; i < 4; ++i)
+		{
+			xfa[i] = f(ya[i],xa[0])*txf[0] + f(ya[i],xa[1])*txf[1] + f(ya[i],xa[2])*txf[2] + f(ya[i],xa[3])*txf[3];
+		}
+		
+		//return the cumulative column evaluation
+		return xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3];
+#undef f
+	}
+
+	//! Rectangle sample
 	value_type	sample_rect(float x0,float y0,float x1,float y1) const
 	{
 		const surface &s = *this;
@@ -577,6 +680,74 @@ public:
 		return cooker_.uncook(acum);
 	}
 
+	//! Rectangle sample for already "cooked" surfaces
+	value_type	sample_rect_cooked(float x0,float y0,float x1,float y1) const
+	{
+		const surface &s = *this;
+		
+		//assumes it's clamped to the boundary of the image
+		//force min max relationship for x0,x1 and y0,y1
+		if(x0 > x1) std::swap(x0,x1);
+		if(y0 > y1) std::swap(y0,y1);
+		
+		//local variable madness
+		//all things that want to inter-operate should provide a default value constructor for = 0
+		accumulator_type acum = 0;
+		int xi=0,yi=0;
+		
+		int	xib=(int)floor(x0),
+		xie=(int)floor(x1);
+		
+		int	yib=(int)floor(y0),
+		yie=(int)floor(y1);
+		
+		//the weight for the pixel should remain the same...
+		float weight = (y1-y0)*(x1-x0);
+		assert(weight != 0);
+		
+		float ylast = y0, xlastb = x0;
+		const_pen	pen_ = s.get_pen(xib,yib);
+		
+		for(yi = yib; yi < yie; ylast = ++yi, pen_.inc_y())
+		{
+			const float yweight = yi+1 - ylast;
+			
+			float xlast = xlastb;
+			for(xi = xib; xi < xie; xlast = ++xi, pen_.inc_x())
+			{
+				const float w = yweight*(xi+1 - xlast);
+				acum += pen_.get_value()*w;
+			}
+			
+			//post... with next being fractional...
+			const float w = yweight*(x1 - xlast);
+			acum += pen_.get_value()*w;
+			
+			pen_.dec_x(xie-xib);
+		}
+		
+		//post in y direction... must have all x...
+		{
+			const float yweight = y1 - ylast;
+			
+			float xlast = xlastb;
+			for(xi = xib; xi < xie; xlast = ++xi)
+			{
+				const float w = yweight*(xi+1 - xlast);
+				
+				acum += pen_.get_value()*w;
+			}
+			
+			//post... with next being fractional...
+			const float w = yweight*(x1 - xlast);
+			acum += pen_.get_value()*w;
+		}
+		
+		acum *= 1/weight;
+		return acum;
+	}
+
+	//! Rectangle sample clipped
 	value_type	sample_rect_clip(float x0,float y0,float x1,float y1) const
 	{
 		const surface &s = *this;
@@ -660,6 +831,92 @@ public:
 
 		acum *= 1/weight;
 		return cooker_.uncook(acum);
+	}
+
+	//! Rectangle sample clipped for already "cooked" surfaces
+	value_type	sample_rect_clip_cooked(float x0,float y0,float x1,float y1) const
+	{
+		const surface &s = *this;
+		
+		//assumes it's clamped to the boundary of the image
+		//force min max relationship for x0,x1 and y0,y1
+		if(x0 > x1) std::swap(x0,x1);
+		if(y0 > y1) std::swap(y0,y1);
+		
+		//local variable madness
+		//all things that want to inter-operate should provide a default value constructor for = 0
+		accumulator_type acum = 0;
+		int xi=0,yi=0;
+		
+		int	xib=(int)floor(x0),
+		xie=(int)floor(x1);
+		
+		int	yib=(int)floor(y0),
+		yie=(int)floor(y1);
+		
+		//the weight for the pixel should remain the same...
+		float weight = (y1-y0)*(x1-x0);
+		
+		assert(weight != 0);
+		
+		//clip to the input region
+		if(x0 >= s.get_w() || x1 <= 0) return acum;
+		if(y0 >= s.get_h() || y1 <= 0) return acum;
+		
+		if(x0 < 0) { x0 = 0; xib = 0; }
+		if(x1 >= s.get_w())
+		{
+			x1 = s.get_w(); //want to be just below the last pixel...
+			xie = s.get_w()-1;
+		}
+		
+		if(y0 < 0) { y0 = 0; yib = 0; }
+		if(y1 >= s.get_h())
+		{
+			y1 = s.get_h(); //want to be just below the last pixel...
+			yie = s.get_h()-1;
+		}
+		
+		float ylast = y0, xlastb = x0;
+		const_pen	pen = s.get_pen(xib,yib);
+		
+		for(yi = yib; yi < yie; ylast = ++yi, pen.inc_y())
+		{
+			const float yweight = yi+1 - ylast;
+			
+			float xlast = xlastb;
+			for(xi = xib; xi < xie; xlast = ++xi, pen.inc_x())
+			{
+				const float w = yweight*(xi+1 - xlast);
+				acum += pen.get_value()*w;
+			}
+			
+			//post... with next being fractional...
+			const float w = yweight*(x1 - xlast);
+			acum += pen.get_value()*w;
+			
+			pen.dec_x(xie-xib);
+		}
+		
+		//post in y direction... must have all x...
+		{
+			const float yweight = y1 - ylast;
+			
+			float xlast = xlastb;
+			for(xi = xib; xi < xie; xlast = ++xi)
+			{
+				const float w = yweight*(xi+1 - xlast);
+				
+				acum += pen.get_value()*w;
+			}
+			
+			//post... with next being fractional...
+			const float w = yweight*(x1 - xlast);
+			acum += pen.get_value()*w;
+		}
+		
+		acum *= 1/weight;
+		return acum;
 	}
 };
 
