@@ -1044,9 +1044,9 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 		cairo_fill(subcr);
 		cairo_restore(subcr);
 	}
-
-	// Render the text on the target surface with the proper operator
 	cairo_restore(subcr);
+	
+	// Render the text on the target surface with the proper operator
 	if(invert)
 	{
 		cairo_set_source_surface(invertcr, subimage, 0,0);
@@ -1059,8 +1059,16 @@ Layer_Freetype::accelerated_cairorender(Context context,cairo_surface_t *surface
 		cairo_set_source_surface(cr, inverted, 0, 0);
 	else
 		cairo_set_source_surface(cr, subimage, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
-	cairo_paint_with_alpha(cr, get_amount());
+	if(is_solid_color())
+	{
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint(cr);
+	}
+	else
+	{
+		cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
+		cairo_paint_with_alpha(cr, get_amount());
+	}
 	cairo_restore(cr);
 
 	// Destroy and return
