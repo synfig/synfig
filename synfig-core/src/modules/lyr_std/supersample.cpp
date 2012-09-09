@@ -241,6 +241,7 @@ SuperSample::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	float scaley=1.0/height;
 	// Calculate the cairo filter based on quality
 	cairo_filter_t filter;
+	cairo_antialias_t anti;
 	switch(quality)
 	{
 		case 1:
@@ -249,15 +250,18 @@ SuperSample::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 		case 4:
 		case 5:	// Best
 			filter=CAIRO_FILTER_BEST;
+			anti=CAIRO_ANTIALIAS_BEST;
 			break;
 		case 6:
 		case 7:
 		case 8:	// Good
 			filter=CAIRO_FILTER_GOOD;
+			anti=CAIRO_ANTIALIAS_GOOD;
 			break;
 		case 9:	// Fast
 		default:
 			filter=CAIRO_FILTER_FAST;
+			anti=CAIRO_ANTIALIAS_FAST;
 			break;
 	}
 	cairo_t* cr=cairo_create(surface);
@@ -266,6 +270,7 @@ SuperSample::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	cairo_pattern_set_filter(cairo_get_source(cr), filter);
 	
 	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_set_antialias(cr, anti);
 	cairo_paint(cr);
 	
 	cairo_destroy(cr);
