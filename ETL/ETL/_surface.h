@@ -208,6 +208,14 @@ public:
 	}
 
 	void
+	copy(const surface &rhs)
+	{
+		if(pitch_!=rhs.pitch_ || w_!=rhs.w_ || h_!=rhs.h_)
+			return;
+		memcpy(data_, rhs.data_, pitch_*h_);
+	}
+	
+	void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, const typename size_type::value_type &pitch=0)
 	{
 		if(data_)
