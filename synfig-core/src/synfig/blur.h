@@ -35,9 +35,9 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-namespace synfig {
-	class ProgressCallback;
-}
+using namespace synfig;
+using namespace std;
+using namespace etl;
 
 class Blur
 {
@@ -54,35 +54,36 @@ public:
 	};
 
 private:
-	synfig::Point	size;
+	Point	size;
 	int				type;
 
-	synfig::ProgressCallback *cb;
+	ProgressCallback *cb;
 
 public:
-	synfig::Point & set_size(const synfig::Point &v) { return (size = v); }
-	const synfig::Point & get_size() const { return size; }
-	synfig::Point & get_size() { return size; }
+	Point & set_size(const Point &v) { return (size = v); }
+	const Point & get_size() const { return size; }
+	Point & get_size() { return size; }
 
 	int & set_type(const int &t) { return (type = t); }
 	const int & get_type() const { return type; }
 	int & get_type() { return type; }
 
 	Blur() {}
-	Blur(const synfig::Point &s, int t, synfig::ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
-	Blur(synfig::Real sx, synfig::Real sy, int t, synfig::ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
+	Blur(const Point &s, int t, ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
+	Blur(Real sx, Real sy, int t, ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
 
 	//Parametric Blur
-	synfig::Point operator()(const synfig::Point &p) const;
-	synfig::Point operator()(synfig::Real x, synfig::Real y) const;
+	Point operator()(const Point &p) const;
+	Point operator()(Real x, Real y) const;
 
 	//Surface based blur
 	//	input surface can be the same as output surface,
 	//	though both have to be the same size
-	bool operator()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
+	bool operator()(const Surface &surface, const Vector &resolution, Surface &out) const;
+	bool operator()(cairo_surface_t *surface, const Vector &resolution, cairo_surface_t *out) const;
 
-	bool operator()(const etl::surface<float> &surface, const synfig::Vector &resolution, etl::surface<float> &out) const;
-	//bool operator()(const etl::surface<unsigned char> &surface, const synfig::Vector &resolution, etl::surface<unsigned char> &out) const;
+	bool operator()(const etl::surface<float> &surface, const Vector &resolution, etl::surface<float> &out) const;
+	//bool operator()(const etl::surface<unsigned char> &surface, const Vector &resolution, etl::surface<unsigned char> &out) const;
 };
 
 /* === E N D =============================================================== */
