@@ -96,7 +96,7 @@ static const float DecodeYUV[3][3]=
 #ifdef USE_HALF_TYPE
 class ColorAccumulator;
 #endif
-
+class CairoColorAccumulator;
 
 class CairoColor;
 
@@ -728,6 +728,9 @@ public:
 		set_b((ceil-floor)*c.get_b()/(Color::ceil-Color::floor));
 		set_a((ceil-floor)*c.get_a()/(Color::ceil-Color::floor));
 	}
+	// From CairoColorAccumulator
+	friend class CairoColorAccumulator;
+	CairoColor(const CairoColorAccumulator& c);
 	
 	const value_type get_pixel()const {return pixel; }
 	const unsigned char get_a()const { return pixel>>24; }
@@ -877,6 +880,162 @@ public:
 	}
 	
 }; // End of CairoColor class
+
+//
+	class CairoColorAccumulator
+	{
+		friend class CairoColor;
+	public:
+		typedef float value_type;
+		
+	private:
+		value_type a_, r_, g_, b_;
+		
+	public:
+		
+		CairoColorAccumulator &
+		operator+=(const CairoColorAccumulator &rhs)
+		{
+			r_+=rhs.r_;
+			g_+=rhs.g_;
+			b_+=rhs.b_;
+			a_+=rhs.a_;
+			return *this;
+		}
+		
+		CairoColorAccumulator &
+		operator-=(const CairoColorAccumulator &rhs)
+		{
+			r_-=rhs.r_;
+			g_-=rhs.g_;
+			b_-=rhs.b_;
+			a_-=rhs.a_;
+			return *this;
+		}
+		
+		CairoColorAccumulator &
+		operator*=(const float &rhs)
+		{
+			r_*=rhs;
+			g_*=rhs;
+			b_*=rhs;
+			a_*=rhs;
+			return *this;
+		}
+		
+		CairoColorAccumulator &
+		operator/=(const float &rhs)
+		{
+			const float temp(value_type(1)/rhs);
+			r_*=temp;
+			g_*=temp;
+			b_*=temp;
+			a_*=temp;
+			return *this;
+		}
+		
+		CairoColorAccumulator
+		operator+(const CairoColorAccumulator &rhs)const
+		{ return CairoColorAccumulator(*this)+=rhs; }
+		
+		CairoColorAccumulator
+		operator-(const CairoColorAccumulator &rhs)const
+		{ return CairoColorAccumulator(*this)-=rhs; }
+		
+		CairoColorAccumulator
+		operator*(const float &rhs)const
+		{ return CairoColorAccumulator(*this)*=rhs; }
+		
+		CairoColorAccumulator
+		operator/(const float &rhs)const
+		{ return CairoColorAccumulator(*this)/=rhs; }
+		
+		bool
+		operator==(const CairoColorAccumulator &rhs)const
+		{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_!=rhs.a_; }
+		
+		bool
+		operator!=(const CairoColorAccumulator &rhs)const
+		{ return r_!=rhs.r_ || g_!=rhs.g_ || b_!=rhs.b_ || a_!=rhs.a_; }
+		
+		CairoColorAccumulator
+		operator-()const
+		{ return CairoColorAccumulator(-r_,-g_,-b_,-a_); }
+		
+		bool is_valid()const
+		{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
+		
+	public:
+		CairoColorAccumulator() { }
+		
+		/*!	\param R Red
+		 **	\param G Green
+		 **	\param B Blue
+		 **	\param A Opacity(alpha) */
+		CairoColorAccumulator(const value_type& R, const value_type& G, const value_type& B, const value_type& A=1):
+		a_(A),
+		r_(R),
+		g_(G),
+		b_(B) { }
+		
+		//!	Copy constructor
+		CairoColorAccumulator(const CairoColorAccumulator& c):
+		a_(c.a_),
+		r_(c.r_),
+		g_(c.g_),
+		b_(c.b_) { }
+		
+		//!	Converter
+		CairoColorAccumulator(const CairoColor& c):
+		a_(c.get_a()/CairoColor::range),
+		r_(c.get_r()/CairoColor::range),
+		g_(c.get_g()/CairoColor::range),
+		b_(c.get_b()/CairoColor::range) { }
+		
+		//! Converter
+		CairoColorAccumulator(int c): a_(c),r_(c), g_(c), b_(c) { }
+		
+		//! Returns the RED component
+		const value_type& get_r()const { return r_; }
+		
+		//! Returns the GREEN component
+		const value_type& get_g()const { return g_; }
+		
+		//! Returns the BLUE component
+		const value_type& get_b()const { return b_; }
+		
+		//! Returns the amount of opacity (alpha)
+		const value_type& get_a()const { return a_; }
+		
+		//! Synonym for get_a(). \see get_a()
+		const value_type& get_alpha()const { return get_a(); }
+		
+		//! Sets the RED component to \a x
+		CairoColorAccumulator& set_r(const value_type& x) { r_ = x; return *this; }
+		
+		//! Sets the GREEN component to \a x
+		CairoColorAccumulator& set_g(const value_type& x) { g_ = x; return *this; }
+		
+		//! Sets the BLUE component to \a x
+		CairoColorAccumulator& set_b(const value_type& x) { b_ = x; return *this; }
+		
+		//! Sets the opacity (alpha) to \a x
+		CairoColorAccumulator& set_a(const value_type& x) { a_ = x; return *this; }
+		
+		//! Synonym for set_a(). \see set_a()
+		CairoColorAccumulator& set_alpha(const value_type& x) { return set_a(x); }
+	};
+	
+	inline
+	CairoColor::CairoColor(const CairoColorAccumulator& c){
+	set_a(c.a_*CairoColor::range);
+	set_r(c.r_*CairoColor::range);
+	set_g(c.g_*CairoColor::range);
+	set_b(c.b_*CairoColor::range);
+	}
+	
+
+//
 
 
 #ifndef USE_HALF_TYPE
