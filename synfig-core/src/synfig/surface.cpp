@@ -282,7 +282,7 @@ synfig::CairoSurface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		return;
 	}
 	else
-		etl::surface<CairoColor, CairoColor, CairoColorPrep>::blit_to(pen,x,y,w,h);
+		etl::surface<CairoColor, CairoColorAccumulator, CairoColorPrep>::blit_to(pen,x,y,w,h);
 }
 
 void

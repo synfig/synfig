@@ -127,7 +127,7 @@ public:
  ** equivalent to the current backend for custom modifications purposes.
  **	\todo writeme
  */
-class CairoSurface : public etl::surface<CairoColor, CairoColor, CairoColorPrep>
+class CairoSurface : public etl::surface<CairoColor, CairoColorAccumulator, CairoColorPrep>
 {
 	// This is the Cairo surface pointer
 	// It is NULL if the not initialized
@@ -154,7 +154,7 @@ public:
 	// Use whits version of set_wh to directly give to the etl::surface the 
 	// pointer to data, the width, height and pitch (stride) between rows 
 	void set_wh(int w, int h, unsigned char* data, int pitch)
-	{ etl::surface<CairoColor, CairoColor, CairoColorPrep>::set_wh(w, h, data, pitch); }
+	{ etl::surface<CairoColor, CairoColorAccumulator, CairoColorPrep>::set_wh(w, h, data, pitch); }
 	// specialization of etl::surface::blit_to that considers the possibility of
 	// don't blend colors when blend method is straight and alpha is 1.0
 	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
@@ -235,16 +235,16 @@ public:
  **	The default blending method is Color::BLEND_COMPOSITE.
  **	\see Color::BlendMethod
  */
-class CairoSurface::alpha_pen : public etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >
+class CairoSurface::alpha_pen : public etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >
 {
 public:
 	alpha_pen() { }
-	alpha_pen(const etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> > &x):
-	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >(x)
+	alpha_pen(const etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> > &x):
+	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >(x)
 	{ }
 	
-	alpha_pen(const etl::generic_pen<CairoColor, CairoColor>& pen, const float &a = 1, const _BlendFunc<CairoColor> &func = _BlendFunc<CairoColor>()):
-	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColor>, float, _BlendFunc<CairoColor> >(pen,a,func)
+	alpha_pen(const etl::generic_pen<CairoColor, CairoColorAccumulator>& pen, const float &a = 1, const _BlendFunc<CairoColor> &func = _BlendFunc<CairoColor>()):
+	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >(pen,a,func)
 	{ }
 	
 	//! Sets the blend method to that described by \a method
