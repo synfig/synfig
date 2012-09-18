@@ -1028,10 +1028,10 @@ public:
 	
 	inline
 	CairoColor::CairoColor(const CairoColorAccumulator& c){
-	set_a(c.a_*CairoColor::range);
-	set_r(c.r_*CairoColor::range);
-	set_g(c.g_*CairoColor::range);
-	set_b(c.b_*CairoColor::range);
+	set_a(CairoColor::clamp(c.a_*CairoColor::range));
+	set_r(CairoColor::clamp(c.r_*CairoColor::range));
+	set_g(CairoColor::clamp(c.g_*CairoColor::range));
+	set_b(CairoColor::clamp(c.b_*CairoColor::range));
 	}
 	
 
