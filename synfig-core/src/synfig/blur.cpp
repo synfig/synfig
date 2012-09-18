@@ -133,22 +133,28 @@ inline Color zero<Color>()
 	return Color::alpha();
 }
 
+template <>
+inline CairoColorAccumulator zero<CairoColorAccumulator>()
+{
+	return CairoColorAccumulator(0);
+}
+
 template <typename T,typename AT,class VP>
 static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
-	T Tmp1,Tmp2,SR0;
+	AT Tmp1,Tmp2,SR0;
 
-	T *SC0=new T[surface.get_w()];
+	AT *SC0=new AT[surface.get_w()];
 
-	memcpy(SC0,surface[0],surface.get_w()*sizeof(T));
+	memcpy(SC0,surface[0],surface.get_w()*sizeof(AT));
 
 	for(y=0;y<surface.get_h();y++)
 	{
 		SR0=surface[y][0];
 		for(x=0;x<surface.get_w();x++)
 		{
-			Tmp1=surface[y][x];
+			Tmp1=(AT)(surface[y][x]);
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
 			surface[y][x]=(SC0[x]+Tmp2)/4;
@@ -162,17 +168,17 @@ template <typename T,typename AT,class VP>
 static void GaussianBlur_3x3(etl::surface<T,AT,VP> &surface)
 {
 	int x,y,u,v,w,h;
-	T Tmp1,Tmp2,SR0,SR1;
+	AT Tmp1,Tmp2,SR0,SR1;
 
 	w=surface.get_w();
 	h=surface.get_h();
 
-	T *SC0=new T[w+1];
-	T *SC1=new T[w+1];
+	AT *SC0=new AT[w+1];
+	AT *SC1=new AT[w+1];
 
 	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x]=surface[0][x]*4;
-//	memcpy(SC1,surface[0],w*sizeof(T));
+	for(x=0;x<w;x++)SC0[x]=(AT)(surface[0][x])*4;
+	memset(SC1,0,w*sizeof(AT));
 
 	for(y=0;y<=h;y++)
 	{
@@ -210,20 +216,19 @@ static void GaussianBlur_3x3(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,T *SC0,T *SC1,T *SC2,T *SC3)
+inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,AT *SC0,AT *SC1,AT *SC2,AT *SC3)
 {
 	int x,y,u,v,w,h;
-	T Tmp1,Tmp2,SR0,SR1,SR2,SR3;
+	AT Tmp1,Tmp2,SR0,SR1,SR2,SR3;
 
 	w=surface.get_w();
 	h=surface.get_h();
 
 	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x+2]=surface[0][x]*24;
-//	memset(SC0,0,(w+2)*sizeof(T));
-	memset(SC1,0,(w+2)*sizeof(T));
-	memset(SC2,0,(w+2)*sizeof(T));
-	memset(SC3,0,(w+2)*sizeof(T));
+	for(x=0;x<w;x++)SC0[x+2]=(AT)(surface[0][x])*24;
+	memset(SC1,0,(w+2)*sizeof(AT));
+	memset(SC2,0,(w+2)*sizeof(AT));
+	memset(SC3,0,(w+2)*sizeof(AT));
 
 	for(y=0;y<h+2;y++)
 	{
@@ -233,7 +238,7 @@ inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,T *SC0,T *SC
 			v=y;
 
 		SR0=SR1=SR2=SR3=0;
-		SR0=surface[v][0]*1.5;
+		SR0=(AT)(surface[v][0])*1.5;
 		for(x=0;x<w+2;x++)
 		{
 			if(x>=w)
@@ -272,10 +277,10 @@ inline static void GaussianBlur_5x5(etl::surface<T,AT,VP> &surface)
 {
 	int w=surface.get_w();
 
-	T *SC0=new T[w+2];
-	T *SC1=new T[w+2];
-	T *SC2=new T[w+2];
-	T *SC3=new T[w+2];
+	AT *SC0=new AT[w+2];
+	AT *SC1=new AT[w+2];
+	AT *SC2=new AT[w+2];
+	AT *SC3=new AT[w+2];
 
 	GaussianBlur_5x5_(surface,SC0,SC1,SC2,SC3);
 
@@ -290,25 +295,25 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 {
 	int x,y,u,v,w,h;
 	int half_n=n/2,i;
-	T inv_divisor=pow(2.0,(n-1));
-	T Tmp1,Tmp2;
+	float inv_divisor=pow(2.0,(n-1));
+	AT Tmp1,Tmp2;
 	inv_divisor=1.0/(inv_divisor*inv_divisor);
 
 	w=surface.get_w();
 	h=surface.get_h();
 
-    T SR[n-1];
-	T *SC[n-1];
+    AT SR[n-1];
+	AT *SC[n-1];
 
 	for(i=0;i<n-1;i++)
 	{
-		SC[i]=new T[w+half_n];
+		SC[i]=new AT[w+half_n];
 		if(!SC[i])
 		{
 			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
 			return;
 		}
-		memset(SC[i],0,(w+half_n)*sizeof(T));
+		memset(SC[i],0,(w+half_n)*sizeof(AT));
 	}
 
 	// Setup the first row
@@ -321,7 +326,7 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 		else
 			v=y;
 
-		memset(SR,0,(n-1)*sizeof(T));
+		memset(SR,0,(n-1)*sizeof(AT));
 
 //		SR[0]=surface[v][0]*(2.0-1.9/n);
 
@@ -413,7 +418,7 @@ static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
 
 	for(x=0;x<surface.get_w();x++)
 	{
-		SR0 = zero<T>();
+		SR0 = zero<AT>();
 		for(y=0;y<surface.get_h();y++)
 		{
 			Tmp1=surface[y][x];
