@@ -728,14 +728,14 @@ bool Blur::operator()(const Surface &surface,
 			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
-			Color *SC0=new class Color[w+2];
-			Color *SC1=new class Color[w+2];
-			Color *SC2=new class Color[w+2];
-			Color *SC3=new class Color[w+2];
-			memset(SC0,0,(w+2)*sizeof(Color));
-			memset(SC0,0,(w+2)*sizeof(Color));
-			memset(SC0,0,(w+2)*sizeof(Color));
-			memset(SC0,0,(w+2)*sizeof(Color));
+			ColorAccumulator *SC0=new ColorAccumulator[w+2];
+			ColorAccumulator *SC1=new ColorAccumulator[w+2];
+			ColorAccumulator *SC2=new ColorAccumulator[w+2];
+			ColorAccumulator *SC3=new ColorAccumulator[w+2];
+			memset(SC0,0,(w+2)*sizeof(ColorAccumulator));
+			memset(SC1,0,(w+2)*sizeof(ColorAccumulator));
+			memset(SC2,0,(w+2)*sizeof(ColorAccumulator));
+			memset(SC3,0,(w+2)*sizeof(ColorAccumulator));
 
 			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
@@ -1114,14 +1114,14 @@ bool Blur::operator()(cairo_surface_t *surface,
 			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 			
-			CairoColor *SC0=new class CairoColor[w+2];
-			CairoColor *SC1=new class CairoColor[w+2];
-			CairoColor *SC2=new class CairoColor[w+2];
-			CairoColor *SC3=new class CairoColor[w+2];
-			memset(SC0,0,(w+2)*sizeof(CairoColor));
-			memset(SC1,0,(w+2)*sizeof(CairoColor));
-			memset(SC2,0,(w+2)*sizeof(CairoColor));
-			memset(SC3,0,(w+2)*sizeof(CairoColor));
+			CairoColorAccumulator *SC0=new class CairoColorAccumulator[w+2];
+			CairoColorAccumulator *SC1=new class CairoColorAccumulator[w+2];
+			CairoColorAccumulator *SC2=new class CairoColorAccumulator[w+2];
+			CairoColorAccumulator *SC3=new class CairoColorAccumulator[w+2];
+			memset(SC0,0,(w+2)*sizeof(CairoColorAccumulator));
+			memset(SC1,0,(w+2)*sizeof(CairoColorAccumulator));
+			memset(SC2,0,(w+2)*sizeof(CairoColorAccumulator));
+			memset(SC3,0,(w+2)*sizeof(CairoColorAccumulator));
 						
 			while(bw&&bh)
 			{
