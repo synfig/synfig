@@ -134,7 +134,7 @@ inline Color zero<Color>()
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_2x2(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
 	T Tmp1,Tmp2,SR0;
@@ -159,7 +159,7 @@ static void GuassianBlur_2x2(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_3x3(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_3x3(etl::surface<T,AT,VP> &surface)
 {
 	int x,y,u,v,w,h;
 	T Tmp1,Tmp2,SR0,SR1;
@@ -286,7 +286,7 @@ inline static void GaussianBlur_5x5(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
+static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 {
 	int x,y,u,v,w,h;
 	int half_n=n/2,i;
@@ -363,7 +363,7 @@ static void GuassianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_2x1(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
 	AT Tmp1,Tmp2,SR0;
@@ -382,7 +382,7 @@ static void GuassianBlur_2x1(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_3x1(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
 	AT Tmp1,Tmp2,SR0,SR1;
@@ -406,7 +406,7 @@ static void GuassianBlur_3x1(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_1x2(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
 	AT Tmp1,Tmp2,SR0;
@@ -425,7 +425,7 @@ static void GuassianBlur_1x2(etl::surface<T,AT,VP> &surface)
 }
 
 template <typename T,typename AT,class VP>
-static void GuassianBlur_1x3(etl::surface<T,AT,VP> &surface)
+static void GaussianBlur_1x3(etl::surface<T,AT,VP> &surface)
 {
 	int x,y;
 	AT Tmp1,Tmp2,SR0,SR1;
@@ -758,7 +758,7 @@ bool Blur::operator()(const Surface &surface,
 				else
 				if(bw>=1 && bh>=1)
 				{
-					GuassianBlur_2x2(*gauss_surface);
+					GaussianBlur_2x2(*gauss_surface);
 					bw--,bh--;
 				}
 
@@ -769,13 +769,13 @@ bool Blur::operator()(const Surface &surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bw>=2)
 				{
-					GuassianBlur_3x1(*gauss_surface);
+					GaussianBlur_3x1(*gauss_surface);
 					bw-=2;
 				}
 				else
 				if(bw>=1)
 				{
-					GuassianBlur_2x1(*gauss_surface);
+					GaussianBlur_2x1(*gauss_surface);
 					bw--;
 				}
 				//synfig::warning("Didn't crash yet bi - %d",i++);
@@ -785,13 +785,13 @@ bool Blur::operator()(const Surface &surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bh>=2)
 				{
-					GuassianBlur_1x3(*gauss_surface);
+					GaussianBlur_1x3(*gauss_surface);
 					bh-=2;
 				}
 				else
 				if(bh>=1)
 				{
-					GuassianBlur_1x2(*gauss_surface);
+					GaussianBlur_1x2(*gauss_surface);
 					bh--;
 				}
 				//synfig::warning("Didn't crash yet bi - %d",i++);
@@ -1141,7 +1141,7 @@ bool Blur::operator()(cairo_surface_t *surface,
 					else
 						if(bw>=1 && bh>=1)
 						{
-							GuassianBlur_2x2(*gauss_surface);
+							GaussianBlur_2x2(*gauss_surface);
 							bw--,bh--;
 						}				
 			}
@@ -1150,13 +1150,13 @@ bool Blur::operator()(cairo_surface_t *surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bw>=2)
 				{
-					GuassianBlur_3x1(*gauss_surface);
+					GaussianBlur_3x1(*gauss_surface);
 					bw-=2;
 				}
 				else
 					if(bw>=1)
 					{
-						GuassianBlur_2x1(*gauss_surface);
+						GaussianBlur_2x1(*gauss_surface);
 						bw--;
 					}
 			}
@@ -1165,13 +1165,13 @@ bool Blur::operator()(cairo_surface_t *surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bh>=2)
 				{
-					GuassianBlur_1x3(*gauss_surface);
+					GaussianBlur_1x3(*gauss_surface);
 					bh-=2;
 				}
 				else
 					if(bh>=1)
 					{
-						GuassianBlur_1x2(*gauss_surface);
+						GaussianBlur_1x2(*gauss_surface);
 						bh--;
 					}
 			}
@@ -1484,7 +1484,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				else
 				if(bw>=1 && bh>=1)
 				{
-					GuassianBlur_2x2(*gauss_surface);
+					GaussianBlur_2x2(*gauss_surface);
 					bw--,bh--;
 				}
 			}
@@ -1494,13 +1494,13 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bw>=2)
 				{
-					GuassianBlur_3x1(*gauss_surface);
+					GaussianBlur_3x1(*gauss_surface);
 					bw-=2;
 				}
 				else
 				if(bw>=1)
 				{
-					GuassianBlur_2x1(*gauss_surface);
+					GaussianBlur_2x1(*gauss_surface);
 					bw--;
 				}
 			}
@@ -1510,13 +1510,13 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 				if(bh>=2)
 				{
-					GuassianBlur_1x3(*gauss_surface);
+					GaussianBlur_1x3(*gauss_surface);
 					bh-=2;
 				}
 				else
 				if(bh>=1)
 				{
-					GuassianBlur_1x2(*gauss_surface);
+					GaussianBlur_1x2(*gauss_surface);
 					bh--;
 				}
 			}
