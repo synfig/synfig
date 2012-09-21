@@ -342,7 +342,7 @@ void extract_options(const po::variables_map& vm, RendDesc& desc)
 }
 
 /// TODO: Check dependency between codec and bitrate parameters
-int extract_options(const po::variables_map& vm, TargetParam& params)
+void extract_options(const po::variables_map& vm, TargetParam& params)
 {
 	if (vm.count("video-codec"))
 	{
@@ -440,7 +440,7 @@ int main(int ac, char* av[])
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
             ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
-            ("sequence-separator", sequence_separator_arg_desc, _("Output file sequence separator string (no blanks)"))
+            ("sequence-separator", sequence_separator_arg_desc, _("Output file sequence separator string (use double quotes if you want to use spaces)"))
             ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using specified # of threads"))
             ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
