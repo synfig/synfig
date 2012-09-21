@@ -76,7 +76,8 @@ Canvas::Canvas(const String &id):
 	cur_time_	(0),
 	is_inline_	(false),
 	is_dirty_	(true),
-	op_flag_	(false)
+	op_flag_	(false),
+	grow_value	(0.0)
 {
 	_CanvasCounter::counter++;
 	clear();
@@ -274,6 +275,23 @@ Canvas::set_description(const String &x)
 	description_=x;
 	signal_meta_data_changed()("description");
 	signal_meta_data_changed("description")();
+}
+
+void
+Canvas::set_grow_value(Real x)
+{
+	if(grow_value!=x)
+	{
+		grow_value=x;
+		get_context().set_dirty_outlines();
+	}
+
+}
+
+Real
+Canvas::get_grow_value()const
+{
+	return grow_value;
 }
 
 void
@@ -1151,7 +1169,14 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
+			{
+				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
+				if(paste_sub_canvas->is_inline())
+					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
+				else
+					paste_sub_canvas->set_grow_value(0.0);
 				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
 // #define SYNFIG_OPTIMIZE_PASTE_CANVAS
@@ -1163,8 +1188,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				paste_canvas->get_amount()			== 1.0f						&&
 				paste_canvas->get_zoom()			== 0						&&
 				paste_canvas->get_time_offset()		== 0						&&
-				paste_canvas->get_origin()			== Point(0,0)				)
+				paste_canvas->get_origin()			== Point(0,0)				&&
+				//paste_canvas->get_param("outline_grow").get(Real()) == 0.0
+				)
 				try {
+					//synfig::info("outline grow is 0.0----------------");
 					for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
 					{
 						Layer* layer=sub_iter->get();
@@ -1260,6 +1288,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	for(iter2=sort_list.begin();iter2!=sort_list.end();++iter2)
 		op_canvas->push_back_simple(iter2->second);
 	op_canvas->op_flag_=true;
+	if(!context->empty() && (*context)->get_canvas())
+	{
+		op_canvas->set_grow_value((*context)->get_canvas()->get_grow_value());
+	}
 }
 
 void
@@ -1396,13 +1428,13 @@ Canvas::register_external_canvas(String file_name, Handle canvas)
 void
 Canvas::show_externals(String file, int line, String text) const
 {
-	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", ulong(this), get_name().c_str(), file.c_str(), line, text.c_str());
+	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", uintptr_t(this), get_name().c_str(), file.c_str(), line, text.c_str());
 	std::map<String, Handle>::iterator iter;
 	for (iter = externals_.begin(); iter != externals_.end(); iter++)
 	{
 		synfig::String first(iter->first);
 		etl::loose_handle<Canvas> second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");
 }

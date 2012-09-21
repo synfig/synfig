@@ -1507,7 +1507,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type);
- 	handle<ValueNode> c[value_node->link_count()];
+ 	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
+	std::vector<handle<ValueNode> > c(value_node->link_count());
 
 	if(!value_node)
 	{
@@ -2597,7 +2598,7 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 	{
 		synfig::String first(iter->first);
 		etl::loose_handle<Canvas> second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");
 }

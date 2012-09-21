@@ -55,6 +55,7 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #define SPINBUTTON_WIDTH 100
+#define ARROW_NEGATIVE_THRESHOLD 0.4
 
 /* === G L O B A L S ======================================================= */
 
@@ -75,7 +76,7 @@ void
 ColorSlider::set_type(Type x) { type=x; queue_draw(); }
 
 void
-ColorSlider::set_color(synfig::Color x) { color_=x; queue_draw(); }
+ColorSlider::set_color(synfig::Color x) { orig_color=x; color_=x; queue_draw(); }
 
 void
 ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
@@ -191,7 +192,8 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 
 	get_style()->paint_arrow(
 		get_window(),
-		Gtk::STATE_SELECTED,
+		(orig_color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE,
+		//use light arrow on dark color, and dark arrow on light color , TODO: detect from style which is darkest from SELECTED or ACTIVE
 		Gtk::SHADOW_OUT,
 		ca,
 		*this,

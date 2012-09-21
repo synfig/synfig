@@ -49,6 +49,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define ARROW_NEGATIVE_THRESHOLD 0.4
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -135,11 +137,9 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 		return true;
 	}
 
-	render_gradient_to_window(get_window(),Gdk::Rectangle(0,0,w,h-CONTROL_HEIGHT),gradient_);
+	render_gradient_to_window(get_window(),Gdk::Rectangle(0,0,w,h),gradient_);
 
 	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
-	get_window()->draw_rectangle(gc, false, 0, h-CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-
 	Gradient::iterator iter,selected_iter;
 	bool show_selected(false);
 	for(iter=gradient_.begin();iter!=gradient_.end();iter++)
@@ -147,7 +147,7 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 		if(*iter!=selected_cpoint)
 		get_style()->paint_arrow(
 			get_window(),
-			(*iter==selected_cpoint)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE,
+		  (iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE, here SELECTED is lighter.
 			Gtk::SHADOW_OUT,
 			area,
 			*this,
@@ -168,11 +168,14 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 
 	// we do this so that we can be sure that
 	// the selected marker is shown on top
+  // show 2 arrows for selected, to compensate for lack of contrast in some color schemes, such as ubuntu default theme
+  // Gtk::STATE_SELECTED was used, but resulted in a barely visible arrow in some color scheme, hence double arrow with contrasting color
+
 	if(show_selected)
 	{
 		get_style()->paint_arrow(
 			get_window(),
-			Gtk::STATE_SELECTED,
+			(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
 			Gtk::SHADOW_OUT,
 			area,
 			*this,
@@ -181,6 +184,20 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 			1,
 			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT,
+			CONTROL_HEIGHT,
+			CONTROL_HEIGHT
+		); // paint_arrow(window, state_type, shadow_type, area, widget, detail, arrow_type, fill, x, y, width, height)
+		get_style()->paint_arrow(
+			get_window(),
+						(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
+			Gtk::SHADOW_OUT,
+			area,
+			*this,
+			" ",
+			Gtk::ARROW_UP,
+			1,
+			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
+			h-CONTROL_HEIGHT*1.3,
 			CONTROL_HEIGHT,
 			CONTROL_HEIGHT
 		);

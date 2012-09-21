@@ -218,9 +218,14 @@ public:
 			while(alive_flag)
 			{
 				Glib::Mutex::Lock lock(mutex);
+				Glib::TimeVal end_time;
+
+				end_time.assign_current_time();
+				end_time.add_microseconds(BOREDOM_TIMEOUT);
+
 				if(!tile_queue.empty() && alive_flag)
 				{
-					if(cond_tile_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
+					if(cond_tile_queue_empty.timed_wait(mutex,end_time))
 						break;
 				}
 				else
@@ -325,12 +330,20 @@ public:
 			signal_progress()();
 		else
 #endif
+		{
+
+			Glib::TimeVal end_time;
+
+			end_time.assign_current_time();
+			end_time.add_microseconds(BOREDOM_TIMEOUT);
+
 			while(alive_flag && !ready_next)
 			{
 				Glib::Mutex::Lock lock(mutex);
-				if(cond_frame_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
+				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
 					break;
 			}
+		}
 	}
 
 

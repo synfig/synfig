@@ -194,6 +194,8 @@ Advanced_Outline::sync()
 		// For one single blinepoint, bezier size is always 1.0
 		Real bezier_size = 1.0/(blineloop?bline_size:(bline_size==1?1.0:(bline_size-1)));
 		const vector<BLinePoint>::const_iterator bend(bline.end());
+		// Retrieve the parent canvas grow value
+		Real gv(exp(get_parent_canvas_grow_value()));
 		// If we have only one blinepoint and it the bline is not looped
 		// then there is nothing to render
 		if(!blineloop && bline_size==1)
@@ -724,7 +726,7 @@ Advanced_Outline::sync()
 						p=hipos;
 					wnext->set_width(widthpoint_interpolate(i, n, p, smoothness_));
 				}
-				add_tip(side_a, side_b, curve(q), unitary, *wnext);
+				add_tip(side_a, side_b, curve(q), unitary, *wnext, gv);
 				// Update wplist iterators
 				witer=wnext;
 				switer=swnext;
@@ -760,7 +762,7 @@ Advanced_Outline::sync()
 							Real p(ipos);
 							if(!fast_)
 								p=hipos;
-							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+							add_cusp(side_a, side_b, bnext->get_vertex(), first_tangent, deriv(1.0-CUSP_TANGENT_ADJUST), gv*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 						}
 					}
 					// ... and get out of the main loop.
@@ -866,7 +868,7 @@ Advanced_Outline::sync()
 					Real p(ipos);
 					if(!fast_)
 						p=hipos;
-					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_));
+					add_cusp(side_a, side_b, biter->get_vertex(), deriv(CUSP_TANGENT_ADJUST), last_tangent, gv*(expand_+width_*0.5*widthpoint_interpolate(i, n, p, smoothness_)));
 				}
 				middle_corner=false;
 				// This avoid to calculate derivative on q=0
@@ -915,7 +917,7 @@ Advanced_Outline::sync()
 						}
 						ww=wnext->get_width();
 					}
-					const Real w(expand_+width_*0.5*ww);
+					const Real w(gv*(expand_+width_*0.5*ww));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// if we haven't passed the position of the second blinepoint
@@ -945,7 +947,7 @@ Advanced_Outline::sync()
 					Real po(ipos);
 					if(!fast_)
 						po=hipos;
-					const Real w(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					const Real w(gv*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 					side_a.push_back(p+d*w);
 					side_b.push_back(p-d*w);
 					// Update iterators
@@ -1002,7 +1004,7 @@ Advanced_Outline::sync()
 					done_tip=false;
 				}
 				else
-					w=(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_));
+					w=(gv*(expand_+width_*0.5*widthpoint_interpolate(i, n, po, smoothness_)));
 				side_a.push_back(p+d*w);
 				side_b.push_back(p-d*w);
 				ipos = ipos + step;
@@ -1242,6 +1244,8 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
 		return false;
+	if((*x)(Time(0)).empty())
+		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;
 	ValueNode::LooseHandle vnode;
@@ -1259,6 +1263,8 @@ bool
 Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
+		return false;
+	if((*x)(Time(0)).empty())
 		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;
@@ -1288,9 +1294,9 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 }
 
 void
-Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp)
+Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, const Real gv)
 {
-	Real w(expand_+width_*0.5*wp.get_width());
+	Real w(gv*(expand_+width_*0.5*wp.get_width()));
 	// Side Before
 	switch (wp.get_side_type_before())
 	{

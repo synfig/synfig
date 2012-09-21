@@ -74,7 +74,7 @@ public:
 	{ get_current_time(base_time); }
 
 	value_type operator()()const
-	{ return timestamp_to_seconds(get_current_time()-base_time); }
+	{ return this->timestamp_to_seconds(get_current_time()-base_time); }
 
 	value_type pop_time()
 	{
@@ -84,7 +84,7 @@ public:
 		// Put the current time into base_time
 		get_current_time(base_time);
 
-		return timestamp_to_seconds(base_time-old_time);
+		return this->timestamp_to_seconds(base_time-old_time);
 	}
 
 	static void

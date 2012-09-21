@@ -291,6 +291,14 @@ Dialog_Setup::Dialog_Setup():
 	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 
+	// Render - Table
+	Gtk::Table *render_table = manage(new Gtk::Table(2, 4, false));
+	notebook->append_page(*render_table, _("Render"));
+
+	// Render - Image sequence separator
+	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
+	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
 	show_all_children();
 }
 
@@ -354,6 +362,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred FPS
 	App::preferred_fps=Real(adj_pref_fps.get_value());
+
+	// Set the preferred image sequence separator
+	App::sequence_separator=image_sequence_separator.get_text();
 
 	App::save_settings();
 
@@ -502,6 +513,9 @@ Dialog_Setup::refresh()
 
 	//Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);
+
+	//Refresh the sequence separator
+	image_sequence_separator.set_text(App::sequence_separator);
 }
 
 GammaPattern::GammaPattern():

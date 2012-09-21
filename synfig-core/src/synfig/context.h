@@ -85,6 +85,9 @@ public:
 	//! Returns the first context's layer's handle that intesects the given \point */
 	etl::handle<Layer> hit_check(const Point &point)const;
 
+	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
+	void set_dirty_outlines();
+
 }; // END of class Context
 
 }; // END of namespace synfig

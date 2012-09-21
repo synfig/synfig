@@ -130,6 +130,8 @@ Widget_RendDesc::refresh()
 	entry_start_time->set_value(rend_desc_.get_time_start());
 	entry_end_time->set_fps(rend_desc_.get_frame_rate());
 	entry_end_time->set_value(rend_desc_.get_time_end());
+	entry_duration->set_fps(rend_desc_.get_frame_rate());
+	entry_duration->set_value(rend_desc_.get_duration());
 
 	adjustment_fps.set_value(rend_desc_.get_frame_rate());
 	adjustment_span.set_value(rend_desc_.get_span());
@@ -264,27 +266,16 @@ Widget_RendDesc::on_end_time_changed()
 	signal_changed()();
 }
 
-/*
-void
-Widget_RendDesc::on_start_frame_changed()
-{
-	if(update_lock)return;
-	UpdateLock lock(update_lock);
-	rend_desc_.set_frame_start((int)(adjustment_start_frame.get_value()+0.5));
-	refresh();
-	signal_changed()();
-}
 
 void
-Widget_RendDesc::on_end_frame_changed()
+Widget_RendDesc::on_duration_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_frame_end((int)(adjustment_end_frame.get_value()+0.5));
+	rend_desc_.set_duration(entry_duration->get_value());
 	refresh();
 	signal_changed()();
 }
-*/
 
 void
 Widget_RendDesc::on_fps_changed()
@@ -340,27 +331,12 @@ void
 Widget_RendDesc::disable_time_section()
 {
 	time_frame->set_sensitive(false);
-
-/*
-	Gtk::Table::TableList &list=time_table->children();
-	Gtk::Table::TableList::iterator iter;
-	for(iter=list.begin();iter!=list.end();iter++)
-		iter->get_widget()->set_sensitive(false);
-*/
 }
 
 void
 Widget_RendDesc::enable_time_section()
 {
 	time_frame->set_sensitive(true);
-
-/*
-	Gtk::Table::TableList &list=time_table->children();
-	Gtk::Table::TableList::iterator iter;
-	for(iter=list.begin();iter!=list.end();iter++)
-		iter->get_widget()->set_sensitive(true);
-
-*/
 }
 
 void
@@ -385,8 +361,7 @@ Widget_RendDesc::create_widgets()
 	entry_fps=manage(new Gtk::SpinButton(adjustment_fps,1,5));
 	entry_start_time=manage(new Widget_Time());
 	entry_end_time=manage(new Widget_Time());
-	//entry_start_frame=manage(new Gtk::SpinButton(adjustment_start_frame,1,0));
-	//entry_end_frame=manage(new Gtk::SpinButton(adjustment_end_frame,1,0));
+	entry_duration=manage(new Widget_Time());
 	entry_focus=manage(new Widget_Vector());
 	toggle_px_aspect=manage(new Gtk::CheckButton(_("_Pixel Aspect"), true));
 	toggle_px_aspect->set_alignment(0, 0.5);
@@ -419,8 +394,7 @@ Widget_RendDesc::connect_signals()
 	entry_fps->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_fps_changed));
 	entry_start_time->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_start_time_changed));
 	entry_end_time->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_end_time_changed));
-	//entry_start_frame->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_start_frame_changed));
-	//entry_end_frame->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_end_frame_changed));
+	entry_duration->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_duration_changed));
 	entry_focus->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_focus_changed));
 	toggle_px_aspect->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_px_width->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
@@ -559,6 +533,11 @@ Widget_RendDesc::create_time_tab()
 	timeFrameTable->attach(*timeEndLabel, 0, 1, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	timeFrameTable->attach(*entry_end_time, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
+	Gtk::Label *timeDurationLabel = manage(new Gtk::Label(_("_Duration"), 0, 0.5, true));
+	timeDurationLabel->set_mnemonic_widget(*entry_duration);
+	timeFrameTable->attach(*timeDurationLabel, 0, 1, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	timeFrameTable->attach(*entry_duration, 1, 2, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+
 	paddedPanel->show_all();
 	return paddedPanel;
 }
@@ -615,7 +594,3 @@ Widget_RendDesc::create_other_tab()
 	paddedPanel->show_all();
 	return paddedPanel;
 }
-
-/*
- * vim:ts=4:sw=4
- */

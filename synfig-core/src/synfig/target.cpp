@@ -97,7 +97,8 @@ Target::Target():
 	quality_(4),
 	gamma_(*default_gamma_),
 	remove_alpha(false),
-	avoid_time_sync_(false)
+	avoid_time_sync_(false),
+	curr_frame_(0)
 {
 }
 
@@ -119,3 +120,50 @@ Target::create(const String &name, const String &filename,
 
 	return Target::Handle(book()[name].factory(filename.c_str(), params));
 }
+
+int
+Target::next_frame(Time& time)
+{
+	int
+	total_frames(1),
+	frame_start(0),
+	frame_end(0);
+	Time
+	time_start(0),
+	time_end(0);
+		
+	frame_start=desc.get_frame_start();
+	frame_end=desc.get_frame_end();
+	time_start=desc.get_time_start();
+	time_end=desc.get_time_end();
+	// TODO: Add option to exclude last frame
+	// If user wants to recover the last buggy behavior then 
+	// expose this option to the interface using the target params.
+	// At the moment it is set to false.
+	bool exclude_last_frame(false);
+	// Calculate the number of frames
+	total_frames=frame_end-frame_start+(exclude_last_frame?0:1);
+	if(total_frames<=0)total_frames=1;
+
+	if(total_frames == 1)
+	{
+		time=time_start;
+	}
+	else
+	{
+		time=(time_end-time_start)*curr_frame_/(total_frames-(exclude_last_frame?0:1))+time_start;
+	}
+
+//	synfig::info("before curr_frame_: %d",curr_frame_);
+	curr_frame_++;
+	
+//	synfig::info("before curr_frame_: %d",curr_frame_);
+//	synfig::info("total_frames: %d",total_frames);
+//	synfig::info("time_end: %s",time_end.get_string().c_str());
+//	synfig::info("time_start: %s",time_start.get_string().c_str());
+//	synfig::info("time: %s",time.get_string().c_str());
+//	synfig::info("remaining frames %d", total_frames-curr_frame_);
+
+	return total_frames- curr_frame_;
+}
+

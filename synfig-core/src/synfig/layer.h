@@ -543,6 +543,8 @@ public:
 	//! Disconnects the parameter from any Value Node
 	virtual bool disconnect_dynamic_param(const String& param);
 
+	//! Retrieves the grow value from its parent canvas
+	Real get_parent_canvas_grow_value()const;
 
 protected:
 

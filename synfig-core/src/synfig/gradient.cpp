@@ -165,6 +165,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 	// if there are cpoints in both gradients run through both until one runs out
 	if (iter1 != end() && iter2 != rhs.end())
 		while(true)
+		{
 			// if the left one has the first cpoint
 			if (left.pos < right.pos)
 			{
@@ -239,6 +240,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 				right = *iter2;
 				if (iter1 == end()) break;
 			}
+		}
 
 	// one of the gradients has run out of points
 	// does the left one have points left?

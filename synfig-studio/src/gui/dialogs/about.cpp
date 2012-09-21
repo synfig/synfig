@@ -107,7 +107,7 @@ About::About()
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright 2001-2011\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
+	set_copyright(_("Copyright 2001-2012\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -160,6 +160,7 @@ About::About()
 	authors.push_back("Ralf Corsepius");
 	authors.push_back("Ray Frederikson");
 	authors.push_back("Timo Paulssen (timonator)");
+	authors.push_back("Yu Chen (jcome)");
 	authors.push_back("Yue Shi Lai");
 	set_authors(authors);
 
