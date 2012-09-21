@@ -216,7 +216,7 @@ void extract_canvas_info(Job& job, string values)
 	};
 }
 
-void extract_RendDesc(const po::variables_map& vm, RendDesc& desc)
+void extract_options(const po::variables_map& vm, RendDesc& desc)
 {
 	int w, h;
 	float span;
@@ -341,6 +341,38 @@ void extract_RendDesc(const po::variables_map& vm, RendDesc& desc)
 
 }
 
+/// TODO: Check dependency between codec and bitrate parameters
+int extract_options(const po::variables_map& vm, TargetParam& params)
+{
+	if (vm.count("video-codec"))
+	{
+		params.video_codec = vm["video-codec"].as<string>();
+
+		// video_codec string to lowercase
+		transform (params.video_codec.begin(),
+				   params.video_codec.end(),
+				   params.video_codec.begin(),
+				   ::tolower);
+
+		bool found = false;
+		// Check if the given video codec is allowed.
+		for (int i = 0; !found && allowed_video_codecs[i] != NULL; i++)
+			if (params.video_codec == allowed_video_codecs[i])
+				found = true;
+
+		// TODO: if (!found) Error!
+		// else
+		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str())
+					   << endl;
+	}
+	if(vm.count("video-bitrate"))
+	{
+		params.bitrate = vm["video-bitrate"].as<int>();
+		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate)
+					   << endl;
+	}
+}
+
 int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
@@ -389,7 +421,8 @@ int main(int ac, char* av[])
 		named_type<string>* append_filename_arg_desc = new named_type<string>("filename");
 		named_type<string>* canvas_info_fields_arg_desc = new named_type<string>("fields");
 		named_type<string>* layer_info_field_arg_desc = new named_type<string>("layer-name");
-
+		named_type<string>* video_codec_arg_desc = new named_type<string>("codec");
+		named_type<int>* video_bitrate_arg_desc = new named_type<int>("bitrate");
 
         po::options_description po_settings(_("Settings"));
         po_settings.add_options()
@@ -428,9 +461,15 @@ int main(int ac, char* av[])
             ("list-canvases", _("List the exported canvases in the composition"))
             ;
 
+        po::options_description po_ffmpeg(_("FFMPEG target options"));
+        po_ffmpeg.add_options()
+			("video-codec", video_codec_arg_desc, _("Set the codec for the video. See --ffmpeg-video-codecs"))
+            ("video-bitrate", video_bitrate_arg_desc, _("Set the bitrate for the output video"))
+            ;
+
         po::options_description po_info("Synfig info options");
         po_info.add_options()
-			("help", _("produce a help message"))
+			("help", _("Produce this help message"))
             ("importers", _("Print out the list of available importers"))
 			("info", _("Print out misc build information"))
             ("layers", _("Print out the list of available layers"))
@@ -438,7 +477,7 @@ int main(int ac, char* av[])
             ("license", _("Print out license information"))
             ("modules", _("Print out the list of loaded modules"))
             ("targets", _("Print out the list of available targets"))
-            ("target-video-codecs", _("Print out the list of available target video codecs"))
+            ("ffmpeg-video-codecs", _("Print out the list of available video codecs when encoding through FFMPEG"))
             ("valuenodes", _("Print out the list of available ValueNodes"))
             ("version", _("Print out version information"))
             ;
@@ -458,7 +497,7 @@ int main(int ac, char* av[])
         // Declare an options description instance which will include
         // all the options
         po::options_description po_all("");
-        po_all.add(po_settings).add(po_switchopts).add(po_misc).add(po_info);
+        po_all.add(po_settings).add(po_switchopts).add(po_misc).add(po_info).add(po_ffmpeg);
 
 #ifdef _DEBUG
 		po_all.add(po_debug);
@@ -467,7 +506,7 @@ int main(int ac, char* av[])
         // Declare an options description instance which will be shown
         // to the user
         po::options_description po_visible("");
-        po_visible.add(po_settings).add(po_switchopts).add(po_misc).add(po_info);
+        po_visible.add(po_settings).add(po_switchopts).add(po_misc).add(po_ffmpeg).add(po_info);
 
 
         po::variables_map vm;
@@ -804,7 +843,7 @@ int main(int ac, char* av[])
 
 		// Setup Job list ----------------------------------------------
 
-		extract_RendDesc(vm,job_list.front().canvas->rend_desc());
+		extract_options(vm,job_list.front().canvas->rend_desc());
 		job_list.front().desc = job_list.front().canvas->rend_desc();
 
 		VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << endl;
@@ -849,8 +888,8 @@ int main(int ac, char* av[])
 			target_name = "png";
 		}
 
-		// TODO: Add ffmpeg target parameters support
 		TargetParam target_parameters;
+		extract_options(vm, target_parameters);
 
 		// If no output filename was provided, then create a output filename
 		// based on the given input filename and the selected target.
