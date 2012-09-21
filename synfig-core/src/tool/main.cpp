@@ -371,6 +371,13 @@ int extract_options(const po::variables_map& vm, TargetParam& params)
 		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate)
 					   << endl;
 	}
+	if(vm.count("sequence-separator"))
+	{
+		params.sequence_separator = vm["sequence-separator"].as<string>();
+		VERBOSE_OUT(1) << strprintf(_("Output file sequence separator set to %s"),
+									params.sequence_separator.c_str())
+					   << endl;
+	}
 }
 
 int main(int ac, char* av[])
@@ -419,6 +426,7 @@ int main(int ac, char* av[])
 		named_type<int>* dpi_x_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_y_arg_desc = new named_type<int>("NUM");
 		named_type<string>* append_filename_arg_desc = new named_type<string>("filename");
+		named_type<string>* sequence_separator_arg_desc = new named_type<string>("string");
 		named_type<string>* canvas_info_fields_arg_desc = new named_type<string>("fields");
 		named_type<string>* layer_info_field_arg_desc = new named_type<string>("layer-name");
 		named_type<string>* video_codec_arg_desc = new named_type<string>("codec");
@@ -432,6 +440,7 @@ int main(int ac, char* av[])
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
             ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
+            ("sequence-separator", sequence_separator_arg_desc, _("Output file sequence separator string (no blanks)"))
             ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using specified # of threads"))
             ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
