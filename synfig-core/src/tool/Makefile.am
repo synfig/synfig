@@ -8,7 +8,8 @@ EXTRA_DIST = \
 
 INCLUDES = \
 	-I$(top_builddir) \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	@BOOST_CPPFLAGS@
 
 
 bin_PROGRAMS = \
@@ -27,7 +28,8 @@ synfig_LDADD = \
 	../synfig/libsynfig.la \
 	@SYNFIG_LIBS@ \
 	@OPENEXR_HALF_LIBS@ \
-	-lboost_program_options
+	@BOOST_LDFLAGS@ \
+	@BOOST_PROGRAM_OPTIONS_LIB@
 
 synfig_CXXFLAGS = \
 	@SYNFIG_CFLAGS@
