@@ -427,7 +427,12 @@ CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
 
 dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
-
+AX_BOOST_BASE([1.32.0])
+AX_BOOST_PROGRAM_OPTIONS
+if test "x$ax_cv_boost_program_options" = "xno" ; then
+	AC_MSG_ERROR([ ** You need to install Boost program-options library])
+fi
+CONFIG_DEPS="$CONFIG_DEPS boost_program_options"
 
 
 
@@ -733,5 +738,8 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
+"'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
+"'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
+"'$'"BOOST_PROGRAM_OPTIONS_LIB -------> '$BOOST_PROGRAM_OPTIONS_LIB'
 "'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "
