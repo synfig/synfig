@@ -40,36 +40,39 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+using namespace synfig;
+using namespace std;
+using namespace etl;
 
-class Halftone3 : public synfig::Layer_Composite
+class Halftone3 : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
-	synfig::Vector size;
+	Vector size;
 	int type;
 	Halftone tone[3];
-	synfig::Color	color[3];
+	Color	color[3];
 	float inverse_matrix[3][3];
 	bool subtractive;
 
-	synfig::Color color_func(const synfig::Point &x, float supersample,const synfig::Color &under_color)const;
+	Color color_func(const Point &x, float supersample,const Color &under_color)const;
 
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
+	float calc_supersample(const Point &x, float pw,float ph)const;
 
-	//float halftone_func(synfig::Point x)const;
+	//float halftone_func(Point x)const;
 
 	void sync();
 
 public:
 	Halftone3();
 
-	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String &param)const;
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual bool set_param(const String &param, const ValueBase &value);
+	virtual ValueBase get_param(const String &param)const;
+	virtual Color get_color(Context context, const Point &pos)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
 }; // END of class Halftone3
