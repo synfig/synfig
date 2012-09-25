@@ -277,12 +277,13 @@ Halftone2::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
 				pen.put_value(
-							  CairoColor(color_func(
-										 pos,
-										 supersample_size,
-										 Color(pen.get_value().demult_alpha())
-										 )).premult_alpha()
-							  );
+					CairoColor(color_func(
+										  pos,
+										  supersample_size,
+										  Color(pen.get_value().demult_alpha())
+										 )
+					).premult_alpha()
+				);
 	}
 	else
 	{
@@ -291,18 +292,18 @@ Halftone2::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			{
 				Color val=Color(pen.get_value().demult_alpha());
 				pen.put_value(
-							  CairoColor(Color::blend(
-													  color_func(
-																 pos,
-																 supersample_size,
-																 val
-																 ),
-													  val,
-													  get_amount(),
-													  get_blend_method()
-													).clamped()
-										 ).premult_alpha()
-								);
+						CairoColor(Color::blend(
+											  color_func(
+														 pos,
+														 supersample_size,
+														 val
+														 ),
+											  val,
+											  get_amount(),
+											  get_blend_method()
+											  ).clamped()
+						).premult_alpha()
+				);
 			}
 				
 	}
