@@ -210,6 +210,7 @@ SYNFIGHEADERS = \
 	version.h \
 	activepoint.h \
 	blur.h \
+	cairo_operators.h \
 	canvas.h \
 	color.h \
 	context.h \
@@ -246,6 +247,7 @@ SYNFIGHEADERS = \
 SYNFIGSOURCES = \
 	activepoint.cpp \
 	blur.cpp \
+	cairo_operators.cpp \
 	canvas.cpp \
 	color.cpp \
 	context.cpp \
