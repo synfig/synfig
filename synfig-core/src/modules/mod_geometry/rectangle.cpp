@@ -695,8 +695,7 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 			// now let's paint the inverted rectangle with the hole on the rendered context 
 			cairo_save(cr);
 			cairo_set_source_surface(cr, subimage, 0, 0);
-			cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
-			cairo_paint_with_alpha(cr, get_amount());
+			cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 			cairo_restore(cr);
 			cairo_surface_destroy(subimage);
 			cairo_destroy(subcr);
@@ -740,12 +739,9 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	cairo_scale(cr, sx, sy);
 	cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
 	cairo_clip(cr);
-	if(is_solid_color())
-		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); 
-	else
-		cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
-	cairo_paint_with_alpha(cr, get_amount());
-	cairo_destroy(cr);	
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	synfig::info("rectangle operator %d", get_blend_method());
+	cairo_destroy(cr);
 	return true;
 }
 

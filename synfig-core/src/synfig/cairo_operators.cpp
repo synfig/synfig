@@ -46,7 +46,7 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
-void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMethod method, int w, int h)
+void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMethod method)
 {
 	cairo_t* cr=cairo_reference(acr);
 	switch (method)
@@ -59,7 +59,33 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_STRAIGHT:
 		{
-			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_save(cr);
+			
+			cairo_surface_t* dest=cairo_get_target(cr);
+			cairo_surface_flush(dest);
+			cairo_surface_t* destimage=cairo_surface_map_to_image(dest, NULL);
+			int w=cairo_image_surface_get_width(destimage);
+			int h=cairo_image_surface_get_height(destimage);
+			cairo_surface_t* newdest=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+			
+			cairo_t* destcr=cairo_create(newdest);
+			cairo_set_source_surface(destcr, destimage, 0, 0);
+			cairo_paint_with_alpha(destcr, 1.0-alpha);
+			cairo_destroy(destcr);
+			
+			destcr=cairo_create(destimage);
+			cairo_set_source_surface(destcr, newdest, 0, 0);
+			cairo_set_operator(destcr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint(destcr);
+			cairo_destroy(destcr);
+			
+			cairo_surface_unmap_image(dest, destimage);
+			cairo_surface_mark_dirty(dest);
+			
+			cairo_surface_destroy(newdest);
+			cairo_restore(cr);
+
+			cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
 			cairo_paint_with_alpha(cr, alpha);
 			break;
 		}

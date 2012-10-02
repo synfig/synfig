@@ -666,9 +666,8 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		return false;
 
 	cairo_t *cr = cairo_create(surface);
-	// TODO set the operator. At the moment it only supports Composite (OVER in Cairo language)
 	cairo_set_source_surface(cr, pastesurface, 0, 0);
-	cairo_paint(cr);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	cairo_destroy(cr);
 	
 	if(cb && !cb->amount_complete(10000,10000)) return false;

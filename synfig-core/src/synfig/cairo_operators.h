@@ -35,7 +35,7 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-void cairo_paint_with_alpha_operator(cairo_t* cr, float alpha, synfig::Color::BlendMethod method, int w, int h);
+void cairo_paint_with_alpha_operator(cairo_t* cr, float alpha, synfig::Color::BlendMethod method);
 //void cairo_paint_operator(cairo_t* cr, Color::BlendMethod method);
 //void cairo_stroke_operator(cairo_t* cr, Color::BlendMethod method);
 //void cairo_fill_operator(cairo_t* cr, Color::BlendMethod method);
