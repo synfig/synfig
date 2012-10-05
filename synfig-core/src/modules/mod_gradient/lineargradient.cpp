@@ -318,7 +318,7 @@ LinearGradient::accelerated_cairorender(Context context,cairo_surface_t *surface
 	cairo_pattern_destroy(pattern); // Not needed more
 	cairo_restore(cr);
 	cairo_destroy(cr);
-
+	return true;
 }
 
 bool
