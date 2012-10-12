@@ -100,6 +100,23 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_paint_with_alpha(cr, alpha);
 			break;
 		}
+		case Color::BLEND_STRAIGHT_ONTO:
+		{
+			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr));
+			cairo_set_operator(cr, CAIRO_OPERATOR_IN);
+			cairo_paint(cr);
+			cairo_surface_t* source=cairo_copy_target_image(cairo_get_target(cr));
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(cr);
+			cairo_set_source_surface(cr, dest, 0, 0);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint(cr);
+			cairo_set_source_surface(cr, source, 0, 0);
+			cairo_paint_with_alpha_operator(cr, alpha, Color::BLEND_STRAIGHT);
+			cairo_surface_destroy(dest);
+			cairo_surface_destroy(source);
+			break;
+		}
 		default:
 		{
 			cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
