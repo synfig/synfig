@@ -727,7 +727,7 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	// In the case where there is nothing to render...
 	if (inter.area()<0.00000001)
 		return true;
-	
+	cairo_save(cr);
 	cairo_set_source_rgba(cr, r, g, b, a);
 	double width (inter_max[0]-inter_min[0]);
 	double height(inter_max[1]-inter_min[1]);
@@ -740,7 +740,7 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
 	cairo_clip(cr);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	synfig::info("rectangle operator %d", get_blend_method());
+	cairo_restore(cr);
 	cairo_destroy(cr);
 	return true;
 }

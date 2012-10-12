@@ -30,6 +30,7 @@
 #endif
 
 #include "cairo_operators.h"
+#include "general.h"
 
 
 #endif
@@ -71,6 +72,16 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_paint_with_alpha(cr, alpha);		
 			break;
 		}
+		case Color::BLEND_BRIGHTEN:
+		{
+
+			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
+			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_LUMINOSITY);
+			cairo_identity_matrix(cr);
+			cairo_mask_surface(cr, dest, 0,0);
+			cairo_surface_destroy(dest);
+			break;
+		}
 		case Color::BLEND_BEHIND:
 		{
 			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_OVER);
@@ -97,6 +108,38 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 	}
 	cairo_destroy(cr);
+}
+
+void cairo_copy_surface(cairo_surface_t* source, cairo_surface_t* dest, float alpha)
+{
+	cairo_t* cr=cairo_create(dest);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_set_source_surface(cr, source, 0, 0);
+	cairo_paint_with_alpha(cr, alpha);
+	cairo_destroy(cr);
+}
+
+cairo_surface_t* cairo_copy_target_image(cairo_surface_t* target, float alpha)
+{
+	cairo_surface_t* targetimage=cairo_surface_map_to_image(target, NULL);
+	cairo_surface_flush(targetimage);
+	int w=cairo_image_surface_get_width(targetimage);
+	int h=cairo_image_surface_get_height(targetimage);
+	cairo_surface_t* image=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+	cairo_copy_surface(targetimage, image, alpha);
+	cairo_surface_mark_dirty(targetimage);
+	cairo_surface_unmap_image(target, targetimage);
+	return image;
+}
+
+void cairo_surface_mask_alpha(cairo_surface_t* image, float alpha)
+{
+	cairo_t* cr=cairo_create(image);
+	cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_ATOP);
+	cairo_paint_with_alpha(cr, alpha);
+	cairo_destroy(cr);
+	
 }
 
 
