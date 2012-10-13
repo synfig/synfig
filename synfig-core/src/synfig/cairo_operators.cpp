@@ -74,9 +74,17 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_BRIGHTEN:
 		{
-
 			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
 			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_LUMINOSITY);
+			cairo_identity_matrix(cr);
+			cairo_mask_surface(cr, dest, 0,0);
+			cairo_surface_destroy(dest);
+			break;
+		}
+		case Color::BLEND_DARKEN:
+		{
+			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
+			cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
 			cairo_identity_matrix(cr);
 			cairo_mask_surface(cr, dest, 0,0);
 			cairo_surface_destroy(dest);
