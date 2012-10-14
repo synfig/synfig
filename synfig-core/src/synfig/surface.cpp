@@ -345,11 +345,11 @@ CairoSurface::map_cairo_image()
 {
 	assert(cs_);
 	assert(cs_image_ == NULL);
-	cairo_surface_flush(cs_);
 	if(cairo_surface_get_type(cs_) != CAIRO_SURFACE_TYPE_IMAGE)
 	{
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
 		cs_image_=cairo_surface_map_to_image (cs_, NULL);
+		cairo_surface_flush(cs_image_);
 #else
 		assert(false); // Old versions of cairo are not supported
 #endif
@@ -383,9 +383,9 @@ CairoSurface::unmap_cairo_image()
 	if(cairo_surface_get_type(cs_) != CAIRO_SURFACE_TYPE_IMAGE)
 	{
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
+		cairo_surface_mark_dirty(cs_image_);
 		// this will destroy cs_image_
 		cairo_surface_unmap_image(cs_, cs_image_);
-		cairo_surface_mark_dirty(cs_);
 #else
 		assert(false); // Old versions of cairo are not supported
 #endif
@@ -394,7 +394,6 @@ CairoSurface::unmap_cairo_image()
 	{
 		cairo_surface_destroy(cs_image_);
 		cs_image_ = NULL;
-		cairo_surface_mark_dirty(cs_);
 	}
 }
 
