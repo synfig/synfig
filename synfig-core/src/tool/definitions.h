@@ -74,6 +74,7 @@ enum exit_code
 
 extern const char *progname;
 extern int verbosity;
+extern int threads;
 extern bool be_quiet;
 extern bool print_benchmarks;
 extern const char* allowed_video_codecs[];

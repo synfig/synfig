@@ -32,7 +32,7 @@ public:
 					   const boost::program_options::options_description& po_visible)
 		: _vm(vm), _po_visible(po_visible) { }
 
-	void process_switch_options();
+	void process_settings_options();
 
 	void process_info_options() throw (SynfigToolException&);
 private:

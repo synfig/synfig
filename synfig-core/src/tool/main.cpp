@@ -80,9 +80,10 @@ namespace po=boost::program_options;
 /* === G L O B A L S ================================================ */
 
 const char *progname;
-int verbosity=0;
-bool be_quiet=false;
-bool print_benchmarks=false;
+int verbosity = 0;
+bool be_quiet = false;
+bool print_benchmarks = false;
+int threads = 1;
 
 //! Allowed video codecs
 /*! \warning This variable is linked to allowed_video_codecs_description,
@@ -527,7 +528,7 @@ int main(int ac, char* av[])
         OptionsProcessor op(vm, po_visible);
 
         // Switch options ---------------------------------------------
-        op.process_switch_options();
+        op.process_settings_options();
 
 #ifdef _DEBUG
 		// DEBUG options ----------------------------------------------
@@ -558,7 +559,6 @@ int main(int ac, char* av[])
 
 		// Processing options --------------------------------------------------
 		string target_name;
-		int threads;
 
 		// Common input file loading
 		if (vm.count("input-file"))
@@ -613,13 +613,6 @@ int main(int ac, char* av[])
 
 		VERBOSE_OUT(1) << _("Quality set to ") << job_list.front().quality
 					   << endl;
-
-		if (vm.count("threads"))
-			threads = vm["threads"].as<int>();
-		else
-			threads = 1;
-
-		VERBOSE_OUT(1) << _("Threads set to ") << threads << endl;
 
 		// WARNING: canvas must be before append
 

@@ -44,7 +44,7 @@
 using namespace std;
 using namespace synfig;
 
-void OptionsProcessor::process_switch_options()
+void OptionsProcessor::process_settings_options()
 {
 	if (_vm.count("verbose"))
 	{
@@ -58,6 +58,13 @@ void OptionsProcessor::process_switch_options()
 
 	if (_vm.count("quiet"))
 		be_quiet=true;
+
+	if (_vm.count("threads"))
+		threads = _vm["threads"].as<int>();
+	else
+		threads = 1;
+
+	VERBOSE_OUT(1) << _("Threads set to ") << threads << endl;
 }
 
 void OptionsProcessor::process_info_options() throw (SynfigToolException&)
