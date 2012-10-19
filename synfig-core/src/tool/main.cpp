@@ -544,100 +544,18 @@ int main(int ac, char* av[])
 #endif
 
 
-        // Info options -----------------------------------------------
-        exit_code ret;
-		if ((ret = op.process_info_options()) != SYNFIGTOOL_OK)
-			return ret;
-
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
 		Progress p(progname);
 		synfig::Main synfig_main(dirname(progname), &p);
 
+        // Info options -----------------------------------------------
+        exit_code ret;
+		if ((ret = op.process_info_options()) != SYNFIGTOOL_OK)
+			return ret;
+
 		list<Job> job_list;
-
-		if (vm.count("layers"))
-		{
-			synfig::Layer::Book::iterator iter =
-				synfig::Layer::book().begin();
-			for(; iter != synfig::Layer::book().end(); iter++)
-				if (iter->second.category != CATEGORY_DO_NOT_USE)
-					cout << iter->first << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("layer-info"))
-		{
-			Layer::Handle layer =
-				synfig::Layer::create(vm["layer-info"].as<string>());
-
-			cout << _("Layer Name: ") << layer->get_name() << endl;
-			cout << _("Localized Layer Name: ")
-				 << layer->get_local_name() << endl;
-			cout << _("Version: ") << layer->get_version() << endl;
-
-			Layer::Vocab vocab = layer->get_param_vocab();
-			for(; !vocab.empty(); vocab.pop_front())
-			{
-				cout << _("param - ") << vocab.front().get_name();
-				if(!vocab.front().get_critical())
-					cout << _(" (not critical)");
-				cout << endl << _("\tLocalized Name: ")
-					 << vocab.front().get_local_name() << endl;
-
-				if(!vocab.front().get_description().empty())
-					cout << _("\tDescription: ")
-						 << vocab.front().get_description() << endl;
-
-				if(!vocab.front().get_hint().empty())
-					cout << _("\tHint: ")
-						 << vocab.front().get_hint() << endl;
-			}
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("modules"))
-		{
-			synfig::Module::Book::iterator iter =
-				synfig::Module::book().begin();
-			for(; iter != synfig::Module::book().end(); iter++)
-				cout << iter->first << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("targets"))
-		{
-			synfig::Target::Book::iterator iter =
-				synfig::Target::book().begin();
-			for(; iter != synfig::Target::book().end(); iter++)
-				cout << iter->first << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("valuenodes"))
-		{
-			synfig::LinkableValueNode::Book::iterator iter =
-				synfig::LinkableValueNode::book().begin();
-			for(; iter != synfig::LinkableValueNode::book().end(); iter++)
-				cout << iter->first << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("importers"))
-		{
-			synfig::Importer::Book::iterator iter =
-				synfig::Importer::book().begin();
-			for(; iter != synfig::Importer::book().end(); iter++)
-				cout << iter->first << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
 
 
 		// Processing options --------------------------------------------------
