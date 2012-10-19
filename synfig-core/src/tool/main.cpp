@@ -64,6 +64,7 @@
 #include "progress.h"
 #include "renderprogress.h"
 #include "job.h"
+#include "synfigtoolexception.h"
 #include "optionsprocessor.h"
 #include "printing_functions.h"
 
@@ -551,12 +552,9 @@ int main(int ac, char* av[])
 		synfig::Main synfig_main(dirname(progname), &p);
 
         // Info options -----------------------------------------------
-        exit_code ret;
-		if ((ret = op.process_info_options()) != SYNFIGTOOL_OK)
-			return ret;
+        op.process_info_options();
 
 		list<Job> job_list;
-
 
 		// Processing options --------------------------------------------------
 		string target_name;
@@ -893,6 +891,13 @@ int main(int ac, char* av[])
 
 		return SYNFIGTOOL_OK;
 
+    }
+    catch (SynfigToolException& e) {
+    	exit_code code = e.get_exit_code();
+    	if (code != SYNFIGTOOL_HELP && code != SYNFIGTOOL_OK)
+    		cerr << e.get_message() << endl;
+
+    	return code;
     }
     catch(std::exception& e) {
         cout << e.what() << "\n";

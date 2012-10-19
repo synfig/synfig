@@ -37,6 +37,7 @@
 
 #include "definitions.h"
 #include "job.h"
+#include "synfigtoolexception.h"
 #include "printing_functions.h"
 #include "optionsprocessor.h"
 
@@ -59,14 +60,14 @@ void OptionsProcessor::process_switch_options()
 		be_quiet=true;
 }
 
-exit_code OptionsProcessor::process_info_options()
+void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 {
 	if (_vm.count("help"))
 	{
 		print_usage();
 		cout << _po_visible;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("info"))
@@ -92,14 +93,14 @@ exit_code OptionsProcessor::process_info_options()
 		cout << endl << SYNFIG_COPYRIGHT << endl;
 		cout << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("version"))
 	{
 		cerr << PACKAGE << " " << VERSION << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("license"))
@@ -108,14 +109,14 @@ exit_code OptionsProcessor::process_info_options()
 		cout << SYNFIG_COPYRIGHT << endl << endl;
 		cerr << SYNFIG_LICENSE << endl << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("target-video-codecs"))
 	{
 		print_target_video_codecs_help();
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("layers"))
@@ -126,7 +127,7 @@ exit_code OptionsProcessor::process_info_options()
 			if (iter->second.category != CATEGORY_DO_NOT_USE)
 				cout << iter->first << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("layer-info"))
@@ -157,7 +158,7 @@ exit_code OptionsProcessor::process_info_options()
 					 << vocab.front().get_hint() << endl;
 		}
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("modules"))
@@ -167,7 +168,7 @@ exit_code OptionsProcessor::process_info_options()
 		for(; iter != synfig::Module::book().end(); iter++)
 			cout << iter->first << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("targets"))
@@ -177,7 +178,7 @@ exit_code OptionsProcessor::process_info_options()
 		for(; iter != synfig::Target::book().end(); iter++)
 			cout << iter->first << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("valuenodes"))
@@ -187,7 +188,7 @@ exit_code OptionsProcessor::process_info_options()
 		for(; iter != synfig::LinkableValueNode::book().end(); iter++)
 			cout << iter->first << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (_vm.count("importers"))
@@ -197,9 +198,7 @@ exit_code OptionsProcessor::process_info_options()
 		for(; iter != synfig::Importer::book().end(); iter++)
 			cout << iter->first << endl;
 
-		return SYNFIGTOOL_HELP;
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
-
-	return SYNFIGTOOL_OK;
 }
 

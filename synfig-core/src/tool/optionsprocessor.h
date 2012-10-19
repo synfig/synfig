@@ -34,7 +34,7 @@ public:
 
 	void process_switch_options();
 
-	exit_code process_info_options();
+	void process_info_options() throw (SynfigToolException&);
 private:
 	boost::program_options::variables_map _vm;
 	boost::program_options::options_description _po_visible;

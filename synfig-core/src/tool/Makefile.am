@@ -20,6 +20,7 @@ synfig_SOURCES = \
 	progress.h \
 	renderprogress.h \
 	job.h \
+	synfigtoolexception.h \
 	printing_functions.h \
 	printing_functions.cpp \
 	optionsprocessor.h \
