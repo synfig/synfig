@@ -22,6 +22,8 @@ synfig_SOURCES = \
 	job.h \
 	printing_functions.h \
 	printing_functions.cpp \
+	optionsprocessor.h \
+	optionsprocessor.cpp \
 	main.cpp
 
 synfig_LDADD = \

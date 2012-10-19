@@ -64,6 +64,7 @@
 #include "progress.h"
 #include "renderprogress.h"
 #include "job.h"
+#include "optionsprocessor.h"
 #include "printing_functions.h"
 
 #include "named_type.h"
@@ -522,21 +523,10 @@ int main(int ac, char* av[])
         po::store(po::command_line_parser(ac, av).options(po_all).
 				  positional(po_positional).run(), vm);
 
-
+        OptionsProcessor op(vm, po_visible);
 
         // Switch options ---------------------------------------------
-        if (vm.count("verbose"))
-        {
-			verbosity = vm["verbose"].as<int>();
-			VERBOSE_OUT(1) << _("verbosity set to ") << verbosity
-						   << endl;
-		}
-
-		if (vm.count("benchmarks"))
-			print_benchmarks=true;
-
-		if (vm.count("quiet"))
-			be_quiet=true;
+        op.process_switch_options();
 
 #ifdef _DEBUG
 		// DEBUG options ----------------------------------------------
@@ -555,62 +545,9 @@ int main(int ac, char* av[])
 
 
         // Info options -----------------------------------------------
-        if (vm.count("help"))
-        {
-			print_usage();
-            cout << po_visible;
-
-            return SYNFIGTOOL_HELP;
-        }
-
-        if (vm.count("info"))
-        {
-			cout << PACKAGE "-" VERSION << endl;
-#ifdef DEVEL_VERSION
-				cout << endl << DEVEL_VERSION << endl << endl;
-#endif
-			cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
-#ifdef __GNUC__
-			cout << " with GCC " << __VERSION__;
-#endif
-#ifdef _MSC_VER
-			cout << " with Microsoft Visual C++ "
-				 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
-#endif
-#ifdef __TCPLUSPLUS__
-			cout << " with Borland Turbo C++ "
-				 << (__TCPLUSPLUS__>>8) << '.'
-				 << ((__TCPLUSPLUS__&255)>>4) << '.'
-				 << (__TCPLUSPLUS__&15);
-#endif
-			cout << endl << SYNFIG_COPYRIGHT << endl;
-			cout << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("version"))
-		{
-			cerr << PACKAGE << " " << VERSION << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("license"))
-		{
-			cerr << PACKAGE << " " << VERSION << endl;
-			cout << SYNFIG_COPYRIGHT << endl << endl;
-			cerr << SYNFIG_LICENSE << endl << endl;
-
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("target-video-codecs"))
-		{
-			print_target_video_codecs_help();
-
-			return SYNFIGTOOL_HELP;
-		}
+        exit_code ret;
+		if ((ret = op.process_info_options()) != SYNFIGTOOL_OK)
+			return ret;
 
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
