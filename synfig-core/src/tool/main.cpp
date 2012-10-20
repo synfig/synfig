@@ -34,10 +34,7 @@
 #include <iostream>
 #include <ETL/stringf>
 #include <list>
-#include <ETL/clock>
-#include <algorithm>
 #include <cstring>
-#include <errno.h>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -45,27 +42,22 @@
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
 
-#include <synfig/loadcanvas.h>
-#include <synfig/savecanvas.h>
-#include <synfig/target_scanline.h>
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
 #include <synfig/targetparam.h>
-#include <synfig/time.h>
 #include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
-#include <synfig/guid.h>
 #include <autorevision.h>
 #include "definitions.h"
 #include "progress.h"
-#include "renderprogress.h"
 #include "job.h"
 #include "synfigtoolexception.h"
 #include "optionsprocessor.h"
+#include "joblistprocessor.h"
 #include "printing_functions.h"
 
 #include "named_type.h"
@@ -284,193 +276,14 @@ int main(int ac, char* av[])
 
 		list<Job> job_list;
 
-		// Processing options --------------------------------------------------
+		// Processing --------------------------------------------------
 		Job job;
 		job = op.extract_job();
-
-		// Setup Job list ----------------------------------------------
 		job.desc = op.extract_renddesc(job.canvas->rend_desc());
+
 		job_list.push_front(job);
 
-		VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << endl;
-
-		// If the target type is not yet defined,
-		// try to figure it out from the outfile.
-		if(!vm.count("target") && !job_list.front().outfilename.empty())
-		{
-			VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
-						   << endl;
-			string ext = filename_extension(job_list.front().outfilename);
-			if (ext.length())
-				ext = ext.substr(1);
-
-			if(Target::ext_book().count(ext))
-			{
-				job_list.front().target_name = Target::ext_book()[ext];
-				info("target name not specified - using %s", job_list.front().target_name.c_str());
-			}
-			else
-			{
-				string lower_ext(ext);
-
-				for(unsigned int i = 0; i < ext.length(); i++)
-					lower_ext[i] = tolower(ext[i]);
-
-				if(Target::ext_book().count(lower_ext))
-				{
-					job_list.front().target_name=Target::ext_book()[lower_ext];
-					info("target name not specified - using %s", job_list.front().target_name.c_str());
-				}
-				else
-					job_list.front().target_name=ext;
-			}
-		}
-
-		// If the target type is STILL not yet defined, then
-		// set it to a some sort of default
-		if(job_list.front().target_name.empty())
-		{
-			VERBOSE_OUT(2) << _("Defaulting to PNG target...") << endl;
-			job_list.front().target_name = "png";
-		}
-
-		TargetParam target_parameters = op.extract_targetparam();
-
-		// If no output filename was provided, then create a output filename
-		// based on the given input filename and the selected target.
-		// (ie: change the extension)
-		if(job_list.front().outfilename.empty())
-		{
-			job_list.front().outfilename =
-				filename_sans_extension(job_list.front().filename) + '.';
-
-			if(Target::book().count(job_list.front().target_name))
-				job_list.front().outfilename +=
-					Target::book()[job_list.front().target_name].filename;
-			else
-				job_list.front().outfilename += job_list.front().target_name;
-		}
-
-		VERBOSE_OUT(4) << "Target name = " << job_list.front().target_name << endl;
-		VERBOSE_OUT(4) << "Outfilename = " << job_list.front().outfilename
-					   << endl;
-
-		// Check permissions
-		if (access(dirname(job_list.front().outfilename).c_str(), W_OK) == -1)
-		{
-			// TODO: This exception should not terminate the program if multi-job
-			// processing is available.
-			throw (SynfigToolException(SYNFIGTOOL_INVALIDOUTPUT,
-					strprintf(_("Unable to create ouput for \"%s\": %s.\n"
-								"Throwing out job..."), job_list.front().filename.c_str(), strerror(errno))));
-		}
-
-		VERBOSE_OUT(4) << _("Creating the target...") << endl;
-		job_list.front().target =
-			synfig::Target::create(job_list.front().target_name,
-								   job_list.front().outfilename,
-								   target_parameters);
-
-		if(job_list.front().target_name == "sif")
-			job_list.front().sifout=true;
-		else
-		{
-			if(!job_list.front().target)
-			{
-				cerr << _("Unknown target for ") << job_list.front().filename
-					 << ": " << job_list.front().target_name << endl;
-				cerr << _("Throwing out job...") << endl;
-				job_list.pop_front();
-			}
-			job_list.front().sifout=false;
-		}
-
-		// Set the Canvas on the Target
-		if(job_list.front().target)
-		{
-			VERBOSE_OUT(4) << _("Setting the canvas on the target...") << endl;
-			job_list.front().target->set_canvas(job_list.front().canvas);
-
-			VERBOSE_OUT(4) << _("Setting the quality of the target...") << endl;
-			job_list.front().target->set_quality(job_list.front().quality);
-		}
-
-		// Set the threads for the target
-		if (job_list.front().target &&
-			Target_Scanline::Handle::cast_dynamic(job_list.front().target))
-			Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
-
-
-		// Process Job list --------------------------------------------
-
-		if(!job_list.size())
-		{
-			cerr << _("Nothing to do!") << endl;
-			return SYNFIGTOOL_BORED;
-		}
-
-		for(; job_list.size(); job_list.pop_front())
-		{
-			VERBOSE_OUT(3) << job_list.front().filename << " -- " << endl;
-			VERBOSE_OUT(3) << '\t'
-						   <<
-				strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
-					job_list.front().desc.get_w(),
-					job_list.front().desc.get_h(),
-					job_list.front().desc.get_antialias(),
-					job_list.front().desc.get_pixel_aspect(),
-					job_list.front().desc.get_image_aspect(),
-					job_list.front().desc.get_span()
-					)
-				<< endl;
-
-			VERBOSE_OUT(3) << '\t'
-						   <<
-				strprintf("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]",
-					job_list.front().desc.get_tl()[0],
-					job_list.front().desc.get_tl()[1],
-					job_list.front().desc.get_br()[0],
-					job_list.front().desc.get_br()[1],
-					job_list.front().desc.get_focus()[0],
-					job_list.front().desc.get_focus()[1]
-					)
-					<< endl;
-
-			RenderProgress p;
-			p.task(job_list.front().filename + " ==> " +
-				   job_list.front().outfilename);
-			if(job_list.front().sifout)
-			{
-				if(!save_canvas(job_list.front().outfilename,
-								job_list.front().canvas))
-				{
-					cerr << _("Render Failure.") << endl;
-					return SYNFIGTOOL_RENDERFAILURE;
-				}
-			}
-			else
-			{
-				VERBOSE_OUT(1) << _("Rendering...") << endl;
-				etl::clock timer;
-				timer.reset();
-
-				// Call the render member of the target
-				if(!job_list.front().target->render(&p))
-				{
-					cerr << _("Render Failure.") << endl;
-					return SYNFIGTOOL_RENDERFAILURE;
-				}
-
-				if(print_benchmarks)
-					cout << job_list.front().filename
-						 << _(": Rendered in ") << timer()
-						 << _(" seconds.") << endl;
-			}
-		}
-
-		job_list.clear();
-
-		VERBOSE_OUT(1) << _("Done.") << endl;
+		process_job_list(job_list, op.extract_targetparam());
 
 		return SYNFIGTOOL_OK;
 

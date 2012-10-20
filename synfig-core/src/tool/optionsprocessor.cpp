@@ -22,6 +22,13 @@
 */
 /* ========================================================================= */
 
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
 #include <iostream>
 
 #include <boost/program_options/options_description.hpp>
@@ -36,12 +43,15 @@
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
+#include <synfig/guid.h>
 
 #include "definitions.h"
 #include "job.h"
 #include "synfigtoolexception.h"
 #include "printing_functions.h"
 #include "optionsprocessor.h"
+
+#endif
 
 using namespace std;
 using namespace synfig;
