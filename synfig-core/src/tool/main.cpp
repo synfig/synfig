@@ -154,71 +154,6 @@ void signal_test()
 
 #endif
 
-void extract_canvas_info(Job& job, string values)
-{
-	job.canvas_info = true;
-	string value;
-
-	std::string::size_type pos;
-	while (!values.empty())
-	{
-		pos = values.find_first_of(',');
-		if (pos == std::string::npos)
-		{
-			value = values;
-			values = "";
-		}
-		else
-		{
-			value = values.substr(0, pos);
-			values = values.substr(pos+1);
-		}
-		if (value == "all")
-		{
-			job.canvas_info_all = true;
-			return;
-		}
-
-		if (value == "time_start")			job.canvas_info_time_start		= true;
-		else if (value == "time_end")		job.canvas_info_time_end		= true;
-		else if (value == "frame_rate")		job.canvas_info_frame_rate		= true;
-		else if (value == "frame_start")	job.canvas_info_frame_start		= true;
-		else if (value == "frame_end")		job.canvas_info_frame_end		= true;
-		else if (value == "w")				job.canvas_info_w				= true;
-		else if (value == "h")				job.canvas_info_h				= true;
-		else if (value == "image_aspect")	job.canvas_info_image_aspect	= true;
-		else if (value == "pw")				job.canvas_info_pw				= true;
-		else if (value == "ph")				job.canvas_info_ph				= true;
-		else if (value == "pixel_aspect")	job.canvas_info_pixel_aspect	= true;
-		else if (value == "tl")				job.canvas_info_tl				= true;
-		else if (value == "br")				job.canvas_info_br				= true;
-		else if (value == "physical_w")		job.canvas_info_physical_w		= true;
-		else if (value == "physical_h")		job.canvas_info_physical_h		= true;
-		else if (value == "x_res")			job.canvas_info_x_res			= true;
-		else if (value == "y_res")			job.canvas_info_y_res			= true;
-		else if (value == "span")			job.canvas_info_span			= true;
-		else if (value == "interlaced")		job.canvas_info_interlaced		= true;
-		else if (value == "antialias")		job.canvas_info_antialias		= true;
-		else if (value == "clamp")			job.canvas_info_clamp			= true;
-		else if (value == "flags")			job.canvas_info_flags			= true;
-		else if (value == "focus")			job.canvas_info_focus			= true;
-		else if (value == "bg_color")		job.canvas_info_bg_color		= true;
-		else if (value == "metadata")		job.canvas_info_metadata		= true;
-		else
-		{
-			cerr << _("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
-			cerr << _("Recognized variables are:") << endl <<
-				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
-				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
-				"  x_res, y_res, span, interlaced, antialias, clamp, flags," << endl <<
-				"  focus, bg_color, metadata" << endl;
-		}
-
-		if (pos == std::string::npos)
-			break;
-	};
-}
-
 void extract_options(const po::variables_map& vm, RendDesc& desc)
 {
 	int w, h;
@@ -401,13 +336,11 @@ int main(int ac, char* av[])
 		return SYNFIGTOOL_BADVERSION;
 	}
 
-	if(ac==1)
-	{
-		print_usage();
-		return SYNFIGTOOL_BLANK;
-	}
+	try {
+		if(ac==1)
+			throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT));
 
-    try {
+
 		named_type<string>* target_arg_desc = new named_type<string>("module");
 		named_type<int>* width_arg_desc = new named_type<int>("NUM");
 		named_type<int>* height_arg_desc = new named_type<int>("NUM");
@@ -558,143 +491,9 @@ int main(int ac, char* av[])
 		list<Job> job_list;
 
 		// Processing options --------------------------------------------------
-		string target_name;
-
-		// Common input file loading
-		if (vm.count("input-file"))
-		{
-			Job job;
-
-			job.filename = vm["input-file"].as<string>();
-
-			// Open the composition
-			string errors, warnings;
-			try
-			{
-				job.root = open_canvas(job.filename, errors, warnings);
-			}
-			catch(runtime_error x)
-			{
-				job.root = 0;
-			}
-
-			// By default, the canvas to render is the root canvas
-			// This can be changed through --canvas option
-			job.canvas = job.root;
-
-			if(!job.canvas)
-			{
-				cerr << _("Unable to load '") << job.filename << "'."
-					 << endl;
-
-				return SYNFIGTOOL_FILENOTFOUND;
-			}
-
-			job.root->set_time(0);
-			job_list.push_front(job);
-		}
-
-		if (vm.count("target"))
-		{
-			target_name = vm["target"].as<string>();
-			VERBOSE_OUT(1) << _("Target set to ") << target_name << endl;
-		}
-
-		// Determine output
-		if (vm.count("output-file"))
-		{
-			job_list.front().outfilename = vm["output-file"].as<string>();
-		}
-
-		if (vm.count("quality"))
-			job_list.front().quality = vm["quality"].as<int>();
-		else
-			job_list.front().quality = DEFAULT_QUALITY;
-
-		VERBOSE_OUT(1) << _("Quality set to ") << job_list.front().quality
-					   << endl;
-
-		// WARNING: canvas must be before append
-
-		if (vm.count("canvas"))
-		{
-			string canvasid;
-			canvasid = vm["canvas"].as<string>();
-
-			try
-			{
-				string warnings;
-				job_list.front().canvas =
-					job_list.front().root->find_canvas(canvasid, warnings);
-			}
-			catch(Exception::IDNotFound)
-			{
-				cerr << _("Unable to find canvas with ID \"")
-					 << canvasid << _("\" in ") << job_list.front().filename
-					 << "." << endl;
-				cerr << _("Throwing out job...") << endl;
-				job_list.pop_front();
-			}
-			catch(Exception::BadLinkName)
-			{
-				cerr << _("Invalid canvas name \"") << canvasid
-					 << _("\" in ") << job_list.front().filename << "."
-					 << endl;
-				cerr << _("Throwing out job...") << endl;
-				job_list.pop_front();
-			}
-
-			// Later we need to set the other parameters for the jobs
-		}
-
-		// WARNING: append must be before list-canvases
-
-		if (vm.count("append"))
-		{
-			// TODO: Enable multi appending. Disabled in the previous CLI version
-			string composite_file;
-			composite_file = vm["append"].as<string>();
-
-			string errors, warnings;
-			Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
-			if(!composite)
-			{
-				cerr << _("Unable to append '") << composite_file
-					 << "'." << endl;
-			}
-			else
-			{
-				Canvas::reverse_iterator iter;
-				for(iter=composite->rbegin(); iter!=composite->rend(); ++iter)
-				{
-					Layer::Handle layer(*iter);
-					if(layer->active())
-						job_list.front().canvas->push_front(layer->clone());
-				}
-			}
-
-			VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
-		}
-
-		if (vm.count("list-canvases"))
-		{
-			print_child_canvases(job_list.front().filename + "#",
-								 job_list.front().root);
-
-			cerr << endl;
-
-			return SYNFIGTOOL_OK;
-		}
-
-		if (vm.count("canvas-info"))
-		{
-			extract_canvas_info(job_list.front(),
-								vm["canvas-info"].as<string>());
-			print_canvas_info(job_list.front());
-
-			return SYNFIGTOOL_OK;
-		}
-
+		Job job;
+		job = op.extract_job();
+		job_list.push_front(job);
 
 		// Setup Job list ----------------------------------------------
 
@@ -715,8 +514,8 @@ int main(int ac, char* av[])
 
 			if(Target::ext_book().count(ext))
 			{
-				target_name = Target::ext_book()[ext];
-				info("target name not specified - using %s", target_name.c_str());
+				job_list.front().target_name = Target::ext_book()[ext];
+				info("target name not specified - using %s", job_list.front().target_name.c_str());
 			}
 			else
 			{
@@ -727,20 +526,20 @@ int main(int ac, char* av[])
 
 				if(Target::ext_book().count(lower_ext))
 				{
-					target_name=Target::ext_book()[lower_ext];
-					info("target name not specified - using %s", target_name.c_str());
+					job_list.front().target_name=Target::ext_book()[lower_ext];
+					info("target name not specified - using %s", job_list.front().target_name.c_str());
 				}
 				else
-					target_name=ext;
+					job_list.front().target_name=ext;
 			}
 		}
 
 		// If the target type is STILL not yet defined, then
 		// set it to a some sort of default
-		if(target_name.empty())
+		if(job_list.front().target_name.empty())
 		{
 			VERBOSE_OUT(2) << _("Defaulting to PNG target...") << endl;
-			target_name = "png";
+			job_list.front().target_name = "png";
 		}
 
 		TargetParam target_parameters;
@@ -754,41 +553,41 @@ int main(int ac, char* av[])
 			job_list.front().outfilename =
 				filename_sans_extension(job_list.front().filename) + '.';
 
-			if(Target::book().count(target_name))
+			if(Target::book().count(job_list.front().target_name))
 				job_list.front().outfilename +=
-					Target::book()[target_name].filename;
+					Target::book()[job_list.front().target_name].filename;
 			else
-				job_list.front().outfilename += target_name;
+				job_list.front().outfilename += job_list.front().target_name;
 		}
 
-		VERBOSE_OUT(4) << "Target name = " << target_name << endl;
+		VERBOSE_OUT(4) << "Target name = " << job_list.front().target_name << endl;
 		VERBOSE_OUT(4) << "Outfilename = " << job_list.front().outfilename
 					   << endl;
 
 		// Check permissions
 		if (access(dirname(job_list.front().outfilename).c_str(), W_OK) == -1)
 		{
-			cerr << _("Unable to create ouput for ")
-				 << job_list.front().outfilename + ": " + strerror(errno)
-				 << endl;
-			job_list.pop_front();
-			cerr << _("Throwing out job...") << endl;
+			// TODO: This exception should not terminate the program if multi-job
+			// processing is available.
+			throw (SynfigToolException(SYNFIGTOOL_INVALIDOUTPUT,
+					strprintf(_("Unable to create ouput for \"%s\": %s.\n"
+								"Throwing out job..."), job_list.front().filename.c_str(), strerror(errno))));
 		}
 
 		VERBOSE_OUT(4) << _("Creating the target...") << endl;
 		job_list.front().target =
-			synfig::Target::create(target_name,
+			synfig::Target::create(job_list.front().target_name,
 								   job_list.front().outfilename,
 								   target_parameters);
 
-		if(target_name == "sif")
+		if(job_list.front().target_name == "sif")
 			job_list.front().sifout=true;
 		else
 		{
 			if(!job_list.front().target)
 			{
 				cerr << _("Unknown target for ") << job_list.front().filename
-					 << ": " << target_name << endl;
+					 << ": " << job_list.front().target_name << endl;
 				cerr << _("Throwing out job...") << endl;
 				job_list.pop_front();
 			}
@@ -889,6 +688,8 @@ int main(int ac, char* av[])
     	exit_code code = e.get_exit_code();
     	if (code != SYNFIGTOOL_HELP && code != SYNFIGTOOL_OK)
     		cerr << e.get_message() << endl;
+    	if (code == SYNFIGTOOL_MISSINGARGUMENT)
+    		print_usage();
 
     	return code;
     }

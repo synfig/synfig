@@ -29,6 +29,7 @@ struct Job
 {
 	std::string filename;
 	std::string outfilename;
+	std::string target_name;
 
 	synfig::RendDesc desc;
 

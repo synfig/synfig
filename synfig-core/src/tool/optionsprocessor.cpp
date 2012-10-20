@@ -27,6 +27,7 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include <ETL/stringf>
 #include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/canvas.h>
@@ -34,6 +35,7 @@
 #include <synfig/layer.h>
 #include <synfig/module.h>
 #include <synfig/importer.h>
+#include <synfig/loadcanvas.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -43,6 +45,73 @@
 
 using namespace std;
 using namespace synfig;
+using namespace etl;
+
+void OptionsProcessor::extract_canvas_info(Job& job)
+{
+	job.canvas_info = true;
+	string value;
+	string values = _vm["canvas-info"].as<string>();
+
+	std::string::size_type pos;
+	while (!values.empty())
+	{
+		pos = values.find_first_of(',');
+		if (pos == std::string::npos)
+		{
+			value = values;
+			values = "";
+		}
+		else
+		{
+			value = values.substr(0, pos);
+			values = values.substr(pos+1);
+		}
+		if (value == "all")
+		{
+			job.canvas_info_all = true;
+			return;
+		}
+
+		if (value == "time_start")			job.canvas_info_time_start		= true;
+		else if (value == "time_end")		job.canvas_info_time_end		= true;
+		else if (value == "frame_rate")		job.canvas_info_frame_rate		= true;
+		else if (value == "frame_start")	job.canvas_info_frame_start		= true;
+		else if (value == "frame_end")		job.canvas_info_frame_end		= true;
+		else if (value == "w")				job.canvas_info_w				= true;
+		else if (value == "h")				job.canvas_info_h				= true;
+		else if (value == "image_aspect")	job.canvas_info_image_aspect	= true;
+		else if (value == "pw")				job.canvas_info_pw				= true;
+		else if (value == "ph")				job.canvas_info_ph				= true;
+		else if (value == "pixel_aspect")	job.canvas_info_pixel_aspect	= true;
+		else if (value == "tl")				job.canvas_info_tl				= true;
+		else if (value == "br")				job.canvas_info_br				= true;
+		else if (value == "physical_w")		job.canvas_info_physical_w		= true;
+		else if (value == "physical_h")		job.canvas_info_physical_h		= true;
+		else if (value == "x_res")			job.canvas_info_x_res			= true;
+		else if (value == "y_res")			job.canvas_info_y_res			= true;
+		else if (value == "span")			job.canvas_info_span			= true;
+		else if (value == "interlaced")		job.canvas_info_interlaced		= true;
+		else if (value == "antialias")		job.canvas_info_antialias		= true;
+		else if (value == "clamp")			job.canvas_info_clamp			= true;
+		else if (value == "flags")			job.canvas_info_flags			= true;
+		else if (value == "focus")			job.canvas_info_focus			= true;
+		else if (value == "bg_color")		job.canvas_info_bg_color		= true;
+		else if (value == "metadata")		job.canvas_info_metadata		= true;
+		else
+		{
+			cerr << _("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
+			cerr << _("Recognized variables are:") << endl <<
+				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
+				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
+				"  x_res, y_res, span, interlaced, antialias, clamp, flags," << endl <<
+				"  focus, bg_color, metadata" << endl;
+		}
+
+		if (pos == std::string::npos)
+			break;
+	};
+}
 
 void OptionsProcessor::process_settings_options()
 {
@@ -207,5 +276,138 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
+}
+
+Job OptionsProcessor::extract_job() throw (SynfigToolException&)
+{
+	Job job;
+
+	// Common input file loading
+	if (_vm.count("input-file"))
+	{
+		job.filename = _vm["input-file"].as<string>();
+
+		// Open the composition
+		string errors, warnings;
+		try
+		{
+			job.root = open_canvas(job.filename, errors, warnings);
+		}
+		catch(runtime_error& x)
+		{
+			job.root = 0;
+		}
+
+		// By default, the canvas to render is the root canvas
+		// This can be changed through --canvas option
+		job.canvas = job.root;
+
+		if(!job.canvas)
+		{
+			throw (SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
+					strprintf(_("Unable to load '%s'."), job.filename.c_str())));
+		}
+
+		job.root->set_time(0);
+	}
+	else
+		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
+				strprintf(_("No input file provided."))));
+
+	if (_vm.count("target"))
+	{
+		job.target_name = _vm["target"].as<string>();
+		VERBOSE_OUT(1) << _("Target set to ") << job.target_name << endl;
+	}
+
+	// Determine output
+	if (_vm.count("output-file"))
+	{
+		job.outfilename = _vm["output-file"].as<string>();
+	}
+
+	if (_vm.count("quality"))
+		job.quality = _vm["quality"].as<int>();
+	else
+		job.quality = DEFAULT_QUALITY;
+
+	VERBOSE_OUT(1) << _("Quality set to ") << job.quality << endl;
+
+	// WARNING: canvas must be before append
+
+	if (_vm.count("canvas"))
+	{
+		string canvasid;
+		canvasid = _vm["canvas"].as<string>();
+
+		try
+		{
+			string warnings;
+			job.canvas = job.root->find_canvas(canvasid, warnings);
+			// TODO: This exceptions should not terminate the program if multi-job
+			// processing is available.
+		}
+		catch(Exception::IDNotFound&)
+		{
+			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
+					strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
+								"Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+		}
+		catch(Exception::BadLinkName&)
+		{
+			throw (SynfigToolException(SYNFIGTOOL_INVALIDJOB,
+					strprintf(_("Invalid canvas name \"%s\" in %s.\n"
+								"Throwing out job..."), canvasid.c_str(), job.filename.c_str())));
+		}
+
+		// Later we need to set the other parameters for the jobs
+	}
+
+	// WARNING: append must be before list-canvases
+
+	if (_vm.count("append"))
+	{
+		// TODO: Enable multi-appending. Disabled in the previous CLI version
+		string composite_file;
+		composite_file = _vm["append"].as<string>();
+
+		string errors, warnings;
+		Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
+		if(!composite)
+		{
+			VERBOSE_OUT(1) << _("Unable to append '") << composite_file
+						   << "'." << endl;
+		}
+		else
+		{
+			Canvas::reverse_iterator iter;
+			for(iter=composite->rbegin(); iter!=composite->rend(); ++iter)
+			{
+				Layer::Handle layer(*iter);
+				if(layer->active())
+					job.canvas->push_front(layer->clone());
+			}
+		}
+
+		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
+	}
+
+	if (_vm.count("list-canvases"))
+	{
+		print_child_canvases(job.filename + "#", job.root);
+		cerr << endl;
+
+		throw (SynfigToolException(SYNFIGTOOL_OK));
+	}
+
+	if (_vm.count("canvas-info"))
+	{
+		extract_canvas_info(job);
+		print_canvas_info(job);
+
+		throw (SynfigToolException(SYNFIGTOOL_OK));
+	}
+
+	return job;
 }
 

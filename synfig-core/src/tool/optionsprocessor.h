@@ -35,7 +35,11 @@ public:
 	void process_settings_options();
 
 	void process_info_options() throw (SynfigToolException&);
+
+	Job extract_job() throw (SynfigToolException&);
 private:
+	void extract_canvas_info(Job& job);
+
 	boost::program_options::variables_map _vm;
 	boost::program_options::options_description _po_visible;
 };
