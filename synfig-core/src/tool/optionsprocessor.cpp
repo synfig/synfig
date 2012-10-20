@@ -278,6 +278,176 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 	}
 }
 
+RendDesc OptionsProcessor::extract_renddesc(RendDesc& renddesc)
+{
+	RendDesc desc = renddesc;
+	int w, h;
+	float span;
+	span = w = h = 0;
+
+	if (_vm.count("width"))
+		w = _vm["width"].as<int>();
+
+	if (_vm.count("height"))
+		h = _vm["height"].as<int>();
+
+	if (_vm.count("antialias"))
+	{
+		int a;
+		a = _vm["antialias"].as<int>();
+		desc.set_antialias(a);
+		VERBOSE_OUT(1) << strprintf(_("Antialiasing set to %d, "
+									  "(%d samples per pixel)"), a, a*a)
+					   << endl;
+	}
+	if (_vm.count("span"))
+	{
+		span = _vm["antialias"].as<int>();
+		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span)
+					   << endl;
+	}
+	if (_vm.count("fps"))
+	{
+		float fps;
+		fps = _vm["antialias"].as<float>();
+		desc.set_frame_rate(fps);
+		VERBOSE_OUT(1) << strprintf(_("Frame rate set to %d frames per "
+									  "second"), fps) << endl;
+	}
+	if (_vm.count("dpi"))
+	{
+		float dpi, dots_per_meter;
+		dpi = _vm["dpi"].as<float>();
+		dots_per_meter = dpi * 39.3700787402;
+		desc.set_x_res(dots_per_meter);
+		desc.set_y_res(dots_per_meter);
+		VERBOSE_OUT(1) << strprintf(_("Physical resolution set to %f "
+									  "dpi"), dpi) << endl;
+	}
+	if (_vm.count("dpi-x"))
+	{
+		float dpi, dots_per_meter;
+		dpi = _vm["dpi-x"].as<float>();
+		dots_per_meter = dpi * 39.3700787402;
+		desc.set_x_res(dots_per_meter);
+		VERBOSE_OUT(1) << strprintf(_("Physical X resolution set to %f "
+									  "dpi"), dpi) << endl;
+	}
+	if (_vm.count("dpi-y"))
+	{
+		float dpi, dots_per_meter;
+		dpi = _vm["dpi-y"].as<float>();
+		dots_per_meter = dpi * 39.3700787402;
+		desc.set_y_res(dots_per_meter);
+		VERBOSE_OUT(1) << strprintf(_("Physical Y resolution set to %f "
+									  "dpi"), dpi) << endl;
+	}
+	if (_vm.count("start-time"))
+	{
+		int seconds;
+		stringstream ss;
+		seconds = _vm["start-time"].as<int>();
+		ss << seconds;
+		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
+	}
+	if (_vm.count("begin-time"))
+	{
+		int seconds;
+		stringstream ss;
+		seconds = _vm["begin-time"].as<int>();
+		ss << seconds;
+		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
+	}
+	if (_vm.count("end-time"))
+	{
+		int seconds;
+		stringstream ss;
+		seconds = _vm["end-time"].as<int>();
+		ss << seconds;
+		desc.set_time_end(Time(ss.str().c_str(), desc.get_frame_rate()));
+	}
+	if (_vm.count("time"))
+	{
+		int seconds;
+		stringstream ss;
+		seconds = _vm["time"].as<int>();
+		ss << seconds;
+		desc.set_time(Time(ss.str().c_str(), desc.get_frame_rate()));
+
+		VERBOSE_OUT(1) << _("Rendering frame at ")
+					   << desc.get_time_start().get_string(desc.get_frame_rate())
+					   << endl;
+	}
+	if (_vm.count("gamma"))
+	{
+		synfig::warning(_("Gamma argument is currently ignored"));
+		//int gamma;
+		//gamma = _vm["gamma"].as<int>();
+		//desc.set_gamma(Gamma(gamma));
+	}
+
+	if (w||h)
+	{
+		// scale properly
+		if (!w)
+			w = desc.get_w() * h / desc.get_h();
+		else if (!h)
+			h = desc.get_h() * w / desc.get_w();
+
+		desc.set_wh(w,h);
+		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d"), w, h)
+					   << endl;
+	}
+
+	if(span)
+		desc.set_span(span);
+
+	return desc;
+}
+
+/// TODO: Check dependency between codec and bitrate parameters
+TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
+{
+	TargetParam params;
+
+	if (_vm.count("video-codec"))
+	{
+		params.video_codec = _vm["video-codec"].as<string>();
+
+		// video_codec string to lowercase
+		transform (params.video_codec.begin(),
+				   params.video_codec.end(),
+				   params.video_codec.begin(),
+				   ::tolower);
+
+		bool found = false;
+		// Check if the given video codec is allowed.
+		for (int i = 0; !found && allowed_video_codecs[i] != NULL; i++)
+			if (params.video_codec == allowed_video_codecs[i])
+				found = true;
+
+		// TODO: if (!found) Error!
+		// else
+		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str())
+					   << endl;
+	}
+	if(_vm.count("video-bitrate"))
+	{
+		params.bitrate = _vm["video-bitrate"].as<int>();
+		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate)
+					   << endl;
+	}
+	if(_vm.count("sequence-separator"))
+	{
+		params.sequence_separator = _vm["sequence-separator"].as<string>();
+		VERBOSE_OUT(1) << strprintf(_("Output file sequence separator set to %s"),
+									params.sequence_separator.c_str())
+					   << endl;
+	}
+
+	return params;
+}
+
 Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 {
 	Job job;

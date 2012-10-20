@@ -37,6 +37,10 @@ public:
 	void process_info_options() throw (SynfigToolException&);
 
 	Job extract_job() throw (SynfigToolException&);
+
+	synfig::RendDesc extract_renddesc(synfig::RendDesc& renddesc);
+
+	synfig::TargetParam extract_targetparam() throw (SynfigToolException&);
 private:
 	void extract_canvas_info(Job& job);
 

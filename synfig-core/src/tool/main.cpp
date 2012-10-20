@@ -154,170 +154,6 @@ void signal_test()
 
 #endif
 
-void extract_options(const po::variables_map& vm, RendDesc& desc)
-{
-	int w, h;
-	float span;
-	span = w = h = 0;
-
-	if (vm.count("width"))
-		w = vm["width"].as<int>();
-
-	if (vm.count("height"))
-		h = vm["height"].as<int>();
-
-	if (vm.count("antialias"))
-	{
-		int a;
-		a = vm["antialias"].as<int>();
-		desc.set_antialias(a);
-		VERBOSE_OUT(1) << strprintf(_("Antialiasing set to %d, "
-									  "(%d samples per pixel)"), a, a*a)
-					   << endl;
-	}
-	if (vm.count("span"))
-	{
-		span = vm["antialias"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span)
-					   << endl;
-	}
-	if (vm.count("fps"))
-	{
-		float fps;
-		fps = vm["antialias"].as<float>();
-		desc.set_frame_rate(fps);
-		VERBOSE_OUT(1) << strprintf(_("Frame rate set to %d frames per "
-									  "second"), fps) << endl;
-	}
-	if (vm.count("dpi"))
-	{
-		float dpi, dots_per_meter;
-		dpi = vm["dpi"].as<float>();
-		dots_per_meter = dpi * 39.3700787402;
-		desc.set_x_res(dots_per_meter);
-		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical resolution set to %f "
-									  "dpi"), dpi) << endl;
-	}
-	if (vm.count("dpi-x"))
-	{
-		float dpi, dots_per_meter;
-		dpi = vm["dpi-x"].as<float>();
-		dots_per_meter = dpi * 39.3700787402;
-		desc.set_x_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical X resolution set to %f "
-									  "dpi"), dpi) << endl;
-	}
-	if (vm.count("dpi-y"))
-	{
-		float dpi, dots_per_meter;
-		dpi = vm["dpi-y"].as<float>();
-		dots_per_meter = dpi * 39.3700787402;
-		desc.set_y_res(dots_per_meter);
-		VERBOSE_OUT(1) << strprintf(_("Physical Y resolution set to %f "
-									  "dpi"), dpi) << endl;
-	}
-	if (vm.count("start-time"))
-	{
-		int seconds;
-		stringstream ss;
-		seconds = vm["start-time"].as<int>();
-		ss << seconds;
-		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
-	}
-	if (vm.count("begin-time"))
-	{
-		int seconds;
-		stringstream ss;
-		seconds = vm["begin-time"].as<int>();
-		ss << seconds;
-		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
-	}
-	if (vm.count("end-time"))
-	{
-		int seconds;
-		stringstream ss;
-		seconds = vm["end-time"].as<int>();
-		ss << seconds;
-		desc.set_time_end(Time(ss.str().c_str(), desc.get_frame_rate()));
-	}
-	if (vm.count("time"))
-	{
-		int seconds;
-		stringstream ss;
-		seconds = vm["time"].as<int>();
-		ss << seconds;
-		desc.set_time(Time(ss.str().c_str(), desc.get_frame_rate()));
-
-		VERBOSE_OUT(1) << _("Rendering frame at ")
-					   << desc.get_time_start().get_string(desc.get_frame_rate())
-					   << endl;
-	}
-	if (vm.count("gamma"))
-	{
-		synfig::warning(_("Gamma argument is currently ignored"));
-		//int gamma;
-		//gamma = vm["gamma"].as<int>();
-		//desc.set_gamma(Gamma(gamma));
-	}
-
-	if (w||h)
-	{
-		// scale properly
-		if (!w)
-			w = desc.get_w() * h / desc.get_h();
-		else if (!h)
-			h = desc.get_h() * w / desc.get_w();
-
-		desc.set_wh(w,h);
-		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d"), w, h)
-					   << endl;
-	}
-
-	if(span)
-		desc.set_span(span);
-
-}
-
-/// TODO: Check dependency between codec and bitrate parameters
-void extract_options(const po::variables_map& vm, TargetParam& params)
-{
-	if (vm.count("video-codec"))
-	{
-		params.video_codec = vm["video-codec"].as<string>();
-
-		// video_codec string to lowercase
-		transform (params.video_codec.begin(),
-				   params.video_codec.end(),
-				   params.video_codec.begin(),
-				   ::tolower);
-
-		bool found = false;
-		// Check if the given video codec is allowed.
-		for (int i = 0; !found && allowed_video_codecs[i] != NULL; i++)
-			if (params.video_codec == allowed_video_codecs[i])
-				found = true;
-
-		// TODO: if (!found) Error!
-		// else
-		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str())
-					   << endl;
-	}
-	if(vm.count("video-bitrate"))
-	{
-		params.bitrate = vm["video-bitrate"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate)
-					   << endl;
-	}
-	if(vm.count("sequence-separator"))
-	{
-		params.sequence_separator = vm["sequence-separator"].as<string>();
-		VERBOSE_OUT(1) << strprintf(_("Output file sequence separator set to %s"),
-									params.sequence_separator.c_str())
-					   << endl;
-	}
-}
-
 int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
@@ -493,12 +329,10 @@ int main(int ac, char* av[])
 		// Processing options --------------------------------------------------
 		Job job;
 		job = op.extract_job();
-		job_list.push_front(job);
 
 		// Setup Job list ----------------------------------------------
-
-		extract_options(vm,job_list.front().canvas->rend_desc());
-		job_list.front().desc = job_list.front().canvas->rend_desc();
+		job.desc = op.extract_renddesc(job.canvas->rend_desc());
+		job_list.push_front(job);
 
 		VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << endl;
 
@@ -542,8 +376,7 @@ int main(int ac, char* av[])
 			job_list.front().target_name = "png";
 		}
 
-		TargetParam target_parameters;
-		extract_options(vm, target_parameters);
+		TargetParam target_parameters = op.extract_targetparam();
 
 		// If no output filename was provided, then create a output filename
 		// based on the given input filename and the selected target.
