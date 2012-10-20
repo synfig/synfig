@@ -405,10 +405,14 @@ RendDesc OptionsProcessor::extract_renddesc(RendDesc& renddesc)
 	return desc;
 }
 
-/// TODO: Check dependency between codec and bitrate parameters
 TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
 {
 	TargetParam params;
+
+	// Both parameters are co-dependent
+	if (_vm.count("video-codec") ^ _vm.count("bitrate"))
+		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
+									_("Both video codec and bitrate parameters are necessary.")));
 
 	if (_vm.count("video-codec"))
 	{
@@ -426,8 +430,11 @@ TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
 			if (params.video_codec == allowed_video_codecs[i])
 				found = true;
 
-		// TODO: if (!found) Error!
-		// else
+		if (!found)
+			throw(SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
+									   strprintf(_("Video codec \"%s\" is not supported."),
+											   	 params.video_codec.c_str())));
+
 		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str())
 					   << endl;
 	}
@@ -482,7 +489,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	}
 	else
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
-				strprintf(_("No input file provided."))));
+									_("No input file provided.")));
 
 	if (_vm.count("target"))
 	{
