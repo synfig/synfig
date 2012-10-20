@@ -25,6 +25,7 @@
 #ifndef __SYNFIG_OPTIONSPROCESSOR_H
 #define __SYNFIG_OPTIONSPROCESSOR_H
 
+/// Class to process all the command line options
 class OptionsProcessor
 {
 public:
@@ -36,16 +37,28 @@ public:
 	void process_debug_options() throw (SynfigToolException&);
 #endif
 
+	/// Settings options
+	/// verbose, quiet, threads, benchmarks
 	void process_settings_options();
 
+	/// Information options
+	/// Options that will only display information
 	void process_info_options() throw (SynfigToolException&);
 
+	/// Extract the necessary options to create a job
+	/// After this, it is necessary to overwrite the necessary RendDesc options
+	/// and set the target parameters, if provided. Then can be processed
 	Job extract_job() throw (SynfigToolException&);
 
-	synfig::RendDesc extract_renddesc(synfig::RendDesc& renddesc);
+	/// Overwrite the input RendDesc object with the options given in the command line
+	synfig::RendDesc extract_renddesc(const synfig::RendDesc& renddesc);
 
+	/// Extract the target parameters from the options given in the command line
+	/// video-codec, bitrate, sequence-separator
 	synfig::TargetParam extract_targetparam() throw (SynfigToolException&);
 private:
+	/// Determine which parameters to show in the canvas info
+	/// canvas-info
 	void extract_canvas_info(Job& job);
 
 	boost::program_options::variables_map _vm;

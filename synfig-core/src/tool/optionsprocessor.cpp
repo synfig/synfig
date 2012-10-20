@@ -288,7 +288,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 	}
 }
 
-RendDesc OptionsProcessor::extract_renddesc(RendDesc& renddesc)
+RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
 	int w, h;
