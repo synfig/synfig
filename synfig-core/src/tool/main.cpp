@@ -123,37 +123,6 @@ const char* allowed_video_codecs_description[] =
 
 /* === M E T H O D S ================================================ */
 
-#ifdef _DEBUG
-
-void guid_test()
-{
-	cout << "GUID Test" << endl;
-	for(int i = 20; i; i--)
-		cout << synfig::GUID().get_string() << ' '
-			 << synfig::GUID().get_string() << endl;
-}
-
-void signal_test_func()
-{
-	cout << "**SIGNAL CALLED**" << endl;
-}
-
-void signal_test()
-{
-	sigc::signal<void> sig;
-	sigc::connection conn;
-	cout << "Signal Test" << endl;
-	conn = sig.connect(sigc::ptr_fun(signal_test_func));
-	cout << "Next line should exclaim signal called." << endl;
-	sig();
-	conn.disconnect();
-	cout << "Next line should NOT exclaim signal called." << endl;
-	sig();
-	cout << "done."<<endl;
-}
-
-#endif
-
 int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
@@ -301,19 +270,8 @@ int main(int ac, char* av[])
 
 #ifdef _DEBUG
 		// DEBUG options ----------------------------------------------
-		if (vm.count("signal-test"))
-		{
-			signal_test();
-			return SYNFIGTOOL_HELP;
-		}
-
-		if (vm.count("guid-test"))
-		{
-			guid_test();
-			return SYNFIGTOOL_HELP;
-		}
+		op.process_debug_options();
 #endif
-
 
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and

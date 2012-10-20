@@ -588,3 +588,51 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	return job;
 }
 
+#ifdef _DEBUG
+
+// DEBUG auxiliar functions
+void guid_test()
+{
+	cout << "GUID Test" << endl;
+	for(int i = 20; i; i--)
+		cout << synfig::GUID().get_string() << ' '
+			 << synfig::GUID().get_string() << endl;
+}
+
+void signal_test_func()
+{
+	cout << "**SIGNAL CALLED**" << endl;
+}
+
+void signal_test()
+{
+	sigc::signal<void> sig;
+	sigc::connection conn;
+	cout << "Signal Test" << endl;
+	conn = sig.connect(sigc::ptr_fun(signal_test_func));
+	cout << "Next line should exclaim signal called." << endl;
+	sig();
+	conn.disconnect();
+	cout << "Next line should NOT exclaim signal called." << endl;
+	sig();
+	cout << "done."<<endl;
+}
+
+// DEBUG options ----------------------------------------------
+void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
+{
+	if (_vm.count("signal-test"))
+	{
+		signal_test();
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
+	}
+
+	if (_vm.count("guid-test"))
+	{
+		guid_test();
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
+	}
+}
+
+#endif
+
