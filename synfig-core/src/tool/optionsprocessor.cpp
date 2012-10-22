@@ -420,7 +420,7 @@ TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
 	TargetParam params;
 
 	// Both parameters are co-dependent
-	if (_vm.count("video-codec") ^ _vm.count("bitrate"))
+	if (_vm.count("video-codec") ^ _vm.count("video-bitrate"))
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
 									_("Both video codec and bitrate parameters are necessary.")));
 
