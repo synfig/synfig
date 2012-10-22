@@ -579,7 +579,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
 	}
 
-	if (_vm.count("list-canvases"))
+	if (_vm.count("list-canvases") || _vm.count("canvases"))
 	{
 		print_child_canvases(job.filename + "#", job.root);
 		cerr << endl;

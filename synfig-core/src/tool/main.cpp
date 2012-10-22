@@ -167,26 +167,26 @@ int main(int ac, char* av[])
 
         po::options_description po_settings(_("Settings"));
         po_settings.add_options()
-			("target,t", target_arg_desc, _("Specify output target (Default:unknown)"))
-            ("width,w", width_arg_desc, _("Set the image width (Use zero for file default)"))
-            ("height,h", height_arg_desc, _("Set the image height (Use zero for file default)"))
+			("target,t", target_arg_desc, _("Specify output target (Default: PNG)"))
+            ("width,w", width_arg_desc, _("Set the image width in pixels (Use zero for file default)"))
+            ("height,h", height_arg_desc, _("Set the image height in pixels (Use zero for file default)"))
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
-            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str())
-            ("sequence-separator", sequence_separator_arg_desc, _("Output file sequence separator string (use double quotes if you want to use spaces)"))
+            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str())
             ("gamma,g", gamma_arg_desc, _("Gamma"))
-            ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using specified # of threads"))
-            ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
+            ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using the specified number of threads"))
+            ("input-file,i", input_file_arg_desc, _("Specify input filename"))
             ("output-file,o", output_file_arg_desc, _("Specify output filename"))
-            ("input-file", input_file_arg_desc, _("Specify input filename"))
+            ("sequence-separator", sequence_separator_arg_desc, _("Output file sequence separator string (Use double quotes if you want to use spaces)"))
+            ("canvas,c", canvas_arg_desc, _("Render the canvas with the given id instead of the root."))
             ("fps", fps_arg_desc, _("Set the frame rate"))
 			("time", time_arg_desc, _("Render a single frame at <seconds>"))
 			("begin-time", begin_time_arg_desc, _("Set the starting time"))
 			("start-time", start_time_arg_desc, _("Set the starting time"))
 			("end-time", end_time_arg_desc, _("Set the ending time"))
-			("dpi", dpi_arg_desc, _("Set the physical resolution (dots-per-inch)"))
-			("dpi-x", dpi_x_arg_desc, _("Set the physical X resolution (dots-per-inch)"))
-			("dpi-y", dpi_y_arg_desc, _("Set the physical Y resolution (dots-per-inch)"))
+			("dpi", dpi_arg_desc, _("Set the physical resolution (Dots-per-inch)"))
+			("dpi-x", dpi_x_arg_desc, _("Set the physical X resolution (Dots-per-inch)"))
+			("dpi-y", dpi_y_arg_desc, _("Set the physical Y resolution (Dots-per-inch)"))
             ;
 
         po::options_description po_switchopts(_("Switch options"));
@@ -200,7 +200,7 @@ int main(int ac, char* av[])
         po_misc.add_options()
 			("append", append_filename_arg_desc, _("Append layers in <filename> to composition"))
             ("canvas-info", canvas_info_fields_arg_desc, _("Print out specified details of the root canvas"))
-            ("list-canvases", _("List the exported canvases in the composition"))
+            ("canvases", _("Print out the list of exported canvases in the composition"))
             ;
 
         po::options_description po_ffmpeg(_("FFMPEG target options"));
@@ -209,7 +209,7 @@ int main(int ac, char* av[])
             ("video-bitrate", video_bitrate_arg_desc, _("Set the bitrate for the output video"))
             ;
 
-        po::options_description po_info("Synfig info options");
+        po::options_description po_info(_("Synfig info options"));
         po_info.add_options()
 			("help", _("Produce this help message"))
             ("importers", _("Print out the list of available importers"))
@@ -223,6 +223,11 @@ int main(int ac, char* av[])
             ("valuenodes", _("Print out the list of available ValueNodes"))
             ("version", _("Print out version information"))
             ;
+
+        po::options_description po_hidden("");
+        po_hidden.add_options()
+			("list-canvases", _("Print out the list of exported canvases in the composition"))
+			;
 
 #ifdef _DEBUG
         po::options_description po_debug(_("Synfig debug flags"));
@@ -239,7 +244,7 @@ int main(int ac, char* av[])
         // Declare an options description instance which will include
         // all the options
         po::options_description po_all("");
-        po_all.add(po_settings).add(po_switchopts).add(po_misc).add(po_info).add(po_ffmpeg);
+        po_all.add(po_settings).add(po_switchopts).add(po_misc).add(po_info).add(po_ffmpeg).add(po_hidden);
 
 #ifdef _DEBUG
 		po_all.add(po_debug);
@@ -248,8 +253,13 @@ int main(int ac, char* av[])
         // Declare an options description instance which will be shown
         // to the user
         po::options_description po_visible("");
-        po_visible.add(po_settings).add(po_switchopts).add(po_misc).add(po_ffmpeg).add(po_info);
+        po_visible.add(po_settings).add(po_switchopts).add(po_misc).add(po_ffmpeg);
 
+#ifdef _DEBUG
+		po_visible.add(po_debug);
+#endif
+
+		po_visible.add(po_info);
 
         po::variables_map vm;
         po::store(po::command_line_parser(ac, av).options(po_all).
