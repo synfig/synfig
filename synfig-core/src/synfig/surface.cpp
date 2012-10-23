@@ -333,12 +333,24 @@ CairoSurface::set_cairo_surface(cairo_surface_t *cs)
 	}
 }
 
-cairo_surface_t* 
+cairo_surface_t*
 CairoSurface::get_cairo_surface()const
 {
-	assert(cs_);
-	return cairo_surface_reference(cs_);
+	if(cs_==NULL)
+		return NULL;
+	else
+		return cairo_surface_reference(cs_);
 }
+
+cairo_surface_t*
+CairoSurface::get_cairo_image_surface()const
+{
+	if(cs_image_==NULL)
+		return NULL;
+	else
+		return cairo_surface_reference(cs_image_);
+}
+
 
 bool
 CairoSurface::map_cairo_image()
@@ -386,6 +398,7 @@ CairoSurface::unmap_cairo_image()
 		cairo_surface_mark_dirty(cs_image_);
 		// this will destroy cs_image_
 		cairo_surface_unmap_image(cs_, cs_image_);
+		cs_image_=NULL;
 #else
 		assert(false); // Old versions of cairo are not supported
 #endif
@@ -398,6 +411,10 @@ CairoSurface::unmap_cairo_image()
 }
 
 
-
+bool
+CairoSurface::is_mapped()const
+{
+	return (cs_image_!=NULL);
+}
 
 

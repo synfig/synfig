@@ -167,6 +167,9 @@ public:
 	// Returns an increased reference pointer of the surface. The receiver is responsible
 	// of destroy the surface once referenced.
 	cairo_surface_t* get_cairo_surface()const;
+	// Returns an increased reference pointer of the image surface. The receiver is responsible
+	// of destroy the surface once referenced.
+	cairo_surface_t* get_cairo_image_surface()const;
 	// Maps cs_ to cs_image_ and extract the *data to etl::surface::data for further modifications
 	// It will flush any remaining painting operation to the cs_
 	// returns true on success or false if something failed
@@ -174,6 +177,8 @@ public:
 	// Unmap the cs_image_ to cs_ after external modification has been done via *data
 	// It will mark cs_ as dirty
 	void unmap_cairo_image();
+	// Returns true if the cairo_surface_t* cs_ is mapped on cs_image_
+	bool is_mapped()const;
 	
 };	// END of class Surface
 
