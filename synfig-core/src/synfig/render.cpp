@@ -394,12 +394,12 @@ synfig::cairorender(
 			for(y2=0,pool=0;y2<a;y2++)
 				for(x2=0;x2<a;x2++)
 				{
-					Color color=context.get_color(
+					Color color=Color(context.get_cairocolor(
 												  Point(
 														u+(Point::value_type)(x2)*dsu,
 														v+(Point::value_type)(y2)*dsv
 														)
-												  );
+												  ));
 					color=color.clamped();
 					c+=color*color.get_a();
 					pool+=color.get_a();
