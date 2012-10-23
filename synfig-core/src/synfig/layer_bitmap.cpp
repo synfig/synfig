@@ -63,7 +63,6 @@ using namespace etl;
 synfig::Layer_Bitmap::Layer_Bitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	method			(SOFTWARE),
-	cs_				(NULL),
 	tl				(-0.5,0.5),
 	br				(0.5,-0.5),
 	c				(1),
@@ -118,7 +117,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 				case CAIRO:
 				default:
-				ret2=int(cairo_image_surface_get_width(cs_));
+				ret2=int(csurface.get_w());
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -138,7 +137,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				break;
 			case CAIRO:
 			default:
-				ret2=int(cairo_image_surface_get_height(cs_));
+				ret2=int(csurface.get_h());
 				break;
 		}
 		ret1.set_static(get_param_static(param));
@@ -227,9 +226,9 @@ synfig::Layer_Bitmap::filter(CairoColor& x)const
 {
 	if(gamma_adjust!=1.0)
 	{
-		x.set_r(powf((float)x.get_r(),gamma_adjust));
-		x.set_g(powf((float)x.get_g(),gamma_adjust));
-		x.set_b(powf((float)x.get_b(),gamma_adjust));
+		x.set_r(powf((float)(x.get_r()/CairoColor::range),gamma_adjust)*CairoColor::range);
+		x.set_g(powf((float)(x.get_g()/CairoColor::range),gamma_adjust)*CairoColor::range);
+		x.set_b(powf((float)(x.get_b()/CairoColor::range),gamma_adjust)*CairoColor::range);
 	}
 	return x;
 }
@@ -311,9 +310,6 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 CairoColor
 synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 {
-	CairoSurface c_surface(cs_); // TODO: don't map/unmap everytime! It is very time consuming!
-	c_surface.map_cairo_image();
-
 	Point surface_pos;
 	
 	if(!get_amount())
@@ -352,26 +348,26 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 				case 5:	// Undefined
 				case 4:	// Undefined
 				case 3:	// Cubic
-					ret=c_surface.cubic_sample(surface_pos[0],surface_pos[1]);
+					ret=csurface.cubic_sample_cooked(surface_pos[0],surface_pos[1]);
 					break;
 					
 				case 2:	// Cosine
-					ret=c_surface.cosine_sample(surface_pos[0],surface_pos[1]);
+					ret=csurface.cosine_sample_cooked(surface_pos[0],surface_pos[1]);
 					break;
 				case 1:	// Linear
-					ret=c_surface.linear_sample(surface_pos[0],surface_pos[1]);
+					ret=csurface.linear_sample_cooked(surface_pos[0],surface_pos[1]);
 					break;
 				case 0:	// Nearest Neighbor
 				default:
 				{
-					int x(min(c_surface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
-					int y(min(c_surface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
-					ret= c_surface[y][x];
+					int x(min(csurface.get_w()-1,max(0,round_to_int(surface_pos[0]))));
+					int y(min(csurface.get_h()-1,max(0,round_to_int(surface_pos[1]))));
+					ret= csurface[y][x];
 				}
 					break;
 			}
-			
-			ret=filter(ret);
+			//ret=ret.demult_alpha();
+			//ret=filter(ret);
 			
 			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
 				return ret;
@@ -379,7 +375,6 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 				return CairoColor::blend(ret,context.get_cairocolor(pos),get_amount(),get_blend_method());
 		}
 	}
-	c_surface.unmap_cairo_image();
 	return context.get_cairocolor(pos);
 }
 
@@ -667,7 +662,15 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 		interp=1;
 	
 	//if we don't actually have a valid surface just skip us
-	if(cairo_surface_status(cs_) && cairo_surface_get_type(cs_)!=CAIRO_SURFACE_TYPE_IMAGE)
+	if(!csurface.is_mapped())
+	{
+		// Render what is behind us
+		return context.accelerated_cairorender(out_surface,quality,renddesc,cb);
+	}
+	
+	cairo_surface_t* cs=csurface.get_cairo_image_surface();
+
+	if(cairo_surface_status(cs) || cairo_surface_get_type(cs)!=CAIRO_SURFACE_TYPE_IMAGE)
 	{
 		// Render what is behind us
 		return context.accelerated_cairorender(out_surface,quality,renddesc,cb);
@@ -681,8 +684,8 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
 
-	int		inw = cairo_image_surface_get_width(cs_);
-	int		inh = cairo_image_surface_get_height(cs_);
+	int		inw = cairo_image_surface_get_width(cs);
+	int		inh = cairo_image_surface_get_height(cs);
 	
 	
 	if(	get_amount()==1 && // our bitmap is full opaque
@@ -697,7 +700,7 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 			{
 				cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
 				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
-				cairo_set_source_surface(cr, cs_, 0, 0); // set the source our cairosurface 
+				cairo_set_source_surface(cr, cs, 0, 0); // set the source our cairosurface
 				cairo_paint(cr); // paint on the destiny
 				cairo_destroy(cr); // finaly destroy the cairo context pointer
 			}
@@ -743,15 +746,14 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	}
 	// TODO: filter the image with gamma_adjust!!
 	cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
-	cairo_set_source_surface(cr, cs_, 0,0);
+	cairo_set_source_surface(cr, cs, 0,0);
+	cairo_surface_destroy(cs);
 	cairo_pattern_set_filter(cairo_get_source(cr), filter);
-	
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be a custom operator
-
 	cairo_translate(cr, disp[0], disp[1]);
 	cairo_scale(cr, scalex, scaley);
 	
-	cairo_paint(cr); 
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_destroy(cr);
 	
 	return true;
 }
@@ -779,18 +781,10 @@ Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
 		synfig::error("Layer_Bitmap received a non valid cairo_surface_t");
 		return;
 	}
-	else
+	if(csurface.is_mapped())
 	{
-		if(cs_!=NULL)
-			cairo_surface_destroy(cs_);
-		cs_=cairo_surface_reference(cs);
+		csurface.unmap_cairo_image();
 	}
+	csurface.set_cairo_surface(cs);
+	csurface.map_cairo_image();
 }
-
-cairo_surface_t* 
-Layer_Bitmap::get_cairo_surface()const
-{
-	assert(cs_);
-	return cairo_surface_reference(cs_);
-}
-

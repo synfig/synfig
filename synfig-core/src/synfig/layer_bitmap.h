@@ -47,7 +47,6 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 	const Color& filter(Color& c)const;
 	const CairoColor& filter(CairoColor& c)const;
 	RenderMethod method;
-	mutable cairo_surface_t* cs_;
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 
@@ -55,6 +54,7 @@ public:
 	Point br;
 	int c;
 	mutable Surface surface;
+	mutable CairoSurface csurface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
@@ -62,7 +62,7 @@ public:
 
 	Layer_Bitmap();
 	~Layer_Bitmap()	{ 
-	if(cs_!=NULL) cairo_surface_destroy(cs_); }
+	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 
@@ -85,7 +85,6 @@ public:
 	RenderMethod get_method()const { return method;}
 	
 	void set_cairo_surface(cairo_surface_t* cs);
-	cairo_surface_t* get_cairo_surface()const;
 
 }; // END of class Layer_Bitmap
 
