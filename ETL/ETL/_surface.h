@@ -431,7 +431,7 @@ public:
 		if(e>=epsilon)ret+=(*this)[v][u+1]*e;
 		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
 		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
-		return ret;
+		return (value_type)(ret);
 	}
 
 	//! Cosine sample
@@ -491,7 +491,7 @@ public:
 		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
 		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
 		
-		return ret;
+		return (value_type)(ret);
 	}
 
 	//! Cubic sample
@@ -619,7 +619,7 @@ public:
 		}
 		
 		//return the cumulative column evaluation
-		return xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3];
+		return (value_type)(xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3]);
 #undef f
 	}
 
@@ -754,7 +754,7 @@ public:
 		}
 		
 		acum *= 1/weight;
-		return acum;
+		return (value_type)(acum);
 	}
 
 	//! Rectangle sample clipped
@@ -926,7 +926,7 @@ public:
 		}
 		
 		acum *= 1/weight;
-		return acum;
+		return (value_type)(acum);
 	}
 };
 
