@@ -91,7 +91,7 @@ typename T::accumulator_pointer SC3)
 			Tmp2=SC2[x]+Tmp1;
 			SC2[x]=Tmp1;
 			if(y>1&&x>1)
-				pen[-2][-2]=(SC3[x]+Tmp2)/256;
+				pen[-2][-2]=(typename T::value_type)((SC3[x]+Tmp2)/256);
 			SC3[x]=Tmp2;
 		}
 		pen.dec_x(x);
@@ -171,7 +171,7 @@ gaussian_blur_3x3(T pen,int w, int h)
 			Tmp2=SC0[x]+Tmp1;
 			SC0[x]=Tmp1;
 			if(y&&x)
-				pen[-1][-1]=(SC1[x]+Tmp2)/16;
+				pen[-1][-1]=(typename T::value_type)((SC1[x]+Tmp2)/16);
 			SC1[x]=Tmp2;
 		}
 		pen.dec_x(x);
