@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -453,11 +454,23 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 	// don't render feathering at all when quality is 10
 	const Real newfeather = (quality == 10) ? 0 : feather + (abs(ph)+abs(pw))/4.0;
 
+	// Apply all the transformations
+	const Point transformed_origin = renddesc.get_transformation_chain().get_transformed(origin);
+	// To calculate the new radius we create a new horizontal vector starting in the origin
+	// and a magnitude of 'radius', then apply the transformations.
+	// The new radius will be the magnitude of the difference vector between the transformed
+	// radius vector and the transformed origin vector.
+	Vector radius_vector(origin[0]+radius, origin[1]);
+	radius_vector = renddesc.get_transformation_chain().get_transformed(radius_vector);
+	const Real transformed_radius = (radius_vector-transformed_origin).mag();
+
+	// From this point on we only refer to the transformed versions of origin and radius
+
 	//int u,v;
-	int left = 	(int)	floor( (origin[0] - x_neg*(radius+newfeather) - tl[0]) / pw );
-	int right = (int)	ceil( (origin[0] + x_neg*(radius+newfeather) - tl[0]) / pw );
-	int top = 	(int)	floor( (origin[1] - y_neg*(radius+newfeather) - tl[1]) / ph );
-	int bottom = (int)	ceil( (origin[1] + y_neg*(radius+newfeather) - tl[1]) / ph );
+	int left = 	(int)	floor( (transformed_origin[0] - x_neg*(transformed_radius+newfeather) - tl[0]) / pw );
+	int right = (int)	ceil( (transformed_origin[0] + x_neg*(transformed_radius+newfeather) - tl[0]) / pw );
+	int top = 	(int)	floor( (transformed_origin[1] - y_neg*(transformed_radius+newfeather) - tl[1]) / ph );
+	int bottom = (int)	ceil( (transformed_origin[1] + y_neg*(transformed_radius+newfeather) - tl[1]) / ph );
 
 	//clip the rectangle bounds
 	if(left < 0)
@@ -469,13 +482,13 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 	if(bottom >= h)
 		bottom = h-1;
 
-	const Real inner_radius = radius-newfeather>0 ? radius-newfeather : 0;
-	const Real outer_radius = radius+newfeather;
+	const Real inner_radius = transformed_radius-newfeather>0 ? transformed_radius-newfeather : 0;
+	const Real outer_radius = transformed_radius+newfeather;
 
 	const Real inner_radius_sqd = inner_radius*inner_radius;
 	const Real outer_radius_sqd = outer_radius*outer_radius;
 
-	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,radius);//4.0*radius*newfeather;
+	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,transformed_radius);//4.0*transformed_radius*newfeather;
 	const Real double_feather = newfeather * 2.0;
 
 	//Compile the temporary cache for the falloff calculations
@@ -530,10 +543,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		}
 	}
 
-	if( (origin[0] - tl[0])*(origin[0] - tl[0]) + (origin[1] - tl[1])*(origin[1] - tl[1]) < inner_radius_sqd
-		&& (origin[0] - br[0])*(origin[0] - br[0]) + (origin[1] - br[1])*(origin[1] - br[1]) < inner_radius_sqd
-		&& (origin[0] - tl[0])*(origin[0] - tl[0]) + (origin[1] - br[1])*(origin[1] - br[1]) < inner_radius_sqd
-		&& (origin[0] - br[0])*(origin[0] - br[0]) + (origin[1] - tl[1])*(origin[1] - tl[1]) < inner_radius_sqd	)
+	if( (transformed_origin[0] - tl[0])*(transformed_origin[0] - tl[0]) + (transformed_origin[1] - tl[1])*(transformed_origin[1] - tl[1]) < inner_radius_sqd
+		&& (transformed_origin[0] - br[0])*(transformed_origin[0] - br[0]) + (transformed_origin[1] - br[1])*(transformed_origin[1] - br[1]) < inner_radius_sqd
+		&& (transformed_origin[0] - tl[0])*(transformed_origin[0] - tl[0]) + (transformed_origin[1] - br[1])*(transformed_origin[1] - br[1]) < inner_radius_sqd
+		&& (transformed_origin[0] - br[0])*(transformed_origin[0] - br[0]) + (transformed_origin[1] - tl[1])*(transformed_origin[1] - tl[1]) < inner_radius_sqd	)
 	{
 		if(invert)
 		{
@@ -575,8 +588,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		}
 
 		//make topf and leftf relative to the center of the circle
-		leftf 	-= 	origin[0];
-		topf 	-= 	origin[1];
+		leftf 	-= 	transformed_origin[0];
+		topf 	-= 	transformed_origin[1];
 
 		j = top;
 		y = topf;
@@ -687,8 +700,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			}
 		}
 
-		topf -= origin[1];
-		leftf-= origin[0];
+		topf -= transformed_origin[1];
+		leftf-= transformed_origin[0];
 
 		j = top;
 		y = topf;
