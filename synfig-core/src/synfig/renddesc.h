@@ -8,6 +8,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -34,6 +35,7 @@
 #include "types.h"
 #include <cmath>
 #include "rect.h"
+#include "transformationchain.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -101,6 +103,8 @@ private:
 	float frame_rate;
 	//! Begin time and end time of the Composition to render
 	Time time_begin, time_end;
+	//! Transformation matrixes chain
+	TransformationChain tc;
 
 public:
 	//! Anti alias filers types. Seems never implemented
@@ -298,6 +302,12 @@ public:
 	RendDesc &set_duration(Time t);
 	//! Gets the duration of the animation
 	const Time get_duration();
+	//! Gets the transformation chain
+	TransformationChain& get_transformation_chain();
+	//! Gets the transformation chain
+	const TransformationChain& get_transformation_chain() const;
+	//! Gets the transformation matrix;
+	RendDesc &set_transformation_chain(const TransformationChain& tc);
 };	// END of class RendDesc
 
 //! This operator allows the combining of RendDesc::Lock flags using the '|' operator

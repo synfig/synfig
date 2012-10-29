@@ -144,7 +144,7 @@ public:
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
 	Vector
-	get_transformed(const Vector &v){
+	get_transformed(const Vector &v) const{
 		 return Vector(v[0]*m00+v[1]*m10+m20,v[0]*m01+v[1]*m11+m21);
 		 }
 

@@ -8,6 +8,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,6 +32,7 @@
 #	include <config.h>
 #endif
 
+#include "transformationchain.h"
 #include "renddesc.h"
 #include <ETL/misc>
 
@@ -576,4 +578,21 @@ RendDesc::get_duration()
 	if(get_frame_rate())		
 		return (get_time_end() - get_time_start() + Time(1/get_frame_rate()));
 	return Time(0.0);
+}
+
+TransformationChain& RendDesc::get_transformation_chain()
+{
+	return tc;
+}
+
+const TransformationChain& RendDesc::get_transformation_chain() const
+{
+	return tc;
+}
+
+RendDesc& RendDesc::set_transformation_chain(const TransformationChain& chain)
+{
+	tc = chain;
+
+	return (*this);
 }
