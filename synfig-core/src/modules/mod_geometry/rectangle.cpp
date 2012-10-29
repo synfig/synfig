@@ -8,6 +8,7 @@
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,6 +36,7 @@
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
+#include <synfig/transformationchain.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
@@ -320,7 +322,8 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 
 	Point max(point1),min(point2);
 
-
+	max = renddesc.get_transformation_chain().get_transformed(max);
+	min = renddesc.get_transformation_chain().get_transformed(min);
 
 
 	/*

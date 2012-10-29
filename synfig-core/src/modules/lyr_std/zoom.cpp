@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -39,6 +40,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
+#include <synfig/transformationchain.h>
 
 #endif
 
@@ -144,14 +146,20 @@ Zoom::get_transform()const
 bool
 Zoom::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Vector::value_type zoomfactor=1.0/exp(amount);
 	RendDesc desc(renddesc);
 	desc.clear_flags();
 
-    // Adjust the top_left and bottom_right points
-	// for our zoom amount
-	desc.set_tl((desc.get_tl()-center)*zoomfactor+center);
-	desc.set_br((desc.get_br()-center)*zoomfactor+center);
+	// In order to perform a scale transformation in 2D with an arbitrary scale
+	// center, we first have to translate the object according to the center,
+	// then scale it and then translate the object back to its position.
+	Matrix m1, m2, m3;
+	m1.set_translate(center);
+	m2.set_scale(exp(amount), exp(amount));
+	m3.set_translate(-center);
+
+	desc.get_transformation_chain().push(m1);
+	desc.get_transformation_chain().push(m2);
+	desc.get_transformation_chain().push(m3);
 
 	// Render the scene
 	return context.accelerated_render(surface,quality,desc,cb);
