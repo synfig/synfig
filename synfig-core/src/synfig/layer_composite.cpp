@@ -184,6 +184,7 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	surfacelayer->br=renddesc.get_br();
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
+	surfacelayer->set_render_method(context, CAIRO);
 	// Push this layer on the image. The blending result is only this layer
 	// and the surface layer. The rest of the context is ignored by the straight
 	// blend method of surface layer
