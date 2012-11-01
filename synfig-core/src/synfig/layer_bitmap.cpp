@@ -336,8 +336,8 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 			}
 			else
 			{
-				surface_pos[0]*=surface.get_w();
-				surface_pos[1]*=surface.get_h();
+				surface_pos[0]*=csurface.get_w();
+				surface_pos[1]*=csurface.get_h();
 			}
 			
 			CairoColor ret(CairoColor::alpha());
@@ -366,8 +366,8 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 				}
 					break;
 			}
-			//ret=ret.demult_alpha();
-			//ret=filter(ret);
+			ret=ret.demult_alpha();
+			ret=filter(ret);
 			
 			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
 				return ret;
