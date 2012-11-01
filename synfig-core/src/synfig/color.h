@@ -756,28 +756,31 @@ public:
 	float
 	get_y() const
 	{
-		return
+		return(
 		(float)get_r()*EncodeYUV[0][0]+
 		(float)get_g()*EncodeYUV[0][1]+
-		(float)get_b()*EncodeYUV[0][2];
+		(float)get_b()*EncodeYUV[0][2]
+		)/CairoColor::range;
 	}
 
 	float
 	get_u() const
 	{
-		return
+		return(
 		(float)get_r()*EncodeYUV[1][0]+
 		(float)get_g()*EncodeYUV[1][1]+
-		(float)get_b()*EncodeYUV[1][2];
+		(float)get_b()*EncodeYUV[1][2]
+		)/CairoColor::range;
 	}
 
 	float
 	get_v() const
 	{
-		return
+		return(
 		(float)get_r()*EncodeYUV[2][0]+
 		(float)get_g()*EncodeYUV[2][1]+
-		(float)get_b()*EncodeYUV[2][2];
+		(float)get_b()*EncodeYUV[2][2]
+		)/CairoColor::range;
 	}
 
 	float
@@ -790,9 +793,11 @@ public:
 	CairoColor&
 	set_yuv(const float &y, const float &u, const float &v)
 	{
-		set_r(y*DecodeYUV[0][0]+u*DecodeYUV[0][1]+v*DecodeYUV[0][2]);
-		set_g(y*DecodeYUV[1][0]+u*DecodeYUV[1][1]+v*DecodeYUV[1][2]);
-		set_b(y*DecodeYUV[2][0]+u*DecodeYUV[2][1]+v*DecodeYUV[2][2]);
+		Color c(*this);
+		c.set_r(y*DecodeYUV[0][0]+u*DecodeYUV[0][1]+v*DecodeYUV[0][2]);
+		c.set_g(y*DecodeYUV[1][0]+u*DecodeYUV[1][1]+v*DecodeYUV[1][2]);
+		c.set_b(y*DecodeYUV[2][0]+u*DecodeYUV[2][1]+v*DecodeYUV[2][2]);
+		(*this)=CairoColor(c);
 		return *this;
 	}
 	
