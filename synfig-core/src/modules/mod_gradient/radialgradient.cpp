@@ -299,9 +299,8 @@ RadialGradient::accelerated_cairorender(Context context,cairo_surface_t *surface
 	}
 	cairo_translate(cr, tx , ty);
 	cairo_scale(cr, sx, sy);
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 	cairo_set_source(cr, pattern);
-	cairo_paint_with_alpha(cr, get_amount());
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	
 	cairo_pattern_destroy(pattern); // Not needed more
 	cairo_restore(cr);

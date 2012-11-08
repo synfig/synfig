@@ -345,8 +345,7 @@ Blur_Layer::accelerated_cairorender(Context context,cairo_surface_t *surface,int
 	
 	cairo_save(cr);
 	cairo_set_source_surface(cr, blurred, -halfsizex, -halfsizey);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // TODO this has to be the real operator
-	cairo_paint_with_alpha(cr, get_amount());
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	cairo_restore(cr);
 
 	if(cb && !cb->amount_complete(10000,10000))

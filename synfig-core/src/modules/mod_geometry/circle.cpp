@@ -953,8 +953,7 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				// now let's paint the inverted circle with the hole on the rendered context
 				cairo_save(cr);
 				cairo_set_source_surface(cr, subimage, 0, 0);
-				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
-				cairo_paint_with_alpha(cr, get_amount());
+				cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 				cairo_restore(cr);
 				cairo_surface_destroy(subimage);
 				cairo_destroy(subcr);
@@ -1005,9 +1004,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				   cairo_scale(cr, sx, sy);
 				   cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
 				   cairo_clip(cr);
-				   cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 				   cairo_set_source_rgba(cr, r, g, b, a);
-				   cairo_paint_with_alpha(cr, get_amount());
+				   cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 				   cairo_restore(cr);
 				   cairo_destroy(cr);
 				   return true;
@@ -1101,9 +1099,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_save(cr);
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
-				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 				cairo_set_source(cr, gradient);
-				cairo_paint_with_alpha(cr, get_amount());
+				cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 				cairo_pattern_destroy(gradient); // Not needed more
 				cairo_restore(cr);
 				cairo_destroy(cr);
@@ -1153,9 +1150,8 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 				cairo_save(cr);
 				cairo_translate(cr, tx , ty);
 				cairo_scale(cr, sx, sy);
-				cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
 				cairo_set_source(cr, gradient);
-				cairo_paint_with_alpha(cr, get_amount());
+				cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 				cairo_pattern_destroy(gradient); // Not needed more
 				cairo_restore(cr);
 				cairo_destroy(cr);

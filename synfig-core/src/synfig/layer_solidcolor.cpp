@@ -210,9 +210,8 @@ Layer_SolidColor::accelerated_cairorender(Context context,cairo_surface_t *surfa
 	}
 
 	cairo_set_source_rgba(cr, r, g, b, a);
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real blend method!
-	cairo_paint_with_alpha(cr, get_amount());
-	cairo_destroy(cr);		
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_destroy(cr);
 	
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))

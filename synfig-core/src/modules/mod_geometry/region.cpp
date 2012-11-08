@@ -455,8 +455,7 @@ Region::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	double py(tl[1]-workdesc.get_tl()[1]);
 	cairo_save(cr);
 	cairo_set_source_surface(cr, subimage, px, py );
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO: this has to be the real operator
-	cairo_paint_with_alpha(cr, get_amount());
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	cairo_restore(cr);
 	cairo_surface_destroy(subimage);
 	cairo_destroy(subcr);

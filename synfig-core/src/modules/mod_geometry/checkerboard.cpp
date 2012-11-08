@@ -278,10 +278,14 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
 	cairo_set_source(cr, pattern);
 	if(is_solid_color())
+	{
 		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+		cairo_paint_with_alpha(cr, get_amount());
+	}
 	else
-		cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
-	cairo_paint_with_alpha(cr, get_amount());
+	{
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
 	cairo_restore(cr);
 	cairo_surface_destroy(subimage);
 	cairo_pattern_destroy(pattern);
