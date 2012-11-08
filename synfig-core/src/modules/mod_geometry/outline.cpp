@@ -900,18 +900,27 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 			segments=vector<synfig::Segment>(bline.get_list().begin(), bline.get_list().end());
 		else
 		{
-			synfig::warning("Region: incorrect type on bline, layer disabled");
+			synfig::warning("Outline: incorrect type on bline, layer disabled");
 			return false;
 		}
 		
 		if(segments.empty())
 		{
-			synfig::warning("Region: segment_list is empty, layer disabled");
+			synfig::warning("Outline: segment_list is empty, layer disabled");
 			return false;
 		}
 		
+		//Calculate the average width
+		Real average_width(0);
+		std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+		std::vector<BLinePoint>::const_iterator	biter;
+		for(biter=list.begin();biter!=list.end();++biter)
+			average_width+=biter->get_width();
+		if(list.size())
+			average_width/=list.size();
+
 		cairo_t* cr=cairo_create(surface);
-		// Let's render the region in other surface
+		// Let's render the outline in other surface
 		// Initially I'll fill it completely with the alpha color
 		cairo_surface_t* subimage;
 		// Let's calculate the subimage dimensions based on the feather value
@@ -973,7 +982,7 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 		{
 			cairo_paint(subcr);
 		}
-		// Draw the region
+		// Draw the outline
 		cairo_translate(subcr, tx , ty);
 		cairo_scale(subcr, sx, sy);
 		
@@ -1017,7 +1026,7 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 		if(!antialias)
 			cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
 		
-		cairo_set_line_width(subcr, width+expand);
+		cairo_set_line_width(subcr, average_width*width+expand);
 		if(sharp_cusps)
 			cairo_set_line_join(subcr, CAIRO_LINE_JOIN_MITER);
 		else
@@ -1064,7 +1073,7 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 			cairosubimage.unmap_cairo_image();
 		}
 		
-		// Put the (feathered) region on the surface
+		// Put the (feathered) outline on the surface
 		if(!is_solid_color()) // we need to render the context before
 			if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
 			{
