@@ -1021,7 +1021,7 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 			p2y=iter->p2[1];
 			cairo_curve_to(subcr, p1x+t1x/3, p1y+t1y/3, p2x-t2x/3, p2y-t2y/3, p2x, p2y);
 		}
-		
+
 		if(loop_) cairo_close_path(subcr);
 		cairo_set_line_width(subcr, average_width*width+expand);
 		if(sharp_cusps)
@@ -1038,7 +1038,9 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 	}
 	else
 	{
-			synfig::info("quality less than 6!");
+		Layer_Shape::shape_to_cairo(subcr);
+		cairo_clip(subcr);
+		cairo_paint(subcr);
 	}
 	
 	cairo_restore(subcr);
