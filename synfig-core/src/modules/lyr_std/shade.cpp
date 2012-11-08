@@ -521,8 +521,10 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 		for(x=0;x<workdesc.get_w();x++)
 		{
 			float a=blurred[y][x];
+			if(invert)
+				a=1.0-a;
 			ccolor.set_a(a*am);
-			ccolor.clamped();
+			ccolor=ccolor.clamped();
 			cairoworksurface[y][x]=CairoColor(ccolor).premult_alpha();
 		}
 	
@@ -531,8 +533,7 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	// Now lets blend the result in the output surface
 	cairo_t *cr=cairo_create(surface);
 	cairo_set_source_surface(cr, worksurface, -halfsizex+(origin_u<0?origin_u:0)-origin_u, -halfsizey+(origin_v<0?origin_v:0)-origin_v);
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // TODO this has to be the real operator
-	cairo_paint(cr); // not need to paint with alpha because it is already included
+	cairo_paint_with_alpha_operator(cr, 1.0, get_blend_method()); // TODO: add cairo_paint_opertor function when alpha=1.0 (it is quicker)
 	cairo_destroy(cr);
 	
 	cairo_surface_destroy(worksurface);
