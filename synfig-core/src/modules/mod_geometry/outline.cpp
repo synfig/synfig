@@ -867,9 +867,6 @@ Outline::get_param_vocab()const
 bool
 Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	if(quality>6)
-	{
-		synfig::info("rendering Cairo Outline");
 		std::vector<synfig::Segment> segments;
 		
 		// Grab the rgba values
@@ -1095,8 +1092,4 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 		cairo_destroy(cr);
 		
 		return true;
-	}
-
-
-	return Layer_Polygon::accelerated_cairorender(context, surface, quality, renddesc, cb);
 }
