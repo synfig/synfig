@@ -982,35 +982,6 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 	// Draw the outline
 	cairo_translate(subcr, tx , ty);
 	cairo_scale(subcr, sx, sy);
-	
-	vector<Segment>::const_iterator iter=segments.begin();
-	double t1x;
-	double t1y;
-	double t2x;
-	double t2y;
-	double p2x;
-	double p2y;
-	double p1x=iter->p1[0];
-	double p1y=iter->p1[1];
-	cairo_move_to(subcr, p1x, p1y);
-	for(;iter!=segments.end();++iter)
-	{
-		t1x=iter->t1[0];
-		t1y=iter->t1[1];
-		t2x=iter->t2[0];
-		t2y=iter->t2[1];
-		p1x=iter->p1[0];
-		p1y=iter->p1[1];
-		p2x=iter->p2[0];
-		p2y=iter->p2[1];
-		cairo_curve_to(subcr, p1x+t1x/3, p1y+t1y/3, p2x-t2x/3, p2y-t2y/3, p2x, p2y);
-	}
-	
-	if(loop_) cairo_close_path(subcr);
-	if(invert)
-		cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
-	else
-		cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
 	switch(winding_style)
 	{
 		case WINDING_NON_ZERO:
@@ -1022,19 +993,54 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 	}
 	if(!antialias)
 		cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
+	if(invert)
+		cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+	else
+		cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
+	if(quality>6)
+	{
+		vector<Segment>::const_iterator iter=segments.begin();
+		double t1x;
+		double t1y;
+		double t2x;
+		double t2y;
+		double p2x;
+		double p2y;
+		double p1x=iter->p1[0];
+		double p1y=iter->p1[1];
+		cairo_move_to(subcr, p1x, p1y);
+		for(;iter!=segments.end();++iter)
+		{
+			t1x=iter->t1[0];
+			t1y=iter->t1[1];
+			t2x=iter->t2[0];
+			t2y=iter->t2[1];
+			p1x=iter->p1[0];
+			p1y=iter->p1[1];
+			p2x=iter->p2[0];
+			p2y=iter->p2[1];
+			cairo_curve_to(subcr, p1x+t1x/3, p1y+t1y/3, p2x-t2x/3, p2y-t2y/3, p2x, p2y);
+		}
+		
+		if(loop_) cairo_close_path(subcr);
+		cairo_set_line_width(subcr, average_width*width+expand);
+		if(sharp_cusps)
+			cairo_set_line_join(subcr, CAIRO_LINE_JOIN_MITER);
+		else
+			cairo_set_line_join(subcr, CAIRO_LINE_JOIN_BEVEL);
+		
+		if(round_tip[0] || round_tip[1])
+			cairo_set_line_cap(subcr, CAIRO_LINE_CAP_ROUND);
+		else
+			cairo_set_line_cap(subcr, CAIRO_LINE_CAP_BUTT);
+		
+		cairo_stroke(subcr);
+	}
+	else
+	{
+			synfig::info("quality less than 6!");
+	}
 	
-	cairo_set_line_width(subcr, average_width*width+expand);
-	if(sharp_cusps)
-		cairo_set_line_join(subcr, CAIRO_LINE_JOIN_MITER);
-	else
-		cairo_set_line_join(subcr, CAIRO_LINE_JOIN_BEVEL);
-
-	if(round_tip[0] || round_tip[1])
-		cairo_set_line_cap(subcr, CAIRO_LINE_CAP_ROUND);
-	else
-		cairo_set_line_cap(subcr, CAIRO_LINE_CAP_BUTT);
-
-	cairo_stroke(subcr);
 	cairo_restore(subcr);
 	if(feather && quality!=10)
 	{
