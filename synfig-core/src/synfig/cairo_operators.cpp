@@ -180,12 +180,52 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_surface_destroy(source);
 			break;
 		}
+		case Color::BLEND_OVERLAY:
+		{
+			cairo_surface_t* target=cairo_get_target(cr);
+			cairo_surface_t* dest=cairo_copy_target_image(target);
+			
+			cairo_save(cr);
+			cairo_reset_clip(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(cr);
+			cairo_restore(cr);
+			
+			cairo_paint(cr);
+			
+			CairoSurface cresult(target);
+			CairoSurface cdest(dest);
+			assert(cdest.map_cairo_image());
+			assert(cresult.map_cairo_image());
+			
+			int w=cresult.get_w();
+			int h=cresult.get_h();
+			
+			for(int y=0;y<h;y++)
+				for(int x=0;x<w;x++)
+				{
+					cresult[y][x]=CairoColor::blend(cresult[y][x], cdest[y][x], alpha,	method);
+				}
+			cresult.unmap_cairo_image();
+			cdest.unmap_cairo_image();
+			
+			cairo_save(cr);
+			cairo_reset_clip(cr);
+			cairo_identity_matrix(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_ATOP);
+			cairo_set_source_surface(cr, dest, 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_restore(cr);
+			
+			cairo_surface_destroy(dest);
+			break;
+			
+		}
 		case Color::BLEND_ADD:
 		case Color::BLEND_SUBTRACT:
 		case Color::BLEND_DIVIDE:
 		case Color::BLEND_ALPHA_BRIGHTEN:
 		case Color::BLEND_ALPHA_DARKEN:
-		case Color::BLEND_OVERLAY:
 		default:
 		{
 			cairo_surface_t* target=cairo_get_target(cr);

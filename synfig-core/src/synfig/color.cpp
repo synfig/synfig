@@ -542,6 +542,49 @@ blendfunc_OVERLAY(C &a,C &b,float amount)
 	return blendfunc_ONTO(ret,b,amount);
 }
 
+//Specialization for CairoColors
+// OVERLAY needs a further compositon with ONTO
+template <>
+static CairoColor
+blendfunc_OVERLAY<CairoColor>(CairoColor &a,CairoColor &b,float amount)
+{
+	//const float one(C::ceil);
+	if(amount<0) a=~a, amount=-amount;
+	
+	int ra, ga, ba, aa, ras, gas, bas;
+	int rb, gb, bb, ab;
+	int aaab;
+
+	ra=a.get_r();
+	ras=ra*ra;
+	ga=a.get_g();
+	gas=ga*ga;
+	ba=a.get_b();
+	bas=ba*ba;
+	aa=a.get_a();
+
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	
+	int rc, gc, bc, ac;
+	
+	if(aa==0 || ab==0) return CairoColor();
+	
+	aaab=aa*ab;
+	
+	rc=(2*aa*rb*ra+ras*ab-2*rb*ras)/aaab;
+	gc=(2*aa*gb*ga+gas*ab-2*gb*gas)/aaab;
+	bc=(2*aa*bb*ba+bas*ab-2*bb*bas)/aaab;
+	ac=aa;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+
+
 template <class C>
 static C
 blendfunc_HARD_LIGHT(C &a,C &b,float amount)
