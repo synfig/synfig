@@ -182,42 +182,44 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_OVERLAY:
 		{
-			cairo_surface_t* target=cairo_get_target(cr);
-			cairo_surface_t* dest=cairo_copy_target_image(target);
-			
-			cairo_save(cr);
-			cairo_reset_clip(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_push_group(cr);
 			cairo_paint(cr);
-			cairo_restore(cr);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
 			
-			cairo_paint(cr);
-			
-			CairoSurface cresult(target);
-			CairoSurface cdest(dest);
+			cairo_surface_t* source;
+			cairo_status_t status;
+			status=cairo_pattern_get_surface(pattern, &source);
+			if(status)
+			{
+				synfig::info("%s", cairo_status_to_string(status));
+				assert(0);
+				return;
+			}
+			CairoSurface csource(source);
+			CairoSurface cdest(cairo_get_target(cr));
 			assert(cdest.map_cairo_image());
-			assert(cresult.map_cairo_image());
+			assert(csource.map_cairo_image());
 			
-			int w=cresult.get_w();
-			int h=cresult.get_h();
+			int w=csource.get_w();
+			int h=csource.get_h();
 			
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
-					cresult[y][x]=CairoColor::blend(cresult[y][x], cdest[y][x], alpha,	method);
+					csource[y][x]=CairoColor::blend(csource[y][x], cdest[y][x], alpha,	method);
 				}
-			cresult.unmap_cairo_image();
+			csource.unmap_cairo_image();
 			cdest.unmap_cairo_image();
 			
 			cairo_save(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_ATOP);
 			cairo_reset_clip(cr);
 			cairo_identity_matrix(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_ATOP);
-			cairo_set_source_surface(cr, dest, 0, 0);
+			cairo_set_source_surface(cr, source, 0, 0);
 			cairo_paint_with_alpha(cr, alpha);
 			cairo_restore(cr);
 			
-			cairo_surface_destroy(dest);
+			cairo_pattern_destroy(pattern);
 			break;
 			
 		}
