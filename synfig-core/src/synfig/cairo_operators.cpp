@@ -199,13 +199,22 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			assert(cdest.map_cairo_image());
 			assert(csource.map_cairo_image());
 			
+			double x1, y1, x2, y2, x0, y0;
+			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
+			cairo_user_to_device(cr, &x1, &y1);
+			cairo_user_to_device(cr, &x2, &y2);
+			x0=x2<x1?x2:x1;
+			y0=y2<y1?y2:y1;
+
 			int w=csource.get_w();
 			int h=csource.get_h();
-			
+			int h0=(int)y0;
+			int w0=(int)x0;
+									
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
-					csource[y][x]=CairoColor::blend(csource[y][x], cdest[y][x], alpha,	method);
+					csource[y][x]=CairoColor::blend(csource[y][x], cdest[h0+y][w0+x], alpha,	method);
 				}
 			csource.unmap_cairo_image();
 			cdest.unmap_cairo_image();
