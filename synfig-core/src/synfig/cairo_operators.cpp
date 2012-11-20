@@ -192,7 +192,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			if(status)
 			{
 				synfig::info("%s", cairo_status_to_string(status));
-				assert(0);
 				return;
 			}
 			CairoSurface csource(source);
