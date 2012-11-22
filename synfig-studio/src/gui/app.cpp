@@ -1305,8 +1305,8 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 		state_manager->add_state(&state_star);
-		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
+		state_manager->add_state(&state_gradient);
 
 		/* bline tools */
 		state_manager->add_state(&state_bline);
