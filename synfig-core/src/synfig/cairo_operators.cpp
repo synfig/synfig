@@ -231,10 +231,52 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			break;
 			
 		}
+		case Color::BLEND_DIVIDE:
+		{
+			cairo_push_group(cr);
+			cairo_paint(cr);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_surface_t* source;
+			cairo_status_t status;
+			status=cairo_pattern_get_surface(pattern, &source);
+			if(status)
+			{
+				synfig::info("%s", cairo_status_to_string(status));
+				return;
+			}
+			CairoSurface csource(source);
+			CairoSurface cdest(cairo_get_target(cr));
+			assert(cdest.map_cairo_image());
+			assert(csource.map_cairo_image());
+			
+			double x1, y1, x2, y2, x0, y0;
+			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
+			cairo_user_to_device(cr, &x1, &y1);
+			cairo_user_to_device(cr, &x2, &y2);
+			x0=x2<x1?x2:x1;
+			y0=y2<y1?y2:y1;
+			
+			int w=csource.get_w();
+			int h=csource.get_h();
+			int h0=(int)y0;
+			int w0=(int)x0;
+			
+			for(int y=0;y<h;y++)
+				for(int x=0;x<w;x++)
+				{
+					cdest[h0+y][w0+x]=CairoColor::blend(csource[y][x], cdest[h0+y][w0+x], alpha,	method);
+				}
+			csource.unmap_cairo_image();
+			cdest.unmap_cairo_image();
+
+			cairo_pattern_destroy(pattern);
+			break;
+		}
 		case Color::BLEND_ADD:
 		case Color::BLEND_SUBTRACT:
 		case Color::BLEND_DIFFERENCE:
-		case Color::BLEND_DIVIDE:
+		case Color::BLEND_COLOR:
 		case Color::BLEND_ALPHA_BRIGHTEN:
 		case Color::BLEND_ALPHA_DARKEN:
 		default:

@@ -435,6 +435,51 @@ blendfunc_DIVIDE(C &a,C &b,float amount)
 	return b;
 }
 
+// Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_DIVIDE(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	float alpha=amount*aa/255.0;
+	float ahpla=1.0-alpha;
+	
+	if(ab==0)
+		return CairoColor();
+	
+	ac=ab;
+	
+	if(ra==0)
+		rc=255;
+	else
+		rc=(rb*alpha*aa)/ra + ahpla*rb;
+
+	if(ga==0)
+		gc=255;
+	else
+		gc=(gb*alpha*aa)/ga + ahpla*gb;
+
+	if(ba==0)
+		bc=255;
+	else
+		bc=(bb*alpha*aa)/ba + ahpla*bb;
+		
+	return CairoColor(rc, gc, bc, ac);
+}
+
 template <class C>
 static C
 blendfunc_COLOR(C &a,C &b,float amount)
