@@ -637,6 +637,41 @@ blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 	return b;
 }
 
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
+{
+	unsigned char ra, ga, ba, aa;
+	unsigned char rb, gb, bb, ab;
+	unsigned char rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+
+	ac=aa*amount;
+	if(ac > ab)
+	{
+		float acaa=(aa*amount)/aa;
+		rc=ra*acaa;
+		gc=ga*acaa;
+		bc=ba*acaa;
+		return CairoColor(rc, gc, bc, ac);
+	}
+	else
+		return b;
+	
+
+}
+
+
 template <class C>
 static C
 blendfunc_SCREEN(C &a,C &b,float amount)
