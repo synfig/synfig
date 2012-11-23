@@ -233,6 +233,7 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_ADD:
 		case Color::BLEND_SUBTRACT:
+		case Color::BLEND_DIFFERENCE:
 		case Color::BLEND_DIVIDE:
 		{
 			cairo_push_group(cr);
@@ -275,7 +276,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_pattern_destroy(pattern);
 			break;
 		}
-		case Color::BLEND_DIFFERENCE:
 		case Color::BLEND_COLOR:
 		case Color::BLEND_ALPHA_BRIGHTEN:
 		case Color::BLEND_ALPHA_DARKEN:

@@ -462,6 +462,38 @@ blendfunc_DIFFERENCE(C &a,C &b,float amount)
 	return b;
 }
 
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_DIFFERENCE(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	int aba=ab*amount;
+	
+	rc=abs(rb-(ra*aba)/255);
+	gc=abs(gb-(ga*aba)/255);
+	bc=abs(bb-(ba*aba)/255);
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+
+
+
 template <class C>
 static C
 blendfunc_MULTIPLY(C &a,C &b,float amount)
