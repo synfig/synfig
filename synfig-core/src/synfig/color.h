@@ -689,7 +689,7 @@ public:
 
 	CairoColor
 	operator~()const
-	{ return CairoColor(ceil-get_r(),ceil-get_g(),ceil-get_b(),get_a()); }
+	{ return CairoColor((unsigned char)(ceil-get_r()),(unsigned char)(ceil-get_g()),(unsigned char)(ceil-get_b()),get_a()); }
 
 	bool is_valid()const
 	{ return true; }
@@ -731,6 +731,7 @@ public:
 	// From CairoColorAccumulator
 	friend class CairoColorAccumulator;
 	CairoColor(const CairoColorAccumulator& c);
+	CairoColor(int r, int g, int b, int a);
 	
 	const value_type get_pixel()const {return pixel; }
 	const unsigned char get_a()const { return pixel>>24; }
@@ -1038,7 +1039,15 @@ public:
 	set_g(CairoColor::clamp(c.g_*CairoColor::range));
 	set_b(CairoColor::clamp(c.b_*CairoColor::range));
 	}
-	
+	inline
+	CairoColor::CairoColor(int r, int g, int b, int a)
+	{
+		set_r(CairoColor::clamp(r));
+		set_g(CairoColor::clamp(g));
+		set_b(CairoColor::clamp(b));
+		set_a(CairoColor::clamp(a));
+	}
+
 
 //
 
