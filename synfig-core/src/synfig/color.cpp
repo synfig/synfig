@@ -628,6 +628,45 @@ blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 	return b;
 }
 
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_ALPHA_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
+{
+	// \todo can this be right, multiplying amount by *b*'s alpha?
+	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
+	//if(a.get_a() < b.get_a()*amount)
+	//	return a.set_a(a.get_a()*amount);
+	//return b;
+	unsigned char ra, ga, ba, aa;
+	unsigned char rb, gb, bb, ab;
+	unsigned char rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	ac=aa*amount;
+	if(aa < ab*amount)
+	{
+		float acaa=(aa*amount)/aa;
+		rc=ra*acaa;
+		gc=ga*acaa;
+		bc=ba*acaa;
+		return CairoColor(rc, gc, bc, ac);
+	}
+	else
+		return b;
+	
+	
+}
+
 template <class C>
 static C
 blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
@@ -655,7 +694,7 @@ blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 	gb=b.get_g();
 	bb=b.get_b();
 	ab=b.get_a();
-
+	
 	ac=aa*amount;
 	if(ac > ab)
 	{
@@ -667,8 +706,6 @@ blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 	}
 	else
 		return b;
-	
-
 }
 
 
