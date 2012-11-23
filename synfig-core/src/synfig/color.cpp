@@ -407,7 +407,6 @@ blendfunc_ADD(CairoColor &a, CairoColor &b, float amount)
 	return CairoColor(rc, gc, bc, ac);
 }
 
-
 template <class C>
 static C
 blendfunc_SUBTRACT(C &a,C &b,float amount)
@@ -419,6 +418,35 @@ blendfunc_SUBTRACT(C &a,C &b,float amount)
 	b.set_b(b.get_b()-a.get_b()*alpha);
 
 	return b;
+}
+
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_SUBTRACT(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	int aba=ab*amount;
+	
+	rc=rb-(ra*aba)/255;
+	gc=gb-(ga*aba)/255;
+	bc=bb-(ba*aba)/255;
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
 }
 
 template <class C>
