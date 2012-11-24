@@ -637,10 +637,31 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		
 		// there's nothing under us, so using straight blending is
 		// faster than and equivalent to using composite, but we don't
-		// want to blank the surrounding areas
+		// want to blank the surrounding areas.
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
+
+	Rect area(desc.get_rect() & full_bounding_rect);
 	
+	Point min(area.get_min());
+	Point max(area.get_max());
+	
+	if (desc.get_tl()[0] > desc.get_br()[0]) swap(min[0], max[0]);
+	if (desc.get_tl()[1] > desc.get_br()[1]) swap(min[1], max[1]);
+	
+	const int x(floor_to_int((min[0] - desc.get_tl()[0]) / desc.get_pw()));
+	const int y(floor_to_int((min[1] - desc.get_tl()[1]) / desc.get_ph()));
+	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
+	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
+		
+	desc.set_subwindow(x,y,w,h);
+	
+	if(desc.get_w()==0 || desc.get_h()==0)
+	{
+		if(cb && !cb->amount_complete(10000,10000)) return false;
+		return true;
+	}
+
 	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-focus)*exp(zoom)+origin+focus))
 	{
 		// if there's no intersection between the context and our
@@ -650,14 +671,8 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		
 		/* 'straight' is faster than 'composite' and has the same
 		 * effect if the affected area of the lower layer is
-		 * transparent;  however, if we're not clipping the blit to
-		 * just the bounding rectangle, the affected area is the whole
-		 * tile, so we can't use this optimisation.  if we are
-		 * clipping, then we can use 'straight' to blit the clipped
-		 * rectangle, but we shouldn't set blend_method to 'straight',
-		 * or the surrounding areas will be blanked, which we don't
-		 * want.
-		 */
+		 * transparent.*/
+		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 	
 	// render the canvas to be pasted onto pastesurface
@@ -666,8 +681,8 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		return false;
 
 	cairo_t *cr = cairo_create(surface);
-	cairo_set_source_surface(cr, pastesurface, 0, 0);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_set_source_surface(cr, pastesurface, x, y);
+	cairo_paint_with_alpha_operator(cr, get_amount(), blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
 	cairo_destroy(cr);
 	
 	if(cb && !cb->amount_complete(10000,10000)) return false;
