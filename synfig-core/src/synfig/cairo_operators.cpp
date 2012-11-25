@@ -73,34 +73,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_paint_with_alpha(cr, alpha);		
 			break;
 		}
-		case Color::BLEND_BRIGHTEN:
-		{
-			cairo_push_group(cr);
-			cairo_identity_matrix(cr);
-			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
-			cairo_paint_with_alpha(cr, alpha);
-			cairo_pattern_t* pattern=cairo_pop_group(cr);
-			
-			cairo_set_operator(cr, CAIRO_OPERATOR_LIGHTEN);
-			cairo_mask(cr, pattern);
-			
-			cairo_pattern_destroy(pattern);
-			break;
-		}
-		case Color::BLEND_DARKEN:
-		{
-			cairo_push_group(cr);
-			cairo_identity_matrix(cr);
-			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
-			cairo_paint_with_alpha(cr, alpha);
-			cairo_pattern_t* pattern=cairo_pop_group(cr);
-			
-			cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
-			cairo_mask(cr, pattern);
-			
-			cairo_pattern_destroy(pattern);
-			break;
-		}
 		case Color::BLEND_MULTIPLY:
 		{
 			cairo_push_group(cr);
@@ -230,10 +202,7 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_status_t status;
 			status=cairo_pattern_get_surface(pattern, &source);
 			if(status)
-			{
-				synfig::info("%s", cairo_status_to_string(status));
 				return;
-			}
 			CairoSurface csource(source);
 			CairoSurface cdest(cairo_get_target(cr));
 			assert(cdest.map_cairo_image());
@@ -271,6 +240,8 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			break;
 			
 		}
+		case Color::BLEND_BRIGHTEN:
+		case Color::BLEND_DARKEN:
 		case Color::BLEND_ADD:
 		case Color::BLEND_SUBTRACT:
 		case Color::BLEND_DIFFERENCE:
@@ -286,10 +257,7 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_status_t status;
 			status=cairo_pattern_get_surface(pattern, &source);
 			if(status)
-			{
-				synfig::info("%s", cairo_status_to_string(status));
 				return;
-			}
 			CairoSurface csource(source);
 			CairoSurface cdest(cairo_get_target(cr));
 			assert(cdest.map_cairo_image());

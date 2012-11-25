@@ -345,6 +345,49 @@ blendfunc_BRIGHTEN(C &a,C &b,float amount)
 	return b;
 }
 
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+
+	const int raab(ra*ab*amount/255.0);
+	const int gaab(ga*ab*amount/255.0);
+	const int baab(ba*ab*amount/255.0);
+	
+	if(rb<raab)
+		rc=raab;
+	else
+		rc=rb;
+		
+	if(gb<gaab)
+		gc=gaab;
+	else
+		gc=gb;
+	
+	if(bb<baab)
+		bc=baab;
+	else
+		bc=bb;
+
+	ac=ab;
+		
+	return CairoColor(rc, gc, bc, ac);
+}
+
 template <class C>
 static C
 blendfunc_DARKEN(C &a,C &b,float amount)
@@ -363,6 +406,51 @@ blendfunc_DARKEN(C &a,C &b,float amount)
 
 
 	return b;
+}
+
+//Specialization for CairoColor
+template <>
+static CairoColor
+blendfunc_DARKEN(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	const int ab255=ab*255;
+	const int abaa=ab*aa;
+	
+	int rcompare=(amount*(ra*ab-abaa)+ab255)/255;
+	if(rb > rcompare)
+		rc=rcompare;
+	else
+		rc=rb;
+		
+	int gcompare=(amount*(ga*ab-abaa)+ab255)/255;
+	if(gb > gcompare)
+		gc=gcompare;
+	else
+		gc=gb;
+
+	int bcompare=(amount*(ba*ab-abaa)+ab255)/255;
+	if(bb > bcompare)
+		bc=bcompare;
+	else
+		bc=bb;
+	
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
 }
 
 template <class C>
