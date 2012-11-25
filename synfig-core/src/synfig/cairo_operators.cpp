@@ -75,56 +75,86 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_BRIGHTEN:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_LIGHTEN);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_LIGHTEN);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_DARKEN:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_MULTIPLY:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_MULTIPLY);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+
+			cairo_set_operator(cr, CAIRO_OPERATOR_MULTIPLY);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_HUE:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_HUE);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_HUE);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_SATURATION:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_SATURATION);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_SATURATION);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_LUMINANCE:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_LUMINOSITY);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_LUMINOSITY);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_BEHIND:
@@ -141,20 +171,30 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_SCREEN:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_SCREEN);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_SCREEN);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_HARD_LIGHT:
 		{
-			cairo_surface_t* dest=cairo_copy_target_image(cairo_get_target(cr), alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
+			cairo_push_group(cr);
 			cairo_identity_matrix(cr);
-			cairo_mask_surface(cr, dest, 0,0);
-			cairo_surface_destroy(dest);
+			cairo_set_source_surface(cr, cairo_get_target(cr), 0, 0);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pattern_t* pattern=cairo_pop_group(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
+			cairo_mask(cr, pattern);
+			
+			cairo_pattern_destroy(pattern);
 			break;
 		}
 		case Color::BLEND_ALPHA_OVER:
