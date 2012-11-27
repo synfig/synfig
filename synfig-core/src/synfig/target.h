@@ -80,13 +80,6 @@ class Canvas;
 class ProgressCallback;
 struct TargetParam;
 
-//! Available rendering methods
-enum RenderMethod {
-	SOFTWARE = 0x100,               //!< Software rendering
-	OPENGL,                         //!< OpenGL rendering (not supported)
-	CAIRO                           //!< Cairo rendering
-};
-
 /*!	\class Target
 **	\brief Used to produce rendered animations of the documents
 **
@@ -181,19 +174,12 @@ public:
 	//! The current frame being rendered
 	int curr_frame_;
 
-	//! Rendering method used by the Target to generate images from data
-	RenderMethod render_method_;
-
 protected:
 	//! Default constructor
 	Target();
 
 public:
 	virtual ~Target() { }
-	//! Returns Target rendering method
-	RenderMethod get_render_method()const { return render_method_; }
-	//! Sets Target rendering method
-	void set_render_method(RenderMethod method) { render_method_ = method; }
 	//! Gets the target quality
 	int get_quality()const { return quality_; }
 	//! Sets the target quality
