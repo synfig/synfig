@@ -55,11 +55,6 @@ public:
 
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
-	
-	//! Obtain a surface pointer based on the render method
-	//! this function has to be overrrided by the derived targets 
-	//! to create the proper Cairo backend surface for each target type.
-	virtual Surface* create_surface(); 
 
 	//! Marks the start of a frame
 	/*! \return \c true on success, \c false upon an error.
