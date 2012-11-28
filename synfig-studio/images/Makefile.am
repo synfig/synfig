@@ -168,7 +168,7 @@ EXTRA_DIST = \
 	meta_data_icon.sif \
 	navigator_icon.sif \
 	palette_icon.sif \
-	params_icon.sif \
+	parameters_icon.sif \
 	time_track_icon.sif
 
 IMAGES = \
@@ -334,7 +334,7 @@ IMAGES = \
 	meta_data_icon.$(EXT) \
 	navigator_icon.$(EXT) \
 	palette_icon.$(EXT) \
-	params_icon.$(EXT) \
+	parameters_icon.$(EXT) \
 	time_track_icon.$(EXT)
 
 MAINTAINERCLEANFILES = \

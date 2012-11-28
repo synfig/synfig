@@ -110,7 +110,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	curves->set_time_adjustment(canvas_view->time_adjustment());
 
 	Gtk::TreeView* param_tree_view(
-		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"))
+		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("parameters"))
 	);
 
 	param_tree_view->get_selection()->signal_changed().connect(
