@@ -285,8 +285,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
 	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
 
-	INIT_STOCK_ICON(add_to_group,"action_add_to_group_icon."IMAGE_EXT,_("Add Layer to Group"));
-	INIT_STOCK_ICON(remove_from_group,"action_remove_from_group_icon."IMAGE_EXT,_("Remove Layer from Group"));
+	INIT_STOCK_ICON(add_to_set,"action_add_to_set_icon."IMAGE_EXT,_("Add Layer to Set"));
+	INIT_STOCK_ICON(remove_from_set,"action_remove_from_set_icon."IMAGE_EXT,_("Remove Layer from Set"));
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));

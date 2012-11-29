@@ -59,8 +59,8 @@ EXTRA_DIST = \
 	render_options_icon.sif \
 	preview_options_icon.sif \
 	action_set_layer_description_icon.sif \
-	action_add_to_group_icon.sif \
-	action_remove_from_group_icon.sif \
+	action_add_to_set_icon.sif \
+	action_remove_from_set_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
 	action_flat_interpolation_icon.sif \
@@ -225,8 +225,8 @@ IMAGES = \
 	render_options_icon.$(EXT) \
 	preview_options_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
-	action_add_to_group_icon.$(EXT) \
-	action_remove_from_group_icon.$(EXT) \
+	action_add_to_set_icon.$(EXT) \
+	action_remove_from_set_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
