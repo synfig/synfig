@@ -36,6 +36,7 @@
 #include "render.h"
 #include "canvas.h"
 #include "context.h"
+#include "rendermethod.h"
 
 #endif
 
@@ -132,6 +133,8 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 	#else
 			context=canvas->get_context();
 	#endif
+			// pass the Render Method to the context
+			context.set_render_method(CAIRO);
 			// Obtain a pointer to the cairo_surface_t given by the Target instance.
 			cairo_surface_t* surface;
 			if(obtain_surface(surface))
