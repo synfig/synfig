@@ -49,6 +49,7 @@ private:
 	String filename;
 	String abs_filename;
 	Importer::Handle importer;
+	//CairoImporter::Handle cimporter;
 	Time time_offset;
 
 protected:

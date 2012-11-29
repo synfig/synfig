@@ -94,7 +94,9 @@ Import::set_param(const String & param, const ValueBase &value)
 		{
 			filename=value.get(filename);
 			importer=0;
+			//cimporter=0;
 			surface.clear();
+			//csurface.set_cairo_surface(NULL);
 			return true;
 		}
 
@@ -132,53 +134,115 @@ Import::set_param(const String & param, const ValueBase &value)
 		{
 			filename=newfilename;
 			importer=0;
+			//cimporter=0;
 			surface.clear();
+			//csurface.set_cairo_surface(NULL);
 			return true;
 		}
 
-		// If we are already loaded, don't reload
-		if(filename==newfilename && importer)
+		switch (get_method())
 		{
-			synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
-			return true;
-		}
-
-		assert(get_canvas());
-
-		if(is_absolute_path(newfilename))
-			filename_with_path=newfilename;
-		else
-			filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
-
-		handle<Importer> newimporter;
-
-		newimporter=Importer::open(absolute_path(filename_with_path));
-
-		if(!newimporter)
-		{
-			newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
-			if(!newimporter)
+		
+		case SOFTWARE:
 			{
-				synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
-				importer=0;
+				// If we are already loaded, don't reload
+				if(filename==newfilename && importer)
+				{
+					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+					return true;
+				}
+
+				assert(get_canvas());
+
+				if(is_absolute_path(newfilename))
+					filename_with_path=newfilename;
+				else
+					filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+
+				handle<Importer> newimporter;
+
+				newimporter=Importer::open(absolute_path(filename_with_path));
+
+				if(!newimporter)
+				{
+					newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
+					if(!newimporter)
+					{
+						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+						importer=0;
+						filename=newfilename;
+						abs_filename=absolute_path(filename_with_path);
+						surface.clear();
+						return false;
+					}
+				}
+
+				surface.clear();
+				if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
+				{
+					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+				}
+
+				importer=newimporter;
 				filename=newfilename;
 				abs_filename=absolute_path(filename_with_path);
-				surface.clear();
+
+				return true;
+			}
+		case OPENGL:
+			{
+				return false;
+			}
+		case CAIRO:
+			{
+				/*
+				if(filename==newfilename && cimporter)
+				{
+				synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+				return true;
+				}
+				 assert(get_canvas());
+				 
+				 if(is_absolute_path(newfilename))
+				 filename_with_path=newfilename;
+				 else
+				 filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+				 
+				 handle<CairoImporter> newimporter;
+				 
+				 newimporter=CairoImporter::open(absolute_path(filename_with_path));
+				 
+				 if(!newimporter)
+				 {
+					 newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
+					 if(!newimporter)
+					 {
+						 synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+						 cimporter=0;
+						 filename=newfilename;
+						 abs_filename=absolute_path(filename_with_path);
+						 csurface.set_cairo_surface(NULL);
+						 return false;
+					 }
+				 }
+				 
+				 cairo_surface_t* cs;
+				 if(!newimporter->get_frame(&cs, get_canvas()->rend_desc(), Time(0), trimmed, width, height, top, left))
+				 {
+					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+				 }
+				 csurface.set_cairo_surface(cs);
+				 cairo_surface_destroy(cs);
+				 
+				 cimporter=newimporter;
+				 filename=newfilename;
+				 abs_filename=absolute_path(filename_with_path);
+				 
+				 return true;
+				*/
 				return false;
 			}
 		}
-
-		surface.clear();
-		if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
-		{
-			synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
-		}
-
-		importer=newimporter;
-		filename=newfilename;
-		abs_filename=absolute_path(filename_with_path);
-
-		return true;
 	}
 	} catch(...) { set_amount(0); return false; }
 
@@ -231,20 +295,68 @@ Import::get_param_vocab()const
 void
 Import::set_time(Context context, Time time)const
 {
-	if(get_amount() && importer &&
-	   importer->is_animated())
-		importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
-
+	switch (get_method())
+	{
+	case SOFTWARE:
+		if(get_amount() && importer &&
+		   importer->is_animated())
+			importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
+		break;
+	case OPENGL:
+		break;
+	case CAIRO:
+		{
+/*
+			if(get_amount() && cimporter &&
+			   cimporter->is_animated())
+			{
+				cairo_surface_t* cs;
+				cimporter->get_frame(&cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
+				if(cs)
+				{
+					csurface.set_cairo_surface(cs);
+					cairo_surface_destroy(cs);
+				}
+			}
+			break;
+*/
+		}
+	
+	}
 	context.set_time(time);
 }
 
 void
 Import::set_time(Context context, Time time, const Point &pos)const
 {
-	if(get_amount() && importer &&
-	   importer->is_animated())
-		importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
-
+	switch (get_method())
+	{
+		case SOFTWARE:
+			if(get_amount() && importer &&
+			   importer->is_animated())
+				importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
+			break;
+		case OPENGL:
+			break;
+		case CAIRO:
+		{
+/*
+			if(get_amount() && cimporter &&
+			   cimporter->is_animated())
+			{
+				cairo_surface_t* cs;
+				cimporter->get_frame(&cs, get_canvas()->rend_desc(), time+time_offset, trimmed, width, height, top, left);
+				if(cs)
+				{
+					csurface.set_cairo_surface(cs);
+					cairo_surface_destroy(cs);
+				}
+			}
+			break;
+*/
+		}
+			
+	}
 	context.set_time(time,pos);
 }
 
@@ -255,6 +367,7 @@ Import::set_render_method(Context context, RenderMethod x)
 	{
 		Layer_Bitmap::set_render_method(context, x); // set the method (and pass to the other layers)
 		importer=0; // invalidate the importer
+		//cimporter=0;
 		set_param("filename", filename); // this will update the importer to the new type
 	}
 	else
