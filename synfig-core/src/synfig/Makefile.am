@@ -221,6 +221,7 @@ SYNFIGHEADERS = \
 	gamma.h \
 	guid.h \
 	importer.h \
+	cairoimporter.h \
 	keyframe.h \
 	layer.h \
 	loadcanvas.h \
@@ -259,6 +260,7 @@ SYNFIGSOURCES = \
 	gamma.cpp \
 	guid.cpp \
 	importer.cpp \
+	cairoimporter.cpp \
 	keyframe.cpp \
 	layer.cpp \
 	loadcanvas.cpp \

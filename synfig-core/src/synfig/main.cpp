@@ -40,6 +40,7 @@
 #include "target.h"
 #include <ETL/stringf>
 #include "listimporter.h"
+#include "cairoimporter.h"
 #include "color.h"
 #include "vector.h"
 #include <fstream>
@@ -208,9 +209,20 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Importers\""));
 	}
 
+	if(cb)cb->task(_("Starting Subsystem \"Cairo Importers\""));
+	if(!CairoImporter::subsys_init())
+	{
+		Importer::subsys_stop();
+		Target::subsys_stop();
+		Layer::subsys_stop();
+		Module::subsys_stop();
+		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
+	}
+
 	if(cb)cb->task(_("Starting Subsystem \"ValueNodes\""));
 	if(!ValueNode::subsys_init())
 	{
+		CairoImporter::subsys_stop();
 		Importer::subsys_stop();
 		Target::subsys_stop();
 		Layer::subsys_stop();
@@ -260,6 +272,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	if (i == locations.size())
 	{
 		Importer::subsys_stop();
+		CairoImporter::subsys_stop();
 		Target::subsys_stop();
 		Layer::subsys_stop();
 		Module::subsys_stop();
@@ -303,6 +316,7 @@ synfig::Main::~Main()
 	ValueNode::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
+	CairoImporter::subsys_stop();
 	// synfig::info("Target::subsys_stop()");
 	Target::subsys_stop();
 	// synfig::info("Layer::subsys_stop()");

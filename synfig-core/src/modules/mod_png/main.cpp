@@ -38,6 +38,7 @@
 #include "trgt_png.h"
 #include "trgt_cairo_png.h"
 #include "mptr_png.h"
+#include "mptr_cairo_png.h"
 #endif
 
 /* === E N T R Y P O I N T ================================================= */
@@ -57,5 +58,6 @@ MODULE_INVENTORY_BEGIN(mod_png)
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER(png_mptr)
+		CAIROIMPORTER(cairo_png_mptr)
 	END_IMPORTERS
 MODULE_INVENTORY_END

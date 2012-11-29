@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file import.h
-**	\brief Header file for implementation of the "Import Image" layer
+/*!	\file mptr_cairo_png.h
+**	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -17,24 +18,24 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-*/
-/* ========================================================================= */
+**
+** === N O T E S ===========================================================
+**
+** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_IMPORT_H
-#define __SYNFIG_IMPORT_H
+#ifndef __SYNFIG_MPTR_CAIRO_PNG_H
+#define __SYNFIG_MPTR_CAIRO_PNG_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_bitmap.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/importer.h>
-#include <synfig/cairoimporter.h>
-#include <synfig/rendermethod.h>
+#include "cairo.h"
+#include "cairomm/cairomm.h"
 
-using namespace synfig;
+#include <synfig/cairoimporter.h>
+#include <synfig/string.h>
+#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,36 +43,21 @@ using namespace synfig;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Import : public Layer_Bitmap
+class cairo_png_mptr : public synfig::CairoImporter
 {
-	SYNFIG_LAYER_MODULE_EXT
-
+	SYNFIG_CAIROIMPORTER_MODULE_EXT
 private:
-	String filename;
-	String abs_filename;
-	Importer::Handle importer;
-	CairoImporter::Handle cimporter;
-	Time time_offset;
-
-protected:
-	Import();
+	synfig::String filename;
+	cairo_surface_t* csurface_;
 
 public:
-	~Import();
+	cairo_png_mptr(const char *filename);
+	~cairo_png_mptr();
 
-	virtual bool set_param(const String & param, const ValueBase &value);
-
-	virtual ValueBase get_param(const String & param)const;
-
-	virtual Vocab get_param_vocab()const;
-
-	virtual void on_canvas_set();
-
-	virtual void set_time(Context context, Time time)const;
-
-	virtual void set_time(Context context, Time time, const Point &point)const;
-	
-	virtual void set_render_method(Context context, RenderMethod x);
+	virtual bool get_frame(cairo_surface_t *&csurface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(cairo_surface_t *&csurface, const synfig::RendDesc &renddesc, synfig::Time time,
+						   bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
+						   synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

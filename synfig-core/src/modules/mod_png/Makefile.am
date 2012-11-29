@@ -21,7 +21,9 @@ libmod_png_la_SOURCES = \
 	trgt_cairo_png.cpp \
 	trgt_cairo_png.h \
 	mptr_png.cpp \
-	mptr_png.h
+	mptr_png.h \
+	mptr_cairo_png.cpp \
+	mptr_cairo_png.h
 
 libmod_png_la_LDFLAGS = \
 	-module \
