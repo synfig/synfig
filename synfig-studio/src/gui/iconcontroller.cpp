@@ -253,7 +253,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(clear_undo,"clear_undo_icon."IMAGE_EXT,_("Clear Undo Stack"));
 	INIT_STOCK_ICON(clear_redo,"clear_redo_icon."IMAGE_EXT,_("Clear Redo Stack"));
 
-	INIT_STOCK_ICON(children,"children_icon."IMAGE_EXT,_("Children"));
+	INIT_STOCK_ICON(library,"library_icon."IMAGE_EXT,_("Library"));
 	INIT_STOCK_ICON(graphs,"graphs_icon."IMAGE_EXT,_("Graphs"));
 	INIT_STOCK_ICON(keyframes,"keyframe_icon."IMAGE_EXT,_("Keyframes"));
 	INIT_STOCK_ICON(meta_data,"meta_data_icon."IMAGE_EXT,_("MetaData"));

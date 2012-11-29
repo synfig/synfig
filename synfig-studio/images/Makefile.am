@@ -158,7 +158,7 @@ EXTRA_DIST = \
 	type_vector_icon.sif \
 	\
 	canvas_icon.sif \
-	children_icon.sif \
+	library_icon.sif \
 	graphs_icon.sif \
 	group_icon.sif \
 	history_icon.sif \
@@ -324,7 +324,7 @@ IMAGES = \
 	type_vector_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
-	children_icon.$(EXT) \
+	library_icon.$(EXT) \
 	graphs_icon.$(EXT) \
 	group_icon.$(EXT) \
 	history_icon.$(EXT) \

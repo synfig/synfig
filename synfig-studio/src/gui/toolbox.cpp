@@ -192,7 +192,7 @@ void _create_stock_dialog1()
 void _create_stock_dialog2()
 {
 	DockDialog* dock_dialog(new DockDialog);
-	dock_dialog->set_contents("layers children keyframes | parameters");
+	dock_dialog->set_contents("layers library keyframes | parameters");
 	dock_dialog->present();
 }
 
@@ -220,7 +220,7 @@ Toolbox::Toolbox():
 	dock_dialogs=manage(new class Gtk::Menu());
 
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Vertical Dock: Canvases, History"),sigc::ptr_fun(_create_stock_dialog1)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Horizontal Dock: Layers, Children, Parameters"),sigc::ptr_fun(_create_stock_dialog2)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Horizontal Dock: Layers, Library, Parameters"),sigc::ptr_fun(_create_stock_dialog2)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Reset Windows to Original Layout"),sigc::ptr_fun(App::reset_initial_window_configuration)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
