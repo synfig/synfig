@@ -43,6 +43,7 @@
 
 #include "cairo.h"
 #include "cairomm/cairomm.h"
+#include "rendermethod.h"
 
 /* === M A C R O S ========================================================= */
 

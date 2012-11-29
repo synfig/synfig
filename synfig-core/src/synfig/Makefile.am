@@ -234,6 +234,7 @@ SYNFIGHEADERS = \
 	rect.h \
 	renddesc.h \
 	render.h \
+	rendermethod.h \
 	savecanvas.h \
 	surface.h \
 	target.h \
