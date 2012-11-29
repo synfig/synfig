@@ -237,7 +237,7 @@ Widget_Gradient::popup_menu(float x)
 
 	menu->items().push_back(
 		Gtk::Menu_Helpers::MenuElem(
-			_("Insert CPoint"),
+			_("Insert Color Stop"),
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Widget_Gradient::insert_cpoint),
 				x
@@ -249,7 +249,7 @@ Widget_Gradient::popup_menu(float x)
 	{
 		menu->items().push_back(
 			Gtk::Menu_Helpers::MenuElem(
-				_("Remove CPoint"),
+				_("Remove Color Stop"),
 				sigc::bind(
 					sigc::mem_fun(*this,&studio::Widget_Gradient::remove_cpoint),
 					x
