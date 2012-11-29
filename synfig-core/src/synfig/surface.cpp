@@ -317,7 +317,10 @@ CairoSurface::set_cairo_surface(cairo_surface_t *cs)
 {
 	if(cs==NULL)
 	{
-		synfig::error("CairoSruface received a NULL cairo_surface_t");
+		if(is_mapped())
+			unmap_cairo_image();
+		cairo_surface_destroy(cs_);
+		cs_=NULL;
 		return;
 	}
 	if(cairo_surface_status(cs))
@@ -327,8 +330,9 @@ CairoSurface::set_cairo_surface(cairo_surface_t *cs)
 	}
 	else
 	{
-		if(cs_!=NULL)
-			cairo_surface_destroy(cs_);
+		if(is_mapped())
+			unmap_cairo_image();
+		cairo_surface_destroy(cs_);
 		cs_=cairo_surface_reference(cs);
 	}
 }

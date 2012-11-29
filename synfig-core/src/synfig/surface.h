@@ -163,6 +163,9 @@ public:
 	// by this surface class.
 	// When the CairoSurface instance is destructed the reference counter of the
 	// cairo_surface_t shoud be decreased.
+	// It is also possible to detach the cairo surface passing NULL as argument.
+	// If the cairo surface is mapped at the time of call this function, then
+	// it is unmaped first.
 	void set_cairo_surface(cairo_surface_t *cs);
 	// Returns an increased reference pointer of the surface. The receiver is responsible
 	// of destroy the surface once referenced.
