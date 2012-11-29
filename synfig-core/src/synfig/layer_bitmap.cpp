@@ -781,10 +781,6 @@ Layer_Bitmap::set_cairo_surface(cairo_surface_t *cs)
 		synfig::error("Layer_Bitmap received a non valid cairo_surface_t");
 		return;
 	}
-	if(csurface.is_mapped())
-	{
-		csurface.unmap_cairo_image();
-	}
 	csurface.set_cairo_surface(cs);
 	csurface.map_cairo_image();
 }
