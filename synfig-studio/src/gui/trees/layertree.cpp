@@ -131,13 +131,13 @@ LayerTree::LayerTree():
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
 	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
-	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Encapsulate");
+	SMALL_BUTTON(button_group,"synfig-group","Group");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
 
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
+	hbox->pack_start(*button_group,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
 
 	// button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
@@ -149,7 +149,7 @@ LayerTree::LayerTree():
 	button_raise->set_sensitive(false);
 	button_lower->set_sensitive(false);
 	button_duplicate->set_sensitive(false);
-	button_encapsulate->set_sensitive(false);
+	button_group->set_sensitive(false);
 	button_delete->set_sensitive(false);
 
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_selection_changed));
@@ -612,7 +612,7 @@ LayerTree::on_selection_changed()
 		button_raise->set_sensitive(false);
 		button_lower->set_sensitive(false);
 		button_duplicate->set_sensitive(false);
-		button_encapsulate->set_sensitive(false);
+		button_group->set_sensitive(false);
 		button_delete->set_sensitive(false);
 		layer_amount_hscale->set_sensitive(false);
 		blend_method_widget.set_sensitive(false);
@@ -622,7 +622,7 @@ LayerTree::on_selection_changed()
 	button_raise->set_sensitive(true);
 	button_lower->set_sensitive(true);
 	button_duplicate->set_sensitive(true);
-	button_encapsulate->set_sensitive(true);
+	button_group->set_sensitive(true);
 	button_delete->set_sensitive(true);
 
 	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))

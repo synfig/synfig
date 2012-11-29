@@ -48,9 +48,9 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulate);
-ACTION_SET_NAME(Action::LayerEncapsulate,"LayerEncapsulate");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Encapsulate"));
-ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
+ACTION_SET_NAME(Action::LayerEncapsulate,"LayerGroup");
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Group"));
+ACTION_SET_TASK(Action::LayerEncapsulate,"group");
 ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulate,0);
 ACTION_SET_VERSION(Action::LayerEncapsulate,"0.0");
@@ -69,7 +69,7 @@ Action::LayerEncapsulate::LayerEncapsulate()
 synfig::String
 Action::LayerEncapsulate::get_local_name()const
 {
-	return get_layer_descriptions(layers, _("Encapsulate Layer"), _("Encapsulate Layers"));
+	return get_layer_descriptions(layers, _("Group Layer"), _("Group Layers"));
 }
 
 Action::ParamVocab
@@ -79,7 +79,7 @@ Action::LayerEncapsulate::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be encapsulated"))
+		.set_desc(_("Layer to be grouped"))
 		.set_supports_multiple()
 	);
 
@@ -138,7 +138,7 @@ Action::LayerEncapsulate::prepare()
 		return;
 
 	if(layers.empty())
-		throw Error(_("No layers to encapsulate"));
+		throw Error(_("No layers to group"));
 
 	// First create the new canvas and layer
 	if(!child_canvas)

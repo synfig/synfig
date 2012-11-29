@@ -27,7 +27,7 @@ EXTRA_DIST = \
 	clear_undo_icon.sif \
 	graphs_icon.sif \
 	duplicate_icon.sif \
-	encapsulate_icon.sif \
+	group_icon.sif \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
@@ -187,7 +187,7 @@ IMAGES = \
 	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
-	encapsulate_icon.$(EXT) \
+	group_icon.$(EXT) \
 	\
 	keyframe_lock_past_on_icon.$(EXT) \
 	keyframe_lock_past_off_icon.$(EXT) \
