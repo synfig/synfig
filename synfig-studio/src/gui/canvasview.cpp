@@ -1495,11 +1495,11 @@ CanvasView::init_menus()
 	//	SLOT_EVENT(EVENT_REDO)
 	//);
 
-	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Ducks")),
+	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Control Points")),
 		sigc::mem_fun(*work_area,&studio::WorkArea::select_all_ducks)
 	);
 
-	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Ducks")),
+	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Control Points")),
 		sigc::mem_fun(*work_area,&studio::WorkArea::unselect_all_ducks)
 	);
 
@@ -1678,13 +1678,13 @@ CanvasView::init_menus()
 				sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),		\
 				Duck::TYPE_##upper))
 
-		DUCK_MASK(position,POSITION,_("Show Position Ducks"));
-		DUCK_MASK(tangent,TANGENT,_("Show Tangent Ducks"));
-		DUCK_MASK(vertex,VERTEX,_("Show Vertex Ducks"));
-		DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
-		DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
-		DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
-		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Ducks"));
+		DUCK_MASK(position,POSITION,_("Show Position Control Points"));
+		DUCK_MASK(tangent,TANGENT,_("Show Tangent Control Points"));
+		DUCK_MASK(vertex,VERTEX,_("Show Vertex Control Points"));
+		DUCK_MASK(radius,RADIUS,_("Show Radius Control Points"));
+		DUCK_MASK(width,WIDTH,_("Show Width Control Points"));
+		DUCK_MASK(angle,ANGLE,_("Show Angle Control Points"));
+		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Control Points"));
 
 #undef DUCK_MASK
 	}

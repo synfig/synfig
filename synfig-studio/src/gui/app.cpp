@@ -763,7 +763,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
 	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")) );
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Ducks")) );
+	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Control Points")) );
 	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")) );
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")) );
 	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
@@ -814,19 +814,19 @@ init_ui_manager()
 	DEFINE_ACTION("cut", Gtk::StockID("gtk-cut"));
 	DEFINE_ACTION("copy", Gtk::StockID("gtk-copy"));
 	DEFINE_ACTION("paste", Gtk::StockID("gtk-paste"));
-	DEFINE_ACTION("select-all-ducks", _("Select All Ducks"));
-	DEFINE_ACTION("unselect-all-ducks", _("Unselect All Ducks"));
+	DEFINE_ACTION("select-all-ducks", _("Select All Control Points"));
+	DEFINE_ACTION("unselect-all-ducks", _("Unselect All Control Points"));
 	DEFINE_ACTION("select-all-layers", _("Select All Layers"));
 	DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"));
 	DEFINE_ACTION("properties", _("Properties"));
 
-	DEFINE_ACTION("mask-position-ducks", _("Show Position Ducks"));
-	DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Ducks"));
-	DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Ducks"));
-	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Ducks"));
-	DEFINE_ACTION("mask-width-ducks", _("Show Width Ducks"));
-	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Ducks"));
-	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Ducks"));
+	DEFINE_ACTION("mask-position-ducks", _("Show Position Control Points"));
+	DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Control Points"));
+	DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Control Points"));
+	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Control Points"));
+	DEFINE_ACTION("mask-width-ducks", _("Show Width Control Points"));
+	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Control Points"));
+	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Control Points"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
