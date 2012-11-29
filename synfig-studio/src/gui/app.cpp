@@ -1835,7 +1835,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
 	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
 	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents","parameters children keyframes | timetrack curves meta_data");
+	synfigapp::Main::settings().set_value("dock.dialog.2.contents","parameters children keyframes | timetrack graphs meta_data");
 	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size",h_contents);
 	synfigapp::Main::settings().set_value("dock.dialog.2.size",h_size);
 	synfigapp::Main::settings().set_value("dock.dialog.2.pos",h_pos);

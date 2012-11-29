@@ -25,7 +25,7 @@ EXTRA_DIST = \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
-	curves_icon.sif \
+	graphs_icon.sif \
 	duplicate_icon.sif \
 	encapsulate_icon.sif \
 	keyframe_lock_icons.sif \
@@ -159,7 +159,7 @@ EXTRA_DIST = \
 	\
 	canvas_icon.sif \
 	children_icon.sif \
-	curves_icon.sif \
+	graphs_icon.sif \
 	group_icon.sif \
 	history_icon.sif \
 	info_icon.sif \
@@ -325,7 +325,7 @@ IMAGES = \
 	\
 	canvas_icon.$(EXT) \
 	children_icon.$(EXT) \
-	curves_icon.$(EXT) \
+	graphs_icon.$(EXT) \
 	group_icon.$(EXT) \
 	history_icon.$(EXT) \
 	info_icon.$(EXT) \
