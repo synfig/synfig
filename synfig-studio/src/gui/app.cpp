@@ -768,7 +768,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")) );
 	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
 	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
-	menus_action_group->add( Gtk::Action::create("menu-group", _("Group")) );
+	menus_action_group->add( Gtk::Action::create("menu-set", _("Set")) );
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 
@@ -1830,7 +1830,7 @@ App::reset_initial_window_configuration()
 	synfig::info("h_sizes: %s", h_size.c_str());
 */
 	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers sets");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
 	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
 	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);

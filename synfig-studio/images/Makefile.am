@@ -160,7 +160,7 @@ EXTRA_DIST = \
 	canvas_icon.sif \
 	library_icon.sif \
 	graphs_icon.sif \
-	group_icon.sif \
+	set_icon.sif \
 	history_icon.sif \
 	info_icon.sif \
 	keyframe_icon.sif \
@@ -326,7 +326,7 @@ IMAGES = \
 	canvas_icon.$(EXT) \
 	library_icon.$(EXT) \
 	graphs_icon.$(EXT) \
-	group_icon.$(EXT) \
+	set_icon.$(EXT) \
 	history_icon.$(EXT) \
 	info_icon.$(EXT) \
 	keyframe_icon.$(EXT) \
