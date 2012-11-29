@@ -991,7 +991,7 @@ init_ui_manager()
 "	</menu>"
 "	<menu name='menu-state' action='menu-state'>"
 "	</menu>"
-"	<menu action='menu-group'>"
+"	<menu action='menu-set'>"
 "		<menuitem action='action-group_add'/>"
 "	</menu>"
 "	<menu action='menu-layer'>"
