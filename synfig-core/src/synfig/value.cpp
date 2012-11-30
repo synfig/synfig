@@ -273,6 +273,37 @@ ValueBase::type_name(Type id)
 	// don't internationalize these type names - they're using in .sif files
 	switch(id)
 	{
+	case TYPE_BOOL:			return N_("bool");
+	case TYPE_INTEGER:		return N_("integer");
+	case TYPE_ANGLE:		return N_("angle");
+	case TYPE_TIME:			return N_("time");
+	case TYPE_REAL:			return N_("real");
+	case TYPE_VECTOR:		return N_("vector");
+	case TYPE_COLOR:		return N_("color");
+	case TYPE_SEGMENT:		return N_("segment");
+	case TYPE_BLINEPOINT:		return N_("bline_point");
+	case TYPE_WIDTHPOINT:		return N_("width_point");
+	case TYPE_DASHITEM:		return N_("dash_item");
+	case TYPE_LIST:			return N_("list");
+	case TYPE_CANVAS:		return N_("canvas");
+	case TYPE_STRING:		return N_("string");
+	case TYPE_GRADIENT:		return N_("gradient");
+	case TYPE_NIL:			return N_("nil");
+	default:
+		break;
+	}
+	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
+//	assert(0);
+	return "UNKNOWN";
+}
+
+String
+ValueBase::type_local_name(Type id)
+{
+//	return dgettext("synfig",type_name(id).c_str());
+
+	switch(id)
+	{
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BOOL:			return N_("bool");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -290,9 +321,9 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_SEGMENT:		return N_("segment");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_BLINEPOINT:	return N_("bline_point");
+	case TYPE_BLINEPOINT:		return N_("bline_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_WIDTHPOINT:	return N_("width_point");
+	case TYPE_WIDTHPOINT:		return N_("width_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_DASHITEM:		return N_("dash_item");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -305,18 +336,11 @@ ValueBase::type_name(Type id)
 	case TYPE_GRADIENT:		return N_("gradient");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_NIL:			return N_("nil");
-	default:
-		break;
+	default:			break;
 	}
 	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
-}
-
-String
-ValueBase::type_local_name(Type id)
-{
-	return dgettext("synfig",type_name(id).c_str());
 }
 
 ValueBase::Type
