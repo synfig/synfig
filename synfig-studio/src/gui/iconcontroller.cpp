@@ -141,7 +141,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(type_vector,"type_vector_icon."IMAGE_EXT,_("Vector"));
 	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
 	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
-	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("BLine Point"));
+	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("Spline Point"));
 	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("List"));
 	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("String"));
 	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
@@ -150,7 +150,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// ToolBox Tools
 	INIT_STOCK_ICON(normal,"tool_normal_icon."IMAGE_EXT,_("Transform Tool"));
         INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
-        INIT_STOCK_ICON(bline,"tool_bline_icon."IMAGE_EXT,_("BLine Tool"));
+        INIT_STOCK_ICON(bline,"tool_spline_icon."IMAGE_EXT,_("Spline Tool"));
         INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
         INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
         INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));

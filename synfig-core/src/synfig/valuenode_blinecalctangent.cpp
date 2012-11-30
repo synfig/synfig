@@ -181,7 +181,7 @@ ValueNode_BLineCalcTangent::get_name()const
 String
 ValueNode_BLineCalcTangent::get_local_name()const
 {
-	return _("BLine Tangent");
+	return _("Spline Tangent");
 }
 
 bool
@@ -238,7 +238,7 @@ ValueNode_BLineCalcTangent::get_children_vocab_vfunc()const
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")
-		.set_local_name(_("BLine"))
+		.set_local_name(_("Spline"))
 		.set_description(_("The BLine where the tangent is linked to"))
 	);
 

@@ -429,13 +429,13 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_circle(_("Create Circle Layer")),
-	checkbutton_layer_region(_("Create Region BLine")),
-	checkbutton_layer_outline(_("Create Outline BLine")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline BLine")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
-	checkbutton_layer_plant(_("Create Plant BLine")),
+	checkbutton_layer_region(_("Create Region Spline")),
+	checkbutton_layer_outline(_("Create Outline Spline")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline Spline")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient Spline")),
+	checkbutton_layer_plant(_("Create Plant Spline")),
 	checkbutton_layer_link_origins(_("Link Origins")),
-	checkbutton_layer_origins_at_center(_("BLine Origins at Center"))
+	checkbutton_layer_origins_at_center(_("Spline Origins at Center"))
 {
 	egress_on_selection_change=true;
 
@@ -484,7 +484,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(enum_blend,                                	0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
-	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))),	0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),	0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_number_of_bline_points,					1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),	0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);

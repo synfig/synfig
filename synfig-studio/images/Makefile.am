@@ -124,7 +124,7 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
-	tool_bline_icon.sif \
+	tool_spline_icon.sif \
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
 	tool_eyedrop_icon.sif \
@@ -290,7 +290,7 @@ IMAGES = \
 	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
 	\
-	tool_bline_icon.$(EXT) \
+	tool_spline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \
 	tool_eyedrop_icon.$(EXT) \
