@@ -223,7 +223,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// Other Layers
 	INIT_STOCK_ICON(layer_other_duplicate,"layer_other_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
 	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
-	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_pastecanvas_icon."IMAGE_EXT,_("Paste Canvas Layer"));
+	INIT_STOCK_ICON(layer_other_group,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
@@ -582,7 +582,7 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="importimage" || layer=="import")
 		return Gtk::StockID("synfig-layer_other_importimage");
 	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return Gtk::StockID("synfig-layer_other_pastecanvas");
+		return Gtk::StockID("synfig-layer_other_group");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");
 	else if(layer=="super_sample")

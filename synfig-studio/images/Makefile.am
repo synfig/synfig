@@ -31,7 +31,6 @@ EXTRA_DIST = \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
-	pastecanvas_icon.sif \
 	saveall_icon.sif \
 	select_all_child_layers_icon.sif \
 	sif_icon.sif \
@@ -112,7 +111,7 @@ EXTRA_DIST = \
 	layer_gradient_spiral_icon.sif \
 	layer_other_duplicate_icon.sif \
 	layer_other_importimage_icon.sif \
-	layer_other_pastecanvas_icon.sif \
+	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
 	layer_other_supersample_icon.sif \
 	layer_other_text_icon.sif \
@@ -174,7 +173,6 @@ EXTRA_DIST = \
 IMAGES = \
 	installer_logo.$(EXT) \
 	installer_logo_osx.$(EXT) \
-	pastecanvas_icon.$(EXT) \
 	clear_redo_icon.$(EXT) \
 	clear_undo_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
@@ -278,7 +276,7 @@ IMAGES = \
 	layer_gradient_spiral_icon.$(EXT) \
 	layer_other_duplicate_icon.$(EXT) \
 	layer_other_importimage_icon.$(EXT) \
-	layer_other_pastecanvas_icon.$(EXT) \
+	layer_other_group_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
