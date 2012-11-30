@@ -321,7 +321,7 @@ ValueBase::type_local_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_SEGMENT:		return N_("segment");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_BLINEPOINT:		return N_("bline_point");
+	case TYPE_BLINEPOINT:		return N_("spline_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_WIDTHPOINT:		return N_("width_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
