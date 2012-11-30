@@ -144,7 +144,7 @@ EXTRA_DIST = \
 	tool_zoom_icon.sif \
 	\
 	type_angle_icon.sif \
-	type_blinepoint_icon.sif \
+	type_splinepoint_icon.sif \
 	type_bool_icon.sif \
 	type_canvas_icon.sif \
 	type_color_icon.sif \
@@ -310,7 +310,7 @@ IMAGES = \
 	tool_zoom_icon.$(EXT) \
 	\
 	type_angle_icon.$(EXT) \
-	type_blinepoint_icon.$(EXT) \
+	type_splinepoint_icon.$(EXT) \
 	type_bool_icon.$(EXT) \
 	type_canvas_icon.$(EXT) \
 	type_color_icon.$(EXT) \

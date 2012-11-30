@@ -141,7 +141,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(type_vector,"type_vector_icon."IMAGE_EXT,_("Vector"));
 	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
 	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
-	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("Spline Point"));
+	INIT_STOCK_ICON(type_blinepoint,"type_splinepoint_icon."IMAGE_EXT,_("Spline Point"));
 	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("List"));
 	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("String"));
 	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
