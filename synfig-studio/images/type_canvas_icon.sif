@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="128" height="128" xres="2834.645691" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>Synfig Studio: Type: Canvas Icon</name>
+<canvas version="0.9" width="128" height="128" xres="2834.645691" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Synfig Studio: Type: Vector Icon</name>
   <desc>Placed in the Public Domain in 2010 by Yu Chen (jcome)</desc>
   <layer type="SolidColor" active="false" version="0.1">
     <param name="z_depth">
@@ -21,7 +21,7 @@
       </color>
     </param>
   </layer>
-  <layer type="PasteCanvas" active="true" version="0.1" desc="canvas">
+  <layer type="PasteCanvas" active="true" version="0.1" desc="vector">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -57,7 +57,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="outline" active="true" version="0.2" desc="Rectangle083 Outline">
+              <layer type="circle" active="true" version="0.1" desc="Circle112">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -75,6 +75,12 @@
                     <a>1.000000</a>
                   </color>
                 </param>
+                <param name="radius">
+                  <real value="0.7916666727"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0833333340"/>
+                </param>
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -84,276 +90,8 @@
                 <param name="invert">
                   <bool value="false"/>
                 </param>
-                <param name="antialias">
-                  <bool value="true"/>
-                </param>
-                <param name="feather">
-                  <real value="0.0833333340"/>
-                </param>
-                <param name="blurtype">
+                <param name="falloff">
                   <integer value="1"/>
-                </param>
-                <param name="winding_style">
-                  <integer value="0"/>
-                </param>
-                <param name="bline">
-                  <bline type="bline_point" loop="true">
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.8220954537</x>
-                            <y>-0.0002525398</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5033448935"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9407507731"/>
-                            </radius>
-                            <theta>
-                              <angle value="-90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9407507731"/>
-                            </radius>
-                            <theta>
-                              <angle value="-90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.5063941479</x>
-                            <y>-0.5754067898</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3920477775"/>
-                            </radius>
-                            <theta>
-                              <angle value="-15.256731"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3920477775"/>
-                            </radius>
-                            <theta>
-                              <angle value="-15.256731"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.5063941479</x>
-                            <y>-0.5754067898</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3995236481"/>
-                            </radius>
-                            <theta>
-                              <angle value="20.137432"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3995236481"/>
-                            </radius>
-                            <theta>
-                              <angle value="20.137432"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.8220954537</x>
-                            <y>-0.0002525398</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5066898465"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9342893899"/>
-                            </radius>
-                            <theta>
-                              <angle value="90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9342893899"/>
-                            </radius>
-                            <theta>
-                              <angle value="90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.5063941479</x>
-                            <y>0.5874050260</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3290327316"/>
-                            </radius>
-                            <theta>
-                              <angle value="165.698303"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3290327316"/>
-                            </radius>
-                            <theta>
-                              <angle value="165.698303"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.5063941479</x>
-                            <y>0.5874050260</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3108934704"/>
-                            </radius>
-                            <theta>
-                              <angle value="-164.844421"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3108934704"/>
-                            </radius>
-                            <theta>
-                              <angle value="-164.844421"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                  </bline>
-                </param>
-                <param name="width">
-                  <real value="0.2083333349"/>
-                </param>
-                <param name="expand">
-                  <real value="0.0000000000"/>
-                </param>
-                <param name="sharp_cusps">
-                  <bool value="true"/>
-                </param>
-                <param name="round_tip[0]">
-                  <bool value="true"/>
-                </param>
-                <param name="round_tip[1]">
-                  <bool value="true"/>
-                </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
-                <param name="homogeneous_width">
-                  <bool value="true"/>
                 </param>
               </layer>
             </canvas>
@@ -373,8 +111,11 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="outline_grow">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="canvas">
+        <layer type="PasteCanvas" active="true" version="0.1" desc="vector">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -392,560 +133,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1">
-                <param name="z_depth">
-                  <real value="0.0000000000"/>
-                </param>
-                <param name="amount">
-                  <real value="1.0000000000"/>
-                </param>
-                <param name="blend_method">
-                  <integer value="0"/>
-                </param>
-                <param name="origin">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
-                <param name="canvas">
-                  <canvas>
-                    <layer type="region" active="true" version="0.1" desc="Rectangle083 Region">
-                      <param name="z_depth">
-                        <real value="0.0000000000"/>
-                      </param>
-                      <param name="amount">
-                        <real value="1.0000000000"/>
-                      </param>
-                      <param name="blend_method">
-                        <integer value="0"/>
-                      </param>
-                      <param name="color">
-                        <color>
-                          <r>0.255694</r>
-                          <g>0.584235</g>
-                          <b>0.139812</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
-                      <param name="origin">
-                        <vector guid="54955CFC3C69CD4596CC7294187ED142">
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                      <param name="invert">
-                        <bool value="false"/>
-                      </param>
-                      <param name="antialias">
-                        <bool value="true"/>
-                      </param>
-                      <param name="feather">
-                        <real value="0.0000000000"/>
-                      </param>
-                      <param name="blurtype">
-                        <integer value="1"/>
-                      </param>
-                      <param name="winding_style">
-                        <integer value="0"/>
-                      </param>
-                      <param name="bline">
-                        <bline type="bline_point" loop="true" guid="EFF86382A2212036AB5E5AF7F75B4DDC">
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>-0.7916922569</x>
-                                  <y>-0.0003681412</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5033448935"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.9059593678"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.9059593678"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>-0.4876663685</x>
-                                  <y>-0.5542516708</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3775488479"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-15.256731"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3775488479"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-15.256731"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.4876663685</x>
-                                  <y>-0.5542516708</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3847482215"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="20.137432"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3847482215"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="20.137432"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.7916922569</x>
-                                  <y>-0.0003681412</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5066898465"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.8997369433"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.8997369433"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.4876663685</x>
-                                  <y>0.5655563474</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3168642381"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="165.698303"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3168642381"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="165.698303"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>-0.4876663685</x>
-                                  <y>0.5655563474</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.2993958145"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-164.844421"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.2993958145"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-164.844421"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                        </bline>
-                      </param>
-                    </layer>
-                    <layer type="region" active="true" version="0.1" desc="Rectangle083 Region">
-                      <param name="z_depth">
-                        <real value="0.0000000000"/>
-                      </param>
-                      <param name="amount">
-                        <real value="1.0000000000"/>
-                      </param>
-                      <param name="blend_method">
-                        <integer value="0"/>
-                      </param>
-                      <param name="color">
-                        <color>
-                          <r>1.000000</r>
-                          <g>1.000000</g>
-                          <b>1.000000</b>
-                          <a>1.000000</a>
-                        </color>
-                      </param>
-                      <param name="origin">
-                        <vector>
-                          <x>0.0000000000</x>
-                          <y>0.0000000000</y>
-                        </vector>
-                      </param>
-                      <param name="invert">
-                        <bool value="false"/>
-                      </param>
-                      <param name="antialias">
-                        <bool value="true"/>
-                      </param>
-                      <param name="feather">
-                        <real value="0.0000000000"/>
-                      </param>
-                      <param name="blurtype">
-                        <integer value="1"/>
-                      </param>
-                      <param name="winding_style">
-                        <integer value="0"/>
-                      </param>
-                      <param name="bline">
-                        <bline type="bline_point" loop="true">
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.0784894228</x>
-                                  <y>-0.6152899265</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5206139684"/>
-                              </origin>
-                              <split>
-                                <bool value="true"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="1.4910571560"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="-87.160507"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.6800315294"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="0.077049"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.5376441479</x>
-                                  <y>-0.5754067898</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.4113298997"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="24.227745"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.4113298997"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="24.227745"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.8220954537</x>
-                                  <y>-0.0002525398</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5066898465"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.9342893899"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.9342893899"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="90.000000"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.5376441479</x>
-                                  <y>0.5874050260</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.5000000000"/>
-                              </origin>
-                              <split>
-                                <bool value="false"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3381110948"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="160.559967"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.3381110948"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="160.559967"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                          <entry>
-                            <composite type="bline_point">
-                              <point>
-                                <vector>
-                                  <x>0.0793764591</x>
-                                  <y>0.6155334711</y>
-                                </vector>
-                              </point>
-                              <width>
-                                <real value="1.0000000000"/>
-                              </width>
-                              <origin>
-                                <real value="0.4939623177"/>
-                              </origin>
-                              <split>
-                                <bool value="true"/>
-                              </split>
-                              <t1>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.7202710944"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="179.946594"/>
-                                  </theta>
-                                </radial_composite>
-                              </t1>
-                              <t2>
-                                <radial_composite type="vector">
-                                  <radius>
-                                    <real value="0.9453644124"/>
-                                  </radius>
-                                  <theta>
-                                    <angle value="267.553253"/>
-                                  </theta>
-                                </radial_composite>
-                              </t2>
-                            </composite>
-                          </entry>
-                        </bline>
-                      </param>
-                    </layer>
-                  </canvas>
-                </param>
-                <param name="zoom">
-                  <real value="0.0000000000"/>
-                </param>
-                <param name="time_offset">
-                  <time value="0s"/>
-                </param>
-                <param name="children_lock">
-                  <bool value="false"/>
-                </param>
-                <param name="focus">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
-              </layer>
-              <layer type="outline" active="true" version="0.2" desc="Rectangle083 Outline">
+              <layer type="circle" active="true" version="0.1" desc="Circle112">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -963,8 +151,14 @@
                     <a>1.000000</a>
                   </color>
                 </param>
+                <param name="radius">
+                  <real value="0.7916666727"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
                 <param name="origin">
-                  <vector guid="54955CFC3C69CD4596CC7294187ED142">
+                  <vector guid="6F254DB0C3A843AA8F85827E4B051FD5">
                     <x>0.0000000000</x>
                     <y>0.0000000000</y>
                   </vector>
@@ -972,276 +166,45 @@
                 <param name="invert">
                   <bool value="false"/>
                 </param>
-                <param name="antialias">
-                  <bool value="true"/>
+                <param name="falloff">
+                  <integer value="1"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" version="0.1" desc="Circle112">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.419718</r>
+                    <g>0.627433</g>
+                    <b>0.326125</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.5833333378"/>
                 </param>
                 <param name="feather">
                   <real value="0.0000000000"/>
                 </param>
-                <param name="blurtype">
+                <param name="origin">
+                  <vector guid="6F254DB0C3A843AA8F85827E4B051FD5">
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+                <param name="falloff">
                   <integer value="1"/>
-                </param>
-                <param name="winding_style">
-                  <integer value="0"/>
-                </param>
-                <param name="bline">
-                  <bline type="bline_point" loop="true" guid="EFF86382A2212036AB5E5AF7F75B4DDC">
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.7916922569</x>
-                            <y>-0.0003681412</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5033448935"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9059593678"/>
-                            </radius>
-                            <theta>
-                              <angle value="-90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.9059593678"/>
-                            </radius>
-                            <theta>
-                              <angle value="-90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.4876663685</x>
-                            <y>-0.5542516708</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3775488479"/>
-                            </radius>
-                            <theta>
-                              <angle value="-15.256731"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3775488479"/>
-                            </radius>
-                            <theta>
-                              <angle value="-15.256731"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.4876663685</x>
-                            <y>-0.5542516708</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3847482215"/>
-                            </radius>
-                            <theta>
-                              <angle value="20.137432"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3847482215"/>
-                            </radius>
-                            <theta>
-                              <angle value="20.137432"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.7916922569</x>
-                            <y>-0.0003681412</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5066898465"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.8997369433"/>
-                            </radius>
-                            <theta>
-                              <angle value="90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.8997369433"/>
-                            </radius>
-                            <theta>
-                              <angle value="90.000000"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>0.4876663685</x>
-                            <y>0.5655563474</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3168642381"/>
-                            </radius>
-                            <theta>
-                              <angle value="165.698303"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.3168642381"/>
-                            </radius>
-                            <theta>
-                              <angle value="165.698303"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                    <entry>
-                      <composite type="bline_point">
-                        <point>
-                          <vector>
-                            <x>-0.4876663685</x>
-                            <y>0.5655563474</y>
-                          </vector>
-                        </point>
-                        <width>
-                          <real value="1.0000000000"/>
-                        </width>
-                        <origin>
-                          <real value="0.5000000000"/>
-                        </origin>
-                        <split>
-                          <bool value="false"/>
-                        </split>
-                        <t1>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.2993958145"/>
-                            </radius>
-                            <theta>
-                              <angle value="-164.844421"/>
-                            </theta>
-                          </radial_composite>
-                        </t1>
-                        <t2>
-                          <radial_composite type="vector">
-                            <radius>
-                              <real value="0.2993958145"/>
-                            </radius>
-                            <theta>
-                              <angle value="-164.844421"/>
-                            </theta>
-                          </radial_composite>
-                        </t2>
-                      </composite>
-                    </entry>
-                  </bline>
-                </param>
-                <param name="width">
-                  <real value="0.2083333349"/>
-                </param>
-                <param name="expand">
-                  <real value="0.0000000000"/>
-                </param>
-                <param name="sharp_cusps">
-                  <bool value="true"/>
-                </param>
-                <param name="round_tip[0]">
-                  <bool value="true"/>
-                </param>
-                <param name="round_tip[1]">
-                  <bool value="true"/>
-                </param>
-                <param name="loopyness">
-                  <real value="1.0000000000"/>
-                </param>
-                <param name="homogeneous_width">
-                  <bool value="true"/>
                 </param>
               </layer>
             </canvas>
@@ -1260,6 +223,9 @@
               <x>0.0000000000</x>
               <y>0.0000000000</y>
             </vector>
+          </param>
+          <param name="outline_grow">
+            <real value="0.0000000000"/>
           </param>
         </layer>
         <layer type="PasteCanvas" active="false" version="0.1" desc="ref-size">
@@ -1697,6 +663,9 @@
               <y>0.0000000000</y>
             </vector>
           </param>
+          <param name="outline_grow">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
       </canvas>
     </param>
@@ -1714,6 +683,9 @@
         <x>0.0000000000</x>
         <y>0.0000000000</y>
       </vector>
+    </param>
+    <param name="outline_grow">
+      <real value="0.0000000000"/>
     </param>
   </layer>
 </canvas>
