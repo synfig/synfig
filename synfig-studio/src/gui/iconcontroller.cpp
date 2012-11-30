@@ -237,8 +237,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
 	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
-	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
-
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(set,"set_icon."IMAGE_EXT,_("Set"));
 

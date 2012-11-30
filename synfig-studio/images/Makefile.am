@@ -41,7 +41,6 @@ EXTRA_DIST = \
 	valuenode_icon.sif \
 	wallpaper.sif \
 	rename_icon.sif \
-	plant_icon.sif \
 	set_fill_color.sif \
 	set_outline_color.sif \
 	duck_position_icon.sif \
@@ -206,7 +205,6 @@ IMAGES = \
 	animate_mode_on_icon.$(EXT) \
 	\
 	rename_icon.$(EXT) \
-	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
 	set_outline_color.$(EXT) \
 	duck_position_icon.$(EXT) \
