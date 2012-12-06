@@ -719,8 +719,8 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	
 
 	// Calculate the width and height in pixels of the bitmap in the output surface
-	float wp=(br[0]-tl[0])/renddesc.get_ph();
-	float hp=(br[1]-tl[1])/renddesc.get_pw();
+	float wp=(br[0]-tl[0])/renddesc.get_pw();
+	float hp=(br[1]-tl[1])/renddesc.get_ph();
 	// So we need to scale the bitmap by wp/inw in horizontal and hp/inh in vertical. 
 	float scalex=wp/inw;
 	float scaley=hp/inh;
@@ -746,13 +746,13 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 	}
 	// TODO: filter the image with gamma_adjust!!
 	cairo_t* cr=cairo_create(out_surface); // create a cairo context with the out surface
-	cairo_set_source_surface(cr, cs, 0,0);
-	cairo_surface_destroy(cs);
-	cairo_pattern_set_filter(cairo_get_source(cr), filter);
-	cairo_translate(cr, disp[0], disp[1]);
+	cairo_translate(cr, disp[0]/renddesc.get_pw(), disp[1]/renddesc.get_ph());
 	cairo_scale(cr, scalex, scaley);
+	cairo_set_source_surface(cr, cs, 0,0);
+	cairo_pattern_set_filter(cairo_get_source(cr), filter);
 	
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_surface_destroy(cs);
 	cairo_destroy(cr);
 	
 	return true;
