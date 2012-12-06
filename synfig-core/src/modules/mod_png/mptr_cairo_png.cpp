@@ -66,7 +66,25 @@ cairo_png_mptr::cairo_png_mptr(const char *file_name)
 	if(csurface_ && !cairo_surface_status(csurface_))
 		cairo_surface_destroy(csurface_);
 	csurface_=cairo_image_surface_create_from_png(file_name);
-
+	CairoSurface cairo_s;
+	cairo_s.set_cairo_surface(csurface_);
+	cairo_s.map_cairo_image();
+	int w=cairo_s.get_w();
+	int h=cairo_s.get_h();
+	for(int y=0; y<h; y++)
+		for(int x=0; x<w; x++)
+		{
+			CairoColor c=cairo_s[y][x];
+			float a=c.get_alpha();
+			unsigned char r=(unsigned char)(a*gamma().r_F32_to_F32(c.get_r()/a));
+			unsigned char g=(unsigned char)(a*gamma().g_F32_to_F32(c.get_g()/a));
+			unsigned char b=(unsigned char)(a*gamma().b_F32_to_F32(c.get_b()/a));
+			c.set_r(r);
+			c.set_g(g);
+			c.set_b(b);
+			cairo_s[y][x]=c;
+		}
+	cairo_s.unmap_cairo_image();
 }
 
 cairo_png_mptr::~cairo_png_mptr()

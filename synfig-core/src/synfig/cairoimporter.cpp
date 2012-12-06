@@ -126,8 +126,8 @@ CairoImporter::open(const String &filename)
 	return 0;
 }
 
-CairoImporter::CairoImporter()//:
-	//gamma_(2.2)
+CairoImporter::CairoImporter():
+	gamma_(2.2)
 {
 }
 
