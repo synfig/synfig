@@ -98,6 +98,9 @@ private:
 
 	bool focused_widget_has_priority(Gtk::Widget* focused);
 
+	//Enable compatiblity to allow terms reworked synfig studio load old settings file properly for panels:
+	//params -> parameters, groups -> sets, children -> library), it should be removed in the future.
+	void setting_map(synfig::String& settings, const synfig::String& strscr, const synfig::String& strdst);
 
 public:
 

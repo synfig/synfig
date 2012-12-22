@@ -508,6 +508,23 @@ DockDialog::get_contents()const
 	return ret;
 }
 
+
+///Enable compatiblity to allow terms reworked synfig studio load old settings file properly for panels:
+//params -> parameters, groups -> sets, children -> library), it should be removed in the future.
+void
+DockDialog::setting_map(synfig::String& settings, const synfig::String& strsrc, const synfig::String& strdst)
+{
+	synfig::String::size_type pos=0;
+	synfig::String::size_type srclen=strsrc.size();
+	synfig::String::size_type dstlen=strdst.size();
+	while((pos=settings.find(strsrc, pos))!=synfig::String::npos)
+	{
+		settings.replace(pos, srclen, strdst);
+		pos += dstlen;
+	}
+
+}
+
 void
 DockDialog::set_contents(const synfig::String& z)
 {
@@ -543,6 +560,12 @@ DockDialog::set_contents(const synfig::String& z)
 			book_contents=String(str.begin(),str.begin()+separator);
 			str=String(str.begin()+separator+1,str.end());
 		}
+
+		//Enable compatiblity to allow terms reworked synfig studio(Params -> Parameters, Children -> Library,
+		//Groups -> Sets) load the old version setting file properly.
+		setting_map(book_contents, "params", "parameters");
+		setting_map(book_contents, "children", "library");
+		setting_map(book_contents, "groups", "sets");
 
 		try
 		{
