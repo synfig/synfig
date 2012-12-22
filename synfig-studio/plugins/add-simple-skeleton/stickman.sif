@@ -53,7 +53,7 @@
     <angle value="15.119938" id="(stk)-wrist2-t"/>
     <real value="0.3261906387" id="(stk)-palm2-r"/>
     <angle value="10.523929" id="(stk)-palm2-t"/>
-    <real value="1.0000000000" id="(stk)-stickman-amount"/>
+    <real value="0.5000000000" id="(stk)-stickman-amount"/>
     <real value="0.9879790492" id="(stk)-knee1-r"/>
     <angle value="-74.198723" id="(stk)-knee1-t"/>
     <real value="0.8117041881" id="(stk)-elbow1-r"/>
@@ -62,7 +62,7 @@
     <real value="0.8028688461" id="(stk)-wrist1-r"/>
     <angle value="-7.152278" id="(stk)-head-t"/>
     <real value="1.0457836598" id="(stk)-head-r"/>
-    <real value="1.0000000000" id="(stk)-fillers-amount"/>
+    <real value="0.7000000000" id="(stk)-fillers-amount"/>
     <color id="(stk)-color">
       <r>0.265699</r>
       <g>0.265699</g>
