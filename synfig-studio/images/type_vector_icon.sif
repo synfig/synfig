@@ -504,8 +504,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>0.0624011122</x>
-                      <y>0.8200708032</y>
+                      <x>0.0922829956</x>
+                      <y>0.7550694942</y>
                     </vector>
                   </point>
                   <width>
@@ -543,8 +543,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>0.8029467463</x>
-                      <y>0.0146252699</y>
+                      <x>0.7730648518</x>
+                      <y>0.0146253072</y>
                     </vector>
                   </point>
                   <width>
@@ -582,8 +582,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>0.0624011122</x>
-                      <y>-0.7908193469</y>
+                      <x>0.0922829956</x>
+                      <y>-0.7258180380</y>
                     </vector>
                   </point>
                   <width>
@@ -725,7 +725,7 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>0.8735293746</x>
+                      <x>0.7329043746</x>
                       <y>0.0146257915</y>
                     </vector>
                   </point>
