@@ -620,7 +620,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.4000000060" guid="B502DC87617DD25C9EDE43310C2169D7"/>
+            <real value="0.3499999940" guid="B502DC87617DD25C9EDE43310C2169D7"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -763,7 +763,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.4000000060" guid="B502DC87617DD25C9EDE43310C2169D7"/>
+            <real value="0.3499999940" guid="B502DC87617DD25C9EDE43310C2169D7"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -984,7 +984,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.4000000060" guid="B502DC87617DD25C9EDE43310C2169D7"/>
+            <real value="0.3499999940" guid="B502DC87617DD25C9EDE43310C2169D7"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
