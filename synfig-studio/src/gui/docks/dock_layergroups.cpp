@@ -65,7 +65,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_LayerGroups::Dock_LayerGroups():
-	Dock_CanvasSpecific("sets",_("Sets"),Gtk::StockID("synfig-set")),
+	Dock_CanvasSpecific("layergroups",_("Sets"),Gtk::StockID("synfig-layergroups")),
 	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
