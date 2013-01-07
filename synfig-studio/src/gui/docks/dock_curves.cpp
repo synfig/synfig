@@ -66,7 +66,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Curves::Dock_Curves():
-	Dock_CanvasSpecific("graphs",_("Graphs"),Gtk::StockID("synfig-graphs"))
+	Dock_CanvasSpecific("curves",_("Graphs"),Gtk::StockID("synfig-curves"))
 {
 	last_widget_curves_=0;
 	table_=0;
