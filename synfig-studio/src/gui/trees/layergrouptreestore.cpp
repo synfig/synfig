@@ -77,7 +77,7 @@ LayerGroupTreeStore::LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInte
 	canvas_interface_		(canvas_interface_)
 {
 	layer_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	group_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-layergroups"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	group_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-groups"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerGroupTreeStore::on_layer_status_changed));
