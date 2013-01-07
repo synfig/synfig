@@ -192,7 +192,7 @@ void _create_stock_dialog1()
 void _create_stock_dialog2()
 {
 	DockDialog* dock_dialog(new DockDialog);
-	dock_dialog->set_contents("layers children keyframes | parameters");
+	dock_dialog->set_contents("layers children keyframes | params");
 	dock_dialog->present();
 }
 

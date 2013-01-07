@@ -404,14 +404,14 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	Glib::RefPtr<LayerParamTreeStore> tree_store(
 		Glib::RefPtr<LayerParamTreeStore>::cast_dynamic(
-			canvas_view->get_tree_model("parameters")
+			canvas_view->get_tree_model("params")
 		)
 	);
 
 	TimeTrackView* tree_view(new TimeTrackView());
 	tree_view->set_canvas_view(canvas_view);
 	tree_view->set_model(tree_store);
-	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("parameters")));
+	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 	tree_view->mimic(param_tree_view);
 
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
@@ -470,7 +470,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(canvas_view)
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
-	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("parameters")));
+	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 	tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
 
 		assert(tree_view);

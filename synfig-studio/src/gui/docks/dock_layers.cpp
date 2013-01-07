@@ -235,10 +235,10 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	// (a) should be before (b), (b) should be before (c)
 	canvas_view->set_ext_widget(get_name()+"_cmp",layer_tree); // (a)
 	canvas_view->set_ext_widget(get_name(),&layer_tree->get_layer_tree_view());
-	canvas_view->set_ext_widget("parameters",&layer_tree->get_param_tree_view());
+	canvas_view->set_ext_widget("params",&layer_tree->get_param_tree_view());
 
 	layer_tree->set_model(layer_tree_store); // (b)
-	canvas_view->set_tree_model("parameters",layer_tree->get_param_tree_view().get_model()); // (c)
+	canvas_view->set_tree_model("params",layer_tree->get_param_tree_view().get_model()); // (c)
 
 	/*
 	canvas_view->layermenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),Gtk::AccelKey("Delete"),
