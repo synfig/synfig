@@ -768,7 +768,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")) );
 	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
 	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
-	menus_action_group->add( Gtk::Action::create("menu-set", _("Set")) );
+	menus_action_group->add( Gtk::Action::create("menu-group", _("Set")) );
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 
@@ -991,7 +991,7 @@ init_ui_manager()
 "	</menu>"
 "	<menu name='menu-state' action='menu-state'>"
 "	</menu>"
-"	<menu action='menu-set'>"
+"	<menu action='menu-group'>"
 "		<menuitem action='action-group_add'/>"
 "	</menu>"
 "	<menu action='menu-layer'>"
