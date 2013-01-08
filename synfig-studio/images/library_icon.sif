@@ -390,7 +390,7 @@
                     <y>0.7072697878</y>
                   </vector>
                 </param>
-                <param name="canvas" use="type_canvas_icon.sif#"/>
+                <param name="canvas" use="type_vector_icon.sif#"/>
                 <param name="zoom">
                   <real value="0.0000000000"/>
                 </param>
