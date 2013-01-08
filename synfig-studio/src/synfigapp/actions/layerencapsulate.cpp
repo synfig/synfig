@@ -48,7 +48,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulate);
-ACTION_SET_NAME(Action::LayerEncapsulate,"LayerGroup");
+ACTION_SET_NAME(Action::LayerEncapsulate,"LayerEncapsulate");
 ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Group Layer"));
 ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
 ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);

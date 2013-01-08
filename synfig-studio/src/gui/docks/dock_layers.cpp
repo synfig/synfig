@@ -152,7 +152,7 @@ Dock_Layers::Dock_Layers():
 	"	<toolitem action='action-LayerLower' />"
 	"	<separator />"
 	"	<toolitem action='action-LayerDuplicate' />"
-	"	<toolitem action='action-LayerGroup' />"
+	"	<toolitem action='action-LayerEncapsulate' />"
 	"	<toolitem action='select-all-child-layers' />"
 	"	<toolitem action='action-LayerRemove' />"
 	"	<separator />"
