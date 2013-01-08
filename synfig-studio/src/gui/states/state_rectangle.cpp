@@ -368,11 +368,11 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	spin_feather(adj_feather,0.1,3),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_rectangle(_("Create Rectangle Layer")),
-	checkbutton_layer_region(_("Create Region Spline")),
-	checkbutton_layer_outline(_("Create Outline Spline")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline Spline")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient Spline")),
-	checkbutton_layer_plant(_("Create Plant Spline")),
+	checkbutton_layer_region(_("Create Region")),
+	checkbutton_layer_outline(_("Create Outline")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
+	checkbutton_layer_plant(_("Create Plant")),
 	checkbutton_layer_link_origins(_("Link Spline Origins"))
 {
 	egress_on_selection_change=true;

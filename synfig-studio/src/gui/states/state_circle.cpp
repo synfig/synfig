@@ -429,11 +429,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_circle(_("Create Circle Layer")),
-	checkbutton_layer_region(_("Create Region Spline")),
-	checkbutton_layer_outline(_("Create Outline Spline")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline Spline")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient Spline")),
-	checkbutton_layer_plant(_("Create Plant Spline")),
+	checkbutton_layer_region(_("Create Region")),
+	checkbutton_layer_outline(_("Create Outline")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
+	checkbutton_layer_plant(_("Create Plant")),
 	checkbutton_layer_link_origins(_("Link Origins")),
 	checkbutton_layer_origins_at_center(_("Spline Origins at Center"))
 {
