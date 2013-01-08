@@ -1211,7 +1211,7 @@ CanvasView::create_display_bar()
 	snap_grid->add(*icon2);
 	snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
-	snap_grid->set_tooltip_text( _("Show grid when enabled"));
+	snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
 	snap_grid->set_relief(Gtk::RELIEF_NONE);
 	snap_grid->show();
 
