@@ -172,8 +172,8 @@ GroupActionManager::refresh()
 				Gtk::Action::create(
 					"action-group_add",
 					Gtk::Stock::ADD,
-					_("Add a New Group"),
-					_("Add a New Group")
+					_("Add a New Set"),
+					_("Add a New Set")
 				),
 				sigc::mem_fun(
 					*this,
