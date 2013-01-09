@@ -223,7 +223,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// Other Layers
 	INIT_STOCK_ICON(layer_other_duplicate,"layer_other_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
 	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
-	INIT_STOCK_ICON(layer_other_group,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
+	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
@@ -238,7 +238,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
-	INIT_STOCK_ICON(groups,"set_icon."IMAGE_EXT,_("Set"));
+	INIT_STOCK_ICON(group,"set_icon."IMAGE_EXT,_("Set"));
 
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -283,8 +283,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
 	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
 
-	INIT_STOCK_ICON(add_to_set,"action_add_to_set_icon."IMAGE_EXT,_("Add Layer to Set"));
-	INIT_STOCK_ICON(remove_from_set,"action_remove_from_set_icon."IMAGE_EXT,_("Remove Layer from Set"));
+	INIT_STOCK_ICON(add_to_group,"action_add_to_set_icon."IMAGE_EXT,_("Add Layer to Set"));
+	INIT_STOCK_ICON(remove_from_group,"action_remove_from_set_icon."IMAGE_EXT,_("Remove Layer from Set"));
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));
@@ -580,7 +580,7 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="importimage" || layer=="import")
 		return Gtk::StockID("synfig-layer_other_importimage");
 	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return Gtk::StockID("synfig-layer_other_group");
+		return Gtk::StockID("synfig-layer_other_pastecanvas");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");
 	else if(layer=="super_sample")
