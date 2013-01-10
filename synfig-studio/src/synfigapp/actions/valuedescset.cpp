@@ -342,6 +342,8 @@ Action::ValueDescSet::prepare()
 			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
 		else if(value.get_type() == ValueBase::TYPE_VECTOR)
 			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
+		else if(value.get_type() == ValueBase::TYPE_REAL)
+			new_value = scale_value_node->get_inverse(time, value.get(Real()));
 		else
 			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
 		Action::Handle action(Action::create("ValueDescSet"));
