@@ -106,7 +106,7 @@ ValueNode_Integer::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(integer_, get_type());
+	case 0: CHECK_TYPE_AND_SET_VALUE(integer_, ValueBase::TYPE_INTEGER);
 	}
 	return false;
 }
@@ -154,19 +154,17 @@ ValueNode_Integer::get_name()const
 String
 ValueNode_Integer::get_local_name()const
 {
-	return _("From Integer");
+	return _("Integer");
 }
 
-// don't show this to the user at the moment - maybe it's not very useful
 bool
 ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
-	return false;
-//	return
-//		type==ValueBase::TYPE_ANGLE ||
-//		type==ValueBase::TYPE_BOOL  ||
-//		type==ValueBase::TYPE_REAL  ||
-//		type==ValueBase::TYPE_TIME;
+	return
+		type==ValueBase::TYPE_ANGLE ||
+		type==ValueBase::TYPE_BOOL  ||
+		type==ValueBase::TYPE_REAL  ||
+		type==ValueBase::TYPE_TIME;
 }
 
 LinkableValueNode::Vocab
