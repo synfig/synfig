@@ -55,6 +55,10 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
+	//! Returns the modified Link to match the target value at time t
+	ValueBase get_inverse(Time t, const synfig::Real &target_value) const;
+	ValueBase get_inverse(Time t, const synfig::Angle &target_value) const;
+
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
 protected:

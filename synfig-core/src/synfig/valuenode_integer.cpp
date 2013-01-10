@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -65,16 +66,16 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	switch(x.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
-		set_link("integer", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));
+		set_link("link", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));
 		break;
 	case ValueBase::TYPE_BOOL:
-		set_link("integer", ValueNode_Const::create(int(x.get(bool()))));
+		set_link("link", ValueNode_Const::create(int(x.get(bool()))));
 		break;
 	case ValueBase::TYPE_REAL:
-		set_link("integer", ValueNode_Const::create(round_to_int(x.get(Real()))));
+		set_link("link", ValueNode_Const::create(round_to_int(x.get(Real()))));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("integer", ValueNode_Const::create(round_to_int(x.get(Time()))));
+		set_link("link", ValueNode_Const::create(round_to_int(x.get(Time()))));
 		break;
 	default:
 		assert(0);
@@ -145,6 +146,20 @@ ValueNode_Integer::operator()(Time t)const
 	}
 }
 
+ValueBase
+synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Real &target_value) const
+{
+	return (int)target_value;
+}
+
+synfig::ValueBase
+synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Angle &target_value) const
+{
+	return (int)Angle::deg(target_value).get();
+}
+
+
+
 String
 ValueNode_Integer::get_name()const
 {
@@ -175,8 +190,8 @@ ValueNode_Integer::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"integer")
-		.set_local_name(_("Integer"))
+	ret.push_back(ParamDesc(ValueBase(),"link")
+		.set_local_name(_("Link"))
 		.set_description(_("The integer value to be converted"))
 	);
 

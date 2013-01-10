@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -48,6 +49,7 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_reference.h>
 #include <synfig/valuenode_scale.h>
+#include <synfig/valuenode_integer.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
@@ -371,6 +373,29 @@ Action::ValueDescSet::prepare()
 		action->set_param("time",time);
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+		return;
+	}
+	// Integer: integer values only
+	if (ValueNode_Integer::Handle integer_value_node = ValueNode_Integer::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueBase new_value;
+		if (value.get_type() == ValueBase::TYPE_ANGLE)
+			new_value = integer_value_node->get_inverse(time, value.get(Angle()));
+		else if(value.get_type() == ValueBase::TYPE_REAL)
+			new_value = integer_value_node->get_inverse(time, value.get(Real()));
+		else
+			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(integer_value_node,integer_value_node->get_link_index_from_name("link")));
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
