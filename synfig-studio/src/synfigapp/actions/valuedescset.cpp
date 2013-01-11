@@ -50,6 +50,7 @@
 #include <synfig/valuenode_reference.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_integer.h>
+#include <synfig/valuenode_real.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
@@ -398,6 +399,27 @@ Action::ValueDescSet::prepare()
 		action->set_param("time",time);
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(integer_value_node,integer_value_node->get_link_index_from_name("link")));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+		return;
+	}
+	// Real: Reverse manipulations for Real->Ange convert
+	if (ValueNode_Real::Handle real_value_node = ValueNode_Real::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueBase new_value;
+		if (value.get_type() == ValueBase::TYPE_ANGLE)
+			new_value = real_value_node->get_inverse(time, value.get(Angle()));
+		else
+			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(real_value_node,real_value_node->get_link_index_from_name("link")));
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);

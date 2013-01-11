@@ -95,6 +95,7 @@ VALUENODEHEADERS = \
 	valuenode_pow.h \
 	valuenode_radialcomposite.h \
 	valuenode_range.h \
+	valuenode_real.h \
 	valuenode_realstring.h \
 	valuenode_reciprocal.h \
 	valuenode_reference.h \
@@ -150,6 +151,7 @@ VALUENODESOURCES = \
 	valuenode_pow.cpp \
 	valuenode_radialcomposite.cpp \
 	valuenode_range.cpp \
+	valuenode_real.cpp \
 	valuenode_realstring.cpp \
 	valuenode_reciprocal.cpp \
 	valuenode_reference.cpp \

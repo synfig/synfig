@@ -47,6 +47,7 @@
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_integer.h>
+#include <synfig/valuenode_real.h>
 #include <map>
 
 #include "general.h"
@@ -82,6 +83,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_Scale::Handle::cast_dynamic(value_node)
 		|| ValueNode_Range::Handle::cast_dynamic(value_node)
 		|| ValueNode_Integer::Handle::cast_dynamic(value_node)
+		|| ValueNode_Real::Handle::cast_dynamic(value_node)
 	)
 		return true;
 	return false;
