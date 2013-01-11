@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_integer.cpp
-**	\brief Implementation of the "Integer" valuenode conversion.
+/*!	\file ValueNode_Real.cpp
+**	\brief Implementation of the "Real" valuenode conversion.
 **
 **	$Id$
 **
@@ -32,7 +32,7 @@
 #	include <config.h>
 #endif
 
-#include "valuenode_integer.h"
+#include "valuenode_real.h"
 #include "valuenode_const.h"
 #include "general.h"
 #include <ETL/misc>
@@ -53,12 +53,12 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Integer::ValueNode_Integer(const ValueBase::Type &x):
+ValueNode_Real::ValueNode_Real(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
 }
 
-ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
+ValueNode_Real::ValueNode_Real(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
 	Vocab ret(get_children_vocab());
@@ -66,16 +66,13 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	switch(x.get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
-		set_link("link", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));
+		set_link("link", ValueNode_Const::create(Angle::deg(x.get(Angle())).get()));
 		break;
 	case ValueBase::TYPE_BOOL:
-		set_link("link", ValueNode_Const::create(int(x.get(bool()))));
+		set_link("link", ValueNode_Const::create(float(x.get(bool()))));
 		break;
-	case ValueBase::TYPE_REAL:
-		set_link("link", ValueNode_Const::create(round_to_int(x.get(Real()))));
-		break;
-	case ValueBase::TYPE_TIME:
-		set_link("link", ValueNode_Const::create(round_to_int(x.get(Time()))));
+	case ValueBase::TYPE_INTEGER:
+		set_link("link", ValueNode_Const::create(float(x.get(int()))));
 		break;
 	default:
 		assert(0);
@@ -83,107 +80,98 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	}
 }
 
-ValueNode_Integer*
-ValueNode_Integer::create(const ValueBase &x)
+ValueNode_Real*
+ValueNode_Real::create(const ValueBase &x)
 {
-	return new ValueNode_Integer(x);
+	return new ValueNode_Real(x);
 }
 
 LinkableValueNode*
-ValueNode_Integer::create_new()const
+ValueNode_Real::create_new()const
 {
-	return new ValueNode_Integer(get_type());
+	return new ValueNode_Real(get_type());
 }
 
-ValueNode_Integer::~ValueNode_Integer()
+ValueNode_Real::~ValueNode_Real()
 {
 	unlink_all();
 }
 
 bool
-ValueNode_Integer::set_link_vfunc(int i,ValueNode::Handle value)
+ValueNode_Real::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(integer_, ValueBase::TYPE_INTEGER);
+	case 0: CHECK_TYPE_AND_SET_VALUE(real_, ValueBase::TYPE_REAL);
 	}
 	return false;
 }
 
 ValueNode::LooseHandle
-ValueNode_Integer::get_link_vfunc(int i)const
+ValueNode_Real::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0) return integer_;
+	if(i==0) return real_;
 
 	return 0;
 }
 
 ValueBase
-ValueNode_Integer::operator()(Time t)const
+ValueNode_Real::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	int integer = (*integer_)(t).get(int());
+	float real = (*real_)(t).get(float());
 
 	switch (get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
-		return Angle::deg(integer);
+		return Angle::deg(real);
 	case ValueBase::TYPE_BOOL:
-		return bool(integer);
-	case ValueBase::TYPE_REAL:
-		return Real(integer);
-	case ValueBase::TYPE_TIME:
-		return Time(integer);
+		return bool(real);
+	case ValueBase::TYPE_INTEGER:
+		return int(real);
 	default:
 		assert(0);
 		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(get_type()));
 	}
 }
 
-ValueBase
-synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Real &target_value) const
-{
-	return (int)target_value;
-}
-
 synfig::ValueBase
-synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Angle &target_value) const
+synfig::ValueNode_Real::get_inverse(Time t, const synfig::Angle &target_value) const
 {
-	return (int)Angle::deg(target_value).get();
+	return (float)Angle::deg(target_value).get();
 }
 
 
 
 String
-ValueNode_Integer::get_name()const
+ValueNode_Real::get_name()const
 {
-	return "fromint";
+	return "fromreal";
 }
 
 String
-ValueNode_Integer::get_local_name()const
+ValueNode_Real::get_local_name()const
 {
-	return _("Integer");
+	return _("Real");
 }
 
 bool
-ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
+ValueNode_Real::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||
 		type==ValueBase::TYPE_BOOL  ||
-		type==ValueBase::TYPE_REAL  ||
-		type==ValueBase::TYPE_TIME;
+		type==ValueBase::TYPE_INTEGER;
 }
 
 LinkableValueNode::Vocab
-ValueNode_Integer::get_children_vocab_vfunc()const
+ValueNode_Real::get_children_vocab_vfunc()const
 {
 	if(children_vocab.size())
 		return children_vocab;
@@ -192,7 +180,7 @@ ValueNode_Integer::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"link")
 		.set_local_name(_("Link"))
-		.set_description(_("The integer value to be converted"))
+		.set_description(_("The real value to be converted"))
 	);
 
 	return ret;

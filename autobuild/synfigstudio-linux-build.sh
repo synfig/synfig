@@ -988,6 +988,11 @@ mkpackage()
 		fi
 		#fetch sources to cache
 		[ -d $PACKAGES_BUILDROOT.$ARCH/source ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source || true
+		if [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
+			if [[ $WORKDIR_IS_REPO == 1 ]]; then
+				rm -rf "$PACKAGES_BUILDROOT/synfig.git"
+			fi
+		fi
 		if ! [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				git clone $SYNFIG_REPO_DIR $PACKAGES_BUILDROOT/synfig.git
