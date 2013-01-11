@@ -46,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupRemove);
 ACTION_SET_NAME(Action::GroupRemove,"GroupRemove");
-ACTION_SET_LOCAL_NAME(Action::GroupRemove,N_("Remove Group"));
+ACTION_SET_LOCAL_NAME(Action::GroupRemove,N_("Remove Set"));
 ACTION_SET_TASK(Action::GroupRemove,"remove");
 ACTION_SET_CATEGORY(Action::GroupRemove,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRemove,0);

@@ -468,13 +468,13 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	checkbutton_invert(_("Invert")),
 	checkbutton_regular_polygon(_("Regular Polygon")),
 	checkbutton_layer_star(_("Create Star Layer")),
-	checkbutton_layer_region(_("Create Region BLine")),
-	checkbutton_layer_outline(_("Create Outline BLine")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline BLine")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
-	checkbutton_layer_plant(_("Create Plant BLine")),
+	checkbutton_layer_region(_("Create Region")),
+	checkbutton_layer_outline(_("Create Outline")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
+	checkbutton_layer_plant(_("Create Plant")),
 	checkbutton_layer_link_origins(_("Link Origins")),
-	checkbutton_layer_origins_at_center(_("BLine Origins at Center"))
+	checkbutton_layer_origins_at_center(_("Spline Origins at Center"))
 {
 	egress_on_selection_change=true;
 

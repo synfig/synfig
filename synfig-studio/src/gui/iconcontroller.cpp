@@ -141,7 +141,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(type_vector,"type_vector_icon."IMAGE_EXT,_("Vector"));
 	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
 	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
-	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("BLine Point"));
+	INIT_STOCK_ICON(type_blinepoint,"type_splinepoint_icon."IMAGE_EXT,_("Spline Point"));
 	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("List"));
 	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("String"));
 	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
@@ -150,7 +150,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// ToolBox Tools
 	INIT_STOCK_ICON(normal,"tool_normal_icon."IMAGE_EXT,_("Transform Tool"));
         INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
-        INIT_STOCK_ICON(bline,"tool_bline_icon."IMAGE_EXT,_("BLine Tool"));
+        INIT_STOCK_ICON(bline,"tool_spline_icon."IMAGE_EXT,_("Spline Tool"));
         INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
         INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
         INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
@@ -223,7 +223,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	// Other Layers
 	INIT_STOCK_ICON(layer_other_duplicate,"layer_other_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
 	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
-	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_pastecanvas_icon."IMAGE_EXT,_("Paste Canvas Layer"));
+	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
@@ -237,31 +237,29 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
 	INIT_STOCK_ICON(layer_transform_scale,"layer_transform_scale_icon."IMAGE_EXT,_("Scale Layer"));
 
-	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
-
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
-	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
+	INIT_STOCK_ICON(group,"set_icon."IMAGE_EXT,_("Set"));
 
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
 	INIT_STOCK_ICON(grid_snap_enable,"grid_snap_enable_icon."IMAGE_EXT,_("Enable Grid Snap"));
 	INIT_STOCK_ICON(grid_snap_disable,"grid_snap_disable_icon."IMAGE_EXT,_("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate,"duplicate_icon."IMAGE_EXT,_("Duplicate"));
-	INIT_STOCK_ICON(encapsulate,"encapsulate_icon."IMAGE_EXT,_("Encapsulate"));
+	INIT_STOCK_ICON(encapsulate,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(select_all_child_layers,"select_all_child_layers_icon."IMAGE_EXT,_("Select All Child Layers"));
 
 	INIT_STOCK_ICON(clear_undo,"clear_undo_icon."IMAGE_EXT,_("Clear Undo Stack"));
 	INIT_STOCK_ICON(clear_redo,"clear_redo_icon."IMAGE_EXT,_("Clear Redo Stack"));
 
-	INIT_STOCK_ICON(children,"children_icon."IMAGE_EXT,_("Children"));
-	INIT_STOCK_ICON(curves,"curves_icon."IMAGE_EXT,_("Curves"));
+	INIT_STOCK_ICON(children,"library_icon."IMAGE_EXT,_("Library"));
+	INIT_STOCK_ICON(curves,"graphs_icon."IMAGE_EXT,_("Graphs"));
 	INIT_STOCK_ICON(keyframes,"keyframe_icon."IMAGE_EXT,_("Keyframes"));
 	INIT_STOCK_ICON(meta_data,"meta_data_icon."IMAGE_EXT,_("MetaData"));
 	INIT_STOCK_ICON(navigator,"navigator_icon."IMAGE_EXT,_("Navigator"));
 	INIT_STOCK_ICON(timetrack,"time_track_icon."IMAGE_EXT,_("Time Track"));
 	INIT_STOCK_ICON(history,"history_icon."IMAGE_EXT,_("History"));
 	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
-	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
+	INIT_STOCK_ICON(params,"parameters_icon."IMAGE_EXT,_("Parameters"));
 
 	INIT_STOCK_ICON(keyframe_lock_past_off,"keyframe_lock_past_off_icon."IMAGE_EXT,_("Past keyframes unlocked"));
 	INIT_STOCK_ICON(keyframe_lock_past_on,"keyframe_lock_past_on_icon."IMAGE_EXT,_("Past keyframes locked"));
@@ -285,8 +283,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
 	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
 
-	INIT_STOCK_ICON(add_to_group,"action_add_to_group_icon."IMAGE_EXT,_("Add Layer to Group"));
-	INIT_STOCK_ICON(remove_from_group,"action_remove_from_group_icon."IMAGE_EXT,_("Remove Layer from Group"));
+	INIT_STOCK_ICON(add_to_group,"action_add_to_set_icon."IMAGE_EXT,_("Add Layer to Set"));
+	INIT_STOCK_ICON(remove_from_group,"action_remove_from_set_icon."IMAGE_EXT,_("Remove Layer from Set"));
 	INIT_STOCK_ICON(set_desc,"action_set_layer_description_icon."IMAGE_EXT,_("Set Layer Description"));
 	INIT_STOCK_ICON(export,"action_export_icon."IMAGE_EXT,_("Export Value Node"));
 	INIT_STOCK_ICON(unexport,"action_unexport_icon."IMAGE_EXT,_("Unexport Value Node"));

@@ -550,13 +550,13 @@ StateDraw_Context::UpdateErrorBox()
 {
 	if(get_local_error_flag())
 	{
-		threshold_label.set_label(_("BLine Local Error"));
+		threshold_label.set_label(_("Spline Local Error"));
 		spin_globalthres.set_adjustment(adj_localthres);
 		spin_globalthres.set_value(adj_localthres.get_value());
 		spin_globalthres.set_increments(0.1,1);
 	}else
 	{
-		threshold_label.set_label(_("BLine Smoothness"));
+		threshold_label.set_label(_("Spline Smoothness"));
 		spin_globalthres.set_adjustment(adj_globalthres);
 		spin_globalthres.set_value(adj_globalthres.get_value());
 		spin_globalthres.set_increments(0.01,.1);
@@ -864,7 +864,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	// Create the action group
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Spline"));
 
 	bool shift_origin = false;
 	Vector shift_origin_vector;
@@ -2233,7 +2233,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	}
 
 	// Create the action group
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
 
 	if(is_advanced_outline)
 	{

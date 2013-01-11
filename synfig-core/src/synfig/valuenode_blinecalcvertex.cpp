@@ -149,7 +149,7 @@ ValueNode_BLineCalcVertex::get_name()const
 String
 ValueNode_BLineCalcVertex::get_local_name()const
 {
-	return _("BLine Vertex");
+	return _("Spline Vertex");
 }
 
 bool
@@ -198,8 +198,8 @@ ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")
-		.set_local_name(_("BLine"))
-		.set_description(_("The BLine where the vertex is linked to"))
+		.set_local_name(_("Spline"))
+		.set_description(_("The spline where the vertex is linked to"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"loop")

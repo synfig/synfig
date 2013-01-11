@@ -389,7 +389,7 @@ Plant::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
-		.set_description(_("A list of BLine Points"))
+		.set_description(_("A list of spline points"))
 		.set_origin("origin")
 		.set_hint("width")
 	);
@@ -417,12 +417,12 @@ Plant::get_param_vocab()const
 
 	ret.push_back(ParamDesc("velocity")
 		.set_local_name(_("Tangential Velocity"))
-		.set_description(_("Amount to which shoots tend to grow along the tangent to the BLine"))
+		.set_description(_("Amount to which shoots tend to grow along the tangent to the spline"))
 	);
 
 	ret.push_back(ParamDesc("perp_velocity")
 		.set_local_name(_("Perpendicular Velocity"))
-		.set_description(_("Amount to which shoots tend to grow perpendicular to the tangent to the BLine"))
+		.set_description(_("Amount to which shoots tend to grow perpendicular to the tangent to the spline"))
 	);
 
 	ret.push_back(ParamDesc("size")
