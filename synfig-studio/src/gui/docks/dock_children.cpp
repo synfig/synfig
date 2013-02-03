@@ -64,7 +64,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Children::Dock_Children():
-	Dock_CanvasSpecific("children",_("Children"),Gtk::StockID("synfig-children"))
+	Dock_CanvasSpecific("children",_("Library"),Gtk::StockID("synfig-children"))
 {
     //! \todo the combination of set_use_scrolled(false) and
 	//!       add(*tree_view) causes crashes when

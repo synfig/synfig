@@ -98,7 +98,6 @@ private:
 
 	bool focused_widget_has_priority(Gtk::Widget* focused);
 
-
 public:
 
 	const std::vector<int>&	get_dock_book_sizes()const { return dock_book_sizes_;}

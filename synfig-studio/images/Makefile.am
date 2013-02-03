@@ -25,13 +25,12 @@ EXTRA_DIST = \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
-	curves_icon.sif \
+	graphs_icon.sif \
 	duplicate_icon.sif \
-	encapsulate_icon.sif \
+	group_icon.sif \
 	keyframe_lock_icons.sif \
 	framedial_icons.sif \
 	logo.sif \
-	pastecanvas_icon.sif \
 	saveall_icon.sif \
 	select_all_child_layers_icon.sif \
 	sif_icon.sif \
@@ -42,7 +41,6 @@ EXTRA_DIST = \
 	valuenode_icon.sif \
 	wallpaper.sif \
 	rename_icon.sif \
-	plant_icon.sif \
 	set_fill_color.sif \
 	set_outline_color.sif \
 	duck_position_icon.sif \
@@ -59,8 +57,8 @@ EXTRA_DIST = \
 	render_options_icon.sif \
 	preview_options_icon.sif \
 	action_set_layer_description_icon.sif \
-	action_add_to_group_icon.sif \
-	action_remove_from_group_icon.sif \
+	action_add_to_set_icon.sif \
+	action_remove_from_set_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
 	action_flat_interpolation_icon.sif \
@@ -112,7 +110,7 @@ EXTRA_DIST = \
 	layer_gradient_spiral_icon.sif \
 	layer_other_duplicate_icon.sif \
 	layer_other_importimage_icon.sif \
-	layer_other_pastecanvas_icon.sif \
+	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
 	layer_other_supersample_icon.sif \
 	layer_other_text_icon.sif \
@@ -124,7 +122,7 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
-	tool_bline_icon.sif \
+	tool_spline_icon.sif \
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
 	tool_eyedrop_icon.sif \
@@ -144,7 +142,7 @@ EXTRA_DIST = \
 	tool_zoom_icon.sif \
 	\
 	type_angle_icon.sif \
-	type_blinepoint_icon.sif \
+	type_splinepoint_icon.sif \
 	type_bool_icon.sif \
 	type_canvas_icon.sif \
 	type_color_icon.sif \
@@ -158,9 +156,9 @@ EXTRA_DIST = \
 	type_vector_icon.sif \
 	\
 	canvas_icon.sif \
-	children_icon.sif \
-	curves_icon.sif \
-	group_icon.sif \
+	library_icon.sif \
+	graphs_icon.sif \
+	set_icon.sif \
 	history_icon.sif \
 	info_icon.sif \
 	keyframe_icon.sif \
@@ -168,13 +166,12 @@ EXTRA_DIST = \
 	meta_data_icon.sif \
 	navigator_icon.sif \
 	palette_icon.sif \
-	params_icon.sif \
+	parameters_icon.sif \
 	time_track_icon.sif
 
 IMAGES = \
 	installer_logo.$(EXT) \
 	installer_logo_osx.$(EXT) \
-	pastecanvas_icon.$(EXT) \
 	clear_redo_icon.$(EXT) \
 	clear_undo_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
@@ -187,7 +184,7 @@ IMAGES = \
 	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
-	encapsulate_icon.$(EXT) \
+	group_icon.$(EXT) \
 	\
 	keyframe_lock_past_on_icon.$(EXT) \
 	keyframe_lock_past_off_icon.$(EXT) \
@@ -208,7 +205,6 @@ IMAGES = \
 	animate_mode_on_icon.$(EXT) \
 	\
 	rename_icon.$(EXT) \
-	plant_icon.$(EXT) \
 	set_fill_color.$(EXT) \
 	set_outline_color.$(EXT) \
 	duck_position_icon.$(EXT) \
@@ -225,8 +221,8 @@ IMAGES = \
 	render_options_icon.$(EXT) \
 	preview_options_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
-	action_add_to_group_icon.$(EXT) \
-	action_remove_from_group_icon.$(EXT) \
+	action_add_to_set_icon.$(EXT) \
+	action_remove_from_set_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
@@ -278,7 +274,7 @@ IMAGES = \
 	layer_gradient_spiral_icon.$(EXT) \
 	layer_other_duplicate_icon.$(EXT) \
 	layer_other_importimage_icon.$(EXT) \
-	layer_other_pastecanvas_icon.$(EXT) \
+	layer_other_group_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
@@ -290,7 +286,7 @@ IMAGES = \
 	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
 	\
-	tool_bline_icon.$(EXT) \
+	tool_spline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \
 	tool_eyedrop_icon.$(EXT) \
@@ -310,7 +306,7 @@ IMAGES = \
 	tool_zoom_icon.$(EXT) \
 	\
 	type_angle_icon.$(EXT) \
-	type_blinepoint_icon.$(EXT) \
+	type_splinepoint_icon.$(EXT) \
 	type_bool_icon.$(EXT) \
 	type_canvas_icon.$(EXT) \
 	type_color_icon.$(EXT) \
@@ -324,9 +320,9 @@ IMAGES = \
 	type_vector_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
-	children_icon.$(EXT) \
-	curves_icon.$(EXT) \
-	group_icon.$(EXT) \
+	library_icon.$(EXT) \
+	graphs_icon.$(EXT) \
+	set_icon.$(EXT) \
 	history_icon.$(EXT) \
 	info_icon.$(EXT) \
 	keyframe_icon.$(EXT) \
@@ -334,7 +330,7 @@ IMAGES = \
 	meta_data_icon.$(EXT) \
 	navigator_icon.$(EXT) \
 	palette_icon.$(EXT) \
-	params_icon.$(EXT) \
+	parameters_icon.$(EXT) \
 	time_track_icon.$(EXT)
 
 MAINTAINERCLEANFILES = \

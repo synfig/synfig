@@ -47,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupRemoveLayers);
 ACTION_SET_NAME(Action::GroupRemoveLayers,"GroupRemoveLayers");
-ACTION_SET_LOCAL_NAME(Action::GroupRemoveLayers,N_("Remove Layers from a Group"));
+ACTION_SET_LOCAL_NAME(Action::GroupRemoveLayers,N_("Remove Layers from a Set"));
 ACTION_SET_TASK(Action::GroupRemoveLayers,"remove_from_group");
 ACTION_SET_CATEGORY(Action::GroupRemoveLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRemoveLayers,0);
@@ -71,7 +71,7 @@ Action::GroupRemoveLayers::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be removed from group"))
+		.set_desc(_("Layer to be removed from set"))
 		.set_supports_multiple()
 	);
 

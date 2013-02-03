@@ -998,7 +998,7 @@ ValueNode_BLine::get_name()const
 String
 ValueNode_BLine::get_local_name()const
 {
-	return _("BLine");
+	return _("Spline");
 }
 
 LinkableValueNode*
