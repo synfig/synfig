@@ -88,6 +88,7 @@
 #include "valuenode_not.h"
 #include "valuenode_and.h"
 #include "valuenode_or.h"
+#include "valuenode_real.h"
 
 #include "layer.h"
 
@@ -165,7 +166,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_TimeLoop,		  "timeloop",		  _("Time Loop"),		 RELEASE_VERSION_0_61_08); // SVN r1226
 	ADD_VALUENODE(ValueNode_Reciprocal,		  "reciprocal",		  _("Reciprocal"),		 RELEASE_VERSION_0_61_08); // SVN r1238
 	ADD_VALUENODE(ValueNode_Duplicate,		  "duplicate",		  _("Duplicate"),		 RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("From Integer"),	 RELEASE_VERSION_0_61_08); // SVN r1267
+	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("Integer"),			 RELEASE_VERSION_0_61_08); // SVN r1267
 	ADD_VALUENODE(ValueNode_Step,			  "step",			  _("Step"),			 RELEASE_VERSION_0_61_08); // SVN r1691
 	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("BLine Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
 
@@ -176,6 +177,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_GradientColor,	  "gradientcolor",	  _("Gradient Color"),	 RELEASE_VERSION_0_61_09); // SVN r1885
 	ADD_VALUENODE(ValueNode_DotProduct,		  "dotproduct",		  _("Dot Product"),		 RELEASE_VERSION_0_61_09); // SVN r1891
 	ADD_VALUENODE(ValueNode_TimeString,		  "timestring",		  _("Time String"),		 RELEASE_VERSION_0_61_09); // SVN r2000
+	ADD_VALUENODE(ValueNode_Real,		  	  "fromreal",		  _("Real"),		 	 RELEASE_VERSION_0_63_06); // git 2013-01-12
 	ADD_VALUENODE(ValueNode_RealString,		  "realstring",		  _("Real String"),		 RELEASE_VERSION_0_61_09); // SVN r2003
 	ADD_VALUENODE(ValueNode_Join,			  "join",			  _("Joined List"),		 RELEASE_VERSION_0_61_09); // SVN r2007
 	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
