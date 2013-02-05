@@ -446,7 +446,7 @@ StateBLine_Context::refresh_tool_options()
 
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("gtk-execute"),
-		_("Make Spline and/or Region")
+		_("Make Spline")
 	)->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(
 			*this,
