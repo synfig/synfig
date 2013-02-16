@@ -40,6 +40,7 @@ remove-potcdate.sed
 remove-potcdate.sin
 stamp-h1
 stamp-po
+test-driver
 
 # ------------------------------------------------------------------------
 
@@ -196,4 +197,3 @@ ETL/test/smach
 ETL/test/smart_ptr
 ETL/test/stringf
 ETL/test/surface
-
