@@ -395,12 +395,12 @@ DuckDrag_Rotate::end_duck_drag(Duckmatic* duckmatic)
 	if(bad_drag)return false;
 	if(move_only)
 	{
-		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Duck"));
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Handle"));
 		duckmatic->signal_edited_selected_ducks();
 		return true;
 	}
 
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Handle"));
 
 	if((last_rotate-Vector(1,1)).mag()>0.0001)
 	{
