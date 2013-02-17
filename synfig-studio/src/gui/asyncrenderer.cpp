@@ -372,6 +372,125 @@ public:
 	}
 };
 
+class AsyncTarget_Cairo : public synfig::Target_Cairo
+{
+public:
+	etl::handle<synfig::Target_Cairo> warm_target;
+	
+	cairo_surface_t* surface;
+	ProgressCallback *callback;
+	
+	Glib::Mutex mutex;
+	
+#ifndef GLIB_DISPATCHER_BROKEN
+	Glib::Dispatcher frame_ready_signal;
+#endif
+	Glib::Cond cond_frame_queue_empty;
+	bool alive_flag;
+	bool ready_next;
+	sigc::connection ready_connection;
+	
+	
+public:
+	AsyncTarget_Cairo(etl::handle<synfig::Target_Cairo> warm_target):
+	warm_target(warm_target)
+	{
+		set_avoid_time_sync(warm_target->get_avoid_time_sync());
+		set_canvas(warm_target->get_canvas());
+		set_quality(warm_target->get_quality());
+		set_remove_alpha(warm_target->get_remove_alpha());
+		set_rend_desc(&warm_target->rend_desc());
+		alive_flag=true;
+#ifndef GLIB_DISPATCHER_BROKEN
+		ready_connection=frame_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready));
+#endif
+	}
+	
+	~AsyncTarget_Cairo()
+	{
+		ready_connection.disconnect();
+	}
+	
+	virtual int next_frame(Time& time)
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+			return 0;
+		return warm_target->next_frame(time);
+		
+	}
+	
+	void set_dead()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		alive_flag=false;
+	}
+		
+	virtual bool put_surface(cairo_surface_t* s, ProgressCallback *cb)
+	{
+		{
+			Glib::Mutex::Lock lock(mutex);
+			surface=s;
+			callback=cb;
+			if(!alive_flag)
+				return false;
+			ready_next=false;
+			
+#ifdef GLIB_DISPATCHER_BROKEN
+			ready_connection=Glib::signal_timeout().connect(
+							sigc::bind_return(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready),false)
+											,0
+											);
+#else
+			frame_ready_signal();
+#endif
+		}
+		
+#ifdef SINGLE_THREADED
+		if (single_threaded())
+			signal_progress()();
+		else
+#endif
+		{
+			
+			Glib::TimeVal end_time;
+			
+			end_time.assign_current_time();
+			end_time.add_microseconds(BOREDOM_TIMEOUT);
+			
+			while(alive_flag && !ready_next)
+			{
+				Glib::Mutex::Lock lock(mutex);
+				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
+					break;
+			}
+		}
+		return true;
+	}
+	
+	void frame_ready()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(alive_flag)
+			alive_flag=warm_target->put_surface(surface, callback);
+#ifdef SINGLE_THREADED
+		if (!single_threaded())
+#endif
+			cond_frame_queue_empty.signal();
+		ready_next=true;
+	}
+
+	virtual bool obtain_surface(cairo_surface_t*& s)
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+			return false;
+		return warm_target->obtain_surface(s);
+	}
+
+};
+
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */

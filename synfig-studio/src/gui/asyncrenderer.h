@@ -35,6 +35,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
+#include <synfig/target_cairo.h>
 #include <synfig/surface.h>
 #include <glibmm/main.h>
 #include <ETL/ref_count>
