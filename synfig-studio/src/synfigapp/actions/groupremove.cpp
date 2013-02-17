@@ -69,8 +69,8 @@ Action::GroupRemove::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
 	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
-		.set_local_name(_("Group"))
-		.set_desc(_("Name of the Group to remove"))
+		.set_local_name(_("Set"))
+		.set_desc(_("Name of the Set to remove"))
 	);
 
 	return ret;

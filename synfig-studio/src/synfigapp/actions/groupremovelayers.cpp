@@ -71,7 +71,7 @@ Action::GroupRemoveLayers::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be removed from set"))
+		.set_desc(_("Layer to be removed from Set"))
 		.set_supports_multiple()
 	);
 
