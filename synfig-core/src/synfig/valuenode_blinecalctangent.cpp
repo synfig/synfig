@@ -239,7 +239,7 @@ ValueNode_BLineCalcTangent::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")
 		.set_local_name(_("Spline"))
-		.set_description(_("The BLine where the tangent is linked to"))
+		.set_description(_("The Spline where the tangent is linked to"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"loop")
@@ -249,7 +249,7 @@ ValueNode_BLineCalcTangent::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"amount")
 		.set_local_name(_("Amount"))
-		.set_description(_("The position of the linked tangent on the BLine (0,1]"))
+		.set_description(_("The position of the linked tangent on the Spline (0,1]"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"offset")
@@ -269,7 +269,7 @@ ValueNode_BLineCalcTangent::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked, the tangent is BLine length based"))
+		.set_description(_("When checked, the tangent is Spline length based"))
 	);
 	return ret;
 }

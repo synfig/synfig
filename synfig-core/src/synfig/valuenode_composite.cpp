@@ -508,11 +508,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	case ValueBase::TYPE_BLINEPOINT:
 		ret.push_back(ParamDesc(ValueBase(),"point")
 			.set_local_name(_("Vertex"))
-			.set_description(_("The vertex of the BLine Point"))
+			.set_description(_("The vertex of the Spline Point"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
-			.set_description(_("The width of the BLine Point"))
+			.set_description(_("The width of the Spline Point"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"origin")
 			.set_local_name(_("Origin"))
@@ -524,11 +524,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"t1")
 			.set_local_name(_("Tangent 1"))
-			.set_description(_("The first tangent of the BLine Point"))
+			.set_description(_("The first tangent of the Spline Point"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"t2")
 			.set_local_name(_("Tangent 2"))
-			.set_description(_("The second tangent of the BLine Point"))
+			.set_description(_("The second tangent of the Spline Point"))
 		);
 		return ret;
 	case ValueBase::TYPE_WIDTHPOINT:

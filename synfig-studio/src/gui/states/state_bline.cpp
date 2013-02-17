@@ -284,7 +284,7 @@ StateBLine_Context::load_settings()
 		if(settings.get_value("bline.id",value))
 			set_id(value);
 		else
-			set_id("NewSpline");
+			set_id(_("NewSpline"));
 
 		if(settings.get_value("bline.feather",value))
 		{
@@ -295,7 +295,7 @@ StateBLine_Context::load_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("State BLine: Caught exception when attempting to load settings.");
+		synfig::warning("State Spline: Caught exception when attempting to load settings.");
 	}
 }
 
@@ -318,7 +318,7 @@ StateBLine_Context::save_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("State BLine : Caught exception when attempting to save settings.");
+		synfig::warning("State Spline : Caught exception when attempting to save settings.");
 	}
 }
 

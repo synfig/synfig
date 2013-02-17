@@ -209,12 +209,12 @@ ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"amount")
 		.set_local_name(_("Amount"))
-		.set_description(_("The position of the linked vertex on the BLine (0,1]"))
+		.set_description(_("The position of the linked vertex on the Spline (0,1]"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked, the position is BLine length based"))
+		.set_description(_("When checked, the position is Spline length based"))
 	);
 	return ret;
 }

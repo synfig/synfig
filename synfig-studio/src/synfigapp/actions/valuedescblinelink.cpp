@@ -84,7 +84,7 @@ Action::ValueDescBLineLink::get_param_vocab()
 		.set_supports_multiple()
 	);
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
-		.set_local_name(_("ValueDesc on BLine to link to"))
+		.set_local_name(_("ValueDesc on Spline to link to"))
 	);
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))

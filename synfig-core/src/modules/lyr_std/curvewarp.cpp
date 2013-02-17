@@ -407,7 +407,7 @@ CurveWarp::get_param_vocab()const
 				  .set_local_name(_("Vertices"))
 				  .set_origin("origin")
 				  .set_hint("width")
-				  .set_description(_("List of BLine Points where the source line is curved to"))
+				  .set_description(_("List of Spline Points where the source line is curved to"))
 	);
 	ret.push_back(ParamDesc("fast")
 				  .set_local_name(_("Fast"))
