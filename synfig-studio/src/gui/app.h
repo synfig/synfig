@@ -207,6 +207,7 @@ public:
 	static synfig::String predefined_fps;
 	static float preferred_fps;
 	static synfig::String sequence_separator;
+	static bool navigator_uses_cairo;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
