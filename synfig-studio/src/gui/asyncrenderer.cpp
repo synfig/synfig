@@ -528,6 +528,19 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 
 		target=wrap_target;
 	}
+	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
+	{
+		etl::handle<AsyncTarget_Cairo> wrap_target(
+			new AsyncTarget_Cairo(
+				etl::handle<synfig::Target_Cairo>::cast_dynamic(target_)
+			)
+		);
+		
+		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo::set_dead));
+		
+		target=wrap_target;
+	}
+
 }
 
 AsyncRenderer::~AsyncRenderer()
