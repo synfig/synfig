@@ -50,7 +50,49 @@ using namespace etl;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+class target2cairo_image: public synfig::Target_Cairo
+{
+public:
+	cairo_surface_t** image;
+	target2cairo_image(cairo_surface_t ** s);
+	virtual ~target2cairo_image();
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
+	virtual bool obtain_surface(cairo_surface_t*& s);
+};
 
+target2cairo_image::target2cairo_image(cairo_surface_t ** s):image(s)
+{
+}
+
+target2cairo_image::~target2cairo_image()
+{
+}
+
+bool
+target2cairo_image::set_rend_desc(synfig::RendDesc *newdesc)
+{
+	assert(newdesc);
+	desc=*newdesc;
+	return synfig::Target_Cairo::set_rend_desc(newdesc);
+}
+
+bool
+target2cairo_image::obtain_surface(cairo_surface_t*& s)
+{
+	int sw=cairo_image_surface_get_width(*image);
+	int sh=cairo_image_surface_get_height(*image);
+	int w=desc.get_w(), h=desc.get_h();
+	
+	if(sw!=w || sh!=w)
+	{
+		cairo_surface_destroy(*image);
+		*image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+	}
+	s=cairo_surface_reference(*image);
+	return true;
+}
+
+////
 class target2surface : public synfig::Target_Scanline
 {
 public:
@@ -125,6 +167,14 @@ synfig::surface_target(Surface *surface)
 {
 	return Target_Scanline::Handle(new target2surface(surface));
 }
+
+
+Target_Cairo::Handle
+synfig::cairo_image_target(cairo_surface_t **surface)
+{
+	return Target_Cairo::Handle(new target2cairo_image(surface));
+}
+
 
 void
 synfig::Surface::clear()

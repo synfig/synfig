@@ -266,6 +266,8 @@ public:
 
 //! Creates a target that will render to \a surface
 etl::handle<Target_Scanline> surface_target(Surface *surface);
+//!Creates a target that will render to a cairo_surface_t image surface
+etl::handle<Target_Cairo> cairo_image_target(cairo_surface_t** surface);
 
 }; // END of namespace synfig
 
