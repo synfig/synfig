@@ -291,7 +291,7 @@ String studio::App::browser_command("open"); // MacOS only
 String studio::App::browser_command("xdg-open"); // Linux XDG standard
 #endif
 String studio::App::sequence_separator(".");
-bool studio::App::navigator_uses_cairo(false);
+bool studio::App::navigator_uses_cairo=false;
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -597,7 +597,7 @@ public:
 			}
 			if(key=="navigator_uses_cairo")
 			{
-				value=App::navigator_uses_cairo;
+				value=strprintf("%i",(int)App::navigator_uses_cairo);
 				return true;
 			}
 		}

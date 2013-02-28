@@ -298,6 +298,7 @@ Dialog_Setup::Dialog_Setup():
 	// Render - Image sequence separator
 	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
 	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	// Render - Use Cairo on Navigator
 	attach_label(render_table, _("Use Cairo render on Navigator"), 1, xpadding, ypadding);
 	render_table->attach(toggle_navigator_uses_cairo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
