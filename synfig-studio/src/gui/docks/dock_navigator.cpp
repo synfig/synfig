@@ -188,6 +188,7 @@ void studio::Widget_NavView::on_finish_render()
 		cairo_surface_t* surf=*cairo_surface.get();
 		if(cairo_surface_status(surf))
 			return;
+		Target_Cairo::gamma_filter(surf);
 		queue_draw();
 		return;
 	}
