@@ -71,7 +71,8 @@ studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 :canvview(cv),
 adj_zoom(0,-4,4,1,2),
 scrolling(false),
-surface(new synfig::Surface)
+surface(new synfig::Surface),
+cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2, 2))
 {
 	attach(drawto,0,4,0,1);
 
@@ -118,6 +119,7 @@ surface(new synfig::Surface)
 
 studio::Widget_NavView::~Widget_NavView()
 {
+	cairo_surface_destroy(*(cairo_surface.get()));
 }
 
 
@@ -130,60 +132,68 @@ void studio::Widget_NavView::on_start_render()
 {
 	if(dirty)
 	{
-		//synfig::warning("Nav: Starting render");
-		//synfig::warning("Nav: Rendering canvas");
-		etl::handle<Target_Scanline>	targ = surface_target(surface.get());
-
-		targ->set_canvas(get_canvas_view()->get_canvas());
-		targ->set_remove_alpha();
-		targ->set_avoid_time_sync();
-		targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
-		//synfig::info("Set the quality level to: %d", get_canvas_view()->get_work_area()->get_quality());
-
 		//this should set it to render a single frame
 		RendDesc	r = get_canvas_view()->get_canvas()->rend_desc();
 		r.set_time(get_canvas_view()->canvas_interface()->get_time());
 
 		//this changes the size of the canvas to the closest thing we can find
 		int sw = r.get_w(), sh = r.get_h();
-
-		//synfig::warning("Nav: source image is %d x %d", sw,sh);
-
+		
 		//resize so largest dimension is 128
 		int dw = sw > sh ? 128 : sw*128/sh,
-			dh = sh > sw ? 128 : sh*128/sw;
-
-		//synfig::warning("Nav: dest image is %d x %d", dw,dh);
-
+		dh = sh > sw ? 128 : sh*128/sw;
+		
 		r.set_w(dw);
 		r.set_h(dh);
 
-		//get the pw and ph
-		//float pw = r.get_pw();
-		//float ph = r.get_ph();
-		//synfig::warning("Nav: pixel size is %f x %f", pw,ph);
-
-		//this renders that single frame
-		targ->set_rend_desc(&r);
-
-		//synfig::warning("Nav: Building async renderer and starting it...");
-
-		renderer = new AsyncRenderer(targ);
+		if(studio::App::navigator_uses_cairo)
+		{
+			// Create a cairo_image_target
+			etl::handle<Target_Cairo> targ = cairo_image_target(cairo_surface.get());
+			// Fill the target with the proper information
+			targ->set_canvas(get_canvas_view()->get_canvas());
+			targ->set_remove_alpha();
+			targ->set_avoid_time_sync();
+			targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
+			targ->set_rend_desc(&r);
+			// Sets up a Asynchronous renderer
+			renderer = new AsyncRenderer(targ);
+		}
+		else
+		{
+			// Create a surface_target
+			etl::handle<Target_Scanline>	targ = surface_target(surface.get());
+			// Fill the target with the proper information
+			targ->set_canvas(get_canvas_view()->get_canvas());
+			targ->set_remove_alpha();
+			targ->set_avoid_time_sync();
+			targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
+			targ->set_rend_desc(&r);
+			// Sets up a Asynchronous renderer
+			renderer = new AsyncRenderer(targ);
+		}
+		// connnect the renderer success to the finish render handler
 		renderer->signal_success().connect(sigc::mem_fun(*this,&Widget_NavView::on_finish_render));
+		// Mark it as clean since we are to start to render
 		dirty = false;
+		// start the asynchronous rendering
 		renderer->start();
 	}
 }
 
 void studio::Widget_NavView::on_finish_render()
 {
+	if(studio::App::navigator_uses_cairo)
+	{
+		cairo_surface_t* surf=*cairo_surface.get();
+		if(cairo_surface_status(surf))
+			return;
+		queue_draw();
+		return;
+	}
 	//convert it into our pixmap
 	PixelFormat pf(PF_RGB);
 
-	//synfig::warning("Nav: It hath succeeded!!!");
-
-	//assert(renderer && renderer->has_success());
-	//synfig::warning("Nav: now we know it really succeeded");
 	if(!*surface)
 	{
 		synfig::warning("dock_navigator: Bad surface");
@@ -227,9 +237,6 @@ void studio::Widget_NavView::on_finish_render()
 	}
 	else
 	{
-		//synfig::warning("Nav: Don't need to resize");
-		//convert into our buffered dataS
-		//synfig::warning("Nav: converting color format into buffer");
 		if(prev) //just in case we're stupid
 		{
 			convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
@@ -267,39 +274,40 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 		return false;
 #endif
 
-	//print out the zoom
-	//HACK kind of...
-	//zoom_print.set_text(strprintf("%.1f%%",100*unit_to_zoom(adj_zoom.get_value())));
-
 	//draw the good stuff
 	on_start_render();
 
 	//if we've got a preview etc. display it...
-	if(get_canvas_view() && prev)
+	if(get_canvas_view())
 	{
 		//axis transform from units to pixel coords
 		float xaxis = 0, yaxis = 0;
 
 		int canvw = get_canvas_view()->get_canvas()->rend_desc().get_w();
-		//int canvh = get_canvas_view()->get_canvas()->rend_desc().get_h();
-
+		int w, h;
+	
 		float pw = get_canvas_view()->get_canvas()->rend_desc().get_pw();
 		float ph = get_canvas_view()->get_canvas()->rend_desc().get_ph();
-
-		int w = prev->get_width();
-		int h = prev->get_height();
+		if(prev && !studio::App::navigator_uses_cairo)
+		{
+			w = prev->get_width();
+			h = prev->get_height();
+		}
+		else
+		{
+			w=cairo_image_surface_get_width(*cairo_surface.get());
+			h=cairo_image_surface_get_height(*cairo_surface.get());
+		}
 
 		//scale up/down to the nearest pixel ratio...
 		//and center in center
-		int offx=0, offy=0;
+		float offx=0, offy=0;
 
 		float sx, sy;
 		int nw,nh;
 
 		sx = drawto.get_width() / (float)w;
 		sy = drawto.get_height() / (float)h;
-
-		//synfig::warning("Nav redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 
 		//round to smallest scale (fit entire thing in window without distortion)
 		if(sx > sy) sx = sy;
@@ -323,24 +331,33 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 
 		//trivial escape
 		if(nw == 0 || nh == 0)return true;
-
 		//draw to drawing area
-		Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(drawto.get_window());
 		Cairo::RefPtr<Cairo::Context> cr = drawto.get_window()->create_cairo_context();
 
-		//synfig::warning("Nav: Scaling pixmap to off (%d,%d) with size (%d,%d)", offx,offy,nw, nh);
-		Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
+		if(prev && !studio::App::navigator_uses_cairo)
+		{
+			Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
 
+			cr->save();
+
+			//synfig::warning("Nav: Drawing scaled bitmap");
+			Gdk::Cairo::set_source_pixbuf(
+				cr, //cairo context
+				scalepx, //pixbuf
+				(int)offx, (int)offy //coordinates to place upper left corner of pixbuf
+				);
+			cr->paint();
+			cr->restore();
+		}
+		if(studio::App::navigator_uses_cairo)
+		{
+			cr->save();
+			cr->scale(sx, sx);
+			cairo_set_source_surface(cr->cobj(), *cairo_surface.get(), offx/sx, offy/sx);
+			cr->paint();
+			cr->restore();	
+		}
 		cr->save();
-
-		//synfig::warning("Nav: Drawing scaled bitmap");
-		Gdk::Cairo::set_source_pixbuf(
-			cr, //cairo context
-			scalepx, //pixbuf
-			offx, offy //coordinates to place upper left corner of pixbuf
-			);
-		cr->paint();
-
 		//draw fancy red rectangle around focus point
 		const Point &wtl = get_canvas_view()->work_area->get_window_tl(),
 					&wbr = get_canvas_view()->work_area->get_window_br();
@@ -360,21 +377,21 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 		//coord system:
 		// tl : (offx,offy)
 		// axis multipliers = xaxis,yaxis
-		//synfig::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
-		//synfig::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
-		//synfig::warning("Nav: Drawing Rectangle (%d,%d) with dim (%d,%d)", l,t,rw,rh);
 
 		cr->set_line_width(2.0);
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
-		cr->set_source_rgb(1,0,0);
+		// Visually distinguish when using Cairo on Navigator or not.
+		if(!studio::App::navigator_uses_cairo)
+			cr->set_source_rgb(1,0,0);
+		else
+			cr->set_source_rgb(0,1,0);
 		cr->rectangle(l,t,rw,rh);
 		cr->stroke();
 
 		cr->restore();
 	}
-
 	return false; //draw everything else too
 }
 
