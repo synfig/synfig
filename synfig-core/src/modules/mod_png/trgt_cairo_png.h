@@ -54,7 +54,6 @@ private:
 	synfig::String base_filename;
 
 	synfig::String sequence_separator;
-	void gamma_filter(cairo_surface_t* surface);
 public:
 	cairo_png_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~cairo_png_trgt();

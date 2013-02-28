@@ -72,6 +72,9 @@ public:
 
 	//! Puts the rendered surface onto the target.
 	virtual bool put_surface(cairo_surface_t *surface, ProgressCallback *cb=NULL);
+	//! Filters the cairo surface based on gamma (hardcored for the moment to 2.2)
+	void gamma_filter(cairo_surface_t* surface);
+
 private:
 }; // END of class Target_Cairo
 
