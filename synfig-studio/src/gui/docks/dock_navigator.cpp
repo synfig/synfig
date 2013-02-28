@@ -355,6 +355,7 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 			cr->save();
 			cr->scale(sx, sx);
 			cairo_set_source_surface(cr->cobj(), *cairo_surface.get(), offx/sx, offy/sx);
+			cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
 			cr->paint();
 			cr->restore();	
 		}
