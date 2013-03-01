@@ -491,14 +491,24 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 		setpos = true;
 	}
 
-	if(setpos && prev && get_canvas_view())
+	if(setpos && (prev||studio::App::navigator_uses_cairo) && get_canvas_view())
 	{
 		const Point &tl = get_canvas_view()->get_canvas()->rend_desc().get_tl();
 		const Point &br = get_canvas_view()->get_canvas()->rend_desc().get_br();
-
+		int w,h;
+		if(prev && !studio::App::navigator_uses_cairo)
+		{
+			w = prev->get_width();
+			h = prev->get_height();
+		}
+		if(studio::App::navigator_uses_cairo)
+		{
+			w=cairo_image_surface_get_width(*cairo_surface.get());
+			h=cairo_image_surface_get_height(*cairo_surface.get());
+		}
 		float max = abs((br[0]-tl[0]) / drawto.get_width());
 
-		if((float(prev->get_width()) / drawto.get_width()) < (float(prev->get_height()) / drawto.get_height()))
+		if((float(w) / drawto.get_width()) < (float(h) / drawto.get_height()))
 			max = abs((br[1]-tl[1]) / drawto.get_height());
 
 		float signx = (br[0]-tl[0]) < 0 ? -1 : 1;
