@@ -189,58 +189,59 @@ void studio::Widget_NavView::on_finish_render()
 		if(cairo_surface_status(surf))
 			return;
 		Target_Cairo::gamma_filter(surf);
-		queue_draw();
-		return;
-	}
-	//convert it into our pixmap
-	PixelFormat pf(PF_RGB);
-
-	if(!*surface)
-	{
-		synfig::warning("dock_navigator: Bad surface");
-		return;
-	}
-
-	int w = 0, h = 0;
-	int dw = surface->get_w();
-	int dh = surface->get_h();
-
-	if(prev)
-	{
-		w = prev->get_width();
-		h = prev->get_height();
-	}
-
-	if(w != dw || h != dh || !prev)
-	{
-		const int total_bytes(dw*dh*synfig::channels(pf));
-
-		//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
-
-		prev.clear();
-		guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
-
-		//convert into our buffered dataS
-		//synfig::warning("Nav: converting color format into buffer");
-		convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
-
-		prev =
-		Gdk::Pixbuf::create_from_data(
-			bytes,	// pointer to the data
-			Gdk::COLORSPACE_RGB, // the colorspace
-			((pf&PF_A)==PF_A), // has alpha?
-			8, // bits per sample
-			dw,	// width
-			dh,	// height
-			dw*synfig::channels(pf), // stride (pitch)
-			sigc::ptr_fun(freegu8)
-		);
 	}
 	else
 	{
-		if(prev) //just in case we're stupid
+		//convert it into our pixmap
+		PixelFormat pf(PF_RGB);
+
+		if(!*surface)
 		{
-			convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
+			synfig::warning("dock_navigator: Bad surface");
+			return;
+		}
+
+		int w = 0, h = 0;
+		int dw = surface->get_w();
+		int dh = surface->get_h();
+
+		if(prev)
+		{
+			w = prev->get_width();
+			h = prev->get_height();
+		}
+
+		if(w != dw || h != dh || !prev)
+		{
+			const int total_bytes(dw*dh*synfig::channels(pf));
+
+			//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
+
+			prev.clear();
+			guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
+
+			//convert into our buffered dataS
+			//synfig::warning("Nav: converting color format into buffer");
+			convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
+
+			prev =
+			Gdk::Pixbuf::create_from_data(
+				bytes,	// pointer to the data
+				Gdk::COLORSPACE_RGB, // the colorspace
+				((pf&PF_A)==PF_A), // has alpha?
+				8, // bits per sample
+				dw,	// width
+				dh,	// height
+				dw*synfig::channels(pf), // stride (pitch)
+				sigc::ptr_fun(freegu8)
+			);
+		}
+		else
+		{
+			if(prev) //just in case we're stupid
+			{
+				convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
+			}
 		}
 	}
 	queue_draw();
@@ -294,7 +295,7 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 			w = prev->get_width();
 			h = prev->get_height();
 		}
-		else
+		if(studio::App::navigator_uses_cairo)
 		{
 			w=cairo_image_surface_get_width(*cairo_surface.get());
 			h=cairo_image_surface_get_height(*cairo_surface.get());
