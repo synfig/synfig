@@ -103,7 +103,7 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 	try {
 		do{
 			// Grab the time
-			if(total_frames>1)
+			if(total_frames>=1)
 				frames=next_frame(t);
 			else
 				frames=0;
