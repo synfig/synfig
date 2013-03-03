@@ -91,7 +91,7 @@ Renderer_Background::render_vfunc(
 	
     cairo_surface_t *check;
 	
-    check=draw_check(16, 16);
+    check=draw_check(15, 15);
 	
     cairo_save(cr);
 
@@ -113,11 +113,8 @@ Renderer_Background::draw_check(int width, int height)
 {
     cairo_surface_t *surface;
     cairo_t *cr;
-	
-	width*=2;
-	height*=2;
-	
-    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, width, height);
+		
+    surface = cairo_image_surface_create (CAIRO_FORMAT_RGB24, width*2, height*2);
     cr = cairo_create (surface);
     cairo_surface_destroy (surface);
 	
@@ -126,8 +123,8 @@ Renderer_Background::draw_check(int width, int height)
     cairo_paint (cr);
 	
     cairo_set_source_rgb (cr, 0.65, 0.65, 0.65); /* dark gray */
-    cairo_rectangle (cr, int(width / 2), 0 , width / 2, height / 2);
-    cairo_rectangle (cr, 0, int(height / 2), width / 2, height / 2);
+    cairo_rectangle (cr, int(width), 0 , width, height);
+    cairo_rectangle (cr, 0, int(height), width , height);
     cairo_fill (cr);
 	
     surface = cairo_surface_reference (cairo_get_target (cr));
