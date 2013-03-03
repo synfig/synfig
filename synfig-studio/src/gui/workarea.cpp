@@ -61,6 +61,7 @@
 #include <synfig/distance.h>
 
 #include "workarearenderer/workarearenderer.h"
+#include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
@@ -297,7 +298,7 @@ public:
 		synfig::Mutex::Lock lock(mutex);
 		assert(surface);
 
-		PixelFormat pf(PF_RGB);
+		PixelFormat pf(PF_RGB|PF_A);
 
 		const int total_bytes(get_tile_w()*get_tile_h()*synfig::channels(pf));
 
@@ -308,24 +309,15 @@ public:
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
-			int w(get_tile_w());
-			int h(get_tile_h());
-			int x(surface.get_w()*surface.get_h());
-			//if(low_res) {
-			//	int div = workarea->get_low_res_pixel_size();
-			//	w/=div,h/=div;
-			//}
-			Color dark(0.6,0.6,0.6);
-			Color lite(0.8,0.8,0.8);
+			int w(surface.get_w());
+			int x(w*surface.get_h());
 			for(int i=0;i<x;i++)
 				dest=Color2PixelFormat(
-					Color::blend(
-						(*(src++)),
-						((i/surface.get_w())*8/h+(i%surface.get_w())*8/w)&1?dark:lite,
-						1.0f
-					).clamped(),
-					pf,dest,App::gamma
-				);
+									   (*(src++)).clamped(),
+									   pf,
+									   dest,
+									   App::gamma
+									   );
 		}
 
 		x/=get_tile_w();
@@ -546,7 +538,7 @@ public:
 	{
 		assert(surface);
 
-		PixelFormat pf(PF_RGB);
+		PixelFormat pf(PF_RGB|PF_A);
 
 		const int total_bytes(surface.get_w()*surface.get_h()*synfig::channels(pf));
 
@@ -554,37 +546,19 @@ public:
 
 		if(!surface || !buffer)
 			return;
+		// Copy the content of surface to the buffer
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
 			int w(surface.get_w());
-			//int h(surface.get_h());
-			int x(surface.get_w()*surface.get_h());
-			//if(low_res) {
-			//	int div = workarea->get_low_res_pixel_size();
-			//	w/=div,h/=div;
-			//}
-			Color dark(0.6,0.6,0.6);
-			Color lite(0.8,0.8,0.8);
-			int tw=workarea->tile_w;
-			int th=workarea->tile_h;
-			if(low_res)
-			{
-				int div = workarea->get_low_res_pixel_size();
-				tw/=div;
-				th/=div;
-			}
+			int x(w*surface.get_h());
 			for(int i=0;i<x;i++)
 				dest=Color2PixelFormat(
-					Color::blend(
-						(*(src++)),
-						((i/w)*8/th+(i%w)*8/tw)&1?dark:lite,
-						1.0f
-					).clamped(),
-					pf,
-					dest,
-					App::gamma
-				);
+									   (*(src++)).clamped(),
+									   pf,
+									   dest,
+									   App::gamma
+									   );
 		}
 
 		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
@@ -689,7 +663,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	meta_data_lock=false;
 
-	insert_renderer(new Renderer_Canvas,	000);
+	insert_renderer(new Renderer_Background, 000);
+	insert_renderer(new Renderer_Canvas,	010);
 	insert_renderer(new Renderer_Grid,		100);
 	insert_renderer(new Renderer_Guides,	200);
 	insert_renderer(new Renderer_Ducks,		300);
