@@ -113,6 +113,7 @@ public:
 		fe.t = time;
 		fe.surface=cairo_surface_reference(surf);
 		prev->push_back(fe);
+		prev->signal_changed()();
 		
 		cairo_surface_destroy(surf);
 		return true;
