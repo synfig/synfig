@@ -68,6 +68,7 @@ public:
 	{
 		float						t;
 		Glib::RefPtr<Gdk::Pixbuf>	buf; //at whatever resolution they are rendered at (resized at run time)
+		cairo_surface_t* surface;
 	};
 
 	etl::handle<studio::AsyncRenderer>	renderer;
@@ -91,6 +92,7 @@ private:
 
 	//expose the frame information etc.
 	class Preview_Target;
+	class Preview_Target_Cairo;
 	void frame_finish(const Preview_Target *);
 
 	sigc::signal0<void>	sig_changed;
@@ -155,6 +157,7 @@ public:
 
 	FlipBook::const_iterator	begin() const {return frames.begin();}
 	FlipBook::const_iterator	end() const	  {return frames.end();}
+	void push_back(FlipbookElem fe) { frames.push_back(fe); }
 
 	void clear() {frames.clear();}
 

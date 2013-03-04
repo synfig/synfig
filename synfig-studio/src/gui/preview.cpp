@@ -40,6 +40,7 @@
 #include <gdkmm/general.h>
 
 #include <synfig/target_scanline.h>
+#include <synfig/target_cairo.h>
 #include <synfig/surface.h>
 
 #include <algorithm>
@@ -75,6 +76,48 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
+
+class studio::Preview::Preview_Target_Cairo : public Target_Cairo
+{
+	Preview *prev;
+public:
+	Preview_Target_Cairo(Preview *prev_): prev(prev_)
+	{
+	}
+	
+	virtual bool set_rend_desc(RendDesc *r)
+	{
+		return Target_Cairo::set_rend_desc(r);
+	}
+	
+	virtual bool obtain_surface(cairo_surface_t*& surface)
+	{
+		int w=desc.get_w(), h=desc.get_h();
+		surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+		return true;
+	}
+
+	bool put_surface(cairo_surface_t *surf, synfig::ProgressCallback *cb)
+	{
+		if(!prev)
+			return false;
+		gamma_filter(surf);
+		if(cairo_surface_status(surf))
+		{
+			if(cb) cb->error(_("Cairo Surface bad status"));
+			return false;
+		}
+		FlipbookElem	fe;
+		Preview pr = *prev;
+		float time = get_canvas()->get_time();
+		fe.t = time;
+		fe.surface=cairo_surface_reference(surf);
+		prev->push_back(fe);
+		
+		cairo_surface_destroy(surf);
+		return true;
+	}
+};
 
 class studio::Preview::Preview_Target : public Target_Scanline
 {
