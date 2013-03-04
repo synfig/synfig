@@ -158,9 +158,10 @@ public:
 	FlipBook::const_iterator	begin() const {return frames.begin();}
 	FlipBook::const_iterator	end() const	  {return frames.end();}
 	void push_back(FlipbookElem fe) { frames.push_back(fe); }
-
-	void clear() {frames.clear();}
-
+	// Used to clear the FlipBook. Do not use directly the std::vector<>::clear member
+	// because the cairo_surface_t* wouldn't be destroyed.
+	void clear();
+	
 	unsigned int				numframes() const  {return frames.size();}
 
 	void render();

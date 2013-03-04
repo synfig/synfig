@@ -280,6 +280,7 @@ void studio::Preview::render()
 		target->set_rend_desc(&desc);
 
 		//... first we must clear our current selves of space
+		clear();
 		frames.resize(0);
 
 		//now tell it to go... with inherited prog. reporting...
@@ -289,6 +290,15 @@ void studio::Preview::render()
 		renderer->start();
 	}
 }
+
+void studio::Preview::clear()
+{
+	FlipBook::iterator it;
+	for(it=frames.begin(); it!=frames.end(); it++)
+		cairo_surface_destroy(it->surface);
+	frames.clear();
+}
+
 
 static void free_guint8(const guint8 *mem)
 {
