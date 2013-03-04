@@ -87,6 +87,8 @@ class Dialog_PreviewOptions : public Gtk::Dialog
 	Gtk::Adjustment	adj_zoom;	// factor at which to resize the window...
 
 	Gtk::Adjustment	adj_fps;	// how often to take samples of the animation
+	
+	Gtk::CheckButton check_use_cairo;
 
 	studio::Widget_Time time_begin;
 	studio::Widget_Time time_end;
