@@ -64,11 +64,21 @@ class AsyncRenderer;
 class Preview : public sigc::trackable, public etl::shared_object
 {
 public:
-	struct FlipbookElem
+	class FlipbookElem
 	{
-		float						t;
-		Glib::RefPtr<Gdk::Pixbuf>	buf; //at whatever resolution they are rendered at (resized at run time)
+	public:
+		float t;
+		Glib::RefPtr<Gdk::Pixbuf> buf; //at whatever resolution they are rendered at (resized at run time)
 		cairo_surface_t* surface;
+		FlipbookElem()
+		{
+			surface=NULL;
+		}
+		~FlipbookElem()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
 	};
 
 	etl::handle<studio::AsyncRenderer>	renderer;

@@ -223,7 +223,6 @@ void studio::Preview::set_canvasview(const studio::CanvasView::LooseHandle &h)
 
 studio::Preview::~Preview()
 {
-	clear(); // we need this to remove the cairo_surface references
 	signal_destroyed_(this); //tell anything that attached to us, we're dying
 }
 
@@ -282,7 +281,6 @@ void studio::Preview::render()
 		target->set_rend_desc(&desc);
 
 		//... first we must clear our current selves of space
-		clear();
 		frames.resize(0);
 
 		//now tell it to go... with inherited prog. reporting...
@@ -295,10 +293,6 @@ void studio::Preview::render()
 
 void studio::Preview::clear()
 {
-	FlipBook::iterator it;
-	for(it=frames.begin(); it!=frames.end(); it++)
-		if(it->surface)
-			cairo_surface_destroy(it->surface);
 	frames.clear();
 }
 
@@ -334,7 +328,6 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 	//load time
 	fe.t = time;
-	fe.surface=NULL;
 	//uses and manages the memory for the buffer...
 	//synfig::warning("Create a pixmap...");
 	fe.buf =
