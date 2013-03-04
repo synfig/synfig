@@ -49,6 +49,7 @@ struct PreviewInfo
 {
 	float zoom,fps,begintime,endtime;
 	bool overbegin,overend;
+	bool use_cairo;
 };
 
 class Dialog_Preview : public Gtk::Window
@@ -133,6 +134,8 @@ public:
 
 	bool get_end_override() const { return check_overend.get_active(); }
 	void set_end_override(bool o) { check_overend.set_active(o); }
+	
+	bool get_use_cairo() const { return check_use_cairo.get_active(); }
 
 	sigc::signal<void,const PreviewInfo &>	&signal_finish() {return signal_finish_;}
 };

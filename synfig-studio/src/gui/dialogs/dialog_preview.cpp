@@ -222,6 +222,7 @@ void Dialog_PreviewOptions::on_ok_pressed()
 	i.fps = get_fps();
 	i.overbegin = get_begin_override();
 	i.overend = get_end_override();
+	i.use_cairo = get_use_cairo();
 	if(i.overbegin) i.begintime = (float)get_begintime();
 	if(i.overend)	i.endtime = (float)get_endtime();
 
