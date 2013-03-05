@@ -74,6 +74,10 @@ public:
 		{
 			surface=NULL;
 		}
+		//Copy constructor
+		FlipbookElem(const FlipbookElem& other): t(other.t) ,buf(other.buf), surface(cairo_surface_reference(other.surface))
+		{
+		}
 		~FlipbookElem()
 		{
 			if(surface)
@@ -192,6 +196,7 @@ class Widget_Preview : public Gtk::Table
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
+	cairo_surface_t* current_surface;
 	int				currentindex;
 	//double			timeupdate;
 	double				timedisp;
