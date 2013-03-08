@@ -85,6 +85,7 @@ namespace studio
 {
 class WorkAreaTarget;
 class WorkAreaTarget_Full;
+class WorkAreaTarget_Cairo;
 
 class Instance;
 class CanvasView;
@@ -105,6 +106,7 @@ class WorkArea : public Gtk::Table, public Duckmatic
 {
 	friend class WorkAreaTarget;
 	friend class WorkAreaTarget_Full;
+	friend class WorkAreaTarget_Cairo;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
@@ -132,6 +134,28 @@ public:
 		DRAG_BOX,
 		DRAG_BEZIER
 	};
+	// Class used to store the cairo surface
+	class SurfaceElement
+	{
+	public:
+		cairo_surface_t* surface;
+		int refreshes;
+		SurfaceElement()
+		{
+			surface=NULL;
+		}
+		//Copy constructor
+		SurfaceElement(const SurfaceElement& other): surface(cairo_surface_reference(other.surface)), refreshes(other.refreshes)
+		{
+		}
+		~SurfaceElement()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
+	};
+
+	typedef std::vector<SurfaceElement>	 SurfaceBook;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -214,6 +238,8 @@ private:
 
 	//! This vector holds all of the tiles for this image
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> > tile_book;
+	// This vector holds all the cairo surfaces for the frame 
+	SurfaceBook cairo_book;
 
 	//! This integer describes the total times that the work are has been refreshed
 	int refreshes;
