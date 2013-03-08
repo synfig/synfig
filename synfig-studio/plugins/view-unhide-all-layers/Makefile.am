@@ -11,3 +11,5 @@ plugin_DATA = \
 	$(PLUGIN_NAME).py \
 	plugin.xml \
 	$(EXTRA_FILES)
+
+@INTLTOOL_XML_RULE@
