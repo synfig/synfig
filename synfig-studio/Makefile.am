@@ -55,7 +55,7 @@ DISTCHECK_CONFIGURE_FLAGS = --disable-update-mimedb
 desktopdir = $(prefix)/share/applications
 desktop_DATA = synfigstudio.desktop
 
-# @INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
 mimeinfodir              = $(prefix)/share/mime-info
 mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime

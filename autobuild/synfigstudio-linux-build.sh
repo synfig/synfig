@@ -511,7 +511,7 @@ if [[ $MODE == 'package' ]]; then
 fi
 
 if [[ $MODE != 'quick' ]]; then
-	autoreconf --install --force
+	/bin/sh ./bootstrap.sh
 	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 

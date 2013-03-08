@@ -99,8 +99,8 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
-	bindtextdomain("synfigstudio", LOCALEDIR);
-	bind_textdomain_codeset("synfigstudio", "UTF-8");
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
 	action_main=new synfigapp::Action::Main();

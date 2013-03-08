@@ -1,3 +1,4 @@
+synfigstudio.desktop.in
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
 src/gui/actionmanagers/keyframeactionmanager.cpp
