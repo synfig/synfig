@@ -3884,6 +3884,7 @@ CanvasView::on_preview_option()
 				po->set_begin_override(false);
 				po->set_endtime(end);
 				po->set_end_override(false);
+				po->set_use_cairo(false);
 
 				set_ext_widget("prevoptions",po);
 			}
