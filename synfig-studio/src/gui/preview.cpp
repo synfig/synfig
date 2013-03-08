@@ -763,6 +763,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	if (text != _("Fit") & text != "fit")
 	{
 		draw_area.set_size_request(nw, nh);
+		dw = draw_area.get_width();
+		dh = draw_area.get_height();
 	}
 
 	//synfig::info("Now to draw to the window...");
@@ -790,7 +792,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 			cr, //cairo context
 			pxnew, //pixbuf
 			//coordinates to place center of the preview window
-			(draw_area.get_width() - nw) / 2, (draw_area.get_height() - nh) / 2
+			(dw - nw) / 2, (dh - nh) / 2
 			);
 		cr->paint();
 		cr->restore();
@@ -798,7 +800,9 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	else
 	{
 		cr->save();
-		cairo_set_source_surface(cr->cobj(), cs, 0, 0);
+		cr->scale(sx, sx);
+		cairo_set_source_surface(cr->cobj(), cs, (dw - nw)/(2*sx), (dh - nh)/(2*sx));
+		cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
 		cairo_surface_destroy(cs);
 		cr->paint();
 		cr->restore();
