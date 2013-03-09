@@ -288,6 +288,7 @@ public:
 	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book(){ return tile_book; }
+	SurfaceBook& get_cairo_book() { return cairo_book; }
 	int get_refreshes()const { return refreshes; }
 	bool get_canceled()const { return canceled_; }
 	bool get_queued()const { return queued; }

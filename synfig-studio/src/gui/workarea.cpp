@@ -2592,7 +2592,17 @@ studio::WorkArea::async_update_preview()
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
 	div = low_resolution ? low_res_pixel_size : 1;
-	if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
+	if(studio::App::workarea_uses_cairo)
+	{
+		// do a Cairo render
+		handle<WorkAreaTarget_Cairo> trgt(new class WorkAreaTarget_Cairo(this,w,h));
+		
+		trgt->set_rend_desc(&desc);
+		trgt->set_onion_skin(get_onion_skin(), onion_skins);
+		target=trgt;
+
+	}
+	else if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
 	{
 		// do a tile render
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));

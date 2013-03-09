@@ -32,11 +32,11 @@
 #endif
 
 #include "renderer_canvas.h"
-#include "workarea.h"
 #include <ETL/misc>
 #include <gdkmm/general.h>
 
 #include "general.h"
+#include "app.h"
 
 #endif
 
@@ -62,6 +62,12 @@ std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >&
 Renderer_Canvas::get_tile_book()
 {
 	return get_work_area()->get_tile_book();
+}
+
+studio::WorkArea::SurfaceBook&
+Renderer_Canvas::get_cairo_book()
+{
+	return get_work_area()->get_cairo_book();
 }
 
 bool
@@ -108,6 +114,7 @@ Renderer_Canvas::render_vfunc(
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
+	WorkArea::SurfaceBook& cairo_book(get_cairo_book());
 
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
@@ -133,8 +140,33 @@ Renderer_Canvas::render_vfunc(
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+	if(studio::App::workarea_uses_cairo)
+	{
+		if(!cairo_book.empty())
+		{
+			if(cairo_book[0].surface)
+			{
+				int div;
+				cr->save();
+				if(get_work_area()->get_low_resolution_flag())
+				{
+					div = get_work_area()->get_low_res_pixel_size();
+					cr->scale(div, div);
+				}
+				else
+					div=1;
+				cairo_set_source_surface(cr->cobj(), cairo_book[0].surface, round_to_int(x)/div, round_to_int(y)/div);
+				cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+				cr->paint();
+				cr->restore();
+			}
+		}
+		if(cairo_book[0].refreshes!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
+		   get_work_area()->async_update_preview();
 
-	if(!tile_book.empty())
+		   
+	}
+	else if(!tile_book.empty())
 	{
 		if(get_full_frame())
 		{

@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
+#include "workarea.h"
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -45,6 +46,7 @@ public:
 	~Renderer_Canvas();
 
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book();
+	WorkArea::SurfaceBook& get_cairo_book();
 
 	bool get_full_frame()const;
 
