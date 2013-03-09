@@ -208,6 +208,7 @@ public:
 	static float preferred_fps;
 	static synfig::String sequence_separator;
 	static bool navigator_uses_cairo;
+	static bool workarea_uses_cairo;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/

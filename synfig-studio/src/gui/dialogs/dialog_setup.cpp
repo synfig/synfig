@@ -301,6 +301,9 @@ Dialog_Setup::Dialog_Setup():
 	// Render - Use Cairo on Navigator
 	attach_label(render_table, _("Use Cairo render on Navigator"), 1, xpadding, ypadding);
 	render_table->attach(toggle_navigator_uses_cairo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	// Render - Use Cairo on WorkArea
+	attach_label(render_table, _("Use Cairo render on WorkArea"), 2, xpadding, ypadding);
+	render_table->attach(toggle_workarea_uses_cairo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	show_all_children();
 }
@@ -371,6 +374,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the navigator uses cairo flag
 	App::navigator_uses_cairo=toggle_navigator_uses_cairo.get_active();
+
+	// Set the workarea uses cairo flag
+	App::workarea_uses_cairo=toggle_workarea_uses_cairo.get_active();
 
 	App::save_settings();
 
@@ -525,6 +531,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the navigator_uses_cairo flag
 	toggle_navigator_uses_cairo.set_active(App::navigator_uses_cairo);
+
+	// Refresh the status of the workarea_uses_cairo flag
+	toggle_workarea_uses_cairo.set_active(App::workarea_uses_cairo);
 }
 
 GammaPattern::GammaPattern():
