@@ -136,6 +136,7 @@ public:
 	void set_end_override(bool o) { check_overend.set_active(o); }
 	
 	bool get_use_cairo() const { return check_use_cairo.get_active(); }
+	void set_use_cairo(bool u) { check_use_cairo.set_active(u); }
 
 	sigc::signal<void,const PreviewInfo &>	&signal_finish() {return signal_finish_;}
 };
