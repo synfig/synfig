@@ -2729,7 +2729,11 @@ again:
 	set_rend_desc(desc);
 
 	// Create the render target
-	handle<WorkAreaTarget> target(new class WorkAreaTarget(this,w,h));
+	handle<Target> target;
+	if(studio::App::workarea_uses_cairo)
+		target=new class WorkAreaTarget_Cairo(this,w,h);
+	else
+		target=new class WorkAreaTarget(this, w, h);
 
 	target->set_rend_desc(&desc);
 
