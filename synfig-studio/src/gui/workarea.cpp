@@ -269,7 +269,6 @@ public:
 	{
 		synfig::Mutex::Lock lock(mutex);
 		workarea->cairo_book.resize(total_tiles());
-		synfig::info("total_tiles()=%d", total_tiles());
 		return true;
 	}
 		
@@ -303,7 +302,7 @@ public:
 		}
 		
 		workarea->queue_draw();
-		assert(workarea->tile_book[index].first);
+		assert(workarea->cairo_book[index].surface);
 
 		cairo_surface_destroy(tile_surface);
 		return true;

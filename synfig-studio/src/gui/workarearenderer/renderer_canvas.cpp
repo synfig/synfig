@@ -144,28 +144,86 @@ Renderer_Canvas::render_vfunc(
 	{
 		if(!cairo_book.empty())
 		{
-			if(cairo_book[0].surface)
+			if(get_full_frame())
+			{
+					if(cairo_book[0].surface)
+					{
+						int div;
+						cr->save();
+						if(get_work_area()->get_low_resolution_flag())
+						{
+							div = get_work_area()->get_low_res_pixel_size();
+							cr->scale(div, div);
+						}
+						else
+							div=1;
+						cairo_set_source_surface(cr->cobj(), cairo_book[0].surface, round_to_int(x)/div, round_to_int(y)/div);
+						cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+						cr->paint();
+						cr->restore();
+					}
+			
+				if(cairo_book[0].refreshes!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
+				   get_work_area()->async_update_preview();
+			}
+			else // tiled frame
 			{
 				int div;
-				cr->save();
-				if(get_work_area()->get_low_resolution_flag())
+
+				const int width_in_tiles(w/tile_w+(((get_work_area()->get_low_resolution_flag())?((w/div)%(tile_w/div)):(w%tile_w))?1:0));
+				const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
+				
+				int u(0),v(0),tx,ty;
+				int u1(0),v1(0),u2(width_in_tiles), v2(height_in_tiles);
+				
+				bool needs_refresh(false);
+				
+				u1=int(-x/tile_w);
+				v1=int(-y/tile_h);
+				u2=int((-x+drawable_w)/tile_w+1);
+				v2=int((-y+drawable_h)/tile_h+1);
+				if(u2>width_in_tiles)u2=width_in_tiles;
+				if(v2>height_in_tiles)v2=height_in_tiles;
+				if(u1<0)u1=0;
+				if(v1<0)v1=0;
+				
+				for(v=v1;v<v2;v++)
 				{
-					div = get_work_area()->get_low_res_pixel_size();
-					cr->scale(div, div);
+					for(u=u1;u<u2;u++)
+					{
+						int index=v*width_in_tiles+u;
+						if(int(cairo_book.size())>index && cairo_book[index].surface)
+						{
+							cr->save();
+							if(get_work_area()->get_low_resolution_flag())
+							{
+								div = get_work_area()->get_low_res_pixel_size();
+								cr->scale(div, div);
+							}
+							else
+								div=1;
+
+							tx=u*tile_w;
+							ty=v*tile_w; // not tile_h?
+							
+							cairo_set_source_surface(cr->cobj(), cairo_book[index].surface, (round_to_int(x)+tx)/div, (round_to_int(y)+ty)/div);
+							cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+							cr->paint();
+							cr->restore();
+						}
+						if(cairo_book[index].refreshes!=get_refreshes())
+							needs_refresh=true;
+					}
 				}
-				else
-					div=1;
-				cairo_set_source_surface(cr->cobj(), cairo_book[0].surface, round_to_int(x)/div, round_to_int(y)/div);
-				cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
-				cr->paint();
-				cr->restore();
+				if(needs_refresh==true && get_canceled()==false && get_rendering()==false && get_queued()==false)
+				{
+					get_work_area()->async_update_preview();
+				}
+				
 			}
 		}
-		if(cairo_book[0].refreshes!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
-		   get_work_area()->async_update_preview();
-
-		   
 	}
+	
 	else if(!tile_book.empty())
 	{
 		if(get_full_frame())
