@@ -151,7 +151,9 @@ synfig-studio/m4/ltversion.m4
 synfig-studio/m4/lt~obsolete.m4
 synfig-studio/pkg-info/macosx/synfig-studio.info
 synfig-studio/po/*.gmo
+synfig-studio/po/.intltool-merge-cache
 synfig-studio/po/synfigstudio.pot
+synfig-studio/po/stamp-it
 synfig-studio/src/gui/synfigstudio
 synfig-studio/synfigstudio-thumbnailer.schemas
 synfig-studio/synfigstudio.desktop
