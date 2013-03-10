@@ -191,7 +191,7 @@ private:
 	synfig::Real	canvasheight;	//!< Height of the canvas
 	synfig::Real	pw;				//!< The width of a pixel
 	synfig::Real	ph;				//!< The height of a pixel
-	// float zoom, prev_zoom are declared in Duckmatic
+	// float zoom and prev_zoom are declared in Duckmatic
 	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
 	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
 
@@ -236,12 +236,12 @@ private:
 
 	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
 
-	//! This vector holds all of the tiles for this image
+	//! This vector holds all of the tiles for this frame
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> > tile_book;
 	// This vector holds all the cairo surfaces for the frame 
 	SurfaceBook cairo_book;
 
-	//! This integer describes the total times that the work are has been refreshed
+	//! This integer describes the total times that the work area has been refreshed
 	int refreshes;
 
 	//! This list holds the queue of tiles that need to be rendered
@@ -263,7 +263,7 @@ private:
 
 	int dirty_trap_queued;
 
-
+	// This flag is set if onion skin is visible
 	bool onion_skin;
 	//! stores the future [1] and past [0] onion skins based on keyframes
 	int onion_skins[2];
@@ -497,7 +497,7 @@ public:
 	void zoom_out();
 	void zoom_fit();
 	void zoom_norm();
-	float get_zoom()const { return zoom; }
+	float get_zoom()const { return zoom; } // zoom is declared in Duckmatic
 
 	void set_zoom(float z);
 
