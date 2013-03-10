@@ -56,7 +56,7 @@ TARGETSOURCES = \
 	target_scanline.cpp \
 	target_cairo.cpp \
 	target_tile.cpp \
-	target_cairo_tile.h
+	target_cairo_tile.cpp
 
 
 IMPORTERHEADERS = \

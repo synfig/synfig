@@ -147,7 +147,7 @@ synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 			cairo_status_t status = cairo_surface_status(surface);
 			if(status)
 			{
-				if(cb) cb->error(_("Bad surface: %s", cairo_status_to_string(status)));
+				if(cb) cb->error(strprintf(_("Bad surface: %s"), cairo_status_to_string(status)));
 				return false;
 			}
 			// Add the tile to the target

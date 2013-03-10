@@ -86,6 +86,7 @@ namespace studio
 class WorkAreaTarget;
 class WorkAreaTarget_Full;
 class WorkAreaTarget_Cairo;
+class WorkAreaTarget_Cairo_Tile;
 
 class Instance;
 class CanvasView;
@@ -107,6 +108,7 @@ class WorkArea : public Gtk::Table, public Duckmatic
 	friend class WorkAreaTarget;
 	friend class WorkAreaTarget_Full;
 	friend class WorkAreaTarget_Cairo;
+	friend class WorkAreaTarget_Cairo_Tile;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
