@@ -104,9 +104,7 @@ public:
 	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
-	//std::vector<Glib::RefPtr<Gdk::Pixbuf> >::iterator tile_iter;
 
-	int twindow_start, twindow_width, twindow_height, twindow_pad;
 	int refresh_id;
 
 	bool onionskin;
@@ -275,19 +273,7 @@ public:
 	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
 	{
 		synfig::Mutex::Lock lock(mutex);
-
-		int tw(rend_desc().get_w()/get_tile_w());
-		if(rend_desc().get_w()%get_tile_w()!=0)tw++;
-		int th(rend_desc().get_h()/get_tile_h());
-		if(rend_desc().get_h()%get_tile_h()!=0)th++;
-
-		twindow_start=0;
-		twindow_width=tw;
-		twindow_height=th;
-		twindow_pad=0;
-
 		workarea->tile_book.resize(total_tiles());
-		//tile_iter=workarea->tile_book.begin()+twindow_start;
 		return true;
 	}
 
@@ -548,9 +534,7 @@ public:
 	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
-	//std::vector<Glib::RefPtr<Gdk::Pixbuf> >::iterator tile_iter;
 
-	int twindow_start, twindow_width, twindow_height, twindow_pad;
 	int refresh_id;
 
 	bool onionskin;
