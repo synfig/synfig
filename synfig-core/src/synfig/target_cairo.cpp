@@ -142,7 +142,7 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 				if(!context.accelerated_cairorender(surface,quality,desc,cb))
 				{
 					// For some reason, the accelerated renderer failed.
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
+					if(cb)cb->error(_("Frame Renderer Failure"));
 					return false;
 				}
 				else

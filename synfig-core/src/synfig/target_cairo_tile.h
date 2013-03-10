@@ -115,13 +115,15 @@ public:
 	void set_clipping(bool x) { clipping_=x; }
 	
 	
-	//! Obtain a surface pointer based on the render method
-	//! this function has to be overrrided by the derived targets 
-	//! to create the proper Cairo backend surface for each target type.
-	virtual bool obtain_surface(cairo_surface_t*&)=0; 
+	//! Marks the start of a frame
+	/*! \return \c true on success, \c false upon an error.
+	 **	\see end_frame()*/
+	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
 	
-	//! Puts the rendered surface onto the target.
-	virtual bool put_surface(cairo_surface_t *surface, ProgressCallback *cb=NULL);
+	//! Marks the end of a frame
+	/*! \see start_frame() */
+	virtual void end_frame()=0;
+	
 	//! Filters the cairo surface based on gamma (hardcored for the moment to 2.2)
 	static void gamma_filter(cairo_surface_t* surface);
 

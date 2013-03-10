@@ -97,7 +97,7 @@ Target_Cairo_Tile::next_tile(int& x, int& y)
 }
 
 bool
-synfig::Target_Cairo_Tile::render_frame_(cairo_surface_t* target_surface, Context context,ProgressCallback *cb)
+synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 {
 	if(tile_w_<=0||tile_h_<=0)
 	{
@@ -151,7 +151,7 @@ synfig::Target_Cairo_Tile::render_frame_(cairo_surface_t* target_surface, Contex
 				return false;
 			}
 			// Add the tile to the target
-			if(!add_tile(surface, target_surface, x,y))
+			if(!add_tile(surface, x,y))
 			{
 				if(cb)cb->error(_("add_tile():Unable to put surface on target"));
 				return false;
@@ -206,6 +206,12 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
 				return false;
 
+			if(!start_frame(cb))
+			{
+				if(cb)cb->error(_("Can't start frame"));
+				return false;
+			}
+
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
@@ -226,32 +232,13 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 	#else
 			context=canvas->get_context();
 	#endif
-			// Obtain a pointer to the cairo_surface_t given by the Target instance.
-			cairo_surface_t* surface;
-			if(obtain_surface(surface))
+			if(!render_frame_(context,cb))
 			{
-				if(!render_frame_(surface,context,cb))
-				{
-					// For some reason, the accelerated renderer failed.
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
-				}
-				else
-				{
-					// Put the surface we renderer onto the target's device.
-					// and destrois cairo_surface_t
-					if(!put_surface(surface, cb))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-				}
+				// For some reason, the accelerated renderer failed.
+				if(cb)cb->error(_("Accelerated Renderer Failure"));
+				return false;
 			}
-			else
-			{
-				if(cb)cb->error(_("Can't obtain a valid surface"));
-				return false;						
-			}
+			end_frame();
 		}while(frames);
 	}
 	catch(String str)
@@ -269,19 +256,6 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 		if(cb)cb->error(_("Caught unknown error, rethrowing..."));
 		throw;
 	}
-	return true;
-}
-
-bool
-Target_Cairo_Tile::put_surface(cairo_surface_t *surface, ProgressCallback *cb)
-{
-	if(cairo_surface_status(surface))
-	{
-		if(cb) cb->error(_("Cairo Surface bad status"));
-		return false;
-	}	
-	cairo_surface_flush(surface);
-	cairo_surface_destroy(surface);
 	return true;
 }
 
