@@ -770,6 +770,9 @@ load_plugins_from_dir(const std::string &pluginsprefix, const std::string &suffi
 {
 	// TODO: (Plugins) Set suffix for plugin id depending on the loation
 	
+	// Get locale
+	std::string current_locale = setlocale(LC_ALL, NULL);
+	
 	//pluginsprefix = *ppath;
 	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
 	
@@ -820,12 +823,17 @@ load_plugins_from_dir(const std::string &pluginsprefix, const std::string &suffi
 									if ( std::string(pNode->get_name()) == std::string("plugin") ){
 										//Recurse through child nodes:
 										xmlpp::Node::NodeList list = pNode->get_children();
+										
+										unsigned int name_relevance = 0;
+										
 										for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 										{
 											const xmlpp::Node* node = *iter;
 											if ( std::string(node->get_name()) == std::string("name") ) {
+
+												const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node);
 												
-												xmlpp::Node::NodeList l = node->get_children();
+												xmlpp::Node::NodeList l = nodeElement->get_children();
 												xmlpp::Node::NodeList::iterator i = l.begin();
 												xmlpp::Node* n = *i;
 												
@@ -833,8 +841,24 @@ load_plugins_from_dir(const std::string &pluginsprefix, const std::string &suffi
 												
 												if(nodeText)
 												{
-													// TODO: (Plugins) Use gettext & intltool for localization of xml files
-													p.name=nodeText->get_content();
+													// Get the language attribute
+													const xmlpp::Attribute* langAttribute = nodeElement->get_attribute("lang", "xml");
+
+													if (langAttribute) {
+														// Element have language attribute,
+														std::string lang = langAttribute->get_value();
+														// let's compare it with current locale
+														 if (!current_locale.compare(0, lang.size(), lang)) {
+															 if (lang.size() > name_relevance){
+																 p.name=nodeText->get_content();
+															 }
+														 }
+													} else {
+														// Element have no language attribute - use as fallback
+														if (name_relevance == 0){
+															p.name=nodeText->get_content();
+														}
+													}
 												}
 												
 											} else if ( std::string(node->get_name()) == std::string("exec") ) {
