@@ -2079,8 +2079,6 @@ App::quit()
 {
 	if(shutdown_in_progress)return;
 
-	shutdown_in_progress=true;
-
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
