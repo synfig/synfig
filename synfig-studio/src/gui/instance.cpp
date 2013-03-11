@@ -208,42 +208,37 @@ studio::Instance::run_plugin(std::string plugin_path)
 	if(answer==synfigapp::UIInterface::RESPONSE_YES){
 	
 	OneMoment one_moment;
-	
+
+	// Save the original filename
 	String filename;
+	filename = this->get_file_name();
+
+	String tmp_filename_base;
+	if (!this->has_real_filename())
+	{
+		tmp_filename_base = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
+	} else {
+		tmp_filename_base = this->get_file_name();
+	}
+	
+	// Make random filename and ensure there's no file with such name exist
+	struct stat buf;
+
+	// Filename to save the file for processing
 	String tmp_filename;
-	// We need tmp_filename_orig in case of plugin execation will fail.
+	do {
+		synfig::GUID guid;
+		tmp_filename = tmp_filename_base+"."+guid.get_string().substr(0,8);
+	} while (stat(tmp_filename.c_str(), &buf) != -1);
+	
+	// We need a copy (tmp_filename_orig) in case of plugin execution will fail.
 	// The tmp_filename_orig will store original unmodified version of file
 	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
 	// tmp_filename_orig instead.
 	String tmp_filename_orig;
-	filename = this->get_file_name();
-	if (!this->has_real_filename())
-	{
-		tmp_filename = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
-	} else {
-		tmp_filename = this->get_file_name();
-	}
-	tmp_filename_orig = tmp_filename;
-	
-	// make random filename and ensure there's no file with such name
-	static string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-	std::string rsuffix;
-	int length = 8;
-	rsuffix.resize(length);
-    
-	srand(time(NULL));
-	struct stat buf;
-	
 	do {
-		for (int i = 0; i < length; i++)
-			rsuffix[i] = charset[rand() % charset.length()];
-		tmp_filename = tmp_filename+"."+rsuffix;
-	} while (stat(tmp_filename.c_str(), &buf) != -1);
-	
-	do {
-		for (int i = 0; i < length; i++)
-			rsuffix[i] = charset[rand() % charset.length()];
-		tmp_filename_orig = tmp_filename_orig+"."+rsuffix;
+		synfig::GUID guid;
+		tmp_filename_orig = tmp_filename_base+"."+guid.get_string().substr(0,8);
 	} while (stat(tmp_filename_orig.c_str(), &buf) != -1);
 	
 	Canvas::Handle canvas(this->get_canvas());
