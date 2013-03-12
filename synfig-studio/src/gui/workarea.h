@@ -145,6 +145,7 @@ public:
 		SurfaceElement()
 		{
 			surface=NULL;
+			refreshes=0;
 		}
 		//Copy constructor
 		SurfaceElement(const SurfaceElement& other): surface(cairo_surface_reference(other.surface)), refreshes(other.refreshes)
