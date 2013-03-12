@@ -1492,6 +1492,7 @@ WorkArea::set_wh(int W, int H,int CHAN)
 	refresh_dimension_info();
 
 	tile_book.clear();
+	cairo_book.clear();
 
 	return true;
 }
