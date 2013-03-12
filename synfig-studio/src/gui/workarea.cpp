@@ -2496,8 +2496,10 @@ WorkArea::comp_to_screen_coords(synfig::Point /*pos*/)const
 int
 WorkArea::next_unrendered_tile(int refreshes)const
 {
-	//assert(!tile_book.empty());
-	if(tile_book.empty())
+	bool uses_cairo=studio::App::workarea_uses_cairo;
+	if(tile_book.empty() && !uses_cairo)
+		return -1;
+	else if (cairo_book.empty() && uses_cairo)
 		return -1;
 
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
@@ -2532,12 +2534,26 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		for(u=u1;u<u2;u++)
 		{
 			int index(v*width_in_tiles+u);
-			if(tile_book[index].second<refreshes)
+			if(!uses_cairo)
 			{
-				last_good_tile=index;
-				if(rand()%8==0)
-					return index;
+				if(tile_book[index].second<refreshes)
+				{
+					last_good_tile=index;
+					if(rand()%8==0)
+						return index;
+				}
 			}
+			else
+			{
+				
+				if(cairo_book[index].refreshes<refreshes)
+				{
+					last_good_tile=index;
+					if(rand()%8==0)
+						return index;
+				}
+			}
+			
 		}
 	return last_good_tile;
 }
