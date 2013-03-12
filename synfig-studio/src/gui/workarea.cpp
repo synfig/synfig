@@ -299,6 +299,7 @@ public:
 			cairo_t* cr=cairo_create(workarea->cairo_book[index].surface);
 			cairo_set_source_surface(cr, tile_surface, 0, 0);
 			cairo_paint_with_alpha(cr, 255/(onion_layers-onion_skin_queue.size()+1));
+			cairo_destroy(cr);
 		}
 		
 		workarea->queue_draw();
