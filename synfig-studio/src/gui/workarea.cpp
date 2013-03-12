@@ -277,7 +277,8 @@ public:
 		synfig::Mutex::Lock lock(mutex);
 		if(cairo_surface_status(tile_surface))
 			return false;
-		
+
+		gamma_filter(tile_surface);
 		x/=get_tile_w();
 		y/=get_tile_h();
 		int tw(rend_desc().get_w()/get_tile_w());
