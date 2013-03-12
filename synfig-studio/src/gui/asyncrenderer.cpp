@@ -241,6 +241,192 @@ public:
 	}
 };
 
+class AsyncTarget_Cairo_Tile : public synfig::Target_Cairo_Tile
+{
+public:
+	etl::handle<synfig::Target_Cairo_Tile> warm_target;
+	
+	class tile_t
+	{
+	public:
+		cairo_surface_t* surface;
+		int x,y;
+		tile_t(): surface(NULL), x(0), y(0)
+		{
+		}
+		tile_t(cairo_surface_t*& surface_,int x_, int y_)
+		{
+			if(surface_)
+				surface=cairo_surface_reference(surface_);
+			else
+				surface=surface_;
+			x=x_;
+			y=y_;
+		}
+		tile_t(const tile_t &other):
+		surface(cairo_surface_reference(other.surface)),
+		x(other.x),
+		y(other.y)
+		{
+		}
+		~tile_t()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
+	};
+	std::list<tile_t> tile_queue;
+	Glib::Mutex mutex;
+	
+#ifndef GLIB_DISPATCHER_BROKEN
+	Glib::Dispatcher tile_ready_signal;
+#endif
+	Glib::Cond cond_tile_queue_empty;
+	bool alive_flag;
+	
+	sigc::connection ready_connection;
+	
+public:
+	AsyncTarget_Cairo_Tile(etl::handle<synfig::Target_Cairo_Tile> warm_target):
+	warm_target(warm_target)
+	{
+		set_avoid_time_sync(warm_target->get_avoid_time_sync());
+		set_tile_w(warm_target->get_tile_w());
+		set_tile_h(warm_target->get_tile_h());
+		set_canvas(warm_target->get_canvas());
+		set_quality(warm_target->get_quality());
+		set_remove_alpha(warm_target->get_remove_alpha());
+		set_threads(warm_target->get_threads());
+		set_clipping(warm_target->get_clipping());
+		set_rend_desc(&warm_target->rend_desc());
+		alive_flag=true;
+#ifndef GLIB_DISPATCHER_BROKEN
+		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready));
+#endif
+	}
+	
+	~AsyncTarget_Cairo_Tile()
+	{
+		ready_connection.disconnect();
+	}
+	void set_dead()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		alive_flag=false;
+	}
+	
+	virtual int total_tiles()const
+	{
+		return warm_target->total_tiles();
+	}
+	
+	virtual int next_tile(int& x, int& y)
+	{
+		if(!alive_flag)
+			return 0;
+		
+		return warm_target->next_tile(x,y);
+	}
+	
+	virtual int next_frame(Time& time)
+	{
+		if(!alive_flag)
+			return 0;
+		return warm_target->next_frame(time);
+	}
+	
+	virtual bool start_frame(synfig::ProgressCallback *cb=0)
+	{
+		if(!alive_flag)
+			return false;
+		return warm_target->start_frame(cb);
+	}
+	
+	virtual bool add_tile(cairo_surface_t*& surface, int gx, int gy)
+	{
+		if(cairo_surface_status(surface))
+			return false;
+		if(!alive_flag)
+			return false;
+		Glib::Mutex::Lock lock(mutex);
+		tile_queue.push_back(tile_t(surface,gx,gy));
+		if(tile_queue.size()==1)
+		{
+#ifdef GLIB_DISPATCHER_BROKEN
+			ready_connection=Glib::signal_timeout().connect(
+					sigc::bind_return(
+							sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready),
+							false
+							)
+							,0
+						);
+#else
+			tile_ready_signal();
+#endif
+		}
+		//cairo_surface_destroy(surface);
+		return alive_flag;
+	}
+	
+	void tile_ready()
+	{
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+		{
+			tile_queue.clear();
+			cond_tile_queue_empty.signal();
+			return;
+		}
+		while(!tile_queue.empty() && alive_flag)
+		{
+			tile_t& tile(tile_queue.front());
+			
+//			if (getenv("SYNFIG_SHOW_TILE_OUTLINES"))
+//			{
+//				Color red(1,0,0);
+//				tile.surface.fill(red, 0, 0, 1, tile.surface.get_h());
+//				tile.surface.fill(red, 0, 0, tile.surface.get_w(), 1);
+//			}
+			
+			alive_flag=warm_target->add_tile(tile.surface,tile.x,tile.y);
+			
+			tile_queue.pop_front();
+		}
+		cond_tile_queue_empty.signal();
+	}
+	
+	virtual void end_frame()
+	{
+#ifdef SINGLE_THREADED
+		if (!single_threaded())
+		{
+#endif
+			while(alive_flag)
+			{
+				Glib::Mutex::Lock lock(mutex);
+				Glib::TimeVal end_time;
+				
+				end_time.assign_current_time();
+				end_time.add_microseconds(BOREDOM_TIMEOUT);
+				
+				if(!tile_queue.empty() && alive_flag)
+				{
+					if(cond_tile_queue_empty.timed_wait(mutex,end_time))
+						break;
+				}
+				else
+					break;
+			}
+#ifdef SINGLE_THREADED
+		}
+#endif
+		Glib::Mutex::Lock lock(mutex);
+		if(!alive_flag)
+			return;
+		return warm_target->end_frame();
+	}
+};
+
 
 
 class AsyncTarget_Scanline : public synfig::Target_Scanline
@@ -528,6 +714,19 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 
 		target=wrap_target;
 	}
+	else if(etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
+	{
+		etl::handle<AsyncTarget_Cairo_Tile> wrap_target(
+			new AsyncTarget_Cairo_Tile(
+					etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_)
+			)
+		);
+		
+		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo_Tile::set_dead));
+		
+		target=wrap_target;
+	}
+
 	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo> wrap_target(
