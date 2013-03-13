@@ -347,7 +347,7 @@ blendfunc_BRIGHTEN(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -410,7 +410,7 @@ blendfunc_DARKEN(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_DARKEN(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -468,7 +468,7 @@ blendfunc_ADD(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_ADD(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -510,7 +510,7 @@ blendfunc_SUBTRACT(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_SUBTRACT(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -552,7 +552,7 @@ blendfunc_DIFFERENCE(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_DIFFERENCE(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -615,7 +615,7 @@ blendfunc_DIVIDE(C &a,C &b,float amount)
 
 // Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_DIVIDE(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
@@ -718,7 +718,7 @@ blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_ALPHA_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 {
 	// \todo can this be right, multiplying amount by *b*'s alpha?
@@ -766,7 +766,7 @@ blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 
 //Specialization for CairoColor
 template <>
-static CairoColor
+CairoColor
 blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 {
 	unsigned char ra, ga, ba, aa;
@@ -840,7 +840,7 @@ blendfunc_OVERLAY(C &a,C &b,float amount)
 //Specialization for CairoColors
 // OVERLAY needs a further compositon with ONTO
 template <>
-static CairoColor
+CairoColor
 blendfunc_OVERLAY<CairoColor>(CairoColor &a,CairoColor &b,float amount)
 {
 	//const float one(C::ceil);

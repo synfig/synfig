@@ -35,6 +35,8 @@
 #include <synfig/string.h>
 # include "angle.h"
 
+#include <stdint.h>
+
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
 #endif
