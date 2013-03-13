@@ -3,5 +3,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = \
-	add-simple-skeleton \
+	add-skeleton-simple \
 	view-unhide-all-layers

@@ -2,7 +2,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-PLUGIN_NAME = add-simple-skeleton
+PLUGIN_NAME = add-skeleton-simple
 
 EXTRA_FILES = stickman.sif
 
