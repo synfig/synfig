@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <canvas version="0.9" width="480" height="270" xres="2834.645752" yres="2834.645752" view-box="-4.000000 2.250000 4.000000 -2.250000" antialias="1" fps="24.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Stickman</name>
   <desc>  </desc>
@@ -42,7 +42,7 @@
     </vector>
     <angle value="-24.257536" id="(stk)-wrist1-t"/>
     <real value="0.3466623282" id="(stk)-palm1-r"/>
-    <angle value="-13.646893" id="(stk)-palm1-t"/>
+    <angle value="-13.646892" id="(stk)-palm1-t"/>
     <vector id="(stk)-shoulder2">
       <x>-0.1397183239</x>
       <y>0.5595002174</y>
@@ -70,6 +70,7 @@
       <a>1.000000</a>
     </color>
     <bool value="false" id="(stk)-children-lock"/>
+    <string id="(stk)-version">1</string>
   </defs>
   <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)">
     <param name="z_depth">
@@ -270,7 +271,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-elbow2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-elbow2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -295,7 +296,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="elbow2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="elbow2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-elbow2-r">
                     <y>
@@ -680,7 +681,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-wrist2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-wrist2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -705,7 +706,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="wrist2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="wrist2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-wrist2-r">
                     <y>
@@ -1108,7 +1109,7 @@
                   <angle value="180.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-palm2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-palm2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -1133,7 +1134,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="palm2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="palm2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-palm2-r">
                     <y>
@@ -1598,7 +1599,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-elbow1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-elbow1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -1623,7 +1624,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="elbow1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="elbow1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-elbow1-r">
                     <y>
@@ -2008,7 +2009,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-wrist1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-wrist1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -2033,7 +2034,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="wrist1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="wrist1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-wrist1-r">
                     <y>
@@ -2425,7 +2426,7 @@
                   <real value="0.0000000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-palm1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-palm1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -2450,7 +2451,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="palm1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="palm1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-palm1-r">
                     <y>
@@ -3184,7 +3185,7 @@
                         <bool value="true"/>
                       </param>
                     </layer>
-                    <layer type="outline" active="true" version="0.2" desc="NewBLine010 &#x41A;&#x43E;&#x43D;&#x442;&#x443;&#x440;">
+                    <layer type="outline" active="true" version="0.2" desc="NewBLine010 Контур">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3355,63 +3356,6 @@
                 </param>
                 <param name="amount">
                   <angle value="-90.000000"/>
-                </param>
-              </layer>
-              <layer type="zoom" active="true" version="0.1" desc="compensator-head" group="(stk)-stretches">
-                <param name="amount">
-                  <scale type="real">
-                    <link>
-                      <logarithm type="real" guid="08F84E68F19EC2EC3DB7557C469B0381">
-                        <link>
-                          <scale type="real" link=":(stk)-head-r">
-                            <scalar>
-                              <real value="0.9657341500"/>
-                            </scalar>
-                          </scale>
-                        </link>
-                        <epsilon>
-                          <real value="0.0000010000"/>
-                        </epsilon>
-                        <infinite>
-                          <real value="999999.0000000000"/>
-                        </infinite>
-                      </logarithm>
-                    </link>
-                    <scalar>
-                      <real value="-1.0000000000"/>
-                    </scalar>
-                  </scale>
-                </param>
-                <param name="center">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
-                </param>
-              </layer>
-              <layer type="zoom" active="true" version="0.1" desc="head" group="(stk)-stretches">
-                <param name="amount">
-                  <logarithm type="real" guid="08F84E68F19EC2EC3DB7557C469B0381">
-                    <link>
-                      <scale type="real" link=":(stk)-head-r">
-                        <scalar>
-                          <real value="0.9657341500"/>
-                        </scalar>
-                      </scale>
-                    </link>
-                    <epsilon>
-                      <real value="0.0000010000"/>
-                    </epsilon>
-                    <infinite>
-                      <real value="999999.0000000000"/>
-                    </infinite>
-                  </logarithm>
-                </param>
-                <param name="center">
-                  <vector>
-                    <x>0.0000000000</x>
-                    <y>0.0000000000</y>
-                  </vector>
                 </param>
               </layer>
               <layer type="rotate" active="true" version="0.1">
@@ -3695,7 +3639,7 @@
                   <angle value="-90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-body" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-body-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -3720,7 +3664,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="body" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="body">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-body-r">
                     <y>
@@ -4128,7 +4072,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-knee1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-knee1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4153,7 +4097,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="knee1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="knee1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-knee1-r">
                     <y>
@@ -4516,7 +4460,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-foot1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-heel1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4541,7 +4485,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="foot1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="heel1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-heel1-r">
                     <y>
@@ -4911,7 +4855,7 @@
                   <real value="0.0000000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-toe1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-toe1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4936,7 +4880,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="toe1" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="toe1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-toe1-r">
                     <y>
@@ -5379,7 +5323,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-knee2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-knee2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -5404,7 +5348,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="knee2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="knee2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-knee2-r">
                     <y>
@@ -5767,7 +5711,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-foot2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-heel2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -5792,7 +5736,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="foot2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="heel2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-heel2-r">
                     <y>
@@ -6173,7 +6117,7 @@
                   <angle value="180.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="compensator-toe2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="(stk)-toe2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -6198,7 +6142,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="toe2" group="(stk)-stretches">
+              <layer type="stretch" active="true" version="0.1" desc="toe2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-toe2-r">
                     <y>
