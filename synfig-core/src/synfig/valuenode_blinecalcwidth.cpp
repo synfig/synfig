@@ -152,7 +152,7 @@ ValueNode_BLineCalcWidth::get_name()const
 String
 ValueNode_BLineCalcWidth::get_local_name()const
 {
-	return _("BLine Width");
+	return _("Spline Width");
 }
 
 bool
@@ -203,8 +203,8 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")
-		.set_local_name(_("BLine"))
-		.set_description(_("The BLine where the width is linked to"))
+		.set_local_name(_("Spline"))
+		.set_description(_("The spline where the width is linked to"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"loop")
@@ -214,7 +214,7 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"amount")
 		.set_local_name(_("Amount"))
-		.set_description(_("The position of the linked width on the BLine (0,1]"))
+		.set_description(_("The position of the linked width on the spline (0,1]"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"scale")
@@ -224,7 +224,7 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked, the width is BLine length based"))
+		.set_description(_("When checked, the width is spline length based"))
 	);
 	return ret;
 }

@@ -46,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupAddLayers);
 ACTION_SET_NAME(Action::GroupAddLayers,"GroupAddLayers");
-ACTION_SET_LOCAL_NAME(Action::GroupAddLayers,N_("Add Layers to Group"));
+ACTION_SET_LOCAL_NAME(Action::GroupAddLayers,N_("Add Layers to Set"));
 ACTION_SET_TASK(Action::GroupAddLayers,"add_to_group");
 ACTION_SET_CATEGORY(Action::GroupAddLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupAddLayers,0);
@@ -70,13 +70,13 @@ Action::GroupAddLayers::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be added to group"))
+		.set_desc(_("Layer to be added to set"))
 		.set_supports_multiple()
 	);
 
 	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
-		.set_local_name(_("Group"))
-		.set_desc(_("Name of the Group to add the Layers to"))
+		.set_local_name(_("Set"))
+		.set_desc(_("Name of the Set to add the Layers to"))
 		.set_user_supplied()
 	);
 

@@ -57,7 +57,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescBLineLink);
 ACTION_SET_NAME(Action::ValueDescBLineLink,"ValueDescBLineLink");
-ACTION_SET_LOCAL_NAME(Action::ValueDescBLineLink,N_("Link to BLine"));
+ACTION_SET_LOCAL_NAME(Action::ValueDescBLineLink,N_("Link to Spline"));
 ACTION_SET_TASK(Action::ValueDescBLineLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescBLineLink,Action::CATEGORY_BEZIER);
 ACTION_SET_PRIORITY(Action::ValueDescBLineLink,0);
@@ -84,7 +84,7 @@ Action::ValueDescBLineLink::get_param_vocab()
 		.set_supports_multiple()
 	);
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
-		.set_local_name(_("ValueDesc on BLine to link to"))
+		.set_local_name(_("ValueDesc on Spline to link to"))
 	);
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))

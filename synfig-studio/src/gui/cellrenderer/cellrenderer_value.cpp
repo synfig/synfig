@@ -424,7 +424,7 @@ CellRenderer_ValueBase::render_vfunc(
 		if(data.get(etl::handle<synfig::Canvas>()))
 		{
 			if(data.get(etl::handle<synfig::Canvas>())->is_inline())
-				property_text()=_("<Inline Canvas>");
+				property_text()=_("<Group>");
 			else
 				property_text()=(Glib::ustring)data.get(etl::handle<synfig::Canvas>())->get_id();
 		}
@@ -464,7 +464,7 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=(Glib::ustring)_("List");
 		break;
 	case ValueBase::TYPE_BLINEPOINT:
-		property_text()=(Glib::ustring)_("BLine Point");
+		property_text()=(Glib::ustring)_("Spline Point");
 		break;
 	case ValueBase::TYPE_WIDTHPOINT:
 		property_text()=(Glib::ustring)_("Width Point");

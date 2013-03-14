@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class SimpleCircle : public synfig::Layer_Composite
+class SimpleCircle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 

@@ -149,7 +149,7 @@ ValueNode_BLineCalcVertex::get_name()const
 String
 ValueNode_BLineCalcVertex::get_local_name()const
 {
-	return _("BLine Vertex");
+	return _("Spline Vertex");
 }
 
 bool
@@ -198,8 +198,8 @@ ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 	LinkableValueNode::Vocab ret;
 
 	ret.push_back(ParamDesc(ValueBase(),"bline")
-		.set_local_name(_("BLine"))
-		.set_description(_("The BLine where the vertex is linked to"))
+		.set_local_name(_("Spline"))
+		.set_description(_("The spline where the vertex is linked to"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"loop")
@@ -209,12 +209,12 @@ ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 
 	ret.push_back(ParamDesc(ValueBase(),"amount")
 		.set_local_name(_("Amount"))
-		.set_description(_("The position of the linked vertex on the BLine (0,1]"))
+		.set_description(_("The position of the linked vertex on the Spline (0,1]"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked, the position is BLine length based"))
+		.set_description(_("When checked, the position is Spline length based"))
 	);
 	return ret;
 }

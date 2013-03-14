@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class FilledRect : public synfig::Layer_Composite
+class FilledRect : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 

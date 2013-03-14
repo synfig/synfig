@@ -284,7 +284,7 @@ StateBLine_Context::load_settings()
 		if(settings.get_value("bline.id",value))
 			set_id(value);
 		else
-			set_id("NewBLine");
+			set_id(_("NewSpline"));
 
 		if(settings.get_value("bline.feather",value))
 		{
@@ -295,7 +295,7 @@ StateBLine_Context::load_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("State BLine: Caught exception when attempting to load settings.");
+		synfig::warning("State Spline: Caught exception when attempting to load settings.");
 	}
 }
 
@@ -318,7 +318,7 @@ StateBLine_Context::save_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("State BLine : Caught exception when attempting to save settings.");
+		synfig::warning("State Spline : Caught exception when attempting to save settings.");
 	}
 }
 
@@ -338,7 +338,7 @@ StateBLine_Context::increment_id()
 	int digits=0;
 
 	if(id.empty())
-		id="NewBLine";
+		id="NewSpline";
 
 	// If there is a number
 	// already at the end of the
@@ -383,11 +383,11 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
-	checkbutton_layer_region(_("Create Region BLine")),
-	checkbutton_layer_outline(_("Create Outline BLine")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline BLine")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
-	checkbutton_layer_plant(_("Create Plant BLine")),
+	checkbutton_layer_region(_("Create Region")),
+	checkbutton_layer_outline(_("Create Outline")),
+	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
+	checkbutton_layer_plant(_("Create Plant")),
 	checkbutton_layer_link_origins(_("Link Origins")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_make(_("Make")),
@@ -400,7 +400,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	load_settings();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("BLine Tool"))),	0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Spline Tool"))),	0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id,									0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_outline,					0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_advanced_outline,		0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -441,12 +441,12 @@ StateBLine_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("BLine Tool"));
+	App::dialog_tool_options->set_local_name(_("Spline Tool"));
 	App::dialog_tool_options->set_name("bline");
 
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("gtk-execute"),
-		_("Make BLine and/or Region")
+		_("Make Spline")
 	)->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(
 			*this,
@@ -456,7 +456,7 @@ StateBLine_Context::refresh_tool_options()
 
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("gtk-clear"),
-		_("Clear current BLine")
+		_("Clear current Spline")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
 			*this,
@@ -545,7 +545,7 @@ StateBLine_Context::run_()
 	}
 	if(bline_point_list.size()<2)
 	{
-		get_canvas_view()->get_ui_interface()->task(_("Information: You need at least two (2) points to create a BLine"));
+		get_canvas_view()->get_ui_interface()->task(_("Information: You need at least two (2) points to create a spline"));
 		return false;
 	}
 
@@ -553,7 +553,7 @@ StateBLine_Context::run_()
 	{
 
 		// Create the action group
-		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New BLine"));
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Spline"));
 
 		std::vector<BLinePoint> new_list;
 		std::list<synfig::ValueNode_Const::Handle>::iterator iter;
@@ -1280,11 +1280,11 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	menu.items().clear();
 	if(loop_)
 	{
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
 		));
 	} else {
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
 	}
@@ -1330,11 +1330,11 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	if(loop_)
 	{
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
 		));
 	} else {
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
 	}
@@ -1431,11 +1431,11 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	if(loop_)
 	{
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
 		));
 	} else {
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop Spline"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
 	}

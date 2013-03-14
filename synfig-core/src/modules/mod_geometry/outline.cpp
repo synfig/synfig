@@ -814,7 +814,7 @@ Outline::get_param_vocab()const
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
 		.set_hint("width")
-		.set_description(_("A list of BLine Points"))
+		.set_description(_("A list of spline points"))
 	);
 
 	/*

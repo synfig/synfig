@@ -131,7 +131,7 @@ LayerTree::LayerTree():
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
 	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
-	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Encapsulate");
+	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Group");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
 
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);

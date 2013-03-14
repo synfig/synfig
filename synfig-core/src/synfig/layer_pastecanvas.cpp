@@ -117,8 +117,8 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 String
 Layer_PasteCanvas::get_local_name()const
 {
-	if(!canvas)	return _("Pasted Canvas");
-	if(canvas->is_inline()) return _("Inline Canvas");
+	if(!canvas)	return _("Group");
+	if(canvas->is_inline()) return _("Group");
 	if(canvas->get_root()==get_canvas()->get_root()) return '[' + canvas->get_id() + ']';
 
 	return '[' + canvas->get_file_name() + ']';

@@ -1122,7 +1122,7 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
-		.set_description(_("A list of BLine Points"))
+		.set_description(_("A list of spline points"))
 	);
 	ret.push_back(ParamDesc("width")
 		.set_is_distance()
@@ -1244,6 +1244,8 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
 		return false;
+	if((*x)(Time(0)).empty())
+		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;
 	ValueNode::LooseHandle vnode;
@@ -1261,6 +1263,8 @@ bool
 Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != ValueBase::TYPE_LIST)
+		return false;
+	if((*x)(Time(0)).empty())
 		return false;
 	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
 		return false;

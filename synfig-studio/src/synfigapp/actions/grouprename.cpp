@@ -46,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupRename);
 ACTION_SET_NAME(Action::GroupRename,"GroupRename");
-ACTION_SET_LOCAL_NAME(Action::GroupRename,N_("Rename Group"));
+ACTION_SET_LOCAL_NAME(Action::GroupRename,N_("Rename Set"));
 ACTION_SET_TASK(Action::GroupRename,"rename");
 ACTION_SET_CATEGORY(Action::GroupRename,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRename,0);
@@ -69,13 +69,13 @@ Action::GroupRename::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
 	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
-		.set_local_name(_("Old Group"))
-		.set_desc(_("Name of the Group to rename"))
+		.set_local_name(_("Old Set"))
+		.set_desc(_("Name of the Set to rename"))
 	);
 
 	ret.push_back(ParamDesc("new_group",Param::TYPE_STRING)
-		.set_local_name(_("New Group"))
-		.set_desc(_("New name for group"))
+		.set_local_name(_("New Set"))
+		.set_desc(_("New name for Set"))
 	);
 
 	return ret;

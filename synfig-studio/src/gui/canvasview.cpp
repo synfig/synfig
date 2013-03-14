@@ -1211,7 +1211,7 @@ CanvasView::create_display_bar()
 	snap_grid->add(*icon2);
 	snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
-	snap_grid->set_tooltip_text( _("Show grid when enabled"));
+	snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
 	snap_grid->set_relief(Gtk::RELIEF_NONE);
 	snap_grid->show();
 
@@ -1495,11 +1495,11 @@ CanvasView::init_menus()
 	//	SLOT_EVENT(EVENT_REDO)
 	//);
 
-	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Ducks")),
+	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
 		sigc::mem_fun(*work_area,&studio::WorkArea::select_all_ducks)
 	);
 
-	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Ducks")),
+	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
 		sigc::mem_fun(*work_area,&studio::WorkArea::unselect_all_ducks)
 	);
 
@@ -1678,13 +1678,13 @@ CanvasView::init_menus()
 				sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),		\
 				Duck::TYPE_##upper))
 
-		DUCK_MASK(position,POSITION,_("Show Position Ducks"));
-		DUCK_MASK(tangent,TANGENT,_("Show Tangent Ducks"));
-		DUCK_MASK(vertex,VERTEX,_("Show Vertex Ducks"));
-		DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
-		DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
-		DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
-		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Ducks"));
+		DUCK_MASK(position,POSITION,_("Show Position Handles"));
+		DUCK_MASK(tangent,TANGENT,_("Show Tangent Handles"));
+		DUCK_MASK(vertex,VERTEX,_("Show Vertex Handles"));
+		DUCK_MASK(radius,RADIUS,_("Show Radius Handles"));
+		DUCK_MASK(width,WIDTH,_("Show Width Handles"));
+		DUCK_MASK(angle,ANGLE,_("Show Angle Handles"));
+		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handle"));
 
 #undef DUCK_MASK
 	}

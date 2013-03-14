@@ -172,8 +172,8 @@ GroupActionManager::refresh()
 				Gtk::Action::create(
 					"action-group_add",
 					Gtk::Stock::ADD,
-					_("Add a New Group"),
-					_("Add a New Group")
+					_("Add a New Set"),
+					_("Add a New Set")
 				),
 				sigc::mem_fun(
 					*this,
@@ -263,7 +263,7 @@ GroupActionManager::on_action_add()
 			group_name=(Glib::ustring)(*selected_iter->parent())[model.group_name]+'.';
 	}
 
-	group_name+=_("UnnamedGroup");
+	group_name+=_("UnnamedSet");
 
 	Gtk::TreePath path(group_tree_->get_model()->on_group_added(group_name));
 

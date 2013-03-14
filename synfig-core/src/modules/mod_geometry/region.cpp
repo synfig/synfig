@@ -232,7 +232,7 @@ Region::get_param_vocab()const
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
-		.set_description(_("A list of BLine Points"))
+		.set_description(_("A list of spline points"))
 	);
 
 	return ret;
