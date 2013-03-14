@@ -59,8 +59,6 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 
-#include <libxml++/libxml++.h>
-
 #include <gtk/gtk.h>
 
 #include <gdkmm/general.h>
@@ -122,9 +120,6 @@
 
 #include "modules/module.h"
 #include "modules/mod_palette/mod_palette.h"
-
-#include <sys/stat.h>
-#include <dirent.h>
 
 #include "ipc.h"
 
@@ -300,7 +295,7 @@ int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
-std::list< App::plugin > studio::App::plugins_list;
+synfigapp::PluginManager studio::App::plugin_manager;
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -766,172 +761,6 @@ public:
 static ::Preferences _preferences;
 
 void
-load_plugins_from_dir(const std::string &pluginsprefix, const std::string &suffix)
-{
-	// TODO: (Plugins) Set suffix for plugin id depending on the loation
-	
-	// Get locale
-	std::string current_locale = setlocale(LC_ALL, NULL);
-	
-	//pluginsprefix = *ppath;
-	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
-	
-	DIR *dir;
-	struct dirent *entry;
-	
-	dir = opendir(pluginsprefix.c_str());
-	if(dir) {
-		while ( (entry = readdir(dir)) != NULL) {
-			if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
-				std::string pluginpath;
-				pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
-				struct stat sb;
-				int rc = stat(pluginpath.c_str(), &sb);
-				// error handling if stat failed
-				if (S_ISDIR(sb.st_mode)) {
-					// checking if directory contains a plugin...
-					DIR *plugindir;
-					struct dirent *plugindirentry;
-					
-					plugindir = opendir(pluginpath.c_str());
-					if(!plugindir) {
-						synfig::warning("Can't read plugin directory!");
-						return;
-					}
-					
-					while ( (plugindirentry = readdir(plugindir)) != NULL) {
-						if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
-							std::string pluginfilepath;
-							pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
-							
-							synfig::info("Loading plugin: %s", entry->d_name);
-							
-							studio::App::plugin p;
-							p.id=std::string(entry->d_name)+"-"+suffix;
-							
-							// parse xml file
-							try
-							{
-								xmlpp::DomParser parser;
-								//parser.set_validate();
-								parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
-								parser.parse_file(pluginfilepath);
-								if(parser)
-								{
-									//Walk the tree:
-									const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
-									if ( std::string(pNode->get_name()) == std::string("plugin") ){
-										//Recurse through child nodes:
-										xmlpp::Node::NodeList list = pNode->get_children();
-										
-										unsigned int name_relevance = 0;
-										
-										for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
-										{
-											const xmlpp::Node* node = *iter;
-											if ( std::string(node->get_name()) == std::string("name") ) {
-
-												const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node);
-												
-												xmlpp::Node::NodeList l = nodeElement->get_children();
-												xmlpp::Node::NodeList::iterator i = l.begin();
-												xmlpp::Node* n = *i;
-												
-												const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-												
-												if(nodeText)
-												{
-													// Get the language attribute
-													const xmlpp::Attribute* langAttribute = nodeElement->get_attribute("lang", "xml");
-
-													if (langAttribute) {
-														// Element have language attribute,
-														std::string lang = langAttribute->get_value();
-														// let's compare it with current locale
-														 if (!current_locale.compare(0, lang.size(), lang)) {
-															 if (lang.size() > name_relevance){
-																 p.name=nodeText->get_content();
-															 }
-														 }
-													} else {
-														// Element have no language attribute - use as fallback
-														if (name_relevance == 0){
-															p.name=nodeText->get_content();
-														}
-													}
-												}
-												
-											} else if ( std::string(node->get_name()) == std::string("exec") ) {
-												
-												xmlpp::Node::NodeList l = node->get_children();
-												xmlpp::Node::NodeList::iterator i = l.begin();
-												xmlpp::Node* n = *i;
-												
-												const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-												
-												if(nodeText)
-												{
-													p.path=pluginpath+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
-												}
-											}
-										}
-									} else {
-										synfig::info("Invalid plugin.xml file.");
-									}
-								}
-							}
-							catch(const std::exception& ex)
-							{
-								std::cout << "Exception caught: " << ex.what() << std::endl;
-							}
-							
-							if ( p.id != "" && p.name != "" && p.path != ""){
-								studio::App::plugins_list.push_back(p);
-							} else {
-								synfig::warning("Invalid plugin.xml file!");
-							}
-						}
-					}
-					
-				}
-			}
-
-		};
-		
-		closedir(dir);
-	}
-}
-
-void
-load_plugins()
-{
-	std::string pluginsprefix;
-	
-	// system plugins path
-#ifdef WIN32
-	pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
-#else
-	pluginsprefix=PLUGIN_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		pluginsprefix=synfig_root;
-		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
-		pluginsprefix+="share";
-		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
-		pluginsprefix+="synfig";
-		pluginsprefix+=ETL_DIRECTORY_SEPARATOR;
-		pluginsprefix+="plugins";
-	}
-	load_plugins_from_dir(pluginsprefix,"system");
-	
-	// user plugins path
-	pluginsprefix=Glib::build_filename(App::get_user_app_directory(),"plugins");
-	load_plugins_from_dir(pluginsprefix,"user");
-	
-}
-
-void
 init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
@@ -1189,11 +1018,12 @@ init_ui_manager()
 "	<menu action='menu-plugins'>"
 ;
 
-	for(list<App::plugin>::iterator p=studio::App::plugins_list.begin();p!=studio::App::plugins_list.end();++p) {
+	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		// TODO: (Plugins) Arrange menu items into groups
 
-		App::plugin plugin = *p;
+		synfigapp::PluginManager::plugin plugin = *p;
 		
 		DEFINE_ACTION(plugin.id, plugin.name);
 		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
@@ -1415,7 +1245,29 @@ App::App(int *argc, char ***argv):
 	try
 	{
 		studio_init_cb.task(_("Loading Plugins..."));
-		load_plugins();
+		
+		std::string pluginsprefix;
+	
+		// system plugins path
+#ifdef WIN32
+		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
+#else
+		pluginsprefix=PLUGIN_DIR;
+#endif
+		char* synfig_root=getenv("SYNFIG_ROOT");
+		if(synfig_root) {
+			pluginsprefix=std::string(synfig_root)
+				+ETL_DIRECTORY_SEPARATOR+"share"
+				+ETL_DIRECTORY_SEPARATOR+"synfig"
+				+ETL_DIRECTORY_SEPARATOR+"plugins";
+		}
+		plugin_manager.load_dir(pluginsprefix);
+		
+		// user plugins path
+		pluginsprefix=Glib::build_filename(App::get_user_app_directory(),"plugins");
+		plugin_manager.load_dir(pluginsprefix);
+		
+		
 		
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();

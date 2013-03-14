@@ -1524,9 +1524,10 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
 	
-	for(list<App::plugin>::iterator p=studio::App::plugins_list.begin();p!=studio::App::plugins_list.end();++p) {
+	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
-		App::plugin plugin = *p;
+		synfigapp::PluginManager::plugin plugin = *p;
 		
 		action_group->add( Gtk::Action::create(plugin.id, plugin.name),
 				sigc::bind(

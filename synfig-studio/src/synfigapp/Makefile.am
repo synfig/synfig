@@ -254,6 +254,7 @@ SYNFIGAPPHH = \
 	inputdevice.h \
 	instance.h \
 	main.h \
+	pluginmanager.h \
 	settings.h \
 	uimanager.h \
 	value_desc.h \
@@ -271,6 +272,7 @@ SYNFIGAPPCC = \
 	inputdevice.cpp \
 	instance.cpp \
 	main.cpp \
+	pluginmanager.cpp \
 	settings.cpp \
 	uimanager.cpp \
 	value_desc.cpp

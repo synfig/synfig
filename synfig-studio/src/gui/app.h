@@ -45,6 +45,7 @@
 #include <gtkmm/uimanager.h>
 
 #include <synfigapp/instance.h>
+#include <synfigapp/pluginmanager.h>
 #include "iconcontroller.h"
 
 /* === M A C R O S ========================================================= */
@@ -200,12 +201,7 @@ public:
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
 	
-	struct plugin{
-		std::string id;
-		std::string name;
-		std::string path;
-	};
-	static std::list< App::plugin > plugins_list;
+	static synfigapp::PluginManager plugin_manager;
 	
 	static synfig::String browser_command;
 	static synfig::String custom_filename_prefix;
