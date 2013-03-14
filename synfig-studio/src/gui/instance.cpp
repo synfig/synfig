@@ -46,6 +46,7 @@
 #include "toolbox.h"
 #include "onemoment.h"
 #include <synfig/savecanvas.h>
+#include <synfigapp/main.h>
 
 #include "autorecover.h"
 #include <sigc++/retype_return.h>
@@ -216,7 +217,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	String tmp_filename_base;
 	if (!this->has_real_filename())
 	{
-		tmp_filename_base = App::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
+		tmp_filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
 	} else {
 		tmp_filename_base = this->get_file_name();
 	}

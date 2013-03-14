@@ -65,6 +65,7 @@
 #include <glibmm/dispatcher.h>
 #include <synfig/mutex.h>
 #include <synfig/string.h>
+#include <synfigapp/main.h>
 #include <glibmm/thread.h>
 
 #include "general.h"
@@ -220,7 +221,7 @@ IPC::fifo_path()
 #ifdef _WIN32
 	return WIN32_PIPE_PATH;
 #else
-	return Glib::build_filename(App::get_user_app_directory(),"fifo");
+	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),"fifo");
 #endif
 }
 

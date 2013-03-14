@@ -146,16 +146,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SYNFIG_USER_APP_DIR
-#ifdef __APPLE__
-#define SYNFIG_USER_APP_DIR	"Library/Synfig"
-#elif defined(_WIN32)
-#define SYNFIG_USER_APP_DIR	"Synfig"
-#else
-#define SYNFIG_USER_APP_DIR	".synfig"
-#endif
-#endif
-
 #ifndef DPM2DPI
 #define DPM2DPI(x)	(float(x)/39.3700787402f)
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
@@ -1192,14 +1182,14 @@ App::App(int *argc, char ***argv):
 
 	distance_system=Distance::SYSTEM_UNITS;
 
-	if(mkdir(get_user_app_directory().c_str(),ACCESSPERMS)<0)
+	if(mkdir(synfigapp::Main::get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
-			synfig::error("UNABLE TO CREATE \"%s\"",get_user_app_directory().c_str());
+			synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
 	else
 	{
-		synfig::info("Created directory \"%s\"",get_user_app_directory().c_str());
+		synfig::info("Created directory \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
 
 
@@ -1264,7 +1254,7 @@ App::App(int *argc, char ***argv):
 		plugin_manager.load_dir(pluginsprefix);
 		
 		// user plugins path
-		pluginsprefix=Glib::build_filename(App::get_user_app_directory(),"plugins");
+		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
 		plugin_manager.load_dir(pluginsprefix);
 		
 		
@@ -1515,21 +1505,10 @@ App::~App()
 	instance_list.clear();
 }
 
-String
-App::get_user_app_directory()
-{
-//! \todo do we need locale_from_utf8() on non-Windows boxes too?  (bug #1837445)
-#ifdef WIN32
-	return Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR));
-#else
-	return Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR);
-#endif
-}
-
 synfig::String
 App::get_config_file(const synfig::String& file)
 {
-	return Glib::build_filename(get_user_app_directory(),file);
+	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
 }
 
 //! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size

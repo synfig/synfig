@@ -356,7 +356,6 @@ public:
 
 	static void open_url(const std::string &url);
 
-	static synfig::String get_user_app_directory();
 	static synfig::String get_config_file(const synfig::String& file);
 	// This will spread the changes made in preferences.
 	// (By now it updates the System Units or Time Format for all the canvases).

@@ -31,6 +31,7 @@
 
 #include "main.h"
 #include "action.h"
+#include <pwd.h>
 
 #include <synfig/color.h>
 #include <synfig/gradient.h>
@@ -51,6 +52,16 @@ using namespace synfig;
 using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
+
+#ifndef SYNFIG_USER_APP_DIR
+#ifdef __APPLE__
+#define SYNFIG_USER_APP_DIR	"Library/Synfig"
+#elif defined(_WIN32)
+#define SYNFIG_USER_APP_DIR	"Synfig"
+#else
+#define SYNFIG_USER_APP_DIR	".synfig"
+#endif
+#endif
 
 /* === S T A T I C S ======================================================= */
 
@@ -408,4 +419,28 @@ synfigapp::Main::set_state(synfig::String state)
 {
 	if(selected_input_device_)
 		selected_input_device_->set_state(state);
+}
+
+synfig::String
+synfigapp::Main::get_user_app_directory()
+{
+	String dir;
+	//! \todo do we need something like Glib::locale_from_utf8()?  (bug #1837445)
+#ifdef WIN32
+	dir = String(getenv("HOMEDRIVE"))+ETL_DIRECTORY_SEPARATOR+getenv("HOMEPATH");
+#else
+	struct passwd* pwd = getpwuid(getuid());
+	if (pwd)
+	{
+		dir = pwd->pw_dir;
+	}
+	else
+	{
+		// try the $HOME environment variable
+		dir = getenv("HOME");
+	}
+#endif
+	dir = dir+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	synfig::info("User app dir = %s", dir.c_str());
+	return dir;
 }
