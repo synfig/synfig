@@ -115,7 +115,7 @@ PluginLauncher::execute( std::string script_path )
 	// at INSTALL_PREFIX/python/python.exe
 	String command;
 #ifdef WIN32
-	command = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
+	command = etl::dirname(etl::dirname((*argv)[0]))+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
 #else
 	command = PYTHON_BINARY;
 #endif
