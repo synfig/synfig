@@ -52,7 +52,6 @@ private:
 	std::string filename_original;		// location of original file
 	std::string filename_processed; 	// processed file
 	std::string filename_backup;		// backup copy
-	std::string frame;
 	std::string output;
 	int exitcode;
 

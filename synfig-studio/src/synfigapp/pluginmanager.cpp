@@ -100,9 +100,6 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 		synfig::GUID guid;
 		filename_backup = filename_base+"."+guid.get_string().substr(0,8);
 	} while (stat(filename_backup.c_str(), &buf) != -1);
-
-	frame = canvas->get_time().get_string(canvas->rend_desc().get_frame_rate(), Time::FORMAT_FRAMES);
-	frame = frame.substr(0, frame.size()-1);
 	
 	save_canvas(filename_processed,canvas);
 	save_canvas(filename_backup,canvas);
@@ -132,7 +129,7 @@ PluginLauncher::execute( std::string script_path )
 	}
 	
 	// Construct the full command:
-	command = command+" "+script_path+" \""+filename_processed+"\" "+frame+" 2>&1";
+	command = command+" "+script_path+" \""+filename_processed+"\" 2>&1";
 	
 	//system(command.c_str());
 	FILE* pipe = popen(command.c_str(), "r");
