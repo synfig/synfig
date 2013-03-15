@@ -83,7 +83,7 @@ target2cairo_image::obtain_surface(cairo_surface_t*& s)
 	int sh=cairo_image_surface_get_height(*image);
 	int w=desc.get_w(), h=desc.get_h();
 	
-	if(sw!=w || sh!=w)
+	if(sw!=w || sh!=h)
 	{
 		cairo_surface_destroy(*image);
 		*image = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
