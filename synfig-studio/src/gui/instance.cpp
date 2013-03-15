@@ -46,7 +46,6 @@
 #include "toolbox.h"
 #include "onemoment.h"
 #include <synfig/savecanvas.h>
-#include <synfigapp/main.h>
 
 #include "autorecover.h"
 #include <sigc++/retype_return.h>
@@ -73,17 +72,6 @@ using namespace studio;
 using namespace sigc;
 
 /* === M A C R O S ========================================================= */
-
-#ifdef WIN32
-#	ifdef PYTHON_BINARY
-#		undef PYTHON_BINARY
-#		define PYTHON_BINARY "python\\python.exe"
-#	endif
-#endif
-
-#ifndef PYTHON_BINARY
-#	define PYTHON_BINARY "python"
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -208,113 +196,47 @@ studio::Instance::run_plugin(std::string plugin_path)
 	int answer=uim->yes_no(this->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
 	if(answer==synfigapp::UIInterface::RESPONSE_YES){
 	
-	OneMoment one_moment;
+		OneMoment one_moment;
 
-	// Save the original filename
-	String filename;
-	filename = this->get_file_name();
+		Canvas::Handle canvas(this->get_canvas());
+		
+		synfigapp::PluginLauncher launcher(canvas);
+		
+		Time cur_time;
+		cur_time = canvas->get_time();
 
-	String tmp_filename_base;
-	if (!this->has_real_filename())
-	{
-		tmp_filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+this->get_file_name();
-	} else {
-		tmp_filename_base = this->get_file_name();
-	}
-	
-	// Make random filename and ensure there's no file with such name exist
-	struct stat buf;
+		this->close();
 
-	// Filename to save the file for processing
-	String tmp_filename;
-	do {
-		synfig::GUID guid;
-		tmp_filename = tmp_filename_base+"."+guid.get_string().substr(0,8);
-	} while (stat(tmp_filename.c_str(), &buf) != -1);
-	
-	// We need a copy (tmp_filename_orig) in case of plugin execution will fail.
-	// The tmp_filename_orig will store original unmodified version of file
-	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
-	// tmp_filename_orig instead.
-	String tmp_filename_orig;
-	do {
-		synfig::GUID guid;
-		tmp_filename_orig = tmp_filename_base+"."+guid.get_string().substr(0,8);
-	} while (stat(tmp_filename_orig.c_str(), &buf) != -1);
-	
-	Canvas::Handle canvas(this->get_canvas());
-	Time cur_time;
-	cur_time = canvas->get_time();
-	std::string frame;
-	frame = cur_time.get_string(canvas->rend_desc().get_frame_rate(), Time::FORMAT_FRAMES);
-	frame = frame.substr(0, frame.size()-1);
-	
-	save_canvas(tmp_filename_orig,canvas);
-	save_canvas(tmp_filename,canvas);
-
-	this->close();
-
-	if(canvas->count()!=1)
-	{
-		one_moment.hide();
-		App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
-		one_moment.show();
-	} else {
-		
-		// Set path to python binary dependin on the os type.
-		// For Windows case Python binary is expected
-		// at INSTALL_PREFIX/python/python.exe
-		String command;
-#ifdef WIN32
-		command = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
-#else
-		command = PYTHON_BINARY;
-#endif
-		// Path to python binary can be overriden
-		// with SYNFIG_PYTHON_BINARY env variable:
-		char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
-		if(custom_python_binary) {
-			command=custom_python_binary;
-		}
-		
-		// Construct the full command:
-		command = command+" "+plugin_path+" \""+tmp_filename+"\" "+frame+" 2>&1";
-		
-		//system(command.c_str());
-		FILE* pipe = popen(command.c_str(), "r");
-		int exitcode;
-		if (!pipe) return; // TODO: (Plugins) Error
-		char buffer[128];
-		std::string result = "";
-		while(!feof(pipe)) {
-			if(fgets(buffer, 128, pipe) != NULL)
-					result += buffer;
-		}
-		
-		if (result != "" ){
-			synfig::info(result);
-		}
-		
-		exitcode=pclose(pipe);
-		if (0!=exitcode){
+		if(canvas->count()!=1)
+		{
 			one_moment.hide();
-			App::dialog_error_blocking(_("Plugin Error"), result);
+			App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
 			one_moment.show();
-			tmp_filename = tmp_filename_orig; // restore original unmodified version
+		} else {
+			bool result;
+			result = launcher.execute(plugin_path);
+			if (!result){
+				one_moment.hide();
+				App::dialog_error_blocking(_("Plugin Error"), launcher.get_output());
+				one_moment.show();
+				
+			}
 		}
-	}
 	
-	canvas=0;
+	
+		canvas=0;
 
-	App::open_as(tmp_filename,filename);
-	remove( tmp_filename.c_str() );
-	remove( tmp_filename_orig.c_str() );
+		App::open_as(launcher.get_result_path(),launcher.get_original_path());
 	
-	etl::handle<Instance> new_instance = App::instance_list.back();
-	new_instance->inc_action_count(); // This file isn't saved! mark it as such
-	canvas = App::instance_list.back()->get_canvas();
-	etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
-	new_canvas_interface->set_time(cur_time);
+	
+		etl::handle<Instance> new_instance = App::instance_list.back();
+		new_instance->inc_action_count(); // This file isn't saved! mark it as such
+
+		// Restore time cursor position
+		canvas = App::instance_list.back()->get_canvas();
+		etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+		new_canvas_interface->set_time(cur_time);
+
 	}
 	return;
 }

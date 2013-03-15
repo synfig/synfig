@@ -40,8 +40,9 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-//#include "general.h"
 #include <synfig/general.h>
+#include <synfig/savecanvas.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -54,9 +55,125 @@ using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef WIN32
+#	ifdef PYTHON_BINARY
+#		undef PYTHON_BINARY
+#		define PYTHON_BINARY "python\\python.exe"
+#	endif
+#endif
+
+#ifndef PYTHON_BINARY
+#	define PYTHON_BINARY "python"
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
+{
+	// Save the original filename
+	filename_original = canvas->get_file_name();
+
+	String filename_base;
+	if (filename_original.compare(0, 1, "/"))
+	{
+		filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+filename_original;
+	} else {
+		filename_base = filename_original;
+	}
+	
+	// Make random filename and ensure there's no file with such name exist
+	struct stat buf;
+
+	// Filename to save the file for processing
+	do {
+		synfig::GUID guid;
+		filename_processed = filename_base+"."+guid.get_string().substr(0,8);
+	} while (stat(filename_processed.c_str(), &buf) != -1);
+	
+	// We need a copy (filename_backup) in case of plugin execution will fail.
+	// The tmp_filename_orig will store original unmodified version of file
+	// If plugin will fail, then tmp_filename can be damaged and we should reopen 
+	// tmp_filename_orig instead.
+	do {
+		synfig::GUID guid;
+		filename_backup = filename_base+"."+guid.get_string().substr(0,8);
+	} while (stat(filename_backup.c_str(), &buf) != -1);
+
+	frame = canvas->get_time().get_string(canvas->rend_desc().get_frame_rate(), Time::FORMAT_FRAMES);
+	frame = frame.substr(0, frame.size()-1);
+	
+	save_canvas(filename_processed,canvas);
+	save_canvas(filename_backup,canvas);
+
+	//canvas=0;
+	exitcode=-1;
+	output="";
+}
+
+bool
+PluginLauncher::execute( std::string script_path )
+{
+	// Set path to python binary dependin on the os type.
+	// For Windows case Python binary is expected
+	// at INSTALL_PREFIX/python/python.exe
+	String command;
+#ifdef WIN32
+	command = App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
+#else
+	command = PYTHON_BINARY;
+#endif
+	// Path to python binary can be overriden
+	// with SYNFIG_PYTHON_BINARY env variable:
+	char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
+	if(custom_python_binary) {
+		command=custom_python_binary;
+	}
+	
+	// Construct the full command:
+	command = command+" "+script_path+" \""+filename_processed+"\" "+frame+" 2>&1";
+	
+	//system(command.c_str());
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
+		output = "ERROR: pipe failed!";
+		return false;
+	}
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+				output += buffer;
+	}
+	
+	if (output != "" ){
+		synfig::info(output);
+	}
+	
+	exitcode=pclose(pipe);
+
+	if (0==exitcode){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+std::string
+PluginLauncher::get_result_path()
+{
+	if (0==exitcode){
+		return filename_processed;
+	} else {
+		return filename_backup;
+	}
+}
+
+PluginLauncher::~PluginLauncher()
+{
+	remove( filename_processed.c_str() );
+	remove( filename_backup.c_str() );
+}
 
 PluginManager::PluginManager():
 	list_()
