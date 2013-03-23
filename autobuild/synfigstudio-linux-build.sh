@@ -1008,49 +1008,9 @@ mkpackage()
 		pushd $PACKAGES_BUILDROOT
 		cd synfig.git && git fetch && cd ..
 		#[ ! -e git-$GITVERSION.tar.bz2 ] && wget -c http://kernel.org/pub/software/scm/git/git-$GITVERSION.tar.bz2
-		for FILE in \
-			atk-${ATK}.tar.bz2 \
-			glib-${GLIB}.tar.bz2 \
-			pixman-${PIXMAN}.tar.gz \
-			cairo-${CAIRO}.tar.gz \
-			fontconfig-${FONTCONFIG}.tar.gz \
-			pango-${PANGO}.tar.bz2 \
-			git-$GITVERSION.tar.bz2 \
-			gtk\+-${GTK}.tar.bz2 \
-			glib-${GLIB}.tar.bz2 \
-			glibmm-${GLIBMM}.tar.bz2 \
-			cairomm-${CAIROMM}.tar.gz \
-			pangomm-${PANGOMM}.tar.bz2 \
-			gtkmm-${GTKMM}.tar.bz2 \
-			libsigc++-${LIBSIGCPP}.tar.bz2 \
-			libsigc++-2.0_2.0.18-2.diff \
-			libxml++-${LIBXMLPP}.tar.bz2 \
-			ImageMagick-6.3.8-invalid-gerror-use.patch \
-			ImageMagick-${IMAGEMAGICK}-10.tar.bz2 \
-			ImageMagick-${IMAGEMAGICK}-multilib.patch \
-			ImageMagick-${IMAGEMAGICK}-xdg-open.patch
-		do
-			#[ ! -e $FILE ] && wget -c http://download.tuxfamily.org/morevna/morevnapackage/sources/$FILE
-			rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/$FILE ./
-		done
+		rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/base/ ./
 		if [[ $OPENGL == 1 ]]; then
-		for FILE in \
-			glew-${GLEW}.tar.gz\
-			glew-${GLEW}-makefile.patch \
-			freeglut-${FREEGLUT}.tar.gz \
-			ftgl-${FTGL}.tar.gz \
-			ftgl-${FTGL}-destdir.patch \
-			ftgl-${FTGL}-Glyph-g++_41.patch \
-			ftgl-${FTGL}-pc_req.patch \
-			ftgl-${FTGL}-rpath_FTGLDemo.patch \
-			ftgl-${FTGL}-ttf_font.patch \
-			gtkglext-${GTKGLEXT}.tar.bz2 \
-			gtkglextmm-${GTKGLEXTMM}.tar.bz2 \
-			gtkglextmm-${GTKGLEXTMM}-aclocal.diff
-		do
-			#[ ! -e $FILE ] && wget -c http://download.tuxfamily.org/morevna/morevnapackage/sources/$FILE
-			rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/$FILE ./
-		done
+			rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/opengl/ ./
 		fi
 		popd
 		#copy sources
