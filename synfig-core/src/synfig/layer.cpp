@@ -329,7 +329,8 @@ void Layer::fill_static(Vocab vocab)
 	}
 }
 
-
+//TODO: This function is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 bool
 Layer::get_param_static(const String &param) const
 {

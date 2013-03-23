@@ -32,6 +32,7 @@
 #include <synfig/layer_composite.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
+#include <synfig/value.h>
 
 using namespace synfig;
 using namespace std;
@@ -49,7 +50,7 @@ class Circle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 private:
 	synfig::Color color;
 	synfig::Point origin;
-	synfig::Real radius;
+	synfig::ValueBase param_radius;
 	synfig::Real feather;
 	bool invert;
 	int falloff;
@@ -102,6 +103,7 @@ public:
 	Circle();
 
 	virtual bool set_param(const String &param, const ValueBase &value);
+	virtual bool set_param_static(const String &param, const bool x);
 
 	virtual ValueBase get_param(const String &param)const;
 

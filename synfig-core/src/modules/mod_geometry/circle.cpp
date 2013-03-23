@@ -64,7 +64,7 @@ Circle::Circle():
 	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	color			(Color::black()),
 	origin			(0,0),
-	radius			(1),
+	param_radius	(Real(1)),
 	feather			(0),
 	invert			(false),
 	falloff			(FALLOFF_INTERPOLATION_LINEAR)
@@ -80,7 +80,7 @@ Circle::ImportParameters(const String &param, const ValueBase &value)
 	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(radius);
+	IMPORT_VALUE(param_radius);
 	IMPORT_PLUS(feather, if(feather<0)feather=0;);
 	IMPORT(invert);
 	IMPORT(origin);
@@ -103,11 +103,18 @@ Circle::set_param(const String &param, const ValueBase &value)
 	return false;
 }
 
+bool
+Circle::set_param_static(const String &param, const bool value)
+{
+	IMPORT_STATIC(param_radius);
+	return Layer_Composite::set_param_static(param,value);
+}
+
 ValueBase
 Circle::get_param(const String &param)const
 {
 	EXPORT(color);
-	EXPORT(radius);
+	EXPORT_VALUE(param_radius);
 	EXPORT(feather);
 	EXPORT(invert);
 	EXPORT(origin);
@@ -165,6 +172,8 @@ Circle::get_param_vocab()const
 synfig::Layer::Handle
 Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	Point temp=origin-point;
 
 	if(get_amount()==0)
@@ -278,6 +287,8 @@ Circle::InvCosineFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 
 void Circle::constructcache()
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	cache.inner_radius = radius - feather;
 	if(cache.inner_radius < 0)
 		cache.inner_radius = 0;
@@ -313,6 +324,8 @@ Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 Color
 Circle::get_color(Context context, const Point &point)const
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.get_color(point);
 
@@ -421,6 +434,8 @@ Circle::get_color(Context context, const Point &point)const
 bool
 Circle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.accelerated_render(surface,quality, renddesc, cb);
@@ -1187,6 +1202,8 @@ Circle::compile_gradient(cairo_pattern_t* gradient, CircleDataCache mycache, FAL
 Rect
 Circle::get_bounding_rect()const
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	if(invert)
 		return Rect::full_plane();
 
@@ -1203,6 +1220,8 @@ Circle::get_bounding_rect()const
 Rect
 Circle::get_full_bounding_rect(Context context)const
 {
+	Real radius;
+	radius = param_radius.get(Real());
 	if(invert)
 	{
 		if(is_solid_color() && color.get_a()==0)
