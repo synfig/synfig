@@ -766,8 +766,31 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} intltool libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
-			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
+			PKG_LIST="${PKG_LIST} \
+				intltool \
+				libpng-devel \
+				libjpeg-devel \
+				freetype-devel \
+				fontconfig-devel \
+				atk-devel \
+				pango-devel \
+				cairo-devel \
+				gtk2-devel \
+				gettext-devel \
+				libxml2-devel \
+				libxml++-devel \
+				gcc-c++ \
+				autoconf \
+				automake \
+				libtool \
+				libtool-ltdl-devel \
+				cvs \
+				shared-mime-info \
+				OpenEXR-devel \
+				libmng-devel \
+				ImageMagick-c++-devel \
+				gtkmm24-devel \
+				glibmm24-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
 			echo "Running yum (you need root privelegies to do that)..."
