@@ -441,6 +441,5 @@ synfigapp::Main::get_user_app_directory()
 	}
 #endif
 	dir = dir+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
-	synfig::info("User app dir = %s", dir.c_str());
 	return dir;
 }
