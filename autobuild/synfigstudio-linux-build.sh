@@ -542,7 +542,7 @@ mkpack()
 	cp -r  ${PREFIX}/* $TBZPREFIX
 
 	if [[ $DEBUG == '--enable-debug' ]]; then
-		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \$@ || "
+		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \"\$@\" || "
 	else
 		GDB=''
 	fi
@@ -557,7 +557,7 @@ export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${PREFIX}/
 export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
 
-$GDB\$PREFIX/bin/synfig \$@
+$GDB\$PREFIX/bin/synfig "\$@"
 EOF
 	if [[ $DEBUG == '--enable-debug' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfigstudio \$@ || "
