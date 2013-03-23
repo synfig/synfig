@@ -75,7 +75,7 @@ Star::Star():
 	radius1(1.0),
 	radius2(0.38),
 	points(5),
-	angle(Angle::deg(90)),
+	param_angle(Angle::deg(90)),
 	regular_polygon(false)
 {
 	sync();
@@ -86,6 +86,7 @@ Star::Star():
 void
 Star::sync()
 {
+	Angle angle = param_angle.get(Angle());
 	Angle dist_between_points(Angle::rot(1)/float(points));
 	std::vector<Point> vector_list;
 
@@ -131,13 +132,7 @@ Star::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	if(	param=="angle" && value.same_type_as(angle))
-	{
-		value.put(&angle);
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
+	IMPORT_VALUE_PLUS(param_angle, sync())
 
 	if(param=="regular_polygon" && value.same_type_as(regular_polygon))
 	{
@@ -153,13 +148,20 @@ Star::set_param(const String & param, const ValueBase &value)
 	return Layer_Polygon::set_param(param,value);
 }
 
+bool
+Star::set_param_static(const String &param, const bool value)
+{
+	IMPORT_STATIC(param_angle);
+	return Layer_Polygon::set_param_static(param,value);
+}
+
 ValueBase
 Star::get_param(const String& param)const
 {
 	EXPORT(radius1);
 	EXPORT(radius2);
 	EXPORT(points);
-	EXPORT(angle);
+	EXPORT_VALUE(param_angle);
 	EXPORT(regular_polygon);
 
 	EXPORT_NAME();
