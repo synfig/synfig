@@ -745,6 +745,7 @@ initialize()
 		shared-mime-info \
 		libltdl3-dev \
 		libtool \
+		intltool \
 		gettext \
 		cvs \
 		libpng12-dev \
@@ -765,7 +766,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
+			PKG_LIST="${PKG_LIST} intltool libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -923,6 +924,9 @@ mkpackage()
 		echo "[user]"  > /root/.gitconfig
 		echo "email = packages@synfig.org"  >> /root/.gitconfig
 		echo "name = Synfig Packager" >> /root/.gitconfig
+		
+		# we need newer intltool
+		dpkg -i /source/intltool_0.41.1-1_all.deb
 
 		#system libs
 		mkglib
