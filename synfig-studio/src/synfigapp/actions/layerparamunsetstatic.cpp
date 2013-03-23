@@ -164,7 +164,7 @@ Action::LayerParamUnSetStatic::perform()
 	if(layer->dynamic_param_list().count(param_name))
 		throw Error(_("This action is not for Value Nodes!"));
 
-	old_static_value=layer->get_param_static(param_name);
+	old_static_value=true;
 
 	if(!layer->set_param_static(param_name,false))
 		throw Error(_("Layer did not accept static value."));
