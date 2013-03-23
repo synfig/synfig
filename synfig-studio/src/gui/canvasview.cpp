@@ -9,6 +9,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009, 2011, 2012 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -1522,7 +1523,20 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
+	
+	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
+		synfigapp::PluginManager::plugin plugin = *p;
+		
+		action_group->add( Gtk::Action::create(plugin.id, plugin.name),
+				sigc::bind(
+					sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin),
+					plugin.path
+				)
+		);
+	}
+	
 	// Preview Quality Menu
 	{
 		int i;

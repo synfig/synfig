@@ -85,13 +85,14 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 OneMoment::OneMoment():
-	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP)
+	Gtk::Window(Gtk::WINDOW_TOPLEVEL)
 {
 	// Create the Label
 	Gtk::Label *label = manage(new class Gtk::Label(_("One Moment, Please...")));
 
-	set_title(_("One Moment, Please..."));
-	set_modal(false);
+	set_title(_("Working..."));
+	set_modal(true);
+	set_decorated(0);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER);
 	set_resizable(false);
 	add(*label);
@@ -106,8 +107,8 @@ OneMoment::OneMoment():
 
 	label->set_size_request(400,60);
 
-	get_root_window()->set_decorations(Gdk::DECOR_BORDER);
-
+	//set_transient_for(get_root_window()); //--not works, parent should be passed
+	
 	// show everything off
 	show_all();
 

@@ -1,3 +1,6 @@
+synfigstudio.desktop.in
+plugins/add-simple-skeleton/plugin.xml.in
+plugins/view-unhide-all-layers/plugin.xml.in
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
 src/gui/actionmanagers/keyframeactionmanager.cpp

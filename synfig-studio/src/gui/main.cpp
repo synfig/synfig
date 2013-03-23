@@ -61,9 +61,9 @@ int main(int argc, char **argv)
 
 #ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
-	bindtextdomain("synfigstudio", LOCALEDIR);
-	bind_textdomain_codeset("synfigstudio", "UTF-8");
-	textdomain("synfigstudio");
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
 #endif
 
 	{

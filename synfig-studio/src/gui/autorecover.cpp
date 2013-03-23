@@ -39,6 +39,7 @@
 #include "app.h"
 #include <synfig/savecanvas.h>
 #include <synfig/loadcanvas.h>
+#include <synfigapp/main.h>
 #include <fstream>
 #include <iostream>
 #include "instance.h"
@@ -109,7 +110,7 @@ AutoRecover::~AutoRecover()
 synfig::String
 AutoRecover::get_shadow_directory()
 {
-	return Glib::build_filename(App::get_user_app_directory(),"tmp");
+	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),"tmp");
 }
 
 int

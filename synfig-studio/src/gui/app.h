@@ -7,7 +7,8 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**  Copyright (c) 2008 Carlos López
+**	Copyright (c) 2008 Carlos López
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -44,6 +45,7 @@
 #include <gtkmm/uimanager.h>
 
 #include <synfigapp/instance.h>
+#include <synfigapp/pluginmanager.h>
 #include "iconcontroller.h"
 
 /* === M A C R O S ========================================================= */
@@ -198,7 +200,9 @@ public:
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
-
+	
+	static synfigapp::PluginManager plugin_manager;
+	
 	static synfig::String browser_command;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
@@ -352,7 +356,6 @@ public:
 
 	static void open_url(const std::string &url);
 
-	static synfig::String get_user_app_directory();
 	static synfig::String get_config_file(const synfig::String& file);
 	// This will spread the changes made in preferences.
 	// (By now it updates the System Units or Time Format for all the canvases).

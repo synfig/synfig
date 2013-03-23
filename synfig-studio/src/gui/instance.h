@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -133,8 +134,6 @@ private:
 	void set_undo_status(bool x);
 	void set_redo_status(bool x);
 
-	static void _revert(Instance *);
-
 protected:
 
 	Instance(synfig::Canvas::Handle);
@@ -175,6 +174,8 @@ public:
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
+	
+	void run_plugin(std::string plugin_path);
 
 	bool save_as(const synfig::String &filename);
 

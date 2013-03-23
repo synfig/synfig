@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <_name>Unhide All Layers</_name>
+   <exec>view-unhide-all-layers.py</exec>
+</plugin> 

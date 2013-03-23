@@ -64,10 +64,17 @@ AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_LIBTOOL_PATCH
 
-## FIXME: add i18n for .desktop and other non-compiled files
 ## AM_GLIB_GNU_GETTEXT([external])
-## AC_PROG_INTLTOOL(0.11)
-ALL_LINGUAS="ca fr es it ru de en_GB zh_CN sk_SK pt_BR fa_IR lt da cs"
+IT_PROG_INTLTOOL([0.35.0])
+
+GETTEXT_PACKAGE=synfigstudio
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
+                     [The domain to use with gettext])
+
+localedir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(localedir)
+
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
@@ -267,6 +274,12 @@ AC_SUBST(imageext)
 imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
 
+plugindir="${datadir}/synfig/plugins"
+AC_SUBST(plugindir)
+
+pythonbinary="python"
+AC_SUBST(pythonbinary)
+
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
    AC_HELP_STRING([--disable-update-mimedb],
@@ -278,7 +291,6 @@ AC_CONFIG_FILES([Makefile
 build_tools/Makefile
 doxygen.cfg
 po/Makefile.in
-synfigstudio.desktop
 synfigstudio.mime
 synfigstudio.keys
 synfigstudio.xml
@@ -289,6 +301,9 @@ src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-studio.info
+plugins/Makefile
+plugins/add-skeleton-simple/Makefile
+plugins/view-unhide-all-layers/Makefile
 ])
 AC_OUTPUT
 

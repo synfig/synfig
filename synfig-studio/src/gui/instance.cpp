@@ -9,6 +9,7 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2011 Carlos López
 **	Copyright (c) 2009 Nikita Kitaev
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -187,6 +188,60 @@ Instance::set_redo_status(bool x)
 	signal_undo_redo_status_changed()();
 }
 
+void
+studio::Instance::run_plugin(std::string plugin_path)
+{
+	handle<synfigapp::UIInterface> uim=this->find_canvas_view(this->get_canvas())->get_ui_interface();
+	string str=strprintf(_("This operation cannot be undone and all undo history will be cleared.\nDo you really want to proceed?"));
+	int answer=uim->yes_no(this->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+	if(answer==synfigapp::UIInterface::RESPONSE_YES){
+	
+		OneMoment one_moment;
+
+		Canvas::Handle canvas(this->get_canvas());
+		
+		synfigapp::PluginLauncher launcher(canvas);
+		
+		Time cur_time;
+		cur_time = canvas->get_time();
+
+		this->close();
+
+		if(canvas->count()!=1)
+		{
+			one_moment.hide();
+			App::dialog_error_blocking(_("Error: Plugin Operation Failed"),_("The plugin operation has failed. This can be due to current file being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this file and try\nagain, or restart Synfig Studio."));
+			one_moment.show();
+		} else {
+			bool result;
+			result = launcher.execute(plugin_path);
+			if (!result){
+				one_moment.hide();
+				App::dialog_error_blocking(_("Plugin Error"), launcher.get_output());
+				one_moment.show();
+				
+			}
+		}
+	
+	
+		canvas=0;
+
+		App::open_as(launcher.get_result_path(),launcher.get_original_path());
+	
+	
+		etl::handle<Instance> new_instance = App::instance_list.back();
+		new_instance->inc_action_count(); // This file isn't saved! mark it as such
+
+		// Restore time cursor position
+		canvas = App::instance_list.back()->get_canvas();
+		etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+		new_canvas_interface->set_time(cur_time);
+
+	}
+	return;
+}
+
+
 bool
 studio::Instance::save_as(const synfig::String &file_name)
 {
@@ -351,6 +406,21 @@ Instance::close()
 	// until we are ready
 	handle<Instance> me(this);
 
+	/*
+	We need to hide some panels when instance is closed.
+	This is done to avoid the crash when two conditions met:
+	 1) the list is scrolled down
+	 2) user closes file
+	*/
+	Gtk::Widget* tree_view_keyframes = find_canvas_view(get_canvas())->get_ext_widget("keyframes");
+	tree_view_keyframes->hide();
+
+	Gtk::Widget* tree_view_params = find_canvas_view(get_canvas())->get_ext_widget("params");
+	tree_view_params->hide();
+
+	Gtk::Widget* tree_view_children = find_canvas_view(get_canvas())->get_ext_widget("children");
+	tree_view_children->hide();
+	
 	// Make sure we aren't selected as the current instance
 	if(studio::App::get_selected_instance()==this)
 		studio::App::set_selected_instance(0);
@@ -375,7 +445,7 @@ Instance::close()
 		(*iter)->hide();
 
 	// Consume pending events before deleting the canvas views
-	while(studio::App::events_pending())studio::App::iteration(false);
+	while(studio::App::events_pending())studio::App::iteration(true);
 
 	// Delete all of the canvas views
 	canvas_view_list().clear();
@@ -574,15 +644,15 @@ Instance::dialog_cvs_revert()
 }
 
 void
-Instance::_revert(Instance *instance)
+Instance::revert()
 {
 	OneMoment one_moment;
 
-	String filename(instance->get_file_name());
+	String filename(get_file_name());
 
-	Canvas::Handle canvas(instance->get_canvas());
+	Canvas::Handle canvas(get_canvas());
 
-	instance->close();
+	close();
 
 	if(canvas->count()!=1)
 	{
@@ -593,22 +663,6 @@ Instance::_revert(Instance *instance)
 	canvas=0;
 
 	App::open(filename);
-}
-
-void
-Instance::revert()
-{
-	// Schedule a revert to occur in a few moments
-	Glib::signal_timeout().connect(
-		sigc::bind_return(
-			sigc::bind(
-				sigc::ptr_fun(&Instance::_revert),
-				this
-			),
-			false
-		)
-		,500
-	);
 }
 
 bool

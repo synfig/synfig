@@ -8,8 +8,9 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008 Gerald Young
-**  Copyright (c) 2008, 2010, 2011 Carlos López
+**	Copyright (c) 2008, 2010, 2011 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
+**	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -120,8 +121,6 @@
 #include "modules/module.h"
 #include "modules/mod_palette/mod_palette.h"
 
-#include <sys/stat.h>
-
 #include "ipc.h"
 
 #include "statemanager.h"
@@ -147,16 +146,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SYNFIG_USER_APP_DIR
-#ifdef __APPLE__
-#define SYNFIG_USER_APP_DIR	"Library/Synfig"
-#elif defined(_WIN32)
-#define SYNFIG_USER_APP_DIR	"Synfig"
-#else
-#define SYNFIG_USER_APP_DIR	".synfig"
-#endif
-#endif
-
 #ifndef DPM2DPI
 #define DPM2DPI(x)	(float(x)/39.3700787402f)
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
@@ -175,6 +164,17 @@ using namespace studio;
 
 #ifndef IMAGE_EXT
 #	define IMAGE_EXT	"tif"
+#endif
+
+#ifdef WIN32
+#	ifdef PLUGIN_DIR
+#		undef PLUGIN_DIR
+#		define PLUGIN_DIR "share\\synfig\\plugins"
+#	endif
+#endif
+
+#ifndef PLUGIN_DIR
+#	define PLUGIN_DIR "/usr/local/share/synfig/plugins"
 #endif
 
 #include <synfigapp/main.h>
@@ -285,6 +285,7 @@ int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
 float studio::App::preferred_fps=24.0;
+synfigapp::PluginManager studio::App::plugin_manager;
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -771,6 +772,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-group", _("Set")) );
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
+	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")) );
 
 	// Add the synfigapp actions...
 	synfigapp::Action::Book::iterator iter;
@@ -873,9 +875,6 @@ init_ui_manager()
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
-#undef DEFINE_ACTION
-#undef DEFINE_ACTION_2
-#undef DEFINE_ACTION_SIG
 
     Glib::ustring ui_info =
 "<ui>"
@@ -1006,10 +1005,31 @@ init_ui_manager()
 "	<menu action='menu-keyframe'>"
 "		<menuitem action='keyframe-properties'/>"
 "	</menu>"
+"	<menu action='menu-plugins'>"
+;
+
+	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
+
+		// TODO: (Plugins) Arrange menu items into groups
+
+		synfigapp::PluginManager::plugin plugin = *p;
+		
+		DEFINE_ACTION(plugin.id, plugin.name);
+		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+	}
+
+	ui_info +=
+"	</menu>"
 "	</popup>"
 
 "</ui>"
 ;
+
+	#undef DEFINE_ACTION
+	#undef DEFINE_ACTION_2
+	#undef DEFINE_ACTION_SIG
+
 /*		"<ui>"
         "  <menubar name='MenuBar'>"
         "    <menu action='MenuFile'>"
@@ -1162,14 +1182,14 @@ App::App(int *argc, char ***argv):
 
 	distance_system=Distance::SYSTEM_UNITS;
 
-	if(mkdir(get_user_app_directory().c_str(),ACCESSPERMS)<0)
+	if(mkdir(synfigapp::Main::get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
-			synfig::error("UNABLE TO CREATE \"%s\"",get_user_app_directory().c_str());
+			synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
 	else
 	{
-		synfig::info("Created directory \"%s\"",get_user_app_directory().c_str());
+		synfig::info("Created directory \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
 
 
@@ -1214,6 +1234,31 @@ App::App(int *argc, char ***argv):
 
 	try
 	{
+		studio_init_cb.task(_("Loading Plugins..."));
+		
+		std::string pluginsprefix;
+	
+		// system plugins path
+#ifdef WIN32
+		pluginsprefix=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+PLUGIN_DIR;
+#else
+		pluginsprefix=PLUGIN_DIR;
+#endif
+		char* synfig_root=getenv("SYNFIG_ROOT");
+		if(synfig_root) {
+			pluginsprefix=std::string(synfig_root)
+				+ETL_DIRECTORY_SEPARATOR+"share"
+				+ETL_DIRECTORY_SEPARATOR+"synfig"
+				+ETL_DIRECTORY_SEPARATOR+"plugins";
+		}
+		plugin_manager.load_dir(pluginsprefix);
+		
+		// user plugins path
+		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
+		plugin_manager.load_dir(pluginsprefix);
+		
+		
+		
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
@@ -1460,21 +1505,10 @@ App::~App()
 	instance_list.clear();
 }
 
-String
-App::get_user_app_directory()
-{
-//! \todo do we need locale_from_utf8() on non-Windows boxes too?  (bug #1837445)
-#ifdef WIN32
-	return Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR));
-#else
-	return Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR);
-#endif
-}
-
 synfig::String
 App::get_config_file(const synfig::String& file)
 {
-	return Glib::build_filename(get_user_app_directory(),file);
+	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
 }
 
 //! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
@@ -1876,7 +1910,6 @@ App::quit()
 {
 	if(shutdown_in_progress)return;
 
-
 	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
@@ -1938,8 +1971,6 @@ App::quit()
 		// This next line causes things to crash for some reason
 		//(*iter)->close();
 	}
-
-	shutdown_in_progress=true;
 
 	instance_list.clear();
 
@@ -2578,7 +2609,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 	if(canvas_view)
 	{
 		selected_instance=canvas_view->get_instance();
-		signal_instance_selected()(canvas_view->get_instance());
+		signal_instance_selected()(selected_instance);
 	}
 /*
 	if(get_selected_canvas_view()==canvas_view)
