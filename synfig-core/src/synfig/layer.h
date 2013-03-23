@@ -80,7 +80,7 @@
 		return new class();																\
 	}
 
-//! Imports a parameter 'x' and perform an action based usually based on
+//! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
 #define IMPORT_PLUS(x,y)																\
 	if (param==#x && value.same_type_as(x))												\
@@ -106,6 +106,21 @@
 #define IMPORT(x)																		\
 	IMPORT_AS(x,#x)
 
+//! Imports a parameter if it is of the same type as param
+#define IMPORT_VALUE(x)																		\
+	if (#x=="param_"+param && x.get_type()==value.get_type())												\
+	{																					\
+		x=value;																		\
+		return true;																	\
+	}
+
+//! Imports a parameter's static value
+#define IMPORT_STATIC(x)														\
+	if ("param_"+param==#x){													\
+		x.set_static(value);													\
+		return true;															\
+	}
+
 //! Exports a parameter 'x' if param is same type as given 'y'
 #define EXPORT_AS(x,y)																	\
 	if (param==y)																		\
@@ -118,6 +133,13 @@
 //! Exports a parameter if it is the same type as value
 #define EXPORT(x)																		\
 	EXPORT_AS(x,#x)
+
+//! Exports a parameter if it is the same type as value
+#define EXPORT_VALUE(x)																	\
+	if (#x=="param_"+param)																\
+	{																					\
+		return x;																		\
+	}
 
 //! Exports the name or the local name of the layer
 #define EXPORT_NAME()																	\
