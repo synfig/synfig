@@ -80,6 +80,8 @@
 		return new class();																\
 	}
 
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 //! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
 #define IMPORT_PLUS(x,y)																\
@@ -115,6 +117,18 @@
 	if (#x=="param_"+param && x.get_type()==value.get_type())												\
 	{																					\
 		x=value;																		\
+		return true;																	\
+	}
+
+//! Imports a parameter 'x' and perform an action usually based on
+//! some condition 'y'
+#define IMPORT_VALUE_PLUS(x,y)																\
+	if (#x=="param_"+param && x.get_type()==value.get_type())												\
+	{																					\
+		x=value;																	\
+		{																				\
+			y;																			\
+		}																				\
 		return true;																	\
 	}
 
