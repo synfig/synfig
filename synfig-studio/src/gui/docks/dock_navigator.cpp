@@ -72,7 +72,7 @@ studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 adj_zoom(0,-4,4,1,2),
 scrolling(false),
 surface(new synfig::Surface),
-cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2, 2))
+cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 {
 	attach(drawto,0,4,0,1);
 
@@ -119,7 +119,7 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2, 2))
 
 studio::Widget_NavView::~Widget_NavView()
 {
-	cairo_surface_destroy(*(cairo_surface.get()));
+	cairo_surface_destroy(cairo_surface);
 }
 
 
@@ -149,7 +149,7 @@ void studio::Widget_NavView::on_start_render()
 		if(studio::App::navigator_uses_cairo)
 		{
 			// Create a cairo_image_target
-			etl::handle<Target_Cairo> targ = cairo_image_target(cairo_surface.get());
+			etl::handle<Target_Cairo> targ = cairo_image_target(&cairo_surface);
 			// Fill the target with the proper information
 			targ->set_canvas(get_canvas_view()->get_canvas());
 			targ->set_remove_alpha();
@@ -185,10 +185,9 @@ void studio::Widget_NavView::on_finish_render()
 {
 	if(studio::App::navigator_uses_cairo)
 	{
-		cairo_surface_t* surf=*cairo_surface.get();
-		if(cairo_surface_status(surf))
+		if(cairo_surface_status(cairo_surface))
 			return;
-		Target_Cairo::gamma_filter(surf);
+		Target_Cairo::gamma_filter(cairo_surface);
 	}
 	else
 	{
@@ -297,8 +296,8 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 		}
 		if(studio::App::navigator_uses_cairo)
 		{
-			w=cairo_image_surface_get_width(*cairo_surface.get());
-			h=cairo_image_surface_get_height(*cairo_surface.get());
+			w=cairo_image_surface_get_width(cairo_surface);
+			h=cairo_image_surface_get_height(cairo_surface);
 		}
 
 		//scale up/down to the nearest pixel ratio...
@@ -355,7 +354,7 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 		{
 			cr->save();
 			cr->scale(sx, sx);
-			cairo_set_source_surface(cr->cobj(), *cairo_surface.get(), offx/sx, offy/sx);
+			cairo_set_source_surface(cr->cobj(), cairo_surface, offx/sx, offy/sx);
 			cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
 			cr->paint();
 			cr->restore();	
@@ -503,8 +502,8 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 		}
 		if(studio::App::navigator_uses_cairo)
 		{
-			w=cairo_image_surface_get_width(*cairo_surface.get());
-			h=cairo_image_surface_get_height(*cairo_surface.get());
+			w=cairo_image_surface_get_width(cairo_surface);
+			h=cairo_image_surface_get_height(cairo_surface);
 		}
 		float max = abs((br[0]-tl[0]) / drawto.get_width());
 

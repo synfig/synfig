@@ -66,12 +66,12 @@ class Widget_NavView : public Gtk::Table
 	Gtk::Label zoom_print;
 
 	//zoom window stuff
-	bool				scrolling;
+	bool	scrolling;
 
 	//asynchronous rendering stuff
 	etl::handle<AsyncRenderer>	renderer;
 	etl::smart_ptr<synfig::Surface> surface;
-	etl::smart_ptr<cairo_surface_t*> cairo_surface;
+	cairo_surface_t* cairo_surface;
 	bool rendering;
 
 	//drawing functionality
