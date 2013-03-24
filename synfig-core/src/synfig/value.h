@@ -42,6 +42,7 @@
 #include "widthpoint.h"
 #include "dashitem.h"
 #include "exception.h"
+#include "interpolation.h"
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -141,6 +142,8 @@ protected:
 	bool loop_;
 	//! For Values of Constant Value Nodes
 	bool static_;
+	//! Parameter interpolation
+	Interpolation interpolation_;
 
 	/*
  --	** -- C O N S T R U C T O R S -----------------------------------
@@ -154,7 +157,8 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_), static_(static_)
+		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_), static_(static_),
+		interpolation_(INTERPOLATION_UNDEFINED)
 		{ set(x); }
 
 	//! Copy constructor. The data is not copied, just the type.
@@ -207,6 +211,12 @@ public:
 
 	//! Sets the static option.
 	void set_static(bool x) { static_=x; }
+
+	//! Gets the interpolation.
+	Interpolation get_interpolation()const { return interpolation_; }
+
+	//! Sets the interpolation.
+	void set_interpolation(Interpolation x) { interpolation_=x; }
 
 	//! True if the Value is not valid or is type LIST and is empty
 	bool empty()const;

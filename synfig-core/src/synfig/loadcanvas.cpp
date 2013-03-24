@@ -1160,6 +1160,31 @@ CanvasParser::parse_angle(xmlpp::Element *element)
 	return Angle::deg(atof(val.c_str()));
 }
 
+Interpolation
+CanvasParser::parse_interpolation(xmlpp::Element *element,String attribute)
+{
+	if(!element->get_attribute(attribute))
+		return INTERPOLATION_UNDEFINED;
+	
+	string val=element->get_attribute(attribute)->get_value();
+	if(val=="halt")
+		return INTERPOLATION_HALT;
+	else if(val=="constant")
+		return INTERPOLATION_CONSTANT;
+	else if(val=="linear")
+		return INTERPOLATION_LINEAR;
+	else if(val=="manual")
+		return INTERPOLATION_MANUAL;
+	else if(val=="auto")
+		return INTERPOLATION_TCB;
+	else if(val=="clamped")
+		return INTERPOLATION_CLAMPED;
+	else
+		error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),attribute.c_str()));
+
+	return INTERPOLATION_UNDEFINED;
+}
+
 bool
 CanvasParser::parse_static(xmlpp::Element *element)
 {
@@ -1187,6 +1212,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ValueBase ret;
 		ret.set(parse_real(element));
 		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
 	}
 	else
@@ -1443,40 +1469,12 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 			if(child->get_attribute("before"))
 			{
-				string val=child->get_attribute("before")->get_value();
-				if(val=="halt")
-					waypoint->set_before(INTERPOLATION_HALT);
-				else if(val=="constant")
-					waypoint->set_before(INTERPOLATION_CONSTANT);
-				else if(val=="linear")
-					waypoint->set_before(INTERPOLATION_LINEAR);
-				else if(val=="manual")
-					waypoint->set_before(INTERPOLATION_MANUAL);
-				else if(val=="auto")
-					waypoint->set_before(INTERPOLATION_TCB);
-				else if(val=="clamped")
-					waypoint->set_before(INTERPOLATION_CLAMPED);
-				else
-					error(child,strprintf(_("\"%s\" not a valid value for attribute \"%s\" in <%s>"),val.c_str(),"before","waypoint"));
+				waypoint->set_before(parse_interpolation(child,"before"));
 			}
 
 			if(child->get_attribute("after"))
 			{
-				string val=child->get_attribute("after")->get_value();
-				if(val=="halt")
-					waypoint->set_after(INTERPOLATION_HALT);
-				else if(val=="constant")
-					waypoint->set_after(INTERPOLATION_CONSTANT);
-				else if(val=="linear")
-					waypoint->set_after(INTERPOLATION_LINEAR);
-				else if(val=="manual")
-					waypoint->set_after(INTERPOLATION_MANUAL);
-				else if(val=="auto")
-					waypoint->set_after(INTERPOLATION_TCB);
-				else if(val=="clamped")
-					waypoint->set_after(INTERPOLATION_CLAMPED);
-				else
-					error(child,strprintf(_("\"%s\" not a valid value for attribute \"%s\" in <%s>"),val.c_str(),"before","waypoint"));
+				waypoint->set_after(parse_interpolation(child,"after"));
 			}
 			}
 			catch(Exception::BadTime x)

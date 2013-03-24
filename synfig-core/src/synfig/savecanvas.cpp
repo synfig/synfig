@@ -102,6 +102,37 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
 	return root;
 }
 
+xmlpp::Element* encode_interpolation(xmlpp::Element* root,Interpolation value,String attribute)
+{
+	if (value!=INTERPOLATION_UNDEFINED)
+	{
+		switch(value)
+		{
+		case INTERPOLATION_HALT:
+			root->set_attribute(attribute,"halt");
+			break;
+		case INTERPOLATION_LINEAR:
+			root->set_attribute(attribute,"linear");
+			break;
+		case INTERPOLATION_MANUAL:
+			root->set_attribute(attribute,"manual");
+			break;
+		case INTERPOLATION_CONSTANT:
+			root->set_attribute(attribute,"constant");
+			break;
+		case INTERPOLATION_TCB:
+			root->set_attribute(attribute,"auto");
+			break;
+		case INTERPOLATION_CLAMPED:
+			root->set_attribute(attribute,"clamped");
+			break;
+		default:
+			error("Unknown waypoint type for \""+attribute+"\" attribute");
+		}
+	}
+	return root;
+}
+
 xmlpp::Element* encode_static(xmlpp::Element* root,bool s)
 {
 	if(s)
@@ -252,6 +283,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_REAL:
 		encode_real(root,data.get(Real()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_TIME:
 		encode_time(root,data.get(Time()));
@@ -350,54 +382,16 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			else
 				encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
 		}
-
-		switch(iter->get_before())
-		{
-		case INTERPOLATION_HALT:
-			waypoint_node->set_attribute("before","halt");
-			break;
-		case INTERPOLATION_LINEAR:
-			waypoint_node->set_attribute("before","linear");
-			break;
-		case INTERPOLATION_MANUAL:
-			waypoint_node->set_attribute("before","manual");
-			break;
-		case INTERPOLATION_CONSTANT:
-			waypoint_node->set_attribute("before","constant");
-			break;
-		case INTERPOLATION_TCB:
-			waypoint_node->set_attribute("before","auto");
-			break;
-		case INTERPOLATION_CLAMPED:
-			waypoint_node->set_attribute("before","clamped");
-			break;
-		default:
+		
+		if (iter->get_before()!=INTERPOLATION_UNDEFINED)
+			encode_interpolation(waypoint_node,iter->get_before(),"before");
+		else
 			error("Unknown waypoint type for \"before\" attribute");
-		}
 
-		switch(iter->get_after())
-		{
-		case INTERPOLATION_HALT:
-			waypoint_node->set_attribute("after","halt");
-			break;
-		case INTERPOLATION_LINEAR:
-			waypoint_node->set_attribute("after","linear");
-			break;
-		case INTERPOLATION_MANUAL:
-			waypoint_node->set_attribute("after","manual");
-			break;
-		case INTERPOLATION_CONSTANT:
-			waypoint_node->set_attribute("after","constant");
-			break;
-		case INTERPOLATION_TCB:
-			waypoint_node->set_attribute("after","auto");
-			break;
-		case INTERPOLATION_CLAMPED:
-			waypoint_node->set_attribute("after","clamped");
-			break;
-		default:
+		if (iter->get_after()!=INTERPOLATION_UNDEFINED)
+			encode_interpolation(waypoint_node,iter->get_after(),"after");
+		else
 			error("Unknown waypoint type for \"after\" attribute");
-		}
 
 		if(iter->get_tension()!=0.0)
 			waypoint_node->set_attribute("tension",strprintf("%f",iter->get_tension()));
