@@ -875,9 +875,15 @@ CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 bool
 CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value)
 {
+	ValueBase old_value;
+	old_value = value_desc.get_value(get_time());
+
 	// If this isn't really a change, then don't bother
-	if(new_value==value_desc.get_value(get_time()))
+	if(new_value==old_value)
 		return true;
+
+	// New value should inherit all properties of original ValueBase (static, etc...)
+	new_value.copy_properties_of(old_value);
 
 	// If this change needs to take place elsewhere, then so be it.
 	if(value_desc.get_canvas())

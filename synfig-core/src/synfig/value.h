@@ -218,6 +218,8 @@ public:
 	//! Sets the interpolation.
 	void set_interpolation(Interpolation x) { interpolation_=x; }
 
+	void copy_properties_of(const ValueBase& x);
+
 	//! True if the Value is not valid or is type LIST and is empty
 	bool empty()const;
 
