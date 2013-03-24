@@ -245,6 +245,14 @@ ValueBase::is_valid()const
 	return type>TYPE_NIL && type<TYPE_END && ref_count;
 }
 
+void
+ValueBase::copy_properties_of(const ValueBase& x)
+{
+	loop_=x.loop_;
+	static_=x.static_;
+	interpolation_=x.interpolation_;
+}
+
 bool
 ValueBase::empty()const
 {
