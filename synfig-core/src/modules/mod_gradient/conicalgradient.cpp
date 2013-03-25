@@ -381,8 +381,8 @@ ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Rea
 			sgradient.push_back(cp);
 		}
 		mygradient=sgradient;
+		mygradient.sort();
 	}
-	mygradient.sort();
 	// Complete the gradient to be sure that always there is a color
 	// stop at start and end of gradient.
 	cp=*mygradient.begin();
@@ -398,20 +398,30 @@ ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Rea
 		mygradient.sort();
 	}
 	mygradient.sort();
-	Gradient cgradient=mygradient;
-	for(iter=cgradient.begin();iter!=cgradient.end(); iter++)
+	
+	// Add as many color stops as needed to be sure
+	// that there is not a space >0.4 between color stops
+	bool long_segment;
+	do
 	{
-		iter2=iter+1;
-		if(iter2==cgradient.end()) break;
-		Real pos1(iter->pos);
-		Real pos2(iter2->pos);
-		if(fabs(pos2-pos1)>=0.5)
+		long_segment=false;
+		Gradient cgradient=mygradient;
+		for(iter=cgradient.begin();iter!=cgradient.end(); iter++)
 		{
-			Real pos((pos1+pos2)/2.0);
-			mygradient.push_back(GradientCPoint(pos, cgradient(pos)));
+			iter2=iter+1;
+			if(iter2==cgradient.end()) break;
+			Real pos1(iter->pos);
+			Real pos2(iter2->pos);
+			if(fabs(pos2-pos1)>=0.4)
+			{
+				long_segment=true;
+				Real pos((pos1+pos2)/2.0);
+				mygradient.push_back(GradientCPoint(pos, cgradient(pos)));
+			}
 		}
-	}
-	mygradient.sort();
+		mygradient.sort();
+	} while (long_segment);
+	
 	mygradient.sort();
 	//// Debug
 	if(0)
