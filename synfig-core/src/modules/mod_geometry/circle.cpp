@@ -1079,7 +1079,6 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 					cairo_paint(cr);
 					cairo_restore(cr);
 					cairo_surface_destroy(subimage);
-					cairo_pattern_destroy(gradient);
 					cairo_destroy(cr);
 					return true;
 				}
