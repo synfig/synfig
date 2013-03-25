@@ -342,7 +342,7 @@ public:
 		return warm_target->start_frame(cb);
 	}
 	
-	virtual bool add_tile(cairo_surface_t*& surface, int gx, int gy)
+	virtual bool add_tile(cairo_surface_t* surface, int gx, int gy)
 	{
 		if(cairo_surface_status(surface))
 			return false;

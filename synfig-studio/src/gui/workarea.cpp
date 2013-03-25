@@ -272,7 +272,7 @@ public:
 		return true;
 	}
 		
-	virtual bool add_tile(cairo_surface_t*& tile_surface, int x, int y)
+	virtual bool add_tile(cairo_surface_t* tile_surface, int x, int y)
 	{
 		synfig::Mutex::Lock lock(mutex);
 		if(cairo_surface_status(tile_surface))

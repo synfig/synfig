@@ -87,7 +87,7 @@ public:
 	virtual int next_frame(Time& time);
 	
 	//! Adds the tile at \a x , \a y contained in \a surface
-	virtual bool add_tile(cairo_surface_t*& surface, int x, int y)=0;
+	virtual bool add_tile(cairo_surface_t* surface, int x, int y)=0;
 	//! Returns the total tiles of the imaged rounded to integer number of tiles
 	virtual int total_tiles()const
 	{
