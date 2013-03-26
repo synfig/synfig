@@ -237,17 +237,21 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	const double sy(1/ph);
 	
 	Point newsize(size);
+	// Normalize the size
 	if(newsize[0] <0.0) newsize[0]=-newsize[0];
 	if(newsize[1] <0.0) newsize[1]=-newsize[1];
+	// Calculate one average size that fits in a number integer of pixels
+	newsize[0]=((int)(2.0*newsize[0]*sx))/(2.0*sx);
+	newsize[1]=((int)(2.0*newsize[1]*sy))/(2.0*sy);
 	
 	// Now let's render the minimum checkerboard in other surface
 	// Initially I'll fill it completely with the alpha color
 	// Create a similar image with the same dimensions than the minimum checkerboard
+	
 	RendDesc desc(renddesc);
-	//desc.set_flags(0);
 	// this will modify the w and h values in pixels.
-	desc.set_tl(Point(origin[0]-newsize[0], origin[1]+newsize[1]));
-	desc.set_br(Point(origin[0]+newsize[0], origin[1]-newsize[1]));
+	desc.set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
+	desc.set_tl_br(Point(-newsize[0], +newsize[1]), Point(+newsize[0], -newsize[1]));
 	double subsx(1/desc.get_pw());
 	double subsy(1/desc.get_ph());
 	double subtx(-desc.get_tl()[0]*subsx);
@@ -255,25 +259,22 @@ CheckerBoard::accelerated_cairorender(Context context,cairo_surface_t *surface,i
 	cairo_surface_t* subimage=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(), desc.get_h());
 	cairo_t* subcr=cairo_create(subimage);
 	cairo_save(subcr);
-	cairo_translate(subcr, subtx , subty);
-	cairo_scale(subcr, subsx, subsy);
 	cairo_set_source_rgba(subcr, r, g, b, a);
-	cairo_rectangle(subcr, origin[0]-newsize[0], origin[1], newsize[0], newsize[1]);
+	cairo_rectangle(subcr, 0, 0, desc.get_w()/2, desc.get_h()/2);
 	cairo_clip(subcr);
 	cairo_paint_with_alpha(subcr, get_amount());
 	cairo_restore(subcr);
 	cairo_save(subcr);
-	cairo_translate(subcr, subtx , subty);
-	cairo_scale(subcr, subsx, subsy);
 	cairo_set_source_rgba(subcr, r, g, b, a);
-	cairo_rectangle(subcr, origin[0], origin[1]-newsize[1], newsize[0], newsize[1]);
+	cairo_rectangle(subcr, desc.get_w()/2, desc.get_h()/2, desc.get_w()/2, desc.get_h()/2);
 	cairo_clip(subcr);
 	cairo_paint_with_alpha(subcr, get_amount());
 	cairo_restore(subcr);
 	
 	cairo_t* cr=cairo_create(surface);
 	cairo_save(cr);
-	cairo_translate(cr, tx+origin[0]*sx , ty+origin[1]*sy);
+	
+	cairo_translate(cr, tx+origin[0]*sx -newsize[0]*sx, ty+origin[1]*sy+newsize[1]*sy);
 	cairo_pattern_t* pattern=cairo_pattern_create_for_surface(subimage);
 	cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
 	cairo_set_source(cr, pattern);
