@@ -281,6 +281,10 @@ public:
 	const Point &get_br()const;
 	//! Sets the bottom right point of the compostion
 	RendDesc &set_br(const Point &x);
+	//! Sets the top left and the bottom right of the composition
+	// Use this when the individual set_tl or set_br
+	// produce degenerate w or h
+	RendDesc &set_tl_br( const Point &x, const Point &y);
 	//! Returns the rectangle of the composition
 	Rect get_rect()const { return Rect(get_tl(),get_br()); }
 	//! Sets the view port by the top left and right bottom corners
