@@ -63,8 +63,6 @@ SYNFIG_CAIROIMPORTER_SET_CVS_ID(cairo_png_mptr,"$Id$");
 cairo_png_mptr::cairo_png_mptr(const char *file_name)
 {
 	filename=file_name;
-	if(csurface_ && !cairo_surface_status(csurface_))
-		cairo_surface_destroy(csurface_);
 	csurface_=cairo_image_surface_create_from_png(file_name);
 	CairoSurface cairo_s;
 	cairo_s.set_cairo_surface(csurface_);
