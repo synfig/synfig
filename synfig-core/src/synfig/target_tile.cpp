@@ -306,13 +306,15 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 				if(!start_frame(cb))
 					return false;
+				Context context;
+				// pass the Render Method to the context
+				context=canvas->get_context();
+				context.set_render_method(SOFTWARE);
 
 				// Set the time that we wish to render
 				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				// Why the above line is commented here and not in TargetScaline?
 					canvas->set_time(t);
-
-				Context context;
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 				Canvas::Handle op_canvas;

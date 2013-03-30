@@ -112,12 +112,15 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			// false, go ahead and bail. (it may be a user cancel)
 			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
 				return false;
+			
+			Context context;
+			// pass the Render Method to the context
+			context=canvas->get_context();
+			context.set_render_method(CAIRO);
 
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
-
-			Context context;
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;
@@ -133,8 +136,6 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 	#else
 			context=canvas->get_context();
 	#endif
-			// pass the Render Method to the context
-			context.set_render_method(CAIRO);
 			// Obtain a pointer to the cairo_surface_t given by the Target instance.
 			cairo_surface_t* surface;
 			if(obtain_surface(surface))
