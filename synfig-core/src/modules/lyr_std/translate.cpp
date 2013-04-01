@@ -156,6 +156,29 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 	return true;
 }
 
+/////
+bool
+Translate::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	RendDesc desc(renddesc);
+	
+	desc.clear_flags();
+	desc.set_tl(desc.get_tl()-origin);
+	desc.set_br(desc.get_br()-origin);
+	
+	// Render the scene
+	if(!context.accelerated_cairorender(surface,quality,desc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	
+	return true;
+}
+
+/////
+
+
 Rect
 Translate::get_full_bounding_rect(Context context)const
 {

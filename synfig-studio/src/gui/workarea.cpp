@@ -52,6 +52,8 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
+#include <synfig/target_cairo.h>
+#include <synfig/target_cairo_tile.h>
 #include <synfig/surface.h>
 #include <synfig/valuenode_composite.h>
 #include <synfigapp/canvasinterface.h>
@@ -61,6 +63,7 @@
 #include <synfig/distance.h>
 
 #include "workarearenderer/workarearenderer.h"
+#include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
@@ -96,6 +99,222 @@ using namespace studio;
 
 /* === C L A S S E S ======================================================= */
 
+class studio::WorkAreaTarget_Cairo_Tile : public synfig::Target_Cairo_Tile
+{
+public:
+	WorkArea *workarea;
+	bool low_res;
+	int w,h;
+	int real_tile_w,real_tile_h;
+	int refresh_id;
+	
+	bool onionskin;
+	bool onion_first_tile;
+	int onion_layers;
+	
+	std::list<synfig::Time> onion_skin_queue;
+	
+	synfig::Mutex mutex;
+	
+	void set_onion_skin(bool x, int *onions)
+	{
+		onionskin=x;
+		
+		Time time(rend_desc().get_time_start());
+		
+		if(!onionskin)
+			return;
+		onion_skin_queue.push_back(time);
+		
+		try
+		{
+			Time thistime=time;
+			for(int i=0; i<onions[0]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+		
+		try
+		{
+			Time thistime=time;
+			for(int i=0; i<onions[1]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+		
+		onion_layers=onion_skin_queue.size();
+		
+		onion_first_tile=false;
+	}
+public:
+	
+	WorkAreaTarget_Cairo_Tile(WorkArea *workarea,int w, int h):
+	workarea(workarea),
+	low_res(workarea->get_low_resolution_flag()),
+	w(w),
+	h(h),
+	real_tile_w(workarea->tile_w),
+	real_tile_h(workarea->tile_h),
+	refresh_id(workarea->refreshes),
+	onionskin(false),
+	onion_layers(0)
+	{
+		set_clipping(true);
+		if(low_res)
+		{
+			int div = workarea->get_low_res_pixel_size();
+			set_tile_w(workarea->tile_w/div);
+			set_tile_h(workarea->tile_h/div);
+		}
+		else
+		{
+			set_tile_w(workarea->tile_w);
+			set_tile_h(workarea->tile_h);
+		}
+		set_canvas(workarea->get_canvas());
+		set_quality(workarea->get_quality());
+	}
+	
+	~WorkAreaTarget_Cairo_Tile()
+	{
+		workarea->queue_draw();
+	}
+	
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
+	{
+		assert(workarea);
+		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
+		if(low_res) {
+			int div = workarea->get_low_res_pixel_size();
+			newdesc->set_wh(w/div,h/div);
+		}
+		else
+			newdesc->set_wh(w,h);
+		
+		if(
+		   workarea->get_w()!=w
+		   || 	workarea->get_h()!=h
+		   ) workarea->set_wh(w,h,4);
+				
+		desc=*newdesc;
+		workarea->full_frame=false;
+		return true;
+	}
+	
+	virtual int total_tiles()const
+	{
+		int tw(rend_desc().get_w()/get_tile_w());
+		int th(rend_desc().get_h()/get_tile_h());
+		if(rend_desc().get_w()%get_tile_w()!=0)tw++;
+		if(rend_desc().get_h()%get_tile_h()!=0)th++;
+		return tw*th;
+	}
+	
+	virtual int next_frame(Time& time)
+	{
+		synfig::Mutex::Lock lock(mutex);
+		
+		if(!onionskin)
+			return synfig::Target_Cairo_Tile::next_frame(time);
+		
+		onion_first_tile=(onion_layers==(signed)onion_skin_queue.size());
+		
+		if(!onion_skin_queue.empty())
+		{
+			time=onion_skin_queue.front();
+			onion_skin_queue.pop_front();
+		}
+		else
+			return 0;
+		
+		return onion_skin_queue.size()+1;
+	}
+	
+	virtual int next_tile(int& x, int& y)
+	{
+		synfig::Mutex::Lock lock(mutex);
+
+		int curr_tile(workarea->next_unrendered_tile(refresh_id-onion_skin_queue.size()));
+		if(curr_tile<0)
+			return 0;
+		
+		// Width of the image(in tiles)
+		int tw(rend_desc().get_w()/get_tile_w());
+		if(rend_desc().get_w()%get_tile_w()!=0)tw++;
+		
+		y=(curr_tile/tw)*get_tile_w();
+		x=(curr_tile%tw)*get_tile_h();
+		
+		// Mark this tile as "up-to-date"
+		if(onionskin)
+			workarea->cairo_book[curr_tile].refreshes=refresh_id-onion_skin_queue.size();
+		else
+			workarea->cairo_book[curr_tile].refreshes=refresh_id;
+		
+		return total_tiles()-curr_tile+1;
+	}
+	
+	
+	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
+	{
+		synfig::Mutex::Lock lock(mutex);
+		workarea->cairo_book.resize(total_tiles());
+		return true;
+	}
+		
+	virtual bool add_tile(cairo_surface_t* tile_surface, int x, int y)
+	{
+		synfig::Mutex::Lock lock(mutex);
+		if(cairo_surface_status(tile_surface))
+			return false;
+
+		gamma_filter(tile_surface);
+		x/=get_tile_w();
+		y/=get_tile_h();
+		int tw(rend_desc().get_w()/get_tile_w());
+		if(rend_desc().get_w()%get_tile_w()!=0)tw++;
+		unsigned int index=y*tw+x;
+		
+		// Sanity check
+		if(index>workarea->cairo_book.size())
+			return false;
+		
+		if(!onionskin || onion_first_tile || !workarea->cairo_book[index].surface)
+		{
+			if(workarea->cairo_book[index].surface)
+				cairo_surface_destroy(workarea->cairo_book[index].surface);
+			workarea->cairo_book[index].surface=cairo_surface_reference(tile_surface);
+		}
+		else
+		{
+			cairo_t* cr=cairo_create(workarea->cairo_book[index].surface);
+			cairo_set_source_surface(cr, tile_surface, 0, 0);
+			cairo_paint_with_alpha(cr, 255/(onion_layers-onion_skin_queue.size()+1));
+			cairo_destroy(cr);
+		}
+		
+		workarea->queue_draw();
+		assert(workarea->cairo_book[index].surface);
+
+		cairo_surface_destroy(tile_surface);
+		return true;
+	}
+	virtual void end_frame()
+	{
+	}
+};
+
+
 class studio::WorkAreaTarget : public synfig::Target_Tile
 {
 public:
@@ -103,9 +322,7 @@ public:
 	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
-	//std::vector<Glib::RefPtr<Gdk::Pixbuf> >::iterator tile_iter;
 
-	int twindow_start, twindow_width, twindow_height, twindow_pad;
 	int refresh_id;
 
 	bool onionskin;
@@ -274,19 +491,7 @@ public:
 	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
 	{
 		synfig::Mutex::Lock lock(mutex);
-
-		int tw(rend_desc().get_w()/get_tile_w());
-		if(rend_desc().get_w()%get_tile_w()!=0)tw++;
-		int th(rend_desc().get_h()/get_tile_h());
-		if(rend_desc().get_h()%get_tile_h()!=0)th++;
-
-		twindow_start=0;
-		twindow_width=tw;
-		twindow_height=th;
-		twindow_pad=0;
-
 		workarea->tile_book.resize(total_tiles());
-		//tile_iter=workarea->tile_book.begin()+twindow_start;
 		return true;
 	}
 
@@ -297,7 +502,7 @@ public:
 		synfig::Mutex::Lock lock(mutex);
 		assert(surface);
 
-		PixelFormat pf(PF_RGB);
+		PixelFormat pf(PF_RGB|PF_A);
 
 		const int total_bytes(get_tile_w()*get_tile_h()*synfig::channels(pf));
 
@@ -308,24 +513,15 @@ public:
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
-			int w(get_tile_w());
-			int h(get_tile_h());
-			int x(surface.get_w()*surface.get_h());
-			//if(low_res) {
-			//	int div = workarea->get_low_res_pixel_size();
-			//	w/=div,h/=div;
-			//}
-			Color dark(0.6,0.6,0.6);
-			Color lite(0.8,0.8,0.8);
+			int w(surface.get_w());
+			int x(w*surface.get_h());
 			for(int i=0;i<x;i++)
 				dest=Color2PixelFormat(
-					Color::blend(
-						(*(src++)),
-						((i/surface.get_w())*8/h+(i%surface.get_w())*8/w)&1?dark:lite,
-						1.0f
-					).clamped(),
-					pf,dest,App::gamma
-				);
+									   (*(src++)).clamped(),
+									   pf,
+									   dest,
+									   App::gamma
+									   );
 		}
 
 		x/=get_tile_w();
@@ -396,6 +592,159 @@ public:
 };
 
 
+class studio::WorkAreaTarget_Cairo: public synfig::Target_Cairo
+{
+public:
+	WorkArea *workarea;
+	bool low_res;
+	int w,h;
+	int refresh_id;
+	bool onionskin;
+	bool onion_first_tile;
+	int onion_layers;
+
+	std::list<synfig::Time> onion_skin_queue;
+
+	void set_onion_skin(bool status, int *onions)
+	{
+		onionskin=status;
+		
+		Time time(rend_desc().get_time_start());
+		
+		if(!onionskin)
+			return;
+		onion_skin_queue.push_back(time);
+		try
+		{
+			Time thistime=time;
+			for(int i=0; i<onions[0]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+		
+		try
+		{
+			Time thistime=time;
+			for(int i=0; i<onions[1]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
+		}
+		catch(...)
+		{  }
+		
+		onion_layers=onion_skin_queue.size();
+		
+		onion_first_tile=false;
+	}
+public:
+	
+	WorkAreaTarget_Cairo(WorkArea *workarea,int w, int h):
+	workarea(workarea),
+	low_res(workarea->get_low_resolution_flag()),
+	w(w),
+	h(h),
+	refresh_id(workarea->refreshes),
+	onionskin(false),
+	onion_layers(0)
+	{
+		set_canvas(workarea->get_canvas());
+		set_quality(workarea->get_quality());
+	}
+	~WorkAreaTarget_Cairo()
+	{
+	}
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
+	{
+		assert(workarea);
+		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
+		if(low_res)
+		{
+			int div = workarea->get_low_res_pixel_size();
+			newdesc->set_wh(w/div,h/div);
+		}
+		else
+			newdesc->set_wh(w,h);
+		
+		if(
+		   workarea->get_w()!=w
+		   || 	workarea->get_h()!=h
+		   ) workarea->set_wh(w,h,4);
+				
+		desc=*newdesc;
+		workarea->full_frame=true;
+		workarea->cairo_book.resize(1);
+		return true;
+	}
+
+	virtual int next_frame(Time& time)
+	{
+		// Mark this tile as "up-to-date"
+		if(onionskin)
+			workarea->cairo_book[0].refreshes=refresh_id-onion_skin_queue.size();
+		else
+			workarea->cairo_book[0].refreshes=refresh_id;
+		
+		if(!onionskin)
+			return synfig::Target_Cairo::next_frame(time);
+		
+		onion_first_tile=(onion_layers==(signed)onion_skin_queue.size());
+		
+		if(!onion_skin_queue.empty())
+		{
+			time=onion_skin_queue.front();
+			onion_skin_queue.pop_front();
+		}
+		else
+			return 0;
+		return onion_skin_queue.size()+1;
+	}
+
+	virtual bool obtain_surface(cairo_surface_t*& surface)
+	{
+		int localw=desc.get_w(), localh=desc.get_h();
+		surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, localw, localh);
+		return true;
+	}
+
+	bool put_surface(cairo_surface_t *surf, synfig::ProgressCallback *cb)
+	{
+		if(!workarea)
+			return false;
+		gamma_filter(surf);
+		if(cairo_surface_status(surf))
+		{
+			if(cb) cb->error(_("Cairo Surface bad status"));
+			return false;
+		}
+		
+		if(!onionskin || onion_first_tile || !workarea->cairo_book[0].surface)
+		{
+			workarea->cairo_book[0].surface=cairo_surface_reference(surf);
+		}
+		else
+		{
+			cairo_t* cr=cairo_create(workarea->cairo_book[0].surface);
+			cairo_set_source_surface(cr, surf, 0, 0);
+			cairo_paint_with_alpha(cr, 255/(onion_layers-onion_skin_queue.size()+1));
+		}
+		
+		workarea->queue_draw();
+		assert(workarea->cairo_book[0].surface);
+		
+		cairo_surface_destroy(surf);
+		return true;
+	}
+
+};
+
 class studio::WorkAreaTarget_Full : public synfig::Target_Scanline
 {
 public:
@@ -403,9 +752,7 @@ public:
 	bool low_res;
 	int w,h;
 	int real_tile_w,real_tile_h;
-	//std::vector<Glib::RefPtr<Gdk::Pixbuf> >::iterator tile_iter;
 
-	int twindow_start, twindow_width, twindow_height, twindow_pad;
 	int refresh_id;
 
 	bool onionskin;
@@ -546,7 +893,7 @@ public:
 	{
 		assert(surface);
 
-		PixelFormat pf(PF_RGB);
+		PixelFormat pf(PF_RGB|PF_A);
 
 		const int total_bytes(surface.get_w()*surface.get_h()*synfig::channels(pf));
 
@@ -554,37 +901,19 @@ public:
 
 		if(!surface || !buffer)
 			return;
+		// Copy the content of surface to the buffer
 		{
 			unsigned char *dest(buffer);
 			const Color *src(surface[0]);
 			int w(surface.get_w());
-			//int h(surface.get_h());
-			int x(surface.get_w()*surface.get_h());
-			//if(low_res) {
-			//	int div = workarea->get_low_res_pixel_size();
-			//	w/=div,h/=div;
-			//}
-			Color dark(0.6,0.6,0.6);
-			Color lite(0.8,0.8,0.8);
-			int tw=workarea->tile_w;
-			int th=workarea->tile_h;
-			if(low_res)
-			{
-				int div = workarea->get_low_res_pixel_size();
-				tw/=div;
-				th/=div;
-			}
+			int x(w*surface.get_h());
 			for(int i=0;i<x;i++)
 				dest=Color2PixelFormat(
-					Color::blend(
-						(*(src++)),
-						((i/w)*8/th+(i%w)*8/tw)&1?dark:lite,
-						1.0f
-					).clamped(),
-					pf,
-					dest,
-					App::gamma
-				);
+									   (*(src++)).clamped(),
+									   pf,
+									   dest,
+									   App::gamma
+									   );
 		}
 
 		Glib::RefPtr<Gdk::Pixbuf> pixbuf;
@@ -689,7 +1018,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	meta_data_lock=false;
 
-	insert_renderer(new Renderer_Canvas,	000);
+	insert_renderer(new Renderer_Background, 000);
+	insert_renderer(new Renderer_Canvas,	010);
 	insert_renderer(new Renderer_Grid,		100);
 	insert_renderer(new Renderer_Guides,	200);
 	insert_renderer(new Renderer_Ducks,		300);
@@ -1163,6 +1493,7 @@ WorkArea::set_wh(int W, int H,int CHAN)
 	refresh_dimension_info();
 
 	tile_book.clear();
+	cairo_book.clear();
 
 	return true;
 }
@@ -2166,8 +2497,10 @@ WorkArea::comp_to_screen_coords(synfig::Point /*pos*/)const
 int
 WorkArea::next_unrendered_tile(int refreshes)const
 {
-	//assert(!tile_book.empty());
-	if(tile_book.empty())
+	bool uses_cairo=studio::App::workarea_uses_cairo;
+	if(tile_book.empty() && !uses_cairo)
+		return -1;
+	else if (cairo_book.empty() && uses_cairo)
 		return -1;
 
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
@@ -2202,12 +2535,26 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		for(u=u1;u<u2;u++)
 		{
 			int index(v*width_in_tiles+u);
-			if(tile_book[index].second<refreshes)
+			if(!uses_cairo)
 			{
-				last_good_tile=index;
-				if(rand()%8==0)
-					return index;
+				if(tile_book[index].second<refreshes)
+				{
+					last_good_tile=index;
+					if(rand()%8==0)
+						return index;
+				}
 			}
+			else
+			{
+				
+				if(cairo_book[index].refreshes<refreshes)
+				{
+					last_good_tile=index;
+					if(rand()%8==0)
+						return index;
+				}
+			}
+			
 		}
 	return last_good_tile;
 }
@@ -2464,7 +2811,25 @@ studio::WorkArea::async_update_preview()
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
 	div = low_resolution ? low_res_pixel_size : 1;
-	if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
+	if(studio::App::workarea_uses_cairo)
+	{
+		if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
+		{
+			handle<WorkAreaTarget_Cairo_Tile> trgt(new class WorkAreaTarget_Cairo_Tile(this,w,h));
+			trgt->set_rend_desc(&desc);
+			trgt->set_onion_skin(get_onion_skin(), onion_skins);
+			target=trgt;
+		}
+		else
+		{
+			handle<WorkAreaTarget_Cairo> trgt(new class WorkAreaTarget_Cairo(this,w,h));
+			trgt->set_rend_desc(&desc);
+			trgt->set_onion_skin(get_onion_skin(), onion_skins);
+			target=trgt;
+		}
+
+	}
+	else if ((w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER")) || getenv("SYNFIG_FORCE_TILE_RENDER"))
 	{
 		// do a tile render
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));
@@ -2591,7 +2956,11 @@ again:
 	set_rend_desc(desc);
 
 	// Create the render target
-	handle<WorkAreaTarget> target(new class WorkAreaTarget(this,w,h));
+	handle<Target> target;
+	if(studio::App::workarea_uses_cairo)
+		target=new class WorkAreaTarget_Cairo(this,w,h);
+	else
+		target=new class WorkAreaTarget(this, w, h);
 
 	target->set_rend_desc(&desc);
 

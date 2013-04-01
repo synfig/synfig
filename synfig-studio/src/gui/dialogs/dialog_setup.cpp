@@ -298,6 +298,12 @@ Dialog_Setup::Dialog_Setup():
 	// Render - Image sequence separator
 	attach_label(render_table, _("Image Sequence Separator String"), 0, xpadding, ypadding);
 	render_table->attach(image_sequence_separator, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	// Render - Use Cairo on Navigator
+	attach_label(render_table, _("Use Cairo render on Navigator"), 1, xpadding, ypadding);
+	render_table->attach(toggle_navigator_uses_cairo, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	// Render - Use Cairo on WorkArea
+	attach_label(render_table, _("Use Cairo render on WorkArea"), 2, xpadding, ypadding);
+	render_table->attach(toggle_workarea_uses_cairo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	show_all_children();
 }
@@ -365,6 +371,12 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred image sequence separator
 	App::sequence_separator=image_sequence_separator.get_text();
+
+	// Set the navigator uses cairo flag
+	App::navigator_uses_cairo=toggle_navigator_uses_cairo.get_active();
+
+	// Set the workarea uses cairo flag
+	App::workarea_uses_cairo=toggle_workarea_uses_cairo.get_active();
 
 	App::save_settings();
 
@@ -516,6 +528,12 @@ Dialog_Setup::refresh()
 
 	//Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
+
+	// Refresh the status of the navigator_uses_cairo flag
+	toggle_navigator_uses_cairo.set_active(App::navigator_uses_cairo);
+
+	// Refresh the status of the workarea_uses_cairo flag
+	toggle_workarea_uses_cairo.set_active(App::workarea_uses_cairo);
 }
 
 GammaPattern::GammaPattern():

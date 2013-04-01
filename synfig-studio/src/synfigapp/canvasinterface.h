@@ -308,7 +308,7 @@ public:
 	~PushMode() { canvas_interface_->set_mode(old_mode_); }
 }; // END of class PushMode
 
-}; // END of namespace studio
+}; // END of namespace synfigapp
 
 /* === E N D =============================================================== */
 

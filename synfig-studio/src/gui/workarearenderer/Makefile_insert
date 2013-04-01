@@ -1,4 +1,5 @@
 WORKAREARENDERER_HH = \
+	workarearenderer/renderer_background.h \
 	workarearenderer/renderer_bbox.h \
 	workarearenderer/renderer_canvas.h \
 	workarearenderer/renderer_dragbox.h \
@@ -9,6 +10,7 @@ WORKAREARENDERER_HH = \
 	workarearenderer/workarearenderer.h
 
 WORKAREARENDERER_CC = \
+	workarearenderer/renderer_background.cpp \
 	workarearenderer/renderer_bbox.cpp \
 	workarearenderer/renderer_canvas.cpp \
 	workarearenderer/renderer_dragbox.cpp \

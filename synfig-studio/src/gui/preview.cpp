@@ -40,6 +40,7 @@
 #include <gdkmm/general.h>
 
 #include <synfig/target_scanline.h>
+#include <synfig/target_cairo.h>
 #include <synfig/surface.h>
 
 #include <algorithm>
@@ -75,6 +76,49 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
+
+class studio::Preview::Preview_Target_Cairo : public Target_Cairo
+{
+	Preview *prev;
+public:
+	Preview_Target_Cairo(Preview *prev_): prev(prev_)
+	{
+	}
+	
+	virtual bool set_rend_desc(RendDesc *r)
+	{
+		return Target_Cairo::set_rend_desc(r);
+	}
+	
+	virtual bool obtain_surface(cairo_surface_t*& surface)
+	{
+		int w=desc.get_w(), h=desc.get_h();
+		surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+		return true;
+	}
+
+	bool put_surface(cairo_surface_t *surf, synfig::ProgressCallback *cb)
+	{
+		if(!prev)
+			return false;
+		gamma_filter(surf);
+		if(cairo_surface_status(surf))
+		{
+			if(cb) cb->error(_("Cairo Surface bad status"));
+			return false;
+		}
+		FlipbookElem	fe;
+		Preview pr = *prev;
+		float time = get_canvas()->get_time();
+		fe.t = time;
+		fe.surface=cairo_surface_reference(surf);
+		prev->push_back(fe);
+		prev->signal_changed()();
+		
+		cairo_surface_destroy(surf);
+		return true;
+	}
+};
 
 class studio::Preview::Preview_Target : public Target_Scanline
 {
@@ -186,17 +230,6 @@ void studio::Preview::render()
 {
 	if(canvasview)
 	{
-		//render using the preview target
-		etl::handle<Preview_Target>	target = new Preview_Target;
-
-		//connect our information to his...
-		//synfig::warning("Connecting to the end frame function...");
-		target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
-
-		//set the options
-		//synfig::warning("Setting Canvas");
-		target->set_canvas(get_canvas());
-		target->set_quality(quality);
 
 		//render description
 		RendDesc desc = get_canvas()->rend_desc();
@@ -213,7 +246,6 @@ void studio::Preview::render()
 		/*synfig::warning("Setting the render description: %d x %d, %f fps, [%f,%f]",
 						neww,newh,newfps, overbegin?begintime:(float)desc.get_time_start(),
 						overend?endtime:(float)desc.get_time_end());*/
-
 		desc.set_w(neww);
 		desc.set_h(newh);
 		desc.set_frame_rate(newfps);
@@ -232,20 +264,44 @@ void studio::Preview::render()
 		//setting the description
 
 		//HACK - add on one extra frame because the renderer can't render the last frame
+		// Maybe this can be removed now because the next_time(&t) was refacgorized to consider the last frame too
+		//TODO: do not use get_time on Preview_Target
 		desc.set_time_end(desc.get_time_end() + 1.000001/fps);
 
+		// Render using a Preview target (cairo or not)
+		etl::handle<Target> target;
+		if(use_cairo)
+		{
+			target = etl::handle<Target>::cast_dynamic(new Preview_Target_Cairo(this));
+		}
+		else
+		{
+			etl::handle<Preview_Target> t_target = new Preview_Target;
+			//connect our information to his...
+			t_target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
+			target =etl::handle<Target>::cast_dynamic(t_target);
+		}
+		//set the options
+		target->set_canvas(get_canvas());
+		target->set_quality(quality);
+		// Set the render description
 		target->set_rend_desc(&desc);
 
 		//... first we must clear our current selves of space
 		frames.resize(0);
 
 		//now tell it to go... with inherited prog. reporting...
-		//synfig::info("Rendering Asynchronously...");
 		if(renderer) renderer->stop();
 		renderer = new AsyncRenderer(target);
 		renderer->start();
 	}
 }
+
+void studio::Preview::clear()
+{
+	frames.clear();
+}
+
 
 static void free_guint8(const guint8 *mem)
 {
@@ -313,6 +369,7 @@ Widget_Preview::Widget_Preview():
 	adj_time_scrub(0, 0, 1000, 0, 10, 0),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
+	current_surface(NULL),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	audiotime(0),
 	adj_sound(0, 0, 4),
@@ -574,12 +631,16 @@ void studio::Widget_Preview::update()
 				synfig::error("i == end....");
 				//assert(0);
 				currentbuf.clear();
+				current_surface=NULL;
 				currentindex = 0;
 				timedisp = -1;
 			}else
 			{
 				currentbuf = i->buf;
 				currentindex = i-beg;
+				if(current_surface)
+					cairo_surface_destroy(current_surface);
+				current_surface= cairo_surface_reference(i->surface);
 				if(timedisp != i->t)
 				{
 					timedisp = i->t;
@@ -616,15 +677,44 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 {
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;
-
-	if(!px || draw_area.get_height() == 0
-		|| px->get_height() == 0 || px->get_width() == 0 /*|| is_visible()*/) //made not need this line
+	cairo_surface_t* cs;
+	bool use_cairo= preview->get_use_cairo();
+	if(use_cairo)
+	{
+		if(current_surface)
+			cs=cairo_surface_reference(current_surface);
+		else
+			return true;
+	}
+	
+	int dw = draw_area.get_width();
+	int dh = draw_area.get_height();
+	
+	if(use_cairo && !cs)
 		return true;
+	else if(!use_cairo && !px)
+		return true;
+	//made not need this line
+	//if ( draw_area.get_height() == 0 || px->get_height() == 0 || px->get_width() == 0)
+	//	return true;
 
 	//figure out the scaling factors...
 	float sx, sy;
 	float q = 1 / preview->get_zoom();
 	int nw, nh;
+	int w,h;
+	
+	// grab the source dimensions
+	if(use_cairo)
+	{
+		w=cairo_image_surface_get_width(cs);
+		h=cairo_image_surface_get_height(cs);
+	}
+	else
+	{
+		w=px->get_width();
+		h=px->get_height();
+	}
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
@@ -634,8 +724,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	if (text == _("Fit") || text == "fit")
 	{
-		sx = draw_area.get_width() / (float)px->get_width();
-		sy = draw_area.get_height()/ (float)px->get_height();
+		sx = dw / (float)w;
+		sy = dh/ (float)h;
 
 		//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 
@@ -661,17 +751,20 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 	else sx = sy = atof(c) / 100 * q;
 
 	//scale to a new pixmap and then copy over to the window
-	nw = (int)(px->get_width() * sx);
-	nh = (int)(px->get_height() * sx);
+	nw = (int)(w * sx);
+	nh = (int)(h * sx);
 
 	if(nw == 0 || nh == 0)return true;
 
-	pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
+	if(!use_cairo)
+		pxnew = px->scale_simple(nw, nh, Gdk::INTERP_NEAREST);
 
 	//except "Fit" or "fit", we need to set size request for scrolled window
 	if (text != _("Fit") & text != "fit")
 	{
 		draw_area.set_size_request(nw, nh);
+		dw = draw_area.get_width();
+		dh = draw_area.get_height();
 	}
 
 	//synfig::info("Now to draw to the window...");
@@ -681,6 +774,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	if(!wind) synfig::warning("The destination window is broken...");
 
+	if(!use_cairo)
 	{
 		/* Options for drawing...
 			1) store with alpha, then clear and render with alpha every frame
@@ -698,8 +792,18 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 			cr, //cairo context
 			pxnew, //pixbuf
 			//coordinates to place center of the preview window
-			(draw_area.get_width() - nw) / 2, (draw_area.get_height() - nh) / 2
+			(dw - nw) / 2, (dh - nh) / 2
 			);
+		cr->paint();
+		cr->restore();
+	}
+	else
+	{
+		cr->save();
+		cr->scale(sx, sx);
+		cairo_set_source_surface(cr->cobj(), cs, (dw - nw)/(2*sx), (dh - nh)/(2*sx));
+		cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+		cairo_surface_destroy(cs);
 		cr->paint();
 		cr->restore();
 	}
@@ -1034,6 +1138,9 @@ void studio::Widget_Preview::eraseall()
 	stoprender();
 
 	currentbuf.clear();
+	if(current_surface)
+		cairo_surface_destroy(current_surface);
+	current_surface=NULL;
 	currentindex = 0;
 	timedisp = 0;
 	queue_draw();

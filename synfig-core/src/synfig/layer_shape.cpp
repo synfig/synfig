@@ -2159,7 +2159,7 @@ void Layer_Shape::curve_to_smooth(Real x2, Real y2, Real x, Real y)		//x1,y1 der
 bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 								Color::BlendMethod got_blend_method, Color::value_type got_amount) const
 {
-	Surface::alpha_pen p(surface->begin(),got_amount,_BlendFunc(got_blend_method));
+	Surface::alpha_pen p(surface->begin(),got_amount,got_blend_method);
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
 	PolySpan::cover_array::iterator end_mark = polyspan.covers.end();
 
@@ -2619,6 +2619,196 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 	}
 
 }
+//
+bool
+Layer_Shape::shape_to_cairo(cairo_t *cr)const
+{
+	int tmp(0);
+	//pointers for processing the bytestream
+	const char *current 	= &bytestream[0];
+	const char *end			= &bytestream[bytestream.size()];
+	int	operation 	= Primitive::NONE;
+	int number		= 0;
+	int curnum;
+	
+	Primitive 	*curprim;
+	Point		*data;
+	
+	Real x,y/*,x1,y1,x2,y2*/;
+	while(current < end)
+	{
+		tmp++;
+		
+		try {
+			
+			//get the op code safely
+			curprim = (Primitive *)current;
+			
+			//advance past indices
+			current += sizeof(Primitive);
+			if(current > end)
+			{
+				warning("Layer_Shape::accelerated_render - Error in the byte stream, not enough space for next declaration");
+				return false;
+			}
+			
+			//get the relevant data
+			operation 	= curprim->operation;
+			number 		= curprim->number;
+			
+			if(operation == Primitive::END)
+				break;
+			
+			if(operation == Primitive::CLOSE)
+			{
+
+				cairo_close_path(cr);
+				continue;
+			}
+			
+			data = (Point*)current;
+			current += sizeof(Point)*number;
+			
+			//check data positioning
+			if(current > end)
+			{
+				warning("Layer_Shape::accelerated_render - Error in the byte stream, in sufficient data space for declared number of points");
+				return false;
+			}
+			
+		} catch(...) { synfig::error("Layer_Shape::render_shape()1: Caught an exception after %d loops, rethrowing...", tmp); throw; }
+		
+		//transfer all the data - RLE optimized
+		for(curnum=0; curnum < number;)
+		{
+			switch(operation)
+			{
+				case Primitive::MOVE_TO:
+				{
+					x = data[curnum][0];
+					y = data[curnum][1];
+					
+					if(curnum == 0)
+					{
+						cairo_move_to(cr, x, y);
+					}
+					else
+					{
+						cairo_line_to(cr, x, y);
+					}
+					
+					curnum++; //only advance one point
+					
+					break;
+				}
+					
+				case Primitive::LINE_TO:
+				{
+					x = data[curnum][0];
+					y = data[curnum][1];
+
+					cairo_line_to(cr, x, y);
+					synfig::info("line to x,y = %f, %f", x, y);
+
+					curnum++;
+					break;
+				}
+//					
+//				case Primitive::CONIC_TO:
+//				{
+//					x = data[curnum+1][0];
+//					x = (x - tl[0] + origin[0])*pw;
+//					y = data[curnum+1][1];
+//					y = (y - tl[1] + origin[1])*ph;
+//					
+//					x1 = data[curnum][0];
+//					x1 = (x1 - tl[0] + origin[0])*pw;
+//					y1 = data[curnum][1];
+//					y1 = (y1 - tl[1] + origin[1])*ph;
+//					
+//					tangent[0] = 2*(x - x1);
+//					tangent[1] = 2*(y - y1);
+//					
+//					span.conic_to(x1,y1,x,y);
+//					curnum += 2;
+//					break;
+//				}
+//					
+//				case Primitive::CONIC_TO_SMOOTH:
+//				{
+//					x = data[curnum][0];
+//					x = (x - tl[0] + origin[0])*pw;
+//					y = data[curnum][1];
+//					y = (y - tl[1] + origin[1])*ph;
+//					
+//					x1 = span.cur_x + tangent[0]/2;
+//					y1 = span.cur_y + tangent[1]/2;
+//					
+//					tangent[0] = 2*(x - x1);
+//					tangent[1] = 2*(y - y1);
+//					
+//					span.conic_to(x1,y1,x,y);
+//					curnum ++;
+//					
+//					break;
+//				}
+//					
+//				case Primitive::CUBIC_TO:
+//				{
+//					x = data[curnum+2][0];
+//					x = (x - tl[0] + origin[0])*pw;
+//					y = data[curnum+2][1];
+//					y = (y - tl[1] + origin[1])*ph;
+//					
+//					x2 = data[curnum+1][0];
+//					x2 = (x2 - tl[0] + origin[0])*pw;
+//					y2 = data[curnum+1][1];
+//					y2 = (y2 - tl[1] + origin[1])*ph;
+//					
+//					x1 = data[curnum][0];
+//					x1 = (x1 - tl[0] + origin[0])*pw;
+//					y1 = data[curnum][1];
+//					y1 = (y1 - tl[1] + origin[1])*ph;
+//					
+//					tangent[0] = 2*(x - x2);
+//					tangent[1] = 2*(y - y2);
+//					
+//					span.cubic_to(x1,y1,x2,y2,x,y);
+//					curnum += 3;
+//					
+//					break;
+//				}
+//					
+//				case Primitive::CUBIC_TO_SMOOTH:
+//				{
+//					x = data[curnum+1][0];
+//					x = (x - tl[0] + origin[0])*pw;
+//					y = data[curnum+1][1];
+//					y = (y - tl[1] + origin[1])*ph;
+//					
+//					x2 = data[curnum][0];
+//					x2 = (x2 - tl[0] + origin[0])*pw;
+//					y2 = data[curnum][1];
+//					y2 = (y2 - tl[1] + origin[1])*ph;
+//					
+//					x1 = span.cur_x + tangent[0]/3.0;
+//					y1 = span.cur_y + tangent[1]/3.0;
+//					
+//					tangent[0] = 2*(x - x2);
+//					tangent[1] = 2*(y - y2);
+//					
+//					span.cubic_to(x1,y1,x2,y2,x,y);
+//					curnum += 2;
+//					
+//					break;
+//				}
+			} // switch
+		} // for
+	} // while
+	
+	return true;
+}
+//
 
 bool
 Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,

@@ -64,10 +64,25 @@ class AsyncRenderer;
 class Preview : public sigc::trackable, public etl::shared_object
 {
 public:
-	struct FlipbookElem
+	class FlipbookElem
 	{
-		float						t;
-		Glib::RefPtr<Gdk::Pixbuf>	buf; //at whatever resolution they are rendered at (resized at run time)
+	public:
+		float t;
+		Glib::RefPtr<Gdk::Pixbuf> buf; //at whatever resolution they are rendered at (resized at run time)
+		cairo_surface_t* surface;
+		FlipbookElem()
+		{
+			surface=NULL;
+		}
+		//Copy constructor
+		FlipbookElem(const FlipbookElem& other): t(other.t) ,buf(other.buf), surface(cairo_surface_reference(other.surface))
+		{
+		}
+		~FlipbookElem()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
 	};
 
 	etl::handle<studio::AsyncRenderer>	renderer;
@@ -85,12 +100,14 @@ private:
 	float	zoom,fps;
 	float	begintime,endtime;
 	bool 	overbegin,overend;
+	bool	use_cairo;
 	int		quality;
 
 	float	global_fps;
 
 	//expose the frame information etc.
 	class Preview_Target;
+	class Preview_Target_Cairo;
 	void frame_finish(const Preview_Target *);
 
 	sigc::signal0<void>	sig_changed;
@@ -137,6 +154,9 @@ public:
 	bool get_overend() const {return overend;}
 	void set_overend(bool b) {overend = b;}
 
+	bool get_use_cairo() const {return use_cairo;}
+	void set_use_cairo(bool b) {use_cairo = b;}
+
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 
@@ -155,9 +175,11 @@ public:
 
 	FlipBook::const_iterator	begin() const {return frames.begin();}
 	FlipBook::const_iterator	end() const	  {return frames.end();}
-
-	void clear() {frames.clear();}
-
+	void push_back(FlipbookElem fe) { frames.push_back(fe); }
+	// Used to clear the FlipBook. Do not use directly the std::vector<>::clear member
+	// because the cairo_surface_t* wouldn't be destroyed.
+	void clear();
+	
 	unsigned int				numframes() const  {return frames.size();}
 
 	void render();
@@ -174,6 +196,7 @@ class Widget_Preview : public Gtk::Table
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
+	cairo_surface_t* current_surface;
 	int				currentindex;
 	//double			timeupdate;
 	double				timedisp;

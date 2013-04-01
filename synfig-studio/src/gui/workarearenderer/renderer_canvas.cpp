@@ -32,11 +32,11 @@
 #endif
 
 #include "renderer_canvas.h"
-#include "workarea.h"
 #include <ETL/misc>
 #include <gdkmm/general.h>
 
 #include "general.h"
+#include "app.h"
 
 #endif
 
@@ -62,6 +62,12 @@ std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >&
 Renderer_Canvas::get_tile_book()
 {
 	return get_work_area()->get_tile_book();
+}
+
+studio::WorkArea::SurfaceBook&
+Renderer_Canvas::get_cairo_book()
+{
+	return get_work_area()->get_cairo_book();
 }
 
 bool
@@ -108,6 +114,7 @@ Renderer_Canvas::render_vfunc(
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
+	WorkArea::SurfaceBook& cairo_book(get_cairo_book());
 
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
@@ -133,8 +140,91 @@ Renderer_Canvas::render_vfunc(
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+	if(studio::App::workarea_uses_cairo)
+	{
+		if(!cairo_book.empty())
+		{
+			if(get_full_frame())
+			{
+					if(cairo_book[0].surface)
+					{
+						int div;
+						cr->save();
+						if(get_work_area()->get_low_resolution_flag())
+						{
+							div = get_work_area()->get_low_res_pixel_size();
+							cr->scale(div, div);
+						}
+						else
+							div=1;
+						cairo_set_source_surface(cr->cobj(), cairo_book[0].surface, round_to_int(x)/div, round_to_int(y)/div);
+						cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+						cr->paint();
+						cr->restore();
+					}
+			
+				if(cairo_book[0].refreshes!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
+				   get_work_area()->async_update_preview();
+			}
+			else // tiled frame
+			{
+				int div;
 
-	if(!tile_book.empty())
+				const int width_in_tiles(w/tile_w+(((get_work_area()->get_low_resolution_flag())?((w/div)%(tile_w/div)):(w%tile_w))?1:0));
+				const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
+				
+				int u(0),v(0),tx,ty;
+				int u1(0),v1(0),u2(width_in_tiles), v2(height_in_tiles);
+				
+				bool needs_refresh(false);
+				
+				u1=int(-x/tile_w);
+				v1=int(-y/tile_h);
+				u2=int((-x+drawable_w)/tile_w+1);
+				v2=int((-y+drawable_h)/tile_h+1);
+				if(u2>width_in_tiles)u2=width_in_tiles;
+				if(v2>height_in_tiles)v2=height_in_tiles;
+				if(u1<0)u1=0;
+				if(v1<0)v1=0;
+				
+				for(v=v1;v<v2;v++)
+				{
+					for(u=u1;u<u2;u++)
+					{
+						int index=v*width_in_tiles+u;
+						if(int(cairo_book.size())>index && cairo_book[index].surface)
+						{
+							cr->save();
+							if(get_work_area()->get_low_resolution_flag())
+							{
+								div = get_work_area()->get_low_res_pixel_size();
+								cr->scale(div, div);
+							}
+							else
+								div=1;
+
+							tx=u*tile_w;
+							ty=v*tile_w; // not tile_h?
+							
+							cairo_set_source_surface(cr->cobj(), cairo_book[index].surface, (round_to_int(x)+tx)/div, (round_to_int(y)+ty)/div);
+							cairo_pattern_set_filter(cairo_get_source(cr->cobj()), CAIRO_FILTER_NEAREST);
+							cr->paint();
+							cr->restore();
+						}
+						if(cairo_book[index].refreshes!=get_refreshes())
+							needs_refresh=true;
+					}
+				}
+				if(needs_refresh==true && get_canceled()==false && get_rendering()==false && get_queued()==false)
+				{
+					get_work_area()->async_update_preview();
+				}
+				
+			}
+		}
+	}
+	
+	else if(!tile_book.empty())
 	{
 		if(get_full_frame())
 		{

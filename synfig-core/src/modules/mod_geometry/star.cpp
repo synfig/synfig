@@ -99,6 +99,7 @@ Star::sync()
 	}
 	clear();
 	add_polygon(vector_list);
+	upload_polygon(vector_list);
 }
 
 bool
@@ -209,3 +210,10 @@ Star::get_param_vocab()const
 
 	return ret;
 }
+//////
+bool
+Star::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	return Layer_Polygon::accelerated_cairorender(context, surface, quality, renddesc, cb);
+}
+/////

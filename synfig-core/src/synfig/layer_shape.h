@@ -62,9 +62,9 @@ private:
 	//internal caching
 	struct Intersector;
 	Intersector	*edge_table;
-
+protected:
 	//exported data
-	Color 					color;
+	Color 	color;
 
 	Point 	origin;
 	bool	invert;
@@ -73,7 +73,7 @@ private:
 	int		blurtype;
 	Real	feather;
 	WindingStyle winding_style;
-
+private:
 	std::vector< char > 	bytestream;
 
 	//for use in creating the bytestream
@@ -112,6 +112,8 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual Rect get_bounding_rect()const;
+	//This function translates Shape primitives to Cairo primitives. Currently only supported move_to and line_to.
+	bool shape_to_cairo(cairo_t* cr)const;
 
 private:
 	class 		PolySpan;

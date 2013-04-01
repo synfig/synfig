@@ -427,8 +427,23 @@ CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
 
 dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
+PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
+	CONFIG_DEPS="$CONFIG_DEPS cairo"
+],[
+	AC_MSG_ERROR([ ** You need to install cairo verison 1.12.0 or higher.])
+])
 
+PKG_CHECK_MODULES(LIBCAIROMM, cairomm-1.0,[
+	CONFIG_DEPS="$CONFIG_DEPS cairomm-1.0"
+],[
+	AC_MSG_ERROR([ ** You need to install cairomm-1.0, verison 1.0.])
+])
 
+PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
+	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
+],[
+	AC_MSG_ERROR([ ** You need to install pango])
+])
 
 
 TARGET_PNG="yes"
@@ -635,8 +650,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -730,6 +745,9 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"CXXFLAGS ------------------------> '$CXXFLAGS'
 "'$'"SYNFIG_LIBS ---------------------> '$SYNFIG_LIBS'
 "'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
+"'$'"LIBCAIRO_LIBS -------------------> '$LIBCAIRO_LIBS'
+"'$'"LIBCAIROMM_LIBS -----------------> '$LIBCAIROMM_LIBS'
+"'$'"LIBPANGO_LIBS -------------------> '$LIBPANGO_LIBS'
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'

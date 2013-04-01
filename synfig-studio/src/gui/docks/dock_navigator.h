@@ -53,25 +53,26 @@ class AsyncRenderer;
 class Widget_NavView : public Gtk::Table
 {
 	//handle to out parent canvas
-	CanvasView::LooseHandle		canvview;
+	CanvasView::LooseHandle canvview;
 
-	Glib::RefPtr<Gdk::Pixbuf>	prev;
+	Glib::RefPtr<Gdk::Pixbuf> prev;
 	bool dirty;
 
 	//The drawing stuff
-	Gtk::DrawingArea	drawto;
+	Gtk::DrawingArea drawto;
 
 	//The input stuff
-	Gtk::Adjustment		adj_zoom;
-	Gtk::Label			zoom_print;
+	Gtk::Adjustment adj_zoom;
+	Gtk::Label zoom_print;
 
 	//zoom window stuff
-	bool				scrolling;
+	bool	scrolling;
 
 	//asynchronous rendering stuff
 	etl::handle<AsyncRenderer>	renderer;
 	etl::smart_ptr<synfig::Surface> surface;
-	bool						rendering;
+	cairo_surface_t* cairo_surface;
+	bool rendering;
 
 	//drawing functionality
 	void on_start_render(); //breaks out into asynchronous rendering

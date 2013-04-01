@@ -84,7 +84,7 @@ Renderer_BBox::render_vfunc(
 
 	const synfig::Point curr_point(get_bbox().get_min());
 	const synfig::Point drag_point(get_bbox().get_max());
-	if(get_bbox().area()<10000000000000000.0)
+	if(get_bbox().area()<10000000000000000.0 && get_bbox().area()>0.00000000000000001)
 	{
 		Point tl(std::min(drag_point[0],curr_point[0]),std::min(drag_point[1],curr_point[1]));
 		Point br(std::max(drag_point[0],curr_point[0]),std::max(drag_point[1],curr_point[1]));
@@ -115,10 +115,10 @@ Renderer_BBox::render_vfunc(
 #endif
 
 		cr->rectangle(
-			tl[0],
-			tl[1],
-			br[0]-tl[0],
-			br[1]-tl[1]
+			int(tl[0])+0.5,
+			int(tl[1])+0.5,
+			int(br[0]-tl[0]+1),
+			int(br[1]-tl[1]+1)
 		);
 		cr->stroke();
 

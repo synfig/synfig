@@ -35,6 +35,8 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
+#include <synfig/target_cairo.h>
+#include <synfig/target_cairo_tile.h>
 #include <synfig/surface.h>
 #include <glibmm/main.h>
 #include <ETL/ref_count>
@@ -59,20 +61,25 @@ namespace studio {
 
 class AsyncRenderer : public etl::shared_object, public sigc::trackable
 {
+	//! Signal emmited when target has been stopped or has finished
 	sigc::signal<void> signal_finished_;
+	//! Signal emmited when target has succedded
 	sigc::signal<void> signal_success_;
 
+	//! Seems to be unused
 	std::list<sigc::connection> activity_connection_list;
-
-	//etl::handle<synfig::Target_Scanline> target_scanline;
-	//etl::handle<synfig::Target_Tile> target_tile;
+	
+	//! The target that is going to be asynchronously rendered.
 	etl::handle<synfig::Target> target;
 
+	//! Set to true when target render fails.
 	bool error;
+	//! Set to true when target render succedded
 	bool success;
 
 	synfig::ProgressCallback *cb;
 
+	//! Signal to be emmited when the target is requested to stop
 	sigc::signal<void> signal_stop_;
 
 	Glib::Thread* render_thread;

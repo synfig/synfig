@@ -519,6 +519,31 @@ RendDesc::set_br(const Point &x)
 }
 
 RendDesc &
+RendDesc::set_tl_br(const Point &x, const Point &y)
+{
+	if(FLAGS(flags, PX_ASPECT))
+	{
+		Vector new_size(y-x);
+		new_size[0]=abs(new_size[0]);
+		new_size[1]=abs(new_size[1]);
+		
+		Vector old_size(tl_-br_);
+		old_size[0]=abs(old_size[0]);
+		old_size[1]=abs(old_size[1]);
+		
+		if(new_size[0]!=old_size[0])
+			w_=round_to_int(new_size[0]*w_/old_size[0]);
+		
+		if(new_size[1]!=old_size[1])
+			h_=round_to_int(new_size[1]*h_/old_size[1]);
+	}
+	tl_=x;
+	br_=y;
+	return *this;
+}
+
+
+RendDesc &
 RendDesc::set_viewport(const Point &__tl, const Point &__br)
 { tl_=__tl; br_=__br; return *this; }
 

@@ -120,11 +120,14 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
 				return false;
 
+			Context context;
+			// pass the Render Method to the context
+			context=canvas->get_context();
+			context.set_render_method(SOFTWARE);
+
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
-
-			Context context;
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas;

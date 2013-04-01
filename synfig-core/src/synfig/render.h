@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "target_scanline.h"
+#include "target_cairo.h"
 #include "vector.h"
 #include "color.h"
 #include "renddesc.h"
@@ -35,6 +36,9 @@
 #include "layer.h"
 #include "canvas.h"
 #include <ETL/handle>
+
+#include "cairo.h"
+#include "cairomm/cairomm.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,6 +54,7 @@ namespace synfig {
 **		you call this function!
 */
 extern bool render(Context context, Target_Scanline::Handle target, const RendDesc &desc,ProgressCallback *);
+extern bool cairorender(Context context, cairo_surface_t* surface, const RendDesc &desc, ProgressCallback *cb=NULL);
 
 extern bool parametric_render(Context context, Surface &surface, const RendDesc &desc,ProgressCallback *);
 

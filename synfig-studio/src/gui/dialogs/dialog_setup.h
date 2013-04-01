@@ -203,6 +203,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::SpinButton* pref_x_size_spinbutton;
 
 	Gtk::Entry image_sequence_separator;
+	Gtk::CheckButton toggle_navigator_uses_cairo;
+	Gtk::CheckButton toggle_workarea_uses_cairo;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

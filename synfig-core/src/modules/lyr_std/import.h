@@ -31,6 +31,10 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/importer.h>
+#include <synfig/cairoimporter.h>
+#include <synfig/rendermethod.h>
+
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -38,15 +42,16 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Import : public synfig::Layer_Bitmap
+class Import : public Layer_Bitmap
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	synfig::String filename;
-	synfig::String abs_filename;
-	synfig::Importer::Handle importer;
-	synfig::Time time_offset;
+	String filename;
+	String abs_filename;
+	Importer::Handle importer;
+	CairoImporter::Handle cimporter;
+	Time time_offset;
 
 protected:
 	Import();
@@ -54,17 +59,19 @@ protected:
 public:
 	~Import();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
 
 	virtual void on_canvas_set();
 
-	virtual void set_time(synfig::Context context, synfig::Time time)const;
+	virtual void set_time(Context context, Time time)const;
 
-	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
+	virtual void set_time(Context context, Time time, const Point &point)const;
+	
+	virtual void set_render_method(Context context, RenderMethod x);
 };
 
 /* === E N D =============================================================== */

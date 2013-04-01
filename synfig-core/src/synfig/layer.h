@@ -39,6 +39,11 @@
 #include "node.h"
 #include "time.h"
 #include "guid.h"
+#include "target.h" // for RenderMethod. TODO: put RenderMethod apart
+
+#include "cairo.h"
+#include "cairomm/cairomm.h"
+#include "rendermethod.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -160,10 +165,12 @@ class ValueNode;
 class ValueBase;
 class Time;
 class Surface;
+class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Context;
 class Color;
+class CairoColor;
 class Transform;
 class Rect;
 class GUID;
@@ -502,7 +509,11 @@ public:
 	**	\see Context::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
+	//! Sets the render method to the layer. Not all layers uses this virtual member
+	virtual void set_render_method(Context context, RenderMethod x);
+	
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param surface		Pointer to Surface to render to.
@@ -513,6 +524,7 @@ public:
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.

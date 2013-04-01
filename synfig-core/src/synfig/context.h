@@ -29,6 +29,10 @@
 
 #include "canvasbase.h"
 #include "rect.h"
+#include "renddesc.h"
+#include "surface.h"
+#include "layer_composite.h"
+#include "general.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,6 +46,7 @@ class Vector;
 typedef Vector Point;
 class Color;
 class Surface;
+class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Layer;
@@ -67,16 +72,18 @@ public:
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
 	Color get_color(const Point &pos)const;
+	CairoColor get_cairocolor(const Point &pos)const;
 
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+	bool accelerated_cairorender(cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//! Sets the context to the Time \time. It is done recursively.
-   	void set_time(Time time)const;
+	void set_time(Time time)const;
 
 	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
-   	void set_time(Time time,const Vector &pos)const;
+	void set_time(Time time,const Vector &pos)const;
 
 	//! Returns the bounding rectangle of all the context.
 	//! It is the union of all the layers's bounding rectangle.
@@ -87,8 +94,12 @@ public:
 
 	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
 	void set_dirty_outlines();
+	
+	// Set Render Method. Passes the information of the render method to use to the layers
+	void set_render_method(RenderMethod x);
 
 }; // END of class Context
+
 
 }; // END of namespace synfig
 

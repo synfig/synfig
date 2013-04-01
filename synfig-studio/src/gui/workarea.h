@@ -85,6 +85,8 @@ namespace studio
 {
 class WorkAreaTarget;
 class WorkAreaTarget_Full;
+class WorkAreaTarget_Cairo;
+class WorkAreaTarget_Cairo_Tile;
 
 class Instance;
 class CanvasView;
@@ -105,6 +107,8 @@ class WorkArea : public Gtk::Table, public Duckmatic
 {
 	friend class WorkAreaTarget;
 	friend class WorkAreaTarget_Full;
+	friend class WorkAreaTarget_Cairo;
+	friend class WorkAreaTarget_Cairo_Tile;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
@@ -132,6 +136,29 @@ public:
 		DRAG_BOX,
 		DRAG_BEZIER
 	};
+	// Class used to store the cairo surface
+	class SurfaceElement
+	{
+	public:
+		cairo_surface_t* surface;
+		int refreshes;
+		SurfaceElement()
+		{
+			surface=NULL;
+			refreshes=0;
+		}
+		//Copy constructor
+		SurfaceElement(const SurfaceElement& other): surface(cairo_surface_reference(other.surface)), refreshes(other.refreshes)
+		{
+		}
+		~SurfaceElement()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
+	};
+
+	typedef std::vector<SurfaceElement>	 SurfaceBook;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -167,7 +194,7 @@ private:
 	synfig::Real	canvasheight;	//!< Height of the canvas
 	synfig::Real	pw;				//!< The width of a pixel
 	synfig::Real	ph;				//!< The height of a pixel
-	// float zoom, prev_zoom are declared in Duckmatic
+	// float zoom and prev_zoom are declared in Duckmatic
 	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
 	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
 
@@ -212,10 +239,12 @@ private:
 
 	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
 
-	//! This vector holds all of the tiles for this image
+	//! This vector holds all of the tiles for this frame
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> > tile_book;
+	// This vector holds all the cairo surfaces for the frame 
+	SurfaceBook cairo_book;
 
-	//! This integer describes the total times that the work are has been refreshed
+	//! This integer describes the total times that the work area has been refreshed
 	int refreshes;
 
 	//! This list holds the queue of tiles that need to be rendered
@@ -237,7 +266,7 @@ private:
 
 	int dirty_trap_queued;
 
-
+	// This flag is set if onion skin is visible
 	bool onion_skin;
 	//! stores the future [1] and past [0] onion skins based on keyframes
 	int onion_skins[2];
@@ -262,6 +291,7 @@ public:
 	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book(){ return tile_book; }
+	SurfaceBook& get_cairo_book() { return cairo_book; }
 	int get_refreshes()const { return refreshes; }
 	bool get_canceled()const { return canceled_; }
 	bool get_queued()const { return queued; }
@@ -470,7 +500,7 @@ public:
 	void zoom_out();
 	void zoom_fit();
 	void zoom_norm();
-	float get_zoom()const { return zoom; }
+	float get_zoom()const { return zoom; } // zoom is declared in Duckmatic
 
 	void set_zoom(float z);
 

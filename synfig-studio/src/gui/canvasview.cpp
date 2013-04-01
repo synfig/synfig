@@ -3898,6 +3898,7 @@ CanvasView::on_preview_option()
 				po->set_begin_override(false);
 				po->set_endtime(end);
 				po->set_end_override(false);
+				po->set_use_cairo(false);
 
 				set_ext_widget("prevoptions",po);
 			}
@@ -3929,6 +3930,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	prev->set_overend(info.overend);
 	prev->set_endtime(info.endtime);
 	prev->set_quality(work_area->get_quality());
+	prev->set_use_cairo(info.use_cairo);
 
 	//render it out...
 	prev->render();

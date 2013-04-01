@@ -39,6 +39,7 @@
 #include "layer_mime.h"
 #include "context.h"
 #include "paramdesc.h"
+#include "surface.h"
 
 #include "layer_solidcolor.h"
 #include "layer_polygon.h"
@@ -524,11 +525,27 @@ Layer::set_time(Context context, Time time, const Point &pos)const
 	dirty_time_=time;
 }
 
+void
+Layer::set_render_method(Context context, RenderMethod x)
+{
+	context.set_render_method(x);
+}
+
 Color
 Layer::get_color(Context context, const Point &pos)const
 {
 	return context.get_color(pos);
 }
+
+CairoColor
+Layer::get_cairocolor(Context context, const Point &pos)const
+{
+	// When the layer doesn't define its own get_cairocolor
+	// then the normal get_cairo color will be used and 
+	// a Color to CairoColor conversion will be done. 
+	return CairoColor(get_color(context, pos));
+}
+
 
 synfig::Layer::Handle
 Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
@@ -542,7 +559,7 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 bool
 Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	handle<Target> target=surface_target(surface);
+	handle<Target_Scanline> target=surface_target(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -563,6 +580,22 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 	return render(context,target,desc,cb);
 	//return render_threaded(context,target,desc,cb,2);
 }
+
+bool
+Layer::accelerated_cairorender(Context context, cairo_surface_t *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
+{	
+	// When we render, we want to
+	// make sure that we are rendered too...
+	// Since the context iterator is for
+	// the layer after us, we need to back up.
+	// This could be considered a hack, as
+	// it is a possibility that we are indeed
+	// not the previous layer.
+	--context;
+	
+	return cairorender(context,surface,renddesc,cb);
+}
+
 
 String
 Layer::get_name()const

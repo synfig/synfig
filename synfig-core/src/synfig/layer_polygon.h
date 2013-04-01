@@ -69,6 +69,9 @@ public:
 	**		points that define the polygon's parameter.
 	*/
 	void add_polygon(const std::vector<Point> &point_list);
+	
+	// Places the point_list on the vector_list, for later render as polygon.
+	void upload_polygon(const std::vector<Point> &point_list);
 
 	//! Clears out any polygon data
 	/*!	Also clears out the EdgeTable, so there is no
@@ -84,10 +87,12 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
+	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 private:
 	class 		PolySpan;
 	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;
+
 }; // END of Layer_Polygon
 
 }; // END of namespace synfig

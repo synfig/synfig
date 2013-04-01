@@ -29,6 +29,7 @@
 
 #include "layer_composite.h"
 #include "surface.h"
+#include "target.h" // for RenderMethod
 
 /* === M A C R O S ========================================================= */
 
@@ -44,6 +45,8 @@ namespace synfig {
 class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
 	const Color& filter(Color& c)const;
+	const CairoColor& filter(CairoColor& c)const;
+	RenderMethod method;
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 
@@ -51,26 +54,38 @@ public:
 	Point br;
 	int c;
 	mutable Surface surface;
+	mutable CairoSurface csurface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
 	Real gamma_adjust;
 
 	Layer_Bitmap();
+	~Layer_Bitmap()	{ 
+	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
+	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	virtual Vocab get_param_vocab()const;
 
 	virtual Rect get_bounding_rect()const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	
+	virtual void set_render_method(Context context, RenderMethod x);
+	void set_method(RenderMethod x) { method=x;}
+	RenderMethod get_method()const { return method;}
+	
+	void set_cairo_surface(cairo_surface_t* cs);
+
 }; // END of class Layer_Bitmap
 
 }; // END of namespace synfig

@@ -66,6 +66,13 @@ Color::hex2real(String s)
 	return n / 255.0f;
 }
 
+unsigned char
+CairoColor::hex2char(String s)
+{
+	ColorReal cr(Color::hex2real(s));
+	return (unsigned char)(cr*255.0f);
+}
+
 const String
 Color::real2hex(ColorReal c)
 {
@@ -76,6 +83,13 @@ Color::real2hex(ColorReal c)
 	if (c>1) c = 1;
 	o << hex << int(c*255.0f);
 	return o.str();
+}
+
+const String
+CairoColor::char2hex(unsigned char c)
+{
+	String s(Color::real2hex((ColorReal)(c/((float)ceil))));
+	return s.c_str();
 }
 
 void
@@ -118,6 +132,16 @@ Color::set_hex(String& str)
 	}
 }
 
+void 
+CairoColor::set_hex(String& str)
+{
+	CairoColor ret(*this);
+	Color c;
+	c.set_hex(str);
+	c=c.clamped();
+	ret=CairoColor(c);
+}
+
 const String
 Color::get_string(void)const
 {
@@ -126,27 +150,13 @@ Color::get_string(void)const
 	return String(o.str().c_str());
 }
 
-#if 0
-Color&
-Color::rotate_uv(const Angle& theta)const
+const String
+CairoColor::get_string(void)const
 {
-/*/
-	Color ret(*this);
-	ret.set_hue(ret.get_hue()+theta);
-	return ret;
-/*/
-	const float
-		a(angle::sin(theta).get()),
-		b(angle::cos(theta).get());
-	const float
-		u(get_u()),
-		v(get_v());
-
-	return set_uv(b*u-a*v,a*u+b*v);
-	//return YUV(get_y(),b*u-a*v,a*u+b*v,get_a());
-//*/
+	std::ostringstream o;
+	o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << get_a();
+	return String(o.str().c_str());
 }
-#endif
 
 Color
 Color::clamped_negative()const
@@ -224,16 +234,28 @@ Color::clamped()const
 	return(ret);
 }
 
-typedef Color (*blendfunc)(Color &,Color &,float);
+Color::Color(const CairoColor& c)
+	{
+		set_r((ceil-floor)*c.get_r()/(CairoColor::ceil-CairoColor::floor));
+		set_g((ceil-floor)*c.get_g()/(CairoColor::ceil-CairoColor::floor));
+		set_b((ceil-floor)*c.get_b()/(CairoColor::ceil-CairoColor::floor));
+		set_a((ceil-floor)*c.get_a()/(CairoColor::ceil-CairoColor::floor));
+	}
 
-static Color
-blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
+
+typedef Color (*blendfunc)(Color &,Color &,float);
+typedef CairoColor (*cairoblendfunc)(CairoColor&, CairoColor&, float);
+
+template <class C>
+static C
+blendfunc_COMPOSITE(C &src,C &dest,float amount)
 {
 	//c_dest'=c_src+(1.0-a_src)*c_dest
 	//a_dest'=a_src+(1.0-a_src)*a_dest
 
 	float a_src=src.get_a()*amount;
 	float a_dest=dest.get_a();
+	const float one(C::ceil); 
 
 	// if a_arc==0.0
 	//if(fabsf(a_src)<COLOR_EPSILON) return dest;
@@ -242,9 +264,9 @@ blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
 	src*=a_src;
 	dest*=a_dest;
 
-	dest=src + dest*(1.0f-a_src);
+	dest=src + dest*(one-a_src);
 
-	a_dest=a_src + a_dest*(1.0f-a_src);
+	a_dest=a_src + a_dest*(one-a_src);
 
 	// if a_dest!=0.0
 	if(fabsf(a_dest)>COLOR_EPSILON)
@@ -254,14 +276,15 @@ blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
 	}
 	else
 	{
-		dest=Color::alpha();
+		dest=C::alpha();
 	}
 	assert(dest.is_valid());
 	return dest;
 }
 
-static Color
-blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
+template <class C>
+static C
+blendfunc_STRAIGHT(C &src,C &bg,float amount)
 {
 	//a_out'=(a_src-a_bg)*amount+a_bg
 	//c_out'=(((c_src*a_src)-(c_bg*a_bg))*amount+(c_bg*a_bg))/a_out'
@@ -269,7 +292,7 @@ blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
 	// ie: if(amount==1.0)
 	//if(fabsf(amount-1.0f)<COLOR_EPSILON)return src;
 
-	Color out;
+	C out;
 
 	float a_out((src.get_a()-bg.get_a())*amount+bg.get_a());
 
@@ -281,28 +304,32 @@ blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
 		out.set_a(a_out);
 	}
 	else
-		out=Color::alpha();
+		out=C::alpha();
 
 	assert(out.is_valid());
 	return out;
 }
 
-static Color
-blendfunc_ONTO(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ONTO(C &a,C &b,float amount)
 {
 	float alpha(b.get_a());
-	return blendfunc_COMPOSITE(a,b.set_a(1.0f),amount).set_a(alpha);
+	const float one(C::ceil);
+	return blendfunc_COMPOSITE(a,b.set_a(one),amount).set_a(alpha);
 }
 
-static Color
-blendfunc_STRAIGHT_ONTO(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
 {
 	a.set_a(a.get_a()*b.get_a());
 	return blendfunc_STRAIGHT(a,b,amount);
 }
 
-static Color
-blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_BRIGHTEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -318,26 +345,117 @@ blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DARKEN(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+
+	const int raab(ra*ab*amount/255.0);
+	const int gaab(ga*ab*amount/255.0);
+	const int baab(ba*ab*amount/255.0);
+	
+	if(rb<raab)
+		rc=raab;
+	else
+		rc=rb;
+		
+	if(gb<gaab)
+		gc=gaab;
+	else
+		gc=gb;
+	
+	if(bb<baab)
+		bc=baab;
+	else
+		bc=bb;
+
+	ac=ab;
+		
+	return CairoColor(rc, gc, bc, ac);
+}
+
+template <class C>
+static C
+blendfunc_DARKEN(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
+	const float one(C::ceil);
+	
+	if(b.get_r()>(a.get_r()-one)*alpha+one)
+		b.set_r((a.get_r()-one)*alpha+one);
 
-	if(b.get_r()>(a.get_r()-1.0f)*alpha+1.0f)
-		b.set_r((a.get_r()-1.0f)*alpha+1.0f);
+	if(b.get_g()>(a.get_g()-one)*alpha+one)
+		b.set_g((a.get_g()-one)*alpha+one);
 
-	if(b.get_g()>(a.get_g()-1.0f)*alpha+1.0f)
-		b.set_g((a.get_g()-1.0f)*alpha+1.0f);
-
-	if(b.get_b()>(a.get_b()-1.0f)*alpha+1.0f)
-		b.set_b((a.get_b()-1.0f)*alpha+1.0f);
+	if(b.get_b()>(a.get_b()-one)*alpha+one)
+		b.set_b((a.get_b()-one)*alpha+one);
 
 
 	return b;
 }
 
-static Color
-blendfunc_ADD(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_DARKEN(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	const int ab255=ab*255;
+	const int abaa=ab*aa;
+	
+	int rcompare=(amount*(ra*ab-abaa)+ab255)/255;
+	if(rb > rcompare)
+		rc=rcompare;
+	else
+		rc=rb;
+		
+	int gcompare=(amount*(ga*ab-abaa)+ab255)/255;
+	if(gb > gcompare)
+		gc=gcompare;
+	else
+		gc=gb;
+
+	int bcompare=(amount*(ba*ab-abaa)+ab255)/255;
+	if(bb > bcompare)
+		bc=bcompare;
+	else
+		bc=bb;
+	
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+template <class C>
+static C
+blendfunc_ADD(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -348,8 +466,38 @@ blendfunc_ADD(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_SUBTRACT(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_ADD(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	int aba=ab*amount;
+	
+	rc=rb+(ra*aba)/255;
+	gc=gb+(ga*aba)/255;
+	bc=bb+(ba*aba)/255;
+	ac=ab;
+
+	return CairoColor(rc, gc, bc, ac);
+}
+
+template <class C>
+static C
+blendfunc_SUBTRACT(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -360,8 +508,38 @@ blendfunc_SUBTRACT(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DIFFERENCE(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_SUBTRACT(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	int aba=ab*amount;
+	
+	rc=rb-(ra*aba)/255;
+	gc=gb-(ga*aba)/255;
+	bc=bb-(ba*aba)/255;
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+template <class C>
+static C
+blendfunc_DIFFERENCE(C &a,C &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -372,8 +550,41 @@ blendfunc_DIFFERENCE(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_MULTIPLY(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_DIFFERENCE(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	int aba=ab*amount;
+	
+	rc=abs(rb-(ra*aba)/255);
+	gc=abs(gb-(ga*aba)/255);
+	bc=abs(bb-(ba*aba)/255);
+	ac=ab;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+
+
+
+template <class C>
+static C
+blendfunc_MULTIPLY(C &a,C &b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -384,8 +595,9 @@ blendfunc_MULTIPLY(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_DIVIDE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_DIVIDE(C &a,C &b,float amount)
 {
 	amount*=a.get_a();
 
@@ -401,48 +613,101 @@ blendfunc_DIVIDE(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_COLOR(Color &a,Color &b,float amount)
+// Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_DIVIDE(CairoColor &a, CairoColor &b, float amount)
 {
-	Color temp(b);
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	float alpha=amount*aa/255.0;
+	float ahpla=1.0-alpha;
+	
+	if(ab==0)
+		return CairoColor();
+	
+	ac=ab;
+	
+	if(ra==0)
+		rc=255;
+	else
+		rc=(rb*alpha*aa)/ra + ahpla*rb;
+
+	if(ga==0)
+		gc=255;
+	else
+		gc=(gb*alpha*aa)/ga + ahpla*gb;
+
+	if(ba==0)
+		bc=255;
+	else
+		bc=(bb*alpha*aa)/ba + ahpla*bb;
+		
+	return CairoColor(rc, gc, bc, ac);
+}
+
+template <class C>
+static C
+blendfunc_COLOR(C &a,C &b,float amount)
+{
+	C temp(b);
 	temp.set_uv(a.get_u(),a.get_v());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_HUE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_HUE(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_hue(a.get_hue());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_SATURATION(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_SATURATION(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_s(a.get_s());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_LUMINANCE(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_LUMINANCE(C &a,C &b,float amount)
 {
-	Color temp(b);
+	C temp(b);
 	temp.set_y(a.get_y());
 	return (temp-b)*amount*a.get_a()+b;
 }
 
-static Color
-blendfunc_BEHIND(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_BEHIND(C &a,C &b,float amount)
 {
-	if(a.get_a()==0)a.set_a(COLOR_EPSILON);		//!< \todo this is a hack
-	a.set_a(a.get_a()*amount);
+	if(a.get_a()==0)
+		a.set_a(COLOR_EPSILON*amount);		//!< \todo this is a hack
+	else
+		a.set_a(a.get_a()*amount);
 	return blendfunc_COMPOSITE(b,a,1.0);
 }
 
-static Color
-blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 {
 	// \todo can this be right, multiplying amount by *b*'s alpha?
 	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
@@ -451,72 +716,197 @@ blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
 	return b;
 }
 
-static Color
-blendfunc_ALPHA_DARKEN(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_ALPHA_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
+{
+	// \todo can this be right, multiplying amount by *b*'s alpha?
+	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
+	//if(a.get_a() < b.get_a()*amount)
+	//	return a.set_a(a.get_a()*amount);
+	//return b;
+	unsigned char ra, ga, ba, aa;
+	unsigned char rb, gb, bb, ab;
+	unsigned char rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	ac=aa*amount;
+	if(aa < ab*amount)
+	{
+		float acaa=(aa*amount)/aa;
+		rc=ra*acaa;
+		gc=ga*acaa;
+		bc=ba*acaa;
+		return CairoColor(rc, gc, bc, ac);
+	}
+	else
+		return b;
+	
+	
+}
+
+template <class C>
+static C
+blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 {
 	if(a.get_a()*amount > b.get_a())
 		return a.set_a(a.get_a()*amount);
 	return b;
 }
 
-static Color
-blendfunc_SCREEN(Color &a,Color &b,float amount)
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 {
+	unsigned char ra, ga, ba, aa;
+	unsigned char rb, gb, bb, ab;
+	unsigned char rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	ac=aa*amount;
+	if(ac > ab)
+	{
+		float acaa=(aa*amount)/aa;
+		rc=ra*acaa;
+		gc=ga*acaa;
+		bc=ba*acaa;
+		return CairoColor(rc, gc, bc, ac);
+	}
+	else
+		return b;
+}
+
+
+template <class C>
+static C
+blendfunc_SCREEN(C &a,C &b,float amount)
+{
+	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
 
-	a.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
-	a.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
-	a.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
+	a.set_r(one-(one-a.get_r())*(one-b.get_r()));
+	a.set_g(one-(one-a.get_g())*(one-b.get_g()));
+	a.set_b(one-(one-a.get_b())*(one-b.get_b()));
 
 	return blendfunc_ONTO(a,b,amount);
 }
 
-static Color
-blendfunc_OVERLAY(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_OVERLAY(C &a,C &b,float amount)
 {
+	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
 
-	Color rm;
+	C rm;
 	rm.set_r(b.get_r()*a.get_r());
 	rm.set_g(b.get_g()*a.get_g());
 	rm.set_b(b.get_b()*a.get_b());
 
-	Color rs;
-	rs.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
-	rs.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
-	rs.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
+	C rs;
+	rs.set_r(one-(one-a.get_r())*(one-b.get_r()));
+	rs.set_g(one-(one-a.get_g())*(one-b.get_g()));
+	rs.set_b(one-(one-a.get_b())*(one-b.get_b()));
 
-	Color& ret(a);
+	C& ret(a);
 
-	ret.set_r(a.get_r()*rs.get_r() + (1.0-a.get_r())*rm.get_r());
-	ret.set_g(a.get_g()*rs.get_g() + (1.0-a.get_g())*rm.get_g());
-	ret.set_b(a.get_b()*rs.get_b() + (1.0-a.get_b())*rm.get_b());
+	ret.set_r(a.get_r()*rs.get_r() + (one-a.get_r())*rm.get_r());
+	ret.set_g(a.get_g()*rs.get_g() + (one-a.get_g())*rm.get_g());
+	ret.set_b(a.get_b()*rs.get_b() + (one-a.get_b())*rm.get_b());
 
 	return blendfunc_ONTO(ret,b,amount);
 }
 
-static Color
-blendfunc_HARD_LIGHT(Color &a,Color &b,float amount)
+//Specialization for CairoColors
+// OVERLAY needs a further compositon with ONTO
+template <>
+CairoColor
+blendfunc_OVERLAY<CairoColor>(CairoColor &a,CairoColor &b,float amount)
 {
+	//const float one(C::ceil);
+	if(amount<0) a=~a, amount=-amount;
+	
+	int ra, ga, ba, aa, ras, gas, bas;
+	int rb, gb, bb, ab;
+	int aaab;
+
+	ra=a.get_r();
+	ras=ra*ra;
+	ga=a.get_g();
+	gas=ga*ga;
+	ba=a.get_b();
+	bas=ba*ba;
+	aa=a.get_a();
+
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	
+	int rc, gc, bc, ac;
+	
+	if(aa==0 || ab==0) return CairoColor();
+	
+	aaab=aa*ab;
+	
+	rc=(2*aa*rb*ra+ras*ab-2*rb*ras)/aaab;
+	gc=(2*aa*gb*ga+gas*ab-2*gb*gas)/aaab;
+	bc=(2*aa*bb*ba+bas*ab-2*bb*bas)/aaab;
+	ac=aa;
+	
+	return CairoColor(rc, gc, bc, ac);
+}
+
+
+
+template <class C>
+static C
+blendfunc_HARD_LIGHT(C &a,C &b,float amount)
+{
+	const float one(C::ceil);
+	const float half((one-C::floor)/2);
 	if(amount<0) a=~a, amount=-amount;
 
-	if(a.get_r()>0.5f)	a.set_r(1.0-(1.0f-(a.get_r()*2.0f-1.0f))*(1.0f-b.get_r()));
-	else				a.set_r(b.get_r()*(a.get_r()*2.0f));
-	if(a.get_g()>0.5f)	a.set_g(1.0-(1.0f-(a.get_g()*2.0f-1.0f))*(1.0f-b.get_g()));
-	else				a.set_g(b.get_g()*(a.get_g()*2.0f));
-	if(a.get_b()>0.5f)	a.set_b(1.0-(1.0f-(a.get_b()*2.0f-1.0f))*(1.0f-b.get_b()));
-	else				a.set_b(b.get_b()*(a.get_b()*2.0f));
+	if(a.get_r()>half)	a.set_r(one-(one-(a.get_r()*2*one-one))*(one-b.get_r()));
+	else				a.set_r(b.get_r()*(a.get_r()*2*one));
+	if(a.get_g()>half)	a.set_g(one-(one-(a.get_g()*2*one-one))*(one-b.get_g()));
+	else				a.set_g(b.get_g()*(a.get_g()*2*one));
+	if(a.get_b()>half)	a.set_b(one-(one-(a.get_b()*2*one-one))*(one-b.get_b()));
+	else				a.set_b(b.get_b()*(a.get_b()*2*one));
 
 	return blendfunc_ONTO(a,b,amount);
 }
 
-static Color
-blendfunc_ALPHA_OVER(Color &a,Color &b,float amount)
+template <class C>
+static C
+blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
-	Color rm(b);
+	const float one(C::ceil);
+	C rm(b);
 
 	//multiply the inverse alpha channel with the one below us
-	rm.set_a((1-a.get_a())*b.get_a());
+	rm.set_a((one-a.get_a())*b.get_a());
 
 	return blendfunc_STRAIGHT(rm,b,amount);
 }
@@ -525,43 +915,6 @@ blendfunc_ALPHA_OVER(Color &a,Color &b,float amount)
 Color
 Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 {
-#if 0
-	if(isnan(a.get_r()) || isnan(a.get_g()) || isnan(a.get_b()))
-	{
-#ifdef _DEBUG
-		a=magenta().set_a(a.get_a());
-#else
-		a=black().set_a(a.get_a());
-#endif
-	}
-
-	if(isnan(b.get_r()) || isnan(b.get_g()) || isnan(b.get_b()))
-	{
-#ifdef _DEBUG
-		b=magenta().set_a(b.get_a());
-#else
-		b=black().set_a(b.get_a());
-#endif
-	}
-#endif
-
-/*
-	if(!a.is_valid()&&b.is_valid())
-		return b;
-
-	if(a.is_valid()&&!b.is_valid())
-		return a;
-
-	if(!a.is_valid()||!b.is_valid())
-	{
-#ifdef _DEBUG
-		return magenta();
-#else
-		return black();
-#endif
-	}
-*/
-
 	// No matter what blend method is being used,
 	// if the amount is equal to zero, then only B
 	// will shine through
@@ -571,28 +924,68 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE,	// 0
-		blendfunc_STRAIGHT,
-		blendfunc_BRIGHTEN,
-		blendfunc_DARKEN,
-		blendfunc_ADD,
-		blendfunc_SUBTRACT,		// 5
-		blendfunc_MULTIPLY,
-		blendfunc_DIVIDE,
-		blendfunc_COLOR,
-		blendfunc_HUE,
-		blendfunc_SATURATION,	// 10
-		blendfunc_LUMINANCE,
-		blendfunc_BEHIND,
-		blendfunc_ONTO,
-		blendfunc_ALPHA_BRIGHTEN,
-		blendfunc_ALPHA_DARKEN,	// 15
-		blendfunc_SCREEN,
-		blendfunc_HARD_LIGHT,
-		blendfunc_DIFFERENCE,
-		blendfunc_ALPHA_OVER,
-		blendfunc_OVERLAY,		// 20
-		blendfunc_STRAIGHT_ONTO,
+		blendfunc_COMPOSITE<Color>,	// 0
+		blendfunc_STRAIGHT<Color>,
+		blendfunc_BRIGHTEN<Color>,
+		blendfunc_DARKEN<Color>,
+		blendfunc_ADD<Color>,
+		blendfunc_SUBTRACT<Color>,		// 5
+		blendfunc_MULTIPLY<Color>,
+		blendfunc_DIVIDE<Color>,
+		blendfunc_COLOR<Color>,
+		blendfunc_HUE<Color>,
+		blendfunc_SATURATION<Color>,	// 10
+		blendfunc_LUMINANCE<Color>,
+		blendfunc_BEHIND<Color>,
+		blendfunc_ONTO<Color>,
+		blendfunc_ALPHA_BRIGHTEN<Color>,
+		blendfunc_ALPHA_DARKEN<Color>,	// 15
+		blendfunc_SCREEN<Color>,
+		blendfunc_HARD_LIGHT<Color>,
+		blendfunc_DIFFERENCE<Color>,
+		blendfunc_ALPHA_OVER<Color>,
+		blendfunc_OVERLAY<Color>,		// 20
+		blendfunc_STRAIGHT_ONTO<Color>,
+	};
+
+	return vtable[type](a,b,amount);
+}
+
+
+CairoColor
+CairoColor::blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod type)
+{
+	// No matter what blend method is being used,
+	// if the amount is equal to zero, then only B
+	// will shine through
+	if(fabsf(amount)<=COLOR_EPSILON)return b;
+
+	assert(type<Color::BLEND_END);
+
+	const static cairoblendfunc vtable[Color::BLEND_END]=
+	{
+		blendfunc_COMPOSITE<CairoColor>,	// 0
+		blendfunc_STRAIGHT<CairoColor>,
+		blendfunc_BRIGHTEN<CairoColor>,
+		blendfunc_DARKEN<CairoColor>,
+		blendfunc_ADD<CairoColor>,
+		blendfunc_SUBTRACT<CairoColor>,		// 5
+		blendfunc_MULTIPLY<CairoColor>,
+		blendfunc_DIVIDE<CairoColor>,
+		blendfunc_COLOR<CairoColor>,
+		blendfunc_HUE<CairoColor>,
+		blendfunc_SATURATION<CairoColor>,	// 10
+		blendfunc_LUMINANCE<CairoColor>,
+		blendfunc_BEHIND<CairoColor>,
+		blendfunc_ONTO<CairoColor>,
+		blendfunc_ALPHA_BRIGHTEN<CairoColor>,
+		blendfunc_ALPHA_DARKEN<CairoColor>,	// 15
+		blendfunc_SCREEN<CairoColor>,
+		blendfunc_HARD_LIGHT<CairoColor>,
+		blendfunc_DIFFERENCE<CairoColor>,
+		blendfunc_ALPHA_OVER<CairoColor>,
+		blendfunc_OVERLAY<CairoColor>,		// 20
+		blendfunc_STRAIGHT_ONTO<CairoColor>,
 	};
 
 	return vtable[type](a,b,amount);
