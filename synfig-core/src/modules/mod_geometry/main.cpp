@@ -67,6 +67,7 @@ MODULE_INVENTORY_BEGIN(libmod_geometry)
 		LAYER(Star)
 		LAYER(Rectangle)
 
+		LAYER_ALIAS(Outline,"BLine")
 		LAYER_ALIAS(Outline,"Spline")
 		LAYER_ALIAS(Outline,"Bezier")
 		LAYER_ALIAS(Region,"Region")
