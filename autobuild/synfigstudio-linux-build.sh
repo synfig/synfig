@@ -84,8 +84,8 @@ GLIBMM=2.18.2 #!!! >= 2.18.0
 ATK=1.25.2
 GLIB=2.20.5
 GTK=2.16.6
-PIXMAN=0.12.0
-CAIRO=1.8.8
+PIXMAN=0.22.0		# required by CAIRO 1.12.0
+CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 PANGO=1.24.5
 FONTCONFIG=2.5.0
 
