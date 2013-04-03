@@ -92,8 +92,9 @@ public:
 		TYPE_CANVASINTERFACE,
 		TYPE_EDITMODE,			// 16
 		TYPE_RENDDESC,
+		TYPE_INTERPOLATION,
 
-		TYPE_END				// 18
+		TYPE_END				// 19
 	};
 private:
 	Type type_;
@@ -117,6 +118,7 @@ private:
 		synfig::Real real;
 		bool b;
 		EditMode edit_mode;
+		synfig::Interpolation interpolation;
 
 	} data;
 public:
@@ -146,6 +148,7 @@ public:
 	Param(const synfig::Time& x);
 	Param(const bool& x);
 	Param(const synfig::ValueBase& x);
+	Param(const synfig::Interpolation& x);
 
 	~Param();
 
@@ -170,6 +173,7 @@ public:
 	int get_integer()const { assert(type_==TYPE_INTEGER); return data.integer; }
 	EditMode get_edit_mode()const { assert(type_==TYPE_EDITMODE); return data.edit_mode; }
 	bool get_bool()const { assert(type_==TYPE_BOOL); return data.b; }
+	const synfig::Interpolation& get_interpolation()const { assert(type_==TYPE_INTERPOLATION); return data.interpolation; }
 
 
 	const Type& get_type()const { return type_; }
