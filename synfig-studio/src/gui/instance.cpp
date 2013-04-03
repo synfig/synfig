@@ -1008,6 +1008,121 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));
 	}
+	
+	// Interpolation menu
+	if (1)
+	{
+		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
+		synfigapp::Action::ParamList param_list;
+		param_list.add("canvas", get_canvas());
+		param_list.add("value_desc", value_desc);
+		/////// None
+		param_list.add("new_value", INTERPOLATION_UNDEFINED);
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::MenuElem(
+				_("None"),
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		/////// TCB
+		param_list.add("new_value", INTERPOLATION_TCB);
+		Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("TCB"),
+				*image,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		
+		/////// Linear
+		param_list.add("new_value", INTERPOLATION_LINEAR);
+		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Linear"),
+				*image,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		
+		/////// Ease
+		param_list.add("new_value", INTERPOLATION_HALT);
+		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Ease"),
+				*image,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		
+		/////// Constant
+		param_list.add("new_value", INTERPOLATION_CONSTANT);
+		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Constant"),
+				*image,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		
+		/////// Ease
+		param_list.add("new_value", INTERPOLATION_CLAMPED);
+		image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
+		param_interpolation_menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+				_("Clamped"),
+				*image,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),
+						param_list
+					),
+					"ValueDescSetInterpolation"
+				)
+			)
+		);
+		param_list.erase("new_value");
+		
+		parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Interpolation"), *param_interpolation_menu));
+	}
 
 	synfigapp::Action::Category categories = synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE;
 	if (bezier)
