@@ -74,6 +74,7 @@
 #include "actions/valuenoderemove.h"
 
 #include "actions/valuedescset.h"
+#include "actions/valuedescsetinterpolation.h"
 #include "actions/valuedescexport.h"
 #include "actions/valuedescconvert.h"
 #include "actions/valuedescconnect.h"
@@ -209,6 +210,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeRemove);
 
 	ADD_ACTION(Action::ValueDescSet);
+	ADD_ACTION(Action::ValueDescSetInterpolation);
 	ADD_ACTION(Action::ValueDescExport);
 	ADD_ACTION(Action::ValueDescConvert);
 	ADD_ACTION(Action::ValueDescConnect);

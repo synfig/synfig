@@ -163,6 +163,9 @@ Param::Param(const Param &rhs):
 	case TYPE_BOOL:
 		data.b=rhs.data.b;
 		break;
+	case TYPE_INTERPOLATION:
+	    	data.interpolation=rhs.data.interpolation;
+		break;
 
 	case TYPE_NIL:
 		break;
@@ -368,6 +371,13 @@ Param::Param(const bool& x):
 	data.b=x;
 }
 
+Param::Param(const synfig::Interpolation& x):
+	type_(TYPE_INTERPOLATION)
+{
+	_ParamCounter::counter++;
+	data.interpolation=x;
+}
+
 Param::~Param()
 {
 	clear();
@@ -447,6 +457,9 @@ Param::operator=(const Param& rhs)
 	case TYPE_BOOL:
 		data.b=rhs.data.b;
 		break;
+	case TYPE_INTERPOLATION:
+		data.interpolation=rhs.data.interpolation;
+		break;
 
 	case TYPE_NIL:
 		break;
@@ -508,6 +521,7 @@ Param::clear()
 	case TYPE_INTEGER:
 	case TYPE_REAL:
 	case TYPE_BOOL:
+	case TYPE_INTERPOLATION:
 		break;
 
 	default:

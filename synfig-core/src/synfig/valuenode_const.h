@@ -58,7 +58,8 @@ public:
 
 	bool get_static()const {return get_value().get_static();}
 	void set_static(bool x) { get_value().set_static(x); }
-        Interpolation get_interpolation()const {return get_value().get_interpolation();}
+	Interpolation get_interpolation()const {return get_value().get_interpolation();}
+	void set_interpolation(Interpolation x) { get_value().set_interpolation(x); }
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
