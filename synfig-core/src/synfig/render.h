@@ -38,7 +38,6 @@
 #include <ETL/handle>
 
 #include "cairo.h"
-#include "cairomm/cairomm.h"
 
 /* === M A C R O S ========================================================= */
 

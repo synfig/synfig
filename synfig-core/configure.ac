@@ -433,11 +433,6 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo verison 1.12.0 or higher.])
 ])
 
-PKG_CHECK_MODULES(LIBCAIROMM, cairomm-1.0,[
-	CONFIG_DEPS="$CONFIG_DEPS cairomm-1.0"
-],[
-	AC_MSG_ERROR([ ** You need to install cairomm-1.0, verison 1.0.])
-])
 
 PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"

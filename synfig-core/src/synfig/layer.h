@@ -42,7 +42,6 @@
 #include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
-#include "cairomm/cairomm.h"
 #include "rendermethod.h"
 
 /* === M A C R O S ========================================================= */

@@ -31,7 +31,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "cairo.h"
-#include "cairomm/cairomm.h"
 
 #include <synfig/cairoimporter.h>
 #include <synfig/string.h>

@@ -30,8 +30,6 @@
 
 #include "layer.h"
 #include "color.h"
-#include "cairo.h"
-#include "cairomm/cairomm.h"
 #include "cairo_operators.h"
 
 /* === M A C R O S ========================================================= */

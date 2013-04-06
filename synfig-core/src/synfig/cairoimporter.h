@@ -37,7 +37,6 @@
 #include "renddesc.h"
 
 #include "cairo.h"
-#include "cairomm/cairomm.h"
 
 /* === M A C R O S ========================================================= */
 
