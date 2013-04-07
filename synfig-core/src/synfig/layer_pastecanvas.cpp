@@ -668,11 +668,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 		// surface, and we're rendering 'onto', then we're done
 		if (Color::is_onto(blend_method) && !Color::is_straight(blend_method))
 			return true;
-		
-		/* 'straight' is faster than 'composite' and has the same
-		 * effect if the affected area of the lower layer is
-		 * transparent.*/
-		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 	
 	// render the canvas to be pasted onto pastesurface
