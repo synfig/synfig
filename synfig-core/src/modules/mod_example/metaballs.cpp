@@ -221,6 +221,16 @@ Metaballs::get_color(Context context, const Point &pos)const
 		return Color::blend(gradient(totaldensity(pos)),context.get_color(pos),get_amount(),get_blend_method());
 }
 
+CairoColor
+Metaballs::get_cairocolor(Context context, const Point &pos)const
+{
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+		return CairoColor(gradient(totaldensity(pos)));
+	else
+		return CairoColor::blend(CairoColor(gradient(totaldensity(pos))),context.get_cairocolor(pos),get_amount(),get_blend_method());
+}
+
+
 bool
 Metaballs::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
