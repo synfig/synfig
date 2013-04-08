@@ -77,52 +77,64 @@ NoiseDistort::NoiseDistort():
 	Layer::fill_static(voc);
 }
 
-inline Color
-NoiseDistort::color_func(const Point &point, float /*supersample*/,Context context)const
+inline Point
+NoiseDistort::point_func(const Point &point)const
 {
-	Color ret(0,0,0,0);
-
 	float x(point[0]/size[0]*(1<<detail));
 	float y(point[1]/size[1]*(1<<detail));
-
+	
 	int i;
 	Time time;
 	time=speed*curr_time;
 	RandomNoise::SmoothType temp_smooth(smooth);
 	RandomNoise::SmoothType smooth((!speed && temp_smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : temp_smooth);
-
+	
+	Vector vect(0,0);
+	for(i=0;i<detail;i++)
 	{
-		Vector vect(0,0);
-		for(i=0;i<detail;i++)
+		vect[0]=random(smooth,0+(detail-i)*5,x,y,time)+vect[0]*0.5;
+		vect[1]=random(smooth,1+(detail-i)*5,x,y,time)+vect[1]*0.5;
+		
+		if(vect[0]<-1)vect[0]=-1;if(vect[0]>1)vect[0]=1;
+		if(vect[1]<-1)vect[1]=-1;if(vect[1]>1)vect[1]=1;
+		
+		if(turbulent)
 		{
-			vect[0]=random(smooth,0+(detail-i)*5,x,y,time)+vect[0]*0.5;
-			vect[1]=random(smooth,1+(detail-i)*5,x,y,time)+vect[1]*0.5;
-
-			if(vect[0]<-1)vect[0]=-1;if(vect[0]>1)vect[0]=1;
-			if(vect[1]<-1)vect[1]=-1;if(vect[1]>1)vect[1]=1;
-
-			if(turbulent)
-			{
-				vect[0]=abs(vect[0]);
-				vect[1]=abs(vect[1]);
-			}
-
-			x/=2.0f;
-			y/=2.0f;
+			vect[0]=abs(vect[0]);
+			vect[1]=abs(vect[1]);
 		}
-
-		if(!turbulent)
-		{
-			vect[0]=vect[0]/2.0f+0.5f;
-			vect[1]=vect[1]/2.0f+0.5f;
-		}
-		vect[0]=(vect[0]-0.5f)*displacement[0];
-		vect[1]=(vect[1]-0.5f)*displacement[1];
-
-		ret=context.get_color(point+vect);
+		
+		x/=2.0f;
+		y/=2.0f;
 	}
+	
+	if(!turbulent)
+	{
+		vect[0]=vect[0]/2.0f+0.5f;
+		vect[1]=vect[1]/2.0f+0.5f;
+	}
+	vect[0]=(vect[0]-0.5f)*displacement[0];
+	vect[1]=(vect[1]-0.5f)*displacement[1];
+	
+	return point+vect;
+}
+
+inline Color
+NoiseDistort::color_func(const Point &point, float /*supersample*/,Context context)const
+{
+	Color ret(0,0,0,0);
+	ret=context.get_color(point_func(point));
 	return ret;
 }
+
+inline CairoColor
+NoiseDistort::cairocolor_func(const Point &point, float /*supersample*/,Context context)const
+{
+	CairoColor ret(0,0,0,0);
+	ret=context.get_cairocolor(point_func(point));
+	return ret;
+}
+
 
 inline float
 NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
@@ -251,6 +263,17 @@ NoiseDistort::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
+CairoColor
+NoiseDistort::get_cairocolor(Context context, const Point &point)const
+{
+	const CairoColor color(cairocolor_func(point,0,context));
+	
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+		return color;
+	else
+		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
+}
+
 Rect
 NoiseDistort::get_bounding_rect(Context context)const
 {
@@ -264,6 +287,7 @@ NoiseDistort::get_bounding_rect(Context context)const
 
 	return bounds;
 }
+
 
 /*
 bool
