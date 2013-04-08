@@ -282,6 +282,37 @@ blendfunc_COMPOSITE(C &src,C &dest,float amount)
 	return dest;
 }
 
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_COMPOSITE(CairoColor &a, CairoColor &b, float amount)
+{
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a()*amount;
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	ac=aa+(ab*(255-aa))/255;
+	if(ac==0) return CairoColor::alpha();
+	
+	rc=(ra*aa+rb*ab*(255-aa)/255)/255;
+	gc=(ga*aa+gb*ab*(255-aa)/255)/255;
+	bc=(ba*aa+bb*ab*(255-aa)/255)/255;
+	
+	return CairoColor(rc, gc, bc, ac);
+
+}
+
+
 template <class C>
 static C
 blendfunc_STRAIGHT(C &src,C &bg,float amount)
