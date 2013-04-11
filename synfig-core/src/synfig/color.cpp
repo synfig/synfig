@@ -626,6 +626,30 @@ blendfunc_MULTIPLY(C &a,C &b,float amount)
 	return b;
 }
 
+template <>
+CairoColor
+blendfunc_MULTIPLY(CairoColor &a,CairoColor &b, float amount)
+{
+	if(amount<0) a=~a, amount=-amount;
+	amount*=a.get_a()/255;
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	
+	b.set_r((rb*ra/255-rb)*(amount)+rb);
+	b.set_g((gb*ga/255-gb)*(amount)+gb);
+	b.set_b((bb*ba/255-bb)*(amount)+bb);
+	return b;
+}
+
 template <class C>
 static C
 blendfunc_DIVIDE(C &a,C &b,float amount)
