@@ -432,7 +432,9 @@ AX_BOOST_PROGRAM_OPTIONS
 if test "x$ax_cv_boost_program_options" = "xno" ; then
 	AC_MSG_ERROR([ ** You need to install Boost program-options library])
 fi
-CONFIG_DEPS="$CONFIG_DEPS boost_program_options"
+# Boost Program Options is just a dependency of the synfig cli and so,
+# not required to link against the synfig library.
+#CONFIG_DEPS="$CONFIG_DEPS boost_program_options"
 
 
 
