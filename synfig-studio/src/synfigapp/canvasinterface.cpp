@@ -639,7 +639,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 
 		Layer::Handle layer(add_layer_to("PasteCanvas",get_canvas()));
 		if(!layer)
-			throw String(_("Unable to create \"Paste Canvas\" layer"));
+			throw String(_("Unable to create \"Group\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))
 			throw int();
 		if(!layer->set_param("children_lock",true))

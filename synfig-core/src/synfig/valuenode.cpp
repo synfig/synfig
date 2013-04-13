@@ -88,6 +88,7 @@
 #include "valuenode_not.h"
 #include "valuenode_and.h"
 #include "valuenode_or.h"
+#include "valuenode_real.h"
 
 #include "layer.h"
 
@@ -145,7 +146,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Stripes,		  "stripes",		  _("Stripes"),			 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Subtract,		  "subtract",		  _("Subtract"),		 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_TwoTone,		  "twotone",		  _("Two-Tone"),		 RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_BLine,			  "bline",			  _("BLine"),			 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_BLine,			  "bline",			  _("Spline"),			 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE2(ValueNode_DynamicList,	  "dynamic_list",	  _("Dynamic List"),	 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_GradientRotate,	  "gradient_rotate",  _("Gradient Rotate"),	 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Sine,			  "sine",			  _("Sine"),			 RELEASE_VERSION_0_61_06);
@@ -154,8 +155,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Repeat_Gradient,  "repeat_gradient",  _("Repeat Gradient"),	 RELEASE_VERSION_0_61_07); // SVN r666
 	ADD_VALUENODE(ValueNode_Exp,			  "exp",			  _("Exponential"),		 RELEASE_VERSION_0_61_07); // SVN r739
 	ADD_VALUENODE(ValueNode_Add,			  "add",			  _("Add"),				 RELEASE_VERSION_0_61_07); // SVN r742
-	ADD_VALUENODE(ValueNode_BLineCalcTangent, "blinecalctangent", _("BLine Tangent"),	 RELEASE_VERSION_0_61_07); // SVN r744
-	ADD_VALUENODE(ValueNode_BLineCalcVertex,  "blinecalcvertex",  _("BLine Vertex"),	 RELEASE_VERSION_0_61_07); // SVN r744
+	ADD_VALUENODE(ValueNode_BLineCalcTangent, "blinecalctangent", _("Spline Tangent"),	 RELEASE_VERSION_0_61_07); // SVN r744
+	ADD_VALUENODE(ValueNode_BLineCalcVertex,  "blinecalcvertex",  _("Spline Vertex"),	 RELEASE_VERSION_0_61_07); // SVN r744
 	ADD_VALUENODE(ValueNode_Range,			  "range",			  _("Range"),			 RELEASE_VERSION_0_61_07); // SVN r776
 
 	ADD_VALUENODE(ValueNode_Switch,			  "switch",			  _("Switch"),			 RELEASE_VERSION_0_61_08); // SVN r923
@@ -165,9 +166,9 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_TimeLoop,		  "timeloop",		  _("Time Loop"),		 RELEASE_VERSION_0_61_08); // SVN r1226
 	ADD_VALUENODE(ValueNode_Reciprocal,		  "reciprocal",		  _("Reciprocal"),		 RELEASE_VERSION_0_61_08); // SVN r1238
 	ADD_VALUENODE(ValueNode_Duplicate,		  "duplicate",		  _("Duplicate"),		 RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("From Integer"),	 RELEASE_VERSION_0_61_08); // SVN r1267
+	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("Integer"),			 RELEASE_VERSION_0_61_08); // SVN r1267
 	ADD_VALUENODE(ValueNode_Step,			  "step",			  _("Step"),			 RELEASE_VERSION_0_61_08); // SVN r1691
-	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("BLine Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
+	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("Spline Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
 
 	ADD_VALUENODE(ValueNode_VectorAngle,	  "vectorangle",	  _("Vector Angle"),	 RELEASE_VERSION_0_61_09); // SVN r1880
 	ADD_VALUENODE(ValueNode_VectorLength,	  "vectorlength",	  _("Vector Length"),	 RELEASE_VERSION_0_61_09); // SVN r1881
@@ -176,6 +177,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_GradientColor,	  "gradientcolor",	  _("Gradient Color"),	 RELEASE_VERSION_0_61_09); // SVN r1885
 	ADD_VALUENODE(ValueNode_DotProduct,		  "dotproduct",		  _("Dot Product"),		 RELEASE_VERSION_0_61_09); // SVN r1891
 	ADD_VALUENODE(ValueNode_TimeString,		  "timestring",		  _("Time String"),		 RELEASE_VERSION_0_61_09); // SVN r2000
+	ADD_VALUENODE(ValueNode_Real,		  	  "fromreal",		  _("Real"),		 	 RELEASE_VERSION_0_63_06); // git 2013-01-12
 	ADD_VALUENODE(ValueNode_RealString,		  "realstring",		  _("Real String"),		 RELEASE_VERSION_0_61_09); // SVN r2003
 	ADD_VALUENODE(ValueNode_Join,			  "join",			  _("Joined List"),		 RELEASE_VERSION_0_61_09); // SVN r2007
 	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010

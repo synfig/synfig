@@ -65,7 +65,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_LayerGroups::Dock_LayerGroups():
-	Dock_CanvasSpecific("groups",_("Groups"),Gtk::StockID("synfig-group")),
+	Dock_CanvasSpecific("groups",_("Sets"),Gtk::StockID("synfig-group")),
 	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
@@ -73,7 +73,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 
 	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", _("Group Ops")) );
 
-	action_group_add=Gtk::Action::create("action-group_add", Gtk::Stock::ADD,_("Add a New Group"),_("Add a New Group"));
+	action_group_add=Gtk::Action::create("action-group_add", Gtk::Stock::ADD,_("Add a New Set"),_("Add a New Set"));
 	action_group_group_ops->add(action_group_add);
 	action_group_add->set_sensitive(false);
 

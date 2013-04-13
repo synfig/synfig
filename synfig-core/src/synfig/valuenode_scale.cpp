@@ -182,6 +182,23 @@ synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Angle &target_value) 
 	return ValueBase();
 }
 
+synfig::ValueBase
+synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Real &target_value) const
+{
+	Real scalar_value((*scalar)(t).get(Real()));
+	if(scalar_value==0)
+			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
+	else
+		{
+			switch (get_type())
+			{
+					default:
+					return target_value / scalar_value;
+			}
+		}
+	return ValueBase();
+}
+
 bool
 synfig::ValueNode_Scale::is_invertible(Time t) const
 {
