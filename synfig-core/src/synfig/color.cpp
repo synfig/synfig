@@ -289,24 +289,34 @@ blendfunc_COMPOSITE(CairoColor &a, CairoColor &b, float amount)
 {
 	int ra, ga, ba, aa;
 	int rb, gb, bb, ab;
-	int rc, gc, bc, ac;
+	int rc, gc, bc;
+	float ac;
+	
+	float faa, fab, A, AA;
 	
 	ra=a.get_r();
 	ga=a.get_g();
 	ba=a.get_b();
-	aa=a.get_a()*amount;
+	aa=a.get_a();
+	aa=aa*amount;
+	A=aa/255.0;
+	AA=1.0-A;
 	
 	rb=b.get_r();
 	gb=b.get_g();
 	bb=b.get_b();
 	ab=b.get_a();
-	
-	ac=aa+(ab*(255-aa))/255;
-	if(ac==0) return CairoColor::alpha();
-	
-	rc=(ra*aa+rb*ab*(255-aa)/255)/255;
-	gc=(ga*aa+gb*ab*(255-aa)/255)/255;
-	bc=(ba*aa+bb*ab*(255-aa)/255)/255;
+
+	ac=aa+ab*AA;
+	if(fabsf(ac)<COLOR_EPSILON)
+		return CairoColor::alpha();
+
+	faa=aa/ac;
+	fab=ab*AA/ac;
+
+	rc=ra*faa+rb*fab;
+	gc=ga*faa+gb*fab;
+	bc=ba*faa+bb*fab;
 	
 	return CairoColor(rc, gc, bc, ac);
 
