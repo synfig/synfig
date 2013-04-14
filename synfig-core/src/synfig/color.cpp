@@ -631,7 +631,7 @@ CairoColor
 blendfunc_MULTIPLY(CairoColor &a,CairoColor &b, float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
-	amount*=a.get_a()/255;
+	amount*=a.get_a()/255.0;
 	int ra, ga, ba;
 	int rb, gb, bb;
 
@@ -643,9 +643,9 @@ blendfunc_MULTIPLY(CairoColor &a,CairoColor &b, float amount)
 	gb=b.get_g();
 	bb=b.get_b();
 	
-	b.set_r((rb*ra/255-rb)*(amount)+rb);
-	b.set_g((gb*ga/255-gb)*(amount)+gb);
-	b.set_b((bb*ba/255-bb)*(amount)+bb);
+	b.set_r((rb*ra*amount/255.0)+rb*(1.0-amount));
+	b.set_g((gb*ga*amount/255.0)+gb*(1.0-amount));
+	b.set_b((bb*ba*amount/255.0)+bb*(1.0-amount));
 	return b;
 }
 
