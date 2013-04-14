@@ -395,6 +395,15 @@ blendfunc_ONTO(C &a,C &b,float amount)
 	return blendfunc_COMPOSITE(a,b.set_a(one),amount).set_a(alpha);
 }
 
+template <>
+CairoColor
+blendfunc_ONTO(CairoColor &a, CairoColor &b, float amount)
+{
+	unsigned char alpha(b.get_a());
+	return blendfunc_COMPOSITE(a,b.set_a(255),amount).set_a(alpha);
+}
+
+
 template <class C>
 static C
 blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
@@ -910,6 +919,20 @@ blendfunc_SCREEN(C &a,C &b,float amount)
 	return blendfunc_ONTO(a,b,amount);
 }
 
+template <>
+CairoColor
+blendfunc_SCREEN(CairoColor &a, CairoColor &b, float amount)
+{
+	if(amount<0) a=~a, amount=-amount;
+	
+	a.set_r(255-(255-a.get_r())*(1.0-b.get_r()/255.0));
+	a.set_g(255-(255-a.get_g())*(1.0-b.get_g()/255.0));
+	a.set_b(255-(255-a.get_b())*(1.0-b.get_b()/255.0));
+
+	return blendfunc_ONTO(a,b,amount);
+}
+
+
 template <class C>
 static C
 blendfunc_OVERLAY(C &a,C &b,float amount)
@@ -937,17 +960,14 @@ blendfunc_OVERLAY(C &a,C &b,float amount)
 }
 
 //Specialization for CairoColors
-// OVERLAY needs a further compositon with ONTO
 template <>
 CairoColor
 blendfunc_OVERLAY<CairoColor>(CairoColor &a,CairoColor &b,float amount)
 {
-	//const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
 	
 	int ra, ga, ba, aa, ras, gas, bas;
 	int rb, gb, bb, ab;
-	int aaab;
 
 	ra=a.get_r();
 	ras=ra*ra;
@@ -967,14 +987,12 @@ blendfunc_OVERLAY<CairoColor>(CairoColor &a,CairoColor &b,float amount)
 	
 	if(aa==0 || ab==0) return CairoColor();
 	
-	aaab=aa*ab;
-	
-	rc=(2*aa*rb*ra+ras*ab-2*rb*ras)/aaab;
-	gc=(2*aa*gb*ga+gas*ab-2*gb*gas)/aaab;
-	bc=(2*aa*bb*ba+bas*ab-2*bb*bas)/aaab;
+	rc=(2*rb*ra+ras-2*rb*ras/255.0)/255.0;
+	gc=(2*gb*ga+gas-2*gb*gas/255.0)/255.0;
+	bc=(2*bb*ba+bas-2*bb*bas/255.0)/255.0;
 	ac=aa;
 	
-	return CairoColor(rc, gc, bc, ac);
+	return CairoColor::blend(CairoColor(rc, gc, bc, ac), b, amount, Color::BLEND_ONTO);
 }
 
 

@@ -223,17 +223,18 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
-					csource[y][x]=CairoColor::blend(csource[y][x], cdest[h0+y][w0+x], alpha,	method);
+					CairoColor ret=CairoColor::blend(csource[y][x].demult_alpha(), cdest[h0+y][w0+x].demult_alpha(), alpha,	method);
+					csource[y][x]=ret.premult_alpha();
 				}
 			csource.unmap_cairo_image();
 			cdest.unmap_cairo_image();
 			
 			cairo_save(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_ATOP);
+			cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
 			cairo_reset_clip(cr);
 			cairo_identity_matrix(cr);
 			cairo_set_source_surface(cr, source, 0, 0);
-			cairo_paint_with_alpha(cr, alpha);
+			cairo_paint(cr);
 			cairo_restore(cr);
 			
 			cairo_pattern_destroy(pattern);
