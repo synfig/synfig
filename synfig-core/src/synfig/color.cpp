@@ -351,6 +351,41 @@ blendfunc_STRAIGHT(C &src,C &bg,float amount)
 	return out;
 }
 
+//Specialization for CairoColor
+template <>
+CairoColor
+blendfunc_STRAIGHT(CairoColor &a, CairoColor &b, float amount)
+{	
+	int ra, ga, ba, aa; //src
+	int rb, gb, bb, ab; //bg
+	int rc, gc, bc;
+	float ac; //out
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	ac=(aa-ab)*amount+ab;
+	
+	// if ac!=0.0
+	if(fabsf(ac)>COLOR_EPSILON)
+	{
+		rc= ((ra*aa-rb*ab)*amount + rb*ab)/ac;
+		gc= ((ga*aa-gb*ab)*amount + gb*ab)/ac;
+		bc= ((ba*aa-bb*ab)*amount + bb*ab)/ac;
+		return CairoColor(rc, gc, bc, ac);
+	}
+	else
+		return CairoColor::alpha();
+}
+
+
 template <class C>
 static C
 blendfunc_ONTO(C &a,C &b,float amount)
