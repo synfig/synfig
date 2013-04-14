@@ -632,9 +632,8 @@ blendfunc_MULTIPLY(CairoColor &a,CairoColor &b, float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 	amount*=a.get_a()/255;
-	int ra, ga, ba, aa;
-	int rb, gb, bb, ab;
-	int rc, gc, bc, ac;
+	int ra, ga, ba;
+	int rb, gb, bb;
 
 	ra=a.get_r();
 	ga=a.get_g();
