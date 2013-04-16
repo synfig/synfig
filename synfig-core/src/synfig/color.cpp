@@ -457,9 +457,9 @@ blendfunc_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 	bb=b.get_b();
 	ab=b.get_a();
 
-	const int raab(ra*ab*amount/255.0);
-	const int gaab(ga*ab*amount/255.0);
-	const int baab(ba*ab*amount/255.0);
+	const int raab(ra*aa*amount/255.0);
+	const int gaab(ga*aa*amount/255.0);
+	const int baab(ba*aa*amount/255.0);
 	
 	if(rb<raab)
 		rc=raab;
