@@ -662,11 +662,11 @@ blendfunc_DIFFERENCE(CairoColor &a, CairoColor &b, float amount)
 	bb=b.get_b();
 	ab=b.get_a();
 	
-	int aba=ab*amount;
+	const float aaa=aa*amount/255.0;
 	
-	rc=abs(rb-(ra*aba)/255);
-	gc=abs(gb-(ga*aba)/255);
-	bc=abs(bb-(ba*aba)/255);
+	rc=abs(rb-ra*aaa);
+	gc=abs(gb-ga*aaa);
+	bc=abs(bb-ba*aaa);
 	ac=ab;
 	
 	return CairoColor(rc, gc, bc, ac);
