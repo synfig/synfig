@@ -279,7 +279,8 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
-					cdest[h0+y][w0+x]=CairoColor::blend(csource[y][x], cdest[h0+y][w0+x], alpha,	method);
+					CairoColor ret=CairoColor::blend(csource[y][x].demult_alpha(), cdest[h0+y][w0+x], alpha,	method);
+					cdest[h0+y][w0+x]=ret.premult_alpha();
 				}
 			csource.unmap_cairo_image();
 			cdest.unmap_cairo_image();

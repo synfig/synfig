@@ -456,10 +456,11 @@ blendfunc_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 	gb=b.get_g();
 	bb=b.get_b();
 	ab=b.get_a();
-
-	const int raab(ra*aa*amount/255.0);
-	const int gaab(ga*aa*amount/255.0);
-	const int baab(ba*aa*amount/255.0);
+	
+	const float alpha = aa*amount/255.0;
+	const int raab(ra*alpha);
+	const int gaab(ga*alpha);
+	const int baab(ba*alpha);
 	
 	if(rb<raab)
 		rc=raab;
@@ -520,22 +521,21 @@ blendfunc_DARKEN(CairoColor &a, CairoColor &b, float amount)
 	bb=b.get_b();
 	ab=b.get_a();
 	
-	const int ab255=ab*255;
-	const int abaa=ab*aa;
-	
-	int rcompare=(amount*(ra*ab-abaa)+ab255)/255;
+	const float alpha=aa*amount/255.0;
+
+	int rcompare=(ra-255)*alpha+255;
 	if(rb > rcompare)
 		rc=rcompare;
 	else
 		rc=rb;
 		
-	int gcompare=(amount*(ga*ab-abaa)+ab255)/255;
+	int gcompare=(ga-255)*alpha+255;
 	if(gb > gcompare)
 		gc=gcompare;
 	else
 		gc=gb;
 
-	int bcompare=(amount*(ba*ab-abaa)+ab255)/255;
+	int bcompare=(ba-255)*alpha+255;
 	if(bb > bcompare)
 		bc=bcompare;
 	else
