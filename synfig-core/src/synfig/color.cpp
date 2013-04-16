@@ -578,11 +578,11 @@ blendfunc_ADD(CairoColor &a, CairoColor &b, float amount)
 	bb=b.get_b();
 	ab=b.get_a();
 	
-	int aba=ab*amount;
+	const float aaa=aa*amount/255.0;
 	
-	rc=rb+(ra*aba)/255;
-	gc=gb+(ga*aba)/255;
-	bc=bb+(ba*aba)/255;
+	rc=rb+ra*aaa;
+	gc=gb+ga*aaa;
+	bc=bb+ba*aaa;
 	ac=ab;
 
 	return CairoColor(rc, gc, bc, ac);
