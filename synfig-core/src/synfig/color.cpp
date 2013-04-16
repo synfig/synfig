@@ -412,6 +412,14 @@ blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
 	return blendfunc_STRAIGHT(a,b,amount);
 }
 
+template <>
+CairoColor
+blendfunc_STRAIGHT_ONTO(CairoColor &a, CairoColor &b, float amount)
+{
+	a.set_a(a.get_a()*b.get_a()/255.0);
+	return CairoColor::blend(a, b, amount, Color::BLEND_STRAIGHT);
+}
+
 template <class C>
 static C
 blendfunc_BRIGHTEN(C &a,C &b,float amount)
