@@ -672,9 +672,6 @@ blendfunc_DIFFERENCE(CairoColor &a, CairoColor &b, float amount)
 	return CairoColor(rc, gc, bc, ac);
 }
 
-
-
-
 template <class C>
 static C
 blendfunc_MULTIPLY(C &a,C &b,float amount)
@@ -748,28 +745,27 @@ blendfunc_DIVIDE(CairoColor &a, CairoColor &b, float amount)
 	bb=b.get_b();
 	ab=b.get_a();
 	
-	float alpha=amount*aa/255.0;
-	float ahpla=1.0-alpha;
+	const float alpha=amount*aa/255.0;
+	const float ahpla=1.0-alpha;
 	
-	if(ab==0)
-		return CairoColor();
+	if(alpha<COLOR_EPSILON)
+		return b;
 	
 	ac=ab;
-	
 	if(ra==0)
-		rc=255;
+		rc=rb;
 	else
-		rc=(rb*alpha*aa)/ra + ahpla*rb;
-
+		rc=rb*(alpha*255)/(ra) + ahpla*rb;
+		
 	if(ga==0)
-		gc=255;
+		gc=gb;
 	else
-		gc=(gb*alpha*aa)/ga + ahpla*gb;
-
+		gc=gb*(alpha*255)/(ga) + ahpla*gb;
+		
 	if(ba==0)
-		bc=255;
+		bc=bb;
 	else
-		bc=(bb*alpha*aa)/ba + ahpla*bb;
+		bc=bb*(alpha*255)/(ba) + ahpla*bb;
 		
 	return CairoColor(rc, gc, bc, ac);
 }
