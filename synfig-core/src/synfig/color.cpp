@@ -1058,6 +1058,45 @@ blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 	return blendfunc_ONTO(a,b,amount);
 }
 
+template <>
+CairoColor
+blendfunc_HARD_LIGHT(CairoColor &a, CairoColor &b, float amount)
+{
+	if(amount<0) a=~a, amount=-amount;
+	
+	int ra, ga, ba, aa;
+	int rb, gb, bb, ab;
+	int rc, gc, bc, ac;
+	
+	ra=a.get_r();
+	ga=a.get_g();
+	ba=a.get_b();
+	aa=a.get_a();
+	
+	rb=b.get_r();
+	gb=b.get_g();
+	bb=b.get_b();
+	ab=b.get_a();
+	
+	if(ra>127)	rc =255 -  (255-(ra*2-255))  *  (255-rb)/255.0;
+	else		rc= rb*(ra*2)/255.0;
+	if(ga>127)	gc =255 -  (255-(ga*2-255))  *  (255-gb)/255.0;
+	else		gc= gb*(ga*2)/255.0;
+	if(ba>127)	bc =255 -  (255-(ba*2-255))  *  (255-bb)/255.0;
+	else		bc= bb*(ba*2)/255.0;
+
+	return CairoColor::blend(CairoColor(rc, gc, bc, aa),b,amount, Color::BLEND_ONTO);
+//
+//	if(a.get_r()>half)	a.set_r(one-(one-(a.get_r()*2*one-one))*(one-b.get_r()));
+//	else				a.set_r(b.get_r()*(a.get_r()*2*one));
+//	if(a.get_g()>half)	a.set_g(one-(one-(a.get_g()*2*one-one))*(one-b.get_g()));
+//	else				a.set_g(b.get_g()*(a.get_g()*2*one));
+//	if(a.get_b()>half)	a.set_b(one-(one-(a.get_b()*2*one-one))*(one-b.get_b()));
+//	else				a.set_b(b.get_b()*(a.get_b()*2*one));
+//	
+//	return blendfunc_ONTO(a,b,amount);
+}
+
 template <class C>
 static C
 blendfunc_ALPHA_OVER(C &a,C &b,float amount)
@@ -1069,6 +1108,18 @@ blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 	rm.set_a((one-a.get_a())*b.get_a());
 
 	return blendfunc_STRAIGHT(rm,b,amount);
+}
+
+template <>
+CairoColor
+blendfunc_ALPHA_OVER(CairoColor &a, CairoColor &b, float amount)
+{
+	CairoColor rm(b);
+	
+	//multiply the inverse alpha channel with the one below us
+	rm.set_a((255-a.get_a())*b.get_a()/255.0);
+	
+	return CairoColor::blend(rm,b,amount, Color::BLEND_STRAIGHT);
 }
 
 
