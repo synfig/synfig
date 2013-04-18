@@ -779,6 +779,15 @@ blendfunc_COLOR(C &a,C &b,float amount)
 	return (temp-b)*amount*a.get_a()+b;
 }
 
+
+template <>
+CairoColor
+blendfunc_COLOR(CairoColor &a, CairoColor &b, float amount)
+{
+	return CairoColor(Color::blend(Color(a), Color(b), amount, Color::BLEND_COLOR));
+}
+
+
 template <class C>
 static C
 blendfunc_HUE(C &a,C &b,float amount)
@@ -786,6 +795,13 @@ blendfunc_HUE(C &a,C &b,float amount)
 	C temp(b);
 	temp.set_hue(a.get_hue());
 	return (temp-b)*amount*a.get_a()+b;
+}
+
+template <>
+CairoColor
+blendfunc_HUE(CairoColor &a, CairoColor &b, float amount)
+{
+	return CairoColor(Color::blend(Color(a), Color(b), amount, Color::BLEND_HUE));
 }
 
 template <class C>
@@ -797,6 +813,13 @@ blendfunc_SATURATION(C &a,C &b,float amount)
 	return (temp-b)*amount*a.get_a()+b;
 }
 
+template <>
+CairoColor
+blendfunc_SATURATION(CairoColor &a, CairoColor &b, float amount)
+{
+	return CairoColor(Color::blend(Color(a), Color(b), amount, Color::BLEND_SATURATION));
+}
+
 template <class C>
 static C
 blendfunc_LUMINANCE(C &a,C &b,float amount)
@@ -804,6 +827,13 @@ blendfunc_LUMINANCE(C &a,C &b,float amount)
 	C temp(b);
 	temp.set_y(a.get_y());
 	return (temp-b)*amount*a.get_a()+b;
+}
+
+template <>
+CairoColor
+blendfunc_LUMINANCE(CairoColor &a, CairoColor &b, float amount)
+{
+	return CairoColor(Color::blend(Color(a), Color(b), amount, Color::BLEND_LUMINANCE));
 }
 
 template <class C>
@@ -816,6 +846,15 @@ blendfunc_BEHIND(C &a,C &b,float amount)
 		a.set_a(a.get_a()*amount);
 	return blendfunc_COMPOSITE(b,a,1.0);
 }
+
+template <>
+CairoColor
+blendfunc_BEHIND(CairoColor &a, CairoColor &b, float amount)
+{
+	a.set_a(a.get_a()*amount);
+	return CairoColor::blend(b, a, 1.0, Color::BLEND_COMPOSITE);
+}
+
 
 template <class C>
 static C
