@@ -51,17 +51,21 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 		iter=pen.x();
 		end=pen.end_x();
 
-		typename T1::accumulator_type tot(*iter*(length+1));
+		typename T1::accumulator_type tot((typename T1::accumulator_type)(*iter)*(length+1));
 
 		for (x=0;x<length && iter!=end;x++,++iter) tot+=*iter;
 		iter=pen.x();
 
 		for (x=0;x<w && iter!=end;x++,++iter,outpen.inc_x())
 		{
-			tot -= (x>length) ? iter[-length-1] : *pen.x();
-			tot += ((x+length)<w) ? iter[length] : end[-1];
-
-			outpen.put_value(tot*divisor);
+			tot -= (x>length) ?
+				(typename T1::accumulator_type)(iter[-length-1]) :
+				(typename T1::accumulator_type)(*pen.x());
+			tot += ((x+length)<w) ?
+				(typename T1::accumulator_type)(iter[length]) :
+				(typename T1::accumulator_type)(end[-1]);
+									  
+			outpen.put_value((typename T2::value_type)(tot*divisor));
 		}
 		outpen.dec_x(x);
 	}
@@ -82,17 +86,21 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 		iter=pen.y();
 		end=pen.end_y();
 
-		typename T1::accumulator_type tot(*iter*(length+1));
+		typename T1::accumulator_type tot((typename T1::accumulator_type)(*iter)*(length+1));
 
 		for (y=0;y<length && iter!=end;y++,++iter) tot+=*iter;
 		iter=pen.y();
 
 		for (y=0;y<h && iter!=end;y++,++iter,outpen.inc_y())
 		{
-			tot -= (y>length) ? iter[-length-1] : *pen.y();
-			tot += ((y+length)<h) ? iter[length] : end[-1];
+			tot -= (y>length) ?
+			(typename T1::accumulator_type)(iter[-length-1]) :
+			(typename T1::accumulator_type)(*pen.y());
+			tot += ((y+length)<h) ?
+			(typename T1::accumulator_type)(iter[length]) :
+			(typename T1::accumulator_type)(end[-1]);
 
-			outpen.put_value(tot*divisor);
+			outpen.put_value((typename T2::value_type)(tot*divisor));
 		}
 		outpen.dec_y(y);
 	}
