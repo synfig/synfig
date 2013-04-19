@@ -1590,7 +1590,11 @@ Advanced_Outline::accelerated_cairorender(Context context,cairo_surface_t *surfa
 		cairo_paint(subcr);
 	}
 	// Draw the outline
-	cairo_translate(subcr, tx , ty);
+	// Calculate new translations after expand the tile
+	const double extx((-workdesc.get_tl()[0]+origin[0])*sx);
+	const double exty((-workdesc.get_tl()[1]+origin[1])*sy);
+	
+	cairo_translate(subcr, extx , exty);
 	cairo_scale(subcr, sx, sy);
 	switch(winding_style)
 	{
@@ -1659,10 +1663,10 @@ Advanced_Outline::accelerated_cairorender(Context context,cairo_surface_t *surfa
 			cairo_surface_destroy(subimage);
 			return false;
 		}
-	double px(tl[0]-workdesc.get_tl()[0]);
-	double py(tl[1]-workdesc.get_tl()[1]);
 	cairo_save(cr);
-	cairo_set_source_surface(cr, subimage, px, py );
+	const double px(tl[0]-workdesc.get_tl()[0]);
+	const double py(tl[1]-workdesc.get_tl()[1]);
+	cairo_set_source_surface(cr, subimage, -px*sx, -py*sy);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	cairo_restore(cr);
 	cairo_surface_destroy(subimage);
