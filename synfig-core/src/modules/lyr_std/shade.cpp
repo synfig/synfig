@@ -507,9 +507,10 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	}
 	// Extract the alpha
 	blurred.set_wh(workdesc.get_w(),workdesc.get_h());
+	float div=1.0/((float)(CairoColor::ceil));
 	for(int j=0;j<workdesc.get_h();j++)
 		for(int i=0;i<workdesc.get_w();i++)
-			blurred[j][i]=cairoworksurface[j][i].get_a()/CairoColor::ceil;
+			blurred[j][i]=cairoworksurface[j][i].get_a()*div;
 	
 	//blur the image
 	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);

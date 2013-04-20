@@ -466,12 +466,13 @@ Layer_Bevel::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 
 	// Copy over the alpha
 	blurred.set_wh(workdesc.get_w(),workdesc.get_h());
+	float div=1.0/((float)(CairoColor::ceil));
 	if(!use_luma)
 	{
 		for(int j=0;j<workdesc.get_h();j++)
 			for(int i=0;i<workdesc.get_w();i++)
 			{
-				blurred[j][i]=cairoworksurface[j][i].get_a()/CairoColor::ceil;
+				blurred[j][i]=cairoworksurface[j][i].get_a()*div;
 			}
 	}
 	else
@@ -479,7 +480,7 @@ Layer_Bevel::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 		for(int j=0;j<workdesc.get_h();j++)
 			for(int i=0;i<workdesc.get_w();i++)
 			{
-				blurred[j][i]=cairoworksurface[j][i].get_a()*(cairoworksurface[j][i].get_y()/CairoColor::ceil);
+				blurred[j][i]=cairoworksurface[j][i].get_a()*(cairoworksurface[j][i].get_y()*div);
 			}
 	}
 	

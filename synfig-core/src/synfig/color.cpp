@@ -236,10 +236,11 @@ Color::clamped()const
 
 Color::Color(const CairoColor& c)
 	{
-		set_r((ceil-floor)*c.get_r()/(CairoColor::ceil-CairoColor::floor));
-		set_g((ceil-floor)*c.get_g()/(CairoColor::ceil-CairoColor::floor));
-		set_b((ceil-floor)*c.get_b()/(CairoColor::ceil-CairoColor::floor));
-		set_a((ceil-floor)*c.get_a()/(CairoColor::ceil-CairoColor::floor));
+		float div=1.0/((float)(CairoColor::ceil-CairoColor::floor));
+		set_r((ceil-floor)*c.get_r()*div);
+		set_g((ceil-floor)*c.get_g()*div);
+		set_b((ceil-floor)*c.get_b()*div);
+		set_a((ceil-floor)*c.get_a()*div);
 	}
 
 

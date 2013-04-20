@@ -425,9 +425,10 @@ Region::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 		// Extract the alpha values:
 		int x, y;
 		int wh(workdesc.get_h()), ww(workdesc.get_w());
+		float div=1.0/((float)(CairoColor::ceil));
 		for(y=0; y<wh; y++)
 			for(x=0;x<ww;x++)
-				shapesurface[y][x]=cairosubimage[y][x].get_a()/CairoColor::ceil;
+				shapesurface[y][x]=cairosubimage[y][x].get_a()*div;
 		// Blue the alpha values
 		Blur(feather,feather,blurtype,cb)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
 		// repaint the cairosubimage with the result
