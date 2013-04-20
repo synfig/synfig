@@ -136,6 +136,11 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 		new_font_("sans serif",PANGO_STYLE_NORMAL,WEIGHT_NORMAL);
 }
 
+/*! The new_font() function try to render
+**	text until it work by simplyfing font style(s).
+** In last chance, render text as "sans serif" Normal
+** font style.
+*/
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
