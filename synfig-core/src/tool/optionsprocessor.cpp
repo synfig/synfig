@@ -312,7 +312,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 	}
 	if (_vm.count("span"))
 	{
-		span = _vm["antialias"].as<int>();
+		span = _vm["span"].as<int>();
 		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span)
 					   << endl;
 	}
