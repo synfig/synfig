@@ -433,32 +433,52 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo verison 1.12.0 or higher.])
 ])
 
-
 PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
 ],[
 	AC_MSG_ERROR([ ** You need to install pango])
 ])
 
+AX_BOOST_BASE([1.32.0])
+AX_BOOST_PROGRAM_OPTIONS
+if test "x$ax_cv_boost_program_options" = "xno" ; then
+	AC_MSG_ERROR([ ** You need to install Boost program-options library])
+fi
+# Boost Program Options is just a dependency of the synfig cli and so,
+# not required to link against the synfig library.
+#CONFIG_DEPS="$CONFIG_DEPS boost_program_options"
+
 
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 
-AC_CHECK_LIB(png, png_write_row,[
-	PNG_LIBS="-lpng"
-	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ] )
+AC_CHECK_LIB(png14, png_write_row,[
+	PNG_LIBS="-lpng14"
+	AC_DEFINE(HAVE_LIBPNG14,[], [ Define if PNG 1.4 library is available ])
+	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
 	AC_SUBST(PNG_LIBS)
+	AM_CONDITIONAL(HAVE_LIBPNG14,true)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
 	AC_CHECK_LIB(png12, png_write_row,[
 	PNG_LIBS="-lpng12"
 	AC_DEFINE(HAVE_LIBPNG,[])
 	AC_SUBST(PNG_LIBS)
+	AM_CONDITIONAL(HAVE_LIBPNG14,false)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 	],[
-		AC_MSG_RESULT([ *** PNG Output target disabled])
-		TARGET_PNG="no"
-		AM_CONDITIONAL(HAVE_LIBPNG,false)
+		AC_CHECK_LIB(png, png_write_row,[
+		PNG_LIBS="-lpng"
+		AC_DEFINE(HAVE_LIBPNG,[])
+		AC_SUBST(PNG_LIBS)
+		AM_CONDITIONAL(HAVE_LIBPNG14,false)
+		AM_CONDITIONAL(HAVE_LIBPNG,true)
+		],[
+			AC_MSG_RESULT([ *** PNG Output target disabled])
+			TARGET_PNG="no"
+			AM_CONDITIONAL(HAVE_LIBPNG14,false)
+			AM_CONDITIONAL(HAVE_LIBPNG,false)
+		],[-lz -L${exec_prefix}/lib])
 	],[-lz -L${exec_prefix}/lib])
 ],[-lz -L${exec_prefix}/lib])
 
@@ -746,5 +766,8 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
+"'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
+"'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
+"'$'"BOOST_PROGRAM_OPTIONS_LIB -------> '$BOOST_PROGRAM_OPTIONS_LIB'
 "'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "
