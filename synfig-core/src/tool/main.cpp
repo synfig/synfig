@@ -289,7 +289,7 @@ int main(int ac, char* av[])
 		// Processing --------------------------------------------------
 		Job job;
 		job = op.extract_job();
-		job.desc = op.extract_renddesc(job.canvas->rend_desc());
+		job.desc = job.canvas->rend_desc() = op.extract_renddesc(job.canvas->rend_desc());
 
 		job_list.push_front(job);
 
