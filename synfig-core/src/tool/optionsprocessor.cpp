@@ -319,7 +319,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 	if (_vm.count("fps"))
 	{
 		float fps;
-		fps = _vm["antialias"].as<float>();
+		fps = _vm["fps"].as<float>();
 		desc.set_frame_rate(fps);
 		VERBOSE_OUT(1) << strprintf(_("Frame rate set to %d frames per "
 									  "second"), fps) << endl;
