@@ -1029,9 +1029,8 @@ Warp::accelerated_cairorender(Context context,cairo_surface_t *surface,int quali
 
 	CairoSurface::pen pen(csurface.begin());
 	
-	if(quality<=4)
+	// Do the warp
 	{
-		// CUBIC
 		int x,y;
 		float u,v;
 		Point point,tmp;
@@ -1053,7 +1052,17 @@ Warp::accelerated_cairorender(Context context,cairo_surface_t *surface,int quali
 				if(u<0 || v<0 || u>=sourcew || v>=sourceh || isnan(u) || isnan(v))
 					csurface[y][x]=context.get_cairocolor(tmp);
 				else
-					csurface[y][x]=csource.cubic_sample(u,v);
+				{
+					// CUBIC
+					if(quality<=4)
+						csurface[y][x]=csource.cubic_sample(u,v);
+					// INTEPOLATION_LINEAR
+					else if(quality<=6)
+						csurface[y][x]=csource.linear_sample(u,v);
+					else
+					// NEAREST_NEIGHBOR
+						csurface[y][x]=csource[floor_to_int(v)][floor_to_int(u)];
+				}
 			}
 			if((y&31)==0 && cb)
 			{
@@ -1062,73 +1071,6 @@ Warp::accelerated_cairorender(Context context,cairo_surface_t *surface,int quali
 			}
 		}
 	}
-	else
-		if(quality<=6)
-		{
-			// INTERPOLATION_LINEAR
-			int x,y;
-			float u,v;
-			Point point,tmp;
-			for(y=0,point[1]=renddesc.get_tl()[1];y<surfaceh;y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-			{
-				for(x=0,point[0]=renddesc.get_tl()[0];x<surfacew;x++,pen.inc_x(),point[0]+=1.0/pw)
-				{
-					tmp=transform_forward(point);
-					const float z(transform_backward_z(tmp));
-					if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-					{
-						csurface[y][x]=Color::alpha();
-						continue;
-					}
-					
-					u=(tmp[0]-tl[0])*src_pw;
-					v=(tmp[1]-tl[1])*src_ph;
-					
-					if(u<0 || v<0 || u>=sourcew || v>=sourceh || isnan(u) || isnan(v))
-						csurface[y][x]=context.get_cairocolor(tmp);
-					else
-						csurface[y][x]=csource.linear_sample(u,v);
-				}
-				if((y&31)==0 && cb)
-				{
-					if(!stagetwo.amount_complete(y,surfaceh))
-						return false;
-				}
-			}
-		}
-		else
-		{
-			// NEAREST_NEIGHBOR
-			int x,y;
-			float u,v;
-			Point point,tmp;
-			for(y=0,point[1]=renddesc.get_tl()[1];y<surfaceh;y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-			{
-				for(x=0,point[0]=renddesc.get_tl()[0];x<surfacew;x++,pen.inc_x(),point[0]+=1.0/pw)
-				{
-					tmp=transform_forward(point);
-					const float z(transform_backward_z(tmp));
-					if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-					{
-						csurface[y][x]=Color::alpha();
-						continue;
-					}
-					
-					u=(tmp[0]-tl[0])*src_pw;
-					v=(tmp[1]-tl[1])*src_ph;
-					
-					if(u<0 || v<0 || u>=sourcew || v>=sourceh || isnan(u) || isnan(v))
-						csurface[y][x]=context.get_cairocolor(tmp);
-					else
-						csurface[y][x]=csource[floor_to_int(v)][floor_to_int(u)];
-				}
-				if((y&31)==0 && cb)
-				{
-					if(!stagetwo.amount_complete(y,surfaceh))
-						return false;
-				}
-			}
-		}
 	
 #endif
 	
