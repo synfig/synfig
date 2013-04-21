@@ -354,35 +354,27 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 	}
 	if (_vm.count("start-time"))
 	{
-		int seconds;
-		stringstream ss;
-		seconds = _vm["start-time"].as<int>();
-		ss << seconds;
-		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
+		string seconds;
+		seconds = _vm["start-time"].as<string>();
+		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("begin-time"))
 	{
-		int seconds;
-		stringstream ss;
-		seconds = _vm["begin-time"].as<int>();
-		ss << seconds;
-		desc.set_time_start(Time(ss.str().c_str(), desc.get_frame_rate()));
+		string seconds;
+		seconds = _vm["begin-time"].as<string>();
+		desc.set_time_start(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("end-time"))
 	{
-		int seconds;
-		stringstream ss;
-		seconds = _vm["end-time"].as<int>();
-		ss << seconds;
-		desc.set_time_end(Time(ss.str().c_str(), desc.get_frame_rate()));
+		string seconds;
+		seconds = _vm["end-time"].as<string>();
+		desc.set_time_end(Time(seconds.c_str(), desc.get_frame_rate()));
 	}
 	if (_vm.count("time"))
 	{
-		int seconds;
-		stringstream ss;
-		seconds = _vm["time"].as<int>();
-		ss << seconds;
-		desc.set_time(Time(ss.str().c_str(), desc.get_frame_rate()));
+		string seconds;
+		seconds = _vm["time"].as<string>();
+		desc.set_time(Time(seconds.c_str(), desc.get_frame_rate()));
 
 		VERBOSE_OUT(1) << _("Rendering frame at ")
 					   << desc.get_time_start().get_string(desc.get_frame_rate())

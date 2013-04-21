@@ -150,11 +150,11 @@ int main(int ac, char* av[])
 		named_type<string>* canvas_arg_desc = new named_type<string>("canvas-id");
 		named_type<string>* output_file_arg_desc = new named_type<string>("filename");
 		named_type<string>* input_file_arg_desc = new named_type<string>("filename");
-		named_type<int>* fps_arg_desc = new named_type<int>("NUM");
-		named_type<int>* time_arg_desc = new named_type<int>("seconds");
-		named_type<int>* begin_time_arg_desc = new named_type<int>("seconds");
-		named_type<int>* start_time_arg_desc = new named_type<int>("seconds");
-		named_type<int>* end_time_arg_desc = new named_type<int>("seconds");
+		named_type<float>* fps_arg_desc = new named_type<float>("NUM");
+		named_type<string>* time_arg_desc = new named_type<string>("seconds");
+		named_type<string>* begin_time_arg_desc = new named_type<string>("seconds");
+		named_type<string>* start_time_arg_desc = new named_type<string>("seconds");
+		named_type<string>* end_time_arg_desc = new named_type<string>("seconds");
 		named_type<int>* dpi_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_x_arg_desc = new named_type<int>("NUM");
 		named_type<int>* dpi_y_arg_desc = new named_type<int>("NUM");
