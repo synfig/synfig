@@ -441,11 +441,12 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 		}
 		else if(column==model.active.index())
 		{
+			
+			synfig::Keyframe keyframe((*row)[model.keyframe]);
+			
 			Glib::Value<bool> x;
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
-			synfig::Keyframe keyframe(*iter->iter);
-			keyframe.set_active(x.get());
 			
 			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
 

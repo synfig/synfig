@@ -153,14 +153,11 @@ Action::KeyframeToggl::perform()
 {
 	Action::Super::perform();
 	
-	if(keyframe.active())
-	{
-		keyframe.enable();
-	} else {
-		keyframe.disable();
-	}
+	keyframe.set_active(new_status);
 	
 	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
+
+	get_canvas()->keyframe_list().sync();
 
 	if(get_canvas_interface())
 	{
@@ -179,13 +176,12 @@ Action::KeyframeToggl::undo()
 	//catch(synfig::Exception::NotFound) { }
 
 	Action::Super::undo();
+	
+	keyframe.set_active(!new_status);
+	
+	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
 
-	if(keyframe.active())
-	{
-		keyframe.disable();
-	} else {
-		keyframe.enable();
-	}
+	get_canvas()->keyframe_list().sync();
 
 	if(get_canvas_interface())
 	{

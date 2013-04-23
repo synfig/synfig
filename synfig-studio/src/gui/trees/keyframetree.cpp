@@ -203,11 +203,9 @@ KeyframeTree::on_keyframe_toggle(const Glib::ustring& path_string)
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-	synfig::Keyframe keyframe(row[model.keyframe]);
-	keyframe.set_active(!keyframe.active());
-	row[model.active]=keyframe.active();
-	signal_edited()(keyframe);
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	bool active=static_cast<bool>(row[model.active]);
+	row[model.active]=!active;
 }
 
 void
