@@ -55,6 +55,7 @@ else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
 BUILDROOT_VERSION=7
+BUILDROOT_LIBRARY_SET_ID=1
 MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
@@ -995,7 +996,12 @@ mkpackage()
 		else
 			SETARCH='linux64'
 		fi
+		
+		# If chroot version changed -> reset existing buildroot
 		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id` != "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
+			echo "======================= !!! ======================"
+			echo "   Buildroot version changed. Force update..."
+			echo "======================= !!! ======================"
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
@@ -1004,7 +1010,25 @@ mkpackage()
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
+		
+		# If library set changed -> remove all existing libraries to force rebuild
+		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id` != "${BUILDROOT_LIBRARY_SET_ID}" ]]; then
+			echo "======================= !!! ======================"
+			echo "   Library set is changed. Force cleanup..."
+			echo "======================= !!! ======================"
+			sleep 5
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/usr/local ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local
+			fi
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/$PREFIX ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX
+			fi
+		fi
+		#set library set ID
+		echo "${BUILDROOT_LIBRARY_SET_ID}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id
+		
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
+		
 		#resolv.conf
 		cp -f /etc/resolv.conf $PACKAGES_BUILDROOT.$ARCH/etc/resolv.conf
 		#keep proxy settings
