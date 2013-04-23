@@ -202,11 +202,28 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_status_t status;
 			status=cairo_pattern_get_surface(pattern, &source);
 			if(status)
+			{
+				// return gracefully
+				synfig::error("%s", cairo_status_to_string(status));
+				cairo_pattern_destroy(pattern);
 				return;
+			}
 			CairoSurface csource(source);
 			CairoSurface cdest(cairo_get_target(cr));
-			assert(cdest.map_cairo_image());
-			assert(csource.map_cairo_image());
+
+			if(!cdest.map_cairo_image())
+			{
+					// return gracefully
+					cairo_pattern_destroy(pattern);
+					return;
+			}
+			if(!csource.map_cairo_image())
+			   {
+				   // return gracefully
+				   cairo_pattern_destroy(pattern);
+				   cdest.unmap_cairo_image();
+				   return;
+			   }
 			
 			double x1, y1, x2, y2, x0, y0;
 			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
@@ -219,7 +236,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			int h=csource.get_h();
 			int h0=(int)y0;
 			int w0=(int)x0;
-									
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
@@ -258,11 +274,28 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_status_t status;
 			status=cairo_pattern_get_surface(pattern, &source);
 			if(status)
+			{
+				// return gracefully
+				synfig::error("%s", cairo_status_to_string(status));
+				cairo_pattern_destroy(pattern);
 				return;
+			}
 			CairoSurface csource(source);
 			CairoSurface cdest(cairo_get_target(cr));
-			assert(cdest.map_cairo_image());
-			assert(csource.map_cairo_image());
+			
+			if(!cdest.map_cairo_image())
+			{
+				// return gracefully
+				cairo_pattern_destroy(pattern);
+				return;
+			}
+			if(!csource.map_cairo_image())
+			{
+				// return gracefully
+				cairo_pattern_destroy(pattern);
+				cdest.unmap_cairo_image();
+				return;
+			}
 			
 			double x1, y1, x2, y2, x0, y0;
 			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
@@ -300,13 +333,27 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			status=cairo_pattern_get_surface(pattern, &source);
 			if(status)
 			{
-				synfig::info("%s", cairo_status_to_string(status));
+				// return gracefully
+				synfig::error("%s", cairo_status_to_string(status));
+				cairo_pattern_destroy(pattern);
 				return;
 			}
 			CairoSurface csource(source);
 			CairoSurface cdest(cairo_get_target(cr));
-			assert(cdest.map_cairo_image());
-			assert(csource.map_cairo_image());
+			
+			if(!cdest.map_cairo_image())
+			{
+				// return gracefully
+				cairo_pattern_destroy(pattern);
+				return;
+			}
+			if(!csource.map_cairo_image())
+			{
+				// return gracefully
+				cairo_pattern_destroy(pattern);
+				cdest.unmap_cairo_image();
+				return;
+			}
 			
 			double x1, y1, x2, y2, x0, y0;
 			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
