@@ -931,7 +931,7 @@ mk()
 {
 	if [[ WORKDIR_IS_REPO == 0 ]]; then
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
-		git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig ${SYNFIG_REPO_DIR}
+		git clone git://github.com/synfig/synfig.git ${SYNFIG_REPO_DIR}
 	fi
 
 	mkETL
@@ -1047,9 +1047,9 @@ mkpackage()
 		if ! [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				git clone $SYNFIG_REPO_DIR $PACKAGES_BUILDROOT/synfig.git
-				sed -i 's|url = .*|url = git://synfig.git.sourceforge.net/gitroot/synfig/synfig|' $PACKAGES_BUILDROOT/synfig.git/.git/config
+				sed -i 's|url = .*|url = git://github.com/synfig/synfig.git|' $PACKAGES_BUILDROOT/synfig.git/.git/config
 			else
-				git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig $PACKAGES_BUILDROOT/synfig.git
+				git clone git://github.com/synfig/synfig.git $PACKAGES_BUILDROOT/synfig.git
 			fi
 		fi
 		pushd $PACKAGES_BUILDROOT
