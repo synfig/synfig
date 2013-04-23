@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2012 Konstantin Dmitriev
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -76,11 +76,11 @@ Action::KeyframeToggl::get_local_name()const
 	if(keyframe.get_time()==(Time::begin()-1))
 		return _("Activate Keyframe");
 
-	return strprintf("%s at %d",
+	return strprintf("%s at %s",
 					 new_status
 					 ? _("Activate Keyframe")
 					 : _("Deactivate Keyframe"),
-					 keyframe.get_time());
+					 keyframe.get_time().get_string(get_canvas()->rend_desc().get_frame_rate(), Time::FORMAT_FRAMES).c_str());
 }
 
 Action::ParamVocab
