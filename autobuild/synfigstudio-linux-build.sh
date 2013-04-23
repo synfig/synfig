@@ -541,7 +541,7 @@ mkpack()
 	mkdir -p $TBZPREFIX
 	cp -r  ${PREFIX}/* $TBZPREFIX
 
-	if [[ $DEBUG == '--enable-debug' ]]; then
+	if [[ $DEBUG != '' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \"\$@\" || "
 	else
 		GDB=''
@@ -559,7 +559,7 @@ export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
 
 $GDB\$PREFIX/bin/synfig "\$@"
 EOF
-	if [[ $DEBUG == '--enable-debug' ]]; then
+	if [[ $DEBUG != '' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfigstudio \$@ || "
 	else
 		GDB=''
@@ -848,7 +848,7 @@ initialize()
 	echo "Done."
 
 	if [[ $DEBUG == 1 ]]; then
-		DEBUG='--enable-debug'
+		DEBUG='--enable-debug --enable-optimization=0'
 	else
 		DEBUG=''
 	fi
