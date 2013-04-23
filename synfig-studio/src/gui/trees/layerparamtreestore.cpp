@@ -568,7 +568,7 @@ LayerParamTreeStore::on_value_node_changed(synfig::ValueNode::Handle /*value_nod
 void
 LayerParamTreeStore::on_keyframe_changed(synfig::Keyframe /*keyframe*/)
 {
-	refresh();
+	queue_refresh();
 }
 
 void

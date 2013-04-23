@@ -414,7 +414,7 @@ void
 Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h)
 {
 	canvas_interface_=h;
-	// Store the values used fomr the canvas interface.
+	// Store the values used from the canvas interface.
 	if (canvas_interface_)
 	{
 		set_fps(canvas_interface_->get_canvas()->rend_desc().get_frame_rate());
