@@ -188,7 +188,7 @@ public:
 	synfig::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
 	synfig::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
 
-	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe, bool use_old_keyframe_list);
+	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe);
 
 	/*
  -- ** -- S T A T I C  M E T H O D S ------------------------------------------
