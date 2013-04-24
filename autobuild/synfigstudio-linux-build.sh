@@ -110,7 +110,7 @@ fi
 
 mklibsigcpp()
 {
-if ! pkg-config sigc\+\+-2.0 --exact-version=${SIGCPP}  --print-errors; then
+if ! pkg-config sigc\+\+-2.0 --exact-version=${LIBSIGCPP}  --print-errors; then
 	pushd /source
 	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
