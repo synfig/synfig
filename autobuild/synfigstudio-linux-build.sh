@@ -55,7 +55,7 @@ else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
 BUILDROOT_VERSION=7
-BUILDROOT_LIBRARY_SET_ID=1
+BUILDROOT_LIBRARY_SET_ID=2
 MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
@@ -69,6 +69,7 @@ BREED=
 
 export EMAIL='root@synfig.org'
 
+# Bundled libraries
 LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
@@ -81,12 +82,13 @@ GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.18.2 #!!! >= 2.18.0
+CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 
+# System libraries
 ATK=1.25.2
 GLIB=2.20.5
 GTK=2.16.6
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
-CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 PANGO=1.24.5
 FONTCONFIG=2.5.0
 BOOST=1_53_0
@@ -271,7 +273,7 @@ if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
 	[ ! -d cairo-${CAIRO} ] && tar -xzf cairo-${CAIRO}.tar.gz
 	cd cairo-${CAIRO}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure \
+	./configure --prefix=${PREFIX} \
 		--disable-static 	\
 		--enable-warnings 	\
 		--enable-xlib 		\
@@ -604,6 +606,7 @@ EOF
 
 	rm -f $TBZPREFIX/lib/*.la
 	rm -f $TBZPREFIX/lib/*.a
+	rm -f $TBZPREFIX/lib/cairo/*.la
 	rm -rf $TBZPREFIX/include
 	rm -rf $TBZPREFIX/lib/gdkmm-2.4
 	rm -rf $TBZPREFIX/lib/libxml++-2.6
@@ -614,6 +617,7 @@ EOF
 	rm -rf $TBZPREFIX/lib/sigc++-2.0
 	rm -rf $TBZPREFIX/share/doc
 	rm -rf $TBZPREFIX/share/devhelp
+	rm -rf $TBZPREFIX/share/gtk-doc
 	rm -rf $TBZPREFIX/share/aclocal
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
@@ -692,6 +696,7 @@ mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 #cleaning devel stuff
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.la
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.a
+rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/cairo/*.la
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/include
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
@@ -703,6 +708,7 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pkgconfig
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/sigc++-2.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/doc
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/devhelp
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/gtk-doc
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/aclocal
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/ImageMagick-6.4.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
