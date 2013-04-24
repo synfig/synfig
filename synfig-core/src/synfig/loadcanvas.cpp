@@ -9,7 +9,8 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
 **	Copyright (c) 2009 Nikita Kitaev
-**  Copyright (c) 2011, 2012 Carlos López
+**	Copyright (c) 2011, 2012 Carlos López
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
