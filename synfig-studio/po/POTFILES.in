@@ -1,5 +1,7 @@
 synfigstudio.desktop.in
-plugins/add-simple-skeleton/plugin.xml.in
+synfigstudio-thumbnailer.schemas.in
+synfigstudio.keys.in
+plugins/add-skeleton-simple/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
@@ -153,6 +155,7 @@ src/gui/trees/layertree.cpp
 src/gui/trees/layertree.h
 src/gui/trees/layertreestore.cpp
 src/gui/trees/layertreestore.h
+src/gui/trees/metadatatree.cpp
 src/gui/trees/metadatatreestore.cpp
 src/gui/trees/metadatatreestore.h
 src/gui/widgets/widget_canvaschooser.cpp
@@ -217,6 +220,7 @@ src/gui/autorecover.cpp
 src/gui/autorecover.h
 src/gui/canvasview.cpp
 src/gui/canvasview.h
+src/gui/compview.cpp
 src/gui/compview.h
 src/gui/devicetracker.cpp
 src/gui/devicetracker.h
@@ -291,6 +295,8 @@ src/synfigapp/actions/canvasdescriptionset.cpp
 src/synfigapp/actions/canvasdescriptionset.h
 src/synfigapp/actions/canvasidset.cpp
 src/synfigapp/actions/canvasidset.h
+src/synfigapp/actions/canvasmetadataerase.cpp
+src/synfigapp/actions/canvasmetadataset.cpp
 src/synfigapp/actions/canvasnameset.cpp
 src/synfigapp/actions/canvasnameset.h
 src/synfigapp/actions/canvasremove.cpp
@@ -407,6 +413,8 @@ src/synfigapp/actions/valuenodereplace.cpp
 src/synfigapp/actions/valuenodereplace.h
 src/synfigapp/actions/waypointadd.cpp
 src/synfigapp/actions/waypointadd.h
+src/synfigapp/actions/waypointconnect.cpp
+src/synfigapp/actions/waypointdisconnect.cpp
 src/synfigapp/actions/waypointremove.cpp
 src/synfigapp/actions/waypointremove.h
 src/synfigapp/actions/waypointset.cpp
