@@ -55,6 +55,7 @@ else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
 BUILDROOT_VERSION=7
+BUILDROOT_LIBRARY_SET_ID=2
 MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
@@ -68,6 +69,7 @@ BREED=
 
 export EMAIL='root@synfig.org'
 
+# Bundled libraries
 LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
@@ -80,14 +82,16 @@ GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.18.2 #!!! >= 2.18.0
+CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 
+# System libraries
 ATK=1.25.2
 GLIB=2.20.5
 GTK=2.16.6
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
-CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 PANGO=1.24.5
 FONTCONFIG=2.5.0
+BOOST=1_53_0
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -109,7 +113,7 @@ fi
 
 mklibsigcpp()
 {
-if ! pkg-config sigc\+\+-2.0 --exact-version=${SIGCPP}  --print-errors; then
+if ! pkg-config sigc\+\+-2.0 --exact-version=${LIBSIGCPP}  --print-errors; then
 	pushd /source
 	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
@@ -269,7 +273,7 @@ if ! pkg-config cairo --exact-version=${CAIRO}  --print-errors; then
 	[ ! -d cairo-${CAIRO} ] && tar -xzf cairo-${CAIRO}.tar.gz
 	cd cairo-${CAIRO}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
-	./configure \
+	./configure --prefix=${PREFIX} \
 		--disable-static 	\
 		--enable-warnings 	\
 		--enable-xlib 		\
@@ -431,6 +435,21 @@ mkgit()
 	popd
 }
 
+mkboost()
+{
+if ! cat /usr/local/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${BOOST%_*}\""; then
+	pushd /source
+	[ ! -d boost-${BOOST} ] && tar -xjf boost_${BOOST}.tar.bz2
+	cd boost_${BOOST}
+	./bootstrap.sh
+	./b2 || true
+	./b2 install || true
+	cd ..
+	popd
+fi
+cp /usr/local/lib/libboost_program_options.so.1.53.0 $PREFIX/lib/
+}
+
 mkETL()
 {
 if [ -f ${SYNFIG_REPO_DIR}/ETL/trunk/configure.ac ]; then
@@ -541,7 +560,7 @@ mkpack()
 	mkdir -p $TBZPREFIX
 	cp -r  ${PREFIX}/* $TBZPREFIX
 
-	if [[ $DEBUG == '--enable-debug' ]]; then
+	if [[ $DEBUG != '' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfig \"\$@\" || "
 	else
 		GDB=''
@@ -559,7 +578,7 @@ export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
 
 $GDB\$PREFIX/bin/synfig "\$@"
 EOF
-	if [[ $DEBUG == '--enable-debug' ]]; then
+	if [[ $DEBUG != '' ]]; then
 		GDB="which gdb && xterm -e  gdb -ex run -ex quit \$PREFIX/bin/synfigstudio \$@ || "
 	else
 		GDB=''
@@ -587,6 +606,7 @@ EOF
 
 	rm -f $TBZPREFIX/lib/*.la
 	rm -f $TBZPREFIX/lib/*.a
+	rm -f $TBZPREFIX/lib/cairo/*.la
 	rm -rf $TBZPREFIX/include
 	rm -rf $TBZPREFIX/lib/gdkmm-2.4
 	rm -rf $TBZPREFIX/lib/libxml++-2.6
@@ -597,6 +617,7 @@ EOF
 	rm -rf $TBZPREFIX/lib/sigc++-2.0
 	rm -rf $TBZPREFIX/share/doc
 	rm -rf $TBZPREFIX/share/devhelp
+	rm -rf $TBZPREFIX/share/gtk-doc
 	rm -rf $TBZPREFIX/share/aclocal
 	rm -rf $TBZPREFIX/share/ImageMagick-6.4.0
 	rm -rf $TBZPREFIX/share/man
@@ -675,6 +696,7 @@ mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 #cleaning devel stuff
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.la
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.a
+rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/cairo/*.la
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/include
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
@@ -686,6 +708,7 @@ rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pkgconfig
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/sigc++-2.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/doc
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/devhelp
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/gtk-doc
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/aclocal
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/ImageMagick-6.4.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/share/man
@@ -784,6 +807,7 @@ initialize()
 				automake \
 				libtool \
 				libtool-ltdl-devel \
+				boost-program-options \
 				cvs \
 				shared-mime-info \
 				OpenEXR-devel \
@@ -803,7 +827,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-program-options shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -821,7 +845,7 @@ initialize()
 				PKG_LIST="${PKG_LIST} debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev"
+			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libboost-program-options-dev"
 		fi
 		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
 			echo "Running apt-get (you need root privelegies to do that)..."
@@ -848,7 +872,7 @@ initialize()
 	echo "Done."
 
 	if [[ $DEBUG == 1 ]]; then
-		DEBUG='--enable-debug'
+		DEBUG='--enable-debug --enable-optimization=0'
 	else
 		DEBUG=''
 	fi
@@ -930,7 +954,7 @@ mk()
 {
 	if [[ WORKDIR_IS_REPO == 0 ]]; then
 		SYNFIG_REPO_DIR=`pwd`/synfig.git/
-		git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig ${SYNFIG_REPO_DIR}
+		git clone git://github.com/synfig/synfig.git ${SYNFIG_REPO_DIR}
 	fi
 
 	mkETL
@@ -969,6 +993,7 @@ mkpackage()
 			mkglew
 		fi
 		mkimagemagick
+		mkboost
 
 		#synfig-studio deps
 		mkcairomm
@@ -995,7 +1020,12 @@ mkpackage()
 		else
 			SETARCH='linux64'
 		fi
+		
+		# If chroot version changed -> reset existing buildroot
 		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id` != "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
+			echo "======================= !!! ======================"
+			echo "   Buildroot version changed. Force update..."
+			echo "======================= !!! ======================"
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
@@ -1004,7 +1034,25 @@ mkpackage()
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
+		
+		# If library set changed -> remove all existing libraries to force rebuild
+		if [[ `cat $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id` != "${BUILDROOT_LIBRARY_SET_ID}" ]]; then
+			echo "======================= !!! ======================"
+			echo "   Library set is changed. Force cleanup..."
+			echo "======================= !!! ======================"
+			sleep 5
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/usr/local ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local
+			fi
+			if [ -e $PACKAGES_BUILDROOT.$ARCH/$PREFIX ]; then
+				rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX
+			fi
+		fi
+		#set library set ID
+		echo "${BUILDROOT_LIBRARY_SET_ID}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id
+		
 		cp -f $0 $PACKAGES_BUILDROOT.$ARCH/build.sh
+		
 		#resolv.conf
 		cp -f /etc/resolv.conf $PACKAGES_BUILDROOT.$ARCH/etc/resolv.conf
 		#keep proxy settings
@@ -1023,9 +1071,9 @@ mkpackage()
 		if ! [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				git clone $SYNFIG_REPO_DIR $PACKAGES_BUILDROOT/synfig.git
-				sed -i 's|url = .*|url = git://synfig.git.sourceforge.net/gitroot/synfig/synfig|' $PACKAGES_BUILDROOT/synfig.git/.git/config
+				sed -i 's|url = .*|url = git://github.com/synfig/synfig.git|' $PACKAGES_BUILDROOT/synfig.git/.git/config
 			else
-				git clone git://synfig.git.sourceforge.net/gitroot/synfig/synfig $PACKAGES_BUILDROOT/synfig.git
+				git clone git://github.com/synfig/synfig.git $PACKAGES_BUILDROOT/synfig.git
 			fi
 		fi
 		pushd $PACKAGES_BUILDROOT
