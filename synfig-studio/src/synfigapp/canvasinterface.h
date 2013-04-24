@@ -91,6 +91,8 @@ private:
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_added_;
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_removed_;
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_changed_;
+	
+	sigc::signal<void> signal_refresh_;
 
 	sigc::signal<void> signal_id_changed_;
 
@@ -177,6 +179,8 @@ public:	// Signal Interface
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_removed() { return signal_keyframe_removed_; }
 
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_changed() { return signal_keyframe_changed_; }
+	
+	sigc::signal<void>& signal_refresh() { return signal_refresh_; }
 
 public:
 
