@@ -89,6 +89,7 @@ PIXMAN=0.22.0		# required by CAIRO 1.12.0
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 PANGO=1.24.5
 FONTCONFIG=2.5.0
+BOOST=1_53_0
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -430,6 +431,21 @@ mkgit()
 	make install
 	cd ..
 	popd
+}
+
+mkboost()
+{
+if ! cat /usr/local/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${BOOST%_*}\""; then
+	pushd /source
+	[ ! -d boost-${BOOST} ] && tar -xjf boost_${BOOST}.tar.bz2
+	cd boost_${BOOST}
+	./bootstrap.sh
+	./b2 || true
+	./b2 install || true
+	cd ..
+	popd
+fi
+cp /usr/local/lib/libboost_program_options.so.1.53.0 $PREFIX/lib/
 }
 
 mkETL()
@@ -785,6 +801,7 @@ initialize()
 				automake \
 				libtool \
 				libtool-ltdl-devel \
+				boost-program-options \
 				cvs \
 				shared-mime-info \
 				OpenEXR-devel \
@@ -804,7 +821,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-program-options shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -822,7 +839,7 @@ initialize()
 				PKG_LIST="${PKG_LIST} debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev"
+			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libboost-program-options-dev"
 		fi
 		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
 			echo "Running apt-get (you need root privelegies to do that)..."
@@ -970,6 +987,7 @@ mkpackage()
 			mkglew
 		fi
 		mkimagemagick
+		mkboost
 
 		#synfig-studio deps
 		mkcairomm
