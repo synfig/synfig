@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -437,6 +438,26 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 
 			canvas_interface()->get_instance()->perform_action(action);
 		}
+		else if(column==model.active.index())
+		{
+			
+			synfig::Keyframe keyframe((*row)[model.keyframe]);
+			
+			Glib::Value<bool> x;
+			g_value_init(x.gobj(),model.active.type());
+			g_value_copy(value.gobj(),x.gobj());
+			
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+
+			if(!action)
+				return;
+			action->set_param("canvas",canvas_interface()->get_canvas());
+			action->set_param("canvas_interface",canvas_interface());
+			action->set_param("keyframe",keyframe);
+			action->set_param("new_status",bool(x.get()));
+
+			canvas_interface()->get_instance()->perform_action(action);
+		}
 		else if(column==model.keyframe.index())
 		{
 			g_warning("KeyframeTreeStore::set_value_impl: This column is read-only");
@@ -780,6 +801,16 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 		g_value_copy(x.gobj(),value.gobj());
 		return;
 	}
+	case 4:		// Active
+	{
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(iter->iter->active());
+
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
 	default:
 		break;
 	}
@@ -839,10 +870,19 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	{
 		if(1)
 		{
+			// Hack: (begin) the keyframe should exist in keyframe_list,
+			//     otherwise find_row() function will fail.
+			//     Example: try removing keyframe from composition with only 1 kf
+			// Note: To avoid the hack the KeyframeTreeStore probably should be re-implemented as ListStore --KD
+			canvas_interface()->get_canvas()->keyframe_list().add(keyframe);
+			
 			Gtk::TreeRow row(find_row(keyframe));
 			dump_iterator(row,"remove_keyframe,row");
 			Gtk::TreePath path(get_path(row));
 			row_deleted(path);
+			
+			// Hack: (end) remove added keyframe
+			canvas_interface()->get_canvas()->keyframe_list().erase(keyframe);
 
 			old_keyframe_list.erase(keyframe);
 		}
@@ -863,7 +903,7 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	try
 	{
 		Gtk::TreeRow row(find_row(keyframe));
-
+		
 		unsigned int new_index(get_index_from_model_iter(row));
 		unsigned int old_index(0);
 		synfig::KeyframeList::iterator iter;
@@ -886,13 +926,21 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 
 				rows_reordered (Path(), iterator(), &new_order[0]);
 			}
-			old_keyframe_list=get_canvas()->keyframe_list();
-
-			row=find_row(keyframe);
+			
 		}
+		
+		old_keyframe_list=get_canvas()->keyframe_list();
+
+		row=find_row(keyframe);
 
 		dump_iterator(row,"change_keyframe,row");
 		row_changed(get_path(row),row);
+
+		// Previous row should be updated too (length value)
+		synfig::Keyframe keyframe_prev = *(get_canvas()->keyframe_list().find_prev(keyframe.get_time(),false));
+		Gtk::TreeRow row_prev(find_row(keyframe_prev));
+		dump_iterator(row_prev,"change_keyframe,row_prev");
+		row_changed(get_path(row_prev),row_prev);
 	}
 	catch(std::exception x)
 	{

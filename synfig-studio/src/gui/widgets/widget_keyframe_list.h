@@ -132,7 +132,7 @@ public:
 
 /* ======================= EVENTS HANDLERS ===========================*/
 	//!Redraw event. Should draw all the keyframes +  the selected + the dragged
-	bool redraw(GdkEventExpose*bleh=NULL);
+	bool redraw();
 
 	//!Mouse event handler.
 	bool on_event(GdkEvent *event);

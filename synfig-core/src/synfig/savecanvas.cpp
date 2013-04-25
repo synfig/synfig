@@ -92,6 +92,7 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
  	root->set_attribute("time",kf.get_time().get_string(fps));
 	if(!kf.get_description().empty())
 		root->set_child_text(kf.get_description());
+	root->set_attribute("active", kf.active()?"true":"false");
 	return root;
 }
 

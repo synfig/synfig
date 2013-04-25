@@ -105,6 +105,8 @@ private:
 
 private:
 
+	void on_keyframe_toggle(const Glib::ustring& path_string);
+
 	void on_edited_time(const Glib::ustring&path_string,synfig::Time time);
 
 	void on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time);

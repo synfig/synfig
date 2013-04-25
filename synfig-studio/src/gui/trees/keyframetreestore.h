@@ -66,6 +66,7 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> description;
 		Gtk::TreeModelColumn<synfig::Keyframe> keyframe;
 		Gtk::TreeModelColumn<synfig::Time> time_delta;
+		Gtk::TreeModelColumn<bool> active;
 
 		Model()
 		{
@@ -73,6 +74,7 @@ public:
 			add(description);
 			add(keyframe);
 			add(time_delta);
+			add(active);
 		}
 	};
 
