@@ -873,6 +873,7 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 			// Hack: (begin) the keyframe should exist in keyframe_list,
 			//     otherwise find_row() function will fail.
 			//     Example: try removing keyframe from composition with only 1 kf
+			// Note: To avoid the hack the KeyframeTreeStore probably should be re-implemented as ListStore --KD
 			canvas_interface()->get_canvas()->keyframe_list().add(keyframe);
 			
 			Gtk::TreeRow row(find_row(keyframe));
