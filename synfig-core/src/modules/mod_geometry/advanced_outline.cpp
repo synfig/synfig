@@ -130,7 +130,7 @@ Advanced_Outline::sync()
 	clear();
 	if (!bline_.get_list().size())
 	{
-		synfig::warning(string("Advanced_Outline::sync():")+N_("No vertices in bline " + string("\"") + get_description() + string("\"")));
+		synfig::warning(string("Advanced_Outline::sync():")+N_("No vertices in spline " + string("\"") + get_description() + string("\"")));
 		return;
 	}
 	try
@@ -1136,7 +1136,7 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc(ValueBase(),"start_tip")
 		.set_local_name(_("Tip Type at Start"))
-		.set_description(_("Defines the Tip type of the first bline point when bline is unlooped"))
+		.set_description(_("Defines the Tip type of the first spline point when spline is unlooped"))
 		.set_hint("enum")
 		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
@@ -1145,7 +1145,7 @@ Advanced_Outline::get_param_vocab()const
 		);
 	ret.push_back(ParamDesc(ValueBase(),"end_tip")
 		.set_local_name(_("Tip Type at End"))
-		.set_description(_("Defines the Tip type of the last bline point when bline is unlooped"))
+		.set_description(_("Defines the Tip type of the last spline point when spline is unlooped"))
 		.set_hint("enum")
 		.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
@@ -1166,7 +1166,7 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When true, widthpoints positions are bline length based"))
+		.set_description(_("When true, widthpoints positions are spline length based"))
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))

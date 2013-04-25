@@ -294,12 +294,12 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(rounded_interpolation,"action_rounded_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Rounded"));
 	INIT_STOCK_ICON(squared_interpolation,"action_squared_interpolation_icon."IMAGE_EXT,_("Set Interpolation to Squared"));
 
-	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position ducks"));
-	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex ducks"));
-	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toggle tangent ducks"));
-	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toggle radius ducks"));
-	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toggle width ducks"));
-	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toggle angle ducks"));
+	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position handles"));
+	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex handles"));
+	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toggle tangent handles"));
+	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toggle radius handles"));
+	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toggle width handles"));
+	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toggle angle handles"));
 
 	INIT_STOCK_ICON(toggle_show_grid,"show_grid_icon."IMAGE_EXT,_("Toggle show grid"));
 	INIT_STOCK_ICON(toggle_snap_grid,"snap_grid_icon."IMAGE_EXT,_("Toggle snap grid"));

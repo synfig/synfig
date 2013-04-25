@@ -534,7 +534,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	case ValueBase::TYPE_WIDTHPOINT:
 		ret.push_back(ParamDesc(ValueBase(),"position")
 			.set_local_name(_("Position"))
-			.set_description(_("The [0,1] position of the Width Point over the BLine"))
+			.set_description(_("The [0,1] position of the Width Point over the Spline"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
@@ -562,17 +562,17 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"lower_bound")
 			.set_local_name(_("Lower Boundary"))
-			.set_description(_("Defines the position at start of the BLine"))
+			.set_description(_("Defines the position at start of the Spline"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"upper_bound")
 			.set_local_name(_("Upper Boundary"))
-			.set_description(_("Defines the position at end of the BLine"))
+			.set_description(_("Defines the position at end of the Spline"))
 		);
 		return ret;
 	case ValueBase::TYPE_DASHITEM:
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
-			.set_description(_("The offset length of the Dash Item over the BLine"))
+			.set_description(_("The offset length of the Dash Item over the Spline"))
 			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"length")

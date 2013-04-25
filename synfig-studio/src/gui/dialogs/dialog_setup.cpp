@@ -82,7 +82,7 @@ Dialog_Setup::Dialog_Setup():
 #ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
 #endif
-	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
+	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	adj_pref_x_size(480,1,10000,1,10,0),
 	adj_pref_y_size(270,1,10000,1,10,0),

@@ -458,7 +458,7 @@ Plant::get_param_vocab()const
 
 	ret.push_back(ParamDesc("sprouts")
 		.set_local_name(_("Sprouts"))
-		.set_description(_("Number of places that growth occurs on each bline section"))
+		.set_description(_("Number of places that growth occurs on each spline section"))
 	);
 
 	ret.push_back(ParamDesc("random_factor")
@@ -473,7 +473,7 @@ Plant::get_param_vocab()const
 
 	ret.push_back(ParamDesc("use_width")
 		.set_local_name(_("Use Width"))
-		.set_description(_("Scale the velocity by the bline's width"))
+		.set_description(_("Scale the velocity by the spline's width"))
 	);
 
 	return ret;
