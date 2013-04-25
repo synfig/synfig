@@ -107,7 +107,7 @@ Action::CanvasRemove::perform()
 		throw Error(_("You cannot remove the root canvas!"));
 
 	if(get_canvas()->is_inline())
-		throw Error(_("You cannot remove an inline canvas!"));
+		throw Error(_("You cannot remove an canvas from a Group!"));
 
 	parent_canvas=get_canvas()->parent();
 	canvas_id=get_canvas()->get_id();

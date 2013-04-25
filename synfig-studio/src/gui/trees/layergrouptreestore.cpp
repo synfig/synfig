@@ -560,7 +560,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 	//synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
 	//synfig::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
 	//synfig::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	synfigapp::Action::PassiveGrouper passive_grouper(canvas_interface()->get_instance().get(),_("Regroup"));
+	synfigapp::Action::PassiveGrouper passive_grouper(canvas_interface()->get_instance().get(),_("Reset"));
 
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{

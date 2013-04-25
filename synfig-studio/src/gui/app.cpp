@@ -895,7 +895,7 @@ init_ui_manager()
 	DEFINE_ACTION("seek-begin", _("Seek to Begin"));
 	DEFINE_ACTION("seek-end", _("Seek to End"));
 
-	DEFINE_ACTION("action-group_add", _("Add group"));
+	DEFINE_ACTION("action-group_add", _("Add set"));
 
 	DEFINE_ACTION("canvas-new", _("New Canvas"));
 
@@ -1322,7 +1322,7 @@ App::App(int *argc, char ***argv):
 		dock_layers=new studio::Dock_Layers();
 		dock_manager->register_dockable(*dock_layers);
 
-		studio_init_cb.task(_("Init Params..."));
+		studio_init_cb.task(_("Init Parameters..."));
 		dock_params=new studio::Dock_Params();
 		dock_manager->register_dockable(*dock_params);
 
@@ -1330,7 +1330,7 @@ App::App(int *argc, char ***argv):
 		dock_meta_data=new studio::Dock_MetaData();
 		dock_manager->register_dockable(*dock_meta_data);
 
-		studio_init_cb.task(_("Init Children..."));
+		studio_init_cb.task(_("Init Library..."));
 		dock_children=new studio::Dock_Children();
 		dock_manager->register_dockable(*dock_children);
 
@@ -1350,7 +1350,7 @@ App::App(int *argc, char ***argv):
 		dock_curves = new studio::Dock_Curves();
 		dock_manager->register_dockable(*dock_curves);
 
-		studio_init_cb.task(_("Init Layer Groups..."));
+		studio_init_cb.task(_("Init Layer Sets..."));
 		dock_layer_groups = new studio::Dock_LayerGroups();
 		dock_manager->register_dockable(*dock_layer_groups);
 

@@ -2467,7 +2467,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			if(child->get_name()=="defs")
 			{
 				if(canvas->is_inline())
-					error(child,_("Inline canvas cannot have a <defs> section"));
+					error(child,_("Group canvases cannot have a <defs> section"));
 				parse_canvas_defs(child, canvas);
 			}
 			else
@@ -2475,7 +2475,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			{
 				if(canvas->is_inline())
 				{
-					warning(child,_("Inline canvas cannot have keyframes"));
+					warning(child,_("Group canvases cannot have keyframes"));
 					continue;
 				}
 
@@ -2487,7 +2487,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			{
 				if(canvas->is_inline())
 				{
-					warning(child,_("Inline canvases cannot have metadata"));
+					warning(child,_("Group canvases cannot have metadata"));
 					continue;
 				}
 

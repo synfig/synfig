@@ -120,7 +120,7 @@ Action::GroupRename::perform()
 {
 	if(get_canvas()->get_groups().count(new_group_name)!=0)
 	{
-		throw Error(_("A group with the name \"%s\" already exists!"),new_group_name.c_str());
+		throw Error(_("A set with the name \"%s\" already exists!"),new_group_name.c_str());
 	}
 	get_canvas()->rename_group(old_group_name,new_group_name);
 }

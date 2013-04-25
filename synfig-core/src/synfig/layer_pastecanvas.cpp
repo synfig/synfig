@@ -75,7 +75,7 @@ public:
 
 SYNFIG_LAYER_INIT(Layer_PasteCanvas);
 SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas"); // todo: use paste_canvas
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,N_("Paste Canvas"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,N_("Group"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
@@ -135,7 +135,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("canvas")
 		.set_local_name(_("Canvas"))
-		.set_description(_("Canvas to paste"))
+		.set_description(_("Group content"))
 	);
 	ret.push_back(ParamDesc("zoom")
 		.set_local_name(_("Zoom"))

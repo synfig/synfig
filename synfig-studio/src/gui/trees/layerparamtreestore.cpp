@@ -238,7 +238,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 
 			if((bool)(*iter)[model.is_toplevel])
 			{
-				synfigapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Set Layer Params"));
+				synfigapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Set Layer Parameters"));
 
 				synfig::ParamDesc param_desc((*iter)[model.param_desc]);
 
