@@ -434,10 +434,11 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 				)
 			)
 		);
-		// The signal below is called after keyframe is removed
-		canvas_interface_->signal_refresh().connect(
+		canvas_interface_->signal_keyframe_removed().connect(
 			sigc::hide_return(
-				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
 			)
 		);
 	}

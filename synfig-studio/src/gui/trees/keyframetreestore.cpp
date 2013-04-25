@@ -870,10 +870,18 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	{
 		if(1)
 		{
+			// Hack: (begin) the keyframe should exist in keyframe_list,
+			//     otherwise find_row() function will fail.
+			//     Example: try removing keyframe from composition with only 1 kf
+			canvas_interface()->get_canvas()->keyframe_list().add(keyframe);
+			
 			Gtk::TreeRow row(find_row(keyframe));
 			dump_iterator(row,"remove_keyframe,row");
 			Gtk::TreePath path(get_path(row));
 			row_deleted(path);
+			
+			// Hack: (end) remove added keyframe
+			canvas_interface()->get_canvas()->keyframe_list().erase(keyframe);
 
 			old_keyframe_list.erase(keyframe);
 		}

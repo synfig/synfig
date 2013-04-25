@@ -129,19 +129,12 @@ Action::KeyframeAdd::perform()
 void
 Action::KeyframeAdd::undo()
 {
-	// We need to call this signal before removal, because otherwise we have 
-	// problem with updating the keyframes TreeView
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_keyframe_removed()(keyframe);
-	}
-	else synfig::warning("CanvasInterface not set on action");
 	
 	get_canvas()->keyframe_list().erase(keyframe);
 
 	if(get_canvas_interface())
 	{
-		get_canvas_interface()->signal_refresh()();
+		get_canvas_interface()->signal_keyframe_removed()(keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
 }
