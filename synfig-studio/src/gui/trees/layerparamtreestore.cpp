@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -91,6 +92,11 @@ LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInte
 
 	canvas_interface()->signal_value_node_child_added().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_child_added));
 	canvas_interface()->signal_value_node_child_removed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_child_removed));
+
+	// This is for updating timetrack when empty/disabled keyframe is moved/deleted
+	// Looks a bit hackish, but I don't know the other way to do that. --KD
+	canvas_interface()->signal_keyframe_changed().connect(sigc::hide_return(sigc::hide(sigc::mem_fun(*this,&studio::LayerParamTreeStore::queue_refresh))));
+	canvas_interface()->signal_keyframe_removed().connect(sigc::hide_return(sigc::hide(sigc::mem_fun(*this,&studio::LayerParamTreeStore::queue_refresh))));
 
 
 	layer_tree->get_selection()->signal_changed().connect(sigc::mem_fun(*this,&LayerParamTreeStore::queue_rebuild));

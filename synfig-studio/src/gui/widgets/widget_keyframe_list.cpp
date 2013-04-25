@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2009 Carlos López
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -67,7 +68,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;
 	set_size_request(-1,64);
 	//!This signal is called when the widget need to be redrawn
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw));
+	signal_expose_event().connect(sigc::hide(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw)));
 	//! The widget respond to mouse button press and release and to
 	//! left button motion
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
@@ -82,7 +83,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 }
 
 bool
-Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
+Widget_Keyframe_List::redraw()
 {
 
 	const int h(get_height());
@@ -323,7 +324,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			if(editable_)
 			{
 				synfig::Time prev_t,next_t;
-				kf_list_->find_prev_next(t, prev_t, next_t);
+				kf_list_->find_prev_next(t, prev_t, next_t, false);
 				if( (prev_t==Time::begin() 	&& 	next_t==Time::end())
 				||
 				((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
@@ -335,13 +336,13 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
-					set_selected_keyframe(*(kf_list_->find_prev(t)));
+					set_selected_keyframe(*(kf_list_->find_prev(t, false)));
 					queue_draw();
 					selected_=true;
 				}
 				else
 				{
-					set_selected_keyframe(*(kf_list_->find_next(t)));
+					set_selected_keyframe(*(kf_list_->find_next(t, false)));
 					queue_draw();
 					selected_=true;
 				}
@@ -414,11 +415,32 @@ void
 Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h)
 {
 	canvas_interface_=h;
-	// Store the values used fomr the canvas interface.
+	// Store the values used from the canvas interface.
 	if (canvas_interface_)
 	{
 		set_fps(canvas_interface_->get_canvas()->rend_desc().get_frame_rate());
 		set_kf_list(&canvas_interface_->get_canvas()->keyframe_list());
+		canvas_interface_->signal_keyframe_added().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
+		canvas_interface_->signal_keyframe_changed().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
+		canvas_interface_->signal_keyframe_removed().connect(
+			sigc::hide_return(
+				sigc::hide(
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+				)
+			)
+		);
 	}
 }
 

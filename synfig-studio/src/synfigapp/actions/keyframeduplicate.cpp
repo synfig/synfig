@@ -235,12 +235,12 @@ void
 Action::KeyframeDuplicate::undo()
 {
 	Action::Super::undo();
+	
+	get_canvas()->keyframe_list().erase(new_keyframe);
 
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_removed()(new_keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
-
-	get_canvas()->keyframe_list().erase(new_keyframe);
 }

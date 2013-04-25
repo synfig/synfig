@@ -9,7 +9,8 @@
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
 **	Copyright (c) 2009 Nikita Kitaev
-**  Copyright (c) 2011, 2012 Carlos López
+**	Copyright (c) 2011, 2012 Carlos López
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -239,13 +240,19 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 	Keyframe ret(Time(element->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 
-	if(element->get_children().empty())
-		return ret;
-
-	if(element->get_child_text()->get_content().empty())
-		return ret;
-
-	ret.set_description(element->get_child_text()->get_content());
+	if(!element->get_children().empty())
+		if(!element->get_child_text()->get_content().empty())
+			ret.set_description(element->get_child_text()->get_content());
+	
+	bool active=true;
+	if(element->get_attribute("active")) 
+	{
+		string val=element->get_attribute("active")->get_value();
+		if(val=="false" || val=="0")
+			active=false;
+	}
+	ret.set_active(active);
+		
 
 	return ret;
 }

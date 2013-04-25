@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -45,11 +46,16 @@ namespace synfig {
 //! \writeme
 class Keyframe :  public UniqueID
 {
-public:
+private:
 
 	Time time_;
 	String desc_;
 	GUID guid_;
+
+	/*! \c true if the keyframe is active, \c false if it is to be skipped (marker)
+	**	\see set_active(), enable(), disable, active()
+	*/
+	bool active_;
 
 public:
 
@@ -69,6 +75,20 @@ public:
 
 	const GUID& get_guid()const { return guid_; }
 	void set_guid(const GUID& x) { guid_=x; }
+
+	//! Enables the keframe (Making it \em active)
+	void enable() { set_active(true); }
+
+	//! Disables the keyframe  (Making it \em inactive)
+	/*! When keyframe is disabled, it will be acting as time marker. */
+	void disable() { set_active(false); }
+	
+	//! Sets the 'active' flag for the LaKeyframe to the state described by \a x
+	/*! When keyframe is disabled, it will be acting as time marker. */
+	void set_active(bool x);
+
+	//! Returns the status of the 'active' flag
+	bool active()const { return active_; }
 
 	using UniqueID::operator<;
 	using UniqueID::operator==;
@@ -102,16 +122,16 @@ public:
 	iterator find(const Time &x);
 
 	//! Finds the keyframe after that point in time
-	iterator find_next(const Time &x);
+	iterator find_next(const Time &x, bool ignore_disabled = true);
 
 	//! Finds the keyframe before that point in time
-	iterator find_prev(const Time &x);
+	iterator find_prev(const Time &x, bool ignore_disabled = true);
 
 	const_iterator find(const Time &x)const;
-	const_iterator find_next(const Time &x)const;
-	const_iterator find_prev(const Time &x)const;
+	const_iterator find_next(const Time &x, bool ignore_disabled = true)const;
+	const_iterator find_prev(const Time &x, bool ignore_disabled = true)const;
 
-	void find_prev_next(const Time& time, Time &prev, Time &next)const;
+	void find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled = true)const;
 
 	void insert_time(const Time& location, const Time& delta);
 

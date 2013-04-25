@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -55,13 +56,24 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 Keyframe::Keyframe():
-	time_(0)
+	time_(0),
+	active_(true)
 {
 }
 
 Keyframe::Keyframe(const Time &time):
-	time_(time)
+	time_(time),
+	active_(true)
 {
+}
+
+void
+Keyframe::set_active(bool x)
+{
+	if(active_!=x)
+	{
+		active_=x;
+	}
 }
 
 Keyframe::~Keyframe()
@@ -143,24 +155,20 @@ KeyframeList::find(const Time &x)
 }
 
 KeyframeList::iterator
-KeyframeList::find_next(const Time &x)
+KeyframeList::find_next(const Time &x, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
-	if(iter!=end())
+	while (iter!=end())
 	{
-		if(iter->get_time().is_more_than(x))
+		if 
+		(
+			iter->get_time().is_more_than(x)
+			&& 
+			( !ignore_disabled || iter->active() )
+		)
 			return iter;
 		++iter;
-		if(iter!=end())
-		{
-			if(iter->get_time().is_more_than(x))
-				return iter;
-/*			++iter;
-			if(iter!=end() && iter->get_time().is_more_than(x))
-				return iter;
-*/
-		}
 	}
 
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
@@ -168,15 +176,29 @@ KeyframeList::find_next(const Time &x)
 
 
 KeyframeList::iterator
-KeyframeList::find_prev(const Time &x)
+KeyframeList::find_prev(const Time &x, bool ignore_disabled)
 {
 	KeyframeList::iterator iter(binary_find(begin(),end(),x));
 
 	if(iter!=end())
 	{
-		if(iter->get_time()+Time::epsilon()<x)
-			return iter;
-		if(iter!=begin() && (--iter)->get_time()+Time::epsilon()<x)
+		while(iter!=begin())
+		{
+			if
+			( 
+				iter->get_time().is_less_than(x)
+				&&
+				( !ignore_disabled || iter->active() ) 
+			)
+				return iter;
+			--iter;
+		};
+		if
+		( 
+			iter->get_time().is_less_than(x)
+			&&
+			( !ignore_disabled || iter->active() ) 
+		)
 			return iter;
 	}
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
@@ -193,26 +215,26 @@ KeyframeList::find(const Time &x)const
 
 
 KeyframeList::const_iterator
-KeyframeList::find_next(const Time &x)const
+KeyframeList::find_next(const Time &x, bool ignore_disabled)const
 {
-	return const_cast<KeyframeList*>(this)->find_next(x);
+	return const_cast<KeyframeList*>(this)->find_next(x, ignore_disabled);
 
 }
 
 
 KeyframeList::const_iterator
-KeyframeList::find_prev(const Time &x)const
+KeyframeList::find_prev(const Time &x, bool ignore_disabled)const
 {
-	return const_cast<KeyframeList*>(this)->find_prev(x);
+	return const_cast<KeyframeList*>(this)->find_prev(x, ignore_disabled);
 
 }
 
 void
-KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next)const
+KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled)const
 {
-	try { prev=find_prev(time)->get_time(); }
+	try { prev=find_prev(time, ignore_disabled)->get_time(); }
 	catch(...) { prev=Time::begin(); }
-	try { next=find_next(time)->get_time(); }
+	try { next=find_next(time, ignore_disabled)->get_time(); }
 	catch(...) { next=Time::end(); }
 }
 

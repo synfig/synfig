@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -94,7 +95,9 @@ Action::KeyframeRemove::set_param(const synfig::String& name, const Action::Para
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
-
+		// For some reason the state of the keyframe is not always passed correctly
+		// Make sure to get it right:
+		keyframe.set_active(get_canvas()->keyframe_list().find(keyframe)->active());
 		return true;
 	}
 
@@ -121,7 +124,7 @@ Action::KeyframeRemove::prepare()
 	}
 
 
-	{
+	if (keyframe.active()){
 		std::vector<synfigapp::ValueDesc> value_desc_list;
 		get_canvas_interface()->find_important_value_descs(value_desc_list);
 		while(!value_desc_list.empty())
@@ -203,14 +206,14 @@ void
 Action::KeyframeRemove::perform()
 {
 	Action::Super::perform();
-
+	
+	get_canvas()->keyframe_list().erase(keyframe);
+	
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_removed()(keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
-
-	get_canvas()->keyframe_list().erase(keyframe);
 }
 
 void

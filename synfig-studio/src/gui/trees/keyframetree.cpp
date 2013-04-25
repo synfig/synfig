@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -58,6 +59,16 @@ KeyframeTree::KeyframeTree()
 {
 	const KeyframeTreeStore::Model model;
 
+	{	// --- O N / O F F ----------------------------------------------------
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
+
+		// Set up the on/off cell-renderer
+		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
+		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_keyframe_toggle));
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_active(), model.active);
+		append_column(*column);
+	}
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time")) );
 
@@ -186,6 +197,16 @@ KeyframeTree::set_editable(bool x)
 		cell_renderer_time_delta->property_editable()=false;
 		cell_renderer_description->property_editable()=false;
 	}
+}
+
+void
+KeyframeTree::on_keyframe_toggle(const Glib::ustring& path_string)
+{
+	Gtk::TreePath path(path_string);
+
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	bool active=static_cast<bool>(row[model.active]);
+	row[model.active]=!active;
 }
 
 void

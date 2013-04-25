@@ -94,6 +94,7 @@
 #include "actions/keyframeadd.h"
 #include "actions/keyframeset.h"
 #include "actions/keyframeremove.h"
+#include "actions/keyframetoggl.h"
 #include "actions/keyframeduplicate.h"
 #include "actions/keyframewaypointset.h"
 #include "actions/keyframesetdelta.h"
@@ -222,6 +223,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::KeyframeAdd);
 	ADD_ACTION(Action::KeyframeSet);
 	ADD_ACTION(Action::KeyframeRemove);
+	ADD_ACTION(Action::KeyframeToggl);
 	ADD_ACTION(Action::KeyframeDuplicate);
 	ADD_ACTION(Action::KeyframeWaypointSet);
 	ADD_ACTION(Action::KeyframeSetDelta);
