@@ -148,11 +148,6 @@ void studio::Widget_NavView::on_start_render()
 
 		if(studio::App::navigator_uses_cairo)
 		{
-			// First clear the surface
-			cairo_t* cr = cairo_create(cairo_surface);
-			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-			cairo_paint(cr);
-			cairo_destroy(cr);
 			// Create a cairo_image_target
 			etl::handle<Target_Cairo> targ = cairo_image_target(&cairo_surface);
 			// Fill the target with the proper information

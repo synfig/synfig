@@ -494,6 +494,7 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	{
 		cairo_t *cr=cairo_create(surface);
 		cairo_set_source_surface(cr, worksurface, -halfsizex+(origin_u<0?origin_u:0), -halfsizey+(origin_v<0?origin_v:0));
+		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 		cairo_paint(cr);
 		cairo_destroy(cr);
 	}
