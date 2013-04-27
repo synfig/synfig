@@ -411,6 +411,7 @@ public:
 	//! Linear sample for already "cooked" surfaces
 	value_type linear_sample_cooked(const float x, const float y)const
 	{
+#define h(j,i)	(((accumulator_type)((*this)[j][i])))
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;
 		static const float epsilon(1.0e-6);
@@ -427,11 +428,13 @@ public:
 		c(1.0f-a), d(1.0f-b),
 		e(a*d),f(c*b),g(a*b);
 		
-		accumulator_type ret((*this)[v][u]*(c*d));
-		if(e>=epsilon)ret+=(*this)[v][u+1]*e;
-		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
-		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
+		accumulator_type ret(h(v,u)*(c*d));
+		if(e>=epsilon)ret+=h(v,u+1)*e;
+		if(f>=epsilon)ret+=h(v+1,u)*f;
+		if(g>=epsilon)ret+=h(v+1,u+1)*g;
+
 		return (value_type)(ret);
+#undef h
 	}
 
 	//! Cosine sample
@@ -467,6 +470,8 @@ public:
 	//! Cosine sample for already "cooked" surfaces
 	value_type cosine_sample_cooked(const float x, const float y)const
 	{
+#define h(j,i)	(((accumulator_type)((*this)[j][i])))
+
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;
 		static const float epsilon(1.0e-6);
@@ -486,12 +491,13 @@ public:
 		c(1.0f-a), d(1.0f-b),
 		e(a*d),f(c*b),g(a*b);
 		
-		accumulator_type ret((*this)[v][u]*(c*d));
-		if(e>=epsilon)ret+=(*this)[v][u+1]*e;
-		if(f>=epsilon)ret+=(*this)[v+1][u]*f;
-		if(g>=epsilon)ret+=(*this)[v+1][u+1]*g;
+		accumulator_type ret(h(v,u)*(c*d));
+		if(e>=epsilon)ret+=h(v,u+1)*e;
+		if(f>=epsilon)ret+=h(v+1,u)*f;
+		if(g>=epsilon)ret+=h(v+1,u+1)*g;
 		
 		return (value_type)(ret);
+#undef h
 	}
 
 	//! Cubic sample
@@ -580,7 +586,7 @@ public:
 	//! Cubic sample for already "cooked" surfaces
 	value_type cubic_sample_cooked(float x, float y)const
 	{
-#define f(j,i)	(((*this)[j][i]))
+#define f(j,i)	(((accumulator_type)((*this)[j][i])))
 		//Using catmull rom interpolation because it doesn't blur at all
 		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
 		accumulator_type xfa [4];

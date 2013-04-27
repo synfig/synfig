@@ -1055,10 +1055,10 @@ Warp::accelerated_cairorender(Context context,cairo_surface_t *surface,int quali
 				{
 					// CUBIC
 					if(quality<=4)
-						csurface[y][x]=csource.cubic_sample(u,v);
+						csurface[y][x]=csource.cubic_sample_cooked(u,v);
 					// INTEPOLATION_LINEAR
 					else if(quality<=6)
-						csurface[y][x]=csource.linear_sample(u,v);
+						csurface[y][x]=csource.linear_sample_cooked(u,v);
 					else
 					// NEAREST_NEIGHBOR
 						csurface[y][x]=csource[floor_to_int(v)][floor_to_int(u)];
