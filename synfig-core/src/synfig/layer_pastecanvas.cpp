@@ -677,6 +677,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 
 	cairo_t *cr = cairo_create(surface);
 	cairo_set_source_surface(cr, pastesurface, x, y);
+	cairo_surface_destroy(pastesurface);
 	cairo_paint_with_alpha_operator(cr, get_amount(), blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
 	cairo_destroy(cr);
 	
