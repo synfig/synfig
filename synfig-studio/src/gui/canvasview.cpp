@@ -2083,15 +2083,22 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 
 	if(layer->get_name()=="PasteCanvas")
 	{
-		menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
-			sigc::bind(
-				sigc::mem_fun(
-					*layer_tree,
-					&studio::LayerTree::select_all_children_layers
-				),
-				layer
-			)
-		));
+		Gtk::Image* image(manage(new Gtk::Image()));
+		Gtk::Stock::lookup(Gtk::StockID("synfig-select_all_child_layers"),Gtk::ICON_SIZE_MENU,*image);
+		menu->items().push_back(
+			Gtk::Menu_Helpers::ImageMenuElem(
+						_("Select All Children"),
+						*image,
+						sigc::bind(
+								   sigc::mem_fun(
+												 *layer_tree,
+												 &studio::LayerTree::select_all_children_layers
+												 ),
+									layer
+									)
+											 )
+								);
+		
 	}
 
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_LAYER);
