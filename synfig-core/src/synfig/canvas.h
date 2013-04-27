@@ -608,6 +608,7 @@ public:
 
 #ifdef _DEBUG
 	void show_externals(String file, int line, String text) const;
+	void show_structure(int i) const;
 #endif	// _DEBUG
 
 private:

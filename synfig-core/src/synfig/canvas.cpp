@@ -1438,4 +1438,29 @@ Canvas::show_externals(String file, int line, String text) const
 	}
 	printf("  `-----\n\n");
 }
+
+void
+Canvas::show_structure(int i) const
+{
+	if(i==0)
+		printf("---Canvas Structure----\n");
+	Context iter;
+	Context context=get_context();
+	for(iter=context;*iter;iter++)
+	{
+		Layer::Handle layer=*iter;
+		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());
+		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+		if(composite)
+			printf(": %d: %f", composite->get_blend_method(), composite->get_amount());
+		else
+			printf(": no composite");
+		printf("\n");
+		if(layer->get_name()=="PasteCanvas")
+		{
+			Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
+			paste_canvas->get_sub_canvas()->show_structure(i+1);
+		}
+	}
+}
 #endif	// _DEBUG
