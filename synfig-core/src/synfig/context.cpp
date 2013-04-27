@@ -569,8 +569,8 @@ Context::accelerated_cairorender(cairo_surface_t *surface,int quality, const Ren
 			if ((ret = Context((context+1)).accelerated_cairorender(surface,quality,renddesc,cb)))
 			{
 				cairo_t* cr=cairo_create(surface);
-				cairo_set_source_rgba(cr, 0, 0, 0, composite->get_amount()); // TODO: handle amount values outside of the range 0.0-1.0
-				cairo_set_operator(cr, CAIRO_OPERATOR_IN);
+				cairo_set_source_rgba(cr, 0, 0, 0, 1.0-composite->get_amount()); // TODO: handle amount values outside of the range 0.0-1.0
+				cairo_set_operator(cr, CAIRO_OPERATOR_DEST_IN);
 				cairo_paint(cr);
 				cairo_destroy(cr);
 			}
