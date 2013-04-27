@@ -275,7 +275,7 @@ Layer_ColorCorrect::accelerated_cairorender(Context context,cairo_surface_t *sur
 	
 	for(y=0;y<renddesc.get_h();y++,pen.inc_y(),pen.dec_x(x))
 		for(x=0;x<renddesc.get_w();x++,pen.inc_x())
-			pen.put_value(CairoColor(correct_color(Color(pen.get_value().demult_alpha()))).premult_alpha());
+			pen.put_value(CairoColor(correct_color(Color(pen.get_value().demult_alpha())).clamped()).premult_alpha());
 	
 	csurface.unmap_cairo_image();
 	// Mark our progress as finished
