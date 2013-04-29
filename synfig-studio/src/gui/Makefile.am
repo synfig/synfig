@@ -116,5 +116,4 @@ synfigstudio_CXXFLAGS = \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \
-	-DPYTHON_BINARY=\"$(pythonbinary)\" \
 	"-DLOCALEDIR=\"$(localedir)\""
