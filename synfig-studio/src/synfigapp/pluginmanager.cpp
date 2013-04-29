@@ -53,16 +53,6 @@ using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
-#ifdef WIN32
-#	ifdef PYTHON_BINARY
-#		undef PYTHON_BINARY
-#		define PYTHON_BINARY "python\\python.exe"
-#	endif
-#endif
-
-#ifndef PYTHON_BINARY
-#	define PYTHON_BINARY "python"
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -108,23 +98,73 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 }
 
 bool
+PluginLauncher::check_python_version(String path)
+{
+	String command;
+	String result;
+	command = path + " --version 2>&1";
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
+		return false;
+	}
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+	}
+	pclose(pipe);
+	// Output is like: "Python 3.3.0"
+	if (result.substr(7,1) != "3"){
+		return false;
+	}
+	return true;
+}
+
+bool
 PluginLauncher::execute( std::string script_path )
 {
-	// Set path to python binary dependin on the os type.
-	// For Windows case Python binary is expected
-	// at INSTALL_PREFIX/python/python.exe
-	String command;
-#ifdef WIN32
-	command = etl::dirname(etl::dirname((*argv)[0]))+ETL_DIRECTORY_SEPARATOR+PYTHON_BINARY;
-#else
-	command = PYTHON_BINARY;
-#endif
+	String command = "";
+	
 	// Path to python binary can be overriden
 	// with SYNFIG_PYTHON_BINARY env variable:
 	char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
 	if(custom_python_binary) {
 		command=custom_python_binary;
+		if (!check_python_version(command)) {
+			output="Error: You need to have Python 3 installed.";
+			return false;
+		}
+	} else {
+	// Set path to python binary depending on the os type.
+	// For Windows case Python binary is expected
+	// at INSTALL_PREFIX/python/python.exe
+		std::list< String > binary_choices;
+		binary_choices.push_back("python");
+		binary_choices.push_back("python3");
+		std::list< String >::iterator iter;
+		for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
+		{
+			String python_path;
+#ifdef WIN32
+			python_path = etl::dirname(etl::dirname((*argv)[0]))+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe";
+#else
+			python_path = *iter;
+#endif
+			if (check_python_version(python_path))
+			{
+				command = python_path;
+				break;
+			}
+			
+		}
+		if (command == "")
+		{
+			output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
+			return false;
+		}
 	}
+	synfig::info("Python 3 binary found: "+command);
+	
 	
 	// Construct the full command:
 	command = command+" "+script_path+" \""+filename_processed+"\" 2>&1";
@@ -228,7 +268,7 @@ PluginManager::load_plugin( const std::string &path )
 	// Get locale
 	std::string current_locale = setlocale(LC_ALL, NULL);
 	
-	synfig::info("Loading plugin: %s", basename(dirname(path)).c_str());
+	synfig::info("   Loading plugin: %s", basename(dirname(path)).c_str());
 							
 	PluginManager::plugin p;
 	std::string plugindir = dirname(path);

@@ -277,9 +277,6 @@ AC_SUBST(imagedir)
 plugindir="${datadir}/synfig/plugins"
 AC_SUBST(plugindir)
 
-pythonbinary="python"
-AC_SUBST(pythonbinary)
-
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
    AC_HELP_STRING([--disable-update-mimedb],

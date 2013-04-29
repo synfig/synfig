@@ -66,6 +66,7 @@ public:
 	~PluginLauncher();
 
 	bool execute( std::string script_path );
+	bool check_python_version( std::string path);
 	std::string get_result_path();
 	std::string get_original_path() { return filename_original; };
 	std::string get_output() { return output; };
