@@ -175,6 +175,7 @@ public:
 	virtual synfig::Rect get_bounding_rect()const;
 	//! Checks to see if a part of the Paste Canvas Layer is directly under \a point
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual void set_render_method(Context context, RenderMethod x);
 
 protected:
 	//!	Function to be overloaded that fills the Time Point Set with
