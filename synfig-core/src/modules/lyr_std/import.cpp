@@ -315,7 +315,7 @@ Import::set_time(Context context, Time time)const
 				if(cs)
 				{
 					csurface.set_cairo_surface(cs);
-					//csurface.map_cairo_image();
+					csurface.map_cairo_image();
 					cairo_surface_destroy(cs);
 				}
 			}
