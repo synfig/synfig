@@ -64,6 +64,11 @@ cairo_png_mptr::cairo_png_mptr(const char *file_name)
 {
 	filename=file_name;
 	csurface_=cairo_image_surface_create_from_png(file_name);
+	if(cairo_surface_status(csurface_))
+	{
+		throw strprintf("Unable to physically open %s",file_name);
+		return;
+	}
 	CairoSurface cairo_s;
 	cairo_s.set_cairo_surface(csurface_);
 	cairo_s.map_cairo_image();
