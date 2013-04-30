@@ -242,6 +242,19 @@ KeyframeActionManager::refresh()
 			action->set_sensitive(false);
 	}
 
+	//get the beginning and ending time of the time slider
+	Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
+	Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();
+	//enable add key frame action if animation duration != 0
+	if(begin_time==end_time)
+	{
+		action_group_->get_action("action-KeyframeAdd")->set_sensitive(false);
+	}
+	else
+	{
+		action_group_->get_action("action-KeyframeAdd")->set_sensitive(true);
+	}
+
 	ui_info="<ui><popup action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP
