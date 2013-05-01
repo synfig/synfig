@@ -4,6 +4,13 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
+0.04.16 (git tag "ETL-0.04.16") - May 01, 2013 -Bug fixes. Cairo adaptation.
+
+ * Fix several compiler warnings: "Statement has no effect" and "Reached non void end of function"
+ * etl::surface, etl::pen and etl::box blur, etl::gaussian. Adapt templates to be used with Cairo surfaces
+ * Added Anjuta IDE configuration
+ * Remove old and unused Xcode configuration files.
+
 0.04.15 (git tag "ETL-0.04.15") - April 09, 2012 - Bug fixes
 
  * Apply patch #3424217. Fix compiling issues with clang compiler. Thanks to Hisashi Todd Fujinaka

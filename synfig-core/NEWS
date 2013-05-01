@@ -4,6 +4,19 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.64.0 (git tag "synfig-0.64.0") - May 01 2013 - Major features, bug fixes.
+ 
+  * New CLI based on boost libraries. 
+  * New pluging system
+  * New Cairo render engine
+  * Terminology renaming
+  * New sequence separator option
+  * Fix bug ID: 2684968: render is one frame short.
+  * Fixed bug that happens when BLine passed is empty.
+  * Fix bug: ID: 3523296 Onion skin and tile render are broken.
+  * Fix bug ID: 3474332: Play/pause by shortcut causes canvas to stop updating.
+  * Add Real convert type, fixes #324
+
  0.63.05 (git tag "synfig-0.63.05") - April 09 2012 - Features, bug fixes.
 
  * Roll back fix bug ID 3405011 because it produced other worse bug.

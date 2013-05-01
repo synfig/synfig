@@ -4,6 +4,16 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
+ 0.64.0 (git tag "synfigstudio-0.64.0") - May 01 3013 - Major features, bug fixes.
+
+  * New pluging system
+  * New Cairo render engine
+  * Terminology renaming
+  * Traslation is now handled by intltool
+  * New sequence separator option
+  * Fix bug ID: 2684968: render is one frame short.
+  * Fix bug ID: 3474332: Play/pause by shortcut causes canvas to stop updating.
+
  0.63.05 (git tag: "synfigstudio-0.63.05") - April 09, 2012 - Feaures, bug fixes.
 
  * Fix bug ID: 3486075. Add new panel on Preferences Dialog ('Render') and include one option for separator string on image sequence render. Default is a dot '.'.
