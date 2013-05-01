@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Extended Template Library],[0.04.15],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[ETL])
+AC_INIT([Extended Template Library],[0.04.16],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
