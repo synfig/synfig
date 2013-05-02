@@ -170,6 +170,8 @@ src/synfig/blinepoint.cpp
 src/synfig/blinepoint.h
 src/synfig/blur.cpp
 src/synfig/blur.h
+src/synfig/cairoimporter.cpp
+src/synfig/cairoimporter.h
 src/synfig/canvas.cpp
 src/synfig/canvas.h
 src/synfig/canvasbase.h
@@ -260,6 +262,10 @@ src/synfig/surfacenew.h
 src/synfig/synfig.h
 src/synfig/target.cpp
 src/synfig/target.h
+src/synfig/target_cairo.cpp
+src/synfig/target_cairo.h
+src/synfig/target_cairo_tile.cpp
+src/synfig/target_cairo_tile.h
 src/synfig/target_multi.cpp
 src/synfig/target_multi.h
 src/synfig/target_null.cpp
@@ -329,6 +335,8 @@ src/synfig/valuenode_radialcomposite.cpp
 src/synfig/valuenode_radialcomposite.h
 src/synfig/valuenode_range.cpp
 src/synfig/valuenode_range.h
+src/synfig/valuenode_real.cpp
+src/synfig/valuenode_real.h
 src/synfig/valuenode_realstring.cpp
 src/synfig/valuenode_realstring.h
 src/synfig/valuenode_reciprocal.cpp
@@ -381,3 +389,8 @@ src/synfig/widthpoint.h
 # src/template.cpp
 # src/template.h
 src/tool/main.cpp
+src/tool/joblistprocessor.cpp
+src/tool/optionsprocessor.cpp
+src/tool/printing_functions.cpp
+src/tool/progress.h
+src/tool/renderprogress.h
