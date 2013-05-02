@@ -220,7 +220,7 @@ int main(int ac, char* av[])
             ("license", _("Print out license information"))
             ("modules", _("Print out the list of loaded modules"))
             ("targets", _("Print out the list of available targets"))
-            ("ffmpeg-video-codecs", _("Print out the list of available video codecs when encoding through FFMPEG"))
+            ("target-video-codecs", _("Print out the list of available video codecs when encoding through FFMPEG"))
             ("valuenodes", _("Print out the list of available ValueNodes"))
             ("version", _("Print out version information"))
             ;
