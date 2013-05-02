@@ -177,7 +177,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_GradientColor,	  "gradientcolor",	  _("Gradient Color"),	 RELEASE_VERSION_0_61_09); // SVN r1885
 	ADD_VALUENODE(ValueNode_DotProduct,		  "dotproduct",		  _("Dot Product"),		 RELEASE_VERSION_0_61_09); // SVN r1891
 	ADD_VALUENODE(ValueNode_TimeString,		  "timestring",		  _("Time String"),		 RELEASE_VERSION_0_61_09); // SVN r2000
-	ADD_VALUENODE(ValueNode_Real,		  	  "fromreal",		  _("Real"),		 	 RELEASE_VERSION_0_63_06); // git 2013-01-12
+	ADD_VALUENODE(ValueNode_Real,		  	  "fromreal",		  _("Real"),		 	 RELEASE_VERSION_0_64_0); // git 2013-01-12
 	ADD_VALUENODE(ValueNode_RealString,		  "realstring",		  _("Real String"),		 RELEASE_VERSION_0_61_09); // SVN r2003
 	ADD_VALUENODE(ValueNode_Join,			  "join",			  _("Joined List"),		 RELEASE_VERSION_0_61_09); // SVN r2007
 	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
