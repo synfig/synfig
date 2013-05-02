@@ -85,7 +85,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 	// If the target type is not yet defined,
 	// try to figure it out from the outfile.
-	if(!job.target_name.empty() && !job.outfilename.empty())
+	if(job.target_name.empty() && !job.outfilename.empty())
 	{
 		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
 					   << endl;
