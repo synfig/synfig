@@ -51,7 +51,6 @@ export SCRIPTPATH=`dirname "$0"`
 export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
 export SYNFIG_PREFIX=${MACPORTS}/synfig/
 export SYNFIG_MODULE_LIST=${MACPORTS}/etc/synfig_modules.cfg
-#export MACOSX_DEPLOYMENT_TARGET=10.5
 export PKG_CONFIG_PATH=${MACPORTS}/lib/pkgconfig:${SYNFIG_PREFIX}/lib/pkgconfig$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib64:$LD_LIBRARY_PATH
 
@@ -498,6 +497,12 @@ fi
 OSNAME=$THEME
 if [ $OS -eq 10 ]; then
 	OSNAME=Snowleopard
+fi
+
+if [ ! $OS -eq 12 ]; then
+	# if not Lion then set compatibility mode
+	export MACOSX_DEPLOYMENT_TARGET=10.5
+	echo "Enabling binary compatibility mode: MACOSX_DEPLOYMENT_TARGET=10.5"
 fi
 
 prepare
