@@ -378,7 +378,7 @@ mkdmg()
 
 get_version_release_string()
 {
-	pushd > /dev/null
+	pushd "$SYNFIG_REPO_DIR" > /dev/null
 	VERSION=`cat synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 	if [ -z $BREED ]; then
 		BREED="`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
@@ -402,52 +402,11 @@ get_version_release_string()
 	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 	echo "$VERSION-$REVISION.$BREED.$RELEASE"
-	popd
+	popd >/dev/null
 }
 
 mkall()
 {
-
-	# Fetch sources
-	#port install python33
-	#port select --set python python33
-	#port install git-core
-	if ! ( which git ); then
-		echo "ERROR: No git found. Please install git from http://code.google.com/p/git-osx-installer/"
-		exit 1
-	fi
-	
-	#detecting repo
-	pushd $SCRIPTPATH >/dev/null
-	if git rev-parse --git-dir >/dev/null; then
-		SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
-		SCRIPTDIR_IS_REPO=1
-	fi
-	popd >/dev/null
-	
-	if [ ! -e ${SYNFIG_REPO_DIR} ]; then
-		pushd `dirname "${SYNFIG_REPO_DIR}"`
-		git clone git://github.com/synfig/synfig.git
-		popd
-	fi
-
-	pushd ${SYNFIG_REPO_DIR} >/dev/null
-	if [[ WORKDIR_IS_REPO == 0 ]]; then
-		git fetch
-		git reset --hard HEAD
-		SELECTEDREVISION=origin/master
-		git checkout $SELECTEDREVISION
-	fi
-	
-	VERSION_STRING=`get_version_release_string`
-	echo
-	echo
-	echo "BUILDING synfigstudio-$VERSION_STRING"
-	echo
-	echo
-	sleep 5
-
-	popd > /dev/null
 	
 	mkdeps
 
@@ -526,6 +485,49 @@ if [ $OS -eq 10 ]; then
 fi
 
 prepare
+
+# Fetch sources
+#port install python33
+#port select --set python python33
+#port install git-core
+if ! ( which git ); then
+	echo "ERROR: No git found. Please install git from http://code.google.com/p/git-osx-installer/"
+	exit 1
+fi
+
+#detecting repo
+pushd $SCRIPTPATH >/dev/null
+if git rev-parse --git-dir >/dev/null; then
+	SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
+	SCRIPTDIR_IS_REPO=1
+fi
+popd >/dev/null
+
+if [ ! -e ${SYNFIG_REPO_DIR} ]; then
+	pushd `dirname "${SYNFIG_REPO_DIR}"`
+	git clone git://github.com/synfig/synfig.git
+	popd
+fi
+
+VERSION=`get_version_release_string`
+
+pushd ${SYNFIG_REPO_DIR} >/dev/null
+if [[ WORKDIR_IS_REPO == 0 ]]; then
+	git fetch
+	git reset --hard HEAD
+	SELECTEDREVISION=origin/master
+	git checkout $SELECTEDREVISION
+fi
+
+
+echo
+echo
+echo "BUILDING synfigstudio-$VERSION"
+echo
+echo
+sleep 5
+
+popd > /dev/null
 
 if [ -z $1 ]; then
 	mkall
