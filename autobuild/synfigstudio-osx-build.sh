@@ -64,10 +64,10 @@ prepare()
 	# == workarounds ==
 	
 	#We should do that, otherwise python won't build:
-	if [ -e /Applications/MacPorts ]; then
-		[ ! -e /Applications/MacPorts.bak ] || rm -rf /Applications/MacPorts.bak
-		echo "Backing up /Applications/MacPorts dir..."
-		mv /Applications/MacPorts /Applications/MacPorts.bak || true
+	if [ -e $MACPORTS/tmp/app ]; then
+		[ ! -e $MACPORTS/tmp/app.bak ] || rm -rf $MACPORTS/tmp/app.bak
+		echo "Backing up custom /Applications/MacPorts dir..."
+		mv $MACPORTS/tmp/app $MACPORTS/tmp/app.bak || true
 	fi
 	
 	# == symlinks ==
@@ -409,6 +409,9 @@ get_version_release_string()
 
 mkall()
 {
+	# Don't write into /Applications/MacPorts
+	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
+	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	mkdeps
 
@@ -453,10 +456,10 @@ mkall()
 do_cleanup()
 {
 	#restore Applications/MacPorts dir
-	if [ -e /Applications/MacPorts.bak ]; then
-		echo "Restoring /Applications/MacPorts dir."
-		rm -rf /Applications/MacPorts || true
-		mv /Applications/MacPorts.bak /Applications/MacPorts
+	if [ -e $MACPORTS/tmp/app.bak ]; then
+		echo "Restoring custom /Applications/MacPorts dir."
+		rm -rf $MACPORTS/tmp/app || true
+		mv $MACPORTS/tmp/app.bak $MACPORTS/tmp/app
 	fi
 }
 
