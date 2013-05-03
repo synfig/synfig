@@ -48,11 +48,15 @@ SCRIPTDIR_IS_REPO=0
 
 export SCRIPTPATH=`dirname "$0"`
 
-export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
 export SYNFIG_PREFIX=${MACPORTS}/synfig/
-export SYNFIG_MODULE_LIST=${MACPORTS}/etc/synfig_modules.cfg
+export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
+export SYNFIG_MODULE_LIST=${SYNFIG_PREFIX}/etc/synfig_modules.cfg
 export PKG_CONFIG_PATH=${MACPORTS}/lib/pkgconfig:${SYNFIG_PREFIX}/lib/pkgconfig$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH=${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib64:$LD_LIBRARY_PATH
+
+#export ACLOCAL_FLAGS="-I ${SYNFIG_PREFIX}/share/aclocal -I ${MACPORTS}/share/aclocal"
+export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
+export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
 
 #======= HEADER END ===========
 
