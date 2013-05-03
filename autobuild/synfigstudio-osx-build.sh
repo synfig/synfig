@@ -192,7 +192,7 @@ mkdeps()
 		gtkmm \
 		python33 \
 		intltool"
-	port install $CORE_DEPS $STUDIO_DEPS
+	port install -f $CORE_DEPS $STUDIO_DEPS
 	port select --set python python33
 }
 
