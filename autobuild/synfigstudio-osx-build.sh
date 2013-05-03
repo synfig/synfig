@@ -209,6 +209,11 @@ mketl()
 	popd
 }
 
+libtoolize()
+{
+	glibtoolize $@
+}
+
 mksynfig()
 {
 	# building synfig-core
