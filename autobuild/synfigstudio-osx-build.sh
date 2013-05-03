@@ -67,7 +67,7 @@ prepare()
 	if [ -e /Applications/MacPorts ]; then
 		[ ! -e /Applications/MacPorts.bak ] || rm -rf /Applications/MacPorts.bak
 		echo "Backing up /Applications/MacPorts dir..."
-		mv /Applications/MacPorts /Applications/MacPorts.bak	
+		mv /Applications/MacPorts /Applications/MacPorts.bak || true
 	fi
 	
 	# == symlinks ==
@@ -418,10 +418,12 @@ mkall()
 	fi
 	
 	#detecting repo
+	pushd $SCRIPTPATH >/dev/null
 	if git rev-parse --git-dir >/dev/null; then
 		SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
 		SCRIPTDIR_IS_REPO=1
 	fi
+	popd >/dev/null
 	
 	if [ ! -e ${SYNFIG_REPO_DIR} ]; then
 		pushd `dirname "${SYNFIG_REPO_DIR}"`
