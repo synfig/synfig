@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# (c) 2008, Simone Karin Lehmann, simone at lisanet dot de
+# GPL version 2 or later
+# script 1.3 Leo
+
+set -e
+
+DIR=`dirname "$0"`
+cd "$DIR/../.."
+APPDIR=`pwd`
+cd - > /dev/null
+# edit the next line to match version file
+VERSION=_VERSION_
+LNDIR=/tmp/skl/SynfigStudio.app
+
+[ ! -e $LNDIR ] || rm -f "$LNDIR"
+mkdir -p /tmp/skl
+chmod a+w /tmp/skl
+ln -s "$APPDIR" "$LNDIR"
+
+CWD="/tmp/skl/SynfigStudio.app/Contents/Resources"
+
+export PATH="$CWD/bin:$CWD/sbin:$PATH"
+export SYNFIG_ROOT="$CWD/"
+export SYNFIG_MODULE_LIST="$CWD/etc/synfig_modules.cfg"
+
+echo launch
+
+cd ~/ > /dev/null
+exec "$CWD/bin/synfigstudio" "$@"
+
+echo end
