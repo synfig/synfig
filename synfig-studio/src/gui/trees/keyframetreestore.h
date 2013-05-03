@@ -97,8 +97,6 @@ private:
 	//! Unique stamp for this TreeModel.
 	int stamp_;
 
-	static KeyframeTreeStore_Class keyframe_tree_store_class_;
-
 	//std::map<synfig::Keyframe,TreeRowReferenceHack> path_table_;
 
 	synfig::KeyframeList old_keyframe_list;
@@ -203,21 +201,6 @@ public:
 
 }; // END of class KeyframeTreeStore
 
-//! \internal
-class KeyframeTreeStore_Class : public Glib::Class
-{
-public:
-	struct KeyframeTreeStoreClass
-	{
-		GObjectClass parent_class;
-	};
-
-	friend class KeyframeTreeStore;
-
-	const Glib::Class& init();
-
-	static void class_init_function(gpointer g_blass, gpointer class_data);
-}; // END of CustomTreeStore_Class
 
 }; // END of namespace studio
 

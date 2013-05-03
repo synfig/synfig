@@ -164,38 +164,6 @@ void clear_iterator(GtkTreeIter* iter)
 
 /* === M E T H O D S ======================================================= */
 
-const Glib::Class&
-KeyframeTreeStore_Class::init()
-{
-	if(!gtype_)
-	{
-		class_init_func_ = &KeyframeTreeStore_Class::class_init_function;
-
-		const GTypeInfo derived_info =
-		{
-			sizeof(GObjectClass),
-			NULL,
-			NULL,
-			class_init_func_,
-			NULL,
-			NULL,
-			sizeof(GObject),
-			0,
-			0,
-			NULL
-		};
-
-		gtype_ = g_type_register_static(G_TYPE_OBJECT, "KeyframeTreeStore", &derived_info, GTypeFlags(0));
-		Gtk::TreeModel::add_interface(get_type());
-	}
-	return *this;
-}
-
-void
-KeyframeTreeStore_Class::class_init_function(gpointer /*g_class*/, gpointer /*class_data*/)
-{
-	// ???
-}
 
 KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Glib::ObjectBase	("KeyframeTreeStore"),
