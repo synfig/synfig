@@ -163,6 +163,10 @@ mkdeps()
 		#!!! mkmacports
 	fi
 	
+	# Don't write into /Applications/MacPorts
+	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
+	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
+	
 	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
 	echo "+nonfree" > $MACPORTS/etc/macports/variants.conf
 
@@ -409,10 +413,6 @@ get_version_release_string()
 
 mkall()
 {
-	# Don't write into /Applications/MacPorts
-	[ -d $MACPORTS/tmp/app ] || mkdir -p $MACPORTS/tmp/app
-	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
-	
 	mkdeps
 
 	# cleanup previous synfig installation if any
