@@ -116,7 +116,7 @@ cd $MPSRC
 	--with-install-user=`id -un` \
 	--with-install-group=`id -gn`
 make clean
-make
+make -j$JOBS
 #sudo make install
 make install
 cd - > /dev/null
@@ -205,7 +205,7 @@ mketl()
 	autoreconf --install --force
 	make clean || true
 	./configure --prefix=${SYNFIG_PREFIX}  --includedir=${SYNFIG_PREFIX}/include
-	make install
+	make -j$JOBS install
 	popd
 }
 
@@ -220,7 +220,7 @@ mksynfig()
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
 	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
-	make install
+	make -j$JOBS install
 	popd
 }
 
@@ -233,7 +233,7 @@ mksynfigstudio()
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
 	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
-	make install
+	make -j$JOBS install
 
 	#for n in AUTHORS COPYING NEWS README
 	#do
@@ -472,6 +472,10 @@ main()  # dummy for navigation
 
 #Init traps
 trap do_cleanup INT
+
+# number of jobs
+export JOBS=`sysctl hw.ncpu | cut -f 2 -d " "`
+echo "Detected processors count: $JOBS"
 
 # get OS X version. 8=Tiger, 9=Leopard, 10=Snowleopard
 export OS=`uname -r | cut -d "." -f1`
