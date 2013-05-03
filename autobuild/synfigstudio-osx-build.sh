@@ -112,7 +112,9 @@ fi
 # this is the main part on which this building and packaging process relies on
 echo Compiling and updating MacPorts...
 cd $MPSRC
-./configure --prefix $MACPORTS --with-tclpackage=$MACPORTS/share/macports/Tcl
+./configure --prefix $MACPORTS --with-tclpackage=$MACPORTS/share/macports/Tcl \
+	--with-install-user=`id -un` \
+	--with-install-group=`id -gn`
 make clean
 make
 #sudo make install
