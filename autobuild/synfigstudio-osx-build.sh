@@ -349,6 +349,7 @@ EOF
 
 mkdmg()
 {
+	pushd ~ >/dev/null
 	# get OS major version
 	OSXVER=`uname -r | cut -f 1 -d '.'`
 
@@ -362,10 +363,10 @@ mkdmg()
 	#else
 	#  FINAL_FILENAME=synfigstudio_"$VERSION"_leopard_"$ARCH"
 	#fi
-	FINAL_FILENAME=~/synfigstudio-"$VERSION"."$ARCH"
+	FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
 
 	VOLNAME="SynfigStudio"
-	TRANSITORY_FILENAME="~/synfig-wla.sparseimage"
+	TRANSITORY_FILENAME="synfig-wla.sparseimage"
 	
 	APPDIR=`dirname "$BUILDDIR"`/SynfigStudio.app
 	
@@ -390,6 +391,8 @@ mkdmg()
 
 	echo "Removing uncompressed transitory dmg..."
 	/bin/rm -f "$TRANSITORY_FILENAME"
+	
+	popd >/dev/null
 
 	echo "Done!"
 }
