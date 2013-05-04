@@ -283,6 +283,7 @@ mkapp()
 	cp -R $MACPORTS/bin "$SYNFIGAPP/bin"
 	cp -R $MACPORTS/etc "$SYNFIGAPP/etc"
 	cp -R $MACPORTS/lib "$SYNFIGAPP/lib"
+	cp -R $MACPORTS/synfig "$SYNFIGAPP/synfig"
 	cp -R $MACPORTS/share "$SYNFIGAPP/share"
 
 	# Cleaning

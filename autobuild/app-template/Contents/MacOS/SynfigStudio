@@ -21,13 +21,15 @@ ln -s "$APPDIR" "$LNDIR"
 
 CWD="/tmp/skl/SynfigStudio.app/Contents/Resources"
 
-export PATH="$CWD/bin:$CWD/sbin:$PATH"
-export SYNFIG_ROOT="$CWD/"
-export SYNFIG_MODULE_LIST="$CWD/etc/synfig_modules.cfg"
+export PATH="$CWD/bin:$CWD/sbin:$CWD/synfig/bin:$PATH"
+export SYNFIG_ROOT="$CWD/synfig/"
+export SYNFIG_MODULE_LIST="$CWD/synfig/etc/synfig_modules.cfg"
 
 echo launch
 
 cd ~/ > /dev/null
-exec "$CWD/bin/synfigstudio" "$@"
+exec "$SYNFIG_ROOT/bin/synfigstudio" "$@"
+
+[ ! -e $LNDIR ] || rm -f "$LNDIR"
 
 echo end
