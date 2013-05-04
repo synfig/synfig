@@ -243,10 +243,10 @@ mksynfigstudio()
 	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 	make -j$JOBS install
 
-	#for n in AUTHORS COPYING NEWS README
-	#do
-	#  	cp -f $n ${MACPORTS}
-	#done
+	for n in AUTHORS COPYING NEWS README
+	do
+	  	cp -f $n ${MACPORTS}
+	done
 	popd
 }
 
