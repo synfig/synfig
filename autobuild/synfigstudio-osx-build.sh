@@ -256,7 +256,6 @@ mkapp()
 {
 	#VERSION=`eval "synfig" --version 2>&1 | cut -d " " -f 2`
 	VERSION=`get_version_release_string`
-	echo Synfig version is: $VERSION
 	echo Now trying to build your new SynfigStudio app ...
 
 	DIR=`dirname "$BUILDDIR"`
@@ -377,6 +376,7 @@ mkdmg()
 	/usr/bin/hdiutil detach /Volumes/"$VOLNAME" || true
 
 	echo "Creating and attaching disk image..."
+	[ ! -e "$TRANSITORY_FILENAME" ] || rm -rf "$TRANSITORY_FILENAME"
 	/usr/bin/hdiutil create -type SPARSE -size 2048m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
@@ -391,6 +391,7 @@ mkdmg()
 	/usr/bin/hdiutil detach /Volumes/"$VOLNAME"
 
 	echo "Compressing disk image..."
+	[ ! -e "$FINAL_FILENAME" ] || rm -rf "$FINAL_FILENAME"
 	/usr/bin/hdiutil convert -imagekey zlib-level=9 -format UDBZ "$TRANSITORY_FILENAME" -o ./"$FINAL_FILENAME"
 
 	echo "Removing uncompressed transitory dmg..."
