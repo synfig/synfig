@@ -81,9 +81,11 @@ prepare()
 
 	echo -n setting symlink to build directory...
 	test -d /tmp/skl || mkdir -p /tmp/skl
+	chmod a+w /tmp/skl
 	pushd /tmp/skl > /dev/null
 	test -L SynfigStudio.app && rm SynfigStudio.app
 	ln -s "$BUILDDIR" SynfigStudio.app
+	chmod a+w SynfigStudio.app
 	popd > /dev/null
 	echo
 }
