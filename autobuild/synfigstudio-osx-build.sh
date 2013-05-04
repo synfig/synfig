@@ -364,10 +364,10 @@ mkdmg()
 	#else
 	#  FINAL_FILENAME=synfigstudio_"$VERSION"_leopard_"$ARCH"
 	#fi
-	FINAL_FILENAME=synfigstudio-"$VERSION"."$ARCH"
+	FINAL_FILENAME=~/synfigstudio-"$VERSION"."$ARCH"
 
 	VOLNAME="SynfigStudio"
-	TRANSITORY_FILENAME="synfig-wla.sparseimage"
+	TRANSITORY_FILENAME="~/synfig-wla.sparseimage"
 	
 	APPDIR=`dirname "$BUILDDIR"`/SynfigStudio.app
 	
@@ -388,10 +388,10 @@ mkdmg()
 	/usr/bin/hdiutil detach /Volumes/"$VOLNAME"
 
 	echo "Compressing disk image..."
-	/usr/bin/hdiutil convert -imagekey zlib-level=9 -format UDBZ ./"$TRANSITORY_FILENAME" -o ./"$FINAL_FILENAME"
+	/usr/bin/hdiutil convert -imagekey zlib-level=9 -format UDBZ "$TRANSITORY_FILENAME" -o ./"$FINAL_FILENAME"
 
 	echo "Removing uncompressed transitory dmg..."
-	/bin/rm -f ./"$TRANSITORY_FILENAME"
+	/bin/rm -f "$TRANSITORY_FILENAME"
 
 	echo "Done!"
 }
