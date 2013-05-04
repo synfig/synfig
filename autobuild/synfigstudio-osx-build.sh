@@ -370,7 +370,7 @@ mkdmg()
 	TRANSITORY_FILENAME="synfig-wla.sparseimage"
 
 	echo "Creating and attaching disk image..."
-	/usr/bin/hdiutil create -type SPARSE -size 2048m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 4096m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
 	cp -R $BUILDDIR /Volumes/"$VOLNAME"/SynfigStudio.app
