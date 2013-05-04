@@ -152,8 +152,8 @@ mkdeps()
 		echo "   Macports installation is outdated. Force rebuild..."
 		echo "=========================== !!! =========================="
 		sleep 10
-		#!!! rm -rf "$MACPORTS"
-		#!!! mkmacports
+		rm -rf "$MACPORTS"
+		mkmacports
 	fi
 
 	echo $BUILDROOT_VERSION > "$MACPORTS/etc/buildroot-id"
@@ -162,8 +162,8 @@ mkdeps()
 		echo "   Buildroot version changed. Force rebuild..."
 		echo "======================= !!! ======================"
 		sleep 10
-		#!!! rm -rf "$MACPORTS"
-		#!!! mkmacports
+		rm -rf "$MACPORTS"
+		mkmacports
 	fi
 	
 	# Don't write into /Applications/MacPorts
@@ -228,8 +228,7 @@ mksynfig()
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
 	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
-	#make -j$JOBS install
-	make install
+	make -j$JOBS install
 	popd
 }
 
@@ -242,8 +241,7 @@ mksynfigstudio()
 	CONFIGURE_PACKAGE_OPTIONS='--disable-update-mimedb'
 	/bin/sh ./bootstrap.sh
 	/bin/sh ./configure --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
-	#make -j$JOBS install
-	make install
+	make -j$JOBS install
 
 	#for n in AUTHORS COPYING NEWS README
 	#do
@@ -430,7 +428,7 @@ mkall()
 	mkdeps
 
 	# cleanup previous synfig installation if any
-	#!!! [ ! -d "$SYNFIG_PREFIX" ] || rm -rf "$SYNFIG_PREFIX"
+	[ ! -d "$SYNFIG_PREFIX" ] || rm -rf "$SYNFIG_PREFIX"
 
 	mketl
 	mksynfig
