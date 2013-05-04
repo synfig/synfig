@@ -368,13 +368,17 @@ mkdmg()
 
 	VOLNAME="SynfigStudio"
 	TRANSITORY_FILENAME="synfig-wla.sparseimage"
+	
+	APPDIR=`dirname "$BUILDDIR"`/SynfigStudio.app
+	
+	/usr/bin/hdiutil detach /Volumes/"$VOLNAME" || true
 
 	echo "Creating and attaching disk image..."
-	/usr/bin/hdiutil create -type SPARSE -size 4096m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
+	/usr/bin/hdiutil create -type SPARSE -size 2048m -fs HFS+ -volname "$VOLNAME" -attach "$TRANSITORY_FILENAME"
 
 	echo "Copying files to disk image..."
-	cp -R $BUILDDIR /Volumes/"$VOLNAME"/SynfigStudio.app
-	cp -R $BUILDDIR/Contents/Resources/share/doc/synfigstudio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
+	cp -R $APPDIR /Volumes/"$VOLNAME"/SynfigStudio.app
+	cp -R $APPDIR/Contents/Resources/share/doc/synfigstudio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
 
 	# open the window so that the icon database is generated
 	open /Volumes/"$VOLNAME"
