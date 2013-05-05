@@ -86,7 +86,7 @@ Action::BLinePointTangentSplit::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
-		.set_local_name(_("ValueNode of BLinePoint"))
+		.set_local_name(_("ValueNode of Spline Point"))
 	);
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
