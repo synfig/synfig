@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	}
 	catch(string str)
 	{
-		std::cerr<<"Uncaught Exception:string: "<<str<<std::endl;
+		std::cerr<<"Uncaught Exception:string: "<<str.c_str()<<std::endl;
 		throw;
 	}
 	catch(std::exception x)

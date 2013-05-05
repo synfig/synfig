@@ -146,7 +146,7 @@ const String
 Color::get_string(void)const
 {
 	std::ostringstream o;
-	o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << a_;
+	o << std::fixed << std::setprecision(3) << "#" << get_hex().c_str() << " : " << std::setw(6) << a_;
 	return String(o.str().c_str());
 }
 
@@ -154,7 +154,7 @@ const String
 CairoColor::get_string(void)const
 {
 	std::ostringstream o;
-	o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << get_a();
+	o << std::fixed << std::setprecision(3) << "#" << get_hex().c_str() << " : " << std::setw(6) << get_a();
 	return String(o.str().c_str());
 }
 

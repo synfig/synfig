@@ -306,10 +306,10 @@ Palette::save_to_file(const synfig::String& filename)const
 		throw strprintf(_("Unable to open %s for write"),filename.c_str());
 
 	file<<PALETTE_SYNFIG_FILE_COOKIE<<endl;
-	file<<name_<<endl;
+	file<<name_.c_str()<<endl;
 	for(iter=begin();iter!=end();++iter)
 	{
-		file<<iter->name<<endl;
+		file<<iter->name.c_str()<<endl;
 		file
 			<<iter->color.get_r()<<endl
 			<<iter->color.get_g()<<endl
@@ -418,7 +418,7 @@ Palette::load_from_file(const synfig::String& filename)
 
 			if (!line.empty())
 			{
-				ss << line;
+				ss << line.c_str();
 
 			 	ss >> r >> g >> b;
 				getline(ss, item.name);

@@ -42,21 +42,21 @@ public:
 	virtual bool
 	task(const String &task)
 	{
-		VERBOSE_OUT(1)<<program<<": "<<task<<std::endl;
+		VERBOSE_OUT(1)<<program<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 
 	virtual bool
 	error(const String &task)
 	{
-		std::cerr<<program<<": "<<_("error")<<": "<<task<<std::endl;
+		std::cerr<<program<<": "<<_("error")<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 
 	virtual bool
 	warning(const String &task)
 	{
-		std::cerr<<program<<": "<<_("warning")<<": "<<task<<std::endl;
+		std::cerr<<program<<": "<<_("warning")<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 

@@ -110,7 +110,7 @@ void OptionsProcessor::extract_canvas_info(Job& job)
 		else if (value == "metadata")		job.canvas_info_metadata		= true;
 		else
 		{
-			cerr << _("Unrecognised canvas variable: ") << "'" << value << "'" << endl;
+			cerr << _("Unrecognised canvas variable: ") << "'" << value.c_str() << "'" << endl;
 			cerr << _("Recognized variables are:") << endl <<
 				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
 				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
@@ -211,7 +211,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 			synfig::Layer::book().begin();
 		for(; iter != synfig::Layer::book().end(); iter++)
 			if (iter->second.category != CATEGORY_DO_NOT_USE)
-				cout << iter->first << endl;
+				cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -221,27 +221,27 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 		Layer::Handle layer =
 			synfig::Layer::create(_vm["layer-info"].as<string>());
 
-		cout << _("Layer Name: ") << layer->get_name() << endl;
+		cout << _("Layer Name: ") << (layer->get_name()).c_str() << endl;
 		cout << _("Localized Layer Name: ")
-			 << layer->get_local_name() << endl;
-		cout << _("Version: ") << layer->get_version() << endl;
+			 << (layer->get_local_name()).c_str() << endl;
+		cout << _("Version: ") << (layer->get_version()).c_str() << endl;
 
 		Layer::Vocab vocab = layer->get_param_vocab();
 		for(; !vocab.empty(); vocab.pop_front())
 		{
-			cout << _("param - ") << vocab.front().get_name();
+			cout << _("param - ") << vocab.front().get_name().c_str();
 			if(!vocab.front().get_critical())
 				cout << _(" (not critical)");
 			cout << endl << _("\tLocalized Name: ")
-				 << vocab.front().get_local_name() << endl;
+				 << vocab.front().get_local_name().c_str() << endl;
 
 			if(!vocab.front().get_description().empty())
 				cout << _("\tDescription: ")
-					 << vocab.front().get_description() << endl;
+					 << vocab.front().get_description().c_str() << endl;
 
 			if(!vocab.front().get_hint().empty())
 				cout << _("\tHint: ")
-					 << vocab.front().get_hint() << endl;
+					 << vocab.front().get_hint().c_str() << endl;
 		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
@@ -252,7 +252,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 		synfig::Module::Book::iterator iter =
 			synfig::Module::book().begin();
 		for(; iter != synfig::Module::book().end(); iter++)
-			cout << iter->first << endl;
+			cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -262,7 +262,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 		synfig::Target::Book::iterator iter =
 			synfig::Target::book().begin();
 		for(; iter != synfig::Target::book().end(); iter++)
-			cout << iter->first << endl;
+			cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -272,7 +272,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 		synfig::LinkableValueNode::Book::iterator iter =
 			synfig::LinkableValueNode::book().begin();
 		for(; iter != synfig::LinkableValueNode::book().end(); iter++)
-			cout << iter->first << endl;
+			cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -282,7 +282,7 @@ void OptionsProcessor::process_info_options() throw (SynfigToolException&)
 		synfig::Importer::Book::iterator iter =
 			synfig::Importer::book().begin();
 		for(; iter != synfig::Importer::book().end(); iter++)
-			cout << iter->first << endl;
+			cout << (iter->first).c_str() << endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -307,14 +307,14 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		a = _vm["antialias"].as<int>();
 		desc.set_antialias(a);
 		VERBOSE_OUT(1) << strprintf(_("Antialiasing set to %d, "
-									  "(%d samples per pixel)"), a, a*a)
-					   << endl;
+									  "(%d samples per pixel)"), a, a*a).c_str()
+						<< endl;
 	}
 	if (_vm.count("span"))
 	{
 		span = _vm["span"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span)
-					   << endl;
+		VERBOSE_OUT(1) << strprintf(_("Span set to %d units"), span).c_str()
+						<< endl;
 	}
 	if (_vm.count("fps"))
 	{
@@ -322,7 +322,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		fps = _vm["fps"].as<float>();
 		desc.set_frame_rate(fps);
 		VERBOSE_OUT(1) << strprintf(_("Frame rate set to %d frames per "
-									  "second"), fps) << endl;
+									  "second"), fps).c_str() << endl;
 	}
 	if (_vm.count("dpi"))
 	{
@@ -332,7 +332,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
 		VERBOSE_OUT(1) << strprintf(_("Physical resolution set to %f "
-									  "dpi"), dpi) << endl;
+									  "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("dpi-x"))
 	{
@@ -341,7 +341,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
 		VERBOSE_OUT(1) << strprintf(_("Physical X resolution set to %f "
-									  "dpi"), dpi) << endl;
+									  "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("dpi-y"))
 	{
@@ -350,7 +350,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
 		VERBOSE_OUT(1) << strprintf(_("Physical Y resolution set to %f "
-									  "dpi"), dpi) << endl;
+									  "dpi"), dpi).c_str() << endl;
 	}
 	if (_vm.count("start-time"))
 	{
@@ -377,7 +377,7 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 		desc.set_time(Time(seconds.c_str(), desc.get_frame_rate()));
 
 		VERBOSE_OUT(1) << _("Rendering frame at ")
-					   << desc.get_time_start().get_string(desc.get_frame_rate())
+					   << desc.get_time_start().get_string(desc.get_frame_rate()).c_str()
 					   << endl;
 	}
 	if (_vm.count("gamma"))
@@ -397,8 +397,8 @@ RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 			h = desc.get_h() * w / desc.get_w();
 
 		desc.set_wh(w,h);
-		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d"), w, h)
-					   << endl;
+		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d"), w, h).c_str()
+						<< endl;
 	}
 
 	if(span)
@@ -437,20 +437,20 @@ TargetParam OptionsProcessor::extract_targetparam() throw (SynfigToolException&)
 									   strprintf(_("Video codec \"%s\" is not supported."),
 											   	 params.video_codec.c_str())));
 
-		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str())
-					   << endl;
+		VERBOSE_OUT(1) << strprintf(_("Target video codec set to %s"), params.video_codec.c_str()).c_str()
+						<< endl;
 	}
 	if(_vm.count("video-bitrate"))
 	{
 		params.bitrate = _vm["video-bitrate"].as<int>();
-		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate)
+		VERBOSE_OUT(1) << strprintf(_("Target bitrate set to %dk"),params.bitrate).c_str()
 					   << endl;
 	}
 	if(_vm.count("sequence-separator"))
 	{
 		params.sequence_separator = _vm["sequence-separator"].as<string>();
 		VERBOSE_OUT(1) << strprintf(_("Output file sequence separator set to %s"),
-									params.sequence_separator.c_str())
+									params.sequence_separator.c_str()).c_str()
 					   << endl;
 	}
 
@@ -496,7 +496,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 	if (_vm.count("target"))
 	{
 		job.target_name = _vm["target"].as<string>();
-		VERBOSE_OUT(1) << _("Target set to ") << job.target_name << endl;
+		VERBOSE_OUT(1) << _("Target set to ") << job.target_name.c_str() << endl;
 	}
 
 	// Determine output
@@ -554,8 +554,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
 		if(!composite)
 		{
-			VERBOSE_OUT(1) << _("Unable to append '") << composite_file
-						   << "'." << endl;
+			VERBOSE_OUT(1) << _("Unable to append '") << composite_file.c_str()
+							<< "'." << endl;
 		}
 		else
 		{
@@ -568,7 +568,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			}
 		}
 
-		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
+		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file.c_str() << endl;
 	}
 
 	if (_vm.count("list-canvases") || _vm.count("canvases"))

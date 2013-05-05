@@ -418,7 +418,7 @@ public:
 	virtual bool
 	task(const std::string &task)
 	{
-		std::cerr<<task<<std::endl;
+		std::cerr<<task.c_str()<<std::endl;
 		while(studio::App::events_pending())studio::App::iteration(false);
 		return true;
 	}
@@ -435,7 +435,7 @@ public:
 	virtual bool
 	warning(const std::string &err)
 	{
-		std::cerr<<"warning: "<<err<<std::endl;
+		std::cerr<<"warning: "<<err.c_str()<<std::endl;
 		while(studio::App::events_pending())studio::App::iteration(false);
 		return true;
 	}
@@ -1719,7 +1719,7 @@ App::save_settings()
 			list<string>::reverse_iterator iter;
 
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
-				file<<*iter<<endl;
+				file<<(*iter).c_str()<<endl;
 		}while(0);
 		do{
 			std::string filename=get_config_file("recentfiles")+std::string("_window_size");
@@ -1735,7 +1735,7 @@ App::save_settings()
 			list<string>::reverse_iterator iter;
 
 			for(iter=recent_files_window_size.rbegin();iter!=recent_files_window_size.rend();iter++)
-				file<<*iter<<endl;
+				file<<(*iter).c_str()<<endl;
 
 		}while(0);
 		std::string filename=get_config_file("settings");

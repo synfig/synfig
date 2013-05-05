@@ -54,14 +54,14 @@ public:
 	virtual bool
 	error(const String &task)
 	{
-		std::cout<<_("error")<<": "<<task<<std::endl;
+		std::cout<<_("error")<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 
 	virtual bool
 	warning(const String &task)
 	{
-		std::cout<<_("warning")<<": "<<task<<std::endl;
+		std::cout<<_("warning")<<": "<<task.c_str()<<std::endl;
 		return true;
 	}
 
@@ -106,7 +106,7 @@ public:
 			while(days>=7)
 				weeks++,days-=7;
 
-			cerr<<taskname<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
+			cerr<<taskname.c_str()<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
 			//cerr<<time/(h-clk_scanline)<<" ";
 			/*
 			if(delta>=-time/(h-clk_scanline)  )
@@ -138,7 +138,7 @@ public:
 			cerr<<"           \r";
 		}
 		else
-			cerr<<taskname<<": "<<_("DONE")<<"                        "<<endl;;
+			cerr<<taskname.c_str()<<": "<<_("DONE")<<"                        "<<endl;;
 		return true;
 	}
 };

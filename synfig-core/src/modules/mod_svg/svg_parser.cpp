@@ -842,7 +842,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			}
 			i--; //decrement i to balance "i++" at command change
 		}else{
-			std::cout<<"unsupported path token: "<<tokens.at(i)<<std::endl;
+			std::cout<<"unsupported path token: "<<tokens.at(i).c_str()<<std::endl;
 		}
 	}
 	if(!k1.empty()) {

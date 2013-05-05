@@ -63,7 +63,7 @@ void print_child_canvases(const string& prefix, const Canvas::Handle& canvas)
 	for (Canvas::Children::const_iterator child_canvas = children.begin();
 		 child_canvas != children.end(); child_canvas++)
 	{
-		cout << prefix << ":" << (*child_canvas)->get_id() << endl;
+		cout << prefix.c_str() << ":" << (*child_canvas)->get_id().c_str() << endl;
 		print_child_canvases(prefix + ":" + (*child_canvas)->get_id(),
 							*child_canvas);
 	}
@@ -259,6 +259,6 @@ void print_canvas_info(const Job& job)
 
 		for (std::list<String>::iterator key = keys.begin();
 			 key != keys.end(); key++)
-			cout << *key << "=" << canvas->get_meta_data(*key) << endl;
+			cout << (*key).c_str() << "=" << canvas->get_meta_data(*key).c_str()<< endl;
 	}
 }

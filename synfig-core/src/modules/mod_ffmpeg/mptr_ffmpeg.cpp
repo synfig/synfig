@@ -172,7 +172,7 @@ ffmpeg_mptr::grab_frame(void)
 {
 	if(!file)
 	{
-		cerr<<"unable to open "<<filename<<endl;
+		cerr<<"unable to open "<<filename.c_str()<<endl;
 		return false;
 	}
 	int w,h;

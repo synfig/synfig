@@ -302,7 +302,7 @@ int main(int ac, char* av[])
     catch (SynfigToolException& e) {
     	exit_code code = e.get_exit_code();
     	if (code != SYNFIGTOOL_HELP && code != SYNFIGTOOL_OK)
-    		cerr << e.get_message() << endl;
+    		cerr << e.get_message().c_str() << endl;
     	if (code == SYNFIGTOOL_MISSINGARGUMENT)
     		print_usage();
 

@@ -213,7 +213,7 @@ CanvasParser::error(xmlpp::Node *element, const String &text)
 	errors_text += "  * " + str + "\n";
 	if(!allow_errors_)
 		throw runtime_error(str);
-	cerr<<str<<endl;
+	cerr<<str.c_str()<<endl;
 	//	synfig::error(str);
 }
 
@@ -2668,7 +2668,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	}
 	catch(const String& str)
 	{
-		cerr<<str<<endl;
+		cerr<<str.c_str()<<endl;
 		//	synfig::error(str);
 		errors = str;
 		return Canvas::Handle();
@@ -2724,7 +2724,7 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 	}
 	catch(const String& str)
 	{
-		cerr<<str<<endl;
+		cerr<<str.c_str()<<endl;
 		errors = str;
 		return Canvas::Handle();
 	}

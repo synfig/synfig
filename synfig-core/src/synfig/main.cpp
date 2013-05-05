@@ -357,7 +357,7 @@ void
 synfig::error(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("error")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<endl;
 }
 
 void
@@ -372,7 +372,7 @@ void
 synfig::warning(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("warning")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<endl;
 }
 
 void
@@ -387,5 +387,5 @@ void
 synfig::info(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("info")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 }

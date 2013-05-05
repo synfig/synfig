@@ -53,13 +53,13 @@ ConsoleUIInterface::confirmation(const std::string &title, const std::string &pr
 		const std::string &secondaryText, const std::string &confirmPhrase,
 		const std::string &cancelPhrase, Response dflt)
 {
-	cout << title << ": " << primaryText << endl;
-	cout << secondaryText;
+	cout << title.c_str() << ": " << primaryText.c_str() << endl;
+	cout << secondaryText.c_str();
 
 	if (dflt == RESPONSE_OK)
-		cout << "(" << confirmPhrase << "/" << cancelPhrase << ")" << endl;
+		cout << "(" << confirmPhrase.c_str() << "/" << cancelPhrase.c_str() << ")" << endl;
 	else
-		cout << "(" << cancelPhrase << "/" << confirmPhrase << ")" << endl;
+		cout << "(" << cancelPhrase.c_str() << "/" << confirmPhrase.c_str() << ")" << endl;
 
 	string resp;
 	cin >> resp;
@@ -78,7 +78,7 @@ ConsoleUIInterface::confirmation(const std::string &title, const std::string &pr
 UIInterface::Response
 ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,Response dflt)
 {
-	cout<<title<<": "<<message<<' ';
+	cout<<title.c_str()<<": "<<message.c_str()<<' ';
 	if(dflt==RESPONSE_NO)
 		cout<<_("(no/yes)")<<endl;
 	else
@@ -105,7 +105,7 @@ ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,
 UIInterface::Response
 ConsoleUIInterface::yes_no_cancel(const std::string &title, const std::string &message, Response dflt)
 {
-	cout<<title<<": "<<message<<' ';
+	cout<<title.c_str()<<": "<<message.c_str()<<' ';
 	if(dflt==RESPONSE_NO)
 		cout<<_("(no/yes)")<<endl;
 	else
@@ -132,7 +132,7 @@ ConsoleUIInterface::yes_no_cancel(const std::string &title, const std::string &m
 UIInterface::Response
 ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &message,Response dflt)
 {
-	cout<<title<<": "<<message<<' ';
+	cout<<title.c_str()<<": "<<message.c_str()<<' ';
 	if(dflt==RESPONSE_CANCEL)
 		cout<<_("(cancel/ok)")<<endl;
 	else
@@ -159,21 +159,21 @@ ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &messa
 bool
 ConsoleUIInterface::task(const std::string &task)
 {
-	cout<<task<<endl;
+	cout<<task.c_str()<<endl;
 	return true;
 }
 
 bool
 ConsoleUIInterface::error(const std::string &task)
 {
-	cout<<_("error: ")<<task<<endl;
+	cout<<_("error: ")<<task.c_str()<<endl;
 	return true;
 }
 
 bool
 ConsoleUIInterface::warning(const std::string &task)
 {
-	cout<<_("warning: ")<<task<<endl;
+	cout<<_("warning: ")<<task.c_str()<<endl;
 	return true;
 }
 

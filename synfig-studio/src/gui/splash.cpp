@@ -99,7 +99,7 @@ public:
 		}
 		else
 		{
-			cerr<<task<<endl;
+			cerr<<task.c_str()<<endl;
 		}
 
 		while(studio::App::events_pending())studio::App::iteration(false);
@@ -115,7 +115,7 @@ public:
 		}
 		else
 		{
-			cerr<<task<<endl;
+			cerr<<task.c_str()<<endl;
 		}
 
 		while(studio::App::events_pending())studio::App::iteration(false);
@@ -131,7 +131,7 @@ public:
 		}
 		else
 		{
-			cerr<<task<<endl;
+			cerr<<task.c_str()<<endl;
 		}
 
 		while(studio::App::events_pending())studio::App::iteration(false);

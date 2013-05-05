@@ -138,14 +138,14 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 			job.outfilename += job.target_name;
 	}
 
-	VERBOSE_OUT(4) << "Target name = " << job.target_name << endl;
-	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename << endl;
+	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << endl;
+	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << endl;
 
 	// Check permissions
 	if (access(dirname(job.outfilename).c_str(), W_OK) == -1)
 	{
-		VERBOSE_OUT(1) << _("Unable to create ouput for \"") << job.filename
-					   << "\": " << strerror(errno) << endl
+		VERBOSE_OUT(1) << _("Unable to create ouput for \"") << job.filename.c_str()
+						<< "\": " << strerror(errno) << endl
 					   << _("Throwing out job...") << endl;
 		return false;
 	}
@@ -162,7 +162,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	{
 		if(!job.target)
 		{
-			VERBOSE_OUT(1) << _("Unknown target for \"") << job.filename
+			VERBOSE_OUT(1) << _("Unknown target for \"") << job.filename.c_str()
 						   << "\": " << strerror(errno) << endl
 						   << _("Throwing out job...") << endl;
 			return false;
@@ -191,7 +191,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 void process_job (Job& job) throw (SynfigToolException&)
 {
-	VERBOSE_OUT(3) << job.filename << " -- " << endl;
+	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << endl;
 	VERBOSE_OUT(3) << '\t'
 				   <<
 		strprintf("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f",
@@ -201,7 +201,7 @@ void process_job (Job& job) throw (SynfigToolException&)
 			job.desc.get_pixel_aspect(),
 			job.desc.get_image_aspect(),
 			job.desc.get_span()
-			)
+			).c_str()
 		<< endl;
 
 	VERBOSE_OUT(3) << '\t'
@@ -213,7 +213,7 @@ void process_job (Job& job) throw (SynfigToolException&)
 			job.desc.get_br()[1],
 			job.desc.get_focus()[0],
 			job.desc.get_focus()[1]
-			)
+			).c_str()
 			<< endl;
 
 	RenderProgress p;
@@ -235,7 +235,7 @@ void process_job (Job& job) throw (SynfigToolException&)
 			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
 
 		if(print_benchmarks)
-			cout << job.filename
+			cout << job.filename.c_str()
 				 << _(": Rendered in ") << timer()
 				 << _(" seconds.") << endl;
 	}
