@@ -2044,7 +2044,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	}
 
 	// Create the action group
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
 
 	if(is_advanced_outline)
 	{
@@ -2169,7 +2169,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
+			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for spline"));
 			group.cancel();
 			return Smach::RESULT_ERROR;
 		}
@@ -2358,7 +2358,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
-			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
+			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for spline"));
 			group.cancel();
 			return Smach::RESULT_ERROR;
 		}
