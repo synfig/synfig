@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Copyright (c) 2012 by Konstantin Dmitriev <ksee.zelgadis@gmail.com>
+# Copyright (c) 2012-2013 by Konstantin Dmitriev <ksee.zelgadis@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,6 +10,7 @@
 
 import os
 import sys
+import codecs
 
 def check_substring(data, substring):
 	s = "\n".join(data);
@@ -31,17 +32,17 @@ def process(filename):
 	
 	template_filename = os.path.join(os.path.dirname(sys.argv[0]), 'stickman.sif')
 
-	template_f = open(template_filename, 'r')
+	template_f = codecs.open(template_filename, 'r', encoding='utf-8')
 	template_contents = template_f.readlines()
 	template_f.close()
 	
 	# Read the input file
-	inputfile_f = open(filename, 'r')
+	inputfile_f = codecs.open(filename, 'r', encoding='utf-8')
 	inputfile_contents = inputfile_f.readlines()
 	inputfile_f.close()
 	
 	# Now write results to the same file
-	inputfile_f = open(filename, 'w')
+	inputfile_f = open(filename, 'w', encoding='utf-8')
 
 	num=1
 	while check_substring(inputfile_contents, '(stk%s' % num):
