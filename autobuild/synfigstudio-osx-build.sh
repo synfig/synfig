@@ -361,7 +361,7 @@ mkdmg()
 	VERSION=`get_version_release_string`
 	#echo Synfig version is: $VERSION
 
-	ARCH=`uname -p`
+	ARCH=`uname -m`
 	#if [ $OSXVER -lt 9 ]; then
 	#  FINAL_FILENAME=synfigstudio_"$VERSION"_tiger_"$ARCH"
 	#else
