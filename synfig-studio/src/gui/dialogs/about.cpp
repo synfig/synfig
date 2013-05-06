@@ -151,6 +151,7 @@ About::About()
 	authors.push_back("Gerald Young (Yoyobuae)");
 	authors.push_back("Gerco Ballintijn");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
+	authors.push_back("Jerome Blanchi (d.j.a.y.)");
 	authors.push_back("Konstantin Dmitriev (zelgadis)");
 	authors.push_back("Luka Pravica");
 	authors.push_back("Nikita Kitaev (nikitakit)");
@@ -177,6 +178,7 @@ About::About()
 	artists.push_back("Henrique Lopes Barone");
 	artists.push_back("Konstantin Dmitriev (zelgadis)");
 	artists.push_back("Madeleine Crubellier (mad0)");
+	artists.push_back("Nikolai Mamashev (solkap)");
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 	artists.push_back("Thimotee Guiet (satrip)");
 	artists.push_back("Yu Chen (jcome)");
