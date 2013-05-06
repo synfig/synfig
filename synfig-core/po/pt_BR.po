@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
-"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
+"Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-05-05 22:35+0200\n"
 "PO-Revision-Date: 2013-05-02 12:39+0000\n"
 "Last-Translator: genete <genetita@gmail.com>\n"

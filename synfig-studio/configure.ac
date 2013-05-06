@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.64.0],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
+AC_INIT([Synfig Studio],[0.64.0],[http://www.synfig.org/issues/thebuggenie/synfig],[synfigstudio])
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 AC_REVISION
 
