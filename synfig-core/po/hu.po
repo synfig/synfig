@@ -1,0 +1,4619 @@
+# translation of cs.po to Hungarian
+# Copyright (C) 2012 Synfig Contributors
+# This file is distributed under the same license as the Synfig Core package.
+# 
+# Translators:
+# Viktória S. <viktoria.s@freemail.hu>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: Synfig\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
+"POT-Creation-Date: 2013-05-05 22:35+0200\n"
+"PO-Revision-Date: 2013-05-02 12:39+0000\n"
+"Last-Translator: genete <genetita@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/modules/mod_example/filledrect.cpp:58
+msgid "Filled Rectangle"
+msgstr "Kitöltött téglalap"
+
+#: src/modules/mod_example/filledrect.cpp:59
+#: src/modules/mod_example/metaballs.cpp:57
+#: src/modules/mod_example/simplecircle.cpp:58
+msgid "Example"
+msgstr "Példa"
+
+#: src/modules/mod_example/filledrect.cpp:120
+#: src/modules/mod_example/simplecircle.cpp:107
+#: src/modules/lyr_freetype/lyr_freetype.cpp:522
+#: src/modules/lyr_std/shade.cpp:563
+#: src/modules/mod_geometry/checkerboard.cpp:122
+#: src/modules/mod_geometry/circle.cpp:128
+#: src/modules/mod_geometry/rectangle.cpp:125 src/synfig/layer_shape.cpp:1192
+#: src/synfig/layer_solidcolor.cpp:102 src/synfig/paramdesc.cpp:79
+msgid "Color"
+msgstr "Szín"
+
+#: src/modules/mod_example/filledrect.cpp:121
+#: src/modules/mod_example/simplecircle.cpp:108
+#: src/modules/mod_geometry/circle.cpp:129
+#: src/modules/mod_geometry/rectangle.cpp:126
+#: src/synfig/layer_solidcolor.cpp:103
+msgid "Fill color of the layer"
+msgstr "A réteg kitöltő színe"
+
+#: src/modules/mod_example/filledrect.cpp:125
+#: src/modules/mod_geometry/rectangle.cpp:130
+#: src/modules/mod_gradient/lineargradient.cpp:190
+msgid "Point 1"
+msgstr "1. pont"
+
+#: src/modules/mod_example/filledrect.cpp:126
+#: src/modules/mod_geometry/rectangle.cpp:132
+msgid "First corner of the rectangle"
+msgstr "A téglalap első sarka"
+
+#: src/modules/mod_example/filledrect.cpp:131
+#: src/modules/mod_geometry/rectangle.cpp:136
+#: src/modules/mod_gradient/lineargradient.cpp:195
+msgid "Point 2"
+msgstr "2. pont"
+
+#: src/modules/mod_example/filledrect.cpp:132
+#: src/modules/mod_geometry/rectangle.cpp:137
+msgid "Second corner of the rectangle"
+msgstr "A téglalap második sarka"
+
+#: src/modules/mod_example/filledrect.cpp:136
+msgid "Feather X"
+msgstr "Lágy szél X"
+
+#: src/modules/mod_example/filledrect.cpp:140
+msgid "Feather Y"
+msgstr "Lágy szél Y"
+
+#: src/modules/mod_example/filledrect.cpp:144 src/modules/lyr_std/bevel.cpp:67
+#: src/modules/mod_geometry/advanced_outline.cpp:1161
+msgid "Bevel"
+msgstr "Lesarkítás"
+
+#: src/modules/mod_example/filledrect.cpp:145
+msgid "Use Bevel for the corners"
+msgstr "Lesarkított sarkok"
+
+#: src/modules/mod_example/filledrect.cpp:149
+msgid "Keep Bevel Circular"
+msgstr "Kerek sarkítás megtartása"
+
+#: src/modules/mod_example/filledrect.cpp:150
+msgid "When checked the bevel is circular"
+msgstr "Ha bekapcsolt, akkor a sarkítás kerek"
+
+#: src/modules/mod_example/metaballs.cpp:56
+msgid "Metaballs"
+msgstr "Metalabdák"
+
+#: src/modules/mod_example/metaballs.cpp:134
+#: src/modules/mod_gradient/conicalgradient.cpp:109
+#: src/modules/mod_gradient/curvegradient.cpp:552
+#: src/modules/mod_gradient/lineargradient.cpp:199
+#: src/modules/mod_gradient/radialgradient.cpp:113
+#: src/modules/mod_gradient/spiralgradient.cpp:112
+#: src/modules/mod_noise/noise.cpp:259 src/modules/mod_particle/plant.cpp:403
+#: src/synfig/valuenode_gradientrotate.cpp:164
+#: src/synfig/valuenode_repeat_gradient.cpp:203
+msgid "Gradient"
+msgstr "Színátmenet"
+
+#: src/modules/mod_example/metaballs.cpp:138
+msgid "Balls"
+msgstr "Labdák"
+
+#: src/modules/mod_example/metaballs.cpp:142
+msgid "Radii"
+msgstr "Sugarak"
+
+#: src/modules/mod_example/metaballs.cpp:146
+msgid "Weights"
+msgstr "Súlyok"
+
+#: src/modules/mod_example/metaballs.cpp:150
+msgid "Gradient Left"
+msgstr "Bal színátmenet"
+
+#: src/modules/mod_example/metaballs.cpp:154
+msgid "Gradient Right"
+msgstr "Jobb színátmenet"
+
+#: src/modules/mod_example/metaballs.cpp:158
+msgid "Positive Only"
+msgstr "Csak pozitív"
+
+#: src/modules/mod_example/simplecircle.cpp:57
+msgid "Simple Circle"
+msgstr "Egyszerű kör"
+
+#: src/modules/mod_example/simplecircle.cpp:112
+#: src/modules/lyr_std/stretch.cpp:110 src/modules/lyr_std/twirl.cpp:112
+#: src/modules/mod_gradient/conicalgradient.cpp:114
+#: src/modules/mod_gradient/radialgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:117
+msgid "Center"
+msgstr "Közép"
+
+#: src/modules/mod_example/simplecircle.cpp:113
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:144
+msgid "Center of the circle"
+msgstr "A kör közepe"
+
+#: src/modules/mod_example/simplecircle.cpp:117
+#: src/modules/lyr_std/sphere_distort.cpp:151
+#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:132
+#: src/modules/mod_gradient/radialgradient.cpp:123
+#: src/modules/mod_gradient/spiralgradient.cpp:122
+#: src/modules/mod_noise/valuenode_random.cpp:269
+#: src/synfig/valuenode_radialcomposite.cpp:272
+msgid "Radius"
+msgstr "Sugár"
+
+#: src/modules/mod_example/simplecircle.cpp:118
+#: src/modules/lyr_std/twirl.cpp:118
+#: src/modules/mod_gradient/radialgradient.cpp:124
+#: src/modules/mod_gradient/spiralgradient.cpp:123
+msgid "This is the radius of the circle"
+msgstr "Ez a kör sugara"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:65
+#: src/modules/lyr_freetype/lyr_freetype.cpp:516
+msgid "Text"
+msgstr "Szöveg"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:66
+#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:60
+#: src/modules/lyr_std/supersample.cpp:57 src/modules/lyr_std/timeloop.cpp:60
+#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:70
+#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:79
+msgid "Other"
+msgstr "Egyéb"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:96
+msgid "Text Layer"
+msgstr "Szöveg réteg"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:389
+msgid "unable to initialize"
+msgstr "Nem tudom inicializálni"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:408
+msgid "empty font set"
+msgstr "Üres betűkészlet"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:517
+msgid "Text to Render"
+msgstr "Megjelenítendő szöveg"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:523
+msgid "Color of the text"
+msgstr "A szöveg színe"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:527
+msgid "Font Family"
+msgstr "Betűcsalád"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:532
+msgid "Style"
+msgstr "Stílus"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:534
+#: src/modules/lyr_freetype/lyr_freetype.cpp:544
+msgid "Normal"
+msgstr "Normális"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:535
+msgid "Oblique"
+msgstr "Kurzív"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:536
+msgid "Italic"
+msgstr "Dőlt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:540
+msgid "Weight"
+msgstr "Vastagság"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:542
+msgid "Ultralight"
+msgstr "Ultrakönnyű"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:543
+msgid "light"
+msgstr "Vékony"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:545
+msgid "Bold"
+msgstr "Vastag"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:546
+msgid "Ultrabold"
+msgstr "Nagyon vastag"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:547
+msgid "Heavy"
+msgstr "Nehéz"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:550
+msgid "Horizontal Spacing"
+msgstr "Vízszintes szóköz"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:551
+msgid "Describes how close glyphs are horizontally"
+msgstr "Megadja, hogy milyen közel vannak egymáshoz a betük"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:555
+msgid "Vertical Spacing"
+msgstr "Sortávolság"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:556
+msgid "Describes how close lines of text are vertically"
+msgstr "Megadja, hogy milyen közel vannak egymáshoz a szöveg sorai"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:560
+#: src/modules/lyr_std/shade.cpp:569 src/modules/lyr_std/xorpattern.cpp:129
+#: src/modules/mod_filter/blur.cpp:371
+#: src/modules/mod_filter/radialblur.cpp:115
+#: src/modules/mod_geometry/checkerboard.cpp:130
+#: src/modules/mod_noise/distort.cpp:222 src/modules/mod_noise/noise.cpp:267
+msgid "Size"
+msgstr "Méret"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:561
+msgid "Size of the text"
+msgstr "A szöveg mérete"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:568
+msgid "Orientation"
+msgstr "Irány"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:569
+msgid "Text Orientation"
+msgstr "A szöveg iránya"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:574
+#: src/modules/lyr_std/insideout.cpp:143 src/modules/lyr_std/rotate.cpp:115
+#: src/modules/lyr_std/shade.cpp:566 src/modules/lyr_std/translate.cpp:99
+#: src/modules/lyr_std/curvewarp.cpp:389
+#: src/modules/lyr_std/xorpattern.cpp:125 src/modules/lyr_std/zoom.cpp:103
+#: src/modules/mod_filter/radialblur.cpp:110
+#: src/modules/mod_geometry/checkerboard.cpp:126
+#: src/modules/mod_geometry/circle.cpp:143
+#: src/modules/mod_gradient/curvegradient.cpp:537
+#: src/modules/mod_particle/plant.cpp:398 src/synfig/layer_pastecanvas.cpp:133
+#: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:518
+msgid "Origin"
+msgstr "Középpont"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+msgid "Text Position"
+msgstr "A szöveg pozíciója"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:579
+msgid "Font"
+msgstr "Betűtípus"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:580
+msgid "Filename of the font to use"
+msgstr "A használandó betűtípus állományának elélési útvonala"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+msgid "Kerning"
+msgstr "Alávágás"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:588
+msgid "Enables/Disables font kerning (If the font supports it)"
+msgstr "Engedélyezi/tiltja az alávágást (azaz az egymásba lógó betűk kezelését). (Ha a betűtípus támogatja azt.)"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:592
+msgid "Sharpen Edges"
+msgstr "Éles élek"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:593
+msgid "Turn this off if you are going to be animating the text"
+msgstr "Kapcsolja ki, ha a szöveget animálni akarja"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:596
+#: src/modules/lyr_std/shade.cpp:586 src/modules/mod_geometry/circle.cpp:147
+#: src/synfig/layer_shape.cpp:1199
+msgid "Invert"
+msgstr "Invertál"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:653
+msgid "No face loaded, no text will be rendered."
+msgstr "Nincs betűtípus betöltve, nem lesz szöveg megjelenítve."
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:679
+msgid "Text too small, no text will be rendered."
+msgstr "A szöveg túl kicsi, semmilyen szöveg nem fog megjelenni"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:703
+msgid "Unable to set face size."
+msgstr "Nem lehet beállítani a betűtípus méretét."
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:746
+msgid "Invalid multibyte sequence - is the locale set?\n"
+msgstr "Hibás multibyte sorozat - be van állítva a lokalizáció?\n"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:753
+msgid "Can't parse multibyte character.\n"
+msgstr "Ne lehet a multibyteos karaktereket feldolgozni.\n"
+
+#: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
+msgid "Stylize"
+msgstr "Stilizál"
+
+#: src/modules/lyr_std/bevel.cpp:569 src/modules/lyr_std/shade.cpp:575
+#: src/modules/mod_filter/blur.cpp:375
+#: src/modules/mod_filter/halftone2.cpp:169
+msgid "Type"
+msgstr "Típus"
+
+#: src/modules/lyr_std/bevel.cpp:570 src/modules/lyr_std/shade.cpp:576
+#: src/modules/mod_filter/blur.cpp:376
+msgid "Type of blur to use"
+msgstr "A elmosás típusa"
+
+#: src/modules/lyr_std/bevel.cpp:572 src/modules/lyr_std/shade.cpp:578
+#: src/modules/mod_filter/blur.cpp:378 src/synfig/layer_shape.cpp:1212
+msgid "Box Blur"
+msgstr "Négyzetes elmosás"
+
+#: src/modules/lyr_std/bevel.cpp:573 src/modules/lyr_std/shade.cpp:579
+#: src/modules/mod_filter/blur.cpp:379 src/synfig/layer_shape.cpp:1213
+msgid "Fast Gaussian Blur"
+msgstr "Gyors Gauss elmosás"
+
+#: src/modules/lyr_std/bevel.cpp:574 src/modules/lyr_std/shade.cpp:580
+#: src/modules/mod_filter/blur.cpp:380 src/synfig/layer_shape.cpp:1214
+msgid "Cross-Hatch Blur"
+msgstr "Négyzetháló elmosás"
+
+#: src/modules/lyr_std/bevel.cpp:575 src/modules/lyr_std/shade.cpp:581
+#: src/modules/mod_filter/blur.cpp:381 src/synfig/layer_shape.cpp:1215
+msgid "Gaussian Blur"
+msgstr "Gauss elmosás"
+
+#: src/modules/lyr_std/bevel.cpp:576 src/modules/lyr_std/shade.cpp:582
+#: src/modules/mod_filter/blur.cpp:382 src/synfig/layer_shape.cpp:1216
+msgid "Disc Blur"
+msgstr "Kör elmosás"
+
+#: src/modules/lyr_std/bevel.cpp:580
+msgid "Hi-Color"
+msgstr "Fényes szín"
+
+#: src/modules/lyr_std/bevel.cpp:583
+msgid "Lo-Color"
+msgstr "Árnyék szín"
+
+#: src/modules/lyr_std/bevel.cpp:586
+msgid "Light Angle"
+msgstr "Fényszög"
+
+#: src/modules/lyr_std/bevel.cpp:590
+msgid "Depth of Bevel"
+msgstr "Sarkítás mélysége"
+
+#: src/modules/lyr_std/bevel.cpp:594
+msgid "Softness"
+msgstr "Finomság"
+
+#: src/modules/lyr_std/bevel.cpp:597
+msgid "Use Luma"
+msgstr "Világosság használata"
+
+#: src/modules/lyr_std/bevel.cpp:600
+msgid "Solid"
+msgstr "Kitöltött"
+
+#: src/modules/lyr_std/booleancurve.cpp:104
+msgid "Region Set"
+msgstr "Régióhalmaz"
+
+#: src/modules/lyr_std/booleancurve.cpp:105
+msgid "Set of regions to combine"
+msgstr "A összevonandó régiók halmaza"
+
+#: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:226
+msgid "Clamp"
+msgstr "Szín intervallum"
+
+#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:55
+#: src/modules/mod_filter/halftone2.cpp:58
+#: src/modules/mod_filter/halftone3.cpp:58
+#: src/modules/mod_filter/lumakey.cpp:58
+msgid "Filters"
+msgstr "Szűrők"
+
+#: src/modules/lyr_std/clamp.cpp:158
+msgid "Invert Negative"
+msgstr "Negatív inverz"
+
+#: src/modules/lyr_std/clamp.cpp:162
+msgid "Clamp Ceiling"
+msgstr "Felső vágás"
+
+#: src/modules/lyr_std/clamp.cpp:163
+msgid "When checked the Ceiling value is used"
+msgstr "Ha bekapcsolt, akkor a felső határ figyelembe vesszük"
+
+#: src/modules/lyr_std/clamp.cpp:167
+msgid "Ceiling"
+msgstr "Felső határ"
+
+#: src/modules/lyr_std/clamp.cpp:168
+msgid "Upper boundary of the clamping"
+msgstr "Az intervallum felső határa"
+
+#: src/modules/lyr_std/clamp.cpp:172
+msgid "Floor"
+msgstr "Alsó határ"
+
+#: src/modules/lyr_std/clamp.cpp:173
+msgid "Lower boundary of the clamping"
+msgstr "Az intervallum alsó határa"
+
+#: src/modules/lyr_std/import.cpp:59
+msgid "Import Image"
+msgstr "Kép importálása"
+
+#: src/modules/lyr_std/import.cpp:151 src/modules/lyr_std/import.cpp:201
+#, c-format
+msgid "Filename seems to already be set to \"%s\" (%s)"
+msgstr "A fájlnév már be van állítva erre:  \"%s\" (%s)"
+
+#: src/modules/lyr_std/import.cpp:283
+msgid "Filename"
+msgstr "Fájlnév"
+
+#: src/modules/lyr_std/import.cpp:284
+msgid "File to import"
+msgstr "Importálandó fájl"
+
+#: src/modules/lyr_std/import.cpp:288 src/synfig/layer_pastecanvas.cpp:146
+msgid "Time Offset"
+msgstr "Idő-eltolás"
+
+#: src/modules/lyr_std/import.cpp:289
+msgid "Time Offset to apply to the imported file"
+msgstr "Az importált fájlra alkalmazandó idő eltolás"
+
+#: src/modules/lyr_std/insideout.cpp:55
+msgid "Inside Out"
+msgstr "Kifordítva"
+
+#: src/modules/lyr_std/insideout.cpp:56
+#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
+#: src/modules/lyr_std/warp.cpp:57 src/modules/lyr_std/curvewarp.cpp:56
+#: src/modules/mod_noise/distort.cpp:58
+msgid "Distortions"
+msgstr "Torzítások"
+
+#: src/modules/lyr_std/insideout.cpp:144
+msgid "Defines the where the center will be"
+msgstr "Megadja, hogy hol lesz a közép"
+
+#: src/modules/lyr_std/julia.cpp:56
+msgid "Julia Set"
+msgstr "Júlia halmaz"
+
+#: src/modules/lyr_std/julia.cpp:57 src/modules/lyr_std/mandelbrot.cpp:57
+msgid "Fractals"
+msgstr "Fraktálok"
+
+#: src/modules/lyr_std/julia.cpp:309
+msgid "Inside Color"
+msgstr "Belső szín"
+
+#: src/modules/lyr_std/julia.cpp:310
+msgid "Color of the Set"
+msgstr "A halmaz színe"
+
+#: src/modules/lyr_std/julia.cpp:313
+msgid "Outside Color"
+msgstr "Külső szín"
+
+#: src/modules/lyr_std/julia.cpp:314
+msgid "Color outside the Set"
+msgstr "A halmazon kívüli pontok színe"
+
+#: src/modules/lyr_std/julia.cpp:317
+msgid "Color Shift"
+msgstr "Szín eltolás"
+
+#: src/modules/lyr_std/julia.cpp:320 src/modules/lyr_std/mandelbrot.cpp:223
+msgid "Iterations"
+msgstr "Iterációk"
+
+#: src/modules/lyr_std/julia.cpp:323
+msgid "Seed Point"
+msgstr "Kiindulási pont"
+
+#: src/modules/lyr_std/julia.cpp:326 src/modules/lyr_std/mandelbrot.cpp:226
+msgid "Bailout ValueBase"
+msgstr "Kisegítő alapérték"
+
+#: src/modules/lyr_std/julia.cpp:330 src/modules/lyr_std/mandelbrot.cpp:236
+#: src/modules/lyr_std/twirl.cpp:130
+msgid "Distort Inside"
+msgstr "Torzítás belül"
+
+#: src/modules/lyr_std/julia.cpp:333 src/modules/lyr_std/mandelbrot.cpp:240
+msgid "Shade Inside"
+msgstr "Árnyékolás belül"
+
+#: src/modules/lyr_std/julia.cpp:336 src/modules/lyr_std/mandelbrot.cpp:244
+msgid "Solid Inside"
+msgstr "Kitöltött belül"
+
+#: src/modules/lyr_std/julia.cpp:339 src/modules/lyr_std/mandelbrot.cpp:248
+msgid "Invert Inside"
+msgstr "Inverz belül"
+
+#: src/modules/lyr_std/julia.cpp:342
+msgid "Color Inside"
+msgstr "Szín belül"
+
+#: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:265
+#: src/modules/lyr_std/twirl.cpp:135
+msgid "Distort Outside"
+msgstr "Torzítás kívül"
+
+#: src/modules/lyr_std/julia.cpp:348 src/modules/lyr_std/mandelbrot.cpp:269
+msgid "Shade Outside"
+msgstr "Árnyékolás kívül"
+
+#: src/modules/lyr_std/julia.cpp:351 src/modules/lyr_std/mandelbrot.cpp:273
+msgid "Solid Outside"
+msgstr "Kitöltött kívül"
+
+#: src/modules/lyr_std/julia.cpp:354 src/modules/lyr_std/mandelbrot.cpp:277
+msgid "Invert Outside"
+msgstr "Inverz kívül"
+
+#: src/modules/lyr_std/julia.cpp:357
+msgid "Color Outside"
+msgstr "Szín kívül"
+
+#: src/modules/lyr_std/julia.cpp:361
+msgid "Color Cycle"
+msgstr "Ciklikus színek"
+
+#: src/modules/lyr_std/julia.cpp:364 src/modules/lyr_std/mandelbrot.cpp:285
+msgid "Smooth Outside"
+msgstr "Egyenletes kívül"
+
+#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:286
+msgid "Smooth the coloration outside the set"
+msgstr "Egyenletes színezés a halmazon kívül"
+
+#: src/modules/lyr_std/julia.cpp:368 src/modules/lyr_std/mandelbrot.cpp:230
+msgid "Break Set"
+msgstr "Törés halmaz"
+
+#: src/modules/lyr_std/julia.cpp:369 src/modules/lyr_std/mandelbrot.cpp:231
+msgid "Modify equation to achieve interesting results"
+msgstr "Módosított egyenlet, hogy érdekes eredményeket kapjunk"
+
+#: src/modules/lyr_std/mandelbrot.cpp:56
+msgid "Mandelbrot Set"
+msgstr "Mandelbrot halmaz"
+
+#: src/modules/lyr_std/mandelbrot.cpp:237
+#: src/modules/lyr_std/mandelbrot.cpp:241
+#: src/modules/lyr_std/mandelbrot.cpp:245
+#: src/modules/lyr_std/mandelbrot.cpp:249
+#: src/modules/lyr_std/mandelbrot.cpp:253
+#: src/modules/lyr_std/mandelbrot.cpp:257
+#: src/modules/lyr_std/mandelbrot.cpp:261
+msgid "Inside"
+msgstr "Belül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:252
+msgid "Gradient Inside"
+msgstr "Színátmenet belül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:256
+msgid "Offset Inside"
+msgstr "Eltolás belül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:260
+msgid "Loop Inside"
+msgstr "Ciklus belül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:266
+#: src/modules/lyr_std/mandelbrot.cpp:270
+#: src/modules/lyr_std/mandelbrot.cpp:274
+#: src/modules/lyr_std/mandelbrot.cpp:278
+#: src/modules/lyr_std/mandelbrot.cpp:282
+#: src/modules/lyr_std/mandelbrot.cpp:287
+#: src/modules/lyr_std/mandelbrot.cpp:291
+#: src/modules/lyr_std/mandelbrot.cpp:295
+msgid "Outside"
+msgstr "Kívül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:281
+msgid "Gradient outside"
+msgstr "Színátmenet kívül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:290
+msgid "Offset Outside"
+msgstr "Eltolás kívül"
+
+#: src/modules/lyr_std/mandelbrot.cpp:294
+msgid "Scale Outside"
+msgstr "Nagyítás kívül"
+
+#: src/modules/lyr_std/rotate.cpp:55
+msgid "Rotate"
+msgstr "Forgatás"
+
+#: src/modules/lyr_std/rotate.cpp:56 src/modules/lyr_std/translate.cpp:55
+#: src/modules/lyr_std/zoom.cpp:52
+msgid "Transform"
+msgstr "Eltolás"
+
+#: src/modules/lyr_std/rotate.cpp:116 src/modules/lyr_std/translate.cpp:100
+#: src/modules/mod_filter/radialblur.cpp:111
+#: src/synfig/layer_pastecanvas.cpp:134
+msgid "Point where you want the origin to be"
+msgstr "A pont ahová a középpontot szeretné"
+
+#: src/modules/lyr_std/rotate.cpp:120
+#: src/modules/lyr_std/sphere_distort.cpp:158
+#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:98
+#: src/synfig/layer_composite.cpp:217
+#: src/synfig/valuenode_blinecalctangent.cpp:251
+#: src/synfig/valuenode_blinecalcvertex.cpp:211
+#: src/synfig/valuenode_blinecalcwidth.cpp:216
+#: src/synfig/valuenode_segcalctangent.cpp:161
+#: src/synfig/valuenode_segcalcvertex.cpp:159
+msgid "Amount"
+msgstr "Mennyiség"
+
+#: src/modules/lyr_std/rotate.cpp:121
+msgid "Amount of rotation"
+msgstr "Az elforgatás szöge"
+
+#: src/modules/lyr_std/shade.cpp:66
+msgid "Shade"
+msgstr "Árnyék"
+
+#: src/modules/lyr_std/shade.cpp:570
+msgid "Size of Shade"
+msgstr "Az árnyék mérete"
+
+#: src/modules/lyr_std/sphere_distort.cpp:73
+#: src/modules/lyr_std/sphere_distort.cpp:172
+msgid "Spherize"
+msgstr "Gömbös torzítás"
+
+#: src/modules/lyr_std/sphere_distort.cpp:146
+#: src/synfig/valuenode_composite.cpp:536
+msgid "Position"
+msgstr "Pozíció"
+
+#: src/modules/lyr_std/sphere_distort.cpp:147
+msgid "Where the sphere distortion is centered"
+msgstr "Ahol a körös torzítás közepe van"
+
+#: src/modules/lyr_std/sphere_distort.cpp:154
+msgid "The size of the sphere distortion"
+msgstr "A gömbös torzítás mértéke"
+
+#: src/modules/lyr_std/sphere_distort.cpp:160
+msgid "The distortion intensity (negative values inverts effect)"
+msgstr "A torzítás mértéke (negatív értékek invertálják a hatást)"
+
+#: src/modules/lyr_std/sphere_distort.cpp:164 src/modules/lyr_std/warp.cpp:409
+msgid "Clip"
+msgstr "Vágás"
+
+#: src/modules/lyr_std/sphere_distort.cpp:165
+msgid "When cheked, the area outside the Radius are not distorted"
+msgstr "Ha bekapcsolt, akkor a sugáron kívüli terület nem lesz torzítva"
+
+#: src/modules/lyr_std/sphere_distort.cpp:169
+msgid "Distort Type"
+msgstr "Torzítás-típus"
+
+#: src/modules/lyr_std/sphere_distort.cpp:170
+msgid "The direction of the distortion"
+msgstr "A torzítás iránya"
+
+#: src/modules/lyr_std/sphere_distort.cpp:173
+msgid "Vertical Bar"
+msgstr "Függőleges sáv"
+
+#: src/modules/lyr_std/sphere_distort.cpp:174
+msgid "Horizontal Bar"
+msgstr "Vízszites sáv"
+
+#: src/modules/lyr_std/stretch.cpp:57
+msgid "Stretch"
+msgstr "Nyújtás"
+
+#: src/modules/lyr_std/stretch.cpp:106
+msgid "Size of the stretch relative to its Center"
+msgstr "A nyújtás mértéke a középponthoz viszonyítva"
+
+#: src/modules/lyr_std/stretch.cpp:111
+msgid "Where the stretch distortion is centered"
+msgstr "A nyújtás középpontja"
+
+#: src/modules/lyr_std/stroboscope.cpp:59
+msgid "Stroboscope"
+msgstr "Sztroboszkóp"
+
+#: src/modules/lyr_std/stroboscope.cpp:101
+msgid "Frequency"
+msgstr "Frekvencia"
+
+#: src/modules/lyr_std/stroboscope.cpp:102
+msgid "Frequency of the Strobe in times per second"
+msgstr "A megvilágítás üteme másodpercenkénti gyakoriság "
+
+#: src/modules/lyr_std/supersample.cpp:56
+msgid "Super Sample"
+msgstr "Szuper mintázás"
+
+#: src/modules/lyr_std/supersample.cpp:129
+msgid "Unable to create SurfaceTarget"
+msgstr "A SurfaceTarget nem létrehozható"
+
+#: src/modules/lyr_std/supersample.cpp:290
+#: src/modules/lyr_std/curvewarp.cpp:393
+#: src/modules/mod_gradient/curvegradient.cpp:542
+#: src/synfig/valuenode_composite.cpp:514
+#: src/synfig/valuenode_composite.cpp:540
+#: src/synfig/valuenode_realstring.cpp:180
+#: src/synfig/valuenode_repeat_gradient.cpp:213
+#: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
+msgid "Width"
+msgstr "Szélesség"
+
+#: src/modules/lyr_std/supersample.cpp:291
+msgid "Width of sample area (In pixels)"
+msgstr "A mintaterület szélessége (pixelben)"
+
+#: src/modules/lyr_std/supersample.cpp:294 src/tool/printing_functions.cpp:123
+msgid "Height"
+msgstr "Magasság"
+
+#: src/modules/lyr_std/supersample.cpp:295
+msgid "Height of sample area (In pixels)"
+msgstr "A mintaterület magassága (pixelben)"
+
+#: src/modules/lyr_std/supersample.cpp:298
+msgid "Use Parametric"
+msgstr "Paraméteres"
+
+#: src/modules/lyr_std/supersample.cpp:299
+msgid "Use the Parametric Renderer"
+msgstr "Használjon paraméteres megjelenítőt"
+
+#: src/modules/lyr_std/supersample.cpp:302
+msgid "Be Alpha Safe"
+msgstr "Átlátszóság-biztos"
+
+#: src/modules/lyr_std/supersample.cpp:303
+msgid "Avoid alpha artifacts when checked"
+msgstr "Ha bekapcsolt megelőzi az átlátszósági hibákat"
+
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:166
+#: src/synfig/valuenode_timeloop.cpp:153
+msgid "Time Loop"
+msgstr "Ismétlés"
+
+#: src/modules/lyr_std/timeloop.cpp:124 src/synfig/valuenode_timeloop.cpp:179
+msgid "Link Time"
+msgstr "Kapcsolódási időpont"
+
+#: src/modules/lyr_std/timeloop.cpp:125
+msgid "Start time of the loop for the cycled context"
+msgstr "Az ismétlődés kezdete az ismétlődő elemekre vonatkozóan"
+
+#: src/modules/lyr_std/timeloop.cpp:129 src/synfig/valuenode_timeloop.cpp:184
+msgid "Local Time"
+msgstr "Helyi időtartam"
+
+#: src/modules/lyr_std/timeloop.cpp:130 src/synfig/valuenode_timeloop.cpp:185
+msgid "The time when the resulted loop starts"
+msgstr "Az az időtartam, amikor az eredményül kapott ismétlődés elindul"
+
+#: src/modules/lyr_std/timeloop.cpp:134 src/synfig/valuenode_step.cpp:202
+#: src/synfig/valuenode_timeloop.cpp:189
+msgid "Duration"
+msgstr "Időtartam"
+
+#: src/modules/lyr_std/timeloop.cpp:135 src/synfig/valuenode_timeloop.cpp:190
+msgid "Lenght of the loop"
+msgstr "Az ismétlődés időtartama"
+
+#: src/modules/lyr_std/timeloop.cpp:139
+msgid "Only For Positive Duration"
+msgstr "Csak pozitív időtartam"
+
+#: src/modules/lyr_std/timeloop.cpp:140
+msgid "When checked will loop only positive durations"
+msgstr "Ha bekapcsolt, akkor az ismétlődés csak pozitív időtartamok esetén indul el"
+
+#: src/modules/lyr_std/timeloop.cpp:144
+msgid "Symmetrical"
+msgstr "Szimmetrikus"
+
+#: src/modules/lyr_std/timeloop.cpp:145
+msgid "When checked, loops are mirrored centered at Local Time"
+msgstr "Ha bekapcsolt, akkor az ismétlődések a helyi dőre nézve középpontosan tükrözöttek"
+
+#: src/modules/lyr_std/translate.cpp:54
+msgid "Translate"
+msgstr "Eltolás"
+
+#: src/modules/lyr_std/twirl.cpp:56
+msgid "Twirl"
+msgstr "Pödrés"
+
+#: src/modules/lyr_std/twirl.cpp:124
+msgid "Rotations"
+msgstr "Forgatások"
+
+#: src/modules/lyr_std/twirl.cpp:125
+msgid "The number of rotations of the twirl effect"
+msgstr "A pödrés effektus forgatásainak a száma"
+
+#: src/modules/lyr_std/twirl.cpp:131
+msgid "When checked, distorts inside the circle"
+msgstr "Ha bekapcsolt, akkor a körön belül pödör"
+
+#: src/modules/lyr_std/twirl.cpp:136
+msgid "When checked, distorts outside the circle"
+msgstr "Ha bekapcsolt, akkor a körön kívül pödör"
+
+#: src/modules/lyr_std/warp.cpp:56
+msgid "Warp"
+msgstr "Kifeszít"
+
+#: src/modules/lyr_std/warp.cpp:374
+msgid "Source TL"
+msgstr "Forrás bal felső"
+
+#: src/modules/lyr_std/warp.cpp:376
+msgid "Top Left corner of the source to warp"
+msgstr "A kifeszítendő terület bal felső sarka"
+
+#: src/modules/lyr_std/warp.cpp:380
+msgid "Source BR"
+msgstr "Forrás jobb alsó"
+
+#: src/modules/lyr_std/warp.cpp:381
+msgid "Bottom Right corner of the source to warp"
+msgstr "A kifeszítendő terület jobb alsó sarka"
+
+#: src/modules/lyr_std/warp.cpp:385
+msgid "Dest TL"
+msgstr "Cél bal felső"
+
+#: src/modules/lyr_std/warp.cpp:387
+msgid "Top Left corner of the destination"
+msgstr "A cél terület bal felső sarka"
+
+#: src/modules/lyr_std/warp.cpp:391
+msgid "Dest TR"
+msgstr "Cél jobb alsó"
+
+#: src/modules/lyr_std/warp.cpp:393
+msgid "Top Right corner of the destination"
+msgstr "A cél terület jobb felső sarka"
+
+#: src/modules/lyr_std/warp.cpp:397
+msgid "Dest BR"
+msgstr "Cél jobb alsó"
+
+#: src/modules/lyr_std/warp.cpp:399
+msgid "Bottom Right corner of the destination"
+msgstr "A cél terület bal felső sarka"
+
+#: src/modules/lyr_std/warp.cpp:403
+msgid "Dest BL"
+msgstr "Cél bal alsó"
+
+#: src/modules/lyr_std/warp.cpp:405
+msgid "Bottom Left corner of the destination"
+msgstr "A cél terület bal alsó sarka"
+
+#: src/modules/lyr_std/warp.cpp:413
+msgid "Horizon"
+msgstr "Horizont"
+
+#: src/modules/lyr_std/warp.cpp:414
+msgid "Height that determines the horizon in perspectives"
+msgstr "Az a magasság, amely a perspektíva horizontját adja meg"
+
+#: src/modules/lyr_std/curvewarp.cpp:55
+msgid "Curve Warp"
+msgstr "Íves feszítés"
+
+#: src/modules/lyr_std/curvewarp.cpp:390
+msgid "Position of the source line"
+msgstr "Az ív középpontja"
+
+#: src/modules/lyr_std/curvewarp.cpp:395
+msgid "How much is expanded the result perpendicular to the source line"
+msgstr "Az eredményül kapott alakzat milyen mértékben legyen függőleges az ívre"
+
+#: src/modules/lyr_std/curvewarp.cpp:398
+msgid "Start Point"
+msgstr "Kezdő pont"
+
+#: src/modules/lyr_std/curvewarp.cpp:400
+msgid "First point of the source line"
+msgstr "Az ív első pontja"
+
+#: src/modules/lyr_std/curvewarp.cpp:403
+msgid "End Point"
+msgstr "Végpont"
+
+#: src/modules/lyr_std/curvewarp.cpp:404
+msgid "Final point of the source line"
+msgstr "Az ív végpontja"
+
+#: src/modules/lyr_std/curvewarp.cpp:407
+#: src/modules/mod_geometry/advanced_outline.cpp:1123
+#: src/modules/mod_geometry/outline.cpp:814
+#: src/modules/mod_geometry/region.cpp:233
+#: src/modules/mod_gradient/curvegradient.cpp:546
+#: src/modules/mod_particle/plant.cpp:391
+msgid "Vertices"
+msgstr "Pontok"
+
+#: src/modules/lyr_std/curvewarp.cpp:410
+msgid "List of Spline Points where the source line is curved to"
+msgstr ""
+
+#: src/modules/lyr_std/curvewarp.cpp:413
+#: src/modules/mod_geometry/advanced_outline.cpp:1178
+#: src/modules/mod_gradient/curvegradient.cpp:567
+msgid "Fast"
+msgstr "Gyors"
+
+#: src/modules/lyr_std/curvewarp.cpp:414
+#: src/modules/mod_gradient/curvegradient.cpp:568
+msgid "When checked, renders quickly but with artifacts"
+msgstr "Ha bekapcsolt, gyorsan előállítja az eredményt, de csúnya élekkel"
+
+#: src/modules/lyr_std/xorpattern.cpp:55
+msgid "XOR Pattern"
+msgstr "Kizáró vagy minta"
+
+#: src/modules/lyr_std/xorpattern.cpp:126
+msgid "Center of the pattern"
+msgstr "A minta középpontja"
+
+#: src/modules/lyr_std/xorpattern.cpp:130
+msgid "Size of the pattern"
+msgstr "A minta mérete"
+
+#: src/modules/lyr_std/zoom.cpp:51 src/synfig/valuenode.cpp:143
+#: src/synfig/valuenode_blinecalctangent.cpp:261
+#: src/synfig/valuenode_blinecalcwidth.cpp:221
+#: src/synfig/valuenode_exp.cpp:155 src/synfig/valuenode_scale.cpp:243
+msgid "Scale"
+msgstr "Nagyítás"
+
+#: src/modules/lyr_std/zoom.cpp:99
+msgid "Amount to scale to"
+msgstr "A nagyítás mértéke"
+
+#: src/modules/lyr_std/zoom.cpp:104
+msgid "Point to scale from"
+msgstr "A nagyítás kezdőpontja"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:131 src/modules/mod_bmp/mptr_bmp.cpp:132
+#: src/modules/mod_ppm/mptr_ppm.cpp:78
+#, c-format
+msgid "Unable to open %s"
+msgstr "Nem lehet megnyitni: %s"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:143 src/modules/mod_bmp/mptr_bmp.cpp:144
+#, c-format
+msgid "%s is not in BMP format"
+msgstr "%s nem BMP formátumban van"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:150
+#, c-format
+msgid "Failure while reading BITMAPFILEHEADER from %s"
+msgstr "%s: Hiba a BITMAPFILEHEADER olvasása során"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:158
+#, c-format
+msgid "Failure while reading BITMAPINFOHEADER from %s"
+msgstr "%s: Hiba a BITMAPINFOHEADER olvasása során"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:168
+#, c-format
+msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
+msgstr "Rossz  BITMAPFILEHEADER %s fájlban. (bfOffsetBits=%d, %d helyett)"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:176
+#, c-format
+msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
+msgstr "Rossz BITMAPINFOHEADER %s fájlban. (biSize=%d, 40 helyett)"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
+msgid "Reading compressed bitmaps is not supported"
+msgstr "Tömörített bitmap fájlok olvasása nem támogatott"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:201 src/modules/mod_bmp/mptr_bmp.cpp:202
+#, c-format
+msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
+msgstr "Nem támogatott bit mélység (bit_count=%d, 24 vagy 32 helyett)"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:184
+msgid " (animated)"
+msgstr "(animált)"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:194 src/modules/mod_bmp/trgt_bmp.cpp:195
+msgid "Unable to open file"
+msgstr "A fájlt nem lehet megnyitni"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:225 src/modules/mod_bmp/trgt_bmp.cpp:226
+msgid "Unable to write file header to file"
+msgstr "A fájl fejrészét nem lehet a fájlban írni"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:232 src/modules/mod_bmp/trgt_bmp.cpp:233
+msgid "Unable to write info header"
+msgstr "Az információs fejrészt nem lehet a fájlba írni"
+
+#: src/modules/mod_dv/trgt_dv.cpp:165 src/modules/mod_dv/trgt_dv.cpp:174
+#: src/modules/mod_dv/trgt_dv.cpp:181 src/modules/mod_dv/trgt_dv.cpp:191
+#: src/modules/mod_dv/trgt_dv.cpp:199 src/modules/mod_dv/trgt_dv.cpp:204
+#: src/modules/mod_dv/trgt_dv.cpp:208 src/modules/mod_dv/trgt_dv.cpp:217
+#: src/modules/mod_dv/trgt_dv.cpp:226
+msgid "Unable to open pipe to encodedv"
+msgstr "Nem lehet csatlakozni az encodedv-hez"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+msgid "Unable to open pipe to ffmpeg"
+msgstr "Nem lehet csatlakozni az ffmpeg-hez"
+
+#: src/modules/mod_filter/blur.cpp:67
+msgid "Blur"
+msgstr "Elmosás"
+
+#: src/modules/mod_filter/blur.cpp:68 src/modules/mod_filter/radialblur.cpp:56
+#: src/synfig/layer_motionblur.cpp:57
+msgid "Blurs"
+msgstr "Elmosások"
+
+#: src/modules/mod_filter/blur.cpp:372
+msgid "Size of Blur"
+msgstr "Az elmosás mérete"
+
+#: src/modules/mod_filter/colorcorrect.cpp:54
+msgid "Color Correct"
+msgstr "Színkorrekció"
+
+#: src/modules/mod_filter/colorcorrect.cpp:210
+msgid "Hue Adjust"
+msgstr "Színárnyalat utánaállítása"
+
+#: src/modules/mod_filter/colorcorrect.cpp:214
+msgid "Brightness"
+msgstr "Fényesség"
+
+#: src/modules/mod_filter/colorcorrect.cpp:218
+msgid "Contrast"
+msgstr "Kontraszt"
+
+#: src/modules/mod_filter/colorcorrect.cpp:222
+msgid "Exposure Adjust"
+msgstr "Expozíció utánaállítás"
+
+#: src/modules/mod_filter/colorcorrect.cpp:226 src/synfig/layer_bitmap.cpp:178
+msgid "Gamma Adjustment"
+msgstr "Gamma utánaállítás"
+
+#: src/modules/mod_filter/halftone2.cpp:57
+msgid "Halftone 2"
+msgstr "Féltónus 2"
+
+#: src/modules/mod_filter/halftone2.cpp:150
+msgid "Mask Origin"
+msgstr "Maszk középpont"
+
+#: src/modules/mod_filter/halftone2.cpp:154
+msgid "Mask Angle"
+msgstr "Maszk szög"
+
+#: src/modules/mod_filter/halftone2.cpp:158
+#: src/modules/mod_filter/halftone3.cpp:308
+msgid "Mask Size"
+msgstr "Maszk méret"
+
+#: src/modules/mod_filter/halftone2.cpp:163
+msgid "Light Color"
+msgstr "Világos szín"
+
+#: src/modules/mod_filter/halftone2.cpp:166
+msgid "Dark Color"
+msgstr "Sötét szín"
+
+#: src/modules/mod_filter/halftone2.cpp:171
+#: src/modules/mod_filter/halftone3.cpp:313
+#: src/modules/mod_gradient/conicalgradient.cpp:125
+msgid "Symmetric"
+msgstr "Szimmetrikus"
+
+#: src/modules/mod_filter/halftone2.cpp:172
+#: src/modules/mod_filter/halftone3.cpp:314
+msgid "Light On Dark"
+msgstr "Világos a sötéten"
+
+#: src/modules/mod_filter/halftone2.cpp:174
+#: src/modules/mod_filter/halftone3.cpp:316
+msgid "Diamond"
+msgstr "Gyémánt"
+
+#: src/modules/mod_filter/halftone2.cpp:175
+#: src/modules/mod_filter/halftone3.cpp:317
+msgid "Stripe"
+msgstr "Csíkos"
+
+#: src/modules/mod_filter/halftone3.cpp:57
+msgid "Halftone 3"
+msgstr "Féltónus 3"
+
+#: src/modules/mod_filter/halftone3.cpp:311
+msgid " Type"
+msgstr "Típus"
+
+#: src/modules/mod_filter/halftone3.cpp:320
+msgid "Subtractive Flag"
+msgstr "Kivonó mód"
+
+#: src/modules/mod_filter/halftone3.cpp:328
+msgid " Color"
+msgstr " szín"
+
+#: src/modules/mod_filter/halftone3.cpp:332
+msgid " Mask Origin"
+msgstr " maszk középpont"
+
+#: src/modules/mod_filter/halftone3.cpp:336
+msgid " Mask Angle"
+msgstr " maszk szög"
+
+#: src/modules/mod_filter/lumakey.cpp:57
+msgid "Luma Key"
+msgstr "Világossági kulcs"
+
+#: src/modules/mod_filter/radialblur.cpp:55
+msgid "Radial Blur"
+msgstr "Körkörös elmosás"
+
+#: src/modules/mod_filter/radialblur.cpp:116
+msgid "Size of blur"
+msgstr "Elmosás mértéke"
+
+#: src/modules/mod_filter/radialblur.cpp:121
+msgid "Fade Out"
+msgstr "Elhalványulás"
+
+#: src/modules/mod_geometry/checkerboard.cpp:58
+msgid "Checkerboard"
+msgstr "Kockás minta"
+
+#: src/modules/mod_geometry/checkerboard.cpp:59
+#: src/modules/mod_geometry/circle.cpp:57
+#: src/modules/mod_geometry/advanced_outline.cpp:68
+#: src/modules/mod_geometry/outline.cpp:73
+#: src/modules/mod_geometry/rectangle.cpp:60
+#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:63
+#: src/synfig/layer_polygon.cpp:62 src/synfig/layer_solidcolor.cpp:57
+msgid "Geometry"
+msgstr "Geometria"
+
+#: src/modules/mod_geometry/checkerboard.cpp:123
+msgid "Color of checkers"
+msgstr "A kockák színe"
+
+#: src/modules/mod_geometry/checkerboard.cpp:127
+msgid "Center of the checkers"
+msgstr "A kockák közepe"
+
+#: src/modules/mod_geometry/checkerboard.cpp:131
+msgid "Size of checkers"
+msgstr "A kockák mérete"
+
+#: src/modules/mod_geometry/circle.cpp:56
+msgid "Circle"
+msgstr "Kör"
+
+#: src/modules/mod_geometry/circle.cpp:134
+msgid "Radius of the circle"
+msgstr "A kör sugara"
+
+#: src/modules/mod_geometry/circle.cpp:138 src/synfig/layer_shape.cpp:1205
+msgid "Feather"
+msgstr "Lágy szél"
+
+#: src/modules/mod_geometry/circle.cpp:140
+msgid "Amount of feather of the circle"
+msgstr "A kör finom szélének vastagsága"
+
+#: src/modules/mod_geometry/circle.cpp:148
+msgid "Invert the circle"
+msgstr "Inverz kör"
+
+#: src/modules/mod_geometry/circle.cpp:152
+msgid "Falloff"
+msgstr "Halványítás"
+
+#: src/modules/mod_geometry/circle.cpp:153
+msgid "Determines the falloff function for the feather"
+msgstr "Meghatározza a lágy szél halványítási függvényét"
+
+#: src/modules/mod_geometry/circle.cpp:155
+#: src/modules/mod_noise/distort.cpp:234 src/modules/mod_noise/noise.cpp:275
+#: src/modules/mod_noise/valuenode_random.cpp:288
+#: src/synfig/layer_bitmap.cpp:172 src/synfig/layer_motionblur.cpp:150
+#: src/synfig/valuenode.cpp:139 src/synfig/valuenode_linear.cpp:146
+msgid "Linear"
+msgstr "Lineáris"
+
+#: src/modules/mod_geometry/circle.cpp:156
+msgid "Squared"
+msgstr "Négyzetes"
+
+#: src/modules/mod_geometry/circle.cpp:157
+msgid "Square Root"
+msgstr "Négyzetgyökös"
+
+#: src/modules/mod_geometry/circle.cpp:158
+msgid "Sigmond"
+msgstr "Sigmond"
+
+#: src/modules/mod_geometry/circle.cpp:159
+#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:276
+#: src/modules/mod_noise/valuenode_random.cpp:289
+#: src/synfig/layer_bitmap.cpp:173
+msgid "Cosine"
+msgstr "Koszinusz"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:67
+msgid "Advanced Outline"
+msgstr "Fejlettebb kontúr"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:133
+msgid "No vertices in spline "
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1125
+#: src/modules/mod_geometry/outline.cpp:817
+#: src/modules/mod_geometry/region.cpp:235
+#: src/modules/mod_gradient/curvegradient.cpp:549
+#: src/modules/mod_particle/plant.cpp:392
+msgid "A list of spline points"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1129
+#: src/modules/mod_geometry/outline.cpp:831
+msgid "Outline Width"
+msgstr "Kontúr szélesség"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1130
+#: src/modules/mod_geometry/outline.cpp:832
+msgid "Global width of the outline"
+msgstr "A kontúr globális szélessége"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1134
+#: src/modules/mod_geometry/outline.cpp:837
+msgid "Expand"
+msgstr "Kibővítés"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1135
+#: src/modules/mod_geometry/outline.cpp:838
+msgid "Value to add to the global width"
+msgstr "Az az érték, amelyet a globális szélességhez hozzá kell adni"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1138
+msgid "Tip Type at Start"
+msgstr "A kezdeti vonalvég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1139
+msgid "Defines the Tip type of the first spline point when spline is unlooped"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/advanced_outline.cpp:1150
+#: src/synfig/valuenode_composite.cpp:548
+#: src/synfig/valuenode_composite.cpp:558
+#: src/synfig/valuenode_composite.cpp:587
+#: src/synfig/valuenode_composite.cpp:596
+msgid "Rounded Stop"
+msgstr "Kerekített vég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1142
+#: src/modules/mod_geometry/advanced_outline.cpp:1151
+#: src/synfig/valuenode_composite.cpp:549
+#: src/synfig/valuenode_composite.cpp:559
+#: src/synfig/valuenode_composite.cpp:588
+#: src/synfig/valuenode_composite.cpp:597
+msgid "Squared Stop"
+msgstr "Négyzete vég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1143
+#: src/modules/mod_geometry/advanced_outline.cpp:1152
+#: src/synfig/valuenode_composite.cpp:550
+#: src/synfig/valuenode_composite.cpp:560
+#: src/synfig/valuenode_composite.cpp:589
+#: src/synfig/valuenode_composite.cpp:598
+msgid "Peak Stop"
+msgstr "Csúcsos vég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1144
+#: src/modules/mod_geometry/advanced_outline.cpp:1153
+#: src/synfig/valuenode_composite.cpp:551
+#: src/synfig/valuenode_composite.cpp:561
+#: src/synfig/valuenode_composite.cpp:590
+#: src/synfig/valuenode_composite.cpp:599
+msgid "Flat Stop"
+msgstr "Lapos vég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1147
+msgid "Tip Type at End"
+msgstr "A befejező vonalvég"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1148
+msgid "Defines the Tip type of the last spline point when spline is unlooped"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1156
+msgid "Cusps Type"
+msgstr "Fordulópontok típusa"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1157
+#: src/modules/mod_geometry/outline.cpp:843
+msgid "Determines cusp type"
+msgstr "Meghatározza a fordulópontok típusát"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1159
+msgid "Sharp"
+msgstr "Éles"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1160
+msgid "Rounded"
+msgstr "Kerekített"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1164
+msgid "Smoothness"
+msgstr "Simaság"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1165
+msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
+msgstr "A szélességi pontok közötti interpolációt határozza meg."
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1168
+#: src/modules/mod_geometry/outline.cpp:859
+#: src/synfig/valuenode_blinecalctangent.cpp:271
+#: src/synfig/valuenode_blinecalcvertex.cpp:216
+#: src/synfig/valuenode_blinecalcwidth.cpp:226
+msgid "Homogeneous"
+msgstr "Homogén"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1169
+msgid "When true, widthpoints positions are spline length based"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1172
+msgid "Width Point List"
+msgstr "Szélesség pont lista"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1175
+msgid "List of width Points that defines the variable width"
+msgstr "A szélességi pontok listája, amelyek a változó szélességet határozzák meg"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1179
+msgid "When checked outline renders faster, but less accurate"
+msgstr "Ha bejelölt, akkor a kontúr gyorsabban jelenik meg, de kevésbé pontos"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1182
+msgid "Dashed Outline"
+msgstr "Vonalkázott kontúr"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1184
+msgid "When checked outline is dashed"
+msgstr "Ha bejelölt, akkor a kontúr vonalkázott"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1187
+msgid "Dash Item List"
+msgstr "Vonalkák listája"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1190
+msgid "List of dash items that defines the dashed outline"
+msgstr "A vonalkák listája, amelyek a vonalkázott kontúr alkotják"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1193
+msgid "Dash Items Offset"
+msgstr "Vonalkák eltolási értéke"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1196
+msgid "Distance to Offset the Dash Items"
+msgstr "A távolság, amellyel a vonalkákat el kell tolni"
+
+#: src/modules/mod_geometry/outline.cpp:72
+msgid "Outline"
+msgstr "Kontúr"
+
+#: src/modules/mod_geometry/outline.cpp:183
+msgid "No vertices in outline "
+msgstr "Nincsenek pontok a kontúron"
+
+#: src/modules/mod_geometry/outline.cpp:842
+msgid "Sharp Cusps"
+msgstr "Éles fordulópontok"
+
+#: src/modules/mod_geometry/outline.cpp:847
+msgid "Rounded Begin"
+msgstr "Kerekített kezdet"
+
+#: src/modules/mod_geometry/outline.cpp:848
+#: src/modules/mod_geometry/outline.cpp:853
+msgid "Round off the tip"
+msgstr "Lekerekíti a vonalvéget"
+
+#: src/modules/mod_geometry/outline.cpp:852
+msgid "Rounded End"
+msgstr "Kerekített befejezés"
+
+#: src/modules/mod_geometry/outline.cpp:856
+msgid "Loopyness"
+msgstr "Folytonosság"
+
+#: src/modules/mod_geometry/outline.cpp:860
+msgid "When checked the width takes the length of the spline to interpolate"
+msgstr "Ha bejelölt, akkor a kontúr szélességét az egész bvonalat figyelembe véve interpoláljuk"
+
+#: src/modules/mod_geometry/rectangle.cpp:59
+msgid "Rectangle"
+msgstr "Téglalap"
+
+#: src/modules/mod_geometry/rectangle.cpp:142
+msgid "Expand amount"
+msgstr "Kiterjesztés mértéke"
+
+#: src/modules/mod_geometry/rectangle.cpp:146
+msgid "Invert the rectangle"
+msgstr "Invertálja a téglalapot"
+
+#: src/modules/mod_geometry/region.cpp:64
+msgid "Region"
+msgstr "Régió"
+
+#: src/modules/mod_geometry/star.cpp:62
+msgid "Star"
+msgstr "Csillag"
+
+#: src/modules/mod_geometry/star.cpp:182
+msgid "Outer Radius"
+msgstr "Külső sugár"
+
+#: src/modules/mod_geometry/star.cpp:183
+msgid "The radius of the outer points in the star"
+msgstr "Sugár a csillag külső pontjainak meghatározásához"
+
+#: src/modules/mod_geometry/star.cpp:189
+msgid "Inner Radius"
+msgstr "Belső sugár"
+
+#: src/modules/mod_geometry/star.cpp:190
+msgid "The radius of the inner points in the star"
+msgstr "Sugár a csillag belső pontjainak meghatározásához"
+
+#: src/modules/mod_geometry/star.cpp:196
+#: src/modules/mod_gradient/conicalgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:129
+#: src/synfig/valuenode_cos.cpp:155 src/synfig/valuenode_sine.cpp:154
+msgid "Angle"
+msgstr "Szög"
+
+#: src/modules/mod_geometry/star.cpp:197
+msgid "The orientation of the star"
+msgstr "A csillag iránya"
+
+#: src/modules/mod_geometry/star.cpp:202 src/synfig/distance.cpp:251
+msgid "Points"
+msgstr "Pontok"
+
+#: src/modules/mod_geometry/star.cpp:203
+msgid "The number of points in the star"
+msgstr "A csillag pontjainak száma"
+
+#: src/modules/mod_geometry/star.cpp:207
+msgid "Regular Polygon"
+msgstr "Szabályos sokszög"
+
+#: src/modules/mod_geometry/star.cpp:208
+msgid "Whether to draw a star or a regular polygon"
+msgstr "Ha bejelölt, akkor csillag helyett szabályos sokszöget rajzol"
+
+#: src/modules/mod_gif/trgt_gif.cpp:105
+#, c-format
+msgid "Unable to open \"%s\" for write access!"
+msgstr "Nem lehet írásra megnyitni a \"%s\" fájlt"
+
+#: src/modules/mod_gif/trgt_gif.cpp:193
+msgid "Description not set!"
+msgstr "A leírás nincs beállítva!"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:57
+msgid "Conical Gradient"
+msgstr "Kúpos színátmenet"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:58
+#: src/modules/mod_gradient/curvegradient.cpp:61
+#: src/modules/mod_gradient/lineargradient.cpp:55
+#: src/modules/mod_gradient/radialgradient.cpp:58
+#: src/modules/mod_gradient/spiralgradient.cpp:57
+#: src/modules/mod_noise/noise.cpp:58
+msgid "Gradients"
+msgstr "Színátmenetek"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:110
+#: src/modules/mod_gradient/curvegradient.cpp:553
+#: src/modules/mod_gradient/lineargradient.cpp:200
+#: src/modules/mod_gradient/radialgradient.cpp:114
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+#: src/modules/mod_noise/noise.cpp:260
+msgid "Gradient to apply"
+msgstr "Az alkalmazandó színátmenet"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:115
+msgid "Center of the cone"
+msgstr "A kúp közepe"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:121
+msgid "Rotation of the gradient around the center"
+msgstr "A színátmenet forgatása a középpont körül"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:126
+#: src/modules/mod_gradient/curvegradient.cpp:557
+#: src/modules/mod_gradient/lineargradient.cpp:204
+#: src/modules/mod_gradient/radialgradient.cpp:131
+msgid "When checked the gradient is looped"
+msgstr "Ha bejelölt, akkor a színátmenet folyamatos lesz"
+
+#: src/modules/mod_gradient/curvegradient.cpp:60
+msgid "Curve Gradient"
+msgstr "Ívelt színátmenet"
+
+#: src/modules/mod_gradient/curvegradient.cpp:538
+#: src/modules/mod_particle/plant.cpp:399
+msgid "Offset for the Vertices List"
+msgstr "A pontok listájára alkalmazandó eltolás"
+
+#: src/modules/mod_gradient/curvegradient.cpp:543
+msgid "Global width of the gradient"
+msgstr "A gradiens globális szélessége"
+
+#: src/modules/mod_gradient/curvegradient.cpp:556
+#: src/modules/mod_gradient/lineargradient.cpp:203
+#: src/modules/mod_gradient/radialgradient.cpp:130
+#: src/synfig/valuenode_blinecalctangent.cpp:246
+#: src/synfig/valuenode_blinecalcvertex.cpp:206
+#: src/synfig/valuenode_blinecalcwidth.cpp:211
+msgid "Loop"
+msgstr "Ismétlődő"
+
+#: src/modules/mod_gradient/curvegradient.cpp:560
+#: src/modules/mod_gradient/lineargradient.cpp:207
+#: src/modules/mod_gradient/radialgradient.cpp:135
+msgid "ZigZag"
+msgstr "Cikk-cakk"
+
+#: src/modules/mod_gradient/curvegradient.cpp:561
+#: src/modules/mod_gradient/lineargradient.cpp:208
+#: src/modules/mod_gradient/radialgradient.cpp:136
+msgid "When checked the gradient is summetrical at the center"
+msgstr "Ha bejelölt, akkor a színátmenet szimmetrikus az ívre"
+
+#: src/modules/mod_gradient/curvegradient.cpp:564
+msgid "Perpendicular"
+msgstr "Merőleges"
+
+#: src/modules/mod_gradient/lineargradient.cpp:54
+msgid "Linear Gradient"
+msgstr "Lineáris színátmenet"
+
+#: src/modules/mod_gradient/lineargradient.cpp:192
+msgid "Start point of the gradient"
+msgstr "A színátmenet kezdőpontja"
+
+#: src/modules/mod_gradient/lineargradient.cpp:196
+msgid "End point of the gradient"
+msgstr "A színátmenet végpontja"
+
+#: src/modules/mod_gradient/radialgradient.cpp:57
+msgid "Radial Gradient"
+msgstr "Körkörös színátmenet"
+
+#: src/modules/mod_gradient/radialgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:118
+msgid "Center of the gradient"
+msgstr "A színátmenet középpontja"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:56
+msgid "Spiral Gradient"
+msgstr "Spirális színátmenet"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:130
+msgid "Rotation of the spiral"
+msgstr "A spirál elforgatásának szöge"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:135
+msgid "Clockwise"
+msgstr "Órajárással egyezően"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:136
+msgid "When checked the spiral turns clockwise"
+msgstr "Ha bejelölt, aspirál az órajárással egyezően fordul"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:103
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:104
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:216
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:217
+msgid "No file to load"
+msgstr "Nincs megnyitandó fájl"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
+#: src/synfig/listimporter.cpp:184 src/synfig/listimporter.cpp:185
+msgid "Unable to open "
+msgstr "Nem lehet megnyitni"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
+#: src/synfig/listimporter.cpp:191 src/synfig/listimporter.cpp:192
+msgid "Unable to get frame from "
+msgstr "Nem lehet a képkockát kiolvasni"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:171
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:172
+msgid "Bad surface from "
+msgstr "Hibás felülete ebből: "
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:227
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:228
+msgid "Unable to open pipe to imagemagick"
+msgstr "Nem lehet az imagemagick-hez csatlakozni"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:240
+msgid "Reached end of stream without finding PPM header"
+msgstr "PPM fej rész megtalálása nélkül ért véget a folyam"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:248
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
+msgid "stream not in PPM format"
+msgstr "A folyam nincs PPM formátumban"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:260
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:261
+msgid "Premature end of file (after header)"
+msgstr "Korai fájlvég (a fejrész után)"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:273
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:274
+msgid "Premature end of file"
+msgstr "Korai fájlvég"
+
+#: src/modules/mod_imagemagick/trgt_imagemagick.cpp:157
+msgid "Unable to open pipe to imagemagick's convert utility"
+msgstr "Nem lehet az imagemagick konvertáló segédletét megnyitni"
+
+#: src/modules/mod_noise/distort.cpp:57
+msgid "Noise Distort"
+msgstr "Zaj-torzítás"
+
+#: src/modules/mod_noise/distort.cpp:217
+msgid "Displacement"
+msgstr "Elmozdítás"
+
+#: src/modules/mod_noise/distort.cpp:218
+msgid "How big the distortion displaces the context"
+msgstr "Milyen mértékben mozdítsa el a környezetet a torzítás"
+
+#: src/modules/mod_noise/distort.cpp:223
+msgid "The distance between distortions"
+msgstr "A torzítások közötti távolság"
+
+#: src/modules/mod_noise/distort.cpp:226 src/modules/mod_noise/noise.cpp:263
+msgid "RandomNoise Seed"
+msgstr "Véletlen zaj kezdőérték"
+
+#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:264
+msgid "Change to modify the random seed of the noise"
+msgstr "Az érték megváltoztatásával, megváltozik a véletlen zaj generálásához használt kezdőérték"
+
+#: src/modules/mod_noise/distort.cpp:230 src/modules/mod_noise/noise.cpp:271
+#: src/modules/mod_noise/valuenode_random.cpp:284
+#: src/synfig/layer_bitmap.cpp:168
+msgid "Interpolation"
+msgstr "Interpoláció"
+
+#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
+#: src/synfig/layer_bitmap.cpp:169
+msgid "What type of interpolation to use"
+msgstr "Milyen interpolációt használjunk"
+
+#: src/modules/mod_noise/distort.cpp:233 src/modules/mod_noise/noise.cpp:274
+#: src/synfig/layer_bitmap.cpp:171
+msgid "Nearest Neighbor"
+msgstr "Legközelebbi szomszéd"
+
+#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:277
+#: src/modules/mod_noise/valuenode_random.cpp:290 src/synfig/valuenode.cpp:149
+#: src/synfig/valuenode_bline.cpp:1001
+#: src/synfig/valuenode_blinecalctangent.cpp:241
+#: src/synfig/valuenode_blinecalcvertex.cpp:201
+#: src/synfig/valuenode_blinecalcwidth.cpp:206
+msgid "Spline"
+msgstr "Spline"
+
+#: src/modules/mod_noise/distort.cpp:237 src/modules/mod_noise/noise.cpp:278
+#: src/modules/mod_noise/valuenode_random.cpp:291
+#: src/synfig/layer_bitmap.cpp:174
+msgid "Cubic"
+msgstr "Köbös"
+
+#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:281
+msgid "Detail"
+msgstr "Részletezettség"
+
+#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:282
+msgid "Increase to obtain fine details of the noise"
+msgstr "Magasabb érték, a zaj finomabb részletezettségét eredményezi"
+
+#: src/modules/mod_noise/distort.cpp:244 src/modules/mod_noise/noise.cpp:285
+msgid "Animation Speed"
+msgstr "Animáció sebesség"
+
+#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:286
+msgid "In cycles per second"
+msgstr "Ciklus/másodpercben"
+
+#: src/modules/mod_noise/distort.cpp:248 src/modules/mod_noise/noise.cpp:289
+msgid "Turbulent"
+msgstr "Turbulens"
+
+#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:290
+msgid "When checked produces turbulent noise"
+msgstr "Ha bejelölt, akkor turbulens zajt hoz létre"
+
+#: src/modules/mod_noise/main.cpp:66
+#: src/modules/mod_noise/valuenode_random.cpp:183
+msgid "Random"
+msgstr "Véletlenszerű"
+
+#: src/modules/mod_noise/noise.cpp:57
+msgid "Noise Gradient"
+msgstr "Zaj színátmenet"
+
+#: src/modules/mod_noise/noise.cpp:268
+msgid "Size of the noise"
+msgstr "A zaj mérete"
+
+#: src/modules/mod_noise/noise.cpp:293
+msgid "Do Alpha"
+msgstr "Átlátszóság is"
+
+#: src/modules/mod_noise/noise.cpp:294
+msgid "Uses transparency"
+msgstr "Használjon átlátszóságot is"
+
+#: src/modules/mod_noise/noise.cpp:297
+msgid "Super Sampling"
+msgstr "Szuper mintavételezés"
+
+#: src/modules/mod_noise/noise.cpp:298
+msgid "When checked the gradient is supersampled"
+msgstr "Ha bejelölt, akkor a színátmenet szuper mintavételezett"
+
+#: src/modules/mod_noise/valuenode_random.cpp:264
+#: src/synfig/valuenode_integer.cpp:194 src/synfig/valuenode_not.cpp:141
+#: src/synfig/valuenode_range.cpp:288 src/synfig/valuenode_real.cpp:182
+#: src/synfig/valuenode_reciprocal.cpp:165
+#: src/synfig/valuenode_reference.cpp:143 src/synfig/valuenode_scale.cpp:267
+#: src/synfig/valuenode_step.cpp:197 src/synfig/valuenode_timeloop.cpp:174
+msgid "Link"
+msgstr "Csatol"
+
+#: src/modules/mod_noise/valuenode_random.cpp:265
+msgid "The value node source that provides the central value"
+msgstr "A érték csomópont forrás, amely a középponti értéket adja"
+
+#: src/modules/mod_noise/valuenode_random.cpp:270
+msgid "The value of the maximum random difference"
+msgstr "A maximális véletlen különbség értéke"
+
+#: src/modules/mod_noise/valuenode_random.cpp:274
+#: src/modules/mod_particle/plant.cpp:450
+msgid "Seed"
+msgstr "Kiinduló érték"
+
+#: src/modules/mod_noise/valuenode_random.cpp:275
+msgid "Seeds the random number generator"
+msgstr "A véletlen szám generátor kiinduló értéke"
+
+#: src/modules/mod_noise/valuenode_random.cpp:279
+msgid "Speed"
+msgstr "Sebesség"
+
+#: src/modules/mod_noise/valuenode_random.cpp:280
+msgid ""
+"Defines how often a new random value is chosen (in choices per second) "
+msgstr "Meghatározza, hogy milyen gyakran választunk új véletlen értéket (választások száma per másodperc)"
+
+#: src/modules/mod_noise/valuenode_random.cpp:285
+msgid ""
+"Determines how the value is interpolated from one random choice to the next"
+msgstr "Meghatározza, hogyan interpolálódik az érték az egyik véletlen választástól a következőig"
+
+#: src/modules/mod_noise/valuenode_random.cpp:287
+msgid "No interpolation"
+msgstr "Nincs interpoláció"
+
+#: src/modules/mod_noise/valuenode_random.cpp:296
+msgid "Loop Time"
+msgstr "Ciklus idő"
+
+#: src/modules/mod_noise/valuenode_random.cpp:297
+msgid "Makes the random value repeat after the given time"
+msgstr "A véletlenszerű érték ezen idő elteltével újra ismétlődik"
+
+#: src/modules/mod_particle/plant.cpp:69
+msgid "Plant"
+msgstr "Növény"
+
+#: src/modules/mod_particle/plant.cpp:404
+msgid "Gradient to be used for coloring the plant"
+msgstr "A növény színezésére használt színátmenet"
+
+#: src/modules/mod_particle/plant.cpp:408
+msgid "Split Angle"
+msgstr "Vágószög"
+
+#: src/modules/mod_particle/plant.cpp:409
+msgid "Angle by which each split deviates from its parent"
+msgstr "Az a szög amellyel minden vágás elhajlik a szülőtől"
+
+#: src/modules/mod_particle/plant.cpp:413
+msgid "Gravity"
+msgstr "Gravitáció"
+
+#: src/modules/mod_particle/plant.cpp:414
+msgid "Direction in which the shoots tend to face"
+msgstr "Az az irány amerre a hajtások nőnek"
+
+#: src/modules/mod_particle/plant.cpp:419
+msgid "Tangential Velocity"
+msgstr "Tangens sebesség"
+
+#: src/modules/mod_particle/plant.cpp:420
+msgid "Amount to which shoots tend to grow along the tangent to the spline"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:424
+msgid "Perpendicular Velocity"
+msgstr "Merőleges sebesség"
+
+#: src/modules/mod_particle/plant.cpp:425
+msgid ""
+"Amount to which shoots tend to grow perpendicular to the tangent to the "
+"spline"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:429
+msgid "Stem Size"
+msgstr "Hajtás méret"
+
+#: src/modules/mod_particle/plant.cpp:430
+msgid "Size of the stem"
+msgstr "A hajtások mérete"
+
+#: src/modules/mod_particle/plant.cpp:435
+msgid "Size As Alpha"
+msgstr "Átlátszóság mint méret"
+
+#: src/modules/mod_particle/plant.cpp:436
+msgid ""
+"If enabled, the alpha channel from the gradient is multiplied by the stem "
+"size, and an alpha of 1.0 is used when rendering"
+msgstr "Ha bejelölt, akkor a hajtás mérete szorzódik a színátmenet átlátszósági értékével, és a megjelenítéskor 1.0 átlátszósági érték használatos"
+
+#: src/modules/mod_particle/plant.cpp:440
+msgid "Reverse"
+msgstr "Visszafelé"
+
+#: src/modules/mod_particle/plant.cpp:441
+msgid "If enabled, render the plant in the opposite direction"
+msgstr "Ha bejelölt, akkor a növény az ellenkező irányba nő"
+
+#: src/modules/mod_particle/plant.cpp:445 src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode_duplicate.cpp:203 src/synfig/valuenode_step.cpp:142
+msgid "Step"
+msgstr "Lépésköz"
+
+#: src/modules/mod_particle/plant.cpp:446
+msgid "Measure of the distance between points when rendering"
+msgstr "A megjelenítéskor mennyi legyen a pontok közötti távolság"
+
+#: src/modules/mod_particle/plant.cpp:451
+msgid "Used to seed the pseudo-random number generator"
+msgstr "A pszeudo-véletlen számnak adott kezdőérték"
+
+#: src/modules/mod_particle/plant.cpp:455
+msgid "Splits"
+msgstr "Elágazások"
+
+#: src/modules/mod_particle/plant.cpp:456
+msgid "Maximum number of times that each sprout can sprout recursively"
+msgstr "Maximum hányszor tud egy hajtás rekurzívan hatást növeszteni"
+
+#: src/modules/mod_particle/plant.cpp:460
+msgid "Sprouts"
+msgstr "Hajtások"
+
+#: src/modules/mod_particle/plant.cpp:461
+msgid "Number of places that growth occurs on each spline section"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:465
+msgid "Random Factor"
+msgstr "Véletlenszerűség mértéke"
+
+#: src/modules/mod_particle/plant.cpp:466
+msgid ""
+"Used to scale down all random effects.  Set to zero to disable randomness"
+msgstr "Minden véletlenszerű hatás gyengítésére szolgál. Ha 0 akkor semmilyen véletlenszerű hatás nincs"
+
+#: src/modules/mod_particle/plant.cpp:470
+msgid "Drag"
+msgstr "Lassítás"
+
+#: src/modules/mod_particle/plant.cpp:471
+msgid "Drag slows the growth"
+msgstr "A lassítás a növekedést lassítja"
+
+#: src/modules/mod_particle/plant.cpp:475
+msgid "Use Width"
+msgstr "Használjon szélességet"
+
+#: src/modules/mod_particle/plant.cpp:476
+msgid "Scale the velocity by the spline's width"
+msgstr ""
+
+#: src/modules/mod_ppm/mptr_ppm.cpp:86
+#, c-format
+msgid "%s was not in PPM format"
+msgstr "%s nincs PPM formátumban"
+
+#: src/synfig/cairoimporter.cpp:87 src/synfig/importer.cpp:87
+msgid "Importer::open(): Cannot open empty filename"
+msgstr "Importer::open(): Nem lehet üres fájlnevet megnyitni"
+
+#: src/synfig/cairoimporter.cpp:101 src/synfig/importer.cpp:101
+msgid "Importer::open(): Couldn't find extension"
+msgstr "Importer::open(): a kiterjesztés nem található"
+
+#: src/synfig/cairoimporter.cpp:112 src/synfig/importer.cpp:112
+msgid "Importer::open(): Unknown file type -- "
+msgstr "Importer::open(): Ismeretlen fájltípus"
+
+#: src/synfig/canvas.cpp:798 src/synfig/canvas.cpp:863
+#: src/synfig/canvas.cpp:886
+msgid "in line"
+msgstr "egy vonalban"
+
+#: src/synfig/distance.cpp:249
+msgid "Units"
+msgstr "Mértékegységek"
+
+#: src/synfig/distance.cpp:250
+msgid "Pixels"
+msgstr "Pixelek"
+
+#: src/synfig/distance.cpp:252
+msgid "Inches"
+msgstr "Hüvelykek"
+
+#: src/synfig/distance.cpp:253
+msgid "Meters"
+msgstr "Méterek"
+
+#: src/synfig/distance.cpp:254
+msgid "Millimeters"
+msgstr "Milliméterek"
+
+#: src/synfig/distance.cpp:255
+msgid "Centimeters"
+msgstr "Centiméterek"
+
+#: src/synfig/layer.cpp:565 src/synfig/layer_composite.cpp:128
+msgid "Unable to create surface target"
+msgstr "Nem lehet létrehozni a felület célt"
+
+#: src/synfig/layer.cpp:619
+msgid "Z Depth"
+msgstr "Z mélység"
+
+#: src/synfig/layer.cpp:621
+msgid "Modifies the position of the layer in the layer stack"
+msgstr "A réteg rétegek közötti pozícióját módosítja"
+
+#: src/synfig/layer_bitmap.cpp:158
+msgid "Top-Left"
+msgstr "Bal felső"
+
+#: src/synfig/layer_bitmap.cpp:159
+msgid "Upper left-hand Corner of image"
+msgstr "A kép bal felső sarka"
+
+#: src/synfig/layer_bitmap.cpp:163
+msgid "Bottom-Right"
+msgstr "Jobb alsó"
+
+#: src/synfig/layer_bitmap.cpp:164
+msgid "Lower right-hand Corner of image"
+msgstr "A kép jobb alsó sarka"
+
+#: src/synfig/layer_composite.cpp:218
+msgid "Alpha channel of the layer"
+msgstr "A réteg átlátszósága"
+
+#: src/synfig/layer_composite.cpp:221 src/synfig/paramdesc.cpp:62
+msgid "Blend Method"
+msgstr "Kompozíciós metódus"
+
+#: src/synfig/layer_composite.cpp:222
+msgid "The blending method used to composite on the layers below"
+msgstr "Az a metódus, ahogyan a rétegekből előállítsuk a végleges képet"
+
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:168
+#: src/synfig/valuenode_duplicate.cpp:174
+msgid "Duplicate"
+msgstr "Megkettőz"
+
+#: src/synfig/layer_duplicate.cpp:148
+msgid "Index"
+msgstr "Sorszám"
+
+#: src/synfig/layer_duplicate.cpp:149
+msgid "Copy Index"
+msgstr "Sorszám másolása"
+
+#: src/synfig/layer_mime.cpp:86
+msgid "[MIME]"
+msgstr "[MIME]"
+
+#: src/synfig/layer_motionblur.cpp:56
+msgid "Motion Blur"
+msgstr "Mozgási elmosódás"
+
+#: src/synfig/layer_motionblur.cpp:136
+msgid "Aperture"
+msgstr "Rekesznyílás"
+
+#: src/synfig/layer_motionblur.cpp:137
+msgid "Shutter Time"
+msgstr "Zársebesség"
+
+#: src/synfig/layer_motionblur.cpp:141
+msgid "Subsamples Factor"
+msgstr "Almintavételezési faktor"
+
+#: src/synfig/layer_motionblur.cpp:142
+msgid "Multiplies The Number Of Subsamples Rendered"
+msgstr "A megjelenített almintavételezések számát szorozza meg"
+
+#: src/synfig/layer_motionblur.cpp:146
+msgid "Subsampling Type"
+msgstr "Almintavételezési típus"
+
+#: src/synfig/layer_motionblur.cpp:147
+msgid "Curve Type For Weighting Subsamples"
+msgstr "Az almintavételezések súlyozásához használt görbe típusa"
+
+#: src/synfig/layer_motionblur.cpp:149 src/synfig/valuenode_const.cpp:127
+msgid "Constant"
+msgstr "Konstans"
+
+#: src/synfig/layer_motionblur.cpp:151
+msgid "Hyperbolic"
+msgstr "Hiperbolikus"
+
+#: src/synfig/layer_motionblur.cpp:155
+msgid "Subsample Start Amount"
+msgstr "Kezdeti almintavételezések száma"
+
+#: src/synfig/layer_motionblur.cpp:156
+msgid "Relative Amount Of The First Subsample, For Linear Weighting"
+msgstr "Az első alminta relatív mennyisége, lineáris súlyozáshoz"
+
+#: src/synfig/layer_motionblur.cpp:160
+msgid "Subsample End Amount"
+msgstr "Végső almintavételezések száma"
+
+#: src/synfig/layer_motionblur.cpp:161
+msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
+msgstr "Az utolsó alminta relatív mennyisége, lineáris súlyozáshoz"
+
+#: src/synfig/layer_pastecanvas.cpp:78 src/synfig/layer_pastecanvas.cpp:120
+#: src/synfig/layer_pastecanvas.cpp:121
+msgid "Group"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:137
+msgid "Canvas"
+msgstr "Vászon"
+
+#: src/synfig/layer_pastecanvas.cpp:138
+msgid "Group content"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:141
+msgid "Zoom"
+msgstr "Nagyít"
+
+#: src/synfig/layer_pastecanvas.cpp:142
+msgid "Size of canvas"
+msgstr "A vászon mérete"
+
+#: src/synfig/layer_pastecanvas.cpp:147
+msgid "Time Offset to apply to the context"
+msgstr "A környezetre alkalmazandó időeltolás"
+
+#: src/synfig/layer_pastecanvas.cpp:151
+msgid "Children Lock"
+msgstr "Gyermekzár"
+
+#: src/synfig/layer_pastecanvas.cpp:152
+msgid "When checked prevents to select the children using the mouse click"
+msgstr "Ha bejelölt, akkor a gyerekeket nem lehet kiválasztani egér klikkel"
+
+#: src/synfig/layer_pastecanvas.cpp:156
+msgid "Focus Point"
+msgstr "Fókuszpont"
+
+#: src/synfig/layer_pastecanvas.cpp:159
+msgid "Point to remain fixed when zooming"
+msgstr "Az a pont, amely nagyításkor rögzített marad"
+
+#: src/synfig/layer_pastecanvas.cpp:164
+msgid "Outline Grow"
+msgstr "Kontúr növelés"
+
+#: src/synfig/layer_pastecanvas.cpp:165
+msgid "Exponential value to grow children Outline layers width"
+msgstr "A gyermek kontúr rétegek növeléséhet használt exponenciális érték"
+
+#: src/synfig/layer_pastecanvas.cpp:180
+msgid "Current Time"
+msgstr "Aktuális idő"
+
+#: src/synfig/layer_polygon.cpp:61
+msgid "Polygon"
+msgstr "Sokszög"
+
+#: src/synfig/layer_polygon.cpp:187
+msgid "Vertices List"
+msgstr "Pont lista"
+
+#: src/synfig/layer_polygon.cpp:188
+msgid "Define the corners of the polygon"
+msgstr "Meghatározza a sokszög sarokpontjait"
+
+#: src/synfig/layer_shape.cpp:63
+msgid "Shape"
+msgstr "Alak"
+
+#: src/synfig/layer_shape.cpp:64
+msgid "Internal"
+msgstr "Belső"
+
+#: src/synfig/layer_shape.cpp:1193
+msgid "Layer_Shape Color"
+msgstr "A réteg alakzatának színe"
+
+#: src/synfig/layer_shape.cpp:1202
+msgid "Antialiasing"
+msgstr "Élsimítás"
+
+#: src/synfig/layer_shape.cpp:1209
+msgid "Type of Feather"
+msgstr "Lágy szél típus"
+
+#: src/synfig/layer_shape.cpp:1210
+msgid "Type of feathering to use"
+msgstr "A lágy szél típusának meghatározása"
+
+#: src/synfig/layer_shape.cpp:1219
+msgid "Winding Style"
+msgstr "Kitöltési stílus"
+
+#: src/synfig/layer_shape.cpp:1220
+msgid "Winding style to use"
+msgstr "A használandó kitöltési stílus"
+
+#: src/synfig/layer_shape.cpp:1222
+msgid "Non Zero"
+msgstr "Nem nulla"
+
+#: src/synfig/layer_shape.cpp:1223
+msgid "Even/Odd"
+msgstr "Páros/páratlan"
+
+#: src/synfig/layer_solidcolor.cpp:56
+msgid "Solid Color"
+msgstr "Homogén szín"
+
+#: src/synfig/listimporter.cpp:161 src/synfig/listimporter.cpp:162
+msgid "No images in list"
+msgstr "A listában nincsenek képek"
+
+#: src/synfig/loadcanvas.cpp:142
+#, c-format
+msgid "cannot load '%s' recursively"
+msgstr "'%s' nem lehet rekurzívan betölteni"
+
+#: src/synfig/loadcanvas.cpp:185
+#, c-format
+msgid "Unexpected element <%s>, Expected <%s>"
+msgstr "Váratlan elem <%s>, várt <%s>"
+
+#: src/synfig/loadcanvas.cpp:191
+#, c-format
+msgid "Unexpected element <%s>"
+msgstr "Váratlan elem <%s>"
+
+#: src/synfig/loadcanvas.cpp:205
+msgid "Too many warnings"
+msgstr "Túl sok figyelmeztető üzenet"
+
+#: src/synfig/loadcanvas.cpp:236
+#, c-format
+msgid "<%s> is missing \"%s\" attribute"
+msgstr "<%s>-ból hiányzó \"%s\" attribútum"
+
+#: src/synfig/loadcanvas.cpp:267 src/synfig/loadcanvas.cpp:286
+#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:469
+#: src/synfig/loadcanvas.cpp:1118
+#, c-format
+msgid "<%s> should not contain anything"
+msgstr "<%s> nem tartalmazhat semmit"
+
+#: src/synfig/loadcanvas.cpp:271 src/synfig/loadcanvas.cpp:290
+#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:473
+#: src/synfig/loadcanvas.cpp:1122
+#, c-format
+msgid "<%s> is missing \"value\" attribute"
+msgstr "<%s>-ból hiányzik a \"value\" attribútum"
+
+#: src/synfig/loadcanvas.cpp:484 src/synfig/loadcanvas.cpp:1144
+#, c-format
+msgid "Bad value \"%s\" in <%s>"
+msgstr "Hibás érték \"%s\" <%s>-ban"
+
+#: src/synfig/loadcanvas.cpp:508
+#, c-format
+msgid "<%s> is missing \"pos\" attribute"
+msgstr "<%s>-ből hiányzik a \"pos\" attribútum"
+
+#: src/synfig/loadcanvas.cpp:1284
+#, c-format
+msgid "Unable to create <animated> with type \"%s\""
+msgstr "Nem létrehozható az <animated> \"%s\" típussal"
+
+#: src/synfig/loadcanvas.cpp:1301
+msgid "<waypoint> is missing attribute \"time\""
+msgstr "<waypoint> hiányzó attribútum: \"time\""
+
+#: src/synfig/loadcanvas.cpp:1314
+msgid ""
+"Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
+"contents..."
+msgstr "\"use\" attribútumot találtam a <waypoint> számára, amely nem volt üres. A tartalom figyelmen kívül marad..."
+
+#: src/synfig/loadcanvas.cpp:1330
+#, c-format
+msgid "Unknown ID (%s) referenced in waypoint"
+msgstr "Ismeretlen azonosító (%s) hivatkozás a referencia pontban"
+
+#: src/synfig/loadcanvas.cpp:1336 src/synfig/loadcanvas.cpp:1348
+#, c-format
+msgid "<%s> is missing its data"
+msgstr "<%s> hiányoznak az adatok"
+
+#: src/synfig/loadcanvas.cpp:1365
+msgid "Bad data for <waypoint>"
+msgstr "<waypoint> hibás adatokat tartalmaz"
+
+#: src/synfig/loadcanvas.cpp:1380
+#, c-format
+msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
+msgstr "Nem várt elem <%s> <waypoint> adatok után, figyelmen kívül lesz hagyva..."
+
+#: src/synfig/loadcanvas.cpp:1424 src/synfig/loadcanvas.cpp:1443
+#, c-format
+msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
+msgstr "\"%s\" nem érvényes a \"%s\" attribútum számára <%s>-ban"
+
+#: src/synfig/loadcanvas.cpp:1504
+#, c-format
+msgid "Missing attribute \"type\" in <%s>"
+msgstr "Hiányzó attribútum \"type\" <%s>-ben"
+
+#: src/synfig/loadcanvas.cpp:1512
+#, c-format
+msgid "Bad type in <%s>"
+msgstr "Rossz típus <%s>-ban"
+
+#: src/synfig/loadcanvas.cpp:1522
+#, c-format
+msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
+msgstr "Hiba a ValueNode <%s> létrehozásakor '%s' típussal.  Hivatkozás: '%s'"
+
+#: src/synfig/loadcanvas.cpp:1531
+#, c-format
+msgid "<%s> did not accept type '%s'"
+msgstr "<%s> nem fogad el '%s' típust"
+
+#: src/synfig/loadcanvas.cpp:1557 src/synfig/loadcanvas.cpp:1628
+#, c-format
+msgid "'%s' was already defined in <%s>"
+msgstr "'%s' már definiálva volt itt: <%s>"
+
+#: src/synfig/loadcanvas.cpp:1570
+#, c-format
+msgid "'%s' attribute in <%s> references unknown ID '%s'"
+msgstr "'%s' attribútum itt: <%s> '%s' ismeretlen azonosítóra hivatkozik"
+
+#: src/synfig/loadcanvas.cpp:1579
+#, c-format
+msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
+msgstr "Nem lehet beállítani a kapcsolódást '\"%s\" az érték csomópont \"%s\"-hoz (kapcsolat #%d itt: \"%s\")"
+
+#: src/synfig/loadcanvas.cpp:1603
+#, c-format
+msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
+msgstr "Érték csomópont \"%s\" hivatkozásakor ismeretlen kivétel keletkezett"
+
+#: src/synfig/loadcanvas.cpp:1643
+#, c-format
+msgid "element <%s> is missing its contents"
+msgstr "A <%s> elemből hiányzik a tartalom"
+
+#: src/synfig/loadcanvas.cpp:1652
+#, c-format
+msgid "Parse of '%s' failed"
+msgstr "A '%s' feldolgozása sikertelen"
+
+#: src/synfig/loadcanvas.cpp:1659
+#, c-format
+msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
+msgstr "Nem lehet hozzákapcsolódni az értékcsomóponthoz ('%s' típusa '%s') kapcsolat létrehozásához ehhez: %d (%s)"
+
+#: src/synfig/loadcanvas.cpp:1677
+#, c-format
+msgid "Unknown Exception thrown when working on element \"%s\""
+msgstr "\"%s\" elem feldolgozásakor ismeretlen kivétel keletkezett"
+
+#: src/synfig/loadcanvas.cpp:1747
+#, c-format
+msgid "<%s> is missing link %d (%s)"
+msgstr "<%s> hiányzó kapcsolatot tartalmaz: %d (%s)"
+
+#: src/synfig/loadcanvas.cpp:1841
+msgid "Unable to create <dynamic_list>"
+msgstr "<dynamic_list> listát nem lehet létrehozni"
+
+#: src/synfig/loadcanvas.cpp:1993
+msgid "<entry> is missing its contents or missing \"use\" element"
+msgstr "<entry> elemből hiányzik a tartalom vagy hiányzó \"use\" elem"
+
+#: src/synfig/loadcanvas.cpp:2038
+#, c-format
+msgid "Bad data in <%s>"
+msgstr "<%s> rossz adatot tartalmaz"
+
+#: src/synfig/loadcanvas.cpp:2076
+#, c-format
+msgid "Expected a ValueNode.  Refer to '%s'"
+msgstr "Érték csomópont a várt elem. Hivatkozás: '%s'"
+
+#: src/synfig/loadcanvas.cpp:2097
+#, c-format
+msgid "Bad ID \"%s\""
+msgstr "Rossz azonosító \"%s\""
+
+#: src/synfig/loadcanvas.cpp:2102
+#, c-format
+msgid "Duplicate ID \"%s\""
+msgstr "Duplikált azonosító  \"%s\""
+
+#: src/synfig/loadcanvas.cpp:2107
+#, c-format
+msgid "Unknown Exception thrown when adding ValueNode \"%s\""
+msgstr "Az érték csomópont \"%s\" hozzáadásakor ismeretlen kivétel keletkezett"
+
+#: src/synfig/loadcanvas.cpp:2142
+msgid "Missing \"type\" attribute to \"layer\" element"
+msgstr "Hiányzó \"type\" attribútum a \"layer\" elemben"
+
+#: src/synfig/loadcanvas.cpp:2161
+msgid "Installed layer version is smaller than layer version in file"
+msgstr "A telepített réteg verzió száma kisebb, mint az állományban lévő réteg verziószáma"
+
+#: src/synfig/loadcanvas.cpp:2181
+msgid "<name> entry for <layer> is not yet supported. Ignoring..."
+msgstr "<name> elem <layer> rétegnek még nem támogatott. Mellőzve..."
+
+#: src/synfig/loadcanvas.cpp:2184
+msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
+msgstr "<desc> elem <layer> rétegnek még nem támogatott. Mellőzve..."
+
+#: src/synfig/loadcanvas.cpp:2192
+msgid "Missing \"name\" attribute for <param>."
+msgstr "Hiányzó \"name\" attribútum a <param> számára."
+
+#: src/synfig/loadcanvas.cpp:2209
+msgid ""
+"Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
+"contents..."
+msgstr "\"use\" attribútumot találtunk a <param> számára, ami nem volt üres. A tartalma mellőzve lesz..."
+
+#: src/synfig/loadcanvas.cpp:2214
+msgid "Empty use=\"\" value in <param>"
+msgstr "Üres use=\"\" érték a <param> elemben"
+
+#: src/synfig/loadcanvas.cpp:2220
+#, c-format
+msgid "Failed to load subcanvas '%s'"
+msgstr "'%s' alárendelt vászon betöltése sikertelen"
+
+#: src/synfig/loadcanvas.cpp:2222
+msgid "Layer rejected canvas link"
+msgstr "A réteg visszautasította a vászon csatolását"
+
+#: src/synfig/loadcanvas.cpp:2244
+#, c-format
+msgid "Unknown ID (%s) referenced in parameter \"%s\""
+msgstr "Ismeretlen azonosító (%s) hivatkozás az alábbi paraméterben: \"%s\""
+
+#: src/synfig/loadcanvas.cpp:2260
+msgid "<param> is either missing its contents, or missing a \"use\" attribute."
+msgstr "<param>: vagy hiányzik a tartalom vagy hiányzik a \"use\" attribútum."
+
+#: src/synfig/loadcanvas.cpp:2272 src/synfig/loadcanvas.cpp:2292
+msgid "Bad data for <param>"
+msgstr "Rossz adatok <param> számára"
+
+#: src/synfig/loadcanvas.cpp:2280
+#, c-format
+msgid "Layer '%s' rejected value for parameter '%s'"
+msgstr "A réteg '%s' visszautasította a '%s' paraméter értékét"
+
+#: src/synfig/loadcanvas.cpp:2303
+#, c-format
+msgid "Unexpected element <%s> after <param> data, ignoring..."
+msgstr "Nem várt elem <%s> <param> adat után, mellőzve..."
+
+#: src/synfig/loadcanvas.cpp:2376 src/synfig/loadcanvas.cpp:2384
+msgid "Canvas with width or height less than one is not allowed"
+msgstr "Egynél kisebb vászon szélesség vagy magasság nem megengedett"
+
+#: src/synfig/loadcanvas.cpp:2470
+msgid "Group canvases cannot have a <defs> section"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2478
+msgid "Group canvases cannot have keyframes"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2490
+msgid "Group canvases cannot have metadata"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2498
+msgid "<meta> must have a name"
+msgstr "<meta> elemnek neve kell legyen"
+
+#: src/synfig/loadcanvas.cpp:2504
+msgid "<meta> must have content"
+msgstr "<meta> elemnek tartalma kell legyen"
+
+#: src/synfig/loadcanvas.cpp:2516
+msgid "blank \"name\" entity"
+msgstr "üres \"name\" entitás"
+
+#: src/synfig/loadcanvas.cpp:2531
+msgid "blank \"desc\" entity"
+msgstr "üres \"desc\" entitás"
+
+#: src/synfig/loadcanvas.cpp:2546
+msgid "blank \"author\" entity"
+msgstr "üres  \"author\" entitás"
+
+#: src/synfig/loadcanvas.cpp:2578
+#, c-format
+msgid "Canvas '%s' has undefined %s: %s"
+msgstr "A vászon '%s' tartalmaz nem definiált %s-t: %s"
+
+#: src/synfig/loadcanvas.cpp:2580 src/synfig/valuenode.cpp:353
+msgid "ValueNode"
+msgstr "Érték csomópont"
+
+#: src/synfig/loadcanvas.cpp:2580
+msgid "ValueNodes"
+msgstr "Érték csomópontok"
+
+#: src/synfig/loadcanvas.cpp:2660 src/synfig/loadcanvas.cpp:2716
+msgid "Can't open file"
+msgstr "A fájlt nem lehet megnyitni"
+
+#: src/synfig/main.cpp:102
+#, c-format
+msgid "API Version mismatch (LIB:%d, PROG:%d)"
+msgstr "API verzió eltérés (könyvtár:%d, program:%d)"
+
+#: src/synfig/main.cpp:107
+#, c-format
+msgid "Size of Vector mismatch (app:%d, lib:%d)"
+msgstr "Eltérés a vektor méretében (alkalmazás: %d, könyvtár: %d)"
+
+#: src/synfig/main.cpp:112
+#, c-format
+msgid "Size of Color mismatch (app:%d, lib:%d)"
+msgstr "Eltérés a szín méretében (alkalmazás: %d, könyvtár: %d)"
+
+#: src/synfig/main.cpp:117
+#, c-format
+msgid "Size of Canvas mismatch (app:%d, lib:%d)"
+msgstr "Eltérés a vászon méretében (alkalmazás: %d, könyvtár: %d)"
+
+#: src/synfig/main.cpp:122
+#, c-format
+msgid "Size of Layer mismatch (app:%d, lib:%d)"
+msgstr "Eltérés a réteg méretében (alkalmazás: %d, könyvtár: %d)"
+
+#: src/synfig/main.cpp:184
+msgid "Starting Subsystem \"Modules\""
+msgstr "A \"Modules\" (Modulok) alrendszer indítása"
+
+#: src/synfig/main.cpp:186
+msgid "Unable to initialize subsystem \"Module\""
+msgstr "A \"Modules\" (Modulok) alrendszer indítása sikertelen"
+
+#: src/synfig/main.cpp:188
+msgid "Starting Subsystem \"Layers\""
+msgstr "A \"Layers\" (Rétegek) alrendszer indítása"
+
+#: src/synfig/main.cpp:192
+msgid "Unable to initialize subsystem \"Layers\""
+msgstr "A \"Layers\" (Rétegek) alrendszer indítása sikertelen"
+
+#: src/synfig/main.cpp:195
+msgid "Starting Subsystem \"Targets\""
+msgstr "A \"Targets\" alrendszer indítása"
+
+#: src/synfig/main.cpp:200
+msgid "Unable to initialize subsystem \"Targets\""
+msgstr "A \"Targets\" (Rétegek) alrendszer indítása sikertelen"
+
+#: src/synfig/main.cpp:203
+msgid "Starting Subsystem \"Importers\""
+msgstr "Az \"Importers\" (Importálók) alrendszer indítása"
+
+#: src/synfig/main.cpp:209
+msgid "Unable to initialize subsystem \"Importers\""
+msgstr "A \"Importers\" (Importálók) alrendszer indítása sikertelen"
+
+#: src/synfig/main.cpp:212
+msgid "Starting Subsystem \"Cairo Importers\""
+msgstr ""
+
+#: src/synfig/main.cpp:219
+msgid "Unable to initialize subsystem \"Cairo Importers\""
+msgstr ""
+
+#: src/synfig/main.cpp:222
+msgid "Starting Subsystem \"ValueNodes\""
+msgstr " A \"ValueNodes\" (Érték csomópontok) alrendszer indítása"
+
+#: src/synfig/main.cpp:230
+msgid "Unable to initialize subsystem \"ValueNodes\""
+msgstr " A \"ValueNodes\" (Érték csomópontok) alrendszer indítása sikertelen"
+
+#: src/synfig/main.cpp:267 src/synfig/main.cpp:268
+#, c-format
+msgid "Loading modules from %s"
+msgstr "Modulok betöltése %s-ból"
+
+#: src/synfig/main.cpp:279
+#, c-format
+msgid "Unable to open module list file '%s'"
+msgstr "Nem lehet megnyitni a modul lista fájlt: '%s'"
+
+#: src/synfig/main.cpp:293 src/tool/renderprogress.h:141
+msgid "DONE"
+msgstr "KÉSZ"
+
+#: src/synfig/main.cpp:360 src/tool/progress.h:52 src/tool/renderprogress.h:57
+msgid "error"
+msgstr "hiba"
+
+#: src/synfig/main.cpp:375 src/tool/progress.h:59 src/tool/renderprogress.h:64
+msgid "warning"
+msgstr "figyelmeztetés"
+
+#: src/synfig/main.cpp:390
+msgid "info"
+msgstr "információ"
+
+#: src/synfig/module.cpp:64
+msgid "Errors on lt_dlinit()"
+msgstr "Hibák lt_dlinit()-ben"
+
+#: src/synfig/module.cpp:101
+#, c-format
+msgid "Unable to load module '%s'"
+msgstr "Nem lehet a '%s' modult betölteni"
+
+#: src/synfig/module.cpp:126
+#, c-format
+msgid "Attempting to register \"%s\""
+msgstr "Regisztráció próba: \"%s\""
+
+#: src/synfig/module.cpp:133
+#, c-format
+msgid "Unable to find module \"%s\" (%s)"
+msgstr "Nem lehet az alábbi modult megtalálni:  \"%s\" (%s)"
+
+#: src/synfig/module.cpp:137
+#, c-format
+msgid "Found module \"%s\""
+msgstr "Modul \"%s\" megtalált"
+
+#: src/synfig/module.cpp:171
+#, c-format
+msgid "Unable to find entrypoint in module \"%s\" (%s)"
+msgstr "Nem lehet az alábbi modulban a belépési pontot megtalálni: \"%s\" (%s)"
+
+#: src/synfig/module.cpp:184
+msgid "Entrypoint did not return a module."
+msgstr "A belépési pont nem modult adott eredményül"
+
+#: src/synfig/module.cpp:188
+#, c-format
+msgid "Success for \"%s\""
+msgstr "\"%s\" sikeres"
+
+#: src/synfig/palette.cpp:79
+msgid "Unnamed"
+msgstr "Megnevezetlen"
+
+#: src/synfig/palette.cpp:96
+msgid "Surface Palette"
+msgstr "Felületi paletta"
+
+#: src/synfig/palette.cpp:291
+#, c-format
+msgid "%0.2f%% Gray"
+msgstr "%0.2f%% Szürke"
+
+#: src/synfig/palette.cpp:306
+#, c-format
+msgid "Unable to open %s for write"
+msgstr "Nem lehet írásra megnyitni az alábbi fájlt: %s"
+
+#: src/synfig/palette.cpp:328
+#, c-format
+msgid "Unable to open %s for read"
+msgstr "Nem lehet olvasásra megnyitni az alábbi fájlt: %s"
+
+#: src/synfig/palette.cpp:340 src/synfig/palette.cpp:382
+#, c-format
+msgid "%s does not appear to be a valid %s palette file"
+msgstr "%s valószínűleg nem egy érvényes %s típusú paletta állomány"
+
+#: src/synfig/palette.cpp:437
+#, c-format
+msgid "%s does not appear to be a supported palette file"
+msgstr "%s valószínűleg nem egy támogatott paletta fájl"
+
+#: src/synfig/paramdesc.cpp:64 src/synfig/valuenode.cpp:140
+#: src/synfig/valuenode_composite.cpp:437
+msgid "Composite"
+msgstr "Összetett"
+
+#: src/synfig/paramdesc.cpp:65
+msgid "Straight"
+msgstr "Egyenes"
+
+#: src/synfig/paramdesc.cpp:66
+msgid "Onto"
+msgstr "Ráillesztett"
+
+#: src/synfig/paramdesc.cpp:67
+msgid "Straight Onto"
+msgstr "Egyenes ráillesztett"
+
+#: src/synfig/paramdesc.cpp:68
+msgid "Behind"
+msgstr "Mögé"
+
+#: src/synfig/paramdesc.cpp:69
+msgid "Screen"
+msgstr "Kivetítés"
+
+#: src/synfig/paramdesc.cpp:70
+msgid "Overlay"
+msgstr "Rávetítés"
+
+#: src/synfig/paramdesc.cpp:71
+msgid "Hard Light"
+msgstr "Erős fény"
+
+#: src/synfig/paramdesc.cpp:72
+msgid "Multiply"
+msgstr "Szorzás"
+
+#: src/synfig/paramdesc.cpp:73
+msgid "Divide"
+msgstr "Osztás"
+
+#: src/synfig/paramdesc.cpp:74 src/synfig/valuenode.cpp:157
+#: src/synfig/valuenode_add.cpp:190
+msgid "Add"
+msgstr "Összegzés"
+
+#: src/synfig/paramdesc.cpp:75 src/synfig/valuenode.cpp:147
+#: src/synfig/valuenode_subtract.cpp:194
+msgid "Subtract"
+msgstr "Kivonás"
+
+#: src/synfig/paramdesc.cpp:76
+msgid "Difference"
+msgstr "Különbség"
+
+#: src/synfig/paramdesc.cpp:77
+msgid "Brighten"
+msgstr "Világosít"
+
+#: src/synfig/paramdesc.cpp:78
+msgid "Darken"
+msgstr "Sötétít"
+
+#: src/synfig/paramdesc.cpp:80 src/synfig/valuenode_radialcomposite.cpp:263
+msgid "Hue"
+msgstr "Színárnyalat"
+
+#: src/synfig/paramdesc.cpp:81 src/synfig/valuenode_radialcomposite.cpp:260
+#: src/synfig/valuenode_radialcomposite.cpp:266
+msgid "Saturation"
+msgstr "Telítettség"
+
+#: src/synfig/paramdesc.cpp:82
+msgid "Luminance"
+msgstr "Fényesség"
+
+#: src/synfig/paramdesc.cpp:83
+msgid "Alpha Over"
+msgstr "Átlátszóság alkalmazása"
+
+#: src/synfig/paramdesc.cpp:84
+msgid "Alpha Brighten"
+msgstr "Átlátszóság világosítás"
+
+#: src/synfig/paramdesc.cpp:85
+msgid "Alpha Darken"
+msgstr "Átlátszóság sötétítés"
+
+#: src/synfig/render.cpp:245 src/synfig/render.cpp:246
+#: src/synfig/render.cpp:300 src/synfig/render.cpp:301
+#: src/synfig/render.cpp:535 src/synfig/render.cpp:536
+#: src/synfig/render.cpp:562 src/synfig/render.cpp:563
+msgid "Target panic"
+msgstr "Cél pánik"
+
+#: src/synfig/savecanvas.cpp:290
+#, c-format
+msgid "Unknown value(%s), cannot create XML representation!"
+msgstr "Ismeretlen érték (%s), nem lehet létrehozni az XML reprezentációt!"
+
+#: src/synfig/savecanvas.cpp:543
+#, c-format
+msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
+msgstr "Ismeretlen érték csomópont típus (%s), nem lehet létrehozni az XML reprezentációt!"
+
+#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:185
+#: src/synfig/target_scanline.cpp:97 src/synfig/target_tile.cpp:280
+msgid "Target initialization failure"
+msgstr "Cél inicializációs hiba"
+
+#: src/synfig/target_cairo.cpp:146
+msgid "Frame Renderer Failure"
+msgstr ""
+
+#: src/synfig/target_cairo.cpp:155 src/synfig/target_scanline.cpp:257
+#: src/synfig/target_scanline.cpp:404
+msgid "Unable to put surface on target"
+msgstr "Nem lehet felületet létrehozni a célon"
+
+#: src/synfig/target_cairo.cpp:162
+msgid "Not supported render method"
+msgstr ""
+
+#: src/synfig/target_cairo.cpp:169 src/synfig/target_cairo_tile.cpp:248
+#: src/synfig/target_scanline.cpp:417 src/synfig/target_tile.cpp:395
+msgid "Caught string :"
+msgstr "Az elkapott szöveg: "
+
+#: src/synfig/target_cairo.cpp:174 src/synfig/target_cairo_tile.cpp:253
+#: src/synfig/target_scanline.cpp:422 src/synfig/target_tile.cpp:400
+msgid "Ran out of memory (Probably a bug)"
+msgstr "Elfogyott a memória (Valószínűleg programhiba)"
+
+#: src/synfig/target_cairo.cpp:179 src/synfig/target_cairo_tile.cpp:258
+#: src/synfig/target_scanline.cpp:427 src/synfig/target_tile.cpp:405
+msgid "Caught unknown error, rethrowing..."
+msgstr "Elkapott ismeretlen hiba, újradobás..."
+
+#: src/synfig/target_cairo.cpp:190
+msgid "Cairo Surface bad status"
+msgstr ""
+
+#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:111
+msgid "Bad Tile Size"
+msgstr "Rossz lapméret"
+
+#: src/synfig/target_cairo_tile.cpp:142 src/synfig/target_cairo_tile.cpp:240
+#: src/synfig/target_scanline.cpp:202 src/synfig/target_scanline.cpp:248
+#: src/synfig/target_scanline.cpp:347 src/synfig/target_scanline.cpp:395
+#: src/synfig/target_tile.cpp:224
+msgid "Accelerated Renderer Failure"
+msgstr "Gyorsított megjelenítő hiba"
+
+#: src/synfig/target_cairo_tile.cpp:150
+#, c-format
+msgid "Bad surface: %s"
+msgstr ""
+
+#: src/synfig/target_cairo_tile.cpp:156 src/synfig/target_tile.cpp:178
+#: src/synfig/target_tile.cpp:244
+msgid "add_tile():Unable to put surface on target"
+msgstr "add_tile(): Nem lehet felületet illeszteni a célra"
+
+#: src/synfig/target_cairo_tile.cpp:211
+msgid "Can't start frame"
+msgstr ""
+
+#: src/synfig/target_tile.cpp:161
+msgid "Parametric Renderer Failure"
+msgstr "Hiba a parametrikus megjelenítőben"
+
+#: src/synfig/target_tile.cpp:168 src/synfig/target_tile.cpp:232
+msgid "Bad surface"
+msgstr "Rossz felület"
+
+#: src/synfig/time.cpp:119
+#, c-format
+msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
+msgstr "Time(): Az idő kódjában nem volt mértékegység, KOCKÁKKAL számolunk (\"%s\")"
+
+#: src/synfig/time.cpp:124
+msgid ""
+"Time(): No unit provided in time code and frame rate is unknown! Assuming "
+"SECONDS"
+msgstr "Time(): Az időkódban nincsen mértékegység megadva, képváltási frekvencia ismeretlen! Másodperc lesz az idő mértékegysége (\"%s\")"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:276 src/synfig/value.cpp:308 src/synfig/value.cpp:360
+msgid "bool"
+msgstr "logikai"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:277 src/synfig/value.cpp:310 src/synfig/value.cpp:358
+msgid "integer"
+msgstr "egész"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:278 src/synfig/value.cpp:312
+msgid "angle"
+msgstr "szög"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:279 src/synfig/value.cpp:314 src/synfig/value.cpp:352
+msgid "time"
+msgstr "idő"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:280 src/synfig/value.cpp:316 src/synfig/value.cpp:355
+msgid "real"
+msgstr "valós"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:281 src/synfig/value.cpp:318
+msgid "vector"
+msgstr "vektor"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:282 src/synfig/value.cpp:320
+msgid "color"
+msgstr "szín"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:283 src/synfig/value.cpp:322
+msgid "segment"
+msgstr "szegmens"
+
+#: src/synfig/value.cpp:284
+msgid "bline_point"
+msgstr "bvonal pont"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:285 src/synfig/value.cpp:326
+msgid "width_point"
+msgstr "szélességi pont"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:286 src/synfig/value.cpp:328
+msgid "dash_item"
+msgstr "vonalkázott elem"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:287 src/synfig/value.cpp:330
+msgid "list"
+msgstr "lista"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:288 src/synfig/value.cpp:332
+msgid "canvas"
+msgstr "vászon"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:289 src/synfig/value.cpp:334
+msgid "string"
+msgstr "szöveg"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:290 src/synfig/value.cpp:336
+msgid "gradient"
+msgstr "színátmenet"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:291 src/synfig/value.cpp:338
+msgid "nil"
+msgstr "üres"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:324
+msgid "spline_point"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_radialcomposite.cpp:234
+msgid "Radial Composite"
+msgstr "Sugaras összetett"
+
+#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_reference.cpp:123
+msgid "Reference"
+msgstr "Referencia"
+
+#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_segcalctangent.cpp:106
+msgid "Segment Tangent"
+msgstr "Szegmens tangens"
+
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_segcalcvertex.cpp:104
+msgid "Segment Vertex"
+msgstr "Szegmenspont"
+
+#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode_stripes.cpp:171
+msgid "Stripes"
+msgstr "Csíkok"
+
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_twotone.cpp:135
+msgid "Two-Tone"
+msgstr "Kettős tónus"
+
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_dynamiclist.cpp:755
+msgid "Dynamic List"
+msgstr "Dinamikus lista"
+
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode_gradientrotate.cpp:146
+msgid "Gradient Rotate"
+msgstr "Színátmenet forgatása"
+
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_sine.cpp:110
+msgid "Sine"
+msgstr "Szinusz"
+
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_timedswap.cpp:221
+msgid "Timed Swap"
+msgstr "Időzített csere"
+
+#: src/synfig/valuenode.cpp:155 src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode_repeat_gradient.cpp:185
+msgid "Repeat Gradient"
+msgstr "Ismétléses színátmenet"
+
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_exp.cpp:106
+msgid "Exponential"
+msgstr "Exponenciális"
+
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_blinecalctangent.cpp:184
+msgid "Spline Tangent"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:159 src/synfig/valuenode_blinecalcvertex.cpp:152
+msgid "Spline Vertex"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_range.cpp:257
+msgid "Range"
+msgstr "Intervallum"
+
+#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_switch.cpp:133
+#: src/synfig/valuenode_switch.cpp:163
+msgid "Switch"
+msgstr "Csere"
+
+#: src/synfig/valuenode.cpp:163 src/synfig/valuenode_cos.cpp:109
+msgid "Cos"
+msgstr "Koszinusz"
+
+#: src/synfig/valuenode.cpp:164
+msgid "aTan2"
+msgstr "Arkusztangens2"
+
+#: src/synfig/valuenode.cpp:165
+msgid "Reverse Tangent"
+msgstr "Inverz tangens"
+
+#: src/synfig/valuenode.cpp:167 src/synfig/valuenode_reciprocal.cpp:147
+msgid "Reciprocal"
+msgstr "Reciprokos"
+
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_integer.cpp:172
+msgid "Integer"
+msgstr "Egész"
+
+#: src/synfig/valuenode.cpp:171 src/synfig/valuenode_blinecalcwidth.cpp:155
+msgid "Spline Width"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_vectorangle.cpp:128
+msgid "Vector Angle"
+msgstr "Vektor szög"
+
+#: src/synfig/valuenode.cpp:174 src/synfig/valuenode_vectorlength.cpp:127
+msgid "Vector Length"
+msgstr "Vektor hossz"
+
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_vectorx.cpp:127
+msgid "Vector X"
+msgstr "Vektor X"
+
+#: src/synfig/valuenode.cpp:176 src/synfig/valuenode_vectory.cpp:127
+msgid "Vector Y"
+msgstr "Vektor Y"
+
+#: src/synfig/valuenode.cpp:177
+msgid "Gradient Color"
+msgstr "Színátmenet szín"
+
+#: src/synfig/valuenode.cpp:178
+msgid "Dot Product"
+msgstr "Pont szorzat"
+
+#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_timestring.cpp:119
+msgid "Time String"
+msgstr "Időpont szövegesen"
+
+#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_real.cpp:161
+#: src/synfig/valuenode_realstring.cpp:175
+msgid "Real"
+msgstr "Valós"
+
+#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_realstring.cpp:125
+msgid "Real String"
+msgstr "Valós szövegesen"
+
+#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_join.cpp:144
+msgid "Joined List"
+msgstr "Összefésült lista"
+
+#: src/synfig/valuenode.cpp:183
+msgid "Angle String"
+msgstr "Szög szövegesen"
+
+#: src/synfig/valuenode.cpp:184
+msgid "Int String"
+msgstr "Egész szövegesen"
+
+#: src/synfig/valuenode.cpp:185
+msgid "Logarithm"
+msgstr "Logaritmikus"
+
+#: src/synfig/valuenode.cpp:187
+msgid "Greyed"
+msgstr "Szürkésített"
+
+#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_pow.cpp:162
+#: src/synfig/valuenode_pow.cpp:185
+msgid "Power"
+msgstr "Hatványozott"
+
+#: src/synfig/valuenode.cpp:189 src/synfig/valuenode_compare.cpp:149
+msgid "Compare"
+msgstr "Összehasonlítás"
+
+#: src/synfig/valuenode.cpp:190
+msgid "Not"
+msgstr "Nem"
+
+#: src/synfig/valuenode.cpp:191
+msgid "And"
+msgstr "És"
+
+#: src/synfig/valuenode.cpp:192
+msgid "Or"
+msgstr "Vagy"
+
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_wplist.cpp:360
+msgid "WPList"
+msgstr "WPList"
+
+#: src/synfig/valuenode.cpp:195
+msgid "DIList"
+msgstr "DIList"
+
+#: src/synfig/valuenode.cpp:233
+#, c-format
+msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
+msgstr "Rossz típus: az értékcsomópont '%s' nem fogad el '%s' típust"
+
+#: src/synfig/valuenode.cpp:513
+msgid "Placeholder"
+msgstr "Helyfenntartó"
+
+#: src/synfig/valuenode.h:61
+#, c-format
+msgid "%s:%d wrong type for %s: need %s but got %s"
+msgstr "%s:%d rossz típus ennek: %s: szükséges %s, de ez van:  %s"
+
+#: src/synfig/valuenode_add.cpp:101 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode_integer.cpp:82 src/synfig/valuenode_integer.cpp:145
+#: src/synfig/valuenode_range.cpp:89 src/synfig/valuenode_real.cpp:79
+#: src/synfig/valuenode_real.cpp:140
+#: src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode_scale.cpp:90 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode_subtract.cpp:101
+msgid ":Bad type "
+msgstr ":Rossz típus"
+
+#: src/synfig/valuenode_add.cpp:129 src/synfig/valuenode_scale.cpp:122
+#: src/synfig/valuenode_subtract.cpp:133
+msgid "One or both of my parameters aren't set!"
+msgstr "Egy vagy több paraméterem nincs beállítva"
+
+#: src/synfig/valuenode_add.cpp:211 src/synfig/valuenode_compare.cpp:167
+#: src/synfig/valuenode_subtract.cpp:218
+msgid "LHS"
+msgstr "BO"
+
+#: src/synfig/valuenode_add.cpp:212
+msgid "Left Hand Side of the add"
+msgstr "Az összeadás bal oldala"
+
+#: src/synfig/valuenode_add.cpp:216 src/synfig/valuenode_compare.cpp:172
+#: src/synfig/valuenode_subtract.cpp:223
+msgid "RHS"
+msgstr "JO"
+
+#: src/synfig/valuenode_add.cpp:217
+msgid "Right Hand Side of the add"
+msgstr "Az összeadás jobb oldala"
+
+#: src/synfig/valuenode_add.cpp:221 src/synfig/valuenode_scale.cpp:272
+#: src/synfig/valuenode_subtract.cpp:228
+msgid "Scalar"
+msgstr "Szorzó"
+
+#: src/synfig/valuenode_add.cpp:222
+msgid "Value that multiplies the add"
+msgstr "Az érték, amely megsokszorozza az összeadást"
+
+#: src/synfig/valuenode_and.cpp:129
+msgid "AND"
+msgstr "ÉS"
+
+#: src/synfig/valuenode_and.cpp:147 src/synfig/valuenode_or.cpp:147
+msgid "Link1"
+msgstr "Kapcsolat1"
+
+#: src/synfig/valuenode_and.cpp:148
+msgid "First operand of the AND operation"
+msgstr "Az és művelet első operandusa"
+
+#: src/synfig/valuenode_and.cpp:152 src/synfig/valuenode_or.cpp:152
+msgid "Link2"
+msgstr "Kapcsolat2"
+
+#: src/synfig/valuenode_and.cpp:153
+msgid "Second operand of the AND operation"
+msgstr "Az és művelet második operandusa"
+
+#: src/synfig/valuenode_animated.cpp:355 src/synfig/valuenode_animated.cpp:379
+#: src/synfig/valuenode_animated.cpp:703 src/synfig/valuenode_animated.cpp:721
+#: src/synfig/valuenode_animated.cpp:801 src/synfig/valuenode_animated.cpp:820
+msgid "A waypoint already exists at this point in time"
+msgstr "A mérföldkő ebben az időpontban már létezik"
+
+#: src/synfig/valuenode_animated.cpp:1134
+#, c-format
+msgid "%s: You cannot use a %s in an animated ValueNode"
+msgstr "%s: nem használhat ilyet: %s egy animált értékcsomópontban"
+
+#: src/synfig/valuenode_animated.cpp:1169
+msgid "Animated"
+msgstr "Animált"
+
+#: src/synfig/valuenode_bline.cpp:977 src/synfig/valuenode_dynamiclist.cpp:661
+#: src/synfig/valuenode_wplist.cpp:336
+msgid "No entries in list"
+msgstr "A listában nincsenek bejegyzések"
+
+#: src/synfig/valuenode_bline.cpp:980 src/synfig/valuenode_dynamiclist.cpp:664
+#: src/synfig/valuenode_wplist.cpp:339
+msgid "No entries in ret_list"
+msgstr "A ret_list nem tartalmaz bejegyzéseket"
+
+#: src/synfig/valuenode_bline.cpp:989 src/synfig/valuenode_bline.cpp:1023
+#, c-format
+msgid "Vertex %03d"
+msgstr "Pont %03d"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:242
+msgid "The Spline where the tangent is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalctangent.cpp:247
+#: src/synfig/valuenode_blinecalcvertex.cpp:207
+#: src/synfig/valuenode_blinecalcwidth.cpp:212
+msgid "When checked, the amount would loop"
+msgstr "Ha bekapcsolt, akkor a mennyiség ciklikus lesz"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:252
+msgid "The position of the linked tangent on the Spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalctangent.cpp:256
+#: src/synfig/valuenode_composite.cpp:574
+#: src/synfig/valuenode_gradientrotate.cpp:169
+#: src/synfig/valuenode_linear.cpp:213
+msgid "Offset"
+msgstr "Eltolás"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:257
+msgid "Angle offset of the tangent"
+msgstr "A tangens szög eltolásának értéke"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:262
+msgid "Scale of the tangent"
+msgstr "A tangens nagyítási értéke"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:266
+msgid "Fixed Length"
+msgstr "Fix hossz"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:267
+msgid "When checked, the tangent's length is fixed"
+msgstr "Ha bekapcsolt, akkor a tangens hossza rögzített"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:272
+msgid "When checked, the tangent is Spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:202
+msgid "The spline where the vertex is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:212
+msgid "The position of the linked vertex on the Spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:217
+msgid "When checked, the position is Spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:207
+msgid "The spline where the width is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:217
+msgid "The position of the linked width on the spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:222
+msgid "Scale of the width"
+msgstr "Szélesség nagyítási értéke"
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:227
+msgid "When checked, the width is spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:219
+msgid "Bad type for composite"
+msgstr "Rossz típus az összetett értékhez"
+
+#: src/synfig/valuenode_composite.cpp:464
+msgid "Red"
+msgstr "Vörös"
+
+#: src/synfig/valuenode_composite.cpp:465
+msgid "The red component of the color"
+msgstr "A szín vörös komponense"
+
+#: src/synfig/valuenode_composite.cpp:468
+msgid "Green"
+msgstr "Zöld"
+
+#: src/synfig/valuenode_composite.cpp:469
+msgid "The green component of the color"
+msgstr "A szín zöld komponense"
+
+#: src/synfig/valuenode_composite.cpp:472
+msgid "Blue"
+msgstr "Kék"
+
+#: src/synfig/valuenode_composite.cpp:473
+msgid "The blue component of the color"
+msgstr "A szín kék komponense"
+
+#: src/synfig/valuenode_composite.cpp:476
+msgid "Alpha"
+msgstr "Átlátszóság"
+
+#: src/synfig/valuenode_composite.cpp:477
+msgid "The alpha of the color"
+msgstr "A szín átlátszósága"
+
+#: src/synfig/valuenode_composite.cpp:482
+msgid "Vertex 1"
+msgstr "Pont 1"
+
+#: src/synfig/valuenode_composite.cpp:483
+msgid "The first vertex of the segment"
+msgstr "A szegmens első pontja"
+
+#: src/synfig/valuenode_composite.cpp:486
+#: src/synfig/valuenode_composite.cpp:526
+msgid "Tangent 1"
+msgstr "Tangens 1"
+
+#: src/synfig/valuenode_composite.cpp:487
+msgid "The first tangent of the segment"
+msgstr "A szegmens első tangense"
+
+#: src/synfig/valuenode_composite.cpp:490
+msgid "Vertex 2"
+msgstr "Pont 2"
+
+#: src/synfig/valuenode_composite.cpp:491
+msgid "The second vertex of the segment"
+msgstr "A szegmens második pontja"
+
+#: src/synfig/valuenode_composite.cpp:494
+#: src/synfig/valuenode_composite.cpp:530
+msgid "Tangent 2"
+msgstr "Tangens 2"
+
+#: src/synfig/valuenode_composite.cpp:495
+msgid "The second tangent of the segment"
+msgstr "A szegmens második tangense"
+
+#: src/synfig/valuenode_composite.cpp:500
+msgid "X-Axis"
+msgstr "X tengely"
+
+#: src/synfig/valuenode_composite.cpp:501
+msgid "The X-Axis component of the vector"
+msgstr "A vektor X koordinátája"
+
+#: src/synfig/valuenode_composite.cpp:504
+msgid "Y-Axis"
+msgstr "Y tengely"
+
+#: src/synfig/valuenode_composite.cpp:505
+msgid "The Y-Axis component of the vector"
+msgstr "A vektor Y koordinátája"
+
+#: src/synfig/valuenode_composite.cpp:510
+msgid "Vertex"
+msgstr "Csúcspont"
+
+#: src/synfig/valuenode_composite.cpp:511
+msgid "The vertex of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:515
+msgid "The width of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:519
+msgid "Defines the Off and On position relative to neighbours"
+msgstr "A szomszédokhoz relatív ki és bekapcsolt pozíciókat definiálja"
+
+#: src/synfig/valuenode_composite.cpp:522
+msgid "Split"
+msgstr "Szétkapcsolt"
+
+#: src/synfig/valuenode_composite.cpp:523
+msgid "When checked, tangents are independent"
+msgstr "Ha bekapcsolt, akkor a tangensek függetlenek"
+
+#: src/synfig/valuenode_composite.cpp:527
+msgid "The first tangent of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:531
+msgid "The second tangent of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:537
+msgid "The [0,1] position of the Width Point over the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:541
+msgid "The width of the Width Point"
+msgstr "A szélességi pont szélessége"
+
+#: src/synfig/valuenode_composite.cpp:544
+#: src/synfig/valuenode_composite.cpp:584
+msgid "Side Type Before"
+msgstr "Az oldal típusa előtte"
+
+#: src/synfig/valuenode_composite.cpp:545
+#: src/synfig/valuenode_composite.cpp:555
+msgid "Defines the interpolation type of the width point"
+msgstr "A szélességi pont interpolációjának típusát határozza meg"
+
+#: src/synfig/valuenode_composite.cpp:547
+#: src/synfig/valuenode_composite.cpp:557
+msgid "Interpolate"
+msgstr "Interpolál"
+
+#: src/synfig/valuenode_composite.cpp:554
+#: src/synfig/valuenode_composite.cpp:593
+msgid "Side Type After"
+msgstr "Az oldal típusa utána"
+
+#: src/synfig/valuenode_composite.cpp:564
+msgid "Lower Boundary"
+msgstr "Alsó határ"
+
+#: src/synfig/valuenode_composite.cpp:565
+msgid "Defines the position at start of the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:568
+msgid "Upper Boundary"
+msgstr "Felső határ"
+
+#: src/synfig/valuenode_composite.cpp:569
+msgid "Defines the position at end of the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:575
+msgid "The offset length of the Dash Item over the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:579
+#: src/synfig/valuenode_timedswap.cpp:260
+msgid "Length"
+msgstr "Hossz"
+
+#: src/synfig/valuenode_composite.cpp:580
+msgid "The length of the Dash Item"
+msgstr "A vonalkázott elem hossza"
+
+#: src/synfig/valuenode_composite.cpp:585
+#: src/synfig/valuenode_composite.cpp:594
+msgid "Defines the side type of the dash item"
+msgstr "A vonalkázott elem oldalának típusát határozza meg"
+
+#: src/synfig/valuenode_const.cpp:127
+msgid "Static"
+msgstr "Statikus"
+
+#: src/synfig/valuenode_compare.cpp:168
+msgid "The left side of the comparison"
+msgstr "Az összehasonlítás bal oldala"
+
+#: src/synfig/valuenode_compare.cpp:173
+msgid "The right side of the comparison"
+msgstr "Az összehasonlítás jobb oldala"
+
+#: src/synfig/valuenode_compare.cpp:177
+msgid "Greater"
+msgstr "Nagyobb"
+
+#: src/synfig/valuenode_compare.cpp:178
+msgid "When checked, returns true if LHS > RHS"
+msgstr "Ha bejelölt, igazat ad, ha bal oldal > jobb oldal"
+
+#: src/synfig/valuenode_compare.cpp:182
+msgid "Equal"
+msgstr "Egyenlő"
+
+#: src/synfig/valuenode_compare.cpp:183
+msgid "When checked, returns true if LHS = RHS"
+msgstr "Ha bejelölt, igazat ad, ha bal oldal = jobb oldal"
+
+#: src/synfig/valuenode_compare.cpp:187
+msgid "Less"
+msgstr "Kissebb"
+
+#: src/synfig/valuenode_compare.cpp:188
+msgid "When checked, returns true if LHS < RHS"
+msgstr "Ha bejelölt, igazat ad, ha bal oldal < jobb oldal"
+
+#: src/synfig/valuenode_cos.cpp:156
+msgid "Value to calculate the cosine"
+msgstr "Az érték, aminek a koszinuszát kell számítani"
+
+#: src/synfig/valuenode_cos.cpp:160 src/synfig/valuenode_sine.cpp:159
+msgid "Amplitude"
+msgstr "Kilengés"
+
+#: src/synfig/valuenode_cos.cpp:161
+msgid "Multiplier of the resulting cosine"
+msgstr "Az eredmény koszinusz szorzója"
+
+#: src/synfig/valuenode_duplicate.cpp:193
+msgid "From"
+msgstr "Ettől"
+
+#: src/synfig/valuenode_duplicate.cpp:194
+msgid "Initial value of the index "
+msgstr "A sorszám kezdeti értéke"
+
+#: src/synfig/valuenode_duplicate.cpp:198
+msgid "To"
+msgstr "Eddig"
+
+#: src/synfig/valuenode_duplicate.cpp:199
+msgid "Final value of the index"
+msgstr "A sorszám végső értéke"
+
+#: src/synfig/valuenode_duplicate.cpp:204
+msgid "Amount increment of the index"
+msgstr "Sorszám növelési értéke"
+
+#: src/synfig/valuenode_dynamiclist.cpp:655
+msgid "List type/item type mismatch, throwing away mismatch"
+msgstr "Lista típus/elem típus eltérés, az elérés eldobása"
+
+#: src/synfig/valuenode_dynamiclist.cpp:703
+#: src/synfig/valuenode_dynamiclist.cpp:957
+#, c-format
+msgid "Item %03d"
+msgstr "Elem %03d"
+
+#: src/synfig/valuenode_exp.cpp:150
+msgid "Exponent"
+msgstr "Exponens"
+
+#: src/synfig/valuenode_exp.cpp:151
+msgid "The value to raise the constant 'e'"
+msgstr "Az konstans 'e' hatvány kitevője"
+
+#: src/synfig/valuenode_exp.cpp:156
+msgid "Multiplier of the resulting exponent"
+msgstr "Az eredmény kitevő szorzója"
+
+#: src/synfig/valuenode_gradientrotate.cpp:165
+msgid "The source gradient to rotate"
+msgstr "Az elforgatandó színátmenet"
+
+#: src/synfig/valuenode_gradientrotate.cpp:170
+msgid "The amount to offset the gradient"
+msgstr "A színátmenet eltolási értéke"
+
+#: src/synfig/valuenode_integer.cpp:195
+msgid "The integer value to be converted"
+msgstr "A konvertálandó egész érték"
+
+#: src/synfig/valuenode_join.cpp:194
+msgid "Strings"
+msgstr "Szövegek"
+
+#: src/synfig/valuenode_join.cpp:195
+msgid "The List of strings to join"
+msgstr "Az összefűzendő szövegek listája"
+
+#: src/synfig/valuenode_join.cpp:199 src/synfig/valuenode_timedswap.cpp:245
+msgid "Before"
+msgstr "Elötte"
+
+#: src/synfig/valuenode_join.cpp:200
+msgid "The string to place before the joined strings"
+msgstr "Az összekapcsolt szövegek elé fűzendő szöveg"
+
+#: src/synfig/valuenode_join.cpp:204
+msgid "Separator"
+msgstr "Elválasztó"
+
+#: src/synfig/valuenode_join.cpp:205
+msgid "The string to place between each string joined"
+msgstr "Az összekapcsolt szövegek közébe fűzendő szöveg"
+
+#: src/synfig/valuenode_join.cpp:209 src/synfig/valuenode_timedswap.cpp:250
+msgid "After"
+msgstr "Utána"
+
+#: src/synfig/valuenode_join.cpp:210
+msgid "The string to place after the joined strings"
+msgstr "Az összekapcsolt szövegek után fűzendő szöveg"
+
+#: src/synfig/valuenode_linear.cpp:200
+msgid "Rate"
+msgstr "Mérték"
+
+#: src/synfig/valuenode_linear.cpp:201 src/synfig/valuenode_linear.cpp:208
+msgid "Value that is multiplied by the current time (in seconds)"
+msgstr "Az érték amellyel az aktuális időt szorozzuk (másodpercben)"
+
+#: src/synfig/valuenode_linear.cpp:207
+msgid "Slope"
+msgstr "Lejtő"
+
+#: src/synfig/valuenode_linear.cpp:214
+msgid "Returned value when the current time is zero"
+msgstr "A visszatérési érték, ha az aktuális idő nulla"
+
+#: src/synfig/valuenode_not.cpp:123
+msgid "NOT"
+msgstr "NEM"
+
+#: src/synfig/valuenode_not.cpp:142
+msgid "Value node used to do the NOT operation"
+msgstr "Az értékcsomópont, amelyet a NEM műveletnél használunk"
+
+#: src/synfig/valuenode_or.cpp:129
+msgid "OR"
+msgstr "VAGY"
+
+#: src/synfig/valuenode_or.cpp:148 src/synfig/valuenode_or.cpp:153
+msgid "Value node used for the OR boolean operation"
+msgstr "Az értékcsomópont, amelyet a VAGY ligikai műveletnél használunk"
+
+#: src/synfig/valuenode_pow.cpp:180
+msgid "Base"
+msgstr "Alap"
+
+#: src/synfig/valuenode_pow.cpp:181
+msgid "The base to be raised to the power"
+msgstr "A hatványozás alapja"
+
+#: src/synfig/valuenode_pow.cpp:186
+msgid "The power used to raise the base"
+msgstr "A hatványkitevő"
+
+#: src/synfig/valuenode_pow.cpp:190 src/synfig/valuenode_reciprocal.cpp:170
+msgid "Epsilon"
+msgstr "Epszilon"
+
+#: src/synfig/valuenode_pow.cpp:191
+msgid "Value used to compare base or power with zero "
+msgstr "Az az érték, amelyet az alap vagy a kitevő nullával történő összehasonlításánál használunk"
+
+#: src/synfig/valuenode_pow.cpp:195 src/synfig/valuenode_reciprocal.cpp:175
+msgid "Infinite"
+msgstr "Végtelen"
+
+#: src/synfig/valuenode_pow.cpp:196
+msgid "Returned value when result tends to infinite"
+msgstr "A visszatérési érték, ha az eredmény a végtelenbe tart"
+
+#: src/synfig/valuenode_radialcomposite.cpp:127
+msgid "Bad type for radialcomposite"
+msgstr "Rossz típus a sugaras összetett értékhez"
+
+#: src/synfig/valuenode_radialcomposite.cpp:257
+msgid "Luma"
+msgstr "Világosság"
+
+#: src/synfig/valuenode_radialcomposite.cpp:273
+msgid "The length of the vector"
+msgstr "A vektor hossza"
+
+#: src/synfig/valuenode_radialcomposite.cpp:276
+msgid "Theta"
+msgstr "Téta"
+
+#: src/synfig/valuenode_radialcomposite.cpp:277
+msgid "The angle of the vector with the X axis"
+msgstr "A vektor X tengelyhez viszonyított szöge"
+
+#: src/synfig/valuenode_range.cpp:122
+msgid "Some of my parameters aren't set!"
+msgstr "Néhány paraméterem nincs beállítva"
+
+#: src/synfig/valuenode_range.cpp:278
+msgid "Min"
+msgstr "Min"
+
+#: src/synfig/valuenode_range.cpp:279
+msgid "Returned value when 'Link' is smaller"
+msgstr "A visszatérési érték, ha a 'kapcsolat' kisebb"
+
+#: src/synfig/valuenode_range.cpp:283
+msgid "Max"
+msgstr "Max"
+
+#: src/synfig/valuenode_range.cpp:284
+msgid "Returned value when 'Link' is greater"
+msgstr "A visszatérési érték, ha a 'kapcsolat' nagyobb"
+
+#: src/synfig/valuenode_range.cpp:289
+msgid "The value node to limit its range"
+msgstr "Az intervallum meghatározásához használt értékcsomópont"
+
+#: src/synfig/valuenode_real.cpp:183
+msgid "The real value to be converted"
+msgstr ""
+
+#: src/synfig/valuenode_realstring.cpp:176
+msgid "Value to convert to string"
+msgstr "A szöveggé konvertálandó érték"
+
+#: src/synfig/valuenode_realstring.cpp:181
+msgid "Width of the string"
+msgstr "A szöveg szélessége"
+
+#: src/synfig/valuenode_realstring.cpp:185
+msgid "Precision"
+msgstr "Pontosság"
+
+#: src/synfig/valuenode_realstring.cpp:186
+msgid "Number of decimal places"
+msgstr "A tizedes helyek száma"
+
+#: src/synfig/valuenode_realstring.cpp:190
+msgid "Zero Padded"
+msgstr "Nullákkal kitöltött"
+
+#: src/synfig/valuenode_realstring.cpp:191
+msgid "When checked, the string is left filled with zeros to match the width"
+msgstr "Ha bejelölt, a szöveg balról nullákkal lesz kitöltve, hogy a szöveg a megfelelő szélességű legyen"
+
+#: src/synfig/valuenode_reciprocal.cpp:166
+msgid "The value node used to calculate its reciprocal"
+msgstr "Az értékcsomópont, amelyet a reciprok érték kiszámításához használunk"
+
+#: src/synfig/valuenode_reciprocal.cpp:171
+msgid ""
+"The value used to decide whether 'Link' is too small to obtain its "
+"reciprocal"
+msgstr "Az az érték, amelyet annak eldöntésére használunk, hogy kapcsolat túl kicsi-e a reciprok számításhoz"
+
+#: src/synfig/valuenode_reciprocal.cpp:176
+msgid "The resulting value when 'Link' < 'Epsilon'"
+msgstr "A visszatérési érték, amikor a 'kapcsolat' < 'epszilon'"
+
+#: src/synfig/valuenode_reference.cpp:144
+msgid "The referenced value"
+msgstr "A hivatkozott érték"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:204
+msgid "The source gradient to repeat"
+msgstr "Az ismétlendő forrás színátmenet"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:208
+msgid "Count"
+msgstr "Számosság"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:209
+msgid "The number of repetition of the gradient"
+msgstr "A színátmenet ismétléseinek száma"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:214
+msgid ""
+"Specifies how much biased is the source gradeint in the repetition [0,1]"
+msgstr "Meghatározza, hogy mennyire kiegyensúlyozott a forrás színátmenet az ismétlődésben [0,1]"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:218
+msgid "Specify Start"
+msgstr "Kezdő szín használata"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:219
+msgid ""
+"When checked, 'Start Color' is used as the start of the resulting gradient"
+msgstr "Ha bejelölt, a 'Kezdő szín' értéket használjuk az eredmény színátmenet kezdő értékeként"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:223
+msgid "Specify End"
+msgstr "Befejező szín használata"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:224
+msgid ""
+"When checked, 'End Color' is used as the start of the resulting gradient"
+msgstr "Ha bejelölt, a 'Befejező szín' értéket használjuk az eredmény színátmenet végső értékeként"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:228
+msgid "Start Color"
+msgstr "Kezdő szín"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:229
+msgid "Used as the start of the resulting gradient"
+msgstr "Az eredmény színátmenet kezdő értéke"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:233
+msgid "End Color"
+msgstr "Befejező szín"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:234
+msgid "Used as the end of the resulting gradient"
+msgstr "Az eredmény színátmenet végső értéke"
+
+#: src/synfig/valuenode_scale.cpp:152 src/synfig/valuenode_scale.cpp:173
+#: src/synfig/valuenode_scale.cpp:190
+msgid "Attempting to get the inverse of a non invertible Valuenode"
+msgstr "Kísérlet nem invertálható értékcsomópont inverzének kiszámítására"
+
+#: src/synfig/valuenode_scale.cpp:268
+msgid "The value node used to scale"
+msgstr "A skálázáshoz használt értékcsomópont"
+
+#: src/synfig/valuenode_scale.cpp:273
+msgid "Value that multiplies the value node"
+msgstr "Az az érték, amelyet az értékcsomópont megszorzására használunk"
+
+#: src/synfig/valuenode_segcalctangent.cpp:156
+#: src/synfig/valuenode_segcalcvertex.cpp:154
+msgid "Segment"
+msgstr "Szegmens"
+
+#: src/synfig/valuenode_segcalctangent.cpp:157
+msgid "The Segment where the tangent is linked to"
+msgstr "Az a szegmens, ahová a tangens kapcsolt"
+
+#: src/synfig/valuenode_segcalctangent.cpp:162
+msgid "The position of the linked tangent on the Segment (0,1]"
+msgstr "A kapcsolt tangens pozíciója a szegmensen (0,1]"
+
+#: src/synfig/valuenode_segcalcvertex.cpp:155
+msgid "The Segment where the vertex is linked to"
+msgstr "A szegmens ahová a pont kapcsolva van"
+
+#: src/synfig/valuenode_segcalcvertex.cpp:160
+msgid "The position of the linked vertex on the Segment (0,1]"
+msgstr "A kapcsolt pont szegmensen belüli pozíciója (0,1]"
+
+#: src/synfig/valuenode_sine.cpp:155
+msgid "The angle where the sine is calculated from"
+msgstr "A szög amelynek szinuszát számítjuk"
+
+#: src/synfig/valuenode_sine.cpp:160
+msgid "The value that multiplies the resulting sine"
+msgstr "Az érték, amely szorozza az eredményül kapott szinuszt"
+
+#: src/synfig/valuenode_step.cpp:198
+msgid "The value node used to make the step"
+msgstr "A lépéshez használt értékcsomópont"
+
+#: src/synfig/valuenode_step.cpp:203
+msgid "The duration of the step"
+msgstr "A lépés hossza"
+
+#: src/synfig/valuenode_step.cpp:207 src/tool/printing_functions.cpp:79
+msgid "Start Time"
+msgstr "Kezdő időpont"
+
+#: src/synfig/valuenode_step.cpp:208
+msgid "The time when the step conversion starts"
+msgstr "Az időpont, amikor a lépéskonverzió kezdődik"
+
+#: src/synfig/valuenode_step.cpp:212
+msgid "Intersection"
+msgstr "Metszéspont"
+
+#: src/synfig/valuenode_step.cpp:213
+msgid "Value that define whether the step is centerd on the value [0,1]"
+msgstr "Az érték, amely meghatározza, hogy mennyire esik a lépés az érték közepére"
+
+#: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
+msgid "Color 1"
+msgstr "Szín 1"
+
+#: src/synfig/valuenode_stripes.cpp:190
+msgid "One color of the gradient stripes"
+msgstr "A színátmeneti sávok egyik színe"
+
+#: src/synfig/valuenode_stripes.cpp:194 src/synfig/valuenode_twotone.cpp:158
+msgid "Color 2"
+msgstr "Szín 2"
+
+#: src/synfig/valuenode_stripes.cpp:195
+msgid "Other color of the gradient stripes"
+msgstr "A színátmeneti sávok másik színe"
+
+#: src/synfig/valuenode_stripes.cpp:199
+msgid "Stripe Count"
+msgstr "Sáv számosság"
+
+#: src/synfig/valuenode_stripes.cpp:200
+msgid "Number of stripes in the gradient"
+msgstr "A színátmenetben lévő sávok száma"
+
+#: src/synfig/valuenode_stripes.cpp:205
+msgid "Width of stripes in the gradient between [0,1]"
+msgstr "A színátmenetben lévő sávok szélessége"
+
+#: src/synfig/valuenode_subtract.cpp:219
+msgid "Left Hand Side of the subtraction"
+msgstr "A kivonás bal oldala"
+
+#: src/synfig/valuenode_subtract.cpp:224
+msgid "Right Hand Side of the subtraction"
+msgstr "A kivonás jobb oldala"
+
+#: src/synfig/valuenode_subtract.cpp:229
+msgid "Value that multiplies the subtraction"
+msgstr "Az érték, amely megszorozza a kivonási értéket"
+
+#: src/synfig/valuenode_switch.cpp:153
+msgid "Link Off"
+msgstr "Kapcsolat kikapcsolt"
+
+#: src/synfig/valuenode_switch.cpp:154
+msgid "The value node returned when the switch is off"
+msgstr "Az érték csomópont, ha a kapcsolat kikapcsolt"
+
+#: src/synfig/valuenode_switch.cpp:158
+msgid "Link On"
+msgstr "Kapcsolat bekapcsolt"
+
+#: src/synfig/valuenode_switch.cpp:159
+msgid "The value node returned when the switch is on"
+msgstr "Az érték csomópont, ha a kapcsolat bekapcsolt"
+
+#: src/synfig/valuenode_switch.cpp:164
+msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
+msgstr "Ha bejelölt, 'Kapcsolat bekapcsolt' értékével, egyébként a 'Kapcsolat kikapcsolt' tér vissza"
+
+#: src/synfig/valuenode_timedswap.cpp:246
+msgid "The value node returned when current time is before 'time' - 'length'"
+msgstr "A visszatérési értékcsomópont, ha az aktuális idő az 'idő' - 'hossz' előtt van"
+
+#: src/synfig/valuenode_timedswap.cpp:251
+msgid "The value node returned when current time is after 'time'"
+msgstr "A visszatérési értékcsomópont, ha az aktuális idő az 'idő' után van"
+
+#: src/synfig/valuenode_timedswap.cpp:255
+#: src/synfig/valuenode_timestring.cpp:163
+msgid "Time"
+msgstr "Idő"
+
+#: src/synfig/valuenode_timedswap.cpp:256
+msgid "The time when the linear interpolation ends"
+msgstr "Az időpont, ha a lineáris interpoláció véget ér"
+
+#: src/synfig/valuenode_timedswap.cpp:261
+msgid ""
+"The length of time when the linear interpolation between 'Before' and "
+"'After' is made"
+msgstr "Az idő hossza, ha az 'Előtte' és 'Utána' értékek között lineáris interpoláció van"
+
+#: src/synfig/valuenode_timeloop.cpp:175
+msgid "The value node to time loop"
+msgstr "Az idő ciklushoz használt értékcsomópont"
+
+#: src/synfig/valuenode_timeloop.cpp:180
+msgid "Start time of the loop for the value node timeline"
+msgstr "A ciklus kezdő időpontja az idővonalbeli értékcsomóponthoz "
+
+#: src/synfig/valuenode_timestring.cpp:164
+msgid "The time that is converted to string"
+msgstr "Az idő, amelyet szöveggé kell konvertálni"
+
+#: src/synfig/valuenode_twotone.cpp:154
+msgid "The start color of the gradient"
+msgstr "A színátmenet kezdő színe"
+
+#: src/synfig/valuenode_twotone.cpp:159
+msgid "The end color of the gradient"
+msgstr "A színátmenet befejező színe"
+
+#: src/synfig/valuenode_vectorangle.cpp:147
+#: src/synfig/valuenode_vectorlength.cpp:145
+#: src/synfig/valuenode_vectorx.cpp:145 src/synfig/valuenode_vectory.cpp:145
+msgid "Vector"
+msgstr "Vektor"
+
+#: src/synfig/valuenode_vectorangle.cpp:148
+msgid "The vector where the angle is calculated from"
+msgstr "Az a vektor, amelyből a szöget számítjuk"
+
+#: src/synfig/valuenode_vectorlength.cpp:146
+msgid "The vector where the length is calculated from"
+msgstr "A vektor, amelyből a hosszat számítjuk"
+
+#: src/synfig/valuenode_vectorx.cpp:146
+msgid "The vector where the X coordinate is extracted from"
+msgstr "A vektor, amelyből az X koordinátát számítjuk"
+
+#: src/synfig/valuenode_vectory.cpp:146
+msgid "The vector where the Y coordinate is extracted from"
+msgstr "A vektor, amelyből az Y koordinátát számítjuk"
+
+#: src/synfig/valuenode_wplist.cpp:348
+#, c-format
+msgid "WidthPoint %03d"
+msgstr "Szélességi pont %03d"
+
+#: src/tool/main.cpp:133
+msgid "FATAL: Synfig Version Mismatch"
+msgstr "VÉGZETES: Synfig verzióeltérés"
+
+#: src/tool/main.cpp:169
+msgid "Settings"
+msgstr ""
+
+#: src/tool/main.cpp:171
+msgid "Specify output target (Default: PNG)"
+msgstr ""
+
+#: src/tool/main.cpp:172
+msgid "Set the image width in pixels (Use zero for file default)"
+msgstr ""
+
+#: src/tool/main.cpp:173
+msgid "Set the image height in pixels (Use zero for file default)"
+msgstr ""
+
+#: src/tool/main.cpp:174
+msgid "Set the diagonal size of image window (Span)"
+msgstr "Kép ablak átlója méretének beállítása (fesztáv)"
+
+#: src/tool/main.cpp:175
+msgid "Set antialias amount for parametric renderer."
+msgstr "Élsimítás mennyiségének beállítása a paraméteres megjelenítő számára"
+
+#: src/tool/main.cpp:176
+#, c-format
+msgid "Specify image quality for accelerated renderer (Default: %d)"
+msgstr ""
+
+#: src/tool/main.cpp:177
+msgid "Gamma"
+msgstr ""
+
+#: src/tool/main.cpp:178
+msgid "Enable multithreaded renderer using the specified number of threads"
+msgstr ""
+
+#: src/tool/main.cpp:179
+msgid "Specify input filename"
+msgstr ""
+
+#: src/tool/main.cpp:180
+msgid "Specify output filename"
+msgstr "Kimeneti fájlnév mehatározása"
+
+#: src/tool/main.cpp:181
+msgid ""
+"Output file sequence separator string (Use double quotes if you want to use "
+"spaces)"
+msgstr ""
+
+#: src/tool/main.cpp:182
+msgid "Render the canvas with the given id instead of the root."
+msgstr "A vászon megjelenítése a megadott azonosítóval, a gyökér helyett"
+
+#: src/tool/main.cpp:183
+msgid "Set the frame rate"
+msgstr "Kocka sebesség beállítása"
+
+#: src/tool/main.cpp:184
+msgid "Render a single frame at <seconds>"
+msgstr "Egyetlen kocka megjelenítése <seconds> időpontban"
+
+#: src/tool/main.cpp:185 src/tool/main.cpp:186
+msgid "Set the starting time"
+msgstr "Kezdő időpont beállítása"
+
+#: src/tool/main.cpp:187
+msgid "Set the ending time"
+msgstr "Befejező időpont beállítása"
+
+#: src/tool/main.cpp:188
+msgid "Set the physical resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:189
+msgid "Set the physical X resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:190
+msgid "Set the physical Y resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:193
+msgid "Switch options"
+msgstr ""
+
+#: src/tool/main.cpp:195
+msgid "Output verbosity level"
+msgstr ""
+
+#: src/tool/main.cpp:196
+msgid "Quiet mode (No progress/time-remaining display)"
+msgstr "Csendes mód (Nincs előhaladás/hátralévő idő kijelzés)"
+
+#: src/tool/main.cpp:197
+msgid "Print benchmarks"
+msgstr ""
+
+#: src/tool/main.cpp:200
+msgid "Misc options"
+msgstr ""
+
+#: src/tool/main.cpp:202
+msgid "Append layers in <filename> to composition"
+msgstr "A <filename>-ban lévő rétegek hozzáfűzése a kompozícióhoz"
+
+#: src/tool/main.cpp:203
+msgid "Print out specified details of the root canvas"
+msgstr "A gyökér vászon meghatározott részleteinek kinyomtatása"
+
+#: src/tool/main.cpp:204 src/tool/main.cpp:230
+msgid "Print out the list of exported canvases in the composition"
+msgstr ""
+
+#: src/tool/main.cpp:207
+msgid "FFMPEG target options"
+msgstr ""
+
+#: src/tool/main.cpp:209
+msgid "Set the codec for the video. See --ffmpeg-video-codecs"
+msgstr ""
+
+#: src/tool/main.cpp:210
+msgid "Set the bitrate for the output video"
+msgstr ""
+
+#: src/tool/main.cpp:213
+msgid "Synfig info options"
+msgstr ""
+
+#: src/tool/main.cpp:215
+msgid "Produce this help message"
+msgstr ""
+
+#: src/tool/main.cpp:216
+msgid "Print out the list of available importers"
+msgstr "Az elérhető importálók kinyomtatása"
+
+#: src/tool/main.cpp:217
+msgid "Print out misc build information"
+msgstr "Vegyes fordítási információk kinyomtatása"
+
+#: src/tool/main.cpp:218
+msgid "Print out the list of available layers"
+msgstr "Az elérhető rétegek kinyomtatása"
+
+#: src/tool/main.cpp:219
+msgid "Print out layer's description, parameter info, etc."
+msgstr "A réteg leírásának, paraméter információinak és egyebeknek kinyomtatása"
+
+#: src/tool/main.cpp:220
+msgid "Print out license information"
+msgstr "Licenc információk kinyomtatása"
+
+#: src/tool/main.cpp:221
+msgid "Print out the list of loaded modules"
+msgstr "A betöltött modulok  kinyomtatása"
+
+#: src/tool/main.cpp:222
+msgid "Print out the list of available targets"
+msgstr "Az elérhető célformátumok kinyomtatása"
+
+#: src/tool/main.cpp:223
+msgid ""
+"Print out the list of available video codecs when encoding through FFMPEG"
+msgstr ""
+
+#: src/tool/main.cpp:224
+msgid "Print out the list of available ValueNodes"
+msgstr "Az elérhető értékcsomópontok kinyomtatása"
+
+#: src/tool/main.cpp:225
+msgid "Print out version information"
+msgstr "Verzió információ kinyomtatása"
+
+#: src/tool/main.cpp:234
+msgid "Synfig debug flags"
+msgstr ""
+
+#: src/tool/main.cpp:236
+msgid "Test GUID generation"
+msgstr "Teszt GUID generálása"
+
+#: src/tool/main.cpp:237
+msgid "Test signal implementation"
+msgstr "Teszt szignál implementáció"
+
+#: src/tool/joblistprocessor.cpp:73
+msgid "Nothing to do!"
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:84
+msgid "Attempting to determine target/outfile..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:90
+msgid "Target name undefined, attempting to figure it out"
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:122
+msgid "Defaulting to PNG target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:147
+msgid "Unable to create ouput for \""
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:149 src/tool/joblistprocessor.cpp:167
+msgid "Throwing out job..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:153
+msgid "Creating the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:165
+msgid "Unknown target for \""
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:177
+msgid "Setting the canvas on the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:180
+msgid "Setting the quality of the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
+msgid "Render Failure."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:229
+msgid "Rendering..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:239
+msgid ": Rendered in "
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:240
+msgid " seconds."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:243
+msgid "Done."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:113
+msgid "Unrecognised canvas variable: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:114
+msgid "Recognized variables are:"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:131
+msgid "verbosity set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:146
+msgid "Threads set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:224
+msgid "Layer Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:225
+msgid "Localized Layer Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:227
+msgid "Version: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:232
+msgid "param - "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:234
+msgid " (not critical)"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:235
+msgid "\tLocalized Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:239
+msgid "\tDescription: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:243
+msgid "\tHint: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:309
+#, c-format
+msgid "Antialiasing set to %d, (%d samples per pixel)"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:316
+#, c-format
+msgid "Span set to %d units"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:324
+#, c-format
+msgid "Frame rate set to %d frames per second"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:334
+#, c-format
+msgid "Physical resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:343
+#, c-format
+msgid "Physical X resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:352
+#, c-format
+msgid "Physical Y resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:379
+msgid "Rendering frame at "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:385
+msgid "Gamma argument is currently ignored"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:400
+#, c-format
+msgid "Resolution set to %dx%d"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:417
+msgid "Both video codec and bitrate parameters are necessary."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:437
+#, c-format
+msgid "Video codec \"%s\" is not supported."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:440
+#, c-format
+msgid "Target video codec set to %s"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:446
+#, c-format
+msgid "Target bitrate set to %dk"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:452
+#, c-format
+msgid "Output file sequence separator set to %s"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:487
+#, c-format
+msgid "Unable to load '%s'."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:494
+msgid "No input file provided."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:499
+msgid "Target set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:513
+msgid "Quality set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:532
+#, c-format
+msgid ""
+"Unable to find canvas with ID \"%s\" in %s.\n"
+"Throwing out job..."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:538
+#, c-format
+msgid ""
+"Invalid canvas name \"%s\" in %s.\n"
+"Throwing out job..."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:557
+msgid "Unable to append '"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:571
+msgid "Appended contents of "
+msgstr ""
+
+#: src/tool/printing_functions.cpp:86
+msgid "End Time"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:93
+msgid "Frame Rate"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:100
+msgid "Start Frame"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:107
+msgid "End Frame"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:129
+msgid "Image Aspect Ratio"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:139
+msgid "Pixel Width"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:146
+msgid "Pixel Height"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:153
+msgid "Pixel Aspect Ratio"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:163
+msgid "Top Left"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:170
+msgid "Bottom Right"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:177
+msgid "Physical Width"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:184
+msgid "Physical Height"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:191
+msgid "X Resolution"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:197
+msgid "Y Resolution"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:203
+msgid "Diagonal Image Span"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:212
+msgid "Interlaced"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:219
+msgid "Antialias"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:233
+msgid "Flags"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:240
+msgid "Focus"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:247
+msgid "Background Color"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:258
+msgid "Metadata"
+msgstr ""
+
+#: src/tool/renderprogress.h:109
+msgid "Line"
+msgstr ""
+
+#: src/tool/renderprogress.h:109
+msgid " of "
+msgstr ""
+
+#: src/tool/renderprogress.h:124
+msgid "w "
+msgstr ""
+
+#: src/tool/renderprogress.h:127
+msgid "d "
+msgstr ""
+
+#: src/tool/renderprogress.h:130
+msgid "h "
+msgstr ""
+
+#: src/tool/renderprogress.h:133
+msgid "m "
+msgstr ""
+
+#: src/tool/renderprogress.h:136
+msgid "s "
+msgstr ""
