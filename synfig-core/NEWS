@@ -4,7 +4,7 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
- 0.64.0 (git tag "synfig-0.64.0") - May 01 2013 - Major features, bug fixes.
+ 0.64.0 (git tag "synfig-0.64.0") - May 06 2013 - Major features, bug fixes.
  
   * New CLI based on boost libraries. 
   * New pluging system
