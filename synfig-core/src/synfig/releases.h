@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2010, 2011 Carlos López
+**  Copyright (c) 2010-2013 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as

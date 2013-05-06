@@ -3,7 +3,7 @@
 # Script to generate API documentation and send it to sf.net
 #
 # Copyright 2009-2010 Konstantin Dmitriev
-# Copyright 2010 Carlos López
+# Copyright 2010, 2013 Carlos López
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -33,7 +33,7 @@ fi
 if [ ! -d $SOURCEDIR ]; then
 	mkdir -p `dirname $SOURCEDIR`
 	cd `dirname $SOURCEDIR`
-	git clone --depth 1 git://synfig.git.sourceforge.net/gitroot/synfig/synfig `basename $SOURCEDIR`
+	git clone --depth 1 git://github.com/synfig/synfig.git `basename $SOURCEDIR`
 fi
 
 mkdir -p $HTMLDIR

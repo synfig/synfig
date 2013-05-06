@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2008 Carlos López
+**	Copyright (c) 2008, 2013 Carlos López
 **	Copyright (c) 2012 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or

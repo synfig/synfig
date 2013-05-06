@@ -8,7 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008 Gerald Young
-**	Copyright (c) 2008, 2010, 2011 Carlos López
+**	Copyright (c) 2008, 2010-2013 Carlos López
 **	Copyright (c) 2009, 2011 Nikita Kitaev
 **	Copyright (c) 2012 Konstantin Dmitriev
 **
