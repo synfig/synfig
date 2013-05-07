@@ -13,3 +13,5 @@ plugin_DATA = \
 	$(EXTRA_FILES)
 
 @INTLTOOL_XML_RULE@
+
+EXTRA_DIST = $(plugin_DATA)
