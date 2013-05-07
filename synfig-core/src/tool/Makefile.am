@@ -16,6 +16,7 @@ bin_PROGRAMS = \
 	synfig
 
 synfig_SOURCES = \
+	named_type.h \
 	definitions.h \
 	progress.h \
 	renderprogress.h \
