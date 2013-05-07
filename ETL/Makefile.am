@@ -45,9 +45,6 @@ EXTRA_DIST = \
 	m4/subs.m4 \
 	config/depcomp \
 	m4/cxx_macros.m4 \
-	ETL.pbproj/project.pbxproj \
-	ETL.pbproj/etl_profile.h \
-	ETL.pbproj/frameworkfix.cpp \
 	ETL-config.in \
 	m4/ETL.m4 \
 	doxygen.cfg.in \
