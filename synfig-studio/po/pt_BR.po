@@ -154,7 +154,7 @@ msgstr "Visite o sítio web do Synfig"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
-"Copyright 2001-2012\n"
+"Copyright 2001-2013\n"
 "Robert B. Quattlebaum Jr.,\n"
 "Adrian Bentley and Synfig contributors"
 msgstr ""

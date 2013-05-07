@@ -151,10 +151,10 @@ msgstr "Besuche die Synfig Website"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
-"Copyright 2001-2012\n"
+"Copyright 2001-2013\n"
 "Robert B. Quattlebaum Jr.,\n"
 "Adrian Bentley and Synfig contributors"
-msgstr "Copyright 2001-2012⏎ Robert B. Quattlebaum Jr.,⏎ Adrian Bentley und Synfig Mitwirkende"
+msgstr "Copyright 2001-2013⏎ Robert B. Quattlebaum Jr.,⏎ Adrian Bentley und Synfig Mitwirkende"
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"

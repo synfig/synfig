@@ -149,10 +149,10 @@ msgstr "Látogassa meg a Synfig weboldalát"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
-"Copyright 2001-2012\n"
+"Copyright 2001-2013\n"
 "Robert B. Quattlebaum Jr.,\n"
 "Adrian Bentley and Synfig contributors"
-msgstr "Szerzői jog 2001-2012\nRobert B. Quattlebaum Jr.,\nAdrian Bentley és Synfig közreműködők"
+msgstr "Szerzői jog 2001-2013\nRobert B. Quattlebaum Jr.,\nAdrian Bentley és Synfig közreműködők"
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
