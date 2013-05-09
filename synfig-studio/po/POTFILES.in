@@ -439,6 +439,7 @@ src/synfigapp/instance.cpp
 src/synfigapp/instance.h
 src/synfigapp/main.cpp
 src/synfigapp/main.h
+src/synfigapp/pluginmanager.cpp
 src/synfigapp/selectionmanager.h
 src/synfigapp/settings.cpp
 src/synfigapp/settings.h

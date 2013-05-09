@@ -23,6 +23,8 @@ MAINTAINERCLEANFILES = \
 	config.status \
 	.doc_stamp \
 	.DS_Store
+	
+DISTCLEANFILES = synfigstudio.desktop	
 
 SUBDIRS = \
 	build_tools \
@@ -45,6 +47,7 @@ EXTRA_DIST = \
 	m4/cxx_macros.m4 \
 	m4/ETL.m4 \
 	ChangeLog.old \
+	synfigstudio.desktop.in \
 	synfigstudio.xml.in \
 	synfigstudio-thumbnailer.schemas.in
 

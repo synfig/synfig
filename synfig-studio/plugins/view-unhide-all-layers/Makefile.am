@@ -1,7 +1,5 @@
 # $Id$
 
-MAINTAINERCLEANFILES = Makefile.in
-
 PLUGIN_NAME = view-unhide-all-layers
 
 EXTRA_FILES = 
@@ -14,4 +12,10 @@ plugin_DATA = \
 
 @INTLTOOL_XML_RULE@
 
-EXTRA_DIST = $(plugin_DATA)
+EXTRA_DIST = \
+	$(PLUGIN_NAME).py \
+	plugin.xml.in \
+	$(EXTRA_FILES)
+
+MAINTAINERCLEANFILES = Makefile.in
+DISTCLEANFILES = plugin.xml
