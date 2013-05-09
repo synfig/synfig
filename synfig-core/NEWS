@@ -10,6 +10,7 @@ http://synfig.org/cms/en/news/
   * New pluging system
   * New Cairo render engine
   * Terminology renaming
+  * Keyframes can now be enabled and disabled
   * New sequence separator option
   * Fix bug ID: 2684968: render is one frame short.
   * Fixed bug that happens when BLine passed is empty.

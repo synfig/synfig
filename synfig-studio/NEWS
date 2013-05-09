@@ -10,6 +10,7 @@ http://synfig.org/cms/en/news/
   * New Cairo render engine
   * Terminology renaming
   * Traslation is now handled by intltool
+  * Keyframes can now be enabled and disabled
   * New sequence separator option
   * Fix bug ID: 2684968: render is one frame short.
   * Fix bug ID: 3474332: Play/pause by shortcut causes canvas to stop updating.
