@@ -266,3 +266,153 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 
 	return true;
 }
+
+
+bool
+Layer_MotionBlur::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(aperture && quality<=10)
+	{
+		//int x, y;
+		SuperCallback subimagecb;
+		int samples=1;
+		switch(quality)
+		{
+			case 1:	// Production Quality
+				samples=32;
+				break;
+			case 2: // Excellent Quality
+				samples=24;
+				break;
+			case 3: // Good Quality
+				samples=16;
+				break;
+			case 4: // Moderate Quality
+				samples=12;
+				break;
+			case 5: // Draft Quality
+				samples=7;
+				break;
+			case 6:
+				samples=6;
+				break;
+			case 7:
+				samples=5;
+				break;
+			case 8:
+				samples=3;
+				break;
+			case 9:
+				samples=2;
+				break;
+			case 10: // Rough Quality
+            default:
+				samples=1;
+				break;
+				
+		}
+		
+		samples *= subsamples_factor;
+		
+		if (samples <= 1) return context.accelerated_cairorender(surface,quality,renddesc,cb);
+		
+		// Only in modes where subsample_start/end matters...
+		if(subsampling_type == SUBSAMPLING_LINEAR)
+		{
+			// We won't render when the scale==0, so we'll use those samples elsewhere
+			if(subsample_start == 0) samples++;
+			if(subsample_end == 0) samples++;
+		}
+		// We need to clear the given surface since it maybe not clean.
+		cairo_t* cr=cairo_create(surface);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint(cr);
+		cairo_destroy(cr);
+		
+		cairo_surface_t* tmp;
+		int i;
+		float scale, divisor = 0;
+		tmp=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, renddesc.get_w(),renddesc.get_h());
+		
+		// Precalculate the divisor
+		// this way we can use directly the values from the cairo surface
+		// and don't need to premultiply before sum and demultiply after divide
+		// Also it avoids a final for loop on the image pixels to divide.
+		for(i=0;i<samples;i++)
+		{
+			float pos = i/(samples-1.0);
+			float ipos = 1.0-pos;
+			switch(subsampling_type)
+			{
+				case SUBSAMPLING_LINEAR:
+					scale = ipos*subsample_start + pos*subsample_end;
+					break;
+				case SUBSAMPLING_HYPERBOLIC:
+					scale = 1.0/(samples-i);
+					break;
+				case SUBSAMPLING_CONSTANT:
+				default:
+					scale = 1.0; // Weights don't matter for constant overall subsampling.
+					break;
+			}
+			// Don't bother rendering if scale is zero
+			if(scale==0)
+				continue;
+			divisor += scale;
+		}
+		
+		// Render subsamples from time_cur-aperture to time_cur		
+		for(i=0;i<samples;i++)
+		{
+			float pos = i/(samples-1.0);
+			float ipos = 1.0-pos;
+			switch(subsampling_type)
+			{
+				case SUBSAMPLING_LINEAR:
+					scale = ipos*subsample_start + pos*subsample_end;
+					break;
+				case SUBSAMPLING_HYPERBOLIC:
+					scale = 1.0/(samples-i);
+					break;
+				case SUBSAMPLING_CONSTANT:
+				default:
+					scale = 1.0; // Weights don't matter for constant overall subsampling.
+					break;
+			}
+			// Don't bother rendering if scale is zero
+			if(scale==0)
+				continue;
+			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
+			context.set_time(time_cur-aperture*ipos);
+			cairo_t* cr=cairo_create(tmp);
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(cr);
+			cairo_destroy(cr);
+			if(!context.accelerated_cairorender(tmp,quality,renddesc,&subimagecb))
+				return false;
+			CairoSurface csurface(surface);
+			if(!csurface.map_cairo_image())
+			{
+				synfig::info("MotionBLur: map cairo image failed");
+				return false;
+			}
+			CairoSurface ctmp(tmp);
+			if(!ctmp.map_cairo_image())
+			{
+				synfig::info("MotionBLur: map cairo image failed");
+				return false;
+			}
+			float s=scale/divisor;
+			for(int y=0;y<renddesc.get_h();y++)
+				for(int x=0;x<renddesc.get_w();x++)
+					csurface[y][x]+=ctmp[y][x]*s;
+
+			ctmp.unmap_cairo_image();
+			csurface.unmap_cairo_image();
+		}
+	}
+	else
+		return context.accelerated_cairorender(surface,quality,renddesc,cb);
+	
+	return true;
+}
