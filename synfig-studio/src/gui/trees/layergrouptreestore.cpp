@@ -878,8 +878,8 @@ LayerGroupTreeStore::on_activity()
 {
 	// If we aren't rebuilding and the last action
 	// had something to do with groups, then go
-	// a head and present the groups dialog.
-	if(!rebuilding && canvas_interface()->get_instance()->get_most_recent_action() && canvas_interface()->get_instance()->get_most_recent_action()->get_name().find("Group")!=String::npos)
+	// ahead and present the groups dialog.
+	if(!rebuilding && canvas_interface()->get_instance()->get_most_recent_action_name().find("Group")!=String::npos)
 	try
 	{
 		App::dock_manager->find_dockable("groups").present();

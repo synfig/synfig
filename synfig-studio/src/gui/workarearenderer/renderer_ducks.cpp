@@ -199,7 +199,7 @@ Renderer_Ducks::render_vfunc(
 	{
 
 		// If this type of duck has been masked, then skip it
-		if((*iter)->get_type() && (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+		if(!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
 			continue;
 
 		Point sub_trans_point((*iter)->get_sub_trans_point());
@@ -212,6 +212,17 @@ Renderer_Ducks::render_vfunc(
 				sub_trans_point[0] = sub_trans_origin[0];
 			if (sub_trans_point[1] < sub_trans_origin[1])
 				sub_trans_point[1] = sub_trans_origin[1];
+		}
+
+		if ((*iter)->is_linear())
+		{
+			Point sub_trans_offset(sub_trans_point - sub_trans_origin);
+			Angle constrained_angle((*iter)->get_linear_angle());
+			Angle difference(Angle::tan(sub_trans_offset[1], sub_trans_offset[0])-constrained_angle);
+			Real length(Angle::cos(difference).get()*sub_trans_offset.mag());
+			if (length < 0) length = 0;
+			sub_trans_point[0] = sub_trans_origin[0] + length * Angle::cos(constrained_angle).get();
+			sub_trans_point[1] = sub_trans_origin[1] + length * Angle::sin(constrained_angle).get();
 		}
 
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
@@ -338,7 +349,7 @@ Renderer_Ducks::render_vfunc(
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
-			screen_duck.color=DUCK_COLOR_RADIUS;
+			screen_duck.color=((*iter)->is_linear() ? DUCK_COLOR_LINEAR : DUCK_COLOR_RADIUS);
 		else if((*iter)->get_type()&Duck::TYPE_WIDTH)
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)
@@ -390,45 +401,48 @@ Renderer_Ducks::render_vfunc(
 
 		if((*iter)->is_radius())
 		{
-			const Real mag((point-origin).mag());
-
-			cr->save();
-
-			cr->arc(
-				origin[0],
-				origin[1],
-				mag,
-				0,
-				M_PI*2
-				);
-
-			if(solid_lines)
+			if (!(*iter)->is_linear())
 			{
-				cr->set_line_width(3.0);
-				cr->set_source_rgb(0,0,0);
-				cr->stroke_preserve();
+				const Real mag((point-origin).mag());
 
-				cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
+				cr->save();
+
+				cr->arc(
+					origin[0],
+					origin[1],
+					mag,
+					0,
+					M_PI*2
+					);
+
+				if(solid_lines)
+				{
+					cr->set_line_width(3.0);
+					cr->set_source_rgb(0,0,0);
+					cr->stroke_preserve();
+
+					cr->set_source_rgb(175.0/255.0,175.0/255.0,175.0/255.0);
+				}
+				else
+				{
+					cr->set_source_rgb(1.0,1.0,1.0);
+
+					// Operator difference was added in Cairo 1.9.4
+					// It currently isn't supported by Cairomm
+	#if CAIRO_VERSION >= 10904
+					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
+	#else
+					// Fallback: set color to black
+					cr->set_source_rgb(0,0,0);
+	#endif
+
+				}
+
+				cr->set_line_width(1.0);
+				cr->stroke();
+
+				cr->restore();
 			}
-			else
-			{
-				cr->set_source_rgb(1.0,1.0,1.0);
-
-				// Operator difference was added in Cairo 1.9.4
-				// It currently isn't supported by Cairomm
-#if CAIRO_VERSION >= 10904
-				cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_DIFFERENCE);
-#else
-				// Fallback: set color to black
-				cr->set_source_rgb(0,0,0);
-#endif
-
-			}
-
-			cr->set_line_width(1.0);
-			cr->stroke();
-
-			cr->restore();
 
 			if(hover)
 			{

@@ -48,6 +48,7 @@
 #include <synfig/valuenode_radialcomposite.h>
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_reference.h>
+#include <synfig/valuenode_boneinfluence.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_integer.h>
 #include <synfig/valuenode_real.h>
@@ -170,13 +171,6 @@ Action::ValueDescSet::prepare()
 		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2") &&
 		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
 	{
-		{
-			ValueNode_Composite::Handle parent_value_node;
-			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-			assert(parent_value_node);
-			Vector t1((*parent_value_node->get_link("t1"))(time));
-			Vector t2((*parent_value_node->get_link("t2"))(time));
-		}
 		if (value_desc.get_name()=="t1") {
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
@@ -213,6 +207,41 @@ Action::ValueDescSet::prepare()
 		add_action(action);
 		return;
 	}
+
+	// if we are a boneinfluence value node, then we need to distribute the changes to the linked value node
+	if(value_desc.is_value_node())
+	{
+		if (ValueNode_BoneInfluence::Handle bone_influence_value_node =
+			ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueDesc bone_influence_value_desc(bone_influence_value_node,
+												bone_influence_value_node->get_link_index_from_name("link"));
+
+			if (bone_influence_value_node->has_inverse_transform())
+				value = bone_influence_value_node->get_inverse_transform().get_transformed(value);
+			else
+				throw Error(_("this node isn't editable - in the future it will be greyed to prevent editing"));
+
+			Action::Handle action(Action::create("ValueDescSet"));
+
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",value);
+			action->set_param("value_desc",bone_influence_value_desc);
+
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+
+			return;
+		}
+	}
+
 	// If we are a composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
@@ -577,6 +606,9 @@ Action::ValueDescSet::prepare()
 		}
 		return;
 	}
+
+	// end reverse manipulations
+
 	// WidthPoint Composite: adjust the width point position
 	// to achieve the desired point on bline
 	// (Code copied from BLineCalcVertex above)
@@ -830,7 +862,7 @@ Action::ValueDescSet::prepare()
 		add_action(action);
 		return;
 	}
-	else // Not in animation mode
+	else						// We are not in animate editing mode
 	{
 		if(value_desc.is_value_node())
 		{

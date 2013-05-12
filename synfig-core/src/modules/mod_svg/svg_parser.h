@@ -57,7 +57,7 @@ namespace synfig{
 typedef struct matrix_t{
 	float a,c,e;
 	float b,d,f;
-}Matrix;
+}SVGMatrix;
 
 typedef struct stop_t{
 	 float r,g,b;
@@ -68,7 +68,7 @@ typedef struct linear_g{
 	char name[80];
 	float x1,x2,y1,y2;
 	std::list<ColorStop*> *stops;
-	Matrix *transform;
+	SVGMatrix *transform;
 }LinearGradient;
 typedef struct radial_g{
 	char name[80];
@@ -76,7 +76,7 @@ typedef struct radial_g{
 	//float fx,fy; //not supported by Synfig
 	float r; //radius
 	std::list<ColorStop*> *stops;
-	Matrix *transform;
+	SVGMatrix *transform;
 }RadialGradient;
 
 typedef struct url_t{
@@ -132,33 +132,33 @@ private:
 		//parser headers
 		void parser_svg(const xmlpp::Node* node);
 		void parser_canvas(const xmlpp::Node* node);
-		void parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent);
+		void parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx_parent);
 
 		/* === LAYER PARSERS ============================== */
-		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
+		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx);
 		void parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
 		/* === CONVERT TO PATH PARSERS ==================== */
-		std::list<BLine *> parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx);
-		std::list<BLine *> parser_path_d(String path_d,Matrix* mtx);
+		std::list<BLine *> parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx);
+		std::list<BLine *> parser_path_d(String path_d,SVGMatrix* mtx);
 
 		/* === EFFECTS PARSERS ============================ */
-		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
+		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,SVGMatrix* mtx);
 
 		/* === DEFS PARSERS =============================== */
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
 		ColorStop* newColorStop(String color,float opacity,float pos);
-		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform);
-		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform);
+		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform);
+		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform);
 		BLine* newBLine(std::list<Vertex*> *points,bool loop);
 
 		/* === BUILDS ===================================== */
-		void build_transform(xmlpp::Element* root,Matrix* mtx);
+		void build_transform(xmlpp::Element* root,SVGMatrix* mtx);
 		std::list<ColorStop*>* find_colorStop(String name);
-		void build_fill(xmlpp::Element* root, String name,Matrix *mtx);
-		void build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matrix* mtx);
-		void build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matrix* mtx);
+		void build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx);
+		void build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx);
+		void build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx);
 		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops);
 		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops,String name);
 		Color adjustGamma(float r,float g,float b,float a);
@@ -191,14 +191,14 @@ private:
 		Vertex* newVertex(float x,float y);
 
 		//matrix operations
-		Matrix* parser_transform(const String transform);
-		Matrix* newMatrix(float a,float b,float c,float d,float e,float f);
-		Matrix* newMatrix(const String mvector);
-		Matrix* newMatrix(Matrix *a);
-		void transformPoint2D(Matrix *mtx,float *a,float *b);
-		bool matrixIsNull(Matrix* mtx);
-		void composeMatrix(Matrix **mtx,Matrix *mtx1,Matrix *mtx2);
-		void multiplyMatrix(Matrix **mtx1,Matrix *mtx2);
+		SVGMatrix* parser_transform(const String transform);
+		SVGMatrix* newSVGMatrix(float a,float b,float c,float d,float e,float f);
+		SVGMatrix* newSVGMatrix(const String mvector);
+		SVGMatrix* newSVGMatrix(SVGMatrix *a);
+		void transformPoint2D(SVGMatrix *mtx,float *a,float *b);
+		bool matrixIsNull(SVGMatrix* mtx);
+		void composeSVGMatrix(SVGMatrix **mtx,SVGMatrix *mtx1,SVGMatrix *mtx2);
+		void multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2);
 		float getRadian(float sexa);
 
 		/* === EXTRA METHODS ============================== */

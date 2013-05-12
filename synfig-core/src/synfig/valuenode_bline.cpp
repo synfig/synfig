@@ -34,6 +34,7 @@
 #include "valuenode_bline.h"
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
+#include "canvas.h"
 #include "general.h"
 #include "exception.h"
 #include "blinepoint.h"
@@ -460,9 +461,11 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 /* === M E T H O D S ======================================================= */
 
 
-ValueNode_BLine::ValueNode_BLine():
-	ValueNode_DynamicList(ValueBase::TYPE_BLINEPOINT)
+ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
+	ValueNode_DynamicList(ValueBase::TYPE_BLINEPOINT, canvas)
 {
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 }
 
 ValueNode_BLine::~ValueNode_BLine()
@@ -470,11 +473,14 @@ ValueNode_BLine::~ValueNode_BLine()
 }
 
 ValueNode_BLine*
-ValueNode_BLine::create(const ValueBase &value)
+ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 {
 	if(value.get_type()!=ValueBase::TYPE_LIST)
 		return 0;
 
+	// don't set the parent canvas yet - do it just before returning from this function
+	// otherwise we'll start constructing and destroying handles to the new bline before
+	// we have a permanent handle to it and it will be destroyed
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 
 	if(!value.empty())
@@ -490,7 +496,7 @@ ValueNode_BLine::create(const ValueBase &value)
 
 			for(iter=bline_points.begin();iter!=bline_points.end();iter++)
 			{
-				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
+				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter, canvas)));
 			}
 			value_node->set_loop(value.get_loop());
 		}
@@ -517,7 +523,7 @@ ValueNode_BLine::create(const ValueBase &value)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
+					prev=ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas));
 					{
 						BLinePoint prev_point(PREV_POINT);
 						prev_point.set_vertex(iter->p1);
@@ -543,8 +549,7 @@ ValueNode_BLine::create(const ValueBase &value)
 					continue;
 				}
 
-				ValueNode_Const::Handle curr;
-				curr=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
+				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas)));
 				{
 					BLinePoint curr_point(CURR_POINT);
 					curr_point.set_vertex(iter->p2);
@@ -574,6 +579,8 @@ ValueNode_BLine::create(const ValueBase &value)
 			break;
 		}
 	}
+
+	value_node->set_parent_canvas(canvas);
 
 	return value_node;
 }
@@ -614,8 +621,6 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	return ret;
 }
 
-// Remove this variable because it is not used.
-//static int instance_count;
 
 ValueBase
 ValueNode_BLine::operator()(Time t)const
@@ -649,14 +654,14 @@ ValueNode_BLine::operator()(Time t)const
 			if(first_flag)
 			{
 				first_iter=iter;
-				first=prev=(*iter->value_node)(t).get(prev);
+				first=prev=get_blinepoint(iter, t);
 				first_flag=false;
 				ret_list.push_back(first);
 				continue;
 			}
 
 			BLinePoint curr;
-			curr=(*iter->value_node)(t).get(prev);
+			curr=get_blinepoint(iter, t);
 
 			if(next_scale!=1.0f)
 			{
@@ -711,7 +716,7 @@ ValueNode_BLine::operator()(Time t)const
 				catch(...) { on_time=Time::end(); }
 			}
 
-			blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
+			blp_here_on=get_blinepoint(iter, on_time);
 //			blp_here_on=(*iter->value_node)(t).get(blp_here_on);
 
 			// Find "end" of dynamic group - ie. search forward along
@@ -734,7 +739,7 @@ ValueNode_BLine::operator()(Time t)const
 					end_iter=--list.end();
 			}
 
-			blp_next_off=(*end_iter->value_node)(off_time).get(prev);
+			blp_next_off=get_blinepoint(end_iter, off_time);
 
 			// Find "begin" of dynamic group
 			begin_iter=iter;
@@ -758,7 +763,7 @@ ValueNode_BLine::operator()(Time t)const
 
 				if(begin_iter->amount_at_time(t)>amount)
 				{
-					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+					blp_prev_off=get_blinepoint(begin_iter, off_time);
 					break;
 				}
 			}while(true);
@@ -772,7 +777,7 @@ ValueNode_BLine::operator()(Time t)const
 					begin_iter=list.begin();
 				else
 					begin_iter=first_iter;
-				blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+				blp_prev_off=get_blinepoint(begin_iter, off_time);
 			}
 
 			// this is how the curve looks when we have completely vanished
@@ -805,7 +810,7 @@ ValueNode_BLine::operator()(Time t)const
 			else if(list.end()!=++std::vector<ListEntry>::const_iterator(iter))
 			{
 				BLinePoint next;
-				next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
+				next=get_blinepoint(++std::vector<ListEntry>::const_iterator(iter), t);
 				next_tangent_scalar=linear_interpolation(next.get_origin()-blp_here_on.get_origin(), 1.0f, amount);
 			}
 			else
@@ -845,20 +850,20 @@ ValueNode_BLine::operator()(Time t)const
 				// for each of the 3 systems, the origin is half way between the previous and next active point
 				// and the axes are based on a vector from the next active point to the previous
 				{
-					const Point   end_pos_at_off_time((  *end_iter->value_node)(off_time).get(prev).get_vertex());
-					const Point begin_pos_at_off_time((*begin_iter->value_node)(off_time).get(prev).get_vertex());
+					const Point   end_pos_at_off_time(get_blinepoint(end_iter,   off_time).get_vertex());
+					const Point begin_pos_at_off_time(get_blinepoint(begin_iter, off_time).get_vertex());
 					off_coord_origin=(begin_pos_at_off_time + end_pos_at_off_time)/2;
 					off_coord_sys[0]=(begin_pos_at_off_time - end_pos_at_off_time).norm();
 					off_coord_sys[1]=off_coord_sys[0].perp();
 
-					const Point   end_pos_at_on_time((  *end_iter->value_node)(on_time).get(prev).get_vertex());
-					const Point begin_pos_at_on_time((*begin_iter->value_node)(on_time).get(prev).get_vertex());
+					const Point   end_pos_at_on_time(get_blinepoint(end_iter,   on_time).get_vertex());
+					const Point begin_pos_at_on_time(get_blinepoint(begin_iter, on_time).get_vertex());
 					on_coord_origin=(begin_pos_at_on_time + end_pos_at_on_time)/2;
 					on_coord_sys[0]=(begin_pos_at_on_time - end_pos_at_on_time).norm();
 					on_coord_sys[1]=on_coord_sys[0].perp();
 
-					const Point   end_pos_at_current_time((  *end_iter->value_node)(t).get(prev).get_vertex());
-					const Point begin_pos_at_current_time((*begin_iter->value_node)(t).get(prev).get_vertex());
+					const Point   end_pos_at_current_time(get_blinepoint(end_iter,   t).get_vertex());
+					const Point begin_pos_at_current_time(get_blinepoint(begin_iter, t).get_vertex());
 					curr_coord_origin=(begin_pos_at_current_time + end_pos_at_current_time)/2;
 					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
@@ -1012,6 +1017,89 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_LIST;
 }
+
+
+BLinePoint
+ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t) const
+{
+	BLinePoint bpcurr((*current->value_node)(t).get(BLinePoint()));
+	if(!bpcurr.get_boned_vertex_flag())
+		return bpcurr;
+
+	std::vector<ListEntry>::const_iterator next(current), previous(current); //iterators current, next, previous
+	BLinePoint bpprev,bpnext; //BLinePoints next, previous
+	Vector t1,t2;
+	Vector tt1,tt2; // Calculated tangents
+	Point v,vn,vp; // Transformed current Vertex, next Vertex, previous Vertex
+	Point vs,vns,vps; // Setup current Vertex, next Vertex, previous Vertex
+	Angle beta1,beta2; //Final angle of tangents (trasformed)
+	Angle beta01,beta02; //Original angle of tangnets (untransformed)
+	Angle alpha; // Increment of angle produced in the segment next-previous
+	Angle gamma; // Compensation due to the variation relative to the midpoint.
+
+	next++;
+	if(next==list.end())
+		next=list.begin();
+	if(current==list.begin())
+		previous=list.end();
+	previous--;
+
+	bpprev=(*previous->value_node)(t).get(BLinePoint());
+	bpnext=(*next->value_node)(t).get(BLinePoint());
+
+	t1=bpcurr.get_tangent1();
+	t2=bpcurr.get_tangent2();
+	v=bpcurr.get_vertex();
+	vp=bpprev.get_vertex();
+	vn=bpnext.get_vertex();
+	vs=bpcurr.get_vertex_setup();
+	vps=bpprev.get_vertex_setup();
+	vns=bpnext.get_vertex_setup();
+	beta01=t1.angle();
+	beta02=t2.angle();
+	// New aproaching: I calculate the needed relative change of the tangents
+	// in relation to the segment that joins the next and previous vertices.
+	// Then add a compensation due to the modification relative to the mid point.
+	// If the blinepoint tangent is not split it is not needed the compensation
+	// in fact the compensation makes it worst so it makes only sense when the
+	// vertex has a particular "shape" by its split tangents.
+	alpha=(vn-vp).angle()-(vns-vps).angle();
+	if (bpcurr.get_split_tangent_flag())
+		gamma=((v-(vn+vp)*0.5).angle()-(vn-vp).angle()) - ((vs-(vns+vps)*0.5).angle()-(vns-vps).angle());
+	else
+		gamma=Angle::zero();
+
+	beta1=alpha + gamma + beta01;
+	beta2=alpha + gamma + beta02;
+	tt1[0]=t1.mag()*Angle::cos(beta1).get();
+	tt1[1]=t1.mag()*Angle::sin(beta1).get();
+	tt2[0]=t2.mag()*Angle::cos(beta2).get();
+	tt2[1]=t2.mag()*Angle::sin(beta2).get();
+	bpcurr.set_tangent1(tt1);
+	bpcurr.set_tangent2(tt2);
+
+	return bpcurr;
+}
+
+#ifdef _DEBUG
+void
+ValueNode_BLine::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
+		printf("%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+
+	LinkableValueNode::ref();
+}
+
+bool
+ValueNode_BLine::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
+		printf("%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+
+	return LinkableValueNode::unref();
+}
+#endif
 
 LinkableValueNode::Vocab
 ValueNode_BLine::get_children_vocab_vfunc()const

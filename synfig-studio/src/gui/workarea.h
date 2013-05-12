@@ -325,6 +325,9 @@ public:
 	// used in renderer_timecode.cpp
 	int timecode_width, timecode_height;
 
+	// used in renderer_bonesetup.cpp
+	int bonesetup_width, bonesetup_height;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/

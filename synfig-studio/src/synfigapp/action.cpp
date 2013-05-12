@@ -63,6 +63,13 @@
 #include "actions/valuenodedynamiclistloop.h"
 #include "actions/valuenodedynamiclistunloop.h"
 #include "actions/valuenodedynamiclistrotateorder.h"
+#include "actions/valuenodestaticlistinsert.h"
+#include "actions/valuenodestaticlistremove.h"
+#include "actions/valuenodestaticlistinsertsmart.h"
+#include "actions/valuenodestaticlistremovesmart.h"
+#include "actions/valuenodestaticlistloop.h"
+#include "actions/valuenodestaticlistunloop.h"
+#include "actions/valuenodestaticlistrotateorder.h"
 #include "actions/valuenoderename.h"
 #include "actions/valuenoderemove.h"
 
@@ -191,6 +198,13 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListRotateOrder);
+	ADD_ACTION(Action::ValueNodeStaticListInsert);
+	ADD_ACTION(Action::ValueNodeStaticListRemove);
+	ADD_ACTION(Action::ValueNodeStaticListInsertSmart);
+	ADD_ACTION(Action::ValueNodeStaticListRemoveSmart);
+	ADD_ACTION(Action::ValueNodeStaticListLoop);
+	ADD_ACTION(Action::ValueNodeStaticListUnLoop);
+	ADD_ACTION(Action::ValueNodeStaticListRotateOrder);
 	ADD_ACTION(Action::ValueNodeRename);
 	ADD_ACTION(Action::ValueNodeRemove);
 
@@ -402,8 +416,9 @@ Super::perform()
 	ActionList::const_iterator iter;
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
-		//// debug actions
-		// synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+		if (getenv("SYNFIG_DEBUG_ACTIONS"))
+			synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+
 		try
 		{
 			try
@@ -562,3 +577,35 @@ CanvasSpecific::get_edit_mode()const
 
 	return MODE_NORMAL;
 }
+
+//DOO static int undoable_count = 0;
+
+Undoable::Undoable():
+	active_(true)
+{
+	//DOO printf("%s:%d Undoable::Undoable() (we have %d)\n", __FILE__, __LINE__, ++undoable_count);
+}
+
+#ifdef _DEBUG
+Undoable::~Undoable() {
+	//DOO printf("%s:%d Undoable::~Undoable() (we now have %d)\n", __FILE__, __LINE__, --undoable_count);
+}
+
+void
+Undoable::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+
+	Base::ref();
+}
+
+bool
+Undoable::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+
+	return Base::unref();
+}
+#endif

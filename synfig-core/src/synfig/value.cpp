@@ -35,7 +35,11 @@
 #include "general.h"
 #include <ETL/stringf>
 #include "canvas.h"
+#include "valuenode_bone.h"
 #include "gradient.h"
+#include "bone.h"
+#include "matrix.h"
+#include "boneweightpair.h"
 
 
 
@@ -51,6 +55,8 @@ using namespace std;
 using namespace etl;
 
 /* === M A C R O S ========================================================= */
+
+#define TRY_FIX_FOR_BUG_27
 
 /* === G L O B A L S ======================================================= */
 
@@ -79,11 +85,15 @@ ValueBase::ValueBase(Type x):
 	case TYPE_COLOR:		data=static_cast<void*>(new Color());				break;
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
+	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
+	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
 	case TYPE_WIDTHPOINT:	data=static_cast<void*>(new WidthPoint());			break;
 	case TYPE_DASHITEM:		data=static_cast<void*>(new DashItem());			break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
+	case TYPE_BONE:			data=static_cast<void*>(new Bone());				break;
+	case TYPE_VALUENODE_BONE:	data=static_cast<void*>(new etl::handle<ValueNode_Bone>());	break;
 	case TYPE_CANVAS:		data=static_cast<void*>(new etl::handle<Canvas>());	break;
 	default:																	break;
 	}
@@ -106,32 +116,57 @@ ValueBase::get_string() const
 {
 	switch(type)
 	{
-	case TYPE_NIL:			return "Nil";
-	case TYPE_BOOL:			return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
-	case TYPE_INTEGER:		return strprintf("Integer (%s)", get(int()));
-	case TYPE_ANGLE:		return strprintf("Angle (%.2f)", Angle::deg(get(Angle())).get());
+	case TYPE_NIL:
+				return "Nil";
+	case TYPE_BOOL:
+		return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
+	case TYPE_INTEGER:
+		return strprintf("Integer (%d)", get(int()));
+	case TYPE_ANGLE:
+		return strprintf("Angle (%.2f)", Angle::deg(get(Angle())).get());
 
 		// All types after this point are larger than 32 bits
 
-	case TYPE_TIME:			return strprintf("Time (%s)", get(Time()).get_string().c_str());
-	case TYPE_REAL:			return strprintf("Real (%f)", get(Real()));
+	case TYPE_TIME:
+		return strprintf("Time (%s)", get(Time()).get_string().c_str());
+	case TYPE_REAL:
+		return strprintf("Real (%f)", get(Real()));
 
 		// All types after this point are larger than 64 bits
 
-	case TYPE_VECTOR:		return strprintf("Vector (%f, %f)", get(Vector())[0], get(Vector())[1]);
-	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
-	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
-	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
-	case TYPE_WIDTHPOINT:	return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
-	case TYPE_DASHITEM:		return strprintf("DashItem (%s)", get(DashItem()).get_offset(), get(DashItem()).get_length());
+	case TYPE_VECTOR:
+		return strprintf("Vector (%f, %f)", get(Vector())[0], get(Vector())[1]);
+	case TYPE_COLOR:
+		return strprintf("Color (%s)", get(Color()).get_string().c_str());
+	case TYPE_SEGMENT:
+		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
+	case TYPE_BLINEPOINT:
+		return strprintf("BLinePoint (%f, %f)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_MATRIX:
+		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
+	case TYPE_BONE_WEIGHT_PAIR:
+		return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
+	case TYPE_WIDTHPOINT:
+		return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
+	case TYPE_DASHITEM:
+				return strprintf("DashItem (%s)", get(DashItem()).get_offset(), get(DashItem()).get_length());
 
 		// All types after this point require construction/destruction
 
-	case TYPE_LIST:			return strprintf("List (%d elements)", get(list_type()).size());
-	case TYPE_CANVAS:		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
-	case TYPE_STRING:		return strprintf("String (%s)", get(String()).c_str());
-	case TYPE_GRADIENT:		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
-	default:				return "Invalid type";
+	case TYPE_LIST:
+		return strprintf("List (%d elements)", get(list_type()).size());
+	case TYPE_CANVAS:
+		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
+	case TYPE_STRING:
+		return strprintf("String (%s)", get(String()).c_str());
+	case TYPE_GRADIENT:
+		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
+	case TYPE_BONE:
+		return strprintf("Bone (%s)", get(Bone()).get_string().c_str());
+	case TYPE_VALUENODE_BONE:
+		return strprintf("ValueNodeBone (%s)", get(ValueNode_Bone::Handle())->get_string().c_str());
+	default:
+		return "Invalid type";
 	}
 }
 #endif	// _DEBUG
@@ -140,7 +175,11 @@ void
 ValueBase::set(Canvas* x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 	{
 		_set(etl::handle<Canvas>(x));
 	}
@@ -155,7 +194,11 @@ void
 ValueBase::set(etl::loose_handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -166,7 +209,11 @@ void
 ValueBase::set(etl::handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -233,29 +280,37 @@ ValueBase::clear()
 	{
 		switch(type)
 		{
-		case TYPE_BOOL:			delete static_cast<bool*>(data);		break;
-		case TYPE_INTEGER:		delete static_cast<int*>(data);			break;
-		case TYPE_ANGLE:		delete static_cast<Angle*>(data);		break;
-		case TYPE_TIME:			delete static_cast<Time*>(data);		break;
-		case TYPE_REAL:			delete static_cast<Real*>(data);		break;
-		case TYPE_VECTOR:		delete static_cast<Vector*>(data);		break;
-		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
-		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
-		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
-		case TYPE_WIDTHPOINT:	delete static_cast<WidthPoint*>(data);	break;
-		case TYPE_DASHITEM:		delete static_cast<DashItem*>(data);	break;
-		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
+		case TYPE_BOOL:             delete static_cast<bool*>(data); break;
+		case TYPE_INTEGER:          delete static_cast<int*>(data); break;
+		case TYPE_ANGLE:            delete static_cast<Angle*>(data); break;
+		case TYPE_TIME:             delete static_cast<Time*>(data); break;
+		case TYPE_REAL:             delete static_cast<Real*>(data); break;
+		case TYPE_VECTOR:           delete static_cast<Vector*>(data); break;
+		case TYPE_COLOR:            delete static_cast<Color*>(data); break;
+		case TYPE_SEGMENT:          delete static_cast<Segment*>(data); break;
+		case TYPE_BLINEPOINT:       delete static_cast<BLinePoint*>(data); break;
+		case TYPE_MATRIX:           delete static_cast<Matrix*>(data); break;
+		case TYPE_BONE_WEIGHT_PAIR: delete static_cast<BoneWeightPair*>(data); break;
+		case TYPE_WIDTHPOINT:       delete static_cast<WidthPoint*>(data); break;
+		case TYPE_DASHITEM:         delete static_cast<DashItem*>(data); break;
+		case TYPE_LIST:             delete static_cast<list_type*>(data); break;
 		case TYPE_CANVAS:
 		{
 			etl::handle<Canvas> canvas(get(etl::loose_handle<Canvas>()));
-			if(canvas && canvas->is_inline())
+			if(canvas
+#ifndef TRY_FIX_FOR_BUG_27
+			   && canvas->is_inline()
+#endif
+				)
 				delete static_cast<etl::handle<Canvas>*>(data);
 			else
 				delete static_cast<etl::loose_handle<Canvas>*>(data);
 			break;
 		}
-		case TYPE_STRING:		delete static_cast<String*>(data);		break;
-		case TYPE_GRADIENT:		delete static_cast<Gradient*>(data);	break;
+		case TYPE_STRING:           delete static_cast<String*>(data); break;
+		case TYPE_GRADIENT:         delete static_cast<Gradient*>(data); break;
+		case TYPE_BONE:             delete static_cast<Bone*>(data); break;
+		case TYPE_VALUENODE_BONE:   delete static_cast<etl::handle<ValueNode_Bone>*>(data); break;
 		default:
 			break;
 		}
@@ -266,29 +321,32 @@ ValueBase::clear()
 	type=TYPE_NIL;
 }
 
-
 String
 ValueBase::type_name(Type id)
 {
-	// don't internationalize these type names - they're using in .sif files
+	// don't internationalize these type names - they're used in .sif files
 	switch(id)
 	{
-	case TYPE_BOOL:			return N_("bool");
-	case TYPE_INTEGER:		return N_("integer");
-	case TYPE_ANGLE:		return N_("angle");
-	case TYPE_TIME:			return N_("time");
-	case TYPE_REAL:			return N_("real");
-	case TYPE_VECTOR:		return N_("vector");
-	case TYPE_COLOR:		return N_("color");
-	case TYPE_SEGMENT:		return N_("segment");
-	case TYPE_BLINEPOINT:		return N_("bline_point");
-	case TYPE_WIDTHPOINT:		return N_("width_point");
-	case TYPE_DASHITEM:		return N_("dash_item");
-	case TYPE_LIST:			return N_("list");
-	case TYPE_CANVAS:		return N_("canvas");
-	case TYPE_STRING:		return N_("string");
-	case TYPE_GRADIENT:		return N_("gradient");
-	case TYPE_NIL:			return N_("nil");
+	case TYPE_BOOL:                return N_("bool");
+	case TYPE_INTEGER:             return N_("integer");
+	case TYPE_ANGLE:               return N_("angle");
+	case TYPE_TIME:                return N_("time");
+	case TYPE_REAL:                return N_("real");
+	case TYPE_VECTOR:              return N_("vector");
+	case TYPE_COLOR:               return N_("color");
+	case TYPE_SEGMENT:             return N_("segment");
+	case TYPE_BLINEPOINT:          return N_("bline_point");
+	case TYPE_MATRIX:              return N_("matrix");
+	case TYPE_BONE_WEIGHT_PAIR:    return N_("bone_weight_pair");
+	case TYPE_WIDTHPOINT:          return N_("width_point");
+	case TYPE_DASHITEM:            return N_("dash_item");
+	case TYPE_LIST:                return N_("list");
+	case TYPE_CANVAS:              return N_("canvas");
+	case TYPE_STRING:              return N_("string");
+	case TYPE_GRADIENT:            return N_("gradient");
+	case TYPE_BONE:	               return N_("bone_object");
+	case TYPE_VALUENODE_BONE:      return N_("bone_valuenode");
+	case TYPE_NIL:                 return N_("nil");
 	default:
 		break;
 	}
@@ -305,43 +363,52 @@ ValueBase::type_local_name(Type id)
 	switch(id)
 	{
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_BOOL:			return N_("bool");
+	case TYPE_BOOL:                 return N_("bool");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_INTEGER:		return N_("integer");
+	case TYPE_INTEGER:              return N_("integer");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_ANGLE:		return N_("angle");
+	case TYPE_ANGLE:                return N_("angle");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_TIME:			return N_("time");
+	case TYPE_TIME:	                return N_("time");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_REAL:			return N_("real");
+	case TYPE_REAL:	                return N_("real");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_VECTOR:		return N_("vector");
+	case TYPE_VECTOR:               return N_("vector");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_COLOR:		return N_("color");
+	case TYPE_COLOR:                return N_("color");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_SEGMENT:		return N_("segment");
+	case TYPE_SEGMENT:              return N_("segment");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_BLINEPOINT:		return N_("spline_point");
+	case TYPE_BLINEPOINT:           return N_("spline_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_WIDTHPOINT:		return N_("width_point");
+	case TYPE_MATRIX:               return N_("matrix");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_DASHITEM:		return N_("dash_item");
+	case TYPE_BONE_WEIGHT_PAIR:     return N_("bone_weight_pair");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_LIST:			return N_("list");
+	case TYPE_WIDTHPOINT:           return N_("width_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_CANVAS:		return N_("canvas");
+	case TYPE_DASHITEM:             return N_("dash_item");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_STRING:		return N_("string");
+	case TYPE_LIST:                 return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_GRADIENT:		return N_("gradient");
+	case TYPE_CANVAS:               return N_("canvas");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
-	case TYPE_NIL:			return N_("nil");
-	default:			break;
+	case TYPE_STRING:               return N_("string");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_GRADIENT:             return N_("gradient");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_BONE:	                return N_("bone_object");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_VALUENODE_BONE:       return N_("bone_valuenode");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_NIL:                  return N_("nil");
+	default: break;
 	}
-	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }
+
 
 ValueBase::Type
 ValueBase::ident_type(const String &str)
@@ -370,8 +437,12 @@ ValueBase::ident_type(const String &str)
 	else if(str=="list")		return TYPE_LIST;
 	else if(str=="segment")		return TYPE_SEGMENT;
 	else if(str=="gradient")	return TYPE_GRADIENT;
+	else if(str=="bone_object")	return TYPE_BONE;
+	else if(str=="bone_valuenode")	return TYPE_VALUENODE_BONE;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
+	else if(str=="matrix")		return TYPE_MATRIX;
+	else if(str=="bone_weight_pair")	return TYPE_BONE_WEIGHT_PAIR;
 	else if(str=="width_point" ||
 			str=="widthpoint")	return TYPE_WIDTHPOINT;
 	else if(str=="dash_item" ||
@@ -390,23 +461,27 @@ ValueBase::operator==(const ValueBase& rhs)const
 
 	switch(get_type())
 	{
-	case TYPE_TIME:            return get(Time()).is_equal(rhs.get(Time()));
-	case TYPE_REAL:            return abs(get(Real())-rhs.get(Real()))<=0.00000000000001;
-	case TYPE_INTEGER:         return get(int())==rhs.get(int());
-	case TYPE_BOOL:            return get(bool())==rhs.get(bool());
-	case TYPE_ANGLE:           return get(Angle())==rhs.get(Angle());
-	case TYPE_VECTOR:          return get(Vector()).is_equal_to(rhs.get(Vector()));
-	case TYPE_COLOR:           return get(Color())==rhs.get(Color());
-	case TYPE_STRING:          return get(String())==rhs.get(String());
-	case TYPE_CANVAS:          return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
-	case TYPE_LIST:            return get_list()==rhs.get_list();
-	case TYPE_WIDTHPOINT:      return get(WidthPoint())==rhs.get(WidthPoint());
-	case TYPE_DASHITEM:        return get(DashItem())==rhs.get(DashItem());
-	case TYPE_SEGMENT:      // return get(Segment())==rhs.get(Segment());
-	case TYPE_GRADIENT:     // return get(Gradient())==rhs.get(Gradient());
-	case TYPE_BLINEPOINT:   // return get(BLinePoint())==rhs.get(BLinePoint());
+	case TYPE_TIME:                   return get(Time()).is_equal(rhs.get(Time()));
+	case TYPE_REAL:                   return abs(get(Real())-rhs.get(Real()))<=0.00000000000001;
+	case TYPE_INTEGER:                return get(int())==rhs.get(int());
+	case TYPE_BOOL:                   return get(bool())==rhs.get(bool());
+	case TYPE_ANGLE:                  return get(Angle())==rhs.get(Angle());
+	case TYPE_VECTOR:                 return get(Vector()).is_equal_to(rhs.get(Vector()));
+	case TYPE_COLOR:                  return get(Color())==rhs.get(Color());
+	case TYPE_STRING:                 return get(String())==rhs.get(String());
+	case TYPE_CANVAS:                 return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
+	case TYPE_LIST:                   return get_list()==rhs.get_list();
+	case TYPE_VALUENODE_BONE:         return get(ValueNode_Bone::Handle())==rhs.get(ValueNode_Bone::Handle());
+	case TYPE_DASHITEM:               return get(DashItem())==rhs.get(DashItem());
+	case TYPE_SEGMENT:             // return get(Segment())==rhs.get(Segment());
+	case TYPE_GRADIENT:            // return get(Gradient())==rhs.get(Gradient());
+	case TYPE_BONE:                // return get(Bone())==rhs.get(Bone());
+	case TYPE_BLINEPOINT:          // return get(BLinePoint())==rhs.get(BLinePoint());
+	case TYPE_MATRIX:              // return get(Matrix())==rhs.get(Matrix());
+	case TYPE_BONE_WEIGHT_PAIR:    // return get(BoneWeightPair())==rhs.get(BoneWeightPair());
+	case TYPE_WIDTHPOINT:
 	case TYPE_NIL:
-	default:                   return false;
+	default:                          return false;
 	}
 	return false;
 }

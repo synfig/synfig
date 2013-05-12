@@ -1,0 +1,5 @@
+Subject: crash editing 'switch' converted bone parent
+
+convert bone1's parent to 'switch'
+right-click 'link off' and 'disconnect'
+edit 'link on' - it crashes

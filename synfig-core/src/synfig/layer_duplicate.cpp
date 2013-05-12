@@ -68,9 +68,9 @@ Layer_Duplicate::Layer_Duplicate():
 }
 
 Layer::Handle
-Layer_Duplicate::clone(const GUID& deriv_guid)const
+Layer_Duplicate::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
-	Layer::Handle ret = (Layer::Handle)Layer_Composite::clone(deriv_guid);
+	Layer::Handle ret = (Layer::Handle)Layer_Composite::clone(canvas, deriv_guid);
 
 	const DynamicParamList &dpl = dynamic_param_list();
 	DynamicParamList::const_iterator iter = dpl.find("index");
@@ -79,7 +79,7 @@ Layer_Duplicate::clone(const GUID& deriv_guid)const
 	// it's not good to have two references to the same index valuenode,
 	// or nested duplications cause an infinite loop
 	if (iter != dpl.end())
-		ret->connect_dynamic_param(iter->first,iter->second->clone(deriv_guid));
+		ret->connect_dynamic_param(iter->first,iter->second->clone(canvas, deriv_guid));
 
 	return ret;
 }

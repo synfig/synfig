@@ -564,13 +564,41 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			{
 				Layer::Handle layer(*iter);
 				if(layer->active())
-					job.canvas->push_front(layer->clone());
+					job.canvas->push_front(layer->clone(composite));
 			}
 		}
 
 		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file.c_str() << endl;
 	}
-
+	/*=== This is a code that comes from bones branch 
+	      possibly it is the solution for multi-appending mentioned before ====	
+	// Extract composite
+	do{
+		string composite_file;
+		extract_append(imageargs,composite_file);
+		if(!composite_file.empty())
+		{
+			String errors, warnings;
+			Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
+			if(!composite)
+			{
+				cerr<<_("Unable to append '")<<composite_file<<"'."<<endl;
+				break;
+			}
+			Canvas::reverse_iterator iter;
+			for(iter=composite->rbegin();iter!=composite->rend();++iter)
+			{
+				Layer::Handle layer(*iter);
+				if(layer->active())
+					job_list.front().canvas->push_front(layer->clone(composite));
+			}
+			VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
+		}
+	} while(false);
+	
+	VERBOSE_OUT(4)<<_("Attempting to determine target/outfile...")<<endl;
+	>>>>>>> genete_bones
+	 */
 	if (_vm.count("list-canvases") || _vm.count("canvases"))
 	{
 		print_child_canvases(job.filename + "#", job.root);

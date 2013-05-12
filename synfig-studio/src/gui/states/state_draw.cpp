@@ -1833,8 +1833,10 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 								printf("in one - it's close\n");
 								ValueNode_Composite::Handle value_node;
 								ValueNode_Composite::Handle value_node_next;
-								value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
-								value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
+								value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()->
+																					 clone(value_desc.get_value_node()->get_parent_canvas()));
+								value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node()->
+																						  clone(value_next.get_value_node()->get_parent_canvas()));
 								if(!value_node || !value_node_next)
 								{
 									synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);

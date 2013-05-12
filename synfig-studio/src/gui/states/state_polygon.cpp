@@ -535,7 +535,7 @@ StatePolygon_Context::run()
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(Vector()));
+	ValueNode::Handle value_node_origin(ValueNode_Const::create(Vector()));
 	assert(value_node_origin);
 
 	// Set the looping flag

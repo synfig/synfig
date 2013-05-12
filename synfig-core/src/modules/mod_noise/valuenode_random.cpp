@@ -231,9 +231,9 @@ ValueNode_Random::check_type(ValueBase::Type type)
 }
 
 ValueNode*
-ValueNode_Random::clone(const GUID& deriv_guid)const
+ValueNode_Random::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
-	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(deriv_guid);
+	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(canvas, deriv_guid);
 	ret->randomize_seed();
 	return ret;
 }

@@ -556,7 +556,7 @@ CellRenderer_TimeTrack::render_vfunc(
 }
 
 synfig::ValueNode_Animated::WaypointList::iterator
-CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Time& scope)
+CellRenderer_TimeTrack::find_editable_waypoint(const synfig::Time& /*t*/,const synfig::Time& scope)
 {
 	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
@@ -567,8 +567,8 @@ CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Ti
 	if(value_node)
 	{
 		for(
-			iter=value_node->waypoint_list().begin();
-			iter!=value_node->waypoint_list().end();
+			iter=value_node->editable_waypoint_list().begin();
+			iter!=value_node->editable_waypoint_list().end();
 			iter++
 			)
 		{
@@ -704,7 +704,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		selection=false;
 		try
 		{
-			iter=find_waypoint(selected_time,pixel_width*cell_area.get_height()/2);
+			iter=find_editable_waypoint(selected_time,pixel_width*cell_area.get_height()/2);
 			selected_waypoint=iter;
 			selected=*iter;
 

@@ -1,0 +1,32 @@
+Subject: Insert Item smart in Bone Weight Pair List Crash
+
+Create a Bline, expand a vertex and do right click on the Vertice parameter.
+Convert it to Bone Influence. Expand the convert type and select the first item
+of the Bone Weight Pair list. Do right click "Insert Item Smart".
+It crashes.
+
+Console message:
+synfig(10168) [00:57:16] warning: ValueNode_StaticList::operator()():List type/item type mismatch, throwing away mismatch
+value.h:246 !'matrix'.same_type_as('bone_weight_pair')
+ss-debug: value.h:248: const T& synfig::ValueBase::get(const T&) const [with T = synfig::BoneWeightPair]: Assertion `is_valid() && same_type_as(x)' failed
+
+------------------------------------------------------------------------
+It crashes too if you delete item smart
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 00:13:19 CET 2008
+
+'insert' no longer seems to crash.
+'delete' still crashes.
+in valuenode_staticlist.cpp, the "if(get_non_inline_ancestor_canvas())" fails, so this never runs:
+	get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
+so the param tree isn't redrawn.  it's the same as this bug:
+	https://sourceforge.net/tracker2/?func=detail&aid=1420091&group_id=144022&atid=757416
+
+the canvas of the static_list is null.
+cloning (copy/paste) or duplicating the bline layer and doing the delete in the new copy doesn't crash
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 17:54:34 CET 2008
+
+Fixed.

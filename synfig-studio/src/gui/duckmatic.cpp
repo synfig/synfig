@@ -55,6 +55,10 @@
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_staticlist.h>
+#include <synfig/valuenode_bone.h>
+#include <synfig/valuenode_boneinfluence.h>
+#include <synfig/valuenode_boneweightpair.h>
 
 #include <synfig/curve_helper.h>
 
@@ -63,6 +67,11 @@
 #include <sigc++/hide.h>
 #include <sigc++/bind.h>
 
+#include "ducktransform_matrix.h"
+#include "ducktransform_rotate.h"
+#include "ducktransform_translate.h"
+#include "ducktransform_scale.h"
+#include "ducktransform_origin.h"
 #include "canvasview.h"
 
 #include "onemoment.h"
@@ -97,7 +106,7 @@ using namespace studio;
 
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
-	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION),
+	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_SETUP-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
@@ -803,6 +812,22 @@ Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck)
 		}
 
 		if (changed) duck->set_point(point);
+
+		if(!duck->signal_edited()(point))
+		{
+			throw String("Bad edit");
+		}
+	}
+	else if (duck->is_linear())
+	{
+		Point point(duck->get_point());
+		Angle constrained_angle(duck->get_linear_angle());
+		Angle difference(Angle::tan(point[1], point[0])-constrained_angle);
+		Real length(Angle::cos(difference).get()*point.mag());
+		if (length < 0) length = 0;
+		point[0] = length * Angle::cos(constrained_angle).get();
+		point[1] = length * Angle::sin(constrained_angle).get();
+		duck->set_point(point);
 
 		if(!duck->signal_edited()(point))
 		{
@@ -1579,7 +1604,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_name(guid_string(value_desc));
 			if(value_desc.is_value_node())
 			{
-				//duck->set_name(strprintf("%x",value_desc.get_value_node().get()));
+				// if the vertex is converted to 'bone influence', add the bones' ducks
+				if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+													  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+								 canvas_view, transform_stack);
 
 				// If the ValueNode can be directly manipulated,
 				// then set it as so.
@@ -1827,13 +1857,83 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (first == -1)
 					first = i;
 
+				// if it's neither a BoneInfluence nor a Composite, the BLinePoint will be used
 				BLinePoint bline_point((*value_node->get_link(i))(get_time()));
 
-				// try casting the vertex to Composite - this tells us whether it is composite or not
-				ValueNode_Composite::Handle composite_vertex_value_node(
-					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
+				// set if we are editing a boneinfluence node
+				ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node(
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)));
 
-				// add the vertex duck - it's a composite
+				// set if we are editing a composite node or a boneinfluence node in setup mode
+				ValueNode_Composite::Handle composite_vertex_value_node (
+					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)) );
+
+				// set if we are editing a boneinfluence node with a composite link in non-setup mode
+				ValueNode_Composite::Handle composite_bone_link_value_node;
+				synfig::TransformStack bone_transform_stack(transform_stack);
+
+				if (bone_influence_vertex_value_node)
+				{
+					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
+					{
+						// If in setup mode, add the original ducks prior to the bones transformation
+						composite_vertex_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
+					}
+					else
+					{
+						// If not in setup mode, apply bones transformation to the ducks
+						composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
+
+						if(param_desc)
+						{
+							if(!param_desc->get_origin().empty())
+							{
+								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+								GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+								bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
+							}
+						}
+
+						Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
+						GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+
+						bone_transform_stack.push(new Transform_Matrix(guid, transform));
+
+						// this environmental variable affects bone functionality in core
+						// \todo remove it, as it is now defunct
+						assert(!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"));
+					}
+				}
+
+
+				// Now add the ducks:
+
+				// ----Bones ducks
+				if (bone_influence_vertex_value_node)
+				{
+					// The bones ducks should be transformed to match the position of this bline,
+					// and then translated along with the origin of this layer
+					synfig::TransformStack layer_transform_stack(transform_stack);
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
+						{
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+							layer_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
+						}
+					}
+
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+									  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+								 canvas_view,layer_transform_stack);
+				}
+
+				// ----Vertex Duck
 				if(composite_vertex_value_node)
 				{
 					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,0),canvas_view,transform_stack))
@@ -1874,7 +1974,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					else
 						return false;
 				}
-				// else it's not a composite
+				else
+				if (composite_bone_link_value_node)
+				{
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,0),canvas_view,bone_transform_stack))
+					{
+						duck=last_duck();
+						if(i==first)
+							first_duck=duck;
+						duck->set_type(Duck::TYPE_VERTEX);
+
+						// Do not add origin duck, as it has already been added
+						// and made a part of the transformation stack
+					}
+					else
+						return false;
+				}
+				// if it's not a composite or BoneInfluence with composite link
 				else
 				{
 					duck=new Duck(bline_point.get_vertex());
@@ -1902,14 +2018,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 					duck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".v"));
 					duck=add_similar_duck(duck);
-//					add_duck(duck);
 				}
 
+				// ----Width duck
+				etl::handle<Duck> width;
+
 				// Add the width duck if it is a parameter with a hint (ie. "width") or if it isn't a parameter
-				if ((param_desc && !param_desc->get_hint().empty()) ||
-					!param_desc)
+				//if (!   ((param_desc && !param_desc->get_hint().empty()) || !param_desc)   )
+				if (param_desc && param_desc->get_hint().empty())
 				{
-					etl::handle<Duck> width;
+					// if it's a parameter without a hint, then don't add the width duck
+					// (This prevents width ducks from being added to region layers, and possibly other cases)
+				}
+				else
+				if(composite_vertex_value_node)
+				{
 					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
@@ -1935,6 +2058,37 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					else
 						synfig::error("Unable to add width duck!");
 				}
+				else
+				if (composite_bone_link_value_node)
+				{
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					{
+						width=last_duck();
+						width->set_origin(duck);
+						width->set_type(Duck::TYPE_WIDTH);
+						width->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".w");
+
+						// if the bline is a layer's parameter, scale the width duck by the layer's "width" parameter
+						if (param_desc)
+						{
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
+							if(value.same_type_as(synfig::Real()))
+								width->set_scalar(value.get(synfig::Real())*0.5f);
+							// if it doesn't have a "width" parameter, scale by 0.5f instead
+							else
+								width->set_scalar(0.5f);
+						}
+						// otherwise just present the raw unscaled width
+						else
+							width->set_scalar(0.5f);
+					}
+					else
+						synfig::error("Unable to add width duck!");
+				}
+				else
+				{
+					synfig::error("Cannot add width duck to non-composite blinepoint");
+				}
 
 				// each bezier uses t2 of one point and t1 of the next
 				// the first time through this loop we won't have the t2 duck from the previous vertex
@@ -1942,9 +2096,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if(bezier)
 				{
 					// Add the tangent1 duck
-					if(composite_vertex_value_node)
+					if (composite_vertex_value_node)
 					{
 						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
+							return false;
+						tduck=last_duck();
+					}
+					else
+					if (composite_bone_link_value_node)
+					{
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+										 canvas_view,bone_transform_stack))
 							return false;
 						tduck=last_duck();
 					}
@@ -1954,15 +2116,18 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						tduck->set_transform_stack(transform_stack);
 						tduck->set_editable(false);
 						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t1");
-//						tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
+	//					tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
 						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t1"));
 						tduck=add_similar_duck(tduck);
-//						add_duck(duck);
+	//					add_duck(duck);
 					}
 
 					tduck->set_origin(duck);
 					tduck->set_scalar(-TANGENT_BEZIER_SCALE);
 					tduck->set_tangent(true);
+
+					// each bezier uses t2 of one point and t1 of the next
+					// we should already have a bezier, so add the t1 of this point to it
 
 					bezier->p2=duck;
 					bezier->c2=tduck;
@@ -1973,7 +2138,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								*canvas_view,
 								&studio::CanvasView::popup_param_menu_bezier),
 							synfigapp::ValueDesc(value_node,i)));
-
+//
 					duck->signal_user_click(2).clear();
 					duck->signal_user_click(2).connect(
 						sigc::bind(
@@ -1986,22 +2151,31 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
 					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
-
+//
 					add_bezier(bezier);
 					bezier=0;
 				}
 
 				// don't start a new bezier for the last point in the line if we're not looped
-				if(i+1>=value_node->link_count() && !value_node->get_loop())
+				if ((i+1>=value_node->link_count() && !value_node->get_loop()))
 					continue;
 
 				bezier=new Bezier();
 
 				// Add the tangent2 duck
-				if(composite_vertex_value_node)
+				if (composite_vertex_value_node)
 				{
 					int i=bline_point.get_split_tangent_flag()?5:4;
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
+						return false;
+					tduck=last_duck();
+				}
+				else
+				if (composite_bone_link_value_node)
+				{
+					int i=bline_point.get_split_tangent_flag()?5:4;
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
+									 canvas_view,bone_transform_stack,0,2))
 						return false;
 					tduck=last_duck();
 				}
@@ -2043,7 +2217,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
 					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
-
 				}
 
 				tduck->set_origin(duck);
@@ -2062,7 +2235,41 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				ValueNode_Composite::Handle composite_vertex_value_node(
 					ValueNode_Composite::Handle::cast_dynamic(
 						value_node->get_link(first)));
+				ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node(
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(first)));
+				ValueNode_Composite::Handle composite_bone_link_value_node;
+				synfig::TransformStack bone_transform_stack(transform_stack);
+				if (bone_influence_vertex_value_node)
+				{
+					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
+					{
+						// If in setup mode, add the original ducks prior to the bones transformation
+						composite_vertex_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
+					}
+					else
+					{
+						// If not in setup mode, apply bones transformation to the ducks
+						composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
 
+						if(param_desc)
+						{
+							if(!param_desc->get_origin().empty())
+							{
+								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+								GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+								bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
+							}
+						}
+
+						Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
+						GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+
+						bone_transform_stack.push(new Transform_Matrix(guid, transform));
+					}
+				}
 				// Add the vertex duck
 				duck=first_duck;
 
@@ -2070,6 +2277,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if(composite_vertex_value_node)
 				{
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4),canvas_view,transform_stack))
+						return false;
+					tduck=last_duck();
+				}
+				else
+				if (composite_bone_link_value_node)
+				{
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+									 canvas_view,bone_transform_stack))
 						return false;
 					tduck=last_duck();
 				}
@@ -2117,6 +2332,119 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			return true;
 		}
+
+		else // Check for StaticList
+		if(value_desc.is_value_node() &&
+			ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueNode_StaticList::Handle value_node;
+			value_node=ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node());
+			int i;
+
+			switch(value_node->get_contained_type())
+			{
+			case ValueBase::TYPE_VECTOR:
+			{
+				Bezier bezier;
+				etl::handle<Duck> first_duck, duck;
+				int first = -1;
+				for(i=0;i<value_node->link_count();i++)
+				{
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+					duck = last_duck();
+
+					// remember the index of the first vertex we didn't skip
+					if (first == -1)
+					{
+						first = i;
+						first_duck = duck;
+					}
+
+					if(param_desc && !param_desc->get_origin().empty())
+					{
+						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+						duck->set_origin(last_duck());
+/*
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
+*/
+//						if(!param_desc->get_origin().empty())
+//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
+					}
+					duck->set_type(Duck::TYPE_VERTEX);
+					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+					bezier.p2=bezier.c2=duck;
+
+					if (first != i)
+					{
+						handle<Bezier> bezier_(new Bezier());
+						bezier_->p1=bezier.p1;
+						bezier_->c1=bezier.c1;
+						bezier_->p2=bezier.p2;
+						bezier_->c2=bezier.c2;
+						add_bezier(bezier_);
+						last_bezier()->signal_user_click(2).connect(
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu_bezier),
+								synfigapp::ValueDesc(value_node,i)));
+					}
+				}
+
+				if (value_node->get_loop() && first != -1 && first_duck != duck)
+				{
+					duck = first_duck;
+
+					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+					bezier.p2=bezier.c2=duck;
+
+					handle<Bezier> bezier_(new Bezier());
+					bezier_->p1=bezier.p1;
+					bezier_->c1=bezier.c1;
+					bezier_->p2=bezier.p2;
+					bezier_->c2=bezier.c2;
+					add_bezier(bezier_);
+					last_bezier()->signal_user_click(2).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu_bezier),
+							synfigapp::ValueDesc(value_node,first)));
+				}
+				break;
+			}
+
+			case ValueBase::TYPE_SEGMENT:
+				for(i=0;i<value_node->link_count();i++)
+				{
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+				}
+				break;
+
+			case ValueBase::TYPE_BONE:
+				printf("%s:%d adding ducks\n", __FILE__, __LINE__);
+				for(i=0;i<value_node->link_count();i++)
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+				printf("%s:%d adding ducks done\n\n", __FILE__, __LINE__);
+				break;
+
+			case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+				for(i=0;i<value_node->link_count();i++)
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+				break;
+
+			default:
+				return false;
+			}
+		}
+
 		else // Check for WPList
 		if(value_desc.is_value_node() &&
 			ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -2331,8 +2659,240 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		return true;
 	}
-
 	break;
+	case ValueBase::TYPE_BONE:
+	case ValueBase::TYPE_VALUENODE_BONE:
+	{
+		ValueNode::Handle value_node(value_desc.get_value_node());
+
+		if (type == ValueBase::TYPE_VALUENODE_BONE)
+		{
+			assert(value_desc.parent_is_value_node());
+			value_node = (*value_node)(get_time()).get(ValueNode_Bone::Handle());
+		}
+		else
+			assert(value_desc.parent_is_linkable_value_node() || value_desc.parent_is_canvas());
+
+		Duck::Handle fake_duck;
+		synfig::TransformStack origin_transform_stack(transform_stack), bone_transform_stack;
+		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
+		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
+
+		ValueNode_Bone::Handle bone_value_node;
+		if (!(bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_node)))
+		{
+			error("expected a ValueNode_Bone");
+			assert(0);
+		}
+
+		GUID guid(bone_value_node->get_guid());
+		Time time(get_time());
+		Bone bone((*bone_value_node)(time).get(Bone()));
+		bool invertible(true);
+		Angle angle;
+		Angle::deg parent_angle(0);
+
+		{
+			Matrix transform;
+			bool has_parent(!bone.is_root());
+			if (has_parent)
+			{
+				Bone parent_bone((*bone.get_parent())(time).get(Bone()));
+
+				// add the parent's ducks too
+				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent")),canvas_view,transform_stack);
+
+				if (setup)
+				{
+					transform = parent_bone.get_setup_matrix().invert();
+					origin_transform_stack.push(new Transform_Matrix(guid, transform));
+					bone_transform_stack = origin_transform_stack;
+					bone_transform_stack.push(new Transform_Translate(guid, bone.get_origin0()));
+				}
+				else
+				{
+					transform = parent_bone.get_animated_matrix();
+					origin_transform_stack.push(new Transform_Matrix(guid, transform));
+					bone_transform_stack = origin_transform_stack;
+					invertible = transform.is_invertible();
+
+					Vector scale(parent_bone.get_local_scale());
+					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0])*bone.get_origin()[0],
+																				  (scale[1])*bone.get_origin()[1])));
+					origin_transform_stack.push(new Transform_Scale(guid, scale));
+				}
+
+#ifdef TRY_TO_ALIGN_WIDTH_DUCKS
+				// this stuff doesn't work very well - we can find out
+				// the cumulative angle and so place the duck on the
+				// right of the circle, but recursive scales in the
+				// parent can cause the radius to look wrong, and the
+				// duck to appear off-center
+				printf("%s:%d bone %s:\n", __FILE__, __LINE__, bone.get_name().c_str());
+				while (true) {
+					printf("%s:%d parent_angle = %5.2f + %5.2f = %5.2f\n", __FILE__, __LINE__,
+						   Angle::deg(parent_angle).get(), Angle::deg(setup ? parent_bone.get_angle0() : parent_bone.get_angle()).get(),
+						   Angle::deg(parent_angle + (setup ? parent_bone.get_angle0() : parent_bone.get_angle())).get());
+					parent_angle += setup ? parent_bone.get_angle0() : parent_bone.get_angle();
+					if (parent_bone.is_root()) break;
+					parent_bone = (*parent_bone.get_parent())(time).get(Bone());
+				}
+				printf("%s:%d finally %5.2f\n\n", __FILE__, __LINE__, Angle::deg(parent_angle).get());
+#endif
+			}
+			else
+			{
+				bone_transform_stack = origin_transform_stack;
+				bone_transform_stack.push(new Transform_Translate(guid, setup ? bone.get_origin0() : bone.get_origin()));
+			}
+		}
+
+		bone_transform_stack.push(new Transform_Rotate(guid, setup ? bone.get_angle0() : bone.get_angle()));
+
+		// origin
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_transform_stack(origin_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			duck->set_point(value_desc.get_value(time).get(Point()));
+
+			// duck->set_guid(calc_duck_guid(value_desc,origin_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,origin_transform_stack)^synfig::GUID::hasher(".origin"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!invertible ? false :
+							   !value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			add_duck(duck);
+		}
+
+		// fake
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_NONE);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			duck->set_point(Point(0, 0));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".fake"));
+
+			duck->set_ignore(true);
+			add_duck(duck);
+			fake_duck = last_duck();
+		}
+
+		// width
+		if (!setup)
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_WIDTH);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			duck->set_radius(true);
+			duck->set_scalar(1);
+			duck->set_point(Point(value_desc.get_value(time).get(Real()), 0));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".width"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!invertible ? false :
+							   !value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			duck->set_origin(fake_duck);
+			add_duck(duck);
+		}
+
+		// angle
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "angle0" : "angle"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_ANGLE);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+
+			angle = value_desc.get_value(time).get(Angle());
+			Real length(bone.get_length() * (setup ? 1 : bone.get_scalex() * bone.get_scalelx()));
+			duck->set_point(Point(length*0.9, 0));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited_angle().clear();
+			duck->signal_edited_angle().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_angle_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			duck->set_origin(fake_duck);
+			add_duck(duck);
+		}
+
+		// tip
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"));
+
+			etl::handle<Duck> duck;
+			if (add_to_ducks(value_desc,canvas_view,bone_transform_stack,REAL_COOKIE))
+			{
+				duck=last_duck();
+				duck->set_origin(fake_duck);
+				duck->set_type(Duck::TYPE_RADIUS);
+				duck->set_name(guid_string(value_desc));
+				duck->set_linear(true, Angle::deg(0));
+
+				Real scale();
+				duck->set_scalar(setup     ? 1 :
+								 recursive ? bone.get_length()*bone.get_scalelx() :
+											 bone.get_length()*bone.get_scalex());
+			}
+		}
+
+		return true;
+	}
+	break;
+	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+	{
+		ValueNode_BoneWeightPair::Handle value_node;
+		if(value_desc.is_value_node() &&
+		   (value_node=ValueNode_BoneWeightPair::Handle::cast_dynamic(value_desc.get_value_node())))
+			add_to_ducks(synfigapp::ValueDesc(value_node, value_node->get_link_index_from_name("bone")), canvas_view, transform_stack);
+		break;
+	}
 	default:
 		break;
 	}

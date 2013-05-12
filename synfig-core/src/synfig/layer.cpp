@@ -46,6 +46,7 @@
 #include "layer_pastecanvas.h"
 #include "layer_motionblur.h"
 #include "layer_duplicate.h"
+#include "layer_skeleton.h"
 
 #include "valuenode_const.h"
 
@@ -120,6 +121,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);	LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
 	INCLUDE_LAYER(Layer_Duplicate);
+	INCLUDE_LAYER(Layer_Skeleton);
 
 #undef INCLUDE_LAYER
 
@@ -290,6 +292,9 @@ Layer::disconnect_dynamic_param(const String& param)
 void
 Layer::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
+
 	dirty_time_=Time::end();
 	Node::on_changed();
 }
@@ -366,7 +371,7 @@ Layer::simple_clone()const
 }
 
 Layer::Handle
-Layer::clone(const GUID& deriv_guid) const
+Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 {
 	if(!book().count(get_name())) return 0;
 
@@ -393,7 +398,10 @@ Layer::clone(const GUID& deriv_guid) const
 			{
 				// This parameter is an inline canvas! we need to clone it
 				// before we set it as a parameter.
+
+				// clone canvas (all code that clones a canvas has this comment)
 				Canvas::Handle new_canvas(canvas->clone(deriv_guid));
+
 				ValueBase value(new_canvas);
 				ret->set_param(iter->first, value);
 				continue;
@@ -414,6 +422,7 @@ Layer::clone(const GUID& deriv_guid) const
 			Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
 			if(canvas->is_inline())
 			{
+				// clone canvas (all code that clones a canvas has this comment)
 				Canvas::Handle new_canvas(canvas->clone(deriv_guid));
 				ValueBase value(new_canvas);
 				ret->connect_dynamic_param(iter->first,ValueNode_Const::create(value));
@@ -424,7 +433,7 @@ Layer::clone(const GUID& deriv_guid) const
 		if(iter->second->is_exported())
 			ret->connect_dynamic_param(iter->first,iter->second);
 		else
-			ret->connect_dynamic_param(iter->first,iter->second->clone(deriv_guid));
+			ret->connect_dynamic_param(iter->first,iter->second->clone(canvas, deriv_guid));
 	}
 
 	//ret->set_canvas(0);
@@ -680,6 +689,13 @@ Layer::get_param_local_name(const String &param_name)const
 		if (iter->get_name() == param_name)
 			return iter->get_local_name();
 	return String();
+}
+
+String
+Layer::get_string()const
+{
+	return String("Layer: ") + get_non_empty_description();
+
 }
 
 Real

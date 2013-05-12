@@ -358,6 +358,8 @@ private:
 	bool rebuild_ducks_queued;
 	sigc::connection queue_rebuild_ducks_connection;
 
+	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
+
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
 	*/
@@ -423,6 +425,8 @@ private:
 	void time_was_changed();
 
 	void refresh_rend_desc();
+
+	void mask_bone_ducks();
 
 	Gtk::Widget *create_work_area();
 

@@ -1,0 +1,207 @@
+Subject: Crash when close old file
+
+Open /home/carlos/Animación/donempinado-/synfig/Montaje.sifz
+It complains about some png and jpg missing and that's not the problem
+The file looks fine
+Close the file and ss-debug crash.
+
+------------------------------------------------------------------------
+backtrace:
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7ff0db2da780 (LWP 27987)]
+0x000000000454a470 in ?? ()
+(gdb) where
+#0  0x000000000454a470 in ?? ()
+#1  0x0000000000705572 in handle (this=0x7fffe330f570, x=0x4549b10)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:175
+#2  0x0000000000705593 in etl::loose_handle<synfig::Canvas>::operator etl::handle<synfig::Canvas> (this=0x81ae100)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:748
+#3  0x00007ff0da7db025 in synfig::ValueBase::clear (this=0x81f9888)
+    at value.cpp:255
+#4  0x00007ff0da7db228 in ~ValueBase (this=0x81f9888) at value.cpp:98
+#5  0x00007ff0da8703d6 in ~ValueNode_Const (this=0x81f9700)
+    at valuenode_const.cpp:112
+#6  0x00000000006e4699 in etl::shared_object::unref (this=0x81f9700)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
+#7  0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+    this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
+#8  0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
+    this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:553
+#9  0x000000000075119e in ~rhandle (this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:466
+#10 0x0000000000751456 in ~Waypoint (this=0x83ae8f0)
+    at /home/carlos/Software/Synfig-git/install/include/synfig-0.0/synfig/waypoi---Type <return> to continue, or q <return> to quit---
+nt.h:57
+#11 0x00007ff0dae1b8a8 in std::_Destroy<synfig::Waypoint> (__pointer=0x83ae8f0)
+    at /usr/include/c++/4.3/bits/stl_construct.h:88
+#12 0x00007ff0dae1b8c5 in std::_Destroy<synfig::Waypoint*> (__first=0x83ae8f0,
+    __last=0x83aeab8) at /usr/include/c++/4.3/bits/stl_construct.h:103
+#13 0x00007ff0dae1b8fa in std::_Destroy<synfig::Waypoint*, synfig::Waypoint> (
+    __first=0x83ae8f0, __last=0x83aeab8)
+    at /usr/include/c++/4.3/bits/stl_construct.h:128
+#14 0x00007ff0dae1d397 in ~vector (this=0x8398838)
+    at /usr/include/c++/4.3/bits/stl_vector.h:300
+#15 0x00007ff0da829e35 in ~ValueNode_Animated (this=0x83986b0)
+    at valuenode_animated.cpp:1097
+#16 0x00007ff0da833a4d in ~_Constant (this=0x83986b0)
+    at valuenode_animated.cpp:536
+#17 0x00000000006e4699 in etl::shared_object::unref (this=0x83986b0)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
+#18 0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+    this=0x81f9bd8)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
+#19 0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
+    this=0x81f9bd8)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:553
+#20 0x000000000075119e in ~rhandle (this=0x81f9bd8)
+---Type <return> to continue, or q <return> to quit---
+
+------------------------------------------------------------------------
+dooglus, Sun Jan  4 18:21:26 CET 2009
+
+Here's valgrind output:
+
+ Invalid read of size 8
+    at 0x70556C: etl::handle<synfig::Canvas>::handle(synfig::Canvas*) (_handle.h:175)
+    by 0x7055A2: etl::loose_handle<synfig::Canvas>::operator etl::handle<synfig::Canvas>() const (_handle.h:748)
+    by 0x53F5244: synfig::ValueBase::clear() (value.cpp:255)
+    by 0x53F5447: synfig::ValueBase::~ValueBase() (value.cpp:98)
+    by 0x548ABE1: synfig::ValueNode_Const::~ValueNode_Const() (valuenode_const.cpp:112)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD702: etl::handle<synfig::ValueNode>::detach() (_handle.h:240)
+    by 0x751187: etl::rhandle<synfig::ValueNode>::detach() (_handle.h:553)
+    by 0x7511AD: etl::rhandle<synfig::ValueNode>::~rhandle() (_handle.h:466)
+    by 0x751465: synfig::Waypoint::~Waypoint() (waypoint.h:57)
+    by 0x4FB7A6B: void std::_Destroy<synfig::Waypoint>(synfig::Waypoint*) (stl_construct.h:88)
+    by 0x4FB7A88: void std::_Destroy<synfig::Waypoint*>(synfig::Waypoint*, synfig::Waypoint*) (stl_construct.h:103)
+    by 0x4FB7ABD: void std::_Destroy<synfig::Waypoint*, synfig::Waypoint>(synfig::Waypoint*, synfig::Waypoint*, ...) (stl_construct.h:128)
+    by 0x4FB95D0: std::vector<synfig::Waypoint, std::allocator<synfig::Waypoint> >::~vector() (stl_vector.h:300)
+    by 0x5444054: synfig::ValueNode_Animated::~ValueNode_Animated() (valuenode_animated.cpp:1118)
+    by 0x544DFD6: _Constant<etl::loose_handle<synfig::Canvas> >::~_Constant() (valuenode_animated.cpp:536)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD702: etl::handle<synfig::ValueNode>::detach() (_handle.h:240)
+    by 0x751187: etl::rhandle<synfig::ValueNode>::detach() (_handle.h:553)
+    by 0x7511AD: etl::rhandle<synfig::ValueNode>::~rhandle() (_handle.h:466)
+    by 0x553B261: std::pair<std::string const, etl::rhandle<synfig::ValueNode> >::~pair() (stl_pair.h:73)
+    by 0x5564068: std::map<std::string, etl::rhandle<synfig::ValueNode>, ...>::erase(...) (stl_map.h:523)
+    by 0x555F392: synfig::Layer::~Layer() (layer.cpp:166)
+    by 0x5401F68: synfig::Layer_Composite::~Layer_Composite() (layer_composite.h:49)
+    by 0x5412421: synfig::Layer_PasteCanvas::~Layer_PasteCanvas() (layer_pastecanvas.cpp:110)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD7C0: etl::handle<synfig::Layer>::detach() (_handle.h:240)
+    by 0x6FD7D8: etl::handle<synfig::Layer>::~handle() (_handle.h:186)
+    by 0x55283D0: synfig::Canvas::clear() (canvas.cpp:158)
+    by 0x552BF7D: synfig::Canvas::~Canvas() (canvas.cpp:121)
+
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x8BFEFA: studio::WorkArea::~WorkArea() (workarea.cpp:833)
+    by 0x7F49B7: std::auto_ptr<studio::WorkArea>::~auto_ptr() (auto_ptr.h:173)
+    by 0x7E9934: studio::CanvasView::~CanvasView() (in /home/chris/programs/synfig/git/install/bin/synfigstudio)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6E7269: etl::handle<studio::CanvasView>::detach() (_handle.h:240)
+    by 0x6E7280: etl::handle<studio::CanvasView>::~handle() (_handle.h:186)
+
+  Address 0x17484b50 is 0 bytes inside a block of size 1,080 free'd
+    at 0x4C24DAD: operator delete(void*) (vg_replace_malloc.c:342)
+    by 0x552CB46: synfig::Canvas::~Canvas() (canvas.cpp:123)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
+
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x8BFEFA: studio::WorkArea::~WorkArea() (workarea.cpp:833)
+    by 0x7F49B7: std::auto_ptr<studio::WorkArea>::~auto_ptr() (auto_ptr.h:173)
+    by 0x7E9934: studio::CanvasView::~CanvasView() (in /home/chris/programs/synfig/git/install/bin/synfigstudio)
+    by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
+    by 0x6E7269: etl::handle<studio::CanvasView>::detach() (_handle.h:240)
+    by 0x6E7280: etl::handle<studio::CanvasView>::~handle() (_handle.h:186)
+    by 0x86A1DF: studio::Instance::safe_close() (instance.cpp:709)
+    by 0x77C2D5: studio::App::quit() (app.cpp:1776)
+
+------------------------------------------------------------------------
+dooglus, Sun Jan  4 20:42:52 CET 2009
+
+Here's a simple .sifz file that causes the same crash:
+
+  <?xml version="1.0"?>
+  <canvas>
+    <defs>
+      <canvas id="xxx">
+        <defs>
+          <canvas id="yyy"></canvas>
+        </defs>
+      </canvas>
+      <canvas id="zzz">
+        <layer type="PasteCanvas" active="true" version="0.1">
+          <param name="canvas">
+            <animated type="canvas">
+              <waypoint time="0s" use=":xxx:yyy"/>
+            </animated>
+          </param>
+        </layer>
+      </canvas>
+    </defs>
+  </canvas>
+
+The bug always happened, it just didn't crash before.  valgrind shows
+the same error in the svn version.  It started showing up after the
+revision with commit message:
+  "Define ref() and unref() as virtual so they can be overridden in
+   derived classes."
+with this diff:
+
+------------------------------------------------------------------------
+--- a/ETL/trunk/ETL/_handle.h
++++ b/ETL/trunk/ETL/_handle.h
+@@ -81,7 +81,7 @@ protected:
+ #endif
+
+ public:
+-	void ref()const
++	virtual void ref()const
+ 	{
+ #ifdef ETL_LOCK_REFCOUNTS
+ 		etl::mutex::lock lock(mtx);
+@@ -91,7 +91,7 @@ public:
+ 	}
+
+ 	//! Returns \c false if object needs to be deleted
+-	bool unref()const
++	virtual bool unref()const
+ 	{
+ 		bool ret = true;
+ 		{
+------------------------------------------------------------------------
+I've updated to the patch you proposed at the following git commit:
+606daa09d274196be856a6f7a0fa35f934d00a7f
+and the crash has dissapeared.
+I don't see any "error: 1 canvas(es) not yet deleted!" message.
+------------------------------------------------------------------------

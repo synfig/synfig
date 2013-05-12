@@ -30,6 +30,9 @@
 #endif
 
 #include "valuenode_const.h"
+#include "valuenode_bone.h"
+#include "valuenode_boneweightpair.h"
+#include "canvas.h"
 #include "general.h"
 
 #endif
@@ -53,32 +56,56 @@ ValueNode_Const::ValueNode_Const()
 }
 
 
-ValueNode_Const::ValueNode_Const(const ValueBase &x):
+ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas):
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-}
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 
+	if (x.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		add_child(x.get(ValueNode_Bone::Handle()).get());
 
-ValueNode_Const*
-ValueNode_Const::create(const ValueBase &x)
-{
-	return new ValueNode_Const(x);
+	set_parent_canvas(canvas);
 }
 
 
 ValueNode*
-ValueNode_Const::clone(const GUID& deriv_guid)const
+ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
+{
+	// this is nasty - shouldn't it be done somewhere else?
+	if (x.get_type() == ValueBase::TYPE_BONE)
+	{
+		printf("%s:%d forcing convert to ValueNode_Bone\n", __FILE__, __LINE__);
+		return ValueNode_Bone::create(x, canvas);
+	}
+
+	// this too
+	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
+	{
+		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
+		return ValueNode_BoneWeightPair::create(x, canvas);
+	}
+
+	return new ValueNode_Const(x, canvas);
+}
+
+
+ValueNode*
+ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 	ValueNode* ret(new ValueNode_Const(value));
 	ret->set_guid(get_guid()^deriv_guid);
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 
 
 ValueNode_Const::~ValueNode_Const()
 {
+	if (get_value().get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		remove_child(get_value().get(ValueNode_Bone::Handle()).get());
 }
 
 
@@ -109,6 +136,12 @@ ValueNode_Const::set_value(const ValueBase &data)
 {
 	if(data!=value)
 	{
+		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			remove_child(value.get(ValueNode_Bone::Handle()).get());
+
+		if (data.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			add_child(data.get(ValueNode_Bone::Handle()).get());
+
 		value=data;
 		changed();
 	}
@@ -125,6 +158,12 @@ String
 ValueNode_Const::get_local_name()const
 {
 	return get_static()?_("Static"):_("Constant");
+}
+
+String
+ValueNode_Const::get_string()const
+{
+	return strprintf("ValueNode_Const (%s)", get_value().get_string().c_str());
 }
 
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const

@@ -139,6 +139,7 @@ private:
 	*/
 
 private:
+	synfig::ValueNode::Handle expandable_bone_parent(synfig::ValueNode::Handle node);
 
 protected:
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;

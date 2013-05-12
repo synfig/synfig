@@ -250,6 +250,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	//! \todo This really needs to be fixed to support value node waypoints!
 	if(waypoint.is_static())
 	{
+		value_widget->set_value_desc(synfigapp::ValueDesc(etl::handle<ValueNode>(waypoint.get_parent_value_node().get())));
 		value_widget->set_value(waypoint.get_value());
 		value_widget->show();
 		value_node_label->hide();

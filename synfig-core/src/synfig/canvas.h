@@ -338,6 +338,8 @@ public:
 	//! Child Value Node Removed
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
+	void invoke_signal_value_node_child_removed(etl::handle<ValueNode>, etl::handle<ValueNode>);
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -398,6 +400,8 @@ public:
 	//! Gets the description of the canvas
 	const String & get_description()const { return description_; }
 
+	String get_string()const;
+
 	//! Sets the name of the canvas
 	void set_description(const String &x);
 
@@ -434,6 +438,8 @@ public:
 
 	//! Returns a handle to the root Canvas
 	LooseHandle get_root()const;
+
+	LooseHandle get_non_inline_ancestor()const;
 
 	//! Returns a list of all child canvases in this canvas
 	std::list<Handle> &children() { return children_; }
@@ -475,7 +481,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find_value_node(const String &id);
+	ValueNode::Handle find_value_node(const String &id, bool might_fail);
 
 	//! \internal \writeme
 	ValueNode::Handle surefind_value_node(const String &id);
@@ -484,7 +490,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find_value_node(const String &id)const;
+	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail)const;
 
 	//! Adds a Value node by its Id.
 	/*! Throws an error if the Id is not
@@ -496,10 +502,10 @@ public:
 	//void rename_value_node(ValueNode::Handle x, const String &id);
 
 	//! Removes a Value Node from the Canvas by its Handle
-	void remove_value_node(ValueNode::Handle x);
+	void remove_value_node(ValueNode::Handle x, bool might_fail);
 
 	//! Removes a Value Node from the Canvas by its Id
-	void remove_value_node(const String &id) { remove_value_node(find_value_node(id)); }
+	void remove_value_node(const String &id, bool might_fail) { remove_value_node(find_value_node(id, might_fail), might_fail); }
 
 	//! Finds a child Canvas in the Canvas with the given \a name
 	/*!	\return If found, returns a handle to the child Canvas.
@@ -598,13 +604,20 @@ public:
 	static Handle create();
 	//! Creates an inline Canvas for a given Canvas \parent
 	static Handle create_inline(Handle parent);
-	//! Clones (copies) the Canvas if it is inline.
-	Handle clone(const GUID& deriv_guid=GUID())const;
+
+	//! Clones (copies) the Canvas
+	Handle clone(const GUID& deriv_guid=GUID(), bool for_export=false)const;
+
 	//! Stores the external canvas by its file name and the Canvas handle
 	void register_external_canvas(String file, Handle canvas);
 	//! Set/Get members for the grow value
 	Real get_grow_value()const;
 	void set_grow_value(Real x);
+
+#if 0
+	void show_canvas_ancestry(String file, int line, String note)const;
+	void show_canvas_ancestry()const;
+#endif
 
 #ifdef _DEBUG
 	void show_externals(String file, int line, String text) const;

@@ -39,6 +39,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/valuenode_duplicate.h>
+#include <synfig/valuenode_bone.h>
 
 #include <synfigapp/general.h>
 
@@ -107,6 +108,11 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
+	// don't allow Bone ValueNodes to be disconnected
+	if(getenv("SYNFIG_DISALLOW_BONE_DISCONNECT") &&
+	   value_desc.is_value_node() &&
+	   ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node()))
+		return false;
 	// don't allow the Index parameter of the Duplicate layer to be disconnected
 	if(value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
 		return false;

@@ -59,7 +59,7 @@ Exception::BadType::BadType(const String &what):
 	std::runtime_error(what)
 //	std::runtime_error(_("Bad Type")+what.empty()?"":(String(": ")+what))
 {
-	synfig::error("EXCEPTION: bad type: "+what);
+//	synfig::error("EXCEPTION: bad type: "+what);
 }
 
 Exception::BadFrameRate::BadFrameRate(const String &what):

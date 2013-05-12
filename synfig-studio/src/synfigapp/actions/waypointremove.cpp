@@ -147,12 +147,12 @@ Action::WaypointRemove::perform()
 		{
 			const String id(value_node->get_id());
 			Canvas::LooseHandle canvas(value_node->get_parent_canvas());
-			canvas->remove_value_node(value_node);
+			canvas->remove_value_node(value_node, false);
 			canvas->add_value_node(value_node_ref, id);
 		}
 
 		value_node->replace(value_node_ref);
-		value_node->waypoint_list().clear();
+		value_node->editable_waypoint_list().clear();
 
 		if(get_canvas_interface())
 		{
@@ -175,7 +175,7 @@ Action::WaypointRemove::undo()
 		{
 			const String id(value_node_ref->get_id());
 			Canvas::LooseHandle canvas(value_node_ref->get_parent_canvas());
-			canvas->remove_value_node(value_node_ref);
+			canvas->remove_value_node(value_node_ref, false);
 			canvas->add_value_node(value_node, id);
 		}
 

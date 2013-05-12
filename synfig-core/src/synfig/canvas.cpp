@@ -86,6 +86,9 @@ Canvas::Canvas(const String &id):
 void
 Canvas::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Canvas::on_changed()\n", __FILE__, __LINE__);
+
 	is_dirty_=true;
 	Node::on_changed();
 }
@@ -320,7 +323,19 @@ Canvas::set_time(Time t)const
 Canvas::LooseHandle
 Canvas::get_root()const
 {
-	return parent_?parent_->get_root().get():const_cast<synfig::Canvas *>(this);
+	// printf("root(%lx) = ", uintptr_t(this));
+	if (parent_)
+		return parent_->get_root();
+	// printf("%lx\n", uintptr_t(this));
+	return const_cast<synfig::Canvas *>(this);
+}
+
+Canvas::LooseHandle
+Canvas::get_non_inline_ancestor()const
+{
+	if (is_inline() && parent_)
+		return parent_->get_non_inline_ancestor();
+	return const_cast<synfig::Canvas *>(this);
 }
 
 int
@@ -389,27 +404,30 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 ValueNode::Handle
-Canvas::find_value_node(const String &id)
+Canvas::find_value_node(const String &id, bool might_fail)
 {
 	return
 		ValueNode::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_value_node(id)
+			const_cast<const Canvas*>(this)->find_value_node(id, might_fail)
 		);
 }
 
 ValueNode::ConstHandle
-Canvas::find_value_node(const String &id)const
+Canvas::find_value_node(const String &id, bool might_fail)const
 {
 	if(is_inline() && parent_)
-		return parent_->find_value_node(id);
+		return parent_->find_value_node(id, might_fail);
 
 	if(id.empty())
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Empty ID");
+	}
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
 	if(id.find_first_of(':')==string::npos && id.find_first_of('#')==string::npos)
-		return value_node_list_.find(id);
+		return value_node_list_.find(id, might_fail);
 
 	String canvas_id(id,0,id.rfind(':'));
 	String value_node_id(id,id.rfind(':')+1);
@@ -419,7 +437,7 @@ Canvas::find_value_node(const String &id)const
 	//synfig::warning("constfind:canvas_id: "+canvas_id);
 
 	String warnings;
-	return find_canvas(canvas_id, warnings)->value_node_list_.find(value_node_id);
+	return find_canvas(canvas_id, warnings)->value_node_list_.find(value_node_id, might_fail);
 }
 
 ValueNode::Handle
@@ -463,7 +481,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	try
 	{
-		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id)))
+		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id, true)))
 			throw Exception::IDNotFound("add_value_node()");
 
 		throw Exception::IDAlreadyExists(id);
@@ -510,17 +528,23 @@ Canvas::rename_value_node(ValueNode::Handle x, const String &id)
 */
 
 void
-Canvas::remove_value_node(ValueNode::Handle x)
+Canvas::remove_value_node(ValueNode::Handle x, bool might_fail)
 {
 	if(is_inline() && parent_)
-		return parent_->remove_value_node(x);
+		return parent_->remove_value_node(x, might_fail);
 //		throw Exception::IDNotFound("Canvas::remove_value_node() was called from an inline canvas");
 
 	if(!x)
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node() was passed empty handle");
+	}
 
 	if(!value_node_list_.erase(x))
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node(): ValueNode was not found inside of this canvas");
+	}
 
 	//x->set_parent_canvas(0);
 
@@ -791,7 +815,7 @@ Canvas::erase(iterator iter)
 }
 
 Canvas::Handle
-Canvas::clone(const GUID& deriv_guid)const
+Canvas::clone(const GUID& deriv_guid, bool for_export)const
 {
 	synfig::String name;
 	if(is_inline())
@@ -807,14 +831,17 @@ Canvas::clone(const GUID& deriv_guid)const
 
 	Handle canvas(new Canvas(name));
 
-	if(is_inline())
+	if(is_inline() && !for_export)
 	{
 		canvas->is_inline_=true;
 		// \todo this was setting parent_=0 - is there a reason for that?
 		// this was causing bug 1838132, where cloning an inline canvas that contains an imported image fails
 		// it was failing to ascertain the absolute pathname of the imported image, since it needs the pathname
 		// of the canvas to get that, which is stored in the parent canvas
+//		printf("%s:%d clone: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(parent().get()));
 		canvas->parent_=parent();
+//		show_canvas_ancestry(__FILE__, __LINE__, "clone(): old");
+//		canvas->show_canvas_ancestry(__FILE__, __LINE__, "clone(): new");
 		canvas->rend_desc() = rend_desc();
 		//canvas->set_inline(parent());
 	}
@@ -824,7 +851,7 @@ Canvas::clone(const GUID& deriv_guid)const
 	const_iterator iter;
 	for(iter=begin();iter!=end();++iter)
 	{
-		Layer::Handle layer((*iter)->clone(deriv_guid));
+		Layer::Handle layer((*iter)->clone(canvas, deriv_guid));
 		if(layer)
 		{
 			assert(layer.count()==1);
@@ -862,7 +889,9 @@ Canvas::set_inline(LooseHandle parent)
 
 	id_=_("in line");
 	is_inline_=true;
+//	printf("%s:%d set_inline: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(parent.get()));
 	parent_=parent;
+//	show_canvas_ancestry(__FILE__, __LINE__, "set_inline()");
 
 	// Have the parent inherit all of the group stuff
 
@@ -899,7 +928,9 @@ Canvas::new_child_canvas()
 	children().push_back(create());
 	Canvas::Handle canvas(children().back());
 
+//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
 	canvas->parent_=this;
+//	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
 
 	canvas->rend_desc()=rend_desc();
 
@@ -918,7 +949,9 @@ Canvas::new_child_canvas(const String &id)
 	Canvas::Handle canvas(children().back());
 
 	canvas->set_id(id);
+//	printf("%s:%d new_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()), uintptr_t(this));
 	canvas->parent_=this;
+//	canvas->show_canvas_ancestry(__FILE__, __LINE__, "new_child_canvas");
 	canvas->rend_desc()=rend_desc();
 
 	return canvas;
@@ -948,7 +981,9 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 			child_canvas->is_inline_=false;
 		child_canvas->id_=id;
 		children().push_back(child_canvas);
+//		printf("%s:%d add_child_canvas: setting parent_ of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()), uintptr_t(this));
 		child_canvas->parent_=this;
+//		child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "add_child_canvas");
 	}
 
 	return child_canvas;
@@ -968,7 +1003,9 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 
 	children().remove(child_canvas);
 
+//	printf("%s:%d remove_child_canvas: setting parent_ of %lx to 0\n", __FILE__, __LINE__, uintptr_t(child_canvas.get()));
 	child_canvas->parent_=0;
+//	child_canvas->show_canvas_ancestry(__FILE__, __LINE__, "remove_child_canvas");
 }
 
 void
@@ -1464,3 +1501,93 @@ Canvas::show_structure(int i) const
 	}
 }
 #endif	// _DEBUG
+
+// #define DEBUG_INVOKE_SVNCR
+
+// this is only ever called from valuenode_dynamiclist.cpp and valuenode_staticlist.cpp
+// the container is a ValueNode_{Static,Dyanmic}List
+// the content is the entry
+void
+Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)
+{
+	signal_value_node_child_removed()(container, content);
+	Canvas::Handle canvas(this);
+#ifdef DEBUG_INVOKE_SVNCR
+	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_set.size());
+#endif
+	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
+	{
+		if (dynamic_cast<Layer*>(*iter))
+		{
+			Layer* layer(dynamic_cast<Layer*>(*iter));
+#ifdef DEBUG_INVOKE_SVNCR
+			printf("it's a layer %lx\n", uintptr_t(layer));
+			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
+#endif
+			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
+				if (dynamic_cast<Canvas*>(*iter))
+				{
+					Canvas* canvas(dynamic_cast<Canvas*>(*iter));
+#ifdef DEBUG_INVOKE_SVNCR
+					printf("it's a canvas %lx\n", uintptr_t(canvas));
+#endif
+					if (canvas->get_non_inline_ancestor())
+					{
+#ifdef DEBUG_INVOKE_SVNCR
+						printf("%s:%d recursively invoking signal vn child removed on non_inline_ancestor %lx\n", __FILE__, __LINE__, uintptr_t(canvas->get_non_inline_ancestor().get()));
+#endif
+						canvas->get_non_inline_ancestor()->invoke_signal_value_node_child_removed(container, content);
+					}
+#ifdef DEBUG_INVOKE_SVNCR
+					else
+						printf("can't get non_inline_ancestor_canvas\n");
+#endif
+				}
+#ifdef DEBUG_INVOKE_SVNCR
+				else
+					printf("not a canvas\n");
+#endif
+		}
+#ifdef DEBUG_INVOKE_SVNCR
+		else
+			printf("not a layer\n");
+#endif
+	}
+}
+
+#if 0
+void
+Canvas::show_canvas_ancestry(String file, int line, String note)const
+{
+	printf("%s:%d %s:\n", file.c_str(), line, note.c_str());
+	show_canvas_ancestry();
+}
+
+void
+Canvas::show_canvas_ancestry()const
+{
+	String layer;
+	// printf("%s:%d parent set size = %zd\n", __FILE__, __LINE__, parent_set.size());
+	if (parent_set.size() == 1)
+	{
+		Node* node(*(parent_set.begin()));
+		if (dynamic_cast<Layer*>(node))
+		{
+			layer = (dynamic_cast<Layer*>(node))->get_description();
+		}
+	}
+
+	printf("  canvas %lx %6s parent %7lx layer %-10s id %8s name '%8s' desc '%8s'\n",
+		   uintptr_t(this), is_inline_?"inline":"", uintptr_t(parent_.get()),
+		   layer.c_str(),
+		   get_id().c_str(), get_name().c_str(), get_description().c_str());
+	if (parent_) parent_->show_canvas_ancestry();
+	else printf("\n");
+}
+#endif
+
+String
+Canvas::get_string()const
+{
+	return String("Canvas: ") + get_description();
+}

@@ -140,7 +140,8 @@ Action::LayerDuplicate::prepare()
 		if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 			throw Error(_("This layer doesn't belong to this canvas anymore"));
 
-		Layer::Handle new_layer(layer->clone(guid));
+		// todo: which canvas should we use?  subcanvas is the layer's canvas, get_canvas() is the canvas set in the action
+		Layer::Handle new_layer(layer->clone(subcanvas, guid));
 
 		{
 			Action::Handle action(Action::create("LayerMove"));
@@ -178,7 +179,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 			String name = strprintf(_("Index %d"), index++);
 			try
 			{
-				canvas->find_value_node(name);
+				canvas->find_value_node(name, true);
 			}
 			catch (Exception::IDNotFound x)
 			{

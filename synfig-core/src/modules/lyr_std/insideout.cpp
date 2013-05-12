@@ -127,6 +127,11 @@ public:
 			return (pos*(inv_mag*inv_mag)+layer->origin);
 		return x;
 	}
+
+	synfig::String get_string()const
+	{
+		return "insideout";
+	}
 };
 etl::handle<Transform>
 InsideOut::get_transform()const

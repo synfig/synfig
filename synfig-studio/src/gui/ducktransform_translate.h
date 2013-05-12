@@ -47,6 +47,11 @@ public:
 	Transform_Translate(const synfig::GUID& guid, const synfig::Vector& origin):Transform(guid), origin(origin) { }
 	synfig::Vector perform(const synfig::Vector& x)const { return x+origin; }
 	synfig::Vector unperform(const synfig::Vector& x)const { return x-origin; }
+
+	synfig::String get_string()const
+	{
+		return "duck translate";
+	}
 }; // END of class synfig::Transform_Translate
 
 }; // END of namespace studio

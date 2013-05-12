@@ -35,24 +35,25 @@
 
 #define DUCK_COLOR_NOT_EDITABLE	Gdk::Color("#cfcfcf")
 
-#define DUCK_COLOR_ANGLE		Gdk::Color("#0000ff")
-#define DUCK_COLOR_RADIUS		Gdk::Color("#00ffff")
-#define DUCK_COLOR_TANGENT_1	Gdk::Color("#ffff00")
-#define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000")
-#define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00")
-#define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff")
-#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::Color("#d3afff")
-#define DUCK_COLOR_OTHER		Gdk::Color("#00ff00")
+#define DUCK_COLOR_ANGLE		Gdk::Color("#0000ff") // blue
+#define DUCK_COLOR_RADIUS		Gdk::Color("#00ffff") // cyan
+#define DUCK_COLOR_LINEAR		Gdk::Color("#00ffff") // cyan // for linear radius ducks
+#define DUCK_COLOR_TANGENT_1	Gdk::Color("#ffff00") // yellow
+#define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000") // red
+#define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00") // orange
+#define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff") // magenta
+#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::Color("#d3afff") // purple
+#define DUCK_COLOR_OTHER		Gdk::Color("#00ff00") // green
 
 #define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck
 
-#define DUCK_COLOR_BEZIER_1		Gdk::Color("#000000") // the 2 colors used to draw bezier curves
-#define DUCK_COLOR_BEZIER_2		Gdk::Color("#afafaf")
+#define DUCK_COLOR_BEZIER_1		Gdk::Color("#000000") // black // the 2 colors used to draw bezier curves
+#define DUCK_COLOR_BEZIER_2		Gdk::Color("#afafaf") // grey
 
-#define DUCK_COLOR_BOX_1		Gdk::Color("#ffffff") // the 2 colors used to draw boxes
-#define DUCK_COLOR_BOX_2		Gdk::Color("#000000")
+#define DUCK_COLOR_BOX_1		Gdk::Color("#ffffff") // white // the 2 colors used to draw boxes
+#define DUCK_COLOR_BOX_2		Gdk::Color("#000000") // black
 
-#define DUCK_COLOR_SELECTED		Gdk::Color("#ff0000") // the color of the box drawn when a valuenode is selected
+#define DUCK_COLOR_SELECTED		Gdk::Color("#ff0000") // red // the color of the box drawn when a valuenode is selected
 
 #define DUCK_COLOR_CONNECT_INSIDE	Gdk::Color("#9fefef") // the color of the inside of the line connecting a vertex duck to the tangent ducks
 #define DUCK_COLOR_CONNECT_OUTSIDE	Gdk::Color("#000000") // the color of the outside of the line connecting a vertex duck to the tangent ducks

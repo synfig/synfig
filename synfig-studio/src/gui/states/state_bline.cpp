@@ -584,7 +584,7 @@ StateBLine_Context::run_()
 		ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 		assert(value_node_bline);
 
-		ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(Vector()));
+		ValueNode::Handle value_node_origin(ValueNode_Const::create(Vector()));
 		assert(value_node_origin);
 
 		// Set the looping flag
@@ -1013,7 +1013,7 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			bline_point.set_origin(0.5f);
 			bline_point.set_split_tangent_flag(false);
 			bline_point.set_tangent1(Vector(0,0));
-			bline_point_list.push_back(ValueNode_Const::create(bline_point));
+			bline_point_list.push_back(ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
 			refresh_ducks();
 			return Smach::RESULT_ACCEPT;
@@ -1375,8 +1375,8 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_split_tangent_flag(false);
 			bline_point.set_origin(origin);
+			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
-			bline_point_list.insert(iter,ValueNode_Const::create(bline_point));
 			break;
 		}
 

@@ -90,10 +90,7 @@ ValueDesc::get_description(bool show_exported_name)const
 		description = strprintf("%s (%s)", _("Exported ValueNode"),
 								get_value_node()->get_id().c_str());
 	else
-	{
-		error("Unknown ValueDesc type");
-		assert(0);
-	}
+		description = "Unknown ValueDesc type";
 
 	return description;
 }

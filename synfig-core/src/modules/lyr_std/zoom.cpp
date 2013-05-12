@@ -135,6 +135,11 @@ public:
 	{
 		return (x-layer->center)/exp(layer->amount)+layer->center;
 	}
+
+	synfig::String get_string()const
+	{
+		return "zoom";
+	}
 };
 etl::handle<Transform>
 Zoom::get_transform()const

@@ -40,6 +40,9 @@
 #include "valuenode_linear.h"
 #include "valuenode_composite.h"
 #include "valuenode_reference.h"
+#include "valuenode_boneinfluence.h"
+#include "valuenode_boneweightpair.h"
+#include "valuenode_bone.h"
 #include "valuenode_greyed.h"
 #include "valuenode_scale.h"
 #include "valuenode_blinecalctangent.h"
@@ -56,6 +59,7 @@
 #include "valuenode_timedswap.h"
 #include "valuenode_twotone.h"
 #include "valuenode_bline.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_wplist.h"
 #include "valuenode_dilist.h"
 #include "valuenode_dynamiclist.h"
@@ -119,22 +123,24 @@ synfig::find_value_node(const GUID& guid)
 
 /* === M E T H O D S ======================================================= */
 
+void
+ValueNode::breakpoint()
+{
+	return;
+}
+
 bool
 ValueNode::subsys_init()
 {
 	book_=new LinkableValueNode::Book();
 
-#define ADD_VALUENODE(class,name,local,version)													\
+#define ADD_VALUENODE_CREATE(class,name,local,version,create)									\
 	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create);		\
 	(*book_)[name].check_type=&class::check_type;												\
 	(*book_)[name].local_name=local;															\
 	(*book_)[name].release_version=version
-
-#define ADD_VALUENODE2(class,name,local,version)												\
-	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create_from);	\
-	(*book_)[name].check_type=&class::check_type;												\
-	(*book_)[name].local_name=local;															\
-	(*book_)[name].release_version=version
+#define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
+#define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
 
 	ADD_VALUENODE(ValueNode_Linear,			  "linear",			  _("Linear"),			 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Composite,		  "composite",		  _("Composite"),		 RELEASE_VERSION_0_61_06);
@@ -183,7 +189,6 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
 	ADD_VALUENODE(ValueNode_IntString,		  "intstring",		  _("Int String"),		 RELEASE_VERSION_0_61_09); // SVN r2010
 	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
-
 	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_62_00); // SVN r2305
 	ADD_VALUENODE(ValueNode_Pow,		      "power",		      _("Power"),		     RELEASE_VERSION_0_62_00); // SVN r2362
 	ADD_VALUENODE(ValueNode_Compare,		  "compare",  	 	  _("Compare"),			 RELEASE_VERSION_0_62_00); // SVN r2364
@@ -191,9 +196,16 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
 	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
 
+	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Root Bone"),		 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_62_00); 
+	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_62_00); 
+
 	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
 	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
-
+	
+#undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
 
@@ -219,27 +231,30 @@ LinkableValueNode::book()
 }
 
 LinkableValueNode::Handle
-LinkableValueNode::create(const String &name, const ValueBase& x)
+LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	if(!book().count(name))
 		return 0;
 
-	if (!check_type(name, x.get_type()) &&
-		// the Duplicate ValueNode is an exception - we don't want the
-		// user creating it for themselves, so check_type() fails for
-		// it even when it is valid
-		!(name == "duplicate" && x.get_type() == ValueBase::TYPE_REAL))
+	if (!check_type(name, x.get_type()))
 	{
 		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), ValueBase::type_local_name(x.get_type()).c_str());
 		return 0;
 	}
 
-	return book()[name].factory(x);
+	return book()[name].factory(x,canvas);
 }
 
 bool
 LinkableValueNode::check_type(const String &name, ValueBase::Type x)
 {
+	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
+	// user creating them for themselves, so check_type() fails for
+	// them even when it is valid
+	if((name == "bone_root" && x == ValueBase::TYPE_BONE) ||
+	   (name == "duplicate" && x == ValueBase::TYPE_REAL))
+		return true;
+
 	if(!book().count(name) || !book()[name].check_type)
 		return false;
 	return book()[name].check_type(x);
@@ -308,6 +323,9 @@ ValueNode::~ValueNode()
 void
 ValueNode::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
+
 	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
@@ -350,6 +368,9 @@ ValueNode::set_id(const String &x)
 String
 ValueNode::get_description(bool show_exported_name)const
 {
+	if (dynamic_cast<const LinkableValueNode*>(this))
+		return dynamic_cast<const LinkableValueNode*>(this)->get_description(-1, show_exported_name);
+
 	String ret(_("ValueNode"));
 
 	if (dynamic_cast<const LinkableValueNode*>(this))
@@ -387,7 +408,7 @@ ValueNodeList::count(const String &id)const
 }
 
 ValueNode::Handle
-ValueNodeList::find(const String &id)
+ValueNodeList::find(const String &id, bool might_fail)
 {
 	iterator iter;
 
@@ -398,13 +419,16 @@ ValueNodeList::find(const String &id)
 		;
 
 	if(iter==end())
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
+	}
 
 	return *iter;
 }
 
 ValueNode::ConstHandle
-ValueNodeList::find(const String &id)const
+ValueNodeList::find(const String &id, bool might_fail)const
 {
 	const_iterator iter;
 
@@ -415,7 +439,10 @@ ValueNodeList::find(const String &id)const
 		;
 
 	if(iter==end())
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
+	}
 
 	return *iter;
 }
@@ -430,7 +457,7 @@ ValueNodeList::surefind(const String &id)
 
 	try
 	{
-		value_node=find(id);
+		value_node=find(id, true);
 	}
 	catch(Exception::IDNotFound)
 	{
@@ -471,7 +498,7 @@ ValueNodeList::add(ValueNode::Handle value_node)
 
 	try
 	{
-		ValueNode::RHandle other_value_node=find(value_node->get_id());
+		ValueNode::RHandle other_value_node=find(value_node->get_id(), true);
 		if(PlaceholderValueNode::Handle::cast_dynamic(other_value_node))
 		{
 			other_value_node->replace(value_node);
@@ -513,17 +540,26 @@ PlaceholderValueNode::get_local_name()const
 	return _("Placeholder");
 }
 
+String
+PlaceholderValueNode::get_string()const
+{
+	return String("PlaceholderValueNode: ") + get_guid().get_string();
+}
+
 ValueNode*
-PlaceholderValueNode::clone(const GUID& deriv_guid)const
+PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	ValueNode* ret(new PlaceholderValueNode());
 	ret->set_guid(get_guid()^deriv_guid);
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 
 PlaceholderValueNode::Handle
 PlaceholderValueNode::create(ValueBase::Type type)
 {
+	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
 	return new PlaceholderValueNode(type);
 }
 
@@ -540,7 +576,7 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 }
 
 ValueNode*
-LinkableValueNode::clone(const GUID& deriv_guid)const
+LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{
 		ValueNode* x(find_value_node(get_guid()^deriv_guid).get());
@@ -559,13 +595,14 @@ LinkableValueNode::clone(const GUID& deriv_guid)const
 		{
 			ValueNode::LooseHandle value_node(find_value_node(link->get_guid()^deriv_guid));
 			if(!value_node)
-				value_node=link->clone(deriv_guid);
+				value_node=link->clone(canvas, deriv_guid);
 			ret->set_link(i,value_node);
 		}
 		else
 			ret->set_link(i,link);
 	}
 
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 
@@ -581,16 +618,72 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 	return canvas_->_get_relative_id(x)+':'+get_id();
 }
 
+etl::loose_handle<Canvas>
+ValueNode::get_parent_canvas()const
+{
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_parent_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas_.get()));
+
+	return canvas_;
+}
+
+etl::loose_handle<Canvas>
+ValueNode::get_root_canvas()const
+{
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_root_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(root_canvas_.get()));
+
+	return root_canvas_;
+}
+
+etl::loose_handle<Canvas>
+ValueNode::get_non_inline_ancestor_canvas()const
+{
+	etl::loose_handle<Canvas> parent(get_parent_canvas());
+
+	if (parent)
+	{
+		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
+
+		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+			printf("%s:%d get_non_inline_ancestor_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(ret.get()));
+
+		return ret;
+	}
+
+	return parent;
+}
+
 void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
-	canvas_=x; if(x) root_canvas_=x->get_root();
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
+
+	canvas_=x;
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d now %lx\n", __FILE__, __LINE__, uintptr_t(canvas_.get()));
+
+	if(x) set_root_canvas(x);
 }
 
 void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
+
 	root_canvas_=x->get_root();
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("now %lx\n", uintptr_t(root_canvas_.get()));
+}
+
+String
+ValueNode::get_string()const
+{
+	return String("ValueNode: ") + get_description();
 }
 
 void LinkableValueNode::get_times_vfunc(Node::time_set &set) const
@@ -619,6 +712,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 
 	if (index == -1)
 	{
+		description = strprintf(" Linkable ValueNode (%s)", get_local_name().c_str());
 		if (show_exported_name && is_exported())
 			description += strprintf(" (%s)", get_id().c_str());
 	}

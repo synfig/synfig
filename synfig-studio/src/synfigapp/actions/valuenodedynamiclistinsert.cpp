@@ -133,6 +133,7 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 		}
 		if(!value_node) // Not a Dynamic list
 			return false;
+
 		list_entry=value_node->create_list_entry(index,time,origin);
 		if(item)
 			list_entry.value_node=item;

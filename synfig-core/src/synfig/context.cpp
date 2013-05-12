@@ -218,8 +218,8 @@ Context::set_time(Time time)const
 	// Set up a writer lock
 	RWLock::WriterLock lock((*context)->get_rw_lock());
 
-	//synfig::info("%s: dirty_time=%f",(*context)->get_name().c_str(),(float)(*context)->dirty_time_);
-	//synfig::info("%s: time=%f",(*context)->get_name().c_str(),(float)time);
+	//synfig::info("%s: dirty_time=%f",(*context)->get_non_empty_description().c_str(),(float)(*context)->dirty_time_);
+	//synfig::info("%s: time=%f",(*context)->get_non_empty_description().c_str(),(float)time);
 
 	{
 		Layer::ParamList params;

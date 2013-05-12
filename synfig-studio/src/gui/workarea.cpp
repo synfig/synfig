@@ -68,6 +68,7 @@
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
 #include "workarearenderer/renderer_timecode.h"
+#include "workarearenderer/renderer_bonesetup.h"
 #include "workarearenderer/renderer_ducks.h"
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
@@ -990,7 +991,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
 	timecode_width(0),
-	timecode_height(0)
+	timecode_height(0),
+	bonesetup_width(0),
+	bonesetup_height(0)
 {
 	show_guides=true;
 	curr_input_device=0;
@@ -1026,6 +1029,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_BBox,		399);
 	insert_renderer(new Renderer_Dragbox,	400);
 	insert_renderer(new Renderer_Timecode,	500);
+	insert_renderer(new Renderer_BoneSetup,	501);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_strokes_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
@@ -3080,8 +3084,14 @@ WorkArea::queue_scroll()
 
 	if (timecode_width && timecode_height)
 	{
-		drawing_area->queue_draw_area(4,       4,    4+timecode_width,    4+timecode_height);
-		drawing_area->queue_draw_area(4-dx, 4-dy, 4-dx+timecode_width, 4-dy+timecode_height);
+		drawing_area->queue_draw_area(timecode_x,    timecode_y,    timecode_x+timecode_width,    timecode_y+timecode_height);
+		drawing_area->queue_draw_area(timecode_x-dx, timecode_y-dy, timecode_x-dx+timecode_width, timecode_y-dy+timecode_height);
+	}
+
+	if (bonesetup_width && bonesetup_height)
+	{
+		drawing_area->queue_draw_area(bonesetup_x,    bonesetup_y,    bonesetup_x+bonesetup_width,    bonesetup_y+bonesetup_height);
+		drawing_area->queue_draw_area(bonesetup_x-dx, bonesetup_y-dy, bonesetup_x-dx+bonesetup_width, bonesetup_y-dy+bonesetup_height);
 	}
 
 #ifndef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE

@@ -99,6 +99,8 @@ public:
 		TYPE_WIDTH		=	(1<<3),	//  8
 		TYPE_ANGLE		=	(1<<4),	// 16
 		TYPE_VERTEX		=	(1<<5),	// 32
+		TYPE_BONE_SETUP	=	(1<<6),	// 64
+		TYPE_BONE_RECURSIVE	=	(1<<7),	// 128
 		TYPE_WIDTHPOINT_POSITION	= (1<<8), //256
 
 		TYPE_ALL		=	(~0),
@@ -136,9 +138,12 @@ private:
 	// Flags
 	bool editable;
 	bool radius_;
+	bool linear_;
 	bool tangent_;
 	bool hover_;
 	bool ignore_;
+
+	synfig::Angle linear_angle_;
 
 	synfig::TransformStack transform_stack_;
 
@@ -254,6 +259,10 @@ public:
 
 	void set_radius(bool r) { radius_=r; }
 	bool is_radius()const { return radius_; }
+
+	bool is_linear()const { return linear_; }
+	void set_linear(bool r, synfig::Angle a) { linear_=r; linear_angle_=a; }
+	synfig::Angle get_linear_angle() { return linear_angle_; }
 
 	//! Sets the name of the duck
 	void set_name(const synfig::String &x);

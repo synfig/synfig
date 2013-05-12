@@ -182,14 +182,23 @@ Action::ValueDescConvert::prepare()
 	else
 		throw Error(_("Unable to decipher ValueDesc (Bug?)"));
 
-	ValueNode::Handle src_value_node(LinkableValueNode::create(type,value));
+	printf("%s:%d Action::ValueDescConvert::prepare() with value %s type %s\n", __FILE__, __LINE__, value.get_string().c_str(), type.c_str());
+//	printf("%s:%d canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_value_node()->get_parent_canvas().get()));
+//	printf("%s:%d parent canvas = %lx\n", __FILE__, __LINE__, uintptr_t(value_desc.get_parent_value_node()->get_parent_canvas().get()));
+	ValueNode::Handle src_value_node(LinkableValueNode::create(type,value,value_desc.get_canvas()));
 
 	if(!src_value_node)
 		throw Error(_("Unable to create new value node"));
 
+//	printf("%s:%d src_value_node canvas was %lx\n", __FILE__, __LINE__, uintptr_t(src_value_node->get_parent_canvas().get()));
+//	if (!src_value_node->get_parent_canvas())
+//		src_value_node->set_parent_canvas();
+	printf("%s:%d CONVERT %s: desc canvas = %lx\n", __FILE__, __LINE__, type.c_str(), uintptr_t(value_desc.get_canvas().get()));
+	printf("%s:%d CONVERT %s: src_value_node canvas is %lx\n", __FILE__, __LINE__, type.c_str(), uintptr_t(src_value_node->get_parent_canvas().get()));
 
 	ValueNode::Handle dest_value_node;
 	dest_value_node=value_desc.get_value_node();
+	// printf("%s:%d dest_value_node canvas = %lx\n", __FILE__, __LINE__, uintptr_t(dest_value_node->get_parent_canvas().get()));
 
 	Action::Handle action(ValueDescConnect::create());
 

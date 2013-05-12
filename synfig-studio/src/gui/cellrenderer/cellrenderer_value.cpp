@@ -50,6 +50,7 @@
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
+#include <synfig/valuenode_bone.h>
 
 #include "widgets/widget_gradient.h"
 #include "dialogs/dialog_gradient.h"
@@ -198,6 +199,12 @@ public:
 			valuewidget->set_param_desc(data);
 	}
 
+	void set_value_desc(const synfigapp::ValueDesc &data)
+	{
+		if(valuewidget)
+			valuewidget->set_value_desc(data);
+	}
+
 	void set_child_param_desc(const synfig::ParamDesc &data)
 	{
 		if(valuewidget)
@@ -273,6 +280,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	property_value_	(*this,"value",synfig::ValueBase()),
 	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
 	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
+	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc()),
 	property_child_param_desc_(*this,"child_param_desc", synfig::ParamDesc())
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
@@ -453,25 +461,33 @@ CellRenderer_ValueBase::render_vfunc(
 		//property_text()=(Glib::ustring)" ";
 		return;
 		break;
-	case ValueBase::TYPE_SEGMENT:
-		property_text()=(Glib::ustring)_("Segment");
-		break;
 	case ValueBase::TYPE_GRADIENT:
 		render_gradient_to_window(window,ca,data.get(Gradient()));
 		return;
 		break;
+	case ValueBase::TYPE_BONE:
+	case ValueBase::TYPE_SEGMENT:
 	case ValueBase::TYPE_LIST:
-		property_text()=(Glib::ustring)_("List");
-		break;
 	case ValueBase::TYPE_BLINEPOINT:
-		property_text()=(Glib::ustring)_("Spline Point");
-		break;
 	case ValueBase::TYPE_WIDTHPOINT:
-		property_text()=(Glib::ustring)_("Width Point");
-		break;
 	case ValueBase::TYPE_DASHITEM:
-		property_text()=(Glib::ustring)_("Dash Item");
+		property_text()=(Glib::ustring)(ValueBase::type_local_name(data.get_type()));
 		break;
+	case ValueBase::TYPE_VALUENODE_BONE:
+	{
+		ValueNode_Bone::Handle bone_node(data.get(ValueNode_Bone::Handle()));
+		String name(_("No Parent"));
+
+		if (!bone_node->is_root())
+		{
+			name = (*(bone_node->get_link("name")))(get_canvas()->get_time()).get(String());
+			if (name.empty())
+				name = bone_node->get_guid().get_string();
+		}
+
+		property_text()=(Glib::ustring)(name);
+		break;
+	}
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
 		break;
@@ -592,6 +608,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			value_entry->set_path(path);
 			value_entry->set_canvas(get_canvas());
 			value_entry->set_param_desc(get_param_desc());
+			value_entry->set_value_desc(get_value_desc());
 			value_entry->set_child_param_desc(get_child_param_desc());
 			value_entry->set_value(data);
 			value_entry->set_parent(&widget);

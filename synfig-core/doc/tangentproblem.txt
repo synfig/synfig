@@ -1,0 +1,73 @@
+THE PROBLEM OF THE TANGENT OF THE BLINES UNDER BONE INFLUENCE
+=============================================================
+Tangents are relative to vertices in any of its definitions (radius, angle)
+or (x,y). As the transformation performed by bones is prepaed to work on
+global coordinates vertices, the tangent transformation can not be directly
+transformed by bones in that way.
+
+There are some solutions to solve that:
+1) 	The solution that Anime Studio gives to the tangents: It doesn't
+	have real tangents but calculated ones based on the neighbour vertices
+	position and a parameter called 'curvature'.
+
+2) 	As well the tangents are relative to the vertex it belongs to, we
+	need to convert the tangent to global coordinates, transform it by the
+	bone(s) influence and then convert it to local coordinates again.
+
+
+
+1) PROPOSAL FOR TANGENTS 'CALCULATED' BASED ON NEIGBOUR VERTICES
+================================================================
+
+	param						convert type					value type
+	-----						------------					----------
+	Tangent                     AverageTangent					Vector
+		Current					BoneInfluence					Vector
+		Next					BoneInfluence					Vector
+		Previous				BoneInfluence					Vector
+		Link					Vector							Vector
+
+'Current' is the current vertex in the bline (where the tangent lies) it is not a parameter
+'Next' is the next vertex in the bline relative to Current
+'Previous' it is the previous vertex in the bline relative to Current.
+
+Resulting Tangent (radius, angle) is defined by:
+
+Let's call: V=Current-(Next+Previous)*0.5
+Let's call: V0=Current.Link-(Next.Link+Previous.Link)*0.5
+
+
+Radius:
+radius = Link.radius
+
+Angle:
+angle=atan2(V.x,V.y) - (atan2(V0.x,V0.y)-Link.angle)
+
+When the user manipulates the tangent duck it modifies Link as an offset.
+
+Problems:
+-Insert a vertex
+-Vertex "on", "off"
+
+2) PROPOSAL FOR TANGENTS IN GLOBAL COORDINATES
+==============================================
+
+Given a vertex V and a tangent T and a transformed position of the vertex
+after bone influence V', calculate the transformed position of the tangent.
+
+global position of the tangent:
+TG=V+T
+TG'=V'+T'
+
+T'=TG'-V' = (V+T)' -V' where ' means tranformed by bones.
+
+	param						convert type					value type
+	-----						------------					----------
+	Tangent						BoneTangent						Vector
+		Bone Weight List		List							Static List
+		Link (T)												Vector
+		Vertex (V)												Vector
+
+It is reasonable that the Bone Weight List is the same for both parameters.
+
+When user manipulates the tangent duck it modifies the parameter T.

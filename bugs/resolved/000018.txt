@@ -1,0 +1,34 @@
+Subject: Edit context menu entry is not shown for waypoints of parent params
+
+New skeleton, go to animation mode
+animate the parent of any bone
+In the Time track or the param time track
+right click on the waypoint doesn't show the
+"Edit" entry. Before it was shown.
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 03:44:36 CET 2008
+
+layertree.cpp "if (param_tree_store_->find_first_value_node(value_node, row) && row)"
+isn't finding the valuenode in the parameter panel.  that's why the
+edit menu entry isn't being shown.
+
+if I
+	export SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS=1
+then it works, and:
+     canvastreestore.cpp:367 CanvasTreeStore::find_first_value_node vn = ValueNode_Animated
+     layertree.cpp:761 found 'ValueNode (Skeleton):Bones>Static List:Item 001>Bone:Parent'
+
+if I
+	unset SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS
+then it doesn't work, and:
+     canvastreestore.cpp:367 CanvasTreeStore::find_first_value_node vn = ValueNode_Animated
+     layertree.cpp:764 didn't find
+
+SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS affects only canvastreestore.cpp's:
+	CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool do_children)
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 10:31:40 CET 2008
+
+Fixed.

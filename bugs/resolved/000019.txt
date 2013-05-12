@@ -1,0 +1,69 @@
+Subject: Unexport a exported bone crash
+
+Recipe:
+Create a new skeleton layer
+Export a parent parameter
+save the file
+unexport the valuenode
+crash
+
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+
+#0  0x00007f28581a1fd5 in raise () from /lib/libc.so.6
+#1  0x00007f28581a3b43 in abort () from /lib/libc.so.6
+#2  0x00007f2858cced9e in g_logv () from /usr/lib/libglib-2.0.so.0
+#3  0x00007f2858ccee33 in g_log () from /usr/lib/libglib-2.0.so.0
+#4  0x00007f285c2abe28 in Glib::exception_handlers_invoke ()
+   from /usr/lib/libglibmm-2.4.so.1
+#5  0x00007f285d903254 in Gtk::TreeModel_Class::get_value_vfunc_callback (
+    self=0x32ea320, iter=0x7fff6745fda0, column=3, value=0x7fff6745fc50)
+    at treemodel.cc:1255
+#6  0x00007f285cb3bce2 in IA__gtk_tree_view_column_cell_set_cell_data (
+    tree_column=0x32f0980, tree_model=0x32ea320, iter=0x7fff6745fda0,
+    is_expander=0, is_expanded=0)
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtktreeviewcolumn.c:2550
+#7  0x00007f285cb35f17 in gtk_tree_view_bin_expose (widget=0x2a7f280,
+    event=0x7fff67460450)
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtktreeview.c:4380
+#8  0x00007f285cb37965 in gtk_tree_view_expose (widget=0x25c6,
+    event=0x7fff67460450)
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtktreeview.c:4945
+#9  0x00007f285ca46908 in _gtk_marshal_BOOLEAN__BOXED (closure=0x26c4df0,
+    return_value=0x7fff67460130, n_param_values=<value optimized out>,
+    param_values=0x7f284805e000, invocation_hint=<value optimized out>,
+    marshal_data=0x7f285d918600)
+---Type <return> to continue, or q <return> to quit---
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtkmarshalers.c:84
+#10 0x00007f285956f25d in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
+#11 0x00007f2859584c3b in ?? () from /usr/lib/libgobject-2.0.so.0
+#12 0x00007f285958648a in g_signal_emit_valist ()
+   from /usr/lib/libgobject-2.0.so.0
+#13 0x00007f2859586b33 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
+#14 0x00007f285cb4974e in gtk_widget_event_internal (widget=0x2a7f280,
+    event=0x7fff67460450) at /build/buildd/gtk+2.0-2.14.4/gtk/gtkwidget.c:4745
+#15 0x00007f285ca4059d in IA__gtk_main_do_event (event=0x7fff67460450)
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtkmain.c:1553
+#16 0x00007f285be065b5 in gdk_window_process_updates_internal (
+    window=0x27e2d30) at /build/buildd/gtk+2.0-2.14.4/gdk/gdkwindow.c:2598
+#17 0x00007f285be06b41 in IA__gdk_window_process_all_updates ()
+    at /build/buildd/gtk+2.0-2.14.4/gdk/gdkwindow.c:2664
+#18 0x00007f285c9c8381 in gtk_container_idle_sizer (data=<value optimized out>)
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtkcontainer.c:1309
+#19 0x00007f285bdea95b in gdk_threads_dispatch (data=0x7f2848057da0)
+    at /build/buildd/gtk+2.0-2.14.4/gdk/gdk.c:473
+#20 0x00007f2858cc4d3b in g_main_context_dispatch ()
+   from /usr/lib/libglib-2.0.so.0
+#21 0x00007f2858cc850d in ?? () from /usr/lib/libglib-2.0.so.0
+#22 0x00007f2858cc8a3d in g_main_loop_run () from /usr/lib/libglib-2.0.so.0
+#23 0x00007f285ca407a7 in IA__gtk_main ()
+---Type <return> to continue, or q <return> to quit---
+    at /build/buildd/gtk+2.0-2.14.4/gtk/gtkmain.c:1200
+#24 0x0000000000768cf7 in main (argc=0, argv=0x7fff674608a8) at main.cpp:99
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 10:39:29 CET 2008
+
+This seems to have been fixed by the previous commit for #18.

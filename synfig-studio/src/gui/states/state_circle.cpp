@@ -619,7 +619,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(origin));
+	ValueNode::Handle value_node_origin(ValueNode_Const::create(origin));
 	assert(value_node_origin);
 
 	// Set the looping flag

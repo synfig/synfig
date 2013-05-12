@@ -179,7 +179,7 @@ public:
 
 	bool is_selected(const synfig::Waypoint& waypoint)const;
 
-	synfig::ValueNode_Animated::WaypointList::iterator find_waypoint(const synfig::Time& t, const synfig::Time& scope=synfig::Time::end());
+	synfig::ValueNode_Animated::WaypointList::iterator find_editable_waypoint(const synfig::Time& t, const synfig::Time& scope=synfig::Time::end());
 
 	virtual void
 	render_vfunc(

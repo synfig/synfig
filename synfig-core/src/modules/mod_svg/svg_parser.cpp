@@ -219,7 +219,7 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 }
 
 void
-Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent){
+Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx_parent){
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring nodename = node->get_name();
 		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
@@ -229,16 +229,16 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
 
 		//resolve transformations
-		Matrix* mtx=NULL;
+		SVGMatrix* mtx=NULL;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 		if (SVG_SEP_TRANSFORMS)
 		{
 			if(mtx_parent){
 				if(mtx)
-					composeMatrix(&mtx,mtx_parent,mtx);
+					composeSVGMatrix(&mtx,mtx_parent,mtx);
 				else
-					mtx=newMatrix(mtx_parent);
+					mtx=newSVGMatrix(mtx_parent);
 			}
 		}
 		if(nodename.compare("g")==0){
@@ -413,7 +413,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 /* === LAYER PARSERS ======================================================= */
 
 void
-Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx){
+Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx){
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring label		=nodeElement->get_attribute_value("label");
 		Glib::ustring style		=nodeElement->get_attribute_value("style");
@@ -492,7 +492,7 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,S
 /* === CONVERT TO PATH PARSERS ============================================= */       
 
 std::list<BLine *>
-Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
+Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 	std::list<BLine *> k0;
 	if(polygon_points.empty())
 		return k0;
@@ -516,7 +516,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
 }
 
 std::list<BLine *>
-Svg_parser::parser_path_d(String path_d,Matrix* mtx){
+Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 	std::list<BLine *> k;
 	std::list<Vertex*> k1;
 
@@ -854,7 +854,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 /* === EFFECTS PARSERS ===================================================== */
 
 void
-Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/,Matrix* mtx){
+Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/,SVGMatrix* mtx){
 	build_transform(root, mtx);
 }
 
@@ -879,7 +879,7 @@ Svg_parser::parser_defs(const xmlpp::Node* node){
 /* === BUILDS ============================================================== */
 
 void
-Svg_parser::build_transform(xmlpp::Element* root,Matrix* mtx){
+Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 	if (mtx) {
 		xmlpp::Element *child_transform=root->add_child("layer");
 		child_transform->set_attribute("type","warp");
@@ -937,7 +937,7 @@ Svg_parser::find_colorStop(String name){
 }
 
 void
-Svg_parser::build_fill(xmlpp::Element* root, String name,Matrix *mtx){
+Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 	if(!name.empty()){
 		int start=name.find_first_of("#")+1;
 		int end=name.find_first_of(")");
@@ -979,7 +979,7 @@ Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops)
 	}
 }
 void
-Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matrix* mtx){
+Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx){
 	if(data){
 		xmlpp::Element* gradient=root->add_child("layer");
 
@@ -998,9 +998,9 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matri
 
 
 		if (mtx || data->transform){
-			Matrix *mtx2=NULL;
+			SVGMatrix *mtx2=NULL;
 			if (mtx && data->transform){
-				composeMatrix(&mtx2,mtx,data->transform);
+				composeSVGMatrix(&mtx2,mtx,data->transform);
 			}else if (mtx){
 				mtx2=mtx;
 			}else if (data->transform){
@@ -1051,7 +1051,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matri
 	}
 }
 void
-Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matrix* mtx){
+Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx){
 	if(data){
 		xmlpp::Element* gradient;
 
@@ -1073,9 +1073,9 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matri
 			gradient=child_layer->add_child("layer");
 			gradient->set_attribute("desc",data->name);
 			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
-			Matrix *mtx2=NULL;
+			SVGMatrix *mtx2=NULL;
 			if (mtx && data->transform){
-				composeMatrix(&mtx2,mtx,data->transform);
+				composeSVGMatrix(&mtx2,mtx,data->transform);
 			}else if (mtx){
 				mtx2=mtx;
 			}else if (data->transform){
@@ -1127,7 +1127,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
 
 		//resolve transformations
-		Matrix* mtx=NULL;
+		SVGMatrix* mtx=NULL;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
@@ -1180,7 +1180,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
 
 		//resolve transformations
-		Matrix* mtx=NULL;
+		SVGMatrix* mtx=NULL;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
@@ -1235,7 +1235,7 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 }
 
 LinearGradient*
-Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform){
+Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform){
 	LinearGradient* data;
 	data=(LinearGradient*)malloc(sizeof(LinearGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1249,7 +1249,7 @@ Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,s
 }
 
 RadialGradient*
-Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform){
+Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform){
 	RadialGradient* data;
 	data=(RadialGradient*)malloc(sizeof(RadialGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1572,9 +1572,9 @@ Svg_parser::newVertex(float x,float y){
 }
 
 //matrices
-Matrix*
+SVGMatrix*
 Svg_parser::parser_transform(const String transform){
-	Matrix* a=NULL;
+	SVGMatrix* a=NULL;
 	String tf(transform);
 	removeIntoS(&tf);
 	std::vector<String> tokens=tokenize(tf," ");
@@ -1590,12 +1590,12 @@ Svg_parser::parser_transform(const String transform){
 			end		=(*aux).size()-1;
 			dy		=atof((*aux).substr(start,end-start).data());
 			if(matrixIsNull(a))
-				a=newMatrix(1,0,0,1,dx,dy);
+				a=newSVGMatrix(1,0,0,1,dx,dy);
 			else
-				multiplyMatrix(&a,newMatrix(1,0,0,1,dx,dy));
+				multiplySVGMatrix(&a,newSVGMatrix(1,0,0,1,dx,dy));
 		}else if((*aux).compare(0,5,"scale")==0){
 			if(matrixIsNull(a))
-				a=newMatrix(1,0,0,1,0,0);
+				a=newSVGMatrix(1,0,0,1,0,0);
 		}else if((*aux).compare(0,6,"rotate")==0){
 			float angle,seno,coseno;
 			int start,end;
@@ -1605,46 +1605,46 @@ Svg_parser::parser_transform(const String transform){
 			seno   =sin(angle);
 			coseno =cos(angle);
 			if(matrixIsNull(a))
-				a=newMatrix(coseno,seno,-1*seno,coseno,0,0);
+				a=newSVGMatrix(coseno,seno,-1*seno,coseno,0,0);
 			else
-				multiplyMatrix(&a,newMatrix(coseno,seno,-1*seno,coseno,0,0));
+				multiplySVGMatrix(&a,newSVGMatrix(coseno,seno,-1*seno,coseno,0,0));
 		}else if((*aux).compare(0,6,"matrix")==0){
 			int start	=(*aux).find_first_of('(')+1;
 			int end		=(*aux).find_first_of(')');
 			if(matrixIsNull(a))
-				a=newMatrix((*aux).substr(start,end-start));
+				a=newSVGMatrix((*aux).substr(start,end-start));
 			else
-				multiplyMatrix(&a,newMatrix((*aux).substr(start,end-start)));
+				multiplySVGMatrix(&a,newSVGMatrix((*aux).substr(start,end-start)));
 		}else{
-			a=newMatrix(1,0,0,1,0,0);
+			a=newSVGMatrix(1,0,0,1,0,0);
 		}
 		aux++;
 	}
 	return a;
 }
 
-Matrix*
-Svg_parser::newMatrix(Matrix *a){
-	Matrix* data;
-	data=(Matrix*)malloc(sizeof(Matrix));
+SVGMatrix*
+Svg_parser::newSVGMatrix(SVGMatrix *a){
+	SVGMatrix* data;
+	data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
 	data->a=a->a;		data->b=a->b;		data->c=a->c;
 	data->d=a->d;		data->e=a->e;		data->f=a->f;
 	return data;
 }
-Matrix*
-Svg_parser::newMatrix(float a,float b,float c,float d,float e,float f){
-	Matrix* data;
-	data=(Matrix*)malloc(sizeof(Matrix));
+SVGMatrix*
+Svg_parser::newSVGMatrix(float a,float b,float c,float d,float e,float f){
+	SVGMatrix* data;
+	data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
 	data->a=a;		data->b=b;		data->c=c;
 	data->d=d;		data->e=e;		data->f=f;
 	return data;
 }
-Matrix*
-Svg_parser::newMatrix(const String mvector){
+SVGMatrix*
+Svg_parser::newSVGMatrix(const String mvector){
 	if(!mvector.empty()){
 		std::vector<String> tokens=tokenize(mvector,",");
-		if(tokens.size()!=6) return newMatrix(1,0,0,1,0,0);
-		Matrix* data=(Matrix*)malloc(sizeof(Matrix));
+		if(tokens.size()!=6) return newSVGMatrix(1,0,0,1,0,0);
+		SVGMatrix* data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
 		data->a=atof(tokens.at(0).data());
 		data->b=atof(tokens.at(1).data());
 		data->c=atof(tokens.at(2).data());
@@ -1653,11 +1653,11 @@ Svg_parser::newMatrix(const String mvector){
 		data->f=atof(tokens.at(5).data());
 		return data;
 	}else{
-		return newMatrix(1,0,0,1,0,0);
+		return newSVGMatrix(1,0,0,1,0,0);
 	}
 }
 void
-Svg_parser::transformPoint2D(Matrix *mtx,float *a,float *b){
+Svg_parser::transformPoint2D(SVGMatrix *mtx,float *a,float *b){
 	float auxa,auxb;
 	auxa=0;
 	auxb=0;
@@ -1668,8 +1668,8 @@ Svg_parser::transformPoint2D(Matrix *mtx,float *a,float *b){
 	return;
 }
 void
-Svg_parser::composeMatrix(Matrix **mtx,Matrix* mtx1,Matrix* mtx2){
-	Matrix* aux=newMatrix(0,0,0,0,0,0);
+Svg_parser::composeSVGMatrix(SVGMatrix **mtx,SVGMatrix* mtx1,SVGMatrix* mtx2){
+	SVGMatrix* aux=newSVGMatrix(0,0,0,0,0,0);
 	aux->a=(mtx1->a)*(mtx2->a)+(mtx1->c)*(mtx2->b);
 	aux->b=(mtx1->b)*(mtx2->a)+(mtx1->d)*(mtx2->b);
 	aux->c=(mtx1->a)*(mtx2->c)+(mtx1->c)*(mtx2->d);
@@ -1679,8 +1679,8 @@ Svg_parser::composeMatrix(Matrix **mtx,Matrix* mtx1,Matrix* mtx2){
 	*mtx=aux;
 }
 void
-Svg_parser::multiplyMatrix(Matrix **mtx1,Matrix *mtx2){
-	Matrix* aux=newMatrix(0,0,0,0,0,0);
+Svg_parser::multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2){
+	SVGMatrix* aux=newSVGMatrix(0,0,0,0,0,0);
 	aux->a=((*mtx1)->a)*(mtx2->a)+((*mtx1)->c)*(mtx2->b);
 	aux->b=((*mtx1)->b)*(mtx2->a)+((*mtx1)->d)*(mtx2->b);
 	aux->c=((*mtx1)->a)*(mtx2->c)+((*mtx1)->c)*(mtx2->d);
@@ -1695,7 +1695,7 @@ Svg_parser::multiplyMatrix(Matrix **mtx1,Matrix *mtx2){
 	(*mtx1)->f=aux->f;
 }
 bool
-Svg_parser::matrixIsNull(Matrix *mtx){
+Svg_parser::matrixIsNull(SVGMatrix *mtx){
 	if(mtx == NULL) return true;
 	return false;
 }

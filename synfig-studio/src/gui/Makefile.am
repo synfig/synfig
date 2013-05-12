@@ -25,6 +25,7 @@ DUCKTRANSFORM_HH = \
 	ducktransform_rotate.h \
 	ducktransform_scale.h \
 	ducktransform_translate.h \
+	ducktransform_matrix.h \
 	duck.h
 
 DUCKTRANSFORM_CC = \

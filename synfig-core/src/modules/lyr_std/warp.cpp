@@ -438,6 +438,11 @@ public:
 		//Point pos(x-layer->origin);
 		//return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
+
+	synfig::String get_string()const
+	{
+		return "warp";
+	}
 };
 etl::handle<Transform>
 Warp::get_transform()const

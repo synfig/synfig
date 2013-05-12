@@ -149,6 +149,11 @@ public:
 		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],
 					  (x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);
 	}
+
+	synfig::String get_string()const
+	{
+		return "stretch";
+	}
 };
 etl::handle<Transform>
 Layer_Stretch::get_transform()const

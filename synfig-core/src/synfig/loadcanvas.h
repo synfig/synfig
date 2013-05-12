@@ -37,6 +37,7 @@
 #include "valuenode_subtract.h"
 #include "valuenode_animated.h"
 #include "valuenode_composite.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_dynamiclist.h"
 #include "keyframe.h"
 #include "guid.h"
@@ -161,6 +162,9 @@ private:
 	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false, String path=".");
 	//! Canvas definitions Parsing Function (exported value nodes and exported canvases)
 	void parse_canvas_defs(xmlpp::Element *node,Canvas::Handle canvas);
+
+	std::list<ValueNode::Handle> parse_canvas_bones(xmlpp::Element *node,Canvas::Handle canvas);
+
 	//! Layer Parsing Function
 	etl::handle<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Base Parsing Function
@@ -192,6 +196,9 @@ private:
 	Gradient parse_gradient(xmlpp::Element *node);
 	//! Bline Point Value Base Parsing Function
 	BLinePoint parse_bline_point(xmlpp::Element *node);
+
+	GUID parse_guid(xmlpp::Element *node);
+
 	//! Width Point Value Base Parsing Function
 	WidthPoint parse_width_point(xmlpp::Element *node);
 	//! Dash Item Value Base Parsing Function
@@ -204,6 +211,10 @@ private:
 	etl::handle<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Linkable ValueNode Parsing Function
 	etl::handle<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+
+	//! Static List Parsnig Function
+	etl::handle<ValueNode_StaticList> parse_static_list(xmlpp::Element *node,Canvas::Handle canvas);
+
 	//! Dynamic List Parsnig Function
 	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 

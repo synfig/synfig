@@ -1,0 +1,40 @@
+Subject: Convert the Setup Origin or the Animated Origin subparams of a bone can lead a loop
+
+When the Setup Origin or the Animated Origin subparameters of a bone were available they
+can potentially converted to be a bone influence type so they can have a bone in the
+bone weight pair list. That bone could be linked to the bone itself so it can produce
+a loop.
+That convert types should not be allowed for the vertex type subparams of the bone
+or there must be a checking to prevent that bone sub-subparam being linked to any other bone reference
+that has the bone in question as parent or linked.
+
+------------------------------------------------------------------------
+
+Example
+
+Bone1 <---------------------------------------------------
+	Animated Origin (Bone Influence converted)            |
+		Vertex Free                                       |
+		Vertex Animated                                   |
+		Bone Influence List                               |
+			BoneWeightPair1                               |
+				Bone     <--------------------------------
+				Weight
+	Setup Vertex
+	Animated Angle
+	Setup Angle
+	Length
+	Scale
+	Strength
+	Parent
+
+------------------------------------------------------------------------
+dooglus, Wed Dec 31 15:47:35 CET 2008
+
+ 1. make a skeleton
+ 2. add a bone to it, set the parent to 'none'
+ 3. convert bone1's origin to bone influence
+ 4. edit the bone in the bwp to be bone2
+ 5. export the bwp list
+ 6. convert bone2's origin to bone influence
+ 7. connect bone2's origin's bwp list to the exported list

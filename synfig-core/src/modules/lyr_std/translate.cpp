@@ -131,6 +131,11 @@ public:
 	{
 		return x-layer->origin;
 	}
+
+	synfig::String get_string()const
+	{
+		return "translate";
+	}
 };
 etl::handle<Transform>
 Translate::get_transform()const

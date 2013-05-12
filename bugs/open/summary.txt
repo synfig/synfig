@@ -1,0 +1,6 @@
+2 'potential crash' bugs:
+
+ 000008	fix more in the 'sibling parent link' series
+ 000014	there's a potential to create loops by connecting
+
+ 000026	waypoints with valuenode values don't update their parents when changed

@@ -1,0 +1,24 @@
+Subject: Node::remove_child() is called carelessly
+
+A couple of recent bugs have been caused by remove_child() removing a
+node from the parent_set when it shouldn't have, due to a sibling
+using the same node.  One case was with two layer parameters linked to
+each other, and the other was two sub-parameters of the Switch
+valuenode being linked to each other.
+
+This same type of bug seems to be present in other places too, and
+should be killed.
+
+------------------------------------------------------------------------
+
+The two fixed bugs were:
+
+2353284: If two parameters in the same layer are connected to the same
+r2291	 valuenode and we disconnect one of them, the parent-child
+	 relationship for the remaining connection was being deleted.
+	 Now we search the parameter list to see if another parameter
+	 uses the same valuenode.
+
+2412072: Don't remove a node from the parent set of a linkable
+r2311	 valuenode when replacing a link if the link is still in use
+	 by one of the sibling links.

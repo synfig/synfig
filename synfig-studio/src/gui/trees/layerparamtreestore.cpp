@@ -205,7 +205,7 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
-	CanvasTreeStore::get_value_vfunc(iter,column,value);
+		CanvasTreeStore::get_value_vfunc(iter,column,value);
 }
 
 
@@ -575,7 +575,14 @@ LayerParamTreeStore::on_value_node_renamed(synfig::ValueNode::Handle /*value_nod
 void
 LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced_value_node*/,synfig::ValueNode::Handle /*new_value_node*/)
 {
-	queue_rebuild();
+	// this used to be "queue_refresh();" but it was crashing when we
+	// first animated a bone's parent parameter (if the params panel
+	// was quite large).  the replaced_value_node handle was out of
+	// scope by the time the tree was rebuilt, and the tree code was
+	// failing as a result.  not sure how the tree code has a pointer
+	// rather than a handle - maybe it has a loosehandle, that would
+	// cause the problem I was seeing
+	rebuild();
 }
 
 void

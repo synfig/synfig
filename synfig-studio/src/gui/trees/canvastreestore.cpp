@@ -35,6 +35,8 @@
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>
+#include <synfig/valuenode_bone.h>
+#include <synfig/boneweightpair.h>
 #include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
@@ -78,6 +80,17 @@ CanvasTreeStore::~CanvasTreeStore()
 {
 }
 
+ValueNode::Handle
+CanvasTreeStore::expandable_bone_parent(ValueNode::Handle node)
+{
+	if ((!getenv("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS")) &&
+		node->get_type() == ValueBase::TYPE_VALUENODE_BONE &&
+		(node->get_name() == "constant" || node->get_name() == "animated"))
+		if (ValueNode::Handle bone_node = (*node)(canvas_interface()->get_time()).get(ValueNode_Bone::Handle()))
+			return bone_node;
+	return node;
+}
+
 void
 CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
 {
@@ -97,7 +110,35 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			x.set(value_desc.get_value());
 		else
 		if(value_desc.is_value_node())
-			x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+			switch(value_desc.get_value_type())
+			{
+			case ValueBase::TYPE_BONE:
+			{
+				Time time(canvas_interface()->get_time());
+				Bone bone((*(value_desc.get_value_node()))(time).get(Bone()));
+				String display(String(bone.get_name()));
+				ValueNode_Bone::ConstHandle parent(bone.get_parent());
+				if (!parent->is_root())
+					display += " --> " + String((*parent->get_link("name"))(time).get(String()));
+				x.set(display);
+				break;
+			}
+			case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+			{
+				Time time(canvas_interface()->get_time());
+				BoneWeightPair bone_weight_pair((*(value_desc.get_value_node()))(time).get(BoneWeightPair()));
+				x.set(bone_weight_pair.get_string());
+				break;
+			}
+			case ValueBase::TYPE_SEGMENT:
+			case ValueBase::TYPE_LIST:
+			case ValueBase::TYPE_BLINEPOINT:
+				x.set(ValueBase::type_local_name(value_desc.get_value_type()));
+				break;
+			default:
+				x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+				break;
+			}
 		else
 		{
 			synfig::error(__FILE__":%d: Unable to figure out value",__LINE__);
@@ -242,11 +283,11 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			{
 				if(!canvas->get_id().empty())
 					x.set(canvas->get_id());
-				else
-				if(!canvas->get_name().empty())
+				else if(!canvas->get_name().empty())
 					x.set(canvas->get_name());
 				else
 					x.set(_("[Unnamed]"));
+				// todo: what are the previous 6 lines for if we're going to overwrite it here?
 				x.set(_("Canvas"));
 			}
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
@@ -342,14 +383,18 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 bool
 CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter)
 {
+	// maybe replace the ValueNode_Const or ValueNode_Animated with the contained ValueNode_Bone
+	// todo: do we need to do this in find_next_value_node, and find_*_value_desc too?
+	synfig::ValueNode::Handle node(expandable_bone_parent(value_node));
+
 	iter=children().begin();
-	while(iter && value_node!=(ValueNode::Handle)(*iter)[model.value_node])
+	while(iter && node!=(ValueNode::Handle)(*iter)[model.value_node])
 	{
 		if(!iter->children().empty())
 		{
 			Gtk::TreeIter iter2(iter->children().begin());
 			//! \todo confirm that the && should be done before the ||
-			if((iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node]) || find_next_value_node(value_node, iter2))
+			if((iter2 && node==(ValueNode::Handle)(*iter2)[model.value_node]) || find_next_value_node(node, iter2))
 			{
 				iter=iter2;
 				return true;
@@ -361,7 +406,7 @@ CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_no
 		else
 			iter=iter2;
 	}
-	return (bool)iter && value_node==(ValueNode::Handle)(*iter)[model.value_node];
+	return (bool)iter && node==(ValueNode::Handle)(*iter)[model.value_node];
 }
 
 bool
@@ -408,6 +453,12 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 		{
 			ValueNode::Handle value_node=value_desc.get_value_node();
 
+			// todo: if the parent is animated and expanded, and we drag the time slider so that it changes,
+			// it's not updated.  it still shows the previous bone valuenode.
+
+			// maybe replace the ValueNode_Const or ValueNode_Animated with the contained ValueNode_Bone
+			value_node = expandable_bone_parent(value_node);
+
 			assert(value_node);
 
 			row[model.value_node] = value_node;
@@ -423,8 +474,10 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				row[model.canvas]=canvas_interface()->get_canvas();
 
 			LinkableValueNode::Handle linkable;
+			// printf("%s:%d value_node = %s\n", __FILE__, __LINE__, value_node->get_description().c_str());
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
 
+			// printf("linkable: %d; do_children: %d\n", bool(linkable), bool(do_children));
 			if(linkable && do_children)
 			{
 				row[model.link_count] = linkable->link_count();

@@ -62,6 +62,8 @@ public:
 	virtual synfig::Rect perform(const synfig::Rect& x)const;
 	virtual synfig::Rect unperform(const synfig::Rect& x)const;
 
+	virtual String get_string()const=0;
+
 }; // END of class Transform
 
 class TransformStack : public std::list<Transform::Handle>

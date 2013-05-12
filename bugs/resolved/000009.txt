@@ -1,0 +1,20 @@
+Subject: crash editing bone parent after duplicate & delete
+
+make skeleton layer
+export 1
+in layers: copy, paste, delete
+clear history
+edit bone1's parent
+
+------------------------------------------------------------------------
+
+When we try to edit bone1's parent, the first thing it does it tries
+to find out which bones are being affected by the widget we're
+editing.  To do this it walks up the parent_set tree from the
+valuenode we're editing.
+
+The parent sub-param of bone1 that we're trying to edit has 1 parent: bone1
+bone1 has 3 parents:
+  the still-alive static_list
+  the copy of static_list on the clipboard
+  the pasted static_list (which has been deleted already)

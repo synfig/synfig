@@ -1,0 +1,5 @@
+Subject: converting to 'switch' results in the 'link on' and 'link off' being linked
+
+convert bone1's parent to 'switch'
+expand and edit 'link on'
+'link off' changes too.  it shouldn't.

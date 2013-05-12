@@ -58,7 +58,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
+synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
 	Vocab ret(get_children_vocab());
@@ -100,12 +100,18 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
 			ValueNode_Const::Handle value_node;
-			value_node=ValueNode_Const::create(wpoint.get_lower_bound());
-			value_node->set_static(true);
-			set_link("lower_bound",value_node);
-			value_node=ValueNode_Const::create(wpoint.get_upper_bound());
-			value_node->set_static(true);
-			set_link("upper_bound",value_node);
+			value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_lower_bound()));
+			if(value_node) 
+			{
+				value_node->set_static(true);
+				set_link("lower_bound",value_node);
+			}
+			value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_upper_bound()));
+			if(value_node)
+			{
+				value_node->set_static(true);
+				set_link("upper_bound",value_node);
+			}
 			break;
 		}
 		case ValueBase::TYPE_DASHITEM:
@@ -121,6 +127,10 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			assert(0);
 			throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for composite %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+	set_parent_canvas(canvas);
 }
 
 ValueNode_Composite::~ValueNode_Composite()
@@ -129,9 +139,9 @@ ValueNode_Composite::~ValueNode_Composite()
 }
 
 ValueNode_Composite*
-ValueNode_Composite::create(const ValueBase &value)
+ValueNode_Composite::create(const ValueBase &value, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_Composite(value);
+	return new ValueNode_Composite(value, canvas);
 }
 
 LinkableValueNode*

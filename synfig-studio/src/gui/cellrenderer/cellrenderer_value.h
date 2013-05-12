@@ -64,13 +64,6 @@
 
 namespace studio {
 
-class Widget_Color;
-class Widget_CanvasChooser;
-class Widget_Enum;
-class Widget_Filename;
-class Widget_Vector;
-class Widget_Time;
-
 class ValueBase_Entry;
 
 class CellRenderer_ValueBase : public Gtk::CellRendererText
@@ -81,6 +74,7 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 	Glib::Property<synfig::ValueBase> property_value_;
 	Glib::Property<etl::handle<synfig::Canvas> > property_canvas_;
 	Glib::Property<synfig::ParamDesc> property_param_desc_;
+	Glib::Property<synfigapp::ValueDesc> property_value_desc_;
 	Glib::Property<synfig::ParamDesc> property_child_param_desc_;
 
 	void string_edited_(const Glib::ustring&,const Glib::ustring&);
@@ -99,11 +93,13 @@ public:
 	Glib::PropertyProxy<synfig::ValueBase> property_value() { return property_value_.get_proxy();}
 	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas() { return property_canvas_.get_proxy();}
 	Glib::PropertyProxy<synfig::ParamDesc> property_param_desc() { return property_param_desc_.get_proxy(); }
+	Glib::PropertyProxy<synfigapp::ValueDesc> property_value_desc() { return property_value_desc_.get_proxy(); }
 	Glib::PropertyProxy<synfig::ParamDesc> property_child_param_desc() { return property_child_param_desc_.get_proxy(); }
 	Glib::PropertyProxy<bool> property_inconsistent() { return property_foreground_set(); }
 
 	etl::handle<synfig::Canvas> get_canvas()const { return property_canvas_; }
 	synfig::ParamDesc get_param_desc()const { return property_param_desc_; }
+	synfigapp::ValueDesc get_value_desc()const { return property_value_desc_; }
 	synfig::ParamDesc get_child_param_desc()const { return property_child_param_desc_; }
 
 	CellRenderer_ValueBase();

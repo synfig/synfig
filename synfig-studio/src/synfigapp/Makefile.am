@@ -73,6 +73,13 @@ VALUENODE_ACTION_HH = \
 	actions/valuenodedynamiclistremovesmart.h \
 	actions/valuenodedynamiclistrotateorder.h \
 	actions/valuenodedynamiclistunloop.h \
+	actions/valuenodestaticlistinsert.h	\
+	actions/valuenodestaticlistinsertsmart.h \
+	actions/valuenodestaticlistloop.h \
+	actions/valuenodestaticlistremove.h \
+	actions/valuenodestaticlistremovesmart.h\
+	actions/valuenodestaticlistrotateorder.h \
+	actions/valuenodestaticlistunloop.h	\
 	actions/valuenodelinkconnect.h \
 	actions/valuenodelinkdisconnect.h \
 	actions/valuenoderemove.h \
@@ -91,6 +98,13 @@ VALUENODE_ACTION_CC = \
 	actions/valuenodedynamiclistremovesmart.cpp \
 	actions/valuenodedynamiclistrotateorder.cpp \
 	actions/valuenodedynamiclistunloop.cpp \
+	actions/valuenodestaticlistinsert.cpp \
+	actions/valuenodestaticlistinsertsmart.cpp \
+	actions/valuenodestaticlistloop.cpp	\
+	actions/valuenodestaticlistremove.cpp \
+	actions/valuenodestaticlistremovesmart.cpp \
+	actions/valuenodestaticlistrotateorder.cpp \
+	actions/valuenodestaticlistunloop.cpp \
 	actions/valuenodelinkconnect.cpp \
 	actions/valuenodelinkdisconnect.cpp \
 	actions/valuenoderemove.cpp \

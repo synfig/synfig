@@ -319,6 +319,7 @@ LayerTree::create_param_tree()
 		cellrenderer_value->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_edited_value));
 		cellrenderer_value->property_value()=synfig::ValueBase();
 		column->add_attribute(cellrenderer_value->property_param_desc(), param_model.param_desc);
+		column->add_attribute(cellrenderer_value->property_value_desc(), param_model.value_desc);
 		column->add_attribute(cellrenderer_value->property_child_param_desc(), param_model.child_param_desc);
 		column->add_attribute(cellrenderer_value->property_inconsistent(),param_model.is_inconsistent);
 		//cellrenderer_value->property_canvas()=canvas_interface->get_canvas(); // Is this line necessary?

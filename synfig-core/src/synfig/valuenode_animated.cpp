@@ -48,6 +48,7 @@
 #include "canvas.h"
 #include "general.h"
 #include "valuenode_animated.h"
+#include "valuenode_bone.h"
 #include "valuenode_const.h"
 #include "exception.h"
 #include "gradient.h"
@@ -331,13 +332,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Hermite<T>* ret(new _Hermite<T>());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 
@@ -398,6 +400,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
@@ -680,13 +685,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Constant<T>* ret(new _Constant<T>());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 
@@ -733,6 +739,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
@@ -778,13 +787,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_AnimBool* ret(new _AnimBool());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 
@@ -832,6 +842,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
@@ -1004,8 +1017,8 @@ ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find(const UniqueID &x)
 {
 	ValueNode_Animated::WaypointList::iterator iter;
-	iter=std::find(waypoint_list().begin(),waypoint_list().end(),x);
-	if(iter==waypoint_list().end() || iter->get_uid()!=x.get_uid())
+	iter=std::find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x);
+	if(iter==editable_waypoint_list().end() || iter->get_uid()!=x.get_uid())
 		throw Exception::NotFound(strprintf("ValueNode_Animated::find(): Can't find UniqueID %d",x.get_uid()));
 	return iter;
 }
@@ -1019,9 +1032,9 @@ ValueNode_Animated::find(const UniqueID &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end() && x.is_equal(iter->get_time()))
+	if(iter!=editable_waypoint_list().end() && x.is_equal(iter->get_time()))
 		return iter;
 
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find(): Can't find Waypoint at %s",x.get_string().c_str()));
@@ -1036,14 +1049,14 @@ ValueNode_Animated::find(const Time &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find_next(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end())
+	if(iter!=editable_waypoint_list().end())
 	{
 		if(iter->get_time().is_more_than(x))
 			return iter;
 		++iter;
-		if(iter!=waypoint_list().end() && iter->get_time().is_more_than(x))
+		if(iter!=editable_waypoint_list().end() && iter->get_time().is_more_than(x))
 			return iter;
 	}
 
@@ -1059,13 +1072,13 @@ ValueNode_Animated::find_next(const Time &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find_prev(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end())
+	if(iter!=editable_waypoint_list().end())
 	{
 		if(iter->get_time().is_less_than(x))
 			return iter;
-		if(iter!=waypoint_list().begin() && (--iter)->get_time().is_less_than(x))
+		if(iter!=editable_waypoint_list().begin() && (--iter)->get_time().is_less_than(x))
 			return iter;
 	}
 
@@ -1078,10 +1091,31 @@ ValueNode_Animated::find_prev(const Time &x)const
 	return const_cast<ValueNode_Animated*>(this)->find_prev(x);
 }
 
+bool
+ValueNode_Animated::waypoint_is_only_use_of_valuenode(Waypoint &waypoint)
+{
+	ValueNode::Handle value_node(waypoint.get_value_node());
+	assert(value_node);
+	WaypointList wp_list(waypoint_list());
+	WaypointList::iterator iter;
+	for (iter = wp_list.begin(); iter != wp_list.end(); iter++)
+		if (*iter == waypoint)
+			continue;
+		else if (iter->get_value_node() == value_node)
+			return false;
+	return true;
+}
+
 void
 ValueNode_Animated::erase(const UniqueID &x)
 {
-	waypoint_list().erase(find(x));
+	printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, uintptr_t(this));
+	WaypointList::iterator iter(find(x));
+	Waypoint waypoint(*iter);
+	assert(waypoint.get_value_node());
+	editable_waypoint_list().erase(iter);
+	if (waypoint_is_only_use_of_valuenode(waypoint))
+		remove_child(waypoint.get_value_node().get());
 }
 
 ValueNode_Animated::WaypointList::iterator
@@ -1123,6 +1157,10 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 
 		case ValueBase::TYPE_STRING:
 			return ValueNode_Animated::Handle(new _Constant<String>);
+		case ValueBase::TYPE_VALUENODE_BONE:
+			return ValueNode_Animated::Handle(new _Constant<ValueNode_Bone::LooseHandle>);
+		case ValueBase::TYPE_BONE:
+			return ValueNode_Animated::Handle(new _Constant<Bone>);
 		case ValueBase::TYPE_GRADIENT:
 			return ValueNode_Animated::Handle(new _Hermite<Gradient>);
 		case ValueBase::TYPE_BOOL:
@@ -1252,6 +1290,12 @@ ValueNode_Animated::find_time(const Time &x)const
  		f.second = true;
 
  	return f;
+}
+
+String
+ValueNode_Animated::get_string()const
+{
+	return "ValueNode_Animated";
 }
 
 void

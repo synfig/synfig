@@ -52,6 +52,7 @@
 
 //#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>
+#include <synfigapp/value_desc.h>
 #include <synfig/value.h>
 #include <synfig/canvas.h>
 
@@ -64,6 +65,7 @@
 
 namespace studio {
 
+class Widget_BoneChooser;
 class Widget_Color;
 class Widget_ColorEdit;
 class Widget_CanvasChooser;
@@ -88,6 +90,7 @@ class Widget_ValueBase : public Gtk::HBox
 
 	Gtk::CheckButton *bool_widget;
 	//Gtk::ColorSelection *color_widget;
+	Widget_BoneChooser *bone_widget;
 	Widget_ColorEdit *color_widget;
 	Widget_CanvasChooser *canvas_widget;
 	Widget_Enum *enum_widget;
@@ -99,6 +102,7 @@ class Widget_ValueBase : public Gtk::HBox
 //	std::string hint;
 
 	synfig::ParamDesc param_desc;
+	synfigapp::ValueDesc value_desc;
 	synfig::ParamDesc child_param_desc;
 	etl::handle<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
@@ -118,6 +122,9 @@ public:
 
 	void set_param_desc(const synfig::ParamDesc &x) { param_desc=x; }
 	const synfig::ParamDesc &get_param_desc() { return param_desc; }
+
+	void set_value_desc(const synfigapp::ValueDesc &x) { value_desc=x; }
+	const synfigapp::ValueDesc &get_value_desc() { return value_desc; }
 
 	void set_child_param_desc(const synfig::ParamDesc &x) { child_param_desc=x; }
 	const synfig::ParamDesc &get_child_param_desc() { return child_param_desc; }

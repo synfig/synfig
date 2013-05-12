@@ -40,9 +40,13 @@
 #include "valuenode.h"
 #include "valuenode_animated.h"
 #include "valuenode_const.h"
+#include "valuenode_linear.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
+#include "valuenode_subtract.h"
 #include "valuenode_bline.h"
+#include "valuenode_bone.h"
 #include "valuenode_wplist.h"
 #include "valuenode_dilist.h"
 #include "dashitem.h"
@@ -85,6 +89,8 @@ int valuenode_too_new_count;
 
 xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas);
 xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas);
+xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas);
+xmlpp::Element* encode_value_node_bone_id(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas);
 
 xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float fps)
 {
@@ -250,6 +256,7 @@ xmlpp::Element* encode_list(xmlpp::Element* root,std::list<ValueBase> list, Canv
 
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas)
 {
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, ValueBase::type_name(data.get_type()).c_str());
 	switch(data.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -282,6 +289,16 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_list(root,data,canvas);
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
+	case ValueBase::TYPE_VALUENODE_BONE:
+		if (!canvas)
+		{
+			printf("%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+			printf("%s:%d zero canvas - please fix - report\n", __FILE__, __LINE__);
+			printf("%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+		}
+		root = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
+		root->set_name("bone_valuenode");
+		return root;
 	case ValueBase::TYPE_NIL:
 		synfig::error("Encountered NIL ValueBase");
 		root->set_name("nil");
@@ -312,7 +329,8 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("use",iter->get_value_node()->get_relative_id(canvas));
 		else {
 			ValueNode::ConstHandle value_node = iter->get_value_node();
-			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node)) {
+			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
+			{
 				const ValueBase data = ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value();
 				if (data.get_type() == ValueBase::TYPE_CANVAS)
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
@@ -382,6 +400,73 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 
 	}
 
+	return root;
+}
+
+
+xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+{
+	assert(value_node);
+	root->set_name("subtract");
+
+	ValueNode::ConstHandle lhs=value_node->get_lhs();
+	ValueNode::ConstHandle rhs=value_node->get_rhs();
+	ValueNode::ConstHandle scalar=value_node->get_scalar();
+
+	assert(lhs);
+	assert(rhs);
+
+	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
+
+	if(lhs==rhs)
+		warning("LHS is equal to RHS, this <subtract> will always be zero!");
+
+	//if(value_node->get_scalar()!=1)
+	//	root->set_attribute("scalar",strprintf(VECTOR_VALUE_TYPE_FORMAT,value_node->get_scalar()));
+
+	if(!scalar->get_id().empty())
+		root->set_attribute("scalar",scalar->get_relative_id(canvas));
+	else
+		encode_value_node(root->add_child("scalar")->add_child("value_node"),scalar,canvas);
+
+	if(!lhs->get_id().empty())
+		root->set_attribute("lhs",lhs->get_relative_id(canvas));
+	else
+		encode_value_node(root->add_child("lhs")->add_child("value_node"),lhs,canvas);
+
+	if(!rhs->get_id().empty())
+		root->set_attribute("rhs",rhs->get_relative_id(canvas));
+	else
+		encode_value_node(root->add_child("rhs")->add_child("value_node"),rhs,canvas);
+
+	return root;
+}
+
+xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+{
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_static_list %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
+	assert(value_node);
+
+	root->set_name(value_node->get_name());
+
+	root->set_attribute("type",ValueBase::type_name(value_node->get_contained_type()));
+
+	vector<ValueNode::RHandle>::const_iterator iter;
+
+	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
+	{
+		xmlpp::Element	*entry_node=root->add_child("entry");
+		assert(*iter);
+		if(!(*iter)->get_id().empty())
+			entry_node->set_attribute("use",(*iter)->get_relative_id(canvas));
+		else
+		{
+			if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode entry %s\n", __FILE__, __LINE__, (*iter)->get_string().c_str());
+			encode_value_node(entry_node->add_child("value_node"),*iter,canvas);
+		}
+	}
+
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_static_list %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	return root;
 }
 
@@ -484,6 +569,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 // Generic linkable data node entry
 xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_linkable_value_node %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
 
 	String name(value_node->get_name());
@@ -510,29 +596,58 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 	synfig::ParamVocab::iterator iter(child_vocab.begin());
 	for(i=0;i<value_node->link_count();i++, iter++)
 	{
+		// printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
 		if(!link)
 			throw runtime_error("Bad link");
 		if(link->is_exported())
 			root->set_attribute(value_node->link_name(i),link->get_relative_id(canvas));
 		else if(iter->get_critical())
+		{
+			if (name == "bone" && value_node->link_name(i) == "parent")
+			{
+				if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d saving bone's parent\n", __FILE__, __LINE__);
+			}
 			encode_value_node(root->add_child(value_node->link_name(i))->add_child("value_node"),link,canvas);
+		}
 	}
 
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_linkable_value_node %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	return root;
 }
 
 xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
 {
 	assert(value_node);
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
 
+	if(value_node->rcount()>1)
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+	{
+		if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d shortcutting for valuenode_bone\n", __FILE__, __LINE__);
+		encode_value_node_bone_id(root,ValueNode_Bone::ConstHandle::cast_dynamic(value_node),canvas);
+	}
+	else
 	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
 		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
 	else
+	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
+		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
+	else
+	if(ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
+		encode_static_list(root,ValueNode_StaticList::ConstHandle::cast_dynamic(value_node),canvas);
+	else
 	if(ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
+	{
 		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);
+	}
+	// if it's a ValueNode_Const
 	else if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 	{
+		if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d got ValueNode_Const encoding value\n", __FILE__, __LINE__);
+		// encode its get_value()
 		encode_value(root,ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value(),canvas);
 	}
 	else
@@ -549,8 +664,65 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	if(!value_node->get_id().empty())
 		root->set_attribute("id",value_node->get_id());
 
-	if(value_node->rcount()>1)
+//	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+//		root->set_attribute("guid",value_node->get_guid().get_string());
+
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
+	return root;
+}
+
+xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
+{
+	assert(value_node);
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node_bone %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
+
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+		encode_linkable_value_node(root,LinkableValueNode::ConstHandle::cast_dynamic(value_node),canvas);
+	else
+	{
+		error(_("Unknown ValueNode Type (%s), cannot create an XML representation"),value_node->get_local_name().c_str());
+		assert(0);
+		root->set_name("nil");
+	}
+
+	assert(root);
+
+	if(!value_node->get_id().empty())
+		root->set_attribute("id",value_node->get_id());
+
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+
+	if(value_node->rcount()>1)
+	{
+		// ~/notes/synfig/crash-when-saving.txt is an example of the execution reaching this line
+		printf("%s:%d xxx value_node->rcount() = %d\n", __FILE__, __LINE__, value_node->rcount());
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+	}
+
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
+	return root;
+}
+
+xmlpp::Element* encode_value_node_bone_id(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
+{
+	root->set_name("bone");
+	root->set_attribute("type",ValueBase::type_name(ValueBase::TYPE_BONE));
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node_bone_id %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
+	if(!value_node->get_id().empty())
+		root->set_attribute("id",value_node->get_id());
+
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+	{
+		if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d bone guid case 1 guid %s\n", __FILE__, __LINE__, value_node->get_guid().get_string().c_str());
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+	}
+
+	if(value_node->rcount()>1)
+	{
+		printf("%s:%d this happens too\n", __FILE__, __LINE__);
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+	}
 
 	return root;
 }
@@ -712,12 +884,32 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			encode_keyframe(root->add_child("keyframe"),*iter,canvas->rend_desc().get_frame_rate());
 	}
 
+	// Output the <bones> section
+	if((!canvas->is_inline() && !ValueNode_Bone::get_bone_map(canvas).empty()))
+	{
+		xmlpp::Element *node=root->add_child("bones");
+
+		encode_value_node_bone(node->add_child("value_node"),ValueNode_Bone::get_root_bone(),canvas);
+
+		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
+		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
+		{
+			ValueNode_Bone::Handle bone(*iter);
+			encode_value_node_bone(node->add_child("value_node"),bone,canvas);
+		}
+	}
+
 	// Output the <defs> section
-	//! Check where the parentheses should really go - around the && or the ||?
+
+	//! \todo check where the parentheses should really go - around the && or the ||?
+	// I guess it should be the other way - but then, why would an inline canvas have either exported valuenode or child canvases?  it shouldn't, right?
+	// (not an inline canvas)   (has some exported valuenodes)         (has some child canvases)
+
 	//! If children is not empty (there are exported canvases in the current canvas)
 	//! they must be listed in the defs section regardless the result of check the
 	//! Value Node list (exported value nodes in the canvas) and if the canvas is
 	//! in line or not. Inline canvases cannot have exported canvases inside.
+
 	if((!canvas->is_inline() && !canvas->value_node_list().empty()) || !canvas->children().empty())
 	{
 		xmlpp::Element *node=root->add_child("defs");
@@ -729,7 +921,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			if(handle<ValueNode_Const>::cast_dynamic(*iter))
 			{
 				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(*iter));
-				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value()))->set_attribute("id",value_node->get_id());
+				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
 				continue;
 			}
 			encode_value_node(node->add_child("value_node"),*iter,canvas);

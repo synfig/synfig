@@ -31,6 +31,7 @@
 
 #include "waypoint.h"
 #include "valuenode_const.h"
+#include "valuenode_animated.h"
 
 #endif
 
@@ -104,12 +105,59 @@ Waypoint::set_value(const ValueBase &x)
 void
 Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 {
+
+	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x), x->get_string().c_str());
+
 	//! If the value node is not set and we are seting the value
 	//! of an angle, then set both interpolation to linear... why?
+
 	if(!value_node && x->get_type()==ValueBase::TYPE_ANGLE)
 		after=before=INTERPOLATION_LINEAR;
 
+	if (value_node == x)
+		return;
+
+	ValueNode::Handle vn_parent(get_parent_value_node());
+	if (!vn_parent)
+	{
+		value_node=x;
+		return;
+	}
+
+	ValueNode_Animated::Handle parent(ValueNode_Animated::Handle::cast_dynamic(vn_parent));
+	if (!parent)
+	{
+		value_node=x;
+		return;
+	}
+
+	if (parent->waypoint_is_only_use_of_valuenode(*this))
+		parent->remove_child(value_node.get());
+
 	value_node=x;
+	parent->add_child(value_node.get());
+	parent->changed();
+}
+
+void
+Waypoint::set_parent_value_node(const etl::loose_handle<ValueNode> &x)
+{
+	// printf("%s:%d Waypoint::set_parent_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()), x->get_string().c_str());
+	assert(get_value_node());
+
+	if (parent_ == x)
+		return;
+
+	// it seems that the parent is never previously set (unless it was
+	// already set to the same value, in which case the previous test
+	// will have caused this function to return already).  if the
+	// parent was previously set, we may need to call
+	// parent_->remove_child() so assert that it isn't, and fix if it
+	// is...
+	assert(!parent_);
+
+	parent_=x;
+	parent_->add_child(get_value_node().get());
 }
 
 bool
@@ -137,12 +185,12 @@ Waypoint::apply_model(const Model &x)
 }
 
 Waypoint
-Waypoint::clone(const GUID& deriv_guid)const
+Waypoint::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
 	Waypoint ret(*this);
 	ret.make_unique();
 	if(!ret.value_node->is_exported())
-		ret.value_node=value_node->clone(deriv_guid);
+		ret.value_node=value_node->clone(canvas, deriv_guid);
 	ret.parent_=0;
 	return ret;
 }
@@ -151,7 +199,9 @@ ValueBase
 Waypoint::get_value()const { return (*value_node)(0); }
 
 ValueBase
-Waypoint::get_value(const Time &t)const { return (*value_node)(t); }
+Waypoint::get_value(const Time &t)const {
+	return (*value_node)(t);
+}
 
 synfig::GUID
 Waypoint::get_guid()const

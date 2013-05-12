@@ -67,7 +67,7 @@ protected:
 	WaypointList waypoint_list_;
 
 public:
-	WaypointList &waypoint_list() { return waypoint_list_; }
+	WaypointList &editable_waypoint_list() { return waypoint_list_; }
 
 	const WaypointList &waypoint_list()const { return waypoint_list_; }
 
@@ -85,6 +85,8 @@ public:
 	//! Adds a waypoint \x
 	//! \see : Waypoint new_waypoint_at_time(const Time& t)const;
 	WaypointList::iterator add(const Waypoint &x);
+
+	bool waypoint_is_only_use_of_valuenode(Waypoint &waypoint);
 
 	//! Removes a waypoint based on its UniqueId from the waypoint list
 	void erase(const UniqueID &x);
@@ -136,6 +138,8 @@ public:
 	//! Inserts time \delta from time \location to the waypoints.
 	//! used to move waypoints in the time line.
 	void insert_time(const Time& location, const Time& delta);
+
+	String get_string()const;
 
 protected:
 	ValueNode_Animated();
