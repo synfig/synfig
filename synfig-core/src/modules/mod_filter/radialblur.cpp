@@ -381,6 +381,7 @@ RadialBlur::accelerated_cairorender(Context context, cairo_surface_t *surface,in
 	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 	cairo_set_source_surface(cr, tmp_surface, int((tl[0] - tmp_surface_tl[0])/pw + 0.5), int((tl[1] - tmp_surface_tl[1])/ph + 0.5));
 	cairo_paint(cr);
+	cairo_destroy(cr);
 		
 	// Map the two surfaces to access the pixels
 	CairoSurface cairo_surface(surface);
