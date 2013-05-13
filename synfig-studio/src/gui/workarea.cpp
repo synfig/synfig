@@ -279,7 +279,7 @@ public:
 		if(cairo_surface_status(tile_surface))
 			return false;
 
-		gamma_filter(tile_surface);
+		gamma_filter(tile_surface, App::gamma);
 		x/=get_tile_w();
 		y/=get_tile_h();
 		int tw(rend_desc().get_w()/get_tile_w());
@@ -719,7 +719,7 @@ public:
 	{
 		if(!workarea)
 			return false;
-		gamma_filter(surf);
+		gamma_filter(surf, App::gamma);
 		if(cairo_surface_status(surf))
 		{
 			if(cb) cb->error(_("Cairo Surface bad status"));

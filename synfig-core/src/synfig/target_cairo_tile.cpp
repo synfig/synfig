@@ -262,24 +262,25 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 }
 
 void
-Target_Cairo_Tile::gamma_filter(cairo_surface_t *surface)
+Target_Cairo_Tile::gamma_filter(cairo_surface_t *surface, const synfig::Gamma gamma)
 {
-	CairoSurface temp(surface);
-	temp.map_cairo_image();
-	int x, y, w, h;
-	float range(CairoColor::range);
-	w=temp.get_w();
-	h=temp.get_h();
-	for(y=0;y<h; y++)
-		for(x=0;x<w; x++)
+	CairoSurface cairo_s;
+	cairo_s.set_cairo_surface(surface);
+	cairo_s.map_cairo_image();
+	int w=cairo_s.get_w();
+	int h=cairo_s.get_h();
+	for(int y=0; y<h; y++)
+		for(int x=0; x<w; x++)
 		{
-			CairoColor c(temp[y][x]);
-			c=c.demult_alpha();
-			c.set_r(gamma_in(c.get_r()/range)*range);
-			c.set_g(gamma_in(c.get_g()/range)*range);
-			c.set_b(gamma_in(c.get_b()/range)*range);
-			c=c.premult_alpha();
-			temp[y][x]=c;
+			CairoColor c=cairo_s[y][x];
+			float a=c.get_alpha();
+			unsigned char r=(unsigned char)(a*gamma.r_F32_to_F32(c.get_r()/a));
+			unsigned char g=(unsigned char)(a*gamma.g_F32_to_F32(c.get_g()/a));
+			unsigned char b=(unsigned char)(a*gamma.b_F32_to_F32(c.get_b()/a));
+			c.set_r(r);
+			c.set_g(g);
+			c.set_b(b);
+			cairo_s[y][x]=c;
 		}
-	temp.unmap_cairo_image();
+	cairo_s.unmap_cairo_image();
 }

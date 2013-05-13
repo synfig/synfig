@@ -101,7 +101,7 @@ public:
 	{
 		if(!prev)
 			return false;
-		gamma_filter(surf);
+		gamma_filter(surf, studio::App::gamma);
 		if(cairo_surface_status(surf))
 		{
 			if(cb) cb->error(_("Cairo Surface bad status"));

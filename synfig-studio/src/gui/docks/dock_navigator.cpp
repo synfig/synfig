@@ -187,7 +187,7 @@ void studio::Widget_NavView::on_finish_render()
 	{
 		if(cairo_surface_status(cairo_surface))
 			return;
-		Target_Cairo::gamma_filter(cairo_surface);
+		Target_Cairo::gamma_filter(cairo_surface, studio::App::gamma);
 	}
 	else
 	{
