@@ -65,9 +65,9 @@ private:
 
 	void sync();
 
-	synfig::Color color_func(const synfig::Point &x, int quality=10, float supersample=0)const;
+	Color color_func(const Point &x, int quality=10, float supersample=0)const;
 
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
+	float calc_supersample(const Point &x, float pw,float ph)const;
 
 public:
 	CurveGradient();
@@ -77,7 +77,7 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
 };

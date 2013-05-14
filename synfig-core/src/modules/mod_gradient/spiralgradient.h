@@ -40,38 +40,43 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class SpiralGradient : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+using namespace synfig;
+using namespace std;
+using namespace etl;
+
+class SpiralGradient : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
-	synfig::Gradient gradient;
+	Gradient gradient;
 
-	synfig::Point center;
+	Point center;
 
-	synfig::Real radius;
+	Real radius;
 
-	synfig::Angle angle;
+	Angle angle;
 
 	bool clockwise;
 
-	synfig::Color color_func(const synfig::Point &x, float supersample=0)const;
+	Color color_func(const Point &x, float supersample=0)const;
 
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
+	float calc_supersample(const Point &x, float pw,float ph)const;
 
 public:
 
 	SpiralGradient();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual ValueBase get_param(const String & param)const;
 
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
 }; // END of class SpiralGradient
