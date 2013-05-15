@@ -57,13 +57,13 @@ class Dock_Keyframes : public Dock_CanvasSpecific
 	*/
 
 	void show_keyframe_properties();
+	void refresh_rend_desc();
 
 	KeyframeActionManager* keyframe_action_manager;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-
 
 public:
 
