@@ -100,6 +100,12 @@ Dock_Keyframes::show_keyframe_properties()
 }
 
 void
+Dock_Keyframes::refresh_rend_desc()
+{
+	keyframe_action_manager->refresh();
+}
+
+void
 Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store;
@@ -111,6 +117,10 @@ Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	canvas_view->set_tree_model(get_name(),keyframe_tree_store);
 	canvas_view->set_ext_widget(get_name(),keyframe_tree);
+
+	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(
+		sigc::mem_fun(*this,&studio::Dock_Keyframes::refresh_rend_desc)
+	);
 }
 
 void
