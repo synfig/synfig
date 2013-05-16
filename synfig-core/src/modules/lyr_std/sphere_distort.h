@@ -62,7 +62,7 @@ private:
 
 	bool clip;
 
-	synfig::Rect bounds;
+	Rect bounds;
 
 	void sync();
 
@@ -70,19 +70,20 @@ public:
 
 	Layer_SphereDistort();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Rect get_bounding_rect()const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual etl::handle<Transform> get_transform()const;
 }; // END of class Layer_SphereDistort
 
 }
