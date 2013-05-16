@@ -46,8 +46,12 @@ class KeyframeTree;
 
 class KeyframeActionManager;
 
+/*! \class Dock_Keyframes
+**	\brief A Dockable dialog who hold keyframe list
+*/
 class Dock_Keyframes : public Dock_CanvasSpecific
 {
+	//The actions stuff
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 	/*
@@ -57,8 +61,10 @@ class Dock_Keyframes : public Dock_CanvasSpecific
 	*/
 
 	void show_keyframe_properties();
+	//animation description change signal handler
 	void refresh_rend_desc();
 
+	//The manager of keyframes actions
 	KeyframeActionManager* keyframe_action_manager;
 
 protected:

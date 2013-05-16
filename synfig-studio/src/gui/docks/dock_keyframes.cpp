@@ -99,6 +99,9 @@ Dock_Keyframes::show_keyframe_properties()
 		get_canvas_view()->show_keyframe_dialog();
 }
 
+/*! \fn Dock_Keyframes::refresh_rend_desc()
+**	\brief Signal handler for animation description change
+*/
 void
 Dock_Keyframes::refresh_rend_desc()
 {
@@ -118,6 +121,7 @@ Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	canvas_view->set_tree_model(get_name(),keyframe_tree_store);
 	canvas_view->set_ext_widget(get_name(),keyframe_tree);
 
+	// keyframe actions status are connected to animation duration
 	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(
 		sigc::mem_fun(*this,&studio::Dock_Keyframes::refresh_rend_desc)
 	);
