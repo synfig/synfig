@@ -39,41 +39,46 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class FilledRect : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+using namespace synfig;
+using namespace std;
+using namespace etl;
+
+class FilledRect : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
-	synfig::Color color;
+	Color color;
 
-	synfig::Point point1;
-	synfig::Point point2;
+	Point point1;
+	Point point2;
 
-	synfig::Real feather_x;
-	synfig::Real feather_y;
+	Real feather_x;
+	Real feather_y;
 
-	synfig::Real	bevel;
+	Real	bevel;
 
 	bool		bevCircle;
 
-	bool get_color(const synfig::Point &pos, synfig::Color &out, synfig::Real &outamount)const;
+	bool get_color(const Point &pos, Color &out, Real &outamount)const;
 
 public:
 
 	FilledRect();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual ValueBase get_param(const String & param)const;
 
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual Layer::Handle hit_check(Context context, const Point &point)const;
 }; // END of class FilledRect
 
 /* === E N D =============================================================== */

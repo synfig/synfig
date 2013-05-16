@@ -592,3 +592,95 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 
 	return true;
 }
+
+
+///////
+bool
+FilledRect::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// Width and Height of a pixel
+	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
+	const int w = renddesc.get_w(), h = renddesc.get_h();
+	
+	Real	wpp = (br[0]-tl[0])/w;
+	Real	hpp = (br[1]-tl[1])/h;
+	
+	//the bounds of the rectangle
+	Point p[2] = {point1,point2};
+	
+	if((p[0][0] > p[1][0]) ^ (wpp < 0))
+	{
+		swap(p[0][0],p[1][0]);
+	}
+	
+	if((p[0][1] > p[1][1]) ^ (hpp < 0))
+	{
+		swap(p[0][1],p[1][1]);
+	}
+
+	//the integer coordinates
+	int y_start = (int)((p[0][1] - tl[1])/hpp +.5); 	//round start up
+	int x_start = (int)((p[0][0] - tl[0])/wpp +.5);
+	int y_end = (int)((p[1][1] - tl[1])/hpp +.5);	//and ends up
+	int x_end =	(int)((p[1][0] - tl[0])/wpp +.5);
+	
+	y_start = max(0,y_start);
+	x_start = max(0,x_start);
+	y_end = min(h,y_end);
+	x_end = min(w,x_end);
+	
+	SuperCallback supercb(cb,0,9000,10000);
+	
+	if(y_start >= h || x_start > w	|| x_end < 0 || y_end < 0)
+	{
+		if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
+		
+		return true;
+	}
+	
+	Real xf_start = tl[0] + x_start*wpp;
+	Point pos(xf_start,tl[1] + y_start*hpp);
+	
+	Color 	clr = Color::black();
+	Real	amt;
+	
+	CairoSurface csurface(surface);
+	if(!csurface.map_cairo_image())
+	{
+		synfig::warning("Filled Rect: map cairo surface failed");
+		return false;
+	}
+
+	if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	
+	for(int y = y_start; y < y_end; y++, pos[1] += hpp)
+	{
+		pos[0] = xf_start;
+		for(int x = x_start; x < x_end; x++, pos[0] += wpp)
+		{
+			if(get_color(pos,clr,amt))
+			{
+				if(amt==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+					csurface[y][x] = CairoColor(clr).premult_alpha();
+				else
+					csurface[y][x] = CairoColor::blend(CairoColor(clr),csurface[y][x],amt,get_blend_method()).premult_alpha();
+
+			}
+		}
+	}
+	
+	csurface.unmap_cairo_image();
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+	
+	return true;
+}
