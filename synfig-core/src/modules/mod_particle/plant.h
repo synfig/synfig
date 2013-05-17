@@ -49,51 +49,52 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Plant : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+class Plant : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	std::vector<synfig::BLinePoint> bline;
+	std::vector<BLinePoint> bline;
 	bool bline_loop;
 
 	Point origin;
 
-	synfig::Gradient gradient;
+	Gradient gradient;
 
 	struct Particle
 	{
-		synfig::Point point;
-		synfig::Color color;
+		Point point;
+		Color color;
 
-		Particle(const synfig::Point &point,const synfig::Color& color):
+		Particle(const Point &point,const Color& color):
 			point(point),color(color) { }
 	};
 
 	mutable std::vector<Particle> particle_list;
-	mutable synfig::Rect	bounding_rect;
-	synfig::Angle split_angle;
-	synfig::Vector gravity;
-	synfig::Real velocity;
-	synfig::Real perp_velocity;
-	synfig::Real step;
-	synfig::Real mass;
-	synfig::Real drag;
-	synfig::Real size;
+	mutable Rect	bounding_rect;
+	Angle split_angle;
+	Vector gravity;
+	Real velocity;
+	Real perp_velocity;
+	Real step;
+	Real mass;
+	Real drag;
+	Real size;
 	int splits;
 	int sprouts;
-	synfig::Real random_factor;
+	Real random_factor;
 	Random random;
 
 	bool size_as_alpha;
 	bool reverse;
 	mutable bool needs_sync_;
-	mutable synfig::Mutex mutex;
+	mutable Mutex mutex;
 
-	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
+	void branch(int n, int depth,float t, float stunt_growth, Point position,Vector velocity)const;
 	void sync()const;
 	String version;
 	bool use_width;
+	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
 
 public:
 
@@ -101,17 +102,17 @@ public:
 
 	void calc_bounding_rect()const;
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
-	virtual bool set_version(const synfig::String &ver);
+	virtual bool set_version(const String &ver);
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;\
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
-	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
+	virtual Rect get_bounding_rect(Context context)const;
 };
 
 /* === E N D =============================================================== */

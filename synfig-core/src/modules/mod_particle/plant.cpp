@@ -497,46 +497,59 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	if(is_disabled() || !ret)
 		return ret;
 
+	if(needs_sync_==true)
+		sync();
+
 	Surface dest_surface;
 	dest_surface.set_wh(surface->get_w(),surface->get_h());
 	dest_surface.clear();
 
+	// Here is where drawing occurs 
+	draw_particles(&dest_surface, renddesc);
+
+	Surface::alpha_pen pen(surface->get_pen(0,0),get_amount(),get_blend_method());
+	dest_surface.blit_to(pen);
+
+	return true;
+}
+
+
+void
+Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
+{
 	const Point	tl(renddesc.get_tl()-origin);
 	const Point br(renddesc.get_br()-origin);
-
+	
 	const int	w(renddesc.get_w());
 	const int	h(renddesc.get_h());
-
-	const int	surface_width(surface->get_w());
-	const int	surface_height(surface->get_h());
-
+	
+	const int	surface_width(dest_surface->get_w());
+	const int	surface_height(dest_surface->get_h());
+	
 	// Width and Height of a pixel
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
-
+	
 	if (isinf(pw) || isinf(ph))
-		return true;
-
-	if(needs_sync_==true)
-		sync();
-
+		return;
+	
 	if (particle_list.begin() != particle_list.end())
 	{
 		std::vector<Particle>::iterator iter;
 		Particle *particle;
-
+		
 		float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
-
+		
 		int x1,y1,x2,y2;
-
+		
 		if (reverse)	iter = particle_list.end();
 		else			iter = particle_list.begin();
-
+		
 		while (true)
 		{
 			if (reverse)	particle = &(*(iter-1));
 			else			particle = &(*iter);
-
+			
 			float scaled_radius(radius);
 			Color color(particle->color);
 			if(size_as_alpha)
@@ -544,12 +557,12 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 				scaled_radius*=color.get_a();
 				color.set_a(1);
 			}
-
+			
 			// previously, radius was multiplied by sqrt(step)*12 only if
 			// the radius came out at less than 1 (pixel):
 			//   if (radius<=1.0f) radius*=sqrt(step)*12.0f;
 			// seems a little arbitrary - does it help?
-
+			
 			// calculate the box that this particle will be drawn as
 			float x1f=(particle->point[0]-tl[0])/pw-(scaled_radius*0.5);
 			float x2f=(particle->point[0]-tl[0])/pw+(scaled_radius*0.5);
@@ -559,25 +572,25 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 			x2=ceil_to_int(x2f)-1;
 			y1=ceil_to_int(y1f);
 			y2=ceil_to_int(y2f)-1;
-
+			
 			// if the box isn't entirely off the canvas, draw it
 			if(x1<=surface_width && y1<=surface_height && x2>=0 && y2>=0)
 			{
 				float x1e=x1-x1f, x2e=x2f-x2, y1e=y1-y1f, y2e=y2f-y2;
 				// printf("x1e %.4f x2e %.4f y1e %.4f y2e %.4f\n", x1e, x2e, y1e, y2e);
-
+				
 				// adjust the box so it's entirely on the canvas
 				if(x1<=0) { x1=0; x1e=0; }
 				if(y1<=0) { y1=0; y1e=0; }
 				if(x2>=surface_width)  { x2=surface_width;  x2e=0; }
 				if(y2>=surface_height) { y2=surface_height; y2e=0; }
-
+				
 				int w(x2-x1), h(y2-y1);
-
-				Surface::alpha_pen surface_pen(dest_surface.get_pen(x1,y1),1.0f);
+				
+				Surface::alpha_pen surface_pen(dest_surface->get_pen(x1,y1),1.0f);
 				if(w>0 && h>0)
-					dest_surface.fill(color,surface_pen,w,h);
-
+					dest_surface->fill(color,surface_pen,w,h);
+				
 				/* the rectangle doesn't cross any vertical pixel boundaries so we don't
 				 * need to draw any top or bottom edges
 				 */
@@ -664,7 +677,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 						}
 						else
 							surface_pen.move_to(x1,y2);
-
+						
 						if (y2e!=0)	// maybe draw bottom edge
 						{
 							surface_pen.set_alpha(y2e);
@@ -682,7 +695,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 						}
 						else
 							surface_pen.move_to(x2,y2-1);
-
+						
 						if (x2e!=0)	// maybe draw right edge
 						{
 							surface_pen.set_alpha(x2e);
@@ -700,7 +713,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 						}
 						else
 							surface_pen.move_to(x2-1,y1-1);
-
+						
 						if (y1e!=0)	// maybe draw top edge
 						{
 							surface_pen.set_alpha(y1e);
@@ -713,7 +726,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 					}
 				}
 			}
-
+			
 			if (reverse)
 			{
 				if (--iter == particle_list.begin())
@@ -726,11 +739,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 			}
 		}
 	}
-
-	Surface::alpha_pen pen(surface->get_pen(0,0),get_amount(),get_blend_method());
-	dest_surface.blit_to(pen);
-
-	return true;
 }
 
 Rect
