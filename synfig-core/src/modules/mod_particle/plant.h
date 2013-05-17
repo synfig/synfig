@@ -95,6 +95,7 @@ private:
 	String version;
 	bool use_width;
 	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
+	void draw_particles(cairo_surface_t *surface, const RendDesc &renddesc)const;
 
 public:
 
@@ -111,6 +112,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Rect get_bounding_rect(Context context)const;
 };

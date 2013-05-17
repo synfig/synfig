@@ -513,6 +513,32 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	return true;
 }
 
+///
+bool
+Plant::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	bool ret(context.accelerated_cairorender(surface,quality,renddesc,cb));
+	if(is_disabled() || !ret)
+		return ret;
+	
+	if(needs_sync_==true)
+		sync();
+		
+	cairo_surface_t* dest_surface=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
+	
+	// Here is where drawing occurs
+	draw_particles(dest_surface, renddesc);
+	
+	// blend the painted dest_surface on the surface
+	cairo_t* cr=cairo_create(surface);
+	cairo_set_source_surface(cr, dest_surface, 0, 0);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_destroy(cr);
+	cairo_surface_destroy(dest_surface);
+	
+	return true;
+}
+
 
 void
 Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
@@ -740,6 +766,89 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 		}
 	}
 }
+
+
+///
+void
+Plant::draw_particles(cairo_surface_t *dest_surface, const RendDesc &renddesc)const
+{
+	const Point	tl(renddesc.get_tl()-origin);
+	const Point br(renddesc.get_br()-origin);
+	
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	if(w==0) return;
+	if(h==0) return;
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	cairo_t* cr=cairo_create(dest_surface);
+
+	if (particle_list.begin() != particle_list.end())
+	{
+		std::vector<Particle>::iterator iter;
+		Particle *particle;
+		
+		float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
+				
+		if (reverse)	iter = particle_list.end();
+		else			iter = particle_list.begin();
+		
+		while (true)
+		{
+			if (reverse)	particle = &(*(iter-1));
+			else			particle = &(*iter);
+			
+			float scaled_radius(radius);
+			Color color(particle->color);
+			if(size_as_alpha)
+			{
+				scaled_radius*=color.get_a();
+				color.set_a(1);
+			}
+			
+			// calculate the box that this particle will be drawn as
+			const float x1f=(particle->point[0]-tl[0])/pw-(scaled_radius*0.5);
+			const float x2f=(particle->point[0]-tl[0])/pw+(scaled_radius*0.5);
+			const float y1f=(particle->point[1]-tl[1])/ph-(scaled_radius*0.5);
+			const float y2f=(particle->point[1]-tl[1])/ph+(scaled_radius*0.5);
+			const double width (x2f-x1f);
+			const double height(y2f-y1f);
+
+			// grab the color components
+			const float r=color.clamped().get_r();
+			const float g=color.clamped().get_g();
+			const float b=color.clamped().get_b();
+			const float a=color.clamped().get_a();
+			
+			cairo_save(cr);
+			
+			cairo_set_source_rgb(cr, r, g, b);
+			cairo_rectangle(cr, x1f, y1f, width, height);
+			cairo_clip(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, a);
+			
+			cairo_restore(cr);
+						
+			if (reverse)
+			{
+				if (--iter == particle_list.begin())
+					break;
+			}
+			else
+			{
+				if (++iter == particle_list.end())
+					break;
+			}
+		}
+	}
+	cairo_destroy(cr);
+}
+
 
 Rect
 Plant::get_bounding_rect(Context context)const
