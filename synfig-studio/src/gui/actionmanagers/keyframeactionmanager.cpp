@@ -86,7 +86,7 @@ KeyframeActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 void
 KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 {
-	selection_changed_connection.disconnect();
+	if(selection_changed_connection) selection_changed_connection.disconnect();
 	keyframe_tree_=x;
 	if(keyframe_tree_)
 	{
@@ -99,11 +99,12 @@ KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 void
 KeyframeActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
 {
-	time_changed_connection.disconnect();
+	if(time_changed_connection) time_changed_connection.disconnect();
 	canvas_interface_=x;
 	if(canvas_interface_)
 	{
-		canvas_interface_->signal_time_changed().connect(
+		// refresh keyframes list connected animation time position change
+		time_changed_connection=canvas_interface_->signal_time_changed().connect(
 			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh)
 		);
 	}
