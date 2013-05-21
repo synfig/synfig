@@ -1001,7 +1001,7 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 		cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
 	else
 		cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
-	if(quality>6)
+	if(0)
 	{
 		vector<Segment>::const_iterator iter=segments.begin();
 		double t1x;
