@@ -1521,8 +1521,6 @@ Advanced_Outline::accelerated_cairorender(Context context,cairo_surface_t *surfa
 	// These are the scale and translation values
 	const double sx(1/pw);
 	const double sy(1/ph);
-	const double tx((-tl[0]+origin[0])*sx);
-	const double ty((-tl[1]+origin[1])*sy);
 
 	cairo_t* cr=cairo_create(surface);
 

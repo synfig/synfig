@@ -278,8 +278,6 @@ Region::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	// These are the scale and translation values
 	const double sx(1/pw);
 	const double sy(1/ph);
-	const double tx((-tl[0]+origin[0])*sx);
-	const double ty((-tl[1]+origin[1])*sy);
 	
 	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
 		segments=convert_bline_to_segment_list(bline);
