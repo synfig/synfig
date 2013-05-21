@@ -377,6 +377,10 @@ CairoSurface::set_cairo_surface(cairo_surface_t *cs)
 	if(cairo_surface_status(cs))
 	{
 		synfig::error("CairoSurface received a non valid cairo_surface_t");
+		if(is_mapped())
+			unmap_cairo_image();
+		cairo_surface_destroy(cs_);
+		cs_=NULL;
 		return;
 	}
 	else
@@ -410,8 +414,11 @@ CairoSurface::get_cairo_image_surface()const
 bool
 CairoSurface::map_cairo_image()
 {
-	assert(cs_);
-	assert(cs_image_ == NULL);
+	if(!cs_ || cs_image_)
+	{
+		synfig::error("Attempting to map a NULL surface or a surface already mapped)");
+		return false;
+	}
 	if(cairo_surface_get_type(cs_) != CAIRO_SURFACE_TYPE_IMAGE)
 	{
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 12, 0)
@@ -445,8 +452,11 @@ CairoSurface::map_cairo_image()
 void
 CairoSurface::unmap_cairo_image()
 {
-	assert(cs_image_);
-	assert(cs_);
+	if(!cs_ || !cs_image_)
+	{
+		synfig::error("Attempting to unmap a NULL surface or a surface not mapped)");
+		return;
+	}
 	cairo_surface_mark_dirty(cs_image_);
 	if(cairo_surface_get_type(cs_) != CAIRO_SURFACE_TYPE_IMAGE)
 	{

@@ -62,10 +62,12 @@ TARGETSOURCES = \
 
 
 IMPORTERHEADERS = \
-	listimporter.h
+	listimporter.h \
+	cairolistimporter.h
 
 IMPORTERSOURCES = \
-	listimporter.cpp
+	listimporter.cpp \
+	cairolistimporter.cpp
 
 
 VALUENODEHEADERS = \

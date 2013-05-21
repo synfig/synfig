@@ -67,11 +67,14 @@ cairo_png_mptr::cairo_png_mptr(const char *file_name)
 	if(cairo_surface_status(csurface_))
 	{
 		throw strprintf("Unable to physically open %s",file_name);
+		cairo_surface_destroy(csurface_);
+		csurface_=NULL;
 		return;
 	}
 	CairoSurface cairo_s;
 	cairo_s.set_cairo_surface(csurface_);
-	cairo_s.map_cairo_image();
+	if(!cairo_s.map_cairo_image())
+	   return;
 	int w=cairo_s.get_w();
 	int h=cairo_s.get_h();
 	for(int y=0; y<h; y++)

@@ -172,6 +172,8 @@ src/synfig/blur.cpp
 src/synfig/blur.h
 src/synfig/cairoimporter.cpp
 src/synfig/cairoimporter.h
+src/synfig/cairolistimporter.cpp
+src/synfig/cairolistimporter.h
 src/synfig/canvas.cpp
 src/synfig/canvas.h
 src/synfig/canvasbase.h

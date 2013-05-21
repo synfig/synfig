@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file listimporter.cpp
+/*!	\file cairolistimporter.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2013 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include "listimporter.h"
+#include "cairolistimporter.h"
 #include "general.h"
 #include <fstream>
 
@@ -44,21 +45,22 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define LIST_IMPORTER_CACHE_SIZE	20
+#define LIST_CAIROIMPORTER_CACHE_SIZE	20
 
 /* === G L O B A L S ======================================================= */
 
-SYNFIG_IMPORTER_INIT(ListImporter);
-SYNFIG_IMPORTER_SET_NAME(ListImporter,"lst");
-SYNFIG_IMPORTER_SET_EXT(ListImporter,"lst");
-SYNFIG_IMPORTER_SET_VERSION(ListImporter,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(ListImporter,"$Id$");
+SYNFIG_CAIROIMPORTER_INIT(CairoListImporter);
+SYNFIG_CAIROIMPORTER_SET_NAME(CairoListImporter,"lst");
+SYNFIG_CAIROIMPORTER_SET_EXT(CairoListImporter,"lst");
+SYNFIG_CAIROIMPORTER_SET_VERSION(CairoListImporter,"0.1");
+SYNFIG_CAIROIMPORTER_SET_CVS_ID(CairoListImporter,"$Id$");
+
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-ListImporter::ListImporter(const String &filename)
+CairoListImporter::CairoListImporter(const String &filename)
 {
 	fps=15;
 
@@ -145,13 +147,12 @@ ListImporter::ListImporter(const String &filename)
 	}
 }
 
-
-ListImporter::~ListImporter()
+CairoListImporter::~CairoListImporter()
 {
 }
 
 bool
-ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb)
+CairoListImporter::get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
 	float document_fps=renddesc.get_frame_rate();
 	int document_frame=round_to_int(time*document_fps);
@@ -168,17 +169,22 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 	if(frame>=(signed)filename_list.size())frame=filename_list.size()-1;
 
 	// See if that frame is cached
-	std::list<std::pair<String,Surface> >::iterator iter;
+	std::list<CacheElement>::iterator iter;
 	for(iter=frame_cache.begin();iter!=frame_cache.end();++iter)
 	{
-		if(iter->first==filename_list[frame])
+		if(iter->frame_name==filename_list[frame])
 		{
-			surface.mirror(iter->second);
-			return static_cast<bool>(surface);
+			if(iter->surface && !cairo_surface_status(iter->surface))
+			{
+				csurface=cairo_surface_reference(iter->surface);
+				return true;
+			}
+			else
+				return false;
 		}
 	}
 
-	Importer::Handle importer(Importer::open(filename_list[frame]));
+	CairoImporter::Handle importer(CairoImporter::open(filename_list[frame]));
 
 	if(!importer)
 	{
@@ -187,25 +193,27 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 		return false;
 	}
 
-	if(!importer->get_frame(surface,renddesc,0,cb))
+	if(!importer->get_frame(csurface,renddesc,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+filename_list[frame]);
 		else synfig::error(_("Unable to get frame from ")+filename_list[frame]);
 		return false;
 	}
 
-	if(frame_cache.size()>=LIST_IMPORTER_CACHE_SIZE)
+	if(frame_cache.size()>=LIST_CAIROIMPORTER_CACHE_SIZE)
 		frame_cache.pop_front();
+	
+	CacheElement ce;
+	ce.frame_name=filename_list[frame];
+	ce.surface=cairo_surface_reference(csurface);;
 
-	frame_cache.push_back(std::pair<String,Surface>(filename_list[frame],surface));
+	frame_cache.push_back(ce);
 
-	surface.mirror(frame_cache.back().second);
-
-	return static_cast<bool>(surface);
+	return !cairo_surface_status(csurface);
 }
 
 bool
-ListImporter::is_animated()
+CairoListImporter::is_animated()
 {
 	return true;
 }

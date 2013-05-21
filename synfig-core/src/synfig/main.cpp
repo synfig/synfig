@@ -39,6 +39,7 @@
 #include <stdexcept>
 #include "target.h"
 #include <ETL/stringf>
+#include "cairolistimporter.h"
 #include "listimporter.h"
 #include "cairoimporter.h"
 #include "color.h"
@@ -232,6 +233,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Load up the list importer
 	Importer::book()[String("lst")]=ListImporter::create;
+	CairoImporter::book()[String("lst")]=CairoListImporter::create;
 
 	// Load up the modules
 	std::list<String> modules_to_load;

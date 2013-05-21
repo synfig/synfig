@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file listimporter.h
+/*!	\file cairolistimporter.h
 **	\brief Template Header
 **
 **	$Id$
@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2013 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,12 +24,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LISTIMPORTER_H
-#define __SYNFIG_LISTIMPORTER_H
+#ifndef __SYNFIG_CAIROLISTIMPORTER_H
+#define __SYNFIG_CAIROLISTIMPORTER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "importer.h"
+#include "cairoimporter.h"
 #include "surface.h"
 #include <ETL/smart_ptr>
 #include <vector>
@@ -43,23 +44,44 @@
 
 namespace synfig {
 
-/*!	\class ListImporter
+/*!	\class CairoListImporter
 **	\todo Write more detailed description
 */
-class ListImporter : public Importer
+class CairoListImporter : public CairoImporter
 {
-	SYNFIG_IMPORTER_MODULE_EXT
+	SYNFIG_CAIROIMPORTER_MODULE_EXT
+public:
+	class CacheElement
+	{
+	public:
+		String frame_name;
+		cairo_surface_t* surface;
+		CacheElement()
+		{
+			surface=NULL;
+		}
+		//Copy constructor
+		CacheElement(const CacheElement& other): frame_name(other.frame_name), surface(cairo_surface_reference(other.surface))
+		{
+		}
+		~CacheElement()
+		{
+			if(surface)
+				cairo_surface_destroy(surface);
+		}
+	};
+
 private:
 	float fps;
 	std::vector<String> filename_list;
-	std::list<std::pair<String,Surface> > frame_cache;
+	std::list<CacheElement> frame_cache;
 
 public:
-	ListImporter(const String &filename);
 
-	~ListImporter();
+	CairoListImporter(const String &filename);
+	~CairoListImporter();
 
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL);
+	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL);
 
 	virtual bool is_animated();
 
