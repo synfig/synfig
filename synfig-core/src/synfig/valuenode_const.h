@@ -62,9 +62,9 @@ public:
 	virtual String get_local_name()const;
 
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
-
+#ifdef _DEBUG
 	String get_string()const;
-
+#endif	// _DEBUG
 public:
 	// create a new ValueNode_Const object with the given value.
 	// Unless the given value is a Bone, in which case make a ValueNode_Bone.

@@ -159,13 +159,13 @@ ValueNode_Const::get_local_name()const
 {
 	return get_static()?_("Static"):_("Constant");
 }
-
+#ifdef _DEBUG
 String
 ValueNode_Const::get_string()const
 {
 	return strprintf("ValueNode_Const (%s)", get_value().get_string().c_str());
 }
-
+#endif	// _DEBUG
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const
 {
 }
