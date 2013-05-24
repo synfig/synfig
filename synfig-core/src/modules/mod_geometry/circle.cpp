@@ -771,6 +771,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 bool
 Circle::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Real radius = param_radius.get(Real());
+
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.accelerated_cairorender(cr,quality, renddesc, cb);
