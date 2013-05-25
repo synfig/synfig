@@ -361,7 +361,9 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 
 	const ValueNode_Animated::WaypointList &waypoint_list=value_node->waypoint_list();
 	ValueNode_Animated::WaypointList::const_iterator iter;
-
+	
+	encode_interpolation(root, value_node->get_interpolation(), "default_interpolation");
+	
 	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
 	{
 		xmlpp::Element *waypoint_node=root->add_child("waypoint");

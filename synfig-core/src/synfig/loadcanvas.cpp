@@ -1346,6 +1346,11 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
+	
+	if(element->get_attribute("default_interpolation"))
+	{
+		value_node->set_interpolation(parse_interpolation(element, "default_interpolation"));
+	}
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
