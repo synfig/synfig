@@ -353,7 +353,8 @@ EOF
 
 mkdmg()
 {
-	pushd ~ >/dev/null
+	cd ~
+	
 	# get OS major version
 	OSXVER=`uname -r | cut -f 1 -d '.'`
 
@@ -397,8 +398,6 @@ mkdmg()
 
 	echo "Removing uncompressed transitory dmg..."
 	/bin/rm -f "$TRANSITORY_FILENAME"
-	
-	popd >/dev/null
 
 	echo "Done!"
 }
