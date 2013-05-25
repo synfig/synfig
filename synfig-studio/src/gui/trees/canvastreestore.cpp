@@ -249,62 +249,30 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		else
 		{
 			stype=ValueBase::type_local_name(value_desc.get_value_type());
-			if(value_desc.get_value_node())
+			if(value_desc.get_static())
+				stype+=" (" + String(_("Static")) + ")";
+			else
 			{
-				lname=value_desc.get_value_node()->get_name();
-				if (lname=="animated")
+				if( value_desc.is_animated())
 					stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
-				else if (lname=="constant")
-                                {
-                                    synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
-                                    if(valuenode_const->get_static())
-                                        stype+=" (" + String(_("Static")) + ")";
-                                    else
-                                        switch(valuenode_const->get_interpolation())
-					{
-						case INTERPOLATION_TCB:
-							stype+=" <i-" + String(_("TCB")) + ">";
-							break;
-						case INTERPOLATION_CONSTANT:
-							stype+=" <i-" + String(_("Constant")) + ">";
-							break;
-						case INTERPOLATION_LINEAR:
-							stype+=" <i-" + String(_("Linear")) + ">";
-							break;
-						case INTERPOLATION_HALT:
-							stype+=" <i-" + String(_("Ease")) + ">";
-							break;
-						case INTERPOLATION_CLAMPED:
-							stype+=" <i-" + String(_("Clamped")) + ">";
-							break;
-					}
-                                }
-				else if (synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
-					stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
-			}
-			else if(value_desc.parent_is_layer_param())
-			{
-				if(value_desc.get_value().get_static())
-					stype+=_(" (Static)");
-				else
-					switch(value_desc.get_value().get_interpolation())
-					{
-						case INTERPOLATION_TCB:
-							stype+=" <i-" + String(_("TCB")) + ">";
-							break;
-						case INTERPOLATION_CONSTANT:
-							stype+=" <i-" + String(_("Constant")) + ">";
-							break;
-						case INTERPOLATION_LINEAR:
-							stype+=" <i-" + String(_("Linear")) + ">";
-							break;
-						case INTERPOLATION_HALT:
-							stype+=" <i-" + String(_("Ease")) + ">";
-							break;
-						case INTERPOLATION_CLAMPED:
-							stype+=" <i-" + String(_("Clamped")) + ">";
-							break;
-					}
+				switch(value_desc.get_interpolation())
+				{
+					case INTERPOLATION_TCB:
+						stype+=" <i-" + String(_("TCB")) + ">";
+						break;
+					case INTERPOLATION_CONSTANT:
+						stype+=" <i-" + String(_("Constant")) + ">";
+						break;
+					case INTERPOLATION_LINEAR:
+						stype+=" <i-" + String(_("Linear")) + ">";
+						break;
+					case INTERPOLATION_HALT:
+						stype+=" <i-" + String(_("Ease")) + ">";
+						break;
+					case INTERPOLATION_CLAMPED:
+						stype+=" <i-" + String(_("Clamped")) + ">";
+						break;
+				}
 			}
 		}
 		x.set(stype.c_str());
