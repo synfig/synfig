@@ -146,14 +146,14 @@ Action::ValueDescSetInterpolation::perform()
 	    } 
 	    else if (lname=="constant")
 	    {
-		synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
-		ValueBase value_base;
-		value_base = valuenode_const->get_value();
-		old_value = value_base.get_interpolation();
-		set_dirty(true);
-		value_base.set_interpolation(value);
-		valuenode_const->set_value(value_base);
-		valuenode_const->changed();
+			synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
+			if(valuenode_const)
+			{
+				old_value = valuenode_const->get_interpolation();
+				set_dirty(true);
+				valuenode_const->set_interpolation(value);
+				valuenode_const->changed();
+			}
 	    }
 	    else if (synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
 		throw Error(_("This action is not for Value Nodes!"));
@@ -194,13 +194,16 @@ Action::ValueDescSetInterpolation::undo()
 	    } 
 	    else if (lname=="constant")
 	    {
-		synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
-		set_dirty(true);
-		valuenode_const->set_interpolation(old_value);
-		valuenode_const->changed();
+			synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
+			if(valuenode_const)
+			{
+				set_dirty(true);
+				valuenode_const->set_interpolation(old_value);
+				valuenode_const->changed();
+			}
 	    }
 	    else if (synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
-		throw Error(_("This action is not for Value Nodes!"));
+			throw Error(_("This action is not for Value Nodes!"));
 	} 
 	else if (value_desc.parent_is_layer_param())
 	{
