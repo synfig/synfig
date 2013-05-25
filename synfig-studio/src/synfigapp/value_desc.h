@@ -257,7 +257,23 @@ public:
 
 	synfig::String
 	get_description(bool show_exported_name = true)const;
+	
+	synfig::Interpolation
+	get_interpolation()const
+	{
+		if(parent_is_layer_param() && is_const())
+			return get_value().get_interpolation();
+		else
+			return get_value_node()->get_interpolation();
+	}
 
+	bool
+	get_static()const
+	{
+		if(is_const())
+		   return get_value().get_static();
+		return false;
+	}
 }; // END of class ValueDesc
 
 }; // END of namespace synfigapp_instance
