@@ -131,33 +131,15 @@ Action::ValueDescSetInterpolation::is_ready()const
 void
 Action::ValueDescSetInterpolation::perform()
 {
+	synfig::info(value_desc.get_description());
 	if(value_desc.get_value_node())
 	{
-	    String lname;
-	    lname=value_desc.get_value_node()->get_name();
-	    if (lname=="animated")
-	    {
-		synfig::info("animated.get_interpolation is not implemented yet");
-		synfig::ValueNode_Animated::Handle valuenode_animated = synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
-		//old_value = valuenode_animated.get_interpolation();
+		ValueNode::Handle value_node=value_desc.get_value_node();
+		old_value = value_node->get_interpolation();
 		set_dirty(true);
-		//valuenode_animated->set_interpolation(value);
-		valuenode_animated->changed();
-	    } 
-	    else if (lname=="constant")
-	    {
-			synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
-			if(valuenode_const)
-			{
-				old_value = valuenode_const->get_interpolation();
-				set_dirty(true);
-				valuenode_const->set_interpolation(value);
-				valuenode_const->changed();
-			}
-	    }
-	    else if (synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
-		throw Error(_("This action is not for Value Nodes!"));
-	} 
+		value_node->set_interpolation(value);
+		value_node->changed();
+	}
 	else if (value_desc.parent_is_layer_param())
 	{
 		old_value = value_desc.get_value().get_interpolation();
@@ -182,28 +164,10 @@ Action::ValueDescSetInterpolation::undo()
 {
 	if(value_desc.get_value_node())
 	{
-	    String lname;
-	    lname=value_desc.get_value_node()->get_name();
-	    if (lname=="animated")
-	    {
-		synfig::info("animated.get_interpolation is not implemented yet");
-		synfig::ValueNode_Animated::Handle valuenode_animated = synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
+		ValueNode::Handle value_node=value_desc.get_value_node();
 		set_dirty(true);
-		//valuenode_animated->set_interpolation(old_value);
-		valuenode_animated->changed();
-	    } 
-	    else if (lname=="constant")
-	    {
-			synfig::ValueNode_Const::Handle valuenode_const = synfig::ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
-			if(valuenode_const)
-			{
-				set_dirty(true);
-				valuenode_const->set_interpolation(old_value);
-				valuenode_const->changed();
-			}
-	    }
-	    else if (synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
-			throw Error(_("This action is not for Value Nodes!"));
+		value_node->set_interpolation(old_value);
+		value_node->changed();
 	} 
 	else if (value_desc.parent_is_layer_param())
 	{
