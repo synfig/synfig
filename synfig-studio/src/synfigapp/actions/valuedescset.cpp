@@ -784,7 +784,7 @@ Action::ValueDescSet::prepare()
 	}
 	// If we are in animate editing mode
 	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
-	if(get_edit_mode()&MODE_ANIMATE && !value.get_static())
+	if(get_edit_mode()&MODE_ANIMATE && !value_desc.get_static())
 	{
 		ValueNode_Animated::Handle& value_node(value_node_animated);
 		// If this value isn't a ValueNode_Animated, but
@@ -797,12 +797,14 @@ Action::ValueDescSet::prepare()
 				value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
 			else
 				value=value_desc.get_value();
+			Interpolation interp=value.get_interpolation();
 			if(!value_node)value_node=ValueNode_Animated::create(value,time);
 			// Be sure that the newly created waypoint is set with the default
 			// interpolations.
 			synfig::ValueNode_Animated::WaypointList::iterator iter(value_node->find(time));
-			iter->set_before(synfigapp::Main::get_interpolation());
-			iter->set_after(synfigapp::Main::get_interpolation());
+			iter->set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+			iter->set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+			value_node->set_interpolation(iter->get_before());
 			Action::Handle action;
 			if(!value_desc.is_value_node())
 			{
@@ -840,8 +842,9 @@ Action::ValueDescSet::prepare()
 		}catch(Exception::NotFound)
 		{
 			waypoint=value_node->new_waypoint_at_time(time);
-			waypoint.set_before(synfigapp::Main::get_interpolation());
-			waypoint.set_after(synfigapp::Main::get_interpolation());
+			Interpolation inter=value_node->get_interpolation();
+			waypoint.set_before(inter==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():inter);
+			waypoint.set_after(inter==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():inter);
 		}
 		waypoint.set_value(value);
 		action->set_param("canvas",get_canvas());
