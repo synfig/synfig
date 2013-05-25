@@ -1009,8 +1009,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));
 	}
 	
-	// Interpolation menu
-	if (1)
+	// Interpolation menu: Show it only if
+	// a) the value description is layer parameter
+	// b) the value description is layer parameter exported constant
+	// c) the value description is exported and constant
+	if ((value_desc.parent_is_layer_param() && !value_desc.get_value_node()) ||
+		(value_desc.parent_is_layer_param() && ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())) ||
+		(value_desc.parent_is_canvas() && ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
+		)
 	{
 		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
 		synfigapp::Action::ParamList param_list;
