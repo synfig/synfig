@@ -1,13 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file star.h
-**	\brief Header file for implementation of the "Star" layer
+/*!	\file valuedescsetinterpolation.h
+**	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007 Chris Moore
-**	Copyright (c) 2012-2013 Carlos López
+**	Copyright (c) 2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -19,22 +18,20 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STAR_H
-#define __SYNFIG_STAR_H
+#ifndef __SYNFIG_APP_ACTION_VALUEDESCSETINTERPOLATION_H
+#define __SYNFIG_APP_ACTION_VALUEDESCSETINTERPOLATION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_polygon.h>
-#include <synfig/value.h>
+#include <synfigapp/action.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/valuenode_animated.h>
 #include <list>
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,35 +39,39 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
+namespace synfigapp {
 
-class Star : protected synfig::Layer_Polygon
+namespace Action {
+
+class ValueDescSetInterpolation :
+	public Undoable,
+	public CanvasSpecific
 {
-	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	Real radius1;
-	Real radius2;
-	int points;
-	ValueBase param_angle;
-	bool regular_polygon;
+	ValueDesc value_desc;
+	synfig::Interpolation value;
+	//synfig::ValueNode_Animated::Handle value_node_animated;
+	synfig::Interpolation old_value;
 
 public:
-	Star();
 
-	//! Updates the polygon data to match the parameters.
-	void sync();
+	ValueDescSetInterpolation();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual bool set_param_static(const String &param, const bool x); 
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
 
-	virtual Vocab get_param_vocab()const;
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual void perform();
+	virtual void undo();
+
+	ACTION_MODULE_EXT
 };
+
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

@@ -3482,53 +3482,83 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			Waypoint::Model model;
 
 			model.reset(); model.set_before(INTERPOLATION_TCB);
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+			Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.reset(); model.set_after(INTERPOLATION_TCB);
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_TCB);
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
+			
 			model.reset(); model.set_before(INTERPOLATION_LINEAR);
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.reset(); model.set_after(INTERPOLATION_LINEAR);
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_LINEAR);
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
+			
 			model.reset(); model.set_before(INTERPOLATION_HALT);
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease In"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.reset(); model.set_after(INTERPOLATION_HALT);
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease Out"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease Out"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_HALT);
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In/Out"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease In/Out"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
+			
 			model.reset(); model.set_before(INTERPOLATION_CONSTANT);
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.reset(); model.set_after(INTERPOLATION_CONSTANT);
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_CONSTANT);
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
+			
 			model.reset(); model.set_before(INTERPOLATION_CLAMPED);
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.reset(); model.set_after(INTERPOLATION_CLAMPED);
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 			model.set_before(INTERPOLATION_CLAMPED);
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Clamped"),
+			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
+				*image,
 				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 		}
 
