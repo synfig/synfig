@@ -118,32 +118,88 @@ public:
 
 	ValueDesc() { }
 
-
-	bool is_valid()const { return layer || parent_value_node || canvas; }
+	// Instrocpection members
+	bool
+	is_valid()const
+		{ return layer || parent_value_node || canvas; }
 	operator bool()const { return is_valid(); }
 
-	bool parent_is_layer_param()const { return (bool)layer; }
-	bool parent_is_value_node()const { return (bool)parent_value_node; }
-	bool parent_is_linkable_value_node()const { return parent_is_value_node() && index>=0; }
-	bool parent_is_value_node_const()const { return parent_is_value_node() && index==-1; }
-	bool parent_is_waypoint()const { return parent_is_value_node() && index==-2; }
-	bool parent_is_canvas()const { return (bool)canvas; }
+	bool
+	parent_is_layer_param()const
+		{ return (bool)layer; }
+	bool
+	parent_is_value_node()const
+		{ return (bool)parent_value_node; }
+	bool
+	parent_is_linkable_value_node()const
+		{ return parent_is_value_node() && index>=0; }
+	bool
+	parent_is_value_node_const()const
+		{ return parent_is_value_node() && index==-1; }
+	bool
+	parent_is_waypoint()const
+		{ return parent_is_value_node() && index==-2; }
+	bool
+	parent_is_canvas()const
+		{ return (bool)canvas; }
+	bool
+	is_value_node()const
+		{ return parent_is_value_node() || parent_is_canvas() || (parent_is_layer_param() && (bool)layer->dynamic_param_list().count(name)); }
+	bool
+	is_const()const
+		{ return (parent_is_layer_param() && !layer->dynamic_param_list().count(name)) || parent_is_value_node_const(); }
+	
+	bool
+	is_animated()const
+		{ return
+			(parent_is_layer_param()
+			 &&
+			 layer->dynamic_param_list().count(name)
+			 &&
+			synfig::ValueNode_Animated::Handle::cast_reinterpret(layer->dynamic_param_list().find(name)->second)
+			 )
+			||
+			(parent_is_canvas()
+			 &&
+			 synfig::ValueNode_Animated::Handle::cast_reinterpret(get_value_node())
+			);
+		}
+	
+	// Get members
+	synfig::Layer::Handle
+	get_layer()const
+		{ assert(parent_is_layer_param()); return layer; }
+	
+	const synfig::String&
+	get_param_name()const
+		{ assert(parent_is_layer_param()); return name; }
 
-	bool is_value_node()const { return parent_is_value_node() || parent_is_canvas() || (parent_is_layer_param() && (bool)layer->dynamic_param_list().count(name)); }
-	bool is_const()const { return (parent_is_layer_param() && !layer->dynamic_param_list().count(name)) || parent_is_value_node_const(); }
+	synfig::ValueNode::Handle
+	get_parent_value_node()const
+		{ assert(parent_is_value_node()); return parent_value_node; }
+	
+	int
+	get_index()const
+		{ assert(parent_is_linkable_value_node()); return index; }
+	
+	synfig::Real
+	get_scalar()const
+	{ assert(parent_is_linkable_value_node()); return scalar; }
+	
+	synfig::String
+	get_name()const
+		{ assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
+	
+	synfig::Time
+	get_waypoint_time()const
+		{ assert(parent_is_waypoint()); return waypoint_time; }
 
-	synfig::Layer::Handle get_layer()const { assert(parent_is_layer_param()); return layer; }
-	const synfig::String& get_param_name()const { assert(parent_is_layer_param()); return name; }
+	const synfig::String&
+	get_value_node_id()const
+		{ assert(parent_is_canvas()); return name; }
 
-	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
-	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
-	synfig::Real get_scalar()const { assert(parent_is_linkable_value_node()); return scalar; }
-	synfig::String get_name()const { assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
-	synfig::Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
-
-	const synfig::String& get_value_node_id()const { assert(parent_is_canvas()); return name; }
-
-	synfig::Canvas::Handle get_canvas()const
+	synfig::Canvas::Handle
+	get_canvas()const
 	{
 		if(canvas)
 			return canvas;
