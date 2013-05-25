@@ -301,6 +301,7 @@ mkapp()
 	rm -rf lib/gtk-2.0/include
 	rm -rf lib/python2.7/test
 	rm -rf lib/python2.7/*/test
+	rm -rf Library/Frameworks/Python.framework/Versions/2.*
 	find lib \( -name "*.la" -or -name "*.a" \)  -delete
 	find . -name "*.pyo" -delete
 
