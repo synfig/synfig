@@ -369,13 +369,6 @@ Layer::get_param_static(const String &param) const
 	return false;
 }
 
-Interpolation
-Layer::get_param_interpolation(const String &param)const
-{
-	EXPORT_INTERPOLATION(param_z_depth)
-	return INTERPOLATION_UNDEFINED;
-}
-
 etl::handle<Transform>
 Layer::get_transform()const
 {

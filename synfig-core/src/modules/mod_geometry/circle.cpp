@@ -108,7 +108,7 @@ bool
 Circle::set_param_interpolation(const String &param, const Interpolation value)
 {
 	IMPORT_INTERPOLATION(param_radius)
-	return Layer/*_Composite*/::set_param_interpolation(param, value);
+	return Layer_Composite::set_param_interpolation(param, value);
 }
 
 
@@ -133,14 +133,6 @@ Circle::get_param(const String &param)const
 	EXPORT_VERSION();
 
 	return Layer_Composite::get_param(param);
-}
-
-Interpolation
-Circle::get_param_interpolation(const String &param)const
-{
-	EXPORT_INTERPOLATION(param_radius)
-	
-	return Layer/*_Composite*/::get_param_interpolation(param);
 }
 
 Layer::Vocab

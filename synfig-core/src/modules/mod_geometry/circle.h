@@ -107,7 +107,6 @@ public:
 	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 
 	virtual ValueBase get_param(const String &param)const;
-	virtual Interpolation get_param_interpolation(const String &param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 

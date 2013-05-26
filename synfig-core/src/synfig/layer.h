@@ -171,20 +171,6 @@
 		return x;																		\
 	}
 
-//! Exports a parameter's static value
-#define EXPORT_STATIC(x)														\
-	if (#x=="param_"+param)														\
-	{																			\
-		return x.get_static();													\
-	}
-
-//! Exports a parameter's static value
-#define EXPORT_INTERPOLATION(x)													\
-	if (#x=="param_"+param)														\
-	{																			\
-		return x.get_interpolation();											\
-	}
-
 //! Exports the name or the local name of the layer
 #define EXPORT_NAME()																	\
 	if (param=="Name" || param=="name" || param=="name__")								\
@@ -558,7 +544,6 @@ public:
 	virtual bool set_param_static(const String &param, const bool x);
 	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual bool get_param_static(const String &param) const;
-	virtual Interpolation get_param_interpolation(const String &param)const;
 	virtual void fill_static(Vocab vocab);
 	virtual void set_interpolation_defaults();
 
