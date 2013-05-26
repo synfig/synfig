@@ -186,8 +186,9 @@ Action::WaypointSetSmart::calc_waypoint()
 	catch(...)
 	{
 		waypoint=value_node->new_waypoint_at_time(time);
-		waypoint.set_before(synfigapp::Main::get_interpolation());
-		waypoint.set_after(synfigapp::Main::get_interpolation());
+		Interpolation interp=value_node->get_interpolation();
+		waypoint.set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+		waypoint.set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
 	}
 /*
 	Time time=waypoint.get_time();
