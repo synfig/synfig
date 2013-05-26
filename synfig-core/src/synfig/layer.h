@@ -539,6 +539,7 @@ public:
 	virtual bool set_param_static(const String &param, const bool x);
 	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual void set_interpolation_defaults();
+	virtual void set_static_defaults();
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

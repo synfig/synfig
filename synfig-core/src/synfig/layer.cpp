@@ -145,6 +145,7 @@ Layer::Layer():
 {
 	_LayerCounter::counter++;
 	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 Layer::LooseHandle
@@ -338,7 +339,14 @@ void Layer::set_interpolation_defaults()
 	Vocab::const_iterator viter;
 	for(viter=vocab.begin();viter!=vocab.end();viter++)
 		set_param_interpolation(viter->get_name(), viter->get_interpolation());
-	
+}
+
+void Layer::set_static_defaults()
+{
+	Vocab vocab(get_param_vocab());
+	Vocab::const_iterator viter;
+	for(viter=vocab.begin();viter!=vocab.end();viter++)
+		set_param_static(viter->get_name(), viter->get_static());
 }
 
 etl::handle<Transform>
@@ -629,6 +637,7 @@ Layer::get_param_vocab()const
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))
 		.set_interpolation(INTERPOLATION_CONSTANT)
+		.set_static(true)
 	);
 
 	return ret;
