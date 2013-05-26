@@ -139,6 +139,13 @@
 		return true;															\
 	}
 
+//! Imports a parameter's interpolation value
+#define IMPORT_INTERPOLATION(x)													\
+	if ("param_"+param==#x){													\
+		x.set_interpolation(value);												\
+		return true;															\
+	}
+
 //TODO: This macro is safe to remove when we will finish converting
 //      all layer parameters to ValueBase type
 //! Exports a parameter 'x' if param is same type as given 'y'
@@ -161,6 +168,20 @@
 	if (#x=="param_"+param)																\
 	{																					\
 		return x;																		\
+	}
+
+//! Exports a parameter's static value
+#define EXPORT_STATIC(x)														\
+	if (#x=="param_"+param)														\
+	{																			\
+		return x.get_static();													\
+	}
+
+//! Exports a parameter's static value
+#define EXPORT_INTERPOLATION(x)													\
+	if (#x=="param_"+param)														\
+	{																			\
+		return x.get_interpolation();											\
 	}
 
 //! Exports the name or the local name of the layer
