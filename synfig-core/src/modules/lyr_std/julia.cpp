@@ -118,8 +118,7 @@ Julia::Julia():color_shift(angle::degrees(0))
 
 	bailout=4;
 	lp=log(log(bailout));
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

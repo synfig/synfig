@@ -96,8 +96,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	muck_with_time_=true;
 	curr_time=Time::begin();
 	outline_grow=0.0;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 	set_param_static("children_lock", true);
 }
 

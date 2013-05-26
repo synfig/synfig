@@ -120,8 +120,7 @@ Mandelbrot::Mandelbrot():
 	bailout=4;
 	lp=log(log(bailout));
 
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

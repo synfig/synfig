@@ -68,8 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
 Import::Import()
 {
 	time_offset=0;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 Import::~Import()

@@ -68,8 +68,7 @@ Layer_MotionBlur::Layer_MotionBlur():
 	subsample_start		(0.0),
 	subsample_end		(1.0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

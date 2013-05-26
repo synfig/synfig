@@ -70,8 +70,7 @@ CheckerBoard::CheckerBoard():
 	origin			(Point(0.125,0.125)),
 	size			(Point(0.25,0.25))
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline bool

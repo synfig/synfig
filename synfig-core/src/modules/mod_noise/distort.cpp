@@ -74,8 +74,7 @@ NoiseDistort::NoiseDistort():
 	random.set_seed(time(NULL));
 	turbulent=false;
 	displacement=Vector(0.25,0.25);
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline Point

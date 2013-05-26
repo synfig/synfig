@@ -68,8 +68,7 @@ Layer_SolidColor::Layer_SolidColor():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	color(Color::black())
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

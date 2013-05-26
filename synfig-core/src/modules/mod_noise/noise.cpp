@@ -78,8 +78,7 @@ Noise::Noise():
 	displacement=Vector(1,1);
 	do_displacement=false;
 	super_sample=false;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 

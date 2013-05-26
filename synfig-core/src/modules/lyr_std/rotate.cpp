@@ -70,8 +70,7 @@ Rotate::Rotate():
 	sin_val	(0),
 	cos_val	(1)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 Rotate::~Rotate()

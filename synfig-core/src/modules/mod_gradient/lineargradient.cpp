@@ -78,8 +78,7 @@ LinearGradient::LinearGradient():
 	zigzag(false)
 {
 	sync();
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline Color

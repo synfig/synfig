@@ -79,8 +79,7 @@ Star::Star():
 	regular_polygon(false)
 {
 	sync();
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 void

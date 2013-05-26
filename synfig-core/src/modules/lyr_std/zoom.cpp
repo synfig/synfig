@@ -64,8 +64,7 @@ Zoom::Zoom():
 	center(0,0),
 	amount(0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

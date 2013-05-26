@@ -71,8 +71,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	trimmed			(false),
 	gamma_adjust	(1.0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 	set_param_static("c", true);
 }
 

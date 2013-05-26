@@ -544,7 +544,6 @@ public:
 	virtual bool set_param_static(const String &param, const bool x);
 	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual bool get_param_static(const String &param) const;
-	virtual void fill_static(Vocab vocab);
 	virtual void set_interpolation_defaults();
 
 	//!	Sets a list of parameters

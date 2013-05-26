@@ -144,8 +144,6 @@ Layer::Layer():
 	dirty_time_(Time::end())
 {
 	_LayerCounter::counter++;
-	Vocab vocab=get_param_vocab();
-	fill_static(vocab);
 	set_interpolation_defaults();
 }
 
@@ -336,16 +334,6 @@ Layer::set_param_interpolation(const String &param, const Interpolation value)
 {
 	IMPORT_INTERPOLATION(param_z_depth)
 	return false;
-}
-
-void Layer::fill_static(Vocab vocab)
-{
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		if(static_params.find(viter->get_name())==static_params.end())
-			static_params.insert(make_pair(viter->get_name(),false));
-	}
 }
 
 void Layer::set_interpolation_defaults()

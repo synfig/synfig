@@ -64,8 +64,7 @@ SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id$");
 InsideOut::InsideOut():
 	origin(0,0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool
