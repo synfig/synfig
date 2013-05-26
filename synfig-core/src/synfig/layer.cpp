@@ -318,18 +318,14 @@ Layer::set_param(const String &param, const ValueBase &value)
 }
 
 bool
-Layer::set_param_static(const String &param, const bool x)
+Layer::set_param_static(const String &param, const bool value)
 {
-	Sparams::iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-	{
-		iter->second=x;
-		return true;
-	}
+	IMPORT_STATIC(param_z_depth)
 	return false;
 }
 
 bool
+
 Layer::set_param_interpolation(const String &param, const Interpolation value)
 {
 	IMPORT_INTERPOLATION(param_z_depth)
