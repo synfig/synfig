@@ -314,13 +314,13 @@ Layer_Composite::get_param(const String & param)const
 	if(param=="amount")
 	{
 		synfig::ValueBase ret(get_amount());
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 	if(param=="blend_method")
 	{
 		synfig::ValueBase ret(static_cast<int>(get_blend_method()));
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 	//! If it is unknown then call the ancestor's get param member

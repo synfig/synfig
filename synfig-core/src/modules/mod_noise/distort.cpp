@@ -192,7 +192,7 @@ NoiseDistort::get_param(const String & param)const
 	if(param=="seed")
 	{
 		ValueBase ret(random.get_seed());
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 	EXPORT(size);

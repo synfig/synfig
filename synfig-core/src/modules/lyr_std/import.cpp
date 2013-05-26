@@ -258,7 +258,7 @@ Import::get_param(const String & param)const
 		if(param=="filename")
 		{
 			ValueBase ret(ValueBase::TYPE_STRING);
-			ret.set_static(get_param_static(param));
+			
 			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 			ret=relative_path(curpath,abs_filename);
 			return ret;

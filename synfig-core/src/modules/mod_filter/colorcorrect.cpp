@@ -192,7 +192,7 @@ Layer_ColorCorrect::get_param(const String &param)const
 	if(param=="gamma")
 	{
 		ValueBase ret(1.0/gamma.get_gamma());
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 

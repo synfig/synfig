@@ -101,7 +101,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	if(param=="gamma_adjust")
 	{
 		ValueBase ret(1.0/gamma_adjust);
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 
@@ -120,8 +120,6 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				ret2=int(csurface.get_w());
 				break;
 		}
-		ret1.set_static(get_param_static(param));
-		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
 		return ret2;
 	}
@@ -140,8 +138,6 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				ret2=int(csurface.get_h());
 				break;
 		}
-		ret1.set_static(get_param_static(param));
-		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
 		return ret2;
 	}

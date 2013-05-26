@@ -681,12 +681,6 @@ Layer_PasteCanvas::set_param_static(const String &param, const bool x)
 }
 
 
-bool
-Layer_PasteCanvas::get_param_static(const String &param) const
-{
-	return Layer_Composite::get_param_static(param);
-}
-
 void
 Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 {

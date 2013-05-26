@@ -154,7 +154,6 @@
 	if (param==y)																		\
 	{																					\
 		synfig::ValueBase ret(x);														\
-		ret.set_static(get_param_static(y));											\
 		return ret;																		\
 	}
 
@@ -338,10 +337,6 @@ private:
 
 	//! The depth parameter of the layer in the layer stack
 	ValueBase param_z_depth;
-
-	//! True if zdepth is not affected when in animation mode
-	typedef std::map<String, bool> Sparams;
-	Sparams static_params;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -543,7 +538,6 @@ public:
 
 	virtual bool set_param_static(const String &param, const bool x);
 	virtual bool set_param_interpolation(const String &param, const Interpolation i);
-	virtual bool get_param_static(const String &param) const;
 	virtual void set_interpolation_defaults();
 
 	//!	Sets a list of parameters

@@ -345,18 +345,6 @@ void Layer::set_interpolation_defaults()
 	
 }
 
-//TODO: This function is safe to remove when we will finish converting
-//      all layer parameters to ValueBase type
-bool
-Layer::get_param_static(const String &param) const
-{
-
-	Sparams::const_iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-		return iter->second;
-	return false;
-}
-
 etl::handle<Transform>
 Layer::get_transform()const
 {

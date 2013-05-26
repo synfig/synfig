@@ -194,7 +194,7 @@ Julia::get_param(const String & param)const
 	if(param=="bailout")
 	{
 		ValueBase ret(sqrt(bailout));
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 
