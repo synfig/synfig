@@ -804,7 +804,7 @@ Action::ValueDescSet::prepare()
 			synfig::ValueNode_Animated::WaypointList::iterator iter(value_node->find(time));
 			iter->set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
 			iter->set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
-			value_node->set_interpolation(iter->get_before());
+			value_node->set_interpolation(interp);
 			Action::Handle action;
 			if(!value_desc.is_value_node())
 			{
