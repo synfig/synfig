@@ -301,6 +301,7 @@ mkapp()
 	rm -rf lib/gtk-2.0/include
 	rm -rf lib/python2.7/test
 	rm -rf lib/python2.7/*/test
+	rm -rf Library/Frameworks/Python.framework/Versions/2.*
 	find lib \( -name "*.la" -or -name "*.a" \)  -delete
 	find . -name "*.pyo" -delete
 
@@ -353,7 +354,8 @@ EOF
 
 mkdmg()
 {
-	pushd ~ >/dev/null
+	cd ~
+	
 	# get OS major version
 	OSXVER=`uname -r | cut -f 1 -d '.'`
 
@@ -397,8 +399,6 @@ mkdmg()
 
 	echo "Removing uncompressed transitory dmg..."
 	/bin/rm -f "$TRANSITORY_FILENAME"
-	
-	popd >/dev/null
 
 	echo "Done!"
 }
