@@ -146,6 +146,7 @@ Layer::Layer():
 	_LayerCounter::counter++;
 	Vocab vocab=get_param_vocab();
 	fill_static(vocab);
+	set_interpolation_defaults();
 }
 
 Layer::LooseHandle
@@ -330,6 +331,12 @@ Layer::set_param_static(const String &param, const bool x)
 	return false;
 }
 
+bool
+Layer::set_param_interpolation(const String &param, const Interpolation value)
+{
+	IMPORT_INTERPOLATION(param_z_depth)
+	return false;
+}
 
 void Layer::fill_static(Vocab vocab)
 {
@@ -339,6 +346,15 @@ void Layer::fill_static(Vocab vocab)
 		if(static_params.find(viter->get_name())==static_params.end())
 			static_params.insert(make_pair(viter->get_name(),false));
 	}
+}
+
+void Layer::set_interpolation_defaults()
+{
+	Vocab vocab(get_param_vocab());
+	Vocab::const_iterator viter;
+	for(viter=vocab.begin();viter!=vocab.end();viter++)
+		set_param_interpolation(viter->get_name(), viter->get_interpolation());
+	
 }
 
 //TODO: This function is safe to remove when we will finish converting
@@ -353,6 +369,12 @@ Layer::get_param_static(const String &param) const
 	return false;
 }
 
+Interpolation
+Layer::get_param_interpolation(const String &param)const
+{
+	EXPORT_INTERPOLATION(param_z_depth)
+	return INTERPOLATION_UNDEFINED;
+}
 
 etl::handle<Transform>
 Layer::get_transform()const
@@ -641,6 +663,7 @@ Layer::get_param_vocab()const
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))
+		.set_interpolation(INTERPOLATION_CONSTANT)
 	);
 
 	return ret;

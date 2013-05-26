@@ -39,6 +39,7 @@
 #include "node.h"
 #include "time.h"
 #include "guid.h"
+#include "interpolation.h"
 #include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
@@ -555,8 +556,11 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 
 	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual bool get_param_static(const String &param) const;
+	virtual Interpolation get_param_interpolation(const String &param)const;
 	virtual void fill_static(Vocab vocab);
+	virtual void set_interpolation_defaults();
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);
