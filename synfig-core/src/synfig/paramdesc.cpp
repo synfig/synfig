@@ -57,7 +57,9 @@ ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
 	hidden_			(false),
 	invisible_duck_	(false),
 	is_distance_	(false),
-	animation_only_	(false)
+	animation_only_	(false),
+	static_			(true),
+	interpolation_	(INTERPOLATION_UNDEFINED)
 {
 	set_local_name(_("Blend Method"))
 		.set_hint("enum")		// used shortcuts: A B C D E F G H I K L M N O P R S T U V Y; free: J Q W X Z
@@ -93,7 +95,9 @@ ParamDesc::ParamDesc(const ValueBase&, const String &a):
 	critical_		(true),
 	hidden_			(false),
 	invisible_duck_	(false),
-		is_distance_	(false),
-		animation_only_	(false)
+	is_distance_	(false),
+	animation_only_	(false),
+	static_			(false),
+	interpolation_	(INTERPOLATION_UNDEFINED)
 {
 }
