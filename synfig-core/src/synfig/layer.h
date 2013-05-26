@@ -350,7 +350,7 @@ private:
 	String description_;
 
 	//! The depth parameter of the layer in the layer stack
-	float z_depth;
+	ValueBase param_z_depth;
 
 	//! True if zdepth is not affected when in animation mode
 	typedef std::map<String, bool> Sparams;
@@ -476,13 +476,13 @@ public:
 	int get_depth()const;
 
 	//! Gets the non animated z depth of the layer
-	float get_z_depth()const { return z_depth; }
+	float get_z_depth()const { return param_z_depth.get(Real()); }
 
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
 	//! Sets the z depth of the layer (non animated)
-	void set_z_depth(float x) { z_depth=x; }
+	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);
