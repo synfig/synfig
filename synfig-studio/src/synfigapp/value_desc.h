@@ -156,12 +156,12 @@ public:
 			 &&
 			 layer->dynamic_param_list().count(name)
 			 &&
-			synfig::ValueNode_Animated::Handle::cast_reinterpret(layer->dynamic_param_list().find(name)->second)
+			synfig::ValueNode_Animated::Handle::cast_dynamic(layer->dynamic_param_list().find(name)->second)
 			 )
 			||
 			(parent_is_canvas()
 			 &&
-			 synfig::ValueNode_Animated::Handle::cast_reinterpret(get_value_node())
+			 synfig::ValueNode_Animated::Handle::cast_dynamic(get_value_node())
 			);
 		}
 	
