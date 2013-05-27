@@ -48,12 +48,12 @@ class Circle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	synfig::Color color;
-	synfig::Point origin;
-	synfig::ValueBase param_radius;
-	synfig::Real feather;
-	bool invert;
-	int falloff;
+	ValueBase param_color;
+	ValueBase param_origin;
+	ValueBase param_radius;
+	ValueBase param_feather;
+	ValueBase param_invert;
+	ValueBase param_falloff;
 
 	//Caching system for circle
 	struct CircleDataCache

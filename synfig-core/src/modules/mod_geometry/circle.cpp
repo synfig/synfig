@@ -62,31 +62,50 @@ SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 
 Circle::Circle():
 	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
-	color			(Color::black()),
-	origin			(0,0),
+	param_color		(Color::black()),
+	param_origin	(Point(0,0)),
 	param_radius	(Real(1)),
-	feather			(0),
-	invert			(false),
-	falloff			(FALLOFF_INTERPOLATION_LINEAR)
+	param_feather	(Real(0)),
+	param_invert	(bool(false)),
+	param_falloff	(int(FALLOFF_INTERPOLATION_LINEAR))
 {
 	constructcache();
-
 	set_interpolation_defaults();
 }
 
 bool
 Circle::ImportParameters(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
-					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
+	IMPORT_VALUE_PLUS(param_color,
+		  {
+			  Color color(param_color.get(Color()));
+			  if (color.get_a() == 0)
+			  {
+				  if(converted_blend_)
+				  {
+					  set_blend_method(Color::BLEND_ALPHA_OVER);
+					  color.set_a(1);
+					  param_color.set(color);
+				  }
+				  else
+					  transparent_color_ = true;
+			  }
+		  }
+	);
 	IMPORT_VALUE(param_radius);
-	IMPORT_PLUS(feather, if(feather<0)feather=0;);
-	IMPORT(invert);
-	IMPORT(origin);
-	IMPORT(falloff);
-
-	IMPORT_AS(origin,"pos");
+	IMPORT_VALUE_PLUS(param_feather,
+		if(param_feather.get(Real())<0)
+		{
+			param_feather.set(Real(0));
+		}
+	);
+	IMPORT_VALUE(param_invert);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_falloff);
+	if(param=="pos")
+	{
+		ImportParameters("origin",value);
+	}
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -106,7 +125,12 @@ Circle::set_param(const String &param, const ValueBase &value)
 bool
 Circle::set_param_interpolation(const String &param, const Interpolation value)
 {
+	IMPORT_INTERPOLATION(param_color)
 	IMPORT_INTERPOLATION(param_radius)
+	IMPORT_INTERPOLATION(param_feather)
+	IMPORT_INTERPOLATION(param_invert)
+	IMPORT_INTERPOLATION(param_origin)
+	IMPORT_INTERPOLATION(param_falloff)
 	return Layer_Composite::set_param_interpolation(param, value);
 }
 
@@ -114,19 +138,24 @@ Circle::set_param_interpolation(const String &param, const Interpolation value)
 bool
 Circle::set_param_static(const String &param, const bool value)
 {
-	IMPORT_STATIC(param_radius);
+	IMPORT_STATIC(param_color)
+	IMPORT_STATIC(param_radius)
+	IMPORT_STATIC(param_feather)
+	IMPORT_STATIC(param_invert)
+	IMPORT_STATIC(param_origin)
+	IMPORT_STATIC(param_falloff)
 	return Layer_Composite::set_param_static(param,value);
 }
 
 ValueBase
 Circle::get_param(const String &param)const
 {
-	EXPORT(color);
+	EXPORT_VALUE(param_color);
 	EXPORT_VALUE(param_radius);
-	EXPORT(feather);
-	EXPORT(invert);
-	EXPORT(origin);
-	EXPORT(falloff);
+	EXPORT_VALUE(param_feather);
+	EXPORT_VALUE(param_invert);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_falloff);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -181,8 +210,11 @@ Circle::get_param_vocab()const
 synfig::Layer::Handle
 Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
+	
 	Point temp=origin-point;
 
 	if(get_amount()==0)
@@ -296,8 +328,8 @@ Circle::InvCosineFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 
 void Circle::constructcache()
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
 	cache.inner_radius = radius - feather;
 	if(cache.inner_radius < 0)
 		cache.inner_radius = 0;
@@ -315,6 +347,8 @@ void Circle::constructcache()
 
 Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 {
+	bool invert = param_invert.get(bool());
+	int falloff = param_falloff.get(int());
 	switch(falloff)
 	{
 	case FALLOFF_SQUARED:	return invert?InvSqdFalloff:SqdFalloff;
@@ -333,8 +367,11 @@ Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 Color
 Circle::get_color(Context context, const Point &point)const
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
+	Color color(param_color.get(Color()));
 	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.get_color(point);
 
@@ -443,8 +480,11 @@ Circle::get_color(Context context, const Point &point)const
 bool
 Circle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
+	Color color(param_color.get(Color()));
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.accelerated_render(surface,quality, renddesc, cb);
@@ -781,6 +821,10 @@ bool
 Circle::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
+	Color color(param_color.get(Color()));
 
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false && !feather))
@@ -876,6 +920,7 @@ void
 Circle::compile_gradient(cairo_pattern_t* gradient, CircleDataCache mycache, FALLOFF_FUNC *func)const
 {
 	double index;
+	Color color = param_color.get(Color());
 	const float r(color.get_r());
 	const float g(color.get_g());
 	const float b(color.get_b());
@@ -896,8 +941,10 @@ Circle::compile_gradient(cairo_pattern_t* gradient, CircleDataCache mycache, FAL
 Rect
 Circle::get_bounding_rect()const
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
 	if(invert)
 		return Rect::full_plane();
 
@@ -914,8 +961,11 @@ Circle::get_bounding_rect()const
 Rect
 Circle::get_full_bounding_rect(Context context)const
 {
-	Real radius;
-	radius = param_radius.get(Real());
+	Real radius = param_radius.get(Real());
+	Color color = param_color.get(Color());
+	Real feather = param_feather.get(Real());
+	Point origin = param_origin.get(Point());
+	bool invert = param_invert.get(bool());
 	if(invert)
 	{
 		if(is_solid_color() && color.get_a()==0)
