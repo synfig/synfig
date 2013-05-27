@@ -41,6 +41,7 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
+#include <time.h>
 
 #endif
 

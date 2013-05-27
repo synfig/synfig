@@ -44,6 +44,7 @@
 #include "color.h"
 #include "vector.h"
 #include <fstream>
+#include <time.h>
 #include "layer.h"
 #include "valuenode.h"
 

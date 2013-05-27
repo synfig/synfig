@@ -46,6 +46,7 @@
 #include <ETL/bezier>
 #include <ETL/hermite>
 #include <vector>
+#include <time.h>
 
 #include <synfig/valuenode_bline.h>
 
