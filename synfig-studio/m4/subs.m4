@@ -209,7 +209,7 @@ case "$host" in
 } ; fi
 
     LTCC="gcc"
-    CXXFLAGS="$CXXFLAGS -LC:/GTK/lib"
+    CXXFLAGS="$CXXFLAGS -Wno-cpp -LC:/GTK/lib"
     CFLAGS="$CFLAGS -LC:/GTK/lib"
     LDFLAGS="$LDFLAGS -lole32 -no-undefined -Wl,--export-all-symbols -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc" 
 dnl    LDFLAGS="$LDFLAGS -lole32 -no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc"
