@@ -53,7 +53,9 @@ inline bool isnan(double x) { return x != x; }
 inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
 #else
+#ifndef isnan
 #define isnan std::isnan
+#endif
 #endif
 
 
