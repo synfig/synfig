@@ -177,7 +177,6 @@ Circle::get_param_vocab()const
 		.set_origin("origin")
 		.set_description(_("Radius of the circle"))
 		.set_is_distance()
-		.set_interpolation(INTERPOLATION_CONSTANT)
 	);
 	ret.push_back(ParamDesc("feather")
 		.set_local_name(_("Feather"))

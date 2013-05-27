@@ -636,8 +636,6 @@ Layer::get_param_vocab()const
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))
-		.set_interpolation(INTERPOLATION_CONSTANT)
-		.set_static(true)
 	);
 
 	return ret;
