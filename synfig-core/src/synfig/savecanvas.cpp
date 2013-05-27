@@ -288,34 +288,42 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_TIME:
 		encode_time(root,data.get(Time()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_INTEGER:
 		encode_integer(root,data.get(int()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_COLOR:
 		encode_color(root,data.get(Color()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_VECTOR:
 		encode_vector(root,data.get(Vector()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_ANGLE:
 		encode_angle(root,data.get(Angle()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_BOOL:
 		encode_bool(root,data.get(bool()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_STRING:
 		encode_string(root,data.get(String()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_SEGMENT:
 		encode_segment(root,data.get(Segment()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
@@ -326,11 +334,13 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_GRADIENT:
 		encode_gradient(root,data.get(Gradient()));
 		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	case ValueBase::TYPE_LIST:
 		return encode_list(root,data,canvas);
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
+		encode_static(root, data.get_static());
 	case ValueBase::TYPE_VALUENODE_BONE:
 		if (!canvas)
 		{
@@ -362,7 +372,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 	const ValueNode_Animated::WaypointList &waypoint_list=value_node->waypoint_list();
 	ValueNode_Animated::WaypointList::const_iterator iter;
 	
-	encode_interpolation(root, value_node->get_interpolation(), "default_interpolation");
+	encode_interpolation(root, value_node->get_interpolation(), "interpolation");
 	
 	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
 	{
