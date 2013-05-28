@@ -107,12 +107,12 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 		return false;
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
-	if(quality<=4)surfacelayer->c=3;else
-	if(quality<=5)surfacelayer->c=2;
-	else if(quality<=6)surfacelayer->c=1;
-	else surfacelayer->c=0;
-	surfacelayer->tl=renddesc.get_tl();
-	surfacelayer->br=renddesc.get_br();
+	if(quality<=4)surfacelayer->set_param("c", 3);else
+	if(quality<=5)surfacelayer->set_param("c", 2);
+	else if(quality<=6)surfacelayer->set_param("c", 1);
+	else surfacelayer->set_param("c",0);
+	surfacelayer->set_param("tl",renddesc.get_tl());
+	surfacelayer->set_param("br",renddesc.get_br());
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 	// Push this layer on the image. The blending result is only this layer
@@ -189,12 +189,12 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int qualit
 	cairo_surface_destroy(cs);
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
-	if(quality<=4)surfacelayer->c=3;else
-		if(quality<=5)surfacelayer->c=2;
-		else if(quality<=6)surfacelayer->c=1;
-		else surfacelayer->c=0;
-	surfacelayer->tl=renddesc.get_tl();
-	surfacelayer->br=renddesc.get_br();
+	if(quality<=4)surfacelayer->set_param("c", 3);else
+		if(quality<=5)surfacelayer->set_param("c", 2);
+		else if(quality<=6)surfacelayer->set_param("c", 1);
+		else surfacelayer->set_param("c",0);
+	surfacelayer->set_param("tl",renddesc.get_tl());
+	surfacelayer->set_param("br",renddesc.get_br());
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 	surfacelayer->set_render_method(context, CAIRO);
@@ -259,13 +259,13 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 	if(param=="amount" && value.same_type_as(amount))
 	{
 		amount=value.get(amount);
-		set_param_static(param,value.get_static());
+		//set_param_static(param,value.get_static());
 	}
 	else
 	if(param=="blend_method" && value.same_type_as(int()))
 	{
 		blend_method = static_cast<Color::BlendMethod>(value.get(int()));
-		set_param_static(param,value.get_static());
+		//set_param_static(param,value.get_static());
 
 		if (blend_method < 0 || blend_method >= Color::BLEND_END)
 		{

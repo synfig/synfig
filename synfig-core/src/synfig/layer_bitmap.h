@@ -51,21 +51,24 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 
-	Point tl;
-	Point br;
-	int c;
+	ValueBase param_tl;
+	ValueBase param_br;
+	ValueBase param_c;
+	ValueBase param_gamma_adjust;
+
 	mutable Surface surface;
 	mutable CairoSurface csurface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
-	Real gamma_adjust;
 
 	Layer_Bitmap();
 	~Layer_Bitmap()	{ 
 	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 
 	virtual ValueBase get_param(const String & param)const;
 
