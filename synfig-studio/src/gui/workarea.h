@@ -54,6 +54,7 @@
 #include "dials/zoomdial.h"
 #include "duckmatic.h"
 #include "instance.h"
+#include "app.h"
 
 /* === M A C R O S ========================================================= */
 

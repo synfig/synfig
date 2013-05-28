@@ -43,12 +43,12 @@
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
 
+#include "app.h"
+
 /* === M A C R O S ========================================================= */
 
-// uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
-#ifdef WIN32
-#define SINGLE_THREADED
-#endif
+// uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) 
+// changed to be default if using windows (Nov 2009 pixelgeek) - see app.h
 #ifdef SINGLE_THREADED
 #  define single_threaded()	App::single_threaded
 #endif

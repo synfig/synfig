@@ -46,6 +46,8 @@
 #include <synfig/time.h>
 #include <algorithm>
 
+#include "app.h"
+
 /* === M A C R O S ========================================================= */
 #ifndef DEFAULT_PREDEFINED_SIZE
 #define DEFAULT_PREDEFINED_SIZE _("Custom Size")
