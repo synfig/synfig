@@ -81,11 +81,13 @@ synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 	IMPORT_VALUE(param_tl);
 	IMPORT_VALUE(param_br);
 	IMPORT_VALUE(param_c);
-	if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
-	{
-		param_gamma_adjust.set(Real(1.0/value.get(Real())));
-		return true;
-	}
+	IMPORT_VALUE_PLUS(param_gamma_adjust,
+		if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
+		{
+			param_gamma_adjust.set(Real(1.0/value.get(Real())));
+			return true;
+		}
+		);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -98,7 +100,8 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	EXPORT_VALUE(param_c);
 	if(param=="gamma_adjust")
 	{
-		ValueBase ret(1.0/param_gamma_adjust.get(Real()));
+		ValueBase ret=param_gamma_adjust;
+		ret.set(1.0/param_gamma_adjust.get(Real()));
 		return ret;
 	}
 
