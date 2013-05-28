@@ -71,6 +71,7 @@ Circle::Circle():
 {
 	constructcache();
 	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 bool
