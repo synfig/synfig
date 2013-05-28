@@ -121,7 +121,7 @@ PluginLauncher::check_python_version(String path)
 }
 
 bool
-PluginLauncher::execute( std::string script_path )
+PluginLauncher::execute( std::string script_path, const std::string& synfig_root )
 {
 	String command = "";
 	
@@ -146,7 +146,7 @@ PluginLauncher::execute( std::string script_path )
 		{
 			String python_path;
 #ifdef WIN32
-			python_path = etl::dirname(etl::dirname((*argv)[0]))+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe";
+			python_path = synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe";
 #else
 			python_path = *iter;
 #endif
