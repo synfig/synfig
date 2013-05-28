@@ -31,7 +31,10 @@
 
 #include "main.h"
 #include "action.h"
+
+#ifndef WIN32
 #include <pwd.h>
+#endif
 
 #include <synfig/color.h>
 #include <synfig/gradient.h>
