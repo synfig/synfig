@@ -110,9 +110,6 @@ public:
 
    	ParamDesc(const ValueBase&, const String &a);
 
-   	ParamDesc(synfig::Color::BlendMethod, const String &a);
-
-
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------
 	*/

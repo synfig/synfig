@@ -50,13 +50,13 @@ class Layer_Composite : public Layer
 {
 private:
 	//! The amount of composite
-	float amount;
+	ValueBase param_amount;
 	//! The blend method for the composition
-	Color::BlendMethod blend_method;
+	ValueBase param_blend_method;
 
 protected:
 	//! Default constructor. Not used directly.
-	Layer_Composite(float amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
+	Layer_Composite(Real amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
 
 	//! Converted blend is used to check if an old version of canvas
 	//! is used in the composition. Old Straight was used as new Composite
@@ -68,17 +68,17 @@ protected:
 
 public:
 	//! Gets the amount of the layer
-	float get_amount()const { return amount; }
+	float get_amount()const { return param_amount.get(Real()); }
 	//! Sets the amount of the layer and returns this layer
-	Layer_Composite& set_amount(float x) { amount=x; return *this; }
+	Layer_Composite& set_amount(float x) { param_amount.set(x); return *this; }
 	//! Gets the blend method of the layer
-	Color::BlendMethod get_blend_method()const { return blend_method; }
+	Color::BlendMethod get_blend_method()const { return Color::BlendMethod((param_blend_method.get(int()))); }
 	//! Sets the blend method of the layer and returns this layer
-	Layer_Composite& set_blend_method(Color::BlendMethod x) { blend_method=x; return *this; }
+	Layer_Composite& set_blend_method(Color::BlendMethod x) { param_blend_method.set(x); return *this; }
 	//! Returns true is amount is 1 and blend method is straight
-	virtual bool is_solid_color()const { return amount==1.0f && blend_method==Color::BLEND_STRAIGHT; }
+	virtual bool is_solid_color()const { return param_amount.get(Real())==1.0f && param_blend_method.get(int())==Color::BLEND_STRAIGHT; }
 	//! Returns true if the amount is zero.
-	bool is_disabled()const { return amount==0.0f; }
+	bool is_disabled()const { return param_amount.get(Real())==0.0f; }
 	//! Gets the parameter vocabulary. To be overrided by the derived.
 	virtual Vocab get_param_vocab()const;
 	//! Sets the value for the given parameter.
