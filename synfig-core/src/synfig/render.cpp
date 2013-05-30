@@ -334,9 +334,6 @@ synfig::cairorender(
 	du, dv,		// Distance between pixels
 	dsu,dsv;	// Distance between subpixels
 	
-	bool
-	no_clamp=!desc.get_clamp();
-	
 	int
 	w(desc.get_w()),
 	h(desc.get_h()),

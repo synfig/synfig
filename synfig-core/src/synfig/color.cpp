@@ -1068,7 +1068,7 @@ blendfunc_HARD_LIGHT(CairoColor &a, CairoColor &b, float amount)
 	
 	int ra, ga, ba, aa;
 	int rb, gb, bb, ab;
-	int rc, gc, bc, ac;
+	int rc, gc, bc;
 	
 	ra=a.get_r();
 	ga=a.get_g();

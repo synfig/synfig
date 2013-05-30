@@ -147,13 +147,13 @@ ValueNode_Integer::operator()(Time t)const
 }
 
 ValueBase
-synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Real &target_value) const
+synfig::ValueNode_Integer::get_inverse(Time /*t*/, const synfig::Real &target_value) const
 {
 	return (int)target_value;
 }
 
 synfig::ValueBase
-synfig::ValueNode_Integer::get_inverse(Time t, const synfig::Angle &target_value) const
+synfig::ValueNode_Integer::get_inverse(Time /*t*/, const synfig::Angle &target_value) const
 {
 	return (int)Angle::deg(target_value).get();
 }
