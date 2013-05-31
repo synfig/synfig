@@ -2592,6 +2592,7 @@ App::new_instance()
 	canvas->rend_desc().set_antialias(1);
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(file_name);
+	canvas->keyframe_list().add(synfig::Keyframe());
 
 	handle<Instance> instance = Instance::create(canvas);
 
