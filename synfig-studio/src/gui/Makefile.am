@@ -87,7 +87,7 @@ OTHER_CC = \
 	valuelink.cpp \
 	workarea.cpp
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 
 bin_PROGRAMS = synfigstudio
