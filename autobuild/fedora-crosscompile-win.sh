@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#TODO: Generate nsi file
+#TODO: Replace version numbers in the .nsi file
 #TODO: Uninstall properly!
 #TODO: Can't find python if installed into Program Files (space in directory name)
 #TODO: Plugins not launched correctly
@@ -20,7 +20,7 @@ if [ -z $NOSU ]; then
 		mingw32-boost \
 		mingw32-libjpeg-turbo \
 		mingw32-gtkmm24 \
-		mingw32-nsiswrapper \
+		mingw32-nsis \
 		p7zip \
 		ImageMagick \
 		"
@@ -172,7 +172,7 @@ unzip portable-python-3.2.5.1.zip
 mv python $PREFIX
 
 cd $PREFIX
-#TODO: generate nsi file
+cp -f $SCRIPTPATH/fedora-crosscompile-win.nsi $PREFIX/synfigstudio.nsi
 makensis synfigstudio.nsi
 }
 
