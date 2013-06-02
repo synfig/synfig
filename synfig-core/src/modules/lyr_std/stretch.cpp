@@ -203,13 +203,12 @@ Layer_Stretch::accelerated_cairorender(Context context,cairo_surface_t *surface,
 	desc.clear_flags();
     // Adjust the top_left and bottom_right points
 	// for our zoom amount
-	Point npos;
-	npos[0]=(desc.get_tl()[0]-center[0])/amount[0]+center[0];
-	npos[1]=(desc.get_tl()[1]-center[1])/amount[1]+center[1];
-	desc.set_tl(npos);
-	npos[0]=(desc.get_br()[0]-center[0])/amount[0]+center[0];
-	npos[1]=(desc.get_br()[1]-center[1])/amount[1]+center[1];
-	desc.set_br(npos);
+	Point tl_new, br_new;
+	tl_new[0]=(desc.get_tl()[0]-center[0])/amount[0]+center[0];
+	tl_new[1]=(desc.get_tl()[1]-center[1])/amount[1]+center[1];
+	br_new[0]=(desc.get_br()[0]-center[0])/amount[0]+center[0];
+	br_new[1]=(desc.get_br()[1]-center[1])/amount[1]+center[1];
+	desc.set_tl_br(tl_new, br_new);
 	
 	// Render the scene
 	return context.accelerated_cairorender(surface,quality,desc,cb);
