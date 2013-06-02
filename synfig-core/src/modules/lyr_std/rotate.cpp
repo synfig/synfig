@@ -441,7 +441,7 @@ Rotate::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	else if(quality>=4) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_GOOD);
 	else cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BEST);
 
-	cairo_set_operator(cr, CAIRO_OPERATOR_OVER); // again this has to be the real operator
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 	cairo_paint(cr);
 	cairo_restore(cr);
 	cairo_surface_destroy(source);
