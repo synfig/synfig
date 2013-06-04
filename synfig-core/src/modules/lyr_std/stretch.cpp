@@ -196,6 +196,7 @@ Layer_Stretch::accelerated_cairorender(Context context,cairo_surface_t *surface,
 		cairo_t* cr=cairo_create(surface);
 		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 		cairo_fill(cr);
+		cairo_destroy(cr);
 		return true;
 	}
 	
