@@ -136,6 +136,11 @@ class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
 
+/*!	\class studio::CanvasView
+**	\brief \writeme
+**
+**	\writeme
+*/
 class CanvasView : public Gtk::Window, public etl::shared_object
 {
 	friend class UniversalScrubber;
@@ -428,6 +433,8 @@ private:
 
 	void mask_bone_ducks();
 
+	//! Constructor Helper - Create the workarea and connect data and signal
+	/*! \see popup_main_menu() */
 	Gtk::Widget *create_work_area();
 
 	Gtk::Widget *create_time_bar();
@@ -483,6 +490,9 @@ public:
 	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
 	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return tree_view_book_; }
 
+	//! Pop up menu for the main menu and the caret menu (not tools and not the bezier ones).
+	/*! Signal handler for work_area->signal_popup_menu */
+	/*! \see create_work_area(), popup_param_menu(), popup_param_menu_bezier() */
 	void popup_main_menu();
 
 	Smach& get_smach() { return smach_; }

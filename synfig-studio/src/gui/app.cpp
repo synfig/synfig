@@ -905,7 +905,7 @@ init_ui_manager()
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
-
+  //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
     Glib::ustring ui_info =
 "<ui>"
 "	<popup name='menu-toolbox' action='menu-toolbox'>"
@@ -1377,8 +1377,29 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Init DeviceTracker..."));
 		device_tracker=new studio::DeviceTracker();
 
-		studio_init_cb.task(_("Init Tools..."));
+		//Init Tools...was here
 
+		studio_init_cb.task(_("Init ModPalette..."));
+		module_list_.push_back(new ModPalette()); module_list_.back()->start();
+
+		studio_init_cb.task(_("Init Setup Dialog..."));
+		dialog_setup=new studio::Dialog_Setup();
+
+		studio_init_cb.task(_("Init Input Dialog..."));
+		dialog_input=new Gtk::InputDialog();
+		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
+		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+
+		studio_init_cb.task(_("Init auto recovery..."));
+		auto_recover=new AutoRecover();
+
+		studio_init_cb.amount_complete(9250,10000);
+		studio_init_cb.task(_("Loading Settings..."));
+		load_settings();
+
+		// Init Tools..must be done after load_settings() : accelerators keys
+		// are displayed in toolbox labels
+		studio_init_cb.task(_("Init Tools..."));
 		/* editing tools */
 		state_manager->add_state(&state_normal);
 		state_manager->add_state(&state_smooth_move);
@@ -1405,23 +1426,7 @@ App::App(int *argc, char ***argv):
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
 		state_manager->add_state(&state_zoom);
 
-		studio_init_cb.task(_("Init ModPalette..."));
-		module_list_.push_back(new ModPalette()); module_list_.back()->start();
 
-		studio_init_cb.task(_("Init Setup Dialog..."));
-		dialog_setup=new studio::Dialog_Setup();
-
-		studio_init_cb.task(_("Init Input Dialog..."));
-		dialog_input=new Gtk::InputDialog();
-		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
-		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
-
-		studio_init_cb.task(_("Init auto recovery..."));
-		auto_recover=new AutoRecover();
-
-		studio_init_cb.amount_complete(9250,10000);
-		studio_init_cb.task(_("Loading Settings..."));
-		load_settings();
 		device_tracker->load_preferences();
 		// If the default bline width is modified before focus a canvas
 		// window, the Distance widget doesn't understand the given value

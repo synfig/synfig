@@ -54,6 +54,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/handlebox.h>
+#include <gtkmm/accelmap.h>
 
 #include <gtkmm/inputdialog.h>
 
@@ -476,6 +477,7 @@ Toolbox::change_state_(const Smach::state_base *state)
 	changing_state_=false;
 }
 
+//! Add and connect a toogle button to the toolbox defined by a state
 void
 Toolbox::add_state(const Smach::state_base *state)
 {
@@ -491,9 +493,15 @@ Toolbox::add_state(const Smach::state_base *state)
 	Gtk::ToggleButton* button;
 	button=manage(new class Gtk::ToggleButton());
 
+	Gtk::AccelKey key;
+	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
+	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
+	//Gets the accelerator representation for labels
+	Glib::ustring accel_path = key.get_abbrev ();
+
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
 	button->add(*icon);
-	button->set_tooltip_text(stock_item.get_label());
+	button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
 	icon->show();
 	button->show();
 
