@@ -147,12 +147,18 @@ KeyframeActionManager::queue_refresh()
 	queued=true;
 }
 
+/*! \fn KeyframeActionManager::on_keyframe_properties()
+**	\brief Signal handler for selected keyframe properties
+*/
 void
 KeyframeActionManager::on_keyframe_properties()
 {
 	signal_show_keyframe_properties_();
 }
 
+/*! \fn KeyframeActionManager::on_keyframe_properties()
+**	\brief Signal handler for add keyframe
+*/
 void
 KeyframeActionManager::on_add_keyframe()
 {
@@ -168,6 +174,9 @@ KeyframeActionManager::on_add_keyframe()
 	canvas_interface_->get_instance()->perform_action(action);
 }
 
+/*! \fn KeyframeActionManager::refresh()
+**	\brief Refresh the action and signals connection for the selected keyframe
+*/
 void
 KeyframeActionManager::refresh()
 {

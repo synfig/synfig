@@ -61,7 +61,7 @@ class Dock_Keyframes : public Dock_CanvasSpecific
 	*/
 
 	void show_keyframe_properties();
-	//animation description change signal handler
+	//animation render description change signal handler
 	void refresh_rend_desc();
 
 	//The manager of keyframes actions

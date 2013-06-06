@@ -100,7 +100,7 @@ Dock_Keyframes::show_keyframe_properties()
 }
 
 /*! \fn Dock_Keyframes::refresh_rend_desc()
-**	\brief Signal handler for animation description change
+**	\brief Signal handler for animation render description change
 */
 void
 Dock_Keyframes::refresh_rend_desc()

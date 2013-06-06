@@ -477,7 +477,11 @@ Toolbox::change_state_(const Smach::state_base *state)
 	changing_state_=false;
 }
 
-//! Add and connect a toogle button to the toolbox defined by a state
+
+/*! \fn Toolbox::add_state(const Smach::state_base *state)
+ *  \brief Add and connect a toogle button to the toolbox defined by a state
+ *  \param state a const pointer to Smach::state_base
+*/
 void
 Toolbox::add_state(const Smach::state_base *state)
 {
