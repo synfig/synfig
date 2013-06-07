@@ -82,6 +82,10 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 {
 }
 
+/*! \fn Widget_Keyframe_List::redraw()
+**	\brief Redraw event. Should draw all the keyframes +  the selected + the dragged + disabled
+**  connected on signal_expose_event()
+*/
 bool
 Widget_Keyframe_List::redraw()
 {
@@ -112,6 +116,7 @@ Widget_Keyframe_List::redraw()
 	//!Loop all the keyframes
 	synfig::KeyframeList::iterator iter,selected_iter;
 	bool show_selected(false);
+
 	for(iter=kf_list_->begin();iter!=kf_list_->end();iter++)
 	{
 		//!do not draw keyframes out of the widget boundaries
@@ -121,9 +126,15 @@ Widget_Keyframe_List::redraw()
 		if(*iter!=selected_kf)
 		{
 			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
-			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-			x-h/2+1, 0, h, h );
+			// Change shape for disabled keyframe
+			if (iter->active())
+				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
+				x-h/2+1, 0, h, h );
+			else
+				get_style()->paint_arrow(get_window(), Gtk::STATE_INSENSITIVE,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
+				x-h/2+1, 0, h, h );
 		}
 		else
 		{
@@ -140,9 +151,15 @@ Widget_Keyframe_List::redraw()
 		if (!dragging_)
 		{
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
-			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-			x-h/2+1, 0, h, h );
+			// Change shape for disabled keyframe
+			if (selected_iter->active())
+				get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
+				x-h/2+1, 0, h, h );
+			else
+				get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
+				x-h/2+1, 0, h, h );
 		}
 		// If dragging then show the selected as insensitive and the
 		// dragged as selected

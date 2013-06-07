@@ -420,6 +420,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
 	canvas_view->set_ext_widget(get_name(),tree_view);
+	// widget_timeslider fps connection to animation render description change
 	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::Dock_Timetrack::refresh_rend_desc));
 }
 
@@ -445,6 +446,9 @@ Dock_Timetrack::refresh_selected_param()
 */
 }
 
+/*! \fn Dock_Timetrack::refresh_rend_desc()
+**	\brief Signal handler for animation render description change
+*/
 void
 Dock_Timetrack::refresh_rend_desc()
 {

@@ -131,7 +131,7 @@ public:
 
 
 /* ======================= EVENTS HANDLERS ===========================*/
-	//!Redraw event. Should draw all the keyframes +  the selected + the dragged
+	//!Redraw event. Should draw all the keyframes +  the selected + the dragged + disabled
 	bool redraw();
 
 	//!Mouse event handler.
