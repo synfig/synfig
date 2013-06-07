@@ -153,11 +153,11 @@ Widget_Keyframe_List::redraw()
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for disabled keyframe
 			if (selected_iter->active())
-				get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 				x-h/2+1, 0, h, h );
 			else
-				get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
 				x-h/2+1, 0, h, h );
 		}
