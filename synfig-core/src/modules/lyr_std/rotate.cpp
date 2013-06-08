@@ -474,28 +474,21 @@ Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const 
 	const double rtx((origin[0]-tl[0])*sx);
 	const double rty((origin[1]-tl[1])*sy);
 
-	cairo_save(cr);
 	float angle=Angle::rad(amount).get();
 	
 	cairo_translate(cr, rtx, rty);
 	cairo_rotate(cr, -angle);
 	cairo_translate(cr, -rtx, -rty);
-	
-	cairo_push_group(cr);
-	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-		return false;
-	cairo_pop_group_to_source(cr);
-	
+
 	if(quality>8) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
 	else if(quality>=4) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_GOOD);
 	else cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BEST);
 	
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
-	cairo_restore(cr);
-
-	return true;
 	
+	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+		return false;
+	
+	return true;	
 }
 
 Rect
