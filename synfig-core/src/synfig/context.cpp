@@ -620,12 +620,6 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 	}
 #endif	// SYNFIG_PROFILE_LAYERS
 	
-	const Rect bbox(renddesc.get_rect());
-	// this is going to be set to true if this layer contributes
-	// nothing, but it's a straight blend with non-zero amount, and so
-	// it has an effect anyway
-	bool straight_and_empty = false;
-	etl::handle<Layer_Composite> composite;
 	Context context(*this);
 	// Run all layers until context is empty
 	for(;!(context)->empty();++context)
@@ -633,41 +627,11 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 		// If we are not active then move on to next layer
 		if(!(*context)->active())
 			continue;
-		const Rect layer_bounds((*context)->get_bounding_rect());
-		// Cast current layer to composite
-		composite = etl::handle<Layer_Composite>::cast_dynamic(*context);
-		// If the box area is less than zero or the boxes do not
-		// intersect then move on to next layer, unless the layer is
-		// using a straight blend and has a non-zero amount, in which
-		// case it will still affect the result
-		if(layer_bounds.area() <= 0.0000000000001 || !(layer_bounds && bbox))
-		{
-			if (composite &&
-				CairoSurface::value_type::is_straight(composite->get_blend_method()) &&
-				composite->get_amount() != 0.0f)
-			{
-				straight_and_empty = true;
-				break;
-			}
-			continue;
-		}
-		// If this layer has Straight as the blend method and amount
-		// is 1.0, and the layer doesn't depend on its context, then
-		// we don't want to render the context
-		if (composite &&
-			composite->get_blend_method() == Color::BLEND_STRAIGHT &&
-			composite->get_amount() == 1.0f &&
-			!composite->reads_context())
-		{
-			Layer::Handle layer = *context;
-			while (!context->empty()) context++; // skip the context
-			return layer->accelerated_cairorender(context,cr,quality,renddesc, cb);
-		}
-		// Break out of the loop--we have found a good layer
+		// Found one good layer
 		break;
 	}
 	// If this layer isn't defined, return alpha
-	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
+	if (context->empty())
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
 		synfig::info("Context::accelerated_cairorender(): Hit end of list");
@@ -699,17 +663,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 		// rendering, but it uses straight blending, so we need to render
 		// the stuff under us and then blit transparent pixels over it
 		// using the appropriate 'amount'
-		if (straight_and_empty)
-		{
-			if ((ret = Context((context+1)).accelerated_cairorender(cr,quality,renddesc,cb)))
-			{
-				cairo_set_source_rgba(cr, 0, 0, 0, 1.0-composite->get_amount()); // TODO: handle amount values outside of the range 0.0-1.0
-				cairo_set_operator(cr, CAIRO_OPERATOR_DEST_IN);
-				cairo_paint(cr);
-			}
-		}
-		else
-			ret = (*context)->accelerated_cairorender(context+1,cr,quality,renddesc, cb);
+		ret = (*context)->accelerated_cairorender(context+1,cr,quality,renddesc, cb);
 #ifdef SYNFIG_PROFILE_LAYERS
 		//post work for the previous layer
 		time_table[curr_layer]+=profile_timer();							//-

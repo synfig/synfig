@@ -789,10 +789,10 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	// inter holds the intersection rectangle of both rectangles.
 	inter&=shape;
 	
-	const Point inter_min(inter.get_min());
-	const Point inter_max(inter.get_max());
-	const double width (inter_max[0]-inter_min[0]);
-	const double height(inter_max[1]-inter_min[1]);
+	const Point shape_min(shape.get_min());
+	const Point shape_max(shape.get_max());
+	const double width (shape_max[0]-shape_min[0]);
+	const double height(shape_max[1]-shape_min[1]);
 	const double tx(-tl[0]/pw);
 	const double ty(-tl[1]/ph);
 	const double sx(1/pw);
@@ -807,9 +807,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 			cairo_set_source_rgba(cr, r, g, b, a);
 			cairo_paint(cr);
 			cairo_restore(cr);
-			// check for trivial case
-			if (inter.area()<0.00000001)
-				return true;
 			// draw the background to an intermediate surface
 			cairo_push_group(cr);
 			if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
@@ -821,7 +818,7 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 			// only paint at the hole of the rectangle
 			cairo_translate(cr, tx , ty);
 			cairo_scale(cr, sx, sy);
-			cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 			cairo_clip(cr);
 			// remove the background
 			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
@@ -847,7 +844,7 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 			cairo_translate(cr, tx , ty);
 			cairo_scale(cr, sx, sy);
-			cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 			cairo_clip(cr);
 			cairo_paint(cr);
 			cairo_pop_group_to_source(cr);
@@ -857,19 +854,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 		}
 	}
 	
-	// not inverted
-	// optimization - if the whole canvas is covered by this rectangle,
-	// and the rectangle is a solid color, we don't need to render
-	// what's behind us
-	if (is_solid_color() && inter==Rect(tl, br))
-	{
-		cairo_save(cr);
-		cairo_set_source_rgba(cr, r, g, b, a);
-		cairo_paint(cr);
-		cairo_restore(cr);
-		return true;
-	}
-	// The rectangle intersects the canvas partially
 	// Render what is behind us
 	cairo_save(cr);
 	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
@@ -878,13 +862,10 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 		return false;
 	}
 	cairo_restore(cr);
-	// In the case where there is nothing to render...
-	if (inter.area()<0.00000001)
-		return true;
 	cairo_set_source_rgba(cr, r, g, b, a);
 	cairo_translate(cr, tx , ty);
 	cairo_scale(cr, sx, sy);
-	cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+	cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 	cairo_clip(cr);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	return true;
