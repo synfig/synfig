@@ -426,7 +426,10 @@ Rotate::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	cairo_surface_t* source=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(), desc.get_h());
 
 	if(!context.accelerated_cairorender(source,quality,desc,cb))
+	{
+		cairo_surface_destroy(source);
 		return false;
+	}
 	
 	cairo_t *cr=cairo_create(surface);
 	cairo_save(cr);
@@ -450,6 +453,51 @@ Rotate::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 
 }
 ///////////
+
+bool
+Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	
+	// These are the scale values
+	const double sx(1/pw);
+	const double sy(1/ph);
+	
+	const double rtx((origin[0]-tl[0])*sx);
+	const double rty((origin[1]-tl[1])*sy);
+
+	cairo_save(cr);
+	float angle=Angle::rad(amount).get();
+	
+	cairo_translate(cr, rtx, rty);
+	cairo_rotate(cr, -angle);
+	cairo_translate(cr, -rtx, -rty);
+	
+	cairo_push_group(cr);
+	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+		return false;
+	cairo_pop_group_to_source(cr);
+	
+	if(quality>8) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
+	else if(quality>=4) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_GOOD);
+	else cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BEST);
+	
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+	cairo_restore(cr);
+
+	return true;
+	
+}
+
 Rect
 Rotate::get_full_bounding_rect(Context context)const
 {
