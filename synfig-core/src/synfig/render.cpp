@@ -424,10 +424,16 @@ synfig::cairorender(
 	// Report our success
 	return(true);
 }
-
-
 ////////
 
+bool
+synfig::cairorender(Context context,
+				cairo_t* cr,
+				const RendDesc &desc,
+				ProgressCallback *cb)
+{
+	return cairorender(context, cairo_get_target(cr), desc, cb);
+}
 
 
 

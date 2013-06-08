@@ -193,10 +193,65 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	// Render the scene
 	return cairorender(Context(image.begin()),surface,renddesc,&stagetwo);
 }
-
-
-
 /////
+
+bool
+Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
+{
+	RendDesc renddesc(renddesc_);
+	
+	if(!amount)
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	
+	CanvasBase image;
+	
+	SuperCallback stageone(cb,0,50000,100000);
+	SuperCallback stagetwo(cb,50000,100000,100000);
+	
+	Layer_Bitmap::Handle surfacelayer(new class Layer_Bitmap());
+	
+	Context iter;
+	
+	for(iter=context;*iter;iter++)
+		image.push_back(*iter);
+	
+	// Add one Bitmap Layer on top
+	image.push_front(surfacelayer.get());
+	
+	image.push_back(0);	// and Alpha black at end
+	
+	// Render the backdrop on the surface layer's surface.
+	cairo_surface_t* cs=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, renddesc.get_w(), renddesc.get_h());
+	cairo_t* cr_cs=cairo_create(cs);
+	if(!context.accelerated_cairorender(cr_cs,quality,renddesc,&stageone))
+	{
+		cairo_surface_destroy(cs);
+		cairo_destroy(cr_cs);
+		return false;
+	}
+	cairo_destroy(cr_cs);
+	surfacelayer->set_cairo_surface(cs);
+	cairo_surface_destroy(cs);
+	// Sets up the interpolation of the context (now the surface layer is the first one)
+	// depending on the quality
+	if(quality<=4)surfacelayer->c=3;else
+		if(quality<=5)surfacelayer->c=2;
+		else if(quality<=6)surfacelayer->c=1;
+		else surfacelayer->c=0;
+	surfacelayer->tl=renddesc.get_tl();
+	surfacelayer->br=renddesc.get_br();
+	// Sets the blend method to straight. See below
+	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
+	surfacelayer->set_render_method(context, CAIRO);
+	// Push this layer on the image. The blending result is only this layer
+	// and the surface layer. The rest of the context is ignored by the straight
+	// blend method of surface layer
+	image.push_front(const_cast<synfig::Layer_Composite*>(this));
+	
+	// Render the scene
+	return cairorender(Context(image.begin()),cr,renddesc,&stagetwo);
+}
+
 
 Rect
 Layer_Composite::get_full_bounding_rect(Context context)const

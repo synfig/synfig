@@ -140,22 +140,25 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			cairo_surface_t* surface;
 			if(obtain_surface(surface))
 			{
-				if(!context.accelerated_cairorender(surface,quality,desc,cb))
+				cairo_t* cr=cairo_create(surface);
+				if(!context.accelerated_cairorender(cr,quality,desc,cb))
 				{
 					// For some reason, the accelerated renderer failed.
 					if(cb)cb->error(_("Frame Renderer Failure"));
+					cairo_destroy(cr);
 					return false;
 				}
 				else
 				{
 					// Put the surface we renderer onto the target's device.
 					// and destrois cairo_surface_t
-					if(!put_surface(surface, cb))
+					if(!put_surface(cairo_surface_reference(surface), cb))
 					{
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
 					}
 				}
+				cairo_destroy(cr);
 			}
 			else
 			{

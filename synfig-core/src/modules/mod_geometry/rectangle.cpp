@@ -744,9 +744,153 @@ Rectangle::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 	cairo_destroy(cr);
 	return true;
 }
-
-
 //////
+
+bool
+Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(is_disabled())
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+	
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	
+	const int	w(renddesc.get_w());
+	const int	h(renddesc.get_h());
+	
+	// Width and Height of a pixel
+	const Real pw = (br[0] - tl[0]) / w;
+	const Real ph = (br[1] - tl[1]) / h;
+	Point min(point1), max(point2);
+	
+	// if x max, min are swaped then swap the x coordinate
+	if(min[0] > max[0]) swap(min[0],max[0]);
+	// if y max min are swaped then swap the y coordinate
+	if(min[1] > max[1]) swap(min[1],max[1]);
+	// min is the lower left corner and max is the upper right corner
+	// now we need to expand the edges
+	min[0]-=expand;
+	max[0]+=expand;
+	min[1]-=expand;
+	max[1]+=expand;
+	//
+	//synfig::info("min=%f, %f     max=%f, %f", min[0], min[1], max[0], max[1]);
+	//
+	// This is a rectangle with the same dimensions of the rectangle
+	const Rect shape(min, max);
+	// This is a rectangle with the same dimensions of the canvas
+	const Rect dest(tl, br);
+	Rect inter(dest);
+	// inter holds the intersection rectangle of both rectangles.
+	inter&=shape;
+	
+	const Point inter_min(inter.get_min());
+	const Point inter_max(inter.get_max());
+	const double width (inter_max[0]-inter_min[0]);
+	const double height(inter_max[1]-inter_min[1]);
+	const double tx(-tl[0]/pw);
+	const double ty(-tl[1]/ph);
+	const double sx(1/pw);
+	const double sy(1/ph);
+
+	if(invert)
+	{
+		if(is_solid_color())
+		{
+			// Fill the all surface with the color
+			cairo_save(cr);
+			cairo_set_source_rgba(cr, r, g, b, a);
+			cairo_paint(cr);
+			cairo_restore(cr);
+			// check for trivial case
+			if (inter.area()<0.00000001)
+				return true;
+			// draw the background to an intermediate surface
+			cairo_push_group(cr);
+			if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+			{
+				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+				return false;
+			}
+			cairo_pop_group_to_source(cr);
+			// only paint at the hole of the rectangle
+			cairo_translate(cr, tx , ty);
+			cairo_scale(cr, sx, sy);
+			cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+			cairo_clip(cr);
+			// remove the background
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint(cr);
+			
+			return true;
+		}
+		else // not solid color so we need to render what's behind
+		{
+			cairo_save(cr);
+			// Initially render what's behind us
+			if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+			{
+				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+				return false;
+			}
+			cairo_restore(cr);
+			// paint the inverted rectangle on an intermediate surface
+			cairo_push_group(cr);
+			cairo_set_source_rgba(cr, r, g, b, a);
+			cairo_paint(cr);
+			// remove the central hole
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_translate(cr, tx , ty);
+			cairo_scale(cr, sx, sy);
+			cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+			cairo_clip(cr);
+			cairo_paint(cr);
+			cairo_pop_group_to_source(cr);
+			// now let's paint the inverted rectangle with the hole on the rendered context
+			cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+			return true;
+		}
+	}
+	
+	// not inverted
+	// optimization - if the whole canvas is covered by this rectangle,
+	// and the rectangle is a solid color, we don't need to render
+	// what's behind us
+	if (is_solid_color() && inter==Rect(tl, br))
+	{
+		cairo_save(cr);
+		cairo_set_source_rgba(cr, r, g, b, a);
+		cairo_paint(cr);
+		cairo_restore(cr);
+		return true;
+	}
+	// The rectangle intersects the canvas partially
+	// Render what is behind us
+	cairo_save(cr);
+	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	cairo_restore(cr);
+	// In the case where there is nothing to render...
+	if (inter.area()<0.00000001)
+		return true;
+	cairo_set_source_rgba(cr, r, g, b, a);
+	cairo_translate(cr, tx , ty);
+	cairo_scale(cr, sx, sy);
+	cairo_rectangle(cr, inter_min[0], inter_min[1], width, height);
+	cairo_clip(cr);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	return true;
+}
+
+
 
 Rect
 Rectangle::get_bounding_rect()const

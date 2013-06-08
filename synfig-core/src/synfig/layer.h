@@ -527,6 +527,7 @@ public:
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator referring to next Layer.

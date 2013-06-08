@@ -135,8 +135,9 @@ synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 		tile_desc.set_subwindow(x,y,w,h);
 				
 		cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+		cairo_t* cr=cairo_create(surface);
 
-		if(!context.accelerated_cairorender(surface,get_quality(),tile_desc,&super))
+		if(!context.accelerated_cairorender(cr,get_quality(),tile_desc,&super))
 		{
 			// For some reason, the accelerated renderer failed.
 			if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -148,14 +149,16 @@ synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 			if(status)
 			{
 				if(cb) cb->error(strprintf(_("Bad surface: %s"), cairo_status_to_string(status)));
+				cairo_destroy(cr);
 				return false;
 			}
 			// Add the tile to the target
-			if(!add_tile(surface, x,y))
+			if(!add_tile(cairo_surface_reference(surface), x,y))
 			{
 				if(cb)cb->error(_("add_tile():Unable to put surface on target"));
 				return false;
 			}
+			cairo_destroy(cr);
 		}
 		signal_progress()();
 	}

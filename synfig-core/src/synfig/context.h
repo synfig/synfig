@@ -79,6 +79,7 @@ public:
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 	bool accelerated_cairorender(cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
+	bool accelerated_cairorender(cairo_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//! Sets the context to the Time \time. It is done recursively.
 	void set_time(Time time)const;
