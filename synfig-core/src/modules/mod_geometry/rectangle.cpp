@@ -757,15 +757,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	const float b(color.get_b());
 	const float a(color.get_a());
 	
-	const Point	tl(renddesc.get_tl());
-	const Point br(renddesc.get_br());
-	
-	const int	w(renddesc.get_w());
-	const int	h(renddesc.get_h());
-	
-	// Width and Height of a pixel
-	const Real pw = (br[0] - tl[0]) / w;
-	const Real ph = (br[1] - tl[1]) / h;
 	Point min(point1), max(point2);
 	
 	// if x max, min are swaped then swap the x coordinate
@@ -783,20 +774,11 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	//
 	// This is a rectangle with the same dimensions of the rectangle
 	const Rect shape(min, max);
-	// This is a rectangle with the same dimensions of the canvas
-	const Rect dest(tl, br);
-	Rect inter(dest);
-	// inter holds the intersection rectangle of both rectangles.
-	inter&=shape;
 	
 	const Point shape_min(shape.get_min());
 	const Point shape_max(shape.get_max());
 	const double width (shape_max[0]-shape_min[0]);
 	const double height(shape_max[1]-shape_min[1]);
-	const double tx(-tl[0]/pw);
-	const double ty(-tl[1]/ph);
-	const double sx(1/pw);
-	const double sy(1/ph);
 
 	if(invert)
 	{
@@ -816,8 +798,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 			}
 			cairo_pop_group_to_source(cr);
 			// only paint at the hole of the rectangle
-			cairo_translate(cr, tx , ty);
-			cairo_scale(cr, sx, sy);
 			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 			cairo_clip(cr);
 			// remove the background
@@ -842,8 +822,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 			cairo_paint(cr);
 			// remove the central hole
 			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-			cairo_translate(cr, tx , ty);
-			cairo_scale(cr, sx, sy);
 			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 			cairo_clip(cr);
 			cairo_paint(cr);
@@ -863,8 +841,6 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	}
 	cairo_restore(cr);
 	cairo_set_source_rgba(cr, r, g, b, a);
-	cairo_translate(cr, tx , ty);
-	cairo_scale(cr, sx, sy);
 	cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 	cairo_clip(cr);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());

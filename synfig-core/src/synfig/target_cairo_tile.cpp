@@ -136,11 +136,17 @@ synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 				
 		cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
 		cairo_t* cr=cairo_create(surface);
-
+		double tx=tile_desc.get_tl()[0];
+		double ty=tile_desc.get_tl()[1];
+		double sx=1.0/tile_desc.get_pw();
+		double sy=1.0/tile_desc.get_ph();
+		cairo_scale(cr, sx, sy);
+		cairo_translate(cr, -tx, -ty);
 		if(!context.accelerated_cairorender(cr,get_quality(),tile_desc,&super))
 		{
 			// For some reason, the accelerated renderer failed.
 			if(cb)cb->error(_("Accelerated Renderer Failure"));
+			cairo_destroy(cr);
 			return false;
 		}
 		else

@@ -141,6 +141,12 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			if(obtain_surface(surface))
 			{
 				cairo_t* cr=cairo_create(surface);
+				double tx=desc.get_tl()[0];
+				double ty=desc.get_tl()[1];
+				double sx=1.0/desc.get_pw();
+				double sy=1.0/desc.get_ph();
+				cairo_scale(cr, sx, sy);
+				cairo_translate(cr, -tx, -ty);
 				if(!context.accelerated_cairorender(cr,quality,desc,cb))
 				{
 					// For some reason, the accelerated renderer failed.

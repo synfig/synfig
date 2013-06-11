@@ -269,22 +269,8 @@ Layer_Stretch::accelerated_cairorender(Context context, cairo_t *cr, int quality
 		cairo_fill(cr);
 		return true;
 	}
-	
-	const Point	tl(renddesc.get_tl());
-	const Point br(renddesc.get_br());
-	const int	w(renddesc.get_w());
-	const int	h(renddesc.get_h());
-	
-	// Width and Height of a pixel
-	const Real pw = (br[0] - tl[0]) / w;
-	const Real ph = (br[1] - tl[1]) / h;
-	
-	// These are the scale values
-	const double sx(1/pw);
-	const double sy(1/ph);
-	
-	const double stx((center[0]-tl[0])*sx);
-	const double sty((center[1]-tl[1])*sy);
+	const double stx(center[0]);
+	const double sty(center[1]);
 		
 	cairo_translate(cr, stx, sty);
 	cairo_scale(cr, amount[0], amount[1]);
