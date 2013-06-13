@@ -183,7 +183,22 @@ Translate::accelerated_cairorender(Context context,cairo_surface_t *surface,int 
 }
 
 /////
+/////
+bool
+Translate::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	cairo_translate(cr, origin[0], origin[1]);
 
+	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	
+	return true;
+}
+
+/////
 
 Rect
 Translate::get_full_bounding_rect(Context context)const
