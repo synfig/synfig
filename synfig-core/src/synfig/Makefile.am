@@ -228,6 +228,7 @@ SYNFIGHEADERS = \
 	blur.h \
 	bone.h \
 	cairo_operators.h \
+	cairo_renddesc.h \
 	canvas.h \
 	color.h \
 	context.h \
@@ -269,6 +270,7 @@ SYNFIGSOURCES = \
 	bone.cpp \
 	blur.cpp \
 	cairo_operators.cpp \
+	cairo_renddesc.cpp \
 	canvas.cpp \
 	color.cpp \
 	context.cpp \
