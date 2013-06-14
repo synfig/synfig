@@ -2812,6 +2812,47 @@ Layer_Shape::shape_to_cairo(cairo_t *cr)const
 //
 
 bool
+Layer_Shape::feather_cairo_surface(cairo_surface_t* surface, RendDesc renddesc, int quality)const
+{
+	if(feather && quality!=10)
+	{
+		etl::surface<float>	shapesurface;
+		shapesurface.set_wh(renddesc.get_w(),renddesc.get_h());
+		shapesurface.clear();
+		
+		CairoSurface cairosurface(surface);
+		if(!cairosurface.map_cairo_image())
+		{
+			synfig::info("map cairo image failed");
+			return false;
+		}
+		// Extract the alpha values:
+		int x, y;
+		int h(renddesc.get_h()), w(renddesc.get_w());
+		float div=1.0/((float)(CairoColor::ceil));
+		for(y=0; y<h; y++)
+			for(x=0;x<w;x++)
+				shapesurface[y][x]=cairosurface[y][x].get_a()*div;
+		// Blue the alpha values
+		Blur(feather,feather,blurtype)(shapesurface, renddesc.get_br()-renddesc.get_tl(), shapesurface);
+		// repaint the cairosurface with the result
+		Color ccolor(color);
+		for(y=0; y<h; y++)
+			for(x=0;x<w;x++)
+			{
+				float a=shapesurface[y][x];
+				ccolor.set_a(a);
+				ccolor.clamped();
+				cairosurface[y][x]=CairoColor(ccolor).premult_alpha();
+			}
+		
+		cairosurface.unmap_cairo_image();
+	}
+	return true;
+}
+
+
+bool
 Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback *cb)const
 {
