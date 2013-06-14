@@ -780,71 +780,34 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	const double width (shape_max[0]-shape_min[0]);
 	const double height(shape_max[1]-shape_min[1]);
 
-	if(invert)
-	{
-		if(is_solid_color())
-		{
-			// Fill the all surface with the color
-			cairo_save(cr);
-			cairo_set_source_rgba(cr, r, g, b, a);
-			cairo_paint(cr);
-			cairo_restore(cr);
-			// draw the background to an intermediate surface
-			cairo_push_group(cr);
-			if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-			{
-				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-				return false;
-			}
-			cairo_pop_group_to_source(cr);
-			// only paint at the hole of the rectangle
-			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
-			cairo_clip(cr);
-			// remove the background
-			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-			cairo_paint(cr);
-			
-			return true;
-		}
-		else // not solid color so we need to render what's behind
-		{
-			cairo_save(cr);
-			// Initially render what's behind us
-			if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-			{
-				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-				return false;
-			}
-			cairo_restore(cr);
-			// paint the inverted rectangle on an intermediate surface
-			cairo_push_group(cr);
-			cairo_set_source_rgba(cr, r, g, b, a);
-			cairo_paint(cr);
-			// remove the central hole
-			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-			cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
-			cairo_clip(cr);
-			cairo_paint(cr);
-			cairo_pop_group_to_source(cr);
-			// now let's paint the inverted rectangle with the hole on the rendered context
-			cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-			return true;
-		}
-	}
-	
-	// Render what is behind us
-	cairo_save(cr);
 	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
 		return false;
 	}
-	cairo_restore(cr);
+
+	cairo_save(cr);
+	if(invert)
+	{
+		cairo_push_group(cr);
+		cairo_reset_clip(cr);
+		cairo_set_source_rgba(cr, r, g, b, a);
+		cairo_fill(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
+		cairo_clip(cr);
+		cairo_paint(cr);
+		cairo_pop_group_to_source(cr);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
 	cairo_set_source_rgba(cr, r, g, b, a);
 	cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
 	cairo_clip(cr);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	return true;
+
+	cairo_restore(cr);
+
+	return  true;
 }
 
 
