@@ -197,8 +197,6 @@ Layer_Polygon::get_param_vocab()const
 bool
 Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	//synfig::info("rendering Cairo polygon");
-
 	// Grab the rgba values
 	const float r(color.get_r());
 	const float g(color.get_g());
@@ -314,40 +312,13 @@ Layer_Polygon::accelerated_cairorender(Context context,cairo_surface_t *surface,
 
 	cairo_fill(subcr);
 	cairo_restore(subcr);
-	if(feather && quality!=10)
-	{
-		etl::surface<float>	shapesurface;
-		shapesurface.set_wh(workdesc.get_w(),workdesc.get_h());
-		shapesurface.clear();
-
-		CairoSurface cairosubimage(subimage);
-		if(!cairosubimage.map_cairo_image())
-		{
-			synfig::info("map cairo image failed");
-			return false;
-		}
-		// Extract the alpha values:
-		int x, y;
-		int wh(workdesc.get_h()), ww(workdesc.get_w());
-		float div=1.0/((float)(CairoColor::ceil));
-		for(y=0; y<wh; y++)
-			for(x=0;x<ww;x++)
-				shapesurface[y][x]=cairosubimage[y][x].get_a()*div;
-		// Blue the alpha values
-		Blur(feather,feather,blurtype,cb)(shapesurface,workdesc.get_br()-workdesc.get_tl(),shapesurface);
-		// repaint the cairosubimage with the result
-		Color ccolor(color);
-		for(y=0; y<wh; y++)
-			for(x=0;x<ww;x++)
-			{
-				float a=shapesurface[y][x];
-				ccolor.set_a(a);
-				ccolor.clamped();
-				cairosubimage[y][x]=CairoColor(ccolor).premult_alpha();
-			}
-		
-		cairosubimage.unmap_cairo_image();
-	}
+	if(!feather_cairo_surface(subimage, workdesc, quality))
+	   {
+		cairo_surface_destroy(subimage);
+		cairo_destroy(subcr);
+		cairo_destroy(cr);
+		return false;
+	   }
 	
 	// Put the (feathered) polygon on the surface
 	if(!is_solid_color()) // we need to render the context before
