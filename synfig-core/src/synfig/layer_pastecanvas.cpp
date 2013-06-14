@@ -41,6 +41,8 @@
 #include "value.h"
 #include "valuenode.h"
 #include "canvas.h"
+#include "cairo_renddesc.h"
+
 
 #endif
 
@@ -688,8 +690,93 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_surface_t *surf
 
 
 ///////
+///////
+
+bool
+Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	if(cb && !cb->amount_complete(0,10000)) return false;
+	
+	if(depth==MAX_DEPTH)
+		// if we are at the extent of our depth,
+		// then we should just return whatever is under us.
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	
+	depth_counter counter(depth);
+	
+	if(!canvas || !get_amount())
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	
+	SuperCallback stageone(cb,0,4500,10000);
+	SuperCallback stagetwo(cb,4500,9000,10000);
+	SuperCallback stagethree(cb,9000,9999,10000);
+		
+	
+	Real grow_value(get_parent_canvas_grow_value());
+	canvas->set_grow_value(outline_grow+grow_value);
+	
+	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
+		canvas->set_time(curr_time+time_offset);
 
 
+	bool ret;
+
+	cairo_surface_t* worksurface;
+	RendDesc workdesc(renddesc);
+	
+	// untransform the renddesc to render the needed part of the canvas
+	if(!cairo_renddesc_untransform(cr, workdesc))
+		return false;
+
+	const int ww=workdesc.get_w();
+	const int wh=workdesc.get_h();
+	const double wtlx=workdesc.get_tl()[0];
+	const double wtly=workdesc.get_tl()[1];
+	const double wpw=(workdesc.get_br()[0]-workdesc.get_tl()[0])/ww;
+	const double wph=(workdesc.get_br()[1]-workdesc.get_tl()[1])/wh;
+
+	worksurface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+
+	// Render the background
+	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
+	if(!ret)
+		return false;
+
+	// prepare a new context to render the canvas content
+	cairo_t* cr2=cairo_create(worksurface);
+	// This will sacle the result to the device size.
+	cairo_scale(cr2, 1/wpw, 1/wph);
+	cairo_translate(cr2, -wtlx, -wtly);
+
+	// apply the transformations form the (paste canvas) group layer
+	cairo_translate(cr2, focus[0], focus[1]);
+	cairo_scale(cr2, exp(zoom), exp(zoom));
+	cairo_translate(cr2, -focus[0], -focus[1]);
+	cairo_translate(cr2, origin[0], origin[1]);
+	// Effectively render the canvas content
+	ret=canvas->get_context().accelerated_cairorender(cr2, quality, workdesc, &stagetwo);
+	// we are done with cr2, can destroy it. Result is at worksurface
+	cairo_destroy(cr2);
+	
+	if(!ret)
+		return false;
+	// Now let's push back the worksurface on the cairo context
+	cairo_save(cr);
+	// We need to scale down the worksurface to the user space again because
+	// it will be again scaled up to pixel size
+	cairo_translate(cr, wtlx, wtly);
+	cairo_scale(cr, wpw, wph);
+	cairo_set_source_surface(cr, worksurface, 0, 0);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_restore(cr);
+	// we are done with the worksurface
+	cairo_surface_destroy(worksurface);
+
+	if(cb && !cb->amount_complete(10000,10000)) return false;
+	
+	return true;
+}
+///////
 
 
 Rect

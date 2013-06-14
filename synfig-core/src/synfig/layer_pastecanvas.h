@@ -170,6 +170,7 @@ public:
 	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
 	//! Returns the rectangle that includes the layer
