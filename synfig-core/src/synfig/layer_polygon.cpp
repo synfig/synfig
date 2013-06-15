@@ -365,7 +365,7 @@ Layer_Polygon::accelerated_cairorender(Context context, cairo_t *cr, int quality
 			return false;
 		}
 	// If the polygon has feather then render as image
-	if((feather && quality != 10) || invert)
+	if(feather && quality != 10)
 	{
 		cairo_surface_t* subimage;
 		RendDesc	workdesc(renddesc);
@@ -428,27 +428,13 @@ Layer_Polygon::accelerated_cairorender(Context context, cairo_t *cr, int quality
 		const double wtlx=workdesc.get_tl()[0];
 		const double wtly=workdesc.get_tl()[1];
 		subimage=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+
 		cairo_t* subcr=cairo_create(subimage);
 		cairo_scale(subcr, 1/wpw, 1/wph);
 		cairo_translate(subcr, -wtlx, -wtly);
 		cairo_translate(subcr, origin[0], origin[1]);
-
-		cairo_set_source_rgba(subcr, r, g, b, a);
-		if(invert)
-		{
-			cairo_paint(subcr);
-		}
-		
 		int i,pointcount=vector_list.size();
-		for(i=0;i<pointcount; i++)
-		{
-			cairo_line_to(subcr, vector_list[i][0], vector_list[i][1]);
-		}
-		cairo_close_path(subcr);
-		if(invert)
-			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
-		else
-			cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
+
 		switch(winding_style)
 		{
 			case WINDING_NON_ZERO:
@@ -460,16 +446,23 @@ Layer_Polygon::accelerated_cairorender(Context context, cairo_t *cr, int quality
 		}
 		if(!antialias)
 			cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
-		
+
+		cairo_set_source_rgba(subcr, r, g, b, a);
+		if(invert)
+			cairo_paint(subcr);
+		for(i=0;i<pointcount; i++)
+			cairo_line_to(subcr, vector_list[i][0], vector_list[i][1]);
+		cairo_close_path(subcr);
+		if(invert)
+			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+		else
+			cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
 		cairo_fill(subcr);
-		if(quality!=10)
+		if(!feather_cairo_surface(subimage, workdesc, quality))
 		{
-			if(!feather_cairo_surface(subimage, workdesc, quality))
-			{
-				cairo_surface_destroy(subimage);
-				cairo_destroy(subcr);
-				return false;
-			}
+			cairo_surface_destroy(subimage);
+			cairo_destroy(subcr);
+			return false;
 		}
 		// we are done with subcr
 		cairo_destroy(subcr);
@@ -486,16 +479,10 @@ Layer_Polygon::accelerated_cairorender(Context context, cairo_t *cr, int quality
 		cairo_surface_destroy(subimage);
 		return true;
 	}
-	// Not inverted and not feather
+	// No feather
 	cairo_save(cr);
 	cairo_translate(cr, origin[0], origin[1]);
 	cairo_set_source_rgba(cr, r, g, b, a);
-	int i,pointcount=vector_list.size();
-	for(i=0;i<pointcount; i++)
-	{
-		cairo_line_to(cr, vector_list[i][0], vector_list[i][1]);
-	}
-	cairo_close_path(cr);
 	switch(winding_style)
 	{
 		case WINDING_NON_ZERO:
@@ -507,8 +494,30 @@ Layer_Polygon::accelerated_cairorender(Context context, cairo_t *cr, int quality
 	}
 	if(!antialias)
 		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-	cairo_clip(cr);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	int i,pointcount=vector_list.size();
+	
+	if(invert)
+	{
+		cairo_push_group(cr);
+		cairo_reset_clip(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+		cairo_paint(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		for(i=0;i<pointcount; i++)
+			cairo_line_to(cr, vector_list[i][0], vector_list[i][1]);
+		cairo_close_path(cr);
+		cairo_fill(cr);
+		cairo_pop_group_to_source(cr);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
+	else
+	{
+		for(i=0;i<pointcount; i++)
+			cairo_line_to(cr, vector_list[i][0], vector_list[i][1]);
+		cairo_close_path(cr);
+		cairo_clip(cr);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
 	cairo_restore(cr);
 	
 	return true;
