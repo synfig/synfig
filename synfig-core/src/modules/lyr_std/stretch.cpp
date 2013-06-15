@@ -271,14 +271,18 @@ Layer_Stretch::accelerated_cairorender(Context context, cairo_t *cr, int quality
 	}
 	const double stx(center[0]);
 	const double sty(center[1]);
-		
+	
+	cairo_save(cr);
 	cairo_translate(cr, stx, sty);
 	cairo_scale(cr, amount[0], amount[1]);
 	cairo_translate(cr, -stx, -sty);
 
 	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+	{
+		cairo_restore(cr);
 		return false;
-	
+	}
+	cairo_restore(cr);
 	return true;
 }
 

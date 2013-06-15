@@ -462,6 +462,7 @@ Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const 
 
 	float angle=Angle::rad(amount).get();
 	
+	cairo_save(cr);
 	cairo_translate(cr, rtx, rty);
 	cairo_rotate(cr, angle);
 	cairo_translate(cr, -rtx, -rty);
@@ -472,8 +473,11 @@ Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const 
 	else cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BEST);
 	
 	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+	{
+		cairo_restore(cr);
 		return false;
-	
+	}
+	cairo_restore(cr);
 	return true;	
 }
 
