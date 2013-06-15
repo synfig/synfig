@@ -720,57 +720,33 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 
 
 	bool ret;
-
-	cairo_surface_t* worksurface;
 	RendDesc workdesc(renddesc);
-	
-	// untransform the renddesc to render the needed part of the canvas
-	if(!cairo_renddesc_untransform(cr, workdesc))
-		return false;
-
-	const int ww=workdesc.get_w();
-	const int wh=workdesc.get_h();
-	const double wtlx=workdesc.get_tl()[0];
-	const double wtly=workdesc.get_tl()[1];
-	const double wpw=(workdesc.get_br()[0]-workdesc.get_tl()[0])/ww;
-	const double wph=(workdesc.get_br()[1]-workdesc.get_tl()[1])/wh;
-
-	worksurface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
 
 	// Render the background
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
 		return false;
 
-	// prepare a new context to render the canvas content
-	cairo_t* cr2=cairo_create(worksurface);
-	// This will sacle the result to the device size.
-	cairo_scale(cr2, 1/wpw, 1/wph);
-	cairo_translate(cr2, -wtlx, -wtly);
+	cairo_save(cr);
 
+	// render the canvas in a separated surface
+	cairo_push_group(cr);
 	// apply the transformations form the (paste canvas) group layer
-	cairo_translate(cr2, focus[0], focus[1]);
-	cairo_scale(cr2, exp(zoom), exp(zoom));
-	cairo_translate(cr2, -focus[0], -focus[1]);
-	cairo_translate(cr2, origin[0], origin[1]);
+	cairo_translate(cr, focus[0], focus[1]);
+	cairo_scale(cr, exp(zoom), exp(zoom));
+	cairo_translate(cr, -focus[0], -focus[1]);
+	cairo_translate(cr, origin[0], origin[1]);
 	// Effectively render the canvas content
-	ret=canvas->get_context().accelerated_cairorender(cr2, quality, workdesc, &stagetwo);
-	// we are done with cr2, can destroy it. Result is at worksurface
-	cairo_destroy(cr2);
+	ret=canvas->get_context().accelerated_cairorender(cr, quality, workdesc, &stagetwo);
+	// we are done apply the result to the source
+	cairo_pop_group_to_source(cr);
 	
 	if(!ret)
 		return false;
-	// Now let's push back the worksurface on the cairo context
-	cairo_save(cr);
-	// We need to scale down the worksurface to the user space again because
-	// it will be again scaled up to pixel size
-	cairo_translate(cr, wtlx, wtly);
-	cairo_scale(cr, wpw, wph);
-	cairo_set_source_surface(cr, worksurface, 0, 0);
+	// Let's paint the result with its alpha
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+
 	cairo_restore(cr);
-	// we are done with the worksurface
-	cairo_surface_destroy(worksurface);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 	
