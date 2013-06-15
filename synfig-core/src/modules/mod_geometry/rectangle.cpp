@@ -787,24 +787,25 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	}
 
 	cairo_save(cr);
+	cairo_set_source_rgba(cr, r, g, b, a);
 	if(invert)
 	{
 		cairo_push_group(cr);
 		cairo_reset_clip(cr);
-		cairo_set_source_rgba(cr, r, g, b, a);
-		cairo_fill(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
-		cairo_clip(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
 		cairo_paint(cr);
-		cairo_pop_group_to_source(cr);
-		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 	}
-	cairo_set_source_rgba(cr, r, g, b, a);
 	cairo_rectangle(cr, shape_min[0], shape_min[1], width, height);
-	cairo_clip(cr);
+	if(invert)
+	{
+		cairo_fill(cr);
+		cairo_pop_group_to_source(cr);
+	}
+	else
+		cairo_clip(cr);
+	
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-
 	cairo_restore(cr);
 
 	return  true;
