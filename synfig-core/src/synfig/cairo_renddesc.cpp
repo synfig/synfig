@@ -57,6 +57,9 @@ cairo_renddesc_untransform(cairo_t* cr, RendDesc &renddesc)
 	double tl_x, tl_y, tr_x, tr_y, bl_x, bl_y, br_x, br_y;
 	double mtlx, mtly, mbrx, mbry;
 	double pminx, pminy, pmaxx, pmaxy;
+	
+	const int flags=renddesc.get_flags();
+	
 	tl_x=tl[0];
 	tl_y=tl[1];
 	br_x=br[0];
@@ -135,13 +138,25 @@ cairo_renddesc_untransform(cairo_t* cr, RendDesc &renddesc)
 	mbry=pminy;
 	
 	// Now apply the new tl and br values to the workdesc
-	// Before we will keep the pixel aspect and so when we modify the tl and br
-	// the width and height will be modified as well.
-	workdesc.set_flags(RendDesc::PX_ASPECT);
+	// We don't want to render more pixels than the needed by the original
+	// renddesc, so we are going to keep the number of pixels in the diagonal
+	// to coincide with the original diagonal
+	Vector m_diagonal(br_x-tl_x, br_y-tl_y);
+	Vector m_diagonal_bbox(mbrx-mtlx, mbry-mtly);
+	double diagonal=m_diagonal.mag();
+	double diagonal_bbox=m_diagonal_bbox.mag();
+	int w_new=diagonal_bbox/diagonal * renddesc.get_w();
+	int h_new=diagonal_bbox/diagonal * renddesc.get_h();
+	workdesc.clear_flags();
 	// finally apply the new desc values!
 	workdesc.set_tl_br(Point(mtlx, mtly), Point(mbrx, mbry));
+	workdesc.set_w(w_new);
+	workdesc.set_h(h_new);
 
 	renddesc=workdesc;
+	
+	renddesc.set_flags(flags);
+	
 	return true;
 }
 
