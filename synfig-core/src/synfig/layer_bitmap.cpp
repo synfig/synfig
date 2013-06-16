@@ -760,6 +760,120 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_surface_t *out_surf
 }
 
 /////
+/////
+
+bool
+Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
+{
+	
+	int interp=c;
+	if(quality>=10)
+		interp=0;
+	else if(quality>=5 && interp>1)
+		interp=1;
+	
+	//if we don't actually have a valid surface just skip us
+	if(!csurface.is_mapped())
+	{
+		// Render what is behind us
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	}
+	
+	cairo_surface_t* cs=csurface.get_cairo_image_surface();
+	
+	if(cairo_surface_status(cs) || cairo_surface_get_type(cs)!=CAIRO_SURFACE_TYPE_IMAGE)
+	{
+		// Render what is behind us
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	}
+	
+	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
+	
+	Point	obr	= renddesc.get_br();
+	Point   otl = renddesc.get_tl();
+	
+	int		outw = renddesc.get_w();
+	int		outh = renddesc.get_h();
+	
+	int		inw = cairo_image_surface_get_width(cs);
+	int		inh = cairo_image_surface_get_height(cs);
+	
+	
+	if(	get_amount()==1 && // our bitmap is full opaque
+	   get_blend_method()==Color::BLEND_STRAIGHT && // and it doesn't draw the context
+	   otl==tl &&
+	   obr==br) // and the tl and br are the same ...
+	{
+		// Check for the trivial case: the Bitmap and the destiny surface have same dimensions and there is not gamma adjust
+		if(inw==outw && inh==outh && gamma_adjust==1.0f)
+		{
+			if(cb && !cb->amount_complete(0,100)) return false;
+			{
+				cairo_save(cr);
+				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
+				cairo_set_source_surface(cr, cs, 0, 0); // set the source our cairosurface
+				cairo_paint(cr); // paint on the destiny
+			}
+			if(cb && !cb->amount_complete(100,100)) return false;
+			return true;
+		}
+	}
+	else // It is not the trivial case
+	{
+		// Render what is behind us...
+		if(!context.accelerated_cairorender(cr,quality,renddesc,&subcb))
+			return false;
+	}
+	
+	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
+	
+	
+	// Calculate the width and height in pixels of the bitmap in the output surface
+	float wp=(br[0]-tl[0])/renddesc.get_pw();
+	float hp=(br[1]-tl[1])/renddesc.get_ph();
+	// So we need to scale the bitmap by wp/inw in horizontal and hp/inh in vertical.
+	float scalex=wp/inw;
+	float scaley=hp/inh;
+	// Now let's calculate the displacement of the image in the output surface.
+	Point disp=tl-otl;
+	// Calculate the cairo interpolation to do by the interpolation parameter c
+	cairo_filter_t filter;
+	switch(c)
+	{
+		case 3:	// Cubic
+			filter=CAIRO_FILTER_BEST;
+			break;
+		case 2:	// Cosine
+			filter=CAIRO_FILTER_GOOD;
+			break;
+		case 1:	// Linear
+			filter=CAIRO_FILTER_FAST;
+			break;
+		case 0:	// Nearest Neighbor
+		default:
+			filter=CAIRO_FILTER_NEAREST;
+			break;
+	}
+	// TODO: filter the image with gamma_adjust!!
+	cairo_save(cr);
+	// Need to scale down to user coordinates before pass to cr
+	cairo_translate(cr, renddesc.get_tl()[0], renddesc.get_tl()[1]);
+	cairo_scale(cr, renddesc.get_pw(), renddesc.get_ph());
+	// Apply the bitmap scale and tanslate
+	cairo_translate(cr, disp[0]/renddesc.get_pw(), disp[1]/renddesc.get_ph());
+	cairo_scale(cr, scalex, scaley);
+	// set the surface, filter, and paint
+	cairo_pattern_set_filter(cairo_get_source(cr), filter);
+	cairo_set_source_surface(cr, cs, 0,0);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	// we don't need cs anymore
+	cairo_surface_destroy(cs);
+	cairo_restore(cr);
+	
+	return true;
+}
+
+/////
 
 
 Rect
