@@ -732,10 +732,10 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	// render the canvas in a separated surface
 	cairo_push_group(cr);
 	// apply the transformations form the (paste canvas) group layer
+	cairo_translate(cr, origin[0], origin[1]);
 	cairo_translate(cr, focus[0], focus[1]);
 	cairo_scale(cr, exp(zoom), exp(zoom));
 	cairo_translate(cr, -focus[0], -focus[1]);
-	cairo_translate(cr, origin[0], origin[1]);
 	// Effectively render the canvas content
 	ret=canvas->get_context().accelerated_cairorender(cr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source
