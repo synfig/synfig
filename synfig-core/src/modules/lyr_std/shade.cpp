@@ -42,6 +42,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/segment.h>
+#include <synfig/cairo_renddesc.h>
 
 #include <cstring>
 #include <ETL/pen>
@@ -544,6 +545,207 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 #undef GAUSSIAN_ADJUSTMENT
 #undef SCALE_FACTOR
 
+	if(cb && !cb->amount_complete(10000,10000))
+	{
+		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		return false;
+	}
+	
+	return true;
+}
+
+///
+///
+bool
+Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	int x,y;
+	
+	RendDesc	workdesc(renddesc);
+	cairo_surface_t		*worksurface;
+	etl::surface<float> blurred;
+	
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, workdesc))
+		return false;
+	
+	const int w=workdesc.get_w(), h=workdesc.get_h();
+	const double pw=(workdesc.get_br()[0]-workdesc.get_tl()[0])/w;
+	const double ph=(workdesc.get_br()[1]-workdesc.get_tl()[1])/h;
+
+	//expand the working surface to accommodate the blur
+	//the expanded size = 1/2 the size in each direction rounded up
+	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
+	halfsizey = (int) (abs(size[1]*.5/ph) + 3);
+	
+	int origin_u(-round_to_int(origin[0]/pw)),origin_v(-round_to_int(origin[1]/ph));
+	
+	int origin_w(w+abs(origin_u)),origin_h(h+abs(origin_v));
+	
+	workdesc.set_subwindow(
+						   origin_u<0?origin_u:0,
+						   origin_v<0?origin_v:0,
+						   (origin_u>0?origin_u:0)+w,
+						   (origin_v>0?origin_v:0)+h
+						   );
+	
+	if(quality >= 10)
+	{
+		halfsizex=1;
+		halfsizey=1;
+	}
+	else if (quality == 9)
+	{
+		halfsizex/=4;
+		halfsizey/=4;
+	}
+#define SCALE_FACTOR	(64.0)
+	//expand by 1/2 size in each direction on either side
+	switch(type)
+	{
+		case Blur::DISC:
+		case Blur::BOX:
+		case Blur::CROSS:
+		{
+			// If passed a certain size don't expand more
+			halfsizex=halfsizex>SCALE_FACTOR?SCALE_FACTOR:halfsizex;
+			halfsizey=halfsizey>SCALE_FACTOR?SCALE_FACTOR:halfsizey;
+			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),origin_w+2*max(1,halfsizex),origin_h+2*max(1,halfsizey));
+			break;
+		}
+		case Blur::FASTGAUSSIAN:
+		{
+			if(quality < 4)
+			{
+				halfsizex*=2;
+				halfsizey*=2;
+			}
+			// If passed a certain size don't expand more
+			halfsizex=halfsizex>SCALE_FACTOR?SCALE_FACTOR:halfsizex;
+			halfsizey=halfsizey>SCALE_FACTOR?SCALE_FACTOR:halfsizey;
+			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),origin_w+2*max(1,halfsizex),origin_h+2*max(1,halfsizey));
+			break;
+		}
+		case Blur::GAUSSIAN:
+		{
+#define GAUSSIAN_ADJUSTMENT		(0.05)
+			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+			
+			pw=pw*pw;
+			ph=ph*ph;
+			
+			halfsizex = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizey = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			
+			halfsizex = (halfsizex + 1)/2;
+			halfsizey = (halfsizey + 1)/2;
+			// If passed a certain size don't expand more
+			halfsizex=halfsizex>SCALE_FACTOR?SCALE_FACTOR:halfsizex;
+			halfsizey=halfsizey>SCALE_FACTOR?SCALE_FACTOR:halfsizey;
+			workdesc.set_subwindow( -halfsizex, -halfsizey, origin_w+2*halfsizex, origin_h+2*halfsizey );
+			
+			break;
+		}
+	}
+	SuperCallback stageone(cb,0,5000,10000);
+	SuperCallback stagetwo(cb,5000,10000,10000);
+	
+	//callbacks depend on how long the blur takes
+	if(size[0] || size[1])
+	{
+		if(type == Blur::DISC)
+		{
+			stageone = SuperCallback(cb,0,5000,10000);
+			stagetwo = SuperCallback(cb,5000,10000,10000);
+		}
+		else
+		{
+			stageone = SuperCallback(cb,0,9000,10000);
+			stagetwo = SuperCallback(cb,9000,10000,10000);
+		}
+	}
+	else
+	{
+		stageone = SuperCallback(cb,0,9999,10000);
+		stagetwo = SuperCallback(cb,9999,10000,10000);
+	}
+	
+	// New expanded workdesc values
+	const int ww=workdesc.get_w();
+	const int wh=workdesc.get_h();
+	const double wtlx=workdesc.get_tl()[0];
+	const double wtly=workdesc.get_tl()[1];
+	
+	// setup the worksurface
+	worksurface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+	cairo_t* subcr=cairo_create(worksurface);
+	cairo_scale(subcr, 1/pw, 1/ph);
+	cairo_translate(subcr, -wtlx, -wtly);
+
+	//render the background onto the expanded surface
+	if(!context.accelerated_cairorender(subcr,quality,workdesc,&stageone))
+		return false;
+	// copy the background on the target surface if applies
+	if(!is_solid_color())
+	{
+		//cairo_translate(subcr, origin[0], origin[1]);
+		cairo_save(cr);
+		cairo_translate(cr, wtlx, wtly);
+		cairo_scale(cr, pw, ph);
+		cairo_set_source_surface(cr, worksurface, 0, 0);
+		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+		cairo_paint(cr);
+		cairo_restore(cr);
+	}
+	
+	// Extract the CairoSurface from the cairo_surface_t
+	CairoSurface cairoworksurface(worksurface);
+	if(!cairoworksurface.map_cairo_image())
+	{
+		synfig::info("map cairo image failed");
+		return false;
+	}
+	// Extract the alpha
+	blurred.set_wh(workdesc.get_w(),workdesc.get_h());
+	float div=1.0/((float)(CairoColor::ceil));
+	for(int j=0;j<workdesc.get_h();j++)
+		for(int i=0;i<workdesc.get_w();i++)
+			blurred[j][i]=cairoworksurface[j][i].get_a()*div;
+	
+	//blur the image
+	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
+	
+	// repaint the cairosubimage with the result. Use the layer's amount here (is faster)
+	Color ccolor(color);
+	float am=get_amount();
+	for(y=0; y<workdesc.get_h(); y++)
+		for(x=0;x<workdesc.get_w();x++)
+		{
+			float a=blurred[y][x];
+			if(invert)
+				a=1.0-a;
+			ccolor.set_a(a*am);
+			ccolor=ccolor.clamped();
+			cairoworksurface[y][x]=CairoColor(ccolor).premult_alpha();
+		}
+	
+	cairoworksurface.unmap_cairo_image();
+	
+	// Now lets blend the result in the output surface
+	cairo_save(cr);
+	cairo_translate(cr, origin[0], origin[1]);
+	cairo_translate(cr, wtlx, wtly);
+	cairo_scale(cr, pw, ph);
+	cairo_set_source_surface(cr, worksurface, 0, 0);
+	cairo_paint_with_alpha_operator(cr, 1.0, get_blend_method());
+	// TODO: add cairo_paint_opertor function when alpha=1.0 (it is quicker)
+	cairo_restore(cr);
+	cairo_surface_destroy(worksurface);
+	
+#undef GAUSSIAN_ADJUSTMENT
+#undef SCALE_FACTOR
+	
 	if(cb && !cb->amount_complete(10000,10000))
 	{
 		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
