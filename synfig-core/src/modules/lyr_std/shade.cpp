@@ -560,6 +560,8 @@ bool
 Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	int x,y;
+	SuperCallback stageone(cb,0,5000,10000);
+	SuperCallback stagetwo(cb,5000,10000,10000);
 	
 	RendDesc	workdesc(renddesc);
 	cairo_surface_t		*worksurface;
@@ -572,6 +574,26 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 	const int w=workdesc.get_w(), h=workdesc.get_h();
 	const double pw=(workdesc.get_br()[0]-workdesc.get_tl()[0])/w;
 	const double ph=(workdesc.get_br()[1]-workdesc.get_tl()[1])/h;
+
+	//callbacks depend on how long the blur takes
+	if(size[0] || size[1])
+	{
+		if(type == Blur::DISC)
+		{
+			stageone = SuperCallback(cb,0,5000,10000);
+			stagetwo = SuperCallback(cb,5000,10000,10000);
+		}
+		else
+		{
+			stageone = SuperCallback(cb,0,9000,10000);
+			stagetwo = SuperCallback(cb,9000,10000,10000);
+		}
+	}
+	else
+	{
+		stageone = SuperCallback(cb,0,9999,10000);
+		stagetwo = SuperCallback(cb,9999,10000,10000);
+	}
 
 	//expand the working surface to accommodate the blur
 	//the expanded size = 1/2 the size in each direction rounded up
@@ -647,28 +669,6 @@ Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 			
 			break;
 		}
-	}
-	SuperCallback stageone(cb,0,5000,10000);
-	SuperCallback stagetwo(cb,5000,10000,10000);
-	
-	//callbacks depend on how long the blur takes
-	if(size[0] || size[1])
-	{
-		if(type == Blur::DISC)
-		{
-			stageone = SuperCallback(cb,0,5000,10000);
-			stagetwo = SuperCallback(cb,5000,10000,10000);
-		}
-		else
-		{
-			stageone = SuperCallback(cb,0,9000,10000);
-			stagetwo = SuperCallback(cb,9000,10000,10000);
-		}
-	}
-	else
-	{
-		stageone = SuperCallback(cb,0,9999,10000);
-		stagetwo = SuperCallback(cb,9999,10000,10000);
 	}
 	
 	// New expanded workdesc values
