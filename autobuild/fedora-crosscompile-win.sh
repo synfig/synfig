@@ -11,6 +11,19 @@ set -e
 
 export SCRIPTPATH=`dirname "$0"`
 
+export BUILDROOT=$HOME/synfig-buildroot
+export PREFIX=$BUILDROOT/win32
+export DISTPREFIX=$BUILDROOT/tmp/win32
+export CACHEDIR=$BUILDROOT/cache
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
+export PATH=${PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+
+mkprep()
+{
+
 if [ -z $NOSU ]; then
 	su -c "yum install -y \
 		mingw32-gcc-c++ \
@@ -25,16 +38,6 @@ if [ -z $NOSU ]; then
 		ImageMagick \
 		"
 fi
-
-export BUILDROOT=$HOME/synfig-buildroot
-export PREFIX=$BUILDROOT/win32
-export DISTPREFIX=$BUILDROOT/tmp/win32
-export CACHEDIR=$BUILDROOT/cache
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
-export PATH=${PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
 
 # copy libs
 [ -d ${PREFIX}/bin ] || mkdir -p ${PREFIX}/bin
@@ -58,6 +61,7 @@ for file in \
    libgobject\*.dll \
    libgthread\*.dll \
    libgtk\*.dll \
+   libharfbuzz\*.dll \
    libintl\*.dll \
    libjpeg\*.dll \
    libpango\*.dll \
@@ -94,6 +98,17 @@ for file in \
 do
 	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
 done
+
+[ -d ${PREFIX}/share ] || mkdir -p ${PREFIX}/share
+for file in \
+   fontconfig \
+   themes \
+   xml \
+# this extra line is required!
+do
+	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
+done
+}
 
 #ETL
 mketl()
@@ -168,7 +183,9 @@ cd ..
 rm -rf ffmpeg
 
 [ -e portable-python-3.2.5.1.zip ] || wget http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
+[ ! -d python ] || rm -rf python
 unzip portable-python-3.2.5.1.zip
+[ ! -d $PREFIX/python ] || rm -rf $PREFIX/python
 mv python $PREFIX
 
 cd $PREFIX
@@ -178,6 +195,7 @@ makensis synfigstudio.nsi
 
 mkall()
 {
+	mkprep
 	mketl
 	mksynfig
 	mksynfigstudio
