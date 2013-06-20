@@ -64,11 +64,11 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 	filename_original = canvas->get_file_name();
 
 	String filename_base;
-	if (filename_original.compare(0, 1, "/"))
+	if (is_absolute_path(filename_original))
 	{
-		filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+filename_original;
-	} else {
 		filename_base = filename_original;
+	} else {
+		filename_base = synfigapp::Main::get_user_app_directory()+ETL_DIRECTORY_SEPARATOR+"tmp"+ETL_DIRECTORY_SEPARATOR+filename_original;
 	}
 	
 	// Make random filename and ensure there's no file with such name exist
