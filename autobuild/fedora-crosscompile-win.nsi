@@ -19,7 +19,7 @@ OutFile "synfigstudio-0.64.0.exe"
 InstallDir $PROGRAMFILES\Synfig
 
 ; Request application privileges for Windows Vista
-RequestExecutionLevel user
+RequestExecutionLevel highest
 
 !define MUI_ABORTWARNING
 
@@ -77,15 +77,15 @@ Section "Synfig Studio"
   File /r /x .* share\pixmaps
   File /r /x .* share\synfig
 
-#  FileOpen $0 $PROFILE\.gtkrc-2.0 a
-#  FileSeek $0 0 END
-#  FileWrite $0 "gtk-toolbar-style = 0"
-#  FileWriteByte $0 "13"
-#  FileWriteByte $0 "10"
-#  FileWrite $0 'gtk-theme-name = "Default"'
-#  FileWriteByte $0 "13"
-#  FileWriteByte $0 "10"	
-#  FileClose $0
+  FileOpen $0 $PROFILE\.gtkrc-2.0 a
+  FileSeek $0 0 END
+  FileWrite $0 "gtk-toolbar-style = 0"
+  FileWriteByte $0 "13"
+  FileWriteByte $0 "10"
+  FileWrite $0 'gtk-theme-name = "Default"'
+  FileWriteByte $0 "13"
+  FileWriteByte $0 "10"	
+  FileClose $0
 
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "0.64.0"
