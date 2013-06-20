@@ -146,7 +146,7 @@ PluginLauncher::execute( std::string script_path, const std::string& synfig_root
 		{
 			String python_path;
 #ifdef WIN32
-			python_path = synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe";
+			python_path = "\"" + synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
 #else
 			python_path = *iter;
 #endif
@@ -167,9 +167,13 @@ PluginLauncher::execute( std::string script_path, const std::string& synfig_root
 	
 	
 	// Construct the full command:
-	command = command+" "+script_path+" \""+filename_processed+"\" 2>&1";
+	command = command+" \""+script_path+"\" \""+filename_processed+"\" 2>&1";
+#ifdef WIN32
+	// This covers the dumb cmd.exe behavior.
+	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+	command = "\"" + command + "\"";
+#endif
 	
-	//system(command.c_str());
 	FILE* pipe = popen(command.c_str(), "r");
 	if (!pipe) {
 		output = "ERROR: pipe failed!";
