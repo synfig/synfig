@@ -34,7 +34,7 @@ RequestExecutionLevel highest
 
 ;!define MUI_HEADERIMAGE
 ;!define MUI_HEADERIMAGE_BITMAP "installer_logo.bmp"
-;!define MUI_WELCOMEFINISHPAGE_BITMAP "installer_logo.bmp"
+;!define MUI_WELCOMEFINISHPAGE_BITMAP ".\share\pixmaps\installer_logo.bmp"
 
 ; Pages
 
@@ -68,21 +68,22 @@ Section "Synfig Studio"
   File /r /x .* python
   
   SetOutPath "$INSTDIR\lib"
-  File /r /x .* lib\gdk-pixbuf-2.0
+;  File /r /x .* lib\gdk-pixbuf-2.0
   File /r /x .* lib\gtk-2.0
-  File /r /x .* lib\pango
+;  File /r /x .* lib\pango
   File /r /x .* lib\synfig
   
   SetOutPath "$INSTDIR\share"
   File /r /x .* share\pixmaps
   File /r /x .* share\synfig
+  File /r /x .* share\themes
 
   FileOpen $0 $PROFILE\.gtkrc-2.0 a
   FileSeek $0 0 END
   FileWrite $0 "gtk-toolbar-style = 0"
   FileWriteByte $0 "13"
   FileWriteByte $0 "10"
-  FileWrite $0 'gtk-theme-name = "Default"'
+  FileWrite $0 'gtk-theme-name = "MS-Windows"'
   FileWriteByte $0 "13"
   FileWriteByte $0 "10"	
   FileClose $0
