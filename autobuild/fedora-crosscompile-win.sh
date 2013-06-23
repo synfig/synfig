@@ -26,6 +26,12 @@ mkprep()
 
 if [ -z $NOSU ]; then
 	su -c "yum install -y \
+		intltool \
+		gcc-c++ \
+		autoconf \
+		automake \
+		libtool \
+		libtool-ltdl-devel \
 		mingw32-gcc-c++ \
 		mingw32-libxml++ \
 		mingw32-cairo \
