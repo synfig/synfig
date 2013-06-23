@@ -2,8 +2,6 @@
 
 #TODO: Replace version numbers in the .nsi file
 #TODO: Uninstall properly!
-#TODO: Can't find python if installed into Program Files (space in directory name)
-#TODO: Plugins not launched correctly
 #TODO: 64bit build
 #TODO: Magick++
 
@@ -195,7 +193,7 @@ unzip portable-python-3.2.5.1.zip
 mv python $PREFIX
 
 cd $PREFIX
-cp -f $SCRIPTPATH/fedora-crosscompile-win.nsi $PREFIX/synfigstudio.nsi
+cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
 makensis synfigstudio.nsi
 }
 
