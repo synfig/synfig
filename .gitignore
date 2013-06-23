@@ -1,4 +1,5 @@
 *.deps
+*.exe
 *.h1
 *.keys
 *.la
@@ -109,8 +110,12 @@ synfig-studio/images/32x32
 synfig-studio/images/48x48
 synfig-studio/images/64x64
 synfig-studio/images/*.png
+synfig-studio/images/*.bmp
+synfig-studio/images/*.ico
 synfig-studio/images/images.nsh
 synfig-studio/images/unimages.nsh
+synfig-studio/images/icons.nsh
+synfig-studio/images/unicons.nsh
 synfig-studio/m4/codeset.m4
 synfig-studio/m4/gettext.m4
 synfig-studio/m4/glibc21.m4
