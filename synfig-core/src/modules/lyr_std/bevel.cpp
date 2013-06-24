@@ -565,7 +565,7 @@ Layer_Bevel::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 bool
 Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	int x,y,u,v;
+	int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
 	
@@ -577,8 +577,9 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 	if(!cairo_renddesc_untransform(cr, workdesc))
 		return false;
 
-	const int	w = renddesc.get_w(), h = renddesc.get_h();
-	const Real	pw = renddesc.get_pw(),	ph = renddesc.get_ph();
+	const int	w = workdesc.get_w(), h = workdesc.get_h();
+	const double	pw = workdesc.get_pw(),	ph = workdesc.get_ph();
+	const Point tl=workdesc.get_tl();
 	const Vector size(softness,softness);
 	
 	//callbacks depend on how long the blur takes
@@ -661,16 +662,18 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 	const int wh=workdesc.get_h();
 	const double wtlx=workdesc.get_tl()[0];
 	const double wtly=workdesc.get_tl()[1];
+	const double wpw=workdesc.get_pw();
+	const double wph=workdesc.get_ph();
 
 	// setup the worksurface
 	worksurface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
-	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
 	cairo_t* subcr=cairo_create(worksurface);
-	cairo_scale(subcr, 1/pw, 1/ph);
+	cairo_scale(subcr, 1/wpw, 1/wph);
 	cairo_translate(subcr, -wtlx, -wtly);
 
 	//render the background onto the expanded surface
-	if(!context.accelerated_cairorender(worksurface,quality,workdesc,&stageone))
+	if(!context.accelerated_cairorender(subcr,quality,workdesc,&stageone))
 		return false;
 	
 	// Extract the CairoSurface from the cairo_surface_t
@@ -710,10 +713,13 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 	
 	//blur the image
 	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
-		
-	for(v=0,y=0;y<workdesc.get_h();y++,v++)
+
+	// Add the bevel effect
+	int u = halfsizex+abs(offset_u), v = halfsizey+abs(offset_v);	
+	for(y=0;y<h;y++,v++)
 	{
-		for(u=0,x=0;x<workdesc.get_w();x++,u++)
+		u = halfsizex+abs(offset_u);
+		for(x=0;x<w;x++,u++)
 		{
 			Real alpha(0);
 			Color shade;
@@ -772,7 +778,7 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 
 	// Now lets put the result in the output surface
 	cairo_save(cr);
-	cairo_translate(cr, wtlx, wtly);
+	cairo_translate(cr, tl[0], tl[1]);
 	cairo_scale(cr, pw, ph);
 	cairo_set_source_surface(cr, surface, 0, 0);
 	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
