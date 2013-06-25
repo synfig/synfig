@@ -41,6 +41,7 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
+#include <synfig/cairo_renddesc.h>
 
 #include <synfig/target.h>
 #include <synfig/render.h>
@@ -276,6 +277,96 @@ SuperSample::accelerated_cairorender(Context context,cairo_surface_t *surface,in
 	cairo_destroy(cr);
 	cairo_surface_destroy(tempsurface);
 		
+	return true;
+}
+
+////
+////
+bool
+SuperSample::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// don't bother supersampling if our quality is too low.
+	if(quality>=10 || (width==1 && height==1))
+		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	
+	RendDesc desc(renddesc);
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, desc))
+		return false;
+
+	//grab values before expand
+	const double pw=desc.get_pw();
+	const double ph=desc.get_ph();
+	const double tlx=desc.get_tl()[0];
+	const double tly=desc.get_tl()[1];
+	
+	// Expand the renddesc
+	desc.clear_flags();
+	desc.set_wh(desc.get_w()*width,desc.get_h()*height);
+	
+	// New expanded desc values
+	const int ww=desc.get_w();
+	const int wh=desc.get_h();
+	const double wtlx=desc.get_tl()[0];
+	const double wtly=desc.get_tl()[1];
+	const double wpw=desc.get_pw();
+	const double wph=desc.get_ph();
+	
+	cairo_surface_t* tempsurface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+	cairo_t* tempcr=cairo_create(tempsurface);
+	cairo_scale(tempcr, 1/wpw, 1/wph);
+	cairo_translate(tempcr, -wtlx, -wtly);
+	// Render the scene
+	if(!context.accelerated_cairorender(tempcr,quality,desc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		return false;
+	}
+	cairo_destroy(tempcr);
+	// Calculate the scales values
+	float scalex=1.0/width;
+	float scaley=1.0/height;
+	// Calculate the cairo filter based on quality
+	cairo_filter_t filter;
+	cairo_antialias_t anti;
+	switch(quality)
+	{
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:	// Best
+			filter=CAIRO_FILTER_BEST;
+			anti=CAIRO_ANTIALIAS_BEST;
+			break;
+		case 6:
+		case 7:
+		case 8:	// Good
+			filter=CAIRO_FILTER_GOOD;
+			anti=CAIRO_ANTIALIAS_GOOD;
+			break;
+		case 9:	// Fast
+		default:
+			filter=CAIRO_FILTER_FAST;
+			anti=CAIRO_ANTIALIAS_FAST;
+			break;
+	}
+	cairo_save(cr);
+
+	cairo_translate(cr, tlx, tly);
+	cairo_scale(cr, pw, ph);
+
+	cairo_scale(cr, scalex, scaley);
+	cairo_set_source_surface(cr, tempsurface, 0,0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_pattern_set_filter(cairo_get_source(cr), filter);
+	cairo_set_antialias(cr, anti);
+	cairo_paint(cr);
+	
+	cairo_restore(cr);
+	
+	cairo_surface_destroy(tempsurface);
+	
 	return true;
 }
 
