@@ -494,12 +494,14 @@ Blur_Layer::accelerated_cairorender(Context context, cairo_t *cr, int quality, c
 	// [T1][S1] are the user to device transformations from workdesc
 	// [T1'][S1'] are the inverse of above
 	// [DRAW2]is the cairo drawing operations below the blur
+	cairo_save(cr);
 	cairo_translate(cr, wtlx, wtly);
 	cairo_scale(cr, wpw, wph);
 	// then set the source surface the worksurface
 	cairo_set_source_surface(cr, worksurface, 0, 0);
 	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);	
+	cairo_paint(cr);
+	cairo_restore(cr);
 	if(cb && !cb->amount_complete(10000,10000))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
