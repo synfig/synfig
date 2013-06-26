@@ -43,6 +43,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
+#include <synfig/cairo_renddesc.h>
 #include <ETL/misc>
 
 #endif
@@ -1085,6 +1086,304 @@ Warp::accelerated_cairorender(Context context,cairo_surface_t *surface,int quali
 	csource.unmap_cairo_image();
 	cairo_surface_destroy(source);
 
+	return true;
+}
+//////////
+bool
+Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
+{
+	SuperCallback stageone(cb,0,9000,10000);
+	SuperCallback stagetwo(cb,9000,10000,10000);
+	
+	
+	RendDesc renddesc(renddesc_);
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, renddesc))
+		return false;
+	
+	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
+	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
+	
+	if(cb && !cb->amount_complete(0,10000))
+		return false;
+	
+	Point tl(renddesc.get_tl());
+	Point br(renddesc.get_br());
+	
+	Rect bounding_rect;
+	
+	Rect render_rect(tl,br);
+	Rect clip_rect(Rect::full_plane());
+	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
+	
+	Real zoom_factor(1.0);
+	
+	// Quick exclusion clip, if necessary
+	if(clip && !intersect(render_rect,dest_rect))
+	{
+		cairo_save(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint(cr);
+		cairo_restore(cr);
+		return true;
+	}
+	
+	{
+		Rect other(render_rect);
+		if(clip)
+			other&=dest_rect;
+		
+		Point min(other.get_min());
+		Point max(other.get_max());
+		
+		bool init_point_set=false;
+		
+		// Point trans_point[4];
+		Point p;
+		// Real trans_z[4];
+		Real z,minz(10000000000000.0f),maxz(0);
+		
+		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
+		//! only 4 corners which satisfy this condition isn't the
+		//! right thing to do.  It's possible that none of the 4
+		//! corners fall within that range, and yet content of the
+		//! tile does.
+		p=transform_forward(min);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+		
+		p=transform_forward(max);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+		
+		swap(min[1],max[1]);
+		
+		p=transform_forward(min);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+		
+		p=transform_forward(max);
+		z=transform_backward_z(p);
+		if(z>0 && z<horizon*2)
+		{
+			if(init_point_set)
+				bounding_rect.expand(p);
+			else
+				bounding_rect=Rect(p);
+			init_point_set=true;
+			maxz=std::max(maxz,z);
+			minz=std::min(minz,z);
+		}
+		
+		if(!init_point_set)
+		{
+			cairo_save(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_paint(cr);
+			cairo_restore(cr);
+			return true;
+		}
+		zoom_factor=(1+(maxz-minz));
+		
+	}
+	
+#ifdef ACCEL_WARP_IS_BROKEN
+	return Layer::accelerated_cairorender(context,cr,quality,renddesc, cb);
+#else
+	
+	/*swap(tl[1],br[1]);
+	 bounding_rect
+	 .expand(transform_forward(tl))
+	 .expand(transform_forward(br))
+	 ;
+	 swap(tl[1],br[1]);*/
+	
+	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
+	//synfig::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
+	
+	// If we are clipping, then go ahead and clip to the
+	// source rectangle
+	if(clip)
+		clip_rect&=Rect(src_tl,src_br);
+	
+	// Bound ourselves to the bounding rectangle of
+	// what is under us
+	clip_rect&=context.get_full_bounding_rect();//.expand_x(abs(zoom_factor/pw)).expand_y(abs(zoom_factor/ph));
+	
+	bounding_rect&=clip_rect;
+	
+	Point min_point(bounding_rect.get_min());
+	Point max_point(bounding_rect.get_max());
+	
+	// we're going to divide by the difference of these pairs soon;
+	// if they're the same, we'll be dividing by zero, and we don't
+	// want to do that!
+	// \todo what should we do in this case?
+	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
+	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
+	
+	if(tl[0]>br[0])
+	{
+		tl[0]=max_point[0];
+		br[0]=min_point[0];
+	}
+	else
+	{
+		br[0]=max_point[0];
+		tl[0]=min_point[0];
+	}
+	if(tl[1]>br[1])
+	{
+		tl[1]=max_point[1];
+		br[1]=min_point[1];
+	}
+	else
+	{
+		br[1]=max_point[1];
+		tl[1]=min_point[1];
+	}
+	
+	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
+	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
+	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
+	
+	
+	RendDesc desc(renddesc);
+	desc.clear_flags();
+	//desc.set_flags(RendDesc::PX_ASPECT);
+	desc.set_tl(tl);
+	desc.set_br(br);
+	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
+	
+	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
+	if(desc.get_w()==0 && desc.get_h()==0)
+	{
+		cairo_save(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint(cr);
+		cairo_restore(cr);
+		return true;
+	}
+	
+	// Recalculate the pixel widths for the src renddesc
+	src_pw=(desc.get_w())/(desc.get_br()[0]-desc.get_tl()[0]);
+	src_ph=(desc.get_h())/(desc.get_br()[1]-desc.get_tl()[1]);
+	
+	cairo_surface_t* source=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(),desc.get_h());
+	cairo_surface_t* surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA,renddesc.get_w(), renddesc.get_h());
+	cairo_t* subcr=cairo_create(source);
+	cairo_scale(subcr, 1/desc.get_pw(), 1/desc.get_ph());
+	cairo_translate(subcr, -desc.get_tl()[0], -desc.get_tl()[1]);
+
+	if(!context.accelerated_cairorender(subcr,quality,desc,&stageone))
+		return false;
+	
+	cairo_destroy(subcr);
+		
+	int surfacew, surfaceh, sourcew, sourceh;
+	
+	CairoSurface csurface(surface);
+	CairoSurface csource(source);
+	
+	csurface.map_cairo_image();
+	csource.map_cairo_image();
+	
+	surfacew=csurface.get_w();
+	surfaceh=csurface.get_h();
+	sourcew=csource.get_w();
+	sourceh=csource.get_h();
+	
+	CairoSurface::pen pen(csurface.begin());
+	
+	// Do the warp
+	{
+		int x,y;
+		float u,v;
+		Point point,tmp;
+		for(y=0,point[1]=renddesc.get_tl()[1];y<surfaceh;y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
+		{
+			for(x=0,point[0]=renddesc.get_tl()[0];x<surfacew;x++,pen.inc_x(),point[0]+=1.0/pw)
+			{
+				tmp=transform_forward(point);
+				const float z(transform_backward_z(tmp));
+				if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
+				{
+					csurface[y][x]=Color::alpha();
+					continue;
+				}
+				
+				u=(tmp[0]-tl[0])*src_pw;
+				v=(tmp[1]-tl[1])*src_ph;
+				
+				if(u<0 || v<0 || u>=sourcew || v>=sourceh || isnan(u) || isnan(v))
+					csurface[y][x]=context.get_cairocolor(tmp);
+				else
+				{
+					// CUBIC
+					if(quality<=4)
+						csurface[y][x]=csource.cubic_sample_cooked(u,v);
+					// INTEPOLATION_LINEAR
+					else if(quality<=6)
+						csurface[y][x]=csource.linear_sample_cooked(u,v);
+					else
+						// NEAREST_NEIGHBOR
+						csurface[y][x]=csource[floor_to_int(v)][floor_to_int(u)];
+				}
+			}
+			if((y&31)==0 && cb)
+			{
+				if(!stagetwo.amount_complete(y,surfaceh))
+					return false;
+			}
+		}
+	}
+	
+#endif
+	
+	if(cb && !cb->amount_complete(10000,10000)) return false;
+	
+	csurface.unmap_cairo_image();
+	csource.unmap_cairo_image();
+	cairo_surface_destroy(source);
+	
+	cairo_save(cr);
+	
+	cairo_translate(cr, renddesc.get_tl()[0], renddesc.get_tl()[1]);
+	cairo_scale(cr, renddesc.get_pw(), renddesc.get_ph());
+	cairo_set_source_surface(cr, surface, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+	
+	cairo_restore(cr);
+	
+	cairo_surface_destroy(surface);
 	return true;
 }
 
