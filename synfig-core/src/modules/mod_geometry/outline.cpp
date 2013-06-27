@@ -43,6 +43,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
+#include <synfig/cairo_renddesc.h>
 
 #include <ETL/calculus>
 #include <ETL/bezier>
@@ -1078,3 +1079,171 @@ Outline::accelerated_cairorender(Context context,cairo_surface_t *surface,int qu
 	
 	return true;
 }
+
+bool
+Outline::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	std::vector<synfig::Segment> segments;
+	
+	// Grab the rgba values
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+
+	// First render the context
+	if(!is_solid_color())
+		if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+		{
+			if(cb)
+				cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
+	
+	if(feather && quality != 10)
+	{
+		cairo_surface_t* subimage;
+		RendDesc	workdesc(renddesc);
+		
+		// Untransform the render desc
+		if(!cairo_renddesc_untransform(cr, workdesc))
+			return false;
+
+		int halfsizex(0), halfsizey(0);
+		
+		int w=workdesc.get_w(), h=workdesc.get_h();
+		const double wpw=(workdesc.get_br()[0]-workdesc.get_tl()[0])/w;
+		const double wph=(workdesc.get_br()[1]-workdesc.get_tl()[1])/h;
+		//the expanded size = 1/2 the size in each direction rounded up
+		halfsizex = (int) (abs(feather*.5/wpw) + 3),
+		halfsizey = (int) (abs(feather*.5/wph) + 3);
+		
+		//expand by 1/2 size in each direction on either side
+		switch(blurtype)
+		{
+			case Blur::DISC:
+			case Blur::BOX:
+			case Blur::CROSS:
+			{
+				workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+				break;
+			}
+			case Blur::FASTGAUSSIAN:
+			{
+				if(quality < 4)
+				{
+					halfsizex*=2;
+					halfsizey*=2;
+				}
+				workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),w+2*max(1,halfsizex),h+2*max(1,halfsizey));
+				break;
+			}
+			case Blur::GAUSSIAN:
+			{
+#define GAUSSIAN_ADJUSTMENT		(0.05)
+				Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
+				Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+				
+				pw=pw*pw;
+				ph=ph*ph;
+				
+				halfsizex = (int)(abs(pw)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+				halfsizey = (int)(abs(ph)*feather*GAUSSIAN_ADJUSTMENT+0.5);
+				
+				halfsizex = (halfsizex + 1)/2;
+				halfsizey = (halfsizey + 1)/2;
+				workdesc.set_subwindow( -halfsizex, -halfsizey, w+2*halfsizex, h+2*halfsizey );
+				break;
+#undef GAUSSIAN_ADJUSTMENT
+			}
+		}
+	
+		// New expanded workdesc values
+		const int ww=workdesc.get_w();
+		const int wh=workdesc.get_h();
+		const double wtlx=workdesc.get_tl()[0];
+		const double wtly=workdesc.get_tl()[1];
+		subimage=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ww, wh);
+		cairo_t* subcr=cairo_create(subimage);
+		cairo_scale(subcr, 1/wpw, 1/wph);
+		cairo_translate(subcr, -wtlx, -wtly);
+		cairo_translate(subcr, origin[0], origin[1]);
+		switch(winding_style)
+		{
+			case WINDING_NON_ZERO:
+				cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_WINDING);
+				break;
+			default:
+				cairo_set_fill_rule(subcr, CAIRO_FILL_RULE_EVEN_ODD);
+				break;
+		}
+
+		cairo_set_source_rgba(subcr, r, g, b, a);
+		if(invert)
+			cairo_paint(subcr);
+		// Draw the outline
+		if(!antialias)
+			cairo_set_antialias(subcr, CAIRO_ANTIALIAS_NONE);
+		if(invert)
+			cairo_set_operator(subcr, CAIRO_OPERATOR_CLEAR);
+		else
+			cairo_set_operator(subcr, CAIRO_OPERATOR_OVER);
+
+		Layer_Shape::shape_to_cairo(subcr);
+		cairo_clip(subcr);
+		cairo_paint(subcr);
+		
+		if(!feather_cairo_surface(subimage, workdesc, quality))
+		{
+			cairo_surface_destroy(subimage);
+			cairo_destroy(subcr);
+			return false;
+		}
+		cairo_destroy(subcr);
+		
+		cairo_save(cr);
+		cairo_translate(cr, wtlx, wtly);
+		cairo_scale(cr, wpw, wph);
+		cairo_set_source_surface(cr, subimage, 0, 0);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+		cairo_restore(cr);
+		cairo_surface_destroy(subimage);
+		return true;
+	}
+	cairo_save(cr);
+	cairo_translate(cr, origin[0], origin[1]);
+	cairo_set_source_rgba(cr, r, g, b, a);
+	switch(winding_style)
+	{
+		case WINDING_NON_ZERO:
+			cairo_set_fill_rule(cr, CAIRO_FILL_RULE_WINDING);
+			break;
+		default:
+			cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
+			break;
+	}
+	if(!antialias)
+		cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+	if(invert)
+	{
+		cairo_push_group(cr);
+		cairo_reset_clip(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+		cairo_paint(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		Layer_Shape::shape_to_cairo(cr);
+		cairo_clip(cr);
+		cairo_fill(cr);
+		cairo_pop_group_to_source(cr);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
+	else
+	{
+		Layer_Shape::shape_to_cairo(cr);
+		cairo_clip(cr);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	}
+	cairo_restore(cr);
+	return true;
+}
+

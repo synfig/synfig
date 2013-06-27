@@ -88,6 +88,7 @@ public:
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}
 	virtual void reset_version(){old_version=false;}
 	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */
