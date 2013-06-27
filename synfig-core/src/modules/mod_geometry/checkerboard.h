@@ -66,6 +66,7 @@ public:
 
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(synfig::Context context,cairo_surface_t *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(synfig::Context context, cairo_t *cr, int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */
