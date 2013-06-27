@@ -1162,6 +1162,100 @@ Circle::accelerated_cairorender(Context context,cairo_surface_t *surface,int qua
 	return true;
 }
 
+///////////
+
+bool
+Circle::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	// trivial case
+	if(is_disabled() || (radius==0 && invert==false && !feather))
+		return context.accelerated_cairorender(cr,quality, renddesc, cb);
+	
+	// Grab the rgba values
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+	
+	// Another trivial case
+	if(invert && radius==0 && is_solid_color())
+	{
+		cairo_set_source_rgba(cr, r, g, b, a); // a=1.0
+		cairo_paint(cr);
+		cairo_restore(cr);
+		return true;
+	}
+
+	// Don't render feathering at all when quality is 10
+	// Cairo will take care of the anti-aliased appaerance
+	const Real newfeather = (quality == 10) ? 0 : feather;
+	
+	const Real in_radius=radius-newfeather>0?radius-newfeather:0;
+	const Real out_radius=radius+newfeather;
+	
+	const Real inner_radius = radius-newfeather>0 ? radius-newfeather : 0;
+	const Real outer_radius = radius+newfeather;
+	
+	const Real inner_radius_sqd = inner_radius*inner_radius;
+	const Real outer_radius_sqd = outer_radius*outer_radius;
+	
+	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,radius);//4.0*radius*newfeather;
+	const Real double_feather = newfeather * 2.0;
+	
+	//Compile the temporary cache for the falloff calculations
+	FALLOFF_FUNC *func = GetFalloffFunc();
+	
+	const CircleDataCache cache =
+	{
+		inner_radius,outer_radius,
+		inner_radius_sqd,outer_radius_sqd,
+		diff_radii_sqd,double_feather
+	};
+	
+	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	if(!newfeather)
+	{
+		if(invert)
+		{
+			cairo_push_group(cr);
+			cairo_set_source_rgba(cr, r, g, b, a);
+			cairo_reset_clip(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+			cairo_paint(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+			cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
+			cairo_clip(cr);
+			cairo_paint(cr);
+			cairo_pop_group_to_source(cr);
+			cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+		}
+		else
+		{
+			cairo_save(cr);
+			cairo_set_source_rgba(cr, r, g, b, a);
+			cairo_arc(cr, origin[0], origin[1], out_radius, 0., 2*M_PI);
+			cairo_clip(cr);
+			cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+			cairo_restore(cr);
+		}
+	}
+	else
+	{
+		cairo_save(cr);
+		cairo_pattern_t* gradient=cairo_pattern_create_radial(origin[0], origin[1], in_radius, origin[0], origin[1], out_radius);
+		compile_gradient(gradient, cache, func);
+		cairo_set_source(cr, gradient);
+		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+		cairo_pattern_destroy(gradient);
+		cairo_restore(cr);
+	}
+	return true;
+}
+
 
 void
 Circle::compile_gradient(cairo_pattern_t* gradient, CircleDataCache mycache, FALLOFF_FUNC *func)const
