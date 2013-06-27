@@ -321,6 +321,41 @@ LinearGradient::accelerated_cairorender(Context context,cairo_surface_t *surface
 }
 
 bool
+LinearGradient::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+
+	cairo_save(cr);
+	cairo_pattern_t* pattern=cairo_pattern_create_linear(p1[0], p1[1], p2[0], p2[1]);
+	bool cpoints_all_opaque=compile_gradient(pattern, gradient);
+	if(loop)
+		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
+	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
+	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
+	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
+	if(
+	   !
+	   (is_solid_color() ||
+		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+	   )
+	{
+		// Initially render what's behind us
+		if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
+	}
+	cairo_set_source(cr, pattern);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	
+	cairo_pattern_destroy(pattern); // Not needed more
+	cairo_restore(cr);
+	return true;
+}
+
+
+
+bool
 LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
 {
 	bool cpoints_all_opaque=true;
