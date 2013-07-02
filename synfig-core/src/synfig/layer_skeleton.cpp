@@ -130,3 +130,9 @@ Layer_Skeleton::accelerated_render(Context context,Surface *surface,int quality,
 {
 	return context.accelerated_render(surface,quality,renddesc,cb);
 }
+
+bool
+Layer_Skeleton::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	return context.accelerated_cairorender(cr,quality,renddesc,cb);
+}
