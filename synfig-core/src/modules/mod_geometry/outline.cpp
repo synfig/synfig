@@ -43,7 +43,6 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
-#include <synfig/cairo_renddesc.h>
 
 #include <ETL/calculus>
 #include <ETL/bezier>

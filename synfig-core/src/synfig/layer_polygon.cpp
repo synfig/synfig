@@ -40,8 +40,6 @@
 #include "surface.h"
 #include "value.h"
 #include "valuenode.h"
-#include "cairo_renddesc.h"
-//#include "ETL/bezier"
 #include <vector>
 
 #include <deque>
