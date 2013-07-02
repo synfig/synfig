@@ -39,6 +39,7 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
+#include <synfig/cairo_renddesc.h>
 #include <ETL/pen>
 
 #include "filledrect.h"
@@ -678,6 +679,123 @@ FilledRect::accelerated_cairorender(Context context, cairo_surface_t *surface,in
 	}
 	
 	csurface.unmap_cairo_image();
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+	
+	return true;
+}
+
+///////
+bool
+FilledRect::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
+{
+	RendDesc	renddesc(renddesc_);
+	
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, renddesc))
+		return false;
+
+	// Width and Height of a pixel
+	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
+	const int w = renddesc.get_w(), h = renddesc.get_h();
+	
+	const double wpp = (br[0]-tl[0])/w;
+	const double hpp = (br[1]-tl[1])/h;
+	
+	//the bounds of the rectangle
+	Point p[2] = {point1,point2};
+	
+	if((p[0][0] > p[1][0]) ^ (wpp < 0))
+	{
+		swap(p[0][0],p[1][0]);
+	}
+	
+	if((p[0][1] > p[1][1]) ^ (hpp < 0))
+	{
+		swap(p[0][1],p[1][1]);
+	}
+	
+	//the integer coordinates
+	int y_start = (int)((p[0][1] - tl[1])/hpp +.5); 	//round start up
+	int x_start = (int)((p[0][0] - tl[0])/wpp +.5);
+	int y_end = (int)((p[1][1] - tl[1])/hpp +.5);	//and ends up
+	int x_end =	(int)((p[1][0] - tl[0])/wpp +.5);
+	
+	y_start = max(0,y_start);
+	x_start = max(0,x_start);
+	y_end = min(h,y_end);
+	x_end = min(w,x_end);
+	
+	SuperCallback supercb(cb,0,9000,10000);
+	
+	if(y_start >= h || x_start > w	|| x_end < 0 || y_end < 0)
+	{
+		if(!context.accelerated_cairorender(cr,quality,renddesc,&supercb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
+		
+		return true;
+	}
+	
+	Real xf_start = tl[0] + x_start*wpp;
+	Point pos(xf_start,tl[1] + y_start*hpp);
+	
+	Color 	clr = Color::black();
+	Real	amt;
+
+	cairo_surface_t* surface;
+	
+	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
+	cairo_t* subcr=cairo_create(surface);
+	cairo_scale(subcr, 1/wpp, 1/hpp);
+	cairo_translate(subcr, -tl[0], -tl[1]);
+
+	
+	if(!context.accelerated_cairorender(subcr,quality,renddesc,&supercb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+		return false;
+	}
+	
+	cairo_destroy(subcr);
+
+	CairoSurface csurface(surface);
+	if(!csurface.map_cairo_image())
+	{
+		synfig::warning("Filled Rect: map cairo surface failed");
+		return false;
+	}
+
+	for(int y = y_start; y < y_end; y++, pos[1] += hpp)
+	{
+		pos[0] = xf_start;
+		for(int x = x_start; x < x_end; x++, pos[0] += wpp)
+		{
+			if(get_color(pos,clr,amt))
+			{
+				if(amt==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+					csurface[y][x] = CairoColor(clr).premult_alpha();
+				else
+					csurface[y][x] = CairoColor::blend(CairoColor(clr),csurface[y][x],amt,get_blend_method()).premult_alpha();
+				
+			}
+		}
+	}
+	
+	csurface.unmap_cairo_image();
+	// paint surface on cr
+	cairo_save(cr);
+	cairo_translate(cr, tl[0], tl[1]);
+	cairo_scale(cr, wpp, hpp);
+	cairo_set_source_surface(cr, surface, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+	cairo_restore(cr);
+
+	cairo_surface_destroy(surface);
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;
