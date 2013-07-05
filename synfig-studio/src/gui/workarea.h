@@ -282,6 +282,12 @@ private:
 	bool dirty;
 	bool queued;
 	bool rendering;
+	
+#ifdef SINGLE_THREADED
+	/* resize bug workaround */
+	int old_window_width;
+	int old_window_height;
+#endif
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -515,6 +521,10 @@ public:
 
 	void done_rendering();
 
+#ifdef SINGLE_THREADED
+	/* resize bug workaround */
+	void refresh_second_check();
+#endif
 	bool refresh(GdkEventExpose*bleh=NULL);
 
 	void reset_cursor();
@@ -546,6 +556,10 @@ public:
 private:
 
 	static gboolean __render_preview(gpointer data);
+#ifdef SINGLE_THREADED
+	/* resize bug workaround */
+	static gboolean __refresh_second_check(gpointer data);
+#endif
 
 }; // END of class WorkArea
 
