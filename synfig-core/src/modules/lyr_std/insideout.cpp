@@ -104,6 +104,15 @@ InsideOut::get_color(Context context, const Point &p)const
 	return context.get_color(invpos+origin);
 }
 
+CairoColor
+InsideOut::get_cairocolor(Context context, const Point &p)const
+{
+	Point pos(p-origin);
+	Real inv_mag=pos.inv_mag();
+	Point invpos(pos*inv_mag*inv_mag);
+	return context.get_cairocolor(invpos+origin);
+}
+
 class InsideOut_Trans : public Transform
 {
 	etl::handle<const InsideOut> layer;
