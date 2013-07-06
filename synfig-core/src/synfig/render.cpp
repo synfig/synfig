@@ -43,6 +43,8 @@
 #include <cassert>
 #include "context.h"
 #include "surface.h"
+#include "cairo_renddesc.h"
+
 
 #endif
 
@@ -432,7 +434,39 @@ synfig::cairorender(Context context,
 				const RendDesc &desc,
 				ProgressCallback *cb)
 {
-	return cairorender(context, cairo_get_target(cr), desc, cb);
+	RendDesc	renddesc(desc);
+	
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, renddesc))
+		return false;
+	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
+	const Point tl(renddesc.get_tl());
+	const int w(renddesc.get_w());
+	const int h(renddesc.get_h());
+	cairo_surface_t *surface;
+	
+	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
+
+	if(!cairorender(context, surface, renddesc, cb))
+	{
+		cairo_surface_destroy(surface);
+		return false;
+	}
+	
+	cairo_save(cr);
+	cairo_translate(cr, tl[0], tl[1]);
+	cairo_scale(cr, pw, ph);
+	cairo_set_source_surface(cr, surface, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+	cairo_restore(cr);
+	
+	cairo_surface_destroy(surface);
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+
+	return true;
 }
 
 
