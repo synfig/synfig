@@ -44,6 +44,8 @@
 #include "general.h"
 #include "render.h"
 #include "paramdesc.h"
+#include "cairo_renddesc.h"
+
 
 #endif
 
@@ -199,9 +201,16 @@ bool
 Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-	
 	if(!amount)
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
+
+	// Untransform the render desc
+	if(!cairo_renddesc_untransform(cr, renddesc))
+		return false;
+	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
+	const Point tl(renddesc.get_tl());
+	const int w(renddesc.get_w());
+	const int h(renddesc.get_h());
 	
 	CanvasBase image;
 	
@@ -221,8 +230,11 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int qualit
 	image.push_back(0);	// and Alpha black at end
 	
 	// Render the backdrop on the surface layer's surface.
-	cairo_surface_t* cs=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, renddesc.get_w(), renddesc.get_h());
+	cairo_surface_t* cs=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+	cairo_surface_t* result=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
 	cairo_t* cr_cs=cairo_create(cs);
+	cairo_scale(cr_cs, 1/pw, 1/ph);
+	cairo_translate(cr_cs, -tl[0], -tl[1]);
 	if(!context.accelerated_cairorender(cr_cs,quality,renddesc,&stageone))
 	{
 		cairo_surface_destroy(cs);
@@ -249,7 +261,25 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int qualit
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 	
 	// Render the scene
-	return cairorender(Context(image.begin()),cr,renddesc,&stagetwo);
+	if(!cairorender(Context(image.begin()),result,renddesc,&stagetwo))
+	{
+		cairo_surface_destroy(result);
+		return false;
+	}
+	// Put the result on the cairo context
+	cairo_save(cr);
+	cairo_translate(cr, tl[0], tl[1]);
+	cairo_scale(cr, pw, ph);
+	cairo_set_source_surface(cr, result, 0, 0);
+	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+	cairo_paint(cr);
+	cairo_restore(cr);
+
+	cairo_surface_destroy(result);
+	// Mark our progress as finished
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+	return true;
 }
 
 
