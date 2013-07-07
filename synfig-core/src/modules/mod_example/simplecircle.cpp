@@ -252,3 +252,42 @@ SimpleCircle::accelerated_cairorender(Context context, cairo_surface_t *surface,
 	return true;
 }
 
+
+bool
+SimpleCircle::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	SuperCallback supercb(cb,0,9500,10000);
+	
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+	{
+		cairo_save(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint(cr);
+		cairo_restore(cr);
+	}
+	else
+	{
+		if(!context.accelerated_cairorender(cr,quality,renddesc,&supercb))
+			return false;
+		if(get_amount()==0)
+			return true;
+	}
+	// Grab the rgba values
+	const float r(color.get_r());
+	const float g(color.get_g());
+	const float b(color.get_b());
+	const float a(color.get_a());
+		
+	
+	cairo_save(cr);
+	cairo_arc(cr, center[0], center[1], radius, 0.0f, 2*M_PI);
+	cairo_clip(cr);
+	cairo_set_source_rgba(cr, r, g, b, a);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	cairo_restore(cr);
+	
+	if(cb && !cb->amount_complete(10000,10000))
+		return false;
+	
+	return true;
+}
