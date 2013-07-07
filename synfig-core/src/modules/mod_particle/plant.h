@@ -96,6 +96,7 @@ private:
 	bool use_width;
 	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
 	void draw_particles(cairo_surface_t *surface, const RendDesc &renddesc)const;
+	void draw_particles(cairo_t *cr)const;
 
 public:
 
@@ -113,6 +114,7 @@ public:
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Rect get_bounding_rect(Context context)const;
 };
