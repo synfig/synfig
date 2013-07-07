@@ -133,3 +133,10 @@ Layer_Stroboscope::accelerated_cairorender(Context context,cairo_surface_t *surf
 {
 	return context.accelerated_cairorender(surface,quality,renddesc,cb);
 }
+
+
+bool
+Layer_Stroboscope::accelerated_cairorender(Context context,cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	return context.accelerated_cairorender(cr,quality,renddesc,cb);
+}
