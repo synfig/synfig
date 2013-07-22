@@ -721,32 +721,50 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 
 	bool ret;
 	RendDesc workdesc(renddesc);
-
+	
 	// Render the background
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
 		return false;
 
-	cairo_save(cr);
 
-	// render the canvas in a separated surface
-	cairo_push_group(cr);
+	// render the canvas to be pasted onto pastesurface
+	cairo_surface_t* pastesurface=cairo_surface_create_similar_image(cairo_get_target(cr), CAIRO_FORMAT_ARGB32, workdesc.get_w(), workdesc.get_h());
+	cairo_t* subcr=cairo_create(pastesurface);
+	// apply the transformations form the current context
+	cairo_matrix_t matrix;
+	cairo_get_matrix(cr, &matrix);
 	// apply the transformations form the (paste canvas) group layer
-	cairo_translate(cr, origin[0], origin[1]);
-	cairo_translate(cr, focus[0], focus[1]);
-	cairo_scale(cr, exp(zoom), exp(zoom));
-	cairo_translate(cr, -focus[0], -focus[1]);
+	cairo_set_matrix(subcr, &matrix);
+	cairo_translate(subcr, origin[0], origin[1]);
+	cairo_translate(subcr, focus[0], focus[1]);
+	cairo_scale(subcr, exp(zoom), exp(zoom));
+	cairo_translate(subcr, -focus[0], -focus[1]);
 	// Effectively render the canvas content
-	ret=canvas->get_context().accelerated_cairorender(cr, quality, workdesc, &stagetwo);
+	ret=canvas->get_context().accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source
-	cairo_pop_group_to_source(cr);
+	cairo_destroy(subcr);
 	
 	if(!ret)
 		return false;
 	// Let's paint the result with its alpha
+	cairo_save(cr);
+
+	cairo_status_t status;
+	status=cairo_matrix_invert(&matrix);
+	if(status) // doh! the matrix can't be inverted!
+	{
+		synfig::error("Can't invert current Cairo matrix!");
+		return false;
+	}
+	// apply the inverse of the transformation of the current context to
+	// compensate the pending transformations form cr to be applied.
+	cairo_transform(cr, &matrix);
+	cairo_set_source_surface(cr, pastesurface, 0, 0);
 	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 
 	cairo_restore(cr);
+	cairo_surface_destroy(pastesurface);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 	
