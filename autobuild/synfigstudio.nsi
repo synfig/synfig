@@ -74,6 +74,7 @@ Section "Synfig Studio"
   File /r /x .* lib\synfig
   
   SetOutPath "$INSTDIR\share"
+  File /r /x .* share\locale
   File /r /x .* share\pixmaps
   File /r /x .* share\synfig
   File /r /x .* share\themes
