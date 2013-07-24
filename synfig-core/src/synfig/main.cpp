@@ -36,6 +36,7 @@
 #include "module.h"
 #include <cstdlib>
 #include <ltdl.h>
+#include <glibmm.h>
 #include <stdexcept>
 #include "target.h"
 #include <ETL/stringf>
@@ -164,7 +165,13 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
-	bindtextdomain("synfig", LOCALEDIR);
+	String locale_dir;
+	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+#ifdef WIN32
+	locale_dir = Glib::locale_from_utf8(locale_dir);
+#endif
+	
+	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
 

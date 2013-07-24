@@ -293,7 +293,7 @@ libsynfigapp_la_LIBADD = \
 
 libsynfigapp_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
-	"-DLOCALEDIR=\"$(localedir)\""
+	-DLOCALEDIR=\"${LOCALEDIR}\"
 
 libsynfigapp_la_LDFLAGS = \
 	-export-dynamic \

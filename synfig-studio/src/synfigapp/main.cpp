@@ -38,6 +38,7 @@
 
 #include <synfig/color.h>
 #include <synfig/gradient.h>
+#include <glibmm.h>
 
 #include <ETL/trivial>
 
@@ -113,7 +114,13 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
-	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	String locale_dir;
+	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+#ifdef WIN32
+	locale_dir = Glib::locale_from_utf8(locale_dir);
+#endif
+	
+	bindtextdomain(GETTEXT_PACKAGE, locale_dir.c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
