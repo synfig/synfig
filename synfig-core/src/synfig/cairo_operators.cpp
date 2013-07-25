@@ -193,31 +193,32 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			cairo_paint_with_alpha(cr, alpha);
 			break;
 		}
-		case Color::BLEND_STRAIGHT_ONTO:
-		{
-			cairo_push_group(cr);
-			cairo_save(cr);
-			
-			cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0-alpha);
-			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_IN);
-			cairo_paint(cr);
-			
-			cairo_restore(cr);
-			
-			cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
-			cairo_paint_with_alpha(cr, alpha);
-			cairo_pop_group_to_source(cr);
-						
-			cairo_matrix_t matrix;
-			cairo_get_matrix(cr, &matrix);
-			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-			cairo_pattern_t* pattern=cairo_pattern_create_for_surface(cairo_get_target(cr));
-			cairo_pattern_set_matrix(pattern, &matrix);
-			cairo_mask(cr, pattern);
-
-			cairo_pattern_destroy(pattern);
-			break;
-		}
+		case Color::BLEND_STRAIGHT_ONTO: // I don't find a suitable way to produce the
+		// render method so I fall back to pixel operations.
+//		{
+//			cairo_push_group(cr);
+//			cairo_save(cr);
+//			
+//			cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0-alpha);
+//			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_IN);
+//			cairo_paint(cr);
+//			
+//			cairo_restore(cr);
+//			
+//			cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
+//			cairo_paint_with_alpha(cr, alpha);
+//			cairo_pop_group_to_source(cr);
+//						
+//			cairo_matrix_t matrix;
+//			cairo_get_matrix(cr, &matrix);
+//			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+//			cairo_pattern_t* pattern=cairo_pattern_create_for_surface(cairo_get_target(cr));
+//			cairo_pattern_set_matrix(pattern, &matrix);
+//			cairo_mask(cr, pattern);
+//
+//			cairo_pattern_destroy(pattern);
+//			break;
+//		}
 		case Color::BLEND_OVERLAY:
 		case Color::BLEND_BRIGHTEN:
 		case Color::BLEND_DARKEN:
