@@ -75,6 +75,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_MULTIPLY:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_MULTIPLY);
@@ -87,6 +92,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_HUE:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_HUE);
@@ -99,6 +109,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_SATURATION:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_SATURATION);
@@ -111,6 +126,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_LUMINANCE:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_HSL_LUMINOSITY);
@@ -135,6 +155,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_SCREEN:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+			
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_SCREEN);
@@ -147,6 +172,11 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		}
 		case Color::BLEND_HARD_LIGHT:
 		{
+			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
@@ -166,9 +196,18 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		case Color::BLEND_STRAIGHT_ONTO:
 		{
 			cairo_push_group(cr);
-			cairo_paint_with_alpha_operator(cr, alpha, Color::BLEND_STRAIGHT);
-			cairo_pop_group_to_source(cr);
+			cairo_save(cr);
 			
+			cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0-alpha);
+			cairo_set_operator(cr, CAIRO_OPERATOR_DEST_IN);
+			cairo_paint(cr);
+			
+			cairo_restore(cr);
+			
+			cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
+			cairo_paint_with_alpha(cr, alpha);
+			cairo_pop_group_to_source(cr);
+						
 			cairo_matrix_t matrix;
 			cairo_get_matrix(cr, &matrix);
 			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
@@ -180,70 +219,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			break;
 		}
 		case Color::BLEND_OVERLAY:
-		{
-			cairo_push_group(cr);
-			cairo_paint(cr);
-			cairo_pattern_t* pattern=cairo_pop_group(cr);
-			
-			cairo_surface_t* source;
-			cairo_status_t status;
-			status=cairo_pattern_get_surface(pattern, &source);
-			if(status)
-			{
-				// return gracefully
-				synfig::error("%s", cairo_status_to_string(status));
-				cairo_pattern_destroy(pattern);
-				return;
-			}
-			CairoSurface csource(source);
-			CairoSurface cdest(cairo_get_target(cr));
-
-			if(!cdest.map_cairo_image())
-			{
-					// return gracefully
-					cairo_pattern_destroy(pattern);
-					return;
-			}
-			if(!csource.map_cairo_image())
-			   {
-				   // return gracefully
-				   cairo_pattern_destroy(pattern);
-				   cdest.unmap_cairo_image();
-				   return;
-			   }
-			
-			double x1, y1, x2, y2, x0, y0;
-			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
-			cairo_user_to_device(cr, &x1, &y1);
-			cairo_user_to_device(cr, &x2, &y2);
-			x0=x2<x1?x2:x1;
-			y0=y2<y1?y2:y1;
-
-			int w=csource.get_w();
-			int h=csource.get_h();
-			int h0=(int)y0;
-			int w0=(int)x0;
-			for(int y=0;y<h;y++)
-				for(int x=0;x<w;x++)
-				{
-					CairoColor ret=CairoColor::blend(csource[y][x].demult_alpha(), cdest[h0+y][w0+x].demult_alpha(), alpha,	method);
-					csource[y][x]=ret.premult_alpha();
-				}
-			csource.unmap_cairo_image();
-			cdest.unmap_cairo_image();
-			
-			cairo_save(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
-			cairo_reset_clip(cr);
-			cairo_identity_matrix(cr);
-			cairo_set_source_surface(cr, source, 0, 0);
-			cairo_paint(cr);
-			cairo_restore(cr);
-			
-			cairo_pattern_destroy(pattern);
-			break;
-			
-		}
 		case Color::BLEND_BRIGHTEN:
 		case Color::BLEND_DARKEN:
 		case Color::BLEND_ADD:
@@ -254,6 +229,7 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		case Color::BLEND_ALPHA_BRIGHTEN:
 		{
 			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 			cairo_paint(cr);
 			cairo_pattern_t* pattern=cairo_pop_group(cr);
 			
@@ -283,7 +259,6 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 				cdest.unmap_cairo_image();
 				return;
 			}
-			
 			double x1, y1, x2, y2, x0, y0;
 			cairo_clip_extents(cr, &x1, &y1, &x2, &y2);
 			cairo_user_to_device(cr, &x1, &y1);
@@ -295,12 +270,14 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 			int h=csource.get_h();
 			int h0=(int)y0;
 			int w0=(int)x0;
-			
 			for(int y=0;y<h;y++)
 				for(int x=0;x<w;x++)
 				{
-					CairoColor ret=CairoColor::blend(csource[y][x].demult_alpha(), cdest[h0+y][w0+x], alpha,	method);
-					cdest[h0+y][w0+x]=ret.premult_alpha();
+					CairoColor src=csource[y][x].demult_alpha();
+					CairoColor dest=cdest[h0+y][w0+x].demult_alpha();
+					CairoColor ret=CairoColor::blend(src, dest, alpha, method);
+					ret=ret.premult_alpha();
+					cdest[h0+y][w0+x]=ret;
 				}
 			csource.unmap_cairo_image();
 			cdest.unmap_cairo_image();
@@ -312,6 +289,7 @@ void cairo_paint_with_alpha_operator(cairo_t* acr, float alpha, Color::BlendMeth
 		default:
 		{
 			cairo_push_group(cr);
+			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 			cairo_paint(cr);
 			cairo_pattern_t* pattern=cairo_pop_group(cr);
 			
