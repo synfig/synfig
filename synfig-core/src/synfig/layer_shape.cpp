@@ -2769,13 +2769,13 @@ Layer_Shape::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 	if(invert)
 	{
 		cairo_push_group(cr);
-		cairo_reset_clip(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+		cairo_set_source_rgba(cr, r, g, b, a);
 		cairo_paint(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 		Layer_Shape::shape_to_cairo(cr);
+		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
 		cairo_clip(cr);
-		cairo_fill(cr);
+		cairo_paint(cr);
 		cairo_pop_group_to_source(cr);
 		cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	}
