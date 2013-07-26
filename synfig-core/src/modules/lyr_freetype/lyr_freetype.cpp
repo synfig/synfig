@@ -1227,6 +1227,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	}
 	cairo_restore(subcr);
 	
+	cairo_save(cr);
 	// Render the text on the target surface with the proper operator
 	if(invert)
 	{
@@ -1234,7 +1235,6 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 		cairo_set_operator(invertcr, CAIRO_OPERATOR_DEST_OUT);
 		cairo_paint_with_alpha(invertcr, get_amount());
 	}
-	cairo_save(cr);
 	// Need to scale down to user coordinates before pass to cr
 	cairo_translate(cr, wtlx, wtly);
 	cairo_scale(cr, wpw, wph);

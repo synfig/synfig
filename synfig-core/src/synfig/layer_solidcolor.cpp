@@ -243,6 +243,7 @@ Layer_SolidColor::accelerated_cairorender(Context context, cairo_t *cr, int qual
 		cairo_set_source_rgba(cr, r, g, b, a);
 		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 		cairo_paint(cr);
+		cairo_restore(cr);
 		// Mark our progress as finished
 		if(cb && !cb->amount_complete(1000,1000))
 			return false;

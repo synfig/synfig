@@ -297,6 +297,7 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 	
 	Mutex::Lock lock(mutex);
 	duplicate_param->reset_index(time_cur);
+	cairo_save(cr);
 	do
 	{
 		subimagecb=SuperCallback(cb,i*(5000/steps),(i+1)*(5000/steps),5000);
@@ -314,6 +315,6 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 		cairo_paint_with_alpha_operator(cr, get_amount(), i ? blend_method : Color::BLEND_COMPOSITE);
 		i++;
 	} while (duplicate_param->step(time_cur));
-
+	cairo_restore(cr);
 	return true;
 }

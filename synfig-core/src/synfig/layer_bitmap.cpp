@@ -813,6 +813,7 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality,
 				cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE); // set operator to ignore destiny
 				cairo_set_source_surface(cr, cs, 0, 0); // set the source our cairosurface
 				cairo_paint(cr); // paint on the destiny
+				cairo_restore(cr);
 			}
 			if(cb && !cb->amount_complete(100,100)) return false;
 			return true;
