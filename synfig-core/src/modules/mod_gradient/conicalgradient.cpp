@@ -355,6 +355,52 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_surface_t *surfac
 	
 }
 ////////
+/////////
+bool
+ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+{
+	cairo_save(cr);
+	const Point	tl(renddesc.get_tl());
+	const Point br(renddesc.get_br());
+	const Point tr(Point(tl[1], br[0]));
+	const Point bl(Point(tl[0], br[1]));
+		
+	cairo_pattern_t* pattern=cairo_pattern_create_mesh();
+	// Calculate the outer radius of the mesh pattern. It has to
+	// cover the whole render desc
+	Real c1=(tl-center).mag_squared();
+	Real c2=(br-center).mag_squared();
+	Real c3=(bl-center).mag_squared();
+	Real c4=(tr-center).mag_squared();
+	Real radius(max(max(max(c1,c2),c3),c4));
+	radius=sqrt(radius)*1.20;
+
+	bool cpoints_all_opaque=compile_mesh(pattern, gradient, radius);
+	if(quality>8) cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+	else if(quality>=4) cairo_set_antialias(cr, CAIRO_ANTIALIAS_GOOD);
+	else cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
+	if(
+	   !
+	   (is_solid_color() ||
+		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+	   )
+	{
+		// Initially render what's behind us
+		if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
+		{
+			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
+			return false;
+		}
+	}
+	cairo_set_source(cr, pattern);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
+	
+	cairo_pattern_destroy(pattern); // Not needed more
+	cairo_restore(cr);
+	return true;
+	
+}
+////////
 
 bool
 ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Real radius)const
