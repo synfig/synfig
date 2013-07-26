@@ -354,18 +354,9 @@ SpiralGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality
 		synfig::warning("Spiral Gradient: map cairo surface failed");
 		return false;
 	}
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-				csurface[y][x]=CairoColor(color_func(pos,calc_supersample(pos,pw,ph))).premult_alpha();
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-				csurface[y][x]=CairoColor::blend(CairoColor(color_func(pos,calc_supersample(pos,pw,ph))),csurface[y][x],get_amount(),get_blend_method()).premult_alpha();
-	}
+	for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
+		for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
+			csurface[y][x]=CairoColor(color_func(pos,calc_supersample(pos,pw,ph))).premult_alpha();
 	csurface.unmap_cairo_image();
 	
 	// paint surface on cr
@@ -373,8 +364,7 @@ SpiralGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality
 	cairo_translate(cr, tl[0], tl[1]);
 	cairo_scale(cr, pw, ph);
 	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
+	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
 	cairo_restore(cr);
 	
 	cairo_surface_destroy(surface);	
