@@ -84,8 +84,6 @@ public:
 	virtual bool set_version(const synfig::String &ver);
 	//! Connects the parameter to another Value Node. Implementation for this layer
 	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-
 
 private:
 

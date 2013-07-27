@@ -513,31 +513,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	return true;
 }
 
-///
-bool
-Plant::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	bool ret(context.accelerated_cairorender(surface,quality,renddesc,cb));
-	if(is_disabled() || !ret)
-		return ret;
-	
-	if(needs_sync_==true)
-		sync();
-		
-	cairo_surface_t* dest_surface=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
-	
-	// Here is where drawing occurs
-	draw_particles(dest_surface, renddesc);
-	
-	// blend the painted dest_surface on the surface
-	cairo_t* cr=cairo_create(surface);
-	cairo_set_source_surface(cr, dest_surface, 0, 0);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_destroy(cr);
-	cairo_surface_destroy(dest_surface);
-	
-	return true;
-}
 
 ///
 bool

@@ -209,66 +209,6 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	return true;
 }
 
-
-/////
-bool
-Layer_Duplicate::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	if(quality == 10)
-		return context.accelerated_cairorender(surface,quality,renddesc,cb);
-	
-	if(context->empty())
-	{
-		cairo_t* cr=cairo_create(surface);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_destroy(cr);
-		return true;
-	}
-	
-	SuperCallback subimagecb;
-	
-	int i = 0;
-	
-	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
-	if (!duplicate_param) return context.accelerated_cairorender(surface,quality,renddesc,cb);
-
-	cairo_surface_t* tmp=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w(), renddesc.get_h());
-	
-	cairo_t* cr=cairo_create(surface);
-	cairo_save(cr);
-	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-	cairo_paint(cr);
-	cairo_restore(cr);
-	
-	
-	Color::BlendMethod blend_method(get_blend_method());
-	int steps = duplicate_param->count_steps(time_cur);
-	
-	Mutex::Lock lock(mutex);
-	duplicate_param->reset_index(time_cur);
-	do
-	{
-		subimagecb=SuperCallback(cb,i*(5000/steps),(i+1)*(5000/steps),5000);
-		// \todo can we force a re-evaluation of all the variables without changing the time twice?
-		context.set_time(time_cur+1);
-		context.set_time(time_cur);
-		if(!context.accelerated_cairorender(tmp,quality,renddesc,&subimagecb)) return false;
-		
-		cairo_save(cr);
-		cairo_set_source_surface(cr, tmp, 0, 0);
-		// \todo have a checkbox allowing use of 'behind' to reverse the order?
-		cairo_paint_with_alpha_operator(cr, get_amount(), i ? blend_method : Color::BLEND_COMPOSITE);
-		cairo_restore(cr);
-
-		i++;
-	} while (duplicate_param->step(time_cur));
-
-	cairo_destroy(cr);
-	cairo_surface_destroy(tmp);
-	
-	return true;
-}
 /////
 bool
 Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const

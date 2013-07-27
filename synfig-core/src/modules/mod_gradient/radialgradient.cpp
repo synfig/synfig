@@ -256,58 +256,6 @@ RadialGradient::accelerated_render(Context context,Surface *surface,int quality,
 	return true;
 }
 
-bool
-RadialGradient::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	const Point	tl(renddesc.get_tl());
-	const Point br(renddesc.get_br());
-	
-	const int	w(renddesc.get_w());
-	const int	h(renddesc.get_h());
-	
-	// Width and Height of a pixel
-	const Real pw = (br[0] - tl[0]) / w;
-	const Real ph = (br[1] - tl[1]) / h;
-	
-	const double tx(-tl[0]/pw);
-	const double ty(-tl[1]/ph);
-	const double sx(1/pw);
-	const double sy(1/ph);
-	
-	cairo_t* cr=cairo_create(surface);
-	cairo_save(cr);
-	cairo_pattern_t* pattern=cairo_pattern_create_radial(center[0], center[1], 0.0 ,center[0], center[1], radius);
-	bool cpoints_all_opaque=compile_gradient(pattern, gradient);
-	if(loop)
-		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
-	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
-	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
-	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
-	if(
-	   !
-	   (is_solid_color() ||
-		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
-	   )
-	{
-		// Initially render what's behind us
-		if(!context.accelerated_cairorender(surface,quality,renddesc,cb))
-		{
-			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-			cairo_destroy(cr);
-			return false;
-		}
-	}
-	cairo_translate(cr, tx , ty);
-	cairo_scale(cr, sx, sy);
-	cairo_set_source(cr, pattern);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	
-	cairo_pattern_destroy(pattern); // Not needed more
-	cairo_restore(cr);
-	cairo_destroy(cr);
-	return true;	
-}
-
 
 bool
 RadialGradient::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const

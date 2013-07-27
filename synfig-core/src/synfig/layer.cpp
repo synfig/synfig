@@ -590,20 +590,6 @@ Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, cons
 	//return render_threaded(context,target,desc,cb,2);
 }
 
-bool
-Layer::accelerated_cairorender(Context context, cairo_surface_t *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
-{	
-	// When we render, we want to
-	// make sure that we are rendered too...
-	// Since the context iterator is for
-	// the layer after us, we need to back up.
-	// This could be considered a hack, as
-	// it is a possibility that we are indeed
-	// not the previous layer.
-	--context;
-	
-	return cairorender(context,surface,renddesc,cb);
-}
 
 bool
 Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const

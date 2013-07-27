@@ -90,7 +90,6 @@ public:
 	virtual Rect get_full_bounding_rect(Context context)const;
 	//! Renders the layer composited on the context and puts it on the target surface.
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 }; // END of class Layer_Composite
 

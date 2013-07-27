@@ -163,23 +163,7 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	return context.accelerated_render(surface,quality,desc,cb);
 }
 
-/////
-bool
-Zoom::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector::value_type zoomfactor=1.0/exp(amount);
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	
-    // Adjust the top_left and bottom_right points
-	// for our zoom amount
-	desc.set_tl((desc.get_tl()-center)*zoomfactor+center);
-	desc.set_br((desc.get_br()-center)*zoomfactor+center);
-	
-	// Render the scene
-	return context.accelerated_cairorender(surface,quality,desc,cb);
-}
-/////
+
 /////
 bool
 Zoom::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const

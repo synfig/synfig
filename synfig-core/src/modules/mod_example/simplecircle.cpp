@@ -192,67 +192,6 @@ SimpleCircle::accelerated_render(Context context,Surface *surface,int quality, c
 */
 
 
-
-bool
-SimpleCircle::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		cairo_t *cr=cairo_create(surface);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_destroy(cr);
-	}
-	else
-	{
-		if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-	// Grab the rgba values
-	const float r(color.get_r());
-	const float g(color.get_g());
-	const float b(color.get_b());
-	const float a(color.get_a());
-	
-	// Window Boundaries
-	const Point	tl(renddesc.get_tl());
-	const Point br(renddesc.get_br());
-	const int	w(renddesc.get_w());
-	const int	h(renddesc.get_h());
-	
-	// Width and Height of a pixel
-	const Real pw = (br[0] - tl[0]) / w;
-	const Real ph = (br[1] - tl[1]) / h;
-	
-	// These are the scale and translation values
-	const double tx(-tl[0]/pw);
-	const double ty(-tl[1]/ph);
-	const double sx(1/pw);
-	const double sy(1/ph);
-
-
-	cairo_t* cr=cairo_create(surface);
-	cairo_save(cr);
-	cairo_translate(cr, tx , ty);
-	cairo_scale(cr, sx, sy);
-	cairo_arc(cr, center[0], center[1], radius, 0.0f, 2*M_PI);
-	cairo_clip(cr);
-	cairo_set_source_rgba(cr, r, g, b, a);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_restore(cr);
-	cairo_destroy(cr);
-
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
-
-
 bool
 SimpleCircle::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {

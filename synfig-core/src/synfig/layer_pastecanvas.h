@@ -169,7 +169,6 @@ public:
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;

@@ -175,55 +175,6 @@ Layer_SolidColor::accelerated_render(Context context,Surface *surface,int qualit
 //////
 
 bool
-Layer_SolidColor::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	cairo_t* cr=cairo_create(surface);
-	float	r(color.get_r()),
-			g(color.get_g()),
-			b(color.get_b()),
-			a(color.get_a());
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT
-	   ||
-	   get_amount()==1.0 && color.get_a()==1.0 && get_blend_method()==Color::BLEND_COMPOSITE
-	   )
-	{
-		// Mark our progress as starting
-		if(cb && !cb->amount_complete(0,1000))
-			return false;
-		cairo_set_source_rgba(cr, r, g, b, a);
-		cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-		cairo_paint(cr);
-		cairo_destroy(cr);
-		// Mark our progress as finished
-		if(cb && !cb->amount_complete(1000,1000))
-			return false;		
-		return true;
-	}
-	
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
-	{
-		cairo_destroy(cr);
-		return false;
-	}
-
-	cairo_set_source_rgba(cr, r, g, b, a);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_destroy(cr);
-	
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
-
-//////
-//////
-
-bool
 Layer_SolidColor::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	float r(color.get_r()),

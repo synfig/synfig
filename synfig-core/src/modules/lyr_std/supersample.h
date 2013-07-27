@@ -57,7 +57,6 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual synfig::Rect get_bounding_rect(Context context)const;
 

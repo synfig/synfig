@@ -632,62 +632,6 @@ CurveGradient::accelerated_render(Context context,Surface *surface,int quality, 
 
 ////
 bool
-CurveGradient::accelerated_cairorender(Context context, cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		cairo_t *cr=cairo_create(surface);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_destroy(cr);
-	}
-	else
-	{
-		if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-	
-	
-	int x,y;
-	
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	
-	CairoSurface csurface(surface);
-	if(!csurface.map_cairo_image())
-	{
-		synfig::warning("Curve Gradient: map cairo surface failed");
-		return false;
-	}
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-				csurface[y][x]=CairoColor(color_func(pos,quality,calc_supersample(pos,pw,ph))).premult_alpha();
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-				csurface[y][x]=CairoColor::blend(CairoColor(color_func(pos,quality,calc_supersample(pos,pw,ph))),csurface[y][x],get_amount(),get_blend_method()).premult_alpha();
-	}
-	csurface.unmap_cairo_image();
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
-
-bool
 CurveGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
 	RendDesc	renddesc(renddesc_);

@@ -66,7 +66,6 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, Vector pos)const;
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */

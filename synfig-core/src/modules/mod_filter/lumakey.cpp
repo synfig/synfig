@@ -164,43 +164,6 @@ LumaKey::accelerated_render(Context context,Surface *surface,int quality, const 
 
 ////
 bool
-LumaKey::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
-		return false;
-
-	int x,y;
-	
-	CairoSurface cairosurface(surface);
-	if(!cairosurface.map_cairo_image())
-	{
-		synfig::info("map cairo image failed");
-		return false;
-	}
-	CairoSurface::pen pen(cairosurface.begin());
-	
-	for(y=0;y<renddesc.get_h();y++,pen.inc_y(),pen.dec_x(x))
-		for(x=0;x<renddesc.get_w();x++,pen.inc_x())
-		{
-			Color tmp(Color(pen.get_value().demult_alpha()));
-			tmp.set_a(tmp.get_y()*tmp.get_a());
-			tmp.set_y(1);
-			pen.put_value(CairoColor(tmp.clamped()).premult_alpha());
-		}
-	
-	cairosurface.unmap_cairo_image();
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
-
-////
-////
-bool
 LumaKey::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
 	RendDesc	renddesc(renddesc_);

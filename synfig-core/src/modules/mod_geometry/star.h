@@ -66,7 +66,6 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual bool accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */

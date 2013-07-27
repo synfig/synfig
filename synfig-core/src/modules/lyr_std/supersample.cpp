@@ -217,70 +217,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 	return true;
 }
 
-////
-bool
-SuperSample::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	// don't bother supersampling if our quality is too low.
-	if(quality>=10 || (width==1 && height==1))
-		return context.accelerated_cairorender(surface,quality,renddesc,cb);
-	
-	RendDesc desc(renddesc);
-		
-	desc.clear_flags();
-	desc.set_wh(desc.get_w()*width,desc.get_h()*height);
-	cairo_surface_t* tempsurface=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, renddesc.get_w()*width, renddesc.get_h()*height);
-	// Render the scene
-	if(!context.accelerated_cairorender(tempsurface,quality,desc,cb))
-		{
-			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-			return false;
-		}
-	
-	// Calculate the scales values
-	float scalex=1.0/width;
-	float scaley=1.0/height;
-	// Calculate the cairo filter based on quality
-	cairo_filter_t filter;
-	cairo_antialias_t anti;
-	switch(quality)
-	{
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:	// Best
-			filter=CAIRO_FILTER_BEST;
-			anti=CAIRO_ANTIALIAS_BEST;
-			break;
-		case 6:
-		case 7:
-		case 8:	// Good
-			filter=CAIRO_FILTER_GOOD;
-			anti=CAIRO_ANTIALIAS_GOOD;
-			break;
-		case 9:	// Fast
-		default:
-			filter=CAIRO_FILTER_FAST;
-			anti=CAIRO_ANTIALIAS_FAST;
-			break;
-	}
-	cairo_t* cr=cairo_create(surface);
-	cairo_scale(cr, scalex, scaley);
-	cairo_set_source_surface(cr, tempsurface, 0,0);
-	cairo_pattern_set_filter(cairo_get_source(cr), filter);
-	
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_set_antialias(cr, anti);
-	cairo_paint(cr);
-	
-	cairo_destroy(cr);
-	cairo_surface_destroy(tempsurface);
-		
-	return true;
-}
 
-////
 ////
 bool
 SuperSample::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const

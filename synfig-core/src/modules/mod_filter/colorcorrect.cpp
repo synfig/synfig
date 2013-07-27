@@ -261,33 +261,6 @@ Layer_ColorCorrect::accelerated_render(Context context,Surface *surface,int qual
 }
 
 bool
-Layer_ColorCorrect::accelerated_cairorender(Context context,cairo_surface_t *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(!context.accelerated_cairorender(surface,quality,renddesc,&supercb))
-		return false;
-	
-	int x,y;
-	
-	CairoSurface csurface(surface);
-	csurface.map_cairo_image();
-	
-	CairoSurface::pen pen(csurface.begin());
-	
-	for(y=0;y<renddesc.get_h();y++,pen.inc_y(),pen.dec_x(x))
-		for(x=0;x<renddesc.get_w();x++,pen.inc_x())
-			pen.put_value(CairoColor(correct_color(Color(pen.get_value().demult_alpha())).clamped()).premult_alpha());
-	
-	csurface.unmap_cairo_image();
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
-
-bool
 Layer_ColorCorrect::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
 	RendDesc	renddesc(renddesc_);
