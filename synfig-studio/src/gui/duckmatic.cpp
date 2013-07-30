@@ -1064,8 +1064,10 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 		if(dist<=closest)
 		{
-			// if there are two ducks at the same position, keep track of them
-			if(dist == closest)
+			// if there are two ducks at the "same" position, keep track of them
+			bool equal;
+			equal=fabs(dist-closest)<0.0000001?true:false;
+			if(equal)
 			{
 				// if we haven't any duck stored keep track of last found
 				if(!ret_vector.size())
@@ -1074,7 +1076,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 				ret_vector.push_back(duck);
 			}
 			// we have another closer duck then discard the stored
-			else if (dist < closest && ret_vector.size())
+			else if (!equal && ret_vector.size())
 				ret_vector.clear();
 			closest=dist;
 			ret=duck;
