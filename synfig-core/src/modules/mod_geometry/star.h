@@ -51,18 +51,18 @@ class Star : protected synfig::Layer_Polygon
 	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	Real radius1;
-	Real radius2;
-	int points;
+	ValueBase param_radius1;
+	ValueBase param_radius2;
+	ValueBase param_points;
 	ValueBase param_angle;
-	bool regular_polygon;
+	ValueBase param_regular_polygon;
 
 public:
 	Star();
 
 	//! Updates the polygon data to match the parameters.
 	void sync();
-
+	bool import_parameters(const String &param, const ValueBase &value);
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual bool set_param_static(const String &param, const bool x); 
 
