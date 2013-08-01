@@ -58,26 +58,25 @@ Section "Synfig Studio"
   SectionIn RO
 
   SetOutPath "$INSTDIR\bin"
-  File /r /x .* bin\*.exe
-  File /r /x .* bin\*.dll
+  !include "bin.nsh"
   
+  SetOutPath "$INSTDIR\etc"
+  !include "etc.nsh"
+
+  SetOutPath "$INSTDIR\lib"
+  !include "lib-gtk.nsh"
+  !include "lib-synfig.nsh"
+  
+  SetOutPath "$INSTDIR\licenses"
+  !include "licenses.nsh"
+
+  ;SetOutPath "$INSTDIR\python"
+  ;!include "python.nsh"
   SetOutPath "$INSTDIR"
-  File /r /x .* etc
-  File /r /x .* examples
-  File /r /x .* licenses
   File /r /x .* python
   
-  SetOutPath "$INSTDIR\lib"
-;  File /r /x .* lib\gdk-pixbuf-2.0
-  File /r /x .* lib\gtk-2.0
-;  File /r /x .* lib\pango
-  File /r /x .* lib\synfig
-  
   SetOutPath "$INSTDIR\share"
-  File /r /x .* share\locale
-  File /r /x .* share\pixmaps
-  File /r /x .* share\synfig
-  File /r /x .* share\themes
+  !include "share.nsh"
 
 IfFileExists $PROFILE\.gtkrc-2.0 GtkrcExists PastGtkrcCheck
 GtkrcExists:
@@ -120,6 +119,14 @@ PastGtkrcCheck:
   WriteUninstaller "${PRODUCT_UNINSTALL_EXE}"
 SectionEnd
 
+Section "FFMpeg"
+	SetOutPath "$INSTDIR\bin"
+	File "bin\ffmpeg.exe"
+SectionEnd
+
+Section "Examples"
+	!include "examples.nsh"
+SectionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
@@ -150,13 +157,16 @@ Section "Uninstall"
 
   ; Remove files and uninstaller
   Delete "$INSTDIR\${PRODUCT_UNINSTALL_EXE}"
-  RMDir /r "$INSTDIR\bin"
-  RMDir /r "$INSTDIR\etc"
-  RMDir /r "$INSTDIR\examples"
-  RMDir /r "$INSTDIR\lib"
-  RMDir /r "$INSTDIR\licenses"
+  !include "bin-uninst.nsh"
+  !include "etc-uninst.nsh"
+  !include "examples-uninst.nsh"
+  !include "lib-gtk-uninst.nsh"
+  !include "lib-synfig-uninst.nsh"
+  RMDir "$INSTDIR\lib"
+  !include "licenses-uninst.nsh"
+  ;!include "python-uninst.nsh"
   RMDir /r "$INSTDIR\python"
-  RMDir /r "$INSTDIR\share"
+  !include "share-uninst.nsh"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
