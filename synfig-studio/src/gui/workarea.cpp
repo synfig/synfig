@@ -2646,6 +2646,10 @@ WorkArea::refresh(GdkEventExpose*event)
 		old_window_width=width;
 		old_window_height=height;
 		if (resize_in_progress){
+			if (get_updating())
+			{
+				stop_updating();
+			}
 			return true;
 		}
 	}
