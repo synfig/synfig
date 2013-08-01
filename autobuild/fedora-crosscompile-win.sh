@@ -56,7 +56,7 @@ for file in \
    libffi\*.dll \
    libfontconfig\*.dll \
    libfreetype\*.dll \
-   libgcc_s_sjlj\*.dll \
+   libgcc_s_\*.dll \
    libgdk\*.dll \
    libgettext\*.dll \
    libgio\*.dll \
@@ -66,21 +66,30 @@ for file in \
    libgthread\*.dll \
    libgtk\*.dll \
    libharfbuzz\*.dll \
+   libiconv\*.dll \
    libintl\*.dll \
+   libjasper\*.dll \
    libjpeg\*.dll \
+   liblzma\*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
    libsigc\*.dll \
    libstdc++\*.dll \
+   libsynfig\*.dll \
+   libtiff\*.dll \
    libturbojpeg.dll \
    libxml2\*.dll \
    libxml++\*.dll \
+   libz\*.dll \
+   pthread\*.dll \
    zlib\*.dll \
    pango-querymodules.exe \
+   synfig.exe \
+   synfigstudio.exe \
 # this extra line is required!
 do
-	cp /usr/i686-w64-mingw32/sys-root/mingw/bin/$file ${PREFIX}/bin
+	cp /usr/i686-w64-mingw32/sys-root/mingw/bin/$file ${PREFIX}/bin || true
 done
 
 [ -d ${PREFIX}/etc ] || mkdir -p ${PREFIX}/etc
