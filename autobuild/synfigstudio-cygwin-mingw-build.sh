@@ -31,12 +31,10 @@
 #		synfigstudio-cygwin-mingw-build.sh make -j2
 
 
-#TODO: Uninstall properly!
-#TODO: Categories!
 #TODO: Submit extended portfiles
-#TODO: Fix import files with international parts
 #TODO: 64bit build
 #TODO: Magick++
+#TODO: Allow to install without locales
 
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
