@@ -38,6 +38,7 @@
 #include <map>
 #include <ctype.h>
 #include <functional>
+#include <glibmm.h>
 
 #endif
 
@@ -82,6 +83,8 @@ Importer::book()
 Importer::Handle
 Importer::open(const String &filename)
 {
+	//String filename;
+	//filename = Glib::locale_from_utf8(filename_utf);
 	if(filename.empty())
 	{
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
@@ -115,7 +118,11 @@ Importer::open(const String &filename)
 
 	try {
 		Importer::Handle importer;
+#ifdef WIN32
+		importer=Importer::book()[ext](Glib::locale_from_utf8(filename).c_str());
+#else
 		importer=Importer::book()[ext](filename.c_str());
+#endif
 		(*__open_importers)[filename]=importer;
 		return importer;
 	}

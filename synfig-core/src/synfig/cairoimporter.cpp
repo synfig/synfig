@@ -38,6 +38,7 @@
 #include <map>
 #include <ctype.h>
 #include <functional>
+#include <glibmm.h>
 
 #endif
 
@@ -115,7 +116,11 @@ CairoImporter::open(const String &filename)
 
 	try {
 		CairoImporter::Handle importer;
+#ifdef WIN32
+		importer=CairoImporter::book()[ext](Glib::locale_from_utf8(filename).c_str());
+#else
 		importer=CairoImporter::book()[ext](filename.c_str());
+#endif
 		(*__open_cairoimporters)[filename]=importer;
 		return importer;
 	}
