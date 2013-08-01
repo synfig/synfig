@@ -1,0 +1,90 @@
+diff -urp boost_1_48_0~/boost/asio/buffers_iterator.hpp boost_1_48_0/boost/asio/buffers_iterator.hpp
+--- boost_1_48_0~/boost/asio/buffers_iterator.hpp	2012-01-16 16:15:26.550239797 +0100
++++ boost_1_48_0/boost/asio/buffers_iterator.hpp	2012-01-16 16:17:45.880243120 +0100
+@@ -128,7 +128,7 @@ public:
+   /// Construct an iterator representing the beginning of the buffers' data.
+   static buffers_iterator begin(const BufferSequence& buffers)
+ #if BOOST_WORKAROUND(__GNUC__, == 4) && BOOST_WORKAROUND(__GNUC_MINOR__, == 3)
+-    __attribute__ ((noinline))
++    __attribute__ ((__noinline__))
+ #endif
+   {
+     buffers_iterator new_iter;
+@@ -148,7 +148,7 @@ public:
+   /// Construct an iterator representing the end of the buffers' data.
+   static buffers_iterator end(const BufferSequence& buffers)
+ #if BOOST_WORKAROUND(__GNUC__, == 4) && BOOST_WORKAROUND(__GNUC_MINOR__, == 3)
+-    __attribute__ ((noinline))
++    __attribute__ ((__noinline__))
+ #endif
+   {
+     buffers_iterator new_iter;
+diff -urp boost_1_48_0~/boost/config/compiler/gcc.hpp boost_1_48_0/boost/config/compiler/gcc.hpp
+--- boost_1_48_0~/boost/config/compiler/gcc.hpp	2012-01-16 16:15:14.643239525 +0100
++++ boost_1_48_0/boost/config/compiler/gcc.hpp	2012-01-16 16:21:24.072247987 +0100
+@@ -120,13 +120,13 @@
+      // _WIN32 or one of its variant spellings. Note that Cygwin is a POSIX environment,
+      // so does not define _WIN32 or its variants.
+ #    define BOOST_HAS_DECLSPEC
+-#    define BOOST_SYMBOL_EXPORT __attribute__((dllexport))
+-#    define BOOST_SYMBOL_IMPORT __attribute__((dllimport))
++#    define BOOST_SYMBOL_EXPORT __attribute__((__dllexport__))
++#    define BOOST_SYMBOL_IMPORT __attribute__((__dllimport__))
+ #  else
+-#    define BOOST_SYMBOL_EXPORT __attribute__((visibility("default")))
++#    define BOOST_SYMBOL_EXPORT __attribute__((__visibility__("default")))
+ #    define BOOST_SYMBOL_IMPORT
+ #  endif
+-#  define BOOST_SYMBOL_VISIBLE __attribute__((visibility("default")))
++#  define BOOST_SYMBOL_VISIBLE __attribute__((__visibility__("default")))
+ #else
+ // config/platform/win32.hpp will define BOOST_SYMBOL_EXPORT, etc., unless already defined  
+ #  define BOOST_SYMBOL_EXPORT
+diff -urp boost_1_48_0~/boost/gil/gil_config.hpp boost_1_48_0/boost/gil/gil_config.hpp
+--- boost_1_48_0~/boost/gil/gil_config.hpp	2012-01-16 16:15:29.883239865 +0100
++++ boost_1_48_0/boost/gil/gil_config.hpp	2012-01-16 16:17:49.096243036 +0100
+@@ -32,7 +32,7 @@
+ #if   defined(_MSC_VER)
+ #    define GIL_FORCEINLINE __forceinline
+ #elif defined(__GNUC__) && __GNUC__ > 3
+-#    define GIL_FORCEINLINE inline __attribute__ ((always_inline))
++#    define GIL_FORCEINLINE inline __attribute__ ((__always_inline__))
+ #else
+ #    define GIL_FORCEINLINE inline
+ #endif
+diff -urp boost_1_48_0~/boost/optional/optional.hpp boost_1_48_0/boost/optional/optional.hpp
+--- boost_1_48_0~/boost/optional/optional.hpp	2012-01-16 16:15:29.743239804 +0100
++++ boost_1_48_0/boost/optional/optional.hpp	2012-01-16 16:17:47.488242994 +0100
+@@ -127,7 +127,7 @@ class aligned_storage
+     union
+     // This works around GCC warnings about breaking strict aliasing rules when casting storage address to T*
+ #if defined(BOOST_OPTIONAL_DETAIL_USE_ATTRIBUTE_MAY_ALIAS)
+-    __attribute__((may_alias))
++    __attribute__((__may_alias__))
+ #endif
+     dummy_u
+     {
+diff -urp boost_1_48_0~/boost/random/detail/integer_log2.hpp boost_1_48_0/boost/random/detail/integer_log2.hpp
+--- boost_1_48_0~/boost/random/detail/integer_log2.hpp	2012-01-16 16:15:24.962239810 +0100
++++ boost_1_48_0/boost/random/detail/integer_log2.hpp	2012-01-16 16:17:44.104242884 +0100
+@@ -27,7 +27,7 @@ namespace detail {
+ #elif defined(BOOST_MSVC)
+ #define BOOST_RANDOM_DETAIL_CONSTEXPR __forceinline
+ #elif defined(__GNUC__) && __GNUC__ >= 4
+-#define BOOST_RANDOM_DETAIL_CONSTEXPR __attribute__((const)) __attribute__((always_inline))
++#define BOOST_RANDOM_DETAIL_CONSTEXPR __attribute__((__const__)) __attribute__((__always_inline__))
+ #else
+ #define BOOST_RANDOM_DETAIL_CONSTEXPR inline
+ #endif
+diff -urp boost_1_48_0~/boost/xpressive/detail/core/adaptor.hpp boost_1_48_0/boost/xpressive/detail/core/adaptor.hpp
+--- boost_1_48_0~/boost/xpressive/detail/core/adaptor.hpp	2012-01-16 16:15:32.315239932 +0100
++++ boost_1_48_0/boost/xpressive/detail/core/adaptor.hpp	2012-01-16 16:17:54.024243179 +0100
+@@ -41,7 +41,7 @@ struct xpression_adaptor
+       && ((__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))
+         // Ugh, gcc has an optimizer bug which elides this c'tor call
+         // resulting in pure virtual function calls.
+-        __attribute__((noinline))
++        __attribute__((__noinline__))
+     #endif
+       : xpr_(xpr)
+     {

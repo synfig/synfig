@@ -120,6 +120,7 @@ $CYGWIN_SETUP \
 #TODO: magick++
 
 # libxml++
+cp -rf $SRCPREFIX/synfig/autobuild/mingw-libxmlpp2.6 $SRCPREFIX/mingw-libxmlpp2.6
 cd $SRCPREFIX/mingw-libxml++2.6
 for action in fetch prep compile install package; do
     cygport mingw-libxml++2.6.cygport $action
@@ -128,6 +129,7 @@ tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
 tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 
 # boost
+cp -rf $SRCPREFIX/synfig/autobuild/mingw-boost $SRCPREFIX/mingw-boost
 cd $SRCPREFIX/mingw-boost
 for action in fetch prep compile install package; do
     cygport mingw-boost.cygport $action
