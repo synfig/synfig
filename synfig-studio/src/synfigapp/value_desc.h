@@ -147,7 +147,13 @@ public:
 		{ return parent_is_value_node() || parent_is_canvas() || (parent_is_layer_param() && (bool)layer->dynamic_param_list().count(name)); }
 	bool
 	is_const()const
-		{ return (parent_is_layer_param() && !layer->dynamic_param_list().count(name)) || parent_is_value_node_const(); }
+		{ return
+		(parent_is_layer_param() && !layer->dynamic_param_list().count(name))
+		||
+		parent_is_value_node_const()
+		||
+		parent_is_linkable_value_node() && synfig::ValueNode_Const::Handle::cast_dynamic(get_value_node());
+		}
 	
 	bool
 	is_animated()const
