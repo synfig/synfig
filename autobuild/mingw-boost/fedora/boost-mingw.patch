@@ -1,0 +1,12 @@
+--- libs/thread/build/Jamfile.v2.mingw	2012-12-04 15:05:00.027057650 +0100
++++ libs/thread/build/Jamfile.v2	2012-12-04 15:05:22.488292220 +0100
+@@ -101,7 +101,8 @@
+ local rule default_threadapi ( )
+ {
+     local api = pthread ;
+-    if [ os.name ] = "NT" { api = win32 ; }
++    #if [ os.name ] = "NT" { api = win32 ; }
++    api = win32 ;
+     return $(api) ;
+ }
+ 

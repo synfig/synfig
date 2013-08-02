@@ -60,8 +60,14 @@ int main(int argc, char **argv)
 {
 
 #ifdef ENABLE_NLS
+	String locale_dir;
+	locale_dir = etl::dirname(etl::dirname((argv)[0]))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+#ifdef WIN32
+	locale_dir = Glib::locale_from_utf8(locale_dir);
+#endif
+	
 	setlocale(LC_ALL, "");
-	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	bindtextdomain(GETTEXT_PACKAGE,  locale_dir.c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif

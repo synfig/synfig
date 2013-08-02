@@ -2598,9 +2598,67 @@ handle2ptr(F func)
 	);
 */
 
+#ifdef SINGLE_THREADED
+/* resize bug workaround */
+gboolean
+WorkArea::__refresh_second_check(gpointer data)
+{
+	WorkArea *work_area(static_cast<WorkArea*>(data));
+	work_area->refresh_second_check();
+	return 0;
+}
+
+void
+WorkArea::refresh_second_check()
+{
+	//resize_timeout_connect.disconnect();
+	int width;
+	int height;
+	canvas_view->get_size(width, height);
+	if (width==old_window_width && height==old_window_height ) {
+		GdkEventExpose event;
+		refresh(&event);
+	}
+}
+#endif
+
 bool
 WorkArea::refresh(GdkEventExpose*event)
 {
+#ifdef SINGLE_THREADED
+	/* resize bug workaround */
+	if (App::single_threaded) {
+		int width;
+		int height;
+		bool resize_in_progress;
+		resize_in_progress = false;
+		canvas_view->get_size(width, height);
+		//synfig::info("Size: %i, %i",width,height);
+		if (width!=old_window_width || height!=old_window_height ) {
+
+			resize_in_progress = true;
+
+			//queue second check
+			int func_id;
+			func_id=g_timeout_add_full(
+				G_PRIORITY_DEFAULT,	// priority -
+				200,			// interval - the time between calls to the function, in milliseconds (1/1000ths of a second)
+				__refresh_second_check,	// function - function to call
+				this,				// data     - data to pass to function
+				NULL);				// notify   - function to call when the idle is removed, or NULL
+		}
+		old_window_width=width;
+		old_window_height=height;
+		if (resize_in_progress){
+			if (get_updating())
+			{
+				stop_updating();
+			}
+			return true;
+		}
+	}
+#endif
+	
 	assert(get_canvas());
 
 	drawing_area->get_window()->clear();
@@ -3207,6 +3265,7 @@ studio::WorkArea::queue_render_preview()
 
 	if(queued==false)
 	{
+		queued=true;
 		//synfig::info("queue_render_preview(): (re)queuing...");
 		//render_idle_func_id=g_idle_add_full(G_PRIORITY_DEFAULT,__render_preview,this,NULL);
 		render_idle_func_id=g_timeout_add_full(
@@ -3215,7 +3274,6 @@ studio::WorkArea::queue_render_preview()
 			__render_preview,	// function - function to call
 			this,				// data     - data to pass to function
 			NULL);				// notify   - function to call when the idle is removed, or NULL
-		queued=true;
 	}
 /*	else if(rendering)
 	{

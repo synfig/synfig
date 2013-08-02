@@ -1563,8 +1563,13 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 
 	const std::string &canvas_window_size = *recent_files_window_size.begin();
 
-	if(canvas_window_size.empty())
+	if(canvas_window_size.empty()) {
+		
+		// A hack to minimize chances of triggering resize bug on Windows
+		instance->find_canvas_view(instance->get_canvas())->resize(750,425);
+		
 		return;
+	}
 
 	synfig::String::size_type current=0;
 	bool seen_root(false), shown_non_root(false);
@@ -2609,6 +2614,9 @@ App::new_instance()
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
+	
+	// A hack to minimize chances of triggering resize bug on Windows
+	instance->find_canvas_view(canvas)->resize(750,425);
 }
 
 void
