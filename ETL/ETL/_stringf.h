@@ -164,9 +164,9 @@ strscanf(const std::string &data, const char*format, ...)
 }
 #else
 
-#if defined (HAVE_SSCANF) && defined (__GNUC__)
+/* #if defined (HAVE_SSCANF) && defined (__GNUC__) */
 #define strscanf(data,format,...) sscanf(data.c_str(),format,__VA_ARGS__)
-#endif
+/* #endif */
 #endif
 
 

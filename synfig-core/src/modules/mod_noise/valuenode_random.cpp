@@ -36,6 +36,7 @@
 #include "synfig/general.h"
 #include "synfig/color.h"
 #include <ETL/misc>
+#include <time.h>
 
 #endif
 

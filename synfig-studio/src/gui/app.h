@@ -56,6 +56,11 @@
 #define SKETCH_DIR_PREFERENCE		"sketch_dir"
 #define RENDER_DIR_PREFERENCE		"render_dir"
 
+// uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
+#ifdef WIN32
+#define SINGLE_THREADED
+#endif
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */

@@ -117,4 +117,4 @@ synfigstudio_CXXFLAGS = \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \
-	"-DLOCALEDIR=\"$(localedir)\""
+	-DLOCALEDIR=\"${LOCALEDIR}\"

@@ -42,6 +42,8 @@
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
 
+#include <glibmm.h>
+
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/cairoimporter.h>
@@ -121,7 +123,13 @@ int main(int ac, char* av[])
 	setlocale(LC_ALL, "");
 
 #ifdef ENABLE_NLS
-	bindtextdomain("synfig", LOCALEDIR);
+	String locale_dir;
+	locale_dir = etl::dirname(etl::dirname((av)[0]))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+#ifdef WIN32
+	locale_dir = Glib::locale_from_utf8(locale_dir);
+#endif
+	
+	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
 #endif

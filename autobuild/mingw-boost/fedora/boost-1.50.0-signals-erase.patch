@@ -1,0 +1,23 @@
+diff -up /home/petr/tmp/blefuj.cc\~ /home/petr/tmp/blefuj.cc
+--- boost_1_46_0_beta1/libs/signals/src/named_slot_map.cpp~	2011-02-03 20:28:07.000000000 +0100
++++ boost_1_46_0_beta1/libs/signals/src/named_slot_map.cpp	2011-02-03 20:51:29.000000000 +0100
+@@ -47669,7 +47669,7 @@ void named_slot_map::disconnect(const st
+       i->first.disconnect();
+       i = next;
+     }
+-    groups.erase(group);
++    groups.erase(const_group_iterator (group));
+   }
+ }
+ 
+@@ -47692,7 +47692,7 @@ void named_slot_map::remove_disconnected
+     }
+ 
+     // Clear out empty groups
+-    if (empty(g)) groups.erase(g++);
++    if (empty(g)) groups.erase(const_group_iterator (g++));
+     else ++g;
+   }
+ }
+
+Diff finished.  Thu Feb  3 20:51:41 2011

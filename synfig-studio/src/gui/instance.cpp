@@ -214,7 +214,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 			one_moment.show();
 		} else {
 			bool result;
-			result = launcher.execute(plugin_path);
+			result = launcher.execute( plugin_path, App::get_base_path() );
 			if (!result){
 				one_moment.hide();
 				App::dialog_error_blocking(_("Plugin Error"), launcher.get_output());
