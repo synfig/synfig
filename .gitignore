@@ -205,3 +205,8 @@ ETL/test/smach
 ETL/test/smart_ptr
 ETL/test/stringf
 ETL/test/surface
+
+# doxygen-generated docs
+ETL/doc
+synfig-core/doc
+synfig-studio/doc
