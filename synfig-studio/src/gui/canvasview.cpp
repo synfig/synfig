@@ -847,9 +847,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
 
 	std::list<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("STRING") );
+	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
-	listTargets.push_back( Gtk::TargetEntry("image") );
+	listTargets.push_back( Gtk::TargetEntry("STRING") );
 
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::CanvasView::on_drop_drag_data_received) );
@@ -3611,7 +3611,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
 	{
-		if(synfig::String(selection_data_.get_data_type())=="STRING")do
+		if(synfig::String(selection_data_.get_data_type())=="STRING"
+		|| synfig::String(selection_data_.get_data_type())=="text/plain")do
 		{
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
@@ -3638,7 +3639,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			success=true;
 		} while(0); // END of "STRING"
 
-		if(synfig::String(selection_data_.get_data_type())=="text/plain")
+		if(synfig::String(selection_data_.get_data_type())=="text/uri-list")
 		{
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
