@@ -65,6 +65,9 @@ Layer_Duplicate::Layer_Duplicate():
 {
 	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(Real(3));
 	connect_dynamic_param("index", index_value_node);
+
+	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 Layer::Handle
@@ -87,14 +90,14 @@ Layer_Duplicate::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 bool
 Layer_Duplicate::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT(index);
+	IMPORT_VALUE(param_index);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 Layer_Duplicate::get_param(const String &param)const
 {
- 	EXPORT(index);
+ 	EXPORT_VALUE(param_index);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
