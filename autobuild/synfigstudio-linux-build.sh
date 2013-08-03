@@ -512,6 +512,8 @@ fi
 make -j$MAKE_THREADS
 make install
 
+sed -i "s|^includedir=.*$|includedir=$SYNFIG_REPO_DIR\/synfig-core\/src|" ${PREFIX}/lib/pkgconfig/synfig.pc
+
 popd
 }
 
@@ -939,6 +941,9 @@ initialize()
 		#detecting repo
 		if git rev-parse --git-dir >/dev/null; then
 			SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
+			pushd "$SYNFIG_REPO_DIR" > /dev/null
+			SYNFIG_REPO_DIR=`pwd`
+			popd  > /dev/null
 			WORKDIR_IS_REPO=1
 		fi
 	fi
