@@ -3669,8 +3669,15 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					continue;
 				}
 
-				// Strip the "file://" part from the filename
-				filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
+				// Converts an escaped ASCII-encoded URI to a local filename
+				// in the encoding used for filenames
+				gchar *extractedFilename = g_filename_from_uri(filename.c_str(), NULL, NULL);
+				if (extractedFilename == NULL) {
+					synfig::warning("Cannot parse URI \"%s\"",filename.c_str());
+					continue;
+				}
+				filename=synfig::String(extractedFilename);
+				g_free(extractedFilename);
 
 				String ext(filename_extension(filename));
 				if (ext.size()) ext = ext.substr(1); // skip initial '.'
