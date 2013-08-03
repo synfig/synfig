@@ -61,13 +61,13 @@ SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
 Circle::Circle():
-	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
-	param_color		(Color::black()),
-	param_origin	(Point(0,0)),
-	param_radius	(Real(1)),
-	param_feather	(Real(0)),
-	param_invert	(bool(false)),
-	param_falloff	(int(FALLOFF_INTERPOLATION_LINEAR))
+	Layer_Composite (1.0,Color::BLEND_COMPOSITE),
+	param_color     (Color::black()),
+	param_origin    (Point(0,0)),
+	param_radius    (Real(1)),
+	param_feather   (Real(0)),
+	param_invert    (bool(false)),
+	param_falloff   (FALLOFF_INTERPOLATION_LINEAR)
 {
 	constructcache();
 	set_interpolation_defaults();
@@ -348,7 +348,7 @@ void Circle::constructcache()
 Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 {
 	bool invert = param_invert.get(bool());
-	int falloff = param_falloff.get(int());
+	Falloff falloff = param_falloff.get(FALLOFF_SQUARED);
 	switch(falloff)
 	{
 	case FALLOFF_SQUARED:	return invert?InvSqdFalloff:SqdFalloff;
