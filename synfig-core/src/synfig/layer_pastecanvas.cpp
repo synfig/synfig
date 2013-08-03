@@ -85,19 +85,22 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Layer_PasteCanvas::Layer_PasteCanvas():
-	origin(0,0),
-	focus(0,0),
+	param_origin      (Vector(0,0)),
+	param_focus       (Vector(0,0)),
+	param_canvas      (etl::loose_handle<synfig::Canvas>(0)),
+	param_zoom        (Real(0)),
+	param_time_offset (Time(0)),
 	depth(0),
-	zoom(0),
-	time_offset(0),
 	extra_reference(false)
 {
-	children_lock=false;
-	muck_with_time_=true;
-	curr_time=Time::begin();
-	outline_grow=0.0;
+	param_children_lock=ValueBase(bool(false));
+	param_outline_grow=ValueBase(Real(0));
+	param_curr_time=ValueBase(Time::begin());
 
-	set_param_static("children_lock", true);
+	muck_with_time_=true;
+
+	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 Layer_PasteCanvas::~Layer_PasteCanvas()
@@ -118,6 +121,7 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 String
 Layer_PasteCanvas::get_local_name()const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 	if(!canvas)	return _("Group");
 	if(canvas->is_inline()) return _("Group");
 	if(canvas->get_root()==get_canvas()->get_root()) return '[' + canvas->get_id() + ']';
@@ -151,6 +155,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	ret.push_back(ParamDesc("children_lock")
 		.set_local_name(_("Children Lock"))
 		.set_description(_("When checked prevents to select the children using the mouse click"))
+		.set_static(true)
 	);
 
 	ret.push_back(ParamDesc("focus")
@@ -165,6 +170,8 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Outline Grow"))
 		.set_description(_("Exponential value to grow children Outline layers width"))
 	);
+
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 
 	if(canvas && !(canvas->is_inline()))
 	{
@@ -189,8 +196,8 @@ Layer_PasteCanvas::get_param_vocab()const
 bool
 Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
-	IMPORT(focus);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_focus);
 
 	// IMPORT(canvas);
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
@@ -218,19 +225,23 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 #else
-	IMPORT(time_offset);
+	IMPORT_VALUE(param_time_offset);
 #endif
 
-	IMPORT(children_lock);
-	IMPORT(zoom);
-	IMPORT(curr_time);
-	IMPORT(outline_grow);
+	IMPORT_VALUE(param_children_lock);
+	IMPORT_VALUE(param_zoom);
+	IMPORT_VALUE(param_outline_grow);
+	IMPORT_VALUE(param_curr_time);
 	return Layer_Composite::set_param(param,value);
 }
 
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+
 	if(canvas && muck_with_time_)
 		remove_child(canvas.get());
 
@@ -266,6 +277,7 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 
 	if(canvas)
 		on_canvas_set();
+	param_canvas.set(canvas);
 }
 
 // when a pastecanvas that contains another pastecanvas is copy/pasted
@@ -276,6 +288,7 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 void
 Layer_PasteCanvas::update_renddesc()
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 	if(!get_canvas() || !canvas || !canvas->is_inline()) return;
 
 	canvas->rend_desc()=get_canvas()->rend_desc();
@@ -290,6 +303,7 @@ Layer_PasteCanvas::update_renddesc()
 void
 Layer_PasteCanvas::on_canvas_set()
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 	if(get_canvas() && canvas && canvas->is_inline() && canvas->parent()!=get_canvas())
 	{
 		canvas->set_inline(get_canvas());
@@ -299,14 +313,14 @@ Layer_PasteCanvas::on_canvas_set()
 ValueBase
 Layer_PasteCanvas::get_param(const String& param)const
 {
-	EXPORT(origin);
-	EXPORT(focus);
-	EXPORT(canvas);
-	EXPORT(zoom);
-	EXPORT(time_offset);
-	EXPORT(children_lock);
-	EXPORT(curr_time);
-	EXPORT(outline_grow);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_focus);
+	EXPORT_VALUE(param_canvas);
+	EXPORT_VALUE(param_zoom);
+	EXPORT_VALUE(param_time_offset);
+	EXPORT_VALUE(param_children_lock);
+	EXPORT_VALUE(param_curr_time);
+	EXPORT_VALUE(param_outline_grow);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -317,10 +331,15 @@ Layer_PasteCanvas::get_param(const String& param)const
 void
 Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 {
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Time time_offset=param_time_offset.get(Time());
+
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
-	curr_time=time;
+	param_curr_time.set(time);
 
 	context.set_time(time);
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 	if(canvas)
 		canvas->set_time(time+time_offset);
 }
@@ -330,6 +349,12 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 {
 	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
 
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
+	bool children_lock=param_children_lock.get(bool(true));
+	
 	if (canvas) {
 		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
@@ -348,6 +373,11 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 Color
 Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
+	
 	if(!canvas || !get_amount())
 		return context.get_color(pos);
 
@@ -361,6 +391,10 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 Rect
 Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
 	return canvas
 		 ? (canvas->get_context(context_params).get_full_bounding_rect()-focus)*exp(zoom)+origin+focus
 		 : Rect::zero();
@@ -369,6 +403,8 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 Rect
 Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 {
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
 	if(is_disabled() || Color::is_onto(get_blend_method()))
 		return context.get_full_bounding_rect();
 
@@ -378,6 +414,14 @@ Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
+	Real outline_grow=param_outline_grow.get(Real());
+	Time time_offset=param_time_offset.get(Time());
+	Time curr_time=param_curr_time.get(Time());
+	
 	if(cb && !cb->amount_complete(0,10000)) return false;
 
 	if(depth==MAX_DEPTH)
@@ -414,7 +458,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
-
+		
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
 
@@ -575,6 +619,14 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 bool
 Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Vector origin=param_origin.get(Vector());
+	Vector focus=param_focus.get(Vector());
+	Real zoom=param_zoom.get(Real());
+	Real outline_grow=param_outline_grow.get(Real());
+	Time time_offset=param_time_offset.get(Time());
+	Time curr_time=param_curr_time.get(Time());
+
 	if(cb && !cb->amount_complete(0,10000)) return false;
 	
 	if(depth==MAX_DEPTH)
@@ -597,7 +649,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
-
 
 	bool ret;
 	RendDesc workdesc(renddesc);
@@ -655,6 +706,9 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 
 void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
+	Time time_offset=param_time_offset.get(Time());
+
 	Node::time_set tset;
 	if(canvas) tset = canvas->get_times();
 
@@ -684,6 +738,7 @@ Layer_PasteCanvas::set_param_static(const String &param, const bool x)
 void
 Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 {
+	etl::handle<synfig::Canvas> canvas=param_canvas.get(etl::handle<synfig::Canvas>());
 	if(canvas) // if there is a canvas pass down to it
 		canvas->get_context(context).set_render_method(x);
 
