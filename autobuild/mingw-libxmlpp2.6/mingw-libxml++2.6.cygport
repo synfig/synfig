@@ -1,7 +1,7 @@
 CROSS_HOST="i686-pc-mingw32"
 inherit cross gtkmm
 
-NAME="mingw-synfig"
+NAME="mingw-libxml++2.6"
 VERSION=2.36.0
 RELEASE=1
 CATEGORY="Mingw"
