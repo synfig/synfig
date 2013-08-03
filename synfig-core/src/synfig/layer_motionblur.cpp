@@ -61,12 +61,12 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 /* === M E M B E R S ======================================================= */
 
 Layer_MotionBlur::Layer_MotionBlur():
-	Layer_Composite		(1.0,Color::BLEND_STRAIGHT),
-	aperture			(0),
-	subsamples_factor	(1.0),
-	subsampling_type	(SUBSAMPLING_HYPERBOLIC),
-	subsample_start		(0.0),
-	subsample_end		(1.0)
+	Layer_Composite         (1.0,Color::BLEND_STRAIGHT),
+	param_aperture          (ValueBase(Time(0))),
+	param_subsamples_factor (ValueBase(Real(1.0))),
+	param_subsampling_type  (ValueBase(SUBSAMPLING_HYPERBOLIC)),
+	param_subsample_start   (ValueBase(Real(0.0))),
+	param_subsample_end     (ValueBase(Real(1.0)))
 {
 
 }
@@ -75,22 +75,22 @@ bool
 Layer_MotionBlur::set_param(const String &param, const ValueBase &value)
 {
 
-	IMPORT(aperture);
-	IMPORT(subsamples_factor);
-	IMPORT(subsampling_type);
-	IMPORT(subsample_start);
-	IMPORT(subsample_end);
+	IMPORT_VALUE(param_aperture);
+	IMPORT_VALUE(param_subsamples_factor);
+	IMPORT_VALUE(param_subsampling_type);
+	IMPORT_VALUE(param_subsample_start);
+	IMPORT_VALUE(param_subsample_end);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 Layer_MotionBlur::get_param(const String &param)const
 {
-	EXPORT(aperture);
-	EXPORT(subsamples_factor);
-	EXPORT(subsampling_type);
-	EXPORT(subsample_start);
-	EXPORT(subsample_end);
+	EXPORT_VALUE(param_aperture);
+	EXPORT_VALUE(param_subsamples_factor);
+	EXPORT_VALUE(param_subsampling_type);
+	EXPORT_VALUE(param_subsample_start);
+	EXPORT_VALUE(param_subsample_end);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -166,6 +166,12 @@ Layer_MotionBlur::get_param_vocab()const
 bool
 Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Time aperture=param_aperture.get(Time());
+	Real subsamples_factor=param_subsamples_factor.get(Real());
+	SubsamplingType subsampling_type=param_subsampling_type.get(SUBSAMPLING_LINEAR);
+	Real subsample_start=param_subsample_start.get(Real());
+	Real subsample_end=param_subsample_end.get(Real());
+	
 	if(aperture && quality<=10)
 	{
 		//int x, y;
@@ -270,6 +276,12 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 bool
 Layer_MotionBlur::accelerated_cairorender(Context context, cairo_t *cr ,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Time aperture=param_aperture.get(Time());
+	Real subsamples_factor=param_subsamples_factor.get(Real());
+	SubsamplingType subsampling_type=param_subsampling_type.get(SUBSAMPLING_LINEAR);
+	Real subsample_start=param_subsample_start.get(Real());
+	Real subsample_end=param_subsample_end.get(Real());
+
 	if(aperture && quality<=10)
 	{
 		//int x, y;
