@@ -78,9 +78,9 @@ cat > $HTMLDIR/index.html <<EOF
 <body>
 <h1>ETL, synfig, synfigstudio API docs</h1>
 <ul>
-<li><a href="ETL/index.html">ETL</a></li>
-<li><a href="synfig-core/index.html">synfig-core</a></li>
-<li><a href="synfig-studio/index.html">synfig-studio</a></li>
+<li><a href="ETL/annotated.html">ETL</a></li>
+<li><a href="synfig-core/annotated.html">synfig-core</a></li>
+<li><a href="synfig-studio/annotated.html">synfig-studio</a></li>
 </ul>
 <p>Generated on: $DATE.</p>
 </body></html>

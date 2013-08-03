@@ -94,6 +94,11 @@ fi
 # Install dependencies
 mkprep()
 {
+
+export PREP_VERSION=1
+
+if [[ `cat $SRCPREFIX/prep-done` != "${PREP_VERSION}" ]]; then
+
 $CYGWIN_SETUP \
 -K http://cygwinports.org/ports.gpg -s http://mirrors.kernel.org/sources.redhat.com/cygwinports -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
@@ -120,24 +125,34 @@ $CYGWIN_SETUP \
 #TODO: magick++
 
 # libxml++
+[ ! -d $SRCPREFIX/mingw-libxmlpp2.6 ] || rm -rf $SRCPREFIX/mingw-libxmlpp2.6
 cp -rf $SRCPREFIX/synfig/autobuild/mingw-libxmlpp2.6 $SRCPREFIX/mingw-libxmlpp2.6
-cd $SRCPREFIX/mingw-libxml++2.6
+cd $SRCPREFIX/mingw-libxmlpp2.6
 for action in fetch prep compile install package; do
     cygport mingw-libxml++2.6.cygport $action
 done
 tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
 tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
+cd ..
+rm -rf $SRCPREFIX/mingw-libxmlpp2.6
 
 # boost
+[ ! -d $SRCPREFIX/mingw-boost ] || rm -rf $SRCPREFIX/mingw-boost
 cp -rf $SRCPREFIX/synfig/autobuild/mingw-boost $SRCPREFIX/mingw-boost
 cd $SRCPREFIX/mingw-boost
 for action in fetch prep compile install package; do
     cygport mingw-boost.cygport $action
 done
 tar -C / -jxf mingw-boost-1.50.0-1.tar.bz2
+cd ..
+rm -rf $SRCPREFIX/mingw-boost
 
 # there should be no *.la files
 rm -rf /usr/i686-pc-mingw32/sys-root/mingw/lib/*.la || true
+
+echo ${PREP_VERSION} > $SRCPREFIX/prep-done
+
+fi
 }
 
 mketl()
