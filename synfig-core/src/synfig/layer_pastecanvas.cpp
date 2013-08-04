@@ -307,7 +307,11 @@ Layer_PasteCanvas::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_focus);
-	EXPORT(canvas);
+	if (param=="canvas")
+	{
+		synfig::ValueBase ret(canvas);
+		return ret;
+	}
 	EXPORT_VALUE(param_zoom);
 	EXPORT_VALUE(param_time_offset);
 	EXPORT_VALUE(param_children_lock);
