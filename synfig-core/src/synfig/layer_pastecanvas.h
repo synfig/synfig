@@ -58,7 +58,7 @@ private:
 	//! Parameter: (Vector) Focus of the zoom of the paste canvas layer
 	ValueBase param_focus;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
-	ValueBase param_canvas;
+	etl::loose_handle<synfig::Canvas> canvas;
 	//! Parameter: (Real) Zoom of the paste canvas layer
 	ValueBase param_zoom;
 	//! Parameter: (Time) Time offset of the paste canvas layer
@@ -140,7 +140,7 @@ public:
 
 	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
 	//! with the get_canvas from the Layer class.
-	etl::handle<synfig::Canvas> get_sub_canvas()const { return param_canvas.get(etl::handle<synfig::Canvas>()); }
+	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
