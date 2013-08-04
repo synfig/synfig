@@ -1011,7 +1011,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	
 	// Interpolation menu: Show it only if
 	// the value description is constant or animated (layer parameter or exported) and not static
-	if ((value_desc.is_const() && !value_desc.get_static()) || value_desc.is_animated())
+	// and value is not canvas type
+	if (((value_desc.is_const() && !value_desc.get_static()) || value_desc.is_animated())
+	&&
+		value_desc.get_value_type()!= ValueBase::TYPE_CANVAS
+		)
 	{
 		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
 		synfigapp::Action::ParamList param_list;
