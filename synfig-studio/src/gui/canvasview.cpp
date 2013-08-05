@@ -3654,36 +3654,42 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			//synfigapp::PassiveGrouper group(canvas_interface()->get_instance(),_("Insert Image"));
 			while(stream)
 			{
-				synfig::String filename,URI;
-				getline(stream,filename);
+				synfig::String URI;
+				getline(stream, URI);
 
-				// If we don't have a filename, move on.
-				if(filename.empty())
+				// If we don't have an URI, move on.
+				if(URI.empty())
 					continue;
 
-				// Make sure this URL is of the "file://" type.
-				URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
-				if(URI!="file://")
+				// Extract protocol name from URI.
+				synfig::String protocol( Glib::uri_parse_scheme(URI) );
+				if(protocol.empty())
 				{
-					synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
+					synfig::warning("Cannot extract protocol from URI \"%s\"", URI.c_str());
 					continue;
 				}
 
-				// Converts an escaped ASCII-encoded URI to a local filename
-				// in the encoding used for filenames
-				gchar *extractedFilename = g_filename_from_uri(filename.c_str(), NULL, NULL);
-				if (extractedFilename == NULL) {
-					synfig::warning("Cannot parse URI \"%s\"",filename.c_str());
+				// Only 'file' protocol supported
+				if(protocol != "file")
+				{
+					synfig::warning("Unknown protocol (%s) in URI \"%s\"", protocol.c_str(), URI.c_str());
 					continue;
 				}
-				filename=synfig::String(extractedFilename);
-				g_free(extractedFilename);
 
-				String ext(filename_extension(filename));
-				if (ext.size()) ext = ext.substr(1); // skip initial '.'
+				// Converts an escaped UTF-8 encoded URI to a local filename
+				// in the encoding used for filenames.
+				synfig::String filename( Glib::filename_from_uri(URI) );
+				if(filename.empty())
+				{
+					synfig::warning("Cannot extract filename from URI \"%s\"", URI.c_str());
+					continue;
+				}
+
+				String ext( filename_extension(filename) );
+				if(!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
-				if(ext=="sketch")
+				if(ext == "sketch")
 				{
 					if(work_area->load_sketch(filename))
 					{
@@ -3699,10 +3705,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					if (warnings != "")
 						App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
 				}
-
-				continue;
 			}
-		} // END of "text/plain"
+		} // END of "text/uri-list"
 	}
 	else
 		ui_interface_->error("Drop failed: bad selection data");
