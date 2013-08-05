@@ -3672,7 +3672,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				// Only 'file' protocol supported
 				if(protocol != "file")
 				{
-					synfig::warning("Unknown protocol (%s) in URI \"%s\"", protocol.c_str(), URI.c_str());
+					synfig::warning("Protocol "%s" is unsupported (URI \"%s\")", protocol.c_str(), URI.c_str());
 					continue;
 				}
 
