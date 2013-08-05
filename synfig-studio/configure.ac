@@ -71,14 +71,13 @@ GETTEXT_PACKAGE=synfigstudio
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
                      [The domain to use with gettext])
-AM_GLIB_GNU_GETTEXT
 
 LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
 AC_SUBST(LOCALEDIR)
 
-# AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
-# AM_GNU_GETTEXT_VERSION([0.15])
+AM_GNU_GETTEXT_VERSION([0.15])
 
 case "$host" in
 	*mingw* | *cygwin*)
