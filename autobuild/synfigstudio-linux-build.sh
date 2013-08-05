@@ -54,7 +54,7 @@ PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
 else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
-BUILDROOT_VERSION=7
+BUILDROOT_VERSION=8
 BUILDROOT_LIBRARY_SET_ID=2
 MAKE_THREADS=4					#count of threads for make
 
@@ -198,24 +198,7 @@ if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 		--without-perl \
 		--without-x \
 		--with-threads \
-		--with-magick_plus_plus \
-		--without-gslib \
-		--without-wmf \
-		--without-lcms \
-		--without-rsvg \
-		--without-xml \
-		--without-windows-font-dir \
-		--without-dps \
-		--without-djvu \
-		--without-fpx \
-		--without-jbig \
-		--without-jp2 \
-		--without-tiff \
-		--without-fontconfig \
-		--without-freetype \
-		--without-png \
-		--without-gvc \
-		--without-openexr
+		--with-magick_plus_plus
 	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 	make -j$MAKE_THREADS
