@@ -557,7 +557,7 @@ Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, c
 			
 			
 			if(shade.get_a())
-				cairosurface[y][x]=CairoColor::blend(shade,cairoworksurface[v][u],get_amount(),get_blend_method());
+				cairosurface[y][x]=CairoColor::blend(CairoColor(shade),cairoworksurface[v][u].demult_alpha(),get_amount(),get_blend_method()).premult_alpha();
 			else
 				cairosurface[y][x] = cairoworksurface[v][u];
 		}
