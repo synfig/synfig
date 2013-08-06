@@ -183,44 +183,18 @@ CanvasInterface::get_mode()const
 }
 
 
-
-Layer::Handle
-CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth)
+void
+CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 {
-	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
-
-	Layer::Handle	layer(Layer::create(name));
-
-	assert(layer);
-
 	if(!layer)
-		return 0;
+		return;
 
-	if(canvas!=get_canvas() && !canvas->is_inline())
-	{
-		synfig::error("Bad canvas passed to \"add_layer_to\"");
-		return 0;
-	}
+	synfig::Canvas::Handle canvas( layer->get_canvas() );
+	if (!canvas)
+		return;
 
-	// automatically export the Index parameter of new Duplicate layers
-	if (name == "duplicate")
-		for (int i = 1; ; i++)
-		{
-			String name = strprintf(_("Index %d"), i);
-			try
-			{
-				canvas->find_value_node(name, true);
-			}
-			catch (Exception::IDNotFound x)
-			{
-				add_value_node(layer->dynamic_param_list().find("index")->second, name);
-				break;
-			}
-		}
+	synfig::String name( layer->get_name() );
 
-	layer->set_canvas(canvas);
-
-	// Apply some defaults
 	if(layer->set_param("fg",synfigapp::Main::get_outline_color()))
 		layer->set_param("bg",synfigapp::Main::get_fill_color());
 	else if (name == "outline" || name == "advanced_outline")
@@ -330,6 +304,47 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 				layer->connect_dynamic_param(iter->first,value_node);
 		}
 	}
+}
+
+
+Layer::Handle
+CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth)
+{
+	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
+
+	Layer::Handle	layer(Layer::create(name));
+
+	assert(layer);
+
+	if(!layer)
+		return 0;
+
+	if(canvas!=get_canvas() && !canvas->is_inline())
+	{
+		synfig::error("Bad canvas passed to \"add_layer_to\"");
+		return 0;
+	}
+
+	// automatically export the Index parameter of new Duplicate layers
+	if (name == "duplicate")
+		for (int i = 1; ; i++)
+		{
+			String name = strprintf(_("Index %d"), i);
+			try
+			{
+				canvas->find_value_node(name, true);
+			}
+			catch (Exception::IDNotFound x)
+			{
+				add_value_node(layer->dynamic_param_list().find("index")->second, name);
+				break;
+			}
+		}
+
+	layer->set_canvas(canvas);
+
+	// Apply some defaults
+	apply_layer_param_defaults(layer);
 
 	// Action to add the layer
 	Action::Handle 	action(Action::LayerAdd::create());
