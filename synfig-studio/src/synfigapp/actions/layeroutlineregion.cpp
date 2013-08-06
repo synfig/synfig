@@ -49,7 +49,7 @@ using namespace Action;
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerOutlineRegion);
 ACTION_SET_NAME(Action::LayerOutlineRegion,"LayerOutlineRegion");
 ACTION_SET_LOCAL_NAME(Action::LayerOutlineRegion,N_("Outline Region"));
-ACTION_SET_TASK(Action::LayerOutlineRegion,"outlineregion");
+ACTION_SET_TASK(Action::LayerOutlineRegion,"outline_region");
 ACTION_SET_CATEGORY(Action::LayerOutlineRegion,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerOutlineRegion,0);
 ACTION_SET_VERSION(Action::LayerOutlineRegion,"0.0");
@@ -68,8 +68,8 @@ Action::LayerOutlineRegion::LayerOutlineRegion()
 synfig::String
 Action::LayerOutlineRegion::get_local_name()const
 {
-	if (region)
-		return strprintf("%s '%s'", _("Outline Region"), region->get_non_empty_description().c_str());
+	if (layer)
+		return strprintf("%s '%s'", _("Outline Region"), layer->get_non_empty_description().c_str());
 	else
 		return _("Outline Region");
 }
@@ -79,7 +79,7 @@ Action::LayerOutlineRegion::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
-	ret.push_back(ParamDesc("region",Param::TYPE_LAYER)
+	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Region"))
 		.set_desc(_("Region to be outlined"))
 		.set_supports_multiple()
@@ -97,11 +97,11 @@ Action::LayerOutlineRegion::is_candidate(const ParamList &x)
 bool
 Action::LayerOutlineRegion::set_param(const synfig::String& name, const Action::Param &param)
 {
-	if(name=="region" && param.get_type()==Param::TYPE_LAYER)
+	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		if (param.get_layer()->get_name() == "region")
 		{
-			region = param.get_layer();
+			layer = param.get_layer();
 			return true;
 		}
 		else return false;
@@ -113,7 +113,7 @@ Action::LayerOutlineRegion::set_param(const synfig::String& name, const Action::
 bool
 Action::LayerOutlineRegion::is_ready()const
 {
-	if(!region)
+	if(!layer)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -125,13 +125,16 @@ Action::LayerOutlineRegion::prepare()
 	if(!first_time())
 		return;
 
-	Canvas::Handle subcanvas(region->get_canvas());
+	if (!layer)
+		return;
+
+	Canvas::Handle subcanvas(layer->get_canvas());
 
 	// Find the iterator for the region
-	Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),region);
+	Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
 
 	// If we couldn't find the region in the canvas, then bail
-	if(*iter!=region)
+	if(*iter!=layer)
 		throw Error(_("This region doesn't exist anymore."));
 
 	// If the subcanvas isn't the same as the canvas,
@@ -141,7 +144,7 @@ Action::LayerOutlineRegion::prepare()
 		throw Error(_("This region doesn't belong to this canvas anymore"));
 
 	// todo: which canvas should we use?  subcanvas is the region's canvas, get_canvas() is the canvas set in the action
-	Layer::Handle outline( get_canvas_interface()->add_layer_to("outline", subcanvas, region->get_depth()) );
+	Layer::Handle outline(synfig::Layer::create("outline"));
 	{
 		Action::Handle action(Action::create("LayerAdd"));
 

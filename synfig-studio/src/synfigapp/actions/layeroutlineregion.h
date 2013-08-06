@@ -48,7 +48,7 @@ class LayerOutlineRegion :
 private:
 
 	synfig::GUID guid;
-	synfig::Layer::Handle region;
+	synfig::Layer::Handle layer;
 
 public:
 
