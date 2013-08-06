@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layeroutlineregion.cpp
+/*!	\file layermakebline.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -29,8 +29,10 @@
 #	include <config.h>
 #endif
 
-#include "layeroutlineregion.h"
+#include "layermakebline.h"
 #include "layeradd.h"
+#include "layermove.h"
+#include "layerparamconnect.h"
 #include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 
@@ -46,14 +48,21 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerOutlineRegion);
-ACTION_SET_NAME(Action::LayerOutlineRegion,"LayerOutlineRegion");
-ACTION_SET_LOCAL_NAME(Action::LayerOutlineRegion,N_("Outline Region"));
-ACTION_SET_TASK(Action::LayerOutlineRegion,"outline_region");
-ACTION_SET_CATEGORY(Action::LayerOutlineRegion,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerOutlineRegion,0);
-ACTION_SET_VERSION(Action::LayerOutlineRegion,"0.0");
-ACTION_SET_CVS_ID(Action::LayerOutlineRegion,"$Id$");
+#define ACTION_LAYERMAKEBLINE_IMPLEMENT(class_name, local_name, bline_layer_name) \
+	ACTION_INIT(Action::class_name); \
+	ACTION_SET_NAME(Action::class_name, #class_name); \
+	ACTION_SET_LOCAL_NAME(Action::class_name,N_(local_name)); \
+	ACTION_SET_TASK(Action::class_name,"make_" bline_layer_name); \
+	ACTION_SET_CATEGORY(Action::class_name,Action::CATEGORY_LAYER); \
+	ACTION_SET_PRIORITY(Action::class_name,0); \
+	ACTION_SET_VERSION(Action::class_name,"0.0"); \
+	ACTION_SET_CVS_ID(Action::class_name,"$Id$"); \
+	bool Action::class_name::is_candidate(const ParamList &x) { return is_candidate_for_make_bline(x, bline_layer_name); } \
+	void Action::class_name::prepare() { prepare_make_bline(bline_layer_name); }
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeOutline, "Make Outline", "outline");
+ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeAdvancedOutline, "Make Advanced Outline", "advanced_outline");
+ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeRegion, "Make Region", "region");
 
 /* === G L O B A L S ======================================================= */
 
@@ -61,34 +70,21 @@ ACTION_SET_CVS_ID(Action::LayerOutlineRegion,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerOutlineRegion::LayerOutlineRegion()
-{
-}
-
-synfig::String
-Action::LayerOutlineRegion::get_local_name()const
-{
-	if (layer)
-		return strprintf("%s '%s'", _("Outline Region"), layer->get_non_empty_description().c_str());
-	else
-		return _("Outline Region");
-}
-
 Action::ParamVocab
-Action::LayerOutlineRegion::get_param_vocab()
+Action::LayerMakeBLine::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
-		.set_local_name(_("Region"))
-		.set_desc(_("Region to be outlined"))
+		.set_local_name(_("Layer"))
+		.set_desc(_("Base layer"))
 	);
 
 	return ret;
 }
 
 bool
-Action::LayerOutlineRegion::is_candidate(const ParamList &x)
+Action::LayerMakeBLine::is_candidate_for_make_bline(const ParamList &x, const synfig::String &bline_layer_name)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
@@ -97,9 +93,9 @@ Action::LayerOutlineRegion::is_candidate(const ParamList &x)
 	{
 		const Param &param = x.find("layer")->second;
 		if(param.get_type() == Param::TYPE_LAYER
-		&& param.get_layer() != NULL
+		&& param.get_layer()
 		&& param.get_layer()->dynamic_param_list().count("bline") == 1
-		&& param.get_layer()->get_name() != "outline")
+		&& param.get_layer()->get_name() != bline_layer_name)
 		{
 			return true;
 		}
@@ -109,7 +105,7 @@ Action::LayerOutlineRegion::is_candidate(const ParamList &x)
 }
 
 bool
-Action::LayerOutlineRegion::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerMakeBLine::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -121,7 +117,7 @@ Action::LayerOutlineRegion::set_param(const synfig::String& name, const Action::
 }
 
 bool
-Action::LayerOutlineRegion::is_ready()const
+Action::LayerMakeBLine::is_ready()const
 {
 	if(!layer)
 		return false;
@@ -129,7 +125,7 @@ Action::LayerOutlineRegion::is_ready()const
 }
 
 void
-Action::LayerOutlineRegion::prepare()
+Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_name)
 {
 	if (!layer)
 		return;
@@ -152,37 +148,42 @@ Action::LayerOutlineRegion::prepare()
 		throw Error(_("This layer doesn't belong to this canvas anymore"));
 
 	// todo: which canvas should we use?  subcanvas is the layer's canvas, get_canvas() is the canvas set in the action
-	Layer::Handle outline(synfig::Layer::create("outline"));
+	Layer::Handle new_layer(synfig::Layer::create(bline_layer_name));
 
 	// Apply some defaults
-	outline->set_canvas(subcanvas);
-	get_canvas_interface()->apply_layer_param_defaults(outline);
+	new_layer->set_canvas(subcanvas);
+	get_canvas_interface()->apply_layer_param_defaults(new_layer);
 
+	// Set depth
 	{
 		Action::Handle action(Action::create("LayerMove"));
 
 		action->set_param("canvas",subcanvas);
 		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",outline);
+		action->set_param("layer",new_layer);
 		action->set_param("new_index",layer->get_depth());
 
 		add_action_front(action);
 	}
+
+	// Add into canvas
 	{
 		Action::Handle action(Action::create("LayerAdd"));
 
 		action->set_param("canvas",subcanvas);
 		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("new",outline);
+		action->set_param("new",new_layer);
 
 		add_action_front(action);
 	}
+
+	// Connect vertices list
 	{
 		Action::Handle action(Action::create("LayerParamConnect"));
 
 		action->set_param("canvas",subcanvas);
 		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("layer",outline);
+		action->set_param("layer",new_layer);
 		action->set_param("param","bline");
 		action->set_param("value_node",layer->dynamic_param_list().find("bline")->second);
 

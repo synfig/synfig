@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layeroutlineregion.h
+/*!	\file layermakebline.h
 **	\brief Template File
 **
 **	$Id$
@@ -42,28 +42,36 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerOutlineRegion :
+class LayerMakeBLine :
 	public Super
 {
 private:
 
-	synfig::GUID guid;
 	synfig::Layer::Handle layer;
 
 public:
-
-	LayerOutlineRegion();
-
 	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
+	static bool is_candidate_for_make_bline(const ParamList &x, const synfig::String &bline_layer_name);
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	virtual void prepare();
-
-	ACTION_MODULE_EXT
+	void prepare_make_bline(const synfig::String &bline_layer_name);
 };
+
+#define ACTION_LAYERMAKEBLINE_DECLARE(class_name) \
+	class class_name : public LayerMakeBLine { \
+	public: \
+		static bool is_candidate(const ParamList &x); \
+		virtual void prepare(); \
+		ACTION_MODULE_EXT \
+	}
+
+ACTION_LAYERMAKEBLINE_DECLARE(LayerMakeOutline);
+ACTION_LAYERMAKEBLINE_DECLARE(LayerMakeAdvancedOutline);
+ACTION_LAYERMAKEBLINE_DECLARE(LayerMakeRegion);
+
+#undef ACTION_LAYERMAKEBLINE_DECLARE
 
 }; // END of namespace action
 }; // END of namespace studio
