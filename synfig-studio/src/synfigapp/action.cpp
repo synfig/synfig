@@ -40,6 +40,7 @@
 #include "actions/layerlower.h"
 #include "actions/layeradd.h"
 #include "actions/layeractivate.h"
+#include "actions/layeroutlineregion.h"
 #include "actions/layerparamset.h"
 #include "actions/layerparamsetstatic.h"
 #include "actions/layerparamunsetstatic.h"
@@ -176,6 +177,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerLower);
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
+	ADD_ACTION(Action::LayerOutlineRegion);
 	ADD_ACTION(Action::LayerParamSet);
 	ADD_ACTION(Action::LayerParamSetStatic);
 	ADD_ACTION(Action::LayerParamUnSetStatic);
