@@ -151,6 +151,16 @@ Action::LayerOutlineRegion::prepare()
 	get_canvas_interface()->apply_layer_param_defaults(outline);
 
 	{
+		Action::Handle action(Action::create("LayerMove"));
+
+		action->set_param("canvas",subcanvas);
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",outline);
+		action->set_param("new_index",layer->get_depth());
+
+		add_action_front(action);
+	}
+	{
 		Action::Handle action(Action::create("LayerAdd"));
 
 		action->set_param("canvas",subcanvas);
