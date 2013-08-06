@@ -145,6 +145,11 @@ Action::LayerOutlineRegion::prepare()
 
 	// todo: which canvas should we use?  subcanvas is the region's canvas, get_canvas() is the canvas set in the action
 	Layer::Handle outline(synfig::Layer::create("outline"));
+
+	// Apply some defaults
+	outline->set_canvas(subcanvas);
+	get_canvas_interface()->apply_layer_param_defaults(outline);
+
 	{
 		Action::Handle action(Action::create("LayerAdd"));
 
