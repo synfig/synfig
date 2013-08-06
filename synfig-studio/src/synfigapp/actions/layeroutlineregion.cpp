@@ -82,7 +82,6 @@ Action::LayerOutlineRegion::get_param_vocab()
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Region"))
 		.set_desc(_("Region to be outlined"))
-		.set_supports_multiple()
 	);
 
 	return ret;
@@ -91,7 +90,22 @@ Action::LayerOutlineRegion::get_param_vocab()
 bool
 Action::LayerOutlineRegion::is_candidate(const ParamList &x)
 {
-	return candidate_check(get_param_vocab(),x);
+	if(!candidate_check(get_param_vocab(),x))
+		return false;
+
+	if(x.count("layer") == 1)
+	{
+		const Param &param = x.find("layer")->second;
+		if(param.get_type() == Param::TYPE_LAYER
+		&& param.get_layer() != NULL
+		&& param.get_layer()->dynamic_param_list().count("bline") == 1
+		&& param.get_layer()->get_name() != "outline")
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool
@@ -99,12 +113,8 @@ Action::LayerOutlineRegion::set_param(const synfig::String& name, const Action::
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
-		if (param.get_layer()->get_name() == "region")
-		{
-			layer = param.get_layer();
-			return true;
-		}
-		else return false;
+		layer = param.get_layer();
+		return true;
 	}
 
 	return Action::CanvasSpecific::set_param(name,param);
@@ -121,29 +131,27 @@ Action::LayerOutlineRegion::is_ready()const
 void
 Action::LayerOutlineRegion::prepare()
 {
-	//todo: why?
-	if(!first_time())
-		return;
-
 	if (!layer)
 		return;
+	if(!layer->dynamic_param_list().count("bline"))
+		throw Error(_("This layer doesn't contains linked \"bline\" parameter."));
 
 	Canvas::Handle subcanvas(layer->get_canvas());
 
-	// Find the iterator for the region
+	// Find the iterator for the layer
 	Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
 
 	// If we couldn't find the region in the canvas, then bail
 	if(*iter!=layer)
-		throw Error(_("This region doesn't exist anymore."));
+		throw Error(_("This layer doesn't exist anymore."));
 
 	// If the subcanvas isn't the same as the canvas,
 	// then it had better be an inline canvas. If not,
 	// bail
 	if(get_canvas()!=subcanvas && !subcanvas->is_inline())
-		throw Error(_("This region doesn't belong to this canvas anymore"));
+		throw Error(_("This layer doesn't belong to this canvas anymore"));
 
-	// todo: which canvas should we use?  subcanvas is the region's canvas, get_canvas() is the canvas set in the action
+	// todo: which canvas should we use?  subcanvas is the layer's canvas, get_canvas() is the canvas set in the action
 	Layer::Handle outline(synfig::Layer::create("outline"));
 
 	// Apply some defaults
