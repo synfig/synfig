@@ -154,4 +154,15 @@ Action::LayerOutlineRegion::prepare()
 
 		add_action_front(action);
 	}
+	{
+		Action::Handle action(Action::create("LayerParamConnect"));
+
+		action->set_param("canvas",subcanvas);
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",outline);
+		action->set_param("param","bline");
+		action->set_param("value_node",layer->dynamic_param_list().find("bline")->second);
+
+		add_action_front(action);
+	}
 }
