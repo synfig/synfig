@@ -14,7 +14,7 @@ LAYER_ACTION_HH = \
 	actions/layerencapsulate.h \
 	actions/layerlower.h \
 	actions/layermove.h \
-	actions/layeroutlineregion.h \
+	actions/layermakebline.h \
 	actions/layerparamconnect.h \
 	actions/layerparamdisconnect.h \
 	actions/layerparamset.h \
@@ -32,7 +32,7 @@ LAYER_ACTION_CC = \
 	actions/layerencapsulate.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
-	actions/layeroutlineregion.cpp \
+	actions/layermakebline.cpp \
 	actions/layerparamconnect.cpp \
 	actions/layerparamdisconnect.cpp \
 	actions/layerparamset.cpp \
