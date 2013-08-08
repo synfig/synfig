@@ -267,6 +267,12 @@ private:
 	*/
 	bool active_;
 
+	/*! When \c true, layer will skipped while final rendering
+	**	but will still present onto work view.
+	**	\see set_exclude_from_rendering(), get_exclude_from_rendering()
+	*/
+	bool exclude_from_rendering_;
+
 	//! Handle to the canvas to which this layer belongs
 	etl::loose_handle<Canvas> canvas_;
 
@@ -389,6 +395,14 @@ public:
 
 	//! Returns that status of the 'active' flag
 	bool active()const { return active_; }
+
+	//! Sets the 'exclude_from_rendering' flag for the Layer
+	/*! When set, layer will skipped while final rendering
+	**	but will still present onto work view. */
+	void set_exclude_from_rendering(bool x);
+
+	//! Returns that status of the 'exclude_from_rendering' flag
+	bool get_exclude_from_rendering()const { return exclude_from_rendering_; }
 
 	//! Returns the position of the layer in the canvas.
 	/*! Returns negative on error */

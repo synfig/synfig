@@ -230,6 +230,18 @@ Layer::set_active(bool x)
 }
 
 void
+Layer::set_exclude_from_rendering(bool x)
+{
+	if(exclude_from_rendering_!=x)
+	{
+		exclude_from_rendering_=x;
+
+		Node::on_changed();
+		signal_status_changed_();
+	}
+}
+
+void
 Layer::set_description(const String& x)
 {
 	if(description_!=x)
