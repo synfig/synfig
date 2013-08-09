@@ -85,6 +85,7 @@ Rectangle::Rectangle():
 {
 	Layer::Vocab voc(get_param_vocab());
 	Layer::fill_static(voc);
+	set_exclude_from_rendering(true);
 }
 
 bool
