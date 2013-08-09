@@ -65,6 +65,7 @@
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_bone.h>
 #include <synfig/layer.h>
+#include <synfig/context.h>
 
 #include <synfigapp/uimanager.h>
 #include <synfigapp/canvasinterface.h>
@@ -725,7 +726,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	//synfig::info("Canvasview: Entered constructor");
 	// Minor hack
-	get_canvas()->set_time(0);
+	// todo: common place to store context_params
+	get_canvas()->set_time(ContextParams(true),0);
 	//layer_tree_store_->rebuild();
 
 	// Set up the UI and Selection managers
@@ -3003,7 +3005,8 @@ CanvasView::rebuild_ducks()
 	work_area->clear_ducks();
 	work_area->clear_curr_transform_stack();
 	work_area->set_time(get_time());
-	get_canvas()->set_time(get_time());
+	// todo: common place to store context_params
+	get_canvas()->set_time(ContextParams(true),get_time());
 
 	//get_canvas()->set_time(get_time());
 	bool not_empty(false);
