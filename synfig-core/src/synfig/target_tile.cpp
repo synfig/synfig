@@ -285,6 +285,8 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	frame_start=desc.get_frame_start();
 	frame_end=desc.get_frame_end();
 
+	ContextParams context_params(desc.get_render_excluded_contexts());
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start+1;
 	if(total_frames<=0)total_frames=1;
@@ -309,13 +311,15 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 					return false;
 				Context context;
 				// pass the Render Method to the context
-				context=canvas->get_context();
+				context=canvas->get_context(context_params);
 				context.set_render_method(SOFTWARE);
 
 				// Set the time that we wish to render
 				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				// Why the above line is commented here and not in TargetScaline?
-					canvas->set_time(t);
+				// Why the above line was commented here and not in TargetScaline?
+				// Anyway now always set the time because previous value of time
+				// may be set with another context_params
+					canvas->set_time(context.get_params(),t);
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 				Canvas::Handle op_canvas;
@@ -323,13 +327,13 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				{
 					op_canvas = Canvas::create();
 					op_canvas->set_file_name(canvas->get_file_name());
-					optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-					context=op_canvas->get_context();
+					optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
+					context=op_canvas->get_context(context_params);
 				}
 				else
-					context=canvas->get_context();
+					context=canvas->get_context(context_params);
 	#else
-				context=canvas->get_context();
+				context=canvas->get_context(context_params);
 	#endif
 
 	/*
@@ -338,14 +342,14 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				Canvas::Handle op_canvas(Canvas::create());
 				op_canvas->set_file_name(canvas->get_file_name());
 				// Set the time that we wish to render
-				canvas->set_time(t);
-				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+				canvas->set_time(context_params,t);
+				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
 				context=op_canvas->get_context();
 				#else
 				Context context;
 				// Set the time that we wish to render
-				canvas->set_time(t);
-				context=canvas->get_context();
+				canvas->set_time(context_params,t);
+				context=canvas->get_context(context_params);
 				#endif
 	*/
 
@@ -363,8 +367,10 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				return false;
 
 			// Set the time that we wish to render
-//			if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				canvas->set_time(t);
+			// Always set the time because previous value of time
+			// may be set with another context_params
+			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
+				canvas->set_time(context_params,t);
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
@@ -376,13 +382,13 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			{
 				op_canvas = Canvas::create();
 				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-				context=op_canvas->get_context();
+				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
+				context=op_canvas->get_context(context_params);
 			}
 			else
-				context=canvas->get_context();
+				context=canvas->get_context(context_params);
 #else
-			context=canvas->get_context();
+			context=canvas->get_context(context_params);
 #endif
 
 			if(!render_frame_(context, cb))
