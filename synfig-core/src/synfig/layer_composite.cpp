@@ -136,7 +136,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	target->set_rend_desc(&desc);
 
 	// Render the scene
-	return render(Context(image.begin()),target,desc,&stagetwo);
+	return render(Context(image.begin(),context),target,desc,&stagetwo);
 	//return render_threaded(Context(image.begin()),target,desc,&stagetwo,2);
 }
 
@@ -206,7 +206,7 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int qualit
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 	
 	// Render the scene
-	if(!cairorender(Context(image.begin()),result,renddesc,&stagetwo))
+	if(!cairorender(Context(image.begin(),context),result,renddesc,&stagetwo))
 	{
 		cairo_surface_destroy(result);
 		return false;
