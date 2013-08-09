@@ -1062,11 +1062,11 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 		Real dist((duck->get_trans_point()-point).mag_squared());
 
-		if(dist<=closest)
+		bool equal;
+		equal=fabs(dist-closest)<0.0000001?true:false;
+		if(dist<closest || equal)
 		{
 			// if there are two ducks at the "same" position, keep track of them
-			bool equal;
-			equal=fabs(dist-closest)<0.0000001?true:false;
 			if(equal)
 			{
 				// if we haven't any duck stored keep track of last found
