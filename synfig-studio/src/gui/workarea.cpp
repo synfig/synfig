@@ -61,6 +61,7 @@
 #include "event_layerclick.h"
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
+#include <synfig/context.h>
 
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
@@ -1857,7 +1858,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			etl::handle<Duck> duck=find_duck(mouse_pos,radius);
 			etl::handle<Bezier> bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
 
-			Layer::Handle layer(get_canvas()->find_layer(mouse_pos));
+			// todo: common place to store context_params
+			Layer::Handle layer(get_canvas()->find_layer(ContextParams(true),mouse_pos));
 			if(duck)
 			{
 				if(get_selected_ducks().size()<=1)
@@ -2161,7 +2163,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(allow_layer_clicks)
 				{
-					Layer::Handle layer(get_canvas()->find_layer(drag_point));
+					// todo: common place to store context_params
+					Layer::Handle layer(get_canvas()->find_layer(ContextParams(true),drag_point));
 					//if(layer)
 					{
 						if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_LEFT,mouse_pos,modifier))==Smach::RESULT_OK)
@@ -2986,7 +2989,8 @@ again:
 	}
 
 	if(!is_visible())return false;
-	get_canvas()->set_time(get_time());
+	// todo: common place to store context_params
+	get_canvas()->set_time(ContextParams(true),get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
 
@@ -3081,7 +3085,8 @@ studio::WorkArea::async_render_preview(synfig::Time time)
 	refreshes+=5;
 	if(!is_visible())return;
 
-	get_canvas()->set_time(get_time());
+	// todo: common place to store context_params
+	get_canvas()->set_time(ContextParams(true),get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
 
