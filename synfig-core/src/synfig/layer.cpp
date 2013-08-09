@@ -462,9 +462,11 @@ Layer::reads_context() const
 Rect
 Layer::get_full_bounding_rect(Context context)const
 {
-	if(active())
+	// No one of overrides of this function don't check the "active" flag
+	// So this check also disabled here
+	//if(Context::active(context.get_params(),*this))
 		return context.get_full_bounding_rect()|get_bounding_rect();
-	return context.get_full_bounding_rect();
+	//return context.get_full_bounding_rect();
 }
 
 Rect
