@@ -38,6 +38,7 @@
 #include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/canvas.h>
+#include <synfig/context.h>
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
@@ -487,7 +488,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 					strprintf(_("Unable to load '%s'."), job.filename.c_str())));
 		}
 
-		job.root->set_time(0);
+		// todo: take context_params from options
+		job.root->set_time(ContextParams(false), 0);
 	}
 	else
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
