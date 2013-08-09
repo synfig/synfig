@@ -193,9 +193,15 @@ Canvas::back()const
 }
 
 Context
-Canvas::get_context()const
+Canvas::get_context(const ContextParams &params)const
 {
-	return begin();
+	return Context(begin(),params);
+}
+
+Context
+Canvas::get_context(const Context &parent_context)const
+{
+	return get_context(parent_context.get_params());
 }
 
 const ValueNodeList &
@@ -223,9 +229,9 @@ Canvas::keyframe_list()const
 }
 
 etl::handle<Layer>
-Canvas::find_layer(const Point &pos)
+Canvas::find_layer(const ContextParams &context_params, const Point &pos)
 {
-	return get_context().hit_check(pos);
+	return get_context(context_params).hit_check(pos);
 }
 
 static bool
@@ -281,12 +287,12 @@ Canvas::set_description(const String &x)
 }
 
 void
-Canvas::set_grow_value(Real x)
+Canvas::set_grow_value(const ContextParams &context_params, Real x)
 {
 	if(grow_value!=x)
 	{
 		grow_value=x;
-		get_context().set_dirty_outlines();
+		get_context(context_params).set_dirty_outlines();
 	}
 
 }
@@ -298,7 +304,7 @@ Canvas::get_grow_value()const
 }
 
 void
-Canvas::set_time(Time t)const
+Canvas::set_time(const ContextParams &context_params, Time t)const
 {
 	if(is_dirty_ || !get_time().is_equal(t))
 	{
@@ -315,7 +321,7 @@ Canvas::set_time(Time t)const
 		const_cast<Canvas&>(*this).cur_time_=t;
 
 		is_dirty_=false;
-		get_context().set_time(t);
+		get_context(context_params).set_time(t);
 	}
 	is_dirty_=false;
 }
@@ -1209,10 +1215,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			{
 				Real parent_grow(paste_canvas->get_parent_canvas_grow_value());
 				if(paste_sub_canvas->is_inline())
-					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
+					paste_sub_canvas->set_grow_value(context.get_params(), parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
 				else
-					paste_sub_canvas->set_grow_value(0.0);
-				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+					paste_sub_canvas->set_grow_value(context.get_params(), 0.0);
+				optimize_layers(time, paste_sub_canvas->get_context(context),sub_canvas,motion_blurred);
 			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
@@ -1308,7 +1314,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 				paste_canvas->set_blend_method(composite->get_blend_method());
 				paste_canvas->set_amount(composite->get_amount());
-				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
+				sub_canvas->set_time(context.get_params(),time); // region and outline don't calculate their bounding rects until their time is set
 				composite->set_blend_method(Color::BLEND_STRAIGHT); // do this before calling set_sub_canvas(), but after set_time()
 				composite->set_amount(1.0f); // after set_time()
 				paste_canvas->set_sub_canvas(sub_canvas);
@@ -1327,7 +1333,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	op_canvas->op_flag_=true;
 	if(!context->empty() && (*context)->get_canvas())
 	{
-		op_canvas->set_grow_value((*context)->get_canvas()->get_grow_value());
+		op_canvas->set_grow_value(context.get_params(), (*context)->get_canvas()->get_grow_value());
 	}
 }
 
@@ -1481,9 +1487,8 @@ Canvas::show_structure(int i) const
 {
 	if(i==0)
 		printf("---Canvas Structure----\n");
-	Context iter;
-	Context context=get_context();
-	for(iter=context;*iter;iter++)
+	Context::const_iterator iter;
+	for(iter=begin();*iter;iter++)
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());
