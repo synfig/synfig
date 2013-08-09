@@ -73,9 +73,6 @@ private:
 	bool muck_with_time_;
 	//! Parameter that avoid hit check to go depth into the children.
 	bool children_lock;
-	//! Boundaries of the paste canvas layer. It is the canvas's boundary
-	//! affected by the zoom, origin and focus.
-	mutable Rect bounds;
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
 
@@ -170,10 +167,13 @@ public:
 	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	//! Bounding rect for this layer depends from context_params
+	Rect get_bounding_rect_context_dependent(const ContextParams &context_params)const;
+	//!Returns the rectangle that includes the context of the layer and
+	//! the intersection of the layer in case it is active and not onto
+	virtual Rect get_full_bounding_rect(Context context)const;
 	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
-	//! Returns the rectangle that includes the layer
-	virtual synfig::Rect get_bounding_rect()const;
 	//! Checks to see if a part of the Paste Canvas Layer is directly under \a point
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual void set_render_method(Context context, RenderMethod x);

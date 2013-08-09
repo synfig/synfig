@@ -253,8 +253,6 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 			)
 		);
 	*/
-	if(canvas)
-		bounds = ((canvas->get_context().get_full_bounding_rect() - focus) * exp(zoom) + origin + focus);
 
 	if(canvas && muck_with_time_)
 		add_child(canvas.get());
@@ -282,9 +280,9 @@ Layer_PasteCanvas::update_renddesc()
 	if(!get_canvas() || !canvas || !canvas->is_inline()) return;
 
 	canvas->rend_desc()=get_canvas()->rend_desc();
-	for (Context context = canvas->get_context(); !context->empty(); context++)
+	for (Canvas::const_iterator iter = canvas->begin(); !iter->empty(); iter++)
 	{
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*context);
+		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*iter);
 		if (paste) paste->update_renddesc();
 	}
 }
@@ -325,13 +323,7 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 
 	context.set_time(time);
 	if(canvas)
-	{
-		canvas->set_time(time+time_offset);
-
-		bounds=(canvas->get_context().get_full_bounding_rect()-focus)*exp(zoom)+origin+focus;
-	}
-	else
-		bounds=Rect::zero();
+		canvas->set_time(context.get_params(),time+time_offset);
 }
 
 synfig::Layer::Handle
@@ -342,11 +334,11 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	if (canvas) {
 		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
-		if(canvas && get_amount() && canvas->get_context().get_color(target_pos).get_a()>=0.25)
+		if(canvas && get_amount() && canvas->get_context(context).get_color(target_pos).get_a()>=0.25)
 		{
 			if(!children_lock)
 			{
-				return canvas->get_context().hit_check(target_pos);
+				return canvas->get_context(context).hit_check(target_pos);
 			}
 			return const_cast<Layer_PasteCanvas*>(this);
 		}
@@ -364,9 +356,25 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 
 	Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
-	return Color::blend(canvas->get_context().get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
+	return Color::blend(canvas->get_context(context).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
 
+Rect
+Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
+{
+	return canvas
+		 ? (canvas->get_context(context_params).get_full_bounding_rect()-focus)*exp(zoom)+origin+focus
+		 : Rect::zero();
+}
+
+Rect
+Layer_PasteCanvas::get_full_bounding_rect(Context context)const
+{
+	if(is_disabled() || Color::is_onto(get_blend_method()))
+		return context.get_full_bounding_rect();
+
+	return context.get_full_bounding_rect()|get_bounding_rect_context_dependent(context.get_params());
+}
 
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
@@ -403,13 +411,13 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		return false;
 
 	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
+	canvas->set_grow_value(context.get_params(),outline_grow+grow_value);
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time+time_offset);
+		canvas->set_time(context.get_params(),curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
-	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
+	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
 
 	bool blend_using_straight = false; // use 'straight' just for the central blit
 
@@ -545,7 +553,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	// render the canvas to be pasted onto pastesurface
 	Surface pastesurface;
-	if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
+	if(!canvas->get_context(context).accelerated_render(&pastesurface,quality,desc,&stagetwo))
 		return false;
 
 #ifdef SYNFIG_CLIP_PASTECANVAS
@@ -586,10 +594,10 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 		
 	
 	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(outline_grow+grow_value);
+	canvas->set_grow_value(context.get_params(),outline_grow+grow_value);
 	
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(curr_time+time_offset);
+		canvas->set_time(context.get_params(),curr_time+time_offset);
 
 
 	bool ret;
@@ -614,7 +622,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	cairo_scale(subcr, exp(zoom), exp(zoom));
 	cairo_translate(subcr, -focus[0], -focus[1]);
 	// Effectively render the canvas content
-	ret=canvas->get_context().accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
+	ret=canvas->get_context(context).accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source
 	cairo_destroy(subcr);
 	
@@ -645,12 +653,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 }
 ///////
 
-
-Rect
-Layer_PasteCanvas::get_bounding_rect()const
-{
-	return bounds;
-}
 
 void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 {
@@ -690,7 +692,7 @@ void
 Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 {
 	if(canvas) // if there is a canvas pass down to it
-		canvas->get_context().set_render_method(x);
+		canvas->get_context(context).set_render_method(x);
 
 	// in any case pass it down
 	context.set_render_method(x);
