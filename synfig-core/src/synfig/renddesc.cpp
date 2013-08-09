@@ -359,7 +359,7 @@ RendDesc::set_clamp(bool x)
 //! Return the status of the render_excluded_contexts flag
 const bool &
 RendDesc::get_render_excluded_contexts()const
-{ return clamp; }
+{ return render_excluded_contexts; }
 
 //! Set the render_excluded_contexts flag
 RendDesc &
