@@ -45,7 +45,8 @@ class Layer_SolidColor : public Layer_Composite, public Layer_NoDeform
 
 private:
 
-	Color color;
+	//!Parameter: (Color) color of the solid
+	ValueBase param_color;
 
 public:
 
