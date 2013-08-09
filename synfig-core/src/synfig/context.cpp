@@ -106,7 +106,7 @@ Context::get_color(const Point &pos)const
 
 	RWLock::ReaderLock lock((*context)->get_rw_lock());
 
-	return (*context)->get_color(context+1, pos);
+	return (*context)->get_color(context.get_next(), pos);
 }
 
 CairoColor
@@ -132,7 +132,7 @@ Context::get_cairocolor(const Point &pos)const
 	
 	RWLock::ReaderLock lock((*context)->get_rw_lock());
 	
-	return (*context)->get_cairocolor(context+1, pos);
+	return (*context)->get_cairocolor(context.get_next(), pos);
 }
 
 
@@ -157,7 +157,7 @@ Context::get_full_bounding_rect()const
 	// If this layer isn't defined, return zero-sized rectangle
 	if(context->empty()) return Rect::zero();
 
-	return (*context)->get_full_bounding_rect(context+1);
+	return (*context)->get_full_bounding_rect(context.get_next());
 }
 
 
@@ -230,7 +230,7 @@ Context::set_time(Time time)const
 		// Sets the modified parameter list to the current context layer
 		(*context)->set_param_list(params);
 		// Calls the set time for the next layer in the context.
-		(*context)->set_time(context+1,time);
+		(*context)->set_time(context.get_next(),time);
 		// Sets the dirty time the current calling time
 		(*context)->dirty_time_=time;
 
@@ -266,7 +266,7 @@ Context::set_render_method(RenderMethod x)
 
 	if((context)->empty()) return;
 	
-	(*context)->set_render_method(context+1, x);
+	(*context)->set_render_method(context.get_next(), x);
 }
 void
 Context::set_time(Time time,const Vector &/*pos*/)const
@@ -300,7 +300,7 @@ Context::set_time(Time time,const Vector &/*pos*/)const
 
 		(*context)->set_param_list(params);
 
-		(*context)->set_time(context+1,time,pos);
+		(*context)->set_time(context.get_next(),time,pos);
 	}
 */
 }
@@ -326,7 +326,7 @@ Context::hit_check(const Point &pos)const
 	// If this layer isn't defined, return an empty handle
 	if((context)->empty()) return 0;
 
-	return (*context)->hit_check(context+1, pos);
+	return (*context)->hit_check(context.get_next(), pos);
 }
 
 
@@ -426,7 +426,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		// using the appropriate 'amount'
 		if (straight_and_empty)
 		{
-			if ((ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb)))
+			if ((ret = Context((context.get_next())).accelerated_render(surface,quality,renddesc,cb)))
 			{
 				Surface clearsurface;
 				clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
@@ -439,7 +439,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			}
 		}
 		else
-			ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+			ret = (*context)->accelerated_render(context.get_next(),surface,quality,renddesc, cb);
 #ifdef SYNFIG_PROFILE_LAYERS
 		//post work for the previous layer
 		time_table[curr_layer]+=profile_timer();							//-
@@ -526,7 +526,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 		// rendering, but it uses straight blending, so we need to render
 		// the stuff under us and then blit transparent pixels over it
 		// using the appropriate 'amount'
-		ret = (*context)->accelerated_cairorender(context+1,cr,quality,renddesc, cb);
+		ret = (*context)->accelerated_cairorender(context.get_next(),cr,quality,renddesc, cb);
 #ifdef SYNFIG_PROFILE_LAYERS
 		//post work for the previous layer
 		time_table[curr_layer]+=profile_timer();							//-

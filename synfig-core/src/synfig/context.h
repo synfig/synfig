@@ -54,21 +54,45 @@ class Layer;
 class Time;
 class Rect;
 
+class ContextParams {
+public:
+	bool render_excluded_contexts;
+	explicit ContextParams(bool render_excluded_contexts = false):
+	render_excluded_contexts(render_excluded_contexts) { }
+};
+
+
 /*!	\class Context
 **	\brief Context is a class to warp the iterator for a double queue of layers
 * (that is the CanvasBase).
 **	\see Layer, Canvas, CanvasBase */
 class Context : public CanvasBase::const_iterator
 {
+private:
+	ContextParams params;
+
 public:
+
 	Context() { }
 
+	Context(const CanvasBase::const_iterator &x, const ContextParams &params):
+		CanvasBase::const_iterator(x), params(params) { }
+
+	Context(const CanvasBase::const_iterator &x, const Context &context):
+		CanvasBase::const_iterator(x), params(context.params) { }
+
 	//! Constructor based on other CanvasBase iterator
-	Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
+	//Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
 
 	//!Assignation operator
-	Context operator=(const CanvasBase::const_iterator &x)
-	{ return CanvasBase::const_iterator::operator=(x); }
+	//Context operator=(const CanvasBase::const_iterator &x)
+	//{ return CanvasBase::const_iterator::operator=(x); }
+
+	Context get_next()const { return Context(*this+1, params); }
+
+	Context get_previous()const { return Context(*this-1, params); }
+
+	const ContextParams& get_params()const { return params; }
 
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
@@ -99,8 +123,20 @@ public:
 	// Set Render Method. Passes the information of the render method to use to the layers
 	void set_render_method(RenderMethod x);
 
-}; // END of class Context
+	// Returns \c true if layer is active in this context
+	static inline bool active(const ContextParams &context_params, const Layer &layer) {
+		return layer.active()
+		    && (context_params.render_excluded_contexts
+		    || layer.get_exclude_from_rendering());
+	}
 
+	// Returns \c true if layer is active in this context
+	inline bool active()const {
+		return !(operator*()).empty()
+			 && active(params, *(operator*()));
+	}
+
+}; // END of class Context
 
 }; // END of namespace synfig
 
