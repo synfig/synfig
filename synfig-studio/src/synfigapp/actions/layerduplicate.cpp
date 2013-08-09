@@ -205,7 +205,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 			{
 				Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
 				if (subcanvas && subcanvas->is_inline())
-					for (Context iter = subcanvas->get_context(); iter != subcanvas->end(); iter++)
+					for (Canvas::const_iterator iter = subcanvas->begin(); iter != subcanvas->end(); iter++)
 						export_dup_nodes(*iter, canvas, index);
 			}
 
