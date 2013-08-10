@@ -175,6 +175,11 @@ mkdeps()
 	
 	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
 	echo "+nonfree" > $MACPORTS/etc/macports/variants.conf
+	
+	# workaround the bug introduced in MacPorts 2.2.0 - https://trac.macports.org/ticket/39850
+	cp -rf $MACPORTS/etc/macports/macports.conf $MACPORTS/etc/macports/macports.conf.bak
+	sed '/sandbox_enable/d' $MACPORTS/etc/macports/macports.conf.bak > $MACPORTS/etc/macports/macports.conf
+	echo "sandbox_enable no" >> $MACPORTS/etc/macports/macports.conf
 
 	port selfupdate
 	port upgrade outdated || true
