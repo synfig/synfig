@@ -2867,6 +2867,7 @@ studio::WorkArea::async_update_preview()
 	// Setup the description parameters
 	desc.set_antialias(1);
 	desc.set_time(cur_time);
+	desc.set_render_excluded_contexts(true);
 
 	set_rend_desc(desc);
 
