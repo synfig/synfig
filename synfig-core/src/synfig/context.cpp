@@ -83,6 +83,113 @@ _print_profile_report()
 
 /* === M E T H O D S ======================================================= */
 
+void
+IndependentContext::set_time(Time time)const
+{
+	IndependentContext context(*this);
+	while(!(context)->empty())
+	{
+		// If this layer is active, and
+		// it either isn't already set to the given time
+		//        or it's a stroboscope layer,
+		//        or it's a time loop layer,
+		// then break out of the loop and set its time
+		if( /* (*context)->active() && */
+		   (!(*context)->dirty_time_.is_equal(time) ||
+			(*context)->get_name() == "stroboscope" ||
+			(*context)->get_name() == "timeloop"))
+			break;
+
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+
+	// If this layer isn't defined, just return
+	if((context)->empty()) return;
+
+	// Set up a writer lock
+	RWLock::WriterLock lock((*context)->get_rw_lock());
+
+	//synfig::info("%s: dirty_time=%f",(*context)->get_non_empty_description().c_str(),(float)(*context)->dirty_time_);
+	//synfig::info("%s: time=%f",(*context)->get_non_empty_description().c_str(),(float)time);
+
+	{
+		Layer::ParamList params;
+		Layer::DynamicParamList::const_iterator iter;
+		// For each parameter of the layer sets the time by the operator()(time)
+		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
+			params[iter->first]=(*iter->second)(time);
+		// Sets the modified parameter list to the current context layer
+		(*context)->set_param_list(params);
+		// Calls the set time for the next layer in the context.
+		(*context)->set_time(context+1,time);
+		// Sets the dirty time the current calling time
+		(*context)->dirty_time_=time;
+
+	}
+}
+
+void
+IndependentContext::set_time(Time time,const Vector &/*pos*/)const
+{
+	set_time(time);
+/*
+	Context context(*this);
+	while(!(context)->empty())
+	{
+		// If this layer is active, then go
+		// ahead and break out of the loop
+		if(context.active())
+			break;
+
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+
+	// If this layer isn't defined, just return
+	if((context)->empty()) return;
+
+	else
+	{
+		Layer::ParamList params;
+		Layer::DynamicParamList::const_iterator iter;
+
+		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
+			params[iter->first]=(*iter->second)(time);
+
+		(*context)->set_param_list(params);
+
+		(*context)->set_time(context+1,time,pos);
+	}
+*/
+}
+
+void
+IndependentContext::set_dirty_outlines()
+{
+	IndependentContext context(*this);
+	while(!(context)->empty())
+	{
+		if( /* (*context)->active() && */
+			(
+			(*context)->get_name() == "outline" ||
+			(*context)->get_name() == "advanced_outline" ||
+			(*context)->get_name() == "PasteCanvas"
+			)
+		  )
+			{
+				{
+					(*context)->dirty_time_=Time::end();
+				}
+			}
+		++context;
+	}
+}
+
 Color
 Context::get_color(const Point &pos)const
 {
@@ -190,76 +297,6 @@ Context::get_full_bounding_rect()const
 
 
 void
-Context::set_time(Time time)const
-{
-	Context context(*this);
-	while(!(context)->empty())
-	{
-		// If this layer is active, and
-		// it either isn't already set to the given time
-		//        or it's a stroboscope layer,
-		//        or it's a time loop layer,
-		// then break out of the loop and set its time
-		if(context.active() &&
-		   (!(*context)->dirty_time_.is_equal(time) ||
-			(*context)->get_name() == "stroboscope" ||
-			(*context)->get_name() == "timeloop"))
-			break;
-
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-
-	// If this layer isn't defined, just return
-	if((context)->empty()) return;
-
-	// Set up a writer lock
-	RWLock::WriterLock lock((*context)->get_rw_lock());
-
-	//synfig::info("%s: dirty_time=%f",(*context)->get_non_empty_description().c_str(),(float)(*context)->dirty_time_);
-	//synfig::info("%s: time=%f",(*context)->get_non_empty_description().c_str(),(float)time);
-
-	{
-		Layer::ParamList params;
-		Layer::DynamicParamList::const_iterator iter;
-		// For each parameter of the layer sets the time by the operator()(time)
-		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
-			params[iter->first]=(*iter->second)(time);
-		// Sets the modified parameter list to the current context layer
-		(*context)->set_param_list(params);
-		// Calls the set time for the next layer in the context.
-		(*context)->set_time(context.get_next(),time);
-		// Sets the dirty time the current calling time
-		(*context)->dirty_time_=time;
-
-	}
-}
-
-void
-Context::set_dirty_outlines()
-{
-	Context context(*this);
-	while(!(context)->empty())
-	{
-		if( context.active() &&
-			(
-			(*context)->get_name() == "outline" ||
-			(*context)->get_name() == "advanced_outline" ||
-			(*context)->get_name() == "PasteCanvas"
-			)
-		  )
-			{
-				{
-					(*context)->dirty_time_=Time::end();
-				}
-			}
-		++context;
-	}
-}
-
-void
 Context::set_render_method(RenderMethod x)
 {
 	Context context(*this);
@@ -267,42 +304,6 @@ Context::set_render_method(RenderMethod x)
 	if((context)->empty()) return;
 	
 	(*context)->set_render_method(context.get_next(), x);
-}
-void
-Context::set_time(Time time,const Vector &/*pos*/)const
-{
-	set_time(time);
-/*
-	Context context(*this);
-	while(!(context)->empty())
-	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if(context.active())
-			break;
-
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-
-	// If this layer isn't defined, just return
-	if((context)->empty()) return;
-
-	else
-	{
-		Layer::ParamList params;
-		Layer::DynamicParamList::const_iterator iter;
-
-		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
-			params[iter->first]=(*iter->second)(time);
-
-		(*context)->set_param_list(params);
-
-		(*context)->set_time(context.get_next(),time,pos);
-	}
-*/
 }
 
 etl::handle<Layer>

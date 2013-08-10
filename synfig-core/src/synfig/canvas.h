@@ -120,8 +120,9 @@
 
 namespace synfig {
 
-class Context;
+class IndependentContext;
 class ContextParams;
+class Context;
 class GUID;
 class Canvas;
 
@@ -452,7 +453,7 @@ public:
 	//Color get_color(const Point &pos)const;
 
 	//! Sets the time for all the layers in the canvas
-	void set_time(const ContextParams &context_params, Time t)const;
+	void set_time(Time t)const;
 
 	//! Returns the current time of the Canvas
 	Time get_time()const { return cur_time_; }
@@ -560,6 +561,9 @@ public:
 	int get_depth(etl::handle<Layer>)const;
 
 	//! Retireves the first layer of the double queue of Layers
+	IndependentContext get_independent_context()const;
+
+	//! Retireves the first layer of the double queue of Layers
 	Context get_context(const ContextParams &params)const;
 
 	//! Retireves the first layer of the double queue of Layers
@@ -617,7 +621,7 @@ public:
 	void register_external_canvas(String file, Handle canvas);
 	//! Set/Get members for the grow value
 	Real get_grow_value()const;
-	void set_grow_value(const ContextParams &context_params, Real x);
+	void set_grow_value(Real x);
 
 #if 0
 	void show_canvas_ancestry(String file, int line, String note)const;

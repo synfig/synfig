@@ -61,12 +61,34 @@ public:
 	render_excluded_contexts(render_excluded_contexts) { }
 };
 
+class IndependentContext: public CanvasBase::const_iterator
+{
+public:
+	IndependentContext() { }
+
+	//! Constructor based on other CanvasBase iterator
+	IndependentContext(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
+
+	//!Assignation operator
+	IndependentContext operator=(const CanvasBase::const_iterator &x)
+	{ return CanvasBase::const_iterator::operator=(x); }
+
+	//! Sets the context to the Time \time. It is done recursively.
+	void set_time(Time time)const;
+
+	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
+	void set_time(Time time,const Vector &pos)const;
+
+	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
+	void set_dirty_outlines();
+};
+
 
 /*!	\class Context
 **	\brief Context is a class to warp the iterator for a double queue of layers
 * (that is the CanvasBase).
 **	\see Layer, Canvas, CanvasBase */
-class Context : public CanvasBase::const_iterator
+class Context : public IndependentContext
 {
 private:
 	ContextParams params;
@@ -75,18 +97,17 @@ public:
 
 	Context() { }
 
+	Context(const IndependentContext &x, const ContextParams &params):
+		IndependentContext(x), params(params) { }
+
+	Context(const IndependentContext &x, const Context &context):
+		IndependentContext(x), params(context.params) { }
+
 	Context(const CanvasBase::const_iterator &x, const ContextParams &params):
-		CanvasBase::const_iterator(x), params(params) { }
+		IndependentContext(x), params(params) { }
 
 	Context(const CanvasBase::const_iterator &x, const Context &context):
-		CanvasBase::const_iterator(x), params(context.params) { }
-
-	//! Constructor based on other CanvasBase iterator
-	//Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
-
-	//!Assignation operator
-	//Context operator=(const CanvasBase::const_iterator &x)
-	//{ return CanvasBase::const_iterator::operator=(x); }
+		IndependentContext(x), params(context.params) { }
 
 	Context get_next()const { return Context(*this+1, params); }
 
@@ -104,12 +125,6 @@ public:
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
-	//! Sets the context to the Time \time. It is done recursively.
-	void set_time(Time time)const;
-
-	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
-	void set_time(Time time,const Vector &pos)const;
-
 	//! Returns the bounding rectangle of all the context.
 	//! It is the union of all the layers's bounding rectangle.
 	Rect get_full_bounding_rect()const;
@@ -117,9 +132,6 @@ public:
 	//! Returns the first context's layer's handle that intesects the given \point */
 	etl::handle<Layer> hit_check(const Point &point)const;
 
-	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
-	void set_dirty_outlines();
-	
 	// Set Render Method. Passes the information of the render method to use to the layers
 	void set_render_method(RenderMethod x);
 
