@@ -92,7 +92,7 @@ Context::get_color(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -118,7 +118,7 @@ Context::get_cairocolor(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 		
 		// Otherwise, we want to keep searching
@@ -145,7 +145,7 @@ Context::get_full_bounding_rect()const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -200,7 +200,7 @@ Context::set_time(Time time)const
 		//        or it's a stroboscope layer,
 		//        or it's a time loop layer,
 		// then break out of the loop and set its time
-		if((*context)->active() &&
+		if(context.active() &&
 		   (!(*context)->dirty_time_.is_equal(time) ||
 			(*context)->get_name() == "stroboscope" ||
 			(*context)->get_name() == "timeloop"))
@@ -243,7 +243,7 @@ Context::set_dirty_outlines()
 	Context context(*this);
 	while(!(context)->empty())
 	{
-		if( (*context)->active() &&
+		if( context.active() &&
 			(
 			(*context)->get_name() == "outline" ||
 			(*context)->get_name() == "advanced_outline" ||
@@ -278,7 +278,7 @@ Context::set_time(Time time,const Vector &/*pos*/)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -314,7 +314,7 @@ Context::hit_check(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -355,7 +355,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	for(;!(context)->empty();++context)
 	{
 		// If we are not active then move on to next layer
-		if(!(*context)->active())
+		if(!context.active())
 			continue;
 		const Rect layer_bounds((*context)->get_bounding_rect());
 		// Cast current layer to composite
@@ -488,7 +488,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 	for(;!(context)->empty();++context)
 	{
 		// If we are not active then move on to next layer
-		if(!(*context)->active())
+		if(!context.active())
 			continue;
 		// Found one good layer
 		break;

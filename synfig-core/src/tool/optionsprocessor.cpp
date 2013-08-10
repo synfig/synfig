@@ -565,7 +565,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			for(iter=composite->rbegin(); iter!=composite->rend(); ++iter)
 			{
 				Layer::Handle layer(*iter);
-				if(layer->active())
+				// todo: take context_params from options
+				if(Context::active(ContextParams(false),*layer))
 					job.canvas->push_front(layer->clone(composite));
 			}
 		}
@@ -591,7 +592,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			for(iter=composite->rbegin();iter!=composite->rend();++iter)
 			{
 				Layer::Handle layer(*iter);
-				if(layer->active())
+				// todo: take context_params from options
+				if(Context::active(ContextParams(false),*layer))
 					job_list.front().canvas->push_front(layer->clone(composite));
 			}
 			VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;

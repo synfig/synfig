@@ -127,7 +127,12 @@ public:
 	static inline bool active(const ContextParams &context_params, const Layer &layer) {
 		return layer.active()
 		    && (context_params.render_excluded_contexts
-		    || layer.get_exclude_from_rendering());
+		    || !layer.get_exclude_from_rendering());
+	}
+
+	// Returns \c true if layer is active in this context
+	inline bool active(const Layer &layer) {
+		return active(params, layer);
 	}
 
 	// Returns \c true if layer is active in this context

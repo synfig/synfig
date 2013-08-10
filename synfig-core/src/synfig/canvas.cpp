@@ -1135,7 +1135,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Layer::Handle layer=*iter;
 
 			// If the layer isn't active, don't worry about it
-			if(!layer->active())
+			if(!context.active(*layer))
 				continue;
 
 			// Any layer with an amount of zero is implicitly disabled.
@@ -1174,7 +1174,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		float z_depth(layer->get_z_depth()*1.0001+i);
 
 		// If the layer isn't active, don't worry about it
-		if(!layer->active())
+		if(!context.active(*layer))
 			continue;
 
 		// Any layer with an amount of zero is implicitly disabled.
