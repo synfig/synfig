@@ -49,29 +49,47 @@ class Julia : public synfig::Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	synfig::Color icolor;
-	synfig::Color ocolor;
-	synfig::Angle color_shift;
-	Real bailout;
+	//!Parameter: (synfig::Color)
+	ValueBase param_icolor;
+	//!Parameter: (synfig::Color)
+	ValueBase param_ocolor;
+	//!Parameter: (synfig::Angle)
+	ValueBase param_color_shift;
+	//!Parameter: (int)
+	ValueBase param_iterations;
+	//!Parameter: (synfig::Point)
+	ValueBase param_seed;
+	//!Parameter: (Real)
+	ValueBase param_bailout;
+	//!Parameter: (bool)
+	ValueBase param_distort_inside;
+	//!Parameter: (bool)
+	ValueBase param_shade_inside;
+	//!Parameter: (bool)
+	ValueBase param_solid_inside;
+	//!Parameter: (bool)
+	ValueBase param_invert_inside;
+	//!Parameter: (bool)
+	ValueBase param_color_inside;
+	//!Parameter: (bool)
+	ValueBase param_distort_outside;
+	//!Parameter: (bool)
+	ValueBase param_shade_outside;
+	//!Parameter: (bool)
+	ValueBase param_solid_outside;
+	//!Parameter: (bool)
+	ValueBase param_invert_outside;
+	//!Parameter: (bool)
+	ValueBase param_color_outside;
+	//!Parameter: (bool)
+	ValueBase param_color_cycle;
+	//!Parameter: (bool)
+	ValueBase param_smooth_outside;
+	//!Parameter: (bool)
+	ValueBase param_broken;
 	Real lp;
-	int iterations;
-	synfig::Point seed;
 
-	bool distort_inside;
-	bool distort_outside;
-	bool shade_inside;
-	bool shade_outside;
-	bool solid_inside;
-	bool solid_outside;
-	bool invert_inside;
-	bool invert_outside;
-	bool color_inside;
-	bool color_outside;
 
-	bool color_cycle;
-	bool smooth_outside;
-	bool broken;
 
 public:
 	Julia();

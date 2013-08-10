@@ -94,76 +94,82 @@ color_neg_flip(Color &color)
 
 /* === M E T H O D S ======================================================= */
 
-Julia::Julia():color_shift(angle::degrees(0))
+Julia::Julia():
+param_color_shift(ValueBase(Angle::deg(0)))
 {
-	icolor=Color::black();
-	ocolor=Color::black();
-	iterations=32;
-	color_shift=Angle::deg(0);
+	param_icolor=ValueBase(Color::black());
+	param_ocolor=ValueBase(Color::black());
+	param_iterations=ValueBase(int(32));
+	param_color_shift=ValueBase(Angle::deg(0));
+	
+	param_distort_inside=ValueBase(true);
+	param_distort_outside=ValueBase(true);
+	param_shade_inside=ValueBase(true);
+	param_shade_outside=ValueBase(true);
+	param_solid_inside=ValueBase(false);
+	param_solid_outside=ValueBase(false);
+	param_invert_inside=ValueBase(false);
+	param_invert_outside=ValueBase(false);
+	param_color_inside=ValueBase(true);
+	param_color_outside=ValueBase(false);
+	param_color_cycle=ValueBase(false);
+	param_smooth_outside=ValueBase(true);
+	param_broken=ValueBase(false);
+	param_seed=ValueBase(Point(0,0));
 
-	distort_inside=true;
-	distort_outside=true;
-	shade_inside=true;
-	shade_outside=true;
-	solid_inside=false;
-	solid_outside=false;
-	invert_inside=false;
-	invert_outside=false;
-	color_inside=true;
-	color_outside=false;
-	color_cycle=false;
-	smooth_outside=true;
-	broken=false;
-	seed=Point(0,0);
+	param_bailout=ValueBase(Real(4));
+	lp=log(log(param_bailout.get(Real())));
 
-	bailout=4;
-	lp=log(log(bailout));
-
+	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 bool
 Julia::set_param(const String & param, const ValueBase &value)
 {
 
-	IMPORT(icolor);
-	IMPORT(ocolor);
-	IMPORT(color_shift);
-	IMPORT(seed);
+	IMPORT_VALUE(param_icolor);
+	IMPORT_VALUE(param_ocolor);
+	IMPORT_VALUE(param_color_shift);
+	IMPORT_VALUE(param_seed);
 
-	IMPORT(distort_inside);
-	IMPORT(distort_outside);
-	IMPORT(shade_inside);
-	IMPORT(shade_outside);
-	IMPORT(solid_inside);
-	IMPORT(solid_outside);
-	IMPORT(invert_inside);
-	IMPORT(invert_outside);
-	IMPORT(color_inside);
-	IMPORT(color_outside);
+	IMPORT_VALUE(param_distort_inside);
+	IMPORT_VALUE(param_distort_outside);
+	IMPORT_VALUE(param_shade_inside);
+	IMPORT_VALUE(param_shade_outside);
+	IMPORT_VALUE(param_solid_inside);
+	IMPORT_VALUE(param_solid_outside);
+	IMPORT_VALUE(param_invert_inside);
+	IMPORT_VALUE(param_invert_outside);
+	IMPORT_VALUE(param_color_inside);
+	IMPORT_VALUE(param_color_outside);
 
-	IMPORT(color_cycle);
-	IMPORT(smooth_outside);
-	IMPORT(broken);
+	IMPORT_VALUE(param_color_cycle);
+	IMPORT_VALUE(param_smooth_outside);
+	IMPORT_VALUE(param_broken);
 
-// TODO: Use IMPORT_PLUS
-	if(param=="iterations" && value.same_type_as(iterations))
+	IMPORT_VALUE_PLUS(param_iterations,
 	{
+		int iterations=param_iterations.get(int());
 		iterations=value.get(iterations);
 		if(iterations<0)
 			iterations=0;
 		if(iterations>500000)
 			iterations=500000;
-		set_param_static(param, value.get_static());
+		param_iterations.set(iterations);
 		return true;
 	}
-	if(param=="bailout" && value.same_type_as(bailout))
+	);
+	IMPORT_VALUE_PLUS(param_bailout,
 	{
+		Real bailout=param_bailout.get(Real());
 		bailout=value.get(bailout);
 		bailout*=bailout;
 		lp=log(log(bailout));
-		set_param_static(param, value.get_static());
+		param_bailout.set(bailout);
 		return true;
 	}
+	);
 
 	return false;
 }
@@ -171,30 +177,31 @@ Julia::set_param(const String & param, const ValueBase &value)
 ValueBase
 Julia::get_param(const String & param)const
 {
-	EXPORT(icolor);
-	EXPORT(ocolor);
-	EXPORT(color_shift);
-	EXPORT(iterations);
-	EXPORT(seed);
+	EXPORT_VALUE(param_icolor);
+	EXPORT_VALUE(param_ocolor);
+	EXPORT_VALUE(param_color_shift);
+	EXPORT_VALUE(param_iterations);
+	EXPORT_VALUE(param_seed);
 
-	EXPORT(distort_inside);
-	EXPORT(distort_outside);
-	EXPORT(shade_inside);
-	EXPORT(shade_outside);
-	EXPORT(solid_inside);
-	EXPORT(solid_outside);
-	EXPORT(invert_inside);
-	EXPORT(invert_outside);
-	EXPORT(color_inside);
-	EXPORT(color_outside);
-	EXPORT(color_cycle);
-	EXPORT(smooth_outside);
-	EXPORT(broken);
+	EXPORT_VALUE(param_distort_inside);
+	EXPORT_VALUE(param_distort_outside);
+	EXPORT_VALUE(param_shade_inside);
+	EXPORT_VALUE(param_shade_outside);
+	EXPORT_VALUE(param_solid_inside);
+	EXPORT_VALUE(param_solid_outside);
+	EXPORT_VALUE(param_invert_inside);
+	EXPORT_VALUE(param_invert_outside);
+	EXPORT_VALUE(param_color_inside);
+	EXPORT_VALUE(param_color_outside);
+	EXPORT_VALUE(param_color_cycle);
+	EXPORT_VALUE(param_smooth_outside);
+	EXPORT_VALUE(param_broken);
 
 	if(param=="bailout")
 	{
-		ValueBase ret(sqrt(bailout));
-		
+		// This line is needed to copy the static and interpolation options
+		ValueBase ret(param_bailout);
+		ret.set(sqrt(param_bailout.get(Real())));
 		return ret;
 	}
 
@@ -207,6 +214,26 @@ Julia::get_param(const String & param)const
 Color
 Julia::get_color(Context context, const Point &pos)const
 {
+	synfig::Color icolor=param_icolor.get(synfig::Color());
+	synfig::Color ocolor=param_ocolor.get(synfig::Color());
+	synfig::Angle color_shift=param_color_shift.get(synfig::Angle());
+	int iterations=param_iterations.get(int());
+	synfig::Point seed=param_seed.get(synfig::Point());
+	bool distort_inside=param_distort_inside.get(bool());
+	bool shade_inside=param_shade_inside.get(bool());
+	bool solid_inside=param_solid_inside.get(bool());
+	bool invert_inside=param_invert_inside.get(bool());
+	bool color_inside=param_color_inside.get(bool());
+	bool distort_outside=param_distort_outside.get(bool());
+	bool shade_outside=param_shade_outside.get(bool());
+	bool solid_outside=param_solid_outside.get(bool());
+	bool invert_outside=param_invert_outside.get(bool());
+	bool color_outside=param_color_outside.get(bool());
+
+	bool color_cycle=param_color_cycle.get(bool());
+	bool smooth_outside=param_smooth_outside.get(bool());
+	bool broken=param_broken.get(bool());
+
 	Real
 		cr, ci,
 		zr, zi,
