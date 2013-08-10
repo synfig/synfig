@@ -2990,8 +2990,7 @@ again:
 	}
 
 	if(!is_visible())return false;
-	// todo: common place to store context_params
-	get_canvas()->set_time(ContextParams(true),get_time());
+	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
 
@@ -3086,8 +3085,7 @@ studio::WorkArea::async_render_preview(synfig::Time time)
 	refreshes+=5;
 	if(!is_visible())return;
 
-	// todo: common place to store context_params
-	get_canvas()->set_time(ContextParams(true),get_time());
+	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
 

@@ -115,8 +115,7 @@ CanvasInterface::set_time(synfig::Time x)
 	}
 	if(cur_time_.is_equal(x))
 		return;
-	// todo: common place to store context_params
-	get_canvas()->set_time(ContextParams(true),cur_time_=x);
+	get_canvas()->set_time(cur_time_=x);
 
 	// update the time in all the child canvases
 	Canvas::Children children = get_canvas()->get_root()->children();
@@ -138,8 +137,7 @@ CanvasInterface::get_time()const
 void
 CanvasInterface::refresh_current_values()
 {
-	// todo: common place to store context_params
-	get_canvas()->set_time(ContextParams(true),cur_time_);
+	get_canvas()->set_time(cur_time_);
 	signal_time_changed()();
 	signal_dirty_preview()();
 }
