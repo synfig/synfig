@@ -162,7 +162,7 @@ public:
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 	//! Sets the time of the Paste Canvas Layer and those under it
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time)const;
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;

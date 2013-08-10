@@ -535,14 +535,14 @@ Layer::reset_version()
 
 
 void
-Layer::set_time(Context context, Time time)const
+Layer::set_time(IndependentContext context, Time time)const
 {
 	context.set_time(time);
 	dirty_time_=time;
 }
 
 void
-Layer::set_time(Context context, Time time, const Point &pos)const
+Layer::set_time(IndependentContext context, Time time, const Point &pos)const
 {
 	context.set_time(time,pos);
 	dirty_time_=time;

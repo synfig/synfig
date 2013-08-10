@@ -167,6 +167,7 @@ class Surface;
 class CairoSurface;
 class RendDesc;
 class ProgressCallback;
+class IndependentContext;
 class Context;
 class Color;
 class CairoColor;
@@ -182,6 +183,7 @@ class GUID;
 class Layer : public Node
 {
 	friend class ValueNode;
+	friend class IndependentContext;
 	friend class Context;
 
 	/*
@@ -509,7 +511,7 @@ public:
 	**	\param time			writeme
 	**	\see Context::set_time()
 	*/
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time)const;
 
 	//! Sets the \a time for the selected Layer and those under it for a specific \a point
 	/*!	\param context		Context iterator referring to next Layer.
@@ -517,7 +519,7 @@ public:
 	**	\param point		writeme
 	**	\see Context::set_time()
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
-	virtual void set_time(Context context, Time time, const Point &point)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
 
 	//! Gets the blend color of the Layer in the context at \a pos
 	/*!	\param context		Context iterator referring to next Layer.

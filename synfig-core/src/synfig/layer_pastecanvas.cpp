@@ -316,14 +316,14 @@ Layer_PasteCanvas::get_param(const String& param)const
 }
 
 void
-Layer_PasteCanvas::set_time(Context context, Time time)const
+Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 {
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
 	curr_time=time;
 
 	context.set_time(time);
 	if(canvas)
-		canvas->set_time(context.get_params(),time+time_offset);
+		canvas->set_time(time+time_offset);
 }
 
 synfig::Layer::Handle
@@ -411,10 +411,10 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		return false;
 
 	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(context.get_params(),outline_grow+grow_value);
+	canvas->set_grow_value(outline_grow+grow_value);
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(context.get_params(),curr_time+time_offset);
+		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
@@ -594,10 +594,10 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 		
 	
 	Real grow_value(get_parent_canvas_grow_value());
-	canvas->set_grow_value(context.get_params(),outline_grow+grow_value);
+	canvas->set_grow_value(outline_grow+grow_value);
 	
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
-		canvas->set_time(context.get_params(),curr_time+time_offset);
+		canvas->set_time(curr_time+time_offset);
 
 
 	bool ret;
