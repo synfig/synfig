@@ -68,9 +68,9 @@ public:
 
 	virtual void on_canvas_set();
 
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time)const;
 
-	virtual void set_time(Context context, Time time, const Point &point)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
 	
 	virtual void set_render_method(Context context, RenderMethod x);
 };

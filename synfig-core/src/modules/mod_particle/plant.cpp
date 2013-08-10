@@ -326,7 +326,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 }
 /*
 void
-Plant::set_time(Context context, Time time)const
+Plant::set_time(IndependentContext context, Time time)const
 {
 	if(needs_sync==true)
 	{
@@ -338,7 +338,7 @@ Plant::set_time(Context context, Time time)const
 }
 
 void
-Plant::set_time(Context context, Time time, Vector pos)const
+Plant::set_time(IndependentContext context, Time time, Vector pos)const
 {
 	if(needs_sync==true)
 	{

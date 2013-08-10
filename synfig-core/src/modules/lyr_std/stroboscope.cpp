@@ -107,7 +107,7 @@ Layer_Stroboscope::get_param_vocab()const
 }
 
 void
-Layer_Stroboscope::set_time(Context context, Time t)const
+Layer_Stroboscope::set_time(IndependentContext context, Time t)const
 {
 	Time ret_time=Time::begin();
 	if(frequency > 0.0)
