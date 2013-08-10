@@ -317,9 +317,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				// Set the time that we wish to render
 				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				// Why the above line was commented here and not in TargetScaline?
-				// Anyway now always set the time because previous value of time
-				// may be set with another context_params
-					canvas->set_time(context.get_params(),t);
+					canvas->set_time(t);
 
 	#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 				Canvas::Handle op_canvas;
@@ -342,13 +340,13 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				Canvas::Handle op_canvas(Canvas::create());
 				op_canvas->set_file_name(canvas->get_file_name());
 				// Set the time that we wish to render
-				canvas->set_time(context_params,t);
+				canvas->set_time(t);
 				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
 				context=op_canvas->get_context();
 				#else
 				Context context;
 				// Set the time that we wish to render
-				canvas->set_time(context_params,t);
+				canvas->set_time(t);
 				context=canvas->get_context(context_params);
 				#endif
 	*/
@@ -367,10 +365,8 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				return false;
 
 			// Set the time that we wish to render
-			// Always set the time because previous value of time
-			// may be set with another context_params
 			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				canvas->set_time(context_params,t);
+				canvas->set_time(t);
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
