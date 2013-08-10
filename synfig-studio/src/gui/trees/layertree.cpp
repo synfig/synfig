@@ -213,6 +213,7 @@ LayerTree::create_layer_tree()
 		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 		column->pack_start(*cellrenderer,false);
 		column->add_attribute(cellrenderer->property_text(), layer_model.label);
+		column->add_attribute(cellrenderer->property_style(), layer_model.style);
 		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_renamed));
 		cellrenderer->property_editable()=true;
 

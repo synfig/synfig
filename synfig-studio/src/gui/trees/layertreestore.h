@@ -63,8 +63,10 @@ public:
 
 
 		Gtk::TreeModelColumn<bool>						active;
+		Gtk::TreeModelColumn<bool>						exclude_from_rendering;
+		Gtk::TreeModelColumn<Pango::Style>				style;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
-		Gtk::TreeModelColumn<synfig::Canvas::Handle> 			contained_canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> 	contained_canvas;
 
 		Gtk::TreeModelColumn<bool>						children_lock;
 
@@ -80,6 +82,8 @@ public:
 			add(canvas);
 			add(tooltip);
 			add(active);
+			add(exclude_from_rendering);
+			add(style);
 			add(layer);
 			add(contained_canvas);
 			add(z_depth);
