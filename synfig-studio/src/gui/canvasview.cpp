@@ -847,9 +847,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
 
 	std::list<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("STRING") );
+	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
-	listTargets.push_back( Gtk::TargetEntry("image") );
+	listTargets.push_back( Gtk::TargetEntry("STRING") );
 
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::CanvasView::on_drop_drag_data_received) );
@@ -3611,7 +3611,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
 	{
-		if(synfig::String(selection_data_.get_data_type())=="STRING")do
+		if(synfig::String(selection_data_.get_data_type())=="STRING"
+		|| synfig::String(selection_data_.get_data_type())=="text/plain")do
 		{
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
@@ -3638,7 +3639,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			success=true;
 		} while(0); // END of "STRING"
 
-		if(synfig::String(selection_data_.get_data_type())=="text/plain")
+		if(synfig::String(selection_data_.get_data_type())=="text/uri-list")
 		{
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
@@ -3653,29 +3654,42 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			//synfigapp::PassiveGrouper group(canvas_interface()->get_instance(),_("Insert Image"));
 			while(stream)
 			{
-				synfig::String filename,URI;
-				getline(stream,filename);
+				synfig::String URI;
+				getline(stream, URI);
 
-				// If we don't have a filename, move on.
-				if(filename.empty())
+				// If we don't have an URI, move on.
+				if(URI.empty())
 					continue;
 
-				// Make sure this URL is of the "file://" type.
-				URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
-				if(URI!="file://")
+				// Extract protocol name from URI.
+				synfig::String protocol( Glib::uri_parse_scheme(URI) );
+				if(protocol.empty())
 				{
-					synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
+					synfig::warning("Cannot extract protocol from URI \"%s\"", URI.c_str());
 					continue;
 				}
 
-				// Strip the "file://" part from the filename
-				filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
+				// Only 'file' protocol supported
+				if(protocol != "file")
+				{
+					synfig::warning("Protocol \"%s\" is unsupported (URI \"%s\")", protocol.c_str(), URI.c_str());
+					continue;
+				}
 
-				String ext(filename_extension(filename));
-				if (ext.size()) ext = ext.substr(1); // skip initial '.'
+				// Converts an escaped UTF-8 encoded URI to a local filename
+				// in the encoding used for filenames.
+				synfig::String filename( Glib::filename_from_uri(URI) );
+				if(filename.empty())
+				{
+					synfig::warning("Cannot extract filename from URI \"%s\"", URI.c_str());
+					continue;
+				}
+
+				String ext( filename_extension(filename) );
+				if(!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
-				if(ext=="sketch")
+				if(ext == "sketch")
 				{
 					if(work_area->load_sketch(filename))
 					{
@@ -3691,10 +3705,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					if (warnings != "")
 						App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
 				}
-
-				continue;
 			}
-		} // END of "text/plain"
+		} // END of "text/uri-list"
 	}
 	else
 		ui_interface_->error("Drop failed: bad selection data");
