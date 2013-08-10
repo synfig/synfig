@@ -157,6 +157,8 @@ private:
 
 	void on_layer_status_changed(synfig::Layer::Handle handle,bool);
 
+	void on_layer_exclude_from_rendering_changed(synfig::Layer::Handle handle,bool);
+
 	void on_layer_lowered(synfig::Layer::Handle handle);
 
 	void on_layer_raised(synfig::Layer::Handle handle);

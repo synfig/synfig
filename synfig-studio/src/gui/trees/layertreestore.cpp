@@ -78,6 +78,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
+	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_exclude_from_rendering_changed));
 	canvas_interface()->signal_layer_lowered().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_lowered));
 	canvas_interface()->signal_layer_raised().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_raised));
 	canvas_interface()->signal_layer_removed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_removed));
@@ -391,7 +392,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("layer",layer);
-			action->set_param("new_status",bool(x.get()));
+			action->set_param("new_state",bool(x.get()));
 
 			canvas_interface()->get_instance()->perform_action(action);
 			return;
@@ -901,6 +902,19 @@ LayerTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool /*x*/)
 	else
 	{
 		synfig::warning("Couldn't find layer to be activated in layer list. Rebuilding index...");
+		rebuild();
+	}
+}
+
+void
+LayerTreeStore::on_layer_exclude_from_rendering_changed(synfig::Layer::Handle handle,bool /*x*/)
+{
+	Gtk::TreeModel::Children::iterator iter;
+	if(find_layer_row(handle,iter))
+		(*iter)[model.layer]=handle;
+	else
+	{
+		synfig::warning("Couldn't find layer to be excluded/included from/to rendering in layer list. Rebuilding index...");
 		rebuild();
 	}
 }
