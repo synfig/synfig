@@ -488,8 +488,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 					strprintf(_("Unable to load '%s'."), job.filename.c_str())));
 		}
 
-		// todo: take context_params from options
-		job.root->set_time(ContextParams(false), 0);
+		job.root->set_time(0);
 	}
 	else
 		throw (SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
