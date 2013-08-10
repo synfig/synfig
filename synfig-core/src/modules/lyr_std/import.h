@@ -48,11 +48,14 @@ class Import : public Layer_Bitmap
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	String filename;
+	//!Parameter: (String)
+	ValueBase param_filename;
+	//!Parameter: (Time)
+	ValueBase param_time_offset;
+
 	String abs_filename;
 	Importer::Handle importer;
 	CairoImporter::Handle cimporter;
-	Time time_offset;
 
 protected:
 	Import();
