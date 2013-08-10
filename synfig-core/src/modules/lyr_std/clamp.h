@@ -43,12 +43,14 @@ class Layer_Clamp : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	bool invert_negative;
-	bool clamp_ceiling;
-
-	float ceiling;
-	float floor;
+	//!Parameter: (bool)
+	ValueBase param_invert_negative;
+	//!Parameter: (bool)
+	ValueBase param_clamp_ceiling;
+	//!Parameter: (synfig::Real)
+	ValueBase param_ceiling;
+	//!Parameter: (synfig::Real)
+	ValueBase param_floor;
 
 	Color clamp_color(const Color &in)const;
 
