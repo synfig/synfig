@@ -1390,7 +1390,15 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 			// do the bounding box thing
 			synfig::Rect& bbox = canvas_view->get_bbox();
-			bbox|=transform_stack.perform(layer->get_bounding_rect());
+
+			// special calculations for Layer_PasteCanvas
+			// todo: common place to store context_params
+			etl::handle<Layer_PasteCanvas> layer_pastecanvas( etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) );
+			synfig::Rect layer_bounds = layer_pastecanvas
+			                          ? layer->get_bounding_rect()
+			                          : layer_pastecanvas->get_bounding_rect_context_dependent(ContextParams(true));
+
+			bbox|=transform_stack.perform(layer_bounds);
 
 			// Grab the layer's list of parameters
 			Layer::ParamList paramlist(layer->get_param_list());
