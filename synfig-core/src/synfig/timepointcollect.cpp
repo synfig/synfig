@@ -108,9 +108,9 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 	canvas=canvas.cast_dynamic(node);
 	if(canvas)
 	{
-		IndependentContext iter;
+		Canvas::const_iterator iter;
 		int ret(0);
-		for(iter=canvas->get_independent_context();iter!=canvas->end();++iter)
+		for(iter=canvas->begin();iter!=canvas->end();++iter)
 			ret+=waypoint_collect(waypoint_set,time,*iter);
 		return ret;
 	}
