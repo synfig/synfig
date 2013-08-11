@@ -1493,8 +1493,8 @@ Canvas::show_structure(int i) const
 {
 	if(i==0)
 		printf("---Canvas Structure----\n");
-	Context::const_iterator iter;
-	for(iter=begin();*iter;iter++)
+	IndependentContext iter;
+	for(iter=get_independent_context();*iter;iter++)
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());
