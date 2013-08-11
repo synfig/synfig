@@ -65,12 +65,13 @@ SYNFIG_LAYER_SET_CVS_ID(Rotate,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Rotate::Rotate():
-	origin	(0,0),
-	amount	(Angle::deg(0)),
+	param_origin (ValueBase(Vector(0,0))),
+	param_amount (ValueBase(Angle::deg(0))),
 	sin_val	(0),
 	cos_val	(1)
 {
-
+	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 Rotate::~Rotate()
@@ -80,16 +81,17 @@ Rotate::~Rotate()
 bool
 Rotate::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
+	IMPORT_VALUE(param_origin);
 
-	if(param=="amount" && value.same_type_as(amount))
+	IMPORT_VALUE_PLUS(param_amount,
 	{
-		amount=value.get(amount);
+		Angle amount=value.get(Angle());
 		sin_val=Angle::sin(amount).get();
 		cos_val=Angle::cos(amount).get();
-		set_param_static(param, value.get_static());
+		param_amount.set(amount);
 		return true;
 	}
+	);
 
 	return false;
 }
@@ -97,8 +99,8 @@ Rotate::set_param(const String & param, const ValueBase &value)
 ValueBase
 Rotate::get_param(const String &param)const
 {
-	EXPORT(origin);
-	EXPORT(amount);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_amount);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -133,14 +135,16 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		Point pos(x-layer->origin);
-		return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
+		Vector origin=layer->param_origin.get(Vector());
+		Point pos(x-origin);
+		return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+origin;
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		Point pos(x-layer->origin);
-		return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
+		Vector origin=layer->param_origin.get(Vector());
+		Point pos(x-origin);
+		return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+origin;
 	}
 
 	synfig::String get_string()const
@@ -157,6 +161,7 @@ Rotate::get_transform()const
 synfig::Layer::Handle
 Rotate::hit_check(synfig::Context context, const synfig::Point &p)const
 {
+	Vector origin=param_origin.get(Vector());
 	Point pos(p-origin);
 	Point newpos(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1]);
 	newpos+=origin;
@@ -166,6 +171,7 @@ Rotate::hit_check(synfig::Context context, const synfig::Point &p)const
 Color
 Rotate::get_color(Context context, const Point &p)const
 {
+	Vector origin=param_origin.get(Vector());
 	Point pos(p-origin);
 	Point newpos(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1]);
 	newpos+=origin;
@@ -175,6 +181,9 @@ Rotate::get_color(Context context, const Point &p)const
 bool
 Rotate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
+	Angle amount=param_amount.get(Angle());
+	
 	if(amount.dist(Angle::deg(0))==Angle::deg(0))
 		return context.accelerated_render(surface,quality,renddesc,cb);
 	if(amount.dist(Angle::deg(180))==Angle::deg(0))
@@ -346,6 +355,9 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 bool
 Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
+	Angle amount=param_amount.get(Angle());
+
 	const double rtx(origin[0]);
 	const double rty(origin[1]);
 
