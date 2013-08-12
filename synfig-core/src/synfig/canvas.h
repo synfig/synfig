@@ -563,10 +563,10 @@ public:
 	//! Retireves the first layer of the double queue of Layers
 	IndependentContext get_independent_context()const;
 
-	//! Retireves the first layer of the double queue of Layers
+	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
 	Context get_context(const ContextParams &params)const;
 
-	//! Retireves the first layer of the double queue of Layers
+	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
 	Context get_context(const Context &parent_context)const;
 
 	//! Returns the last Canvas layer queue iterator. Notice that it
