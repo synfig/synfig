@@ -62,6 +62,9 @@
 
 #include <synfig/curve_helper.h>
 
+#include <synfig/context.h>
+#include <synfig/layer_pastecanvas.h>
+
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 #include <sigc++/hide.h>
@@ -1395,8 +1398,8 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			// todo: common place to store context_params
 			etl::handle<Layer_PasteCanvas> layer_pastecanvas( etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) );
 			synfig::Rect layer_bounds = layer_pastecanvas
-			                          ? layer->get_bounding_rect()
-			                          : layer_pastecanvas->get_bounding_rect_context_dependent(ContextParams(true));
+			                          ? layer_pastecanvas->get_bounding_rect_context_dependent(ContextParams(true))
+			                          : layer->get_bounding_rect();
 
 			bbox|=transform_stack.perform(layer_bounds);
 
