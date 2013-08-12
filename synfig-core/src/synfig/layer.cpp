@@ -139,6 +139,7 @@ Layer::subsys_stop()
 
 Layer::Layer():
 	active_(true),
+	exclude_from_rendering_(false),
 	z_depth(0.0f),
 	dirty_time_(Time::end())//,
 	//z_depth_static(false)
