@@ -48,7 +48,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-#define ACTION_LAYERMAKEBLINE_IMPLEMENT(class_name, local_name, bline_layer_name) \
+#define ACTION_LAYERMAKEBLINE_IMPLEMENT(class_name, local_name, bline_layer_name, put_new_layer_behind, ...) \
 	ACTION_INIT(Action::class_name); \
 	ACTION_SET_NAME(Action::class_name, #class_name); \
 	ACTION_SET_LOCAL_NAME(Action::class_name,N_(local_name)); \
@@ -57,12 +57,22 @@ using namespace Action;
 	ACTION_SET_PRIORITY(Action::class_name,0); \
 	ACTION_SET_VERSION(Action::class_name,"0.0"); \
 	ACTION_SET_CVS_ID(Action::class_name,"$Id$"); \
-	bool Action::class_name::is_candidate(const ParamList &x) { return is_candidate_for_make_bline(x, bline_layer_name); } \
-	void Action::class_name::prepare() { prepare_make_bline(bline_layer_name); }
+	const char * Action::class_name::possible_layer_names__[] = {__VA_ARGS__}; \
+	bool Action::class_name::is_candidate(const ParamList &x) \
+		{ return is_candidate_for_make_bline(x, possible_layer_names__, sizeof(possible_layer_names__)/sizeof(possible_layer_names__[0])); } \
+	void Action::class_name::prepare() { prepare_make_bline(bline_layer_name, put_new_layer_behind); }
 
-ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeOutline, "Make Outline", "outline");
-ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeAdvancedOutline, "Make Advanced Outline", "advanced_outline");
-ACTION_LAYERMAKEBLINE_IMPLEMENT(LayerMakeRegion, "Make Region", "region");
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakeOutline, "Make Outline", "outline", false,
+		"advanced_outline", "region");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakeAdvancedOutline, "Make Advanced Outline", "advanced_outline", false,
+		"outline", "region");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakeRegion, "Make Region", "region", true,
+		"outline", "advanced_outline");
 
 /* === G L O B A L S ======================================================= */
 
@@ -84,7 +94,7 @@ Action::LayerMakeBLine::get_param_vocab()
 }
 
 bool
-Action::LayerMakeBLine::is_candidate_for_make_bline(const ParamList &x, const synfig::String &bline_layer_name)
+Action::LayerMakeBLine::is_candidate_for_make_bline(const ParamList &x, const char **possible_layer_names, size_t possible_layer_names_count)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
@@ -94,10 +104,11 @@ Action::LayerMakeBLine::is_candidate_for_make_bline(const ParamList &x, const sy
 		const Param &param = x.find("layer")->second;
 		if(param.get_type() == Param::TYPE_LAYER
 		&& param.get_layer()
-		&& param.get_layer()->dynamic_param_list().count("bline") == 1
-		&& param.get_layer()->get_name() != bline_layer_name)
+		&& param.get_layer()->dynamic_param_list().count("bline") == 1)
 		{
-			return true;
+			for(size_t i = 0; i < possible_layer_names_count; i++)
+				if (param.get_layer()->get_name() == possible_layer_names[i])
+					return true;
 		}
 	}
 
@@ -125,7 +136,7 @@ Action::LayerMakeBLine::is_ready()const
 }
 
 void
-Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_name)
+Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_name, bool put_new_layer_behind)
 {
 	if (!layer)
 		return;
@@ -161,7 +172,7 @@ Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_nam
 		action->set_param("canvas",subcanvas);
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("layer",new_layer);
-		action->set_param("new_index",layer->get_depth());
+		action->set_param("new_index", put_new_layer_behind ? layer->get_depth()+1 : layer->get_depth());
 
 		add_action_front(action);
 	}

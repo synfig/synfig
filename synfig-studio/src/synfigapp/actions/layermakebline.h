@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_LAYEROUTLINEREGION_H
-#define __SYNFIG_APP_ACTION_LAYEROUTLINEREGION_H
+#ifndef __SYNFIG_APP_ACTION_LAYERMAKEBLINE_H
+#define __SYNFIG_APP_ACTION_LAYERMAKEBLINE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,21 +46,22 @@ class LayerMakeBLine :
 	public Super
 {
 private:
-
 	synfig::Layer::Handle layer;
 
 public:
 	static ParamVocab get_param_vocab();
-	static bool is_candidate_for_make_bline(const ParamList &x, const synfig::String &bline_layer_name);
+	static bool is_candidate_for_make_bline(const ParamList &x, const char **possible_layer_names, size_t possible_layer_names_count);
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	void prepare_make_bline(const synfig::String &bline_layer_name);
+	void prepare_make_bline(const synfig::String &bline_layer_name, bool put_new_layer_behind);
 };
 
 #define ACTION_LAYERMAKEBLINE_DECLARE(class_name) \
 	class class_name : public LayerMakeBLine { \
+	private: \
+		static const char *possible_layer_names__[]; \
 	public: \
 		static bool is_candidate(const ParamList &x); \
 		virtual void prepare(); \
