@@ -182,6 +182,10 @@ mkdeps()
 	echo "sandbox_enable no" >> $MACPORTS/etc/macports/macports.conf
 
 	port selfupdate
+	
+	# We have to make sure python 2 is default, because some packages won't build with python 3
+	port select --set python python27 || true
+	
 	port upgrade outdated || true
 
 	CORE_DEPS=" \
@@ -205,7 +209,9 @@ mkdeps()
 		python33 \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
-	port select --set python python33
+	
+	# We have to make sure python 2 is default, because some packages won't build with python 3
+	port select --set python python27
 }
 
 mketl()
