@@ -684,6 +684,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	smach_					(this),
 	instance_				(instance),
 	canvas_interface_		(canvas_interface_),
+	context_params_			(true),
 	//layer_tree_store_		(LayerTreeStore::create(canvas_interface_)),
 	//children_tree_store_	(ChildrenTreeStore::create(canvas_interface_)),
 	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),

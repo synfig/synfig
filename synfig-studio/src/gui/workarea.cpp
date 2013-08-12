@@ -1858,8 +1858,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			etl::handle<Duck> duck=find_duck(mouse_pos,radius);
 			etl::handle<Bezier> bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
 
-			// todo: common place to store context_params
-			Layer::Handle layer(get_canvas()->find_layer(ContextParams(true),mouse_pos));
+			Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),mouse_pos));
 			if(duck)
 			{
 				if(get_selected_ducks().size()<=1)
@@ -2163,8 +2162,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(allow_layer_clicks)
 				{
-					// todo: common place to store context_params
-					Layer::Handle layer(get_canvas()->find_layer(ContextParams(true),drag_point));
+					Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),drag_point));
 					//if(layer)
 					{
 						if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_LEFT,mouse_pos,modifier))==Smach::RESULT_OK)

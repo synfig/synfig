@@ -76,8 +76,7 @@ void studio::Dock_Info::on_mouse_move()
 	x.set_text(xv.get_string(3));
 	y.set_text(yv.get_string(3));
 
-	// todo: common place to store context_params
-	Color c = get_canvas_view()->get_canvas()->get_context(ContextParams(true)).get_color(pos);
+	Color c = get_canvas_view()->get_canvas()->get_context( get_canvas_view()->get_context_params() ).get_color(pos);
 	float cr = c.get_r(),cg = c.get_g(), cb = c.get_b();
 
 	if(use_colorspace_gamma())
