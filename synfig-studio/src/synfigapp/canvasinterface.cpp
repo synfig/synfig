@@ -52,6 +52,8 @@
 #include <synfig/importer.h>
 #include <synfig/guidset.h>
 
+#include <synfig/context.h>
+
 #include "canvasinterface.h"
 #include "instance.h"
 
@@ -1034,9 +1036,9 @@ CanvasInterface::find_important_value_descs(synfig::Canvas::Handle canvas,std::v
 			ret+=_process_value_desc(ValueDesc(canvas,(*iter)->get_id()),out,guid_set);
 	}
 
-	Canvas::const_iterator iter;
+	IndependentContext iter;
 
-	for(iter=canvas->begin();iter!=canvas->end();++iter)
+	for(iter=canvas->get_independent_context();iter!=canvas->end();++iter)
 	{
 		Layer::Handle layer(*iter);
 

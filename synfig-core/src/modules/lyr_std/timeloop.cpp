@@ -219,7 +219,7 @@ Layer_TimeLoop::reset_version()
 }
 
 void
-Layer_TimeLoop::set_time(Context context, Time t)const
+Layer_TimeLoop::set_time(IndependentContext context, Time t)const
 {
 	Time time = t;
 	float document_fps=get_canvas()->rend_desc().get_frame_rate();

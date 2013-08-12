@@ -38,6 +38,7 @@
 #include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/canvas.h>
+#include <synfig/context.h>
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
@@ -563,7 +564,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			for(iter=composite->rbegin(); iter!=composite->rend(); ++iter)
 			{
 				Layer::Handle layer(*iter);
-				if(layer->active())
+				//if(layer->active())
 					job.canvas->push_front(layer->clone(composite));
 			}
 		}
@@ -589,7 +590,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 			for(iter=composite->rbegin();iter!=composite->rend();++iter)
 			{
 				Layer::Handle layer(*iter);
-				if(layer->active())
+				//if(layer->active())
 					job_list.front().canvas->push_front(layer->clone(composite));
 			}
 			VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;

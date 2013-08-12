@@ -21,7 +21,8 @@ LAYER_ACTION_HH = \
 	actions/layerparamunsetstatic.h\
 	actions/layerraise.h \
 	actions/layerremove.h \
-	actions/layersetdesc.h
+	actions/layersetdesc.h \
+	actions/layersetexcludefromrendering.h
 
 LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
@@ -37,7 +38,8 @@ LAYER_ACTION_CC = \
 	actions/layerparamunsetstatic.cpp\
 	actions/layerraise.cpp \
 	actions/layerremove.cpp \
-	actions/layersetdesc.cpp
+	actions/layersetdesc.cpp \
+	actions/layersetexcludefromrendering.cpp
 
 
 VALUEDESC_ACTION_HH = \

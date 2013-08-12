@@ -49,6 +49,7 @@
 #include <synfigapp/selectionmanager.h>
 
 #include <synfig/canvas.h>
+#include <synfig/context.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
 
@@ -210,6 +211,7 @@ private:
 
 	etl::loose_handle<Instance> instance_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
+	synfig::ContextParams context_params_;
 
 	// DEBUGPOINT_CLASS(3);
 
@@ -504,6 +506,10 @@ public:
 	void popup_layer_menu(synfig::Layer::Handle layer);
 
 	virtual ~CanvasView();
+
+	const synfig::ContextParams& get_context_params()const { return context_params_; }
+
+	void set_context_params(const synfig::ContextParams &x) { context_params_ = x; }
 
 	void set_mode(Mode x) { canvas_interface()->set_mode(x); }
 

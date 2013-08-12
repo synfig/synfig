@@ -167,6 +167,7 @@ class Surface;
 class CairoSurface;
 class RendDesc;
 class ProgressCallback;
+class IndependentContext;
 class Context;
 class Color;
 class CairoColor;
@@ -182,6 +183,7 @@ class GUID;
 class Layer : public Node
 {
 	friend class ValueNode;
+	friend class IndependentContext;
 	friend class Context;
 
 	/*
@@ -266,6 +268,12 @@ private:
 	**	\see set_active(), enable(), disable, active()
 	*/
 	bool active_;
+
+	/*! When \c true, layer will skipped while final rendering
+	**	but will still present onto work view.
+	**	\see set_exclude_from_rendering(), get_exclude_from_rendering()
+	*/
+	bool exclude_from_rendering_;
 
 	//! Handle to the canvas to which this layer belongs
 	etl::loose_handle<Canvas> canvas_;
@@ -390,6 +398,14 @@ public:
 	//! Returns that status of the 'active' flag
 	bool active()const { return active_; }
 
+	//! Sets the 'exclude_from_rendering' flag for the Layer
+	/*! When set, layer will skipped while final rendering
+	**	but will still present onto work view. */
+	void set_exclude_from_rendering(bool x);
+
+	//! Returns that status of the 'exclude_from_rendering' flag
+	bool get_exclude_from_rendering()const { return exclude_from_rendering_; }
+
 	//! Returns the position of the layer in the canvas.
 	/*! Returns negative on error */
 	int get_depth()const;
@@ -495,7 +511,7 @@ public:
 	**	\param time			writeme
 	**	\see Context::set_time()
 	*/
-	virtual void set_time(Context context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time)const;
 
 	//! Sets the \a time for the selected Layer and those under it for a specific \a point
 	/*!	\param context		Context iterator referring to next Layer.
@@ -503,7 +519,7 @@ public:
 	**	\param point		writeme
 	**	\see Context::set_time()
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
-	virtual void set_time(Context context, Time time, const Point &point)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
 
 	//! Gets the blend color of the Layer in the context at \a pos
 	/*!	\param context		Context iterator referring to next Layer.

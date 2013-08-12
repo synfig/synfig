@@ -1069,14 +1069,14 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 }
 
 void
-Advanced_Outline::set_time(Context context, Time time)const
+Advanced_Outline::set_time(IndependentContext context, Time time)const
 {
 	const_cast<Advanced_Outline*>(this)->sync();
 	context.set_time(time);
 }
 
 void
-Advanced_Outline::set_time(Context context, Time time, Vector pos)const
+Advanced_Outline::set_time(IndependentContext context, Time time, Vector pos)const
 {
 	const_cast<Advanced_Outline*>(this)->sync();
 	context.set_time(time,pos);

@@ -181,14 +181,14 @@ Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)co
 }
 
 void
-Noise::set_time(synfig::Context context, synfig::Time t)const
+Noise::set_time(synfig::IndependentContext context, synfig::Time t)const
 {
 	curr_time=t;
 	context.set_time(t);
 }
 
 void
-Noise::set_time(synfig::Context context, synfig::Time t, const synfig::Point &point)const
+Noise::set_time(synfig::IndependentContext context, synfig::Time t, const synfig::Point &point)const
 {
 	curr_time=t;
 	context.set_time(t,point);

@@ -249,6 +249,7 @@ void studio::Preview::render()
 		desc.set_w(neww);
 		desc.set_h(newh);
 		desc.set_frame_rate(newfps);
+		desc.set_render_excluded_contexts(false);
 
 		if(overbegin)
 		{

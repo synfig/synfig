@@ -132,7 +132,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 		}
 		target->set_rend_desc(&desc);
 
-		if(!render(context-1,target,desc,&subcb))
+		if(!render(context.get_previous(),target,desc,&subcb))
 		{
 			if(cb)cb->error(strprintf(__FILE__"%d: Scanline Renderer Failure",__LINE__));
 			return false;

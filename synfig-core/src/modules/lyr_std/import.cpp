@@ -293,7 +293,7 @@ Import::get_param_vocab()const
 }
 
 void
-Import::set_time(Context context, Time time)const
+Import::set_time(IndependentContext context, Time time)const
 {
 	switch (get_method())
 	{
@@ -328,7 +328,7 @@ Import::set_time(Context context, Time time)const
 }
 
 void
-Import::set_time(Context context, Time time, const Point &pos)const
+Import::set_time(IndependentContext context, Time time, const Point &pos)const
 {
 	switch (get_method())
 	{

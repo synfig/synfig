@@ -322,6 +322,7 @@ RenderSettings::on_render_pressed()
 	target->set_canvas(canvas_interface_->get_canvas());
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	rend_desc.set_antialias((int)adjustment_antialias.get_value());
+	rend_desc.set_render_excluded_contexts(false);
 
 	// If we are to only render the current frame
 	if(toggle_single_frame.get_active())
