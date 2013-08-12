@@ -80,27 +80,48 @@ inline void clamp(synfig::Vector &v)
 
 Layer_Shade::Layer_Shade():
 	Layer_Composite	(0.75,Color::BLEND_BEHIND),
-	size(0.1,0.1),
-	type(Blur::FASTGAUSSIAN),
-	color(Color::black()),
-	origin(0.2,-0.2),
-	invert(false)
+	param_size(ValueBase(Vector(0.1,0.1))),
+	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
+	param_color(ValueBase(Color::black())),
+	param_origin(ValueBase(Vector(0.2,-0.2))),
+	param_invert(ValueBase(false))
 {
-
+	set_interpolation_defaults();
+	set_static_defaults();
 }
 
 bool
 Layer_Shade::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(size,clamp(size));
-	IMPORT(type);
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
+	IMPORT_VALUE_PLUS(param_size,
+		{
+			synfig::Vector size=param_size.get(synfig::Vector());
+			clamp(size);
+			param_size.set(size);
+		}
+		);
+	IMPORT_VALUE(param_type);
+	IMPORT_VALUE_PLUS(param_color,
+		{
+			synfig::Color color=param_color.get(synfig::Color());
+			if (color.get_a() == 0)
+			{
+				if (converted_blend_)
+				{
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(origin);
-	IMPORT(invert);
+					color.set_a(1);
+					param_color.set(color);
+				}
+				else
+					transparent_color_ = true;
+			}
+		}
+		);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_invert);
 
-	IMPORT_AS(origin,"offset");
+	if(param=="offset")
+		set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -108,11 +129,11 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 ValueBase
 Layer_Shade::get_param(const String &param)const
 {
-	EXPORT(size);
-	EXPORT(type);
-	EXPORT(color);
-	EXPORT(origin);
-	EXPORT(invert);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_type);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -123,6 +144,12 @@ Layer_Shade::get_param(const String &param)const
 Color
 Layer_Shade::get_color(Context context, const Point &pos)const
 {
+	synfig::Vector size=param_size.get(synfig::Vector());
+	int type=param_type.get(int());
+	synfig::Color color=param_color.get(synfig::Color());
+	synfig::Vector origin=param_origin.get(synfig::Vector());
+	bool invert=param_invert.get(bool());
+	
 	Point blurpos = Blur(size,type)(pos);
 
 	if(get_amount()==0.0)
@@ -141,6 +168,12 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 bool
 Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Vector size=param_size.get(synfig::Vector());
+	int type=param_type.get(int());
+	synfig::Color color=param_color.get(synfig::Color());
+	synfig::Vector origin=param_origin.get(synfig::Vector());
+	bool invert=param_invert.get(bool());
+
 	int x,y;
 
 	const int	w = renddesc.get_w(),
@@ -374,6 +407,12 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Shade::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Vector size=param_size.get(synfig::Vector());
+	int type=param_type.get(int());
+	synfig::Color color=param_color.get(synfig::Color());
+	synfig::Vector origin=param_origin.get(synfig::Vector());
+	bool invert=param_invert.get(bool());
+
 	int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
@@ -610,6 +649,10 @@ Layer_Shade::get_param_vocab(void)const
 Rect
 Layer_Shade::get_full_bounding_rect(Context context)const
 {
+	synfig::Vector size=param_size.get(synfig::Vector());
+	synfig::Vector origin=param_origin.get(synfig::Vector());
+	bool invert=param_invert.get(bool());
+
 	if(is_disabled())
 		return context.get_full_bounding_rect();
 
