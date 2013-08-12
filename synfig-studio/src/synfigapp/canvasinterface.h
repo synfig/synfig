@@ -261,6 +261,10 @@ public:
 	/*! \see Mode */
 	Mode get_mode()const;
 
+	//! Applies initial param values for \c layer
+	/*! canvas property of layer should be set before call */
+	void apply_layer_param_defaults(synfig::Layer::Handle layer);
+
 	//! Creates a new layer, of type \c id at the top of the layer stack
 	// synfig::Layer::Handle add_layer(synfig::String id) { return add_layer_to(id,get_canvas()); }
 
