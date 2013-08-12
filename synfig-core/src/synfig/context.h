@@ -54,21 +54,82 @@ class Layer;
 class Time;
 class Rect;
 
-/*!	\class Context
-**	\brief Context is a class to warp the iterator for a double queue of layers
+/*!	\class IndependentContext
+**	\brief IndependentContext is a class to warp the iterator for a double queue of layers
 * (that is the CanvasBase).
-**	\see Layer, Canvas, CanvasBase */
-class Context : public CanvasBase::const_iterator
+**	\see Layer, Canvas, CanvasBase, Context */
+class IndependentContext: public CanvasBase::const_iterator
 {
 public:
-	Context() { }
+	IndependentContext() { }
 
 	//! Constructor based on other CanvasBase iterator
-	Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
+	IndependentContext(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
 
-	//!Assignation operator
-	Context operator=(const CanvasBase::const_iterator &x)
+	//! Assignation operator
+	IndependentContext operator=(const CanvasBase::const_iterator &x)
 	{ return CanvasBase::const_iterator::operator=(x); }
+
+	//! Sets the context to the Time \time. It is done recursively.
+	void set_time(Time time)const;
+
+	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
+	void set_time(Time time,const Vector &pos)const;
+
+	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
+	void set_dirty_outlines();
+};
+
+
+/*!	\class ContextParams
+**	\brief ContextParams is a class to store rendering parameters significant for Context.
+**	\see Context */
+class ContextParams {
+public:
+	//! When \c true layers with exclude_from_rendering flag should be rendered
+	bool render_excluded_contexts;
+
+	explicit ContextParams(bool render_excluded_contexts = false):
+	render_excluded_contexts(render_excluded_contexts) { }
+};
+
+/*!	\class Context
+**	\brief Context is a class to warp the iterator for a double queue of layers
+* (that is the CanvasBase) with additional information about rendering parameters.
+**	\see Layer, Canvas, CanvasBase, IndependentContext, ContextParams */
+class Context : public IndependentContext
+{
+private:
+	//! Rendering parameters significant for Context.
+	ContextParams params;
+
+public:
+
+	Context() { }
+
+	//! Constructor based on IndependentContext.
+	Context(const IndependentContext &x, const ContextParams &params):
+		IndependentContext(x), params(params) { }
+
+	//! Constructor based on IndependentContext and other Context (to get parameters).
+	Context(const IndependentContext &x, const Context &context):
+		IndependentContext(x), params(context.params) { }
+
+	//! Constructor based on other CanvasBase iterator and other Context (to get parameters).
+	Context(const CanvasBase::const_iterator &x, const ContextParams &params):
+		IndependentContext(x), params(params) { }
+
+	Context(const CanvasBase::const_iterator &x, const Context &context):
+		IndependentContext(x), params(context.params) { }
+
+	//! Returns next iterator.
+	Context get_next()const { return Context(*this+1, params); }
+
+	//! Returns previous iterator.
+	Context get_previous()const { return Context(*this-1, params); }
+
+	//! Get rendering parameters.
+	const ContextParams& get_params()const { return params; }
 
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
@@ -80,12 +141,6 @@ public:
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
-	//! Sets the context to the Time \time. It is done recursively.
-	void set_time(Time time)const;
-
-	//!	Sets the context to the Time \time. It is done recursively. Vector \pos is not used
-	void set_time(Time time,const Vector &pos)const;
-
 	//! Returns the bounding rectangle of all the context.
 	//! It is the union of all the layers's bounding rectangle.
 	Rect get_full_bounding_rect()const;
@@ -93,14 +148,28 @@ public:
 	//! Returns the first context's layer's handle that intesects the given \point */
 	etl::handle<Layer> hit_check(const Point &point)const;
 
-	//! Sets dirty (dirty_time_= Time::end()) to all Outline type layers
-	void set_dirty_outlines();
-	
 	// Set Render Method. Passes the information of the render method to use to the layers
 	void set_render_method(RenderMethod x);
 
-}; // END of class Context
+	//! Returns \c true if layer is active with this context_params
+	static inline bool active(const ContextParams &context_params, const Layer &layer) {
+		return layer.active()
+		    && (context_params.render_excluded_contexts
+		    || !layer.get_exclude_from_rendering());
+	}
 
+	//! Returns \c true if layer is active in this context
+	inline bool active(const Layer &layer) {
+		return active(params, layer);
+	}
+
+	//! Returns \c true if layer is active in this context
+	inline bool active()const {
+		return !(operator*()).empty()
+			 && active(params, *(operator*()));
+	}
+
+}; // END of class Context
 
 }; // END of namespace synfig
 

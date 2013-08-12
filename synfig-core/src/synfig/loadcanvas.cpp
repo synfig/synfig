@@ -254,7 +254,6 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 	ret.set_active(active);
 		
-
 	return ret;
 }
 
@@ -2389,6 +2388,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(element->get_attribute("active"))
 		layer->set_active(element->get_attribute("active")->get_value()=="false"?false:true);
+
+	if(element->get_attribute("exclude_from_rendering"))
+		layer->set_exclude_from_rendering(element->get_attribute("exclude_from_rendering")->get_value()=="false"?false:true);
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)

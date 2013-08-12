@@ -192,10 +192,22 @@ Canvas::back()const
 	return *(CanvasBase::end()-1);
 }
 
-Context
-Canvas::get_context()const
+IndependentContext
+Canvas::get_independent_context()const
 {
-	return begin();
+	return IndependentContext(begin());
+}
+
+Context
+Canvas::get_context(const ContextParams &params)const
+{
+	return Context(get_independent_context(),params);
+}
+
+Context
+Canvas::get_context(const Context &parent_context)const
+{
+	return get_context(parent_context.get_params());
 }
 
 const ValueNodeList &
@@ -223,9 +235,9 @@ Canvas::keyframe_list()const
 }
 
 etl::handle<Layer>
-Canvas::find_layer(const Point &pos)
+Canvas::find_layer(const ContextParams &context_params, const Point &pos)
 {
-	return get_context().hit_check(pos);
+	return get_context(context_params).hit_check(pos);
 }
 
 static bool
@@ -286,7 +298,7 @@ Canvas::set_grow_value(Real x)
 	if(grow_value!=x)
 	{
 		grow_value=x;
-		get_context().set_dirty_outlines();
+		get_independent_context().set_dirty_outlines();
 	}
 
 }
@@ -315,7 +327,7 @@ Canvas::set_time(Time t)const
 		const_cast<Canvas&>(*this).cur_time_=t;
 
 		is_dirty_=false;
-		get_context().set_time(t);
+		get_independent_context().set_time(t);
 	}
 	is_dirty_=false;
 }
@@ -1129,7 +1141,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			Layer::Handle layer=*iter;
 
 			// If the layer isn't active, don't worry about it
-			if(!layer->active())
+			if(!context.active(*layer))
 				continue;
 
 			// Any layer with an amount of zero is implicitly disabled.
@@ -1168,7 +1180,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		float z_depth(layer->get_z_depth()*1.0001+i);
 
 		// If the layer isn't active, don't worry about it
-		if(!layer->active())
+		if(!context.active(*layer))
 			continue;
 
 		// Any layer with an amount of zero is implicitly disabled.
@@ -1212,7 +1224,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
 				else
 					paste_sub_canvas->set_grow_value(0.0);
-				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+				optimize_layers(time, paste_sub_canvas->get_context(context),sub_canvas,motion_blurred);
 			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
@@ -1481,9 +1493,8 @@ Canvas::show_structure(int i) const
 {
 	if(i==0)
 		printf("---Canvas Structure----\n");
-	Context iter;
-	Context context=get_context();
-	for(iter=context;*iter;iter++)
+	IndependentContext iter;
+	for(iter=get_independent_context();*iter;iter++)
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());

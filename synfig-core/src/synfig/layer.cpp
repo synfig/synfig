@@ -139,6 +139,7 @@ Layer::subsys_stop()
 
 Layer::Layer():
 	active_(true),
+	exclude_from_rendering_(false),
 	z_depth(0.0f),
 	dirty_time_(Time::end())//,
 	//z_depth_static(false)
@@ -223,6 +224,18 @@ Layer::set_active(bool x)
 	if(active_!=x)
 	{
 		active_=x;
+
+		Node::on_changed();
+		signal_status_changed_();
+	}
+}
+
+void
+Layer::set_exclude_from_rendering(bool x)
+{
+	if(exclude_from_rendering_!=x)
+	{
+		exclude_from_rendering_=x;
 
 		Node::on_changed();
 		signal_status_changed_();
@@ -364,6 +377,7 @@ Layer::simple_clone()const
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
 	ret->set_active(active());
+	ret->set_exclude_from_rendering(get_exclude_from_rendering());
 	ret->set_param_list(get_param_list());
 	for(DynamicParamList::const_iterator iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
 		ret->connect_dynamic_param(iter->first, iter->second);
@@ -382,6 +396,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
 	ret->set_active(active());
+	ret->set_exclude_from_rendering(get_exclude_from_rendering());
 	ret->set_guid(get_guid()^deriv_guid);
 
 	//ret->set_param_list(get_param_list());
@@ -450,9 +465,11 @@ Layer::reads_context() const
 Rect
 Layer::get_full_bounding_rect(Context context)const
 {
-	if(active())
+	// No one of overrides of this function don't check the "active" flag
+	// So this check also disabled here
+	//if(Context::active(context.get_params(),*this))
 		return context.get_full_bounding_rect()|get_bounding_rect();
-	return context.get_full_bounding_rect();
+	//return context.get_full_bounding_rect();
 }
 
 Rect
@@ -521,14 +538,14 @@ Layer::reset_version()
 
 
 void
-Layer::set_time(Context context, Time time)const
+Layer::set_time(IndependentContext context, Time time)const
 {
 	context.set_time(time);
 	dirty_time_=time;
 }
 
 void
-Layer::set_time(Context context, Time time, const Point &pos)const
+Layer::set_time(IndependentContext context, Time time, const Point &pos)const
 {
 	context.set_time(time,pos);
 	dirty_time_=time;

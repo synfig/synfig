@@ -198,6 +198,8 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 	frame_start=desc.get_frame_start();
 	frame_end=desc.get_frame_end();
 
+	ContextParams context_params(desc.get_render_excluded_contexts());
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start+1;
 	if(total_frames<=0)total_frames=1;
@@ -222,7 +224,7 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			}
 			Context context;
 			// pass the Render Method to the context
-			context=canvas->get_context();
+			context=canvas->get_context(context_params);
 			context.set_render_method(CAIRO);
 
 			// Set the time that we wish to render
@@ -235,13 +237,13 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			{
 				op_canvas = Canvas::create();
 				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-				context=op_canvas->get_context();
+				optimize_layers(canvas->get_time(), canvas->get_context(context_params), op_canvas);
+				context=op_canvas->get_context(context_params);
 			}
 			else
-				context=canvas->get_context();
+				context=canvas->get_context(context_params);
 	#else
-			context=canvas->get_context();
+			context=canvas->get_context(context_params);
 	#endif
 			if(!render_frame_(context,cb))
 			{

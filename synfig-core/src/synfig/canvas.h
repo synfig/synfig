@@ -120,6 +120,8 @@
 
 namespace synfig {
 
+class IndependentContext;
+class ContextParams;
 class Context;
 class GUID;
 class Canvas;
@@ -553,13 +555,20 @@ public:
 
 	//! Finds a Layer by its position.
 	//! \see get_context()
-	etl::handle<Layer> find_layer(const Point &pos);
+	etl::handle<Layer> find_layer(const ContextParams &context_params, const Point &pos);
 
 	//! Gets the depth of a particular Layer by its handle
 	int get_depth(etl::handle<Layer>)const;
 
 	//! Retireves the first layer of the double queue of Layers
-	Context get_context()const;
+	IndependentContext get_independent_context()const;
+
+	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	Context get_context(const ContextParams &params)const;
+
+	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	Context get_context(const Context &parent_context)const;
+
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an interator
 	 * just past the last element of the queue.*/

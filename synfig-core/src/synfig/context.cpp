@@ -83,116 +83,10 @@ _print_profile_report()
 
 /* === M E T H O D S ======================================================= */
 
-Color
-Context::get_color(const Point &pos)const
-{
-	Context context(*this);
-
-	while(!context->empty())
-	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if((*context)->active())
-			break;
-
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-
-	// If this layer isn't defined, return alpha
-	if((context)->empty()) return Color::alpha();
-
-	RWLock::ReaderLock lock((*context)->get_rw_lock());
-
-	return (*context)->get_color(context+1, pos);
-}
-
-CairoColor
-Context::get_cairocolor(const Point &pos)const
-{
-	Context context(*this);
-	
-	while(!context->empty())
-	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if((*context)->active())
-			break;
-		
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-	
-	// If this layer isn't defined, return alpha
-	if((context)->empty()) return CairoColor::alpha();
-	
-	RWLock::ReaderLock lock((*context)->get_rw_lock());
-	
-	return (*context)->get_cairocolor(context+1, pos);
-}
-
-
-Rect
-Context::get_full_bounding_rect()const
-{
-	Context context(*this);
-
-	while(!context->empty())
-	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if((*context)->active())
-			break;
-
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-
-	// If this layer isn't defined, return zero-sized rectangle
-	if(context->empty()) return Rect::zero();
-
-	return (*context)->get_full_bounding_rect(context+1);
-}
-
-
-/* Profiling will go like this:
-	Profile start = +, stop = -
-
-	+
-	-
-
-	time diff is recorded
-
-	to get the independent times we need to break at the one inside and record etc...
-	so it looks more like this:
-
-	+
-	  -
-	  +
-		-
-		+
-			...
-		-
-		+
-	  -
-	  +
-	-
-
-	at each minus we must record all the info for that which we are worried about...
-	each layer can do work before or after the other work is done... so both values must be recorded...
-*/
-
-
 void
-Context::set_time(Time time)const
+IndependentContext::set_time(Time time)const
 {
-	Context context(*this);
+	IndependentContext context(*this);
 	while(!(context)->empty())
 	{
 		// If this layer is active, and
@@ -200,7 +94,7 @@ Context::set_time(Time time)const
 		//        or it's a stroboscope layer,
 		//        or it's a time loop layer,
 		// then break out of the loop and set its time
-		if((*context)->active() &&
+		if( /* (*context)->active() && */
 		   (!(*context)->dirty_time_.is_equal(time) ||
 			(*context)->get_name() == "stroboscope" ||
 			(*context)->get_name() == "timeloop"))
@@ -238,38 +132,7 @@ Context::set_time(Time time)const
 }
 
 void
-Context::set_dirty_outlines()
-{
-	Context context(*this);
-	while(!(context)->empty())
-	{
-		if( (*context)->active() &&
-			(
-			(*context)->get_name() == "outline" ||
-			(*context)->get_name() == "advanced_outline" ||
-			(*context)->get_name() == "PasteCanvas"
-			)
-		  )
-			{
-				{
-					(*context)->dirty_time_=Time::end();
-				}
-			}
-		++context;
-	}
-}
-
-void
-Context::set_render_method(RenderMethod x)
-{
-	Context context(*this);
-
-	if((context)->empty()) return;
-	
-	(*context)->set_render_method(context+1, x);
-}
-void
-Context::set_time(Time time,const Vector &/*pos*/)const
+IndependentContext::set_time(Time time,const Vector &/*pos*/)const
 {
 	set_time(time);
 /*
@@ -278,7 +141,7 @@ Context::set_time(Time time,const Vector &/*pos*/)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -305,6 +168,144 @@ Context::set_time(Time time,const Vector &/*pos*/)const
 */
 }
 
+void
+IndependentContext::set_dirty_outlines()
+{
+	IndependentContext context(*this);
+	while(!(context)->empty())
+	{
+		if( /* (*context)->active() && */
+			(
+			(*context)->get_name() == "outline" ||
+			(*context)->get_name() == "advanced_outline" ||
+			(*context)->get_name() == "PasteCanvas"
+			)
+		  )
+			{
+				{
+					(*context)->dirty_time_=Time::end();
+				}
+			}
+		++context;
+	}
+}
+
+Color
+Context::get_color(const Point &pos)const
+{
+	Context context(*this);
+
+	while(!context->empty())
+	{
+		// If this layer is active, then go
+		// ahead and break out of the loop
+		if(context.active())
+			break;
+
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+
+	// If this layer isn't defined, return alpha
+	if((context)->empty()) return Color::alpha();
+
+	RWLock::ReaderLock lock((*context)->get_rw_lock());
+
+	return (*context)->get_color(context.get_next(), pos);
+}
+
+CairoColor
+Context::get_cairocolor(const Point &pos)const
+{
+	Context context(*this);
+	
+	while(!context->empty())
+	{
+		// If this layer is active, then go
+		// ahead and break out of the loop
+		if(context.active())
+			break;
+		
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+	
+	// If this layer isn't defined, return alpha
+	if((context)->empty()) return CairoColor::alpha();
+	
+	RWLock::ReaderLock lock((*context)->get_rw_lock());
+	
+	return (*context)->get_cairocolor(context.get_next(), pos);
+}
+
+
+Rect
+Context::get_full_bounding_rect()const
+{
+	Context context(*this);
+
+	while(!context->empty())
+	{
+		// If this layer is active, then go
+		// ahead and break out of the loop
+		if(context.active())
+			break;
+
+		// Otherwise, we want to keep searching
+		// till we find either an active layer,
+		// or the end of the layer list
+		++context;
+	}
+
+	// If this layer isn't defined, return zero-sized rectangle
+	if(context->empty()) return Rect::zero();
+
+	return (*context)->get_full_bounding_rect(context.get_next());
+}
+
+
+/* Profiling will go like this:
+	Profile start = +, stop = -
+
+	+
+	-
+
+	time diff is recorded
+
+	to get the independent times we need to break at the one inside and record etc...
+	so it looks more like this:
+
+	+
+	  -
+	  +
+		-
+		+
+			...
+		-
+		+
+	  -
+	  +
+	-
+
+	at each minus we must record all the info for that which we are worried about...
+	each layer can do work before or after the other work is done... so both values must be recorded...
+*/
+
+
+void
+Context::set_render_method(RenderMethod x)
+{
+	Context context(*this);
+
+	if((context)->empty()) return;
+	
+	(*context)->set_render_method(context.get_next(), x);
+}
+
 etl::handle<Layer>
 Context::hit_check(const Point &pos)const
 {
@@ -314,7 +315,7 @@ Context::hit_check(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if((*context)->active())
+		if(context.active())
 			break;
 
 		// Otherwise, we want to keep searching
@@ -326,7 +327,7 @@ Context::hit_check(const Point &pos)const
 	// If this layer isn't defined, return an empty handle
 	if((context)->empty()) return 0;
 
-	return (*context)->hit_check(context+1, pos);
+	return (*context)->hit_check(context.get_next(), pos);
 }
 
 
@@ -355,7 +356,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	for(;!(context)->empty();++context)
 	{
 		// If we are not active then move on to next layer
-		if(!(*context)->active())
+		if(!context.active())
 			continue;
 		const Rect layer_bounds((*context)->get_bounding_rect());
 		// Cast current layer to composite
@@ -426,7 +427,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		// using the appropriate 'amount'
 		if (straight_and_empty)
 		{
-			if ((ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb)))
+			if ((ret = Context((context.get_next())).accelerated_render(surface,quality,renddesc,cb)))
 			{
 				Surface clearsurface;
 				clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
@@ -439,7 +440,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			}
 		}
 		else
-			ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+			ret = (*context)->accelerated_render(context.get_next(),surface,quality,renddesc, cb);
 #ifdef SYNFIG_PROFILE_LAYERS
 		//post work for the previous layer
 		time_table[curr_layer]+=profile_timer();							//-
@@ -488,7 +489,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 	for(;!(context)->empty();++context)
 	{
 		// If we are not active then move on to next layer
-		if(!(*context)->active())
+		if(!context.active())
 			continue;
 		// Found one good layer
 		break;
@@ -526,7 +527,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 		// rendering, but it uses straight blending, so we need to render
 		// the stuff under us and then blit transparent pixels over it
 		// using the appropriate 'amount'
-		ret = (*context)->accelerated_cairorender(context+1,cr,quality,renddesc, cb);
+		ret = (*context)->accelerated_cairorender(context.get_next(),cr,quality,renddesc, cb);
 #ifdef SYNFIG_PROFILE_LAYERS
 		//post work for the previous layer
 		time_table[curr_layer]+=profile_timer();							//-

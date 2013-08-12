@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file import.h
-**	\brief Header file for implementation of the "Import Image" layer
+/*!	\file layersetexcludefromrendering.h
+**	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2012-2013 Carlos López
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,19 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_IMPORT_H
-#define __SYNFIG_IMPORT_H
+#ifndef __SYNFIG_APP_ACTION_LAYERSETEXCLUDEFROMRENDERING_H
+#define __SYNFIG_APP_ACTION_LAYERSETEXCLUDEFROMRENDERING_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_bitmap.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/importer.h>
-#include <synfig/cairoimporter.h>
-#include <synfig/rendermethod.h>
-
-using namespace synfig;
+#include <synfig/layer.h>
+#include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,37 +36,41 @@ using namespace synfig;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Import : public Layer_Bitmap
+namespace synfigapp {
+
+class Instance;
+
+namespace Action {
+
+class LayerSetExcludeFromRendering :
+	public Undoable,
+	public CanvasSpecific
 {
-	SYNFIG_LAYER_MODULE_EXT
-
 private:
-	String filename;
-	String abs_filename;
-	Importer::Handle importer;
-	CairoImporter::Handle cimporter;
-	Time time_offset;
 
-protected:
-	Import();
+	synfig::Layer::Handle layer;
+	bool new_state_set;
+	bool old_state;
+	bool new_state;
 
 public:
-	~Import();
 
-	virtual bool set_param(const String & param, const ValueBase &value);
+	LayerSetExcludeFromRendering();
 
-	virtual ValueBase get_param(const String & param)const;
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	virtual Vocab get_param_vocab()const;
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
 
-	virtual void on_canvas_set();
+	virtual void perform();
+	virtual void undo();
 
-	virtual void set_time(IndependentContext context, Time time)const;
-
-	virtual void set_time(IndependentContext context, Time time, const Point &point)const;
-	
-	virtual void set_render_method(Context context, RenderMethod x);
+	ACTION_MODULE_EXT
 };
+
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

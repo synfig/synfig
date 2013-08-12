@@ -144,14 +144,14 @@ NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*
 }
 
 void
-NoiseDistort::set_time(synfig::Context context, synfig::Time t)const
+NoiseDistort::set_time(synfig::IndependentContext context, synfig::Time t)const
 {
 	curr_time=t;
 	context.set_time(t);
 }
 
 void
-NoiseDistort::set_time(synfig::Context context, synfig::Time t, const synfig::Point &point)const
+NoiseDistort::set_time(synfig::IndependentContext context, synfig::Time t, const synfig::Point &point)const
 {
 	curr_time=t;
 	context.set_time(t,point);

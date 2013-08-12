@@ -97,6 +97,8 @@ private:
 	bool interlaced;
 	//! Clamp flag to decide if color must be clamped or not
 	bool clamp;
+	//! When \c true layers with exclude_from_rendering flag should be rendered
+	bool render_excluded_contexts;
 	//! Frame rate of the composition to be rendered
 	float frame_rate;
 	//! Begin time and end time of the Composition to render
@@ -127,6 +129,7 @@ public:
 		flags		(0),
 		interlaced	(false),
 		clamp		(false),
+		render_excluded_contexts(false),
 		frame_rate	(24),
 		time_begin	(0),
 		time_end	(0)
@@ -241,6 +244,12 @@ public:
 
 	//! Set the clamp flag
 	RendDesc &set_clamp(bool x);
+
+	//! Return the status of the render_excluded_contexts flag
+	const bool &get_render_excluded_contexts()const;
+
+	//! Set the render_excluded_contexts flag
+	RendDesc &set_render_excluded_contexts(bool x);
 
 	//! Set constraint flags
 	RendDesc &set_flags(const int &x);

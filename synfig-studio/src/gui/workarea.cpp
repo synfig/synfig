@@ -61,6 +61,7 @@
 #include "event_layerclick.h"
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
+#include <synfig/context.h>
 
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
@@ -1857,7 +1858,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			etl::handle<Duck> duck=find_duck(mouse_pos,radius);
 			etl::handle<Bezier> bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
 
-			Layer::Handle layer(get_canvas()->find_layer(mouse_pos));
+			Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),mouse_pos));
 			if(duck)
 			{
 				if(get_selected_ducks().size()<=1)
@@ -2161,7 +2162,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(allow_layer_clicks)
 				{
-					Layer::Handle layer(get_canvas()->find_layer(drag_point));
+					Layer::Handle layer(get_canvas()->find_layer(get_canvas_view()->get_context_params(),drag_point));
 					//if(layer)
 					{
 						if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_LEFT,mouse_pos,modifier))==Smach::RESULT_OK)
@@ -2864,6 +2865,7 @@ studio::WorkArea::async_update_preview()
 	// Setup the description parameters
 	desc.set_antialias(1);
 	desc.set_time(cur_time);
+	desc.set_render_excluded_contexts(true);
 
 	set_rend_desc(desc);
 
