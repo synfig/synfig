@@ -46,7 +46,7 @@ MPSRC=MacPorts-2.0.3
 SYNFIG_REPO_DIR=~/src/synfig
 SCRIPTDIR_IS_REPO=0
 
-export SCRIPTPATH=`dirname "$0"`
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
 export SYNFIG_PREFIX=${MACPORTS}/synfig/
 export PATH="$MACPORTS/bin:${SYNFIG_PREFIX}/bin:$MACPORTS/sbin:$PATH"
