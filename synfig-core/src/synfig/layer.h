@@ -169,19 +169,32 @@
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
 #define CATEGORY_DO_NOT_USE "Do Not Use"
-/*
-//! x=variable name, y=static bool value
-#define SET_STATIC(x,y)																	\
-	if(param==#x && x ## _static != y)													\
-	{																					\
-		x ## _static = y;																\
-		return true;																	\
-	}
 
-#define GET_STATIC(x)																	\
-	if(param==#x)																		\
-		return x ## _static;															\
-*/
+//! Sets the interpolation defaults for the layer
+#define SET_INTERPOLATION_DEFAULTS()                                           \
+{                                                                              \
+	Vocab vocab(get_param_vocab());                                            \
+	Vocab::const_iterator viter;                                               \
+	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
+	{                                                                          \
+		ValueBase v=get_param(viter->get_name());                              \
+		v.set_interpolation(viter->get_interpolation());                       \
+		set_param(viter->get_name(), v);                                       \
+	}                                                                          \
+}                                                                              \
+
+//! Sets the static defaults for the layer
+#define SET_STATIC_DEFAULTS()                                                  \
+{                                                                              \
+	Vocab vocab(get_param_vocab());                                            \
+	Vocab::const_iterator viter;                                               \
+	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
+	{                                                                          \
+		ValueBase v=get_param(viter->get_name());                              \
+		v.set_static(viter->get_static());                                     \
+		set_param(viter->get_name(), v);                                       \
+	}                                                                          \
+}                                                                              \
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -519,9 +532,6 @@ public:
 	**	\todo \a param should be of the type <tt>const String \&param</tt>
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
-
-	virtual void set_interpolation_defaults();
-	virtual void set_static_defaults();
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

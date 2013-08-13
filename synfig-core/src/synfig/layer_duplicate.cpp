@@ -66,8 +66,8 @@ Layer_Duplicate::Layer_Duplicate():
 	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(Real(3));
 	connect_dynamic_param("index", index_value_node);
 
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer::Handle

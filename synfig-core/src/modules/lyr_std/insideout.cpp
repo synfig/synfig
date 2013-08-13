@@ -64,8 +64,8 @@ SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id$");
 InsideOut::InsideOut():
 	param_origin(ValueBase(Point(0,0)))
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

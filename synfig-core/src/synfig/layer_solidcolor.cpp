@@ -68,8 +68,8 @@ Layer_SolidColor::Layer_SolidColor():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	param_color(ValueBase(Color::black()))
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

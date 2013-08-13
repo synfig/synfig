@@ -70,8 +70,8 @@ Rotate::Rotate():
 	sin_val	(0),
 	cos_val	(1)
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Rotate::~Rotate()

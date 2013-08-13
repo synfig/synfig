@@ -92,8 +92,8 @@ Layer_Bevel::Layer_Bevel():
 	param_use_luma=ValueBase(false);
 	param_solid=ValueBase(false);
 
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void

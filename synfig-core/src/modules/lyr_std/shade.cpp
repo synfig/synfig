@@ -86,8 +86,8 @@ Layer_Shade::Layer_Shade():
 	param_origin(ValueBase(Vector(0.2,-0.2))),
 	param_invert(ValueBase(false))
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

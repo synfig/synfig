@@ -144,8 +144,8 @@ Layer::Layer():
 	dirty_time_(Time::end())
 {
 	_LayerCounter::counter++;
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer::LooseHandle
@@ -316,30 +316,6 @@ Layer::set_param(const String &param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_z_depth)
 	return false;
-}
-
-void Layer::set_interpolation_defaults()
-{
-	Vocab vocab(get_param_vocab());
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		ValueBase v=get_param(viter->get_name());
-		v.set_interpolation(viter->get_interpolation());
-		set_param(viter->get_name(), v);
-	}
-}
-
-void Layer::set_static_defaults()
-{
-	Vocab vocab(get_param_vocab());
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		ValueBase v=get_param(viter->get_name());
-		v.set_static(viter->get_static());
-		set_param(viter->get_name(), v);
-	}
 }
 
 etl::handle<Transform>

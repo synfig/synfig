@@ -178,8 +178,8 @@ CurveWarp::CurveWarp():
 	param_bline.set(bline);
 	sync();
 
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Point

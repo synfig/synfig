@@ -68,8 +68,8 @@ Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
 		converted_blend_	(false),
 		transparent_color_	(false)
 	{
-		set_interpolation_defaults();
-		set_static_defaults();
+		SET_INTERPOLATION_DEFAULTS();
+		SET_STATIC_DEFAULTS();
 	}
 
 bool

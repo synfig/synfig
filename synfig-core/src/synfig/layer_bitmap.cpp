@@ -71,8 +71,8 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	surface			(128,128),
 	trimmed			(false)
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

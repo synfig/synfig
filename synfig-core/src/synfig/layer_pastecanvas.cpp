@@ -98,8 +98,8 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 
 	muck_with_time_=true;
 
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_PasteCanvas::~Layer_PasteCanvas()

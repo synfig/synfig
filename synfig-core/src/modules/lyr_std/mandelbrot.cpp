@@ -119,8 +119,8 @@ Mandelbrot::Mandelbrot():
 	param_bailout=ValueBase(Real(4));
 	lp=log(log(param_bailout.get(Real())));
 
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

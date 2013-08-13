@@ -69,8 +69,8 @@ Import::Import():
 	param_filename(ValueBase(String())),
 	param_time_offset(ValueBase(Time(0)))
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Import::~Import()

@@ -69,8 +69,8 @@ Layer_Clamp::Layer_Clamp():
 	param_ceiling(ValueBase(Real(1.0f))),
 	param_floor(ValueBase(Real(0.0f)))
 {
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color

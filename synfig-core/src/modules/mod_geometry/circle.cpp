@@ -70,8 +70,8 @@ Circle::Circle():
 	param_falloff   (FALLOFF_INTERPOLATION_LINEAR)
 {
 	constructcache();
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool

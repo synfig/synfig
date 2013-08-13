@@ -76,8 +76,8 @@ Layer_Skeleton::Layer_Skeleton():
 		bones.push_back(Bone());
 
 	param_bones.set(bones);
-	set_interpolation_defaults();
-	set_static_defaults();
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 #ifdef _DEBUG
