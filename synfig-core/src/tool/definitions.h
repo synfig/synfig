@@ -74,7 +74,7 @@ enum exit_code
 
 /* === G L O B A L S ======================================================= */
 
-extern const char *progname;
+extern std::string progname;
 extern int verbosity;
 extern int threads;
 extern bool be_quiet;
