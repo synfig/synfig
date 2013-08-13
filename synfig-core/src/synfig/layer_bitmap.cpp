@@ -145,27 +145,6 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	return Layer_Composite::get_param(param);
 }
 
-bool
-Layer_Bitmap::set_param_static(const String &param, const bool value)
-{
-	IMPORT_STATIC(param_tl)
-	IMPORT_STATIC(param_br)
-	IMPORT_STATIC(param_c)
-	IMPORT_STATIC(param_gamma_adjust)
-	return Layer_Composite::set_param_static(param, value);
-}
-
-bool
-
-Layer_Bitmap::set_param_interpolation(const String &param, const Interpolation value)
-{
-	IMPORT_INTERPOLATION(param_tl)
-	IMPORT_INTERPOLATION(param_br)
-	IMPORT_INTERPOLATION(param_c)
-	IMPORT_INTERPOLATION(param_gamma_adjust)
-	return Layer_Composite::set_param_interpolation(param, value);
-}
-
 
 Layer::Vocab
 Layer_Bitmap::get_param_vocab()const

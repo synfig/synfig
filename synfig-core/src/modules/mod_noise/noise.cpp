@@ -211,7 +211,6 @@ Noise::set_param(const String & param, const ValueBase &value)
 	if(param=="seed" && value.same_type_as(int()))
 	{
 		random.set_seed(value.get(int()));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	IMPORT(size);

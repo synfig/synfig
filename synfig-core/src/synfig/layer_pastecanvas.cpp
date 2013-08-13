@@ -199,7 +199,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954.
@@ -714,13 +713,6 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 			);
 
 	Layer::get_times_vfunc(set);
-}
-
-
-bool
-Layer_PasteCanvas::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
 }
 
 

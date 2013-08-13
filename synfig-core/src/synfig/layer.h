@@ -89,7 +89,6 @@
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(#x,value.get_static());										\
 		{																				\
 			y;																			\
 		}																				\
@@ -103,7 +102,6 @@
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(y,value.get_static());										\
 		return true;																	\
 	}
 
@@ -131,20 +129,6 @@
 			y;																			\
 		}																				\
 		return true;																	\
-	}
-
-//! Imports a parameter's static value
-#define IMPORT_STATIC(x)														\
-	if ("param_"+param==#x){													\
-		x.set_static(value);													\
-		return true;															\
-	}
-
-//! Imports a parameter's interpolation value
-#define IMPORT_INTERPOLATION(x)													\
-	if ("param_"+param==#x){													\
-		x.set_interpolation(value);												\
-		return true;															\
 	}
 
 //TODO: This macro is safe to remove when we will finish converting
@@ -536,8 +520,6 @@ public:
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
 
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 	virtual void set_interpolation_defaults();
 	virtual void set_static_defaults();
 

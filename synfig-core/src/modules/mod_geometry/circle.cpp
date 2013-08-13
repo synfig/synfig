@@ -123,31 +123,6 @@ Circle::set_param(const String &param, const ValueBase &value)
 	return false;
 }
 
-bool
-Circle::set_param_interpolation(const String &param, const Interpolation value)
-{
-	IMPORT_INTERPOLATION(param_color)
-	IMPORT_INTERPOLATION(param_radius)
-	IMPORT_INTERPOLATION(param_feather)
-	IMPORT_INTERPOLATION(param_invert)
-	IMPORT_INTERPOLATION(param_origin)
-	IMPORT_INTERPOLATION(param_falloff)
-	return Layer_Composite::set_param_interpolation(param, value);
-}
-
-
-bool
-Circle::set_param_static(const String &param, const bool value)
-{
-	IMPORT_STATIC(param_color)
-	IMPORT_STATIC(param_radius)
-	IMPORT_STATIC(param_feather)
-	IMPORT_STATIC(param_invert)
-	IMPORT_STATIC(param_origin)
-	IMPORT_STATIC(param_falloff)
-	return Layer_Composite::set_param_static(param,value);
-}
-
 ValueBase
 Circle::get_param(const String &param)const
 {

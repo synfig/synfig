@@ -64,7 +64,6 @@ public:
 	void sync();
 	bool import_parameters(const String &param, const ValueBase &value);
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual bool set_param_static(const String &param, const bool x); 
 
 	virtual ValueBase get_param(const String & param)const;
 

@@ -163,7 +163,9 @@ Action::LayerParamSetStatic::perform()
 
 	old_static_value=false;
 
-	if(!layer->set_param_static(param_name,true))
+	ValueBase v=layer->get_param(param_name);
+	v.set_static(true);
+	if(!layer->set_param(param_name,v))
 		throw Error(_("Layer did not accept static value."));
 
 	//! Signal layer changed
@@ -176,8 +178,11 @@ Action::LayerParamSetStatic::perform()
 void
 Action::LayerParamSetStatic::undo()
 {
-	if(!layer->set_param_static(param_name,old_static_value))
-		throw Error(_("Layer did not accept static value."));
+	ValueBase v=layer->get_param(param_name);
+	v.set_static(old_static_value);
+	if(!layer->set_param(param_name,v))
+	   throw Error(_("Layer did not accept static value."));
+
 	//! Signal layer changed
 	layer->changed();
 	//! Signal that a layer parameter changed

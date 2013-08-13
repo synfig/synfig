@@ -67,8 +67,6 @@ public:
 	if(csurface.is_mapped()) csurface.unmap_cairo_image(); }
 
 	virtual bool set_param(const String & param, const ValueBase & value);
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool set_param_interpolation(const String &param, const Interpolation i);
 
 	virtual ValueBase get_param(const String & param)const;
 

@@ -281,14 +281,12 @@ Plant::set_param(const String & param, const ValueBase &value)
 		bline=value;
 		bline_loop=value.get_loop();
 		needs_sync_=true;
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	if(param=="seed" && value.same_type_as(int()))
 	{
 		random.set_seed(value.get(int()));
 		needs_sync_=true;
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	IMPORT(origin);

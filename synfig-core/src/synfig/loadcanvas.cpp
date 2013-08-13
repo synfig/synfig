@@ -2455,7 +2455,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					if(!layer->set_param(param_name,c))
 						error((*iter),_("Layer rejected canvas link"));
 					//Parse the static option and sets it to the canvas ValueBase
-					layer->set_param_static(param_name, parse_static(child));
+					ValueBase v=layer->get_param(param_name);
+					v.set_static(parse_static(child));
+					layer->set_param(param_name, v);
 				}
 				else
 				try

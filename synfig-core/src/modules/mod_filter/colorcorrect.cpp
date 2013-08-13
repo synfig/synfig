@@ -175,7 +175,6 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 	if(param=="gamma" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		gamma.set_gamma(1.0/value.get(Real()));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	return false;

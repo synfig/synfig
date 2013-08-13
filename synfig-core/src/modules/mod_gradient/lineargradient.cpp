@@ -144,14 +144,12 @@ LinearGradient::set_param(const String & param, const ValueBase &value)
 	if(param=="p1" && value.same_type_as(p1))
 	{
 		p1=value.get(p1);
-		set_param_static(param, value.get_static());
 		sync();
 		return true;
 	}
 	if(param=="p2" && value.same_type_as(p2))
 	{
 		p2=value.get(p2);
-		set_param_static(param, value.get_static());
 		sync();
 		return true;
 	}

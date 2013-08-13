@@ -71,7 +71,6 @@ RadialBlur::RadialBlur():
 	fade_out(false)
 {
 
-	set_param_static("blend_method",true);
 }
 
 RadialBlur::~RadialBlur()

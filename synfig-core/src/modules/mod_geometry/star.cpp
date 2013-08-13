@@ -134,18 +134,10 @@ Star::set_param(const String & param, const ValueBase &value)
 	if(import_parameters(param, value))
 	{
 		sync();
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	
 	return false;
-}
-
-bool
-Star::set_param_static(const String &param, const bool value)
-{
-	IMPORT_STATIC(param_angle);
-	return Layer_Polygon::set_param_static(param,value);
 }
 
 ValueBase

@@ -114,8 +114,6 @@ Advanced_Outline::Advanced_Outline()
 	ditem_list.push_back(DashItem());
 	dilist_=ditem_list;
 
-	set_param_static("fast", true);
-
 }
 
 
@@ -1049,7 +1047,6 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 		if(value > 1.0) smoothness_=1.0;
 		else if(value < 0.0) smoothness_=0.0;
 		else smoothness_=value;
-		set_param_static("smoothness", value.get_static());
 		return true;
 	}
 	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
