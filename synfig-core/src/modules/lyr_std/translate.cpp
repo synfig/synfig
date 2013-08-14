@@ -65,8 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id$");
 
 Translate::Translate():origin(0,0)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 Translate::~Translate()

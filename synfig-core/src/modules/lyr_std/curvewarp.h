@@ -51,15 +51,21 @@ class CurveWarp : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	std::vector<synfig::BLinePoint> bline;
+	//!Parameter: (Point) origin of the warp
+	ValueBase param_origin;
+	//!Parameter: (Real) perpendicular expansion
+	ValueBase param_perp_width;
+	//!Parameter: (Point) start point of source
+	ValueBase param_start_point;
+	//!Parameter: (Point) end point of source
+	ValueBase param_end_point;
+	//!Parameter: (std::vector<synfig::BlinePoint>) spline of the warp
+	ValueBase param_bline;
+	//!Parameter: (bool)
+	ValueBase param_fast;
 
-	Point origin;
-	Real perp_width;
-	Point start_point;
-	Point end_point;
-	Real curve_length_;
 	Vector perp_;
-	bool fast;
+	Real curve_length_;
 
 	void sync();
 

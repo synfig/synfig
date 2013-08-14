@@ -41,6 +41,7 @@
 #include "guid.h"
 #include <ETL/angle>
 #include "paramdesc.h"
+#include "interpolation.h"
 
 #include "node.h"
 
@@ -254,6 +255,10 @@ public:
 	//! a replaceable handle to the Node
 	//! \see etl::rhandle
 	int replace(etl::handle<ValueNode> x);
+	
+	//! Get/Set the default interpolation for Value Nodes
+	virtual Interpolation get_interpolation()const { return INTERPOLATION_UNDEFINED; }
+	virtual void set_interpolation(Interpolation /* i*/) { }
 
 protected:
 	//! Sets the type of the ValueNode

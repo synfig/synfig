@@ -164,8 +164,7 @@ Outline::Outline()
 
 	needs_sync=true;
 
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 

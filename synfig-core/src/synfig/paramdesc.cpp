@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
+ParamDesc::ParamDesc(const ValueBase&, const String &a):
 	name_			(a),
 	local_name_		(a),
 	scalar_			(1.0),
@@ -57,9 +57,13 @@ ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
 	hidden_			(false),
 	invisible_duck_	(false),
 	is_distance_	(false),
-	animation_only_	(false)
+	animation_only_	(false),
+	static_			(false),
+	interpolation_	(INTERPOLATION_UNDEFINED)
 {
-	set_local_name(_("Blend Method"))
+	if(a == "blend_method")
+	{
+		set_local_name(_("Blend Method"))
 		.set_hint("enum")		// used shortcuts: A B C D E F G H I K L M N O P R S T U V Y; free: J Q W X Z
 		.add_enum_value(Color::BLEND_COMPOSITE,      "composite",    _("Composite"))
 		.add_enum_value(Color::BLEND_STRAIGHT,       "straight",     _("Straight"))
@@ -83,17 +87,8 @@ ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
 		.add_enum_value(Color::BLEND_ALPHA_OVER,     "alphaover",    _("Alpha Over"))
 		.add_enum_value(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten",_("Alpha Brighten"))
 		.add_enum_value(Color::BLEND_ALPHA_DARKEN,   "alphadarken",  _("Alpha Darken"))
+		.set_static(true)
 		; // end of enums
-}
-
-ParamDesc::ParamDesc(const ValueBase&, const String &a):
-	name_			(a),
-	local_name_		(a),
-	scalar_			(1.0),
-	critical_		(true),
-	hidden_			(false),
-	invisible_duck_	(false),
-		is_distance_	(false),
-		animation_only_	(false)
-{
+		
+	}
 }

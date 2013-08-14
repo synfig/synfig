@@ -49,28 +49,44 @@ class Mandelbrot : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Real bailout;
+	//!Parameter: (int)
+	ValueBase param_iterations;
+	//!Parameter: (Real)
+	ValueBase param_bailout;
 	Real lp;
-	int iterations;
+	//!Parameter: (bool)
+	ValueBase param_broken;
 
-	bool smooth_outside;
-	bool broken;
-
-	bool distort_inside;
-	bool distort_outside;
-	bool solid_inside;
-	bool solid_outside;
-	bool invert_inside;
-	bool invert_outside;
-	bool shade_outside;
-	bool shade_inside;
-	Real gradient_offset_inside;
-	Real gradient_offset_outside;
-	bool gradient_loop_inside;
-	Real gradient_scale_outside;
-	Gradient gradient_inside;
-	Gradient gradient_outside;
+	//!Parameter: (bool)
+	ValueBase param_distort_inside;
+	//!Parameter: (bool)
+	ValueBase param_shade_inside;
+	//!Parameter: (bool)
+	ValueBase param_solid_inside;
+	//!Parameter: (bool)
+	ValueBase param_invert_inside;
+	//!Parameter: (Gradient)
+	ValueBase param_gradient_inside;
+	//!Parameter: (Real)
+	ValueBase param_gradient_offset_inside;
+	//!Parameter: (bool)
+	ValueBase param_gradient_loop_inside;
+	//!Parameter: (bool)
+	ValueBase param_distort_outside;
+	//!Parameter: (bool)
+	ValueBase param_shade_outside;
+	//!Parameter: (bool)
+	ValueBase param_solid_outside;
+	//!Parameter: (bool)
+	ValueBase param_invert_outside;
+	//!Parameter: (Gradient)
+	ValueBase param_gradient_outside;
+	//!Parameter: (bool)
+	ValueBase param_smooth_outside;
+	//!Parameter: (Real)
+	ValueBase param_gradient_offset_outside;
+	//!Parameter: (Real)
+	ValueBase param_gradient_scale_outside;
 
 public:
 	Mandelbrot();

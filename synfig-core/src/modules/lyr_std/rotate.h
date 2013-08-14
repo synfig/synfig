@@ -50,8 +50,10 @@ class Rotate : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Rotate_Trans;
 private:
-	Vector origin;
-	Angle amount;
+	//!Parameter: (Vector)
+	ValueBase param_origin;
+	//!Parameter: (Angle)
+	ValueBase param_amount;
 
 	Real sin_val;
 	Real cos_val;

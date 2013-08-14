@@ -53,26 +53,31 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	//! Parameter Origin of the paste canvas layer
-	Vector origin;
-	//!Parameter Focus of the zoom of the paste canvas layer
-	Vector focus;
-	//! The canvas parameter
+	//! Parameter: (Vector) Origin of the paste canvas layer
+	ValueBase param_origin;
+	//! Parameter: (Vector) Focus of the zoom of the paste canvas layer
+	ValueBase param_focus;
+	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
-	//! Recursion depth counter. Not a parameter
-	mutable int depth;
-	//! Zoom parameter of the paste canvas layer
-	Real zoom;
-	//! Time offset parameter of the paste canvas layer
-	Time time_offset;
-	//! Current time of the paste canvas layer. \see set_time
-	mutable Time curr_time;
-	//! The value to grow the children outline layers
-	Real outline_grow;
-	//! \todo writeme! Not a parameter
+	//! Parameter: (Real) Zoom of the paste canvas layer
+	ValueBase param_zoom;
+	//! Parameter: (Time) Time offset of the paste canvas layer
+	ValueBase param_time_offset;
+	//! Parameter: (Real) The value to grow the children outline layers
+	ValueBase param_outline_grow;
+	//! Parameter: (bool) Value that avoid hit check to go depth into the children.
+	ValueBase param_children_lock;
+	//! Parameter: Current time of the paste canvas layer. \see set_time
+	mutable ValueBase param_curr_time;
+
+	//! \todo writeme!
 	bool muck_with_time_;
-	//! Parameter that avoid hit check to go depth into the children.
-	bool children_lock;
+	//! Recursion depth counter.
+	mutable int depth;
+
+	//! Boundaries of the paste canvas layer. It is the canvas's boundary
+	//! affected by the zoom, origin and focus.
+	mutable Rect bounds;
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
 
@@ -140,13 +145,13 @@ public:
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
 	//! Gets zoom parameter
-	Real get_zoom()const { return zoom; }
+	Real get_zoom()const { return param_zoom.get(Real()); }
 	//! Gets time offset parameter
-	Time get_time_offset()const { return time_offset; }
+	Time get_time_offset()const { return param_time_offset.get(Time()); }
 	//! Get origin parameter
-	Point get_origin()const { return origin; }
+	Point get_origin()const { return param_origin.get(Vector()); }
 	//! Get focus parameter
-	Vector get_focus()const { return focus; }
+	Vector get_focus()const { return param_focus.get(Vector()); }
 	//! Default constructor
 	Layer_PasteCanvas();
 	//! Destructor
@@ -157,8 +162,6 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	//! Get the value of the specified parameter. \see Layer::get_param
 	virtual ValueBase get_param(const String & param)const;
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool get_param_static(const String &param) const;
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 	//! Sets the time of the Paste Canvas Layer and those under it

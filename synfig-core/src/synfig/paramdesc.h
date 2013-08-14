@@ -30,6 +30,7 @@
 #include "string.h"
 #include "real.h"
 #include "color.h"
+#include "interpolation.h"
 #include <list>
 
 /* === M A C R O S ========================================================= */
@@ -83,6 +84,8 @@ private:
 	bool invisible_duck_;
 	bool is_distance_;
 	bool animation_only_;
+	bool static_;
+	Interpolation interpolation_;
 
 	std::list<EnumData> enum_list_;
 
@@ -100,13 +103,12 @@ public:
 		hidden_			(false),
 		invisible_duck_	(false),
 		is_distance_	(false),
-		animation_only_	(false)
+		animation_only_	(false),
+		static_			(false),
+		interpolation_	(INTERPOLATION_UNDEFINED)
 	{ }
 
    	ParamDesc(const ValueBase&, const String &a);
-
-   	ParamDesc(synfig::Color::BlendMethod, const String &a);
-
 
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------
@@ -208,8 +210,12 @@ public:
 
    	//! Returns \c true if the layer is hidden, \c false otherwise.
    	bool get_hidden()const { return hidden_; }
+	
+	bool get_static()const { return static_; }
+	ParamDesc &set_static(bool s) { static_=s; return *this; }
 
-
+	Interpolation get_interpolation()const { return interpolation_; }
+	ParamDesc &set_interpolation(Interpolation i) { interpolation_=i; return *this; }
 
    	ParamDesc& set_is_distance(bool x=true) { is_distance_=x; return *this;}
    	bool get_is_distance()const { return is_distance_; }

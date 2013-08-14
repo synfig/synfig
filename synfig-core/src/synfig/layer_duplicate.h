@@ -41,7 +41,7 @@ class Layer_Duplicate : public synfig::Layer_Composite
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	mutable Real index;
+	mutable ValueBase param_index;
 	mutable Time time_cur;
 	mutable synfig::Mutex mutex;
 

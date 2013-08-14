@@ -69,8 +69,7 @@ LumaKey::LumaKey():
 	Layer_Composite	(1.0,Color::BLEND_STRAIGHT)
 {
 	set_blend_method(Color::BLEND_STRAIGHT);
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 

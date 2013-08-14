@@ -71,8 +71,7 @@ SimpleCircle::SimpleCircle():
 	center(0,0),
 	radius(0.5)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

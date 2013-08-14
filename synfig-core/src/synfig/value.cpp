@@ -64,7 +64,7 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-ValueBase::ValueBase():type(TYPE_NIL),data(0),ref_count(0),loop_(0),static_(0)
+ValueBase::ValueBase():type(TYPE_NIL),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
 }
 
@@ -72,7 +72,8 @@ ValueBase::ValueBase(Type x):
 	type(x),
 	data(0),
 	loop_(0),
-	static_(0)
+	static_(0),
+	interpolation_(INTERPOLATION_UNDEFINED)
 {
 	switch(type)
 	{
@@ -244,6 +245,14 @@ ValueBase::is_valid()const
 	return type>TYPE_NIL && type<TYPE_END && ref_count;
 }
 
+void
+ValueBase::copy_properties_of(const ValueBase& x)
+{
+	loop_=x.loop_;
+	static_=x.static_;
+	interpolation_=x.interpolation_;
+}
+
 bool
 ValueBase::empty()const
 {
@@ -270,6 +279,7 @@ ValueBase::operator=(const ValueBase& x)
 	}
 	loop_=x.loop_;
 	static_=x.static_;
+	interpolation_=x.interpolation_;
 	return *this;
 }
 

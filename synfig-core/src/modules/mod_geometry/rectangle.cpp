@@ -83,8 +83,7 @@ Rectangle::Rectangle():
 	expand(0),
 	invert(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

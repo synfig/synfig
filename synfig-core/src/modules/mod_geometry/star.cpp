@@ -72,20 +72,26 @@ SYNFIG_LAYER_SET_CVS_ID(Star,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Star::Star():
-	radius1(1.0),
-	radius2(0.38),
-	points(5),
-	angle(Angle::deg(90)),
-	regular_polygon(false)
+	param_radius1(ValueBase(Real(1.0))),
+	param_radius2(ValueBase(Real(0.38))),
+	param_points(ValueBase(int(5))),
+	param_angle(ValueBase(Angle::deg(90))),
+	param_regular_polygon(ValueBase(bool(false)))
 {
 	sync();
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void
 Star::sync()
 {
+	Angle angle = param_angle.get(Angle());
+	int points = param_points.get(int(0));
+	Real radius1 = param_radius1.get(Real());
+	Real radius2 = param_radius2.get(Real());
+	bool regular_polygon = param_regular_polygon.get(bool(true));
+	
 	Angle dist_between_points(Angle::rot(1)/float(points));
 	std::vector<Point> vector_list;
 
@@ -104,63 +110,44 @@ Star::sync()
 }
 
 bool
-Star::set_param(const String & param, const ValueBase &value)
+Star::import_parameters(const String &param, const ValueBase &value)
 {
-	if(	param=="radius1" && value.same_type_as(radius1))
-	{
-		value.put(&radius1);
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
-
-	if(	param=="radius2" && value.same_type_as(radius2))
-	{
-		value.put(&radius2);
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
-
-	if(	param=="points" && value.same_type_as(points))
-	{
-		value.put(&points);
-		if(points<2)points=2;
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
-
-	if(	param=="angle" && value.same_type_as(angle))
-	{
-		value.put(&angle);
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
-
-	if(param=="regular_polygon" && value.same_type_as(regular_polygon))
-	{
-		value.put(&regular_polygon);
-		sync();
-		set_param_static(param, value.get_static());
-		return true;
-	}
-
-	if(param=="vector_list")
-		return false;
+	IMPORT_VALUE(param_radius1);
+	IMPORT_VALUE(param_radius2);
+	IMPORT_VALUE_PLUS(param_points,
+		  {
+			  int points(param_points.get(int(0)));
+			  if(points<2)points=2;
+			  param_points.set(points);
+		  }
+	);
+	IMPORT_VALUE(param_angle);
+	IMPORT_VALUE(param_regular_polygon);
 
 	return Layer_Polygon::set_param(param,value);
+
+}
+
+bool
+Star::set_param(const String & param, const ValueBase &value)
+{
+	if(import_parameters(param, value))
+	{
+		sync();
+		return true;
+	}
+	
+	return false;
 }
 
 ValueBase
 Star::get_param(const String& param)const
 {
-	EXPORT(radius1);
-	EXPORT(radius2);
-	EXPORT(points);
-	EXPORT(angle);
-	EXPORT(regular_polygon);
+	EXPORT_VALUE(param_radius1);
+	EXPORT_VALUE(param_radius2);
+	EXPORT_VALUE(param_points);
+	EXPORT_VALUE(param_angle);
+	EXPORT_VALUE(param_regular_polygon);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();

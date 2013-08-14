@@ -164,9 +164,11 @@ Action::LayerParamUnSetStatic::perform()
 	if(layer->dynamic_param_list().count(param_name))
 		throw Error(_("This action is not for Value Nodes!"));
 
-	old_static_value=layer->get_param_static(param_name);
-
-	if(!layer->set_param_static(param_name,false))
+	old_static_value=true;
+	
+	ValueBase v=layer->get_param(param_name);
+	v.set_static(false);
+	if(!layer->set_param(param_name,v))
 		throw Error(_("Layer did not accept static value."));
 
 	//! Signal layer changed
@@ -179,8 +181,11 @@ Action::LayerParamUnSetStatic::perform()
 void
 Action::LayerParamUnSetStatic::undo()
 {
-	if(!layer->set_param(param_name,old_static_value))
-		throw Error(_("Layer did not accept parameter."));
+	ValueBase v=layer->get_param(param_name);
+	v.set_static(old_static_value);
+	if(!layer->set_param(param_name,v))
+		throw Error(_("Layer did not accept static value."));
+
 	//! Signal layer changed
 	layer->changed();
 	//! Signal that a layer parameter changed

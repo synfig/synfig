@@ -67,8 +67,7 @@ SuperSample::SuperSample():width(2),height(2)
 {
 	scanline=false;
 	alpha_aware=true;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

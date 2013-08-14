@@ -151,8 +151,9 @@ Action::WaypointAdd::calc_waypoint()
 	Waypoint original(waypoint);
 	waypoint=value_node->new_waypoint_at_time(time);
 	waypoint.mimic(original);
-	waypoint.set_before(synfigapp::Main::get_interpolation());
-	waypoint.set_after(synfigapp::Main::get_interpolation());
+	Interpolation interp=value_node->get_interpolation();
+	waypoint.set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+	waypoint.set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
 
 /*
 	ValueNode_Animated::WaypointList &waypoint_list(value_node->waypoint_list());

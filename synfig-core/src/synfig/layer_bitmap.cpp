@@ -64,31 +64,30 @@ using namespace etl;
 synfig::Layer_Bitmap::Layer_Bitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	method			(SOFTWARE),
-	tl				(-0.5,0.5),
-	br				(0.5,-0.5),
-	c				(1),
+	param_tl				(Point(-0.5,0.5)),
+	param_br				(Point(0.5,-0.5)),
+	param_c				(int(1)),
+	param_gamma_adjust	(Real(1.0)),
 	surface			(128,128),
-	trimmed			(false),
-	gamma_adjust	(1.0)
+	trimmed			(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
-	set_param_static("c", true);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 {
-	IMPORT(tl);
-	IMPORT(br);
-	IMPORT(c);
-	if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
-	{
-		set_param_static(param, value.get_static());
-		gamma_adjust=1.0/value.get(Real());
-		//gamma_adjust.set_gamma(1.0/value.get(Real()));
-		return true;
-	}
+	IMPORT_VALUE(param_tl);
+	IMPORT_VALUE(param_br);
+	IMPORT_VALUE(param_c);
+	IMPORT_VALUE_PLUS(param_gamma_adjust,
+		if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
+		{
+			param_gamma_adjust.set(Real(1.0/value.get(Real())));
+			return true;
+		}
+		);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -96,13 +95,13 @@ synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 ValueBase
 synfig::Layer_Bitmap::get_param(const String & param)const
 {
-	EXPORT(tl);
-	EXPORT(br);
-	EXPORT(c);
+	EXPORT_VALUE(param_tl);
+	EXPORT_VALUE(param_br);
+	EXPORT_VALUE(param_c);
 	if(param=="gamma_adjust")
 	{
-		ValueBase ret(1.0/gamma_adjust);
-		ret.set_static(get_param_static(param));
+		ValueBase ret=param_gamma_adjust;
+		ret.set(1.0/param_gamma_adjust.get(Real()));
 		return ret;
 	}
 
@@ -121,8 +120,6 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				ret2=int(csurface.get_w());
 				break;
 		}
-		ret1.set_static(get_param_static(param));
-		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
 		return ret2;
 	}
@@ -141,14 +138,13 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 				ret2=int(csurface.get_h());
 				break;
 		}
-		ret1.set_static(get_param_static(param));
-		ret2.set_static(get_param_static(param));
 		if (trimmed) return ret1;
 		return ret2;
 	}
 
 	return Layer_Composite::get_param(param);
 }
+
 
 Layer::Vocab
 Layer_Bitmap::get_param_vocab()const
@@ -173,6 +169,7 @@ Layer_Bitmap::get_param_vocab()const
 		.add_enum_value(1,"linear",_("Linear"))
 		.add_enum_value(2,"cosine",_("Cosine"))
 		.add_enum_value(3,"cubic",_("Cubic"))
+		.set_static(true)
 	);
 
 	ret.push_back(ParamDesc("gamma_adjust")
@@ -185,6 +182,8 @@ Layer_Bitmap::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
 	Point surface_pos;
 	surface_pos=pos-tl;
 
@@ -212,6 +211,7 @@ inline
 const Color&
 synfig::Layer_Bitmap::filter(Color& x)const
 {
+	Real gamma_adjust(param_gamma_adjust.get(Real()));
 	if(gamma_adjust!=1.0)
 	{
 		x.set_r(powf((float)x.get_r(),gamma_adjust));
@@ -225,6 +225,7 @@ inline
 const CairoColor&
 synfig::Layer_Bitmap::filter(CairoColor& x)const
 {
+	Real gamma_adjust(param_gamma_adjust.get(Real()));
 	if(gamma_adjust!=1.0)
 	{
 		x.set_r(powf((float)(x.get_r()/CairoColor::range),gamma_adjust)*CairoColor::range);
@@ -238,6 +239,10 @@ synfig::Layer_Bitmap::filter(CairoColor& x)const
 Color
 synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+	int c(param_c.get(int()));
+
 	Point surface_pos;
 
 	if(!get_amount())
@@ -311,6 +316,10 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 CairoColor
 synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+	int c(param_c.get(int()));
+
 	Point surface_pos;
 	
 	if(!get_amount())
@@ -383,6 +392,11 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 bool
 Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+	int c(param_c.get(int()));
+	Real gamma_adjust(param_gamma_adjust.get(Real()));
+
 	int interp=c;
 	if(quality>=10)
 		interp=0;
@@ -656,6 +670,10 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 bool
 Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+	int c(param_c.get(int()));
+	Real gamma_adjust(param_gamma_adjust.get(Real()));
 	
 	int interp=c;
 	if(quality>=10)
@@ -771,6 +789,9 @@ Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality,
 Rect
 Layer_Bitmap::get_bounding_rect()const
 {
+	Point tl(param_tl.get(Point()));
+	Point br(param_br.get(Point()));
+
 	return Rect(tl,br);
 }
 

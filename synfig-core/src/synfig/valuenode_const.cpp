@@ -151,13 +151,13 @@ ValueNode_Const::set_value(const ValueBase &data)
 String
 ValueNode_Const::get_name()const
 {
-	return get_static()?"static":"constant";
+	return "constant";
 }
 
 String
 ValueNode_Const::get_local_name()const
 {
-	return get_static()?_("Static"):_("Constant");
+	return _("Constant");
 }
 #ifdef _DEBUG
 String

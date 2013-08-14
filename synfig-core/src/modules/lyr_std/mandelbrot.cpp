@@ -95,80 +95,80 @@ color_neg_flip(Color &color)
 /* === M E T H O D S ======================================================= */
 
 Mandelbrot::Mandelbrot():
-	gradient_offset_inside(0.0),
-	gradient_offset_outside(0.0),
-	gradient_loop_inside(true),
-	gradient_scale_outside(1.0),
-	gradient_inside(Color::alpha(),Color::black()),
-	gradient_outside(Color::alpha(),Color::black())
+	param_gradient_inside(ValueBase(Gradient(Color::alpha(),Color::black()))),
+	param_gradient_offset_inside(ValueBase(Real(0.0))),
+	param_gradient_loop_inside(ValueBase(true)),
+	param_gradient_outside(ValueBase(Gradient(Color::alpha(),Color::black()))),
+	param_gradient_offset_outside(ValueBase(Real(0.0))),
+	param_gradient_scale_outside(ValueBase(Real(1.0)))
 {
-	iterations=32;
-//	color_shift=Angle::deg(0);
+	param_iterations=ValueBase(int(32));
 
-	distort_inside=true;
-	distort_outside=true;
-	solid_inside=false;
-	solid_outside=false;
-	invert_inside=false;
-	invert_outside=false;
-	shade_inside=true;
-	shade_outside=true;
+	param_distort_inside=ValueBase(true);
+	param_distort_outside=ValueBase(true);
+	param_solid_inside=ValueBase(false);
+	param_solid_outside=ValueBase(false);
+	param_invert_inside=ValueBase(false);
+	param_invert_outside=ValueBase(false);
+	param_shade_inside=ValueBase(true);
+	param_shade_outside=ValueBase(true);
 
-	smooth_outside=true;
-	broken=false;
+	param_smooth_outside=ValueBase(true);
+	param_broken=ValueBase(false);
 
-	bailout=4;
-	lp=log(log(bailout));
+	param_bailout=ValueBase(Real(4));
+	lp=log(log(param_bailout.get(Real())));
 
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Mandelbrot::set_param(const String & param, const ValueBase &value)
 {
 
-//	IMPORT(color_shift);
+	IMPORT_VALUE(param_gradient_offset_inside);
+	IMPORT_VALUE(param_gradient_offset_outside);
+	IMPORT_VALUE(param_gradient_loop_inside);
+	IMPORT_VALUE(param_gradient_scale_outside);
 
-	IMPORT(gradient_offset_inside);
-	IMPORT(gradient_offset_outside);
-	IMPORT(gradient_loop_inside);
-	IMPORT(gradient_scale_outside);
+	IMPORT_VALUE(param_distort_inside);
+	IMPORT_VALUE(param_distort_outside);
+	IMPORT_VALUE(param_solid_inside);
+	IMPORT_VALUE(param_solid_outside);
+	IMPORT_VALUE(param_invert_inside);
+	IMPORT_VALUE(param_invert_outside);
+	IMPORT_VALUE(param_shade_inside);
+	IMPORT_VALUE(param_shade_outside);
 
-	IMPORT(distort_inside);
-	IMPORT(distort_outside);
-	IMPORT(solid_inside);
-	IMPORT(solid_outside);
-	IMPORT(invert_inside);
-	IMPORT(invert_outside);
-	IMPORT(shade_inside);
-	IMPORT(shade_outside);
+	IMPORT_VALUE(param_smooth_outside);
+	IMPORT_VALUE(param_broken);
 
-	IMPORT(smooth_outside);
-	IMPORT(broken);
+	IMPORT_VALUE(param_gradient_inside);
+	IMPORT_VALUE(param_gradient_outside);
 
-	IMPORT(gradient_inside);
-	IMPORT(gradient_outside);
-
-// TODO: Use IMPORT_PLUS
-	if(param=="iterations" && value.same_type_as(iterations))
-	{
-		iterations=value.get(iterations);
-		if(iterations<0)
-			iterations=0;
-		if(iterations>500000)
-			iterations=500000;
-		set_param_static(param, value.get_static());
-		return true;
-	}
-	if(param=="bailout" && value.same_type_as(bailout))
-	{
-		bailout=value.get(bailout);
-		bailout*=bailout;
-		lp=log(log(bailout));
-		set_param_static(param, value.get_static());
-		return true;
-	}
+	IMPORT_VALUE_PLUS(param_iterations,
+	  {
+		  int iterations=param_iterations.get(int());
+		  iterations=value.get(iterations);
+		  if(iterations<0)
+			  iterations=0;
+		  if(iterations>500000)
+			  iterations=500000;
+		  param_iterations.set(iterations);
+		  return true;
+	  }
+	  );
+	IMPORT_VALUE_PLUS(param_bailout,
+	  {
+		  Real bailout=param_bailout.get(Real());
+		  bailout=value.get(bailout);
+		  bailout*=bailout;
+		  lp=log(log(bailout));
+		  param_bailout.set(bailout);
+		  return true;
+	  }
+	  );
 
 	return false;
 }
@@ -176,37 +176,33 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 ValueBase
 Mandelbrot::get_param(const String & param)const
 {
-//	EXPORT(icolor);
-//	EXPORT(ocolor);
-//	EXPORT(color_shift);
-	EXPORT(iterations);
+	EXPORT_VALUE(param_iterations);
 
-	EXPORT(gradient_offset_inside);
-	EXPORT(gradient_offset_outside);
-	EXPORT(gradient_loop_inside);
-	EXPORT(gradient_scale_outside);
+	EXPORT_VALUE(param_gradient_offset_inside);
+	EXPORT_VALUE(param_gradient_offset_outside);
+	EXPORT_VALUE(param_gradient_loop_inside);
+	EXPORT_VALUE(param_gradient_scale_outside);
 
-	EXPORT(distort_inside);
-	EXPORT(distort_outside);
-	EXPORT(solid_inside);
-	EXPORT(solid_outside);
-	EXPORT(invert_inside);
-	EXPORT(invert_outside);
-	EXPORT(shade_inside);
-	EXPORT(shade_outside);
-	EXPORT(smooth_outside);
-	EXPORT(broken);
+	EXPORT_VALUE(param_distort_inside);
+	EXPORT_VALUE(param_distort_outside);
+	EXPORT_VALUE(param_solid_inside);
+	EXPORT_VALUE(param_solid_outside);
+	EXPORT_VALUE(param_invert_inside);
+	EXPORT_VALUE(param_invert_outside);
+	EXPORT_VALUE(param_shade_inside);
+	EXPORT_VALUE(param_shade_outside);
+	EXPORT_VALUE(param_smooth_outside);
+	EXPORT_VALUE(param_broken);
 
-	EXPORT(gradient_inside);
-	EXPORT(gradient_outside);
-
+	EXPORT_VALUE(param_gradient_inside);
+	EXPORT_VALUE(param_gradient_outside);
 	if(param=="bailout")
 	{
-		ValueBase ret(sqrt(bailout));
-		ret.set_static(get_param_static(param));
+		// This line is needed to copy the static and interpolation options
+		ValueBase ret(param_bailout);
+		ret.set(sqrt(param_bailout.get(Real())));
 		return ret;
 	}
-
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -301,6 +297,27 @@ Mandelbrot::get_param_vocab()const
 Color
 Mandelbrot::get_color(Context context, const Point &pos)const
 {
+	int iterations=param_iterations.get(int());
+	Real bailout=param_bailout.get(Real());
+	bool broken=param_broken.get(bool());
+
+	bool distort_inside=param_distort_inside.get(bool());
+	bool shade_inside=param_shade_inside.get(bool());
+	bool solid_inside=param_solid_inside.get(bool());
+	bool invert_inside=param_invert_inside.get(bool());
+	Gradient gradient_inside=param_gradient_inside.get(Gradient());
+	Real gradient_offset_inside=param_gradient_offset_inside.get(Real());
+	bool gradient_loop_inside=param_gradient_loop_inside.get(bool());
+
+	bool distort_outside=param_distort_outside.get(bool());
+	bool shade_outside=param_shade_outside.get(bool());
+	bool solid_outside=param_solid_outside.get(bool());
+	bool invert_outside=param_invert_outside.get(bool());
+	Gradient gradient_outside=param_gradient_outside.get(Gradient());
+	bool smooth_outside=param_smooth_outside.get(bool());
+	Real gradient_offset_outside=param_gradient_offset_outside.get(Real());
+	Real gradient_scale_outside=param_gradient_scale_outside.get(Real());
+	
 	Real
 		cr, ci,
 		zr, zi,

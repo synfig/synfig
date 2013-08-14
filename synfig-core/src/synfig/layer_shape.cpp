@@ -1124,18 +1124,18 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
-	Layer_Composite	(a,m),
-	edge_table		(new Intersector),
-	color			(Color::black()),
-	origin			(0,0),
-	invert			(false),
-	antialias		(true),
-	blurtype		(Blur::FASTGAUSSIAN),
-	feather			(0),
-	winding_style	(WINDING_NON_ZERO),
-	bytestream		(0),
-	lastbyteop		(Primitive::NONE),
-	lastoppos		(-1)
+	Layer_Composite      (a,m),
+	edge_table	         (new Intersector),
+	param_color          (Color::black()),
+	param_origin         (Vector(0,0)),
+	param_invert         (bool(false)),
+	param_antialias      (bool(true)),
+	param_blurtype       (int(Blur::FASTGAUSSIAN)),
+	param_feather        (Real(0.0)),
+	param_winding_style	 (WINDING_NON_ZERO),
+	bytestream           (0),
+	lastbyteop           (Primitive::NONE),
+	lastoppos            (-1)
 {
 }
 
@@ -1154,31 +1154,57 @@ Layer_Shape::clear()
 bool
 Layer_Shape::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
-					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(origin);
-	IMPORT(invert);
-	IMPORT(antialias);
-	IMPORT_PLUS(feather, if(feather<0)feather=0;);
-	IMPORT(blurtype);
-	IMPORT(winding_style);
+	IMPORT_VALUE_PLUS(param_color,
+	{
+		Color color=param_color.get(Color());
+		if (color.get_a() == 0)
+		{
+			if (converted_blend_)
+			{
+				set_blend_method(Color::BLEND_ALPHA_OVER);
+				color.set_a(1);
+			}
+			else
+			transparent_color_ = true;
+		}
+		param_color.set(color);
+	}
+	);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_invert);
+	IMPORT_VALUE(param_antialias);
+	IMPORT_VALUE_PLUS(param_feather,
+	{
+		Real feather=param_feather.get(Real());
+		if(feather<0)
+		{
+			feather=0;
+			param_feather.set(feather);
+		}
+	}
+	);
 
-	IMPORT_AS(origin,"offset");
+	IMPORT_VALUE(param_blurtype);
+	IMPORT_VALUE(param_winding_style);
 
+	if(param=="offset" && param_origin.get_type() == value.get_type())
+	{
+		param_origin=value;
+		return true;
+	}
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 Layer_Shape::get_param(const String &param)const
 {
-	EXPORT(color);
-	EXPORT(origin);
-	EXPORT(invert);
-	EXPORT(antialias);
-	EXPORT(feather);
-	EXPORT(blurtype);
-	EXPORT(winding_style);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_invert);
+	EXPORT_VALUE(param_antialias);
+	EXPORT_VALUE(param_feather);
+	EXPORT_VALUE(param_blurtype);
+	EXPORT_VALUE(param_winding_style);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -1232,6 +1258,10 @@ Layer_Shape::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	
 	Point pos(p-origin);
 
 	int intercepts = edge_table->intersect(pos[0],pos[1]);
@@ -1274,6 +1304,12 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 Color
 Layer_Shape::get_color(Context context, const Point &p)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	int blurtype=param_blurtype.get(int());
+	Real feather=param_feather.get(Real());
+
 	Point pp = p;
 
 	if(feather)
@@ -2162,6 +2198,12 @@ void Layer_Shape::curve_to_smooth(Real x2, Real y2, Real x, Real y)		//x1,y1 der
 bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 								Color::BlendMethod got_blend_method, Color::value_type got_amount) const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	bool antialias =param_antialias.get(bool(true));
+	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+
 	Surface::alpha_pen p(surface->begin(),got_amount,got_blend_method);
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
 	PolySpan::cover_array::iterator end_mark = polyspan.covers.end();
@@ -2287,6 +2329,12 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 
 bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polyspan) const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	bool antialias =param_antialias.get(bool(true));
+	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+
 	etl::surface<float>::pen p(surface->begin());
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
 	PolySpan::cover_array::iterator end_mark = polyspan.covers.end();
@@ -2462,6 +2510,12 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 bool
 Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	int blurtype=param_blurtype.get(int());
+	Real feather=param_feather.get(Real());
+
 	const unsigned int w = renddesc.get_w();
 	const unsigned int h = renddesc.get_h();
 
@@ -2627,6 +2681,14 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Shape::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	bool antialias =param_antialias.get(bool(true));
+	int blurtype=param_blurtype.get(int());
+	Real feather=param_feather.get(Real());
+	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+
 	// Grab the rgba values
 	const float r(color.get_r());
 	const float g(color.get_g());
@@ -2795,6 +2857,8 @@ Layer_Shape::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 bool
 Layer_Shape::shape_to_cairo(cairo_t *cr)const
 {
+	Point origin=param_origin.get(Point());
+
 	int tmp(0);
 	//pointers for processing the bytestream
 	const char *current 	= &bytestream[0];
@@ -2985,6 +3049,11 @@ Layer_Shape::shape_to_cairo(cairo_t *cr)const
 bool
 Layer_Shape::feather_cairo_surface(cairo_surface_t* surface, RendDesc renddesc, int quality)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	int blurtype=param_blurtype.get(int());
+	Real feather=param_feather.get(Real());
+
 	if(feather && quality!=10)
 	{
 		etl::surface<float>	shapesurface;
@@ -3027,6 +3096,8 @@ bool
 Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Point origin=param_origin.get(Point());
+
 	int tmp(0);
 
 	SuperCallback	progress(cb,0,renddesc.get_h(),renddesc.get_h());
@@ -3271,6 +3342,7 @@ bool
 Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback */*cb*/)const
 {
+	Point origin=param_origin.get(Point());
 	// If our amount is set to zero, no need to render anything
 	if(!get_amount())
 		return true;
@@ -3497,6 +3569,11 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 Rect
 Layer_Shape::get_bounding_rect()const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	bool invert =param_invert.get(bool(true));
+	Real feather=param_feather.get(Real());
+
 	if(invert)
 		return Rect::full_plane();
 

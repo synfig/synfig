@@ -64,16 +64,20 @@ private:
 	struct Intersector;
 	Intersector	*edge_table;
 protected:
-	//exported data
-	Color 	color;
-
-	Point 	origin;
-	bool	invert;
-	bool	antialias;
-
-	int		blurtype;
-	Real	feather;
-	WindingStyle winding_style;
+	//!Parameter: (Color) Color of the shape
+	ValueBase   param_color;
+	//!Parameter: (Point) Origin of the shape definition
+	ValueBase   param_origin;
+	//!Parameter: (bool) Whether the shape is inverted or not
+	ValueBase   param_invert;
+	//!Parameter: (bool) Whether the shape has antialiased edge
+	ValueBase   param_antialias;
+	//!Parameter: (Blur::Type) The type of blur used for the feather
+	ValueBase   param_blurtype;
+	//!Parameter: (Real) Amount of feather of the shape
+	ValueBase   param_feather;
+	//!Parameter: (WindingStyle) How shape is rendered when crosses it self
+	ValueBase param_winding_style;
 private:
 	std::vector< char > 	bytestream;
 
