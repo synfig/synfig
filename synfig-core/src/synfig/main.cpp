@@ -38,12 +38,16 @@
 #include <ltdl.h>
 #include <glibmm.h>
 #include <stdexcept>
+
 #ifdef WIN32
 #include <windows.h>
+#elif defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
 #else
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+
 #include "target.h"
 #include <ETL/stringf>
 #include "cairolistimporter.h"
