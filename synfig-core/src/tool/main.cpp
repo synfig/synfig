@@ -130,8 +130,7 @@ int main(int ac, char* av[])
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
-	synfig::info("Locale_dir:");
-	synfig::info(locale_dir.c_str());
+	synfig::info("Locale_dir: %s",locale_dir.c_str());
 	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");

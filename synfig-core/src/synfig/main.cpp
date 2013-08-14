@@ -412,15 +412,25 @@ synfig::get_binary_path()
 	size_t buf_size;
 	buf_size = PATH_MAX - 1;
 	char* path = new char[buf_size];
+	String result;
 
 #ifdef WIN32
 	GetModuleFileName(NULL, path, PATH_MAX);
 
-    String path_str(path);
+	result = String(path);
 	delete path;
 
-	return path_str;
-
+#elif defined(__APPLE__)
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	CFURLRef executable = CFBundleCopyExecutableURL(mainBundle);
+	CFStringRef string = CFURLCopyFileSystemPath(executable, kCFURLPOSIXPathStyle);
+	CFStringGetCString(string, path, PATH_MAX, kCFStringEncodingUTF8);
+	CFRelease(string);
+	CFRelease(executable);
+	CFRelease(mainBundle);
+	
+	result = String(path);
+	
 #else
 
 	ssize_t size;
@@ -458,68 +468,68 @@ synfig::get_binary_path()
 
 			/* path is not a symlink. Done. */
 			delete path2;
-			String path_str(path);
+			result = String(path);
 			delete path;
-
-			return path_str;
+			break;
 		}
 
 		/* path is a symlink. Continue loop and resolve this. */
 		strncpy(path, path2, buf_size - 1);
 	}
 
+	if (result == "")
+	{
+		/* readlink() or stat() failed; this can happen when the program is
+		 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
 
-	/* readlink() or stat() failed; this can happen when the program is
-	 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
+		buf_size = PATH_MAX + 128;
+		char* line = new char[buf_size];
 
-	buf_size = PATH_MAX + 128;
-	char* line = new char[buf_size];
+		f = fopen("/proc/self/maps", "r");
+		if (f == NULL) {
+			delete line;
+			synfig::error("Cannot open /proc/self/maps.");
+		}
 
-	f = fopen("/proc/self/maps", "r");
-	if (f == NULL) {
+		/* The first entry should be the executable name. */
+		char *r;
+		r = fgets(line, (int) buf_size, f);
+		if (r == NULL) {
+			fclose(f);
+			delete line;
+			synfig::error("Cannot read /proc/self/maps.");
+		}
+
+		/* Get rid of newline character. */
+		buf_size = strlen(line);
+		if (buf_size <= 0) {
+			/* Huh? An empty string? */
+			fclose(f);
+			delete line;
+			synfig::error("Invalid /proc/self/maps.");
+		}
+		if (line[buf_size - 1] == 10)
+			line[buf_size - 1] = 0;
+
+		/* Extract the filename; it is always an absolute path. */
+		path = strchr(line, '/');
+
+		/* Sanity check. */
+		if (strstr(line, " r-xp ") == NULL || path == NULL) {
+			fclose(f);
+			delete line;
+			synfig::error("Invalid /proc/self/maps.");
+		}
+
+		result = String(path);
 		delete line;
-		synfig::error("Cannot open /proc/self/maps.");
-		return "";
-	}
-
-	/* The first entry should be the executable name. */
-	char *result;
-	result = fgets(line, (int) buf_size, f);
-	if (result == NULL) {
 		fclose(f);
-		delete line;
-		synfig::error("Cannot read /proc/self/maps.");
-		return "";
+		delete path;
 	}
 
-	/* Get rid of newline character. */
-	buf_size = strlen(line);
-	if (buf_size <= 0) {
-		/* Huh? An empty string? */
-		fclose(f);
-		delete line;
-		synfig::error("Invalid /proc/self/maps.");
-		return "";
-	}
-	if (line[buf_size - 1] == 10)
-		line[buf_size - 1] = 0;
-
-	/* Extract the filename; it is always an absolute path. */
-	path = strchr(line, '/');
-
-	/* Sanity check. */
-	if (strstr(line, " r-xp ") == NULL || path == NULL) {
-		fclose(f);
-		delete line;
-		synfig::error("Invalid /proc/self/maps.");
-		return "";
-	}
-
-	String path_str(path);
-	delete line;
-	fclose(f);
-	delete path;
-
-	return path_str;
 #endif
+	
+	// TODO: Add fallback path (from argv[0])
+	
+	return result;
 }
