@@ -195,22 +195,55 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 
 	synfig::String name( layer->get_name() );
 
-	if(layer->set_param("fg",synfigapp::Main::get_outline_color()))
-		layer->set_param("bg",synfigapp::Main::get_fill_color());
+	ValueBase p;
+	p=layer->get_param("fg");
+	p.set(synfigapp::Main::get_outline_color());
+	if(layer->set_param("fg",p))
+	{
+		p=layer->get_param("bg");
+		p.set(synfigapp::Main::get_outline_color());
+		layer->set_param("bg",p);
+	}
 	else if (name == "outline" || name == "advanced_outline")
-		layer->set_param("color",synfigapp::Main::get_outline_color());
+	{
+		p=layer->get_param("color");
+		p.set(synfigapp::Main::get_outline_color());
+		layer->set_param("color",p);
+	}
 	else
-		layer->set_param("color",synfigapp::Main::get_fill_color());
+	{
+		p=layer->get_param("color");
+		p.set(synfigapp::Main::get_fill_color());
+		layer->set_param("color",p);
+	}
 	// by default, new advanced outline layers are not homogeneous
 	if(name=="advanced_outline")
-		layer->set_param("homogeneous", false);
-
-	layer->set_param("width",synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
-	layer->set_param("gradient",synfigapp::Main::get_gradient());
+	{
+		p=layer->get_param("homogeneous");
+		p.set(false);
+		layer->set_param("homogeneous",p);
+	}
+	p=layer->get_param("width");
+	p.set(synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
+	layer->set_param("width",p);
+	
+	p=layer->get_param("gradient");
+	p.set(synfigapp::Main::get_gradient());
+	layer->set_param("gradient",p);
+	
 	if(name!="zoom")
-		layer->set_param("amount",synfigapp::Main::get_opacity());
+	{
+		p=layer->get_param("amount");
+		p.set(synfigapp::Main::get_opacity());
+		layer->set_param("amount",p);
+	}
 	if(synfigapp::Main::get_blend_method() != Color::BLEND_BY_LAYER)
-		layer->set_param("blend_method",synfigapp::Main::get_blend_method());
+	{
+		p=layer->get_param("blend_method");
+		p.set(synfigapp::Main::get_blend_method());
+		layer->set_param("blend_method",p);
+	}
+
 
 	{
 		// Grab the layer's list of parameters
