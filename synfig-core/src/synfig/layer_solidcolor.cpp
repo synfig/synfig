@@ -66,18 +66,30 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id$");
 
 Layer_SolidColor::Layer_SolidColor():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	color(Color::black())
+	param_color(ValueBase(Color::black()))
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Layer_SolidColor::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
+	IMPORT_VALUE_PLUS(param_color,
+		{
+			Color color=param_color.get(Color());
+			if (color.get_a() == 0)
+			{
+				if (converted_blend_)
+				{
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
+					color.set_a(1);
+					param_color.set(color);
+				}
+				else transparent_color_ = true;
+			}
+		}
+		);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -85,7 +97,7 @@ Layer_SolidColor::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_SolidColor::get_param(const String &param)const
 {
-	EXPORT(color);
+	EXPORT_VALUE(param_color);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -109,6 +121,7 @@ Layer_SolidColor::get_param_vocab()const
 synfig::Layer::Handle
 Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	Color color=param_color.get(Color());
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Layer_SolidColor*>(this);
 	else
@@ -123,6 +136,7 @@ Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)
 Color
 Layer_SolidColor::get_color(Context context, const Point &pos)const
 {
+	Color color=param_color.get(Color());
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
 	else
@@ -132,6 +146,7 @@ Layer_SolidColor::get_color(Context context, const Point &pos)const
 bool
 Layer_SolidColor::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		// Mark our progress as starting
@@ -177,6 +192,7 @@ Layer_SolidColor::accelerated_render(Context context,Surface *surface,int qualit
 bool
 Layer_SolidColor::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
 	float r(color.get_r()),
 	      g(color.get_g()),
 		  b(color.get_b()),

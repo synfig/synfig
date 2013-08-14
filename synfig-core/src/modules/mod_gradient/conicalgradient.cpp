@@ -72,8 +72,7 @@ ConicalGradient::ConicalGradient():
 	angle(Angle::zero()),
 	symmetric(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

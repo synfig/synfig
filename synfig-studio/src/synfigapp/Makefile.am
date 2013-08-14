@@ -52,6 +52,7 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedesclink.h \
 	actions/valuedescblinelink.h \
 	actions/valuedescset.h \
+	actions/valuedescsetinterpolation.h \
 	actions/valuedescremovesmart.h
 
 VALUEDESC_ACTION_CC = \
@@ -62,6 +63,7 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedesclink.cpp \
 	actions/valuedescblinelink.cpp \
 	actions/valuedescset.cpp \
+	actions/valuedescsetinterpolation.cpp \
 	actions/valuedescremovesmart.cpp
 
 

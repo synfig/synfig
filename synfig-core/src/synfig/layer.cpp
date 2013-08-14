@@ -140,13 +140,12 @@ Layer::subsys_stop()
 Layer::Layer():
 	active_(true),
 	exclude_from_rendering_(false),
-	z_depth(0.0f),
-	dirty_time_(Time::end())//,
-	//z_depth_static(false)
+	param_z_depth(Real(0.0f)),
+	dirty_time_(Time::end())
 {
 	_LayerCounter::counter++;
-	Vocab vocab=get_param_vocab();
-	fill_static(vocab);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer::LooseHandle
@@ -315,44 +314,9 @@ Layer::on_changed()
 bool
 Layer::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT(z_depth)
+	IMPORT_VALUE(param_z_depth)
 	return false;
 }
-
-bool
-Layer::set_param_static(const String &param, const bool x)
-{
-	Sparams::iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-	{
-		iter->second=x;
-		return true;
-	}
-	return false;
-}
-
-
-void Layer::fill_static(Vocab vocab)
-{
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		if(static_params.find(viter->get_name())==static_params.end())
-			static_params.insert(make_pair(viter->get_name(),false));
-	}
-}
-
-
-bool
-Layer::get_param_static(const String &param) const
-{
-
-	Sparams::const_iterator iter=static_params.find(param);
-	if(iter!=static_params.end())
-		return iter->second;
-	return false;
-}
-
 
 etl::handle<Transform>
 Layer::get_transform()const
@@ -364,7 +328,7 @@ float
 Layer::get_z_depth(const synfig::Time& t)const
 {
 	if(!dynamic_param_list().count("z_depth"))
-		return z_depth;
+		return param_z_depth.get(Real());
 	return (*dynamic_param_list().find("z_depth")->second)(t).get(Real());
 }
 
@@ -510,12 +474,7 @@ Layer::get_param_list()const
 ValueBase
 Layer::get_param(const String & param)const
 {
-	if(param=="z_depth")
-	{
-		synfig::ValueBase ret(get_z_depth());
-		ret.set_static(get_param_static(param));
-		return ret;
-	}
+	EXPORT_VALUE(param_z_depth);
 	return ValueBase();
 }
 
@@ -642,7 +601,7 @@ Layer::get_param_vocab()const
 {
 	Layer::Vocab ret;
 
-	ret.push_back(ParamDesc(z_depth,"z_depth")
+	ret.push_back(ParamDesc(param_z_depth,"z_depth")
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))

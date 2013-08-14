@@ -74,8 +74,7 @@ NoiseDistort::NoiseDistort():
 	random.set_seed(time(NULL));
 	turbulent=false;
 	displacement=Vector(0.25,0.25);
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline Point
@@ -175,7 +174,6 @@ NoiseDistort::set_param(const String & param, const ValueBase &value)
 	if(param=="seed" && value.same_type_as(int()))
 	{
 		random.set_seed(value.get(int()));
-		set_param_static(param, value.get_static());
 		return true;
 	}
 	IMPORT(size);
@@ -193,7 +191,7 @@ NoiseDistort::get_param(const String & param)const
 	if(param=="seed")
 	{
 		ValueBase ret(random.get_seed());
-		ret.set_static(get_param_static(param));
+		
 		return ret;
 	}
 	EXPORT(size);

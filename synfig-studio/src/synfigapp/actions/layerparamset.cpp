@@ -133,6 +133,9 @@ Action::LayerParamSet::perform()
 
 	old_value=layer->get_param(param_name);
 
+	// We shouldn't change the parameters properties when change its value
+	new_value.copy_properties_of(old_value);
+
 	if(!layer->set_param(param_name,new_value))
 		throw Error(_("Layer did not accept parameter."));
 

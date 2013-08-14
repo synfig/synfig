@@ -63,8 +63,9 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Skeleton::Layer_Skeleton():
-	name("skeleton")
+	param_name(ValueBase("skeleton"))
 {
+	std::vector<synfig::Bone> bones;
 	int bone_count = 1;
 	if (getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
 		bone_count = atoi(getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"));
@@ -73,6 +74,10 @@ Layer_Skeleton::Layer_Skeleton():
 
 	while (bone_count--)
 		bones.push_back(Bone());
+
+	param_bones.set(bones);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 #ifdef _DEBUG
@@ -86,11 +91,11 @@ Layer_Skeleton::~Layer_Skeleton()
 bool
 Layer_Skeleton::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(name);
+	IMPORT_VALUE(param_name);
 
-	if (param=="bones" && value.same_type_as(bones))
+	if (param=="bones" && param_bones.get_type()==value.get_type())
 	{
-		bones = value;
+		param_bones = value;
 		return true;
 	}
 
@@ -100,8 +105,8 @@ Layer_Skeleton::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Skeleton::get_param(const String &param)const
 {
-	EXPORT(name);
-	EXPORT(bones);
+	EXPORT_VALUE(param_name);
+	EXPORT_VALUE(param_bones);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();

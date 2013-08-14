@@ -49,11 +49,11 @@ class Layer_MotionBlur : public synfig::Layer_Composite
 	};
 
 private:
-	Time aperture;
-	Real subsamples_factor;
-	SubsamplingType subsampling_type;
-	Real subsample_start;
-	Real subsample_end;
+	ValueBase param_aperture;
+	ValueBase param_subsamples_factor;
+	ValueBase param_subsampling_type;
+	ValueBase param_subsample_start;
+	ValueBase param_subsample_end;
 	mutable Time time_cur;
 
 public:

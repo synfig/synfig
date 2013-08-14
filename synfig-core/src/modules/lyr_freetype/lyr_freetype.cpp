@@ -93,27 +93,34 @@ Layer_Freetype::Layer_Freetype()
 {
 	face=0;
 
-	size=Vector(0.25,0.25);
-	text=_("Text Layer");
-	color=Color::black();
-	origin=Vector(0,0);
-	orient=Vector(0.5,0.5);
-	compress=1.0;
-	vcompress=1.0;
-	weight=WEIGHT_NORMAL;
-	style=PANGO_STYLE_NORMAL;
-	family="Sans Serif";
-	use_kerning=true;
-	grid_fit=false;
+	param_size=ValueBase(Vector(0.25,0.25));
+	param_text=ValueBase(_("Text Layer"));
+	param_color=ValueBase(Color::black());
+	param_origin=ValueBase(Vector(0,0));
+	param_orient=ValueBase(Vector(0.5,0.5));
+	param_compress=ValueBase(Real(1.0));
+	param_vcompress=ValueBase(Real(1.0));
+	param_weight=ValueBase(WEIGHT_NORMAL);
+	param_style=ValueBase(PANGO_STYLE_NORMAL);
+	param_family=ValueBase("Sans Serif");
+	param_use_kerning=ValueBase(true);
+	param_grid_fit=ValueBase(false);
+	param_invert=ValueBase(false);
+	param_font=ValueBase("");
+
 	old_version=false;
+
 	set_blend_method(Color::BLEND_COMPOSITE);
 	needs_sync_=true;
 
+	synfig::String family=param_family.get(synfig::String());
+	int style=param_style.get(int());
+	int weight=param_weight.get(int());
+
 	new_font(family,style,weight);
 
-	invert=false;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_Freetype::~Layer_Freetype()
@@ -335,6 +342,7 @@ void fss2path(char *path, FSSpec *fss)
 bool
 Layer_Freetype::new_face(const String &newfont)
 {
+	synfig::String font=param_font.get(synfig::String());
 	int error;
 	FT_Long face_index=0;
 
@@ -463,23 +471,67 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 */
-	IMPORT_PLUS(family,new_font(family,style,weight));
-	IMPORT_PLUS(weight,new_font(family,style,weight));
-	IMPORT_PLUS(style,new_font(family,style,weight));
-	IMPORT_PLUS(size, if(old_version){size/=2.0;} needs_sync_=true );
-	IMPORT_PLUS(text,needs_sync_=true);
-	IMPORT_PLUS(origin,needs_sync_=true);
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
+	IMPORT_VALUE_PLUS(param_family,
+		{
+			synfig::String family=param_family.get(synfig::String());
+			int style=param_style.get(int());
+			int weight=param_weight.get(int());
+			new_font(family,style,weight);
+		}
+		);
+		
+	IMPORT_VALUE_PLUS(param_weight,
+		{
+			synfig::String family=param_family.get(synfig::String());
+			int style=param_style.get(int());
+			int weight=param_weight.get(int());
+			new_font(family,style,weight);
+		}
+		);
+	IMPORT_VALUE_PLUS(param_style,
+		{
+			synfig::String family=param_family.get(synfig::String());
+			int style=param_style.get(int());
+			int weight=param_weight.get(int());
+			new_font(family,style,weight);
+		}
+		);
+	IMPORT_VALUE_PLUS(param_size,
+		{
+			if(old_version)
+			{
+				synfig::Vector size=param_size.get(synfig::Vector());
+				size/=2.0;
+				param_size.set(size);
+			}
+			needs_sync_=true;
+		}
+		);
+	IMPORT_VALUE_PLUS(param_text,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_origin,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_color,
+		{
+			Color color=param_color.get(Color());
+			if (color.get_a() == 0)
+			{
+				if (converted_blend_)
+				{
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(invert);
-	IMPORT_PLUS(orient,needs_sync_=true);
-	IMPORT_PLUS(compress,needs_sync_=true);
-	IMPORT_PLUS(vcompress,needs_sync_=true);
-	IMPORT_PLUS(use_kerning,needs_sync_=true);
-	IMPORT_PLUS(grid_fit,needs_sync_=true);
-
-	IMPORT_AS(origin,"pos");
+					color.set_a(1);
+					param_color.set(color);
+				} else transparent_color_ = true;
+			}
+		}
+		);
+	IMPORT_VALUE(param_invert);
+	IMPORT_VALUE_PLUS(param_orient,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_compress,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_vcompress,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync_=true);
+	
+	if(param=="pos")
+		set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -487,20 +539,20 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Freetype::get_param(const String& param)const
 {
-	EXPORT(font);
-	EXPORT(family);
-	EXPORT(style);
-	EXPORT(weight);
-	EXPORT(size);
-	EXPORT(text);
-	EXPORT(color);
-	EXPORT(origin);
-	EXPORT(orient);
-	EXPORT(compress);
-	EXPORT(vcompress);
-	EXPORT(use_kerning);
-	EXPORT(grid_fit);
-	EXPORT(invert);
+	EXPORT_VALUE(param_font);
+	EXPORT_VALUE(param_family);
+	EXPORT_VALUE(param_style);
+	EXPORT_VALUE(param_weight);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_text);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_orient);
+	EXPORT_VALUE(param_compress);
+	EXPORT_VALUE(param_vcompress);
+	EXPORT_VALUE(param_use_kerning);
+	EXPORT_VALUE(param_grid_fit);
+	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -608,8 +660,9 @@ Layer_Freetype::sync()
 inline Color
 Layer_Freetype::color_func(const Point &point_ __attribute__ ((unused)), int quality __attribute__ ((unused)), float supersample __attribute__ ((unused)))const
 {
+	bool invert=param_invert.get(bool());
 	if (invert)
-		return color;
+		return param_color.get(Color());
 	else
 		return Color::alpha();
 }
@@ -634,18 +687,25 @@ Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 bool
 Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	bool use_kerning=param_use_kerning.get(bool());
+	bool grid_fit=param_grid_fit.get(bool());
+	bool invert=param_invert.get(bool());
+	Color color=param_color.get(Color());
+	synfig::Point origin=param_origin.get(Point());
+	synfig::Vector orient=param_orient.get(Vector());
+	
 	static synfig::RecMutex freetype_mutex;
 
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 
 	int error;
-	Vector size(Layer_Freetype::size*2);
+	Vector size(Layer_Freetype::param_size.get(synfig::Vector())*2);
 
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
 
-	if(is_disabled() || text.empty())
+	if(is_disabled() || param_text.get(synfig::String()).empty())
 		return true;
 
 	// If there is no font loaded, just bail
@@ -655,7 +715,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		return true;
 	}
 
-	String text(Layer_Freetype::text);
+	String text(Layer_Freetype::param_text.get(synfig::String()));
 	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
 	{
 		text=basename(get_canvas()->get_file_name());
@@ -696,8 +756,8 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	const float xerror(abs(size[0]*pw)/(float)face->size->metrics.x_ppem/1.13f/0.996);
 	const float yerror(abs(size[1]*ph)/(float)face->size->metrics.y_ppem/1.13f/0.996);
 	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
-	const float compress(Layer_Freetype::compress*xerror);
-	const float vcompress(Layer_Freetype::vcompress*yerror);
+	const float compress(Layer_Freetype::param_compress.get(Real())*xerror);
+	const float vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
 
 	if(error)
 	{
@@ -922,7 +982,19 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 ////
 bool
 Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{	
+{
+	int style=param_style.get(int());
+	int weight=param_weight.get(int());
+	synfig::Vector size=param_size.get(Vector());
+	synfig::Real compress=param_compress.get(synfig::Real());
+	synfig::Real vcompress=param_vcompress.get(synfig::Real());
+	bool invert=param_invert.get(bool());
+	Color color=param_color.get(Color());
+	synfig::Point origin=param_origin.get(Point());
+	synfig::Vector orient=param_orient.get(Vector());
+	synfig::String font=param_font.get(synfig::String());
+	synfig::String text=param_text.get(synfig::String());
+	
 	if(!is_solid_color())
 	{
 		// Initially render what's behind us

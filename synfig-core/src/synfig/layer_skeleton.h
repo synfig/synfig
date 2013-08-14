@@ -45,9 +45,10 @@ class Layer_Skeleton : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	std::vector<synfig::Bone> bones;
-
-	synfig::String name;
+	//!Parameter: (std::vector<synfig::Bone>) Bones list of the skeleton
+	ValueBase param_bones;
+	//!Parameter: (synfig::String) Name of the skeleton
+	ValueBase param_name;
 
 public:
 

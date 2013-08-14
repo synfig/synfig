@@ -42,11 +42,16 @@ class Layer_Shade : public synfig::Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	synfig::Vector 	size;
-	int				type;
-	synfig::Color	color;
-	synfig::Vector	origin;
-	bool invert;
+	//!Parameter: (synfig::Vector)
+	ValueBase param_size;
+	//!Parameter: (int)
+	ValueBase param_type;
+	//!Parameter: (synfig::Color)
+	ValueBase param_color;
+	//!Parameter: (synfig::Vector)
+	ValueBase param_origin;
+	//!Parameter: (bool)
+	ValueBase param_invert;
 
 public:
 	Layer_Shade();

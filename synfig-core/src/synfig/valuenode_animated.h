@@ -52,6 +52,8 @@ namespace synfig {
 */
 struct ValueNode_Animated : public ValueNode
 {
+private:
+	Interpolation interpolation_;
 public:
 	typedef etl::handle<ValueNode_Animated> Handle;
 	typedef etl::handle<const ValueNode_Animated> ConstHandle;
@@ -140,6 +142,12 @@ public:
 	void insert_time(const Time& location, const Time& delta);
 
 	String get_string()const;
+
+	//! Get/Set the default interpolation for Value Nodes
+	virtual Interpolation get_interpolation()const { return interpolation_; }
+	virtual void set_interpolation(Interpolation i) { interpolation_=i; }
+
+	
 
 protected:
 	ValueNode_Animated();

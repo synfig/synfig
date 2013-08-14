@@ -65,11 +65,12 @@ SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Import::Import()
+Import::Import():
+	param_filename(ValueBase(String())),
+	param_time_offset(ValueBase(Time(0)))
 {
-	time_offset=0;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Import::~Import()
@@ -79,17 +80,17 @@ Import::~Import()
 void
 Import::on_canvas_set()
 {
-	if(get_canvas())set_param("filename",filename);
+	if(get_canvas())set_param("filename",param_filename);
 }
 
 bool
 Import::set_param(const String & param, const ValueBase &value)
 {
 	try{
-	IMPORT(time_offset);
-	if(param=="filename" && value.same_type_as(filename))
+	IMPORT_VALUE(param_time_offset);
+IMPORT_VALUE_PLUS(param_filename,
 	{
-		set_param_static(param, value.get_static());
+		String filename=param_filename.get(String());
 		if(!get_canvas())
 		{
 			filename=value.get(filename);
@@ -97,6 +98,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			cimporter=0;
 			surface.clear();
 			csurface.set_cairo_surface(NULL);
+			param_filename.set(filename);
 			return true;
 		}
 
@@ -137,6 +139,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			cimporter=0;
 			surface.clear();
 			csurface.set_cairo_surface(NULL);
+			param_filename.set(filename);
 			return true;
 		}
 
@@ -173,6 +176,7 @@ Import::set_param(const String & param, const ValueBase &value)
 						filename=newfilename;
 						abs_filename=absolute_path(filename_with_path);
 						surface.clear();
+						param_filename.set(filename);
 						return false;
 					}
 				}
@@ -186,6 +190,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				importer=newimporter;
 				filename=newfilename;
 				abs_filename=absolute_path(filename_with_path);
+				param_filename.set(filename);
 
 				return true;
 			}
@@ -198,15 +203,15 @@ Import::set_param(const String & param, const ValueBase &value)
 				
 				if(filename==newfilename && cimporter)
 				{
-				synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
-				return true;
+					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+					return true;
 				}
 				 assert(get_canvas());
 				 
 				 if(is_absolute_path(newfilename))
-				 filename_with_path=newfilename;
+					 filename_with_path=newfilename;
 				 else
-				 filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+					 filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
 				 
 				 handle<CairoImporter> newimporter;
 				 
@@ -222,6 +227,7 @@ Import::set_param(const String & param, const ValueBase &value)
 						 filename=newfilename;
 						 abs_filename=absolute_path(filename_with_path);
 						 csurface.set_cairo_surface(NULL);
+						 param_filename.set(filename);
 						 return false;
 					 }
 				 }
@@ -237,6 +243,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				 cimporter=newimporter;
 				 filename=newfilename;
 				 abs_filename=absolute_path(filename_with_path);
+				 param_filename.set(filename);
 				 
 				 return true;
 				
@@ -244,6 +251,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			}
 		}
 	}
+	);
 	} catch(...) { set_amount(0); return false; }
 
 	return Layer_Bitmap::set_param(param,value);
@@ -252,21 +260,23 @@ Import::set_param(const String & param, const ValueBase &value)
 ValueBase
 Import::get_param(const String & param)const
 {
-	EXPORT(time_offset);
+	EXPORT_VALUE(param_time_offset);
 
 	if(get_canvas())
 	{
 		if(param=="filename")
 		{
 			ValueBase ret(ValueBase::TYPE_STRING);
-			ret.set_static(get_param_static(param));
+			// This line is needed to copy the internals of ValueBase from param_filename
+			ret=param_filename;
+			
 			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 			ret=relative_path(curpath,abs_filename);
 			return ret;
 		}
 	}
 	else
-		EXPORT(filename);
+		EXPORT_VALUE(param_filename);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -295,6 +305,7 @@ Import::get_param_vocab()const
 void
 Import::set_time(IndependentContext context, Time time)const
 {
+	Time time_offset=param_time_offset.get(Time());
 	switch (get_method())
 	{
 	case SOFTWARE:
@@ -330,6 +341,7 @@ Import::set_time(IndependentContext context, Time time)const
 void
 Import::set_time(IndependentContext context, Time time, const Point &pos)const
 {
+	Time time_offset=param_time_offset.get(Time());
 	switch (get_method())
 	{
 		case SOFTWARE:
@@ -370,7 +382,7 @@ Import::set_render_method(Context context, RenderMethod x)
 		Layer_Bitmap::set_render_method(context, x); // set the method (and pass to the other layers)
 		importer=0; // invalidate the importer
 		cimporter=0;
-		set_param("filename", filename); // this will update the importer to the new type
+		set_param("filename", param_filename); // this will update the importer to the new type
 	}
 	else
 		context.set_render_method(x); // pass it down.

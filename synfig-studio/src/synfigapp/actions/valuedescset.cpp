@@ -756,17 +756,7 @@ Action::ValueDescSet::prepare()
 	    }
 
 	}
-	// if the value desc is layer param or Value Node Const then use local_value
-	// to store the static option to eventually avoid the animation mode.
-	ValueBase local_value;
-	local_value.set_static(false);
-		if(!value_desc.is_value_node() || ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
-		{
-			if(value_desc.is_value_node())
-				local_value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
-			else
-				local_value=value_desc.get_value();
-		}
+
 	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
 	// then we are changing the value of a widthpoint boundary.
 	// It is needed to check that we aren't doing the boundary range zero
@@ -793,7 +783,8 @@ Action::ValueDescSet::prepare()
 		}
 	}
 	// If we are in animate editing mode
-	if(get_edit_mode()&MODE_ANIMATE && !local_value.get_static())
+	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
+	if(get_edit_mode()&MODE_ANIMATE && !value_desc.get_static())
 	{
 		ValueNode_Animated::Handle& value_node(value_node_animated);
 		// If this value isn't a ValueNode_Animated, but
@@ -806,12 +797,14 @@ Action::ValueDescSet::prepare()
 				value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
 			else
 				value=value_desc.get_value();
+			Interpolation interp=value.get_interpolation();
 			if(!value_node)value_node=ValueNode_Animated::create(value,time);
 			// Be sure that the newly created waypoint is set with the default
 			// interpolations.
 			synfig::ValueNode_Animated::WaypointList::iterator iter(value_node->find(time));
-			iter->set_before(synfigapp::Main::get_interpolation());
-			iter->set_after(synfigapp::Main::get_interpolation());
+			iter->set_before(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+			iter->set_after(interp==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():interp);
+			value_node->set_interpolation(interp);
 			Action::Handle action;
 			if(!value_desc.is_value_node())
 			{
@@ -849,8 +842,9 @@ Action::ValueDescSet::prepare()
 		}catch(Exception::NotFound)
 		{
 			waypoint=value_node->new_waypoint_at_time(time);
-			waypoint.set_before(synfigapp::Main::get_interpolation());
-			waypoint.set_after(synfigapp::Main::get_interpolation());
+			Interpolation inter=value_node->get_interpolation();
+			waypoint.set_before(inter==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():inter);
+			waypoint.set_after(inter==INTERPOLATION_UNDEFINED?synfigapp::Main::get_interpolation():inter);
 		}
 		waypoint.set_value(value);
 		action->set_param("canvas",get_canvas());
@@ -869,8 +863,6 @@ Action::ValueDescSet::prepare()
 			if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
 			{
 				Action::Handle action(ValueNodeConstSet::create());
-				synfig::ValueNode_Const::Handle localvaluenode(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()));
-				value.set_static(localvaluenode->get_static());
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",value_desc.get_value_node());
@@ -890,8 +882,6 @@ Action::ValueDescSet::prepare()
 		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
 		{
 			Action::Handle layer_param_set(LayerParamSet::create());
-			synfig::ValueBase localvalue(value_desc.get_value());
-			value.set_static(local_value.get_static());
 			layer_param_set->set_param("canvas",get_canvas());
 			layer_param_set->set_param("canvas_interface",get_canvas_interface());
 			layer_param_set->set_param("layer",value_desc.get_layer());

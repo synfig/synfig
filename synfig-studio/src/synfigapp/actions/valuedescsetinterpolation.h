@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file clamp.h
-**	\brief Header file for implementation of the "Clamp" layer
+/*!	\file valuedescsetinterpolation.h
+**	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2012-2013 Carlos López
+**	Copyright (c) 2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,12 +23,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_SOLIDCOLOR_H
-#define __SYNFIG_LAYER_SOLIDCOLOR_H
+#ifndef __SYNFIG_APP_ACTION_VALUEDESCSETINTERPOLATION_H
+#define __SYNFIG_APP_ACTION_VALUEDESCSETINTERPOLATION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
+#include <synfigapp/action.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/valuenode_animated.h>
+#include <list>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,42 +39,39 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig {
+namespace synfigapp {
 
-class Layer_Clamp : public Layer
+namespace Action {
+
+class ValueDescSetInterpolation :
+	public Undoable,
+	public CanvasSpecific
 {
-	SYNFIG_LAYER_MODULE_EXT
-
 private:
-	//!Parameter: (bool)
-	ValueBase param_invert_negative;
-	//!Parameter: (bool)
-	ValueBase param_clamp_ceiling;
-	//!Parameter: (synfig::Real)
-	ValueBase param_ceiling;
-	//!Parameter: (synfig::Real)
-	ValueBase param_floor;
 
-	Color clamp_color(const Color &in)const;
+	ValueDesc value_desc;
+	synfig::Interpolation value;
+	//synfig::ValueNode_Animated::Handle value_node_animated;
+	synfig::Interpolation old_value;
 
 public:
 
-	Layer_Clamp();
+	ValueDescSetInterpolation();
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
 
-	virtual Color get_color(Context context, const Point &pos)const;
+	virtual void perform();
+	virtual void undo();
 
-	virtual Rect get_full_bounding_rect(Context context)const;
+	ACTION_MODULE_EXT
+};
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-
-	virtual Vocab get_param_vocab()const;
-}; // END of class Layer_Clamp
-
-}; // END of namespace synfig
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

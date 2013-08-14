@@ -32,6 +32,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer_polygon.h>
+#include <synfig/value.h>
 #include <list>
 #include <vector>
 
@@ -50,17 +51,18 @@ class Star : protected synfig::Layer_Polygon
 	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	Real radius1;
-	Real radius2;
-	int points;
-	Angle angle;
-	bool regular_polygon;
+	ValueBase param_radius1;
+	ValueBase param_radius2;
+	ValueBase param_points;
+	ValueBase param_angle;
+	ValueBase param_regular_polygon;
+
 public:
 	Star();
 
 	//! Updates the polygon data to match the parameters.
 	void sync();
-
+	bool import_parameters(const String &param, const ValueBase &value);
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;

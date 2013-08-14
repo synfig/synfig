@@ -62,21 +62,21 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-Layer_Composite::Layer_Composite(float 	a, Color::BlendMethod 	bm):
-		amount				(a),
-		blend_method		(bm),
+Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
+		param_amount		(a),
+		param_blend_method	(Color::BlendMethod(bm)),
 		converted_blend_	(false),
 		transparent_color_	(false)
 	{
-		Layer::Vocab voc(get_param_vocab());
-		Layer::fill_static(voc);
+		SET_INTERPOLATION_DEFAULTS();
+		SET_STATIC_DEFAULTS();
 	}
 
 bool
 Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-
+	Real amount(param_amount.get(Real()));
 	if(!amount)
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -109,12 +109,12 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 		return false;
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
-	if(quality<=4)surfacelayer->c=3;else
-	if(quality<=5)surfacelayer->c=2;
-	else if(quality<=6)surfacelayer->c=1;
-	else surfacelayer->c=0;
-	surfacelayer->tl=renddesc.get_tl();
-	surfacelayer->br=renddesc.get_br();
+	if(quality<=4)surfacelayer->set_param("c", 3);else
+	if(quality<=5)surfacelayer->set_param("c", 2);
+	else if(quality<=6)surfacelayer->set_param("c", 1);
+	else surfacelayer->set_param("c",0);
+	surfacelayer->set_param("tl",renddesc.get_tl());
+	surfacelayer->set_param("br",renddesc.get_br());
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 	// Push this layer on the image. The blending result is only this layer
@@ -146,6 +146,8 @@ bool
 Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
+	Real amount(param_amount.get(Real()));
+
 	if(!amount)
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
 
@@ -191,12 +193,12 @@ Layer_Composite::accelerated_cairorender(Context context,cairo_t *cr, int qualit
 	cairo_surface_destroy(cs);
 	// Sets up the interpolation of the context (now the surface layer is the first one)
 	// depending on the quality
-	if(quality<=4)surfacelayer->c=3;else
-		if(quality<=5)surfacelayer->c=2;
-		else if(quality<=6)surfacelayer->c=1;
-		else surfacelayer->c=0;
-	surfacelayer->tl=renddesc.get_tl();
-	surfacelayer->br=renddesc.get_br();
+	if(quality<=4)surfacelayer->set_param("c", 3);else
+		if(quality<=5)surfacelayer->set_param("c", 2);
+		else if(quality<=6)surfacelayer->set_param("c", 1);
+		else surfacelayer->set_param("c",0);
+	surfacelayer->set_param("tl",renddesc.get_tl());
+	surfacelayer->set_param("br",renddesc.get_br());
 	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 	surfacelayer->set_render_method(context, CAIRO);
@@ -243,11 +245,11 @@ Layer_Composite::get_param_vocab()const
 	//! First fills the returning vocabulary with the ancestor class
 	Layer::Vocab ret(Layer::get_param_vocab());
 	//! Now inserts the two parameters that this layer knows.
-	ret.push_back(ParamDesc(amount,"amount")
+	ret.push_back(ParamDesc(param_amount,"amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("Alpha channel of the layer"))
 	);
-	ret.push_back(ParamDesc(blend_method,"blend_method")
+	ret.push_back(ParamDesc(param_blend_method,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("The blending method used to composite on the layers below"))
 	);
@@ -258,21 +260,13 @@ Layer_Composite::get_param_vocab()const
 bool
 Layer_Composite::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="amount" && value.same_type_as(amount))
-	{
-		amount=value.get(amount);
-		set_param_static(param,value.get_static());
-	}
-	else
-	if(param=="blend_method" && value.same_type_as(int()))
-	{
-		blend_method = static_cast<Color::BlendMethod>(value.get(int()));
-		set_param_static(param,value.get_static());
-
+	IMPORT_VALUE(param_amount)
+	IMPORT_VALUE_PLUS(param_blend_method,
+		Color::BlendMethod blend_method = static_cast<Color::BlendMethod>(value.get(int()));
 		if (blend_method < 0 || blend_method >= Color::BLEND_END)
 		{
 			warning("illegal value (%d) for blend_method - using Composite instead", blend_method);
-			blend_method = Color::BLEND_COMPOSITE;
+			param_blend_method.set(Color::BLEND_COMPOSITE);
 			return false;
 		}
 
@@ -290,7 +284,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 								version.c_str(), get_non_empty_description().c_str());
 					else
 					{
-						blend_method = Color::BLEND_COMPOSITE;
+						param_blend_method.set(Color::BLEND_COMPOSITE);
 						converted_blend_ = true;
 
 						// if this layer has a transparent color, go back and set the color again
@@ -302,29 +296,17 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 				}
 			}
 		}
-	}
-	else
-		return Layer::set_param(param,value);
-	return true;
+		);
+
+	return Layer::set_param(param,value);
 }
 
 ValueBase
 Layer_Composite::get_param(const String & param)const
 {
 
-	//! First check if the parameter's string is known.
-	if(param=="amount")
-	{
-		synfig::ValueBase ret(get_amount());
-		ret.set_static(get_param_static(param));
-		return ret;
-	}
-	if(param=="blend_method")
-	{
-		synfig::ValueBase ret(static_cast<int>(get_blend_method()));
-		ret.set_static(get_param_static(param));
-		return ret;
-	}
+	EXPORT_VALUE(param_amount)
+	EXPORT_VALUE(param_blend_method)
 	//! If it is unknown then call the ancestor's get param member
 	//! to see if it can handle that parameter's string.
 	return Layer::get_param(param);

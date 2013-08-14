@@ -112,23 +112,36 @@ class Layer_Freetype : public synfig::Layer_Composite, public synfig::Layer_NoDe
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
+	//!Parameter: (synfig::String) text of the layer;
+	ValueBase param_text;
+	//!Parameter: (synfig::Color) color of the text;
+	ValueBase param_color;
+	//!Parameter: (synfig::String) font family used in the text
+	ValueBase param_family;
+	//!Parameter: (int) style used in the font
+	ValueBase param_style;
+	//!Parameter: (int) weight used in the font
+	ValueBase param_weight;
+	//!Parameter: (synfig::Real) horizontal spacing
+	ValueBase param_compress;
+	//!Parameter: (synfig::Real) vertical spacing
+	ValueBase param_vcompress;
+	//!Parameter: (synfig::Vector) size of the text
+	ValueBase param_size;
+	//!Parameter: (synfig::Vector) text orientation
+	ValueBase param_orient;
+	//!Parameter: (synfig::Point) text position
+	ValueBase param_origin;
+	//!Parameter: (synfig::String) font used in the text
+	ValueBase param_font;
+	//!Parameter: (bool)
+	ValueBase param_use_kerning;
+	//!Parameter: (bool)
+	ValueBase param_grid_fit;
+	//!Parameter: (bool) inverts the rendered text
+	ValueBase param_invert;
 
 	FT_Face face;
-	synfig::String font;
-	synfig::String family;
-	synfig::String text;
-	synfig::Vector size;
-	synfig::Vector orient;
-	synfig::Color color;
-	synfig::Point origin;
-	synfig::Real compress;
-	synfig::Real vcompress;
-
-	int style;
-	int weight;
-	bool use_kerning;
-	bool grid_fit;
-	bool invert;
 
 	bool old_version;
 	bool needs_sync_;

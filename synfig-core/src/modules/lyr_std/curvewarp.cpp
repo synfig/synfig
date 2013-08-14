@@ -150,17 +150,23 @@ find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,co
 inline void
 CurveWarp::sync()
 {
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(),param_bline.get_list().end());
+	Point start_point=param_start_point.get(Point());
+	Point end_point=param_end_point.get(Point());
+	
 	curve_length_=calculate_distance(bline);
 	perp_ = (end_point - start_point).perp().norm();
 }
 
 CurveWarp::CurveWarp():
-	origin(0,0),
-	perp_width(1),
-	start_point(-2.5,-0.5),
-	end_point(2.5,-0.3),
-	fast(true)
+	param_origin(ValueBase(Point(0,0))),
+	param_perp_width(ValueBase(Real(1))),
+	param_start_point(ValueBase(Point(-2.5,-0.5))),
+	param_end_point(ValueBase(Point(2.5,-0.3))),
+	param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
+	param_fast(ValueBase(true))
 {
+	std::vector<synfig::BLinePoint> bline;
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline[0].set_vertex(Point(-2.5,0));
@@ -169,15 +175,23 @@ CurveWarp::CurveWarp():
 	bline[1].set_tangent(Point(1, -0.1));
 	bline[0].set_width(1.0f);
 	bline[1].set_width(1.0f);
-
+	param_bline.set(bline);
 	sync();
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Point
 CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)const
 {
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(),param_bline.get_list().end());
+	Point start_point=param_start_point.get(Point());
+	Point end_point=param_end_point.get(Point());
+	Point origin=param_origin.get(Point());
+	bool fast=param_fast.get(bool());
+	Real perp_width=param_perp_width.get(Real());
+
 	Vector tangent;
 	Vector diff;
 	Point p1;
@@ -346,21 +360,15 @@ CurveWarp::hit_check(synfig::Context context, const synfig::Point &point)const
 bool
 CurveWarp::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
-	IMPORT(start_point);
-	IMPORT(end_point);
-	IMPORT(fast);
-	IMPORT(perp_width);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_start_point);
+	IMPORT_VALUE(param_end_point);
+	IMPORT_VALUE(param_fast);
+	IMPORT_VALUE(param_perp_width);
+	IMPORT_VALUE_PLUS(param_bline, sync());
 
-	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
-	{
-		bline=value;
-		sync();
-
-		return true;
-	}
-
-	IMPORT_AS(origin,"offset");
+	if(param=="offset")
+		set_param("origin", value);
 
 	return false;
 }
@@ -368,12 +376,12 @@ CurveWarp::set_param(const String & param, const ValueBase &value)
 ValueBase
 CurveWarp::get_param(const String & param)const
 {
-	EXPORT(origin);
-	EXPORT(start_point);
-	EXPORT(end_point);
-	EXPORT(bline);
-	EXPORT(fast);
-	EXPORT(perp_width);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_start_point);
+	EXPORT_VALUE(param_end_point);
+	EXPORT_VALUE(param_bline);
+	EXPORT_VALUE(param_fast);
+	EXPORT_VALUE(param_perp_width);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -426,6 +434,9 @@ CurveWarp::get_color(Context context, const Point &point)const
 bool
 CurveWarp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Point start_point=param_start_point.get(Point());
+	Point end_point=param_end_point.get(Point());
+
 	SuperCallback stageone(cb,0,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
 
@@ -604,6 +615,9 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 bool
 CurveWarp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
+	Point start_point=param_start_point.get(Point());
+	Point end_point=param_end_point.get(Point());
+
 	SuperCallback stageone(cb,0,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
 	

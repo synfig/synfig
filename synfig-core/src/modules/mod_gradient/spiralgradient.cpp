@@ -73,8 +73,7 @@ SpiralGradient::SpiralGradient():
 	angle(Angle::zero()),
 	clockwise(false)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

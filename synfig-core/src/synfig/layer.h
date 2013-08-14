@@ -39,6 +39,7 @@
 #include "node.h"
 #include "time.h"
 #include "guid.h"
+#include "interpolation.h"
 #include "target.h" // for RenderMethod. TODO: put RenderMethod apart
 
 #include "cairo.h"
@@ -80,44 +81,78 @@
 		return new class();																\
 	}
 
-//! Imports a parameter 'x' and perform an action based usually based on
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
+//! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
 #define IMPORT_PLUS(x,y)																\
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(#x,value.get_static());										\
 		{																				\
 			y;																			\
 		}																				\
 		return true;																	\
 	}
 
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 //! Imports a parameter 'y' if it has the same type than 'x'
 #define IMPORT_AS(x,y)																	\
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(y,value.get_static());										\
 		return true;																	\
 	}
 
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 //! Imports a parameter if it is of the same type as param
 #define IMPORT(x)																		\
 	IMPORT_AS(x,#x)
 
+//! Imports a parameter if it is of the same type as param
+#define IMPORT_VALUE(x)																		\
+	if (#x=="param_"+param && x.get_type()==value.get_type())												\
+	{																					\
+		x=value;																		\
+		return true;																	\
+	}
+
+//! Imports a parameter 'x' and perform an action usually based on
+//! some condition 'y'
+#define IMPORT_VALUE_PLUS(x,y)																\
+	if (#x=="param_"+param && x.get_type()==value.get_type())												\
+	{																					\
+		x=value;																	\
+		{																				\
+			y;																			\
+		}																				\
+		return true;																	\
+	}
+
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 //! Exports a parameter 'x' if param is same type as given 'y'
 #define EXPORT_AS(x,y)																	\
 	if (param==y)																		\
 	{																					\
 		synfig::ValueBase ret(x);														\
-		ret.set_static(get_param_static(y));											\
 		return ret;																		\
 	}
 
+//TODO: This macro is safe to remove when we will finish converting
+//      all layer parameters to ValueBase type
 //! Exports a parameter if it is the same type as value
 #define EXPORT(x)																		\
 	EXPORT_AS(x,#x)
+
+//! Exports a parameter if it is the same type as value
+#define EXPORT_VALUE(x)																	\
+	if (#x=="param_"+param)																\
+	{																					\
+		return x;																		\
+	}
 
 //! Exports the name or the local name of the layer
 #define EXPORT_NAME()																	\
@@ -134,19 +169,32 @@
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
 #define CATEGORY_DO_NOT_USE "Do Not Use"
-/*
-//! x=variable name, y=static bool value
-#define SET_STATIC(x,y)																	\
-	if(param==#x && x ## _static != y)													\
-	{																					\
-		x ## _static = y;																\
-		return true;																	\
-	}
 
-#define GET_STATIC(x)																	\
-	if(param==#x)																		\
-		return x ## _static;															\
-*/
+//! Sets the interpolation defaults for the layer
+#define SET_INTERPOLATION_DEFAULTS()                                           \
+{                                                                              \
+	Vocab vocab(get_param_vocab());                                            \
+	Vocab::const_iterator viter;                                               \
+	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
+	{                                                                          \
+		ValueBase v=get_param(viter->get_name());                              \
+		v.set_interpolation(viter->get_interpolation());                       \
+		set_param(viter->get_name(), v);                                       \
+	}                                                                          \
+}                                                                              \
+
+//! Sets the static defaults for the layer
+#define SET_STATIC_DEFAULTS()                                                  \
+{                                                                              \
+	Vocab vocab(get_param_vocab());                                            \
+	Vocab::const_iterator viter;                                               \
+	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
+	{                                                                          \
+		ValueBase v=get_param(viter->get_name());                              \
+		v.set_static(viter->get_static());                                     \
+		set_param(viter->get_name(), v);                                       \
+	}                                                                          \
+}                                                                              \
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -285,11 +333,7 @@ private:
 	String description_;
 
 	//! The depth parameter of the layer in the layer stack
-	float z_depth;
-
-	//! True if zdepth is not affected when in animation mode
-	typedef std::map<String, bool> Sparams;
-	Sparams static_params;
+	ValueBase param_z_depth;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -411,13 +455,13 @@ public:
 	int get_depth()const;
 
 	//! Gets the non animated z depth of the layer
-	float get_z_depth()const { return z_depth; }
+	float get_z_depth()const { return param_z_depth.get(Real()); }
 
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
 	//! Sets the z depth of the layer (non animated)
-	void set_z_depth(float x) { z_depth=x; }
+	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);
@@ -488,10 +532,6 @@ public:
 	**	\todo \a param should be of the type <tt>const String \&param</tt>
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
-
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool get_param_static(const String &param) const;
-	virtual void fill_static(Vocab vocab);
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

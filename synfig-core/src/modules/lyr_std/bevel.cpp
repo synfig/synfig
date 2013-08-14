@@ -81,23 +81,27 @@ inline void clamp(synfig::Vector &v)
 
 Layer_Bevel::Layer_Bevel():
 	Layer_Composite	(0.75,Color::BLEND_ONTO),
-	softness(0.1),
-	type(Blur::FASTGAUSSIAN),
-	color1(Color::white()),
-	color2(Color::black()),
-	depth(0.2)
+	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
+	param_softness (ValueBase(Real(0.1))),
+	param_color1(ValueBase(Color::white())),
+	param_color2(ValueBase(Color::black())),
+	param_depth(ValueBase(Real(0.2)))
 {
-	angle=Angle::deg(135);
+	param_angle=ValueBase(Angle::deg(135));
 	calc_offset();
-	use_luma=false;
-	solid=false;
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	param_use_luma=ValueBase(false);
+	param_solid=ValueBase(false);
+
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void
 Layer_Bevel::calc_offset()
 {
+	synfig::Angle angle=param_angle.get(synfig::Angle());
+	synfig::Real depth=param_depth.get(synfig::Real());
+	
 	offset[0]=Angle::cos(angle).get()*depth;
 	offset[1]=Angle::sin(angle).get()*depth;
 
@@ -108,14 +112,20 @@ Layer_Bevel::calc_offset()
 bool
 Layer_Bevel::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(softness,softness=softness>0?softness:0);
-	IMPORT(color1);
-	IMPORT(color2);
-	IMPORT_PLUS(depth,calc_offset());
-	IMPORT_PLUS(angle,calc_offset());
-	IMPORT(type);
-	IMPORT(use_luma);
-	IMPORT(solid);
+	IMPORT_VALUE_PLUS(param_softness,
+		{
+			synfig::Real softness=param_softness.get(Real());
+			softness=softness>0?softness:0;
+			param_softness.set(softness);
+		}
+		);
+	IMPORT_VALUE(param_color1);
+	IMPORT_VALUE(param_color2);
+	IMPORT_VALUE_PLUS(param_depth,calc_offset());
+	IMPORT_VALUE_PLUS(param_angle,calc_offset());
+	IMPORT_VALUE(param_type);
+	IMPORT_VALUE(param_use_luma);
+	IMPORT_VALUE(param_solid);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -123,14 +133,14 @@ Layer_Bevel::set_param(const String &param, const ValueBase &value)
 ValueBase
 Layer_Bevel::get_param(const String &param)const
 {
-	EXPORT(type);
-	EXPORT(softness);
-	EXPORT(color1);
-	EXPORT(color2);
-	EXPORT(depth);
-	EXPORT(angle);
-	EXPORT(use_luma);
-	EXPORT(solid);
+	EXPORT_VALUE(param_type);
+	EXPORT_VALUE(param_softness);
+	EXPORT_VALUE(param_color1);
+	EXPORT_VALUE(param_color2);
+	EXPORT_VALUE(param_depth);
+	EXPORT_VALUE(param_angle);
+	EXPORT_VALUE(param_use_luma);
+	EXPORT_VALUE(param_solid);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -141,6 +151,11 @@ Layer_Bevel::get_param(const String &param)const
 Color
 Layer_Bevel::get_color(Context context, const Point &pos)const
 {
+	synfig::Real softness=param_softness.get(Real());
+	int type=param_type.get(int());
+	synfig::Color color1=param_color1.get(synfig::Color());
+	synfig::Color color2=param_color2.get(synfig::Color());
+	
 	const Vector size(softness,softness);
 	Point blurpos = Blur(size,type)(pos);
 
@@ -164,6 +179,13 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 bool
 Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Real softness=param_softness.get(Real());
+	int type=param_type.get(int());
+	synfig::Color color1=param_color1.get(synfig::Color());
+	synfig::Color color2=param_color2.get(synfig::Color());
+	bool use_luma=param_use_luma.get(bool());
+	bool solid=param_solid.get(bool());
+	
 	int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
@@ -355,6 +377,13 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 Layer_Bevel::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Real softness=param_softness.get(Real());
+	int type=param_type.get(int());
+	synfig::Color color1=param_color1.get(synfig::Color());
+	synfig::Color color2=param_color2.get(synfig::Color());
+	bool use_luma=param_use_luma.get(bool());
+	bool solid=param_solid.get(bool());
+
 	int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
@@ -632,6 +661,9 @@ Layer_Bevel::get_param_vocab(void)const
 Rect
 Layer_Bevel::get_full_bounding_rect(Context context)const
 {
+	synfig::Real softness=param_softness.get(Real());
+	synfig::Real depth=param_depth.get(synfig::Real());
+
 	if(is_disabled())
 		return context.get_full_bounding_rect();
 

@@ -62,23 +62,23 @@ SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 InsideOut::InsideOut():
-	origin(0,0)
+	param_origin(ValueBase(Point(0,0)))
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 InsideOut::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
+	IMPORT_VALUE(param_origin);
 	return false;
 }
 
 ValueBase
 InsideOut::get_param(const String & param)const
 {
-	EXPORT(origin);
+	EXPORT_VALUE(param_origin);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -89,6 +89,7 @@ InsideOut::get_param(const String & param)const
 synfig::Layer::Handle
 InsideOut::hit_check(synfig::Context context, const synfig::Point &p)const
 {
+	Point origin=param_origin.get(Point());
 	Point pos(p-origin);
 	Real inv_mag=pos.inv_mag();
 	Point invpos(pos*inv_mag*inv_mag);
@@ -98,6 +99,7 @@ InsideOut::hit_check(synfig::Context context, const synfig::Point &p)const
 Color
 InsideOut::get_color(Context context, const Point &p)const
 {
+	Point origin=param_origin.get(Point());
 	Point pos(p-origin);
 	Real inv_mag=pos.inv_mag();
 	Point invpos(pos*inv_mag*inv_mag);
@@ -107,6 +109,7 @@ InsideOut::get_color(Context context, const Point &p)const
 CairoColor
 InsideOut::get_cairocolor(Context context, const Point &p)const
 {
+	Point origin=param_origin.get(Point());
 	Point pos(p-origin);
 	Real inv_mag=pos.inv_mag();
 	Point invpos(pos*inv_mag*inv_mag);
@@ -121,19 +124,21 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		Point pos(x-layer->origin);
+		Point origin=layer->param_origin.get(Point());
+		Point pos(x-origin);
 		Real inv_mag=pos.inv_mag();
 		if(!isnan(inv_mag))
-			return (pos*(inv_mag*inv_mag)+layer->origin);
+			return (pos*(inv_mag*inv_mag)+origin);
 		return x;
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		Point pos(x-layer->origin);
+		Point origin=layer->param_origin.get(Point());
+		Point pos(x-origin);
 		Real inv_mag=pos.inv_mag();
 		if(!isnan(inv_mag))
-			return (pos*(inv_mag*inv_mag)+layer->origin);
+			return (pos*(inv_mag*inv_mag)+origin);
 		return x;
 	}
 

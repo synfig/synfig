@@ -66,8 +66,7 @@ XORPattern::XORPattern():
 	origin(0.125,0.125),
 	size(0.25,0.25)
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 bool

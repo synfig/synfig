@@ -889,6 +889,7 @@ public:
 
 ValueNode_Animated::ValueNode_Animated()
 {
+	interpolation_=INTERPOLATION_UNDEFINED;
 }
 
 int

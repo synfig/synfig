@@ -231,8 +231,7 @@ CurveGradient::CurveGradient():
 	bline_loop=true;
 
 	sync();
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+
 }
 
 inline Color

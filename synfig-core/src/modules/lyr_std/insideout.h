@@ -50,8 +50,8 @@ class InsideOut : public Layer
 	friend class InsideOut_Trans;
 
 private:
-
-	Point origin;
+	//!Parameter: (Point)
+	ValueBase param_origin;
 
 public:
 	InsideOut();

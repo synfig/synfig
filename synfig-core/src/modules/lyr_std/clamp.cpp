@@ -64,18 +64,23 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Clamp::Layer_Clamp():
-	invert_negative(false),
-	clamp_ceiling(true),
-	ceiling(1.0f),
-	floor(0.0f)
+	param_invert_negative(ValueBase(false)),
+	param_clamp_ceiling(ValueBase(true)),
+	param_ceiling(ValueBase(Real(1.0f))),
+	param_floor(ValueBase(Real(0.0f)))
 {
-	Layer::Vocab voc(get_param_vocab());
-	Layer::fill_static(voc);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color
 Layer_Clamp::clamp_color(const Color &in)const
 {
+	bool invert_negative=param_invert_negative.get(bool());
+	bool clamp_ceiling=param_clamp_ceiling.get(bool());
+	synfig::Real ceiling=param_ceiling.get(synfig::Real());
+	synfig::Real floor=param_floor.get(synfig::Real());
+	
 	Color ret(in);
 
 	if(ret.get_a()==0)
@@ -126,10 +131,10 @@ Layer_Clamp::clamp_color(const Color &in)const
 bool
 Layer_Clamp::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(invert_negative);
-	IMPORT(clamp_ceiling);
-	IMPORT(ceiling);
-	IMPORT(floor);
+	IMPORT_VALUE(param_invert_negative);
+	IMPORT_VALUE(param_clamp_ceiling);
+	IMPORT_VALUE(param_ceiling);
+	IMPORT_VALUE(param_floor);
 
 	return false;
 }
@@ -137,11 +142,10 @@ Layer_Clamp::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Clamp::get_param(const String &param)const
 {
-	EXPORT(invert_negative);
-	EXPORT(clamp_ceiling);
-
-	EXPORT(ceiling);
-	EXPORT(floor);
+	EXPORT_VALUE(param_invert_negative);
+	EXPORT_VALUE(param_clamp_ceiling);
+	EXPORT_VALUE(param_ceiling);
+	EXPORT_VALUE(param_floor);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
