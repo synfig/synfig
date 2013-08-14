@@ -126,6 +126,9 @@ Action::ValueNodeConstSet::perform()
 
 	old_value=value_node->get_value();
 
+	// We shouldn't change the parameters properties when change its value
+	new_value.copy_properties_of(old_value);
+
 	value_node->set_value(new_value);
 
 	// Signal that a layer has been inserted
