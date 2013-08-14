@@ -38,7 +38,12 @@
 #include <ltdl.h>
 #include <glibmm.h>
 #include <stdexcept>
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/stat.h>
+#include <unistd.h>
+#endif
 #include "target.h"
 #include <ETL/stringf>
 #include "cairolistimporter.h"
@@ -172,12 +177,13 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
-	
+
 	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
 
-	String prefix=basepath+"/..";
+	String prefix=etl::dirname(basepath);
+	synfig::info("Prefix = %s",prefix.c_str());
 	unsigned int i;
 #ifdef _DEBUG
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
@@ -253,13 +259,12 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	else
 	{
 		locations.push_back("./"MODULE_LIST_FILENAME);
-		locations.push_back("../etc/"MODULE_LIST_FILENAME);
 		if(getenv("HOME"))
 			locations.push_back(strprintf("%s/.synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME);
+		locations.push_back(prefix+ETL_DIRECTORY_SEPARATOR+"etc"+ETL_DIRECTORY_SEPARATOR+MODULE_LIST_FILENAME);
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
@@ -404,105 +409,117 @@ synfig::info(const String &str)
 String
 synfig::get_binary_path()
 {
-        size_t buf_size;
-        ssize_t size;
-        struct stat stat_buf;
-        FILE *f;
-
-        /* Read from /proc/self/exe (symlink) */
+	size_t buf_size;
 	buf_size = PATH_MAX - 1;
 	char* path = new char[buf_size];
-	char* path2 = new char[buf_size];
-        strncpy (path2, "/proc/self/exe", buf_size - 1);
 
-        while (1) {
-                int i;
+#ifdef WIN32
+	GetModuleFileName(NULL, path, PATH_MAX);
 
-                size = readlink (path2, path, buf_size - 1);
-                if (size == -1) {
-                        /* Error. */
-                        delete path2;
-                        break;
-                }
-
-                /* readlink() success. */
-                path[size] = '\0';
-
-                /* Check whether the symlink's target is also a symlink.
-                 * We want to get the final target. */
-                i = stat (path, &stat_buf);
-                if (i == -1) {
-                        /* Error. */
-                        delete path2;
-                        break;
-                }
-
-                /* stat() success. */
-                if (!S_ISLNK (stat_buf.st_mode)) {
-
-			/* path is not a symlink. Done. */
-                        delete path2;
-                        String path_str(path);
-                        delete path;
-
-                        return path_str;
-                }
-
-                /* path is a symlink. Continue loop and resolve this. */
-                strncpy (path, path2, buf_size - 1);
-        }
-
-
-        /* readlink() or stat() failed; this can happen when the program is
-         * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
-
-        buf_size = PATH_MAX + 128;
-	char* line = new char[buf_size];
-
-        f = fopen ("/proc/self/maps", "r");
-        if (f == NULL) {
-                delete line;
-                synfig::error("Cannot open /proc/self/maps.");
-                return "";
-        }
-
-        /* The first entry should be the executable name. */
-	char *result;
-        result = fgets (line, (int) buf_size, f);
-        if (result == NULL) {
-                fclose (f);
-                delete line;
-                synfig::error("Cannot read /proc/self/maps.");
-                return "";
-        }
-
-        /* Get rid of newline character. */
-        buf_size = strlen (line);
-        if (buf_size <= 0) {
-                /* Huh? An empty string? */
-                fclose (f);
-                delete line;
-                synfig::error("Invalid /proc/self/maps.");
-                return "";
-        }
-        if (line[buf_size - 1] == 10)
-                line[buf_size - 1] = 0;
-
-        /* Extract the filename; it is always an absolute path. */
-        path = strchr (line, '/');
-
-        /* Sanity check. */
-        if (strstr (line, " r-xp ") == NULL || path == NULL) {
-                fclose (f);
-                delete line;
-                synfig::error("Invalid /proc/self/maps.");
-                return "";
-        }
-
-        String path_str(path);
-        delete line;
-        fclose (f);
-        delete path;
+    String path_str(path);
+	delete path;
 
 	return path_str;
+
+#else
+
+	ssize_t size;
+	struct stat stat_buf;
+	FILE *f;
+
+	/* Read from /proc/self/exe (symlink) */
+	char* path2 = new char[buf_size];
+	strncpy(path2, "/proc/self/exe", buf_size - 1);
+
+	while (1) {
+		int i;
+
+		size = readlink(path2, path, buf_size - 1);
+		if (size == -1) {
+			/* Error. */
+			delete path2;
+			break;
+		}
+
+		/* readlink() success. */
+		path[size] = '\0';
+
+		/* Check whether the symlink's target is also a symlink.
+		 * We want to get the final target. */
+		i = stat(path, &stat_buf);
+		if (i == -1) {
+			/* Error. */
+			delete path2;
+			break;
+		}
+
+		/* stat() success. */
+		if (!S_ISLNK(stat_buf.st_mode)) {
+
+			/* path is not a symlink. Done. */
+			delete path2;
+			String path_str(path);
+			delete path;
+
+			return path_str;
+		}
+
+		/* path is a symlink. Continue loop and resolve this. */
+		strncpy(path, path2, buf_size - 1);
+	}
+
+
+	/* readlink() or stat() failed; this can happen when the program is
+	 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
+
+	buf_size = PATH_MAX + 128;
+	char* line = new char[buf_size];
+
+	f = fopen("/proc/self/maps", "r");
+	if (f == NULL) {
+		delete line;
+		synfig::error("Cannot open /proc/self/maps.");
+		return "";
+	}
+
+	/* The first entry should be the executable name. */
+	char *result;
+	result = fgets(line, (int) buf_size, f);
+	if (result == NULL) {
+		fclose(f);
+		delete line;
+		synfig::error("Cannot read /proc/self/maps.");
+		return "";
+	}
+
+	/* Get rid of newline character. */
+	buf_size = strlen(line);
+	if (buf_size <= 0) {
+		/* Huh? An empty string? */
+		fclose(f);
+		delete line;
+		synfig::error("Invalid /proc/self/maps.");
+		return "";
+	}
+	if (line[buf_size - 1] == 10)
+		line[buf_size - 1] = 0;
+
+	/* Extract the filename; it is always an absolute path. */
+	path = strchr(line, '/');
+
+	/* Sanity check. */
+	if (strstr(line, " r-xp ") == NULL || path == NULL) {
+		fclose(f);
+		delete line;
+		synfig::error("Invalid /proc/self/maps.");
+		return "";
+	}
+
+	String path_str(path);
+	delete line;
+	fclose(f);
+	delete path;
+
+	return path_str;
+#endif
 }
