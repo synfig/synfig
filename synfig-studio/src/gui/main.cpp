@@ -61,13 +61,14 @@ int main(int argc, char **argv)
 
 #ifdef ENABLE_NLS
 	String progname;
-	progname = synfig::get_binary_path();
-	synfig::info("Binary path: %s", progname.c_str());
+	progname = synfig::get_binary_path(String(argv[0]));
+	synfig::info("SynfigStudio binary path: %s", progname.c_str());
 	String locale_dir;
 	locale_dir = etl::dirname(etl::dirname(progname))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
+	synfig::info("SynfigStudio locale dir: %s", locale_dir.c_str());
 	
 	setlocale(LC_ALL, "");
 	bindtextdomain(GETTEXT_PACKAGE,  locale_dir.c_str() );

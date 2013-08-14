@@ -155,7 +155,7 @@ extern void info(const char *format,...);
 extern void info(const String &str);
 
 //! Returns absolute path to the binary
-extern String get_binary_path();
+extern String get_binary_path(const String &fallback_path);
 
 }; // END of namespace synfig
 

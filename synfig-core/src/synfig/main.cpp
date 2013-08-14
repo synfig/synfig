@@ -187,7 +187,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #endif
 
 	String prefix=etl::dirname(basepath);
-	synfig::info("Prefix = %s",prefix.c_str());
+
 	unsigned int i;
 #ifdef _DEBUG
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
@@ -411,7 +411,7 @@ synfig::info(const String &str)
 }
 
 String
-synfig::get_binary_path()
+synfig::get_binary_path(const String &fallback_path)
 {
 	size_t buf_size;
 	buf_size = PATH_MAX - 1;
@@ -533,7 +533,11 @@ synfig::get_binary_path()
 
 #endif
 	
-	// TODO: Add fallback path (from argv[0])
-	
+	if (result == "")
+	{
+		// In worst case use value specified as fallback 
+		// (usually should come from argv[0])
+		result = fallback_path;
+	}
 	return result;
 }
