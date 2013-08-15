@@ -250,8 +250,6 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		else
 		{
 			stype=ValueBase::type_local_name(value_desc.get_value_type());
-			if(value_desc.get_static())
-				stype+=" (" + String(_("Static")) + ")";
 		}
 		x.set(stype.c_str());
 		g_value_init(value.gobj(),x.value_type());
