@@ -43,6 +43,7 @@
 #include "cellrenderer/cellrenderer_value.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
 #include <ETL/clock>
+#include <synfig/interpolation.h>
 
 #include "general.h"
 
@@ -332,6 +333,67 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 
 		x.set(get_tree_pixbuf(value_desc.get_value_type()));
 
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.interpolation_icon.index())
+	{
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if(!value_desc)
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
+		
+		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
+		g_value_init(x.gobj(),x.value_type());
+		
+		x.set(get_interpolation_pixbuf(value_desc.get_interpolation()));
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+		
+	}
+	else
+	if(column==model.is_static.index())
+	{
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+		
+		x.set(value_desc.get_static());
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.interpolation.index())
+	{
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if(!value_desc)
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
+		
+		Glib::Value<synfig::Interpolation> x;
+		g_value_init(x.gobj(),x.value_type());
+		
+		x.set(value_desc.get_interpolation());
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+		
+	}
+	else
+	if(column==model.interpolation_icon_visible.index())
+	{
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+	
+		bool is_visible((!value_desc.get_static())
+						&& (value_desc.get_interpolation()!=INTERPOLATION_UNDEFINED)
+						&& (value_desc.get_interpolation()!=INTERPOLATION_MANUAL)
+						&& (value_desc.get_interpolation()!=INTERPOLATION_NIL));
+		x.set(is_visible);
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
