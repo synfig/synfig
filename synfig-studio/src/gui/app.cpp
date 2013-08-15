@@ -1208,7 +1208,10 @@ App::App(int *argc, char ***argv):
 	Gtk::Main(argc,argv),
 	IconController(etl::dirname((*argv)[0]))
 {
-	app_base_path_=etl::dirname(etl::dirname(synfig::get_binary_path(String((*argv)[0]))));
+	
+	String binary_path = synfig::get_binary_path( String((*argv)[0]) );
+	
+	app_base_path_=etl::dirname(etl::dirname(binary_path));
 
 
 	ui_interface_=new GlobalUIInterface();
@@ -1257,7 +1260,7 @@ App::App(int *argc, char ***argv):
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname(synfig::get_binary_path(String((*argv)[0]))),&synfig_init_cb)); }
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname(binary_path),&synfig_init_cb)); }
 	catch(std::runtime_error x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
