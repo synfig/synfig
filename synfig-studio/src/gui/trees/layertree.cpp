@@ -347,6 +347,12 @@ LayerTree::create_param_tree()
 		column->add_attribute(interpolation_icon_cellrenderer->property_pixbuf(),param_model.interpolation_icon);
 		column->add_attribute(interpolation_icon_cellrenderer->property_visible(), param_model.interpolation_icon_visible);
 
+		// Set up the static icon cell-renderer to be on the far right
+		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
+		column->pack_end(*static_icon_cellrenderer,false);
+		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-animate_mode_off"),icon_size);
+		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
+
 		get_param_tree_view().append_column(*column);
 		column->set_reorderable();
 		column->set_resizable();
