@@ -92,7 +92,6 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 		
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > interpolation_icon;
-		Gtk::TreeModelColumn<synfig::Interpolation> interpolation;
 		Gtk::TreeModelColumn<bool> is_static;
 		Gtk::TreeModelColumn<bool> interpolation_icon_visible;
 
@@ -119,7 +118,6 @@ public:
 
 			add(tooltip);
 			add(interpolation_icon);
-			add(interpolation);
 			add(is_static);
 			add(interpolation_icon_visible);
 		}

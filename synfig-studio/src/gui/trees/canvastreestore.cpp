@@ -341,22 +341,6 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
-	if(column==model.interpolation.index())
-	{
-		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
-		if(!value_desc)
-			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
-		
-		Glib::Value<synfig::Interpolation> x;
-		g_value_init(x.gobj(),x.value_type());
-		
-		x.set(value_desc.get_interpolation());
-		
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-		
-	}
-	else
 	if(column==model.interpolation_icon_visible.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
