@@ -44,7 +44,7 @@ using namespace synfig;
 void print_usage ()
 {
 	cout << "Synfig " << VERSION << endl
-		 << "Usage: " << progname
+		 << "Usage: " << binary_path
 		 << " [options] ([sif file] [specific options])" << endl;
 }
 

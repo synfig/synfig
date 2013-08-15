@@ -74,7 +74,7 @@ namespace po=boost::program_options;
 
 /* === G L O B A L S ================================================ */
 
-String progname;
+String binary_path;
 int verbosity = 0;
 bool be_quiet = false;
 bool print_benchmarks = false;
@@ -122,11 +122,11 @@ int main(int ac, char* av[])
 {
 	setlocale(LC_ALL, "");
 	
-	progname = synfig::get_binary_path(String(av[0]));
+	binary_path = synfig::get_binary_path(String(av[0]));
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname(progname))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
@@ -286,8 +286,8 @@ int main(int ac, char* av[])
 		// TODO: Optional load of main only if needed. i.e. not needed to display help
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
-		Progress p(progname.c_str());
-		synfig::Main synfig_main(etl::dirname(progname), &p);
+		Progress p(binary_path.c_str());
+		synfig::Main synfig_main(etl::dirname(binary_path), &p);
 
         // Info options -----------------------------------------------
         op.process_info_options();
