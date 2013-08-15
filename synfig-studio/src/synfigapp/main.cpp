@@ -119,7 +119,6 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
-	synfig::info("libSynfigApp locale dir: %s", locale_dir.c_str());
 	
 	bindtextdomain(GETTEXT_PACKAGE, locale_dir.c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
