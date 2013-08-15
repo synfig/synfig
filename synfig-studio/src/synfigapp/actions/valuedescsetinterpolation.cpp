@@ -131,7 +131,7 @@ Action::ValueDescSetInterpolation::is_ready()const
 void
 Action::ValueDescSetInterpolation::perform()
 {
-	synfig::info(value_desc.get_description());
+	//synfig::info(value_desc.get_description());
 	if(value_desc.get_value_node())
 	{
 		ValueNode::Handle value_node=value_desc.get_value_node();
