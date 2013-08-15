@@ -59,6 +59,19 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
 
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
+
+if [[ $DEBUG == 1 ]]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
+
 #======= HEADER END ===========
 
 
