@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-		studio::App app(&argc, &argv);
+		studio::App app(etl::dirname(binary_path), &argc, &argv);
 
 		app.run();
 	}
