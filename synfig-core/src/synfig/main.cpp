@@ -42,11 +42,13 @@
 #ifdef WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
-#include <CoreFoundation/CoreFoundation.h>
+#include <mach-o/dyld.h>
 #else
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+
+#include <libproc.h>
 
 #include "target.h"
 #include <ETL/stringf>
@@ -425,15 +427,22 @@ synfig::get_binary_path(const String &fallback_path)
 	delete path;
 
 #elif defined(__APPLE__)
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	CFURLRef executable = CFBundleCopyExecutableURL(mainBundle);
-	CFStringRef string = CFURLCopyFileSystemPath(executable, kCFURLPOSIXPathStyle);
-	CFStringGetCString(string, path, PATH_MAX, kCFStringEncodingUTF8);
-	CFRelease(string);
-	CFRelease(executable);
-	CFRelease(mainBundle);
 	
-	result = String(path);
+	char* macpath = (char*)malloc(MAXPATHLEN);
+	uint32_t macbufsize = MAXPATHLEN;
+	
+	if(_NSGetExecutablePath(macpath, &macbufsize) == -1 ) {
+		macpath = (char*)realloc(path, macbufsize);
+		_NSGetExecutablePath(macpath, &macbufsize);
+	}
+	
+	result = String(macpath);
+	
+	// "./synfig" case workaround
+	String artifact("/./");
+	size_t start_pos = result.find(artifact);
+	if (start_pos != std::string::npos)
+		result.replace(start_pos, artifact.length(), "/");
 	
 #else
 
