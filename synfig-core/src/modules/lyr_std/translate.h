@@ -51,7 +51,8 @@ class Translate : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Translate_Trans;
 private:
-	Vector origin;
+	//! Parameter: (Vector)
+	ValueBase param_origin;
 public:
 	Translate();
 	~Translate();
