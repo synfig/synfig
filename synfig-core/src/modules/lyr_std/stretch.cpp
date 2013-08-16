@@ -66,8 +66,8 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Stretch,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Stretch::Layer_Stretch():
-	amount(1,1),
-	center(0,0)
+	param_amount(ValueBase(Point(1,1))),
+	param_center(ValueBase(Point(0,0)))
 {
 
 }
@@ -76,8 +76,8 @@ Layer_Stretch::Layer_Stretch():
 bool
 Layer_Stretch::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(amount);
-	IMPORT(center);
+	IMPORT_VALUE(param_amount);
+	IMPORT_VALUE(param_center);
 
 	return false;
 }
@@ -85,8 +85,8 @@ Layer_Stretch::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Stretch::get_param(const String &param)const
 {
-	EXPORT(amount);
-	EXPORT(center);
+	EXPORT_VALUE(param_amount);
+	EXPORT_VALUE(param_center);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -116,6 +116,9 @@ Layer_Stretch::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Stretch::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+	
 	Point npos(pos);
 	npos[0]=(npos[0]-center[0])/amount[0]+center[0];
 	npos[1]=(npos[1]-center[1])/amount[1]+center[1];
@@ -125,6 +128,9 @@ Layer_Stretch::hit_check(synfig::Context context, const synfig::Point &pos)const
 Color
 Layer_Stretch::get_color(Context context, const Point &pos)const
 {
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+
 	Point npos(pos);
 	npos[0]=(npos[0]-center[0])/amount[0]+center[0];
 	npos[1]=(npos[1]-center[1])/amount[1]+center[1];
@@ -139,14 +145,20 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return Vector((x[0]-layer->center[0])*layer->amount[0]+layer->center[0],
-					  (x[1]-layer->center[1])*layer->amount[1]+layer->center[1]);
+		Vector amount=layer->param_amount.get(Vector());
+		Point center=layer->param_center.get(Point());
+
+		return Vector((x[0]-center[0])*amount[0]+center[0],
+					  (x[1]-center[1])*amount[1]+center[1]);
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],
-					  (x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);
+		Vector amount=layer->param_amount.get(Vector());
+		Point center=layer->param_center.get(Point());
+
+		return Vector((x[0]-center[0])/amount[0]+center[0],
+					  (x[1]-center[1])/amount[1]+center[1]);
 	}
 
 	synfig::String get_string()const
@@ -163,6 +175,9 @@ Layer_Stretch::get_transform()const
 bool
 Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+
 	if (amount[0] == 0 || amount[1] == 0)
 	{
 		surface->set_wh(renddesc.get_w(), renddesc.get_h());
@@ -191,6 +206,9 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 bool
 Layer_Stretch::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+
 	if (amount[0] == 0 || amount[1] == 0)
 	{
 		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
@@ -218,6 +236,9 @@ Layer_Stretch::accelerated_cairorender(Context context, cairo_t *cr, int quality
 Rect
 Layer_Stretch::get_full_bounding_rect(Context context)const
 {
+	Vector amount=param_amount.get(Vector());
+	Point center=param_center.get(Point());
+
 	Rect rect(context.get_full_bounding_rect());
 	Point min(rect.get_min()), max(rect.get_max());
 
