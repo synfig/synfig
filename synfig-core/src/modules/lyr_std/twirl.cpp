@@ -66,23 +66,24 @@ SYNFIG_LAYER_SET_CVS_ID(Twirl,"$Id$");
 
 Twirl::Twirl():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-	center(0,0),
-	radius(1.0),
-	rotations(Angle::zero()),
-	distort_inside(true),
-	distort_outside(false)
+	param_center(ValueBase(Point(0,0))),
+	param_radius(ValueBase(Real(1.0))),
+	param_rotations(ValueBase(Angle::zero())),
+	param_distort_inside(ValueBase(true)),
+	param_distort_outside(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Twirl::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(center);
-	IMPORT(radius);
-	IMPORT(rotations);
-	IMPORT(distort_inside);
-	IMPORT(distort_outside);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_radius);
+	IMPORT_VALUE(param_rotations);
+	IMPORT_VALUE(param_distort_inside);
+	IMPORT_VALUE(param_distort_outside);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -90,11 +91,11 @@ Twirl::set_param(const String & param, const ValueBase &value)
 ValueBase
 Twirl::get_param(const String &param)const
 {
-	EXPORT(center);
-	EXPORT(radius);
-	EXPORT(rotations);
-	EXPORT(distort_inside);
-	EXPORT(distort_outside);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_radius);
+	EXPORT_VALUE(param_rotations);
+	EXPORT_VALUE(param_distort_inside);
+	EXPORT_VALUE(param_distort_outside);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -141,6 +142,12 @@ Twirl::get_param_vocab()const
 synfig::Point
 Twirl::distort(const synfig::Point &pos,bool reverse)const
 {
+	synfig::Point center=param_center.get(synfig::Point());
+	synfig::Real radius=param_radius.get(synfig::Real());
+	synfig::Angle rotations=param_rotations.get(synfig::Angle());
+	bool distort_inside=param_distort_inside.get(bool());
+	bool distort_outside=param_distort_outside.get(bool());
+	
 	Point centered(pos-center);
 	Real mag(centered.mag());
 

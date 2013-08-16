@@ -49,16 +49,16 @@ class Twirl : public synfig::Layer_Composite
 	friend class Twirl_Trans;
 
 private:
-
-	synfig::Point center;
-
-	synfig::Real radius;
-
-	synfig::Angle rotations;
-
-	bool distort_inside;
-
-	bool distort_outside;
+	//! Parameter: (synfig::Point)
+	synfig::ValueBase param_center;
+	//! Parameter: (synfig::Real)
+	synfig::ValueBase param_radius;
+	//! Parameter: (synfig::Angle)
+	synfig::ValueBase param_rotations;
+	//! Parameter: (bool)
+	synfig::ValueBase param_distort_inside;
+	//! Parameter: (bool)
+	synfig::ValueBase param_distort_outside;
 
 	synfig::Point distort(const synfig::Point &pos, bool reverse=false)const;
 public:
