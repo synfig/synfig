@@ -69,6 +69,8 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Stroboscope,"$Id$");
 Layer_Stroboscope::Layer_Stroboscope()
 {
 	param_frequency=ValueBase(float(2.0));
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_Stroboscope::~Layer_Stroboscope()

@@ -69,6 +69,8 @@ param_height(ValueBase(int(2)))
 {
 	param_scanline=ValueBase(false);
 	param_alpha_aware=ValueBase(true);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 
 }
 

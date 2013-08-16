@@ -69,7 +69,8 @@ Layer_Stretch::Layer_Stretch():
 	param_amount(ValueBase(Point(1,1))),
 	param_center(ValueBase(Point(0,0)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 
