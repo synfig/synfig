@@ -87,7 +87,6 @@ ParamDesc::ParamDesc(const ValueBase&, const String &a):
 		.add_enum_value(Color::BLEND_ALPHA_OVER,     "alphaover",    _("Alpha Over"))
 		.add_enum_value(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten",_("Alpha Brighten"))
 		.add_enum_value(Color::BLEND_ALPHA_DARKEN,   "alphadarken",  _("Alpha Darken"))
-		.set_static(true)
 		; // end of enums
 		
 	}
