@@ -47,20 +47,17 @@ class Layer_SphereDistort : public Layer
 	friend class Spherize_Trans;
 
 private:
-
-	Vector center;
-	double radius;
-
-	double percent;
-
-	int		type;
-
-//	static Point sphtrans(const Point &xoff, const Point &center, const Real &radius, const Real &percent, int type);
-
-//	static double spherify(double xoff);
-//	static double unspherify(double xoff);
-
-	bool clip;
+	
+	//!Parameter (Vector)
+	ValueBase param_center;
+	//!Parameter (double)
+	ValueBase param_radius;
+	//!Parameter (double)
+	ValueBase param_amount;
+	//!Parameter (int)
+	ValueBase param_type;
+	//!Parameter (bool)
+	ValueBase param_clip;
 
 	Rect bounds;
 
