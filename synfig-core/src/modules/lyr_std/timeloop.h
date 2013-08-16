@@ -48,15 +48,20 @@ class Layer_TimeLoop : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	Time	link_time;
-	Time	local_time;
-	Time	duration;
+	//! Parameter: (Time)
+	ValueBase param_link_time;
+	//! Parameter: (Time)
+	ValueBase param_local_time;
+	//! Parameter: (Time)
+	ValueBase param_duration;
+	//! Parameter: (bool)
+	ValueBase param_only_for_positive_duration;
+	//! Parameter: (bool)
+	ValueBase param_symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
 
 	Time	start_time;
 	Time	end_time;
 	bool	old_version;
-	bool	only_for_positive_duration;
-	bool	symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
 
 protected:
 	Layer_TimeLoop();

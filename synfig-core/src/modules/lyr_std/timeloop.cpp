@@ -68,12 +68,14 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id$");
 Layer_TimeLoop::Layer_TimeLoop()
 {
 	old_version=false;
-	only_for_positive_duration=false;
-	symmetrical=true;
-	link_time=0;
-	local_time=0;
-	duration=1;
+	param_only_for_positive_duration=ValueBase(false);
+	param_symmetrical=ValueBase(true);
+	param_link_time=ValueBase(Time(0));
+	param_local_time=ValueBase(Time(0));
+	param_duration=ValueBase(Time(1));
 
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_TimeLoop::~Layer_TimeLoop()
@@ -85,16 +87,24 @@ Layer_TimeLoop::set_param(const String & param, const ValueBase &value)
 {
 	if(old_version)
 	{
-		IMPORT(start_time);
-		IMPORT(end_time);
+		if(param=="start_time" && value.same_type_as(start_time))
+		{
+			value.put(&start_time);
+			return true;
+		}
+		if(param=="end_time" && value.same_type_as(end_time))
+		{
+			value.put(&end_time);
+			return true;
+		}
 	}
 	else
 	{
-		IMPORT(local_time);
-		IMPORT(link_time);
-		IMPORT(duration);
-		IMPORT(only_for_positive_duration);
-		IMPORT(symmetrical);
+		IMPORT_VALUE(param_local_time);
+		IMPORT_VALUE(param_link_time);
+		IMPORT_VALUE(param_duration);
+		IMPORT_VALUE(param_only_for_positive_duration);
+		IMPORT_VALUE(param_symmetrical);
 	}
 
 	return Layer::set_param(param,value);
@@ -103,11 +113,11 @@ Layer_TimeLoop::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_TimeLoop::get_param(const String & param)const
 {
-	EXPORT(link_time);
-	EXPORT(local_time);
-	EXPORT(duration);
-	EXPORT(only_for_positive_duration);
-	EXPORT(symmetrical);
+	EXPORT_VALUE(param_link_time);
+	EXPORT_VALUE(param_local_time);
+	EXPORT_VALUE(param_duration);
+	EXPORT_VALUE(param_only_for_positive_duration);
+	EXPORT_VALUE(param_symmetrical);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -159,6 +169,8 @@ Layer_TimeLoop::set_version(const String &ver)
 void
 Layer_TimeLoop::reset_version()
 {
+	Time link_time, local_time, duration;
+	bool only_for_positive_duration, symmetrical;
 	// if we're not converting from an old version of the layer, there's nothing to do
 	if (!old_version)
 		return;
@@ -180,8 +192,14 @@ Layer_TimeLoop::reset_version()
 	only_for_positive_duration = true;
 	symmetrical = false;
 
+	param_local_time.set(local_time);
+	param_duration.set(duration);
+	param_only_for_positive_duration.set(only_for_positive_duration);
+	param_symmetrical.set(symmetrical);
+	
 	//! \todo layer version 0.1 acted differently before start_time was reached - possibly due to a bug
 	link_time = 0;
+	param_link_time.set(link_time);
 
 	// convert the dynamic parameters
 	const DynamicParamList &dpl = dynamic_param_list();
@@ -220,6 +238,12 @@ Layer_TimeLoop::reset_version()
 void
 Layer_TimeLoop::set_time(IndependentContext context, Time t)const
 {
+	Time link_time=param_link_time.get(Time());
+	Time local_time=param_local_time.get(Time());
+	Time duration=param_duration.get(Time());
+	bool only_for_positive_duration=param_only_for_positive_duration.get(bool());
+	bool symmetrical=param_symmetrical.get(bool());
+	
 	Time time = t;
 	float document_fps=get_canvas()->rend_desc().get_frame_rate();
 	if (!only_for_positive_duration || duration > 0)
