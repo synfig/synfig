@@ -43,12 +43,11 @@
 #include <windows.h>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
+#include <sys/param.h>
 #else
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-
-#include <libproc.h>
 
 #include "target.h"
 #include <ETL/stringf>
