@@ -60,8 +60,9 @@ int main(int argc, char **argv)
 {
 
 #ifdef ENABLE_NLS
+	String binary_path = synfig::get_binary_path(String(argv[0]));
 	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname((argv)[0]))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
@@ -101,7 +102,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-		studio::App app(&argc, &argv);
+		studio::App app(etl::dirname(binary_path), &argc, &argv);
 
 		app.run();
 	}

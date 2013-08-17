@@ -280,7 +280,7 @@ private:
 
 public:
 
-	App(int *argc, char ***argv);
+	App(const synfig::String& basepath, int *argc, char ***argv);
 	virtual ~App();
 
 	/*
