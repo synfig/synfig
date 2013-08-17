@@ -43,6 +43,7 @@ remove-potcdate.sin
 stamp-h1
 stamp-po
 test-driver
+compile
 
 # ------------------------------------------------------------------------
 
