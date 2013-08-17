@@ -39,6 +39,7 @@
 #include <glibmm.h>
 #include <stdexcept>
 
+// Includes used by get_binary_path():
 #ifdef WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
@@ -410,6 +411,9 @@ synfig::info(const String &str)
 	static Mutex mutex; Mutex::Lock lock(mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
 }
+
+// synfig::get_binary_path()
+// See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
 
 String
 synfig::get_binary_path(const String &fallback_path)
