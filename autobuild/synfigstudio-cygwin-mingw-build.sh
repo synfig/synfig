@@ -21,6 +21,7 @@
 # ** mkdir C:\synfig-build
 # ** cd C:\synfig-build
 # ** git clone https://github.com/synfig/synfig.git
+# ** mkdir cygwin-dist
 # ** cd synfig
 # ** git config --global core.autocrlf input
 # ** exit
@@ -60,8 +61,8 @@ export DEBUG=1
 #=========================== EDIT UNTIL HERE ===================================
 
 export DISTPREFIX=$WORKSPACE/dist
-export SCRIPTPATH=`dirname "$0"`
-SCRIPTPATH=$(cd "$SCRIPTPATH/.."; pwd)
+export SRCPREFIX=`dirname "$0"`
+SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
 export MINGWPREFIX=/usr/i686-pc-mingw32/sys-root/mingw/
 
@@ -99,7 +100,6 @@ alias convert="/usr/bin/convert"
 
 set -e
 
-export SCRIPTPATH=`dirname "$0"`
 if [[ $DEBUG == 1 ]]; then
 	DEBUG='--enable-debug --enable-optimization=0'
 else
