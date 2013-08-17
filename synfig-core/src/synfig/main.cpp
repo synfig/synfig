@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2013 Konstantin Dmitriev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,6 +39,18 @@
 #include <ltdl.h>
 #include <glibmm.h>
 #include <stdexcept>
+
+// Includes used by get_binary_path():
+#ifdef WIN32
+#include <windows.h>
+#elif defined(__APPLE__)
+#include <mach-o/dyld.h>
+#include <sys/param.h>
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #include "target.h"
 #include <ETL/stringf>
 #include "cairolistimporter.h"
@@ -171,12 +184,13 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #ifdef WIN32
 	locale_dir = Glib::locale_from_utf8(locale_dir);
 #endif
-	
+
 	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
 
-	String prefix=basepath+"/..";
+	String prefix=etl::dirname(basepath);
+
 	unsigned int i;
 #ifdef _DEBUG
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
@@ -252,13 +266,12 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	else
 	{
 		locations.push_back("./"MODULE_LIST_FILENAME);
-		locations.push_back("../etc/"MODULE_LIST_FILENAME);
 		if(getenv("HOME"))
 			locations.push_back(strprintf("%s/.synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME);
+		locations.push_back(prefix+ETL_DIRECTORY_SEPARATOR+"etc"+ETL_DIRECTORY_SEPARATOR+MODULE_LIST_FILENAME);
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
@@ -398,4 +411,147 @@ synfig::info(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
 	cerr<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
+}
+
+// synfig::get_binary_path()
+// See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
+
+String
+synfig::get_binary_path(const String &fallback_path)
+{
+	
+	String result;
+
+#ifdef WIN32
+	
+	size_t buf_size = PATH_MAX - 1;
+	char* path = (char*)malloc(buf_size);
+	
+	GetModuleFileName(NULL, path, PATH_MAX);
+
+	result = String(path);
+	
+	free(path);
+
+#elif defined(__APPLE__)
+	
+	uint32_t buf_size = MAXPATHLEN;
+	char* path = (char*)malloc(MAXPATHLEN);
+	
+	if(_NSGetExecutablePath(path, &buf_size) == -1 ) {
+		path = (char*)realloc(path, buf_size);
+		_NSGetExecutablePath(path, &buf_size);
+	}
+	
+	result = String(path);
+	
+	free(path);
+	
+	// "./synfig" case workaround
+	String artifact("/./");
+	size_t start_pos = result.find(artifact);
+	if (start_pos != std::string::npos)
+		result.replace(start_pos, artifact.length(), "/");
+	
+#else
+
+	size_t buf_size = PATH_MAX - 1;
+	char* path = (char*)malloc(buf_size);
+
+	ssize_t size;
+	struct stat stat_buf;
+	FILE *f;
+
+	/* Read from /proc/self/exe (symlink) */
+	char* path2 = (char*)malloc(buf_size);
+	strncpy(path2, "/proc/self/exe", buf_size - 1);
+
+	while (1) {
+		int i;
+
+		size = readlink(path2, path, buf_size - 1);
+		if (size == -1) {
+			/* Error. */
+			break;
+		}
+
+		/* readlink() success. */
+		path[size] = '\0';
+
+		/* Check whether the symlink's target is also a symlink.
+		 * We want to get the final target. */
+		i = stat(path, &stat_buf);
+		if (i == -1) {
+			/* Error. */
+			break;
+		}
+
+		/* stat() success. */
+		if (!S_ISLNK(stat_buf.st_mode)) {
+
+			/* path is not a symlink. Done. */
+			result = String(path);
+			
+			break;
+		}
+
+		/* path is a symlink. Continue loop and resolve this. */
+		strncpy(path, path2, buf_size - 1);
+	}
+	
+	free(path2);
+
+	if (result == "")
+	{
+		/* readlink() or stat() failed; this can happen when the program is
+		 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
+
+		buf_size = PATH_MAX + 128;
+		char* line = (char*)malloc(buf_size);
+
+		f = fopen("/proc/self/maps", "r");
+		if (f == NULL) {
+			synfig::error("Cannot open /proc/self/maps.");
+		}
+
+		/* The first entry should be the executable name. */
+		char *r;
+		r = fgets(line, (int) buf_size, f);
+		if (r == NULL) {
+			synfig::error("Cannot read /proc/self/maps.");
+		}
+
+		/* Get rid of newline character. */
+		buf_size = strlen(line);
+		if (buf_size <= 0) {
+			/* Huh? An empty string? */
+			synfig::error("Invalid /proc/self/maps.");
+		}
+		if (line[buf_size - 1] == 10)
+			line[buf_size - 1] = 0;
+
+		/* Extract the filename; it is always an absolute path. */
+		path = strchr(line, '/');
+
+		/* Sanity check. */
+		if (strstr(line, " r-xp ") == NULL || path == NULL) {
+			synfig::error("Invalid /proc/self/maps.");
+		}
+
+		result = String(path);
+		free(line);
+		fclose(f);
+	}
+	
+	free(path);
+
+#endif
+	
+	if (result == "")
+	{
+		// In worst case use value specified as fallback 
+		// (usually should come from argv[0])
+		result = etl::absolute_path(fallback_path);
+	}
+	return result;
 }

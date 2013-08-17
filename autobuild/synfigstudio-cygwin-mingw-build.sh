@@ -41,12 +41,14 @@
 
 export CYGWIN_SETUP=/cygdrive/d/synfig-win/cygwin-setup.exe
 export NSIS_BINARY="/cygdrive/c/Program Files (x86)/NSIS/makensis.exe"
-export SRCPREFIX=/cygdrive/c/synfig-build/
+export WORKSPACE=/cygdrive/c/synfig-build/
 export DEBUG=1
 
 #=========================== EDIT UNTIL HERE ===================================
 
-export DISTPREFIX=$SRCPREFIX/dist
+export DISTPREFIX=$WORKSPACE/dist
+export SCRIPTPATH=`dirname "$0"`
+SCRIPTPATH=$(cd "$SCRIPTPATH/.."; pwd)
 
 export MINGWPREFIX=/usr/i686-pc-mingw32/sys-root/mingw/
 
@@ -97,7 +99,7 @@ mkprep()
 
 export PREP_VERSION=1
 
-if [[ `cat $SRCPREFIX/prep-done` != "${PREP_VERSION}" ]]; then
+if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
 
 $CYGWIN_SETUP \
 -K http://cygwinports.org/ports.gpg -s http://mirrors.kernel.org/sources.redhat.com/cygwinports -s http://ftp.linux.kiev.ua/pub/cygwin/ \
@@ -125,39 +127,39 @@ $CYGWIN_SETUP \
 #TODO: magick++
 
 # libxml++
-[ ! -d $SRCPREFIX/mingw-libxmlpp2.6 ] || rm -rf $SRCPREFIX/mingw-libxmlpp2.6
-cp -rf $SRCPREFIX/synfig/autobuild/mingw-libxmlpp2.6 $SRCPREFIX/mingw-libxmlpp2.6
-cd $SRCPREFIX/mingw-libxmlpp2.6
+[ ! -d $WORKSPACE/mingw-libxmlpp2.6 ] || rm -rf $WORKSPACE/mingw-libxmlpp2.6
+cp -rf $SRCPREFIX/autobuild/mingw-libxmlpp2.6 $WORKSPACE/mingw-libxmlpp2.6
+cd $WORKSPACE/mingw-libxmlpp2.6
 for action in fetch prep compile install package; do
     cygport mingw-libxml++2.6.cygport $action
 done
 tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
 tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 cd ..
-rm -rf $SRCPREFIX/mingw-libxmlpp2.6
+rm -rf $WORKSPACE/mingw-libxmlpp2.6
 
 # boost
-[ ! -d $SRCPREFIX/mingw-boost ] || rm -rf $SRCPREFIX/mingw-boost
-cp -rf $SRCPREFIX/synfig/autobuild/mingw-boost $SRCPREFIX/mingw-boost
-cd $SRCPREFIX/mingw-boost
+[ ! -d $WORKSPACE/mingw-boost ] || rm -rf $WORKSPACE/mingw-boost
+cp -rf $SRCPREFIX/autobuild/mingw-boost $WORKSPACE/mingw-boost
+cd $WORKSPACE/mingw-boost
 for action in fetch prep compile install package; do
     cygport mingw-boost.cygport $action
 done
 tar -C / -jxf mingw-boost-1.50.0-1.tar.bz2
 cd ..
-rm -rf $SRCPREFIX/mingw-boost
+rm -rf $WORKSPACE/mingw-boost
 
 # there should be no *.la files
 rm -rf /usr/i686-pc-mingw32/sys-root/mingw/lib/*.la || true
 
-echo ${PREP_VERSION} > $SRCPREFIX/prep-done
+echo ${PREP_VERSION} > $WORKSPACE/prep-done
 
 fi
 }
 
 mketl()
 {
-cd $SRCPREFIX/synfig/ETL
+cd $SRCPREFIX/ETL
 autoreconf --install --force
 ./configure \
 --prefix=/usr/i686-pc-mingw32/sys-root/mingw \
@@ -179,7 +181,7 @@ make install
 
 mksynfig()
 {
-cd $SRCPREFIX/synfig/synfig-core
+cd $SRCPREFIX/synfig-core
 libtoolize --copy --force
 autoreconf --install --force
 ./configure \
@@ -204,7 +206,7 @@ make install
 
 mksynfigstudio()
 {
-cd $SRCPREFIX/synfig/synfig-studio
+cd $SRCPREFIX/synfig-studio
 ./bootstrap.sh
 ./configure \
 --prefix=/usr/i686-pc-mingw32/sys-root/mingw \
@@ -239,7 +241,7 @@ mkdir -p $DISTPREFIX
 [ -d $DISTPREFIX/lib ] || mkdir -p $DISTPREFIX/lib
 [ -d $DISTPREFIX/share ] || mkdir -p $DISTPREFIX/share
 
-cd $SRCPREFIX
+cd $WORKSPACE
 
 [ -e ffmpeg-latest-win32-static.7z ] || wget http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
 [ ! -d ffmpeg ] || rm -rf ffmpeg
@@ -257,8 +259,8 @@ unzip portable-python-3.2.5.1.zip
 [ ! -d $DISTPREFIX/python ] || rm -rf $DISTPREFIX/python
 mv python $DISTPREFIX
 
-cp -rf $SRCPREFIX/synfig/synfig-core/examples $DISTPREFIX/
-cp -rf $SRCPREFIX/synfig/synfig-studio/COPYING $DISTPREFIX/licenses/synfigstudio.txt
+cp -rf $SRCPREFIX/synfig-core/examples $DISTPREFIX/
+cp -rf $SRCPREFIX/synfig-studio/COPYING $DISTPREFIX/licenses/synfigstudio.txt
 
 #copy compiled files
 #cp -rf $MINGWPREFIX/bin/*.exe $DISTPREFIX/bin/
@@ -366,7 +368,7 @@ gen_list_nsh share share
 
 
 #make installer
-cp -f $SRCPREFIX/synfig/autobuild/synfigstudio.nsi ./
+cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
 }

@@ -59,6 +59,19 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
 
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
+
+if [[ $DEBUG == 1 ]]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
+
 #======= HEADER END ===========
 
 
@@ -182,6 +195,10 @@ mkdeps()
 	echo "sandbox_enable no" >> $MACPORTS/etc/macports/macports.conf
 
 	port selfupdate
+	
+	# We have to make sure python 2 is default, because some packages won't build with python 3
+	port select --set python python27 || true
+	
 	port upgrade outdated || true
 
 	CORE_DEPS=" \
@@ -205,7 +222,9 @@ mkdeps()
 		python33 \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
-	port select --set python python33
+	
+	# We have to make sure python 2 is default, because some packages won't build with python 3
+	port select --set python python27
 }
 
 mketl()
