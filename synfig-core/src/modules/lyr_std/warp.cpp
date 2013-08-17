@@ -66,17 +66,18 @@ SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Warp::Warp():
-	src_tl	(-2,2),
-	src_br	(2,-2),
-	dest_tl	(-1.8,2.1),
-	dest_tr	(1.8,2.1),
-	dest_bl	(-2.2,-2),
-	dest_br	(2.2,-2),
-	clip	(true)
+	param_src_tl  (ValueBase(Point(-2,2))),
+	param_src_br  (ValueBase(Point(2,-2))),
+	param_dest_tl (ValueBase(Point(-1.8,2.1))),
+	param_dest_tr (ValueBase(Point(1.8,2.1))),
+	param_dest_bl (ValueBase(Point(-2.2,-2))),
+	param_dest_br (ValueBase(Point(2.2,-2))),
+	param_clip	  (ValueBase(true))
 {
+	param_horizon=ValueBase(Real(4));
 	sync();
-	horizon=4;
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Warp::~Warp()
@@ -208,7 +209,12 @@ Warp::sync()
 	matrix[0][2]=matrix[0][0]*dest_tl[0] + matrix[0][1]*dest_tl[1];
 	matrix[1][2]=matrix[1][0]*dest_tl[0] + matrix[1][1]*dest_tl[1];
 */
-
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	Point dest_tl=param_dest_tl.get(Point());
+	Point dest_tr=param_dest_tr.get(Point());
+	Point dest_bl=param_dest_bl.get(Point());
+	Point dest_br=param_dest_br.get(Point());
 #define matrix tmp
 	Real tmp[3][3];
 
@@ -335,14 +341,14 @@ Warp::sync()
 bool
 Warp::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(src_tl,sync());
-	IMPORT_PLUS(src_br,sync());
-	IMPORT_PLUS(dest_tl,sync());
-	IMPORT_PLUS(dest_tr,sync());
-	IMPORT_PLUS(dest_bl,sync());
-	IMPORT_PLUS(dest_br,sync());
-	IMPORT(clip);
-	IMPORT(horizon);
+	IMPORT_VALUE_PLUS(param_src_tl,sync());
+	IMPORT_VALUE_PLUS(param_src_br,sync());
+	IMPORT_VALUE_PLUS(param_dest_tl,sync());
+	IMPORT_VALUE_PLUS(param_dest_tr,sync());
+	IMPORT_VALUE_PLUS(param_dest_bl,sync());
+	IMPORT_VALUE_PLUS(param_dest_br,sync());
+	IMPORT_VALUE(param_clip);
+	IMPORT_VALUE(param_horizon);
 
 	return false;
 }
@@ -350,14 +356,14 @@ Warp::set_param(const String & param, const ValueBase &value)
 ValueBase
 Warp::get_param(const String &param)const
 {
-	EXPORT(src_tl);
-	EXPORT(src_br);
-	EXPORT(dest_tl);
-	EXPORT(dest_tr);
-	EXPORT(dest_bl);
-	EXPORT(dest_br);
-	EXPORT(clip);
-	EXPORT(horizon);
+	EXPORT_VALUE(param_src_tl);
+	EXPORT_VALUE(param_src_br);
+	EXPORT_VALUE(param_dest_tl);
+	EXPORT_VALUE(param_dest_tr);
+	EXPORT_VALUE(param_dest_bl);
+	EXPORT_VALUE(param_dest_br);
+	EXPORT_VALUE(param_clip);
+	EXPORT_VALUE(param_horizon);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -453,6 +459,10 @@ Warp::get_transform()const
 synfig::Layer::Handle
 Warp::hit_check(synfig::Context context, const synfig::Point &p)const
 {
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	bool clip=param_clip.get(bool());
+	
 	Point newpos(transform_forward(p));
 
 	if(clip)
@@ -468,6 +478,11 @@ Warp::hit_check(synfig::Context context, const synfig::Point &p)const
 Color
 Warp::get_color(Context context, const Point &p)const
 {
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	Real horizon=param_horizon.get(Real());
+	bool clip=param_clip.get(bool());
+
 	Point newpos(transform_forward(p));
 
 	if(clip)
@@ -489,6 +504,15 @@ Warp::get_color(Context context, const Point &p)const
 bool
 Warp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	Point dest_tl=param_dest_tl.get(Point());
+	Point dest_tr=param_dest_tr.get(Point());
+	Point dest_bl=param_dest_bl.get(Point());
+	Point dest_br=param_dest_br.get(Point());
+	Real horizon=param_horizon.get(Real());
+	bool clip=param_clip.get(bool());
+
 	SuperCallback stageone(cb,0,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
 
@@ -809,6 +833,15 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 bool
 Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	Point dest_tl=param_dest_tl.get(Point());
+	Point dest_tr=param_dest_tr.get(Point());
+	Point dest_bl=param_dest_bl.get(Point());
+	Point dest_br=param_dest_br.get(Point());
+	Real horizon=param_horizon.get(Real());
+	bool clip=param_clip.get(bool());
+
 	SuperCallback stageone(cb,0,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
 	
@@ -1114,6 +1147,10 @@ synfig::Rect
 Warp::get_full_bounding_rect(Context context)const
 {
 //	return Rect::full_plane();
+
+	Point src_tl=param_src_tl.get(Point());
+	Point src_br=param_src_br.get(Point());
+	bool clip=param_clip.get(bool());
 
 	Rect under(context.get_full_bounding_rect());
 
