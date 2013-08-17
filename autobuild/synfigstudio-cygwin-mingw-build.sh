@@ -16,11 +16,23 @@
 #
 # = Usage notes =
 # 
-# * You need to have Cygwin and NSIS installed
-# * Tweak the basic variables (below) before first run
-# * Script should be started from the Cygwin terminal, launched as administrator
+# * You need to have Git, Cygwin and NSIS (>=3.0) installed
+# ** http://msysgit.github.io/
+# ** http://www.cygwin.com/
+# ** http://nsis.sourceforge.net/
+# * Open Git Bash and execute following commands:
+# ** mkdir C:\synfig-build
+# ** cd C:\synfig-build
+# ** git clone https://github.com/synfig/synfig.git
+# ** exit
+# * Open C:\synfig-build\autobuild\synfigstudio-cygwin-mingw-build.sh file in text editor and tweak paths for CYGWIN_SETUP and NSIS_BINARY variables.
+# * Open Cygwin console (with administrator previlegies) and run the build script:
+# ** bash /cygdrive/c/synfig-build/synfig/synfigstudio-cygwin-mingw-build.sh
+# * Installation bundle will be written to C:\synfig-build\dist\
+#
+#
+# = Other notes =
 # * Builds from current repository, current revision. So you should manually checkout the desired revision to build
-# * (TODO) If no repository found - then  sources fetched into C:\synfig-build\synfig and the latest master branch is built
 # * Executing script without arguments makes a full clean build and produces installer package
 # * You can pass arguments to the script to invoke particular stage. 
 #	Available stages: mkprep, mketl, mksynfig, mksynfigstudio, mkpackage
@@ -39,9 +51,9 @@
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
-export CYGWIN_SETUP=/cygdrive/d/synfig-win/cygwin-setup.exe
-export NSIS_BINARY="/cygdrive/c/Program Files (x86)/NSIS/makensis.exe"
-export WORKSPACE=/cygdrive/c/synfig-build/
+export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/cygwin-setup.exe"
+export NSIS_BINARY="/cygdrive/c/Program Files/NSIS/makensis.exe"
+export WORKSPACE="/cygdrive/c/synfig-build/"
 export DEBUG=1
 
 #=========================== EDIT UNTIL HERE ===================================
