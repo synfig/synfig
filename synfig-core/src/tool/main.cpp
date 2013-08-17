@@ -123,7 +123,6 @@ int main(int ac, char* av[])
 	setlocale(LC_ALL, "");
 	
 	binary_path = synfig::get_binary_path(String(av[0]));
-	synfig::info("Synfig binary path: %s", binary_path.c_str());
 
 #ifdef ENABLE_NLS
 	String locale_dir;
@@ -134,7 +133,6 @@ int main(int ac, char* av[])
 	bindtextdomain("synfig", locale_dir.c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
-	synfig::info("Synfig locale dir: %s", locale_dir.c_str());
 #endif
 
 	if(!SYNFIG_CHECK_VERSION())
