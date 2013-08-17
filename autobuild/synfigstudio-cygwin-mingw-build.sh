@@ -56,6 +56,7 @@
 export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
+export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
 export DEBUG=1
 
 #=========================== EDIT UNTIL HERE ===================================
@@ -64,23 +65,32 @@ export DISTPREFIX=$WORKSPACE/dist
 export SRCPREFIX=`dirname "$0"`
 SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
-export MINGWPREFIX=/usr/i686-pc-mingw32/sys-root/mingw/
+if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+    export TOOLCHAIN_HOST="i686-w64-mingw32"
+elif [[ $TOOLCHAIN == "mingw" ]]; then
+    export TOOLCHAIN_HOST="${TOOLCHAIN_HOST}"
+else
+    echo "Error: Unknown toolchain"
+    exit 1
+fi
 
-export CHOST=i686-pc-mingw32
-export CTARGET=i686-pc-mingw32
-export CC=i686-pc-mingw32-gcc
-export CXX=i686-pc-mingw32-g++
-export F77=i686-pc-mingw32-gfortran
-export FC=i686-pc-mingw32-gfortran
-export GCJ=i686-pc-mingw32-gcj
-export GOC=i686-pc-mingw32-gccgo
-export OBJC=i686-pc-mingw32-gcc
-export OBJCXX=i686-pc-mingw32-g++
-export AR=i686-pc-mingw32-ar
-export OBJDUMP=i686-pc-mingw32-objdump
-export RANLIB=i686-pc-mingw32-ranlib
-export STRIP=i686-pc-mingw32-strip
-export RC=i686-pc-mingw32-windres
+export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
+
+export CHOST=${TOOLCHAIN_HOST}
+export CTARGET=${TOOLCHAIN_HOST}
+export CC=${TOOLCHAIN_HOST}-gcc
+export CXX=${TOOLCHAIN_HOST}-g++
+export F77=${TOOLCHAIN_HOST}-gfortran
+export FC=${TOOLCHAIN_HOST}-gfortran
+export GCJ=${TOOLCHAIN_HOST}-gcj
+export GOC=${TOOLCHAIN_HOST}-gccgo
+export OBJC=${TOOLCHAIN_HOST}-gcc
+export OBJCXX=${TOOLCHAIN_HOST}-g++
+export AR=${TOOLCHAIN_HOST}-ar
+export OBJDUMP=${TOOLCHAIN_HOST}-objdump
+export RANLIB=${TOOLCHAIN_HOST}-ranlib
+export STRIP=${TOOLCHAIN_HOST}-strip
+export RC=${TOOLCHAIN_HOST}-windres
 export CFLAGS=' -O2 -pipe -mms-bitfields'
 export CXXFLAGS=' -O2 -pipe -mms-bitfields'
 export F77FLAGS=' -mms-bitfields'
@@ -90,12 +100,12 @@ export GOCFLAGS=' -mms-bitfields'
 export OBJCFLAGS=' -O2 -pipe -mms-bitfields'
 export OBJCXXFLAGS=' -O2 -pipe -mms-bitfields'
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_LIBDIR=/usr/i686-pc-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-pc-mingw32/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
-export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/i686-pc-mingw32/sys-root/mingw/include
-export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/i686-pc-mingw32/sys-root/mingw/lib
-export CPPFLAGS=" -I/usr/i686-pc-mingw32/sys-root/mingw/include "
-export LDFLAGS=" -L/usr/i686-pc-mingw32/sys-root/mingw/lib "
-export PATH="/usr/i686-pc-mingw32/sys-root/mingw/bin/:$PATH"
+export PKG_CONFIG_LIBDIR=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
+export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
+export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib "
+export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
 alias convert="/usr/bin/convert"
 
 set -e
@@ -128,11 +138,12 @@ $CYGWIN_SETUP \
 -P ImageMagick \
 -P cygport \
 -P mm-common \
--P mingw-gcc-g++  \
--P mingw-cairo \
--P mingw-glibmm2.4 \
--P mingw-pango1.0 \
--P mingw-gtkmm2.4 \
+-P $TOOLCHAIN-gcc-g++  \
+-P $TOOLCHAIN-cairo \
+-P $TOOLCHAIN-glibmm2.4 \
+-P $TOOLCHAIN-pango1.0 \
+-P $TOOLCHAIN-gtkmm2.4 \
+-P $TOOLCHAIN-boost \
 -q
 
 #objdump -p hello.exe | grep "DLL Name"
@@ -140,18 +151,19 @@ $CYGWIN_SETUP \
 #TODO: magick++
 
 # libxml++
-[ ! -d $WORKSPACE/mingw-libxmlpp2.6 ] || rm -rf $WORKSPACE/mingw-libxmlpp2.6
-cp -rf $SRCPREFIX/autobuild/mingw-libxmlpp2.6 $WORKSPACE/mingw-libxmlpp2.6
-cd $WORKSPACE/mingw-libxmlpp2.6
+[ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] || rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
+cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
+cd $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 for action in fetch prep compile install package; do
-    cygport mingw-libxml++2.6.cygport $action
+    cygport $TOOLCHAIN-libxml++2.6.cygport $action
 done
-tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
-[ ! -e mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
+tar -C / -jxf $TOOLCHAIN-libxml++2.6-2.36.0-1.tar.bz2
+[ ! -e $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/mingw-libxmlpp2.6
+rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 
 # boost
+if [[ $TOOLCHAIN == "mingw" ]]; then
 [ ! -d $WORKSPACE/mingw-boost ] || rm -rf $WORKSPACE/mingw-boost
 cp -rf $SRCPREFIX/autobuild/mingw-boost $WORKSPACE/mingw-boost
 cd $WORKSPACE/mingw-boost
@@ -161,9 +173,10 @@ done
 tar -C / -jxf mingw-boost-1.50.0-1.tar.bz2
 cd ..
 rm -rf $WORKSPACE/mingw-boost
+fi
 
 # there should be no *.la files
-rm -rf /usr/i686-pc-mingw32/sys-root/mingw/lib/*.la || true
+rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
 
 echo ${PREP_VERSION} > $WORKSPACE/prep-done
 
@@ -175,17 +188,17 @@ mketl()
 cd $SRCPREFIX/ETL
 autoreconf --install --force
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
@@ -198,20 +211,20 @@ cd $SRCPREFIX/synfig-core
 libtoolize --copy --force
 autoreconf --install --force
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
---with-magickpp=yes --with-boost=/usr/i686-pc-mingw32/sys-root/mingw/ \
+--with-magickpp=yes --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
 --enable-maintainer-mode $DEBUG
 make -j2
 make install
@@ -222,24 +235,24 @@ mksynfigstudio()
 cd $SRCPREFIX/synfig-studio
 ./bootstrap.sh
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
 make -j2
 make install 
-cp -rf /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps
-rm -rf /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps/synfigstudio
+cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps
+rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
 }

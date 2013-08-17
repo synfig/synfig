@@ -1,0 +1,17 @@
+CROSS_HOST="i686-w64-mingw32"
+inherit cross gtkmm
+
+NAME="mingw64-i686-libxml++2.6"
+VERSION=2.36.0
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="libxml2 C++ bindings for Win32 toolchain"
+DESCRIPTION="This package does NOT contain cygwin binaries.  Instead, it
+contains msvcrt-linked binaries (aka 'mingw').  It is for use with the
+mingw64-i686-gcc cross compiler, and installs into the
+/usr/i686-w64-mingw32/sys-root/mingw/{lib,include} directories."
+HOMEPAGE="http://libxmlplusplus.sourceforge.net/"
+SRC_URI="http://ftp.gnome.org/pub/GNOME/sources/libxml++/2.36/libxml++-2.36.0.tar.xz"
+SRC_DIR="libxml++-${VERSION}"
+DEPEND="mingw64-i686-libxml2 mingw64-i686-glibmm2.4"
+
