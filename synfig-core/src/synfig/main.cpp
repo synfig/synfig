@@ -414,28 +414,33 @@ synfig::info(const String &str)
 String
 synfig::get_binary_path(const String &fallback_path)
 {
-	size_t buf_size;
-	buf_size = PATH_MAX - 1;
-	char* path = new char[buf_size];
+	
 	String result;
 
 #ifdef WIN32
+	
+	size_t buf_size = PATH_MAX - 1;
+	char* path = (char*)malloc(buf_size);
+	
 	GetModuleFileName(NULL, path, PATH_MAX);
 
 	result = String(path);
-	delete path;
+	
+	free(path);
 
 #elif defined(__APPLE__)
 	
-	char* macpath = (char*)malloc(MAXPATHLEN);
-	uint32_t macbufsize = MAXPATHLEN;
+	uint32_t buf_size = MAXPATHLEN;
+	char* path = (char*)malloc(MAXPATHLEN);
 	
-	if(_NSGetExecutablePath(macpath, &macbufsize) == -1 ) {
-		macpath = (char*)realloc(path, macbufsize);
-		_NSGetExecutablePath(macpath, &macbufsize);
+	if(_NSGetExecutablePath(path, &buf_size) == -1 ) {
+		path = (char*)realloc(path, buf_size);
+		_NSGetExecutablePath(path, &buf_size);
 	}
 	
-	result = String(macpath);
+	result = String(path);
+	
+	free(path);
 	
 	// "./synfig" case workaround
 	String artifact("/./");
@@ -445,12 +450,15 @@ synfig::get_binary_path(const String &fallback_path)
 	
 #else
 
+	size_t buf_size = PATH_MAX - 1;
+	char* path = (char*)malloc(buf_size);
+
 	ssize_t size;
 	struct stat stat_buf;
 	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	char* path2 = new char[buf_size];
+	char* path2 = (char*)malloc(buf_size);
 	strncpy(path2, "/proc/self/exe", buf_size - 1);
 
 	while (1) {
@@ -459,7 +467,6 @@ synfig::get_binary_path(const String &fallback_path)
 		size = readlink(path2, path, buf_size - 1);
 		if (size == -1) {
 			/* Error. */
-			delete path2;
 			break;
 		}
 
@@ -471,7 +478,6 @@ synfig::get_binary_path(const String &fallback_path)
 		i = stat(path, &stat_buf);
 		if (i == -1) {
 			/* Error. */
-			delete path2;
 			break;
 		}
 
@@ -479,15 +485,16 @@ synfig::get_binary_path(const String &fallback_path)
 		if (!S_ISLNK(stat_buf.st_mode)) {
 
 			/* path is not a symlink. Done. */
-			delete path2;
 			result = String(path);
-			delete path;
+			
 			break;
 		}
 
 		/* path is a symlink. Continue loop and resolve this. */
 		strncpy(path, path2, buf_size - 1);
 	}
+	
+	free(path2);
 
 	if (result == "")
 	{
@@ -495,11 +502,10 @@ synfig::get_binary_path(const String &fallback_path)
 		 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
 
 		buf_size = PATH_MAX + 128;
-		char* line = new char[buf_size];
+		char* line = (char*)malloc(buf_size);
 
 		f = fopen("/proc/self/maps", "r");
 		if (f == NULL) {
-			delete line;
 			synfig::error("Cannot open /proc/self/maps.");
 		}
 
@@ -507,8 +513,6 @@ synfig::get_binary_path(const String &fallback_path)
 		char *r;
 		r = fgets(line, (int) buf_size, f);
 		if (r == NULL) {
-			fclose(f);
-			delete line;
 			synfig::error("Cannot read /proc/self/maps.");
 		}
 
@@ -516,8 +520,6 @@ synfig::get_binary_path(const String &fallback_path)
 		buf_size = strlen(line);
 		if (buf_size <= 0) {
 			/* Huh? An empty string? */
-			fclose(f);
-			delete line;
 			synfig::error("Invalid /proc/self/maps.");
 		}
 		if (line[buf_size - 1] == 10)
@@ -528,16 +530,15 @@ synfig::get_binary_path(const String &fallback_path)
 
 		/* Sanity check. */
 		if (strstr(line, " r-xp ") == NULL || path == NULL) {
-			fclose(f);
-			delete line;
 			synfig::error("Invalid /proc/self/maps.");
 		}
 
 		result = String(path);
-		delete line;
+		free(line);
 		fclose(f);
-		delete path;
 	}
+	
+	free(path);
 
 #endif
 	
@@ -545,7 +546,7 @@ synfig::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = fallback_path;
+		result = etl::absolute_path(fallback_path);
 	}
 	return result;
 }
