@@ -147,7 +147,7 @@ for action in fetch prep compile install package; do
     cygport mingw-libxml++2.6.cygport $action
 done
 tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
-tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
+[ ! -e mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 cd ..
 rm -rf $WORKSPACE/mingw-libxmlpp2.6
 
