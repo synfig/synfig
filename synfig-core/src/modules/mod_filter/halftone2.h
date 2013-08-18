@@ -37,6 +37,18 @@
 #include "halftone.h"
 
 /* === M A C R O S ========================================================= */
+#define HALFTONE2_IMPORT_VALUE(x)                                             \
+	if (#x=="halftone.param_"+param && x.get_type()==value.get_type())        \
+		{                                                                     \
+			x=value;                                                          \
+			return true;                                                      \
+		}                                                                     \
+
+#define HALFTONE2_EXPORT_VALUE(x)                                             \
+	if (#x=="halftone.param_"+param)                                          \
+		{                                                                     \
+			return x;                                                         \
+		}                                                                     \
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -50,10 +62,12 @@ class Halftone2 : public Layer_Composite
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
+	//! Parameter: (class Halftone)
 	Halftone halftone;
-	Color	color_dark;
-	Color	color_light;
+	//! Parameter: (Color)
+	ValueBase param_color_dark;
+	//! Parameter: (Color)
+	ValueBase param_color_light;
 
 	Color color_func(const Point &x, float supersample,const Color &under_color)const;
 

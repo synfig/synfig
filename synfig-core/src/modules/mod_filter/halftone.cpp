@@ -86,6 +86,11 @@ Halftone::operator()(const Point &point, const float& luma, float supersample)co
 float
 Halftone::mask(synfig::Point point)const
 {
+	int type=param_type.get(int());
+	Point origin=param_origin.get(Point());
+	Vector size=param_size.get(Vector());
+	Angle angle=param_angle.get(Angle());
+	
 	float radius1;
 	float radius2;
 
