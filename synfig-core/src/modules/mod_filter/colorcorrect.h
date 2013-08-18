@@ -46,12 +46,18 @@ class Layer_ColorCorrect : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Angle hue_adjust;
-	Real brightness;
-	Real contrast;
-	Real exposure;
-
+	//! Parameter: (Angle)
+	ValueBase param_hue_adjust;
+	//! Parameter: (Real)
+	ValueBase param_brightness;
+	//! Parameter: (Real)
+	ValueBase param_contrast;
+	//! Parameter: (Real)
+	ValueBase param_exposure;
+	//! Parameter: (Real)
+	ValueBase param_gamma;
+	// This gamma member is kept to avoid need to recalculate the gamma table
+	// on each pixel
 	Gamma gamma;
 
 	Color correct_color(const Color &in)const;
