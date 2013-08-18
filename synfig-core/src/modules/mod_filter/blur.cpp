@@ -81,17 +81,24 @@ inline void clamp(synfig::Vector &v)
 
 Blur_Layer::Blur_Layer():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-	size(0.1,0.1),
-	type(Blur::FASTGAUSSIAN)
+	param_size(ValueBase(Point(0.1,0.1))),
+	param_type(ValueBase(int(Blur::FASTGAUSSIAN)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Blur_Layer::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(size,clamp(size));
-	IMPORT(type);
+	IMPORT_VALUE_PLUS(param_size,
+		{
+			synfig::Point size=param_size.get(Point());
+			clamp(size);
+			param_size.set(size);
+		});
+		
+	IMPORT_VALUE(param_type);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -99,8 +106,8 @@ Blur_Layer::set_param(const String &param, const ValueBase &value)
 ValueBase
 Blur_Layer::get_param(const String &param)const
 {
-	EXPORT(size);
-	EXPORT(type);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_type);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -111,6 +118,9 @@ Blur_Layer::get_param(const String &param)const
 Color
 Blur_Layer::get_color(Context context, const Point &pos)const
 {
+	synfig::Point size=param_size.get(Point());
+	int type=param_type.get(int());
+	
 	Point blurpos = Blur(size,type)(pos);
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
@@ -125,6 +135,9 @@ Blur_Layer::get_color(Context context, const Point &pos)const
 bool
 Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Point size=param_size.get(Point());
+	int type=param_type.get(int());
+
 	// don't do anything at quality 10
 	if (quality == 10)
 		return context.accelerated_render(surface,quality,renddesc,cb);
@@ -240,6 +253,9 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 bool
 Blur_Layer::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	synfig::Point size=param_size.get(Point());
+	int type=param_type.get(int());
+
 	// don't do anything at quality 10
 	if (quality == 10)
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
@@ -414,6 +430,8 @@ Blur_Layer::get_param_vocab(void)const
 Rect
 Blur_Layer::get_full_bounding_rect(Context context)const
 {
+	synfig::Point size=param_size.get(Point());
+
 	if(is_disabled() || Color::is_onto(get_blend_method()))
 		return context.get_full_bounding_rect();
 
