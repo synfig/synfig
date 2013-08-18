@@ -61,18 +61,19 @@ SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Zoom::Zoom():
-	center(0,0),
-	amount(0)
+	param_center(ValueBase(Vector(0,0))),
+	param_amount(ValueBase(Real(0)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Zoom::set_param(const String & param, const ValueBase &value)
 {
 
-	IMPORT(center);
-	IMPORT(amount);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_amount);
 
 	return false;
 }
@@ -80,8 +81,8 @@ Zoom::set_param(const String & param, const ValueBase &value)
 ValueBase
 Zoom::get_param(const String &param)const
 {
-	EXPORT(center);
-	EXPORT(amount);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_amount);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -110,13 +111,15 @@ Zoom::get_param_vocab()const
 synfig::Layer::Handle
 Zoom::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
-	return context.hit_check((pos-center)/exp(amount)+center);
+	Vector center=param_center.get(Vector());
+	return context.hit_check((pos-center)/exp(param_amount.get(Real()))+center);
 }
 
 Color
 Zoom::get_color(Context context, const Point &pos)const
 {
-	return context.get_color((pos-center)/exp(amount)+center);
+	Vector center=param_center.get(Vector());
+	return context.get_color((pos-center)/exp(param_amount.get(Real()))+center);
 }
 
 class Zoom_Trans : public Transform
@@ -127,12 +130,16 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return (x-layer->center)*exp(layer->amount)+layer->center;
+		Vector center=layer->param_center.get(Vector());
+		Real amount=layer->param_amount.get(Real());
+		return (x-center)*exp(amount)+center;
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return (x-layer->center)/exp(layer->amount)+layer->center;
+		Vector center=layer->param_center.get(Vector());
+		Real amount=layer->param_amount.get(Real());
+		return (x-center)/exp(amount)+center;
 	}
 
 	synfig::String get_string()const
@@ -149,6 +156,9 @@ Zoom::get_transform()const
 bool
 Zoom::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector center=param_center.get(Vector());
+	Real amount=param_amount.get(Real());
+
 	Vector::value_type zoomfactor=1.0/exp(amount);
 	RendDesc desc(renddesc);
 	desc.clear_flags();
@@ -167,6 +177,9 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 bool
 Zoom::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector center=param_center.get(Vector());
+	Real amount=param_amount.get(Real());
+
 	double zoomfactor=exp(amount);
 	
 	cairo_save(cr);
@@ -188,6 +201,7 @@ Zoom::accelerated_cairorender(Context context, cairo_t *cr,int quality, const Re
 synfig::Rect
 Zoom::get_full_bounding_rect(synfig::Context context)const
 {
-	return (context.get_full_bounding_rect()-center)*exp(amount)+center;
+	Vector center=param_center.get(Vector());
+	return (context.get_full_bounding_rect()-center)*exp(param_amount.get(Real()))+center;
 }
 
