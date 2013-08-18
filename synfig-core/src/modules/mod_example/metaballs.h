@@ -44,17 +44,20 @@ class Metaballs : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	synfig::Gradient gradient;
-
-	std::vector<synfig::Point>	centers;
-	std::vector<synfig::Real>	radii;
-	std::vector<synfig::Real>	weights;
-
-	synfig::Real	threshold;
-	synfig::Real	threshold2;
-
-	bool positive;
+	//! Parameter: (Gradient)
+	synfig::ValueBase param_gradient;
+	//! Parameter: (std::vector<synfig::Point>)
+	synfig::ValueBase param_centers;
+	//! Parameter: (std::vector<synfig::Real>)
+	synfig::ValueBase param_radii;
+	//! Parameter: (std::vector<synfig::Real>)
+	synfig::ValueBase param_weights;
+	//! Parameter: (synfig::Real)
+	synfig::ValueBase param_threshold;
+	//! Parameter: (synfig::Real)
+	synfig::ValueBase param_threshold2;
+	//! Parameter: (bool)
+	synfig::ValueBase param_positive;
 
 	synfig::Real densityfunc(const synfig::Point &p, const synfig::Point &c, synfig::Real R)const;
 
