@@ -68,7 +68,7 @@ SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
 elif [[ $TOOLCHAIN == "mingw" ]]; then
-    export TOOLCHAIN_HOST="${TOOLCHAIN_HOST}"
+    export TOOLCHAIN_HOST="i686-pc-mingw32"
 else
     echo "Error: Unknown toolchain"
     exit 1
