@@ -7,17 +7,45 @@
 
 set -e
 
-export SCRIPTPATH=`dirname "$0"`
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
-export BUILDROOT=$HOME/synfig-buildroot
-export PREFIX=$BUILDROOT/win32
-export DISTPREFIX=$BUILDROOT/tmp/win32
-export CACHEDIR=$BUILDROOT/cache
+if [ -z $ARCH ]; then
+	export ARCH="32"
+fi
+
+export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
+
+export WORKSPACE=$HOME/synfig-buildroot
+export PREFIX=$WORKSPACE/win$ARCH
+export DISTPREFIX=$WORKSPACE/tmp/win$ARCH
+export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
 export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+
+if [[ $TOOLCHAIN == "mingw32" ]]; then
+    export TOOLCHAIN_HOST="i686-w64-mingw32"
+elif [[ $TOOLCHAIN == "mingw64" ]]; then
+    export TOOLCHAIN_HOST="x86_64-w64-mingw32"
+else
+    echo "Error: Unknown toolchain"
+    exit 1
+fi
+
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
+
+if [[ $DEBUG == 1 ]]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
 
 mkprep()
 {
@@ -30,14 +58,14 @@ if [ -z $NOSU ]; then
 		automake \
 		libtool \
 		libtool-ltdl-devel \
-		mingw32-gcc-c++ \
-		mingw32-libxml++ \
-		mingw32-cairo \
-		mingw32-pango \
-		mingw32-boost \
-		mingw32-libjpeg-turbo \
-		mingw32-gtkmm24 \
-		mingw32-nsis \
+		${TOOLCHAIN}-gcc-c++ \
+		${TOOLCHAIN}-libxml++ \
+		${TOOLCHAIN}-cairo \
+		${TOOLCHAIN}-pango \
+		${TOOLCHAIN}-boost \
+		${TOOLCHAIN}-libjpeg-turbo \
+		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-nsis \
 		p7zip \
 		ImageMagick \
 		"
@@ -89,7 +117,7 @@ for file in \
    synfigstudio.exe \
 # this extra line is required!
 do
-	cp /usr/i686-w64-mingw32/sys-root/mingw/bin/$file ${PREFIX}/bin || true
+	cp /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/$file ${PREFIX}/bin || true
 done
 
 [ -d ${PREFIX}/etc ] || mkdir -p ${PREFIX}/etc
@@ -99,7 +127,7 @@ for file in \
    pango \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/etc/$file ${PREFIX}/etc
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc/$file ${PREFIX}/etc
 done
 
 [ -d ${PREFIX}/lib ] || mkdir -p ${PREFIX}/lib
@@ -109,7 +137,7 @@ for file in \
    pango \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib
 done
 
 [ -d ${PREFIX}/share ] || mkdir -p ${PREFIX}/share
@@ -119,7 +147,7 @@ for file in \
    xml \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib || true
 done
 }
 
@@ -129,7 +157,7 @@ mketl()
 cd $SCRIPTPATH/../ETL
 make clean || true
 autoreconf --install --force
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
 make install
 }
 
@@ -146,7 +174,7 @@ autoreconf --install --force
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/i686-w64-mingw32/sys-root/mingw/ --enable-warnings=minimum $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
 make install -j4
 }
 
@@ -159,7 +187,7 @@ make clean || true
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
 make install -j4
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
 }
