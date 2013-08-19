@@ -66,11 +66,12 @@ SYNFIG_LAYER_SET_CVS_ID(RadialBlur,"$Id$");
 
 RadialBlur::RadialBlur():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-	origin	(0,0),
-	size	(0.2),
-	fade_out(false)
+	param_origin (ValueBase(Vector(0,0))),
+	param_size(ValueBase(Real(0.2))),
+	param_fade_out(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 RadialBlur::~RadialBlur()
@@ -80,9 +81,9 @@ RadialBlur::~RadialBlur()
 bool
 RadialBlur::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
-	IMPORT(size);
-	IMPORT(fade_out);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_size);
+	IMPORT_VALUE(param_fade_out);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -90,9 +91,9 @@ RadialBlur::set_param(const String & param, const ValueBase &value)
 ValueBase
 RadialBlur::get_param(const String &param)const
 {
-	EXPORT(origin);
-	EXPORT(size);
-	EXPORT(fade_out);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_fade_out);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -133,6 +134,10 @@ RadialBlur::get_color(Context context, const Point &p)const
 bool
 RadialBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
+	Real size=param_size.get(Real());
+	bool fade_out=param_fade_out.get(bool());
+	
 	// don't do anything at quality 10
 	if (quality == 10)
 		return context.accelerated_render(surface,quality,renddesc,cb);
@@ -328,6 +333,10 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 bool
 RadialBlur::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
+	Real size=param_size.get(Real());
+	bool fade_out=param_fade_out.get(bool());
+
 	RendDesc	renddesc(renddesc_);
 	
 	// Untransform the render desc
