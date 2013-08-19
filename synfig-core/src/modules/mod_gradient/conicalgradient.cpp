@@ -67,31 +67,32 @@ SYNFIG_LAYER_SET_CVS_ID(ConicalGradient,"$Id$");
 
 ConicalGradient::ConicalGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	gradient(Color::black(),Color::white()),
-	center(0,0),
-	angle(Angle::zero()),
-	symmetric(false)
+	param_gradient(ValueBase(Gradient(Color::black(),Color::white()))),
+	param_center(ValueBase(Point(0,0))),
+	param_angle(ValueBase(Angle::zero())),
+	param_symmetric(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 ConicalGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(gradient);
-	IMPORT(center);
-	IMPORT(angle);
-	IMPORT(symmetric);
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_angle);
+	IMPORT_VALUE(param_symmetric);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 ConicalGradient::get_param(const String &param)const
 {
-	EXPORT(gradient);
-	EXPORT(center);
-	EXPORT(angle);
-	EXPORT(symmetric);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_angle);
+	EXPORT_VALUE(param_symmetric);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -131,6 +132,11 @@ ConicalGradient::get_param_vocab()const
 inline Color
 ConicalGradient::color_func(const Point &pos, float supersample)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	Point center=param_center.get(Point());
+	Angle angle=param_angle.get(Angle());
+	bool symmetric=param_symmetric.get(bool());
+	
 	const Point centered(pos-center);
 	Angle::rot a=Angle::tan(-centered[1],centered[0]).mod();
 	a+=angle;
@@ -195,6 +201,8 @@ ConicalGradient::color_func(const Point &pos, float supersample)const
 float
 ConicalGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
+	Point center=param_center.get(Point());
+
 	Point adj(x-center);
 	if(abs(adj[0])<abs(pw*0.5) && abs(adj[1])<abs(ph*0.5))
 		return 0.5;
@@ -293,6 +301,10 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 bool
 ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	Point center=param_center.get(Point());
+	Angle angle=param_angle.get(Angle());
+
 	cairo_save(cr);
 	const Point	tl(renddesc.get_tl());
 	const Point br(renddesc.get_br());
@@ -340,6 +352,10 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality
 bool
 ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Real radius)const
 {
+	Point center=param_center.get(Point());
+	Angle angle=param_angle.get(Angle());
+	bool symmetric=param_symmetric.get(bool());
+
 	bool cpoints_all_opaque=true;
 	float a1, r1, g1, b1, a2, r2, g2, b2;
 	Gradient::CPoint cp;
