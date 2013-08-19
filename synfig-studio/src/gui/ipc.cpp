@@ -321,7 +321,7 @@ IPC::make_connection()
 #endif
 			synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",error);
 	}
-	int fd=_open_osfhandle(reinterpret_cast<long int>(pipe_handle),_O_APPEND|O_WRONLY);
+	int fd=_open_osfhandle(reinterpret_cast<intptr_t>(pipe_handle),_O_APPEND|O_WRONLY);
 #else
 	struct stat file_stat;
 	if(stat(fifo_path().c_str(),&file_stat)!=0)
