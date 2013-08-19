@@ -48,28 +48,30 @@ class Outline : public synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
+	//! Parameter: type list of BLinePoints
+	ValueBase param_bline;
+	//! Parameter: (bool)
+	ValueBase param_round_tip[2];
+	//! Parameter: (bool)
+	ValueBase param_sharp_cusps;
+	//! Parameter: (bool)
+	ValueBase param_loop;
+	//! Parameter: (Real)
+	ValueBase param_width;
+	//! Parameter: (Real)
+	ValueBase param_expand;
+	//! Parameter: (Real)
+	ValueBase param_loopyness;
+	//! Parameter: (bool)
+	ValueBase param_homogeneous_width;
 
-	synfig::ValueBase bline;
-
-	std::vector<synfig::Segment> segment_list;
-	std::vector<synfig::Real> width_list;
-
-	bool round_tip[2];
-
-	bool sharp_cusps;
-
-	bool loop_;
-
-	synfig::Real width;
-
-	synfig::Real expand;
-
-	Real loopyness;
 	bool old_version;
 
 	bool needs_sync;
 
-	bool homogeneous_width;
+
+	std::vector<synfig::Segment> segment_list;
+	std::vector<synfig::Real> width_list;
 
 public:
 
