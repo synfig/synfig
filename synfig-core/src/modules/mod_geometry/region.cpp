@@ -88,12 +88,17 @@ Region::Region()
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	bline=bline_point_list;
+	param_bline.set(bline_point_list);
+
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void
 Region::sync()
 {
+	ValueBase bline=param_bline;
+	
 	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
 		segment_list=convert_bline_to_segment_list(bline);
 	else if(bline.get_contained_type()==ValueBase::TYPE_SEGMENT)
@@ -190,7 +195,7 @@ Region::set_param(const String & param, const ValueBase &value)
 		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
 		//	return false;
 
-		bline=value;
+		param_bline=value;
 
 		return true;
 	}
@@ -217,7 +222,7 @@ Region::set_param(const String & param, const ValueBase &value)
 ValueBase
 Region::get_param(const String& param)const
 {
-	EXPORT(bline);
+	EXPORT_VALUE(param_bline);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
