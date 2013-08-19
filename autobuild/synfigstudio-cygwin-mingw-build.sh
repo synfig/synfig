@@ -120,12 +120,15 @@ fi
 mkprep()
 {
 
-export PREP_VERSION=1
+export PREP_VERSION=2
 
 if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
 
+#CYGPORT_MIRROR=ftp://ftp.cygwinports.org/pub/cygwinports
+CYGPORT_MIRROR=http://mirrors.kernel.org/sources.redhat.com/cygwinports
+
 $CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg -s http://mirrors.kernel.org/sources.redhat.com/cygwinports -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-K http://cygwinports.org/ports.gpg -s $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
 -P gdb \
@@ -150,6 +153,21 @@ $CYGWIN_SETUP \
 
 #TODO: magick++
 
+#freetype
+if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+cd $WORKSPACE
+[ ! -d $WORKSPACE/$TOOLCHAIN-freetype2 ] || rm -rf $WORKSPACE/$TOOLCHAIN-freetype2
+git clone git://cygwin-ports.git.sourceforge.net/gitroot/cygwin-ports/mingw64-i686-freetype2
+cd $WORKSPACE/$TOOLCHAIN-freetype2
+for action in fetch prep compile install package; do
+    cygport $TOOLCHAIN-freetype2.cygport $action
+done
+tar -C / -jxf $TOOLCHAIN-freetype2-2.4.11-1.tar.bz2
+[ ! -e $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2
+cd ..
+rm -rf $WORKSPACE/$TOOLCHAIN-freetype2
+fi
+
 # libxml++
 [ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] || rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
@@ -163,17 +181,15 @@ cd ..
 rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 
 # boost
-if [[ $TOOLCHAIN == "mingw" ]]; then
-[ ! -d $WORKSPACE/mingw-boost ] || rm -rf $WORKSPACE/mingw-boost
-cp -rf $SRCPREFIX/autobuild/mingw-boost $WORKSPACE/mingw-boost
-cd $WORKSPACE/mingw-boost
+[ ! -d $WORKSPACE/$TOOLCHAIN-boost ] || rm -rf $WORKSPACE/$TOOLCHAIN-boost
+cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
+cd $WORKSPACE/$TOOLCHAIN-boost
 for action in fetch prep compile install package; do
-    cygport mingw-boost.cygport $action
+    cygport $TOOLCHAIN-boost.cygport $action
 done
-tar -C / -jxf mingw-boost-1.50.0-1.tar.bz2
+tar -C / -jxf $TOOLCHAIN-boost-1.50.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/mingw-boost
-fi
+rm -rf $WORKSPACE/$TOOLCHAIN-boost
 
 # there should be no *.la files
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
