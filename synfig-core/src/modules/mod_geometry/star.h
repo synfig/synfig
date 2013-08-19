@@ -50,11 +50,15 @@ class Star : protected synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-
+	//!Parameter: (Real)
 	ValueBase param_radius1;
+	//!Parameter: (Real)
 	ValueBase param_radius2;
+	//!Parameter: (int)
 	ValueBase param_points;
+	//!Parameter: (Angle)
 	ValueBase param_angle;
+	//!Parameter: (bool)	
 	ValueBase param_regular_polygon;
 
 public:
