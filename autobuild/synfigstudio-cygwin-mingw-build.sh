@@ -146,7 +146,6 @@ $CYGWIN_SETUP \
 -P $TOOLCHAIN-glibmm2.4 \
 -P $TOOLCHAIN-pango1.0 \
 -P $TOOLCHAIN-gtkmm2.4 \
--P $TOOLCHAIN-boost \
 -q
 
 #objdump -p hello.exe | grep "DLL Name"
@@ -181,15 +180,13 @@ cd ..
 rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 
 # boost
-[ ! -d $WORKSPACE/$TOOLCHAIN-boost ] || rm -rf $WORKSPACE/$TOOLCHAIN-boost
-cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
+[ ! -d $WORKSPACE/$TOOLCHAIN-boost ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
 cd $WORKSPACE/$TOOLCHAIN-boost
 for action in fetch prep compile install package; do
     cygport $TOOLCHAIN-boost.cygport $action
 done
 tar -C / -jxf $TOOLCHAIN-boost-1.50.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/$TOOLCHAIN-boost
 
 # there should be no *.la files
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
