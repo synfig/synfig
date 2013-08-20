@@ -263,7 +263,9 @@ SYNFIGHEADERS = \
 	uniqueid.h \
 	valuenode.h \
 	waypoint.h \
-	matrix.h
+	matrix.h \
+	storage.h \
+	storagezip.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -304,7 +306,9 @@ SYNFIGSOURCES = \
 	uniqueid.cpp \
 	valuenode.cpp \
 	waypoint.cpp \
-	matrix.cpp
+	matrix.cpp \
+	storage.cpp \
+	storagezip.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la
