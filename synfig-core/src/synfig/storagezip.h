@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <map>
+#include <ctime>
 #include "storage.h"
 
 /* === M A C R O S ========================================================= */
@@ -48,16 +49,20 @@ namespace synfig
 		{
 			std::string name;
 			bool is_directory;
+			bool directory_saved;
 			file_size_t size;
 			file_size_t header_offset;
 			unsigned int crc32;
+			time_t time;
 
 			std::string name_part_directory;
 			std::string name_part_localname;
 
 			void split_name();
 
-			inline FileInfo(): is_directory(false), size(0), header_offset(0), crc32(0) { }
+			inline FileInfo():
+				is_directory(false), directory_saved(false),
+				size(0), header_offset(0), crc32(0), time(0) { }
 		};
 
 		typedef std::map< std::string, FileInfo > FileMap;
@@ -70,6 +75,8 @@ namespace synfig
 		FileMap::iterator file_;
 		file_size_t file_processed_size_;
 		bool changed_;
+
+		unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
 
 	public:
 		StorageZip();
