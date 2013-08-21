@@ -29,7 +29,7 @@
 # * Run Cygwin setup and install with the default parameters.
 # * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
 # * Open Cygwin console (with administrator previlegies) and run the build script:
-# ** bash /cygdrive/c/synfig-build/synfig/synfigstudio-cygwin-mingw-build.sh
+# ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
 # * Installation bundle will be written to C:\synfig-build\dist\
 #
 #
@@ -76,6 +76,7 @@ fi
 
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
 
+export CBUILD=i686-pc-cygwin
 export CHOST=${TOOLCHAIN_HOST}
 export CTARGET=${TOOLCHAIN_HOST}
 export CC=${TOOLCHAIN_HOST}-gcc
@@ -120,7 +121,7 @@ fi
 mkprep()
 {
 
-export PREP_VERSION=2
+export PREP_VERSION=3
 
 if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
 
@@ -131,6 +132,7 @@ $CYGWIN_SETUP \
 -K http://cygwinports.org/ports.gpg -s $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
+-P gcc \
 -P gdb \
 -P intltool \
 -P autoconf \
@@ -141,6 +143,8 @@ $CYGWIN_SETUP \
 -P ImageMagick \
 -P cygport \
 -P mm-common \
+-P $TOOLCHAIN-libxml2 \
+-P $TOOLCHAIN-gcc  \
 -P $TOOLCHAIN-gcc-g++  \
 -P $TOOLCHAIN-cairo \
 -P $TOOLCHAIN-glibmm2.4 \
@@ -155,8 +159,7 @@ $CYGWIN_SETUP \
 #freetype
 if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
 cd $WORKSPACE
-[ ! -d $WORKSPACE/$TOOLCHAIN-freetype2 ] || rm -rf $WORKSPACE/$TOOLCHAIN-freetype2
-git clone git://cygwin-ports.git.sourceforge.net/gitroot/cygwin-ports/mingw64-i686-freetype2
+[ ! -d $WORKSPACE/$TOOLCHAIN-freetype2 ] && git clone git://cygwin-ports.git.sourceforge.net/gitroot/cygwin-ports/mingw64-i686-freetype2
 cd $WORKSPACE/$TOOLCHAIN-freetype2
 for action in fetch prep compile install package; do
     cygport $TOOLCHAIN-freetype2.cygport $action
@@ -164,12 +167,10 @@ done
 tar -C / -jxf $TOOLCHAIN-freetype2-2.4.11-1.tar.bz2
 [ ! -e $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/$TOOLCHAIN-freetype2
 fi
 
 # libxml++
-[ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] || rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
-cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
+[ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 cd $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 for action in fetch prep compile install package; do
     cygport $TOOLCHAIN-libxml++2.6.cygport $action
@@ -177,7 +178,6 @@ done
 tar -C / -jxf $TOOLCHAIN-libxml++2.6-2.36.0-1.tar.bz2
 [ ! -e $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 
 # boost
 [ ! -d $WORKSPACE/$TOOLCHAIN-boost ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
