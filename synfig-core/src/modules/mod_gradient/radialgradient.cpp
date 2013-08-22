@@ -150,6 +150,9 @@ RadialGradient::color_func(const Point &point, float supersample)const
 
 	Real dist((point-center).mag()/radius);
 
+	if(loop)
+		dist-=floor(dist);
+	
 	if(zigzag)
 	{
 		dist*=2.0;
@@ -159,8 +162,6 @@ RadialGradient::color_func(const Point &point, float supersample)const
 
 	if(loop)
 	{
-		dist-=floor(dist);
-
 		if(dist+supersample*0.5>1.0)
 		{
 			float  left(supersample*0.5-(dist-1.0));
