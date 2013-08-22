@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file storage.cpp
-**	\brief Storage
+/*!	\file filesystem.cpp
+**	\brief FileSystem
 **
 **	$Id$
 **
@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "storage.h"
+#include "filesystem.h"
 
 #endif
 
@@ -47,9 +47,14 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Storage::Storage() { }
+FileSystem::Stream::Stream(Handle file_system): file_system_(file_system) { }
+FileSystem::Stream::~Stream() { }
 
-Storage::~Storage() { }
+FileSystem::ReadStream::ReadStream(Handle file_system): Stream(file_system) { }
+FileSystem::WriteStream::WriteStream(Handle file_system): Stream(file_system) { }
+
+FileSystem::FileSystem() { }
+FileSystem::~FileSystem() { }
 
 /* === E N T R Y P O I N T ================================================= */
 

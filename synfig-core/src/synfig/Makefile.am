@@ -264,8 +264,11 @@ SYNFIGHEADERS = \
 	valuenode.h \
 	waypoint.h \
 	matrix.h \
-	storage.h \
-	storagezip.h
+	filesystem.h \
+	filesystemnative.h \
+	filesystemgroup.h \
+	filecontainer.h \
+	filecontainerzip.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -307,8 +310,11 @@ SYNFIGSOURCES = \
 	valuenode.cpp \
 	waypoint.cpp \
 	matrix.cpp \
-	storage.cpp \
-	storagezip.cpp
+	filesystem.cpp \
+	filesystemnative.cpp \
+	filesystemgroup.cpp \
+	filecontainer.cpp \
+	filecontainerzip.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

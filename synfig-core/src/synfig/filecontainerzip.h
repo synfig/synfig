@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file storagezip.h
-**	\brief StorageZip
+/*!	\file filecontainerzip.h
+**	\brief FileContainerZip
 **
 **	$Id$
 **
@@ -22,14 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STORAGEZIP_H
-#define __SYNFIG_STORAGEZIP_H
+#ifndef __SYNFIG_FILECONTAINERZIP_H
+#define __SYNFIG_FILECONTAINERZIP_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <map>
 #include <ctime>
-#include "storage.h"
+#include "filecontainer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,7 +40,7 @@
 namespace synfig
 {
 
-	class StorageZip: public Storage
+	class FileContainerZip: public FileContainer
 	{
 	private:
 		typedef long long int file_size_t;
@@ -79,8 +79,8 @@ namespace synfig
 		unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
 
 	public:
-		StorageZip();
-		virtual ~StorageZip();
+		FileContainerZip();
+		virtual ~FileContainerZip();
 
 		virtual bool create(const std::string &storage_filename);
 		virtual bool open(const std::string &storage_filename);

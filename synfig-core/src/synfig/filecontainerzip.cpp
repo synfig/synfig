@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file storagezip.cpp
-**	\brief StorageZip
+/*!	\file filecontainerzip.cpp
+**	\brief FileContainerZip
 **
 **	$Id$
 **
@@ -30,7 +30,7 @@
 #endif
 
 #include <cstring>
-#include "storagezip.h"
+#include "filecontainerzip.h"
 
 #endif
 
@@ -48,7 +48,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-namespace StorageZIP_InternalStructs
+namespace FileContainerZip_InternalStructs
 {
 	typedef unsigned int uint32_t;
 	typedef unsigned short int uint16_t;
@@ -202,9 +202,9 @@ namespace StorageZIP_InternalStructs
 	#pragma pack(pop)
 }
 
-using namespace StorageZIP_InternalStructs;
+using namespace FileContainerZip_InternalStructs;
 
-void StorageZip::FileInfo::split_name()
+void FileContainerZip::FileInfo::split_name()
 {
 	size_t pos = name.rfind('/');
 	if (pos == std::string::npos || pos == 0)
@@ -219,7 +219,7 @@ void StorageZip::FileInfo::split_name()
 	}
 }
 
-StorageZip::StorageZip():
+FileContainerZip::FileContainerZip():
 storage_file_(NULL),
 prev_storage_size_(0),
 file_reading_(false),
@@ -228,9 +228,9 @@ file_processed_size_(0),
 changed_(false)
 { }
 
-StorageZip::~StorageZip() { close(); }
+FileContainerZip::~FileContainerZip() { close(); }
 
-unsigned int StorageZip::crc32(unsigned int previous_crc, const void *buffer, size_t size)
+unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buffer, size_t size)
 {
 	static const unsigned int table[] = {
 	    0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
@@ -275,7 +275,7 @@ unsigned int StorageZip::crc32(unsigned int previous_crc, const void *buffer, si
 	return crc ^ 0xFFFFFFFFUL;
 }
 
-bool StorageZip::create(const std::string &storage_filename)
+bool FileContainerZip::create(const std::string &storage_filename)
 {
 	if (is_opened()) return false;
 	storage_file_ = fopen(storage_filename.c_str(), "wb");
@@ -283,7 +283,7 @@ bool StorageZip::create(const std::string &storage_filename)
 	return is_opened();
 }
 
-bool StorageZip::open(const std::string &storage_filename)
+bool FileContainerZip::open(const std::string &storage_filename)
 {
 	if (is_opened()) return false;
 	FILE *f = fopen(storage_filename.c_str(), "r+b");
@@ -386,7 +386,7 @@ bool StorageZip::open(const std::string &storage_filename)
 	return true;
 }
 
-void StorageZip::close()
+void FileContainerZip::close()
 {
 	if (!is_opened()) return;
 
@@ -470,26 +470,26 @@ void StorageZip::close()
 }
 
 
-bool StorageZip::is_opened()
+bool FileContainerZip::is_opened()
 {
 	return storage_file_ != NULL;
 }
 
-bool StorageZip::is_file(const std::string &filename)
+bool FileContainerZip::is_file(const std::string &filename)
 {
 	if (!is_opened()) return false;
 	FileMap::const_iterator i = files_.find(filename);
 	return i != files_.end() && !i->second.is_directory;
 }
 
-bool StorageZip::is_directory(const std::string &filename)
+bool FileContainerZip::is_directory(const std::string &filename)
 {
 	if (!is_opened()) return false;
 	FileMap::const_iterator i = files_.find(filename);
 	return i != files_.end() && i->second.is_directory;
 }
 
-bool StorageZip::directory_create(const std::string &dirname)
+bool FileContainerZip::directory_create(const std::string &dirname)
 {
 	if (!is_opened()) return false;
 	if (is_file(dirname)) return false;
@@ -510,7 +510,7 @@ bool StorageZip::directory_create(const std::string &dirname)
 	return true;
 }
 
-bool StorageZip::directory_scan(const std::string &dirname, std::list< std::string > &out_files)
+bool FileContainerZip::directory_scan(const std::string &dirname, std::list< std::string > &out_files)
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
@@ -520,7 +520,7 @@ bool StorageZip::directory_scan(const std::string &dirname, std::list< std::stri
 	return true;
 }
 
-bool StorageZip::file_remove(const std::string &filename)
+bool FileContainerZip::file_remove(const std::string &filename)
 {
 	if (is_directory(filename))
 	{
@@ -541,7 +541,7 @@ bool StorageZip::file_remove(const std::string &filename)
 	return true;
 }
 
-bool StorageZip::file_open_read(const std::string &filename)
+bool FileContainerZip::file_open_read(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	file_ = files_.find(filename);
@@ -563,7 +563,7 @@ bool StorageZip::file_open_read(const std::string &filename)
 	return true;
 }
 
-bool StorageZip::file_open_write(const std::string &filename)
+bool FileContainerZip::file_open_write(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
 	if (filename.size() > (1 << 16) - 1 - sizeof(CentralDirectoryFileHeader))
@@ -617,7 +617,7 @@ bool StorageZip::file_open_write(const std::string &filename)
 	return true;
 }
 
-void StorageZip::file_close()
+void FileContainerZip::file_close()
 {
 	if (file_is_opened_for_write())
 	{
@@ -631,19 +631,22 @@ void StorageZip::file_close()
 	file_reading_ = false;
 	file_writing_ = false;
 	file_processed_size_ = 0;
+
+	// call base-class method to invalidate streams
+	FileContainer::file_close();
 }
 
-bool StorageZip::file_is_opened_for_read()
+bool FileContainerZip::file_is_opened_for_read()
 {
 	return is_opened() && file_reading_;
 }
 
-bool StorageZip::file_is_opened_for_write()
+bool FileContainerZip::file_is_opened_for_write()
 {
 	return is_opened() && file_writing_;
 }
 
-size_t StorageZip::file_read(void *buffer, size_t size)
+size_t FileContainerZip::file_read(void *buffer, size_t size)
 {
 	if (!file_is_opened_for_read()) return 0;
 	file_size_t remain_size = file_->second.size - file_processed_size_;
@@ -653,7 +656,7 @@ size_t StorageZip::file_read(void *buffer, size_t size)
 	return s;
 }
 
-size_t StorageZip::file_write(const void *buffer, size_t size)
+size_t FileContainerZip::file_write(const void *buffer, size_t size)
 {
 	if (!file_is_opened_for_write()) return 0;
 	size_t s = fwrite(buffer, 1, size, storage_file_);
