@@ -51,6 +51,7 @@ using namespace std;
 using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
+FileSystemGroup* synfig::Importer::file_system_;
 
 map<String,Importer::LooseHandle> *__open_importers;
 
@@ -63,6 +64,7 @@ Importer::subsys_init()
 {
 	book_=new Book();
 	__open_importers=new map<String,Importer::LooseHandle>();
+	file_system_ = new FileSystemGroup();
 	return true;
 }
 
@@ -71,6 +73,7 @@ Importer::subsys_stop()
 {
 	delete book_;
 	delete __open_importers;
+	delete file_system_;
 	return true;
 }
 
@@ -78,6 +81,12 @@ Importer::Book&
 Importer::book()
 {
 	return *book_;
+}
+
+FileSystemGroup&
+Importer::file_system()
+{
+	return *file_system_;
 }
 
 Importer::Handle

@@ -33,7 +33,8 @@
 #include "string.h"
 #include "time.h"
 #include "gamma.h"
-#include "renddesc.h" 
+#include "renddesc.h"
+#include "filesystemgroup.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -88,8 +89,10 @@ public:
 	typedef Importer* (*Factory)(const char *filename);
 	typedef std::map<String,Factory> Book;
 	static Book* book_;
+	static FileSystemGroup *file_system_;
 
 	static Book& book();
+	static FileSystemGroup& file_system();
 
 	//! Initializes the Import module by creating a book of importers names
 	//! and its creators and the list of open importers
