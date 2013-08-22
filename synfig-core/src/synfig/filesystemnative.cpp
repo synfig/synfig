@@ -30,6 +30,7 @@
 #endif
 
 #include "filesystemnative.h"
+#include <glibmm.h>
 
 #endif
 
@@ -83,7 +84,11 @@ bool FileSystemNative::file_remove(const std::string &filename)
 
 FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string &filename)
 {
+#ifdef WIN32
+	FILE *f = fopen(Glib::locale_from_utf8(filename).c_str(), "rb");
+#else
 	FILE *f = fopen(filename.c_str(), "rb");
+#endif
 	return f == NULL
 	     ? ReadStreamHandle()
 	     : ReadStreamHandle(new ReadStream(this, f));
@@ -91,7 +96,11 @@ FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string
 
 FileSystem::WriteStreamHandle FileSystemNative::get_write_stream(const std::string &filename)
 {
-	FILE *f = fopen(filename.c_str(), "rb");
+#ifdef WIN32
+	FILE *f = fopen(Glib::locale_from_utf8(filename).c_str(), "wb");
+#else
+	FILE *f = fopen(filename.c_str(), "wb");
+#endif
 	return f == NULL
 	     ? WriteStreamHandle()
 	     : WriteStreamHandle(new WriteStream(this, f));
