@@ -67,23 +67,24 @@ SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id$");
 
 RadialGradient::RadialGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	gradient(Color::black(),Color::white()),
-	center(0,0),
-	radius(0.5),
-	loop(false),
-	zigzag(false)
+	param_gradient(ValueBase(Gradient(Color::black(),Color::white()))),
+	param_center(ValueBase(Point(0,0))),
+	param_radius(ValueBase(Real(0.5))),
+	param_loop(ValueBase(false)),
+	param_zigzag(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 RadialGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(gradient);
-	IMPORT(center);
-	IMPORT(radius);
-	IMPORT(loop);
-	IMPORT(zigzag);
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_radius);
+	IMPORT_VALUE(param_loop);
+	IMPORT_VALUE(param_zigzag);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -91,11 +92,11 @@ RadialGradient::set_param(const String & param, const ValueBase &value)
 ValueBase
 RadialGradient::get_param(const String &param)const
 {
-	EXPORT(gradient);
-	EXPORT(center);
-	EXPORT(radius);
-	EXPORT(loop);
-	EXPORT(zigzag);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_radius);
+	EXPORT_VALUE(param_loop);
+	EXPORT_VALUE(param_zigzag);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -141,6 +142,12 @@ RadialGradient::get_param_vocab()const
 inline Color
 RadialGradient::color_func(const Point &point, float supersample)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+	bool loop=param_loop.get(bool());
+	bool zigzag=param_zigzag.get(bool());
+
 	Real dist((point-center).mag()/radius);
 
 	if(zigzag)
@@ -181,6 +188,7 @@ RadialGradient::color_func(const Point &point, float supersample)const
 float
 RadialGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
+	Real radius=param_radius.get(Real());
 //	return sqrt(pw*pw+ph*ph)/radius;
 	return 1.2*pw/radius;
 }
@@ -259,6 +267,11 @@ RadialGradient::accelerated_render(Context context,Surface *surface,int quality,
 bool
 RadialGradient::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+	bool loop=param_loop.get(bool());
+
 	cairo_save(cr);
 	cairo_pattern_t* pattern=cairo_pattern_create_radial(center[0], center[1], 0.0 ,center[0], center[1], radius);
 	bool cpoints_all_opaque=compile_gradient(pattern, gradient);
@@ -291,6 +304,9 @@ RadialGradient::accelerated_cairorender(Context context,cairo_t *cr, int quality
 bool
 RadialGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
 {
+	bool zigzag=param_zigzag.get(bool());
+	bool loop=param_loop.get(bool());
+
 	bool cpoints_all_opaque=true;
 	float a,r,g,b;
 	Gradient::CPoint cp;
