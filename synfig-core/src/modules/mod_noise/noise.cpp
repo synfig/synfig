@@ -66,19 +66,20 @@ SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id$");
 
 Noise::Noise():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	size(1,1),
-	gradient(Color::black(), Color::white())
+	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
+	param_random(ValueBase(int(time(NULL)))),
+	param_size(ValueBase(Vector(1,1))),
+	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
+	param_detail(ValueBase(int(4))),
+	param_speed(ValueBase(Real(0))),
+	param_turbulent(ValueBase(bool(false))),
+	param_do_alpha(ValueBase(bool(false))),
+	param_super_sample(ValueBase(bool(false)))
 {
-	smooth=RandomNoise::SMOOTH_COSINE;
-	detail=4;
-	speed=0;
-	do_alpha=false;
-	random.set_seed(time(NULL));
-	turbulent=false;
-	displacement=Vector(1,1);
-	do_displacement=false;
-	super_sample=false;
-
+	//displacement=Vector(1,1);
+	//do_displacement=false;
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 
@@ -86,6 +87,18 @@ Noise::Noise():
 inline Color
 Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	Vector size=param_size.get(Vector());
+	RandomNoise random;
+	random.set_seed(param_random.get(int()));
+	int smooth_=param_smooth.get(int());
+	int detail=param_detail.get(int());
+	Real speed=param_speed.get(Real());
+	bool turbulent=param_turbulent.get(bool());
+	bool do_alpha=param_do_alpha.get(bool());
+	bool super_sample=param_super_sample.get(bool());
+	
+
 	Color ret(0,0,0,0);
 
 	float x(point[0]/size[0]*(1<<detail));
@@ -101,7 +114,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 	int i;
 	Time time;
 	time=speed*curr_time;
-	RandomNoise::SmoothType smooth((!speed && Noise::smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : Noise::smooth);
+	int smooth((!speed && smooth_ == (int)RandomNoise::SMOOTH_SPLINE) ? (int)RandomNoise::SMOOTH_FAST_SPLINE : smooth_);
 
 	float ftime(time);
 
@@ -112,15 +125,15 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		float alpha=0.0f;
 		for(i=0;i<detail;i++)
 		{
-			amount=random(smooth,0+(detail-i)*5,x,y,ftime)+amount*0.5;
+			amount=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y,ftime)+amount*0.5;
 			if(amount<-1)amount=-1;if(amount>1)amount=1;
 
 			if(super_sample&&pixel_size)
 			{
-				amount2=random(smooth,0+(detail-i)*5,x2,y,ftime)+amount2*0.5;
+				amount2=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x2,y,ftime)+amount2*0.5;
 				if(amount2<-1)amount2=-1;if(amount2>1)amount2=1;
 
-				amount3=random(smooth,0+(detail-i)*5,x,y2,ftime)+amount3*0.5;
+				amount3=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y2,ftime)+amount3*0.5;
 				if(amount3<-1)amount3=-1;if(amount3>1)amount3=1;
 
 				if(turbulent)
@@ -135,7 +148,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 			if(do_alpha)
 			{
-				alpha=random(smooth,3+(detail-i)*5,x,y,ftime)+alpha*0.5;
+				alpha=random(RandomNoise::SmoothType(smooth),3+(detail-i)*5,x,y,ftime)+alpha*0.5;
 				if(alpha<-1)alpha=-1;if(alpha>1)alpha=1;
 			}
 
@@ -208,19 +221,18 @@ Noise::hit_check(synfig::Context context, const synfig::Point &point)const
 bool
 Noise::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="seed" && value.same_type_as(int()))
-	{
-		random.set_seed(value.get(int()));
-		return true;
-	}
-	IMPORT(size);
-	IMPORT(speed);
-	IMPORT(smooth);
-	IMPORT(detail);
-	IMPORT(do_alpha);
-	IMPORT(gradient);
-	IMPORT(turbulent);
-	IMPORT(super_sample);
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_size);
+	IMPORT_VALUE(param_random);
+	IMPORT_VALUE(param_detail);
+	IMPORT_VALUE(param_smooth);
+	IMPORT_VALUE(param_speed);
+	IMPORT_VALUE(param_turbulent);
+	IMPORT_VALUE(param_do_alpha);
+	IMPORT_VALUE(param_super_sample);
+	
+	if(param=="seed")
+		return set_param("random", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -228,20 +240,18 @@ Noise::set_param(const String & param, const ValueBase &value)
 ValueBase
 Noise::get_param(const String & param)const
 {
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_random);
+	EXPORT_VALUE(param_detail);
+	EXPORT_VALUE(param_smooth);
+	EXPORT_VALUE(param_speed);
+	EXPORT_VALUE(param_turbulent);
+	EXPORT_VALUE(param_do_alpha);
+	EXPORT_VALUE(param_super_sample);
+
 	if(param=="seed")
-	{
-		ValueBase ret(random.get_seed());
-		
-		return ret;
-	}
-	EXPORT(size);
-	EXPORT(speed);
-	EXPORT(smooth);
-	EXPORT(detail);
-	EXPORT(do_alpha);
-	EXPORT(gradient);
-	EXPORT(turbulent)
-	EXPORT(super_sample);
+		return get_param("random");
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
