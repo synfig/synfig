@@ -47,11 +47,49 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+
+// Stream
+
 FileSystem::Stream::Stream(Handle file_system): file_system_(file_system) { }
 FileSystem::Stream::~Stream() { }
 
+
+// ReadStream
+
 FileSystem::ReadStream::ReadStream(Handle file_system): Stream(file_system) { }
+
+int
+FileSystem::ReadStream::getc()
+{
+	int character = 0;
+	return 1 == read(&character, 1) ? character : EOF;
+}
+
+bool
+FileSystem::ReadStream::read_whole_block(void *buffer, size_t size)
+{
+	return size == read(buffer, size);
+}
+
+
+// WriteStream
+
 FileSystem::WriteStream::WriteStream(Handle file_system): Stream(file_system) { }
+
+int
+FileSystem::WriteStream::putc(int character)
+{
+	return 1 == write(&character, 1) ? character : EOF;
+}
+
+bool
+FileSystem::WriteStream::write_whole_block(const void *buffer, size_t size)
+{
+	return size == write(buffer, size);
+}
+
+
+// FileSystem
 
 FileSystem::FileSystem() { }
 FileSystem::~FileSystem() { }
