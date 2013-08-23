@@ -88,8 +88,11 @@ bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &valu
 
 ValueBase BooleanCurve::get_param(const String & param)const
 {
-	EXPORT(regions);
-
+	if(param=="regions")
+	{
+		ValueBase ret(regions);
+		return ret;
+	}
 	EXPORT_NAME();
 	EXPORT_VERSION();
 

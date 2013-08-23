@@ -68,13 +68,17 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id$");
 
 Layer_Polygon::Layer_Polygon():
 	Layer_Shape(1.0,Color::BLEND_COMPOSITE),
-	vector_list(0)
+	param_vector_list(ValueBase(std::vector<Point>()))
 {
+	std::vector<Point> vector_list;
 	vector_list.push_back(Point(0,0.5));
 	vector_list.push_back(Point(-0.333333,0));
 	vector_list.push_back(Point(0.333333,0));
+	param_vector_list.set(vector_list);
 	sync();
-
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_Polygon::~Layer_Polygon()
@@ -134,28 +138,33 @@ Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 void
 Layer_Polygon::upload_polygon(const std::vector<Point> &point_list)
 {
+	std::vector<Point> vector_list(param_vector_list.get_list().begin(), param_vector_list.get_list().end());
+	
 	vector_list.clear();
 	int i,pointcount=point_list.size();
 	for(i = 0;i < pointcount; i++)
 	{
 		vector_list.push_back(point_list[i]);
 	}
-	
+	param_vector_list.set(vector_list);
 }
 
 void
 Layer_Polygon::clear()
 {
+	std::vector<Point> vector_list(param_vector_list.get_list().begin(), param_vector_list.get_list().end());
+
 	Layer_Shape::clear();
 	vector_list.clear();
+	param_vector_list.set(vector_list);
 }
 
 bool
 Layer_Polygon::set_param(const String & param, const ValueBase &value)
 {
-	if(	param=="vector_list" && value.same_type_as(vector_list))
+	if(	param=="vector_list" && param_vector_list.get_type()==value.get_type())
 	{
-		vector_list=value;
+		param_vector_list=value;
 		Layer_Shape::clear();
 		add_polygon(value);
 		sync();
@@ -168,7 +177,7 @@ Layer_Polygon::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Polygon::get_param(const String &param)const
 {
-	EXPORT(vector_list);
+	EXPORT_VALUE(param_vector_list);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
