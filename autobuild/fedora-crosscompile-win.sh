@@ -65,7 +65,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
 		${TOOLCHAIN}-gtkmm24 \
-		${TOOLCHAIN}-nsis \
+		mingw32-nsis \
 		p7zip \
 		ImageMagick \
 		"
