@@ -15,8 +15,8 @@ Name "Synfig Studio 0.64.0"
 ; The file to write
 OutFile "synfigstudio-0.64.0.exe"
 
-; The default installation directory
-InstallDir $PROGRAMFILES\Synfig
+; The default installation directory and registry
+!include "arch-specific.nsh"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel highest
