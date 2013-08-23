@@ -50,18 +50,25 @@ class CurveGradient : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	std::vector<synfig::BLinePoint> bline;
+	//! Parameter: (Point)
+	ValueBase param_origin;
+	//! Parameter: (Real)
+	ValueBase param_width;
+	//! Parameter: (std::vector<synfig::BLinePoint>)
+	ValueBase param_bline;
+	//! Parameter: (Gradient)
+	ValueBase param_gradient;
+	//! Parameter: (bool)
+	ValueBase param_loop;
+	//! Parameter: (bool)
+	ValueBase param_zigzag;
+	//! Parameter: (bool)
+	ValueBase param_perpendicular;
+	//! Parameter: (bool)
+	ValueBase param_fast;
 
-	Point origin;
-	Real width;
-	Gradient gradient;
 	Real curve_length_;
-
-	bool loop;
-	bool zigzag;
 	bool bline_loop;
-	bool perpendicular;
-	bool fast;
 
 	void sync();
 

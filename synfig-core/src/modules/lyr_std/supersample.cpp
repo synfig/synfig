@@ -63,28 +63,40 @@ SYNFIG_LAYER_SET_CVS_ID(SuperSample,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-SuperSample::SuperSample():width(2),height(2)
+SuperSample::SuperSample():
+param_width(ValueBase(int(2))),
+param_height(ValueBase(int(2)))
 {
-	scanline=false;
-	alpha_aware=true;
+	param_scanline=ValueBase(false);
+	param_alpha_aware=ValueBase(true);
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 
 }
 
 bool
 SuperSample::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(width,
-		if(value.get(int()) < 1) width = 1;
-		else width=value.get(int());
-		return true;
-		)
-	IMPORT_PLUS(height,
-		if(value.get(int()) < 1) height = 1;
-		else height=value.get(int());
-		return true;
-		)
-	IMPORT(scanline);
-	IMPORT(alpha_aware);
+	IMPORT_VALUE_PLUS(param_width,
+		{
+			int width=param_width.get(int());
+			if(value.get(int()) < 1) width = 1;
+			else width=value.get(int());
+			param_width.set(width);
+			return true;
+		}
+		);
+	IMPORT_VALUE_PLUS(param_height,
+		{
+			int height=param_height.get(int());
+			if(value.get(int()) < 1) height = 1;
+			else height=value.get(int());
+			param_height.set(height);
+			return true;
+		}
+		);
+	IMPORT_VALUE(param_scanline);
+	IMPORT_VALUE(param_alpha_aware);
 
 	return false;
 }
@@ -92,10 +104,10 @@ SuperSample::set_param(const String & param, const ValueBase &value)
 ValueBase
 SuperSample::get_param(const String& param)const
 {
-	EXPORT(width);
-	EXPORT(height);
-    EXPORT(scanline);
-    EXPORT(alpha_aware);
+	EXPORT_VALUE(param_width);
+	EXPORT_VALUE(param_height);
+    EXPORT_VALUE(param_scanline);
+    EXPORT_VALUE(param_alpha_aware);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -106,6 +118,11 @@ SuperSample::get_param(const String& param)const
 bool
 SuperSample::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	int width=param_width.get(int());
+	int height=param_height.get(int());
+	bool scanline=param_scanline.get(bool());
+	bool alpha_aware=param_alpha_aware.get(bool());
+	
 	// don't bother supersampling if our quality is too low.
 	if(quality>=10)
 		return context.accelerated_render(surface,quality,renddesc,cb);
@@ -221,6 +238,9 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 bool
 SuperSample::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	int width=param_width.get(int());
+	int height=param_height.get(int());
+
 	// don't bother supersampling if our quality is too low.
 	if(quality>=10 || (width==1 && height==1))
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);

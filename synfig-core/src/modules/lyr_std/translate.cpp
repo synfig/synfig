@@ -63,9 +63,10 @@ SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id$");
 
 /* === E N T R Y P O I N T ================================================= */
 
-Translate::Translate():origin(0,0)
+Translate::Translate():param_origin(ValueBase(Vector(0,0)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Translate::~Translate()
@@ -75,7 +76,7 @@ Translate::~Translate()
 bool
 Translate::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
+	IMPORT_VALUE(param_origin);
 
 	return false;
 }
@@ -83,7 +84,7 @@ Translate::set_param(const String & param, const ValueBase &value)
 ValueBase
 Translate::get_param(const String& param)const
 {
-	EXPORT(origin);
+	EXPORT_VALUE(param_origin);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -106,12 +107,14 @@ Translate::get_param_vocab()const
 synfig::Layer::Handle
 Translate::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Vector origin=param_origin.get(Vector());
 	return context.hit_check(pos-origin);
 }
 
 Color
 Translate::get_color(Context context, const Point &pos)const
 {
+	Vector origin=param_origin.get(Vector());
 	return context.get_color(pos-origin);
 }
 
@@ -123,12 +126,12 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return x+layer->origin;
+		return x+layer->param_origin.get(Vector());
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return x-layer->origin;
+		return x-layer->param_origin.get(Vector());
 	}
 
 	synfig::String get_string()const
@@ -145,6 +148,7 @@ Translate::get_transform()const
 bool
 Translate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
 	RendDesc desc(renddesc);
 
 	desc.clear_flags();
@@ -165,6 +169,7 @@ Translate::accelerated_render(Context context,Surface *surface,int quality, cons
 bool
 Translate::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Vector origin=param_origin.get(Vector());
 	cairo_save(cr);
 	cairo_translate(cr, origin[0], origin[1]);
 
@@ -182,5 +187,6 @@ Translate::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 Rect
 Translate::get_full_bounding_rect(Context context)const
 {
+	Vector origin=param_origin.get(Vector());
 	return context.get_full_bounding_rect() + origin;
 }

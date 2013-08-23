@@ -49,15 +49,16 @@ class RadialGradient : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Gradient gradient;
-
-	Point center;
-
-	Real radius;
-
-	bool loop;
-	bool zigzag;
+	//! Parameter: (Gradient)
+	ValueBase param_gradient;
+	//! Parameter: (Point)
+	ValueBase param_center;
+	//! Parameter: (Real)
+	ValueBase param_radius;
+	//! Parameter: (bool)
+	ValueBase param_loop;
+	//! Parameter: (bool)
+	ValueBase param_zigzag;
 
 	Color color_func(const Point &x, float supersample=0)const;
 

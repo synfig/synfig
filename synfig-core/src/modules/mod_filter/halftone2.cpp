@@ -66,22 +66,25 @@ SYNFIG_LAYER_SET_CVS_ID(Halftone2,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Halftone2::Halftone2():
-	color_dark(Color::black()),
-	color_light(Color::white())
+	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	param_color_dark(ValueBase(Color::black())),
+	param_color_light(ValueBase(Color::white()))
 {
-	halftone.origin=(synfig::Point(0,0));
-	halftone.size=(synfig::Vector(0.25,0.25));
-	halftone.angle=(Angle::zero());
-	halftone.type=TYPE_SYMMETRIC;
+	halftone.param_origin=ValueBase(synfig::Point(0,0));
+	halftone.param_size=ValueBase(synfig::Vector(0.25,0.25));
+	halftone.param_angle=ValueBase(Angle::zero());
+	halftone.param_type=ValueBase(int(TYPE_SYMMETRIC));
 
-	set_blend_method(Color::BLEND_STRAIGHT);
-
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color
 Halftone2::color_func(const Point &point, float supersample,const Color& color)const
 {
+	Color color_dark=param_color_dark.get(Color());
+	Color color_light=param_color_light.get(Color());
+
 	const float amount(halftone(point,color.get_y(),supersample));
 	Color halfcolor;
 
@@ -100,7 +103,7 @@ Halftone2::color_func(const Point &point, float supersample,const Color& color)c
 inline float
 Halftone2::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
-	return abs(pw/(halftone.size).mag());
+	return abs(pw/(halftone.param_size.get(Vector())).mag());
 }
 
 synfig::Layer::Handle
@@ -112,15 +115,16 @@ Halftone2::hit_check(synfig::Context /*context*/, const synfig::Point &/*point*/
 bool
 Halftone2::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(color_dark);
-	IMPORT(color_light);
+	IMPORT_VALUE(param_color_dark);
+	IMPORT_VALUE(param_color_light);
 
-	IMPORT_AS(halftone.size,"size");
-	IMPORT_AS(halftone.type,"type");
-	IMPORT_AS(halftone.angle,"angle");
-	IMPORT_AS(halftone.origin,"origin");
+	HALFTONE2_IMPORT_VALUE(halftone.param_size);
+	HALFTONE2_IMPORT_VALUE(halftone.param_type);
+	HALFTONE2_IMPORT_VALUE(halftone.param_angle);
+	HALFTONE2_IMPORT_VALUE(halftone.param_origin);
 
-	IMPORT_AS(halftone.origin,"offset");
+	if(param=="offset")
+		set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -128,13 +132,13 @@ Halftone2::set_param(const String & param, const ValueBase &value)
 ValueBase
 Halftone2::get_param(const String & param)const
 {
-	EXPORT_AS(halftone.size,"size");
-	EXPORT_AS(halftone.type,"type");
-	EXPORT_AS(halftone.angle,"angle");
-	EXPORT_AS(halftone.origin,"origin");
+	EXPORT_VALUE(param_color_dark);
+	EXPORT_VALUE(param_color_light);
 
-	EXPORT(color_dark);
-	EXPORT(color_light);
+	HALFTONE2_EXPORT_VALUE(halftone.param_size);
+	HALFTONE2_EXPORT_VALUE(halftone.param_type);
+	HALFTONE2_EXPORT_VALUE(halftone.param_angle);
+	HALFTONE2_EXPORT_VALUE(halftone.param_origin);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -205,7 +209,7 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	const float supersample_size(abs(pw/(halftone.size).mag()));
+	const float supersample_size(abs(pw/(halftone.param_size.get(Vector())).mag()));
 
 	Surface::pen pen(surface->begin());
 	Point pos;
@@ -263,7 +267,7 @@ Halftone2::accelerated_cairorender(Context context,cairo_t *cr,int quality, cons
 	const Point tl(renddesc.get_tl());
 	const int w(renddesc.get_w());
 	const int h(renddesc.get_h());
-	const float supersample_size(abs(pw/(halftone.size).mag()));
+	const float supersample_size(abs(pw/(halftone.param_size.get(Vector())).mag()));
 
 	SuperCallback supercb(cb,0,9500,10000);
 	

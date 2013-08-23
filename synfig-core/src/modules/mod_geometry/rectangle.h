@@ -45,15 +45,16 @@ class Rectangle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	synfig::Color color;
-
-	synfig::Point point1;
-	synfig::Point point2;
-
-	synfig::Real expand;
-
-	bool invert;
+	//! Parameter: (Color)
+	synfig::ValueBase param_color;
+	//! Parameter: (Point)
+	synfig::ValueBase param_point1;
+	//! Parameter: (Point)
+	synfig::ValueBase param_point2;
+	//! Parameter: (Real)
+	synfig::ValueBase param_expand;
+	//! Parameter: (bool)
+	synfig::ValueBase param_invert;
 
 public:
 

@@ -63,19 +63,21 @@ SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id$");
 
 XORPattern::XORPattern():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	origin(0.125,0.125),
-	size(0.25,0.25)
+	param_origin(ValueBase(Vector(0.125,0.125))),
+	param_size(ValueBase(Vector(0.25,0.25)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 XORPattern::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(origin);
-	IMPORT(size);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_size);
 
-	IMPORT_AS(origin,"pos");
+	if(param=="pos")
+		set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -83,8 +85,8 @@ XORPattern::set_param(const String & param, const ValueBase &value)
 ValueBase
 XORPattern::get_param(const String & param)const
 {
-	EXPORT(origin);
-	EXPORT(size);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_size);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -95,6 +97,9 @@ XORPattern::get_param(const String & param)const
 Color
 XORPattern::get_color(Context context, const Point &point)const
 {
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+	
 	if(get_amount()==0.0)
 		return context.get_color(point);
 

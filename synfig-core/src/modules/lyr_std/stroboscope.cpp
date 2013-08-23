@@ -68,7 +68,9 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Stroboscope,"$Id$");
 
 Layer_Stroboscope::Layer_Stroboscope()
 {
-	frequency=2.0;
+	param_frequency=ValueBase(float(2.0));
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 Layer_Stroboscope::~Layer_Stroboscope()
@@ -78,7 +80,7 @@ Layer_Stroboscope::~Layer_Stroboscope()
 bool
 Layer_Stroboscope::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(frequency);
+	IMPORT_VALUE(param_frequency);
 
 	return Layer::set_param(param,value);
 }
@@ -86,7 +88,7 @@ Layer_Stroboscope::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Stroboscope::get_param(const String & param)const
 {
-	EXPORT(frequency);
+	EXPORT_VALUE(param_frequency);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -109,6 +111,8 @@ Layer_Stroboscope::get_param_vocab()const
 void
 Layer_Stroboscope::set_time(IndependentContext context, Time t)const
 {
+	float frequency=param_frequency.get(float());
+	
 	Time ret_time=Time::begin();
 	if(frequency > 0.0)
 		ret_time = Time(1.0)/frequency*floor(t*frequency);

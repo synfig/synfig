@@ -30,6 +30,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/angle.h>
+#include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,15 +43,21 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+using namespace synfig;
+using namespace std;
+using namespace etl;
 
 class Halftone
 {
 public:
-
-	int type;
-	synfig::Point origin;
-	synfig::Vector size;
-	synfig::Angle angle;
+	//! Parameter: (int)
+	ValueBase param_type;
+	//! Parameter: (synfig::Point)
+	ValueBase param_origin;
+	//! Parameter: (synfig::Vector)
+	ValueBase param_size;
+	//! Parameter: (synfig::Angle)
+	ValueBase param_angle;
 
 	float mask(synfig::Point point)const;
 

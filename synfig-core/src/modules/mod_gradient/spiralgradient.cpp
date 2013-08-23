@@ -67,23 +67,24 @@ SYNFIG_LAYER_SET_CVS_ID(SpiralGradient,"$Id$");
 
 SpiralGradient::SpiralGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	gradient(Color::black(),Color::white()),
-	center(0,0),
-	radius(0.5),
-	angle(Angle::zero()),
-	clockwise(false)
+	param_gradient(ValueBase(Gradient(Color::black(),Color::white()))),
+	param_center(ValueBase(Point(0,0))),
+	param_radius(ValueBase(Real(0.5))),
+	param_angle(ValueBase(Angle::zero())),
+	param_clockwise(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 SpiralGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(gradient);
-	IMPORT(center);
-	IMPORT(radius);
-	IMPORT(angle);
-	IMPORT(clockwise);
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_radius);
+	IMPORT_VALUE(param_angle);
+	IMPORT_VALUE(param_clockwise);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -91,11 +92,11 @@ SpiralGradient::set_param(const String & param, const ValueBase &value)
 ValueBase
 SpiralGradient::get_param(const String &param)const
 {
-	EXPORT(gradient);
-	EXPORT(center);
-	EXPORT(radius);
-	EXPORT(angle);
-	EXPORT(clockwise);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_radius);
+	EXPORT_VALUE(param_angle);
+	EXPORT_VALUE(param_clockwise);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -142,6 +143,13 @@ SpiralGradient::get_param_vocab()const
 inline Color
 SpiralGradient::color_func(const Point &pos, float supersample)const
 {
+
+	Gradient gradient=param_gradient.get(Gradient());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+	Angle angle=param_angle.get(Angle());
+	bool clockwise=param_clockwise.get(bool());
+	
 	const Point centered(pos-center);
 	Angle a;
 	a=Angle::tan(-centered[1],centered[0]).mod();
@@ -179,6 +187,9 @@ SpiralGradient::color_func(const Point &pos, float supersample)const
 float
 SpiralGradient::calc_supersample(const synfig::Point &x, float pw,float /*ph*/)const
 {
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+
 	return (1.41421*pw/radius+(1.41421*pw/Point(x-center).mag())/(PI*2))*0.5;
 }
 

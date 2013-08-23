@@ -68,32 +68,33 @@ SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Halftone3::Halftone3()
+Halftone3::Halftone3():
+Layer_Composite(1.0,Color::BLEND_STRAIGHT)
 {
-	size=(synfig::Vector(0.25,0.25));
-	type=TYPE_SYMMETRIC;
+	param_size=ValueBase(synfig::Vector(0.25,0.25));
+	param_type=ValueBase(int(TYPE_SYMMETRIC));
 
 	for(int i=0;i<3;i++)
 	{
-		tone[i].size=size;
-		tone[i].type=type;
-		tone[i].origin=(synfig::Point(0,0));
-		tone[i].angle=Angle::deg(30.0)*(float)i;
+		tone[i].param_size=param_size;
+		tone[i].param_type=param_type;
+		tone[i].param_origin=ValueBase(synfig::Point(0,0));
+		tone[i].param_angle=ValueBase(Angle::deg(30.0)*(float)i);
 	}
 
-	subtractive=true;
+	param_subtractive=ValueBase(true);
 
-	if(subtractive)
+	if(param_subtractive.get(bool()))
 	{
-		color[0]=Color::cyan();
-		color[1]=Color::magenta();
-		color[2]=Color::yellow();
+		param_color[0].set(Color::cyan());
+		param_color[1].set(Color::magenta());
+		param_color[2].set(Color::yellow());
 	}
 	else
 	{
-		color[0]=Color::red();
-		color[1]=Color::green();
-		color[2]=Color::blue();
+		param_color[0].set(Color::red());
+		param_color[1].set(Color::green());
+		param_color[2].set(Color::blue());
 	}
 
 	set_blend_method(Color::BLEND_STRAIGHT);
@@ -103,22 +104,28 @@ Halftone3::Halftone3()
 			inverse_matrix[i][j]=(j==i)?1.0f:0.0f;
 
 	sync();
-
-
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void
 Halftone3::sync()
 {
+	bool subtractive=param_subtractive.get(bool());
+	Color color[3];
+	for(int i=0;i<3;i++)
+		color[i]=param_color[i].get(Color());
+
+	// Is this needed? set_param does the same!
 	for(int i=0;i<3;i++)
 	{
-		tone[i].size=size;
-		tone[i].type=type;
+		tone[i].param_size=param_size;
+		tone[i].param_type=param_type;
 	}
 
 #define matrix inverse_matrix
 	//float matrix[3][3];
-
 	if(subtractive)
 	{
 		for(int i=0;i<3;i++)
@@ -198,6 +205,11 @@ Halftone3::sync()
 inline Color
 Halftone3::color_func(const Point &point, float supersample,const Color& in_color)const
 {
+	bool subtractive=param_subtractive.get(bool());
+	Color color[3];
+	for(int i=0;i<3;i++)
+		color[i]=param_color[i].get(Color());
+
 	Color halfcolor;
 
 	float chan[3];
@@ -236,7 +248,7 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 inline float
 Halftone3::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
-	return abs(pw/(tone[0].size).mag());
+	return abs(pw/(tone[0].param_size.get(Vector())).mag());
 }
 
 synfig::Layer::Handle
@@ -248,27 +260,37 @@ Halftone3::hit_check(synfig::Context /*context*/, const synfig::Point &/*point*/
 bool
 Halftone3::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(size, {tone[0].size=size; tone[1].size=size; tone[2].size=size;});
-	IMPORT_PLUS(type, {tone[0].type=type; tone[1].type=type; tone[2].type=type;});
+	IMPORT_VALUE_PLUS(param_size,
+		{
+			for(int i=0;i<3;i++)
+				tone[i].param_size=param_size;
 
-	IMPORT_PLUS(color[0],sync());
-	IMPORT_PLUS(color[1],sync());
-	IMPORT_PLUS(color[2],sync());
+		});
+	IMPORT_VALUE_PLUS(param_type,
+		{
+			for(int i=0;i<3;i++)
+				tone[i].param_type=param_type;
+		});
 
-	IMPORT_PLUS(subtractive,sync());
+	IMPORT_VALUE_PLUS(param_color[0],sync());
+	IMPORT_VALUE_PLUS(param_color[1],sync());
+	IMPORT_VALUE_PLUS(param_color[2],sync());
 
-	IMPORT(tone[0].angle);
-	IMPORT(tone[0].origin);
-
-	IMPORT(tone[1].angle);
-	IMPORT(tone[1].origin);
-
-	IMPORT(tone[2].angle);
-	IMPORT(tone[2].origin);
-
-	IMPORT_AS(tone[0].origin,"tone[0].offset");
-	IMPORT_AS(tone[1].origin,"tone[1].offset");
-	IMPORT_AS(tone[2].origin,"tone[2].offset");
+	IMPORT_VALUE_PLUS(param_subtractive,sync());
+	for(int i=0;i<3;i++)
+		if ((param==strprintf("tone[%d].angle",i) || param==strprintf("tone[%d].angle",i))
+			&& tone[i].param_angle.get_type()==value.get_type())
+		{
+			tone[i].param_angle=value;
+			return true;
+		}
+	for(int i=0;i<3;i++)
+		if ((param==strprintf("tone[%d].origin",i) || param==strprintf("tone[%d].origin",i))
+			&& tone[i].param_origin.get_type()==value.get_type())
+		{
+			tone[i].param_origin=value;
+			return true;
+		}
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -276,23 +298,20 @@ Halftone3::set_param(const String & param, const ValueBase &value)
 ValueBase
 Halftone3::get_param(const String & param)const
 {
-	EXPORT(size);
-	EXPORT(type);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_type);
 
-	EXPORT(color[0]);
-	EXPORT(color[1]);
-	EXPORT(color[2]);
+	EXPORT_VALUE(param_color[0]);
+	EXPORT_VALUE(param_color[1]);
+	EXPORT_VALUE(param_color[2]);
 
-	EXPORT(subtractive);
-
-	EXPORT(tone[0].angle);
-	EXPORT(tone[0].origin);
-
-	EXPORT(tone[1].angle);
-	EXPORT(tone[1].origin);
-
-	EXPORT(tone[2].angle);
-	EXPORT(tone[2].origin);
+	EXPORT_VALUE(param_subtractive);
+	for(int i=0;i<3;i++)
+		if (param==strprintf("tone[%d].angle",i))
+			return tone[i].param_angle;
+	for(int i=0;i<3;i++)
+		if (param==strprintf("tone[%d].origin",i))
+			return tone[i].param_origin;
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -368,7 +387,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	const float supersample_size(abs(pw/(tone[0].size).mag()));
+	const float supersample_size(abs(pw/(tone[0].param_size.get(Vector())).mag()));
 
 	Surface::pen pen(surface->begin());
 	Point pos;
@@ -426,7 +445,7 @@ Halftone3::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 	const Point tl(renddesc.get_tl());
 	const int w(renddesc.get_w());
 	const int h(renddesc.get_h());
-	const float supersample_size(abs(pw/(tone[0].size).mag()));
+	const float supersample_size(abs(pw/(tone[0].param_size.get(Vector())).mag()));
 	
 	SuperCallback supercb(cb,0,9500,10000);
 	

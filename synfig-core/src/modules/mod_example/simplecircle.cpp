@@ -67,19 +67,20 @@ SYNFIG_LAYER_SET_CVS_ID(SimpleCircle,"$Id$");
 
 SimpleCircle::SimpleCircle():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	color(Color::black()),
-	center(0,0),
-	radius(0.5)
+	param_color(ValueBase(Color::black())),
+	param_center(ValueBase(Point(0,0))),
+	param_radius(ValueBase(Real(0.5)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 SimpleCircle::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(color);
-	IMPORT(center);
-	IMPORT(radius);
+	IMPORT_VALUE(param_color);
+	IMPORT_VALUE(param_center);
+	IMPORT_VALUE(param_radius);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -87,9 +88,9 @@ SimpleCircle::set_param(const String & param, const ValueBase &value)
 ValueBase
 SimpleCircle::get_param(const String &param)const
 {
-	EXPORT(color);
-	EXPORT(center);
-	EXPORT(radius);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_radius);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -116,6 +117,7 @@ SimpleCircle::get_param_vocab()const
 		.set_local_name(_("Radius"))
 		.set_description(_("This is the radius of the circle"))
 		.set_origin("center")
+		.set_is_distance()
 	);
 
 	return ret;
@@ -124,6 +126,9 @@ SimpleCircle::get_param_vocab()const
 Color
 SimpleCircle::get_color(Context context, const Point &pos)const
 {
+	Color color=param_color.get(Color());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
 
 	if((pos-center).mag()<radius)
 	{
@@ -139,6 +144,9 @@ SimpleCircle::get_color(Context context, const Point &pos)const
 synfig::Layer::Handle
 SimpleCircle::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+
 	if((pos-center).mag()<radius)
 		return const_cast<SimpleCircle*>(this);
 	else
@@ -194,6 +202,10 @@ SimpleCircle::accelerated_render(Context context,Surface *surface,int quality, c
 bool
 SimpleCircle::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+
 	SuperCallback supercb(cb,0,9500,10000);
 	
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)

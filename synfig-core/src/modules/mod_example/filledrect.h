@@ -48,18 +48,20 @@ class FilledRect : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Color color;
-
-	Point point1;
-	Point point2;
-
-	Real feather_x;
-	Real feather_y;
-
-	Real	bevel;
-
-	bool		bevCircle;
+	//! Parameter: (Color)
+	ValueBase param_color;
+	//! Parameter: (Point)
+	ValueBase param_point1;
+	//! Parameter: (Point)
+	ValueBase param_point2;
+	//! Parameter: Real)
+	ValueBase param_feather_x;
+	//! Parameter: (Real)
+	ValueBase param_feather_y;
+	//! Parameter: (Real)
+	ValueBase param_bevel;
+	//! Parameter: (bool)
+	ValueBase param_bevCircle;
 
 	bool get_color(const Point &pos, Color &out, Real &outamount)const;
 

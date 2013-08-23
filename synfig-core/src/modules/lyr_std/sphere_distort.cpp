@@ -82,59 +82,56 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id$");
 
 /* === E N T R Y P O I N T ================================================= */
 
-Layer_SphereDistort::Layer_SphereDistort()
-:center(0,0),
-radius(1),
-percent(1.0),
-type(TYPE_NORMAL),
-clip(false)
+Layer_SphereDistort::Layer_SphereDistort():
+param_center(ValueBase(Vector(0,0))),
+param_radius(ValueBase(double(1))),
+param_amount(ValueBase(double(1))),
+param_type(ValueBase(int(TYPE_NORMAL))),
+param_clip(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 
 bool
 Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(center,sync());
-	IMPORT_PLUS(radius,sync());
-	IMPORT(type);
-	IMPORT_AS(percent,"amount");
-	IMPORT(clip);
+	IMPORT_VALUE_PLUS(param_center,sync());
+	IMPORT_VALUE_PLUS(param_radius,sync());
+	IMPORT_VALUE(param_type);
+	IMPORT_VALUE(param_amount);
+	IMPORT_VALUE(param_clip);
 
-	if(param=="percent")
+	if(param=="percent" && param_amount.get_type()==value.get_type())
 	{
-		if(dynamic_param_list().count("percent"))
-		{
-			connect_dynamic_param("amount",dynamic_param_list().find("percent")->second);
-			disconnect_dynamic_param("percent");
-			synfig::warning("Layer_SphereDistort::::set_param(): Updated valuenode connection to use the new \"amount\" parameter.");
-		}
-		else
-			synfig::warning("Layer_SphereDistort::::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
+		set_param("amount", value);
 	}
 
-	return false;
+	return Layer::set_param(param,value);
 }
 
 ValueBase
 Layer_SphereDistort::get_param(const String &param)const
 {
-	EXPORT(center);
-	EXPORT(radius);
-	EXPORT(type);
-	EXPORT_AS(percent,"amount");
-	EXPORT(clip);
+	EXPORT_VALUE(param_center);
+	EXPORT_VALUE(param_radius);
+	EXPORT_VALUE(param_type);
+	EXPORT_VALUE(param_amount);
+	EXPORT_VALUE(param_clip);
+	if(param=="percent")
+		return get_param("amount");
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return ValueBase();
+	return Layer::get_param(param);
 }
 
 void
 Layer_SphereDistort::sync()
 {
+// Remove me?
 }
 
 Layer::Vocab
@@ -306,6 +303,12 @@ inline Point sphtrans(const Point &p, const Point &center, const Real &radius,
 synfig::Layer::Handle
 Layer_SphereDistort::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	double percent=param_amount.get(double());
+	int type=param_type.get(int());
+	bool clip=param_clip.get(bool());
+	
 	bool clipped;
 	Point point(sphtrans(pos,center,radius,percent,type,clipped));
 	if(clip && clipped)
@@ -316,6 +319,12 @@ Layer_SphereDistort::hit_check(synfig::Context context, const synfig::Point &pos
 Color
 Layer_SphereDistort::get_color(Context context, const Point &pos)const
 {
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	double percent=param_amount.get(double());
+	int type=param_type.get(int());
+	bool clip=param_clip.get(bool());
+
 	bool clipped;
 	Point point(sphtrans(pos,center,radius,percent,type,clipped));
 	if(clip && clipped)
@@ -338,6 +347,11 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 	*/
 
 	//bounding box reject
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	double percent=param_amount.get(double());
+	int type=param_type.get(int());
+	bool clip=param_clip.get(bool());
 	{
 		Rect	sphr;
 
@@ -548,6 +562,12 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 	 super sampling, non-linear interpolation
 	 */
 	
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	double percent=param_amount.get(double());
+	int type=param_type.get(int());
+	bool clip=param_clip.get(bool());
+
 	RendDesc	renddesc(renddesc_);
 	
 	// Untransform the render desc
@@ -780,12 +800,12 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return sphtrans(x,layer->center,layer->radius,-layer->percent,layer->type);
+		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(bool()));
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return sphtrans(x,layer->center,layer->radius,layer->percent,layer->type);
+		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(bool()));
 	}
 
 	synfig::String get_string()const
@@ -803,6 +823,11 @@ Layer_SphereDistort::get_transform()const
 Rect
 Layer_SphereDistort::get_bounding_rect()const
 {
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	int type=param_type.get(int());
+	bool clip=param_clip.get(bool());
+
 	Rect bounds(Rect::full_plane());
 
 	if (clip)

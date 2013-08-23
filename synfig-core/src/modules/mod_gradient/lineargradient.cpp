@@ -63,6 +63,9 @@ SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id$");
 inline void
 LinearGradient::sync()
 {
+	Point p1=param_p1.get(Point());
+	Point p2=param_p2.get(Point());
+	
 	diff=(p2-p1);
 	const Real mag(diff.inv_mag());
 	diff*=mag*mag;
@@ -71,19 +74,26 @@ LinearGradient::sync()
 
 LinearGradient::LinearGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	p1(1,1),
-	p2(-1,-1),
-	gradient(Color::black(), Color::white()),
-	loop(false),
-	zigzag(false)
+	param_p1(ValueBase(Point(1,1))),
+	param_p2(ValueBase(Point(-1,-1))),
+	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
+	param_loop(ValueBase(false)),
+	param_zigzag(ValueBase(false))
 {
 	sync();
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color
 LinearGradient::color_func(const Point &point, float supersample)const
 {
+	Point p1=param_p1.get(Point());
+	Point p2=param_p2.get(Point());
+	Gradient gradient=param_gradient.get(Gradient());
+	bool loop=param_loop.get(bool());
+	bool zigzag=param_zigzag.get(bool());
+	
 	Real dist(point*diff-p1*diff);
 
 	if(loop)
@@ -123,6 +133,9 @@ LinearGradient::color_func(const Point &point, float supersample)const
 float
 LinearGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
+	Point p1=param_p1.get(Point());
+	Point p2=param_p2.get(Point());
+
 	return pw/(p2-p1).mag();
 }
 
@@ -141,36 +154,22 @@ LinearGradient::hit_check(synfig::Context context, const synfig::Point &point)co
 bool
 LinearGradient::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="p1" && value.same_type_as(p1))
-	{
-		p1=value.get(p1);
-		sync();
-		return true;
-	}
-	if(param=="p2" && value.same_type_as(p2))
-	{
-		p2=value.get(p2);
-		sync();
-		return true;
-	}
-	//IMPORT(p1);
-	//IMPORT(p2);
-
-
-	IMPORT(gradient);
-	IMPORT(loop);
-	IMPORT(zigzag);
+	IMPORT_VALUE_PLUS(param_p1,sync());
+	IMPORT_VALUE_PLUS(param_p2,sync());
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_loop);
+	IMPORT_VALUE(param_zigzag);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 LinearGradient::get_param(const String & param)const
 {
-	EXPORT(p1);
-	EXPORT(p2);
-	EXPORT(gradient);
-	EXPORT(loop);
-	EXPORT(zigzag);
+	EXPORT_VALUE(param_p1);
+	EXPORT_VALUE(param_p2);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_loop);
+	EXPORT_VALUE(param_zigzag);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -270,6 +269,10 @@ LinearGradient::accelerated_render(Context context,Surface *surface,int quality,
 bool
 LinearGradient::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	bool loop=param_loop.get(bool());
+	Point p1=param_p1.get(Point());
+	Point p2=param_p2.get(Point());
+	Gradient gradient=param_gradient.get(Gradient());
 
 	cairo_save(cr);
 	cairo_pattern_t* pattern=cairo_pattern_create_linear(p1[0], p1[1], p2[0], p2[1]);
@@ -305,6 +308,9 @@ LinearGradient::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 bool
 LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
 {
+	bool loop=param_loop.get(bool());
+	bool zigzag=param_zigzag.get(bool());
+
 	bool cpoints_all_opaque=true;
 	float a,r,g,b;
 	Gradient::CPoint cp;

@@ -48,12 +48,12 @@ class SimpleCircle : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Color color;
-
-	Point center;
-
-	Real radius;
+	//! Parameter: (Color)
+	ValueBase param_color;
+	//! Parameter: (Point)
+	ValueBase param_center;
+	//! Parameter: (Real)
+	ValueBase param_radius;
 
 public:
 

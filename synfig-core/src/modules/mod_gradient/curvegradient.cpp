@@ -202,20 +202,23 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 inline void
 CurveGradient::sync()
 {
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
 	curve_length_=calculate_distance(bline, bline_loop);
 }
 
 
 CurveGradient::CurveGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	origin(0,0),
-	width(0.25),
-	gradient(Color::black(), Color::white()),
-	loop(false),
-	zigzag(false),
-	perpendicular(false),
-	fast(true)
+	param_origin(ValueBase(Point(0,0))),
+	param_width(ValueBase(Real(0.25))),
+	param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
+	param_gradient(Gradient(Color::black(), Color::white())),
+	param_loop(ValueBase(false)),
+	param_zigzag(ValueBase(false)),
+	param_perpendicular(ValueBase(false)),
+	param_fast(ValueBase(true))
 {
+	std::vector<synfig::BLinePoint> bline;
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
@@ -229,14 +232,26 @@ CurveGradient::CurveGradient():
 	bline[1].set_width(1.0f);
 	bline[2].set_width(1.0f);
 	bline_loop=true;
+	param_bline.set(bline);
 
 	sync();
 
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color
 CurveGradient::color_func(const Point &point_, int quality, float supersample)const
 {
+	Point origin=param_origin.get(Point());
+	Real width=param_width.get(Real());
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	Gradient gradient=param_gradient.get(Gradient());
+	bool loop=param_loop.get(bool());
+	bool zigzag=param_zigzag.get(bool());
+	bool perpendicular=param_perpendicular.get(bool());
+	bool fast=param_fast.get(bool());
+
 	Vector tangent;
 	Vector diff;
 	Point p1;
@@ -487,25 +502,23 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 {
 
 
-	IMPORT(origin);
-	IMPORT(perpendicular);
-	IMPORT(fast);
-
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_width);
 	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
 	{
-		bline=value;
+		param_bline=value;
 		bline_loop=value.get_loop();
 		sync();
-
 		return true;
 	}
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_loop);
+	IMPORT_VALUE(param_zigzag);
+	IMPORT_VALUE(param_perpendicular);
+	IMPORT_VALUE(param_fast);
 
-	IMPORT(width);
-	IMPORT(gradient);
-	IMPORT(loop);
-	IMPORT(zigzag);
-
-	IMPORT_AS(origin,"offset");
+	if(param=="offset")
+		set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -513,14 +526,14 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 ValueBase
 CurveGradient::get_param(const String & param)const
 {
-	EXPORT(origin);
-	EXPORT(bline);
-	EXPORT(gradient);
-	EXPORT(loop);
-	EXPORT(zigzag);
-	EXPORT(width);
-	EXPORT(perpendicular);
-	EXPORT(fast);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_width);
+	EXPORT_VALUE(param_bline);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_loop);
+	EXPORT_VALUE(param_zigzag);
+	EXPORT_VALUE(param_perpendicular);
+	EXPORT_VALUE(param_fast);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -671,7 +684,7 @@ CurveGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality,
 	CairoSurface csurface(surface);
 	if(!csurface.map_cairo_image())
 	{
-		synfig::warning("Spiral Gradient: map cairo surface failed");
+		synfig::warning("Curve Gradient: map cairo surface failed");
 		return false;
 	}
 	for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)

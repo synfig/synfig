@@ -50,14 +50,14 @@ class ConicalGradient : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Gradient gradient;
-
-	Point center;
-
-	Angle angle;
-
-	bool symmetric;
+	//! Parameter: (Gradient)
+	ValueBase param_gradient;
+	//! Parameter: (Point)
+	ValueBase param_center;
+	//! Parameter: (Angle)
+	ValueBase param_angle;
+	//! Parameter: (bool)
+	ValueBase param_symmetric;
 
 	Color color_func(const Point &x, float supersample=0)const;
 

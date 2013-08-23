@@ -37,6 +37,12 @@
 #include "halftone.h"
 
 /* === M A C R O S ========================================================= */
+#define HALFTONE3_IMPORT_VALUE(x)                                             \
+	if (#x=="tone[i].param_"+param && x.get_type()==value.get_type())         \
+		{                                                                     \
+			x=value;                                                          \
+			return true;                                                      \
+		}                                                                     \
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -50,13 +56,18 @@ class Halftone3 : public Layer_Composite
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Vector size;
-	int type;
+	//! Parameter: (Vector)
+	ValueBase param_size;
+	//! Parameter: (int)
+	ValueBase param_type;
+	//! Parameter: (class Halftone)
 	Halftone tone[3];
-	Color	color[3];
+	//! Parameter: (Color)
+	ValueBase param_color[3];
+	//! Parameter: (bool)
+	ValueBase param_subtractive;
+
 	float inverse_matrix[3][3];
-	bool subtractive;
 
 	Color color_func(const Point &x, float supersample,const Color &under_color)const;
 

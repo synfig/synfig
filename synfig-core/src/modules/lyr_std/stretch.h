@@ -47,9 +47,10 @@ class Layer_Stretch : public Layer
 	friend class ::Stretch_Trans;
 
 private:
-
-	Vector amount;
-	Point center;
+	//!Parameter (Vector)
+	ValueBase param_amount;
+	//!Parameter (Point)
+	ValueBase param_center;
 
 public:
 

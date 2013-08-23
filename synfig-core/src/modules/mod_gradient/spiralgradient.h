@@ -49,16 +49,16 @@ class SpiralGradient : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Gradient gradient;
-
-	Point center;
-
-	Real radius;
-
-	Angle angle;
-
-	bool clockwise;
+	//! Parameter: (Gradient)
+	ValueBase param_gradient;
+	//! Parameter: (Point)
+	ValueBase param_center;
+	//! Parameter: (Real)
+	ValueBase param_radius;
+	//! Parameter: (Angle)
+	ValueBase param_angle;
+	//! Parameter: (bool)
+	ValueBase param_clockwise;
 
 	Color color_func(const Point &x, float supersample=0)const;
 

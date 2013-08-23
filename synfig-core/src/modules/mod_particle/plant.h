@@ -53,13 +53,42 @@ class Plant : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
+	//! Parameter: (std::vector<BLinePoint>)
+	ValueBase param_bline;
+	//! Parameter: (Point)
+	ValueBase param_origin;
+	//!Parameter: (Gradient)
+	ValueBase param_gradient;
+	//!Parameter: (Angle)
+	ValueBase param_split_angle;
+	//!Parameter: (Vector)
+	ValueBase param_gravity;
+	//!Parameter: (Real)
+	ValueBase param_velocity;
+	//!Parameter: (Real)
+	ValueBase param_perp_velocity;
+	//!Parameter: (Real)
+	ValueBase param_size;
+	//!Parameter: (bool)
+	ValueBase param_size_as_alpha;
+	//!Parameter: (bool)
+	ValueBase param_reverse;
+	//!Parameter: (Real)
+	ValueBase param_step;
+	//!Parameter: (Random)
+	ValueBase param_random;
+	//!Parameter: (int)
+	ValueBase param_splits;
+	//!Parameter: (int)
+	ValueBase param_sprouts;
+	//!Parameter: (Real)
+	ValueBase param_random_factor;
+	//!Parameter: (Real)
+	ValueBase param_drag;
+	//!Parameter: (bool)
+	ValueBase param_use_width;
 
-	std::vector<BLinePoint> bline;
 	bool bline_loop;
-
-	Point origin;
-
-	Gradient gradient;
 
 	struct Particle
 	{
@@ -72,30 +101,15 @@ private:
 
 	mutable std::vector<Particle> particle_list;
 	mutable Rect	bounding_rect;
-	Angle split_angle;
-	Vector gravity;
-	Real velocity;
-	Real perp_velocity;
-	Real step;
 	Real mass;
-	Real drag;
-	Real size;
-	int splits;
-	int sprouts;
-	Real random_factor;
-	Random random;
 
-	bool size_as_alpha;
-	bool reverse;
 	mutable bool needs_sync_;
 	mutable Mutex mutex;
 
 	void branch(int n, int depth,float t, float stunt_growth, Point position,Vector velocity)const;
 	void sync()const;
 	String version;
-	bool use_width;
 	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
-	void draw_particles(cairo_surface_t *surface, const RendDesc &renddesc)const;
 	void draw_particles(cairo_t *cr)const;
 
 public:

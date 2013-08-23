@@ -48,23 +48,32 @@ class Noise : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
+	//!Parameter: (Gradient)
+	synfig::ValueBase param_gradient;
+	//!Parameter: (RandomNoise)
+	synfig::ValueBase param_random;
+	//!Parameter: (synfig::Vector)
+	synfig::ValueBase param_size;
+	//!Parameter: (RandomNoise::SmoothType)
+	synfig::ValueBase param_smooth;
+	//!Parameter: (int)
+	synfig::ValueBase param_detail;
+	//!Parameter: (synfig::Real)
+	synfig::ValueBase param_speed;
+	//!Parameter: (bool)
+	synfig::ValueBase param_turbulent;
+	//!Parameter: (bool)
+	synfig::ValueBase param_do_alpha;
+	//!Parameter: (bool)
+	synfig::ValueBase param_super_sample;
 
-	synfig::Vector size;
 
-	RandomNoise random;
-	RandomNoise::SmoothType smooth;
-	int detail;
-	bool do_alpha;
-	synfig::Gradient gradient;
-	synfig::Real speed;
-	bool turbulent;
-	bool do_displacement;
-	synfig::Vector displacement;
+//	bool do_displacement;
+//	synfig::Vector displacement;
 
 	//void sync();
 	mutable synfig::Time curr_time;
 
-	bool super_sample;
 
 	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 

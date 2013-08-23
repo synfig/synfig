@@ -48,8 +48,10 @@ class Zoom : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Zoom_Trans;
 private:
-	Vector center;
-	Real amount;
+	//! Parameter: (Vector)
+	ValueBase param_center;
+	//!Parameter: (Real)
+	ValueBase param_amount;
 public:
 	Zoom();
 

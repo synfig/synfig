@@ -39,6 +39,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
 #include <synfigapp/action.h>
+#include <synfig/interpolation.h>
 
 #include "general.h"
 
@@ -72,6 +73,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_value_type[(int)synfig::ValueBase::TYPE_END];
+static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
 
 #ifdef WIN32
 IconController::IconController(const synfig::String& basepath)
@@ -334,12 +336,16 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
 		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
+		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 IconController::~IconController()
 {
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
 		_tree_pixbuf_table_value_type[i]=Glib::RefPtr<Gdk::Pixbuf>();
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
+		_tree_pixbuf_table_interpolation[i]=Glib::RefPtr<Gdk::Pixbuf>();
 
 	icon_factory->remove_default();
 }
@@ -445,6 +451,36 @@ studio::value_icon(synfig::ValueBase::Type type)
 }
 
 Gtk::StockID
+studio::interpolation_icon(synfig::Interpolation type)
+{
+	switch(type)
+	{
+		case INTERPOLATION_TCB:
+			return Gtk::StockID("synfig-interpolation_type_tcb");
+			break;
+		case INTERPOLATION_CONSTANT:
+			return Gtk::StockID("synfig-interpolation_type_const");
+			break;
+		case INTERPOLATION_LINEAR:
+			return Gtk::StockID("synfig-interpolation_type_linear");
+			break;
+		case INTERPOLATION_HALT:
+			return Gtk::StockID("synfig-interpolation_type_ease");
+			break;
+		case INTERPOLATION_CLAMPED:
+			return Gtk::StockID("synfig-interpolation_type_clamped");
+			break;
+		case INTERPOLATION_MANUAL:
+		case INTERPOLATION_UNDEFINED:
+		case INTERPOLATION_NIL:
+		default:
+			return Gtk::StockID();
+			break;
+	}
+}
+
+
+Gtk::StockID
 studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
@@ -462,6 +498,12 @@ studio::get_tree_pixbuf(synfig::ValueBase::Type type)
 {
 	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[int(type)];
+}
+
+Glib::RefPtr<Gdk::Pixbuf>
+studio::get_interpolation_pixbuf(synfig::Interpolation type)
+{
+	return _tree_pixbuf_table_interpolation[int(type)];
 }
 
 #ifdef WIN32

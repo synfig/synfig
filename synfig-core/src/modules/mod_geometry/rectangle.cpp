@@ -77,25 +77,39 @@ inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 
 Rectangle::Rectangle():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	color(Color::black()),
-	point1(0,0),
-	point2(1,1),
-	expand(0),
-	invert(false)
+	param_color(ValueBase(Color::black())),
+	param_point1(ValueBase(Point(0,0))),
+	param_point2(ValueBase(Point(1,1))),
+	param_expand(ValueBase(Real(0))),
+	param_invert(ValueBase(false))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Rectangle::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
-					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(point1);
-	IMPORT(point2);
-	IMPORT(expand);
-	IMPORT(invert);
+	IMPORT_VALUE_PLUS(param_color,
+					  {
+						  Color color(param_color.get(Color()));
+						  if (color.get_a() == 0)
+						  {
+							  if(converted_blend_)
+							  {
+								  set_blend_method(Color::BLEND_ALPHA_OVER);
+								  color.set_a(1);
+								  param_color.set(color);
+							  }
+							  else
+								  transparent_color_ = true;
+						  }
+					  }
+					  );
+	IMPORT_VALUE(param_point1);
+	IMPORT_VALUE(param_point2);
+	IMPORT_VALUE(param_expand);
+	IMPORT_VALUE(param_invert);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -103,11 +117,11 @@ Rectangle::set_param(const String & param, const ValueBase &value)
 ValueBase
 Rectangle::get_param(const String &param)const
 {
-	EXPORT(color);
-	EXPORT(point1);
-	EXPORT(point2);
-	EXPORT(expand);
-	EXPORT(invert);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_point1);
+	EXPORT_VALUE(param_point2);
+	EXPORT_VALUE(param_expand);
+	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -151,6 +165,11 @@ Rectangle::get_param_vocab()const
 synfig::Layer::Handle
 Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+	
 	if(is_disabled())
 		return context.hit_check(pos);
 
@@ -188,6 +207,8 @@ Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 bool
 Rectangle::is_solid_color()const
 {
+	Color color=param_color.get(Color());
+	
 	return Layer_Composite::is_solid_color() ||
 		(get_blend_method() == Color::BLEND_COMPOSITE &&
 		 get_amount() == 1.0f &&
@@ -197,6 +218,12 @@ Rectangle::is_solid_color()const
 Color
 Rectangle::get_color(Context context, const Point &pos)const
 {
+	Color color=param_color.get(Color());
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+
 	if(is_disabled())
 		return context.get_color(pos);
 
@@ -304,6 +331,12 @@ Rectangle::get_color(Context context, const Point &pos)const
 bool
 Rectangle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+
 	if(is_disabled())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -562,6 +595,12 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 bool
 Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+
 	if(is_disabled())
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
 	
@@ -629,6 +668,11 @@ Rectangle::accelerated_cairorender(Context context, cairo_t *cr, int quality, co
 Rect
 Rectangle::get_bounding_rect()const
 {
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+
 	if(invert)
 		return Rect::full_plane();
 
@@ -665,6 +709,12 @@ Rectangle::get_bounding_rect()const
 Rect
 Rectangle::get_full_bounding_rect(Context context)const
 {
+	Color color=param_color.get(Color());
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real expand=param_expand.get(Real());
+	bool invert=param_invert.get(bool());
+
 	if(invert)
 	{
 		if(is_solid_color() && color.get_a()==0)

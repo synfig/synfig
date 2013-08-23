@@ -49,7 +49,8 @@ class Layer_Stroboscope : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	float	frequency;
+	//!Parameter (float)
+	ValueBase param_frequency;
 
 protected:
 	Layer_Stroboscope();
