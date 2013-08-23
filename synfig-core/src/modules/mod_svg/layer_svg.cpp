@@ -74,7 +74,11 @@ svg_layer::set_param(const String & param, const ValueBase &value)
 		if(canvas){
 			canvas->set_inline(get_canvas());
 			set_sub_canvas(canvas);
-			IMPORT(filename);
+			if(param=="filename" && value.same_type_as(filename))
+			{
+				value.put(&filename);
+				return true;
+			}
 		}
 	}
 	return Layer_PasteCanvas::set_param(param,value);
@@ -83,7 +87,11 @@ svg_layer::set_param(const String & param, const ValueBase &value)
 ValueBase
 svg_layer::get_param(const String &param)const
 {
-	EXPORT(filename);
+	if(param=="filename")
+	{
+		ValueBase ret(filename);
+		return ret;
+	}
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
