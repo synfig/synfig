@@ -60,6 +60,8 @@ namespace synfig
 			ReadStream(Handle file_system);
 		public:
 			virtual size_t read(void *buffer, size_t size) = 0;
+			int getc();
+			bool read_whole_block(void *buffer, size_t size);
 		};
 
 		class WriteStream : public Stream
@@ -68,6 +70,8 @@ namespace synfig
 			WriteStream(Handle file_system);
 		public:
 			virtual size_t write(void *buffer, size_t size) = 0;
+			int putc(int character);
+			bool write_whole_block(void *buffer, size_t size);
 		};
 
 		typedef etl::handle< ReadStream > ReadStreamHandle;

@@ -125,8 +125,9 @@ bmp_mptr::~bmp_mptr()
 bool
 bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time /*time*/, synfig::ProgressCallback *cb)
 {
-	FILE *file=fopen(filename.c_str(),"rb");
-	if(!file)
+	FileSystem::ReadStreamHandle stream = file_system().get_read_stream(filename);
+
+	if(!stream)
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
 		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
@@ -135,8 +136,8 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	synfig::BITMAPFILEHEADER fileheader;
 	synfig::BITMAPINFOHEADER infoheader;
-	char b_char=fgetc(file);
-	char m_char=fgetc(file);
+	char b_char=stream->getc();
+	char m_char=stream->getc();
 
 	if(b_char!='B' || m_char!='M')
 	{
@@ -145,7 +146,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	if(fread(&fileheader.bfSize, 1, sizeof(synfig::BITMAPFILEHEADER)-4, file)!=sizeof(synfig::BITMAPFILEHEADER)-4)
+	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAPFILEHEADER)-4))
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),filename.c_str()));
 		if(cb)cb->error(str);
@@ -153,7 +154,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	if(fread(&infoheader, 1, sizeof(synfig::BITMAPINFOHEADER), file)!=sizeof(synfig::BITMAPINFOHEADER))
+	if(!stream->read_whole_block(&infoheader, sizeof(synfig::BITMAPINFOHEADER)))
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),filename.c_str()));
 		if(cb)cb->error(str);
@@ -209,12 +210,12 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	for(y=0;y<surface.get_h();y++)
 		for(x=0;x<surface.get_w();x++)
 		{
-//			float b=(float)(unsigned char)fgetc(file)*(1.0/255.0);
-//			float g=(float)(unsigned char)fgetc(file)*(1.0/255.0);
-//			float r=(float)(unsigned char)fgetc(file)*(1.0/255.0);
-			float b=gamma().b_U8_to_F32((unsigned char)fgetc(file));
-			float g=gamma().g_U8_to_F32((unsigned char)fgetc(file));
-			float r=gamma().r_U8_to_F32((unsigned char)fgetc(file));
+//			float b=(float)(unsigned char)stream->getc()*(1.0/255.0);
+//			float g=(float)(unsigned char)stream->getc()*(1.0/255.0);
+//			float r=(float)(unsigned char)stream->getc()*(1.0/255.0);
+			float b=gamma().b_U8_to_F32((unsigned char)stream->getc());
+			float g=gamma().g_U8_to_F32((unsigned char)stream->getc());
+			float r=gamma().r_U8_to_F32((unsigned char)stream->getc());
 
 			surface[h-y-1][x]=Color(
 				r,
@@ -223,11 +224,10 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				1.0
 			);
 			if(bit_count==32)
-				fgetc(file);
+				stream->getc();
 		}
 
 
-	fclose(file);
 	return true;
 }
 
