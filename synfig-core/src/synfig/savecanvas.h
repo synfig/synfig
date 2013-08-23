@@ -28,6 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <list>
 #include "string.h"
 #include "canvas.h"
 #include "releases.h"
@@ -49,6 +50,8 @@ bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
 //! Stores a Canvas in a string in XML format
 /*! \return The string with the XML canvas definition */
 String canvas_to_string(Canvas::ConstHandle canvas);
+
+void set_save_canvas_external_file_callback(void (*callback)(const std::string &));
 
 void set_file_version(ReleaseVersion version);
 ReleaseVersion get_file_version();
