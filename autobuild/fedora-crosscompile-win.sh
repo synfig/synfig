@@ -229,8 +229,44 @@ unzip portable-python-3.2.5.1.zip
 [ ! -d $PREFIX/python ] || rm -rf $PREFIX/python
 mv python $PREFIX
 
+gen_list_nsh()
+{
+[ ! -e $2.nsh ] || rm $2.nsh
+[ ! -e $2-uninst.nsh ] || rm $2-uninst.nsh
+for line in `find $1 -print`; do
+	directory=`dirname $line`
+	line1=`echo $directory | sed "s|\./||g" | sed "s|/|\\\\\|g"`
+	line2=`echo $line | sed "s|\./||g" | sed "s|/|\\\\\|g"`
+	if [ -d $line ]; then
+		echo "RMDir \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
+	else
+		echo "SetOutPath \"\$INSTDIR\\$line1\""  >> $2.nsh
+		echo "File \"$line2\"" >> $2.nsh
+		echo "Delete \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
+	fi
+done
+# reverse order of uninstall commands
+cp $2-uninst.nsh $2-uninst.nsh.tmp
+tac $2-uninst.nsh.tmp > $2-uninst.nsh
+rm $2-uninst.nsh.tmp
+}
+
 cd $PREFIX
+
+#generate file lists
+
+gen_list_nsh bin bin
+sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from he list of binaries - it will go into separate group
+gen_list_nsh etc etc
+gen_list_nsh examples examples
+gen_list_nsh lib/gtk-2.0 lib-gtk
+gen_list_nsh lib/synfig lib-synfig
+gen_list_nsh licenses licenses
+#gen_list_nsh python python # -- takes too long
+gen_list_nsh share share
+
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
+cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
 }
 
