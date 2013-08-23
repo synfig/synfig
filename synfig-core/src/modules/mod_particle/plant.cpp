@@ -78,20 +78,30 @@ SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 
 
 Plant::Plant():
-	origin(0,0),
-	split_angle(Angle::deg(10)),
-	gravity(0,-0.1),
-	velocity(0.3),
-	perp_velocity(0.0),
-	step(0.01),
-	sprouts(10),
-	version(version__),
-	use_width(true)
+	param_bline(ValueBase(std::vector<BLinePoint>())),
+	param_origin(ValueBase(Vector(0,0))),
+	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
+	param_split_angle(ValueBase(Angle::deg(10))),
+	param_gravity(ValueBase(Vector(0,-0.1))),
+	param_velocity(ValueBase(Real(0.3))),
+	param_perp_velocity(ValueBase(Real(0.0))),
+	param_size(ValueBase(Real(0.015))),
+	param_size_as_alpha(ValueBase(false)),
+	param_reverse(ValueBase(true)),
+	param_step(ValueBase(Real(0.01))),
+	param_splits(ValueBase(int(5))),
+	param_sprouts(ValueBase(int(10))),
+	param_random_factor(ValueBase(Real(0.2))),
+	param_drag(ValueBase(Real(0.1))),
+	param_use_width(ValueBase(true)),
+	version(version__)
 {
 	bounding_rect=Rect::zero();
-	random_factor=0.2;
+	Random random;
 	random.set_seed(time(NULL));
-
+	param_random.set(random.get_seed());
+	
+	std::vector<BLinePoint> bline;
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
@@ -104,21 +114,30 @@ Plant::Plant():
 	bline[0].set_width(1.0f);
 	bline[1].set_width(1.0f);
 	bline[2].set_width(1.0f);
+	param_bline.set(bline);
+	
 	bline_loop=true;
 	mass=(0.5);
-	splits=5;
-	drag=0.1;
-	size=0.015;
 	needs_sync_=true;
 	sync();
-	size_as_alpha=false;
-	reverse=true;
-
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 void
 Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector vel)const
 {
+	int splits=param_splits.get(int());
+	Real step=param_step.get(Real());
+	Vector gravity=param_gravity.get(Vector());
+	Real drag=param_drag.get(Real());
+	Gradient gradient=param_gradient.get(Gradient());
+	Angle split_angle=param_split_angle.get(Angle());
+	Real random_factor=param_random_factor.get(Real());
+	Random random;
+	random.set_seed(param_random.get(int()));
+	
 	float next_split((1.0-t)/(splits-depth)+t/*+random_factor*random(40+depth,t*splits,0,0)/splits*/);
 	for(;t<next_split;t+=step)
 	{
@@ -152,6 +171,11 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 void
 Plant::calc_bounding_rect()const
 {
+	std::vector<BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	Real velocity=param_velocity.get(Real());
+	Vector gravity=param_gravity.get(Vector());
+	Real size=param_size.get(Real());
+
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
 	bounding_rect=Rect::zero();
@@ -184,6 +208,18 @@ Plant::calc_bounding_rect()const
 void
 Plant::sync()const
 {
+	std::vector<BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	Real step_=param_step.get(Real());
+	Gradient gradient=param_gradient.get(Gradient());
+	Real random_factor=param_random_factor.get(Real());
+	Random random;
+	random.set_seed(param_random.get(int()));
+	int sprouts=param_sprouts.get(int());
+	Real velocity=param_velocity.get(Real());
+	Real perp_velocity=param_perp_velocity.get(Real());
+	int splits=param_splits.get(int());
+	bool use_width=param_use_width.get(bool());
+	
 	Mutex::Lock lock(mutex);
 	if (!needs_sync_) return;
 	time_t start_time; time(&start_time);
@@ -202,7 +238,7 @@ Plant::sync()const
 
 	etl::hermite<Vector> curve;
 
-	Real step(abs(this->step));
+	Real step(abs(step_));
 
 	int seg(0);
 
@@ -276,48 +312,49 @@ Plant::sync()const
 bool
 Plant::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
+	IMPORT_VALUE_PLUS(param_bline,
 	{
-		bline=value;
 		bline_loop=value.get_loop();
 		needs_sync_=true;
 		return true;
-	}
-	if(param=="seed" && value.same_type_as(int()))
-	{
-		random.set_seed(value.get(int()));
-		needs_sync_=true;
-		return true;
-	}
-	IMPORT(origin);
-	IMPORT_PLUS(split_angle,needs_sync_=true);
-	IMPORT_PLUS(gravity,needs_sync_=true);
-	IMPORT_PLUS(gradient,needs_sync_=true);
-	IMPORT_PLUS(velocity,needs_sync_=true);
-	IMPORT_PLUS(perp_velocity,needs_sync_=true);
-	IMPORT_PLUS(step,{
+	});
+	IMPORT_VALUE_PLUS(param_random, needs_sync_=true);
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE_PLUS(param_split_angle,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_gravity,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_gradient,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_velocity,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_perp_velocity,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_step,{
 			needs_sync_ = true;
+			Real step=param_step.get(Real());
 			if (step <= 0)
 				step=0.01; // user is probably clueless - give a good default
 			else if (step < 0.00001)
 				step=0.00001; // 100K should be enough for anyone
 			else if (step > 1)
 				step=1;
+			param_step.set(step);
 		});
-	IMPORT_PLUS(splits,{
+	IMPORT_VALUE_PLUS(param_splits,{
 			needs_sync_=true;
+			int splits=param_splits.get(int());
 			if (splits < 1)
 				splits = 1;
+			param_splits.set(splits);
 		});
-	IMPORT_PLUS(sprouts,needs_sync_=true);
-	IMPORT_PLUS(random_factor,needs_sync_=true);
-	IMPORT_PLUS(drag,needs_sync_=true);
-	IMPORT(size);
-	IMPORT(size_as_alpha);
-	IMPORT(reverse);
-	IMPORT(use_width);
+	IMPORT_VALUE_PLUS(param_sprouts,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_random_factor,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_drag,needs_sync_=true);
+	IMPORT_VALUE(param_size);
+	IMPORT_VALUE(param_size_as_alpha);
+	IMPORT_VALUE(param_reverse);
+	IMPORT_VALUE(param_use_width);
 
-	IMPORT_AS(origin,"offset");
+	if(param=="offset")
+		set_param("origin", value);
+	if(param=="seed")
+		set_param("random", value);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -350,27 +387,25 @@ ValueBase
 Plant::get_param(const String& param)const
 {
 	if(param=="seed")
-	{
-		ValueBase ret(random.get_seed());
-		
-		return ret;
-	}
-	EXPORT(bline);
-	EXPORT(origin);
-	EXPORT(split_angle);
-	EXPORT(gravity);
-	EXPORT(velocity);
-	EXPORT(perp_velocity);
-	EXPORT(step);
-	EXPORT(gradient);
-	EXPORT(splits);
-	EXPORT(sprouts);
-	EXPORT(random_factor);
-	EXPORT(drag);
-	EXPORT(size);
-	EXPORT(size_as_alpha);
-	EXPORT(reverse);
-	EXPORT(use_width);
+		return get_param("random");
+
+	EXPORT_VALUE(param_bline);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_split_angle);
+	EXPORT_VALUE(param_gravity);
+	EXPORT_VALUE(param_velocity);
+	EXPORT_VALUE(param_perp_velocity);
+	EXPORT_VALUE(param_step);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_splits);
+	EXPORT_VALUE(param_sprouts);
+	EXPORT_VALUE(param_random_factor);
+	EXPORT_VALUE(param_drag);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_size_as_alpha);
+	EXPORT_VALUE(param_reverse);
+	EXPORT_VALUE(param_use_width);
+	EXPORT_VALUE(param_random);
 
 	EXPORT_NAME();
 
@@ -483,7 +518,7 @@ Plant::set_version(const String &ver)
 	version = ver;
 
 	if (version == "0.1")
-		use_width = false;
+		param_use_width.set(false);
 
 	return true;
 }
@@ -540,6 +575,11 @@ Plant::accelerated_cairorender(Context context, cairo_t *cr, int quality, const 
 void
 Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 {
+	Point origin=param_origin.get(Vector());
+	Real size=param_size.get(Real());
+	bool reverse=param_reverse.get(bool());
+	bool size_as_alpha=param_size_as_alpha.get(bool());
+	
 	const Point	tl(renddesc.get_tl()-origin);
 	const Point br(renddesc.get_br()-origin);
 	
@@ -769,6 +809,11 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 void
 Plant::draw_particles(cairo_surface_t *dest_surface, const RendDesc &renddesc)const
 {
+	Point origin=param_origin.get(Vector());
+	Real size=param_size.get(Real());
+	bool reverse=param_reverse.get(bool());
+	bool size_as_alpha=param_size_as_alpha.get(bool());
+
 	const Point	tl(renddesc.get_tl()-origin);
 	const Point br(renddesc.get_br()-origin);
 	
@@ -850,6 +895,11 @@ Plant::draw_particles(cairo_surface_t *dest_surface, const RendDesc &renddesc)co
 void
 Plant::draw_particles(cairo_t *cr)const
 {
+	Point origin=param_origin.get(Vector());
+	Real size=param_size.get(Real());
+	bool reverse=param_reverse.get(bool());
+	bool size_as_alpha=param_size_as_alpha.get(bool());
+
 	if (particle_list.begin() != particle_list.end())
 	{
 		std::vector<Particle>::iterator iter;
