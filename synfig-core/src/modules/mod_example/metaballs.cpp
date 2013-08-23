@@ -67,42 +67,38 @@ SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 
 Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	gradient(Color::black(), Color::white()),
-	threshold(0),
-	threshold2(1),
-	positive(false)
+	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
+	param_centers(ValueBase(std::vector<synfig::Point>())),
+	param_radii(ValueBase(std::vector<synfig::Real>())),
+	param_weights(ValueBase(std::vector<synfig::Real>())),
+	param_threshold(ValueBase(Real(0))),
+	param_threshold2(ValueBase(Real(1))),
+	param_positive(ValueBase(false))
 {
+	std::vector<synfig::Point> centers;
+	std::vector<synfig::Real> radii;
+	std::vector<synfig::Real> weights;
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point( 2,  1));	radii.push_back(2.5);	weights.push_back(1);
-
+	param_centers.set(centers);
+	param_radii.set(radii);
+	param_weights.set(weights);
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 Metaballs::set_param(const String & param, const ValueBase &value)
 {
-	if(	param=="centers" && value.same_type_as(centers))
-	{
-		centers = value;
-		return true;
-	}
-
-	if(	param=="weights" && value.same_type_as(weights))
-	{
-		weights = value;
-		return true;
-	}
-
-	if(	param=="radii" && value.same_type_as(radii))
-	{
-		radii = value;
-		return true;
-	}
-
-	IMPORT(gradient);
-	IMPORT(threshold);
-	IMPORT(threshold2);
-	IMPORT(positive);
+	IMPORT_VALUE(param_centers);
+	IMPORT_VALUE(param_radii);
+	IMPORT_VALUE(param_weights);
+	IMPORT_VALUE(param_gradient);
+	IMPORT_VALUE(param_threshold);
+	IMPORT_VALUE(param_threshold2);
+	IMPORT_VALUE(param_positive);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -110,14 +106,13 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 ValueBase
 Metaballs::get_param(const String &param)const
 {
-	EXPORT(gradient);
-
-	EXPORT(radii);
-	EXPORT(weights);
-	EXPORT(centers);
-	EXPORT(threshold);
-	EXPORT(threshold2);
-	EXPORT(positive);
+	EXPORT_VALUE(param_gradient);
+	EXPORT_VALUE(param_radii);
+	EXPORT_VALUE(param_weights);
+	EXPORT_VALUE(param_centers);
+	EXPORT_VALUE(param_threshold);
+	EXPORT_VALUE(param_threshold2);
+	EXPORT_VALUE(param_positive);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -183,6 +178,8 @@ Metaballs::hit_check(synfig::Context context, const synfig::Point &point)const
 Real
 Metaballs::densityfunc(const synfig::Point &p, const synfig::Point &c, Real R)const
 {
+	bool positive=param_positive.get(bool());
+	
 	const Real dx = p[0] - c[0];
 	const Real dy = p[1] - c[1];
 
@@ -203,6 +200,12 @@ Metaballs::densityfunc(const synfig::Point &p, const synfig::Point &c, Real R)co
 Real
 Metaballs::totaldensity(const Point &pos)const
 {
+	std::vector<synfig::Point> centers(param_centers.get_list().begin(),param_centers.get_list().end());
+	std::vector<synfig::Real> radii(param_radii.get_list().begin(),param_radii.get_list().end());
+	std::vector<synfig::Real> weights(param_weights.get_list().begin(),param_weights.get_list().end());
+	synfig::Real threshold=param_threshold.get(Real());
+	synfig::Real threshold2=param_threshold2.get(Real());
+
 	Real density = 0;
 
 	//sum up weighted functions
@@ -215,6 +218,7 @@ Metaballs::totaldensity(const Point &pos)const
 Color
 Metaballs::get_color(Context context, const Point &pos)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return gradient(totaldensity(pos));
 	else
@@ -224,6 +228,7 @@ Metaballs::get_color(Context context, const Point &pos)const
 CairoColor
 Metaballs::get_cairocolor(Context context, const Point &pos)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return CairoColor(gradient(totaldensity(pos)));
 	else
@@ -234,6 +239,8 @@ Metaballs::get_cairocolor(Context context, const Point &pos)const
 bool
 Metaballs::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Gradient gradient=param_gradient.get(Gradient());
+	
 	// Width and Height of a pixel
 	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
 	const int 	 w(renddesc.get_w()), 	h(renddesc.get_h());

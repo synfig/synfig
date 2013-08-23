@@ -65,19 +65,26 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_ColorCorrect,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_ColorCorrect::Layer_ColorCorrect():
-	hue_adjust(Angle::zero()),
-	brightness(0),
-	contrast(1.0),
-	exposure(0.0)
+	param_hue_adjust(ValueBase(Angle::zero())),
+	param_brightness(ValueBase(Real(0))),
+	param_contrast(ValueBase(Real(1.0))),
+	param_exposure(ValueBase(Real(0.0))),
+	param_gamma(ValueBase(Real(1.0)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Color
 Layer_ColorCorrect::correct_color(const Color &in)const
 {
+	Angle hue_adjust=param_hue_adjust.get(Angle());
+	Real _brightness=param_brightness.get(Real());
+	Real contrast=param_contrast.get(Real());
+	Real exposure=param_exposure.get(Real());
+	
 	Color ret(in);
-	Real brightness((this->brightness-0.5)*this->contrast+0.5);
+	Real brightness((_brightness-0.5)*contrast+0.5);
 
 	if(gamma.get_gamma_r()!=1.0)
 	{
@@ -167,31 +174,31 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 bool
 Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(hue_adjust);
-	IMPORT(brightness);
-	IMPORT(contrast);
-	IMPORT(exposure);
+	IMPORT_VALUE(param_hue_adjust);
+	IMPORT_VALUE(param_brightness);
+	IMPORT_VALUE(param_contrast);
+	IMPORT_VALUE(param_exposure);
 
-	if(param=="gamma" && value.get_type()==ValueBase::TYPE_REAL)
-	{
-		gamma.set_gamma(1.0/value.get(Real()));
-		return true;
-	}
+	IMPORT_VALUE_PLUS(param_gamma,
+		{
+			gamma.set_gamma(1.0/param_gamma.get(Real()));
+			return true;
+		});
 	return false;
 }
 
 ValueBase
 Layer_ColorCorrect::get_param(const String &param)const
 {
-	EXPORT(hue_adjust);
-	EXPORT(brightness);
-	EXPORT(contrast);
-	EXPORT(exposure);
+	EXPORT_VALUE(param_hue_adjust);
+	EXPORT_VALUE(param_brightness);
+	EXPORT_VALUE(param_contrast);
+	EXPORT_VALUE(param_exposure);
 
 	if(param=="gamma")
 	{
-		ValueBase ret(1.0/gamma.get_gamma());
-		
+		ValueBase ret=param_gamma;
+		ret.set(1.0/gamma.get_gamma());
 		return ret;
 	}
 

@@ -51,9 +51,10 @@ class XORPattern : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Point origin;
-	Point size;
+	//! Parameter: (Point)
+	ValueBase param_origin;
+	//! Parameter: (Point)
+	ValueBase param_size;
 
 public:
 	XORPattern();

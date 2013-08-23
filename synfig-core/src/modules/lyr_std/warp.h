@@ -51,10 +51,17 @@ class Warp : public Layer
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Warp_Trans;
 private:
-
-	Point src_tl,src_br,dest_tl,dest_tr,dest_bl,dest_br;
-
-	Real horizon;
+	//! Parameters: (Point)
+	ValueBase param_src_tl;
+	ValueBase param_src_br;
+	ValueBase param_dest_tl;
+	ValueBase param_dest_tr;
+	ValueBase param_dest_bl;
+	ValueBase param_dest_br;
+	//! Parameter: (Real)
+	ValueBase param_horizon;
+	//! Parameter: (bool)
+	ValueBase param_clip;
 
 	Real cache_a,cache_b,cache_c,cache_d,cache_e,cache_f,cache_i,cache_j;
 
@@ -67,7 +74,6 @@ private:
 	Real transform_forward_z(const Point& p)const;
 	Real transform_backward_z(const Point& p)const;
 
-	bool clip;
 
 public:
 	void sync();

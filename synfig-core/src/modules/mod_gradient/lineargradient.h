@@ -49,13 +49,15 @@ class LinearGradient : public Layer_Composite, public Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
-	Point p1,p2;
+	//! Parameter: (Point)
+	ValueBase param_p1,param_p2;
 	Vector diff;
-	Gradient gradient;
-
-	bool loop;
-	bool zigzag;
+	//! Parameter: (Gradient)
+	ValueBase param_gradient;
+	//! Parameter: (bool)
+	ValueBase param_loop;
+	//! Parameter: (bool)
+	ValueBase param_zigzag;
 
 	void sync();
 

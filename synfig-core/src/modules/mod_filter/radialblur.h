@@ -49,9 +49,12 @@ class RadialBlur : public Layer_Composite
 	SYNFIG_LAYER_MODULE_EXT
 	friend class RadialBlur_Trans;
 private:
-	Vector origin;
-	Real size;
-	bool fade_out;
+	//! Parameter: (Vector)
+	ValueBase param_origin;
+	//! Parameter: (Real)
+	ValueBase param_size;
+	//! Parameter: (bool)
+	ValueBase param_fade_out;
 
 public:
 	RadialBlur();

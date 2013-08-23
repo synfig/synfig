@@ -1021,6 +1021,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas", get_canvas());
 		param_list.add("value_desc", value_desc);
+		param_list.add("canvas_interface",canvas_interface);
 		/////// None
 		param_list.add("new_value", INTERPOLATION_UNDEFINED);
 		param_interpolation_menu->items().push_back(

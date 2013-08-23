@@ -138,13 +138,13 @@ Point line_intersection(
 Outline::Outline()
 {
 	old_version=false;
-	round_tip[0]=true;
-	round_tip[1]=true;
-	sharp_cusps=true;
-	width=1.0f;
-	loopyness=1.0f;
-	expand=0;
-	homogeneous_width=true;
+	param_round_tip[0]=ValueBase(true);
+	param_round_tip[1]=ValueBase(true);
+	param_sharp_cusps=ValueBase(true);
+	param_width=ValueBase(Real(1.0f));
+	param_loopyness=ValueBase(Real(1.0f));
+	param_expand=ValueBase(Real(0));
+	param_homogeneous_width=ValueBase(true);
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -160,11 +160,12 @@ Outline::Outline()
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	bline=bline_point_list;
+	param_bline.set(bline_point_list);
 
 	needs_sync=true;
-
-
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 
@@ -175,6 +176,15 @@ Outline::Outline()
 void
 Outline::sync()
 {
+	ValueBase bline=param_bline;
+	bool round_tip[2];
+	round_tip[0]=param_round_tip[0].get(bool());
+	round_tip[1]=param_round_tip[1].get(bool());
+	bool sharp_cusps=param_sharp_cusps.get(bool());
+	Real width=param_width.get(Real());
+	Real expand=param_expand.get(Real());
+	bool homogeneous_width=param_homogeneous_width.get(bool());
+	
 	clear();
 
 	if (!bline.get_list().size())
@@ -696,7 +706,7 @@ Outline::set_param(const String & param, const ValueBase &value)
 		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
 		//	return false;
 
-		bline=value;
+		param_bline=value;
 
 		return true;
 	}
@@ -751,13 +761,13 @@ Outline::set_param(const String & param, const ValueBase &value)
 	}
 	*/
 
-	IMPORT(round_tip[0]);
-	IMPORT(round_tip[1]);
-	IMPORT(sharp_cusps);
-	IMPORT_PLUS(width,if(old_version){width*=2.0;});
-	IMPORT(loopyness);
-	IMPORT(expand);
-	IMPORT(homogeneous_width);
+	IMPORT_VALUE(param_round_tip[0]);
+	IMPORT_VALUE(param_round_tip[1]);
+	IMPORT_VALUE(param_sharp_cusps);
+	IMPORT_VALUE_PLUS(param_width,if(old_version){param_width.set(param_width.get(Real())*2.0);});
+	IMPORT_VALUE(param_loopyness);
+	IMPORT_VALUE(param_expand);
+	IMPORT_VALUE(param_homogeneous_width);
 
 	if(param!="vector_list")
 		return Layer_Polygon::set_param(param,value);
@@ -782,16 +792,16 @@ Outline::set_time(IndependentContext context, Time time, Vector pos)const
 ValueBase
 Outline::get_param(const String& param)const
 {
-	EXPORT(bline);
-	EXPORT(expand);
+	EXPORT_VALUE(param_bline);
+	EXPORT_VALUE(param_expand);
 	//EXPORT(width_list);
 	//EXPORT(segment_list);
-	EXPORT(homogeneous_width);
-	EXPORT(round_tip[0]);
-	EXPORT(round_tip[1]);
-	EXPORT(sharp_cusps);
-	EXPORT(width);
-	EXPORT(loopyness);
+	EXPORT_VALUE(param_homogeneous_width);
+	EXPORT_VALUE(param_round_tip[0]);
+	EXPORT_VALUE(param_round_tip[1]);
+	EXPORT_VALUE(param_sharp_cusps);
+	EXPORT_VALUE(param_width);
+	EXPORT_VALUE(param_loopyness);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -853,6 +863,7 @@ Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("loopyness")
 		.set_local_name(_("Loopyness"))
+		.set_description(_("(Currently not used)"))
 	);
 	ret.push_back(ParamDesc("homogeneous_width")
 		.set_local_name(_("Homogeneous"))

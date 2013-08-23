@@ -47,8 +47,10 @@ class SuperSample : public synfig::Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	int width, height;
-	bool scanline,alpha_aware;
+	//!Parameter (int)
+	ValueBase param_width, param_height;
+	//!Parameter (bool)
+	ValueBase param_scanline, param_alpha_aware;
 public:
 	SuperSample();
 

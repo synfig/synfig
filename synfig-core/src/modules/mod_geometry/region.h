@@ -51,7 +51,9 @@ class Region : protected synfig::Layer_Polygon//Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	synfig::ValueBase bline;
+	//! Parameter: list of type BlinePoint
+	ValueBase param_bline;
+
 	std::vector<synfig::Segment> segment_list;
 public:
 	Region();

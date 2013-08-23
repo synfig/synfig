@@ -66,16 +66,20 @@ SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 
 CheckerBoard::CheckerBoard():
 	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
-	color			(Color::black()),
-	origin			(Point(0.125,0.125)),
-	size			(Point(0.25,0.25))
+	param_color (ValueBase(Color::black())),
+	param_origin (ValueBase(Point(0.125,0.125))),
+	param_size (ValueBase(Point(0.25,0.25)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline bool
 CheckerBoard::point_test(const synfig::Point& getpos)const
 {
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+	
 	int val=((int)((getpos[0]-origin[0])/size[0])+(int)((getpos[1]-origin[1])/size[1]));
 	if(getpos[0]-origin[0] < 0.0)
 		val++;
@@ -87,15 +91,36 @@ CheckerBoard::point_test(const synfig::Point& getpos)const
 bool
 CheckerBoard::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
-					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(origin);
-	IMPORT(size);
+	IMPORT_VALUE_PLUS(param_color,
+	  {
+		  Color color(param_color.get(Color()));
+		  if (color.get_a() == 0)
+		  {
+			  if(converted_blend_)
+			  {
+				  set_blend_method(Color::BLEND_ALPHA_OVER);
+				  color.set_a(1);
+				  param_color.set(color);
+			  }
+			  else
+				  transparent_color_ = true;
+		  }
+	  }
+	  );
+	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_size);
 
-	IMPORT_AS(origin,"pos");
-	IMPORT_AS(origin[0],"pos[0]");
-	IMPORT_AS(origin[1],"pos[1]");
+	if(param=="pos")
+		set_param("origin", value);
+
+	for(int i=0;i<2;i++)
+		if(param==strprintf("pos[%d]",i) && value.get_type()==ValueBase::TYPE_REAL)
+		{
+			Point p=param_origin.get(Point());
+			p[i]=value.get(Real());
+			param_origin.set(p);
+			return true;
+		}
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -103,9 +128,9 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 ValueBase
 CheckerBoard::get_param(const String &param)const
 {
-	EXPORT(color);
-	EXPORT(origin);
-	EXPORT(size);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_size);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -137,6 +162,9 @@ CheckerBoard::get_param_vocab()const
 synfig::Layer::Handle
 CheckerBoard::hit_check(synfig::Context context, const synfig::Point &getpos)const
 {
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+
 	if(get_amount()!=0.0 && point_test(getpos))
 	{
 		synfig::Layer::Handle tmp;
@@ -153,6 +181,10 @@ CheckerBoard::hit_check(synfig::Context context, const synfig::Point &getpos)con
 Color
 CheckerBoard::get_color(Context context, const Point &getpos)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+
 	if(get_amount()!=0.0 && point_test(getpos))
 	{
 		if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
@@ -167,6 +199,10 @@ CheckerBoard::get_color(Context context, const Point &getpos)const
 bool
 CheckerBoard::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+
 	SuperCallback supercb(cb,0,9500,10000);
 
 	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
@@ -204,6 +240,10 @@ CheckerBoard::accelerated_render(Context context,Surface *surface,int quality, c
 bool
 CheckerBoard::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Color color=param_color.get(Color());
+	Point origin=param_origin.get(Point());
+	Point size=param_size.get(Point());
+
 	SuperCallback supercb(cb,0,9500,10000);
 	
 	if(!is_solid_color())

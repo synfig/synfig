@@ -72,18 +72,22 @@ SYNFIG_LAYER_SET_CVS_ID(Advanced_Outline,"$Id$");
 Point line_intersection( const Point& p1, const Vector& t1, const Point& p2, const Vector& t2 );
 /* === M E T H O D S ======================================================= */
 
-Advanced_Outline::Advanced_Outline()
+Advanced_Outline::Advanced_Outline():
+param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
+param_wplist(ValueBase(std::vector<synfig::WidthPoint>())),
+param_dilist(ValueBase(std::vector<synfig::DashItem>()))
 {
-	cusp_type_=TYPE_SHARP;
-	start_tip_= end_tip_= WidthPoint::TYPE_ROUNDED;
-	width_=1.0f;
-	expand_=0;
-	smoothness_=0.5;
-	dash_offset_=0.0;
-	homogeneous_=false;
-	dash_enabled_=false;
+	param_cusp_type = ValueBase(int(TYPE_SHARP));
+	param_start_tip = param_end_tip = ValueBase(int(WidthPoint::TYPE_ROUNDED));
+	param_width = ValueBase(Real(1.0f));
+	param_expand = ValueBase(Real(0));
+	param_smoothness = ValueBase(Real(0.5));
+	param_dash_offset = ValueBase(Real(0.0));
+	param_homogeneous = ValueBase(false);
+	param_dash_enabled = ValueBase(false);
+	param_fast = ValueBase(false);
+	
 	old_version=false;
-	fast_=false;
 	clear();
 
 	vector<BLinePoint> bline_point_list;
@@ -99,7 +103,8 @@ Advanced_Outline::Advanced_Outline()
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	bline_=bline_point_list;
+	param_bline.set(bline_point_list);
+	
 	vector<WidthPoint> wpoint_list;
 	wpoint_list.push_back(WidthPoint());
 	wpoint_list.push_back(WidthPoint());
@@ -109,11 +114,14 @@ Advanced_Outline::Advanced_Outline()
 	wpoint_list[1].set_width(1.0);
 	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_INTERPOLATE);
 	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_INTERPOLATE);
-	wplist_=wpoint_list;
+	param_wplist.set(wpoint_list);
+	
 	vector<DashItem> ditem_list;
 	ditem_list.push_back(DashItem());
-	dilist_=ditem_list;
-
+	param_dilist.set(ditem_list);
+	
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 
@@ -124,6 +132,20 @@ Advanced_Outline::Advanced_Outline()
 void
 Advanced_Outline::sync()
 {
+	ValueBase bline_=param_bline;
+	ValueBase wplist_=param_wplist;
+	ValueBase dilist_=param_dilist;
+	int start_tip_=param_start_tip.get(int());
+	int end_tip_=param_end_tip.get(int());
+	int cusp_type_=param_cusp_type.get(int());
+	Real width_=param_width.get(Real());
+	Real expand_=param_expand.get(Real());
+	Real smoothness_=param_smoothness.get(Real());
+	bool homogeneous_=param_homogeneous.get(bool());
+	Real dash_offset_=param_dash_offset.get(Real());
+	bool dash_enabled_=param_dash_enabled.get(bool());
+	bool fast_=param_fast.get(bool());
+	
 	clear();
 	if (!bline_.get_list().size())
 	{
@@ -1028,37 +1050,26 @@ Advanced_Outline::sync()
 bool
 Advanced_Outline::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
-	{
-		bline_=value;
-		return true;
-	}
-	IMPORT_AS(cusp_type_, "cusp_type");
-	IMPORT_AS(start_tip_, "start_tip");
-	IMPORT_AS(end_tip_, "end_tip");
-	IMPORT_AS(width_,"width");
-	IMPORT_AS(expand_, "expand");
-	IMPORT_AS(dash_offset_,"dash_offset");
-	IMPORT_AS(homogeneous_,"homogeneous");
-	IMPORT_AS(dash_enabled_, "dash_enabled");
-	IMPORT_AS(fast_, "fast");
-	if(param=="smoothness" && value.get_type()==ValueBase::TYPE_REAL)
-	{
-		if(value > 1.0) smoothness_=1.0;
-		else if(value < 0.0) smoothness_=0.0;
-		else smoothness_=value;
-		return true;
-	}
-	if(param=="wplist" && value.get_type()==ValueBase::TYPE_LIST)
-	{
-		wplist_=value;
-		return true;
-	}
-	if(param=="dilist" && value.get_type()==ValueBase::TYPE_LIST)
-	{
-		dilist_=value;
-		return true;
-	}
+
+	IMPORT_VALUE(param_bline);
+	IMPORT_VALUE(param_wplist);
+	IMPORT_VALUE(param_dilist);
+	IMPORT_VALUE(param_start_tip);
+	IMPORT_VALUE(param_end_tip);
+	IMPORT_VALUE(param_cusp_type);
+	IMPORT_VALUE(param_width);
+	IMPORT_VALUE(param_expand);
+	IMPORT_VALUE_PLUS(param_smoothness,
+		{
+			if(value > 1.0) param_smoothness.set(Real(1.0));
+			else if(value < 0.0) param_smoothness.set(Real(0.0));
+		}
+	);
+	IMPORT_VALUE(param_homogeneous);
+	IMPORT_VALUE(param_dash_offset);
+	IMPORT_VALUE(param_dash_enabled);
+	IMPORT_VALUE(param_fast);
+
 	if(param=="vector_list")
 		return false;
 	return Layer_Polygon::set_param(param,value);
@@ -1089,19 +1100,20 @@ Advanced_Outline::set_version(const synfig::String &ver)
 ValueBase
 Advanced_Outline::get_param(const String& param)const
 {
-	EXPORT_AS(bline_, "bline");
-	EXPORT_AS(expand_, "expand");
-	EXPORT_AS(smoothness_, "smoothness");
-	EXPORT_AS(cusp_type_, "cusp_type");
-	EXPORT_AS(start_tip_,"start_tip");
-	EXPORT_AS(end_tip_,"end_tip");
-	EXPORT_AS(width_, "width");
-	EXPORT_AS(wplist_, "wplist");
-	EXPORT_AS(dash_offset_,"dash_offset");
-	EXPORT_AS(dilist_, "dilist");
-	EXPORT_AS(homogeneous_, "homogeneous");
-	EXPORT_AS(dash_enabled_,"dash_enabled");
-	EXPORT_AS(fast_, "fast");
+	EXPORT_VALUE(param_bline);
+	EXPORT_VALUE(param_wplist);
+	EXPORT_VALUE(param_dilist);
+	EXPORT_VALUE(param_start_tip);
+	EXPORT_VALUE(param_end_tip);
+	EXPORT_VALUE(param_cusp_type);
+	EXPORT_VALUE(param_width);
+	EXPORT_VALUE(param_expand);
+	EXPORT_VALUE(param_smoothness);
+	EXPORT_VALUE(param_homogeneous);
+	EXPORT_VALUE(param_dash_offset);
+	EXPORT_VALUE(param_dash_enabled);
+	EXPORT_VALUE(param_fast);
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 	if(param=="vector_list")
@@ -1292,6 +1304,9 @@ Advanced_Outline::bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size
 void
 Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, const Real gv)
 {
+	Real width_=param_width.get(Real());
+	Real expand_=param_expand.get(Real());
+
 	Real w(gv*(expand_+width_*0.5*wp.get_width()));
 	// Side Before
 	switch (wp.get_side_type_before())
@@ -1409,6 +1424,8 @@ Advanced_Outline::add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b
 void
 Advanced_Outline::add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real w)
 {
+	int cusp_type_=param_cusp_type.get(int());
+
 	static int counter=0;
 	counter++;
 	const Vector t1(last.perp().norm());

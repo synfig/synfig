@@ -65,35 +65,45 @@ SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 NoiseDistort::NoiseDistort():
-	size(1,1)
+	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	param_displacement(ValueBase(Vector(0.25,0.25))),
+	param_size(ValueBase(Vector(1,1))),
+	param_random(ValueBase(int(time(NULL)))),
+	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
+	param_detail(ValueBase(int(4))),
+	param_speed(ValueBase(Real(0))),
+	param_turbulent(bool(false))
 {
-	set_blend_method(Color::BLEND_STRAIGHT);
-	smooth=RandomNoise::SMOOTH_COSINE;
-	detail=4;
-	speed=0;
-	random.set_seed(time(NULL));
-	turbulent=false;
-	displacement=Vector(0.25,0.25);
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 inline Point
 NoiseDistort::point_func(const Point &point)const
 {
+	Vector displacement=param_displacement.get(Vector());
+	Vector size=param_size.get(Vector());
+	RandomNoise random;
+	random.set_seed(param_random.get(int()));
+	int smooth_=param_smooth.get(int());
+	int detail=param_detail.get(int());
+	Real speed=param_speed.get(Real());
+	bool turbulent=param_turbulent.get(bool());
+	
 	float x(point[0]/size[0]*(1<<detail));
 	float y(point[1]/size[1]*(1<<detail));
 	
 	int i;
 	Time time;
 	time=speed*curr_time;
-	RandomNoise::SmoothType temp_smooth(smooth);
-	RandomNoise::SmoothType smooth((!speed && temp_smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : temp_smooth);
+	int temp_smooth(smooth_);
+	int smooth((!speed && temp_smooth == (int)(RandomNoise::SMOOTH_SPLINE)) ? (int)(RandomNoise::SMOOTH_FAST_SPLINE) : temp_smooth);
 	
 	Vector vect(0,0);
 	for(i=0;i<detail;i++)
 	{
-		vect[0]=random(smooth,0+(detail-i)*5,x,y,time)+vect[0]*0.5;
-		vect[1]=random(smooth,1+(detail-i)*5,x,y,time)+vect[1]*0.5;
+		vect[0]=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y,time)+vect[0]*0.5;
+		vect[1]=random(RandomNoise::SmoothType(smooth),1+(detail-i)*5,x,y,time)+vect[1]*0.5;
 		
 		if(vect[0]<-1)vect[0]=-1;if(vect[0]>1)vect[0]=1;
 		if(vect[1]<-1)vect[1]=-1;if(vect[1]>1)vect[1]=1;
@@ -171,36 +181,32 @@ NoiseDistort::hit_check(synfig::Context context, const synfig::Point &point)cons
 bool
 NoiseDistort::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="seed" && value.same_type_as(int()))
-	{
-		random.set_seed(value.get(int()));
-		return true;
-	}
-	IMPORT(size);
-	IMPORT(speed);
-	IMPORT(smooth);
-	IMPORT(detail);
-	IMPORT(turbulent);
-	IMPORT(displacement);
+	IMPORT_VALUE(param_displacement);
+	IMPORT_VALUE(param_size);
+	IMPORT_VALUE(param_random);
+	IMPORT_VALUE(param_detail);
+	IMPORT_VALUE(param_smooth);
+	IMPORT_VALUE(param_speed);
+	IMPORT_VALUE(param_turbulent);
+	if(param=="seed")
+		return set_param("random", value);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 NoiseDistort::get_param(const String & param)const
 {
-	if(param=="seed")
-	{
-		ValueBase ret(random.get_seed());
-		
-		return ret;
-	}
-	EXPORT(size);
-	EXPORT(speed);
-	EXPORT(smooth);
-	EXPORT(detail);
-	EXPORT(displacement);
-	EXPORT(turbulent);
+	EXPORT_VALUE(param_displacement);
+	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_random);
+	EXPORT_VALUE(param_detail);
+	EXPORT_VALUE(param_smooth);
+	EXPORT_VALUE(param_speed);
+	EXPORT_VALUE(param_turbulent);
 
+	if(param=="seed")
+		return get_param("random");
+		
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -276,6 +282,8 @@ NoiseDistort::get_cairocolor(Context context, const Point &point)const
 Rect
 NoiseDistort::get_bounding_rect(Context context)const
 {
+	Vector displacement=param_displacement.get(Vector());
+
 	if(is_disabled())
 		return Rect::zero();
 

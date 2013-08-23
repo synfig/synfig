@@ -69,27 +69,38 @@ SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id$");
 
 FilledRect::FilledRect():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
-	color(Color::black()),
-	point1(0,0),
-	point2(1,1),
-	feather_x(0),
-	feather_y(0),
-	bevel(0),
-	bevCircle(0)
+	param_color(ValueBase(Color::black())),
+	param_point1(ValueBase(Vector(0,0))),
+	param_point2(ValueBase(Vector(1,1))),
+	param_feather_x(ValueBase(Real(0))),
+	param_feather_y(ValueBase(Real(0))),
+	param_bevel(ValueBase(Real(0))),
+	param_bevCircle(ValueBase(bool(false)))
 {
-
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
 }
 
 bool
 FilledRect::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(color);
-	IMPORT(point1);
-	IMPORT(point2);
-	IMPORT_PLUS(feather_x, if(feather_x<0)feather_x=0;);
-	IMPORT_PLUS(feather_y, if(feather_y<0)feather_y=0;);
-	IMPORT(bevel);
-	IMPORT(bevCircle);
+	IMPORT_VALUE(param_color);
+	IMPORT_VALUE(param_point1);
+	IMPORT_VALUE(param_point2);
+	IMPORT_VALUE_PLUS(param_feather_x,
+		{
+			Real feather_x=param_feather_x.get(Real());
+			if(feather_x<0) feather_x=0;
+			param_feather_x.set(feather_x);
+		});
+	IMPORT_VALUE_PLUS(param_feather_y,
+		  {
+			  Real feather_y=param_feather_y.get(Real());
+			  if(feather_y<0) feather_y=0;
+			  param_feather_y.set(feather_y);
+		  });
+	IMPORT_VALUE(param_bevel);
+	IMPORT_VALUE(param_bevCircle);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -97,13 +108,13 @@ FilledRect::set_param(const String & param, const ValueBase &value)
 ValueBase
 FilledRect::get_param(const String &param)const
 {
-	EXPORT(color);
-	EXPORT(point1);
-	EXPORT(point2);
-	EXPORT(feather_x);
-	EXPORT(feather_y);
-	EXPORT(bevel);
-	EXPORT(bevCircle);
+	EXPORT_VALUE(param_color);
+	EXPORT_VALUE(param_point1);
+	EXPORT_VALUE(param_point2);
+	EXPORT_VALUE(param_feather_x);
+	EXPORT_VALUE(param_feather_y);
+	EXPORT_VALUE(param_bevel);
+	EXPORT_VALUE(param_bevCircle);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -134,15 +145,18 @@ FilledRect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("feather_x")
 		.set_local_name(_("Feather X"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("feather_y")
 		.set_local_name(_("Feather Y"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("bevel")
 		.set_local_name(_("Bevel"))
 		.set_description(_("Use Bevel for the corners"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("bevCircle")
@@ -176,6 +190,14 @@ FilledRect::hit_check(synfig::Context context, const synfig::Point &point)const
 bool
 FilledRect::get_color(const Point &pos, Color &out, Real &outamount) const
 {
+	Color color=param_color.get(Color());
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+	Real feather_x=param_feather_x.get(Real());
+	Real feather_y=param_feather_y.get(Real());
+	Real bevel=param_bevel.get(Real());
+	bool bevCircle=param_bevCircle.get(bool());
+	
 	Point p[2] = {point1,point2};
 	Real swap;
 
@@ -349,6 +371,9 @@ FilledRect::get_color(Context context, const Point &pos)const
 bool
 FilledRect::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+
 	// Width and Height of a pixel
 	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
 	const int w = renddesc.get_w(), h = renddesc.get_h();
@@ -597,6 +622,9 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 bool
 FilledRect::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
 {
+	Point point1=param_point1.get(Point());
+	Point point2=param_point2.get(Point());
+
 	RendDesc	renddesc(renddesc_);
 	
 	// Untransform the render desc

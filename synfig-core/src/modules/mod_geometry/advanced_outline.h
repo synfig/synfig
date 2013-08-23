@@ -48,22 +48,34 @@ class Advanced_Outline : public synfig::Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
+	//! Parameter: type list of BlinePoint
+	ValueBase param_bline;
+	//! Parameter: type list of WidthPoint
+	ValueBase param_wplist;
+	//! Parameter: type list of DashItem
+	ValueBase param_dilist;
+	//! Parameter: (WidthPoint::SideType)
+	ValueBase param_start_tip;
+	//! Parameter: (WidthPoint::SideType)
+	ValueBase param_end_tip;
+	//! Parameter: (int)
+	ValueBase param_cusp_type;
+	//! Parameter: (Real)
+	ValueBase param_width;
+	//! Parameter: (Real)
+	ValueBase param_expand;
+	//! Parameter: (Real)
+	ValueBase param_smoothness;
+	//! Parameter: (bool)
+	ValueBase param_homogeneous;
+	//! Parameter: (Real)
+	ValueBase param_dash_offset;
+	//! Parameter: (bool)
+	ValueBase param_dash_enabled;
+	//! Parameter: (bool)
+	ValueBase param_fast;
 
-	synfig::ValueBase bline_;
-	synfig::ValueBase wplist_;
-	synfig::ValueBase dilist_;
-	WidthPoint::SideType start_tip_;
-	WidthPoint::SideType end_tip_;
-	int cusp_type_;
-	bool loop_;
-	synfig::Real width_;
-	synfig::Real expand_;
-	Real smoothness_;
-	bool homogeneous_;
-	Real dash_offset_;
-	bool dash_enabled_;
 	bool old_version;
-	bool fast_;
 
 public:
 	enum CuspType

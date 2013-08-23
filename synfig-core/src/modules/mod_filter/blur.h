@@ -42,8 +42,10 @@ class Blur_Layer : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	synfig::Point 	size;
-	int				type;
+	//! Parameter: (synfig::Point)
+	ValueBase param_size;
+	//! Parameter: (int)
+	ValueBase param_type;
 
 public:
 	Blur_Layer();
