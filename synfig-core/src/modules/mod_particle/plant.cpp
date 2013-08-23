@@ -854,6 +854,7 @@ Plant::draw_particles(cairo_t *cr)const
 			cairo_save(cr);
 			
 			cairo_set_source_rgb(cr, r, g, b);
+			cairo_translate(cr, origin[0], origin[1]);
 			cairo_rectangle(cr, x1f, y1f, width, height);
 			cairo_clip(cr);
 			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
