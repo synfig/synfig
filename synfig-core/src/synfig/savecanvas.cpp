@@ -56,6 +56,8 @@
 #include "string.h"
 #include "paramdesc.h"
 
+#include "filecontainerzip.h"
+
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>
 #include "gradient.h"
@@ -84,6 +86,7 @@ using namespace synfig;
 
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
+void (*save_canvas_external_file_callback)(const std::string &) = NULL;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -818,6 +821,14 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			xmlpp::Element *node=root->add_child("param");
 			node->set_attribute("name",iter->get_name());
 
+			// remember filename param if need
+			if (save_canvas_external_file_callback != NULL
+			 && iter->get_name() == "filename"
+			 && value.get_type() == ValueBase::TYPE_STRING)
+			{
+				save_canvas_external_file_callback(value.get(String()));
+			}
+
 			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
 		}
 	}
@@ -1028,6 +1039,12 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 	encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
 	return document.write_to_string_formatted();
+}
+
+void
+set_save_canvas_external_file_callback(void (*callback)(const std::string &))
+{
+	save_canvas_external_file_callback = callback;
 }
 
 void
