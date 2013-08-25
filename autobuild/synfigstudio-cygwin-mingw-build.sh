@@ -67,6 +67,10 @@ SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
 if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
+    export ARCH=32
+elif [[ $TOOLCHAIN == "mingw64-x86_64" ]]; then
+    export TOOLCHAIN_HOST="x86_64-w64-mingw32"
+    export ARCH=32
 elif [[ $TOOLCHAIN == "mingw" ]]; then
     export TOOLCHAIN_HOST="i686-pc-mingw32"
 else
@@ -181,6 +185,7 @@ if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
     tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd ${PKG_NAME}-${PKG_VERSION}
     patch -p1 < $SRCPREFIX/autobuild/cygwin/${PKG_NAME}-${PKG_VERSION}.patch
+    patch -p1 < $SRCPREFIX/autobuild/cygwin/${PKG_NAME}-${PKG_VERSION}-python-fixes.patch
 else
     cd ${PKG_NAME}-${PKG_VERSION}
 fi
@@ -193,6 +198,63 @@ make -j2 install
 cd python
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 export LDFLAGS=" -L/usr/local/lib" 
+python setup.py build
+python setup.py install
+}
+
+mkpycurl()
+{
+PKG_NAME=pycurl
+PKG_VERSION=7.19.0
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://pycurl.sourceforge.net/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+python setup.py build
+python setup.py install
+}
+
+mkurlgrabber()
+{
+PKG_NAME=urlgrabber
+PKG_VERSION=3.9.1
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://urlgrabber.baseurl.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+python setup.py build
+python setup.py install
+}
+
+mkyum-metadata-parser()
+{
+PKG_NAME=yum-metadata-parser
+PKG_VERSION=1.1.4
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/yum-metadata-parser/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
 python setup.py build
 python setup.py install
 }
@@ -235,10 +297,51 @@ if [ ! -e /usr/bin/yumdownloader ]; then
 fi
 }
 
-rpm-install()
+fedora-mingw-install()
 {
-[ -d $WORKSPACE/rpms ] || mkdir $WORKSPACE/rpms
+[ -d $WORKSPACE/mingw-rpms ] || mkdir $WORKSPACE/mingw-rpms
 
+cd $WORKSPACE/mingw-rpms
+
+# Prepare custom yum.conf
+cat > $WORKSPACE/mingw-rpms/yum.conf <<EOF
+[main]
+cachedir=${WORKSPACE}mingw-rpms/yum
+keepcache=0
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+plugins=1
+installonly_limit=3
+
+[fedora]
+name=Fedora \$releasever - \$basearch
+failovermethod=priority
+mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+enabled=1
+metadata_expire=7d
+
+[updates]
+name=Fedora \$releasever - \$basearch - Updates
+failovermethod=priority
+mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+enabled=1
+EOF
+
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=18 --installroot="$WORKSPACE/mingw-rpms" $1`
+for URL in $URLS; do
+if ( echo "$URL" | egrep "^http:" > /dev/null ); then
+    PKG=`basename $URL`
+    if ( echo "$PKG" | egrep "^mingw" > /dev/null ); then
+        if ! ( echo $PKG | egrep "^mingw..-headers|^mingw..-gcc|^mingw-|^mingw..-filesystem|^mingw..-binutils|^mingw..-crt|^mingw..-cpp" > /dev/null); then
+            echo $PKG
+            wget -c "$URL"
+            rpm -Uhv --ignoreos --nodeps --force "$PKG"
+        fi
+    fi
+fi
+done
 }
 
 # Install dependencies
@@ -275,13 +378,32 @@ $CYGWIN_SETUP \
 -P $TOOLCHAIN-gcc-g++  \
 -q
 
+#-P libglib2.0-devel \ # yum req
+#-P libsqlite3-devel \ # yum req
+#-P libxml2-devel \ # yum req
+#-P libcurl-devel \ # pycurl req
 
 mknative mkpopt
 mknative mkrpm
-mknative mkyum
-mknative mkyum-utils
+#mknative mkurlgrabber
+mknative mkyum-metadata-parser
 
-rpm-install
+
+#mknative mkyum
+#mknative mkyum-utils
+
+cd $WORKSPACE
+wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-3.4.3-47.fc18.noarch.rpm
+rpm -Uhv --ignoreos --nodeps yum-3.4.3-47.fc18.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-utils-1.1.31-6.fc18.noarch.rpm
+rpm -Uhv --ignoreos --nodeps yum-utils-1.1.31-6.fc18.noarch.rpm
+
+fedora-mingw-install mingw${ARCH}-libxml++
+fedora-mingw-install mingw${ARCH}-cairo
+fedora-mingw-install mingw${ARCH}-pango
+fedora-mingw-install mingw${ARCH}-boost
+fedora-mingw-install mingw${ARCH}-libjpeg-turbo
+fedora-mingw-install mingw${ARCH}-gtkmm24
 
 #TODO: magick++
 
