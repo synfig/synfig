@@ -117,6 +117,130 @@ else
 	DEBUG=''
 fi
 
+mknative()
+{
+export CBUILD=""
+export CHOST=""
+export CTARGET=""
+export CC=""
+export CXX=""
+export F77=""
+export FC=""
+export GCJ=""
+export GOC=""
+export OBJC=""
+export OBJCXX=""
+export AR=""
+export OBJDUMP=""
+export RANLIB=""
+export STRIP=""
+export RC=""
+export CFLAGS=""
+export CXXFLAGS=""
+export F77FLAGS=""
+export FCFLAGS=""
+export GCJFLAGS=""
+export GOCFLAGS=""
+export OBJCFLAGS=""
+export OBJCXXFLAGS=""
+export PKG_CONFIG_LIBDIR=""
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=""
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=""
+export CPPFLAGS=""
+export LDFLAGS=""
+export PATH="/usr/local/bin:/usr/bin"
+
+$@
+}
+
+mkpopt()
+{
+PKG_NAME=popt
+PKG_VERSION=1.10.3
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.gz ] || wget http://rpm5.org/files/popt/${PKG_NAME}-${PKG_VERSION}.tar.gz
+[ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
+cd ${PKG_NAME}-${PKG_VERSION}
+./autogen.sh
+make -j2 install
+
+}
+
+mkrpm()
+{
+PKG_NAME=rpm
+#PKG_VERSION=4.11.1
+PKG_VERSION=4.10.3.1
+#PKG_VERSION=4.7.0
+TAREXT=bz2
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://rpm.org/releases/rpm-4.7.x/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+    patch -p1 < $SRCPREFIX/autobuild/cygwin/${PKG_NAME}-${PKG_VERSION}.patch
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+LDFLAGS=" -L/usr/local/lib" CPPFLAGS="-I/usr/include/nspr -I/usr/include/nss -I/usr/include/db4.8/ -I/usr/include/python2.7/" ./autogen.sh \
+    --with-external-db \
+    --without-lua \
+    --enable-python
+make -j2 install
+
+cd python
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export LDFLAGS=" -L/usr/local/lib" 
+python setup.py build
+python setup.py install
+}
+
+mkyum()
+{
+PKG_NAME=yum
+PKG_VERSION=3.4.3
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/3.4/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+rm INSTALL || true
+make install PREFIX="//" DESTDIR=""
+}
+
+mkyum-utils()
+{
+PKG_NAME=yum-utils
+PKG_VERSION=1.1.31
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/yum-utils/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+make install || true
+if [ ! -e /usr/bin/yumdownloader ]; then
+    exit 1
+fi
+}
+
+rpm-install()
+{
+[ -d $WORKSPACE/rpms ] || mkdir $WORKSPACE/rpms
+
+}
+
 # Install dependencies
 mkprep()
 {
@@ -125,11 +249,50 @@ export PREP_VERSION=3
 
 if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
 
-#CYGPORT_MIRROR=ftp://ftp.cygwinports.org/pub/cygwinports
-CYGPORT_MIRROR=http://mirrors.kernel.org/sources.redhat.com/cygwinports
-
 $CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg -s $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-K http://cygwinports.org/ports.gpg -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-P git \
+-P make \
+-P gcc \
+-P gdb \
+-P intltool \
+-P autoconf \
+-P automake \
+-P libtool \
+-P pkg-config \
+-P p7zip \
+-P ImageMagick \
+-P cygport \
+-P zlib-devel \
+-P libnspr-devel \
+-P liblzma-devel \
+-P libnss-devel \
+-P libiconv \
+-P libdb4.8-devel \
+-P python \
+-P urlgrabber \ # yum req
+-P $TOOLCHAIN-gcc  \
+-P $TOOLCHAIN-gcc-g++  \
+-q
+
+
+mknative mkpopt
+mknative mkrpm
+mknative mkyum
+mknative mkyum-utils
+
+rpm-install
+
+#TODO: magick++
+
+if false; then
+
+# cygport stuff
+
+#CYGPORT_MIRROR="-s ftp://ftp.cygwinports.org/pub/cygwinports"
+CYGPORT_MIRROR="-s http://mirrors.kernel.org/sources.redhat.com/cygwinports"
+$CYGWIN_SETUP \
+-K http://cygwinports.org/ports.gpg $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
 -P gcc \
@@ -153,8 +316,6 @@ $CYGWIN_SETUP \
 -q
 
 #objdump -p hello.exe | grep "DLL Name"
-
-#TODO: magick++
 
 #freetype
 if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
@@ -190,6 +351,8 @@ cd ..
 
 # there should be no *.la files
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
+
+fi # if false
 
 echo ${PREP_VERSION} > $WORKSPACE/prep-done
 

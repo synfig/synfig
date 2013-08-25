@@ -1,0 +1,219 @@
+diff --git a/python/header-py.c b/python/header-py.c
+index d194fdc..48a88ef 100644
+--- a/python/header-py.c
++++ b/python/header-py.c
+@@ -683,7 +683,7 @@ static char hdr_doc[] =
+ "";
+ 
+ PyTypeObject hdr_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.hdr",			/* tp_name */
+ 	sizeof(hdrObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmbmodule.c b/python/rpmbmodule.c
+index f6e1491..f5c94f0 100644
+--- a/python/rpmbmodule.c
++++ b/python/rpmbmodule.c
+@@ -10,18 +10,22 @@ static char rpmb__doc__[] =
+ */
+ static int prepareInitModule(void)
+ {
++#if !defined(__CYGWIN__)
+     if (PyType_Ready(&spec_Type) < 0) return 0;
+     if (PyType_Ready(&specPkg_Type) < 0) return 0;
++#endif
+ 
+     return 1;
+ }
+ 
+ static int initModule(PyObject *m)
+ {
++#if !defined(__CYGWIN__)
+     Py_INCREF(&spec_Type);
+     PyModule_AddObject(m, "spec", (PyObject *) &spec_Type);
+     Py_INCREF(&specPkg_Type);
+     PyModule_AddObject(m, "specPkg", (PyObject *) &specPkg_Type);
++#endif
+ 
+ #define REGISTER_ENUM(val) PyModule_AddIntConstant(m, #val, val)
+     REGISTER_ENUM(RPMBUILD_ISSOURCE);
+diff --git a/python/rpmds-py.c b/python/rpmds-py.c
+index 30fb908..ed97690 100644
+--- a/python/rpmds-py.c
++++ b/python/rpmds-py.c
+@@ -340,7 +340,7 @@ static char rpmds_doc[] =
+ "";
+ 
+ PyTypeObject rpmds_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.ds",			/* tp_name */
+ 	sizeof(rpmdsObject),		/* tp_basicsize */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmfd-py.c b/python/rpmfd-py.c
+index a266ad6..029487b 100644
+--- a/python/rpmfd-py.c
++++ b/python/rpmfd-py.c
+@@ -309,7 +309,7 @@ static PyGetSetDef rpmfd_getseters[] = {
+ };
+ 
+ PyTypeObject rpmfd_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.fd",			/* tp_name */
+ 	sizeof(rpmfdObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmfi-py.c b/python/rpmfi-py.c
+index 458e721..66222f5 100644
+--- a/python/rpmfi-py.c
++++ b/python/rpmfi-py.c
+@@ -319,7 +319,7 @@ static char rpmfi_doc[] =
+ "";
+ 
+ PyTypeObject rpmfi_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.fi",			/* tp_name */
+ 	sizeof(rpmfiObject),		/* tp_basicsize */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmii-py.c b/python/rpmii-py.c
+index d7713af..d323768 100644
+--- a/python/rpmii-py.c
++++ b/python/rpmii-py.c
+@@ -102,7 +102,7 @@ static char rpmii_doc[] =
+ "";
+ 
+ PyTypeObject rpmii_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.ii",			/* tp_name */
+ 	sizeof(rpmiiObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmkeyring-py.c b/python/rpmkeyring-py.c
+index d5f131e..45ace97 100644
+--- a/python/rpmkeyring-py.c
++++ b/python/rpmkeyring-py.c
+@@ -51,7 +51,7 @@ static struct PyMethodDef rpmPubkey_methods[] = {
+ static char rpmPubkey_doc[] = "";
+ 
+ PyTypeObject rpmPubkey_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.pubkey",			/* tp_name */
+ 	sizeof(rpmPubkeyObject),	/* tp_size */
+ 	0,				/* tp_itemsize */
+@@ -132,7 +132,7 @@ static char rpmKeyring_doc[] =
+ "";
+ 
+ PyTypeObject rpmKeyring_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.keyring",			/* tp_name */
+ 	sizeof(rpmKeyringObject),	/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmmi-py.c b/python/rpmmi-py.c
+index 8e670ce..ad3d85b 100644
+--- a/python/rpmmi-py.c
++++ b/python/rpmmi-py.c
+@@ -163,7 +163,7 @@ static char rpmmi_doc[] =
+ "";
+ 
+ PyTypeObject rpmmi_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.mi",			/* tp_name */
+ 	sizeof(rpmmiObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmps-py.c b/python/rpmps-py.c
+index bdc899a..04b01f9 100644
+--- a/python/rpmps-py.c
++++ b/python/rpmps-py.c
+@@ -71,7 +71,7 @@ static void rpmprob_dealloc(rpmProblemObject *s)
+ }
+ 
+ PyTypeObject rpmProblem_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.prob",			/* tp_name */
+ 	sizeof(rpmProblemObject),		/* tp_basicsize */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmte-py.c b/python/rpmte-py.c
+index 2204a52..8884c03 100644
+--- a/python/rpmte-py.c
++++ b/python/rpmte-py.c
+@@ -249,7 +249,7 @@ static char rpmte_doc[] =
+ "";
+ 
+ PyTypeObject rpmte_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.te",			/* tp_name */
+ 	sizeof(rpmteObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/rpmts-py.c b/python/rpmts-py.c
+index 5c6e9ba..2ffeeac 100644
+--- a/python/rpmts-py.c
++++ b/python/rpmts-py.c
+@@ -871,7 +871,7 @@ static PyGetSetDef rpmts_getseters[] = {
+ };
+ 
+ PyTypeObject rpmts_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.ts",			/* tp_name */
+ 	sizeof(rpmtsObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+diff --git a/python/setup.py.in b/python/setup.py.in
+index 619b0ac..55a4f24 100644
+--- a/python/setup.py.in
++++ b/python/setup.py.in
+@@ -27,14 +27,14 @@ rpmmod = Extension('rpm._rpm',
+                                 'rpmtd', 'rpmte', 'rpmts', 'rpmmodule',
+                              ]),
+                    include_dirs = pkgconfig('--cflags'),
+-                   libraries = pkgconfig('--libs'),
++                   libraries = pkgconfig('--libs') + ['ssp'] + ['intl'],
+                    extra_compile_args = cflags
+                   )
+ 
+ rpmbuild_mod = Extension('rpm._rpmb',
+                    sources = mksources(['rpmbmodule', 'spec']),
+                    include_dirs = pkgconfig('--cflags'),
+-                   libraries = pkgconfig('--libs') + ['rpmbuild'],
++                   libraries = ['rpmbuild'] + ['magic'] + ['ssp'] + pkgconfig('--libs') + ['intl'],
+                    extra_compile_args = cflags
+                   )
+ 
+diff --git a/python/spec-py.c b/python/spec-py.c
+index 1850a50..5923421 100644
+--- a/python/spec-py.c
++++ b/python/spec-py.c
+@@ -61,7 +61,7 @@ static PyGetSetDef specpkg_getseters[] = {
+ };
+ 
+ PyTypeObject specPkg_Type = {
+-	PyVarObject_HEAD_INIT(&PyType_Type, 0)
++	PyVarObject_HEAD_INIT(NULL, 0)
+ 	"rpm.specpkg",			/* tp_name */
+ 	sizeof(specPkgObject),		/* tp_size */
+ 	0,				/* tp_itemsize */
+@@ -262,7 +262,7 @@ static struct PyMethodDef spec_methods[] = {
+ };
+ 
+ PyTypeObject spec_Type = {
+-    PyVarObject_HEAD_INIT(&PyType_Type, 0)
++    PyVarObject_HEAD_INIT(NULL, 0)
+     "rpm.spec",               /*tp_name*/
+     sizeof(specObject),        /*tp_basicsize*/
+     0,                         /*tp_itemsize*/
+diff --git a/rpm.pc.in b/rpm.pc.in
+index 9426920..86e63dc 100644
+--- a/rpm.pc.in
++++ b/rpm.pc.in
+@@ -12,4 +12,4 @@ URL: http://rpm.org
+ # Conflicts:
+ Cflags: -I${includedir}
+ Libs: -L${libdir} -lrpm -lrpmio
+-Libs.private: -lpopt -lrt -lpthread @WITH_SELINUX_LIB@ @WITH_LZMA_LIB@ @WITH_DB_LIB@ @WITH_BZ2_LIB@ @WITH_ZLIB_LIB@ @WITH_NSS_LIB@ @WITH_LUA_LIB@
++Libs.private: -lpopt -lrt -lpthread @WITH_SELINUX_LIB@ @WITH_LZMA_LIB@ @WITH_DB_LIB@ @WITH_BZ2_LIB@ @WITH_ZLIB_LIB@ @WITH_NSS_LIB@
