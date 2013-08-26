@@ -222,6 +222,7 @@ void FileContainerZip::FileInfo::split_name()
 FileContainerZip::FileContainerZip():
 storage_file_(NULL),
 prev_storage_size_(0),
+file_reading_whole_container_(false),
 file_reading_(false),
 file_writing_(false),
 file_processed_size_(0),
@@ -275,18 +276,18 @@ unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buff
 	return crc ^ 0xFFFFFFFFUL;
 }
 
-bool FileContainerZip::create(const std::string &storage_filename)
+bool FileContainerZip::create(const std::string &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = fopen(storage_filename.c_str(), "wb");
+	storage_file_ = fopen(container_filename.c_str(), "wb");
 	if (is_opened()) changed_ = true;
 	return is_opened();
 }
 
-bool FileContainerZip::open(const std::string &storage_filename)
+bool FileContainerZip::open(const std::string &container_filename)
 {
 	if (is_opened()) return false;
-	FILE *f = fopen(storage_filename.c_str(), "r+b");
+	FILE *f = fopen(container_filename.c_str(), "r+b");
 	if (f == NULL) return false;
 
 	// check size of file
@@ -386,6 +387,88 @@ bool FileContainerZip::open(const std::string &storage_filename)
 	return true;
 }
 
+bool FileContainerZip::save()
+{
+	if (file_is_opened()) return false;
+	if (!changed_) return true;
+
+	fseek(storage_file_, 0, SEEK_END);
+
+	// write headers of new directories
+	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
+	{
+		FileInfo &info = i->second;
+		if (info.is_directory && !info.directory_saved)
+		{
+			LocalFileHeader lfh;
+			lfh.version = 20;
+			lfh.filename_length = info.name.size() + 1;
+			DOSTimestamp dos_timestamp(info.time);
+			lfh.modification_time = dos_timestamp.dos_time;
+			lfh.modification_date = dos_timestamp.dos_date;
+
+			info.header_offset = ftell(storage_file_);
+			if (sizeof(lfh) != fwrite(&lfh, 1, sizeof(lfh), storage_file_))
+				return false;
+			if (info.name.size() != fwrite(info.name.c_str(), 1, info.name.size(), storage_file_))
+				return false;
+			if ((int)'/' != fputc('/', storage_file_))
+				return false;
+
+			info.directory_saved = true;
+		}
+	}
+
+	// write central directory
+	uint32_t central_directory_offset = (uint32_t)ftell(storage_file_);
+	if (central_directory_offset == (uint32_t)-1L)
+	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
+	{
+		FileInfo &info = i->second;
+		CentralDirectoryFileHeader cdfh;
+		cdfh.min_version = 20;
+		cdfh.compressed_size = cdfh.uncompressed_size = info.size;
+		cdfh.crc32 = info.crc32;
+		cdfh.filename_length = (uint16_t)info.name.size();
+		if (info.is_directory)
+			cdfh.filename_length++;
+		DOSTimestamp dos_timestamp(info.time);
+		cdfh.modification_time = dos_timestamp.dos_time;
+		cdfh.modification_date = dos_timestamp.dos_date;
+
+		// write header
+		if (sizeof(cdfh) != fwrite(&cdfh, 1, sizeof(cdfh), storage_file_))
+			return false;
+
+		// write name
+		if (info.name.size() != fwrite(info.name.c_str(), 1, info.name.size(), storage_file_))
+			return false;
+		if (info.is_directory)
+			if ((int)'/' != fputc('/', storage_file_))
+				return false;
+	}
+
+	// end of central directory
+	EndOfCentralDirectory ecd;
+	ecd.offset = central_directory_offset;
+	ecd.total_records = files_.size();
+	ecd.size = ftell(storage_file_) - central_directory_offset;
+	if (prev_storage_size_ > 0)
+		ecd.comment_length = sprintf(NULL, "%llx", prev_storage_size_);
+
+	// write header
+	if (sizeof(ecd) != fwrite(&ecd, 1, sizeof(ecd), storage_file_))
+		return false;
+
+	// write comment if need
+	if (prev_storage_size_ != 0)
+		if (ecd.comment_length != fprintf(storage_file_, "%llx", prev_storage_size_))
+			return false;
+
+	changed_ = false;
+	return true;
+}
+
 void FileContainerZip::close()
 {
 	if (!is_opened()) return;
@@ -393,72 +476,7 @@ void FileContainerZip::close()
 	// close opened file if need
 	file_close();
 
-	if (changed_)
-	{
-		fseek(storage_file_, 0, SEEK_END);
-
-		// write headers of new directories
-		for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
-		{
-			FileInfo &info = i->second;
-			if (info.is_directory && !info.directory_saved)
-			{
-				LocalFileHeader lfh;
-				lfh.version = 20;
-				lfh.filename_length = info.name.size() + 1;
-				DOSTimestamp dos_timestamp(info.time);
-				lfh.modification_time = dos_timestamp.dos_time;
-				lfh.modification_date = dos_timestamp.dos_date;
-
-				info.header_offset = ftell(storage_file_);
-				fwrite(&lfh, 1, sizeof(lfh), storage_file_);
-				fwrite(info.name.c_str(), 1, info.name.size(), storage_file_);
-				fputc('/', storage_file_);
-
-				info.directory_saved = true;
-			}
-		}
-
-		// write central directory
-		uint32_t central_directory_offset = ftell(storage_file_);
-		for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
-		{
-			FileInfo &info = i->second;
-			CentralDirectoryFileHeader cdfh;
-			cdfh.min_version = 20;
-			cdfh.compressed_size = cdfh.uncompressed_size = info.size;
-			cdfh.crc32 = info.crc32;
-			cdfh.filename_length = (uint16_t)info.name.size();
-			if (info.is_directory)
-				cdfh.filename_length++;
-			DOSTimestamp dos_timestamp(info.time);
-			cdfh.modification_time = dos_timestamp.dos_time;
-			cdfh.modification_date = dos_timestamp.dos_date;
-
-			// write header
-			fwrite(&cdfh, 1, sizeof(cdfh), storage_file_);
-
-			// write name
-			fwrite(info.name.c_str(), 1, info.name.size(), storage_file_);
-			if (info.is_directory)
-				fputc('/', storage_file_);
-		}
-
-		// end of central directory
-		EndOfCentralDirectory ecd;
-		ecd.offset = central_directory_offset;
-		ecd.total_records = files_.size();
-		ecd.size = ftell(storage_file_) - central_directory_offset;
-		if (prev_storage_size_ > 0)
-			ecd.comment_length = sprintf(NULL, "%llx", prev_storage_size_);
-
-		// write header
-		fwrite(&ecd, 1, sizeof(ecd), storage_file_);
-
-		// write comment if need
-		if (prev_storage_size_)
-			fprintf(storage_file_, "%llx", prev_storage_size_);
-	}
+	save();
 
 	// close storage file and clead variables
 	fclose(storage_file_);
@@ -468,7 +486,6 @@ void FileContainerZip::close()
 	file_writing_ = false;
 	changed_ = false;
 }
-
 
 bool FileContainerZip::is_opened()
 {
@@ -538,6 +555,15 @@ bool FileContainerZip::file_remove(const std::string &filename)
 		changed_ = true;
 		files_.erase(filename);
 	}
+	return true;
+}
+
+bool FileContainerZip::file_open_read_whole_container()
+{
+	if (!is_opened() || file_is_opened()) return false;
+	fseek(storage_file_, 0, SEEK_SET);
+	file_reading_whole_container_ = true;
+	file_processed_size_ = 0;
 	return true;
 }
 
@@ -628,6 +654,7 @@ void FileContainerZip::file_close()
 		fwrite(&lfho, 1, sizeof(lfho), storage_file_);
 		file_writing_ = false;
 	}
+	file_reading_whole_container_ = false;
 	file_reading_ = false;
 	file_writing_ = false;
 	file_processed_size_ = 0;
@@ -638,7 +665,7 @@ void FileContainerZip::file_close()
 
 bool FileContainerZip::file_is_opened_for_read()
 {
-	return is_opened() && file_reading_;
+	return is_opened() && (file_reading_ || file_reading_whole_container_);
 }
 
 bool FileContainerZip::file_is_opened_for_write()
@@ -649,7 +676,9 @@ bool FileContainerZip::file_is_opened_for_write()
 size_t FileContainerZip::file_read(void *buffer, size_t size)
 {
 	if (!file_is_opened_for_read()) return 0;
-	file_size_t remain_size = file_->second.size - file_processed_size_;
+	file_size_t file_size = file_reading_whole_container_
+	                      ? prev_storage_size_ : file_->second.size;
+	file_size_t remain_size = file_size - file_processed_size_;
 	size_t s = remain_size > (file_size_t)size ? size : (size_t)remain_size;
 	s = fread(buffer, 1, s, storage_file_);
 	file_processed_size_ += s;

@@ -88,11 +88,34 @@ FileSystem::WriteStream::write_whole_block(const void *buffer, size_t size)
 	return size == write(buffer, size);
 }
 
+bool
+FileSystem::WriteStream::write_whole_stream(ReadStreamHandle stream)
+{
+	if (!stream) return false;
+	char buffer[4*1024];
+	size_t size;
+	while(0 < (size == stream->read(buffer, sizeof(buffer))))
+		if (!write_whole_block(buffer, size))
+			return false;
+	return true;
+}
+
 
 // FileSystem
 
 FileSystem::FileSystem() { }
+
 FileSystem::~FileSystem() { }
+
+bool FileSystem::copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename)
+{
+	if (from_file_system.empty() || to_file_system.empty()) return false;
+	ReadStreamHandle read_stream = from_file_system->get_read_stream(from_filename);
+	if (read_stream.empty()) return false;
+	WriteStreamHandle write_stream = to_file_system->get_write_stream(to_filename);
+	if (write_stream.empty()) return false;
+	return write_stream->write_whole_stream(read_stream);
+}
 
 /* === E N T R Y P O I N T ================================================= */
 

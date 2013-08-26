@@ -64,6 +64,8 @@ namespace synfig
 			bool read_whole_block(void *buffer, size_t size);
 		};
 
+		typedef etl::handle< ReadStream > ReadStreamHandle;
+
 		class WriteStream : public Stream
 		{
 		protected:
@@ -71,10 +73,10 @@ namespace synfig
 		public:
 			virtual size_t write(void *buffer, size_t size) = 0;
 			int putc(int character);
-			bool write_whole_block(void *buffer, size_t size);
+			bool write_whole_block(const void *buffer, size_t size);
+			bool write_whole_stream(ReadStreamHandle stream);
 		};
 
-		typedef etl::handle< ReadStream > ReadStreamHandle;
 		typedef etl::handle< WriteStream > WriteStreamHandle;
 
 		FileSystem();
@@ -83,6 +85,8 @@ namespace synfig
 		virtual bool file_remove(const std::string &filename) = 0;
 		virtual ReadStreamHandle get_read_stream(const std::string &filename) = 0;
 		virtual WriteStreamHandle get_write_stream(const std::string &filename) = 0;
+
+		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
 	};
 
 }
