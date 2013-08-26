@@ -79,7 +79,7 @@ FileContainer::WriteStream::~WriteStream()
 	container->stream_valid_ = false;
 }
 
-size_t FileContainer::WriteStream::write(void *buffer, size_t size)
+size_t FileContainer::WriteStream::write(const void *buffer, size_t size)
 {
 	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
 	if (!container->stream_valid_) return 0;

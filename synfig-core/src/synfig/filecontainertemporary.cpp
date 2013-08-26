@@ -31,6 +31,7 @@
 
 #include <cstring>
 #include "filecontainertemporary.h"
+#include "guid.h"
 
 #endif
 
@@ -48,6 +49,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+std::string FileContainerTemporary::tmp_prefix__;
 
 void FileContainerTemporary::FileInfo::split_name()
 {
@@ -75,6 +77,11 @@ file_system_(new FileSystemNative())
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }
 
+std::string FileContainerTemporary::generate_tmp_filename()
+{
+	 return tmp_prefix__ + GUID().get_string();
+}
+
 bool FileContainerTemporary::create(const std::string &container_filename)
 {
 	return !is_opened() && container_->create(container_filename);
@@ -91,7 +98,6 @@ void FileContainerTemporary::close()
 	file_close();
 	save_changes();
 	container_->close();
-	container_filename_.clear();
 }
 
 
@@ -123,10 +129,7 @@ bool FileContainerTemporary::directory_create(const std::string &dirname)
 	if (!is_opened()) return false;
 	if (is_file(dirname)) return false;
 	if (is_directory(dirname)) return true;
-
-	// todo: common function to check dirname before create directory (for ZIP)
-	if (dirname.size() > (1 << 16) - 2 - sizeof(CentralDirectoryFileHeader))
-		return false;
+	if (!container_->directory_check_name(dirname)) return false;
 
 	FileInfo info;
 	info.name = dirname;
@@ -152,14 +155,14 @@ bool FileContainerTemporary::directory_scan(const std::string &dirname, std::lis
 		{
 			if (i->second.is_removed)
 			{
-				for(std::list< std::string >::iterator j = out_files.begin(); j = out_files.end();)
+				for(std::list< std::string >::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						j = out_files.erase(j); else j++;
 			}
 			else
 			{
 				bool found = false;
-				for(std::list< std::string >::iterator j = out_files.begin(); j = out_files.end();)
+				for(std::list< std::string >::iterator j = out_files.begin(); j != out_files.end();)
 					if (*j == i->second.name_part_localname)
 						{ found = true; break; }
 				if (!found)
@@ -217,7 +220,7 @@ bool FileContainerTemporary::file_remove(const std::string &filename)
 			info.is_removed = true;
 			if (!info.tmp_filename.empty())
 			{
-				file_system_->remove(info.tmp_filename);
+				file_system_->file_remove(info.tmp_filename);
 				info.tmp_filename.clear();
 			}
 		}
@@ -244,10 +247,7 @@ bool FileContainerTemporary::file_open_read(const std::string &filename)
 bool FileContainerTemporary::file_open_write(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
-
-	// todo: common function to check dirname before create directory (for ZIP)
-	if (filename.size() > (1 << 16) - 1 - sizeof(CentralDirectoryFileHeader))
-		return false;
+	if (!container_->file_check_name(filename)) return false;
 
 	FileMap::iterator i = files_.find(filename);
 
@@ -330,8 +330,6 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 		container = new FileContainerZip();
 		if (!container->open(filename)) return false;
 	}
-	etl::handle< FileContainerZip > container = container_;
-
 
 	FileMap files = files_;
 
@@ -342,7 +340,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 		processed = false;
 		for(FileMap::iterator i = files.begin(); i != files.end(); i++)
 		{
-			if (i->second.is_removed && container->file_remove())
+			if (i->second.is_removed && container->file_remove(i->second.name))
 			{
 				processed = true;
 				files.erase(i);

@@ -61,17 +61,26 @@ namespace synfig
 
 		typedef std::map< std::string, FileInfo > FileMap;
 
+		static std::string tmp_prefix__;
+
 		FileMap files_;
 		etl::handle< FileContainerZip > container_;
 		etl::handle< FileSystemNative > file_system_;
 
 		std::string file_;
 		FileSystem::ReadStreamHandle file_read_stream_;
-		FileSystem::ReadStreamHandle file_write_stream_;
+		FileSystem::WriteStreamHandle file_write_stream_;
+
+		std::string generate_tmp_filename();
 
 	public:
 		FileContainerTemporary();
 		virtual ~FileContainerTemporary();
+
+		static void set_tmp_dirname(const std::string &tmp_prefix)
+			{ tmp_prefix__ = tmp_prefix; }
+		static const std::string& get_tmp_dirname()
+			{ return tmp_prefix__; }
 
 		virtual bool create(const std::string &container_filename);
 		virtual bool open(const std::string &container_filename);

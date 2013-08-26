@@ -103,11 +103,13 @@ namespace synfig
 		virtual bool is_file(const std::string &filename);
 		virtual bool is_directory(const std::string &filename);
 
+		bool directory_check_name(const std::string &dirname);
 		virtual bool directory_create(const std::string &dirname);
 		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files);
 
 		virtual bool file_remove(const std::string &filename);
 
+		bool file_check_name(const std::string &filename);
 		virtual bool file_open_read_whole_container();
 		virtual bool file_open_read(const std::string &filename);
 		virtual bool file_open_write(const std::string &filename);

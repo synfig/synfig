@@ -60,7 +60,7 @@ namespace synfig
 			WriteStream(Handle file_system, FILE *file_);
 		public:
 			virtual ~WriteStream();
-			virtual size_t write(void *buffer, size_t size);
+			virtual size_t write(const void *buffer, size_t size);
 		};
 
 		FileSystemNative();

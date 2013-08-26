@@ -506,13 +506,17 @@ bool FileContainerZip::is_directory(const std::string &filename)
 	return i != files_.end() && i->second.is_directory;
 }
 
+bool FileContainerZip::directory_check_name(const std::string &dirname)
+{
+	return dirname.size() <= (1 << 16) - 2 - sizeof(CentralDirectoryFileHeader);
+}
+
 bool FileContainerZip::directory_create(const std::string &dirname)
 {
 	if (!is_opened()) return false;
 	if (is_file(dirname)) return false;
 	if (is_directory(dirname)) return true;
-	if (dirname.size() > (1 << 16) - 2 - sizeof(CentralDirectoryFileHeader))
-		return false;
+	if (!directory_check_name(dirname)) return false;
 
 	FileInfo info;
 	info.name = dirname;
@@ -558,6 +562,11 @@ bool FileContainerZip::file_remove(const std::string &filename)
 	return true;
 }
 
+bool FileContainerZip::file_check_name(const std::string &filename)
+{
+	return filename.size() <= (1 << 16) - 1 - sizeof(CentralDirectoryFileHeader);
+}
+
 bool FileContainerZip::file_open_read_whole_container()
 {
 	if (!is_opened() || file_is_opened()) return false;
@@ -592,8 +601,8 @@ bool FileContainerZip::file_open_read(const std::string &filename)
 bool FileContainerZip::file_open_write(const std::string &filename)
 {
 	if (!is_opened() || file_is_opened()) return false;
-	if (filename.size() > (1 << 16) - 1 - sizeof(CentralDirectoryFileHeader))
-		return false;
+	if (!file_check_name(filename)) return false;
+
 	file_ = files_.find(filename);
 
 	FileInfo new_info;

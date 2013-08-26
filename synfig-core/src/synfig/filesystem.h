@@ -71,7 +71,7 @@ namespace synfig
 		protected:
 			WriteStream(Handle file_system);
 		public:
-			virtual size_t write(void *buffer, size_t size) = 0;
+			virtual size_t write(const void *buffer, size_t size) = 0;
 			int putc(int character);
 			bool write_whole_block(const void *buffer, size_t size);
 			bool write_whole_stream(ReadStreamHandle stream);
