@@ -49,11 +49,16 @@ RELEASE=8
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
+
 if [ -z $BUILDROOT ]; then
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
 else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
+if [ -d "$PACKAGES_BUILDROOT" ]; then
+PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
+fi
+
 BUILDROOT_VERSION=8
 BUILDROOT_LIBRARY_SET_ID=2
 MAKE_THREADS=4					#count of threads for make
@@ -1078,8 +1083,21 @@ mkpackage()
 		#copy sources
 		[ -d $PACKAGES_BUILDROOT.$ARCH/source ] || mkdir -p $PACKAGES_BUILDROOT.$ARCH/source
 		cp -rf $PACKAGES_BUILDROOT/* $PACKAGES_BUILDROOT.$ARCH/source/
+
+		#set up the /proc link
+		echo "Mounting proc..."
+		if ! ( mount | egrep "proc on $PACKAGES_BUILDROOT.${ARCH}/proc" ); then
+			mount -o bind /proc $PACKAGES_BUILDROOT.$ARCH/proc
+			echo "   Done."
+		else
+			echo "   Already mounted. Skipping."
+		fi
+
 		#go to chroot
 		$SETARCH chroot $PACKAGES_BUILDROOT.$ARCH env http_proxy=$http_proxy bash /build.sh package $SELECTEDREVISION
+
+		umount $PACKAGES_BUILDROOT.$ARCH/proc || true
+
 		mv -f $PACKAGES_BUILDROOT.$ARCH/packages/* $PACKAGES_PATH
 		done
 		echo
