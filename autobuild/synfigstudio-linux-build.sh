@@ -922,6 +922,8 @@ initialize()
 		esac
 	else
 		#detecting repo
+		SCRIPTPATH=`dirname "$0"`
+		pushd "$SCRIPTPATH"
 		if git rev-parse --git-dir >/dev/null; then
 			SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
 			pushd "$SYNFIG_REPO_DIR" > /dev/null
@@ -929,6 +931,7 @@ initialize()
 			popd  > /dev/null
 			WORKDIR_IS_REPO=1
 		fi
+		popd > /dev/null
 	fi
 
 	#export PREFIX=/opt/synfig
