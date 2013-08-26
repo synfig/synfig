@@ -544,6 +544,10 @@ mkpack()
 {
 	[ -d /packages ] || mkdir /packages
 
+	# bundle libpng
+	rm -f ${PREFIX}/lib/libpng* || true
+	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
