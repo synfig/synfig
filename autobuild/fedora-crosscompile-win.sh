@@ -45,6 +45,11 @@ else
 	DEBUG=''
 fi
 
+export VERSION="0.64.0"
+pushd "${SCRIPTPATH}" > /dev/null
+export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
+popd > /dev/null
+
 mkprep()
 {
 
@@ -274,6 +279,8 @@ gen_list_nsh share share
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
+
+mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()
