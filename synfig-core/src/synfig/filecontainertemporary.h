@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file filecontainerzip.h
-**	\brief FileContainerZip
+/*!	\file filecontainertemporary.h
+**	\brief FileContainerTemporary
 **
 **	$Id$
 **
@@ -22,14 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_FILECONTAINERZIP_H
-#define __SYNFIG_FILECONTAINERZIP_H
+#ifndef __SYNFIG_FILECONTAINERTEMPORARY_H
+#define __SYNFIG_FILECONTAINERTEMPORARY_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <map>
 #include <ctime>
-#include "filecontainer.h"
+#include "filesystemnative.h"
+#include "filecontainerzip.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,65 +41,42 @@
 namespace synfig
 {
 
-	class FileContainerZip: public FileContainer
+	class FileContainerTemporary: public FileContainer
 	{
-	public:
-		class WholeZipReadStream : public FileSystem::ReadStream
-		{
-		protected:
-			friend FileContainerZip;
-			WholeZipReadStream(Handle file_system);
-		public:
-			virtual ~WholeZipReadStream();
-			virtual size_t read(void *buffer, size_t size);
-		};
-
 	private:
-		typedef long long int file_size_t;
-
 		struct FileInfo
 		{
 			std::string name;
+			std::string tmp_filename;
 			bool is_directory;
-			bool directory_saved;
-			file_size_t size;
-			file_size_t header_offset;
-			unsigned int crc32;
-			time_t time;
+			bool is_removed;
 
 			std::string name_part_directory;
 			std::string name_part_localname;
 
 			void split_name();
 
-			inline FileInfo():
-				is_directory(false), directory_saved(false),
-				size(0), header_offset(0), crc32(0), time(0) { }
+			inline FileInfo(): is_directory(false), is_removed(false) { }
 		};
 
 		typedef std::map< std::string, FileInfo > FileMap;
 
-		FILE *storage_file_;
 		FileMap files_;
-		file_size_t prev_storage_size_;
-		bool file_reading_whole_container_;
-		bool file_reading_;
-		bool file_writing_;
-		FileMap::iterator file_;
-		file_size_t file_processed_size_;
-		bool changed_;
+		etl::handle< FileContainerZip > container_;
+		etl::handle< FileSystemNative > file_system_;
 
-		unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
+		std::string file_;
+		FileSystem::ReadStreamHandle file_read_stream_;
+		FileSystem::ReadStreamHandle file_write_stream_;
 
 	public:
-		FileContainerZip();
-		virtual ~FileContainerZip();
+		FileContainerTemporary();
+		virtual ~FileContainerTemporary();
 
 		virtual bool create(const std::string &container_filename);
 		virtual bool open(const std::string &container_filename);
 		virtual void close();
 		virtual bool is_opened();
-		bool save();
 
 		virtual bool is_file(const std::string &filename);
 		virtual bool is_directory(const std::string &filename);
@@ -108,7 +86,6 @@ namespace synfig
 
 		virtual bool file_remove(const std::string &filename);
 
-		virtual bool file_open_read_whole_container();
 		virtual bool file_open_read(const std::string &filename);
 		virtual bool file_open_write(const std::string &filename);
 		virtual void file_close();
@@ -118,6 +95,9 @@ namespace synfig
 
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
+
+		bool save_changes(const std::string &filename = std::string(), bool as_copy = false);
+		void discard_changes();
 	};
 
 }

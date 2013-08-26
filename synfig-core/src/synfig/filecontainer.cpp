@@ -93,7 +93,18 @@ FileContainer::FileContainer(): stream_opened_(false), stream_valid_(false) { }
 
 FileContainer::~FileContainer() { }
 
+bool FileContainer::file_open_read_whole_container() { return false; }
+
 void FileContainer::file_close() { stream_valid_ = false; }
+
+FileSystem::ReadStreamHandle FileContainer::get_read_stream_whole_container()
+{
+	if (stream_opened_ || !file_open_read_whole_container())
+		return ReadStreamHandle();
+	stream_opened_ = true;
+	stream_valid_ = true;
+	return ReadStreamHandle(new ReadStream(this));
+}
 
 FileSystem::ReadStreamHandle FileContainer::get_read_stream(const std::string &filename)
 {
