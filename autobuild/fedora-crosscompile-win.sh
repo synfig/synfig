@@ -1,8 +1,6 @@
 #!/bin/sh
 
 #TODO: Replace version numbers in the .nsi file
-#TODO: Uninstall properly!
-#TODO: 64bit build
 #TODO: Magick++
 
 set -e
@@ -149,6 +147,14 @@ for file in \
 do
 	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib || true
 done
+
+# cleaning source tree
+for dir in ETL synfig-core synfig-studio; do
+	pushd $SCRIPTPATH/../$dir > /dev/null
+	make clean || true
+	popd > /dev/null
+done
+
 }
 
 #ETL
