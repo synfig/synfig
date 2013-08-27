@@ -31,6 +31,7 @@
 #include <ETL/handle>
 #include <synfig/canvas.h>
 #include <synfig/string.h>
+#include <synfig/filecontainertemporary.h>
 #include <list>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
@@ -77,6 +78,7 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
+	etl::handle< synfig::FileContainerTemporary > container_;
 
 	CanvasInterfaceList canvas_interface_list_;
 
@@ -85,7 +87,7 @@ private:
 	etl::handle<SelectionManager> selection_manager_;
 
 protected:
-	Instance(etl::handle<synfig::Canvas>);
+	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -125,7 +127,7 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas);
+	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container);
 }; // END class Instance
 
 etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);

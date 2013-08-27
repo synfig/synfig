@@ -136,7 +136,7 @@ private:
 
 protected:
 
-	Instance(synfig::Canvas::Handle);
+	Instance(synfig::Canvas::Handle, etl::handle< synfig::FileContainerTemporary >);
 
 public:
 
@@ -228,7 +228,7 @@ private:
 	void insert_canvas(Gtk::TreeRow row,synfig::Canvas::Handle canvas);
 
 public:
-	static etl::handle<Instance> create(synfig::Canvas::Handle canvas);
+	static etl::handle<Instance> create(synfig::Canvas::Handle canvas, etl::handle< synfig::FileContainerTemporary > container);
 }; // END class Instance
 
 }; // END namespace studio
