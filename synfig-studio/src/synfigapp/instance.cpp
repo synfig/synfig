@@ -101,9 +101,10 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas):
+Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container):
 	CVSInfo(canvas->get_file_name()),
-	canvas_(canvas)
+	canvas_(canvas),
+	container_(container)
 {
 	assert(canvas->is_root());
 
@@ -113,10 +114,10 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas):
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas)
+Instance::create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas));
+	handle<Instance> instance(new Instance(canvas, container));
 
 	return instance;
 } // END of synfigapp::Instance::create()
