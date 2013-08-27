@@ -48,161 +48,164 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-namespace FileContainerZip_InternalStructs
+namespace synfig
 {
-	typedef unsigned int uint32_t;
-	typedef unsigned short int uint16_t;
-
-	#pragma pack(push, 1)
-
-	struct DOSTimestamp
+	namespace FileContainerZip_InternalStructs
 	{
-		uint16_t dos_time;
-		uint16_t dos_date;
+		typedef unsigned int uint32_t;
+		typedef unsigned short int uint16_t;
 
-		inline DOSTimestamp():
-			dos_time(0), dos_date(0) { }
+		#pragma pack(push, 1)
 
-		inline explicit DOSTimestamp(uint16_t dos_time, uint16_t dos_date):
-			dos_time(dos_time), dos_date(dos_date) { }
-
-		inline explicit DOSTimestamp(time_t time)
+		struct DOSTimestamp
 		{
-			tm *t = localtime(&time);
-			dos_time = ((t->tm_sec  & 0x3f) >>  1)
-					 | ((t->tm_min  & 0x3f) <<  5)
-					 | ((t->tm_hour & 0x1f) << 11);
-			dos_date = ((t->tm_mday & 0x1f) <<  0)
-					 | ((t->tm_mon  & 0x0f) <<  5)
-					 | ((t->tm_year & 0x7f) <<  9);
-		}
+			uint16_t dos_time;
+			uint16_t dos_date;
 
-		inline time_t get_time()
+			inline DOSTimestamp():
+				dos_time(0), dos_date(0) { }
+
+			inline explicit DOSTimestamp(uint16_t dos_time, uint16_t dos_date):
+				dos_time(dos_time), dos_date(dos_date) { }
+
+			inline explicit DOSTimestamp(time_t time)
+			{
+				tm *t = localtime(&time);
+				dos_time = ((t->tm_sec  & 0x3f) >>  1)
+						 | ((t->tm_min  & 0x3f) <<  5)
+						 | ((t->tm_hour & 0x1f) << 11);
+				dos_date = ((t->tm_mday & 0x1f) <<  0)
+						 | ((t->tm_mon  & 0x0f) <<  5)
+						 | ((t->tm_year & 0x7f) <<  9);
+			}
+
+			inline time_t get_time()
+			{
+				tm t;
+				memset(&t, 0, sizeof(t));
+				t.tm_sec  = (dos_time <<  1) & 0x3f;
+				t.tm_min  = (dos_time >>  5) & 0x3f;
+				t.tm_hour = (dos_time >> 11) & 0x1f;
+				t.tm_mday = (dos_time >>  0) & 0x1f;
+				t.tm_mon  = (dos_time >>  5) & 0x0f;
+				t.tm_year = (dos_time >>  9) & 0x7f;
+				return mktime(&t);
+			}
+		};
+
+		struct LocalFileHeader
 		{
-			tm t;
-			memset(&t, 0, sizeof(t));
-			t.tm_sec  = (dos_time <<  1) & 0x3f;
-			t.tm_min  = (dos_time >>  5) & 0x3f;
-			t.tm_hour = (dos_time >> 11) & 0x1f;
-			t.tm_mday = (dos_time >>  0) & 0x1f;
-			t.tm_mon  = (dos_time >>  5) & 0x0f;
-			t.tm_year = (dos_time >>  9) & 0x7f;
-			return mktime(&t);
-		}
-	};
+			enum { valid_signature__ = 0x04034b50 };
 
-	struct LocalFileHeader
-	{
-		enum { valid_signature__ = 0x04034b50 };
+			uint32_t signature;			//!< Local file header signature = 0x04034b50 (read as a little-endian number)
+			uint16_t version;			//!< Version needed to extract (minimum)
+			uint16_t flags;				//!< General purpose bit flag
+			uint16_t compression;		//!< Compression method
+			uint16_t modification_time;	//!< File last modification time
+			uint16_t modification_date; //!< File last modification date
+			uint32_t crc32;				//!< CRC-32
+			uint32_t compressed_size;	//!< Compressed size
+			uint32_t uncompressed_size;	//!< Uncompressed size
+			uint16_t filename_length;	//!< File name length (n)
+			uint16_t extrafield_length; //!< Extra field length (m)
+			// next:
+			//   filename - n bytes
+			//   extrafield - m bytes
+			//   file data
+			//   optional LocalFileDataDescriptor (if bit 3 (0x08) set in flags)
 
-		uint32_t signature;			//!< Local file header signature = 0x04034b50 (read as a little-endian number)
-		uint16_t version;			//!< Version needed to extract (minimum)
-		uint16_t flags;				//!< General purpose bit flag
-		uint16_t compression;		//!< Compression method
-		uint16_t modification_time;	//!< File last modification time
-		uint16_t modification_date; //!< File last modification date
-		uint32_t crc32;				//!< CRC-32
-		uint32_t compressed_size;	//!< Compressed size
-		uint32_t uncompressed_size;	//!< Uncompressed size
-		uint16_t filename_length;	//!< File name length (n)
-		uint16_t extrafield_length; //!< Extra field length (m)
-		// next:
-		//   filename - n bytes
-		//   extrafield - m bytes
-		//   file data
-		//   optional LocalFileDataDescriptor (if bit 3 (0x08) set in flags)
+			inline LocalFileHeader()
+			{
+				memset(this, 0, sizeof(*this));
+				signature = valid_signature__;
+			}
+		};
 
-		inline LocalFileHeader()
+		struct LocalFileHeaderOverwrite
 		{
-			memset(this, 0, sizeof(*this));
-			signature = valid_signature__;
-		}
-	};
+			uint32_t crc32;				//!< CRC-32
+			uint32_t compressed_size;	//!< Compressed size
+			uint32_t uncompressed_size;	//!< Uncompressed size
 
-	struct LocalFileHeaderOverwrite
-	{
-		uint32_t crc32;				//!< CRC-32
-		uint32_t compressed_size;	//!< Compressed size
-		uint32_t uncompressed_size;	//!< Uncompressed size
+			inline LocalFileHeaderOverwrite()
+			{
+				memset(this, 0, sizeof(*this));
+			}
 
-		inline LocalFileHeaderOverwrite()
+			inline static size_t offset_from_header()
+			{
+				return (size_t)(&((LocalFileHeader*)0)->crc32);
+			}
+		};
+
+		struct CentralDirectoryFileHeader
 		{
-			memset(this, 0, sizeof(*this));
-		}
+			enum { valid_signature__ = 0x02014b50 };
 
-		inline static size_t offset_from_header()
+			uint32_t signature;			//!< Central directory file header signature = 0x02014b50
+			uint16_t version;			//!< Version made by
+			uint16_t min_version;		//!< Version needed to extract (minimum)
+			uint16_t flags;				//!< General purpose bit flag
+			uint16_t compression;		//!< Compression method
+			uint16_t modification_time;	//!< File last modification time
+			uint16_t modification_date; //!< File last modification date
+			uint32_t crc32;				//!< CRC-32
+			uint32_t compressed_size;	//!< Compressed size
+			uint32_t uncompressed_size;	//!< Uncompressed size
+			uint16_t filename_length;	//!< File name length (n)
+			uint16_t extrafield_length;	//!< Extra field length (m)
+			uint16_t filecomment_length;//!< File comment length (k)
+			uint16_t disk_number;		//!< Disk number where file starts
+			uint16_t internal_attrs;	//!< Internal file attributes
+			uint32_t external_attrs;	//!< External file attributes
+			uint32_t offset;			//!< Relative offset of local file header.
+										//!< This is the number of bytes between the
+										//!< start of the first disk on which the
+										//!< file occurs, and the start of the local
+										//!< file header. This allows software reading
+										//!< the central directory to locate the
+										//!< position of the file inside the .ZIP file.
+			// next:
+			//   filename - n bytes
+			//   extrafield - m bytes
+			//   filecomment - k bytes
+			//   next CentralDirectorySignature
+
+			inline CentralDirectoryFileHeader()
+			{
+				memset(this, 0, sizeof(*this));
+				signature = valid_signature__;
+			}
+		};
+
+		struct EndOfCentralDirectory
 		{
-			return (size_t)(&((LocalFileHeader*)0)->crc32);
-		}
-	};
+			enum { valid_signature__ = 0x06054b50 };
 
-	struct CentralDirectoryFileHeader
-	{
-		enum { valid_signature__ = 0x02014b50 };
+			uint32_t signature;			//!< End of central directory signature = 0x06054b50
+			uint16_t current_disk;		//!< Number of this disk
+			uint16_t first_disk;		//!< Disk where central directory starts
+			uint16_t current_records;	//!< Number of central directory records on this disk
+			uint16_t total_records;		//!< Total number of central directory records
+			uint32_t size;				//!< Size of central directory (bytes)
+			uint32_t offset;			//!< Offset of start of central directory, relative to start of archive
+			uint16_t comment_length;	//!< Comment length (n)
+			// next:
+			//   comment - n bytes
+			//   end of file
 
-		uint32_t signature;			//!< Central directory file header signature = 0x02014b50
-		uint16_t version;			//!< Version made by
-		uint16_t min_version;		//!< Version needed to extract (minimum)
-		uint16_t flags;				//!< General purpose bit flag
-		uint16_t compression;		//!< Compression method
-		uint16_t modification_time;	//!< File last modification time
-		uint16_t modification_date; //!< File last modification date
-		uint32_t crc32;				//!< CRC-32
-		uint32_t compressed_size;	//!< Compressed size
-		uint32_t uncompressed_size;	//!< Uncompressed size
-		uint16_t filename_length;	//!< File name length (n)
-		uint16_t extrafield_length;	//!< Extra field length (m)
-		uint16_t filecomment_length;//!< File comment length (k)
-		uint16_t disk_number;		//!< Disk number where file starts
-		uint16_t internal_attrs;	//!< Internal file attributes
-		uint32_t external_attrs;	//!< External file attributes
-		uint32_t offset;			//!< Relative offset of local file header.
-									//!< This is the number of bytes between the
-									//!< start of the first disk on which the
-									//!< file occurs, and the start of the local
-									//!< file header. This allows software reading
-									//!< the central directory to locate the
-									//!< position of the file inside the .ZIP file.
-		// next:
-		//   filename - n bytes
-		//   extrafield - m bytes
-		//   filecomment - k bytes
-		//   next CentralDirectorySignature
+			inline EndOfCentralDirectory()
+			{
+				memset(this, 0, sizeof(*this));
+				signature = valid_signature__;
+			}
+		};
 
-		inline CentralDirectoryFileHeader()
-		{
-			memset(this, 0, sizeof(*this));
-			signature = valid_signature__;
-		}
-	};
-
-	struct EndOfCentralDirectory
-	{
-		enum { valid_signature__ = 0x06054b50 };
-
-		uint32_t signature;			//!< End of central directory signature = 0x06054b50
-		uint16_t current_disk;		//!< Number of this disk
-		uint16_t first_disk;		//!< Disk where central directory starts
-		uint16_t current_records;	//!< Number of central directory records on this disk
-		uint16_t total_records;		//!< Total number of central directory records
-		uint32_t size;				//!< Size of central directory (bytes)
-		uint32_t offset;			//!< Offset of start of central directory, relative to start of archive
-		uint16_t comment_length;	//!< Comment length (n)
-		// next:
-		//   comment - n bytes
-		//   end of file
-
-		inline EndOfCentralDirectory()
-		{
-			memset(this, 0, sizeof(*this));
-			signature = valid_signature__;
-		}
-	};
-
-	#pragma pack(pop)
+		#pragma pack(pop)
+	}
 }
 
-using namespace FileContainerZip_InternalStructs;
+using namespace synfig::FileContainerZip_InternalStructs;
 
 void FileContainerZip::FileInfo::split_name()
 {
