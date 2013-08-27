@@ -61,6 +61,7 @@ namespace synfig
 
 		typedef std::map< std::string, FileInfo > FileMap;
 
+		bool is_opened_;
 		FileMap files_;
 		etl::handle< FileContainerZip > container_;
 		etl::handle< FileSystemNative > file_system_;

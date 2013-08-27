@@ -71,7 +71,8 @@ void FileContainerTemporary::FileInfo::split_name()
 
 FileContainerTemporary::FileContainerTemporary():
 container_(new FileContainerZip()),
-file_system_(new FileSystemNative())
+file_system_(new FileSystemNative()),
+is_opened_(false)
 { }
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }
@@ -88,12 +89,16 @@ std::string FileContainerTemporary::generate_tmp_filename()
 
 bool FileContainerTemporary::create(const std::string &container_filename)
 {
-	return !is_opened() && container_->create(container_filename);
+	return !is_opened()
+		&& (container_filename.empty() || container_->create(container_filename))
+		&& (is_opened_ = true);
 }
 
 bool FileContainerTemporary::open(const std::string &container_filename)
 {
-	return !is_opened() && container_->open(container_filename);
+	return !is_opened()
+		&& container_->open(container_filename)
+		&& (is_opened_ = true);
 }
 
 void FileContainerTemporary::close()
@@ -101,13 +106,15 @@ void FileContainerTemporary::close()
 	if (!is_opened()) return;
 	file_close();
 	save_changes();
+	discard_changes();
 	container_->close();
+	is_opened_ = false;
 }
 
 
 bool FileContainerTemporary::is_opened()
 {
-	return container_->is_opened();
+	return is_opened_;
 }
 
 bool FileContainerTemporary::is_file(const std::string &filename)
@@ -317,22 +324,32 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 
 	if (filename.empty())
 	{
+		if (!container_->is_opened()) return false;
 		if (as_copy) return false;
 		container = container_;
 	}
 	else
 	{
-		{ // copy container
-			ReadStreamHandle read_steram = container_->get_read_stream_whole_container();
-			if (read_steram.empty()) return false;
-			WriteStreamHandle write_stream = file_system_->get_write_stream(filename);
-			if (write_stream.empty()) return false;
-			if (!write_stream->write_whole_stream(read_steram)) return false;
-		}
+		if (container_->is_opened())
+		{
+			{ // copy container
+				ReadStreamHandle read_steram = container_->get_read_stream_whole_container();
+				if (read_steram.empty()) return false;
+				WriteStreamHandle write_stream = file_system_->get_write_stream(filename);
+				if (write_stream.empty()) return false;
+				if (!write_stream->write_whole_stream(read_steram)) return false;
+			}
 
-		// open container
-		container = new FileContainerZip();
-		if (!container->open(filename)) return false;
+			// open container
+			container = new FileContainerZip();
+			if (!container->open(filename)) return false;
+		}
+		else
+		{
+			// create container
+			container = new FileContainerZip();
+			if (!container->create(filename)) return false;
+		}
 	}
 
 	FileMap files = files_;
