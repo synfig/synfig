@@ -75,11 +75,6 @@ namespace synfig
 		FileContainerTemporary();
 		virtual ~FileContainerTemporary();
 
-		static void set_tmp_dirname(const std::string &tmp_prefix)
-			{ tmp_prefix__ = tmp_prefix; }
-		static const std::string& get_tmp_dirname()
-			{ return tmp_prefix__; }
-
 		virtual bool create(const std::string &container_filename);
 		virtual bool open(const std::string &container_filename);
 		virtual void close();
