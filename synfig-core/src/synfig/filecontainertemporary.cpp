@@ -50,8 +50,6 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-std::string FileContainerTemporary::tmp_prefix__;
-
 void FileContainerTemporary::FileInfo::split_name()
 {
 	size_t posA = name.rfind('/');
