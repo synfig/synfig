@@ -30,6 +30,7 @@
 #endif
 
 #include <cstring>
+#include <cstdlib>
 #include "filecontainertemporary.h"
 #include "guid.h"
 
@@ -79,7 +80,12 @@ FileContainerTemporary::~FileContainerTemporary() { close(); }
 
 std::string FileContainerTemporary::generate_tmp_filename()
 {
-	 return tmp_prefix__ + GUID().get_string();
+    char *tmpdir;
+    if ((tmpdir = getenv ("TEMP")) == NULL)
+    if ((tmpdir = getenv ("TMP")) == NULL)
+    if ((tmpdir = getenv ("TMPDIR")) == NULL)
+    	 tmpdir = "/tmp";
+    return std::string(tmpdir) + ETL_DIRECTORY_SEPARATOR + "synfig_" + GUID().get_string();
 }
 
 bool FileContainerTemporary::create(const std::string &container_filename)
