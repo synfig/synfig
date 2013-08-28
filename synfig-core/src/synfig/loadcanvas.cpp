@@ -2875,28 +2875,35 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 
 		filename=as;
 		total_warnings_=0;
-		xmlpp::DomParser parser(file);
-		if(parser)
+
+		FileSystem::ReadStreamHandle stream = Importer::file_system().get_read_stream(file);
+		if (stream)
 		{
-			Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,as));
-			if (!canvas) return canvas;
-			register_canvas_in_map(canvas, as);
-
-			const ValueNodeList& value_node_list(canvas->value_node_list());
-
-			again:
-			ValueNodeList::const_iterator iter;
-			for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+			xmlpp::DomParser parser;
+			parser.parse_stream(stream->stream());
+			stream.reset();
+			if(parser)
 			{
-				ValueNode::Handle value_node(*iter);
-				if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
-				{
-					canvas->remove_value_node(value_node, true);
-					goto again;
-				}
-			}
+				Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,as));
+				if (!canvas) return canvas;
+				register_canvas_in_map(canvas, as);
 
-			return canvas;
+				const ValueNodeList& value_node_list(canvas->value_node_list());
+
+				again:
+				ValueNodeList::const_iterator iter;
+				for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+				{
+					ValueNode::Handle value_node(*iter);
+					if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
+					{
+						canvas->remove_value_node(value_node, true);
+						goto again;
+					}
+				}
+
+				return canvas;
+			}
 		}
 	}
 	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
