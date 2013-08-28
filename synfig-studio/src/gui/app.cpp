@@ -2532,6 +2532,24 @@ App::open_as(std::string filename,std::string as)
 		OneMoment one_moment;
 		String errors, warnings;
 
+		std::string canvas_filename = filename;
+		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+
+		// TODO: move literal ".zip" into common place
+		if (etl::filename_extension(filename) == ".zip")
+		{
+			if (!container->open(filename))
+				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+			canvas_filename = "container:/project.sifz";
+		}
+		else
+		{
+			if (!container->create(std::string()))
+				throw (String)strprintf(_("Unable to create container\n\n"),filename.c_str());
+		}
+
+		Importer::file_system().register_system("container:", container);
+
 		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors,warnings));
 		if(canvas && get_instance(canvas))
 		{
@@ -2550,7 +2568,7 @@ App::open_as(std::string filename,std::string as)
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas));
+			handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
@@ -2566,16 +2584,19 @@ App::open_as(std::string filename,std::string as)
 	catch(String x)
 	{
 		dialog_error_blocking(_("Error"), x);
+		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 	catch(runtime_error x)
 	{
 		dialog_error_blocking(_("Error"), x.what());
+		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 	catch(...)
 	{
 		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 
@@ -2608,7 +2629,10 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	handle<Instance> instance = Instance::create(canvas);
+	etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+	container->create(std::string());
+
+	handle<Instance> instance = Instance::create(canvas, container);
 
 	if (getenv("SYNFIG_AUTO_ADD_SKELETON_LAYER"))
 		instance->find_canvas_view(canvas)->add_layer("skeleton");
