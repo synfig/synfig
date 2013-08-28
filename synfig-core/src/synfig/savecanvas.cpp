@@ -983,11 +983,11 @@ xmlpp::Element* encode_canvas_toplevel(xmlpp::Element* root,Canvas::ConstHandle 
 }
 
 bool
-synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
+synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool safe)
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-	synfig::String tmp_filename(filename+".TMP");
+	synfig::String tmp_filename(safe ? filename+".TMP" : filename);
 
 	if (filename_extension(filename) == ".sifz")
 		xmlSetCompressMode(9);
@@ -1001,27 +1001,37 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 
 		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
-		document.write_to_file_formatted(tmp_filename);
+		FileSystem::WriteStreamHandle stream = Importer::file_system().get_write_stream(tmp_filename);
+		if (!stream)
+		{
+			synfig::error("synfig::save_canvas(): Unable to open file for write");
+			return false;
+		}
 
+		document.write_to_stream_formatted(stream->stream());
+
+		if (safe)
+		{
 #ifdef _WIN32
-		// On Win32 platforms, rename() has bad behavior. work around it.
-		char old_file[80]="sif.XXXXXXXX";
-		mktemp(old_file);
-		rename(filename.c_str(),old_file);
-		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		{
-			rename(old_file,tmp_filename.c_str());
-			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-			return false;
-		}
-		remove(old_file);
+			// On Win32 platforms, rename() has bad behavior. work around it.
+			char old_file[80]="sif.XXXXXXXX";
+			mktemp(old_file);
+			Importer::file_system().file_rename(filename,old_file);
+			if(!Importer::file_system().file_rename(tmp_filename,filename))
+			{
+				Importer::file_system().file_rename(old_file,tmp_filename);
+				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
+				return false;
+			}
+			remove(old_file);
 #else
-		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		{
-			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-			return false;
-		}
+			if(!Importer::file_system().file_rename(tmp_filename, filename))
+			{
+				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
+				return false;
+			}
 #endif
+		}
 	}
 	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
 
