@@ -1010,6 +1010,9 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool saf
 
 		document.write_to_stream_formatted(stream->stream());
 
+		// close stream
+		stream.reset();
+
 		if (safe)
 		{
 #ifdef _WIN32
