@@ -70,19 +70,19 @@ void FileContainerTemporary::FileInfo::split_name()
 }
 
 FileContainerTemporary::FileContainerTemporary():
+is_opened_(false),
 container_(new FileContainerZip()),
-file_system_(new FileSystemNative()),
-is_opened_(false)
+file_system_(new FileSystemNative())
 { }
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }
 
 std::string FileContainerTemporary::generate_tmp_filename()
 {
-    char *tmpdir;
-    if ((tmpdir = getenv ("TEMP")) == NULL)
-    if ((tmpdir = getenv ("TMP")) == NULL)
-    if ((tmpdir = getenv ("TMPDIR")) == NULL)
+    const char *tmpdir;
+    if ((tmpdir = getenv("TEMP")) == NULL)
+    if ((tmpdir = getenv("TMP")) == NULL)
+    if ((tmpdir = getenv("TMPDIR")) == NULL)
     	 tmpdir = "/tmp";
     return std::string(tmpdir) + ETL_DIRECTORY_SEPARATOR + "synfig_" + GUID().get_string();
 }
