@@ -82,6 +82,12 @@ bool FileSystemNative::file_remove(const std::string &filename)
 	return 0 == remove(filename.c_str());
 }
 
+bool FileSystemNative::file_rename(const std::string &from_filename, const std::string &to_filename)
+{
+	return 0 == rename(from_filename.c_str(), to_filename.c_str());
+}
+
+
 FileSystem::ReadStreamHandle FileSystemNative::get_read_stream(const std::string &filename)
 {
 #ifdef WIN32

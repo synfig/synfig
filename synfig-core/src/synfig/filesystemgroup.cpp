@@ -102,6 +102,17 @@ bool FileSystemGroup::file_remove(const std::string &filename)
 	    && file_system->file_remove(internal_filename);
 }
 
+bool FileSystemGroup::file_rename(const std::string &from_filename, const std::string &to_filename)
+{
+	// move file across file systems not supported
+	Handle from_file_system, to_file_system;
+	std::string from_internal_filename, to_internal_filename;
+	return find_system(from_filename, from_file_system, from_internal_filename)
+	    && find_system(to_filename, to_file_system, to_internal_filename)
+	    && from_file_system == to_file_system
+	    && from_file_system->file_rename(from_internal_filename, to_internal_filename);
+}
+
 FileSystem::ReadStreamHandle FileSystemGroup::get_read_stream(const std::string &filename)
 {
 	Handle file_system;
