@@ -56,7 +56,11 @@ FileSystem::Stream::~Stream() { }
 
 // ReadStream
 
-FileSystem::ReadStream::ReadStream(Handle file_system): Stream(file_system) { }
+FileSystem::ReadStream::ReadStream(Handle file_system):
+Stream(file_system),
+buf_(this),
+stream_(&buf_)
+{ }
 
 int
 FileSystem::ReadStream::getc()
@@ -74,12 +78,16 @@ FileSystem::ReadStream::read_whole_block(void *buffer, size_t size)
 
 // WriteStream
 
-FileSystem::WriteStream::WriteStream(Handle file_system): Stream(file_system) { }
+FileSystem::WriteStream::WriteStream(Handle file_system):
+Stream(file_system),
+buf_(this),
+stream_(&buf_)
+{ }
 
 int
 FileSystem::WriteStream::putc(int character)
 {
-	return 1 == write(&character, 1) ? character : EOF;
+	return character != EOF && 1 == write(&character, 1) ? character : EOF;
 }
 
 bool
@@ -94,7 +102,7 @@ FileSystem::WriteStream::write_whole_stream(ReadStreamHandle stream)
 	if (!stream) return false;
 	char buffer[4*1024];
 	size_t size;
-	while(0 < (size == stream->read(buffer, sizeof(buffer))))
+	while(0 < (size = stream->read(buffer, sizeof(buffer))))
 		if (!write_whole_block(buffer, size))
 			return false;
 	return true;
