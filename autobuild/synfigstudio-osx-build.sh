@@ -225,6 +225,11 @@ mkdeps()
 	
 	# We have to make sure python 2 is default, because some packages won't build with python 3
 	port select --set python python27
+
+	# ...but we still need python3 binary available
+	pushd $MACPORTS/bin/ > /dev/null
+	ln -sf python3.3 python3
+	popd > /dev/null
 }
 
 mketl()
