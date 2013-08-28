@@ -29,6 +29,9 @@
 
 #include <cstdio>
 #include <string>
+#include <streambuf>
+#include <istream>
+#include <ostream>
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
@@ -57,11 +60,25 @@ namespace synfig
 		class ReadStream : public Stream
 		{
 		protected:
+			class istreambuf : public std::streambuf
+			{
+			private:
+				ReadStream *stream_;
+			public:
+				istreambuf(ReadStream *stream): stream_(stream) { }
+			protected:
+		        virtual int underflow() { return stream_->getc(); }
+			};
+
+			istreambuf buf_;
+			std::istream stream_;
+
 			ReadStream(Handle file_system);
 		public:
 			virtual size_t read(void *buffer, size_t size) = 0;
 			int getc();
 			bool read_whole_block(void *buffer, size_t size);
+			std::istream& stream() { return stream_; }
 		};
 
 		typedef etl::handle< ReadStream > ReadStreamHandle;
@@ -69,12 +86,26 @@ namespace synfig
 		class WriteStream : public Stream
 		{
 		protected:
+			class ostreambuf : public std::streambuf
+			{
+			private:
+				WriteStream *stream_;
+			public:
+				ostreambuf(WriteStream *stream): stream_(stream) { }
+			protected:
+		        virtual int overflow(int ch) { return stream_->putc(ch); }
+			};
+
+			ostreambuf buf_;
+			std::ostream stream_;
+
 			WriteStream(Handle file_system);
 		public:
 			virtual size_t write(const void *buffer, size_t size) = 0;
 			int putc(int character);
 			bool write_whole_block(const void *buffer, size_t size);
 			bool write_whole_stream(ReadStreamHandle stream);
+			std::ostream& stream() { return stream_; }
 		};
 
 		typedef etl::handle< WriteStream > WriteStreamHandle;
