@@ -60,13 +60,13 @@ SYNFIG_CAIROIMPORTER_SET_CVS_ID(cairo_png_mptr,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 
-cairo_png_mptr::cairo_png_mptr(const char *file_name)
+cairo_png_mptr::cairo_png_mptr(const synfig::FileSystem::Identifier &identifier):
+synfig::Importer(identifier)
 {
-	filename=file_name;
-	csurface_=cairo_image_surface_create_from_png(file_name);
+	csurface_=cairo_image_surface_create_from_png(identifier.filename.c_str());
 	if(cairo_surface_status(csurface_))
 	{
-		throw strprintf("Unable to physically open %s",file_name);
+		throw strprintf("Unable to physically open %s",identifier.filename.c_str());
 		cairo_surface_destroy(csurface_);
 		csurface_=NULL;
 		return;
