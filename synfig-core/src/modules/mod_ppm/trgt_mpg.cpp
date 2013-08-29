@@ -33,7 +33,7 @@
 
 #include <ETL/stringf>
 #include "trgt_mpg.h"
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <algorithm>
 #include <functional>

@@ -34,7 +34,7 @@
 #include <fstream>
 #include <iostream>
 #include <synfig/general.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 
 #include <sys/types.h>
