@@ -48,6 +48,33 @@ namespace synfig
 	public:
 		typedef etl::handle< FileSystem > Handle;
 
+		class Identifier {
+		public:
+			Handle file_system;
+			std::string filename;
+			Identifier() { }
+			Identifier(const Handle &file_system, const std::string &filename):
+				file_system(file_system), filename(filename) { }
+
+			bool empty() const { return file_system; }
+			operator bool () const { return !empty(); }
+
+			bool operator < (const Identifier &other) const
+			{
+				if (file_system.get() < other.file_system.get()) return true;
+				if (other.file_system.get() < file_system.get()) return false;
+				if (filename < other.filename) return true;
+				if (other.filename < filename) return false;
+				return false;
+			}
+			bool operator > (const Identifier &other) const
+				{ return other < *this; }
+			bool operator != (const Identifier &other) const
+				{ return *this > other || other < *this; }
+			bool operator == (const Identifier &other) const
+				{ return !(*this != other); }
+		};
+
 		class Stream : public etl::rshared_object
 		{
 		protected:
