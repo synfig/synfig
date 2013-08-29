@@ -124,7 +124,7 @@ Halftone2::set_param(const String & param, const ValueBase &value)
 	HALFTONE2_IMPORT_VALUE(halftone.param_origin);
 
 	if(param=="offset")
-		set_param("origin", value);
+		return set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }

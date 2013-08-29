@@ -531,7 +531,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync_=true);
 	
 	if(param=="pos")
-		set_param("origin", value);
+		return set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
