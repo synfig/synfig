@@ -424,7 +424,6 @@ bool FileContainerZip::save()
 
 	// write central directory
 	uint32_t central_directory_offset = (uint32_t)ftell(storage_file_);
-	if (central_directory_offset == (uint32_t)-1L)
 	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
 	{
 		FileInfo &info = i->second;
@@ -468,6 +467,7 @@ bool FileContainerZip::save()
 		if (ecd.comment_length != fprintf(storage_file_, "%llx", prev_storage_size_))
 			return false;
 
+	fflush(storage_file_);
 	changed_ = false;
 	return true;
 }
@@ -483,6 +483,7 @@ void FileContainerZip::close()
 
 	// close storage file and clead variables
 	fclose(storage_file_);
+	storage_file_ = NULL;
 	files_.clear();
 	prev_storage_size_ = 0;
 	file_reading_ = false;
@@ -505,6 +506,7 @@ bool FileContainerZip::is_file(const std::string &filename)
 bool FileContainerZip::is_directory(const std::string &filename)
 {
 	if (!is_opened()) return false;
+	if (filename.empty()) return true;
 	FileMap::const_iterator i = files_.find(filename);
 	return i != files_.end() && i->second.is_directory;
 }
@@ -665,6 +667,7 @@ void FileContainerZip::file_close()
 		fseek(storage_file_, file_->second.header_offset + LocalFileHeaderOverwrite::offset_from_header(), SEEK_SET);
 		fwrite(&lfho, 1, sizeof(lfho), storage_file_);
 		file_writing_ = false;
+		fflush(storage_file_);
 	}
 	file_reading_whole_container_ = false;
 	file_reading_ = false;

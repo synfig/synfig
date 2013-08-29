@@ -51,8 +51,7 @@ bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
-		if (filename.size() <= i->prefix.size()
-		 && filename.substr(0, i->prefix.size()) == i->prefix)
+		if (filename.substr(0, i->prefix.size()) == i->prefix)
 		{
 			out_file_system = i->file_system;
 			out_filename = filename.substr(i->prefix.size());

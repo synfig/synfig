@@ -55,8 +55,8 @@ FileContainer::ReadStream::ReadStream(Handle file_system):
 FileContainer::ReadStream::~ReadStream()
 {
 	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
-	container->stream_valid_ = false;
 }
 
 size_t FileContainer::ReadStream::read(void *buffer, size_t size)
@@ -75,8 +75,8 @@ FileContainer::WriteStream::WriteStream(Handle file_system):
 FileContainer::WriteStream::~WriteStream()
 {
 	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
+	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
-	container->stream_valid_ = false;
 }
 
 size_t FileContainer::WriteStream::write(const void *buffer, size_t size)
