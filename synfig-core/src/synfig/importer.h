@@ -42,7 +42,29 @@
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_IMPORTER_MODULE_EXT \
 		public: static const char name__[], version__[], ext__[],cvs_id__[]; \
-		static Importer *create(const char *filename);
+		static synfig::Importer *create(const synfig::FileSystem::Identifier &identifier);
+
+//! Defines constructor for class derived from other class which derived from Importer
+#define SYNFIG_IMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, parent) \
+		public: class(const synfig::FileSystem::Identifier &identifier): parent(identifier) { }
+
+//! Defines constructor for class derived from Importer
+#define SYNFIG_IMPORTER_MODULE_CONSTRUCTOR(class) \
+		SYNFIG_IMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, synfig::Importer)
+
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
+//! And defines constructor for class derived from other class which derived from Importer
+#define SYNFIG_IMPORTER_MODULE_DECLARATIONS_DERIVED(class, parent) \
+		SYNFIG_IMPORTER_MODULE_EXT \
+		SYNFIG_IMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, parent)
+
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
+//! And defines constructor
+#define SYNFIG_IMPORTER_MODULE_DECLARATIONS(class) \
+		SYNFIG_IMPORTER_MODULE_EXT \
+		SYNFIG_IMPORTER_MODULE_CONSTRUCTOR(class)
 
 //! Sets the name of the importer.
 #define SYNFIG_IMPORTER_SET_NAME(class,x) const char class::name__[]=x
@@ -57,8 +79,8 @@
 #define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! Defines de implementation of the create method for the importer
-//! \param filename The file name to be imported by the importer.
-#define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const char *filename) { return new class(filename); }
+//! \param identifier The identifier of file to be imported by the importer.
+#define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const synfig::FileSystem::Identifier &identifier) { return new class(identifier); }
 
 /* === T Y P E D E F S ===================================================== */
 
