@@ -48,6 +48,78 @@ namespace synfig
 	public:
 		typedef etl::handle< FileSystem > Handle;
 
+		class Stream : public etl::rshared_object
+		{
+		protected:
+			Handle file_system_;
+			Stream(Handle file_system);
+		public:
+			virtual ~Stream();
+		};
+
+		class ReadStream : public Stream
+		{
+		protected:
+			class istreambuf : public std::streambuf
+			{
+			private:
+				ReadStream *stream_;
+				char buffer_;
+			public:
+				istreambuf(ReadStream *stream): stream_(stream)
+					{ setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1); }
+			protected:
+
+		        virtual int underflow() {
+		            if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
+		            int c = stream_->get_char();
+		            if (c == EOF) return EOF;
+		            buffer_ = traits_type::to_char_type(c);
+		            setg(&buffer_, &buffer_, &buffer_ + 1);
+		            return traits_type::to_int_type(*gptr());
+		        }
+			};
+
+			istreambuf buf_;
+			std::istream stream_;
+
+			ReadStream(Handle file_system);
+		public:
+			virtual size_t read(void *buffer, size_t size) = 0;
+			int get_char();
+			bool read_whole_block(void *buffer, size_t size);
+			std::istream& stream() { return stream_; }
+		};
+
+		typedef etl::handle< ReadStream > ReadStreamHandle;
+
+		class WriteStream : public Stream
+		{
+		protected:
+			class ostreambuf : public std::streambuf
+			{
+			private:
+				WriteStream *stream_;
+			public:
+				ostreambuf(WriteStream *stream): stream_(stream) { }
+			protected:
+		        virtual int overflow(int ch) { return stream_->put_char(ch); }
+			};
+
+			ostreambuf buf_;
+			std::ostream stream_;
+
+			WriteStream(Handle file_system);
+		public:
+			virtual size_t write(const void *buffer, size_t size) = 0;
+			int put_char(int character);
+			bool write_whole_block(const void *buffer, size_t size);
+			bool write_whole_stream(ReadStreamHandle stream);
+			std::ostream& stream() { return stream_; }
+		};
+
+		typedef etl::handle< WriteStream > WriteStreamHandle;
+
 		class Identifier {
 		public:
 			Handle file_system;
@@ -73,79 +145,10 @@ namespace synfig
 				{ return *this > other || other < *this; }
 			bool operator == (const Identifier &other) const
 				{ return !(*this != other); }
+
+			ReadStreamHandle get_read_stream() const;
+			WriteStreamHandle get_write_stream() const;
 		};
-
-		class Stream : public etl::rshared_object
-		{
-		protected:
-			Handle file_system_;
-			Stream(Handle file_system);
-		public:
-			virtual ~Stream();
-		};
-
-		class ReadStream : public Stream
-		{
-		protected:
-			class istreambuf : public std::streambuf
-			{
-			private:
-				ReadStream *stream_;
-				char buffer_;
-			public:
-				istreambuf(ReadStream *stream): stream_(stream)
-					{ setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1); }
-			protected:
-
-		        virtual int underflow() {
-		            if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
-		            int c = stream_->getc();
-		            if (c == EOF) return EOF;
-		            buffer_ = traits_type::to_char_type(c);
-		            setg(&buffer_, &buffer_, &buffer_ + 1);
-		            return traits_type::to_int_type(*gptr());
-		        }
-			};
-
-			istreambuf buf_;
-			std::istream stream_;
-
-			ReadStream(Handle file_system);
-		public:
-			virtual size_t read(void *buffer, size_t size) = 0;
-			int getc();
-			bool read_whole_block(void *buffer, size_t size);
-			std::istream& stream() { return stream_; }
-		};
-
-		typedef etl::handle< ReadStream > ReadStreamHandle;
-
-		class WriteStream : public Stream
-		{
-		protected:
-			class ostreambuf : public std::streambuf
-			{
-			private:
-				WriteStream *stream_;
-			public:
-				ostreambuf(WriteStream *stream): stream_(stream) { }
-			protected:
-		        virtual int overflow(int ch) { return stream_->putc(ch); }
-			};
-
-			ostreambuf buf_;
-			std::ostream stream_;
-
-			WriteStream(Handle file_system);
-		public:
-			virtual size_t write(const void *buffer, size_t size) = 0;
-			int putc(int character);
-			bool write_whole_block(const void *buffer, size_t size);
-			bool write_whole_stream(ReadStreamHandle stream);
-			std::ostream& stream() { return stream_; }
-		};
-
-		typedef etl::handle< WriteStream > WriteStreamHandle;
 
 		FileSystem();
 		virtual ~FileSystem();

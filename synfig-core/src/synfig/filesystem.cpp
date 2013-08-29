@@ -63,7 +63,7 @@ stream_(&buf_)
 { }
 
 int
-FileSystem::ReadStream::getc()
+FileSystem::ReadStream::get_char()
 {
 	int character = 0;
 	return 1 == read(&character, 1) ? character : EOF;
@@ -85,7 +85,7 @@ stream_(&buf_)
 { }
 
 int
-FileSystem::WriteStream::putc(int character)
+FileSystem::WriteStream::put_char(int character)
 {
 	return character != EOF && 1 == write(&character, 1) ? character : EOF;
 }
@@ -107,6 +107,14 @@ FileSystem::WriteStream::write_whole_stream(ReadStreamHandle stream)
 			return false;
 	return true;
 }
+
+
+// Identifier
+
+FileSystem::ReadStreamHandle FileSystem::Identifier::get_read_stream() const
+	{ return file_system ? file_system->get_read_stream(filename) : ReadStreamHandle(); }
+FileSystem::WriteStreamHandle FileSystem::Identifier::get_write_stream() const
+	{ return file_system ? file_system->get_write_stream(filename) : ReadStreamHandle(); }
 
 
 // FileSystem
