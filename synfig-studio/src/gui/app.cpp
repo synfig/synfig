@@ -2540,7 +2540,7 @@ App::open_as(std::string filename,std::string as)
 		{
 			if (!container->open(filename))
 				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
-			canvas_filename = "container:/project.sifz";
+			canvas_filename = "container:project.sifz";
 		}
 		else
 		{
@@ -2550,11 +2550,11 @@ App::open_as(std::string filename,std::string as)
 
 		Importer::file_system().register_system("container:", container);
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors,warnings));
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_filename,as,errors,warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
-			info("%s is already open", filename.c_str());
+			info("%s is already open", canvas_filename.c_str());
 			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		else
