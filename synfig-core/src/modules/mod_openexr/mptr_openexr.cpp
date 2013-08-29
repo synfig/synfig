@@ -62,22 +62,13 @@ SYNFIG_IMPORTER_SET_CVS_ID(exr_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-exr_mptr::exr_mptr(const char *file)
-{
-	filename=file;
-}
-
-exr_mptr::~exr_mptr()
-{
-}
-
 bool
 exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback *cb)
 {
     try
     {
 
-	Imf::RgbaInputFile in(filename.c_str());
+	Imf::RgbaInputFile in(identifier.filename.c_str());
 
     int w = in.dataWindow().max.x - in.dataWindow().min.x + 1;
     int h = in.dataWindow().max.y - in.dataWindow().min.y + 1;
