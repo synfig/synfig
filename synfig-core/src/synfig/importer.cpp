@@ -39,6 +39,7 @@
 #include <ctype.h>
 #include <functional>
 #include <glibmm.h>
+#include "filesystemnative.h"
 
 #endif
 
@@ -51,7 +52,7 @@ using namespace std;
 using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
-FileSystemGroup* synfig::Importer::file_system_;
+etl::handle< FileSystemGroup >* synfig::Importer::file_system_;
 
 map<String,Importer::LooseHandle> *__open_importers;
 
@@ -64,7 +65,10 @@ Importer::subsys_init()
 {
 	book_=new Book();
 	__open_importers=new map<String,Importer::LooseHandle>();
-	file_system_ = new FileSystemGroup();
+	file_system_ = new etl::handle< FileSystemGroup >(
+	               new FileSystemGroup(
+	               new FileSystemNative(
+	               	   )));
 	return true;
 }
 
@@ -86,7 +90,7 @@ Importer::book()
 FileSystemGroup&
 Importer::file_system()
 {
-	return *file_system_;
+	return *(*file_system_);
 }
 
 Importer::Handle
