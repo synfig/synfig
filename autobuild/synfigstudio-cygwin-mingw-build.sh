@@ -350,6 +350,9 @@ if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     fi
 fi
 done
+
+# Ensure all dlls have executable flag, otherwise the compiled binaries won't run
+chmod a+x /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/*.dll
 }
 
 # Install dependencies
