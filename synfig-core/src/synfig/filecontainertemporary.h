@@ -63,6 +63,7 @@ namespace synfig
 
 		bool is_opened_;
 		FileMap files_;
+		std::string container_filename_;
 		etl::handle< FileContainerZip > container_;
 		etl::handle< FileSystemNative > file_system_;
 
