@@ -34,7 +34,7 @@
 
 #include <ETL/stringf>
 #include "trgt_gif.h"
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 /* === M A C R O S ========================================================= */

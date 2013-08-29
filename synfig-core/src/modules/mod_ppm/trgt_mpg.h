@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/synfig.h>
-#include <stdio.h>
+#include <cstdio>
 #include "trgt_ppm.h"
 
 /* === M A C R O S ========================================================= */
