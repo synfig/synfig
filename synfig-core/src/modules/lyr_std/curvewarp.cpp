@@ -368,7 +368,7 @@ CurveWarp::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_bline, sync());
 
 	if(param=="offset")
-		set_param("origin", value);
+		return set_param("origin", value);
 
 	return false;
 }
