@@ -30,7 +30,7 @@
 # * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
 # * Open Cygwin console (with administrator previlegies) and run the build script:
 # ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
-# * Installation bundle will be written to C:\synfig-build\dist\
+# * Installation bundle will be written to C:\synfig-build\
 #
 #
 # = Other notes =
@@ -89,6 +89,11 @@ if [[ $DEBUG == 1 ]]; then
 else
 	DEBUG=''
 fi
+
+export VERSION="0.64.0"
+pushd "${SRCPREFIX}" > /dev/null
+export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
+popd > /dev/null
 
 prepare_mingw_env()
 {
@@ -715,8 +720,10 @@ gen_list_nsh share share
 
 #make installer
 cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
+cp -f $SRCPREFIX/autobuild/win${ARCH}-specific.nsh ./arch-specific.nsh
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
+mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()
