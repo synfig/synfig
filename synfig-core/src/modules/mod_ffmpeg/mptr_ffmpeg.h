@@ -31,7 +31,7 @@
 
 #include <synfig/importer.h>
 #include <sys/types.h>
-#include <stdio.h>
+#include <cstdio>
 #include "string.h"
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
@@ -51,7 +51,6 @@ class ffmpeg_mptr : public synfig::Importer
 public:
 private:
 	pid_t pid;
-	synfig::String filename;
 	FILE *file;
 	int cur_frame;
 	synfig::Surface frame;
@@ -64,7 +63,7 @@ private:
 	bool grab_frame(void);
 
 public:
-	ffmpeg_mptr(const char *filename);
+	ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier);
 	~ffmpeg_mptr();
 
 	virtual bool is_animated();
