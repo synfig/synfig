@@ -34,7 +34,7 @@
 #include "time.h"
 #include "gamma.h"
 #include "renddesc.h"
-#include "filesystemgroup.h"
+#include "filesystem.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -86,13 +86,11 @@ class Importer : public etl::shared_object
 public:
 	//! Type that represents a pointer to a Importer's constructor.
 	//! As a pointer to the constructor, it represents a "factory" of importers.
-	typedef Importer* (*Factory)(const char *filename);
-	typedef std::map<String,Factory> Book;
+	typedef Importer* (*Factory)(const FileSystem::Identifier &identifier);
+	typedef std::map<std::string,Factory> Book;
 	static Book* book_;
-	static etl::handle< FileSystemGroup > *file_system_;
 
 	static Book& book();
-	static FileSystemGroup& file_system();
 
 	//! Initializes the Import module by creating a book of importers names
 	//! and its creators and the list of open importers
@@ -111,9 +109,11 @@ private:
 	Gamma gamma_;
 
 protected:
-	Importer();
+
+	Importer(const FileSystem::Identifier &identifier);
 
 public:
+	const FileSystem::Identifier identifier;
 
 	Gamma& gamma() { return gamma_; }
 	const Gamma& gamma()const { return gamma_; }
@@ -144,7 +144,7 @@ public:
 	virtual bool is_animated() { return false; }
 
 	//! Attempts to open \a filename, and returns a handle to the associated Importer
-	static Handle open(const String &filename);
+	static Handle open(const FileSystem::Identifier &identifier);
 };
 
 }; // END of namespace synfig
