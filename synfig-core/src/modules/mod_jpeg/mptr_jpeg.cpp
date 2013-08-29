@@ -96,13 +96,12 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 
 
 
-jpeg_mptr::jpeg_mptr(const char *file_name)
+jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier)
 {
   	struct my_error_mgr jerr;
-	filename=file_name;
 
 	/* Open the file pointer */
-    FILE *file = fopen(file_name, "rb");
+    FILE *file = fopen(identifier.filename.c_str(), "rb");
     if (!file)
     {
         //! \todo THROW SOMETHING
