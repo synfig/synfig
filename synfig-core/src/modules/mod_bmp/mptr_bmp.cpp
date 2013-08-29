@@ -109,46 +109,32 @@ inline short little_endian_short(const short &x)
 #endif
 
 
-
-
-
-
-bmp_mptr::bmp_mptr(const char *file)
-{
-	filename=file;
-}
-
-bmp_mptr::~bmp_mptr()
-{
-}
-
 bool
 bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time /*time*/, synfig::ProgressCallback *cb)
 {
-	FileSystem::ReadStreamHandle stream = file_system().get_read_stream(filename);
-
+	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
 	if(!stream)
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
-		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));
+		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));
 		return false;
 	}
 
 	synfig::BITMAPFILEHEADER fileheader;
 	synfig::BITMAPINFOHEADER infoheader;
-	char b_char=stream->getc();
-	char m_char=stream->getc();
+	char b_char=stream->get_char();
+	char m_char=stream->get_char();
 
 	if(b_char!='B' || m_char!='M')
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
-		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),identifier.filename.c_str()));
+		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),identifier.filename.c_str()));
 		return false;
 	}
 
 	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAPFILEHEADER)-4))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),filename.c_str()));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),identifier.filename.c_str()));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -156,7 +142,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(!stream->read_whole_block(&infoheader, sizeof(synfig::BITMAPINFOHEADER)))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),filename.c_str()));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),identifier.filename.c_str()));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -166,7 +152,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(offset!=sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2)
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),filename.c_str(),offset,sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -174,7 +160,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(little_endian(infoheader.biSize)!=little_endian(40))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),filename.c_str(),little_endian(infoheader.biSize)));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),identifier.filename.c_str(),little_endian(infoheader.biSize)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -213,9 +199,9 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 //			float b=(float)(unsigned char)stream->getc()*(1.0/255.0);
 //			float g=(float)(unsigned char)stream->getc()*(1.0/255.0);
 //			float r=(float)(unsigned char)stream->getc()*(1.0/255.0);
-			float b=gamma().b_U8_to_F32((unsigned char)stream->getc());
-			float g=gamma().g_U8_to_F32((unsigned char)stream->getc());
-			float r=gamma().r_U8_to_F32((unsigned char)stream->getc());
+			float b=gamma().b_U8_to_F32((unsigned char)stream->get_char());
+			float g=gamma().g_U8_to_F32((unsigned char)stream->get_char());
+			float r=gamma().r_U8_to_F32((unsigned char)stream->get_char());
 
 			surface[h-y-1][x]=Color(
 				r,
@@ -224,7 +210,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				1.0
 			);
 			if(bit_count==32)
-				stream->getc();
+				stream->get_char();
 		}
 
 

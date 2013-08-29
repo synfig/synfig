@@ -42,15 +42,9 @@
 
 class bmp_mptr : public synfig::Importer
 {
-SYNFIG_IMPORTER_MODULE_EXT
-
-private:
-	synfig::String filename;
+SYNFIG_IMPORTER_MODULE_DECLARATIONS(bmp_mptr)
 
 public:
-	bmp_mptr(const char *filename);
-	~bmp_mptr();
-
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 };
 
