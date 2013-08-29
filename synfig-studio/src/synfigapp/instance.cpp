@@ -163,25 +163,38 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 bool
 Instance::save()const
 {
+	Importer::file_system().register_system("container:", container_);
 	bool ret=save_canvas(get_file_name(),canvas_);
 	if(ret)
 	{
 		reset_action_count();
 		const_cast<sigc::signal<void>& >(signal_saved_)();
 	}
+	Importer::file_system().unregister_system("container:");
 	return ret;
 }
 
 bool
 Instance::save_as(const synfig::String &file_name)
 {
+	bool save_container = false;
+	std::string canvas_filename = file_name;
+	if (filename_extension(file_name) == ".zip")
+	{
+		canvas_filename = "container:project.sifz";
+		save_container = true;
+	}
+
+	Importer::file_system().register_system("container:", container_);
+
 	bool ret;
 
 	String old_file_name(get_file_name());
 
 	set_file_name(file_name);
 
-	ret=save_canvas(file_name,canvas_);
+	ret = save_canvas(canvas_filename,canvas_,!save_container)
+	   && container_->save_changes(file_name, false);
 
 	if(ret)
 	{
@@ -193,5 +206,6 @@ Instance::save_as(const synfig::String &file_name)
 
 	signal_filename_changed_();
 
+	Importer::file_system().unregister_system("container:");
 	return ret;
 }
