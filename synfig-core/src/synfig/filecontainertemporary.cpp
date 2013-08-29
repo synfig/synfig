@@ -131,6 +131,7 @@ bool FileContainerTemporary::is_file(const std::string &filename)
 bool FileContainerTemporary::is_directory(const std::string &filename)
 {
 	if (!is_opened()) return false;
+	if (filename.empty()) return true;
 	FileMap::const_iterator i = files_.find(filename);
 	return i == files_.end()
 		 ? container_->is_directory(filename)
