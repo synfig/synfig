@@ -34,7 +34,7 @@
 #include <synfig/synfig.h>
 #include <ETL/stringf>
 #include "mptr_mplayer.h"
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <algorithm>
 #include <functional>
@@ -49,28 +49,16 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-const char mplayer_mptr::Name[]="avi";
-const char mplayer_mptr::Ext[]="avi";
+SYNFIG_IMPORTER_INIT(mplayer_mptr);
+SYNFIG_IMPORTER_SET_NAME(mplayer_mptr,"mplayer");
+SYNFIG_IMPORTER_SET_EXT(mplayer_mptr,"avi");
+SYNFIG_IMPORTER_SET_VERSION(mplayer_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(mplayer_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Importer *
-mplayer_mptr::New(const char *file)
-{
-	return new mplayer_mptr(file);
-}
-
-mplayer_mptr::mplayer_mptr(const char *file)
-{
-	filename=file;
-}
-
-mplayer_mptr::~mplayer_mptr()
-{
-}
-
 bool
-mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCallback *)
+mplayer_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback)
 {
 
 #error This code has vulnerabilites: arbitrary shell command execution and tmpfile issues
@@ -78,7 +66,7 @@ mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCall
 	int ret;
 	ret=system(
 		strprintf("/usr/local/bin/mencoder \"%s\" -ovc rawrgb -ss %f -endpos 0 -nosound -o /tmp/tmp.synfig.rgbdata | grep \"VIDEO\" > /tmp/tmp.synfig.size",
-			filename.c_str(),
+			identifier.filename.c_str(),
 			time
 		).c_str()
 	);
