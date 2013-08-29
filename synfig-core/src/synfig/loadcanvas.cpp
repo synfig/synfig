@@ -70,6 +70,8 @@
 
 #include "gradient.h"
 
+#include "importer.h"
+
 #include <map>
 #include <sigc++/bind.h>
 
