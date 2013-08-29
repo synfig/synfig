@@ -104,9 +104,7 @@ Circle::ImportParameters(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_falloff);
 	if(param=="pos")
-	{
-		ImportParameters("origin",value);
-	}
+		return ImportParameters("origin",value);
 
 	return Layer_Composite::set_param(param,value);
 }

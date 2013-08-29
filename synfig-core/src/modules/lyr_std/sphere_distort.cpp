@@ -104,9 +104,7 @@ Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_clip);
 
 	if(param=="percent" && param_amount.get_type()==value.get_type())
-	{
-		set_param("amount", value);
-	}
+		return set_param("amount", value);
 
 	return Layer::set_param(param,value);
 }

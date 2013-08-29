@@ -121,7 +121,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_invert);
 
 	if(param=="offset")
-		set_param("origin", value);
+		return set_param("origin", value);
 
 	return Layer_Composite::set_param(param,value);
 }
