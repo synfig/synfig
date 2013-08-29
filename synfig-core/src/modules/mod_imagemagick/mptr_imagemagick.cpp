@@ -34,7 +34,7 @@
 
 #include <ETL/stringf>
 #include "mptr_imagemagick.h"
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
@@ -53,6 +53,7 @@
 #include <functional>
 #include <ETL/stringf>
 #include <synfig/general.h>
+#include <synfig/filesystemnative.h>
 
 #endif
 
@@ -79,12 +80,11 @@ SYNFIG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 
-imagemagick_mptr::imagemagick_mptr(const char *f)
-{
-
-	filename=f;
-	file=NULL;
-}
+imagemagick_mptr::imagemagick_mptr(const synfig::FileSystem::Identifier &identifier):
+synfig::Importer(identifier),
+file(NULL),
+cur_frame(0)
+{ }
 
 imagemagick_mptr::~imagemagick_mptr()
 {
@@ -98,7 +98,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 //#define HAS_LIBPNG 1
 
 #if 1
-	if(filename.empty())
+	if(identifier.filename.empty())
 	{
 		if(cb)cb->error(_("No file to load"));
 		else synfig::error(_("No file to load"));
@@ -113,10 +113,10 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	string command;
 
-	if(filename.find("psd")!=String::npos)
-		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+	if(identifier.filename.find("psd")!=String::npos)
+		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",identifier.filename.c_str(),temp_file.c_str());
 	else
-		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+		command=strprintf("convert \"%s\" \"png32:%s\"\n",identifier.filename.c_str(),temp_file.c_str());
 
 	if(system(command.c_str())!=0)
 		return false;
@@ -133,10 +133,10 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	if (pid == 0){
 		// Child process
-		if(filename.find("psd")!=String::npos)
-			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+		if(identifier.filename.find("psd")!=String::npos)
+			execlp("convert", "convert", identifier.filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
 		else
-			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
+			execlp("convert", "convert", identifier.filename.c_str(), output.c_str(), (const char *)NULL);
 		// We should never reach here unless the exec failed
 		return false;
 	}
@@ -150,7 +150,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	#error There are no known APIs for creating child processes
 #endif
 
-	Importer::Handle importer(Importer::open(temp_file));
+	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(new synfig::FileSystemNative(), temp_file)));
 
 	if(!importer)
 	{
@@ -211,14 +211,14 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	string command;
 
-	if(filename.empty())
+	if(identifier.filename.empty())
 	{
 		if(cb)cb->error(_("No file to load"));
 		else synfig::error(_("No file to load"));
 		return false;
 	}
 
-	command=strprintf("convert \"%s\" -flatten ppm:-\n",filename.c_str());
+	command=strprintf("convert \"%s\" -flatten ppm:-\n",identifier.filename.c_str());
 
 	file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
