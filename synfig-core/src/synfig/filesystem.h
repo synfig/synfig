@@ -64,10 +64,20 @@ namespace synfig
 			{
 			private:
 				ReadStream *stream_;
+				char buffer_;
 			public:
-				istreambuf(ReadStream *stream): stream_(stream) { }
+				istreambuf(ReadStream *stream): stream_(stream)
+					{ setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1); }
 			protected:
-		        virtual int underflow() { return stream_->getc(); }
+
+		        virtual int underflow() {
+		            if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
+		            int c = stream_->getc();
+		            if (c == EOF) return EOF;
+		            buffer_ = traits_type::to_char_type(c);
+		            setg(&buffer_, &buffer_, &buffer_ + 1);
+		            return traits_type::to_int_type(*gptr());
+		        }
 			};
 
 			istreambuf buf_;

@@ -1008,7 +1008,7 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool saf
 			return false;
 		}
 
-		document.write_to_stream_formatted(stream->stream());
+		document.write_to_stream_formatted(stream->stream(), "UTF-8");
 
 		// close stream
 		stream.reset();

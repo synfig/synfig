@@ -453,7 +453,7 @@ bool FileContainerZip::save()
 	// end of central directory
 	EndOfCentralDirectory ecd;
 	ecd.offset = central_directory_offset;
-	ecd.total_records = files_.size();
+	ecd.current_records = ecd.total_records = files_.size();
 	ecd.size = ftell(storage_file_) - central_directory_offset;
 	if (prev_storage_size_ > 0)
 		ecd.comment_length = sprintf(NULL, "%llx", prev_storage_size_);

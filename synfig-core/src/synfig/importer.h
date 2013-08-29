@@ -89,7 +89,7 @@ public:
 	typedef Importer* (*Factory)(const char *filename);
 	typedef std::map<String,Factory> Book;
 	static Book* book_;
-	static FileSystemGroup *file_system_;
+	static etl::handle< FileSystemGroup > *file_system_;
 
 	static Book& book();
 	static FileSystemGroup& file_system();

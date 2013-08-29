@@ -45,7 +45,7 @@ namespace synfig
 		struct Entry
 		{
 			std::string prefix;
-			FileSystem::Handle file_system;
+			Handle file_system;
 			inline Entry() { }
 			inline Entry(const std::string &prefix, const Handle &file_system):
 				prefix(prefix), file_system(file_system) { }
@@ -57,6 +57,9 @@ namespace synfig
 		bool find_system(const std::string &filename, FileSystem::Handle &out_file_system, std::string &out_filename);
 
 	public:
+		FileSystemGroup();
+		explicit FileSystemGroup(Handle default_file_system);
+
 		void register_system(const std::string &prefix, FileSystem::Handle file_system);
 		void unregister_system(const std::string &prefix);
 

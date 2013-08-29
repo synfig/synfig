@@ -47,6 +47,14 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+FileSystemGroup::FileSystemGroup() { }
+
+FileSystemGroup::FileSystemGroup(Handle default_file_system)
+{
+	if (default_file_system) register_system(std::string(), default_file_system);
+}
+
+
 bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_system, std::string &out_filename)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
