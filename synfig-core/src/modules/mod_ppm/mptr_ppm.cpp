@@ -60,22 +60,13 @@ SYNFIG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ppm_mptr::ppm_mptr(const char *file)
-{
-	filename=file;
-}
-
-ppm_mptr::~ppm_mptr()
-{
-}
-
 bool
 ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback *cb)
 {
-	SmartFILE file(fopen(filename.c_str(),"rb"));
+	SmartFILE file(fopen(identifier.filename.c_str(),"rb"));
 	if(!file)
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
+		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));
 		return false;
 	}
 	int w,h;
@@ -83,7 +74,7 @@ ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(fgetc(file.get())!='P' || fgetc(file.get())!='6')
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("%s was not in PPM format"),filename.c_str()));
+		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("%s was not in PPM format"),identifier.filename.c_str()));
 		return false;
 	}
 
