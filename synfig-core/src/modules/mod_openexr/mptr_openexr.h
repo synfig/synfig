@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <stdio.h>
+#include <cstdio>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -41,16 +41,9 @@
 
 class exr_mptr : public synfig::Importer
 {
-	SYNFIG_IMPORTER_MODULE_EXT
+	SYNFIG_IMPORTER_MODULE_DECLARATIONS(exr_mptr)
 
-private:
-	synfig::String filename;
 public:
-	exr_mptr(const char *filename);
-	~exr_mptr();
-
-
-
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 
 };
