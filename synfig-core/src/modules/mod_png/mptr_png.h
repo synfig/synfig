@@ -44,7 +44,6 @@ class png_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	synfig::String filename;
 	synfig::Surface surface_buffer;
 
 	png_structp png_ptr;
@@ -59,7 +58,7 @@ private:
 	static int read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk);
 
 public:
-	png_mptr(const char *filename);
+	png_mptr(const synfig::FileSystem::Identifier &identifier);
 	~png_mptr();
 
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
