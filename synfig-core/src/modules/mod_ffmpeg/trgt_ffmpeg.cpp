@@ -35,7 +35,7 @@
 
 #include <ETL/stringf>
 #include "trgt_ffmpeg.h"
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
