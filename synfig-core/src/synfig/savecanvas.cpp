@@ -56,7 +56,7 @@
 #include "string.h"
 #include "paramdesc.h"
 
-#include "filecontainerzip.h"
+#include "importer.h"
 
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>

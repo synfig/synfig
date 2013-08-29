@@ -115,6 +115,11 @@ FileSystem::FileSystem() { }
 
 FileSystem::~FileSystem() { }
 
+bool FileSystem::file_rename(const std::string & /* from_filename */, const std::string & /* to_filename */)
+{
+	return false;
+}
+
 bool FileSystem::copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename)
 {
 	if (from_file_system.empty() || to_file_system.empty()) return false;

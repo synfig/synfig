@@ -53,6 +53,8 @@
 
 #include "general.h"
 
+#include <synfig/importer.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

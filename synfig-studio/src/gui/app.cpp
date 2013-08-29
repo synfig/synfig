@@ -65,6 +65,7 @@
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
+#include <synfig/importer.h>
 
 #include "app.h"
 #include "dialogs/about.h"
