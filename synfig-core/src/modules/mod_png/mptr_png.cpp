@@ -102,16 +102,14 @@ png_mptr::read_chunk_callback(png_struct */*png_data*/, png_unknown_chunkp /*chu
 	//return (n); /* success */
 }
 
-png_mptr::png_mptr(const char *file_name)
+png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier)
 {
-	filename=file_name;
-
 	/* Open the file pointer */
-    FILE *file = fopen(file_name, "rb");
+    FILE *file = fopen(identifier.filename.c_str(), "rb");
     if (!file)
     {
         //! \todo THROW SOMETHING
-		throw strprintf("Unable to physically open %s",file_name);
+		throw strprintf("Unable to physically open %s",identifier.filename.c_str());
 		return;
     }
 
@@ -123,7 +121,7 @@ png_mptr::png_mptr(const char *file_name)
     if (!is_png)
     {
         //! \todo THROW SOMETHING
-		throw strprintf("This (\"%s\") doesn't appear to be a PNG file",file_name);
+		throw strprintf("This (\"%s\") doesn't appear to be a PNG file",identifier.filename.c_str());
 		return;
     }
 
