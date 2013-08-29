@@ -91,6 +91,7 @@ bool FileContainerTemporary::create(const std::string &container_filename)
 {
 	return !is_opened()
 		&& (container_filename.empty() || container_->create(container_filename))
+		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
 }
 
@@ -98,6 +99,7 @@ bool FileContainerTemporary::open(const std::string &container_filename)
 {
 	return !is_opened()
 		&& container_->open(container_filename)
+		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
 }
 
@@ -105,9 +107,9 @@ void FileContainerTemporary::close()
 {
 	if (!is_opened()) return;
 	file_close();
-	save_changes();
 	discard_changes();
 	container_->close();
+	container_filename_.clear();
 	is_opened_ = false;
 }
 
@@ -322,10 +324,13 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 
 	etl::handle< FileContainerZip > container;
 
-	if (filename.empty())
+	bool save_at_place = filename.empty() || filename == container_filename_;
+ 	if (save_at_place) as_copy = false;
+
+
+	if (save_at_place)
 	{
 		if (!container_->is_opened()) return false;
-		if (as_copy) return false;
 		container = container_;
 	}
 	else
@@ -407,7 +412,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 	if (container->save())
 	{
 		// update internal state
-		if (filename.empty())
+		if (save_at_place)
 		{
 			files_ = files;
 		}
