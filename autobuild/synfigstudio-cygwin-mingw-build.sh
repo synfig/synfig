@@ -80,6 +80,18 @@ fi
 
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
 
+
+
+set -e
+
+if [[ $DEBUG == 1 ]]; then
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
+
+prepare_mingw_env()
+{
 export CBUILD=i686-pc-cygwin
 export CHOST=${TOOLCHAIN_HOST}
 export CTARGET=${TOOLCHAIN_HOST}
@@ -112,14 +124,7 @@ export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
 export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib "
 export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
 alias convert="/usr/bin/convert"
-
-set -e
-
-if [[ $DEBUG == 1 ]]; then
-	DEBUG='--enable-debug --enable-optimization=0'
-else
-	DEBUG=''
-fi
+}
 
 mknative()
 {
@@ -147,6 +152,7 @@ export GCJFLAGS=""
 export GOCFLAGS=""
 export OBJCFLAGS=""
 export OBJCXXFLAGS=""
+export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
 export PKG_CONFIG_LIBDIR=""
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=""
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=""
@@ -169,6 +175,8 @@ cd ${PKG_NAME}-${PKG_VERSION}
 ./autogen.sh
 make -j2 install
 
+# remove old version of popt
+[ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
 }
 
 mkrpm()
@@ -180,7 +188,7 @@ PKG_VERSION=4.10.3.1
 TAREXT=bz2
 
 cd $WORKSPACE
-[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://rpm.org/releases/rpm-4.7.x/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://rpm.org/releases/rpm-4.10.x/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
     tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd ${PKG_NAME}-${PKG_VERSION}
@@ -350,10 +358,10 @@ mkprep()
 
 export PREP_VERSION=3
 
-if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
+if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
 $CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
 -P gcc \
@@ -366,6 +374,8 @@ $CYGWIN_SETUP \
 -P p7zip \
 -P ImageMagick \
 -P cygport \
+-P $TOOLCHAIN-gcc  \
+-P $TOOLCHAIN-gcc-g++  \
 -P zlib-devel \
 -P libnspr-devel \
 -P liblzma-devel \
@@ -373,9 +383,15 @@ $CYGWIN_SETUP \
 -P libiconv \
 -P libdb4.8-devel \
 -P python \
--P urlgrabber \ # yum req
--P $TOOLCHAIN-gcc  \
--P $TOOLCHAIN-gcc-g++  \
+-q
+
+# yum dependencies
+$CYGWIN_SETUP \
+-s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-P urlgrabber \
+-P libglib2.0-devel \
+-P libxml2-devel \
+-P libsqlite3-devel \
 -q
 
 #-P libglib2.0-devel \ # yum req
@@ -394,9 +410,9 @@ mknative mkyum-metadata-parser
 
 cd $WORKSPACE
 wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-3.4.3-47.fc18.noarch.rpm
-rpm -Uhv --ignoreos --nodeps yum-3.4.3-47.fc18.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-47.fc18.noarch.rpm
 wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-utils-1.1.31-6.fc18.noarch.rpm
-rpm -Uhv --ignoreos --nodeps yum-utils-1.1.31-6.fc18.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-6.fc18.noarch.rpm
 
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
@@ -404,6 +420,9 @@ fedora-mingw-install mingw${ARCH}-pango
 fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm24
+
+# Somehow this is required too...
+fedora-mingw-install mingw${ARCH}-pcre
 
 #TODO: magick++
 
@@ -476,7 +495,7 @@ rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
 
 fi # if false
 
-echo ${PREP_VERSION} > $WORKSPACE/prep-done
+echo ${PREP_VERSION} > /prep-done
 
 fi
 }
@@ -700,6 +719,7 @@ cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
 mkall()
 {
 	mkprep
+	prepare_mingw_env
 	mketl
 	mksynfig
 	mksynfigstudio
@@ -710,5 +730,6 @@ if [ -z $1 ]; then
 	mkall
 else
 	echo "Executing custom user command..."
+	prepare_mingw_env
 	$@
 fi
