@@ -35,6 +35,7 @@
 #include "time.h"
 #include "gamma.h"
 #include "renddesc.h"
+#include "filesystem.h"
 
 #include "cairo.h"
 
@@ -44,7 +45,30 @@
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_CAIROIMPORTER_MODULE_EXT \
 		public: static const char name__[], version__[], ext__[],cvs_id__[]; \
-		static CairoImporter *create(const char *filename);
+		static const bool supports_file_system_wrapper__; \
+		static synfig::CairoImporter *create(const synfig::FileSystem::Identifier &identifier);
+
+//! Defines constructor for class derived from other class which derived from CairoImporter
+#define SYNFIG_CAIROIMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, parent) \
+		public: class(const synfig::FileSystem::Identifier &identifier): parent(identifier) { }
+
+//! Defines constructor for class derived from CairoImporter
+#define SYNFIG_CAIROIMPORTER_MODULE_CONSTRUCTOR(class) \
+		SYNFIG_CAIROIMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, synfig::CairoImporter)
+
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
+//! And defines constructor for class derived from other class which derived from CairoImporter
+#define SYNFIG_CAIROIMPORTER_MODULE_DECLARATIONS_DERIVED(class, parent) \
+		SYNFIG_CAIROIMPORTER_MODULE_EXT \
+		SYNFIG_CAIROIMPORTER_MODULE_CONSTRUCTOR_DERIVED(class, parent)
+
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
+//! And defines constructor
+#define SYNFIG_CAIROIMPORTER_MODULE_DECLARATIONS(class) \
+		SYNFIG_CAIROIMPORTER_MODULE_EXT \
+		SYNFIG_CAIROIMPORTER_MODULE_CONSTRUCTOR(class)
 
 //! Sets the name of the importer.
 #define SYNFIG_CAIROIMPORTER_SET_NAME(class,x) const char class::name__[]=x
@@ -58,9 +82,12 @@
 //! Sets the CVS ID of the importer.
 #define SYNFIG_CAIROIMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
+//! Sets the supports_file_system_wrapper flag of the importer.
+#define SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(class,x) const char class::supports_file_system_wrapper__=x
+
 //! Defines de implementation of the create method for the importer
 //! \param filename The file name to be imported by the importer.
-#define SYNFIG_CAIROIMPORTER_INIT(class) synfig::CairoImporter* class::create(const char *filename) { return new class(filename); }
+#define SYNFIG_CAIROIMPORTER_INIT(class) synfig::CairoImporter* class::create(const synfig::FileSystem::Identifier &identifier) { return new class(identifier); }
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -85,10 +112,22 @@ class ProgressCallback;
 class CairoImporter : public etl::shared_object
 {
 public:
-	//! Type that represents a pointer to a Importer's constructor.
+	//! Type that represents a pointer to a CairoImporter's constructor.
 	//! As a pointer to the constructor, it represents a "factory" of importers.
-	typedef CairoImporter* (*Factory)(const char *filename);
-	typedef std::map<String, Factory> Book;
+	typedef CairoImporter* (*Factory)(const FileSystem::Identifier &identifier);
+
+	struct BookEntry
+	{
+		Factory factory;
+		bool supports_file_system_wrapper;
+
+		BookEntry(): factory(NULL), supports_file_system_wrapper(false) { }
+		BookEntry(Factory factory, bool supports_file_system_wrapper):
+		factory(factory), supports_file_system_wrapper(supports_file_system_wrapper)
+		{ }
+	};
+
+	typedef std::map<std::string,BookEntry> Book;
 	static Book* book_;
 
 	static Book& book();
@@ -110,9 +149,10 @@ private:
 	Gamma gamma_;
 
 protected:
-	CairoImporter();
+	CairoImporter(const FileSystem::Identifier &identifier);
 
 public:
+	const FileSystem::Identifier identifier;
 
 	Gamma& gamma() { return gamma_; }
 	const Gamma& gamma()const { return gamma_; }
@@ -143,7 +183,7 @@ public:
 	virtual bool is_animated() { return false; }
 
 	//! Attempts to open \a filename, and returns a handle to the associated CairoImporter
-	static Handle open(const String &filename);
+	static Handle open(const FileSystem::Identifier &identifier);
 };
 
 }; // END of namespace synfig
