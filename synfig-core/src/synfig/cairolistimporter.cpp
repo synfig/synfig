@@ -33,6 +33,7 @@
 
 #include "cairolistimporter.h"
 #include "general.h"
+#include "filesystemnative.h"
 #include <fstream>
 
 #endif
@@ -60,19 +61,20 @@ SYNFIG_CAIROIMPORTER_SET_CVS_ID(CairoListImporter,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-CairoListImporter::CairoListImporter(const String &filename)
+CairoListImporter::CairoListImporter(const FileSystem::Identifier &identifier):
+Importer(identifier)
 {
 	fps=15;
 
-	ifstream stream(filename.c_str());
+	ifstream stream(identifier.filename.c_str());
 
 	if(!stream)
 	{
-		synfig::error("Unable to open "+filename);
+		synfig::error("Unable to open "+identifier.filename);
 		return;
 	}
 	String line;
-	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPARATOR;
+	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 	getline(stream,line);		// read first line and check whether it is a Papagayo lip sync file
 
 	if (line == "MohoSwitch1")	// it is a Papagayo lipsync file
@@ -184,7 +186,7 @@ CairoListImporter::get_frame(cairo_surface_t *&csurface, const RendDesc &renddes
 		}
 	}
 
-	CairoImporter::Handle importer(CairoImporter::open(filename_list[frame]));
+	CairoImporter::Handle importer(CairoImporter::open(FileSystem::Identifier(new FileSystemNative(), filename_list[frame])));
 
 	if(!importer)
 	{
