@@ -697,14 +697,16 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//this curve have 6 parameters
 			//radius
 			float radius_x,radius_y;
-			float angle;
+			// todo: why 'angle' never used?
+			//float angle;
 			bool sweep,large;
 			//radius
 			radius_x=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
 			radius_y=atof(tokens.at(i).data());
 			//angle
-			i++; angle=atof(tokens.at(i).data());
+			// todo: why 'angle' never used?
+			i++; // angle=atof(tokens.at(i).data());
 			//flags
 			i++; large=atoi(tokens.at(i).data());
 			i++; sweep=atoi(tokens.at(i).data());
