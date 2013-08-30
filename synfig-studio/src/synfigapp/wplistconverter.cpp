@@ -59,8 +59,6 @@ WPListConverter::WPListConverter()
 void
 WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::list<synfig::Point> &p, const std::list<synfig::Real> &w)
 {
-	// number of data (float format)
-	Real nf;
 	// indexes k1, k2 for the interval considered, kem where the error
 	// is maximum
 	unsigned int k1, k2, kem;
@@ -89,7 +87,6 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		}
 	// once removed the duplicated then get the sizes of the work vectors
 	n=points.size();
-	nf=Real(n);
 	// Calculate the cumulative distances
 	Point p1(points[0]), p2;
 	Real d(0);
