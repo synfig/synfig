@@ -56,6 +56,7 @@ SYNFIG_CAIROIMPORTER_SET_NAME(cairo_png_mptr,"cairo_png");
 SYNFIG_CAIROIMPORTER_SET_EXT(cairo_png_mptr,"png");
 SYNFIG_CAIROIMPORTER_SET_VERSION(cairo_png_mptr,"0.1");
 SYNFIG_CAIROIMPORTER_SET_CVS_ID(cairo_png_mptr,"$Id$");
+SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(cairo_png_mptr, false);
 
 /* === M E T H O D S ======================================================= */
 

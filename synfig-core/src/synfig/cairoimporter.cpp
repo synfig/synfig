@@ -52,7 +52,7 @@ using namespace synfig;
 
 CairoImporter::Book* synfig::CairoImporter::book_;
 
-map<String, CairoImporter::LooseHandle> *__open_cairoimporters;
+map<FileSystem::Identifier, CairoImporter::LooseHandle> *__open_cairoimporters;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -62,7 +62,7 @@ bool
 CairoImporter::subsys_init()
 {
 	book_=new Book();
-	__open_cairoimporters=new map<String, CairoImporter::LooseHandle>();
+	__open_cairoimporters=new map<FileSystem::Identifier, CairoImporter::LooseHandle>();
 	return true;
 }
 
@@ -81,47 +81,43 @@ CairoImporter::book()
 }
 
 CairoImporter::Handle
-CairoImporter::open(const String &filename)
+CairoImporter::open(const FileSystem::Identifier &identifier)
 {
-	if(filename.empty())
+	if(identifier.filename.empty())
 	{
-		synfig::error(_("Importer::open(): Cannot open empty filename"));
+		synfig::error(_("CairoImporter::open(): Cannot open empty filename"));
 		return 0;
 	}
 
 	// If we already have an importer open under that filename,
 	// then use it instead.
-	if(__open_cairoimporters->count(filename))
+	if(__open_cairoimporters->count(identifier))
 	{
-		//synfig::info("Found importer already open, using it...");
-		return (*__open_cairoimporters)[filename];
+		//synfig::info("Found cairo importer already open, using it...");
+		return (*__open_cairoimporters)[identifier];
 	}
 
-	if(filename_extension(filename) == "")
+	if(filename_extension(identifier.filename) == "")
 	{
-		synfig::error(_("Importer::open(): Couldn't find extension"));
+		synfig::error(_("CairoImporter::open(): Couldn't find extension"));
 		return 0;
 	}
 
-	String ext(filename_extension(filename));
+	String ext(filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
 
 	if(!CairoImporter::book().count(ext))
 	{
-		synfig::error(_("Importer::open(): Unknown file type -- ")+ext);
+		synfig::error(_("CairoImporter::open(): Unknown file type -- ")+ext);
 		return 0;
 	}
 
 	try {
 		CairoImporter::Handle importer;
-#ifdef WIN32
-		importer=CairoImporter::book()[ext](Glib::locale_from_utf8(filename).c_str());
-#else
-		importer=CairoImporter::book()[ext](filename.c_str());
-#endif
-		(*__open_cairoimporters)[filename]=importer;
+		importer=CairoImporter::book()[ext].factory(identifier);
+		(*__open_cairoimporters)[identifier]=importer;
 		return importer;
 	}
 	catch (String str)
@@ -131,7 +127,8 @@ CairoImporter::open(const String &filename)
 	return 0;
 }
 
-CairoImporter::CairoImporter():
+CairoImporter::CairoImporter(const FileSystem::Identifier &identifier):
+	identifier(identifier),
 	gamma_(2.2)
 {
 }
@@ -140,7 +137,7 @@ CairoImporter::CairoImporter():
 CairoImporter::~CairoImporter()
 {
 	// Remove ourselves from the open importer list
-	map<String,CairoImporter::LooseHandle>::iterator iter;
+	map<FileSystem::Identifier,CairoImporter::LooseHandle>::iterator iter;
 	for(iter=__open_cairoimporters->begin();iter!=__open_cairoimporters->end();++iter)
 		if(iter->second==this)
 		{
