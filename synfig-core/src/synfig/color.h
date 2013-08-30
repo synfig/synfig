@@ -30,13 +30,14 @@
 /* === H E A D E R S ======================================================= */
 
 
-#include <math.h>
+#include <cmath>
 #include <cassert>
+#include <stdint.h>
+
 #include "gamma.h"
 #include <synfig/string.h>
 # include "angle.h"
 
-#include <stdint.h>
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -68,7 +69,7 @@ inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
 #else
 #ifndef isnan
-#define isnan std::isnan
+#define isnan(x) (std::isnan)(x)
 #endif
 #endif
 
