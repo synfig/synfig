@@ -30,13 +30,14 @@
 /* === H E A D E R S ======================================================= */
 
 
-#include <math.h>
+#include <cmath>
 #include <cassert>
+#include <stdint.h>
+
 #include "gamma.h"
 #include <synfig/string.h>
 # include "angle.h"
 
-#include <stdint.h>
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -68,7 +69,7 @@ inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
 #else
 #ifndef isnan
-#define isnan std::isnan
+#define isnan(x) (std::isnan)(x)
 #endif
 #endif
 
@@ -738,12 +739,12 @@ public:
 	CairoColor(const CairoColorAccumulator& c);
 	CairoColor(int r, int g, int b, int a);
 	
-	const value_type get_pixel()const {return pixel; }
-	const unsigned char get_a()const { return pixel>>24; }
-	const unsigned char get_r()const { return pixel>>16; }
-	const unsigned char get_g()const { return pixel>>8; }
-	const unsigned char get_b()const { return pixel; }
-	const unsigned char get_alpha()const { return get_a(); }
+	value_type get_pixel()const {return pixel; }
+	unsigned char get_a()const { return pixel>>24; }
+	unsigned char get_r()const { return pixel>>16; }
+	unsigned char get_g()const { return pixel>>8; }
+	unsigned char get_b()const { return pixel; }
+	unsigned char get_alpha()const { return get_a(); }
 	
 	const String get_string(void)const;
 

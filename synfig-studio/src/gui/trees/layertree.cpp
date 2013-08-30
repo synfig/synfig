@@ -808,7 +808,7 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			if(!get_layer_tree_view().get_model()->get_iter(path))
 				break;
 
-			Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
+			//Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 			if(cellrenderer_time_track==column->get_first_cell_renderer())

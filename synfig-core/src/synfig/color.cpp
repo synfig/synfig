@@ -880,7 +880,7 @@ blendfunc_ALPHA_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 	//	return a.set_a(a.get_a()*amount);
 	//return b;
 	unsigned char ra, ga, ba, aa;
-	unsigned char rb, gb, bb, ab;
+	unsigned char ab;
 	unsigned char rc, gc, bc, ac;
 	
 	ra=a.get_r();
@@ -888,9 +888,6 @@ blendfunc_ALPHA_BRIGHTEN(CairoColor &a, CairoColor &b, float amount)
 	ba=a.get_b();
 	aa=a.get_a();
 	
-	rb=b.get_r();
-	gb=b.get_g();
-	bb=b.get_b();
 	ab=b.get_a();
 	
 	ac=aa*amount;
@@ -923,7 +920,7 @@ CairoColor
 blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 {
 	unsigned char ra, ga, ba, aa;
-	unsigned char rb, gb, bb, ab;
+	unsigned char ab;
 	unsigned char rc, gc, bc, ac;
 	
 	ra=a.get_r();
@@ -931,9 +928,6 @@ blendfunc_ALPHA_DARKEN(CairoColor &a, CairoColor &b, float amount)
 	ba=a.get_b();
 	aa=a.get_a();
 	
-	rb=b.get_r();
-	gb=b.get_g();
-	bb=b.get_b();
 	ab=b.get_a();
 	
 	ac=aa*amount;
@@ -1067,7 +1061,7 @@ blendfunc_HARD_LIGHT(CairoColor &a, CairoColor &b, float amount)
 	if(amount<0) a=~a, amount=-amount;
 	
 	int ra, ga, ba, aa;
-	int rb, gb, bb, ab;
+	int rb, gb, bb;
 	int rc, gc, bc;
 	
 	ra=a.get_r();
@@ -1078,7 +1072,6 @@ blendfunc_HARD_LIGHT(CairoColor &a, CairoColor &b, float amount)
 	rb=b.get_r();
 	gb=b.get_g();
 	bb=b.get_b();
-	ab=b.get_a();
 	
 	if(ra>127)	rc =255 -  (255-(ra*2-255))  *  (255-rb)/255.0;
 	else		rc= rb*(ra*2)/255.0;

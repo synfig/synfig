@@ -89,7 +89,6 @@ inline Color
 LinearGradient::color_func(const Point &point, float supersample)const
 {
 	Point p1=param_p1.get(Point());
-	Point p2=param_p2.get(Point());
 	Gradient gradient=param_gradient.get(Gradient());
 	bool loop=param_loop.get(bool());
 	bool zigzag=param_zigzag.get(bool());
@@ -285,7 +284,7 @@ LinearGradient::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	if(
 	   !
 	   (is_solid_color() ||
-		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+		(cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.f))
 	   )
 	{
 		// Initially render what's behind us

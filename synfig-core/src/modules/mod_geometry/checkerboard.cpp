@@ -162,9 +162,6 @@ CheckerBoard::get_param_vocab()const
 synfig::Layer::Handle
 CheckerBoard::hit_check(synfig::Context context, const synfig::Point &getpos)const
 {
-	Point origin=param_origin.get(Point());
-	Point size=param_size.get(Point());
-
 	if(get_amount()!=0.0 && point_test(getpos))
 	{
 		synfig::Layer::Handle tmp;
@@ -182,8 +179,6 @@ Color
 CheckerBoard::get_color(Context context, const Point &getpos)const
 {
 	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
-	Point size=param_size.get(Point());
 
 	if(get_amount()!=0.0 && point_test(getpos))
 	{
@@ -200,8 +195,6 @@ bool
 CheckerBoard::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
-	Point size=param_size.get(Point());
 
 	SuperCallback supercb(cb,0,9500,10000);
 

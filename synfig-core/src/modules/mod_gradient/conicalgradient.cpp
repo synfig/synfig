@@ -303,7 +303,6 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality
 {
 	Gradient gradient=param_gradient.get(Gradient());
 	Point center=param_center.get(Point());
-	Angle angle=param_angle.get(Angle());
 
 	cairo_save(cr);
 	const Point	tl(renddesc.get_tl());
@@ -328,7 +327,7 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality
 	if(
 	   !
 	   (is_solid_color() ||
-		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+		(cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.f))
 	   )
 	{
 		// Initially render what's behind us
@@ -352,7 +351,6 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality
 bool
 ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Real radius)const
 {
-	Point center=param_center.get(Point());
 	Angle angle=param_angle.get(Angle());
 	bool symmetric=param_symmetric.get(bool());
 
