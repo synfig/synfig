@@ -121,7 +121,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 	next=bline.begin();
 
 	float best_bline_dist(0);
-	float best_bline_len(0);
+	//float best_bline_len(0);
 	float total_bline_dist(0);
 	float best_pos(0);
 	etl::hermite<Vector> best_curve;
@@ -175,7 +175,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 				ret=iter;
 				dist=thisdist;
 				best_bline_dist=total_bline_dist;
-				best_bline_len=len;
+				//best_bline_len=len;
 				best_curve=curve;
 				best_pos = pos;
 			}
