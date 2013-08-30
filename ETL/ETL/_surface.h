@@ -238,7 +238,7 @@ public:
 		deletable_=true;
 	}
 
-	virtual void
+	void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, unsigned char* newdata, const typename size_type::value_type &pitch)
 	{
 		if(data_ && deletable_)
