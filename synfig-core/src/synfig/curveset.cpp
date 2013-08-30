@@ -366,9 +366,6 @@ public:
 
 			set<ipoint *>::iterator deliter;
 
-			int ci,i1,i2,size;
-			float t1,t2;
-
 			CurveSet::region	current;
 			CurvePoint	cp;
 
@@ -385,20 +382,8 @@ public:
 					if(deliter != ipset.end()) ipset.erase(deliter);
 				}
 
-				//go to next and accumulate information
-				ci = iter->curveindex;
-				i1 = iter->vertindex;
-				t1 = iter->tvalue;
-				iter = iter->next; //move to next and get its info
-
-				i2 = iter->vertindex;
-				t2 = iter->tvalue;
-
-				size = cur->set[ci].size();
-
-				//record all the stuff between us...
-				//start on an intersection - get the curve point...
-
+				//go to next
+				iter = iter->next;
 
 				//transition curves...
 				iter = iter->neighbor;
