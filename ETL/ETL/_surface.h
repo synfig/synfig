@@ -557,18 +557,18 @@ public:
 		//figure polynomials for each point
 		const float txf[] =
 		{
-			0.5*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-			0.5*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
-			0.5*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
-			0.5*xf*xf*(xf-1)				//-t^2 + t^3
+			0.5f*xf*(xf*(xf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+			0.5f*(xf*(xf*(3.f*xf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+			0.5f*xf*(xf*(-3.f*xf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+			0.5f*xf*xf*(xf-1.f)						//-t^2 + t^3
 		};
 
 		const float tyf[] =
 		{
-			0.5*yf*(yf*(yf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-			0.5*(yf*(yf*(3*yf - 5)) + 2), 	//2 - 5t^2 + 3t^3
-			0.5*yf*(yf*(-3*yf + 4) + 1),	//t + 4t^2 - 3t^3
-			0.5*yf*yf*(yf-1)				//-t^2 + t^3
+			0.5f*yf*(yf*(yf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+			0.5f*(yf*(yf*(3.f*yf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+			0.5f*yf*(yf*(-3.f*yf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+			0.5f*yf*yf*(yf-1.f)						//-t^2 + t^3
 		};
 
 		//evaluate polynomial for each row
@@ -604,18 +604,18 @@ public:
 		//figure polynomials for each point
 		const float txf[] =
 		{
-			0.5*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-			0.5*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
-			0.5*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
-			0.5*xf*xf*(xf-1)				//-t^2 + t^3
+			0.5f*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
+			0.5f*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
+			0.5f*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
+			0.5f*xf*xf*(xf-1)				//-t^2 + t^3
 		};
 		
 		const float tyf[] =
 		{
-			0.5*yf*(yf*(yf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-			0.5*(yf*(yf*(3*yf - 5)) + 2), 	//2 - 5t^2 + 3t^3
-			0.5*yf*(yf*(-3*yf + 4) + 1),	//t + 4t^2 - 3t^3
-			0.5*yf*yf*(yf-1)				//-t^2 + t^3
+			0.5f*yf*(yf*(yf*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+			0.5f*(yf*(yf*(3.f*yf - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+			0.5f*yf*(yf*(-3.f*yf + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+			0.5f*yf*yf*(yf-1.f)						//-t^2 + t^3
 		};
 		
 		//evaluate polynomial for each row
