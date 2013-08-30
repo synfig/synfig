@@ -366,7 +366,8 @@ bool FileContainerZip::open(const std::string &container_filename)
 	// create directories
 	for(FileMap::iterator i = files.begin(); i != files.end();)
 	{
-		if (files.find( i->second.name_part_directory ) == files.end())
+		if (!i->second.name_part_directory.empty()
+		 && files.find( i->second.name_part_directory ) == files.end())
 		{
 			FileInfo info;
 			info.name = i->second.name_part_directory;
