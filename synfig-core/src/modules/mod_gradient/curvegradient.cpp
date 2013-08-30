@@ -157,7 +157,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 
 		if (fast)
 		{
-#define POINT_CHECK(x) bp=curve(x);	thisdist=(bp-p).mag_squared(); if(thisdist<dist) { ret=iter; dist=thisdist; best_bline_dist=total_bline_dist; best_bline_len=len; best_curve=curve; }
+#define POINT_CHECK(x) bp=curve(x);	thisdist=(bp-p).mag_squared(); if(thisdist<dist) { ret=iter; dist=thisdist; best_bline_dist=total_bline_dist; /* best_bline_len=len; */ best_curve=curve; }
 			POINT_CHECK(0.0001);
 			POINT_CHECK((1.0/6.0));
 			POINT_CHECK((2.0/6.0));
