@@ -3008,15 +3008,11 @@ CanvasView::rebuild_ducks()
 	get_canvas()->set_time(get_time());
 
 	//get_canvas()->set_time(get_time());
-	bool not_empty(false);
 
 	// First do the layers...
 	do{
 		synfigapp::SelectionManager::LayerList selected_list(get_selection_manager()->get_selected_layers());
 		std::set<synfig::Layer::Handle> layer_set(selected_list.begin(),selected_list.end());
-
-		if(!layer_set.empty())
-			not_empty=true;
 
 		synfig::TransformStack transform_stack;
 
@@ -3036,7 +3032,6 @@ CanvasView::rebuild_ducks()
 		}
 		else
 		{
-			not_empty=true;
 			for(iter=selected_list.begin();iter!=selected_list.end();++iter)
 			{
 				work_area->add_to_ducks(*iter,this,transform_stack);

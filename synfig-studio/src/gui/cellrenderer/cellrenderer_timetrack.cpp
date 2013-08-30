@@ -481,7 +481,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 		int xstart(0);
 
-		int x=0,prevx=0;
+		int x=0 /*,prevx=0*/;
 		for(next=activepoint_list.begin(),iter=next++;iter!=activepoint_list.end();iter=next++)
 		{
 			x=((int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->time-adjustment->get_lower())));
@@ -536,7 +536,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				gc->set_rgb_fg_color(activepoint_color[iter->state]);
 				window->draw_rectangle(gc, true, area.get_x()+x-w/2, area.get_y(), w, area.get_height());
 			}
-			prevx=x;
+			//prevx=x;
 		}
 		if(is_off)
 		{
@@ -599,16 +599,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 {
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
-    Time nearest=1000000000;
 	Gtk::Adjustment *adjustment=get_adjustment();
 
 	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
 	synfig::Canvas::Handle canvas(get_canvas());
-
-	synfig::ValueNode_DynamicList *parent_value_node(0);
-	if(property_value_desc().get_value().parent_is_value_node())
-		parent_value_node=dynamic_cast<synfig::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
 
 	Time deltatime = 0;
 	Time curr_time;
