@@ -39,9 +39,9 @@
 # * You can pass arguments to the script to invoke particular stage. 
 #	Available stages: mkprep, mketl, mksynfig, mksynfigstudio, mkpackage
 #	Example: 
-#		synfigstudio-cygwin-mingw-build.sh mkdeps
+#		synfigstudio-cygwin-mingw-build.sh mkpackage
 # * You can pass a custom command to be invoked in the build environment.
-#	Example (uninstalls glibmm package from the buildroot):
+#	Example (executes make with respect to the build environment):
 #		synfigstudio-cygwin-mingw-build.sh make -j2
 
 
@@ -725,6 +725,14 @@ cp -f $SRCPREFIX/autobuild/win${ARCH}-specific.nsh ./arch-specific.nsh
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
 mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+
+INSTALLER_PATH=`cygpath -w "$WORKSPACE"`
+echo
+echo
+echo
+echo "Installer package generated:"
+echo "   ${INSTALLER_PATH}synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe"
+echo
 }
 
 mkall()
