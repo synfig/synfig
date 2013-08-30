@@ -83,8 +83,6 @@ Importer::book()
 Importer::Handle
 Importer::open(const FileSystem::Identifier &identifier)
 {
-	//String filename;
-	//filename = Glib::locale_from_utf8(filename_utf);
 	if(identifier.filename.empty())
 	{
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
@@ -118,7 +116,7 @@ Importer::open(const FileSystem::Identifier &identifier)
 
 	try {
 		Importer::Handle importer;
-		importer=Importer::book()[ext](identifier);
+		importer=Importer::book()[ext].factory(identifier);
 		(*__open_importers)[identifier]=importer;
 		return importer;
 	}

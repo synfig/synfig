@@ -53,6 +53,7 @@ SYNFIG_IMPORTER_SET_NAME(ListImporter,"lst");
 SYNFIG_IMPORTER_SET_EXT(ListImporter,"lst");
 SYNFIG_IMPORTER_SET_VERSION(ListImporter,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(ListImporter,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === P R O C E D U R E S ================================================= */
 
