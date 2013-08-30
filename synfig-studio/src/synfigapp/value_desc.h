@@ -152,7 +152,7 @@ public:
 		||
 		parent_is_value_node_const()
 		||
-		parent_is_linkable_value_node() && synfig::ValueNode_Const::Handle::cast_dynamic(get_value_node());
+		(parent_is_linkable_value_node() && synfig::ValueNode_Const::Handle::cast_dynamic(get_value_node()));
 		}
 	
 	bool
