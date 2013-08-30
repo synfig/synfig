@@ -30,7 +30,7 @@
 
 #include "angle.h"
 #include "real.h"
-#include <math.h>
+#include <cmath>
 
 /* === M A C R O S ========================================================= */
 
@@ -54,7 +54,7 @@ inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
 #else
 #ifndef isnan
-#define isnan std::isnan
+#define isnan(x) (std::isnan)(x)
 #endif
 #endif
 
