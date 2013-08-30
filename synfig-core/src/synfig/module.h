@@ -144,13 +144,14 @@
 		synfig::Importer::book()[synfig::String(y)]=synfig::Importer::BookEntry(x::create, x::supports_file_system_wrapper__);
 
 //! Register an Importer class in the book of importers by the default extension
-#define IMPORTER(x) IMPORTER_EXT(x,x::ext__);
+#define IMPORTER(x) IMPORTER_EXT(x,x::ext__)
 
 //! Register an Importer class in the book of importers by one file extension string
-#define CAIROIMPORTER_EXT(x,y) synfig::CairoImporter::book()[synfig::String(y)]=x::create;
+#define CAIROIMPORTER_EXT(x,y) \
+		synfig::CairoImporter::book()[synfig::String(y)]=synfig::Importer::BookEntry(x::create, x::supports_file_system_wrapper__);
 
 //! Register an CairoImporter class in the book of importers by the default extension
-#define CAIROIMPORTER(x) synfig::CairoImporter::book()[synfig::String(x::ext__)]=x::create;
+#define CAIROIMPORTER(x) CAIROIMPORTER_EXT(x,x::ext__)
 
 //! Marks the end of the importers in the module's inventory
 #define END_IMPORTERS }
