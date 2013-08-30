@@ -2199,7 +2199,6 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 								Color::BlendMethod got_blend_method, Color::value_type got_amount) const
 {
 	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
 	bool antialias =param_antialias.get(bool(true));
 	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
@@ -2329,8 +2328,6 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 
 bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polyspan) const
 {
-	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
 	bool antialias =param_antialias.get(bool(true));
 	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
@@ -2857,8 +2854,6 @@ Layer_Shape::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 bool
 Layer_Shape::shape_to_cairo(cairo_t *cr)const
 {
-	Point origin=param_origin.get(Point());
-
 	int tmp(0);
 	//pointers for processing the bytestream
 	const char *current 	= &bytestream[0];
@@ -3050,7 +3045,6 @@ bool
 Layer_Shape::feather_cairo_surface(cairo_surface_t* surface, RendDesc renddesc, int quality)const
 {
 	Color color=param_color.get(Color());
-	Point origin=param_origin.get(Point());
 	int blurtype=param_blurtype.get(int());
 	Real feather=param_feather.get(Real());
 
@@ -3569,7 +3563,6 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 Rect
 Layer_Shape::get_bounding_rect()const
 {
-	Color color=param_color.get(Color());
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
 	Real feather=param_feather.get(Real());

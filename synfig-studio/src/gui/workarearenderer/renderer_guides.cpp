@@ -89,8 +89,6 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 	// const float radius((abs(get_pw())+abs(get_ph()))*4);
 	int button_pressed(0);
 	float pressure(0);
-	bool is_mouse(false);
-	Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
 	// Handle input stuff
 	if(
@@ -105,12 +103,10 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 		if(event->any.type==GDK_MOTION_NOTIFY)
 		{
 			device=event->motion.device;
-			modifier=Gdk::ModifierType(event->motion.state);
 		}
 		else
 		{
 			device=event->button.device;
-			modifier=Gdk::ModifierType(event->button.state);
 		}
 
 		// Make sure we recognize the device
@@ -139,7 +135,6 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->button.x,event->button.y)));
 			button_pressed=event->button.button;
 			pressure=1.0f;
-			is_mouse=true;
 			if(isnan(event->button.x) || isnan(event->button.y))
 				return false;
 		}

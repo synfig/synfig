@@ -198,9 +198,9 @@ Layer_SolidColor::accelerated_cairorender(Context context, cairo_t *cr, int qual
 		  b(color.get_b()),
 		  a(color.get_a());
 	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT
+	if((get_amount()==1.f && get_blend_method()==Color::BLEND_STRAIGHT)
 	   ||
-	   get_amount()==1.0 && color.get_a()==1.0 && get_blend_method()==Color::BLEND_COMPOSITE
+	   (get_amount()==1.f && color.get_a()==1.f && get_blend_method()==Color::BLEND_COMPOSITE)
 	   )
 	{
 		// Mark our progress as starting

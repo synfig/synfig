@@ -118,26 +118,26 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 			//figure polynomials for each point
 			const float txf[] =
 			{
-				0.5*dx*(dx*(dx*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-				0.5*(dx*(dx*(3*dx - 5)) + 2), 	//2 - 5t^2 + 3t^3
-				0.5*dx*(dx*(-3*dx + 4) + 1),	//t + 4t^2 - 3t^3
-				0.5*dx*dx*(dx-1)				//-t^2 + t^3
+				0.5f*dx*(dx*(dx*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+				0.5f*(dx*(dx*(3.f*dx - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+				0.5f*dx*(dx*(-3.f*dx + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+				0.5f*dx*dx*(dx-1.f)						//-t^2 + t^3
 			};
 
 			const float tyf[] =
 			{
-				0.5*dy*(dy*(dy*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-				0.5*(dy*(dy*(3*dy - 5)) + 2), 	//2 - 5t^2 + 3t^3
-				0.5*dy*(dy*(-3*dy + 4) + 1),	//t + 4t^2 - 3t^3
-				0.5*dy*dy*(dy-1)				//-t^2 + t^3
+				0.5f*dy*(dy*(dy*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+				0.5f*(dy*(dy*(3.f*dy - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+				0.5f*dy*(dy*(-3.f*dy + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+				0.5f*dy*dy*(dy-1.f)						//-t^2 + t^3
 			};
 
 			const float ttf[] =
 			{
-				0.5*dt*(dt*(dt*(-1) + 2) - 1),	//-t + 2t^2 -t^3
-				0.5*(dt*(dt*(3*dt - 5)) + 2), 	//2 - 5t^2 + 3t^3
-				0.5*dt*(dt*(-3*dt + 4) + 1),	//t + 4t^2 - 3t^3
-				0.5*dt*dt*(dt-1)				//-t^2 + t^3
+				0.5f*dt*(dt*(dt*(-1.f) + 2.f) - 1.f),	//-t + 2t^2 -t^3
+				0.5f*(dt*(dt*(3.f*dt - 5.f)) + 2.f), 	//2 - 5t^2 + 3t^3
+				0.5f*dt*(dt*(-3.f*dt + 4.f) + 1.f),		//t + 4t^2 - 3t^3
+				0.5f*dt*dt*(dt-1.f)						//-t^2 + t^3
 			};
 
 			//evaluate polynomial for each row

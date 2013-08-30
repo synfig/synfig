@@ -233,9 +233,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
-	Vector origin=param_origin.get(Vector());
-	Vector focus=param_focus.get(Vector());
-
 	if(canvas && muck_with_time_)
 		remove_child(canvas.get());
 
@@ -326,8 +323,6 @@ Layer_PasteCanvas::get_param(const String& param)const
 void
 Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 {
-	Vector origin=param_origin.get(Vector());
-	Vector focus=param_focus.get(Vector());
 	Time time_offset=param_time_offset.get(Time());
 
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
@@ -394,8 +389,6 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 Rect
 Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 {
-	Vector origin=param_origin.get(Vector());
-	Vector focus=param_focus.get(Vector());
 	if(is_disabled() || Color::is_onto(get_blend_method()))
 		return context.get_full_bounding_rect();
 
