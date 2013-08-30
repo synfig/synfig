@@ -652,6 +652,7 @@ for file in \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
