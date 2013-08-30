@@ -327,7 +327,7 @@ ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality
 	if(
 	   !
 	   (is_solid_color() ||
-		cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.0)
+		(cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.f))
 	   )
 	{
 		// Initially render what's behind us
