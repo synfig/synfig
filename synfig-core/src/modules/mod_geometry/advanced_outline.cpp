@@ -248,7 +248,8 @@ Advanced_Outline::sync()
 		// initialize the blinepoints positions iterators
 		hbpiter=hbline_pos.begin();
 		bpiter=bline_pos.begin();
-		Real biter_pos(*bpiter), hbiter_pos(*hbpiter);
+		// todo: why 'hbiter_pos' never used?
+		Real biter_pos(*bpiter) /* , hbiter_pos(*hbpiter) */ ;
 		bpiter++;
 		hbpiter++;
 		Real bnext_pos(*bpiter), hbnext_pos(*hbpiter);
@@ -857,7 +858,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					hbiter_pos = hbnext_pos;
+					// todo: why 'hbiter_pos' never used?
+					//hbiter_pos = hbnext_pos;
 					bpiter++;
 					hbpiter++;
 					bnext_pos=*bpiter;
@@ -974,7 +976,8 @@ Advanced_Outline::sync()
 					bnext++;
 					// Update blinepoints positions
 					biter_pos = bnext_pos;
-					hbiter_pos = hbnext_pos;
+					// todo: why 'hbiter_pos' never used?
+					//hbiter_pos = hbnext_pos;
 					bpiter++;
 					hbpiter++;
 					bnext_pos=*bpiter;
