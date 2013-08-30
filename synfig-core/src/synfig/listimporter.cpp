@@ -32,6 +32,7 @@
 
 #include "listimporter.h"
 #include "general.h"
+#include "filesystemnative.h"
 #include <fstream>
 
 #endif
@@ -59,19 +60,20 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === M E T H O D S ======================================================= */
 
-ListImporter::ListImporter(const String &filename)
+ListImporter::ListImporter(const FileSystem::Identifier &identifier):
+Importer(identifier)
 {
 	fps=15;
 
-	ifstream stream(filename.c_str());
+	ifstream stream(identifier.filename.c_str());
 
 	if(!stream)
 	{
-		synfig::error("Unable to open "+filename);
+		synfig::error("Unable to open "+identifier.filename);
 		return;
 	}
 	String line;
-	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPARATOR;
+	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 	getline(stream,line);		// read first line and check whether it is a Papagayo lip sync file
 
 	if (line == "MohoSwitch1")	// it is a Papagayo lipsync file
@@ -179,7 +181,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 		}
 	}
 
-	Importer::Handle importer(Importer::open(filename_list[frame]));
+	Importer::Handle importer(Importer::open(FileSystem::Identifier(new FileSystemNative(), filename_list[frame])));
 
 	if(!importer)
 	{

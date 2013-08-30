@@ -78,7 +78,7 @@ private:
 
 public:
 
-	CairoListImporter(const String &filename);
+	CairoListImporter(const FileSystem::Identifier &identifier);
 	~CairoListImporter();
 
 	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL);

@@ -55,7 +55,7 @@ private:
 	std::list<std::pair<String,Surface> > frame_cache;
 
 public:
-	ListImporter(const String &filename);
+	ListImporter(const FileSystem::Identifier &identifier);
 
 	~ListImporter();
 
