@@ -42,6 +42,7 @@
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_IMPORTER_MODULE_EXT \
 		public: static const char name__[], version__[], ext__[],cvs_id__[]; \
+		static const bool supports_file_system_wrapper__; \
 		static synfig::Importer *create(const synfig::FileSystem::Identifier &identifier);
 
 //! Defines constructor for class derived from other class which derived from Importer
@@ -78,6 +79,9 @@
 //! Sets the CVS ID of the importer.
 #define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
+//! Sets the supports_file_system_wrapper flag of the importer.
+#define SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(class,x) const char class::supports_file_system_wrapper__=x
+
 //! Defines de implementation of the create method for the importer
 //! \param identifier The identifier of file to be imported by the importer.
 #define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const synfig::FileSystem::Identifier &identifier) { return new class(identifier); }
@@ -109,7 +113,19 @@ public:
 	//! Type that represents a pointer to a Importer's constructor.
 	//! As a pointer to the constructor, it represents a "factory" of importers.
 	typedef Importer* (*Factory)(const FileSystem::Identifier &identifier);
-	typedef std::map<std::string,Factory> Book;
+
+	struct BookEntry
+	{
+		Factory factory;
+		bool supports_file_system_wrapper;
+
+		BookEntry(): factory(NULL), supports_file_system_wrapper(false) { }
+		BookEntry(Factory factory, bool supports_file_system_wrapper):
+		factory(factory), supports_file_system_wrapper(supports_file_system_wrapper)
+		{ }
+	};
+
+	typedef std::map<std::string,BookEntry> Book;
 	static Book* book_;
 
 	static Book& book();

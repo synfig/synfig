@@ -74,6 +74,7 @@ SYNFIG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
 SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
 SYNFIG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ffmpeg_mptr, false);
 
 /* === M E T H O D S ======================================================= */
 

@@ -52,6 +52,7 @@ SYNFIG_IMPORTER_SET_NAME(bmp_mptr,"bmp");
 SYNFIG_IMPORTER_SET_EXT(bmp_mptr,"bmp");
 SYNFIG_IMPORTER_SET_VERSION(bmp_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(bmp_mptr,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(bmp_mptr, true);
 
 /* === M E T H O D S ======================================================= */
 namespace synfig {

@@ -64,6 +64,7 @@ SYNFIG_IMPORTER_SET_NAME(png_mptr,"png");
 SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
 SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(png_mptr,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, false);
 
 /* === M E T H O D S ======================================================= */
 
