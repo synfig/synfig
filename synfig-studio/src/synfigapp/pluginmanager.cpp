@@ -121,7 +121,7 @@ PluginLauncher::check_python_version(String path)
 }
 
 bool
-PluginLauncher::execute( std::string script_path, const std::string& synfig_root )
+PluginLauncher::execute( std::string script_path, const std::string& /* synfig_root */ )
 {
 	String command = "";
 	
