@@ -215,7 +215,7 @@ Noise::hit_check(synfig::Context context, const synfig::Point &point)const
 		return context.hit_check(point);
 	if(color_func(point,0,context).get_a()>0.5)
 		return const_cast<Noise*>(this);
-	return false;
+	return synfig::Layer::Handle();
 }
 
 bool

@@ -89,12 +89,6 @@ CellRenderer_Time::render_vfunc(
 		return;
 	//int	height = ca.get_height();
 
-	Gtk::StateType state = Gtk::STATE_INSENSITIVE;
-	if(property_editable())
-		state = Gtk::STATE_NORMAL;
-	if((flags & Gtk::CELL_RENDERER_SELECTED) != 0)
-		state = (widget.has_focus()) ? Gtk::STATE_SELECTED : Gtk::STATE_ACTIVE;
-
 	const Time time(property_time_);
 	const float fps((Real)Time(property_fps_));
 

@@ -186,8 +186,6 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 		int begin=0,end=0;
 		int	cur=0,maxs=0,mins=0;
 
-		int	  i=0; //pixel counter
-
 		//etl::clock	check; check.reset();
 
 		float position = adj_timescale->get_value();
@@ -217,7 +215,7 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 						framesize, begin, end, w, check());*/
 
 		cur = begin;
-		i = 0; cum = 0;
+		cum = 0;
 		for(int i=0;i<w;++i)
 		{
 			//get the maximum of the collected samples

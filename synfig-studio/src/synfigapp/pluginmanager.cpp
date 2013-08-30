@@ -121,7 +121,7 @@ PluginLauncher::check_python_version(String path)
 }
 
 bool
-PluginLauncher::execute( std::string script_path, const std::string& synfig_root )
+PluginLauncher::execute( std::string script_path, const std::string& /* synfig_root */ )
 {
 	String command = "";
 	
@@ -235,7 +235,6 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 				std::string pluginpath;
 				pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
 				struct stat sb;
-				int rc = stat(pluginpath.c_str(), &sb);
 				// error handling if stat failed
 				if (S_ISDIR(sb.st_mode)) {
 					// checking if directory contains a plugin...
