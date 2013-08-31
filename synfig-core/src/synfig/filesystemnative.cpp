@@ -48,6 +48,8 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+const etl::handle< FileSystemNative > FileSystemNative::instance__(new FileSystemNative);
+
 // ReadStream
 
 FileSystemNative::ReadStream::ReadStream(Handle file_system, FILE *file):

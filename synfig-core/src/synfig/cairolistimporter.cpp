@@ -186,7 +186,7 @@ CairoListImporter::get_frame(cairo_surface_t *&csurface, const RendDesc &renddes
 		}
 	}
 
-	CairoImporter::Handle importer(CairoImporter::open(FileSystem::Identifier(new FileSystemNative(), filename_list[frame])));
+	CairoImporter::Handle importer(CairoImporter::open(FileSystem::Identifier(FileSystemNative::instance(), filename_list[frame])));
 
 	if(!importer)
 	{
