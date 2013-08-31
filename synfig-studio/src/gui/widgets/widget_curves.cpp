@@ -219,6 +219,13 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.push_back(Channel());
 				channels.back().name="t2.y";
 				channels.back().color=Gdk::Color("#7f7f00");
+
+				channels.push_back(Channel());
+				channels.back().name="rsplit";
+				channels.back().color=Gdk::Color("#ff00ff");
+				channels.push_back(Channel());
+				channels.back().name="asplit";
+				channels.back().color=Gdk::Color("#ff00ff");
 				break;
 			case ValueBase::TYPE_WIDTHPOINT:
 				channels.push_back(Channel());
@@ -300,6 +307,8 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels[6].values[time]=value.get(BLinePoint()).get_tangent1()[1];
 				channels[7].values[time]=value.get(BLinePoint()).get_tangent2()[0];
 				channels[8].values[time]=value.get(BLinePoint()).get_tangent2()[1];
+				channels[9].values[time]=value.get(BLinePoint()).get_split_tangent_radius();
+				channels[10].values[time]=value.get(BLinePoint()).get_split_tangent_angle();
 				break;
 			case ValueBase::TYPE_WIDTHPOINT:
 				channels[0].values[time]=value.get(WidthPoint()).get_position();
@@ -515,8 +524,16 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	Real r_min(100000000);
 
 	std::list<CurveStruct>::iterator curve_iter;
-
-	vector<Gdk::Point> points[10];
+	//Figure out maximun number of channels
+	int min_channels(100);
+	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
+	{
+		int channels(curve_iter->channels.size());
+		if(channels<min_channels)
+			min_channels=channels;
+	}
+	// and use it when sizing the points
+	vector<Gdk::Point> points[min_channels];
 
 	gc->set_function(Gdk::COPY);
 	gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
