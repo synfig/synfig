@@ -49,11 +49,16 @@ RELEASE=8
 PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
+
 if [ -z $BUILDROOT ]; then
 PACKAGES_BUILDROOT=$HOME/synfig-buildroot	# path of for build infrastructure
 else
 PACKAGES_BUILDROOT=$BUILDROOT/synfig-buildroot
 fi
+if [ -d "$PACKAGES_BUILDROOT" ]; then
+PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
+fi
+
 BUILDROOT_VERSION=8
 BUILDROOT_LIBRARY_SET_ID=2
 MAKE_THREADS=4					#count of threads for make
@@ -539,6 +544,10 @@ mkpack()
 {
 	[ -d /packages ] || mkdir /packages
 
+	# bundle libpng
+	rm -f ${PREFIX}/lib/libpng* || true
+	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
@@ -922,6 +931,8 @@ initialize()
 		esac
 	else
 		#detecting repo
+		SCRIPTPATH=`dirname "$0"`
+		pushd "$SCRIPTPATH"
 		if git rev-parse --git-dir >/dev/null; then
 			SYNFIG_REPO_DIR=$(dirname `git rev-parse --git-dir`)
 			pushd "$SYNFIG_REPO_DIR" > /dev/null
@@ -929,6 +940,7 @@ initialize()
 			popd  > /dev/null
 			WORKDIR_IS_REPO=1
 		fi
+		popd > /dev/null
 	fi
 
 	#export PREFIX=/opt/synfig
@@ -1075,8 +1087,21 @@ mkpackage()
 		#copy sources
 		[ -d $PACKAGES_BUILDROOT.$ARCH/source ] || mkdir -p $PACKAGES_BUILDROOT.$ARCH/source
 		cp -rf $PACKAGES_BUILDROOT/* $PACKAGES_BUILDROOT.$ARCH/source/
+
+		#set up the /proc link
+		echo "Mounting proc..."
+		if ! ( mount | egrep "proc on $PACKAGES_BUILDROOT.${ARCH}/proc" ); then
+			mount -o bind /proc $PACKAGES_BUILDROOT.$ARCH/proc
+			echo "   Done."
+		else
+			echo "   Already mounted. Skipping."
+		fi
+
 		#go to chroot
 		$SETARCH chroot $PACKAGES_BUILDROOT.$ARCH env http_proxy=$http_proxy bash /build.sh package $SELECTEDREVISION
+
+		umount $PACKAGES_BUILDROOT.$ARCH/proc || true
+
 		mv -f $PACKAGES_BUILDROOT.$ARCH/packages/* $PACKAGES_PATH
 		done
 		echo
