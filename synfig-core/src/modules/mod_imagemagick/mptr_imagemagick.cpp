@@ -151,7 +151,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	#error There are no known APIs for creating child processes
 #endif
 
-	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(new synfig::FileSystemNative(), temp_file)));
+	Importer::Handle importer(Importer::open(synfig::FileSystem::Identifier(synfig::FileSystemNative::instance(), temp_file)));
 
 	if(!importer)
 	{

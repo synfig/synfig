@@ -63,7 +63,14 @@ namespace synfig
 			virtual size_t write(const void *buffer, size_t size);
 		};
 
+	private:
+		const etl::handle< FileSystemNative > instance__;
 		FileSystemNative();
+
+	public:
+		static const etl::handle< FileSystemNative >& instance()
+			{ return instance__; }
+
 		virtual ~FileSystemNative();
 
 		virtual bool file_remove(const std::string &filename);

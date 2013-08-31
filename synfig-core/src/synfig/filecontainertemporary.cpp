@@ -72,7 +72,7 @@ void FileContainerTemporary::FileInfo::split_name()
 FileContainerTemporary::FileContainerTemporary():
 is_opened_(false),
 container_(new FileContainerZip()),
-file_system_(new FileSystemNative())
+file_system_(FileSystemNative::instance())
 { }
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }

@@ -181,7 +181,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 		}
 	}
 
-	Importer::Handle importer(Importer::open(FileSystem::Identifier(new FileSystemNative(), filename_list[frame])));
+	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename_list[frame])));
 
 	if(!importer)
 	{
