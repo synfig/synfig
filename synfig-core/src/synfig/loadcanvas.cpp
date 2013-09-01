@@ -101,7 +101,7 @@ test_class test_class_instance;
 
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
 
-std::set<String> CanvasParser::loading_;
+std::set<FileSystem::Identifier> CanvasParser::loading_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -132,21 +132,16 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas(const String &filename,String &errors,String &warnings)
+synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings)
 {
-	return open_canvas_as(filename, filename, errors, warnings);
-}
-
-Canvas::Handle
-synfig::open_canvas_as(const String &filename,const String &as,String &errors,String &warnings)
-{
-	if (CanvasParser::loading_.count(filename))
+	if (CanvasParser::loading_.count(identifier))
 	{
-		String warning(strprintf(_("cannot load '%s' recursively"), filename.c_str()));
+		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.c_str()));
 		synfig::warning(warning);
 		warnings = "  * " + warning + "\n";
 		Canvas::Handle canvas(Canvas::create());
-		canvas->set_file_name(filename);
+		canvas->set_identifier(identifier);
+		canvas->set_file_name(as);
 		Layer::Handle paste(Layer_PasteCanvas::create());
 		canvas->push_back(paste);
 		paste->set_description(warning);
@@ -159,15 +154,15 @@ synfig::open_canvas_as(const String &filename,const String &as,String &errors,St
 
 	try
 	{
-		CanvasParser::loading_.insert(filename);
-		canvas=parser.parse_from_file_as(filename,as,errors);
+		CanvasParser::loading_.insert(identifier);
+		canvas=parser.parse_from_file_as(identifier,as,errors);
 	}
 	catch (...)
 	{
-		CanvasParser::loading_.erase(filename);
+		CanvasParser::loading_.erase(identifier);
 		throw;
 	}
-	CanvasParser::loading_.erase(filename);
+	CanvasParser::loading_.erase(identifier);
 
 	warnings = parser.get_warnings_text();
 
@@ -2864,11 +2859,9 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 #endif	// _DEBUG
 
 Canvas::Handle
-CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &errors)
+CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const String &as,String &errors)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	String file(unix_to_local_path(file_));
-	String as(unix_to_local_path(as_));
 
 	try
 	{
@@ -2878,7 +2871,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 		filename=as;
 		total_warnings_=0;
 
-		FileSystem::ReadStreamHandle stream = Importer::file_system().get_read_stream(file);
+		FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
 		if (stream)
 		{
 			xmlpp::DomParser parser;
@@ -2916,7 +2909,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	catch(xmlpp::internal_error x)
 	{
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
-			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + file + "\"");
+			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + identifier.filename + "\"");
 		throw;
 	}
 	catch(const std::exception& ex)
