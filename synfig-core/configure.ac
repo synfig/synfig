@@ -719,7 +719,6 @@ src/modules/synfig_modules.cfg
 test/Makefile
 examples/walk/Makefile
 examples/Makefile
-win32inst.nsi
 pkg-info/macosx/synfig-core.info
 ])
 ## src/modules/trgt_mpg/Makefile

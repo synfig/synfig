@@ -297,7 +297,6 @@ src/Makefile
 src/gui/Makefile
 src/synfigapp/Makefile
 images/Makefile
-win32inst.nsi
 pkg-info/macosx/synfig-studio.info
 plugins/Makefile
 plugins/add-skeleton-simple/Makefile
