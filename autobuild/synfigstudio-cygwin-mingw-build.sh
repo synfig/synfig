@@ -533,6 +533,7 @@ make install
 mksynfig()
 {
 cd $SRCPREFIX/synfig-core
+[ ! -e config.cache ] || rm config.cache
 libtoolize --copy --force
 autoreconf --install --force
 ./configure \
@@ -558,6 +559,7 @@ make install
 mksynfigstudio()
 {
 cd $SRCPREFIX/synfig-studio
+[ ! -e config.cache ] || rm config.cache
 ./bootstrap.sh
 ./configure \
 --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \

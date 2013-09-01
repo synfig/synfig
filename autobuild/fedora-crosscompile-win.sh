@@ -180,6 +180,7 @@ mksynfig()
 {
 cd $SCRIPTPATH/../synfig-core/
 make clean || true
+[ ! -e config.cache ] || rm config.cache
 libtoolize --ltdl --copy --force
 autoreconf --install --force
 cp ./configure ./configure.real
@@ -194,6 +195,7 @@ mksynfigstudio()
 {
 cd $SCRIPTPATH/../synfig-studio/
 make clean || true
+[ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
