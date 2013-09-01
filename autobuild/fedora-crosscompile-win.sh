@@ -276,7 +276,10 @@ gen_list_nsh lib/gtk-2.0 lib-gtk
 gen_list_nsh lib/synfig lib-synfig
 gen_list_nsh licenses licenses
 #gen_list_nsh python python # -- takes too long
-gen_list_nsh share share
+gen_list_nsh share/locale share-locale
+gen_list_nsh share/pixmaps share-pixmaps
+gen_list_nsh share/synfig share-synfig
+gen_list_nsh share/themes share-themes
 
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
