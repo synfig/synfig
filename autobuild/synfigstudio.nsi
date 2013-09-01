@@ -175,6 +175,7 @@ Section "Uninstall"
   !include "share-pixmaps-uninst.nsh"
   !include "share-synfig-uninst.nsh"
   !include "share-themes-uninst.nsh"
+  RMDir "$INSTDIR\share"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
