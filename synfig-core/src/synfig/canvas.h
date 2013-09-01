@@ -42,6 +42,7 @@
 #include "renddesc.h"
 #include "node.h"
 #include "guid.h"
+#include "filesystem.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -539,6 +540,12 @@ public:
 
 	//! Gets the filename (with path)
 	String get_file_name()const;
+
+	//! Sets the file identifier
+	void set_identifier(const FileSystem::Identifier &);
+
+	//! Gets the file identifier
+	const FileSystem::Identifier& get_identifier()const;
 
 	//! Creates a new child canvas, and returns its handle
 	Handle new_child_canvas();
