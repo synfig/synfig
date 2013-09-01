@@ -64,9 +64,7 @@ EXTRA_DIST = \
 	m4/subs.m4 \
 	config/package \
 	doc/hw-gfx-mapping.txt \
-	win32build.sh \
 	macosxbuild.sh \
-	win32inst.nsi.in \
 	COPYING \
 	config/depcomp \
 	m4/synfig.m4 \
@@ -146,20 +144,11 @@ install-bin:
 
 RMDIR=rm -fr
 
-if WIN32_PKG	
-package: all win32inst.nsi
-	cp -fu `which libHalf-6.dll` src/modules/mod_openexr/.libs/
-	cp -fu `which libIlmImf-6.dll` src/modules/mod_openexr/.libs/
-	cp -fu `which libIlmThread-6.dll` src/modules/mod_openexr/.libs/
-	cp -fu `which libIex-6.dll` src/modules/mod_openexr/.libs/
-	makensis win32inst.nsi
-else
 if MACOSX_PKG
 package: all pkg-info/macosx/synfig-core.info
 	[ -d pkg_root ] && $(RMDIR) pkg_root || true
 	make install-strip prefix="`pwd`/pkg_root"
 	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-core.info -r $(srcdir)/pkg-info/macosx/core-resources
-endif
 endif
 
 run: check
