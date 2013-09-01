@@ -137,6 +137,8 @@ KeyframeTree::KeyframeTree()
 
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
+
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
 }
 
 KeyframeTree::~KeyframeTree()
@@ -177,6 +179,13 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	);
 	cell_renderer_time->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
 	cell_renderer_time_delta->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
+
+	keyframe_tree_store_->canvas_interface()->signal_keyframe_selected().connect(
+		sigc::mem_fun(
+			*this,
+			&studio::KeyframeTree::on_keyframe_changed
+		)
+	);
 }
 
 void
@@ -308,4 +317,26 @@ KeyframeTree::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+}
+
+void
+KeyframeTree::on_selection_changed()
+{
+	if(get_selection()->count_selected_rows()==1)
+	{
+		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
+		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
+		{
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+			selected_kf = keyframe;
+		}
+	}
+}
+
+void
+KeyframeTree::on_keyframe_changed(synfig::Keyframe keyframe)
+{
+	Gtk::TreeModel::Path path;
+	if(keyframe_tree_store_ && keyframe_tree_store_->find_keyframe_path(keyframe,path))
+		set_cursor (path);
 }

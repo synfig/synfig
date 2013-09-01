@@ -68,7 +68,7 @@ public:
 public:
 
 	KeyframeTreeStore::Model model;
-
+	synfig::Keyframe selected_kf;
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -117,6 +117,14 @@ private:
 
 	void on_rend_desc_changed();
 
+	//! Action performed when a keyframe is selected in the widget
+	//! This is where keyframe selected signal is fired
+	void on_selection_changed();
+
+	//! Signal handler for select keyframe signal from canvas interface
+	void on_keyframe_changed(synfig::Keyframe);
+
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
@@ -125,7 +133,7 @@ public:
 
 	KeyframeTree();
 	~KeyframeTree();
-
+	//! Assign the model and connect signals from the canvas interface
 	void set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_);
 
 	void set_editable(bool x=true);

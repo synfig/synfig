@@ -82,10 +82,6 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 {
 }
 
-/*! \fn Widget_Keyframe_List::redraw()
-**	\brief Redraw event. Should draw all the keyframes +  the selected + the dragged + disabled
-**  connected on signal_expose_event()
-*/
 bool
 Widget_Keyframe_List::redraw()
 {
@@ -102,6 +98,8 @@ Widget_Keyframe_List::redraw()
 
 	//! The graphic context
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
+	//! The style of the widget.
+	Glib::RefPtr<Gtk::Style> style = get_style();
 	//! A rectangle that defines the drawing area.
 	Gdk::Rectangle area(0,0,w,h);
 
@@ -131,11 +129,11 @@ Widget_Keyframe_List::redraw()
 			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for disabled keyframe
 			if (iter->active())
-				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
+				style->paint_arrow(window, Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 				x-h/2+1, 0, h, h );
 			else
-				get_style()->paint_arrow(window, Gtk::STATE_INSENSITIVE,
+				style->paint_arrow(window, Gtk::STATE_INSENSITIVE,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
 				x-h/2+1, 0, h, h );
 		}
@@ -154,26 +152,36 @@ Widget_Keyframe_List::redraw()
 		if (!dragging_)
 		{
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			// Change shape for disabled keyframe
+			// Change shape for selected disabled keyframe
 			if (selected_iter->active())
-				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
+			{
+				// Draw a selected arrow with "normal border"
+				style->paint_arrow(window, Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-				x-h/2+1, 0, h, h );
+				x-h/2+1, 0, h, h);
+				style->paint_arrow (window, Gtk::STATE_SELECTED,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
+				x-h/2+3, 2, h-3, h-3);
+			}
 			else
-				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
+				// Draw a selected arrow with "normal border" looking a right
+				style->paint_arrow(get_window(), Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
 				x-h/2+1, 0, h, h );
+				style->paint_arrow (get_window(), Gtk::STATE_SELECTED,
+				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
+				x-h/2+3, 2, h-3, h-3);
 		}
 		// If dragging then show the selected as insensitive and the
 		// dragged as selected
 		else
 		{
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			get_style()->paint_arrow(window, Gtk::STATE_INSENSITIVE,
+			style->paint_arrow(window, Gtk::STATE_INSENSITIVE,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2, 0, h, h );
 			x=(int)((float)(dragging_kf_time-bottom) * (w/(top-bottom)) ) ;
-			get_style()->paint_arrow(window, Gtk::STATE_SELECTED,
+			style->paint_arrow(window, Gtk::STATE_SELECTED,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2+1, 0, h, h );
 		}
@@ -194,10 +202,28 @@ Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
+	if (x == selected_none) return;
+
 	selected_kf=x;
 	selected_=true;
 	dragging_kf_time=selected_kf.get_time();
-	//signal_keyframe_selected_(selected_kf);
+
+	if(canvas_interface_)
+		canvas_interface_->signal_keyframe_selected()(selected_kf);
+
+	dragging_=false;
+	queue_draw();
+}
+
+void
+Widget_Keyframe_List::on_keyframe_changed(const synfig::Keyframe keyframe)
+{
+	if (keyframe == selected_kf)	return;
+
+	selected_kf=keyframe;
+	selected_=true;
+
+	dragging_kf_time=selected_kf.get_time();
 	dragging_=false;
 	queue_draw();
 }
@@ -232,11 +258,13 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 			try
 			{
 				canvas_interface_->get_instance()->perform_action(action);
+				canvas_interface_->signal_keyframe_selected()(selected_kf);
 			}
 			catch(...)
 			{
 				return false;
 			}
+
 		}
 	else
 		{
@@ -296,6 +324,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			// AND left or right mouse button pressed
 			if (event->motion.state & (GDK_BUTTON1_MASK /*| GDK_BUTTON3_MASK*/))
 			{
+				if (!selected_) return true;
 				// stick to integer frames. It can be optional in the future
 				if(fps) t = floor(t*fps + 0.5)/fps;
 				dragging_kf_time=t;
@@ -460,6 +489,9 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
 				)
 			)
+		);
+		canvas_interface_->signal_keyframe_selected().connect(
+				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::on_keyframe_changed)
 		);
 	}
 }

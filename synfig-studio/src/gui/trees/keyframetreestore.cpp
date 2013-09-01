@@ -174,9 +174,11 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 	reset_stamp();
 	//reset_path_table();
 
+	//connect some events
 	canvas_interface()->signal_keyframe_added().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::add_keyframe));
 	canvas_interface()->signal_keyframe_removed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::remove_keyframe));
 	canvas_interface()->signal_keyframe_changed().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::change_keyframe));
+	//canvas_interface()->signal_keyframe_selected().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::select_keyframe));
 }
 
 KeyframeTreeStore::~KeyframeTreeStore()
@@ -808,6 +810,16 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 	if(iter->iter==keyframe_list.end())
 		throw std::runtime_error(_("Unable to find Keyframe in table"));
 	return row;
+}
+
+bool
+KeyframeTreeStore::find_keyframe_path(const synfig::Keyframe &keyframe, Gtk::TreeModel::Path &path)
+{
+	assert(keyframe);
+	Gtk::TreeRow row(find_row(keyframe));
+	path = get_path(row);
+
+	return true;
 }
 
 void

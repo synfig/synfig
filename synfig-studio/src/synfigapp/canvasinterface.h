@@ -93,6 +93,7 @@ private:
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_added_;
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_removed_;
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_changed_;
+	sigc::signal<void,synfig::Keyframe> signal_keyframe_selected_;
 
 	sigc::signal<void> signal_id_changed_;
 
@@ -180,11 +181,14 @@ public:	// Signal Interface
 	//! Signal called whenever the RendDesc changes
 	sigc::signal<void>& signal_rend_desc_changed() { return signal_rend_desc_changed_; }
 
+	//! Signal called when a keyframe is added
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_added() { return signal_keyframe_added_; }
-
+	//! Signal called when a keyframe is removed
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_removed() { return signal_keyframe_removed_; }
-
+	//! Signal called when a keyframe is changed
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_changed() { return signal_keyframe_changed_; }
+	//! Signal called when a keyframe is selected
+	sigc::signal<void,synfig::Keyframe>& signal_keyframe_selected() { return signal_keyframe_selected_; }
 
 public:
 

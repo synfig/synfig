@@ -107,8 +107,7 @@ public:
 	//!Member for private data
 	bool get_editable()const { return editable_; }
 
-
-	//!Store the selected keyframe value
+	//!Store the selected keyframe value and fired keyframe selected signal
 	void set_selected_keyframe(const synfig::Keyframe &x);
 
 	//!Returns the selected keyframe
@@ -120,7 +119,7 @@ public:
 	//! Set the fps
 	void set_fps(float x);
 
-	//! Set the canvas interface
+	//! Set the canvas interface, it's the place where signals are connected
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h);
 
 	//! Performs the keyframe movement. Returns true if it was sucessful
@@ -131,11 +130,16 @@ public:
 
 
 /* ======================= EVENTS HANDLERS ===========================*/
-	//!Redraw event. Should draw all the keyframes +  the selected + the dragged + disabled
+	//!Redraw event. Should draw background and all the keyframes : the selected, the dragged, disabled
+	//connected on signal_expose_event()
+	//! @return true: if success or !editable. false: if there are not keyframes to draw
 	bool redraw();
 
 	//!Mouse event handler.
 	bool on_event(GdkEvent *event);
+
+	//! Signal handler for select keyframe signal from canvas interface
+	void on_keyframe_changed(synfig::Keyframe);
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

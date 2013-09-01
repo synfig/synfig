@@ -43,9 +43,11 @@
 //class TreeRowReferenceHack;
 //#define TreeRowReferenceHack Gtk::TreeRowReference
 
+
 namespace studio {
 
 class KeyframeTreeStore_Class;
+
 
 class KeyframeTreeStore :
 	public Glib::Object,
@@ -188,6 +190,7 @@ public:
 
 	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe);
 
+	bool find_keyframe_path(const synfig::Keyframe &keyframe, Gtk::TreeModel::Path &path);
 	/*
  -- ** -- S T A T I C  M E T H O D S ------------------------------------------
 	*/
