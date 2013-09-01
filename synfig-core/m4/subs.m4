@@ -212,12 +212,12 @@ case "$host" in
     LTCC="gcc"
     CXXFLAGS="$CXXFLAGS -Wno-cpp -LC:/GTK/lib"
     CFLAGS="$CFLAGS -LC:/GTK/lib"
-    LDFLAGS="$LDFLAGS -lole32 -Wl,--export-all-symbols -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc" 
-dnl    LDFLAGS="$LDFLAGS -lole32 -no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc"
+    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc" 
+dnl    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console -Wl,--enable-runtime-pseudo-reloc"
     ;;
   *cygwin*)
-    LDFLAGS="$LDFLAGS -lole32 -no-undefined -Wl,--export-all-symbols"
-dnl    LDFLAGS="$LDFLAGS -lole32 -no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console"
+    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols"
+dnl    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console"
     CXXFLAGS="$CXXFLAGS -I/target/include"
     CFLAGS="$CFLAGS -I/target/include"
     ;;
