@@ -150,7 +150,7 @@ for file in \
    xml \
 # this extra line is required!
 do
-	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib || true
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/$file ${PREFIX}/share || true
 done
 
 # cleaning source tree
