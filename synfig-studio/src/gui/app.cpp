@@ -1498,6 +1498,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_manager->show_all_dock_dialogs();
 
 		toolbox->present();
+
+		splash_screen.hide();
+
+#ifdef WIN32
+		dialog_warning_blocking(_("Warning"), _("WARNING:\n\nThis version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window.\n\nIf you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.\n\nPlease accept our apologies for inconvenience, we hope to get this issue resolved in the future versions."));
+#endif
 	}
 	catch(String x)
 	{
