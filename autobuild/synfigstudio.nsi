@@ -75,8 +75,9 @@ Section "Synfig Studio"
   SetOutPath "$INSTDIR"
   File /r /x .* python
   
-  SetOutPath "$INSTDIR\share"
-  !include "share.nsh"
+  !include "share-pixmaps.nsh"
+  !include "share-synfig.nsh"
+  !include "share-themes.nsh"
 
 IfFileExists $PROFILE\.gtkrc-2.0 GtkrcExists PastGtkrcCheck
 GtkrcExists:
@@ -128,6 +129,10 @@ Section "Examples"
 	!include "examples.nsh"
 SectionEnd
 
+Section "Interface Languages"
+	!include "share-locale.nsh"
+SectionEnd
+
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
 
@@ -166,7 +171,10 @@ Section "Uninstall"
   !include "licenses-uninst.nsh"
   ;!include "python-uninst.nsh"
   RMDir /r "$INSTDIR\python"
-  !include "share-uninst.nsh"
+  !include "share-locale-uninst.nsh"
+  !include "share-pixmaps-uninst.nsh"
+  !include "share-synfig-uninst.nsh"
+  !include "share-themes-uninst.nsh"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
