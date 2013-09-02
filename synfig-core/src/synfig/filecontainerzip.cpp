@@ -430,6 +430,7 @@ bool FileContainerZip::save()
 		FileInfo &info = i->second;
 		CentralDirectoryFileHeader cdfh;
 		cdfh.min_version = 20;
+		cdfh.offset = info.header_offset;
 		cdfh.compressed_size = cdfh.uncompressed_size = info.size;
 		cdfh.crc32 = info.crc32;
 		cdfh.filename_length = (uint16_t)info.name.size();

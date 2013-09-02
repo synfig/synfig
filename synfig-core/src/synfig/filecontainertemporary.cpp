@@ -377,7 +377,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 	}
 
 	// create directories
-	processed = false;
+	processed = true;
 	while(processed)
 	{
 		processed = false;
