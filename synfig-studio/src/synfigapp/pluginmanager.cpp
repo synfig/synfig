@@ -121,7 +121,11 @@ PluginLauncher::check_python_version(String path)
 }
 
 bool
+#ifdef WIN32
+PluginLauncher::execute( std::string script_path, const std::string& synfig_root )
+#else
 PluginLauncher::execute( std::string script_path, const std::string& /* synfig_root */ )
+#endif
 {
 	String command = "";
 	

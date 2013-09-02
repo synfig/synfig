@@ -313,6 +313,7 @@ IPC::make_connection()
 		FILE_ATTRIBUTE_NORMAL, // flags and attributes
 		NULL  // template file
 	);
+	int fd;
 	if(pipe_handle==INVALID_HANDLE_VALUE)
 	{
 		DWORD error = GetLastError();
@@ -320,8 +321,10 @@ IPC::make_connection()
 		if( error != ERROR_FILE_NOT_FOUND )
 #endif
 			synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",error);
+		fd=-1;
+	} else {
+		fd=_open_osfhandle(reinterpret_cast<intptr_t>(pipe_handle),_O_APPEND|O_WRONLY);
 	}
-	int fd=_open_osfhandle(reinterpret_cast<long int>(pipe_handle),_O_APPEND|O_WRONLY);
 #else
 	struct stat file_stat;
 	if(stat(fifo_path().c_str(),&file_stat)!=0)

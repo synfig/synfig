@@ -59,8 +59,9 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 
-#ifdef ENABLE_NLS
 	String binary_path = synfig::get_binary_path(String(argv[0]));
+	
+#ifdef ENABLE_NLS
 	String locale_dir;
 	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 #ifdef WIN32

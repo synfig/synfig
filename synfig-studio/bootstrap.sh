@@ -1,19 +1,19 @@
 #!/bin/sh
 
-echo +++ Running autoreconf ... &&
-autoreconf --install --force &&
-echo +++ Running intltoolize ... &&
-intltoolize --force --copy &&
-#echo +++ Running libtoolize ... &&
-#libtoolize --copy &&
-#echo +++ Running aclocal ... &&
-#aclocal -I m4 &&
-#echo +++ Running autoconf ... &&
-#autoconf && 
-#echo +++ Running automake --add-missing ... &&
-#automake --add-missing --copy --gnu -Wno-portability &&
-#echo +++ Running automake ... &&
-#automake Makefile src/Makefile &&
+AUTORECONF=`which autoreconf`
+if test -z $AUTORECONF; then
+        echo "*** No autoreconf found, please install it ***"
+        exit 1
+fi
+
+INTLTOOLIZE=`which intltoolize`
+if test -z $INTLTOOLIZE; then
+        echo "*** No intltoolize found, please install the intltool package ***"
+        exit 1
+fi
+
+autopoint --force
+AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 
 # WORKAROUND 2013-08-15:
 # Patch the generated po/Makefile.in.in file so that locale files are installed
@@ -27,6 +27,4 @@ intltoolize --force --copy &&
 sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/' < po/Makefile.in.in > po/Makefile.in.in.tmp
 mv po/Makefile.in.in.tmp po/Makefile.in.in
 
-echo You may now run ./configure ||
-( echo ERROR.; false )
-
+echo "Done! Please run ./configure now."

@@ -437,7 +437,7 @@ synfigapp::Main::get_user_app_directory()
 	String dir;
 	//! \todo do we need something like Glib::locale_from_utf8()?  (bug #1837445)
 #ifdef WIN32
-	dir = String(getenv("HOMEDRIVE"))+ETL_DIRECTORY_SEPARATOR+getenv("HOMEPATH");
+	dir = String(getenv("HOMEDRIVE"))+getenv("HOMEPATH");
 #else
 	struct passwd* pwd = getpwuid(getuid());
 	if (pwd)
