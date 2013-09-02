@@ -46,7 +46,7 @@ using namespace synfig;
 using namespace etl;
 using namespace std;
 
-namespace synfig { extern Canvas::Handle open_canvas(const String &filename, String &errors, String &warnings); };
+namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
 
 /* === M A C R O S ========================================================= */
 
@@ -601,7 +601,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 		else
 		{
 			String errors;
-			external_canvas=open_canvas(file_name, errors, warnings);
+			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings);
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
@@ -687,7 +687,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 		else
 		{
 			String errors, warnings;
-			external_canvas=open_canvas(file_name, errors, warnings);
+			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings);
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
@@ -1072,6 +1072,19 @@ Canvas::get_file_path()const
 		return parent()->get_file_path();
 	return dirname(file_name_);
 }
+
+void
+Canvas::set_identifier(const FileSystem::Identifier &identifier)
+{
+	identifier_ = identifier;
+}
+
+const FileSystem::Identifier&
+Canvas::get_identifier()const
+{
+	return parent() ? parent()->get_identifier() : identifier_;
+}
+
 
 String
 Canvas::get_meta_data(const String& key)const

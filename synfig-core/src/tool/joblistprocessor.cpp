@@ -53,6 +53,7 @@
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
+#include <synfig/filesystemnative.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -221,7 +222,8 @@ void process_job (Job& job) throw (SynfigToolException&)
 
 	if(job.sifout)
 	{
-		if(!save_canvas(job.outfilename, job.canvas))
+		// todo: support containers
+		if(!save_canvas(FileSystemNative::instance()->get_identifier(job.outfilename), job.canvas))
 			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
 	}
 	else

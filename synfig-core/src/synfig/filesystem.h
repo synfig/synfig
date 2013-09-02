@@ -158,6 +158,7 @@ namespace synfig
 		virtual ReadStreamHandle get_read_stream(const std::string &filename) = 0;
 		virtual WriteStreamHandle get_write_stream(const std::string &filename) = 0;
 
+		Identifier get_identifier(const std::string filename) { return Identifier(this, filename); }
 		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);
 	};
 
