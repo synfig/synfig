@@ -64,7 +64,7 @@ namespace synfig
 		};
 
 	private:
-		const etl::handle< FileSystemNative > instance__;
+		static const etl::handle< FileSystemNative > instance__;
 		FileSystemNative();
 
 	public:

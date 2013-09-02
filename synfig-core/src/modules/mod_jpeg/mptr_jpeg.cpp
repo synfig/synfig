@@ -97,7 +97,8 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 
 
 
-jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier)
+jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
+	Importer(identifier)
 {
   	struct my_error_mgr jerr;
 

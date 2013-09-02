@@ -80,7 +80,7 @@
 #define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! Sets the supports_file_system_wrapper flag of the importer.
-#define SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(class,x) const char class::supports_file_system_wrapper__=x
+#define SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(class,x) const bool class::supports_file_system_wrapper__=x
 
 //! Defines de implementation of the create method for the importer
 //! \param identifier The identifier of file to be imported by the importer.

@@ -62,7 +62,7 @@ SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(cairo_png_mptr, false);
 
 
 cairo_png_mptr::cairo_png_mptr(const synfig::FileSystem::Identifier &identifier):
-synfig::Importer(identifier)
+	CairoImporter(identifier)
 {
 	csurface_=cairo_image_surface_create_from_png(identifier.filename.c_str());
 	if(cairo_surface_status(csurface_))

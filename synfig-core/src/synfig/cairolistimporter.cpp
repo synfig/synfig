@@ -62,7 +62,7 @@ SYNFIG_CAIROIMPORTER_SET_CVS_ID(CairoListImporter,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 CairoListImporter::CairoListImporter(const FileSystem::Identifier &identifier):
-Importer(identifier)
+CairoImporter(identifier)
 {
 	fps=15;
 

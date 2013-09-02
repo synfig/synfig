@@ -128,8 +128,8 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 }
 
 CairoImporter::CairoImporter(const FileSystem::Identifier &identifier):
-	identifier(identifier),
-	gamma_(2.2)
+	gamma_(2.2),
+	identifier(identifier)
 {
 }
 

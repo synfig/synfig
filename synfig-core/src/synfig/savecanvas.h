@@ -45,7 +45,7 @@ namespace synfig {
 
 //!	Saves a canvas to \a filename
 /*!	\return	\c true on success, \c false on error. */
-bool save_canvas(const String &filename, Canvas::ConstHandle canvas, bool safe = true);
+bool save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandle canvas, bool safe = true);
 
 //! Stores a Canvas in a string in XML format
 /*! \return The string with the XML canvas definition */
