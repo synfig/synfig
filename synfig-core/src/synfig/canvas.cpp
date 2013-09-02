@@ -38,6 +38,7 @@
 #include "context.h"
 #include "layer_pastecanvas.h"
 #include "loadcanvas.h"
+#include "filesystemnative.h"
 #include <sigc++/bind.h>
 
 #endif
@@ -79,6 +80,7 @@ Canvas::Canvas(const String &id):
 	op_flag_	(false),
 	grow_value	(0.0)
 {
+	identifier_.file_system = FileSystemNative::instance();
 	_CanvasCounter::counter++;
 	clear();
 }

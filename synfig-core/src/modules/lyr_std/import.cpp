@@ -43,6 +43,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
+#include <synfig/filesystemnative.h>
 
 #endif
 
@@ -158,6 +159,7 @@ IMPORT_VALUE_PLUS(param_filename,
 				assert(get_canvas());
 
 				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
+				if (!file_system) file_system = FileSystemNative::instance();
 
 				if(is_absolute_path(newfilename))
 					filename_with_path=newfilename;
@@ -211,6 +213,7 @@ IMPORT_VALUE_PLUS(param_filename,
 				assert(get_canvas());
 				 
 				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
+				if (!file_system) file_system = FileSystemNative::instance();
 
 				if(is_absolute_path(newfilename))
 					filename_with_path=newfilename;

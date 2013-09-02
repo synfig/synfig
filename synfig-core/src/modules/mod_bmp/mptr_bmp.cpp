@@ -57,6 +57,8 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(bmp_mptr, true);
 /* === M E T H O D S ======================================================= */
 namespace synfig {
 
+#pragma pack(push, 1)
+
 struct BITMAPFILEHEADER
 {
 	unsigned char	bfType[2];
@@ -80,6 +82,8 @@ struct BITMAPINFOHEADER
 	unsigned long	biClrUsed;
 	unsigned long	biClrImportant;
 };
+
+#pragma pack(pop)
 
 }
 
@@ -133,7 +137,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAPFILEHEADER)-4))
+	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAPFILEHEADER)-2))
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),identifier.filename.c_str()));
 		if(cb)cb->error(str);
@@ -151,15 +155,15 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	int offset=little_endian(fileheader.bfOffsetBits);
 
-	if(offset!=sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2)
+	if(offset!=sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
 
-	if(little_endian(infoheader.biSize)!=little_endian(40))
+	if(little_endian(infoheader.biSize)!=sizeof(synfig::BITMAPFILEHEADER))
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),identifier.filename.c_str(),little_endian(infoheader.biSize)));
 		if(cb)cb->error(str);

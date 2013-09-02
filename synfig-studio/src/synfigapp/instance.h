@@ -62,6 +62,16 @@ public:
 
 	typedef std::list< etl::handle<CanvasInterface> > CanvasInterfaceList;
 
+	struct FileReference
+	{
+		synfig::Layer::ConstHandle layer;
+		std::string param_name;
+		std::string old_filename;
+		std::string new_filename;
+	};
+
+	typedef std::list< FileReference > FileReferenceList;
+
 	using etl::shared_object::ref;
 	using etl::shared_object::unref;
 
@@ -76,6 +86,7 @@ public:
 	*/
 
 private:
+
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
@@ -87,6 +98,10 @@ private:
 	sigc::signal<void> signal_filename_changed_;
 	sigc::signal<void> signal_saved_;
 	etl::handle<SelectionManager> selection_manager_;
+
+	FileReferenceList save_canvas_references_;
+	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
+	void update_references_in_canvas();
 
 protected:
 	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
@@ -110,7 +125,7 @@ public:
 	synfig::Canvas::Handle get_canvas()const { return canvas_; }
 
 	//! Saves the instance to filename_
-	bool save()const;
+	bool save();
 
 	bool save_as(const synfig::String &filename);
 

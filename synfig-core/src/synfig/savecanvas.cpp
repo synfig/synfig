@@ -57,6 +57,7 @@
 #include "paramdesc.h"
 
 #include "importer.h"
+#include "cairoimporter.h"
 
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>
@@ -827,9 +828,20 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			 && iter->get_name() == "filename"
 			 && value.get_type() == ValueBase::TYPE_STRING)
 			{
-				std::string s( value.get(String()) );
-				if (save_canvas_external_file_callback(save_canvas_external_file_user_data, layer, s))
-					value.set(s);
+				std::string filename( value.get(String()) );
+				std::string ext = filename_extension(filename);
+				bool registered_in_importer = Importer::book().count(ext) > 0;
+				bool supports_by_importer = registered_in_importer
+						                 && Importer::book()[ext].supports_file_system_wrapper;
+				bool registered_in_cairoimporter = CairoImporter::book().count(ext) > 0;
+				bool supports_by_cairoimporter = registered_in_cairoimporter
+						                      && CairoImporter::book()[ext].supports_file_system_wrapper;
+				bool supports = (supports_by_importer && supports_by_cairoimporter)
+						     || (supports_by_importer && !registered_in_cairoimporter)
+						     || (!registered_in_importer && supports_by_cairoimporter);
+				if (supports)
+					if (save_canvas_external_file_callback(save_canvas_external_file_user_data, layer, iter->get_name(), filename))
+						value.set(filename);
 			}
 
 			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
@@ -1058,7 +1070,7 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 }
 
 void
-set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data)
+synfig::set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data)
 {
 	save_canvas_external_file_callback = callback;
 	save_canvas_external_file_user_data = user_data;
