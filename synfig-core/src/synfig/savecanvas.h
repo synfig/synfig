@@ -44,7 +44,7 @@ namespace synfig {
 
 /* === E X T E R N S ======================================================= */
 
-typedef bool (*save_canvas_external_file_callback_t)(Layer::ConstHandle, std::string &);
+typedef bool (*save_canvas_external_file_callback_t)(void *, Layer::ConstHandle, std::string &);
 
 
 //!	Saves a canvas to \a filename
@@ -55,7 +55,7 @@ bool save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandle c
 /*! \return The string with the XML canvas definition */
 String canvas_to_string(Canvas::ConstHandle canvas);
 
-void set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback);
+void set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data);
 
 void set_file_version(ReleaseVersion version);
 ReleaseVersion get_file_version();

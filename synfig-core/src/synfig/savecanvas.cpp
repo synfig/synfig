@@ -87,6 +87,7 @@ using namespace synfig;
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
 save_canvas_external_file_callback_t save_canvas_external_file_callback = NULL;
+void *save_canvas_external_file_user_data = NULL;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -1057,9 +1058,10 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 }
 
 void
-set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback)
+set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data)
 {
 	save_canvas_external_file_callback = callback;
+	save_canvas_external_file_user_data = user_data;
 }
 
 void
