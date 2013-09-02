@@ -45,6 +45,7 @@
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/guid.h>
+#include <synfig/filesystemnative.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -471,7 +472,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		string errors, warnings;
 		try
 		{
-			job.root = open_canvas(job.filename, errors, warnings);
+			// todo: support containers
+			job.root = open_canvas_as(FileSystemNative::instance()->get_identifier(job.filename), job.filename, errors, warnings);
 		}
 		catch(runtime_error& x)
 		{
@@ -552,7 +554,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		composite_file = _vm["append"].as<string>();
 
 		string errors, warnings;
-		Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
+		// todo: support containers
+		Canvas::Handle composite(open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings));
 		if(!composite)
 		{
 			VERBOSE_OUT(1) << _("Unable to append '") << composite_file.c_str()
@@ -580,7 +583,7 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		if(!composite_file.empty())
 		{
 			String errors, warnings;
-			Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
+			Canvas::Handle composite(open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings));
 			if(!composite)
 			{
 				cerr<<_("Unable to append '")<<composite_file<<"'."<<endl;

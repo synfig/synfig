@@ -157,6 +157,8 @@ IMPORT_VALUE_PLUS(param_filename,
 
 				assert(get_canvas());
 
+				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
+
 				if(is_absolute_path(newfilename))
 					filename_with_path=newfilename;
 				else
@@ -164,11 +166,11 @@ IMPORT_VALUE_PLUS(param_filename,
 
 				handle<Importer> newimporter;
 
-				newimporter=Importer::open(absolute_path(filename_with_path));
+				newimporter=Importer::open(file_system->get_identifier(absolute_path(filename_with_path)));
 
 				if(!newimporter)
 				{
-					newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
+					newimporter=Importer::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename)));
 					if(!newimporter)
 					{
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
@@ -206,46 +208,48 @@ IMPORT_VALUE_PLUS(param_filename,
 					synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
 					return true;
 				}
-				 assert(get_canvas());
+				assert(get_canvas());
 				 
-				 if(is_absolute_path(newfilename))
-					 filename_with_path=newfilename;
-				 else
-					 filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
+
+				if(is_absolute_path(newfilename))
+					filename_with_path=newfilename;
+				else
+					filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
 				 
-				 handle<CairoImporter> newimporter;
+				handle<CairoImporter> newimporter;
 				 
-				 newimporter=CairoImporter::open(absolute_path(filename_with_path));
+				newimporter=CairoImporter::open(file_system->get_identifier(absolute_path(filename_with_path)));
 				 
-				 if(!newimporter)
-				 {
-					 newimporter=CairoImporter::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
-					 if(!newimporter)
-					 {
-						 synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
-						 cimporter=0;
-						 filename=newfilename;
-						 abs_filename=absolute_path(filename_with_path);
-						 csurface.set_cairo_surface(NULL);
-						 param_filename.set(filename);
-						 return false;
-					 }
-				 }
+				if(!newimporter)
+				{
+					newimporter=CairoImporter::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename)));
+					if(!newimporter)
+					{
+						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+						cimporter=0;
+						filename=newfilename;
+						abs_filename=absolute_path(filename_with_path);
+						csurface.set_cairo_surface(NULL);
+						param_filename.set(filename);
+						return false;
+					}
+				}
 				 
-				 cairo_surface_t* cs;
-				 if(!newimporter->get_frame(cs, get_canvas()->rend_desc(), Time(0), trimmed, width, height, top, left))
-				 {
+				cairo_surface_t* cs;
+				if(!newimporter->get_frame(cs, get_canvas()->rend_desc(), Time(0), trimmed, width, height, top, left))
+				{
 					synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
-				 }
-				 set_cairo_surface(cs);
-				 cairo_surface_destroy(cs);
+				}
+				set_cairo_surface(cs);
+				cairo_surface_destroy(cs);
 				 
-				 cimporter=newimporter;
-				 filename=newfilename;
-				 abs_filename=absolute_path(filename_with_path);
-				 param_filename.set(filename);
-				 
-				 return true;
+				cimporter=newimporter;
+				filename=newfilename;
+				abs_filename=absolute_path(filename_with_path);
+				param_filename.set(filename);
+
+				return true;
 				
 				//return false;
 			}

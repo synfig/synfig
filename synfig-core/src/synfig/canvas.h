@@ -190,6 +190,10 @@ private:
 	/*! \see get_file_name(), set_file_name() */
 	String file_name_;
 
+	//! File identifier of Canvas
+	/*! \see get_identifier(), set_identifier() */
+	FileSystem::Identifier identifier_;
+
 	//! Metadata map for Canvas.
 	/*! \see get_meta_data(), set_meta_data(), erase_meta_data() */
 	std::map<String, String> meta_data_;
