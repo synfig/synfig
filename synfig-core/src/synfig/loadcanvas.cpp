@@ -2548,7 +2548,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Canvas::Handle
-CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool inline_, String filename)
+CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool inline_,const FileSystem::Identifier &identifier,String filename)
 {
 
 	if(element->get_name()!="canvas")
@@ -2584,6 +2584,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	else
 	{
 		canvas=Canvas::create();
+		canvas->set_identifier(identifier);
 		if(filename=="/dev/stdin")
 			canvas->set_file_name("./stdin.sif");
 		else
@@ -2879,7 +2880,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 			stream.reset();
 			if(parser)
 			{
-				Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,as));
+				Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,identifier,as));
 				if (!canvas) return canvas;
 				register_canvas_in_map(canvas, as);
 
@@ -2937,7 +2938,7 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 		total_warnings_=0;
 		if(node)
 		{
-			Canvas::Handle canvas(parse_canvas(node,0,false,""));
+			Canvas::Handle canvas(parse_canvas(node,0,false,FileSystemNative::instance()->get_identifier(std::string()),""));
 			if (!canvas) return canvas;
 
 			const ValueNodeList& value_node_list(canvas->value_node_list());
