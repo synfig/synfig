@@ -161,14 +161,16 @@ IMPORT_VALUE_PLUS(param_filename,
 				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
 				if (!file_system) file_system = FileSystemNative::instance();
 
-				if(is_absolute_path(newfilename))
+				// todo: literal "container:"
+				if(is_absolute_path(newfilename)
+				|| newfilename.substr(0, std::string("container:").size())=="container:")
 					filename_with_path=newfilename;
 				else
-					filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
 
 				handle<Importer> newimporter;
 
-				newimporter=Importer::open(file_system->get_identifier(absolute_path(filename_with_path)));
+				newimporter=Importer::open(file_system->get_identifier(filename_with_path));
 
 				if(!newimporter)
 				{
@@ -178,7 +180,7 @@ IMPORT_VALUE_PLUS(param_filename,
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 						importer=0;
 						filename=newfilename;
-						abs_filename=absolute_path(filename_with_path);
+						abs_filename=filename_with_path;
 						surface.clear();
 						param_filename.set(filename);
 						return false;
@@ -193,7 +195,7 @@ IMPORT_VALUE_PLUS(param_filename,
 
 				importer=newimporter;
 				filename=newfilename;
-				abs_filename=absolute_path(filename_with_path);
+				abs_filename=filename_with_path;
 				param_filename.set(filename);
 
 				return true;
@@ -215,14 +217,16 @@ IMPORT_VALUE_PLUS(param_filename,
 				FileSystem::Handle file_system = get_canvas()->get_identifier().file_system;
 				if (!file_system) file_system = FileSystemNative::instance();
 
-				if(is_absolute_path(newfilename))
+				// todo: literal "container:"
+				if(is_absolute_path(newfilename)
+				|| newfilename.substr(0, std::string("container:").size())=="container:")
 					filename_with_path=newfilename;
 				else
-					filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
+					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
 				 
 				handle<CairoImporter> newimporter;
 				 
-				newimporter=CairoImporter::open(file_system->get_identifier(absolute_path(filename_with_path)));
+				newimporter=CairoImporter::open(file_system->get_identifier(filename_with_path));
 				 
 				if(!newimporter)
 				{
@@ -232,7 +236,7 @@ IMPORT_VALUE_PLUS(param_filename,
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 						cimporter=0;
 						filename=newfilename;
-						abs_filename=absolute_path(filename_with_path);
+						abs_filename=filename_with_path;
 						csurface.set_cairo_surface(NULL);
 						param_filename.set(filename);
 						return false;
@@ -249,7 +253,7 @@ IMPORT_VALUE_PLUS(param_filename,
 				 
 				cimporter=newimporter;
 				filename=newfilename;
-				abs_filename=absolute_path(filename_with_path);
+				abs_filename=filename_with_path;
 				param_filename.set(filename);
 
 				return true;

@@ -41,7 +41,7 @@
 #include "valuenode_dynamiclist.h"
 #include "keyframe.h"
 #include "guid.h"
-#include "filesystem.h"
+#include "filesystemnative.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -160,7 +160,7 @@ private:
 	void error_unexpected_element(xmlpp::Node *node,const String &got);
 
 	//! Canvas Parsing Function
-	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false, String path=".");
+	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false,const FileSystem::Identifier &identifier = FileSystemNative::instance()->get_identifier(std::string()),String path=".");
 	//! Canvas definitions Parsing Function (exported value nodes and exported canvases)
 	void parse_canvas_defs(xmlpp::Element *node,Canvas::Handle canvas);
 
