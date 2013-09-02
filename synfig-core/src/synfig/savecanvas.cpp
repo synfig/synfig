@@ -830,6 +830,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			{
 				std::string filename( value.get(String()) );
 				std::string ext = filename_extension(filename);
+				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 				bool registered_in_importer = Importer::book().count(ext) > 0;
 				bool supports_by_importer = registered_in_importer
 						                 && Importer::book()[ext].supports_file_system_wrapper;
