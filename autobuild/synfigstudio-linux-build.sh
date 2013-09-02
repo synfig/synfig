@@ -547,6 +547,9 @@ mkpack()
 	# bundle libpng
 	rm -f ${PREFIX}/lib/libpng* || true
 	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+	# bundle libjasper
+	rm -f ${PREFIX}/lib/libjasper* || true
+	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
 
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
