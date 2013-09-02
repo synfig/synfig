@@ -86,7 +86,7 @@ using namespace synfig;
 
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
-void (*save_canvas_external_file_callback)(const std::string &) = NULL;
+save_canvas_external_file_callback_t save_canvas_external_file_callback = NULL;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -826,7 +826,9 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			 && iter->get_name() == "filename"
 			 && value.get_type() == ValueBase::TYPE_STRING)
 			{
-				save_canvas_external_file_callback(value.get(String()));
+				std::string s( value.get(String()) );
+				if (save_canvas_external_file_callback(layer, s))
+					value.set(s);
 			}
 
 			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
@@ -1055,7 +1057,7 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 }
 
 void
-set_save_canvas_external_file_callback(void (*callback)(const std::string &))
+set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback)
 {
 	save_canvas_external_file_callback = callback;
 }
