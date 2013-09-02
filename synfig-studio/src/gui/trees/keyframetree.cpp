@@ -282,7 +282,10 @@ KeyframeTree::on_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
+if(get_selection()->get_selected())
+	synfig::warning(_("KeyframeTree::GDK_BUTTON_PRESS selected"));
+else
+	synfig::warning(_("KeyframeTree::GDK_BUTTON_PRESS !selected"));
 			signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if (synfig::String(column->get_title ()) == _("Jump"))
 			{
@@ -322,13 +325,21 @@ KeyframeTree::on_event(GdkEvent *event)
 void
 KeyframeTree::on_selection_changed()
 {
-	if(get_selection()->count_selected_rows()==1)
+	if (!has_focus ())
+	{
+		synfig::warning(_("KeyframeTree::on_selection_changed :!has_focus ()"));
+
+		return;
+	}
+	if(has_focus () && get_selection()->count_selected_rows()==1)
 	{
 		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
 		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
 		{
-			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+							synfig::warning(_("KeyframeTree::on_selection_changed"));
+							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
 			selected_kf = keyframe;
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
 		}
 	}
 }

@@ -85,6 +85,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 bool
 Widget_Keyframe_List::redraw()
 {
+					synfig::warning(_("redraw01"));
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> window = get_window();
 	if(!window) return true;
@@ -186,6 +187,7 @@ Widget_Keyframe_List::redraw()
 			x-h/2+1, 0, h, h );
 		}
 	}
+						synfig::warning(_("redrawfin"));
 	return true;
 }
 
@@ -203,21 +205,23 @@ void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
 	if (x == selected_none) return;
-
+					synfig::warning(_("set_selected_keyframe1"));
 	selected_kf=x;
 	selected_=true;
 	dragging_kf_time=selected_kf.get_time();
-
+					synfig::warning(_("set_selected_keyframe2"));
 	if(canvas_interface_)
 		canvas_interface_->signal_keyframe_selected()(selected_kf);
-
+					synfig::warning(_("set_selected_keyframe3"));
 	dragging_=false;
 	queue_draw();
+					synfig::warning(_("set_selected_keyframe4"));
 }
 
 void
 Widget_Keyframe_List::on_keyframe_changed(const synfig::Keyframe keyframe)
 {
+					synfig::warning(_("on_keyframe_changed"));
 	if (keyframe == selected_kf)	return;
 
 	selected_kf=keyframe;
@@ -385,12 +389,14 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
+					synfig::warning(_("GDK_BUTTON_PRESSelse if"));
 					set_selected_keyframe(*(kf_list_->find_prev(t, false)));
 					queue_draw();
 					selected_=true;
 				}
 				else
 				{
+					synfig::warning(_("GDK_BUTTON_PRESSelse"));
 					set_selected_keyframe(*(kf_list_->find_next(t, false)));
 					queue_draw();
 					selected_=true;
