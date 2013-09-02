@@ -59,29 +59,38 @@ namespace synfig {
 
 #pragma pack(push, 1)
 
-struct BITMAPFILEHEADER
+namespace BITMAP
 {
-	unsigned char	bfType[2];
-	unsigned long	bfSize;
-	unsigned short	bfReserved1;
-	unsigned short	bfReserved2;
-	unsigned long	bfOffsetBits;
-};
+	typedef unsigned char uint8_t;
+	typedef unsigned short int uint16_t;
+	typedef int int32_t;
+	typedef unsigned int uint32_t;
 
-struct BITMAPINFOHEADER
-{
-	unsigned long	biSize;
-	long			biWidth;
-	long			biHeight;
-	unsigned short	biPlanes;
-	unsigned short	biBitCount;
-	unsigned long	biCompression;
-	unsigned long	biSizeImage;
-	long			biXPelsPerMeter;
-	long			biYPelsPerMeter;
-	unsigned long	biClrUsed;
-	unsigned long	biClrImportant;
-};
+	struct FILEHEADER
+	{
+		uint8_t		bfType[2];
+		uint32_t	bfSize;
+		uint16_t	bfReserved1;
+		uint16_t	bfReserved2;
+		uint32_t	bfOffsetBits;
+	};
+
+	struct INFOHEADER
+	{
+		uint32_t	biSize;
+		int32_t		biWidth;
+		int32_t		biHeight;
+		uint16_t	biPlanes;
+		uint16_t	biBitCount;
+		uint32_t	biCompression;
+		uint32_t	biSizeImage;
+		int32_t		biXPelsPerMeter;
+		int32_t		biYPelsPerMeter;
+		uint32_t	biClrUsed;
+		uint32_t	biClrImportant;
+	};
+}
+
 
 #pragma pack(pop)
 
@@ -125,8 +134,8 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	synfig::BITMAPFILEHEADER fileheader;
-	synfig::BITMAPINFOHEADER infoheader;
+	synfig::BITMAP::FILEHEADER fileheader;
+	synfig::BITMAP::INFOHEADER infoheader;
 	char b_char=stream->get_char();
 	char m_char=stream->get_char();
 
@@ -137,17 +146,17 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAPFILEHEADER)-2))
+	if(!stream->read_whole_block(&fileheader.bfSize, sizeof(synfig::BITMAP::FILEHEADER)-2))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),identifier.filename.c_str()));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAP::FILEHEADER from %s"),identifier.filename.c_str()));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
 
-	if(!stream->read_whole_block(&infoheader, sizeof(synfig::BITMAPINFOHEADER)))
+	if(!stream->read_whole_block(&infoheader, sizeof(synfig::BITMAP::INFOHEADER)))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),identifier.filename.c_str()));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAP::INFOHEADER from %s"),identifier.filename.c_str()));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -155,17 +164,17 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	int offset=little_endian(fileheader.bfOffsetBits);
 
-	if(offset!=sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER))
+	if(offset!=sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
 
-	if(little_endian(infoheader.biSize)!=sizeof(synfig::BITMAPFILEHEADER))
+	if(little_endian(infoheader.biSize)!=sizeof(synfig::BITMAP::INFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),identifier.filename.c_str(),little_endian(infoheader.biSize)));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %d)"),identifier.filename.c_str(),little_endian(infoheader.biSize),sizeof(synfig::BITMAP::INFOHEADER)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
