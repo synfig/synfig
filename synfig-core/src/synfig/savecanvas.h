@@ -44,7 +44,7 @@ namespace synfig {
 
 /* === E X T E R N S ======================================================= */
 
-typedef bool (*save_canvas_external_file_callback_t)(void *, Layer::ConstHandle, std::string &);
+typedef bool (*save_canvas_external_file_callback_t)(void *user_data, Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
 
 
 //!	Saves a canvas to \a filename

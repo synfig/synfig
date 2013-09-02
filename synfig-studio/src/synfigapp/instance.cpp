@@ -34,6 +34,7 @@
 #include "instance.h"
 #include "canvasinterface.h"
 #include <iostream>
+#include <synfig/context.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filesystemnative.h>
@@ -167,17 +168,71 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 }
 
 bool
-Instance::save()const
+Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename)
 {
-	// todo: use save callback to copy references
+	// todo: "container:" and "images" literals
+	Instance *instance = (Instance*)instance_ptr;
 
-	bool ret=save_canvas(canvas_->get_identifier(),canvas_);
-	if(ret)
+	// skip already packed files
+	if (filename.substr(0, std::string("container:").size()) == "container:")
+		return false;
+
+	// try to create directory
+	if (!instance->container_->directory_create("images"))
+		return false;
+
+	// generate new filename
+	int i = 0;
+	std::string new_filename = "container:images/"+basename(filename);
+	while(instance->container_->is_exists(new_filename))
 	{
-		reset_action_count();
-		const_cast<sigc::signal<void>& >(signal_saved_)();
+		new_filename = "container:images/"
+				     + filename_sans_extension(basename(filename))
+				     + strprintf("_%d", ++i)
+				     + filename_extension(filename);
 	}
-	return ret;
+
+	// try to copy file
+	if (!FileSystem::copy(instance->file_system_, filename, instance->file_system_, new_filename))
+		return false;
+
+	// save information about copied file
+	FileReference r;
+	r.layer = layer;
+	r.param_name = param_name;
+	r.old_filename = filename;
+	r.new_filename = new_filename;
+	instance->save_canvas_references_.push_back(r);
+
+	filename = new_filename;
+	return true;
+}
+
+void
+Instance::update_references_in_canvas()
+{
+	while(!save_canvas_references_.empty())
+	{
+		FileReference &r = save_canvas_references_.front();
+		for(IndependentContext c = get_canvas()->get_independent_context(); c != get_canvas()->end(); c++)
+		{
+			if (*c == r.layer)
+			{
+				ValueBase value;
+				value.set(r.new_filename);
+				(*c)->set_param(r.param_name, value);
+				break;
+			}
+		}
+		save_canvas_references_.pop_front();
+	}
+}
+
+
+bool
+Instance::save()
+{
+	return save_as(get_canvas()->get_file_name());
 }
 
 bool
@@ -197,10 +252,13 @@ Instance::save_as(const synfig::String &file_name)
 
 	set_file_name(file_name);
 
-	// todo: use save callback to copy references
-
+	set_save_canvas_external_file_callback(save_canvas_callback, this);
 	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_container)
 	   && container_->save_changes(file_name, false);
+
+	if (ret) update_references_in_canvas();
+	set_save_canvas_external_file_callback(NULL, NULL);
+	save_canvas_references_.clear();
 
 	if(ret)
 	{
