@@ -983,13 +983,13 @@ xmlpp::Element* encode_canvas_toplevel(xmlpp::Element* root,Canvas::ConstHandle 
 }
 
 bool
-synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool safe)
+synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandle canvas, bool safe)
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-	synfig::String tmp_filename(safe ? filename+".TMP" : filename);
+    synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
 
-	if (filename_extension(filename) == ".sifz")
+	if (filename_extension(identifier.filename) == ".sifz")
 		xmlSetCompressMode(9);
 	else
 		xmlSetCompressMode(0);
@@ -1001,7 +1001,7 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool saf
 
 		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
-		FileSystem::WriteStreamHandle stream = Importer::file_system().get_write_stream(tmp_filename);
+		FileSystem::WriteStreamHandle stream = identifier.file_system->get_write_stream(tmp_filename);
 		if (!stream)
 		{
 			synfig::error("synfig::save_canvas(): Unable to open file for write");
@@ -1019,16 +1019,16 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas, bool saf
 			// On Win32 platforms, rename() has bad behavior. work around it.
 			char old_file[80]="sif.XXXXXXXX";
 			mktemp(old_file);
-			Importer::file_system().file_rename(filename,old_file);
-			if(!Importer::file_system().file_rename(tmp_filename,filename))
+			identifier.file_system->file_rename(filename,old_file);
+			if(!identifier.file_system->file_rename(tmp_filename,identifier.filename))
 			{
-				Importer::file_system().file_rename(old_file,tmp_filename);
+				identifier.file_system->file_rename(old_file,tmp_filename);
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;
 			}
-			remove(old_file);
+			identifier.file_system->file_remove(old_file);
 #else
-			if(!Importer::file_system().file_rename(tmp_filename, filename))
+			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
 			{
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;

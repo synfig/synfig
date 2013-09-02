@@ -114,7 +114,7 @@ FileSystem::WriteStream::write_whole_stream(ReadStreamHandle stream)
 FileSystem::ReadStreamHandle FileSystem::Identifier::get_read_stream() const
 	{ return file_system ? file_system->get_read_stream(filename) : ReadStreamHandle(); }
 FileSystem::WriteStreamHandle FileSystem::Identifier::get_write_stream() const
-	{ return file_system ? file_system->get_write_stream(filename) : ReadStreamHandle(); }
+	{ return file_system ? file_system->get_write_stream(filename) : WriteStreamHandle(); }
 
 
 // FileSystem

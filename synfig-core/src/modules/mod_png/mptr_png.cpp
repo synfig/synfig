@@ -103,7 +103,8 @@ png_mptr::read_chunk_callback(png_struct */*png_data*/, png_unknown_chunkp /*chu
 	//return (n); /* success */
 }
 
-png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier)
+png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
+	Importer(identifier)
 {
 	/* Open the file pointer */
     FILE *file = fopen(identifier.filename.c_str(), "rb");
