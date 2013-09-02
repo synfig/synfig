@@ -828,7 +828,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			 && value.get_type() == ValueBase::TYPE_STRING)
 			{
 				std::string s( value.get(String()) );
-				if (save_canvas_external_file_callback(layer, s))
+				if (save_canvas_external_file_callback(save_canvas_external_file_user_data, layer, s))
 					value.set(s);
 			}
 
