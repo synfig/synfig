@@ -1498,6 +1498,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_manager->show_all_dock_dialogs();
 
 		toolbox->present();
+
+		splash_screen.hide();
+
+#ifdef WIN32
+		dialog_warning_blocking(_("Warning"), _("WARNING:\n\nThis version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window.\n\nIf you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.\n\nPlease accept our apologies for inconvenience, we hope to get this issue resolved in the future versions."));
+#endif
 	}
 	catch(String x)
 	{
@@ -2510,12 +2516,15 @@ bool
 App::open_as(std::string filename,std::string as)
 {
 #ifdef WIN32
-    char long_name[1024];
+    size_t buf_size = PATH_MAX - 1;
+    char* long_name = (char*)malloc(buf_size);
+    long_name[0] = '\0';
     if(GetLongPathName(as.c_str(),long_name,sizeof(long_name)));
-	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
-	// don't use it if that's the case
-	if (long_name[0] != '\0')
-		as=long_name;
+    // when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
+    // don't use it if that's the case
+    if (long_name[0] != '\0')
+        as=String(long_name);
+    free(long_name);
 #endif
 
 	try

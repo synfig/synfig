@@ -1,0 +1,102 @@
+diff --git a/misc/fts.c b/misc/fts.c
+index 9fbefe3..27e9c42 100644
+--- a/misc/fts.c
++++ b/misc/fts.c
+@@ -61,6 +61,12 @@ static char sccsid[] = "@(#)fts.c	8.6 (Berkeley) 8/14/94";
+ #   define _STAT_VER		0
+ #   define __fxstat64(_stat_ver, _fd, _sbp) fstat64((_fd), (_sbp))
+ #endif
++#if defined(__CYGWIN__)
++#   define __errno_location() 	(&errno)
++#   define stat64		stat
++#   define _STAT_VER		0
++#   define __fxstat64(_stat_ver, _fd, _sbp)	fstat((_fd), (_sbp))
++#endif
+ #include "system.h"
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/misc/fts.h b/misc/fts.h
+index 47c650e..a1ed262 100644
+--- a/misc/fts.h
++++ b/misc/fts.h
+@@ -53,6 +53,10 @@
+ # define	_LARGEFILE64_SOURCE
+ #endif
+ 
++#if defined(__CYGWIN__)
++# define _D_EXACT_NAMLEN(d) (strlen ((d)->d_name))
++#endif
++
+ #if defined(sun)
+ # define _D_EXACT_NAMLEN(d) ((d)->d_reclen)
+ #endif
+diff --git a/rpmdb.c b/rpmdb.c
+index 7223fdf..53e95f5 100644
+--- a/rpmdb.c
++++ b/rpmdb.c
+@@ -5,7 +5,7 @@
+ #include "cliutils.h"
+ #include "debug.h"
+ 
+-#if !defined(__GLIBC__) && !defined(__APPLE__)
++#if !defined(__GLIBC__) && !defined(__APPLE__) && !defined(__CYGWIN__)
+ char ** environ = NULL;
+ #endif
+ 
+diff --git a/rpmkeys.c b/rpmkeys.c
+index fa4e4d8..42416d7 100644
+--- a/rpmkeys.c
++++ b/rpmkeys.c
+@@ -5,7 +5,7 @@
+ #include "cliutils.h"
+ #include "debug.h"
+ 
+-#if !defined(__GLIBC__) && !defined(__APPLE__)
++#if !defined(__GLIBC__) && !defined(__APPLE__) && !defined(__CYGWIN__)
+ char ** environ = NULL;
+ #endif
+ 
+diff --git a/rpmsign.c b/rpmsign.c
+index e29864e..868cd78 100644
+--- a/rpmsign.c
++++ b/rpmsign.c
+@@ -8,7 +8,7 @@
+ #include "cliutils.h"
+ #include "debug.h"
+ 
+-#if !defined(__GLIBC__) && !defined(__APPLE__)
++#if !defined(__GLIBC__) && !defined(__APPLE__) && !defined(__CYGWIN__)
+ char ** environ = NULL;
+ #endif
+ 
+diff --git a/sign/rpmgensig.c b/sign/rpmgensig.c
+index 7695ffa..13d7fd9 100644
+--- a/sign/rpmgensig.c
++++ b/sign/rpmgensig.c
+@@ -22,7 +22,7 @@
+ 
+ #include "debug.h"
+ 
+-#if !defined(__GLIBC__) && !defined(__APPLE__)
++#if !defined(__GLIBC__) && !defined(__APPLE__) && !defined(__CYGWIN__)
+ char ** environ = NULL;
+ #endif
+ 
+diff --git a/system.h b/system.h
+index 0037244..5f69d75 100644
+--- a/system.h
++++ b/system.h
+@@ -119,11 +119,13 @@ typedef	char * security_context_t;
+ #define	setprogname(pn)
+ #else
+ #define	__progname	program_name
++#if !defined(__CYGWIN__)
+ #define	setprogname(pn)	\
+   { if ((__progname = strrchr(pn, '/')) != NULL) __progname++; \
+     else __progname = pn;		\
+   }
+ #endif
++#endif
+ extern const char *__progname;
+ 
+ /* Take care of NLS matters.  */

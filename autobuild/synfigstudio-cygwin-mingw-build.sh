@@ -16,18 +16,32 @@
 #
 # = Usage notes =
 # 
-# * You need to have Cygwin and NSIS installed
-# * Tweak the basic variables (below) before first run
-# * Script should be started from the Cygwin terminal, launched as administrator
+# * Download and install Git (http://msysgit.github.io/).
+# * Open Git Bash and execute following commands:
+# ** mkdir C:\synfig-build
+# ** cd C:\synfig-build
+# ** git clone https://github.com/synfig/synfig.git
+# ** mkdir cygwin-dist
+# ** cd synfig
+# ** git config --global core.autocrlf input
+# ** exit
+# * Download Cygwin setup binary (http://www.cygwin.com/) and save it into C:\synfig-build\cygwin-dist\ directory.
+# * Run Cygwin setup and install with the default parameters.
+# * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
+# * Open Cygwin console (with administrator previlegies) and run the build script:
+# ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
+# * Installation bundle will be written to C:\synfig-build\
+#
+#
+# = Other notes =
 # * Builds from current repository, current revision. So you should manually checkout the desired revision to build
-# * (TODO) If no repository found - then  sources fetched into C:\synfig-build\synfig and the latest master branch is built
 # * Executing script without arguments makes a full clean build and produces installer package
 # * You can pass arguments to the script to invoke particular stage. 
 #	Available stages: mkprep, mketl, mksynfig, mksynfigstudio, mkpackage
 #	Example: 
-#		synfigstudio-cygwin-mingw-build.sh mkdeps
+#		synfigstudio-cygwin-mingw-build.sh mkpackage
 # * You can pass a custom command to be invoked in the build environment.
-#	Example (uninstalls glibmm package from the buildroot):
+#	Example (executes make with respect to the build environment):
 #		synfigstudio-cygwin-mingw-build.sh make -j2
 
 
@@ -39,34 +53,66 @@
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
-export CYGWIN_SETUP=/cygdrive/d/synfig-win/cygwin-setup.exe
-export NSIS_BINARY="/cygdrive/c/Program Files (x86)/NSIS/makensis.exe"
-export WORKSPACE=/cygdrive/c/synfig-build/
+export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
+export WORKSPACE="/cygdrive/c/synfig-build/"
+export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
 export DEBUG=1
 
 #=========================== EDIT UNTIL HERE ===================================
 
 export DISTPREFIX=$WORKSPACE/dist
-export SCRIPTPATH=`dirname "$0"`
-SCRIPTPATH=$(cd "$SCRIPTPATH/.."; pwd)
+export SRCPREFIX=`dirname "$0"`
+SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
-export MINGWPREFIX=/usr/i686-pc-mingw32/sys-root/mingw/
+if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+    export TOOLCHAIN_HOST="i686-w64-mingw32"
+    export ARCH=32
+elif [[ $TOOLCHAIN == "mingw64-x86_64" ]]; then
+    export TOOLCHAIN_HOST="x86_64-w64-mingw32"
+    export ARCH=32
+elif [[ $TOOLCHAIN == "mingw" ]]; then
+    export TOOLCHAIN_HOST="i686-pc-mingw32"
+else
+    echo "Error: Unknown toolchain"
+    exit 1
+fi
 
-export CHOST=i686-pc-mingw32
-export CTARGET=i686-pc-mingw32
-export CC=i686-pc-mingw32-gcc
-export CXX=i686-pc-mingw32-g++
-export F77=i686-pc-mingw32-gfortran
-export FC=i686-pc-mingw32-gfortran
-export GCJ=i686-pc-mingw32-gcj
-export GOC=i686-pc-mingw32-gccgo
-export OBJC=i686-pc-mingw32-gcc
-export OBJCXX=i686-pc-mingw32-g++
-export AR=i686-pc-mingw32-ar
-export OBJDUMP=i686-pc-mingw32-objdump
-export RANLIB=i686-pc-mingw32-ranlib
-export STRIP=i686-pc-mingw32-strip
-export RC=i686-pc-mingw32-windres
+export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
+
+
+
+set -e
+
+if [[ $DEBUG == 1 ]]; then
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
+
+export VERSION="0.64.0"
+pushd "${SRCPREFIX}" > /dev/null
+export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
+popd > /dev/null
+
+prepare_mingw_env()
+{
+export CBUILD=i686-pc-cygwin
+export CHOST=${TOOLCHAIN_HOST}
+export CTARGET=${TOOLCHAIN_HOST}
+export CC=${TOOLCHAIN_HOST}-gcc
+export CXX=${TOOLCHAIN_HOST}-g++
+export F77=${TOOLCHAIN_HOST}-gfortran
+export FC=${TOOLCHAIN_HOST}-gfortran
+export GCJ=${TOOLCHAIN_HOST}-gcj
+export GOC=${TOOLCHAIN_HOST}-gccgo
+export OBJC=${TOOLCHAIN_HOST}-gcc
+export OBJCXX=${TOOLCHAIN_HOST}-g++
+export AR=${TOOLCHAIN_HOST}-ar
+export OBJDUMP=${TOOLCHAIN_HOST}-objdump
+export RANLIB=${TOOLCHAIN_HOST}-ranlib
+export STRIP=${TOOLCHAIN_HOST}-strip
+export RC=${TOOLCHAIN_HOST}-windres
 export CFLAGS=' -O2 -pipe -mms-bitfields'
 export CXXFLAGS=' -O2 -pipe -mms-bitfields'
 export F77FLAGS=' -mms-bitfields'
@@ -76,35 +122,329 @@ export GOCFLAGS=' -mms-bitfields'
 export OBJCFLAGS=' -O2 -pipe -mms-bitfields'
 export OBJCXXFLAGS=' -O2 -pipe -mms-bitfields'
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_LIBDIR=/usr/i686-pc-mingw32/sys-root/mingw/lib/pkgconfig:/usr/i686-pc-mingw32/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
-export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/i686-pc-mingw32/sys-root/mingw/include
-export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/i686-pc-mingw32/sys-root/mingw/lib
-export CPPFLAGS=" -I/usr/i686-pc-mingw32/sys-root/mingw/include "
-export LDFLAGS=" -L/usr/i686-pc-mingw32/sys-root/mingw/lib "
-export PATH="/usr/i686-pc-mingw32/sys-root/mingw/bin/:$PATH"
+export PKG_CONFIG_LIBDIR=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
+export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
+export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib "
+export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
 alias convert="/usr/bin/convert"
+}
 
-set -e
+mknative()
+{
+export CBUILD=""
+export CHOST=""
+export CTARGET=""
+export CC=""
+export CXX=""
+export F77=""
+export FC=""
+export GCJ=""
+export GOC=""
+export OBJC=""
+export OBJCXX=""
+export AR=""
+export OBJDUMP=""
+export RANLIB=""
+export STRIP=""
+export RC=""
+export CFLAGS=""
+export CXXFLAGS=""
+export F77FLAGS=""
+export FCFLAGS=""
+export GCJFLAGS=""
+export GOCFLAGS=""
+export OBJCFLAGS=""
+export OBJCXXFLAGS=""
+export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR=""
+export PKG_CONFIG_SYSTEM_INCLUDE_PATH=""
+export PKG_CONFIG_SYSTEM_LIBRARY_PATH=""
+export CPPFLAGS=""
+export LDFLAGS=""
+export PATH="/usr/local/bin:/usr/bin"
 
-export SCRIPTPATH=`dirname "$0"`
-if [[ $DEBUG == 1 ]]; then
-	DEBUG='--enable-debug --enable-optimization=0'
+$@
+}
+
+mkpopt()
+{
+PKG_NAME=popt
+PKG_VERSION=1.10.3
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.gz ] || wget http://rpm5.org/files/popt/${PKG_NAME}-${PKG_VERSION}.tar.gz
+[ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
+cd ${PKG_NAME}-${PKG_VERSION}
+./autogen.sh
+make -j2 install
+
+# remove old version of popt
+[ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
+}
+
+mkrpm()
+{
+PKG_NAME=rpm
+#PKG_VERSION=4.11.1
+PKG_VERSION=4.10.3.1
+#PKG_VERSION=4.7.0
+TAREXT=bz2
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://rpm.org/releases/rpm-4.10.x/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+    patch -p1 < $SRCPREFIX/autobuild/cygwin/${PKG_NAME}-${PKG_VERSION}.patch
+    patch -p1 < $SRCPREFIX/autobuild/cygwin/${PKG_NAME}-${PKG_VERSION}-python-fixes.patch
 else
-	DEBUG=''
+    cd ${PKG_NAME}-${PKG_VERSION}
 fi
+LDFLAGS=" -L/usr/local/lib" CPPFLAGS="-I/usr/include/nspr -I/usr/include/nss -I/usr/include/db4.8/ -I/usr/include/python2.7/" ./autogen.sh \
+    --with-external-db \
+    --without-lua \
+    --enable-python
+make -j2 install
+
+cd python
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export LDFLAGS=" -L/usr/local/lib" 
+python setup.py build
+python setup.py install
+}
+
+mkpycurl()
+{
+PKG_NAME=pycurl
+PKG_VERSION=7.19.0
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://pycurl.sourceforge.net/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+python setup.py build
+python setup.py install
+}
+
+mkurlgrabber()
+{
+PKG_NAME=urlgrabber
+PKG_VERSION=3.9.1
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://urlgrabber.baseurl.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+python setup.py build
+python setup.py install
+}
+
+mkyum-metadata-parser()
+{
+PKG_NAME=yum-metadata-parser
+PKG_VERSION=1.1.4
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/yum-metadata-parser/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+
+python setup.py build
+python setup.py install
+}
+
+mkyum()
+{
+PKG_NAME=yum
+PKG_VERSION=3.4.3
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/3.4/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+rm INSTALL || true
+make install PREFIX="//" DESTDIR=""
+}
+
+mkyum-utils()
+{
+PKG_NAME=yum-utils
+PKG_VERSION=1.1.31
+TAREXT=gz
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://yum.baseurl.org/download/yum-utils/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+make install || true
+if [ ! -e /usr/bin/yumdownloader ]; then
+    exit 1
+fi
+}
+
+fedora-mingw-install()
+{
+[ -d $WORKSPACE/mingw-rpms ] || mkdir $WORKSPACE/mingw-rpms
+
+cd $WORKSPACE/mingw-rpms
+
+# Prepare custom yum.conf
+cat > $WORKSPACE/mingw-rpms/yum.conf <<EOF
+[main]
+cachedir=${WORKSPACE}mingw-rpms/yum
+keepcache=0
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+plugins=1
+installonly_limit=3
+
+[fedora]
+name=Fedora \$releasever - \$basearch
+failovermethod=priority
+mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+enabled=1
+metadata_expire=7d
+
+[updates]
+name=Fedora \$releasever - \$basearch - Updates
+failovermethod=priority
+mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+enabled=1
+EOF
+
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=18 --installroot="$WORKSPACE/mingw-rpms" $1`
+for URL in $URLS; do
+if ( echo "$URL" | egrep "^http:" > /dev/null ); then
+    PKG=`basename $URL`
+    if ( echo "$PKG" | egrep "^mingw" > /dev/null ); then
+        if ! ( echo $PKG | egrep "^mingw..-headers|^mingw..-gcc|^mingw-|^mingw..-filesystem|^mingw..-binutils|^mingw..-crt|^mingw..-cpp" > /dev/null); then
+            echo $PKG
+            wget -c "$URL"
+            rpm -Uhv --ignoreos --nodeps --force "$PKG"
+        fi
+    fi
+fi
+done
+
+# Ensure all dlls have executable flag, otherwise the compiled binaries won't run
+chmod a+x /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/*.dll
+}
 
 # Install dependencies
 mkprep()
 {
 
-export PREP_VERSION=1
+export PREP_VERSION=3
 
-if [[ `cat $WORKSPACE/prep-done` != "${PREP_VERSION}" ]]; then
+if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
 $CYGWIN_SETUP \
--K http://cygwinports.org/ports.gpg -s http://mirrors.kernel.org/sources.redhat.com/cygwinports -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
+-P gcc \
+-P gdb \
+-P intltool \
+-P autoconf \
+-P automake \
+-P libtool \
+-P pkg-config \
+-P p7zip \
+-P ImageMagick \
+-P cygport \
+-P $TOOLCHAIN-gcc  \
+-P $TOOLCHAIN-gcc-g++  \
+-P zlib-devel \
+-P libnspr-devel \
+-P liblzma-devel \
+-P libnss-devel \
+-P libiconv \
+-P libdb4.8-devel \
+-P python \
+-q
+
+# yum dependencies
+$CYGWIN_SETUP \
+-s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-P urlgrabber \
+-P libglib2.0-devel \
+-P libxml2-devel \
+-P libsqlite3-devel \
+-q
+
+#-P libglib2.0-devel \ # yum req
+#-P libsqlite3-devel \ # yum req
+#-P libxml2-devel \ # yum req
+#-P libcurl-devel \ # pycurl req
+
+mknative mkpopt
+mknative mkrpm
+#mknative mkurlgrabber
+mknative mkyum-metadata-parser
+
+
+#mknative mkyum
+#mknative mkyum-utils
+
+cd $WORKSPACE
+wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-3.4.3-47.fc18.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-3.4.3-47.fc18.noarch.rpm
+wget -c http://fedora.inode.at/fedora/linux/releases/18/Everything/i386/os/Packages/y/yum-utils-1.1.31-6.fc18.noarch.rpm
+rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-6.fc18.noarch.rpm
+
+fedora-mingw-install mingw${ARCH}-libxml++
+fedora-mingw-install mingw${ARCH}-cairo
+fedora-mingw-install mingw${ARCH}-pango
+fedora-mingw-install mingw${ARCH}-boost
+fedora-mingw-install mingw${ARCH}-libjpeg-turbo
+fedora-mingw-install mingw${ARCH}-gtkmm24
+
+# Somehow this is required too...
+fedora-mingw-install mingw${ARCH}-pcre
+
+#TODO: magick++
+
+if false; then
+
+# cygport stuff
+
+#CYGPORT_MIRROR="-s ftp://ftp.cygwinports.org/pub/cygwinports"
+CYGPORT_MIRROR="-s http://mirrors.kernel.org/sources.redhat.com/cygwinports"
+$CYGWIN_SETUP \
+-K http://cygwinports.org/ports.gpg $CYGPORT_MIRROR -s http://ftp.linux.kiev.ua/pub/cygwin/ \
+-P git \
+-P make \
+-P gcc \
 -P gdb \
 -P intltool \
 -P autoconf \
@@ -115,44 +455,55 @@ $CYGWIN_SETUP \
 -P ImageMagick \
 -P cygport \
 -P mm-common \
--P mingw-gcc-g++  \
--P mingw-cairo \
--P mingw-glibmm2.4 \
--P mingw-pango1.0 \
--P mingw-gtkmm2.4 \
+-P $TOOLCHAIN-libxml2 \
+-P $TOOLCHAIN-gcc  \
+-P $TOOLCHAIN-gcc-g++  \
+-P $TOOLCHAIN-cairo \
+-P $TOOLCHAIN-glibmm2.4 \
+-P $TOOLCHAIN-pango1.0 \
+-P $TOOLCHAIN-gtkmm2.4 \
 -q
 
 #objdump -p hello.exe | grep "DLL Name"
 
-#TODO: magick++
+#freetype
+if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+cd $WORKSPACE
+[ ! -d $WORKSPACE/$TOOLCHAIN-freetype2 ] && git clone git://cygwin-ports.git.sourceforge.net/gitroot/cygwin-ports/mingw64-i686-freetype2
+cd $WORKSPACE/$TOOLCHAIN-freetype2
+for action in fetch prep compile install package; do
+    cygport $TOOLCHAIN-freetype2.cygport $action
+done
+tar -C / -jxf $TOOLCHAIN-freetype2-2.4.11-1.tar.bz2
+[ ! -e $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-freetype2-debuginfo-2.4.11-1.tar.bz2
+cd ..
+fi
 
 # libxml++
-[ ! -d $WORKSPACE/mingw-libxmlpp2.6 ] || rm -rf $WORKSPACE/mingw-libxmlpp2.6
-cp -rf $SRCPREFIX/autobuild/mingw-libxmlpp2.6 $WORKSPACE/mingw-libxmlpp2.6
-cd $WORKSPACE/mingw-libxmlpp2.6
+[ ! -d $WORKSPACE/$TOOLCHAIN-libxmlpp2.6 ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-libxmlpp2.6 $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
+cd $WORKSPACE/$TOOLCHAIN-libxmlpp2.6
 for action in fetch prep compile install package; do
-    cygport mingw-libxml++2.6.cygport $action
+    cygport $TOOLCHAIN-libxml++2.6.cygport $action
 done
-tar -C / -jxf mingw-libxml++2.6-2.36.0-1.tar.bz2
-tar -C / -jxf mingw-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
+tar -C / -jxf $TOOLCHAIN-libxml++2.6-2.36.0-1.tar.bz2
+[ ! -e $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2 ] || tar -C / -jxf $TOOLCHAIN-libxml++2.6-debuginfo-2.36.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/mingw-libxmlpp2.6
 
 # boost
-[ ! -d $WORKSPACE/mingw-boost ] || rm -rf $WORKSPACE/mingw-boost
-cp -rf $SRCPREFIX/autobuild/mingw-boost $WORKSPACE/mingw-boost
-cd $WORKSPACE/mingw-boost
+[ ! -d $WORKSPACE/$TOOLCHAIN-boost ] && cp -rf $SRCPREFIX/autobuild/$TOOLCHAIN-boost $WORKSPACE/$TOOLCHAIN-boost
+cd $WORKSPACE/$TOOLCHAIN-boost
 for action in fetch prep compile install package; do
-    cygport mingw-boost.cygport $action
+    cygport $TOOLCHAIN-boost.cygport $action
 done
-tar -C / -jxf mingw-boost-1.50.0-1.tar.bz2
+tar -C / -jxf $TOOLCHAIN-boost-1.50.0-1.tar.bz2
 cd ..
-rm -rf $WORKSPACE/mingw-boost
 
 # there should be no *.la files
-rm -rf /usr/i686-pc-mingw32/sys-root/mingw/lib/*.la || true
+rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/*.la || true
 
-echo ${PREP_VERSION} > $WORKSPACE/prep-done
+fi # if false
+
+echo ${PREP_VERSION} > /prep-done
 
 fi
 }
@@ -162,17 +513,17 @@ mketl()
 cd $SRCPREFIX/ETL
 autoreconf --install --force
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
@@ -182,23 +533,24 @@ make install
 mksynfig()
 {
 cd $SRCPREFIX/synfig-core
+[ ! -e config.cache ] || rm config.cache
 libtoolize --copy --force
 autoreconf --install --force
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
---with-magickpp=yes --with-boost=/usr/i686-pc-mingw32/sys-root/mingw/ \
+--with-magickpp=yes --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
 --enable-maintainer-mode $DEBUG
 make -j2
 make install
@@ -207,26 +559,27 @@ make install
 mksynfigstudio()
 {
 cd $SRCPREFIX/synfig-studio
+[ ! -e config.cache ] || rm config.cache
 ./bootstrap.sh
 ./configure \
---prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---exec-prefix=/usr/i686-pc-mingw32/sys-root/mingw \
---bindir=/usr/i686-pc-mingw32/sys-root/mingw/bin \
---sbindir=/usr/i686-pc-mingw32/sys-root/mingw/sbin \
---libexecdir=/usr/i686-pc-mingw32/sys-root/mingw/lib \
---datadir=/usr/i686-pc-mingw32/sys-root/mingw/share \
---localstatedir=/usr/i686-pc-mingw32/sys-root/mingw/var \
---sysconfdir=/usr/i686-pc-mingw32/sys-root/mingw/etc \
---datarootdir=/usr/i686-pc-mingw32/sys-root/mingw/share \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
 --docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=i686-pc-mingw32 \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
 make -j2
 make install 
-cp -rf /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps
-rm -rf /usr/i686-pc-mingw32/sys-root/mingw/share/pixmaps/synfigstudio
+cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps
+rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
 }
@@ -301,6 +654,7 @@ for file in \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
@@ -364,18 +718,32 @@ gen_list_nsh lib/gtk-2.0 lib-gtk
 gen_list_nsh lib/synfig lib-synfig
 gen_list_nsh licenses licenses
 #gen_list_nsh python python # -- takes too long
-gen_list_nsh share share
+gen_list_nsh share/locale share-locale
+gen_list_nsh share/pixmaps share-pixmaps
+gen_list_nsh share/synfig share-synfig
+gen_list_nsh share/themes share-themes
 
 
 #make installer
 cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
+cp -f $SRCPREFIX/autobuild/win${ARCH}-specific.nsh ./arch-specific.nsh
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
+mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+
+INSTALLER_PATH=`cygpath -w "$WORKSPACE"`
+echo
+echo
+echo
+echo "Installer package generated:"
+echo "   ${INSTALLER_PATH}synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe"
+echo
 }
 
 mkall()
 {
 	mkprep
+	prepare_mingw_env
 	mketl
 	mksynfig
 	mksynfigstudio
@@ -386,5 +754,6 @@ if [ -z $1 ]; then
 	mkall
 else
 	echo "Executing custom user command..."
+	prepare_mingw_env
 	$@
 fi

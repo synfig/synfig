@@ -1,23 +1,54 @@
 #!/bin/sh
 
 #TODO: Replace version numbers in the .nsi file
-#TODO: Uninstall properly!
-#TODO: 64bit build
 #TODO: Magick++
 
 set -e
 
-export SCRIPTPATH=`dirname "$0"`
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
-export BUILDROOT=$HOME/synfig-buildroot
-export PREFIX=$BUILDROOT/win32
-export DISTPREFIX=$BUILDROOT/tmp/win32
-export CACHEDIR=$BUILDROOT/cache
+if [ -z $ARCH ]; then
+	export ARCH="32"
+fi
+
+export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
+
+export WORKSPACE=$HOME/synfig-buildroot
+export PREFIX=$WORKSPACE/win$ARCH
+export DISTPREFIX=$WORKSPACE/tmp/win$ARCH
+export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
 export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+
+if [[ $TOOLCHAIN == "mingw32" ]]; then
+    export TOOLCHAIN_HOST="i686-w64-mingw32"
+elif [[ $TOOLCHAIN == "mingw64" ]]; then
+    export TOOLCHAIN_HOST="x86_64-w64-mingw32"
+else
+    echo "Error: Unknown toolchain"
+    exit 1
+fi
+
+if [ -z $DEBUG ]; then
+	export DEBUG=0
+fi
+
+if [[ $DEBUG == 1 ]]; then
+	echo
+	echo "Debug mode: enabled"
+	echo
+	DEBUG='--enable-debug --enable-optimization=0'
+else
+	DEBUG=''
+fi
+
+export VERSION="0.64.0"
+pushd "${SCRIPTPATH}" > /dev/null
+export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
+popd > /dev/null
 
 mkprep()
 {
@@ -30,13 +61,13 @@ if [ -z $NOSU ]; then
 		automake \
 		libtool \
 		libtool-ltdl-devel \
-		mingw32-gcc-c++ \
-		mingw32-libxml++ \
-		mingw32-cairo \
-		mingw32-pango \
-		mingw32-boost \
-		mingw32-libjpeg-turbo \
-		mingw32-gtkmm24 \
+		${TOOLCHAIN}-gcc-c++ \
+		${TOOLCHAIN}-libxml++ \
+		${TOOLCHAIN}-cairo \
+		${TOOLCHAIN}-pango \
+		${TOOLCHAIN}-boost \
+		${TOOLCHAIN}-libjpeg-turbo \
+		${TOOLCHAIN}-gtkmm24 \
 		mingw32-nsis \
 		p7zip \
 		ImageMagick \
@@ -89,7 +120,7 @@ for file in \
    synfigstudio.exe \
 # this extra line is required!
 do
-	cp /usr/i686-w64-mingw32/sys-root/mingw/bin/$file ${PREFIX}/bin || true
+	cp /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/$file ${PREFIX}/bin || true
 done
 
 [ -d ${PREFIX}/etc ] || mkdir -p ${PREFIX}/etc
@@ -99,7 +130,7 @@ for file in \
    pango \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/etc/$file ${PREFIX}/etc
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc/$file ${PREFIX}/etc
 done
 
 [ -d ${PREFIX}/lib ] || mkdir -p ${PREFIX}/lib
@@ -109,7 +140,7 @@ for file in \
    pango \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib
 done
 
 [ -d ${PREFIX}/share ] || mkdir -p ${PREFIX}/share
@@ -119,8 +150,16 @@ for file in \
    xml \
 # this extra line is required!
 do
-	cp -rf /usr/i686-w64-mingw32/sys-root/mingw/lib/$file ${PREFIX}/lib
+	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/$file ${PREFIX}/share || true
 done
+
+# cleaning source tree
+for dir in ETL synfig-core synfig-studio; do
+	pushd $SCRIPTPATH/../$dir > /dev/null
+	make clean || true
+	popd > /dev/null
+done
+
 }
 
 #ETL
@@ -129,7 +168,7 @@ mketl()
 cd $SCRIPTPATH/../ETL
 make clean || true
 autoreconf --install --force
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
 make install
 }
 
@@ -141,12 +180,13 @@ mksynfig()
 {
 cd $SCRIPTPATH/../synfig-core/
 make clean || true
+[ ! -e config.cache ] || rm config.cache
 libtoolize --ltdl --copy --force
 autoreconf --install --force
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/i686-w64-mingw32/sys-root/mingw/ --enable-warnings=minimum $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
 make install -j4
 }
 
@@ -155,11 +195,12 @@ mksynfigstudio()
 {
 cd $SCRIPTPATH/../synfig-studio/
 make clean || true
+[ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
-mingw32-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
+${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
 make install -j4
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
 }
@@ -201,9 +242,50 @@ unzip portable-python-3.2.5.1.zip
 [ ! -d $PREFIX/python ] || rm -rf $PREFIX/python
 mv python $PREFIX
 
+gen_list_nsh()
+{
+[ ! -e $2.nsh ] || rm $2.nsh
+[ ! -e $2-uninst.nsh ] || rm $2-uninst.nsh
+for line in `find $1 -print`; do
+	directory=`dirname $line`
+	line1=`echo $directory | sed "s|\./||g" | sed "s|/|\\\\\|g"`
+	line2=`echo $line | sed "s|\./||g" | sed "s|/|\\\\\|g"`
+	if [ -d $line ]; then
+		echo "RMDir \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
+	else
+		echo "SetOutPath \"\$INSTDIR\\$line1\""  >> $2.nsh
+		echo "File \"$line2\"" >> $2.nsh
+		echo "Delete \"\$INSTDIR\\$line2\"" >> $2-uninst.nsh
+	fi
+done
+# reverse order of uninstall commands
+cp $2-uninst.nsh $2-uninst.nsh.tmp
+tac $2-uninst.nsh.tmp > $2-uninst.nsh
+rm $2-uninst.nsh.tmp
+}
+
 cd $PREFIX
+
+#generate file lists
+
+gen_list_nsh bin bin
+sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from he list of binaries - it will go into separate group
+gen_list_nsh etc etc
+gen_list_nsh examples examples
+gen_list_nsh lib/gtk-2.0 lib-gtk
+gen_list_nsh lib/synfig lib-synfig
+gen_list_nsh licenses licenses
+#gen_list_nsh python python # -- takes too long
+gen_list_nsh share/locale share-locale
+gen_list_nsh share/pixmaps share-pixmaps
+gen_list_nsh share/synfig share-synfig
+gen_list_nsh share/themes share-themes
+
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
+cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
+
+mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()

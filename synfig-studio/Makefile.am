@@ -40,8 +40,6 @@ EXTRA_DIST = \
 	doxygen.cfg.in \
 	doxygen.cfg \
 	macosxbuild.sh \
-	win32build.sh \
-	win32inst.nsi.in \
 	config/package \
 	config/depcomp \
 	m4/cxx_macros.m4 \
@@ -114,26 +112,13 @@ run: check
 	$(DOXYGEN) doxygen.cfg
 	touch .doc_stamp
 
-package-win32: all win32inst.nsi
-	convert images/installer_logo.png bmp3:images/installer_logo.bmp
-	make -C images sif_icon.ico synfig_icon.ico
-	grep -v -e 'installer_logo' -e 'sif_icon' images/images.nsh >images/images.nsh.tmp
-	grep -v -e 'installer_logo' -e 'sif_icon' images/unimages.nsh >images/unimages.nsh.tmp
-	mv -f images/images.nsh.tmp images/images.nsh
-	mv -f images/unimages.nsh.tmp images/unimages.nsh
-	makensis win32inst.nsi
-
 package-osx: all pkg-info/macosx/synfig-studio.info
 	[ -d pkg_root ] && $(RMDIR) pkg_root || true
 	convert images/installer_logo_osx.png $(srcdir)/pkg-info/macosx/studio-resources/background.tif
 	make install prefix="`pwd`/pkg_root"
 	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-studio.info -r $(srcdir)/pkg-info/macosx/studio-resources
-if WIN32_PKG	
-package: package-win32
-else
 if MACOSX_PKG
 package: package-osx
-endif
 endif
 
 install-data-hook:

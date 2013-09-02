@@ -375,12 +375,7 @@ SUFFIXES = .sif .tif .png
 #.SUFFIXES: $(SUFFIXES)
 
 .sif.ico:
-	$(SYNFIG) $< -w 16 -h 16 -o $*-16x16.png
-	$(SYNFIG) $< -w 32 -h 32 -o $*-32x32.png
-	$(SYNFIG) $< -w 48 -h 48 -o $*-48x48.png
-	$(SYNFIG) $< -w 64 -h 64 -o $*-64x64.png
-	convert $*-16x16.png $*-32x32.png $*-48x48.png $*-64x64.png -background transparent -gamma 2.2 $@
-	rm -f $*-16x16.png $*-32x32.png $*-48x48.png $*-64x64.png
+	bash ../build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
