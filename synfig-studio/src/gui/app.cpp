@@ -66,6 +66,9 @@
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/importer.h>
+#include <synfig/filesystemnative.h>
+#include <synfig/filesystemgroup.h>
+#include <synfig/filecontainertemporary.h>
 
 #include "app.h"
 #include "dialogs/about.h"
@@ -2533,14 +2536,18 @@ App::open_as(std::string filename,std::string as)
 		OneMoment one_moment;
 		String errors, warnings;
 
+		// TODO: move literal "container:" into common place
 		std::string canvas_filename = filename;
+		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+		file_system->register_system("container:", container);
 
 		// TODO: move literal ".zip" into common place
 		if (etl::filename_extension(filename) == ".zip")
 		{
 			if (!container->open(filename))
 				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+			// TODO: move literal "project.sifz" into common place
 			canvas_filename = "container:project.sifz";
 		}
 		else
@@ -2549,9 +2556,7 @@ App::open_as(std::string filename,std::string as)
 				throw (String)strprintf(_("Unable to create container\n\n"),filename.c_str());
 		}
 
-		Importer::file_system().register_system("container:", container);
-
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_filename,as,errors,warnings));
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(file_system->get_identifier(canvas_filename),as,errors,warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -2585,19 +2590,16 @@ App::open_as(std::string filename,std::string as)
 	catch(String x)
 	{
 		dialog_error_blocking(_("Error"), x);
-		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 	catch(runtime_error x)
 	{
 		dialog_error_blocking(_("Error"), x.what());
-		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 	catch(...)
 	{
 		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
-		Importer::file_system().unregister_system("container:");
 		return false;
 	}
 

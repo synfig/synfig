@@ -36,6 +36,7 @@
 #include <iostream>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
+#include <synfig/filesystemnative.h>
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_radialcomposite.h>
 #include <synfig/valuenode_reference.h>
@@ -106,8 +107,11 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
+	file_system_(new FileSystemGroup(FileSystemNative::instance())),
 	container_(container)
 {
+	file_system_->register_system("container:", container_);
+
 	assert(canvas->is_root());
 
 	unset_selection_manager();
@@ -165,14 +169,14 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 bool
 Instance::save()const
 {
-	Importer::file_system().register_system("container:", container_);
-	bool ret=save_canvas(get_file_name(),canvas_);
+	// todo: use save callback to copy references
+
+	bool ret=save_canvas(canvas_->get_identifier(),canvas_);
 	if(ret)
 	{
 		reset_action_count();
 		const_cast<sigc::signal<void>& >(signal_saved_)();
 	}
-	Importer::file_system().unregister_system("container:");
 	return ret;
 }
 
@@ -187,15 +191,15 @@ Instance::save_as(const synfig::String &file_name)
 		save_container = true;
 	}
 
-	Importer::file_system().register_system("container:", container_);
-
 	bool ret;
 
 	String old_file_name(get_file_name());
 
 	set_file_name(file_name);
 
-	ret = save_canvas(canvas_filename,canvas_,!save_container)
+	// todo: use save callback to copy references
+
+	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_container)
 	   && container_->save_changes(file_name, false);
 
 	if(ret)
@@ -208,6 +212,5 @@ Instance::save_as(const synfig::String &file_name)
 
 	signal_filename_changed_();
 
-	Importer::file_system().unregister_system("container:");
 	return ret;
 }

@@ -221,7 +221,8 @@ AutoRecover::auto_backup()
 
 				Canvas::Handle canvas((*iter)->get_canvas());
 				file<<canvas->get_file_name().c_str()<<endl;
-				save_canvas(get_shadow_file_name(canvas->get_file_name()),canvas);
+				// TODO: fix autorecovery
+				//save_canvas(get_shadow_file_name(canvas->get_file_name()),canvas);
 				savecount++;
 			}
 

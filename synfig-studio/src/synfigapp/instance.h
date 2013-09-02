@@ -32,6 +32,7 @@
 #include <synfig/canvas.h>
 #include <synfig/string.h>
 #include <synfig/filecontainertemporary.h>
+#include <synfig/filesystemgroup.h>
 #include <list>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
@@ -78,6 +79,7 @@ private:
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
+	etl::handle< synfig::FileSystemGroup > file_system_;
 	etl::handle< synfig::FileContainerTemporary > container_;
 
 	CanvasInterfaceList canvas_interface_list_;
