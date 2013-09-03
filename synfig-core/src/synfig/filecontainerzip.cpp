@@ -458,7 +458,7 @@ bool FileContainerZip::save()
 	ecd.current_records = ecd.total_records = files_.size();
 	ecd.size = ftell(storage_file_) - central_directory_offset;
 	if (prev_storage_size_ > 0)
-		ecd.comment_length = sprintf(NULL, "%llx", prev_storage_size_);
+		ecd.comment_length = snprintf(NULL, 0, "%llx", prev_storage_size_);
 
 	// write header
 	if (sizeof(ecd) != fwrite(&ecd, 1, sizeof(ecd), storage_file_))
