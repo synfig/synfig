@@ -89,6 +89,9 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 bool
 Widget_Keyframe_List::redraw()
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
 
 	const int h(get_height());
 	const int w(get_width());
@@ -98,13 +101,13 @@ Widget_Keyframe_List::redraw()
 	synfig::Time bottom(adj_timescale->get_lower());
 
 	//! The graphic context
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	//! A rectangle that defines the drawing area.
 	Gdk::Rectangle area(0,0,w,h);
 
 	//! draw a background
 	gc->set_rgb_fg_color(Gdk::Color("#9d9d9d"));
-	get_window()->draw_rectangle(gc, true, 0, 0, w, h);
+	window->draw_rectangle(gc, true, 0, 0, w, h);
 
 	if(!editable_)
 	{
@@ -128,11 +131,11 @@ Widget_Keyframe_List::redraw()
 			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for disabled keyframe
 			if (iter->active())
-				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
+				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 				x-h/2+1, 0, h, h );
 			else
-				get_style()->paint_arrow(get_window(), Gtk::STATE_INSENSITIVE,
+				get_style()->paint_arrow(window, Gtk::STATE_INSENSITIVE,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
 				x-h/2+1, 0, h, h );
 		}
@@ -153,11 +156,11 @@ Widget_Keyframe_List::redraw()
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for disabled keyframe
 			if (selected_iter->active())
-				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
+				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 				x-h/2+1, 0, h, h );
 			else
-				get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
+				get_style()->paint_arrow(window, Gtk::STATE_NORMAL,
 				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
 				x-h/2+1, 0, h, h );
 		}
@@ -166,11 +169,11 @@ Widget_Keyframe_List::redraw()
 		else
 		{
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			get_style()->paint_arrow(get_window(), Gtk::STATE_INSENSITIVE,
+			get_style()->paint_arrow(window, Gtk::STATE_INSENSITIVE,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2, 0, h, h );
 			x=(int)((float)(dragging_kf_time-bottom) * (w/(top-bottom)) ) ;
-			get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+			get_style()->paint_arrow(window, Gtk::STATE_SELECTED,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2+1, 0, h, h );
 		}
