@@ -178,7 +178,7 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 		return false;
 
 	// is file already copied?
-	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != save_canvas_references_.end(); i++)
+	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != instance->save_canvas_references_.end(); i++)
 	{
 		if (i->old_filename == filename)
 		{
