@@ -138,7 +138,7 @@ KeyframeTree::KeyframeTree()
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 
-	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
+//	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
 }
 
 KeyframeTree::~KeyframeTree()
@@ -337,6 +337,27 @@ KeyframeTree::on_selection_changed()
 		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
 		{
 							synfig::warning(_("KeyframeTree::on_selection_changed"));
+							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
+			selected_kf = keyframe;
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+		}
+	}
+}
+
+void
+KeyframeTree::on_cursor_changed()
+{
+	if (!has_focus ())
+	{
+		synfig::warning(_("KeyframeTree::on_cursor_changed :!has_focus ()"));
+
+		return;
+	}	if(has_focus () && get_selection()->count_selected_rows()==1)
+	{
+		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
+		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
+		{
+							synfig::warning(_("KeyframeTree::on_cursor_changed"));
 							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
 			selected_kf = keyframe;
 			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);

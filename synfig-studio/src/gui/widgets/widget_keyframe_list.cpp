@@ -383,6 +383,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
 				)
 				{
+					synfig::warning(_("GDK_BUTTON_PRESS selected_none"));
 					set_selected_keyframe(selected_none);
 					selected_=false;
 					queue_draw();

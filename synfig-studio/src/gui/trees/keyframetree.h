@@ -69,6 +69,8 @@ public:
 
 	KeyframeTreeStore::Model model;
 	synfig::Keyframe selected_kf;
+
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -150,6 +152,14 @@ public:
 	sigc::signal<void,synfig::Keyframe,synfig::String>& signal_edited_description() { return signal_edited_description_; }
 
 	sigc::signal<void,int, Gtk::TreeRow, ColumnID>& signal_user_click() { return signal_user_click_; }
+
+	/*
+ -- ** -- P R O T E C T E D   M E T H O D S ---------------------------------------
+	*/
+
+	protected:
+
+	virtual void on_cursor_changed();
 }; // END of KeyframeTree
 
 }; // END of namespace studio
