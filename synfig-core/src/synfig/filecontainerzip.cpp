@@ -465,10 +465,11 @@ bool FileContainerZip::save()
 		return false;
 
 	// write comment if need
-	if (prev_storage_size_ != 0)
+	if (prev_storage_size_ > 0)
 		if (ecd.comment_length != fprintf(storage_file_, "%llx", prev_storage_size_))
 			return false;
 
+	prev_storage_size_ = ftell(storage_file_);
 	fflush(storage_file_);
 	changed_ = false;
 	return true;
