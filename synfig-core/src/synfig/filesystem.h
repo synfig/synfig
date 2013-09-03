@@ -89,6 +89,9 @@ namespace synfig
 			int get_char();
 			bool read_whole_block(void *buffer, size_t size);
 			std::istream& stream() { return stream_; }
+
+			template<typename T> bool read_variable(T &v)
+				{ return sizeof(T) == read(&v, sizeof(T)); }
 		};
 
 		typedef etl::handle< ReadStream > ReadStreamHandle;
@@ -116,6 +119,9 @@ namespace synfig
 			bool write_whole_block(const void *buffer, size_t size);
 			bool write_whole_stream(ReadStreamHandle stream);
 			std::ostream& stream() { return stream_; }
+
+			template<typename T> bool write_variable(const T &v)
+				{ return sizeof(T) == write(&v, sizeof(T)); }
 		};
 
 		typedef etl::handle< WriteStream > WriteStreamHandle;

@@ -48,6 +48,8 @@ class cairo_png_mptr : public synfig::CairoImporter
 private:
 	cairo_surface_t* csurface_;
 
+	static cairo_status_t read_callback(void *closure, unsigned char *data, unsigned int length);
+
 public:
 	cairo_png_mptr(const synfig::FileSystem::Identifier &identifier);
 	~cairo_png_mptr();
