@@ -46,16 +46,12 @@ class png_mptr : public synfig::Importer
 private:
 	synfig::Surface surface_buffer;
 
-	png_structp png_ptr;
-    png_infop info_ptr;
-    png_infop end_info;
-
 	bool trim;
 	unsigned int orig_width, orig_height, trimmed_x, trimmed_y;
 
 	static void png_out_error(png_struct *png_data,const char *msg);
 	static void png_out_warning(png_struct *png_data,const char *msg);
-	static int read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk);
+	static void read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read);
 
 public:
 	png_mptr(const synfig::FileSystem::Identifier &identifier);

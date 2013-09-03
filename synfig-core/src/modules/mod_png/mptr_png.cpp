@@ -64,7 +64,7 @@ SYNFIG_IMPORTER_SET_NAME(png_mptr,"png");
 SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
 SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(png_mptr,"$Id$");
-SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, false);
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, true);
 
 /* === M E T H O D S ======================================================= */
 
@@ -84,49 +84,43 @@ png_mptr::png_out_warning(png_struct */*png_data*/,const char *msg)
 	//me->ready=false;
 }
 
-int
-png_mptr::read_chunk_callback(png_struct */*png_data*/, png_unknown_chunkp /*chunk*/)
+void
+png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read)
 {
-	/* The unknown chunk structure contains your
-	  chunk data: */
-	//png_byte name[5];
-	//png_byte *data;
-	//png_size_t size;
-	/* Note that libpng has already taken care of
-	  the CRC handling */
-
-	/* put your code here.  Return one of the
-	  following: */
-
-	//return (-n); /* chunk had an error */
-	return (0); /* did not recognize */
-	//return (n); /* success */
+	png_size_t s = png_ptr->io_ptr == NULL
+				 ? 0
+				 : ((FileSystem::ReadStream*)png_ptr->io_ptr)->read(out_bytes, bytes_count_to_read);
+	if (s < bytes_count_to_read)
+		memset(out_bytes + s, 0, bytes_count_to_read - s);
 }
 
 png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
 	/* Open the file pointer */
-    FILE *file = fopen(identifier.filename.c_str(), "rb");
-    if (!file)
+	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+    if (!stream)
     {
         //! \todo THROW SOMETHING
 		throw strprintf("Unable to physically open %s",identifier.filename.c_str());
 		return;
     }
 
-
 	/* Make sure we are dealing with a PNG format file */
 	png_byte header[PNG_CHECK_BYTES];
-	fread(header, 1, PNG_CHECK_BYTES, file);
-    bool is_png = !png_sig_cmp(header, 0, PNG_CHECK_BYTES);
-    if (!is_png)
+	if (!stream->read_variable(header))
+	{
+        //! \todo THROW SOMETHING
+		throw strprintf("Cannot read header from \"%s\"",identifier.filename.c_str());
+		return;
+	}
+
+    if (0 != png_sig_cmp(header, 0, PNG_CHECK_BYTES))
     {
         //! \todo THROW SOMETHING
 		throw strprintf("This (\"%s\") doesn't appear to be a PNG file",identifier.filename.c_str());
 		return;
     }
-
 
 	png_structp png_ptr = png_create_read_struct
        (PNG_LIBPNG_VER_STRING, (png_voidp)this,
@@ -158,9 +152,7 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 		return;
     }
 
-
-
-	png_init_io(png_ptr, file);
+    png_set_read_fn(png_ptr, stream.get(), read_callback);
 	png_set_sig_bytes(png_ptr,PNG_CHECK_BYTES);
 
 	png_read_info(png_ptr, info_ptr);
@@ -197,8 +189,6 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 		return;
 	}
 	*/
-
-	png_set_read_user_chunk_fn(png_ptr, this, &png_mptr::read_chunk_callback);
 
 	// man libpng tells me:
 	//   You must use png_transforms and not call any
@@ -328,6 +318,8 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 			}
 		break;
 	default:
+		png_read_end(png_ptr, end_info);
+		png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 		synfig::error("png_mptr: error: Unsupported color type");
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*6");
@@ -336,7 +328,7 @@ png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-	fclose(file);
+	stream.reset();
 
 	delete [] row_pointers;
 	delete [] data;

@@ -56,15 +56,28 @@ SYNFIG_CAIROIMPORTER_SET_NAME(cairo_png_mptr,"cairo_png");
 SYNFIG_CAIROIMPORTER_SET_EXT(cairo_png_mptr,"png");
 SYNFIG_CAIROIMPORTER_SET_VERSION(cairo_png_mptr,"0.1");
 SYNFIG_CAIROIMPORTER_SET_CVS_ID(cairo_png_mptr,"$Id$");
-SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(cairo_png_mptr, false);
+SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(cairo_png_mptr, true);
 
 /* === M E T H O D S ======================================================= */
 
+cairo_status_t
+cairo_png_mptr::read_callback(void *closure, unsigned char *data, unsigned int length)
+{
+	unsigned int s = closure == NULL ? 0
+				 : ((FileSystem::ReadStream*)closure)->read(data, length);
+	if (s < length) {
+		memset(data + s, 0, length - s);
+		return CAIRO_STATUS_READ_ERROR;
+	}
+	return CAIRO_STATUS_SUCCESS;
+}
 
 cairo_png_mptr::cairo_png_mptr(const synfig::FileSystem::Identifier &identifier):
 	CairoImporter(identifier)
 {
-	csurface_=cairo_image_surface_create_from_png(identifier.filename.c_str());
+	FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+	csurface_=cairo_image_surface_create_from_png_stream(read_callback, stream.get());
+	stream.reset();
 	if(cairo_surface_status(csurface_))
 	{
 		throw strprintf("Unable to physically open %s",identifier.filename.c_str());
