@@ -177,6 +177,20 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	if (filename.substr(0, std::string("container:").size()) == "container:")
 		return false;
 
+	// is file already copied?
+	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != save_canvas_references_.end(); i++)
+	{
+		if (i->old_filename == filename)
+		{
+			FileReference r = *i;
+			r.layer = layer;
+			r.param_name = param_name;
+			instance->save_canvas_references_.push_back(r);
+			filename = r.new_filename;
+			return true;
+		}
+	}
+
 	// try to create directory
 	if (!instance->container_->directory_create("images"))
 		return false;
