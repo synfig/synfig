@@ -488,9 +488,13 @@ Widget_Curves::on_event(GdkEvent *event)
 bool
 Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
+
 	const int h(get_height());
 	const int w(get_width());
-	get_window()->clear();
+	window->clear();
 
 	if(!time_adjustment_ || !range_adjustment_ || !h || !w)
 		return false;
@@ -498,7 +502,7 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	if(!curve_list_.size())
 		return false;
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	const Real t_begin(time_adjustment_->get_lower());
 	const Real t_end(time_adjustment_->get_upper());
@@ -519,7 +523,7 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 
 	// Draw zero mark
 	gc->set_rgb_fg_color(Gdk::Color("#4f4f4f"));
-	get_window()->draw_rectangle(gc, false, 0, round_to_int((0-r_bottom)/dr), w, 0);
+	window->draw_rectangle(gc, false, 0, round_to_int((0-r_bottom)/dr), w, 0);
 
 	// This try to find a valid vanvas to show the keyframes of those
 	// valuenodes. If not canvas found then no keyframes marks are shown.
@@ -546,14 +550,14 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 			if(iter->get_time()>=t_begin && iter->get_time()<t_end)
 			{
 				gc->set_rgb_fg_color(Gdk::Color("#a07f7f")); // It should be user selectable
-				get_window()->draw_rectangle(gc, true, x, 0, 1, h);
+				window->draw_rectangle(gc, true, x, 0, 1, h);
 			}
 		}
 	}
 
 	// Draw current time
 	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
-	get_window()->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
+	window->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
 
 	// Draw curves for the valuenodes stored in the curve list
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
@@ -589,12 +593,12 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 			gc->set_rgb_fg_color(curve_iter->channels[chan].color);
 
 			// Draw the curve
-			get_window()->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points[chan]));
+			window->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points[chan]));
 
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 
 			layout->set_text(curve_iter->channels[chan].name);
-			get_window()->draw_layout(gc, 1, points[chan][0].get_y()+1, layout);
+			window->draw_layout(gc, 1, points[chan][0].get_y()+1, layout);
 		}
 	}
 
@@ -603,7 +607,7 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 		range_adjustment_->set_upper(r_max+range_adjustment_->get_page_size()/2);
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}
-	get_window()->get_update_area();
+	window->get_update_area();
 
 	return true;
 }
