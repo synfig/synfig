@@ -269,7 +269,8 @@ SYNFIGHEADERS = \
 	filesystemgroup.h \
 	filecontainer.h \
 	filecontainerzip.h \
-	filecontainertemporary.h
+	filecontainertemporary.h \
+	zstreambuf.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -316,7 +317,8 @@ SYNFIGSOURCES = \
 	filesystemgroup.cpp \
 	filecontainer.cpp \
 	filecontainerzip.cpp \
-	filecontainertemporary.cpp
+	filecontainertemporary.cpp \
+	zstreambuf.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

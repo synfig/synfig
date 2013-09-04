@@ -55,6 +55,7 @@ namespace synfig
 			Stream(Handle file_system);
 		public:
 			virtual ~Stream();
+			Handle file_system() const { return file_system_; }
 		};
 
 		class ReadStream : public Stream
