@@ -84,7 +84,11 @@ public:
 	bool
 	redraw(GdkEventExpose */*bleh*/)
 	{
-		Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+		//!Check if the window we want draw is ready
+		Glib::RefPtr<Gdk::Window> window = get_window();
+		if(!window) return false;
+
+		Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 		const int h(get_height());
 		const int w(get_width());
@@ -101,12 +105,12 @@ public:
 			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
 		// Fill in the fill color
-		render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
+		render_color_to_window(window,Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
 
 /*
 		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_fill_color()));
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		get_window()->draw_rectangle(
+		window->draw_rectangle(
 			gc,
 			true,	// Fill?
 			0,0,	// x,y
@@ -118,7 +122,7 @@ public:
 		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_outline_color()));
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		get_window()->draw_arc(
+		window->draw_arc(
 			gc,
 			true,
 			round_to_int(((float)w/2.0f)-pixelsize/2.0f),
