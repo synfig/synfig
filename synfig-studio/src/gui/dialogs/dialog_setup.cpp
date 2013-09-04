@@ -594,9 +594,13 @@ GammaPattern::refresh()
 bool
 GammaPattern::redraw(GdkEventExpose */*bleh*/)
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
+
 	static const char hlines[] = { 3, 0 };
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 	Gdk::Color trueblack("#000000");
@@ -605,45 +609,45 @@ GammaPattern::redraw(GdkEventExpose */*bleh*/)
 	for(i=0;i<4;i++)
 	{
 		gc->set_rgb_fg_color(black[i]);
-		get_window()->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
 
 		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
 		gc->set_fill(Gdk::STIPPLED);
 		gc->set_rgb_fg_color(white[i]);
-		get_window()->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
 
 		gc->set_fill(Gdk::SOLID);
 		gc->set_rgb_fg_color(gray50[i]);
 
-		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
 	// 25% Pattern
 	for(i=0;i<4;i++)
 	{
 		gc->set_rgb_fg_color(black[i]);
-		get_window()->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
 
 		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
 		gc->set_fill(Gdk::STIPPLED);
 		gc->set_rgb_fg_color(gray50[i]);
-		get_window()->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
 
 		gc->set_fill(Gdk::SOLID);
 		gc->set_rgb_fg_color(gray25[i]);
 
-		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
 	// Black-level Pattern
 	gc->set_rgb_fg_color(trueblack);
-	get_window()->draw_rectangle(gc, true, 0, tile_h*2, tile_w*4, tile_h);
+	window->draw_rectangle(gc, true, 0, tile_h*2, tile_w*4, tile_h);
 	gc->set_fill(Gdk::SOLID);
 	for(i=0;i<4;i++)
 	{
 		gc->set_rgb_fg_color(black[i]);
 
-		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
 	return true;
@@ -667,11 +671,15 @@ BlackLevelSelector::~BlackLevelSelector()
 bool
 BlackLevelSelector::redraw(GdkEventExpose */*bleh*/)
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
+
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
@@ -681,24 +689,24 @@ BlackLevelSelector::redraw(GdkEventExpose */*bleh*/)
 		color.set_rgb(i*65536/w,i*65536/w,i*65536/w);
 
 		gc->set_rgb_fg_color(color);
-		get_window()->draw_rectangle(gc, true, i, 0, 1, h);
+		window->draw_rectangle(gc, true, i, 0, 1, h);
 	}
 
 	// Draw a frame
 	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	get_window()->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
 
 	// Draw the position of the current value
 	i=(int)(level*w+0.5);
 	gc->set_rgb_fg_color(Gdk::Color("#ff0000"));
-	get_window()->draw_rectangle(gc, true, i, 1, 1, h-1);
+	window->draw_rectangle(gc, true, i, 1, 1, h-1);
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.01f%%",level*100.0f));
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	get_window()->draw_layout(gc, w/2, 4, layout);
+	window->draw_layout(gc, w/2, 4, layout);
 
 	return true;
 }
@@ -793,11 +801,15 @@ RedBlueLevelSelector::~RedBlueLevelSelector()
 bool
 RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
+
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
@@ -816,24 +828,24 @@ RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
 		);
 
 		gc->set_rgb_fg_color(color);
-		get_window()->draw_rectangle(gc, true, i, 0, 1, h);
+		window->draw_rectangle(gc, true, i, 0, 1, h);
 	}
 
 	// Draw a frame
 	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	get_window()->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
 
 	// Draw the position of the current value
 	i=(int)(((level-1.0f)*2.0f+1.0f-0.5f)*w+0.5);
 	gc->set_rgb_fg_color(Gdk::Color("#00ff00"));
-	get_window()->draw_rectangle(gc, true, i, 1, 1, h-1);
+	window->draw_rectangle(gc, true, i, 1, 1, h-1);
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.02f",level));
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	get_window()->draw_layout(gc, w/2, 4, layout);
+	window->draw_layout(gc, w/2, 4, layout);
 
 	return true;
 }
