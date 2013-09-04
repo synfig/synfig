@@ -67,19 +67,19 @@ bool zstreambuf::inflate_buf()
     // initialize inflate if need
     if (!inflate_initialized)
     {
-    	memset(&inflate_stream_, 0, sizeof(z_stream));
-    	if (Z_OK != inflateInit(&inflate_stream_)) return false;
+    	memset(&inflate_stream_, 0, sizeof(inflate_stream_));
+    	if (Z_OK != inflateInit2(&inflate_stream_, option_window_bits)) return false;
     	inflate_initialized = true;
     }
 
     // read and inflate new chunk of data
-    char in_buf[bufsize];
+    char in_buf[option_bufsize];
     inflate_stream_.avail_in = buf_->sgetn(in_buf, sizeof(in_buf));
     inflate_stream_.next_in = (Bytef*)in_buf;
 	read_buffer_.resize(0);
 	do
 	{
-		inflate_stream_.avail_out = bufsize;
+		inflate_stream_.avail_out = option_bufsize;
 		read_buffer_.resize(read_buffer_.size() + inflate_stream_.avail_out);
 		inflate_stream_.next_out = (Bytef*)&read_buffer_.front();
 		int ret = ::inflate(&inflate_stream_, Z_NO_FLUSH);
@@ -103,14 +103,21 @@ bool zstreambuf::deflate_buf(bool flush)
 		// initialize deflate if need
 		if (!deflate_initialized)
 		{
-			memset(&deflate_stream_, 0, sizeof(z_stream));
-			if (Z_OK != deflateInit(&deflate_stream_, compression_level))
-				return false;
+			memset(&deflate_stream_, 0, sizeof(deflate_stream_));
+
+			if (Z_OK != deflateInit2(&deflate_stream_,
+					option_compression_level,
+					option_method,
+					option_window_bits,
+					option_mem_level,
+					option_strategy
+			)) return false;
+
 			deflate_initialized = true;
 		}
 
 		// deflate and write new chunk of data
-		char out_buf[bufsize];
+		char out_buf[option_bufsize];
 		deflate_stream_.avail_in = (uInt)(pptr() - pbase());
 		deflate_stream_.next_in = (Bytef*)pbase();
 		do
@@ -122,6 +129,7 @@ bool zstreambuf::deflate_buf(bool flush)
 			if (deflate_stream_.avail_out < sizeof(out_buf))
 				buf_->sputn(out_buf, sizeof(out_buf) - deflate_stream_.avail_out);
 		} while (deflate_stream_.avail_out == 0);
+		setp(NULL, NULL);
 	}
 	return true;
 }
@@ -129,7 +137,6 @@ bool zstreambuf::deflate_buf(bool flush)
 int zstreambuf::sync()
 {
 	bool deflate_success = deflate_buf(true);
-	setp(NULL, NULL);
 	bool buf_sync_success = 0 == buf_->pubsync();
 	return deflate_success && buf_sync_success ? 0 : -1;
 }
@@ -151,7 +158,7 @@ int zstreambuf::overflow(int c)
 	if (pptr() >= epptr())
 	{
 		if (!deflate_buf(false)) return EOF;
-		if (write_buffer_.size() < bufsize) write_buffer_.resize(bufsize);
+		if (write_buffer_.size() < option_bufsize) write_buffer_.resize(option_bufsize);
 		char *pointer = &write_buffer_.front();
 		setp(pointer, pointer + write_buffer_.size());
 	}

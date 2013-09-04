@@ -46,8 +46,12 @@ namespace synfig {
 	{
 	public:
 		enum {
-			bufsize = 4096,
-			compression_level = 9
+			option_bufsize				= 4096,
+			option_method				= Z_DEFLATED,
+			option_compression_level	= 9,
+			option_window_bits			= 16+MAX_WBITS,
+			option_mem_level			= 9,
+			option_strategy				= Z_DEFAULT_STRATEGY
 		};
 
 	private:
@@ -110,9 +114,10 @@ namespace synfig {
 
 		virtual size_t write(const void *buffer, size_t size)
 		{
-			std::streampos prev = ostream_.tellp();
-			ostream_.write((const char*)buffer, size);
-			return (size_t)(ostream_.tellp() - prev);
+			for(size_t i = 0; i < size; i++)
+				if (!ostream_.put(((const char*)buffer)[i]).good())
+					return i;
+			return size;
 		}
 	};
 }
