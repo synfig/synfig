@@ -56,6 +56,7 @@
 #include "string.h"
 #include "paramdesc.h"
 
+#include "zstreambuf.h"
 #include "importer.h"
 #include "cairoimporter.h"
 
@@ -1005,11 +1006,6 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
     synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
 
-	if (filename_extension(identifier.filename) == ".sifz")
-		xmlSetCompressMode(9);
-	else
-		xmlSetCompressMode(0);
-
 	try
 	{
 		assert(canvas);
@@ -1023,6 +1019,9 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			synfig::error("synfig::save_canvas(): Unable to open file for write");
 			return false;
 		}
+
+		if (filename_extension(identifier.filename) == ".sifz")
+			stream = FileSystem::WriteStreamHandle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(stream->stream(), "UTF-8");
 

@@ -72,6 +72,8 @@
 
 #include "importer.h"
 
+#include "zstreambuf.h"
+
 #include <map>
 #include <sigc++/bind.h>
 
@@ -2875,6 +2877,9 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
 		if (stream)
 		{
+			if (filename_extension(identifier.filename) == ".sifz")
+				stream = FileSystem::ReadStreamHandle(new ZReadStream(stream));
+
 			xmlpp::DomParser parser;
 			parser.parse_stream(stream->stream());
 			stream.reset();
