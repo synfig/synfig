@@ -65,8 +65,8 @@ stream_(&buf_)
 int
 FileSystem::ReadStream::get_char()
 {
-	int character = 0;
-	return 1 == read(&character, 1) ? character : EOF;
+	char c = 0;
+	return sizeof(c) == read(&c, sizeof(c)) ? std::char_traits<char>::to_int_type(c) : EOF;
 }
 
 bool
@@ -87,7 +87,8 @@ stream_(&buf_)
 int
 FileSystem::WriteStream::put_char(int character)
 {
-	return character != EOF && 1 == write(&character, 1) ? character : EOF;
+	char c = std::char_traits<char>::to_char_type(character);
+	return character != EOF && sizeof(c) == write(&c, sizeof(c)) ? character : EOF;
 }
 
 bool
