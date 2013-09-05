@@ -80,9 +80,8 @@ void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 {
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return;
+	if(window) window.clear();
 
-	window.clear();
 	preview.set_preview(prev);
 	//preview.update();
 }
