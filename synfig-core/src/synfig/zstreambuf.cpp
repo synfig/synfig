@@ -81,16 +81,18 @@ bool zstreambuf::inflate_buf()
 	{
 		inflate_stream_.avail_out = option_bufsize;
 		read_buffer_.resize(read_buffer_.size() + inflate_stream_.avail_out);
-		inflate_stream_.next_out = (Bytef*)&read_buffer_.front();
+		inflate_stream_.next_out = (Bytef*)(&read_buffer_.back() + 1 - inflate_stream_.avail_out);
 		int ret = ::inflate(&inflate_stream_, Z_NO_FLUSH);
 		read_buffer_.resize(read_buffer_.size() - inflate_stream_.avail_out);
 		if (ret != Z_OK) break;
 	} while (inflate_stream_.avail_out == 0);
+	assert(inflate_stream_.avail_in == 0);
 
 	// nothing to read
 	if (read_buffer_.empty()) return false;
 
 	// set new read buffer
+	printf("%s", &read_buffer_.front());
 	char *pointer = &read_buffer_.front();
     setg(pointer, pointer, pointer + read_buffer_.size());
     return true;
@@ -129,6 +131,7 @@ bool zstreambuf::deflate_buf(bool flush)
 			if (deflate_stream_.avail_out < sizeof(out_buf))
 				buf_->sputn(out_buf, sizeof(out_buf) - deflate_stream_.avail_out);
 		} while (deflate_stream_.avail_out == 0);
+		assert(deflate_stream_.avail_in == 0);
 		setp(NULL, NULL);
 	}
 	return true;

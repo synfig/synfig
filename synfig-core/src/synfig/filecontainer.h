@@ -75,10 +75,6 @@ namespace synfig
 		virtual void close() = 0;
 		virtual bool is_opened() = 0;
 
-		virtual bool is_file(const std::string &filename) = 0;
-		virtual bool is_directory(const std::string &filename) = 0;
-
-		virtual bool directory_create(const std::string &dirname) = 0;
 		virtual bool directory_scan(const std::string &dirname, std::list< std::string > &out_files) = 0;
 
 		virtual bool file_open_read_whole_container();
@@ -96,8 +92,6 @@ namespace synfig
 		{
 			return file_is_opened_for_read() || file_is_opened_for_write();
 		}
-
-		inline bool is_exists(const std::string filename) { return is_file(filename) || is_directory(filename); }
 
 		ReadStreamHandle get_read_stream_whole_container();
 		virtual ReadStreamHandle get_read_stream(const std::string &filename);

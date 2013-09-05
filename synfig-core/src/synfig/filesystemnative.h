@@ -73,6 +73,11 @@ namespace synfig
 
 		virtual ~FileSystemNative();
 
+		virtual bool is_file(const std::string &filename);
+		virtual bool is_directory(const std::string &filename);
+
+		virtual bool directory_create(const std::string &dirname);
+
 		virtual bool file_remove(const std::string &filename);
 		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
 		virtual ReadStreamHandle get_read_stream(const std::string &filename);

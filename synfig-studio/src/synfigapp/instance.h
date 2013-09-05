@@ -99,6 +99,8 @@ private:
 	sigc::signal<void> signal_saved_;
 	etl::handle<SelectionManager> selection_manager_;
 
+	bool save_canvas_into_container_;
+	std::string save_canvas_reference_directory_;
 	FileReferenceList save_canvas_references_;
 	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
 	void update_references_in_canvas();

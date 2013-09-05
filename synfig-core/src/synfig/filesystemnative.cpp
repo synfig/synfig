@@ -30,7 +30,7 @@
 #endif
 
 #include "filesystemnative.h"
-#include <glibmm.h>
+#include <giomm.h>
 
 #endif
 
@@ -78,6 +78,24 @@ size_t FileSystemNative::WriteStream::write(const void *buffer, size_t size)
 
 FileSystemNative::FileSystemNative() { }
 FileSystemNative::~FileSystemNative() { }
+
+bool FileSystemNative::is_file(const std::string &filename)
+{
+	return Gio::File::create_for_path(filename)->query_file_type()
+	    == Gio::FILE_TYPE_REGULAR;
+}
+
+bool FileSystemNative::is_directory(const std::string &filename)
+{
+	return Gio::File::create_for_path(filename)->query_file_type()
+	    == Gio::FILE_TYPE_DIRECTORY;
+}
+
+bool FileSystemNative::directory_create(const std::string &dirname)
+{
+	return is_directory(dirname)
+	    || Gio::File::create_for_path(dirname)->make_directory();
+}
 
 bool FileSystemNative::file_remove(const std::string &filename)
 {
