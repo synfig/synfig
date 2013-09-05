@@ -193,6 +193,7 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	}
 
 	const std::string &dir = instance->save_canvas_reference_directory_;
+	const std::string &localdir = instance->save_canvas_reference_local_directory_;
 
 	// try to create directory
 	if (!instance->file_system_->directory_create(dir.substr(0,dir.size()-1)))
@@ -200,17 +201,16 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 
 	// generate new filename
 	int i = 0;
-	std::string new_filename = dir + basename(filename);
-	while(instance->file_system_->is_exists(new_filename))
+	std::string new_filename = basename(filename);
+	while(instance->file_system_->is_exists(dir + new_filename))
 	{
-		new_filename = dir
-				     + filename_sans_extension(basename(filename))
+		new_filename = filename_sans_extension(basename(filename))
 				     + strprintf("_%d", ++i)
 				     + filename_extension(filename);
 	}
 
 	// try to copy file
-	if (!FileSystem::copy(instance->file_system_, filename, instance->file_system_, new_filename))
+	if (!FileSystem::copy(instance->file_system_, filename, instance->file_system_, dir + new_filename))
 		return false;
 
 	// save information about copied file
@@ -218,10 +218,10 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	r.layer = layer;
 	r.param_name = param_name;
 	r.old_filename = filename;
-	r.new_filename = new_filename;
+	r.new_filename = localdir + new_filename;
 	instance->save_canvas_references_.push_back(r);
 
-	filename = new_filename;
+	filename = r.new_filename;
 	return true;
 }
 
@@ -260,11 +260,19 @@ Instance::save_as(const synfig::String &file_name)
 	if (filename_extension(file_name) == ".zip")
 	{
 		save_canvas_reference_directory_ = "container:images/";
+		save_canvas_reference_local_directory_ = "container:images/";
 		canvas_filename = "container:project.sifz";
 		save_canvas_into_container_ = true;
 	} else
 	{
-		save_canvas_reference_directory_ = filename_sans_extension(file_name) + "images" + ETL_DIRECTORY_SEPARATOR;
+		save_canvas_reference_directory_ =
+			filename_sans_extension(file_name)
+		  + ".images"
+		  + ETL_DIRECTORY_SEPARATOR;
+		save_canvas_reference_local_directory_ =
+			filename_sans_extension(basename(file_name))
+		  + ".images"
+		  + ETL_DIRECTORY_SEPARATOR;
 	}
 
 	bool ret;
