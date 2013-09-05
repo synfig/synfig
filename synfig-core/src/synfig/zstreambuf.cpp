@@ -92,7 +92,6 @@ bool zstreambuf::inflate_buf()
 	if (read_buffer_.empty()) return false;
 
 	// set new read buffer
-	printf("%s", &read_buffer_.front());
 	char *pointer = &read_buffer_.front();
     setg(pointer, pointer, pointer + read_buffer_.size());
     return true;
