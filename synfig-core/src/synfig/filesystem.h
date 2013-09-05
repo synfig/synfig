@@ -160,10 +160,17 @@ namespace synfig
 		FileSystem();
 		virtual ~FileSystem();
 
+		virtual bool is_file(const std::string &filename) = 0;
+		virtual bool is_directory(const std::string &filename) = 0;
+
+		virtual bool directory_create(const std::string &dirname) = 0;
+
 		virtual bool file_remove(const std::string &filename) = 0;
 		virtual bool file_rename(const std::string &from_filename, const std::string &to_filename);
 		virtual ReadStreamHandle get_read_stream(const std::string &filename) = 0;
 		virtual WriteStreamHandle get_write_stream(const std::string &filename) = 0;
+
+		inline bool is_exists(const std::string filename) { return is_file(filename) || is_directory(filename); }
 
 		Identifier get_identifier(const std::string filename) { return Identifier(this, filename); }
 		static bool copy(Handle from_file_system, const std::string &from_filename, Handle to_file_system, const std::string &to_filename);

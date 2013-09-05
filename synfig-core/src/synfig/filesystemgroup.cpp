@@ -54,7 +54,6 @@ FileSystemGroup::FileSystemGroup(Handle default_file_system)
 	if (default_file_system) register_system(std::string(), default_file_system);
 }
 
-
 bool FileSystemGroup::find_system(const std::string &filename, Handle &out_file_system, std::string &out_filename)
 {
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
@@ -99,6 +98,30 @@ void FileSystemGroup::unregister_system(const std::string &prefix)
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end();)
 		if (i->prefix == prefix)
 			i = entries_.erase(i); else i++;
+}
+
+bool FileSystemGroup::is_file(const std::string &filename)
+{
+	Handle file_system;
+	std::string internal_filename;
+	return find_system(filename, file_system, internal_filename)
+	    && file_system->is_file(internal_filename);
+}
+
+bool FileSystemGroup::is_directory(const std::string &filename)
+{
+	Handle file_system;
+	std::string internal_filename;
+	return find_system(filename, file_system, internal_filename)
+	    && file_system->is_directory(internal_filename);
+}
+
+bool FileSystemGroup::directory_create(const std::string &dirname)
+{
+	Handle file_system;
+	std::string internal_dirname;
+	return find_system(dirname, file_system, internal_dirname)
+	    && file_system->directory_create(internal_dirname);
 }
 
 bool FileSystemGroup::file_remove(const std::string &filename)
