@@ -126,18 +126,22 @@ Widget_Gradient::~Widget_Gradient()
 bool
 Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return false;
+
 	const int h(get_height());
 	const int w(get_width());
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	Gdk::Rectangle area(0,0,w,h);
 	if(!editable_)
 	{
-		render_gradient_to_window(get_window(),area,gradient_);
+		render_gradient_to_window(window,area,gradient_);
 		return true;
 	}
 
-	render_gradient_to_window(get_window(),Gdk::Rectangle(0,0,w,h),gradient_);
+	render_gradient_to_window(window,Gdk::Rectangle(0,0,w,h),gradient_);
 
 	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
 	Gradient::iterator iter,selected_iter;
@@ -146,7 +150,7 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 	{
 		if(*iter!=selected_cpoint)
 		get_style()->paint_arrow(
-			get_window(),
+			window,
 		  (iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE, here SELECTED is lighter.
 			Gtk::SHADOW_OUT,
 			area,
@@ -174,7 +178,7 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 	if(show_selected)
 	{
 		get_style()->paint_arrow(
-			get_window(),
+			window,
 			(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
 			Gtk::SHADOW_OUT,
 			area,
@@ -188,7 +192,7 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 			CONTROL_HEIGHT
 		); // paint_arrow(window, state_type, shadow_type, area, widget, detail, arrow_type, fill, x, y, width, height)
 		get_style()->paint_arrow(
-			get_window(),
+			window,
 						(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
 			Gtk::SHADOW_OUT,
 			area,

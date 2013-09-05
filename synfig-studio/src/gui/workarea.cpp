@@ -2662,7 +2662,11 @@ WorkArea::refresh(GdkEventExpose*event)
 	
 	assert(get_canvas());
 
-	drawing_area->get_window()->clear();
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
+	if(!draw_area_window) return false;
+
+	draw_area_window->clear();
 
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
@@ -2678,7 +2682,7 @@ WorkArea::refresh(GdkEventExpose*event)
 		{
 			if((*iter)->get_enabled())
 				(*iter)->render_vfunc(
-					drawing_area->get_window(),
+					draw_area_window,
 					Gdk::Rectangle(&event->area)
 				);
 		}
@@ -2707,7 +2711,7 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 #else
 		// So let's do it in a more primitive fashion.
-		Cairo::RefPtr<Cairo::Context> cr = drawing_area->get_window()->create_cairo_context();
+		Cairo::RefPtr<Cairo::Context> cr = draw_area_window->create_cairo_context();
 		cr->save();
 
 		cr->set_source_rgb(1,0,0);
@@ -3120,6 +3124,10 @@ WorkArea::sync_render_preview_hook()
 void
 WorkArea::queue_scroll()
 {
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
+	if(!draw_area_window) return;
+
 //	const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	const synfig::Point focus_point(get_focus_point());
@@ -3140,7 +3148,7 @@ WorkArea::queue_scroll()
 		dx(round_to_int(old_x)-round_to_int(new_x)),
 		dy(round_to_int(old_y)-round_to_int(new_y));
 
-	drawing_area->get_window()->scroll(-dx,-dy);
+	draw_area_window->scroll(-dx,-dy);
 
 	if (timecode_width && timecode_height)
 	{
@@ -3309,12 +3317,20 @@ studio::WorkArea::queue_draw_preview()
 void
 studio::WorkArea::set_cursor(const Gdk::Cursor& x)
 {
-	drawing_area->get_window()->set_cursor(x);
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
+	if(!draw_area_window) return;
+	
+	draw_area_window->set_cursor(x);
 }
 void
 studio::WorkArea::set_cursor(Gdk::CursorType x)
 {
-	drawing_area->get_window()->set_cursor(Gdk::Cursor(x));
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
+	if(!draw_area_window) return;
+	
+	draw_area_window->set_cursor(Gdk::Cursor(x));
 }
 
 //#include "iconcontroller.h"
@@ -3327,7 +3343,11 @@ studio::WorkArea::refresh_cursor()
 void
 studio::WorkArea::reset_cursor()
 {
-	drawing_area->get_window()->set_cursor(Gdk::Cursor(Gdk::TOP_LEFT_ARROW));
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
+	if(!draw_area_window) return;
+	
+	draw_area_window->set_cursor(Gdk::Cursor(Gdk::TOP_LEFT_ARROW));
 //	set_cursor(Gdk::TOP_LEFT_ARROW);
 }
 

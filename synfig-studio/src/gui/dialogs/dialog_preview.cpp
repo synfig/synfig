@@ -78,7 +78,10 @@ Dialog_Preview::~Dialog_Preview()
 
 void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 {
-	get_window().clear();
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(window) window.clear();
+
 	preview.set_preview(prev);
 	//preview.update();
 }
@@ -104,7 +107,11 @@ bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
 
 void Dialog_Preview::close_window_handler()
 {
-	if ((get_window()->get_state() & Gdk::WINDOW_STATE_MAXIMIZED) != 0)
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return;
+
+	if ((window->get_state() & Gdk::WINDOW_STATE_MAXIMIZED) != 0)
 	{
 	unmaximize();
 	}
