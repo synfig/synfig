@@ -623,7 +623,7 @@ public:
 	//! Hides the time bar
 	void hide_timebar();
 
-	//t Enables or disables interaction with the timebar
+	//! Enables or disables interaction with the timebar
 	void set_sensitive_timebar(bool sensitive);
 
 	void time_zoom_in();
@@ -738,6 +738,7 @@ private:
 
 	void on_meta_data_changed();
 
+	//! Keyboard event dispatcher following window priority
 	bool on_key_press_event(GdkEventKey* event);
 	bool focused_widget_has_priority(Gtk::Widget * focused);
 
