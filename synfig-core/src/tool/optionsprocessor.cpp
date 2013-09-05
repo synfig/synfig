@@ -45,7 +45,9 @@
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/guid.h>
+#include <synfig/filesystemgroup.h>
 #include <synfig/filesystemnative.h>
+#include <synfig/filecontainerzip.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -472,8 +474,23 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		string errors, warnings;
 		try
 		{
-			// todo: support containers
-			job.root = open_canvas_as(FileSystemNative::instance()->get_identifier(job.filename), job.filename, errors, warnings);
+			// todo: literals ".zip", "container:", "project.sifz"
+			if (filename_extension(job.filename) == ".zip")
+			{
+				etl::handle< FileContainerZip > container = new FileContainerZip();
+				if (container->open(job.filename))
+				{
+					etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
+					file_system->register_system("container:", container);
+					job.root = open_canvas_as(file_system->get_identifier("container:project.sifz"), job.filename, errors, warnings);
+				} else
+				{
+					errors.append("Cannot open container " + job.filename + "\n");
+				}
+			} else
+			{
+				job.root = open_canvas_as(FileSystemNative::instance()->get_identifier(job.filename), job.filename, errors, warnings);
+			}
 		}
 		catch(runtime_error& x)
 		{
@@ -554,8 +571,25 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		composite_file = _vm["append"].as<string>();
 
 		string errors, warnings;
-		// todo: support containers
-		Canvas::Handle composite(open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings));
+		Canvas::Handle composite;
+		// todo: literals ".zip", "container:", "project.sifz"
+		if (filename_extension(composite_file) == ".zip")
+		{
+			etl::handle< FileContainerZip > container = new FileContainerZip();
+			if (container->open(job.filename))
+			{
+				etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
+				file_system->register_system("container:", container);
+				job.root = open_canvas_as(file_system->get_identifier("container:project.sifz"), composite_file, errors, warnings);
+			} else
+			{
+				errors.append("Cannot open container " + composite_file + "\n");
+			}
+		} else
+		{
+			composite = open_canvas_as(FileSystemNative::instance()->get_identifier(composite_file), composite_file, errors, warnings);
+		}
+
 		if(!composite)
 		{
 			VERBOSE_OUT(1) << _("Unable to append '") << composite_file.c_str()
