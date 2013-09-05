@@ -189,12 +189,14 @@ Widget_Color::on_event(GdkEvent *event)
 bool
 Widget_Color::redraw(GdkEventExpose */*bleh*/)
 {
-	//Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return true;
 
 	const int h(get_height());
 	const int w(get_width());
 
-	render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),color);
+	render_color_to_window(window,Gdk::Rectangle(0,0,w,h),color);
 
 	return true;
 }

@@ -141,16 +141,18 @@ void studio::Widget_Sound::draw()
 
 bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 {
-	if(!get_window()) return false;
+	//!Check if the window we want draw is ready
+	Glib::RefPtr<Gdk::Window> window = get_window();
+	if(!window) return false;
 
 	//clear the background to dark grey
-	Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(get_window());
+	Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(window);
 
 	if(!gc) return false;
 
 	{
 		Gdk::Rectangle r(0,0,get_width(),get_height());
-		get_window()->begin_paint_rect(r);
+		window->begin_paint_rect(r);
 	}
 	Gdk::Color	c("#3f3f3f");
 	gc->set_rgb_fg_color(c);
@@ -158,21 +160,21 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 
 	int w = get_width();
 	int baseline = get_height()/2;
-	get_window()->draw_rectangle(gc,true,0,0,w,get_height());
+	window->draw_rectangle(gc,true,0,0,w,get_height());
 
 	//set up the color to be blue
 	c.set_rgb_p(0,0.5,1);
 	gc->set_rgb_fg_color(c);
 
 	//draw the base line
-	get_window()->draw_line(gc,0,baseline,w,baseline);
+	window->draw_line(gc,0,baseline,w,baseline);
 
 	//redraw all the samples from begin to end, but only if we have samples to draw (or there is no space to draw)
 
 	//synfig::warning("Ok rendered everything, now must render actual sound wave");
 	if(!audioprof || !adj_timescale || !w)
 	{
-		get_window()->end_paint();
+		window->end_paint();
 		return true;
 	}
 
@@ -234,16 +236,16 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 				int top = maxs * baseline / 64;
 				int bot = mins * baseline / 64;
 
-				get_window()->draw_line(gc,i,baseline+bot,i,baseline+top);
+				window->draw_line(gc,i,baseline+bot,i,baseline+top);
 			}
 		}
 
 		//synfig::warning("Drawing audio line");
 		c.set_rgb_p(1,0,0);
 		gc->set_rgb_fg_color(c);
-		get_window()->draw_line(gc,posi,0,posi,get_height());
+		window->draw_line(gc,posi,0,posi,get_height());
 	}
-	get_window()->end_paint();
+	window->end_paint();
 
 	return true;
 }
