@@ -250,14 +250,15 @@ bool
 DockDialog::on_key_press_event(GdkEventKey* event)
 {
 	Gtk::Widget* focused_widget = get_focus();
-	if(focused_widget_has_priority(focused_widget))
+	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
 	else if(Gtk::Window::on_key_press_event(event))
-		return true;
-	else return focused_widget->event((GdkEvent*)event);
+			return true;
+		else
+			if (focused_widget) return focused_widget->event((GdkEvent*)event);
 	return false;
 }
 
