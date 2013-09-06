@@ -94,6 +94,7 @@ private:
 	void drop_on_append(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 	void drop_on_prepend(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 
+	//! Keyboard event dispatcher following window priority
 	bool on_key_press_event(GdkEventKey* event);
 
 	bool focused_widget_has_priority(Gtk::Widget* focused);
