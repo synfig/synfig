@@ -77,6 +77,7 @@ class Toolbox : public Gtk::Window
 
 	void on_recent_files_changed();
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	//! Keyboard event dispatcher following window priority
 	bool on_key_press_event(GdkEventKey* event);
 	bool focused_widget_has_priority(Gtk::Widget * focused);
 
