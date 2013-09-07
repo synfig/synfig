@@ -879,8 +879,10 @@ Duckmatic::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
-		if (value_desc.parent_is_layer_param() && value_desc.get_param_name() == "zoom" ){
-			// Zoom duck value should be converted back from exponent to normal
+		// Zoom duck value (PasteCanvas and Zoom layers) should be
+		// converted back from exponent to normal
+		if (    ( value_desc.parent_is_layer_param() && value_desc.get_param_name() == "zoom" ) ||
+			( value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name()=="zoom" && value_desc.get_param_name() == "amount" )  ){
 			return canvas_interface->change_value(value_desc,log(value.mag()));
 		} else {
 			return canvas_interface->change_value(value_desc,value.mag());
@@ -1486,9 +1488,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_type(Duck::TYPE_RADIUS);
 
 			// put the duck on the right hand side of the center
-			if (param_desc->get_name()=="zoom")
+			// Zoom parameter value (PasteCanvas and Zoom layers)
+			// should be represented as exponent
+			if (    ( param_desc->get_name()=="zoom" ) ||
+				( value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name()=="zoom" && value_desc.get_param_name() == "amount" ) )
 			{
-				// Zoom parameter value of PasteCanvas should be represented as exponent
 				duck->set_point(Point(exp(value_desc.get_value(get_time()).get(Real())), 0));
 			} else {
 				duck->set_point(Point(value_desc.get_value(get_time()).get(Real()), 0));
