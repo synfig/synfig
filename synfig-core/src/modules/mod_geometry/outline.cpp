@@ -248,7 +248,7 @@ Outline::sync()
 		Vector iter_t(iter->get_tangent2());
 		Vector next_t(next->get_tangent1());
 
-		bool split_flag(iter->get_split_tangent_both());
+		bool split_flag(iter->get_split_tangent_angle() || iter->get_split_tangent_radius());
 
 		// if iter.t2 == 0 and next.t1 == 0, this is a straight line
 		if(iter_t.is_equal_to(Vector::zero()) && next_t.is_equal_to(Vector::zero()))

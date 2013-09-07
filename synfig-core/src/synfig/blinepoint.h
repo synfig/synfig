@@ -114,7 +114,7 @@ public:
 	void set_merge_tangent_both(bool x=false) { split_tangent_radius_=split_tangent_angle_=x; update_flags();}
 
 
-	const bool& get_split_tangent_radius() { return split_tangent_radius_; }
+	const bool& get_split_tangent_radius()const { return split_tangent_radius_; }
 	void set_split_tangent_radius(bool x=true)
 	{
 		if(split_tangent_radius_ == x)
@@ -124,7 +124,7 @@ public:
 		update_flags();
 	}
 
-	const bool& get_split_tangent_angle() { return split_tangent_angle_; }
+	const bool& get_split_tangent_angle()const { return split_tangent_angle_; }
 	void set_split_tangent_angle(bool x=true)
 	{
 		if(split_tangent_angle_ == x)
