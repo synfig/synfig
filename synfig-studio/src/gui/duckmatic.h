@@ -402,7 +402,7 @@ public:
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks();
 
-	bool on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc);
+	bool on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc, bool exponential);
 	bool on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc);
 
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
