@@ -86,7 +86,7 @@ class studio::StatePolygon_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 
-	bool on_polygon_duck_change(const synfig::Point &point, std::list<synfig::Point>::iterator iter);
+	bool on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter);
 
 
 	void popup_handle_menu(synfigapp::ValueDesc value_desc);
@@ -1023,8 +1023,8 @@ StatePolygon_Context::refresh_ducks()
 
 
 bool
-StatePolygon_Context::on_polygon_duck_change(const synfig::Point &point, std::list<synfig::Point>::iterator iter)
+StatePolygon_Context::on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter)
 {
-	*iter=point;
+	*iter=duck.get_point();
 	return true;
 }

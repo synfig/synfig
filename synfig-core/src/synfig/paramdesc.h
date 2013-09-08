@@ -79,6 +79,7 @@ private:
    	String connect_;
    	String box_;
 	Real scalar_;			//! Scalar value for visual editing
+	bool exponential_;		//! Allow range from -inf to inf for visual editing
    	bool critical_;
 	bool hidden_;
 	bool invisible_duck_;
@@ -99,6 +100,7 @@ public:
 		name_			(a),
 		local_name_		(a),
 		scalar_			(1.0),
+		exponential_		(false),
 		critical_		(true),
 		hidden_			(false),
 		invisible_duck_	(false),
@@ -158,6 +160,10 @@ public:
    	/*! This value determines how the value is to be presented
    	**	to the user when editing visually. */
    	ParamDesc &set_scalar(const Real &n) { scalar_=n; return *this; }
+	
+	//! Sets if the parameter value should be exposed for visual editing using the exponential function
+   	/*!	Such representation allows to set the Real values in the range from \c -inf to \c inf . */
+	ParamDesc &set_exponential(bool x=true) { exponential_=x; return *this; }
 
    	//!	Marks the parameter as not necessary for saving or copying
    	ParamDesc &not_critical() { critical_=false; return *this; }
@@ -204,6 +210,10 @@ public:
 
    	//! Returns the scalar value for the parameter. Used for visual editing.
    	const Real &get_scalar()const { return scalar_; }
+	
+	//! Tells if the value should be exposed for editing using the exponential function
+   	/*!	Such representation allows to set the Real values in the range from \c -inf to \c inf . */
+	bool get_exponential()const {return exponential_; }
 
    	//! Returns \c true if the layer is critical, \c false otherwise.
    	bool get_critical()const { return critical_; }
