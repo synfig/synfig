@@ -403,7 +403,6 @@ public:
 	void signal_edited_selected_ducks();
 
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
-	bool on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc);
 
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
 	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
