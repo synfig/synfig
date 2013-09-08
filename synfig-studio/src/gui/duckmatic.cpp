@@ -874,15 +874,15 @@ Duckmatic::signal_edited_selected_ducks()
 }
 
 bool
-Duckmatic::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc)
+Duckmatic::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc, bool exponential)
 {
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
 		// Zoom duck value (PasteCanvas and Zoom layers) should be
 		// converted back from exponent to normal
-		if (    ( value_desc.parent_is_layer_param() && value_desc.get_param_name() == "zoom" ) ||
-			( value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name()=="zoom" && value_desc.get_param_name() == "amount" )  ){
+		if( exponential ) {
+			synfig::info("!!!");
 			return canvas_interface->change_value(value_desc,log(value.mag()));
 		} else {
 			return canvas_interface->change_value(value_desc,value.mag());
@@ -1476,6 +1476,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 {
 	ValueBase::Type type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)
+	
+	bool exponential;
+	if (param_desc)
+		exponential=param_desc->get_exponential();
+	else
+		exponential=false;
+	
 	switch(type)
 	{
 	case ValueBase::TYPE_REAL:
@@ -1490,8 +1497,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			// put the duck on the right hand side of the center
 			// Zoom parameter value (PasteCanvas and Zoom layers)
 			// should be represented as exponent
-			if (    ( param_desc->get_name()=="zoom" ) ||
-				( value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name()=="zoom" && value_desc.get_param_name() == "amount" ) )
+			if ( param_desc && param_desc->get_exponential() )
 			{
 				duck->set_point(Point(exp(value_desc.get_value(get_time()).get(Real())), 0));
 			} else {
@@ -1526,9 +1532,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_REAL:
 			duck->signal_edited().connect(
 				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						exponential ),
 					value_desc));
 			duck->set_value_desc(value_desc);
 
@@ -1696,9 +1704,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
 			duck->signal_edited().connect(
 				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						exponential ),
 					value_desc));
 			duck->set_value_desc(value_desc);
 
@@ -2532,7 +2542,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					pduck->set_guid(calc_duck_guid(wpoint_value_desc,transform_stack)^synfig::GUID::hasher(".wpoint"));
 					pduck->set_editable(synfigapp::is_editable(wpoint_value_desc.get_value_node()));
 					pduck->signal_edited().clear();
-					pduck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), wpoint_value_desc));
+					pduck->signal_edited().connect(sigc::bind(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), exponential ), wpoint_value_desc));
 					pduck->signal_user_click(2).clear();
 					pduck->signal_user_click(2).connect(
 						sigc::bind(
@@ -2796,7 +2806,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							   synfigapp::is_editable(value_desc.get_value_node()));
 
 			duck->signal_edited().clear();
-			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+			duck->signal_edited().connect(sigc::bind(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), exponential ), value_desc));
 			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
 																							  &studio::CanvasView::popup_param_menu),
 																				false), // bezier
@@ -2847,7 +2857,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							   synfigapp::is_editable(value_desc.get_value_node()));
 
 			duck->signal_edited().clear();
-			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+			duck->signal_edited().connect(sigc::bind(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), exponential ), value_desc));
 			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
 																							  &studio::CanvasView::popup_param_menu),
 																				false), // bezier

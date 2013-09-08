@@ -99,6 +99,7 @@ Zoom::get_param_vocab()const
 		.set_local_name(_("Amount"))
 		.set_description(_("Amount to scale to"))
 		.set_origin("center")
+		.set_exponential()
 	);
 
 	ret.push_back(ParamDesc("center")
