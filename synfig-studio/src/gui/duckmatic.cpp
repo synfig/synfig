@@ -1524,7 +1524,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->set_origin(value_desc_origin.get_value(get_time()).get(synfig::Point()));
 					*/
 					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-					duck->set_origin(last_duck());
+					
+					Layer::Handle layer=value_desc.get_layer();
+					String layer_name=layer->get_name();
+					if(layer_name=="PasteCanvas")
+					{
+						Vector focus(layer->get_param("focus").get(Vector()));
+						duck->set_origin(last_duck()->get_point() + focus);
+						synfig::info("focus!");
+					}
+					else
+						duck->set_origin(last_duck());
 				}
 				duck->set_scalar(param_desc->get_scalar());
 			}
