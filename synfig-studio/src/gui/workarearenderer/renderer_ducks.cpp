@@ -447,7 +447,10 @@ Renderer_Ducks::render_vfunc(
 			if(hover)
 			{
 				Real mag;
-				if (App::restrict_radius_ducks)
+				if ((*iter)->get_exponential()){
+					mag = log((*iter)->get_point().mag());
+				}
+				else if (App::restrict_radius_ducks)
 				{
 					Point sub_trans_point((*iter)->get_sub_trans_point());
 					Point sub_trans_origin((*iter)->get_sub_trans_origin());
@@ -466,7 +469,8 @@ Renderer_Ducks::render_vfunc(
 					mag = ((*iter)->get_trans_point()-(*iter)->get_trans_origin()).mag();
 
 				Distance real_mag(mag, Distance::SYSTEM_UNITS);
-				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
+				if (!(*iter)->get_exponential())
+					real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
 
 				cr->save();
 
