@@ -98,9 +98,9 @@ class studio::StateBLine_Context : public sigc::trackable
 	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
 	synfigapp::Settings& settings;
 
-	bool on_vertex_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
+	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
 
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
@@ -985,7 +985,7 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 {
 	if(curr_duck)
 	{
-		curr_duck->signal_edited()(curr_duck->get_point());
+		curr_duck->signal_edited()(*curr_duck);
 		if(next_duck)
 		{
 			curr_duck=next_duck;
@@ -1232,28 +1232,28 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 
 bool
-StateBLine_Context::on_vertex_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_vertex(point);
+	bline_point.set_vertex(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_tangent1(point);
+	bline_point.set_tangent1(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_tangent2(point);
+	bline_point.set_tangent2(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
