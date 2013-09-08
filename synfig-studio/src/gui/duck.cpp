@@ -84,7 +84,8 @@ Duck::Duck():
 	linear_(false),
 	tangent_(false),
 	hover_(false),
-	ignore_(false)
+	ignore_(false),
+	exponential_(false)
 { duck_count++; _DuckCounter::counter++; }
 
 Duck::Duck(const synfig::Point &point):

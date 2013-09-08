@@ -882,7 +882,6 @@ Duckmatic::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc
 		// Zoom duck value (PasteCanvas and Zoom layers) should be
 		// converted back from exponent to normal
 		if( exponential ) {
-			synfig::info("!!!");
 			return canvas_interface->change_value(value_desc,log(value.mag()));
 		} else {
 			return canvas_interface->change_value(value_desc,value.mag());
@@ -1477,15 +1476,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	ValueBase::Type type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)
 	
-	bool exponential;
-	if (param_desc)
-		exponential=param_desc->get_exponential();
-	else
-		exponential=false;
-	
 	switch(type)
 	{
 	case ValueBase::TYPE_REAL:
+		
+		bool exponential;
+		if (param_desc)
+			exponential=param_desc->get_exponential();
+		else
+			exponential=false;
 
 		if(!param_desc || param_desc==REAL_COOKIE || !param_desc->get_origin().empty())
 		{
@@ -1493,6 +1492,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(transform_stack);
 			duck->set_radius(true);
 			duck->set_type(Duck::TYPE_RADIUS);
+			duck->set_exponential(exponential);
 
 			// put the duck on the right hand side of the center
 			// Zoom parameter value (PasteCanvas and Zoom layers)
