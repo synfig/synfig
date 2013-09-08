@@ -792,7 +792,7 @@ Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck)
 {
 	if (duck->get_type() == Duck::TYPE_ANGLE)
 	{
-		if(!duck->signal_edited_angle()(duck->get_rotations()))
+		if(!duck->signal_edited()(*duck))
 		{
 			throw String("Bad edit");
 		}
@@ -888,18 +888,11 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 			return canvas_interface->change_value(value_desc,value.mag());
 		}
 	case ValueBase::TYPE_ANGLE:
-		return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]));
+		//return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]));
+		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
 	default:
 		return canvas_interface->change_value(value_desc,value);
 	}
-}
-
-bool
-Duckmatic::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc)
-{
-	// \todo will this really always be the case?
-	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);
-	return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + rotation);
 }
 
 void
@@ -1605,12 +1598,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_ANGLE:
-			duck->signal_edited_angle().clear();
-			duck->signal_edited_angle().connect(
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
 						*this,
-						&studio::Duckmatic::on_duck_angle_changed),
+						&studio::Duckmatic::on_duck_changed),
 					value_desc));
 			duck->set_value_desc(value_desc);
 
@@ -2888,8 +2881,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_editable(!value_desc.is_value_node() ? true :
 							   synfigapp::is_editable(value_desc.get_value_node()));
 
-			duck->signal_edited_angle().clear();
-			duck->signal_edited_angle().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_angle_changed), value_desc));
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
 			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
 																							  &studio::CanvasView::popup_param_menu),
 																				false), // bezier

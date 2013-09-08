@@ -355,7 +355,7 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 				{
 				if ((*iter)->get_type() == Duck::TYPE_ANGLE)
 					{
-						if(!(*iter)->signal_edited_angle()((*iter)->get_rotations()))
+						if(!(*iter)->signal_edited()(**iter))
 						{
 							throw String("Bad edit");
 						}
