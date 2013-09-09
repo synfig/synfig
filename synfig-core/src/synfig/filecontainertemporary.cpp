@@ -309,8 +309,10 @@ void FileContainerTemporary::file_close()
 {
 	if (file_write_stream_ && !file_tmp_name_.empty())
 	{
+		std::string prev_name = files_[file_].tmp_filename;
 		files_[file_].tmp_filename = file_tmp_name_;
 		file_tmp_name_.clear();
+		file_system_->file_remove(prev_name);
 	}
 
 	file_read_stream_.reset();
