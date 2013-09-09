@@ -46,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerSetExcludeFromRendering);
 ACTION_SET_NAME(Action::LayerSetExcludeFromRendering,"LayerSetExcludeFromRendering");
-ACTION_SET_LOCAL_NAME(Action::LayerSetExcludeFromRendering,N_("Toggle Exclude Layer from Rendering"));
+ACTION_SET_LOCAL_NAME(Action::LayerSetExcludeFromRendering,N_("Toggle Exclude from Rendering"));
 ACTION_SET_TASK(Action::LayerSetExcludeFromRendering,"setexcludefromrendering");
 ACTION_SET_CATEGORY(Action::LayerSetExcludeFromRendering,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerSetExcludeFromRendering,0);
@@ -70,12 +70,12 @@ synfig::String
 Action::LayerSetExcludeFromRendering::get_local_name()const
 {
 	if(!layer)
-		return _("Toggle Exclude Layer from Rendering");
+		return _("Toggle Exclude from Rendering");
 
 	return strprintf("%s '%s'",
 					 new_state
-					 ? _("Exclude Layer from Rendering")
-					 : _("Include Layer to Rendering"),
+					 ? _("Exclude from Rendering")
+					 : _("Enable Rendering of"),
 					 layer->get_non_empty_description().c_str());
 }
 
