@@ -1483,7 +1483,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			// put the duck on the right hand side of the center
 			// Zoom parameter value (PasteCanvas and Zoom layers)
 			// should be represented as exponent
-			if ( param_desc && param_desc->get_exponential() )
+			if ( param_desc && param_desc!=REAL_COOKIE && param_desc->get_exponential() )
 			{
 				duck->set_point(Point(exp(value_desc.get_value(get_time()).get(Real())), 0));
 				duck->set_exponential(param_desc->get_exponential());
