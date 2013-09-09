@@ -31,8 +31,12 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <libxml++/libxml++.h>
+
 #include "filecontainertemporary.h"
+#include "general.h"
 #include "guid.h"
+#include "zstreambuf.h"
 
 #endif
 
@@ -72,19 +76,30 @@ void FileContainerTemporary::FileInfo::split_name()
 FileContainerTemporary::FileContainerTemporary():
 is_opened_(false),
 container_(new FileContainerZip()),
-file_system_(FileSystemNative::instance())
+file_system_(FileSystemNative::instance()),
+temporary_filename_base_(generate_temporary_filename_base())
 { }
 
 FileContainerTemporary::~FileContainerTemporary() { close(); }
 
-std::string FileContainerTemporary::generate_tmp_filename()
+std::string FileContainerTemporary::get_temporary_directory()
 {
     const char *tmpdir;
     if ((tmpdir = getenv("TEMP")) == NULL)
     if ((tmpdir = getenv("TMP")) == NULL)
     if ((tmpdir = getenv("TMPDIR")) == NULL)
     	 tmpdir = "/tmp";
-    return std::string(tmpdir) + ETL_DIRECTORY_SEPARATOR + "synfig_" + GUID().get_string();
+    return std::string(tmpdir) + ETL_DIRECTORY_SEPARATOR;
+}
+
+std::string FileContainerTemporary::generate_temporary_filename_base()
+{
+    return "synfig_" + GUID().get_string();
+}
+
+std::string FileContainerTemporary::generate_temporary_filename()
+{
+    return get_temporary_directory() + generate_temporary_filename_base();
 }
 
 bool FileContainerTemporary::create(const std::string &container_filename)
@@ -273,7 +288,7 @@ bool FileContainerTemporary::file_open_write(const std::string &filename)
 		new_info.split_name();
 		if (new_info.name_part_localname.empty()
 		 || !is_directory(new_info.name_part_directory)) return false;
-		new_info.tmp_filename = generate_tmp_filename();
+		new_info.tmp_filename = generate_temporary_filename();
 		file_write_stream_ = file_system_->get_write_stream(new_info.tmp_filename);
 		if (file_write_stream_) files_[new_info.name] = new_info;
 	}
@@ -448,7 +463,126 @@ void FileContainerTemporary::discard_changes()
 
 		// update internal state
 		files_.clear();
+
+		file_system_->file_remove( get_temporary_directory() + get_temporary_filename_base() );
+		temporary_filename_base_ = generate_temporary_filename_base();
 	}
+}
+
+bool FileContainerTemporary::save_temporary() const
+{
+	xmlpp::Document document;
+	xmlpp::Element *root = document.get_root_node();
+	root->set_name("temporary-container");
+	root->add_child("container-filename")->set_child_text(container_filename_);
+	xmlpp::Element *files = root->add_child("files");
+	for(FileMap::const_iterator i = files_.begin(); i != files_.end(); i++)
+	{
+		xmlpp::Element *entry = files->add_child("entry");
+		entry->add_child("name")->set_child_text(i->second.name);
+		entry->add_child("tmp-basename")->set_child_text(basename(i->second.tmp_filename));
+		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
+		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
+	}
+
+	FileSystem::WriteStreamHandle stream =
+		file_system_->get_write_stream(
+			get_temporary_directory()
+		  + get_temporary_filename_base());
+	if (!stream) return false;
+	stream = new ZWriteStream(stream);
+	try
+	{
+		document.write_to_stream_formatted(stream->stream(), "UTF-8");
+	}
+	catch(...)
+	{
+		synfig::error("FileContainerTemporary::save_temporary(): Caught unknown exception");
+		return false;
+	}
+	stream.reset();
+
+	return true;
+}
+
+bool FileContainerTemporary::open_temporary(const std::string &filename_base)
+{
+	if (is_opened()) return false;
+
+	FileSystem::ReadStreamHandle stream =
+		file_system_->get_read_stream(
+			get_temporary_directory()
+		  + filename_base);
+	if (!stream) return false;
+	stream = new ZReadStream(stream);
+
+	xmlpp::DomParser parser;
+	parser.parse_stream(stream->stream());
+	stream.reset();
+	if (!parser) return false;
+
+	xmlpp::Element *root = parser.get_document()->get_root_node();
+	if (root->get_name() != "temporary-container") return false;
+
+	for(xmlpp::Element::NodeList::iterator i = root->get_children().begin(); i != root->get_children().end(); i++)
+	{
+		if ((*i)->get_name() == "container-filename")
+			for(xmlpp::Element::NodeList::iterator j = (*i)->get_children().begin(); j != (*i)->get_children().end(); j++)
+				if (dynamic_cast<xmlpp::TextNode*>(*j))
+					container_filename_ += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
+		if ((*i)->get_name() == "files")
+		{
+			for(xmlpp::Element::NodeList::iterator j = (*i)->get_children().begin(); j != (*i)->get_children().end(); j++)
+			{
+				if ((*j)->get_name() == "entry")
+				{
+					FileInfo info;
+					for(xmlpp::Element::NodeList::iterator k = (*j)->get_children().begin(); k != (*j)->get_children().end(); k++)
+					{
+						if ((*k)->get_name() == "name")
+							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
+								if (dynamic_cast<xmlpp::TextNode*>(*l))
+									info.name += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+						if ((*k)->get_name() == "tmp-basename")
+							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
+								if (dynamic_cast<xmlpp::TextNode*>(*l))
+									info.tmp_filename += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+						if ((*k)->get_name() == "is-directory")
+						{
+							std::string s;
+							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
+								if (dynamic_cast<xmlpp::TextNode*>(*l))
+									s += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+							info.is_directory = s == "true";
+						}
+						if ((*k)->get_name() == "is-removed")
+						{
+							std::string s;
+							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
+								if (dynamic_cast<xmlpp::TextNode*>(*l))
+									s += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+							info.is_removed = s == "true";
+						}
+					}
+					if (!info.tmp_filename.empty())
+						info.tmp_filename = get_temporary_directory() + info.tmp_filename;
+					info.split_name();
+					files_[info.name] = info;
+				}
+			}
+		}
+	}
+
+	if (!container_filename_.empty() && !container_->open(container_filename_))
+	{
+		container_filename_.clear();
+		files_.clear();
+		return false;
+	}
+
+	temporary_filename_base_ = filename_base;
+	is_opened_ = true;
+	return true;
 }
 
 /* === E N T R Y P O I N T ================================================= */

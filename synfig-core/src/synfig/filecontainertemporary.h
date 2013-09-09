@@ -71,7 +71,7 @@ namespace synfig
 		FileSystem::ReadStreamHandle file_read_stream_;
 		FileSystem::WriteStreamHandle file_write_stream_;
 
-		std::string generate_tmp_filename();
+		std::string temporary_filename_base_;
 
 	public:
 		FileContainerTemporary();
@@ -99,6 +99,16 @@ namespace synfig
 
 		virtual size_t file_read(void *buffer, size_t size);
 		virtual size_t file_write(const void *buffer, size_t size);
+
+		static std::string get_temporary_directory();
+		static std::string generate_temporary_filename_base();
+		static std::string generate_temporary_filename();
+
+		const std::string& get_container_filename() const { return container_filename_; }
+		const std::string& get_temporary_filename_base() const { return temporary_filename_base_; }
+
+		bool save_temporary() const;
+		bool open_temporary(const std::string &filename_base);
 
 		bool save_changes(const std::string &filename = std::string(), bool as_copy = false);
 		void discard_changes();
