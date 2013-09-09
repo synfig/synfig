@@ -46,7 +46,9 @@
 # - debuginfo packages
 
 RELEASE=8
+if [ -z "$PREFIX" ]; then
 PREFIX=$HOME/synfig/
+fi
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 
