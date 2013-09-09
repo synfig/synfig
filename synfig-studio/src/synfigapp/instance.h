@@ -121,6 +121,8 @@ public:
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
+	etl::handle< synfig::FileSystemGroup > get_file_system() const { return file_system_; };
+	etl::handle< synfig::FileContainerTemporary > get_container() const { return container_; };
 
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);

@@ -29,6 +29,8 @@
 
 #include <map>
 #include <ctime>
+#include <libxml++/libxml++.h>
+
 #include "filesystemnative.h"
 #include "filecontainerzip.h"
 
@@ -68,10 +70,13 @@ namespace synfig
 		etl::handle< FileSystemNative > file_system_;
 
 		std::string file_;
+		std::string file_tmp_name_;
 		FileSystem::ReadStreamHandle file_read_stream_;
 		FileSystem::WriteStreamHandle file_write_stream_;
 
 		std::string temporary_filename_base_;
+
+		static std::string get_xml_node_text(xmlpp::Node *node);
 
 	public:
 		FileContainerTemporary();
