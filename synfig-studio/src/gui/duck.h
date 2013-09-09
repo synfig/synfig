@@ -113,8 +113,7 @@ public:
 
 private:
 
-	sigc::signal<bool,const synfig::Point &> signal_edited_;
-	sigc::signal<bool,const synfig::Angle &> signal_edited_angle_;
+	sigc::signal<bool,const Duck &> signal_edited_;
 	sigc::signal<void> signal_user_click_[5];
 
 	Type type_;
@@ -142,6 +141,7 @@ private:
 	bool tangent_;
 	bool hover_;
 	bool ignore_;
+	bool exponential_;
 
 	synfig::Angle linear_angle_;
 
@@ -156,8 +156,7 @@ public:
 	Duck(const synfig::Point &point,const synfig::Point &origin);
 	~Duck();
 
-	sigc::signal<bool,const synfig::Point &> &signal_edited() { return signal_edited_; }
-	sigc::signal<bool,const synfig::Angle &> &signal_edited_angle() { return signal_edited_angle_; }
+	sigc::signal<bool,const Duck &> &signal_edited() { return signal_edited_; }
 	sigc::signal<void> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
 
 	void set_guid(const synfig::GUID& x) { guid_=x; }
@@ -188,6 +187,13 @@ public:
 
 	//! Retrieves whether to ignore the duck when checking for user interaction
 	bool get_ignore()const { return ignore_; }
+	
+	//! Sets if the duck is using the exponential function
+	/*!	Such representation allows to set the Real values in the range from \c -inf to \c inf . */
+	void set_exponential(bool n) { exponential_=n; }
+	
+	//! Retrieves the exponential value
+	bool get_exponential()const { return exponential_; }
 
 	void set_connect_duck(const etl::handle<Duck>& x) { connect_duck=x; }
 	void set_box_duck(const etl::handle<Duck>& x) { box_duck=x; }
@@ -214,7 +220,7 @@ public:
 
 	//! Retrieves the scalar value
 	synfig::Vector::value_type get_scalar()const { return scalar; }
-
+	
 	void set_shared_point(const etl::smart_ptr<synfig::Point>&x) { shared_point=x; }
 
 	//! Sets the location of the duck with respect to the origin
