@@ -31,7 +31,6 @@
 
 #include <cstring>
 #include <cstdlib>
-#include <libxml++/libxml++.h>
 
 #include "filecontainertemporary.h"
 #include "general.h"
@@ -279,6 +278,7 @@ bool FileContainerTemporary::file_open_write(const std::string &filename)
 	if (!container_->file_check_name(filename)) return false;
 
 	FileMap::iterator i = files_.find(filename);
+	std::string tmp_filename;
 
 	FileInfo new_info;
 	if (i == files_.end())
@@ -293,18 +293,26 @@ bool FileContainerTemporary::file_open_write(const std::string &filename)
 		if (file_write_stream_) files_[new_info.name] = new_info;
 	}
 	else
-	if (!i->second.is_removed && !i->second.is_directory && !i->second.tmp_filename.empty())
+	if (!i->second.is_removed && !i->second.is_directory)
 	{
-		file_write_stream_ = file_system_->get_write_stream(i->second.tmp_filename);
+		tmp_filename = generate_temporary_filename();
+		file_write_stream_ = file_system_->get_write_stream(tmp_filename);
 	}
 
 	if (!file_write_stream_) return false;
 	file_ = filename;
+	file_tmp_name_ = tmp_filename;
 	return true;
 }
 
 void FileContainerTemporary::file_close()
 {
+	if (file_write_stream_ && !file_tmp_name_.empty())
+	{
+		files_[file_].tmp_filename = file_tmp_name_;
+		file_tmp_name_.clear();
+	}
+
 	file_read_stream_.reset();
 	file_write_stream_.reset();
 
@@ -472,8 +480,7 @@ void FileContainerTemporary::discard_changes()
 bool FileContainerTemporary::save_temporary() const
 {
 	xmlpp::Document document;
-	xmlpp::Element *root = document.get_root_node();
-	root->set_name("temporary-container");
+	xmlpp::Element *root = document.create_root_node("temporary-container");
 	root->add_child("container-filename")->set_child_text(container_filename_);
 	xmlpp::Element *files = root->add_child("files");
 	for(FileMap::const_iterator i = files_.begin(); i != files_.end(); i++)
@@ -505,6 +512,19 @@ bool FileContainerTemporary::save_temporary() const
 	return true;
 }
 
+std::string FileContainerTemporary::get_xml_node_text(xmlpp::Node *node)
+{
+	std::string s;
+	if (node != NULL)
+	{
+		xmlpp::Element::NodeList list = node->get_children();
+		for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
+			if (dynamic_cast<xmlpp::TextNode*>(*i))
+				s += dynamic_cast<xmlpp::TextNode*>(*i)->get_content();
+	}
+	return s;
+}
+
 bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 {
 	if (is_opened()) return false;
@@ -524,45 +544,30 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 	xmlpp::Element *root = parser.get_document()->get_root_node();
 	if (root->get_name() != "temporary-container") return false;
 
-	for(xmlpp::Element::NodeList::iterator i = root->get_children().begin(); i != root->get_children().end(); i++)
+	xmlpp::Element::NodeList list = root->get_children();
+	for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
 	{
 		if ((*i)->get_name() == "container-filename")
-			for(xmlpp::Element::NodeList::iterator j = (*i)->get_children().begin(); j != (*i)->get_children().end(); j++)
-				if (dynamic_cast<xmlpp::TextNode*>(*j))
-					container_filename_ += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
+			container_filename_ = get_xml_node_text(*i);
 		if ((*i)->get_name() == "files")
 		{
-			for(xmlpp::Element::NodeList::iterator j = (*i)->get_children().begin(); j != (*i)->get_children().end(); j++)
+			xmlpp::Element::NodeList files_list = (*i)->get_children();
+			for(xmlpp::Element::NodeList::iterator j = files_list.begin(); j != files_list.end(); j++)
 			{
 				if ((*j)->get_name() == "entry")
 				{
 					FileInfo info;
-					for(xmlpp::Element::NodeList::iterator k = (*j)->get_children().begin(); k != (*j)->get_children().end(); k++)
+					xmlpp::Element::NodeList fields_list = (*j)->get_children();
+					for(xmlpp::Element::NodeList::iterator k = fields_list.begin(); k != fields_list.end(); k++)
 					{
 						if ((*k)->get_name() == "name")
-							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
-								if (dynamic_cast<xmlpp::TextNode*>(*l))
-									info.name += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+							info.name = get_xml_node_text(*k);
 						if ((*k)->get_name() == "tmp-basename")
-							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
-								if (dynamic_cast<xmlpp::TextNode*>(*l))
-									info.tmp_filename += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
+							info.tmp_filename = get_xml_node_text(*k);
 						if ((*k)->get_name() == "is-directory")
-						{
-							std::string s;
-							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
-								if (dynamic_cast<xmlpp::TextNode*>(*l))
-									s += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
-							info.is_directory = s == "true";
-						}
+							info.is_directory = get_xml_node_text(*k) == "true";
 						if ((*k)->get_name() == "is-removed")
-						{
-							std::string s;
-							for(xmlpp::Element::NodeList::iterator l = (*k)->get_children().begin(); l != (*k)->get_children().end(); l++)
-								if (dynamic_cast<xmlpp::TextNode*>(*l))
-									s += dynamic_cast<xmlpp::TextNode*>(*l)->get_content();
-							info.is_removed = s == "true";
-						}
+							info.is_removed = get_xml_node_text(*k) == "true";
 					}
 					if (!info.tmp_filename.empty())
 						info.tmp_filename = get_temporary_directory() + info.tmp_filename;
