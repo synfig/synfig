@@ -416,7 +416,7 @@ mkdmg()
 	cp -R ${SYNFIG_REPO_DIR}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
 
 	# open the window so that the icon database is generated
-	open /Volumes/"$VOLNAME"
+	open /Volumes/"$VOLNAME" || true
 	sleep 3
 
 	echo "Detaching disk image..."
