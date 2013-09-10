@@ -81,8 +81,8 @@ int studio::Instance::instance_count_=0;
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(synfig::Canvas::Handle canvas):
-	synfigapp::Instance		(canvas),
+Instance::Instance(synfig::Canvas::Handle canvas, etl::handle< synfig::FileContainerTemporary > container):
+	synfigapp::Instance		(canvas, container),
 	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
 	undo_status_(false),
@@ -123,10 +123,10 @@ Instance::get_visible_canvases()const
 }
 
 handle<Instance>
-Instance::create(synfig::Canvas::Handle canvas)
+Instance::create(synfig::Canvas::Handle canvas, etl::handle< synfig::FileContainerTemporary > container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas));
+	handle<Instance> instance(new Instance(canvas, container));
 
 	// Add the new instance to the application's instance list
 	App::instance_list.push_back(instance);
@@ -348,7 +348,8 @@ studio::Instance::dialog_save_as()
 		try
 		{
 			String ext(filename_extension(filename));
-			if(ext!=".sif" && ext!=".sifz" && !App::dialog_yes_no(_("Unknown extension"),
+			// todo: ".zip" literal and others
+			if(ext!=".sif" && ext!=".sifz" && ext!=".zip" && !App::dialog_yes_no(_("Unknown extension"),
 				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
 				continue;
 		}

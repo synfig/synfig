@@ -56,6 +56,10 @@
 #include "string.h"
 #include "paramdesc.h"
 
+#include "zstreambuf.h"
+#include "importer.h"
+#include "cairoimporter.h"
+
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>
 #include "gradient.h"
@@ -84,6 +88,8 @@ using namespace synfig;
 
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
+save_canvas_external_file_callback_t save_canvas_external_file_callback = NULL;
+void *save_canvas_external_file_user_data = NULL;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -818,6 +824,28 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			xmlpp::Element *node=root->add_child("param");
 			node->set_attribute("name",iter->get_name());
 
+			// remember filename param if need
+			if (save_canvas_external_file_callback != NULL
+			 && iter->get_name() == "filename"
+			 && value.get_type() == ValueBase::TYPE_STRING)
+			{
+				std::string filename( value.get(String()) );
+				std::string ext = filename_extension(filename);
+				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
+				bool registered_in_importer = Importer::book().count(ext) > 0;
+				bool supports_by_importer = registered_in_importer
+						                 && Importer::book()[ext].supports_file_system_wrapper;
+				bool registered_in_cairoimporter = CairoImporter::book().count(ext) > 0;
+				bool supports_by_cairoimporter = registered_in_cairoimporter
+						                      && CairoImporter::book()[ext].supports_file_system_wrapper;
+				bool supports = (supports_by_importer && supports_by_cairoimporter)
+						     || (supports_by_importer && !registered_in_cairoimporter)
+						     || (!registered_in_importer && supports_by_cairoimporter);
+				if (supports)
+					if (save_canvas_external_file_callback(save_canvas_external_file_user_data, layer, iter->get_name(), filename))
+						value.set(filename);
+			}
+
 			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
 		}
 	}
@@ -972,16 +1000,11 @@ xmlpp::Element* encode_canvas_toplevel(xmlpp::Element* root,Canvas::ConstHandle 
 }
 
 bool
-synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
+synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandle canvas, bool safe)
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-	synfig::String tmp_filename(filename+".TMP");
-
-	if (filename_extension(filename) == ".sifz")
-		xmlSetCompressMode(9);
-	else
-		xmlSetCompressMode(0);
+    synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
 
 	try
 	{
@@ -990,27 +1013,43 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 
 		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
-		document.write_to_file_formatted(tmp_filename);
+		FileSystem::WriteStreamHandle stream = identifier.file_system->get_write_stream(tmp_filename);
+		if (!stream)
+		{
+			synfig::error("synfig::save_canvas(): Unable to open file for write");
+			return false;
+		}
 
+		if (filename_extension(identifier.filename) == ".sifz")
+			stream = FileSystem::WriteStreamHandle(new ZWriteStream(stream));
+
+		document.write_to_stream_formatted(stream->stream(), "UTF-8");
+
+		// close stream
+		stream.reset();
+
+		if (safe)
+		{
 #ifdef _WIN32
-		// On Win32 platforms, rename() has bad behavior. work around it.
-		char old_file[80]="sif.XXXXXXXX";
-		mktemp(old_file);
-		rename(filename.c_str(),old_file);
-		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		{
-			rename(old_file,tmp_filename.c_str());
-			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-			return false;
-		}
-		remove(old_file);
+			// On Win32 platforms, rename() has bad behavior. work around it.
+			char old_file[80]="sif.XXXXXXXX";
+			mktemp(old_file);
+			identifier.file_system->file_rename(filename,old_file);
+			if(!identifier.file_system->file_rename(tmp_filename,identifier.filename))
+			{
+				identifier.file_system->file_rename(old_file,tmp_filename);
+				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
+				return false;
+			}
+			identifier.file_system->file_remove(old_file);
 #else
-		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		{
-			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-			return false;
-		}
+			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
+			{
+				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
+				return false;
+			}
 #endif
+		}
 	}
 	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
 
@@ -1028,6 +1067,13 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 	encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
 	return document.write_to_string_formatted();
+}
+
+void
+synfig::set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data)
+{
+	save_canvas_external_file_callback = callback;
+	save_canvas_external_file_user_data = user_data;
 }
 
 void

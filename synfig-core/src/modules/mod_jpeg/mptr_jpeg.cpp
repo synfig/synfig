@@ -63,6 +63,7 @@ SYNFIG_IMPORTER_SET_NAME(jpeg_mptr,"jpeg");
 SYNFIG_IMPORTER_SET_EXT(jpeg_mptr,"jpg");
 SYNFIG_IMPORTER_SET_VERSION(jpeg_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(jpeg_mptr,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(jpeg_mptr, false);
 
 /* === M E T H O D S ======================================================= */
 
@@ -96,13 +97,13 @@ jpeg_mptr::my_error_exit (j_common_ptr cinfo)
 
 
 
-jpeg_mptr::jpeg_mptr(const char *file_name)
+jpeg_mptr::jpeg_mptr(const synfig::FileSystem::Identifier &identifier):
+	Importer(identifier)
 {
   	struct my_error_mgr jerr;
-	filename=file_name;
 
 	/* Open the file pointer */
-    FILE *file = fopen(file_name, "rb");
+    FILE *file = fopen(identifier.filename.c_str(), "rb");
     if (!file)
     {
         //! \todo THROW SOMETHING

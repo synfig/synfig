@@ -41,6 +41,7 @@
 #include "valuenode_dynamiclist.h"
 #include "keyframe.h"
 #include "guid.h"
+#include "filesystemnative.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -138,12 +139,12 @@ public:
 #endif	// _DEBUG
 
 	//! Parse a Cavnas form a file with absolute path.
-	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
+	Canvas::Handle parse_from_file_as(const FileSystem::Identifier &identifier,const String &as,String &errors);
 	//! Parse a Canvas from a xmlpp root node
 	Canvas::Handle parse_as(xmlpp::Element* node,String &errors);
 
 	//! Set of absolute file names of the canvases currently being parsed
-	static std::set<String> loading_;
+	static std::set<FileSystem::Identifier> loading_;
 
 private:
 
@@ -159,7 +160,7 @@ private:
 	void error_unexpected_element(xmlpp::Node *node,const String &got);
 
 	//! Canvas Parsing Function
-	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false, String path=".");
+	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false,const FileSystem::Identifier &identifier = FileSystemNative::instance()->get_identifier(std::string()),String path=".");
 	//! Canvas definitions Parsing Function (exported value nodes and exported canvases)
 	void parse_canvas_defs(xmlpp::Element *node,Canvas::Handle canvas);
 
@@ -230,16 +231,13 @@ private:
 //!	Loads a canvas from current xmlpp Element
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
 extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
-//!	Loads a canvas from \a filename
-/*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas(const String &filename,String &errors,String &warnings);
 //!	Loads a canvas from \a filename and its absolute path
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors,String &warnings);
+extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings);
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
-std::map<synfig::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
+std::map<String, etl::loose_handle<Canvas> >& get_open_canvas_map();
 
 }; // END of namespace synfig
 

@@ -65,6 +65,10 @@
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
+#include <synfig/importer.h>
+#include <synfig/filesystemnative.h>
+#include <synfig/filesystemgroup.h>
+#include <synfig/filecontainertemporary.h>
 
 #include "app.h"
 #include "dialogs/about.h"
@@ -2509,9 +2513,6 @@ App::open(std::string filename)
 	return open_as(filename,filename);
 }
 
-// this is called from autorecover.cpp:
-//   App::open_as(get_shadow_file_name(filename),filename)
-// other than that, 'filename' and 'as' are the same
 bool
 App::open_as(std::string filename,std::string as)
 {
@@ -2532,11 +2533,31 @@ App::open_as(std::string filename,std::string as)
 		OneMoment one_moment;
 		String errors, warnings;
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors,warnings));
+		// TODO: move literal "container:" into common place
+		std::string canvas_filename = filename;
+		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
+		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+		file_system->register_system("container:", container);
+
+		// TODO: move literal ".zip" into common place
+		if (etl::filename_extension(filename) == ".zip")
+		{
+			if (!container->open(filename))
+				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+			// TODO: move literal "project.sifz" into common place
+			canvas_filename = "container:project.sifz";
+		}
+		else
+		{
+			if (!container->create(std::string()))
+				throw (String)strprintf(_("Unable to create container\n\n"),filename.c_str());
+		}
+
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(file_system->get_identifier(canvas_filename),as,errors,warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
-			info("%s is already open", filename.c_str());
+			info("%s is already open", canvas_filename.c_str());
 			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		else
@@ -2550,10 +2571,80 @@ App::open_as(std::string filename,std::string as)
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas));
+			handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
+
+			set_recent_file_window_size(instance);
+
+			one_moment.hide();
+
+			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+				instance->dialog_cvs_update();
+		}
+	}
+	catch(String x)
+	{
+		dialog_error_blocking(_("Error"), x);
+		return false;
+	}
+	catch(runtime_error x)
+	{
+		dialog_error_blocking(_("Error"), x.what());
+		return false;
+	}
+	catch(...)
+	{
+		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
+		return false;
+	}
+
+	return true;
+}
+
+// this is called from autorecover.cpp:
+//   App::open_as(get_shadow_file_name(filename),filename)
+// other than that, 'filename' and 'as' are the same
+bool
+App::open_from_temporary_container_as(std::string container_filename_base,std::string as)
+{
+	try
+	{
+		OneMoment one_moment;
+		String errors, warnings;
+
+		// TODO: move literals "container:" and "project.sifz" into common place
+		std::string canvas_filename = "container:project.sifz";
+		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
+		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+		file_system->register_system("container:", container);
+
+		if (!container->open_temporary(container_filename_base))
+			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"),container_filename_base.c_str());
+
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(file_system->get_identifier(canvas_filename),as,errors,warnings));
+		if(canvas && get_instance(canvas))
+		{
+			get_instance(canvas)->find_canvas_view(canvas)->present();
+			info("%s is already open", canvas_filename.c_str());
+			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
+		}
+		else
+		{
+			if(!canvas)
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),container_filename_base.c_str()) + errors;
+
+			if (warnings != "")
+				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+
+			if (as.find(custom_filename_prefix.c_str()) != 0)
+				add_recent_file(as);
+
+			handle<Instance> instance(Instance::create(canvas, container));
+
+			if(!instance)
+				throw (String)strprintf(_("Unable to create instance for \"%s\""),container_filename_base.c_str());
 
 			set_recent_file_window_size(instance);
 
@@ -2608,7 +2699,13 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 	canvas->keyframe_list().add(synfig::Keyframe());
 
-	handle<Instance> instance = Instance::create(canvas);
+	etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
+	etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
+	file_system->register_system("container:", container);
+	container->create(std::string());
+	canvas->set_identifier(file_system->get_identifier(file_name));
+
+	handle<Instance> instance = Instance::create(canvas, container);
 
 	if (getenv("SYNFIG_AUTO_ADD_SKELETON_LAYER"))
 		instance->find_canvas_view(canvas)->add_layer("skeleton");

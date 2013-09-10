@@ -31,6 +31,8 @@
 #include <ETL/handle>
 #include <synfig/canvas.h>
 #include <synfig/string.h>
+#include <synfig/filecontainertemporary.h>
+#include <synfig/filesystemgroup.h>
 #include <list>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
@@ -60,6 +62,16 @@ public:
 
 	typedef std::list< etl::handle<CanvasInterface> > CanvasInterfaceList;
 
+	struct FileReference
+	{
+		synfig::Layer::ConstHandle layer;
+		std::string param_name;
+		std::string old_filename;
+		std::string new_filename;
+	};
+
+	typedef std::list< FileReference > FileReferenceList;
+
 	using etl::shared_object::ref;
 	using etl::shared_object::unref;
 
@@ -74,9 +86,12 @@ public:
 	*/
 
 private:
+
 	//! Handle for root canvas
 	synfig::Canvas::Handle canvas_;
 
+	etl::handle< synfig::FileSystemGroup > file_system_;
+	etl::handle< synfig::FileContainerTemporary > container_;
 
 	CanvasInterfaceList canvas_interface_list_;
 
@@ -84,8 +99,15 @@ private:
 	sigc::signal<void> signal_saved_;
 	etl::handle<SelectionManager> selection_manager_;
 
+	bool save_canvas_into_container_;
+	std::string save_canvas_reference_directory_;
+	std::string save_canvas_reference_local_directory_;
+	FileReferenceList save_canvas_references_;
+	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
+	void update_references_in_canvas();
+
 protected:
-	Instance(etl::handle<synfig::Canvas>);
+	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -99,6 +121,8 @@ public:
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
+	etl::handle< synfig::FileSystemGroup > get_file_system() const { return file_system_; };
+	etl::handle< synfig::FileContainerTemporary > get_container() const { return container_; };
 
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
@@ -106,7 +130,7 @@ public:
 	synfig::Canvas::Handle get_canvas()const { return canvas_; }
 
 	//! Saves the instance to filename_
-	bool save()const;
+	bool save();
 
 	bool save_as(const synfig::String &filename);
 
@@ -125,7 +149,7 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas);
+	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::FileContainerTemporary > container);
 }; // END class Instance
 
 etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);

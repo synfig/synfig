@@ -46,11 +46,12 @@ class cairo_png_mptr : public synfig::CairoImporter
 {
 	SYNFIG_CAIROIMPORTER_MODULE_EXT
 private:
-	synfig::String filename;
 	cairo_surface_t* csurface_;
 
+	static cairo_status_t read_callback(void *closure, unsigned char *data, unsigned int length);
+
 public:
-	cairo_png_mptr(const char *filename);
+	cairo_png_mptr(const synfig::FileSystem::Identifier &identifier);
 	~cairo_png_mptr();
 
 	virtual bool get_frame(cairo_surface_t *&csurface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);

@@ -319,6 +319,8 @@ public:
 
 	static bool open_as(std::string filename,std::string as);
 
+	static bool open_from_temporary_container_as(std::string container_filename_base,std::string as);
+
 	static void new_instance();
 
 	static void dialog_open(std::string filename = "");

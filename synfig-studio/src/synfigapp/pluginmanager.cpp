@@ -89,8 +89,8 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 		filename_backup = filename_base+"."+guid.get_string().substr(0,8);
 	} while (stat(filename_backup.c_str(), &buf) != -1);
 	
-	save_canvas(filename_processed,canvas);
-	save_canvas(filename_backup,canvas);
+	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_processed),canvas);
+	save_canvas(canvas->get_identifier().file_system->get_identifier(filename_backup),canvas);
 
 	//canvas=0;
 	exitcode=-1;

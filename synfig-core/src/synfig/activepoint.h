@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 /* === S Y N F I G ========================================================= */
 /*!	\file activepoint.h
 **	\brief Template Header

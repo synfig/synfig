@@ -32,6 +32,7 @@
 
 #include "listimporter.h"
 #include "general.h"
+#include "filesystemnative.h"
 #include <fstream>
 
 #endif
@@ -53,24 +54,26 @@ SYNFIG_IMPORTER_SET_NAME(ListImporter,"lst");
 SYNFIG_IMPORTER_SET_EXT(ListImporter,"lst");
 SYNFIG_IMPORTER_SET_VERSION(ListImporter,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(ListImporter,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-ListImporter::ListImporter(const String &filename)
+ListImporter::ListImporter(const FileSystem::Identifier &identifier):
+Importer(identifier)
 {
 	fps=15;
 
-	ifstream stream(filename.c_str());
+	ifstream stream(identifier.filename.c_str());
 
 	if(!stream)
 	{
-		synfig::error("Unable to open "+filename);
+		synfig::error("Unable to open "+identifier.filename);
 		return;
 	}
 	String line;
-	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPARATOR;
+	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 	getline(stream,line);		// read first line and check whether it is a Papagayo lip sync file
 
 	if (line == "MohoSwitch1")	// it is a Papagayo lipsync file
@@ -178,7 +181,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 		}
 	}
 
-	Importer::Handle importer(Importer::open(filename_list[frame]));
+	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename_list[frame])));
 
 	if(!importer)
 	{
