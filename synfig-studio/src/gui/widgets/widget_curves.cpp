@@ -295,7 +295,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels[1].values[time]=value.get(BLinePoint()).get_vertex()[1];
 				channels[2].values[time]=value.get(BLinePoint()).get_width();
 				channels[3].values[time]=value.get(BLinePoint()).get_origin();
-				channels[4].values[time]=value.get(BLinePoint()).get_split_tangent_flag();
+				channels[4].values[time]=value.get(BLinePoint()).get_split_tangent_both();
 				channels[5].values[time]=value.get(BLinePoint()).get_tangent1()[0];
 				channels[6].values[time]=value.get(BLinePoint()).get_tangent1()[1];
 				channels[7].values[time]=value.get(BLinePoint()).get_tangent2()[0];

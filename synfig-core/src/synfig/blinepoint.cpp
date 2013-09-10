@@ -46,10 +46,11 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
+//TODO: write reverse for rest of flags cases.
 void
 synfig::BLinePoint::reverse()
 {
-	if(split_tangent_)
+	if(split_tangent_both_)
 	{
 		std::swap(tangent_[0],tangent_[1]);
 		tangent_[0]=-tangent_[0];
@@ -59,5 +60,29 @@ synfig::BLinePoint::reverse()
 	{
 		tangent_[0]=-tangent_[0];
 		tangent_[1]=-tangent_[1];
+		update_tangent2();
 	}
+}
+
+void
+synfig::BLinePoint::update_tangent2()
+{
+	// if both are merged, use tangent1
+	if(merge_tangent_both_)
+		tangent_[1]=tangent_[0];
+	// if radius is split use the angle from tangent1
+	else if(split_tangent_radius_ && !split_tangent_angle_)
+		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
+	// if angle is split use the radius from tangent1
+	else if(!split_tangent_radius_ && split_tangent_angle_)
+		tangent2_angle_split_=Vector(tangent_[0].mag(), tangent_[1].angle());
+	// both are split then do nothing
+	return;
+}
+
+void
+synfig::BLinePoint::update_flags()
+{
+	split_tangent_both_= split_tangent_radius_ && split_tangent_angle_;
+	merge_tangent_both_= !split_tangent_radius_ && !split_tangent_angle_;
 }

@@ -169,7 +169,7 @@ Action::ValueDescSet::prepare()
 	if(	value_desc.parent_is_value_node() &&
 		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
 		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2") &&
-		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
+		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_both()==false)
 	{
 		if (value_desc.get_name()=="t1") {
 			ValueNode_Composite::Handle parent_value_node;
@@ -278,7 +278,7 @@ Action::ValueDescSet::prepare()
 				components[0]=bline_point.get_vertex();
 				components[1]=bline_point.get_width();
 				components[2]=bline_point.get_origin();
-				components[3]=bline_point.get_split_tangent_flag();
+				components[3]=bline_point.get_split_tangent_both();
 				components[4]=bline_point.get_tangent1();
 				components[5]=bline_point.get_tangent2();
 				n_components=6;

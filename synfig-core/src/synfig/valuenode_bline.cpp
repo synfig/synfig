@@ -530,7 +530,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 						prev_point.set_tangent1(iter->t1);
 						prev_point.set_width(0.01);
 						prev_point.set_origin(0.5);
-						prev_point.set_split_tangent_flag(false);
+						prev_point.set_split_tangent_both(false);
 						prev->set_value(prev_point);
 					}
 					first=prev;
@@ -556,13 +556,13 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 					curr_point.set_tangent1(iter->t2);
 					curr_point.set_width(0.01);
 					curr_point.set_origin(0.5);
-					curr_point.set_split_tangent_flag(false);
+					curr_point.set_split_tangent_both(false);
 					curr->set_value(curr_point);
 				}
 				if(!PREV_POINT.get_tangent1().is_equal_to(iter->t1))
 				{
 					BLinePoint prev_point(PREV_POINT);
-					prev_point.set_split_tangent_flag(true);
+					prev_point.set_split_tangent_both(true);
 					prev_point.set_tangent2(iter->t1);
 					prev->set_value(prev_point);
 				}
@@ -611,7 +611,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
 		bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
 		bline_point.set_tangent2(bline_point.get_tangent1());
-		bline_point.set_split_tangent_flag(false);
+		bline_point.set_split_tangent_both(false);
 		bline_point.set_origin(origin);
 	}
 	ret.index=index;
@@ -665,12 +665,12 @@ ValueNode_BLine::operator()(Time t)const
 
 			if(next_scale!=1.0f)
 			{
-				ret_list.back().set_split_tangent_flag(true);
+				ret_list.back().set_split_tangent_both(true);
 				ret_list.back().set_tangent2(prev.get_tangent2()*next_scale);
 
 				ret_list.push_back(curr);
 
-				ret_list.back().set_split_tangent_flag(true);
+				ret_list.back().set_split_tangent_both(true);
 				ret_list.back().set_tangent2(curr.get_tangent2());
 				ret_list.back().set_tangent1(curr.get_tangent1()*next_scale);
 
@@ -834,8 +834,8 @@ ValueNode_BLine::operator()(Time t)const
 			// 	blp_here_now.set_vertex(linear_interpolation(blp_here_off.get_vertex(), blp_here_on.get_vertex(), amount) +
 			// 							(ref_point_now-ref_point_linear));
 			// 	blp_here_now.set_tangent1(linear_interpolation(blp_here_off.get_tangent1(), blp_here_on.get_tangent1(), amount));
-			// 	blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
-			// 	if(blp_here_now.get_split_tangent_flag())
+			// 	blp_here_now.set_split_tangent_both(blp_here_on.get_split_tangent_both());
+			// 	if(blp_here_now.get_split_tangent_both())
 			// 		blp_here_now.set_tangent2(linear_interpolation(blp_here_off.get_tangent2(), blp_here_on.get_tangent2(), amount));
 			// }
 			// else
@@ -888,7 +888,7 @@ ValueNode_BLine::operator()(Time t)const
 				transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys);
 				transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
 
-				if(blp_here_on.get_split_tangent_flag())
+				if(blp_here_on.get_split_tangent_both())
 				{
 					transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Point::zero(), on_coord_sys);
 					transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys);
@@ -916,9 +916,9 @@ ValueNode_BLine::operator()(Time t)const
 				blp_here_now.set_tangent1(radial_interpolation(blp_here_off.get_tangent1(),blp_here_on.get_tangent1(),amount));
 #endif
 
-				if (blp_here_on.get_split_tangent_flag())
+				if (blp_here_on.get_split_tangent_both())
 				{
-					blp_here_now.set_split_tangent_flag(true);
+					blp_here_now.set_split_tangent_both(true);
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 					{
 						Vector tmp;
@@ -930,7 +930,7 @@ ValueNode_BLine::operator()(Time t)const
 #endif
 				}
 				else
-					blp_here_now.set_split_tangent_flag(false);
+					blp_here_now.set_split_tangent_both(false);
 			}
 
 			blp_here_now.set_origin(blp_here_on.get_origin());
@@ -947,10 +947,10 @@ ValueNode_BLine::operator()(Time t)const
 				continue;
 			}
 
-			ret_list.back().set_split_tangent_flag(true);
+			ret_list.back().set_split_tangent_both(true);
 			ret_list.back().set_tangent2(prev.get_tangent2()*prev_tangent_scalar);
 			ret_list.push_back(blp_here_now);
-			ret_list.back().set_split_tangent_flag(true);
+			ret_list.back().set_split_tangent_both(true);
 			//ret_list.back().set_tangent2(blp_here_now.get_tangent1());
 			ret_list.back().set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar);
 
@@ -960,7 +960,7 @@ ValueNode_BLine::operator()(Time t)const
 
 	if(next_scale!=1.0f)
 	{
-		ret_list.back().set_split_tangent_flag(true);
+		ret_list.back().set_split_tangent_both(true);
 		ret_list.back().set_tangent2(prev.get_tangent2()*next_scale);
 	}
 
@@ -1064,7 +1064,7 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 	// in fact the compensation makes it worst so it makes only sense when the
 	// vertex has a particular "shape" by its split tangents.
 	alpha=(vn-vp).angle()-(vns-vps).angle();
-	if (bpcurr.get_split_tangent_flag())
+	if (bpcurr.get_split_tangent_both())
 		gamma=((v-(vn+vp)*0.5).angle()-(vn-vp).angle()) - ((vs-(vns+vps)*0.5).angle()-(vns-vps).angle());
 	else
 		gamma=Angle::zero();

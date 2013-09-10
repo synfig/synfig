@@ -679,7 +679,7 @@ Advanced_Outline::sync()
 			Vector next_t(bnext->get_tangent1());
 			Real iter_t_mag(iter_t.mag());
 			Real next_t_mag(next_t.mag());
-			bool split_flag(biter->get_split_tangent_flag() || (iter_t_mag==0.0));
+			bool split_flag(biter->get_split_tangent_both() || (iter_t_mag==0.0));
 			// Setup the bezier curve
 			hermite<Vector> curve(
 				biter->get_vertex(),
@@ -765,7 +765,7 @@ Advanced_Outline::sync()
 					scwnext=scwplist.begin();
 					scwiter=--scwplist.end();
 					// if we are doing looped blines and it is tangent split or its tangent is zero
-					if(blineloop && (bnext->get_split_tangent_flag()|| bnext->get_tangent1().mag()==0.0))
+					if(blineloop && (bnext->get_split_tangent_both()|| bnext->get_tangent1().mag()==0.0))
 					{
 						vector<WidthPoint>::iterator first(wplist.begin());
 						vector<WidthPoint>::iterator last(--wplist.end());

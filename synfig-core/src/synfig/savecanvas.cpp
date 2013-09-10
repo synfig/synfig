@@ -224,7 +224,7 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	encode_vector(root->add_child("vertex")->add_child("vector"),bline_point.get_vertex());
 	encode_vector(root->add_child("t1")->add_child("vector"),bline_point.get_tangent1());
 
-	if(bline_point.get_split_tangent_flag())
+	if(bline_point.get_split_tangent_both())
 		encode_vector(root->add_child("t2")->add_child("vector"),bline_point.get_tangent2());
 
 	encode_real(root->add_child("width")->add_child("real"),bline_point.get_width());

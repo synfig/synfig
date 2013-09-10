@@ -2221,7 +2221,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent2 duck
 				if (composite_vertex_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?
+					int i=bline_point.get_split_tangent_both()?
 						composite_vertex_value_node->get_link_index_from_name("t2"):
 						composite_vertex_value_node->get_link_index_from_name("t1");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
@@ -2231,7 +2231,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?
+					int i=bline_point.get_split_tangent_both()?
 					composite_bone_link_value_node->get_link_index_from_name("t2"):
 					composite_bone_link_value_node->get_link_index_from_name("t1");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
@@ -2241,7 +2241,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				}
 				else
 				{
-					if(bline_point.get_split_tangent_flag())
+					if(bline_point.get_split_tangent_both())
 						tduck=new Duck(bline_point.get_tangent2());
 					else
 						tduck=new Duck(bline_point.get_tangent1());

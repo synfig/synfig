@@ -702,7 +702,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 	}
 
 	BLinePoint ret;
-	ret.set_split_tangent_flag(false);
+	ret.set_split_tangent_both(false);
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -784,7 +784,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 			}
 
 			ret.set_tangent2(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
-			ret.set_split_tangent_flag(true);
+			ret.set_split_tangent_both(true);
 		}
 		else
 		// width

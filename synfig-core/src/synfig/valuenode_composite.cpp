@@ -87,7 +87,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			set_link("point",ValueNode_Const::create(bline_point.get_vertex()));
 			set_link("width",ValueNode_Const::create(bline_point.get_width()));
 			set_link("origin",ValueNode_Const::create(bline_point.get_origin()));
-			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_flag()));
+			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_both()));
 			set_link("t1",ValueNode_RadialComposite::create(bline_point.get_tangent1()));
 			set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
 			break;
@@ -193,9 +193,9 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_vertex((*components[0])(t).get(Point()));
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_origin((*components[2])(t).get(Real()));
-			ret.set_split_tangent_flag((*components[3])(t).get(bool()));
+			ret.set_split_tangent_both((*components[3])(t).get(bool()));
 			ret.set_tangent1((*components[4])(t).get(Vector()));
-			if(ret.get_split_tangent_flag())
+			if(ret.get_split_tangent_both())
 				ret.set_tangent2((*components[5])(t).get(Vector()));
 			return ret;
 		}
