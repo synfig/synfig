@@ -1022,11 +1022,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("canvas", get_canvas());
 		param_list.add("value_desc", value_desc);
 		param_list.add("canvas_interface",canvas_interface);
-		/////// None
+		/////// Default
 		param_list.add("new_value", INTERPOLATION_UNDEFINED);
 		param_interpolation_menu->items().push_back(
 			Gtk::Menu_Helpers::MenuElem(
-				_("None"),
+				_("Default"),
 				sigc::bind(
 					sigc::bind(
 						sigc::mem_fun(*const_cast<studio::Instance*>(this),&studio::Instance::process_action),

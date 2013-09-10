@@ -46,7 +46,9 @@
 # - debuginfo packages
 
 RELEASE=8
+if [ -z "$PREFIX" ]; then
 PREFIX=$HOME/synfig/
+fi
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 
@@ -547,6 +549,9 @@ mkpack()
 	# bundle libpng
 	rm -f ${PREFIX}/lib/libpng* || true
 	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+	# bundle libjasper
+	rm -f ${PREFIX}/lib/libjasper* || true
+	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
 
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}

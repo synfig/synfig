@@ -200,4 +200,37 @@ Action::LayerMakeBLine::prepare_make_bline(const synfig::String &bline_layer_nam
 
 		add_action_front(action);
 	}
+	
+	// Connect origin
+	ValueNode::Handle value_node_origin;
+	if (layer->dynamic_param_list().count("origin"))
+		value_node_origin=layer->dynamic_param_list().find("origin")->second;
+	else
+	{
+		Vector origin;
+		origin = layer->get_param("origin").get(Vector());
+		value_node_origin=ValueNode_Const::create(origin);
+		{
+			Action::Handle action(Action::create("LayerParamConnect"));
+
+			action->set_param("canvas",subcanvas);
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			action->set_param("param","origin");
+			action->set_param("value_node",value_node_origin);
+
+			add_action_front(action);
+		}
+	}
+	{
+		Action::Handle action(Action::create("LayerParamConnect"));
+
+		action->set_param("canvas",subcanvas);
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",new_layer);
+		action->set_param("param","origin");
+		action->set_param("value_node",value_node_origin);
+
+		add_action_front(action);
+	}
 }
