@@ -87,9 +87,10 @@ png_mptr::png_out_warning(png_struct */*png_data*/,const char *msg)
 void
 png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read)
 {
-	png_size_t s = png_ptr->io_ptr == NULL
+	FileSystem::ReadStream *stream = (FileSystem::ReadStream*)png_get_io_ptr(png_ptr);
+	png_size_t s = stream == NULL
 				 ? 0
-				 : ((FileSystem::ReadStream*)png_ptr->io_ptr)->read(out_bytes, bytes_count_to_read);
+				 : stream->read(out_bytes, bytes_count_to_read);
 	if (s < bytes_count_to_read)
 		memset(out_bytes + s, 0, bytes_count_to_read - s);
 }
