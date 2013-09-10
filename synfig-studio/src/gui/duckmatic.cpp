@@ -1734,17 +1734,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 	case ValueBase::TYPE_SEGMENT:
 		{
+			int index;
 			etl::handle<Bezier> bezier(new Bezier());
 			ValueNode_Composite::Handle value_node;
 
 			if(value_desc.is_value_node() &&
 				(value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())))
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,0),canvas_view,transform_stack))
+				index=value_node->get_link_index_from_name("p1");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->p1=last_duck();
 				bezier->p1->set_type(Duck::TYPE_VERTEX);
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,1),canvas_view,transform_stack))
+
+				index=value_node->get_link_index_from_name("t1");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->c1=last_duck();
 				bezier->c1->set_type(Duck::TYPE_TANGENT);
@@ -1752,11 +1756,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->c1->set_scalar(TANGENT_BEZIER_SCALE);
 				bezier->c1->set_tangent(true);
 
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,2),canvas_view,transform_stack))
+				index=value_node->get_link_index_from_name("p2");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->p2=last_duck();
 				bezier->p2->set_type(Duck::TYPE_VERTEX);
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,3),canvas_view,transform_stack))
+
+				index=value_node->get_link_index_from_name("t2");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->c2=last_duck();
 				bezier->c2->set_type(Duck::TYPE_TANGENT);
@@ -1826,18 +1833,19 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 	case ValueBase::TYPE_BLINEPOINT:
 	{
-
+		int index;
 		if(value_desc.is_value_node() &&
 			ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
 			ValueNode_Composite::Handle value_node;
 			value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-
-			if(!add_to_ducks(synfigapp::ValueDesc(value_node,0),canvas_view,transform_stack))
+			index=value_node->get_link_index_from_name("p");
+			if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 				return false;
 			etl::handle<Duck> vertex_duck(last_duck());
 			vertex_duck->set_type(Duck::TYPE_VERTEX);
-			if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,-TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+			index=value_node->get_link_index_from_name("t1");
+			if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,-TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 				return false;
 			etl::handle<Duck> t1_duck(last_duck());
 
@@ -1847,10 +1855,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			etl::handle<Duck> t2_duck;
 
+			index=value_node->get_link_index_from_name("t2");
 			// If the tangents are split
 			if((*value_node->get_link("split"))(get_time()).get(bool()))
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,5,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1859,7 +1868,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			else
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1977,7 +1986,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// ----Vertex Duck
 				if(composite_vertex_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,0),canvas_view,transform_stack))
+					int index=composite_vertex_value_node->get_link_index_from_name("p");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack))
 					{
 						duck=last_duck();
 						if(i==first)
@@ -2018,7 +2028,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,0),canvas_view,bone_transform_stack))
+					int index=composite_bone_link_value_node->get_link_index_from_name("p");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index),canvas_view,bone_transform_stack))
 					{
 						duck=last_duck();
 						if(i==first)
@@ -2074,7 +2085,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if(composite_vertex_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					int index=composite_vertex_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
 						width->set_origin(duck);
@@ -2102,7 +2114,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					int index=composite_bone_link_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
 						width->set_origin(duck);
@@ -2139,14 +2152,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// Add the tangent1 duck
 					if (composite_vertex_value_node)
 					{
-						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
+						int index=composite_vertex_value_node->get_link_index_from_name("t1");
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
 							return false;
 						tduck=last_duck();
 					}
 					else
 					if (composite_bone_link_value_node)
 					{
-						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+						int index=composite_bone_link_value_node->get_link_index_from_name("t1");
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index,-TANGENT_BEZIER_SCALE),
 										 canvas_view,bone_transform_stack))
 							return false;
 						tduck=last_duck();
@@ -2206,7 +2221,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent2 duck
 				if (composite_vertex_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?5:4;
+					int i=bline_point.get_split_tangent_flag()?
+						composite_vertex_value_node->get_link_index_from_name("t2"):
+						composite_vertex_value_node->get_link_index_from_name("t1");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
 						return false;
 					tduck=last_duck();
@@ -2214,7 +2231,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?5:4;
+					int i=bline_point.get_split_tangent_flag()?
+					composite_bone_link_value_node->get_link_index_from_name("t2"):
+					composite_bone_link_value_node->get_link_index_from_name("t1");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack,0,2))
 						return false;
@@ -2317,14 +2336,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent1 duck
 				if(composite_vertex_value_node)
 				{
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4),canvas_view,transform_stack))
+					int index=composite_vertex_value_node->get_link_index_from_name("t1");
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack))
 						return false;
 					tduck=last_duck();
 				}
 				else
 				if (composite_bone_link_value_node)
 				{
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+					int index=composite_bone_link_value_node->get_link_index_from_name("t1");
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index,-TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack))
 						return false;
 					tduck=last_duck();
@@ -2569,7 +2590,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						}
 					}
 					// add the width duck
-					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,1),canvas_view,transform_stack))
+					int index=composite_width_point_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,index),canvas_view,transform_stack))
 					{
 						etl::handle<Duck> wduck;
 						wduck=last_duck();
