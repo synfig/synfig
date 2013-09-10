@@ -103,7 +103,7 @@ ffmpeg_mptr::seek_to(int frame)
 
 		string command;
 
-		command=strprintf("ffmpeg -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",frame,filename.c_str());
+		command=strprintf("ffmpeg -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",frame,identifier.filename.c_str());
 
 		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
