@@ -32,10 +32,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <cstring>
 
 #include <libxml++/libxml++.h>
 #include <ETL/angle>

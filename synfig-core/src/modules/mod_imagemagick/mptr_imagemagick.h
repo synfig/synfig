@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <stdio.h>
+#include <cstdio>
 #include "string.h"
 #include <synfig/surface.h>
 
@@ -44,13 +44,12 @@ class imagemagick_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	synfig::String filename;
 	FILE *file;
 	int cur_frame;
 	synfig::Surface frame;
 
 public:
-	imagemagick_mptr(const char *filename);
+	imagemagick_mptr(const synfig::FileSystem::Identifier &identifier);
 
 	~imagemagick_mptr();
 

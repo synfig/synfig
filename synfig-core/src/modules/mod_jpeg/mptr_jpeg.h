@@ -48,7 +48,6 @@ class jpeg_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	synfig::String filename;
 	synfig::Surface surface_buffer;
 
 	struct jpeg_decompress_struct cinfo;
@@ -56,7 +55,7 @@ private:
 	static void my_error_exit (j_common_ptr cinfo);
 
 public:
-	jpeg_mptr(const char *filename);
+	jpeg_mptr(const synfig::FileSystem::Identifier &identifier);
 	~jpeg_mptr();
 
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);

@@ -34,7 +34,7 @@
 
 #include <ETL/stringf>
 #include "mptr_ffmpeg.h"
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
@@ -74,6 +74,7 @@ SYNFIG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
 SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
 SYNFIG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ffmpeg_mptr, false);
 
 /* === M E T H O D S ======================================================= */
 
@@ -134,7 +135,7 @@ ffmpeg_mptr::seek_to(int frame)
 			// Close the unneeded pipein
 			close(p[1]);
 			string time = strprintf("00:00:00.%d",frame);
-			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", identifier.filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
 			_exit(1);
@@ -172,7 +173,7 @@ ffmpeg_mptr::grab_frame(void)
 {
 	if(!file)
 	{
-		cerr<<"unable to open "<<filename.c_str()<<endl;
+		cerr<<"unable to open "<<identifier.filename.c_str()<<endl;
 		return false;
 	}
 	int w,h;
@@ -228,13 +229,13 @@ ffmpeg_mptr::grab_frame(void)
 	return true;
 }
 
-ffmpeg_mptr::ffmpeg_mptr(const char *f)
+ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier):
+	synfig::Importer(identifier)
 {
 	pid=-1;
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
-	filename=f;
 	file=NULL;
 	fps=23.98;
 	cur_frame=-1;

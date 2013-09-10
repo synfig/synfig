@@ -50,6 +50,8 @@ SYNFIG_IMPORTER_SET_NAME(Importer_LibAVCodec,"libav");
 SYNFIG_IMPORTER_SET_EXT(Importer_LibAVCodec,"avi");
 SYNFIG_IMPORTER_SET_VERSION(Importer_LibAVCodec,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(Importer_LibAVCodec,"$Id$");
+SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(Importer_LibAVCodec, false);
+
 
 /* === M E T H O D S ======================================================= */
 

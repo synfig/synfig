@@ -52,7 +52,7 @@ using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
 
-map<String,Importer::LooseHandle> *__open_importers;
+map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -62,7 +62,7 @@ bool
 Importer::subsys_init()
 {
 	book_=new Book();
-	__open_importers=new map<String,Importer::LooseHandle>();
+	__open_importers=new map<FileSystem::Identifier,Importer::LooseHandle>();
 	return true;
 }
 
@@ -81,11 +81,9 @@ Importer::book()
 }
 
 Importer::Handle
-Importer::open(const String &filename)
+Importer::open(const FileSystem::Identifier &identifier)
 {
-	//String filename;
-	//filename = Glib::locale_from_utf8(filename_utf);
-	if(filename.empty())
+	if(identifier.filename.empty())
 	{
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
 		return 0;
@@ -93,19 +91,19 @@ Importer::open(const String &filename)
 
 	// If we already have an importer open under that filename,
 	// then use it instead.
-	if(__open_importers->count(filename))
+	if(__open_importers->count(identifier))
 	{
 		//synfig::info("Found importer already open, using it...");
-		return (*__open_importers)[filename];
+		return (*__open_importers)[identifier];
 	}
 
-	if(filename_extension(filename) == "")
+	if(filename_extension(identifier.filename) == "")
 	{
 		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return 0;
 	}
 
-	String ext(filename_extension(filename));
+	String ext(filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
@@ -118,12 +116,8 @@ Importer::open(const String &filename)
 
 	try {
 		Importer::Handle importer;
-#ifdef WIN32
-		importer=Importer::book()[ext](Glib::locale_from_utf8(filename).c_str());
-#else
-		importer=Importer::book()[ext](filename.c_str());
-#endif
-		(*__open_importers)[filename]=importer;
+		importer=Importer::book()[ext].factory(identifier);
+		(*__open_importers)[identifier]=importer;
 		return importer;
 	}
 	catch (String str)
@@ -133,8 +127,9 @@ Importer::open(const String &filename)
 	return 0;
 }
 
-Importer::Importer():
-	gamma_(2.2)
+Importer::Importer(const FileSystem::Identifier &identifier):
+	gamma_(2.2),
+	identifier(identifier)
 {
 }
 
@@ -142,7 +137,7 @@ Importer::Importer():
 Importer::~Importer()
 {
 	// Remove ourselves from the open importer list
-	map<String,Importer::LooseHandle>::iterator iter;
+	map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
 	for(iter=__open_importers->begin();iter!=__open_importers->end();++iter)
 		if(iter->second==this)
 		{

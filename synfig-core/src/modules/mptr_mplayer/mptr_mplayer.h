@@ -29,9 +29,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/synfig.h>
-#include <stdio.h>
-#include "string.h"
+#include <synfig/importer.h>
+#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,21 +40,9 @@
 
 class mplayer_mptr : public synfig::Importer
 {
+	SYNFIG_IMPORTER_MODULE_DECLARATIONS(mplayer_mptr)
 public:
-private:
-	String filename;
-
-public:
-	mplayer_mptr(const char *filename);
-	~mplayer_mptr();
-
-
-	static const char Name[];
-	static const char Ext[];
-
-	virtual bool GetFrame(synfig::Time time, synfig::Surface &, synfig::ProgressCallback *);
-
-	static synfig::Importer *New(const char *filename);
+	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

@@ -34,7 +34,7 @@
 
 #include <ETL/stringf>
 #include "trgt_imagemagick.h"
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>

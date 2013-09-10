@@ -407,6 +407,18 @@ PKG_CHECK_MODULES(ETL, [ETL >= 0.04.16],,[
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
 
+PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.18.2],[
+	CONFIG_DEPS="$CONFIG_DEPS glibmm-2.4"
+],[
+	AC_MSG_ERROR([ ** You need to install glibmm-2.4 verison 2.18.2 or higher.])
+])
+
+PKG_CHECK_MODULES(GIOMM, [giomm-2.4 >= 2.18.2],[
+	CONFIG_DEPS="$CONFIG_DEPS giomm-2.4"
+],[
+	AC_MSG_ERROR([ ** You need to install giomm-2.4 verison 2.18.2 or higher.])
+])
+
 PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
 	CONFIG_DEPS="$CONFIG_DEPS libxml++-2.6"
 ],[
@@ -424,8 +436,6 @@ dnl		AC_MSG_ERROR([ ** At least libsigc++-1.2 is required.])
 dnl	])
 ])
 CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
-
-dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	CONFIG_DEPS="$CONFIG_DEPS cairo"
@@ -665,8 +675,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -759,6 +769,8 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"CXX -----------------------------> '$CXX'
 "'$'"CXXFLAGS ------------------------> '$CXXFLAGS'
 "'$'"SYNFIG_LIBS ---------------------> '$SYNFIG_LIBS'
+"'$'"GLIBMM_LIBS ---------------------> '$GLIBMM_LIBS'
+"'$'"GIOMM_LIBS ----------------------> '$GIOMM_LIBS'
 "'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
 "'$'"LIBCAIRO_LIBS -------------------> '$LIBCAIRO_LIBS'
 "'$'"LIBCAIROMM_LIBS -----------------> '$LIBCAIROMM_LIBS'

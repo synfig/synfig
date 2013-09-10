@@ -254,8 +254,8 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	}
 
 	// Load up the list importer
-	Importer::book()[String("lst")]=ListImporter::create;
-	CairoImporter::book()[String("lst")]=CairoListImporter::create;
+	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);
+	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
 
 	// Load up the modules
 	std::list<String> modules_to_load;

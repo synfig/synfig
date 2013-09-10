@@ -28,9 +28,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <list>
 #include "string.h"
 #include "canvas.h"
 #include "releases.h"
+#include "layer.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -42,13 +44,18 @@ namespace synfig {
 
 /* === E X T E R N S ======================================================= */
 
+typedef bool (*save_canvas_external_file_callback_t)(void *user_data, Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
+
+
 //!	Saves a canvas to \a filename
 /*!	\return	\c true on success, \c false on error. */
-bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
+bool save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandle canvas, bool safe = true);
 
 //! Stores a Canvas in a string in XML format
 /*! \return The string with the XML canvas definition */
 String canvas_to_string(Canvas::ConstHandle canvas);
+
+void set_save_canvas_external_file_callback(save_canvas_external_file_callback_t callback, void *user_data);
 
 void set_file_version(ReleaseVersion version);
 ReleaseVersion get_file_version();

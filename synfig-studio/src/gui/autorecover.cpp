@@ -90,7 +90,7 @@ using namespace studio;
 AutoRecover::AutoRecover()
 {
 	// Three Minutes
-	set_timeout(3*60*1000);
+	set_timeout(10 /* 3*60*1000 */);
 
 	if(mkdir(get_shadow_directory().c_str(),ACCESSPERMS)<0)
 	{
@@ -191,6 +191,10 @@ AutoRecover::auto_backup()
 	int pid(0);
 
 #ifdef HAVE_FORK
+#undef HAVE_FORK
+#endif
+
+#ifdef HAVE_FORK
 	pid=fork();
 #endif
 
@@ -204,12 +208,12 @@ AutoRecover::auto_backup()
 
 		try
 		{
-			std::list<etl::handle<Instance> >::iterator iter;
+			std::list< etl::handle<Instance> >::iterator iter;
 
 			std::string filename=App::get_config_file("autorecovery");
 			std::ofstream file(filename.c_str());
 
-			int savecount(0);
+			//int savedcount = 0;
 
 			for(iter=App::instance_list.begin();iter!=App::instance_list.end();++iter)
 			{
@@ -220,13 +224,25 @@ AutoRecover::auto_backup()
 					continue;
 
 				Canvas::Handle canvas((*iter)->get_canvas());
-				file<<canvas->get_file_name().c_str()<<endl;
-				save_canvas(get_shadow_file_name(canvas->get_file_name()),canvas);
-				savecount++;
+
+				// todo: literal "container:project.sifz"
+				FileSystem::Handle file_system = canvas->get_identifier().file_system;
+				if (file_system && (*iter)->get_container())
+				{
+					if (save_canvas(file_system->get_identifier("container:project.sifz"), canvas, false))
+					{
+						if ((*iter)->get_container()->save_temporary())
+						{
+							file << (*iter)->get_container()->get_temporary_filename_base() << endl;
+							file << canvas->get_file_name().c_str() << endl;
+							//savedcount++;
+						}
+					}
+				}
 			}
 
-//			if(savecount)
-//				synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
+			//if(savecount)
+			//	synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
 		}
 		catch(...)
 		{
@@ -289,16 +305,22 @@ AutoRecover::recover(int& number_recovered)
 
 	while(file)
 	{
-		std::string filename;
-		getline(file,filename);
-		if(filename.empty())
+		std::string container_filename_base;
+		std::string canvas_filename;
+
+		getline(file,container_filename_base);
+		if (!file || container_filename_base.empty())
+			continue;
+
+		getline(file,canvas_filename);
+		if(canvas_filename.empty())
 			continue;
 
 		// Open the file
-		if(App::open_as(get_shadow_file_name(filename),filename))
+		if(App::open_from_temporary_container_as(container_filename_base,canvas_filename))
 		{
 			// Correct the file name
-			App::instance_list.back()->set_file_name(filename);
+			App::instance_list.back()->set_file_name(canvas_filename);
 
 			// This file isn't saved! mark it as such
 			App::instance_list.back()->inc_action_count();

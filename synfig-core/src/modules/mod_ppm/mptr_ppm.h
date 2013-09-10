@@ -30,7 +30,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,13 +39,8 @@
 
 class ppm_mptr : public synfig::Importer
 {
-	SYNFIG_IMPORTER_MODULE_EXT
-private:
-	synfig::String filename;
+	SYNFIG_IMPORTER_MODULE_DECLARATIONS(ppm_mptr)
 public:
-	ppm_mptr(const char *filename);
-	~ppm_mptr();
-
 	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 }; // END of class ppm_mptr
 

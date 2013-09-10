@@ -70,6 +70,10 @@
 
 #include "gradient.h"
 
+#include "importer.h"
+
+#include "zstreambuf.h"
+
 #include <map>
 #include <sigc++/bind.h>
 
@@ -99,7 +103,7 @@ test_class test_class_instance;
 
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
 
-std::set<String> CanvasParser::loading_;
+std::set<FileSystem::Identifier> CanvasParser::loading_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -130,21 +134,16 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas(const String &filename,String &errors,String &warnings)
+synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings)
 {
-	return open_canvas_as(filename, filename, errors, warnings);
-}
-
-Canvas::Handle
-synfig::open_canvas_as(const String &filename,const String &as,String &errors,String &warnings)
-{
-	if (CanvasParser::loading_.count(filename))
+	if (CanvasParser::loading_.count(identifier))
 	{
-		String warning(strprintf(_("cannot load '%s' recursively"), filename.c_str()));
+		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.c_str()));
 		synfig::warning(warning);
 		warnings = "  * " + warning + "\n";
 		Canvas::Handle canvas(Canvas::create());
-		canvas->set_file_name(filename);
+		canvas->set_identifier(identifier);
+		canvas->set_file_name(as);
 		Layer::Handle paste(Layer_PasteCanvas::create());
 		canvas->push_back(paste);
 		paste->set_description(warning);
@@ -157,15 +156,15 @@ synfig::open_canvas_as(const String &filename,const String &as,String &errors,St
 
 	try
 	{
-		CanvasParser::loading_.insert(filename);
-		canvas=parser.parse_from_file_as(filename,as,errors);
+		CanvasParser::loading_.insert(identifier);
+		canvas=parser.parse_from_file_as(identifier,as,errors);
 	}
 	catch (...)
 	{
-		CanvasParser::loading_.erase(filename);
+		CanvasParser::loading_.erase(identifier);
 		throw;
 	}
-	CanvasParser::loading_.erase(filename);
+	CanvasParser::loading_.erase(identifier);
 
 	warnings = parser.get_warnings_text();
 
@@ -2551,7 +2550,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Canvas::Handle
-CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool inline_, String filename)
+CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool inline_,const FileSystem::Identifier &identifier,String filename)
 {
 
 	if(element->get_name()!="canvas")
@@ -2587,6 +2586,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	else
 	{
 		canvas=Canvas::create();
+		canvas->set_identifier(identifier);
 		if(filename=="/dev/stdin")
 			canvas->set_file_name("./stdin.sif");
 		else
@@ -2862,11 +2862,9 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 #endif	// _DEBUG
 
 Canvas::Handle
-CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &errors)
+CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const String &as,String &errors)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	String file(unix_to_local_path(file_));
-	String as(unix_to_local_path(as_));
 
 	try
 	{
@@ -2875,28 +2873,38 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 
 		filename=as;
 		total_warnings_=0;
-		xmlpp::DomParser parser(file);
-		if(parser)
+
+		FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
+		if (stream)
 		{
-			Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,as));
-			if (!canvas) return canvas;
-			register_canvas_in_map(canvas, as);
+			if (filename_extension(identifier.filename) == ".sifz")
+				stream = FileSystem::ReadStreamHandle(new ZReadStream(stream));
 
-			const ValueNodeList& value_node_list(canvas->value_node_list());
-
-			again:
-			ValueNodeList::const_iterator iter;
-			for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+			xmlpp::DomParser parser;
+			parser.parse_stream(stream->stream());
+			stream.reset();
+			if(parser)
 			{
-				ValueNode::Handle value_node(*iter);
-				if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
-				{
-					canvas->remove_value_node(value_node, true);
-					goto again;
-				}
-			}
+				Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,identifier,as));
+				if (!canvas) return canvas;
+				register_canvas_in_map(canvas, as);
 
-			return canvas;
+				const ValueNodeList& value_node_list(canvas->value_node_list());
+
+				again:
+				ValueNodeList::const_iterator iter;
+				for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+				{
+					ValueNode::Handle value_node(*iter);
+					if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
+					{
+						canvas->remove_value_node(value_node, true);
+						goto again;
+					}
+				}
+
+				return canvas;
+			}
 		}
 	}
 	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
@@ -2907,7 +2915,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	catch(xmlpp::internal_error x)
 	{
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
-			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + file + "\"");
+			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + identifier.filename + "\"");
 		throw;
 	}
 	catch(const std::exception& ex)
@@ -2935,7 +2943,7 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 		total_warnings_=0;
 		if(node)
 		{
-			Canvas::Handle canvas(parse_canvas(node,0,false,""));
+			Canvas::Handle canvas(parse_canvas(node,0,false,FileSystemNative::instance()->get_identifier(std::string()),""));
 			if (!canvas) return canvas;
 
 			const ValueNodeList& value_node_list(canvas->value_node_list());
