@@ -69,6 +69,12 @@ using namespace studio;
 #	endif
 #endif
 
+#ifdef WIN32
+#define DLLIMPORT __declspec (dllimport)
+#else
+#define DLLIMPORT
+#endif
+
 #ifndef IMAGE_DIR
 #	define IMAGE_DIR "/usr/local/share/pixmaps"
 #endif
@@ -82,11 +88,11 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-extern const guint gtk_major_version;
-extern const guint gtk_minor_version;
-extern const guint gtk_micro_version;
-extern const guint gtk_binary_age;
-extern const guint gtk_interface_age;
+extern DLLIMPORT const guint gtk_major_version;
+extern DLLIMPORT const guint gtk_minor_version;
+extern DLLIMPORT const guint gtk_micro_version;
+extern DLLIMPORT const guint gtk_binary_age;
+extern DLLIMPORT const guint gtk_interface_age;
 
 /* === P R O C E D U R E S ================================================= */
 
