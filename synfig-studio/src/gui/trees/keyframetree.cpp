@@ -110,7 +110,6 @@ KeyframeTree::KeyframeTree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable(false);
-		column->set_sort_column(COLUMNID_JUMP); // without this, (JMP) needs a double click?!
 
 		append_column(*column);
 	}
@@ -276,7 +275,7 @@ KeyframeTree::on_event(GdkEvent *event)
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
 
 			signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
-			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
+			if (synfig::String(column->get_title ()) == _("Jump"))
 			{
 				keyframe_tree_store_->canvas_interface()->set_time(row[model.time]);
 			}
