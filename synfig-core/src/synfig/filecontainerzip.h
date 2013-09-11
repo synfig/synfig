@@ -46,7 +46,7 @@ namespace synfig
 		class WholeZipReadStream : public FileSystem::ReadStream
 		{
 		protected:
-			friend FileContainerZip;
+			friend class FileContainerZip;
 			WholeZipReadStream(Handle file_system);
 		public:
 			virtual ~WholeZipReadStream();

@@ -44,7 +44,7 @@ namespace synfig
 		class ReadStream : public FileSystem::ReadStream
 		{
 		protected:
-			friend FileSystemNative;
+			friend class FileSystemNative;
 			FILE *file_;
 			ReadStream(Handle file_system, FILE *file);
 		public:
@@ -55,7 +55,7 @@ namespace synfig
 		class WriteStream : public FileSystem::WriteStream
 		{
 		protected:
-			friend FileSystemNative;
+			friend class FileSystemNative;
 			FILE *file_;
 			WriteStream(Handle file_system, FILE *file_);
 		public:
