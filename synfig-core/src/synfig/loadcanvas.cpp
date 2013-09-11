@@ -1802,8 +1802,26 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			if((version=="0.8" || version =="0.7") &&
 				(element->get_name() == "composite") && value_node->link_name(i) =="upper_bound")
 			{
-				// old versions have lower boundary set to 1.0
+				// old versions have upper boundary set to 1.0
 				value_node->set_link("upper_bound", ValueNode_Const::create(Real(1.0)));
+				continue;
+			}
+			// 'split_radius' was added while canvas 0.9 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version == "0.1" || version == "0.2" || version == "0.3" || version == "0.4" || version == "0.5" || version == "0.6" || version=="0.7" || version=="0.8" || version =="0.9") &&
+			   (element->get_name() == "composite") && value_node->link_name(i) =="split_radius")
+			{
+				// old versions must have split_radius and split_angle set to the same value node than split
+				value_node->set_link("split_radius", value_node->get_link(value_node->get_link_index_from_name("split"))->clone(canvas));
+				continue;
+			}
+			// 'split_angle' was added while canvas 0.9 was in use and
+			// ValueNode_Composite has been modified since canvas version 0.7
+			if((version == "0.1" || version == "0.2" || version == "0.3" || version == "0.4" || version == "0.5" || version == "0.6" || version=="0.7" || version=="0.8" || version =="0.9") &&
+			   (element->get_name() == "composite") && value_node->link_name(i) =="split_angle")
+			{
+				// old versions must have split_radius and split_angle set to the same value node than split
+				value_node->set_link("split_angle", value_node->get_link(value_node->get_link_index_from_name("split"))->clone(canvas));
 				continue;
 			}
 
