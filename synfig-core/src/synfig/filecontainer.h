@@ -45,7 +45,7 @@ namespace synfig
 		class ReadStream : public FileSystem::ReadStream
 		{
 		protected:
-			friend FileContainer;
+			friend class FileContainer;
 			ReadStream(Handle file_system);
 		public:
 			virtual ~ReadStream();
@@ -55,7 +55,7 @@ namespace synfig
 		class WriteStream : public FileSystem::WriteStream
 		{
 		protected:
-			friend FileContainer;
+			friend class FileContainer;
 			WriteStream(Handle file_system);
 		public:
 			virtual ~WriteStream();
