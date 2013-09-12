@@ -755,62 +755,178 @@ Action::ValueDescSet::prepare()
 	// we must also set the second tangent for things
 	// to interpolate properly
 	if (value_desc.parent_is_value_node() &&
-	    value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
-	    value_desc.get_index()==3)
+	    value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT)
 	{
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 		assert(parent_value_node);
-		// are we splitting or merging the tangents?
-	    if (value.get(bool()))
-	    {
-			// we are splitting tangents
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
-			action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
-	    }
-	    else
-	    {
-			// we are merging tangents
-			// the merged tangent should be the average of the 2 tangents we're merging
-			ValueBase average(((Vector)((*parent_value_node->get_link("t1"))(time)) +
-							   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
+		int split_both=parent_value_node->get_link_index_from_name("split");
+		int split_radius=parent_value_node->get_link_index_from_name("split_radius");
+		int split_angle=parent_value_node->get_link_index_from_name("split_angle");
+		int index_value_desc=value_desc.get_index();
+		// If we are merging both tangents
+		if(index_value_desc==split_both)
+		{
+			// are we splitting or merging the tangents?
+			if (value.get(bool()))
 			{
+				// we are splitting tangents
 				Action::Handle action(Action::create("ValueDescSet"));
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
-				action->set_param("new_value",average);
-				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
-			}
-			{
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",average);
+				action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
 				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
 				add_action(action);
 			}
-	    }
-
+			else
+			{
+				// we are merging tangents
+				// the merged tangent should be the average of the 2 tangents we're merging
+				ValueBase average(((Vector)((*parent_value_node->get_link("t1"))(time)) +
+								   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",average);
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",average);
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+			}
+		}
+		else if(index_value_desc==split_radius)
+		{
+			// are we splitting or merging the radius?
+			if (value.get(bool()))
+			{
+				// we are splitting radius
+				Vector t2new((*parent_value_node->get_link("t1"))(time).get(Vector()).mag(),(*parent_value_node->get_link("t2"))(time).get(Vector()).angle());
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",ValueBase(t2new));
+				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
+			else
+			{
+				// we are merging radius
+				// the merged tangent should be the average radius of the 2 tangents we're merging
+				Real average(((*parent_value_node->get_link("t1"))(time).get(Vector()).mag() +
+							  (*parent_value_node->get_link("t2"))(time).get(Vector()).mag()) / 2);
+				Vector t1new(Vector(average, (*parent_value_node->get_link("t1"))(time).get(Vector()).angle()));
+				Vector t2new(Vector(average, (*parent_value_node->get_link("t2"))(time).get(Vector()).angle()));
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t1new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t2new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+			}
+		}
+		else if(index_value_desc==split_angle)
+		{
+			// are we splitting or merging the angle?
+			if (value.get(bool()))
+			{
+				// we are splitting angle
+				Vector t2new((*parent_value_node->get_link("t2"))(time).get(Vector()).mag(),(*parent_value_node->get_link("t1"))(time).get(Vector()).angle());
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",ValueBase(t2new));
+				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
+			else
+			{
+				// we are merging angle
+				// the merged tangent should be the average angle of the 2 tangents we're merging
+				Angle average(((*parent_value_node->get_link("t1"))(time).get(Vector()).angle() +
+							  (*parent_value_node->get_link("t2"))(time).get(Vector()).angle()) / 2);
+				Vector t1new(Vector((*parent_value_node->get_link("t1"))(time).get(Vector()).mag(), average));
+				Vector t2new(Vector((*parent_value_node->get_link("t2"))(time).get(Vector()).mag(), average));
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t1new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t2new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+			}
+		}
 	}
 
 	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
