@@ -128,7 +128,9 @@ Action::BLinePointTangentSplit::is_candidate(const ParamList &x)
 		if(!value_node || value_node->get_type()!=ValueBase::TYPE_BLINEPOINT)
 			return false;
 		synfig::Time time(x.find("time")->second.get_time());
-		if((*value_node->get_link("split"))(time).get(bool())==true)
+		bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
+		bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
+		if(split_radius==true || split_angle==true)
 			return false;
 		return true;
 	}
@@ -188,17 +190,34 @@ void
 Action::BLinePointTangentSplit::prepare()
 {
 	clear();
-	Action::Handle action;
-	action=Action::create("ValueDescSet");
-	if(!action)
-		throw Error(_("Couldn't find action \"ValueDescSet\""));
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",ValueDesc(value_node,value_node->get_link_index_from_name("split")));
-	action->set_param("time",time);
-	action->set_param("new_value",synfig::ValueBase(true));
-	assert(action->is_ready());
-	if(!action->is_ready())
-		throw Error(Error::TYPE_NOTREADY);
-	add_action(action);
+	{
+		Action::Handle action;
+		action=Action::create("ValueDescSet");
+		if(!action)
+			throw Error(_("Couldn't find action \"ValueDescSet\""));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("value_desc",ValueDesc(value_node,value_node->get_link_index_from_name("split_radius")));
+		action->set_param("time",time);
+		action->set_param("new_value",synfig::ValueBase(true));
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+	}
+	{
+		Action::Handle action;
+		action=Action::create("ValueDescSet");
+		if(!action)
+			throw Error(_("Couldn't find action \"ValueDescSet\""));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("value_desc",ValueDesc(value_node,value_node->get_link_index_from_name("split_angle")));
+		action->set_param("time",time);
+		action->set_param("new_value",synfig::ValueBase(true));
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+	}
 }
