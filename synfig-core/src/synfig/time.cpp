@@ -47,7 +47,7 @@
 #ifdef WIN32
 #include <float.h>
 #ifndef isnan
-extern "C" { int _isnan(double x); }
+extern "C" { __declspec(dllimport) int _isnan(double x); }
 #define isnan _isnan
 #endif
 #endif
