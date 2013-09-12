@@ -746,7 +746,6 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 "'$'"CXXFLAGS ------------------------> '$CXXFLAGS'
 "'$'"SYNFIG_LIBS ---------------------> '$SYNFIG_LIBS'
 "'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
-"'$'"MAGICKPP_LIBS -------------------> '$MAGICKPP_LIBS'
 "'$'"LIBCAIRO_LIBS -------------------> '$LIBCAIRO_LIBS'
 "'$'"LIBCAIROMM_LIBS -----------------> '$LIBCAIROMM_LIBS'
 "'$'"LIBPANGO_LIBS -------------------> '$LIBPANGO_LIBS'
