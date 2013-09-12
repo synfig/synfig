@@ -159,7 +159,7 @@ AC_ARG_WITH(magickpp,[
 	with_magickpp="yes"
 ])
 if test $with_magickpp = "yes" ; then {
-	PKG_CHECK_MODULES(MAGICKPP, Magick++ > 6.3.8,[
+	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
                 AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
 	],[
