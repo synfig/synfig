@@ -58,7 +58,7 @@ export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
 export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
 export DEBUG=1
-
+export THREADS=4
 #=========================== EDIT UNTIL HERE ===================================
 
 export DISTPREFIX=$WORKSPACE/dist
@@ -178,7 +178,7 @@ cd $WORKSPACE
 [ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
 cd ${PKG_NAME}-${PKG_VERSION}
 ./autogen.sh
-make -j2 install
+make -j$THREADS install
 
 # remove old version of popt
 [ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
@@ -206,7 +206,7 @@ LDFLAGS=" -L/usr/local/lib" CPPFLAGS="-I/usr/include/nspr -I/usr/include/nss -I/
     --with-external-db \
     --without-lua \
     --enable-python
-make -j2 install
+make -j$THREADS install
 
 cd python
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -552,7 +552,7 @@ autoreconf --install --force
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --with-magickpp=yes --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
 --enable-maintainer-mode $DEBUG
-make -j2
+make -j$THREADS
 make install
 }
 
@@ -576,7 +576,7 @@ cd $SRCPREFIX/synfig-studio
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
-make -j2
+make -j$THREADS
 make install 
 cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
