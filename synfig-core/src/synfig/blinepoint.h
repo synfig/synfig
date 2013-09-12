@@ -85,8 +85,10 @@ public:
 	const Vector& get_tangent1()const { return tangent_[0];	}
 	const Vector& get_tangent2()const
 	{
-		if(merge_tangent_both_ || split_tangent_both_)
-			return tangent_[1]; // When merged tangent_[1] is == tangent_[0]
+		if(merge_tangent_both_)
+			return tangent_[0];
+		if(split_tangent_both_)
+			return tangent_[1];
 		else if(split_tangent_radius_)
 			return tangent2_radius_split_;
 		return tangent2_angle_split_;
