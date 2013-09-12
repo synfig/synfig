@@ -159,28 +159,14 @@ AC_ARG_WITH(magickpp,[
 	with_magickpp="yes"
 ])
 if test $with_magickpp = "yes" ; then {
-  AC_CHECK_HEADER([Magick++.h],[
-  	MAGICKPP_LIBS="-lMagick++"
-  	AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
-  	AC_SUBST(MAGICKPP_LIBS)
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
-	AC_CHECK_LIB(Magick,OptimizeImageTransparency,[
-		AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
-		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
+	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
+		with_magickpp="yes"
+                AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
 	],[
-		AC_MSG_RESULT([ *** OptimizeImageTransparency() not available - need ImageMagick 6.3 or newer ])
-		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
+                with_magickpp="no"
+                AC_MSG_RESULT([ *** Magick++ Output target disabled])
+                AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 	])
-  ],[
-	with_magickpp="no"
-  	AC_MSG_RESULT([ *** Magick++ Output target disabled])
-  	TARGET_MAGICKPP="no"
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
-	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
-  ])
-} else {
-	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
-	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
 } ; fi
 
 
@@ -665,8 +651,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $MAGICKPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
