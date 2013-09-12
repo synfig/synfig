@@ -118,7 +118,6 @@ magickpp_trgt::~magickpp_trgt()
 			for_each(images.begin(), images.end(), Magick::animationDelayImage(delay));
 
 			// optimize the images (only write the pixels that change from frame to frame
-#ifdef HAVE_MAGICK_OPTIMIZE
 			// make a completely new image list
 			// this is required because:
 			//   RemoveDuplicateLayers wants a linked list of images, and removes some of them
@@ -169,18 +168,6 @@ magickpp_trgt::~magickpp_trgt()
 
 			synfig::info("recreating image list");
 			insertImages(&images, image_list);
-#else
-			synfig::info("not optimizing images");
-			// DeconstructImages is available in ImageMagic 6.2.* but it doesn't take
-			// the 'dispose' method into account, so for frames with transparency where
-			// nothing is moving, we end up with objects disappearing when they shouldn't
-
-			// linkImages(images.begin(), images.end());
-			// MagickLib::Image* new_images = DeconstructImages(images.begin()->image(),&exceptionInfo);
-			// unlinkImages(images.begin(), images.end());
-			// images.clear();
-			// insertImages(&images, new_images);
-#endif
 		}
 		else if (multiple_images)
 		{
