@@ -50,6 +50,7 @@ private:
 	ValueDesc value_desc;
 	synfig::ValueBase value;
 	synfig::Time time;
+	bool recursive;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
 public:
