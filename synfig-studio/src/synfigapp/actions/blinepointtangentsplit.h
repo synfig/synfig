@@ -65,6 +65,53 @@ public:
 	ACTION_MODULE_EXT
 };
 
+class BLinePointTangentSplitRadius :
+public Super
+{
+private:
+	
+	synfig::ValueNode_Composite::Handle value_node;
+	synfig::Time time;
+	
+public:
+	
+	BLinePointTangentSplitRadius();
+	
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
+	
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
+	
+	virtual void prepare();
+	
+	ACTION_MODULE_EXT
+};
+
+class BLinePointTangentSplitAngle :
+public Super
+{
+private:
+	
+	synfig::ValueNode_Composite::Handle value_node;
+	synfig::Time time;
+	
+public:
+	
+	BLinePointTangentSplitAngle();
+	
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
+	
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
+	
+	virtual void prepare();
+	
+	ACTION_MODULE_EXT
+};
+
+
 }; // END of namespace action
 }; // END of namespace studio
 

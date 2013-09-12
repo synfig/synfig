@@ -264,7 +264,11 @@ Action::Main::Main()
 	ADD_ACTION(Action::EditModeSet);
 
 	ADD_ACTION(Action::BLinePointTangentMerge);
+	ADD_ACTION(Action::BLinePointTangentMergeRadius);
+	ADD_ACTION(Action::BLinePointTangentMergeAngle);
 	ADD_ACTION(Action::BLinePointTangentSplit);
+	ADD_ACTION(Action::BLinePointTangentSplitRadius);
+	ADD_ACTION(Action::BLinePointTangentSplitAngle);
 
 	ADD_ACTION(Action::GradientSet);
 	ADD_ACTION(Action::ColorSetFromOC);
