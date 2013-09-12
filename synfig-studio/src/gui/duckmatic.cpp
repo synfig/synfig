@@ -2221,9 +2221,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent2 duck
 				if (composite_vertex_value_node)
 				{
-					int i=bline_point.get_split_tangent_both()?
-						composite_vertex_value_node->get_link_index_from_name("t2"):
-						composite_vertex_value_node->get_link_index_from_name("t1");
+					int i=composite_vertex_value_node->get_link_index_from_name("t2");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
 						return false;
 					tduck=last_duck();
@@ -2231,9 +2229,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					int i=bline_point.get_split_tangent_both()?
-					composite_bone_link_value_node->get_link_index_from_name("t2"):
-					composite_bone_link_value_node->get_link_index_from_name("t1");
+					int i=composite_vertex_value_node->get_link_index_from_name("t2");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack,0,2))
 						return false;
@@ -2241,11 +2237,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				}
 				else
 				{
-					if(bline_point.get_split_tangent_both())
-						tduck=new Duck(bline_point.get_tangent2());
-					else
-						tduck=new Duck(bline_point.get_tangent1());
-
+					tduck=new Duck(bline_point.get_tangent2());
 					tduck->set_transform_stack(transform_stack);
 					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t2");
 					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t2"));
