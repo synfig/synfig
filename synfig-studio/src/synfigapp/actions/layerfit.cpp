@@ -130,16 +130,42 @@ Action::LayerFit::perform()
 	 || layer->dynamic_param_list().count("br") > 0)
 		throw Error(_("You cannot fit animated layers"));
 
-
+	// remember values
 	prev_tl = layer->get_param("tl");
 	prev_br = layer->get_param("br");
 
 	set_dirty();
 
-	Point canvas_tl = subcanvas->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
-	//Point canvas_br = subcanvas->rend_desc().get_br()-get_canvas()->rend_desc().get_br();
-	ValueBase new_tl(Point(canvas_tl*(-0.5f)));
-	ValueBase new_br(Point(canvas_tl*0.5f));
+	// new coordinates
+	Vector size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
+	ValueBase new_tl(Point(size*(-0.5f)));
+	ValueBase new_br(Point(size*0.5f));
+
+	// recalculate coordinates to keep proportions
+	int w = layer->get_param("_width").get(int());
+	int h = layer->get_param("_height").get(int());
+	if(w > 0 && h > 0)
+	{
+		Vector x;
+
+		if(abs(size[0])<abs(size[1]))	// if canvas is tall and thin
+		{
+			x[0]=size[0];	// use full width
+			x[1]=size[0]/w*h; // and scale for height
+			if((size[0]<0) ^ (size[1]<0))
+				x[1]=-x[1];
+		}
+		else				// else canvas is short and fat (or maybe square)
+		{
+			x[1]=size[1];	// use full height
+			x[0]=size[1]/h*w; // and scale for width
+			if((size[0]<0) ^ (size[1]<0))
+				x[0]=-x[0];
+		}
+
+		new_tl = -x/2;
+		new_br = x/2;
+	}
 
 	layer->set_param("tl", new_tl);
 	layer->set_param("br", new_br);
