@@ -469,6 +469,8 @@ fedora-mingw-install mingw${ARCH}-pcre
 fedora-mingw-install mingw${ARCH}-libltdl
 fedora-mingw-install mingw${ARCH}-libtiff
 
+prepare_mingw_env
+
 # magick++
 mkimagemagick
 
