@@ -87,9 +87,7 @@ Action::LayerFit::is_candidate(const ParamList &x)
 			const Layer::Handle layer = i->second.get_layer();
 			if (layer.empty()
 			 || layer->get_param("tl").empty()
-			 || layer->get_param("br").empty()
-			 || layer->dynamic_param_list().count("tl") > 0
-			 || layer->dynamic_param_list().count("br") > 0)
+			 || layer->get_param("br").empty())
 				return false;
 		}
 	}
@@ -127,6 +125,11 @@ Action::LayerFit::perform()
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer)
 		throw Error(_("This layer doesn't exist anymore."));
+
+	if (layer->dynamic_param_list().count("tl") > 0
+	 || layer->dynamic_param_list().count("br") > 0)
+		throw Error(_("You cannot fit animated layers"));
+
 
 	prev_tl = layer->get_param("tl");
 	prev_br = layer->get_param("br");
