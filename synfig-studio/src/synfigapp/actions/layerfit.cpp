@@ -79,16 +79,21 @@ Action::LayerFit::get_param_vocab()
 bool
 Action::LayerFit::is_candidate(const ParamList &x)
 {
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
 	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) {
 		if (i->first == "layer") {
 			if (i->second.get_type() != Param::TYPE_LAYER) return false;
 			const Layer::Handle layer = i->second.get_layer();
 			if (layer.empty()
 			 || layer->get_param("tl").empty()
-			 || layer->get_param("br").empty()) return false;
+			 || layer->get_param("br").empty()
+			 || layer->dynamic_param_list().count("tl") > 0
+			 || layer->dynamic_param_list().count("br") > 0)
+				return false;
 		}
 	}
-	return candidate_check(get_param_vocab(),x);
+	return true;
 }
 
 bool
