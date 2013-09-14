@@ -67,7 +67,7 @@ public:
 
 	BLinePoint():
 		vertex_(Point(0,0)),
-		width_(0.01),
+		width_(1),
 		origin_(0.0),
 		split_tangent_radius_(false),
 		split_tangent_angle_(false),
