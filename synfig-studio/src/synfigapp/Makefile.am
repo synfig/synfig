@@ -12,6 +12,7 @@ LAYER_ACTION_HH = \
 	actions/layeradd.h \
 	actions/layerduplicate.h \
 	actions/layerencapsulate.h \
+	actions/layerfit.h \
 	actions/layerlower.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
@@ -30,6 +31,7 @@ LAYER_ACTION_CC = \
 	actions/layeradd.cpp \
 	actions/layerduplicate.cpp \
 	actions/layerencapsulate.cpp \
+	actions/layerfit.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
