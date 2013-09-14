@@ -606,12 +606,15 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		next=(*list[next_i].value_node)(time);
 		prev=(*list[prev_i].value_node)(time);
 		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-		etl::derivative< etl::hermite<Vector> > deriv(curve);
-		bline_point.set_vertex(curve(origin));
+		etl::hermite<Vector> left;
+		etl::hermite<Vector> right;
+		curve.subdivide(&left, &right, origin);
+		bline_point.set_vertex(left[3]);
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
-		bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
-		bline_point.set_tangent2(bline_point.get_tangent1());
-		bline_point.set_split_tangent_both(false);
+		bline_point.set_split_tangent_radius(true);
+		bline_point.set_split_tangent_angle(false);
+		bline_point.set_tangent1((left[2]-left[3])*-3);
+		bline_point.set_tangent2((right[1]-right[0])*3);
 		bline_point.set_origin(origin);
 	}
 	ret.index=index;
