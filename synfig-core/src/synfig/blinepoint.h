@@ -108,10 +108,10 @@ public:
 
 
 	const bool& get_split_tangent_both()const { return split_tangent_both_; }
-	void set_split_tangent_both(bool x=true) { split_tangent_radius_=split_tangent_angle_=x; update_flags();}
+	void set_split_tangent_both(bool x=true) { set_split_tangent_radius(x); set_split_tangent_angle(x); }
 
 	const bool& get_merge_tangent_both()const { return merge_tangent_both_; }
-	void set_merge_tangent_both(bool x=false) { split_tangent_radius_=split_tangent_angle_=x; update_flags();}
+	void set_merge_tangent_both(bool x=true) { set_split_tangent_radius(!x); set_split_tangent_angle(!x); }
 
 
 	const bool& get_split_tangent_radius()const { return split_tangent_radius_; }
