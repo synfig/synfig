@@ -109,6 +109,7 @@ EXTRA_DIST = \
 	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
 	layer_other_supersample_icon.sif \
+	layer_other_skeleton_icon.sif \
 	layer_other_text_icon.sif \
 	layer_other_timeloop_icon.sif \
 	layer_other_xorpattern_icon.sif \
@@ -272,6 +273,7 @@ IMAGES = \
 	layer_other_group_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
+	layer_other_skeleton_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
 	layer_other_timeloop_icon.$(EXT) \
 	layer_other_xorpattern_icon.$(EXT) \
