@@ -227,6 +227,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
 	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
+	INIT_STOCK_ICON(layer_other_stroboscope,"layer_other_stroboscope_icon."IMAGE_EXT,_("Stroboscope Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
 	INIT_STOCK_ICON(layer_other_skeleton,"layer_other_skeleton_icon."IMAGE_EXT,_("Skeleton Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
