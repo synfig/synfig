@@ -627,6 +627,10 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_other_pastecanvas");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");
+	else if(layer=="stroboscope")
+		return Gtk::StockID("synfig-layer_other_stroboscope");
+	else if(layer=="skeleton")
+		return Gtk::StockID("synfig-layer_other_skeleton");
 	else if(layer=="super_sample")
 		return Gtk::StockID("synfig-layer_other_supersample");
 	else if(layer=="text")
