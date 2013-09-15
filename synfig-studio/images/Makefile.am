@@ -68,11 +68,6 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
 	\
-	interpolation_type_tcb_icon.sif\
-	interpolation_type_ease_icon.sif\
-	interpolation_type_const_icon.sif\
-	interpolation_type_linear_icon.sif\
-	interpolation_type_clamped_icon.sif\
 	interpolation_type_icons.sif\
 	\
 	layer_blur_blur_icon.sif \
