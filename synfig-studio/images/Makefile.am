@@ -501,7 +501,7 @@ interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) -q $< -o $@ --time 2
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
