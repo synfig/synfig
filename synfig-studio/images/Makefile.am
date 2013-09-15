@@ -106,7 +106,6 @@ EXTRA_DIST = \
 	layer_gradient_radial_icon.sif \
 	layer_gradient_spiral_icon.sif \
 	layer_other_duplicate_icon.sif \
-	layer_other_importimage_icon.sif \
 	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
 	layer_other_supersample_icon.sif \
@@ -152,7 +151,6 @@ EXTRA_DIST = \
 	type_time_icon.sif \
 	type_vector_icon.sif \
 	\
-	canvas_icon.sif \
 	library_icon.sif \
 	graphs_icon.sif \
 	set_icon.sif \
@@ -495,6 +493,16 @@ interpolation_type_const_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
 
 interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+layer_other_importimage_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
