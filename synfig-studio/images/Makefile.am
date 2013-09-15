@@ -73,6 +73,7 @@ EXTRA_DIST = \
 	interpolation_type_const_icon.sif\
 	interpolation_type_linear_icon.sif\
 	interpolation_type_clamped_icon.sif\
+	interpolation_type_icons.sif\
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -467,7 +468,6 @@ animate_loop_icon.$(EXT): $(srcdir)/framedial_icons.sif
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-
 animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo " File \"images\\$@\"" >>./images.nsh
@@ -475,6 +475,31 @@ animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
 
 animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_tcb_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_linear_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_ease_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_const_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 4
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 5
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
