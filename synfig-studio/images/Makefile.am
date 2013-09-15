@@ -108,6 +108,7 @@ EXTRA_DIST = \
 	layer_other_duplicate_icon.sif \
 	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
+	layer_other_stroboscope_icon.sif \
 	layer_other_supersample_icon.sif \
 	layer_other_skeleton_icon.sif \
 	layer_other_text_icon.sif \
@@ -272,6 +273,7 @@ IMAGES = \
 	layer_other_importimage_icon.$(EXT) \
 	layer_other_group_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
+	layer_other_stroboscope_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
 	layer_other_skeleton_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
