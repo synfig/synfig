@@ -67,11 +67,8 @@ synfig::BLinePoint::reverse()
 void
 synfig::BLinePoint::update_tangent2()
 {
-	// if both are merged, use tangent1
-	if(merge_tangent_both_)
-		tangent_[1]=tangent_[0];
 	// if radius is split use the angle from tangent1
-	else if(split_tangent_radius_ && !split_tangent_angle_)
+	if(split_tangent_radius_ && !split_tangent_angle_)
 	{
 		// But not if the radius of the tangent1 == 0 (angle undefined)
 		if(tangent_[0].mag() != 0)
