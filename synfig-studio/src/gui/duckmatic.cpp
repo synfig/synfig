@@ -1695,9 +1695,30 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			etl::handle<Duck> duck=new Duck();
 			duck->set_transform_stack(transform_stack);
-
-			duck->set_point(value_desc.get_value(get_time()).get(Point()));
 			duck->set_name(guid_string(value_desc));
+			ValueNode_Composite::Handle blinepoint_value_node;
+			int index;
+			bool done(false);
+			if(value_desc.parent_is_linkable_value_node()
+			   &&
+			   value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				blinepoint_value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node());
+				if(blinepoint_value_node)
+				{
+					index=blinepoint_value_node->get_link_index_from_name("t2");
+					if(index==value_desc.get_index())
+					{
+						BLinePoint bp=(*blinepoint_value_node)(get_time()).get(BLinePoint());
+						Vector t2=bp.get_tangent2();
+						duck->set_point(t2);
+						done=true;
+					}
+				}
+			}
+			if(!done)
+				duck->set_point(value_desc.get_value(get_time()).get(Point()));
+			
 			if(value_desc.is_value_node())
 			{
 				// if the vertex is converted to 'bone influence', add the bones' ducks
