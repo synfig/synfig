@@ -261,7 +261,7 @@ LinkableValueNode::check_type(const String &name, ValueBase::Type x)
 }
 
 bool
-LinkableValueNode::set_link(int i,ValueNode::Handle x)
+LinkableValueNode::set_link(int i,ValueNode::Handle x, bool silent)
 {
 	ValueNode::Handle previous(get_link(i));
 
@@ -290,7 +290,7 @@ LinkableValueNode::set_link(int i,ValueNode::Handle x)
 		{
 			x->set_parent_canvas(get_parent_canvas());
 		}
-		changed();
+		if (!silent) changed();
 		return true;
 	}
 	return false;
