@@ -58,71 +58,57 @@ namespace synfig
 			Handle file_system() const { return file_system_; }
 		};
 
-		class ReadStream : public Stream
+		class ReadStream :
+			public Stream,
+			private std::streambuf,
+			public std::istream
 		{
 		protected:
-			class istreambuf : public std::streambuf
-			{
-			private:
-				ReadStream *stream_;
-				char buffer_;
-			public:
-				istreambuf(ReadStream *stream): stream_(stream)
-					{ setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1); }
-			protected:
-
-		        virtual int underflow() {
-		            if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
-		            int c = stream_->get_char();
-		            if (c == EOF) return EOF;
-		            buffer_ = traits_type::to_char_type(c);
-		            setg(&buffer_, &buffer_, &buffer_ + 1);
-		            return traits_type::to_int_type(*gptr());
-		        }
-			};
-
-			istreambuf buf_;
-			std::istream stream_;
+			char buffer_;
 
 			ReadStream(Handle file_system);
-		public:
-			virtual size_t read(void *buffer, size_t size) = 0;
-			int get_char();
-			bool read_whole_block(void *buffer, size_t size);
-			std::istream& stream() { return stream_; }
+			virtual int underflow();
+			virtual size_t internal_read(void *buffer, size_t size) = 0;
 
+		public:
+			size_t read_block(void *buffer, size_t size)
+				{ return read((char*)buffer, size).gcount(); }
+			bool read_whole_block(void *buffer, size_t size)
+				{ return size == read_block(buffer, size); }
 			template<typename T> bool read_variable(T &v)
-				{ return sizeof(T) == read(&v, sizeof(T)); }
+				{ return read_whole_block(&v, sizeof(T)); }
 		};
 
 		typedef etl::handle< ReadStream > ReadStreamHandle;
 
-		class WriteStream : public Stream
+		class WriteStream :
+			public Stream,
+			private std::streambuf,
+			public std::ostream
 		{
 		protected:
-			class ostreambuf : public std::streambuf
-			{
-			private:
-				WriteStream *stream_;
-			public:
-				ostreambuf(WriteStream *stream): stream_(stream) { }
-			protected:
-		        virtual int overflow(int ch) { return stream_->put_char(ch); }
-			};
-
-			ostreambuf buf_;
-			std::ostream stream_;
-
 			WriteStream(Handle file_system);
-		public:
-			virtual size_t write(const void *buffer, size_t size) = 0;
-			int put_char(int character);
-			bool write_whole_block(const void *buffer, size_t size);
-			bool write_whole_stream(ReadStreamHandle stream);
-			std::ostream& stream() { return stream_; }
+	        virtual int overflow(int ch);
+			virtual size_t internal_write(const void *buffer, size_t size) = 0;
 
+		public:
+			bool write_block(const void *buffer, size_t size)
+			{
+				for(size_t i = 0; i < size; i++)
+					if (!put(((const char*)buffer)[i]).good())
+						return i;
+				return size;
+			}
+			bool write_whole_block(const void *buffer, size_t size)
+				{ return size == write_block(buffer, size); }
+			bool write_whole_stream(std::streambuf &streambuf)
+				{ return (*this << &streambuf).good(); }
+			bool write_whole_stream(std::istream &stream)
+				{ return write_whole_stream(*stream.rdbuf()); }
+			bool write_whole_stream(ReadStreamHandle stream)
+				{ return !stream || write_whole_stream(*(std::istream*)&(*stream)); }
 			template<typename T> bool write_variable(const T &v)
-				{ return sizeof(T) == write(&v, sizeof(T)); }
+				{ return write_whole_block(&v, sizeof(T)); }
 		};
 
 		typedef etl::handle< WriteStream > WriteStreamHandle;

@@ -335,13 +335,13 @@ bool FileContainerTemporary::file_is_opened_for_write()
 size_t FileContainerTemporary::file_read(void *buffer, size_t size)
 {
 	if (!file_is_opened_for_read()) return 0;
-	return file_read_stream_->read(buffer, size);
+	return file_read_stream_->read_block(buffer, size);
 }
 
 size_t FileContainerTemporary::file_write(const void *buffer, size_t size)
 {
 	if (!file_is_opened_for_write()) return 0;
-	return file_write_stream_->write(buffer, size);
+	return file_write_stream_->write_block(buffer, size);
 }
 
 bool FileContainerTemporary::save_changes(const std::string &filename, bool as_copy)
@@ -502,7 +502,7 @@ bool FileContainerTemporary::save_temporary() const
 	stream = new ZWriteStream(stream);
 	try
 	{
-		document.write_to_stream_formatted(stream->stream(), "UTF-8");
+		document.write_to_stream_formatted(*stream, "UTF-8");
 	}
 	catch(...)
 	{
@@ -539,7 +539,7 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 	stream = new ZReadStream(stream);
 
 	xmlpp::DomParser parser;
-	parser.parse_stream(stream->stream());
+	parser.parse_stream(*stream);
 	stream.reset();
 	if (!parser) return false;
 

@@ -58,7 +58,7 @@ FileSystemNative::ReadStream::ReadStream(Handle file_system, FILE *file):
 FileSystemNative::ReadStream::~ReadStream()
 	{ fclose(file_); }
 
-size_t FileSystemNative::ReadStream::read(void *buffer, size_t size)
+size_t FileSystemNative::ReadStream::internal_read(void *buffer, size_t size)
 	{ return fread(buffer, 1, size, file_); }
 
 
@@ -70,7 +70,7 @@ FileSystemNative::WriteStream::WriteStream(Handle file_system, FILE *file):
 FileSystemNative::WriteStream::~WriteStream()
 	{ fclose(file_); }
 
-size_t FileSystemNative::WriteStream::write(const void *buffer, size_t size)
+size_t FileSystemNative::WriteStream::internal_write(const void *buffer, size_t size)
 	{ return fwrite(buffer, 1, size, file_); }
 
 

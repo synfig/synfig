@@ -90,7 +90,7 @@ png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t byt
 	FileSystem::ReadStream *stream = (FileSystem::ReadStream*)png_get_io_ptr(png_ptr);
 	png_size_t s = stream == NULL
 				 ? 0
-				 : stream->read(out_bytes, bytes_count_to_read);
+				 : stream->read_block(out_bytes, bytes_count_to_read);
 	if (s < bytes_count_to_read)
 		memset(out_bytes + s, 0, bytes_count_to_read - s);
 }

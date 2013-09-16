@@ -47,9 +47,9 @@ namespace synfig
 			friend class FileSystemNative;
 			FILE *file_;
 			ReadStream(Handle file_system, FILE *file);
+			virtual size_t internal_read(void *buffer, size_t size);
 		public:
 			virtual ~ReadStream();
-			virtual size_t read(void *buffer, size_t size);
 		};
 
 		class WriteStream : public FileSystem::WriteStream
@@ -58,9 +58,9 @@ namespace synfig
 			friend class FileSystemNative;
 			FILE *file_;
 			WriteStream(Handle file_system, FILE *file_);
+			virtual size_t internal_write(const void *buffer, size_t size);
 		public:
 			virtual ~WriteStream();
-			virtual size_t write(const void *buffer, size_t size);
 		};
 
 	private:
