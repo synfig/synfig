@@ -233,6 +233,7 @@ IMAGES = \
 	interpolation_type_const_icon.$(EXT)\
 	interpolation_type_linear_icon.$(EXT)\
 	interpolation_type_clamped_icon.$(EXT)\
+	valuenode_forbidanimation_icon.$(EXT)\
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
@@ -497,6 +498,11 @@ interpolation_type_const_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
 
 interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+valuenode_forbidanimation_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 7 
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
