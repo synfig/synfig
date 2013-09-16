@@ -172,6 +172,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
+	INIT_STOCK_ICON(valuenode_forbidanimation,"valuenode_forbidanimation_icon."IMAGE_EXT,_("ValueNode Forbid Animation"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
