@@ -249,7 +249,7 @@ ValueNode_Random::randomize_seed()
 		int seed = time(NULL) + rand();
 		if (seed < 0) seed = -seed;
 		random.set_seed(seed);
-		set_link(i, ValueNode_Const::create(seed));
+		set_link(i, ValueNode_Const::create(seed), true);
 	}
 }
 
