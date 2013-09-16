@@ -117,7 +117,8 @@ export GOCFLAGS=' -mms-bitfields'
 export OBJCFLAGS=' -O2 -pipe -mms-bitfields'
 export OBJCXXFLAGS=' -O2 -pipe -mms-bitfields'
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_LIBDIR=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
+export PKG_CONFIG_PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig"
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
 export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
@@ -468,6 +469,8 @@ fedora-mingw-install mingw${ARCH}-pcre
 # Dependencies for magick++
 fedora-mingw-install mingw${ARCH}-libltdl
 fedora-mingw-install mingw${ARCH}-libtiff
+
+prepare_mingw_env
 
 # magick++
 mkimagemagick
