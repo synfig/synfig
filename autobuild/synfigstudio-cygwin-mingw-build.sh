@@ -336,7 +336,6 @@ autoreconf -i --verbose  # does this really required?
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --disable-static --enable-shared \
 --without-modules \
---without-lzma \
 --without-perl \
 --without-x \
 --with-threads \
