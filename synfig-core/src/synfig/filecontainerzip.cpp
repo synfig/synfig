@@ -31,6 +31,7 @@
 
 #include <cstring>
 #include <stdint.h>
+#include <cstddef>
 #include "filecontainerzip.h"
 
 #endif
@@ -133,7 +134,7 @@ namespace synfig
 
 			inline static size_t offset_from_header()
 			{
-				return (size_t)(&((LocalFileHeader*)0)->crc32);
+				return offsetof(LocalFileHeaderOverwrite, crc32);
 			}
 		};
 
