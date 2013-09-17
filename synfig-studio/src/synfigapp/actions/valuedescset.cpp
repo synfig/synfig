@@ -153,7 +153,7 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 	if(name=="recursive" && param.get_type()==Param::TYPE_BOOL)
 	{
 		recursive=param.get_bool();
-		
+
 		return true;
 	}
 
@@ -197,7 +197,7 @@ Action::ValueDescSet::prepare()
 				// We are modifying t1 so we need to update t2 accordingly. Let's ask it to the BLinePoint
 				// We modify the tangent1 (and the tangent2 is updated)
 				bp.set_tangent1(value);
-				// then we retrieve the correct tangent2 
+				// then we retrieve the correct tangent2
 				ValueBase new_value(bp.get_tangent2());
 				Action::Handle action(Action::create("ValueDescSet"));
 				if(!action)
@@ -300,8 +300,10 @@ Action::ValueDescSet::prepare()
 	// we need to distribute the changes to the
 	// individual parts
 	// except if we are TYPE WIDTHPOINT which is handled individually
+	// except if we are TYPE BLINEPOINT which is handled individually
 	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT)
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_BLINEPOINT)
 	{
 		ValueBase components[8];
 		int n_components(0);
@@ -326,20 +328,6 @@ Action::ValueDescSet::prepare()
 			components[3]=value.get(Segment()).t2;
 			n_components=4;
 			break;
-		case ValueBase::TYPE_BLINEPOINT:
-			{
-				BLinePoint bline_point(value);
-				components[0]=bline_point.get_vertex();
-				components[1]=bline_point.get_width();
-				components[2]=bline_point.get_origin();
-				components[3]=bline_point.get_split_tangent_both();
-				components[6]=bline_point.get_split_tangent_radius();
-				components[7]=bline_point.get_split_tangent_angle();
-				components[4]=bline_point.get_tangent1();
-				components[5]=bline_point.get_tangent2();
-				n_components=6;
-				break;
-			}
 		default:
 			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
@@ -361,6 +349,45 @@ Action::ValueDescSet::prepare()
 		}
 		return;
 	}
+
+	// If we are a composite value node type BLINEPOINT, then
+	// we need to distribute the changes to the
+	// individual parts in a proper way
+	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	 && value_desc.get_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT)
+	{
+		ValueBase components[8];
+		int n_components(0);
+		int order[8]={0,1,2,3,6,7,4,5};
+		BLinePoint bline_point(value);
+		components[0]=bline_point.get_vertex();
+		components[1]=bline_point.get_width();
+		components[2]=bline_point.get_origin();
+		components[3]=bline_point.get_split_tangent_both();
+		components[4]=bline_point.get_tangent1();
+		components[5]=bline_point.get_tangent2();
+		components[6]=bline_point.get_split_tangent_radius();
+		components[7]=bline_point.get_split_tangent_angle();
+		n_components=8;
+		for(int i=0;i<n_components;i++)
+		{
+			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
+			Action::Handle action(Action::create("ValueDescSet"));
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",components[order[i]]);
+			action->set_param("value_desc",component_value_desc);
+			action->set_param("recursive", false);
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
+		}
+		return;
+	}
+
 	// If we are a RADIAL composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
