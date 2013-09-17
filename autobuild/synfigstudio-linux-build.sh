@@ -80,7 +80,7 @@ export EMAIL='root@synfig.org'
 LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
-IMAGEMAGICK=6.4.0
+IMAGEMAGICK=6.8.6
 PANGOMM=2.24.0
 GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
 FTGL=2.1.2
@@ -195,10 +195,14 @@ fi
 
 mkimagemagick()
 {
+PKG_NAME=ImageMagick
+PKG_VERSION="${IMAGEMAGICK}-9"
+TAREXT=bz2
 if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 	pushd /source
-	[ ! -d ImageMagick-${IMAGEMAGICK} ] && tar -xjf ImageMagick-${IMAGEMAGICK}-10.tar.bz2 && cd ImageMagick-${IMAGEMAGICK} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
-	cd ImageMagick-${IMAGEMAGICK}
+	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.bz2 # && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
+	cd ${PKG_NAME}-${PKG_VERSION}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared \
 		--with-modules \
@@ -476,8 +480,6 @@ else
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 fi
 
-export CXXFLAGS=-I${PREFIX}/include/ImageMagick
-
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
 if [[ $MODE != 'quick' ]]; then
@@ -552,6 +554,9 @@ mkpack()
 	# bundle libjasper
 	rm -f ${PREFIX}/lib/libjasper* || true
 	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
+	# bundle libltdl
+	rm -f ${PREFIX}/lib/libltdl* || true
+	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
 
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
@@ -1067,7 +1072,7 @@ mkpackage()
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
 		fi
 		#fetch sources to cache
-		[ -d $PACKAGES_BUILDROOT.$ARCH/source ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source || true
+		[ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
 		if [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				rm -rf "$PACKAGES_BUILDROOT/synfig.git"
