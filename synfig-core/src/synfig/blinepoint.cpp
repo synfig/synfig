@@ -67,17 +67,12 @@ synfig::BLinePoint::reverse()
 void
 synfig::BLinePoint::update_tangent2()
 {
-	// if radius is split use the angle from tangent1
-	if(split_tangent_radius_ && !split_tangent_angle_)
-	{
-		// But not if the radius of the tangent1 == 0 (angle undefined)
-		if(tangent_[0].mag() != 0)
-			tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
-	}
-	// if angle is split use the radius from tangent1
-	else if(!split_tangent_radius_ && split_tangent_angle_)
+	if(tangent_[0].mag() != 0)
+		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
+	else
+		tangent2_radius_split_=tangent_[1];
+	if(tangent_[1].mag() != 0)
 		tangent2_angle_split_=Vector(tangent_[0].mag(), tangent_[1].angle());
-	// both are split then do nothing
 	return;
 }
 

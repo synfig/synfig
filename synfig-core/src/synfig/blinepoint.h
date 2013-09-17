@@ -63,6 +63,7 @@ private:
 
 	void	update_flags();
 	void	update_tangent2();
+
 public:
 
 	BLinePoint():
@@ -89,7 +90,7 @@ public:
 			return tangent_[0];
 		if(split_tangent_both_)
 			return tangent_[1];
-		else if(split_tangent_radius_)
+		if(split_tangent_radius_)
 			return tangent2_radius_split_;
 		return tangent2_angle_split_;
 	}
@@ -117,8 +118,6 @@ public:
 	const bool& get_split_tangent_radius()const { return split_tangent_radius_; }
 	void set_split_tangent_radius(bool x=true)
 	{
-		if(split_tangent_radius_ == x)
-			return;
 		split_tangent_radius_=x;
 		update_tangent2();
 		update_flags();
@@ -127,8 +126,6 @@ public:
 	const bool& get_split_tangent_angle()const { return split_tangent_angle_; }
 	void set_split_tangent_angle(bool x=true)
 	{
-		if(split_tangent_angle_ == x)
-			return;
 		split_tangent_angle_=x;
 		update_tangent2();
 		update_flags();
