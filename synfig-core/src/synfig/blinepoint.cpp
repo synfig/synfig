@@ -71,8 +71,7 @@ synfig::BLinePoint::update_tangent2()
 		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
 	else
 		tangent2_radius_split_=tangent_[1];
-	if(tangent_[1].mag() != 0)
-		tangent2_angle_split_=Vector(tangent_[0].mag(), tangent_[1].angle());
+	tangent2_angle_split_=Vector(tangent_[0].mag(), tangent_[1].angle());
 	return;
 }
 
