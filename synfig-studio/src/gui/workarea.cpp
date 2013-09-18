@@ -59,6 +59,7 @@
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
+#include "event_keyboard.h"
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include <synfig/context.h>
@@ -1506,6 +1507,10 @@ WorkArea::set_wh(int W, int H,int CHAN)
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
+	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
+			return true;
+
 	if(get_selected_ducks().empty())
 		return false;
 
@@ -1556,6 +1561,13 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	set_guide_snap(guide_snap_holder);
 
 	return true;
+}
+
+bool
+WorkArea::on_key_release_event(GdkEventKey* event)
+{
+	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 }
 
 bool
