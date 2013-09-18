@@ -542,6 +542,7 @@ public:
 
 private:
 	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
