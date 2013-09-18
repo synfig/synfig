@@ -244,65 +244,72 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 				throw Error(Error::TYPE_NOTREADY);
 
 			add_action(action);
-			// If we are inserting on a BLine,
-			// once we add a new item, we need to update the tangent's radius
-			// of the previous and next entries from the index to keep the
-			// shape of the curve
-			if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
+			// If we are inserting the first element, there is nothing more to do
+			if(value_node->list.size() > 0)
 			{
-				int prev, next, after;
-				if(!value_node->list[index].status_at_time(time))
-					next=value_node->find_next_valid_entry(index,time);
-				else
-					next=index;
-				after=next+1;
-				prev=value_node->find_prev_valid_entry(index,time);
-				assert(prev>=0);
-				assert(next>=0);
-				ValueNode_DynamicList::ListEntry next_list_entry(value_node->list[next]);
-				ValueNode_DynamicList::ListEntry prev_list_entry(value_node->list[prev]);
-				BLinePoint bpn((*next_list_entry.value_node)(time).get(synfig::BLinePoint()));
-				BLinePoint bpp((*prev_list_entry.value_node)(time).get(synfig::BLinePoint()));
-				// Update previous BLinePoint's tangent's radius
-				// Do not add new way-points to the split radius if already split
-				if(!bpp.get_split_tangent_radius())
-					bpp.set_split_tangent_radius();
-				bpp.set_tangent2(Vector(bpp.get_tangent2().mag()*origin, bpp.get_tangent2().angle()));
-				// Update next BLinePoint's tangent's radius
-				// Do not add new way-points to the split radius if already split
-				if(!bpn.get_split_tangent_radius())
-					bpn.set_split_tangent_radius();
-				bpn.set_tangent1(Vector(bpn.get_tangent1().mag()*(1.0-origin), bpn.get_tangent1().angle()));
-				// Now add the actions to modify the value descs
+				// If we are inserting on a BLine,
+				// once we add a new item, we need to update the tangent's radius
+				// of the previous and next entries from the index to keep the
+				// shape of the curve
+				if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
 				{
-					// PREVIOUS
-					Action::Handle action(Action::create("ValueDescSet"));
-					if(!action)
-						throw Error(_("Unable to find action ValueDescSet (bug)"));
-					action->set_param("edit_mode",get_edit_mode());
-					action->set_param("canvas",get_canvas());
-					action->set_param("canvas_interface",get_canvas_interface());
-					action->set_param("time",time);
-					action->set_param("new_value",ValueBase(bpp));
-					action->set_param("value_desc",ValueDesc(value_node,prev));
-					if(!action->is_ready())
-						throw Error(Error::TYPE_NOTREADY);
-					add_action(action);
-				}
-				{
-					// AFTER
-					Action::Handle action(Action::create("ValueDescSet"));
-					if(!action)
-						throw Error(_("Unable to find action ValueDescSet (bug)"));
-					action->set_param("edit_mode",get_edit_mode());
-					action->set_param("canvas",get_canvas());
-					action->set_param("canvas_interface",get_canvas_interface());
-					action->set_param("time",time);
-					action->set_param("new_value",ValueBase(bpn));
-					action->set_param("value_desc",ValueDesc(value_node,after));
-					if(!action->is_ready())
-						throw Error(Error::TYPE_NOTREADY);
-					add_action(action);
+					int prev, next, after, before;
+					if(!value_node->list[index].status_at_time(time))
+						next=value_node->find_next_valid_entry(index,time);
+					else
+						next=index;
+					after=next+1;
+					prev=value_node->find_prev_valid_entry(index,time);
+					before=prev;
+					if(next==0)
+						before++;
+					assert(prev>=0);
+					assert(next>=0);
+					ValueNode_DynamicList::ListEntry next_list_entry(value_node->list[next]);
+					ValueNode_DynamicList::ListEntry prev_list_entry(value_node->list[prev]);
+					BLinePoint bpn((*next_list_entry.value_node)(time).get(synfig::BLinePoint()));
+					BLinePoint bpp((*prev_list_entry.value_node)(time).get(synfig::BLinePoint()));
+					// Update previous BLinePoint's tangent's radius
+					// Do not add new way-points to the split radius if already split
+					if(!bpp.get_split_tangent_radius())
+						bpp.set_split_tangent_radius();
+					bpp.set_tangent2(Vector(bpp.get_tangent2().mag()*origin, bpp.get_tangent2().angle()));
+					// Update next BLinePoint's tangent's radius
+					// Do not add new way-points to the split radius if already split
+					if(!bpn.get_split_tangent_radius())
+						bpn.set_split_tangent_radius();
+					bpn.set_tangent1(Vector(bpn.get_tangent1().mag()*(1.0-origin), bpn.get_tangent1().angle()));
+					// Now add the actions to modify the value descs
+					{
+						// BEFORE
+						Action::Handle action(Action::create("ValueDescSet"));
+						if(!action)
+							throw Error(_("Unable to find action ValueDescSet (bug)"));
+						action->set_param("edit_mode",get_edit_mode());
+						action->set_param("canvas",get_canvas());
+						action->set_param("canvas_interface",get_canvas_interface());
+						action->set_param("time",time);
+						action->set_param("new_value",ValueBase(bpp));
+						action->set_param("value_desc",ValueDesc(value_node,before));
+						if(!action->is_ready())
+							throw Error(Error::TYPE_NOTREADY);
+						add_action(action);
+					}
+					{
+						// AFTER
+						Action::Handle action(Action::create("ValueDescSet"));
+						if(!action)
+							throw Error(_("Unable to find action ValueDescSet (bug)"));
+						action->set_param("edit_mode",get_edit_mode());
+						action->set_param("canvas",get_canvas());
+						action->set_param("canvas_interface",get_canvas_interface());
+						action->set_param("time",time);
+						action->set_param("new_value",ValueBase(bpn));
+						action->set_param("value_desc",ValueDesc(value_node,after));
+						if(!action->is_ready())
+							throw Error(Error::TYPE_NOTREADY);
+						add_action(action);
+					}
 				}
 			}
 		}
@@ -342,65 +349,72 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 
 		add_action(action);
-		// If we are inserting on a BLine,
-		// once we add a new item, we need to update the tangents's radius
-		// of the previous and next entries from the index to keep the
-		// shape of the curve
-		if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
+		// If we are inserting the first element, there is nothing more to do
+		if(value_node->list.size() > 0)
 		{
-			int prev, next, after;
-			if(!value_node->list[index].status_at_time(time))
+			// If we are inserting on a BLine,
+			// once we add a new item, we need to update the tangent's radius
+			// of the previous and next entries from the index to keep the
+			// shape of the curve
+			if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				int prev, next, after, before;
+				if(!value_node->list[index].status_at_time(time))
 				next=value_node->find_next_valid_entry(index,time);
-			else
-				next=index;
-			after=next+1;
-			prev=value_node->find_prev_valid_entry(index,time);
-			assert(prev>=0);
-			assert(next>=0);
-			ValueNode_DynamicList::ListEntry next_list_entry(value_node->list[next]);
-			ValueNode_DynamicList::ListEntry prev_list_entry(value_node->list[prev]);
-			BLinePoint bpn((*next_list_entry.value_node)(time).get(synfig::BLinePoint()));
-			BLinePoint bpp((*prev_list_entry.value_node)(time).get(synfig::BLinePoint()));
-			// Update previous BLinePoint's tangent's readius
-			// Do not add new waypoints to the split radius if already split
-			if(!bpp.get_split_tangent_radius())
-				bpp.set_split_tangent_radius();
-			bpp.set_tangent2(Vector(bpp.get_tangent2().mag()*origin, bpp.get_tangent2().angle()));
-			// Update next BLinePoint's tangent's radius
-			// Do not add new waypoints to the split radius if already split
-			if(!bpn.get_split_tangent_radius())
-				bpn.set_split_tangent_radius();
-			bpn.set_tangent1(Vector(bpn.get_tangent1().mag()*(1.0-origin), bpn.get_tangent1().angle()));
-			// Now add the actions to modify the value descs
-			{
-				// PREVIOUS
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("edit_mode",get_edit_mode());
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",ValueBase(bpp));
-				action->set_param("value_desc",ValueDesc(value_node,prev));
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
-			}
-			{
-				// AFTER
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("edit_mode",get_edit_mode());
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",ValueBase(bpn));
-				action->set_param("value_desc",ValueDesc(value_node,after));
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
+				else
+					next=index;
+				after=next+1;
+				prev=value_node->find_prev_valid_entry(index,time);
+				before=prev;
+				if(next==0)
+					before++;
+				assert(prev>=0);
+				assert(next>=0);
+				ValueNode_DynamicList::ListEntry next_list_entry(value_node->list[next]);
+				ValueNode_DynamicList::ListEntry prev_list_entry(value_node->list[prev]);
+				BLinePoint bpn((*next_list_entry.value_node)(time).get(synfig::BLinePoint()));
+				BLinePoint bpp((*prev_list_entry.value_node)(time).get(synfig::BLinePoint()));
+				// Update previous BLinePoint's tangent's radius
+				// Do not add new way-points to the split radius if already split
+				if(!bpp.get_split_tangent_radius())
+					bpp.set_split_tangent_radius();
+				bpp.set_tangent2(Vector(bpp.get_tangent2().mag()*origin, bpp.get_tangent2().angle()));
+				// Update next BLinePoint's tangent's radius
+				// Do not add new way-points to the split radius if already split
+				if(!bpn.get_split_tangent_radius())
+					bpn.set_split_tangent_radius();
+				bpn.set_tangent1(Vector(bpn.get_tangent1().mag()*(1.0-origin), bpn.get_tangent1().angle()));
+				// Now add the actions to modify the value descs
+				{
+					// BEFORE
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("edit_mode",get_edit_mode());
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(bpp));
+					action->set_param("value_desc",ValueDesc(value_node,before));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					// AFTER
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("edit_mode",get_edit_mode());
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(bpn));
+					action->set_param("value_desc",ValueDesc(value_node,after));
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
 			}
 		}
 	}
