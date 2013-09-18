@@ -33,6 +33,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <synfig/valuenode_animated.h>
 #include <synfig/valuenode_blinecalcvertex.h>
@@ -49,6 +50,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
+#include "event_keyboard.h"
 #include "toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
@@ -150,6 +152,8 @@ public:
 	Smach::event_result event_mouse_button_down_handler(const Smach::event& x);
 	Smach::event_result event_multiple_ducks_clicked_handler(const Smach::event& x);
 	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
+	Smach::event_result event_key_down_handler(const Smach::event& x);
+	Smach::event_result event_key_up_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void refresh_tool_options();
 	Smach::event_result event_layer_click(const Smach::event& x);
@@ -172,6 +176,8 @@ StateNormal::StateNormal():
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateNormal_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateNormal_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateNormal_Context::event_mouse_motion_handler));
+	insert(event_def(EVENT_WORKAREA_KEY_DOWN,&StateNormal_Context::event_key_down_handler));
+	insert(event_def(EVENT_WORKAREA_KEY_UP,&StateNormal_Context::event_key_up_handler));
 	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,&StateNormal_Context::event_layer_click));
 
 }
@@ -542,6 +548,64 @@ StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
 	set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
 
 	return Smach::RESULT_OK;
+}
+
+Smach::event_result
+StateNormal_Context::event_key_down_handler(const Smach::event& x)
+{
+	// event.modifier yet not set when ctrl (or alt or shift)
+	// key pressed event handled. So we need to check this keys manually.
+	// We may encountred some cosmetic problems with mouse-cursor image
+	// if user will redefine modifier keys.
+	// Anyway processing of keys Ctrl+Right, Ctrl+Left etc will works fine.
+	// see 'xmodmap' command
+	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
+	switch(event.keyval)
+	{
+	case GDK_KEY_Control_L:
+	case GDK_KEY_Control_R:
+		set_rotate_flag(true);
+		break;
+	case GDK_KEY_Alt_L:
+	case GDK_KEY_Alt_R:
+	case GDK_KEY_Meta_L:
+		set_scale_flag(true);
+		break;
+	case GDK_KEY_Shift_L:
+	case GDK_KEY_Shift_R:
+		set_constrain_flag(true);
+		break;
+	default:
+		set_rotate_flag(event.modifier&GDK_CONTROL_MASK);
+		set_scale_flag(event.modifier&GDK_MOD1_MASK);
+		set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
+		break;
+	}
+	return Smach::RESULT_REJECT;
+}
+
+Smach::event_result
+StateNormal_Context::event_key_up_handler(const Smach::event& x)
+{
+	// see event_key_down_handler for possible problems
+	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
+	switch(event.keyval)
+	{
+	case GDK_KEY_Control_L:
+	case GDK_KEY_Control_R:
+		set_rotate_flag(false);
+		break;
+	case GDK_KEY_Alt_L:
+	case GDK_KEY_Alt_R:
+	case GDK_KEY_Meta_L:
+		set_scale_flag(false);
+		break;
+	case GDK_KEY_Shift_L:
+	case GDK_KEY_Shift_R:
+		set_constrain_flag(false);
+		break;
+	}
+	return Smach::RESULT_REJECT;
 }
 
 Smach::event_result
