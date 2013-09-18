@@ -1140,6 +1140,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_scrolly_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
 
 	get_canvas()->signal_meta_data_changed("grid_size").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -1207,7 +1208,9 @@ WorkArea::save_meta_data()
 	meta_data_lock=true;
 
 	Vector s(get_grid_size());
+	Color c(get_grid_color());
 	canvas_interface->set_meta_data("grid_size",strprintf("%f %f",s[0],s[1]));
+	canvas_interface->set_meta_data("grid_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 	canvas_interface->set_meta_data("grid_snap",get_grid_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_snap",get_guide_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_show",get_show_guides()?"1":"0");
@@ -1284,6 +1287,40 @@ WorkArea::load_meta_data()
 			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
 		set_grid_size(Vector(gx,gy));
+	}
+
+	data=canvas->get_meta_data("grid_color");
+	if(!data.empty())
+	{
+		float gr(get_grid_color().get_r()),gg(get_grid_color().get_g()),gb(get_grid_color().get_b());
+
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String tmp(data.begin(),iter);
+
+		if(!tmp.empty())
+			gr=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(iter+1,data.end());
+
+		if(!tmp.empty())
+			gg=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(iter+1,data.end());
+		if(!tmp.empty())
+			gb=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+
+		set_grid_color(synfig::Color(gr,gg,gb));
 	}
 
 	data=canvas->get_meta_data("grid_show");
@@ -1443,6 +1480,14 @@ void
 WorkArea::set_grid_size(const synfig::Vector &s)
 {
 	Duckmatic::set_grid_size(s);
+	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::set_grid_color(const synfig::Color &c)
+{
+	Duckmatic::set_grid_color(c);
 	save_meta_data();
 	queue_draw();
 }

@@ -113,6 +113,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
+	grid_color(synfig::Color(159.0/255.0,159.0/255.0,159.0/255.0)),
 	show_persistent_strokes(true)
 {
 	axis_lock=false;
@@ -162,6 +163,16 @@ Duckmatic::set_grid_size(const synfig::Vector &s)
 	if(grid_size!=s)
 	{
 		grid_size=s;
+		signal_grid_changed();
+	}
+}
+
+void
+Duckmatic::set_grid_color(const synfig::Color &c)
+{
+	if(grid_color!=c)
+	{	
+		grid_color=c;	
 		signal_grid_changed();
 	}
 }
