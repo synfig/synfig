@@ -1011,7 +1011,8 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			bline_point.set_vertex(get_work_area()->snap_point_to_grid(event.pos));
 			bline_point.set_width(1.0f);
 			bline_point.set_origin(0.5f);
-			bline_point.set_split_tangent_both(false);
+			bline_point.set_split_tangent_radius(true);
+			bline_point.set_split_tangent_angle(false);
 			bline_point.set_tangent1(Vector(0,0));
 			bline_point_list.push_back(ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
@@ -1245,6 +1246,7 @@ StateBLine_Context::on_tangent1_change(const studio::Duck &duck, synfig::ValueNo
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
+	bline_point.set_tangent2(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
@@ -1254,6 +1256,7 @@ StateBLine_Context::on_tangent2_change(const studio::Duck &duck, synfig::ValueNo
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent2(duck.get_point());
+	bline_point.set_tangent1(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
