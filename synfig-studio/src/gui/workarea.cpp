@@ -1304,7 +1304,7 @@ WorkArea::load_meta_data()
 		if(iter==data.end())
 			tmp.clear();
 		else
-			tmp=String(iter+1,data.end());
+			tmp=String(++iter,data.end());
 
 		if(!tmp.empty())
 			gg=stratof(tmp);
@@ -1313,7 +1313,7 @@ WorkArea::load_meta_data()
 		if(iter==data.end())
 			tmp.clear();
 		else
-			tmp=String(iter+1,data.end());
+			tmp=String(++iter,data.end());
 		if(!tmp.empty())
 			gb=stratof(tmp);
 		else
@@ -1784,14 +1784,20 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					// we have the tangent, but need the vertex - that's the parent
 					if (value_desc.parent_is_value_node()) {
 						ValueNode_Composite::Handle parent_value_node = value_desc.get_parent_value_node();
-
+						BLinePoint bp((*parent_value_node)(get_time()).get(BLinePoint()));
 						// if the tangent isn't split, then split it
-						if (!((*(parent_value_node->get_link("split")))(get_time()).get(bool())))
+						if (!bp.get_split_tangent_both())
 						{
 							if (get_canvas_view()->canvas_interface()->
 								change_value(synfigapp::ValueDesc(parent_value_node,
-																  parent_value_node->get_link_index_from_name("split")),
-											 true))
+																  parent_value_node->get_link_index_from_name("split_radius")),
+											 true)
+								&&
+								get_canvas_view()->canvas_interface()->
+								change_value(synfigapp::ValueDesc(parent_value_node,
+																  parent_value_node->get_link_index_from_name("split_angle")),
+											 true)
+								)
 							{
 								// rebuild the ducks from scratch, so the tangents ducks aren't connected
 								get_canvas_view()->rebuild_ducks();
