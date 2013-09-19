@@ -457,6 +457,8 @@ public:
 
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
+	void set_grid_color(const synfig::Color &c);
+	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
 	//! ??
 	void popup_menu();
