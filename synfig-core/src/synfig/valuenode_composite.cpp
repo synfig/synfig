@@ -538,6 +538,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"split")
 			.set_local_name(_("Split"))
 			.set_description(_("When checked, tangents are independent"))
+			.hidden()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"t1")
 			.set_local_name(_("Tangent 1"))
@@ -549,11 +550,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split_radius")
 			.set_local_name(_("Radius Split"))
-			.set_description(_("When checked, tangents's radius are independent"))
+			.set_description(_("When checked, tangent's radius are independent"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split_angle")
 			.set_local_name(_("Angle Split"))
-			.set_description(_("When checked, tangents's angles are independent"))
+			.set_description(_("When checked, tangent's angles are independent"))
 		);
 		return ret;
 	case ValueBase::TYPE_WIDTHPOINT:
