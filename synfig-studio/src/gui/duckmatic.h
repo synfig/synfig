@@ -247,6 +247,7 @@ protected:
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
+	synfig::Color grid_color;
 
 	float zoom;					//!< Zoom factor
 	float prev_zoom;			//!< Previous Zoom factor
@@ -309,9 +310,11 @@ public:
 
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
+	void set_grid_color(const synfig::Color &c);
 
 	//! Returns the size of the grid
 	const synfig::Vector &get_grid_size()const { return grid_size; }
+	const synfig::Color &get_grid_color()const { return grid_color;}
 
 
 	const synfig::Time &get_time()const { return cur_time; }
