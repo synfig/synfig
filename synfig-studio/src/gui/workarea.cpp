@@ -1305,7 +1305,7 @@ WorkArea::load_meta_data()
 		if(iter==data.end())
 			tmp.clear();
 		else
-			tmp=String(iter+1,data.end());
+			tmp=String(++iter,data.end());
 
 		if(!tmp.empty())
 			gg=stratof(tmp);
@@ -1314,7 +1314,7 @@ WorkArea::load_meta_data()
 		if(iter==data.end())
 			tmp.clear();
 		else
-			tmp=String(iter+1,data.end());
+			tmp=String(++iter,data.end());
 		if(!tmp.empty())
 			gb=stratof(tmp);
 		else
