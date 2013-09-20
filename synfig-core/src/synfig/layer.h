@@ -91,15 +91,19 @@
 
 //! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
-#define IMPORT_VALUE_PLUS(x,y)                                                  \
+#define IMPORT_VALUE_PLUS_BEGIN(x)                                              \
 	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
 	{                                                                           \
 		x=value;                                                                \
-		{                                                                       \
-			y;                                                                  \
+		{
+#define IMPORT_VALUE_PLUS_END                                                   \
 		}                                                                       \
 		return true;                                                            \
 	}
+#define IMPORT_VALUE_PLUS(x,y)                                                  \
+        IMPORT_VALUE_PLUS_BEGIN(x)                                              \
+			y;                                                                  \
+        IMPORT_VALUE_PLUS_END
 
 //! Exports a parameter if it is the same type as value
 #define EXPORT_VALUE(x)                                                         \

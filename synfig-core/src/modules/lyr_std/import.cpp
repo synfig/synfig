@@ -89,7 +89,8 @@ Import::set_param(const String & param, const ValueBase &value)
 {
 	try{
 	IMPORT_VALUE(param_time_offset);
-IMPORT_VALUE_PLUS(param_filename,
+
+	IMPORT_VALUE_PLUS_BEGIN(param_filename)
 	{
 		String filename=param_filename.get(String());
 		if(!get_canvas())
@@ -262,7 +263,7 @@ IMPORT_VALUE_PLUS(param_filename,
 			}
 		}
 	}
-	);
+	IMPORT_VALUE_PLUS_END
 	} catch(...) { set_amount(0); return false; }
 
 	return Layer_Bitmap::set_param(param,value);
