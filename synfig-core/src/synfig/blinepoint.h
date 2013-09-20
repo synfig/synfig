@@ -70,7 +70,7 @@ public:
 		vertex_(Point(0,0)),
 		width_(1),
 		origin_(0.0),
-		split_tangent_radius_(false),
+		split_tangent_radius_(true),
 		split_tangent_angle_(false),
 		boned_vertex_(false),
 		vertex_setup_(vertex_)
