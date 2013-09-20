@@ -48,20 +48,30 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListInsertSmart);
 ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmart,"ValueNodeDynamicListInsertSmart");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmart,N_("Insert Item (Smart)"));
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmart,N_("Insert Item"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmart,-20);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmart,"0.0");
 ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmart,"$Id$");
 
+ACTION_INIT(Action::ValueNodeDynamicListInsertSmartKeepShape);
+ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmartKeepShape,"ValueNodeDynamicListInsertSmartKeepShape");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmartKeepShape,N_("Insert Item & Keep Shape"));
+ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmartKeepShape,"insert");
+ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmartKeepShape,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
+ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmartKeepShape,-21);
+ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmartKeepShape,"0.0");
+ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmartKeepShape,"$Id$");
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart()
+///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
+Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart() :
+	keep_shape(false)
 {
 	index=0;
 	time=0;
@@ -244,8 +254,9 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 				throw Error(Error::TYPE_NOTREADY);
 
 			add_action(action);
-			// If we are inserting the first element, there is nothing more to do
-			if(value_node->list.size() > 0)
+			// If we are inserting the first element, or don't want to
+			// keep the shape, there is nothing more to do
+			if(value_node->list.size() > 0 && keep_shape)
 			{
 				// If we are inserting on a BLine,
 				// once we add a new item, we need to update the tangent's radius
@@ -349,8 +360,9 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 
 		add_action(action);
-		// If we are inserting the first element, there is nothing more to do
-		if(value_node->list.size() > 0)
+		// If we are inserting the first element, or don't want to
+		// keep the shape, there is nothing more to do
+		if(value_node->list.size() > 0 && keep_shape)
 		{
 			// If we are inserting on a BLine,
 			// once we add a new item, we need to update the tangent's radius
@@ -418,4 +430,10 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			}
 		}
 	}
+}
+
+///////////// VALUENODEDYNAMICLISTINSERTITEMSMARTKEEPSHAPE
+Action::ValueNodeDynamicListInsertSmartKeepShape::ValueNodeDynamicListInsertSmartKeepShape()
+{
+	keep_shape=true;
 }

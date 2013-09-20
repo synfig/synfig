@@ -44,6 +44,8 @@ class Instance;
 
 namespace Action {
 
+class ValueNodeDynamicListInsertSmartKeepShape;
+
 class ValueNodeDynamicListInsertSmart :
 	public Super
 {
@@ -53,10 +55,11 @@ private:
 	synfig::Time time;
 	synfig::Real origin;
 	int index;
-
+private:
+	bool keep_shape;
 
 public:
-
+	friend class ValueNodeDynamicListInsertSmartKeepShape;
 	ValueNodeDynamicListInsertSmart();
 
 	static ParamVocab get_param_vocab();
@@ -70,8 +73,17 @@ public:
 	ACTION_MODULE_EXT
 };
 
+class ValueNodeDynamicListInsertSmartKeepShape :
+	public ValueNodeDynamicListInsertSmart
+{
+public:
+	ValueNodeDynamicListInsertSmartKeepShape();
+
+	ACTION_MODULE_EXT
+};
+
 }; // END of namespace action
-}; // END of namespace studio
+}; // END of namespace synfigapp
 
 /* === E N D =============================================================== */
 

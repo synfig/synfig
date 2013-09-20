@@ -203,6 +203,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListInsert);
 	ADD_ACTION(Action::ValueNodeDynamicListRemove);
 	ADD_ACTION(Action::ValueNodeDynamicListInsertSmart);
+	ADD_ACTION(Action::ValueNodeDynamicListInsertSmartKeepShape);
 	ADD_ACTION(Action::ValueNodeDynamicListRemoveSmart);
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
