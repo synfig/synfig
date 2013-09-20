@@ -90,7 +90,7 @@ using namespace studio;
 AutoRecover::AutoRecover()
 {
 	// Three Minutes
-	set_timeout(10 /* 3*60*1000 */);
+	set_timeout(3*60*1000);
 
 	if(mkdir(get_shadow_directory().c_str(),ACCESSPERMS)<0)
 	{
