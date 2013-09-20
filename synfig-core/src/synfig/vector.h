@@ -79,6 +79,10 @@ private:
 public:
 	Vector(): _x(0.0), _y(0.0) { };
 	Vector(const value_type &x, const value_type &y):_x(x),_y(y) { };
+	Vector(const value_type &radius, const Angle &angle):
+	_x(radius*Angle::cos(angle).get()),
+	_y(radius*Angle::sin(angle).get())
+	{ };
 
 	bool is_valid()const { return !(isnan(_x) || isnan(_y)); }
 

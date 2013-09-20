@@ -340,7 +340,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 
 			if (t<0.5)
 			{
-				if (iter->get_split_tangent_flag() || zero_tangent)
+				if (iter->get_split_tangent_angle() || iter->get_split_tangent_radius() || zero_tangent)
 				{
 					// fake the current tangent if we need to
 					if (zero_tangent) tangent = curve(FAKE_TANGENT_STEP) - curve(0);
@@ -366,7 +366,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			}
 			else
 			{
-				if (next->get_split_tangent_flag() || zero_tangent)
+				if (next->get_split_tangent_angle() || next->get_split_tangent_radius() || zero_tangent)
 				{
 					// fake the current tangent if we need to
 					if (zero_tangent) tangent = curve(1) - curve(1-FAKE_TANGENT_STEP);

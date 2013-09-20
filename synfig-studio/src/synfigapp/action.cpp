@@ -203,6 +203,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListInsert);
 	ADD_ACTION(Action::ValueNodeDynamicListRemove);
 	ADD_ACTION(Action::ValueNodeDynamicListInsertSmart);
+	ADD_ACTION(Action::ValueNodeDynamicListInsertSmartKeepShape);
 	ADD_ACTION(Action::ValueNodeDynamicListRemoveSmart);
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
@@ -264,7 +265,11 @@ Action::Main::Main()
 	ADD_ACTION(Action::EditModeSet);
 
 	ADD_ACTION(Action::BLinePointTangentMerge);
+	ADD_ACTION(Action::BLinePointTangentMergeRadius);
+	ADD_ACTION(Action::BLinePointTangentMergeAngle);
 	ADD_ACTION(Action::BLinePointTangentSplit);
+	ADD_ACTION(Action::BLinePointTangentSplitRadius);
+	ADD_ACTION(Action::BLinePointTangentSplitAngle);
 
 	ADD_ACTION(Action::GradientSet);
 	ADD_ACTION(Action::ColorSetFromOC);
