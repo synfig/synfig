@@ -113,8 +113,6 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 			value_desc.parent_is_canvas()
 			||
 			(value_desc.is_value_node() && value_desc.get_value_node()->is_exported())
-			||
-			(value_desc.get_value_type()==ValueBase::TYPE_CANVAS && !value_desc.get_value().get(Canvas::Handle())->is_inline())
 			)
 		{
 			return false;
