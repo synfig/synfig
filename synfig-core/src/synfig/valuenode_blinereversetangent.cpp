@@ -100,19 +100,7 @@ ValueNode_BLineRevTangent::operator()(Time t)const
 	{
 		BLinePoint reference((*reference_)(t));
 		BLinePoint ret(reference);
-		if(ret.get_split_tangent_flag())
-		{
-			ret.set_tangent1(-reference.get_tangent2());
-			ret.set_tangent2(-reference.get_tangent1());
-		}
-		else
-		{
-			// \todo what should we do here really?
-			// it seems that there's some pre-existing bug
-			// with the 'reference' convert, too - referencing
-			// a non-split blinepoint causes some problems
-			ret.set_tangent1(-reference.get_tangent1());
-		}
+		ret.reverse();
 		return ret;
 	}
 	else

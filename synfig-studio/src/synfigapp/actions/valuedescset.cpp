@@ -82,7 +82,8 @@ ACTION_SET_CVS_ID(Action::ValueDescSet,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescSet::ValueDescSet():
-	time(0)
+	time(0),
+	recursive(true)
 {
 }
 
@@ -110,6 +111,10 @@ Action::ValueDescSet::get_param_vocab()
 
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("recursive", Param::TYPE_BOOL)
+		.set_local_name(_("Recursive"))
 		.set_optional()
 	);
 
@@ -145,6 +150,12 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 
 		return true;
 	}
+	if(name=="recursive" && param.get_type()==Param::TYPE_BOOL)
+	{
+		recursive=param.get_bool();
+
+		return true;
+	}
 
 	return Action::CanvasSpecific::set_param(name,param);
 }
@@ -166,26 +177,69 @@ Action::ValueDescSet::prepare()
 	// our first tangent is being manipulated,
 	// then we also need to adjust the other
 	// tangent.
-	if(	value_desc.parent_is_value_node() &&
-		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
-		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2") &&
-		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
+	if(	value_desc.parent_is_value_node()
+		&&
+		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT
+		&&
+		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2")
+		&&
+		recursive
+	)
 	{
-		if (value_desc.get_name()=="t1") {
-			ValueNode_Composite::Handle parent_value_node;
-			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-			assert(parent_value_node);
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",value);
-			action->set_param("value_desc",ValueDesc(parent_value_node, parent_value_node->get_link_index_from_name("t2")));
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+		ValueNode_Composite::Handle parent_value_node;
+		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+		assert(parent_value_node);
+		BLinePoint bp((*parent_value_node)(time).get(BLinePoint()));
+		if(!bp.get_split_tangent_radius() || !bp.get_split_tangent_angle())
+		{
+			if (value_desc.get_name()=="t1")
+			{
+				// We are modifying t1 so we need to update t2 accordingly. Let's ask it to the BLinePoint
+				// We modify the tangent1 (and the tangent2 is updated)
+				bp.set_tangent1(value);
+				// then we retrieve the correct tangent2
+				ValueBase new_value(bp.get_tangent2());
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",new_value);
+				action->set_param("value_desc",ValueDesc(parent_value_node, parent_value_node->get_link_index_from_name("t2")));
+				action->set_param("recursive", false);
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
+			if (value_desc.get_name()=="t2") {
+				// We are modifying t2 so we need to update t1 accordingly. Let's ask it to the BLinePoint
+				// Create a new BLinePoint
+				BLinePoint nbp;
+				// Terporary set the flags for the new BLinePoint to all split
+				nbp.set_split_tangent_both(true);
+				// Now we can set the tangents. Tangent2 won't be modified by tangent1
+				nbp.set_tangent1(value);
+				// bp.tangent1 is the one we want to update based on value
+				nbp.set_tangent2(bp.get_tangent1());
+				// Now update the flags (nbp.tangent2 will be updated)
+				nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+				nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+				// Now retrieve the updated tangent2 (which will be stored later as t1, see below)
+				ValueBase new_value(nbp.get_tangent2());
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",new_value);
+				action->set_param("value_desc",ValueDesc(parent_value_node, parent_value_node->get_link_index_from_name("t1")));
+				action->set_param("recursive", false);
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
 		}
 	}
 	// If we are a reference value node, then
@@ -246,10 +300,12 @@ Action::ValueDescSet::prepare()
 	// we need to distribute the changes to the
 	// individual parts
 	// except if we are TYPE WIDTHPOINT which is handled individually
+	// except if we are TYPE BLINEPOINT which is handled individually
 	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT)
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT
+	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_BLINEPOINT)
 	{
-		ValueBase components[6];
+		ValueBase components[8];
 		int n_components(0);
 		switch(value.get_type())
 		{
@@ -272,18 +328,6 @@ Action::ValueDescSet::prepare()
 			components[3]=value.get(Segment()).t2;
 			n_components=4;
 			break;
-		case ValueBase::TYPE_BLINEPOINT:
-			{
-				BLinePoint bline_point(value);
-				components[0]=bline_point.get_vertex();
-				components[1]=bline_point.get_width();
-				components[2]=bline_point.get_origin();
-				components[3]=bline_point.get_split_tangent_flag();
-				components[4]=bline_point.get_tangent1();
-				components[5]=bline_point.get_tangent2();
-				n_components=6;
-				break;
-			}
 		default:
 			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
@@ -305,6 +349,45 @@ Action::ValueDescSet::prepare()
 		}
 		return;
 	}
+
+	// If we are a composite value node type BLINEPOINT, then
+	// we need to distribute the changes to the
+	// individual parts in a proper way
+	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	 && value_desc.get_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT)
+	{
+		ValueBase components[8];
+		int n_components(0);
+		int order[8]={0,1,2,3,6,7,4,5};
+		BLinePoint bline_point(value);
+		components[0]=bline_point.get_vertex();
+		components[1]=bline_point.get_width();
+		components[2]=bline_point.get_origin();
+		components[3]=bline_point.get_split_tangent_both();
+		components[4]=bline_point.get_tangent1();
+		components[5]=bline_point.get_tangent2();
+		components[6]=bline_point.get_split_tangent_radius();
+		components[7]=bline_point.get_split_tangent_angle();
+		n_components=8;
+		for(int i=0;i<n_components;i++)
+		{
+			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),order[i]);
+			Action::Handle action(Action::create("ValueDescSet"));
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",components[order[i]]);
+			action->set_param("value_desc",component_value_desc);
+			action->set_param("recursive", false);
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
+		}
+		return;
+	}
+
 	// If we are a RADIAL composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
@@ -433,7 +516,7 @@ Action::ValueDescSet::prepare()
 		add_action(action);
 		return;
 	}
-	// Real: Reverse manipulations for Real->Ange convert
+	// Real: Reverse manipulations for Real->Angle convert
 	if (ValueNode_Real::Handle real_value_node = ValueNode_Real::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueBase new_value;
@@ -699,62 +782,130 @@ Action::ValueDescSet::prepare()
 	// we must also set the second tangent for things
 	// to interpolate properly
 	if (value_desc.parent_is_value_node() &&
-	    value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
-	    value_desc.get_index()==3)
+	    value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT)
 	{
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 		assert(parent_value_node);
-		// are we splitting or merging the tangents?
-	    if (value.get(bool()))
-	    {
-			// we are splitting tangents
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
-			action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
-	    }
-	    else
-	    {
-			// we are merging tangents
-			// the merged tangent should be the average of the 2 tangents we're merging
-			ValueBase average(((Vector)((*parent_value_node->get_link("t1"))(time)) +
-							   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
+		int split_radius=parent_value_node->get_link_index_from_name("split_radius");
+		int split_angle=parent_value_node->get_link_index_from_name("split_angle");
+		int index_value_desc=value_desc.get_index();
+		if(index_value_desc==split_radius)
+		{
+			// are we splitting or merging the radius?
+			if (value.get(bool()))
 			{
+				// we are splitting radius
+				Vector t2new((*parent_value_node->get_link("t1"))(time).get(Vector()).mag(),(*parent_value_node->get_link("t2"))(time).get(Vector()).angle());
 				Action::Handle action(Action::create("ValueDescSet"));
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
-				action->set_param("new_value",average);
-				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
-			}
-			{
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",average);
+				action->set_param("new_value",ValueBase(t2new));
 				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+				action->set_param("recursive", false);
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
 				add_action(action);
 			}
-	    }
-
+			else
+			{
+				// we are merging radius
+				// the merged tangent should be the average radius of the 2 tangents we're merging
+				Real average(((*parent_value_node->get_link("t1"))(time).get(Vector()).mag() +
+							  (*parent_value_node->get_link("t2"))(time).get(Vector()).mag()) / 2);
+				Vector t1new(Vector(average, (*parent_value_node->get_link("t1"))(time).get(Vector()).angle()));
+				Vector t2new(Vector(average, (*parent_value_node->get_link("t2"))(time).get(Vector()).angle()));
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t1new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
+					action->set_param("recursive", false);
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t2new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+					action->set_param("recursive", false);
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+			}
+		}
+		else if(index_value_desc==split_angle)
+		{
+			// are we splitting or merging the angle?
+			if (value.get(bool()))
+			{
+				// we are splitting angle
+				Vector t2new((*parent_value_node->get_link("t2"))(time).get(Vector()).mag(),(*parent_value_node->get_link("t1"))(time).get(Vector()).angle());
+				Action::Handle action(Action::create("ValueDescSet"));
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",ValueBase(t2new));
+				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+				action->set_param("recursive", false);
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+				add_action(action);
+			}
+			else
+			{
+				// we are merging angle
+				// the merged tangent should be the average angle of the 2 tangents we're merging
+				Angle average(((*parent_value_node->get_link("t1"))(time).get(Vector()).angle() +
+							  (*parent_value_node->get_link("t2"))(time).get(Vector()).angle()) / 2);
+				Vector t1new(Vector((*parent_value_node->get_link("t1"))(time).get(Vector()).mag(), average));
+				Vector t2new(Vector((*parent_value_node->get_link("t2"))(time).get(Vector()).mag(), average));
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t1new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
+					action->set_param("recursive", false);
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+				{
+					Action::Handle action(Action::create("ValueDescSet"));
+					if(!action)
+						throw Error(_("Unable to find action ValueDescSet (bug)"));
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",ValueBase(t2new));
+					action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
+					action->set_param("recursive", false);
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+					add_action(action);
+				}
+			}
+		}
 	}
 
 	// if value desc has parent value node and parent is composite widthpoint type and index is 4 or 5
