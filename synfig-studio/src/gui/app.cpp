@@ -2539,8 +2539,8 @@ App::open_as(std::string filename,std::string as)
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
 		file_system->register_system("container:", container);
 
-		// TODO: move literal ".zip" into common place
-		if (etl::filename_extension(filename) == ".zip")
+		// TODO: move literal ".sfg" into common place
+		if (etl::filename_extension(filename) == ".sfg")
 		{
 			if (!container->open(filename))
 				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());

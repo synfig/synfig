@@ -257,7 +257,7 @@ Instance::save_as(const synfig::String &file_name)
 {
 	save_canvas_into_container_ = false;
 	std::string canvas_filename = file_name;
-	if (filename_extension(file_name) == ".zip")
+	if (filename_extension(file_name) == ".sfg")
 	{
 		save_canvas_reference_directory_ = "container:images/";
 		save_canvas_reference_local_directory_ = "container:images/";

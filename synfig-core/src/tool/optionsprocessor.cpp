@@ -474,8 +474,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		string errors, warnings;
 		try
 		{
-			// todo: literals ".zip", "container:", "project.sifz"
-			if (filename_extension(job.filename) == ".zip")
+			// todo: literals ".sfg", "container:", "project.sifz"
+			if (filename_extension(job.filename) == ".sfg")
 			{
 				etl::handle< FileContainerZip > container = new FileContainerZip();
 				if (container->open(job.filename))
@@ -572,8 +572,8 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 
 		string errors, warnings;
 		Canvas::Handle composite;
-		// todo: literals ".zip", "container:", "project.sifz"
-		if (filename_extension(composite_file) == ".zip")
+		// todo: literals ".sfg", "container:", "project.sifz"
+		if (filename_extension(composite_file) == ".sfg")
 		{
 			etl::handle< FileContainerZip > container = new FileContainerZip();
 			if (container->open(job.filename))
