@@ -181,10 +181,20 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	if (file_already_in_container && instance->save_canvas_into_container_) return false;
 	if (!file_already_in_container && !instance->save_canvas_into_container_) return false;
 
+	const std::string src_dir = instance->get_canvas()->get_file_path();
+	const std::string &dir = instance->save_canvas_reference_directory_;
+	const std::string &localdir = instance->save_canvas_reference_local_directory_;
+
+	std::string absolute_filename
+		  =	file_already_in_container  ? filename
+		  : filename.empty()           ? src_dir
+		  : is_absolute_path(filename) ? filename
+		  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+filename);
+
 	// is file already copied?
 	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != instance->save_canvas_references_.end(); i++)
 	{
-		if (i->old_filename == filename)
+		if (i->old_filename == absolute_filename)
 		{
 			FileReference r = *i;
 			r.layer = layer;
@@ -194,9 +204,6 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 			return true;
 		}
 	}
-
-	const std::string &dir = instance->save_canvas_reference_directory_;
-	const std::string &localdir = instance->save_canvas_reference_local_directory_;
 
 	// try to create directory
 	if (!instance->file_system_->directory_create(dir.substr(0,dir.size()-1)))
@@ -213,14 +220,14 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	}
 
 	// try to copy file
-	if (!FileSystem::copy(instance->file_system_, filename, instance->file_system_, dir + new_filename))
+	if (!FileSystem::copy(instance->file_system_, absolute_filename, instance->file_system_, dir + new_filename))
 		return false;
 
 	// save information about copied file
 	FileReference r;
 	r.layer = layer;
 	r.param_name = param_name;
-	r.old_filename = filename;
+	r.old_filename = absolute_filename;
 	r.new_filename = localdir + new_filename;
 	instance->save_canvas_references_.push_back(r);
 
@@ -359,6 +366,7 @@ Instance::save_as(const synfig::String &file_name)
 	String old_file_name(get_file_name());
 
 	set_file_name(file_name);
+	get_canvas()->set_identifier(file_system_->get_identifier(canvas_filename));
 
 	set_save_canvas_external_file_callback(save_canvas_callback, this);
 	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_canvas_into_container_);

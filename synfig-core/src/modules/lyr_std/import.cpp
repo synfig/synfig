@@ -90,9 +90,9 @@ Import::set_param(const String & param, const ValueBase &value)
 	try{
 	IMPORT_VALUE(param_time_offset);
 
+	String filename=param_filename.get(String());
 	IMPORT_VALUE_PLUS_BEGIN(param_filename)
 	{
-		String filename=param_filename.get(String());
 		if(!get_canvas())
 		{
 			filename=value.get(filename);
@@ -282,8 +282,11 @@ Import::get_param(const String & param)const
 			// This line is needed to copy the internals of ValueBase from param_filename
 			ret=param_filename;
 			
-			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
-			ret=relative_path(curpath,abs_filename);
+			// todo: literal "container:"
+			if(ret.get(String()).substr(0, std::string("container:").size())!="container:") {
+				string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
+				ret=relative_path(curpath,abs_filename);
+			}
 			return ret;
 		}
 	}
