@@ -1608,6 +1608,11 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("dialog-flipbook", _("Preview Window")),
 		sigc::mem_fun0(*preview_dialog, &studio::Dialog_Preview::present)
 	);
+	// Prevent call to preview window before preview option has created the preview window
+	{
+		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
+		action->set_sensitive(false);
+	}
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
@@ -4031,6 +4036,13 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	pd->set_default_size(700,510);
 	pd->set_preview(prev.get());
 	pd->present();
+
+	// Preview Window created, the action can be enabled
+	{
+		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
+		action->set_sensitive(true);
+	}
+
 }
 
 void
