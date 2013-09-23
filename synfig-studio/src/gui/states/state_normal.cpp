@@ -74,6 +74,17 @@ using namespace studio;
 #define EPSILON	0.0000001
 #endif
 
+#if !GTK_CHECK_VERSION(2, 20, 0)
+#define GDK_KEY_Control_L GDK_Control_L
+#define GDK_KEY_Control_R GDK_Control_R
+#define GDK_KEY_Shift_L GDK_Shift_L
+#define GDK_KEY_Shift_R GDK_Shift_R
+#define GDK_KEY_Alt_L GDK_Alt_L
+#define GDK_KEY_Alt_R GDK_Alt_R
+#define GDK_KEY_Meta_L GDK_Meta_L
+#define GDK_KEY_Meta_R GDK_Meta_R
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 StateNormal studio::state_normal;
