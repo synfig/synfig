@@ -51,6 +51,9 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_integer.h>
 #include <synfig/valuenode_real.h>
+#include <synfig/layer_pastecanvas.h>
+#include "actions/valuedescexport.h"
+#include "actions/valuedescconnect.h"
 #include <map>
 
 #include "general.h"
@@ -245,6 +248,81 @@ Instance::update_references_in_canvas()
 	}
 }
 
+bool
+Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer::Handle> &imported)
+{
+	etl::handle<CanvasInterface> canvas_interface;
+
+	for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+	{
+		etl::handle<Layer_PasteCanvas> paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		if (!paste_canvas) continue;
+
+		Canvas::Handle sub_canvas = paste_canvas->get_sub_canvas();
+		if (!sub_canvas) continue;
+		if (!sub_canvas->is_root()) continue;
+
+		if (imported.count(sub_canvas.get()) != 0) {
+			// link already exported canvas
+			Layer::Handle layer = imported[canvas.get()];
+			if (!layer) continue;
+
+			// Action to link canvas
+			Action::Handle action(Action::ValueDescConnect::create());
+			if (!action) continue;
+			canvas_interface = find_canvas_interface(canvas);
+			action->set_param("canvas",canvas);
+			action->set_param("canvas_interface",canvas_interface);
+			action->set_param("src",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
+			action->set_param("dest",ValueDesc(layer,std::string("canvas")));
+			if(!action->is_ready()) continue;
+			if(!perform_action(action)) continue;
+		} else {
+			imported[sub_canvas.get()] = NULL;
+
+			// generate name
+			std::string name;
+			bool found = false;
+			for(int j = 1; j < 1000; j++)
+			{
+				name = strprintf("canvas%d");
+				if (canvas->value_node_list().count(name))
+					{ found = true; break; }
+			}
+			if (!found) continue;
+
+			// Action to import canvas
+			Action::Handle action(Action::ValueDescExport::create());
+			if (!action) continue;
+
+			canvas_interface = find_canvas_interface(canvas);
+			action->set_param("canvas",canvas);
+			action->set_param("canvas_interface",canvas_interface);
+			action->set_param("value_desc",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
+			action->set_param("name",name);
+			if(!action->is_ready()) continue;
+			if(!perform_action(action)) continue;
+
+			imported[sub_canvas.get()] = paste_canvas;
+
+			return true;
+		}
+	}
+
+	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
+		if (import_external_canvas(*i, imported))
+			return true;
+
+	return false;
+}
+
+void
+Instance::import_external_canvases()
+{
+	std::map<Canvas*, Layer::Handle> imported;
+	while(import_external_canvas(get_canvas(), imported));
+}
+
 
 bool
 Instance::save()
@@ -263,6 +341,7 @@ Instance::save_as(const synfig::String &file_name)
 		save_canvas_reference_local_directory_ = "container:images/";
 		canvas_filename = "container:project.sifz";
 		save_canvas_into_container_ = true;
+		//import_external_canvases();
 	} else
 	{
 		save_canvas_reference_directory_ =

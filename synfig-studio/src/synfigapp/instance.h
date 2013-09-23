@@ -105,6 +105,8 @@ private:
 	FileReferenceList save_canvas_references_;
 	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
 	void update_references_in_canvas();
+	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Layer::Handle> &imported);
+	void import_external_canvases();
 
 protected:
 	Instance(etl::handle<synfig::Canvas>, etl::handle< synfig::FileContainerTemporary > container);
