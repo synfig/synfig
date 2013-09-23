@@ -88,9 +88,21 @@ class ContextParams {
 public:
 	//! When \c true layers with exclude_from_rendering flag should be rendered
 	bool render_excluded_contexts;
+	//! When \c true layers are visible only in Z_Depth range
+	bool z_depth_range_enabled;
+	//! Defines the starting position to apply Z_Depth visibility
+	Real z_depth_range_position;
+	//! Defines the depth of the range of the Z_Depth visibility
+	Real z_depth_range_depth;
+	//! Layers with z_Depth inside transition are partially visibile
+	Real z_depth_range_transition;
 
 	explicit ContextParams(bool render_excluded_contexts = false):
-	render_excluded_contexts(render_excluded_contexts) { }
+	render_excluded_contexts(render_excluded_contexts),
+	z_depth_range_enabled(false),
+	z_depth_range_position(0.0),
+	z_depth_range_depth(1.0),
+	z_depth_range_transition(0.0){ }
 };
 
 /*!	\class Context
