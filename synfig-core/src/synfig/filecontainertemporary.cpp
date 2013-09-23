@@ -103,18 +103,26 @@ std::string FileContainerTemporary::generate_temporary_filename()
 
 bool FileContainerTemporary::create(const std::string &container_filename)
 {
-	return !is_opened()
+	bool res
+		 = !is_opened()
 		&& (container_filename.empty() || container_->create(container_filename))
 		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
 }
 
 bool FileContainerTemporary::open(const std::string &container_filename)
 {
-	return !is_opened()
+	bool res
+	     = !is_opened()
 		&& container_->open(container_filename)
 		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
 }
 
 void FileContainerTemporary::close()
@@ -350,7 +358,10 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 
 	etl::handle< FileContainerZip > container;
 
-	bool save_at_place = filename.empty() || filename == container_filename_;
+	std::string fname_abs = filename;
+	if (!is_absolute_path(fname_abs)) fname_abs = absolute_path(fname_abs);
+
+	bool save_at_place = filename.empty() || fname_abs == container_filename_;
  	if (save_at_place) as_copy = false;
 
 
@@ -445,6 +456,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 		else
 		if (!as_copy && files.empty())
 		{
+			container_filename_ = fname_abs;
 			container_ = container;
 			files_ = files;
 		}
