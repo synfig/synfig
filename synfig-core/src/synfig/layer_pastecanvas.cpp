@@ -98,6 +98,11 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 
 	muck_with_time_=true;
 
+	param_z_depth_range_enabled=ValueBase(bool(false));
+	param_z_depth_range_position=ValueBase(Real(0.0));
+	param_z_depth_range_depth=ValueBase(Real(1.0));
+	param_z_depth_range_transition=ValueBase(Real(0.0));
+
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
@@ -171,6 +176,23 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_description(_("Exponential value to grow children Outline layers width"))
 	);
 
+	ret.push_back(ParamDesc("z_depth_range_enabled")
+		.set_local_name(_("Z_Depth Range Enabled"))
+		.set_description(_("When checked, only layers inside range are visible"))
+	);
+
+	ret.push_back(ParamDesc("z_depth_range_position")
+		.set_local_name(_("Z_Depth Range Position"))
+		.set_description(_("Starting z_depth position where layers are visible"))
+	);
+	ret.push_back(ParamDesc("z_depth_range_depth")
+		.set_local_name(_("Z_Depth Range Depth"))
+		.set_description(_("Depth where layers are visibles in z_depth range"))
+	);
+	ret.push_back(ParamDesc("z_depth_range_transition")
+		.set_local_name(_("Z_Depth Range Transition"))
+		.set_description(_("Z_Depth area where layers inside are partially visible"))
+	);
 	if(canvas && !(canvas->is_inline()))
 	{
 		ret.back().hidden();
@@ -229,6 +251,10 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_zoom);
 	IMPORT_VALUE(param_outline_grow);
 	IMPORT_VALUE(param_curr_time);
+	IMPORT_VALUE(param_z_depth_range_enabled);
+	IMPORT_VALUE(param_z_depth_range_position);
+	IMPORT_VALUE(param_z_depth_range_depth);
+	IMPORT_VALUE(param_z_depth_range_transition);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -315,6 +341,10 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT_VALUE(param_children_lock);
 	EXPORT_VALUE(param_curr_time);
 	EXPORT_VALUE(param_outline_grow);
+	EXPORT_VALUE(param_z_depth_range_enabled);
+	EXPORT_VALUE(param_z_depth_range_position);
+	EXPORT_VALUE(param_z_depth_range_depth);
+	EXPORT_VALUE(param_z_depth_range_transition);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -344,7 +374,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
 	bool children_lock=param_children_lock.get(bool(true));
-	
+
 	if (canvas) {
 		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
@@ -366,7 +396,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	Vector origin=param_origin.get(Vector());
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
-	
+
 	if(!canvas || !get_amount())
 		return context.get_color(pos);
 
@@ -406,7 +436,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 	Time curr_time=param_curr_time.get(Time());
-	
+
 	if(cb && !cb->amount_complete(0,10000)) return false;
 
 	if(depth==MAX_DEPTH)
@@ -443,7 +473,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
-		
+
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
 
@@ -612,31 +642,31 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	Time curr_time=param_curr_time.get(Time());
 
 	if(cb && !cb->amount_complete(0,10000)) return false;
-	
+
 	if(depth==MAX_DEPTH)
 		// if we are at the extent of our depth,
 		// then we should just return whatever is under us.
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
-	
+
 	depth_counter counter(depth);
-	
+
 	if(!canvas || !get_amount())
 		return context.accelerated_cairorender(cr,quality,renddesc,cb);
-	
+
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
-		
-	
+
+
 	Real grow_value(get_parent_canvas_grow_value());
 	canvas->set_grow_value(outline_grow+grow_value);
-	
+
 	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
 
 	bool ret;
 	RendDesc workdesc(renddesc);
-	
+
 	// Render the background
 	ret=context.accelerated_cairorender(cr, quality, renddesc, &stagethree);
 	if(!ret)
@@ -659,7 +689,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	ret=canvas->get_context(context).accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source
 	cairo_destroy(subcr);
-	
+
 	if(!ret)
 		return false;
 	// Let's paint the result with its alpha
@@ -682,7 +712,7 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	cairo_surface_destroy(pastesurface);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
-	
+
 	return true;
 }
 ///////
