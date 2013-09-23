@@ -275,40 +275,62 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 			if (!layer) continue;
 
 			// Action to link canvas
-			Action::Handle action(Action::ValueDescConnect::create());
-			if (!action) continue;
-			canvas_interface = find_canvas_interface(canvas);
-			action->set_param("canvas",canvas);
-			action->set_param("canvas_interface",canvas_interface);
-			action->set_param("src",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
-			action->set_param("dest",ValueDesc(layer,std::string("canvas")));
-			if(!action->is_ready()) continue;
-			if(!perform_action(action)) continue;
+			try
+			{
+				Action::Handle action(Action::ValueDescConnect::create());
+				if (!action) continue;
+				canvas_interface = find_canvas_interface(canvas);
+				action->set_param("canvas",canvas);
+				action->set_param("canvas_interface",canvas_interface);
+				action->set_param("src",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
+				action->set_param("dest",layer->dynamic_param_list().find("canvas")->second);
+				if(!action->is_ready()) continue;
+				if(!perform_action(action)) continue;
+			}
+			catch(...)
+			{
+				continue;
+			}
 		} else {
 			imported[sub_canvas.get()] = NULL;
 
 			// generate name
+			std::string fname = filename_sans_extension(basename(canvas->get_file_name()));
+			static const char bad_chars[]=" :#@$^&()*";
+			for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
+				for(const char *k = bad_chars; *k != 0; k++)
+					if (*j == *k) { *j = '_'; break; }
+			if (fname.empty()) fname = "canvas";
+			if (fname[0]>='0' && fname[0]<='9')
+				fname = "_" + fname;
+
 			std::string name;
 			bool found = false;
 			for(int j = 1; j < 1000; j++)
 			{
-				name = strprintf("canvas%d");
-				if (canvas->value_node_list().count(name))
+				name = j == 1 ? fname : strprintf("%s %d", fname.c_str(), j);
+				if (canvas->value_node_list().count(name) == 0)
 					{ found = true; break; }
 			}
 			if (!found) continue;
 
 			// Action to import canvas
-			Action::Handle action(Action::ValueDescExport::create());
-			if (!action) continue;
+			try {
+				Action::Handle action(Action::ValueDescExport::create());
+				if (!action) continue;
 
-			canvas_interface = find_canvas_interface(canvas);
-			action->set_param("canvas",canvas);
-			action->set_param("canvas_interface",canvas_interface);
-			action->set_param("value_desc",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
-			action->set_param("name",name);
-			if(!action->is_ready()) continue;
-			if(!perform_action(action)) continue;
+				canvas_interface = find_canvas_interface(canvas);
+				action->set_param("canvas",canvas);
+				action->set_param("canvas_interface",canvas_interface);
+				action->set_param("value_desc",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
+				action->set_param("name",name);
+				if(!action->is_ready()) continue;
+				if(!perform_action(action)) continue;
+			}
+			catch(...)
+			{
+				continue;
+			}
 
 			imported[sub_canvas.get()] = paste_canvas;
 
@@ -348,7 +370,7 @@ Instance::save_as(const synfig::String &file_name)
 		save_canvas_reference_local_directory_ = "container:images/";
 		canvas_filename = "container:project.sifz";
 		save_canvas_into_container_ = true;
-		//import_external_canvases();
+		import_external_canvases();
 	} else
 	{
 		save_canvas_reference_directory_ =
