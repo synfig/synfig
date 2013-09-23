@@ -36,9 +36,11 @@
 #include "valuedescexport.h"
 #include "layerparamconnect.h"
 #include "layerparamset.h"
+#include "valuedescconnect.h"
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
+#include <synfig/context.h>
 
 #include <synfigapp/general.h>
 
@@ -156,6 +158,85 @@ Action::ValueDescExport::is_ready()const
 	return Action::CanvasSpecific::is_ready();
 }
 
+void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas)
+{
+	{ // scan children
+		std::list<Canvas::Handle> &children = canvas->children();
+		for(std::list<Canvas::Handle>::iterator i = children.begin(); i != children.end(); i++)
+			scan_canvas(prev_canvas, new_canvas, *i);
+	}
+
+	{ // scan layers
+		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+			scan_layer(prev_canvas, new_canvas, *i);
+	}
+
+	{ // scan values
+		const ValueNodeList &value_node_list = canvas->value_node_list();
+		for(ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); i++)
+		{
+			LinkableValueNode::Handle linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(*i);
+			if (linkable_value_node)
+				scan_linkable_value_node(prev_canvas, new_canvas, linkable_value_node);
+		}
+	}
+}
+
+void Action::ValueDescExport::scan_layer(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Layer::Handle layer)
+{
+	// dynamic params
+	const Layer::DynamicParamList &dynamic_param_list = layer->dynamic_param_list();
+	for(Layer::DynamicParamList::const_iterator i = dynamic_param_list.begin(); i != dynamic_param_list.end(); i++)
+	{
+		if (i->second->get_parent_canvas() == prev_canvas)
+		{
+			// create action
+			Action::Handle action(ValueDescConnect::create());
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("dest",ValueDesc(layer, i->first));
+			action->set_param("src",new_canvas->find_value_node(i->second->get_id(),false));
+			assert(action->is_ready());
+			add_action(action);
+		}
+
+		if (!i->second->get_parent_canvas())
+		{
+			LinkableValueNode::Handle linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(i->second);
+			if (linkable_value_node)
+				scan_linkable_value_node(prev_canvas, new_canvas, linkable_value_node);
+		}
+	}
+}
+
+void Action::ValueDescExport::scan_linkable_value_node(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::LinkableValueNode::Handle linkable_value_node)
+{
+	for(int i = 0; i < linkable_value_node->link_count(); i++)
+	{
+		ValueNode::Handle link = linkable_value_node->get_link(i);
+		if (link)
+		{
+			if (link->get_parent_canvas() == prev_canvas)
+			{
+				// create action
+				Action::Handle action(ValueDescConnect::create());
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("dest",ValueDesc(linkable_value_node, i));
+				action->set_param("src",new_canvas->find_value_node(link->get_id(),false));
+				assert(action->is_ready());
+				add_action(action);
+			}
+			if (!link->get_parent_canvas())
+			{
+				LinkableValueNode::Handle sub_linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(link);
+				if (sub_linkable_value_node)
+					scan_linkable_value_node(prev_canvas, new_canvas, sub_linkable_value_node);
+			}
+		}
+	}
+}
+
 void
 Action::ValueDescExport::prepare()
 {
@@ -170,8 +251,28 @@ Action::ValueDescExport::prepare()
 			throw Error(_("Can only export Canvas when used as constant parameter"));
 		Canvas::Handle canvas(value_desc.get_value().get(Canvas::Handle()));
 
+		bool external = !canvas->parent();
+		Canvas::Handle prev_canvas = canvas;
+
 		// clone canvas (all code that clones a canvas has this comment)
 		if (canvas) canvas=canvas->clone(GUID(), true);
+
+		if (external)
+		{
+			// clone value nodes
+			const ValueNodeList &value_node_list = prev_canvas->value_node_list();
+			for(ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); i++)
+			{
+				ValueNode::Handle new_node = (*i)->clone(canvas, guid);
+				assert(new_node);
+				if (new_node)
+					canvas->add_value_node(new_node, (*i)->get_id());
+			}
+
+			// scan all layers and canvases and relink value nodes
+			scan_canvas(prev_canvas, canvas, get_canvas());
+			scan_canvas(prev_canvas, canvas, canvas);
+		}
 
 		Action::Handle action(CanvasAdd::create());
 
