@@ -2537,7 +2537,7 @@ App::open_as(std::string filename,std::string as)
 		std::string canvas_filename = filename;
 		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-		file_system->register_system("container:", container);
+		file_system->register_system("#", container);
 
 		// TODO: move literal ".sfg" into common place
 		if (etl::filename_extension(filename) == ".sfg")
@@ -2545,7 +2545,7 @@ App::open_as(std::string filename,std::string as)
 			if (!container->open(filename))
 				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
 			// TODO: move literal "project.sifz" into common place
-			canvas_filename = "container:project.sifz";
+			canvas_filename = "#project.sifz";
 		}
 		else
 		{
@@ -2615,10 +2615,10 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 		String errors, warnings;
 
 		// TODO: move literals "container:" and "project.sifz" into common place
-		std::string canvas_filename = "container:project.sifz";
+		std::string canvas_filename = "#project.sifz";
 		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-		file_system->register_system("container:", container);
+		file_system->register_system("#", container);
 
 		if (!container->open_temporary(container_filename_base))
 			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"),container_filename_base.c_str());
@@ -2701,7 +2701,7 @@ App::new_instance()
 
 	etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 	etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-	file_system->register_system("container:", container);
+	file_system->register_system("#", container);
 	container->create(std::string());
 	canvas->set_identifier(file_system->get_identifier(file_name));
 

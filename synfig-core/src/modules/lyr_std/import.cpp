@@ -164,7 +164,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 				// todo: literal "container:"
 				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("container:").size())=="container:")
+				|| newfilename.substr(0, std::string("#").size())=="#")
 					filename_with_path=newfilename;
 				else
 					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
@@ -220,7 +220,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 				// todo: literal "container:"
 				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("container:").size())=="container:")
+				|| newfilename.substr(0, std::string("#").size())=="#")
 					filename_with_path=newfilename;
 				else
 					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
@@ -283,7 +283,7 @@ Import::get_param(const String & param)const
 			ret=param_filename;
 			
 			// todo: literal "container:"
-			if(ret.get(String()).substr(0, std::string("container:").size())!="container:") {
+			if(ret.get(String()).substr(0, std::string("#").size())!="#") {
 				string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 				ret=relative_path(curpath,abs_filename);
 			}

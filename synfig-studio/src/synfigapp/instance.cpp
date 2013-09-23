@@ -114,7 +114,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::File
 	file_system_(new FileSystemGroup(FileSystemNative::instance())),
 	container_(container)
 {
-	file_system_->register_system("container:", container_);
+	file_system_->register_system("#", container_);
 
 	assert(canvas->is_root());
 
@@ -177,7 +177,7 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	Instance *instance = (Instance*)instance_ptr;
 
 	// skip already packed (or unpacked) files
-	bool file_already_in_container = filename.substr(0, std::string("container:").size()) == "container:";
+	bool file_already_in_container = filename.substr(0, std::string("#").size()) == "#";
 	if (file_already_in_container && instance->save_canvas_into_container_) return false;
 	if (!file_already_in_container && !instance->save_canvas_into_container_) return false;
 
@@ -366,9 +366,9 @@ Instance::save_as(const synfig::String &file_name)
 	std::string canvas_filename = file_name;
 	if (filename_extension(file_name) == ".sfg")
 	{
-		save_canvas_reference_directory_ = "container:images/";
-		save_canvas_reference_local_directory_ = "container:images/";
-		canvas_filename = "container:project.sifz";
+		save_canvas_reference_directory_ = "#images/";
+		save_canvas_reference_local_directory_ = "#images/";
+		canvas_filename = "#project.sifz";
 		save_canvas_into_container_ = true;
 		import_external_canvases();
 	} else

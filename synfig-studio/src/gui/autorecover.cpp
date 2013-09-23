@@ -229,7 +229,7 @@ AutoRecover::auto_backup()
 				FileSystem::Handle file_system = canvas->get_identifier().file_system;
 				if (file_system && (*iter)->get_container())
 				{
-					if (save_canvas(file_system->get_identifier("container:project.sifz"), canvas, false))
+					if (save_canvas(file_system->get_identifier("#project.sifz"), canvas, false))
 					{
 						if ((*iter)->get_container()->save_temporary())
 						{
