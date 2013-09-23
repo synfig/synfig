@@ -175,12 +175,15 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Outline Grow"))
 		.set_description(_("Exponential value to grow children Outline layers width"))
 	);
+	if(canvas && !(canvas->is_inline()))
+	{
+		ret.back().hidden();
+	}
 
 	ret.push_back(ParamDesc("z_depth_range_enabled")
 		.set_local_name(_("Z_Depth Range Enabled"))
 		.set_description(_("When checked, only layers inside range are visible"))
 	);
-
 	ret.push_back(ParamDesc("z_depth_range_position")
 		.set_local_name(_("Z_Depth Range Position"))
 		.set_description(_("Starting z_depth position where layers are visible"))
@@ -193,10 +196,6 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Z_Depth Range Transition"))
 		.set_description(_("Z_Depth area where layers inside are partially visible"))
 	);
-	if(canvas && !(canvas->is_inline()))
-	{
-		ret.back().hidden();
-	}
 
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
