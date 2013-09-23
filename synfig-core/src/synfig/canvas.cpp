@@ -1197,7 +1197,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		// If the layer isn't active, don't worry about it
 		if(!context.active(*layer))
 			continue;
-
+		// If the z_depth range is enabled and the layer's z_depth is outside range, skip layer
+		ContextParams params=context.get_params();
+		if(params.z_depth_range_enabled)
+			if(z_depth<params.z_depth_range_position || z_depth>=(params.z_depth_range_position+params.z_depth_range_depth))
+				continue;
 		// Any layer with an amount of zero is implicitly disabled.
 		ValueBase value(layer->get_param("amount"));
 		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
@@ -1239,7 +1243,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
 				else
 					paste_sub_canvas->set_grow_value(0.0);
-				optimize_layers(time, paste_sub_canvas->get_context(context),sub_canvas,motion_blurred);
+				ContextParams params=context.get_params();
+				params.z_depth_range_enabled=paste_canvas->get_param("z_depth_range_enabled").get(bool());
+				params.z_depth_range_position=paste_canvas->get_param("z_depth_range_position").get(Real());
+				params.z_depth_range_depth=paste_canvas->get_param("z_depth_range_depth").get(Real());
+				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
 			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
