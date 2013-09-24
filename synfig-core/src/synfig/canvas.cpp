@@ -1194,14 +1194,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		Layer::Handle layer=*iter;
 		float z_depth(layer->get_true_z_depth());
 
-		// If the layer isn't active, don't worry about it
-		if(!context.active(*layer))
+		// If the layer isn't active or isn't visible in its z depth range,
+		// don't worry about it
+		if(!context.active(*layer) || context.z_depth_visibility(*layer)==0.0)
 			continue;
-		// If the z_depth range is enabled and the layer's z_depth is outside range, skip layer
-		ContextParams params=context.get_params();
-		if(params.z_depth_range_enabled)
-			if(z_depth<params.z_depth_range_position || z_depth>=(params.z_depth_range_position+params.z_depth_range_depth))
-				continue;
+
 		// Any layer with an amount of zero is implicitly disabled.
 		ValueBase value(layer->get_param("amount"));
 		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
