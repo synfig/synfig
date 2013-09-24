@@ -332,6 +332,13 @@ Layer::get_z_depth(const synfig::Time& t)const
 	return (*dynamic_param_list().find("z_depth")->second)(t).get(Real());
 }
 
+float
+Layer::get_true_z_depth(const synfig::Time& t)const
+{
+	// TODO: the 1.0001 constant should be somehow user defined
+	return get_z_depth(t)*1.0001+get_depth();
+}
+
 Layer::Handle
 Layer::simple_clone()const
 {

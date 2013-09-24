@@ -414,6 +414,9 @@ public:
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
+	//! Gets the true z depth of the layer (index + parameter)
+	float get_true_z_depth(const synfig::Time& t=Time(0))const;
+
 	//! Sets the z depth of the layer (non animated)
 	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 

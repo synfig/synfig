@@ -172,7 +172,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<float> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		x.set(layer->get_z_depth(canvas_interface()->get_time())*1.0001+layer->get_depth());
+		x.set(layer->get_true_z_depth(canvas_interface()->get_time()));
 
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
