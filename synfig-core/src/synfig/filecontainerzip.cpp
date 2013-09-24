@@ -30,6 +30,7 @@
 #endif
 
 #include <cstring>
+#include <stdint.h>
 #include "filecontainerzip.h"
 
 #endif
@@ -52,8 +53,6 @@ namespace synfig
 {
 	namespace FileContainerZip_InternalStructs
 	{
-		typedef unsigned int uint32_t;
-		typedef unsigned short int uint16_t;
 
 		#pragma pack(push, 1)
 
