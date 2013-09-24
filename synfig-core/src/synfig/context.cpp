@@ -199,7 +199,7 @@ Context::get_color(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if(context.active())
+		if(context.active() && context.z_depth_visibility()!=0.0)
 			break;
 
 		// Otherwise, we want to keep searching
@@ -225,7 +225,7 @@ Context::get_cairocolor(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if(context.active())
+		if(context.active() && context.z_depth_visibility()!=0.0)
 			break;
 		
 		// Otherwise, we want to keep searching
@@ -311,7 +311,7 @@ Context::hit_check(const Point &pos)const
 {
 	Context context(*this);
 
-	while(!context->empty())
+	while(!context->empty() && context.z_depth_visibility()!=0.0)
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop

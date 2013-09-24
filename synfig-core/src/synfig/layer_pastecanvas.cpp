@@ -373,15 +373,19 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
 	bool children_lock=param_children_lock.get(bool(true));
-
+	ContextParams cp(context.get_params());
+	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
+	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
+	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
+	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
 	if (canvas) {
 		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
-		if(canvas && get_amount() && canvas->get_context(context).get_color(target_pos).get_a()>=0.25)
+		if(canvas && get_amount() && canvas->get_context(cp).get_color(target_pos).get_a()>=0.25)
 		{
 			if(!children_lock)
 			{
-				return canvas->get_context(context).hit_check(target_pos);
+				return canvas->get_context(cp).hit_check(target_pos);
 			}
 			return const_cast<Layer_PasteCanvas*>(this);
 		}
@@ -395,7 +399,11 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	Vector origin=param_origin.get(Vector());
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
-
+	ContextParams cp(context.get_params());
+	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
+	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
+	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
+	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
 	if(!canvas || !get_amount())
 		return context.get_color(pos);
 
@@ -403,7 +411,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 
 	Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
-	return Color::blend(canvas->get_context(context).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
+	return Color::blend(canvas->get_context(cp).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
 
 Rect
