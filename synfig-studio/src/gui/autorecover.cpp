@@ -233,7 +233,7 @@ AutoRecover::auto_backup()
 					{
 						if ((*iter)->get_container()->save_temporary())
 						{
-							file << (*iter)->get_container()->get_temporary_filename_base() << endl;
+							file << (*iter)->get_container()->get_temporary_filename_base().c_str() << endl;
 							file << canvas->get_file_name().c_str() << endl;
 							//savedcount++;
 						}
