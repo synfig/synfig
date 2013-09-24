@@ -2410,7 +2410,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					int i=composite_vertex_value_node->get_link_index_from_name("t2");
+					int i=composite_bone_link_value_node->get_link_index_from_name("t2");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack,0,2))
 						return false;
