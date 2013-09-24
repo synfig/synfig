@@ -412,8 +412,13 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 	Vector origin=param_origin.get(Vector());
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
+	ContextParams cp(context_params);
+	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
+	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
+	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
+	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
 	return canvas
-		 ? (canvas->get_context(context_params).get_full_bounding_rect()-focus)*exp(zoom)+origin+focus
+		 ? (canvas->get_context(cp).get_full_bounding_rect()-focus)*exp(zoom)+origin+focus
 		 : Rect::zero();
 }
 

@@ -250,9 +250,9 @@ Context::get_full_bounding_rect()const
 
 	while(!context->empty())
 	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if(context.active())
+		// If this layer is active and visible in z_depth range,
+		// then go ahead and break out of the loop
+		if(context.active() && context.z_depth_visibility()!=0.0)
 			break;
 
 		// Otherwise, we want to keep searching
