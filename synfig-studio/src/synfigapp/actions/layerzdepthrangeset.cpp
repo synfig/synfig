@@ -64,6 +64,8 @@ ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
 Action::LayerZDepthRangeSet::LayerZDepthRangeSet()
 {
+	z_depth=0;
+	z_position=1e8;
 }
 
 synfig::String
@@ -115,10 +117,18 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layers.push_back(param.get_layer());
-
+		Layer::Handle layer=param.get_layer();
+		if(layer)
+		{
+			// Expand position and depth to include the given layer
+			float layer_z_depth=layer->get_true_z_depth();
+			if(z_position > layer_z_depth)
+				z_position=layer_z_depth;
+			else if(z_position + z_depth < layer_z_depth)
+				z_depth=layer_z_depth - z_position;
+		}
 		return true;
 	}
-
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -126,6 +136,8 @@ bool
 Action::LayerZDepthRangeSet::is_ready()const
 {
 	if(layers.empty())
+		return false;
+	if(z_depth == 0)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
