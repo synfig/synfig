@@ -183,6 +183,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	ret.push_back(ParamDesc("z_depth_range_enabled")
 		.set_local_name(_("Z_Depth Range Enabled"))
 		.set_description(_("When checked, only layers inside range are visible"))
+		.set_static(true)
 	);
 	ret.push_back(ParamDesc("z_depth_range_position")
 		.set_local_name(_("Z_Depth Range Position"))
@@ -190,7 +191,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("z_depth_range_depth")
 		.set_local_name(_("Z_Depth Range Depth"))
-		.set_description(_("Depth where layers are visibles in z_depth range"))
+		.set_description(_("Depth where layers are visible in z_depth range"))
 	);
 	ret.push_back(ParamDesc("z_depth_range_transition")
 		.set_local_name(_("Z_Depth Range Transition"))
