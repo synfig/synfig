@@ -675,6 +675,30 @@ Layer::get_param_local_name(const String &param_name)const
 	return String();
 }
 
+synfig::Layer::LooseHandle
+synfig::Layer::get_parent_paste_canvas_layer()const
+{
+	synfig::Canvas::LooseHandle canvas=get_canvas();
+	if(canvas->parent())
+	{
+		synfig::Canvas::LooseHandle parent_canvas=canvas->parent();
+		Canvas::iterator iter;
+		for(iter=parent_canvas->begin();iter!=parent_canvas->end();++iter)
+		{
+			Layer::LooseHandle layer=iter->get();
+			if(layer->get_name()=="PasteCanvas")
+			{
+				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
+				Canvas::Handle sub_canvas=paste_canvas->get_sub_canvas();
+				if(sub_canvas==canvas)
+					return layer;
+			}
+		}
+		return NULL;
+	}
+	return NULL;
+}
+
 String
 Layer::get_string()const
 {

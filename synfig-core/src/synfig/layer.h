@@ -441,6 +441,11 @@ public:
 	//! Returns the localised version of the given layer parameter
 	const String get_param_local_name(const String &param_name)const;
 
+	//! Returns a handle to the Parent PasteCanvas layer or NULL if layer belongs to root canvas
+	/*! Notice that it could return the wrong handle to PasteCanvas if the layer */
+	/*! belongs to a exported canvas (canvas can be referenced multiple times)*/
+	Layer::LooseHandle get_parent_paste_canvas_layer()const;
+
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
