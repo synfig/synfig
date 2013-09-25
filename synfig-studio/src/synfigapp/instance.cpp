@@ -241,7 +241,7 @@ Instance::update_references_in_canvas(synfig::Canvas::Handle canvas)
 	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
 		update_references_in_canvas(*i);
 
-	for(IndependentContext c = canvas->get_independent_context(); c; c++)
+	for(IndependentContext c = canvas->get_independent_context(); *c; c++)
 	{
 		for(FileReferenceList::iterator j = save_canvas_references_.begin(); j != save_canvas_references_.end();)
 		{
