@@ -282,7 +282,7 @@ unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buff
 bool FileContainerZip::create(const std::string &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = fopen(container_filename.c_str(), "wb");
+	storage_file_ = fopen(container_filename.c_str(), "w+b");
 	if (is_opened()) changed_ = true;
 	return is_opened();
 }
@@ -626,7 +626,7 @@ bool FileContainerZip::file_open_write(const std::string &filename)
 	if (file_->second.is_directory)
 		return false;
 
-	FileInfo &info = file_ == files_.end() ? new_info :file_->second;
+	FileInfo &info = file_ == files_.end() ? new_info : file_->second;
 
 	// write header
 	LocalFileHeader lfh;

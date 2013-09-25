@@ -236,22 +236,26 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 }
 
 void
-Instance::update_references_in_canvas()
+Instance::update_references_in_canvas(synfig::Canvas::Handle canvas)
 {
-	while(!save_canvas_references_.empty())
+	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
+		update_references_in_canvas(*i);
+
+	for(IndependentContext c = canvas->get_independent_context(); c; c++)
 	{
-		FileReference &r = save_canvas_references_.front();
-		for(IndependentContext c = get_canvas()->get_independent_context(); c != get_canvas()->end(); c++)
+		for(FileReferenceList::iterator j = save_canvas_references_.begin(); j != save_canvas_references_.end();)
 		{
-			if (*c == r.layer)
+			if (*c == j->layer)
 			{
 				ValueBase value;
-				value.set(r.new_filename);
-				(*c)->set_param(r.param_name, value);
-				break;
+				value.set(j->new_filename);
+				(*c)->set_param(j->param_name, value);
+				(*c)->changed();
+				find_canvas_interface(get_canvas())->signal_layer_param_changed()(*c,j->param_name);
+				j = save_canvas_references_.erase(j);
 			}
+			else j++;
 		}
-		save_canvas_references_.pop_front();
 	}
 }
 
@@ -396,7 +400,7 @@ Instance::save_as(const synfig::String &file_name)
 	if (ret && save_canvas_into_container_)
 	   ret = container_->save_changes(file_name, false);
 
-	if (ret) update_references_in_canvas();
+	if (ret) update_references_in_canvas(get_canvas());
 	set_save_canvas_external_file_callback(NULL, NULL);
 	save_canvas_references_.clear();
 
