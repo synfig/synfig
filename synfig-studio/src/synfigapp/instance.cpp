@@ -295,7 +295,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 			imported[sub_canvas.get()] = NULL;
 
 			// generate name
-			std::string fname = filename_sans_extension(basename(canvas->get_file_name()));
+			std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));
 			static const char bad_chars[]=" :#@$^&()*";
 			for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
 				for(const char *k = bad_chars; *k != 0; k++)
