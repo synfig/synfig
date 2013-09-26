@@ -218,7 +218,7 @@ public:
 	void insert_time(const Time& location, const Time& delta);
 	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
 
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 

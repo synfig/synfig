@@ -546,7 +546,7 @@ PlaceholderValueNode::get_string()const
 	return String("PlaceholderValueNode: ") + get_guid().get_string();
 }
 
-ValueNode*
+ValueNode::Handle
 PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	ValueNode* ret(new PlaceholderValueNode());
@@ -575,7 +575,7 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 {
 }
 
-ValueNode*
+ValueNode::Handle
 LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{

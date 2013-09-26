@@ -332,7 +332,7 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
+	ValueNode::Handle clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Hermite<T>* ret(new _Hermite<T>());
@@ -685,7 +685,7 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
+	ValueNode::Handle clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Constant<T>* ret(new _Constant<T>());
@@ -787,7 +787,7 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
+	ValueNode::Handle clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_AnimBool* ret(new _AnimBool());
