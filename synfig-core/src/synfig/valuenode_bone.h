@@ -68,7 +68,7 @@ public:
 
 	virtual ValueBase operator()(Time t)const;
 
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ~ValueNode_Bone();
 	virtual void set_guid(const GUID& new_guid);

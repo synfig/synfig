@@ -261,7 +261,7 @@ LinkableValueNode::check_type(const String &name, ValueBase::Type x)
 }
 
 bool
-LinkableValueNode::set_link(int i,ValueNode::Handle x, bool silent)
+LinkableValueNode::set_link(int i,ValueNode::Handle x)
 {
 	ValueNode::Handle previous(get_link(i));
 
@@ -290,7 +290,7 @@ LinkableValueNode::set_link(int i,ValueNode::Handle x, bool silent)
 		{
 			x->set_parent_canvas(get_parent_canvas());
 		}
-		if (!silent) changed();
+		changed();
 		return true;
 	}
 	return false;
@@ -546,7 +546,7 @@ PlaceholderValueNode::get_string()const
 	return String("PlaceholderValueNode: ") + get_guid().get_string();
 }
 
-ValueNode*
+ValueNode::Handle
 PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	ValueNode* ret(new PlaceholderValueNode());
@@ -575,7 +575,7 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 {
 }
 
-ValueNode*
+ValueNode::Handle
 LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{
@@ -593,7 +593,7 @@ LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)cons
 		ValueNode::Handle link=get_link_vfunc(i);
 		if(!link->is_exported())
 		{
-			ValueNode::LooseHandle value_node(find_value_node(link->get_guid()^deriv_guid));
+			ValueNode::Handle value_node(find_value_node(link->get_guid()^deriv_guid));
 			if(!value_node)
 				value_node=link->clone(canvas, deriv_guid);
 			ret->set_link(i,value_node);

@@ -231,16 +231,16 @@ ValueNode_Random::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_VECTOR	;
 }
 
-ValueNode*
+ValueNode::Handle
 ValueNode_Random::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
-	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(canvas, deriv_guid);
-	ret->randomize_seed(true);
+	etl::handle<ValueNode_Random> ret=LinkableValueNode::clone(canvas, deriv_guid);
+	ret->randomize_seed();
 	return ret;
 }
 
 void
-ValueNode_Random::randomize_seed(bool silent)
+ValueNode_Random::randomize_seed()
 {
 	int i = get_link_index_from_name("seed");
 	ValueNode::Handle link = get_link_vfunc(i);
@@ -249,7 +249,7 @@ ValueNode_Random::randomize_seed(bool silent)
 		int seed = time(NULL) + rand();
 		if (seed < 0) seed = -seed;
 		random.set_seed(seed);
-		set_link(i, ValueNode_Const::create(seed), silent);
+		set_link(i, ValueNode_Const::create(seed));
 	}
 }
 
