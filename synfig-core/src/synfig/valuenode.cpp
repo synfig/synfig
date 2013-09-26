@@ -593,7 +593,7 @@ LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)cons
 		ValueNode::Handle link=get_link_vfunc(i);
 		if(!link->is_exported())
 		{
-			ValueNode::LooseHandle value_node(find_value_node(link->get_guid()^deriv_guid));
+			ValueNode::Handle value_node(find_value_node(link->get_guid()^deriv_guid));
 			if(!value_node)
 				value_node=link->clone(canvas, deriv_guid);
 			ret->set_link(i,value_node);
