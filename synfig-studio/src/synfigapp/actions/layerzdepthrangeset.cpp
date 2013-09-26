@@ -108,6 +108,8 @@ Action::LayerZDepthRangeSet::is_candidate(const ParamList &x)
 				canvas=layer->get_canvas();
 			if(canvas && canvas->is_root())
 				return false;
+			if(canvas && !canvas->is_inline())
+				return false;
 			if(layer->get_canvas() && canvas && layer->get_canvas()!=canvas)
 				return false;
 		}
