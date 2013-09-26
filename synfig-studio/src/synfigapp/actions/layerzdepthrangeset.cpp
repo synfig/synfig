@@ -56,6 +56,8 @@ ACTION_SET_PRIORITY(Action::LayerZDepthRangeSet,0);
 ACTION_SET_VERSION(Action::LayerZDepthRangeSet,"0.0");
 ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
+#define ZDEPTH_MAX 1e8
+#define ZDEPTH_EPS 0
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -64,8 +66,8 @@ ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
 Action::LayerZDepthRangeSet::LayerZDepthRangeSet()
 {
-	z_depth=0;
-	z_position=1e8;
+	z_depth=ZDEPTH_EPS;
+	z_position=ZDEPTH_MAX;
 }
 
 synfig::String
@@ -104,6 +106,8 @@ Action::LayerZDepthRangeSet::is_candidate(const ParamList &x)
 				return false;
 			if(!canvas)
 				canvas=layer->get_canvas();
+			if(canvas && canvas->is_root())
+				return false;
 			if(layer->get_canvas() && canvas && layer->get_canvas()!=canvas)
 				return false;
 		}
@@ -124,7 +128,7 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 			float layer_z_depth=layer->get_true_z_depth();
 			if(z_position > layer_z_depth)
 				z_position=layer_z_depth;
-			else if(z_position + z_depth < layer_z_depth)
+			if(z_position + z_depth < layer_z_depth)
 				z_depth=layer_z_depth - z_position;
 		}
 		return true;
@@ -137,7 +141,7 @@ Action::LayerZDepthRangeSet::is_ready()const
 {
 	if(layers.empty())
 		return false;
-	if(z_depth == 0)
+	if(z_position == ZDEPTH_MAX)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -145,11 +149,57 @@ Action::LayerZDepthRangeSet::is_ready()const
 void
 Action::LayerZDepthRangeSet::prepare()
 {
-
 	if(!first_time())
 		return;
 
 	if(layers.empty())
 		throw Error(_("No layers selected"));
 
+	Layer::Handle layer=layers.front();
+	Layer::Handle paste=layer->get_parent_paste_canvas_layer();
+	if(!paste)
+		throw Error(_("Parent Group doesn't found!"));
+	// Z ENABLE
+	{
+		ValueBase new_value(true);
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_enabled"));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+	}
+		// Z POSITION
+	{
+		ValueBase new_value(z_position);
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_position"));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+	}
+	// Z DEPTH
+	{
+		ValueBase new_value(z_depth);
+		Action::Handle action(Action::create("ValueDescSet"));
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_depth"));
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action(action);
+	}
+	return;
 }

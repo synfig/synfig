@@ -47,12 +47,9 @@ class LayerZDepthRangeSet :
 	public Super
 {
 private:
-	synfig::Canvas::Handle child_canvas;
 	std::list<synfig::Layer::Handle> layers;
 	float z_position;
 	float z_depth;
-
-	int lowest_depth()const;
 
 public:
 
