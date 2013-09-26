@@ -67,7 +67,7 @@ public:
 
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
-	void randomize_seed(bool silent = false);
+	void randomize_seed();
 
 protected:
 	LinkableValueNode* create_new()const;
