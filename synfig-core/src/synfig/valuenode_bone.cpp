@@ -513,7 +513,7 @@ ValueNode_Bone::operator()(Time t)const
 	return ret;
 }
 
-ValueNode*
+ValueNode::Handle
 ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	String old_name;
@@ -536,7 +536,7 @@ ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 //	else
 //		printf("%s:%d cloned bone's name is exported, so not editing\n", __FILE__, __LINE__);
 
-	ValueNode* ret(LinkableValueNode::clone(canvas, deriv_guid));
+	ValueNode::Handle ret(LinkableValueNode::clone(canvas, deriv_guid));
 
 	if (const_name_link)
 		const_name_link->set_value(old_name);

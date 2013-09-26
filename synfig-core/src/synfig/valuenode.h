@@ -223,7 +223,7 @@ public:
 	String get_string()const;
 
 	//! Clones a Value Node
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
 
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
@@ -297,7 +297,7 @@ public:
 
 	String get_string()const;
 
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
 
@@ -402,10 +402,10 @@ public:
 	virtual int get_link_index_from_name(const String &name)const;
 
 	//! Clones a Value Node
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Sets a new Value Node link by its index
-	bool set_link(int i,ValueNode::Handle x,bool silent=false);
+	bool set_link(int i,ValueNode::Handle x);
 	//! Sets a new Value Node link by its name
 	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}
 

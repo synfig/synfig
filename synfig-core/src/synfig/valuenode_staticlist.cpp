@@ -344,7 +344,7 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 	return etl::strprintf(_("Item %03d"),i+1);
 }
 
-ValueNode*
+ValueNode::Handle
 ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "before cloning staticlist");
