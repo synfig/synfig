@@ -697,7 +697,6 @@ synfig::Layer::get_parent_paste_canvas_layer()const
 		synfig::warning("Layer's canvas has parent canvas but I can't find a proper Layer_PasteCanvas in it");
 		return NULL;
 	}
-	synfig::warning("Selected layer's canvas hasn't a parent");
 	return NULL;
 }
 

@@ -1156,9 +1156,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		for(iter=context,i=0;*iter;iter++,i++)
 		{
 			Layer::Handle layer=*iter;
+			
+			const float layer_visibility=context.z_depth_visibility(*layer);
 
 			// If the layer isn't active, don't worry about it
-			if(!context.active(*layer) || context.z_depth_visibility(*layer)==0.0)
+			if(!context.active(*layer) || layer_visibility==0.0)
 				continue;
 
 			// Any layer with an amount of zero is implicitly disabled.
@@ -1195,10 +1197,12 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	{
 		Layer::Handle layer=*iter;
 		float z_depth(layer->get_true_z_depth());
+		const float layer_visibility=context.z_depth_visibility(*layer);
+		//synfig::info("Visibility of %s called %s = %f", layer->get_name().c_str(), layer->get_description().c_str(), layer_visibility);
 
 		// If the layer isn't active or isn't visible in its z depth range,
 		// don't worry about it
-		if(!context.active(*layer) || context.z_depth_visibility(*layer)==0.0)
+		if(!context.active(*layer) || layer_visibility==0.0)
 			continue;
 
 		// Any layer with an amount of zero is implicitly disabled.
@@ -1352,11 +1356,12 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		// Alright, the layer is included in the sorted list
 		// let's look if it is a composite and if it is partially visible
 		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
-		if(composite && context.z_depth_visibility(*layer) < 1.0)
+		if(composite && layer_visibility < 1.0)
 		{
-			// Let's clone the composite layer
-			// TODO: if the layer is PasteCanvas would this work?
-			composite = composite->simple_clone();
+			// Let's clone the composite layer if it is not a Paste Canvas
+			// (because paste will be always new layer)
+			if(layer->get_name()!="PasteCanvas")
+				composite = composite->simple_clone();
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
 			// First look if amount is dynamic:
