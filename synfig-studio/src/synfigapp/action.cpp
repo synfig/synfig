@@ -52,6 +52,7 @@
 #include "actions/layersetdesc.h"
 #include "actions/layersetexcludefromrendering.h"
 #include "actions/layerzdepthrangeset.h"
+#include "actions/layerembed.h"
 
 #include "actions/valuenodeconstset.h"
 #include "actions/valuenodeconstsetstatic.h"
@@ -194,6 +195,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerSetDesc);
 	ADD_ACTION(Action::LayerSetExcludeFromRendering);
 	ADD_ACTION(Action::LayerZDepthRangeSet);
+	ADD_ACTION(Action::LayerEmbed);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
 	ADD_ACTION(Action::ValueNodeConstSetStatic);
