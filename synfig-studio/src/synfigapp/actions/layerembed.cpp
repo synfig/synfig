@@ -45,9 +45,9 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::LayerEmbed);
-ACTION_SET_NAME(Action::LayerEmbed,"LayerMove");
+ACTION_SET_NAME(Action::LayerEmbed,"LayerEmbed");
 ACTION_SET_LOCAL_NAME(Action::LayerEmbed,N_("Embed Layer"));
-ACTION_SET_TASK(Action::LayerEmbed,"move");
+ACTION_SET_TASK(Action::LayerEmbed,"embed");
 ACTION_SET_CATEGORY(Action::LayerEmbed,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEmbed,0);
 ACTION_SET_VERSION(Action::LayerEmbed,"0.0");
