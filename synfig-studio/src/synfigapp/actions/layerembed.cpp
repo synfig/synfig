@@ -225,7 +225,7 @@ Action::LayerEmbed::prepare()
 
 		// create action to change layer param
 		ValueBase value;
-		value.set(dir + new_filename);
+		value.set("#" + new_filename);
 		Action::Handle action(Action::create("LayerParamSet"));
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());

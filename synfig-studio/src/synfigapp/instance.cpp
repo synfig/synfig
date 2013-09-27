@@ -176,8 +176,12 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	// todo: "container:" and "images" literals
 	Instance *instance = (Instance*)instance_ptr;
 
+	std::string actual_filename = filename;
+	if (actual_filename.substr(0, std::string("#").size()) == "#")
+		actual_filename = "#images/" + actual_filename.substr(std::string("#").size());
+
 	// skip already packed (or unpacked) files
-	bool file_already_in_container = filename.substr(0, std::string("#").size()) == "#";
+	bool file_already_in_container = actual_filename.substr(0, std::string("#").size()) == "#";
 	if (file_already_in_container && instance->save_canvas_into_container_) return false;
 	if (!file_already_in_container && !instance->save_canvas_into_container_) return false;
 
@@ -186,10 +190,10 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	const std::string &localdir = instance->save_canvas_reference_local_directory_;
 
 	std::string absolute_filename
-		  =	file_already_in_container  ? filename
-		  : filename.empty()           ? src_dir
-		  : is_absolute_path(filename) ? filename
-		  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+filename);
+		  =	file_already_in_container  ? actual_filename
+		  : actual_filename.empty()           ? src_dir
+		  : is_absolute_path(actual_filename) ? actual_filename
+		  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+actual_filename);
 
 	// is file already copied?
 	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != instance->save_canvas_references_.end(); i++)
@@ -209,14 +213,14 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	if (!instance->file_system_->directory_create(dir.substr(0,dir.size()-1)))
 		return false;
 
-	// generate new filename
+	// generate new actual_filename
 	int i = 0;
-	std::string new_filename = basename(filename);
+	std::string new_filename = basename(actual_filename);
 	while(instance->file_system_->is_exists(dir + new_filename))
 	{
-		new_filename = filename_sans_extension(basename(filename))
+		new_filename = filename_sans_extension(basename(actual_filename))
 				     + strprintf("_%d", ++i)
-				     + filename_extension(filename);
+				     + filename_extension(actual_filename);
 	}
 
 	// try to copy file
@@ -229,6 +233,8 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	r.param_name = param_name;
 	r.old_filename = absolute_filename;
 	r.new_filename = localdir + new_filename;
+	if (r.new_filename.substr(0, String("#images/").size())=="#images/")
+		r.new_filename = "#" + r.new_filename.substr(String("#images/").size());
 	instance->save_canvas_references_.push_back(r);
 
 	filename = r.new_filename;

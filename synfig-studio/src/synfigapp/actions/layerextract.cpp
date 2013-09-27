@@ -148,6 +148,7 @@ Action::LayerExtract::prepare()
 	if (layer) {
 		// TODO: "container:" and "images" literals
 		std::string old_filename = layer->get_param("filename").get(String());
+		old_filename = "#images/" + old_filename.substr(String("#").size());
 		std::string src_dir = get_canvas()->get_file_path();
 		if (!is_absolute_path(src_dir))
 			src_dir = absolute_path(src_dir);
