@@ -65,6 +65,7 @@ public:
 		Gtk::TreeModelColumn<bool>						active;
 		Gtk::TreeModelColumn<bool>						exclude_from_rendering;
 		Gtk::TreeModelColumn<Pango::Style>				style;
+		Gtk::TreeModelColumn<Pango::Weight>				weight;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
 		Gtk::TreeModelColumn<synfig::Canvas::Handle> 	contained_canvas;
 
@@ -84,6 +85,7 @@ public:
 			add(active);
 			add(exclude_from_rendering);
 			add(style);
+			add(weight);
 			add(layer);
 			add(contained_canvas);
 			add(z_depth);
@@ -158,6 +160,8 @@ private:
 	void on_layer_status_changed(synfig::Layer::Handle handle,bool);
 
 	void on_layer_exclude_from_rendering_changed(synfig::Layer::Handle handle,bool);
+
+	void on_layer_z_depth_range_changed(synfig::Layer::Handle handle,bool);
 
 	void on_layer_lowered(synfig::Layer::Handle handle);
 

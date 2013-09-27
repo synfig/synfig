@@ -40,6 +40,7 @@
 #include "instance.h"
 #include <synfig/layer_pastecanvas.h>
 #include <synfigapp/action_system.h>
+#include <synfig/context.h>
 
 #include <gtk/gtkversion.h>
 #include <ETL/clock>
@@ -79,6 +80,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
 	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_exclude_from_rendering_changed));
+	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_z_depth_range_changed));
 	canvas_interface()->signal_layer_lowered().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_lowered));
 	canvas_interface()->signal_layer_raised().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_raised));
 	canvas_interface()->signal_layer_removed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_removed));
@@ -279,6 +281,31 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(layer->get_exclude_from_rendering() ? Pango::STYLE_ITALIC : Pango::STYLE_NORMAL);
+
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else if(column==model.weight.index())
+	{
+		synfig::Layer::Handle layer((*iter)[model.layer]);
+
+		if(!layer)return;
+
+		Glib::Value<Pango::Weight> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		synfig::Layer_PasteCanvas::Handle paste=layer->get_parent_paste_canvas_layer();
+		if(paste)
+		{
+			synfig::ContextParams cp;
+			cp.z_depth_range_enabled=paste->get_param("z_depth_range_enabled").get(bool());
+			cp.z_depth_range_position=paste->get_param("z_depth_range_position").get(Real());
+			cp.z_depth_range_depth=paste->get_param("z_depth_range_depth").get(Real());
+			float visibility=synfig::Context::z_depth_visibility(cp, *layer);
+			x.set(visibility==1.0 && cp.z_depth_range_enabled ? Pango::WEIGHT_BOLD : Pango::WEIGHT_NORMAL);
+		}
+		else
+			x.set(Pango::WEIGHT_NORMAL);
 
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
@@ -918,6 +945,22 @@ LayerTreeStore::on_layer_exclude_from_rendering_changed(synfig::Layer::Handle ha
 		rebuild();
 	}
 }
+
+void
+LayerTreeStore::on_layer_z_depth_range_changed(synfig::Layer::Handle handle,bool /*x*/)
+{
+	// Seems to not work. Need to do something different like call row_changed
+	// for this layer row or all its children.
+	Gtk::TreeModel::Children::iterator iter;
+	if(find_layer_row(handle,iter))
+		(*iter)[model.layer]=handle;
+	else
+	{
+		synfig::warning("Couldn't find layer to be change the z_depth range in layer list. Rebuilding index...");
+		rebuild();
+	}
+}
+
 
 void
 LayerTreeStore::on_layer_lowered(synfig::Layer::Handle layer)

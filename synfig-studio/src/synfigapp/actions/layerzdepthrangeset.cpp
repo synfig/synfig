@@ -203,5 +203,10 @@ Action::LayerZDepthRangeSet::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
 	}
+
+	if(get_canvas_interface())
+	{
+		get_canvas_interface()->signal_layer_z_depth_range_changed()(paste,true);
+	}
 	return;
 }
