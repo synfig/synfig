@@ -49,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerZDepthRangeSet);
 ACTION_SET_NAME(Action::LayerZDepthRangeSet,"LayerZDepthRangeSet");
-ACTION_SET_LOCAL_NAME(Action::LayerZDepthRangeSet,N_("Make Layers ZDepth visible"));
+ACTION_SET_LOCAL_NAME(Action::LayerZDepthRangeSet,N_("Make Z Range visible"));
 ACTION_SET_TASK(Action::LayerZDepthRangeSet,"zdetph_range_set");
 ACTION_SET_CATEGORY(Action::LayerZDepthRangeSet,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerZDepthRangeSet,0);
@@ -57,7 +57,7 @@ ACTION_SET_VERSION(Action::LayerZDepthRangeSet,"0.0");
 ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
 #define ZDEPTH_MAX 1e8
-#define ZDEPTH_EPS 0
+#define ZDEPTH_EPS 1.0
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -73,7 +73,7 @@ Action::LayerZDepthRangeSet::LayerZDepthRangeSet()
 synfig::String
 Action::LayerZDepthRangeSet::get_local_name()const
 {
-	return get_layer_descriptions(layers, _("Make Layer ZDepth visible"), _("Make Layers ZDepth visible"));
+	return get_layer_descriptions(layers, _("Make Z Range visible"), _("Make Z Range visible"));
 }
 
 Action::ParamVocab
@@ -83,7 +83,7 @@ Action::LayerZDepthRangeSet::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to make visible"))
+		.set_desc(_("Layer to make Z Range visible"))
 		.set_supports_multiple()
 	);
 
@@ -130,8 +130,8 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 			float layer_z_depth=layer->get_true_z_depth();
 			if(z_position > layer_z_depth)
 				z_position=layer_z_depth;
-			if(z_position + z_depth < layer_z_depth)
-				z_depth=layer_z_depth - z_position;
+			if(z_position + z_depth <= layer_z_depth)
+				z_depth=layer_z_depth - z_position + ZDEPTH_EPS;
 		}
 		return true;
 	}
@@ -170,7 +170,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_enabled"));
+		action->set_param("value_desc",ValueDesc(paste, "z_range"));
 		action->set_param("recursive", true);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
@@ -185,7 +185,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_position"));
+		action->set_param("value_desc",ValueDesc(paste, "z_range_position"));
 		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
@@ -200,7 +200,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_depth"));
+		action->set_param("value_desc",ValueDesc(paste, "z_range_depth"));
 		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);

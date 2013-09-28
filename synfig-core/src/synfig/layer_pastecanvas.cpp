@@ -98,10 +98,10 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 
 	muck_with_time_=true;
 
-	param_z_depth_range_enabled=ValueBase(bool(false));
-	param_z_depth_range_position=ValueBase(Real(0.0));
-	param_z_depth_range_depth=ValueBase(Real(0.0));
-	param_z_depth_range_transition=ValueBase(Real(0.0));
+	param_z_range=ValueBase(bool(false));
+	param_z_range_position=ValueBase(Real(0.0));
+	param_z_range_depth=ValueBase(Real(1.0));
+	param_z_range_blur=ValueBase(Real(0.0));
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -180,22 +180,22 @@ Layer_PasteCanvas::get_param_vocab()const
 		ret.back().hidden();
 	}
 
-	ret.push_back(ParamDesc("z_depth_range_enabled")
-		.set_local_name(_("Z_Depth Range Enabled"))
+	ret.push_back(ParamDesc("z_range")
+		.set_local_name(_("Z Range"))
 		.set_description(_("When checked, only layers inside range are visible"))
 		.set_static(true)
 	);
-	ret.push_back(ParamDesc("z_depth_range_position")
-		.set_local_name(_("Z_Depth Range Position"))
-		.set_description(_("Starting z_depth position where layers are visible"))
+	ret.push_back(ParamDesc("z_range_position")
+		.set_local_name(_("Z Range Position"))
+		.set_description(_("Starting position where layers are visible"))
 	);
-	ret.push_back(ParamDesc("z_depth_range_depth")
-		.set_local_name(_("Z_Depth Range Depth"))
-		.set_description(_("Depth where layers are visible in z_depth range"))
+	ret.push_back(ParamDesc("z_range_depth")
+		.set_local_name(_("Z Range Depth"))
+		.set_description(_("Depth where layers are visible in range"))
 	);
-	ret.push_back(ParamDesc("z_depth_range_transition")
-		.set_local_name(_("Z_Depth Range Transition"))
-		.set_description(_("Z_Depth area where layers inside are partially visible"))
+	ret.push_back(ParamDesc("z_range_blur")
+		.set_local_name(_("Z Range Blur"))
+		.set_description(_("Area where layers inside are partially visible"))
 	);
 
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
@@ -251,10 +251,10 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_zoom);
 	IMPORT_VALUE(param_outline_grow);
 	IMPORT_VALUE(param_curr_time);
-	IMPORT_VALUE(param_z_depth_range_enabled);
-	IMPORT_VALUE(param_z_depth_range_position);
-	IMPORT_VALUE(param_z_depth_range_depth);
-	IMPORT_VALUE(param_z_depth_range_transition);
+	IMPORT_VALUE(param_z_range);
+	IMPORT_VALUE(param_z_range_position);
+	IMPORT_VALUE(param_z_range_depth);
+	IMPORT_VALUE(param_z_range_blur);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -341,10 +341,10 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT_VALUE(param_children_lock);
 	EXPORT_VALUE(param_curr_time);
 	EXPORT_VALUE(param_outline_grow);
-	EXPORT_VALUE(param_z_depth_range_enabled);
-	EXPORT_VALUE(param_z_depth_range_position);
-	EXPORT_VALUE(param_z_depth_range_depth);
-	EXPORT_VALUE(param_z_depth_range_transition);
+	EXPORT_VALUE(param_z_range);
+	EXPORT_VALUE(param_z_range_position);
+	EXPORT_VALUE(param_z_range_depth);
+	EXPORT_VALUE(param_z_range_blur);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -375,10 +375,10 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	Real zoom=param_zoom.get(Real());
 	bool children_lock=param_children_lock.get(bool(true));
 	ContextParams cp(context.get_params());
-	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
-	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
-	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
-	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
+	cp.z_range=param_z_range.get(bool());
+	cp.z_range_position=param_z_range_position.get(Real());
+	cp.z_range_depth=param_z_range_depth.get(Real());
+	cp.z_range_blur=param_z_range_blur.get(Real());
 	if (canvas) {
 		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
@@ -401,10 +401,10 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
 	ContextParams cp(context.get_params());
-	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
-	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
-	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
-	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
+	cp.z_range=param_z_range.get(bool());
+	cp.z_range_position=param_z_range_position.get(Real());
+	cp.z_range_depth=param_z_range_depth.get(Real());
+	cp.z_range_blur=param_z_range_blur.get(Real());
 	if(!canvas || !get_amount())
 		return context.get_color(pos);
 
@@ -422,10 +422,10 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 	Vector focus=param_focus.get(Vector());
 	Real zoom=param_zoom.get(Real());
 	ContextParams cp(context_params);
-	cp.z_depth_range_enabled=param_z_depth_range_enabled.get(bool());
-	cp.z_depth_range_position=param_z_depth_range_position.get(Real());
-	cp.z_depth_range_depth=param_z_depth_range_depth.get(Real());
-	cp.z_depth_range_transition=param_z_depth_range_transition.get(Real());
+	cp.z_range=param_z_range.get(bool());
+	cp.z_range_position=param_z_range_position.get(Real());
+	cp.z_range_depth=param_z_range_depth.get(Real());
+	cp.z_range_blur=param_z_range_blur.get(Real());
 	return canvas
 		 ? (canvas->get_context(cp).get_full_bounding_rect()-focus)*exp(zoom)+origin+focus
 		 : Rect::zero();
