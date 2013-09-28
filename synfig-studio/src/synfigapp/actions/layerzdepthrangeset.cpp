@@ -57,7 +57,7 @@ ACTION_SET_VERSION(Action::LayerZDepthRangeSet,"0.0");
 ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
 #define ZDEPTH_MAX 1e8
-#define ZDEPTH_EPS 0
+#define ZDEPTH_EPS 1.0
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -131,7 +131,7 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 			if(z_position > layer_z_depth)
 				z_position=layer_z_depth;
 			if(z_position + z_depth < layer_z_depth)
-				z_depth=layer_z_depth - z_position;
+				z_depth=layer_z_depth - z_position + ZDEPTH_EPS;
 		}
 		return true;
 	}

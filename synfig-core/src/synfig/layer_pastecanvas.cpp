@@ -100,7 +100,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 
 	param_z_depth_range_enabled=ValueBase(bool(false));
 	param_z_depth_range_position=ValueBase(Real(0.0));
-	param_z_depth_range_depth=ValueBase(Real(0.0));
+	param_z_depth_range_depth=ValueBase(Real(1.0));
 	param_z_depth_range_transition=ValueBase(Real(0.0));
 
 	SET_INTERPOLATION_DEFAULTS();
