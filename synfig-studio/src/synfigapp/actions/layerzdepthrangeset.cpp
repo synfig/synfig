@@ -171,6 +171,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_enabled"));
+		action->set_param("recursive", true);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
@@ -185,6 +186,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_position"));
+		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
@@ -199,14 +201,10 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
 		action->set_param("value_desc",ValueDesc(paste, "z_depth_range_depth"));
+		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
-	}
-
-	if(get_canvas_interface())
-	{
-		get_canvas_interface()->signal_layer_z_depth_range_changed()(paste,true);
 	}
 	return;
 }
