@@ -49,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerZDepthRangeSet);
 ACTION_SET_NAME(Action::LayerZDepthRangeSet,"LayerZDepthRangeSet");
-ACTION_SET_LOCAL_NAME(Action::LayerZDepthRangeSet,N_("Make Layers ZDepth visible"));
+ACTION_SET_LOCAL_NAME(Action::LayerZDepthRangeSet,N_("Make Z Range visible"));
 ACTION_SET_TASK(Action::LayerZDepthRangeSet,"zdetph_range_set");
 ACTION_SET_CATEGORY(Action::LayerZDepthRangeSet,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerZDepthRangeSet,0);
@@ -130,7 +130,7 @@ Action::LayerZDepthRangeSet::set_param(const synfig::String& name, const Action:
 			float layer_z_depth=layer->get_true_z_depth();
 			if(z_position > layer_z_depth)
 				z_position=layer_z_depth;
-			if(z_position + z_depth < layer_z_depth)
+			if(z_position + z_depth <= layer_z_depth)
 				z_depth=layer_z_depth - z_position + ZDEPTH_EPS;
 		}
 		return true;
