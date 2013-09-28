@@ -161,7 +161,7 @@ private:
 
 	void on_layer_exclude_from_rendering_changed(synfig::Layer::Handle handle,bool);
 
-	void on_layer_z_depth_range_changed(synfig::Layer::Handle handle,bool);
+	void on_layer_z_range_changed(synfig::Layer::Handle handle,bool);
 
 	void on_layer_lowered(synfig::Layer::Handle handle);
 
