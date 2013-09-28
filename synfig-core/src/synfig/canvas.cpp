@@ -1247,10 +1247,10 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				else
 					paste_sub_canvas->set_grow_value(0.0);
 				ContextParams params=context.get_params();
-				params.z_depth_range_enabled=paste_canvas->get_param("z_depth_range_enabled").get(bool());
-				params.z_depth_range_position=paste_canvas->get_param("z_depth_range_position").get(Real());
-				params.z_depth_range_depth=paste_canvas->get_param("z_depth_range_depth").get(Real());
-				params.z_depth_range_transition=paste_canvas->get_param("z_depth_range_transition").get(Real());
+				params.z_range=paste_canvas->get_param("z_range").get(bool());
+				params.z_range_position=paste_canvas->get_param("z_range_position").get(Real());
+				params.z_range_depth=paste_canvas->get_param("z_range_depth").get(Real());
+				params.z_range_blur=paste_canvas->get_param("z_range_blur").get(Real());
 				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
 			}
 
