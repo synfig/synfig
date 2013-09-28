@@ -294,7 +294,16 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<Pango::Weight> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		synfig::Layer_PasteCanvas::Handle paste=layer->get_parent_paste_canvas_layer();
+		synfig::Layer::Handle paste=layer->get_parent_paste_canvas_layer();
+		if(paste)
+		{
+			etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
+			if(sub_canvas && !sub_canvas->is_inline())
+			{
+				Gtk::TreeRow row=*iter;
+				paste=(*row.parent())[model.layer];
+			}
+		}
 		if(paste)
 		{
 			synfig::ContextParams cp;
