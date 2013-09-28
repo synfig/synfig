@@ -332,6 +332,13 @@ Layer::get_z_depth(const synfig::Time& t)const
 	return (*dynamic_param_list().find("z_depth")->second)(t).get(Real());
 }
 
+float
+Layer::get_true_z_depth(const synfig::Time& t)const
+{
+	// TODO: the 1.0001 constant should be somehow user defined
+	return get_z_depth(t)*1.0001+get_depth();
+}
+
 Layer::Handle
 Layer::simple_clone()const
 {
@@ -666,6 +673,31 @@ Layer::get_param_local_name(const String &param_name)const
 		if (iter->get_name() == param_name)
 			return iter->get_local_name();
 	return String();
+}
+
+synfig::Layer::LooseHandle
+synfig::Layer::get_parent_paste_canvas_layer()const
+{
+	synfig::Canvas::LooseHandle canvas=get_canvas();
+	if(canvas->parent())
+	{
+		synfig::Canvas::LooseHandle parent_canvas=canvas->parent();
+		Canvas::iterator iter;
+		for(iter=parent_canvas->begin();iter!=parent_canvas->end();++iter)
+		{
+			Layer::LooseHandle layer=iter->get();
+			if(layer->get_name()=="PasteCanvas")
+			{
+				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
+				Canvas::Handle sub_canvas=paste_canvas->get_sub_canvas();
+				if(sub_canvas==canvas)
+					return layer;
+			}
+		}
+		synfig::warning("Layer's canvas has parent canvas but I can't find a proper Layer_PasteCanvas in it");
+		return NULL;
+	}
+	return NULL;
 }
 
 String
