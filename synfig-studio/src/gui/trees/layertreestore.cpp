@@ -80,7 +80,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
 	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_exclude_from_rendering_changed));
-	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_z_depth_range_changed));
+	canvas_interface()->signal_layer_z_depth_range_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_z_depth_range_changed));
 	canvas_interface()->signal_layer_lowered().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_lowered));
 	canvas_interface()->signal_layer_raised().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_raised));
 	canvas_interface()->signal_layer_removed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_removed));
