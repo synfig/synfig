@@ -24,7 +24,8 @@ LAYER_ACTION_HH = \
 	actions/layerraise.h \
 	actions/layerremove.h \
 	actions/layersetdesc.h \
-	actions/layersetexcludefromrendering.h
+	actions/layersetexcludefromrendering.h \
+	actions/layerzdepthrangeset.h
 
 LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
@@ -43,7 +44,8 @@ LAYER_ACTION_CC = \
 	actions/layerraise.cpp \
 	actions/layerremove.cpp \
 	actions/layersetdesc.cpp \
-	actions/layersetexcludefromrendering.cpp
+	actions/layersetexcludefromrendering.cpp \
+	actions/layerzdepthrangeset.cpp
 
 
 VALUEDESC_ACTION_HH = \

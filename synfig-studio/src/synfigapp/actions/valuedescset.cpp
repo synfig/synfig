@@ -933,6 +933,24 @@ Action::ValueDescSet::prepare()
 			}
 		}
 	}
+
+	// If we are changing the z_depth range parameters
+	// send a signal to the canvas interface to say that the layer has changed
+	if(value_desc.parent_is_layer_param()
+	   &&
+	   (value_desc.get_param_name() =="z_depth_range_enabled"
+		||
+		value_desc.get_param_name() =="z_depth_range_position"
+		||
+		value_desc.get_param_name() =="z_depth_range_depth")
+	   )
+	{
+		if (get_canvas_interface() && recursive)
+		{
+			get_canvas_interface()->signal_layer_z_depth_range_changed()(value_desc.get_layer(),true);
+		}
+	}
+
 	// If we are in animate editing mode
 	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
 	if(get_edit_mode()&MODE_ANIMATE && !value_desc.get_static())
@@ -1045,4 +1063,6 @@ Action::ValueDescSet::prepare()
 		}
 		throw Error(_("Unsupported ValueDesc type"));
 	}
+
+	
 }
