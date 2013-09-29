@@ -331,7 +331,7 @@ mkapp()
 	rm -rf lib/python2.7/test
 	rm -rf lib/python2.7/*/test
 	rm -rf Library/Frameworks/Python.framework/Versions/2.*
-	find lib \( -name "*.la" -or -name "*.a" \)  -delete
+	find lib \( -name "*.la" -or -name "*.a" \) -not -path "lib/ImageMagick*"  -delete
 	find . -name "*.pyo" -delete
 
 	echo cleaning up some stuff in share ...
