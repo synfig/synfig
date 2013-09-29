@@ -172,7 +172,7 @@ ffmpeg_trgt::init()
 
 	if( filename.c_str()[0] == '-' )
 		command = strprintf("ffmpeg.exe -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop_input"
+							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							" -vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
@@ -182,7 +182,7 @@ ffmpeg_trgt::init()
 							filename.c_str());
 	else
 		command = strprintf("ffmpeg.exe -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop_input"
+							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							"-vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
@@ -227,7 +227,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input", "-metadata",
+					   "-i", "pipe:", "-loop", "1", "-metadata",
 						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 						"-vcodec", video_codec.c_str(),
 						"-b", strprintf("%ik", bitrate).c_str(),
@@ -237,7 +237,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input", "-metadata",
+					   "-i", "pipe:", "-loop", "1", "-metadata",
 						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 						"-vcodec", video_codec.c_str(),
 						"-b", strprintf("%ik", bitrate).c_str(),
@@ -249,7 +249,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input",
+					   "-i", "pipe:", "-loop", "1",
 					   "-metadata",
 					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 					   "-vcodec", video_codec.c_str(),
@@ -260,7 +260,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input",
+					   "-i", "pipe:", "-loop", "1",
 					   "-metadata",
 					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 					   "-vcodec", video_codec.c_str(),
