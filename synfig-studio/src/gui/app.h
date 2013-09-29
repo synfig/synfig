@@ -205,6 +205,7 @@ public:
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
+	static bool enable_experimental_features;
 	
 	static synfigapp::PluginManager plugin_manager;
 	
