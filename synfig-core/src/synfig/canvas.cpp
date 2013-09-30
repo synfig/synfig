@@ -1378,7 +1378,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			ValueNode::Handle value_node=LinkableValueNode::create("scale", ValueBase(Real()), op_canvas);
 			ValueNode_Scale::Handle scale=ValueNode_Scale::Handle::cast_dynamic(value_node);
 			scale->set_link("link", amount);
-			scale->set_link("scalar", ValueNode_Const::create(context.z_depth_visibility(*layer)));
+			scale->set_link("scalar", ValueNode_Const::create(layer_visibility));
 			composite->connect_dynamic_param("amount", value_node);
 			layer=composite;
 		}
