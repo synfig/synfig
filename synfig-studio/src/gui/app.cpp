@@ -2390,7 +2390,7 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 		tree.get_selection()->select(selected_row);
 
 	Gtk::Table table(1, 2);
-	table.attach(label, 0, 1, 0, 1);
+	table.attach(label, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
 	table.attach(tree, 0, 1, 1, 2);
 
 	dialog.get_vbox()->pack_start(table);
