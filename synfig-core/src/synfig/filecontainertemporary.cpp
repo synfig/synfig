@@ -125,6 +125,19 @@ bool FileContainerTemporary::open(const std::string &container_filename)
 	return res;
 }
 
+bool FileContainerTemporary::open_from_history(const std::string &container_filename, FileContainerZip::file_size_t truncate_storage_size)
+{
+	bool res
+	     = !is_opened()
+		&& container_->open_from_history(container_filename, truncate_storage_size)
+		&& ((container_filename_ = container_filename).empty() || true)
+		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
+}
+
+
 void FileContainerTemporary::close()
 {
 	if (!is_opened()) return;
