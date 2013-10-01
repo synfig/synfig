@@ -298,6 +298,50 @@ Action::ValueDescSet::prepare()
 		}
 	}
 
+	// if we are a boneinfluence value node, then we need to distribute the changes
+	/// to the linked value node.
+	// This is only valid for blinepoint type converted to bone influence
+	// Not valid for a vector converted to bone influence
+	if(value_desc.is_value_node() && value.get_type() == ValueBase::TYPE_BLINEPOINT)
+	{
+		if (ValueNode_BoneInfluence::Handle bone_influence_value_node =
+			ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueDesc bone_influence_value_desc(bone_influence_value_node,
+												bone_influence_value_node->get_link_index_from_name("link"));
+			ValueBase old_value(value);
+			BLinePoint bp, nbp;
+			nbp=bp=old_value.get(BLinePoint());
+			if (bone_influence_value_node->has_inverse_transform())
+			{
+				nbp.set_vertex(bone_influence_value_node->get_inverse_transform().get_transformed(bp.get_vertex()));
+				nbp.set_tangent1(bone_influence_value_node->get_inverse_transform().get_transformed(bp.get_tangent1()));
+				nbp.set_tangent2(bone_influence_value_node->get_inverse_transform().get_transformed(bp.get_tangent2()));
+			}
+			else
+				throw Error(_("this node isn't editable - in the future it will be greyed to prevent editing"));
+			
+			Action::Handle action(Action::create("ValueDescSet"));
+			
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+			
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",ValueBase(nbp));
+			action->set_param("value_desc",bone_influence_value_desc);
+			
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			
+			add_action(action);
+			
+			return;
+		}
+	}
+
+
 	// If we are a composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
