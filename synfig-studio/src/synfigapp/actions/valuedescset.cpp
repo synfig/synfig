@@ -263,7 +263,9 @@ Action::ValueDescSet::prepare()
 	}
 
 	// if we are a boneinfluence value node, then we need to distribute the changes to the linked value node
-	if(value_desc.is_value_node())
+	// This is only valid for vector type converted to bone influence
+	// Not valid for a whole blinepoint converted to bone influence
+	if(value_desc.is_value_node() && value.get_type() == ValueBase::TYPE_VECTOR)
 	{
 		if (ValueNode_BoneInfluence::Handle bone_influence_value_node =
 			ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
