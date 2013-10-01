@@ -90,7 +90,7 @@ using namespace studio;
 AutoRecover::AutoRecover()
 {
 	// Three Minutes
-	set_timeout(10 /* 3*60*1000 */);
+	set_timeout(3*60*1000);
 
 	if(mkdir(get_shadow_directory().c_str(),ACCESSPERMS)<0)
 	{
@@ -229,7 +229,7 @@ AutoRecover::auto_backup()
 				FileSystem::Handle file_system = canvas->get_identifier().file_system;
 				if (file_system && (*iter)->get_container())
 				{
-					if (save_canvas(file_system->get_identifier("container:project.sifz"), canvas, false))
+					if (save_canvas(file_system->get_identifier("#project.sifz"), canvas, false))
 					{
 						if ((*iter)->get_container()->save_temporary())
 						{

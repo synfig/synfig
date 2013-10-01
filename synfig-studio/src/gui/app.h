@@ -42,6 +42,8 @@
 #include <synfig/string.h>
 #include <synfig/time.h>
 
+#include <synfig/filecontainerzip.h>
+
 #include <gtkmm/uimanager.h>
 
 #include <synfigapp/instance.h>
@@ -131,6 +133,11 @@ public:
 		static int count;
 		Busy(){count++;}
 		~Busy(){count--;}
+	};
+
+	enum Response
+	{
+		RESPONSE_ACCEPT_WITH_HISTORY = 1
 	};
 
 
@@ -317,7 +324,7 @@ public:
 
 	static bool open(std::string filename);
 
-	static bool open_as(std::string filename,std::string as);
+	static bool open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size = 0);
 
 	static bool open_from_temporary_container_as(std::string container_filename_base,std::string as);
 
@@ -346,7 +353,10 @@ public:
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
 	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
+
+	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 

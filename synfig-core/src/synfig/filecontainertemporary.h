@@ -84,6 +84,7 @@ namespace synfig
 
 		virtual bool create(const std::string &container_filename);
 		virtual bool open(const std::string &container_filename);
+		bool open_from_history(const std::string &container_filename, FileContainerZip::file_size_t truncate_storage_size = 0);
 		virtual void close();
 		virtual bool is_opened();
 

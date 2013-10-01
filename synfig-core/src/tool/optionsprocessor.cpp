@@ -474,15 +474,15 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 		string errors, warnings;
 		try
 		{
-			// todo: literals ".zip", "container:", "project.sifz"
-			if (filename_extension(job.filename) == ".zip")
+			// todo: literals ".sfg", "container:", "project.sifz"
+			if (filename_extension(job.filename) == ".sfg")
 			{
 				etl::handle< FileContainerZip > container = new FileContainerZip();
 				if (container->open(job.filename))
 				{
 					etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
-					file_system->register_system("container:", container);
-					job.root = open_canvas_as(file_system->get_identifier("container:project.sifz"), job.filename, errors, warnings);
+					file_system->register_system("#", container);
+					job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), job.filename, errors, warnings);
 				} else
 				{
 					errors.append("Cannot open container " + job.filename + "\n");
@@ -572,15 +572,15 @@ Job OptionsProcessor::extract_job() throw (SynfigToolException&)
 
 		string errors, warnings;
 		Canvas::Handle composite;
-		// todo: literals ".zip", "container:", "project.sifz"
-		if (filename_extension(composite_file) == ".zip")
+		// todo: literals ".sfg", "container:", "project.sifz"
+		if (filename_extension(composite_file) == ".sfg")
 		{
 			etl::handle< FileContainerZip > container = new FileContainerZip();
 			if (container->open(job.filename))
 			{
 				etl::handle< FileSystemGroup > file_system( new FileSystemGroup(FileSystemNative::instance()) );
-				file_system->register_system("container:", container);
-				job.root = open_canvas_as(file_system->get_identifier("container:project.sifz"), composite_file, errors, warnings);
+				file_system->register_system("#", container);
+				job.root = open_canvas_as(file_system->get_identifier("#project.sifz"), composite_file, errors, warnings);
 			} else
 			{
 				errors.append("Cannot open container " + composite_file + "\n");

@@ -864,6 +864,9 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 
 	canvas->set_guid(get_guid()^deriv_guid);
 
+	if (canvas->parent().empty())
+		canvas->set_file_name(get_file_name());
+
 	const_iterator iter;
 	for(iter=begin();iter!=end();++iter)
 	{
