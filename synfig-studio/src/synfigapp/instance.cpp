@@ -53,7 +53,7 @@
 #include <synfig/valuenode_real.h>
 #include <synfig/layer_pastecanvas.h>
 #include "actions/valuedescexport.h"
-#include "actions/valuedescconnect.h"
+#include "actions/layerparamset.h"
 #include <map>
 
 #include "general.h"
@@ -266,7 +266,7 @@ Instance::update_references_in_canvas(synfig::Canvas::Handle canvas)
 }
 
 bool
-Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer::Handle> &imported)
+Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas::Handle> &imported)
 {
 	etl::handle<CanvasInterface> canvas_interface;
 
@@ -281,19 +281,20 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 
 		if (imported.count(sub_canvas.get()) != 0) {
 			// link already exported canvas
-			Layer::Handle layer = imported[canvas.get()];
-			if (!layer) continue;
+			Canvas::Handle new_canvas = imported[sub_canvas.get()];
+			if (!new_canvas) continue;
 
 			// Action to link canvas
 			try
 			{
-				Action::Handle action(Action::ValueDescConnect::create());
+				Action::Handle action(Action::LayerParamSet::create());
 				if (!action) continue;
 				canvas_interface = find_canvas_interface(canvas);
 				action->set_param("canvas",canvas);
 				action->set_param("canvas_interface",canvas_interface);
-				action->set_param("src",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
-				action->set_param("dest",layer->dynamic_param_list().find("canvas")->second);
+				action->set_param("layer",Layer::Handle(paste_canvas));
+				action->set_param("param","canvas");
+				action->set_param("new_value",ValueBase(new_canvas));
 				if(!action->is_ready()) continue;
 				if(!perform_action(action)) continue;
 			}
@@ -318,9 +319,15 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 			bool found = false;
 			for(int j = 1; j < 1000; j++)
 			{
-				name = j == 1 ? fname : strprintf("%s %d", fname.c_str(), j);
-				if (canvas->value_node_list().count(name) == 0)
-					{ found = true; break; }
+				name = j == 1 ? fname : strprintf("%s_%d", fname.c_str(), j);
+				if (canvas->value_node_list().count(name) == false)
+				{
+					found = true;
+					for(std::list<Canvas::Handle>::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();iter++)
+						if(name==(*iter)->get_id())
+							{ found = false; break; }
+					if (found) break;
+				}
 			}
 			if (!found) continue;
 
@@ -336,13 +343,13 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 				action->set_param("name",name);
 				if(!action->is_ready()) continue;
 				if(!perform_action(action)) continue;
+				std::string warnings;
+				imported[sub_canvas.get()] = canvas->find_canvas(name, warnings);
 			}
 			catch(...)
 			{
 				continue;
 			}
-
-			imported[sub_canvas.get()] = paste_canvas;
 
 			return true;
 		}
@@ -358,7 +365,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Layer:
 void
 Instance::import_external_canvases()
 {
-	std::map<Canvas*, Layer::Handle> imported;
+	std::map<Canvas*, Canvas::Handle> imported;
 	while(import_external_canvas(get_canvas(), imported));
 }
 
@@ -373,6 +380,8 @@ bool
 Instance::save_as(const synfig::String &file_name)
 {
 	save_canvas_into_container_ = false;
+	bool embed_data = false;
+	bool extract_data = false;
 	std::string canvas_filename = file_name;
 	if (filename_extension(file_name) == ".sfg")
 	{
@@ -380,7 +389,7 @@ Instance::save_as(const synfig::String &file_name)
 		save_canvas_reference_local_directory_ = "#images/";
 		canvas_filename = "#project.sifz";
 		save_canvas_into_container_ = true;
-		import_external_canvases();
+		embed_data = filename_extension(get_canvas()->get_file_name()) != ".sfg";
 	} else
 	{
 		save_canvas_reference_directory_ =
@@ -391,7 +400,10 @@ Instance::save_as(const synfig::String &file_name)
 			filename_sans_extension(basename(file_name))
 		  + ".images"
 		  + ETL_DIRECTORY_SEPARATOR;
+		extract_data = filename_extension(get_canvas()->get_file_name()) == ".sfg";
 	}
+
+	if (embed_data) import_external_canvases();
 
 	bool ret;
 
@@ -400,13 +412,18 @@ Instance::save_as(const synfig::String &file_name)
 	set_file_name(file_name);
 	get_canvas()->set_identifier(file_system_->get_identifier(canvas_filename));
 
-	set_save_canvas_external_file_callback(save_canvas_callback, this);
+	if (embed_data || extract_data)
+		set_save_canvas_external_file_callback(save_canvas_callback, this);
+	else
+		set_save_canvas_external_file_callback(NULL, NULL);
+
 	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_canvas_into_container_);
 
 	if (ret && save_canvas_into_container_)
 	   ret = container_->save_changes(file_name, false);
 
-	if (ret) update_references_in_canvas(get_canvas());
+	if (ret && (embed_data || extract_data))
+		update_references_in_canvas(get_canvas());
 	set_save_canvas_external_file_callback(NULL, NULL);
 	save_canvas_references_.clear();
 
