@@ -173,9 +173,15 @@ Action::LayerEmbed::prepare()
 		bool found = false;
 		for(int j = 1; j < 1000; j++)
 		{
-			name = j == 1 ? fname : strprintf("%s %d", fname.c_str(), j);
-			if (get_canvas()->value_node_list().count(name) == 0)
-				{ found = true; break; }
+			name = j == 1 ? fname : strprintf("%s_%d", fname.c_str(), j);
+			if (get_canvas()->value_node_list().count(name) == false)
+			{
+				found = true;
+				for(std::list<Canvas::Handle>::const_iterator iter=get_canvas()->children().begin();iter!=get_canvas()->children().end();iter++)
+					if(name==(*iter)->get_id())
+						{ found = false; break; }
+				if (found) break;
+			}
 		}
 		if (!found)
 			throw Error(_("Cannot generate valid name for new canvas"));
