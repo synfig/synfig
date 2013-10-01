@@ -101,7 +101,7 @@ public:
 	render_excluded_contexts(render_excluded_contexts),
 	z_range(false),
 	z_range_position(0.0),
-	z_range_depth(1.0),
+	z_range_depth(0.0),
 	z_range_blur(0.0){ }
 };
 
@@ -179,11 +179,11 @@ public:
 			float d=cp.z_range_depth;
 			float t=cp.z_range_blur;
 			// Out of range
-			if(z>=p+d+t || z<p-t)
+			if(z>p+d+t || z<p-t)
 				return 0.0;
 			else
 			// Inside right range
-			if(z>=p+d)
+			if(z>p+d)
 				return t>0.0?(p+d+t-z)/t:0.0;
 			else
 			// Inside left range
