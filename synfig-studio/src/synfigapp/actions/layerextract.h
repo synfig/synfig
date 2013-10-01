@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedescexport.h
+/*!	\file layerextract.h
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,14 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUEDESCEXPORT_H
-#define __SYNFIG_APP_ACTION_VALUEDESCEXPORT_H
+#ifndef __SYNFIG_APP_ACTION_LAYEREXTRACT_H
+#define __SYNFIG_APP_ACTION_LAYEREXTRACT_H
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/layer.h>
+#include <synfig/layer_pastecanvas.h>
+#include <modules/lyr_std/import.h>
 #include <synfigapp/action.h>
-#include <synfigapp/value_desc.h>
-#include <list>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,24 +40,18 @@
 
 namespace synfigapp {
 
+class Instance;
+
 namespace Action {
 
-class ValueDescExport :
+class LayerExtract :
 	public Super
 {
 private:
-	synfig::GUID guid;
-	ValueDesc value_desc;
-	synfig::String name;
-
-	void scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas);
-	void scan_layer(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Layer::Handle layer);
-	void scan_linkable_value_node(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::LinkableValueNode::Handle linkable_value_node);
+	etl::handle<synfig::Layer> layer;
+	std::string filename;
 
 public:
-
-	ValueDescExport();
-
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 

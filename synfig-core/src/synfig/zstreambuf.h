@@ -84,18 +84,19 @@ namespace synfig {
 		FileSystem::ReadStreamHandle stream_;
 		zstreambuf buf_;
 		std::istream istream_;
+
+	protected:
+		virtual size_t internal_read(void *buffer, size_t size)
+			{ return (size_t)istream_.read((char*)buffer, size).gcount(); }
+
 	public:
 		ZReadStream(FileSystem::ReadStreamHandle stream):
 			FileSystem::ReadStream(stream->file_system()),
 			stream_(stream),
-			buf_((std::streambuf*)stream_->stream().rdbuf()),
+			buf_(stream_->rdbuf()),
 			istream_(&buf_)
 		{ }
 
-		virtual size_t read(void *buffer, size_t size)
-		{
-			return (size_t)istream_.read((char*)buffer, size).gcount();
-		}
 	};
 
 	class ZWriteStream : public FileSystem::WriteStream
@@ -104,21 +105,23 @@ namespace synfig {
 		FileSystem::WriteStreamHandle stream_;
 		zstreambuf buf_;
 		std::ostream ostream_;
-	public:
-		ZWriteStream(FileSystem::WriteStreamHandle stream):
-			FileSystem::WriteStream(stream->file_system()),
-			stream_(stream),
-			buf_((std::streambuf*)stream_->stream().rdbuf()),
-			ostream_(&buf_)
-		{ }
 
-		virtual size_t write(const void *buffer, size_t size)
+	protected:
+		virtual size_t internal_write(const void *buffer, size_t size)
 		{
 			for(size_t i = 0; i < size; i++)
 				if (!ostream_.put(((const char*)buffer)[i]).good())
 					return i;
 			return size;
 		}
+
+	public:
+		ZWriteStream(FileSystem::WriteStreamHandle stream):
+			FileSystem::WriteStream(stream->file_system()),
+			stream_(stream),
+			buf_(stream_->rdbuf()),
+			ostream_(&buf_)
+		{ }
 	};
 }
 

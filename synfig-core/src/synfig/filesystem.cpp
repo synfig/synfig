@@ -53,62 +53,36 @@ using namespace synfig;
 FileSystem::Stream::Stream(Handle file_system): file_system_(file_system) { }
 FileSystem::Stream::~Stream() { }
 
-
 // ReadStream
 
 FileSystem::ReadStream::ReadStream(Handle file_system):
 Stream(file_system),
-buf_(this),
-stream_(&buf_)
-{ }
-
-int
-FileSystem::ReadStream::get_char()
+std::istream((std::streambuf*)this)
 {
-	char c = 0;
-	return sizeof(c) == read(&c, sizeof(c)) ? std::char_traits<char>::to_int_type(c) : EOF;
+	setg(&buffer_ + 1, &buffer_ + 1, &buffer_ + 1);
 }
 
-bool
-FileSystem::ReadStream::read_whole_block(void *buffer, size_t size)
+int FileSystem::ReadStream::underflow()
 {
-	return size == read(buffer, size);
+	if (gptr() < egptr()) return std::streambuf::traits_type::to_int_type(*gptr());
+	if (sizeof(buffer_) != internal_read(&buffer_, sizeof(buffer_))) return EOF;
+	setg(&buffer_, &buffer_, &buffer_ + 1);
+	return std::streambuf::traits_type::to_int_type(*gptr());
 }
-
 
 // WriteStream
 
 FileSystem::WriteStream::WriteStream(Handle file_system):
 Stream(file_system),
-buf_(this),
-stream_(&buf_)
+std::ostream((std::streambuf*)this)
 { }
 
 int
-FileSystem::WriteStream::put_char(int character)
+FileSystem::WriteStream::overflow(int character)
 {
-	char c = std::char_traits<char>::to_char_type(character);
-	return character != EOF && sizeof(c) == write(&c, sizeof(c)) ? character : EOF;
+	char c = std::streambuf::traits_type::to_char_type(character);
+	return character != EOF && sizeof(c) == internal_write(&c, sizeof(c)) ? character : EOF;
 }
-
-bool
-FileSystem::WriteStream::write_whole_block(const void *buffer, size_t size)
-{
-	return size == write(buffer, size);
-}
-
-bool
-FileSystem::WriteStream::write_whole_stream(ReadStreamHandle stream)
-{
-	if (!stream) return false;
-	char buffer[4*1024];
-	size_t size;
-	while(0 < (size = stream->read(buffer, sizeof(buffer))))
-		if (!write_whole_block(buffer, size))
-			return false;
-	return true;
-}
-
 
 // Identifier
 

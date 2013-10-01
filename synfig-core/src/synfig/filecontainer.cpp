@@ -59,7 +59,7 @@ FileContainer::ReadStream::~ReadStream()
 	container->stream_opened_ = false;
 }
 
-size_t FileContainer::ReadStream::read(void *buffer, size_t size)
+size_t FileContainer::ReadStream::internal_read(void *buffer, size_t size)
 {
 	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
 	if (!container->stream_valid_) return 0;
@@ -79,7 +79,7 @@ FileContainer::WriteStream::~WriteStream()
 	container->stream_opened_ = false;
 }
 
-size_t FileContainer::WriteStream::write(const void *buffer, size_t size)
+size_t FileContainer::WriteStream::internal_write(const void *buffer, size_t size)
 {
 	etl::handle< FileContainer > container ( etl::handle< FileContainer >::cast_static(file_system_) );
 	if (!container->stream_valid_) return 0;

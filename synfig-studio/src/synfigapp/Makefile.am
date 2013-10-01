@@ -11,7 +11,9 @@ LAYER_ACTION_HH = \
 	actions/layeractivate.h \
 	actions/layeradd.h \
 	actions/layerduplicate.h \
+	actions/layerembed.h \
 	actions/layerencapsulate.h \
+	actions/layerextract.h \
 	actions/layerfit.h \
 	actions/layerlower.h \
 	actions/layermove.h \
@@ -31,7 +33,9 @@ LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
 	actions/layeradd.cpp \
 	actions/layerduplicate.cpp \
+	actions/layerembed.cpp \
 	actions/layerencapsulate.cpp \
+	actions/layerextract.cpp \
 	actions/layerfit.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \

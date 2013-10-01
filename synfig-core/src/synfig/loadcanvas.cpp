@@ -2899,7 +2899,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				stream = FileSystem::ReadStreamHandle(new ZReadStream(stream));
 
 			xmlpp::DomParser parser;
-			parser.parse_stream(stream->stream());
+			parser.parse_stream(*stream);
 			stream.reset();
 			if(parser)
 			{

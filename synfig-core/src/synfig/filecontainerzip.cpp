@@ -31,6 +31,9 @@
 
 #include <cstring>
 #include <stdint.h>
+#include <cstddef>
+#include <ETL/stringf>
+#include <libxml++/libxml++.h>
 #include "filecontainerzip.h"
 
 #endif
@@ -133,7 +136,7 @@ namespace synfig
 
 			inline static size_t offset_from_header()
 			{
-				return (size_t)(&((LocalFileHeader*)0)->crc32);
+				return offsetof(LocalFileHeader, crc32);
 			}
 		};
 
@@ -278,16 +281,118 @@ unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buff
 	return crc ^ 0xFFFFFFFFUL;
 }
 
+std::string FileContainerZip::encode_history(const FileContainerZip::HistoryRecord &history_record)
+{
+	xmlpp::Document document;
+	document.
+		create_root_node("history")->
+		add_child("prev_storage_size")->
+		set_child_text(strprintf("%lld", history_record.prev_storage_size));
+	return document.write_to_string_formatted();
+}
+
+FileContainerZip::HistoryRecord FileContainerZip::decode_history(const std::string &comment)
+{
+	HistoryRecord history_record;
+	xmlpp::DomParser parser;
+	parser.parse_memory(comment);
+	if(parser)
+	{
+		xmlpp::Element *root = parser.get_document()->get_root_node();
+		if (root->get_name() == "history")
+		{
+			xmlpp::Element::NodeList list = root->get_children();
+			for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
+			{
+				if ((*i)->get_name() == "prev_storage_size")
+				{
+					std::string s;
+					xmlpp::Element::NodeList list = (*i)->get_children();
+					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); j++)
+						if (dynamic_cast<xmlpp::TextNode*>(*j))
+							s += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
+					history_record.prev_storage_size = strtoll(s.c_str(), NULL, 10);
+					if (history_record.prev_storage_size < 0)
+						history_record.prev_storage_size = 0;
+				}
+			}
+		}
+	}
+	return history_record;
+}
+
+void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, file_size_t size)
+{
+	if (size < (long int)sizeof(EndOfCentralDirectory))
+		return;
+
+	// search "end of central directory" record
+
+	char buffer[(1 << 16) + sizeof(EndOfCentralDirectory)];
+	std::string comment;
+	size_t read_size = size > (long int)sizeof(buffer)
+					 ? sizeof(buffer) : (size_t)size;
+	fseek(f, (long int)size - (long int)read_size, SEEK_SET);
+	read_size = fread(&buffer, 1, read_size, f);
+	bool found = false;
+	HistoryRecord history_record;
+
+	for(int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--)
+	{
+		EndOfCentralDirectory *e = (EndOfCentralDirectory*)&buffer[i];
+		if (e->signature == EndOfCentralDirectory::valid_signature__
+		 && e->comment_length == (uint16_t)(read_size - sizeof(EndOfCentralDirectory) - i))
+		{
+			// found
+			if (e->comment_length > 0)
+			{
+				comment = std::string(buffer + i + sizeof(EndOfCentralDirectory), e->comment_length);
+				history_record = decode_history(comment);
+				history_record.storage_size = size;
+				found = true;
+			}
+			break;
+		}
+	}
+
+	if (found)
+	{
+		list.front() = history_record;
+		if (history_record.prev_storage_size > 0 && history_record.prev_storage_size < size) {
+			list.push_front(HistoryRecord(0, history_record.prev_storage_size));
+			read_history(list, f, history_record.prev_storage_size);
+		}
+	}
+}
+
+std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const std::string &container_filename)
+{
+	std::list<HistoryRecord> list;
+
+	FILE *f = fopen(container_filename.c_str(), "rb");
+	if (f == NULL) return list;
+
+	fseek(f, 0, SEEK_END);
+	long int size = ftell(f);
+	if (size >= (long int)sizeof(EndOfCentralDirectory))
+	{
+		list.push_front(HistoryRecord(0, size));
+		read_history(list, f, size);
+	}
+
+	fclose(f);
+	return list;
+}
+
 bool FileContainerZip::create(const std::string &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = fopen(container_filename.c_str(), "wb");
+	storage_file_ = fopen(container_filename.c_str(), "w+b");
 	if (is_opened()) changed_ = true;
 	return is_opened();
 }
 
-bool FileContainerZip::open(const std::string &container_filename)
-{
+bool FileContainerZip::open_from_history(const std::string &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
 	FILE *f = fopen(container_filename.c_str(), "r+b");
 	if (f == NULL) return false;
@@ -295,8 +400,12 @@ bool FileContainerZip::open(const std::string &container_filename)
 	// check size of file
 	fseek(f, 0, SEEK_END);
 	long int filesize = ftell(f);
-	if (filesize <= (long int)sizeof(EndOfCentralDirectory))
+	long int actual_filesize = filesize;
+	if (filesize < (long int)sizeof(EndOfCentralDirectory))
 		{ fclose(f); return false; }
+
+	if (truncate_storage_size > 0 && truncate_storage_size < filesize)
+		filesize = (long int)truncate_storage_size;
 
 	char buffer[(1 << 16) + sizeof(EndOfCentralDirectory)];
 
@@ -304,7 +413,7 @@ bool FileContainerZip::open(const std::string &container_filename)
 	EndOfCentralDirectory ecd;
 	size_t read_size = filesize > (long int)sizeof(buffer)
 					 ? sizeof(buffer) : (size_t)filesize;
-	fseek(f, -(long int)read_size, SEEK_END);
+	fseek(f, filesize - (long int)read_size, SEEK_SET);
 	read_size = fread(&buffer, 1, read_size, f);
 	bool found = false;
 	for(int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--)
@@ -383,11 +492,16 @@ bool FileContainerZip::open(const std::string &container_filename)
 	fseek(f, 0, SEEK_END);
 	storage_file_ = f;
 	files_.swap( files );
-	prev_storage_size_ = filesize;
+	prev_storage_size_ = actual_filesize;
 	file_reading_ = false;
 	file_writing_ = false;
 	changed_ = false;
 	return true;
+}
+
+bool FileContainerZip::open(const std::string &container_filename)
+{
+	return open_from_history(container_filename);
 }
 
 bool FileContainerZip::save()
@@ -456,17 +570,19 @@ bool FileContainerZip::save()
 	ecd.offset = central_directory_offset;
 	ecd.current_records = ecd.total_records = files_.size();
 	ecd.size = ftell(storage_file_) - central_directory_offset;
-	if (prev_storage_size_ > 0)
-		ecd.comment_length = snprintf(NULL, 0, "%llx", prev_storage_size_);
+	std::string comment = encode_history(HistoryRecord(prev_storage_size_));
+	ecd.comment_length = comment.size();
 
 	// write header
 	if (sizeof(ecd) != fwrite(&ecd, 1, sizeof(ecd), storage_file_))
 		return false;
 
-	// write comment if need
-	if (prev_storage_size_ > 0)
-		if (ecd.comment_length != fprintf(storage_file_, "%llx", prev_storage_size_))
-			return false;
+	// write comment
+	if (ecd.comment_length > 0
+	 && ecd.comment_length != fwrite(comment.c_str(), 1, ecd.comment_length, storage_file_))
+	{
+		return false;
+	}
 
 	prev_storage_size_ = ftell(storage_file_);
 	fflush(storage_file_);
@@ -625,7 +741,7 @@ bool FileContainerZip::file_open_write(const std::string &filename)
 	if (file_->second.is_directory)
 		return false;
 
-	FileInfo &info = file_ == files_.end() ? new_info :file_->second;
+	FileInfo &info = file_ == files_.end() ? new_info : file_->second;
 
 	// write header
 	LocalFileHeader lfh;
