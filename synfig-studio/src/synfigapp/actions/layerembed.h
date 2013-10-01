@@ -29,7 +29,6 @@
 
 #include <synfig/layer.h>
 #include <synfig/layer_pastecanvas.h>
-#include <modules/lyr_std/import.h>
 #include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
