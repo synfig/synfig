@@ -78,6 +78,7 @@
 #include "dialogs/dialog_setup.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
+#include "mainwindow.h"
 #include "toolbox.h"
 #include "onemoment.h"
 
@@ -213,8 +214,6 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 static std::list<std::string> recent_files;
 const std::list<std::string>& App::get_recent_files() { return recent_files; }
-
-static std::list<std::string> recent_files_window_size;
 
 int	App::Busy::count;
 bool App::shutdown_in_progress;
@@ -1313,6 +1312,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init State Manager..."));
 		state_manager=new StateManager();
 
+		studio_init_cb.task(_("Init Main Window..."));
+		main_window=new studio::MainWindow();
+
 		studio_init_cb.task(_("Init Toolbox..."));
 		toolbox=new studio::Toolbox();
 
@@ -1501,6 +1503,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
 
+		main_window->present();
 		toolbox->present();
 
 		splash_screen.hide();
@@ -1543,6 +1546,10 @@ App::~App()
 
 	delete about;
 
+	main_window->hide();
+
+	delete main_window;
+
 	toolbox->hide();
 
 	delete toolbox;
@@ -1564,67 +1571,6 @@ synfig::String
 App::get_config_file(const synfig::String& file)
 {
 	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
-}
-
-//! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
-void
-App::set_recent_file_window_size(etl::handle<Instance> instance)
-{
-
-	const std::string &canvas_window_size = *recent_files_window_size.begin();
-
-	if(canvas_window_size.empty())
-		return;
-
-	synfig::String::size_type current=0;
-	bool seen_root(false), shown_non_root(false);
-
-	while(current != synfig::String::npos)
-	{
-		// find end of first field (canvas) or return
-		synfig::String::size_type separator = canvas_window_size.find_first_of(' ', current);
-		if(separator == synfig::String::npos) break;
-
-		// find the canvas
-		synfig::Canvas::Handle canvas;
-		try {
-			String warnings;
-			canvas = instance->get_canvas()->find_canvas(String(canvas_window_size, current, separator-current), warnings);
-		}
-		catch(Exception::IDNotFound) {
-			// can't find the canvas; skip to the next canvas or return
-			separator = canvas_window_size.find_first_of('\t', current);
-			if(separator == synfig::String::npos) return;
-			current = separator+1;
-			continue;
-		}
-
-		if (canvas->is_root())
-			seen_root = true;
-		else
-			shown_non_root = true;
-
-		// check that we have the tab character the ends this canvas' data or return
-		current = separator+1;
-		separator = canvas_window_size.find_first_of('\t', current);
-		if(separator == synfig::String::npos) return;
-
-		int x,y,w,h;
-		if(!strscanf(String(canvas_window_size, current, separator-current),"%d %d %d %d",&x, &y, &w, &h))
-		{
-			current = separator+1;
-			continue;
-		}
-		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
-		canvasview->move(x,y);
-		canvasview->resize(w,h);
-		canvasview->present();
-
-		current = separator+1;
-	}
-
-	if (shown_non_root && !seen_root)
-		instance->find_canvas_view(instance->get_canvas())->hide();
 }
 
 void
@@ -1656,7 +1602,7 @@ App::add_recent_file(const etl::handle<Instance> instance)
 }
 
 void
-App::add_recent_file(const std::string &file_name, const std::string &window_size)
+App::add_recent_file(const std::string &file_name)
 {
 	std::string filename(file_name);
 
@@ -1673,34 +1619,24 @@ App::add_recent_file(const std::string &file_name, const std::string &window_siz
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
 
-	std::string old_window_size;
-
 	list<string>::iterator iter;
-	list<string>::iterator iter_wsize;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for(iter=recent_files.begin(), iter_wsize=recent_files_window_size.begin();iter!=recent_files.end();iter++, iter_wsize++)
+	for(iter=recent_files.begin();iter!=recent_files.end();iter++)
 		if(*iter==filename)
 		{
 			recent_files.erase(iter);
-			old_window_size = *iter_wsize;
-			recent_files_window_size.erase(iter_wsize);
 			break;
 		}
 
 
 	// Push the filename to the front of the list
 	recent_files.push_front(filename);
-	if(window_size.empty())
-		recent_files_window_size.push_front(old_window_size);
-	else
-		recent_files_window_size.push_front(window_size);
 
 	// Clean out the files at the end of the list.
 	while(recent_files.size()>(unsigned)get_max_recent_files())
 	{
 		recent_files.pop_back();
-		recent_files_window_size.pop_back();
 	}
 
 	signal_recent_files_changed_();
@@ -1749,23 +1685,6 @@ App::save_settings()
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
 				file<<(*iter).c_str()<<endl;
 		}while(0);
-		do{
-			std::string filename=get_config_file("recentfiles")+std::string("_window_size");
-
-			std::ofstream file(filename.c_str());
-
-			if(!file)
-			{
-				synfig::warning("Unable to save %s",filename.c_str());
-				break;
-			}
-
-			list<string>::reverse_iterator iter;
-
-			for(iter=recent_files_window_size.rbegin();iter!=recent_files_window_size.rend();iter++)
-				file<<(*iter).c_str()<<endl;
-
-		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
 
@@ -1790,41 +1709,15 @@ App::load_settings()
 			bool window_size_broken = false;
 
 			std::string filename=get_config_file("recentfiles");
-			std::string filename_window_size=filename+std::string("_window_size");
-
 			std::ifstream file(filename.c_str());
-			std::ifstream file_window_size(filename_window_size.c_str());
-
-			if(!file_window_size)
-				window_size_broken = true;
 
 			while(file)
 			{
 				std::string recent_file;
 				std::string recent_file_window_size;
 				getline(file,recent_file);
-				if(!window_size_broken)
-					getline(file_window_size,recent_file_window_size);
-				if(!recent_file.empty())
-				{
-					if(!window_size_broken && !file_window_size)
-						window_size_broken = true;
-					if (std::ifstream(recent_file.c_str()))
-					{
-						if(!window_size_broken)
-							add_recent_file(recent_file,recent_file_window_size);
-						else
-							add_recent_file(recent_file);
-					}
-				}
-			}
-			if(!window_size_broken && file_window_size)
-				window_size_broken = true;
-
-			if(window_size_broken)
-			{
-				recent_files_window_size.clear();
-				recent_files_window_size.resize(recent_files.size());
+				if(!recent_file.empty() && std::ifstream(recent_file.c_str()))
+					add_recent_file(recent_file);
 			}
 		}
 		std::string filename=get_config_file("settings");

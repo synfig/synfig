@@ -87,6 +87,7 @@ namespace studio {
 typedef Gtk::UIManager UIManager;
 
 class About;
+class MainWindow;
 class Toolbox;
 class Instance;
 class CanvasView;
@@ -198,6 +199,7 @@ public:
 	static synfig::Gamma gamma;
 
 	static About *about;
+	static MainWindow *main_window;
 	static Toolbox *toolbox;
 
 	static std::list<etl::handle<Instance> > instance_list;
@@ -279,7 +281,7 @@ public:
 	*/
 
 private:
-	static void add_recent_file(const std::string &filename, const std::string &window_size = std::string());
+	static void add_recent_file(const std::string &filename);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -300,7 +302,6 @@ public:
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 
-	static void set_recent_file_window_size(etl::handle<Instance> instance);
 	static void add_recent_file(const etl::handle<Instance> instance);
 
 	static synfig::String get_base_path();
