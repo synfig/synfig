@@ -1576,29 +1576,7 @@ App::get_config_file(const synfig::String& file)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-
-	std::string canvas_window_size;
-
-	const Instance::CanvasViewList& cview_list = instance->canvas_view_list();
-	Instance::CanvasViewList::const_iterator iter;
-
-	for(iter=cview_list.begin();iter!=cview_list.end();iter++)
-	{
-		if( !((*iter)->is_visible()) )
-			continue;
-
-		etl::handle<synfig::Canvas> canvas = (*iter)->get_canvas();
-		int x_pos, y_pos, x_size, y_size;
-		(*iter)->get_position(x_pos,y_pos);
-		(*iter)->get_size(x_size,y_size);
-
-		canvas_window_size += strprintf("%s %d %d %d %d\t",
-										canvas->get_relative_id(canvas->get_root()).c_str(),
-										x_pos,  y_pos,
-										x_size, y_size);
-	}
-
-	add_recent_file(absolute_path(instance->get_file_name()), canvas_window_size);
+	add_recent_file(absolute_path(instance->get_file_name()));
 }
 
 void
@@ -1706,8 +1684,6 @@ App::load_settings()
 			Gtk::AccelMap::load(filename);
 		}
 		{
-			bool window_size_broken = false;
-
 			std::string filename=get_config_file("recentfiles");
 			std::ifstream file(filename.c_str());
 
@@ -2611,8 +2587,6 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
 
-			set_recent_file_window_size(instance);
-
 			one_moment.hide();
 
 			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
@@ -2680,8 +2654,6 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),container_filename_base.c_str());
-
-			set_recent_file_window_size(instance);
 
 			one_moment.hide();
 
