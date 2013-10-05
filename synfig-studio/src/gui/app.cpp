@@ -1287,6 +1287,19 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	try
 	{
+		
+		studio_init_cb.task(_("Init auto recovery..."));
+		auto_recover=new AutoRecover();
+		
+		// Try to load settings early to get access to some important
+		// values, like "enable_experimental_features".
+		studio_init_cb.task(_("Loading Basic Settings..."));
+		load_settings();
+		// Calling load_settings() at this point will load only
+		// "prefs" domain. Other domains are initialized below, 
+		// so we will need to call load_settings() second time
+		// after full initialization is done.
+		
 		studio_init_cb.task(_("Loading Plugins..."));
 		
 		std::string pluginsprefix;
@@ -1403,14 +1416,17 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
-		studio_init_cb.task(_("Init auto recovery..."));
-		auto_recover=new AutoRecover();
-
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
-		load_settings();
+		load_accel_map();
+		if (!load_settings())
+		{
+			gamma.set_gamma(1.0/2.2);
+			reset_initial_window_configuration();
+		}
+		load_file_window_size();
 
-		// Init Tools..must be done after load_settings() : accelerators keys
+		// Init Tools must be done after load_accel_map() : accelerators keys
 		// are displayed in toolbox labels
 		studio_init_cb.task(_("Init Tools..."));
 		/* editing tools */
@@ -1785,8 +1801,24 @@ App::save_settings()
 	}
 }
 
-void
+bool
 App::load_settings()
+{
+	bool ret=false;
+	try
+	{
+		std::string filename=get_config_file("settings");
+		ret=synfigapp::Main::settings().load_from_file(filename);
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to load settings.");
+	}
+	return ret;
+}
+
+void
+App::load_accel_map()
 {
 	try
 	{
@@ -1795,6 +1827,18 @@ App::load_settings()
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
 		}
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to load accel map settings.");
+	}
+}
+
+void
+App::load_file_window_size()
+{
+	try
+	{
 		{
 			bool window_size_broken = false;
 
@@ -1836,21 +1880,11 @@ App::load_settings()
 				recent_files_window_size.resize(recent_files.size());
 			}
 		}
-		std::string filename=get_config_file("settings");
-		if(!synfigapp::Main::settings().load_from_file(filename))
-		{
-			//std::string filename=Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),".synfigrc"));
-			//if(!synfigapp::Main::settings().load_from_file(filename))
-			{
-				gamma.set_gamma(1.0/2.2);
-				reset_initial_window_configuration();
-			}
-		}
 
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to load settings.");
+		synfig::warning("Caught exception when attempting to load window settings.");
 	}
 }
 
