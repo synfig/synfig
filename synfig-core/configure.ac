@@ -406,8 +406,18 @@ PKG_CHECK_MODULES(ETL, [ETL >= 0.04.16],,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
-PKG_CHECK_MODULES(LIBZ, zlib,[
-	CONFIG_DEPS="$CONFIG_DEPS zlib"
+# The pkgconfig detection is not available for old
+# versions of zlib, so  it is disabled for now.
+#
+#PKG_CHECK_MODULES(LIBZ, zlib,[
+#	CONFIG_DEPS="$CONFIG_DEPS zlib"
+#],[
+#	AC_MSG_ERROR([ ** You need to install zlib])
+#])
+#
+AC_CHECK_HEADER([zlib.h],[
+	LIBZ_LIBS="-lz"
+	AC_SUBST(LIBZ_LIBS)
 ],[
 	AC_MSG_ERROR([ ** You need to install zlib])
 ])
