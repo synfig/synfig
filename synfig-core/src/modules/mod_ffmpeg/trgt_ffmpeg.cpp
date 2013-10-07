@@ -170,22 +170,29 @@ ffmpeg_trgt::init()
 
 	string command;
 
+	String binary_path = synfig::get_binary_path("");
+	if (binary_path != "")
+		binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
+	binary_path += "ffmpeg.exe";
+	
 	if( filename.c_str()[0] == '-' )
-		command = strprintf("ffmpeg.exe -f image2pipe -vcodec ppm -an"
+		command = strprintf("%s -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							" -vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
+							binary_path.c_str(),
 							desc.get_frame_rate(),
 							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 	else
-		command = strprintf("ffmpeg.exe -f image2pipe -vcodec ppm -an"
+		command = strprintf("%s -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							"-vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
+							binary_path.c_str(),
 							desc.get_frame_rate(),
 							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,

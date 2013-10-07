@@ -198,13 +198,14 @@ public:
 	static bool shutdown_in_progress;
 
 	static bool use_colorspace_gamma;
-
+	
 #ifdef SINGLE_THREADED
 	static bool single_threaded;
 #endif
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
+	static bool enable_experimental_features;
 	
 	static synfigapp::PluginManager plugin_manager;
 	
@@ -298,7 +299,9 @@ public:
 
 	static synfig::String get_base_path();
 	static void save_settings();
-	static void load_settings();
+	static bool load_settings();
+	static void load_accel_map();
+	static void load_file_window_size();
 	static void reset_initial_window_configuration();
 	static void reset_initial_preferences();
 

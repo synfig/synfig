@@ -84,6 +84,7 @@ Dialog_Setup::Dialog_Setup():
 #endif
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
+	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
 	adj_pref_x_size(480,1,10000,1,10,0),
 	adj_pref_y_size(270,1,10000,1,10,0),
 	adj_pref_fps(24.0,1.0,100,0.1,1,0)
@@ -200,11 +201,6 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - use_colorspace_gamma
 	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-#ifdef SINGLE_THREADED
-	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-#endif
-
 	// Misc - auto backup interval
 	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
@@ -214,6 +210,14 @@ Dialog_Setup::Dialog_Setup():
 
 	// Misc - resize_imported_images
 	misc_table->attach(toggle_resize_imported_images, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	
+	// Misc - resize_imported_images
+	misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	
+#ifdef SINGLE_THREADED
+	// Misc - single_threaded
+	misc_table->attach(toggle_single_threaded, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+#endif
 
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
@@ -347,6 +351,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the resize_imported_images flag
 	App::resize_imported_images=toggle_resize_imported_images.get_active();
+	
+	// Set the resize_imported_images flag
+	App::enable_experimental_features=toggle_enable_experimental_features.get_active();
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
@@ -504,6 +511,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the resize_imported_images flag
 	toggle_resize_imported_images.set_active(App::resize_imported_images);
+	
+	// Refresh the status of the resize_imported_images flag
+	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);

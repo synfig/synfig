@@ -235,12 +235,12 @@ ValueNode*
 ValueNode_Random::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
 	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(canvas, deriv_guid);
-	ret->randomize_seed();
+	ret->randomize_seed(true);
 	return ret;
 }
 
 void
-ValueNode_Random::randomize_seed()
+ValueNode_Random::randomize_seed(bool silent)
 {
 	int i = get_link_index_from_name("seed");
 	ValueNode::Handle link = get_link_vfunc(i);
@@ -249,7 +249,7 @@ ValueNode_Random::randomize_seed()
 		int seed = time(NULL) + rand();
 		if (seed < 0) seed = -seed;
 		random.set_seed(seed);
-		set_link(i, ValueNode_Const::create(seed));
+		set_link(i, ValueNode_Const::create(seed), silent);
 	}
 }
 

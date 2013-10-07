@@ -58,16 +58,27 @@ public:
 	LayerSetExcludeFromRendering();
 
 	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
+	static bool is_candidate_for_exclude(const ParamList &x, bool new_state);
+	synfig::String get_local_name()const;
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
 	virtual void perform();
 	virtual void undo();
-
-	ACTION_MODULE_EXT
 };
+
+#define ACTION_LAYERSETEXCLUDEFROMRENDERING_DECLARE(class_name) \
+	class class_name : public LayerSetExcludeFromRendering { \
+	public: \
+		static bool is_candidate(const ParamList &x); \
+		ACTION_MODULE_EXT \
+	}
+
+ACTION_LAYERSETEXCLUDEFROMRENDERING_DECLARE(LayerSetExcludeFromRenderingOn);
+ACTION_LAYERSETEXCLUDEFROMRENDERING_DECLARE(LayerSetExcludeFromRenderingOff);
+
+#undef ACTION_LAYERSETEXCLUDEFROMRENDERING_DECLARE
 
 }; // END of namespace action
 }; // END of namespace studio
