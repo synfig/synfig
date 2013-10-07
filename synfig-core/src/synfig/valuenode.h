@@ -405,7 +405,7 @@ public:
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Sets a new Value Node link by its index
-	bool set_link(int i,ValueNode::Handle x);
+	bool set_link(int i,ValueNode::Handle x,bool silent=false);
 	//! Sets a new Value Node link by its name
 	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}
 

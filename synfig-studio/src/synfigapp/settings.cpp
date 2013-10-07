@@ -129,8 +129,8 @@ Settings::set_value(const synfig::String& key,const synfig::String& value)
 		}
 	}
 
-	simple_value_map[key]=value;
-	return true;
+	//simple_value_map[key]=value;
+	return false;
 }
 
 //! Compare two key names, putting pref.* keys first

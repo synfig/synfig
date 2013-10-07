@@ -1758,7 +1758,7 @@
                               <bool value="false"/>
                             </param>
                           </layer>
-                          <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="synfig dog">
+                          <layer type="PasteCanvas" active="false" exclude_from_rendering="false" version="0.1" desc="synfig dog">
                             <param name="z_depth">
                               <real value="0.0000000000"/>
                             </param>
@@ -6901,11 +6901,11 @@
                     <waypoint time="0s" before="clamped" after="clamped">
                       <real value="1.0000000000"/>
                     </waypoint>
-                    <waypoint time="0.03333334s" before="constant" after="constant">
-                      <real value="0.0000000000"/>
+                    <waypoint time="0.03333334s" before="clamped" after="clamped">
+                      <real guid="D52242A6E24589CFE6AE50A56BC5EB00" value="1.0000000000"/>
                     </waypoint>
                     <waypoint time="0.06666667s" before="clamped" after="clamped">
-                      <real value="1.0000000000"/>
+                      <real guid="D52242A6E24589CFE6AE50A56BC5EB00" value="1.0000000000"/>
                     </waypoint>
                   </animated>
                 </param>
@@ -7551,10 +7551,10 @@
                       <real value="1.0000000000"/>
                     </waypoint>
                     <waypoint time="0.03333334s" before="clamped" after="clamped">
-                      <real value="0.0000000000"/>
+                      <real guid="CEE3A22DD17F1E72AFD4F3C181438B7F" value="1.0000000000"/>
                     </waypoint>
                     <waypoint time="0.06666667s" before="clamped" after="clamped">
-                      <real value="1.0000000000"/>
+                      <real guid="CEE3A22DD17F1E72AFD4F3C181438B7F" value="1.0000000000"/>
                     </waypoint>
                   </animated>
                 </param>

@@ -44,14 +44,23 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerSetExcludeFromRendering);
-ACTION_SET_NAME(Action::LayerSetExcludeFromRendering,"LayerSetExcludeFromRendering");
-ACTION_SET_LOCAL_NAME(Action::LayerSetExcludeFromRendering,N_("Toggle Exclude from Rendering"));
-ACTION_SET_TASK(Action::LayerSetExcludeFromRendering,"setexcludefromrendering");
-ACTION_SET_CATEGORY(Action::LayerSetExcludeFromRendering,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerSetExcludeFromRendering,0);
-ACTION_SET_VERSION(Action::LayerSetExcludeFromRendering,"0.0");
-ACTION_SET_CVS_ID(Action::LayerSetExcludeFromRendering,"$Id$");
+#define ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(class_name, local_name, task, ...) \
+	ACTION_INIT(Action::class_name); \
+	ACTION_SET_NAME(Action::class_name, #class_name); \
+	ACTION_SET_LOCAL_NAME(Action::class_name,N_(local_name)); \
+	ACTION_SET_TASK(Action::class_name,"setexcludefromrendering_" #task); \
+	ACTION_SET_CATEGORY(Action::class_name,Action::CATEGORY_LAYER); \
+	ACTION_SET_PRIORITY(Action::class_name,0); \
+	ACTION_SET_VERSION(Action::class_name,"0.0"); \
+	ACTION_SET_CVS_ID(Action::class_name,"$Id$"); \
+	bool Action::class_name::is_candidate(const ParamList &x) \
+		{ return is_candidate_for_exclude(x,task); }
+
+ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(
+		LayerSetExcludeFromRenderingOn, "Disable Layer Rendering", true);
+
+ACTION_LAYERSETEXCLUDEFROMRENDERING_IMPLEMENT(
+		LayerSetExcludeFromRenderingOff, "Enable Layer Rendering", false);
 
 /* === G L O B A L S ======================================================= */
 
@@ -74,8 +83,8 @@ Action::LayerSetExcludeFromRendering::get_local_name()const
 
 	return strprintf("%s '%s'",
 					 new_state
-					 ? _("Exclude from Rendering")
-					 : _("Enable Rendering of"),
+					 ? _("Disable layer rendering - ")
+					 : _("Enable layer rendering - "),
 					 layer->get_non_empty_description().c_str());
 }
 
@@ -98,9 +107,17 @@ Action::LayerSetExcludeFromRendering::get_param_vocab()
 }
 
 bool
-Action::LayerSetExcludeFromRendering::is_candidate(const ParamList &x)
+Action::LayerSetExcludeFromRendering::is_candidate_for_exclude(const ParamList &x, bool new_state)
 {
-	return candidate_check(get_param_vocab(),x);
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
+	
+	Layer::Handle l(x.find("layer")->second.get_layer());
+	
+	if (l->get_exclude_from_rendering() == new_state)
+		return false;
+	else
+		return true;
 }
 
 bool

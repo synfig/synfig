@@ -279,6 +279,7 @@ bool studio::App::use_colorspace_gamma=true;
 #endif  // SINGLE THREADED
 bool studio::App::restrict_radius_ducks=true;
 bool studio::App::resize_imported_images=false;
+bool studio::App::enable_experimental_features=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
@@ -557,6 +558,11 @@ public:
 				value=strprintf("%i",(int)App::resize_imported_images);
 				return true;
 			}
+			if(key=="enable_experimental_features")
+			{
+				value=strprintf("%i",(int)App::enable_experimental_features);
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				value=App::browser_command;
@@ -684,6 +690,12 @@ public:
 				App::resize_imported_images=i;
 				return true;
 			}
+			if(key=="enable_experimental_features")
+			{
+				int i(atoi(value.c_str()));
+				App::enable_experimental_features=i;
+				return true;
+			}
 			if(key=="browser_command")
 			{
 				App::browser_command=value;
@@ -761,6 +773,7 @@ public:
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
+		ret.push_back("enable_experimental_features");
 		ret.push_back("browser_command");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("preferred_x_size");
@@ -1274,6 +1287,19 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	try
 	{
+		
+		studio_init_cb.task(_("Init auto recovery..."));
+		auto_recover=new AutoRecover();
+		
+		// Try to load settings early to get access to some important
+		// values, like "enable_experimental_features".
+		studio_init_cb.task(_("Loading Basic Settings..."));
+		load_settings();
+		// Calling load_settings() at this point will load only
+		// "prefs" domain. Other domains are initialized below, 
+		// so we will need to call load_settings() second time
+		// after full initialization is done.
+		
 		studio_init_cb.task(_("Loading Plugins..."));
 		
 		std::string pluginsprefix;
@@ -1390,14 +1416,17 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
-		studio_init_cb.task(_("Init auto recovery..."));
-		auto_recover=new AutoRecover();
-
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
-		load_settings();
+		load_accel_map();
+		if (!load_settings())
+		{
+			gamma.set_gamma(1.0/2.2);
+			reset_initial_window_configuration();
+		}
+		load_file_window_size();
 
-		// Init Tools..must be done after load_settings() : accelerators keys
+		// Init Tools must be done after load_accel_map() : accelerators keys
 		// are displayed in toolbox labels
 		studio_init_cb.task(_("Init Tools..."));
 		/* editing tools */
@@ -1501,9 +1530,29 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		splash_screen.hide();
 
+		String warnings;
+		if (App::enable_experimental_features) {
+			warnings += _("EXPERIMENTAL FEATURES:");
+			warnings += "\n\n";
+			warnings += _("This version have following experimental features enabled:");
+			warnings += "\n";
+			warnings += String("   * ")+_("Skeleton Layer");
+			warnings += "\n\n";
+			warnings += _("The experimental features are NOT intended for production use. It is quite posiible their functionality will change in the future versions, which can break compatibility for your files. Use for testing purposes only.");
+			warnings += "\n\n";
+			warnings += _("You can disable experimental features on the \"Misc\" tab of Setup dialog.");
+		}
 #ifdef WIN32
-		dialog_warning_blocking(_("Warning"), _("WARNING:\n\nThis version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window.\n\nIf you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.\n\nPlease accept our apologies for inconvenience, we hope to get this issue resolved in the future versions."));
+		if (warnings!="")
+			warnings += "\n\n";
+		warnings += _("BUG WARNING:");
+		warnings += "\n\n";
+		warnings += _("This version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window. If you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.");
+		warnings += "\n\n";
+		warnings += _("Please accept our apologies for inconvenience, we hope to get this issue resolved in the future versions.");
 #endif
+		if (warnings!="")
+			dialog_warning_blocking(_("Warning"), warnings);
 	}
 	catch(String x)
 	{
@@ -1772,8 +1821,24 @@ App::save_settings()
 	}
 }
 
-void
+bool
 App::load_settings()
+{
+	bool ret=false;
+	try
+	{
+		std::string filename=get_config_file("settings");
+		ret=synfigapp::Main::settings().load_from_file(filename);
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to load settings.");
+	}
+	return ret;
+}
+
+void
+App::load_accel_map()
 {
 	try
 	{
@@ -1782,6 +1847,18 @@ App::load_settings()
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
 		}
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to load accel map settings.");
+	}
+}
+
+void
+App::load_file_window_size()
+{
+	try
+	{
 		{
 			bool window_size_broken = false;
 
@@ -1823,21 +1900,11 @@ App::load_settings()
 				recent_files_window_size.resize(recent_files.size());
 			}
 		}
-		std::string filename=get_config_file("settings");
-		if(!synfigapp::Main::settings().load_from_file(filename))
-		{
-			//std::string filename=Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),".synfigrc"));
-			//if(!synfigapp::Main::settings().load_from_file(filename))
-			{
-				gamma.set_gamma(1.0/2.2);
-				reset_initial_window_configuration();
-			}
-		}
 
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to load settings.");
+		synfig::warning("Caught exception when attempting to load window settings.");
 	}
 }
 
@@ -1939,6 +2006,7 @@ App::reset_initial_preferences()
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
+	synfigapp::Main::settings().set_value("pref.enable_experimental_features","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
