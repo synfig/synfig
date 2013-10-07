@@ -136,6 +136,8 @@ SectionEnd
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
 
+  SetOutPath "$INSTDIR\bin"
+
   SetShellVarContext All
   CreateDirectory "$SMPROGRAMS\Synfig"
   CreateShortCut "$SMPROGRAMS\Synfig\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-synfigstudio.exe" "" "$INSTDIR\uninstall-synfigstudio.exe" 0
