@@ -239,6 +239,8 @@ etl::handle<CanvasView> App::selected_canvas_view;
 
 studio::About *studio::App::about=NULL;
 
+studio::MainWindow *studio::App::main_window=NULL;
+
 studio::Toolbox *studio::App::toolbox=NULL;
 
 studio::AutoRecover *studio::App::auto_recover=NULL;
@@ -1314,6 +1316,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow();
+		main_window->add_accel_group(App::ui_manager_->get_accel_group());
+
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		toolbox=new studio::Toolbox();

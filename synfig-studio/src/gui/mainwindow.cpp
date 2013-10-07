@@ -29,9 +29,7 @@
 #	include <config.h>
 #endif
 
-/*
-** Insert headers here
-*/
+#include "mainwindow.h"
 
 #endif
 
@@ -52,6 +50,7 @@ using namespace studio;
 MainWindow::MainWindow()
 {
 	add(notebook_);
+	notebook_.show();
 }
 
 MainWindow::~MainWindow() { }
