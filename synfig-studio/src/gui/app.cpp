@@ -1547,7 +1547,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			warnings += "\n\n";
 		warnings += _("BUG WARNING:");
 		warnings += "\n\n";
-		warnings += _("This version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window.\n\nIf you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.");
+		warnings += _("This version of Synfig Studio have a bug, which can cause computer to hang/freeze when you resize the canvas window. If you got affected by this issue, consider pressing ALT+TAB to unfreeze your system and get it back to the working state.");
 		warnings += "\n\n";
 		warnings += _("Please accept our apologies for inconvenience, we hope to get this issue resolved in the future versions.");
 #endif
