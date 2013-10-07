@@ -30,6 +30,7 @@
 #endif
 
 #include "mainwindow.h"
+#include "canvasview.h"
 
 #endif
 
@@ -51,9 +52,23 @@ MainWindow::MainWindow()
 {
 	add(notebook_);
 	notebook_.show();
+
+	notebook_.signal_switch_page().connect(
+		sigc::mem_fun(*this, &studio::MainWindow::on_switch_page) );
 }
 
 MainWindow::~MainWindow() { }
+
+void
+MainWindow::on_switch_page(GtkNotebookPage* page, guint page_num)
+{
+	Gtk::Notebook::PageList::iterator i = App::main_window->notebook().pages().find(page_num);
+	if (i == App::main_window->notebook().pages().end())
+		App::set_selected_canvas_view(NULL);
+	else
+		App::set_selected_canvas_view(dynamic_cast<CanvasView*>(i->get_child()));
+}
+
 
 /* === E N T R Y P O I N T ================================================= */
 

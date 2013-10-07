@@ -879,6 +879,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	on_time_changed();
 	show();
+
 	//synfig::info("Canvasview: Constructor Done");
 }
 
@@ -2386,16 +2387,6 @@ CanvasView::present()
 	grab_focus();//on_focus_in_event(0);
 	App::main_window->present();
 	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
-}
-
-void
-CanvasView::on_switch_page(Gtk::Widget* page, guint /* page_num */)
-{
-	if (page == this) {
-		grab_focus();//on_focus_in_event(0);
-	} else {
-		on_hide();
-	}
 }
 
 bool

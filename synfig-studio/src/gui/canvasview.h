@@ -669,8 +669,6 @@ private:
 	virtual bool on_focus_in_event(GdkEventFocus*);
 	virtual bool on_focus_out_event(GdkEventFocus*);
 
-	void on_switch_page(Gtk::Widget* page, guint page_num);
-
 	//bool on_children_tree_event(GdkEvent *event);
 
 	bool on_keyframe_tree_event(GdkEvent *event);

@@ -41,8 +41,10 @@
 namespace studio {
 	class MainWindow: public Gtk::Window
 	{
-	protected:
+	private:
 		Gtk::Notebook notebook_;
+
+		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
 	public:
 		MainWindow();
