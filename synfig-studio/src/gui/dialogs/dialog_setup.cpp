@@ -84,7 +84,7 @@ Dialog_Setup::Dialog_Setup():
 #endif
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
-	toggle_enable_experimental_features(_("Enable experimental features")),
+	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
 	adj_pref_x_size(480,1,10000,1,10,0),
 	adj_pref_y_size(270,1,10000,1,10,0),
 	adj_pref_fps(24.0,1.0,100,0.1,1,0)
