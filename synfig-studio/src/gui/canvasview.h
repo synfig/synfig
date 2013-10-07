@@ -142,7 +142,7 @@ class Dock_Keyframes;
 **
 **	\writeme
 */
-class CanvasView : public Gtk::Window, public etl::shared_object
+class CanvasView : public Gtk::Bin, public etl::shared_object
 {
 	friend class UniversalScrubber;
 	friend class Dock_Layers;
@@ -243,6 +243,8 @@ private:
 	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
+
+	Gtk::Label *windowTitle;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
@@ -667,6 +669,8 @@ private:
 	virtual bool on_focus_in_event(GdkEventFocus*);
 	virtual bool on_focus_out_event(GdkEventFocus*);
 
+	void on_switch_page(Gtk::Widget* page, guint page_num);
+
 	//bool on_children_tree_event(GdkEvent *event);
 
 	bool on_keyframe_tree_event(GdkEvent *event);
@@ -747,6 +751,7 @@ private:
 protected:
 	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
+	void on_size_allocate(Gtk::Allocation &allocation);
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

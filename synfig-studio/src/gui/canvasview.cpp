@@ -98,6 +98,7 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 
+#include "mainwindow.h"
 #include "toolbox.h"
 
 #include "dialogs/dialog_preview.h"
@@ -124,14 +125,6 @@ using namespace studio;
 using namespace sigc;
 
 /* === M A C R O S ========================================================= */
-
-#define GRAB_HINT_DATA(y)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} \
-	}
 
 #define DEFAULT_TIME_WINDOW_SIZE		(10.0)
 
@@ -265,12 +258,12 @@ public:
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::MessageDialog dialog(
-			*view,			// Parent
-			primaryText,		// Message
-			false,			// Markup
-			Gtk::MESSAGE_WARNING,	// Type
-			Gtk::BUTTONS_NONE,	// Buttons
-			true			// Modal
+			*App::main_window, // Parent
+			primaryText,	   // Message
+			false,			   // Markup
+			Gtk::MESSAGE_WARNING, // Type
+			Gtk::BUTTONS_NONE, // Buttons
+			true			   // Modal
 		);
 
 		if (! title.empty())
@@ -290,9 +283,10 @@ public:
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
+		;
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -313,7 +307,7 @@ public:
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -335,7 +329,7 @@ public:
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -373,7 +367,7 @@ public:
 		// then just go ahead and return false --
 		// don't bother displaying a dialog
 		if(view->cancel)return false;
-		Gtk::MessageDialog dialog(*view, err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		Gtk::MessageDialog dialog(*App::main_window, err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.show();
 		dialog.run();
 		view->statusbar->pop();
@@ -705,14 +699,17 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	working_depth			(0),
 	cancel					(false),
 
-	canvas_properties		(*this,canvas_interface_),
-	canvas_options			(this),
-	render_settings			(*this,canvas_interface_),
-	waypoint_dialog			(*this,canvas_interface_->get_canvas()),
-	keyframe_dialog			(*this,canvas_interface_),
+	canvas_properties		(*App::main_window,canvas_interface_),
+	canvas_options			(*App::main_window,this),
+	render_settings			(*App::main_window,canvas_interface_),
+	waypoint_dialog			(*App::main_window,canvas_interface_->get_canvas()),
+	keyframe_dialog			(*App::main_window,canvas_interface_),
 	preview_dialog			(new Dialog_Preview),
-	sound_dialog			(new Dialog_SoundSelect(*this,canvas_interface_))
+	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
+	windowTitle = new Gtk::Label();
+	App::main_window->notebook().append_page(*this, *windowTitle);
+
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
@@ -825,30 +822,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	*/
 	work_area->queue_render_preview();
 
-	// If the canvas is really big, zoom out so that we can fit it all in the window
-	/*! \todo In other words, this is a zoom-to-fit, and should be
-	** in its own function.
-	*/
-	int w=get_canvas()->rend_desc().get_w()+70;
-	int h=get_canvas()->rend_desc().get_h()+70;
-	while(w>700 || h>600)
-	{
-		// Minor hack:
-		//   zoom_out() =>
-		//	   WorkArea::async_update_preview() =>
-		//	     WorkArea::set_zoom(float) =>
-		//		   WorkArea::async_update_preview() =>
-		//			 desc.set_time(cur_time), where cur_time isn't initialized
-		work_area->set_time(0);
-		work_area->zoom_out();
-		w=round_to_int(get_canvas()->rend_desc().get_w()*work_area->get_zoom()+70);
-		h=round_to_int(get_canvas()->rend_desc().get_h()*work_area->get_zoom()+70);
-	}
-	if(w>700)w=700;
-	if(h>600)h=600;
-	set_default_size(w,h);
-	property_window_position().set_value(Gtk::WIN_POS_NONE);
-
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -901,19 +874,11 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_window_adjustment().set_value(get_canvas()->rend_desc().get_time_start());
 	time_window_adjustment().value_changed();
 
-	GRAB_HINT_DATA("canvas_view");
-	/*
-	{
-	set_skip_taskbar_hint(true);
-	set_skip_pager_hint(true);
-	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	}
-	*/
-
 	refresh_rend_desc();
 	hide_tables();
 
 	on_time_changed();
+	show();
 	//synfig::info("Canvasview: Constructor Done");
 }
 
@@ -942,7 +907,7 @@ CanvasView::~CanvasView()
 	//delete preview
 	audio.reset();
 
-	hide();
+	App::main_window->notebook().remove_page(*this);
 
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
@@ -950,6 +915,12 @@ CanvasView::~CanvasView()
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("CanvasView::~CanvasView(): Deleted");
+}
+
+void
+CanvasView::on_size_allocate(Gtk::Allocation &allocation) {
+	get_child()->size_allocate(allocation);
+	Gtk::Bin::on_size_allocate(allocation);
 }
 
 std::list<int>&
@@ -1719,8 +1690,6 @@ CanvasView::init_menus()
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
 
-	add_accel_group(App::ui_manager()->get_accel_group());
-
 /*	// Here is where we add the actions that may have conflicting
 	// keyboard accelerators.
 	{
@@ -2401,21 +2370,32 @@ CanvasView::update_title()
 	if(get_canvas()->is_root())
 		title+=_(" (Root)");
 
-	set_title(title);
+	windowTitle->set_text(title);
 }
 
 void
 CanvasView::on_hide()
 {
 	smach_.egress();
-	Gtk::Window::on_hide();
+	Gtk::Bin::on_hide();
 }
 
 void
 CanvasView::present()
 {
 	grab_focus();//on_focus_in_event(0);
-	Gtk::Window::present();
+	App::main_window->present();
+	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
+}
+
+void
+CanvasView::on_switch_page(Gtk::Widget* page, guint /* page_num */)
+{
+	if (page == this) {
+		grab_focus();//on_focus_in_event(0);
+	} else {
+		on_hide();
+	}
 }
 
 bool
@@ -2438,7 +2418,7 @@ CanvasView::on_focus_in_event(GdkEventFocus*x)
 
 	// HACK ... Questionable...?
 	if(x)
-		return Gtk::Window::on_focus_in_event(x);
+		return Gtk::Bin::on_focus_in_event(x);
 
 	return true;
 }
@@ -2448,19 +2428,19 @@ CanvasView::on_focus_out_event(GdkEventFocus*x)
 {
 	//App::ui_manager()->remove_action_group(action_group);
 	//App::ui_manager()->ensure_update();
-	return Gtk::Window::on_focus_out_event(x);
+	return Gtk::Bin::on_focus_out_event(x);
 }
 
 bool
 CanvasView::on_key_press_event(GdkEventKey* event)
 {
-	Gtk::Widget* focused_widget = get_focus();
+	Gtk::Widget* focused_widget = App::main_window->get_focus();
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	else if(Gtk::Window::on_key_press_event(event))
+	else if(Gtk::Bin::on_key_press_event(event))
 			return true;
 		else
 			if (focused_widget) return focused_widget->event((GdkEvent*)event);
