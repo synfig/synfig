@@ -201,11 +201,6 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - use_colorspace_gamma
 	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-#ifdef SINGLE_THREADED
-	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-#endif
-
 	// Misc - auto backup interval
 	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
@@ -218,6 +213,11 @@ Dialog_Setup::Dialog_Setup():
 	
 	// Misc - resize_imported_images
 	misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	
+#ifdef SINGLE_THREADED
+	// Misc - single_threaded
+	misc_table->attach(toggle_single_threaded, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+#endif
 
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
