@@ -182,8 +182,8 @@ studio::render_time_point_to_window(
 		);
 
 		points.clear();
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		window->draw_lines(gc,points);
 
 		break;
@@ -292,8 +292,8 @@ studio::render_time_point_to_window(
 		);
 
 		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
 		window->draw_lines(gc,points);
 
 		break;
