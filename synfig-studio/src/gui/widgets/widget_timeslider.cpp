@@ -115,7 +115,7 @@ studio::render_time_point_to_window(
 )
 {
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	const Gdk::Color black("#000000");
+	const Gdk::Color black("#2e3436");
 
 	if(selected)
 		gc->set_line_attributes(2,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
