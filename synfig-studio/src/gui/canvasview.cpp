@@ -707,8 +707,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	preview_dialog			(new Dialog_Preview),
 	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
-	windowTitle = new Gtk::Label();
-	App::main_window->notebook().append_page(*this, *windowTitle);
+	window_title = new Gtk::Label();
 
 	layer_tree=0;
 	children_tree=0;
@@ -878,6 +877,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	on_time_changed();
 	show();
+
+	App::main_window->notebook().append_page(*this, *window_title);
 	//synfig::info("Canvasview: Constructor Done");
 }
 
@@ -928,6 +929,18 @@ CanvasView::on_size_request(Gtk::Requisition *requisition) {
 	Gtk::Bin::on_size_request(requisition);
 	if (get_child() != NULL && requisition != NULL)
 		*requisition = get_child()->size_request();
+}
+
+void CanvasView::activate()
+{
+	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
+	App::ui_manager()->insert_action_group(action_group);
+}
+
+void CanvasView::deactivate()
+{
+	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
+	App::ui_manager()->remove_action_group(action_group);
 }
 
 std::list<int>&
@@ -1505,12 +1518,12 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
-	
+
 	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
 	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		synfigapp::PluginManager::plugin plugin = *p;
-		
+
 		action_group->add( Gtk::Action::create(plugin.id, plugin.name),
 				sigc::bind(
 					sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin),
@@ -1518,7 +1531,7 @@ CanvasView::init_menus()
 				)
 		);
 	}
-	
+
 	// Preview Quality Menu
 	{
 		int i;
@@ -2377,7 +2390,7 @@ CanvasView::update_title()
 	if(get_canvas()->is_root())
 		title+=_(" (Root)");
 
-	windowTitle->set_text(title);
+	window_title->set_text(title);
 }
 
 void
@@ -2390,42 +2403,8 @@ CanvasView::on_hide()
 void
 CanvasView::present()
 {
-	grab_focus();//on_focus_in_event(0);
-	App::main_window->present();
 	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
-}
-
-bool
-CanvasView::on_focus_in_event(GdkEventFocus*x)
-{
-	if(studio::App::get_selected_canvas_view()!=this)
-	{
-		if(studio::App::get_selected_canvas_view())
-		{
-			studio::App::get_selected_canvas_view()->get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
-			App::ui_manager()->remove_action_group(App::get_selected_canvas_view()->action_group);
-		}
-
-		get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
-
-		studio::App::set_selected_canvas_view(this);
-
-		App::ui_manager()->insert_action_group(action_group);
-	}
-
-	// HACK ... Questionable...?
-	if(x)
-		return Gtk::Bin::on_focus_in_event(x);
-
-	return true;
-}
-
-bool
-CanvasView::on_focus_out_event(GdkEventFocus*x)
-{
-	//App::ui_manager()->remove_action_group(action_group);
-	//App::ui_manager()->ensure_update();
-	return Gtk::Bin::on_focus_out_event(x);
+	App::main_window->present();
 }
 
 bool

@@ -244,7 +244,7 @@ private:
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
-	Gtk::Label *windowTitle;
+	Gtk::Label *window_title;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
@@ -479,6 +479,9 @@ private:
 	*/
 
 public:
+	void activate();
+	void deactivate();
+
 	synfig::Rect& get_bbox() { return bbox; }
 
 	Glib::RefPtr<Glib::ObjectBase> get_ref_obj(const synfig::String& x);
@@ -665,9 +668,6 @@ private:
 	void on_input_device_changed(GdkDevice*);
 
 	virtual void on_hide();
-
-	virtual bool on_focus_in_event(GdkEventFocus*);
-	virtual bool on_focus_out_event(GdkEventFocus*);
 
 	//bool on_children_tree_event(GdkEvent *event);
 

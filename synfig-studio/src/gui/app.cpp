@@ -2803,13 +2803,20 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 void
 App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
-	selected_canvas_view=canvas_view;
-	signal_canvas_view_focus()(selected_canvas_view);
+	if(selected_canvas_view != canvas_view)
+	{
+		if (selected_canvas_view) selected_canvas_view->deactivate();
+		selected_canvas_view = canvas_view;
+		signal_canvas_view_focus()(selected_canvas_view);
+		if (selected_canvas_view) selected_canvas_view->activate();
+	}
+
 	if(canvas_view)
 	{
 		selected_instance=canvas_view->get_instance();
 		signal_instance_selected()(selected_instance);
 	}
+
 /*
 	if(get_selected_canvas_view()==canvas_view)
 	{

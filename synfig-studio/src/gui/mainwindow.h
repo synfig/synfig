@@ -43,11 +43,12 @@ namespace studio {
 	class MainWindow: public Gtk::Window
 	{
 	private:
-		bool menu_added_;
 		Gtk::Notebook notebook_;
 		Gtk::VBox vbox_;
 
-		void on_ui_manager_add_widget(Gtk::Widget*);
+		//! Constructor Helper - Initializes all of the menus
+		void init_menus();
+
 		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
 	public:
