@@ -196,11 +196,11 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION="${IMAGEMAGICK}-9"
+PKG_VERSION="${IMAGEMAGICK}-10"
 TAREXT=bz2
 if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 	pushd /source
-	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.bz2 # && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
