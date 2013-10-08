@@ -707,7 +707,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	preview_dialog			(new Dialog_Preview),
 	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
-	window_title = new Gtk::Label();
+	window_title = manage(new Gtk::Label());
 
 	layer_tree=0;
 	children_tree=0;
@@ -878,9 +878,23 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	on_time_changed();
 	show();
 
+	Gtk::Button *close_button = manage(new Gtk::Button());
+	Gtk::Image *close_button_image = manage(new Gtk::Image(
+			Gtk::StockID("gtk-close"),
+			Gtk::IconSize::from_name("synfig-small_icon") ));
+	close_button->add(*close_button_image);
+	close_button->signal_clicked().connect(
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
+
+	Gtk::HBox *title_box = manage(new Gtk::HBox());
+	title_box->pack_start(*window_title);
+	title_box->pack_end(*close_button);
+	title_box->show_all();
+
+	show();
 	instance->canvas_view_list().push_front(this);
 	instance->signal_canvas_view_created()(this);
-	App::main_window->notebook().append_page(*this, *window_title);
+	App::main_window->notebook().append_page(*this, *title_box);
 	//synfig::info("Canvasview: Constructor Done");
 }
 
