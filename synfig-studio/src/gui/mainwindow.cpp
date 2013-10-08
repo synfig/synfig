@@ -34,6 +34,8 @@
 
 #include <synfigapp/main.h>
 
+#include <gtkmm/menubar.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -59,20 +61,41 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-MainWindow::MainWindow()
+MainWindow::MainWindow():
+	menu_added_(false)
 {
 	set_default_size(600, 400);
 
-	add(notebook_);
 	notebook_.show();
+	vbox_.pack_end(notebook_, true, true, 0);
+	vbox_.show();
+	add(vbox_);
+
+	add_accel_group(App::ui_manager()->get_accel_group());
 
 	notebook_.signal_switch_page().connect(
 		sigc::mem_fun(*this, &studio::MainWindow::on_switch_page) );
+	App::ui_manager()->signal_add_widget().connect(
+		sigc::mem_fun(*this, &studio::MainWindow::on_ui_manager_add_widget) );
 
 	GRAB_HINT_DATA("canvas_view");
 }
 
 MainWindow::~MainWindow() { }
+
+void
+MainWindow::on_ui_manager_add_widget(Gtk::Widget*)
+{
+	if (menu_added_) return;
+	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
+	if (menubar != NULL)
+	{
+		menubar->show();
+		vbox_.pack_start(*menubar, false, false, 0);
+		menu_added_ = true;
+	}
+}
+
 
 void
 MainWindow::on_switch_page(GtkNotebookPage* /* page */, guint page_num)

@@ -911,13 +911,7 @@ init_ui_manager()
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
   //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
-    Glib::ustring ui_info =
-"<ui>"
-"	<popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
-"	</popup>"
-"	<popup name='menu-main' action='menu-main'>"
+	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
 "		<menuitem action='new' />"
 "		<menuitem action='open' />"
@@ -989,9 +983,9 @@ init_ui_manager()
 ;
 
 	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-		ui_info += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
+		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
 
-	ui_info +=
+	ui_info_menu +=
 "		</menu>"
 "		<separator name='bleh08'/>"
 "		<menuitem action='play'/>"
@@ -1057,15 +1051,21 @@ init_ui_manager()
 		synfigapp::PluginManager::plugin plugin = *p;
 		
 		DEFINE_ACTION(plugin.id, plugin.name);
-		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+		ui_info_menu += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
-	ui_info +=
+	ui_info_menu +=
+"	</menu>";
+
+	Glib::ustring ui_info =
+"<ui>"
+"   <popup name='menu-toolbox' action='menu-toolbox'>"
+"	<menu action='menu-file'>"
 "	</menu>"
 "	</popup>"
-
-"</ui>"
-;
+"	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+"	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+"</ui>";
 
 	#undef DEFINE_ACTION
 	#undef DEFINE_ACTION_2

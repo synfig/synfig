@@ -265,8 +265,11 @@ KeyframeActionManager::refresh()
 		action_group_->get_action("action-KeyframeAdd")->set_sensitive(true);
 	}
 
-	ui_info="<ui><popup action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
-	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
+	String full_ui_info;
+	full_ui_info="<ui><popup action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
+	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	full_ui_info="<ui><menubar action='menubar-main'><menu action='menu-keyframe'>"+ui_info+"</menu></menubar></ui>";
+	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);

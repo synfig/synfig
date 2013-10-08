@@ -30,6 +30,7 @@
 #include <ETL/handle>
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
+#include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 
 /* === M A C R O S ========================================================= */
@@ -42,8 +43,11 @@ namespace studio {
 	class MainWindow: public Gtk::Window
 	{
 	private:
+		bool menu_added_;
 		Gtk::Notebook notebook_;
+		Gtk::VBox vbox_;
 
+		void on_ui_manager_add_widget(Gtk::Widget*);
 		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
 	public:

@@ -113,7 +113,10 @@ StateManager::add_state(const Smach::state_base *state)
 	);
 	*/
 
-	String uid_def("<ui><popup action='menu-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></popup></ui>");
+	String uid_def;
+	uid_def = "<ui><popup action='menu-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></popup></ui>";
+	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
+	uid_def = "<ui><menubar action='menubar-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></menubar></ui>";
 	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
 
 	App::ui_manager()->ensure_update();
