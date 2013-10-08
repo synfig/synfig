@@ -88,9 +88,21 @@ class ContextParams {
 public:
 	//! When \c true layers with exclude_from_rendering flag should be rendered
 	bool render_excluded_contexts;
+	//! When \c true layers are visible only in Z_Depth range
+	bool z_range;
+	//! Defines the starting position to apply Z_Depth visibility
+	Real z_range_position;
+	//! Defines the depth of the range of the Z_Depth visibility
+	Real z_range_depth;
+	//! Layers with z_Depth inside transition are partially visibile
+	Real z_range_blur;
 
 	explicit ContextParams(bool render_excluded_contexts = false):
-	render_excluded_contexts(render_excluded_contexts) { }
+	render_excluded_contexts(render_excluded_contexts),
+	z_range(false),
+	z_range_position(0.0),
+	z_range_depth(0.0),
+	z_range_blur(0.0){ }
 };
 
 /*!	\class Context
@@ -158,9 +170,38 @@ public:
 		    || !layer.get_exclude_from_rendering());
 	}
 
+	//! Returns a value between 1.0 and 0.0 for layer visibility in z_depth range with this context_params
+	static inline float z_depth_visibility(const ContextParams &cp, const Layer &layer) {
+			if(!cp.z_range)
+				return 1.0;
+			float z=layer.get_true_z_depth();
+			float p=cp.z_range_position;
+			float d=cp.z_range_depth;
+			float t=cp.z_range_blur;
+			// Out of range
+			if(z>p+d+t || z<p-t)
+				return 0.0;
+			else
+			// Inside right range
+			if(z>p+d)
+				return t>0.0?(p+d+t-z)/t:0.0;
+			else
+			// Inside left range
+			if(z<p)
+				return t>0.0?(z-p+t)/t:0.0;
+			else
+			// Full visible
+				return 1.0;
+	}
+
 	//! Returns \c true if layer is active in this context
 	inline bool active(const Layer &layer) {
 		return active(params, layer);
+	}
+
+	//! Returns \c true if layers is visible in z_depth range in this context
+	inline float z_depth_visibility(const Layer &layer) {
+		return z_depth_visibility(params, layer);
 	}
 
 	//! Returns \c true if layer is active in this context
@@ -169,6 +210,12 @@ public:
 			 && active(params, *(operator*()));
 	}
 
+	//! Returns \c true if layer is visible in z_depth range in this context
+	inline bool z_depth_visibility()const {
+		return !(operator*()).empty()
+			 && z_depth_visibility(params, *(operator*()));
+	}
+	
 }; // END of class Context
 
 }; // END of namespace synfig

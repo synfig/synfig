@@ -709,7 +709,7 @@ ValueNode_DynamicList::link_local_name(int i)const
 	return etl::strprintf(_("Item %03d"),i+1);
 }
 
-ValueNode*
+ValueNode::Handle
 ValueNode_DynamicList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }

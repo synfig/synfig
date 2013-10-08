@@ -59,6 +59,7 @@
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
+#include "event_keyboard.h"
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include <synfig/context.h>
@@ -1139,6 +1140,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_scrolly_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
 
 	get_canvas()->signal_meta_data_changed("grid_size").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -1206,7 +1208,9 @@ WorkArea::save_meta_data()
 	meta_data_lock=true;
 
 	Vector s(get_grid_size());
+	Color c(get_grid_color());
 	canvas_interface->set_meta_data("grid_size",strprintf("%f %f",s[0],s[1]));
+	canvas_interface->set_meta_data("grid_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 	canvas_interface->set_meta_data("grid_snap",get_grid_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_snap",get_guide_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_show",get_show_guides()?"1":"0");
@@ -1283,6 +1287,40 @@ WorkArea::load_meta_data()
 			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
 		set_grid_size(Vector(gx,gy));
+	}
+
+	data=canvas->get_meta_data("grid_color");
+	if(!data.empty())
+	{
+		float gr(get_grid_color().get_r()),gg(get_grid_color().get_g()),gb(get_grid_color().get_b());
+
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String tmp(data.begin(),iter);
+
+		if(!tmp.empty())
+			gr=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(++iter,data.end());
+
+		if(!tmp.empty())
+			gg=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+		if(iter==data.end())
+			tmp.clear();
+		else
+			tmp=String(++iter,data.end());
+		if(!tmp.empty())
+			gb=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+
+		set_grid_color(synfig::Color(gr,gg,gb));
 	}
 
 	data=canvas->get_meta_data("grid_show");
@@ -1447,6 +1485,14 @@ WorkArea::set_grid_size(const synfig::Vector &s)
 }
 
 void
+WorkArea::set_grid_color(const synfig::Color &c)
+{
+	Duckmatic::set_grid_color(c);
+	save_meta_data();
+	queue_draw();
+}
+
+void
 WorkArea::set_focus_point(const synfig::Point &point)
 {
 	// These next three lines try to ensure that we place the
@@ -1506,6 +1552,10 @@ WorkArea::set_wh(int W, int H,int CHAN)
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
+	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
+			return true;
+
 	if(get_selected_ducks().empty())
 		return false;
 
@@ -1556,6 +1606,13 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	set_guide_snap(guide_snap_holder);
 
 	return true;
+}
+
+bool
+WorkArea::on_key_release_event(GdkEventKey* event)
+{
+	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 }
 
 bool
@@ -1739,14 +1796,20 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					// we have the tangent, but need the vertex - that's the parent
 					if (value_desc.parent_is_value_node()) {
 						ValueNode_Composite::Handle parent_value_node = value_desc.get_parent_value_node();
-
+						BLinePoint bp((*parent_value_node)(get_time()).get(BLinePoint()));
 						// if the tangent isn't split, then split it
-						if (!((*(parent_value_node->get_link("split")))(get_time()).get(bool())))
+						if (!bp.get_split_tangent_both())
 						{
 							if (get_canvas_view()->canvas_interface()->
 								change_value(synfigapp::ValueDesc(parent_value_node,
-																  parent_value_node->get_link_index_from_name("split")),
-											 true))
+																  parent_value_node->get_link_index_from_name("split_radius")),
+											 true)
+								&&
+								get_canvas_view()->canvas_interface()->
+								change_value(synfigapp::ValueDesc(parent_value_node,
+																  parent_value_node->get_link_index_from_name("split_angle")),
+											 true)
+								)
 							{
 								// rebuild the ducks from scratch, so the tangents ducks aren't connected
 								get_canvas_view()->rebuild_ducks();

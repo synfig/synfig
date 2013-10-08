@@ -457,6 +457,8 @@ public:
 
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
+	void set_grid_color(const synfig::Color &c);
+	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
 	//! ??
 	void popup_menu();
@@ -542,6 +544,7 @@ public:
 
 private:
 	bool on_key_press_event(GdkEventKey* event);
+	bool on_key_release_event(GdkEventKey* event);
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);

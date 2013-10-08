@@ -141,7 +141,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		if (!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"))
 		{
 			link.set_tangent1(transform.get_transformed(link.get_tangent1() + v) - vt);
-			if (link.get_split_tangent_flag())
+			if (link.get_split_tangent_both())
 				link.set_tangent2(transform.get_transformed(link.get_tangent2() + v) - vt);
 		}
 		else

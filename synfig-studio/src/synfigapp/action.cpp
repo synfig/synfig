@@ -40,6 +40,7 @@
 #include "actions/layerlower.h"
 #include "actions/layeradd.h"
 #include "actions/layeractivate.h"
+#include "actions/layerfit.h"
 #include "actions/layermakebline.h"
 #include "actions/layerparamset.h"
 #include "actions/layerparamsetstatic.h"
@@ -50,6 +51,9 @@
 #include "actions/layerduplicate.h"
 #include "actions/layersetdesc.h"
 #include "actions/layersetexcludefromrendering.h"
+#include "actions/layerzdepthrangeset.h"
+#include "actions/layerembed.h"
+#include "actions/layerextract.h"
 
 #include "actions/valuenodeconstset.h"
 #include "actions/valuenodeconstsetstatic.h"
@@ -178,6 +182,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerLower);
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
+	ADD_ACTION(Action::LayerFit);
 	ADD_ACTION(Action::LayerMakeOutline);
 	ADD_ACTION(Action::LayerMakeAdvancedOutline);
 	ADD_ACTION(Action::LayerMakeRegion);
@@ -190,6 +195,9 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerDuplicate);
 	ADD_ACTION(Action::LayerSetDesc);
 	ADD_ACTION(Action::LayerSetExcludeFromRendering);
+	ADD_ACTION(Action::LayerZDepthRangeSet);
+	ADD_ACTION(Action::LayerEmbed);
+	ADD_ACTION(Action::LayerExtract);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
 	ADD_ACTION(Action::ValueNodeConstSetStatic);
@@ -201,6 +209,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListInsert);
 	ADD_ACTION(Action::ValueNodeDynamicListRemove);
 	ADD_ACTION(Action::ValueNodeDynamicListInsertSmart);
+	ADD_ACTION(Action::ValueNodeDynamicListInsertSmartKeepShape);
 	ADD_ACTION(Action::ValueNodeDynamicListRemoveSmart);
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
@@ -262,7 +271,11 @@ Action::Main::Main()
 	ADD_ACTION(Action::EditModeSet);
 
 	ADD_ACTION(Action::BLinePointTangentMerge);
+	ADD_ACTION(Action::BLinePointTangentMergeRadius);
+	ADD_ACTION(Action::BLinePointTangentMergeAngle);
 	ADD_ACTION(Action::BLinePointTangentSplit);
+	ADD_ACTION(Action::BLinePointTangentSplitRadius);
+	ADD_ACTION(Action::BLinePointTangentSplitAngle);
 
 	ADD_ACTION(Action::GradientSet);
 	ADD_ACTION(Action::ColorSetFromOC);

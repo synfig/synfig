@@ -64,7 +64,7 @@ cairo_status_t
 cairo_png_mptr::read_callback(void *closure, unsigned char *data, unsigned int length)
 {
 	unsigned int s = closure == NULL ? 0
-				 : ((FileSystem::ReadStream*)closure)->read(data, length);
+				 : ((FileSystem::ReadStream*)closure)->read_block(data, length);
 	if (s < length) {
 		memset(data + s, 0, length - s);
 		return CAIRO_STATUS_READ_ERROR;

@@ -231,10 +231,10 @@ ValueNode_Random::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_VECTOR	;
 }
 
-ValueNode*
+ValueNode::Handle
 ValueNode_Random::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
-	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(canvas, deriv_guid);
+	etl::handle<ValueNode_Random> ret=LinkableValueNode::clone(canvas, deriv_guid);
 	ret->randomize_seed();
 	return ret;
 }

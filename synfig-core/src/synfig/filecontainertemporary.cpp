@@ -103,19 +103,40 @@ std::string FileContainerTemporary::generate_temporary_filename()
 
 bool FileContainerTemporary::create(const std::string &container_filename)
 {
-	return !is_opened()
+	bool res
+		 = !is_opened()
 		&& (container_filename.empty() || container_->create(container_filename))
 		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
 }
 
 bool FileContainerTemporary::open(const std::string &container_filename)
 {
-	return !is_opened()
+	bool res
+	     = !is_opened()
 		&& container_->open(container_filename)
 		&& ((container_filename_ = container_filename).empty() || true)
 		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
 }
+
+bool FileContainerTemporary::open_from_history(const std::string &container_filename, FileContainerZip::file_size_t truncate_storage_size)
+{
+	bool res
+	     = !is_opened()
+		&& container_->open_from_history(container_filename, truncate_storage_size)
+		&& ((container_filename_ = container_filename).empty() || true)
+		&& (is_opened_ = true);
+	if (res && !container_filename_.empty() && !is_absolute_path(container_filename_))
+		container_filename_ = absolute_path(container_filename_);
+	return res;
+}
+
 
 void FileContainerTemporary::close()
 {
@@ -335,13 +356,13 @@ bool FileContainerTemporary::file_is_opened_for_write()
 size_t FileContainerTemporary::file_read(void *buffer, size_t size)
 {
 	if (!file_is_opened_for_read()) return 0;
-	return file_read_stream_->read(buffer, size);
+	return file_read_stream_->read_block(buffer, size);
 }
 
 size_t FileContainerTemporary::file_write(const void *buffer, size_t size)
 {
 	if (!file_is_opened_for_write()) return 0;
-	return file_write_stream_->write(buffer, size);
+	return file_write_stream_->write_block(buffer, size);
 }
 
 bool FileContainerTemporary::save_changes(const std::string &filename, bool as_copy)
@@ -350,7 +371,10 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 
 	etl::handle< FileContainerZip > container;
 
-	bool save_at_place = filename.empty() || filename == container_filename_;
+	std::string fname_abs = filename;
+	if (!is_absolute_path(fname_abs)) fname_abs = absolute_path(fname_abs);
+
+	bool save_at_place = filename.empty() || fname_abs == container_filename_;
  	if (save_at_place) as_copy = false;
 
 
@@ -445,6 +469,7 @@ bool FileContainerTemporary::save_changes(const std::string &filename, bool as_c
 		else
 		if (!as_copy && files.empty())
 		{
+			container_filename_ = fname_abs;
 			container_ = container;
 			files_ = files;
 		}
@@ -502,7 +527,7 @@ bool FileContainerTemporary::save_temporary() const
 	stream = new ZWriteStream(stream);
 	try
 	{
-		document.write_to_stream_formatted(stream->stream(), "UTF-8");
+		document.write_to_stream_formatted(*stream, "UTF-8");
 	}
 	catch(...)
 	{
@@ -539,7 +564,7 @@ bool FileContainerTemporary::open_temporary(const std::string &filename_base)
 	stream = new ZReadStream(stream);
 
 	xmlpp::DomParser parser;
-	parser.parse_stream(stream->stream());
+	parser.parse_stream(*stream);
 	stream.reset();
 	if (!parser) return false;
 

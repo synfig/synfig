@@ -45,9 +45,13 @@ class ValueDescExport :
 	public Super
 {
 private:
-
+	synfig::GUID guid;
 	ValueDesc value_desc;
 	synfig::String name;
+
+	void scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas);
+	void scan_layer(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Layer::Handle layer);
+	void scan_linkable_value_node(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::LinkableValueNode::Handle linkable_value_node);
 
 public:
 

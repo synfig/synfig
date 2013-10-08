@@ -113,6 +113,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
+	grid_color(synfig::Color(159.0/255.0,159.0/255.0,159.0/255.0)),
 	show_persistent_strokes(true)
 {
 	axis_lock=false;
@@ -162,6 +163,16 @@ Duckmatic::set_grid_size(const synfig::Vector &s)
 	if(grid_size!=s)
 	{
 		grid_size=s;
+		signal_grid_changed();
+	}
+}
+
+void
+Duckmatic::set_grid_color(const synfig::Color &c)
+{
+	if(grid_color!=c)
+	{	
+		grid_color=c;	
 		signal_grid_changed();
 	}
 }
@@ -491,10 +502,115 @@ Duckmatic::update_ducks()
 	Time time(get_time());
 	DuckList duck_list(get_duck_list());
 	const DuckList selected_ducks(get_selected_ducks());
-	DuckList::const_iterator iter;
-	for (iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter)
+	DuckList::const_iterator selected_iter;
+	if(get_selected_bezier())
 	{
-		etl::handle<Duck> duck(*iter);
+		etl::handle<Duck> c1(get_selected_bezier()->c1);
+		etl::handle<Duck> c2(get_selected_bezier()->c2);
+		if(c1->get_value_desc().parent_is_linkable_value_node())
+		{
+			ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(c1->get_value_desc().get_parent_value_node()));
+			LinkableValueNode::Handle duck_value_node(LinkableValueNode::Handle::cast_dynamic(c1->get_value_desc().get_value_node()));
+			// it belongs to a composite and it is a BLinePoint
+			if(composite && composite->get_type() == ValueBase::TYPE_BLINEPOINT && duck_value_node)
+			{
+				int index(c1->get_value_desc().get_index());
+				etl::handle<Duck> origin_duck=c1->get_origin_duck();
+				// Search all the rest of ducks
+				DuckList::iterator iter;
+				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+					// if the other duck has the same origin and it is tangent type
+					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
+					{
+						ValueNode_Composite::Handle iter_composite;
+						iter_composite=ValueNode_Composite::Handle::cast_dynamic((*iter)->get_value_desc().get_parent_value_node());
+						// and their parent valuenode are the same
+						if(iter_composite.get() == composite.get())
+						{
+							BLinePoint bp=(*composite)(time);
+							int t1_index=composite->get_link_index_from_name("t1");
+							int t2_index=composite->get_link_index_from_name("t2");
+							if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+							{
+								bp.set_tangent1(c1->get_point());
+								Vector t2(bp.get_tangent2());
+								(*iter)->set_point(Point(t2));
+							}
+							else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
+							{
+								// Create a new BLinePoint
+								BLinePoint nbp;
+								// Terporary set the flags for the new BLinePoint to all split
+								nbp.set_split_tangent_both(true);
+								// Now we can set the tangents. Tangent2 won't be modified by tangent1
+								nbp.set_tangent1(c1->get_point());
+								nbp.set_tangent2(bp.get_tangent1());
+								// Now update the flags
+								nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+								nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+								// Now retrieve the updated tangent2 (which will be stored as t1, see below)
+								Vector t1(nbp.get_tangent2());
+								(*iter)->set_point(Point(t1));
+							}
+						}
+					}
+			}
+		}
+		if(c2->get_value_desc().parent_is_linkable_value_node())
+		{
+			ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(c2->get_value_desc().get_parent_value_node()));
+			LinkableValueNode::Handle duck_value_node(LinkableValueNode::Handle::cast_dynamic(c2->get_value_desc().get_value_node()));
+			// it belongs to a composite and it is a BLinePoint
+			if(composite && composite->get_type() == ValueBase::TYPE_BLINEPOINT && duck_value_node)
+			{
+				int index(c2->get_value_desc().get_index());
+				etl::handle<Duck> origin_duck=c2->get_origin_duck();
+				// Search all the rest of ducks
+				DuckList::iterator iter;
+				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+					// if the other duck has the same origin and it is tangent type
+					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
+					{
+						ValueNode_Composite::Handle iter_composite;
+						iter_composite=ValueNode_Composite::Handle::cast_dynamic((*iter)->get_value_desc().get_parent_value_node());
+						// and their parent valuenode are the same
+						if(iter_composite.get() == composite.get())
+						{
+							BLinePoint bp=(*composite)(time);
+							int t1_index=composite->get_link_index_from_name("t1");
+							int t2_index=composite->get_link_index_from_name("t2");
+							if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+							{
+								bp.set_tangent1(c2->get_point());
+								Vector t2(bp.get_tangent2());
+								(*iter)->set_point(Point(t2));
+							}
+							else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
+							{
+								// Create a new BLinePoint
+								BLinePoint nbp;
+								// Terporary set the flags for the new BLinePoint to all split
+								nbp.set_split_tangent_both(true);
+								// Now we can set the tangents. Tangent2 won't be modified by tangent1
+								nbp.set_tangent1(c2->get_point());
+								nbp.set_tangent2(bp.get_tangent1());
+								// Now update the flags
+								nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+								nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+								// Now retrieve the updated tangent2 (which will be stored as t1, see below)
+								Vector t1(nbp.get_tangent2());
+								(*iter)->set_point(Point(t1));
+							}
+						}
+					}
+			}
+		}
+	}
+	for (selected_iter=selected_ducks.begin(); selected_iter!=selected_ducks.end(); ++selected_iter)
+	{
+		etl::handle<Duck> duck(*selected_iter);
+		if(!duck)
+			return;
 		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
 		{
 			ValueNode_BLineCalcVertex::Handle bline_vertex;
@@ -549,6 +665,59 @@ Duckmatic::update_ducks()
 								(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
 						}
 					}
+			}
+		}
+		// We are moving a tangent handle
+		else if( duck->get_type() == Duck::TYPE_TANGENT)
+		{
+			if(duck->get_value_desc().parent_is_linkable_value_node())
+			{
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_parent_value_node()));
+				LinkableValueNode::Handle duck_value_node(LinkableValueNode::Handle::cast_dynamic(duck->get_value_desc().get_value_node()));
+				// it belongs to a composite and it is a BLinePoint
+				if(composite && composite->get_type() == ValueBase::TYPE_BLINEPOINT && duck_value_node)
+				{
+					int index(duck->get_value_desc().get_index());
+					etl::handle<Duck> origin_duck=duck->get_origin_duck();
+					// Search all the rest of ducks
+					DuckList::iterator iter;
+					for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+						// if the other duck has the same origin and it is tangent type
+						if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
+						{
+							ValueNode_Composite::Handle iter_composite;
+							iter_composite=ValueNode_Composite::Handle::cast_dynamic((*iter)->get_value_desc().get_parent_value_node());
+							// and their parent valuenode are the same
+							if(iter_composite.get() == composite.get())
+							{
+								BLinePoint bp=(*composite)(time);
+								int t1_index=composite->get_link_index_from_name("t1");
+								int t2_index=composite->get_link_index_from_name("t2");
+								if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+								{
+									bp.set_tangent1(duck->get_point());
+									Vector t2(bp.get_tangent2());
+									(*iter)->set_point(Point(t2));
+								}
+								else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
+								{
+									// Create a new BLinePoint
+									BLinePoint nbp;
+									// Terporary set the flags for the new BLinePoint to all split
+									nbp.set_split_tangent_both(true);
+									// Now we can set the tangents. Tangent2 won't be modified by tangent1
+									nbp.set_tangent1(duck->get_point());
+									nbp.set_tangent2(bp.get_tangent1());
+									// Now update the flags
+									nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+									nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+									// Now retrieve the updated tangent2 (which will be stored as t1, see below)
+									Vector t1(nbp.get_tangent2());
+									(*iter)->set_point(Point(t1));
+								}
+							}
+						}
+				}
 			}
 		}
 	}
@@ -753,6 +922,8 @@ BezierDrag_Default::bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vect
 	duckmatic->get_selected_bezier()->c2->set_trans_point(c2_initial+c2_offset, time);
 
 	last_translate_=vect;
+	
+	duckmatic->update_ducks();
 }
 
 bool
@@ -1629,9 +1800,30 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			etl::handle<Duck> duck=new Duck();
 			duck->set_transform_stack(transform_stack);
-
-			duck->set_point(value_desc.get_value(get_time()).get(Point()));
 			duck->set_name(guid_string(value_desc));
+			ValueNode_Composite::Handle blinepoint_value_node;
+			int index;
+			bool done(false);
+			if(value_desc.parent_is_linkable_value_node()
+			   &&
+			   value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_BLINEPOINT)
+			{
+				blinepoint_value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node());
+				if(blinepoint_value_node)
+				{
+					index=blinepoint_value_node->get_link_index_from_name("t2");
+					if(index==value_desc.get_index())
+					{
+						BLinePoint bp=(*blinepoint_value_node)(get_time()).get(BLinePoint());
+						Vector t2=bp.get_tangent2();
+						duck->set_point(t2);
+						done=true;
+					}
+				}
+			}
+			if(!done)
+				duck->set_point(value_desc.get_value(get_time()).get(Point()));
+			
 			if(value_desc.is_value_node())
 			{
 				// if the vertex is converted to 'bone influence', add the bones' ducks
@@ -1723,17 +1915,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 	case ValueBase::TYPE_SEGMENT:
 		{
+			int index;
 			etl::handle<Bezier> bezier(new Bezier());
 			ValueNode_Composite::Handle value_node;
 
 			if(value_desc.is_value_node() &&
 				(value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())))
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,0),canvas_view,transform_stack))
+				index=value_node->get_link_index_from_name("p1");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->p1=last_duck();
 				bezier->p1->set_type(Duck::TYPE_VERTEX);
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,1),canvas_view,transform_stack))
+
+				index=value_node->get_link_index_from_name("t1");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->c1=last_duck();
 				bezier->c1->set_type(Duck::TYPE_TANGENT);
@@ -1741,11 +1937,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->c1->set_scalar(TANGENT_BEZIER_SCALE);
 				bezier->c1->set_tangent(true);
 
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,2),canvas_view,transform_stack))
+				index=value_node->get_link_index_from_name("p2");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->p2=last_duck();
 				bezier->p2->set_type(Duck::TYPE_VERTEX);
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,3),canvas_view,transform_stack))
+
+				index=value_node->get_link_index_from_name("t2");
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 					return false;
 				bezier->c2=last_duck();
 				bezier->c2->set_type(Duck::TYPE_TANGENT);
@@ -1815,18 +2014,19 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 	case ValueBase::TYPE_BLINEPOINT:
 	{
-
+		int index;
 		if(value_desc.is_value_node() &&
 			ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
 			ValueNode_Composite::Handle value_node;
 			value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-
-			if(!add_to_ducks(synfigapp::ValueDesc(value_node,0),canvas_view,transform_stack))
+			index=value_node->get_link_index_from_name("p");
+			if(!add_to_ducks(synfigapp::ValueDesc(value_node,index),canvas_view,transform_stack))
 				return false;
 			etl::handle<Duck> vertex_duck(last_duck());
 			vertex_duck->set_type(Duck::TYPE_VERTEX);
-			if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,-TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+			index=value_node->get_link_index_from_name("t1");
+			if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,-TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 				return false;
 			etl::handle<Duck> t1_duck(last_duck());
 
@@ -1836,10 +2036,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			etl::handle<Duck> t2_duck;
 
+			index=value_node->get_link_index_from_name("t2");
 			// If the tangents are split
 			if((*value_node->get_link("split"))(get_time()).get(bool()))
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,5,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1848,7 +2049,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			else
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,index,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1966,7 +2167,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// ----Vertex Duck
 				if(composite_vertex_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,0),canvas_view,transform_stack))
+					int index=composite_vertex_value_node->get_link_index_from_name("p");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack))
 					{
 						duck=last_duck();
 						if(i==first)
@@ -2007,7 +2209,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,0),canvas_view,bone_transform_stack))
+					int index=composite_bone_link_value_node->get_link_index_from_name("p");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index),canvas_view,bone_transform_stack))
 					{
 						duck=last_duck();
 						if(i==first)
@@ -2063,7 +2266,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if(composite_vertex_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					int index=composite_vertex_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
 						width->set_origin(duck);
@@ -2091,7 +2295,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					int index=composite_bone_link_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
 						width->set_origin(duck);
@@ -2128,14 +2333,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// Add the tangent1 duck
 					if (composite_vertex_value_node)
 					{
-						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
+						int index=composite_vertex_value_node->get_link_index_from_name("t1");
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
 							return false;
 						tduck=last_duck();
 					}
 					else
 					if (composite_bone_link_value_node)
 					{
-						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+						int index=composite_bone_link_value_node->get_link_index_from_name("t1");
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index,-TANGENT_BEZIER_SCALE),
 										 canvas_view,bone_transform_stack))
 							return false;
 						tduck=last_duck();
@@ -2195,7 +2402,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent2 duck
 				if (composite_vertex_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?5:4;
+					int i=composite_vertex_value_node->get_link_index_from_name("t2");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
 						return false;
 					tduck=last_duck();
@@ -2203,7 +2410,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				if (composite_bone_link_value_node)
 				{
-					int i=bline_point.get_split_tangent_flag()?5:4;
+					int i=composite_bone_link_value_node->get_link_index_from_name("t2");
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack,0,2))
 						return false;
@@ -2211,11 +2418,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				}
 				else
 				{
-					if(bline_point.get_split_tangent_flag())
-						tduck=new Duck(bline_point.get_tangent2());
-					else
-						tduck=new Duck(bline_point.get_tangent1());
-
+					tduck=new Duck(bline_point.get_tangent2());
 					tduck->set_transform_stack(transform_stack);
 					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t2");
 					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t2"));
@@ -2306,14 +2509,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// Add the tangent1 duck
 				if(composite_vertex_value_node)
 				{
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4),canvas_view,transform_stack))
+					int index=composite_vertex_value_node->get_link_index_from_name("t1");
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,index),canvas_view,transform_stack))
 						return false;
 					tduck=last_duck();
 				}
 				else
 				if (composite_bone_link_value_node)
 				{
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+					int index=composite_bone_link_value_node->get_link_index_from_name("t1");
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,index,-TANGENT_BEZIER_SCALE),
 									 canvas_view,bone_transform_stack))
 						return false;
 					tduck=last_duck();
@@ -2558,7 +2763,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						}
 					}
 					// add the width duck
-					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,1),canvas_view,transform_stack))
+					int index=composite_width_point_value_node->get_link_index_from_name("width");
+					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,index),canvas_view,transform_stack))
 					{
 						etl::handle<Duck> wduck;
 						wduck=last_duck();

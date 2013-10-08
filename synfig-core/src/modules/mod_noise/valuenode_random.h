@@ -65,7 +65,7 @@ public:
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
-	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	void randomize_seed();
 

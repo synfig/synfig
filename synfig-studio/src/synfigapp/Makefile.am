@@ -11,7 +11,10 @@ LAYER_ACTION_HH = \
 	actions/layeractivate.h \
 	actions/layeradd.h \
 	actions/layerduplicate.h \
+	actions/layerembed.h \
 	actions/layerencapsulate.h \
+	actions/layerextract.h \
+	actions/layerfit.h \
 	actions/layerlower.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
@@ -23,13 +26,17 @@ LAYER_ACTION_HH = \
 	actions/layerraise.h \
 	actions/layerremove.h \
 	actions/layersetdesc.h \
-	actions/layersetexcludefromrendering.h
+	actions/layersetexcludefromrendering.h \
+	actions/layerzdepthrangeset.h
 
 LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
 	actions/layeradd.cpp \
 	actions/layerduplicate.cpp \
+	actions/layerembed.cpp \
 	actions/layerencapsulate.cpp \
+	actions/layerextract.cpp \
+	actions/layerfit.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
@@ -41,7 +48,8 @@ LAYER_ACTION_CC = \
 	actions/layerraise.cpp \
 	actions/layerremove.cpp \
 	actions/layersetdesc.cpp \
-	actions/layersetexcludefromrendering.cpp
+	actions/layersetexcludefromrendering.cpp \
+	actions/layerzdepthrangeset.cpp
 
 
 VALUEDESC_ACTION_HH = \

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenodedynamiclistinsertsmart.h
+/*!	\file layerextract.h
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUENODEDYNAMICLISTINSERTSMART_H
-#define __SYNFIG_APP_ACTION_VALUENODEDYNAMICLISTINSERTSMART_H
+#ifndef __SYNFIG_APP_ACTION_LAYEREXTRACT_H
+#define __SYNFIG_APP_ACTION_LAYEREXTRACT_H
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/layer.h>
+#include <synfig/layer_pastecanvas.h>
 #include <synfigapp/action.h>
-#include <synfig/activepoint.h>
-#include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_bline.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,24 +43,14 @@ class Instance;
 
 namespace Action {
 
-class ValueNodeDynamicListInsertSmartKeepShape;
-
-class ValueNodeDynamicListInsertSmart :
+class LayerExtract :
 	public Super
 {
 private:
-
-	synfig::ValueNode_DynamicList::Handle value_node;
-	synfig::Time time;
-	synfig::Real origin;
-	int index;
-private:
-	bool keep_shape;
+	etl::handle<synfig::Layer> layer;
+	std::string filename;
 
 public:
-	friend class ValueNodeDynamicListInsertSmartKeepShape;
-	ValueNodeDynamicListInsertSmart();
-
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 
@@ -73,17 +62,8 @@ public:
 	ACTION_MODULE_EXT
 };
 
-class ValueNodeDynamicListInsertSmartKeepShape :
-	public ValueNodeDynamicListInsertSmart
-{
-public:
-	ValueNodeDynamicListInsertSmartKeepShape();
-
-	ACTION_MODULE_EXT
-};
-
 }; // END of namespace action
-}; // END of namespace synfigapp
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

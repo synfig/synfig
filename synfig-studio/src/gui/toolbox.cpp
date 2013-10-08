@@ -234,6 +234,10 @@ Toolbox::Toolbox():
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
+	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::SAVE,
+		sigc::ptr_fun(save_selected_instance)));
+	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::SAVE_AS,
+		sigc::ptr_fun(save_as_selected_instance)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-saveall"),
 		sigc::ptr_fun(save_all)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,

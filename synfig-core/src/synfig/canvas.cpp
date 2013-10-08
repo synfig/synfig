@@ -37,6 +37,8 @@
 #include "time.h"
 #include "context.h"
 #include "layer_pastecanvas.h"
+#include "valuenode_const.h"
+#include "valuenode_scale.h"
 #include "loadcanvas.h"
 #include "filesystemnative.h"
 #include <sigc++/bind.h>
@@ -862,6 +864,9 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 
 	canvas->set_guid(get_guid()^deriv_guid);
 
+	if (canvas->parent().empty())
+		canvas->set_file_name(get_file_name());
+
 	const_iterator iter;
 	for(iter=begin();iter!=end();++iter)
 	{
@@ -1154,9 +1159,11 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		for(iter=context,i=0;*iter;iter++,i++)
 		{
 			Layer::Handle layer=*iter;
+			
+			const float layer_visibility=context.z_depth_visibility(*layer);
 
 			// If the layer isn't active, don't worry about it
-			if(!context.active(*layer))
+			if(!context.active(*layer) || layer_visibility==0.0)
 				continue;
 
 			// Any layer with an amount of zero is implicitly disabled.
@@ -1166,7 +1173,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 			if(layer->get_name()=="MotionBlur" || layer->get_name()=="duplicate")
 			{
-				float z_depth(layer->get_z_depth()*1.0001+i);
+				float z_depth(layer->get_true_z_depth());
 
 				// If we've seen a motion blur before in this context...
 				if (seen_motion_blur_locally)
@@ -1192,10 +1199,13 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 	for(iter=context,i=0;*iter;iter++,i++)
 	{
 		Layer::Handle layer=*iter;
-		float z_depth(layer->get_z_depth()*1.0001+i);
+		float z_depth(layer->get_true_z_depth());
+		const float layer_visibility=context.z_depth_visibility(*layer);
+		//synfig::info("Visibility of %s called %s = %f", layer->get_name().c_str(), layer->get_description().c_str(), layer_visibility);
 
-		// If the layer isn't active, don't worry about it
-		if(!context.active(*layer))
+		// If the layer isn't active or isn't visible in its z depth range,
+		// don't worry about it
+		if(!context.active(*layer) || layer_visibility==0.0)
 			continue;
 
 		// Any layer with an amount of zero is implicitly disabled.
@@ -1239,7 +1249,12 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 					paste_sub_canvas->set_grow_value(parent_grow+paste_canvas->get_param("outline_grow").get(Real()));
 				else
 					paste_sub_canvas->set_grow_value(0.0);
-				optimize_layers(time, paste_sub_canvas->get_context(context),sub_canvas,motion_blurred);
+				ContextParams params=context.get_params();
+				params.z_range=paste_canvas->get_param("z_range").get(bool());
+				params.z_range_position=paste_canvas->get_param("z_range_position").get(Real());
+				params.z_range_depth=paste_canvas->get_param("z_range_depth").get(Real());
+				params.z_range_blur=paste_canvas->get_param("z_range_blur").get(Real());
+				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
 			}
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
@@ -1341,7 +1356,35 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				paste_canvas->set_sub_canvas(sub_canvas);
 			}
 		}
-
+		// Alright, the layer is included in the sorted list
+		// let's look if it is a composite and if it is partially visible
+		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+		if(composite && layer_visibility < 1.0)
+		{
+			// Let's clone the composite layer if it is not a Paste Canvas
+			// (because paste will be always new layer)
+			if(layer->get_name()!="PasteCanvas")
+				composite = composite->simple_clone();
+			// Let's scale the amount parameter by the z depth visibility
+			ValueNode::Handle amount;
+			// First look if amount is dynamic:
+			if(composite->dynamic_param_list().count("amount"))
+			{
+				amount=composite->dynamic_param_list().find("amount")->second;
+			}
+			else
+			// It is normal constant parameter
+			{
+				amount=ValueNode_Const::create(layer->get_param("amount").get(Real()));
+			}
+			// Connect a ValueNode_Scale to the amount parameter with the right sub-parameters
+			ValueNode::Handle value_node=LinkableValueNode::create("scale", ValueBase(Real()), op_canvas);
+			ValueNode_Scale::Handle scale=ValueNode_Scale::Handle::cast_dynamic(value_node);
+			scale->set_link("link", amount);
+			scale->set_link("scalar", ValueNode_Const::create(layer_visibility));
+			composite->connect_dynamic_param("amount", value_node);
+			layer=composite;
+		}
 		sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,layer));
 		//op_canvas->push_back_simple(layer);
 	}

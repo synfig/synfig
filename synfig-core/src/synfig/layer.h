@@ -91,15 +91,19 @@
 
 //! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
-#define IMPORT_VALUE_PLUS(x,y)                                                  \
+#define IMPORT_VALUE_PLUS_BEGIN(x)                                              \
 	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
 	{                                                                           \
 		x=value;                                                                \
-		{                                                                       \
-			y;                                                                  \
+		{
+#define IMPORT_VALUE_PLUS_END                                                   \
 		}                                                                       \
 		return true;                                                            \
 	}
+#define IMPORT_VALUE_PLUS(x,y)                                                  \
+        IMPORT_VALUE_PLUS_BEGIN(x)                                              \
+			y;                                                                  \
+        IMPORT_VALUE_PLUS_END
 
 //! Exports a parameter if it is the same type as value
 #define EXPORT_VALUE(x)                                                         \
@@ -414,6 +418,9 @@ public:
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
+	//! Gets the true z depth of the layer (index + parameter)
+	float get_true_z_depth(const synfig::Time& t=Time(0))const;
+
 	//! Sets the z depth of the layer (non animated)
 	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 
@@ -437,6 +444,11 @@ public:
 
 	//! Returns the localised version of the given layer parameter
 	const String get_param_local_name(const String &param_name)const;
+
+	//! Returns a handle to the Parent PasteCanvas layer or NULL if layer belongs to root canvas
+	/*! Notice that it could return the wrong handle to PasteCanvas if the layer */
+	/*! belongs to a exported canvas (canvas can be referenced multiple times)*/
+	Layer::LooseHandle get_parent_paste_canvas_layer()const;
 
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
