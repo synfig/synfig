@@ -910,11 +910,11 @@ initialize()
 			BREED=${BREED%_master}
 		fi
 		if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
-			if [[ $BREED == 'master' ]]; then
+			#if [[ $BREED == 'master' ]]; then
 				BREED=rc${VERSION##*-RC}
-			else
-				BREED=rc${VERSION##*-RC}.$BREED
-			fi
+			#else
+			#	BREED=rc${VERSION##*-RC}.$BREED
+			#fi
 			VERSION=${VERSION%%-*}
 		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
