@@ -887,8 +887,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
 
 	Gtk::HBox *title_box = manage(new Gtk::HBox());
-	title_box->pack_start(*window_title);
-	title_box->pack_end(*close_button);
+	title_box->pack_start(*window_title, false, false, 10);
+	title_box->pack_end(*close_button, false, false, 0);
 	title_box->show_all();
 
 	show();

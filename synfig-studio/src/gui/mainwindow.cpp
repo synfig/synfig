@@ -65,6 +65,7 @@ MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
 
+	notebook_.set_scrollable(true);
 	notebook_.show();
 
 	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
