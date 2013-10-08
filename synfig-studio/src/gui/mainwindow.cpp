@@ -32,15 +32,26 @@
 #include "mainwindow.h"
 #include "canvasview.h"
 
+#include <synfigapp/main.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
 using namespace etl;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define GRAB_HINT_DATA(y)	{ \
+		String x; \
+		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
+		{ \
+			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
+		} \
+	}
 
 /* === G L O B A L S ======================================================= */
 
@@ -50,17 +61,21 @@ using namespace studio;
 
 MainWindow::MainWindow()
 {
+	set_default_size(600, 400);
+
 	add(notebook_);
 	notebook_.show();
 
 	notebook_.signal_switch_page().connect(
 		sigc::mem_fun(*this, &studio::MainWindow::on_switch_page) );
+
+	GRAB_HINT_DATA("canvas_view");
 }
 
 MainWindow::~MainWindow() { }
 
 void
-MainWindow::on_switch_page(GtkNotebookPage* page, guint page_num)
+MainWindow::on_switch_page(GtkNotebookPage* /* page */, guint page_num)
 {
 	Gtk::Notebook::PageList::iterator i = App::main_window->notebook().pages().find(page_num);
 	if (i == App::main_window->notebook().pages().end())

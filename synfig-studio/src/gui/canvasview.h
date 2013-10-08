@@ -750,6 +750,7 @@ protected:
 	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
 	void on_size_allocate(Gtk::Allocation &allocation);
+	void on_size_request(Gtk::Requisition *requisition);
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

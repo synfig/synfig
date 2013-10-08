@@ -749,15 +749,14 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 4, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(5, 1, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_work_area(),   0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-
-	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	update_title();
 
@@ -879,7 +878,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	on_time_changed();
 	show();
-
 	//synfig::info("Canvasview: Constructor Done");
 }
 
@@ -920,8 +918,16 @@ CanvasView::~CanvasView()
 
 void
 CanvasView::on_size_allocate(Gtk::Allocation &allocation) {
-	get_child()->size_allocate(allocation);
 	Gtk::Bin::on_size_allocate(allocation);
+	if (get_child() != NULL)
+		get_child()->size_allocate(allocation);
+}
+
+void
+CanvasView::on_size_request(Gtk::Requisition *requisition) {
+	Gtk::Bin::on_size_request(requisition);
+	if (get_child() != NULL && requisition != NULL)
+		*requisition = get_child()->size_request();
 }
 
 std::list<int>&
@@ -1107,7 +1113,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(16, 1, false));
+	displaybar = manage(new class Gtk::Table(1, 16, false));
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial(iconsize));
@@ -1244,20 +1250,20 @@ CanvasView::create_display_bar()
 	preview_options_button->show();
 
 
-	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator3, 5, 6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*show_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*snap_grid, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator4, 8, 9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*past_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*onion_skin, 10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*future_onion_spin, 11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator5, 12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*render_options_button, 13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*toggleducksdial,         0,  1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator1,              1,  2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*resolutiondial,          2,  3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator2,              3,  4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*quality_spin,            4,  5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator3,              5,  6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*show_grid,               6,  7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*snap_grid,               7,  8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator4,              8,  9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*past_onion_spin,         9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*onion_skin,             10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*future_onion_spin,      11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator5,             12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*render_options_button,  13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*preview_options_button, 14, 15, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 	displaybar->show();
