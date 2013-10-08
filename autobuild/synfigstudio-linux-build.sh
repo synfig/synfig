@@ -557,7 +557,33 @@ mkpack()
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
+	
+	cat > $PREFIX/synfig <<EOF
+#!/bin/sh
 
+PREFIX="/opt/synfig"
+
+export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${PREFIX}/
+export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
+
+\$PREFIX/bin/synfig "\$@"
+EOF
+	chmod a+x $PREFIX/synfig
+	
+	cat > $PREFIX/synfigstudio <<EOF
+#!/bin/sh
+
+PREFIX="/opt/synfig"
+
+export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${PREFIX}/
+export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
+
+\$PREFIX/bin/synfigstudio "\$@"
+EOF
+	chmod a+x $PREFIX/synfigstudio
+	
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
@@ -596,7 +622,7 @@ export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${PREFIX}/
 export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
 
-$GDB\$PREFIX/bin/synfigstudio \$@
+$GDB\$PREFIX/bin/synfigstudio "\$@"
 EOF
 	chmod a+x $TBZPREFIX/synfig
 	chmod a+x $TBZPREFIX/synfigstudio
@@ -678,8 +704,8 @@ mkdir -p \$RPM_BUILD_ROOT/usr/share/pixmaps
 ln -sf ${PREFIX}/share/pixmaps/sif_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/sif_icon.png
 ln -sf ${PREFIX}/share/pixmaps/synfig_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/synfig_icon.png
 mkdir -p \$RPM_BUILD_ROOT/usr/bin
-mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfig \$RPM_BUILD_ROOT/usr/bin/
-mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
+cp \$RPM_BUILD_ROOT/${PREFIX}/synfig \$RPM_BUILD_ROOT/usr/bin/
+cp \$RPM_BUILD_ROOT/${PREFIX}/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 
 #if [ -e \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor ]; then
 #mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor \$RPM_BUILD_ROOT/usr/bin/
@@ -701,7 +727,7 @@ mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.la
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.a
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/cairo/*.la
-rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
+#rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/include
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/libxml++-2.6
