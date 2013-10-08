@@ -381,7 +381,9 @@ if test $with_jpeg = "no" ; then {
 
 AC_LIB_LTDL
 
-ALL_LINGUAS="es fr it ru de en_GB zh_CN ro no_NO pt_BR pl_PL fa_IR nl sk_SK lt el_GR cs hu ja_JP"
+# Languages list (alphabetical order, please!)
+ALL_LINGUAS="ca cs da de el_GR en_GB es eu eu_ES fa_IR fr hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr zh_CN"
+
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])

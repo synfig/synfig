@@ -1,10 +1,10 @@
-# translation of da.po to Danish
+# Turkish translation for Synfig Studio.
 # Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig Studio package.
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Lamhauge <davidlamhauge@gmail.com>, 2012
-# neigaard <soeren@neigaard.com>, 2011
+# karakartala <mehmet337402@gmail.com>, 2013
+# lazbiyolog <yakupyasin@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -12,12 +12,12 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:24+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/synfig/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1
 msgid "Create and edit 2D animations and compositions"
@@ -59,50 +59,50 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
-msgstr "Tilføj Ny Keyframe"
+msgstr "Yeni film karesi ekle"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 #: ../src/gui/app.cpp:832
 msgid "Keyframe Properties"
-msgstr "Keyframe Attributter"
+msgstr "Film karesi özellikleri"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:105
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:498 ../src/gui/app.cpp:918
 msgid "Increase Amount"
-msgstr "Forøg Antal"
+msgstr "Görünürlüğü artır"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:117
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515 ../src/gui/app.cpp:919
 msgid "Decrease Amount"
-msgstr "Formindsk Antal"
+msgstr "Görünürlüğü azalt"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Antal"
+msgstr "Katman görünürlüğü ayarlar"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:135
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Select All Child Layers"
-msgstr "Vælg Alle Underliggende Lag"
+msgstr "bütün alt tabakaları seçer"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:365
 msgid "Paste"
-msgstr "Sæt Ind"
+msgstr "yapıştır"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:454
 #: ../src/synfigapp/actions/layerduplicate.cpp:179
 #: ../src/synfigapp/canvasinterface.cpp:365
 #, c-format
 msgid "Index %d"
-msgstr "Index %d"
+msgstr "İndeks %d"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:235
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "paragraf"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:239
 msgid "Enter Paragraph Text Here:"
-msgstr "Indsæt Paragraf Tekst Her:"
+msgstr "yazınızı buraya giriniz"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
@@ -110,7 +110,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "<Intet Billede Valgt>"
+msgstr "resim seçilmedi"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
@@ -118,15 +118,15 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
-msgstr "UKENDT"
+msgstr "BİLİNMEYEN"
 
 #: ../src/gui/dialogs/about.cpp:104
 msgid "2D vector animation studio"
-msgstr "2D vektor animation studio"
+msgstr "2 boyutlu vektör animasyon studio"
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Visit the Synfig website"
-msgstr "Besøg Synfig hjemmesiden"
+msgstr "synfig web sitesini ziyaret et"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
@@ -137,16 +137,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
-msgstr "Oprindelige udviklere:"
+msgstr "Orjinal geliştiriciler"
 
 #: ../src/gui/dialogs/about.cpp:136
 msgid "Contributors:"
-msgstr "Bidragydere:"
+msgstr "Katkı sağlayanlar"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
-msgstr "oversættelse-anerkendelse"
+msgstr "Çevirmen Takımı"
 
 #: ../src/gui/dialogs/about.cpp:215
 #, c-format
@@ -154,21 +154,21 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\nUdviklingsversion:\n%s\n"
+msgstr "\n\\n\nGeliştrilen sürüm:\\n\n%s\\n\n\n"
 
 #: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
-msgstr "Bygget på %s\n"
+msgstr "Üstüne kur %s\n"
 
 #: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
-msgstr "Bygget med:\n"
+msgstr "Birlikte kur \n"
 
 #: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
-msgstr "ETL %s\n"
+msgstr "ETL %s\\n\n"
 
 #: ../src/gui/dialogs/about.cpp:226
 #, c-format
@@ -178,7 +178,7 @@ msgstr "Synfig API %s\n"
 #: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig bibliotek %d\n"
+msgstr "Synfig Kütüphanesi %d\\n\n"
 
 #: ../src/gui/dialogs/about.cpp:228
 #, c-format
@@ -192,12 +192,12 @@ msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
-msgstr "Benytter:\n"
+msgstr "Kullan:\n"
 
 #: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
-msgstr "Synfig %s\n"
+msgstr "synfig%s\n"
 
 #: ../src/gui/dialogs/about.cpp:237
 #, c-format
@@ -206,27 +206,27 @@ msgstr "GTK+ %d.%d.%d"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:61
 msgid "Canvas Options"
-msgstr "Lærred Indstillinger"
+msgstr "Çizim Tahtası Seçenekleri"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:63
 msgid "_Snap to grid"
-msgstr "_Fastgør til gitter"
+msgstr "_lzgaraya git"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:64
 msgid "S_how grid"
-msgstr "V_is gitter"
+msgstr "İzgarayı göster"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:65
 msgid "Snap to _frame"
-msgstr ""
+msgstr "Film karasine _git"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:80
 msgid "Grid"
-msgstr "Gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:90
 msgid "_Grid size"
-msgstr ""
+msgstr "_lzgara boyutu"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:104
 #: ../src/gui/trees/keyframetree.cpp:73 ../src/gui/iconcontroller.cpp:141
@@ -253,21 +253,21 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
-msgstr ""
+msgstr "Zaman"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
 #: ../src/gui/dialogs/dialog_setup.cpp:181
 msgid "Units"
-msgstr ""
+msgstr "Üniteler/birimler"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:114
 msgid "Not yet implemented!"
-msgstr ""
+msgstr "Henüz tamamlanmadı!"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:151 ../src/gui/app.cpp:848
 #: ../src/gui/canvasview.cpp:1481
 msgid "Options"
-msgstr ""
+msgstr "Seçenekler"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:169
 msgid "Not yet implemented"
@@ -275,59 +275,59 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:64
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Çizim tahtası Özellikleri"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:77
 msgid "Canvas Info"
-msgstr ""
+msgstr "Çizim tahtası bilgisi"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "<b>Canvas Info</b>"
-msgstr ""
+msgstr "<b>Çizim tahtası Özellikleri</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:95
 msgid "_ID"
-msgstr ""
+msgstr "_ID"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:101
 msgid "_Name"
-msgstr ""
+msgstr "_İsim"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:104
 msgid "_Description"
-msgstr ""
+msgstr "_Tanımlama"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:197 ../src/gui/app.cpp:863
 msgid "Properties"
-msgstr ""
+msgstr "Özellikler"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:226
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "Çizim tahtası özelliklerini düzenle"
 
 #: ../src/gui/dialogs/dialog_color.cpp:59
 msgid "Colors"
-msgstr ""
+msgstr "Renkler"
 
 #: ../src/gui/dialogs/dialog_color.cpp:66 ../src/gui/iconcontroller.cpp:277
 msgid "Set as Outline"
-msgstr ""
+msgstr "Taslağı Ayarla"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:278
 msgid "Set as Fill"
-msgstr ""
+msgstr "Dolgu rengi olarak ayarla"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:65
 msgid "Gradient Editor"
-msgstr ""
+msgstr "Renk geçişleri düzenleyicisi"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:75
 msgid "Set as Default"
-msgstr ""
+msgstr "Varsayılan olarak ayarla"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
-msgstr ""
+msgstr "Film karesi pencesi"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1608
 msgid "Preview Window"
@@ -335,7 +335,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_preview.cpp:124
 msgid "Preview Options"
-msgstr ""
+msgstr "Önizleme Seçenekleri"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:127
 msgid "Use _Cairo render"
@@ -376,19 +376,19 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_preview.cpp:212 ../src/gui/app.cpp:845
 #: ../src/gui/canvasview.cpp:1475
 msgid "Preview"
-msgstr ""
+msgstr "Önizleme"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:75
 msgid "Synfig Studio Setup"
-msgstr ""
+msgstr "Synfig Stüdyo'u Kur"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:81
 msgid "Visually Linear Color Selection"
-msgstr ""
+msgstr "Görsel doğrusal renk seçimi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:83
 msgid "Use Only a Single Thread"
-msgstr ""
+msgstr "Yalnıca tek fim kullan"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:85
 msgid "Restrict Real-Valued Handles to Top Right Quadrant"
@@ -396,7 +396,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:86
 msgid "Scale New Imported Images to Fit Canvas"
-msgstr ""
+msgstr "Fotoğrafın boyutunu çizim tahtasına göre ölçekle"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Enable experimental features (restart required)"
@@ -404,174 +404,174 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:118
 msgid "Gamma"
-msgstr ""
+msgstr "Gama kontrast derecesi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:123
 #: ../src/gui/widgets/widget_coloredit.cpp:360
 msgid "Red"
-msgstr ""
+msgstr "Kırmızı"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:128
 #: ../src/gui/widgets/widget_coloredit.cpp:362
 msgid "Green"
-msgstr ""
+msgstr "Yeşil"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:133
 #: ../src/gui/widgets/widget_coloredit.cpp:364
 msgid "Blue"
-msgstr ""
+msgstr "Mavi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:137
 msgid "Black Level"
-msgstr ""
+msgstr "Siyah Seviyesi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:148
 msgid "Misc."
-msgstr ""
+msgstr "Çeşitli"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:154
 msgid "Timestamp"
-msgstr ""
+msgstr "Tarih bilgisi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:182
 msgid "Pixels"
-msgstr ""
+msgstr "Piksel"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Points"
-msgstr ""
+msgstr "Nokta"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Inches"
-msgstr ""
+msgstr "İnç"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Meters"
-msgstr ""
+msgstr "Metre"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Centimeters"
-msgstr ""
+msgstr "Santimetre"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Millimeters"
-msgstr ""
+msgstr "Milimetre"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:192
 msgid "Unit System"
-msgstr ""
+msgstr "Ünite Sistemi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:198
 msgid "Recent Files"
-msgstr ""
+msgstr "Son Kullanılanlar"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:205
 msgid "Auto Backup Interval (0 to disable)"
-msgstr ""
+msgstr "Otomatik Yedek Alma Aralığı ( 0  devredışı bırakır)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:223
 msgid "Browser Command"
-msgstr ""
+msgstr "Tarayıcı Komutu"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "Document"
-msgstr ""
+msgstr "Belge"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "New Document filename prefix"
-msgstr ""
+msgstr "Yeni Belgenin dosya öneki"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:233
 msgid "File name prefix for the new created document"
-msgstr ""
+msgstr "Yeni oluşturulmuş belgenin Dosya adı öneki"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "New Document X size"
-msgstr ""
+msgstr "Yeni Belgenin yatay boyutu"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Width in pixels of the new created document"
-msgstr ""
+msgstr "Yeni oluşturulmuş belgenin piksel genişliği"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:243
 msgid "New Document Y size"
-msgstr ""
+msgstr "Yeni belgenin dikey boyutu"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "High in pixels of the new created document"
-msgstr ""
+msgstr "Yeni oluşturulmuş belgenin piksel yükselkliği"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:249
 msgid "Predefined Resolutions:"
-msgstr ""
+msgstr "Önceden Tanımlanmış Çözünürlükler:"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:254
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 ful açıklık 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:255
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 tam açıklık doğal  2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:256
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:257
 msgid "1280x720  HDTV 720p"
-msgstr ""
+msgstr "1280x720 HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:258
 msgid "720x576   DVD PAL"
-msgstr ""
+msgstr "720x576 DVD PAL"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:259
 msgid "720x480   DVD NTSC"
-msgstr ""
+msgstr "720x480 DVD NTSC"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:260
 msgid "720x540   Web 720x"
-msgstr ""
+msgstr "720x540 Web 720x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:261
 msgid "720x405   Web 720x HD"
-msgstr ""
+msgstr "720x405 Web 720x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:262
 msgid "640x480   Web 640x"
-msgstr ""
+msgstr "640x480 Web 640x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:263
 msgid "640x360   Web 640x HD"
-msgstr ""
+msgstr "640x360 Web 640x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:264
 msgid "480x360   Web 480x"
-msgstr ""
+msgstr "480x360 Web 480x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:265
 msgid "480x270   Web 480x HD"
-msgstr ""
+msgstr "480x270 Web 480x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:266
 msgid "360x270   Web 360x"
-msgstr ""
+msgstr "360x270 Web 360x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:267
 msgid "360x203   Web 360x HD"
-msgstr ""
+msgstr "360x203 Web 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:272
 msgid "Predefined FPS:"
-msgstr ""
+msgstr "Önceden tanımlanmış FPS :"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:294
 msgid "New Document FPS"
-msgstr ""
+msgstr "Yeni belgenin FPS'si"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:296
 msgid "Frames per second of the new created document"
-msgstr ""
+msgstr "Yeni oluşturulmuş belgenin saniye başına kare yakalama hızı"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:300 ../src/gui/app.cpp:844
 #: ../src/gui/canvasview.cpp:1472 ../src/gui/render.cpp:177
@@ -592,111 +592,111 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.h:53
 msgid "Custom Size"
-msgstr ""
+msgstr "Genel Boyut"
 
 #: ../src/gui/dialogs/dialog_setup.h:56
 msgid "Custom fps"
-msgstr ""
+msgstr "Genel fps"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:60
 msgid "Sound Select"
-msgstr ""
+msgstr "Ses Seç"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:67
 msgid "Sound Parameters"
-msgstr ""
+msgstr "Ses Parametreleri"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:68
 msgid "<b>Sound Parameters</b>"
-msgstr ""
+msgstr "<b>Ses Parametreleri</b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:76
 msgid "_Sound File"
-msgstr ""
+msgstr "_Ses Dosyası"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:79
 msgid "Time _Offset"
-msgstr ""
+msgstr "Zaman _Farkı"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:45
 msgid "Custom Video Codec"
-msgstr ""
+msgstr "Genel Video Kodeği"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:46
 msgid "write your video codec here"
-msgstr ""
+msgstr "Video kododeğinizi buraya yazın"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:68
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
-msgstr ""
+msgstr "Flaş video (FLV) / Sorenson Spark / Sorenson H.263."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:69
 msgid "H.263+ / H.263-1998 / H.263 version 2."
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 version 2."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:70
 msgid "Huffyuv / HuffYUV."
-msgstr ""
+msgstr "Huffyuv / HuffYUV."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:71
 msgid "libtheora Theora."
-msgstr ""
+msgstr "libtheora Theora."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:72
 msgid "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
-msgstr ""
+msgstr "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:73
 msgid "MJPEG (Motion JPEG)."
-msgstr ""
+msgstr "MJPEG (Motion JPEG)."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:74
 msgid "raw MPEG-1 video."
-msgstr ""
+msgstr "işlenmemiş MPEG-1 video."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:75
 msgid "raw MPEG-2 video."
-msgstr ""
+msgstr "işlenmemiş MPEG-2 video."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:76
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 part 2. (XviD/DivX)"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:77
 msgid "MPEG-4 part 2 Microsoft variant version 3."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 3."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:78
 msgid "MPEG-4 part 2 Microsoft variant version 1."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 1."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:79
 msgid "MPEG-4 part 2 Microsoft variant version 2."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 2."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:80
 msgid "Windows Media Video 7."
-msgstr ""
+msgstr "Windows Media Video 7."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:81
 msgid "Windows Media Video 8."
-msgstr ""
+msgstr "Windows Media Video 8."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:92
 msgid "Target Parameters"
-msgstr ""
+msgstr "Hedef Parametreler"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:100
 msgid "Available Video Codecs:"
-msgstr ""
+msgstr "Mevcut Video Kodekleri:"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:130
 msgid "Video Bit Rate:"
-msgstr ""
+msgstr "Video  Bit Hızı:"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:63
 msgid "Waypoint Editor"
-msgstr ""
+msgstr "Ara nokta Editörü"
 
 #: ../src/gui/dials/framedial.cpp:56 ../src/gui/iconcontroller.cpp:280
 msgid "Seek to begin"
@@ -714,7 +714,7 @@ msgstr ""
 #: ../src/gui/iconcontroller.cpp:283 ../src/gui/preview.cpp:440
 #: ../src/gui/preview.cpp:1013
 msgid "Play"
-msgstr ""
+msgstr "Oynat"
 
 #: ../src/gui/dials/framedial.cpp:60 ../src/gui/iconcontroller.cpp:285
 #: ../src/gui/preview.cpp:1039
@@ -743,19 +743,19 @@ msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Increase Display Resolution"
-msgstr ""
+msgstr "Görünür Çözünürlüğu Artır"
 
 #: ../src/gui/dials/resolutiondial.cpp:57
 msgid "Decrease Display Resolution"
-msgstr ""
+msgstr "Görünür Çözünürlüğü Azalt"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Low Res"
-msgstr ""
+msgstr "Düşük Çözünürlük"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Use Low Resolution when enabled"
-msgstr ""
+msgstr "Uygun olduğunda Düşük çözünürlük Kullan "
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:302
 msgid "Toggle position handles"
@@ -783,41 +783,41 @@ msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:55
 msgid "Zoom In"
-msgstr ""
+msgstr "Büyütme"
 
 #: ../src/gui/dials/zoomdial.cpp:56
 msgid "Zoom Out"
-msgstr ""
+msgstr "Küçültme"
 
 #: ../src/gui/dials/zoomdial.cpp:57
 msgid "Zoom to Fit"
-msgstr ""
+msgstr "Uygun Büyütme"
 
 #: ../src/gui/dials/zoomdial.cpp:58
 msgid "Zoom to 100%"
-msgstr ""
+msgstr "% 100 Büyütme"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
 #: ../src/gui/docks/dialog_tooloptions.cpp:74
 msgid "Tool Options"
-msgstr ""
+msgstr "Araç Çubuğu"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 msgid "This tool has no options"
-msgstr ""
+msgstr "Bu araç herhangi bir seçeneğe sahip değil"
 
 #: ../src/gui/docks/dockable.cpp:112
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/compview.cpp:168
 msgid "Canvas Browser"
-msgstr ""
+msgstr "Çizim tahtası Listesi"
 
 #: ../src/gui/docks/dock_canvases.cpp:108 ../src/gui/trees/childrentree.cpp:93
 #: ../src/gui/compview.cpp:191 ../src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:67 ../src/gui/iconcontroller.cpp:259
 msgid "Library"
@@ -829,126 +829,126 @@ msgstr ""
 
 #: ../src/gui/docks/dockdialog.cpp:115
 msgid "Dock Panel"
-msgstr ""
+msgstr "Sürükleme Paneli"
 
 #: ../src/gui/docks/dockdialog.cpp:587
 msgid "Empty Dock Panel"
-msgstr ""
+msgstr "Boş Sürükleme Paneli"
 
 #: ../src/gui/docks/dock_history.cpp:69 ../src/gui/docks/dock_history.cpp:125
 #: ../src/gui/compview.cpp:91 ../src/gui/iconcontroller.cpp:265
 msgid "History"
-msgstr ""
+msgstr "Geri alma Geçmişi"
 
 #: ../src/gui/docks/dock_history.cpp:78 ../src/gui/iconcontroller.cpp:256
 msgid "Clear Undo Stack"
-msgstr ""
+msgstr "Geri alma geçmişini temizle"
 
 #: ../src/gui/docks/dock_history.cpp:79
 msgid "Clear the undo stack"
-msgstr ""
+msgstr "Geri alma geçmişini bellekten temizle"
 
 #: ../src/gui/docks/dock_history.cpp:89 ../src/gui/iconcontroller.cpp:257
 msgid "Clear Redo Stack"
-msgstr ""
+msgstr "İleri alma geçmişini temizle"
 
 #: ../src/gui/docks/dock_history.cpp:90
 msgid "Clear the redo stack"
-msgstr ""
+msgstr "İleri alma geçmişini bellekten temizle"
 
 #: ../src/gui/docks/dock_history.cpp:100
 msgid "Clear Undo and Redo Stacks"
-msgstr ""
+msgstr "İleri ve geri alma geçmişlerini temizle"
 
 #: ../src/gui/docks/dock_history.cpp:101
 msgid "Clear the undo and redo stacks"
-msgstr ""
+msgstr "İleri ve geri alma geçmişlerini belllekten temizle"
 
 #: ../src/gui/docks/dock_history.cpp:111 ../src/gui/toolbox.cpp:290
 msgid "Undo"
-msgstr ""
+msgstr "Geri al"
 
 #: ../src/gui/docks/dock_history.cpp:112
 msgid "Undo the previous action"
-msgstr ""
+msgstr "Bir önceki eylemi geri al"
 
 #: ../src/gui/docks/dock_history.cpp:119 ../src/gui/toolbox.cpp:291
 msgid "Redo"
-msgstr ""
+msgstr "İleri al"
 
 #: ../src/gui/docks/dock_history.cpp:120
 msgid "Redo the previously undone action"
-msgstr ""
+msgstr "Önceden silinmiş eylemi geri al"
 
 #: ../src/gui/docks/dock_history.cpp:190 ../src/gui/trees/keyframetree.cpp:103
 #: ../src/gui/compview.cpp:251
 msgid "Jump"
-msgstr ""
+msgstr "Atla"
 
 #: ../src/gui/docks/dock_history.cpp:195 ../src/gui/trees/keyframetree.cpp:107
 #: ../src/gui/compview.cpp:256
 msgid "(JMP)"
-msgstr ""
+msgstr "(assembly de sıçrama komutu)"
 
 #: ../src/gui/docks/dock_history.cpp:207 ../src/gui/compview.cpp:268
 msgid "Action"
-msgstr ""
+msgstr "Eylem"
 
 #: ../src/gui/docks/dock_history.cpp:254 ../src/gui/docks/dock_history.cpp:262
 #: ../src/gui/docks/dock_history.cpp:270 ../src/gui/compview.cpp:333
 #: ../src/gui/compview.cpp:342
 msgid "Clear History"
-msgstr ""
+msgstr "Geçmişi Temizle"
 
 #: ../src/gui/docks/dock_history.cpp:255 ../src/gui/compview.cpp:333
 msgid ""
 "You will not be able to undo any changes that you have made!\n"
 "Are you sure you want to clear the undo stack?"
-msgstr ""
+msgstr "Yaptığınız herhangibir değişikliği geri almak mümkün olmayacaktır!/n\nGeri alma geçmişinin bellekten temizlenmesini istediğinizden eminmisiniz?"
 
 #: ../src/gui/docks/dock_history.cpp:263 ../src/gui/compview.cpp:342
 msgid ""
 "You will not be able to redo any changes that you have made!\n"
 "Are you sure you want to clear the redo stack?"
-msgstr ""
+msgstr "Yaptığınız herhangibir değişikliği ileri almak mümkün olmayacaktır!/n\nİleri alma geçmişinin bellekten temizlenmesini istediğinizden eminmisiniz?"
 
 #: ../src/gui/docks/dock_history.cpp:271
 msgid ""
 "You will not be able to undo or redo any changes that you have made!\n"
 "Are you sure you want to clear the undo and redo stacks?"
-msgstr ""
+msgstr "Yaptığınız herhangibir değişikliği geri ve ileri  almak mümkün olmayacaktır!/n\nGeri ve ileri alma geçmişinin bellekten temizlenmesini istediğinizden eminmisiniz?"
 
 #: ../src/gui/docks/dock_info.cpp:96 ../src/gui/instance.cpp:580
 msgid "Info"
-msgstr ""
+msgstr "Bilgi"
 
 #: ../src/gui/docks/dock_info.cpp:103
 msgid "X: "
-msgstr ""
+msgstr "X:"
 
 #: ../src/gui/docks/dock_info.cpp:104
 msgid "Y: "
-msgstr ""
+msgstr "Y:"
 
 #: ../src/gui/docks/dock_info.cpp:114
 msgid "R: "
-msgstr ""
+msgstr "R:"
 
 #: ../src/gui/docks/dock_info.cpp:115
 msgid "G: "
-msgstr ""
+msgstr "G:"
 
 #: ../src/gui/docks/dock_info.cpp:116
 msgid "B: "
-msgstr ""
+msgstr "B:"
 
 #: ../src/gui/docks/dock_info.cpp:117
 msgid "A: "
-msgstr ""
+msgstr "A:"
 
 #: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/iconcontroller.cpp:261
 msgid "Keyframes"
-msgstr ""
+msgstr "Film kareleri"
 
 #: ../src/gui/docks/dock_layergroups.cpp:68
 msgid "Sets"
@@ -960,19 +960,19 @@ msgstr ""
 
 #: ../src/gui/docks/dock_layers.cpp:74
 msgid "Layers"
-msgstr ""
+msgstr "Katmanlar"
 
 #: ../src/gui/docks/dock_layers.cpp:151
 msgid "Layer Ops"
-msgstr ""
+msgstr "Katman Özellikleri "
 
 #: ../src/gui/docks/dock_metadata.cpp:66
 msgid "Canvas MetaData"
-msgstr ""
+msgstr "Çizim tahtası MetaData'sı"
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
-msgstr ""
+msgstr "Yeni MetaData girişi  Ekle"
 
 #: ../src/gui/docks/dock_metadata.cpp:81
 msgid "Remove selected MetaData entry"
@@ -980,15 +980,15 @@ msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:125
 msgid "New MetaData Entry"
-msgstr ""
+msgstr "Yeni Meta Data Girişi"
 
 #: ../src/gui/docks/dock_metadata.cpp:125
 msgid "Please enter the name of the key"
-msgstr ""
+msgstr "Lütfen!Anahtarın adını girin"
 
 #: ../src/gui/docks/dock_navigator.cpp:532 ../src/gui/iconcontroller.cpp:263
 msgid "Navigator"
-msgstr ""
+msgstr "Ön izleme paneli"
 
 #: ../src/gui/docks/dock_params.cpp:65 ../src/gui/iconcontroller.cpp:267
 msgid "Parameters"
@@ -1002,43 +1002,43 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodeadd.cpp:77
 #: ../src/synfigapp/actions/valuenoderename.cpp:86
 msgid "Name"
-msgstr ""
+msgstr "İsim"
 
 #: ../src/gui/docks/dock_timetrack.cpp:88
 #: ../src/gui/trees/childrentree.cpp:141 ../src/gui/trees/layertree.cpp:376
 #: ../src/gui/iconcontroller.cpp:264
 msgid "Time Track"
-msgstr ""
+msgstr "Süre takibi"
 
 #: ../src/gui/docks/dock_timetrack.cpp:372
 msgid "Timetrack"
-msgstr ""
+msgstr "Süre takibi"
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:56
 msgid "Palette Browser"
-msgstr ""
+msgstr "Renk Panosu listesi"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:123
 msgid "Palette Editor"
-msgstr ""
+msgstr "Renk panosu editörü"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:131
 msgid "Add Color"
-msgstr ""
+msgstr "Renk ekle"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:132
 msgid ""
 "Add current outline color\n"
 "to the palette"
-msgstr ""
+msgstr "Mevcut taslak rengini palete ekle"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:142
 msgid "Save palette"
-msgstr ""
+msgstr "Paleti Kaydet"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:143
 msgid "Save the current palette"
-msgstr ""
+msgstr "Mevcut paleti Kaydet"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:153
 msgid "Load a palette"
@@ -1639,7 +1639,7 @@ msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:502
 msgid "New Polygon"
-msgstr ""
+msgstr "Yeni Poligon"
 
 #: ../src/gui/states/state_polygon.cpp:619
 #: ../src/gui/states/state_polygon.cpp:621
@@ -1665,7 +1665,7 @@ msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:476
 msgid "New Rectangle"
-msgstr ""
+msgstr "Yeni Dikdörtgen"
 
 #: ../src/gui/states/state_rotate.cpp:197
 msgid "Allow Scale"
@@ -2490,7 +2490,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1651
 msgid "Next Frame"
-msgstr ""
+msgstr "Bir sonraki Kare"
 
 #: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1653
 msgid "Prev Frame"
@@ -2506,11 +2506,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1664
 msgid "Seek to Begin"
-msgstr ""
+msgstr "Aramaya başlamak"
 
 #: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1661
 msgid "Seek to End"
-msgstr ""
+msgstr "Aramayi Sonlandırma"
 
 #: ../src/gui/app.cpp:914
 msgid "Add set"
@@ -2777,15 +2777,15 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2401
 msgid "Feature not available"
-msgstr ""
+msgstr "Özellik geçerli değil"
 
 #: ../src/gui/app.cpp:2402
 msgid "Sorry, this feature has not yet been implemented."
-msgstr ""
+msgstr "Üzgümüm,bu özellik henüz uygulanmadı."
 
 #: ../src/gui/app.cpp:2487
 msgid "Documentation"
-msgstr ""
+msgstr "Dökümantasyan"
 
 #: ../src/gui/app.cpp:2488
 msgid ""
@@ -2796,7 +2796,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2489 ../src/gui/toolbox.cpp:294
 msgid "Help"
-msgstr ""
+msgstr "Yardım"
 
 #: ../src/gui/app.cpp:2499
 msgid "No browser was found. Please load this website manually:"
@@ -3111,7 +3111,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
-msgstr "Liste"
+msgstr "liste"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "String"
@@ -3897,15 +3897,15 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:507
 msgid "Time Settings"
-msgstr ""
+msgstr "Zaman Ayarları"
 
 #: ../src/gui/renddesc.cpp:509
 msgid "<b>Time Settings</b>"
-msgstr ""
+msgstr "<b>Zaman Ayarları</b>"
 
 #: ../src/gui/renddesc.cpp:521
 msgid "_Frames per second"
-msgstr ""
+msgstr "Saniye başına _Film karesi"
 
 #: ../src/gui/renddesc.cpp:526
 msgid "_Start Time"
@@ -3913,7 +3913,7 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:531
 msgid "_End Time"
-msgstr ""
+msgstr "_Bitiş Zamanı"
 
 #: ../src/gui/renddesc.cpp:536
 msgid "_Duration"
