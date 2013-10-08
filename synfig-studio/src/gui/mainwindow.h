@@ -32,6 +32,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/actiongroup.h>
 
 /* === M A C R O S ========================================================= */
 

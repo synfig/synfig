@@ -878,6 +878,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	on_time_changed();
 	show();
 
+	instance->canvas_view_list().push_front(this);
+	instance->signal_canvas_view_created()(this);
 	App::main_window->notebook().append_page(*this, *window_title);
 	//synfig::info("Canvasview: Constructor Done");
 }
@@ -1431,12 +1433,6 @@ CanvasView::init_menus()
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
-	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
-	);
-	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::open))
-	);
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
@@ -2352,8 +2348,6 @@ handle<CanvasView>
 CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
 {
 	etl::handle<studio::CanvasView> view(new CanvasView(instance,instance->synfigapp::Instance::find_canvas_interface(canvas)));
-	instance->canvas_view_list().push_front(view);
-	instance->signal_canvas_view_created()(view.get());
 	return view;
 }
 

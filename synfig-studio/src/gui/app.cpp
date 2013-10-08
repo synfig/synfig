@@ -2731,6 +2731,8 @@ App::new_instance()
 void
 App::dialog_open(string filename)
 {
+	if (filename.empty() && selected_instance != NULL)
+		filename = selected_instance->get_file_name();
 	if (filename.empty())
 		filename="*.sif";
 
