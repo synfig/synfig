@@ -69,7 +69,7 @@ public:
 	bool load_from_string(const synfig::String& data);
 	bool save_to_string(synfig::String& data);
 
-	bool load_from_file(const synfig::String& filename);
+	bool load_from_file(const synfig::String& filename, const synfig::String& domain = "" );
 	bool save_to_file(const synfig::String& filename)const;
 }; // END of class Settings
 

@@ -1294,9 +1294,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-		load_settings();
+		load_settings("pref");
 		// Calling load_settings() at this point will load only
-		// "prefs" domain. Other domains are initialized below, 
+		// "pref" domain. Other domains are initialized below, 
 		// so we will need to call load_settings() second time
 		// after full initialization is done.
 		
@@ -1822,13 +1822,13 @@ App::save_settings()
 }
 
 bool
-App::load_settings()
+App::load_settings(const synfig::String& domain)
 {
 	bool ret=false;
 	try
 	{
 		std::string filename=get_config_file("settings");
-		ret=synfigapp::Main::settings().load_from_file(filename);
+		ret=synfigapp::Main::settings().load_from_file(filename, domain);
 	}
 	catch(...)
 	{

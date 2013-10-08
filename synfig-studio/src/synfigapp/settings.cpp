@@ -129,8 +129,8 @@ Settings::set_value(const synfig::String& key,const synfig::String& value)
 		}
 	}
 
-	//simple_value_map[key]=value;
-	return false;
+	simple_value_map[key]=value;
+	return true;
 }
 
 //! Compare two key names, putting pref.* keys first
@@ -226,7 +226,7 @@ Settings::save_to_file(const synfig::String& filename)const
 }
 
 bool
-Settings::load_from_file(const synfig::String& filename)
+Settings::load_from_file(const synfig::String& filename, const synfig::String& domain )
 {
 	std::ifstream file(filename.c_str());
 	if(!file)
@@ -245,9 +245,12 @@ Settings::load_from_file(const synfig::String& filename)
 
 			//synfig::info("Settings::load_from_file(): Trying Key \"%s\" with a value of \"%s\".",key.c_str(),value.c_str());
 			try{
-			if(!set_value(key,value))
-				synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());
-			}
+				if (domain=="" || (key.size()>domain.size() && String(key.begin(),key.begin()+domain.size())==domain) )
+				{
+					if(!set_value(key,value))
+						synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());
+					}
+				}
 			catch(...)
 			{
 				synfig::error("Settings::load_from_file(): Attempt to set key \"%s\" with a value of \"%s\" has thrown an exception.",key.c_str(),value.c_str());
