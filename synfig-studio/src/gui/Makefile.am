@@ -32,6 +32,7 @@ DUCKTRANSFORM_CC = \
 	duck.cpp
 
 EVENTS_HH = \
+	event_keyboard.h \
 	event_layerclick.h \
 	event_mouse.h
 

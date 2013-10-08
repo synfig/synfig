@@ -210,7 +210,7 @@ ValueNode_Step::get_children_vocab_vfunc()const
 
 		ret.push_back(ParamDesc(ValueBase(),"intersection")
 		.set_local_name(_("Intersection"))
-		.set_description(_("Value that define whether the step is centerd on the value [0,1]"))
+		.set_description(_("Value that define whether the step is centered on the value [0,1]"))
 	);
 
 	return ret;

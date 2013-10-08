@@ -93,7 +93,8 @@ Renderer_Grid::render_vfunc(
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
 	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
-
+	
+	synfig::Color grid_color(get_work_area()->get_grid_color());
 
 	// Draw out the grid
 	if(grid_size[0]>pw*3.5 && grid_size[1]>ph*3.5)
@@ -109,7 +110,7 @@ Renderer_Grid::render_vfunc(
 		cr->set_antialias(Cairo::ANTIALIAS_NONE);
 
 		cr->set_line_width(1.0);
-		cr->set_source_rgb(159.0/255.0,159.0/255.0,159.0/255.0);
+		cr->set_source_rgb(grid_color.get_r(),grid_color.get_g(),grid_color.get_b()); 
 		std::valarray<double> dashes(2);
 		dashes[0]=4.0;
 		dashes[1]=4.0;

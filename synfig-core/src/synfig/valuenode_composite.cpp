@@ -87,7 +87,9 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			set_link("point",ValueNode_Const::create(bline_point.get_vertex()));
 			set_link("width",ValueNode_Const::create(bline_point.get_width()));
 			set_link("origin",ValueNode_Const::create(bline_point.get_origin()));
-			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_flag()));
+			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_both()));
+			set_link("split_radius",ValueNode_Const::create(bline_point.get_split_tangent_radius()));
+			set_link("split_angle",ValueNode_Const::create(bline_point.get_split_tangent_angle()));
 			set_link("t1",ValueNode_RadialComposite::create(bline_point.get_tangent1()));
 			set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
 			break;
@@ -189,14 +191,15 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		case ValueBase::TYPE_BLINEPOINT:
 		{
 			BLinePoint ret;
-			assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5]);
+			assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5] && components[6] && components[7]);
 			ret.set_vertex((*components[0])(t).get(Point()));
 			ret.set_width((*components[1])(t).get(Real()));
 			ret.set_origin((*components[2])(t).get(Real()));
-			ret.set_split_tangent_flag((*components[3])(t).get(bool()));
+			ret.set_split_tangent_both((*components[3])(t).get(bool()));
+			ret.set_split_tangent_radius((*components[6])(t).get(bool()));
+			ret.set_split_tangent_angle((*components[7])(t).get(bool()));
 			ret.set_tangent1((*components[4])(t).get(Vector()));
-			if(ret.get_split_tangent_flag())
-				ret.set_tangent2((*components[5])(t).get(Vector()));
+			ret.set_tangent2((*components[5])(t).get(Vector()));
 			return ret;
 		}
 		case ValueBase::TYPE_WIDTHPOINT:
@@ -280,7 +283,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				components[i]=x;
 				return true;
 			}
-			if(i==3 && x->get_type()==ValueBase(bool()).get_type())
+			if((i==3 || i==6 || i==7) && x->get_type()==ValueBase(bool()).get_type())
 			{
 				components[i]=x;
 				return true;
@@ -406,6 +409,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="t2")
 			return 5;
+		if(name=="split_radius")
+			return 6;
+		if(name=="split_angle")
+			return 7;
 	case ValueBase::TYPE_WIDTHPOINT:
 		if(name=="position")
 			return 0;
@@ -531,6 +538,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"split")
 			.set_local_name(_("Split"))
 			.set_description(_("When checked, tangents are independent"))
+			.hidden()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"t1")
 			.set_local_name(_("Tangent 1"))
@@ -539,6 +547,14 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"t2")
 			.set_local_name(_("Tangent 2"))
 			.set_description(_("The second tangent of the Spline Point"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"split_radius")
+			.set_local_name(_("Radius Split"))
+			.set_description(_("When checked, tangent's radius are independent"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"split_angle")
+			.set_local_name(_("Angle Split"))
+			.set_description(_("When checked, tangent's angles are independent"))
 		);
 		return ret;
 	case ValueBase::TYPE_WIDTHPOINT:

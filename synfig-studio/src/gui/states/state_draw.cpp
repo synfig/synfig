@@ -816,7 +816,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		{
 			// If the tangents are not similar, then
 			// split the tangents
-			bline.front().set_split_tangent_flag(true);
+			bline.front().set_split_tangent_both(true);
 			bline.front().set_tangent1(tangent);
 		}
 		else

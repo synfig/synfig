@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedescset.h
-**	\brief Template File
+/*!	\file event_keyboard.h
+**	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUEDESCSET_H
-#define __SYNFIG_APP_ACTION_VALUEDESCSET_H
+#ifndef __SYNFIG_EVENT_KEYBOARD_H
+#define __SYNFIG_EVENT_KEYBOARD_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfigapp/action.h>
-#include <synfigapp/value_desc.h>
-#include <synfig/valuenode_animated.h>
-#include <list>
+#include <synfig/vector.h>
+#include "smach.h"
+#include <gdkmm/types.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,37 +37,20 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
+namespace studio {
 
-namespace Action {
-
-class ValueDescSet :
-	public Super
+struct EventKeyboard : public Smach::event
 {
-private:
+	guint keyval;
+	Gdk::ModifierType modifier;
 
-	ValueDesc value_desc;
-	synfig::ValueBase value;
-	synfig::Time time;
-	bool recursive;
-	synfig::ValueNode_Animated::Handle value_node_animated;
+	EventKeyboard(EventKey id, guint keyval, Gdk::ModifierType modifier = Gdk::ModifierType(0)):
+		Smach::event(id),
+		keyval(keyval),
+		modifier(modifier)
+	{ }
+}; // END of EventKeyboard
 
-public:
-
-	ValueDescSet();
-
-	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
-
-	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
-
-	virtual void prepare();
-
-	ACTION_MODULE_EXT
-};
-
-}; // END of namespace action
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -51,6 +51,9 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_integer.h>
 #include <synfig/valuenode_real.h>
+#include <synfig/layer_pastecanvas.h>
+#include "actions/valuedescexport.h"
+#include "actions/layerparamset.h"
 #include <map>
 
 #include "general.h"
@@ -111,7 +114,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, etl::handle< synfig::File
 	file_system_(new FileSystemGroup(FileSystemNative::instance())),
 	container_(container)
 {
-	file_system_->register_system("container:", container_);
+	file_system_->register_system("#", container_);
 
 	assert(canvas->is_root());
 
@@ -173,15 +176,29 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 	// todo: "container:" and "images" literals
 	Instance *instance = (Instance*)instance_ptr;
 
+	std::string actual_filename = filename;
+	if (actual_filename.substr(0, std::string("#").size()) == "#")
+		actual_filename = "#images/" + actual_filename.substr(std::string("#").size());
+
 	// skip already packed (or unpacked) files
-	bool file_already_in_container = filename.substr(0, std::string("container:").size()) == "container:";
+	bool file_already_in_container = actual_filename.substr(0, std::string("#").size()) == "#";
 	if (file_already_in_container && instance->save_canvas_into_container_) return false;
 	if (!file_already_in_container && !instance->save_canvas_into_container_) return false;
+
+	const std::string src_dir = instance->get_canvas()->get_file_path();
+	const std::string &dir = instance->save_canvas_reference_directory_;
+	const std::string &localdir = instance->save_canvas_reference_local_directory_;
+
+	std::string absolute_filename
+		  =	file_already_in_container  ? actual_filename
+		  : actual_filename.empty()           ? src_dir
+		  : is_absolute_path(actual_filename) ? actual_filename
+		  : cleanup_path(src_dir+ETL_DIRECTORY_SEPARATOR+actual_filename);
 
 	// is file already copied?
 	for(FileReferenceList::iterator i = instance->save_canvas_references_.begin(); i != instance->save_canvas_references_.end(); i++)
 	{
-		if (i->old_filename == filename)
+		if (i->old_filename == absolute_filename)
 		{
 			FileReference r = *i;
 			r.layer = layer;
@@ -192,33 +209,32 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 		}
 	}
 
-	const std::string &dir = instance->save_canvas_reference_directory_;
-	const std::string &localdir = instance->save_canvas_reference_local_directory_;
-
 	// try to create directory
 	if (!instance->file_system_->directory_create(dir.substr(0,dir.size()-1)))
 		return false;
 
-	// generate new filename
+	// generate new actual_filename
 	int i = 0;
-	std::string new_filename = basename(filename);
+	std::string new_filename = basename(actual_filename);
 	while(instance->file_system_->is_exists(dir + new_filename))
 	{
-		new_filename = filename_sans_extension(basename(filename))
+		new_filename = filename_sans_extension(basename(actual_filename))
 				     + strprintf("_%d", ++i)
-				     + filename_extension(filename);
+				     + filename_extension(actual_filename);
 	}
 
 	// try to copy file
-	if (!FileSystem::copy(instance->file_system_, filename, instance->file_system_, dir + new_filename))
+	if (!FileSystem::copy(instance->file_system_, absolute_filename, instance->file_system_, dir + new_filename))
 		return false;
 
 	// save information about copied file
 	FileReference r;
 	r.layer = layer;
 	r.param_name = param_name;
-	r.old_filename = filename;
+	r.old_filename = absolute_filename;
 	r.new_filename = localdir + new_filename;
+	if (r.new_filename.substr(0, String("#images/").size())=="#images/")
+		r.new_filename = "#" + r.new_filename.substr(String("#images/").size());
 	instance->save_canvas_references_.push_back(r);
 
 	filename = r.new_filename;
@@ -226,23 +242,131 @@ Instance::save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle la
 }
 
 void
-Instance::update_references_in_canvas()
+Instance::update_references_in_canvas(synfig::Canvas::Handle canvas)
 {
-	while(!save_canvas_references_.empty())
+	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
+		update_references_in_canvas(*i);
+
+	for(IndependentContext c = canvas->get_independent_context(); *c; c++)
 	{
-		FileReference &r = save_canvas_references_.front();
-		for(IndependentContext c = get_canvas()->get_independent_context(); c != get_canvas()->end(); c++)
+		for(FileReferenceList::iterator j = save_canvas_references_.begin(); j != save_canvas_references_.end();)
 		{
-			if (*c == r.layer)
+			if (*c == j->layer)
 			{
 				ValueBase value;
-				value.set(r.new_filename);
-				(*c)->set_param(r.param_name, value);
-				break;
+				value.set(j->new_filename);
+				(*c)->set_param(j->param_name, value);
+				(*c)->changed();
+				find_canvas_interface(get_canvas())->signal_layer_param_changed()(*c,j->param_name);
+				j = save_canvas_references_.erase(j);
 			}
+			else j++;
 		}
-		save_canvas_references_.pop_front();
 	}
+}
+
+bool
+Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas::Handle> &imported)
+{
+	etl::handle<CanvasInterface> canvas_interface;
+
+	for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+	{
+		etl::handle<Layer_PasteCanvas> paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		if (!paste_canvas) continue;
+
+		Canvas::Handle sub_canvas = paste_canvas->get_sub_canvas();
+		if (!sub_canvas) continue;
+		if (!sub_canvas->is_root()) continue;
+
+		if (imported.count(sub_canvas.get()) != 0) {
+			// link already exported canvas
+			Canvas::Handle new_canvas = imported[sub_canvas.get()];
+			if (!new_canvas) continue;
+
+			// Action to link canvas
+			try
+			{
+				Action::Handle action(Action::LayerParamSet::create());
+				if (!action) continue;
+				canvas_interface = find_canvas_interface(canvas);
+				action->set_param("canvas",canvas);
+				action->set_param("canvas_interface",canvas_interface);
+				action->set_param("layer",Layer::Handle(paste_canvas));
+				action->set_param("param","canvas");
+				action->set_param("new_value",ValueBase(new_canvas));
+				if(!action->is_ready()) continue;
+				if(!perform_action(action)) continue;
+			}
+			catch(...)
+			{
+				continue;
+			}
+		} else {
+			imported[sub_canvas.get()] = NULL;
+
+			// generate name
+			std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));
+			static const char bad_chars[]=" :#@$^&()*";
+			for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
+				for(const char *k = bad_chars; *k != 0; k++)
+					if (*j == *k) { *j = '_'; break; }
+			if (fname.empty()) fname = "canvas";
+			if (fname[0]>='0' && fname[0]<='9')
+				fname = "_" + fname;
+
+			std::string name;
+			bool found = false;
+			for(int j = 1; j < 1000; j++)
+			{
+				name = j == 1 ? fname : strprintf("%s_%d", fname.c_str(), j);
+				if (canvas->value_node_list().count(name) == false)
+				{
+					found = true;
+					for(std::list<Canvas::Handle>::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();iter++)
+						if(name==(*iter)->get_id())
+							{ found = false; break; }
+					if (found) break;
+				}
+			}
+			if (!found) continue;
+
+			// Action to import canvas
+			try {
+				Action::Handle action(Action::ValueDescExport::create());
+				if (!action) continue;
+
+				canvas_interface = find_canvas_interface(canvas);
+				action->set_param("canvas",canvas);
+				action->set_param("canvas_interface",canvas_interface);
+				action->set_param("value_desc",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
+				action->set_param("name",name);
+				if(!action->is_ready()) continue;
+				if(!perform_action(action)) continue;
+				std::string warnings;
+				imported[sub_canvas.get()] = canvas->find_canvas(name, warnings);
+			}
+			catch(...)
+			{
+				continue;
+			}
+
+			return true;
+		}
+	}
+
+	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
+		if (import_external_canvas(*i, imported))
+			return true;
+
+	return false;
+}
+
+void
+Instance::import_external_canvases()
+{
+	std::map<Canvas*, Canvas::Handle> imported;
+	while(import_external_canvas(get_canvas(), imported));
 }
 
 
@@ -256,13 +380,16 @@ bool
 Instance::save_as(const synfig::String &file_name)
 {
 	save_canvas_into_container_ = false;
+	bool embed_data = false;
+	bool extract_data = false;
 	std::string canvas_filename = file_name;
-	if (filename_extension(file_name) == ".zip")
+	if (filename_extension(file_name) == ".sfg")
 	{
-		save_canvas_reference_directory_ = "container:images/";
-		save_canvas_reference_local_directory_ = "container:images/";
-		canvas_filename = "container:project.sifz";
+		save_canvas_reference_directory_ = "#images/";
+		save_canvas_reference_local_directory_ = "#images/";
+		canvas_filename = "#project.sifz";
 		save_canvas_into_container_ = true;
+		embed_data = filename_extension(get_canvas()->get_file_name()) != ".sfg";
 	} else
 	{
 		save_canvas_reference_directory_ =
@@ -273,21 +400,30 @@ Instance::save_as(const synfig::String &file_name)
 			filename_sans_extension(basename(file_name))
 		  + ".images"
 		  + ETL_DIRECTORY_SEPARATOR;
+		extract_data = filename_extension(get_canvas()->get_file_name()) == ".sfg";
 	}
+
+	if (embed_data) import_external_canvases();
 
 	bool ret;
 
 	String old_file_name(get_file_name());
 
 	set_file_name(file_name);
+	get_canvas()->set_identifier(file_system_->get_identifier(canvas_filename));
 
-	set_save_canvas_external_file_callback(save_canvas_callback, this);
+	if (embed_data || extract_data)
+		set_save_canvas_external_file_callback(save_canvas_callback, this);
+	else
+		set_save_canvas_external_file_callback(NULL, NULL);
+
 	ret = save_canvas(file_system_->get_identifier(canvas_filename),canvas_,!save_canvas_into_container_);
 
 	if (ret && save_canvas_into_container_)
 	   ret = container_->save_changes(file_name, false);
 
-	if (ret) update_references_in_canvas();
+	if (ret && (embed_data || extract_data))
+		update_references_in_canvas(get_canvas());
 	set_save_canvas_external_file_callback(NULL, NULL);
 	save_canvas_references_.clear();
 

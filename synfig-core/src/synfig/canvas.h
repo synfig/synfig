@@ -108,12 +108,17 @@
  *      Added "homogenous" link to "BLineCalcVertex", "BLineCalcTangent"
  *      and "BLineCalcWidth" valuenodes.
  *
- * 0.9 git
+ * 0.9: git 6922776b8129fdae6cb42953b2715decc810786c
+ *
+ *		Added "split_radius" and "split_angle" to BLinePoint Composite
+ *		Value Node
+ *
+ * 1.0 git
  *
  *      Added a canvas component called
  */
 
-#define CURRENT_CANVAS_VERSION "0.9"
+#define CURRENT_CANVAS_VERSION "1.0"
 
 /* === T Y P E D E F S ===================================================== */
 

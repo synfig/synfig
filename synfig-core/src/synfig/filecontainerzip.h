@@ -53,9 +53,16 @@ namespace synfig
 			virtual size_t read(void *buffer, size_t size);
 		};
 
-	private:
 		typedef long long int file_size_t;
 
+		struct HistoryRecord {
+			file_size_t prev_storage_size;
+			file_size_t storage_size;
+			inline explicit HistoryRecord(file_size_t prev_storage_size = 0, file_size_t storage_size = 0):
+				prev_storage_size(prev_storage_size), storage_size(storage_size) { }
+		};
+
+	private:
 		struct FileInfo
 		{
 			std::string name;
@@ -88,7 +95,10 @@ namespace synfig
 		file_size_t file_processed_size_;
 		bool changed_;
 
-		unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
+		static unsigned int crc32(unsigned int previous_crc, const void *buffer, size_t size);
+		static std::string encode_history(const HistoryRecord &history_record);
+		static HistoryRecord decode_history(const std::string &comment);
+		static void read_history(std::list<HistoryRecord> &list, FILE *f, file_size_t size);
 
 	public:
 		FileContainerZip();
@@ -96,9 +106,12 @@ namespace synfig
 
 		virtual bool create(const std::string &container_filename);
 		virtual bool open(const std::string &container_filename);
+		bool open_from_history(const std::string &container_filename, file_size_t truncate_storage_size = 0);
 		virtual void close();
 		virtual bool is_opened();
 		bool save();
+
+		static std::list<HistoryRecord> read_history(const std::string &container_filename);
 
 		virtual bool is_file(const std::string &filename);
 		virtual bool is_directory(const std::string &filename);

@@ -2065,7 +2065,7 @@ bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
-
+	// TODO: Win32 native dialod not ready yet
 #ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
 
@@ -2141,6 +2141,93 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
     return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
+
+bool
+App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
+{
+	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+
+// TODO: Win32 native dialog not ready yet
+//#ifdef USE_WIN32_FILE_DIALOGS
+#if 0
+	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
+
+	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
+
+	ofn.lStructSize=sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.hInstance = hInstance;
+	ofn.lpstrFilter = szFilter;
+//	ofn.lpstrCustomFilter=NULL;
+//	ofn.nMaxCustFilter=0;
+//	ofn.nFilterIndex=0;
+//	ofn.lpstrFile=NULL;
+	ofn.nMaxFile=MAX_PATH;
+//	ofn.lpstrFileTitle=NULL;
+//	ofn.lpstrInitialDir=NULL;
+//	ofn.lpstrTitle=NULL;
+	ofn.Flags=OFN_HIDEREADONLY;
+//	ofn.nFileOffset=0;
+//	ofn.nFileExtension=0;
+	ofn.lpstrDefExt=TEXT("sif");
+//	ofn.lCustData = 0l;
+	ofn.lpfnHook=NULL;
+//	ofn.lpTemplateName=NULL;
+
+	CHAR szFilename[MAX_PATH];
+	CHAR szTitle[500];
+	strcpy(szFilename,filename.c_str());
+	strcpy(szTitle,title.c_str());
+
+	ofn.lpstrFile=szFilename;
+	ofn.lpstrFileTitle=szTitle;
+
+	if(GetOpenFileName(&ofn))
+	{
+		filename=szFilename;
+		return true;
+	}
+	return false;
+
+#else   // not USE_WIN32_FILE_DIALOGS
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
+	prev_path = absolute_path(prev_path);
+
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+    dialog->set_current_folder(prev_path);
+    dialog->add_button("Open history", RESPONSE_ACCEPT_WITH_HISTORY);
+    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+
+    if (filename.empty())
+		dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+		dialog->set_filename(filename);
+	else
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+    int response = dialog->run();
+    if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
+        filename = dialog->get_filename();
+        show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
+		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+		_preferences.set_value(preference, dirname(filename));
+        delete dialog;
+        return true;
+    }
+
+    delete dialog;
+    return false;
+#endif   // not USE_WIN32_FILE_DIALOGS
+}
+
 
 bool
 App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
@@ -2265,6 +2352,61 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
     return false;
 #endif
 }
+
+bool
+App::dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index)
+{
+	Gtk::Dialog dialog(title, true, true);
+
+	Gtk::Label label(message, 0, 0);
+	label.set_line_wrap();
+
+	class ModelColumns : public Gtk::TreeModel::ColumnRecord
+	{
+	public:
+		Gtk::TreeModelColumn<int> column_index;
+		Gtk::TreeModelColumn<Glib::ustring> column_main;
+		ModelColumns() { add(column_index); add(column_main); }
+	} model_columns;
+
+	Glib::RefPtr<Gtk::ListStore> list_store = Gtk::ListStore::create(model_columns);
+
+	int k = 0;
+	for(std::list<std::string>::const_iterator i = list.begin(); i != list.end(); i++) {
+		Gtk::ListStore::iterator j = list_store->append();
+		j->set_value(model_columns.column_index, k++);
+		j->set_value(model_columns.column_main, Glib::ustring(*i));
+	}
+
+	Gtk::TreeView tree(list_store);
+	Gtk::TreeViewColumn column_index("", model_columns.column_index);
+	Gtk::TreeViewColumn column_main("", model_columns.column_main);
+	column_index.set_visible(false);
+	tree.append_column(column_index);
+	tree.append_column(column_main);
+
+	Gtk::TreeModel::Row selected_row = list_store->children()[item_index];
+	if (selected_row)
+		tree.get_selection()->select(selected_row);
+
+	Gtk::Table table(1, 2);
+	table.attach(label, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::FILL);
+	table.attach(tree, 0, 1, 1, 2);
+
+	dialog.get_vbox()->pack_start(table);
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog.set_default_size(300, 450);
+	dialog.show_all();
+
+	if (dialog.run() == Gtk::RESPONSE_ACCEPT) {
+		item_index = tree.get_selection()->get_selected()->get_value(model_columns.column_index);
+		return true;
+	}
+
+	return false;
+}
+
 
 void
 App::dialog_error_blocking(const std::string &title, const std::string &message)
@@ -2514,7 +2656,7 @@ App::open(std::string filename)
 }
 
 bool
-App::open_as(std::string filename,std::string as)
+App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef WIN32
     size_t buf_size = PATH_MAX - 1;
@@ -2537,15 +2679,15 @@ App::open_as(std::string filename,std::string as)
 		std::string canvas_filename = filename;
 		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-		file_system->register_system("container:", container);
+		file_system->register_system("#", container);
 
-		// TODO: move literal ".zip" into common place
-		if (etl::filename_extension(filename) == ".zip")
+		// TODO: move literal ".sfg" into common place
+		if (etl::filename_extension(filename) == ".sfg")
 		{
-			if (!container->open(filename))
+			if (!container->open_from_history(filename, truncate_storage_size))
 				throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
 			// TODO: move literal "project.sifz" into common place
-			canvas_filename = "container:project.sifz";
+			canvas_filename = "#project.sifz";
 		}
 		else
 		{
@@ -2615,10 +2757,10 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 		String errors, warnings;
 
 		// TODO: move literals "container:" and "project.sifz" into common place
-		std::string canvas_filename = "container:project.sifz";
+		std::string canvas_filename = "#project.sifz";
 		etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 		etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-		file_system->register_system("container:", container);
+		file_system->register_system("#", container);
 
 		if (!container->open_temporary(container_filename_base))
 			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"),container_filename_base.c_str());
@@ -2701,7 +2843,7 @@ App::new_instance()
 
 	etl::handle< FileSystemGroup > file_system(new FileSystemGroup(FileSystemNative::instance()));
 	etl::handle< FileContainerTemporary > container(new FileContainerTemporary());
-	file_system->register_system("container:", container);
+	file_system->register_system("#", container);
 	container->create(std::string());
 	canvas->set_identifier(file_system->get_identifier(file_name));
 
@@ -2723,14 +2865,41 @@ App::dialog_open(string filename)
 	if (filename.empty())
 		filename="*.sif";
 
-	while(dialog_open_file("Open", filename, ANIMATION_DIR_PREFERENCE))
+	bool show_history = false;
+	while(dialog_open_file_with_history_button("Open", filename, show_history, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
 		if(find(filename.begin(),filename.end(),'*')!=filename.end())
 			continue;
 
-		if(open(filename))
+		FileContainerZip::file_size_t truncate_storage_size = 0;
+
+		// TODO: ".sfg" literal
+		if (show_history && filename_extension(filename) == ".sfg")
+		{
+			// read history
+			std::list<FileContainerZip::HistoryRecord> history
+				= FileContainerZip::read_history(filename);
+
+			// build list of history entries for dialog (descending)
+			std::list<std::string> list;
+			int index = 0;
+			for(std::list<FileContainerZip::HistoryRecord>::const_iterator i = history.begin(); i != history.end(); i++)
+				list.push_front(strprintf("%s%d", _("History entry #"), ++index));
+
+			// show dialog
+			index=0;
+			if (!dialog_select_list_item(_("Open"), _("Select one of previous versions of file"), list, index))
+				continue;
+
+			// find selected entry in list (descending)
+			for(std::list<FileContainerZip::HistoryRecord>::const_reverse_iterator i = history.rbegin(); i != history.rend(); i++)
+				if (0 == index--)
+					truncate_storage_size = i->storage_size;
+		}
+
+		if(open_as(filename,filename,truncate_storage_size))
 			break;
 
 		get_ui_interface()->error(_("Unable to open file"));

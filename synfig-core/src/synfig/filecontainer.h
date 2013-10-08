@@ -47,9 +47,9 @@ namespace synfig
 		protected:
 			friend class FileContainer;
 			ReadStream(Handle file_system);
+			virtual size_t internal_read(void *buffer, size_t size);
 		public:
 			virtual ~ReadStream();
-			virtual size_t read(void *buffer, size_t size);
 		};
 
 		class WriteStream : public FileSystem::WriteStream
@@ -57,9 +57,9 @@ namespace synfig
 		protected:
 			friend class FileContainer;
 			WriteStream(Handle file_system);
+			virtual size_t internal_write(const void *buffer, size_t size);
 		public:
 			virtual ~WriteStream();
-			virtual size_t write(const void *buffer, size_t size);
 		};
 
 	protected:

@@ -69,6 +69,14 @@ private:
 	ValueBase param_children_lock;
 	//! Parameter: Current time of the paste canvas layer. \see set_time
 	mutable ValueBase param_curr_time;
+	//! Parameter: (bool) Z_Depth Range is active
+	ValueBase param_z_range;
+	//! Parameter: (Real) Z_Depth Range position
+	ValueBase param_z_range_position;
+	//! Parameter: (Real) Z_Depth Range depth
+	ValueBase param_z_range_depth;
+	//! Parameter: (Real) Z_Depth Range transition
+	ValueBase param_z_range_blur;
 
 	//! \todo writeme!
 	bool muck_with_time_;

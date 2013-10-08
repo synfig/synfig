@@ -594,7 +594,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		//intemp = f; //don't want to smooth out the corners
 
 		bool breaktan = false, setwidth;
-		a.set_split_tangent_flag(false);
+		a.set_split_tangent_both(false);
 		//a.set_width(width);
 		a.set_width(1.0f);
 
@@ -763,7 +763,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			if(setwidth)a.set_width(width_cache[is]);
 
 			blinepoints_out.push_back(a);
-			a.set_split_tangent_flag(false); //won't need to break anymore
+			a.set_split_tangent_both(false); //won't need to break anymore
 			breaktan = false;
 
 			for(i = 1; i < (int)curind.size()-1; ++i)
@@ -790,14 +790,14 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 				v *= (curind.back().tangentscale/v.mag());
 
 			a.set_tangent1(v);
-			a.set_split_tangent_flag(true);
+			a.set_split_tangent_both(true);
 			breaktan = true;
 
 			//will get the vertex and tangent 2 from next round
 		}
 
 		a.set_vertex(point_cache[i3]);
-		a.set_split_tangent_flag(false);
+		a.set_split_tangent_both(false);
 		if(setwidth)
 			a.set_width(width_cache[i3]);
 		blinepoints_out.push_back(a);

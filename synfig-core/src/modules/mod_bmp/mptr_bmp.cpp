@@ -136,10 +136,10 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	synfig::BITMAP::FILEHEADER fileheader;
 	synfig::BITMAP::INFOHEADER infoheader;
-	char b_char=stream->get_char();
-	char m_char=stream->get_char();
 
-	if(b_char!='B' || m_char!='M')
+	if (!stream->read_variable(fileheader.bfType)
+	 || fileheader.bfType[0] != 'B'
+	 || fileheader.bfType[1] != 'M')
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),identifier.filename.c_str()));
 		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),identifier.filename.c_str()));
@@ -213,9 +213,9 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 //			float b=(float)(unsigned char)stream->getc()*(1.0/255.0);
 //			float g=(float)(unsigned char)stream->getc()*(1.0/255.0);
 //			float r=(float)(unsigned char)stream->getc()*(1.0/255.0);
-			float b=gamma().b_U8_to_F32((unsigned char)stream->get_char());
-			float g=gamma().g_U8_to_F32((unsigned char)stream->get_char());
-			float r=gamma().r_U8_to_F32((unsigned char)stream->get_char());
+			float b=gamma().b_U8_to_F32((unsigned char)stream->get());
+			float g=gamma().g_U8_to_F32((unsigned char)stream->get());
+			float r=gamma().r_U8_to_F32((unsigned char)stream->get());
 
 			surface[h-y-1][x]=Color(
 				r,
@@ -224,7 +224,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				1.0
 			);
 			if(bit_count==32)
-				stream->get_char();
+				stream->get();
 		}
 
 

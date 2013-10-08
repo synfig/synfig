@@ -89,9 +89,10 @@ Import::set_param(const String & param, const ValueBase &value)
 {
 	try{
 	IMPORT_VALUE(param_time_offset);
-IMPORT_VALUE_PLUS(param_filename,
+
+	String filename=param_filename.get(String());
+	IMPORT_VALUE_PLUS_BEGIN(param_filename)
 	{
-		String filename=param_filename.get(String());
 		if(!get_canvas())
 		{
 			filename=value.get(filename);
@@ -105,6 +106,10 @@ IMPORT_VALUE_PLUS(param_filename,
 
 		String newfilename=value.get(string());
 		String filename_with_path;
+
+		// TODO: "images" and "container:" literals
+		if (newfilename.substr(0, String("#").size()) == "#")
+			newfilename = "#images/" + newfilename.substr(String("#").size());
 
 		// Get rid of any %20 crap
 		{
@@ -163,7 +168,7 @@ IMPORT_VALUE_PLUS(param_filename,
 
 				// todo: literal "container:"
 				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("container:").size())=="container:")
+				|| newfilename.substr(0, std::string("#").size())=="#")
 					filename_with_path=newfilename;
 				else
 					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
@@ -219,7 +224,7 @@ IMPORT_VALUE_PLUS(param_filename,
 
 				// todo: literal "container:"
 				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("container:").size())=="container:")
+				|| newfilename.substr(0, std::string("#").size())=="#")
 					filename_with_path=newfilename;
 				else
 					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
@@ -262,7 +267,7 @@ IMPORT_VALUE_PLUS(param_filename,
 			}
 		}
 	}
-	);
+	IMPORT_VALUE_PLUS_END
 	} catch(...) { set_amount(0); return false; }
 
 	return Layer_Bitmap::set_param(param,value);
@@ -281,8 +286,15 @@ Import::get_param(const String & param)const
 			// This line is needed to copy the internals of ValueBase from param_filename
 			ret=param_filename;
 			
-			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
-			ret=relative_path(curpath,abs_filename);
+			// todo: literal "container:" and "images"
+			if(ret.get(String()).substr(0, std::string("#").size())!="#") {
+				string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
+				ret=relative_path(curpath,abs_filename);
+			} else
+			if(ret.get(String()).substr(0, std::string("#images/").size())=="#images/") {
+				ret = "#" + ret.get(String()).substr(std::string("#images/").size());
+			}
+
 			return ret;
 		}
 	}

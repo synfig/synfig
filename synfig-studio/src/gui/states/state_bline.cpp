@@ -1011,7 +1011,8 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			bline_point.set_vertex(get_work_area()->snap_point_to_grid(event.pos));
 			bline_point.set_width(1.0f);
 			bline_point.set_origin(0.5f);
-			bline_point.set_split_tangent_flag(false);
+			bline_point.set_split_tangent_radius(true);
+			bline_point.set_split_tangent_angle(false);
 			bline_point.set_tangent1(Vector(0,0));
 			bline_point_list.push_back(ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
@@ -1113,7 +1114,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		tduck->set_origin(duck);
 		tduck->set_scalar(0.33333333333333333);
 		tduck->set_tangent(true);
-		if(bline_point.get_split_tangent_flag())
+		if(bline_point.get_split_tangent_both())
 		{
 			tduck->set_name(strprintf("%x-tangent2",value_node.get()));
 			tduck->signal_edited().connect(
@@ -1245,6 +1246,7 @@ StateBLine_Context::on_tangent1_change(const studio::Duck &duck, synfig::ValueNo
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
+	bline_point.set_tangent2(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
@@ -1254,6 +1256,7 @@ StateBLine_Context::on_tangent2_change(const studio::Duck &duck, synfig::ValueNo
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent2(duck.get_point());
+	bline_point.set_tangent1(duck.get_point());
 	value_node->set_value(bline_point);
 	return true;
 }
@@ -1297,7 +1300,7 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	));
 	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	if(bline_point.get_split_tangent_flag())
+	if(bline_point.get_split_tangent_both())
 		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
@@ -1373,7 +1376,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			bline_point.set_width((next_bline_point.get_width()-prev_bline_point.get_width())*origin+prev_bline_point.get_width());
 			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
 			bline_point.set_tangent2(bline_point.get_tangent1());
-			bline_point.set_split_tangent_flag(false);
+			bline_point.set_split_tangent_both(false);
 			bline_point.set_origin(origin);
 			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
@@ -1414,7 +1417,7 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
-	if(bline_point.get_split_tangent_flag())
+	if(bline_point.get_split_tangent_both())
 		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
@@ -1453,7 +1456,7 @@ void
 StateBLine_Context::bline_detach_handle(synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_split_tangent_flag(true);
+	bline_point.set_split_tangent_both(true);
 	bline_point.set_tangent2(bline_point.get_tangent1());
 	value_node->set_value(bline_point);
 	refresh_ducks(false);
@@ -1464,7 +1467,7 @@ StateBLine_Context::bline_attach_handle(synfig::ValueNode_Const::Handle value_no
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1((bline_point.get_tangent1()+bline_point.get_tangent2())*0.5);
-	bline_point.set_split_tangent_flag(false);
+	bline_point.set_split_tangent_both(false);
 	value_node->set_value(bline_point);
 	refresh_ducks(false);
 }
