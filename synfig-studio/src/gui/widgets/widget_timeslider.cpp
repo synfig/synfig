@@ -62,32 +62,32 @@ Gdk::Color get_interp_color(synfig::Interpolation x)
 	switch(x)
 	{
 	case INTERPOLATION_TCB:
-		return Gdk::Color("#00B000");
+		return Gdk::Color("#73d216");
 
 		break;
 
 	case INTERPOLATION_LINEAR:
-		return Gdk::Color("#B0B000");
+		return Gdk::Color("#edd400");
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		return Gdk::Color("#C70000");
+		return Gdk::Color("#cc0000");
 		break;
 
 	case INTERPOLATION_HALT:
-		return Gdk::Color("#00b0b0");
+		return Gdk::Color("#3465a4");
 		break;
 
 	case INTERPOLATION_MANUAL:
-		return Gdk::Color("#B000B0");
+		return Gdk::Color("#75507b");
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		return Gdk::Color("#c08000");
+		return Gdk::Color("#c17d11");
 		break;
 
 	case INTERPOLATION_UNDEFINED: default:
-		return Gdk::Color("#808080");
+		return Gdk::Color("#555753");
 		break;
 	}
 }
