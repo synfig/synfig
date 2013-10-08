@@ -62,32 +62,32 @@ Gdk::Color get_interp_color(synfig::Interpolation x)
 	switch(x)
 	{
 	case INTERPOLATION_TCB:
-		return Gdk::Color("#00B000");
+		return Gdk::Color("#73d216");
 
 		break;
 
 	case INTERPOLATION_LINEAR:
-		return Gdk::Color("#B0B000");
+		return Gdk::Color("#edd400");
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		return Gdk::Color("#C70000");
+		return Gdk::Color("#cc0000");
 		break;
 
 	case INTERPOLATION_HALT:
-		return Gdk::Color("#00b0b0");
+		return Gdk::Color("#3465a4");
 		break;
 
 	case INTERPOLATION_MANUAL:
-		return Gdk::Color("#B000B0");
+		return Gdk::Color("#75507b");
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		return Gdk::Color("#c08000");
+		return Gdk::Color("#c17d11");
 		break;
 
 	case INTERPOLATION_UNDEFINED: default:
-		return Gdk::Color("#808080");
+		return Gdk::Color("#555753");
 		break;
 	}
 }
@@ -115,7 +115,7 @@ studio::render_time_point_to_window(
 )
 {
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	const Gdk::Color black("#000000");
+	const Gdk::Color black("#2e3436");
 
 	if(selected)
 		gc->set_line_attributes(2,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
@@ -180,6 +180,12 @@ studio::render_time_point_to_window(
 			64*90,
 			64*90
 		);
+
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
+		window->draw_lines(gc,points);
+
 		break;
 
 	case INTERPOLATION_LINEAR:
@@ -284,6 +290,12 @@ studio::render_time_point_to_window(
 			64*270,
 			64*90
 		);
+
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
+		window->draw_lines(gc,points);
+
 		break;
 
 	case INTERPOLATION_LINEAR:
