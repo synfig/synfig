@@ -180,6 +180,12 @@ studio::render_time_point_to_window(
 			64*90,
 			64*90
 		);
+
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x(),area.get_y()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		window->draw_lines(gc,points);
+
 		break;
 
 	case INTERPOLATION_LINEAR:
@@ -284,6 +290,12 @@ studio::render_time_point_to_window(
 			64*270,
 			64*90
 		);
+
+		points.clear();
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
+		window->draw_lines(gc,points);
+
 		break;
 
 	case INTERPOLATION_LINEAR:
