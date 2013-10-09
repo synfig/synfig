@@ -342,10 +342,14 @@ endif
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
+if DEVELOPMENT_SNAPSHOT
+SPLASH_DEV = splash_screen_development.sif
+endif
 
 CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
+	$(SPLASH_DEV) \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \

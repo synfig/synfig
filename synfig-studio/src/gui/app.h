@@ -299,7 +299,7 @@ public:
 
 	static synfig::String get_base_path();
 	static void save_settings();
-	static bool load_settings();
+	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void load_file_window_size();
 	static void reset_initial_window_configuration();

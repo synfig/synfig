@@ -1,10 +1,9 @@
-# translation of da.po to Danish
+# Dutch translation for Synfig Studio.
 # Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig Studio package.
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Lamhauge <davidlamhauge@gmail.com>, 2012
-# neigaard <soeren@neigaard.com>, 2011
+# darkspace65 <studio.diba@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -12,11 +11,11 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:24+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/synfig/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1
@@ -59,35 +58,35 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
-msgstr "Tilføj Ny Keyframe"
+msgstr "Toevoegen nieuw sleutelbeeld"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 #: ../src/gui/app.cpp:832
 msgid "Keyframe Properties"
-msgstr "Keyframe Attributter"
+msgstr "Sleutelbeeld eigenschappen"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:105
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:498 ../src/gui/app.cpp:918
 msgid "Increase Amount"
-msgstr "Forøg Antal"
+msgstr "Vergroot waarde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:117
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515 ../src/gui/app.cpp:919
 msgid "Decrease Amount"
-msgstr "Formindsk Antal"
+msgstr "Verlaag waarde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Antal"
+msgstr "Waarde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:135
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Select All Child Layers"
-msgstr "Vælg Alle Underliggende Lag"
+msgstr "Selecteer alle onderliggende lagen"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:365
 msgid "Paste"
-msgstr "Sæt Ind"
+msgstr "Plak"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:454
 #: ../src/synfigapp/actions/layerduplicate.cpp:179
@@ -98,11 +97,11 @@ msgstr "Index %d"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:235
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "Paragraaf"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:239
 msgid "Enter Paragraph Text Here:"
-msgstr "Indsæt Paragraf Tekst Her:"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
@@ -110,7 +109,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "<Intet Billede Valgt>"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
@@ -118,15 +117,15 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
-msgstr "UKENDT"
+msgstr "ONBEKEND"
 
 #: ../src/gui/dialogs/about.cpp:104
 msgid "2D vector animation studio"
-msgstr "2D vektor animation studio"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Visit the Synfig website"
-msgstr "Besøg Synfig hjemmesiden"
+msgstr "Bezoek de Synfig website"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
@@ -137,16 +136,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
-msgstr "Oprindelige udviklere:"
+msgstr "Oorspronkelijke ontwikkelaars"
 
 #: ../src/gui/dialogs/about.cpp:136
 msgid "Contributors:"
-msgstr "Bidragydere:"
+msgstr "Bijdragers"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
-msgstr "oversættelse-anerkendelse"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:215
 #, c-format
@@ -154,67 +153,67 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\nUdviklingsversion:\n%s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
-msgstr "Bygget på %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
-msgstr "Bygget med:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
-msgstr "ETL %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:226
 #, c-format
 msgid "Synfig API %s\n"
-msgstr "Synfig API %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig bibliotek %d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:228
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
-msgstr "GTK+ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:230
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
-msgstr "GNU G++ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
-msgstr "Benytter:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
-msgstr "Synfig %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr "GTK+ %d.%d.%d"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:61
 msgid "Canvas Options"
-msgstr "Lærred Indstillinger"
+msgstr "Tekenvenster opties"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:63
 msgid "_Snap to grid"
-msgstr "_Fastgør til gitter"
+msgstr "_Uitlijnen op raster"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:64
 msgid "S_how grid"
-msgstr "V_is gitter"
+msgstr "T_oon raster"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:65
 msgid "Snap to _frame"
@@ -222,11 +221,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:80
 msgid "Grid"
-msgstr "Gitter"
+msgstr "Raster"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:90
 msgid "_Grid size"
-msgstr ""
+msgstr "_Raster grootte"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:104
 #: ../src/gui/trees/keyframetree.cpp:73 ../src/gui/iconcontroller.cpp:141
@@ -253,12 +252,12 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
-msgstr ""
+msgstr "Tijd"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
 #: ../src/gui/dialogs/dialog_setup.cpp:181
 msgid "Units"
-msgstr ""
+msgstr "Eenheden"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:114
 msgid "Not yet implemented!"
@@ -267,7 +266,7 @@ msgstr ""
 #: ../src/gui/dialogs/canvasoptions.cpp:151 ../src/gui/app.cpp:848
 #: ../src/gui/canvasview.cpp:1481
 msgid "Options"
-msgstr ""
+msgstr "Opties"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:169
 msgid "Not yet implemented"
@@ -275,15 +274,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:64
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Tekenvenster eigenschappen"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:77
 msgid "Canvas Info"
-msgstr ""
+msgstr "Tekenvenster info"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "<b>Canvas Info</b>"
-msgstr ""
+msgstr "<b>Tekenvenster Info</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:95
 msgid "_ID"
@@ -291,35 +290,35 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:101
 msgid "_Name"
-msgstr ""
+msgstr "_Naam"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:104
 msgid "_Description"
-msgstr ""
+msgstr "_Beschrijving"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:197 ../src/gui/app.cpp:863
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschappen"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:226
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "Aanpassen Tekenvenster eigenschappen"
 
 #: ../src/gui/dialogs/dialog_color.cpp:59
 msgid "Colors"
-msgstr ""
+msgstr "Kleuren"
 
 #: ../src/gui/dialogs/dialog_color.cpp:66 ../src/gui/iconcontroller.cpp:277
 msgid "Set as Outline"
-msgstr ""
+msgstr "Bepaal omlijning"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:278
 msgid "Set as Fill"
-msgstr ""
+msgstr "Bepaal invulling"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:65
 msgid "Gradient Editor"
-msgstr ""
+msgstr "Verloop Editor"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:75
 msgid "Set as Default"
@@ -327,15 +326,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
-msgstr ""
+msgstr "Sleutelbeeld dialoog"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1608
 msgid "Preview Window"
-msgstr ""
+msgstr "Voorbeeldvenster"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:124
 msgid "Preview Options"
-msgstr ""
+msgstr "Voorbeeld opties"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:127
 msgid "Use _Cairo render"
@@ -376,7 +375,7 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_preview.cpp:212 ../src/gui/app.cpp:845
 #: ../src/gui/canvasview.cpp:1475
 msgid "Preview"
-msgstr ""
+msgstr "Voorbeeld"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:75
 msgid "Synfig Studio Setup"
@@ -409,17 +408,17 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:123
 #: ../src/gui/widgets/widget_coloredit.cpp:360
 msgid "Red"
-msgstr ""
+msgstr "Rood"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:128
 #: ../src/gui/widgets/widget_coloredit.cpp:362
 msgid "Green"
-msgstr ""
+msgstr "Groen"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:133
 #: ../src/gui/widgets/widget_coloredit.cpp:364
 msgid "Blue"
-msgstr ""
+msgstr "Blauw"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:137
 msgid "Black Level"
@@ -435,27 +434,27 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:182
 msgid "Pixels"
-msgstr ""
+msgstr "Pixels"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Points"
-msgstr ""
+msgstr "Punten"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Inches"
-msgstr ""
+msgstr "Inches"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Meters"
-msgstr ""
+msgstr "Meters"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Centimeters"
-msgstr ""
+msgstr "Centimeters"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Millimeters"
-msgstr ""
+msgstr "Millimeters"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:192
 msgid "Unit System"
@@ -463,7 +462,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:198
 msgid "Recent Files"
-msgstr ""
+msgstr "Recente bestanden"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:205
 msgid "Auto Backup Interval (0 to disable)"
@@ -475,7 +474,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "New Document filename prefix"
@@ -487,91 +486,91 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "New Document X size"
-msgstr ""
+msgstr "Nieuwe document X grootte"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Width in pixels of the new created document"
-msgstr ""
+msgstr "Breedte in pixels van het nieuwe gemaakte document"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:243
 msgid "New Document Y size"
-msgstr ""
+msgstr "Nieuwe document Y grootte"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "High in pixels of the new created document"
-msgstr ""
+msgstr "Hoogte in pixels van het nieuwe gemaakte document"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:249
 msgid "Predefined Resolutions:"
-msgstr ""
+msgstr "Voorgedefinieerde resoluties"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:254
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 Full Aperture 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:255
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 Full Aperture Native 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:256
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:257
 msgid "1280x720  HDTV 720p"
-msgstr ""
+msgstr "1280x720  HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:258
 msgid "720x576   DVD PAL"
-msgstr ""
+msgstr "720x576   DVD PAL"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:259
 msgid "720x480   DVD NTSC"
-msgstr ""
+msgstr "720x480   DVD NTSC"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:260
 msgid "720x540   Web 720x"
-msgstr ""
+msgstr "720x540   Web 720x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:261
 msgid "720x405   Web 720x HD"
-msgstr ""
+msgstr "720x405   Web 720x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:262
 msgid "640x480   Web 640x"
-msgstr ""
+msgstr "640x480   Web 640x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:263
 msgid "640x360   Web 640x HD"
-msgstr ""
+msgstr "640x360   Web 640x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:264
 msgid "480x360   Web 480x"
-msgstr ""
+msgstr "480x360   Web 480x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:265
 msgid "480x270   Web 480x HD"
-msgstr ""
+msgstr "480x270   Web 480x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:266
 msgid "360x270   Web 360x"
-msgstr ""
+msgstr "360x270   Web 360x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:267
 msgid "360x203   Web 360x HD"
-msgstr ""
+msgstr "360x203   Web 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:272
 msgid "Predefined FPS:"
-msgstr ""
+msgstr "Voorgedefinieerd FPS:"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:294
 msgid "New Document FPS"
-msgstr ""
+msgstr "Nieuwe document FPS:"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:296
 msgid "Frames per second of the new created document"
-msgstr ""
+msgstr "Beelden per seconde van het nieuwe gemaakte document"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:300 ../src/gui/app.cpp:844
 #: ../src/gui/canvasview.cpp:1472 ../src/gui/render.cpp:177
@@ -592,35 +591,35 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.h:53
 msgid "Custom Size"
-msgstr ""
+msgstr "Aangepaste grootte"
 
 #: ../src/gui/dialogs/dialog_setup.h:56
 msgid "Custom fps"
-msgstr ""
+msgstr "Aangepaste FPS:"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:60
 msgid "Sound Select"
-msgstr ""
+msgstr "Selecteer geluid"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:67
 msgid "Sound Parameters"
-msgstr ""
+msgstr "Geluid parameters"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:68
 msgid "<b>Sound Parameters</b>"
-msgstr ""
+msgstr "<b>Geluid parameters<b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:76
 msgid "_Sound File"
-msgstr ""
+msgstr "_Geluidsbestand"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:79
 msgid "Time _Offset"
-msgstr ""
+msgstr "Tijds_verschuiving"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:45
 msgid "Custom Video Codec"
-msgstr ""
+msgstr "Aangepaste video codec"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:46
 msgid "write your video codec here"
@@ -628,75 +627,75 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:68
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
-msgstr ""
+msgstr "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:69
 msgid "H.263+ / H.263-1998 / H.263 version 2."
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 version 2."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:70
 msgid "Huffyuv / HuffYUV."
-msgstr ""
+msgstr "Huffyuv / HuffYUV."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:71
 msgid "libtheora Theora."
-msgstr ""
+msgstr "libtheora Theora."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:72
 msgid "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
-msgstr ""
+msgstr "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:73
 msgid "MJPEG (Motion JPEG)."
-msgstr ""
+msgstr "MJPEG (Motion JPEG)."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:74
 msgid "raw MPEG-1 video."
-msgstr ""
+msgstr "raw MPEG-1 video."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:75
 msgid "raw MPEG-2 video."
-msgstr ""
+msgstr "raw MPEG-2 video."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:76
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 part 2. (XviD/DivX)"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:77
 msgid "MPEG-4 part 2 Microsoft variant version 3."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 3."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:78
 msgid "MPEG-4 part 2 Microsoft variant version 1."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 1."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:79
 msgid "MPEG-4 part 2 Microsoft variant version 2."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 2."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:80
 msgid "Windows Media Video 7."
-msgstr ""
+msgstr "Windows Media Video 7."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:81
 msgid "Windows Media Video 8."
-msgstr ""
+msgstr "Windows Media Video 8."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:92
 msgid "Target Parameters"
-msgstr ""
+msgstr "Doel parameters"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:100
 msgid "Available Video Codecs:"
-msgstr ""
+msgstr "Beschikbare video codecs"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:130
 msgid "Video Bit Rate:"
-msgstr ""
+msgstr "Video Bit Rate:"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:63
 msgid "Waypoint Editor"
-msgstr ""
+msgstr "Controlepunt editor"
 
 #: ../src/gui/dials/framedial.cpp:56 ../src/gui/iconcontroller.cpp:280
 msgid "Seek to begin"
@@ -743,19 +742,19 @@ msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Increase Display Resolution"
-msgstr ""
+msgstr "Verhoog de weergave resolutie"
 
 #: ../src/gui/dials/resolutiondial.cpp:57
 msgid "Decrease Display Resolution"
-msgstr ""
+msgstr "Verlaag de weergave resolutie"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Low Res"
-msgstr ""
+msgstr "Lage res"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Use Low Resolution when enabled"
-msgstr ""
+msgstr "Gebruik lage resolutie wanneer ingeschakeld"
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:302
 msgid "Toggle position handles"
@@ -783,41 +782,41 @@ msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:55
 msgid "Zoom In"
-msgstr ""
+msgstr "Zoom in"
 
 #: ../src/gui/dials/zoomdial.cpp:56
 msgid "Zoom Out"
-msgstr ""
+msgstr "Zoom out"
 
 #: ../src/gui/dials/zoomdial.cpp:57
 msgid "Zoom to Fit"
-msgstr ""
+msgstr "Zoom passend"
 
 #: ../src/gui/dials/zoomdial.cpp:58
 msgid "Zoom to 100%"
-msgstr ""
+msgstr "Zoom naar 100%"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
 #: ../src/gui/docks/dialog_tooloptions.cpp:74
 msgid "Tool Options"
-msgstr ""
+msgstr "Gereedschapsopties "
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 msgid "This tool has no options"
-msgstr ""
+msgstr "Dit gereedschap heeft geen opties"
 
 #: ../src/gui/docks/dockable.cpp:112
 msgid "X"
-msgstr ""
+msgstr "x"
 
 #: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/compview.cpp:168
 msgid "Canvas Browser"
-msgstr ""
+msgstr "Tekenvenster browser"
 
 #: ../src/gui/docks/dock_canvases.cpp:108 ../src/gui/trees/childrentree.cpp:93
 #: ../src/gui/compview.cpp:191 ../src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:67 ../src/gui/iconcontroller.cpp:259
 msgid "Library"
@@ -984,7 +983,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:125
 msgid "Please enter the name of the key"
-msgstr ""
+msgstr "Geef de naam van de sleutel"
 
 #: ../src/gui/docks/dock_navigator.cpp:532 ../src/gui/iconcontroller.cpp:263
 msgid "Navigator"
@@ -2490,7 +2489,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1651
 msgid "Next Frame"
-msgstr ""
+msgstr "Volgend beeld"
 
 #: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1653
 msgid "Prev Frame"
@@ -3111,7 +3110,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
-msgstr "Liste"
+msgstr "Lijst"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "String"
@@ -3905,7 +3904,7 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:521
 msgid "_Frames per second"
-msgstr ""
+msgstr "_Beelden per seconde"
 
 #: ../src/gui/renddesc.cpp:526
 msgid "_Start Time"

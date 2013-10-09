@@ -1,13 +1,11 @@
 # Translation of pt_BR.po to Portuguese (Brasilian)
 # Brasilian translations for Synfig Core package
-# Copyright (C) 2012 Synfig Contributors
+# Copyright (C) 2012-2013 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
 # andersonfobr <emailregister2004-mm@yahoo.com.br>, 2013
 # gamont <gamontbr@gmail.com>, 2011
-# gamont <gamontbr@gmail.com>, 2011
-# hbarone <henrique.blender@gmail.com>, 2011
 # hbarone <henrique.blender@gmail.com>, 2011
 # Ricardo Graça <ricolandia@gmail.com>, 2011
 # rodolforg <rodolforg@gmail.com>, 2013
@@ -15,129 +13,129 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-05-05 22:35+0200\n"
-"PO-Revision-Date: 2013-05-02 12:39+0000\n"
-"Last-Translator: genete <genetita@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-10-07 21:14+0700\n"
+"PO-Revision-Date: 2013-10-07 14:23+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/synfig/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/modules/mod_example/filledrect.cpp:58
+#: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
 msgstr "Retângulo preenchido"
 
-#: src/modules/mod_example/filledrect.cpp:59
-#: src/modules/mod_example/metaballs.cpp:57
+#: src/modules/mod_example/filledrect.cpp:60
+#: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
 msgstr "Exemplo"
 
-#: src/modules/mod_example/filledrect.cpp:120
+#: src/modules/mod_example/filledrect.cpp:131
 #: src/modules/mod_example/simplecircle.cpp:107
-#: src/modules/lyr_freetype/lyr_freetype.cpp:522
-#: src/modules/lyr_std/shade.cpp:563
-#: src/modules/mod_geometry/checkerboard.cpp:122
-#: src/modules/mod_geometry/circle.cpp:128
-#: src/modules/mod_geometry/rectangle.cpp:125 src/synfig/layer_shape.cpp:1192
-#: src/synfig/layer_solidcolor.cpp:102 src/synfig/paramdesc.cpp:79
+#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+#: src/modules/lyr_std/shade.cpp:620
+#: src/modules/mod_geometry/checkerboard.cpp:146
+#: src/modules/mod_geometry/circle.cpp:146
+#: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1221
+#: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
 msgstr "Cor"
 
-#: src/modules/mod_example/filledrect.cpp:121
+#: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
-#: src/modules/mod_geometry/circle.cpp:129
-#: src/modules/mod_geometry/rectangle.cpp:126
-#: src/synfig/layer_solidcolor.cpp:103
+#: src/modules/mod_geometry/circle.cpp:147
+#: src/modules/mod_geometry/rectangle.cpp:139
+#: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
 msgstr "Cor de preenchimento da camada"
 
-#: src/modules/mod_example/filledrect.cpp:125
-#: src/modules/mod_geometry/rectangle.cpp:130
-#: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/modules/mod_example/filledrect.cpp:136
+#: src/modules/mod_geometry/rectangle.cpp:143
+#: src/modules/mod_gradient/lineargradient.cpp:185
 msgid "Point 1"
 msgstr "Ponto 1"
 
-#: src/modules/mod_example/filledrect.cpp:126
-#: src/modules/mod_geometry/rectangle.cpp:132
+#: src/modules/mod_example/filledrect.cpp:137
+#: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
 msgstr "Primeiro canto do retângulo"
 
-#: src/modules/mod_example/filledrect.cpp:131
-#: src/modules/mod_geometry/rectangle.cpp:136
-#: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/modules/mod_example/filledrect.cpp:142
+#: src/modules/mod_geometry/rectangle.cpp:149
+#: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 2"
 msgstr "Ponto 2"
 
-#: src/modules/mod_example/filledrect.cpp:132
-#: src/modules/mod_geometry/rectangle.cpp:137
+#: src/modules/mod_example/filledrect.cpp:143
+#: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
 msgstr "Segundo canto do retângulo"
 
-#: src/modules/mod_example/filledrect.cpp:136
+#: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
 msgstr "Suavizar X"
 
-#: src/modules/mod_example/filledrect.cpp:140
+#: src/modules/mod_example/filledrect.cpp:152
 msgid "Feather Y"
 msgstr "Suavizar Y"
 
-#: src/modules/mod_example/filledrect.cpp:144 src/modules/lyr_std/bevel.cpp:67
-#: src/modules/mod_geometry/advanced_outline.cpp:1161
+#: src/modules/mod_example/filledrect.cpp:157 src/modules/lyr_std/bevel.cpp:69
+#: src/modules/mod_geometry/advanced_outline.cpp:1172
 msgid "Bevel"
 msgstr "Chanfro"
 
-#: src/modules/mod_example/filledrect.cpp:145
+#: src/modules/mod_example/filledrect.cpp:158
 msgid "Use Bevel for the corners"
 msgstr "Usar chanfro nos cantos"
 
-#: src/modules/mod_example/filledrect.cpp:149
+#: src/modules/mod_example/filledrect.cpp:163
 msgid "Keep Bevel Circular"
 msgstr "Manter chanfro circular"
 
-#: src/modules/mod_example/filledrect.cpp:150
+#: src/modules/mod_example/filledrect.cpp:164
 msgid "When checked the bevel is circular"
 msgstr "Quando marcado, o chanfro é circular"
 
-#: src/modules/mod_example/metaballs.cpp:56
+#: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
 msgstr "Metaballs"
 
-#: src/modules/mod_example/metaballs.cpp:134
+#: src/modules/mod_example/metaballs.cpp:129
 #: src/modules/mod_gradient/conicalgradient.cpp:109
-#: src/modules/mod_gradient/curvegradient.cpp:552
-#: src/modules/mod_gradient/lineargradient.cpp:199
+#: src/modules/mod_gradient/curvegradient.cpp:565
+#: src/modules/mod_gradient/lineargradient.cpp:194
 #: src/modules/mod_gradient/radialgradient.cpp:113
-#: src/modules/mod_gradient/spiralgradient.cpp:112
-#: src/modules/mod_noise/noise.cpp:259 src/modules/mod_particle/plant.cpp:403
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+#: src/modules/mod_noise/noise.cpp:268 src/modules/mod_particle/plant.cpp:436
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
 msgstr "Gradiente"
 
-#: src/modules/mod_example/metaballs.cpp:138
+#: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
 msgstr "Bolas"
 
-#: src/modules/mod_example/metaballs.cpp:142
+#: src/modules/mod_example/metaballs.cpp:137
 msgid "Radii"
 msgstr "Radios"
 
-#: src/modules/mod_example/metaballs.cpp:146
+#: src/modules/mod_example/metaballs.cpp:141
 msgid "Weights"
 msgstr "Pesos"
 
-#: src/modules/mod_example/metaballs.cpp:150
+#: src/modules/mod_example/metaballs.cpp:145
 msgid "Gradient Left"
 msgstr "Gradiente Esquerda"
 
-#: src/modules/mod_example/metaballs.cpp:154
+#: src/modules/mod_example/metaballs.cpp:149
 msgid "Gradient Right"
 msgstr "Gradiente Direito"
 
-#: src/modules/mod_example/metaballs.cpp:158
+#: src/modules/mod_example/metaballs.cpp:153
 msgid "Positive Only"
 msgstr "Positivo apenas"
 
@@ -149,21 +147,21 @@ msgstr "Círculo Simples"
 #: src/modules/lyr_std/stretch.cpp:110 src/modules/lyr_std/twirl.cpp:112
 #: src/modules/mod_gradient/conicalgradient.cpp:114
 #: src/modules/mod_gradient/radialgradient.cpp:118
-#: src/modules/mod_gradient/spiralgradient.cpp:117
+#: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
 msgstr "Centro"
 
 #: src/modules/mod_example/simplecircle.cpp:113
-#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:144
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
 msgstr "Centro do círculo"
 
 #: src/modules/mod_example/simplecircle.cpp:117
-#: src/modules/lyr_std/sphere_distort.cpp:151
-#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:132
+#: src/modules/lyr_std/sphere_distort.cpp:146
+#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:150
 #: src/modules/mod_gradient/radialgradient.cpp:123
-#: src/modules/mod_gradient/spiralgradient.cpp:122
-#: src/modules/mod_noise/valuenode_random.cpp:269
+#: src/modules/mod_gradient/spiralgradient.cpp:123
+#: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
 msgstr "Raio"
@@ -171,266 +169,266 @@ msgstr "Raio"
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
-#: src/modules/mod_gradient/spiralgradient.cpp:123
+#: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
 msgstr "Este é o raio do círculo"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:65
-#: src/modules/lyr_freetype/lyr_freetype.cpp:516
+#: src/modules/lyr_freetype/lyr_freetype.cpp:66
+#: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
 msgstr "Texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:66
-#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:60
-#: src/modules/lyr_std/supersample.cpp:57 src/modules/lyr_std/timeloop.cpp:60
-#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:70
-#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:79
+#: src/modules/lyr_freetype/lyr_freetype.cpp:67
+#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:61
+#: src/modules/lyr_std/supersample.cpp:58 src/modules/lyr_std/timeloop.cpp:60
+#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:71
+#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:81
 msgid "Other"
 msgstr "Outro"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:96
+#: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
 msgstr "Camada de texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:389
+#: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
 msgstr "Não é possível inicializar"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:408
+#: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
 msgstr "Conjunto de fonte vazio"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:517
+#: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
 msgstr "Renderizar texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:523
+#: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
 msgstr "Cor do texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:527
+#: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
 msgstr "Família de fonte"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:532
+#: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
 msgstr "Estilo"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:534
-#: src/modules/lyr_freetype/lyr_freetype.cpp:544
+#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+#: src/modules/lyr_freetype/lyr_freetype.cpp:597
 msgid "Normal"
 msgstr "Normal"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:535
+#: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
 msgstr "Oblíquo"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:536
+#: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
 msgstr "Itálico"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:540
+#: src/modules/lyr_freetype/lyr_freetype.cpp:593
 msgid "Weight"
 msgstr "Peso"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:542
+#: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
 msgstr "Ultraleve"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:543
+#: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
 msgstr "leve"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:545
+#: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
 msgstr "Negrito"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:546
+#: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
 msgstr "Ultra-negrito"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:547
+#: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
 msgstr "Pesado"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:550
+#: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
 msgstr "Espaçamento horizontal"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:551
+#: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
 msgstr "Descreve a proximidade dos glifos horizontais"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:555
+#: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
 msgstr "Espaçamento Vertical"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:556
+#: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
 msgstr "Descreve a proximidade das linhas de texto são verticais"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:560
-#: src/modules/lyr_std/shade.cpp:569 src/modules/lyr_std/xorpattern.cpp:129
-#: src/modules/mod_filter/blur.cpp:371
+#: src/modules/lyr_freetype/lyr_freetype.cpp:613
+#: src/modules/lyr_std/shade.cpp:626 src/modules/lyr_std/xorpattern.cpp:133
+#: src/modules/mod_filter/blur.cpp:413
 #: src/modules/mod_filter/radialblur.cpp:115
-#: src/modules/mod_geometry/checkerboard.cpp:130
-#: src/modules/mod_noise/distort.cpp:222 src/modules/mod_noise/noise.cpp:267
+#: src/modules/mod_geometry/checkerboard.cpp:154
+#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
 msgstr "Tamanho"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:561
+#: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
 msgstr "Tamanho do texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:568
+#: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
 msgstr "Orientação"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:569
+#: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
 msgstr "Orientação do Texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:574
-#: src/modules/lyr_std/insideout.cpp:143 src/modules/lyr_std/rotate.cpp:115
-#: src/modules/lyr_std/shade.cpp:566 src/modules/lyr_std/translate.cpp:99
-#: src/modules/lyr_std/curvewarp.cpp:389
-#: src/modules/lyr_std/xorpattern.cpp:125 src/modules/lyr_std/zoom.cpp:103
+#: src/modules/lyr_freetype/lyr_freetype.cpp:627
+#: src/modules/lyr_std/insideout.cpp:162 src/modules/lyr_std/rotate.cpp:117
+#: src/modules/lyr_std/shade.cpp:623 src/modules/lyr_std/translate.cpp:100
+#: src/modules/lyr_std/curvewarp.cpp:398
+#: src/modules/lyr_std/xorpattern.cpp:129 src/modules/lyr_std/zoom.cpp:106
 #: src/modules/mod_filter/radialblur.cpp:110
-#: src/modules/mod_geometry/checkerboard.cpp:126
-#: src/modules/mod_geometry/circle.cpp:143
-#: src/modules/mod_gradient/curvegradient.cpp:537
-#: src/modules/mod_particle/plant.cpp:398 src/synfig/layer_pastecanvas.cpp:133
-#: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:518
+#: src/modules/mod_geometry/checkerboard.cpp:150
+#: src/modules/mod_geometry/circle.cpp:161
+#: src/modules/mod_gradient/curvegradient.cpp:550
+#: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:136
+#: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:528
 msgid "Origin"
 msgstr "Origem"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+#: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
 msgstr "Posição do Texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:579
+#: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
 msgstr "Fonte"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:580
+#: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
 msgstr "Nome do arquivo da fonte a ser usada"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+#: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
 msgstr "Kerning"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:588
+#: src/modules/lyr_freetype/lyr_freetype.cpp:641
 msgid "Enables/Disables font kerning (If the font supports it)"
 msgstr "Ativa / Desativa o kerning da fonte (se a fonte suporta)"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:592
+#: src/modules/lyr_freetype/lyr_freetype.cpp:645
 msgid "Sharpen Edges"
 msgstr "Realçar bordas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:593
+#: src/modules/lyr_freetype/lyr_freetype.cpp:646
 msgid "Turn this off if you are going to be animating the text"
 msgstr "Desligue isto se você estiver animando o texto"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:596
-#: src/modules/lyr_std/shade.cpp:586 src/modules/mod_geometry/circle.cpp:147
-#: src/synfig/layer_shape.cpp:1199
+#: src/modules/lyr_freetype/lyr_freetype.cpp:649
+#: src/modules/lyr_std/shade.cpp:643 src/modules/mod_geometry/circle.cpp:165
+#: src/synfig/layer_shape.cpp:1228
 msgid "Invert"
 msgstr "Inverter"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:653
+#: src/modules/lyr_freetype/lyr_freetype.cpp:714
 msgid "No face loaded, no text will be rendered."
 msgstr "Nenhuma face carregada, nenhum texto será processado."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:679
+#: src/modules/lyr_freetype/lyr_freetype.cpp:740
 msgid "Text too small, no text will be rendered."
 msgstr "Texto muito pequeno, nenhum texto será processado."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:703
+#: src/modules/lyr_freetype/lyr_freetype.cpp:764
 msgid "Unable to set face size."
 msgstr "Não é possível definir o tamanho da face."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:746
+#: src/modules/lyr_freetype/lyr_freetype.cpp:807
 msgid "Invalid multibyte sequence - is the locale set?\n"
 msgstr "Sequência multibyte inválida - local está definido?\n"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:753
+#: src/modules/lyr_freetype/lyr_freetype.cpp:814
 msgid "Can't parse multibyte character.\n"
 msgstr "Não é possível analisar caracteres multibyte.\n"
 
-#: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
+#: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
 msgstr "Estilizar"
 
-#: src/modules/lyr_std/bevel.cpp:569 src/modules/lyr_std/shade.cpp:575
-#: src/modules/mod_filter/blur.cpp:375
-#: src/modules/mod_filter/halftone2.cpp:169
+#: src/modules/lyr_std/bevel.cpp:624 src/modules/lyr_std/shade.cpp:632
+#: src/modules/mod_filter/blur.cpp:417
+#: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
 msgstr "Tipo"
 
-#: src/modules/lyr_std/bevel.cpp:570 src/modules/lyr_std/shade.cpp:576
-#: src/modules/mod_filter/blur.cpp:376
+#: src/modules/lyr_std/bevel.cpp:625 src/modules/lyr_std/shade.cpp:633
+#: src/modules/mod_filter/blur.cpp:418
 msgid "Type of blur to use"
 msgstr "Tipo de desfoque para usar"
 
-#: src/modules/lyr_std/bevel.cpp:572 src/modules/lyr_std/shade.cpp:578
-#: src/modules/mod_filter/blur.cpp:378 src/synfig/layer_shape.cpp:1212
+#: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
+#: src/modules/mod_filter/blur.cpp:420 src/synfig/layer_shape.cpp:1241
 msgid "Box Blur"
 msgstr "Desfoque de caixa"
 
-#: src/modules/lyr_std/bevel.cpp:573 src/modules/lyr_std/shade.cpp:579
-#: src/modules/mod_filter/blur.cpp:379 src/synfig/layer_shape.cpp:1213
+#: src/modules/lyr_std/bevel.cpp:628 src/modules/lyr_std/shade.cpp:636
+#: src/modules/mod_filter/blur.cpp:421 src/synfig/layer_shape.cpp:1242
 msgid "Fast Gaussian Blur"
 msgstr "Desfoque Gaussiano rápido"
 
-#: src/modules/lyr_std/bevel.cpp:574 src/modules/lyr_std/shade.cpp:580
-#: src/modules/mod_filter/blur.cpp:380 src/synfig/layer_shape.cpp:1214
+#: src/modules/lyr_std/bevel.cpp:629 src/modules/lyr_std/shade.cpp:637
+#: src/modules/mod_filter/blur.cpp:422 src/synfig/layer_shape.cpp:1243
 msgid "Cross-Hatch Blur"
 msgstr "Desfoque Cross-Hatch"
 
-#: src/modules/lyr_std/bevel.cpp:575 src/modules/lyr_std/shade.cpp:581
-#: src/modules/mod_filter/blur.cpp:381 src/synfig/layer_shape.cpp:1215
+#: src/modules/lyr_std/bevel.cpp:630 src/modules/lyr_std/shade.cpp:638
+#: src/modules/mod_filter/blur.cpp:423 src/synfig/layer_shape.cpp:1244
 msgid "Gaussian Blur"
 msgstr "Desfoque Gaussiano"
 
-#: src/modules/lyr_std/bevel.cpp:576 src/modules/lyr_std/shade.cpp:582
-#: src/modules/mod_filter/blur.cpp:382 src/synfig/layer_shape.cpp:1216
+#: src/modules/lyr_std/bevel.cpp:631 src/modules/lyr_std/shade.cpp:639
+#: src/modules/mod_filter/blur.cpp:424 src/synfig/layer_shape.cpp:1245
 msgid "Disc Blur"
 msgstr "Desfoque em disco"
 
-#: src/modules/lyr_std/bevel.cpp:580
+#: src/modules/lyr_std/bevel.cpp:635
 msgid "Hi-Color"
 msgstr "Hi-Color"
 
-#: src/modules/lyr_std/bevel.cpp:583
+#: src/modules/lyr_std/bevel.cpp:638
 msgid "Lo-Color"
 msgstr "Lo-Color"
 
-#: src/modules/lyr_std/bevel.cpp:586
+#: src/modules/lyr_std/bevel.cpp:641
 msgid "Light Angle"
 msgstr "Ângulo de lux"
 
-#: src/modules/lyr_std/bevel.cpp:590
+#: src/modules/lyr_std/bevel.cpp:645
 msgid "Depth of Bevel"
 msgstr "Profundidade do Chanfro"
 
-#: src/modules/lyr_std/bevel.cpp:594
+#: src/modules/lyr_std/bevel.cpp:649
 msgid "Softness"
 msgstr "Suavidade"
 
-#: src/modules/lyr_std/bevel.cpp:597
+#: src/modules/lyr_std/bevel.cpp:652
 msgid "Use Luma"
 msgstr "Use Luma"
 
-#: src/modules/lyr_std/bevel.cpp:600
+#: src/modules/lyr_std/bevel.cpp:655
 msgid "Solid"
 msgstr "Sólido"
 
-#: src/modules/lyr_std/booleancurve.cpp:104
+#: src/modules/lyr_std/booleancurve.cpp:107
 msgid "Region Set"
 msgstr "Região definida"
 
-#: src/modules/lyr_std/booleancurve.cpp:105
+#: src/modules/lyr_std/booleancurve.cpp:108
 msgid "Set of regions to combine"
 msgstr "Conjunto de regiões a combinar"
 
@@ -438,38 +436,38 @@ msgstr "Conjunto de regiões a combinar"
 msgid "Clamp"
 msgstr "Braçadeira"
 
-#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:55
-#: src/modules/mod_filter/halftone2.cpp:58
-#: src/modules/mod_filter/halftone3.cpp:58
-#: src/modules/mod_filter/lumakey.cpp:58
+#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
+#: src/modules/mod_filter/halftone2.cpp:60
+#: src/modules/mod_filter/halftone3.cpp:60
+#: src/modules/mod_filter/lumakey.cpp:60
 msgid "Filters"
 msgstr "Filtros"
 
-#: src/modules/lyr_std/clamp.cpp:158
+#: src/modules/lyr_std/clamp.cpp:162
 msgid "Invert Negative"
 msgstr "Inverter Negativo"
 
-#: src/modules/lyr_std/clamp.cpp:162
+#: src/modules/lyr_std/clamp.cpp:166
 msgid "Clamp Ceiling"
 msgstr "Braçadeira de teto"
 
-#: src/modules/lyr_std/clamp.cpp:163
+#: src/modules/lyr_std/clamp.cpp:167
 msgid "When checked the Ceiling value is used"
 msgstr "Quando verificado o valor do teto é usado"
 
-#: src/modules/lyr_std/clamp.cpp:167
+#: src/modules/lyr_std/clamp.cpp:171
 msgid "Ceiling"
 msgstr "Teto"
 
-#: src/modules/lyr_std/clamp.cpp:168
+#: src/modules/lyr_std/clamp.cpp:172
 msgid "Upper boundary of the clamping"
 msgstr "Limite superior da fixação"
 
-#: src/modules/lyr_std/clamp.cpp:172
+#: src/modules/lyr_std/clamp.cpp:176
 msgid "Floor"
 msgstr "Pavimento"
 
-#: src/modules/lyr_std/clamp.cpp:173
+#: src/modules/lyr_std/clamp.cpp:177
 msgid "Lower boundary of the clamping"
 msgstr "Limite inferior da braçadeira"
 
@@ -477,24 +475,24 @@ msgstr "Limite inferior da braçadeira"
 msgid "Import Image"
 msgstr "Importar imagem"
 
-#: src/modules/lyr_std/import.cpp:151 src/modules/lyr_std/import.cpp:201
+#: src/modules/lyr_std/import.cpp:154 src/modules/lyr_std/import.cpp:206
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
 msgstr "Nome do arquivo parece já estar definido como \"%s\" (%s)"
 
-#: src/modules/lyr_std/import.cpp:283
+#: src/modules/lyr_std/import.cpp:293
 msgid "Filename"
 msgstr "Nome do arquivo"
 
-#: src/modules/lyr_std/import.cpp:284
+#: src/modules/lyr_std/import.cpp:294
 msgid "File to import"
 msgstr "Arquivo para importar"
 
-#: src/modules/lyr_std/import.cpp:288 src/synfig/layer_pastecanvas.cpp:146
+#: src/modules/lyr_std/import.cpp:298 src/synfig/layer_pastecanvas.cpp:151
 msgid "Time Offset"
 msgstr "Deslocar tempo"
 
-#: src/modules/lyr_std/import.cpp:289
+#: src/modules/lyr_std/import.cpp:299
 msgid "Time Offset to apply to the imported file"
 msgstr "Tempo de deslocamento para aplicar o arquivo importado"
 
@@ -503,14 +501,14 @@ msgid "Inside Out"
 msgstr "De dentro para fora"
 
 #: src/modules/lyr_std/insideout.cpp:56
-#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
-#: src/modules/lyr_std/warp.cpp:57 src/modules/lyr_std/curvewarp.cpp:56
-#: src/modules/mod_noise/distort.cpp:58
+#: src/modules/lyr_std/warp.cpp:58 src/modules/lyr_std/curvewarp.cpp:57
+#: src/modules/mod_noise/distort.cpp:59
 msgid "Distortions"
 msgstr "Distorções"
 
-#: src/modules/lyr_std/insideout.cpp:144
+#: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines the where the center will be"
 msgstr "Define onde o centro será"
 
@@ -522,97 +520,97 @@ msgstr "Julia Set"
 msgid "Fractals"
 msgstr "Fractais"
 
-#: src/modules/lyr_std/julia.cpp:309
+#: src/modules/lyr_std/julia.cpp:335
 msgid "Inside Color"
 msgstr "Cor de dentro"
 
-#: src/modules/lyr_std/julia.cpp:310
+#: src/modules/lyr_std/julia.cpp:336
 msgid "Color of the Set"
 msgstr "Cor do Conjunto"
 
-#: src/modules/lyr_std/julia.cpp:313
+#: src/modules/lyr_std/julia.cpp:339
 msgid "Outside Color"
 msgstr "Cor de fora"
 
-#: src/modules/lyr_std/julia.cpp:314
+#: src/modules/lyr_std/julia.cpp:340
 msgid "Color outside the Set"
 msgstr "Cor fora do conjunto"
 
-#: src/modules/lyr_std/julia.cpp:317
+#: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
 msgstr "Mudança de cor"
 
-#: src/modules/lyr_std/julia.cpp:320 src/modules/lyr_std/mandelbrot.cpp:223
+#: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
 msgstr "Iterações"
 
-#: src/modules/lyr_std/julia.cpp:323
+#: src/modules/lyr_std/julia.cpp:349
 msgid "Seed Point"
 msgstr "Ponto de origem"
 
-#: src/modules/lyr_std/julia.cpp:326 src/modules/lyr_std/mandelbrot.cpp:226
+#: src/modules/lyr_std/julia.cpp:352 src/modules/lyr_std/mandelbrot.cpp:222
 msgid "Bailout ValueBase"
 msgstr "Bailout ValorBase"
 
-#: src/modules/lyr_std/julia.cpp:330 src/modules/lyr_std/mandelbrot.cpp:236
+#: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
 #: src/modules/lyr_std/twirl.cpp:130
 msgid "Distort Inside"
 msgstr "Distorcer interior"
 
-#: src/modules/lyr_std/julia.cpp:333 src/modules/lyr_std/mandelbrot.cpp:240
+#: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
 msgid "Shade Inside"
 msgstr "Sombra interior"
 
-#: src/modules/lyr_std/julia.cpp:336 src/modules/lyr_std/mandelbrot.cpp:244
+#: src/modules/lyr_std/julia.cpp:362 src/modules/lyr_std/mandelbrot.cpp:240
 msgid "Solid Inside"
 msgstr "Sólido interior"
 
-#: src/modules/lyr_std/julia.cpp:339 src/modules/lyr_std/mandelbrot.cpp:248
+#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:244
 msgid "Invert Inside"
 msgstr "Inverter interior"
 
-#: src/modules/lyr_std/julia.cpp:342
+#: src/modules/lyr_std/julia.cpp:368
 msgid "Color Inside"
 msgstr "Cor Interior"
 
-#: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:265
+#: src/modules/lyr_std/julia.cpp:371 src/modules/lyr_std/mandelbrot.cpp:261
 #: src/modules/lyr_std/twirl.cpp:135
 msgid "Distort Outside"
 msgstr "Distorcer exterior"
 
-#: src/modules/lyr_std/julia.cpp:348 src/modules/lyr_std/mandelbrot.cpp:269
+#: src/modules/lyr_std/julia.cpp:374 src/modules/lyr_std/mandelbrot.cpp:265
 msgid "Shade Outside"
 msgstr "Sombrear exterior"
 
-#: src/modules/lyr_std/julia.cpp:351 src/modules/lyr_std/mandelbrot.cpp:273
+#: src/modules/lyr_std/julia.cpp:377 src/modules/lyr_std/mandelbrot.cpp:269
 msgid "Solid Outside"
 msgstr "Exterior sólido"
 
-#: src/modules/lyr_std/julia.cpp:354 src/modules/lyr_std/mandelbrot.cpp:277
+#: src/modules/lyr_std/julia.cpp:380 src/modules/lyr_std/mandelbrot.cpp:273
 msgid "Invert Outside"
 msgstr "Inverter exterior"
 
-#: src/modules/lyr_std/julia.cpp:357
+#: src/modules/lyr_std/julia.cpp:383
 msgid "Color Outside"
 msgstr "Cor exterior"
 
-#: src/modules/lyr_std/julia.cpp:361
+#: src/modules/lyr_std/julia.cpp:387
 msgid "Color Cycle"
 msgstr "Ciclo de cor"
 
-#: src/modules/lyr_std/julia.cpp:364 src/modules/lyr_std/mandelbrot.cpp:285
+#: src/modules/lyr_std/julia.cpp:390 src/modules/lyr_std/mandelbrot.cpp:281
 msgid "Smooth Outside"
 msgstr "Suavizar exterior"
 
-#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:286
+#: src/modules/lyr_std/julia.cpp:391 src/modules/lyr_std/mandelbrot.cpp:282
 msgid "Smooth the coloration outside the set"
 msgstr "Suavizar a coloração exterior do conjunto"
 
-#: src/modules/lyr_std/julia.cpp:368 src/modules/lyr_std/mandelbrot.cpp:230
+#: src/modules/lyr_std/julia.cpp:394 src/modules/lyr_std/mandelbrot.cpp:226
 msgid "Break Set"
 msgstr "Quebrar conjunto"
 
-#: src/modules/lyr_std/julia.cpp:369 src/modules/lyr_std/mandelbrot.cpp:231
+#: src/modules/lyr_std/julia.cpp:395 src/modules/lyr_std/mandelbrot.cpp:227
 msgid "Modify equation to achieve interesting results"
 msgstr "Modificar equação para obter resultados interessantes"
 
@@ -620,70 +618,70 @@ msgstr "Modificar equação para obter resultados interessantes"
 msgid "Mandelbrot Set"
 msgstr "Conjunto Mandelbrot"
 
+#: src/modules/lyr_std/mandelbrot.cpp:233
 #: src/modules/lyr_std/mandelbrot.cpp:237
 #: src/modules/lyr_std/mandelbrot.cpp:241
 #: src/modules/lyr_std/mandelbrot.cpp:245
 #: src/modules/lyr_std/mandelbrot.cpp:249
 #: src/modules/lyr_std/mandelbrot.cpp:253
 #: src/modules/lyr_std/mandelbrot.cpp:257
-#: src/modules/lyr_std/mandelbrot.cpp:261
 msgid "Inside"
 msgstr "Interior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:252
+#: src/modules/lyr_std/mandelbrot.cpp:248
 msgid "Gradient Inside"
 msgstr "Gradiente interior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:256
+#: src/modules/lyr_std/mandelbrot.cpp:252
 msgid "Offset Inside"
 msgstr "Deslocamento interior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:260
+#: src/modules/lyr_std/mandelbrot.cpp:256
 msgid "Loop Inside"
 msgstr "Loop interior"
 
+#: src/modules/lyr_std/mandelbrot.cpp:262
 #: src/modules/lyr_std/mandelbrot.cpp:266
 #: src/modules/lyr_std/mandelbrot.cpp:270
 #: src/modules/lyr_std/mandelbrot.cpp:274
 #: src/modules/lyr_std/mandelbrot.cpp:278
-#: src/modules/lyr_std/mandelbrot.cpp:282
+#: src/modules/lyr_std/mandelbrot.cpp:283
 #: src/modules/lyr_std/mandelbrot.cpp:287
 #: src/modules/lyr_std/mandelbrot.cpp:291
-#: src/modules/lyr_std/mandelbrot.cpp:295
 msgid "Outside"
 msgstr "Exterior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:281
+#: src/modules/lyr_std/mandelbrot.cpp:277
 msgid "Gradient outside"
 msgstr "Gradiente exterior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:290
+#: src/modules/lyr_std/mandelbrot.cpp:286
 msgid "Offset Outside"
 msgstr "Deslocamento exterior"
 
-#: src/modules/lyr_std/mandelbrot.cpp:294
+#: src/modules/lyr_std/mandelbrot.cpp:290
 msgid "Scale Outside"
 msgstr "Escala exterior"
 
-#: src/modules/lyr_std/rotate.cpp:55
+#: src/modules/lyr_std/rotate.cpp:56
 msgid "Rotate"
 msgstr "Girar"
 
-#: src/modules/lyr_std/rotate.cpp:56 src/modules/lyr_std/translate.cpp:55
-#: src/modules/lyr_std/zoom.cpp:52
+#: src/modules/lyr_std/rotate.cpp:57 src/modules/lyr_std/translate.cpp:56
+#: src/modules/lyr_std/zoom.cpp:53
 msgid "Transform"
 msgstr "Transformar"
 
-#: src/modules/lyr_std/rotate.cpp:116 src/modules/lyr_std/translate.cpp:100
+#: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
 #: src/modules/mod_filter/radialblur.cpp:111
-#: src/synfig/layer_pastecanvas.cpp:134
+#: src/synfig/layer_pastecanvas.cpp:137
 msgid "Point where you want the origin to be"
 msgstr "Aponte onde deseja que a origem seja"
 
-#: src/modules/lyr_std/rotate.cpp:120
-#: src/modules/lyr_std/sphere_distort.cpp:158
-#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:98
-#: src/synfig/layer_composite.cpp:217
+#: src/modules/lyr_std/rotate.cpp:122
+#: src/modules/lyr_std/sphere_distort.cpp:153
+#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:99
+#: src/synfig/layer_composite.cpp:249
 #: src/synfig/valuenode_blinecalctangent.cpp:251
 #: src/synfig/valuenode_blinecalcvertex.cpp:211
 #: src/synfig/valuenode_blinecalcwidth.cpp:216
@@ -692,61 +690,61 @@ msgstr "Aponte onde deseja que a origem seja"
 msgid "Amount"
 msgstr "Quantidade"
 
-#: src/modules/lyr_std/rotate.cpp:121
+#: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
 msgstr "Quantidade de rotação"
 
-#: src/modules/lyr_std/shade.cpp:66
+#: src/modules/lyr_std/shade.cpp:68
 msgid "Shade"
 msgstr "Sombra"
 
-#: src/modules/lyr_std/shade.cpp:570
+#: src/modules/lyr_std/shade.cpp:627
 msgid "Size of Shade"
 msgstr "Tamanho da Sombra"
 
-#: src/modules/lyr_std/sphere_distort.cpp:73
-#: src/modules/lyr_std/sphere_distort.cpp:172
+#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Spherize"
 msgstr "Esferizar"
 
-#: src/modules/lyr_std/sphere_distort.cpp:146
-#: src/synfig/valuenode_composite.cpp:536
+#: src/modules/lyr_std/sphere_distort.cpp:141
+#: src/synfig/valuenode_composite.cpp:546
 msgid "Position"
 msgstr "Posição"
 
-#: src/modules/lyr_std/sphere_distort.cpp:147
+#: src/modules/lyr_std/sphere_distort.cpp:142
 msgid "Where the sphere distortion is centered"
 msgstr "Onde a distorção da esfera está centrada"
 
-#: src/modules/lyr_std/sphere_distort.cpp:154
+#: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
 msgstr "O tamanho da distorção da esfera"
 
-#: src/modules/lyr_std/sphere_distort.cpp:160
+#: src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The distortion intensity (negative values inverts effect)"
 msgstr "A intensidade de distorção (valores negativos invertem efeito)"
 
-#: src/modules/lyr_std/sphere_distort.cpp:164 src/modules/lyr_std/warp.cpp:409
+#: src/modules/lyr_std/sphere_distort.cpp:159 src/modules/lyr_std/warp.cpp:415
 msgid "Clip"
 msgstr "Clip"
 
-#: src/modules/lyr_std/sphere_distort.cpp:165
+#: src/modules/lyr_std/sphere_distort.cpp:160
 msgid "When cheked, the area outside the Radius are not distorted"
 msgstr "Quando marcado, a área fora do raio não será distorcida"
 
-#: src/modules/lyr_std/sphere_distort.cpp:169
+#: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
 msgstr "Tipo de distorção"
 
-#: src/modules/lyr_std/sphere_distort.cpp:170
+#: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
 msgstr "A direção da distorção"
 
-#: src/modules/lyr_std/sphere_distort.cpp:173
+#: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
 msgstr "Bara vertical"
 
-#: src/modules/lyr_std/sphere_distort.cpp:174
+#: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Horizontal Bar"
 msgstr "Barra horizontal"
 
@@ -762,112 +760,112 @@ msgstr "Tamanho do esticado relativo ao centro"
 msgid "Where the stretch distortion is centered"
 msgstr "Quando a distorção do esticado está centrado"
 
-#: src/modules/lyr_std/stroboscope.cpp:59
+#: src/modules/lyr_std/stroboscope.cpp:60
 msgid "Stroboscope"
 msgstr "Stroboscópico"
 
-#: src/modules/lyr_std/stroboscope.cpp:101
+#: src/modules/lyr_std/stroboscope.cpp:104
 msgid "Frequency"
 msgstr "Frequência"
 
-#: src/modules/lyr_std/stroboscope.cpp:102
+#: src/modules/lyr_std/stroboscope.cpp:105
 msgid "Frequency of the Strobe in times per second"
 msgstr "A freqüência do estroboscópio em vezes por segundo"
 
-#: src/modules/lyr_std/supersample.cpp:56
+#: src/modules/lyr_std/supersample.cpp:57
 msgid "Super Sample"
 msgstr "Super Amostra"
 
-#: src/modules/lyr_std/supersample.cpp:129
+#: src/modules/lyr_std/supersample.cpp:146
 msgid "Unable to create SurfaceTarget"
 msgstr "Não é possível criar SurfaceTarget"
 
-#: src/modules/lyr_std/supersample.cpp:290
-#: src/modules/lyr_std/curvewarp.cpp:393
-#: src/modules/mod_gradient/curvegradient.cpp:542
-#: src/synfig/valuenode_composite.cpp:514
-#: src/synfig/valuenode_composite.cpp:540
+#: src/modules/lyr_std/supersample.cpp:337
+#: src/modules/lyr_std/curvewarp.cpp:402
+#: src/modules/mod_gradient/curvegradient.cpp:555
+#: src/synfig/valuenode_composite.cpp:524
+#: src/synfig/valuenode_composite.cpp:550
 #: src/synfig/valuenode_realstring.cpp:180
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
 msgid "Width"
 msgstr "Largura"
 
-#: src/modules/lyr_std/supersample.cpp:291
+#: src/modules/lyr_std/supersample.cpp:338
 msgid "Width of sample area (In pixels)"
 msgstr "Largura da área de amostra (em pixels)"
 
-#: src/modules/lyr_std/supersample.cpp:294 src/tool/printing_functions.cpp:123
+#: src/modules/lyr_std/supersample.cpp:341 src/tool/printing_functions.cpp:123
 msgid "Height"
 msgstr "Altura"
 
-#: src/modules/lyr_std/supersample.cpp:295
+#: src/modules/lyr_std/supersample.cpp:342
 msgid "Height of sample area (In pixels)"
 msgstr "Altura da área de amostra (em pixels)"
 
-#: src/modules/lyr_std/supersample.cpp:298
+#: src/modules/lyr_std/supersample.cpp:345
 msgid "Use Parametric"
 msgstr "Usar paramétrico"
 
-#: src/modules/lyr_std/supersample.cpp:299
+#: src/modules/lyr_std/supersample.cpp:346
 msgid "Use the Parametric Renderer"
 msgstr "Usar o processamento paramétrico"
 
-#: src/modules/lyr_std/supersample.cpp:302
+#: src/modules/lyr_std/supersample.cpp:349
 msgid "Be Alpha Safe"
 msgstr "Seja Alfa seguro"
 
-#: src/modules/lyr_std/supersample.cpp:303
+#: src/modules/lyr_std/supersample.cpp:350
 msgid "Avoid alpha artifacts when checked"
 msgstr "Evite artefatos alfa, quando verificada"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:166
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:172
 #: src/synfig/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "Time Loop"
 
-#: src/modules/lyr_std/timeloop.cpp:124 src/synfig/valuenode_timeloop.cpp:179
+#: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
 msgstr "Link Time"
 
-#: src/modules/lyr_std/timeloop.cpp:125
+#: src/modules/lyr_std/timeloop.cpp:134
 msgid "Start time of the loop for the cycled context"
 msgstr "Hora de início do ciclo para o contexto de um ciclo"
 
-#: src/modules/lyr_std/timeloop.cpp:129 src/synfig/valuenode_timeloop.cpp:184
+#: src/modules/lyr_std/timeloop.cpp:138 src/synfig/valuenode_timeloop.cpp:184
 msgid "Local Time"
 msgstr "O tempo local"
 
-#: src/modules/lyr_std/timeloop.cpp:130 src/synfig/valuenode_timeloop.cpp:185
+#: src/modules/lyr_std/timeloop.cpp:139 src/synfig/valuenode_timeloop.cpp:185
 msgid "The time when the resulted loop starts"
 msgstr "O tempo quando o resultado de laço começa"
 
-#: src/modules/lyr_std/timeloop.cpp:134 src/synfig/valuenode_step.cpp:202
+#: src/modules/lyr_std/timeloop.cpp:143 src/synfig/valuenode_step.cpp:202
 #: src/synfig/valuenode_timeloop.cpp:189
 msgid "Duration"
 msgstr "Duração"
 
-#: src/modules/lyr_std/timeloop.cpp:135 src/synfig/valuenode_timeloop.cpp:190
+#: src/modules/lyr_std/timeloop.cpp:144 src/synfig/valuenode_timeloop.cpp:190
 msgid "Lenght of the loop"
 msgstr "Comprimento do loop"
 
-#: src/modules/lyr_std/timeloop.cpp:139
+#: src/modules/lyr_std/timeloop.cpp:148
 msgid "Only For Positive Duration"
 msgstr "Apenas para duração positiva"
 
-#: src/modules/lyr_std/timeloop.cpp:140
+#: src/modules/lyr_std/timeloop.cpp:149
 msgid "When checked will loop only positive durations"
 msgstr "Quando selecionado irá percorrer apenas durações positivas"
 
-#: src/modules/lyr_std/timeloop.cpp:144
+#: src/modules/lyr_std/timeloop.cpp:153
 msgid "Symmetrical"
 msgstr "Simétrico"
 
-#: src/modules/lyr_std/timeloop.cpp:145
+#: src/modules/lyr_std/timeloop.cpp:154
 msgid "When checked, loops are mirrored centered at Local Time"
 msgstr "Quando marcado, os loops são espelhados centrados em tempo local"
 
-#: src/modules/lyr_std/translate.cpp:54
+#: src/modules/lyr_std/translate.cpp:55
 msgid "Translate"
 msgstr "Mover"
 
@@ -891,115 +889,115 @@ msgstr "Quando marcada, distorce dentro do círculo"
 msgid "When checked, distorts outside the circle"
 msgstr "Quando marcada, distorce fora do círculo"
 
-#: src/modules/lyr_std/warp.cpp:56
+#: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
 msgstr "Empenar"
 
-#: src/modules/lyr_std/warp.cpp:374
+#: src/modules/lyr_std/warp.cpp:380
 msgid "Source TL"
 msgstr "Fonte TL"
 
-#: src/modules/lyr_std/warp.cpp:376
+#: src/modules/lyr_std/warp.cpp:382
 msgid "Top Left corner of the source to warp"
 msgstr "Canto superior esquerdo da fonte para empenar"
 
-#: src/modules/lyr_std/warp.cpp:380
+#: src/modules/lyr_std/warp.cpp:386
 msgid "Source BR"
 msgstr "Fonte BR"
 
-#: src/modules/lyr_std/warp.cpp:381
+#: src/modules/lyr_std/warp.cpp:387
 msgid "Bottom Right corner of the source to warp"
 msgstr "O canto inferior direito da fonte para empenar"
 
-#: src/modules/lyr_std/warp.cpp:385
+#: src/modules/lyr_std/warp.cpp:391
 msgid "Dest TL"
 msgstr "Dest TL"
 
-#: src/modules/lyr_std/warp.cpp:387
+#: src/modules/lyr_std/warp.cpp:393
 msgid "Top Left corner of the destination"
 msgstr "No canto superior esquerdo do destino"
 
-#: src/modules/lyr_std/warp.cpp:391
+#: src/modules/lyr_std/warp.cpp:397
 msgid "Dest TR"
 msgstr "Dest TR"
 
-#: src/modules/lyr_std/warp.cpp:393
+#: src/modules/lyr_std/warp.cpp:399
 msgid "Top Right corner of the destination"
 msgstr "Canto superior direito do destino"
 
-#: src/modules/lyr_std/warp.cpp:397
+#: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BR"
 msgstr "Dest BR"
 
-#: src/modules/lyr_std/warp.cpp:399
+#: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Right corner of the destination"
 msgstr "O canto inferior direito do destino"
 
-#: src/modules/lyr_std/warp.cpp:403
+#: src/modules/lyr_std/warp.cpp:409
 msgid "Dest BL"
 msgstr "Dest BL"
 
-#: src/modules/lyr_std/warp.cpp:405
+#: src/modules/lyr_std/warp.cpp:411
 msgid "Bottom Left corner of the destination"
 msgstr "Canto inferior esquerdo do destino"
 
-#: src/modules/lyr_std/warp.cpp:413
+#: src/modules/lyr_std/warp.cpp:419
 msgid "Horizon"
 msgstr "Horizonte"
 
-#: src/modules/lyr_std/warp.cpp:414
+#: src/modules/lyr_std/warp.cpp:420
 msgid "Height that determines the horizon in perspectives"
 msgstr "Altura que determina o horizonte de perspectivas"
 
-#: src/modules/lyr_std/curvewarp.cpp:55
+#: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
 msgstr "Curva de empenamento"
 
-#: src/modules/lyr_std/curvewarp.cpp:390
-msgid "Position of the source line"
-msgstr "Posição da linha de origem"
+#: src/modules/lyr_std/curvewarp.cpp:399
+msgid "Position of the destiny Spline line"
+msgstr ""
 
-#: src/modules/lyr_std/curvewarp.cpp:395
+#: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
 msgstr "Quanto é ampliado o resultado perpendicular à linha de origem"
 
-#: src/modules/lyr_std/curvewarp.cpp:398
+#: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
 msgstr "Ponto de partida"
 
-#: src/modules/lyr_std/curvewarp.cpp:400
+#: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
 msgstr "Primeiro ponto da linha de origem"
 
-#: src/modules/lyr_std/curvewarp.cpp:403
+#: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
 msgstr "Ponto Final"
 
-#: src/modules/lyr_std/curvewarp.cpp:404
+#: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
 msgstr "ponto final da linha de origem"
 
-#: src/modules/lyr_std/curvewarp.cpp:407
-#: src/modules/mod_geometry/advanced_outline.cpp:1123
-#: src/modules/mod_geometry/outline.cpp:814
-#: src/modules/mod_geometry/region.cpp:233
-#: src/modules/mod_gradient/curvegradient.cpp:546
-#: src/modules/mod_particle/plant.cpp:391
+#: src/modules/lyr_std/curvewarp.cpp:416
+#: src/modules/mod_geometry/advanced_outline.cpp:1134
+#: src/modules/mod_geometry/outline.cpp:823
+#: src/modules/mod_geometry/region.cpp:238
+#: src/modules/mod_gradient/curvegradient.cpp:559
+#: src/modules/mod_particle/plant.cpp:424
 msgid "Vertices"
 msgstr "Vértices"
 
-#: src/modules/lyr_std/curvewarp.cpp:410
+#: src/modules/lyr_std/curvewarp.cpp:419
 msgid "List of Spline Points where the source line is curved to"
 msgstr ""
 
-#: src/modules/lyr_std/curvewarp.cpp:413
-#: src/modules/mod_geometry/advanced_outline.cpp:1178
-#: src/modules/mod_gradient/curvegradient.cpp:567
+#: src/modules/lyr_std/curvewarp.cpp:422
+#: src/modules/mod_geometry/advanced_outline.cpp:1189
+#: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
 msgstr "Rápido"
 
-#: src/modules/lyr_std/curvewarp.cpp:414
-#: src/modules/mod_gradient/curvegradient.cpp:568
+#: src/modules/lyr_std/curvewarp.cpp:423
+#: src/modules/mod_gradient/curvegradient.cpp:581
 msgid "When checked, renders quickly but with artifacts"
 msgstr "Quando marcada, processa rapidamente, mas com os artefatos"
 
@@ -1007,26 +1005,26 @@ msgstr "Quando marcada, processa rapidamente, mas com os artefatos"
 msgid "XOR Pattern"
 msgstr "XOR Padrão"
 
-#: src/modules/lyr_std/xorpattern.cpp:126
+#: src/modules/lyr_std/xorpattern.cpp:130
 msgid "Center of the pattern"
 msgstr "Centro do padrão"
 
-#: src/modules/lyr_std/xorpattern.cpp:130
+#: src/modules/lyr_std/xorpattern.cpp:134
 msgid "Size of the pattern"
 msgstr "Tamanho do padrão"
 
-#: src/modules/lyr_std/zoom.cpp:51 src/synfig/valuenode.cpp:143
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:149
 #: src/synfig/valuenode_blinecalctangent.cpp:261
 #: src/synfig/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenode_exp.cpp:155 src/synfig/valuenode_scale.cpp:243
 msgid "Scale"
 msgstr ""
 
-#: src/modules/lyr_std/zoom.cpp:99
+#: src/modules/lyr_std/zoom.cpp:100
 msgid "Amount to scale to"
 msgstr ""
 
-#: src/modules/lyr_std/zoom.cpp:104
+#: src/modules/lyr_std/zoom.cpp:107
 msgid "Point to scale from"
 msgstr ""
 
@@ -1044,22 +1042,22 @@ msgstr "%s não está no formato BMP"
 #: src/modules/mod_bmp/mptr_bmp.cpp:150
 #, c-format
 msgid "Failure while reading BITMAPFILEHEADER from %s"
-msgstr "Falha na leitura de BITMAPFILEHEADER de %s"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:158
 #, c-format
 msgid "Failure while reading BITMAPINFOHEADER from %s"
-msgstr "Falha na leitura de BITMAPINFOHEADER de %s"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:168
 #, c-format
 msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
-msgstr "BITMAPFILEHEADER ruim em %s. (bfOffsetBits=%d, deve ser %d)"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:176
 #, c-format
 msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
-msgstr "BITMAPINFOHEADER ruim em %s. (biSize=%d, deve ser 40)"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
 msgid "Reading compressed bitmaps is not supported"
@@ -1094,126 +1092,126 @@ msgstr "Não é possível gravar informações de cabeçalho"
 msgid "Unable to open pipe to encodedv"
 msgstr "Não foi possível abrir pipe para encodedv"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:215
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:225
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:279
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:297
 msgid "Unable to open pipe to ffmpeg"
 msgstr "Não foi possível abrir pipe para o ffmpeg"
 
-#: src/modules/mod_filter/blur.cpp:67
+#: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
 msgstr "Desfoque"
 
-#: src/modules/mod_filter/blur.cpp:68 src/modules/mod_filter/radialblur.cpp:56
+#: src/modules/mod_filter/blur.cpp:70 src/modules/mod_filter/radialblur.cpp:57
 #: src/synfig/layer_motionblur.cpp:57
 msgid "Blurs"
 msgstr "Desfoques"
 
-#: src/modules/mod_filter/blur.cpp:372
+#: src/modules/mod_filter/blur.cpp:414
 msgid "Size of Blur"
 msgstr "Tamanho do desfoque"
 
-#: src/modules/mod_filter/colorcorrect.cpp:54
+#: src/modules/mod_filter/colorcorrect.cpp:56
 msgid "Color Correct"
 msgstr "Correção de cor"
 
-#: src/modules/mod_filter/colorcorrect.cpp:210
+#: src/modules/mod_filter/colorcorrect.cpp:217
 msgid "Hue Adjust"
 msgstr "Ajuste de matiz"
 
-#: src/modules/mod_filter/colorcorrect.cpp:214
+#: src/modules/mod_filter/colorcorrect.cpp:221
 msgid "Brightness"
 msgstr "Brilho"
 
-#: src/modules/mod_filter/colorcorrect.cpp:218
+#: src/modules/mod_filter/colorcorrect.cpp:225
 msgid "Contrast"
 msgstr "Contraste"
 
-#: src/modules/mod_filter/colorcorrect.cpp:222
+#: src/modules/mod_filter/colorcorrect.cpp:229
 msgid "Exposure Adjust"
 msgstr "Exposição Ajuste"
 
-#: src/modules/mod_filter/colorcorrect.cpp:226 src/synfig/layer_bitmap.cpp:178
+#: src/modules/mod_filter/colorcorrect.cpp:233 src/synfig/layer_bitmap.cpp:176
 msgid "Gamma Adjustment"
 msgstr "Gama de ajuste"
 
-#: src/modules/mod_filter/halftone2.cpp:57
+#: src/modules/mod_filter/halftone2.cpp:59
 msgid "Halftone 2"
 msgstr "Meio-tom"
 
-#: src/modules/mod_filter/halftone2.cpp:150
+#: src/modules/mod_filter/halftone2.cpp:155
 msgid "Mask Origin"
 msgstr "Máscara de Origem"
 
-#: src/modules/mod_filter/halftone2.cpp:154
+#: src/modules/mod_filter/halftone2.cpp:159
 msgid "Mask Angle"
 msgstr "Ângulo de máscara"
 
-#: src/modules/mod_filter/halftone2.cpp:158
-#: src/modules/mod_filter/halftone3.cpp:308
+#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone3.cpp:328
 msgid "Mask Size"
 msgstr "Tamanho da Máscara"
 
-#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone2.cpp:168
 msgid "Light Color"
 msgstr "Cor suave"
 
-#: src/modules/mod_filter/halftone2.cpp:166
+#: src/modules/mod_filter/halftone2.cpp:171
 msgid "Dark Color"
 msgstr "Cor escura"
 
-#: src/modules/mod_filter/halftone2.cpp:171
-#: src/modules/mod_filter/halftone3.cpp:313
+#: src/modules/mod_filter/halftone2.cpp:176
+#: src/modules/mod_filter/halftone3.cpp:333
 #: src/modules/mod_gradient/conicalgradient.cpp:125
 msgid "Symmetric"
 msgstr "Simétrico"
 
-#: src/modules/mod_filter/halftone2.cpp:172
-#: src/modules/mod_filter/halftone3.cpp:314
+#: src/modules/mod_filter/halftone2.cpp:177
+#: src/modules/mod_filter/halftone3.cpp:334
 msgid "Light On Dark"
 msgstr "Luz no esuro"
 
-#: src/modules/mod_filter/halftone2.cpp:174
-#: src/modules/mod_filter/halftone3.cpp:316
+#: src/modules/mod_filter/halftone2.cpp:179
+#: src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
 msgstr "Diamante"
 
-#: src/modules/mod_filter/halftone2.cpp:175
-#: src/modules/mod_filter/halftone3.cpp:317
+#: src/modules/mod_filter/halftone2.cpp:180
+#: src/modules/mod_filter/halftone3.cpp:337
 msgid "Stripe"
 msgstr "Listra"
 
-#: src/modules/mod_filter/halftone3.cpp:57
+#: src/modules/mod_filter/halftone3.cpp:59
 msgid "Halftone 3"
 msgstr "Meio-tom 3"
 
-#: src/modules/mod_filter/halftone3.cpp:311
+#: src/modules/mod_filter/halftone3.cpp:331
 msgid " Type"
 msgstr "Tipo"
 
-#: src/modules/mod_filter/halftone3.cpp:320
+#: src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
 msgstr "Bandeira subtrativa"
 
-#: src/modules/mod_filter/halftone3.cpp:328
+#: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
 msgstr "Cor"
 
-#: src/modules/mod_filter/halftone3.cpp:332
+#: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
 msgstr "Máscara de Origem"
 
-#: src/modules/mod_filter/halftone3.cpp:336
+#: src/modules/mod_filter/halftone3.cpp:356
 msgid " Mask Angle"
 msgstr "Ângulo de máscara"
 
-#: src/modules/mod_filter/lumakey.cpp:57
+#: src/modules/mod_filter/lumakey.cpp:59
 msgid "Luma Key"
 msgstr "Luma Key"
 
-#: src/modules/mod_filter/radialblur.cpp:55
+#: src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
 msgstr "Desfoque Radial"
 
@@ -1234,20 +1232,20 @@ msgstr "Tabuleiro de damas"
 #: src/modules/mod_geometry/advanced_outline.cpp:68
 #: src/modules/mod_geometry/outline.cpp:73
 #: src/modules/mod_geometry/rectangle.cpp:60
-#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:63
-#: src/synfig/layer_polygon.cpp:62 src/synfig/layer_solidcolor.cpp:57
+#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
+#: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
 msgid "Geometry"
 msgstr "Geometria"
 
-#: src/modules/mod_geometry/checkerboard.cpp:123
+#: src/modules/mod_geometry/checkerboard.cpp:147
 msgid "Color of checkers"
 msgstr "Cor de quadriculado"
 
-#: src/modules/mod_geometry/checkerboard.cpp:127
+#: src/modules/mod_geometry/checkerboard.cpp:151
 msgid "Center of the checkers"
 msgstr "Centro do quadriculado"
 
-#: src/modules/mod_geometry/checkerboard.cpp:131
+#: src/modules/mod_geometry/checkerboard.cpp:155
 msgid "Size of checkers"
 msgstr "Tamanho do quadriculado"
 
@@ -1255,54 +1253,54 @@ msgstr "Tamanho do quadriculado"
 msgid "Circle"
 msgstr "Círculo"
 
-#: src/modules/mod_geometry/circle.cpp:134
+#: src/modules/mod_geometry/circle.cpp:152
 msgid "Radius of the circle"
 msgstr "Raio do círculo"
 
-#: src/modules/mod_geometry/circle.cpp:138 src/synfig/layer_shape.cpp:1205
+#: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1234
 msgid "Feather"
 msgstr "Suavizar"
 
-#: src/modules/mod_geometry/circle.cpp:140
+#: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
 msgstr "Quantidade da suavidade do círculo"
 
-#: src/modules/mod_geometry/circle.cpp:148
+#: src/modules/mod_geometry/circle.cpp:166
 msgid "Invert the circle"
 msgstr "Inverter o círculo"
 
-#: src/modules/mod_geometry/circle.cpp:152
+#: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
 msgstr "Falloff"
 
-#: src/modules/mod_geometry/circle.cpp:153
+#: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
 msgstr "Determina a função falloff para a suavização"
 
-#: src/modules/mod_geometry/circle.cpp:155
-#: src/modules/mod_noise/distort.cpp:234 src/modules/mod_noise/noise.cpp:275
-#: src/modules/mod_noise/valuenode_random.cpp:288
-#: src/synfig/layer_bitmap.cpp:172 src/synfig/layer_motionblur.cpp:150
-#: src/synfig/valuenode.cpp:139 src/synfig/valuenode_linear.cpp:146
+#: src/modules/mod_geometry/circle.cpp:173
+#: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
+#: src/modules/mod_noise/valuenode_random.cpp:289
+#: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_linear.cpp:146
 msgid "Linear"
 msgstr "Linear"
 
-#: src/modules/mod_geometry/circle.cpp:156
+#: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
 msgstr "Quadrado"
 
-#: src/modules/mod_geometry/circle.cpp:157
+#: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
 msgstr "Raiz quadrada"
 
-#: src/modules/mod_geometry/circle.cpp:158
+#: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
 msgstr "Sigmond"
 
-#: src/modules/mod_geometry/circle.cpp:159
-#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:276
-#: src/modules/mod_noise/valuenode_random.cpp:289
-#: src/synfig/layer_bitmap.cpp:173
+#: src/modules/mod_geometry/circle.cpp:177
+#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
+#: src/modules/mod_noise/valuenode_random.cpp:290
+#: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
 msgstr "Co-seno"
 
@@ -1310,160 +1308,160 @@ msgstr "Co-seno"
 msgid "Advanced Outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:133
+#: src/modules/mod_geometry/advanced_outline.cpp:152
 msgid "No vertices in spline "
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1125
-#: src/modules/mod_geometry/outline.cpp:817
-#: src/modules/mod_geometry/region.cpp:235
-#: src/modules/mod_gradient/curvegradient.cpp:549
-#: src/modules/mod_particle/plant.cpp:392
+#: src/modules/mod_geometry/advanced_outline.cpp:1136
+#: src/modules/mod_geometry/outline.cpp:826
+#: src/modules/mod_geometry/region.cpp:240
+#: src/modules/mod_gradient/curvegradient.cpp:562
+#: src/modules/mod_particle/plant.cpp:425
 msgid "A list of spline points"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1129
-#: src/modules/mod_geometry/outline.cpp:831
+#: src/modules/mod_geometry/advanced_outline.cpp:1140
+#: src/modules/mod_geometry/outline.cpp:840
 msgid "Outline Width"
 msgstr "Largura da borda"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1130
-#: src/modules/mod_geometry/outline.cpp:832
+#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/outline.cpp:841
 msgid "Global width of the outline"
 msgstr "Largura global do contorno"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1134
-#: src/modules/mod_geometry/outline.cpp:837
+#: src/modules/mod_geometry/advanced_outline.cpp:1145
+#: src/modules/mod_geometry/outline.cpp:846
 msgid "Expand"
 msgstr "Expanda"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1135
-#: src/modules/mod_geometry/outline.cpp:838
+#: src/modules/mod_geometry/advanced_outline.cpp:1146
+#: src/modules/mod_geometry/outline.cpp:847
 msgid "Value to add to the global width"
 msgstr "Valor a adicionar à largura global"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1138
+#: src/modules/mod_geometry/advanced_outline.cpp:1149
 msgid "Tip Type at Start"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1139
+#: src/modules/mod_geometry/advanced_outline.cpp:1150
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1141
-#: src/modules/mod_geometry/advanced_outline.cpp:1150
-#: src/synfig/valuenode_composite.cpp:548
+#: src/modules/mod_geometry/advanced_outline.cpp:1152
+#: src/modules/mod_geometry/advanced_outline.cpp:1161
 #: src/synfig/valuenode_composite.cpp:558
-#: src/synfig/valuenode_composite.cpp:587
-#: src/synfig/valuenode_composite.cpp:596
+#: src/synfig/valuenode_composite.cpp:568
+#: src/synfig/valuenode_composite.cpp:597
+#: src/synfig/valuenode_composite.cpp:606
 msgid "Rounded Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1142
-#: src/modules/mod_geometry/advanced_outline.cpp:1151
-#: src/synfig/valuenode_composite.cpp:549
+#: src/modules/mod_geometry/advanced_outline.cpp:1153
+#: src/modules/mod_geometry/advanced_outline.cpp:1162
 #: src/synfig/valuenode_composite.cpp:559
-#: src/synfig/valuenode_composite.cpp:588
-#: src/synfig/valuenode_composite.cpp:597
+#: src/synfig/valuenode_composite.cpp:569
+#: src/synfig/valuenode_composite.cpp:598
+#: src/synfig/valuenode_composite.cpp:607
 msgid "Squared Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1143
-#: src/modules/mod_geometry/advanced_outline.cpp:1152
-#: src/synfig/valuenode_composite.cpp:550
+#: src/modules/mod_geometry/advanced_outline.cpp:1154
+#: src/modules/mod_geometry/advanced_outline.cpp:1163
 #: src/synfig/valuenode_composite.cpp:560
-#: src/synfig/valuenode_composite.cpp:589
-#: src/synfig/valuenode_composite.cpp:598
+#: src/synfig/valuenode_composite.cpp:570
+#: src/synfig/valuenode_composite.cpp:599
+#: src/synfig/valuenode_composite.cpp:608
 msgid "Peak Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1144
-#: src/modules/mod_geometry/advanced_outline.cpp:1153
-#: src/synfig/valuenode_composite.cpp:551
+#: src/modules/mod_geometry/advanced_outline.cpp:1155
+#: src/modules/mod_geometry/advanced_outline.cpp:1164
 #: src/synfig/valuenode_composite.cpp:561
-#: src/synfig/valuenode_composite.cpp:590
-#: src/synfig/valuenode_composite.cpp:599
+#: src/synfig/valuenode_composite.cpp:571
+#: src/synfig/valuenode_composite.cpp:600
+#: src/synfig/valuenode_composite.cpp:609
 msgid "Flat Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1147
+#: src/modules/mod_geometry/advanced_outline.cpp:1158
 msgid "Tip Type at End"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1148
+#: src/modules/mod_geometry/advanced_outline.cpp:1159
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1156
+#: src/modules/mod_geometry/advanced_outline.cpp:1167
 msgid "Cusps Type"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1157
-#: src/modules/mod_geometry/outline.cpp:843
+#: src/modules/mod_geometry/advanced_outline.cpp:1168
+#: src/modules/mod_geometry/outline.cpp:852
 msgid "Determines cusp type"
 msgstr "Determina o tipo cúspide"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1159
+#: src/modules/mod_geometry/advanced_outline.cpp:1170
 msgid "Sharp"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1160
+#: src/modules/mod_geometry/advanced_outline.cpp:1171
 msgid "Rounded"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1164
+#: src/modules/mod_geometry/advanced_outline.cpp:1175
 msgid "Smoothness"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1165
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1168
-#: src/modules/mod_geometry/outline.cpp:859
+#: src/modules/mod_geometry/advanced_outline.cpp:1179
+#: src/modules/mod_geometry/outline.cpp:869
 #: src/synfig/valuenode_blinecalctangent.cpp:271
 #: src/synfig/valuenode_blinecalcvertex.cpp:216
 #: src/synfig/valuenode_blinecalcwidth.cpp:226
 msgid "Homogeneous"
 msgstr "Homogêneo"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1169
+#: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "When true, widthpoints positions are spline length based"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1172
+#: src/modules/mod_geometry/advanced_outline.cpp:1183
 msgid "Width Point List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1175
+#: src/modules/mod_geometry/advanced_outline.cpp:1186
 msgid "List of width Points that defines the variable width"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1179
+#: src/modules/mod_geometry/advanced_outline.cpp:1190
 msgid "When checked outline renders faster, but less accurate"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1182
+#: src/modules/mod_geometry/advanced_outline.cpp:1193
 msgid "Dashed Outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1184
+#: src/modules/mod_geometry/advanced_outline.cpp:1195
 msgid "When checked outline is dashed"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1187
+#: src/modules/mod_geometry/advanced_outline.cpp:1198
 msgid "Dash Item List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1190
+#: src/modules/mod_geometry/advanced_outline.cpp:1201
 msgid "List of dash items that defines the dashed outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1193
+#: src/modules/mod_geometry/advanced_outline.cpp:1204
 msgid "Dash Items Offset"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1196
+#: src/modules/mod_geometry/advanced_outline.cpp:1207
 msgid "Distance to Offset the Dash Items"
 msgstr ""
 
@@ -1471,32 +1469,36 @@ msgstr ""
 msgid "Outline"
 msgstr "Borda"
 
-#: src/modules/mod_geometry/outline.cpp:183
+#: src/modules/mod_geometry/outline.cpp:192
 msgid "No vertices in outline "
 msgstr "Sem vértices na borda"
 
-#: src/modules/mod_geometry/outline.cpp:842
+#: src/modules/mod_geometry/outline.cpp:851
 msgid "Sharp Cusps"
 msgstr "Cúspides afiadas"
 
-#: src/modules/mod_geometry/outline.cpp:847
+#: src/modules/mod_geometry/outline.cpp:856
 msgid "Rounded Begin"
 msgstr "Início Arredondado"
 
-#: src/modules/mod_geometry/outline.cpp:848
-#: src/modules/mod_geometry/outline.cpp:853
+#: src/modules/mod_geometry/outline.cpp:857
+#: src/modules/mod_geometry/outline.cpp:862
 msgid "Round off the tip"
 msgstr "Termine a ponta"
 
-#: src/modules/mod_geometry/outline.cpp:852
+#: src/modules/mod_geometry/outline.cpp:861
 msgid "Rounded End"
 msgstr "Fim arredondado"
 
-#: src/modules/mod_geometry/outline.cpp:856
+#: src/modules/mod_geometry/outline.cpp:865
 msgid "Loopyness"
 msgstr "Loopyness"
 
-#: src/modules/mod_geometry/outline.cpp:860
+#: src/modules/mod_geometry/outline.cpp:866
+msgid "(Currently not used)"
+msgstr ""
+
+#: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
 msgstr "Quando verificada a largura tem o comprimento da Spline para interpolar"
 
@@ -1504,11 +1506,11 @@ msgstr "Quando verificada a largura tem o comprimento da Spline para interpolar"
 msgid "Rectangle"
 msgstr "Retângulo"
 
-#: src/modules/mod_geometry/rectangle.cpp:142
+#: src/modules/mod_geometry/rectangle.cpp:155
 msgid "Expand amount"
 msgstr "Expandir a quantidade"
 
-#: src/modules/mod_geometry/rectangle.cpp:146
+#: src/modules/mod_geometry/rectangle.cpp:159
 msgid "Invert the rectangle"
 msgstr "Inverter o retângulo"
 
@@ -1516,50 +1518,50 @@ msgstr "Inverter o retângulo"
 msgid "Region"
 msgstr "Região"
 
-#: src/modules/mod_geometry/star.cpp:62
+#: src/modules/mod_geometry/star.cpp:63
 msgid "Star"
 msgstr "Estrela"
 
-#: src/modules/mod_geometry/star.cpp:182
+#: src/modules/mod_geometry/star.cpp:170
 msgid "Outer Radius"
 msgstr "Raio externo"
 
-#: src/modules/mod_geometry/star.cpp:183
+#: src/modules/mod_geometry/star.cpp:171
 msgid "The radius of the outer points in the star"
 msgstr "O raio dos pontos exteriores da estrela"
 
-#: src/modules/mod_geometry/star.cpp:189
+#: src/modules/mod_geometry/star.cpp:177
 msgid "Inner Radius"
 msgstr "Raio interno"
 
-#: src/modules/mod_geometry/star.cpp:190
+#: src/modules/mod_geometry/star.cpp:178
 msgid "The radius of the inner points in the star"
 msgstr "O raio dos pontos interiores da estrela"
 
-#: src/modules/mod_geometry/star.cpp:196
+#: src/modules/mod_geometry/star.cpp:184
 #: src/modules/mod_gradient/conicalgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:129
+#: src/modules/mod_gradient/spiralgradient.cpp:130
 #: src/synfig/valuenode_cos.cpp:155 src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
 msgstr "Ângulo"
 
-#: src/modules/mod_geometry/star.cpp:197
+#: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
 msgstr "A orientação da estrela"
 
-#: src/modules/mod_geometry/star.cpp:202 src/synfig/distance.cpp:251
+#: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
 msgid "Points"
 msgstr "Pontos"
 
-#: src/modules/mod_geometry/star.cpp:203
+#: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
 msgstr "O número de pontos na estrela"
 
-#: src/modules/mod_geometry/star.cpp:207
+#: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
 msgstr "Polígono Regular"
 
-#: src/modules/mod_geometry/star.cpp:208
+#: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
 msgstr "Seja para desenhar uma estrela ou um polígono regular"
 
@@ -1577,20 +1579,20 @@ msgid "Conical Gradient"
 msgstr "Gradiente Cônico"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:58
-#: src/modules/mod_gradient/curvegradient.cpp:61
+#: src/modules/mod_gradient/curvegradient.cpp:62
 #: src/modules/mod_gradient/lineargradient.cpp:55
 #: src/modules/mod_gradient/radialgradient.cpp:58
-#: src/modules/mod_gradient/spiralgradient.cpp:57
-#: src/modules/mod_noise/noise.cpp:58
+#: src/modules/mod_gradient/spiralgradient.cpp:58
+#: src/modules/mod_noise/noise.cpp:59
 msgid "Gradients"
 msgstr "Gradientes"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:110
-#: src/modules/mod_gradient/curvegradient.cpp:553
-#: src/modules/mod_gradient/lineargradient.cpp:200
+#: src/modules/mod_gradient/curvegradient.cpp:566
+#: src/modules/mod_gradient/lineargradient.cpp:195
 #: src/modules/mod_gradient/radialgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:113
-#: src/modules/mod_noise/noise.cpp:260
+#: src/modules/mod_gradient/spiralgradient.cpp:114
+#: src/modules/mod_noise/noise.cpp:269
 msgid "Gradient to apply"
 msgstr "Gradiente para aplicar"
 
@@ -1603,27 +1605,27 @@ msgid "Rotation of the gradient around the center"
 msgstr "Rotação do gradiente em torno do centro"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:126
-#: src/modules/mod_gradient/curvegradient.cpp:557
-#: src/modules/mod_gradient/lineargradient.cpp:204
+#: src/modules/mod_gradient/curvegradient.cpp:570
+#: src/modules/mod_gradient/lineargradient.cpp:199
 #: src/modules/mod_gradient/radialgradient.cpp:131
 msgid "When checked the gradient is looped"
 msgstr "Quando marcado o gradiente é fechado"
 
-#: src/modules/mod_gradient/curvegradient.cpp:60
+#: src/modules/mod_gradient/curvegradient.cpp:61
 msgid "Curve Gradient"
 msgstr "Curva de gradiente"
 
-#: src/modules/mod_gradient/curvegradient.cpp:538
-#: src/modules/mod_particle/plant.cpp:399
+#: src/modules/mod_gradient/curvegradient.cpp:551
+#: src/modules/mod_particle/plant.cpp:432
 msgid "Offset for the Vertices List"
 msgstr "Deslocamento para a lista de vértices"
 
-#: src/modules/mod_gradient/curvegradient.cpp:543
+#: src/modules/mod_gradient/curvegradient.cpp:556
 msgid "Global width of the gradient"
 msgstr "Largura global  do gradiente"
 
-#: src/modules/mod_gradient/curvegradient.cpp:556
-#: src/modules/mod_gradient/lineargradient.cpp:203
+#: src/modules/mod_gradient/curvegradient.cpp:569
+#: src/modules/mod_gradient/lineargradient.cpp:198
 #: src/modules/mod_gradient/radialgradient.cpp:130
 #: src/synfig/valuenode_blinecalctangent.cpp:246
 #: src/synfig/valuenode_blinecalcvertex.cpp:206
@@ -1631,19 +1633,19 @@ msgstr "Largura global  do gradiente"
 msgid "Loop"
 msgstr "Loop"
 
-#: src/modules/mod_gradient/curvegradient.cpp:560
-#: src/modules/mod_gradient/lineargradient.cpp:207
+#: src/modules/mod_gradient/curvegradient.cpp:573
+#: src/modules/mod_gradient/lineargradient.cpp:202
 #: src/modules/mod_gradient/radialgradient.cpp:135
 msgid "ZigZag"
 msgstr "ZigZag"
 
-#: src/modules/mod_gradient/curvegradient.cpp:561
-#: src/modules/mod_gradient/lineargradient.cpp:208
+#: src/modules/mod_gradient/curvegradient.cpp:574
+#: src/modules/mod_gradient/lineargradient.cpp:203
 #: src/modules/mod_gradient/radialgradient.cpp:136
 msgid "When checked the gradient is summetrical at the center"
 msgstr "Quando marcado, o gradiente é simétrico no centro"
 
-#: src/modules/mod_gradient/curvegradient.cpp:564
+#: src/modules/mod_gradient/curvegradient.cpp:577
 msgid "Perpendicular"
 msgstr "Perpendicular"
 
@@ -1651,11 +1653,11 @@ msgstr "Perpendicular"
 msgid "Linear Gradient"
 msgstr "Gradiente linear"
 
-#: src/modules/mod_gradient/lineargradient.cpp:192
+#: src/modules/mod_gradient/lineargradient.cpp:187
 msgid "Start point of the gradient"
 msgstr "Ponto inicial do gradiente"
 
-#: src/modules/mod_gradient/lineargradient.cpp:196
+#: src/modules/mod_gradient/lineargradient.cpp:191
 msgid "End point of the gradient"
 msgstr "Ponto final do gradiente"
 
@@ -1664,23 +1666,23 @@ msgid "Radial Gradient"
 msgstr "Gradiente radial"
 
 #: src/modules/mod_gradient/radialgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:119
 msgid "Center of the gradient"
 msgstr "Centro do gradiente"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:56
+#: src/modules/mod_gradient/spiralgradient.cpp:57
 msgid "Spiral Gradient"
 msgstr "Gradiente espiral"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:130
+#: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Rotation of the spiral"
 msgstr "Rotação da espiral"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:135
+#: src/modules/mod_gradient/spiralgradient.cpp:136
 msgid "Clockwise"
 msgstr "Sentido horário"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:136
+#: src/modules/mod_gradient/spiralgradient.cpp:137
 msgid "When checked the spiral turns clockwise"
 msgstr "Quando marcado, a espiral gira para a direita"
 
@@ -1693,13 +1695,15 @@ msgstr "Nenhum arquivo para carregar"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
-#: src/synfig/listimporter.cpp:184 src/synfig/listimporter.cpp:185
+#: src/synfig/cairolistimporter.cpp:191 src/synfig/cairolistimporter.cpp:192
+#: src/synfig/listimporter.cpp:185 src/synfig/listimporter.cpp:186
 msgid "Unable to open "
 msgstr "Não é possível abrir"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
-#: src/synfig/listimporter.cpp:191 src/synfig/listimporter.cpp:192
+#: src/synfig/cairolistimporter.cpp:198 src/synfig/cairolistimporter.cpp:199
+#: src/synfig/listimporter.cpp:192 src/synfig/listimporter.cpp:193
 msgid "Unable to get frame from "
 msgstr "Não foi possível obter quadro de"
 
@@ -1737,115 +1741,115 @@ msgstr "Fim prematuro de arquivo"
 msgid "Unable to open pipe to imagemagick's convert utility"
 msgstr "Não foi possível abrir pipe para imagemagick de utilitário de conversão"
 
-#: src/modules/mod_noise/distort.cpp:57
+#: src/modules/mod_noise/distort.cpp:58
 msgid "Noise Distort"
 msgstr "Distorção de ruído "
 
-#: src/modules/mod_noise/distort.cpp:217
+#: src/modules/mod_noise/distort.cpp:222
 msgid "Displacement"
 msgstr "Deslocamento"
 
-#: src/modules/mod_noise/distort.cpp:218
+#: src/modules/mod_noise/distort.cpp:223
 msgid "How big the distortion displaces the context"
 msgstr "Quanto a distorção desloca o contexto"
 
-#: src/modules/mod_noise/distort.cpp:223
+#: src/modules/mod_noise/distort.cpp:228
 msgid "The distance between distortions"
 msgstr "A distância entre as distorções"
 
-#: src/modules/mod_noise/distort.cpp:226 src/modules/mod_noise/noise.cpp:263
+#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
 msgid "RandomNoise Seed"
 msgstr "Semente de ruído aleatório"
 
-#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:264
+#: src/modules/mod_noise/distort.cpp:232 src/modules/mod_noise/noise.cpp:273
 msgid "Change to modify the random seed of the noise"
 msgstr "Alterar para modificar a semente aleatória do ruído"
 
-#: src/modules/mod_noise/distort.cpp:230 src/modules/mod_noise/noise.cpp:271
-#: src/modules/mod_noise/valuenode_random.cpp:284
-#: src/synfig/layer_bitmap.cpp:168
+#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:280
+#: src/modules/mod_noise/valuenode_random.cpp:285
+#: src/synfig/layer_bitmap.cpp:165
 msgid "Interpolation"
 msgstr "Interpolação"
 
-#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
-#: src/synfig/layer_bitmap.cpp:169
+#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
+#: src/synfig/layer_bitmap.cpp:166
 msgid "What type of interpolation to use"
 msgstr "Que tipo de interpolação usar"
 
-#: src/modules/mod_noise/distort.cpp:233 src/modules/mod_noise/noise.cpp:274
-#: src/synfig/layer_bitmap.cpp:171
+#: src/modules/mod_noise/distort.cpp:238 src/modules/mod_noise/noise.cpp:283
+#: src/synfig/layer_bitmap.cpp:168
 msgid "Nearest Neighbor"
 msgstr "Vizinhos mais próximos"
 
-#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:277
-#: src/modules/mod_noise/valuenode_random.cpp:290 src/synfig/valuenode.cpp:149
-#: src/synfig/valuenode_bline.cpp:1001
+#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
+#: src/modules/mod_noise/valuenode_random.cpp:291 src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode_bline.cpp:1006
 #: src/synfig/valuenode_blinecalctangent.cpp:241
 #: src/synfig/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenode_blinecalcwidth.cpp:206
 msgid "Spline"
 msgstr "Spline"
 
-#: src/modules/mod_noise/distort.cpp:237 src/modules/mod_noise/noise.cpp:278
-#: src/modules/mod_noise/valuenode_random.cpp:291
-#: src/synfig/layer_bitmap.cpp:174
+#: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
+#: src/modules/mod_noise/valuenode_random.cpp:292
+#: src/synfig/layer_bitmap.cpp:171
 msgid "Cubic"
 msgstr "Cúbico"
 
-#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:281
+#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:290
 msgid "Detail"
 msgstr "Detalhe"
 
-#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:282
+#: src/modules/mod_noise/distort.cpp:246 src/modules/mod_noise/noise.cpp:291
 msgid "Increase to obtain fine details of the noise"
 msgstr "Aumente para obter detalhes do ruído"
 
-#: src/modules/mod_noise/distort.cpp:244 src/modules/mod_noise/noise.cpp:285
+#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:294
 msgid "Animation Speed"
 msgstr "Velocidade da Animação"
 
-#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:286
+#: src/modules/mod_noise/distort.cpp:250 src/modules/mod_noise/noise.cpp:295
 msgid "In cycles per second"
 msgstr "Em ciclos por segundo"
 
-#: src/modules/mod_noise/distort.cpp:248 src/modules/mod_noise/noise.cpp:289
+#: src/modules/mod_noise/distort.cpp:253 src/modules/mod_noise/noise.cpp:298
 msgid "Turbulent"
 msgstr "Turbulento"
 
-#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:290
+#: src/modules/mod_noise/distort.cpp:254 src/modules/mod_noise/noise.cpp:299
 msgid "When checked produces turbulent noise"
 msgstr "Quando marcada produz ruído turbulento"
 
 #: src/modules/mod_noise/main.cpp:66
-#: src/modules/mod_noise/valuenode_random.cpp:183
+#: src/modules/mod_noise/valuenode_random.cpp:184
 msgid "Random"
 msgstr "Aleatório"
 
-#: src/modules/mod_noise/noise.cpp:57
+#: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
 msgstr "Ruído Gradiente"
 
-#: src/modules/mod_noise/noise.cpp:268
+#: src/modules/mod_noise/noise.cpp:277
 msgid "Size of the noise"
 msgstr "Tamanho do ruído"
 
-#: src/modules/mod_noise/noise.cpp:293
+#: src/modules/mod_noise/noise.cpp:302
 msgid "Do Alpha"
 msgstr "Do Alpha"
 
-#: src/modules/mod_noise/noise.cpp:294
+#: src/modules/mod_noise/noise.cpp:303
 msgid "Uses transparency"
 msgstr "Usa transparência "
 
-#: src/modules/mod_noise/noise.cpp:297
+#: src/modules/mod_noise/noise.cpp:306
 msgid "Super Sampling"
 msgstr "Super Amostragem"
 
-#: src/modules/mod_noise/noise.cpp:298
+#: src/modules/mod_noise/noise.cpp:307
 msgid "When checked the gradient is supersampled"
 msgstr "Quando marcado o gradiente é super amostrado"
 
-#: src/modules/mod_noise/valuenode_random.cpp:264
+#: src/modules/mod_noise/valuenode_random.cpp:265
 #: src/synfig/valuenode_integer.cpp:194 src/synfig/valuenode_not.cpp:141
 #: src/synfig/valuenode_range.cpp:288 src/synfig/valuenode_real.cpp:182
 #: src/synfig/valuenode_reciprocal.cpp:165
@@ -1854,168 +1858,168 @@ msgstr "Quando marcado o gradiente é super amostrado"
 msgid "Link"
 msgstr "Link"
 
-#: src/modules/mod_noise/valuenode_random.cpp:265
+#: src/modules/mod_noise/valuenode_random.cpp:266
 msgid "The value node source that provides the central value"
 msgstr "O valor do nó de origem que fornece o valor central"
 
-#: src/modules/mod_noise/valuenode_random.cpp:270
+#: src/modules/mod_noise/valuenode_random.cpp:271
 msgid "The value of the maximum random difference"
 msgstr "O valor da diferença máxima aleatória"
 
-#: src/modules/mod_noise/valuenode_random.cpp:274
-#: src/modules/mod_particle/plant.cpp:450
+#: src/modules/mod_noise/valuenode_random.cpp:275
+#: src/modules/mod_particle/plant.cpp:483
 msgid "Seed"
 msgstr "Sementes"
 
-#: src/modules/mod_noise/valuenode_random.cpp:275
+#: src/modules/mod_noise/valuenode_random.cpp:276
 msgid "Seeds the random number generator"
 msgstr "Semeia o gerador de números aleatórios"
 
-#: src/modules/mod_noise/valuenode_random.cpp:279
+#: src/modules/mod_noise/valuenode_random.cpp:280
 msgid "Speed"
 msgstr "Velocidade"
 
-#: src/modules/mod_noise/valuenode_random.cpp:280
+#: src/modules/mod_noise/valuenode_random.cpp:281
 msgid ""
 "Defines how often a new random value is chosen (in choices per second) "
 msgstr "Define quantas vezes um novo valor aleatório é escolhido (em escolhas por segundo)"
 
-#: src/modules/mod_noise/valuenode_random.cpp:285
+#: src/modules/mod_noise/valuenode_random.cpp:286
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
 msgstr "Determina como o valor é interpolada uma escolha aleatória para a próxima"
 
-#: src/modules/mod_noise/valuenode_random.cpp:287
+#: src/modules/mod_noise/valuenode_random.cpp:288
 msgid "No interpolation"
 msgstr "Sem interpolação"
 
-#: src/modules/mod_noise/valuenode_random.cpp:296
+#: src/modules/mod_noise/valuenode_random.cpp:297
 msgid "Loop Time"
 msgstr "Tempo do loop"
 
-#: src/modules/mod_noise/valuenode_random.cpp:297
+#: src/modules/mod_noise/valuenode_random.cpp:298
 msgid "Makes the random value repeat after the given time"
 msgstr "Torna a repetir um valor aleatório após o tempo determinado"
 
-#: src/modules/mod_particle/plant.cpp:69
+#: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
 msgstr "Planta"
 
-#: src/modules/mod_particle/plant.cpp:404
+#: src/modules/mod_particle/plant.cpp:437
 msgid "Gradient to be used for coloring the plant"
 msgstr "Gradiente para ser utilizado na coloração da planta"
 
-#: src/modules/mod_particle/plant.cpp:408
+#: src/modules/mod_particle/plant.cpp:441
 msgid "Split Angle"
 msgstr "Separar ângulo"
 
-#: src/modules/mod_particle/plant.cpp:409
+#: src/modules/mod_particle/plant.cpp:442
 msgid "Angle by which each split deviates from its parent"
 msgstr "Ângulo pelo qual cada grupo se desvia do seu pai"
 
-#: src/modules/mod_particle/plant.cpp:413
+#: src/modules/mod_particle/plant.cpp:446
 msgid "Gravity"
 msgstr "Gravidade"
 
-#: src/modules/mod_particle/plant.cpp:414
+#: src/modules/mod_particle/plant.cpp:447
 msgid "Direction in which the shoots tend to face"
 msgstr "Direção na qual os disparos tendem a ir"
 
-#: src/modules/mod_particle/plant.cpp:419
+#: src/modules/mod_particle/plant.cpp:452
 msgid "Tangential Velocity"
 msgstr "Velocidade tangencial"
 
-#: src/modules/mod_particle/plant.cpp:420
+#: src/modules/mod_particle/plant.cpp:453
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:424
+#: src/modules/mod_particle/plant.cpp:457
 msgid "Perpendicular Velocity"
 msgstr "Velocidade perpendicular"
 
-#: src/modules/mod_particle/plant.cpp:425
+#: src/modules/mod_particle/plant.cpp:458
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:429
+#: src/modules/mod_particle/plant.cpp:462
 msgid "Stem Size"
 msgstr "Tamanho da haste"
 
-#: src/modules/mod_particle/plant.cpp:430
+#: src/modules/mod_particle/plant.cpp:463
 msgid "Size of the stem"
 msgstr "Tamanho da haste"
 
-#: src/modules/mod_particle/plant.cpp:435
+#: src/modules/mod_particle/plant.cpp:468
 msgid "Size As Alpha"
 msgstr "Tamanho como alfa"
 
-#: src/modules/mod_particle/plant.cpp:436
+#: src/modules/mod_particle/plant.cpp:469
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
 msgstr "Se ativado, o canal alfa do gradiente é multiplicado pelo tamanho da haste, e um alfa de 1,0 é usado quando o processamento"
 
-#: src/modules/mod_particle/plant.cpp:440
+#: src/modules/mod_particle/plant.cpp:473
 msgid "Reverse"
 msgstr "Reverso"
 
-#: src/modules/mod_particle/plant.cpp:441
+#: src/modules/mod_particle/plant.cpp:474
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Se ativado, processa a planta na direção oposta"
 
-#: src/modules/mod_particle/plant.cpp:445 src/synfig/valuenode.cpp:170
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:176
 #: src/synfig/valuenode_duplicate.cpp:203 src/synfig/valuenode_step.cpp:142
 msgid "Step"
 msgstr "Etapa"
 
-#: src/modules/mod_particle/plant.cpp:446
+#: src/modules/mod_particle/plant.cpp:479
 msgid "Measure of the distance between points when rendering"
 msgstr "Medida da distância entre os pontos quando em processamento"
 
-#: src/modules/mod_particle/plant.cpp:451
+#: src/modules/mod_particle/plant.cpp:484
 msgid "Used to seed the pseudo-random number generator"
 msgstr "Usado para semear o gerador de números pseudo-aleatórios"
 
-#: src/modules/mod_particle/plant.cpp:455
+#: src/modules/mod_particle/plant.cpp:488
 msgid "Splits"
 msgstr "Partir"
 
-#: src/modules/mod_particle/plant.cpp:456
+#: src/modules/mod_particle/plant.cpp:489
 msgid "Maximum number of times that each sprout can sprout recursively"
 msgstr "O número máximo de vezes que cada broto pode brotar recursivamente"
 
-#: src/modules/mod_particle/plant.cpp:460
+#: src/modules/mod_particle/plant.cpp:493
 msgid "Sprouts"
 msgstr "Brotos"
 
-#: src/modules/mod_particle/plant.cpp:461
+#: src/modules/mod_particle/plant.cpp:494
 msgid "Number of places that growth occurs on each spline section"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:465
+#: src/modules/mod_particle/plant.cpp:498
 msgid "Random Factor"
 msgstr "Fator Aleatório"
 
-#: src/modules/mod_particle/plant.cpp:466
+#: src/modules/mod_particle/plant.cpp:499
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
 msgstr "Usado para reduzir todos efeitos aleatórios. Definido como zero para desabilitar aleatoriedade."
 
-#: src/modules/mod_particle/plant.cpp:470
+#: src/modules/mod_particle/plant.cpp:503
 msgid "Drag"
 msgstr "Arrastar"
 
-#: src/modules/mod_particle/plant.cpp:471
+#: src/modules/mod_particle/plant.cpp:504
 msgid "Drag slows the growth"
 msgstr "Arraste retarda o crescimento"
 
-#: src/modules/mod_particle/plant.cpp:475
+#: src/modules/mod_particle/plant.cpp:508
 msgid "Use Width"
 msgstr "Use a Largura"
 
-#: src/modules/mod_particle/plant.cpp:476
+#: src/modules/mod_particle/plant.cpp:509
 msgid "Scale the velocity by the spline's width"
 msgstr ""
 
@@ -2024,97 +2028,102 @@ msgstr ""
 msgid "%s was not in PPM format"
 msgstr "%s não estava no formato PPM"
 
-#: src/synfig/cairoimporter.cpp:87 src/synfig/importer.cpp:87
+#: src/synfig/cairoimporter.cpp:88 src/synfig/importer.cpp:90
 msgid "Importer::open(): Cannot open empty filename"
 msgstr "Importer::open (): Não é possível abrir arquivo vazio"
 
-#: src/synfig/cairoimporter.cpp:101 src/synfig/importer.cpp:101
+#: src/synfig/cairoimporter.cpp:102 src/synfig/importer.cpp:104
 msgid "Importer::open(): Couldn't find extension"
 msgstr "Importer::open (): Não foi possível encontrar a extensão"
 
-#: src/synfig/cairoimporter.cpp:112 src/synfig/importer.cpp:112
+#: src/synfig/cairoimporter.cpp:113 src/synfig/importer.cpp:115
 msgid "Importer::open(): Unknown file type -- "
 msgstr "Importer::open (): Tipo de arquivo desconhecido --"
 
-#: src/synfig/canvas.cpp:798 src/synfig/canvas.cpp:863
-#: src/synfig/canvas.cpp:886
+#: src/synfig/cairolistimporter.cpp:163 src/synfig/cairolistimporter.cpp:164
+#: src/synfig/listimporter.cpp:162 src/synfig/listimporter.cpp:163
+msgid "No images in list"
+msgstr ""
+
+#: src/synfig/canvas.cpp:834 src/synfig/canvas.cpp:902
+#: src/synfig/canvas.cpp:927
 msgid "in line"
 msgstr "em linha"
 
-#: src/synfig/distance.cpp:249
+#: src/synfig/distance.cpp:251
 msgid "Units"
 msgstr "Unidades"
 
-#: src/synfig/distance.cpp:250
+#: src/synfig/distance.cpp:252
 msgid "Pixels"
 msgstr "Pixels"
 
-#: src/synfig/distance.cpp:252
+#: src/synfig/distance.cpp:254
 msgid "Inches"
 msgstr "Polegadas"
 
-#: src/synfig/distance.cpp:253
+#: src/synfig/distance.cpp:255
 msgid "Meters"
 msgstr "Metros"
 
-#: src/synfig/distance.cpp:254
+#: src/synfig/distance.cpp:256
 msgid "Millimeters"
 msgstr "Milímetros"
 
-#: src/synfig/distance.cpp:255
+#: src/synfig/distance.cpp:257
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: src/synfig/layer.cpp:565 src/synfig/layer_composite.cpp:128
+#: src/synfig/layer.cpp:550 src/synfig/layer_composite.cpp:130
 msgid "Unable to create surface target"
 msgstr "Não é possível criar alvo da superfície"
 
-#: src/synfig/layer.cpp:619
+#: src/synfig/layer.cpp:605
 msgid "Z Depth"
 msgstr "Profundidade Z"
 
-#: src/synfig/layer.cpp:621
+#: src/synfig/layer.cpp:607
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Modifica a posição da camada na pilha de camadas"
 
-#: src/synfig/layer_bitmap.cpp:158
+#: src/synfig/layer_bitmap.cpp:155
 msgid "Top-Left"
 msgstr "No topo-à esquerda"
 
-#: src/synfig/layer_bitmap.cpp:159
+#: src/synfig/layer_bitmap.cpp:156
 msgid "Upper left-hand Corner of image"
 msgstr "Canto superior esquerdo da imagem"
 
-#: src/synfig/layer_bitmap.cpp:163
+#: src/synfig/layer_bitmap.cpp:160
 msgid "Bottom-Right"
 msgstr "Embaixo- à direita"
 
-#: src/synfig/layer_bitmap.cpp:164
+#: src/synfig/layer_bitmap.cpp:161
 msgid "Lower right-hand Corner of image"
 msgstr "Canto inferior-direito da imagem"
 
-#: src/synfig/layer_composite.cpp:218
+#: src/synfig/layer_composite.cpp:250
 msgid "Alpha channel of the layer"
 msgstr "Canal alfa da camada"
 
-#: src/synfig/layer_composite.cpp:221 src/synfig/paramdesc.cpp:62
+#: src/synfig/layer_composite.cpp:253 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
 msgstr "Método Mistura"
 
-#: src/synfig/layer_composite.cpp:222
+#: src/synfig/layer_composite.cpp:254
 msgid "The blending method used to composite on the layers below"
 msgstr "O método de mistura utilizado para compor as camadas abaixo"
 
-#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:168
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:174
 #: src/synfig/valuenode_duplicate.cpp:174
 msgid "Duplicate"
 msgstr "Duplicado"
 
-#: src/synfig/layer_duplicate.cpp:148
+#: src/synfig/layer_duplicate.cpp:151
 msgid "Index"
 msgstr "Índice"
 
-#: src/synfig/layer_duplicate.cpp:149
+#: src/synfig/layer_duplicate.cpp:152
 msgid "Copy Index"
 msgstr "Índice da cópia"
 
@@ -2126,156 +2135,156 @@ msgstr "[MIME]"
 msgid "Motion Blur"
 msgstr "Borragem de movimento"
 
-#: src/synfig/layer_motionblur.cpp:136
+#: src/synfig/layer_motionblur.cpp:135
 msgid "Aperture"
 msgstr "Abertura"
 
-#: src/synfig/layer_motionblur.cpp:137
+#: src/synfig/layer_motionblur.cpp:136
 msgid "Shutter Time"
 msgstr "Tempo do obturador"
 
-#: src/synfig/layer_motionblur.cpp:141
+#: src/synfig/layer_motionblur.cpp:140
 msgid "Subsamples Factor"
 msgstr "Fator de subamostras"
 
-#: src/synfig/layer_motionblur.cpp:142
+#: src/synfig/layer_motionblur.cpp:141
 msgid "Multiplies The Number Of Subsamples Rendered"
 msgstr "Multiplica o número de subamostras geradas"
 
-#: src/synfig/layer_motionblur.cpp:146
+#: src/synfig/layer_motionblur.cpp:145
 msgid "Subsampling Type"
 msgstr "Tipo subamostragem"
 
-#: src/synfig/layer_motionblur.cpp:147
+#: src/synfig/layer_motionblur.cpp:146
 msgid "Curve Type For Weighting Subsamples"
 msgstr "Tipo de curva de Ponderação das Subamostras"
 
-#: src/synfig/layer_motionblur.cpp:149 src/synfig/valuenode_const.cpp:127
+#: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:160
 msgid "Constant"
 msgstr "Constante"
 
-#: src/synfig/layer_motionblur.cpp:151
+#: src/synfig/layer_motionblur.cpp:150
 msgid "Hyperbolic"
 msgstr "Hiperbólico"
 
-#: src/synfig/layer_motionblur.cpp:155
+#: src/synfig/layer_motionblur.cpp:154
 msgid "Subsample Start Amount"
 msgstr "Valor Inicial da Subamostra"
 
-#: src/synfig/layer_motionblur.cpp:156
+#: src/synfig/layer_motionblur.cpp:155
 msgid "Relative Amount Of The First Subsample, For Linear Weighting"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:160
+#: src/synfig/layer_motionblur.cpp:159
 msgid "Subsample End Amount"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:161
+#: src/synfig/layer_motionblur.cpp:160
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:78 src/synfig/layer_pastecanvas.cpp:120
-#: src/synfig/layer_pastecanvas.cpp:121
+#: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:123
+#: src/synfig/layer_pastecanvas.cpp:124
 msgid "Group"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:137
+#: src/synfig/layer_pastecanvas.cpp:140
 msgid "Canvas"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:138
+#: src/synfig/layer_pastecanvas.cpp:141
 msgid "Group content"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:141
+#: src/synfig/layer_pastecanvas.cpp:144
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/synfig/layer_pastecanvas.cpp:142
+#: src/synfig/layer_pastecanvas.cpp:145
 msgid "Size of canvas"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:147
+#: src/synfig/layer_pastecanvas.cpp:152
 msgid "Time Offset to apply to the context"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:151
+#: src/synfig/layer_pastecanvas.cpp:156
 msgid "Children Lock"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:152
+#: src/synfig/layer_pastecanvas.cpp:157
 msgid "When checked prevents to select the children using the mouse click"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:156
+#: src/synfig/layer_pastecanvas.cpp:162
 msgid "Focus Point"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:159
+#: src/synfig/layer_pastecanvas.cpp:165
 msgid "Point to remain fixed when zooming"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:164
+#: src/synfig/layer_pastecanvas.cpp:170
 msgid "Outline Grow"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:165
+#: src/synfig/layer_pastecanvas.cpp:171
 msgid "Exponential value to grow children Outline layers width"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:180
+#: src/synfig/layer_pastecanvas.cpp:186
 msgid "Current Time"
 msgstr ""
 
-#: src/synfig/layer_polygon.cpp:61
+#: src/synfig/layer_polygon.cpp:60
 msgid "Polygon"
 msgstr ""
 
-#: src/synfig/layer_polygon.cpp:187
+#: src/synfig/layer_polygon.cpp:194
 msgid "Vertices List"
 msgstr ""
 
-#: src/synfig/layer_polygon.cpp:188
+#: src/synfig/layer_polygon.cpp:195
 msgid "Define the corners of the polygon"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:63
+#: src/synfig/layer_shape.cpp:66
 msgid "Shape"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:64
+#: src/synfig/layer_shape.cpp:67
 msgid "Internal"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1193
+#: src/synfig/layer_shape.cpp:1222
 msgid "Layer_Shape Color"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1202
+#: src/synfig/layer_shape.cpp:1231
 msgid "Antialiasing"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1209
+#: src/synfig/layer_shape.cpp:1238
 msgid "Type of Feather"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1210
+#: src/synfig/layer_shape.cpp:1239
 msgid "Type of feathering to use"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1219
+#: src/synfig/layer_shape.cpp:1248
 msgid "Winding Style"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1220
+#: src/synfig/layer_shape.cpp:1249
 msgid "Winding style to use"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1222
+#: src/synfig/layer_shape.cpp:1251
 msgid "Non Zero"
 msgstr ""
 
-#: src/synfig/layer_shape.cpp:1223
+#: src/synfig/layer_shape.cpp:1252
 msgid "Even/Odd"
 msgstr "Par/Ímpar"
 
@@ -2283,406 +2292,406 @@ msgstr "Par/Ímpar"
 msgid "Solid Color"
 msgstr ""
 
-#: src/synfig/listimporter.cpp:161 src/synfig/listimporter.cpp:162
-msgid "No images in list"
-msgstr ""
-
-#: src/synfig/loadcanvas.cpp:142
+#: src/synfig/loadcanvas.cpp:143
 #, c-format
 msgid "cannot load '%s' recursively"
 msgstr "Não pôde carregar '%s' recursivamente"
 
-#: src/synfig/loadcanvas.cpp:185
+#: src/synfig/loadcanvas.cpp:186
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
 msgstr "Elemento inesperado <%s>, era esperado <%s>"
 
-#: src/synfig/loadcanvas.cpp:191
+#: src/synfig/loadcanvas.cpp:192
 #, c-format
 msgid "Unexpected element <%s>"
 msgstr "Elemento inesperado <%s>"
 
-#: src/synfig/loadcanvas.cpp:205
+#: src/synfig/loadcanvas.cpp:206
 msgid "Too many warnings"
 msgstr "Muitas mensagens de advertência."
 
-#: src/synfig/loadcanvas.cpp:236
+#: src/synfig/loadcanvas.cpp:237
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr ""
 
 #: src/synfig/loadcanvas.cpp:267 src/synfig/loadcanvas.cpp:286
-#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:469
-#: src/synfig/loadcanvas.cpp:1118
+#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:324
+#: src/synfig/loadcanvas.cpp:494 src/synfig/loadcanvas.cpp:1149
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr "<%s> não deve ser vazio"
 
 #: src/synfig/loadcanvas.cpp:271 src/synfig/loadcanvas.cpp:290
-#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:473
-#: src/synfig/loadcanvas.cpp:1122
+#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:328
+#: src/synfig/loadcanvas.cpp:498 src/synfig/loadcanvas.cpp:1153
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:484 src/synfig/loadcanvas.cpp:1144
+#: src/synfig/loadcanvas.cpp:509 src/synfig/loadcanvas.cpp:1182
+#: src/synfig/loadcanvas.cpp:1200
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:508
+#: src/synfig/loadcanvas.cpp:533
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1284
+#: src/synfig/loadcanvas.cpp:1353
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1301
+#: src/synfig/loadcanvas.cpp:1375
 msgid "<waypoint> is missing attribute \"time\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1314
+#: src/synfig/loadcanvas.cpp:1388
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1330
+#: src/synfig/loadcanvas.cpp:1404
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1336 src/synfig/loadcanvas.cpp:1348
+#: src/synfig/loadcanvas.cpp:1410 src/synfig/loadcanvas.cpp:1422
 #, c-format
 msgid "<%s> is missing its data"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1365
+#: src/synfig/loadcanvas.cpp:1439
 msgid "Bad data for <waypoint>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1380
+#: src/synfig/loadcanvas.cpp:1455
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1424 src/synfig/loadcanvas.cpp:1443
-#, c-format
-msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
-msgstr ""
-
-#: src/synfig/loadcanvas.cpp:1504
+#: src/synfig/loadcanvas.cpp:1556
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1512
+#: src/synfig/loadcanvas.cpp:1565
 #, c-format
 msgid "Bad type in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1522
+#: src/synfig/loadcanvas.cpp:1577
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1531
+#: src/synfig/loadcanvas.cpp:1587
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1557 src/synfig/loadcanvas.cpp:1628
+#: src/synfig/loadcanvas.cpp:1612 src/synfig/loadcanvas.cpp:1683
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1570
+#: src/synfig/loadcanvas.cpp:1625
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1579
+#: src/synfig/loadcanvas.cpp:1634
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1603
+#: src/synfig/loadcanvas.cpp:1658
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1643
+#: src/synfig/loadcanvas.cpp:1698
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1652
+#: src/synfig/loadcanvas.cpp:1707
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1659
+#: src/synfig/loadcanvas.cpp:1714
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1677
+#: src/synfig/loadcanvas.cpp:1732
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1747
+#: src/synfig/loadcanvas.cpp:1811
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1841
-msgid "Unable to create <dynamic_list>"
+#: src/synfig/loadcanvas.cpp:1861
+msgid "Unable to create <list>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1993
+#: src/synfig/loadcanvas.cpp:1903 src/synfig/loadcanvas.cpp:2150
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2038
+#: src/synfig/loadcanvas.cpp:1998
+msgid "Unable to create <dynamic_list>"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2220
 #, c-format
 msgid "Bad data in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2076
+#: src/synfig/loadcanvas.cpp:2283
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2097
+#: src/synfig/loadcanvas.cpp:2304
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2102
+#: src/synfig/loadcanvas.cpp:2310
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2107
+#: src/synfig/loadcanvas.cpp:2316
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2142
+#: src/synfig/loadcanvas.cpp:2373
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2161
+#: src/synfig/loadcanvas.cpp:2392
 msgid "Installed layer version is smaller than layer version in file"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2181
+#: src/synfig/loadcanvas.cpp:2415
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2184
+#: src/synfig/loadcanvas.cpp:2418
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2192
+#: src/synfig/loadcanvas.cpp:2426
 msgid "Missing \"name\" attribute for <param>."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2209
+#: src/synfig/loadcanvas.cpp:2443
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2214
+#: src/synfig/loadcanvas.cpp:2448
 msgid "Empty use=\"\" value in <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2220
+#: src/synfig/loadcanvas.cpp:2454
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2222
+#: src/synfig/loadcanvas.cpp:2456
 msgid "Layer rejected canvas link"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2244
+#: src/synfig/loadcanvas.cpp:2480
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2260
+#: src/synfig/loadcanvas.cpp:2496
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2272 src/synfig/loadcanvas.cpp:2292
+#: src/synfig/loadcanvas.cpp:2508 src/synfig/loadcanvas.cpp:2528
 msgid "Bad data for <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2280
+#: src/synfig/loadcanvas.cpp:2516
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2303
+#: src/synfig/loadcanvas.cpp:2539
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2376 src/synfig/loadcanvas.cpp:2384
+#: src/synfig/loadcanvas.cpp:2615 src/synfig/loadcanvas.cpp:2623
 msgid "Canvas with width or height less than one is not allowed"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2470
+#: src/synfig/loadcanvas.cpp:2710
 msgid "Group canvases cannot have a <defs> section"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2478
+#: src/synfig/loadcanvas.cpp:2717
+msgid "Inline canvas cannot have a <bones> section"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2725
 msgid "Group canvases cannot have keyframes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2490
+#: src/synfig/loadcanvas.cpp:2737
 msgid "Group canvases cannot have metadata"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2498
+#: src/synfig/loadcanvas.cpp:2745
 msgid "<meta> must have a name"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2504
+#: src/synfig/loadcanvas.cpp:2751
 msgid "<meta> must have content"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2516
+#: src/synfig/loadcanvas.cpp:2763
 msgid "blank \"name\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2531
+#: src/synfig/loadcanvas.cpp:2778
 msgid "blank \"desc\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2546
+#: src/synfig/loadcanvas.cpp:2793
 msgid "blank \"author\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2578
+#: src/synfig/loadcanvas.cpp:2828
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2580 src/synfig/valuenode.cpp:353
+#: src/synfig/loadcanvas.cpp:2830 src/synfig/valuenode.cpp:374
 msgid "ValueNode"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2580
+#: src/synfig/loadcanvas.cpp:2830
 msgid "ValueNodes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2660 src/synfig/loadcanvas.cpp:2716
+#: src/synfig/loadcanvas.cpp:2910 src/synfig/loadcanvas.cpp:2966
 msgid "Can't open file"
 msgstr "Impossível abrir o arquivo"
 
-#: src/synfig/main.cpp:102
+#: src/synfig/main.cpp:118
 #, c-format
 msgid "API Version mismatch (LIB:%d, PROG:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:107
+#: src/synfig/main.cpp:123
 #, c-format
 msgid "Size of Vector mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:112
+#: src/synfig/main.cpp:128
 #, c-format
 msgid "Size of Color mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:117
+#: src/synfig/main.cpp:133
 #, c-format
 msgid "Size of Canvas mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:122
+#: src/synfig/main.cpp:138
 #, c-format
 msgid "Size of Layer mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:184
+#: src/synfig/main.cpp:207
 msgid "Starting Subsystem \"Modules\""
 msgstr ""
 
-#: src/synfig/main.cpp:186
+#: src/synfig/main.cpp:209
 msgid "Unable to initialize subsystem \"Module\""
 msgstr ""
 
-#: src/synfig/main.cpp:188
+#: src/synfig/main.cpp:211
 msgid "Starting Subsystem \"Layers\""
 msgstr ""
 
-#: src/synfig/main.cpp:192
+#: src/synfig/main.cpp:215
 msgid "Unable to initialize subsystem \"Layers\""
 msgstr ""
 
-#: src/synfig/main.cpp:195
+#: src/synfig/main.cpp:218
 msgid "Starting Subsystem \"Targets\""
 msgstr ""
 
-#: src/synfig/main.cpp:200
+#: src/synfig/main.cpp:223
 msgid "Unable to initialize subsystem \"Targets\""
 msgstr ""
 
-#: src/synfig/main.cpp:203
+#: src/synfig/main.cpp:226
 msgid "Starting Subsystem \"Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:209
+#: src/synfig/main.cpp:232
 msgid "Unable to initialize subsystem \"Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:212
+#: src/synfig/main.cpp:235
 msgid "Starting Subsystem \"Cairo Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:219
+#: src/synfig/main.cpp:242
 msgid "Unable to initialize subsystem \"Cairo Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:222
+#: src/synfig/main.cpp:245
 msgid "Starting Subsystem \"ValueNodes\""
 msgstr ""
 
-#: src/synfig/main.cpp:230
+#: src/synfig/main.cpp:253
 msgid "Unable to initialize subsystem \"ValueNodes\""
 msgstr ""
 
-#: src/synfig/main.cpp:267 src/synfig/main.cpp:268
+#: src/synfig/main.cpp:290 src/synfig/main.cpp:291
 #, c-format
 msgid "Loading modules from %s"
 msgstr ""
 
-#: src/synfig/main.cpp:279
+#: src/synfig/main.cpp:302
 #, c-format
 msgid "Unable to open module list file '%s'"
 msgstr ""
 
-#: src/synfig/main.cpp:293 src/tool/renderprogress.h:141
+#: src/synfig/main.cpp:316 src/tool/renderprogress.h:141
 msgid "DONE"
 msgstr "PRONTO"
 
-#: src/synfig/main.cpp:360 src/tool/progress.h:52 src/tool/renderprogress.h:57
+#: src/synfig/main.cpp:383 src/tool/progress.h:52 src/tool/renderprogress.h:57
 msgid "error"
 msgstr ""
 
-#: src/synfig/main.cpp:375 src/tool/progress.h:59 src/tool/renderprogress.h:64
+#: src/synfig/main.cpp:398 src/tool/progress.h:59 src/tool/renderprogress.h:64
 msgid "warning"
 msgstr ""
 
-#: src/synfig/main.cpp:390
+#: src/synfig/main.cpp:413
 msgid "info"
 msgstr ""
 
@@ -2757,178 +2766,178 @@ msgstr ""
 msgid "%s does not appear to be a supported palette file"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:64 src/synfig/valuenode.cpp:140
-#: src/synfig/valuenode_composite.cpp:437
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:146
+#: src/synfig/valuenode_composite.cpp:447
 msgid "Composite"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:65
+#: src/synfig/paramdesc.cpp:69
 msgid "Straight"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:66
+#: src/synfig/paramdesc.cpp:70
 msgid "Onto"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:67
+#: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:68
+#: src/synfig/paramdesc.cpp:72
 msgid "Behind"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:69
+#: src/synfig/paramdesc.cpp:73
 msgid "Screen"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:70
+#: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:71
+#: src/synfig/paramdesc.cpp:75
 msgid "Hard Light"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:72
+#: src/synfig/paramdesc.cpp:76
 msgid "Multiply"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:73
+#: src/synfig/paramdesc.cpp:77
 msgid "Divide"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:74 src/synfig/valuenode.cpp:157
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:163
 #: src/synfig/valuenode_add.cpp:190
 msgid "Add"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:75 src/synfig/valuenode.cpp:147
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:153
 #: src/synfig/valuenode_subtract.cpp:194
 msgid "Subtract"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:76
+#: src/synfig/paramdesc.cpp:80
 msgid "Difference"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:77
+#: src/synfig/paramdesc.cpp:81
 msgid "Brighten"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:78
+#: src/synfig/paramdesc.cpp:82
 msgid "Darken"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:80 src/synfig/valuenode_radialcomposite.cpp:263
+#: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:263
 msgid "Hue"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:81 src/synfig/valuenode_radialcomposite.cpp:260
+#: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:260
 #: src/synfig/valuenode_radialcomposite.cpp:266
 msgid "Saturation"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:82
+#: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:83
+#: src/synfig/paramdesc.cpp:87
 msgid "Alpha Over"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:84
+#: src/synfig/paramdesc.cpp:88
 msgid "Alpha Brighten"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:85
+#: src/synfig/paramdesc.cpp:89
 msgid "Alpha Darken"
 msgstr ""
 
-#: src/synfig/render.cpp:245 src/synfig/render.cpp:246
-#: src/synfig/render.cpp:300 src/synfig/render.cpp:301
-#: src/synfig/render.cpp:535 src/synfig/render.cpp:536
-#: src/synfig/render.cpp:562 src/synfig/render.cpp:563
+#: src/synfig/render.cpp:248 src/synfig/render.cpp:249
+#: src/synfig/render.cpp:303 src/synfig/render.cpp:304
+#: src/synfig/render.cpp:573 src/synfig/render.cpp:574
+#: src/synfig/render.cpp:600 src/synfig/render.cpp:601
 msgid "Target panic"
 msgstr ""
 
-#: src/synfig/savecanvas.cpp:290
+#: src/synfig/savecanvas.cpp:359
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr ""
 
-#: src/synfig/savecanvas.cpp:543
+#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:185
-#: src/synfig/target_scanline.cpp:97 src/synfig/target_tile.cpp:280
+#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
+#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:281
 msgid "Target initialization failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:146
+#: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:155 src/synfig/target_scanline.cpp:257
-#: src/synfig/target_scanline.cpp:404
+#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:260
+#: src/synfig/target_scanline.cpp:407
 msgid "Unable to put surface on target"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:162
+#: src/synfig/target_cairo.cpp:173
 msgid "Not supported render method"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:169 src/synfig/target_cairo_tile.cpp:248
-#: src/synfig/target_scanline.cpp:417 src/synfig/target_tile.cpp:395
+#: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
+#: src/synfig/target_scanline.cpp:420 src/synfig/target_tile.cpp:398
 msgid "Caught string :"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:174 src/synfig/target_cairo_tile.cpp:253
-#: src/synfig/target_scanline.cpp:422 src/synfig/target_tile.cpp:400
+#: src/synfig/target_cairo.cpp:185 src/synfig/target_cairo_tile.cpp:264
+#: src/synfig/target_scanline.cpp:425 src/synfig/target_tile.cpp:403
 msgid "Ran out of memory (Probably a bug)"
 msgstr "Sem memória (provavelmente é um bug)"
 
-#: src/synfig/target_cairo.cpp:179 src/synfig/target_cairo_tile.cpp:258
-#: src/synfig/target_scanline.cpp:427 src/synfig/target_tile.cpp:405
+#: src/synfig/target_cairo.cpp:190 src/synfig/target_cairo_tile.cpp:269
+#: src/synfig/target_scanline.cpp:430 src/synfig/target_tile.cpp:408
 msgid "Caught unknown error, rethrowing..."
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:190
+#: src/synfig/target_cairo.cpp:201
 msgid "Cairo Surface bad status"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:111
+#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:112
 msgid "Bad Tile Size"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:142 src/synfig/target_cairo_tile.cpp:240
-#: src/synfig/target_scanline.cpp:202 src/synfig/target_scanline.cpp:248
-#: src/synfig/target_scanline.cpp:347 src/synfig/target_scanline.cpp:395
-#: src/synfig/target_tile.cpp:224
+#: src/synfig/target_cairo_tile.cpp:148 src/synfig/target_cairo_tile.cpp:251
+#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:251
+#: src/synfig/target_scanline.cpp:350 src/synfig/target_scanline.cpp:398
+#: src/synfig/target_tile.cpp:225
 msgid "Accelerated Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:150
+#: src/synfig/target_cairo_tile.cpp:157
 #, c-format
 msgid "Bad surface: %s"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:156 src/synfig/target_tile.cpp:178
-#: src/synfig/target_tile.cpp:244
+#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:179
+#: src/synfig/target_tile.cpp:245
 msgid "add_tile():Unable to put surface on target"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:211
+#: src/synfig/target_cairo_tile.cpp:222
 msgid "Can't start frame"
 msgstr ""
 
-#: src/synfig/target_tile.cpp:161
+#: src/synfig/target_tile.cpp:162
 msgid "Parametric Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_tile.cpp:168 src/synfig/target_tile.cpp:232
+#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:233
 msgid "Bad surface"
 msgstr ""
 
@@ -2945,292 +2954,336 @@ msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:276 src/synfig/value.cpp:308 src/synfig/value.cpp:360
+#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
 msgid "bool"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:277 src/synfig/value.cpp:310 src/synfig/value.cpp:358
+#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
 msgid "integer"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:278 src/synfig/value.cpp:312
+#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
 msgid "angle"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:279 src/synfig/value.cpp:314 src/synfig/value.cpp:352
+#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
 msgid "time"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:280 src/synfig/value.cpp:316 src/synfig/value.cpp:355
+#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
 msgid "real"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:281 src/synfig/value.cpp:318
+#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
 msgid "vector"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:282 src/synfig/value.cpp:320
+#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
 msgid "color"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:283 src/synfig/value.cpp:322
+#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
 msgid "segment"
 msgstr ""
 
-#: src/synfig/value.cpp:284
+#: src/synfig/value.cpp:348
 msgid "bline_point"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:285 src/synfig/value.cpp:326
+#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+msgid "matrix"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+msgid "bone_weight_pair"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
 msgid "width_point"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:286 src/synfig/value.cpp:328
+#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
 msgid "dash_item"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:287 src/synfig/value.cpp:330
+#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
 msgid "list"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:288 src/synfig/value.cpp:332
+#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
 msgid "canvas"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:289 src/synfig/value.cpp:334
+#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
 msgid "string"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:290 src/synfig/value.cpp:336
+#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
 msgid "gradient"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:291 src/synfig/value.cpp:338
+#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+msgid "bone_object"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+msgid "bone_valuenode"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
 msgid "nil"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:324
+#: src/synfig/value.cpp:392
 msgid "spline_point"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_radialcomposite.cpp:234
+#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_radialcomposite.cpp:234
 msgid "Radial Composite"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_reference.cpp:123
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_reference.cpp:123
 msgid "Reference"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_segcalctangent.cpp:106
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_segcalcvertex.cpp:104
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_stripes.cpp:81
 #: src/synfig/valuenode_stripes.cpp:171
 msgid "Stripes"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_twotone.cpp:135
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_dynamiclist.cpp:755
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_dynamiclist.cpp:762
 msgid "Dynamic List"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_timedswap.cpp:221
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_timedswap.cpp:221
 msgid "Timed Swap"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:155 src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_exp.cpp:106
 msgid "Exponential"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_blinecalctangent.cpp:184
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_blinecalctangent.cpp:184
 msgid "Spline Tangent"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:159 src/synfig/valuenode_blinecalcvertex.cpp:152
+#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_range.cpp:257
+#: src/synfig/valuenode.cpp:166 src/synfig/valuenode_range.cpp:257
 msgid "Range"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenode_switch.cpp:133
 #: src/synfig/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:164
+#: src/synfig/valuenode.cpp:170
 msgid "aTan2"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:171
 msgid "Reverse Tangent"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenode_reciprocal.cpp:147
+#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_integer.cpp:172
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_integer.cpp:172
 msgid "Integer"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenode_blinecalcwidth.cpp:155
+#: src/synfig/valuenode.cpp:177 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_vectorangle.cpp:128
+#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_vectorangle.cpp:128
 msgid "Vector Angle"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenode_vectorlength.cpp:127
+#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_vectorlength.cpp:127
 msgid "Vector Length"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_vectorx.cpp:127
+#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_vectorx.cpp:127
 msgid "Vector X"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:176 src/synfig/valuenode_vectory.cpp:127
+#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_vectory.cpp:127
 msgid "Vector Y"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:177
+#: src/synfig/valuenode.cpp:183
 msgid "Gradient Color"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:184
 msgid "Dot Product"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_timestring.cpp:119
+#: src/synfig/valuenode.cpp:185 src/synfig/valuenode_timestring.cpp:119
 msgid "Time String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_real.cpp:161
+#: src/synfig/valuenode.cpp:186 src/synfig/valuenode_real.cpp:161
 #: src/synfig/valuenode_realstring.cpp:175
 msgid "Real"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_realstring.cpp:125
+#: src/synfig/valuenode.cpp:187 src/synfig/valuenode_realstring.cpp:125
 msgid "Real String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_join.cpp:144
+#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_join.cpp:144
 msgid "Joined List"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:183
+#: src/synfig/valuenode.cpp:189
 msgid "Angle String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:190
 msgid "Int String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:191
 msgid "Logarithm"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:192
 msgid "Greyed"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:193 src/synfig/valuenode_pow.cpp:162
 #: src/synfig/valuenode_pow.cpp:185
 msgid "Power"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:189 src/synfig/valuenode_compare.cpp:149
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:195
 msgid "Not"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:191
+#: src/synfig/valuenode.cpp:196
 msgid "And"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:197
 msgid "Or"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_wplist.cpp:360
+#: src/synfig/valuenode.cpp:199
+msgid "Bone Influence"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:200
+msgid "Bone"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:201
+msgid "Root Bone"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:202
+msgid "Static List"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:203
+msgid "Bone Weight Pair"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:205 src/synfig/valuenode_wplist.cpp:360
 msgid "WPList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:206
 msgid "DIList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:233
+#: src/synfig/valuenode.cpp:241
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:513
+#: src/synfig/valuenode.cpp:540
 msgid "Placeholder"
 msgstr ""
 
-#: src/synfig/valuenode.h:61
+#: src/synfig/valuenode.h:62
 #, c-format
 msgid "%s:%d wrong type for %s: need %s but got %s"
 msgstr ""
@@ -3297,32 +3350,32 @@ msgstr ""
 msgid "Second operand of the AND operation"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:355 src/synfig/valuenode_animated.cpp:379
-#: src/synfig/valuenode_animated.cpp:703 src/synfig/valuenode_animated.cpp:721
-#: src/synfig/valuenode_animated.cpp:801 src/synfig/valuenode_animated.cpp:820
+#: src/synfig/valuenode_animated.cpp:357 src/synfig/valuenode_animated.cpp:381
+#: src/synfig/valuenode_animated.cpp:709 src/synfig/valuenode_animated.cpp:727
+#: src/synfig/valuenode_animated.cpp:811 src/synfig/valuenode_animated.cpp:830
 msgid "A waypoint already exists at this point in time"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:1134
+#: src/synfig/valuenode_animated.cpp:1173
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:1169
+#: src/synfig/valuenode_animated.cpp:1208
 msgid "Animated"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:977 src/synfig/valuenode_dynamiclist.cpp:661
+#: src/synfig/valuenode_bline.cpp:982 src/synfig/valuenode_dynamiclist.cpp:667
 #: src/synfig/valuenode_wplist.cpp:336
 msgid "No entries in list"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:980 src/synfig/valuenode_dynamiclist.cpp:664
+#: src/synfig/valuenode_bline.cpp:985 src/synfig/valuenode_dynamiclist.cpp:670
 #: src/synfig/valuenode_wplist.cpp:339
 msgid "No entries in ret_list"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:989 src/synfig/valuenode_bline.cpp:1023
+#: src/synfig/valuenode_bline.cpp:994 src/synfig/valuenode_bline.cpp:1111
 #, c-format
 msgid "Vertex %03d"
 msgstr ""
@@ -3342,7 +3395,7 @@ msgid "The position of the linked tangent on the Spline (0,1]"
 msgstr ""
 
 #: src/synfig/valuenode_blinecalctangent.cpp:256
-#: src/synfig/valuenode_composite.cpp:574
+#: src/synfig/valuenode_composite.cpp:584
 #: src/synfig/valuenode_gradientrotate.cpp:169
 #: src/synfig/valuenode_linear.cpp:213
 msgid "Offset"
@@ -3396,188 +3449,184 @@ msgstr ""
 msgid "When checked, the width is spline length based"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:219
+#: src/synfig/valuenode_composite.cpp:229
 msgid "Bad type for composite"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:464
+#: src/synfig/valuenode_composite.cpp:474
 msgid "Red"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:465
+#: src/synfig/valuenode_composite.cpp:475
 msgid "The red component of the color"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:468
+#: src/synfig/valuenode_composite.cpp:478
 msgid "Green"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:469
+#: src/synfig/valuenode_composite.cpp:479
 msgid "The green component of the color"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:472
+#: src/synfig/valuenode_composite.cpp:482
 msgid "Blue"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:473
+#: src/synfig/valuenode_composite.cpp:483
 msgid "The blue component of the color"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:476
+#: src/synfig/valuenode_composite.cpp:486
 msgid "Alpha"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:477
+#: src/synfig/valuenode_composite.cpp:487
 msgid "The alpha of the color"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:482
+#: src/synfig/valuenode_composite.cpp:492
 msgid "Vertex 1"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:483
+#: src/synfig/valuenode_composite.cpp:493
 msgid "The first vertex of the segment"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:486
-#: src/synfig/valuenode_composite.cpp:526
+#: src/synfig/valuenode_composite.cpp:496
+#: src/synfig/valuenode_composite.cpp:536
 msgid "Tangent 1"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:487
+#: src/synfig/valuenode_composite.cpp:497
 msgid "The first tangent of the segment"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:490
+#: src/synfig/valuenode_composite.cpp:500
 msgid "Vertex 2"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:491
+#: src/synfig/valuenode_composite.cpp:501
 msgid "The second vertex of the segment"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:494
-#: src/synfig/valuenode_composite.cpp:530
+#: src/synfig/valuenode_composite.cpp:504
+#: src/synfig/valuenode_composite.cpp:540
 msgid "Tangent 2"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:495
+#: src/synfig/valuenode_composite.cpp:505
 msgid "The second tangent of the segment"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:500
+#: src/synfig/valuenode_composite.cpp:510
 msgid "X-Axis"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:501
+#: src/synfig/valuenode_composite.cpp:511
 msgid "The X-Axis component of the vector"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:504
+#: src/synfig/valuenode_composite.cpp:514
 msgid "Y-Axis"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:505
+#: src/synfig/valuenode_composite.cpp:515
 msgid "The Y-Axis component of the vector"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:510
+#: src/synfig/valuenode_composite.cpp:520
 msgid "Vertex"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:511
+#: src/synfig/valuenode_composite.cpp:521
 msgid "The vertex of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:515
+#: src/synfig/valuenode_composite.cpp:525
 msgid "The width of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:519
+#: src/synfig/valuenode_composite.cpp:529
 msgid "Defines the Off and On position relative to neighbours"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:522
+#: src/synfig/valuenode_composite.cpp:532
 msgid "Split"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:523
+#: src/synfig/valuenode_composite.cpp:533
 msgid "When checked, tangents are independent"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:527
+#: src/synfig/valuenode_composite.cpp:537
 msgid "The first tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:531
+#: src/synfig/valuenode_composite.cpp:541
 msgid "The second tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:537
+#: src/synfig/valuenode_composite.cpp:547
 msgid "The [0,1] position of the Width Point over the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:541
+#: src/synfig/valuenode_composite.cpp:551
 msgid "The width of the Width Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:544
-#: src/synfig/valuenode_composite.cpp:584
+#: src/synfig/valuenode_composite.cpp:554
+#: src/synfig/valuenode_composite.cpp:594
 msgid "Side Type Before"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:545
 #: src/synfig/valuenode_composite.cpp:555
+#: src/synfig/valuenode_composite.cpp:565
 msgid "Defines the interpolation type of the width point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:547
 #: src/synfig/valuenode_composite.cpp:557
+#: src/synfig/valuenode_composite.cpp:567
 msgid "Interpolate"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:554
-#: src/synfig/valuenode_composite.cpp:593
+#: src/synfig/valuenode_composite.cpp:564
+#: src/synfig/valuenode_composite.cpp:603
 msgid "Side Type After"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:564
+#: src/synfig/valuenode_composite.cpp:574
 msgid "Lower Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:565
+#: src/synfig/valuenode_composite.cpp:575
 msgid "Defines the position at start of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:568
+#: src/synfig/valuenode_composite.cpp:578
 msgid "Upper Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:569
+#: src/synfig/valuenode_composite.cpp:579
 msgid "Defines the position at end of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:575
+#: src/synfig/valuenode_composite.cpp:585
 msgid "The offset length of the Dash Item over the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:579
+#: src/synfig/valuenode_composite.cpp:589
 #: src/synfig/valuenode_timedswap.cpp:260
 msgid "Length"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:580
+#: src/synfig/valuenode_composite.cpp:590
 msgid "The length of the Dash Item"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:585
-#: src/synfig/valuenode_composite.cpp:594
+#: src/synfig/valuenode_composite.cpp:595
+#: src/synfig/valuenode_composite.cpp:604
 msgid "Defines the side type of the dash item"
-msgstr ""
-
-#: src/synfig/valuenode_const.cpp:127
-msgid "Static"
 msgstr ""
 
 #: src/synfig/valuenode_compare.cpp:168
@@ -3644,12 +3693,12 @@ msgstr ""
 msgid "Amount increment of the index"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:655
+#: src/synfig/valuenode_dynamiclist.cpp:661
 msgid "List type/item type mismatch, throwing away mismatch"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:703
-#: src/synfig/valuenode_dynamiclist.cpp:957
+#: src/synfig/valuenode_dynamiclist.cpp:709
+#: src/synfig/valuenode_dynamiclist.cpp:964
 #, c-format
 msgid "Item %03d"
 msgstr ""
@@ -3974,7 +4023,7 @@ msgid "Intersection"
 msgstr ""
 
 #: src/synfig/valuenode_step.cpp:213
-msgid "Value that define whether the step is centerd on the value [0,1]"
+msgid "Value that define whether the step is centered on the value [0,1]"
 msgstr ""
 
 #: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
@@ -4107,195 +4156,195 @@ msgstr ""
 msgid "WidthPoint %03d"
 msgstr ""
 
-#: src/tool/main.cpp:133
+#: src/tool/main.cpp:140
 msgid "FATAL: Synfig Version Mismatch"
 msgstr ""
 
-#: src/tool/main.cpp:169
+#: src/tool/main.cpp:176
 msgid "Settings"
 msgstr ""
 
-#: src/tool/main.cpp:171
+#: src/tool/main.cpp:178
 msgid "Specify output target (Default: PNG)"
 msgstr ""
 
-#: src/tool/main.cpp:172
+#: src/tool/main.cpp:179
 msgid "Set the image width in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:173
+#: src/tool/main.cpp:180
 msgid "Set the image height in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:174
+#: src/tool/main.cpp:181
 msgid "Set the diagonal size of image window (Span)"
 msgstr ""
 
-#: src/tool/main.cpp:175
+#: src/tool/main.cpp:182
 msgid "Set antialias amount for parametric renderer."
 msgstr ""
 
-#: src/tool/main.cpp:176
+#: src/tool/main.cpp:183
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
 msgstr ""
 
-#: src/tool/main.cpp:177
+#: src/tool/main.cpp:184
 msgid "Gamma"
 msgstr ""
 
-#: src/tool/main.cpp:178
+#: src/tool/main.cpp:185
 msgid "Enable multithreaded renderer using the specified number of threads"
 msgstr ""
 
-#: src/tool/main.cpp:179
+#: src/tool/main.cpp:186
 msgid "Specify input filename"
 msgstr ""
 
-#: src/tool/main.cpp:180
+#: src/tool/main.cpp:187
 msgid "Specify output filename"
 msgstr ""
 
-#: src/tool/main.cpp:181
+#: src/tool/main.cpp:188
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
 msgstr ""
 
-#: src/tool/main.cpp:182
+#: src/tool/main.cpp:189
 msgid "Render the canvas with the given id instead of the root."
 msgstr ""
 
-#: src/tool/main.cpp:183
+#: src/tool/main.cpp:190
 msgid "Set the frame rate"
 msgstr ""
 
-#: src/tool/main.cpp:184
+#: src/tool/main.cpp:191
 msgid "Render a single frame at <seconds>"
 msgstr ""
 
-#: src/tool/main.cpp:185 src/tool/main.cpp:186
+#: src/tool/main.cpp:192 src/tool/main.cpp:193
 msgid "Set the starting time"
 msgstr ""
 
-#: src/tool/main.cpp:187
+#: src/tool/main.cpp:194
 msgid "Set the ending time"
 msgstr ""
 
-#: src/tool/main.cpp:188
+#: src/tool/main.cpp:195
 msgid "Set the physical resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:189
+#: src/tool/main.cpp:196
 msgid "Set the physical X resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:190
+#: src/tool/main.cpp:197
 msgid "Set the physical Y resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:193
+#: src/tool/main.cpp:200
 msgid "Switch options"
 msgstr ""
 
-#: src/tool/main.cpp:195
+#: src/tool/main.cpp:202
 msgid "Output verbosity level"
 msgstr ""
 
-#: src/tool/main.cpp:196
+#: src/tool/main.cpp:203
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr ""
 
-#: src/tool/main.cpp:197
+#: src/tool/main.cpp:204
 msgid "Print benchmarks"
 msgstr ""
 
-#: src/tool/main.cpp:200
+#: src/tool/main.cpp:207
 msgid "Misc options"
 msgstr ""
 
-#: src/tool/main.cpp:202
+#: src/tool/main.cpp:209
 msgid "Append layers in <filename> to composition"
 msgstr ""
 
-#: src/tool/main.cpp:203
+#: src/tool/main.cpp:210
 msgid "Print out specified details of the root canvas"
 msgstr ""
 
-#: src/tool/main.cpp:204 src/tool/main.cpp:230
+#: src/tool/main.cpp:211 src/tool/main.cpp:237
 msgid "Print out the list of exported canvases in the composition"
 msgstr ""
 
-#: src/tool/main.cpp:207
+#: src/tool/main.cpp:214
 msgid "FFMPEG target options"
 msgstr ""
 
-#: src/tool/main.cpp:209
+#: src/tool/main.cpp:216
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
 msgstr ""
 
-#: src/tool/main.cpp:210
+#: src/tool/main.cpp:217
 msgid "Set the bitrate for the output video"
 msgstr ""
 
-#: src/tool/main.cpp:213
+#: src/tool/main.cpp:220
 msgid "Synfig info options"
 msgstr ""
 
-#: src/tool/main.cpp:215
+#: src/tool/main.cpp:222
 msgid "Produce this help message"
 msgstr ""
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:223
 msgid "Print out the list of available importers"
 msgstr ""
 
-#: src/tool/main.cpp:217
+#: src/tool/main.cpp:224
 msgid "Print out misc build information"
 msgstr ""
 
-#: src/tool/main.cpp:218
+#: src/tool/main.cpp:225
 msgid "Print out the list of available layers"
 msgstr ""
 
-#: src/tool/main.cpp:219
+#: src/tool/main.cpp:226
 msgid "Print out layer's description, parameter info, etc."
 msgstr ""
 
-#: src/tool/main.cpp:220
+#: src/tool/main.cpp:227
 msgid "Print out license information"
 msgstr ""
 
-#: src/tool/main.cpp:221
+#: src/tool/main.cpp:228
 msgid "Print out the list of loaded modules"
 msgstr ""
 
-#: src/tool/main.cpp:222
+#: src/tool/main.cpp:229
 msgid "Print out the list of available targets"
 msgstr ""
 
-#: src/tool/main.cpp:223
+#: src/tool/main.cpp:230
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
 msgstr ""
 
-#: src/tool/main.cpp:224
+#: src/tool/main.cpp:231
 msgid "Print out the list of available ValueNodes"
 msgstr ""
 
-#: src/tool/main.cpp:225
+#: src/tool/main.cpp:232
 msgid "Print out version information"
 msgstr ""
 
-#: src/tool/main.cpp:234
+#: src/tool/main.cpp:241
 msgid "Synfig debug flags"
 msgstr ""
 
-#: src/tool/main.cpp:236
+#: src/tool/main.cpp:243
 msgid "Test GUID generation"
 msgstr ""
 
-#: src/tool/main.cpp:237
+#: src/tool/main.cpp:244
 msgid "Test signal implementation"
 msgstr ""
 
@@ -4359,157 +4408,157 @@ msgstr ""
 msgid "Done."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:113
+#: src/tool/optionsprocessor.cpp:114
 msgid "Unrecognised canvas variable: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:114
+#: src/tool/optionsprocessor.cpp:115
 msgid "Recognized variables are:"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:131
+#: src/tool/optionsprocessor.cpp:132
 msgid "verbosity set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:146
+#: src/tool/optionsprocessor.cpp:147
 msgid "Threads set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:224
+#: src/tool/optionsprocessor.cpp:225
 msgid "Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:225
+#: src/tool/optionsprocessor.cpp:226
 msgid "Localized Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:227
+#: src/tool/optionsprocessor.cpp:228
 msgid "Version: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:232
+#: src/tool/optionsprocessor.cpp:233
 msgid "param - "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:234
+#: src/tool/optionsprocessor.cpp:235
 msgid " (not critical)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:235
+#: src/tool/optionsprocessor.cpp:236
 msgid "\tLocalized Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:239
+#: src/tool/optionsprocessor.cpp:240
 msgid "\tDescription: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:243
+#: src/tool/optionsprocessor.cpp:244
 msgid "\tHint: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:309
+#: src/tool/optionsprocessor.cpp:310
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:316
+#: src/tool/optionsprocessor.cpp:317
 #, c-format
 msgid "Span set to %d units"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:324
+#: src/tool/optionsprocessor.cpp:325
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:334
+#: src/tool/optionsprocessor.cpp:335
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:343
+#: src/tool/optionsprocessor.cpp:344
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:352
+#: src/tool/optionsprocessor.cpp:353
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:379
+#: src/tool/optionsprocessor.cpp:380
 msgid "Rendering frame at "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:385
+#: src/tool/optionsprocessor.cpp:386
 msgid "Gamma argument is currently ignored"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:400
+#: src/tool/optionsprocessor.cpp:401
 #, c-format
 msgid "Resolution set to %dx%d"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:417
+#: src/tool/optionsprocessor.cpp:418
 msgid "Both video codec and bitrate parameters are necessary."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:437
+#: src/tool/optionsprocessor.cpp:438
 #, c-format
 msgid "Video codec \"%s\" is not supported."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:440
+#: src/tool/optionsprocessor.cpp:441
 #, c-format
 msgid "Target video codec set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:446
+#: src/tool/optionsprocessor.cpp:447
 #, c-format
 msgid "Target bitrate set to %dk"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:452
+#: src/tool/optionsprocessor.cpp:453
 #, c-format
 msgid "Output file sequence separator set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:487
+#: src/tool/optionsprocessor.cpp:488
 #, c-format
 msgid "Unable to load '%s'."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:494
+#: src/tool/optionsprocessor.cpp:495
 msgid "No input file provided."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:499
+#: src/tool/optionsprocessor.cpp:500
 msgid "Target set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:513
+#: src/tool/optionsprocessor.cpp:514
 msgid "Quality set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:532
+#: src/tool/optionsprocessor.cpp:533
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:538
+#: src/tool/optionsprocessor.cpp:539
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:557
+#: src/tool/optionsprocessor.cpp:558
 msgid "Unable to append '"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:571
+#: src/tool/optionsprocessor.cpp:572
 msgid "Appended contents of "
 msgstr ""
 

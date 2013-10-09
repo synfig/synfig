@@ -158,6 +158,7 @@ src/gui/trees/layertreestore.h
 src/gui/trees/metadatatree.cpp
 src/gui/trees/metadatatreestore.cpp
 src/gui/trees/metadatatreestore.h
+src/gui/widgets/widget_bonechooser.cpp
 src/gui/widgets/widget_canvaschooser.cpp
 src/gui/widgets/widget_canvaschooser.h
 src/gui/widgets/widget_color.cpp
@@ -196,6 +197,7 @@ src/gui/widgets/widget_waypointmodel.cpp
 src/gui/widgets/widget_waypointmodel.h
 src/gui/workarearenderer/renderer_bbox.cpp
 src/gui/workarearenderer/renderer_bbox.h
+src/gui/workarearenderer/renderer_bonesetup.cpp
 src/gui/workarearenderer/renderer_canvas.cpp
 src/gui/workarearenderer/renderer_canvas.h
 src/gui/workarearenderer/renderer_dragbox.cpp
@@ -340,6 +342,7 @@ src/synfigapp/actions/layerencapsulate.cpp
 src/synfigapp/actions/layerencapsulate.h
 src/synfigapp/actions/layerlower.cpp
 src/synfigapp/actions/layerlower.h
+src/synfigapp/actions/layermakebline.cpp
 src/synfigapp/actions/layermove.cpp
 src/synfigapp/actions/layermove.h
 src/synfigapp/actions/layerparamconnect.cpp
@@ -358,6 +361,7 @@ src/synfigapp/actions/layerremove.cpp
 src/synfigapp/actions/layerremove.h
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
+src/synfigapp/actions/layersetexcludefromrendering.cpp
 src/synfigapp/actions/timepointscopy.cpp
 src/synfigapp/actions/timepointscopy.h
 src/synfigapp/actions/timepointsdelete.cpp
@@ -378,6 +382,7 @@ src/synfigapp/actions/valuedesclink.cpp
 src/synfigapp/actions/valuedesclink.h
 src/synfigapp/actions/valuedescset.cpp
 src/synfigapp/actions/valuedescset.h
+src/synfigapp/actions/valuedescsetinterpolation.cpp
 src/synfigapp/actions/valuedescremovesmart.cpp
 src/synfigapp/actions/valuedescremovesmart.h
 src/synfigapp/actions/valuenodeadd.cpp
@@ -412,6 +417,13 @@ src/synfigapp/actions/valuenoderename.cpp
 src/synfigapp/actions/valuenoderename.h
 src/synfigapp/actions/valuenodereplace.cpp
 src/synfigapp/actions/valuenodereplace.h
+src/synfigapp/actions/valuenodestaticlistinsert.cpp
+src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp
+src/synfigapp/actions/valuenodestaticlistloop.cpp
+src/synfigapp/actions/valuenodestaticlistremove.cpp
+src/synfigapp/actions/valuenodestaticlistremovesmart.cpp
+src/synfigapp/actions/valuenodestaticlistrotateorder.cpp
+src/synfigapp/actions/valuenodestaticlistunloop.cpp
 src/synfigapp/actions/waypointadd.cpp
 src/synfigapp/actions/waypointadd.h
 src/synfigapp/actions/waypointconnect.cpp

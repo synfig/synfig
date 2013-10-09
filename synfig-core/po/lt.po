@@ -1,137 +1,136 @@
-# Translation of lt.po to Lituanian
 # Lituanian translations for Synfig Core package
-# Copyright (C) 2012 Synfig Contributors
+# Copyright (C) 2012-2013 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
-#
+# 
 # Translators:
-# Aldas p <aldixuks@gmail.com.>, 2011
+# Aldas p <aldixuks@gmail.com.>, 2011,2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-05-05 22:35+0200\n"
-"PO-Revision-Date: 2013-05-02 12:39+0000\n"
-"Last-Translator: genete <genetita@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-10-07 21:14+0700\n"
+"PO-Revision-Date: 2013-10-07 14:23+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"Language-Team: Lithuanian (http://www.transifex.com/projects/p/synfig/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: lt\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/modules/mod_example/filledrect.cpp:58
+#: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
 msgstr "Užpildytas stačiakampis"
 
-#: src/modules/mod_example/filledrect.cpp:59
-#: src/modules/mod_example/metaballs.cpp:57
+#: src/modules/mod_example/filledrect.cpp:60
+#: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
 msgstr "Pavyzdys"
 
-#: src/modules/mod_example/filledrect.cpp:120
+#: src/modules/mod_example/filledrect.cpp:131
 #: src/modules/mod_example/simplecircle.cpp:107
-#: src/modules/lyr_freetype/lyr_freetype.cpp:522
-#: src/modules/lyr_std/shade.cpp:563
-#: src/modules/mod_geometry/checkerboard.cpp:122
-#: src/modules/mod_geometry/circle.cpp:128
-#: src/modules/mod_geometry/rectangle.cpp:125 src/synfig/layer_shape.cpp:1192
-#: src/synfig/layer_solidcolor.cpp:102 src/synfig/paramdesc.cpp:79
+#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+#: src/modules/lyr_std/shade.cpp:620
+#: src/modules/mod_geometry/checkerboard.cpp:146
+#: src/modules/mod_geometry/circle.cpp:146
+#: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1221
+#: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
 msgstr "Spalva"
 
-#: src/modules/mod_example/filledrect.cpp:121
+#: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
-#: src/modules/mod_geometry/circle.cpp:129
-#: src/modules/mod_geometry/rectangle.cpp:126
-#: src/synfig/layer_solidcolor.cpp:103
+#: src/modules/mod_geometry/circle.cpp:147
+#: src/modules/mod_geometry/rectangle.cpp:139
+#: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
 msgstr "Sluoksnio užpildo spalva"
 
-#: src/modules/mod_example/filledrect.cpp:125
-#: src/modules/mod_geometry/rectangle.cpp:130
-#: src/modules/mod_gradient/lineargradient.cpp:190
+#: src/modules/mod_example/filledrect.cpp:136
+#: src/modules/mod_geometry/rectangle.cpp:143
+#: src/modules/mod_gradient/lineargradient.cpp:185
 msgid "Point 1"
 msgstr "Taškas 1"
 
-#: src/modules/mod_example/filledrect.cpp:126
-#: src/modules/mod_geometry/rectangle.cpp:132
+#: src/modules/mod_example/filledrect.cpp:137
+#: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
 msgstr "Pirmas stačiakampio kampas"
 
-#: src/modules/mod_example/filledrect.cpp:131
-#: src/modules/mod_geometry/rectangle.cpp:136
-#: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/modules/mod_example/filledrect.cpp:142
+#: src/modules/mod_geometry/rectangle.cpp:149
+#: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 2"
 msgstr "Taškas 2"
 
-#: src/modules/mod_example/filledrect.cpp:132
-#: src/modules/mod_geometry/rectangle.cpp:137
+#: src/modules/mod_example/filledrect.cpp:143
+#: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
 msgstr "Antras stačiakampio kampas"
 
-#: src/modules/mod_example/filledrect.cpp:136
+#: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
 msgstr "Ištempimas pagal X"
 
-#: src/modules/mod_example/filledrect.cpp:140
+#: src/modules/mod_example/filledrect.cpp:152
 msgid "Feather Y"
 msgstr "Ištempimas pagal Y"
 
-#: src/modules/mod_example/filledrect.cpp:144 src/modules/lyr_std/bevel.cpp:67
-#: src/modules/mod_geometry/advanced_outline.cpp:1161
+#: src/modules/mod_example/filledrect.cpp:157 src/modules/lyr_std/bevel.cpp:69
+#: src/modules/mod_geometry/advanced_outline.cpp:1172
 msgid "Bevel"
 msgstr "Nuožulnus"
 
-#: src/modules/mod_example/filledrect.cpp:145
+#: src/modules/mod_example/filledrect.cpp:158
 msgid "Use Bevel for the corners"
 msgstr "Naudoti nuožulnumą kampuose"
 
-#: src/modules/mod_example/filledrect.cpp:149
+#: src/modules/mod_example/filledrect.cpp:163
 msgid "Keep Bevel Circular"
 msgstr "Palikti nuožulnumą užapvalintą"
 
-#: src/modules/mod_example/filledrect.cpp:150
+#: src/modules/mod_example/filledrect.cpp:164
 msgid "When checked the bevel is circular"
 msgstr "Kai įjungta, kampas yra užapvalinamas"
 
-#: src/modules/mod_example/metaballs.cpp:56
+#: src/modules/mod_example/metaballs.cpp:57
 msgid "Metaballs"
 msgstr "Metakamuoliai"
 
-#: src/modules/mod_example/metaballs.cpp:134
+#: src/modules/mod_example/metaballs.cpp:129
 #: src/modules/mod_gradient/conicalgradient.cpp:109
-#: src/modules/mod_gradient/curvegradient.cpp:552
-#: src/modules/mod_gradient/lineargradient.cpp:199
+#: src/modules/mod_gradient/curvegradient.cpp:565
+#: src/modules/mod_gradient/lineargradient.cpp:194
 #: src/modules/mod_gradient/radialgradient.cpp:113
-#: src/modules/mod_gradient/spiralgradient.cpp:112
-#: src/modules/mod_noise/noise.cpp:259 src/modules/mod_particle/plant.cpp:403
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+#: src/modules/mod_noise/noise.cpp:268 src/modules/mod_particle/plant.cpp:436
 #: src/synfig/valuenode_gradientrotate.cpp:164
 #: src/synfig/valuenode_repeat_gradient.cpp:203
 msgid "Gradient"
 msgstr "Gradientas"
 
-#: src/modules/mod_example/metaballs.cpp:138
+#: src/modules/mod_example/metaballs.cpp:133
 msgid "Balls"
 msgstr "Kamuoliai"
 
-#: src/modules/mod_example/metaballs.cpp:142
+#: src/modules/mod_example/metaballs.cpp:137
 msgid "Radii"
 msgstr "Spinduliai"
 
-#: src/modules/mod_example/metaballs.cpp:146
+#: src/modules/mod_example/metaballs.cpp:141
 msgid "Weights"
 msgstr "Svoriai"
 
-#: src/modules/mod_example/metaballs.cpp:150
+#: src/modules/mod_example/metaballs.cpp:145
 msgid "Gradient Left"
 msgstr "Gradientas į kairę"
 
-#: src/modules/mod_example/metaballs.cpp:154
+#: src/modules/mod_example/metaballs.cpp:149
 msgid "Gradient Right"
 msgstr "Gradientas į dešinę"
 
-#: src/modules/mod_example/metaballs.cpp:158
+#: src/modules/mod_example/metaballs.cpp:153
 msgid "Positive Only"
 msgstr "Tik teigiamas"
 
@@ -143,21 +142,21 @@ msgstr "Paprastas apskritimas"
 #: src/modules/lyr_std/stretch.cpp:110 src/modules/lyr_std/twirl.cpp:112
 #: src/modules/mod_gradient/conicalgradient.cpp:114
 #: src/modules/mod_gradient/radialgradient.cpp:118
-#: src/modules/mod_gradient/spiralgradient.cpp:117
+#: src/modules/mod_gradient/spiralgradient.cpp:118
 msgid "Center"
 msgstr "Centras"
 
 #: src/modules/mod_example/simplecircle.cpp:113
-#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:144
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
 msgstr "Apskritimo centras"
 
 #: src/modules/mod_example/simplecircle.cpp:117
-#: src/modules/lyr_std/sphere_distort.cpp:151
-#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:132
+#: src/modules/lyr_std/sphere_distort.cpp:146
+#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:150
 #: src/modules/mod_gradient/radialgradient.cpp:123
-#: src/modules/mod_gradient/spiralgradient.cpp:122
-#: src/modules/mod_noise/valuenode_random.cpp:269
+#: src/modules/mod_gradient/spiralgradient.cpp:123
+#: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
 msgstr "Spindulys"
@@ -165,266 +164,266 @@ msgstr "Spindulys"
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
-#: src/modules/mod_gradient/spiralgradient.cpp:123
+#: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
 msgstr "Tai apskritimo spindulys"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:65
-#: src/modules/lyr_freetype/lyr_freetype.cpp:516
+#: src/modules/lyr_freetype/lyr_freetype.cpp:66
+#: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
 msgstr "Tekstas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:66
-#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:60
-#: src/modules/lyr_std/supersample.cpp:57 src/modules/lyr_std/timeloop.cpp:60
-#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:70
-#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:79
+#: src/modules/lyr_freetype/lyr_freetype.cpp:67
+#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:61
+#: src/modules/lyr_std/supersample.cpp:58 src/modules/lyr_std/timeloop.cpp:60
+#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:71
+#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:81
 msgid "Other"
 msgstr "Kitas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:96
+#: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
 msgstr "Teksto sluoksnis"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:389
+#: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
 msgstr "nepavyko inicijuoti"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:408
+#: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
 msgstr "tuščias šrifto rinkinys"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:517
+#: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
 msgstr "Atvaizduojamas tekstas "
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:523
+#: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
 msgstr "Teksto spalva"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:527
+#: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
 msgstr "Šriftų šeima"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:532
+#: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
 msgstr "Stilius"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:534
-#: src/modules/lyr_freetype/lyr_freetype.cpp:544
+#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+#: src/modules/lyr_freetype/lyr_freetype.cpp:597
 msgid "Normal"
 msgstr "Normalus"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:535
+#: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
 msgstr "Kursyvas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:536
+#: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
 msgstr "Italic"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:540
+#: src/modules/lyr_freetype/lyr_freetype.cpp:593
 msgid "Weight"
 msgstr "Sodrumas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:542
+#: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
 msgstr "Ultrašviesus"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:543
+#: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
 msgstr "Šviesus"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:545
+#: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
 msgstr "Pusjuodis"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:546
+#: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
 msgstr "Ultrajuodas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:547
+#: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
 msgstr "Sunkus"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:550
+#: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
 msgstr "Horizontalus išsidėstymas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:551
+#: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
 msgstr "Aprašoma, kaip glaudžiai horizontaliai yra rašmenys"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:555
+#: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
 msgstr "Vertikalus išsidėstymas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:556
+#: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
 msgstr "Aprašoma, kaip glaudžiai vertikaliai yra teksto eilutės"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:560
-#: src/modules/lyr_std/shade.cpp:569 src/modules/lyr_std/xorpattern.cpp:129
-#: src/modules/mod_filter/blur.cpp:371
+#: src/modules/lyr_freetype/lyr_freetype.cpp:613
+#: src/modules/lyr_std/shade.cpp:626 src/modules/lyr_std/xorpattern.cpp:133
+#: src/modules/mod_filter/blur.cpp:413
 #: src/modules/mod_filter/radialblur.cpp:115
-#: src/modules/mod_geometry/checkerboard.cpp:130
-#: src/modules/mod_noise/distort.cpp:222 src/modules/mod_noise/noise.cpp:267
+#: src/modules/mod_geometry/checkerboard.cpp:154
+#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
 msgstr "Dydis"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:561
+#: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
 msgstr "Teksto dydis"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:568
+#: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
 msgstr "Orientacija"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:569
+#: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
 msgstr "Teksto orientacija"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:574
-#: src/modules/lyr_std/insideout.cpp:143 src/modules/lyr_std/rotate.cpp:115
-#: src/modules/lyr_std/shade.cpp:566 src/modules/lyr_std/translate.cpp:99
-#: src/modules/lyr_std/curvewarp.cpp:389
-#: src/modules/lyr_std/xorpattern.cpp:125 src/modules/lyr_std/zoom.cpp:103
+#: src/modules/lyr_freetype/lyr_freetype.cpp:627
+#: src/modules/lyr_std/insideout.cpp:162 src/modules/lyr_std/rotate.cpp:117
+#: src/modules/lyr_std/shade.cpp:623 src/modules/lyr_std/translate.cpp:100
+#: src/modules/lyr_std/curvewarp.cpp:398
+#: src/modules/lyr_std/xorpattern.cpp:129 src/modules/lyr_std/zoom.cpp:106
 #: src/modules/mod_filter/radialblur.cpp:110
-#: src/modules/mod_geometry/checkerboard.cpp:126
-#: src/modules/mod_geometry/circle.cpp:143
-#: src/modules/mod_gradient/curvegradient.cpp:537
-#: src/modules/mod_particle/plant.cpp:398 src/synfig/layer_pastecanvas.cpp:133
-#: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:518
+#: src/modules/mod_geometry/checkerboard.cpp:150
+#: src/modules/mod_geometry/circle.cpp:161
+#: src/modules/mod_gradient/curvegradient.cpp:550
+#: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:136
+#: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:528
 msgid "Origin"
 msgstr "Pradžia"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+#: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
 msgstr "Teksto padėtis"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:579
+#: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
 msgstr "Šriftas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:580
+#: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
 msgstr "Naudojamo šrifto failo pavadinimas"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+#: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
 msgstr "Rašmenų sanglauda"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:588
+#: src/modules/lyr_freetype/lyr_freetype.cpp:641
 msgid "Enables/Disables font kerning (If the font supports it)"
 msgstr "Įjungti/Išjungti rašmenų sanglauda (jei šriftas palaiko)"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:592
+#: src/modules/lyr_freetype/lyr_freetype.cpp:645
 msgid "Sharpen Edges"
 msgstr "Paryškinti kraštai"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:593
+#: src/modules/lyr_freetype/lyr_freetype.cpp:646
 msgid "Turn this off if you are going to be animating the text"
 msgstr "Išjungti šią funkciją, jei jūs ketinate animuoti tekstą"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:596
-#: src/modules/lyr_std/shade.cpp:586 src/modules/mod_geometry/circle.cpp:147
-#: src/synfig/layer_shape.cpp:1199
+#: src/modules/lyr_freetype/lyr_freetype.cpp:649
+#: src/modules/lyr_std/shade.cpp:643 src/modules/mod_geometry/circle.cpp:165
+#: src/synfig/layer_shape.cpp:1228
 msgid "Invert"
 msgstr "Invertuoti"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:653
+#: src/modules/lyr_freetype/lyr_freetype.cpp:714
 msgid "No face loaded, no text will be rendered."
 msgstr "Užrašas neįkeliamas, tekstas nebus atvaizduotas."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:679
+#: src/modules/lyr_freetype/lyr_freetype.cpp:740
 msgid "Text too small, no text will be rendered."
 msgstr "Tekstas per mažas, tekstas nebus atvaizduotas."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:703
+#: src/modules/lyr_freetype/lyr_freetype.cpp:764
 msgid "Unable to set face size."
 msgstr "Nepavyko nustatyti teksto dydžio."
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:746
+#: src/modules/lyr_freetype/lyr_freetype.cpp:807
 msgid "Invalid multibyte sequence - is the locale set?\n"
 msgstr "Neteisinga daugiabaitė seka. Ar nustatėte lokalę?\n"
 
-#: src/modules/lyr_freetype/lyr_freetype.cpp:753
+#: src/modules/lyr_freetype/lyr_freetype.cpp:814
 msgid "Can't parse multibyte character.\n"
 msgstr "Nepavyko išanalizuoti daugiabaičio simbolio.\n\n"
 
-#: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
+#: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
 msgstr "Stilizuoti"
 
-#: src/modules/lyr_std/bevel.cpp:569 src/modules/lyr_std/shade.cpp:575
-#: src/modules/mod_filter/blur.cpp:375
-#: src/modules/mod_filter/halftone2.cpp:169
+#: src/modules/lyr_std/bevel.cpp:624 src/modules/lyr_std/shade.cpp:632
+#: src/modules/mod_filter/blur.cpp:417
+#: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
 msgstr "Tipas"
 
-#: src/modules/lyr_std/bevel.cpp:570 src/modules/lyr_std/shade.cpp:576
-#: src/modules/mod_filter/blur.cpp:376
+#: src/modules/lyr_std/bevel.cpp:625 src/modules/lyr_std/shade.cpp:633
+#: src/modules/mod_filter/blur.cpp:418
 msgid "Type of blur to use"
 msgstr "Suliejimo tipas"
 
-#: src/modules/lyr_std/bevel.cpp:572 src/modules/lyr_std/shade.cpp:578
-#: src/modules/mod_filter/blur.cpp:378 src/synfig/layer_shape.cpp:1212
+#: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
+#: src/modules/mod_filter/blur.cpp:420 src/synfig/layer_shape.cpp:1241
 msgid "Box Blur"
 msgstr "Languotas suliejimas"
 
-#: src/modules/lyr_std/bevel.cpp:573 src/modules/lyr_std/shade.cpp:579
-#: src/modules/mod_filter/blur.cpp:379 src/synfig/layer_shape.cpp:1213
+#: src/modules/lyr_std/bevel.cpp:628 src/modules/lyr_std/shade.cpp:636
+#: src/modules/mod_filter/blur.cpp:421 src/synfig/layer_shape.cpp:1242
 msgid "Fast Gaussian Blur"
 msgstr "Greitas Gauso suliejimas"
 
-#: src/modules/lyr_std/bevel.cpp:574 src/modules/lyr_std/shade.cpp:580
-#: src/modules/mod_filter/blur.cpp:380 src/synfig/layer_shape.cpp:1214
+#: src/modules/lyr_std/bevel.cpp:629 src/modules/lyr_std/shade.cpp:637
+#: src/modules/mod_filter/blur.cpp:422 src/synfig/layer_shape.cpp:1243
 msgid "Cross-Hatch Blur"
 msgstr "Kryžminis suliejimas"
 
-#: src/modules/lyr_std/bevel.cpp:575 src/modules/lyr_std/shade.cpp:581
-#: src/modules/mod_filter/blur.cpp:381 src/synfig/layer_shape.cpp:1215
+#: src/modules/lyr_std/bevel.cpp:630 src/modules/lyr_std/shade.cpp:638
+#: src/modules/mod_filter/blur.cpp:423 src/synfig/layer_shape.cpp:1244
 msgid "Gaussian Blur"
 msgstr "Gauso suliejimas"
 
-#: src/modules/lyr_std/bevel.cpp:576 src/modules/lyr_std/shade.cpp:582
-#: src/modules/mod_filter/blur.cpp:382 src/synfig/layer_shape.cpp:1216
+#: src/modules/lyr_std/bevel.cpp:631 src/modules/lyr_std/shade.cpp:639
+#: src/modules/mod_filter/blur.cpp:424 src/synfig/layer_shape.cpp:1245
 msgid "Disc Blur"
 msgstr "Disko suliejimas"
 
-#: src/modules/lyr_std/bevel.cpp:580
+#: src/modules/lyr_std/bevel.cpp:635
 msgid "Hi-Color"
 msgstr "Šviesos spalva"
 
-#: src/modules/lyr_std/bevel.cpp:583
+#: src/modules/lyr_std/bevel.cpp:638
 msgid "Lo-Color"
 msgstr "Šešėlio spalva"
 
-#: src/modules/lyr_std/bevel.cpp:586
+#: src/modules/lyr_std/bevel.cpp:641
 msgid "Light Angle"
 msgstr "Apšvietimo kampas"
 
-#: src/modules/lyr_std/bevel.cpp:590
+#: src/modules/lyr_std/bevel.cpp:645
 msgid "Depth of Bevel"
 msgstr "Nuožulnumo gylis"
 
-#: src/modules/lyr_std/bevel.cpp:594
+#: src/modules/lyr_std/bevel.cpp:649
 msgid "Softness"
 msgstr "Minkštumas"
 
-#: src/modules/lyr_std/bevel.cpp:597
+#: src/modules/lyr_std/bevel.cpp:652
 msgid "Use Luma"
 msgstr "Šviesis"
 
-#: src/modules/lyr_std/bevel.cpp:600
+#: src/modules/lyr_std/bevel.cpp:655
 msgid "Solid"
 msgstr "Vientisas"
 
-#: src/modules/lyr_std/booleancurve.cpp:104
+#: src/modules/lyr_std/booleancurve.cpp:107
 msgid "Region Set"
 msgstr "Regiono nustatymas"
 
-#: src/modules/lyr_std/booleancurve.cpp:105
+#: src/modules/lyr_std/booleancurve.cpp:108
 msgid "Set of regions to combine"
 msgstr "Nustatyti regionus sujungimui"
 
@@ -432,38 +431,38 @@ msgstr "Nustatyti regionus sujungimui"
 msgid "Clamp"
 msgstr "Krūva"
 
-#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:55
-#: src/modules/mod_filter/halftone2.cpp:58
-#: src/modules/mod_filter/halftone3.cpp:58
-#: src/modules/mod_filter/lumakey.cpp:58
+#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
+#: src/modules/mod_filter/halftone2.cpp:60
+#: src/modules/mod_filter/halftone3.cpp:60
+#: src/modules/mod_filter/lumakey.cpp:60
 msgid "Filters"
 msgstr "Filtrai"
 
-#: src/modules/lyr_std/clamp.cpp:158
+#: src/modules/lyr_std/clamp.cpp:162
 msgid "Invert Negative"
 msgstr "Invertuoti neigiamą"
 
-#: src/modules/lyr_std/clamp.cpp:162
+#: src/modules/lyr_std/clamp.cpp:166
 msgid "Clamp Ceiling"
 msgstr "Krūvos lubos"
 
-#: src/modules/lyr_std/clamp.cpp:163
+#: src/modules/lyr_std/clamp.cpp:167
 msgid "When checked the Ceiling value is used"
 msgstr "Kai įjungta, naudojama ribinė vertė"
 
-#: src/modules/lyr_std/clamp.cpp:167
+#: src/modules/lyr_std/clamp.cpp:171
 msgid "Ceiling"
 msgstr "Aukščio riba"
 
-#: src/modules/lyr_std/clamp.cpp:168
+#: src/modules/lyr_std/clamp.cpp:172
 msgid "Upper boundary of the clamping"
 msgstr "Viršutinė krūvos riba "
 
-#: src/modules/lyr_std/clamp.cpp:172
+#: src/modules/lyr_std/clamp.cpp:176
 msgid "Floor"
 msgstr "Grindys"
 
-#: src/modules/lyr_std/clamp.cpp:173
+#: src/modules/lyr_std/clamp.cpp:177
 msgid "Lower boundary of the clamping"
 msgstr "Apatinė suspaudimo riba"
 
@@ -471,24 +470,24 @@ msgstr "Apatinė suspaudimo riba"
 msgid "Import Image"
 msgstr "Importuoti paveikslėlį"
 
-#: src/modules/lyr_std/import.cpp:151 src/modules/lyr_std/import.cpp:201
+#: src/modules/lyr_std/import.cpp:154 src/modules/lyr_std/import.cpp:206
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
 msgstr "Failo pavadinimas, atrodo, jau yra nustatytas \"%s\" (%s)"
 
-#: src/modules/lyr_std/import.cpp:283
+#: src/modules/lyr_std/import.cpp:293
 msgid "Filename"
 msgstr "Failo pavadinimas"
 
-#: src/modules/lyr_std/import.cpp:284
+#: src/modules/lyr_std/import.cpp:294
 msgid "File to import"
 msgstr "Importo failas"
 
-#: src/modules/lyr_std/import.cpp:288 src/synfig/layer_pastecanvas.cpp:146
+#: src/modules/lyr_std/import.cpp:298 src/synfig/layer_pastecanvas.cpp:151
 msgid "Time Offset"
 msgstr "Laiko juosta"
 
-#: src/modules/lyr_std/import.cpp:289
+#: src/modules/lyr_std/import.cpp:299
 msgid "Time Offset to apply to the imported file"
 msgstr "Laiko poslinkį taikyti importuojamam failui"
 
@@ -497,14 +496,14 @@ msgid "Inside Out"
 msgstr "Išvirkštinis"
 
 #: src/modules/lyr_std/insideout.cpp:56
-#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/sphere_distort.cpp:75
 #: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
-#: src/modules/lyr_std/warp.cpp:57 src/modules/lyr_std/curvewarp.cpp:56
-#: src/modules/mod_noise/distort.cpp:58
+#: src/modules/lyr_std/warp.cpp:58 src/modules/lyr_std/curvewarp.cpp:57
+#: src/modules/mod_noise/distort.cpp:59
 msgid "Distortions"
 msgstr "Iškraipymai"
 
-#: src/modules/lyr_std/insideout.cpp:144
+#: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines the where the center will be"
 msgstr "Nurodo, kur bus "
 
@@ -516,97 +515,97 @@ msgstr "Julios rinkinys"
 msgid "Fractals"
 msgstr "Fraktalai"
 
-#: src/modules/lyr_std/julia.cpp:309
+#: src/modules/lyr_std/julia.cpp:335
 msgid "Inside Color"
 msgstr "Vidinė spalva"
 
-#: src/modules/lyr_std/julia.cpp:310
+#: src/modules/lyr_std/julia.cpp:336
 msgid "Color of the Set"
 msgstr "Rinkinio spalva"
 
-#: src/modules/lyr_std/julia.cpp:313
+#: src/modules/lyr_std/julia.cpp:339
 msgid "Outside Color"
 msgstr "Išorės spalva"
 
-#: src/modules/lyr_std/julia.cpp:314
+#: src/modules/lyr_std/julia.cpp:340
 msgid "Color outside the Set"
 msgstr "Rinkinio išorės spalva"
 
-#: src/modules/lyr_std/julia.cpp:317
+#: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
 msgstr "Spalvos poslinkis"
 
-#: src/modules/lyr_std/julia.cpp:320 src/modules/lyr_std/mandelbrot.cpp:223
+#: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
 msgstr "Iteracija"
 
-#: src/modules/lyr_std/julia.cpp:323
+#: src/modules/lyr_std/julia.cpp:349
 msgid "Seed Point"
 msgstr "Pradžios punktas"
 
-#: src/modules/lyr_std/julia.cpp:326 src/modules/lyr_std/mandelbrot.cpp:226
+#: src/modules/lyr_std/julia.cpp:352 src/modules/lyr_std/mandelbrot.cpp:222
 msgid "Bailout ValueBase"
 msgstr "Gelbėti bazinę reikšmę"
 
-#: src/modules/lyr_std/julia.cpp:330 src/modules/lyr_std/mandelbrot.cpp:236
+#: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
 #: src/modules/lyr_std/twirl.cpp:130
 msgid "Distort Inside"
 msgstr "Iškreipti viduje"
 
-#: src/modules/lyr_std/julia.cpp:333 src/modules/lyr_std/mandelbrot.cpp:240
+#: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
 msgid "Shade Inside"
 msgstr "Šešėlis viduje"
 
-#: src/modules/lyr_std/julia.cpp:336 src/modules/lyr_std/mandelbrot.cpp:244
+#: src/modules/lyr_std/julia.cpp:362 src/modules/lyr_std/mandelbrot.cpp:240
 msgid "Solid Inside"
 msgstr "Vientisas viduje"
 
-#: src/modules/lyr_std/julia.cpp:339 src/modules/lyr_std/mandelbrot.cpp:248
+#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:244
 msgid "Invert Inside"
 msgstr "Vidinė inversija"
 
-#: src/modules/lyr_std/julia.cpp:342
+#: src/modules/lyr_std/julia.cpp:368
 msgid "Color Inside"
 msgstr "Vidinė spalva"
 
-#: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:265
+#: src/modules/lyr_std/julia.cpp:371 src/modules/lyr_std/mandelbrot.cpp:261
 #: src/modules/lyr_std/twirl.cpp:135
 msgid "Distort Outside"
 msgstr "Iškreipti išorėje"
 
-#: src/modules/lyr_std/julia.cpp:348 src/modules/lyr_std/mandelbrot.cpp:269
+#: src/modules/lyr_std/julia.cpp:374 src/modules/lyr_std/mandelbrot.cpp:265
 msgid "Shade Outside"
 msgstr "Šešėlis išorėje"
 
-#: src/modules/lyr_std/julia.cpp:351 src/modules/lyr_std/mandelbrot.cpp:273
+#: src/modules/lyr_std/julia.cpp:377 src/modules/lyr_std/mandelbrot.cpp:269
 msgid "Solid Outside"
 msgstr "Vientisas išorėje"
 
-#: src/modules/lyr_std/julia.cpp:354 src/modules/lyr_std/mandelbrot.cpp:277
+#: src/modules/lyr_std/julia.cpp:380 src/modules/lyr_std/mandelbrot.cpp:273
 msgid "Invert Outside"
 msgstr "Išorės inversija"
 
-#: src/modules/lyr_std/julia.cpp:357
+#: src/modules/lyr_std/julia.cpp:383
 msgid "Color Outside"
 msgstr "Išorės spalva"
 
-#: src/modules/lyr_std/julia.cpp:361
+#: src/modules/lyr_std/julia.cpp:387
 msgid "Color Cycle"
 msgstr "Spalvos ratas"
 
-#: src/modules/lyr_std/julia.cpp:364 src/modules/lyr_std/mandelbrot.cpp:285
+#: src/modules/lyr_std/julia.cpp:390 src/modules/lyr_std/mandelbrot.cpp:281
 msgid "Smooth Outside"
 msgstr "Glotninti išorę"
 
-#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:286
+#: src/modules/lyr_std/julia.cpp:391 src/modules/lyr_std/mandelbrot.cpp:282
 msgid "Smooth the coloration outside the set"
 msgstr "Glotninti spalvą už rinkinio ribų"
 
-#: src/modules/lyr_std/julia.cpp:368 src/modules/lyr_std/mandelbrot.cpp:230
+#: src/modules/lyr_std/julia.cpp:394 src/modules/lyr_std/mandelbrot.cpp:226
 msgid "Break Set"
 msgstr "Pertraukti rinkinį"
 
-#: src/modules/lyr_std/julia.cpp:369 src/modules/lyr_std/mandelbrot.cpp:231
+#: src/modules/lyr_std/julia.cpp:395 src/modules/lyr_std/mandelbrot.cpp:227
 msgid "Modify equation to achieve interesting results"
 msgstr "Modifikuoti išlyginimą, kad pasiekti įdomių rezultatų"
 
@@ -614,70 +613,70 @@ msgstr "Modifikuoti išlyginimą, kad pasiekti įdomių rezultatų"
 msgid "Mandelbrot Set"
 msgstr "Mandelbrot rinkinys"
 
+#: src/modules/lyr_std/mandelbrot.cpp:233
 #: src/modules/lyr_std/mandelbrot.cpp:237
 #: src/modules/lyr_std/mandelbrot.cpp:241
 #: src/modules/lyr_std/mandelbrot.cpp:245
 #: src/modules/lyr_std/mandelbrot.cpp:249
 #: src/modules/lyr_std/mandelbrot.cpp:253
 #: src/modules/lyr_std/mandelbrot.cpp:257
-#: src/modules/lyr_std/mandelbrot.cpp:261
 msgid "Inside"
 msgstr "Viduje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:252
+#: src/modules/lyr_std/mandelbrot.cpp:248
 msgid "Gradient Inside"
 msgstr "Gradientas viduje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:256
+#: src/modules/lyr_std/mandelbrot.cpp:252
 msgid "Offset Inside"
 msgstr "Poslinkis viduje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:260
+#: src/modules/lyr_std/mandelbrot.cpp:256
 msgid "Loop Inside"
 msgstr "Uždaryti viduje"
 
+#: src/modules/lyr_std/mandelbrot.cpp:262
 #: src/modules/lyr_std/mandelbrot.cpp:266
 #: src/modules/lyr_std/mandelbrot.cpp:270
 #: src/modules/lyr_std/mandelbrot.cpp:274
 #: src/modules/lyr_std/mandelbrot.cpp:278
-#: src/modules/lyr_std/mandelbrot.cpp:282
+#: src/modules/lyr_std/mandelbrot.cpp:283
 #: src/modules/lyr_std/mandelbrot.cpp:287
 #: src/modules/lyr_std/mandelbrot.cpp:291
-#: src/modules/lyr_std/mandelbrot.cpp:295
 msgid "Outside"
 msgstr "Išorėje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:281
+#: src/modules/lyr_std/mandelbrot.cpp:277
 msgid "Gradient outside"
 msgstr "Gradientas išorėje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:290
+#: src/modules/lyr_std/mandelbrot.cpp:286
 msgid "Offset Outside"
 msgstr "Poslinkis išorėje"
 
-#: src/modules/lyr_std/mandelbrot.cpp:294
+#: src/modules/lyr_std/mandelbrot.cpp:290
 msgid "Scale Outside"
 msgstr "Mastelis išorėje"
 
-#: src/modules/lyr_std/rotate.cpp:55
+#: src/modules/lyr_std/rotate.cpp:56
 msgid "Rotate"
 msgstr "Pasukti"
 
-#: src/modules/lyr_std/rotate.cpp:56 src/modules/lyr_std/translate.cpp:55
-#: src/modules/lyr_std/zoom.cpp:52
+#: src/modules/lyr_std/rotate.cpp:57 src/modules/lyr_std/translate.cpp:56
+#: src/modules/lyr_std/zoom.cpp:53
 msgid "Transform"
 msgstr "Transformuoti"
 
-#: src/modules/lyr_std/rotate.cpp:116 src/modules/lyr_std/translate.cpp:100
+#: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
 #: src/modules/mod_filter/radialblur.cpp:111
-#: src/synfig/layer_pastecanvas.cpp:134
+#: src/synfig/layer_pastecanvas.cpp:137
 msgid "Point where you want the origin to be"
 msgstr "Nurodykite, kur norite perkelti centrą"
 
-#: src/modules/lyr_std/rotate.cpp:120
-#: src/modules/lyr_std/sphere_distort.cpp:158
-#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:98
-#: src/synfig/layer_composite.cpp:217
+#: src/modules/lyr_std/rotate.cpp:122
+#: src/modules/lyr_std/sphere_distort.cpp:153
+#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:99
+#: src/synfig/layer_composite.cpp:249
 #: src/synfig/valuenode_blinecalctangent.cpp:251
 #: src/synfig/valuenode_blinecalcvertex.cpp:211
 #: src/synfig/valuenode_blinecalcwidth.cpp:216
@@ -686,61 +685,61 @@ msgstr "Nurodykite, kur norite perkelti centrą"
 msgid "Amount"
 msgstr "Kiekis"
 
-#: src/modules/lyr_std/rotate.cpp:121
+#: src/modules/lyr_std/rotate.cpp:123
 msgid "Amount of rotation"
 msgstr "Sukimosi kiekis"
 
-#: src/modules/lyr_std/shade.cpp:66
+#: src/modules/lyr_std/shade.cpp:68
 msgid "Shade"
 msgstr "Šešėlis"
 
-#: src/modules/lyr_std/shade.cpp:570
+#: src/modules/lyr_std/shade.cpp:627
 msgid "Size of Shade"
 msgstr "Šešėlio dydis"
 
-#: src/modules/lyr_std/sphere_distort.cpp:73
-#: src/modules/lyr_std/sphere_distort.cpp:172
+#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Spherize"
 msgstr "Sferizavimas"
 
-#: src/modules/lyr_std/sphere_distort.cpp:146
-#: src/synfig/valuenode_composite.cpp:536
+#: src/modules/lyr_std/sphere_distort.cpp:141
+#: src/synfig/valuenode_composite.cpp:546
 msgid "Position"
 msgstr "Pozicija"
 
-#: src/modules/lyr_std/sphere_distort.cpp:147
+#: src/modules/lyr_std/sphere_distort.cpp:142
 msgid "Where the sphere distortion is centered"
 msgstr "Kur yra sferinio iškraipymo centras"
 
-#: src/modules/lyr_std/sphere_distort.cpp:154
+#: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
 msgstr "Sferinio iškraipymo dydis"
 
-#: src/modules/lyr_std/sphere_distort.cpp:160
+#: src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The distortion intensity (negative values inverts effect)"
 msgstr "Iškraipymo intensyvumas (neigiama vertė apverčia poveikį)"
 
-#: src/modules/lyr_std/sphere_distort.cpp:164 src/modules/lyr_std/warp.cpp:409
+#: src/modules/lyr_std/sphere_distort.cpp:159 src/modules/lyr_std/warp.cpp:415
 msgid "Clip"
 msgstr " Apkarpymas"
 
-#: src/modules/lyr_std/sphere_distort.cpp:165
+#: src/modules/lyr_std/sphere_distort.cpp:160
 msgid "When cheked, the area outside the Radius are not distorted"
 msgstr "Kai įjungta, spindulio išorėje nebus iškreipimo"
 
-#: src/modules/lyr_std/sphere_distort.cpp:169
+#: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
 msgstr "Iškreipimo tipas"
 
-#: src/modules/lyr_std/sphere_distort.cpp:170
+#: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
 msgstr "Iškraipymo kryptis"
 
-#: src/modules/lyr_std/sphere_distort.cpp:173
+#: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
 msgstr "Vertikalus ruožas"
 
-#: src/modules/lyr_std/sphere_distort.cpp:174
+#: src/modules/lyr_std/sphere_distort.cpp:169
 msgid "Horizontal Bar"
 msgstr "Horizontalus ruožas"
 
@@ -756,112 +755,112 @@ msgstr "Įtempimo dydis jo centro atžvilgiu"
 msgid "Where the stretch distortion is centered"
 msgstr "Kur iškraipymo centras"
 
-#: src/modules/lyr_std/stroboscope.cpp:59
+#: src/modules/lyr_std/stroboscope.cpp:60
 msgid "Stroboscope"
 msgstr "Stroboskopas"
 
-#: src/modules/lyr_std/stroboscope.cpp:101
+#: src/modules/lyr_std/stroboscope.cpp:104
 msgid "Frequency"
 msgstr "Dažnis"
 
-#: src/modules/lyr_std/stroboscope.cpp:102
+#: src/modules/lyr_std/stroboscope.cpp:105
 msgid "Frequency of the Strobe in times per second"
 msgstr "Mirksėjimo dažnumas per sekundę"
 
-#: src/modules/lyr_std/supersample.cpp:56
+#: src/modules/lyr_std/supersample.cpp:57
 msgid "Super Sample"
 msgstr "Glotninimas"
 
-#: src/modules/lyr_std/supersample.cpp:129
+#: src/modules/lyr_std/supersample.cpp:146
 msgid "Unable to create SurfaceTarget"
 msgstr "Nepavyko sukurti tikslo paviršiaus"
 
-#: src/modules/lyr_std/supersample.cpp:290
-#: src/modules/lyr_std/curvewarp.cpp:393
-#: src/modules/mod_gradient/curvegradient.cpp:542
-#: src/synfig/valuenode_composite.cpp:514
-#: src/synfig/valuenode_composite.cpp:540
+#: src/modules/lyr_std/supersample.cpp:337
+#: src/modules/lyr_std/curvewarp.cpp:402
+#: src/modules/mod_gradient/curvegradient.cpp:555
+#: src/synfig/valuenode_composite.cpp:524
+#: src/synfig/valuenode_composite.cpp:550
 #: src/synfig/valuenode_realstring.cpp:180
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
 msgid "Width"
 msgstr "Plotis"
 
-#: src/modules/lyr_std/supersample.cpp:291
+#: src/modules/lyr_std/supersample.cpp:338
 msgid "Width of sample area (In pixels)"
 msgstr "Mėginio srities plotis (pikseliais)"
 
-#: src/modules/lyr_std/supersample.cpp:294 src/tool/printing_functions.cpp:123
+#: src/modules/lyr_std/supersample.cpp:341 src/tool/printing_functions.cpp:123
 msgid "Height"
 msgstr "Aukštis"
 
-#: src/modules/lyr_std/supersample.cpp:295
+#: src/modules/lyr_std/supersample.cpp:342
 msgid "Height of sample area (In pixels)"
 msgstr "Mėginio ploto aukštis (pikseliais)"
 
-#: src/modules/lyr_std/supersample.cpp:298
+#: src/modules/lyr_std/supersample.cpp:345
 msgid "Use Parametric"
 msgstr "Naudoti parametrinius"
 
-#: src/modules/lyr_std/supersample.cpp:299
+#: src/modules/lyr_std/supersample.cpp:346
 msgid "Use the Parametric Renderer"
 msgstr "Naudokite parametrinį atvaizdavimą"
 
-#: src/modules/lyr_std/supersample.cpp:302
+#: src/modules/lyr_std/supersample.cpp:349
 msgid "Be Alpha Safe"
 msgstr "Neliesti alfa"
 
-#: src/modules/lyr_std/supersample.cpp:303
+#: src/modules/lyr_std/supersample.cpp:350
 msgid "Avoid alpha artifacts when checked"
 msgstr "Įjungus padeda išvengti alfa artefaktų"
 
-#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:166
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:172
 #: src/synfig/valuenode_timeloop.cpp:153
 msgid "Time Loop"
 msgstr "Laiko ciklas"
 
-#: src/modules/lyr_std/timeloop.cpp:124 src/synfig/valuenode_timeloop.cpp:179
+#: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
 msgstr "Sąryšio laikas"
 
-#: src/modules/lyr_std/timeloop.cpp:125
+#: src/modules/lyr_std/timeloop.cpp:134
 msgid "Start time of the loop for the cycled context"
 msgstr "Ciklo pradžios laikas uždaram kontekstui"
 
-#: src/modules/lyr_std/timeloop.cpp:129 src/synfig/valuenode_timeloop.cpp:184
+#: src/modules/lyr_std/timeloop.cpp:138 src/synfig/valuenode_timeloop.cpp:184
 msgid "Local Time"
 msgstr "Lokalus laikas"
 
-#: src/modules/lyr_std/timeloop.cpp:130 src/synfig/valuenode_timeloop.cpp:185
+#: src/modules/lyr_std/timeloop.cpp:139 src/synfig/valuenode_timeloop.cpp:185
 msgid "The time when the resulted loop starts"
 msgstr "Laikas, kai prasideda rezultato ciklas"
 
-#: src/modules/lyr_std/timeloop.cpp:134 src/synfig/valuenode_step.cpp:202
+#: src/modules/lyr_std/timeloop.cpp:143 src/synfig/valuenode_step.cpp:202
 #: src/synfig/valuenode_timeloop.cpp:189
 msgid "Duration"
 msgstr "Trukmė"
 
-#: src/modules/lyr_std/timeloop.cpp:135 src/synfig/valuenode_timeloop.cpp:190
+#: src/modules/lyr_std/timeloop.cpp:144 src/synfig/valuenode_timeloop.cpp:190
 msgid "Lenght of the loop"
 msgstr "Ciklo ilgis"
 
-#: src/modules/lyr_std/timeloop.cpp:139
+#: src/modules/lyr_std/timeloop.cpp:148
 msgid "Only For Positive Duration"
 msgstr "Tik teigiamos trukmės"
 
-#: src/modules/lyr_std/timeloop.cpp:140
+#: src/modules/lyr_std/timeloop.cpp:149
 msgid "When checked will loop only positive durations"
 msgstr "Kai įjungta, ciklas bus tik teigiamos trukmės"
 
-#: src/modules/lyr_std/timeloop.cpp:144
+#: src/modules/lyr_std/timeloop.cpp:153
 msgid "Symmetrical"
 msgstr "Simetriškas"
 
-#: src/modules/lyr_std/timeloop.cpp:145
+#: src/modules/lyr_std/timeloop.cpp:154
 msgid "When checked, loops are mirrored centered at Local Time"
 msgstr "Kai įjungta, ciklai atvaizduojami centre Vietos Laiku"
 
-#: src/modules/lyr_std/translate.cpp:54
+#: src/modules/lyr_std/translate.cpp:55
 msgid "Translate"
 msgstr "Perkelti"
 
@@ -885,115 +884,115 @@ msgstr "Kai įjungta, iškraipoma apskritimo viduje"
 msgid "When checked, distorts outside the circle"
 msgstr "Kai įjungta, iškraipoma už apskritimo"
 
-#: src/modules/lyr_std/warp.cpp:56
+#: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
 msgstr "Deformuoti"
 
-#: src/modules/lyr_std/warp.cpp:374
+#: src/modules/lyr_std/warp.cpp:380
 msgid "Source TL"
 msgstr "Šaltinis VK"
 
-#: src/modules/lyr_std/warp.cpp:376
+#: src/modules/lyr_std/warp.cpp:382
 msgid "Top Left corner of the source to warp"
 msgstr "Deformacijos šaltinis viršutiniame kairiajame kampe"
 
-#: src/modules/lyr_std/warp.cpp:380
+#: src/modules/lyr_std/warp.cpp:386
 msgid "Source BR"
 msgstr "Šaltinis AD"
 
-#: src/modules/lyr_std/warp.cpp:381
+#: src/modules/lyr_std/warp.cpp:387
 msgid "Bottom Right corner of the source to warp"
 msgstr "Deformacijos šaltinis apatiniame dešiniajame kampe"
 
-#: src/modules/lyr_std/warp.cpp:385
+#: src/modules/lyr_std/warp.cpp:391
 msgid "Dest TL"
 msgstr "Tikslas VK"
 
-#: src/modules/lyr_std/warp.cpp:387
+#: src/modules/lyr_std/warp.cpp:393
 msgid "Top Left corner of the destination"
 msgstr "Tikslas viršutiniame kairiajame kampe "
 
-#: src/modules/lyr_std/warp.cpp:391
+#: src/modules/lyr_std/warp.cpp:397
 msgid "Dest TR"
 msgstr "Tikslas VD"
 
-#: src/modules/lyr_std/warp.cpp:393
+#: src/modules/lyr_std/warp.cpp:399
 msgid "Top Right corner of the destination"
 msgstr "Tikslas viršutiniame dešiniajame kampe"
 
-#: src/modules/lyr_std/warp.cpp:397
+#: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BR"
 msgstr "Tikslas AD"
 
-#: src/modules/lyr_std/warp.cpp:399
+#: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Right corner of the destination"
 msgstr "Tikslas apatiniame dešiniajame kampe"
 
-#: src/modules/lyr_std/warp.cpp:403
+#: src/modules/lyr_std/warp.cpp:409
 msgid "Dest BL"
 msgstr "Tikslas AK"
 
-#: src/modules/lyr_std/warp.cpp:405
+#: src/modules/lyr_std/warp.cpp:411
 msgid "Bottom Left corner of the destination"
 msgstr "Tikslas apatiniame kairiajame kampe"
 
-#: src/modules/lyr_std/warp.cpp:413
+#: src/modules/lyr_std/warp.cpp:419
 msgid "Horizon"
 msgstr "Horizontas"
 
-#: src/modules/lyr_std/warp.cpp:414
+#: src/modules/lyr_std/warp.cpp:420
 msgid "Height that determines the horizon in perspectives"
 msgstr "Aukštis, nustatantis horizontą perspektyvoje"
 
-#: src/modules/lyr_std/curvewarp.cpp:55
+#: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
 msgstr "Kreivės deformacija"
 
-#: src/modules/lyr_std/curvewarp.cpp:390
-msgid "Position of the source line"
-msgstr "Šaltinio linijos padėtis"
+#: src/modules/lyr_std/curvewarp.cpp:399
+msgid "Position of the destiny Spline line"
+msgstr ""
 
-#: src/modules/lyr_std/curvewarp.cpp:395
+#: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
 msgstr "Kiek išsiplėtė rezultatas statmenai šaltinio linijai"
 
-#: src/modules/lyr_std/curvewarp.cpp:398
+#: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
 msgstr "Pradžios taškas"
 
-#: src/modules/lyr_std/curvewarp.cpp:400
+#: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
 msgstr "Pirmas šaltinio linijos taškas"
 
-#: src/modules/lyr_std/curvewarp.cpp:403
+#: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
 msgstr "Pabaigos taškas"
 
-#: src/modules/lyr_std/curvewarp.cpp:404
+#: src/modules/lyr_std/curvewarp.cpp:413
 msgid "Final point of the source line"
 msgstr "Galutinis šaltinio linijos taškas"
 
-#: src/modules/lyr_std/curvewarp.cpp:407
-#: src/modules/mod_geometry/advanced_outline.cpp:1123
-#: src/modules/mod_geometry/outline.cpp:814
-#: src/modules/mod_geometry/region.cpp:233
-#: src/modules/mod_gradient/curvegradient.cpp:546
-#: src/modules/mod_particle/plant.cpp:391
+#: src/modules/lyr_std/curvewarp.cpp:416
+#: src/modules/mod_geometry/advanced_outline.cpp:1134
+#: src/modules/mod_geometry/outline.cpp:823
+#: src/modules/mod_geometry/region.cpp:238
+#: src/modules/mod_gradient/curvegradient.cpp:559
+#: src/modules/mod_particle/plant.cpp:424
 msgid "Vertices"
 msgstr "Viršūnės"
 
-#: src/modules/lyr_std/curvewarp.cpp:410
+#: src/modules/lyr_std/curvewarp.cpp:419
 msgid "List of Spline Points where the source line is curved to"
 msgstr ""
 
-#: src/modules/lyr_std/curvewarp.cpp:413
-#: src/modules/mod_geometry/advanced_outline.cpp:1178
-#: src/modules/mod_gradient/curvegradient.cpp:567
+#: src/modules/lyr_std/curvewarp.cpp:422
+#: src/modules/mod_geometry/advanced_outline.cpp:1189
+#: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
 msgstr "Greitai"
 
-#: src/modules/lyr_std/curvewarp.cpp:414
-#: src/modules/mod_gradient/curvegradient.cpp:568
+#: src/modules/lyr_std/curvewarp.cpp:423
+#: src/modules/mod_gradient/curvegradient.cpp:581
 msgid "When checked, renders quickly but with artifacts"
 msgstr "Kai įjungta, greitai atvaizduoja, tačiau su artefaktais"
 
@@ -1001,26 +1000,26 @@ msgstr "Kai įjungta, greitai atvaizduoja, tačiau su artefaktais"
 msgid "XOR Pattern"
 msgstr "XOR Šablonas"
 
-#: src/modules/lyr_std/xorpattern.cpp:126
+#: src/modules/lyr_std/xorpattern.cpp:130
 msgid "Center of the pattern"
 msgstr "Šablono centras"
 
-#: src/modules/lyr_std/xorpattern.cpp:130
+#: src/modules/lyr_std/xorpattern.cpp:134
 msgid "Size of the pattern"
 msgstr "Šablono dydis"
 
-#: src/modules/lyr_std/zoom.cpp:51 src/synfig/valuenode.cpp:143
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:149
 #: src/synfig/valuenode_blinecalctangent.cpp:261
 #: src/synfig/valuenode_blinecalcwidth.cpp:221
 #: src/synfig/valuenode_exp.cpp:155 src/synfig/valuenode_scale.cpp:243
 msgid "Scale"
 msgstr "Mastelis"
 
-#: src/modules/lyr_std/zoom.cpp:99
+#: src/modules/lyr_std/zoom.cpp:100
 msgid "Amount to scale to"
 msgstr ""
 
-#: src/modules/lyr_std/zoom.cpp:104
+#: src/modules/lyr_std/zoom.cpp:107
 msgid "Point to scale from"
 msgstr ""
 
@@ -1038,22 +1037,22 @@ msgstr "Failas %s nėra išsaugotas BMP formatu"
 #: src/modules/mod_bmp/mptr_bmp.cpp:150
 #, c-format
 msgid "Failure while reading BITMAPFILEHEADER from %s"
-msgstr "Nesėkmė skaitant RASTROFAILOANTRAŠTĘ iš %s"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:158
 #, c-format
 msgid "Failure while reading BITMAPINFOHEADER from %s"
-msgstr "Nesėkmė skaitant RASTROINFOANTRAŠTĘ iš %s"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:168
 #, c-format
 msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
-msgstr "Bloga RASTROFAILOANTRAŠTĖ %s. (bfOffsetBits=%d, turėtų būti %d)"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:176
 #, c-format
 msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
-msgstr "Bloga RASTROFAILOANTRAŠTĖ %s. (biDydis=%d, turėtų būti 40)"
+msgstr ""
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
 msgid "Reading compressed bitmaps is not supported"
@@ -1088,126 +1087,126 @@ msgstr "Nepavyko užrašyti informacijos "
 msgid "Unable to open pipe to encodedv"
 msgstr "Nepavyko atidaryti signalo, kad koduotidv"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:215
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:225
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:279
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:297
 msgid "Unable to open pipe to ffmpeg"
 msgstr "Nepavyko atidaryti signalo, kad koduoti ffmpeg"
 
-#: src/modules/mod_filter/blur.cpp:67
+#: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
 msgstr "Sulietas"
 
-#: src/modules/mod_filter/blur.cpp:68 src/modules/mod_filter/radialblur.cpp:56
+#: src/modules/mod_filter/blur.cpp:70 src/modules/mod_filter/radialblur.cpp:57
 #: src/synfig/layer_motionblur.cpp:57
 msgid "Blurs"
 msgstr "Sulieti"
 
-#: src/modules/mod_filter/blur.cpp:372
+#: src/modules/mod_filter/blur.cpp:414
 msgid "Size of Blur"
 msgstr "Suliejimo dydis"
 
-#: src/modules/mod_filter/colorcorrect.cpp:54
+#: src/modules/mod_filter/colorcorrect.cpp:56
 msgid "Color Correct"
 msgstr "Spalvos korekcija"
 
-#: src/modules/mod_filter/colorcorrect.cpp:210
+#: src/modules/mod_filter/colorcorrect.cpp:217
 msgid "Hue Adjust"
 msgstr "Atspalvio nustatymas"
 
-#: src/modules/mod_filter/colorcorrect.cpp:214
+#: src/modules/mod_filter/colorcorrect.cpp:221
 msgid "Brightness"
 msgstr "Ryškumas"
 
-#: src/modules/mod_filter/colorcorrect.cpp:218
+#: src/modules/mod_filter/colorcorrect.cpp:225
 msgid "Contrast"
 msgstr "Kontrastas"
 
-#: src/modules/mod_filter/colorcorrect.cpp:222
+#: src/modules/mod_filter/colorcorrect.cpp:229
 msgid "Exposure Adjust"
 msgstr "Ekspozicijos nustatymas"
 
-#: src/modules/mod_filter/colorcorrect.cpp:226 src/synfig/layer_bitmap.cpp:178
+#: src/modules/mod_filter/colorcorrect.cpp:233 src/synfig/layer_bitmap.cpp:176
 msgid "Gamma Adjustment"
 msgstr "Gamos nustatymas"
 
-#: src/modules/mod_filter/halftone2.cpp:57
+#: src/modules/mod_filter/halftone2.cpp:59
 msgid "Halftone 2"
 msgstr "Pustonis 2"
 
-#: src/modules/mod_filter/halftone2.cpp:150
+#: src/modules/mod_filter/halftone2.cpp:155
 msgid "Mask Origin"
 msgstr "Slėpti pagrindą"
 
-#: src/modules/mod_filter/halftone2.cpp:154
+#: src/modules/mod_filter/halftone2.cpp:159
 msgid "Mask Angle"
 msgstr "Slėpti kampą"
 
-#: src/modules/mod_filter/halftone2.cpp:158
-#: src/modules/mod_filter/halftone3.cpp:308
+#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone3.cpp:328
 msgid "Mask Size"
 msgstr "Slėpti dydį"
 
-#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone2.cpp:168
 msgid "Light Color"
 msgstr "Šviesos spalva"
 
-#: src/modules/mod_filter/halftone2.cpp:166
+#: src/modules/mod_filter/halftone2.cpp:171
 msgid "Dark Color"
 msgstr "Šešėlio spalva"
 
-#: src/modules/mod_filter/halftone2.cpp:171
-#: src/modules/mod_filter/halftone3.cpp:313
+#: src/modules/mod_filter/halftone2.cpp:176
+#: src/modules/mod_filter/halftone3.cpp:333
 #: src/modules/mod_gradient/conicalgradient.cpp:125
 msgid "Symmetric"
 msgstr "Simetriškas"
 
-#: src/modules/mod_filter/halftone2.cpp:172
-#: src/modules/mod_filter/halftone3.cpp:314
+#: src/modules/mod_filter/halftone2.cpp:177
+#: src/modules/mod_filter/halftone3.cpp:334
 msgid "Light On Dark"
 msgstr "Šviesus ant tamsaus"
 
-#: src/modules/mod_filter/halftone2.cpp:174
-#: src/modules/mod_filter/halftone3.cpp:316
+#: src/modules/mod_filter/halftone2.cpp:179
+#: src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
 msgstr "Deimantas"
 
-#: src/modules/mod_filter/halftone2.cpp:175
-#: src/modules/mod_filter/halftone3.cpp:317
+#: src/modules/mod_filter/halftone2.cpp:180
+#: src/modules/mod_filter/halftone3.cpp:337
 msgid "Stripe"
 msgstr "Juosta"
 
-#: src/modules/mod_filter/halftone3.cpp:57
+#: src/modules/mod_filter/halftone3.cpp:59
 msgid "Halftone 3"
 msgstr "Pustonis 3"
 
-#: src/modules/mod_filter/halftone3.cpp:311
+#: src/modules/mod_filter/halftone3.cpp:331
 msgid " Type"
 msgstr " Tipas"
 
-#: src/modules/mod_filter/halftone3.cpp:320
+#: src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
 msgstr "Atimama žyma"
 
-#: src/modules/mod_filter/halftone3.cpp:328
+#: src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
 msgstr " Spalva"
 
-#: src/modules/mod_filter/halftone3.cpp:332
+#: src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
 msgstr " Slėpti pagrindą"
 
-#: src/modules/mod_filter/halftone3.cpp:336
+#: src/modules/mod_filter/halftone3.cpp:356
 msgid " Mask Angle"
 msgstr " Slėpti kampą"
 
-#: src/modules/mod_filter/lumakey.cpp:57
+#: src/modules/mod_filter/lumakey.cpp:59
 msgid "Luma Key"
 msgstr "Šviesio "
 
-#: src/modules/mod_filter/radialblur.cpp:55
+#: src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
 msgstr "Radialinis suliejimas"
 
@@ -1228,20 +1227,20 @@ msgstr "Šaškių lenta"
 #: src/modules/mod_geometry/advanced_outline.cpp:68
 #: src/modules/mod_geometry/outline.cpp:73
 #: src/modules/mod_geometry/rectangle.cpp:60
-#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:63
-#: src/synfig/layer_polygon.cpp:62 src/synfig/layer_solidcolor.cpp:57
+#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
+#: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
 msgid "Geometry"
 msgstr "Geometrija"
 
-#: src/modules/mod_geometry/checkerboard.cpp:123
+#: src/modules/mod_geometry/checkerboard.cpp:147
 msgid "Color of checkers"
 msgstr "Langelių spalva"
 
-#: src/modules/mod_geometry/checkerboard.cpp:127
+#: src/modules/mod_geometry/checkerboard.cpp:151
 msgid "Center of the checkers"
 msgstr "Langelių centras"
 
-#: src/modules/mod_geometry/checkerboard.cpp:131
+#: src/modules/mod_geometry/checkerboard.cpp:155
 msgid "Size of checkers"
 msgstr "Langelių dydis"
 
@@ -1249,54 +1248,54 @@ msgstr "Langelių dydis"
 msgid "Circle"
 msgstr "Apskritimas"
 
-#: src/modules/mod_geometry/circle.cpp:134
+#: src/modules/mod_geometry/circle.cpp:152
 msgid "Radius of the circle"
 msgstr "Apskritimo spindulys"
 
-#: src/modules/mod_geometry/circle.cpp:138 src/synfig/layer_shape.cpp:1205
+#: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1234
 msgid "Feather"
 msgstr "Ištempimas"
 
-#: src/modules/mod_geometry/circle.cpp:140
+#: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
 msgstr "Apskritimo ištempimo dydis"
 
-#: src/modules/mod_geometry/circle.cpp:148
+#: src/modules/mod_geometry/circle.cpp:166
 msgid "Invert the circle"
 msgstr "Invertuoti apskritimą"
 
-#: src/modules/mod_geometry/circle.cpp:152
+#: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
 msgstr "Sumažėjimas"
 
-#: src/modules/mod_geometry/circle.cpp:153
+#: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
 msgstr "Nustato ištempimo sumažėjimo funkcija"
 
-#: src/modules/mod_geometry/circle.cpp:155
-#: src/modules/mod_noise/distort.cpp:234 src/modules/mod_noise/noise.cpp:275
-#: src/modules/mod_noise/valuenode_random.cpp:288
-#: src/synfig/layer_bitmap.cpp:172 src/synfig/layer_motionblur.cpp:150
-#: src/synfig/valuenode.cpp:139 src/synfig/valuenode_linear.cpp:146
+#: src/modules/mod_geometry/circle.cpp:173
+#: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
+#: src/modules/mod_noise/valuenode_random.cpp:289
+#: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_linear.cpp:146
 msgid "Linear"
 msgstr "Linijinis"
 
-#: src/modules/mod_geometry/circle.cpp:156
+#: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
 msgstr "Languotas"
 
-#: src/modules/mod_geometry/circle.cpp:157
+#: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
 msgstr "Kvadratinė šaknis"
 
-#: src/modules/mod_geometry/circle.cpp:158
+#: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
 msgstr "Sigmond"
 
-#: src/modules/mod_geometry/circle.cpp:159
-#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:276
-#: src/modules/mod_noise/valuenode_random.cpp:289
-#: src/synfig/layer_bitmap.cpp:173
+#: src/modules/mod_geometry/circle.cpp:177
+#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
+#: src/modules/mod_noise/valuenode_random.cpp:290
+#: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
 msgstr "Kosinusas"
 
@@ -1304,160 +1303,160 @@ msgstr "Kosinusas"
 msgid "Advanced Outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:133
+#: src/modules/mod_geometry/advanced_outline.cpp:152
 msgid "No vertices in spline "
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1125
-#: src/modules/mod_geometry/outline.cpp:817
-#: src/modules/mod_geometry/region.cpp:235
-#: src/modules/mod_gradient/curvegradient.cpp:549
-#: src/modules/mod_particle/plant.cpp:392
+#: src/modules/mod_geometry/advanced_outline.cpp:1136
+#: src/modules/mod_geometry/outline.cpp:826
+#: src/modules/mod_geometry/region.cpp:240
+#: src/modules/mod_gradient/curvegradient.cpp:562
+#: src/modules/mod_particle/plant.cpp:425
 msgid "A list of spline points"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1129
-#: src/modules/mod_geometry/outline.cpp:831
+#: src/modules/mod_geometry/advanced_outline.cpp:1140
+#: src/modules/mod_geometry/outline.cpp:840
 msgid "Outline Width"
 msgstr "Kontūro plotis"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1130
-#: src/modules/mod_geometry/outline.cpp:832
+#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/outline.cpp:841
 msgid "Global width of the outline"
 msgstr "Globalus kontūro plotis"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1134
-#: src/modules/mod_geometry/outline.cpp:837
+#: src/modules/mod_geometry/advanced_outline.cpp:1145
+#: src/modules/mod_geometry/outline.cpp:846
 msgid "Expand"
 msgstr "Plėsti"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1135
-#: src/modules/mod_geometry/outline.cpp:838
+#: src/modules/mod_geometry/advanced_outline.cpp:1146
+#: src/modules/mod_geometry/outline.cpp:847
 msgid "Value to add to the global width"
 msgstr "Pridėti reikšmę prie globalaus pločio"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1138
+#: src/modules/mod_geometry/advanced_outline.cpp:1149
 msgid "Tip Type at Start"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1139
+#: src/modules/mod_geometry/advanced_outline.cpp:1150
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1141
-#: src/modules/mod_geometry/advanced_outline.cpp:1150
-#: src/synfig/valuenode_composite.cpp:548
+#: src/modules/mod_geometry/advanced_outline.cpp:1152
+#: src/modules/mod_geometry/advanced_outline.cpp:1161
 #: src/synfig/valuenode_composite.cpp:558
-#: src/synfig/valuenode_composite.cpp:587
-#: src/synfig/valuenode_composite.cpp:596
+#: src/synfig/valuenode_composite.cpp:568
+#: src/synfig/valuenode_composite.cpp:597
+#: src/synfig/valuenode_composite.cpp:606
 msgid "Rounded Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1142
-#: src/modules/mod_geometry/advanced_outline.cpp:1151
-#: src/synfig/valuenode_composite.cpp:549
+#: src/modules/mod_geometry/advanced_outline.cpp:1153
+#: src/modules/mod_geometry/advanced_outline.cpp:1162
 #: src/synfig/valuenode_composite.cpp:559
-#: src/synfig/valuenode_composite.cpp:588
-#: src/synfig/valuenode_composite.cpp:597
+#: src/synfig/valuenode_composite.cpp:569
+#: src/synfig/valuenode_composite.cpp:598
+#: src/synfig/valuenode_composite.cpp:607
 msgid "Squared Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1143
-#: src/modules/mod_geometry/advanced_outline.cpp:1152
-#: src/synfig/valuenode_composite.cpp:550
+#: src/modules/mod_geometry/advanced_outline.cpp:1154
+#: src/modules/mod_geometry/advanced_outline.cpp:1163
 #: src/synfig/valuenode_composite.cpp:560
-#: src/synfig/valuenode_composite.cpp:589
-#: src/synfig/valuenode_composite.cpp:598
+#: src/synfig/valuenode_composite.cpp:570
+#: src/synfig/valuenode_composite.cpp:599
+#: src/synfig/valuenode_composite.cpp:608
 msgid "Peak Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1144
-#: src/modules/mod_geometry/advanced_outline.cpp:1153
-#: src/synfig/valuenode_composite.cpp:551
+#: src/modules/mod_geometry/advanced_outline.cpp:1155
+#: src/modules/mod_geometry/advanced_outline.cpp:1164
 #: src/synfig/valuenode_composite.cpp:561
-#: src/synfig/valuenode_composite.cpp:590
-#: src/synfig/valuenode_composite.cpp:599
+#: src/synfig/valuenode_composite.cpp:571
+#: src/synfig/valuenode_composite.cpp:600
+#: src/synfig/valuenode_composite.cpp:609
 msgid "Flat Stop"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1147
+#: src/modules/mod_geometry/advanced_outline.cpp:1158
 msgid "Tip Type at End"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1148
+#: src/modules/mod_geometry/advanced_outline.cpp:1159
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1156
+#: src/modules/mod_geometry/advanced_outline.cpp:1167
 msgid "Cusps Type"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1157
-#: src/modules/mod_geometry/outline.cpp:843
+#: src/modules/mod_geometry/advanced_outline.cpp:1168
+#: src/modules/mod_geometry/outline.cpp:852
 msgid "Determines cusp type"
 msgstr "Nustato smailumo tipą"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1159
+#: src/modules/mod_geometry/advanced_outline.cpp:1170
 msgid "Sharp"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1160
+#: src/modules/mod_geometry/advanced_outline.cpp:1171
 msgid "Rounded"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1164
+#: src/modules/mod_geometry/advanced_outline.cpp:1175
 msgid "Smoothness"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1165
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
 msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1168
-#: src/modules/mod_geometry/outline.cpp:859
+#: src/modules/mod_geometry/advanced_outline.cpp:1179
+#: src/modules/mod_geometry/outline.cpp:869
 #: src/synfig/valuenode_blinecalctangent.cpp:271
 #: src/synfig/valuenode_blinecalcvertex.cpp:216
 #: src/synfig/valuenode_blinecalcwidth.cpp:226
 msgid "Homogeneous"
 msgstr "Vienodas"
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1169
+#: src/modules/mod_geometry/advanced_outline.cpp:1180
 msgid "When true, widthpoints positions are spline length based"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1172
+#: src/modules/mod_geometry/advanced_outline.cpp:1183
 msgid "Width Point List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1175
+#: src/modules/mod_geometry/advanced_outline.cpp:1186
 msgid "List of width Points that defines the variable width"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1179
+#: src/modules/mod_geometry/advanced_outline.cpp:1190
 msgid "When checked outline renders faster, but less accurate"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1182
+#: src/modules/mod_geometry/advanced_outline.cpp:1193
 msgid "Dashed Outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1184
+#: src/modules/mod_geometry/advanced_outline.cpp:1195
 msgid "When checked outline is dashed"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1187
+#: src/modules/mod_geometry/advanced_outline.cpp:1198
 msgid "Dash Item List"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1190
+#: src/modules/mod_geometry/advanced_outline.cpp:1201
 msgid "List of dash items that defines the dashed outline"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1193
+#: src/modules/mod_geometry/advanced_outline.cpp:1204
 msgid "Dash Items Offset"
 msgstr ""
 
-#: src/modules/mod_geometry/advanced_outline.cpp:1196
+#: src/modules/mod_geometry/advanced_outline.cpp:1207
 msgid "Distance to Offset the Dash Items"
 msgstr ""
 
@@ -1465,32 +1464,36 @@ msgstr ""
 msgid "Outline"
 msgstr "Kontūras"
 
-#: src/modules/mod_geometry/outline.cpp:183
+#: src/modules/mod_geometry/outline.cpp:192
 msgid "No vertices in outline "
 msgstr "Kontūre nėra viršūnių "
 
-#: src/modules/mod_geometry/outline.cpp:842
+#: src/modules/mod_geometry/outline.cpp:851
 msgid "Sharp Cusps"
 msgstr "Aštrios viršūnės "
 
-#: src/modules/mod_geometry/outline.cpp:847
+#: src/modules/mod_geometry/outline.cpp:856
 msgid "Rounded Begin"
 msgstr "Suapvalinta pradžia"
 
-#: src/modules/mod_geometry/outline.cpp:848
-#: src/modules/mod_geometry/outline.cpp:853
+#: src/modules/mod_geometry/outline.cpp:857
+#: src/modules/mod_geometry/outline.cpp:862
 msgid "Round off the tip"
 msgstr "Suapvalintas galas"
 
-#: src/modules/mod_geometry/outline.cpp:852
+#: src/modules/mod_geometry/outline.cpp:861
 msgid "Rounded End"
 msgstr "Suapvalinta pabaiga"
 
-#: src/modules/mod_geometry/outline.cpp:856
+#: src/modules/mod_geometry/outline.cpp:865
 msgid "Loopyness"
 msgstr "Kilpinis"
 
-#: src/modules/mod_geometry/outline.cpp:860
+#: src/modules/mod_geometry/outline.cpp:866
+msgid "(Currently not used)"
+msgstr ""
+
+#: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
 msgstr "Kada patikrintas plotis, imasi kreivės ilgio interpoliacijos"
 
@@ -1498,11 +1501,11 @@ msgstr "Kada patikrintas plotis, imasi kreivės ilgio interpoliacijos"
 msgid "Rectangle"
 msgstr "Stačiakampis"
 
-#: src/modules/mod_geometry/rectangle.cpp:142
+#: src/modules/mod_geometry/rectangle.cpp:155
 msgid "Expand amount"
 msgstr "Išplėsti reikšmę"
 
-#: src/modules/mod_geometry/rectangle.cpp:146
+#: src/modules/mod_geometry/rectangle.cpp:159
 msgid "Invert the rectangle"
 msgstr "Invertuoti stačiakampį"
 
@@ -1510,50 +1513,50 @@ msgstr "Invertuoti stačiakampį"
 msgid "Region"
 msgstr "Regionas"
 
-#: src/modules/mod_geometry/star.cpp:62
+#: src/modules/mod_geometry/star.cpp:63
 msgid "Star"
 msgstr "Žvaigždė"
 
-#: src/modules/mod_geometry/star.cpp:182
+#: src/modules/mod_geometry/star.cpp:170
 msgid "Outer Radius"
 msgstr "Išorinis spindulys"
 
-#: src/modules/mod_geometry/star.cpp:183
+#: src/modules/mod_geometry/star.cpp:171
 msgid "The radius of the outer points in the star"
 msgstr "Išorinis žvaigždės spindulys"
 
-#: src/modules/mod_geometry/star.cpp:189
+#: src/modules/mod_geometry/star.cpp:177
 msgid "Inner Radius"
 msgstr "Vidinis spindulys"
 
-#: src/modules/mod_geometry/star.cpp:190
+#: src/modules/mod_geometry/star.cpp:178
 msgid "The radius of the inner points in the star"
 msgstr "Vidinis žvaigždės spindulys "
 
-#: src/modules/mod_geometry/star.cpp:196
+#: src/modules/mod_geometry/star.cpp:184
 #: src/modules/mod_gradient/conicalgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:129
+#: src/modules/mod_gradient/spiralgradient.cpp:130
 #: src/synfig/valuenode_cos.cpp:155 src/synfig/valuenode_sine.cpp:154
 msgid "Angle"
 msgstr "Kampas"
 
-#: src/modules/mod_geometry/star.cpp:197
+#: src/modules/mod_geometry/star.cpp:185
 msgid "The orientation of the star"
 msgstr "Žvaigždės orientacija"
 
-#: src/modules/mod_geometry/star.cpp:202 src/synfig/distance.cpp:251
+#: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
 msgid "Points"
 msgstr "Taškai"
 
-#: src/modules/mod_geometry/star.cpp:203
+#: src/modules/mod_geometry/star.cpp:191
 msgid "The number of points in the star"
 msgstr "Žvaigždės viršūnių skaičius"
 
-#: src/modules/mod_geometry/star.cpp:207
+#: src/modules/mod_geometry/star.cpp:195
 msgid "Regular Polygon"
 msgstr "Taisyklingas daugiakampis"
 
-#: src/modules/mod_geometry/star.cpp:208
+#: src/modules/mod_geometry/star.cpp:196
 msgid "Whether to draw a star or a regular polygon"
 msgstr "Ar padaryti žvaigždę arba taisyklingą daugiakampį"
 
@@ -1571,20 +1574,20 @@ msgid "Conical Gradient"
 msgstr "Kūginis gradientas"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:58
-#: src/modules/mod_gradient/curvegradient.cpp:61
+#: src/modules/mod_gradient/curvegradient.cpp:62
 #: src/modules/mod_gradient/lineargradient.cpp:55
 #: src/modules/mod_gradient/radialgradient.cpp:58
-#: src/modules/mod_gradient/spiralgradient.cpp:57
-#: src/modules/mod_noise/noise.cpp:58
+#: src/modules/mod_gradient/spiralgradient.cpp:58
+#: src/modules/mod_noise/noise.cpp:59
 msgid "Gradients"
 msgstr "Gradientai"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:110
-#: src/modules/mod_gradient/curvegradient.cpp:553
-#: src/modules/mod_gradient/lineargradient.cpp:200
+#: src/modules/mod_gradient/curvegradient.cpp:566
+#: src/modules/mod_gradient/lineargradient.cpp:195
 #: src/modules/mod_gradient/radialgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:113
-#: src/modules/mod_noise/noise.cpp:260
+#: src/modules/mod_gradient/spiralgradient.cpp:114
+#: src/modules/mod_noise/noise.cpp:269
 msgid "Gradient to apply"
 msgstr "Taikyti gradientą"
 
@@ -1597,27 +1600,27 @@ msgid "Rotation of the gradient around the center"
 msgstr "Sukimosi aplink centrą gradientas"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:126
-#: src/modules/mod_gradient/curvegradient.cpp:557
-#: src/modules/mod_gradient/lineargradient.cpp:204
+#: src/modules/mod_gradient/curvegradient.cpp:570
+#: src/modules/mod_gradient/lineargradient.cpp:199
 #: src/modules/mod_gradient/radialgradient.cpp:131
 msgid "When checked the gradient is looped"
 msgstr "Kai įjungta, gradientas yra kilpinis"
 
-#: src/modules/mod_gradient/curvegradient.cpp:60
+#: src/modules/mod_gradient/curvegradient.cpp:61
 msgid "Curve Gradient"
 msgstr "Kreivės gradientas"
 
-#: src/modules/mod_gradient/curvegradient.cpp:538
-#: src/modules/mod_particle/plant.cpp:399
+#: src/modules/mod_gradient/curvegradient.cpp:551
+#: src/modules/mod_particle/plant.cpp:432
 msgid "Offset for the Vertices List"
 msgstr "Poslinkis viršūnių sąrašui"
 
-#: src/modules/mod_gradient/curvegradient.cpp:543
+#: src/modules/mod_gradient/curvegradient.cpp:556
 msgid "Global width of the gradient"
 msgstr "Globalus gradiento plotis"
 
-#: src/modules/mod_gradient/curvegradient.cpp:556
-#: src/modules/mod_gradient/lineargradient.cpp:203
+#: src/modules/mod_gradient/curvegradient.cpp:569
+#: src/modules/mod_gradient/lineargradient.cpp:198
 #: src/modules/mod_gradient/radialgradient.cpp:130
 #: src/synfig/valuenode_blinecalctangent.cpp:246
 #: src/synfig/valuenode_blinecalcvertex.cpp:206
@@ -1625,19 +1628,19 @@ msgstr "Globalus gradiento plotis"
 msgid "Loop"
 msgstr "Kilpa"
 
-#: src/modules/mod_gradient/curvegradient.cpp:560
-#: src/modules/mod_gradient/lineargradient.cpp:207
+#: src/modules/mod_gradient/curvegradient.cpp:573
+#: src/modules/mod_gradient/lineargradient.cpp:202
 #: src/modules/mod_gradient/radialgradient.cpp:135
 msgid "ZigZag"
 msgstr "Zigzagas "
 
-#: src/modules/mod_gradient/curvegradient.cpp:561
-#: src/modules/mod_gradient/lineargradient.cpp:208
+#: src/modules/mod_gradient/curvegradient.cpp:574
+#: src/modules/mod_gradient/lineargradient.cpp:203
 #: src/modules/mod_gradient/radialgradient.cpp:136
 msgid "When checked the gradient is summetrical at the center"
 msgstr "Kai įjungta, gradientas yra simetriškas centre"
 
-#: src/modules/mod_gradient/curvegradient.cpp:564
+#: src/modules/mod_gradient/curvegradient.cpp:577
 msgid "Perpendicular"
 msgstr "Statmenas"
 
@@ -1645,11 +1648,11 @@ msgstr "Statmenas"
 msgid "Linear Gradient"
 msgstr "Linijinis gradientas"
 
-#: src/modules/mod_gradient/lineargradient.cpp:192
+#: src/modules/mod_gradient/lineargradient.cpp:187
 msgid "Start point of the gradient"
 msgstr "Gradiento pradžios taškas"
 
-#: src/modules/mod_gradient/lineargradient.cpp:196
+#: src/modules/mod_gradient/lineargradient.cpp:191
 msgid "End point of the gradient"
 msgstr "Gradiento pabaigos taškas"
 
@@ -1658,23 +1661,23 @@ msgid "Radial Gradient"
 msgstr "Radialinis gradientas"
 
 #: src/modules/mod_gradient/radialgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:119
 msgid "Center of the gradient"
 msgstr "Gradiento centras"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:56
+#: src/modules/mod_gradient/spiralgradient.cpp:57
 msgid "Spiral Gradient"
 msgstr "Spiralinis gradientas"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:130
+#: src/modules/mod_gradient/spiralgradient.cpp:131
 msgid "Rotation of the spiral"
 msgstr "Spiralės sūkiai"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:135
+#: src/modules/mod_gradient/spiralgradient.cpp:136
 msgid "Clockwise"
 msgstr "Pagal laikrodžio rodyklę"
 
-#: src/modules/mod_gradient/spiralgradient.cpp:136
+#: src/modules/mod_gradient/spiralgradient.cpp:137
 msgid "When checked the spiral turns clockwise"
 msgstr "Kai įjungta, spiralė sukasi pagal laikrodžio rodyklę"
 
@@ -1687,13 +1690,15 @@ msgstr "Nėra failo įkėlimui"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
-#: src/synfig/listimporter.cpp:184 src/synfig/listimporter.cpp:185
+#: src/synfig/cairolistimporter.cpp:191 src/synfig/cairolistimporter.cpp:192
+#: src/synfig/listimporter.cpp:185 src/synfig/listimporter.cpp:186
 msgid "Unable to open "
 msgstr "Nepavyko atidaryti"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
-#: src/synfig/listimporter.cpp:191 src/synfig/listimporter.cpp:192
+#: src/synfig/cairolistimporter.cpp:198 src/synfig/cairolistimporter.cpp:199
+#: src/synfig/listimporter.cpp:192 src/synfig/listimporter.cpp:193
 msgid "Unable to get frame from "
 msgstr "Nepavyko gauti kadro iš"
 
@@ -1731,115 +1736,115 @@ msgstr "Pirmalaikė failo pabaiga"
 msgid "Unable to open pipe to imagemagick's convert utility"
 msgstr ""
 
-#: src/modules/mod_noise/distort.cpp:57
+#: src/modules/mod_noise/distort.cpp:58
 msgid "Noise Distort"
 msgstr "Triukšmo iškraipymas"
 
-#: src/modules/mod_noise/distort.cpp:217
+#: src/modules/mod_noise/distort.cpp:222
 msgid "Displacement"
 msgstr "Išstūmimas"
 
-#: src/modules/mod_noise/distort.cpp:218
+#: src/modules/mod_noise/distort.cpp:223
 msgid "How big the distortion displaces the context"
 msgstr "Kokio dydžio iškraipymą pakeičia kontekstas"
 
-#: src/modules/mod_noise/distort.cpp:223
+#: src/modules/mod_noise/distort.cpp:228
 msgid "The distance between distortions"
 msgstr "Atstumas tarp iškraipymų"
 
-#: src/modules/mod_noise/distort.cpp:226 src/modules/mod_noise/noise.cpp:263
+#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
 msgid "RandomNoise Seed"
 msgstr "Atsitiktinis triukšmo grūdas"
 
-#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:264
+#: src/modules/mod_noise/distort.cpp:232 src/modules/mod_noise/noise.cpp:273
 msgid "Change to modify the random seed of the noise"
 msgstr "Atsitiktinis triukšmo grūdo keitimas"
 
-#: src/modules/mod_noise/distort.cpp:230 src/modules/mod_noise/noise.cpp:271
-#: src/modules/mod_noise/valuenode_random.cpp:284
-#: src/synfig/layer_bitmap.cpp:168
+#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:280
+#: src/modules/mod_noise/valuenode_random.cpp:285
+#: src/synfig/layer_bitmap.cpp:165
 msgid "Interpolation"
 msgstr "Interpoliacija"
 
-#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
-#: src/synfig/layer_bitmap.cpp:169
+#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
+#: src/synfig/layer_bitmap.cpp:166
 msgid "What type of interpolation to use"
 msgstr "Kokio tipo interpoliacija naudoti"
 
-#: src/modules/mod_noise/distort.cpp:233 src/modules/mod_noise/noise.cpp:274
-#: src/synfig/layer_bitmap.cpp:171
+#: src/modules/mod_noise/distort.cpp:238 src/modules/mod_noise/noise.cpp:283
+#: src/synfig/layer_bitmap.cpp:168
 msgid "Nearest Neighbor"
 msgstr "Nearest Neighbor"
 
-#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:277
-#: src/modules/mod_noise/valuenode_random.cpp:290 src/synfig/valuenode.cpp:149
-#: src/synfig/valuenode_bline.cpp:1001
+#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
+#: src/modules/mod_noise/valuenode_random.cpp:291 src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode_bline.cpp:1006
 #: src/synfig/valuenode_blinecalctangent.cpp:241
 #: src/synfig/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenode_blinecalcwidth.cpp:206
 msgid "Spline"
 msgstr "Spline"
 
-#: src/modules/mod_noise/distort.cpp:237 src/modules/mod_noise/noise.cpp:278
-#: src/modules/mod_noise/valuenode_random.cpp:291
-#: src/synfig/layer_bitmap.cpp:174
+#: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
+#: src/modules/mod_noise/valuenode_random.cpp:292
+#: src/synfig/layer_bitmap.cpp:171
 msgid "Cubic"
 msgstr "Kubinę"
 
-#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:281
+#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:290
 msgid "Detail"
 msgstr "Išsamiai"
 
-#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:282
+#: src/modules/mod_noise/distort.cpp:246 src/modules/mod_noise/noise.cpp:291
 msgid "Increase to obtain fine details of the noise"
 msgstr ""
 
-#: src/modules/mod_noise/distort.cpp:244 src/modules/mod_noise/noise.cpp:285
+#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:294
 msgid "Animation Speed"
 msgstr "Animacijos greitis"
 
-#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:286
+#: src/modules/mod_noise/distort.cpp:250 src/modules/mod_noise/noise.cpp:295
 msgid "In cycles per second"
 msgstr "Ciklų per sekundę"
 
-#: src/modules/mod_noise/distort.cpp:248 src/modules/mod_noise/noise.cpp:289
+#: src/modules/mod_noise/distort.cpp:253 src/modules/mod_noise/noise.cpp:298
 msgid "Turbulent"
 msgstr "Turbulentinis"
 
-#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:290
+#: src/modules/mod_noise/distort.cpp:254 src/modules/mod_noise/noise.cpp:299
 msgid "When checked produces turbulent noise"
 msgstr "Kai įjungta, gaminas turbulentinis triukšmas"
 
 #: src/modules/mod_noise/main.cpp:66
-#: src/modules/mod_noise/valuenode_random.cpp:183
+#: src/modules/mod_noise/valuenode_random.cpp:184
 msgid "Random"
 msgstr "Atsitiktinis"
 
-#: src/modules/mod_noise/noise.cpp:57
+#: src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
 msgstr "Triukšmo gradientas"
 
-#: src/modules/mod_noise/noise.cpp:268
+#: src/modules/mod_noise/noise.cpp:277
 msgid "Size of the noise"
 msgstr "Triukšmo dydis "
 
-#: src/modules/mod_noise/noise.cpp:293
+#: src/modules/mod_noise/noise.cpp:302
 msgid "Do Alpha"
 msgstr "Su alfa kanalu"
 
-#: src/modules/mod_noise/noise.cpp:294
+#: src/modules/mod_noise/noise.cpp:303
 msgid "Uses transparency"
 msgstr "Naudojamas skaidrumas"
 
-#: src/modules/mod_noise/noise.cpp:297
+#: src/modules/mod_noise/noise.cpp:306
 msgid "Super Sampling"
 msgstr "Super atranka"
 
-#: src/modules/mod_noise/noise.cpp:298
+#: src/modules/mod_noise/noise.cpp:307
 msgid "When checked the gradient is supersampled"
 msgstr "Kai įjungta, gradientas yra supersampled"
 
-#: src/modules/mod_noise/valuenode_random.cpp:264
+#: src/modules/mod_noise/valuenode_random.cpp:265
 #: src/synfig/valuenode_integer.cpp:194 src/synfig/valuenode_not.cpp:141
 #: src/synfig/valuenode_range.cpp:288 src/synfig/valuenode_real.cpp:182
 #: src/synfig/valuenode_reciprocal.cpp:165
@@ -1848,168 +1853,168 @@ msgstr "Kai įjungta, gradientas yra supersampled"
 msgid "Link"
 msgstr "Jungtis"
 
-#: src/modules/mod_noise/valuenode_random.cpp:265
+#: src/modules/mod_noise/valuenode_random.cpp:266
 msgid "The value node source that provides the central value"
 msgstr ""
 
-#: src/modules/mod_noise/valuenode_random.cpp:270
+#: src/modules/mod_noise/valuenode_random.cpp:271
 msgid "The value of the maximum random difference"
 msgstr "Maksimali atsitiktinė skirtumo vertė"
 
-#: src/modules/mod_noise/valuenode_random.cpp:274
-#: src/modules/mod_particle/plant.cpp:450
+#: src/modules/mod_noise/valuenode_random.cpp:275
+#: src/modules/mod_particle/plant.cpp:483
 msgid "Seed"
 msgstr "Sėkla"
 
-#: src/modules/mod_noise/valuenode_random.cpp:275
+#: src/modules/mod_noise/valuenode_random.cpp:276
 msgid "Seeds the random number generator"
 msgstr "Sėklos atsitiktinių skaičių generatorius"
 
-#: src/modules/mod_noise/valuenode_random.cpp:279
+#: src/modules/mod_noise/valuenode_random.cpp:280
 msgid "Speed"
 msgstr "Greitis"
 
-#: src/modules/mod_noise/valuenode_random.cpp:280
+#: src/modules/mod_noise/valuenode_random.cpp:281
 msgid ""
 "Defines how often a new random value is chosen (in choices per second) "
 msgstr "Apibrėžia, kaip dažnai naujos atsitiktinės reikšmės yra pasirenkamos (pasirinkimai per sekundę)"
 
-#: src/modules/mod_noise/valuenode_random.cpp:285
+#: src/modules/mod_noise/valuenode_random.cpp:286
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
 msgstr "Nustato, kaip vertė yra interpoliuojama iš vieno atsitiktinio pasirinkimo į kitą"
 
-#: src/modules/mod_noise/valuenode_random.cpp:287
+#: src/modules/mod_noise/valuenode_random.cpp:288
 msgid "No interpolation"
 msgstr "Be interpoliacijos"
 
-#: src/modules/mod_noise/valuenode_random.cpp:296
+#: src/modules/mod_noise/valuenode_random.cpp:297
 msgid "Loop Time"
 msgstr "Laiko ciklas"
 
-#: src/modules/mod_noise/valuenode_random.cpp:297
+#: src/modules/mod_noise/valuenode_random.cpp:298
 msgid "Makes the random value repeat after the given time"
 msgstr "Atsitiktinis reikšmės pasikartojimas po nurodyto laiko"
 
-#: src/modules/mod_particle/plant.cpp:69
+#: src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
 msgstr "Augalas"
 
-#: src/modules/mod_particle/plant.cpp:404
+#: src/modules/mod_particle/plant.cpp:437
 msgid "Gradient to be used for coloring the plant"
 msgstr "Gradientas augalo nuspalvinimui"
 
-#: src/modules/mod_particle/plant.cpp:408
+#: src/modules/mod_particle/plant.cpp:441
 msgid "Split Angle"
 msgstr "Padalinti kampą"
 
-#: src/modules/mod_particle/plant.cpp:409
+#: src/modules/mod_particle/plant.cpp:442
 msgid "Angle by which each split deviates from its parent"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:413
+#: src/modules/mod_particle/plant.cpp:446
 msgid "Gravity"
 msgstr "Sunkis"
 
-#: src/modules/mod_particle/plant.cpp:414
+#: src/modules/mod_particle/plant.cpp:447
 msgid "Direction in which the shoots tend to face"
 msgstr "Kryptis, į kurią ūgliai palinkę"
 
-#: src/modules/mod_particle/plant.cpp:419
+#: src/modules/mod_particle/plant.cpp:452
 msgid "Tangential Velocity"
 msgstr "Greitis pagal liestinę"
 
-#: src/modules/mod_particle/plant.cpp:420
+#: src/modules/mod_particle/plant.cpp:453
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:424
+#: src/modules/mod_particle/plant.cpp:457
 msgid "Perpendicular Velocity"
 msgstr "Statmenai liestinei"
 
-#: src/modules/mod_particle/plant.cpp:425
+#: src/modules/mod_particle/plant.cpp:458
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:429
+#: src/modules/mod_particle/plant.cpp:462
 msgid "Stem Size"
 msgstr "Storis"
 
-#: src/modules/mod_particle/plant.cpp:430
+#: src/modules/mod_particle/plant.cpp:463
 msgid "Size of the stem"
 msgstr "Kamieno storis"
 
-#: src/modules/mod_particle/plant.cpp:435
+#: src/modules/mod_particle/plant.cpp:468
 msgid "Size As Alpha"
 msgstr "Alfa dydis"
 
-#: src/modules/mod_particle/plant.cpp:436
+#: src/modules/mod_particle/plant.cpp:469
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:440
+#: src/modules/mod_particle/plant.cpp:473
 msgid "Reverse"
 msgstr "Atvirkštinis"
 
-#: src/modules/mod_particle/plant.cpp:441
+#: src/modules/mod_particle/plant.cpp:474
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Jei įjungta, augalas vaizduojamas priešinga kryptimi"
 
-#: src/modules/mod_particle/plant.cpp:445 src/synfig/valuenode.cpp:170
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:176
 #: src/synfig/valuenode_duplicate.cpp:203 src/synfig/valuenode_step.cpp:142
 msgid "Step"
 msgstr "Žingsnis"
 
-#: src/modules/mod_particle/plant.cpp:446
+#: src/modules/mod_particle/plant.cpp:479
 msgid "Measure of the distance between points when rendering"
 msgstr "Atstumo tarp taškų matavimo vienetas atvaizduojant"
 
-#: src/modules/mod_particle/plant.cpp:451
+#: src/modules/mod_particle/plant.cpp:484
 msgid "Used to seed the pseudo-random number generator"
 msgstr "Naudojamas sėklos pseudoatsitiktinių skaičių generatorius"
 
-#: src/modules/mod_particle/plant.cpp:455
+#: src/modules/mod_particle/plant.cpp:488
 msgid "Splits"
 msgstr "Padalijimai"
 
-#: src/modules/mod_particle/plant.cpp:456
+#: src/modules/mod_particle/plant.cpp:489
 msgid "Maximum number of times that each sprout can sprout recursively"
 msgstr "Maksimalų kartų skaičius, kai kiekvienas daigas atauga pasikartodamas"
 
-#: src/modules/mod_particle/plant.cpp:460
+#: src/modules/mod_particle/plant.cpp:493
 msgid "Sprouts"
 msgstr "Daigai"
 
-#: src/modules/mod_particle/plant.cpp:461
+#: src/modules/mod_particle/plant.cpp:494
 msgid "Number of places that growth occurs on each spline section"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:465
+#: src/modules/mod_particle/plant.cpp:498
 msgid "Random Factor"
 msgstr "Atsitiktinis faktorius"
 
-#: src/modules/mod_particle/plant.cpp:466
+#: src/modules/mod_particle/plant.cpp:499
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:470
+#: src/modules/mod_particle/plant.cpp:503
 msgid "Drag"
 msgstr "Vilkti"
 
-#: src/modules/mod_particle/plant.cpp:471
+#: src/modules/mod_particle/plant.cpp:504
 msgid "Drag slows the growth"
 msgstr "Augimo sulėtėjimas"
 
-#: src/modules/mod_particle/plant.cpp:475
+#: src/modules/mod_particle/plant.cpp:508
 msgid "Use Width"
 msgstr ""
 
-#: src/modules/mod_particle/plant.cpp:476
+#: src/modules/mod_particle/plant.cpp:509
 msgid "Scale the velocity by the spline's width"
 msgstr ""
 
@@ -2018,97 +2023,102 @@ msgstr ""
 msgid "%s was not in PPM format"
 msgstr ""
 
-#: src/synfig/cairoimporter.cpp:87 src/synfig/importer.cpp:87
+#: src/synfig/cairoimporter.cpp:88 src/synfig/importer.cpp:90
 msgid "Importer::open(): Cannot open empty filename"
 msgstr "Importuotojas::atverti(): Negaliu atidaryti, failo vardas tuščias"
 
-#: src/synfig/cairoimporter.cpp:101 src/synfig/importer.cpp:101
+#: src/synfig/cairoimporter.cpp:102 src/synfig/importer.cpp:104
 msgid "Importer::open(): Couldn't find extension"
 msgstr "Importuotojas::atverti(): Nepavyko rasti plėtinio"
 
-#: src/synfig/cairoimporter.cpp:112 src/synfig/importer.cpp:112
+#: src/synfig/cairoimporter.cpp:113 src/synfig/importer.cpp:115
 msgid "Importer::open(): Unknown file type -- "
 msgstr "Importuotojas::atverti(): Nežinomas failo tipas -- "
 
-#: src/synfig/canvas.cpp:798 src/synfig/canvas.cpp:863
-#: src/synfig/canvas.cpp:886
+#: src/synfig/cairolistimporter.cpp:163 src/synfig/cairolistimporter.cpp:164
+#: src/synfig/listimporter.cpp:162 src/synfig/listimporter.cpp:163
+msgid "No images in list"
+msgstr "Sąraše nėra pavekslėlių"
+
+#: src/synfig/canvas.cpp:834 src/synfig/canvas.cpp:902
+#: src/synfig/canvas.cpp:927
 msgid "in line"
 msgstr "atitinka"
 
-#: src/synfig/distance.cpp:249
+#: src/synfig/distance.cpp:251
 msgid "Units"
 msgstr "Vienetai"
 
-#: src/synfig/distance.cpp:250
+#: src/synfig/distance.cpp:252
 msgid "Pixels"
 msgstr "Pikseliai"
 
-#: src/synfig/distance.cpp:252
+#: src/synfig/distance.cpp:254
 msgid "Inches"
 msgstr "Coliai"
 
-#: src/synfig/distance.cpp:253
+#: src/synfig/distance.cpp:255
 msgid "Meters"
 msgstr "Metrai"
 
-#: src/synfig/distance.cpp:254
+#: src/synfig/distance.cpp:256
 msgid "Millimeters"
 msgstr "Milimetrai"
 
-#: src/synfig/distance.cpp:255
+#: src/synfig/distance.cpp:257
 msgid "Centimeters"
 msgstr "Centimetrai"
 
-#: src/synfig/layer.cpp:565 src/synfig/layer_composite.cpp:128
+#: src/synfig/layer.cpp:550 src/synfig/layer_composite.cpp:130
 msgid "Unable to create surface target"
 msgstr "Nepavyko sukurti paviršiaus adresato"
 
-#: src/synfig/layer.cpp:619
+#: src/synfig/layer.cpp:605
 msgid "Z Depth"
 msgstr "Z Gylis"
 
-#: src/synfig/layer.cpp:621
+#: src/synfig/layer.cpp:607
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Pakeičia sluoksnio poziciją sluoksnio krūvoje "
 
-#: src/synfig/layer_bitmap.cpp:158
+#: src/synfig/layer_bitmap.cpp:155
 msgid "Top-Left"
 msgstr "Viršutiniame kairiajame"
 
-#: src/synfig/layer_bitmap.cpp:159
+#: src/synfig/layer_bitmap.cpp:156
 msgid "Upper left-hand Corner of image"
 msgstr "Paveikslėlio viršutinis kairysis kampas"
 
-#: src/synfig/layer_bitmap.cpp:163
+#: src/synfig/layer_bitmap.cpp:160
 msgid "Bottom-Right"
 msgstr "Apatiniame dešiniajame"
 
-#: src/synfig/layer_bitmap.cpp:164
+#: src/synfig/layer_bitmap.cpp:161
 msgid "Lower right-hand Corner of image"
 msgstr "Paveikslėlio apatinis dešinysis kampas"
 
-#: src/synfig/layer_composite.cpp:218
+#: src/synfig/layer_composite.cpp:250
 msgid "Alpha channel of the layer"
 msgstr "Sluoksnio Alfa kanalas"
 
-#: src/synfig/layer_composite.cpp:221 src/synfig/paramdesc.cpp:62
+#: src/synfig/layer_composite.cpp:253 src/synfig/paramdesc.cpp:66
 msgid "Blend Method"
 msgstr "Maišymo metodas"
 
-#: src/synfig/layer_composite.cpp:222
+#: src/synfig/layer_composite.cpp:254
 msgid "The blending method used to composite on the layers below"
 msgstr ""
 
-#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:168
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:174
 #: src/synfig/valuenode_duplicate.cpp:174
 msgid "Duplicate"
 msgstr "Dublikatas"
 
-#: src/synfig/layer_duplicate.cpp:148
+#: src/synfig/layer_duplicate.cpp:151
 msgid "Index"
 msgstr "Rodyklė"
 
-#: src/synfig/layer_duplicate.cpp:149
+#: src/synfig/layer_duplicate.cpp:152
 msgid "Copy Index"
 msgstr "Indekso kopija"
 
@@ -2120,156 +2130,156 @@ msgstr "[MIME]"
 msgid "Motion Blur"
 msgstr "Suliejimas judesiu"
 
-#: src/synfig/layer_motionblur.cpp:136
+#: src/synfig/layer_motionblur.cpp:135
 msgid "Aperture"
 msgstr "Diafragma"
 
-#: src/synfig/layer_motionblur.cpp:137
+#: src/synfig/layer_motionblur.cpp:136
 msgid "Shutter Time"
 msgstr "Užrakto laikas"
 
-#: src/synfig/layer_motionblur.cpp:141
+#: src/synfig/layer_motionblur.cpp:140
 msgid "Subsamples Factor"
 msgstr "Submėginių faktorius"
 
-#: src/synfig/layer_motionblur.cpp:142
+#: src/synfig/layer_motionblur.cpp:141
 msgid "Multiplies The Number Of Subsamples Rendered"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:146
+#: src/synfig/layer_motionblur.cpp:145
 msgid "Subsampling Type"
 msgstr "Mėginio tipas"
 
-#: src/synfig/layer_motionblur.cpp:147
+#: src/synfig/layer_motionblur.cpp:146
 msgid "Curve Type For Weighting Subsamples"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:149 src/synfig/valuenode_const.cpp:127
+#: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:160
 msgid "Constant"
 msgstr "Pastovus"
 
-#: src/synfig/layer_motionblur.cpp:151
+#: src/synfig/layer_motionblur.cpp:150
 msgid "Hyperbolic"
 msgstr "Hiperbolinis"
 
-#: src/synfig/layer_motionblur.cpp:155
+#: src/synfig/layer_motionblur.cpp:154
 msgid "Subsample Start Amount"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:156
+#: src/synfig/layer_motionblur.cpp:155
 msgid "Relative Amount Of The First Subsample, For Linear Weighting"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:160
+#: src/synfig/layer_motionblur.cpp:159
 msgid "Subsample End Amount"
 msgstr ""
 
-#: src/synfig/layer_motionblur.cpp:161
+#: src/synfig/layer_motionblur.cpp:160
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:78 src/synfig/layer_pastecanvas.cpp:120
-#: src/synfig/layer_pastecanvas.cpp:121
+#: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:123
+#: src/synfig/layer_pastecanvas.cpp:124
 msgid "Group"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:137
+#: src/synfig/layer_pastecanvas.cpp:140
 msgid "Canvas"
 msgstr "Drobė"
 
-#: src/synfig/layer_pastecanvas.cpp:138
+#: src/synfig/layer_pastecanvas.cpp:141
 msgid "Group content"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:141
+#: src/synfig/layer_pastecanvas.cpp:144
 msgid "Zoom"
 msgstr "Mastelis"
 
-#: src/synfig/layer_pastecanvas.cpp:142
+#: src/synfig/layer_pastecanvas.cpp:145
 msgid "Size of canvas"
 msgstr "Drobės dydis"
 
-#: src/synfig/layer_pastecanvas.cpp:147
+#: src/synfig/layer_pastecanvas.cpp:152
 msgid "Time Offset to apply to the context"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:151
+#: src/synfig/layer_pastecanvas.cpp:156
 msgid "Children Lock"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:152
+#: src/synfig/layer_pastecanvas.cpp:157
 msgid "When checked prevents to select the children using the mouse click"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:156
+#: src/synfig/layer_pastecanvas.cpp:162
 msgid "Focus Point"
 msgstr "Fokusavimo taškas"
 
-#: src/synfig/layer_pastecanvas.cpp:159
+#: src/synfig/layer_pastecanvas.cpp:165
 msgid "Point to remain fixed when zooming"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:164
+#: src/synfig/layer_pastecanvas.cpp:170
 msgid "Outline Grow"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:165
+#: src/synfig/layer_pastecanvas.cpp:171
 msgid "Exponential value to grow children Outline layers width"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:180
+#: src/synfig/layer_pastecanvas.cpp:186
 msgid "Current Time"
 msgstr "Dabartinis laikas"
 
-#: src/synfig/layer_polygon.cpp:61
+#: src/synfig/layer_polygon.cpp:60
 msgid "Polygon"
 msgstr "Daugiakampis"
 
-#: src/synfig/layer_polygon.cpp:187
+#: src/synfig/layer_polygon.cpp:194
 msgid "Vertices List"
 msgstr "Viršūnių sąrašas"
 
-#: src/synfig/layer_polygon.cpp:188
+#: src/synfig/layer_polygon.cpp:195
 msgid "Define the corners of the polygon"
 msgstr "Nustatyti daugiakampio kampus"
 
-#: src/synfig/layer_shape.cpp:63
+#: src/synfig/layer_shape.cpp:66
 msgid "Shape"
 msgstr "Figūra"
 
-#: src/synfig/layer_shape.cpp:64
+#: src/synfig/layer_shape.cpp:67
 msgid "Internal"
 msgstr "Vidaus"
 
-#: src/synfig/layer_shape.cpp:1193
+#: src/synfig/layer_shape.cpp:1222
 msgid "Layer_Shape Color"
 msgstr "Sluoksnio_figūros spalva"
 
-#: src/synfig/layer_shape.cpp:1202
+#: src/synfig/layer_shape.cpp:1231
 msgid "Antialiasing"
 msgstr "Išlyginimas"
 
-#: src/synfig/layer_shape.cpp:1209
+#: src/synfig/layer_shape.cpp:1238
 msgid "Type of Feather"
 msgstr "Ištempimo tipas"
 
-#: src/synfig/layer_shape.cpp:1210
+#: src/synfig/layer_shape.cpp:1239
 msgid "Type of feathering to use"
 msgstr "Naudojamas ištempimo tipas"
 
-#: src/synfig/layer_shape.cpp:1219
+#: src/synfig/layer_shape.cpp:1248
 msgid "Winding Style"
 msgstr "Spiralinis stilius"
 
-#: src/synfig/layer_shape.cpp:1220
+#: src/synfig/layer_shape.cpp:1249
 msgid "Winding style to use"
 msgstr "Naudojamas spiralinis stilius"
 
-#: src/synfig/layer_shape.cpp:1222
+#: src/synfig/layer_shape.cpp:1251
 msgid "Non Zero"
 msgstr "Nenulinis"
 
-#: src/synfig/layer_shape.cpp:1223
+#: src/synfig/layer_shape.cpp:1252
 msgid "Even/Odd"
 msgstr "Lyginis/Nelyginis"
 
@@ -2277,406 +2287,406 @@ msgstr "Lyginis/Nelyginis"
 msgid "Solid Color"
 msgstr "Vientisa spalva"
 
-#: src/synfig/listimporter.cpp:161 src/synfig/listimporter.cpp:162
-msgid "No images in list"
-msgstr "Sąraše nėra pavekslėlių"
-
-#: src/synfig/loadcanvas.cpp:142
+#: src/synfig/loadcanvas.cpp:143
 #, c-format
 msgid "cannot load '%s' recursively"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:185
+#: src/synfig/loadcanvas.cpp:186
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
 msgstr "Nenumatytas elementas <%s>, numatytas<%s>"
 
-#: src/synfig/loadcanvas.cpp:191
+#: src/synfig/loadcanvas.cpp:192
 #, c-format
 msgid "Unexpected element <%s>"
 msgstr "Unexpected element <%s>"
 
-#: src/synfig/loadcanvas.cpp:205
+#: src/synfig/loadcanvas.cpp:206
 msgid "Too many warnings"
 msgstr "Per daug įspėjimų"
 
-#: src/synfig/loadcanvas.cpp:236
+#: src/synfig/loadcanvas.cpp:237
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr "<%s> trūksta\"%s\" atributo"
 
 #: src/synfig/loadcanvas.cpp:267 src/synfig/loadcanvas.cpp:286
-#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:469
-#: src/synfig/loadcanvas.cpp:1118
+#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:324
+#: src/synfig/loadcanvas.cpp:494 src/synfig/loadcanvas.cpp:1149
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr ""
 
 #: src/synfig/loadcanvas.cpp:271 src/synfig/loadcanvas.cpp:290
-#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:473
-#: src/synfig/loadcanvas.cpp:1122
+#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:328
+#: src/synfig/loadcanvas.cpp:498 src/synfig/loadcanvas.cpp:1153
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:484 src/synfig/loadcanvas.cpp:1144
+#: src/synfig/loadcanvas.cpp:509 src/synfig/loadcanvas.cpp:1182
+#: src/synfig/loadcanvas.cpp:1200
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr "Bloga reikšmė \"%s\"  <%s>"
 
-#: src/synfig/loadcanvas.cpp:508
+#: src/synfig/loadcanvas.cpp:533
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1284
+#: src/synfig/loadcanvas.cpp:1353
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1301
+#: src/synfig/loadcanvas.cpp:1375
 msgid "<waypoint> is missing attribute \"time\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1314
+#: src/synfig/loadcanvas.cpp:1388
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1330
+#: src/synfig/loadcanvas.cpp:1404
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1336 src/synfig/loadcanvas.cpp:1348
+#: src/synfig/loadcanvas.cpp:1410 src/synfig/loadcanvas.cpp:1422
 #, c-format
 msgid "<%s> is missing its data"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1365
+#: src/synfig/loadcanvas.cpp:1439
 msgid "Bad data for <waypoint>"
 msgstr "Neteisingi duomenys <fiksatoriui>"
 
-#: src/synfig/loadcanvas.cpp:1380
+#: src/synfig/loadcanvas.cpp:1455
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1424 src/synfig/loadcanvas.cpp:1443
-#, c-format
-msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
-msgstr ""
-
-#: src/synfig/loadcanvas.cpp:1504
+#: src/synfig/loadcanvas.cpp:1556
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1512
+#: src/synfig/loadcanvas.cpp:1565
 #, c-format
 msgid "Bad type in <%s>"
 msgstr "Blogas tipas <%s>"
 
-#: src/synfig/loadcanvas.cpp:1522
+#: src/synfig/loadcanvas.cpp:1577
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1531
+#: src/synfig/loadcanvas.cpp:1587
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1557 src/synfig/loadcanvas.cpp:1628
+#: src/synfig/loadcanvas.cpp:1612 src/synfig/loadcanvas.cpp:1683
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1570
+#: src/synfig/loadcanvas.cpp:1625
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1579
+#: src/synfig/loadcanvas.cpp:1634
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1603
+#: src/synfig/loadcanvas.cpp:1658
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1643
+#: src/synfig/loadcanvas.cpp:1698
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1652
+#: src/synfig/loadcanvas.cpp:1707
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr "Analizė '%s' nepavyko"
 
-#: src/synfig/loadcanvas.cpp:1659
+#: src/synfig/loadcanvas.cpp:1714
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1677
+#: src/synfig/loadcanvas.cpp:1732
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1747
+#: src/synfig/loadcanvas.cpp:1811
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1841
-msgid "Unable to create <dynamic_list>"
+#: src/synfig/loadcanvas.cpp:1861
+msgid "Unable to create <list>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1993
+#: src/synfig/loadcanvas.cpp:1903 src/synfig/loadcanvas.cpp:2150
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2038
+#: src/synfig/loadcanvas.cpp:1998
+msgid "Unable to create <dynamic_list>"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2220
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Neteisingi duomenys <%s>"
 
-#: src/synfig/loadcanvas.cpp:2076
+#: src/synfig/loadcanvas.cpp:2283
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2097
+#: src/synfig/loadcanvas.cpp:2304
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Blogas ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:2102
+#: src/synfig/loadcanvas.cpp:2310
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr "ID dublikatas \"%s\""
 
-#: src/synfig/loadcanvas.cpp:2107
+#: src/synfig/loadcanvas.cpp:2316
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2142
+#: src/synfig/loadcanvas.cpp:2373
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2161
+#: src/synfig/loadcanvas.cpp:2392
 msgid "Installed layer version is smaller than layer version in file"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2181
+#: src/synfig/loadcanvas.cpp:2415
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2184
+#: src/synfig/loadcanvas.cpp:2418
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2192
+#: src/synfig/loadcanvas.cpp:2426
 msgid "Missing \"name\" attribute for <param>."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2209
+#: src/synfig/loadcanvas.cpp:2443
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2214
+#: src/synfig/loadcanvas.cpp:2448
 msgid "Empty use=\"\" value in <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2220
+#: src/synfig/loadcanvas.cpp:2454
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2222
+#: src/synfig/loadcanvas.cpp:2456
 msgid "Layer rejected canvas link"
 msgstr "Sluoksnis atmetė drobės nuorodą"
 
-#: src/synfig/loadcanvas.cpp:2244
+#: src/synfig/loadcanvas.cpp:2480
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2260
+#: src/synfig/loadcanvas.cpp:2496
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2272 src/synfig/loadcanvas.cpp:2292
+#: src/synfig/loadcanvas.cpp:2508 src/synfig/loadcanvas.cpp:2528
 msgid "Bad data for <param>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2280
+#: src/synfig/loadcanvas.cpp:2516
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2303
+#: src/synfig/loadcanvas.cpp:2539
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2376 src/synfig/loadcanvas.cpp:2384
+#: src/synfig/loadcanvas.cpp:2615 src/synfig/loadcanvas.cpp:2623
 msgid "Canvas with width or height less than one is not allowed"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2470
+#: src/synfig/loadcanvas.cpp:2710
 msgid "Group canvases cannot have a <defs> section"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2478
+#: src/synfig/loadcanvas.cpp:2717
+msgid "Inline canvas cannot have a <bones> section"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2725
 msgid "Group canvases cannot have keyframes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2490
+#: src/synfig/loadcanvas.cpp:2737
 msgid "Group canvases cannot have metadata"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2498
+#: src/synfig/loadcanvas.cpp:2745
 msgid "<meta> must have a name"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2504
+#: src/synfig/loadcanvas.cpp:2751
 msgid "<meta> must have content"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2516
+#: src/synfig/loadcanvas.cpp:2763
 msgid "blank \"name\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2531
+#: src/synfig/loadcanvas.cpp:2778
 msgid "blank \"desc\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2546
+#: src/synfig/loadcanvas.cpp:2793
 msgid "blank \"author\" entity"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2578
+#: src/synfig/loadcanvas.cpp:2828
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2580 src/synfig/valuenode.cpp:353
+#: src/synfig/loadcanvas.cpp:2830 src/synfig/valuenode.cpp:374
 msgid "ValueNode"
 msgstr "Mazgo reikšmė"
 
-#: src/synfig/loadcanvas.cpp:2580
+#: src/synfig/loadcanvas.cpp:2830
 msgid "ValueNodes"
 msgstr "Mazgo reikšmės"
 
-#: src/synfig/loadcanvas.cpp:2660 src/synfig/loadcanvas.cpp:2716
+#: src/synfig/loadcanvas.cpp:2910 src/synfig/loadcanvas.cpp:2966
 msgid "Can't open file"
 msgstr "Negalima atidaryti failo"
 
-#: src/synfig/main.cpp:102
+#: src/synfig/main.cpp:118
 #, c-format
 msgid "API Version mismatch (LIB:%d, PROG:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:107
+#: src/synfig/main.cpp:123
 #, c-format
 msgid "Size of Vector mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:112
+#: src/synfig/main.cpp:128
 #, c-format
 msgid "Size of Color mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:117
+#: src/synfig/main.cpp:133
 #, c-format
 msgid "Size of Canvas mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:122
+#: src/synfig/main.cpp:138
 #, c-format
 msgid "Size of Layer mismatch (app:%d, lib:%d)"
 msgstr ""
 
-#: src/synfig/main.cpp:184
+#: src/synfig/main.cpp:207
 msgid "Starting Subsystem \"Modules\""
 msgstr ""
 
-#: src/synfig/main.cpp:186
+#: src/synfig/main.cpp:209
 msgid "Unable to initialize subsystem \"Module\""
 msgstr ""
 
-#: src/synfig/main.cpp:188
+#: src/synfig/main.cpp:211
 msgid "Starting Subsystem \"Layers\""
 msgstr ""
 
-#: src/synfig/main.cpp:192
+#: src/synfig/main.cpp:215
 msgid "Unable to initialize subsystem \"Layers\""
 msgstr ""
 
-#: src/synfig/main.cpp:195
+#: src/synfig/main.cpp:218
 msgid "Starting Subsystem \"Targets\""
 msgstr ""
 
-#: src/synfig/main.cpp:200
+#: src/synfig/main.cpp:223
 msgid "Unable to initialize subsystem \"Targets\""
 msgstr ""
 
-#: src/synfig/main.cpp:203
+#: src/synfig/main.cpp:226
 msgid "Starting Subsystem \"Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:209
+#: src/synfig/main.cpp:232
 msgid "Unable to initialize subsystem \"Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:212
+#: src/synfig/main.cpp:235
 msgid "Starting Subsystem \"Cairo Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:219
+#: src/synfig/main.cpp:242
 msgid "Unable to initialize subsystem \"Cairo Importers\""
 msgstr ""
 
-#: src/synfig/main.cpp:222
+#: src/synfig/main.cpp:245
 msgid "Starting Subsystem \"ValueNodes\""
 msgstr ""
 
-#: src/synfig/main.cpp:230
+#: src/synfig/main.cpp:253
 msgid "Unable to initialize subsystem \"ValueNodes\""
 msgstr ""
 
-#: src/synfig/main.cpp:267 src/synfig/main.cpp:268
+#: src/synfig/main.cpp:290 src/synfig/main.cpp:291
 #, c-format
 msgid "Loading modules from %s"
 msgstr ""
 
-#: src/synfig/main.cpp:279
+#: src/synfig/main.cpp:302
 #, c-format
 msgid "Unable to open module list file '%s'"
 msgstr ""
 
-#: src/synfig/main.cpp:293 src/tool/renderprogress.h:141
+#: src/synfig/main.cpp:316 src/tool/renderprogress.h:141
 msgid "DONE"
 msgstr "PRIIMTA"
 
-#: src/synfig/main.cpp:360 src/tool/progress.h:52 src/tool/renderprogress.h:57
+#: src/synfig/main.cpp:383 src/tool/progress.h:52 src/tool/renderprogress.h:57
 msgid "error"
 msgstr "klaida"
 
-#: src/synfig/main.cpp:375 src/tool/progress.h:59 src/tool/renderprogress.h:64
+#: src/synfig/main.cpp:398 src/tool/progress.h:59 src/tool/renderprogress.h:64
 msgid "warning"
 msgstr "įspėjimas"
 
-#: src/synfig/main.cpp:390
+#: src/synfig/main.cpp:413
 msgid "info"
 msgstr "info"
 
@@ -2751,178 +2761,178 @@ msgstr ""
 msgid "%s does not appear to be a supported palette file"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:64 src/synfig/valuenode.cpp:140
-#: src/synfig/valuenode_composite.cpp:437
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:146
+#: src/synfig/valuenode_composite.cpp:447
 msgid "Composite"
 msgstr "Mišinys"
 
-#: src/synfig/paramdesc.cpp:65
+#: src/synfig/paramdesc.cpp:69
 msgid "Straight"
 msgstr "Tiesiai"
 
-#: src/synfig/paramdesc.cpp:66
+#: src/synfig/paramdesc.cpp:70
 msgid "Onto"
 msgstr "Ant"
 
-#: src/synfig/paramdesc.cpp:67
+#: src/synfig/paramdesc.cpp:71
 msgid "Straight Onto"
 msgstr "Tiesiai ant"
 
-#: src/synfig/paramdesc.cpp:68
+#: src/synfig/paramdesc.cpp:72
 msgid "Behind"
 msgstr "Už"
 
-#: src/synfig/paramdesc.cpp:69
+#: src/synfig/paramdesc.cpp:73
 msgid "Screen"
 msgstr "Ekranas"
 
-#: src/synfig/paramdesc.cpp:70
+#: src/synfig/paramdesc.cpp:74
 msgid "Overlay"
 msgstr "Perdangti"
 
-#: src/synfig/paramdesc.cpp:71
+#: src/synfig/paramdesc.cpp:75
 msgid "Hard Light"
 msgstr "Kieta šviesa"
 
-#: src/synfig/paramdesc.cpp:72
+#: src/synfig/paramdesc.cpp:76
 msgid "Multiply"
 msgstr "Daugyba"
 
-#: src/synfig/paramdesc.cpp:73
+#: src/synfig/paramdesc.cpp:77
 msgid "Divide"
 msgstr "Dalyba"
 
-#: src/synfig/paramdesc.cpp:74 src/synfig/valuenode.cpp:157
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:163
 #: src/synfig/valuenode_add.cpp:190
 msgid "Add"
 msgstr "Papildytas"
 
-#: src/synfig/paramdesc.cpp:75 src/synfig/valuenode.cpp:147
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:153
 #: src/synfig/valuenode_subtract.cpp:194
 msgid "Subtract"
 msgstr "Atimti"
 
-#: src/synfig/paramdesc.cpp:76
+#: src/synfig/paramdesc.cpp:80
 msgid "Difference"
 msgstr "Skirtumas"
 
-#: src/synfig/paramdesc.cpp:77
+#: src/synfig/paramdesc.cpp:81
 msgid "Brighten"
 msgstr "Paryškinti"
 
-#: src/synfig/paramdesc.cpp:78
+#: src/synfig/paramdesc.cpp:82
 msgid "Darken"
 msgstr "Tamsinimas"
 
-#: src/synfig/paramdesc.cpp:80 src/synfig/valuenode_radialcomposite.cpp:263
+#: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:263
 msgid "Hue"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:81 src/synfig/valuenode_radialcomposite.cpp:260
+#: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:260
 #: src/synfig/valuenode_radialcomposite.cpp:266
 msgid "Saturation"
 msgstr ""
 
-#: src/synfig/paramdesc.cpp:82
+#: src/synfig/paramdesc.cpp:86
 msgid "Luminance"
 msgstr "Skaistis"
 
-#: src/synfig/paramdesc.cpp:83
+#: src/synfig/paramdesc.cpp:87
 msgid "Alpha Over"
 msgstr "Alpha virš"
 
-#: src/synfig/paramdesc.cpp:84
+#: src/synfig/paramdesc.cpp:88
 msgid "Alpha Brighten"
 msgstr "Alpha paryškinti"
 
-#: src/synfig/paramdesc.cpp:85
+#: src/synfig/paramdesc.cpp:89
 msgid "Alpha Darken"
 msgstr "Alfa patamsinti"
 
-#: src/synfig/render.cpp:245 src/synfig/render.cpp:246
-#: src/synfig/render.cpp:300 src/synfig/render.cpp:301
-#: src/synfig/render.cpp:535 src/synfig/render.cpp:536
-#: src/synfig/render.cpp:562 src/synfig/render.cpp:563
+#: src/synfig/render.cpp:248 src/synfig/render.cpp:249
+#: src/synfig/render.cpp:303 src/synfig/render.cpp:304
+#: src/synfig/render.cpp:573 src/synfig/render.cpp:574
+#: src/synfig/render.cpp:600 src/synfig/render.cpp:601
 msgid "Target panic"
 msgstr "Adresato panika"
 
-#: src/synfig/savecanvas.cpp:290
+#: src/synfig/savecanvas.cpp:359
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr ""
 
-#: src/synfig/savecanvas.cpp:543
+#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:185
-#: src/synfig/target_scanline.cpp:97 src/synfig/target_tile.cpp:280
+#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
+#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:281
 msgid "Target initialization failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:146
+#: src/synfig/target_cairo.cpp:155
 msgid "Frame Renderer Failure"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:155 src/synfig/target_scanline.cpp:257
-#: src/synfig/target_scanline.cpp:404
+#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:260
+#: src/synfig/target_scanline.cpp:407
 msgid "Unable to put surface on target"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:162
+#: src/synfig/target_cairo.cpp:173
 msgid "Not supported render method"
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:169 src/synfig/target_cairo_tile.cpp:248
-#: src/synfig/target_scanline.cpp:417 src/synfig/target_tile.cpp:395
+#: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
+#: src/synfig/target_scanline.cpp:420 src/synfig/target_tile.cpp:398
 msgid "Caught string :"
 msgstr "Sugauta eilutė:"
 
-#: src/synfig/target_cairo.cpp:174 src/synfig/target_cairo_tile.cpp:253
-#: src/synfig/target_scanline.cpp:422 src/synfig/target_tile.cpp:400
+#: src/synfig/target_cairo.cpp:185 src/synfig/target_cairo_tile.cpp:264
+#: src/synfig/target_scanline.cpp:425 src/synfig/target_tile.cpp:403
 msgid "Ran out of memory (Probably a bug)"
 msgstr "Pritrūko atminties (tikriausiai klaida)"
 
-#: src/synfig/target_cairo.cpp:179 src/synfig/target_cairo_tile.cpp:258
-#: src/synfig/target_scanline.cpp:427 src/synfig/target_tile.cpp:405
+#: src/synfig/target_cairo.cpp:190 src/synfig/target_cairo_tile.cpp:269
+#: src/synfig/target_scanline.cpp:430 src/synfig/target_tile.cpp:408
 msgid "Caught unknown error, rethrowing..."
 msgstr ""
 
-#: src/synfig/target_cairo.cpp:190
+#: src/synfig/target_cairo.cpp:201
 msgid "Cairo Surface bad status"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:111
+#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:112
 msgid "Bad Tile Size"
 msgstr "Blogas išklotinės dydis"
 
-#: src/synfig/target_cairo_tile.cpp:142 src/synfig/target_cairo_tile.cpp:240
-#: src/synfig/target_scanline.cpp:202 src/synfig/target_scanline.cpp:248
-#: src/synfig/target_scanline.cpp:347 src/synfig/target_scanline.cpp:395
-#: src/synfig/target_tile.cpp:224
+#: src/synfig/target_cairo_tile.cpp:148 src/synfig/target_cairo_tile.cpp:251
+#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:251
+#: src/synfig/target_scanline.cpp:350 src/synfig/target_scanline.cpp:398
+#: src/synfig/target_tile.cpp:225
 msgid "Accelerated Renderer Failure"
 msgstr "Pagreitinto atvaizdavimo gedimas"
 
-#: src/synfig/target_cairo_tile.cpp:150
+#: src/synfig/target_cairo_tile.cpp:157
 #, c-format
 msgid "Bad surface: %s"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:156 src/synfig/target_tile.cpp:178
-#: src/synfig/target_tile.cpp:244
+#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:179
+#: src/synfig/target_tile.cpp:245
 msgid "add_tile():Unable to put surface on target"
 msgstr ""
 
-#: src/synfig/target_cairo_tile.cpp:211
+#: src/synfig/target_cairo_tile.cpp:222
 msgid "Can't start frame"
 msgstr ""
 
-#: src/synfig/target_tile.cpp:161
+#: src/synfig/target_tile.cpp:162
 msgid "Parametric Renderer Failure"
 msgstr "Parametrinio atvaizdavimo gedimas"
 
-#: src/synfig/target_tile.cpp:168 src/synfig/target_tile.cpp:232
+#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:233
 msgid "Bad surface"
 msgstr "Bloga figūra"
 
@@ -2939,292 +2949,336 @@ msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:276 src/synfig/value.cpp:308 src/synfig/value.cpp:360
+#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
 msgid "bool"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:277 src/synfig/value.cpp:310 src/synfig/value.cpp:358
+#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
 msgid "integer"
 msgstr "sveikasis skaičius"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:278 src/synfig/value.cpp:312
+#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
 msgid "angle"
 msgstr "kampas"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:279 src/synfig/value.cpp:314 src/synfig/value.cpp:352
+#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
 msgid "time"
 msgstr "laikas"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:280 src/synfig/value.cpp:316 src/synfig/value.cpp:355
+#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
 msgid "real"
 msgstr "realus"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:281 src/synfig/value.cpp:318
+#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
 msgid "vector"
 msgstr "vektorius"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:282 src/synfig/value.cpp:320
+#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
 msgid "color"
 msgstr "spalva"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:283 src/synfig/value.cpp:322
+#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
 msgid "segment"
 msgstr "segmentas"
 
-#: src/synfig/value.cpp:284
+#: src/synfig/value.cpp:348
 msgid "bline_point"
 msgstr "kreivės_taškas"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:285 src/synfig/value.cpp:326
+#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+msgid "matrix"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+msgid "bone_weight_pair"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
 msgid "width_point"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:286 src/synfig/value.cpp:328
+#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
 msgid "dash_item"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:287 src/synfig/value.cpp:330
+#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
 msgid "list"
 msgstr "sąrašas"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:288 src/synfig/value.cpp:332
+#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
 msgid "canvas"
 msgstr "drobė"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:289 src/synfig/value.cpp:334
+#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
 msgid "string"
 msgstr "Styga"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:290 src/synfig/value.cpp:336
+#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
 msgid "gradient"
 msgstr "gradiento"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:291 src/synfig/value.cpp:338
+#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+msgid "bone_object"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+msgid "bone_valuenode"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
 msgid "nil"
 msgstr "nulis"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:324
+#: src/synfig/value.cpp:392
 msgid "spline_point"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_radialcomposite.cpp:234
+#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_radialcomposite.cpp:234
 msgid "Radial Composite"
 msgstr "Radialinis "
 
-#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_reference.cpp:123
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_reference.cpp:123
 msgid "Reference"
 msgstr "Nuoroda"
 
-#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_segcalctangent.cpp:106
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_segcalctangent.cpp:106
 msgid "Segment Tangent"
 msgstr "Segmento liestinė"
 
-#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_segcalcvertex.cpp:104
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_segcalcvertex.cpp:104
 msgid "Segment Vertex"
 msgstr "Segmentas viršūnė"
 
-#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_stripes.cpp:81
 #: src/synfig/valuenode_stripes.cpp:171
 msgid "Stripes"
-msgstr ""
+msgstr "Juostelėmis"
 
-#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_twotone.cpp:135
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_twotone.cpp:135
 msgid "Two-Tone"
 msgstr "Dviejų atspalvių"
 
-#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_dynamiclist.cpp:755
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_dynamiclist.cpp:762
 msgid "Dynamic List"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_gradientrotate.cpp:78
 #: src/synfig/valuenode_gradientrotate.cpp:146
 msgid "Gradient Rotate"
 msgstr "Pasukti gradientą"
 
-#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_sine.cpp:110
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_sine.cpp:110
 msgid "Sine"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_timedswap.cpp:221
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_timedswap.cpp:221
 msgid "Timed Swap"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:155 src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_repeat_gradient.cpp:84
 #: src/synfig/valuenode_repeat_gradient.cpp:185
 msgid "Repeat Gradient"
 msgstr "Pakartoti gradientą"
 
-#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_exp.cpp:106
+#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_exp.cpp:106
 msgid "Exponential"
 msgstr "Eksponentinis"
 
-#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_blinecalctangent.cpp:184
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_blinecalctangent.cpp:184
 msgid "Spline Tangent"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:159 src/synfig/valuenode_blinecalcvertex.cpp:152
+#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_blinecalcvertex.cpp:152
 msgid "Spline Vertex"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_range.cpp:257
+#: src/synfig/valuenode.cpp:166 src/synfig/valuenode_range.cpp:257
 msgid "Range"
 msgstr "Diapazonas"
 
-#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_switch.cpp:133
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenode_switch.cpp:133
 #: src/synfig/valuenode_switch.cpp:163
 msgid "Switch"
 msgstr "Pakeitimas"
 
-#: src/synfig/valuenode.cpp:163 src/synfig/valuenode_cos.cpp:109
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_cos.cpp:109
 msgid "Cos"
 msgstr "Cos"
 
-#: src/synfig/valuenode.cpp:164
+#: src/synfig/valuenode.cpp:170
 msgid "aTan2"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:165
+#: src/synfig/valuenode.cpp:171
 msgid "Reverse Tangent"
 msgstr "Atvirkštinė liestinė"
 
-#: src/synfig/valuenode.cpp:167 src/synfig/valuenode_reciprocal.cpp:147
+#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_reciprocal.cpp:147
 msgid "Reciprocal"
 msgstr "Abipusis"
 
-#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_integer.cpp:172
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_integer.cpp:172
 msgid "Integer"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:171 src/synfig/valuenode_blinecalcwidth.cpp:155
+#: src/synfig/valuenode.cpp:177 src/synfig/valuenode_blinecalcwidth.cpp:155
 msgid "Spline Width"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_vectorangle.cpp:128
+#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_vectorangle.cpp:128
 msgid "Vector Angle"
 msgstr "Vektoriaus kampas"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenode_vectorlength.cpp:127
+#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_vectorlength.cpp:127
 msgid "Vector Length"
 msgstr "Vektoriaus ilgis"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_vectorx.cpp:127
+#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_vectorx.cpp:127
 msgid "Vector X"
 msgstr "Vektoriaus X"
 
-#: src/synfig/valuenode.cpp:176 src/synfig/valuenode_vectory.cpp:127
+#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_vectory.cpp:127
 msgid "Vector Y"
 msgstr "Vektoriaus Y"
 
-#: src/synfig/valuenode.cpp:177
+#: src/synfig/valuenode.cpp:183
 msgid "Gradient Color"
 msgstr "Gradiento spalva"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:184
 msgid "Dot Product"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_timestring.cpp:119
+#: src/synfig/valuenode.cpp:185 src/synfig/valuenode_timestring.cpp:119
 msgid "Time String"
 msgstr "Laiko eilutė"
 
-#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_real.cpp:161
+#: src/synfig/valuenode.cpp:186 src/synfig/valuenode_real.cpp:161
 #: src/synfig/valuenode_realstring.cpp:175
 msgid "Real"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_realstring.cpp:125
+#: src/synfig/valuenode.cpp:187 src/synfig/valuenode_realstring.cpp:125
 msgid "Real String"
 msgstr "Faktinė eilutė"
 
-#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_join.cpp:144
+#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_join.cpp:144
 msgid "Joined List"
 msgstr "Jungtinis sąrašas"
 
-#: src/synfig/valuenode.cpp:183
+#: src/synfig/valuenode.cpp:189
 msgid "Angle String"
 msgstr "Kampo eilutė"
 
-#: src/synfig/valuenode.cpp:184
+#: src/synfig/valuenode.cpp:190
 msgid "Int String"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:185
+#: src/synfig/valuenode.cpp:191
 msgid "Logarithm"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:187
+#: src/synfig/valuenode.cpp:192
 msgid "Greyed"
 msgstr "Pilka"
 
-#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_pow.cpp:162
+#: src/synfig/valuenode.cpp:193 src/synfig/valuenode_pow.cpp:162
 #: src/synfig/valuenode_pow.cpp:185
 msgid "Power"
 msgstr "Galia"
 
-#: src/synfig/valuenode.cpp:189 src/synfig/valuenode_compare.cpp:149
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_compare.cpp:149
 msgid "Compare"
 msgstr "Palyginti"
 
-#: src/synfig/valuenode.cpp:190
+#: src/synfig/valuenode.cpp:195
 msgid "Not"
 msgstr "Ne"
 
-#: src/synfig/valuenode.cpp:191
+#: src/synfig/valuenode.cpp:196
 msgid "And"
 msgstr "Ir"
 
-#: src/synfig/valuenode.cpp:192
+#: src/synfig/valuenode.cpp:197
 msgid "Or"
 msgstr "Arba"
 
-#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_wplist.cpp:360
+#: src/synfig/valuenode.cpp:199
+msgid "Bone Influence"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:200
+msgid "Bone"
+msgstr "Kaulas"
+
+#: src/synfig/valuenode.cpp:201
+msgid "Root Bone"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:202
+msgid "Static List"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:203
+msgid "Bone Weight Pair"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:205 src/synfig/valuenode_wplist.cpp:360
 msgid "WPList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:195
+#: src/synfig/valuenode.cpp:206
 msgid "DIList"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:233
+#: src/synfig/valuenode.cpp:241
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr ""
 
-#: src/synfig/valuenode.cpp:513
+#: src/synfig/valuenode.cpp:540
 msgid "Placeholder"
 msgstr ""
 
-#: src/synfig/valuenode.h:61
+#: src/synfig/valuenode.h:62
 #, c-format
 msgid "%s:%d wrong type for %s: need %s but got %s"
 msgstr ""
@@ -3291,32 +3345,32 @@ msgstr "Jungtis2"
 msgid "Second operand of the AND operation"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:355 src/synfig/valuenode_animated.cpp:379
-#: src/synfig/valuenode_animated.cpp:703 src/synfig/valuenode_animated.cpp:721
-#: src/synfig/valuenode_animated.cpp:801 src/synfig/valuenode_animated.cpp:820
+#: src/synfig/valuenode_animated.cpp:357 src/synfig/valuenode_animated.cpp:381
+#: src/synfig/valuenode_animated.cpp:709 src/synfig/valuenode_animated.cpp:727
+#: src/synfig/valuenode_animated.cpp:811 src/synfig/valuenode_animated.cpp:830
 msgid "A waypoint already exists at this point in time"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:1134
+#: src/synfig/valuenode_animated.cpp:1173
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
 msgstr ""
 
-#: src/synfig/valuenode_animated.cpp:1169
+#: src/synfig/valuenode_animated.cpp:1208
 msgid "Animated"
 msgstr "Animacinis"
 
-#: src/synfig/valuenode_bline.cpp:977 src/synfig/valuenode_dynamiclist.cpp:661
+#: src/synfig/valuenode_bline.cpp:982 src/synfig/valuenode_dynamiclist.cpp:667
 #: src/synfig/valuenode_wplist.cpp:336
 msgid "No entries in list"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:980 src/synfig/valuenode_dynamiclist.cpp:664
+#: src/synfig/valuenode_bline.cpp:985 src/synfig/valuenode_dynamiclist.cpp:670
 #: src/synfig/valuenode_wplist.cpp:339
 msgid "No entries in ret_list"
 msgstr ""
 
-#: src/synfig/valuenode_bline.cpp:989 src/synfig/valuenode_bline.cpp:1023
+#: src/synfig/valuenode_bline.cpp:994 src/synfig/valuenode_bline.cpp:1111
 #, c-format
 msgid "Vertex %03d"
 msgstr ""
@@ -3336,7 +3390,7 @@ msgid "The position of the linked tangent on the Spline (0,1]"
 msgstr ""
 
 #: src/synfig/valuenode_blinecalctangent.cpp:256
-#: src/synfig/valuenode_composite.cpp:574
+#: src/synfig/valuenode_composite.cpp:584
 #: src/synfig/valuenode_gradientrotate.cpp:169
 #: src/synfig/valuenode_linear.cpp:213
 msgid "Offset"
@@ -3390,188 +3444,184 @@ msgstr "Pločio mastelis"
 msgid "When checked, the width is spline length based"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:219
+#: src/synfig/valuenode_composite.cpp:229
 msgid "Bad type for composite"
 msgstr "Blogas mišinio tipas"
 
-#: src/synfig/valuenode_composite.cpp:464
+#: src/synfig/valuenode_composite.cpp:474
 msgid "Red"
 msgstr "Raudona"
 
-#: src/synfig/valuenode_composite.cpp:465
+#: src/synfig/valuenode_composite.cpp:475
 msgid "The red component of the color"
 msgstr "Raudonos spalvos komponentas"
 
-#: src/synfig/valuenode_composite.cpp:468
+#: src/synfig/valuenode_composite.cpp:478
 msgid "Green"
 msgstr "Žalia"
 
-#: src/synfig/valuenode_composite.cpp:469
+#: src/synfig/valuenode_composite.cpp:479
 msgid "The green component of the color"
 msgstr "Žalios spalvos komponentas"
 
-#: src/synfig/valuenode_composite.cpp:472
+#: src/synfig/valuenode_composite.cpp:482
 msgid "Blue"
 msgstr "Mėlyna"
 
-#: src/synfig/valuenode_composite.cpp:473
+#: src/synfig/valuenode_composite.cpp:483
 msgid "The blue component of the color"
 msgstr "Mėlynos spalvos komponentas"
 
-#: src/synfig/valuenode_composite.cpp:476
+#: src/synfig/valuenode_composite.cpp:486
 msgid "Alpha"
 msgstr "Alfa"
 
-#: src/synfig/valuenode_composite.cpp:477
+#: src/synfig/valuenode_composite.cpp:487
 msgid "The alpha of the color"
 msgstr "Spalvos alfa"
 
-#: src/synfig/valuenode_composite.cpp:482
+#: src/synfig/valuenode_composite.cpp:492
 msgid "Vertex 1"
 msgstr "Viršūnė 1"
 
-#: src/synfig/valuenode_composite.cpp:483
+#: src/synfig/valuenode_composite.cpp:493
 msgid "The first vertex of the segment"
 msgstr "Segmento pirmoji viršūnė "
 
-#: src/synfig/valuenode_composite.cpp:486
-#: src/synfig/valuenode_composite.cpp:526
+#: src/synfig/valuenode_composite.cpp:496
+#: src/synfig/valuenode_composite.cpp:536
 msgid "Tangent 1"
 msgstr "Liestinė 1"
 
-#: src/synfig/valuenode_composite.cpp:487
+#: src/synfig/valuenode_composite.cpp:497
 msgid "The first tangent of the segment"
 msgstr "Pirmoji segmento liestinė"
 
-#: src/synfig/valuenode_composite.cpp:490
+#: src/synfig/valuenode_composite.cpp:500
 msgid "Vertex 2"
 msgstr "Viršūnė 2"
 
-#: src/synfig/valuenode_composite.cpp:491
+#: src/synfig/valuenode_composite.cpp:501
 msgid "The second vertex of the segment"
 msgstr "Segmento antroji viršūnė "
 
-#: src/synfig/valuenode_composite.cpp:494
-#: src/synfig/valuenode_composite.cpp:530
+#: src/synfig/valuenode_composite.cpp:504
+#: src/synfig/valuenode_composite.cpp:540
 msgid "Tangent 2"
 msgstr "Liestinė 2"
 
-#: src/synfig/valuenode_composite.cpp:495
+#: src/synfig/valuenode_composite.cpp:505
 msgid "The second tangent of the segment"
 msgstr "Antroji segmento liestinė"
 
-#: src/synfig/valuenode_composite.cpp:500
+#: src/synfig/valuenode_composite.cpp:510
 msgid "X-Axis"
 msgstr "X-ašis"
 
-#: src/synfig/valuenode_composite.cpp:501
+#: src/synfig/valuenode_composite.cpp:511
 msgid "The X-Axis component of the vector"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:504
+#: src/synfig/valuenode_composite.cpp:514
 msgid "Y-Axis"
 msgstr "Y-ašis"
 
-#: src/synfig/valuenode_composite.cpp:505
+#: src/synfig/valuenode_composite.cpp:515
 msgid "The Y-Axis component of the vector"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:510
+#: src/synfig/valuenode_composite.cpp:520
 msgid "Vertex"
 msgstr "Viršūnė"
 
-#: src/synfig/valuenode_composite.cpp:511
+#: src/synfig/valuenode_composite.cpp:521
 msgid "The vertex of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:515
+#: src/synfig/valuenode_composite.cpp:525
 msgid "The width of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:519
+#: src/synfig/valuenode_composite.cpp:529
 msgid "Defines the Off and On position relative to neighbours"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:522
+#: src/synfig/valuenode_composite.cpp:532
 msgid "Split"
-msgstr ""
+msgstr "Skaldyti"
 
-#: src/synfig/valuenode_composite.cpp:523
+#: src/synfig/valuenode_composite.cpp:533
 msgid "When checked, tangents are independent"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:527
+#: src/synfig/valuenode_composite.cpp:537
 msgid "The first tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:531
+#: src/synfig/valuenode_composite.cpp:541
 msgid "The second tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:537
+#: src/synfig/valuenode_composite.cpp:547
 msgid "The [0,1] position of the Width Point over the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:541
+#: src/synfig/valuenode_composite.cpp:551
 msgid "The width of the Width Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:544
-#: src/synfig/valuenode_composite.cpp:584
+#: src/synfig/valuenode_composite.cpp:554
+#: src/synfig/valuenode_composite.cpp:594
 msgid "Side Type Before"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:545
 #: src/synfig/valuenode_composite.cpp:555
+#: src/synfig/valuenode_composite.cpp:565
 msgid "Defines the interpolation type of the width point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:547
 #: src/synfig/valuenode_composite.cpp:557
+#: src/synfig/valuenode_composite.cpp:567
 msgid "Interpolate"
 msgstr "Interpoliuoti"
 
-#: src/synfig/valuenode_composite.cpp:554
-#: src/synfig/valuenode_composite.cpp:593
+#: src/synfig/valuenode_composite.cpp:564
+#: src/synfig/valuenode_composite.cpp:603
 msgid "Side Type After"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:564
+#: src/synfig/valuenode_composite.cpp:574
 msgid "Lower Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:565
+#: src/synfig/valuenode_composite.cpp:575
 msgid "Defines the position at start of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:568
+#: src/synfig/valuenode_composite.cpp:578
 msgid "Upper Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:569
+#: src/synfig/valuenode_composite.cpp:579
 msgid "Defines the position at end of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:575
+#: src/synfig/valuenode_composite.cpp:585
 msgid "The offset length of the Dash Item over the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:579
+#: src/synfig/valuenode_composite.cpp:589
 #: src/synfig/valuenode_timedswap.cpp:260
 msgid "Length"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:580
+#: src/synfig/valuenode_composite.cpp:590
 msgid "The length of the Dash Item"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:585
-#: src/synfig/valuenode_composite.cpp:594
+#: src/synfig/valuenode_composite.cpp:595
+#: src/synfig/valuenode_composite.cpp:604
 msgid "Defines the side type of the dash item"
-msgstr ""
-
-#: src/synfig/valuenode_const.cpp:127
-msgid "Static"
 msgstr ""
 
 #: src/synfig/valuenode_compare.cpp:168
@@ -3638,12 +3688,12 @@ msgstr ""
 msgid "Amount increment of the index"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:655
+#: src/synfig/valuenode_dynamiclist.cpp:661
 msgid "List type/item type mismatch, throwing away mismatch"
 msgstr ""
 
-#: src/synfig/valuenode_dynamiclist.cpp:703
-#: src/synfig/valuenode_dynamiclist.cpp:957
+#: src/synfig/valuenode_dynamiclist.cpp:709
+#: src/synfig/valuenode_dynamiclist.cpp:964
 #, c-format
 msgid "Item %03d"
 msgstr ""
@@ -3968,7 +4018,7 @@ msgid "Intersection"
 msgstr ""
 
 #: src/synfig/valuenode_step.cpp:213
-msgid "Value that define whether the step is centerd on the value [0,1]"
+msgid "Value that define whether the step is centered on the value [0,1]"
 msgstr ""
 
 #: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
@@ -4101,195 +4151,195 @@ msgstr ""
 msgid "WidthPoint %03d"
 msgstr ""
 
-#: src/tool/main.cpp:133
+#: src/tool/main.cpp:140
 msgid "FATAL: Synfig Version Mismatch"
 msgstr ""
 
-#: src/tool/main.cpp:169
+#: src/tool/main.cpp:176
 msgid "Settings"
-msgstr ""
+msgstr "Nustatymai"
 
-#: src/tool/main.cpp:171
+#: src/tool/main.cpp:178
 msgid "Specify output target (Default: PNG)"
 msgstr ""
 
-#: src/tool/main.cpp:172
+#: src/tool/main.cpp:179
 msgid "Set the image width in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:173
+#: src/tool/main.cpp:180
 msgid "Set the image height in pixels (Use zero for file default)"
 msgstr ""
 
-#: src/tool/main.cpp:174
+#: src/tool/main.cpp:181
 msgid "Set the diagonal size of image window (Span)"
 msgstr ""
 
-#: src/tool/main.cpp:175
+#: src/tool/main.cpp:182
 msgid "Set antialias amount for parametric renderer."
 msgstr ""
 
-#: src/tool/main.cpp:176
+#: src/tool/main.cpp:183
 #, c-format
 msgid "Specify image quality for accelerated renderer (Default: %d)"
 msgstr ""
 
-#: src/tool/main.cpp:177
+#: src/tool/main.cpp:184
 msgid "Gamma"
-msgstr ""
+msgstr "Gama"
 
-#: src/tool/main.cpp:178
+#: src/tool/main.cpp:185
 msgid "Enable multithreaded renderer using the specified number of threads"
 msgstr ""
 
-#: src/tool/main.cpp:179
+#: src/tool/main.cpp:186
 msgid "Specify input filename"
 msgstr ""
 
-#: src/tool/main.cpp:180
+#: src/tool/main.cpp:187
 msgid "Specify output filename"
 msgstr ""
 
-#: src/tool/main.cpp:181
+#: src/tool/main.cpp:188
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
 msgstr ""
 
-#: src/tool/main.cpp:182
+#: src/tool/main.cpp:189
 msgid "Render the canvas with the given id instead of the root."
 msgstr ""
 
-#: src/tool/main.cpp:183
+#: src/tool/main.cpp:190
 msgid "Set the frame rate"
 msgstr ""
 
-#: src/tool/main.cpp:184
+#: src/tool/main.cpp:191
 msgid "Render a single frame at <seconds>"
 msgstr ""
 
-#: src/tool/main.cpp:185 src/tool/main.cpp:186
+#: src/tool/main.cpp:192 src/tool/main.cpp:193
 msgid "Set the starting time"
 msgstr ""
 
-#: src/tool/main.cpp:187
+#: src/tool/main.cpp:194
 msgid "Set the ending time"
 msgstr ""
 
-#: src/tool/main.cpp:188
+#: src/tool/main.cpp:195
 msgid "Set the physical resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:189
+#: src/tool/main.cpp:196
 msgid "Set the physical X resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:190
+#: src/tool/main.cpp:197
 msgid "Set the physical Y resolution (Dots-per-inch)"
 msgstr ""
 
-#: src/tool/main.cpp:193
+#: src/tool/main.cpp:200
 msgid "Switch options"
 msgstr ""
 
-#: src/tool/main.cpp:195
+#: src/tool/main.cpp:202
 msgid "Output verbosity level"
 msgstr ""
 
-#: src/tool/main.cpp:196
+#: src/tool/main.cpp:203
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr ""
 
-#: src/tool/main.cpp:197
+#: src/tool/main.cpp:204
 msgid "Print benchmarks"
 msgstr ""
 
-#: src/tool/main.cpp:200
+#: src/tool/main.cpp:207
 msgid "Misc options"
 msgstr ""
 
-#: src/tool/main.cpp:202
+#: src/tool/main.cpp:209
 msgid "Append layers in <filename> to composition"
 msgstr ""
 
-#: src/tool/main.cpp:203
+#: src/tool/main.cpp:210
 msgid "Print out specified details of the root canvas"
 msgstr ""
 
-#: src/tool/main.cpp:204 src/tool/main.cpp:230
+#: src/tool/main.cpp:211 src/tool/main.cpp:237
 msgid "Print out the list of exported canvases in the composition"
 msgstr ""
 
-#: src/tool/main.cpp:207
+#: src/tool/main.cpp:214
 msgid "FFMPEG target options"
 msgstr ""
 
-#: src/tool/main.cpp:209
+#: src/tool/main.cpp:216
 msgid "Set the codec for the video. See --ffmpeg-video-codecs"
 msgstr ""
 
-#: src/tool/main.cpp:210
+#: src/tool/main.cpp:217
 msgid "Set the bitrate for the output video"
 msgstr ""
 
-#: src/tool/main.cpp:213
+#: src/tool/main.cpp:220
 msgid "Synfig info options"
 msgstr ""
 
-#: src/tool/main.cpp:215
+#: src/tool/main.cpp:222
 msgid "Produce this help message"
 msgstr ""
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:223
 msgid "Print out the list of available importers"
 msgstr ""
 
-#: src/tool/main.cpp:217
+#: src/tool/main.cpp:224
 msgid "Print out misc build information"
 msgstr ""
 
-#: src/tool/main.cpp:218
+#: src/tool/main.cpp:225
 msgid "Print out the list of available layers"
 msgstr ""
 
-#: src/tool/main.cpp:219
+#: src/tool/main.cpp:226
 msgid "Print out layer's description, parameter info, etc."
 msgstr ""
 
-#: src/tool/main.cpp:220
+#: src/tool/main.cpp:227
 msgid "Print out license information"
 msgstr ""
 
-#: src/tool/main.cpp:221
+#: src/tool/main.cpp:228
 msgid "Print out the list of loaded modules"
 msgstr ""
 
-#: src/tool/main.cpp:222
+#: src/tool/main.cpp:229
 msgid "Print out the list of available targets"
 msgstr ""
 
-#: src/tool/main.cpp:223
+#: src/tool/main.cpp:230
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
 msgstr ""
 
-#: src/tool/main.cpp:224
+#: src/tool/main.cpp:231
 msgid "Print out the list of available ValueNodes"
 msgstr ""
 
-#: src/tool/main.cpp:225
+#: src/tool/main.cpp:232
 msgid "Print out version information"
 msgstr ""
 
-#: src/tool/main.cpp:234
+#: src/tool/main.cpp:241
 msgid "Synfig debug flags"
 msgstr ""
 
-#: src/tool/main.cpp:236
+#: src/tool/main.cpp:243
 msgid "Test GUID generation"
 msgstr ""
 
-#: src/tool/main.cpp:237
+#: src/tool/main.cpp:244
 msgid "Test signal implementation"
 msgstr ""
 
@@ -4339,7 +4389,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:229
 msgid "Rendering..."
-msgstr ""
+msgstr "Atvaizdavimas ..."
 
 #: src/tool/joblistprocessor.cpp:239
 msgid ": Rendered in "
@@ -4353,157 +4403,157 @@ msgstr ""
 msgid "Done."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:113
+#: src/tool/optionsprocessor.cpp:114
 msgid "Unrecognised canvas variable: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:114
+#: src/tool/optionsprocessor.cpp:115
 msgid "Recognized variables are:"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:131
+#: src/tool/optionsprocessor.cpp:132
 msgid "verbosity set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:146
+#: src/tool/optionsprocessor.cpp:147
 msgid "Threads set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:224
+#: src/tool/optionsprocessor.cpp:225
 msgid "Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:225
+#: src/tool/optionsprocessor.cpp:226
 msgid "Localized Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:227
+#: src/tool/optionsprocessor.cpp:228
 msgid "Version: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:232
+#: src/tool/optionsprocessor.cpp:233
 msgid "param - "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:234
+#: src/tool/optionsprocessor.cpp:235
 msgid " (not critical)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:235
+#: src/tool/optionsprocessor.cpp:236
 msgid "\tLocalized Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:239
+#: src/tool/optionsprocessor.cpp:240
 msgid "\tDescription: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:243
+#: src/tool/optionsprocessor.cpp:244
 msgid "\tHint: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:309
+#: src/tool/optionsprocessor.cpp:310
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:316
+#: src/tool/optionsprocessor.cpp:317
 #, c-format
 msgid "Span set to %d units"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:324
+#: src/tool/optionsprocessor.cpp:325
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:334
+#: src/tool/optionsprocessor.cpp:335
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:343
+#: src/tool/optionsprocessor.cpp:344
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:352
+#: src/tool/optionsprocessor.cpp:353
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:379
+#: src/tool/optionsprocessor.cpp:380
 msgid "Rendering frame at "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:385
+#: src/tool/optionsprocessor.cpp:386
 msgid "Gamma argument is currently ignored"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:400
+#: src/tool/optionsprocessor.cpp:401
 #, c-format
 msgid "Resolution set to %dx%d"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:417
+#: src/tool/optionsprocessor.cpp:418
 msgid "Both video codec and bitrate parameters are necessary."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:437
+#: src/tool/optionsprocessor.cpp:438
 #, c-format
 msgid "Video codec \"%s\" is not supported."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:440
+#: src/tool/optionsprocessor.cpp:441
 #, c-format
 msgid "Target video codec set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:446
+#: src/tool/optionsprocessor.cpp:447
 #, c-format
 msgid "Target bitrate set to %dk"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:452
+#: src/tool/optionsprocessor.cpp:453
 #, c-format
 msgid "Output file sequence separator set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:487
+#: src/tool/optionsprocessor.cpp:488
 #, c-format
 msgid "Unable to load '%s'."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:494
+#: src/tool/optionsprocessor.cpp:495
 msgid "No input file provided."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:499
+#: src/tool/optionsprocessor.cpp:500
 msgid "Target set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:513
+#: src/tool/optionsprocessor.cpp:514
 msgid "Quality set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:532
+#: src/tool/optionsprocessor.cpp:533
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:538
+#: src/tool/optionsprocessor.cpp:539
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:557
+#: src/tool/optionsprocessor.cpp:558
 msgid "Unable to append '"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:571
+#: src/tool/optionsprocessor.cpp:572
 msgid "Appended contents of "
 msgstr ""
 
@@ -4517,15 +4567,15 @@ msgstr ""
 
 #: src/tool/printing_functions.cpp:100
 msgid "Start Frame"
-msgstr ""
+msgstr "Pradžios kadras"
 
 #: src/tool/printing_functions.cpp:107
 msgid "End Frame"
-msgstr ""
+msgstr "Pabaigos kadras"
 
 #: src/tool/printing_functions.cpp:129
 msgid "Image Aspect Ratio"
-msgstr ""
+msgstr "Paveikslėlio kraštinių santykis"
 
 #: src/tool/printing_functions.cpp:139
 msgid "Pixel Width"

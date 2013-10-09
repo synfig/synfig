@@ -1,10 +1,9 @@
-# translation of da.po to Danish
-# Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig Studio package.
+# Swedish (Sweden) translation for Synfig Studio.
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Lamhauge <davidlamhauge@gmail.com>, 2012
-# neigaard <soeren@neigaard.com>, 2011
+# rylleman <rylleman@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -12,11 +11,11 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:24+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
+"Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/synfig/language/sv_SE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1
@@ -59,35 +58,35 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
-msgstr "Tilføj Ny Keyframe"
+msgstr "Lägg till ny nyckelbild"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 #: ../src/gui/app.cpp:832
 msgid "Keyframe Properties"
-msgstr "Keyframe Attributter"
+msgstr "Nyckelbild egenskaper"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:105
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:498 ../src/gui/app.cpp:918
 msgid "Increase Amount"
-msgstr "Forøg Antal"
+msgstr "Öka värde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:117
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515 ../src/gui/app.cpp:919
 msgid "Decrease Amount"
-msgstr "Formindsk Antal"
+msgstr "Minska värde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Antal"
+msgstr "Värde"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:135
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Select All Child Layers"
-msgstr "Vælg Alle Underliggende Lag"
+msgstr "Välj alla barnlager"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:365
 msgid "Paste"
-msgstr "Sæt Ind"
+msgstr "Klistra in"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:454
 #: ../src/synfigapp/actions/layerduplicate.cpp:179
@@ -102,7 +101,7 @@ msgstr "Paragraf"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:239
 msgid "Enter Paragraph Text Here:"
-msgstr "Indsæt Paragraf Tekst Her:"
+msgstr "Skriv in paragraftext här:"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
@@ -110,7 +109,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "<Intet Billede Valgt>"
+msgstr "<Ingen bild vald>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
@@ -118,15 +117,15 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
-msgstr "UKENDT"
+msgstr "OKÄND"
 
 #: ../src/gui/dialogs/about.cpp:104
 msgid "2D vector animation studio"
-msgstr "2D vektor animation studio"
+msgstr "2D vectoranimationsstudio"
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Visit the Synfig website"
-msgstr "Besøg Synfig hjemmesiden"
+msgstr "Besök Synfigs hemsida"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
@@ -137,16 +136,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
-msgstr "Oprindelige udviklere:"
+msgstr "Ursprungliga utvecklare:"
 
 #: ../src/gui/dialogs/about.cpp:136
 msgid "Contributors:"
-msgstr "Bidragydere:"
+msgstr "Medverkande:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
-msgstr "oversættelse-anerkendelse"
+msgstr "David Rylander"
 
 #: ../src/gui/dialogs/about.cpp:215
 #, c-format
@@ -154,16 +153,16 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\nUdviklingsversion:\n%s\n"
+msgstr "\nUtvecklingsversion:\n%s\n\n"
 
 #: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
-msgstr "Bygget på %s\n"
+msgstr "Byggd  %s\\n\n"
 
 #: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
-msgstr "Bygget med:\n"
+msgstr "Byggd med:\n\n"
 
 #: ../src/gui/dialogs/about.cpp:225
 #, c-format
@@ -192,7 +191,7 @@ msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
-msgstr "Benytter:\n"
+msgstr "Använder:\n"
 
 #: ../src/gui/dialogs/about.cpp:236
 #, c-format
@@ -202,19 +201,19 @@ msgstr "Synfig %s\n"
 #: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr "GTK+ %d.%d.%d"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:61
 msgid "Canvas Options"
-msgstr "Lærred Indstillinger"
+msgstr "Alternativ för ritytan"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:63
 msgid "_Snap to grid"
-msgstr "_Fastgør til gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:64
 msgid "S_how grid"
-msgstr "V_is gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:65
 msgid "Snap to _frame"
@@ -222,7 +221,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:80
 msgid "Grid"
-msgstr "Gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:90
 msgid "_Grid size"
@@ -275,15 +274,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:64
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Egenskaper för ritytan"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:77
 msgid "Canvas Info"
-msgstr ""
+msgstr "Information om ritytan"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "<b>Canvas Info</b>"
-msgstr ""
+msgstr "<b>Information om ritytan</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:95
 msgid "_ID"
@@ -303,7 +302,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:226
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "Redigera ritytans egenskaper"
 
 #: ../src/gui/dialogs/dialog_color.cpp:59
 msgid "Colors"
@@ -327,7 +326,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
-msgstr ""
+msgstr "Nyckelbildsdialog"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1608
 msgid "Preview Window"
@@ -396,7 +395,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:86
 msgid "Scale New Imported Images to Fit Canvas"
-msgstr ""
+msgstr "Skala nya bilder att passa ritytan"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Enable experimental features (restart required)"
@@ -704,7 +703,7 @@ msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:57
 msgid "Seek to previous keyframe"
-msgstr ""
+msgstr "Sök till föregående nyckelbild"
 
 #: ../src/gui/dials/framedial.cpp:58
 msgid "Seek to previous frame"
@@ -727,7 +726,7 @@ msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:62
 msgid "Seek to next keyframe"
-msgstr ""
+msgstr "Sök till nästa nyckelbild"
 
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/iconcontroller.cpp:288
 msgid "Seek to end"
@@ -735,11 +734,11 @@ msgstr ""
 
 #: ../src/gui/dials/keyframedial.cpp:54
 msgid "Unlock past keyframe"
-msgstr ""
+msgstr "Lås upp tidigare nyckelbild"
 
 #: ../src/gui/dials/keyframedial.cpp:55
 msgid "Unlock future keyframe"
-msgstr ""
+msgstr "Lås upp kommande nyckelbild"
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Increase Display Resolution"
@@ -812,7 +811,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/compview.cpp:168
 msgid "Canvas Browser"
-msgstr ""
+msgstr "Rityteutforskare"
 
 #: ../src/gui/docks/dock_canvases.cpp:108 ../src/gui/trees/childrentree.cpp:93
 #: ../src/gui/compview.cpp:191 ../src/synfigapp/actions/canvasadd.cpp:78
@@ -948,7 +947,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/iconcontroller.cpp:261
 msgid "Keyframes"
-msgstr ""
+msgstr "Nyckelbilder"
 
 #: ../src/gui/docks/dock_layergroups.cpp:68
 msgid "Sets"
@@ -968,7 +967,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:66
 msgid "Canvas MetaData"
-msgstr ""
+msgstr "Ritytan MetaData"
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
@@ -1871,7 +1870,7 @@ msgstr ""
 #: ../src/gui/iconcontroller.cpp:149 ../src/gui/iconcontroller.cpp:178
 #: ../src/synfigapp/action.cpp:525
 msgid "Canvas"
-msgstr ""
+msgstr "Rityta"
 
 #: ../src/gui/trees/canvastreestore.cpp:279
 #: ../src/gui/trees/childrentreestore.cpp:201 ../src/gui/instance.cpp:482
@@ -1892,7 +1891,7 @@ msgstr ""
 
 #: ../src/gui/trees/childrentreestore.cpp:78 ../src/gui/compview.cpp:90
 msgid "Canvases"
-msgstr ""
+msgstr "Ritytor"
 
 #: ../src/gui/trees/childrentreestore.cpp:83
 msgid "ValueBase Nodes"
@@ -1916,11 +1915,11 @@ msgstr ""
 #: ../src/gui/trees/keyframetreestore.cpp:794
 #: ../src/gui/trees/keyframetreestore.cpp:809
 msgid "Unable to find Keyframe in table"
-msgstr ""
+msgstr "Hittar inte nyckelbild i tabell"
 
 #: ../src/gui/trees/keyframetreestore.cpp:800
 msgid "There are no keyframes in this canvas"
-msgstr ""
+msgstr "Det finns inga nyckebilder i denna rityta"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:440
 msgid "Activate "
@@ -2005,7 +2004,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Choose Canvas"
-msgstr ""
+msgstr "Välj rityta"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Enter the relative name of the canvas that you want"
@@ -2157,7 +2156,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:220
 msgid "Not possible to ALT-drag the first keyframe"
-msgstr ""
+msgstr "Inte möjligt att ALT-dra första nyckelbilden"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:247
 msgid "Delta set not allowed"
@@ -2165,7 +2164,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:318
 msgid "Click and drag keyframes"
-msgstr ""
+msgstr "Klicka och dra nyckelbild"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:79
 msgid "(Non-static value)"
@@ -2298,7 +2297,7 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:92
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
-msgstr ""
+msgstr "Nyckelbild"
 
 #: ../src/gui/app.cpp:812 ../src/gui/iconcontroller.cpp:246
 #: ../src/synfigapp/actions/groupaddlayers.cpp:78
@@ -2482,11 +2481,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1667
 msgid "Jump to Next Keyframe"
-msgstr ""
+msgstr "Hoppa till nästa nyckelbild"
 
 #: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1670
 msgid "Jump to Prev Keyframe"
-msgstr ""
+msgstr "Hoppa till föregående nyckelbild"
 
 #: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1651
 msgid "Next Frame"
@@ -2575,7 +2574,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1356
 msgid "Init Keyframes..."
-msgstr ""
+msgstr "Initialisera nyckelbilder..."
 
 #: ../src/gui/app.cpp:1360
 msgid "Init Layers..."
@@ -2978,19 +2977,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:2866
 msgid "Unlock future keyframes"
-msgstr ""
+msgstr "Lås upp kommande nyckelbilder"
 
 #: ../src/gui/canvasview.cpp:2876
 msgid "Lock future keyframes"
-msgstr ""
+msgstr "Lås kommande nyckelbilder"
 
 #: ../src/gui/canvasview.cpp:2886
 msgid "Unlock past keyframes"
-msgstr ""
+msgstr "Lås upp tidigare nyckelbilder"
 
 #: ../src/gui/canvasview.cpp:2896
 msgid "Lock past  keyframes"
-msgstr ""
+msgstr "Lås tidigare nyckelbilder"
 
 #: ../src/gui/canvasview.cpp:3391
 msgid "Change Waypoint Group"
@@ -3111,7 +3110,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
-msgstr "Liste"
+msgstr "Lista"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "String"
@@ -3402,19 +3401,19 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:269
 msgid "Past keyframes unlocked"
-msgstr ""
+msgstr "Tidigare nyckelbilder upplåsta"
 
 #: ../src/gui/iconcontroller.cpp:270
 msgid "Past keyframes locked"
-msgstr ""
+msgstr "Tidigare nyckelbilder låsta"
 
 #: ../src/gui/iconcontroller.cpp:271
 msgid "Future keyframes unlocked"
-msgstr ""
+msgstr "Kommande nyckelbilder upplåsta"
 
 #: ../src/gui/iconcontroller.cpp:272
 msgid "Future keyframes locked"
-msgstr ""
+msgstr "Kommande nyckelbilder låsta"
 
 #: ../src/gui/iconcontroller.cpp:274
 msgid "Animate Mode Off"
@@ -3426,7 +3425,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:281
 msgid "Previous keyframe"
-msgstr ""
+msgstr "Föregående nyckelbild"
 
 #: ../src/gui/iconcontroller.cpp:282
 msgid "Previous frame"
@@ -3438,7 +3437,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:287
 msgid "Next keyframe"
-msgstr ""
+msgstr "Nästa nyckelbild"
 
 #: ../src/gui/iconcontroller.cpp:289
 msgid "Animate Loop"
@@ -4472,17 +4471,17 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:49
 msgid "Add Keyframe"
-msgstr ""
+msgstr "Lägg till nyckelbild"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:74
 #: ../src/synfigapp/actions/keyframeset.cpp:80
 msgid "New Keyframe"
-msgstr ""
+msgstr "Ny nyckelbild"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:75
 #: ../src/synfigapp/actions/keyframeset.cpp:81
 msgid "Keyframe to be added"
-msgstr ""
+msgstr "Nyckelbild som ska läggas till"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:114
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:138
@@ -4490,21 +4489,21 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframeremove.cpp:222
 #: ../src/synfigapp/actions/keyframeset.cpp:130
 msgid "A Keyframe already exists at this point in time"
-msgstr ""
+msgstr "En nyckelbild existerar redan vid denna tidpunkt"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:117
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:220
 #: ../src/synfigapp/actions/keyframeremove.cpp:225
 msgid "This keyframe is already in the ValueNode"
-msgstr ""
+msgstr "Denna nyckelbild finns redan i värdenoden"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:53
 msgid "Duplicate Keyframe"
-msgstr ""
+msgstr "Duplicera nyckelbild"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:80
 msgid "Keyframe to be duplicated"
-msgstr ""
+msgstr "Nyckelbild som skall dupliceras"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
@@ -4516,25 +4515,25 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:146
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:129
 msgid "Unable to find the given keyframe"
-msgstr ""
+msgstr "Kan inte hitta den givna nyckelbilden"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:54
 msgid "Remove Keyframe"
-msgstr ""
+msgstr "Ta bort nyckelbild"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:80
 msgid "Keyframe to be removed"
-msgstr ""
+msgstr "Nyckelbild som ska tas bort"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:55
 msgid "Set Keyframe"
-msgstr ""
+msgstr "Sätt nyckelbild"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:389
 msgid ""
 "Cannot change keyframe time because another keyframe already exists with "
 "that time."
-msgstr ""
+msgstr "Kan inte ändra nyckelbildens tidspunkt eftersom en annan nyckelbild redan existerar vid den tidspunkten"
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:53
 msgid "Set Keyframe Delta"
@@ -4546,20 +4545,20 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:54
 msgid "Activate/Deactivate Keyframe"
-msgstr ""
+msgstr "Aktivera/inaktivera nyckelbild"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:77
 #: ../src/synfigapp/actions/keyframetoggl.cpp:81
 msgid "Activate Keyframe"
-msgstr ""
+msgstr "Aktivera nyckelbild"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:82
 msgid "Deactivate Keyframe"
-msgstr ""
+msgstr "Inaktivera nyckelbild"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:93
 msgid "Keyframe to be activated or deactivated"
-msgstr ""
+msgstr "Nyckelbild saom skall aktiveras eller inaktiveras"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:97
 #: ../src/synfigapp/actions/layeractivate.cpp:90
@@ -4568,7 +4567,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:98
 msgid "The new status of the keyframe"
-msgstr ""
+msgstr "Nyckelbildens nya status"
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:53
 msgid "Set Waypoints at Keyframe"

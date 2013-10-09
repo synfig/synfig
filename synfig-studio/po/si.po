@@ -1,10 +1,8 @@
-# translation of da.po to Danish
-# Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig Studio package.
+# Sinhala translation for Synfig Studio.
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Lamhauge <davidlamhauge@gmail.com>, 2012
-# neigaard <soeren@neigaard.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -12,11 +10,11 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:24+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
+"Language-Team: Sinhala (http://www.transifex.com/projects/p/synfig/language/si/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: si\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1
@@ -59,50 +57,50 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
-msgstr "Tilføj Ny Keyframe"
+msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 #: ../src/gui/app.cpp:832
 msgid "Keyframe Properties"
-msgstr "Keyframe Attributter"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:105
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:498 ../src/gui/app.cpp:918
 msgid "Increase Amount"
-msgstr "Forøg Antal"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:117
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515 ../src/gui/app.cpp:919
 msgid "Decrease Amount"
-msgstr "Formindsk Antal"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Antal"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:135
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Select All Child Layers"
-msgstr "Vælg Alle Underliggende Lag"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:365
 msgid "Paste"
-msgstr "Sæt Ind"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:454
 #: ../src/synfigapp/actions/layerduplicate.cpp:179
 #: ../src/synfigapp/canvasinterface.cpp:365
 #, c-format
 msgid "Index %d"
-msgstr "Index %d"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:235
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:239
 msgid "Enter Paragraph Text Here:"
-msgstr "Indsæt Paragraf Tekst Her:"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
@@ -110,7 +108,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "<Intet Billede Valgt>"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
@@ -118,15 +116,15 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
-msgstr "UKENDT"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:104
 msgid "2D vector animation studio"
-msgstr "2D vektor animation studio"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Visit the Synfig website"
-msgstr "Besøg Synfig hjemmesiden"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
@@ -137,16 +135,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
-msgstr "Oprindelige udviklere:"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:136
 msgid "Contributors:"
-msgstr "Bidragydere:"
+msgstr ""
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
-msgstr "oversættelse-anerkendelse"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:215
 #, c-format
@@ -154,67 +152,67 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\nUdviklingsversion:\n%s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
-msgstr "Bygget på %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
-msgstr "Bygget med:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
-msgstr "ETL %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:226
 #, c-format
 msgid "Synfig API %s\n"
-msgstr "Synfig API %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig bibliotek %d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:228
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
-msgstr "GTK+ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:230
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
-msgstr "GNU G++ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
-msgstr "Benytter:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
-msgstr "Synfig %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:237
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr "GTK+ %d.%d.%d"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:61
 msgid "Canvas Options"
-msgstr "Lærred Indstillinger"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:63
 msgid "_Snap to grid"
-msgstr "_Fastgør til gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:64
 msgid "S_how grid"
-msgstr "V_is gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:65
 msgid "Snap to _frame"
@@ -222,7 +220,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:80
 msgid "Grid"
-msgstr "Gitter"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:90
 msgid "_Grid size"
@@ -3103,7 +3101,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:145
 msgid "Segment"
-msgstr "Segment"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:146
 msgid "Spline Point"
@@ -3111,7 +3109,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
-msgstr "Liste"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "String"
@@ -5592,7 +5590,7 @@ msgstr ""
 
 #: ../src/synfigapp/uimanager.cpp:139
 msgid "(ok/cancel)"
-msgstr ""
+msgstr "(ok/cancel)"
 
 #: ../src/synfigapp/uimanager.cpp:169
 msgid "error: "
