@@ -1,10 +1,9 @@
-# translation of da.po to Danish
-# Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig Studio package.
+# Basque translation for Synfig Studio.
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Lamhauge <davidlamhauge@gmail.com>, 2012
-# neigaard <soeren@neigaard.com>, 2011
+# alexgabilondo <alexgabi@openmailbox.org>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -12,11 +11,11 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:24+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
+"Language-Team: Basque (http://www.transifex.com/projects/p/synfig/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: eu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../synfigstudio.desktop.in.h:1
@@ -45,7 +44,7 @@ msgstr ""
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
-msgstr ""
+msgstr "Erakutsi geruza guztiak"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:175
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
@@ -59,50 +58,50 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
-msgstr "Tilføj Ny Keyframe"
+msgstr "Gehitu gako-fotograma berria"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 #: ../src/gui/app.cpp:832
 msgid "Keyframe Properties"
-msgstr "Keyframe Attributter"
+msgstr "Gako-fotogramaren ezaugarriak"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:105
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:498 ../src/gui/app.cpp:918
 msgid "Increase Amount"
-msgstr "Forøg Antal"
+msgstr "Handitu kopurua"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:117
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:515 ../src/gui/app.cpp:919
 msgid "Decrease Amount"
-msgstr "Formindsk Antal"
+msgstr "Txikitu kopurua"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Antal"
+msgstr "Kopurua"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:135
 #: ../src/gui/iconcontroller.cpp:254
 msgid "Select All Child Layers"
-msgstr "Vælg Alle Underliggende Lag"
+msgstr "Hautatu geruza ume guztiak"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:365
 msgid "Paste"
-msgstr "Sæt Ind"
+msgstr "Itsatsi"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:454
 #: ../src/synfigapp/actions/layerduplicate.cpp:179
 #: ../src/synfigapp/canvasinterface.cpp:365
 #, c-format
 msgid "Index %d"
-msgstr "Index %d"
+msgstr "Indexatu %d"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:235
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "Paragrafoa"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:239
 msgid "Enter Paragraph Text Here:"
-msgstr "Indsæt Paragraf Tekst Her:"
+msgstr "Sartu testu-paragrafoa hemen:"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:435
 msgid "<Group>"
@@ -110,7 +109,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:440
 msgid "<No Image Selected>"
-msgstr "<Intet Billede Valgt>"
+msgstr "<Ez dago irudi hautaturik>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
@@ -118,15 +117,15 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
-msgstr "UKENDT"
+msgstr "EZEZAGUNA"
 
 #: ../src/gui/dialogs/about.cpp:104
 msgid "2D vector animation studio"
-msgstr "2D vektor animation studio"
+msgstr "2D animazio bektorialaren estudioa"
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Visit the Synfig website"
-msgstr "Besøg Synfig hjemmesiden"
+msgstr "Bisitatu Synfig-en webgunea"
 
 #: ../src/gui/dialogs/about.cpp:110
 msgid ""
@@ -137,16 +136,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:131
 msgid "Original developers:"
-msgstr "Oprindelige udviklere:"
+msgstr "Atxiki saretari"
 
 #: ../src/gui/dialogs/about.cpp:136
 msgid "Contributors:"
-msgstr "Bidragydere:"
+msgstr "Partaideak:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:188
 msgid "translator-credits"
-msgstr "oversættelse-anerkendelse"
+msgstr "itzultzaileen-kredituak"
 
 #: ../src/gui/dialogs/about.cpp:215
 #, c-format
@@ -154,21 +153,21 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\nUdviklingsversion:\n%s\n"
+msgstr "\ngarapen-bertsioa\n%s\n"
 
 #: ../src/gui/dialogs/about.cpp:220
 #, c-format
 msgid "Built on %s\n"
-msgstr "Bygget på %s\n"
+msgstr "%s aktibatuta\n"
 
 #: ../src/gui/dialogs/about.cpp:224
 msgid "Built with:\n"
-msgstr "Bygget med:\n"
+msgstr "Ireki honekin:\n"
 
 #: ../src/gui/dialogs/about.cpp:225
 #, c-format
 msgid "ETL %s\n"
-msgstr "ETL %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:226
 #, c-format
@@ -178,7 +177,7 @@ msgstr "Synfig API %s\n"
 #: ../src/gui/dialogs/about.cpp:227
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig bibliotek %d\n"
+msgstr "Synfig liburutegia %d\n"
 
 #: ../src/gui/dialogs/about.cpp:228
 #, c-format
@@ -192,12 +191,12 @@ msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:235
 msgid "Using:\n"
-msgstr "Benytter:\n"
+msgstr "Erabiltzen:\n"
 
 #: ../src/gui/dialogs/about.cpp:236
 #, c-format
 msgid "Synfig %s\n"
-msgstr "Synfig %s\n"
+msgstr "Erabiltzen %s\n"
 
 #: ../src/gui/dialogs/about.cpp:237
 #, c-format
@@ -206,27 +205,27 @@ msgstr "GTK+ %d.%d.%d"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:61
 msgid "Canvas Options"
-msgstr "Lærred Indstillinger"
+msgstr "Ohialaren aukerak"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:63
 msgid "_Snap to grid"
-msgstr "_Fastgør til gitter"
+msgstr "Atxiki saretari"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:64
 msgid "S_how grid"
-msgstr "V_is gitter"
+msgstr "Erakutsi sareta"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:65
 msgid "Snap to _frame"
-msgstr ""
+msgstr "Atxiki fotogramari"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:80
 msgid "Grid"
-msgstr "Gitter"
+msgstr "Sareta"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:90
 msgid "_Grid size"
-msgstr ""
+msgstr "Saretaren neurria"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:104
 #: ../src/gui/trees/keyframetree.cpp:73 ../src/gui/iconcontroller.cpp:141
@@ -253,89 +252,89 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
-msgstr ""
+msgstr "Denbora"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:113
 #: ../src/gui/dialogs/dialog_setup.cpp:181
 msgid "Units"
-msgstr ""
+msgstr "Unitate"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:114
 msgid "Not yet implemented!"
-msgstr ""
+msgstr "Ez dago inplementatuta oraindik!"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:151 ../src/gui/app.cpp:848
 #: ../src/gui/canvasview.cpp:1481
 msgid "Options"
-msgstr ""
+msgstr "Aukerak"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:169
 msgid "Not yet implemented"
-msgstr ""
+msgstr "Ez dago inplementatuta oraindik"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:64
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Oihalaren propietateak"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:77
 msgid "Canvas Info"
-msgstr ""
+msgstr "Oihalaren informazioa"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "<b>Canvas Info</b>"
-msgstr ""
+msgstr "<b>Oihalaren informazioa</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:95
 msgid "_ID"
-msgstr ""
+msgstr "_ID"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:101
 msgid "_Name"
-msgstr ""
+msgstr "_Izena"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:104
 msgid "_Description"
-msgstr ""
+msgstr "_Deskripzioa"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:197 ../src/gui/app.cpp:863
 msgid "Properties"
-msgstr ""
+msgstr "Ezaugarriak"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:226
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "Editatu oihalaren ezaugarriak"
 
 #: ../src/gui/dialogs/dialog_color.cpp:59
 msgid "Colors"
-msgstr ""
+msgstr "Koloreak"
 
 #: ../src/gui/dialogs/dialog_color.cpp:66 ../src/gui/iconcontroller.cpp:277
 msgid "Set as Outline"
-msgstr ""
+msgstr "Ezarri eskema gisa"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:278
 msgid "Set as Fill"
-msgstr ""
+msgstr "Ezarri betegarri gisa"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:65
 msgid "Gradient Editor"
-msgstr ""
+msgstr "Gradienteen editorea"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:75
 msgid "Set as Default"
-msgstr ""
+msgstr "Ezarri lehenetsi gisa"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
-msgstr ""
+msgstr "gako-fotogramaren elkarrizketa"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:65 ../src/gui/canvasview.cpp:1608
 msgid "Preview Window"
-msgstr ""
+msgstr "Aurreikusi leihoa"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:124
 msgid "Preview Options"
-msgstr ""
+msgstr "Aurreikusi aukerak"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:127
 msgid "Use _Cairo render"
@@ -359,7 +358,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_preview.cpp:157 ../src/gui/render.cpp:159
 msgid "_Quality"
-msgstr ""
+msgstr "_Kalitatea"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:166
 msgid "_FPS"
@@ -376,19 +375,19 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_preview.cpp:212 ../src/gui/app.cpp:845
 #: ../src/gui/canvasview.cpp:1475
 msgid "Preview"
-msgstr ""
+msgstr "Aurreikusi"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:75
 msgid "Synfig Studio Setup"
-msgstr ""
+msgstr "Synfig Studio hobespenak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:81
 msgid "Visually Linear Color Selection"
-msgstr ""
+msgstr "Bistaratu kolorearen aukeraketa lineala"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:83
 msgid "Use Only a Single Thread"
-msgstr ""
+msgstr "Erabili bakarri hari sinplea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:85
 msgid "Restrict Real-Valued Handles to Top Right Quadrant"
@@ -396,7 +395,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:86
 msgid "Scale New Imported Images to Fit Canvas"
-msgstr ""
+msgstr "Eskalatu inportatutako irudi berriak doitzeko oihalera"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Enable experimental features (restart required)"
@@ -404,179 +403,179 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:118
 msgid "Gamma"
-msgstr ""
+msgstr "Gamma"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:123
 #: ../src/gui/widgets/widget_coloredit.cpp:360
 msgid "Red"
-msgstr ""
+msgstr "Gorria"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:128
 #: ../src/gui/widgets/widget_coloredit.cpp:362
 msgid "Green"
-msgstr ""
+msgstr "Berdea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:133
 #: ../src/gui/widgets/widget_coloredit.cpp:364
 msgid "Blue"
-msgstr ""
+msgstr "Urdina"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:137
 msgid "Black Level"
-msgstr ""
+msgstr "Beltz-maila"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:148
 msgid "Misc."
-msgstr ""
+msgstr "Misc."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:154
 msgid "Timestamp"
-msgstr ""
+msgstr "Denbora-marka"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:182
 msgid "Pixels"
-msgstr ""
+msgstr "Pixelak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Points"
-msgstr ""
+msgstr "Puntuak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Inches"
-msgstr ""
+msgstr "Hazbeteak "
 
 #: ../src/gui/dialogs/dialog_setup.cpp:185
 msgid "Meters"
-msgstr ""
+msgstr "Metroak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Centimeters"
-msgstr ""
+msgstr "Centimetroak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:187
 msgid "Millimeters"
-msgstr ""
+msgstr "Milimetroak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:192
 msgid "Unit System"
-msgstr ""
+msgstr "Unitate-sistema"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:198
 msgid "Recent Files"
-msgstr ""
+msgstr "Azken fitxategiak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:205
 msgid "Auto Backup Interval (0 to disable)"
-msgstr ""
+msgstr "Babeskopia automatikoen tartea (0 ezgaitzeko)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:223
 msgid "Browser Command"
-msgstr ""
+msgstr "Arakatzeko komandoa"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:228
 msgid "Document"
-msgstr ""
+msgstr "Dokumentua"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:231
 msgid "New Document filename prefix"
-msgstr ""
+msgstr "Dokumentu berriaren aurrizkia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:233
 msgid "File name prefix for the new created document"
-msgstr ""
+msgstr "Dokumentu sortu berrien aurrizki-izena"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:237
 msgid "New Document X size"
-msgstr ""
+msgstr "Dokumentu berriaren X neurria"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:239
 msgid "Width in pixels of the new created document"
-msgstr ""
+msgstr "Dokumentu sortu berriaren zabalera"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:243
 msgid "New Document Y size"
-msgstr ""
+msgstr "Dokumentu berriaren Y neurria"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:245
 msgid "High in pixels of the new created document"
-msgstr ""
+msgstr "Dokumentu sortu berriaren altuera pixeletan"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:249
 msgid "Predefined Resolutions:"
-msgstr ""
+msgstr "Lehenetsitako bereizmena"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:254
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 guztiz irekia 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:255
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 guztiz irekia Native 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:256
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:257
 msgid "1280x720  HDTV 720p"
-msgstr ""
+msgstr "1280x720 HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:258
 msgid "720x576   DVD PAL"
-msgstr ""
+msgstr "720x576 DVD PAL"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:259
 msgid "720x480   DVD NTSC"
-msgstr ""
+msgstr "720x480 DVD NTSC"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:260
 msgid "720x540   Web 720x"
-msgstr ""
+msgstr "720x540 Web 720x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:261
 msgid "720x405   Web 720x HD"
-msgstr ""
+msgstr "720x405 Web 720x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:262
 msgid "640x480   Web 640x"
-msgstr ""
+msgstr "640x480 Web 640x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:263
 msgid "640x360   Web 640x HD"
-msgstr ""
+msgstr "640x360 Web 640x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:264
 msgid "480x360   Web 480x"
-msgstr ""
+msgstr "480x360 Web 480x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:265
 msgid "480x270   Web 480x HD"
-msgstr ""
+msgstr "480x270 Web 480x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:266
 msgid "360x270   Web 360x"
-msgstr ""
+msgstr "360x270 Web 360x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:267
 msgid "360x203   Web 360x HD"
-msgstr ""
+msgstr "360x203 Web 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:272
 msgid "Predefined FPS:"
-msgstr ""
+msgstr "Lehenetsitako FPS"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:294
 msgid "New Document FPS"
-msgstr ""
+msgstr "Dokumentu berriaren FPS"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:296
 msgid "Frames per second of the new created document"
-msgstr ""
+msgstr "Dokumentu sortu berriaren fotograma segundoko (FPS)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:300 ../src/gui/app.cpp:844
 #: ../src/gui/canvasview.cpp:1472 ../src/gui/render.cpp:177
 msgid "Render"
-msgstr ""
+msgstr "Errenderizatu"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:303
 msgid "Image Sequence Separator String"
@@ -592,111 +591,111 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.h:53
 msgid "Custom Size"
-msgstr ""
+msgstr "Neurri pertsonalizatua"
 
 #: ../src/gui/dialogs/dialog_setup.h:56
 msgid "Custom fps"
-msgstr ""
+msgstr "FPS pertsonalizatua"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:60
 msgid "Sound Select"
-msgstr ""
+msgstr "Aukeratu soinua"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:67
 msgid "Sound Parameters"
-msgstr ""
+msgstr "Soinuaren parametroak"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:68
 msgid "<b>Sound Parameters</b>"
-msgstr ""
+msgstr "<b>Soinuaren parametroak</b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:76
 msgid "_Sound File"
-msgstr ""
+msgstr "_audio-fitxategia"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:79
 msgid "Time _Offset"
-msgstr ""
+msgstr "Denbora-desplazamendua"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:45
 msgid "Custom Video Codec"
-msgstr ""
+msgstr "Bideo-kodeketa pertsonalizatua"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:46
 msgid "write your video codec here"
-msgstr ""
+msgstr "Idatzi zure bideo-kodeketa hemen"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:68
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
-msgstr ""
+msgstr "Flash Video (FLV) / Sorenson Spark / Sorenson H.263."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:69
 msgid "H.263+ / H.263-1998 / H.263 version 2."
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 2. bertsioa"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:70
 msgid "Huffyuv / HuffYUV."
-msgstr ""
+msgstr "Huffyuv / HuffYUV."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:71
 msgid "libtheora Theora."
-msgstr ""
+msgstr "libtheora Theora."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:72
 msgid "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
-msgstr ""
+msgstr "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:73
 msgid "MJPEG (Motion JPEG)."
-msgstr ""
+msgstr "MJPEG (Motion JPEG)."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:74
 msgid "raw MPEG-1 video."
-msgstr ""
+msgstr "raw MPEG-1 bdeoa."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:75
 msgid "raw MPEG-2 video."
-msgstr ""
+msgstr "raw MPEG-2 bideoa."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:76
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 part 2. (XviD/DivX)"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:77
 msgid "MPEG-4 part 2 Microsoft variant version 3."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 3."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:78
 msgid "MPEG-4 part 2 Microsoft variant version 1."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 1."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:79
 msgid "MPEG-4 part 2 Microsoft variant version 2."
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 2."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:80
 msgid "Windows Media Video 7."
-msgstr ""
+msgstr "Windows Media Video 7."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:81
 msgid "Windows Media Video 8."
-msgstr ""
+msgstr "Windows Media Video 8."
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:92
 msgid "Target Parameters"
-msgstr ""
+msgstr "Helburuaren parametroak"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:100
 msgid "Available Video Codecs:"
-msgstr ""
+msgstr "Bideo-kodek eskuragarriak"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:130
 msgid "Video Bit Rate:"
-msgstr ""
+msgstr "Bideo bit-tasa"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:63
 msgid "Waypoint Editor"
-msgstr ""
+msgstr "Waypoint-editorea"
 
 #: ../src/gui/dials/framedial.cpp:56 ../src/gui/iconcontroller.cpp:280
 msgid "Seek to begin"
@@ -714,7 +713,7 @@ msgstr ""
 #: ../src/gui/iconcontroller.cpp:283 ../src/gui/preview.cpp:440
 #: ../src/gui/preview.cpp:1013
 msgid "Play"
-msgstr ""
+msgstr "Erreproduzitu"
 
 #: ../src/gui/dials/framedial.cpp:60 ../src/gui/iconcontroller.cpp:285
 #: ../src/gui/preview.cpp:1039
@@ -743,19 +742,19 @@ msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:56
 msgid "Increase Display Resolution"
-msgstr ""
+msgstr "Handitu pantailaren bereizmena"
 
 #: ../src/gui/dials/resolutiondial.cpp:57
 msgid "Decrease Display Resolution"
-msgstr ""
+msgstr "Txikitu pantailaren bereizmena"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Low Res"
-msgstr ""
+msgstr "Bereizmen txikia"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Use Low Resolution when enabled"
-msgstr ""
+msgstr "Erabili bereizmen txikia ahal denean"
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:302
 msgid "Toggle position handles"
@@ -783,41 +782,41 @@ msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:55
 msgid "Zoom In"
-msgstr ""
+msgstr "Zooma handiagotu"
 
 #: ../src/gui/dials/zoomdial.cpp:56
 msgid "Zoom Out"
-msgstr ""
+msgstr "Zooma txikiagotu"
 
 #: ../src/gui/dials/zoomdial.cpp:57
 msgid "Zoom to Fit"
-msgstr ""
+msgstr "Zooma doitzeko"
 
 #: ../src/gui/dials/zoomdial.cpp:58
 msgid "Zoom to 100%"
-msgstr ""
+msgstr "Zooma %100 era"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:57
 #: ../src/gui/docks/dialog_tooloptions.cpp:74
 msgid "Tool Options"
-msgstr ""
+msgstr "Tresna-aukerak"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 msgid "This tool has no options"
-msgstr ""
+msgstr "Tresna honek ez dauka aukerarik"
 
 #: ../src/gui/docks/dockable.cpp:112
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: ../src/gui/docks/dock_canvases.cpp:55 ../src/gui/compview.cpp:168
 msgid "Canvas Browser"
-msgstr ""
+msgstr "Oihal-arakatzailea"
 
 #: ../src/gui/docks/dock_canvases.cpp:108 ../src/gui/trees/childrentree.cpp:93
 #: ../src/gui/compview.cpp:191 ../src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:67 ../src/gui/iconcontroller.cpp:259
 msgid "Library"
@@ -829,126 +828,126 @@ msgstr ""
 
 #: ../src/gui/docks/dockdialog.cpp:115
 msgid "Dock Panel"
-msgstr ""
+msgstr "Atrakatze panela"
 
 #: ../src/gui/docks/dockdialog.cpp:587
 msgid "Empty Dock Panel"
-msgstr ""
+msgstr "Ustu atrakatze panela"
 
 #: ../src/gui/docks/dock_history.cpp:69 ../src/gui/docks/dock_history.cpp:125
 #: ../src/gui/compview.cpp:91 ../src/gui/iconcontroller.cpp:265
 msgid "History"
-msgstr ""
+msgstr "Historia"
 
 #: ../src/gui/docks/dock_history.cpp:78 ../src/gui/iconcontroller.cpp:256
 msgid "Clear Undo Stack"
-msgstr ""
+msgstr "Garbitu desegiteko ekintzak"
 
 #: ../src/gui/docks/dock_history.cpp:79
 msgid "Clear the undo stack"
-msgstr ""
+msgstr "Garbitu desegitek ekintzak"
 
 #: ../src/gui/docks/dock_history.cpp:89 ../src/gui/iconcontroller.cpp:257
 msgid "Clear Redo Stack"
-msgstr ""
+msgstr "Garbitu berregiteko ekintzak"
 
 #: ../src/gui/docks/dock_history.cpp:90
 msgid "Clear the redo stack"
-msgstr ""
+msgstr "Garbitu berregiteko ekintzak"
 
 #: ../src/gui/docks/dock_history.cpp:100
 msgid "Clear Undo and Redo Stacks"
-msgstr ""
+msgstr "Garbitu "
 
 #: ../src/gui/docks/dock_history.cpp:101
 msgid "Clear the undo and redo stacks"
-msgstr ""
+msgstr "Garbitu desegiteko eta berregiteko ekintzak"
 
 #: ../src/gui/docks/dock_history.cpp:111 ../src/gui/toolbox.cpp:290
 msgid "Undo"
-msgstr ""
+msgstr "Desegin"
 
 #: ../src/gui/docks/dock_history.cpp:112
 msgid "Undo the previous action"
-msgstr ""
+msgstr "Desegin aurreko ekintza"
 
 #: ../src/gui/docks/dock_history.cpp:119 ../src/gui/toolbox.cpp:291
 msgid "Redo"
-msgstr ""
+msgstr "Berregin"
 
 #: ../src/gui/docks/dock_history.cpp:120
 msgid "Redo the previously undone action"
-msgstr ""
+msgstr "Berregin ekintza desegin berria"
 
 #: ../src/gui/docks/dock_history.cpp:190 ../src/gui/trees/keyframetree.cpp:103
 #: ../src/gui/compview.cpp:251
 msgid "Jump"
-msgstr ""
+msgstr "Jauzi"
 
 #: ../src/gui/docks/dock_history.cpp:195 ../src/gui/trees/keyframetree.cpp:107
 #: ../src/gui/compview.cpp:256
 msgid "(JMP)"
-msgstr ""
+msgstr "(JMP)"
 
 #: ../src/gui/docks/dock_history.cpp:207 ../src/gui/compview.cpp:268
 msgid "Action"
-msgstr ""
+msgstr "Ekintza"
 
 #: ../src/gui/docks/dock_history.cpp:254 ../src/gui/docks/dock_history.cpp:262
 #: ../src/gui/docks/dock_history.cpp:270 ../src/gui/compview.cpp:333
 #: ../src/gui/compview.cpp:342
 msgid "Clear History"
-msgstr ""
+msgstr "Garbitu historia"
 
 #: ../src/gui/docks/dock_history.cpp:255 ../src/gui/compview.cpp:333
 msgid ""
 "You will not be able to undo any changes that you have made!\n"
 "Are you sure you want to clear the undo stack?"
-msgstr ""
+msgstr "Ezingo duzu desegin egindako aldaketak\nSeguru zaude garbitu nahi duzula desegitekoen zerrenda?"
 
 #: ../src/gui/docks/dock_history.cpp:263 ../src/gui/compview.cpp:342
 msgid ""
 "You will not be able to redo any changes that you have made!\n"
 "Are you sure you want to clear the redo stack?"
-msgstr ""
+msgstr "Ezingo duzu berregin egindako aldaketak!\nSeguru zaude garbitu nahi duzula berregitekoen zerrenda?"
 
 #: ../src/gui/docks/dock_history.cpp:271
 msgid ""
 "You will not be able to undo or redo any changes that you have made!\n"
 "Are you sure you want to clear the undo and redo stacks?"
-msgstr ""
+msgstr "Ezingo duzu desegin edo berregin egindako aldaketak!\nSeguru zaude garbitu nahi duzula desegiteko eta berregitekoen zerrendak?"
 
 #: ../src/gui/docks/dock_info.cpp:96 ../src/gui/instance.cpp:580
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: ../src/gui/docks/dock_info.cpp:103
 msgid "X: "
-msgstr ""
+msgstr "X: "
 
 #: ../src/gui/docks/dock_info.cpp:104
 msgid "Y: "
-msgstr ""
+msgstr "Y: "
 
 #: ../src/gui/docks/dock_info.cpp:114
 msgid "R: "
-msgstr ""
+msgstr "R: "
 
 #: ../src/gui/docks/dock_info.cpp:115
 msgid "G: "
-msgstr ""
+msgstr "G: "
 
 #: ../src/gui/docks/dock_info.cpp:116
 msgid "B: "
-msgstr ""
+msgstr "B: "
 
 #: ../src/gui/docks/dock_info.cpp:117
 msgid "A: "
-msgstr ""
+msgstr "A: "
 
 #: ../src/gui/docks/dock_keyframes.cpp:66 ../src/gui/iconcontroller.cpp:261
 msgid "Keyframes"
-msgstr ""
+msgstr "Gako-fotogramak"
 
 #: ../src/gui/docks/dock_layergroups.cpp:68
 msgid "Sets"
@@ -960,39 +959,39 @@ msgstr ""
 
 #: ../src/gui/docks/dock_layers.cpp:74
 msgid "Layers"
-msgstr ""
+msgstr "Geruzak"
 
 #: ../src/gui/docks/dock_layers.cpp:151
 msgid "Layer Ops"
-msgstr ""
+msgstr "Geruzen aukerak"
 
 #: ../src/gui/docks/dock_metadata.cpp:66
 msgid "Canvas MetaData"
-msgstr ""
+msgstr "Oihalaren metadatuak"
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
-msgstr ""
+msgstr "Gehitu metadatu-sarrera berria"
 
 #: ../src/gui/docks/dock_metadata.cpp:81
 msgid "Remove selected MetaData entry"
-msgstr ""
+msgstr "Ezabatu hautatutako metadatu-sarrera"
 
 #: ../src/gui/docks/dock_metadata.cpp:125
 msgid "New MetaData Entry"
-msgstr ""
+msgstr "Metadatu sarrera berria"
 
 #: ../src/gui/docks/dock_metadata.cpp:125
 msgid "Please enter the name of the key"
-msgstr ""
+msgstr "Sartu gakoaren izena, mesedez"
 
 #: ../src/gui/docks/dock_navigator.cpp:532 ../src/gui/iconcontroller.cpp:263
 msgid "Navigator"
-msgstr ""
+msgstr "Nabigatzailea"
 
 #: ../src/gui/docks/dock_params.cpp:65 ../src/gui/iconcontroller.cpp:267
 msgid "Parameters"
-msgstr ""
+msgstr "Parametroak"
 
 #: ../src/gui/docks/dock_timetrack.cpp:84
 #: ../src/gui/trees/layergrouptree.cpp:79 ../src/gui/trees/layertree.cpp:210
@@ -1002,86 +1001,86 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodeadd.cpp:77
 #: ../src/synfigapp/actions/valuenoderename.cpp:86
 msgid "Name"
-msgstr ""
+msgstr "Izena"
 
 #: ../src/gui/docks/dock_timetrack.cpp:88
 #: ../src/gui/trees/childrentree.cpp:141 ../src/gui/trees/layertree.cpp:376
 #: ../src/gui/iconcontroller.cpp:264
 msgid "Time Track"
-msgstr ""
+msgstr "Denbora-pista"
 
 #: ../src/gui/docks/dock_timetrack.cpp:372
 msgid "Timetrack"
-msgstr ""
+msgstr "Denbora-pista"
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:56
 msgid "Palette Browser"
-msgstr ""
+msgstr "Paleta-arakatzailea"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:123
 msgid "Palette Editor"
-msgstr ""
+msgstr "Paleta-editorea"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:131
 msgid "Add Color"
-msgstr ""
+msgstr "Gehitu kolorea"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:132
 msgid ""
 "Add current outline color\n"
 "to the palette"
-msgstr ""
+msgstr "Gehitu oraingo ertza-kolorea\npaletara"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:142
 msgid "Save palette"
-msgstr ""
+msgstr "Gorde paleta"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:143
 msgid "Save the current palette"
-msgstr ""
+msgstr "Gorde oraingo paleta"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:153
 msgid "Load a palette"
-msgstr ""
+msgstr "Ireki paleta"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:154
 msgid "Load a saved palette"
-msgstr ""
+msgstr "Ireki gordetako paleta"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:164
 msgid "Load default"
-msgstr ""
+msgstr "Ireki paleta lehenetsia"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:165
 msgid "Load default palette"
-msgstr ""
+msgstr "Ireki paleta lehenetsia"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:233
 #: ../src/gui/instance.cpp:333
 msgid "Choose a Filename to Save As"
-msgstr ""
+msgstr "Aukeratu fitxategi-izena gordetzeko"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:248
 #: ../src/gui/instance.cpp:351
 msgid "Unknown extension"
-msgstr ""
+msgstr "Gehigarri ezezaguna"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:249
 #: ../src/gui/instance.cpp:352
 msgid ""
 "You have given the file name an extension\n"
 "which I do not recognize. Are you sure this is what you want?"
-msgstr ""
+msgstr "Fitxategiari eman diozu ezagutzen ez den\nluzapena. Seguru zaude hori dela nahi duzuna?"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:266
 #: ../src/gui/instance.cpp:369
 #, c-format
 msgid "Unable to check whether '%s' exists."
-msgstr ""
+msgstr "Ezin da '%s' existitzen den egiaztatzea."
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:267
 msgid "Save Palette - Error"
-msgstr ""
+msgstr "Errorea paleta gordetzean"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:272
 #: ../src/gui/instance.cpp:375
@@ -1090,20 +1089,20 @@ msgid ""
 "A file named '%s' already exists.\n"
 "\n"
 "Do you want to replace it with the file you are saving?"
-msgstr ""
+msgstr "'%s' fitxategia badago lehendik.\n\n Gordetzen ari zarenarekin ordeztu nahi duzu?"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:275
 #: ../src/gui/instance.cpp:378
 msgid "File exists"
-msgstr ""
+msgstr "Fitxategia badago lehendik"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:287
 msgid "Choose a Palette to load"
-msgstr ""
+msgstr "Aukeratu paleta irekitzeko"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:300 ../src/gui/app.cpp:2707
 msgid "Unable to open file"
-msgstr ""
+msgstr "Ezin da fitxategia ireki"
 
 #: ../src/gui/states/state_bline.cpp:287
 msgid "NewSpline"
@@ -1123,7 +1122,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:372
 #: ../src/gui/states/state_star.cpp:472
 msgid "Create Outline"
-msgstr ""
+msgstr "Sortu ertza"
 
 #: ../src/gui/states/state_bline.cpp:388
 #: ../src/gui/states/state_circle.cpp:434 ../src/gui/states/state_draw.cpp:459
@@ -1131,7 +1130,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:373
 #: ../src/gui/states/state_star.cpp:473
 msgid "Create Advanced Outline"
-msgstr ""
+msgstr "Sortu ertza aurreratua"
 
 #: ../src/gui/states/state_bline.cpp:389
 #: ../src/gui/states/state_circle.cpp:435
@@ -1154,20 +1153,20 @@ msgstr ""
 #: ../src/gui/states/state_polygon.cpp:359
 #: ../src/gui/states/state_star.cpp:476
 msgid "Link Origins"
-msgstr ""
+msgstr "Estekatu jatorrizkoa"
 
 #: ../src/gui/states/state_bline.cpp:392 ../src/gui/states/state_draw.cpp:460
 msgid "Auto Export"
-msgstr ""
+msgstr "Esportazio automatikoa"
 
 #: ../src/gui/states/state_bline.cpp:393
 #: ../src/gui/states/state_polygon.cpp:360
 msgid "Make"
-msgstr ""
+msgstr "Egin"
 
 #: ../src/gui/states/state_bline.cpp:394
 msgid "Clear"
-msgstr ""
+msgstr "Garbitu"
 
 #: ../src/gui/states/state_bline.cpp:403 ../src/gui/states/state_bline.cpp:444
 #: ../src/gui/iconcontroller.cpp:155
@@ -1177,7 +1176,7 @@ msgstr ""
 #: ../src/gui/states/state_bline.cpp:412 ../src/gui/states/state_draw.cpp:507
 #: ../src/gui/states/state_polygon.cpp:383
 msgid "Feather"
-msgstr ""
+msgstr "Difuminatu"
 
 #: ../src/gui/states/state_bline.cpp:449
 msgid "Make Spline"
@@ -1197,7 +1196,7 @@ msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:598
 msgid "Unable to add value node"
-msgstr ""
+msgstr "Ezin da gehitu nodo-baliorik"
 
 #: ../src/gui/states/state_bline.cpp:641 ../src/gui/states/state_bline.cpp:703
 #: ../src/gui/states/state_bline.cpp:764 ../src/gui/states/state_bline.cpp:833
@@ -1233,7 +1232,7 @@ msgstr ""
 #: ../src/gui/states/state_star.cpp:968 ../src/gui/states/state_star.cpp:1041
 #: ../src/gui/states/state_text.cpp:425
 msgid "Unable to create layer"
-msgstr ""
+msgstr "Ezin da geruza sortu"
 
 #: ../src/gui/states/state_bline.cpp:644
 #: ../src/gui/states/state_circle.cpp:717
@@ -1241,7 +1240,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:578
 #: ../src/gui/states/state_star.cpp:763
 msgid " Gradient"
-msgstr ""
+msgstr "Gradientea"
 
 #: ../src/gui/states/state_bline.cpp:662 ../src/gui/states/state_bline.cpp:685
 #: ../src/gui/states/state_circle.cpp:740
@@ -1252,7 +1251,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:618
 #: ../src/gui/states/state_star.cpp:782 ../src/gui/states/state_star.cpp:804
 msgid "Unable to create Gradient layer"
-msgstr ""
+msgstr "Ezin da gradiente-geruza sortu"
 
 #: ../src/gui/states/state_bline.cpp:706
 #: ../src/gui/states/state_circle.cpp:789
@@ -1260,7 +1259,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:640
 #: ../src/gui/states/state_star.cpp:831
 msgid " Plant"
-msgstr ""
+msgstr " Plant"
 
 #: ../src/gui/states/state_bline.cpp:724 ../src/gui/states/state_bline.cpp:746
 #: ../src/gui/states/state_circle.cpp:812
@@ -1271,7 +1270,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:680
 #: ../src/gui/states/state_star.cpp:849 ../src/gui/states/state_star.cpp:871
 msgid "Unable to create Plant layer"
-msgstr ""
+msgstr "Ezin da sortu Plant-geruza"
 
 #: ../src/gui/states/state_bline.cpp:767
 #: ../src/gui/states/state_circle.cpp:861
@@ -1280,7 +1279,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:702
 #: ../src/gui/states/state_star.cpp:898
 msgid " Region"
-msgstr ""
+msgstr "Area"
 
 #: ../src/gui/states/state_bline.cpp:793 ../src/gui/states/state_bline.cpp:815
 #: ../src/gui/states/state_circle.cpp:893
@@ -1292,7 +1291,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:752
 #: ../src/gui/states/state_star.cpp:924 ../src/gui/states/state_star.cpp:946
 msgid "Unable to create Region layer"
-msgstr ""
+msgstr "Ezin da sortu area-geruza"
 
 #: ../src/gui/states/state_bline.cpp:836
 #: ../src/gui/states/state_circle.cpp:941
@@ -1301,7 +1300,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:774
 #: ../src/gui/states/state_star.cpp:973
 msgid " Outline"
-msgstr ""
+msgstr "Ertza"
 
 #: ../src/gui/states/state_bline.cpp:859 ../src/gui/states/state_bline.cpp:881
 #: ../src/gui/states/state_circle.cpp:970
@@ -1312,7 +1311,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:820
 #: ../src/gui/states/state_star.cpp:997 ../src/gui/states/state_star.cpp:1019
 msgid "Unable to create Outline layer"
-msgstr ""
+msgstr "Ezin da sortu ertza-geruza"
 
 #: ../src/gui/states/state_bline.cpp:902
 #: ../src/gui/states/state_circle.cpp:1018
@@ -1321,7 +1320,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:842
 #: ../src/gui/states/state_star.cpp:1046
 msgid " Advanced Outline"
-msgstr ""
+msgstr "Ertza aurreratua"
 
 #: ../src/gui/states/state_bline.cpp:925 ../src/gui/states/state_bline.cpp:947
 #: ../src/gui/states/state_circle.cpp:1047
@@ -1332,7 +1331,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:888
 #: ../src/gui/states/state_star.cpp:1070 ../src/gui/states/state_star.cpp:1092
 msgid "Unable to create Advanced Outline layer"
-msgstr ""
+msgstr "Ezin da sortu ertza aurreratua geruza"
 
 #: ../src/gui/states/state_bline.cpp:1283
 #: ../src/gui/states/state_bline.cpp:1333
@@ -1349,44 +1348,44 @@ msgstr ""
 #: ../src/gui/states/state_bline.cpp:1292
 #: ../src/gui/states/state_bline.cpp:1443
 msgid "Delete Vertex"
-msgstr ""
+msgstr "Ezabatu erpina"
 
 #: ../src/gui/states/state_bline.cpp:1301
 #: ../src/gui/states/state_bline.cpp:1418
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:59
 msgid "Merge Tangents"
-msgstr ""
+msgstr "Batu tangenteak"
 
 #: ../src/gui/states/state_bline.cpp:1308
 #: ../src/gui/states/state_bline.cpp:1425
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:59
 msgid "Split Tangents"
-msgstr ""
+msgstr "Banandu tangenteak"
 
 #: ../src/gui/states/state_bline.cpp:1321
 msgid "Insert Vertex"
-msgstr ""
+msgstr "Txertatu erpina"
 
 #: ../src/gui/states/state_bline.cpp:1385
 msgid ""
 "Unable to find where to insert vertex, internal error, please report this "
 "bug"
-msgstr ""
+msgstr "Ezin da aurkitu non txertatu erpina. Barne errorea. Eman akatsaren berri mesedez."
 
 #: ../src/gui/states/state_bline.cpp:1404
 msgid "Unable to remove vertex, internal error, please report this bug"
-msgstr ""
+msgstr "Ezin da erpina ezabatu. Barne errorea. Bidali akatsaren txostena mesedez."
 
 #: ../src/gui/states/state_circle.cpp:430
 #: ../src/gui/states/state_polygon.cpp:352
 #: ../src/gui/states/state_rectangle.cpp:369
 #: ../src/gui/states/state_star.cpp:468
 msgid "Invert"
-msgstr ""
+msgstr "Alderantzizkatu"
 
 #: ../src/gui/states/state_circle.cpp:431
 msgid "Create Circle Layer"
-msgstr ""
+msgstr "Sortu Zirkulu-geruza"
 
 #: ../src/gui/states/state_circle.cpp:438 ../src/gui/states/state_star.cpp:477
 msgid "Spline Origins at Center"
@@ -1394,11 +1393,11 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:444
 msgid "Falloff"
-msgstr ""
+msgstr "Erorketa"
 
 #: ../src/gui/states/state_circle.cpp:445
 msgid "Determines the falloff function for the feather"
-msgstr ""
+msgstr "Zehaztu erorketa-funtzioa difuminatuarentzat"
 
 #: ../src/gui/states/state_circle.cpp:447
 #: ../src/gui/states/state_gradient.cpp:292
@@ -1408,48 +1407,48 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:81
 #: ../src/gui/widgets/widget_waypointmodel.cpp:99 ../src/gui/instance.cpp:1063
 msgid "Linear"
-msgstr ""
+msgstr "Lineala"
 
 #: ../src/gui/states/state_circle.cpp:448 ../src/gui/instance.cpp:1242
 #: ../src/gui/instance.cpp:1331
 msgid "Squared"
-msgstr ""
+msgstr "Karratua"
 
 #: ../src/gui/states/state_circle.cpp:449
 msgid "Square Root"
-msgstr ""
+msgstr "Erro karratua"
 
 #: ../src/gui/states/state_circle.cpp:450
 msgid "Sigmond"
-msgstr ""
+msgstr "Sigmond"
 
 #: ../src/gui/states/state_circle.cpp:451
 msgid "Cosine"
-msgstr ""
+msgstr "kosinu"
 
 #: ../src/gui/states/state_circle.cpp:455
 #: ../src/gui/states/state_gradient.cpp:299
 msgid "Blend Method"
-msgstr ""
+msgstr "Nahasketa-metodoa"
 
 #: ../src/gui/states/state_circle.cpp:456
 msgid "Defines the blend method to be used for circles"
-msgstr ""
+msgstr "Definitu zirkuluetan erabiltzeko nahasketa-metodoa"
 
 #: ../src/gui/states/state_circle.cpp:461
 #: ../src/gui/states/state_circle.cpp:517 ../src/gui/iconcontroller.cpp:160
 msgid "Circle Tool"
-msgstr ""
+msgstr "Zirkulu-tresna"
 
 #: ../src/gui/states/state_circle.cpp:476
 msgid "Falloff:"
-msgstr ""
+msgstr "Erorketa:"
 
 #: ../src/gui/states/state_circle.cpp:480
 #: ../src/gui/states/state_rectangle.cpp:401
 #: ../src/gui/states/state_star.cpp:497
 msgid "Feather:"
-msgstr ""
+msgstr "Difuminatu:"
 
 #: ../src/gui/states/state_circle.cpp:487
 msgid "Spline Points:"
@@ -1457,39 +1456,39 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:490
 msgid "Point Angle Offset:"
-msgstr ""
+msgstr "Puntuaren angelu-desplazamendua"
 
 #: ../src/gui/states/state_circle.cpp:563
 msgid "New Circle"
-msgstr ""
+msgstr "Zirkulu berria"
 
 #: ../src/gui/states/state_circle.cpp:690
 msgid "Unable to create Circle layer"
-msgstr ""
+msgstr "Ezin da sortu zirkulu-geruza"
 
 #: ../src/gui/states/state_draw.cpp:453
 msgid "Pressure Width"
-msgstr ""
+msgstr "Behartu zabalera"
 
 #: ../src/gui/states/state_draw.cpp:454
 msgid "Auto Loop"
-msgstr ""
+msgstr "Begizta automatikoa"
 
 #: ../src/gui/states/state_draw.cpp:455
 msgid "Auto Extend"
-msgstr ""
+msgstr "Hedapen automatikoa"
 
 #: ../src/gui/states/state_draw.cpp:456
 msgid "Auto Link"
-msgstr ""
+msgstr "Esteka automatikoa"
 
 #: ../src/gui/states/state_draw.cpp:461 ../src/gui/states/state_draw.cpp:592
 msgid "Fill Last Stroke"
-msgstr ""
+msgstr "Bete azken trazua"
 
 #: ../src/gui/states/state_draw.cpp:464
 msgid "Min Pressure"
-msgstr ""
+msgstr "Minimizatu presioa"
 
 #: ../src/gui/states/state_draw.cpp:467
 msgid "Max Width Error"
@@ -1497,12 +1496,12 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:471
 msgid "LocalError"
-msgstr ""
+msgstr "Errore lokala"
 
 #: ../src/gui/states/state_draw.cpp:486 ../src/gui/states/state_draw.cpp:587
 #: ../src/gui/iconcontroller.cpp:158
 msgid "Draw Tool"
-msgstr ""
+msgstr "Marrazketa tresna"
 
 #: ../src/gui/states/state_draw.cpp:553
 msgid "Spline Local Error"
@@ -1518,7 +1517,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:1453
 msgid "Define Region"
-msgstr ""
+msgstr "Area zehaztu"
 
 #: ../src/gui/states/state_draw.cpp:2049 ../src/gui/states/state_draw.cpp:2238
 msgid "Extend Spline"
@@ -1531,7 +1530,7 @@ msgstr ""
 #: ../src/gui/states/state_draw.cpp:2155 ../src/gui/states/state_draw.cpp:2198
 #: ../src/gui/states/state_draw.cpp:2344 ../src/gui/states/state_draw.cpp:2387
 msgid "Unable to insert item"
-msgstr ""
+msgstr "Ezin da elementua txertatu"
 
 #: ../src/gui/states/state_draw.cpp:2174 ../src/gui/states/state_draw.cpp:2363
 msgid "Unable to set loop for spline"
@@ -1543,112 +1542,112 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:2429
 msgid "Fill Stroke"
-msgstr ""
+msgstr "Bete trazua"
 
 #: ../src/gui/states/state_fill.cpp:160
 msgid "No layer here"
-msgstr ""
+msgstr "Ez dago geruzarik hemen"
 
 #: ../src/gui/states/state_fill.cpp:170
 msgid "Unable to set layer color"
-msgstr ""
+msgstr "Ezin da ezarri objektuaren kolorea"
 
 #: ../src/gui/states/state_gradient.cpp:285
 #: ../src/gui/states/state_gradient.cpp:345 ../src/gui/iconcontroller.cpp:169
 msgid "Gradient Tool"
-msgstr ""
+msgstr "Gradiente-tresna"
 
 #: ../src/gui/states/state_gradient.cpp:289
 msgid "Gradient Type"
-msgstr ""
+msgstr "Gradiente mota"
 
 #: ../src/gui/states/state_gradient.cpp:290
 msgid "Determines the type of Gradient used"
-msgstr ""
+msgstr "Zehaztu gradiente mota"
 
 #: ../src/gui/states/state_gradient.cpp:293
 msgid "Radial"
-msgstr ""
+msgstr "Erradiala"
 
 #: ../src/gui/states/state_gradient.cpp:294
 msgid "Conical"
-msgstr ""
+msgstr "Konikoa"
 
 #: ../src/gui/states/state_gradient.cpp:295
 msgid "Spiral"
-msgstr ""
+msgstr "Espirala"
 
 #: ../src/gui/states/state_gradient.cpp:300
 msgid "The blend method the gradient will use"
-msgstr ""
+msgstr "Gradientean erabiliko den nahasketa-metodoa"
 
 #: ../src/gui/states/state_gradient.cpp:403
 msgid "New Gradient"
-msgstr ""
+msgstr "Gradiente berria"
 
 #: ../src/gui/states/state_mirror.cpp:172
 msgid "Horizontal"
-msgstr ""
+msgstr "Horizontala"
 
 #: ../src/gui/states/state_mirror.cpp:173
 msgid "Vertical"
-msgstr ""
+msgstr "Bertikala"
 
 #: ../src/gui/states/state_mirror.cpp:176
 #: ../src/gui/states/state_mirror.cpp:235 ../src/gui/iconcontroller.cpp:167
 msgid "Mirror Tool"
-msgstr ""
+msgstr "Ispilu-tresna"
 
 #: ../src/gui/states/state_mirror.cpp:179
 msgid "(Shift key toggles axis)"
-msgstr ""
+msgstr "(Mayuskula teklak ardatza txandakatzen du)"
 
 #: ../src/gui/states/state_normal.cpp:220
 #: ../src/gui/states/state_normal.cpp:245 ../src/gui/iconcontroller.cpp:153
 msgid "Transform Tool"
-msgstr ""
+msgstr "Eraladaketa-tresna"
 
 #: ../src/gui/states/state_normal.cpp:221
 msgid "Ctrl to rotate"
-msgstr ""
+msgstr "Ctrl biratzeko"
 
 #: ../src/gui/states/state_normal.cpp:222
 msgid "Alt to scale"
-msgstr ""
+msgstr "Alt eskalatzeko"
 
 #: ../src/gui/states/state_normal.cpp:223
 msgid "Shift to constrain"
-msgstr ""
+msgstr "Shift mantentzeko"
 
 #: ../src/gui/states/state_polygon.cpp:353
 msgid "Create Polygon Layer"
-msgstr ""
+msgstr "Sortu poligono-geruza"
 
 #: ../src/gui/states/state_polygon.cpp:368
 #: ../src/gui/states/state_polygon.cpp:420 ../src/gui/iconcontroller.cpp:154
 msgid "Polygon Tool"
-msgstr ""
+msgstr "Poligono-tresna"
 
 #: ../src/gui/states/state_polygon.cpp:425
 msgid "Make Polygon"
-msgstr ""
+msgstr "Egin poligonoa"
 
 #: ../src/gui/states/state_polygon.cpp:435
 msgid "Clear current Polygon"
-msgstr ""
+msgstr "Garbitu oraingo poligonoa"
 
 #: ../src/gui/states/state_polygon.cpp:502
 msgid "New Polygon"
-msgstr ""
+msgstr "Poligono berria"
 
 #: ../src/gui/states/state_polygon.cpp:619
 #: ../src/gui/states/state_polygon.cpp:621
 msgid "Unable to create Polygon layer"
-msgstr ""
+msgstr "Ezin da Poligono-geruza sortu"
 
 #: ../src/gui/states/state_rectangle.cpp:370
 msgid "Create Rectangle Layer"
-msgstr ""
+msgstr "Sortu Laukizuzen-geruza"
 
 #: ../src/gui/states/state_rectangle.cpp:376
 msgid "Link Spline Origins"
@@ -1657,24 +1656,24 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:382
 #: ../src/gui/states/state_rectangle.cpp:428 ../src/gui/iconcontroller.cpp:161
 msgid "Rectangle Tool"
-msgstr ""
+msgstr "Laukizuzen-tresna"
 
 #: ../src/gui/states/state_rectangle.cpp:397
 msgid "Expansion:"
-msgstr ""
+msgstr "Hedapena:"
 
 #: ../src/gui/states/state_rectangle.cpp:476
 msgid "New Rectangle"
-msgstr ""
+msgstr "Laukizuzen berria"
 
 #: ../src/gui/states/state_rotate.cpp:197
 msgid "Allow Scale"
-msgstr ""
+msgstr "Baimendu eskala"
 
 #: ../src/gui/states/state_rotate.cpp:202
 #: ../src/gui/states/state_rotate.cpp:229
 msgid "Rotate Tool"
-msgstr ""
+msgstr "Biratze-tresna"
 
 #: ../src/gui/states/state_rotate.cpp:398
 msgid "Move Handle"
@@ -1686,184 +1685,184 @@ msgstr ""
 
 #: ../src/gui/states/state_scale.cpp:186
 msgid "Lock Aspect Ratio"
-msgstr ""
+msgstr "Blokeatu aspektu-erlazioa"
 
 #: ../src/gui/states/state_scale.cpp:189 ../src/gui/states/state_scale.cpp:215
 msgid "Scale Tool"
-msgstr ""
+msgstr "Eskala-tresna"
 
 #: ../src/gui/states/state_sketch.cpp:160
 #: ../src/gui/states/state_sketch.cpp:241
 msgid "Save Sketch"
-msgstr ""
+msgstr "Gorde ziriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:170
 msgid "Unable to save sketch"
-msgstr ""
+msgstr "Ezin da zirriborroa gorde"
 
 #: ../src/gui/states/state_sketch.cpp:179
 #: ../src/gui/states/state_sketch.cpp:242
 msgid "Load Sketch"
-msgstr ""
+msgstr "Kargatu zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:189
 msgid "Unable to load sketch"
-msgstr ""
+msgstr "Ezin da ireki zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:239
 #: ../src/gui/states/state_sketch.cpp:270
 #: ../src/gui/states/state_sketch.cpp:271
 msgid "Clear Sketch"
-msgstr ""
+msgstr "Garbitu zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:240
 msgid "Undo Stroke"
-msgstr ""
+msgstr "Desegin zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:243
 msgid "Show Sketch"
-msgstr ""
+msgstr "Erakutsi zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:258
 #: ../src/gui/states/state_sketch.cpp:259
 msgid "Undo Last Stroke"
-msgstr ""
+msgstr "Desegin azken zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:282
 #: ../src/gui/states/state_sketch.cpp:283
 #: ../src/gui/states/state_sketch.cpp:294
 #: ../src/gui/states/state_sketch.cpp:295
 msgid "Save Sketch As..."
-msgstr ""
+msgstr "Gorde zirriborroa honela..."
 
 #: ../src/gui/states/state_sketch.cpp:306
 #: ../src/gui/states/state_sketch.cpp:307
 msgid "Open a Sketch"
-msgstr ""
+msgstr "Ireki zirriborroa"
 
 #: ../src/gui/states/state_sketch.cpp:327
 #: ../src/gui/states/state_sketch.cpp:395 ../src/gui/iconcontroller.cpp:159
 msgid "Sketch Tool"
-msgstr ""
+msgstr "Zirriborro-tresna"
 
 #: ../src/gui/states/state_smoothmove.cpp:201
 #: ../src/gui/iconcontroller.cpp:162
 msgid "SmoothMove Tool"
-msgstr ""
+msgstr "Mugimendu leuna-tresna"
 
 #: ../src/gui/states/state_smoothmove.cpp:202
 msgid "Radius"
-msgstr ""
+msgstr "Erradioa"
 
 #: ../src/gui/states/state_smoothmove.cpp:228
 msgid "Smooth Move"
-msgstr ""
+msgstr "Mugimendu leuna"
 
 #: ../src/gui/states/state_star.cpp:469
 msgid "Regular Polygon"
-msgstr ""
+msgstr "Poligono erregularra"
 
 #: ../src/gui/states/state_star.cpp:470
 msgid "Create Star Layer"
-msgstr ""
+msgstr "Sortu izarra-geruza"
 
 #: ../src/gui/states/state_star.cpp:484 ../src/gui/states/state_star.cpp:545
 #: ../src/gui/iconcontroller.cpp:170
 msgid "Star Tool"
-msgstr ""
+msgstr "Izarra-tresna"
 
 #: ../src/gui/states/state_star.cpp:500
 msgid "Number of Points:"
-msgstr ""
+msgstr "Puntu kopurua"
 
 #: ../src/gui/states/state_star.cpp:503
 msgid "Inner Tangent:"
-msgstr ""
+msgstr "Barne tangentea"
 
 #: ../src/gui/states/state_star.cpp:506
 msgid "Outer Tangent:"
-msgstr ""
+msgstr "Kanpo tangentea"
 
 #: ../src/gui/states/state_star.cpp:509
 msgid "Inner Width:"
-msgstr ""
+msgstr "Barne zabalera"
 
 #: ../src/gui/states/state_star.cpp:512
 msgid "Outer Width:"
-msgstr ""
+msgstr "Kanpo zabalera"
 
 #: ../src/gui/states/state_star.cpp:515
 msgid "Radius Ratio:"
-msgstr ""
+msgstr "Erradio erlazioa:"
 
 #: ../src/gui/states/state_star.cpp:518
 msgid "Angle Offset:"
-msgstr ""
+msgstr "Angelu desplazamendua:"
 
 #: ../src/gui/states/state_star.cpp:591
 msgid "New Star"
-msgstr ""
+msgstr "Izar berria"
 
 #: ../src/gui/states/state_star.cpp:736
 msgid "Unable to create Star layer"
-msgstr ""
+msgstr "Ezin da sortu izar-geruza"
 
 #: ../src/gui/states/state_text.cpp:293
 msgid "Multiline Editor"
-msgstr ""
+msgstr "Lerro anitzen editorea"
 
 #: ../src/gui/states/state_text.cpp:302 ../src/gui/states/state_text.cpp:347
 msgid "Text Tool"
-msgstr ""
+msgstr "Testu-tresna"
 
 #: ../src/gui/states/state_text.cpp:305
 msgid "Size:"
-msgstr ""
+msgstr "Neurria:"
 
 #: ../src/gui/states/state_text.cpp:307
 msgid "Orientation:"
-msgstr ""
+msgstr "Orientazioa:"
 
 #: ../src/gui/states/state_text.cpp:309
 msgid "Family:"
-msgstr ""
+msgstr "Familia:"
 
 #: ../src/gui/states/state_text.cpp:393
 msgid "New Text"
-msgstr ""
+msgstr "Testu berria"
 
 #: ../src/gui/states/state_text.cpp:418
 msgid "Text Paragraph"
-msgstr ""
+msgstr "Testu paragrafoa"
 
 #: ../src/gui/states/state_text.cpp:418 ../src/gui/states/state_text.cpp:420
 msgid "Enter text here:"
-msgstr ""
+msgstr "Sartu testua hemen"
 
 #: ../src/gui/states/state_text.cpp:420
 msgid "Text Entry"
-msgstr ""
+msgstr "Testu-sarrera"
 
 #: ../src/gui/states/state_width.cpp:237
 msgid "Relative Growth"
-msgstr ""
+msgstr "Hazkunde erlatiboa"
 
 #: ../src/gui/states/state_width.cpp:248 ../src/gui/states/state_width.cpp:305
 #: ../src/gui/iconcontroller.cpp:164
 msgid "Width Tool"
-msgstr ""
+msgstr "Zabalera-tresna"
 
 #: ../src/gui/states/state_width.cpp:251
 msgid "Growth:"
-msgstr ""
+msgstr "Hazkundea:"
 
 #: ../src/gui/states/state_width.cpp:253
 msgid "Radius:"
-msgstr ""
+msgstr "Erradioa"
 
 #: ../src/gui/states/state_width.cpp:582
 msgid "Sketch Width"
-msgstr ""
+msgstr "Eskema zabalera"
 
 #: ../src/gui/trees/canvastreestore.cpp:248
 #: ../src/gui/trees/canvastreestore.cpp:281
@@ -1871,32 +1870,32 @@ msgstr ""
 #: ../src/gui/iconcontroller.cpp:149 ../src/gui/iconcontroller.cpp:178
 #: ../src/synfigapp/action.cpp:525
 msgid "Canvas"
-msgstr ""
+msgstr "Oihala"
 
 #: ../src/gui/trees/canvastreestore.cpp:279
 #: ../src/gui/trees/childrentreestore.cpp:201 ../src/gui/instance.cpp:482
 msgid "[Unnamed]"
-msgstr ""
+msgstr "(Izengabea)"
 
 #: ../src/gui/trees/childrentree.cpp:113 ../src/gui/trees/layertree.cpp:362
 #: ../src/synfigapp/actions/valuedescconvert.cpp:97
 msgid "Type"
-msgstr ""
+msgstr "Mota"
 
 #: ../src/gui/trees/childrentree.cpp:124
 #: ../src/synfigapp/actions/layerparamset.cpp:80
 #: ../src/synfigapp/actions/valuedescset.cpp:108
 #: ../src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
-msgstr ""
+msgstr "ValueBase"
 
 #: ../src/gui/trees/childrentreestore.cpp:78 ../src/gui/compview.cpp:90
 msgid "Canvases"
-msgstr ""
+msgstr "Oihalak"
 
 #: ../src/gui/trees/childrentreestore.cpp:83
 msgid "ValueBase Nodes"
-msgstr ""
+msgstr "ValueBase nodoak"
 
 #: ../src/gui/trees/keyframetree.cpp:63 ../src/gui/trees/layergrouptree.cpp:63
 #: ../src/gui/trees/layergrouptree.cpp:74 ../src/gui/trees/layertree.cpp:192
@@ -1906,29 +1905,29 @@ msgstr ""
 
 #: ../src/gui/trees/keyframetree.cpp:88
 msgid "Length"
-msgstr ""
+msgstr "Luzera"
 
 #: ../src/gui/trees/keyframetree.cpp:118
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:82
 msgid "Description"
-msgstr ""
+msgstr "Deskripzioa"
 
 #: ../src/gui/trees/keyframetreestore.cpp:794
 #: ../src/gui/trees/keyframetreestore.cpp:809
 msgid "Unable to find Keyframe in table"
-msgstr ""
+msgstr "Ezin da aurkitu gako-fotograma taulan"
 
 #: ../src/gui/trees/keyframetreestore.cpp:800
 msgid "There are no keyframes in this canvas"
-msgstr ""
+msgstr "Ez dago gako-fotogramarik oihal honetan"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:440
 msgid "Activate "
-msgstr ""
+msgstr "Gaitu"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:440
 msgid "Deactivate "
-msgstr ""
+msgstr "Ezgaitu"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:563
 msgid "Reset"
@@ -1950,11 +1949,11 @@ msgstr ""
 #: ../src/synfigapp/actions/layerremove.cpp:79
 #: ../src/synfigapp/actions/layersetdesc.cpp:85
 msgid "Layer"
-msgstr ""
+msgstr "Geruza"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:241
 msgid "Set Layer Parameters"
-msgstr ""
+msgstr "Talde geruzaren parametroak"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:253
 #: ../src/gui/widgets/widget_canvaschooser.cpp:145
@@ -1966,28 +1965,28 @@ msgstr ""
 #: ../src/gui/instance.cpp:616 ../src/gui/instance.cpp:632
 #: ../src/gui/instance.cpp:641
 msgid "Error"
-msgstr ""
+msgstr "Errore"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:253
 msgid "Unable to set all layer parameters."
-msgstr ""
+msgstr "Ezin dira ezarri geruza guztien parametroak."
 
 #: ../src/gui/trees/layertree.cpp:205
 msgid "Icon"
-msgstr ""
+msgstr "Ikonoa"
 
 #: ../src/gui/trees/layertree.cpp:229
 msgid "Z Depth"
-msgstr ""
+msgstr "Z sakonera"
 
 #: ../src/gui/trees/layertree.cpp:316
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:84
 msgid "Value"
-msgstr ""
+msgstr "Balioa"
 
 #: ../src/gui/trees/layertreestore.cpp:516
 msgid "Move Layers"
-msgstr ""
+msgstr "Mugitu geruzak"
 
 #: ../src/gui/trees/metadatatree.cpp:58
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:81
@@ -2001,103 +2000,103 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:115
 msgid "Other..."
-msgstr ""
+msgstr "Besteak..."
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Choose Canvas"
-msgstr ""
+msgstr "Hautatu oihala"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:136
 msgid "Enter the relative name of the canvas that you want"
-msgstr ""
+msgstr "Sartu nahi duzun oihalaren izen erlatiboa"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:145
 msgid "No canvas name was specified"
-msgstr ""
+msgstr "Ez duzu eman oihalaren izena"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:159
 msgid "Error:Exception Thrown"
-msgstr ""
+msgstr "Errorea:  Salbuespena jaurti du"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:159
 msgid ""
 "Error selecting canvas:\n"
 "\n"
-msgstr ""
+msgstr "Errorea oihala hautatzen\n\n"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:164
 msgid "Unknown Exception"
-msgstr ""
+msgstr "Salbuespen ezezaguna"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:311
 msgid "RGB"
-msgstr ""
+msgstr "RGB"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:312
 msgid "YUV"
-msgstr ""
+msgstr "YUV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:367
 msgid "HTML code"
-msgstr ""
+msgstr "HTML kodea"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:380
 msgid "Luma"
-msgstr ""
+msgstr "Luminantzia"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:381
 msgid "Hue"
-msgstr ""
+msgstr "Ñabardura"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:382
 msgid "Saturation"
-msgstr ""
+msgstr "Saturazioa"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:383
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:384
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:388
 msgid "Alpha"
-msgstr ""
+msgstr "Alfa"
 
 #: ../src/gui/widgets/widget_defaults.cpp:219
 msgid "Outline Color"
-msgstr ""
+msgstr "Ertzaren kolorea"
 
 #: ../src/gui/widgets/widget_defaults.cpp:227
 msgid "Fill Color"
-msgstr ""
+msgstr "Betegarri kolorea"
 
 #: ../src/gui/widgets/widget_defaults.cpp:244
 msgid ""
 "Swap Fill and\n"
 "Outline Colors"
-msgstr ""
+msgstr "Aldatu betetze eta ertza koloreak"
 
 #: ../src/gui/widgets/widget_defaults.cpp:258
 msgid "Reset Colors to Black and White"
-msgstr ""
+msgstr "Berrezarri koloreak beltza eta zurira"
 
 #: ../src/gui/widgets/widget_defaults.cpp:270
 msgid "Brush Preview"
-msgstr ""
+msgstr "Brotxa aurreikusi"
 
 #: ../src/gui/widgets/widget_defaults.cpp:280
 msgid "Brush Size"
-msgstr ""
+msgstr "Brotxaren neurria"
 
 #: ../src/gui/widgets/widget_defaults.cpp:288
 msgid "By Layer Default"
-msgstr ""
+msgstr "Lehenetsitako geruza"
 
 #: ../src/gui/widgets/widget_defaults.cpp:291
 msgid "Default Blend Method"
-msgstr ""
+msgstr "Blend metodo lehenetsia"
 
 #: ../src/gui/widgets/widget_defaults.cpp:299
 #: ../src/gui/widgets/widget_waypoint.cpp:90
@@ -2121,7 +2120,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:79
 #: ../src/gui/widgets/widget_waypointmodel.cpp:97 ../src/gui/instance.cpp:1099
 msgid "Constant"
-msgstr ""
+msgstr "Konstantea"
 
 #: ../src/gui/widgets/widget_defaults.cpp:302
 #: ../src/gui/widgets/widget_waypoint.cpp:93
@@ -2133,19 +2132,19 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:313
 msgid "Default Interpolation"
-msgstr ""
+msgstr "Lehenetsitako interpolazioa"
 
 #: ../src/gui/widgets/widget_defaults.cpp:321
 msgid "Default Opacity"
-msgstr ""
+msgstr "Lehenetsitako opakotasuna"
 
 #: ../src/gui/widgets/widget_defaults.cpp:328
 msgid "Default Gradient"
-msgstr ""
+msgstr "Lehenetsitako gradientea"
 
 #: ../src/gui/widgets/widget_filename.cpp:132
 msgid "Choose File"
-msgstr ""
+msgstr "Hautatu fitxategia"
 
 #: ../src/gui/widgets/widget_gradient.cpp:244
 msgid "Insert Color Stop"
@@ -2157,19 +2156,19 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:220
 msgid "Not possible to ALT-drag the first keyframe"
-msgstr ""
+msgstr "Ezin da ALT -arrastatu lehenengo gako-fotograma"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:247
 msgid "Delta set not allowed"
-msgstr ""
+msgstr "Delta ezartzea ezgaitua"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:318
 msgid "Click and drag keyframes"
-msgstr ""
+msgstr "Klikatu eta arrastatu gako-fotogramak"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:79
 msgid "(Non-static value)"
-msgstr ""
+msgstr "(balio ez estatikoa)"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:133
 #: ../src/synfigapp/actions/waypointremove.cpp:78
@@ -2177,103 +2176,103 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:78
 #: ../src/synfigapp/value_desc.cpp:82
 msgid "Waypoint"
-msgstr ""
+msgstr "Waypoint"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:135
 msgid "<b>Waypoint</b>"
-msgstr ""
+msgstr "<b>Waypoint</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:147
 msgid "_Value"
-msgstr ""
+msgstr "-Balioa"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:154
 msgid "_Time"
-msgstr ""
+msgstr "_Denbora"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:160 ../src/gui/instance.cpp:1130
 msgid "Interpolation"
-msgstr ""
+msgstr "Interpolazioa"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:162
 msgid "<b>Interpolation</b>"
-msgstr ""
+msgstr "<b>Interpolazioa</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:174
 msgid "_In Interpolation"
-msgstr ""
+msgstr "_Sartu interpolazioa"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:180
 msgid "_Out Interpolation"
-msgstr ""
+msgstr "_Atera interpolazioa"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:186
 msgid "TCB Parameters"
-msgstr ""
+msgstr "TCB parametroak"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:188
 msgid "<b>TCB Parameter</b>"
-msgstr ""
+msgstr "<b>TCB Parametroak</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:200
 msgid "T_ension"
-msgstr ""
+msgstr "_Tentsioa"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:207
 msgid "_Continuity"
-msgstr ""
+msgstr "_Jarraikortasuna"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:214
 msgid "_Bias"
-msgstr ""
+msgstr "_Bias"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:221
 msgid "Te_mporal Tension"
-msgstr ""
+msgstr "Uneko tentsioa"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:65
 msgid "Out:"
-msgstr ""
+msgstr "Kanpoan:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:66
 msgid "In:"
-msgstr ""
+msgstr "Barruan:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:67
 msgid "Tension:"
-msgstr ""
+msgstr "Tentsioa:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:68
 msgid "Continuity:"
-msgstr ""
+msgstr "Jarraipena:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:69
 msgid "Bias:"
-msgstr ""
+msgstr "Blas:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:70
 msgid "Temporal Tension:"
-msgstr ""
+msgstr "Uneko tentsioa"
 
 #: ../src/gui/app.cpp:802 ../src/gui/toolbox.cpp:277
 msgid "_File"
-msgstr ""
+msgstr "_Fitxategia"
 
 #: ../src/gui/app.cpp:803 ../src/gui/canvasview.cpp:3584
 msgid "_Edit"
-msgstr ""
+msgstr "_Editatu"
 
 #: ../src/gui/app.cpp:804
 msgid "_View"
-msgstr ""
+msgstr "_Ikusi"
 
 #: ../src/gui/app.cpp:805
 msgid "_Canvas"
-msgstr ""
+msgstr "_Oihala"
 
 #: ../src/gui/app.cpp:806
 msgid "_Layer"
-msgstr ""
+msgstr "_Geruza"
 
 #: ../src/gui/app.cpp:807
 msgid "Show/Hide Handles"
@@ -2281,16 +2280,16 @@ msgstr ""
 
 #: ../src/gui/app.cpp:808
 msgid "Preview Quality"
-msgstr ""
+msgstr "Aurreikuspenaren kalitatea"
 
 #: ../src/gui/app.cpp:809
 msgid "Low-Res Pixel Size"
-msgstr ""
+msgstr "Erresoluzio baxuko pixel neurria"
 
 #: ../src/gui/app.cpp:810 ../src/gui/canvasview.cpp:2597
 #: ../src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
-msgstr ""
+msgstr "Geruza berria"
 
 #: ../src/gui/app.cpp:811 ../src/synfigapp/actions/keyframeduplicate.cpp:79
 #: ../src/synfigapp/actions/keyframeremove.cpp:79
@@ -2298,7 +2297,7 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:92
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
-msgstr ""
+msgstr "Gako-fotograma"
 
 #: ../src/gui/app.cpp:812 ../src/gui/iconcontroller.cpp:246
 #: ../src/synfigapp/actions/groupaddlayers.cpp:78
@@ -2308,11 +2307,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:813
 msgid "Tool"
-msgstr ""
+msgstr "Tresna"
 
 #: ../src/gui/app.cpp:814
 msgid "Toolbox"
-msgstr ""
+msgstr "Tresna-kutxa"
 
 #: ../src/gui/app.cpp:815
 msgid "Plug-Ins"
@@ -2320,23 +2319,23 @@ msgstr ""
 
 #: ../src/gui/app.cpp:843 ../src/gui/canvasview.cpp:1469
 msgid "Import"
-msgstr ""
+msgstr "Inportatu"
 
 #: ../src/gui/app.cpp:846
 msgid "Preview Dialog"
-msgstr ""
+msgstr "Aurreikusteko elkarrizketa"
 
 #: ../src/gui/app.cpp:847 ../src/gui/canvasview.cpp:1478
 msgid "Sound File"
-msgstr ""
+msgstr "Soinu-fitxategia"
 
 #: ../src/gui/app.cpp:849
 msgid "Close View"
-msgstr ""
+msgstr "Itxi ikuspegia"
 
 #: ../src/gui/app.cpp:850 ../src/gui/canvasview.cpp:1487
 msgid "Close Document"
-msgstr ""
+msgstr "Itxi dokumentua"
 
 #: ../src/gui/app.cpp:859 ../src/gui/canvasview.cpp:1502
 msgid "Select All Handles"
@@ -2348,11 +2347,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:861 ../src/gui/canvasview.cpp:1510
 msgid "Select All Layers"
-msgstr ""
+msgstr "Hautatu geruza guztiak"
 
 #: ../src/gui/app.cpp:862 ../src/gui/canvasview.cpp:1514
 msgid "Unselect All Layers"
-msgstr ""
+msgstr "Desautatu geruza guztiak"
 
 #: ../src/gui/app.cpp:865 ../src/gui/canvasview.cpp:1698
 msgid "Show Position Handles"
@@ -2396,121 +2395,121 @@ msgstr ""
 
 #: ../src/gui/app.cpp:875 ../src/gui/canvasview.cpp:1546
 msgid "Use Parametric Renderer"
-msgstr ""
+msgstr "Erabili errendatze parametrikoa"
 
 #: ../src/gui/app.cpp:876
 msgid "Use Quality Level 1"
-msgstr ""
+msgstr "Erabili 1 kalitate-maila"
 
 #: ../src/gui/app.cpp:877
 msgid "Use Quality Level 2"
-msgstr ""
+msgstr "Erabili 2 kalitate-maila"
 
 #: ../src/gui/app.cpp:878
 msgid "Use Quality Level 3"
-msgstr ""
+msgstr "Erabili 3 kalitate-maila"
 
 #: ../src/gui/app.cpp:879
 msgid "Use Quality Level 4"
-msgstr ""
+msgstr "Erabili 4 kalitate-maila"
 
 #: ../src/gui/app.cpp:880
 msgid "Use Quality Level 5"
-msgstr ""
+msgstr "Erabili 5 kalitate-maila"
 
 #: ../src/gui/app.cpp:881
 msgid "Use Quality Level 6"
-msgstr ""
+msgstr "Erabili 6 kalitate-maila"
 
 #: ../src/gui/app.cpp:882
 msgid "Use Quality Level 7"
-msgstr ""
+msgstr "Erabili 7 kalitate-maila"
 
 #: ../src/gui/app.cpp:883
 msgid "Use Quality Level 8"
-msgstr ""
+msgstr "Erabili 8 kalitate-maila"
 
 #: ../src/gui/app.cpp:884
 msgid "Use Quality Level 9"
-msgstr ""
+msgstr "Erabili 9 kalitate-maila"
 
 #: ../src/gui/app.cpp:885
 msgid "Use Quality Level 10"
-msgstr ""
+msgstr "Erabili 10 kalitate-maila"
 
 #: ../src/gui/app.cpp:887 ../src/gui/canvasview.cpp:1580
 #, c-format
 msgid "Set Low-Res pixel size to %d"
-msgstr ""
+msgstr "Ezarri erresoluzio baxua %d pixeletan"
 
 #: ../src/gui/app.cpp:890 ../src/gui/canvasview.cpp:1103
 #: ../src/gui/iconcontroller.cpp:284
 msgid "Stop"
-msgstr ""
+msgstr "Gelditu"
 
 #: ../src/gui/app.cpp:891
 msgid "Toggle Grid Show"
-msgstr ""
+msgstr "Aldatu sareta ikustea"
 
 #: ../src/gui/app.cpp:892
 msgid "Toggle Grid Snap"
-msgstr ""
+msgstr "Aldatu sareta-atxikitzea"
 
 #: ../src/gui/app.cpp:893
 msgid "Toggle Guide Show"
-msgstr ""
+msgstr "Aldatu gida ikusi"
 
 #: ../src/gui/app.cpp:894
 msgid "Toggle Guide Snap"
-msgstr ""
+msgstr "Aldatu gidara atxikitzea"
 
 #: ../src/gui/app.cpp:895
 msgid "Toggle Low-Res"
-msgstr ""
+msgstr "Aldatu erresoluzio-baxua"
 
 #: ../src/gui/app.cpp:896 ../src/gui/canvasview.cpp:1596
 msgid "Decrease Low-Res Pixel Size"
-msgstr ""
+msgstr "Txikitu erresoluzio baxuko pixel neurria"
 
 #: ../src/gui/app.cpp:897 ../src/gui/canvasview.cpp:1599
 msgid "Increase Low-Res Pixel Size"
-msgstr ""
+msgstr "Handitu erresoluzio baxuko pixel neurria"
 
 #: ../src/gui/app.cpp:898
 msgid "Toggle Onion Skin"
-msgstr ""
+msgstr "Aldatu  tipula-azala"
 
 #: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1667
 msgid "Jump to Next Keyframe"
-msgstr ""
+msgstr "Jauzi hurrengo gako-fotogramara"
 
 #: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1670
 msgid "Jump to Prev Keyframe"
-msgstr ""
+msgstr "Jauzi aurreko gako-fotogramara"
 
 #: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1651
 msgid "Next Frame"
-msgstr ""
+msgstr "Hurrengo fotograma"
 
 #: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1653
 msgid "Prev Frame"
-msgstr ""
+msgstr "Aurreko fotograma"
 
 #: ../src/gui/app.cpp:909 ../src/gui/canvasview.cpp:1656
 msgid "Seek Forward"
-msgstr ""
+msgstr "Bilatu aurreraka"
 
 #: ../src/gui/app.cpp:910 ../src/gui/canvasview.cpp:1658
 msgid "Seek Backward"
-msgstr ""
+msgstr "Bilatu atzeraka"
 
 #: ../src/gui/app.cpp:911 ../src/gui/canvasview.cpp:1664
 msgid "Seek to Begin"
-msgstr ""
+msgstr "Bilatu hasieraruntz"
 
 #: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:1661
 msgid "Seek to End"
-msgstr ""
+msgstr "Bilatu bukaeraruntz"
 
 #: ../src/gui/app.cpp:914
 msgid "Add set"
@@ -2519,19 +2518,19 @@ msgstr ""
 #: ../src/gui/app.cpp:916 ../src/gui/iconcontroller.cpp:179
 #: ../src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
-msgstr ""
+msgstr "Oihal berria"
 
 #: ../src/gui/app.cpp:1263 ../src/gui/toolbox.cpp:352
 msgid "Synfig Studio"
-msgstr ""
+msgstr "Synfig Studio"
 
 #: ../src/gui/app.cpp:1276 ../src/gui/app.cpp:1281
 msgid "Failed to initialize synfig!"
-msgstr ""
+msgstr "Huts egin du Synfig abiatzen!"
 
 #: ../src/gui/app.cpp:1291
 msgid "Init auto recovery..."
-msgstr ""
+msgstr "Abiatu berrezarpen automatikoa"
 
 #: ../src/gui/app.cpp:1296
 msgid "Loading Basic Settings..."
@@ -2543,43 +2542,43 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1328
 msgid "Init UI Manager..."
-msgstr ""
+msgstr "Abiatu interfaze-gestorea"
 
 #: ../src/gui/app.cpp:1332
 msgid "Init Dock Manager..."
-msgstr ""
+msgstr "Abiatu atrakatze-gestorea"
 
 #: ../src/gui/app.cpp:1335
 msgid "Init State Manager..."
-msgstr ""
+msgstr "Abiatu egoera gestorea"
 
 #: ../src/gui/app.cpp:1338
 msgid "Init Toolbox..."
-msgstr ""
+msgstr "Abiatu Tresna-kutxa"
 
 #: ../src/gui/app.cpp:1341
 msgid "Init About Dialog..."
-msgstr ""
+msgstr "Abiatu Honi buruz elkarrizketa..."
 
 #: ../src/gui/app.cpp:1344
 msgid "Init Tool Options..."
-msgstr ""
+msgstr "Abiatu tresna-aukerak...."
 
 #: ../src/gui/app.cpp:1348
 msgid "Init History..."
-msgstr ""
+msgstr "Abiatu historia..."
 
 #: ../src/gui/app.cpp:1352
 msgid "Init Canvases..."
-msgstr ""
+msgstr "Abiatu oihalak"
 
 #: ../src/gui/app.cpp:1356
 msgid "Init Keyframes..."
-msgstr ""
+msgstr "Abiatu gako-fotogramak"
 
 #: ../src/gui/app.cpp:1360
 msgid "Init Layers..."
-msgstr ""
+msgstr "Abiatu geruzak..."
 
 #: ../src/gui/app.cpp:1364
 msgid "Init Parameters..."
@@ -2587,7 +2586,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1368
 msgid "Init MetaData..."
-msgstr ""
+msgstr "Abiatu metadatuak"
 
 #: ../src/gui/app.cpp:1372
 msgid "Init Library..."
@@ -2595,108 +2594,108 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1376
 msgid "Init Info..."
-msgstr ""
+msgstr "Abiatu informazioa...."
 
 #: ../src/gui/app.cpp:1380
 msgid "Init Navigator..."
-msgstr ""
+msgstr "Abiatu nabigatzailea..."
 
 #: ../src/gui/app.cpp:1384
 msgid "Init Timetrack..."
-msgstr ""
+msgstr "Abiatu Denbora-lerroa"
 
 #: ../src/gui/app.cpp:1388
 msgid "Init Curve Editor..."
-msgstr ""
+msgstr "Abiatu kurba-editorea"
 
 #: ../src/gui/app.cpp:1392
 msgid "Init Layer Sets..."
-msgstr ""
+msgstr "Hasieratu geruzaren ezarpenak..."
 
 #: ../src/gui/app.cpp:1397
 msgid "Init Color Dialog..."
-msgstr ""
+msgstr "Abiatu Kolore-elkarrizketa"
 
 #: ../src/gui/app.cpp:1400
 msgid "Init Gradient Dialog..."
-msgstr ""
+msgstr "Abiatu gradiente-elkarrizketa"
 
 #: ../src/gui/app.cpp:1403
 msgid "Init DeviceTracker..."
-msgstr ""
+msgstr "Abiatu gailu-aztarnaria"
 
 #: ../src/gui/app.cpp:1408
 msgid "Init ModPalette..."
-msgstr ""
+msgstr "Abiatu Mod-paleta"
 
 #: ../src/gui/app.cpp:1411
 msgid "Init Setup Dialog..."
-msgstr ""
+msgstr "Abiatu konfigurazio-elkarrizketa"
 
 #: ../src/gui/app.cpp:1414
 msgid "Init Input Dialog..."
-msgstr ""
+msgstr "Abiatu sarrera-elkarrizketa"
 
 #: ../src/gui/app.cpp:1420
 msgid "Loading Settings..."
-msgstr ""
+msgstr "Ezarpenak kargatzen..."
 
 #: ../src/gui/app.cpp:1431
 msgid "Init Tools..."
-msgstr ""
+msgstr "Abiatu tresnak..."
 
 #: ../src/gui/app.cpp:1468
 msgid "Checking auto-recover..."
-msgstr ""
+msgstr "Berrezarpen automatikoa egiaztatzen"
 
 #: ../src/gui/app.cpp:1476
 msgid "Crash Recovery"
-msgstr ""
+msgstr "Kraskatze ondorengo berreskuratzea"
 
 #: ../src/gui/app.cpp:1477
 msgid "Auto recovery file found"
-msgstr ""
+msgstr "Topatutako fitxategia automatikoki berreskuratzen"
 
 #: ../src/gui/app.cpp:1478
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files. "
 "Recover unsaved changes?"
-msgstr ""
+msgstr "Badirudi Synfig Studio kraskatu dela zuk fitxategiak gorde aurretik. Berreskuratu gorde gabeko aldaketak?"
 
 #: ../src/gui/app.cpp:1480
 msgid "Recover"
-msgstr ""
+msgstr "Berreskuratu"
 
 #: ../src/gui/app.cpp:1480
 msgid "Ignore"
-msgstr ""
+msgstr "Utzi"
 
 #: ../src/gui/app.cpp:1486
 msgid "Unable to fully recover from previous crash"
-msgstr ""
+msgstr "Ezin da guztiz berreskuratu kraskatu aurrekora"
 
 #: ../src/gui/app.cpp:1488
 msgid "Unable to recover from previous crash"
-msgstr ""
+msgstr "Ezin da berreskuratu kraskatu aurrekora"
 
 #: ../src/gui/app.cpp:1490 ../src/gui/app.cpp:1555
 msgid "Warning"
-msgstr ""
+msgstr "Kontuz"
 
 #: ../src/gui/app.cpp:1491
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files that"
 " it has recovered are NOT YET SAVED. It would be a good idea to review them "
 "and save them now."
-msgstr ""
+msgstr "Synfig Studio saiatu da kraskatu aurrekoa berreskuratzen. Berreskuratu diren fitxategiak EZ DAUDE GORDEAK. Ideia ona litzateke fitxategiok berrikusi eta gordetzea orain."
 
 #: ../src/gui/app.cpp:1506
 msgid "Loading files..."
-msgstr ""
+msgstr "Fitxategiak kargatzen...."
 
 #: ../src/gui/app.cpp:1517
 msgid "Done."
-msgstr ""
+msgstr "Egina."
 
 #: ../src/gui/app.cpp:1535
 msgid "EXPERIMENTAL FEATURES:"
@@ -2743,121 +2742,121 @@ msgstr ""
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
-msgstr ""
+msgstr "Salbuespen ezezaguna gertatu da aplikazioa abiatzean. Baliteke softwarea ezegonkor aritzea."
 
 #: ../src/gui/app.cpp:2034
 msgid "Quit Request"
-msgstr ""
+msgstr "Eskatu irtetea"
 
 #: ../src/gui/app.cpp:2037
 msgid "Cannot quit!"
-msgstr ""
+msgstr "Ezin irten!"
 
 #: ../src/gui/app.cpp:2037
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
-msgstr ""
+msgstr "Badaude martxan dauden atazak.\nItxi atazok mesedez eta saia zaitez berriz."
 
 #: ../src/gui/app.cpp:2103
 msgid "Quit Request sent"
-msgstr ""
+msgstr "Irteteko eskaera bidalita"
 
 #: ../src/gui/app.cpp:2275
 msgid "current"
-msgstr ""
+msgstr "Unekoa"
 
 #: ../src/gui/app.cpp:2288
 msgid "and older"
-msgstr ""
+msgstr "eta zaharragoa"
 
 #: ../src/gui/app.cpp:2292
 msgid "File Format Version: "
-msgstr ""
+msgstr "Fitxategiaren formatu-bertsioa"
 
 #: ../src/gui/app.cpp:2401
 msgid "Feature not available"
-msgstr ""
+msgstr "Eginbidea ez dago erabilgarri"
 
 #: ../src/gui/app.cpp:2402
 msgid "Sorry, this feature has not yet been implemented."
-msgstr ""
+msgstr "Barkatu, eginbide hau oraindik ez da inplementatu"
 
 #: ../src/gui/app.cpp:2487
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentazioa"
 
 #: ../src/gui/app.cpp:2488
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
-msgstr ""
+msgstr "Sinfig Studio-ren dokumentazioa eskuragarri daukazu webgunean\n\nhttp://synfig.org/wiki/Category:Manual"
 
 #: ../src/gui/app.cpp:2489 ../src/gui/toolbox.cpp:294
 msgid "Help"
-msgstr ""
+msgstr "Laguntza"
 
 #: ../src/gui/app.cpp:2499
 msgid "No browser was found. Please load this website manually:"
-msgstr ""
+msgstr "Ez da nabigatzailerik aurkitu. Kargatu webgunea eskuz, mesedez."
 
 #: ../src/gui/app.cpp:2501
 msgid "No browser found"
-msgstr ""
+msgstr "Ez da nabigatzailerik aurkitu"
 
 #: ../src/gui/app.cpp:2613
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
-msgstr ""
+msgstr "Ezin da \"%s\" kargatu\n\n"
 
 #: ../src/gui/app.cpp:2616 ../src/gui/canvasview.cpp:3734
 #: ../src/gui/canvasview.cpp:3941
 msgid "Warnings"
-msgstr ""
+msgstr "Kontuz"
 
 #: ../src/gui/app.cpp:2624
 #, c-format
 msgid "Unable to create instance for \"%s\""
-msgstr ""
+msgstr "Ezin izan da instantzia sortu \"%s\"-rentzat"
 
 #: ../src/gui/app.cpp:2630 ../src/gui/iconcontroller.cpp:327
 #: ../src/gui/instance.cpp:589
 msgid "CVS Update"
-msgstr ""
+msgstr "CVS eguneraketa"
 
 #: ../src/gui/app.cpp:2630
 msgid ""
 "There appears to be a newer version of this file available on the CVS repository.\n"
 "Would you like to update now? (It would probably be a good idea)"
-msgstr ""
+msgstr "Badirudi fitxategi honen bertsio berria dagoela CVS biltegian.\nNahi duzu eguneratu? (gomendagarria)"
 
 #: ../src/gui/app.cpp:2646
 msgid "Uncaught error on file open (BUG)"
-msgstr ""
+msgstr "Errore ez detektatua irekitako fitxategian (ERROREA)"
 
 #: ../src/gui/canvasview.cpp:249 ../src/gui/workarea.cpp:2958
 #: ../src/gui/workarea.cpp:3057
 msgid "Idle"
-msgstr ""
+msgstr "inaktiboa"
 
 #: ../src/gui/canvasview.cpp:370
 msgid "ERROR"
-msgstr ""
+msgstr "ERROREA"
 
 #: ../src/gui/canvasview.cpp:419
 msgid "Feature not yet implemented"
-msgstr ""
+msgstr "Eginbidea ez dago oraindik inplementatua"
 
 #: ../src/gui/canvasview.cpp:980
 msgid "Moves the time window"
-msgstr ""
+msgstr "Mugitu denbora-leihoa"
 
 #: ../src/gui/canvasview.cpp:981
 msgid "Changes the current time"
-msgstr ""
+msgstr "Aldatu uneko denbora"
 
 #: ../src/gui/canvasview.cpp:994 ../src/gui/canvasview.cpp:2855
 msgid "Turn on animate editing mode"
@@ -2865,19 +2864,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1022
 msgid "Current time"
-msgstr ""
+msgstr "Uneko denbora"
 
 #: ../src/gui/canvasview.cpp:1104
 msgid "Refresh"
-msgstr ""
+msgstr "Freskatu"
 
 #: ../src/gui/canvasview.cpp:1193
 msgid "Quality (lower is better)"
-msgstr ""
+msgstr "Kalitatea (baxuena da hoberena)"
 
 #: ../src/gui/canvasview.cpp:1205
 msgid "Show grid when enabled"
-msgstr ""
+msgstr "Erakutsi sareta posible denean"
 
 #: ../src/gui/canvasview.cpp:1218
 msgid "Snap to grid when enabled"
@@ -2885,92 +2884,92 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1231
 msgid "Shows onion skin when enabled"
-msgstr ""
+msgstr "Erakutsi tipula-azala ahal denean"
 
 #: ../src/gui/canvasview.cpp:1239
 msgid "Past onion skins"
-msgstr ""
+msgstr "Itsatsi tipula-azalak"
 
 #: ../src/gui/canvasview.cpp:1246
 msgid "Future onion skins"
-msgstr ""
+msgstr "Datozen tipula-azalak"
 
 #: ../src/gui/canvasview.cpp:1257
 msgid "Shows the Render Settings Dialog"
-msgstr ""
+msgstr "Erakutsi errendatzearen ezarpen-elkarrizketa"
 
 #: ../src/gui/canvasview.cpp:1269
 msgid "Shows the Preview Settings Dialog"
-msgstr ""
+msgstr "Erakutsi aurreikuspenen ezarpen-elkarrizketa"
 
 #: ../src/gui/canvasview.cpp:1484
 msgid "Close Window"
-msgstr ""
+msgstr "Itxi leihoa"
 
 #: ../src/gui/canvasview.cpp:1490
 msgid "Quit"
-msgstr ""
+msgstr "Irten"
 
 #: ../src/gui/canvasview.cpp:1555
 msgid " (best)"
-msgstr ""
+msgstr "(hoberena)"
 
 #: ../src/gui/canvasview.cpp:1556
 msgid " (fastest)"
-msgstr ""
+msgstr "(azkarrena)"
 
 #: ../src/gui/canvasview.cpp:1558
 #, c-format
 msgid "Set Quality to %d"
-msgstr ""
+msgstr "Ezarri kalitatea balio honetan: %d"
 
 #: ../src/gui/canvasview.cpp:1615 ../src/gui/iconcontroller.cpp:248
 msgid "Show Grid"
-msgstr ""
+msgstr "Erakutsi sareta"
 
 #: ../src/gui/canvasview.cpp:1619
 msgid "Snap to Grid"
-msgstr ""
+msgstr "Doitu saretara"
 
 #: ../src/gui/canvasview.cpp:1623
 msgid "Show Guides"
-msgstr ""
+msgstr "Erakutsi gidak"
 
 #: ../src/gui/canvasview.cpp:1627
 msgid "Snap to Guides"
-msgstr ""
+msgstr "Doitu gidetara"
 
 #: ../src/gui/canvasview.cpp:1632
 msgid "Use Low-Res"
-msgstr ""
+msgstr "Erakutsi erresoluzio baxua"
 
 #: ../src/gui/canvasview.cpp:1636
 msgid "Show Onion Skin"
-msgstr ""
+msgstr "Erakutsi Kipula-azala"
 
 #: ../src/gui/canvasview.cpp:1679
 msgid "Zoom In on Timeline"
-msgstr ""
+msgstr "Handiagotu denbora-lerroa"
 
 #: ../src/gui/canvasview.cpp:1682
 msgid "Zoom Out on Timeline"
-msgstr ""
+msgstr "Txikiagotu denbora-lerroa"
 
 #: ../src/gui/canvasview.cpp:2100 ../src/gui/canvasview.cpp:2600
 msgid "Select All Children"
-msgstr ""
+msgstr "Hautatu ume guztiak"
 
 #: ../src/gui/canvasview.cpp:2389
 msgid "-MODIFIED"
-msgstr ""
+msgstr "-ALDATUA"
 
 #: ../src/gui/canvasview.cpp:2391
 msgid "-UPDATED"
-msgstr ""
+msgstr "-EGUNERATUA"
 
 #: ../src/gui/canvasview.cpp:2396
 msgid " (Root)"
-msgstr ""
+msgstr "(root)"
 
 #: ../src/gui/canvasview.cpp:2845
 msgid "Turn off animate editing mode"
@@ -2994,42 +2993,42 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:3391
 msgid "Change Waypoint Group"
-msgstr ""
+msgstr "Aldatu Waypoint-taldea"
 
 #: ../src/gui/canvasview.cpp:3422
 msgid "Duplicate Waypoints"
-msgstr ""
+msgstr "Bikoiztu waypointak"
 
 #: ../src/gui/canvasview.cpp:3438
 msgid "Remove Waypoints"
-msgstr ""
+msgstr "Ezabatu waypointak"
 
 #: ../src/gui/canvasview.cpp:3484 ../src/gui/canvasview.cpp:3489
 #: ../src/gui/canvasview.cpp:3494
 msgid "_TCB"
-msgstr ""
+msgstr "_TCB"
 
 #: ../src/gui/canvasview.cpp:3500 ../src/gui/canvasview.cpp:3505
 #: ../src/gui/canvasview.cpp:3510
 msgid "_Linear"
-msgstr ""
+msgstr "_Lineala"
 
 #: ../src/gui/canvasview.cpp:3516
 msgid "_Ease In"
-msgstr ""
+msgstr "_Erraztasuna honetan"
 
 #: ../src/gui/canvasview.cpp:3521
 msgid "_Ease Out"
-msgstr ""
+msgstr "_Irteera leundu"
 
 #: ../src/gui/canvasview.cpp:3526
 msgid "_Ease In/Out"
-msgstr ""
+msgstr "_Sarrera/irteera erraza"
 
 #: ../src/gui/canvasview.cpp:3532 ../src/gui/canvasview.cpp:3537
 #: ../src/gui/canvasview.cpp:3542
 msgid "_Constant"
-msgstr ""
+msgstr "_Konstantea"
 
 #: ../src/gui/canvasview.cpp:3548 ../src/gui/canvasview.cpp:3553
 #: ../src/gui/canvasview.cpp:3558
@@ -3038,36 +3037,36 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:3574
 msgid "_Jump To"
-msgstr ""
+msgstr "_Jauzi hona"
 
 #: ../src/gui/canvasview.cpp:3577
 msgid "_Duplicate"
-msgstr ""
+msgstr "_Bikoiztu"
 
 #: ../src/gui/canvasview.cpp:3580
 msgid "_Remove"
-msgstr ""
+msgstr "_Ezabatu"
 
 #: ../src/gui/canvasview.cpp:3580
 #, c-format
 msgid "_Remove %d Waypoints"
-msgstr ""
+msgstr "_Ezabatu %d bide-puntuak"
 
 #: ../src/gui/canvasview.cpp:3591
 msgid "_Both"
-msgstr ""
+msgstr "_Biak"
 
 #: ../src/gui/canvasview.cpp:3592
 msgid "_In"
-msgstr ""
+msgstr "_Barnean"
 
 #: ../src/gui/canvasview.cpp:3593
 msgid "_Out"
-msgstr ""
+msgstr "_Kanpoan"
 
 #: ../src/gui/canvasview.cpp:3937 ../src/synfigapp/canvasinterface.cpp:672
 msgid "Import Image"
-msgstr ""
+msgstr "Inportatu irudia"
 
 #: ../src/gui/compview.cpp:298
 msgid "Clear Undo"
@@ -3079,31 +3078,31 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:138
 msgid "Bool"
-msgstr ""
+msgstr "Booliar"
 
 #: ../src/gui/iconcontroller.cpp:139
 msgid "Integer"
-msgstr ""
+msgstr "Osokoa"
 
 #: ../src/gui/iconcontroller.cpp:140
 msgid "Angle"
-msgstr ""
+msgstr "Angelua"
 
 #: ../src/gui/iconcontroller.cpp:142
 msgid "Real"
-msgstr ""
+msgstr "Erreala"
 
 #: ../src/gui/iconcontroller.cpp:143
 msgid "Vector"
-msgstr ""
+msgstr "Bektorea"
 
 #: ../src/gui/iconcontroller.cpp:144
 msgid "Color"
-msgstr ""
+msgstr "Kolorea"
 
 #: ../src/gui/iconcontroller.cpp:145
 msgid "Segment"
-msgstr "Segment"
+msgstr "Segmentoa"
 
 #: ../src/gui/iconcontroller.cpp:146
 msgid "Spline Point"
@@ -3111,35 +3110,35 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
-msgstr "Liste"
+msgstr "Zerrenda"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "String"
-msgstr ""
+msgstr "Katea"
 
 #: ../src/gui/iconcontroller.cpp:150
 msgid "Gradient"
-msgstr ""
+msgstr "Gradientea"
 
 #: ../src/gui/iconcontroller.cpp:156
 msgid "Eyedrop Tool"
-msgstr ""
+msgstr "Tanta-kontagailua tresna"
 
 #: ../src/gui/iconcontroller.cpp:157
 msgid "Fill Tool"
-msgstr ""
+msgstr "Betegarri-tresna"
 
 #: ../src/gui/iconcontroller.cpp:166
 msgid "Zoom Tool"
-msgstr ""
+msgstr "Zoom-tresna"
 
 #: ../src/gui/iconcontroller.cpp:172
 msgid "Reset Colors"
-msgstr ""
+msgstr "Berrezarri koloreak"
 
 #: ../src/gui/iconcontroller.cpp:173
 msgid "Swap Colors"
-msgstr ""
+msgstr "Trukatu koloreak"
 
 #: ../src/gui/iconcontroller.cpp:174
 #: ../src/synfigapp/actions/layerparamconnect.cpp:80
@@ -3150,7 +3149,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenoderemove.cpp:80
 #: ../src/synfigapp/value_desc.cpp:72
 msgid "ValueNode"
-msgstr ""
+msgstr "ValueNode"
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "ValueNode Forbid Animation"
@@ -3158,175 +3157,175 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:176
 msgid "About"
-msgstr ""
+msgstr "Honi buruz"
 
 #: ../src/gui/iconcontroller.cpp:177
 msgid "Rename"
-msgstr ""
+msgstr "Berrizendatu"
 
 #: ../src/gui/iconcontroller.cpp:180 ../src/gui/toolbox.cpp:289
 msgid "Save All"
-msgstr ""
+msgstr "Gorde dena"
 
 #: ../src/gui/iconcontroller.cpp:185
 msgid "Blur Layer"
-msgstr ""
+msgstr "Lausotze-geruza"
 
 #: ../src/gui/iconcontroller.cpp:186
 msgid "Motion Blur Layer"
-msgstr ""
+msgstr "Mugimendu-lausotzea geruza"
 
 #: ../src/gui/iconcontroller.cpp:187
 msgid "Radial Blur Layer"
-msgstr ""
+msgstr "Erradio-lausotzea geruza"
 
 #: ../src/gui/iconcontroller.cpp:189
 msgid "Curve Warp Layer"
-msgstr ""
+msgstr "Kurba-deformatzea geruza"
 
 #: ../src/gui/iconcontroller.cpp:190
 msgid "Inside Out Layer"
-msgstr ""
+msgstr "Barrukoa kanpora geruza"
 
 #: ../src/gui/iconcontroller.cpp:191
 msgid "Noise Distort Layer"
-msgstr ""
+msgstr "Zarata-distortsioa geruza"
 
 #: ../src/gui/iconcontroller.cpp:192
 msgid "Spherize Layer"
-msgstr ""
+msgstr "Esfera geruza"
 
 #: ../src/gui/iconcontroller.cpp:193
 msgid "Stretch Layer"
-msgstr ""
+msgstr "Tiratu geruza"
 
 #: ../src/gui/iconcontroller.cpp:194
 msgid "Twirl Layer"
-msgstr ""
+msgstr "Kiribildu geruza"
 
 #: ../src/gui/iconcontroller.cpp:195
 msgid "Warp Layer"
-msgstr ""
+msgstr "Okertu geruza"
 
 #: ../src/gui/iconcontroller.cpp:197
 msgid "Filled Rectangle Layer"
-msgstr ""
+msgstr "Laukizuzen betea geruza"
 
 #: ../src/gui/iconcontroller.cpp:198
 msgid "Metallballs Layer"
-msgstr ""
+msgstr "Metallballs geruza"
 
 #: ../src/gui/iconcontroller.cpp:199
 msgid "Simple Circle Layer"
-msgstr ""
+msgstr "Zirkulu sinplea geruza"
 
 #: ../src/gui/iconcontroller.cpp:201
 msgid "Clamp Layer"
-msgstr ""
+msgstr "Brida geruza"
 
 #: ../src/gui/iconcontroller.cpp:202
 msgid "Color Correct Layer"
-msgstr ""
+msgstr "Kolore zuzenketa geruza"
 
 #: ../src/gui/iconcontroller.cpp:203
 msgid "Halftone 2 Layer"
-msgstr ""
+msgstr "Tarteko tonua 2 geruza"
 
 #: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 3 Layer"
-msgstr ""
+msgstr "Tarteko tonua 3 geruza"
 
 #: ../src/gui/iconcontroller.cpp:205
 msgid "Luna Key Layer"
-msgstr ""
+msgstr "Luna Key geruza"
 
 #: ../src/gui/iconcontroller.cpp:207
 msgid "Julia Set Layer"
-msgstr ""
+msgstr "Julia Set geruza"
 
 #: ../src/gui/iconcontroller.cpp:208
 msgid "Mandelbrot Set Layer"
-msgstr ""
+msgstr "Mandelbrot Set geruza"
 
 #: ../src/gui/iconcontroller.cpp:210
 msgid "Checker Board Layer"
-msgstr ""
+msgstr "Checker Board geruza"
 
 #: ../src/gui/iconcontroller.cpp:211
 msgid "Circle Layer"
-msgstr ""
+msgstr "Zirkulua geruza"
 
 #: ../src/gui/iconcontroller.cpp:212
 msgid "Outline Layer"
-msgstr ""
+msgstr "Ertza-geruza"
 
 #: ../src/gui/iconcontroller.cpp:213
 msgid "Advanced Outline Layer"
-msgstr ""
+msgstr "Ertza aurreratua geruza"
 
 #: ../src/gui/iconcontroller.cpp:214
 msgid "Polygon Layer"
-msgstr ""
+msgstr "Poligonoa geruza"
 
 #: ../src/gui/iconcontroller.cpp:215
 msgid "Rectangle Layer"
-msgstr ""
+msgstr "Laukizuzena geruza"
 
 #: ../src/gui/iconcontroller.cpp:216
 msgid "Region Layer"
-msgstr ""
+msgstr "Area geruza"
 
 #: ../src/gui/iconcontroller.cpp:217
 msgid "Solid Color Layer"
-msgstr ""
+msgstr "Kolore solidoa geruza"
 
 #: ../src/gui/iconcontroller.cpp:218
 msgid "Star Layer"
-msgstr ""
+msgstr "Izar geruza"
 
 #: ../src/gui/iconcontroller.cpp:220
 msgid "Conical Gradient Layer"
-msgstr ""
+msgstr "Gradiente konikoa geruza"
 
 #: ../src/gui/iconcontroller.cpp:221
 msgid "Curve Gradient Layer"
-msgstr ""
+msgstr "Gradiente kurboa geruza"
 
 #: ../src/gui/iconcontroller.cpp:222
 msgid "Noise Gradient Layer"
-msgstr ""
+msgstr "Zarata gradientea geruza"
 
 #: ../src/gui/iconcontroller.cpp:223
 msgid "Linear Gradient Layer"
-msgstr ""
+msgstr "Gradiente lineala geruza"
 
 #: ../src/gui/iconcontroller.cpp:224
 msgid "Radial Gradient Layer"
-msgstr ""
+msgstr "Erradio-gradientea geruza"
 
 #: ../src/gui/iconcontroller.cpp:225
 msgid "Spiral Gradient Layer"
-msgstr ""
+msgstr "Espiral-gradientea geruza"
 
 #: ../src/gui/iconcontroller.cpp:227
 #: ../src/synfigapp/actions/layerduplicate.cpp:52
 #: ../src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layer"
-msgstr ""
+msgstr "Bikoiztu-geruza"
 
 #: ../src/gui/iconcontroller.cpp:228
 msgid "Import Image Layer"
-msgstr ""
+msgstr "Inportatu irudia geruza"
 
 #: ../src/gui/iconcontroller.cpp:229
 #: ../src/synfigapp/actions/layerencapsulate.cpp:52
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layer"
-msgstr ""
+msgstr "Talde-geruza"
 
 #: ../src/gui/iconcontroller.cpp:230
 msgid "Plant Layer"
-msgstr ""
+msgstr "Plant geruza"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Stroboscope Layer"
@@ -3334,71 +3333,71 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:232
 msgid "Super Sample Layer"
-msgstr ""
+msgstr "Super Sample geruza"
 
 #: ../src/gui/iconcontroller.cpp:234
 msgid "Text Layer"
-msgstr ""
+msgstr "Testu-geruza"
 
 #: ../src/gui/iconcontroller.cpp:235
 msgid "Time Loop Layer"
-msgstr ""
+msgstr "Denbora-begizta geruza"
 
 #: ../src/gui/iconcontroller.cpp:236
 msgid "XOR Pattern Layer"
-msgstr ""
+msgstr "XOR txantiloia geruza"
 
 #: ../src/gui/iconcontroller.cpp:238
 msgid "Bevel Layer"
-msgstr ""
+msgstr "Bevel geruza"
 
 #: ../src/gui/iconcontroller.cpp:239
 msgid "Shade Layer"
-msgstr ""
+msgstr "Itzala-geruza"
 
 #: ../src/gui/iconcontroller.cpp:241
 msgid "Rotate Layer"
-msgstr ""
+msgstr "Bira-geruza"
 
 #: ../src/gui/iconcontroller.cpp:242
 msgid "Translate Layer"
-msgstr ""
+msgstr "Itzuli-geruza"
 
 #: ../src/gui/iconcontroller.cpp:243
 msgid "Scale Layer"
-msgstr ""
+msgstr "Eskala-geruza"
 
 #: ../src/gui/iconcontroller.cpp:245
 msgid "Info Tool"
-msgstr ""
+msgstr "Info-tresna"
 
 #: ../src/gui/iconcontroller.cpp:249
 msgid "Hide Grid"
-msgstr ""
+msgstr "Ezkutatu sareta"
 
 #: ../src/gui/iconcontroller.cpp:250
 msgid "Enable Grid Snap"
-msgstr ""
+msgstr "Gaitu sareta-atxikitzea"
 
 #: ../src/gui/iconcontroller.cpp:251
 msgid "Disable Grid Snap"
-msgstr ""
+msgstr "Desgaitu sareta-atxikitzea"
 
 #: ../src/gui/iconcontroller.cpp:252
 msgid "Duplicate"
-msgstr ""
+msgstr "Bikoiztu"
 
 #: ../src/gui/iconcontroller.cpp:253
 msgid "Group"
-msgstr ""
+msgstr "Taldea"
 
 #: ../src/gui/iconcontroller.cpp:262
 msgid "MetaData"
-msgstr ""
+msgstr "Meta-datua"
 
 #: ../src/gui/iconcontroller.cpp:266
 msgid "Palette"
-msgstr ""
+msgstr "Paleta"
 
 #: ../src/gui/iconcontroller.cpp:269
 msgid "Past keyframes unlocked"
@@ -3446,25 +3445,25 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:291
 msgid "Add Layer to Set"
-msgstr ""
+msgstr "Gehitu geruza taldera"
 
 #: ../src/gui/iconcontroller.cpp:292
 msgid "Remove Layer from Set"
-msgstr ""
+msgstr "Ezabatu geruza taldetik"
 
 #: ../src/gui/iconcontroller.cpp:293
 #: ../src/synfigapp/actions/layersetdesc.cpp:50
 #: ../src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
-msgstr ""
+msgstr "Ezarri geruzaren deskripzioa"
 
 #: ../src/gui/iconcontroller.cpp:294
 msgid "Export Value Node"
-msgstr ""
+msgstr "Esportatu balio-nodoa"
 
 #: ../src/gui/iconcontroller.cpp:295
 msgid "Unexport Value Node"
-msgstr ""
+msgstr "Ez esportatu balio-nodoa"
 
 #: ../src/gui/iconcontroller.cpp:296
 msgid "Set Interpolation to Flat"
@@ -3488,31 +3487,31 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:309
 msgid "Toggle show grid"
-msgstr ""
+msgstr "Aldatu sareta erakustea"
 
 #: ../src/gui/iconcontroller.cpp:310
 msgid "Toggle snap grid"
-msgstr ""
+msgstr "Aldatu sareta-atxikitzea"
 
 #: ../src/gui/iconcontroller.cpp:312
 msgid "Toggle onion skin"
-msgstr ""
+msgstr "Aldatu tipula-azala"
 
 #: ../src/gui/iconcontroller.cpp:314
 msgid "Increase resolution"
-msgstr ""
+msgstr "Handitu erresoluzioa "
 
 #: ../src/gui/iconcontroller.cpp:315
 msgid "Decrease resolution"
-msgstr ""
+msgstr "Txikitu erresoluzioa"
 
 #: ../src/gui/iconcontroller.cpp:317
 msgid "Preview Options Dialog"
-msgstr ""
+msgstr "Aurreikusi aukeren elkarrizketa"
 
 #: ../src/gui/iconcontroller.cpp:318
 msgid "Render Options Dialog"
-msgstr ""
+msgstr "Errendatze-aukeren elkarrizketa"
 
 #: ../src/gui/iconcontroller.cpp:320
 msgid "TCB interpolation"
@@ -3536,16 +3535,16 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:326
 msgid "CVS Add"
-msgstr ""
+msgstr "Gehitu CVS"
 
 #: ../src/gui/iconcontroller.cpp:328 ../src/gui/instance.cpp:520
 #: ../src/gui/instance.cpp:531
 msgid "CVS Commit"
-msgstr ""
+msgstr "Egikaritu CVS"
 
 #: ../src/gui/iconcontroller.cpp:329 ../src/gui/instance.cpp:622
 msgid "CVS Revert"
-msgstr ""
+msgstr "Leheneratu CVS"
 
 #: ../src/gui/instance.cpp:195
 msgid ""
@@ -3573,11 +3572,11 @@ msgstr ""
 #: ../src/gui/instance.cpp:283 ../src/gui/instance.cpp:387
 #, c-format
 msgid "Unable to save to '%s'"
-msgstr ""
+msgstr "Ezin da gorde  '%s'-ra"
 
 #: ../src/gui/instance.cpp:284
 msgid "Save - Error"
-msgstr ""
+msgstr "Errorea gordetzean"
 
 #: ../src/gui/instance.cpp:315
 msgid ""
@@ -3585,60 +3584,60 @@ msgid ""
 "on a composition that is being referenced by other\n"
 "files that are currently open. Close these\n"
 "other files first before trying to use \"SaveAs\"."
-msgstr ""
+msgstr "Egun badago errore bat \"gorde honela\" \nune honetan irekita  daudencbeste fitxategi\nbatzuei erreferentzia egiten diona. Itxi beste\nfitxategi horiek \"gorde honela\" saiatu aurretik."
 
 #: ../src/gui/instance.cpp:319 ../src/gui/instance.cpp:370
 #: ../src/gui/instance.cpp:388
 msgid "SaveAs - Error"
-msgstr ""
+msgstr "Gorde honela errorea"
 
 #: ../src/gui/instance.cpp:511
 msgid "You must first add this composition to the repository"
-msgstr ""
+msgstr "Aurrena konposizio hau biltegira gehitu behar duzu"
 
 #: ../src/gui/instance.cpp:520 ../src/gui/instance.cpp:589
 msgid "This will save any changes you have made. Are you sure?"
-msgstr ""
+msgstr "Honek egindako aldaketa guztiak gordeko ditu. Seguru zaude?"
 
 #: ../src/gui/instance.cpp:527
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
-msgstr ""
+msgstr "Fitxategiaren kopia lokala ez da aldatu azkeneko eguneratzetik.\nEz dago egitekorik!"
 
 #: ../src/gui/instance.cpp:531
 msgid "Enter a log message describing the changes you have made"
-msgstr ""
+msgstr "Sartu log-mezu bat egin dituzun aldaketak deskribatzen"
 
 #: ../src/gui/instance.cpp:539
 msgid "An error has occurred when trying to COMMIT"
-msgstr ""
+msgstr "Errore bat gertatu da egikaritzen saiatzean"
 
 #: ../src/gui/instance.cpp:550
 msgid "This composition has already been added to the repository"
-msgstr ""
+msgstr "Konposizioa biltegira gehitu da"
 
 #: ../src/gui/instance.cpp:564
 msgid "An error has occurred when trying to ADD"
-msgstr ""
+msgstr "Errore bat gertatu da gehitzen saiatzean"
 
 #: ../src/gui/instance.cpp:575
 msgid ""
 "This file is not under version control, so there is nothing to update from!"
-msgstr ""
+msgstr "Fitxategi hau ez dago kontrol-bertsioan, beraz ez dago ezer eguneratzeko!"
 
 #: ../src/gui/instance.cpp:580
 msgid "This file is up-to-date"
-msgstr ""
+msgstr "Fitxategia eguneratuta dago"
 
 #: ../src/gui/instance.cpp:605 ../src/gui/instance.cpp:641
 msgid "An error has occurred when trying to UPDATE"
-msgstr ""
+msgstr "Errorea eguneratzen saiatzean"
 
 #: ../src/gui/instance.cpp:616
 msgid ""
 "This file is not under version control, so there is nothing to revert to!"
-msgstr ""
+msgstr "Fitxategia ez dago kontrol-bertsioan, beraz ez dago ezer leheneratzeko!"
 
 #: ../src/gui/instance.cpp:623
 msgid ""
@@ -3646,15 +3645,15 @@ msgid ""
 "since the last time you performed a commit\n"
 "operation. This cannot be undone! Are you sure\n"
 "you want to do this?"
-msgstr ""
+msgstr "Azken ekintzatik hona egindako aldaketa\nguztiak galdu egingo dira. Honek ez \ndauka atzera-bueltarik. Seguru zaude\negin nahi duzula?"
 
 #: ../src/gui/instance.cpp:632
 msgid "Unable to remove previous version"
-msgstr ""
+msgstr "Ezin da kendu aurreko bertsioa"
 
 #: ../src/gui/instance.cpp:660
 msgid "Error: Revert Failed"
-msgstr ""
+msgstr "Errorea: leheneratzeak huts egin du"
 
 #: ../src/gui/instance.cpp:660
 msgid ""
@@ -3663,29 +3662,29 @@ msgid ""
 "because of an internal error in Synfig Studio. Try closing any\n"
 "compositions that might reference this composition and try\n"
 "again, or restart Synfig Studio."
-msgstr ""
+msgstr "Atzera egiteak huts egin du. Izan daiteke erreferentzia \negiten diola irekida dagoen beste konposaketa bati edo\nSinfig Studioko barne-errore bat. Itxi konposaketa \nhoni erreferentzia egiten ahal diote beste konposaketak eta\nsaiatu berriz, edo berrabiarazi Sinfig Studio."
 
 #: ../src/gui/instance.cpp:672
 msgid "Revert to saved"
-msgstr ""
+msgstr "Gordetakora leheneratzen"
 
 #: ../src/gui/instance.cpp:672
 msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
-msgstr ""
+msgstr "Honek egindako aldaketa guztiak gordeko ditu. Seguru zaude?"
 
 #: ../src/gui/instance.cpp:695
 #, c-format
 msgid "Would you like to save your changes to %s?"
-msgstr ""
+msgstr "Nahi duzu zure aldaketak %s-ra gordetzea?"
 
 #: ../src/gui/instance.cpp:711
 #, c-format
 msgid ""
 "%s has changes not yet on the CVS repository.\n"
 "Would you like to commit these changes?"
-msgstr ""
+msgstr "%s-k CVS biltegian jada ez dauden aldaketak dauzka.\nNahi duzu aldaketa horiek aplikatzea?"
 
 #: ../src/gui/instance.cpp:1029
 msgid "Default"
@@ -3697,7 +3696,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1171
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Waypointa editatu"
 
 #: ../src/gui/instance.cpp:1208 ../src/gui/instance.cpp:1297
 msgid "Interpolate"
@@ -3733,43 +3732,43 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1437
 msgid "Set Waypoints"
-msgstr ""
+msgstr "Ezarri waypointa"
 
 #: ../src/gui/instance.cpp:1499
 msgid "Unable to convert to animated waypoint"
-msgstr ""
+msgstr "Ezin izan da waypoint animatua bihurtu"
 
 #: ../src/gui/instance.cpp:1516
 msgid "Unable to find WaypointSetSmart action"
-msgstr ""
+msgstr "Ezin da aurkitu WaypointSetSmart ekintza."
 
 #: ../src/gui/instance.cpp:1529
 msgid "Unable to set a specific waypoint"
-msgstr ""
+msgstr "Ezin izan da ezarri waypoint zehatza"
 
 #: ../src/gui/instance.cpp:1557
 msgid "Edit Waypoints"
-msgstr ""
+msgstr "Editatu Waypointa"
 
 #: ../src/gui/instance.h:42
 msgid "Synfig Animation "
-msgstr ""
+msgstr "Sinfig animazioa"
 
 #: ../src/gui/main.cpp:82
 msgid "synfig studio is already running"
-msgstr ""
+msgstr "Sinfig Studio martxan dago jada"
 
 #: ../src/gui/main.cpp:83
 msgid "the existing process will be used"
-msgstr ""
+msgstr "prozedura erabiliko da"
 
 #: ../src/gui/main.cpp:102
 msgid "synfig studio -- starting up application..."
-msgstr ""
+msgstr "Sinfig Studio -- aplikazioa abiatzen..."
 
 #: ../src/gui/onemoment.cpp:91
 msgid "One Moment, Please..."
-msgstr ""
+msgstr "Une bat, mesedez..."
 
 #: ../src/gui/onemoment.cpp:93
 msgid "Working..."
@@ -3809,111 +3808,111 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:96
 msgid "Image"
-msgstr ""
+msgstr "Irudia"
 
 #: ../src/gui/renddesc.cpp:98
 msgid "Other"
-msgstr ""
+msgstr "Beste bat"
 
 #: ../src/gui/renddesc.cpp:366
 msgid "_Pixel Aspect"
-msgstr ""
+msgstr "_pixel aspektua"
 
 #: ../src/gui/renddesc.cpp:368
 msgid "Pi_xel Width"
-msgstr ""
+msgstr "_pixel zabal"
 
 #: ../src/gui/renddesc.cpp:370
 msgid "Pix_el Height"
-msgstr ""
+msgstr "-pixel altu"
 
 #: ../src/gui/renddesc.cpp:372
 msgid "Image _Aspect"
-msgstr ""
+msgstr "Irudi _aspektua"
 
 #: ../src/gui/renddesc.cpp:374
 msgid "Image _Width"
-msgstr ""
+msgstr "Irudi _zabalera"
 
 #: ../src/gui/renddesc.cpp:376
 msgid "Image _Height"
-msgstr ""
+msgstr "Irudi _alturera"
 
 #: ../src/gui/renddesc.cpp:378
 msgid "Image _Span"
-msgstr ""
+msgstr "Irudi _atxikitzea"
 
 #: ../src/gui/renddesc.cpp:417
 msgid "Image Size"
-msgstr ""
+msgstr "Irudiaren tamaina"
 
 #: ../src/gui/renddesc.cpp:419
 msgid "<b>Image Size</b>"
-msgstr ""
+msgstr "<b>Irudiaren tamaina</b>"
 
 #: ../src/gui/renddesc.cpp:430
 msgid "_Width"
-msgstr ""
+msgstr "_Zabalera"
 
 #: ../src/gui/renddesc.cpp:433
 msgid "_Height"
-msgstr ""
+msgstr "_Altuera"
 
 #: ../src/gui/renddesc.cpp:436
 msgid "_XRes"
-msgstr ""
+msgstr "_X erresoluzioa"
 
 #: ../src/gui/renddesc.cpp:439
 msgid "_YRes"
-msgstr ""
+msgstr "_Y erresoluzioa"
 
 #: ../src/gui/renddesc.cpp:442
 msgid "_Physical Width"
-msgstr ""
+msgstr "-Zabalera fisikoa"
 
 #: ../src/gui/renddesc.cpp:445
 msgid "Phy_sical Height"
-msgstr ""
+msgstr "_Altuera fisikoa"
 
 #: ../src/gui/renddesc.cpp:448
 msgid "I_mage Span"
-msgstr ""
+msgstr "_Irudiaren atxikitzea"
 
 #: ../src/gui/renddesc.cpp:469
 msgid "Image Area"
-msgstr ""
+msgstr "Irudiaren area"
 
 #: ../src/gui/renddesc.cpp:471
 msgid "<b>Image Area</b>"
-msgstr ""
+msgstr "<b>Irudiaren area</b>"
 
 #: ../src/gui/renddesc.cpp:483
 msgid "_Top Left"
-msgstr ""
+msgstr "_Goian ezkerrean"
 
 #: ../src/gui/renddesc.cpp:486
 msgid "_Bottom Right"
-msgstr ""
+msgstr "_Behean eskuinean"
 
 #: ../src/gui/renddesc.cpp:507
 msgid "Time Settings"
-msgstr ""
+msgstr "Denbora-ezarpenak"
 
 #: ../src/gui/renddesc.cpp:509
 msgid "<b>Time Settings</b>"
-msgstr ""
+msgstr "<b>Denbora-ezarpenak</b>"
 
 #: ../src/gui/renddesc.cpp:521
 msgid "_Frames per second"
-msgstr ""
+msgstr "_Fotograma segundoko"
 
 #: ../src/gui/renddesc.cpp:526
 msgid "_Start Time"
-msgstr ""
+msgstr "_Hasiera-denbora"
 
 #: ../src/gui/renddesc.cpp:531
 msgid "_End Time"
-msgstr ""
+msgstr "_Amaiera"
 
 #: ../src/gui/renddesc.cpp:536
 msgid "_Duration"
@@ -3921,27 +3920,27 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:554
 msgid "Locks and Links"
-msgstr ""
+msgstr "Blokeoak eta estekak"
 
 #: ../src/gui/renddesc.cpp:556
 msgid "<b>Locks and Links</b>"
-msgstr ""
+msgstr "<b>Blokeoak eta estekak</b>"
 
 #: ../src/gui/renddesc.cpp:577
 msgid "Focus Point"
-msgstr ""
+msgstr "Fokatze-puntua"
 
 #: ../src/gui/renddesc.cpp:579
 msgid "<b>Focus Point</b>"
-msgstr ""
+msgstr "<b>Fokatze-puntua</b>"
 
 #: ../src/gui/renddesc.cpp:589
 msgid "_Focus Point"
-msgstr ""
+msgstr "_Fokatze-puntua"
 
 #: ../src/gui/render.cpp:65 ../src/gui/render.cpp:189
 msgid "Render Settings"
-msgstr ""
+msgstr "Errendatze-ezarpenak"
 
 #: ../src/gui/render.cpp:71
 msgid "Render _current frame only"
@@ -3949,236 +3948,236 @@ msgstr ""
 
 #: ../src/gui/render.cpp:83
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: ../src/gui/render.cpp:107
 msgid "Choose..."
-msgstr ""
+msgstr "Aukeratu..."
 
 #: ../src/gui/render.cpp:111
 msgid "Parameters..."
-msgstr ""
+msgstr "Parametroak..."
 
 #: ../src/gui/render.cpp:116
 msgid "Target"
-msgstr ""
+msgstr "Helburua"
 
 #: ../src/gui/render.cpp:118
 msgid "<b>Target</b>"
-msgstr ""
+msgstr "<b>Helburua</b>"
 
 #: ../src/gui/render.cpp:129
 msgid "_Filename"
-msgstr ""
+msgstr "_Fitxategi-izena"
 
 #: ../src/gui/render.cpp:136
 msgid "_Target"
-msgstr ""
+msgstr "_Helburua"
 
 #: ../src/gui/render.cpp:145
 msgid "Settings"
-msgstr ""
+msgstr "Ezarpenak"
 
 #: ../src/gui/render.cpp:147
 msgid "<b>Settings</b>"
-msgstr ""
+msgstr "<b>Ezarpenak</b>"
 
 #: ../src/gui/render.cpp:165
 msgid "_Anti-Aliasing"
-msgstr ""
+msgstr "_Anti-Aliasing"
 
 #: ../src/gui/render.cpp:270
 msgid "You must supply a filename!"
-msgstr ""
+msgstr "Fitxategi-izen bat eman behar duzu!"
 
 #: ../src/gui/render.cpp:296
 msgid "Unable to determine proper target from filename."
-msgstr ""
+msgstr "Ezin da zehaztu fitxategi-helburu egokia fitxategi-izenerako."
 
 #: ../src/gui/render.cpp:303
 msgid "A filename is required for this target"
-msgstr ""
+msgstr "Helburu honetarako fitxategi-izena behar da"
 
 #: ../src/gui/render.cpp:310
 msgid "Unable to create target for "
-msgstr ""
+msgstr "Ezin da helburua sortu"
 
 #: ../src/gui/render.cpp:316
 msgid "Unable to create file for "
-msgstr ""
+msgstr "Ezin da fitxategia sortu"
 
 #: ../src/gui/render.cpp:334
 msgid "Target initialization failure"
-msgstr ""
+msgstr "Errorea helburua hasieratzean"
 
 #: ../src/gui/render.cpp:338
 msgid "Rendering "
-msgstr ""
+msgstr "Errendatzen"
 
 #: ../src/gui/render.cpp:366
 msgid "File rendered successfully"
-msgstr ""
+msgstr "Fitxategia ongi errendatu da"
 
 #: ../src/gui/splash.cpp:113
 msgid "ERROR:"
-msgstr ""
+msgstr "ERROREA:"
 
 #: ../src/gui/splash.cpp:129
 msgid "WARNING:"
-msgstr ""
+msgstr "KONTUZ:"
 
 #: ../src/gui/toolbox.cpp:136
 msgid "Cannot save"
-msgstr ""
+msgstr "Ezin da gorde"
 
 #: ../src/gui/toolbox.cpp:136 ../src/gui/toolbox.cpp:148
 msgid "Nothing to save"
-msgstr ""
+msgstr "Ez dago ezer gordetzeko"
 
 #: ../src/gui/toolbox.cpp:148
 msgid "Cannot save as"
-msgstr ""
+msgstr "Ezin da gorde honela"
 
 #: ../src/gui/toolbox.cpp:170
 msgid "Cannot close"
-msgstr ""
+msgstr "Ezin da itxi"
 
 #: ../src/gui/toolbox.cpp:170
 msgid "Nothing to close"
-msgstr ""
+msgstr "Ez dago ezer ixteko"
 
 #: ../src/gui/toolbox.cpp:223
 msgid "Vertical Dock: Canvases, History"
-msgstr ""
+msgstr "Atrakatze bertikala: oihalak, historia"
 
 #: ../src/gui/toolbox.cpp:224
 msgid "Horizontal Dock: Layers, Library, Parameters"
-msgstr ""
+msgstr "Atrakatze horizontala: geruzak, liburutegiak, parametroak"
 
 #: ../src/gui/toolbox.cpp:226
 msgid "Reset Windows to Original Layout"
-msgstr ""
+msgstr "Berrezarri leihoaren jatorrizko diseinua"
 
 #: ../src/gui/toolbox.cpp:235
 msgid "Open Recent"
-msgstr ""
+msgstr "Irekitako azkenak"
 
 #: ../src/gui/toolbox.cpp:242
 msgid "Panels"
-msgstr ""
+msgstr "Panelak"
 
 #: ../src/gui/toolbox.cpp:244
 msgid "Input Devices..."
-msgstr ""
+msgstr "Sarrera-gailuak..."
 
 #: ../src/gui/toolbox.cpp:246
 msgid "Setup..."
-msgstr ""
+msgstr "Konfigurazioa..."
 
 #: ../src/gui/toolbox.cpp:248
 msgid "Reset to default Setup values"
-msgstr ""
+msgstr "Berrezarri lehenetsitako konfigurazio-balioak"
 
 #. TRANSLATORS: Help menu entry
 #: ../src/gui/toolbox.cpp:267
 msgid "Tutorials"
-msgstr ""
+msgstr "Tutorialak"
 
 #. TRANSLATORS: a wiki page
 #: ../src/gui/toolbox.cpp:267
 msgid "/Category:Tutorials"
-msgstr ""
+msgstr "/Kategoria:Tutorialak"
 
 #. TRANSLATORS: Help menu entry
 #: ../src/gui/toolbox.cpp:268
 msgid "Reference"
-msgstr ""
+msgstr "Erreferentzia"
 
 #. TRANSLATORS: a wiki page
 #: ../src/gui/toolbox.cpp:268
 msgid "/Category:Reference"
-msgstr ""
+msgstr "/Kategoria:Erreferentzia"
 
 #. TRANSLATORS: Help menu entry
 #: ../src/gui/toolbox.cpp:269
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "FAQ"
 
 #. TRANSLATORS: a wiki page
 #: ../src/gui/toolbox.cpp:269
 msgid "/FAQ"
-msgstr ""
+msgstr "/FAQ"
 
 #. TRANSLATORS: Help menu entry
 #: ../src/gui/toolbox.cpp:271
 msgid "Get Support"
-msgstr ""
+msgstr "Eskuratu laguntza"
 
 #. TRANSLATORS: a website page
 #: ../src/gui/toolbox.cpp:271
 msgid "/en/support"
-msgstr ""
+msgstr "/en/support"
 
 #: ../src/gui/toolbox.cpp:278
 msgid "_Help"
-msgstr ""
+msgstr "_Laguntza"
 
 #: ../src/gui/toolbox.cpp:285
 msgid "New..."
-msgstr ""
+msgstr "Berria...."
 
 #: ../src/gui/toolbox.cpp:286
 msgid "Open..."
-msgstr ""
+msgstr "Ireki..."
 
 #: ../src/gui/toolbox.cpp:287
 msgid "Save"
-msgstr ""
+msgstr "Gorde"
 
 #: ../src/gui/toolbox.cpp:288
 msgid "Save As..."
-msgstr ""
+msgstr "Gorde honela..."
 
 #: ../src/gui/toolbox.cpp:292
 msgid "Setup"
-msgstr ""
+msgstr "Konfiguratu"
 
 #: ../src/gui/toolbox.cpp:293
 msgid "About Synfig Studio"
-msgstr ""
+msgstr "Synfig Studio-ri buruz"
 
 #: ../src/gui/workarea.cpp:1537
 msgid "Nudge"
-msgstr ""
+msgstr "Bultzatu"
 
 #: ../src/gui/workarea.cpp:2057 ../src/gui/workarea.cpp:2104
 msgid "Move"
-msgstr ""
+msgstr "Mugitu"
 
 #: ../src/gui/workarea.cpp:2936
 msgid "Rendering..."
-msgstr ""
+msgstr "Errendatzen..."
 
 #: ../src/gui/workarea.cpp:2963 ../src/gui/workarea.cpp:3059
 msgid "Render Failed"
-msgstr ""
+msgstr "Huts egin du errendatzen"
 
 #: ../src/gui/workarea.cpp:3041
 #, c-format
 msgid "Rendering canvas %s..."
-msgstr ""
+msgstr "Oihala errendatzen %s..."
 
 #: ../src/synfigapp/action.cpp:526
 msgid "Selected Canvas"
-msgstr ""
+msgstr "Hautatutako oihala"
 
 #: ../src/synfigapp/action.cpp:530 ../src/synfigapp/action.cpp:531
 msgid "Canvas Interface"
-msgstr ""
+msgstr "Oihal-interfazea"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:50
 msgid "Add Activepoint"
-msgstr ""
+msgstr "Gehitu Activepoint"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:76
 #: ../src/synfigapp/actions/activepointremove.cpp:75
@@ -4201,37 +4200,37 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:80
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:75
 msgid "ValueDesc"
-msgstr ""
+msgstr "ValueDesc"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:80
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:87
 msgid "New Activepoint"
-msgstr ""
+msgstr "Activepoint berria"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:81
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:88
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:79
 msgid "Activepoint to be added"
-msgstr ""
+msgstr "Gehitzeko Activepoint-a"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:87
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:94
 msgid "Time where activepoint is to be added"
-msgstr ""
+msgstr "Activepoint-a gehitu behar den unea"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:177
 #: ../src/synfigapp/actions/activepointremove.cpp:163
 msgid "A Activepoint already exists at this point in time"
-msgstr ""
+msgstr "Beste Activepoint-a dago une horretan"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:180
 #: ../src/synfigapp/actions/activepointremove.cpp:166
 msgid "This activepoint is already in the ValueNode"
-msgstr ""
+msgstr "Activepoint hau jada badago ValueNodean."
 
 #: ../src/synfigapp/actions/activepointremove.cpp:50
 msgid "Remove Activepoint"
-msgstr ""
+msgstr "Ezabatu Activepoint-a"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:79
 #: ../src/synfigapp/actions/activepointset.cpp:78
@@ -4239,12 +4238,12 @@ msgstr ""
 #: ../src/synfigapp/actions/activepointseton.cpp:88
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:78
 msgid "Activepoint"
-msgstr ""
+msgstr "Activepoint"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:80
 #: ../src/synfigapp/actions/activepointset.cpp:79
 msgid "Activepoint to be changed"
-msgstr ""
+msgstr "Aldatzeko Activepoint-a"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:144
 #: ../src/synfigapp/actions/activepointset.cpp:152
@@ -4252,33 +4251,33 @@ msgstr ""
 #: ../src/synfigapp/actions/activepointset.cpp:256
 #: ../src/synfigapp/actions/activepointset.cpp:277
 msgid "Unable to find activepoint"
-msgstr ""
+msgstr "Ezin da aurkitu activepoint-a"
 
 #: ../src/synfigapp/actions/activepointset.cpp:50
 msgid "Set Activepoint"
-msgstr ""
+msgstr "Ezarri activepoint-a"
 
 #: ../src/synfigapp/actions/activepointsetoff.cpp:58
 msgid "Mark Activepoint as \"Off\""
-msgstr ""
+msgstr "Markatu activepoint-a \"Itxalita\""
 
 #: ../src/synfigapp/actions/activepointseton.cpp:58
 msgid "Mark Activepoint as \"On\""
-msgstr ""
+msgstr "Markatu activepoint-a \"Piztua\""
 
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:57
 msgid "Set Activepoint (Smart)"
-msgstr ""
+msgstr "Ezarri activepoint-a (Smart)"
 
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:366
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:440
 msgid "Unable to determine how to proceed. This is a bug."
-msgstr ""
+msgstr "Ezin da zehaztu nola jarraitu. Hau akats bat da."
 
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:49
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:49
 msgid "Simply Add Waypoint"
-msgstr ""
+msgstr "Gehitu bide-puntu sinpleki"
 
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:74
 #: ../src/synfigapp/actions/waypointadd.cpp:77
@@ -4286,16 +4285,16 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:85
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:74
 msgid "Destination ValueNode (Animated)"
-msgstr ""
+msgstr "Helburuko ValueNode (Animatua)"
 
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:169
 msgid "The activepoint to remove no longer exists"
-msgstr ""
+msgstr "Ezabatzeko activepoint ez dago"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:81
 #, c-format
 msgid "Merge Tangents of '%s'"
-msgstr ""
+msgstr "Batu '%s'-ren ukitzaileak"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:89
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:89
@@ -4305,46 +4304,46 @@ msgstr ""
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:194
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:194
 msgid "Couldn't find action \"ValueDescSet\""
-msgstr ""
+msgstr "Ezin da aurkitu \"ValueDescSet\" ekintza"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:81
 #, c-format
 msgid "Split Tangents of '%s'"
-msgstr ""
+msgstr "Zatitu '%s'-ren ukitzaileak "
 
 #: ../src/synfigapp/actions/canvasadd.cpp:49
 msgid "Add Child Canvas"
-msgstr ""
+msgstr "Gehitu oihal kumea"
 
 #: ../src/synfigapp/actions/canvasadd.cpp:79
 msgid "The name that you want this canvas to be"
-msgstr ""
+msgstr "Oihalerako nahi duzun izena"
 
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:50
 msgid "Set Canvas Description"
-msgstr ""
+msgstr "Ezarri oihalaren deskripzioa"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. description changed.
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:71
 #, c-format
 msgid "Change canvas description from '%s' to '%s'"
-msgstr ""
+msgstr "Aldatu oihalaren deskripzioa '%s'-tik '%s'-ra"
 
 #: ../src/synfigapp/actions/canvasidset.cpp:50
 msgid "Set Canvas Id"
-msgstr ""
+msgstr "Ezarri oihalaren Id"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its id
 #. changed.
 #: ../src/synfigapp/actions/canvasidset.cpp:71
 #, c-format
 msgid "Change canvas id from '%s' to '%s'"
-msgstr ""
+msgstr "Aldatu oihalaren Id  '%s'-tik '%s'-ra"
 
 #: ../src/synfigapp/actions/canvasidset.cpp:82
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:51
 msgid "Erase Canvas Metadata"
@@ -4368,22 +4367,22 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasnameset.cpp:50
 msgid "Set Canvas Name"
-msgstr ""
+msgstr "Ezarri oihalaren izena"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
 #: ../src/synfigapp/actions/canvasnameset.cpp:71
 #, c-format
 msgid "Change canvas name from '%s' to '%s'"
-msgstr ""
+msgstr "Aldatu oihalaren izena '%s'-tik '%s'-ra"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:49
 msgid "Remove Canvas"
-msgstr ""
+msgstr "Ezabatu oihala"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:107
 msgid "You cannot remove the root canvas!"
-msgstr ""
+msgstr "Ezin duzu ezabatu oihal-sustraia"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:110
 msgid "You cannot remove an canvas from a Group!"
@@ -4391,43 +4390,43 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:49
 msgid "Set Canvas RendDesc"
-msgstr ""
+msgstr "Ezarri oihalaren RendDesc"
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:73
 msgid "RendDesc"
-msgstr ""
+msgstr "RendDesc"
 
 #: ../src/synfigapp/actions/colorset.cpp:55
 msgid "Apply Outline Color"
-msgstr ""
+msgstr "Aplikatu ertza-kolorea"
 
 #: ../src/synfigapp/actions/colorset.cpp:64
 msgid "Apply Fill Color"
-msgstr ""
+msgstr "Aplikatu betetzeko kolorea"
 
 #: ../src/synfigapp/actions/editmodeset.cpp:49
 msgid "Set Edit Mode"
-msgstr ""
+msgstr "Ezarri edizio modua"
 
 #: ../src/synfigapp/actions/editmodeset.cpp:72
 msgid "New Edit Mode"
-msgstr ""
+msgstr "Edizio modu berria"
 
 #: ../src/synfigapp/actions/gradientset.cpp:55
 msgid "Apply Default Gradient"
-msgstr ""
+msgstr "Aplikatu gradiente lehenetsia"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:49
 msgid "Add Layers to Set"
-msgstr ""
+msgstr "Gehitu geruza taldera"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:73
 msgid "Layer to be added to set"
-msgstr ""
+msgstr "Taldera gehituko den geruza"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:79
 msgid "Name of the Set to add the Layers to"
-msgstr ""
+msgstr "Geruza gehituko den taldearen izena"
 
 #: ../src/synfigapp/actions/groupremove.cpp:49
 msgid "Remove Set"
@@ -4439,11 +4438,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:50
 msgid "Remove Layers from a Set"
-msgstr ""
+msgstr "Ezabatu geruzak taldetik"
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from Set"
-msgstr ""
+msgstr "Taldetik ezabatuko den geruza"
 
 #: ../src/synfigapp/actions/grouprename.cpp:49
 msgid "Rename Set"
@@ -4472,17 +4471,17 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:49
 msgid "Add Keyframe"
-msgstr ""
+msgstr "Gehitu gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:74
 #: ../src/synfigapp/actions/keyframeset.cpp:80
 msgid "New Keyframe"
-msgstr ""
+msgstr "Gako-fotograma berria"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:75
 #: ../src/synfigapp/actions/keyframeset.cpp:81
 msgid "Keyframe to be added"
-msgstr ""
+msgstr "Gehitu behar den gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:114
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:138
@@ -4490,25 +4489,25 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframeremove.cpp:222
 #: ../src/synfigapp/actions/keyframeset.cpp:130
 msgid "A Keyframe already exists at this point in time"
-msgstr ""
+msgstr "Lehendik badago beste gako-fotograma denbora-une horretan"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:117
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:220
 #: ../src/synfigapp/actions/keyframeremove.cpp:225
 msgid "This keyframe is already in the ValueNode"
-msgstr ""
+msgstr "Gako-fotograma hori jada badago ValueNode-n"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:53
 msgid "Duplicate Keyframe"
-msgstr ""
+msgstr "Bikoiztu gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:80
 msgid "Keyframe to be duplicated"
-msgstr ""
+msgstr "Bikoiztu beharreko gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
-msgstr ""
+msgstr "(Bikoiztu)"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:135
 #: ../src/synfigapp/actions/keyframeremove.cpp:123
@@ -4516,33 +4515,33 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:146
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:129
 msgid "Unable to find the given keyframe"
-msgstr ""
+msgstr "Ezin da aurkitu emandako gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:54
 msgid "Remove Keyframe"
-msgstr ""
+msgstr "Ezabatu gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:80
 msgid "Keyframe to be removed"
-msgstr ""
+msgstr "Ezabatu beharreko gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:55
 msgid "Set Keyframe"
-msgstr ""
+msgstr "Ezarri gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:389
 msgid ""
 "Cannot change keyframe time because another keyframe already exists with "
 "that time."
-msgstr ""
+msgstr "Ezin da aldatu gako-fotograma lehendik beste gako-fotograma dagoelako denbora-une horretan."
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:53
 msgid "Set Keyframe Delta"
-msgstr ""
+msgstr "Ezarri Delta gako-fotograma"
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:82
 msgid "Delta"
-msgstr ""
+msgstr "Delta"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:54
 msgid "Activate/Deactivate Keyframe"
@@ -4564,7 +4563,7 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:97
 #: ../src/synfigapp/actions/layeractivate.cpp:90
 msgid "New Status"
-msgstr ""
+msgstr "Egoera berria"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:98
 msgid "The new status of the keyframe"
@@ -4572,26 +4571,26 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:53
 msgid "Set Waypoints at Keyframe"
-msgstr ""
+msgstr "Ezarri bide-puntuak gako-fotograma moduan"
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:82
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:95
 msgid "Waypoint Model"
-msgstr ""
+msgstr "Bide-puntu modeloa"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:50
 #: ../src/synfigapp/actions/layeractivate.cpp:71
 #: ../src/synfigapp/actions/layeractivate.cpp:75
 msgid "Activate Layer"
-msgstr ""
+msgstr "Gaitu geruza"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:76
 msgid "Deactivate Layer"
-msgstr ""
+msgstr "Ezgaitu geruza"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:91
 msgid "The new status of the layer"
-msgstr ""
+msgstr "Geruzaren egoera berria"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:141
 #: ../src/synfigapp/actions/layeradd.cpp:144
@@ -4603,272 +4602,272 @@ msgstr ""
 #: ../src/synfigapp/actions/layerraise.cpp:137
 #: ../src/synfigapp/actions/layerremove.cpp:134
 msgid "This layer doesn't exist anymore."
-msgstr ""
+msgstr "Geruza hau desagertu da"
 
 #: ../src/synfigapp/actions/layeradd.cpp:50
 #: ../src/synfigapp/actions/layeradd.cpp:71
 #: ../src/synfigapp/actions/layeradd.cpp:73
 msgid "Add Layer"
-msgstr ""
+msgstr "Gehitu geruza"
 
 #: ../src/synfigapp/actions/layeradd.cpp:83
 msgid "Layer to be added"
-msgstr ""
+msgstr "Gehituko den geruza"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layers"
-msgstr ""
+msgstr "Bikoiztu geruza"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:82
 msgid "Layer to be duplicated"
-msgstr ""
+msgstr "Bikoiztuko den geruza"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:141
 #: ../src/synfigapp/actions/layerencapsulate.cpp:200
 #: ../src/synfigapp/actions/layerremove.cpp:144
 msgid "This layer doesn't belong to this canvas anymore"
-msgstr ""
+msgstr "Geruza hau ez da jada oihal honetakoa"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layers"
-msgstr ""
+msgstr "Group geruza"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:82
 msgid "Layer to be grouped"
-msgstr ""
+msgstr "Taldekatuko den geruza"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:141
 msgid "No layers to group"
-msgstr ""
+msgstr "Ez dago geruzarik taldekatzeko"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:194
 msgid "This layer doesn't have a parent canvas"
-msgstr ""
+msgstr "Geruza honek ez dauka oihal-gurasorik"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:203
 msgid "get_canvas()!=subcanvas"
-msgstr ""
+msgstr "get_canvas()!=subcanvas"
 
 #: ../src/synfigapp/actions/layerlower.cpp:51
 #: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layer"
-msgstr ""
+msgstr "Azpiko geruza"
 
 #: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layers"
-msgstr ""
+msgstr "Azpiko geruzak"
 
 #: ../src/synfigapp/actions/layerlower.cpp:81
 msgid "Layer to be lowered"
-msgstr ""
+msgstr "Azpira bidaliko den geruza"
 
 #: ../src/synfigapp/actions/layermove.cpp:50
 #: ../src/synfigapp/actions/layermove.cpp:74
 #: ../src/synfigapp/actions/layermove.cpp:76
 msgid "Move Layer"
-msgstr ""
+msgstr "Mugitu geruza"
 
 #: ../src/synfigapp/actions/layermove.cpp:86
 #: ../src/synfigapp/actions/layersetdesc.cpp:86
 msgid "Layer to be moved"
-msgstr ""
+msgstr "Mugituko den geruza"
 
 #: ../src/synfigapp/actions/layermove.cpp:90
 msgid "New Index"
-msgstr ""
+msgstr "Aurkibide berria"
 
 #: ../src/synfigapp/actions/layermove.cpp:91
 msgid "Where the layer is to be moved to"
-msgstr ""
+msgstr "Geruza mugitu den tokia"
 
 #: ../src/synfigapp/actions/layermove.cpp:95
 msgid "Destination Canvas"
-msgstr ""
+msgstr "Helburuko oihala"
 
 #: ../src/synfigapp/actions/layermove.cpp:96
 msgid "The canvas the layer is to be moved to"
-msgstr ""
+msgstr "Oihala geruza mugitu behar da hona"
 
 #: ../src/synfigapp/actions/layermove.cpp:170
 msgid "You cannot directly move layers across compositions"
-msgstr ""
+msgstr "Ezin duzu zuzenean mugitu geruzak konposaketen artean"
 
 #: ../src/synfigapp/actions/layerparamconnect.cpp:49
 msgid "Connect Layer Parameter"
-msgstr ""
+msgstr "Konektatu geruza parametroa"
 
 #: ../src/synfigapp/actions/layerparamconnect.cpp:76
 #: ../src/synfigapp/actions/layerparamdisconnect.cpp:79
 #: ../src/synfigapp/actions/layerparamset.cpp:76
 msgid "Param"
-msgstr ""
+msgstr "Param"
 
 #: ../src/synfigapp/actions/layerparamconnect.cpp:147
 msgid "Layer did not recognize parameter name"
-msgstr ""
+msgstr "Geruzak ez du ezagutzen parametro-izena"
 
 #: ../src/synfigapp/actions/layerparamconnect.cpp:150
 msgid "Bad connection"
-msgstr ""
+msgstr "Konexio okerra"
 
 #: ../src/synfigapp/actions/layerparamdisconnect.cpp:50
 msgid "Disconnect Layer Parameter"
-msgstr ""
+msgstr "Deskonektatu geruza-parametroa"
 
 #: ../src/synfigapp/actions/layerparamdisconnect.cpp:135
 msgid "Layer Parameter is not connected to anything"
-msgstr ""
+msgstr "Geruza-parametroa ez dago inora konektatuta"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:49
 msgid "Set Layer Parameter"
-msgstr ""
+msgstr "Ezarri geruza-parametroa"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:132
 msgid "ValueNode attached to Parameter."
-msgstr ""
+msgstr "ValueNode Parameter-i erantsita"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:140
 #: ../src/synfigapp/actions/layerparamset.cpp:160
 msgid "Layer did not accept parameter."
-msgstr ""
+msgstr "Geruzak ez du parametroa onartzen"
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:50
 #: ../src/synfigapp/actions/valuenodeconstsetstatic.cpp:50
 msgid "Forbid Animation"
-msgstr ""
+msgstr "Ezgaitu animazioa"
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:73
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:73
 msgid "Value Desc"
-msgstr ""
+msgstr "Value Desc"
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:162
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:165
 msgid "This action is not for Value Nodes!"
-msgstr ""
+msgstr "Ekintza hau ez da Value Nodes-erako!"
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:169
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:184
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:172
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:187
 msgid "Layer did not accept static value."
-msgstr ""
+msgstr "Geruzak ez du balio estatikoa onartzen"
 
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:50
 #: ../src/synfigapp/actions/valuenodeconstunsetstatic.cpp:50
 msgid "Allow Animation"
-msgstr ""
+msgstr "Gaitu animaizoa"
 
 #: ../src/synfigapp/actions/layerraise.cpp:51
 #: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layer"
-msgstr ""
+msgstr "Goratu geruza"
 
 #: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layers"
-msgstr ""
+msgstr "Goratu geruzak"
 
 #: ../src/synfigapp/actions/layerraise.cpp:81
 msgid "Layer to be raised"
-msgstr ""
+msgstr "Goratu behar den geruza"
 
 #: ../src/synfigapp/actions/layerremove.cpp:50
 #: ../src/synfigapp/actions/layerremove.cpp:70
 msgid "Delete Layer"
-msgstr ""
+msgstr "Ezabatu geruza"
 
 #: ../src/synfigapp/actions/layerremove.cpp:70
 msgid "Delete Layers"
-msgstr ""
+msgstr "Ezabatu geruzak"
 
 #: ../src/synfigapp/actions/layerremove.cpp:80
 msgid "Layer to be deleted"
-msgstr ""
+msgstr "Ezabatu behar den geruza"
 
 #. TRANSLATORS: this is the string used in the history dialog when renaming a
 #. layer to/from its default name
 #: ../src/synfigapp/actions/layersetdesc.cpp:75
 #: ../src/synfigapp/actions/layersetdesc.cpp:76
 msgid "[default]"
-msgstr ""
+msgstr "[lehenetsia]"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:90
 msgid "New Description"
-msgstr ""
+msgstr "Deskripzio berria"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:91
 msgid "Enter a new description for this layer"
-msgstr ""
+msgstr "Sartu deskripzio berria geruza honentzat"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:58
 msgid "Copy Time Points"
-msgstr ""
+msgstr "Kopiatu denbora-puntuak"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:83
 #: ../src/synfigapp/actions/timepointsdelete.cpp:82
 #: ../src/synfigapp/actions/timepointsmove.cpp:83
 msgid "New Selected Layer"
-msgstr ""
+msgstr "Geruza hautatu berria"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:84
 #: ../src/synfigapp/actions/timepointsdelete.cpp:83
 #: ../src/synfigapp/actions/timepointsmove.cpp:84
 msgid "A layer to add to our selected list"
-msgstr ""
+msgstr "Hautatuen zerrendara gehitzeko geruza"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:90
 #: ../src/synfigapp/actions/timepointsdelete.cpp:89
 #: ../src/synfigapp/actions/timepointsmove.cpp:90
 msgid "New Selected Canvas"
-msgstr ""
+msgstr "Hautatutako oihal berria"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:91
 #: ../src/synfigapp/actions/timepointsdelete.cpp:90
 #: ../src/synfigapp/actions/timepointsmove.cpp:91
 msgid "A canvas to add to our selected list"
-msgstr ""
+msgstr "Hautatutako zerrendara gehitzeko oihala"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:97
 #: ../src/synfigapp/actions/timepointsdelete.cpp:96
 #: ../src/synfigapp/actions/timepointsmove.cpp:97
 msgid "New Selected ValueBase"
-msgstr ""
+msgstr "ValueBase hautatu berria"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:98
 #: ../src/synfigapp/actions/timepointsdelete.cpp:97
 #: ../src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
-msgstr ""
+msgstr "Hautatutako zerrendara gehitzeko valuenodearen deskripzioa"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:104
 #: ../src/synfigapp/actions/timepointsdelete.cpp:103
 #: ../src/synfigapp/actions/timepointsmove.cpp:104
 msgid "New Selected Time Point"
-msgstr ""
+msgstr "Hautatutako denbora-puntu berria"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:105
 #: ../src/synfigapp/actions/timepointsdelete.cpp:104
 #: ../src/synfigapp/actions/timepointsmove.cpp:105
 msgid "A time point to add to our selected list"
-msgstr ""
+msgstr "Hautatutako zerrendara gehitzeko denbora-punbuta"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:110
 #: ../src/synfigapp/actions/timepointsmove.cpp:110
 msgid "Time adjustment"
-msgstr ""
+msgstr "Denbora-doiketa"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:111
 #: ../src/synfigapp/actions/timepointsmove.cpp:111
 msgid "The amount of time to adjust all the selected points"
-msgstr ""
+msgstr "Hautatutako puntuak doitzeko behar den denbora"
 
 #: ../src/synfigapp/actions/timepointsdelete.cpp:58
 msgid "Delete Time Points"
-msgstr ""
+msgstr "Ezabatu denbora-puntuak"
 
 #: ../src/synfigapp/actions/timepointsmove.cpp:58
 msgid "Move Time Points"
-msgstr ""
+msgstr "Mugitu denbora-puntuak"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:60
 msgid "Link to Spline"
@@ -4876,7 +4875,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:83
 msgid "ValueDesc to link"
-msgstr ""
+msgstr "Estekatzeko ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:87
 msgid "ValueDesc on Spline to link to"
@@ -4888,40 +4887,40 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:87
 msgid "Origin"
-msgstr ""
+msgstr "Jatorria"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:55
 msgid "Connect"
-msgstr ""
+msgstr "Konektatu"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is
 #. made.
 #: ../src/synfigapp/actions/valuedescconnect.cpp:76
 #, c-format
 msgid "Connect '%s' to '%s'"
-msgstr ""
+msgstr "Konektatu '%s' eta '%s'"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:87
 msgid "Destination ValueDesc"
-msgstr ""
+msgstr "Helburuko ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:91
 #: ../src/synfigapp/actions/valuenodereplace.cpp:90
 msgid "Source ValueNode"
-msgstr ""
+msgstr "Jatorrizko ValueNode"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:96
 msgid "Source ValueNode Name"
-msgstr ""
+msgstr "Jatorrizko ValueNodearen izena"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:257
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:241
 msgid "ValueDesc is not recognized or supported."
-msgstr ""
+msgstr "ValueDesc ezezaguna edo ez baliozkoa"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:60
 msgid "Convert"
-msgstr ""
+msgstr "Bihurtu"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is
 #. converted.  The first %s is what is converted, the 2nd is the local name of
@@ -4929,34 +4928,34 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescconvert.cpp:82
 #, c-format
 msgid "Convert '%s' to ValueNode type '%s'"
-msgstr ""
+msgstr "Bihurtu '%s'  '%s' ValueNode motara"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:98
 msgid "The type of ValueNode that you want to be converted to"
-msgstr ""
+msgstr "Zein motara bihurtu nahi duzu ValueNode-a"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:183
 msgid "Unable to decipher ValueDesc (Bug?)"
-msgstr ""
+msgstr "Ezin da ValueDesc deszifratu (Errorea?)"
 
 #: ../src/synfigapp/actions/valuedescconvert.cpp:192
 msgid "Unable to create new value node"
-msgstr ""
+msgstr "Ezin da sortu value node berria"
 
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:58
 msgid "Disconnect"
-msgstr ""
+msgstr "Deskonektatu"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is
 #. disconnected.
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:80
 #, c-format
 msgid "Disconnect %s"
-msgstr ""
+msgstr "Deskonektatu %s"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:57
 msgid "Export"
-msgstr ""
+msgstr "Esportatu"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is
 #. exported.  The first %s is what is exported, the 2nd is the name it is
@@ -4964,110 +4963,110 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescexport.cpp:78
 #, c-format
 msgid "Export '%s' as '%s'"
-msgstr ""
+msgstr "Esportatu  '%s'  '%s' gisa"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:94
 msgid "The name that you want this value to be exported as"
-msgstr ""
+msgstr "Balioa esportatu nahi duzun izena"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:172
 msgid "Can only export Canvas when used as constant parameter"
-msgstr ""
+msgstr "Oihala bakarrik esporta daiteke  parametro konstantea erabili duenean"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:215
 msgid "ValueBase is already exported"
-msgstr ""
+msgstr "ValueBae jada esportatuta dago"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:223
 msgid "Unable to export parameter. (Bug?)"
-msgstr ""
+msgstr "Ezin da parametroa esportatu. (Errorea?)"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:55
 msgid "Link"
-msgstr ""
+msgstr "Estela"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:64
 msgid "Link Opposite"
-msgstr ""
+msgstr "Alderantzizko eesteka"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:88
 msgid "ValueDesc to smart link"
-msgstr ""
+msgstr "ValueDesk eskeka azkarrera"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:140
 msgid "Cannot link two different exported values ('"
-msgstr ""
+msgstr "Ezin dira estekatu esportatutako bi balio ezberdin ('"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:141
 msgid "' and '"
-msgstr ""
+msgstr "'eta'"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:142
 msgid "')"
-msgstr ""
+msgstr "')"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:148
 msgid "Used exported ValueNode ('"
-msgstr ""
+msgstr "Erabilitako esportatutako ValueNode ('"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:148
 msgid "')."
-msgstr ""
+msgstr "')."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:155
 msgid "Using the only available ValueNode."
-msgstr ""
+msgstr "Eskuragarri den ValueNode bakarra erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:169
 #: ../src/synfigapp/actions/valuedesclink.cpp:176
 msgid "Using the most referenced ValueNode."
-msgstr ""
+msgstr "Erreferentzia gehien dituen ValueNodea erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:184
 #: ../src/synfigapp/actions/valuedesclink.cpp:193
 msgid "There's a tie for most referenced; using the animated ValueNode."
-msgstr ""
+msgstr "Erreferentzia gehien dituztenen arteko berdinketa dago; ValueNode animatua erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:206
 #: ../src/synfigapp/actions/valuedesclink.cpp:213
 msgid ""
 "There's a tie for most referenced, and both are animated; using the one with"
 " the most waypoints."
-msgstr ""
+msgstr "Erreferentzia gehien dituztenen arteko berdinketa dago; bide-puntu gehien dituena erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:226
 #: ../src/synfigapp/actions/valuedesclink.cpp:233
 msgid ""
 "There's a tie for most referenced, and both are linkable value node "
 "animated; using the one with the most waypoints."
-msgstr ""
+msgstr "Erreferentzia gehien dituztenen arteko berdinketa dago, eta biak dira value node animatu estekagarriak; bide-puntu gehien dituena erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:242
 #: ../src/synfigapp/actions/valuedesclink.cpp:249
 msgid "Everything is tied; using the least recently modified value."
-msgstr ""
+msgstr "Guztien arteko berdinketa; azkeneko aldaketak izan dituena erabiltzen."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:255
 msgid "Absolutely everything is tied."
-msgstr ""
+msgstr "Guzti guztien arteko berdinketa."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:263
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
-msgstr ""
+msgstr "Ezin dira estekatu mota ezberdineko balioak  ('%s' eta '%s')"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:300
 msgid "No ValueNodes were available, so one was created."
-msgstr ""
+msgstr "Ez zegoen ValueNode eskuragarririk, beraz bat sortu da."
 
 #: ../src/synfigapp/actions/valuedescset.cpp:71
 msgid "Set ValueDesc"
-msgstr ""
+msgstr "Ezarri ValueDesc"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:92
 #, c-format
 msgid "Set %s"
-msgstr ""
+msgstr "Ezarri %s"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:180
 #: ../src/synfigapp/actions/valuedescset.cpp:199
@@ -5089,7 +5088,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescset.cpp:746
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:195
 msgid "Unable to find action ValueDescSet (bug)"
-msgstr ""
+msgstr "Ezin da aurkitu ValueDescSet ekintzarik (errorea)"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:223
 msgid ""
@@ -5100,12 +5099,12 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescset.cpp:288
 #, c-format
 msgid "Bad type for composite (%s)"
-msgstr ""
+msgstr "Konposaketa mota txarra (%s)"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:338
 #, c-format
 msgid "Bad type for radial composite (%s)"
-msgstr ""
+msgstr "Konposaketa erradial mota txarra (%s)"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:367
 msgid "Attempt to edit scale ValueNode with a scale factor of zero."
@@ -5498,7 +5497,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:346
 msgid "Add Layer To"
-msgstr ""
+msgstr "Gehitu geruza hona"
 
 #: ../src/synfigapp/canvasinterface.cpp:395
 #: ../src/synfigapp/canvasinterface.cpp:456
@@ -5543,7 +5542,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:722
 msgid "Unable to create \"Group\" layer"
-msgstr ""
+msgstr "Ezin da sortu \"Group\" geruza"
 
 #: ../src/synfigapp/canvasinterface.cpp:726
 msgid "Could not set children lock of imported canvas"
@@ -5604,7 +5603,7 @@ msgstr ""
 
 #: ../src/synfigapp/value_desc.cpp:61
 msgid "Layer Parameter"
-msgstr ""
+msgstr "Geruza-parametroa"
 
 #: ../src/synfigapp/value_desc.cpp:78
 msgid "Const ValueNode"

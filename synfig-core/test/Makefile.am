@@ -1,7 +1,7 @@
 # $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
-AM_CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)/src
+AM_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ -I$(top_builddir) -I$(top_srcdir)/src
 check_PROGRAMS=$(TESTS)
 
 TESTS=bone

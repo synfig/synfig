@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.64.0],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[0.64.1-RC1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -381,14 +381,16 @@ if test $with_jpeg = "no" ; then {
 
 AC_LIB_LTDL
 
-ALL_LINGUAS="es fr it ru de en_GB zh_CN ro no_NO pt_BR pl_PL fa_IR nl sk_SK lt el_GR cs hu ja_JP"
+# Languages list (alphabetical order, please!)
+ALL_LINGUAS="ca cs da de el_GR en_GB es eu eu_ES fa_IR fr hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr zh_CN"
+
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.16],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.16 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.17-RC1],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.17-RC1 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 

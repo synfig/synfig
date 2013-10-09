@@ -1288,17 +1288,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	try
 	{
 		
-		studio_init_cb.task(_("Init auto recovery..."));
-		auto_recover=new AutoRecover();
+		
 		
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-		load_settings();
-		// Calling load_settings() at this point will load only
-		// "prefs" domain. Other domains are initialized below, 
-		// so we will need to call load_settings() second time
-		// after full initialization is done.
+		load_settings("pref.enable_experimental_features");
 		
 		studio_init_cb.task(_("Loading Plugins..."));
 		
@@ -1415,6 +1410,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input=new Gtk::InputDialog();
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+		
+		studio_init_cb.task(_("Init auto recovery..."));
+		auto_recover=new AutoRecover();
 
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
@@ -1822,13 +1820,13 @@ App::save_settings()
 }
 
 bool
-App::load_settings()
+App::load_settings(const synfig::String& key_filter)
 {
 	bool ret=false;
 	try
 	{
 		std::string filename=get_config_file("settings");
-		ret=synfigapp::Main::settings().load_from_file(filename);
+		ret=synfigapp::Main::settings().load_from_file(filename, key_filter);
 	}
 	catch(...)
 	{
@@ -1963,12 +1961,11 @@ App::reset_initial_window_configuration()
 	int h_ysize=rect.get_height()*hpanel_height/100.0;
 	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
 	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
-	int v_dock1 = rect.get_height()*vdock*0.8/100.0;
-	int v_dock2 = rect.get_height()*vdock*0.6/100.0;
-	int v_dock3 = rect.get_height()*vdock*1.1/100.0;
+	int v_dock1 = rect.get_height()*vdock*1.0/100.0;
+	int v_dock2 = rect.get_height()*vdock*1.1/100.0;
 	int h_dock = rect.get_width()*hdock/100.0;
 //Contents size
-	std::string v_contents(strprintf("%d %d %d", v_dock1, v_dock2, v_dock3));
+	std::string v_contents(strprintf("%d %d", v_dock1, v_dock2));
 	std::string h_contents(strprintf("%d", h_dock));
 // Tool Box position
 	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
@@ -1982,7 +1979,7 @@ App::reset_initial_window_configuration()
 	synfig::info("h_sizes: %s", h_size.c_str());
 */
 	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator info pal_edit pal_browse - tool_options history canvases - layers groups");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
 	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
 	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
@@ -2272,7 +2269,8 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-				.add_enum_value(synfig::RELEASE_VERSION_0_63_05, "0.64.0", strprintf("0.64.0 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_64_1, "0.64.1", strprintf("0.64.1 (%s)", _("current")))
+				.add_enum_value(synfig::RELEASE_VERSION_0_64_0, "0.64.0", "0.64.0")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_04, "0.63.05", "0.63.05")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_04, "0.63.04", "0.63.04")
 				.add_enum_value(synfig::RELEASE_VERSION_0_63_03, "0.63.03", "0.63.03")

@@ -85,7 +85,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.0"
+export VERSION="0.64.1"
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -309,11 +309,11 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION=6.8.6-9
+PKG_VERSION=6.8.6-10
 TAREXT=bz2
 
 cd $WORKSPACE
-[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
     tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd ${PKG_NAME}-${PKG_VERSION}

@@ -1,9 +1,8 @@
-# Translations for ro to Romanian for Synfig.
-# Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig package.
+# translation of da.po to Danish
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# LiviuTM <liviu_micu@yahoo.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
@@ -11,12 +10,12 @@ msgstr ""
 "POT-Creation-Date: 2013-10-07 21:14+0700\n"
 "PO-Revision-Date: 2013-10-07 14:23+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Romanian (http://www.transifex.com/projects/p/synfig/language/ro/)\n"
+"Language-Team: Danish (http://www.transifex.com/projects/p/synfig/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/modules/mod_example/filledrect.cpp:59
 msgid "Filled Rectangle"
@@ -26,7 +25,7 @@ msgstr ""
 #: src/modules/mod_example/metaballs.cpp:58
 #: src/modules/mod_example/simplecircle.cpp:58
 msgid "Example"
-msgstr "Exemplu"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:131
 #: src/modules/mod_example/simplecircle.cpp:107
@@ -37,7 +36,7 @@ msgstr "Exemplu"
 #: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1221
 #: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
 msgid "Color"
-msgstr "Culoare"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:132
 #: src/modules/mod_example/simplecircle.cpp:108
@@ -51,23 +50,23 @@ msgstr ""
 #: src/modules/mod_geometry/rectangle.cpp:143
 #: src/modules/mod_gradient/lineargradient.cpp:185
 msgid "Point 1"
-msgstr "Punctul 1"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:137
 #: src/modules/mod_geometry/rectangle.cpp:145
 msgid "First corner of the rectangle"
-msgstr "Primul colţ al dreptunghiului"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:142
 #: src/modules/mod_geometry/rectangle.cpp:149
 #: src/modules/mod_gradient/lineargradient.cpp:190
 msgid "Point 2"
-msgstr "Punctul 2"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:143
 #: src/modules/mod_geometry/rectangle.cpp:150
 msgid "Second corner of the rectangle"
-msgstr "Al doilea colţ al dreptunghiului"
+msgstr ""
 
 #: src/modules/mod_example/filledrect.cpp:147
 msgid "Feather X"
@@ -149,7 +148,7 @@ msgstr ""
 #: src/modules/mod_example/simplecircle.cpp:113
 #: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:162
 msgid "Center of the circle"
-msgstr "Mijlocul cercului"
+msgstr ""
 
 #: src/modules/mod_example/simplecircle.cpp:117
 #: src/modules/lyr_std/sphere_distort.cpp:146
@@ -159,19 +158,19 @@ msgstr "Mijlocul cercului"
 #: src/modules/mod_noise/valuenode_random.cpp:270
 #: src/synfig/valuenode_radialcomposite.cpp:272
 msgid "Radius"
-msgstr "Raza cercului"
+msgstr ""
 
 #: src/modules/mod_example/simplecircle.cpp:118
 #: src/modules/lyr_std/twirl.cpp:118
 #: src/modules/mod_gradient/radialgradient.cpp:124
 #: src/modules/mod_gradient/spiralgradient.cpp:124
 msgid "This is the radius of the circle"
-msgstr "Aceasta este raza cercului"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:66
 #: src/modules/lyr_freetype/lyr_freetype.cpp:569
 msgid "Text"
-msgstr "Text"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
 #: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:61
@@ -179,7 +178,7 @@ msgstr "Text"
 #: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:71
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:81
 msgid "Other"
-msgstr "Altele"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:97
 msgid "Text Layer"
@@ -187,7 +186,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:398
 msgid "unable to initialize"
-msgstr "Nu se poate iniţializa"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "empty font set"
@@ -195,52 +194,52 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:570
 msgid "Text to Render"
-msgstr "Nu se poate reda"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:576
 msgid "Color of the text"
-msgstr "Culoarea textului"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:580
 msgid "Font Family"
-msgstr "Familie de fonturi"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:585
 msgid "Style"
-msgstr "Stil"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:587
 #: src/modules/lyr_freetype/lyr_freetype.cpp:597
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Oblique"
-msgstr "Oblic"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Italic"
-msgstr "Italic"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:593
 msgid "Weight"
-msgstr "Dimensiune"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Ultralight"
-msgstr "Ultrasubţire"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:596
 msgid "light"
-msgstr "Subţire"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:598
 msgid "Bold"
-msgstr "Îngroşat"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Ultrabold"
-msgstr "Ultraîngroşat"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:600
 msgid "Heavy"
@@ -248,7 +247,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:603
 msgid "Horizontal Spacing"
-msgstr "Distanţă orizontală"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Describes how close glyphs are horizontally"
@@ -256,11 +255,11 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Vertical Spacing"
-msgstr "Diatanţă verticală"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:609
 msgid "Describes how close lines of text are vertically"
-msgstr "Arată care e distanţa verticală între rîndurile de text"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:613
 #: src/modules/lyr_std/shade.cpp:626 src/modules/lyr_std/xorpattern.cpp:133
@@ -269,19 +268,19 @@ msgstr "Arată care e distanţa verticală între rîndurile de text"
 #: src/modules/mod_geometry/checkerboard.cpp:154
 #: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
 msgid "Size"
-msgstr "Mărime"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Size of the text"
-msgstr "Mărimea textului"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:621
 msgid "Orientation"
-msgstr "Orientare"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Text Orientation"
-msgstr "Orientarea textului"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:627
 #: src/modules/lyr_std/insideout.cpp:162 src/modules/lyr_std/rotate.cpp:117
@@ -295,23 +294,23 @@ msgstr "Orientarea textului"
 #: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:136
 #: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:528
 msgid "Origin"
-msgstr "Origine"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Text Position"
-msgstr "Poziţia textului"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:632
 msgid "Font"
-msgstr "Font"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Filename of the font to use"
-msgstr "Numele fişierului care conţine fontul ce urmează a fi folosit"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Kerning"
-msgstr "Suprapunere"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:641
 msgid "Enables/Disables font kerning (If the font supports it)"
@@ -323,7 +322,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:646
 msgid "Turn this off if you are going to be animating the text"
-msgstr "Dezactivaţi această opţiune dacă doriţi să animaţi textul"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:649
 #: src/modules/lyr_std/shade.cpp:643 src/modules/mod_geometry/circle.cpp:165
@@ -337,7 +336,7 @@ msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:740
 msgid "Text too small, no text will be rendered."
-msgstr "Text prea mic, ni"
+msgstr ""
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:764
 msgid "Unable to set face size."
@@ -353,13 +352,13 @@ msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
 msgid "Stylize"
-msgstr "Stilizare"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:624 src/modules/lyr_std/shade.cpp:632
 #: src/modules/mod_filter/blur.cpp:417
 #: src/modules/mod_filter/halftone2.cpp:174
 msgid "Type"
-msgstr "Tip"
+msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:625 src/modules/lyr_std/shade.cpp:633
 #: src/modules/mod_filter/blur.cpp:418
@@ -417,7 +416,7 @@ msgstr ""
 
 #: src/modules/lyr_std/bevel.cpp:655
 msgid "Solid"
-msgstr "Solid"
+msgstr ""
 
 #: src/modules/lyr_std/booleancurve.cpp:107
 msgid "Region Set"
@@ -436,7 +435,7 @@ msgstr ""
 #: src/modules/mod_filter/halftone3.cpp:60
 #: src/modules/mod_filter/lumakey.cpp:60
 msgid "Filters"
-msgstr "Filtre"
+msgstr ""
 
 #: src/modules/lyr_std/clamp.cpp:162
 msgid "Invert Negative"
@@ -452,15 +451,15 @@ msgstr ""
 
 #: src/modules/lyr_std/clamp.cpp:171
 msgid "Ceiling"
-msgstr "Plafon"
+msgstr ""
 
 #: src/modules/lyr_std/clamp.cpp:172
 msgid "Upper boundary of the clamping"
-msgstr "Pragul de sus al "
+msgstr ""
 
 #: src/modules/lyr_std/clamp.cpp:176
 msgid "Floor"
-msgstr "Podea"
+msgstr ""
 
 #: src/modules/lyr_std/clamp.cpp:177
 msgid "Lower boundary of the clamping"
@@ -477,7 +476,7 @@ msgstr ""
 
 #: src/modules/lyr_std/import.cpp:293
 msgid "Filename"
-msgstr "Numele fişierului"
+msgstr ""
 
 #: src/modules/lyr_std/import.cpp:294
 msgid "File to import"
@@ -501,35 +500,35 @@ msgstr ""
 #: src/modules/lyr_std/warp.cpp:58 src/modules/lyr_std/curvewarp.cpp:57
 #: src/modules/mod_noise/distort.cpp:59
 msgid "Distortions"
-msgstr "Distorsiuni"
+msgstr ""
 
 #: src/modules/lyr_std/insideout.cpp:163
 msgid "Defines the where the center will be"
-msgstr "Defineşte unde va fi centrul"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:56
 msgid "Julia Set"
-msgstr "Set Julia"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:57 src/modules/lyr_std/mandelbrot.cpp:57
 msgid "Fractals"
-msgstr "Fractali"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:335
 msgid "Inside Color"
-msgstr "Culoarea interiorului"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:336
 msgid "Color of the Set"
-msgstr "Culoarea setului"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:339
 msgid "Outside Color"
-msgstr "Culoarea exteriorului"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:340
 msgid "Color outside the Set"
-msgstr "Culoarea în afara setului"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:343
 msgid "Color Shift"
@@ -537,11 +536,11 @@ msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
 msgid "Iterations"
-msgstr "Număr de paşi"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:349
 msgid "Seed Point"
-msgstr "Punct de pornire"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:352 src/modules/lyr_std/mandelbrot.cpp:222
 msgid "Bailout ValueBase"
@@ -550,7 +549,7 @@ msgstr ""
 #: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
 #: src/modules/lyr_std/twirl.cpp:130
 msgid "Distort Inside"
-msgstr "Distorsionează către interior"
+msgstr ""
 
 #: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
 msgid "Shade Inside"
@@ -611,7 +610,7 @@ msgstr ""
 
 #: src/modules/lyr_std/mandelbrot.cpp:56
 msgid "Mandelbrot Set"
-msgstr "Set Mandelbrot"
+msgstr ""
 
 #: src/modules/lyr_std/mandelbrot.cpp:233
 #: src/modules/lyr_std/mandelbrot.cpp:237
@@ -705,19 +704,19 @@ msgstr ""
 #: src/modules/lyr_std/sphere_distort.cpp:141
 #: src/synfig/valuenode_composite.cpp:546
 msgid "Position"
-msgstr "Poziţie"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:142
 msgid "Where the sphere distortion is centered"
-msgstr "Centrul distorsiunii sferice"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:149
 msgid "The size of the sphere distortion"
-msgstr "Mărimea distorsiunii sferice"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The distortion intensity (negative values inverts effect)"
-msgstr "Intensitatea distorsiunii (valorile negative duc la un efect contrar)"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:159 src/modules/lyr_std/warp.cpp:415
 msgid "Clip"
@@ -725,15 +724,15 @@ msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:160
 msgid "When cheked, the area outside the Radius are not distorted"
-msgstr "Bifează dacă nu vrei ca suprafaţa în afara Razei cercului să fie distorsionaţă"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:164
 msgid "Distort Type"
-msgstr "Tipul distorsiunii"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:165
 msgid "The direction of the distortion"
-msgstr "Direcţia distorsiunii"
+msgstr ""
 
 #: src/modules/lyr_std/sphere_distort.cpp:168
 msgid "Vertical Bar"
@@ -757,11 +756,11 @@ msgstr ""
 
 #: src/modules/lyr_std/stroboscope.cpp:60
 msgid "Stroboscope"
-msgstr "Stroboscop"
+msgstr ""
 
 #: src/modules/lyr_std/stroboscope.cpp:104
 msgid "Frequency"
-msgstr "Frecvenţă"
+msgstr ""
 
 #: src/modules/lyr_std/stroboscope.cpp:105
 msgid "Frequency of the Strobe in times per second"
@@ -792,7 +791,7 @@ msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:341 src/tool/printing_functions.cpp:123
 msgid "Height"
-msgstr "Înălţime"
+msgstr ""
 
 #: src/modules/lyr_std/supersample.cpp:342
 msgid "Height of sample area (In pixels)"
@@ -817,7 +816,7 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:172
 #: src/synfig/valuenode_timeloop.cpp:153
 msgid "Time Loop"
-msgstr "Buclă temporală"
+msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
@@ -838,11 +837,11 @@ msgstr ""
 #: src/modules/lyr_std/timeloop.cpp:143 src/synfig/valuenode_step.cpp:202
 #: src/synfig/valuenode_timeloop.cpp:189
 msgid "Duration"
-msgstr "Durată"
+msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:144 src/synfig/valuenode_timeloop.cpp:190
 msgid "Lenght of the loop"
-msgstr "Lungimea buclei"
+msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:148
 msgid "Only For Positive Duration"
@@ -854,7 +853,7 @@ msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:153
 msgid "Symmetrical"
-msgstr "Simetric"
+msgstr ""
 
 #: src/modules/lyr_std/timeloop.cpp:154
 msgid "When checked, loops are mirrored centered at Local Time"
@@ -862,83 +861,83 @@ msgstr ""
 
 #: src/modules/lyr_std/translate.cpp:55
 msgid "Translate"
-msgstr "Tradu"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:56
 msgid "Twirl"
-msgstr "Răsucire"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:124
 msgid "Rotations"
-msgstr "Rotaţii"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:125
 msgid "The number of rotations of the twirl effect"
-msgstr "Numărul de rotaţii al efectului de răsucire"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:131
 msgid "When checked, distorts inside the circle"
-msgstr "Bifează aici pentru distorsionarea interiorului cercului"
+msgstr ""
 
 #: src/modules/lyr_std/twirl.cpp:136
 msgid "When checked, distorts outside the circle"
-msgstr "Bifează aici pentru distorsionarea exteriorului cercului"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
-msgstr "Torsionare"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:380
 msgid "Source TL"
-msgstr "SS sursă"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:382
 msgid "Top Left corner of the source to warp"
-msgstr "Colţul stînga-sus al obiectului ce urmează a fi torsionat\n(sursă)"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:386
 msgid "Source BR"
-msgstr "DJ sursă"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:387
 msgid "Bottom Right corner of the source to warp"
-msgstr "Colţul dreapta-jos al obiectului ce urmează a fi torsionat\n(sursă)"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:391
 msgid "Dest TL"
-msgstr "SS dest"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:393
 msgid "Top Left corner of the destination"
-msgstr "Colţul stînga-sus al destinaţiei"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:397
 msgid "Dest TR"
-msgstr "DS dest"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:399
 msgid "Top Right corner of the destination"
-msgstr "Colţul dreapta-sus al destinaţiei"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BR"
-msgstr "DS dest"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Right corner of the destination"
-msgstr "Colţul dreapta-jos al destinaţiei"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:409
 msgid "Dest BL"
-msgstr "DJ dest"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:411
 msgid "Bottom Left corner of the destination"
-msgstr "Colţul stînga-jos al destinaţiei"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:419
 msgid "Horizon"
-msgstr "Orizont"
+msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:420
 msgid "Height that determines the horizon in perspectives"
@@ -958,11 +957,11 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
-msgstr "Punct de plecare"
+msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
-msgstr "Primul punct al "
+msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
@@ -989,7 +988,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1189
 #: src/modules/mod_gradient/curvegradient.cpp:580
 msgid "Fast"
-msgstr "Rapid"
+msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
@@ -998,15 +997,15 @@ msgstr ""
 
 #: src/modules/lyr_std/xorpattern.cpp:55
 msgid "XOR Pattern"
-msgstr "Tipar XOR"
+msgstr ""
 
 #: src/modules/lyr_std/xorpattern.cpp:130
 msgid "Center of the pattern"
-msgstr "Centrul tiparului"
+msgstr ""
 
 #: src/modules/lyr_std/xorpattern.cpp:134
 msgid "Size of the pattern"
-msgstr "Mărimea tiparului"
+msgstr ""
 
 #: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:149
 #: src/synfig/valuenode_blinecalctangent.cpp:261
@@ -4667,4 +4666,4 @@ msgstr ""
 
 #: src/tool/renderprogress.h:136
 msgid "s "
-msgstr ""
+msgstr "s "

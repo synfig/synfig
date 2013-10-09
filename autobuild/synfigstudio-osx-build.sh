@@ -448,11 +448,11 @@ get_version_release_string()
 		BREED=${BREED%_master}
 	fi
 	if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
-		if [[ $BREED == 'master' ]]; then
+		#if [[ $BREED == 'master' ]]; then
 			BREED=rc${VERSION##*-RC}
-		else
-			BREED=rc${VERSION##*-RC}.$BREED
-		fi
+		#else
+		#	BREED=rc${VERSION##*-RC}.$BREED
+		#fi
 		VERSION=${VERSION%%-*}
 	fi
 	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
