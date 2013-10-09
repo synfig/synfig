@@ -44,7 +44,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.0"
+export VERSION="0.64.1"
 pushd "${SCRIPTPATH}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
