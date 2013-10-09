@@ -226,7 +226,7 @@ Settings::save_to_file(const synfig::String& filename)const
 }
 
 bool
-Settings::load_from_file(const synfig::String& filename, const synfig::String& domain )
+Settings::load_from_file(const synfig::String& filename, const synfig::String& key_filter )
 {
 	std::ifstream file(filename.c_str());
 	if(!file)
@@ -245,11 +245,11 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& d
 
 			//synfig::info("Settings::load_from_file(): Trying Key \"%s\" with a value of \"%s\".",key.c_str(),value.c_str());
 			try{
-				if (domain=="" || (key.size()>domain.size() && String(key.begin(),key.begin()+domain.size())==domain) )
+				if (key_filter=="" || (key==key_filter) )
 				{
 					if(!set_value(key,value))
 						synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());
-					}
+				}
 				}
 			catch(...)
 			{

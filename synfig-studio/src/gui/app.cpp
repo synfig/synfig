@@ -1288,17 +1288,12 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	try
 	{
 		
-		studio_init_cb.task(_("Init auto recovery..."));
-		auto_recover=new AutoRecover();
+		
 		
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
-		load_settings("pref");
-		// Calling load_settings() at this point will load only
-		// "pref" domain. Other domains are initialized below, 
-		// so we will need to call load_settings() second time
-		// after full initialization is done.
+		load_settings("pref.enable_experimental_features");
 		
 		studio_init_cb.task(_("Loading Plugins..."));
 		
@@ -1415,6 +1410,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input=new Gtk::InputDialog();
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+		
+		studio_init_cb.task(_("Init auto recovery..."));
+		auto_recover=new AutoRecover();
 
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
@@ -1822,13 +1820,13 @@ App::save_settings()
 }
 
 bool
-App::load_settings(const synfig::String& domain)
+App::load_settings(const synfig::String& key_filter)
 {
 	bool ret=false;
 	try
 	{
 		std::string filename=get_config_file("settings");
-		ret=synfigapp::Main::settings().load_from_file(filename, domain);
+		ret=synfigapp::Main::settings().load_from_file(filename, key_filter);
 	}
 	catch(...)
 	{
