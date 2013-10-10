@@ -174,7 +174,7 @@ ffmpeg_trgt::init()
 	if (binary_path != "")
 		binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 	binary_path += "ffmpeg.exe";
-	
+
 	if( filename.c_str()[0] == '-' )
 		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop 1"
@@ -197,6 +197,10 @@ ffmpeg_trgt::init()
 							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
+
+	// This covers the dumb cmd.exe behavior.
+	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+	command = "\"" + command + "\"";
 
 	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
