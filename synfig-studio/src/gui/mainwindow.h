@@ -30,7 +30,6 @@
 #include <ETL/handle>
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
-#include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/actiongroup.h>
 
@@ -44,8 +43,7 @@ namespace studio {
 	class MainWindow: public Gtk::Window
 	{
 	private:
-		Gtk::Notebook notebook_;
-		Gtk::VBox vbox_;
+		Gtk::Notebook *notebook_;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -56,8 +54,8 @@ namespace studio {
 		MainWindow();
 		virtual ~MainWindow();
 
-		Gtk::Notebook& notebook() { return notebook_; }
-		const Gtk::Notebook& notebook() const { return notebook_; }
+		Gtk::Notebook& notebook() { return *notebook_; }
+		const Gtk::Notebook& notebook() const { return *notebook_; }
 	};
 }; // END of namespace studio
 

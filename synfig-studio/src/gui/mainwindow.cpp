@@ -35,6 +35,7 @@
 #include <synfigapp/main.h>
 
 #include <gtkmm/menubar.h>
+#include <gtkmm/box.h>
 
 #endif
 
@@ -65,26 +66,31 @@ MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
 
-	notebook_.set_scrollable(true);
-	notebook_.show();
+	notebook_ = manage(new Gtk::Notebook());
+	notebook_->set_scrollable(true);
+	notebook_->show();
+
+	//DockLayout *layout = manage(new DockLayout(*notebook_));
+	//layout->show();
+
+	Gtk::VBox *vbox = manage(new Gtk::VBox());
 
 	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
 	if (menubar != NULL)
 	{
 		menubar->show();
-		vbox_.pack_start(*menubar, false, false, 0);
+		vbox->pack_start(*menubar, false, false, 0);
 	}
 
-	vbox_.pack_end(notebook_, true, true, 0);
-
-	vbox_.show();
-	add(vbox_);
+	vbox->pack_end(*notebook_, true, true, 0);
+	vbox->show();
+	add(*vbox);
 
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	init_menus();
 
-	notebook_.signal_switch_page().connect(
+	notebook_->signal_switch_page().connect(
 		sigc::mem_fun(*this, &studio::MainWindow::on_switch_page) );
 
 	GRAB_HINT_DATA("canvas_view");
