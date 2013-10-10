@@ -690,30 +690,40 @@ Duckmatic::update_ducks()
 							// and their parent valuenode are the same
 							if(iter_composite.get() == composite.get())
 							{
-								BLinePoint bp=(*composite)(time);
-								int t1_index=composite->get_link_index_from_name("t1");
-								int t2_index=composite->get_link_index_from_name("t2");
-								if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+								// Check if the other tangent is also selected, in that case
+								// it is going to be moved itself so don't update it.
+								bool selected=false;
+								DuckList::const_iterator iter2;
+								for(iter2=selected_ducks.begin(); iter2!=selected_ducks.end(); ++iter2)
+									if(*iter == *iter2)
+										selected=true;
+								if(!selected)
 								{
-									bp.set_tangent1(duck->get_point());
-									Vector t2(bp.get_tangent2());
-									(*iter)->set_point(Point(t2));
-								}
-								else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
-								{
-									// Create a new BLinePoint
-									BLinePoint nbp;
-									// Terporary set the flags for the new BLinePoint to all split
-									nbp.set_split_tangent_both(true);
-									// Now we can set the tangents. Tangent2 won't be modified by tangent1
-									nbp.set_tangent1(duck->get_point());
-									nbp.set_tangent2(bp.get_tangent1());
-									// Now update the flags
-									nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
-									nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
-									// Now retrieve the updated tangent2 (which will be stored as t1, see below)
-									Vector t1(nbp.get_tangent2());
-									(*iter)->set_point(Point(t1));
+									BLinePoint bp=(*composite)(time);
+									int t1_index=composite->get_link_index_from_name("t1");
+									int t2_index=composite->get_link_index_from_name("t2");
+									if(index==t1_index && (*iter)->get_value_desc().get_index()!=t1_index)
+									{
+										bp.set_tangent1(duck->get_point());
+										Vector t2(bp.get_tangent2());
+										(*iter)->set_point(Point(t2));
+									}
+									else if(index==t2_index && (*iter)->get_value_desc().get_index()!=t2_index)
+									{
+										// Create a new BLinePoint
+										BLinePoint nbp;
+										// Terporary set the flags for the new BLinePoint to all split
+										nbp.set_split_tangent_both(true);
+										// Now we can set the tangents. Tangent2 won't be modified by tangent1
+										nbp.set_tangent1(duck->get_point());
+										nbp.set_tangent2(bp.get_tangent1());
+										// Now update the flags
+										nbp.set_split_tangent_radius(bp.get_split_tangent_radius());
+										nbp.set_split_tangent_angle(bp.get_split_tangent_angle());
+										// Now retrieve the updated tangent2 (which will be stored as t1, see below)
+										Vector t1(nbp.get_tangent2());
+										(*iter)->set_point(Point(t1));
+									}
 								}
 							}
 						}
