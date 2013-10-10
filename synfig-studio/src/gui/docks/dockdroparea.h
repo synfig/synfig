@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dockbook.h
+/*!	\file docks/dockdroparea.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,14 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCKBOOK_H
-#define __SYNFIG_STUDIO_DOCKBOOK_H
+#ifndef __SYNFIG_STUDIO_DOCKDROPAREA_H
+#define __SYNFIG_STUDIO_DOCKDROPAREA_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/notebook.h>
-#include <synfig/string.h>
-#include <gtkmm/tooltip.h>
+#include <gtkmm/table.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,45 +37,20 @@
 
 namespace studio {
 
-class DockManager;
-class Dockable;
-
-class DockBook : public Gtk::Notebook
+class DockDropArea : public Gtk::Table
 {
-	friend class DockManager;
-	friend class Dockable;
-
-	sigc::signal<void> signal_empty_;
-	sigc::signal<void> signal_changed_;
-
-	bool deleting_;
+protected:
+	void drop_on(bool vertical, bool first, const Glib::RefPtr<Gdk::DragContext>& context, const Gtk::SelectionData& selection_data, guint time);
+	void drop_on_left(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_right(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_top(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_bottom(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 
 public:
-	DockBook();
-	~DockBook();
+	Gtk::Widget *target;
 
-	sigc::signal<void>& signal_empty() { return signal_empty_; }
-	sigc::signal<void>& signal_changed() { return signal_changed_; }
-
-	void add(Dockable& dockable, int position=-1);
-	void remove(Dockable& dockable);
-
-	void present();
-
-	void clear();
-
-	synfig::String get_local_contents()const;
-
-	synfig::String get_contents()const;
-	void set_contents(const synfig::String& x);
-
-	void refresh_tabs_headers();
-
-	void refresh_tab(Dockable*);
-
-	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
-	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
-}; // END of studio::DockBook
+	DockDropArea(Gtk::Widget *target = NULL);
+}; // END of studio::DockDropArea
 
 }; // END of namespace studio
 

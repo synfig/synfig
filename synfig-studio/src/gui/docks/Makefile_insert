@@ -16,6 +16,7 @@ DOCKS_HH = \
 	docks/dockable.h \
 	docks/dockbook.h \
 	docks/dockdialog.h \
+	docks/dockdroparea.h \
 	docks/dockmanager.h
 
 DOCKS_CC = \
@@ -36,6 +37,7 @@ DOCKS_CC = \
 	docks/dockable.cpp \
 	docks/dockbook.cpp \
 	docks/dockdialog.cpp \
+	docks/dockdroparea.cpp \
 	docks/dockmanager.cpp
 
 synfigstudio_src += \

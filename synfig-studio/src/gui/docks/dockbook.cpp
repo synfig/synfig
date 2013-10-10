@@ -34,6 +34,7 @@
 #include "docks/dockable.h"
 #include "app.h"
 #include "docks/dockmanager.h"
+#include "docks/dockdroparea.h"
 
 #include <gtkmm/image.h>
 #include <gtkmm/eventbox.h>
@@ -71,33 +72,9 @@ DockBook::DockBook()
 	set_show_tabs(true);
 	deleting_=false;
 
-	Gtk::Button *button_left   = manage(new Gtk::Button());
-	Gtk::Button *button_right  = manage(new Gtk::Button());
-	Gtk::Button *button_top    = manage(new Gtk::Button());
-	Gtk::Button *button_bottom = manage(new Gtk::Button());
-
-	button_left->drag_dest_set(listTargets);
-	button_right->drag_dest_set(listTargets);
-	button_top->drag_dest_set(listTargets);
-	button_bottom->drag_dest_set(listTargets);
-
-	button_left->signal_drag_data_received().connect(
-			sigc::mem_fun(*this,&DockBook::drop_on_left));
-	button_right->signal_drag_data_received().connect(
-			sigc::mem_fun(*this,&DockBook::drop_on_right));
-	button_top->signal_drag_data_received().connect(
-			sigc::mem_fun(*this,&DockBook::drop_on_top));
-	button_bottom->signal_drag_data_received().connect(
-			sigc::mem_fun(*this,&DockBook::drop_on_bottom));
-
-	Gtk::Table *table = manage(new Gtk::Table(3, 3, true));
-	table->attach(*button_left,   0, 1, 1, 2, Gtk::FILL, Gtk::FILL);
-	table->attach(*button_right,  2, 3, 1, 2, Gtk::FILL, Gtk::FILL);
-	table->attach(*button_top,    1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
-	table->attach(*button_bottom, 1, 2, 2, 3, Gtk::FILL, Gtk::FILL);
-	table->show_all();
-
-	set_action_widget(table, Gtk::PACK_END);
+	DockDropArea *dock_area = manage(new DockDropArea(this));
+	dock_area->show();
+	set_action_widget(dock_area, Gtk::PACK_END);
 }
 
 DockBook::~DockBook()
@@ -111,45 +88,6 @@ DockBook::clear()
 {
 	while(get_n_pages())
 		remove(static_cast<Dockable&>(*get_nth_page(get_n_pages()-1)));
-}
-
-void
-DockBook::drop_on(bool vertical, bool first, const Glib::RefPtr<Gdk::DragContext>& context, const Gtk::SelectionData& selection_data, guint time)
-{
-	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
-	{
-		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
-		if (DockManager::add_dockable(*this, dockable, vertical, first))
-		{
-			context->drag_finish(true, false, time);
-			return;
-		}
-	}
-	context->drag_finish(false, false, time);
-}
-
-void
-DockBook::drop_on_left(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
-{
-	drop_on(false, true, context, selection_data, time);
-}
-
-void
-DockBook::drop_on_right(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
-{
-	drop_on(false, false, context, selection_data, time);
-}
-
-void
-DockBook::drop_on_top(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
-{
-	drop_on(true, true, context, selection_data, time);
-}
-
-void
-DockBook::drop_on_bottom(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
-{
-	drop_on(true, false, context, selection_data, time);
 }
 
 void
@@ -310,7 +248,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 
 	tabmenu->items().push_back(
 		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
-			sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), this)
+			sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable)
 		)
 	);
 

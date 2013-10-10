@@ -31,6 +31,7 @@
 
 #include "mainwindow.h"
 #include "canvasview.h"
+#include "docks/dockdroparea.h"
 
 #include <synfigapp/main.h>
 
@@ -67,11 +68,33 @@ MainWindow::MainWindow()
 	set_default_size(600, 400);
 
 	notebook_ = manage(new Gtk::Notebook());
+
+	DockDropArea *dock_area = manage(new DockDropArea(notebook_));
+	dock_area->show();
+
+	notebook_->set_action_widget(dock_area, Gtk::PACK_END);
 	notebook_->set_scrollable(true);
 	notebook_->show();
 
-	//DockLayout *layout = manage(new DockLayout(*notebook_));
-	//layout->show();
+	class Bin : public Gtk::Bin {
+	public:
+		Bin() { }
+	protected:
+		void on_size_allocate(Gtk::Allocation &allocation) {
+			Gtk::Bin::on_size_allocate(allocation);
+			if (get_child() != NULL)
+				get_child()->size_allocate(allocation);
+		}
+		void on_size_request(Gtk::Requisition *requisition) {
+			Gtk::Bin::on_size_request(requisition);
+			if (get_child() != NULL && requisition != NULL)
+				*requisition = get_child()->size_request();
+		}
+	};
+
+	Gtk::Bin *bin = manage((Gtk::Bin*)new Bin());
+	bin->add(*notebook_);
+	bin->show();
 
 	Gtk::VBox *vbox = manage(new Gtk::VBox());
 
@@ -82,7 +105,7 @@ MainWindow::MainWindow()
 		vbox->pack_start(*menubar, false, false, 0);
 	}
 
-	vbox->pack_end(*notebook_, true, true, 0);
+	vbox->pack_end(*bin, true, true, 0);
 	vbox->show();
 	add(*vbox);
 

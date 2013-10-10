@@ -42,6 +42,7 @@
 #include "general.h"
 
 #include <gtkmm/paned.h>
+#include <gtkmm/box.h>
 #include <gtkmm/window.h>
 
 
@@ -61,22 +62,24 @@ using namespace studio;
 namespace studio {
 	class DockLinkPoint {
 	public:
+		Gtk::Bin *bin;
 		Gtk::Paned *paned;
 		Gtk::Window *window;
 		bool is_first;
 
-		DockLinkPoint(): paned(NULL), window(NULL), is_first(false) { }
-		DockLinkPoint(Gtk::Paned *paned, bool is_first): paned(paned), window(NULL), is_first(is_first) { }
-		DockLinkPoint(Gtk::Window *window): paned(NULL), window(window), is_first(false) { }
-
+		DockLinkPoint(): bin(NULL), paned(NULL), window(NULL), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Bin *bin): bin(bin), paned(NULL), window(NULL), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Paned *paned, bool is_first): bin(NULL), paned(paned), window(NULL), is_first(is_first) { }
+		explicit DockLinkPoint(Gtk::Window *window): bin(NULL), paned(NULL), window(window), is_first(false) { }
 		explicit DockLinkPoint(Gtk::Widget &widget) {
 			Gtk::Container *container = widget.get_parent();
+			bin = dynamic_cast<Gtk::Bin*>(container);
 			paned = dynamic_cast<Gtk::Paned*>(container);
 			window = dynamic_cast<Gtk::Window*>(container);
 			is_first = paned != NULL && paned->get_child1() == &widget;
 		}
 
-		bool is_valid() { return paned || window; }
+		bool is_valid() { return bin || paned || window; }
 
 		void unlink() {
 			if (paned && is_first && paned->get_child1())
@@ -87,6 +90,8 @@ namespace studio {
 			else
 			if (window)
 				window->remove();
+			if (bin)
+				bin->remove();
 		}
 
 		void link(Gtk::Widget &widget)
@@ -99,6 +104,9 @@ namespace studio {
 			else
 			if (window)
 				window->add(widget);
+			else
+			if (bin)
+				bin->add(widget);
 		}
 	};
 }
