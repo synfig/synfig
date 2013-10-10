@@ -717,6 +717,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	children_tree=0;
 	duck_refresh_flag=true;
 	toggling_ducks_=false;
+	toggling_animate_mode_=false;
 	changing_resolution_=false;
 	updating_quality_=false;
 	toggling_show_grid=false;
@@ -2839,6 +2840,9 @@ CanvasView::on_id_changed()
 void
 CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 {
+	if(toggling_animate_mode_)
+		return;
+	toggling_animate_mode_=true;
 	// If the animate flag was set in mode...
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	if(mode&synfigapp::MODE_ANIMATE)
@@ -2850,6 +2854,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		animatebutton->set_tooltip_text(_("Turn off animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
+		animatebutton->set_active(true);
 	}
 	else
 	{
@@ -2860,6 +2865,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
+		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
 	if(mode&synfigapp::MODE_ANIMATE_FUTURE)
@@ -2871,6 +2877,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		futurekeyframebutton->set_tooltip_text(_("Unlock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
+		futurekeyframebutton->set_active(true);
 	}
 	else
 	{
@@ -2881,6 +2888,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		futurekeyframebutton->set_tooltip_text(_("Lock future keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
+		futurekeyframebutton->set_active(false);
 	}
 	if(mode&synfigapp::MODE_ANIMATE_PAST)
 	{
@@ -2891,6 +2899,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		pastkeyframebutton->set_tooltip_text(_("Unlock past keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
+		pastkeyframebutton->set_active(true);
 	}
 	else
 	{
@@ -2901,14 +2910,18 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 		pastkeyframebutton->set_tooltip_text(_("Lock past  keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
+		pastkeyframebutton->set_active(false);
 	}
 
 	work_area->queue_draw();
+	toggling_animate_mode_=false;
 }
 
 void
 CanvasView::toggle_animatebutton()
 {
+	if(toggling_animate_mode_)
+		return;
 	if(get_mode()&synfigapp::MODE_ANIMATE)
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE);
 	else
@@ -2918,6 +2931,8 @@ CanvasView::toggle_animatebutton()
 void
 CanvasView::toggle_past_keyframe_button()
 {
+	if(toggling_animate_mode_)
+		return;
 	synfigapp::CanvasInterface::Mode mode(get_mode());
 	if((mode&synfigapp::MODE_ANIMATE_PAST) )
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_PAST);
@@ -2928,6 +2943,8 @@ CanvasView::toggle_past_keyframe_button()
 void
 CanvasView::toggle_future_keyframe_button()
 {
+	if(toggling_animate_mode_)
+		return;
  	synfigapp::CanvasInterface::Mode mode(get_mode());
 	if((mode&synfigapp::MODE_ANIMATE_FUTURE) )
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);

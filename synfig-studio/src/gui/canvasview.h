@@ -275,6 +275,7 @@ private:
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
 	Gtk::ToggleButton *futurekeyframebutton;
+	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
 	bool toggling_ducks_;
