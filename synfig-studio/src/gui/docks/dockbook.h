@@ -53,6 +53,12 @@ class DockBook : public Gtk::Notebook
 	bool deleting_;
 
 protected:
+	void drop_on(bool vertical, bool first, const Glib::RefPtr<Gdk::DragContext>& context, const Gtk::SelectionData& selection_data, guint time);
+	void drop_on_left(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_right(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_top(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void drop_on_bottom(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+
 public:
 	DockBook();
 	~DockBook();

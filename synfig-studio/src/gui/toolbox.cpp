@@ -185,16 +185,18 @@ show_dialog_input()
 
 void _create_stock_dialog1()
 {
-	DockDialog* dock_dialog(new DockDialog);
-	dock_dialog->set_contents("canvases history");
-	dock_dialog->set_composition_selector(true);
-	dock_dialog->present();
+	// TODO:
+	//DockDialog* dock_dialog(new DockDialog);
+	//dock_dialog->set_contents("canvases history");
+	//dock_dialog->set_composition_selector(true);
+	//dock_dialog->present();
 }
 void _create_stock_dialog2()
 {
-	DockDialog* dock_dialog(new DockDialog);
-	dock_dialog->set_contents("layers children keyframes | params");
-	dock_dialog->present();
+	// TODO:
+	//DockDialog* dock_dialog(new DockDialog);
+	//dock_dialog->set_contents("layers children keyframes | params");
+	//dock_dialog->present();
 }
 
 Toolbox::Toolbox():

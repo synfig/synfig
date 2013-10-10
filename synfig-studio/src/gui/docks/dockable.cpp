@@ -114,7 +114,8 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 		header_box_.pack_end(*bttn_close,false,false);
 		bttn_close->show();
 		bttn_close->set_relief(Gtk::RELIEF_NONE);
-		bttn_close->signal_clicked().connect(sigc::mem_fun(*this,&Dockable::detach));
+		bttn_close->signal_clicked().connect(
+				sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), this));
 		bttn_close->set_border_width(0);
 		dynamic_cast<Gtk::Misc*>(bttn_close->get_child())->set_padding(0,0);
 	}
@@ -183,7 +184,7 @@ Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 {
 	if(!dnd_success_)
 	{
-		detach();
+		DockManager::remove_widget_recursive(*this);
 		present();
 	}
 }
@@ -304,13 +305,6 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 
 
 void
-Dockable::detach()
-{
-	if(parent_)
-		parent_->remove(*this);
-}
-
-void
 Dockable::present()
 {
 	if(parent_)
@@ -320,8 +314,12 @@ Dockable::present()
 	}
 	else
 	{
+		show();
+		DockBook* book = manage(new DockBook());
+		book->show();
+		book->add(*this);
 		DockDialog* dock_dialog(new DockDialog());
-		dock_dialog->get_dock_book().add(*this);
+		dock_dialog->add(*book);
 /*		//hack: always display composition selector on top of canvas browser
 		if(get_name()=="canvases")
 			dock_dialog->set_composition_selector(true);

@@ -33,12 +33,17 @@
 #include "docks/dockmanager.h"
 #include <stdexcept>
 #include "docks/dockable.h"
+#include "docks/dockbook.h"
 #include "docks/dockdialog.h"
 #include <synfigapp/settings.h>
 #include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
 #include "general.h"
+
+#include <gtkmm/paned.h>
+#include <gtkmm/window.h>
+
 
 #endif
 
@@ -52,6 +57,51 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
+namespace studio {
+	class DockLinkPoint {
+	public:
+		Gtk::Paned *paned;
+		Gtk::Window *window;
+		bool is_first;
+
+		DockLinkPoint(): paned(NULL), window(NULL), is_first(false) { }
+		DockLinkPoint(Gtk::Paned *paned, bool is_first): paned(paned), window(NULL), is_first(is_first) { }
+		DockLinkPoint(Gtk::Window *window): paned(NULL), window(window), is_first(false) { }
+
+		explicit DockLinkPoint(Gtk::Widget &widget) {
+			Gtk::Container *container = widget.get_parent();
+			paned = dynamic_cast<Gtk::Paned*>(container);
+			window = dynamic_cast<Gtk::Window*>(container);
+			is_first = paned != NULL && paned->get_child1() == &widget;
+		}
+
+		bool is_valid() { return paned || window; }
+
+		void unlink() {
+			if (paned && is_first && paned->get_child1())
+				paned->remove(*paned->get_child1());
+			else
+			if (paned && !is_first && paned->get_child2())
+				paned->remove(*paned->get_child2());
+			else
+			if (window)
+				window->remove();
+		}
+
+		void link(Gtk::Widget &widget)
+		{
+			if (paned && is_first)
+				paned->add1(widget);
+			else
+			if (paned && !is_first)
+				paned->add2(widget);
+			else
+			if (window)
+				window->add(widget);
+		}
+	};
+}
 
 class studio::DockSettings : public synfigapp::Settings
 {
@@ -81,12 +131,13 @@ public:
 
 			if(key=="contents_size")
 			{
-				dock_dialog.rebuild_sizes();
-				vector<int>::const_iterator iter(dock_dialog.get_dock_book_sizes().begin());
-				vector<int>::const_iterator end(dock_dialog.get_dock_book_sizes().end());
-				value.clear();
-				for(;iter!=end;++iter)
-					value+=strprintf("%d ",*iter);
+				// TODO:
+				//dock_dialog.rebuild_sizes();
+				//vector<int>::const_iterator iter(dock_dialog.get_dock_book_sizes().begin());
+				//vector<int>::const_iterator end(dock_dialog.get_dock_book_sizes().end());
+				//value.clear();
+				//for(;iter!=end;++iter)
+				//	value+=strprintf("%d ",*iter);
 				return true;
 			}
 			if(key=="pos")
@@ -103,12 +154,14 @@ public:
 			}
 			if(key=="contents")
 			{
-				value=dock_dialog.get_contents();
+				// TODO:
+				//value=dock_dialog.get_contents();
 				return true;
 			}
 			if(key=="comp_selector")
 			{
-				value=dock_dialog.get_composition_selector()?"1":"0";
+				// TODO:
+				//value=dock_dialog.get_composition_selector()?"1":"0";
 				return true;
 			}
 		}catch (...) { return false; }
@@ -148,7 +201,8 @@ public:
 						break;
 					n++;
 				}
-				dock_dialog.set_dock_book_sizes(data);
+				// TODO:
+				//dock_dialog.set_dock_book_sizes(data);
 				}
 				catch(...)
 				{
@@ -178,15 +232,17 @@ public:
 			}
 			if(key=="contents")
 			{
-				dock_dialog.set_contents(value);
+				// TODO:
+				//dock_dialog.set_contents(value);
 				return true;
 			}
 			if(key=="comp_selector")
 			{
-				if(value.empty() || value[0]=='0')
-					dock_dialog.set_composition_selector(false);
-				else
-					dock_dialog.set_composition_selector(true);
+				// TODO:
+				//if(value.empty() || value[0]=='0')
+				//	dock_dialog.set_composition_selector(false);
+				//else
+				//	dock_dialog.set_composition_selector(true);
 				return true;
 			}
 		}
@@ -248,7 +304,7 @@ DockManager::unregister_dockable(Dockable& x)
 	{
 		if(&x==*iter)
 		{
-			x.detach();
+			remove_widget_recursive(x);
 			dockable_list_.erase(iter);
 			synfig::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
 			return true;
@@ -311,3 +367,103 @@ DockManager::show_all_dock_dialogs()
 	for(iter=dock_dialog_list_.begin();iter!=dock_dialog_list_.end();++iter)
 		(*iter)->present();
 }
+
+bool
+DockManager::swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2)
+{
+	DockLinkPoint point1(widget1);
+	DockLinkPoint point2(widget2);
+	if (point1.is_valid() && point2.is_valid())
+	{
+		point1.unlink();
+		point2.unlink();
+		point1.link(widget2);
+		point2.link(widget1);
+		return true;
+	}
+	return false;
+}
+
+void
+DockManager::remove_widget_recursive(Gtk::Widget &widget)
+{
+	DockLinkPoint link(widget);
+	if (link.is_valid())
+	{
+		link.unlink();
+		if (link.paned)
+		{
+			Gtk::Widget &widget = link.is_first
+								? *link.paned->get_child2()
+								: *link.paned->get_child1();
+			DockLinkPoint paned_link(*link.paned);
+			if (paned_link.is_valid())
+			{
+				link.paned->remove(widget);
+				paned_link.unlink();
+				paned_link.link(widget);
+				delete link.paned;
+			}
+		}
+		else
+		if (link.window) link.window->hide();
+	}
+	else
+	if (widget.get_parent())
+	{
+		DockBook *book = dynamic_cast<DockBook*>(widget.get_parent());
+		widget.get_parent()->remove(widget);
+		if (book && book->pages().empty())
+		{
+			remove_widget_recursive(*book);
+			delete book;
+		}
+	}
+
+	Dockable *dockable = dynamic_cast<Dockable*>(&widget);
+	if (dockable) dockable->parent_ = NULL;
+}
+
+
+bool
+DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first)
+{
+	if (&src_widget == &dest_widget) return false;
+
+	// check for src widget is parent for dest_widget
+	for(Gtk::Widget *parent = src_widget.get_parent(); parent != NULL; parent = parent->get_parent())
+		if (parent == &dest_widget)
+			return swap_widgets(src_widget, dest_widget);
+
+	// unlink dest_widget
+	DockLinkPoint dest_link(dest_widget);
+	if (!dest_link.is_valid()) return false;
+	dest_link.unlink();
+
+	// unlink src_widget
+	remove_widget_recursive(src_widget);
+
+	// create new paned and link all
+	Gtk::Paned *paned = manage(vertical ? (Gtk::Paned*)new Gtk::VPaned() : (Gtk::Paned*)new Gtk::HPaned());
+	paned->show();
+	DockLinkPoint(paned, first).link(src_widget);
+	DockLinkPoint(paned, !first).link(dest_widget);
+	dest_link.link(*paned);
+	return true;
+}
+
+bool
+DockManager::add_dockable(Gtk::Widget &dest_widget, Dockable &dockable, bool vertical, bool first)
+{
+	DockBook *book = manage(new DockBook());
+	book->show();
+	if (add_widget(dest_widget, *book, vertical, first))
+	{
+		book->add(dockable);
+		return true;
+	}
+	delete book;
+	return false;
+}
+
+

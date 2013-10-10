@@ -34,6 +34,8 @@
 #include <sigc++/object.h>
 #include <ETL/smart_ptr>
 
+#include <gtkmm/widget.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -74,6 +76,11 @@ public:
 	void present(synfig::String x);
 	void show_all_dock_dialogs();
 
+	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);
+	static void remove_widget_recursive(Gtk::Widget &widget);
+	static void remove_widget_by_pointer_recursive(Gtk::Widget *widget) { remove_widget_recursive(*widget); }
+	static bool add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first);
+	static bool add_dockable(Gtk::Widget &dest_widget, Dockable &dockable, bool vertical, bool first);
 }; // END of class DockManager
 
 }; // END of namespace studio
