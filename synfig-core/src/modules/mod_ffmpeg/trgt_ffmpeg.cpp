@@ -176,7 +176,7 @@ ffmpeg_trgt::init()
 	binary_path += "ffmpeg.exe";
 	
 	if( filename.c_str()[0] == '-' )
-		command = strprintf("%s -f image2pipe -vcodec ppm -an"
+		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							" -vcodec %s -b %ik"
@@ -187,7 +187,7 @@ ffmpeg_trgt::init()
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 	else
-		command = strprintf("%s -f image2pipe -vcodec ppm -an"
+		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							"-vcodec %s -b %ik"
