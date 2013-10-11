@@ -792,6 +792,8 @@ init_ui_manager()
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
+	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")) );
+	menus_action_group->add( Gtk::Action::create("menu-panels", _("Panels")) );
 	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
@@ -805,6 +807,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")) );
+	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
 	// Add the synfigapp actions...
 	synfigapp::Action::Book::iterator iter;
@@ -827,6 +830,7 @@ init_ui_manager()
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);
 	DEFINE_ACTION("save-as", Gtk::Stock::SAVE_AS);
+	DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
 	DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
 	DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
 	DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
@@ -840,8 +844,13 @@ init_ui_manager()
 	DEFINE_ACTION("options", _("Options"));
 	DEFINE_ACTION("close", _("Close View"));
 	DEFINE_ACTION("close-document", _("Close Document"));
+	DEFINE_ACTION("panels-vertical", _("Vertical Dock: Canvases, History"));
+	DEFINE_ACTION("panels-horizontal", _("Horizontal Dock: Layers, Library, Parameters"));
+	DEFINE_ACTION("panels-reset", _("Reset Windows to Original Layout"));
+	DEFINE_ACTION("input-devices", _("Input Devices..."));
+	DEFINE_ACTION("setup", _("Setup..."));
+	DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
 	DEFINE_ACTION("quit", Gtk::Stock::QUIT);
-
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
 	DEFINE_ACTION("redo", Gtk::StockID("gtk-redo"));
@@ -910,44 +919,65 @@ init_ui_manager()
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
+	DEFINE_ACTION("help", Gtk::Stock::HELP);
+	DEFINE_ACTION("help-tutorials", _("Tutorials"));
+	DEFINE_ACTION("help-reference", _("Reference"));
+	DEFINE_ACTION("help-faq", _("Frequently Asked Questions"));
+	DEFINE_ACTION("help-support", _("Get Support"));
+	DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
+
   //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
 "		<menuitem action='new' />"
 "		<menuitem action='open' />"
+"		<menu action='menu-open-recent' />"
 "		<menuitem action='save' />"
 "		<menuitem action='save-as' />"
+"		<menuitem action='save-all' />"
 "		<menuitem action='revert' />"
-"		<separator name='bleh01'/>"
+"		<separator name='sep-file1'/>"
 "		<menuitem action='cvs-add' />"
 "		<menuitem action='cvs-update' />"
 "		<menuitem action='cvs-commit' />"
 "		<menuitem action='cvs-revert' />"
-"		<separator name='bleh02'/>"
+"		<separator name='sep-file2'/>"
 "		<menuitem action='import' />"
-"		<separator name='bleh03'/>"
+"		<separator name='sep-file3'/>"
 "		<menuitem action='render' />"
 "		<menuitem action='preview' />"
 "		<menuitem action='sound' />"
-"		<separator name='bleh04'/>"
+"		<separator name='sep-file4'/>"
 "		<menuitem action='options' />"
 "		<menuitem action='close' />"
 "		<menuitem action='close-document' />"
+"		<separator name='sep-file5'/>"
+"		<menu action='menu-panels'>"
+"			<menuitem action='panels-vertical' />"
+"			<menuitem action='panels-horizontal' />"
+"			<separator name='sep-file-panels1'/>"
+"			<menuitem action='panels-reset' />"
+"			<separator name='sep-file-panels2'/>"
+"		</menu>"
+"		<menuitem action='input-devices' />"
+"		<menuitem action='setup' />"
+"		<menuitem action='reset-initial-preferences' />"
+"		<separator name='sep-file6'/>"
 "		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
 "		<menuitem action='redo'/>"
-"		<separator name='bleh05'/>"
+"		<separator name='sep-edit1'/>"
 "		<menuitem action='cut'/>"
 "		<menuitem action='copy'/>"
 "		<menuitem action='paste'/>"
-"		<separator name='bleh06'/>"
+"		<separator name='sep-edit2'/>"
 "		<menuitem action='select-all-layers'/>"
 "		<menuitem action='unselect-all-layers'/>"
 "		<menuitem action='select-all-ducks'/>"
 "		<menuitem action='unselect-all-ducks'/>"
-"		<separator name='bleh07'/>"
+"		<separator name='sep-edit3'/>"
 "		<menuitem action='properties'/>"
 "	</menu>"
 "	<menu action='menu-view'>"
@@ -977,9 +1007,9 @@ init_ui_manager()
 "			<menuitem action='quality-10' />"
 "		</menu>"
 "		<menu action='menu-lowres-pixel'>"
-"		<menuitem action='decrease-low-res-pixel-size'/>"
-"		<menuitem action='increase-low-res-pixel-size'/>"
-"		<separator name='pixel-size-separator'/>"
+"			<menuitem action='decrease-low-res-pixel-size'/>"
+"			<menuitem action='increase-low-res-pixel-size'/>"
+"			<separator name='pixel-size-separator'/>"
 ;
 
 	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
@@ -987,27 +1017,27 @@ init_ui_manager()
 
 	ui_info_menu +=
 "		</menu>"
-"		<separator name='bleh08'/>"
+"		<separator name='sep-view1'/>"
 "		<menuitem action='play'/>"
 //"		<menuitem action='pause'/>"
 "		<menuitem action='stop'/>"
 "		<menuitem action='dialog-flipbook'/>"
-"		<separator name='bleh09'/>"
+"		<separator name='sep-view2'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
 "		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-onion-skin'/>"
-"		<separator name='bleh10'/>"
+"		<separator name='sep-view3'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
 "		<menuitem action='canvas-zoom-fit'/>"
 "		<menuitem action='canvas-zoom-100'/>"
-"		<separator name='bleh11'/>"
+"		<separator name='sep-view4'/>"
 "		<menuitem action='time-zoom-in'/>"
 "		<menuitem action='time-zoom-out'/>"
-"		<separator name='bleh12'/>"
+"		<separator name='sep-view5'/>"
 "		<menuitem action='jump-next-keyframe'/>"
 "		<menuitem action='jump-prev-keyframe'/>"
 "		<menuitem action='seek-next-frame'/>"
@@ -1029,7 +1059,7 @@ init_ui_manager()
 //"		<menuitem action='cut'/>"
 //"		<menuitem action='copy'/>"
 //"		<menuitem action='paste'/>"
-//"		<separator name='bleh06'/>"
+//"		<separator name='bleh71'/>"
 "		<menu action='menu-layer-new'></menu>"
 "		<menuitem action='amount-inc'/>"
 "		<menuitem action='amount-dec'/>"
@@ -1055,6 +1085,17 @@ init_ui_manager()
 	}
 
 	ui_info_menu +=
+"	</menu>"
+"	<menu action='menu-help'>"
+"		<menuitem action='help'/>"
+"		<separator name='sep-help1'/>"
+"		<menuitem action='help-tutorials'/>"
+"		<menuitem action='help-reference'/>"
+"		<menuitem action='help-faq'/>"
+"		<separator name='sep-help2'/>"
+"		<menuitem action='help-support'/>"
+"		<separator name='sep-help3'/>"
+"		<menuitem action='help-about'/>"
 "	</menu>";
 
 	Glib::ustring ui_info =
