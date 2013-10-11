@@ -798,12 +798,12 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(bool()));
+		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(int()));
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(bool()));
+		return sphtrans(x,layer->param_center.get(Vector()),layer->param_radius.get(double()),-layer->param_amount.get(double()),layer->param_type.get(int()));
 	}
 
 	synfig::String get_string()const
