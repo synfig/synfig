@@ -1,18 +1,17 @@
-# Translation of zh_CN to Chinese
-# Chinese translations for Synfig Studio package
-# Copyright (C) 2012 Synfig Contributors
+# Translation file for Synfig Studio package.
+# Copyright (C) 2013 Synfig Contributors
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
-# Yu Chen <jcomee@gmail.com>, 2010, 2011
+# Yu Chen <jcomee@gmail.com>, 2010-2011
 # Yu Chen <jcomee@gmail.com>, 2010, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-07 21:14+0700\n"
-"PO-Revision-Date: 2013-10-07 14:24+0000\n"
+"POT-Creation-Date: 2013-10-10 22:48+0700\n"
+"PO-Revision-Date: 2013-10-11 06:53+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/synfig/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -251,6 +250,9 @@ msgstr "网格大小(_G)"
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:83
 #: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:83
+#: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:80
+#: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:81
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:88
 #: ../src/synfigapp/actions/waypointadd.cpp:87
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:100
@@ -1103,7 +1105,7 @@ msgstr "文件已经存在"
 msgid "Choose a Palette to load"
 msgstr "选个要加载的调色板"
 
-#: ../src/gui/modules/mod_palette/dock_paledit.cpp:300 ../src/gui/app.cpp:2707
+#: ../src/gui/modules/mod_palette/dock_paledit.cpp:300 ../src/gui/app.cpp:2705
 msgid "Unable to open file"
 msgstr "不能打开文件"
 
@@ -1944,6 +1946,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerduplicate.cpp:81
 #: ../src/synfigapp/actions/layerencapsulate.cpp:81
 #: ../src/synfigapp/actions/layerlower.cpp:80
+#: ../src/synfigapp/actions/layermakebline.cpp:89
 #: ../src/synfigapp/actions/layermove.cpp:85
 #: ../src/synfigapp/actions/layerparamconnect.cpp:72
 #: ../src/synfigapp/actions/layerparamdisconnect.cpp:75
@@ -1951,6 +1954,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerraise.cpp:80
 #: ../src/synfigapp/actions/layerremove.cpp:79
 #: ../src/synfigapp/actions/layersetdesc.cpp:85
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:97
 msgid "Layer"
 msgstr "层"
 
@@ -1960,8 +1964,8 @@ msgstr ""
 
 #: ../src/gui/trees/layerparamtreestore.cpp:253
 #: ../src/gui/widgets/widget_canvaschooser.cpp:145
-#: ../src/gui/widgets/widget_canvaschooser.cpp:164 ../src/gui/app.cpp:2636
-#: ../src/gui/app.cpp:2641 ../src/gui/app.cpp:2646 ../src/gui/instance.cpp:511
+#: ../src/gui/widgets/widget_canvaschooser.cpp:164 ../src/gui/app.cpp:2634
+#: ../src/gui/app.cpp:2639 ../src/gui/app.cpp:2644 ../src/gui/instance.cpp:511
 #: ../src/gui/instance.cpp:527 ../src/gui/instance.cpp:539
 #: ../src/gui/instance.cpp:550 ../src/gui/instance.cpp:564
 #: ../src/gui/instance.cpp:575 ../src/gui/instance.cpp:605
@@ -1999,6 +2003,10 @@ msgstr ""
 
 #: ../src/gui/trees/metadatatree.cpp:71
 msgid "Data"
+msgstr ""
+
+#: ../src/gui/widgets/widget_bonechooser.cpp:89
+msgid "<None>"
 msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:115
@@ -2194,6 +2202,7 @@ msgid "_Time"
 msgstr "时间(_T)"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:160 ../src/gui/instance.cpp:1130
+#: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:89
 msgid "Interpolation"
 msgstr "插值法"
 
@@ -2256,6 +2265,14 @@ msgstr "偏向："
 #: ../src/gui/widgets/widget_waypointmodel.cpp:70
 msgid "Temporal Tension:"
 msgstr "暂时张力："
+
+#: ../src/gui/workarearenderer/renderer_bonesetup.cpp:100
+msgid "Bone Setup Mode"
+msgstr ""
+
+#: ../src/gui/workarearenderer/renderer_bonesetup.cpp:102
+msgid "Bone Recursive Scale Mode"
+msgstr ""
 
 #: ../src/gui/app.cpp:802 ../src/gui/toolbox.cpp:277
 msgid "_File"
@@ -2531,203 +2548,203 @@ msgstr "Synfig Studio"
 msgid "Failed to initialize synfig!"
 msgstr "初始化 Synfig 失败！"
 
-#: ../src/gui/app.cpp:1291
-msgid "Init auto recovery..."
-msgstr "初始化自动恢复..."
-
-#: ../src/gui/app.cpp:1296
+#: ../src/gui/app.cpp:1295
 msgid "Loading Basic Settings..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1303
+#: ../src/gui/app.cpp:1298
 msgid "Loading Plugins..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1328
+#: ../src/gui/app.cpp:1323
 msgid "Init UI Manager..."
 msgstr "初始化 UI 管理器..."
 
-#: ../src/gui/app.cpp:1332
+#: ../src/gui/app.cpp:1327
 msgid "Init Dock Manager..."
 msgstr "初始化停靠管理器..."
 
-#: ../src/gui/app.cpp:1335
+#: ../src/gui/app.cpp:1330
 msgid "Init State Manager..."
 msgstr "初始化状态管理器..."
 
-#: ../src/gui/app.cpp:1338
+#: ../src/gui/app.cpp:1333
 msgid "Init Toolbox..."
 msgstr "初始化工具箱..."
 
-#: ../src/gui/app.cpp:1341
+#: ../src/gui/app.cpp:1336
 msgid "Init About Dialog..."
 msgstr "初始化关于对话框..."
 
-#: ../src/gui/app.cpp:1344
+#: ../src/gui/app.cpp:1339
 msgid "Init Tool Options..."
 msgstr "初始化工具选项..."
 
-#: ../src/gui/app.cpp:1348
+#: ../src/gui/app.cpp:1343
 msgid "Init History..."
 msgstr "初始化历史记录..."
 
-#: ../src/gui/app.cpp:1352
+#: ../src/gui/app.cpp:1347
 msgid "Init Canvases..."
 msgstr "初始化画布..."
 
-#: ../src/gui/app.cpp:1356
+#: ../src/gui/app.cpp:1351
 msgid "Init Keyframes..."
 msgstr "初始化关键帧..."
 
-#: ../src/gui/app.cpp:1360
+#: ../src/gui/app.cpp:1355
 msgid "Init Layers..."
 msgstr "初始化层..."
 
-#: ../src/gui/app.cpp:1364
+#: ../src/gui/app.cpp:1359
 msgid "Init Parameters..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1368
+#: ../src/gui/app.cpp:1363
 msgid "Init MetaData..."
 msgstr "初始化元数据..."
 
-#: ../src/gui/app.cpp:1372
+#: ../src/gui/app.cpp:1367
 msgid "Init Library..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1376
+#: ../src/gui/app.cpp:1371
 msgid "Init Info..."
 msgstr "初始化信息..."
 
-#: ../src/gui/app.cpp:1380
+#: ../src/gui/app.cpp:1375
 msgid "Init Navigator..."
 msgstr "初始化导航器..."
 
-#: ../src/gui/app.cpp:1384
+#: ../src/gui/app.cpp:1379
 msgid "Init Timetrack..."
 msgstr "初始化时间轨迹..."
 
-#: ../src/gui/app.cpp:1388
+#: ../src/gui/app.cpp:1383
 msgid "Init Curve Editor..."
 msgstr "初始化曲线编辑器..."
 
-#: ../src/gui/app.cpp:1392
+#: ../src/gui/app.cpp:1387
 msgid "Init Layer Sets..."
 msgstr ""
 
-#: ../src/gui/app.cpp:1397
+#: ../src/gui/app.cpp:1392
 msgid "Init Color Dialog..."
 msgstr "初始化颜色对话框..."
 
-#: ../src/gui/app.cpp:1400
+#: ../src/gui/app.cpp:1395
 msgid "Init Gradient Dialog..."
 msgstr "初始化渐变对话框..."
 
-#: ../src/gui/app.cpp:1403
+#: ../src/gui/app.cpp:1398
 msgid "Init DeviceTracker..."
 msgstr "初始化设备追踪器..."
 
-#: ../src/gui/app.cpp:1408
+#: ../src/gui/app.cpp:1403
 msgid "Init ModPalette..."
 msgstr "初始化 ModPalette..."
 
-#: ../src/gui/app.cpp:1411
+#: ../src/gui/app.cpp:1406
 msgid "Init Setup Dialog..."
 msgstr "初始化设定对话框..."
 
-#: ../src/gui/app.cpp:1414
+#: ../src/gui/app.cpp:1409
 msgid "Init Input Dialog..."
 msgstr "初始化输入对话框..."
 
-#: ../src/gui/app.cpp:1420
+#: ../src/gui/app.cpp:1414
+msgid "Init auto recovery..."
+msgstr "初始化自动恢复..."
+
+#: ../src/gui/app.cpp:1418
 msgid "Loading Settings..."
 msgstr "设定加载中..."
 
-#: ../src/gui/app.cpp:1431
+#: ../src/gui/app.cpp:1429
 msgid "Init Tools..."
 msgstr "初始化工具..."
 
-#: ../src/gui/app.cpp:1468
+#: ../src/gui/app.cpp:1466
 msgid "Checking auto-recover..."
 msgstr "正在检查自动恢复..."
 
-#: ../src/gui/app.cpp:1476
+#: ../src/gui/app.cpp:1474
 msgid "Crash Recovery"
 msgstr "崩溃恢复"
 
-#: ../src/gui/app.cpp:1477
+#: ../src/gui/app.cpp:1475
 msgid "Auto recovery file found"
 msgstr "发现有自动恢复的文件"
 
-#: ../src/gui/app.cpp:1478
+#: ../src/gui/app.cpp:1476
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files. "
 "Recover unsaved changes?"
 msgstr "Synfig Studio 好像在您保存文件之前崩溃了。想要恢复未保存的更改吗？"
 
-#: ../src/gui/app.cpp:1480
+#: ../src/gui/app.cpp:1478
 msgid "Recover"
 msgstr "恢复"
 
-#: ../src/gui/app.cpp:1480
+#: ../src/gui/app.cpp:1478
 msgid "Ignore"
 msgstr "忽略"
 
-#: ../src/gui/app.cpp:1486
+#: ../src/gui/app.cpp:1484
 msgid "Unable to fully recover from previous crash"
 msgstr "未能从上次的崩溃中完全恢复"
 
-#: ../src/gui/app.cpp:1488
+#: ../src/gui/app.cpp:1486
 msgid "Unable to recover from previous crash"
 msgstr "未能从上次的崩溃中恢复"
 
-#: ../src/gui/app.cpp:1490 ../src/gui/app.cpp:1555
+#: ../src/gui/app.cpp:1488 ../src/gui/app.cpp:1553
 msgid "Warning"
 msgstr "警告"
 
-#: ../src/gui/app.cpp:1491
+#: ../src/gui/app.cpp:1489
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files that"
 " it has recovered are NOT YET SAVED. It would be a good idea to review them "
 "and save them now."
 msgstr "Synfig Studio 已经尝试从上一次的崩溃中恢复了数据，但是所恢复的文件还没有保存。请您现在就查看，保存。"
 
-#: ../src/gui/app.cpp:1506
+#: ../src/gui/app.cpp:1504
 msgid "Loading files..."
 msgstr "文件加载中..."
 
-#: ../src/gui/app.cpp:1517
+#: ../src/gui/app.cpp:1515
 msgid "Done."
 msgstr "完成。"
 
-#: ../src/gui/app.cpp:1535
+#: ../src/gui/app.cpp:1533
 msgid "EXPERIMENTAL FEATURES:"
 msgstr ""
 
-#: ../src/gui/app.cpp:1537
+#: ../src/gui/app.cpp:1535
 msgid "This version have following experimental features enabled:"
 msgstr ""
 
-#: ../src/gui/app.cpp:1539 ../src/gui/iconcontroller.cpp:233
+#: ../src/gui/app.cpp:1537 ../src/gui/iconcontroller.cpp:233
 msgid "Skeleton Layer"
 msgstr ""
 
-#: ../src/gui/app.cpp:1541
+#: ../src/gui/app.cpp:1539
 msgid ""
 "The experimental features are NOT intended for production use. It is quite "
 "posiible their functionality will change in the future versions, which can "
 "break compatibility for your files. Use for testing purposes only."
 msgstr ""
 
-#: ../src/gui/app.cpp:1543
+#: ../src/gui/app.cpp:1541
 msgid "You can disable experimental features on the \"Misc\" tab of Setup dialog."
 msgstr ""
 
-#: ../src/gui/app.cpp:1548
+#: ../src/gui/app.cpp:1546
 msgid "BUG WARNING:"
 msgstr ""
 
-#: ../src/gui/app.cpp:1550
+#: ../src/gui/app.cpp:1548
 msgid ""
 "This version of Synfig Studio have a bug, which can cause computer to "
 "hang/freeze when you resize the canvas window. If you got affected by this "
@@ -2735,108 +2752,108 @@ msgid ""
 "the working state."
 msgstr ""
 
-#: ../src/gui/app.cpp:1552
+#: ../src/gui/app.cpp:1550
 msgid ""
 "Please accept our apologies for inconvenience, we hope to get this issue "
 "resolved in the future versions."
 msgstr ""
 
-#: ../src/gui/app.cpp:1559 ../src/gui/app.cpp:1563
+#: ../src/gui/app.cpp:1557 ../src/gui/app.cpp:1561
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
 msgstr "在创建应用是发生未知异常。\n本软件可能不稳定。"
 
-#: ../src/gui/app.cpp:2034
+#: ../src/gui/app.cpp:2031
 msgid "Quit Request"
 msgstr "请求退出"
 
-#: ../src/gui/app.cpp:2037
+#: ../src/gui/app.cpp:2034
 msgid "Cannot quit!"
 msgstr "不能退出！"
 
-#: ../src/gui/app.cpp:2037
+#: ../src/gui/app.cpp:2034
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
 msgstr "有任务正在运行中。\n请取消当前任务后再尝试"
 
-#: ../src/gui/app.cpp:2103
+#: ../src/gui/app.cpp:2100
 msgid "Quit Request sent"
 msgstr "退出请求已发送"
 
-#: ../src/gui/app.cpp:2275
+#: ../src/gui/app.cpp:2272
 msgid "current"
 msgstr "当期"
 
-#: ../src/gui/app.cpp:2288
+#: ../src/gui/app.cpp:2286
 msgid "and older"
 msgstr "以及更旧的"
 
-#: ../src/gui/app.cpp:2292
+#: ../src/gui/app.cpp:2290
 msgid "File Format Version: "
 msgstr "文件格式版本："
 
-#: ../src/gui/app.cpp:2401
+#: ../src/gui/app.cpp:2399
 msgid "Feature not available"
 msgstr "特性无效"
 
-#: ../src/gui/app.cpp:2402
+#: ../src/gui/app.cpp:2400
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "对不起，该特性还没实现。"
 
-#: ../src/gui/app.cpp:2487
+#: ../src/gui/app.cpp:2485
 msgid "Documentation"
 msgstr "文档"
 
-#: ../src/gui/app.cpp:2488
+#: ../src/gui/app.cpp:2486
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 msgstr "Synfig Stuio 的文档在网站上可以找到：\n\nhttp://synfig.org/wiki/Category:Manual"
 
-#: ../src/gui/app.cpp:2489 ../src/gui/toolbox.cpp:294
+#: ../src/gui/app.cpp:2487 ../src/gui/toolbox.cpp:294
 msgid "Help"
 msgstr "帮助"
 
-#: ../src/gui/app.cpp:2499
+#: ../src/gui/app.cpp:2497
 msgid "No browser was found. Please load this website manually:"
 msgstr "没有找到浏览器。请手工加载这个网站："
 
-#: ../src/gui/app.cpp:2501
+#: ../src/gui/app.cpp:2499
 msgid "No browser found"
 msgstr "没有找到浏览器"
 
-#: ../src/gui/app.cpp:2613
+#: ../src/gui/app.cpp:2611
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr "未能加载\"%s\":\n\n"
 
-#: ../src/gui/app.cpp:2616 ../src/gui/canvasview.cpp:3734
+#: ../src/gui/app.cpp:2614 ../src/gui/canvasview.cpp:3734
 #: ../src/gui/canvasview.cpp:3941
 msgid "Warnings"
 msgstr "警告"
 
-#: ../src/gui/app.cpp:2624
+#: ../src/gui/app.cpp:2622
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "未能为\"%s\"创建实例"
 
-#: ../src/gui/app.cpp:2630 ../src/gui/iconcontroller.cpp:327
+#: ../src/gui/app.cpp:2628 ../src/gui/iconcontroller.cpp:327
 #: ../src/gui/instance.cpp:589
 msgid "CVS Update"
 msgstr "CVS 更新"
 
-#: ../src/gui/app.cpp:2630
+#: ../src/gui/app.cpp:2628
 msgid ""
 "There appears to be a newer version of this file available on the CVS repository.\n"
 "Would you like to update now? (It would probably be a good idea)"
 msgstr "这个文件在 CVS 仓库中有个新版本。\n需要现在就更新吗？（这应该是个好主意）"
 
-#: ../src/gui/app.cpp:2646
+#: ../src/gui/app.cpp:2644
 msgid "Uncaught error on file open (BUG)"
 msgstr "打开文件出现为捕获错误 (BUG)"
 
@@ -3150,6 +3167,8 @@ msgstr "交换颜色"
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:74
 #: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:74
 #: ../src/synfigapp/actions/valuenoderemove.cpp:80
+#: ../src/synfigapp/actions/valuenodestaticlistloop.cpp:73
+#: ../src/synfigapp/actions/valuenodestaticlistunloop.cpp:73
 #: ../src/synfigapp/value_desc.cpp:72
 msgid "ValueNode"
 msgstr "值节点"
@@ -3787,6 +3806,7 @@ msgstr ""
 
 #: ../src/gui/preview.cpp:472
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:52
+#: ../src/synfigapp/actions/valuenodestaticlistloop.cpp:50
 msgid "Loop"
 msgstr "闭环"
 
@@ -4196,12 +4216,19 @@ msgstr "添加活跃点"
 #: ../src/synfigapp/actions/valuedescexport.cpp:89
 #: ../src/synfigapp/actions/valuedescset.cpp:95
 #: ../src/synfigapp/actions/valuedescset.cpp:104
+#: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:76
+#: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:85
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:77
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
 #: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:80
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:75
+#: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:77
+#: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:78
+#: ../src/synfigapp/actions/valuenodestaticlistremove.cpp:75
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:85
+#: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:75
 msgid "ValueDesc"
 msgstr "值描述"
 
@@ -4600,10 +4627,12 @@ msgstr "层的新状态"
 #: ../src/synfigapp/actions/layerduplicate.cpp:135
 #: ../src/synfigapp/actions/layerencapsulate.cpp:191
 #: ../src/synfigapp/actions/layerlower.cpp:140
+#: ../src/synfigapp/actions/layermakebline.cpp:153
 #: ../src/synfigapp/actions/layermove.cpp:161
 #: ../src/synfigapp/actions/layermove.cpp:234
 #: ../src/synfigapp/actions/layerraise.cpp:137
 #: ../src/synfigapp/actions/layerremove.cpp:134
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:162
 msgid "This layer doesn't exist anymore."
 msgstr "该层不再存在。"
 
@@ -4627,6 +4656,7 @@ msgstr "要复制的层"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:141
 #: ../src/synfigapp/actions/layerencapsulate.cpp:200
+#: ../src/synfigapp/actions/layermakebline.cpp:159
 #: ../src/synfigapp/actions/layerremove.cpp:144
 msgid "This layer doesn't belong to this canvas anymore"
 msgstr "该层不再属于这个画布了"
@@ -4663,6 +4693,14 @@ msgstr "下移多个层"
 #: ../src/synfigapp/actions/layerlower.cpp:81
 msgid "Layer to be lowered"
 msgstr "要下移的层"
+
+#: ../src/synfigapp/actions/layermakebline.cpp:90
+msgid "Base layer"
+msgstr ""
+
+#: ../src/synfigapp/actions/layermakebline.cpp:144
+msgid "This layer doesn't contains linked \"bline\" parameter."
+msgstr ""
 
 #: ../src/synfigapp/actions/layermove.cpp:50
 #: ../src/synfigapp/actions/layermove.cpp:74
@@ -4802,6 +4840,26 @@ msgstr "新建描述"
 msgid "Enter a new description for this layer"
 msgstr "输入这个层的新描述"
 
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:82
+msgid "Toggle Exclude from Rendering"
+msgstr ""
+
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:86
+msgid "Disable layer rendering - "
+msgstr ""
+
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:87
+msgid "Enable layer rendering - "
+msgstr ""
+
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:101
+msgid "New State"
+msgstr ""
+
+#: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:102
+msgid "The new state of the layer exclusion"
+msgstr ""
+
 #: ../src/synfigapp/actions/timepointscopy.cpp:58
 msgid "Copy Time Points"
 msgstr "拷贝时间点"
@@ -4889,6 +4947,9 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:84
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:87
+#: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:84
+#: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:85
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:92
 msgid "Origin"
 msgstr "原点"
 
@@ -5143,6 +5204,15 @@ msgstr "必须在动画编辑模式中才能直接操作该值"
 msgid "Unsupported ValueDesc type"
 msgstr "未支持的值描述类型"
 
+#: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:53
+msgid "Set Parameter Interpolation"
+msgstr ""
+
+#: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:73
+#, c-format
+msgid "Set interpolation for %s"
+msgstr ""
+
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:51
 msgid "Remove Multiple Items(Smart)"
 msgstr ""
@@ -5152,6 +5222,9 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:272
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:209
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:227
+#: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:159
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:166
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:184
 msgid "Unable to find action (bug)"
 msgstr "未能发现动作 (Bug)"
 
@@ -5193,14 +5266,17 @@ msgid "ValueNode_Const"
 msgstr "值节点结构"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:50
+#: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:50
 msgid "Insert Item"
 msgstr "插入项目"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:88
+#: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:88
 msgid "ValueNode to insert"
 msgstr "要插入的值节点"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:51
+#: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:51
 msgid "Insert Item (Smart)"
 msgstr ""
 
@@ -5213,18 +5289,22 @@ msgid "Unable to find action \"ActivepointSetOn\""
 msgstr "未能发现“活跃点设为开”动作"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:50
+#: ../src/synfigapp/actions/valuenodestaticlistremove.cpp:50
 msgid "Remove Item"
 msgstr "移除项目"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:53
+#: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:51
 msgid "Remove Item (Smart)"
 msgstr "移除项目（智能）"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:50
+#: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:50
 msgid "Rotate Order"
 msgstr "旋转顺序"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:52
+#: ../src/synfigapp/actions/valuenodestaticlistunloop.cpp:50
 msgid "Unloop"
 msgstr "不闭环"
 
