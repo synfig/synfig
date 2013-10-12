@@ -131,7 +131,7 @@ MainWindow::MainWindow()
 	App::dock_manager->signal_dockable_registered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_registered) );
 
-	GRAB_HINT_DATA("canvas_view");
+	GRAB_HINT_DATA("mainwindow");
 }
 
 MainWindow::~MainWindow() { }

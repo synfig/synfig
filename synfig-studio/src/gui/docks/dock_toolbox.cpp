@@ -169,6 +169,9 @@ close_selected_instance()
 Dock_Toolbox::Dock_Toolbox():
 	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-toolbox"))
 {
+	set_use_scrolled(false);
+	set_size_request(-1,-1);
+
 	Gtk::Image *icon;
 
 	ADD_TOOLBOX_BUTTON(button_new,"gtk-new",_("New..."));
@@ -196,17 +199,17 @@ Dock_Toolbox::Dock_Toolbox():
 	// Create the file button cluster
 	Gtk::Table *file_buttons=manage(new class Gtk::Table());
 
-	file_buttons->attach(*button_new,      0,1, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_open,     1,2, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_save,     2,3, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_saveas,   3,4, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_save_all, 4,5, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_new,      0,1, 0,1,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_open,     1,2, 0,1,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_save,     2,3, 0,1,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_saveas,   3,4, 0,1,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_save_all, 4,5, 0,1,Gtk::SHRINK,Gtk::SHRINK);
 
-	file_buttons->attach(*button_undo,     0,1, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_redo,     1,2, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_setup,    2,3, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
-	file_buttons->attach(*button_help,     4,5, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_undo,     0,1, 1,2,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_redo,     1,2, 1,2,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_setup,    2,3, 1,2,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_about,    3,4, 1,2,Gtk::SHRINK,Gtk::SHRINK);
+	file_buttons->attach(*button_help,     4,5, 1,2,Gtk::SHRINK,Gtk::SHRINK);
 
 	file_buttons->show();
 
@@ -230,9 +233,9 @@ Dock_Toolbox::Dock_Toolbox():
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
 	table1->set_col_spacings(0);
-	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->show_all();
 
 	add(*table1);
@@ -384,7 +387,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*button,col,col+1,row,row+1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 	state_button_map[name]=button;
 
