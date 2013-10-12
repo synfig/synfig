@@ -47,6 +47,7 @@ namespace studio {
 class Dockable;
 class DockDialog;
 class DockSettings;
+class DockLinkPoint;
 
 class DockManager : public sigc::trackable
 {
@@ -60,6 +61,19 @@ class DockManager : public sigc::trackable
 	sigc::signal<void,Dockable*> signal_dockable_registered_;
 
 	etl::smart_ptr<DockSettings> dock_settings;
+
+private:
+	void write_separator(std::string &x, bool continue_ = true);
+	void write_string(std::string &x, const std::string &str);
+	void write_int(std::string &x, int i);
+	void write_bool(std::string &x, bool b);
+	void write_widget(std::string &x, Gtk::Widget* widget);
+
+	bool         read_separator(std::string &x);
+	std::string  read_string(std::string &x);
+	int          read_int(std::string &x);
+	bool         read_bool(std::string &x);
+	Gtk::Widget* read_widget(std::string &x);
 
 public:
 	DockManager();
@@ -75,6 +89,12 @@ public:
 	Dockable& find_dockable(const synfig::String& x);
 	void present(synfig::String x);
 	void show_all_dock_dialogs();
+
+	std::string save_widget_to_string(Gtk::Widget *widget);
+	Gtk::Widget* load_widget_from_string(const std::string &x);
+
+	std::string save_layout_to_string();
+	void load_layout_from_string(const std::string &x);
 
 	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);
 	static void remove_widget_recursive(Gtk::Widget &widget);

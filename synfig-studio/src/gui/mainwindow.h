@@ -45,6 +45,7 @@ namespace studio {
 	class MainWindow: public Gtk::Window
 	{
 	private:
+		Gtk::Bin *bin_;
 		Gtk::Notebook *notebook_;
 		Glib::RefPtr<Gtk::ActionGroup> panels_action_group;
 
@@ -63,6 +64,9 @@ namespace studio {
 	public:
 		MainWindow();
 		virtual ~MainWindow();
+
+		Gtk::Bin& root() { return *bin_; }
+		const Gtk::Bin& root() const { return *bin_; }
 
 		Gtk::Notebook& notebook() { return *notebook_; }
 		const Gtk::Notebook& notebook() const { return *notebook_; }

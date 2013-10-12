@@ -96,9 +96,9 @@ MainWindow::MainWindow()
 		}
 	};
 
-	Gtk::Bin *bin = manage((Gtk::Bin*)new Bin());
-	bin->add(*notebook_);
-	bin->show();
+	bin_ = manage((Gtk::Bin*)new Bin());
+	bin_->add(*notebook_);
+	bin_->show();
 
 	Gtk::VBox *vbox = manage(new Gtk::VBox());
 
@@ -109,7 +109,7 @@ MainWindow::MainWindow()
 		vbox->pack_start(*menubar, false, false, 0);
 	}
 
-	vbox->pack_end(*bin, true, true, 0);
+	vbox->pack_end(*bin_, true, true, 0);
 	vbox->show();
 	add(*vbox);
 
