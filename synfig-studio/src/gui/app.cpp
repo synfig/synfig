@@ -1825,6 +1825,7 @@ App::load_settings(const synfig::String& key_filter)
 	bool ret=false;
 	try
 	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		std::string filename=get_config_file("settings");
 		ret=synfigapp::Main::settings().load_from_file(filename, key_filter);
 	}
@@ -1857,6 +1858,7 @@ App::load_file_window_size()
 {
 	try
 	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			bool window_size_broken = false;
 
