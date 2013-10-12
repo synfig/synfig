@@ -28,6 +28,7 @@ EXTRA_DIST = \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
+	canvas_and_importimage_icons.sif \
 	graphs_icon.sif \
 	duplicate_icon.sif \
 	group_icon.sif \
