@@ -160,6 +160,8 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 bool
 ffmpeg_trgt::init()
 {
+	synfig::info("ffmpeg_trgt::init called...");
+	
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
@@ -209,14 +211,14 @@ ffmpeg_trgt::init()
 	int p[2];
 
 	if (pipe(p)) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (no pipe)"));
 		return false;
 	};
 
 	pid = fork();
 
 	if (pid == -1) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (pid == -1)"));
 		return false;
 	}
 
@@ -226,7 +228,7 @@ ffmpeg_trgt::init()
 		close(p[1]);
 		// Dup pipeout to stdin
 		if( dup2( p[0], STDIN_FILENO ) == -1 ){
-			synfig::error(_("Unable to open pipe to ffmpeg"));
+			synfig::error(_("Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"));
 			return false;
 		}
 		// Close the unneeded pipeout
@@ -280,7 +282,7 @@ ffmpeg_trgt::init()
 		}
 
 		// We should never reach here unless the exec failed
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (exec failed)"));
 		return false;
 	} else {
 		// Parent process
@@ -298,7 +300,7 @@ ffmpeg_trgt::init()
 
 	if(!file)
 	{
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (no file)"));
 		return false;
 	}
 

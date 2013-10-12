@@ -85,6 +85,8 @@ bool ffmpeg_mptr::is_animated()
 bool
 ffmpeg_mptr::seek_to(int frame)
 {
+	cerr<<"ffmpeg_mptr::seek_to called..."<<endl;
+	
 	if(frame<cur_frame || !file)
 	{
 		if(file)
@@ -101,8 +103,17 @@ ffmpeg_mptr::seek_to(int frame)
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
 		string command;
+		
+		String binary_path = synfig::get_binary_path("");
+		if (binary_path != "")
+			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
+		binary_path += "ffmpeg.exe";
 
-		command=strprintf("ffmpeg -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",frame,filename.c_str());
+		command=strprintf("\"%s\" -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",binary_path.c_str(),frame,filename.c_str());
+		
+		// This covers the dumb cmd.exe behavior.
+		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+		command = "\"" + command + "\"";
 
 		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
@@ -111,14 +122,14 @@ ffmpeg_mptr::seek_to(int frame)
 		int p[2];
 
 		if (pipe(p)) {
-			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			cerr<<"Unable to open pipe to ffmpeg (no pipe)"<<endl;
 			return false;
 		};
 
 		pid = fork();
 
 		if (pid == -1) {
-			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			cerr<<"Unable to open pipe to ffmpeg (pid == -1)"<<endl;
 			return false;
 		}
 
@@ -128,7 +139,7 @@ ffmpeg_mptr::seek_to(int frame)
 			close(p[0]);
 			// Dup pipein to stdout
 			if( dup2( p[1], STDOUT_FILENO ) == -1 ){
-				cerr<<"Unable to open pipe to ffmpeg"<<endl;
+				cerr<<"Unable to open pipe to ffmpeg (dup2( p[1], STDOUT_FILENO ) == -1)"<<endl;
 				return false;
 			}
 			// Close the unneeded pipein
@@ -136,7 +147,7 @@ ffmpeg_mptr::seek_to(int frame)
 			string time = strprintf("00:00:00.%d",frame);
 			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
-			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);
 		} else {
 			// Parent process
