@@ -1,14 +1,14 @@
-# Turkish translation for Synfig Core.
+# Translation file for Synfig Core package.
 # Copyright (C) 2013 Synfig Contributors
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-07 21:14+0700\n"
-"PO-Revision-Date: 2013-10-07 14:23+0000\n"
+"POT-Creation-Date: 2013-10-10 22:47+0700\n"
+"PO-Revision-Date: 2013-10-11 06:53+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/synfig/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -1086,11 +1086,11 @@ msgstr ""
 msgid "Unable to open pipe to encodedv"
 msgstr ""
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:215
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:225
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:279
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:297
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
 msgid "Unable to open pipe to ffmpeg"
 msgstr ""
 

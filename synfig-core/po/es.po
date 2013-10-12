@@ -1,13 +1,11 @@
-# translation of es.po to Español
-# Spanish translations for Synfig Core package
-# Traducciones al español para el paquete Synfig Core.
-# Copyright (C) 2012-2013 Synfig Contributors
-# This file is distributed under the same license as the Synfig package.
+# Translation file for Synfig Core package.
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
 # genete <genetita@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012
 # carlos_tutor <carlos_tutor@hotmail.com>, 2011
-# genete <genetita@gmail.com>, 2011
+# genete <genetita@gmail.com>, 2007-2013
 # genete <genetita@gmail.com>, 2013
 # genete <genetita@gmail.com>, 2011, 2012
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
@@ -15,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-07 21:14+0700\n"
-"PO-Revision-Date: 2013-10-07 14:23+0000\n"
+"POT-Creation-Date: 2013-10-10 22:47+0700\n"
+"PO-Revision-Date: 2013-10-11 06:53+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -957,7 +955,7 @@ msgstr "Combar por Curva"
 
 #: src/modules/lyr_std/curvewarp.cpp:399
 msgid "Position of the destiny Spline line"
-msgstr ""
+msgstr "Posición del spline destino"
 
 #: src/modules/lyr_std/curvewarp.cpp:404
 msgid "How much is expanded the result perpendicular to the source line"
@@ -1044,22 +1042,22 @@ msgstr "%s no está en formato BMP"
 #: src/modules/mod_bmp/mptr_bmp.cpp:150
 #, c-format
 msgid "Failure while reading BITMAPFILEHEADER from %s"
-msgstr ""
+msgstr "Fallo mientras se leía BITMAPFILEHEADER desde %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:158
 #, c-format
 msgid "Failure while reading BITMAPINFOHEADER from %s"
-msgstr ""
+msgstr "Falló mientras leía BITMAPINFOHEADER desde %s"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:168
 #, c-format
 msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
-msgstr ""
+msgstr "Mal BITMAPFILEHEADER in %s. (bfOffsetBits=%d, debería ser %d)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:176
 #, c-format
 msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
-msgstr ""
+msgstr "Mal BITMAPINFOHEADER in %s. (biSize=%d, debería ser 40)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
 msgid "Reading compressed bitmaps is not supported"
@@ -1094,11 +1092,11 @@ msgstr "Imposible escribir la información de cabecera"
 msgid "Unable to open pipe to encodedv"
 msgstr "Imposible abrir tubería para encodedv"
 
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:215
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:225
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:279
-#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:297
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
 msgid "Unable to open pipe to ffmpeg"
 msgstr "Imposible abrir tubería para ffmpeg"
 
@@ -1498,7 +1496,7 @@ msgstr "Loopyness"
 
 #: src/modules/mod_geometry/outline.cpp:866
 msgid "(Currently not used)"
-msgstr ""
+msgstr "(Actualmente no usado)"
 
 #: src/modules/mod_geometry/outline.cpp:870
 msgid "When checked the width takes the length of the spline to interpolate"
@@ -2444,7 +2442,7 @@ msgstr "<%s>esta perdiendo el enlace %d (%s)"
 
 #: src/synfig/loadcanvas.cpp:1861
 msgid "Unable to create <list>"
-msgstr ""
+msgstr "Imposible crear <list>"
 
 #: src/synfig/loadcanvas.cpp:1903 src/synfig/loadcanvas.cpp:2150
 msgid "<entry> is missing its contents or missing \"use\" element"
@@ -2551,7 +2549,7 @@ msgstr "Lienzos de grupo no pueden tener una sección <defs>"
 
 #: src/synfig/loadcanvas.cpp:2717
 msgid "Inline canvas cannot have a <bones> section"
-msgstr ""
+msgstr "Lienzo en línea no puede tener una sección <bones>"
 
 #: src/synfig/loadcanvas.cpp:2725
 msgid "Group canvases cannot have keyframes"
@@ -3010,13 +3008,13 @@ msgstr "Punto de Spline"
 #. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:349 src/synfig/value.cpp:394
 msgid "matrix"
-msgstr ""
+msgstr "matriz"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:350 src/synfig/value.cpp:396
 msgid "bone_weight_pair"
-msgstr ""
+msgstr "par_hueso_peso"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
@@ -3058,13 +3056,13 @@ msgstr "Gradiente"
 #. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:357 src/synfig/value.cpp:410
 msgid "bone_object"
-msgstr ""
+msgstr "objeto_hueso"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:358 src/synfig/value.cpp:412
 msgid "bone_valuenode"
-msgstr ""
+msgstr "valor_de_nodo_hueso"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
@@ -3250,23 +3248,23 @@ msgstr "O"
 
 #: src/synfig/valuenode.cpp:199
 msgid "Bone Influence"
-msgstr ""
+msgstr "Influencia de Hueso"
 
 #: src/synfig/valuenode.cpp:200
 msgid "Bone"
-msgstr ""
+msgstr "Hueso"
 
 #: src/synfig/valuenode.cpp:201
 msgid "Root Bone"
-msgstr ""
+msgstr "Hueso Raíz"
 
 #: src/synfig/valuenode.cpp:202
 msgid "Static List"
-msgstr ""
+msgstr "Lista Estática"
 
 #: src/synfig/valuenode.cpp:203
 msgid "Bone Weight Pair"
-msgstr ""
+msgstr "Par Hueso-Peso"
 
 #: src/synfig/valuenode.cpp:205 src/synfig/valuenode_wplist.cpp:360
 msgid "WPList"
@@ -4026,7 +4024,7 @@ msgstr "Intersección"
 
 #: src/synfig/valuenode_step.cpp:213
 msgid "Value that define whether the step is centered on the value [0,1]"
-msgstr ""
+msgstr "Valor que definine si el paso es centrado sobre el valor [0,1]"
 
 #: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
 msgid "Color 1"
