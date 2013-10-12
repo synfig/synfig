@@ -151,6 +151,7 @@ About::About()
 	authors.push_back("Gerald Young (Yoyobuae)");
 	authors.push_back("Gerco Ballintijn");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
+	authors.push_back("Ivan Mahonin");
 	authors.push_back("Jerome Blanchi (d.j.a.y.)");
 	authors.push_back("Konstantin Dmitriev (zelgadis)");
 	authors.push_back("Luka Pravica");
