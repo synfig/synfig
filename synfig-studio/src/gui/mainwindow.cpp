@@ -38,6 +38,8 @@
 #include <gtkmm/menubar.h>
 #include <gtkmm/box.h>
 
+#include <gtkmm/inputdialog.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -121,20 +123,103 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow() { }
 
+void MainWindow::create_stock_dialog1()
+{
+	// TODO:
+	//DockDialog* dock_dialog(new DockDialog);
+	//dock_dialog->set_contents("canvases history");
+	//dock_dialog->set_composition_selector(true);
+	//dock_dialog->present();
+}
+void MainWindow::create_stock_dialog2()
+{
+	// TODO:
+	//DockDialog* dock_dialog(new DockDialog);
+	//dock_dialog->set_contents("layers children keyframes | params");
+	//dock_dialog->present();
+}
+
+void
+MainWindow::save_all()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
+		(*iter)->save();
+}
+
+void
+MainWindow::show_dialog_input()
+{
+	App::dialog_input->present();
+}
+
 void
 MainWindow::init_menus()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
+	// file
 	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
 	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-saveall")),
+		sigc::ptr_fun(save_all)
+	);
+	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
+		sigc::ptr_fun(&MainWindow::show_dialog_input)
+	);
+	action_group->add( Gtk::Action::create("setup", _("Setup...")),
+		sigc::ptr_fun(&studio::App::show_setup)
+	);
+	action_group->add( Gtk::Action::create("reset-initial-preferences", _("Reset to default Setup values")),
+		sigc::ptr_fun(&studio::App::reset_initial_preferences)
+	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
+
+	// file -> panels
+	action_group->add( Gtk::Action::create("panels-vertical", _("Vertical Dock: Canvases, History")),
+		sigc::ptr_fun(&MainWindow::create_stock_dialog1)
+	);
+	action_group->add( Gtk::Action::create("panels-horizontal", _("Horizontal Dock: Layers, Library, Parameters")),
+		sigc::ptr_fun(&MainWindow::create_stock_dialog2)
+	);
+	action_group->add( Gtk::Action::create("panels-reset", _("Reset Windows to Original Layout")),
+		sigc::ptr_fun(App::reset_initial_window_configuration)
+	);
+
+	// help
+	#define URL(action_name,title,url) \
+		action_group->add( Gtk::Action::create(action_name, title), \
+			sigc::bind(sigc::ptr_fun(&studio::App::open_url),url))
+	#define WIKI(action_name,title,page) \
+		URL(action_name,title, "http://synfig.org/wiki" + String(page))
+	#define SITE(action_name,title,page) \
+		URL(action_name,title, "http://synfig.org/cms" + String(page))
+
+	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
+		sigc::ptr_fun(studio::App::dialog_help)
+	);
+
+	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
+	WIKI("help-tutorials",	_("Tutorials"),					_("/Category:Tutorials"));
+	WIKI("help-reference",	_("Reference"),					_("/Category:Reference"));
+	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
+	SITE("help-support",	_("Get Support"),				_("/en/support")		);
+
+	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
+		sigc::ptr_fun(studio::App::dialog_help)
+	);
+	action_group->add( Gtk::Action::create("help-about", Gtk::StockID("synfig-about")),
+		sigc::ptr_fun(studio::App::dialog_about)
+	);
+
+	// TODO: open recent
+	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
 }

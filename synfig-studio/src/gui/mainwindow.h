@@ -50,6 +50,11 @@ namespace studio {
 
 		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
+		static void create_stock_dialog1();
+		static void create_stock_dialog2();
+		static void save_all();
+		static void show_dialog_input();
+
 	public:
 		MainWindow();
 		virtual ~MainWindow();
