@@ -437,7 +437,8 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 				Dockable *dockable = &find_dockable(name);
 				if (dockable != NULL)
 				{
-					if (book == NULL) book = manage(new DockBook());
+					remove_widget_recursive(*dockable);
+					if (book == NULL) { book = manage(new DockBook()); book->show(); }
 					book->add(*dockable);
 				}
 			}
@@ -471,6 +472,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		dialog->move(left, top);
 		dialog->set_default_size(width, height);
 		dialog->resize(width, height);
+		dialog->present();
 
 		return NULL;
 	}
@@ -504,6 +506,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		App::main_window->move(left, top);
 		App::main_window->set_default_size(width, height);
 		App::main_window->resize(width, height);
+		App::main_window->present();
 
 		return NULL;
 	}
@@ -627,12 +630,12 @@ Gtk::Widget* DockManager::load_widget_from_string(const std::string &x)
 std::string DockManager::save_layout_to_string()
 {
 	std::string res;
-	write_widget(res, App::main_window);
 	for(std::list<DockDialog*>::iterator i = dock_dialog_list_.begin(); i != dock_dialog_list_.end(); i++)
 	{
-		write_separator(res);
 		write_widget(res, *i);
+		write_separator(res);
 	}
+	write_widget(res, App::main_window);
 	return res;
 }
 
@@ -645,5 +648,27 @@ void DockManager::load_layout_from_string(const std::string &x)
 	} while (read_separator(copy));
 }
 
+std::string DockManager::layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy)
+{
+	std::string res;
+	size_t pos_begin;
+	size_t pos_end = 0;
+	while(true)
+	{
+		pos_begin = tpl.find_first_of("%", pos_end);
+		if (pos_begin == std::string::npos)
+			{ res+=tpl.substr(pos_end); break; }
+		res+=tpl.substr(pos_end, pos_begin-pos_end);
+		pos_end = tpl.find_first_of("xyXY", pos_begin);
+		if (pos_end == std::string::npos) break;
+		float f = (float)strtol(tpl.c_str()+pos_begin+1, NULL, 10);
+		if (tpl[pos_end] == 'X') res += strprintf("%d", (int)roundf(dx+f*sx/100.f));
+		if (tpl[pos_end] == 'Y') res += strprintf("%d", (int)roundf(dy+f*sy/100.f));
+		if (tpl[pos_end] == 'x') res += strprintf("%d", (int)roundf(f*sx/100.f));
+		if (tpl[pos_end] == 'y') res += strprintf("%d", (int)roundf(f*sy/100.f));
+		pos_end++;
+	}
+	return res;
+}
 
 

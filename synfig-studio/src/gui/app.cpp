@@ -1769,80 +1769,36 @@ App::reset_initial_window_configuration()
 	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
 	// primary one.
 	screen->get_monitor_geometry(0,rect);
-#define hpanel_width 79.0f
-#define hpanel_height 25.0f
-#define vpanel_width 20.0f
-#define vpanel_height 100.0f
-#define vdock 20.0f
-#define hdock 20.0f
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
 
-/* percentages referred to width or height of the screen
- *---------------------------------------------------------------------*
- *    t   |                                                |
- *    o   |                                                |
- *    o   |                                                |vdock%
- *    l   |                                                |
- *    b   |                                                |------------
- *    o   |                                                |
- *    x   |                                                |vdock%
- * --------                                                |
- *                                                         |
- *                                                         |------------
- *                                                         |
- *                                                         |vdock%
- *                                                         |
- *                                                         |
- *-----hdock%----------------------------------------------|------------
- *             |                                           |
- *             |                                           |vdock%
- *             |                                           |
- *             |                                           |
- * --------------------------------------------------------------------*
-*/
-// Vertical Panel
-	int v_xpos=rect.get_x() + rect.get_width()*(1.0-vpanel_width/100.0);
-	int v_xsize=rect.get_width()*vpanel_width/100.0;
-	int v_ypos=rect.get_y();
-	int v_ysize=rect.get_height()*vpanel_height/100.0;
-	std::string v_pos(strprintf("%d %d", v_xpos, v_ypos));
-	std::string v_size(strprintf("%d %d", v_xsize, v_ysize));
-// Horizontal Panel
-	int h_xpos=rect.get_x();
-	int h_xsize=rect.get_width()*hpanel_width/100.0;
-	int h_ypos=rect.get_y()+ rect.get_height()*(1.0-hpanel_height/100.0);;
-	int h_ysize=rect.get_height()*hpanel_height/100.0;
-	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
-	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
-	int v_dock1 = rect.get_height()*vdock*0.8/100.0;
-	int v_dock2 = rect.get_height()*vdock*0.6/100.0;
-	int v_dock3 = rect.get_height()*vdock*1.1/100.0;
-	int h_dock = rect.get_width()*hdock/100.0;
-//Contents size
-	std::string v_contents(strprintf("%d %d %d", v_dock1, v_dock2, v_dock3));
-	std::string h_contents(strprintf("%d", h_dock));
-// Tool Box position
-	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
-/*
-	synfig::info("tool box pos: %s", tbox_pos.c_str());
-	synfig::info("v_contents sizes: %s", v_contents.c_str());
-	synfig::info("v_pos: %s", v_pos.c_str());
-	synfig::info("v_sizes: %s", v_size.c_str());
-	synfig::info("h_contents sizes: %s", h_contents.c_str());
-	synfig::info("h_pos: %s", h_pos.c_str());
-	synfig::info("h_sizes: %s", h_size.c_str());
-*/
-	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
-	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
-	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
-	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size",h_contents);
-	synfigapp::Main::settings().set_value("dock.dialog.2.size",h_size);
-	synfigapp::Main::settings().set_value("dock.dialog.2.pos",h_pos);
-	synfigapp::Main::settings().set_value("window.toolbox.pos",tbox_pos);
+	std::string tpl =
+	"[mainwindow|%5X|%5Y|%90x|%90y|"
+		"[hor|%30x"
+			"|[vert|%70y"
+				"|[hor|%15x"
+					"|[book|toolbox]"
+					"|[mainnotebook]"
+				"]"
+				"|[hor|%25x"
+					"|[book|params]"
+					"|[book|keyframes]"
+				"]"
+			"]"
+			"|[vert|%20y"
+				"|[book|canvases]"
+				"|[vert|%25y"
+					"|[book|history]"
+					"|[book|layers]"
+				"]"
+			"]"
+		"]"
+	"]";
 
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
 }
 

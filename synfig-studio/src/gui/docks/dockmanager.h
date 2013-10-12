@@ -96,6 +96,8 @@ public:
 	std::string save_layout_to_string();
 	void load_layout_from_string(const std::string &x);
 
+	static std::string layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy);
+
 	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);
 	static void remove_widget_recursive(Gtk::Widget &widget);
 	static void remove_widget_by_pointer_recursive(Gtk::Widget *widget) { remove_widget_recursive(*widget); }
