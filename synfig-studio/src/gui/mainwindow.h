@@ -54,6 +54,7 @@ namespace studio {
 		static void create_stock_dialog2();
 		static void save_all();
 		static void show_dialog_input();
+		void on_recent_files_changed();
 
 	public:
 		MainWindow();

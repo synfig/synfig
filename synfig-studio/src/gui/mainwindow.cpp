@@ -116,7 +116,10 @@ MainWindow::MainWindow()
 	init_menus();
 
 	notebook_->signal_switch_page().connect(
-		sigc::mem_fun(*this, &studio::MainWindow::on_switch_page) );
+		sigc::mem_fun(*this, &MainWindow::on_switch_page) );
+
+	App::signal_recent_files_changed().connect(
+		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
 
 	GRAB_HINT_DATA("canvas_view");
 }
@@ -211,9 +214,6 @@ MainWindow::init_menus()
 	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
 	SITE("help-support",	_("Get Support"),				_("/en/support")		);
 
-	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
-		sigc::ptr_fun(studio::App::dialog_help)
-	);
 	action_group->add( Gtk::Action::create("help-about", Gtk::StockID("synfig-about")),
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
@@ -222,6 +222,46 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
+}
+
+void
+MainWindow::on_recent_files_changed()
+{
+	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+
+	int index = 0;
+	std::string menu_items;
+	for(list<string>::const_iterator i=App::get_recent_files().begin();i!=App::get_recent_files().end();i++)
+	{
+		std::string raw = basename(*i);
+		std::string quoted;
+		size_t pos = 0, last_pos = 0;
+
+		// replace _ in filenames by __ or it won't show up in the menu
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+		quoted += raw.substr(last_pos);
+
+		std::string action_name = strprintf("file-recent-%d", index++);
+		menu_items += "<menuitem action='" + action_name +"' />";
+
+		action_group->add( Gtk::Action::create(action_name, quoted),
+			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),*i))
+		);
+	}
+
+	std::string ui_info =
+		"<menu action='menu-file'><menu action='menu-open-recent'>"
+	  + menu_items
+	  + "</menu></menu>";
+	std::string ui_info_popup =
+		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
+	std::string ui_info_menubar =
+		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
+
+	App::ui_manager()->insert_action_group(action_group);
+	App::ui_manager()->add_ui_from_string(ui_info_popup);
+	App::ui_manager()->add_ui_from_string(ui_info_menubar);
 }
 
 void
