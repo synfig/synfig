@@ -37,7 +37,7 @@
 #include "dialogs/dialog_color.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "canvasview.h"
 #include <synfigapp/main.h>
 
@@ -101,14 +101,14 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvas_view):
 	synfig::info("Entered Eyedrop State");
 	canvas_view->work_area->set_cursor(Gdk::Cursor(Gdk::CROSSHAIR));
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 StateEyedrop_Context::~StateEyedrop_Context()
 {
 	synfig::info("Left Eyedrop State");
 	canvas_view->work_area->reset_cursor();
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file toolbox.cpp
+/*!	\file dock_toolbox.cpp
 **	\brief writeme
 **
 **	$Id$
@@ -66,7 +66,7 @@
 
 #include <sstream>
 
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "instance.h"
 #include "app.h"
 #include "canvasview.h"
@@ -93,16 +93,6 @@ using namespace studio;
 using namespace sigc;
 
 /* === M A C R O S ========================================================= */
-
-#define GRAB_HINT_DATA(y,default)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} else {\
-			set_type_hint(default); \
-		} \
-	}
 
 /* === G L O B A L S ======================================================= */
 
@@ -176,116 +166,9 @@ close_selected_instance()
 	//assert(instance.unique());
 }
 
-
-static void
-show_dialog_input()
+Dock_Toolbox::Dock_Toolbox():
+	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-toolbox"))
 {
-	App::dialog_input->present();
-}
-
-void _create_stock_dialog1()
-{
-	// TODO:
-	//DockDialog* dock_dialog(new DockDialog);
-	//dock_dialog->set_contents("canvases history");
-	//dock_dialog->set_composition_selector(true);
-	//dock_dialog->present();
-}
-void _create_stock_dialog2()
-{
-	// TODO:
-	//DockDialog* dock_dialog(new DockDialog);
-	//dock_dialog->set_contents("layers children keyframes | params");
-	//dock_dialog->present();
-}
-
-Toolbox::Toolbox():
-	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
-	dialog_settings(this,"toolbox")
-{
-	GRAB_HINT_DATA(
-		"toolbox",
-//#ifdef __APPLE__
-		Gdk::WINDOW_TYPE_HINT_NORMAL
-//#else
-//		Gdk::WINDOW_TYPE_HINT_UTILITY
-//#endif
-	);
-	set_keep_above(false);
-	set_role("toolbox");
-
-
-
-	recent_files_menu= manage(new class Gtk::Menu());
-
-	Gtk::Menu	*filemenu	=manage(new class Gtk::Menu());
-
-	dock_dialogs=manage(new class Gtk::Menu());
-
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Vertical Dock: Canvases, History"),sigc::ptr_fun(_create_stock_dialog1)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Horizontal Dock: Layers, Library, Parameters"),sigc::ptr_fun(_create_stock_dialog2)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Reset Windows to Original Layout"),sigc::ptr_fun(App::reset_initial_window_configuration)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
-
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::NEW,
-		sigc::ptr_fun(&studio::App::new_instance)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::OPEN,
-		sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), "")));
-
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
-
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::SAVE,
-		sigc::ptr_fun(save_selected_instance)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::SAVE_AS,
-		sigc::ptr_fun(save_as_selected_instance)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-saveall"),
-		sigc::ptr_fun(save_all)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,
-		sigc::ptr_fun(close_selected_instance)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Panels"),*dock_dialogs));
-
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Input Devices..."),
-		sigc::ptr_fun(&show_dialog_input)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Setup..."),
-		sigc::ptr_fun(&studio::App::show_setup)));
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Reset to default Setup values"),
-		sigc::ptr_fun(&studio::App::reset_initial_preferences)));
-
-	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID(Gtk::Stock::QUIT),
-		sigc::ptr_fun(studio::App::quit)));
-
-#define WIKI(title,page)											\
-	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
-		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org/wiki")+page)))
-
-#define SITE(title,page)											\
-	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
-		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org/cms")+page)))
-
-	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
-	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP, sigc::ptr_fun(studio::App::dialog_help)));
-	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Tutorials"),					/* TRANSLATORS: a wiki page */ _("/Category:Tutorials")				);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Reference"),					/* TRANSLATORS: a wiki page */ _("/Category:Reference")				);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Frequently Asked Questions"),/* TRANSLATORS: a wiki page */ _("/FAQ")					);
-	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	/* TRANSLATORS: Help menu entry */ SITE(_("Get Support"),				/* TRANSLATORS: a website page */ _("/en/support")			);
-	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
-		sigc::ptr_fun(studio::App::dialog_about)));
-
-	Gtk::MenuBar *menubar1 = manage(new class Gtk::MenuBar());
-	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_File"),*filemenu));
-	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Help"),*helpmenu));
-
-
-	menubar1->show();
-
 	Gtk::Image *icon;
 
 	ADD_TOOLBOX_BUTTON(button_new,"gtk-new",_("New..."));
@@ -347,28 +230,17 @@ Toolbox::Toolbox():
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
 	table1->set_col_spacings(0);
-	table1->attach(*menubar1,        0,1, 0,1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
 	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
 
-	// Set the parameters for this window
 	add(*table1);
-	set_title(_("Synfig Studio"));
-	set_modal(false);
-	property_window_position().set_value(Gtk::WIN_POS_NONE);
-	signal_delete_event().connect(sigc::ptr_fun(App::shutdown_request));
-	set_resizable(false);
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
-			sigc::mem_fun(*this,&studio::Toolbox::update_undo_redo)
+			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_undo_redo)
 		)
-	);
-
-	App::signal_recent_files_changed().connect(
-			sigc::mem_fun(*this,&studio::Toolbox::on_recent_files_changed)
 	);
 
 	button_undo->set_sensitive(false);
@@ -380,31 +252,25 @@ Toolbox::Toolbox():
 //	listTargets.push_back( Gtk::TargetEntry("image/x-sif") );
 
 	drag_dest_set(listTargets);
-	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Toolbox::on_drop_drag_data_received) );
-
-	App::dock_manager->signal_dockable_registered().connect(sigc::mem_fun(*this,&Toolbox::dockable_registered));
+	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
 
 	changing_state_=false;
 
-
-	add_accel_group(App::ui_manager()->get_accel_group());
-
-	App::signal_present_all().connect(sigc::mem_fun0(*this,&Toolbox::present));
+	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
 }
 
-Toolbox::~Toolbox()
+Dock_Toolbox::~Dock_Toolbox()
 {
 	hide();
 	//studio::App::cb.task(_("Toolbox: I was nailed!"));
 	//studio::App::quit();
 
-	if(studio::App::toolbox==this)
-		studio::App::toolbox=NULL;
-
+	if(studio::App::dock_toolbox==this)
+		studio::App::dock_toolbox=NULL;
 }
 
 void
-Toolbox::set_active_state(const synfig::String& statename)
+Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
 	std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 
@@ -438,7 +304,7 @@ Toolbox::set_active_state(const synfig::String& statename)
 }
 
 void
-Toolbox::change_state(const synfig::String& statename)
+Dock_Toolbox::change_state(const synfig::String& statename)
 {
 	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
@@ -460,7 +326,7 @@ Toolbox::change_state(const synfig::String& statename)
 }
 
 void
-Toolbox::change_state_(const Smach::state_base *state)
+Dock_Toolbox::change_state_(const Smach::state_base *state)
 {
 	if(changing_state_)
 		return;
@@ -484,12 +350,12 @@ Toolbox::change_state_(const Smach::state_base *state)
 }
 
 
-/*! \fn Toolbox::add_state(const Smach::state_base *state)
+/*! \fn Dock_Toolbox::add_state(const Smach::state_base *state)
  *  \brief Add and connect a toogle button to the toolbox defined by a state
  *  \param state a const pointer to Smach::state_base
 */
 void
-Toolbox::add_state(const Smach::state_base *state)
+Dock_Toolbox::add_state(const Smach::state_base *state)
 {
 	Gtk::Image *icon;
 
@@ -524,7 +390,7 @@ Toolbox::add_state(const Smach::state_base *state)
 
 	button->signal_clicked().connect(
 		sigc::bind(
-			sigc::mem_fun(*this,&studio::Toolbox::change_state_),
+			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
 			state
 		)
 	);
@@ -534,7 +400,7 @@ Toolbox::add_state(const Smach::state_base *state)
 
 
 void
-Toolbox::update_undo_redo()
+Dock_Toolbox::update_undo_redo()
 {
 	etl::handle<Instance> instance=App::get_selected_instance();
 	if(instance)
@@ -573,33 +439,7 @@ Toolbox::update_undo_redo()
 }
 
 void
-Toolbox::on_recent_files_changed()
-{
-	while(recent_files_menu->get_children().size())
-		recent_files_menu->remove(**recent_files_menu->get_children().begin());
-
-	list<string>::const_iterator iter;
-	for(iter=App::get_recent_files().begin();iter!=App::get_recent_files().end();iter++)
-	{
-		string raw = basename(*iter), quoted;
-		size_t pos = 0, last_pos = 0;
-
-		// replace _ in filenames by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
-			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-		quoted += raw.substr(last_pos);
-
-		recent_files_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(quoted,
-			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),*iter))
-		));
-	}
-
-	// HACK
-	show();
-}
-
-void
-Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
+Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
 {
 	// We will make this true once we have a solid drop
 	bool success(false);
@@ -648,42 +488,4 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 
 	// Finish the drag
 	context->drag_finish(success, false, time);
-}
-
-bool
-Toolbox::on_key_press_event(GdkEventKey* event)
-{
-	Gtk::Widget* focused_widget = get_focus();
-	if(focused_widget && focused_widget_has_priority(focused_widget))
-	{
-		if(focused_widget->event((GdkEvent*)event))
-		return true;
-	}
-	else if(Gtk::Window::on_key_press_event(event))
-			return true;
-		else
-			if (focused_widget) return focused_widget->event((GdkEvent*)event);
-	return false;
-}
-
-bool
-Toolbox::focused_widget_has_priority(Gtk::Widget * focused)
-{
-	if(dynamic_cast<Gtk::Entry*>(focused))
-		return true;
-	return false;
-}
-
-void
-Toolbox::dockable_registered(Dockable* x)
-{
-	dock_dialogs->items().push_back(
-		Gtk::Menu_Helpers::MenuElem(
-			x->get_local_name(),
-			sigc::mem_fun(
-				*x,
-				&Dockable::present
-			)
-		)
-	);
 }

@@ -79,7 +79,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
 #include "mainwindow.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "onemoment.h"
 
 #include "docks/dockmanager.h"
@@ -241,7 +241,7 @@ studio::About *studio::App::about=NULL;
 
 studio::MainWindow *studio::App::main_window=NULL;
 
-studio::Toolbox *studio::App::toolbox=NULL;
+studio::Dock_Toolbox *studio::App::dock_toolbox=NULL;
 
 studio::AutoRecover *studio::App::auto_recover=NULL;
 
@@ -1361,7 +1361,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 
 		studio_init_cb.task(_("Init Toolbox..."));
-		toolbox=new studio::Toolbox();
+		dock_toolbox=new studio::Dock_Toolbox();
+		dock_manager->register_dockable(*dock_toolbox);
 
 		studio_init_cb.task(_("Init About Dialog..."));
 		about=new studio::About();
@@ -1549,7 +1550,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_manager->show_all_dock_dialogs();
 
 		main_window->present();
-		toolbox->present();
+		dock_toolbox->present();
 
 		splash_screen.hide();
 
@@ -1595,9 +1596,7 @@ App::~App()
 
 	delete main_window;
 
-	toolbox->hide();
-
-	delete toolbox;
+	delete dock_toolbox;
 
 	delete dialog_setup;
 

@@ -31,6 +31,8 @@
 
 #include "mainwindow.h"
 #include "canvasview.h"
+#include "docks/dockable.h"
+#include "docks/dockmanager.h"
 #include "docks/dockdroparea.h"
 
 #include <synfigapp/main.h>
@@ -114,12 +116,20 @@ MainWindow::MainWindow()
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	init_menus();
+	panels_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	App::ui_manager()->insert_action_group(panels_action_group);
 
 	notebook_->signal_switch_page().connect(
 		sigc::mem_fun(*this, &MainWindow::on_switch_page) );
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
+
+	signal_delete_event().connect(
+		sigc::ptr_fun(App::shutdown_request) );
+
+	App::dock_manager->signal_dockable_registered().connect(
+		sigc::mem_fun(*this,&MainWindow::on_dockable_registered) );
 
 	GRAB_HINT_DATA("canvas_view");
 }
@@ -224,6 +234,7 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 }
 
+
 void
 MainWindow::on_recent_files_changed()
 {
@@ -260,6 +271,26 @@ MainWindow::on_recent_files_changed()
 		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
 
 	App::ui_manager()->insert_action_group(action_group);
+	App::ui_manager()->add_ui_from_string(ui_info_popup);
+	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+}
+
+void
+MainWindow::on_dockable_registered(Dockable* dockable)
+{
+	panels_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
+		sigc::mem_fun(*dockable, &Dockable::present)
+	);
+
+	std::string ui_info =
+		"<menu action='menu-file'><menu action='menu-panels'>"
+	    "<menuitem action='panel-" + dockable->get_name() + "' />"
+	    "</menu></menu>";
+	std::string ui_info_popup =
+		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
+	std::string ui_info_menubar =
+		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
+
 	App::ui_manager()->add_ui_from_string(ui_info_popup);
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
 }

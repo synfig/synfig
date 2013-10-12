@@ -88,7 +88,6 @@ typedef Gtk::UIManager UIManager;
 
 class About;
 class MainWindow;
-class Toolbox;
 class Instance;
 class CanvasView;
 class Dialog_Setup;
@@ -100,6 +99,7 @@ class AutoRecover;
 
 class DockManager;
 
+class Dock_Toolbox;
 class Dock_History;
 class Dock_Canvases;
 
@@ -200,7 +200,7 @@ public:
 
 	static About *about;
 	static MainWindow *main_window;
-	static Toolbox *toolbox;
+	static Dock_Toolbox *dock_toolbox;
 
 	static std::list<etl::handle<Instance> > instance_list;
 

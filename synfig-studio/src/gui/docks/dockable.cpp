@@ -82,7 +82,6 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	title_label_(local_name,Gtk::ALIGN_LEFT),
 	stock_id_(stock_id_)
 {
-	parent_=0;
 	scrolled_=0;
 
 	use_scrolled_=true;
@@ -167,13 +166,19 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
 
-		if(dockable.parent_ != parent_)
-			parent_->add(dockable,parent_->page_num(*this));
-		else
-			parent_->reorder_child(dockable,parent_->page_num(*this));
-		dockable.present();
-		context->drag_finish(true, false, time);
-		return;
+		DockBook *parent = dynamic_cast<DockBook*>(get_parent());
+		DockBook *dockable_parent = dynamic_cast<DockBook*>(dockable.get_parent());
+
+		if (parent)
+		{
+			if (dockable_parent != parent)
+				 parent->add(dockable,parent->page_num(*this));
+			else
+				parent->reorder_child(dockable,parent->page_num(*this));
+			dockable.present();
+			context->drag_finish(true, false, time);
+			return;
+		}
 	}
 
 	context->drag_finish(false, false, time);
@@ -307,10 +312,11 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 void
 Dockable::present()
 {
-	if(parent_)
+	DockBook *parent = dynamic_cast<DockBook*>(get_parent());
+	if(parent)
 	{
-		parent_->set_current_page(parent_->page_num(*this));
-		parent_->present();
+		parent->set_current_page(parent->page_num(*this));
+		parent->present();
 	}
 	else
 	{

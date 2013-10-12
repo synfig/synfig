@@ -60,7 +60,6 @@ OTHER_HH = \
 	render.h \
 	splash.h \
 	statemanager.h \
-	toolbox.h \
 	valuelink.h \
 	workarea.h \
 	mainwindow.h
@@ -85,7 +84,6 @@ OTHER_CC = \
 	render.cpp \
 	splash.cpp \
 	statemanager.cpp \
-	toolbox.cpp \
 	valuelink.cpp \
 	workarea.cpp \
 	mainwindow.cpp

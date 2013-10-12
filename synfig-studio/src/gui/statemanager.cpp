@@ -35,7 +35,7 @@
 #include <gtkmm/action.h>
 #include <synfig/string.h>
 #include "app.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 
 #include "general.h"
 
@@ -74,7 +74,7 @@ StateManager::~StateManager()
 void
 StateManager::change_state_(const Smach::state_base *state)
 {
-	App::toolbox->change_state_(state);
+	App::dock_toolbox->change_state_(state);
 }
 
 void
@@ -121,7 +121,7 @@ StateManager::add_state(const Smach::state_base *state)
 
 	App::ui_manager()->ensure_update();
 
-	App::toolbox->add_state(state);
+	App::dock_toolbox->add_state(state);
 }
 
 Glib::RefPtr<Gtk::ActionGroup>

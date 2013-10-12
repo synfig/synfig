@@ -99,7 +99,7 @@
 #include "event_layerclick.h"
 
 #include "mainwindow.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_soundselect.h"
@@ -3945,7 +3945,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 
 	synfigapp::InputDevice::Handle input_device;
 	input_device=synfigapp::Main::select_input_device(device->name);
-	App::toolbox->change_state(input_device->get_state());
+	App::dock_toolbox->change_state(input_device->get_state());
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }
 

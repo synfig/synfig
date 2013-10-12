@@ -46,7 +46,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -215,7 +215,7 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	get_work_area()->set_cursor(Gdk::EXCHANGE);
 //	get_work_area()->reset_cursor();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 
 	load_settings();
 	refresh_scale_flag();
@@ -253,7 +253,7 @@ StateRotate_Context::~StateRotate_Context()
 
 	App::dialog_tool_options->clear();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 

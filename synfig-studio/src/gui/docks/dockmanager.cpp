@@ -427,9 +427,6 @@ DockManager::remove_widget_recursive(Gtk::Widget &widget)
 			delete book;
 		}
 	}
-
-	Dockable *dockable = dynamic_cast<Dockable*>(&widget);
-	if (dockable) dockable->parent_ = NULL;
 }
 
 

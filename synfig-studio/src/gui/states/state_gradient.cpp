@@ -46,7 +46,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -334,7 +334,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_user_click));
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -379,7 +379,7 @@ StateGradient_Context::~StateGradient_Context()
 
 	get_work_area()->refresh_cursor();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

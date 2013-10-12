@@ -36,7 +36,7 @@
 #include "docks/dockdialog.h"
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
-#include "toolbox.h"
+#include "mainwindow.h"
 #include "widgets/widget_compselect.h"
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
@@ -102,7 +102,7 @@ DockDialog::DockDialog():
 	//! paragraph 3 of http://standards.freedesktop.org/wm-spec/1.3/ar01s07.html suggests we can
 	// this seems to have bad effects on KDE, so leave it disabled by default
 	if(getenv("SYNFIG_TRANSIENT_DIALOGS"))
-		set_transient_for(*App::toolbox);
+		set_transient_for(*App::main_window);
 
 	// Set up the window
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);

@@ -84,8 +84,6 @@ private:
 
 	Gtk::StockID stock_id_;
 
-	DockBook* parent_;
-
 	bool dnd_success_;
 
 public:

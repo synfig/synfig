@@ -43,7 +43,7 @@
 #include "app.h"
 #include <sigc++/signal.h>
 #include <sigc++/adaptors/hide.h>
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "onemoment.h"
 #include <synfig/savecanvas.h>
 
@@ -176,7 +176,7 @@ void
 Instance::set_undo_status(bool x)
 {
 	undo_status_=x;
-	App::toolbox->update_undo_redo();
+	App::dock_toolbox->update_undo_redo();
 	signal_undo_redo_status_changed()();
 }
 
@@ -184,7 +184,7 @@ void
 Instance::set_redo_status(bool x)
 {
 	redo_status_=x;
-	App::toolbox->update_undo_redo();
+	App::dock_toolbox->update_undo_redo();
 	signal_undo_redo_status_changed()();
 }
 

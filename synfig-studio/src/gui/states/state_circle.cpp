@@ -46,7 +46,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -506,7 +506,7 @@ options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),	0, 1, 15
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -540,7 +540,7 @@ StateCircle_Context::~StateCircle_Context()
 
 	get_canvas_view()->queue_rebuild_ducks();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

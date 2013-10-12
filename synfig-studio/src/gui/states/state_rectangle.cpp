@@ -47,7 +47,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -417,7 +417,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::DOTBOX);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -452,7 +452,7 @@ StateRectangle_Context::~StateRectangle_Context()
 
 	get_canvas_view()->queue_rebuild_ducks();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

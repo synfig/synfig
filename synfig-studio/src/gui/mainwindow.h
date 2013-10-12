@@ -40,10 +40,13 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+	class Dockable;
+
 	class MainWindow: public Gtk::Window
 	{
 	private:
 		Gtk::Notebook *notebook_;
+		Glib::RefPtr<Gtk::ActionGroup> panels_action_group;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -55,6 +58,7 @@ namespace studio {
 		static void save_all();
 		static void show_dialog_input();
 		void on_recent_files_changed();
+		void on_dockable_registered(Dockable* dockable);
 
 	public:
 		MainWindow();

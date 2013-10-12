@@ -96,7 +96,7 @@ DockBook::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
-		if(dockable.parent_!=this)
+		if(dockable.get_parent()!=this)
 			add(dockable);
 		dockable.present();
 		context->drag_finish(true, false, time);
@@ -128,8 +128,6 @@ DockBook::add(Dockable& dockable, int position)
 		)
 	);
 
-	dockable.parent_=this;
-
 	dockable.show();
 
 	signal_changed_();
@@ -160,7 +158,6 @@ DockBook::remove(Dockable& dockable)
 {
 	dockable.hide();
 	remove_page(dockable);
-	dockable.parent_=0;
 
 	if(!deleting_)
 	{

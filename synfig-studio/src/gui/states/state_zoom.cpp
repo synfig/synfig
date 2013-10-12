@@ -43,7 +43,7 @@
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include <synfigapp/main.h>
 
 #include "general.h"
@@ -128,7 +128,7 @@ StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 StateZoom_Context::~StateZoom_Context()
@@ -136,7 +136,7 @@ StateZoom_Context::~StateZoom_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

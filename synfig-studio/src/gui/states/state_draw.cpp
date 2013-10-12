@@ -51,7 +51,7 @@
 #include <utility>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 
 #include <synfigapp/blineconvert.h>
 #include <synfigapp/wplistconverter.h>
@@ -540,7 +540,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 
 	refresh_ducks();
 }
@@ -620,7 +620,7 @@ StateDraw_Context::~StateDraw_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result
