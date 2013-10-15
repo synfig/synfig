@@ -130,6 +130,7 @@ DockDialog::~DockDialog()
 	is_deleting=true;
 
 	// Remove us from the dock manager
+	DockManager::containers_to_remove_.erase(this);
 	if(App::dock_manager)try{
 		std::list<DockDialog*>::iterator iter;
 		for(iter=App::dock_manager->dock_dialog_list_.begin();iter!=App::dock_manager->dock_dialog_list_.end();++iter)

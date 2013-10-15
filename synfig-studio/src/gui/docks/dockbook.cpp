@@ -79,6 +79,7 @@ DockBook::DockBook()
 
 DockBook::~DockBook()
 {
+	DockManager::containers_to_remove_.erase(this);
 	deleting_=true;
 	clear();
 }

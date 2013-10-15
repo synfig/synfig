@@ -45,13 +45,14 @@
 namespace studio {
 
 class Dockable;
+class DockBook;
 class DockDialog;
 class DockSettings;
-class DockLinkPoint;
 
 class DockManager : public sigc::trackable
 {
 	friend class Dockable;
+	friend class DockBook;
 	friend class DockDialog;
 	friend class DockSettings;
 
@@ -63,6 +64,8 @@ class DockManager : public sigc::trackable
 	etl::smart_ptr<DockSettings> dock_settings;
 
 private:
+	static std::map<Gtk::Container*, bool> containers_to_remove_;
+
 	void write_separator(std::string &x, bool continue_ = true);
 	void write_string(std::string &x, const std::string &str);
 	void write_int(std::string &x, int i);
@@ -101,6 +104,8 @@ public:
 	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);
 	static void remove_widget_recursive(Gtk::Widget &widget);
 	static void remove_widget_by_pointer_recursive(Gtk::Widget *widget) { remove_widget_recursive(*widget); }
+	static void remove_empty_container_recursive(Gtk::Container &container);
+	static void remove_empty_container_by_pointer_recursive(Gtk::Container *container) { remove_empty_container_recursive(*container); }
 	static bool add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first);
 	static bool add_dockable(Gtk::Widget &dest_widget, Dockable &dockable, bool vertical, bool first);
 }; // END of class DockManager

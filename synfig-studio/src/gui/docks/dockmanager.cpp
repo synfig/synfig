@@ -61,6 +61,8 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+std::map<Gtk::Container*, bool> DockManager::containers_to_remove_;
+
 namespace studio {
 	class DockLinkPoint {
 	public:
@@ -281,35 +283,45 @@ DockManager::swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2)
 }
 
 void
-DockManager::remove_widget_recursive(Gtk::Widget &widget)
+DockManager::remove_empty_container_recursive(Gtk::Container &container)
 {
-	DockLinkPoint link(widget);
-	if (link.is_valid())
+	containers_to_remove_.erase(&container);
+	Gtk::Paned *paned = dynamic_cast<Gtk::Paned*>(&container);
+	Gtk::Window *window = dynamic_cast<Gtk::Window*>(&container);
+	DockBook *book = dynamic_cast<DockBook*>(&container);
+
+	if (paned)
 	{
-		link.unlink();
-		if (link.paned)
+		if (paned->get_child1() && paned->get_child2()) return;
+		Gtk::Widget *child = paned->get_child1() ? paned->get_child1() : paned->get_child2();
+		if (child)
 		{
-			Gtk::Widget &widget = link.is_first
-								? *link.paned->get_child2()
-								: *link.paned->get_child1();
-			DockLinkPoint paned_link(*link.paned);
-			if (paned_link.is_valid())
+			DockLinkPoint link(*paned);
+			if (link.is_valid())
 			{
-				link.paned->remove(widget);
-				paned_link.unlink();
-				paned_link.link(widget);
-				delete link.paned;
+				paned->remove(*child);
+				link.unlink();
+				link.link(*child);
+				delete paned;
 			}
 		}
 		else
-		if (link.window) link.window->hide();
+		{
+			remove_widget_recursive(*paned);
+			delete paned;
+			return;
+		}
 	}
 	else
-	if (widget.get_parent())
+	if (window)
 	{
-		DockBook *book = dynamic_cast<DockBook*>(widget.get_parent());
-		widget.get_parent()->remove(widget);
-		if (book && book->pages().empty())
+		if (!window->get_child())
+			window->hide();
+	}
+	else
+	if (book)
+	{
+		if (book->pages().empty())
 		{
 			remove_widget_recursive(*book);
 			delete book;
@@ -317,6 +329,15 @@ DockManager::remove_widget_recursive(Gtk::Widget &widget)
 	}
 }
 
+void
+DockManager::remove_widget_recursive(Gtk::Widget &widget)
+{
+	if (widget.get_parent())
+	{
+		widget.get_parent()->remove(widget);
+		remove_empty_container_recursive(*widget.get_parent());
+	}
+}
 
 bool
 DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first)
@@ -437,7 +458,12 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 				Dockable *dockable = &find_dockable(name);
 				if (dockable != NULL)
 				{
-					remove_widget_recursive(*dockable);
+					Gtk::Container *container = dockable->get_parent();
+					if (container)
+					{
+						container->remove(*dockable);
+						containers_to_remove_[container] = true;
+					}
 					if (book == NULL) { book = manage(new DockBook()); book->show(); }
 					book->add(*dockable);
 				}
@@ -624,7 +650,10 @@ std::string DockManager::save_widget_to_string(Gtk::Widget *widget)
 Gtk::Widget* DockManager::load_widget_from_string(const std::string &x)
 {
 	std::string copy(x);
-	return read_widget(copy);
+	Gtk::Widget *widget = read_widget(copy);
+	while (!containers_to_remove_.empty())
+		remove_empty_container_recursive(*containers_to_remove_.begin()->first);
+	return widget;
 }
 
 std::string DockManager::save_layout_to_string()
@@ -646,6 +675,8 @@ void DockManager::load_layout_from_string(const std::string &x)
 	{
 		read_widget(copy);
 	} while (read_separator(copy));
+	while (!containers_to_remove_.empty())
+		remove_empty_container_recursive(*containers_to_remove_.begin()->first);
 }
 
 std::string DockManager::layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy)
