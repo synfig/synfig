@@ -332,10 +332,11 @@ DockManager::remove_empty_container_recursive(Gtk::Container &container)
 void
 DockManager::remove_widget_recursive(Gtk::Widget &widget)
 {
-	if (widget.get_parent())
+	Gtk::Container *container = widget.get_parent();
+	if (container)
 	{
-		widget.get_parent()->remove(widget);
-		remove_empty_container_recursive(*widget.get_parent());
+		container->remove(widget);
+		remove_empty_container_recursive(*container);
 	}
 }
 
