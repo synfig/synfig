@@ -99,10 +99,10 @@ namespace studio {
 		void link(Gtk::Widget &widget)
 		{
 			if (paned && is_first)
-				paned->add1(widget);
+				paned->pack1(widget, true, false);
 			else
 			if (paned && !is_first)
-				paned->add2(widget);
+				paned->pack2(widget, true, false);
 			else
 			if (window)
 				window->add(widget);
@@ -415,8 +415,8 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 
 		// create paned
 		Gtk::Paned *paned = manage(hor ? (Gtk::Paned*)new Gtk::HPaned() : (Gtk::Paned*)new Gtk::VPaned());
-		paned->add1(*first);
-		paned->add2(*second);
+		paned->pack1(*first,  true, false);
+		paned->pack2(*second, true, false);
 		paned->set_position(size);
 		paned->show();
 		return paned;
