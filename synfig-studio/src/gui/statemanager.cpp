@@ -35,7 +35,7 @@
 #include <gtkmm/action.h>
 #include <synfig/string.h>
 #include "app.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 
 #include "general.h"
 
@@ -74,7 +74,7 @@ StateManager::~StateManager()
 void
 StateManager::change_state_(const Smach::state_base *state)
 {
-	App::toolbox->change_state_(state);
+	App::dock_toolbox->change_state_(state);
 }
 
 void
@@ -113,12 +113,15 @@ StateManager::add_state(const Smach::state_base *state)
 	);
 	*/
 
-	String uid_def("<ui><popup action='menu-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></popup></ui>");
+	String uid_def;
+	uid_def = "<ui><popup action='menu-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></popup></ui>";
+	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
+	uid_def = "<ui><menubar action='menubar-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></menubar></ui>";
 	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
 
 	App::ui_manager()->ensure_update();
 
-	App::toolbox->add_state(state);
+	App::dock_toolbox->add_state(state);
 }
 
 Glib::RefPtr<Gtk::ActionGroup>

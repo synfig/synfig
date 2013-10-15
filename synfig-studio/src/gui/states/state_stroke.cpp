@@ -45,7 +45,7 @@
 #include <utility>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include <synfigapp/main.h>
 
 #include "general.h"
@@ -136,7 +136,7 @@ StateStroke_Context::~StateStroke_Context()
 {
 	duckmatic_push.restore();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 
 	// Send the stroke data to whatever previously called this state.
 	if(stroke_data->size()>=2)

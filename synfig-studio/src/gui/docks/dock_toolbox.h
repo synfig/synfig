@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file toolbox.h
+/*!	\file dock_toolbox.h
 **	\brief Header File
 **
 **	$Id$
@@ -24,16 +24,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_TOOLBOX_H
-#define __SYNFIG_GTKMM_TOOLBOX_H
+#ifndef __SYNFIG_GTKMM_DOCK_TOOLBOX_H
+#define __SYNFIG_GTKMM_DOCK_TOOLBOX_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/window.h>
+#include "docks/dockable.h"
+
 #include <gtkmm/tooltip.h>
 #include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
-#include <gtkmm/menu.h>
 #include <gtkmm/table.h>
 #include <synfig/string.h>
 #include "smach.h"
@@ -53,14 +53,11 @@
 
 namespace studio {
 
-class Dockable;
 class StateManager;
 
-class Toolbox : public Gtk::Window
+class Dock_Toolbox : public Dockable
 {
 	friend class studio::StateManager;
-
-	DialogSettings dialog_settings;
 
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
@@ -69,17 +66,9 @@ class Toolbox : public Gtk::Window
 
 	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;
 
-	Gtk::Menu	*recent_files_menu;
-
-	Gtk::Menu	*dock_dialogs;
-
 	bool changing_state_;
 
-	void on_recent_files_changed();
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
-	//! Keyboard event dispatcher following window priority
-	bool on_key_press_event(GdkEventKey* event);
-	bool focused_widget_has_priority(Gtk::Widget * focused);
 
 	void change_state_(const Smach::state_base *state);
 
@@ -95,11 +84,8 @@ public:
 
 	void add_state(const Smach::state_base *state);
 
-
-	void dockable_registered(Dockable* x);
-
-	Toolbox();
-	virtual ~Toolbox();
+	Dock_Toolbox();
+	virtual ~Dock_Toolbox();
 
 };
 

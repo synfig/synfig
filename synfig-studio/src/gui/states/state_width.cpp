@@ -50,7 +50,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include "widgets/widget_distance.h"
 #include <gtkmm/optionmenu.h>
@@ -294,7 +294,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	// Turn the mouse pointer to crosshairs
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -330,7 +330,7 @@ StateWidth_Context::~StateWidth_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

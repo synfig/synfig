@@ -113,8 +113,6 @@ Dock_Layers::Dock_Layers():
 		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
 		synfig::String layer_ui_info;
 
-		layer_ui_info+="<ui><popup action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>";
-
 		std::map<synfig::String,synfig::String>::iterator iter;
 		for(iter=category_map.begin();iter!=category_map.end();++iter)
 		{
@@ -122,14 +120,20 @@ Dock_Layers::Dock_Layers():
 			action_group_categories->add(Gtk::Action::create(iter->first.c_str(),dgettext("synfig", iter->first.c_str())));
 		}
 
-		layer_ui_info+="</menu></menu></popup></ui>";
-
 		App::ui_manager()->insert_action_group(action_group_categories);
 		App::ui_manager()->insert_action_group(action_group_new_layers);
 
 		try
 		{
-			App::ui_manager()->add_ui_from_string(layer_ui_info);
+			synfig::String ui_info;
+			ui_info = "<ui><popup action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
+			        + layer_ui_info
+			        + "</menu></menu></popup></ui>";
+			App::ui_manager()->add_ui_from_string(ui_info);
+			ui_info = "<ui><menubar action='menubar-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
+			        + layer_ui_info
+			        + "</menu></menu></menubar></ui>";
+			App::ui_manager()->add_ui_from_string(ui_info);
 		}
 		catch(Glib::MarkupError x)
 		{

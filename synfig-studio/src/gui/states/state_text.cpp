@@ -43,7 +43,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -336,7 +336,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateText_Context::on_user_click));
 	get_work_area()->set_cursor(Gdk::XTERM);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -369,7 +369,7 @@ StateText_Context::~StateText_Context()
 
 	get_canvas_view()->queue_rebuild_ducks();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

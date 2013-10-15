@@ -49,7 +49,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -212,7 +212,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 
 	get_work_area()->set_cursor(Gdk::FLEUR);
 	//get_work_area()->reset_cursor();
@@ -252,7 +252,7 @@ StateSmoothMove_Context::~StateSmoothMove_Context()
 
 	App::dialog_tool_options->clear();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 

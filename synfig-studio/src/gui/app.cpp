@@ -78,7 +78,8 @@
 #include "dialogs/dialog_setup.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
-#include "toolbox.h"
+#include "mainwindow.h"
+#include "docks/dock_toolbox.h"
 #include "onemoment.h"
 
 #include "docks/dockmanager.h"
@@ -214,8 +215,6 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 static std::list<std::string> recent_files;
 const std::list<std::string>& App::get_recent_files() { return recent_files; }
 
-static std::list<std::string> recent_files_window_size;
-
 int	App::Busy::count;
 bool App::shutdown_in_progress;
 
@@ -240,7 +239,9 @@ etl::handle<CanvasView> App::selected_canvas_view;
 
 studio::About *studio::App::about=NULL;
 
-studio::Toolbox *studio::App::toolbox=NULL;
+studio::MainWindow *studio::App::main_window=NULL;
+
+studio::Dock_Toolbox *studio::App::dock_toolbox=NULL;
 
 studio::AutoRecover *studio::App::auto_recover=NULL;
 
@@ -791,6 +792,8 @@ init_ui_manager()
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
+	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")) );
+	menus_action_group->add( Gtk::Action::create("menu-panels", _("Panels")) );
 	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
@@ -804,6 +807,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")) );
+	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
 	// Add the synfigapp actions...
 	synfigapp::Action::Book::iterator iter;
@@ -826,6 +830,7 @@ init_ui_manager()
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);
 	DEFINE_ACTION("save-as", Gtk::Stock::SAVE_AS);
+	DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
 	DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
 	DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
 	DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
@@ -839,8 +844,13 @@ init_ui_manager()
 	DEFINE_ACTION("options", _("Options"));
 	DEFINE_ACTION("close", _("Close View"));
 	DEFINE_ACTION("close-document", _("Close Document"));
+	DEFINE_ACTION("panels-vertical", _("Vertical Docks: Canvases, History, Layers"));
+	DEFINE_ACTION("panels-horizontal", _("Horizontal Docks: Parameters, Keyframes"));
+	DEFINE_ACTION("panels-reset", _("Reset Panels to Original Layout"));
+	DEFINE_ACTION("input-devices", _("Input Devices..."));
+	DEFINE_ACTION("setup", _("Setup..."));
+	DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
 	DEFINE_ACTION("quit", Gtk::Stock::QUIT);
-
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
 	DEFINE_ACTION("redo", Gtk::StockID("gtk-redo"));
@@ -909,50 +919,65 @@ init_ui_manager()
 	DEFINE_ACTION("amount-inc", _("Increase Amount"));
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
+	DEFINE_ACTION("help", Gtk::Stock::HELP);
+	DEFINE_ACTION("help-tutorials", _("Tutorials"));
+	DEFINE_ACTION("help-reference", _("Reference"));
+	DEFINE_ACTION("help-faq", _("Frequently Asked Questions"));
+	DEFINE_ACTION("help-support", _("Get Support"));
+	DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
+
   //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
-    Glib::ustring ui_info =
-"<ui>"
-"	<popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
-"	</popup>"
-"	<popup name='menu-main' action='menu-main'>"
+	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
 "		<menuitem action='new' />"
 "		<menuitem action='open' />"
+"		<menu action='menu-open-recent' />"
 "		<menuitem action='save' />"
 "		<menuitem action='save-as' />"
+"		<menuitem action='save-all' />"
 "		<menuitem action='revert' />"
-"		<separator name='bleh01'/>"
+"		<separator name='sep-file1'/>"
 "		<menuitem action='cvs-add' />"
 "		<menuitem action='cvs-update' />"
 "		<menuitem action='cvs-commit' />"
 "		<menuitem action='cvs-revert' />"
-"		<separator name='bleh02'/>"
+"		<separator name='sep-file2'/>"
 "		<menuitem action='import' />"
-"		<separator name='bleh03'/>"
+"		<separator name='sep-file3'/>"
 "		<menuitem action='render' />"
 "		<menuitem action='preview' />"
 "		<menuitem action='sound' />"
-"		<separator name='bleh04'/>"
+"		<separator name='sep-file4'/>"
 "		<menuitem action='options' />"
 "		<menuitem action='close' />"
 "		<menuitem action='close-document' />"
+"		<separator name='sep-file5'/>"
+"		<menu action='menu-panels'>"
+"			<menuitem action='panels-vertical' />"
+"			<menuitem action='panels-horizontal' />"
+"			<separator name='sep-file-panels1'/>"
+"			<menuitem action='panels-reset' />"
+"			<separator name='sep-file-panels2'/>"
+"		</menu>"
+"		<menuitem action='input-devices' />"
+"		<menuitem action='setup' />"
+"		<menuitem action='reset-initial-preferences' />"
+"		<separator name='sep-file6'/>"
 "		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
 "		<menuitem action='redo'/>"
-"		<separator name='bleh05'/>"
+"		<separator name='sep-edit1'/>"
 "		<menuitem action='cut'/>"
 "		<menuitem action='copy'/>"
 "		<menuitem action='paste'/>"
-"		<separator name='bleh06'/>"
+"		<separator name='sep-edit2'/>"
 "		<menuitem action='select-all-layers'/>"
 "		<menuitem action='unselect-all-layers'/>"
 "		<menuitem action='select-all-ducks'/>"
 "		<menuitem action='unselect-all-ducks'/>"
-"		<separator name='bleh07'/>"
+"		<separator name='sep-edit3'/>"
 "		<menuitem action='properties'/>"
 "	</menu>"
 "	<menu action='menu-view'>"
@@ -982,37 +1007,37 @@ init_ui_manager()
 "			<menuitem action='quality-10' />"
 "		</menu>"
 "		<menu action='menu-lowres-pixel'>"
-"		<menuitem action='decrease-low-res-pixel-size'/>"
-"		<menuitem action='increase-low-res-pixel-size'/>"
-"		<separator name='pixel-size-separator'/>"
+"			<menuitem action='decrease-low-res-pixel-size'/>"
+"			<menuitem action='increase-low-res-pixel-size'/>"
+"			<separator name='pixel-size-separator'/>"
 ;
 
 	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-		ui_info += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
+		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
 
-	ui_info +=
+	ui_info_menu +=
 "		</menu>"
-"		<separator name='bleh08'/>"
+"		<separator name='sep-view1'/>"
 "		<menuitem action='play'/>"
 //"		<menuitem action='pause'/>"
 "		<menuitem action='stop'/>"
 "		<menuitem action='dialog-flipbook'/>"
-"		<separator name='bleh09'/>"
+"		<separator name='sep-view2'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"
 "		<menuitem action='toggle-guide-snap'/>"
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-onion-skin'/>"
-"		<separator name='bleh10'/>"
+"		<separator name='sep-view3'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
 "		<menuitem action='canvas-zoom-fit'/>"
 "		<menuitem action='canvas-zoom-100'/>"
-"		<separator name='bleh11'/>"
+"		<separator name='sep-view4'/>"
 "		<menuitem action='time-zoom-in'/>"
 "		<menuitem action='time-zoom-out'/>"
-"		<separator name='bleh12'/>"
+"		<separator name='sep-view5'/>"
 "		<menuitem action='jump-next-keyframe'/>"
 "		<menuitem action='jump-prev-keyframe'/>"
 "		<menuitem action='seek-next-frame'/>"
@@ -1034,7 +1059,7 @@ init_ui_manager()
 //"		<menuitem action='cut'/>"
 //"		<menuitem action='copy'/>"
 //"		<menuitem action='paste'/>"
-//"		<separator name='bleh06'/>"
+//"		<separator name='bleh71'/>"
 "		<menu action='menu-layer-new'></menu>"
 "		<menuitem action='amount-inc'/>"
 "		<menuitem action='amount-dec'/>"
@@ -1056,15 +1081,32 @@ init_ui_manager()
 		synfigapp::PluginManager::plugin plugin = *p;
 		
 		DEFINE_ACTION(plugin.id, plugin.name);
-		ui_info += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+		ui_info_menu += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
-	ui_info +=
+	ui_info_menu +=
+"	</menu>"
+"	<menu action='menu-help'>"
+"		<menuitem action='help'/>"
+"		<separator name='sep-help1'/>"
+"		<menuitem action='help-tutorials'/>"
+"		<menuitem action='help-reference'/>"
+"		<menuitem action='help-faq'/>"
+"		<separator name='sep-help2'/>"
+"		<menuitem action='help-support'/>"
+"		<separator name='sep-help3'/>"
+"		<menuitem action='help-about'/>"
+"	</menu>";
+
+	Glib::ustring ui_info =
+"<ui>"
+"   <popup name='menu-toolbox' action='menu-toolbox'>"
+"	<menu action='menu-file'>"
 "	</menu>"
 "	</popup>"
-
-"</ui>"
-;
+"	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+"	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+"</ui>";
 
 	#undef DEFINE_ACTION
 	#undef DEFINE_ACTION_2
@@ -1313,8 +1355,14 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init State Manager..."));
 		state_manager=new StateManager();
 
+		studio_init_cb.task(_("Init Main Window..."));
+		main_window=new studio::MainWindow();
+		main_window->add_accel_group(App::ui_manager_->get_accel_group());
+
+
 		studio_init_cb.task(_("Init Toolbox..."));
-		toolbox=new studio::Toolbox();
+		dock_toolbox=new studio::Dock_Toolbox();
+		dock_manager->register_dockable(*dock_toolbox);
 
 		studio_init_cb.task(_("Init About Dialog..."));
 		about=new studio::About();
@@ -1501,7 +1549,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
 
-		toolbox->present();
+		main_window->present();
+		dock_toolbox->present();
 
 		splash_screen.hide();
 
@@ -1543,9 +1592,9 @@ App::~App()
 
 	delete about;
 
-	toolbox->hide();
+	main_window->hide();
 
-	delete toolbox;
+	delete main_window;
 
 	delete dialog_setup;
 
@@ -1566,97 +1615,14 @@ App::get_config_file(const synfig::String& file)
 	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
 }
 
-//! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
-void
-App::set_recent_file_window_size(etl::handle<Instance> instance)
-{
-
-	const std::string &canvas_window_size = *recent_files_window_size.begin();
-
-	if(canvas_window_size.empty())
-		return;
-
-	synfig::String::size_type current=0;
-	bool seen_root(false), shown_non_root(false);
-
-	while(current != synfig::String::npos)
-	{
-		// find end of first field (canvas) or return
-		synfig::String::size_type separator = canvas_window_size.find_first_of(' ', current);
-		if(separator == synfig::String::npos) break;
-
-		// find the canvas
-		synfig::Canvas::Handle canvas;
-		try {
-			String warnings;
-			canvas = instance->get_canvas()->find_canvas(String(canvas_window_size, current, separator-current), warnings);
-		}
-		catch(Exception::IDNotFound) {
-			// can't find the canvas; skip to the next canvas or return
-			separator = canvas_window_size.find_first_of('\t', current);
-			if(separator == synfig::String::npos) return;
-			current = separator+1;
-			continue;
-		}
-
-		if (canvas->is_root())
-			seen_root = true;
-		else
-			shown_non_root = true;
-
-		// check that we have the tab character the ends this canvas' data or return
-		current = separator+1;
-		separator = canvas_window_size.find_first_of('\t', current);
-		if(separator == synfig::String::npos) return;
-
-		int x,y,w,h;
-		if(!strscanf(String(canvas_window_size, current, separator-current),"%d %d %d %d",&x, &y, &w, &h))
-		{
-			current = separator+1;
-			continue;
-		}
-		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
-		canvasview->move(x,y);
-		canvasview->resize(w,h);
-		canvasview->present();
-
-		current = separator+1;
-	}
-
-	if (shown_non_root && !seen_root)
-		instance->find_canvas_view(instance->get_canvas())->hide();
-}
-
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-
-	std::string canvas_window_size;
-
-	const Instance::CanvasViewList& cview_list = instance->canvas_view_list();
-	Instance::CanvasViewList::const_iterator iter;
-
-	for(iter=cview_list.begin();iter!=cview_list.end();iter++)
-	{
-		if( !((*iter)->is_visible()) )
-			continue;
-
-		etl::handle<synfig::Canvas> canvas = (*iter)->get_canvas();
-		int x_pos, y_pos, x_size, y_size;
-		(*iter)->get_position(x_pos,y_pos);
-		(*iter)->get_size(x_size,y_size);
-
-		canvas_window_size += strprintf("%s %d %d %d %d\t",
-										canvas->get_relative_id(canvas->get_root()).c_str(),
-										x_pos,  y_pos,
-										x_size, y_size);
-	}
-
-	add_recent_file(absolute_path(instance->get_file_name()), canvas_window_size);
+	add_recent_file(absolute_path(instance->get_file_name()));
 }
 
 void
-App::add_recent_file(const std::string &file_name, const std::string &window_size)
+App::add_recent_file(const std::string &file_name)
 {
 	std::string filename(file_name);
 
@@ -1673,34 +1639,24 @@ App::add_recent_file(const std::string &file_name, const std::string &window_siz
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
 
-	std::string old_window_size;
-
 	list<string>::iterator iter;
-	list<string>::iterator iter_wsize;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for(iter=recent_files.begin(), iter_wsize=recent_files_window_size.begin();iter!=recent_files.end();iter++, iter_wsize++)
+	for(iter=recent_files.begin();iter!=recent_files.end();iter++)
 		if(*iter==filename)
 		{
 			recent_files.erase(iter);
-			old_window_size = *iter_wsize;
-			recent_files_window_size.erase(iter_wsize);
 			break;
 		}
 
 
 	// Push the filename to the front of the list
 	recent_files.push_front(filename);
-	if(window_size.empty())
-		recent_files_window_size.push_front(old_window_size);
-	else
-		recent_files_window_size.push_front(window_size);
 
 	// Clean out the files at the end of the list.
 	while(recent_files.size()>(unsigned)get_max_recent_files())
 	{
 		recent_files.pop_back();
-		recent_files_window_size.pop_back();
 	}
 
 	signal_recent_files_changed_();
@@ -1749,23 +1705,6 @@ App::save_settings()
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
 				file<<(*iter).c_str()<<endl;
 		}while(0);
-		do{
-			std::string filename=get_config_file("recentfiles")+std::string("_window_size");
-
-			std::ofstream file(filename.c_str());
-
-			if(!file)
-			{
-				synfig::warning("Unable to save %s",filename.c_str());
-				break;
-			}
-
-			list<string>::reverse_iterator iter;
-
-			for(iter=recent_files_window_size.rbegin();iter!=recent_files_window_size.rend();iter++)
-				file<<(*iter).c_str()<<endl;
-
-		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
 
@@ -1787,44 +1726,16 @@ App::load_settings()
 			Gtk::AccelMap::load(filename);
 		}
 		{
-			bool window_size_broken = false;
-
 			std::string filename=get_config_file("recentfiles");
-			std::string filename_window_size=filename+std::string("_window_size");
-
 			std::ifstream file(filename.c_str());
-			std::ifstream file_window_size(filename_window_size.c_str());
-
-			if(!file_window_size)
-				window_size_broken = true;
 
 			while(file)
 			{
 				std::string recent_file;
 				std::string recent_file_window_size;
 				getline(file,recent_file);
-				if(!window_size_broken)
-					getline(file_window_size,recent_file_window_size);
-				if(!recent_file.empty())
-				{
-					if(!window_size_broken && !file_window_size)
-						window_size_broken = true;
-					if (std::ifstream(recent_file.c_str()))
-					{
-						if(!window_size_broken)
-							add_recent_file(recent_file,recent_file_window_size);
-						else
-							add_recent_file(recent_file);
-					}
-				}
-			}
-			if(!window_size_broken && file_window_size)
-				window_size_broken = true;
-
-			if(window_size_broken)
-			{
-				recent_files_window_size.clear();
-				recent_files_window_size.resize(recent_files.size());
+				if(!recent_file.empty() && std::ifstream(recent_file.c_str()))
+					add_recent_file(recent_file);
 			}
 		}
 		std::string filename=get_config_file("settings");
@@ -1856,80 +1767,36 @@ App::reset_initial_window_configuration()
 	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
 	// primary one.
 	screen->get_monitor_geometry(0,rect);
-#define hpanel_width 79.0f
-#define hpanel_height 25.0f
-#define vpanel_width 20.0f
-#define vpanel_height 100.0f
-#define vdock 20.0f
-#define hdock 20.0f
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
 
-/* percentages referred to width or height of the screen
- *---------------------------------------------------------------------*
- *    t   |                                                |
- *    o   |                                                |
- *    o   |                                                |vdock%
- *    l   |                                                |
- *    b   |                                                |------------
- *    o   |                                                |
- *    x   |                                                |vdock%
- * --------                                                |
- *                                                         |
- *                                                         |------------
- *                                                         |
- *                                                         |vdock%
- *                                                         |
- *                                                         |
- *-----hdock%----------------------------------------------|------------
- *             |                                           |
- *             |                                           |vdock%
- *             |                                           |
- *             |                                           |
- * --------------------------------------------------------------------*
-*/
-// Vertical Panel
-	int v_xpos=rect.get_x() + rect.get_width()*(1.0-vpanel_width/100.0);
-	int v_xsize=rect.get_width()*vpanel_width/100.0;
-	int v_ypos=rect.get_y();
-	int v_ysize=rect.get_height()*vpanel_height/100.0;
-	std::string v_pos(strprintf("%d %d", v_xpos, v_ypos));
-	std::string v_size(strprintf("%d %d", v_xsize, v_ysize));
-// Horizontal Panel
-	int h_xpos=rect.get_x();
-	int h_xsize=rect.get_width()*hpanel_width/100.0;
-	int h_ypos=rect.get_y()+ rect.get_height()*(1.0-hpanel_height/100.0);;
-	int h_ysize=rect.get_height()*hpanel_height/100.0;
-	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
-	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
-	int v_dock1 = rect.get_height()*vdock*0.8/100.0;
-	int v_dock2 = rect.get_height()*vdock*0.6/100.0;
-	int v_dock3 = rect.get_height()*vdock*1.1/100.0;
-	int h_dock = rect.get_width()*hdock/100.0;
-//Contents size
-	std::string v_contents(strprintf("%d %d %d", v_dock1, v_dock2, v_dock3));
-	std::string h_contents(strprintf("%d", h_dock));
-// Tool Box position
-	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
-/*
-	synfig::info("tool box pos: %s", tbox_pos.c_str());
-	synfig::info("v_contents sizes: %s", v_contents.c_str());
-	synfig::info("v_pos: %s", v_pos.c_str());
-	synfig::info("v_sizes: %s", v_size.c_str());
-	synfig::info("h_contents sizes: %s", h_contents.c_str());
-	synfig::info("h_pos: %s", h_pos.c_str());
-	synfig::info("h_sizes: %s", h_size.c_str());
-*/
-	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
-	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
-	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
-	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size",h_contents);
-	synfigapp::Main::settings().set_value("dock.dialog.2.size",h_size);
-	synfigapp::Main::settings().set_value("dock.dialog.2.pos",h_pos);
-	synfigapp::Main::settings().set_value("window.toolbox.pos",tbox_pos);
+	std::string tpl =
+	"[mainwindow|%5X|%5Y|%90x|%90y|"
+		"[hor|%30x"
+			"|[vert|%70y"
+				"|[hor|%15x"
+					"|[book|toolbox]"
+					"|[mainnotebook]"
+				"]"
+				"|[hor|%25x"
+					"|[book|params]"
+					"|[book|keyframes]"
+				"]"
+			"]"
+			"|[vert|%20y"
+				"|[book|canvases]"
+				"|[vert|%25y"
+					"|[book|history]"
+					"|[book|layers]"
+				"]"
+			"]"
+		"]"
+	"]";
 
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
 }
 
@@ -2718,8 +2585,6 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
 
-			set_recent_file_window_size(instance);
-
 			one_moment.hide();
 
 			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
@@ -2787,8 +2652,6 @@ App::open_from_temporary_container_as(std::string container_filename_base,std::s
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),container_filename_base.c_str());
-
-			set_recent_file_window_size(instance);
 
 			one_moment.hide();
 
@@ -2862,6 +2725,8 @@ App::new_instance()
 void
 App::dialog_open(string filename)
 {
+	if (filename.empty() && selected_instance)
+		filename = selected_instance->get_file_name();
 	if (filename.empty())
 		filename="*.sif";
 
@@ -2934,13 +2799,20 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 void
 App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
-	selected_canvas_view=canvas_view;
-	signal_canvas_view_focus()(selected_canvas_view);
+	if(selected_canvas_view != canvas_view)
+	{
+		if (selected_canvas_view) selected_canvas_view->deactivate();
+		selected_canvas_view = canvas_view;
+		signal_canvas_view_focus()(selected_canvas_view);
+		if (selected_canvas_view) selected_canvas_view->activate();
+	}
+
 	if(canvas_view)
 	{
 		selected_instance=canvas_view->get_instance();
 		signal_instance_selected()(selected_instance);
 	}
+
 /*
 	if(get_selected_canvas_view()==canvas_view)
 	{

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dockbook.h
-**	\brief Template Header
+/*!	\file mainwindow.h
+**	\brief MainWindow
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,14 +22,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCKBOOK_H
-#define __SYNFIG_STUDIO_DOCKBOOK_H
+#ifndef __SYNFIG_STUDIO_MAINWINDOW_H
+#define __SYNFIG_STUDIO_MAINWINDOW_H
 
 /* === H E A D E R S ======================================================= */
 
+#include <ETL/handle>
+#include <gtkmm/window.h>
+#include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
-#include <synfig/string.h>
-#include <gtkmm/tooltip.h>
+#include <gtkmm/actiongroup.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,47 +40,37 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+	class Dockable;
 
-class DockManager;
-class Dockable;
+	class MainWindow: public Gtk::Window
+	{
+	private:
+		Gtk::Bin *bin_;
+		Gtk::Notebook *notebook_;
+		Glib::RefPtr<Gtk::ActionGroup> panels_action_group;
 
-class DockBook : public Gtk::Notebook
-{
-	friend class DockManager;
-	friend class Dockable;
+		//! Constructor Helper - Initializes all of the menus
+		void init_menus();
 
-	sigc::signal<void> signal_empty_;
-	sigc::signal<void> signal_changed_;
+		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
-	bool deleting_;
+		static void create_stock_dialog1();
+		static void create_stock_dialog2();
+		static void save_all();
+		static void show_dialog_input();
+		void on_recent_files_changed();
+		void on_dockable_registered(Dockable* dockable);
 
-public:
-	DockBook();
-	~DockBook();
+	public:
+		MainWindow();
+		virtual ~MainWindow();
 
-	sigc::signal<void>& signal_empty() { return signal_empty_; }
-	sigc::signal<void>& signal_changed() { return signal_changed_; }
+		Gtk::Bin& root() { return *bin_; }
+		const Gtk::Bin& root() const { return *bin_; }
 
-	void add(Dockable& dockable, int position=-1);
-	void remove(Dockable& dockable);
-
-	void present();
-
-	void clear();
-
-	synfig::String get_local_contents()const;
-
-	synfig::String get_contents()const;
-	void set_contents(const synfig::String& x);
-
-	void refresh_tabs_headers();
-
-	void refresh_tab(Dockable*);
-
-	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
-	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
-}; // END of studio::DockBook
-
+		Gtk::Notebook& notebook() { return *notebook_; }
+		const Gtk::Notebook& notebook() const { return *notebook_; }
+	};
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

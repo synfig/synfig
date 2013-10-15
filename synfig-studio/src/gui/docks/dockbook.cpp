@@ -34,6 +34,7 @@
 #include "docks/dockable.h"
 #include "app.h"
 #include "docks/dockmanager.h"
+#include "docks/dockdroparea.h"
 
 #include <gtkmm/image.h>
 #include <gtkmm/eventbox.h>
@@ -70,10 +71,15 @@ DockBook::DockBook()
 	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
 	deleting_=false;
+
+	DockDropArea *dock_area = manage(new DockDropArea(this));
+	dock_area->show();
+	set_action_widget(dock_area, Gtk::PACK_END);
 }
 
 DockBook::~DockBook()
 {
+	DockManager::containers_to_remove_.erase(this);
 	deleting_=true;
 	clear();
 }
@@ -91,7 +97,7 @@ DockBook::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
-		if(dockable.parent_!=this)
+		if(dockable.get_parent()!=this)
 			add(dockable);
 		dockable.present();
 		context->drag_finish(true, false, time);
@@ -104,7 +110,7 @@ DockBook::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 void
 DockBook::add(Dockable& dockable, int position)
 {
-	dockable.detach();
+	DockManager::remove_widget_recursive(dockable);
 
 	if(position==-1)
 		append_page(dockable, " ");
@@ -122,8 +128,6 @@ DockBook::add(Dockable& dockable, int position)
 			&dockable
 		)
 	);
-
-	dockable.parent_=this;
 
 	dockable.show();
 
@@ -155,7 +159,6 @@ DockBook::remove(Dockable& dockable)
 {
 	dockable.hide();
 	remove_page(dockable);
-	dockable.parent_=0;
 
 	if(!deleting_)
 	{
@@ -243,7 +246,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 
 	tabmenu->items().push_back(
 		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
-			sigc::mem_fun(*dockable,&Dockable::detach)
+			sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable)
 		)
 	);
 
