@@ -60,9 +60,9 @@ OTHER_HH = \
 	render.h \
 	splash.h \
 	statemanager.h \
-	toolbox.h \
 	valuelink.h \
-	workarea.h
+	workarea.h \
+	mainwindow.h
 
 OTHER_CC = \
 	adjust_window.cpp \
@@ -84,9 +84,9 @@ OTHER_CC = \
 	render.cpp \
 	splash.cpp \
 	statemanager.cpp \
-	toolbox.cpp \
 	valuelink.cpp \
-	workarea.cpp
+	workarea.cpp \
+	mainwindow.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src

@@ -311,7 +311,9 @@ LayerActionManager::refresh()
 		}
 	}
 
-	ui_info=("<ui>"
+	String full_ui_info;
+	full_ui_info=
+			 "<ui>"
 			   "<popup action='menu-main'>"
 			     "<menu action='menu-layer'>" +
 			 	   ui_info +
@@ -322,8 +324,22 @@ LayerActionManager::refresh()
 			 	   "<separator/>"
 			     "</menu>"
 			   "</popup>" +
-			 "</ui>");
-	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
+			 "</ui>";
+	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	full_ui_info=
+			 "<ui>"
+			   "<menubar action='menubar-main'>"
+			     "<menu action='menu-layer'>" +
+			 	   ui_info +
+				   "<separator/>"
+			       "<menuitem action='cut' />"
+			 	   "<menuitem action='copy' />"
+			 	   "<menuitem action='paste' />"
+			 	   "<separator/>"
+			     "</menu>"
+			   "</menubar>" +
+			 "</ui>";
+	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);

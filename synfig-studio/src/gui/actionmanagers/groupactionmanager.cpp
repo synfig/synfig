@@ -229,8 +229,11 @@ GroupActionManager::refresh()
 
 	if(true)
 	{
-		ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
-		popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
+		String full_ui_info;
+		full_ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
+		popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+		full_ui_info="<ui><menubar action='menubar-main'><menu action='menu-group'>"+ui_info+"</menu></menubar></ui>";
+		popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 	}
 	else
 	{

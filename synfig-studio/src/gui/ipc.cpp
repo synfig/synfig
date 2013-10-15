@@ -61,7 +61,7 @@
 #define read	_read
 #endif
 
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include <glibmm/dispatcher.h>
 #include <synfig/mutex.h>
 #include <synfig/string.h>

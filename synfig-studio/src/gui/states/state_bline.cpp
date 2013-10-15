@@ -47,7 +47,7 @@
 #include <utility>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/spinbutton.h>
 #include <synfig/transform.h>
@@ -433,7 +433,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -493,7 +493,7 @@ StateBLine_Context::~StateBLine_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

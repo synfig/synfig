@@ -37,7 +37,7 @@
 #include "dialogs/dialog_color.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "canvasview.h"
 #include <synfigapp/main.h>
 
@@ -120,14 +120,14 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 
 	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 StateFill_Context::~StateFill_Context()
 {
 	synfig::info("Left Fill State");
 	canvas_view->work_area->reset_cursor();
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

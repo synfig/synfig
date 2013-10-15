@@ -98,7 +98,8 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 
-#include "toolbox.h"
+#include "mainwindow.h"
+#include "docks/dock_toolbox.h"
 
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_soundselect.h"
@@ -124,14 +125,6 @@ using namespace studio;
 using namespace sigc;
 
 /* === M A C R O S ========================================================= */
-
-#define GRAB_HINT_DATA(y)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} \
-	}
 
 #define DEFAULT_TIME_WINDOW_SIZE		(10.0)
 
@@ -265,12 +258,12 @@ public:
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::MessageDialog dialog(
-			*view,			// Parent
-			primaryText,		// Message
-			false,			// Markup
-			Gtk::MESSAGE_WARNING,	// Type
-			Gtk::BUTTONS_NONE,	// Buttons
-			true			// Modal
+			*App::main_window, // Parent
+			primaryText,	   // Message
+			false,			   // Markup
+			Gtk::MESSAGE_WARNING, // Type
+			Gtk::BUTTONS_NONE, // Buttons
+			true			   // Modal
 		);
 
 		if (! title.empty())
@@ -290,9 +283,10 @@ public:
 	{
 		view->present();
 		//while(studio::App::events_pending())studio::App::iteration(false);
+		;
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -313,7 +307,7 @@ public:
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -335,7 +329,7 @@ public:
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		Gtk::Dialog dialog(
 			title,		// Title
-			*view,		// Parent
+			*App::main_window, // Parent
 			true,		// Modal
 			true		// use_separator
 		);
@@ -373,7 +367,7 @@ public:
 		// then just go ahead and return false --
 		// don't bother displaying a dialog
 		if(view->cancel)return false;
-		Gtk::MessageDialog dialog(*view, err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		Gtk::MessageDialog dialog(*App::main_window, err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.show();
 		dialog.run();
 		view->statusbar->pop();
@@ -705,14 +699,16 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	working_depth			(0),
 	cancel					(false),
 
-	canvas_properties		(*this,canvas_interface_),
-	canvas_options			(this),
-	render_settings			(*this,canvas_interface_),
-	waypoint_dialog			(*this,canvas_interface_->get_canvas()),
-	keyframe_dialog			(*this,canvas_interface_),
+	canvas_properties		(*App::main_window,canvas_interface_),
+	canvas_options			(*App::main_window,this),
+	render_settings			(*App::main_window,canvas_interface_),
+	waypoint_dialog			(*App::main_window,canvas_interface_->get_canvas()),
+	keyframe_dialog			(*App::main_window,canvas_interface_),
 	preview_dialog			(new Dialog_Preview),
-	sound_dialog			(new Dialog_SoundSelect(*this,canvas_interface_))
+	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
+	window_title = manage(new Gtk::Label());
+
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
@@ -752,15 +748,14 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 4, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(5, 1, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_work_area(),   0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-
-	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_status_bar(),  0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	update_title();
 
@@ -825,30 +820,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	*/
 	work_area->queue_render_preview();
 
-	// If the canvas is really big, zoom out so that we can fit it all in the window
-	/*! \todo In other words, this is a zoom-to-fit, and should be
-	** in its own function.
-	*/
-	int w=get_canvas()->rend_desc().get_w()+70;
-	int h=get_canvas()->rend_desc().get_h()+70;
-	while(w>700 || h>600)
-	{
-		// Minor hack:
-		//   zoom_out() =>
-		//	   WorkArea::async_update_preview() =>
-		//	     WorkArea::set_zoom(float) =>
-		//		   WorkArea::async_update_preview() =>
-		//			 desc.set_time(cur_time), where cur_time isn't initialized
-		work_area->set_time(0);
-		work_area->zoom_out();
-		w=round_to_int(get_canvas()->rend_desc().get_w()*work_area->get_zoom()+70);
-		h=round_to_int(get_canvas()->rend_desc().get_h()*work_area->get_zoom()+70);
-	}
-	if(w>700)w=700;
-	if(h>600)h=600;
-	set_default_size(w,h);
-	property_window_position().set_value(Gtk::WIN_POS_NONE);
-
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -901,19 +872,29 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_window_adjustment().set_value(get_canvas()->rend_desc().get_time_start());
 	time_window_adjustment().value_changed();
 
-	GRAB_HINT_DATA("canvas_view");
-	/*
-	{
-	set_skip_taskbar_hint(true);
-	set_skip_pager_hint(true);
-	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	}
-	*/
-
 	refresh_rend_desc();
 	hide_tables();
 
 	on_time_changed();
+	show();
+
+	Gtk::Button *close_button = manage(new Gtk::Button());
+	Gtk::Image *close_button_image = manage(new Gtk::Image(
+			Gtk::StockID("gtk-close"),
+			Gtk::IconSize::from_name("synfig-small_icon") ));
+	close_button->add(*close_button_image);
+	close_button->signal_clicked().connect(
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
+
+	Gtk::HBox *title_box = manage(new Gtk::HBox());
+	title_box->pack_start(*window_title, false, false, 10);
+	title_box->pack_end(*close_button, false, false, 0);
+	title_box->show_all();
+
+	show();
+	instance->canvas_view_list().push_front(this);
+	instance->signal_canvas_view_created()(this);
+	App::main_window->notebook().append_page(*this, *title_box);
 	//synfig::info("Canvasview: Constructor Done");
 }
 
@@ -942,7 +923,7 @@ CanvasView::~CanvasView()
 	//delete preview
 	audio.reset();
 
-	hide();
+	App::main_window->notebook().remove_page(*this);
 
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
@@ -950,6 +931,32 @@ CanvasView::~CanvasView()
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("CanvasView::~CanvasView(): Deleted");
+}
+
+void
+CanvasView::on_size_allocate(Gtk::Allocation &allocation) {
+	Gtk::Bin::on_size_allocate(allocation);
+	if (get_child() != NULL)
+		get_child()->size_allocate(allocation);
+}
+
+void
+CanvasView::on_size_request(Gtk::Requisition *requisition) {
+	Gtk::Bin::on_size_request(requisition);
+	if (get_child() != NULL && requisition != NULL)
+		*requisition = get_child()->size_request();
+}
+
+void CanvasView::activate()
+{
+	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
+	App::ui_manager()->insert_action_group(action_group);
+}
+
+void CanvasView::deactivate()
+{
+	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
+	App::ui_manager()->remove_action_group(action_group);
 }
 
 std::list<int>&
@@ -1135,7 +1142,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(16, 1, false));
+	displaybar = manage(new class Gtk::Table(1, 16, false));
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial(iconsize));
@@ -1272,20 +1279,20 @@ CanvasView::create_display_bar()
 	preview_options_button->show();
 
 
-	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator3, 5, 6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*show_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*snap_grid, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator4, 8, 9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*past_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*onion_skin, 10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*future_onion_spin, 11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator5, 12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
-	displaybar->attach(*render_options_button, 13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*toggleducksdial,         0,  1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator1,              1,  2, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*resolutiondial,          2,  3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator2,              3,  4, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*quality_spin,            4,  5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator3,              5,  6, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*show_grid,               6,  7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*snap_grid,               7,  8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator4,              8,  9, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*past_onion_spin,         9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*onion_skin,             10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*future_onion_spin,      11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator5,             12, 13, 0, 1, Gtk::FILL, Gtk::FILL, 8);
+	displaybar->attach(*render_options_button,  13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*preview_options_button, 14, 15, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 	displaybar->show();
@@ -1440,12 +1447,6 @@ CanvasView::init_menus()
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
-	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
-	);
-	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::open))
-	);
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
@@ -1527,12 +1528,12 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
-	
+
 	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
 	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		synfigapp::PluginManager::plugin plugin = *p;
-		
+
 		action_group->add( Gtk::Action::create(plugin.id, plugin.name),
 				sigc::bind(
 					sigc::mem_fun(*get_instance().get(), &studio::Instance::run_plugin),
@@ -1540,7 +1541,7 @@ CanvasView::init_menus()
 				)
 		);
 	}
-	
+
 	// Preview Quality Menu
 	{
 		int i;
@@ -1718,8 +1719,6 @@ CanvasView::init_menus()
 		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
-
-	add_accel_group(App::ui_manager()->get_accel_group());
 
 /*	// Here is where we add the actions that may have conflicting
 	// keyboard accelerators.
@@ -2363,8 +2362,6 @@ handle<CanvasView>
 CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
 {
 	etl::handle<studio::CanvasView> view(new CanvasView(instance,instance->synfigapp::Instance::find_canvas_interface(canvas)));
-	instance->canvas_view_list().push_front(view);
-	instance->signal_canvas_view_created()(view.get());
 	return view;
 }
 
@@ -2401,66 +2398,33 @@ CanvasView::update_title()
 	if(get_canvas()->is_root())
 		title+=_(" (Root)");
 
-	set_title(title);
+	window_title->set_text(title);
 }
 
 void
 CanvasView::on_hide()
 {
 	smach_.egress();
-	Gtk::Window::on_hide();
+	Gtk::Bin::on_hide();
 }
 
 void
 CanvasView::present()
 {
-	grab_focus();//on_focus_in_event(0);
-	Gtk::Window::present();
-}
-
-bool
-CanvasView::on_focus_in_event(GdkEventFocus*x)
-{
-	if(studio::App::get_selected_canvas_view()!=this)
-	{
-		if(studio::App::get_selected_canvas_view())
-		{
-			studio::App::get_selected_canvas_view()->get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
-			App::ui_manager()->remove_action_group(App::get_selected_canvas_view()->action_group);
-		}
-
-		get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
-
-		studio::App::set_selected_canvas_view(this);
-
-		App::ui_manager()->insert_action_group(action_group);
-	}
-
-	// HACK ... Questionable...?
-	if(x)
-		return Gtk::Window::on_focus_in_event(x);
-
-	return true;
-}
-
-bool
-CanvasView::on_focus_out_event(GdkEventFocus*x)
-{
-	//App::ui_manager()->remove_action_group(action_group);
-	//App::ui_manager()->ensure_update();
-	return Gtk::Window::on_focus_out_event(x);
+	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
+	App::main_window->present();
 }
 
 bool
 CanvasView::on_key_press_event(GdkEventKey* event)
 {
-	Gtk::Widget* focused_widget = get_focus();
+	Gtk::Widget* focused_widget = App::main_window->get_focus();
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	else if(Gtk::Window::on_key_press_event(event))
+	else if(Gtk::Bin::on_key_press_event(event))
 			return true;
 		else
 			if (focused_widget) return focused_widget->event((GdkEvent*)event);
@@ -3981,7 +3945,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 
 	synfigapp::InputDevice::Handle input_device;
 	input_device=synfigapp::Main::select_input_device(device->name);
-	App::toolbox->change_state(input_device->get_state());
+	App::dock_toolbox->change_state(input_device->get_state());
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }
 

@@ -47,7 +47,7 @@
 #include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <synfigapp/main.h>
 
@@ -408,7 +408,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -469,7 +469,7 @@ StatePolygon_Context::~StatePolygon_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 Smach::event_result

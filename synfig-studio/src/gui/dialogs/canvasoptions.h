@@ -57,7 +57,7 @@ class CanvasOptions  :  public Gtk::Dialog
 	Gtk::CheckButton toggle_time_snap;
 
 public:
-	CanvasOptions(etl::loose_handle<CanvasView> canvas_view);
+	CanvasOptions(Gtk::Window &window,etl::loose_handle<CanvasView> canvas_view);
 	~CanvasOptions();
 
 	void refresh();

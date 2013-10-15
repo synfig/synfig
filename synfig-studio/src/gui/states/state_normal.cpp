@@ -51,7 +51,7 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "event_keyboard.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
@@ -251,7 +251,7 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 //	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 //	get_work_area()->reset_cursor();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void
@@ -272,7 +272,7 @@ StateNormal_Context::~StateNormal_Context()
 
 	App::dialog_tool_options->clear();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 DuckDrag_Combo::DuckDrag_Combo():

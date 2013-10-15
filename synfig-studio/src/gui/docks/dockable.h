@@ -84,8 +84,6 @@ private:
 
 	Gtk::StockID stock_id_;
 
-	DockBook* parent_;
-
 	bool dnd_success_;
 
 public:
@@ -115,8 +113,6 @@ public:
 	void add(Gtk::Widget& x);
 
 	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());
-
-	void detach();
 
 	void present();
 

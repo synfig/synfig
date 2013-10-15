@@ -47,7 +47,7 @@
 #include <utility>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "toolbox.h"
+#include "docks/dock_toolbox.h"
 
 #include <synfigapp/blineconvert.h>
 #include <synfigapp/main.h>
@@ -359,7 +359,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::on_user_click));
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 StateSketch_Context::~StateSketch_Context()
@@ -377,7 +377,7 @@ StateSketch_Context::~StateSketch_Context()
 	// Refresh the work area
 	//get_work_area()->queue_draw();
 
-	App::toolbox->refresh();
+	App::dock_toolbox->refresh();
 }
 
 void

@@ -2676,9 +2676,8 @@ void
 WorkArea::refresh_second_check()
 {
 	//resize_timeout_connect.disconnect();
-	int width;
-	int height;
-	canvas_view->get_size(width, height);
+	int width = canvas_view->get_width();
+	int height = canvas_view->get_height();
 	if (width==old_window_width && height==old_window_height ) {
 		GdkEventExpose event;
 		refresh(&event);
@@ -2696,7 +2695,8 @@ WorkArea::refresh(GdkEventExpose*event)
 		int height;
 		bool resize_in_progress;
 		resize_in_progress = false;
-		canvas_view->get_size(width, height);
+		width = canvas_view->get_width();
+		height = canvas_view->get_height();
 		//synfig::info("Size: %i, %i",width,height);
 		if (width!=old_window_width || height!=old_window_height ) {
 
