@@ -136,7 +136,8 @@ namespace synfig
 
 			inline static size_t offset_from_header()
 			{
-				return offsetof(LocalFileHeader, crc32);
+				const static LocalFileHeader dummy;
+				return (size_t)((const char *)&dummy.crc32 - (const char *)&dummy);
 			}
 		};
 
