@@ -844,9 +844,9 @@ init_ui_manager()
 	DEFINE_ACTION("options", _("Options"));
 	DEFINE_ACTION("close", _("Close View"));
 	DEFINE_ACTION("close-document", _("Close Document"));
-	DEFINE_ACTION("panels-vertical", _("Vertical Dock: Canvases, History"));
-	DEFINE_ACTION("panels-horizontal", _("Horizontal Dock: Layers, Library, Parameters"));
-	DEFINE_ACTION("panels-reset", _("Reset Windows to Original Layout"));
+	DEFINE_ACTION("panels-vertical", _("Vertical Docks: Canvases, History, Layers"));
+	DEFINE_ACTION("panels-horizontal", _("Horizontal Docks: Parameters, Keyframes"));
+	DEFINE_ACTION("panels-reset", _("Reset Panels to Original Layout"));
 	DEFINE_ACTION("input-devices", _("Input Devices..."));
 	DEFINE_ACTION("setup", _("Setup..."));
 	DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));

@@ -140,56 +140,28 @@ void MainWindow::create_stock_dialog1()
 {
 	// Canvases, History
 
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-
-	float vpanel_width = 20.0f;
-	float vpanel_height = 100.0f;
-	int v_xpos=rect.get_x() + rect.get_width()*(1.0-vpanel_width/100.0);
-	int v_xsize=rect.get_width()*vpanel_width/100.0;
-	int v_ypos=rect.get_y();
-	int v_ysize=rect.get_height()*vpanel_height/100.0;
-	std::string v_pos(strprintf("%d|%d|%d|%d", v_xpos, v_ypos, v_xsize, v_ysize));
-	std::string paned_pos(strprintf("%d", v_ysize/2));
-
-	App::dock_manager->load_layout_from_string(
-		"[dialog|" + v_pos +
-		"|[vert|" + paned_pos + "|[book|canvases]|[book|history]]]"
-	);
+	std::string layout =
+		"[vert|200"
+			"|[book|canvases]"
+			"|[vert|200|[book|history]|[book|layers]]"
+		"]";
+	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
+	if (widget != NULL)
+		DockManager::add_widget(App::main_window->notebook(), *widget, false, false);
 }
+
 void MainWindow::create_stock_dialog2()
 {
 	// Layers, Library, Parameters
 
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-
-	float hpanel_width = 79.0f;
-	float hpanel_height = 25.0f;
-
-	int h_xpos=rect.get_x();
-	int h_xsize=rect.get_width()*hpanel_width/100.0;
-	int h_ypos=rect.get_y()+ rect.get_height()*(1.0-hpanel_height/100.0);;
-	int h_ysize=rect.get_height()*hpanel_height/100.0;
-	std::string h_pos(strprintf("%d|%d|%d|%d", h_xpos, h_ypos, h_xsize, h_ysize));
-	std::string paned_pos(strprintf("%d", h_xsize/3));
-
-	App::dock_manager->load_layout_from_string(
-		"[dialog|" + h_pos +
-		"|[hor|" + paned_pos + "|[book|layers]|[hor|" + paned_pos + "|[book|keyframes]|[book|params]]]"
-	);
+	std::string layout =
+		"[hor|200"
+			"|[book|params]"
+			"|[book|keyframes]"
+		"]";
+	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
+	if (widget != NULL)
+		DockManager::add_widget(App::main_window->notebook(), *widget, true, false);
 }
 
 void
@@ -235,13 +207,13 @@ MainWindow::init_menus()
 	);
 
 	// file -> panels
-	action_group->add( Gtk::Action::create("panels-vertical", _("Vertical Dock: Canvases, History")),
+	action_group->add( Gtk::Action::create("panels-vertical", _("Vertical Docks: Canvases, History, Layers")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog1)
 	);
-	action_group->add( Gtk::Action::create("panels-horizontal", _("Horizontal Dock: Layers, Library, Parameters")),
+	action_group->add( Gtk::Action::create("panels-horizontal", _("Horizontal Docks: Parameters, Keyframes")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog2)
 	);
-	action_group->add( Gtk::Action::create("panels-reset", _("Reset Windows to Original Layout")),
+	action_group->add( Gtk::Action::create("panels-reset", _("Reset Panels to Original Layout")),
 		sigc::ptr_fun(App::reset_initial_window_configuration)
 	);
 
