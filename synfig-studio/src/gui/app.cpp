@@ -1596,8 +1596,6 @@ App::~App()
 
 	delete main_window;
 
-	delete dock_toolbox;
-
 	delete dialog_setup;
 
 	delete dialog_gradient;
