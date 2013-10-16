@@ -36,6 +36,7 @@
 #include "png.h"
 #include <synfig/module.h>
 #include "trgt_png.h"
+#include "trgt_png_spritesheet.h"
 #include "trgt_cairo_png.h"
 #include "mptr_png.h"
 #include "mptr_cairo_png.h"
@@ -55,6 +56,7 @@ MODULE_INVENTORY_BEGIN(mod_png)
 	BEGIN_TARGETS
 		TARGET(cairo_png_trgt)
 		TARGET(png_trgt)
+		TARGET(png_trgt_spritesheet)
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER(png_mptr)
