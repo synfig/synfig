@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/en/news/releases
 
-0.04.17 (git tag "ETL-0.04.17") - May 06, 2013
+0.04.17 (git tag "ETL-0.04.17") - October 23, 2013
 
  * Bones implementation-related changes
  * "Unvirtualise" method etl::surface::set_wh(w,h,newdata,pitch)
