@@ -85,7 +85,7 @@
 #define IMPORT_VALUE(x)                                                         \
 	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
 	{                                                                           \
-		x=value;                                                                \
+		x.copy(value);                                                                \
 		return true;                                                            \
 	}
 
@@ -105,7 +105,9 @@
 #define EXPORT_VALUE(x)                                                         \
 	if (#x=="param_"+param)                                                     \
 	{                                                                           \
-		return x;                                                               \
+		synfig::ValueBase ret;					\
+		ret.copy(x);							\
+		return ret;							\
 	}
 
 //! Exports the name or the local name of the layer

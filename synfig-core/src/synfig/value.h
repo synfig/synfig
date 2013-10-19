@@ -217,6 +217,9 @@ public:
 
 	//! Sets the interpolation.
 	void set_interpolation(Interpolation x) { interpolation_=x; }
+	
+	//! Create independent copy from existing ValueBase object
+	void copy(const ValueBase& x);
 
 	//! Copies properties (static, interpolation, etc) from other ValueBase object.
 	void copy_properties_of(const ValueBase& x);
