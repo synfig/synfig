@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-10-10 22:48+0700\n"
-"PO-Revision-Date: 2013-10-11 06:53+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2013-10-17 14:48+0000\n"
+"Last-Translator: d.j.a.y\n"
 "Language-Team: French (http://www.transifex.com/projects/p/synfig/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -415,7 +415,7 @@ msgstr "Mettre les Images Importés à l'Échelle du Canevas"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Enable experimental features (restart required)"
-msgstr ""
+msgstr "Activer les fonctionnalités expérimental (un redémarrage est requis)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:118
 msgid "Gamma"
@@ -2018,7 +2018,7 @@ msgstr "Donnée"
 
 #: ../src/gui/widgets/widget_bonechooser.cpp:89
 msgid "<None>"
-msgstr ""
+msgstr "<Aucun>"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:115
 msgid "Other..."
@@ -2279,11 +2279,11 @@ msgstr "Tension Temporelle :"
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:100
 msgid "Bone Setup Mode"
-msgstr ""
+msgstr "Mode de Configuration de l'Ossature"
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:102
 msgid "Bone Recursive Scale Mode"
-msgstr ""
+msgstr "Mode Échelle Récursive d'Ossature"
 
 #: ../src/gui/app.cpp:802 ../src/gui/toolbox.cpp:277
 msgid "_File"
@@ -2561,7 +2561,7 @@ msgstr "Échec de l'initialisation de Synfig !"
 
 #: ../src/gui/app.cpp:1295
 msgid "Loading Basic Settings..."
-msgstr ""
+msgstr "Chargement de la Configuration Basique..."
 
 #: ../src/gui/app.cpp:1298
 msgid "Loading Plugins..."
@@ -2730,30 +2730,30 @@ msgstr "Fini."
 
 #: ../src/gui/app.cpp:1533
 msgid "EXPERIMENTAL FEATURES:"
-msgstr ""
+msgstr "FONCTIONNALITÉS EXPÉRIMENTALES:"
 
 #: ../src/gui/app.cpp:1535
 msgid "This version have following experimental features enabled:"
-msgstr ""
+msgstr "Cette version a les fonction expérimental suivante activé :"
 
 #: ../src/gui/app.cpp:1537 ../src/gui/iconcontroller.cpp:233
 msgid "Skeleton Layer"
-msgstr ""
+msgstr "Calque Squelette"
 
 #: ../src/gui/app.cpp:1539
 msgid ""
 "The experimental features are NOT intended for production use. It is quite "
 "posiible their functionality will change in the future versions, which can "
 "break compatibility for your files. Use for testing purposes only."
-msgstr ""
+msgstr "Les fonctionnalités expérimentales ne sont PAS conçus pour un usage de production. Il est fort possible que leurs fonctionnement change dans les versions futures, ce qui pourrait entraîner une incompatibilités de format de fichier. Elles sont a utiliser uniquement afin de tests."
 
 #: ../src/gui/app.cpp:1541
 msgid "You can disable experimental features on the \"Misc\" tab of Setup dialog."
-msgstr ""
+msgstr "Vous pouvez désactiver les fonctionnalités expérimentales dans l'onglet \"Divers\" de la boîte de dialogue Configuration"
 
 #: ../src/gui/app.cpp:1546
 msgid "BUG WARNING:"
-msgstr ""
+msgstr "AVERTISSEMENT D'ÉRREUR:"
 
 #: ../src/gui/app.cpp:1548
 msgid ""
@@ -2761,13 +2761,13 @@ msgid ""
 "hang/freeze when you resize the canvas window. If you got affected by this "
 "issue, consider pressing ALT+TAB to unfreeze your system and get it back to "
 "the working state."
-msgstr ""
+msgstr "Cette version de Synfig Studio possède un Bug qui peut causer un bloquage de l'ordinateur lors du redimensionnement de la fenêtre canevas. Si vous êtes affecté par ce problème, sachez que ALT+TAB pourra permettre au système de revenir dans un état fonctionnel."
 
 #: ../src/gui/app.cpp:1550
 msgid ""
 "Please accept our apologies for inconvenience, we hope to get this issue "
 "resolved in the future versions."
-msgstr ""
+msgstr "Merci d'accepter nos excuses pour le désagrément, en espérant que cela soit résolu dans une prochaine version."
 
 #: ../src/gui/app.cpp:1557 ../src/gui/app.cpp:1561
 msgid ""
@@ -3186,7 +3186,7 @@ msgstr "Nœud de Valeur"
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "ValueNode Forbid Animation"
-msgstr ""
+msgstr "Nœud de Valeur Interdire l'Animation"
 
 #: ../src/gui/iconcontroller.cpp:176
 msgid "About"
@@ -3362,7 +3362,7 @@ msgstr "Calque Plante"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Stroboscope Layer"
-msgstr ""
+msgstr "Calque Stroboscope"
 
 #: ../src/gui/iconcontroller.cpp:232
 msgid "Super Sample Layer"
@@ -4707,11 +4707,11 @@ msgstr "Calque à descendre"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:90
 msgid "Base layer"
-msgstr ""
+msgstr "Calque base"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:144
 msgid "This layer doesn't contains linked \"bline\" parameter."
-msgstr ""
+msgstr "Ce calque ne contient aucun paramètre \"spline\" lié."
 
 #: ../src/synfigapp/actions/layermove.cpp:50
 #: ../src/synfigapp/actions/layermove.cpp:74
@@ -4853,23 +4853,23 @@ msgstr "Entrez une nouvelle description pour ce calque"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:82
 msgid "Toggle Exclude from Rendering"
-msgstr ""
+msgstr "Bascule l'Exclusion du Rendu"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:86
 msgid "Disable layer rendering - "
-msgstr ""
+msgstr "Désactive le rendu du calque -"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:87
 msgid "Enable layer rendering - "
-msgstr ""
+msgstr "Active le rendu du calque -"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:101
 msgid "New State"
-msgstr ""
+msgstr "Nouvel État"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:102
 msgid "The new state of the layer exclusion"
-msgstr ""
+msgstr "Le nouvel état de l'exclusion du calque"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:58
 msgid "Copy Time Points"
@@ -5217,12 +5217,12 @@ msgstr "Type de Description de Valeur non supporté"
 
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:53
 msgid "Set Parameter Interpolation"
-msgstr ""
+msgstr "Définir l'interpolation du Paramètre"
 
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:73
 #, c-format
 msgid "Set interpolation for %s"
-msgstr ""
+msgstr "Définir l'interpolation pour %s"
 
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:51
 msgid "Remove Multiple Items(Smart)"
@@ -5289,7 +5289,7 @@ msgstr "Nœud de Valeur à insérer"
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:51
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:51
 msgid "Insert Item (Smart)"
-msgstr ""
+msgstr "Insérer un Élément (Intelligent)"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:234
 msgid "Unable to find action \"ActivepointSetOff\""
