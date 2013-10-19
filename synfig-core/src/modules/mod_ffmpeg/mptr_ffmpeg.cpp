@@ -36,6 +36,7 @@
 #include "mptr_ffmpeg.h"
 #include <stdio.h>
 #include <sys/types.h>
+#include <synfig/general.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
 #endif
@@ -85,8 +86,6 @@ bool ffmpeg_mptr::is_animated()
 bool
 ffmpeg_mptr::seek_to(int frame)
 {
-	cerr<<"ffmpeg_mptr::seek_to called..."<<endl;
-	
 	if(frame<cur_frame || !file)
 	{
 		if(file)
