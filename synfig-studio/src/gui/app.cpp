@@ -1705,7 +1705,7 @@ App::save_settings()
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
 				file<<(*iter).c_str()<<endl;
 		}while(0);
-		std::string filename=get_config_file("settings");
+		std::string filename=get_config_file("settings-0.65");
 		synfigapp::Main::settings().save_to_file(filename);
 
 	}
@@ -1738,7 +1738,7 @@ App::load_settings()
 					add_recent_file(recent_file);
 			}
 		}
-		std::string filename=get_config_file("settings");
+		std::string filename=get_config_file("settings-0.65");
 		if(!synfigapp::Main::settings().load_from_file(filename))
 		{
 			//std::string filename=Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),".synfigrc"));
