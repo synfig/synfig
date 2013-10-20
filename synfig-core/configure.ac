@@ -411,16 +411,16 @@ AC_CHECK_HEADER([zlib.h],[
 ])
 
 
-PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.18.2],[
+PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.24.2],[
 	CONFIG_DEPS="$CONFIG_DEPS glibmm-2.4"
 ],[
-	AC_MSG_ERROR([ ** You need to install glibmm-2.4 verison 2.18.2 or higher.])
+	AC_MSG_ERROR([ ** You need to install glibmm-2.4 version 2.24.2 or higher.])
 ])
 
 PKG_CHECK_MODULES(GIOMM, [giomm-2.4 >= 2.18.2],[
 	CONFIG_DEPS="$CONFIG_DEPS giomm-2.4"
 ],[
-	AC_MSG_ERROR([ ** You need to install giomm-2.4 verison 2.18.2 or higher.])
+	AC_MSG_ERROR([ ** You need to install giomm-2.4 version 2.18.2 or higher.])
 ])
 
 PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
@@ -429,7 +429,7 @@ PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
 	PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0,[
 		CONFIG_DEPS="$CONFIG_DEPS libxml++-1.0"
 	],[
-		AC_MSG_ERROR([ ** You need to install libxml++, either verison 2.6 or 1.0.])
+		AC_MSG_ERROR([ ** You need to install libxml++, either version 2.6 or 1.0.])
 	])
 ])
 
@@ -444,7 +444,7 @@ CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
 PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	CONFIG_DEPS="$CONFIG_DEPS cairo"
 ],[
-	AC_MSG_ERROR([ ** You need to install cairo verison 1.12.0 or higher.])
+	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
 
 PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
