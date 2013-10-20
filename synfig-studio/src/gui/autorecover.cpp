@@ -191,6 +191,10 @@ AutoRecover::auto_backup()
 	int pid(0);
 
 #ifdef HAVE_FORK
+#undef HAVE_FORK
+#endif
+
+#ifdef HAVE_FORK
 	pid=fork();
 #endif
 
