@@ -74,7 +74,7 @@ using namespace studio;
 #define EPSILON	0.0000001
 #endif
 
-#if !GTK_CHECK_VERSION(2, 20, 0)
+#if !GTK_CHECK_VERSION(2, 21, 0)
 #define GDK_KEY_Control_L GDK_Control_L
 #define GDK_KEY_Control_R GDK_Control_R
 #define GDK_KEY_Shift_L GDK_Shift_L
