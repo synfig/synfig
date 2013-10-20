@@ -62,8 +62,8 @@ PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
 BUILDROOT_VERSION=8
-BUILDROOT_LIBRARY_SET_ID=2
-MAKE_THREADS=4					#count of threads for make
+BUILDROOT_LIBRARY_SET_ID=3
+MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -81,20 +81,20 @@ LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
 IMAGEMAGICK=6.8.6
-PANGOMM=2.24.0
-GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
+PANGOMM=2.26.3		# required by GTKMM 2.20.3
+GTKMM=2.20.3 		# !!! we need Notebook.set_action_widget()
 FTGL=2.1.2
 FREEGLUT=2.4.0
 GTKGLEXT=1.2.0
 GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
-GLIBMM=2.18.2 #!!! >= 2.18.0
+GLIBMM=2.24.2		# required by GTKMM 2.20.3
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
 
 # System libraries
-ATK=1.25.2
-GLIB=2.20.5
-GTK=2.16.6
+ATK=1.29.4			# required by GTK 2.20.1
+GLIB=2.24.2			# required by GLIBMM 2.24.2
+GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
