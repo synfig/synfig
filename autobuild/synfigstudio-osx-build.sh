@@ -266,6 +266,9 @@ mksynfig()
 
 mksynfigstudio()
 {
+	# Copy launch script, so we can test synfigstudio without building an app package
+	cp -rf $SCRIPTPATH/app-template/Contents/MacOS ${MACPORTS}/../MacOS
+	
 	# building synfig-studio
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio
 
@@ -279,6 +282,7 @@ mksynfigstudio()
 	do
 	  	cp -f $n ${MACPORTS}
 	done
+	
 	popd
 }
 
