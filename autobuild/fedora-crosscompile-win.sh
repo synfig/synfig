@@ -10,6 +10,10 @@ if [ -z $ARCH ]; then
 	export ARCH="32"
 fi
 
+if [ -z $THREADS ]; then
+	export THREADS=4
+fi
+
 export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
 
 export WORKSPACE=$HOME/synfig-buildroot
@@ -44,7 +48,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.1"
+export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SCRIPTPATH}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -215,7 +219,7 @@ ${TOOLCHAIN}-configure \
 --with-threads \
 --with-magick_plus_plus
 
-make install
+make install -j$THREADS
 }
 
 #ETL
@@ -243,7 +247,7 @@ cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
-make install -j4
+make install -j$THREADS
 }
 
 #synfig-studio
@@ -257,7 +261,7 @@ cp ./configure ./configure.real
 echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
-make install -j4
+make install -j$THREADS
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
 }
 
@@ -338,6 +342,7 @@ gen_list_nsh share/synfig share-synfig
 gen_list_nsh share/themes share-themes
 
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
+sed -i "s/@VERSION@/$VERSION/g" $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
 

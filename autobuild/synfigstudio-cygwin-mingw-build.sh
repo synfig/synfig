@@ -52,8 +52,12 @@ export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
 export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
-export DEBUG=1
-export THREADS=4
+if [ -z $DEBUG ]; then
+	export DEBUG=1
+fi
+if [ -z $THREADS ]; then
+	export THREADS=4
+fi
 #=========================== EDIT UNTIL HERE ===================================
 
 export DISTPREFIX=$WORKSPACE/dist
@@ -85,7 +89,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.1"
+export VERSION=`cat ${SRCPREFIX}/synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -771,6 +775,7 @@ gen_list_nsh share/themes share-themes
 
 #make installer
 cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
+sed -i "s/@VERSION@/$VERSION/g" ./synfigstudio.nsi
 cp -f $SRCPREFIX/autobuild/win${ARCH}-specific.nsh ./arch-specific.nsh
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
