@@ -92,6 +92,8 @@
 
 #include <synfig/transform.h>
 
+#include "docks/dockable.h"
+
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
@@ -142,7 +144,7 @@ class Dock_Keyframes;
 **
 **	\writeme
 */
-class CanvasView : public Gtk::Bin, public etl::shared_object
+class CanvasView : public Dockable, public etl::shared_object
 {
 	friend class UniversalScrubber;
 	friend class Dock_Layers;
@@ -243,8 +245,6 @@ private:
 	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
-
-	Gtk::Label *window_title;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
@@ -648,8 +648,6 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	void present();
-
 	bool is_playing() { return is_playing_; }
 
 	void update_quality();
@@ -749,8 +747,6 @@ private:
 protected:
 	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
-	void on_size_allocate(Gtk::Allocation &allocation);
-	void on_size_request(Gtk::Requisition *requisition);
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

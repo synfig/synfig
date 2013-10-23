@@ -213,6 +213,7 @@ void
 Dockable::set_local_name(const synfig::String& local_name)
 {
 	//set_title(local_name);
+	local_name_ = local_name;
 	title_label_.set_text(local_name);
 }
 

@@ -99,6 +99,7 @@
 #include "event_layerclick.h"
 
 #include "mainwindow.h"
+#include "docks/dockmanager.h"
 #include "docks/dock_toolbox.h"
 
 #include "dialogs/dialog_preview.h"
@@ -675,6 +676,7 @@ CanvasView::IsWorking::operator bool()const
 /* === M E T H O D S ======================================================= */
 
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface_):
+	Dockable(GUID().get_string(),_("Canvas View")),
 	smach_					(this),
 	instance_				(instance),
 	canvas_interface_		(canvas_interface_),
@@ -707,8 +709,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	preview_dialog			(new Dialog_Preview),
 	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
-	window_title = manage(new Gtk::Label());
-
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
@@ -878,28 +878,17 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	on_time_changed();
 	show();
 
-	Gtk::Button *close_button = manage(new Gtk::Button());
-	Gtk::Image *close_button_image = manage(new Gtk::Image(
-			Gtk::StockID("gtk-close"),
-			Gtk::IconSize::from_name("synfig-small_icon") ));
-	close_button->add(*close_button_image);
-	close_button->signal_clicked().connect(
-		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
-
-	Gtk::HBox *title_box = manage(new Gtk::HBox());
-	title_box->pack_start(*window_title, false, false, 10);
-	title_box->pack_end(*close_button, false, false, 0);
-	title_box->show_all();
-
-	show();
 	instance->canvas_view_list().push_front(this);
 	instance->signal_canvas_view_created()(this);
-	App::main_window->notebook().append_page(*this, *title_box);
 	//synfig::info("Canvasview: Constructor Done");
+
+	App::dock_manager->register_dockable(*this);
+	present();
 }
 
 CanvasView::~CanvasView()
 {
+	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
 
 	App::ui_manager()->remove_action_group(action_group);
@@ -931,20 +920,6 @@ CanvasView::~CanvasView()
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("CanvasView::~CanvasView(): Deleted");
-}
-
-void
-CanvasView::on_size_allocate(Gtk::Allocation &allocation) {
-	Gtk::Bin::on_size_allocate(allocation);
-	if (get_child() != NULL)
-		get_child()->size_allocate(allocation);
-}
-
-void
-CanvasView::on_size_request(Gtk::Requisition *requisition) {
-	Gtk::Bin::on_size_request(requisition);
-	if (get_child() != NULL && requisition != NULL)
-		*requisition = get_child()->size_request();
 }
 
 void CanvasView::activate()
@@ -2398,21 +2373,14 @@ CanvasView::update_title()
 	if(get_canvas()->is_root())
 		title+=_(" (Root)");
 
-	window_title->set_text(title);
+	set_local_name(title);
 }
 
 void
 CanvasView::on_hide()
 {
 	smach_.egress();
-	Gtk::Bin::on_hide();
-}
-
-void
-CanvasView::present()
-{
-	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
-	App::main_window->present();
+	Dockable::on_hide();
 }
 
 bool
@@ -2424,7 +2392,7 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	else if(Gtk::Bin::on_key_press_event(event))
+	else if(Dockable::on_key_press_event(event))
 			return true;
 		else
 			if (focused_widget) return focused_widget->event((GdkEvent*)event);
