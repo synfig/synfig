@@ -77,6 +77,7 @@ public:
 
 	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
 	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+	void on_switch_page(GtkNotebookPage* page, guint page_num);
 }; // END of studio::DockBook
 
 }; // END of namespace studio

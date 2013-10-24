@@ -665,7 +665,11 @@ private:
 
 	void on_input_device_changed(GdkDevice*);
 
-	virtual void on_hide();
+	void on_hide();
+
+	Gtk::Widget* create_tab_label();
+
+	bool on_button_press_event(GdkEventButton *event);
 
 	//bool on_children_tree_event(GdkEvent *event);
 

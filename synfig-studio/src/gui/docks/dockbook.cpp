@@ -42,6 +42,8 @@
 
 #include "general.h"
 
+#include "canvasview.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -238,6 +240,10 @@ DockBook::set_contents(const synfig::String& x)
 bool
 DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
+	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+	if (canvas_view && canvas_view != App::get_selected_canvas_view())
+		App::set_selected_canvas_view(canvas_view);
+
 	if(event->button!=3)
 		return false;
 
@@ -253,4 +259,16 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
+}
+
+void
+DockBook::on_switch_page(GtkNotebookPage* page, guint page_num)
+{
+	Gtk::Notebook::PageList::iterator p = pages().find(page_num);
+	if (p != pages().end()) {
+		CanvasView *canvas_view = dynamic_cast<CanvasView*>(p->get_child());
+		if (canvas_view && canvas_view != App::get_selected_canvas_view())
+			App::set_selected_canvas_view(canvas_view);
+	}
+	Notebook::on_switch_page(page, page_num);
 }

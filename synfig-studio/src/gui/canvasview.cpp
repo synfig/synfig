@@ -44,8 +44,12 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodelsort.h>
+#include <gtkmm/button.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/eventbox.h>
+#include <gtkmm/label.h>
+#include <gtkmm/box.h>
 
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
@@ -100,6 +104,7 @@
 
 #include "mainwindow.h"
 #include "docks/dockmanager.h"
+#include "docks/dockbook.h"
 #include "docks/dock_toolbox.h"
 
 #include "dialogs/dialog_preview.h"
@@ -112,6 +117,8 @@
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
+
+#include <pangomm.h>
 
 #include "general.h"
 
@@ -760,7 +767,14 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	update_title();
 
 	layout_table->show();
-	add(*layout_table);
+
+	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
+	event_box->set_above_child(true);
+	event_box->add(*layout_table);
+	event_box->show();
+	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&studio::CanvasView::on_button_press_event));
+
+	add(*event_box);
 
 	//set_transient_for(*App::toolbox);
 
@@ -926,12 +940,18 @@ void CanvasView::activate()
 {
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+
+	DockBook *dock_book = dynamic_cast<DockBook*>(get_parent());
+	if (dock_book) dock_book->refresh_tab(this);
 }
 
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+
+	DockBook *dock_book = dynamic_cast<DockBook*>(get_parent());
+	if (dock_book) dock_book->refresh_tab(this);
 }
 
 std::list<int>&
@@ -2381,6 +2401,51 @@ CanvasView::on_hide()
 {
 	smach_.egress();
 	Dockable::on_hide();
+}
+
+Gtk::Widget*
+CanvasView::create_tab_label()
+{
+	Gtk::EventBox* event_box(manage(new Gtk::EventBox()));
+
+	attach_dnd_to(*event_box);
+
+	Glib::ustring text(get_local_name());
+	
+	Gtk::HBox* box(manage(new Gtk::HBox()));
+	event_box->add(*box);
+	box->show();
+
+	Gtk::Label* label(manage(new Gtk::Label(text)));
+	box->pack_start(*label, false, true);
+	if (this == App::get_selected_canvas_view().get())
+	{
+		Pango::AttrList list;
+		Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+		list.insert(attr);
+		label->set_attributes(list);
+	}
+	label->show();
+
+	Gtk::Button *close_button = manage(new Gtk::Button());
+	box->pack_end(*close_button, false, false, 0);
+	Gtk::Image* close_button_image(manage(new Gtk::Image(
+			Gtk::StockID("gtk-close"),
+			Gtk::IconSize::from_name("synfig-small_icon") )));
+	close_button->add(*close_button_image);
+	close_button->signal_clicked().connect(
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
+	close_button->show_all();
+
+	return event_box;
+}
+
+bool
+CanvasView::on_button_press_event(GdkEventButton *event)
+{
+	if (this != App::get_selected_canvas_view())
+		App::set_selected_canvas_view(this);
+	return Dockable::on_button_press_event(event);
 }
 
 bool
