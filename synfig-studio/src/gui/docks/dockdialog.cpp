@@ -37,6 +37,7 @@
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
 #include "mainwindow.h"
+#include "canvasview.h"
 #include "widgets/widget_compselect.h"
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
@@ -111,13 +112,6 @@ DockDialog::DockDialog():
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
 
-	// connect our signals
-	signal_delete_event().connect(
-		sigc::hide(
-			sigc::mem_fun(*this,&DockDialog::close)
-		)
-	);
-
 	add_accel_group(App::ui_manager()->get_accel_group());
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&DockDialog::present));
 
@@ -146,11 +140,21 @@ DockDialog::~DockDialog()
 	}
 }
 
-void
-DockDialog::on_hide()
+bool
+DockDialog::on_delete_event(GdkEventAny * /* event */)
 {
-	Gtk::Window::on_hide();
-	close();
+	for(std::list<Dockable*>::iterator i = App::dock_manager->dockable_list_.begin(); i != App::dock_manager->dockable_list_.end(); i++)
+	{
+		if ((*i)->get_parent_window() == get_window())
+		{
+			CanvasView *canvas_view = dynamic_cast<CanvasView*>(*i);
+			if (canvas_view)
+				canvas_view->close_view();
+			else
+				DockManager::remove_widget_recursive(**i);
+		}
+	}
+	return true;
 }
 
 bool
