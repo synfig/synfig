@@ -47,6 +47,7 @@
 
 #include "app.h"
 #include "mainwindow.h"
+#include "canvasview.h"
 
 #endif
 
@@ -205,6 +206,7 @@ DockManager::unregister_dockable(Dockable& x)
 			remove_widget_recursive(x);
 			dockable_list_.erase(iter);
 			synfig::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
+			update_window_titles();
 			return true;
 		}
 	}
@@ -704,3 +706,32 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 }
 
 
+void
+DockManager::update_window_titles()
+{
+	// build maps
+	typedef std::map< CanvasView::ActivationIndex, CanvasView* > CanvasViewMap;
+	typedef std::map< Glib::RefPtr<Gdk::Window>, std::string > TitleMap;
+	CanvasViewMap canvas_view_map;
+	TitleMap title_map;
+	for(std::list<Dockable*>::iterator i = dockable_list_.begin(); i != dockable_list_.end(); i++)
+	{
+		if ((*i)->get_parent_window())
+		{
+			title_map[(*i)->get_parent_window()] = (*i)->get_parent_window() == App::main_window->notebook().get_parent_window()
+			                                     ? _("Synfig Studio") : _("Dock Panel");
+			CanvasView *canvas_view = dynamic_cast<CanvasView*>(*i);
+			if (canvas_view)
+				canvas_view_map[canvas_view->get_activation_index()] = canvas_view;
+		}
+	}
+
+	// prepare titles
+	for(CanvasViewMap::iterator i = canvas_view_map.begin(); i != canvas_view_map.end(); i++)
+		title_map[ i->second->get_parent_window() ] =
+			i->second->get_local_name() + " - " + _("Synfig Studio");
+
+	// set titles
+	for(TitleMap::iterator i = title_map.begin(); i != title_map.end(); i++)
+		i->first->set_title(i->second);
+}

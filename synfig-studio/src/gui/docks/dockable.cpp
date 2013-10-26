@@ -177,6 +177,7 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 				parent->reorder_child(dockable,parent->page_num(*this));
 			dockable.present();
 			context->drag_finish(true, false, time);
+			App::dock_manager->update_window_titles();
 			return;
 		}
 	}
@@ -215,6 +216,7 @@ Dockable::set_local_name(const synfig::String& local_name)
 	//set_title(local_name);
 	local_name_ = local_name;
 	title_label_.set_text(local_name);
+	signal_stock_id_changed()();
 }
 
 void
@@ -333,6 +335,7 @@ Dockable::present()
 */
 		dock_dialog->present();
 	}
+	App::dock_manager->update_window_titles();
 }
 
 Gtk::Widget*

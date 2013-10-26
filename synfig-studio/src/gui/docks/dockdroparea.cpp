@@ -29,6 +29,7 @@
 #	include <config.h>
 #endif
 
+#include "app.h"
 #include "docks/dockdroparea.h"
 #include "docks/dockmanager.h"
 #include <gtkmm/button.h>
@@ -92,6 +93,7 @@ DockDropArea::drop_on(bool vertical, bool first, const Glib::RefPtr<Gdk::DragCon
 		if (DockManager::add_dockable(*target, dockable, vertical, first))
 		{
 			context->drag_finish(true, false, time);
+			App::dock_manager->update_window_titles();
 			return;
 		}
 	}

@@ -186,6 +186,29 @@ public:
 	};
 	friend class IsWorking;
 
+	class ActivationIndex {
+	private:
+		static ActivationIndex last__;
+	public:
+		long long int activation_index;
+		long long int creation_index;
+
+		void create() { creation_index = ++last__.creation_index; }
+		void activate() { activation_index = ++last__.activation_index; }
+
+		explicit ActivationIndex(bool create = false): activation_index(0), creation_index(0)
+		{
+			if (create) this->create();
+		}
+
+		bool operator < (const ActivationIndex &other) const
+		{
+			if (activation_index < other.activation_index) return true;
+			if (other.activation_index < activation_index) return false;
+			return creation_index < other.creation_index;
+		}
+	};
+
 	typedef synfigapp::CanvasInterface::Mode Mode;
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
@@ -201,6 +224,7 @@ public:
 
 	WorkArea* get_work_area() { return work_area.get(); }
 private:
+	ActivationIndex activation_index_;
 
 	synfig::Rect bbox;
 
@@ -479,8 +503,11 @@ private:
 	*/
 
 public:
+	ActivationIndex get_activation_index() { return activation_index_; }
+
 	void activate();
 	void deactivate();
+	void present();
 
 	synfig::Rect& get_bbox() { return bbox; }
 

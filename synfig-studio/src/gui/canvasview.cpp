@@ -682,8 +682,11 @@ CanvasView::IsWorking::operator bool()const
 
 /* === M E T H O D S ======================================================= */
 
+CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
+
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface_):
 	Dockable(GUID().get_string(),_("Canvas View")),
+	activation_index_       (true),
 	smach_					(this),
 	instance_				(instance),
 	canvas_interface_		(canvas_interface_),
@@ -769,7 +772,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	layout_table->show();
 
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
-	event_box->set_above_child(true);
+	//event_box->set_above_child(true);
 	event_box->add(*layout_table);
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&studio::CanvasView::on_button_press_event));
@@ -938,21 +941,25 @@ CanvasView::~CanvasView()
 
 void CanvasView::activate()
 {
+	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
-
-	DockBook *dock_book = dynamic_cast<DockBook*>(get_parent());
-	if (dock_book) dock_book->refresh_tab(this);
+	update_title();
 }
 
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
-
-	DockBook *dock_book = dynamic_cast<DockBook*>(get_parent());
-	if (dock_book) dock_book->refresh_tab(this);
+	update_title();
 }
+
+void CanvasView::present()
+{
+	Dockable::present();
+	update_title();
+}
+
 
 std::list<int>&
 CanvasView::get_pixel_sizes()
@@ -2363,22 +2370,18 @@ CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Can
 void
 CanvasView::update_title()
 {
-	string title;
+	bool modified = get_instance()->get_action_count() > 0;
+	bool is_root = get_canvas()->is_root();
+	string filename = get_instance()->has_real_filename()
+					? etl::basename(get_instance()->get_file_name()) : "";
+	string canvas_name = get_canvas()->get_name();
+	string canvas_id = get_canvas()->get_id();
+	string &canvas_title = canvas_name.empty() ? canvas_id : canvas_name;
 
-	title = strprintf("%s%s\"%s\"",
-					  (
-						  get_instance()->get_action_count()
-						  ? "*"
-						  : ""
-					  ), (
-						  get_instance()->has_real_filename()
-						  ? (etl::basename(get_instance()->get_file_name()) + " : ").c_str()
-						  : ""
-					  ), (
-						  get_canvas()->get_name().empty()
-						  ? get_canvas()->get_id().c_str()
-						  : get_canvas()->get_name().c_str()
-					  ));
+	string title = filename.empty() ? canvas_title
+			     : is_root ? filename
+			     : filename + " (" + canvas_title + ")";
+	if (modified) title = "*" + title;
 
 	if(get_instance()->synfigapp::Instance::in_repository())
 	{
@@ -2390,10 +2393,8 @@ CanvasView::update_title()
 		title+=')';
 	}
 
-	if(get_canvas()->is_root())
-		title+=_(" (Root)");
-
 	set_local_name(title);
+	App::dock_manager->update_window_titles();
 }
 
 void
@@ -2441,11 +2442,12 @@ CanvasView::create_tab_label()
 }
 
 bool
-CanvasView::on_button_press_event(GdkEventButton *event)
+CanvasView::on_button_press_event(GdkEventButton * /* event */)
 {
 	if (this != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(this);
-	return Dockable::on_button_press_event(event);
+	return false;
+	//return Dockable::on_button_press_event(event);
 }
 
 bool

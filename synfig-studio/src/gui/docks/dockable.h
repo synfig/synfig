@@ -114,7 +114,7 @@ public:
 
 	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());
 
-	void present();
+	virtual void present();
 
 	void attach_dnd_to(Gtk::Widget& widget);
 
