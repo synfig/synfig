@@ -900,6 +900,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//synfig::info("Canvasview: Constructor Done");
 
 	App::dock_manager->register_dockable(*this);
+	App::main_window->main_dock_book().add(*this);
 	present();
 }
 
@@ -929,8 +930,6 @@ CanvasView::~CanvasView()
 	//delete preview
 	audio.reset();
 
-	App::main_window->notebook().remove_page(*this);
-
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
@@ -945,6 +944,7 @@ void CanvasView::activate()
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
 	update_title();
+	present();
 }
 
 void CanvasView::deactivate()

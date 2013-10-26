@@ -53,6 +53,8 @@ class DockBook : public Gtk::Notebook
 	bool deleting_;
 
 public:
+	bool allow_empty;
+
 	DockBook();
 	~DockBook();
 

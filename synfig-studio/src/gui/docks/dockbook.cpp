@@ -61,7 +61,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-DockBook::DockBook()
+DockBook::DockBook():
+	allow_empty(false)
 {
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
@@ -72,6 +73,7 @@ DockBook::DockBook()
 	//add_events(Gdk::ALL_EVENTS_MASK);
 	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
+	set_scrollable(true);
 	deleting_=false;
 
 	DockDropArea *dock_area = manage(new DockDropArea(this));

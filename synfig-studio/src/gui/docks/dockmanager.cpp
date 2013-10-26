@@ -323,7 +323,7 @@ DockManager::remove_empty_container_recursive(Gtk::Container &container)
 	else
 	if (book)
 	{
-		if (book->pages().empty())
+		if (!book->allow_empty && book->pages().empty())
 		{
 			remove_widget_recursive(*book);
 			delete book;
@@ -528,7 +528,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 
 		Gtk::Widget *child = App::main_window->root().get_child();
 		App::main_window->root().remove();
-		if (child && child != &App::main_window->notebook())
+		if (child && child != &App::main_window->main_dock_book())
 			delete child;
 		App::main_window->root().add(*widget);
 
@@ -543,9 +543,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	if (x.substr(0, 14) == "[mainnotebook]")
 	{
 		x = x.substr(14);
-		if (App::main_window->notebook().get_parent())
-			App::main_window->notebook().get_parent()->remove(App::main_window->notebook());
-		return &App::main_window->notebook();
+		if (App::main_window->main_dock_book().get_parent())
+			App::main_window->main_dock_book().get_parent()->remove(App::main_window->main_dock_book());
+		return &App::main_window->main_dock_book();
 	}
 
 	return NULL;
@@ -591,7 +591,7 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 		write_separator(x, false);
 	}
 	else
-	if (widget == &App::main_window->notebook())
+	if (widget == &App::main_window->main_dock_book())
 	{
 		write_string(x, "[mainnotebook]");
 	}
@@ -718,7 +718,7 @@ DockManager::update_window_titles()
 	{
 		if ((*i)->get_parent_window())
 		{
-			title_map[(*i)->get_parent_window()] = (*i)->get_parent_window() == App::main_window->notebook().get_parent_window()
+			title_map[(*i)->get_parent_window()] = (*i)->get_parent_window() == App::main_window->get_window()
 			                                     ? _("Synfig Studio") : _("Dock Panel");
 			CanvasView *canvas_view = dynamic_cast<CanvasView*>(*i);
 			if (canvas_view)
