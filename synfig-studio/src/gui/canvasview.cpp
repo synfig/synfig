@@ -685,7 +685,7 @@ CanvasView::IsWorking::operator bool()const
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface_):
-	Dockable(GUID().get_string(),_("Canvas View")),
+	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	activation_index_       (true),
 	smach_					(this),
 	instance_				(instance),
