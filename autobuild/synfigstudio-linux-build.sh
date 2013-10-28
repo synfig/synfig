@@ -907,11 +907,12 @@ initialize()
 		DEBUG=''
 	fi
 
-
+	if [[ $MODE == 'package' ]]; then
+		PREFIX="/opt/synfig"
+	fi
 
 	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		SYNFIG_REPO_DIR="/source/synfig.git"
-		PREFIX="/opt/synfig"
 
 		which git || mkgit
 
@@ -1077,12 +1078,11 @@ mkpackage()
 			echo "   Library set is changed. Force cleanup..."
 			echo "======================= !!! ======================"
 			sleep 5
-			if [ -e $PACKAGES_BUILDROOT.$ARCH/usr/local ]; then
-				rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local
-			fi
-			if [ -e $PACKAGES_BUILDROOT.$ARCH/$PREFIX ]; then
-				rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX
-			fi
+			echo "Cleaning $PACKAGES_BUILDROOT.$ARCH/usr/local ..."
+			rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local || true
+			echo "Cleaning $PACKAGES_BUILDROOT.$ARCH/$PREFIX ..."
+			rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX || true
+			echo
 		fi
 		#set library set ID
 		echo "${BUILDROOT_LIBRARY_SET_ID}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id
