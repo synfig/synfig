@@ -136,6 +136,7 @@ private:
 
 	// Flags
 	bool editable;
+	bool edit_immediatelly_;
 	bool radius_;
 	bool linear_;
 	bool tangent_;
@@ -169,6 +170,12 @@ public:
 
 	//! Retrieves the status of the editable flag
 	bool get_editable()const { return editable; }
+
+	//! If set, the duck will send signal_edited while moving.
+	//! If not set, the duck will send signal_edited when button released.
+	void set_edit_immediatelly(bool x) { edit_immediatelly_=x; }
+
+	bool get_edit_immediatelly()const { return edit_immediatelly_; }
 
 	//! \writeme
 	void set_tangent(bool x) { tangent_=x; type_=TYPE_TANGENT; }

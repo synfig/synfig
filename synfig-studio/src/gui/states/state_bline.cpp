@@ -99,16 +99,15 @@ class studio::StateBLine_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node);
 
-	void bline_detach_handle(synfig::ValueNode_Const::Handle value_node);
-	void bline_attach_handle(synfig::ValueNode_Const::Handle value_node);
+	void bline_set_split_handle(synfig::ValueNode_Const::Handle value_node, bool merge_radius, bool merge_angle);
 	void bline_delete_vertex(synfig::ValueNode_Const::Handle value_node);
 	void bline_insert_vertex(synfig::ValueNode_Const::Handle value_node,float origin=0.5);
 	void loop_bline();
@@ -378,8 +377,10 @@ StateBLine_Context::increment_id()
 StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
+	prev_table_status(false),
 	loop_(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
+	depth(-1),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
@@ -395,7 +396,6 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	adj_feather(0,0,10000,0.01,0.1),
 	spin_feather(adj_feather,0.01,4)
 {
-	depth=-1;
 	egress_on_selection_change=true;
 	load_settings();
 
@@ -971,6 +971,7 @@ StateBLine_Context::event_mouse_motion_handler(const Smach::event& x)
 	{
 		Point p(get_work_area()->snap_point_to_grid(event.pos));
 		curr_duck->set_trans_point(p);
+		curr_duck->signal_edited()(*curr_duck);
 		if(next_duck)
 			next_duck->set_trans_point(p);
 		get_work_area()->queue_draw();
@@ -1011,9 +1012,9 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			bline_point.set_vertex(get_work_area()->snap_point_to_grid(event.pos));
 			bline_point.set_width(1.0f);
 			bline_point.set_origin(0.5f);
-			bline_point.set_split_tangent_radius(true);
+			bline_point.set_split_tangent_radius(false);
 			bline_point.set_split_tangent_angle(false);
-			bline_point.set_tangent1(Vector(0,0));
+			bline_point.set_tangent(Vector(0,0));
 			bline_point_list.push_back(ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
 			refresh_ducks();
@@ -1037,7 +1038,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	list<ValueNode_Const::Handle>::iterator iter;
 
 	handle<WorkArea::Bezier> bezier;
-	handle<WorkArea::Duck> duck,tduck;
+	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
 	BLinePoint bline_point;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
@@ -1066,27 +1067,32 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 		get_work_area()->add_duck(duck);
 
+		tduck1=new WorkArea::Duck(bline_point.get_tangent1());
+		tduck2=new WorkArea::Duck(bline_point.get_tangent2());
+		if (!first_tduck1) first_tduck1 = tduck1;
+		if (!first_tduck2) first_tduck2 = tduck2;
+
 		// Add the tangent1 duck
-		tduck=new WorkArea::Duck(bline_point.get_tangent1());
-		tduck->set_editable(true);
-		tduck->set_name(strprintf("%x-tangent1",value_node.get()));
-		tduck->set_origin(duck);
-		tduck->set_scalar(-0.33333333333333333);
-		tduck->set_tangent(true);
-		tduck->set_guid(value_node->get_guid()^synfig::GUID::hasher(3));
-		tduck->signal_edited().connect(
-			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),value_node)
+		tduck1->set_editable(true);
+		tduck1->set_edit_immediatelly(true);
+		tduck1->set_name(strprintf("%x-tangent1",value_node.get()));
+		tduck1->set_origin(duck);
+		tduck1->set_scalar(-0.33333333333333333);
+		tduck1->set_tangent(true);
+		tduck1->set_guid(value_node->get_guid()^synfig::GUID::hasher(3));
+		tduck1->signal_edited().connect(
+			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),tduck2,value_node)
 		);
-		tduck->signal_user_click(2).connect(
+		tduck1->signal_user_click(2).connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_handle_menu),value_node)
 		);
 
 		// See if we need to add that duck to the previous bezier
 		if(bezier)
 		{
-			get_work_area()->add_duck(tduck);
+			get_work_area()->add_duck(tduck1);
 			bezier->p2=duck;
-			bezier->c2=tduck;
+			bezier->c2=tduck1;
 
 			bezier->signal_user_click(2).connect(
 				sigc::bind(
@@ -1109,36 +1115,28 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		bezier=new WorkArea::Bezier();
 
 		// Add the tangent2 duck
-		tduck=new WorkArea::Duck(bline_point.get_tangent2());
-		tduck->set_editable(true);
-		tduck->set_origin(duck);
-		tduck->set_scalar(0.33333333333333333);
-		tduck->set_tangent(true);
-		if(bline_point.get_split_tangent_both())
-		{
-			tduck->set_name(strprintf("%x-tangent2",value_node.get()));
-			tduck->signal_edited().connect(
-				sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent2_change),value_node)
-			);
-		}
-		else
-		{
-			tduck->set_name(strprintf("%x-tangent1",value_node.get()));
-			tduck->signal_edited().connect(
-				sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),value_node)
-			);
-		}
-		tduck->set_guid(value_node->get_guid()^synfig::GUID::hasher(4));
-		tduck->signal_user_click(2).connect(
+		tduck2->set_editable(true);
+		tduck2->set_edit_immediatelly(true);
+		tduck2->set_origin(duck);
+		tduck2->set_scalar(0.33333333333333333);
+		tduck2->set_tangent(true);
+
+		tduck2->set_name(strprintf("%x-tangent2",value_node.get()));
+		tduck2->signal_edited().connect(
+			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent2_change),tduck1,value_node)
+		);
+
+		tduck2->set_guid(value_node->get_guid()^synfig::GUID::hasher(4));
+		tduck2->signal_user_click(2).connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_handle_menu),value_node)
 		);
 
 		// Setup the next bezier
 		bezier->p1=duck;
-		bezier->c1=tduck;
+		bezier->c1=tduck2;
 
-		get_work_area()->add_duck(tduck);
-		curr_duck=tduck;
+		get_work_area()->add_duck(tduck2);
+		curr_duck=tduck2;
 	}
 
 	// Add the loop, if requested
@@ -1161,23 +1159,27 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		);
 		get_work_area()->add_duck(duck);
 
+		/*
+		tduck1=new WorkArea::Duck(bline_point.get_tangent1());
+
 		// Add the tangent1 duck
-		tduck=new WorkArea::Duck(bline_point.get_tangent1());
-		tduck->set_editable(true);
-		tduck->set_name(strprintf("%x-tangent1",bline_point_list.front().get()));
-		tduck->set_origin(duck);
-		tduck->set_scalar(-0.33333333333333333);
-		tduck->set_tangent(true);
-		tduck->signal_edited().connect(
-			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),bline_point_list.front())
+		tduck1->set_editable(true);
+		tduck1->set_name(strprintf("%x-tangent1",bline_point_list.front().get()));
+		tduck1->set_origin(duck);
+		tduck1->set_scalar(-0.33333333333333333);
+		tduck1->set_tangent(true);
+		tduck1->signal_edited().connect(
+			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),first_tduck2,bline_point_list.front())
 		);
-		tduck->signal_user_click(2).connect(
+		tduck1->signal_user_click(2).connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_handle_menu),bline_point_list.front())
 		);
-		get_work_area()->add_duck(tduck);
+		get_work_area()->add_duck(tduck1);
+		*/
+		get_work_area()->add_duck(first_tduck1);
 
 		bezier->p2=duck;
-		bezier->c2=tduck;
+		bezier->c2=first_tduck1;
 
 		bezier->signal_user_click(2).connect(
 			sigc::bind(
@@ -1198,21 +1200,21 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		duck->set_name("temp");
 
 		// Add the tangent1 duck
-		tduck=new WorkArea::Duck(Vector(0,0));
-		tduck->set_ignore(true);
-		tduck->set_name("ttemp");
-		tduck->set_origin(duck);
-		tduck->set_scalar(-0.33333333333333333);
+		tduck1=new WorkArea::Duck(Vector(0,0));
+		tduck1->set_ignore(true);
+		tduck1->set_name("ttemp");
+		tduck1->set_origin(duck);
+		tduck1->set_scalar(-0.33333333333333333);
 
-		tduck->set_tangent(true);
+		tduck1->set_tangent(true);
 		bezier->p2=duck;
-		bezier->c2=tduck;
+		bezier->c2=tduck1;
 
 		get_work_area()->add_duck(bezier->p2);
 		get_work_area()->add_bezier(bezier);
 
 		duck->set_guid(synfig::GUID());
-		tduck->set_guid(synfig::GUID());
+		tduck1->set_guid(synfig::GUID());
 
 		next_duck=duck;
 	}
@@ -1242,22 +1244,50 @@ StateBLine_Context::on_vertex_change(const studio::Duck &duck, synfig::ValueNode
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
-	bline_point.set_tangent2(duck.get_point());
 	value_node->set_value(bline_point);
+	if (other_duck)
+	{
+		other_duck->set_point(bline_point.get_tangent2());
+		get_work_area()->update_ducks();
+		get_work_area()->queue_draw();
+	}
 	return true;
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_tangent2(duck.get_point());
-	bline_point.set_tangent1(duck.get_point());
+
+	bool split_angle = bline_point.get_split_tangent_angle();
+	bool split_radius = bline_point.get_split_tangent_radius();
+
+	if (split_angle && split_radius) {
+		bline_point.set_tangent2(duck.get_point());
+	} else
+	if (split_angle && !split_radius) {
+		bline_point.set_tangent1(Vector(duck.get_point().mag(), bline_point.get_tangent1().angle()));
+		bline_point.set_tangent2(duck.get_point());
+	} else
+	if (!split_angle && split_radius) {
+		bline_point.set_tangent1(Vector(bline_point.get_tangent1().mag(), duck.get_point().angle()));
+		bline_point.set_tangent2(duck.get_point());
+	} else
+	if (!split_angle && !split_radius) {
+		bline_point.set_tangent1(duck.get_point());
+	}
+
 	value_node->set_value(bline_point);
+	if (other_duck)
+	{
+		other_duck->set_point(bline_point.get_tangent1());
+		get_work_area()->update_ducks();
+		get_work_area()->queue_draw();
+	}
 	return true;
 }
 
@@ -1300,20 +1330,35 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	));
 	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	if(bline_point.get_split_tangent_both())
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
-			sigc::bind(
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
-				value_node
-			)
-		));
+
+	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius)	\
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_(title),	\
+			sigc::bind(													\
+				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
+				value_node, split_angle, split_radius					\
+			)															\
+		))
+
+	bool split_angle = bline_point.get_split_tangent_angle();
+	bool split_radius = bline_point.get_split_tangent_radius();
+
+	if (split_angle)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius);
 	else
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Split Tangents"),
-			sigc::bind(
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_detach_handle),
-				value_node
-			)
-		));
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius);
+
+	if (split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false);
+	else
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true);
+
+	if (split_angle || split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+	if (!split_angle && !split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+
+	#undef STATE_BLINE_ADD_MENU_ITEM
+
 	menu.popup(0,0);
 }
 
@@ -1372,11 +1417,12 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 									   next_bline_point.get_tangent1());
 			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
+			bline_point.set_split_tangent_angle(false);
+			bline_point.set_split_tangent_radius(false);
 			bline_point.set_vertex(curve(origin));
 			bline_point.set_width((next_bline_point.get_width()-prev_bline_point.get_width())*origin+prev_bline_point.get_width());
 			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
 			bline_point.set_tangent2(bline_point.get_tangent1());
-			bline_point.set_split_tangent_both(false);
 			bline_point.set_origin(origin);
 			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
 
@@ -1417,21 +1463,35 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
-	if(bline_point.get_split_tangent_both())
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
-			sigc::bind(
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
-				value_node
-			)
-		));
+	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius)	\
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_(title),	\
+			sigc::bind(													\
+				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
+				value_node, split_angle, split_radius					\
+			)															\
+		))
+
+	bool split_angle = bline_point.get_split_tangent_angle();
+	bool split_radius = bline_point.get_split_tangent_radius();
+
+	if (split_angle)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius);
 	else
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Split Tangents"),
-			sigc::bind(
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_detach_handle),
-				value_node
-			)
-		));
-	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius);
+
+	if (split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false);
+	else
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true);
+
+	if (split_angle || split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false);
+	if (!split_angle && !split_radius)
+		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true);
+
+	#undef STATE_BLINE_ADD_MENU_ITEM
+
+		menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	if(loop_)
 	{
 		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop Spline"),
@@ -1453,21 +1513,22 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 }
 
 void
-StateBLine_Context::bline_detach_handle(synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::bline_set_split_handle(synfig::ValueNode_Const::Handle value_node, bool split_angle, bool split_radius)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_split_tangent_both(true);
-	bline_point.set_tangent2(bline_point.get_tangent1());
-	value_node->set_value(bline_point);
-	refresh_ducks(false);
-}
 
-void
-StateBLine_Context::bline_attach_handle(synfig::ValueNode_Const::Handle value_node)
-{
-	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	bline_point.set_tangent1((bline_point.get_tangent1()+bline_point.get_tangent2())*0.5);
-	bline_point.set_split_tangent_both(false);
+	if (bline_point.get_split_tangent_angle() != split_angle)
+	{
+		bline_point.set_tangent2(Vector(bline_point.get_tangent2().mag(), bline_point.get_tangent1().angle()));
+		bline_point.set_split_tangent_angle(split_angle);
+	}
+
+	if (bline_point.get_split_tangent_radius() != split_radius)
+	{
+		bline_point.set_tangent2(Vector(bline_point.get_tangent1().mag(), bline_point.get_tangent2().angle()));
+		bline_point.set_split_tangent_radius(split_radius);
+	}
+
 	value_node->set_value(bline_point);
 	refresh_ducks(false);
 }

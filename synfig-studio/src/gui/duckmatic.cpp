@@ -817,6 +817,8 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 void
 DuckDrag_Translate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
+	is_moving = false;
+
 	last_translate_=Vector(0,0);
 	{
 		drag_offset_=duckmatic->find_duck(offset)->get_trans_point();
@@ -838,7 +840,7 @@ DuckDrag_Translate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& 
 bool
 DuckDrag_Translate::end_duck_drag(Duckmatic* duckmatic)
 {
-	if(last_translate_.mag()>0.0001)
+	if(is_moving)
 	{
 		duckmatic->signal_edited_selected_ducks();
 		return true;
@@ -870,15 +872,22 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 		if ((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
 			(*iter)->set_trans_point(positions[i]+vect, time);
 
+	last_translate_=vect;
+
+	if(last_translate_.mag()>0.0001)
+		is_moving = true;
+
+	if (is_moving)
+		duckmatic->signal_edited_selected_ducks(true);
+
 	// then patch up the tangents for the vertices we've moved
 	duckmatic->update_ducks();
-
-	last_translate_=vect;
 }
 
 void
 BezierDrag_Default::begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& offset, float bezier_click_pos)
 {
+	is_moving = false;
 	drag_offset_=offset;
 	click_pos_=bezier_click_pos;
 
@@ -928,18 +937,28 @@ BezierDrag_Default::bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vect
 	synfig::Vector c1_offset(vect[0]*c1_ratio, vect[1]*c1_ratio);
 	synfig::Vector c2_offset(vect[0]*c2_ratio, vect[1]*c2_ratio);
 
-	duckmatic->get_selected_bezier()->c1->set_trans_point(c1_initial+c1_offset, time);
-	duckmatic->get_selected_bezier()->c2->set_trans_point(c2_initial+c2_offset, time);
+	etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
+	etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+
+	c1->set_trans_point(c1_initial+c1_offset, time);
+	c2->set_trans_point(c2_initial+c2_offset, time);
 
 	last_translate_=vect;
-	
+	if(last_translate_.mag()>0.0001)
+		is_moving = true;
+
+	if (is_moving) {
+		duckmatic->signal_edited_duck(c1, true);
+		duckmatic->signal_edited_duck(c2, true);
+	}
+
 	duckmatic->update_ducks();
 }
 
 bool
 BezierDrag_Default::end_bezier_drag(Duckmatic* duckmatic)
 {
-	if(last_translate_.mag()>0.0001)
+	if(is_moving)
 	{
 		etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
 		etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
@@ -969,8 +988,10 @@ Duckmatic::signal_user_click_selected_ducks(int button)
 }
 
 void
-Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck)
+Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck, bool moving)
 {
+	if (moving && !duck->get_edit_immediatelly()) return;
+
 	if (duck->get_type() == Duck::TYPE_ANGLE)
 	{
 		if(!duck->signal_edited()(*duck))
@@ -1029,7 +1050,7 @@ Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck)
 
 
 void
-Duckmatic::signal_edited_selected_ducks()
+Duckmatic::signal_edited_selected_ducks(bool moving)
 {
 	const DuckList ducks(get_selected_ducks());
 	DuckList::const_iterator iter;
@@ -1043,7 +1064,8 @@ Duckmatic::signal_edited_selected_ducks()
 	{
 		try
 		{
-			signal_edited_duck(*iter);
+			if (!moving || (*iter)->get_edit_immediatelly())
+				signal_edited_duck(*iter);
 		}
 		catch (String)
 		{

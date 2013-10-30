@@ -106,6 +106,7 @@ class DuckDrag_Translate : public DuckDrag_Base
 	synfig::Vector drag_offset_;
 	synfig::Vector snap;
 	std::vector<synfig::Vector> positions;
+	bool is_moving;
 
 public:
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
@@ -132,6 +133,7 @@ class BezierDrag_Default : public BezierDrag_Base
 	float c2_ratio;
 	bool c1_selected;
 	bool c2_selected;
+	bool is_moving;
 
 public:
 	void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos);
@@ -399,11 +401,11 @@ public:
 
 	//! Calls a single duck's edited signal
 	/*! Updates the corresponding valuenodes after a drag */
-	void signal_edited_duck(const etl::handle<Duck> &duck);
+	void signal_edited_duck(const etl::handle<Duck> &duck, bool moving = false);
 
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
-	void signal_edited_selected_ducks();
+	void signal_edited_selected_ducks(bool moving = false);
 
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 

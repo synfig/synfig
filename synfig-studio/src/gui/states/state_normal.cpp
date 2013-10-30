@@ -108,6 +108,8 @@ class DuckDrag_Combo : public DuckDrag_Base
 	bool bad_drag;
 	bool move_only;
 
+	bool is_moving;
+
 public:
 	CanvasView* canvas_view_;
 	bool scale;
@@ -276,6 +278,7 @@ StateNormal_Context::~StateNormal_Context()
 }
 
 DuckDrag_Combo::DuckDrag_Combo():
+	is_moving(false),
 	scale(false),
 	rotate(false),
 	constrain(false) // Lock aspect for scale
@@ -285,6 +288,7 @@ DuckDrag_Combo::DuckDrag_Combo():
 void
 DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
+	is_moving = false;
 	last_move=Vector(1,1);
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
@@ -457,10 +461,16 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	}
 
+	last_move=vect;
+
+	if((last_move-Vector(1,1)).mag()>0.0001)
+		is_moving = true;
+
+	if (is_moving)
+		duckmatic->signal_edited_selected_ducks(true);
+
 	// then patch up the tangents for the vertices we've moved
 	duckmatic->update_ducks();
-
-	last_move=vect;
 }
 
 bool
@@ -470,7 +480,7 @@ DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 
 	//synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
 
-	if((last_move-Vector(1,1)).mag()>0.0001)
+	if(is_moving)
 	{
 		duckmatic->signal_edited_selected_ducks();
 		return true;
