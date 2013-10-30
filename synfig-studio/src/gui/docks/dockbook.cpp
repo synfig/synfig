@@ -42,6 +42,8 @@
 
 #include "general.h"
 
+#include "canvasview.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -59,7 +61,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-DockBook::DockBook()
+DockBook::DockBook():
+	allow_empty(false)
 {
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
@@ -70,6 +73,7 @@ DockBook::DockBook()
 	//add_events(Gdk::ALL_EVENTS_MASK);
 	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
+	set_scrollable(true);
 	deleting_=false;
 
 	DockDropArea *dock_area = manage(new DockDropArea(this));
@@ -238,6 +242,10 @@ DockBook::set_contents(const synfig::String& x)
 bool
 DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
+	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+	if (canvas_view && canvas_view != App::get_selected_canvas_view())
+		App::set_selected_canvas_view(canvas_view);
+
 	if(event->button!=3)
 		return false;
 
@@ -253,4 +261,16 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
+}
+
+void
+DockBook::on_switch_page(GtkNotebookPage* page, guint page_num)
+{
+	Gtk::Notebook::PageList::iterator p = pages().find(page_num);
+	if (p != pages().end()) {
+		CanvasView *canvas_view = dynamic_cast<CanvasView*>(p->get_child());
+		if (canvas_view && canvas_view != App::get_selected_canvas_view())
+			App::set_selected_canvas_view(canvas_view);
+	}
+	Notebook::on_switch_page(page, page_num);
 }

@@ -99,6 +99,8 @@ public:
 	std::string save_layout_to_string();
 	void load_layout_from_string(const std::string &x);
 
+	void update_window_titles();
+
 	static std::string layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy);
 
 	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);

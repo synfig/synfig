@@ -32,6 +32,7 @@
 #include "mainwindow.h"
 #include "canvasview.h"
 #include "docks/dockable.h"
+#include "docks/dockbook.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdroparea.h"
 
@@ -71,14 +72,9 @@ MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
 
-	notebook_ = manage(new Gtk::Notebook());
-
-	DockDropArea *dock_area = manage(new DockDropArea(notebook_));
-	dock_area->show();
-
-	notebook_->set_action_widget(dock_area, Gtk::PACK_END);
-	notebook_->set_scrollable(true);
-	notebook_->show();
+	main_dock_book_ = manage(new DockBook());
+	main_dock_book_->allow_empty = true;
+	main_dock_book_->show();
 
 	class Bin : public Gtk::Bin {
 	public:
@@ -97,7 +93,7 @@ MainWindow::MainWindow()
 	};
 
 	bin_ = manage((Gtk::Bin*)new Bin());
-	bin_->add(*notebook_);
+	bin_->add(*main_dock_book_);
 	bin_->show();
 
 	Gtk::VBox *vbox = manage(new Gtk::VBox());
@@ -118,9 +114,6 @@ MainWindow::MainWindow()
 	init_menus();
 	panels_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 	App::ui_manager()->insert_action_group(panels_action_group);
-
-	notebook_->signal_switch_page().connect(
-		sigc::mem_fun(*this, &MainWindow::on_switch_page) );
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
@@ -147,7 +140,7 @@ void MainWindow::create_stock_dialog1()
 		"]";
 	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
 	if (widget != NULL)
-		DockManager::add_widget(App::main_window->notebook(), *widget, false, false);
+		DockManager::add_widget(App::main_window->main_dock_book(), *widget, false, false);
 }
 
 void MainWindow::create_stock_dialog2()
@@ -161,7 +154,7 @@ void MainWindow::create_stock_dialog2()
 		"]";
 	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
 	if (widget != NULL)
-		DockManager::add_widget(App::main_window->notebook(), *widget, true, false);
+		DockManager::add_widget(App::main_window->main_dock_book(), *widget, true, false);
 }
 
 void
@@ -305,16 +298,6 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 
 	App::ui_manager()->add_ui_from_string(ui_info_popup);
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
-}
-
-void
-MainWindow::on_switch_page(GtkNotebookPage* /* page */, guint page_num)
-{
-	Gtk::Notebook::PageList::iterator i = App::main_window->notebook().pages().find(page_num);
-	if (i == App::main_window->notebook().pages().end())
-		App::set_selected_canvas_view(NULL);
-	else
-		App::set_selected_canvas_view(dynamic_cast<CanvasView*>(i->get_child()));
 }
 
 /* === E N T R Y P O I N T ================================================= */

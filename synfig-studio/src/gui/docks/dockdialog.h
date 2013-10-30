@@ -67,7 +67,7 @@ class DockDialog : public Gtk::Window
 private:
 	int id_;
 
-	void on_hide();
+	bool on_delete_event(GdkEventAny *event);
 	void set_id(int x) { id_=x; }
 
 public:

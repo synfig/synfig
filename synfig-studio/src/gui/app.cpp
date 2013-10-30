@@ -2801,7 +2801,9 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
 	if(selected_canvas_view != canvas_view)
 	{
-		if (selected_canvas_view) selected_canvas_view->deactivate();
+		etl::loose_handle<CanvasView> prev = selected_canvas_view;
+		selected_canvas_view = NULL;
+		if (prev) prev->deactivate();
 		selected_canvas_view = canvas_view;
 		signal_canvas_view_focus()(selected_canvas_view);
 		if (selected_canvas_view) selected_canvas_view->activate();

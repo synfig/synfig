@@ -44,8 +44,12 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodelsort.h>
+#include <gtkmm/button.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/eventbox.h>
+#include <gtkmm/label.h>
+#include <gtkmm/box.h>
 
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
@@ -99,6 +103,8 @@
 #include "event_layerclick.h"
 
 #include "mainwindow.h"
+#include "docks/dockmanager.h"
+#include "docks/dockbook.h"
 #include "docks/dock_toolbox.h"
 
 #include "dialogs/dialog_preview.h"
@@ -111,6 +117,8 @@
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
+
+#include <pangomm.h>
 
 #include "general.h"
 
@@ -674,7 +682,11 @@ CanvasView::IsWorking::operator bool()const
 
 /* === M E T H O D S ======================================================= */
 
+CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
+
 CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface_):
+	Dockable(synfig::GUID().get_string(),_("Canvas View")),
+	activation_index_       (true),
 	smach_					(this),
 	instance_				(instance),
 	canvas_interface_		(canvas_interface_),
@@ -707,8 +719,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	preview_dialog			(new Dialog_Preview),
 	sound_dialog			(new Dialog_SoundSelect(*App::main_window,canvas_interface_))
 {
-	window_title = manage(new Gtk::Label());
-
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
@@ -760,7 +770,14 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	update_title();
 
 	layout_table->show();
-	add(*layout_table);
+
+	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
+	//event_box->set_above_child(true);
+	event_box->add(*layout_table);
+	event_box->show();
+	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&studio::CanvasView::on_button_press_event));
+
+	add(*event_box);
 
 	//set_transient_for(*App::toolbox);
 
@@ -878,28 +895,18 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	on_time_changed();
 	show();
 
-	Gtk::Button *close_button = manage(new Gtk::Button());
-	Gtk::Image *close_button_image = manage(new Gtk::Image(
-			Gtk::StockID("gtk-close"),
-			Gtk::IconSize::from_name("synfig-small_icon") ));
-	close_button->add(*close_button_image);
-	close_button->signal_clicked().connect(
-		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance)));
-
-	Gtk::HBox *title_box = manage(new Gtk::HBox());
-	title_box->pack_start(*window_title, false, false, 10);
-	title_box->pack_end(*close_button, false, false, 0);
-	title_box->show_all();
-
-	show();
 	instance->canvas_view_list().push_front(this);
 	instance->signal_canvas_view_created()(this);
-	App::main_window->notebook().append_page(*this, *title_box);
 	//synfig::info("Canvasview: Constructor Done");
+
+	App::dock_manager->register_dockable(*this);
+	App::main_window->main_dock_book().add(*this);
+	present();
 }
 
 CanvasView::~CanvasView()
 {
+	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
 
 	App::ui_manager()->remove_action_group(action_group);
@@ -923,8 +930,6 @@ CanvasView::~CanvasView()
 	//delete preview
 	audio.reset();
 
-	App::main_window->notebook().remove_page(*this);
-
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
@@ -933,31 +938,28 @@ CanvasView::~CanvasView()
 		synfig::info("CanvasView::~CanvasView(): Deleted");
 }
 
-void
-CanvasView::on_size_allocate(Gtk::Allocation &allocation) {
-	Gtk::Bin::on_size_allocate(allocation);
-	if (get_child() != NULL)
-		get_child()->size_allocate(allocation);
-}
-
-void
-CanvasView::on_size_request(Gtk::Requisition *requisition) {
-	Gtk::Bin::on_size_request(requisition);
-	if (get_child() != NULL && requisition != NULL)
-		*requisition = get_child()->size_request();
-}
-
 void CanvasView::activate()
 {
+	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+	update_title();
+	present();
 }
 
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+	update_title();
 }
+
+void CanvasView::present()
+{
+	Dockable::present();
+	update_title();
+}
+
 
 std::list<int>&
 CanvasView::get_pixel_sizes()
@@ -2368,22 +2370,18 @@ CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Can
 void
 CanvasView::update_title()
 {
-	string title;
+	bool modified = get_instance()->get_action_count() > 0;
+	bool is_root = get_canvas()->is_root();
+	string filename = get_instance()->has_real_filename()
+					? etl::basename(get_instance()->get_file_name()) : "";
+	string canvas_name = get_canvas()->get_name();
+	string canvas_id = get_canvas()->get_id();
+	string &canvas_title = canvas_name.empty() ? canvas_id : canvas_name;
 
-	title = strprintf("%s%s\"%s\"",
-					  (
-						  get_instance()->get_action_count()
-						  ? "*"
-						  : ""
-					  ), (
-						  get_instance()->has_real_filename()
-						  ? (etl::basename(get_instance()->get_file_name()) + " : ").c_str()
-						  : ""
-					  ), (
-						  get_canvas()->get_name().empty()
-						  ? get_canvas()->get_id().c_str()
-						  : get_canvas()->get_name().c_str()
-					  ));
+	string title = filename.empty() ? canvas_title
+			     : is_root ? filename
+			     : filename + " (" + canvas_title + ")";
+	if (modified) title = "*" + title;
 
 	if(get_instance()->synfigapp::Instance::in_repository())
 	{
@@ -2395,24 +2393,61 @@ CanvasView::update_title()
 		title+=')';
 	}
 
-	if(get_canvas()->is_root())
-		title+=_(" (Root)");
-
-	window_title->set_text(title);
+	set_local_name(title);
+	App::dock_manager->update_window_titles();
 }
 
 void
 CanvasView::on_hide()
 {
 	smach_.egress();
-	Gtk::Bin::on_hide();
+	Dockable::on_hide();
 }
 
-void
-CanvasView::present()
+Gtk::Widget*
+CanvasView::create_tab_label()
 {
-	App::main_window->notebook().set_current_page( App::main_window->notebook().page_num(*this) );
-	App::main_window->present();
+	Gtk::EventBox* event_box(manage(new Gtk::EventBox()));
+
+	attach_dnd_to(*event_box);
+
+	Glib::ustring text(get_local_name());
+	
+	Gtk::HBox* box(manage(new Gtk::HBox()));
+	event_box->add(*box);
+	box->show();
+
+	Gtk::Label* label(manage(new Gtk::Label(text)));
+	box->pack_start(*label, false, true);
+	if (this == App::get_selected_canvas_view().get())
+	{
+		Pango::AttrList list;
+		Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+		list.insert(attr);
+		label->set_attributes(list);
+	}
+	label->show();
+
+	Gtk::Button *close_button = manage(new Gtk::Button());
+	box->pack_end(*close_button, false, false, 0);
+	Gtk::Image* close_button_image(manage(new Gtk::Image(
+			Gtk::StockID("gtk-close"),
+			Gtk::IconSize::from_name("synfig-small_icon") )));
+	close_button->add(*close_button_image);
+	close_button->signal_clicked().connect(
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_view)));
+	close_button->show_all();
+
+	return event_box;
+}
+
+bool
+CanvasView::on_button_press_event(GdkEventButton * /* event */)
+{
+	if (this != App::get_selected_canvas_view())
+		App::set_selected_canvas_view(this);
+	return false;
+	//return Dockable::on_button_press_event(event);
 }
 
 bool
@@ -2424,7 +2459,7 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		if(focused_widget->event((GdkEvent*)event))
 		return true;
 	}
-	else if(Gtk::Bin::on_key_press_event(event))
+	else if(Dockable::on_key_press_event(event))
 			return true;
 		else
 			if (focused_widget) return focused_widget->event((GdkEvent*)event);

@@ -92,6 +92,8 @@
 
 #include <synfig/transform.h>
 
+#include "docks/dockable.h"
+
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
@@ -142,7 +144,7 @@ class Dock_Keyframes;
 **
 **	\writeme
 */
-class CanvasView : public Gtk::Bin, public etl::shared_object
+class CanvasView : public Dockable, public etl::shared_object
 {
 	friend class UniversalScrubber;
 	friend class Dock_Layers;
@@ -184,6 +186,29 @@ public:
 	};
 	friend class IsWorking;
 
+	class ActivationIndex {
+	private:
+		static ActivationIndex last__;
+	public:
+		long long int activation_index;
+		long long int creation_index;
+
+		void create() { creation_index = ++last__.creation_index; }
+		void activate() { activation_index = ++last__.activation_index; }
+
+		explicit ActivationIndex(bool create = false): activation_index(0), creation_index(0)
+		{
+			if (create) this->create();
+		}
+
+		bool operator < (const ActivationIndex &other) const
+		{
+			if (activation_index < other.activation_index) return true;
+			if (other.activation_index < activation_index) return false;
+			return creation_index < other.creation_index;
+		}
+	};
+
 	typedef synfigapp::CanvasInterface::Mode Mode;
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
@@ -199,6 +224,7 @@ public:
 
 	WorkArea* get_work_area() { return work_area.get(); }
 private:
+	ActivationIndex activation_index_;
 
 	synfig::Rect bbox;
 
@@ -243,8 +269,6 @@ private:
 	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
-
-	Gtk::Label *window_title;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
@@ -479,8 +503,11 @@ private:
 	*/
 
 public:
+	ActivationIndex get_activation_index() { return activation_index_; }
+
 	void activate();
 	void deactivate();
+	void present();
 
 	synfig::Rect& get_bbox() { return bbox; }
 
@@ -648,8 +675,6 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	void present();
-
 	bool is_playing() { return is_playing_; }
 
 	void update_quality();
@@ -667,7 +692,11 @@ private:
 
 	void on_input_device_changed(GdkDevice*);
 
-	virtual void on_hide();
+	void on_hide();
+
+	Gtk::Widget* create_tab_label();
+
+	bool on_button_press_event(GdkEventButton *event);
 
 	//bool on_children_tree_event(GdkEvent *event);
 
@@ -749,8 +778,6 @@ private:
 protected:
 	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
-	void on_size_allocate(Gtk::Allocation &allocation);
-	void on_size_request(Gtk::Requisition *requisition);
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

@@ -41,18 +41,17 @@
 
 namespace studio {
 	class Dockable;
+	class DockBook;
 
 	class MainWindow: public Gtk::Window
 	{
 	private:
 		Gtk::Bin *bin_;
-		Gtk::Notebook *notebook_;
+		DockBook *main_dock_book_;
 		Glib::RefPtr<Gtk::ActionGroup> panels_action_group;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
-
-		void on_switch_page(GtkNotebookPage* page, guint page_num);
 
 		static void create_stock_dialog1();
 		static void create_stock_dialog2();
@@ -68,8 +67,8 @@ namespace studio {
 		Gtk::Bin& root() { return *bin_; }
 		const Gtk::Bin& root() const { return *bin_; }
 
-		Gtk::Notebook& notebook() { return *notebook_; }
-		const Gtk::Notebook& notebook() const { return *notebook_; }
+		DockBook& main_dock_book() { return *main_dock_book_; }
+		const DockBook& main_dock_book() const { return *main_dock_book_; }
 	};
 }; // END of namespace studio
 
