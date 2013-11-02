@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-10-10 22:48+0700\n"
-"PO-Revision-Date: 2013-10-11 06:53+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2013-10-30 19:29+0000\n"
+"Last-Translator: Aldas p <aldixuks@gmail.com.>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/synfig/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,15 +36,15 @@ msgstr ""
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:4
 msgid "enable"
-msgstr ""
+msgstr "leisti"
 
 #: ../plugins/add-skeleton-simple/plugin.xml.in.h:1
 msgid "Add Skeleton (Simple)"
-msgstr ""
+msgstr "Įdėti skeletą (paprasta)"
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
-msgstr ""
+msgstr "Parodyti visus sluoksnius"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:175
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
@@ -54,7 +54,7 @@ msgstr "Pridėti naują rinkinį"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:266
 msgid "UnnamedSet"
-msgstr ""
+msgstr "Neįvardytas rinkinys"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:231
 msgid "Add New Keyframe"
@@ -113,7 +113,7 @@ msgstr "<Nepasirinktas joks paveikslėlis>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:479
 msgid "No Parent"
-msgstr ""
+msgstr "Nėra viršesnio"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:492
 msgid "UNKNOWN"
@@ -582,7 +582,7 @@ msgstr "Atvaizduoti"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:303
 msgid "Image Sequence Separator String"
-msgstr ""
+msgstr "Paveikslėlio sekos skirtuko eilutė"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:306
 msgid "Use Cairo render on Navigator"
@@ -761,15 +761,15 @@ msgstr "Kai įjungtą, naudoją žemą skiriamąją gebą"
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:302
 msgid "Toggle position handles"
-msgstr ""
+msgstr "Perjungti pozicijos rankenėles"
 
 #: ../src/gui/dials/toggleducksdial.cpp:56 ../src/gui/iconcontroller.cpp:303
 msgid "Toggle vertex handles"
-msgstr ""
+msgstr "Perjungti viršūnės rankenėles"
 
 #: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:304
 msgid "Toggle tangent handles"
-msgstr ""
+msgstr "Perjungti liestinės rankenėles"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:305
 msgid "Toggle radius handles"
@@ -777,11 +777,11 @@ msgstr "Perjungti spindulio rankenėles"
 
 #: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:306
 msgid "Toggle width handles"
-msgstr ""
+msgstr "Perjungti pločio rankenėles"
 
 #: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:307
 msgid "Toggle angle handles"
-msgstr ""
+msgstr "Perjungti kampo rankenėles"
 
 #: ../src/gui/dials/zoomdial.cpp:55
 msgid "Zoom In"
@@ -1109,7 +1109,7 @@ msgstr "Nepavyko atidaryti failo"
 
 #: ../src/gui/states/state_bline.cpp:287
 msgid "NewSpline"
-msgstr ""
+msgstr "Naujas splainas"
 
 #: ../src/gui/states/state_bline.cpp:386
 #: ../src/gui/states/state_circle.cpp:432 ../src/gui/states/state_draw.cpp:457
@@ -1117,7 +1117,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:371
 #: ../src/gui/states/state_star.cpp:471
 msgid "Create Region"
-msgstr ""
+msgstr "Sukurti regioną"
 
 #: ../src/gui/states/state_bline.cpp:387
 #: ../src/gui/states/state_circle.cpp:433 ../src/gui/states/state_draw.cpp:458
@@ -1141,7 +1141,7 @@ msgstr "Sukurti išplėstinį kontūrą"
 #: ../src/gui/states/state_rectangle.cpp:374
 #: ../src/gui/states/state_star.cpp:474
 msgid "Create Curve Gradient"
-msgstr ""
+msgstr "Sukurti kreivės gradientą"
 
 #: ../src/gui/states/state_bline.cpp:390
 #: ../src/gui/states/state_circle.cpp:436
@@ -1149,7 +1149,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:375
 #: ../src/gui/states/state_star.cpp:475
 msgid "Create Plant"
-msgstr ""
+msgstr "Sukurti augalą"
 
 #: ../src/gui/states/state_bline.cpp:391
 #: ../src/gui/states/state_circle.cpp:437
@@ -1346,7 +1346,7 @@ msgstr "Pertraukti splainą"
 #: ../src/gui/states/state_bline.cpp:1337
 #: ../src/gui/states/state_bline.cpp:1438
 msgid "Loop Spline"
-msgstr ""
+msgstr "Uždaryti splainą"
 
 #: ../src/gui/states/state_bline.cpp:1292
 #: ../src/gui/states/state_bline.cpp:1443
@@ -1392,7 +1392,7 @@ msgstr "Sukurti apskritimo sluoksnį"
 
 #: ../src/gui/states/state_circle.cpp:438 ../src/gui/states/state_star.cpp:477
 msgid "Spline Origins at Center"
-msgstr ""
+msgstr "Splaino pagrindus į centrą"
 
 #: ../src/gui/states/state_circle.cpp:444
 msgid "Falloff"
@@ -1495,7 +1495,7 @@ msgstr "Min slėgis"
 
 #: ../src/gui/states/state_draw.cpp:467
 msgid "Max Width Error"
-msgstr ""
+msgstr "Maksimalaus pločio klaida"
 
 #: ../src/gui/states/state_draw.cpp:471
 msgid "LocalError"
@@ -1508,7 +1508,7 @@ msgstr "Piešimo įrankis"
 
 #: ../src/gui/states/state_draw.cpp:553
 msgid "Spline Local Error"
-msgstr ""
+msgstr "Splaino lokali klaida"
 
 #: ../src/gui/states/state_draw.cpp:559
 msgid "Spline Smoothness"
@@ -1516,7 +1516,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:867
 msgid "Sketch Spline"
-msgstr ""
+msgstr "Piešti splainą"
 
 #: ../src/gui/states/state_draw.cpp:1453
 msgid "Define Region"
@@ -1680,11 +1680,11 @@ msgstr "Pasukimo įrankis"
 
 #: ../src/gui/states/state_rotate.cpp:398
 msgid "Move Handle"
-msgstr ""
+msgstr "Perkelti rankenėlę"
 
 #: ../src/gui/states/state_rotate.cpp:403
 msgid "Rotate Handle"
-msgstr ""
+msgstr "Pasukti rankenėlę"
 
 #: ../src/gui/states/state_scale.cpp:186
 msgid "Lock Aspect Ratio"
@@ -1958,7 +1958,7 @@ msgstr "Sluoksnis"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:241
 msgid "Set Layer Parameters"
-msgstr ""
+msgstr "Keisti sluoksnio parametrus"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:253
 #: ../src/gui/widgets/widget_canvaschooser.cpp:145
@@ -1997,15 +1997,15 @@ msgstr "Perkelti sluoksnius"
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:81
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:81
 msgid "Key"
-msgstr ""
+msgstr "Raktas"
 
 #: ../src/gui/trees/metadatatree.cpp:71
 msgid "Data"
-msgstr ""
+msgstr "Duomenys"
 
 #: ../src/gui/widgets/widget_bonechooser.cpp:89
 msgid "<None>"
-msgstr ""
+msgstr "<Nėra>"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:115
 msgid "Other..."
@@ -2266,7 +2266,7 @@ msgstr "Laikinas įtempimas"
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:100
 msgid "Bone Setup Mode"
-msgstr ""
+msgstr "Kaulo nustatymų režimas"
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:102
 msgid "Bone Recursive Scale Mode"
@@ -2294,7 +2294,7 @@ msgstr "_Sluoksnis"
 
 #: ../src/gui/app.cpp:807
 msgid "Show/Hide Handles"
-msgstr ""
+msgstr "Rodyti/Slėpti rankenėles"
 
 #: ../src/gui/app.cpp:808
 msgid "Preview Quality"
@@ -2333,7 +2333,7 @@ msgstr "Įrankinė"
 
 #: ../src/gui/app.cpp:815
 msgid "Plug-Ins"
-msgstr ""
+msgstr "Įskiepiai"
 
 #: ../src/gui/app.cpp:843 ../src/gui/canvasview.cpp:1469
 msgid "Import"
@@ -2361,7 +2361,7 @@ msgstr "Pasirinkite visas rankenėles"
 
 #: ../src/gui/app.cpp:860 ../src/gui/canvasview.cpp:1506
 msgid "Unselect All Handles"
-msgstr ""
+msgstr "Atžymėti visas rankenėles"
 
 #: ../src/gui/app.cpp:861 ../src/gui/canvasview.cpp:1510
 msgid "Select All Layers"
@@ -2373,19 +2373,19 @@ msgstr "Atžymėti visus sluoksnius"
 
 #: ../src/gui/app.cpp:865 ../src/gui/canvasview.cpp:1698
 msgid "Show Position Handles"
-msgstr ""
+msgstr "Rodyti pozicijos rankenėles"
 
 #: ../src/gui/app.cpp:866 ../src/gui/canvasview.cpp:1700
 msgid "Show Vertex Handles"
-msgstr ""
+msgstr "Rodyti viršūnės rankenėles"
 
 #: ../src/gui/app.cpp:867 ../src/gui/canvasview.cpp:1699
 msgid "Show Tangent Handles"
-msgstr ""
+msgstr "Rodyti liestinės rankenėles"
 
 #: ../src/gui/app.cpp:868 ../src/gui/canvasview.cpp:1701
 msgid "Show Radius Handles"
-msgstr ""
+msgstr "Rodyti spindulio rankenėles"
 
 #: ../src/gui/app.cpp:869 ../src/gui/canvasview.cpp:1702
 msgid "Show Width Handles"
@@ -2531,7 +2531,7 @@ msgstr "Kreiptis į pabaigą"
 
 #: ../src/gui/app.cpp:914
 msgid "Add set"
-msgstr ""
+msgstr "Įdėti rinkinį"
 
 #: ../src/gui/app.cpp:916 ../src/gui/iconcontroller.cpp:179
 #: ../src/synfigapp/actions/canvasadd.cpp:73
@@ -2596,7 +2596,7 @@ msgstr "Sluoksnių skydelis..."
 
 #: ../src/gui/app.cpp:1359
 msgid "Init Parameters..."
-msgstr ""
+msgstr "Parametrų skydelis..."
 
 #: ../src/gui/app.cpp:1363
 msgid "Init MetaData..."
@@ -2717,7 +2717,7 @@ msgstr "Atlikta."
 
 #: ../src/gui/app.cpp:1533
 msgid "EXPERIMENTAL FEATURES:"
-msgstr ""
+msgstr "Bandomosios savybės:"
 
 #: ../src/gui/app.cpp:1535
 msgid "This version have following experimental features enabled:"
@@ -2725,7 +2725,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1537 ../src/gui/iconcontroller.cpp:233
 msgid "Skeleton Layer"
-msgstr ""
+msgstr "Skeleto sluoksnis"
 
 #: ../src/gui/app.cpp:1539
 msgid ""
@@ -3088,11 +3088,11 @@ msgstr "Importuoti paveikslėlį"
 
 #: ../src/gui/compview.cpp:298
 msgid "Clear Undo"
-msgstr ""
+msgstr "Išvalyti atšaukimus"
 
 #: ../src/gui/compview.cpp:301
 msgid "Clear Redo"
-msgstr ""
+msgstr "Valyti atstatymus"
 
 #: ../src/gui/iconcontroller.cpp:138
 msgid "Bool"
@@ -3341,7 +3341,7 @@ msgstr "Importuoto paveikslėlio sluoksnis"
 #: ../src/synfigapp/actions/layerencapsulate.cpp:52
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layer"
-msgstr ""
+msgstr "Grupuoti sluoksnį"
 
 #: ../src/gui/iconcontroller.cpp:230
 msgid "Plant Layer"
@@ -3385,7 +3385,7 @@ msgstr "Perkėlimo sluoksnis"
 
 #: ../src/gui/iconcontroller.cpp:243
 msgid "Scale Layer"
-msgstr ""
+msgstr "Sluoksnio mastelis"
 
 #: ../src/gui/iconcontroller.cpp:245
 msgid "Info Tool"
@@ -3461,7 +3461,7 @@ msgstr "Kitas raktinis kadras"
 
 #: ../src/gui/iconcontroller.cpp:289
 msgid "Animate Loop"
-msgstr ""
+msgstr "Animuoti ciklą"
 
 #: ../src/gui/iconcontroller.cpp:291
 msgid "Add Layer to Set"
@@ -3644,7 +3644,7 @@ msgstr "Įvyko klaida bandant PRIDĖTI"
 #: ../src/gui/instance.cpp:575
 msgid ""
 "This file is not under version control, so there is nothing to update from!"
-msgstr "Šis failas nekontroliuojamas šios versijos, todėl nėra nieko atnaujinti!"
+msgstr "Šis failas nekontroliuojamas šios versijos, todėl nėra ko atnaujinti!"
 
 #: ../src/gui/instance.cpp:580
 msgid "This file is up-to-date"
@@ -3708,7 +3708,7 @@ msgstr "%s turi pokyčių, kurių dar nėra CVS saugykloje.\n Ar norėtumėte pa
 
 #: ../src/gui/instance.cpp:1029
 msgid "Default"
-msgstr ""
+msgstr "Numatytas"
 
 #: ../src/gui/instance.cpp:1081
 msgid "Ease"
@@ -3800,7 +3800,7 @@ msgstr ""
 
 #: ../src/gui/preview.cpp:427
 msgid "Prev frame"
-msgstr ""
+msgstr "Ankstesnis kadras"
 
 #: ../src/gui/preview.cpp:472
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:52
@@ -3818,14 +3818,14 @@ msgstr "Perskaičiuoti"
 
 #: ../src/gui/preview.cpp:498
 msgid "Erase all rendered frame(s)"
-msgstr ""
+msgstr "Šalinti visus sugeneruotus kadrus(ą)"
 
 #: ../src/gui/preview.cpp:526 ../src/gui/preview.cpp:726
 #: ../src/gui/preview.cpp:764 ../src/gui/preview.cpp:1164
 #: ../src/gui/preview.cpp:1181 ../src/gui/preview.cpp:1292
 #: ../src/gui/preview.cpp:1294
 msgid "Fit"
-msgstr ""
+msgstr "Pritaikyti"
 
 #: ../src/gui/renddesc.cpp:96
 msgid "Image"
@@ -4037,7 +4037,7 @@ msgstr "Atvaizdavimas "
 
 #: ../src/gui/render.cpp:366
 msgid "File rendered successfully"
-msgstr "Failo atvaizduotas sėkmingai"
+msgstr "Failas atvaizduotas sėkmingai"
 
 #: ../src/gui/splash.cpp:113
 msgid "ERROR:"
@@ -4414,7 +4414,7 @@ msgstr "Jūs negalite pašalinti pagrindo drobės!"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:110
 msgid "You cannot remove an canvas from a Group!"
-msgstr ""
+msgstr "Jūs negalite pašalinti drobės iš grupės"
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:49
 msgid "Set Canvas RendDesc"
@@ -4470,7 +4470,7 @@ msgstr "Pašalinti sluoksnius iš rinkinio"
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from Set"
-msgstr ""
+msgstr "Sluoksnis turi būti pašalintas iš rinkinio"
 
 #: ../src/synfigapp/actions/grouprename.cpp:49
 msgid "Rename Set"
@@ -4478,7 +4478,7 @@ msgstr "Pervardyti rinkinį"
 
 #: ../src/synfigapp/actions/grouprename.cpp:72
 msgid "Old Set"
-msgstr ""
+msgstr "Senas rinkinys"
 
 #: ../src/synfigapp/actions/grouprename.cpp:73
 msgid "Name of the Set to rename"
@@ -4573,16 +4573,16 @@ msgstr "Delta"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:54
 msgid "Activate/Deactivate Keyframe"
-msgstr ""
+msgstr "Įjungti / Išjungti atraminį kadrą"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:77
 #: ../src/synfigapp/actions/keyframetoggl.cpp:81
 msgid "Activate Keyframe"
-msgstr ""
+msgstr "Aktyvuoti atraminį kadrą"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:82
 msgid "Deactivate Keyframe"
-msgstr ""
+msgstr "Išjungti atraminį kadrą"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:93
 msgid "Keyframe to be activated or deactivated"
@@ -4661,7 +4661,7 @@ msgstr "Šis sluoksnis nepriklauso šiai drobei daugiau"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layers"
-msgstr ""
+msgstr "Grupuoti sluoksnius"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:82
 msgid "Layer to be grouped"
@@ -4694,7 +4694,7 @@ msgstr "Žemyn perkeliamas sluoksnis"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:90
 msgid "Base layer"
-msgstr ""
+msgstr "Pagrindo sluoksnis"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:144
 msgid "This layer doesn't contains linked \"bline\" parameter."
@@ -4844,11 +4844,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:86
 msgid "Disable layer rendering - "
-msgstr ""
+msgstr "Išjungti sluoksnio atvaizdavimą -"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:87
 msgid "Enable layer rendering - "
-msgstr ""
+msgstr "Įjungti sluoksnio atvaizdavimą -"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:101
 msgid "New State"
@@ -4930,7 +4930,7 @@ msgstr "Perkelti laiko taškus"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:60
 msgid "Link to Spline"
-msgstr ""
+msgstr "Nuoroda į splainą"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:83
 msgid "ValueDesc to link"
@@ -5213,7 +5213,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:51
 msgid "Remove Multiple Items(Smart)"
-msgstr ""
+msgstr "Pašalinti kelis elementus (Smart)"
 
 #: ../src/synfigapp/actions/valuedescremovesmart.cpp:241
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:216
@@ -5308,14 +5308,14 @@ msgstr "Pertraukti"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:49
 msgid "Connect ValueNode Link"
-msgstr ""
+msgstr "Susieti mazgo reikšmės jungtį"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:73
 #: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:75
 #: ../src/synfigapp/actions/waypointconnect.cpp:74
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:76
 msgid "Parent ValueNode"
-msgstr ""
+msgstr "Viršesnė mazgo reikšmė"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:77
 #: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:79

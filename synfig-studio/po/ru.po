@@ -14,14 +14,15 @@
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011-2013
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011
 # prokoudine <alexandre.prokoudine@gmail.com>, 2010
+# zurba11 <zurbaxi@gmail.com>, 2013
 # prokoudine <alexandre.prokoudine@gmail.com>, 2010
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-10-10 22:48+0700\n"
-"PO-Revision-Date: 2013-10-11 06:53+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2013-10-29 15:49+0000\n"
+"Last-Translator: zurba11 <zurbaxi@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/synfig/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,7 +56,7 @@ msgstr ""
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
-msgstr ""
+msgstr "Показать все скрытые слои"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:175
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
@@ -772,27 +773,27 @@ msgstr "Если включено, использовать низкое раз�
 
 #: ../src/gui/dials/toggleducksdial.cpp:55 ../src/gui/iconcontroller.cpp:302
 msgid "Toggle position handles"
-msgstr ""
+msgstr "Включить точки позиции"
 
 #: ../src/gui/dials/toggleducksdial.cpp:56 ../src/gui/iconcontroller.cpp:303
 msgid "Toggle vertex handles"
-msgstr ""
+msgstr "Включить точки вершин"
 
 #: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:304
 msgid "Toggle tangent handles"
-msgstr ""
+msgstr "Включить точки касательных"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:305
 msgid "Toggle radius handles"
-msgstr ""
+msgstr "Включить точки радиуса"
 
 #: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:306
 msgid "Toggle width handles"
-msgstr ""
+msgstr "Включить точки ширины"
 
 #: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:307
 msgid "Toggle angle handles"
-msgstr ""
+msgstr "Включить точки углов"
 
 #: ../src/gui/dials/zoomdial.cpp:55
 msgid "Zoom In"
@@ -1025,7 +1026,7 @@ msgstr "Дорожка времени"
 
 #: ../src/gui/docks/dock_timetrack.cpp:372
 msgid "Timetrack"
-msgstr "Дорожка времени"
+msgstr "Шкала кадров"
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:56
 msgid "Palette Browser"
@@ -1120,7 +1121,7 @@ msgstr "Не удалось открыть файл"
 
 #: ../src/gui/states/state_bline.cpp:287
 msgid "NewSpline"
-msgstr ""
+msgstr "Новая Кривая"
 
 #: ../src/gui/states/state_bline.cpp:386
 #: ../src/gui/states/state_circle.cpp:432 ../src/gui/states/state_draw.cpp:457
@@ -1185,7 +1186,7 @@ msgstr "Очистить"
 #: ../src/gui/states/state_bline.cpp:403 ../src/gui/states/state_bline.cpp:444
 #: ../src/gui/iconcontroller.cpp:155
 msgid "Spline Tool"
-msgstr "Сплайн"
+msgstr "Кривые"
 
 #: ../src/gui/states/state_bline.cpp:412 ../src/gui/states/state_draw.cpp:507
 #: ../src/gui/states/state_polygon.cpp:383
@@ -1198,7 +1199,7 @@ msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:459
 msgid "Clear current Spline"
-msgstr "Очистить текущий сплайн"
+msgstr "Удалить кривую"
 
 #: ../src/gui/states/state_bline.cpp:548
 msgid "Information: You need at least two (2) points to create a spline"
@@ -1206,7 +1207,7 @@ msgstr "Для сведения: Вам необходимо по крайней
 
 #: ../src/gui/states/state_bline.cpp:556
 msgid "New Spline"
-msgstr ""
+msgstr "Новая кривая"
 
 #: ../src/gui/states/state_bline.cpp:598
 msgid "Unable to add value node"
@@ -1351,13 +1352,13 @@ msgstr "Невозможно создать слой Расширенного к
 #: ../src/gui/states/state_bline.cpp:1333
 #: ../src/gui/states/state_bline.cpp:1434
 msgid "Unloop Spline"
-msgstr ""
+msgstr "Разорвать контур"
 
 #: ../src/gui/states/state_bline.cpp:1287
 #: ../src/gui/states/state_bline.cpp:1337
 #: ../src/gui/states/state_bline.cpp:1438
 msgid "Loop Spline"
-msgstr ""
+msgstr "Соединить контур"
 
 #: ../src/gui/states/state_bline.cpp:1292
 #: ../src/gui/states/state_bline.cpp:1443
@@ -1535,7 +1536,7 @@ msgstr "Задать регион"
 
 #: ../src/gui/states/state_draw.cpp:2049 ../src/gui/states/state_draw.cpp:2238
 msgid "Extend Spline"
-msgstr ""
+msgstr "Продолжить кривую"
 
 #: ../src/gui/states/state_draw.cpp:2110
 msgid "Unable to set lower boundary for wplist"
@@ -1548,7 +1549,7 @@ msgstr "Невозможно вставить объект"
 
 #: ../src/gui/states/state_draw.cpp:2174 ../src/gui/states/state_draw.cpp:2363
 msgid "Unable to set loop for spline"
-msgstr ""
+msgstr "Невозможно замкнуть кривую"
 
 #: ../src/gui/states/state_draw.cpp:2299
 msgid "Unable to set upper boundary for wplist"
@@ -2012,7 +2013,7 @@ msgstr ""
 
 #: ../src/gui/trees/metadatatree.cpp:71
 msgid "Data"
-msgstr ""
+msgstr "Данные"
 
 #: ../src/gui/widgets/widget_bonechooser.cpp:89
 msgid "<None>"
@@ -2305,7 +2306,7 @@ msgstr "Сло_й"
 
 #: ../src/gui/app.cpp:807
 msgid "Show/Hide Handles"
-msgstr ""
+msgstr "Скрыть/Показать Контрольные точки"
 
 #: ../src/gui/app.cpp:808
 msgid "Preview Quality"
@@ -2372,7 +2373,7 @@ msgstr "Выбрать все контрольные точки"
 
 #: ../src/gui/app.cpp:860 ../src/gui/canvasview.cpp:1506
 msgid "Unselect All Handles"
-msgstr ""
+msgstr "Снять выделение со всех Контрольных точек"
 
 #: ../src/gui/app.cpp:861 ../src/gui/canvasview.cpp:1510
 msgid "Select All Layers"
@@ -2384,27 +2385,27 @@ msgstr "Снять выделение со всех слоёв"
 
 #: ../src/gui/app.cpp:865 ../src/gui/canvasview.cpp:1698
 msgid "Show Position Handles"
-msgstr ""
+msgstr "Показывать точки позиции"
 
 #: ../src/gui/app.cpp:866 ../src/gui/canvasview.cpp:1700
 msgid "Show Vertex Handles"
-msgstr ""
+msgstr "Показывать точки вершин"
 
 #: ../src/gui/app.cpp:867 ../src/gui/canvasview.cpp:1699
 msgid "Show Tangent Handles"
-msgstr ""
+msgstr "Показывать точки касательных"
 
 #: ../src/gui/app.cpp:868 ../src/gui/canvasview.cpp:1701
 msgid "Show Radius Handles"
-msgstr ""
+msgstr "Показывать точки радиуса"
 
 #: ../src/gui/app.cpp:869 ../src/gui/canvasview.cpp:1702
 msgid "Show Width Handles"
-msgstr ""
+msgstr "Показывать точки ширины "
 
 #: ../src/gui/app.cpp:870 ../src/gui/canvasview.cpp:1703
 msgid "Show Angle Handles"
-msgstr ""
+msgstr "Показывать точки углов"
 
 #: ../src/gui/app.cpp:871 ../src/gui/canvasview.cpp:1704
 msgid "Show Bone Setup Handles"
@@ -2420,7 +2421,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:874 ../src/gui/canvasview.cpp:1708
 msgid "Show WidthPoints Position Handles"
-msgstr ""
+msgstr "Показывать расположение точек ширины"
 
 #: ../src/gui/app.cpp:875 ../src/gui/canvasview.cpp:1546
 msgid "Use Parametric Renderer"
@@ -2627,7 +2628,7 @@ msgstr "Панель навигатора..."
 
 #: ../src/gui/app.cpp:1379
 msgid "Init Timetrack..."
-msgstr "Панель шкалы времени..."
+msgstr "Загружается шкала кадров..."
 
 #: ../src/gui/app.cpp:1383
 msgid "Init Curve Editor..."
@@ -3135,7 +3136,7 @@ msgstr "Сегмент"
 
 #: ../src/gui/iconcontroller.cpp:146
 msgid "Spline Point"
-msgstr "Вершина сплайна"
+msgstr "Вершина кривой"
 
 #: ../src/gui/iconcontroller.cpp:147
 msgid "List"
@@ -3352,7 +3353,7 @@ msgstr "Слой импортированного изображения"
 #: ../src/synfigapp/actions/layerencapsulate.cpp:52
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layer"
-msgstr ""
+msgstr "Слой Группа"
 
 #: ../src/gui/iconcontroller.cpp:230
 msgid "Plant Layer"
@@ -3360,7 +3361,7 @@ msgstr "Слой растительности"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Stroboscope Layer"
-msgstr ""
+msgstr "Стробоскоп"
 
 #: ../src/gui/iconcontroller.cpp:232
 msgid "Super Sample Layer"
@@ -3476,11 +3477,11 @@ msgstr "Animate Loop"
 
 #: ../src/gui/iconcontroller.cpp:291
 msgid "Add Layer to Set"
-msgstr ""
+msgstr "Добавить слой в набор"
 
 #: ../src/gui/iconcontroller.cpp:292
 msgid "Remove Layer from Set"
-msgstr ""
+msgstr "Удалить слой из группы"
 
 #: ../src/gui/iconcontroller.cpp:293
 #: ../src/synfigapp/actions/layersetdesc.cpp:50
@@ -3581,7 +3582,7 @@ msgstr "CVS Revert"
 msgid ""
 "This operation cannot be undone and all undo history will be cleared.\n"
 "Do you really want to proceed?"
-msgstr ""
+msgstr "Эту операцию нельзя будет отменить и вся история действий будет очищена.\nВы действительно хотите продолжить?"
 
 #: ../src/gui/instance.cpp:213
 msgid "Error: Plugin Operation Failed"
@@ -3594,11 +3595,11 @@ msgid ""
 "because of an internal error in Synfig Studio. Try closing any\n"
 "compositions that might reference this file and try\n"
 "again, or restart Synfig Studio."
-msgstr ""
+msgstr "Плагин не выполнен. Это может быть из-за того, что на него ссылается другая композиция, которая уже открыта, или из-за внутренней ошибки в Synfig Studio. Попробуйте закрыть все композиции, которые могут на него ссылаться и повторите попытку, или перезапустите Synfig Studio."
 
 #: ../src/gui/instance.cpp:220
 msgid "Plugin Error"
-msgstr ""
+msgstr "Ошибка выполнения Плагина"
 
 #: ../src/gui/instance.cpp:283 ../src/gui/instance.cpp:387
 #, c-format
@@ -3803,7 +3804,7 @@ msgstr "Минуточку, пожалуйста..."
 
 #: ../src/gui/onemoment.cpp:93
 msgid "Working..."
-msgstr ""
+msgstr "Обработка..."
 
 #: ../src/gui/preview.cpp:107 ../src/gui/workarea.cpp:726
 msgid "Cairo Surface bad status"
@@ -4084,7 +4085,7 @@ msgstr "Вертикальный док: Холсты, История"
 
 #: ../src/gui/toolbox.cpp:224
 msgid "Horizontal Dock: Layers, Library, Parameters"
-msgstr ""
+msgstr "Горизонтальный док: Слои, Библиотека, Параметры"
 
 #: ../src/gui/toolbox.cpp:226
 msgid "Reset Windows to Original Layout"
@@ -4457,7 +4458,7 @@ msgstr "Применить градиент по умолчанию"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:49
 msgid "Add Layers to Set"
-msgstr ""
+msgstr "Добавить слои в набор"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:73
 msgid "Layer to be added to set"
@@ -4465,11 +4466,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:79
 msgid "Name of the Set to add the Layers to"
-msgstr ""
+msgstr "Имя набора для добавления слоёв"
 
 #: ../src/synfigapp/actions/groupremove.cpp:49
 msgid "Remove Set"
-msgstr ""
+msgstr "Удалить набор"
 
 #: ../src/synfigapp/actions/groupremove.cpp:73
 msgid "Name of the Set to remove"
@@ -4477,7 +4478,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:50
 msgid "Remove Layers from a Set"
-msgstr ""
+msgstr "Удалить слои из набора"
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from Set"
@@ -4506,7 +4507,7 @@ msgstr ""
 #: ../src/synfigapp/actions/grouprename.cpp:123
 #, c-format
 msgid "A set with the name \"%s\" already exists!"
-msgstr ""
+msgstr "Набор с именем \"%s\" уже существует!"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:49
 msgid "Add Keyframe"
@@ -4672,7 +4673,7 @@ msgstr "Этот слой больше не принадлежит холсту"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Group Layers"
-msgstr ""
+msgstr "Добавить в группу"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:82
 msgid "Layer to be grouped"
@@ -5287,7 +5288,7 @@ msgstr "Узел значения для вставки"
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:51
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:51
 msgid "Insert Item (Smart)"
-msgstr ""
+msgstr "Вставить элемент"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:234
 msgid "Unable to find action \"ActivepointSetOff\""
@@ -5634,7 +5635,7 @@ msgstr "Невозможно открыть эту структуру"
 
 #: ../src/synfigapp/canvasinterface.cpp:722
 msgid "Unable to create \"Group\" layer"
-msgstr ""
+msgstr "Невозможно создать Слой Группу"
 
 #: ../src/synfigapp/canvasinterface.cpp:726
 msgid "Could not set children lock of imported canvas"

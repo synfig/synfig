@@ -5,6 +5,7 @@
 # Translators:
 # darkhog <rave002@o2.pl>, 2011
 # Michał Szymański <szamanx01@gmail.com>, 2012-2013
+# wozniax1 <wozniax1@wp.pl>, 2013
 # darkhog <rave002@o2.pl>, 2011
 # Michał Szymański <szamanx01@gmail.com>, 2013
 # Michał Szymański <szamanx01@gmail.com>, 2012
@@ -13,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-10-10 22:47+0700\n"
-"PO-Revision-Date: 2013-10-14 18:42+0000\n"
+"PO-Revision-Date: 2013-10-22 19:59+0000\n"
 "Last-Translator: Michał Szymański <szamanx01@gmail.com>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/synfig/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +50,7 @@ msgstr "Kolor"
 #: src/modules/mod_geometry/rectangle.cpp:139
 #: src/synfig/layer_solidcolor.cpp:115
 msgid "Fill color of the layer"
-msgstr "Kolor wypełnienia warstwy"
+msgstr "Wypełnij kolorem warstwy"
 
 #: src/modules/mod_example/filledrect.cpp:136
 #: src/modules/mod_geometry/rectangle.cpp:143
@@ -777,7 +778,7 @@ msgstr "Próbkowanie"
 
 #: src/modules/lyr_std/supersample.cpp:146
 msgid "Unable to create SurfaceTarget"
-msgstr "Nie można utworzyć SurfaceTargetu"
+msgstr "Nie można utworzyć celu"
 
 #: src/modules/lyr_std/supersample.cpp:337
 #: src/modules/lyr_std/curvewarp.cpp:402
@@ -825,11 +826,11 @@ msgstr "Pętla czasu"
 
 #: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
 msgid "Link Time"
-msgstr "Połącz czas"
+msgstr "Czas początkowy"
 
 #: src/modules/lyr_std/timeloop.cpp:134
 msgid "Start time of the loop for the cycled context"
-msgstr "Czas startowy pętli dla ciągu kontekstu"
+msgstr "Czas od którego pętla ma się rozpocząć wewnątrz obiektu"
 
 #: src/modules/lyr_std/timeloop.cpp:138 src/synfig/valuenode_timeloop.cpp:184
 msgid "Local Time"
@@ -846,7 +847,7 @@ msgstr "Czas trwania"
 
 #: src/modules/lyr_std/timeloop.cpp:144 src/synfig/valuenode_timeloop.cpp:190
 msgid "Lenght of the loop"
-msgstr "Czas pętli"
+msgstr "Czas pętli wewnątrz obiektu"
 
 #: src/modules/lyr_std/timeloop.cpp:148
 msgid "Only For Positive Duration"
@@ -854,11 +855,11 @@ msgstr "Tylko dla dodatniego czasu trwania"
 
 #: src/modules/lyr_std/timeloop.cpp:149
 msgid "When checked will loop only positive durations"
-msgstr "Gdy zaznaczone zapętli wyłącznie dodatnie czasy trwania"
+msgstr "Zaznaczone: pętla jest pomijana przy wartościach ujemnych czasu trwania"
 
 #: src/modules/lyr_std/timeloop.cpp:153
 msgid "Symmetrical"
-msgstr "Symetryczny"
+msgstr "Symetryczna"
 
 #: src/modules/lyr_std/timeloop.cpp:154
 msgid "When checked, loops are mirrored centered at Local Time"
@@ -866,7 +867,7 @@ msgstr "Gdy zaznaczone, pętle są dublowane wokół czasu lokalnego"
 
 #: src/modules/lyr_std/translate.cpp:55
 msgid "Translate"
-msgstr "Przetłumacz"
+msgstr "Przenieś"
 
 #: src/modules/lyr_std/twirl.cpp:56
 msgid "Twirl"
@@ -882,23 +883,23 @@ msgstr "Liczba rotacji efektu wiru"
 
 #: src/modules/lyr_std/twirl.cpp:131
 msgid "When checked, distorts inside the circle"
-msgstr "Gdy zaznaczony, rozprasza wnętrze okręgu"
+msgstr "Efekt wewnątrz okręgu"
 
 #: src/modules/lyr_std/twirl.cpp:136
 msgid "When checked, distorts outside the circle"
-msgstr "Gdy zaznaczony, rozprasza na zewnątrz okręgu"
+msgstr "Efekt na zewnątrz okręgu"
 
 #: src/modules/lyr_std/warp.cpp:57
 msgid "Warp"
-msgstr ""
+msgstr "Zniekształć"
 
 #: src/modules/lyr_std/warp.cpp:380
 msgid "Source TL"
-msgstr "Źródło TL"
+msgstr "Źródło LG"
 
 #: src/modules/lyr_std/warp.cpp:382
 msgid "Top Left corner of the source to warp"
-msgstr ""
+msgstr "Górny lewy róg źródła zniekształcenia"
 
 #: src/modules/lyr_std/warp.cpp:386
 msgid "Source BR"
@@ -914,7 +915,7 @@ msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:393
 msgid "Top Left corner of the destination"
-msgstr ""
+msgstr "Lewy górny róg celu efektu"
 
 #: src/modules/lyr_std/warp.cpp:397
 msgid "Dest TR"
@@ -922,7 +923,7 @@ msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:399
 msgid "Top Right corner of the destination"
-msgstr ""
+msgstr "Prawy górny róg celu efektu"
 
 #: src/modules/lyr_std/warp.cpp:403
 msgid "Dest BR"
@@ -930,7 +931,7 @@ msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:405
 msgid "Bottom Right corner of the destination"
-msgstr ""
+msgstr "Prawy dolny róg celu efektu"
 
 #: src/modules/lyr_std/warp.cpp:409
 msgid "Dest BL"
@@ -938,7 +939,7 @@ msgstr ""
 
 #: src/modules/lyr_std/warp.cpp:411
 msgid "Bottom Left corner of the destination"
-msgstr ""
+msgstr "Lewy dolny róg celu efektu"
 
 #: src/modules/lyr_std/warp.cpp:419
 msgid "Horizon"
@@ -946,7 +947,7 @@ msgstr "Horyzont"
 
 #: src/modules/lyr_std/warp.cpp:420
 msgid "Height that determines the horizon in perspectives"
-msgstr "Wysokość determinująca horyzont w perspektywach"
+msgstr "Określa zasięg efektu"
 
 #: src/modules/lyr_std/curvewarp.cpp:56
 msgid "Curve Warp"
@@ -962,11 +963,11 @@ msgstr ""
 
 #: src/modules/lyr_std/curvewarp.cpp:407
 msgid "Start Point"
-msgstr "Punkt startowy"
+msgstr "Punkt początkowy"
 
 #: src/modules/lyr_std/curvewarp.cpp:409
 msgid "First point of the source line"
-msgstr "Pierwszy punkt linii źródłowej"
+msgstr "Początkowy punkt linii źródłowej"
 
 #: src/modules/lyr_std/curvewarp.cpp:412
 msgid "End Point"
@@ -998,7 +999,7 @@ msgstr "Szybko"
 #: src/modules/lyr_std/curvewarp.cpp:423
 #: src/modules/mod_gradient/curvegradient.cpp:581
 msgid "When checked, renders quickly but with artifacts"
-msgstr "Gdy zaznaczone, renderuje szybko lecz z artefaktami"
+msgstr "Renderuje przebiega szybciej lecz mogą wystąpić artefakty"
 
 #: src/modules/lyr_std/xorpattern.cpp:55
 msgid "XOR Pattern"
@@ -1065,7 +1066,7 @@ msgstr "Czytanie skompresowanych map bitowych nie jest wspierane"
 #: src/modules/mod_bmp/mptr_bmp.cpp:201 src/modules/mod_bmp/mptr_bmp.cpp:202
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
-msgstr "Niewspierana głąbia bitów (bit_count=%d, powinien być 24 lub 32)"
+msgstr "Niewspierana głębia bitów (bit_count=%d, powinien być 24 lub 32)"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:184
 msgid " (animated)"
@@ -1175,7 +1176,7 @@ msgstr "Jasny na ciemnym"
 #: src/modules/mod_filter/halftone2.cpp:179
 #: src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
-msgstr ""
+msgstr "Diament"
 
 #: src/modules/mod_filter/halftone2.cpp:180
 #: src/modules/mod_filter/halftone3.cpp:337
@@ -1212,7 +1213,7 @@ msgstr ""
 
 #: src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
-msgstr ""
+msgstr "Okrężne rozmycie"
 
 #: src/modules/mod_filter/radialblur.cpp:116
 msgid "Size of blur"
@@ -1234,7 +1235,7 @@ msgstr ""
 #: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
 #: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
 msgid "Geometry"
-msgstr ""
+msgstr "Geometria"
 
 #: src/modules/mod_geometry/checkerboard.cpp:147
 msgid "Color of checkers"
@@ -1250,15 +1251,15 @@ msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:56
 msgid "Circle"
-msgstr ""
+msgstr "Okrąg"
 
 #: src/modules/mod_geometry/circle.cpp:152
 msgid "Radius of the circle"
-msgstr ""
+msgstr "Promień okręgu"
 
 #: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1234
 msgid "Feather"
-msgstr ""
+msgstr "Rozmycie krawędzi"
 
 #: src/modules/mod_geometry/circle.cpp:158
 msgid "Amount of feather of the circle"
@@ -1270,7 +1271,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/circle.cpp:170
 msgid "Falloff"
-msgstr ""
+msgstr "Funkcja rozmycia"
 
 #: src/modules/mod_geometry/circle.cpp:171
 msgid "Determines the falloff function for the feather"
@@ -1282,15 +1283,15 @@ msgstr ""
 #: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
 #: src/synfig/valuenode.cpp:145 src/synfig/valuenode_linear.cpp:146
 msgid "Linear"
-msgstr ""
+msgstr "Liniowa"
 
 #: src/modules/mod_geometry/circle.cpp:174
 msgid "Squared"
-msgstr ""
+msgstr "Kwadratowa"
 
 #: src/modules/mod_geometry/circle.cpp:175
 msgid "Square Root"
-msgstr ""
+msgstr "Pierwiastka kwadratowego"
 
 #: src/modules/mod_geometry/circle.cpp:176
 msgid "Sigmond"
@@ -1301,7 +1302,7 @@ msgstr ""
 #: src/modules/mod_noise/valuenode_random.cpp:290
 #: src/synfig/layer_bitmap.cpp:170
 msgid "Cosine"
-msgstr ""
+msgstr "Cosinus"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:67
 msgid "Advanced Outline"
@@ -1322,7 +1323,7 @@ msgstr ""
 #: src/modules/mod_geometry/advanced_outline.cpp:1140
 #: src/modules/mod_geometry/outline.cpp:840
 msgid "Outline Width"
-msgstr ""
+msgstr "Szerokość konturu"
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1141
 #: src/modules/mod_geometry/outline.cpp:841
@@ -1466,11 +1467,11 @@ msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:72
 msgid "Outline"
-msgstr ""
+msgstr "Kontur"
 
 #: src/modules/mod_geometry/outline.cpp:192
 msgid "No vertices in outline "
-msgstr ""
+msgstr "Brak wierzchołków wewnątrz konturu"
 
 #: src/modules/mod_geometry/outline.cpp:851
 msgid "Sharp Cusps"
@@ -1487,7 +1488,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/outline.cpp:861
 msgid "Rounded End"
-msgstr ""
+msgstr "Zaokrąglony koniec"
 
 #: src/modules/mod_geometry/outline.cpp:865
 msgid "Loopyness"
@@ -1503,7 +1504,7 @@ msgstr ""
 
 #: src/modules/mod_geometry/rectangle.cpp:59
 msgid "Rectangle"
-msgstr ""
+msgstr "Prostokąt"
 
 #: src/modules/mod_geometry/rectangle.cpp:155
 msgid "Expand amount"

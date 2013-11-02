@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
 "POT-Creation-Date: 2013-10-10 22:47+0700\n"
-"PO-Revision-Date: 2013-10-11 06:53+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2013-10-28 18:30+0000\n"
+"Last-Translator: Aldas p <aldixuks@gmail.com.>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/synfig/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2181,7 +2181,7 @@ msgstr ""
 #: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:123
 #: src/synfig/layer_pastecanvas.cpp:124
 msgid "Group"
-msgstr ""
+msgstr "Grupė"
 
 #: src/synfig/layer_pastecanvas.cpp:140
 msgid "Canvas"
@@ -3243,7 +3243,7 @@ msgstr "Arba"
 
 #: src/synfig/valuenode.cpp:199
 msgid "Bone Influence"
-msgstr ""
+msgstr "Kaulo poveikis"
 
 #: src/synfig/valuenode.cpp:200
 msgid "Bone"
@@ -3251,7 +3251,7 @@ msgstr "Kaulas"
 
 #: src/synfig/valuenode.cpp:201
 msgid "Root Bone"
-msgstr ""
+msgstr "Pagrindinis kaulas"
 
 #: src/synfig/valuenode.cpp:202
 msgid "Static List"
@@ -3971,7 +3971,7 @@ msgstr ""
 #: src/synfig/valuenode_segcalctangent.cpp:156
 #: src/synfig/valuenode_segcalcvertex.cpp:154
 msgid "Segment"
-msgstr ""
+msgstr "Segmentas"
 
 #: src/synfig/valuenode_segcalctangent.cpp:157
 msgid "The Segment where the tangent is linked to"
@@ -4092,7 +4092,7 @@ msgstr ""
 #: src/synfig/valuenode_timedswap.cpp:255
 #: src/synfig/valuenode_timestring.cpp:163
 msgid "Time"
-msgstr ""
+msgstr "Laikas"
 
 #: src/synfig/valuenode_timedswap.cpp:256
 msgid "The time when the linear interpolation ends"
@@ -4385,7 +4385,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
 msgid "Render Failure."
-msgstr ""
+msgstr "Atvaizdavimo nesėkmė"
 
 #: src/tool/joblistprocessor.cpp:229
 msgid "Rendering..."
@@ -4401,7 +4401,7 @@ msgstr ""
 
 #: src/tool/joblistprocessor.cpp:243
 msgid "Done."
-msgstr ""
+msgstr "Atlikta."
 
 #: src/tool/optionsprocessor.cpp:114
 msgid "Unrecognised canvas variable: "
@@ -4421,7 +4421,7 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:225
 msgid "Layer Name: "
-msgstr ""
+msgstr "Sluoksnio pavadinimas:"
 
 #: src/tool/optionsprocessor.cpp:226
 msgid "Localized Layer Name: "
@@ -4429,7 +4429,7 @@ msgstr ""
 
 #: src/tool/optionsprocessor.cpp:228
 msgid "Version: "
-msgstr ""
+msgstr "Versija:"
 
 #: src/tool/optionsprocessor.cpp:233
 msgid "param - "
