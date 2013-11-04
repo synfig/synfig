@@ -4,7 +4,7 @@ More detailed notes are available on the news page:
 
 http://synfig.org/cms/en/news/
 
- 0.64.1 (git tag "synfig-0.64.1") - October 23, 2013 - Features, bug fixes.
+ 0.64.1 (git tag "0.64.1") - November 4, 2013 - Features, bug fixes.
   
   * Parameters are stored as ValueBase now.
   * Core Bones implementation / Skeleton layer.
