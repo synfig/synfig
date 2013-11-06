@@ -45,11 +45,6 @@
 #		synfigstudio-cygwin-mingw-build.sh make -j2
 
 
-#TODO: Submit extended portfiles
-#TODO: 64bit build
-#TODO: Magick++
-#TODO: Allow to install without locales
-
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
@@ -90,7 +85,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.0"
+export VERSION="0.64.1"
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -122,13 +117,14 @@ export GOCFLAGS=' -mms-bitfields'
 export OBJCFLAGS=' -O2 -pipe -mms-bitfields'
 export OBJCXXFLAGS=' -O2 -pipe -mms-bitfields'
 export PKG_CONFIG=/usr/bin/pkg-config
-export PKG_CONFIG_LIBDIR=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig
+export PKG_CONFIG_PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pkgconfig:/usr/share/pkgconfig"
 export PKG_CONFIG_SYSTEM_INCLUDE_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
 export PKG_CONFIG_SYSTEM_LIBRARY_PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
 export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include "
 export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib "
 export PATH="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/:$PATH"
-alias convert="/usr/bin/convert"
+alias convert="/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/convert"
 }
 
 mknative()
@@ -310,6 +306,44 @@ if [ ! -e /usr/bin/yumdownloader ]; then
 fi
 }
 
+mkimagemagick()
+{
+PKG_NAME=ImageMagick
+PKG_VERSION=6.8.6-10
+TAREXT=bz2
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+[ ! -e config.cache ] || rm config.cache
+autoreconf -i --verbose  # does this really required?
+./configure \
+--prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
+--bindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin \
+--sbindir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/sbin \
+--libexecdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib \
+--datadir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--localstatedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/var \
+--sysconfdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/etc \
+--datarootdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/share \
+--docdir=/usr/share/doc/mingw-synfig -C \
+--build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
+--disable-static --enable-shared \
+--without-modules \
+--without-perl \
+--without-x \
+--with-threads \
+--with-magick_plus_plus
+
+make install
+}
+
 fedora-mingw-install()
 {
 [ -d $WORKSPACE/mingw-rpms ] || mkdir $WORKSPACE/mingw-rpms
@@ -364,7 +398,7 @@ chmod a+x /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/*.dll
 mkprep()
 {
 
-export PREP_VERSION=3
+export PREP_VERSION=4
 
 if [[ `cat /prep-done` != "${PREP_VERSION}" ]]; then
 
@@ -432,7 +466,14 @@ fedora-mingw-install mingw${ARCH}-gtkmm24
 # Somehow this is required too...
 fedora-mingw-install mingw${ARCH}-pcre
 
-#TODO: magick++
+# Dependencies for magick++
+fedora-mingw-install mingw${ARCH}-libltdl
+fedora-mingw-install mingw${ARCH}-libtiff
+
+prepare_mingw_env
+
+# magick++
+mkimagemagick
 
 if false; then
 
@@ -638,6 +679,7 @@ for file in \
    libglib\*.dll \
    libgmodule\*.dll \
    libgobject\*.dll \
+   libgomp*.dll \
    libgthread\*.dll \
    libgtk\*.dll \
    libharfbuzz\*.dll \
@@ -645,7 +687,9 @@ for file in \
    libintl\*.dll \
    libjasper\*.dll \
    libjpeg\*.dll \
+   libltdl*.dll \
    liblzma\*.dll \
+   libMagick*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
@@ -660,6 +704,7 @@ for file in \
    libz\*.dll \
    pthread\*.dll \
    zlib\*.dll \
+   convert.exe \
    pango-querymodules.exe \
    synfig.exe \
    synfigstudio.exe \

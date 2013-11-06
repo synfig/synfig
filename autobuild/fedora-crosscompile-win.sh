@@ -1,7 +1,6 @@
 #!/bin/sh
 
 #TODO: Replace version numbers in the .nsi file
-#TODO: Magick++
 
 set -e
 
@@ -45,7 +44,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.0"
+export VERSION="0.64.1"
 pushd "${SCRIPTPATH}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -68,6 +67,8 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
 		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-libltdl \
+		${TOOLCHAIN}-libtiff \
 		mingw32-nsis \
 		p7zip \
 		ImageMagick \
@@ -94,6 +95,7 @@ for file in \
    libglib\*.dll \
    libgmodule\*.dll \
    libgobject\*.dll \
+   libgomp*.dll \
    libgthread\*.dll \
    libgtk\*.dll \
    libharfbuzz\*.dll \
@@ -101,7 +103,9 @@ for file in \
    libintl\*.dll \
    libjasper\*.dll \
    libjpeg\*.dll \
+   libltdl*.dll \
    liblzma\*.dll \
+   libMagick*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
@@ -110,11 +114,13 @@ for file in \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
    pthread\*.dll \
    zlib\*.dll \
+   convert.exe \
    pango-querymodules.exe \
    synfig.exe \
    synfigstudio.exe \
@@ -160,6 +166,56 @@ for dir in ETL synfig-core synfig-studio; do
 	popd > /dev/null
 done
 
+export PREP_VERSION=1
+
+if [[ `cat "$PREFIX/prep-done"` != "${PREP_VERSION}" ]]; then
+
+mkimagemagick
+
+echo ${PREP_VERSION} > "$PREFIX/prep-done"
+
+fi
+}
+
+#ImageMagick
+mkimagemagick()
+{
+PKG_NAME=ImageMagick
+PKG_VERSION=6.8.6-10
+TAREXT=bz2
+
+cd $WORKSPACE
+[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd ${PKG_NAME}-${PKG_VERSION}
+else
+    cd ${PKG_NAME}-${PKG_VERSION}
+fi
+[ ! -e config.cache ] || rm config.cache
+${TOOLCHAIN}-configure \
+--prefix=${PREFIX} \
+--exec-prefix=${PREFIX} \
+--bindir=${PREFIX}/bin \
+--sbindir=${PREFIX}/sbin \
+--libexecdir=${PREFIX}/lib \
+--datadir=${PREFIX}/share \
+--localstatedir=${PREFIX}/var \
+--sysconfdir=${PREFIX}/etc \
+--datarootdir=${PREFIX}/share \
+--datadir=${PREFIX}/share \
+--includedir=${PREFIX}/include \
+--libdir=${PREFIX}/lib \
+--mandir=${PREFIX}/share/man \
+--program-prefix="" \
+--disable-static --enable-shared \
+--without-modules \
+--without-perl \
+--without-x \
+--with-threads \
+--with-magick_plus_plus
+
+make install
 }
 
 #ETL

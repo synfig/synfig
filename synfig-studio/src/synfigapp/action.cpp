@@ -194,10 +194,11 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerEncapsulate);
 	ADD_ACTION(Action::LayerDuplicate);
 	ADD_ACTION(Action::LayerSetDesc);
-	ADD_ACTION(Action::LayerSetExcludeFromRendering);
 	ADD_ACTION(Action::LayerZDepthRangeSet);
 	ADD_ACTION(Action::LayerEmbed);
 	ADD_ACTION(Action::LayerExtract);
+	ADD_ACTION(Action::LayerSetExcludeFromRenderingOn);
+	ADD_ACTION(Action::LayerSetExcludeFromRenderingOff);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
 	ADD_ACTION(Action::ValueNodeConstSetStatic);

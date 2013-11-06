@@ -172,6 +172,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
+	INIT_STOCK_ICON(valuenode_forbidanimation,"valuenode_forbidanimation_icon."IMAGE_EXT,_("ValueNode Forbid Animation"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
@@ -227,7 +228,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
 	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_group_icon."IMAGE_EXT,_("Group Layer"));
 	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
+	INIT_STOCK_ICON(layer_other_stroboscope,"layer_other_stroboscope_icon."IMAGE_EXT,_("Stroboscope Layer"));
 	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
+	INIT_STOCK_ICON(layer_other_skeleton,"layer_other_skeleton_icon."IMAGE_EXT,_("Skeleton Layer"));
 	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
 	INIT_STOCK_ICON(layer_other_timeloop,"layer_other_timeloop_icon."IMAGE_EXT,_("Time Loop Layer"));
 	INIT_STOCK_ICON(layer_other_xorpattern,"layer_other_xorpattern_icon."IMAGE_EXT,_("XOR Pattern Layer"));
@@ -625,6 +628,10 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_other_pastecanvas");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");
+	else if(layer=="stroboscope")
+		return Gtk::StockID("synfig-layer_other_stroboscope");
+	else if(layer=="skeleton")
+		return Gtk::StockID("synfig-layer_other_skeleton");
 	else if(layer=="super_sample")
 		return Gtk::StockID("synfig-layer_other_supersample");
 	else if(layer=="text")

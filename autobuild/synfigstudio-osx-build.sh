@@ -266,6 +266,9 @@ mksynfig()
 
 mksynfigstudio()
 {
+	# Copy launch script, so we can test synfigstudio without building an app package
+	cp -rf $SCRIPTPATH/app-template/Contents/MacOS ${MACPORTS}/../MacOS
+	
 	# building synfig-studio
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio
 
@@ -279,6 +282,7 @@ mksynfigstudio()
 	do
 	  	cp -f $n ${MACPORTS}
 	done
+	
 	popd
 }
 
@@ -331,7 +335,7 @@ mkapp()
 	rm -rf lib/python2.7/test
 	rm -rf lib/python2.7/*/test
 	rm -rf Library/Frameworks/Python.framework/Versions/2.*
-	find lib \( -name "*.la" -or -name "*.a" \)  -delete
+	find lib \( -name "*.la" -or -name "*.a" \) -not -path "lib/ImageMagick*"  -delete
 	find . -name "*.pyo" -delete
 
 	echo cleaning up some stuff in share ...
@@ -416,7 +420,7 @@ mkdmg()
 	cp -R ${SYNFIG_REPO_DIR}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
 
 	# open the window so that the icon database is generated
-	open /Volumes/"$VOLNAME"
+	open /Volumes/"$VOLNAME" || true
 	sleep 3
 
 	echo "Detaching disk image..."
@@ -448,11 +452,11 @@ get_version_release_string()
 		BREED=${BREED%_master}
 	fi
 	if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
-		if [[ $BREED == 'master' ]]; then
+		#if [[ $BREED == 'master' ]]; then
 			BREED=rc${VERSION##*-RC}
-		else
-			BREED=rc${VERSION##*-RC}.$BREED
-		fi
+		#else
+		#	BREED=rc${VERSION##*-RC}.$BREED
+		#fi
 		VERSION=${VERSION%%-*}
 	fi
 	BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain

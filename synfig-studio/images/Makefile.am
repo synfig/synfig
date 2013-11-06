@@ -6,7 +6,9 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
+	splash_screen-0.64.1.sif \
 	splash_screen-0.64.0.sif \
+	splash_screen-0.64.sif \
 	splash_screen-0.63.05.sif \
 	splash_screen-0.63.04.sif \
 	splash_screen-0.63.03.sif \
@@ -26,6 +28,7 @@ EXTRA_DIST = \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
+	canvas_and_importimage_icons.sif \
 	graphs_icon.sif \
 	duplicate_icon.sif \
 	group_icon.sif \
@@ -68,11 +71,7 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
 	\
-	interpolation_type_tcb_icon.sif\
-	interpolation_type_ease_icon.sif\
-	interpolation_type_const_icon.sif\
-	interpolation_type_linear_icon.sif\
-	interpolation_type_clamped_icon.sif\
+	interpolation_type_icons.sif\
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -110,10 +109,11 @@ EXTRA_DIST = \
 	layer_gradient_radial_icon.sif \
 	layer_gradient_spiral_icon.sif \
 	layer_other_duplicate_icon.sif \
-	layer_other_importimage_icon.sif \
 	layer_other_group_icon.sif \
 	layer_other_plant_icon.sif \
+	layer_other_stroboscope_icon.sif \
 	layer_other_supersample_icon.sif \
+	layer_other_skeleton_icon.sif \
 	layer_other_text_icon.sif \
 	layer_other_timeloop_icon.sif \
 	layer_other_xorpattern_icon.sif \
@@ -156,7 +156,6 @@ EXTRA_DIST = \
 	type_time_icon.sif \
 	type_vector_icon.sif \
 	\
-	canvas_icon.sif \
 	library_icon.sif \
 	graphs_icon.sif \
 	set_icon.sif \
@@ -237,6 +236,7 @@ IMAGES = \
 	interpolation_type_const_icon.$(EXT)\
 	interpolation_type_linear_icon.$(EXT)\
 	interpolation_type_clamped_icon.$(EXT)\
+	valuenode_forbidanimation_icon.$(EXT)\
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
@@ -277,7 +277,9 @@ IMAGES = \
 	layer_other_importimage_icon.$(EXT) \
 	layer_other_group_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
+	layer_other_stroboscope_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
+	layer_other_skeleton_icon.$(EXT) \
 	layer_other_text_icon.$(EXT) \
 	layer_other_timeloop_icon.$(EXT) \
 	layer_other_xorpattern_icon.$(EXT) \
@@ -343,10 +345,14 @@ endif
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
+if DEVELOPMENT_SNAPSHOT
+SPLASH_DEV = splash_screen_development.sif
+endif
 
 CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
+	$(SPLASH_DEV) \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \
@@ -467,13 +473,52 @@ animate_loop_icon.$(EXT): $(srcdir)/framedial_icons.sif
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
-
 animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 0
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_tcb_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 1
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_linear_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_ease_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 3
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_const_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 4
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 5
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+valuenode_forbidanimation_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 7 
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
+	$(SYNFIG) -q $< -o $@ --time 2
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+layer_other_importimage_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
 	$(SYNFIG) -q $< -o $@ --time 1
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh

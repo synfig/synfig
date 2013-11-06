@@ -1,0 +1,4670 @@
+# Translation file for Synfig Core package.
+# Copyright (C) 2013 Synfig Contributors
+# This file is distributed under the same license as the Synfig Core package.
+# 
+# Translators:
+# Benjamin Larsson <mafortion.benjamin@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: Synfig\n"
+"Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
+"POT-Creation-Date: 2013-10-10 22:47+0700\n"
+"PO-Revision-Date: 2013-10-11 06:53+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/synfig/language/sv_SE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv_SE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/modules/mod_example/filledrect.cpp:59
+msgid "Filled Rectangle"
+msgstr "Fylld rektangel"
+
+#: src/modules/mod_example/filledrect.cpp:60
+#: src/modules/mod_example/metaballs.cpp:58
+#: src/modules/mod_example/simplecircle.cpp:58
+msgid "Example"
+msgstr "Exempel"
+
+#: src/modules/mod_example/filledrect.cpp:131
+#: src/modules/mod_example/simplecircle.cpp:107
+#: src/modules/lyr_freetype/lyr_freetype.cpp:575
+#: src/modules/lyr_std/shade.cpp:620
+#: src/modules/mod_geometry/checkerboard.cpp:146
+#: src/modules/mod_geometry/circle.cpp:146
+#: src/modules/mod_geometry/rectangle.cpp:138 src/synfig/layer_shape.cpp:1221
+#: src/synfig/layer_solidcolor.cpp:114 src/synfig/paramdesc.cpp:83
+msgid "Color"
+msgstr "Färg"
+
+#: src/modules/mod_example/filledrect.cpp:132
+#: src/modules/mod_example/simplecircle.cpp:108
+#: src/modules/mod_geometry/circle.cpp:147
+#: src/modules/mod_geometry/rectangle.cpp:139
+#: src/synfig/layer_solidcolor.cpp:115
+msgid "Fill color of the layer"
+msgstr "Fyllnadsfärg för lagret"
+
+#: src/modules/mod_example/filledrect.cpp:136
+#: src/modules/mod_geometry/rectangle.cpp:143
+#: src/modules/mod_gradient/lineargradient.cpp:185
+msgid "Point 1"
+msgstr "Punkt 1"
+
+#: src/modules/mod_example/filledrect.cpp:137
+#: src/modules/mod_geometry/rectangle.cpp:145
+msgid "First corner of the rectangle"
+msgstr "Första hörnet i rektangeln"
+
+#: src/modules/mod_example/filledrect.cpp:142
+#: src/modules/mod_geometry/rectangle.cpp:149
+#: src/modules/mod_gradient/lineargradient.cpp:190
+msgid "Point 2"
+msgstr "Punkt 2"
+
+#: src/modules/mod_example/filledrect.cpp:143
+#: src/modules/mod_geometry/rectangle.cpp:150
+msgid "Second corner of the rectangle"
+msgstr "Andra hörnet i rektangeln"
+
+#: src/modules/mod_example/filledrect.cpp:147
+msgid "Feather X"
+msgstr "X-fjädring"
+
+#: src/modules/mod_example/filledrect.cpp:152
+msgid "Feather Y"
+msgstr "Y-fjädring"
+
+#: src/modules/mod_example/filledrect.cpp:157 src/modules/lyr_std/bevel.cpp:69
+#: src/modules/mod_geometry/advanced_outline.cpp:1172
+msgid "Bevel"
+msgstr "Fas"
+
+#: src/modules/mod_example/filledrect.cpp:158
+msgid "Use Bevel for the corners"
+msgstr "Använd Fas i hörnen"
+
+#: src/modules/mod_example/filledrect.cpp:163
+msgid "Keep Bevel Circular"
+msgstr "Behåll Fas rund"
+
+#: src/modules/mod_example/filledrect.cpp:164
+msgid "When checked the bevel is circular"
+msgstr "När detta är på blir faskanten cirkulär"
+
+#: src/modules/mod_example/metaballs.cpp:57
+msgid "Metaballs"
+msgstr "Metaballs"
+
+#: src/modules/mod_example/metaballs.cpp:129
+#: src/modules/mod_gradient/conicalgradient.cpp:109
+#: src/modules/mod_gradient/curvegradient.cpp:565
+#: src/modules/mod_gradient/lineargradient.cpp:194
+#: src/modules/mod_gradient/radialgradient.cpp:113
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+#: src/modules/mod_noise/noise.cpp:268 src/modules/mod_particle/plant.cpp:436
+#: src/synfig/valuenode_gradientrotate.cpp:164
+#: src/synfig/valuenode_repeat_gradient.cpp:203
+msgid "Gradient"
+msgstr "Gradient"
+
+#: src/modules/mod_example/metaballs.cpp:133
+msgid "Balls"
+msgstr "Bollar"
+
+#: src/modules/mod_example/metaballs.cpp:137
+msgid "Radii"
+msgstr "Radier"
+
+#: src/modules/mod_example/metaballs.cpp:141
+msgid "Weights"
+msgstr "Tjocklekar"
+
+#: src/modules/mod_example/metaballs.cpp:145
+msgid "Gradient Left"
+msgstr "Gradient åt vänster"
+
+#: src/modules/mod_example/metaballs.cpp:149
+msgid "Gradient Right"
+msgstr "Gradient åt höger"
+
+#: src/modules/mod_example/metaballs.cpp:153
+msgid "Positive Only"
+msgstr "Endast positiva"
+
+#: src/modules/mod_example/simplecircle.cpp:57
+msgid "Simple Circle"
+msgstr "Enkel cirkel"
+
+#: src/modules/mod_example/simplecircle.cpp:112
+#: src/modules/lyr_std/stretch.cpp:110 src/modules/lyr_std/twirl.cpp:112
+#: src/modules/mod_gradient/conicalgradient.cpp:114
+#: src/modules/mod_gradient/radialgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:118
+msgid "Center"
+msgstr "Mitt"
+
+#: src/modules/mod_example/simplecircle.cpp:113
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:162
+msgid "Center of the circle"
+msgstr "Cirkelns mitt"
+
+#: src/modules/mod_example/simplecircle.cpp:117
+#: src/modules/lyr_std/sphere_distort.cpp:146
+#: src/modules/lyr_std/twirl.cpp:117 src/modules/mod_geometry/circle.cpp:150
+#: src/modules/mod_gradient/radialgradient.cpp:123
+#: src/modules/mod_gradient/spiralgradient.cpp:123
+#: src/modules/mod_noise/valuenode_random.cpp:270
+#: src/synfig/valuenode_radialcomposite.cpp:272
+msgid "Radius"
+msgstr "Radie"
+
+#: src/modules/mod_example/simplecircle.cpp:118
+#: src/modules/lyr_std/twirl.cpp:118
+#: src/modules/mod_gradient/radialgradient.cpp:124
+#: src/modules/mod_gradient/spiralgradient.cpp:124
+msgid "This is the radius of the circle"
+msgstr "Detta är cirkelns radie"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:66
+#: src/modules/lyr_freetype/lyr_freetype.cpp:569
+msgid "Text"
+msgstr "Text"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:67
+#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:61
+#: src/modules/lyr_std/supersample.cpp:58 src/modules/lyr_std/timeloop.cpp:60
+#: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:71
+#: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:81
+msgid "Other"
+msgstr "Övriga"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:97
+msgid "Text Layer"
+msgstr "Textlager"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:398
+msgid "unable to initialize"
+msgstr "oförmögen att initisalisera"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:417
+msgid "empty font set"
+msgstr "tomt typsnittssats"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:570
+msgid "Text to Render"
+msgstr "Text att Rendera"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:576
+msgid "Color of the text"
+msgstr "Textens färg"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:580
+msgid "Font Family"
+msgstr "Teckensnitt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:585
+msgid "Style"
+msgstr "Stil"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:587
+#: src/modules/lyr_freetype/lyr_freetype.cpp:597
+msgid "Normal"
+msgstr "Normal"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:588
+msgid "Oblique"
+msgstr "Oblik"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:589
+msgid "Italic"
+msgstr "Kursiv"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:593
+msgid "Weight"
+msgstr "Tjocklek"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:595
+msgid "Ultralight"
+msgstr "Ultramager"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:596
+msgid "light"
+msgstr "mager"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:598
+msgid "Bold"
+msgstr "Halvfet"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:599
+msgid "Ultrabold"
+msgstr "Fet"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:600
+msgid "Heavy"
+msgstr "Ultrafet"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:603
+msgid "Horizontal Spacing"
+msgstr "Vågrät mellanrum"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:604
+msgid "Describes how close glyphs are horizontally"
+msgstr "Bestämmer hur nära varandra tecken är vågrätt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:608
+msgid "Vertical Spacing"
+msgstr "Radvastånd"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:609
+msgid "Describes how close lines of text are vertically"
+msgstr "Bestämmer hur nära varandra raderna av text är lodrätt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:613
+#: src/modules/lyr_std/shade.cpp:626 src/modules/lyr_std/xorpattern.cpp:133
+#: src/modules/mod_filter/blur.cpp:413
+#: src/modules/mod_filter/radialblur.cpp:115
+#: src/modules/mod_geometry/checkerboard.cpp:154
+#: src/modules/mod_noise/distort.cpp:227 src/modules/mod_noise/noise.cpp:276
+msgid "Size"
+msgstr "Storlek"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:614
+msgid "Size of the text"
+msgstr "Textens storlek"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:621
+msgid "Orientation"
+msgstr "Orientering"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:622
+msgid "Text Orientation"
+msgstr "Textens orientering"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:627
+#: src/modules/lyr_std/insideout.cpp:162 src/modules/lyr_std/rotate.cpp:117
+#: src/modules/lyr_std/shade.cpp:623 src/modules/lyr_std/translate.cpp:100
+#: src/modules/lyr_std/curvewarp.cpp:398
+#: src/modules/lyr_std/xorpattern.cpp:129 src/modules/lyr_std/zoom.cpp:106
+#: src/modules/mod_filter/radialblur.cpp:110
+#: src/modules/mod_geometry/checkerboard.cpp:150
+#: src/modules/mod_geometry/circle.cpp:161
+#: src/modules/mod_gradient/curvegradient.cpp:550
+#: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:136
+#: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:528
+msgid "Origin"
+msgstr "Utgångspunkt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:628
+msgid "Text Position"
+msgstr "Textens position"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:632
+msgid "Font"
+msgstr "Typsnitt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:633
+msgid "Filename of the font to use"
+msgstr "Filnamnet på typsnittet du vill använda"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:640
+msgid "Kerning"
+msgstr "Kerning"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:641
+msgid "Enables/Disables font kerning (If the font supports it)"
+msgstr "Slår på/av typsnittskerning (om typsnittet stödjer det)"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:645
+msgid "Sharpen Edges"
+msgstr "Öka kanternas skärpa"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:646
+msgid "Turn this off if you are going to be animating the text"
+msgstr "Slå av detta om du ska animera texten"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:649
+#: src/modules/lyr_std/shade.cpp:643 src/modules/mod_geometry/circle.cpp:165
+#: src/synfig/layer_shape.cpp:1228
+msgid "Invert"
+msgstr "Invertera"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:714
+msgid "No face loaded, no text will be rendered."
+msgstr "Inget typsnitt laddades, ingen text kommer att renderas"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:740
+msgid "Text too small, no text will be rendered."
+msgstr "Texten är för liten, ingen text kommer att renderas"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:764
+msgid "Unable to set face size."
+msgstr "Kan inte ställa in storlek på typsnitt"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:807
+msgid "Invalid multibyte sequence - is the locale set?\n"
+msgstr "Invalid multibyte sequence - is the locale set?\n"
+
+#: src/modules/lyr_freetype/lyr_freetype.cpp:814
+msgid "Can't parse multibyte character.\n"
+msgstr "Can't parse multibyte character.\n"
+
+#: src/modules/lyr_std/bevel.cpp:70 src/modules/lyr_std/shade.cpp:69
+msgid "Stylize"
+msgstr "Stilisera"
+
+#: src/modules/lyr_std/bevel.cpp:624 src/modules/lyr_std/shade.cpp:632
+#: src/modules/mod_filter/blur.cpp:417
+#: src/modules/mod_filter/halftone2.cpp:174
+msgid "Type"
+msgstr "Typ"
+
+#: src/modules/lyr_std/bevel.cpp:625 src/modules/lyr_std/shade.cpp:633
+#: src/modules/mod_filter/blur.cpp:418
+msgid "Type of blur to use"
+msgstr "Typ av oskärpa att använda"
+
+#: src/modules/lyr_std/bevel.cpp:627 src/modules/lyr_std/shade.cpp:635
+#: src/modules/mod_filter/blur.cpp:420 src/synfig/layer_shape.cpp:1241
+msgid "Box Blur"
+msgstr "Box-oskärpa"
+
+#: src/modules/lyr_std/bevel.cpp:628 src/modules/lyr_std/shade.cpp:636
+#: src/modules/mod_filter/blur.cpp:421 src/synfig/layer_shape.cpp:1242
+msgid "Fast Gaussian Blur"
+msgstr "Snabb gaussisk oskärpa"
+
+#: src/modules/lyr_std/bevel.cpp:629 src/modules/lyr_std/shade.cpp:637
+#: src/modules/mod_filter/blur.cpp:422 src/synfig/layer_shape.cpp:1243
+msgid "Cross-Hatch Blur"
+msgstr "Korsskuggnings-oskärpa"
+
+#: src/modules/lyr_std/bevel.cpp:630 src/modules/lyr_std/shade.cpp:638
+#: src/modules/mod_filter/blur.cpp:423 src/synfig/layer_shape.cpp:1244
+msgid "Gaussian Blur"
+msgstr "Gaussisk oskärpa"
+
+#: src/modules/lyr_std/bevel.cpp:631 src/modules/lyr_std/shade.cpp:639
+#: src/modules/mod_filter/blur.cpp:424 src/synfig/layer_shape.cpp:1245
+msgid "Disc Blur"
+msgstr "Disk-oskärpa"
+
+#: src/modules/lyr_std/bevel.cpp:635
+msgid "Hi-Color"
+msgstr "Hög-färg"
+
+#: src/modules/lyr_std/bevel.cpp:638
+msgid "Lo-Color"
+msgstr "Låg-färg"
+
+#: src/modules/lyr_std/bevel.cpp:641
+msgid "Light Angle"
+msgstr "Ljusets vinkel"
+
+#: src/modules/lyr_std/bevel.cpp:645
+msgid "Depth of Bevel"
+msgstr "Fasens djup"
+
+#: src/modules/lyr_std/bevel.cpp:649
+msgid "Softness"
+msgstr "Mjukhet"
+
+#: src/modules/lyr_std/bevel.cpp:652
+msgid "Use Luma"
+msgstr "Använda luma"
+
+#: src/modules/lyr_std/bevel.cpp:655
+msgid "Solid"
+msgstr "Solid"
+
+#: src/modules/lyr_std/booleancurve.cpp:107
+msgid "Region Set"
+msgstr "Regionssats"
+
+#: src/modules/lyr_std/booleancurve.cpp:108
+msgid "Set of regions to combine"
+msgstr "Grupp av regioner att kombinera"
+
+#: src/modules/lyr_std/clamp.cpp:55 src/tool/printing_functions.cpp:226
+msgid "Clamp"
+msgstr "Clampa"
+
+#: src/modules/lyr_std/clamp.cpp:56 src/modules/mod_filter/colorcorrect.cpp:57
+#: src/modules/mod_filter/halftone2.cpp:60
+#: src/modules/mod_filter/halftone3.cpp:60
+#: src/modules/mod_filter/lumakey.cpp:60
+msgid "Filters"
+msgstr "Filter"
+
+#: src/modules/lyr_std/clamp.cpp:162
+msgid "Invert Negative"
+msgstr "Invertera negativ"
+
+#: src/modules/lyr_std/clamp.cpp:166
+msgid "Clamp Ceiling"
+msgstr "Clamp tak"
+
+#: src/modules/lyr_std/clamp.cpp:167
+msgid "When checked the Ceiling value is used"
+msgstr "När detta är på används takvärdet"
+
+#: src/modules/lyr_std/clamp.cpp:171
+msgid "Ceiling"
+msgstr "Tak"
+
+#: src/modules/lyr_std/clamp.cpp:172
+msgid "Upper boundary of the clamping"
+msgstr "Övre gräns för clampningen"
+
+#: src/modules/lyr_std/clamp.cpp:176
+msgid "Floor"
+msgstr "Botten"
+
+#: src/modules/lyr_std/clamp.cpp:177
+msgid "Lower boundary of the clamping"
+msgstr "Nedre gränsen för clampningen"
+
+#: src/modules/lyr_std/import.cpp:59
+msgid "Import Image"
+msgstr "Importera bild"
+
+#: src/modules/lyr_std/import.cpp:154 src/modules/lyr_std/import.cpp:206
+#, c-format
+msgid "Filename seems to already be set to \"%s\" (%s)"
+msgstr "Filnamnet ser ut att redan vara inställt på \"%s\" (%s)"
+
+#: src/modules/lyr_std/import.cpp:293
+msgid "Filename"
+msgstr "Filnamn"
+
+#: src/modules/lyr_std/import.cpp:294
+msgid "File to import"
+msgstr "Fil att importera"
+
+#: src/modules/lyr_std/import.cpp:298 src/synfig/layer_pastecanvas.cpp:151
+msgid "Time Offset"
+msgstr "Tidsförskjutning"
+
+#: src/modules/lyr_std/import.cpp:299
+msgid "Time Offset to apply to the imported file"
+msgstr "Förskjutning i tid att tillämpa på den importerade filen"
+
+#: src/modules/lyr_std/insideout.cpp:55
+msgid "Inside Out"
+msgstr "Insidan ut"
+
+#: src/modules/lyr_std/insideout.cpp:56
+#: src/modules/lyr_std/sphere_distort.cpp:75
+#: src/modules/lyr_std/stretch.cpp:58 src/modules/lyr_std/twirl.cpp:57
+#: src/modules/lyr_std/warp.cpp:58 src/modules/lyr_std/curvewarp.cpp:57
+#: src/modules/mod_noise/distort.cpp:59
+msgid "Distortions"
+msgstr "Förvrängning"
+
+#: src/modules/lyr_std/insideout.cpp:163
+msgid "Defines the where the center will be"
+msgstr "Bestämmer var mitten ska vara"
+
+#: src/modules/lyr_std/julia.cpp:56
+msgid "Julia Set"
+msgstr "Julia Set"
+
+#: src/modules/lyr_std/julia.cpp:57 src/modules/lyr_std/mandelbrot.cpp:57
+msgid "Fractals"
+msgstr "Fraktaler"
+
+#: src/modules/lyr_std/julia.cpp:335
+msgid "Inside Color"
+msgstr "Insidans färg"
+
+#: src/modules/lyr_std/julia.cpp:336
+msgid "Color of the Set"
+msgstr "Settets färg"
+
+#: src/modules/lyr_std/julia.cpp:339
+msgid "Outside Color"
+msgstr "Utsidans färg"
+
+#: src/modules/lyr_std/julia.cpp:340
+msgid "Color outside the Set"
+msgstr "Färg utanför settet"
+
+#: src/modules/lyr_std/julia.cpp:343
+msgid "Color Shift"
+msgstr "Färg-skiftning"
+
+#: src/modules/lyr_std/julia.cpp:346 src/modules/lyr_std/mandelbrot.cpp:219
+msgid "Iterations"
+msgstr "Upprepningar"
+
+#: src/modules/lyr_std/julia.cpp:349
+msgid "Seed Point"
+msgstr "Seed Point"
+
+#: src/modules/lyr_std/julia.cpp:352 src/modules/lyr_std/mandelbrot.cpp:222
+msgid "Bailout ValueBase"
+msgstr "Bailout ValueBase"
+
+#: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:232
+#: src/modules/lyr_std/twirl.cpp:130
+msgid "Distort Inside"
+msgstr "Förvräng insidan"
+
+#: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:236
+msgid "Shade Inside"
+msgstr "Skugga insidan"
+
+#: src/modules/lyr_std/julia.cpp:362 src/modules/lyr_std/mandelbrot.cpp:240
+msgid "Solid Inside"
+msgstr "Solid insida"
+
+#: src/modules/lyr_std/julia.cpp:365 src/modules/lyr_std/mandelbrot.cpp:244
+msgid "Invert Inside"
+msgstr "Invertera insida"
+
+#: src/modules/lyr_std/julia.cpp:368
+msgid "Color Inside"
+msgstr "Insidans färg"
+
+#: src/modules/lyr_std/julia.cpp:371 src/modules/lyr_std/mandelbrot.cpp:261
+#: src/modules/lyr_std/twirl.cpp:135
+msgid "Distort Outside"
+msgstr "Förvräng utsida"
+
+#: src/modules/lyr_std/julia.cpp:374 src/modules/lyr_std/mandelbrot.cpp:265
+msgid "Shade Outside"
+msgstr "Skugga utsida"
+
+#: src/modules/lyr_std/julia.cpp:377 src/modules/lyr_std/mandelbrot.cpp:269
+msgid "Solid Outside"
+msgstr "Solid utsida"
+
+#: src/modules/lyr_std/julia.cpp:380 src/modules/lyr_std/mandelbrot.cpp:273
+msgid "Invert Outside"
+msgstr "Invertera utsida"
+
+#: src/modules/lyr_std/julia.cpp:383
+msgid "Color Outside"
+msgstr "Utsidans färg"
+
+#: src/modules/lyr_std/julia.cpp:387
+msgid "Color Cycle"
+msgstr "Färgserie"
+
+#: src/modules/lyr_std/julia.cpp:390 src/modules/lyr_std/mandelbrot.cpp:281
+msgid "Smooth Outside"
+msgstr "Mjuk utsida"
+
+#: src/modules/lyr_std/julia.cpp:391 src/modules/lyr_std/mandelbrot.cpp:282
+msgid "Smooth the coloration outside the set"
+msgstr "Gör färgningen utanför settet mjukare"
+
+#: src/modules/lyr_std/julia.cpp:394 src/modules/lyr_std/mandelbrot.cpp:226
+msgid "Break Set"
+msgstr "Avbryt-set"
+
+#: src/modules/lyr_std/julia.cpp:395 src/modules/lyr_std/mandelbrot.cpp:227
+msgid "Modify equation to achieve interesting results"
+msgstr "Ändra jämvikten för att få intressanta resultat"
+
+#: src/modules/lyr_std/mandelbrot.cpp:56
+msgid "Mandelbrot Set"
+msgstr "Mandelbrotmängd"
+
+#: src/modules/lyr_std/mandelbrot.cpp:233
+#: src/modules/lyr_std/mandelbrot.cpp:237
+#: src/modules/lyr_std/mandelbrot.cpp:241
+#: src/modules/lyr_std/mandelbrot.cpp:245
+#: src/modules/lyr_std/mandelbrot.cpp:249
+#: src/modules/lyr_std/mandelbrot.cpp:253
+#: src/modules/lyr_std/mandelbrot.cpp:257
+msgid "Inside"
+msgstr "Insida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:248
+msgid "Gradient Inside"
+msgstr "Gradient insida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:252
+msgid "Offset Inside"
+msgstr "Förskjutning insida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:256
+msgid "Loop Inside"
+msgstr "Repetera på insidan"
+
+#: src/modules/lyr_std/mandelbrot.cpp:262
+#: src/modules/lyr_std/mandelbrot.cpp:266
+#: src/modules/lyr_std/mandelbrot.cpp:270
+#: src/modules/lyr_std/mandelbrot.cpp:274
+#: src/modules/lyr_std/mandelbrot.cpp:278
+#: src/modules/lyr_std/mandelbrot.cpp:283
+#: src/modules/lyr_std/mandelbrot.cpp:287
+#: src/modules/lyr_std/mandelbrot.cpp:291
+msgid "Outside"
+msgstr "Utsida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:277
+msgid "Gradient outside"
+msgstr "Gradient utsida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:286
+msgid "Offset Outside"
+msgstr "Förskjutning utsida"
+
+#: src/modules/lyr_std/mandelbrot.cpp:290
+msgid "Scale Outside"
+msgstr "Storlek utsida"
+
+#: src/modules/lyr_std/rotate.cpp:56
+msgid "Rotate"
+msgstr "Rotera"
+
+#: src/modules/lyr_std/rotate.cpp:57 src/modules/lyr_std/translate.cpp:56
+#: src/modules/lyr_std/zoom.cpp:53
+msgid "Transform"
+msgstr "Tranformera"
+
+#: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
+#: src/modules/mod_filter/radialblur.cpp:111
+#: src/synfig/layer_pastecanvas.cpp:137
+msgid "Point where you want the origin to be"
+msgstr "Peka där du vill att utgångspunkten ska vara"
+
+#: src/modules/lyr_std/rotate.cpp:122
+#: src/modules/lyr_std/sphere_distort.cpp:153
+#: src/modules/lyr_std/stretch.cpp:104 src/modules/lyr_std/zoom.cpp:99
+#: src/synfig/layer_composite.cpp:249
+#: src/synfig/valuenode_blinecalctangent.cpp:251
+#: src/synfig/valuenode_blinecalcvertex.cpp:211
+#: src/synfig/valuenode_blinecalcwidth.cpp:216
+#: src/synfig/valuenode_segcalctangent.cpp:161
+#: src/synfig/valuenode_segcalcvertex.cpp:159
+msgid "Amount"
+msgstr "Kvantitet"
+
+#: src/modules/lyr_std/rotate.cpp:123
+msgid "Amount of rotation"
+msgstr "Hur mycket rotation som ska tillämpas"
+
+#: src/modules/lyr_std/shade.cpp:68
+msgid "Shade"
+msgstr "Skugga"
+
+#: src/modules/lyr_std/shade.cpp:627
+msgid "Size of Shade"
+msgstr "Skuggans storlek"
+
+#: src/modules/lyr_std/sphere_distort.cpp:74
+#: src/modules/lyr_std/sphere_distort.cpp:167
+msgid "Spherize"
+msgstr "Sfärifisera"
+
+#: src/modules/lyr_std/sphere_distort.cpp:141
+#: src/synfig/valuenode_composite.cpp:546
+msgid "Position"
+msgstr "Position"
+
+#: src/modules/lyr_std/sphere_distort.cpp:142
+msgid "Where the sphere distortion is centered"
+msgstr "Var sfär-förvrängningen ska vara centrerad"
+
+#: src/modules/lyr_std/sphere_distort.cpp:149
+msgid "The size of the sphere distortion"
+msgstr "Storleken på sfär-förvrängningen"
+
+#: src/modules/lyr_std/sphere_distort.cpp:155
+msgid "The distortion intensity (negative values inverts effect)"
+msgstr "Förvrängnings-intensitet (negativa värden inverterar effekten)"
+
+#: src/modules/lyr_std/sphere_distort.cpp:159 src/modules/lyr_std/warp.cpp:415
+msgid "Clip"
+msgstr "Begränsa"
+
+#: src/modules/lyr_std/sphere_distort.cpp:160
+msgid "When cheked, the area outside the Radius are not distorted"
+msgstr "När detta alternativ är ikryssat, så kommer området utanför radien inte att förvrängas"
+
+#: src/modules/lyr_std/sphere_distort.cpp:164
+msgid "Distort Type"
+msgstr "Förvrängningstyp"
+
+#: src/modules/lyr_std/sphere_distort.cpp:165
+msgid "The direction of the distortion"
+msgstr "Riktningen på förvrängningen"
+
+#: src/modules/lyr_std/sphere_distort.cpp:168
+msgid "Vertical Bar"
+msgstr "Lodrät stolpe"
+
+#: src/modules/lyr_std/sphere_distort.cpp:169
+msgid "Horizontal Bar"
+msgstr "Vågrät stolpe"
+
+#: src/modules/lyr_std/stretch.cpp:57
+msgid "Stretch"
+msgstr "Tänj"
+
+#: src/modules/lyr_std/stretch.cpp:106
+msgid "Size of the stretch relative to its Center"
+msgstr "Storleken på tänjningen relativt till dess mitt"
+
+#: src/modules/lyr_std/stretch.cpp:111
+msgid "Where the stretch distortion is centered"
+msgstr "Var tänjningsförvridningen ska vara centrerad"
+
+#: src/modules/lyr_std/stroboscope.cpp:60
+msgid "Stroboscope"
+msgstr "Stroboskop"
+
+#: src/modules/lyr_std/stroboscope.cpp:104
+msgid "Frequency"
+msgstr "Frekvens"
+
+#: src/modules/lyr_std/stroboscope.cpp:105
+msgid "Frequency of the Strobe in times per second"
+msgstr "Strobens frekvens i antal gånger per sekund"
+
+#: src/modules/lyr_std/supersample.cpp:57
+msgid "Super Sample"
+msgstr "Super-sampla"
+
+#: src/modules/lyr_std/supersample.cpp:146
+msgid "Unable to create SurfaceTarget"
+msgstr "Kan inte skapa ytmål"
+
+#: src/modules/lyr_std/supersample.cpp:337
+#: src/modules/lyr_std/curvewarp.cpp:402
+#: src/modules/mod_gradient/curvegradient.cpp:555
+#: src/synfig/valuenode_composite.cpp:524
+#: src/synfig/valuenode_composite.cpp:550
+#: src/synfig/valuenode_realstring.cpp:180
+#: src/synfig/valuenode_repeat_gradient.cpp:213
+#: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
+msgid "Width"
+msgstr "Bredd"
+
+#: src/modules/lyr_std/supersample.cpp:338
+msgid "Width of sample area (In pixels)"
+msgstr "Bredd på samplings-området (i pixlar)"
+
+#: src/modules/lyr_std/supersample.cpp:341 src/tool/printing_functions.cpp:123
+msgid "Height"
+msgstr "Höjd"
+
+#: src/modules/lyr_std/supersample.cpp:342
+msgid "Height of sample area (In pixels)"
+msgstr "Höjd på samplingsområdet (i pixlar)"
+
+#: src/modules/lyr_std/supersample.cpp:345
+msgid "Use Parametric"
+msgstr "Använd parametrik"
+
+#: src/modules/lyr_std/supersample.cpp:346
+msgid "Use the Parametric Renderer"
+msgstr "Använd den parametriska renderaren"
+
+#: src/modules/lyr_std/supersample.cpp:349
+msgid "Be Alpha Safe"
+msgstr "Var alfa-säker"
+
+#: src/modules/lyr_std/supersample.cpp:350
+msgid "Avoid alpha artifacts when checked"
+msgstr "Alfa-artefakter undviks när detta alternativ är påslaget"
+
+#: src/modules/lyr_std/timeloop.cpp:59 src/synfig/valuenode.cpp:172
+#: src/synfig/valuenode_timeloop.cpp:153
+msgid "Time Loop"
+msgstr "Tids-slinga"
+
+#: src/modules/lyr_std/timeloop.cpp:133 src/synfig/valuenode_timeloop.cpp:179
+msgid "Link Time"
+msgstr "Länka tid"
+
+#: src/modules/lyr_std/timeloop.cpp:134
+msgid "Start time of the loop for the cycled context"
+msgstr "Start time of the loop for the cycled context"
+
+#: src/modules/lyr_std/timeloop.cpp:138 src/synfig/valuenode_timeloop.cpp:184
+msgid "Local Time"
+msgstr "Lokal tid"
+
+#: src/modules/lyr_std/timeloop.cpp:139 src/synfig/valuenode_timeloop.cpp:185
+msgid "The time when the resulted loop starts"
+msgstr "Tiden när den resulterande slingan startar"
+
+#: src/modules/lyr_std/timeloop.cpp:143 src/synfig/valuenode_step.cpp:202
+#: src/synfig/valuenode_timeloop.cpp:189
+msgid "Duration"
+msgstr "Varaktighet"
+
+#: src/modules/lyr_std/timeloop.cpp:144 src/synfig/valuenode_timeloop.cpp:190
+msgid "Lenght of the loop"
+msgstr "Slingans längd"
+
+#: src/modules/lyr_std/timeloop.cpp:148
+msgid "Only For Positive Duration"
+msgstr "Endast för positiva längder"
+
+#: src/modules/lyr_std/timeloop.cpp:149
+msgid "When checked will loop only positive durations"
+msgstr "När detta är på kommer endast positiva varaktighetsvärden att upprepas"
+
+#: src/modules/lyr_std/timeloop.cpp:153
+msgid "Symmetrical"
+msgstr "Symmetrisk"
+
+#: src/modules/lyr_std/timeloop.cpp:154
+msgid "When checked, loops are mirrored centered at Local Time"
+msgstr "När detta är på, kommer slingor speglas med mitt på lokal tid"
+
+#: src/modules/lyr_std/translate.cpp:55
+msgid "Translate"
+msgstr "Översätt"
+
+#: src/modules/lyr_std/twirl.cpp:56
+msgid "Twirl"
+msgstr "Virvel"
+
+#: src/modules/lyr_std/twirl.cpp:124
+msgid "Rotations"
+msgstr "Rotationer"
+
+#: src/modules/lyr_std/twirl.cpp:125
+msgid "The number of rotations of the twirl effect"
+msgstr "Antalet roteringar i virveleffekten"
+
+#: src/modules/lyr_std/twirl.cpp:131
+msgid "When checked, distorts inside the circle"
+msgstr "När detta är på förvrängs insidan av cirkeln"
+
+#: src/modules/lyr_std/twirl.cpp:136
+msgid "When checked, distorts outside the circle"
+msgstr "När detta är på förvrängs utsidan av cirkeln"
+
+#: src/modules/lyr_std/warp.cpp:57
+msgid "Warp"
+msgstr "Förvrid"
+
+#: src/modules/lyr_std/warp.cpp:380
+msgid "Source TL"
+msgstr "Källa ÖV"
+
+#: src/modules/lyr_std/warp.cpp:382
+msgid "Top Left corner of the source to warp"
+msgstr "Övre vänstra hörnet på källan att förvrida"
+
+#: src/modules/lyr_std/warp.cpp:386
+msgid "Source BR"
+msgstr "Källa NH"
+
+#: src/modules/lyr_std/warp.cpp:387
+msgid "Bottom Right corner of the source to warp"
+msgstr "Nedre högra hörnet på källan att förvrida"
+
+#: src/modules/lyr_std/warp.cpp:391
+msgid "Dest TL"
+msgstr "Dest ÖV"
+
+#: src/modules/lyr_std/warp.cpp:393
+msgid "Top Left corner of the destination"
+msgstr "Övre vänstra hörnet på destinationen"
+
+#: src/modules/lyr_std/warp.cpp:397
+msgid "Dest TR"
+msgstr "Dest ÖH"
+
+#: src/modules/lyr_std/warp.cpp:399
+msgid "Top Right corner of the destination"
+msgstr "Övre högra hörnet på destinationen"
+
+#: src/modules/lyr_std/warp.cpp:403
+msgid "Dest BR"
+msgstr "Dest NH"
+
+#: src/modules/lyr_std/warp.cpp:405
+msgid "Bottom Right corner of the destination"
+msgstr "Nedre högra hörnet på destinationen"
+
+#: src/modules/lyr_std/warp.cpp:409
+msgid "Dest BL"
+msgstr "Dest NV"
+
+#: src/modules/lyr_std/warp.cpp:411
+msgid "Bottom Left corner of the destination"
+msgstr "Nedre vänstra hörnet på destinationen"
+
+#: src/modules/lyr_std/warp.cpp:419
+msgid "Horizon"
+msgstr "Horisont"
+
+#: src/modules/lyr_std/warp.cpp:420
+msgid "Height that determines the horizon in perspectives"
+msgstr "Höjd som anger horisonten i perspektiv"
+
+#: src/modules/lyr_std/curvewarp.cpp:56
+msgid "Curve Warp"
+msgstr "Kurv-förvridning"
+
+#: src/modules/lyr_std/curvewarp.cpp:399
+msgid "Position of the destiny Spline line"
+msgstr ""
+
+#: src/modules/lyr_std/curvewarp.cpp:404
+msgid "How much is expanded the result perpendicular to the source line"
+msgstr "Hur mycket resultatet är utvidgat vinkelrätt mot källinjen"
+
+#: src/modules/lyr_std/curvewarp.cpp:407
+msgid "Start Point"
+msgstr "Startpunkt"
+
+#: src/modules/lyr_std/curvewarp.cpp:409
+msgid "First point of the source line"
+msgstr "Första punkten på källinjen"
+
+#: src/modules/lyr_std/curvewarp.cpp:412
+msgid "End Point"
+msgstr "Slutpunkt"
+
+#: src/modules/lyr_std/curvewarp.cpp:413
+msgid "Final point of the source line"
+msgstr "Sista punkten på källinjen"
+
+#: src/modules/lyr_std/curvewarp.cpp:416
+#: src/modules/mod_geometry/advanced_outline.cpp:1134
+#: src/modules/mod_geometry/outline.cpp:823
+#: src/modules/mod_geometry/region.cpp:238
+#: src/modules/mod_gradient/curvegradient.cpp:559
+#: src/modules/mod_particle/plant.cpp:424
+msgid "Vertices"
+msgstr "Vertices"
+
+#: src/modules/lyr_std/curvewarp.cpp:419
+msgid "List of Spline Points where the source line is curved to"
+msgstr ""
+
+#: src/modules/lyr_std/curvewarp.cpp:422
+#: src/modules/mod_geometry/advanced_outline.cpp:1189
+#: src/modules/mod_gradient/curvegradient.cpp:580
+msgid "Fast"
+msgstr "Snabb"
+
+#: src/modules/lyr_std/curvewarp.cpp:423
+#: src/modules/mod_gradient/curvegradient.cpp:581
+msgid "When checked, renders quickly but with artifacts"
+msgstr "När detta är på, blir renderingen snabb men med fula detaljer"
+
+#: src/modules/lyr_std/xorpattern.cpp:55
+msgid "XOR Pattern"
+msgstr "XOR-mönster"
+
+#: src/modules/lyr_std/xorpattern.cpp:130
+msgid "Center of the pattern"
+msgstr "Mönstrets mitt"
+
+#: src/modules/lyr_std/xorpattern.cpp:134
+msgid "Size of the pattern"
+msgstr "Storlek på mönstret"
+
+#: src/modules/lyr_std/zoom.cpp:52 src/synfig/valuenode.cpp:149
+#: src/synfig/valuenode_blinecalctangent.cpp:261
+#: src/synfig/valuenode_blinecalcwidth.cpp:221
+#: src/synfig/valuenode_exp.cpp:155 src/synfig/valuenode_scale.cpp:243
+msgid "Scale"
+msgstr "Skala"
+
+#: src/modules/lyr_std/zoom.cpp:100
+msgid "Amount to scale to"
+msgstr ""
+
+#: src/modules/lyr_std/zoom.cpp:107
+msgid "Point to scale from"
+msgstr ""
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:131 src/modules/mod_bmp/mptr_bmp.cpp:132
+#: src/modules/mod_ppm/mptr_ppm.cpp:78
+#, c-format
+msgid "Unable to open %s"
+msgstr "Kan inte öppna %s"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:143 src/modules/mod_bmp/mptr_bmp.cpp:144
+#, c-format
+msgid "%s is not in BMP format"
+msgstr "%s är inte i BMP-format"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:150
+#, c-format
+msgid "Failure while reading BITMAPFILEHEADER from %s"
+msgstr ""
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:158
+#, c-format
+msgid "Failure while reading BITMAPINFOHEADER from %s"
+msgstr ""
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:168
+#, c-format
+msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
+msgstr ""
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:176
+#, c-format
+msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
+msgstr ""
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
+msgid "Reading compressed bitmaps is not supported"
+msgstr "Läsning av komprimerade bitmap-filer stöds ej"
+
+#: src/modules/mod_bmp/mptr_bmp.cpp:201 src/modules/mod_bmp/mptr_bmp.cpp:202
+#, c-format
+msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
+msgstr "Bit-djupet stöds ej (bit_count=%d, bör vara 24 eller 32)"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:184
+msgid " (animated)"
+msgstr "(animerad)"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:194 src/modules/mod_bmp/trgt_bmp.cpp:195
+msgid "Unable to open file"
+msgstr "Kan inte öppna fil"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:225 src/modules/mod_bmp/trgt_bmp.cpp:226
+msgid "Unable to write file header to file"
+msgstr "Kan inte skriva fil-sidhuvud till fil"
+
+#: src/modules/mod_bmp/trgt_bmp.cpp:232 src/modules/mod_bmp/trgt_bmp.cpp:233
+msgid "Unable to write info header"
+msgstr "Kan inte skriva info-sidhuvud"
+
+#: src/modules/mod_dv/trgt_dv.cpp:165 src/modules/mod_dv/trgt_dv.cpp:174
+#: src/modules/mod_dv/trgt_dv.cpp:181 src/modules/mod_dv/trgt_dv.cpp:191
+#: src/modules/mod_dv/trgt_dv.cpp:199 src/modules/mod_dv/trgt_dv.cpp:204
+#: src/modules/mod_dv/trgt_dv.cpp:208 src/modules/mod_dv/trgt_dv.cpp:217
+#: src/modules/mod_dv/trgt_dv.cpp:226
+msgid "Unable to open pipe to encodedv"
+msgstr "Kan inte öppna pipe till encodedv"
+
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
+#: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
+msgid "Unable to open pipe to ffmpeg"
+msgstr "Kan inte öppna pipe till ffmpeg"
+
+#: src/modules/mod_filter/blur.cpp:69
+msgid "Blur"
+msgstr "Oskärpa"
+
+#: src/modules/mod_filter/blur.cpp:70 src/modules/mod_filter/radialblur.cpp:57
+#: src/synfig/layer_motionblur.cpp:57
+msgid "Blurs"
+msgstr "Oskärpor"
+
+#: src/modules/mod_filter/blur.cpp:414
+msgid "Size of Blur"
+msgstr "Storlek på oskärpa"
+
+#: src/modules/mod_filter/colorcorrect.cpp:56
+msgid "Color Correct"
+msgstr "Färg-korrekt"
+
+#: src/modules/mod_filter/colorcorrect.cpp:217
+msgid "Hue Adjust"
+msgstr "Justera nyans"
+
+#: src/modules/mod_filter/colorcorrect.cpp:221
+msgid "Brightness"
+msgstr "Klarhet"
+
+#: src/modules/mod_filter/colorcorrect.cpp:225
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: src/modules/mod_filter/colorcorrect.cpp:229
+msgid "Exposure Adjust"
+msgstr "Exponerings-justering"
+
+#: src/modules/mod_filter/colorcorrect.cpp:233 src/synfig/layer_bitmap.cpp:176
+msgid "Gamma Adjustment"
+msgstr "Gamma-justering"
+
+#: src/modules/mod_filter/halftone2.cpp:59
+msgid "Halftone 2"
+msgstr "Halvton 2"
+
+#: src/modules/mod_filter/halftone2.cpp:155
+msgid "Mask Origin"
+msgstr "Maskursprung"
+
+#: src/modules/mod_filter/halftone2.cpp:159
+msgid "Mask Angle"
+msgstr "Maskvinkel"
+
+#: src/modules/mod_filter/halftone2.cpp:163
+#: src/modules/mod_filter/halftone3.cpp:328
+msgid "Mask Size"
+msgstr "Maskstorlek"
+
+#: src/modules/mod_filter/halftone2.cpp:168
+msgid "Light Color"
+msgstr "Ljus färg"
+
+#: src/modules/mod_filter/halftone2.cpp:171
+msgid "Dark Color"
+msgstr "Mörk färg"
+
+#: src/modules/mod_filter/halftone2.cpp:176
+#: src/modules/mod_filter/halftone3.cpp:333
+#: src/modules/mod_gradient/conicalgradient.cpp:125
+msgid "Symmetric"
+msgstr "Symmetrisk"
+
+#: src/modules/mod_filter/halftone2.cpp:177
+#: src/modules/mod_filter/halftone3.cpp:334
+msgid "Light On Dark"
+msgstr "Ljust på mörkt"
+
+#: src/modules/mod_filter/halftone2.cpp:179
+#: src/modules/mod_filter/halftone3.cpp:336
+msgid "Diamond"
+msgstr "Diamant"
+
+#: src/modules/mod_filter/halftone2.cpp:180
+#: src/modules/mod_filter/halftone3.cpp:337
+msgid "Stripe"
+msgstr "Rand"
+
+#: src/modules/mod_filter/halftone3.cpp:59
+msgid "Halftone 3"
+msgstr "Halvton 3"
+
+#: src/modules/mod_filter/halftone3.cpp:331
+msgid " Type"
+msgstr "Typ"
+
+#: src/modules/mod_filter/halftone3.cpp:340
+msgid "Subtractive Flag"
+msgstr "Subtractive Flag"
+
+#: src/modules/mod_filter/halftone3.cpp:348
+msgid " Color"
+msgstr "Färg"
+
+#: src/modules/mod_filter/halftone3.cpp:352
+msgid " Mask Origin"
+msgstr "Maskursprung"
+
+#: src/modules/mod_filter/halftone3.cpp:356
+msgid " Mask Angle"
+msgstr "Maskvinkel"
+
+#: src/modules/mod_filter/lumakey.cpp:59
+msgid "Luma Key"
+msgstr "Luma-nyckel"
+
+#: src/modules/mod_filter/radialblur.cpp:56
+msgid "Radial Blur"
+msgstr "Radiell oskärpa"
+
+#: src/modules/mod_filter/radialblur.cpp:116
+msgid "Size of blur"
+msgstr "Storlek på oskärpa"
+
+#: src/modules/mod_filter/radialblur.cpp:121
+msgid "Fade Out"
+msgstr "Tona bort"
+
+#: src/modules/mod_geometry/checkerboard.cpp:58
+msgid "Checkerboard"
+msgstr "Schackbräde"
+
+#: src/modules/mod_geometry/checkerboard.cpp:59
+#: src/modules/mod_geometry/circle.cpp:57
+#: src/modules/mod_geometry/advanced_outline.cpp:68
+#: src/modules/mod_geometry/outline.cpp:73
+#: src/modules/mod_geometry/rectangle.cpp:60
+#: src/modules/mod_geometry/region.cpp:65 src/modules/mod_geometry/star.cpp:64
+#: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:57
+msgid "Geometry"
+msgstr "Geometri"
+
+#: src/modules/mod_geometry/checkerboard.cpp:147
+msgid "Color of checkers"
+msgstr "Färg på rutor"
+
+#: src/modules/mod_geometry/checkerboard.cpp:151
+msgid "Center of the checkers"
+msgstr "Mitten på rutorna"
+
+#: src/modules/mod_geometry/checkerboard.cpp:155
+msgid "Size of checkers"
+msgstr "Storlek på rutorna"
+
+#: src/modules/mod_geometry/circle.cpp:56
+msgid "Circle"
+msgstr "Cirkel"
+
+#: src/modules/mod_geometry/circle.cpp:152
+msgid "Radius of the circle"
+msgstr "Cirkelns radie"
+
+#: src/modules/mod_geometry/circle.cpp:156 src/synfig/layer_shape.cpp:1234
+msgid "Feather"
+msgstr "Fjädring"
+
+#: src/modules/mod_geometry/circle.cpp:158
+msgid "Amount of feather of the circle"
+msgstr "Mängd fjädring runt cirkeln"
+
+#: src/modules/mod_geometry/circle.cpp:166
+msgid "Invert the circle"
+msgstr "Invertera cirkeln"
+
+#: src/modules/mod_geometry/circle.cpp:170
+msgid "Falloff"
+msgstr "Matta"
+
+#: src/modules/mod_geometry/circle.cpp:171
+msgid "Determines the falloff function for the feather"
+msgstr "Bestämmer mattnings-funktionen för fjädringen"
+
+#: src/modules/mod_geometry/circle.cpp:173
+#: src/modules/mod_noise/distort.cpp:239 src/modules/mod_noise/noise.cpp:284
+#: src/modules/mod_noise/valuenode_random.cpp:289
+#: src/synfig/layer_bitmap.cpp:169 src/synfig/layer_motionblur.cpp:149
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_linear.cpp:146
+msgid "Linear"
+msgstr "Linjär"
+
+#: src/modules/mod_geometry/circle.cpp:174
+msgid "Squared"
+msgstr "Kvadratisk"
+
+#: src/modules/mod_geometry/circle.cpp:175
+msgid "Square Root"
+msgstr "Kvadratrot"
+
+#: src/modules/mod_geometry/circle.cpp:176
+msgid "Sigmond"
+msgstr "Sigmond"
+
+#: src/modules/mod_geometry/circle.cpp:177
+#: src/modules/mod_noise/distort.cpp:240 src/modules/mod_noise/noise.cpp:285
+#: src/modules/mod_noise/valuenode_random.cpp:290
+#: src/synfig/layer_bitmap.cpp:170
+msgid "Cosine"
+msgstr "Kosinus"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:67
+msgid "Advanced Outline"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:152
+msgid "No vertices in spline "
+msgstr "Inga vertices i splinen"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1136
+#: src/modules/mod_geometry/outline.cpp:826
+#: src/modules/mod_geometry/region.cpp:240
+#: src/modules/mod_gradient/curvegradient.cpp:562
+#: src/modules/mod_particle/plant.cpp:425
+msgid "A list of spline points"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1140
+#: src/modules/mod_geometry/outline.cpp:840
+msgid "Outline Width"
+msgstr "Kontur-bredd"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1141
+#: src/modules/mod_geometry/outline.cpp:841
+msgid "Global width of the outline"
+msgstr "Global bredd på konturen"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1145
+#: src/modules/mod_geometry/outline.cpp:846
+msgid "Expand"
+msgstr "Expandera"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1146
+#: src/modules/mod_geometry/outline.cpp:847
+msgid "Value to add to the global width"
+msgstr "Värde att lägga till på den globala bredden"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1149
+msgid "Tip Type at Start"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1150
+msgid "Defines the Tip type of the first spline point when spline is unlooped"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1152
+#: src/modules/mod_geometry/advanced_outline.cpp:1161
+#: src/synfig/valuenode_composite.cpp:558
+#: src/synfig/valuenode_composite.cpp:568
+#: src/synfig/valuenode_composite.cpp:597
+#: src/synfig/valuenode_composite.cpp:606
+msgid "Rounded Stop"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1153
+#: src/modules/mod_geometry/advanced_outline.cpp:1162
+#: src/synfig/valuenode_composite.cpp:559
+#: src/synfig/valuenode_composite.cpp:569
+#: src/synfig/valuenode_composite.cpp:598
+#: src/synfig/valuenode_composite.cpp:607
+msgid "Squared Stop"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1154
+#: src/modules/mod_geometry/advanced_outline.cpp:1163
+#: src/synfig/valuenode_composite.cpp:560
+#: src/synfig/valuenode_composite.cpp:570
+#: src/synfig/valuenode_composite.cpp:599
+#: src/synfig/valuenode_composite.cpp:608
+msgid "Peak Stop"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1155
+#: src/modules/mod_geometry/advanced_outline.cpp:1164
+#: src/synfig/valuenode_composite.cpp:561
+#: src/synfig/valuenode_composite.cpp:571
+#: src/synfig/valuenode_composite.cpp:600
+#: src/synfig/valuenode_composite.cpp:609
+msgid "Flat Stop"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1158
+msgid "Tip Type at End"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1159
+msgid "Defines the Tip type of the last spline point when spline is unlooped"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1167
+msgid "Cusps Type"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1168
+#: src/modules/mod_geometry/outline.cpp:852
+msgid "Determines cusp type"
+msgstr "Bestämmer typen av udd"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1170
+msgid "Sharp"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1171
+msgid "Rounded"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1175
+msgid "Smoothness"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1176
+msgid "Determines the interpolation between withpoints. (0) Linear (1) Smooth"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1179
+#: src/modules/mod_geometry/outline.cpp:869
+#: src/synfig/valuenode_blinecalctangent.cpp:271
+#: src/synfig/valuenode_blinecalcvertex.cpp:216
+#: src/synfig/valuenode_blinecalcwidth.cpp:226
+msgid "Homogeneous"
+msgstr "Enhetlig"
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1180
+msgid "When true, widthpoints positions are spline length based"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1183
+msgid "Width Point List"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1186
+msgid "List of width Points that defines the variable width"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1190
+msgid "When checked outline renders faster, but less accurate"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1193
+msgid "Dashed Outline"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1195
+msgid "When checked outline is dashed"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1198
+msgid "Dash Item List"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1201
+msgid "List of dash items that defines the dashed outline"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1204
+msgid "Dash Items Offset"
+msgstr ""
+
+#: src/modules/mod_geometry/advanced_outline.cpp:1207
+msgid "Distance to Offset the Dash Items"
+msgstr ""
+
+#: src/modules/mod_geometry/outline.cpp:72
+msgid "Outline"
+msgstr "Kontur"
+
+#: src/modules/mod_geometry/outline.cpp:192
+msgid "No vertices in outline "
+msgstr "Inga vertices i konturen"
+
+#: src/modules/mod_geometry/outline.cpp:851
+msgid "Sharp Cusps"
+msgstr "Spetsiga uddar"
+
+#: src/modules/mod_geometry/outline.cpp:856
+msgid "Rounded Begin"
+msgstr "Rundad start"
+
+#: src/modules/mod_geometry/outline.cpp:857
+#: src/modules/mod_geometry/outline.cpp:862
+msgid "Round off the tip"
+msgstr "Runda av toppen"
+
+#: src/modules/mod_geometry/outline.cpp:861
+msgid "Rounded End"
+msgstr "Rundat slut"
+
+#: src/modules/mod_geometry/outline.cpp:865
+msgid "Loopyness"
+msgstr "Repetering"
+
+#: src/modules/mod_geometry/outline.cpp:866
+msgid "(Currently not used)"
+msgstr ""
+
+#: src/modules/mod_geometry/outline.cpp:870
+msgid "When checked the width takes the length of the spline to interpolate"
+msgstr "När detta är på används längden på splinen för att interpolera"
+
+#: src/modules/mod_geometry/rectangle.cpp:59
+msgid "Rectangle"
+msgstr "Rektangel"
+
+#: src/modules/mod_geometry/rectangle.cpp:155
+msgid "Expand amount"
+msgstr "Öka värde"
+
+#: src/modules/mod_geometry/rectangle.cpp:159
+msgid "Invert the rectangle"
+msgstr "Invertera rektangeln"
+
+#: src/modules/mod_geometry/region.cpp:64
+msgid "Region"
+msgstr "Region"
+
+#: src/modules/mod_geometry/star.cpp:63
+msgid "Star"
+msgstr "Stjärna"
+
+#: src/modules/mod_geometry/star.cpp:170
+msgid "Outer Radius"
+msgstr "Yttre radie"
+
+#: src/modules/mod_geometry/star.cpp:171
+msgid "The radius of the outer points in the star"
+msgstr "Radien på de yttre punkterna  stjärnan"
+
+#: src/modules/mod_geometry/star.cpp:177
+msgid "Inner Radius"
+msgstr "Inre radie"
+
+#: src/modules/mod_geometry/star.cpp:178
+msgid "The radius of the inner points in the star"
+msgstr "Radien på de inre punkterna i stjärnan"
+
+#: src/modules/mod_geometry/star.cpp:184
+#: src/modules/mod_gradient/conicalgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:130
+#: src/synfig/valuenode_cos.cpp:155 src/synfig/valuenode_sine.cpp:154
+msgid "Angle"
+msgstr "Vinkel"
+
+#: src/modules/mod_geometry/star.cpp:185
+msgid "The orientation of the star"
+msgstr "Stjärnans orientering"
+
+#: src/modules/mod_geometry/star.cpp:190 src/synfig/distance.cpp:253
+msgid "Points"
+msgstr "Punkter"
+
+#: src/modules/mod_geometry/star.cpp:191
+msgid "The number of points in the star"
+msgstr "Antalet punkter i stjärnan"
+
+#: src/modules/mod_geometry/star.cpp:195
+msgid "Regular Polygon"
+msgstr "Vanlig Polygon"
+
+#: src/modules/mod_geometry/star.cpp:196
+msgid "Whether to draw a star or a regular polygon"
+msgstr "Anger vad som ska ritas - en stjärna eller en vanlig polygon"
+
+#: src/modules/mod_gif/trgt_gif.cpp:105
+#, c-format
+msgid "Unable to open \"%s\" for write access!"
+msgstr "Kan inte öppna \"%s\" för skrivåtkomst!"
+
+#: src/modules/mod_gif/trgt_gif.cpp:193
+msgid "Description not set!"
+msgstr "Beskrivning ej angiven!"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:57
+msgid "Conical Gradient"
+msgstr "Konisk gradient"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:58
+#: src/modules/mod_gradient/curvegradient.cpp:62
+#: src/modules/mod_gradient/lineargradient.cpp:55
+#: src/modules/mod_gradient/radialgradient.cpp:58
+#: src/modules/mod_gradient/spiralgradient.cpp:58
+#: src/modules/mod_noise/noise.cpp:59
+msgid "Gradients"
+msgstr "Gradienter"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:110
+#: src/modules/mod_gradient/curvegradient.cpp:566
+#: src/modules/mod_gradient/lineargradient.cpp:195
+#: src/modules/mod_gradient/radialgradient.cpp:114
+#: src/modules/mod_gradient/spiralgradient.cpp:114
+#: src/modules/mod_noise/noise.cpp:269
+msgid "Gradient to apply"
+msgstr "Gradient att använda"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:115
+msgid "Center of the cone"
+msgstr "Konens mitt"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:121
+msgid "Rotation of the gradient around the center"
+msgstr "Rotation på gradienten runt mitten"
+
+#: src/modules/mod_gradient/conicalgradient.cpp:126
+#: src/modules/mod_gradient/curvegradient.cpp:570
+#: src/modules/mod_gradient/lineargradient.cpp:199
+#: src/modules/mod_gradient/radialgradient.cpp:131
+msgid "When checked the gradient is looped"
+msgstr "När detta alternativ är ikryssat repeteras gradienten"
+
+#: src/modules/mod_gradient/curvegradient.cpp:61
+msgid "Curve Gradient"
+msgstr "Kurvgradient"
+
+#: src/modules/mod_gradient/curvegradient.cpp:551
+#: src/modules/mod_particle/plant.cpp:432
+msgid "Offset for the Vertices List"
+msgstr "Förskjutning av vertexlistan"
+
+#: src/modules/mod_gradient/curvegradient.cpp:556
+msgid "Global width of the gradient"
+msgstr "Global bredd på gradienten"
+
+#: src/modules/mod_gradient/curvegradient.cpp:569
+#: src/modules/mod_gradient/lineargradient.cpp:198
+#: src/modules/mod_gradient/radialgradient.cpp:130
+#: src/synfig/valuenode_blinecalctangent.cpp:246
+#: src/synfig/valuenode_blinecalcvertex.cpp:206
+#: src/synfig/valuenode_blinecalcwidth.cpp:211
+msgid "Loop"
+msgstr "Repetera"
+
+#: src/modules/mod_gradient/curvegradient.cpp:573
+#: src/modules/mod_gradient/lineargradient.cpp:202
+#: src/modules/mod_gradient/radialgradient.cpp:135
+msgid "ZigZag"
+msgstr "Sick-sack"
+
+#: src/modules/mod_gradient/curvegradient.cpp:574
+#: src/modules/mod_gradient/lineargradient.cpp:203
+#: src/modules/mod_gradient/radialgradient.cpp:136
+msgid "When checked the gradient is summetrical at the center"
+msgstr "När detta alternativ är ikryssat, är gradienten symmetrisk vid mitten"
+
+#: src/modules/mod_gradient/curvegradient.cpp:577
+msgid "Perpendicular"
+msgstr "Vinkelrät"
+
+#: src/modules/mod_gradient/lineargradient.cpp:54
+msgid "Linear Gradient"
+msgstr "Linjär gradient"
+
+#: src/modules/mod_gradient/lineargradient.cpp:187
+msgid "Start point of the gradient"
+msgstr "Startpunkt för gradient"
+
+#: src/modules/mod_gradient/lineargradient.cpp:191
+msgid "End point of the gradient"
+msgstr "Slutpunkt för gradient"
+
+#: src/modules/mod_gradient/radialgradient.cpp:57
+msgid "Radial Gradient"
+msgstr "Radiell gradient"
+
+#: src/modules/mod_gradient/radialgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:119
+msgid "Center of the gradient"
+msgstr "Gradientens mitt"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:57
+msgid "Spiral Gradient"
+msgstr "Spiralgradient"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:131
+msgid "Rotation of the spiral"
+msgstr "Rotation på spiral"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:136
+msgid "Clockwise"
+msgstr "Medurs"
+
+#: src/modules/mod_gradient/spiralgradient.cpp:137
+msgid "When checked the spiral turns clockwise"
+msgstr "När detta alternativ är ikryssat snurrar spiralen medurs"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:103
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:104
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:216
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:217
+msgid "No file to load"
+msgstr "Ingen fil att ladda"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
+#: src/synfig/cairolistimporter.cpp:191 src/synfig/cairolistimporter.cpp:192
+#: src/synfig/listimporter.cpp:185 src/synfig/listimporter.cpp:186
+msgid "Unable to open "
+msgstr "Kan inte öppna"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
+#: src/synfig/cairolistimporter.cpp:198 src/synfig/cairolistimporter.cpp:199
+#: src/synfig/listimporter.cpp:192 src/synfig/listimporter.cpp:193
+msgid "Unable to get frame from "
+msgstr "Unable to get frame from "
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:171
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:172
+msgid "Bad surface from "
+msgstr "Ogiltig yta från"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:227
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:228
+msgid "Unable to open pipe to imagemagick"
+msgstr "Kan inte öppna pipe till imagemagick"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:240
+msgid "Reached end of stream without finding PPM header"
+msgstr "Nådde slutet på strömmen utan att hitta PPM header"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:248
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
+msgid "stream not in PPM format"
+msgstr "strömmen är inte i PPM-format"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:260
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:261
+msgid "Premature end of file (after header)"
+msgstr "För tidigt slut på fil (efter sidhuvud)"
+
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:273
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:274
+msgid "Premature end of file"
+msgstr "För tidig slut på fil"
+
+#: src/modules/mod_imagemagick/trgt_imagemagick.cpp:157
+msgid "Unable to open pipe to imagemagick's convert utility"
+msgstr "Kan inte öppna pipe till imagemagick:s konverteringsfunktion"
+
+#: src/modules/mod_noise/distort.cpp:58
+msgid "Noise Distort"
+msgstr "Brus-förvrängning"
+
+#: src/modules/mod_noise/distort.cpp:222
+msgid "Displacement"
+msgstr "Förskjutning"
+
+#: src/modules/mod_noise/distort.cpp:223
+msgid "How big the distortion displaces the context"
+msgstr "Hur mycket förvrängningen flyttar på omgivningarna "
+
+#: src/modules/mod_noise/distort.cpp:228
+msgid "The distance between distortions"
+msgstr "Avståndet mellan förvrängningar"
+
+#: src/modules/mod_noise/distort.cpp:231 src/modules/mod_noise/noise.cpp:272
+msgid "RandomNoise Seed"
+msgstr "SlumpBrus-seed"
+
+#: src/modules/mod_noise/distort.cpp:232 src/modules/mod_noise/noise.cpp:273
+msgid "Change to modify the random seed of the noise"
+msgstr "Ändra för att modifiera slump-seed för bruset"
+
+#: src/modules/mod_noise/distort.cpp:235 src/modules/mod_noise/noise.cpp:280
+#: src/modules/mod_noise/valuenode_random.cpp:285
+#: src/synfig/layer_bitmap.cpp:165
+msgid "Interpolation"
+msgstr "Interpolation"
+
+#: src/modules/mod_noise/distort.cpp:236 src/modules/mod_noise/noise.cpp:281
+#: src/synfig/layer_bitmap.cpp:166
+msgid "What type of interpolation to use"
+msgstr "Vilken typ av interpolation som ska användas"
+
+#: src/modules/mod_noise/distort.cpp:238 src/modules/mod_noise/noise.cpp:283
+#: src/synfig/layer_bitmap.cpp:168
+msgid "Nearest Neighbor"
+msgstr "Närmaste granne"
+
+#: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
+#: src/modules/mod_noise/valuenode_random.cpp:291 src/synfig/valuenode.cpp:155
+#: src/synfig/valuenode_bline.cpp:1006
+#: src/synfig/valuenode_blinecalctangent.cpp:241
+#: src/synfig/valuenode_blinecalcvertex.cpp:201
+#: src/synfig/valuenode_blinecalcwidth.cpp:206
+msgid "Spline"
+msgstr "Spline"
+
+#: src/modules/mod_noise/distort.cpp:242 src/modules/mod_noise/noise.cpp:287
+#: src/modules/mod_noise/valuenode_random.cpp:292
+#: src/synfig/layer_bitmap.cpp:171
+msgid "Cubic"
+msgstr "Kubisk"
+
+#: src/modules/mod_noise/distort.cpp:245 src/modules/mod_noise/noise.cpp:290
+msgid "Detail"
+msgstr "Detaljer"
+
+#: src/modules/mod_noise/distort.cpp:246 src/modules/mod_noise/noise.cpp:291
+msgid "Increase to obtain fine details of the noise"
+msgstr "Öka för få små detaljer i bruset"
+
+#: src/modules/mod_noise/distort.cpp:249 src/modules/mod_noise/noise.cpp:294
+msgid "Animation Speed"
+msgstr "Hastighet på animation"
+
+#: src/modules/mod_noise/distort.cpp:250 src/modules/mod_noise/noise.cpp:295
+msgid "In cycles per second"
+msgstr "I svängningar per sekund"
+
+#: src/modules/mod_noise/distort.cpp:253 src/modules/mod_noise/noise.cpp:298
+msgid "Turbulent"
+msgstr "Turbulent"
+
+#: src/modules/mod_noise/distort.cpp:254 src/modules/mod_noise/noise.cpp:299
+msgid "When checked produces turbulent noise"
+msgstr "När detta alternativ är ikryssat skapas häftigt, turbulent brus"
+
+#: src/modules/mod_noise/main.cpp:66
+#: src/modules/mod_noise/valuenode_random.cpp:184
+msgid "Random"
+msgstr "Slumpmässig"
+
+#: src/modules/mod_noise/noise.cpp:58
+msgid "Noise Gradient"
+msgstr "Brusgradient"
+
+#: src/modules/mod_noise/noise.cpp:277
+msgid "Size of the noise"
+msgstr "Storlek på brus"
+
+#: src/modules/mod_noise/noise.cpp:302
+msgid "Do Alpha"
+msgstr "Göt alfa"
+
+#: src/modules/mod_noise/noise.cpp:303
+msgid "Uses transparency"
+msgstr "Använder transparans"
+
+#: src/modules/mod_noise/noise.cpp:306
+msgid "Super Sampling"
+msgstr "Supersampla"
+
+#: src/modules/mod_noise/noise.cpp:307
+msgid "When checked the gradient is supersampled"
+msgstr "När detta alternativ är ikryssat används \"supersampling\" på gradienten"
+
+#: src/modules/mod_noise/valuenode_random.cpp:265
+#: src/synfig/valuenode_integer.cpp:194 src/synfig/valuenode_not.cpp:141
+#: src/synfig/valuenode_range.cpp:288 src/synfig/valuenode_real.cpp:182
+#: src/synfig/valuenode_reciprocal.cpp:165
+#: src/synfig/valuenode_reference.cpp:143 src/synfig/valuenode_scale.cpp:267
+#: src/synfig/valuenode_step.cpp:197 src/synfig/valuenode_timeloop.cpp:174
+msgid "Link"
+msgstr "Länk"
+
+#: src/modules/mod_noise/valuenode_random.cpp:266
+msgid "The value node source that provides the central value"
+msgstr "Den värdenodkällan som innehar det centrala värdet "
+
+#: src/modules/mod_noise/valuenode_random.cpp:271
+msgid "The value of the maximum random difference"
+msgstr "Värdet på den högsta tillåtna slumpskillnanden"
+
+#: src/modules/mod_noise/valuenode_random.cpp:275
+#: src/modules/mod_particle/plant.cpp:483
+msgid "Seed"
+msgstr "Seed"
+
+#: src/modules/mod_noise/valuenode_random.cpp:276
+msgid "Seeds the random number generator"
+msgstr "Seed för slumpgeneratorn"
+
+#: src/modules/mod_noise/valuenode_random.cpp:280
+msgid "Speed"
+msgstr "Hastighet"
+
+#: src/modules/mod_noise/valuenode_random.cpp:281
+msgid ""
+"Defines how often a new random value is chosen (in choices per second) "
+msgstr "Anger hur ofta ett nytt slumpat värde väljs (i val per sekund)"
+
+#: src/modules/mod_noise/valuenode_random.cpp:286
+msgid ""
+"Determines how the value is interpolated from one random choice to the next"
+msgstr "Bestämmer hur värdet interpoleras från ett slumpval till nästa"
+
+#: src/modules/mod_noise/valuenode_random.cpp:288
+msgid "No interpolation"
+msgstr "Ingen interpolation"
+
+#: src/modules/mod_noise/valuenode_random.cpp:297
+msgid "Loop Time"
+msgstr "Upprepningstid"
+
+#: src/modules/mod_noise/valuenode_random.cpp:298
+msgid "Makes the random value repeat after the given time"
+msgstr "Gör att slumpvärdet repeteras efter den angivna tiden"
+
+#: src/modules/mod_particle/plant.cpp:70
+msgid "Plant"
+msgstr "Växt"
+
+#: src/modules/mod_particle/plant.cpp:437
+msgid "Gradient to be used for coloring the plant"
+msgstr "Gradient att användas för att färga växten"
+
+#: src/modules/mod_particle/plant.cpp:441
+msgid "Split Angle"
+msgstr "Vinkel på delningar"
+
+#: src/modules/mod_particle/plant.cpp:442
+msgid "Angle by which each split deviates from its parent"
+msgstr "Vinkel som delningar avviker med från upphovet"
+
+#: src/modules/mod_particle/plant.cpp:446
+msgid "Gravity"
+msgstr "Gravitation"
+
+#: src/modules/mod_particle/plant.cpp:447
+msgid "Direction in which the shoots tend to face"
+msgstr "Riktning i vilken skotten tenderar att vända sig åt"
+
+#: src/modules/mod_particle/plant.cpp:452
+msgid "Tangential Velocity"
+msgstr "Tangentialhastighet"
+
+#: src/modules/mod_particle/plant.cpp:453
+msgid "Amount to which shoots tend to grow along the tangent to the spline"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:457
+msgid "Perpendicular Velocity"
+msgstr "Vertikalhastighet"
+
+#: src/modules/mod_particle/plant.cpp:458
+msgid ""
+"Amount to which shoots tend to grow perpendicular to the tangent to the "
+"spline"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:462
+msgid "Stem Size"
+msgstr "Stjälkstorlek"
+
+#: src/modules/mod_particle/plant.cpp:463
+msgid "Size of the stem"
+msgstr "Storleken på stjälken"
+
+#: src/modules/mod_particle/plant.cpp:468
+msgid "Size As Alpha"
+msgstr "Storlek som alfa"
+
+#: src/modules/mod_particle/plant.cpp:469
+msgid ""
+"If enabled, the alpha channel from the gradient is multiplied by the stem "
+"size, and an alpha of 1.0 is used when rendering"
+msgstr "När detta alternativ är ikryssat, multipliceras alfa-kanalen från gradienten med stjäökstorleken, och ett alfavärde på 1,0 används vid rendering"
+
+#: src/modules/mod_particle/plant.cpp:473
+msgid "Reverse"
+msgstr "Vänd"
+
+#: src/modules/mod_particle/plant.cpp:474
+msgid "If enabled, render the plant in the opposite direction"
+msgstr "När detta alternativ är ikryssat renderas växten i motsatt riktning"
+
+#: src/modules/mod_particle/plant.cpp:478 src/synfig/valuenode.cpp:176
+#: src/synfig/valuenode_duplicate.cpp:203 src/synfig/valuenode_step.cpp:142
+msgid "Step"
+msgstr "Steg"
+
+#: src/modules/mod_particle/plant.cpp:479
+msgid "Measure of the distance between points when rendering"
+msgstr "Mått på avståndet mellan punkter vid rendering"
+
+#: src/modules/mod_particle/plant.cpp:484
+msgid "Used to seed the pseudo-random number generator"
+msgstr "Används som seed för pseudo-slumpgeneratorn"
+
+#: src/modules/mod_particle/plant.cpp:488
+msgid "Splits"
+msgstr "Delningar"
+
+#: src/modules/mod_particle/plant.cpp:489
+msgid "Maximum number of times that each sprout can sprout recursively"
+msgstr "Högsta antalet gånger som varje skott kan gro rekursivt"
+
+#: src/modules/mod_particle/plant.cpp:493
+msgid "Sprouts"
+msgstr "Skott"
+
+#: src/modules/mod_particle/plant.cpp:494
+msgid "Number of places that growth occurs on each spline section"
+msgstr ""
+
+#: src/modules/mod_particle/plant.cpp:498
+msgid "Random Factor"
+msgstr "Slumpfaktor"
+
+#: src/modules/mod_particle/plant.cpp:499
+msgid ""
+"Used to scale down all random effects.  Set to zero to disable randomness"
+msgstr "Används för att minska alla slumpmässiga effekter. Noll inaktiverar all slumpmässighet"
+
+#: src/modules/mod_particle/plant.cpp:503
+msgid "Drag"
+msgstr "Sega"
+
+#: src/modules/mod_particle/plant.cpp:504
+msgid "Drag slows the growth"
+msgstr "Tillväxten går långsammare med \"seg\" aktiverat"
+
+#: src/modules/mod_particle/plant.cpp:508
+msgid "Use Width"
+msgstr "Använd bredd"
+
+#: src/modules/mod_particle/plant.cpp:509
+msgid "Scale the velocity by the spline's width"
+msgstr ""
+
+#: src/modules/mod_ppm/mptr_ppm.cpp:86
+#, c-format
+msgid "%s was not in PPM format"
+msgstr "%s var inte i PPM-format"
+
+#: src/synfig/cairoimporter.cpp:88 src/synfig/importer.cpp:90
+msgid "Importer::open(): Cannot open empty filename"
+msgstr "Importer::open():Kan inte öppna tomt filnamn"
+
+#: src/synfig/cairoimporter.cpp:102 src/synfig/importer.cpp:104
+msgid "Importer::open(): Couldn't find extension"
+msgstr "Importer::open():Kunde inte hitta filnamnstillägg"
+
+#: src/synfig/cairoimporter.cpp:113 src/synfig/importer.cpp:115
+msgid "Importer::open(): Unknown file type -- "
+msgstr "Importer::open():Okänt filformat --"
+
+#: src/synfig/cairolistimporter.cpp:163 src/synfig/cairolistimporter.cpp:164
+#: src/synfig/listimporter.cpp:162 src/synfig/listimporter.cpp:163
+msgid "No images in list"
+msgstr "Inga bilder i listan"
+
+#: src/synfig/canvas.cpp:834 src/synfig/canvas.cpp:902
+#: src/synfig/canvas.cpp:927
+msgid "in line"
+msgstr "i linje"
+
+#: src/synfig/distance.cpp:251
+msgid "Units"
+msgstr "Enhet"
+
+#: src/synfig/distance.cpp:252
+msgid "Pixels"
+msgstr "Pixlar"
+
+#: src/synfig/distance.cpp:254
+msgid "Inches"
+msgstr "Inch"
+
+#: src/synfig/distance.cpp:255
+msgid "Meters"
+msgstr "Meter"
+
+#: src/synfig/distance.cpp:256
+msgid "Millimeters"
+msgstr "Millimeter"
+
+#: src/synfig/distance.cpp:257
+msgid "Centimeters"
+msgstr "Centimeter"
+
+#: src/synfig/layer.cpp:550 src/synfig/layer_composite.cpp:130
+msgid "Unable to create surface target"
+msgstr "Kan inte skapa ytmål"
+
+#: src/synfig/layer.cpp:605
+msgid "Z Depth"
+msgstr "Z-djup"
+
+#: src/synfig/layer.cpp:607
+msgid "Modifies the position of the layer in the layer stack"
+msgstr "Anger lagrets postion i lagerhögen"
+
+#: src/synfig/layer_bitmap.cpp:155
+msgid "Top-Left"
+msgstr " Övre vänstra hörnet"
+
+#: src/synfig/layer_bitmap.cpp:156
+msgid "Upper left-hand Corner of image"
+msgstr "Positionen för bildens övre vänstra hörn"
+
+#: src/synfig/layer_bitmap.cpp:160
+msgid "Bottom-Right"
+msgstr "Nedre högra hörnet"
+
+#: src/synfig/layer_bitmap.cpp:161
+msgid "Lower right-hand Corner of image"
+msgstr "Positionen för bildens nedre högra hörn"
+
+#: src/synfig/layer_composite.cpp:250
+msgid "Alpha channel of the layer"
+msgstr "Lagrets alfa-kanal"
+
+#: src/synfig/layer_composite.cpp:253 src/synfig/paramdesc.cpp:66
+msgid "Blend Method"
+msgstr "Blandningsmetod"
+
+#: src/synfig/layer_composite.cpp:254
+msgid "The blending method used to composite on the layers below"
+msgstr "Blandningsmetoden att använda för att kombinera bilden med lagren under"
+
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:174
+#: src/synfig/valuenode_duplicate.cpp:174
+msgid "Duplicate"
+msgstr "Duplicera"
+
+#: src/synfig/layer_duplicate.cpp:151
+msgid "Index"
+msgstr "Index"
+
+#: src/synfig/layer_duplicate.cpp:152
+msgid "Copy Index"
+msgstr "Kopiera index"
+
+#: src/synfig/layer_mime.cpp:86
+msgid "[MIME]"
+msgstr "[MIME]"
+
+#: src/synfig/layer_motionblur.cpp:56
+msgid "Motion Blur"
+msgstr "Rörelse-oskärpa"
+
+#: src/synfig/layer_motionblur.cpp:135
+msgid "Aperture"
+msgstr "Bländare"
+
+#: src/synfig/layer_motionblur.cpp:136
+msgid "Shutter Time"
+msgstr "Slutartid"
+
+#: src/synfig/layer_motionblur.cpp:140
+msgid "Subsamples Factor"
+msgstr "Subsamplings-faktot"
+
+#: src/synfig/layer_motionblur.cpp:141
+msgid "Multiplies The Number Of Subsamples Rendered"
+msgstr "Ökar antalet subsamplingar som renderas"
+
+#: src/synfig/layer_motionblur.cpp:145
+msgid "Subsampling Type"
+msgstr "Typ av subsampling"
+
+#: src/synfig/layer_motionblur.cpp:146
+msgid "Curve Type For Weighting Subsamples"
+msgstr "Kurvtyp för att påverka subsamplingar"
+
+#: src/synfig/layer_motionblur.cpp:148 src/synfig/valuenode_const.cpp:160
+msgid "Constant"
+msgstr "Konstant"
+
+#: src/synfig/layer_motionblur.cpp:150
+msgid "Hyperbolic"
+msgstr "Hyperbolisk"
+
+#: src/synfig/layer_motionblur.cpp:154
+msgid "Subsample Start Amount"
+msgstr "Startmängd på subsampling"
+
+#: src/synfig/layer_motionblur.cpp:155
+msgid "Relative Amount Of The First Subsample, For Linear Weighting"
+msgstr "Relativ mängd på första subsamplingen, för linjär kurvtyp."
+
+#: src/synfig/layer_motionblur.cpp:159
+msgid "Subsample End Amount"
+msgstr "Slutmängd på subsampling"
+
+#: src/synfig/layer_motionblur.cpp:160
+msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
+msgstr "Relativ mängd på sista subsamplingen, för linjär kurvtyp"
+
+#: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:123
+#: src/synfig/layer_pastecanvas.cpp:124
+msgid "Group"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:140
+msgid "Canvas"
+msgstr "Rityta"
+
+#: src/synfig/layer_pastecanvas.cpp:141
+msgid "Group content"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:144
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/synfig/layer_pastecanvas.cpp:145
+msgid "Size of canvas"
+msgstr "Storleken på ritytan"
+
+#: src/synfig/layer_pastecanvas.cpp:152
+msgid "Time Offset to apply to the context"
+msgstr "Tidsförskjutning att tillämpa på området"
+
+#: src/synfig/layer_pastecanvas.cpp:156
+msgid "Children Lock"
+msgstr "Lås ättlingar"
+
+#: src/synfig/layer_pastecanvas.cpp:157
+msgid "When checked prevents to select the children using the mouse click"
+msgstr "När detta alternativ är ikryssat kan inte ättlingar markeras med musklick"
+
+#: src/synfig/layer_pastecanvas.cpp:162
+msgid "Focus Point"
+msgstr "Fokuspunkt"
+
+#: src/synfig/layer_pastecanvas.cpp:165
+msgid "Point to remain fixed when zooming"
+msgstr "Den punkt som ska förbli stilla när man zoomar"
+
+#: src/synfig/layer_pastecanvas.cpp:170
+msgid "Outline Grow"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:171
+msgid "Exponential value to grow children Outline layers width"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:186
+msgid "Current Time"
+msgstr "Nuvarande tid"
+
+#: src/synfig/layer_polygon.cpp:60
+msgid "Polygon"
+msgstr "Polygon"
+
+#: src/synfig/layer_polygon.cpp:194
+msgid "Vertices List"
+msgstr "Vertexlista"
+
+#: src/synfig/layer_polygon.cpp:195
+msgid "Define the corners of the polygon"
+msgstr "Anger hörnen på polygonen"
+
+#: src/synfig/layer_shape.cpp:66
+msgid "Shape"
+msgstr "Form"
+
+#: src/synfig/layer_shape.cpp:67
+msgid "Internal"
+msgstr "Intern"
+
+#: src/synfig/layer_shape.cpp:1222
+msgid "Layer_Shape Color"
+msgstr "Layer_Shape Color"
+
+#: src/synfig/layer_shape.cpp:1231
+msgid "Antialiasing"
+msgstr "Kantutjämning"
+
+#: src/synfig/layer_shape.cpp:1238
+msgid "Type of Feather"
+msgstr "Fjädringstyp"
+
+#: src/synfig/layer_shape.cpp:1239
+msgid "Type of feathering to use"
+msgstr "Typ av fjädring att använda"
+
+#: src/synfig/layer_shape.cpp:1248
+msgid "Winding Style"
+msgstr "Slingringstyp"
+
+#: src/synfig/layer_shape.cpp:1249
+msgid "Winding style to use"
+msgstr "Vilken stil på slingring som ska användas"
+
+#: src/synfig/layer_shape.cpp:1251
+msgid "Non Zero"
+msgstr "Inte noll"
+
+#: src/synfig/layer_shape.cpp:1252
+msgid "Even/Odd"
+msgstr "Jämn/udda"
+
+#: src/synfig/layer_solidcolor.cpp:56
+msgid "Solid Color"
+msgstr "Solid färg"
+
+#: src/synfig/loadcanvas.cpp:143
+#, c-format
+msgid "cannot load '%s' recursively"
+msgstr "kan inte ladda \"%s\" rekursivt"
+
+#: src/synfig/loadcanvas.cpp:186
+#, c-format
+msgid "Unexpected element <%s>, Expected <%s>"
+msgstr "Unexpected element <%s>, Expected <%s>"
+
+#: src/synfig/loadcanvas.cpp:192
+#, c-format
+msgid "Unexpected element <%s>"
+msgstr "Unexpected element <%s>"
+
+#: src/synfig/loadcanvas.cpp:206
+msgid "Too many warnings"
+msgstr "För många varningar"
+
+#: src/synfig/loadcanvas.cpp:237
+#, c-format
+msgid "<%s> is missing \"%s\" attribute"
+msgstr "<%s> saknar attributet \"%s\""
+
+#: src/synfig/loadcanvas.cpp:267 src/synfig/loadcanvas.cpp:286
+#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:324
+#: src/synfig/loadcanvas.cpp:494 src/synfig/loadcanvas.cpp:1149
+#, c-format
+msgid "<%s> should not contain anything"
+msgstr "<%s> borde inte innehålla någonting"
+
+#: src/synfig/loadcanvas.cpp:271 src/synfig/loadcanvas.cpp:290
+#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:328
+#: src/synfig/loadcanvas.cpp:498 src/synfig/loadcanvas.cpp:1153
+#, c-format
+msgid "<%s> is missing \"value\" attribute"
+msgstr "<%s> saknar attributet \"value\""
+
+#: src/synfig/loadcanvas.cpp:509 src/synfig/loadcanvas.cpp:1182
+#: src/synfig/loadcanvas.cpp:1200
+#, c-format
+msgid "Bad value \"%s\" in <%s>"
+msgstr "Ogiltigt värde \"%s\" i <%s>"
+
+#: src/synfig/loadcanvas.cpp:533
+#, c-format
+msgid "<%s> is missing \"pos\" attribute"
+msgstr "<%s> saknar attributet \"pos\""
+
+#: src/synfig/loadcanvas.cpp:1353
+#, c-format
+msgid "Unable to create <animated> with type \"%s\""
+msgstr "Kan inte skapa <animated> med typ \"%s\""
+
+#: src/synfig/loadcanvas.cpp:1375
+msgid "<waypoint> is missing attribute \"time\""
+msgstr "<vägpunkt> saknar attributet \"time\""
+
+#: src/synfig/loadcanvas.cpp:1388
+msgid ""
+"Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
+"contents..."
+msgstr "Fann attributet \"use\" för <wägpunkt>, men den var inte tom. Ignorerar innehåll..."
+
+#: src/synfig/loadcanvas.cpp:1404
+#, c-format
+msgid "Unknown ID (%s) referenced in waypoint"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:1410 src/synfig/loadcanvas.cpp:1422
+#, c-format
+msgid "<%s> is missing its data"
+msgstr "\"%s\" saknar sin data"
+
+#: src/synfig/loadcanvas.cpp:1439
+msgid "Bad data for <waypoint>"
+msgstr "Ogiltig data för <wägpunkt>"
+
+#: src/synfig/loadcanvas.cpp:1455
+#, c-format
+msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
+msgstr "Oväntad beståndsdel <%s> efter <vägpunkt>-data, ignorerar..."
+
+#: src/synfig/loadcanvas.cpp:1556
+#, c-format
+msgid "Missing attribute \"type\" in <%s>"
+msgstr "<%s> saknar attributet \"type\""
+
+#: src/synfig/loadcanvas.cpp:1565
+#, c-format
+msgid "Bad type in <%s>"
+msgstr "Ogiltig typ i <%s>"
+
+#: src/synfig/loadcanvas.cpp:1577
+#, c-format
+msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
+msgstr "Fel vid skapande av värdenod <%s> med typ '%s'. Refererar till '%s'"
+
+#: src/synfig/loadcanvas.cpp:1587
+#, c-format
+msgid "<%s> did not accept type '%s'"
+msgstr "<%s> accepterade inte typen '%s'"
+
+#: src/synfig/loadcanvas.cpp:1612 src/synfig/loadcanvas.cpp:1683
+#, c-format
+msgid "'%s' was already defined in <%s>"
+msgstr "'%s' är redan definierad i <%s>"
+
+#: src/synfig/loadcanvas.cpp:1625
+#, c-format
+msgid "'%s' attribute in <%s> references unknown ID '%s'"
+msgstr "'%s' attribute in <%s> references unknown ID '%s'"
+
+#: src/synfig/loadcanvas.cpp:1634
+#, c-format
+msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
+msgstr "Kan inte skapa länk '\"%s\" till värdenod \"%s\" (länk #%d i \"%s\")"
+
+#: src/synfig/loadcanvas.cpp:1658
+#, c-format
+msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
+msgstr "Okänt undantag uppkom vid referens till värdenod \"%s\""
+
+#: src/synfig/loadcanvas.cpp:1698
+#, c-format
+msgid "element <%s> is missing its contents"
+msgstr "<%s> saknar sitt innehåll"
+
+#: src/synfig/loadcanvas.cpp:1707
+#, c-format
+msgid "Parse of '%s' failed"
+msgstr "Analysering av '%s' misslyckades"
+
+#: src/synfig/loadcanvas.cpp:1714
+#, c-format
+msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
+msgstr "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
+
+#: src/synfig/loadcanvas.cpp:1732
+#, c-format
+msgid "Unknown Exception thrown when working on element \"%s\""
+msgstr "Okänt undantag uppkom vid arbetet med '%s'"
+
+#: src/synfig/loadcanvas.cpp:1811
+#, c-format
+msgid "<%s> is missing link %d (%s)"
+msgstr "<%s> is missing link %d (%s)"
+
+#: src/synfig/loadcanvas.cpp:1861
+msgid "Unable to create <list>"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:1903 src/synfig/loadcanvas.cpp:2150
+msgid "<entry> is missing its contents or missing \"use\" element"
+msgstr "<entry> saknar sitt innehåll, eller saknar \"use\"-element"
+
+#: src/synfig/loadcanvas.cpp:1998
+msgid "Unable to create <dynamic_list>"
+msgstr "Unable to create <dynamic_list>"
+
+#: src/synfig/loadcanvas.cpp:2220
+#, c-format
+msgid "Bad data in <%s>"
+msgstr "Ogiltig data i <%s>"
+
+#: src/synfig/loadcanvas.cpp:2283
+#, c-format
+msgid "Expected a ValueNode.  Refer to '%s'"
+msgstr "Värdenod förväntad. Refererar till '%s'"
+
+#: src/synfig/loadcanvas.cpp:2304
+#, c-format
+msgid "Bad ID \"%s\""
+msgstr "Ogiltig ID \"%s\""
+
+#: src/synfig/loadcanvas.cpp:2310
+#, c-format
+msgid "Duplicate ID \"%s\""
+msgstr "Dubbelt ID \"%s\""
+
+#: src/synfig/loadcanvas.cpp:2316
+#, c-format
+msgid "Unknown Exception thrown when adding ValueNode \"%s\""
+msgstr "Okänt undantag uppkom när värdenod \"%s\" lades till"
+
+#: src/synfig/loadcanvas.cpp:2373
+msgid "Missing \"type\" attribute to \"layer\" element"
+msgstr "Saknar attribut \"type\" för elementet \"layer\""
+
+#: src/synfig/loadcanvas.cpp:2392
+msgid "Installed layer version is smaller than layer version in file"
+msgstr "Installerad lagerversion är mindre än filens lagerversion"
+
+#: src/synfig/loadcanvas.cpp:2415
+msgid "<name> entry for <layer> is not yet supported. Ignoring..."
+msgstr "<name>-värde för <layer> stöds ännu inte. Ignorerar..."
+
+#: src/synfig/loadcanvas.cpp:2418
+msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
+msgstr "<desc>-värde för <layer> stöds ännu inte. Ignorerar..."
+
+#: src/synfig/loadcanvas.cpp:2426
+msgid "Missing \"name\" attribute for <param>."
+msgstr "Saknar \"name\"-attribut för <param>"
+
+#: src/synfig/loadcanvas.cpp:2443
+msgid ""
+"Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
+"contents..."
+msgstr "Hittade \"use\"-attribut för <param>, men den var inte tom. Ignorerar innehåll..."
+
+#: src/synfig/loadcanvas.cpp:2448
+msgid "Empty use=\"\" value in <param>"
+msgstr "Tomt use=\"\"-värde i <param>"
+
+#: src/synfig/loadcanvas.cpp:2454
+#, c-format
+msgid "Failed to load subcanvas '%s'"
+msgstr "Laddning av del-ritytan '%s' misslyckades"
+
+#: src/synfig/loadcanvas.cpp:2456
+msgid "Layer rejected canvas link"
+msgstr "Lager förkastade ritytans länk"
+
+#: src/synfig/loadcanvas.cpp:2480
+#, c-format
+msgid "Unknown ID (%s) referenced in parameter \"%s\""
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2496
+msgid "<param> is either missing its contents, or missing a \"use\" attribute."
+msgstr "<param> saknar antingen sitt innehåll, eller saknar ett \"use\"-attribut"
+
+#: src/synfig/loadcanvas.cpp:2508 src/synfig/loadcanvas.cpp:2528
+msgid "Bad data for <param>"
+msgstr "Ogiltig data för <param>"
+
+#: src/synfig/loadcanvas.cpp:2516
+#, c-format
+msgid "Layer '%s' rejected value for parameter '%s'"
+msgstr "Layer '%s' rejected value for parameter '%s'"
+
+#: src/synfig/loadcanvas.cpp:2539
+#, c-format
+msgid "Unexpected element <%s> after <param> data, ignoring..."
+msgstr "Oväntat element <%s> efter <param>-data, ignorerar..."
+
+#: src/synfig/loadcanvas.cpp:2615 src/synfig/loadcanvas.cpp:2623
+msgid "Canvas with width or height less than one is not allowed"
+msgstr "Rityta med bredd eller höjd under ett är inte tillåtet"
+
+#: src/synfig/loadcanvas.cpp:2710
+msgid "Group canvases cannot have a <defs> section"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2717
+msgid "Inline canvas cannot have a <bones> section"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2725
+msgid "Group canvases cannot have keyframes"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2737
+msgid "Group canvases cannot have metadata"
+msgstr ""
+
+#: src/synfig/loadcanvas.cpp:2745
+msgid "<meta> must have a name"
+msgstr "<meta> måste ha ett namn"
+
+#: src/synfig/loadcanvas.cpp:2751
+msgid "<meta> must have content"
+msgstr "<meta> måste ha ett innehåll"
+
+#: src/synfig/loadcanvas.cpp:2763
+msgid "blank \"name\" entity"
+msgstr "tom \"namn\"-enhet"
+
+#: src/synfig/loadcanvas.cpp:2778
+msgid "blank \"desc\" entity"
+msgstr "tom \"desc\"-enhet"
+
+#: src/synfig/loadcanvas.cpp:2793
+msgid "blank \"author\" entity"
+msgstr "tom \"author\"-enhet"
+
+#: src/synfig/loadcanvas.cpp:2828
+#, c-format
+msgid "Canvas '%s' has undefined %s: %s"
+msgstr "Ritytan '%s\" har odefinierad %s: %s"
+
+#: src/synfig/loadcanvas.cpp:2830 src/synfig/valuenode.cpp:374
+msgid "ValueNode"
+msgstr "Värdenod"
+
+#: src/synfig/loadcanvas.cpp:2830
+msgid "ValueNodes"
+msgstr "Värdenoder"
+
+#: src/synfig/loadcanvas.cpp:2910 src/synfig/loadcanvas.cpp:2966
+msgid "Can't open file"
+msgstr "Kan ej öppna fil"
+
+#: src/synfig/main.cpp:118
+#, c-format
+msgid "API Version mismatch (LIB:%d, PROG:%d)"
+msgstr "API Version mismatch (LIB:%d, PROG:%d)"
+
+#: src/synfig/main.cpp:123
+#, c-format
+msgid "Size of Vector mismatch (app:%d, lib:%d)"
+msgstr "Size of Vector mismatch (app:%d, lib:%d)"
+
+#: src/synfig/main.cpp:128
+#, c-format
+msgid "Size of Color mismatch (app:%d, lib:%d)"
+msgstr "Size of Color mismatch (app:%d, lib:%d)"
+
+#: src/synfig/main.cpp:133
+#, c-format
+msgid "Size of Canvas mismatch (app:%d, lib:%d)"
+msgstr "Size of Canvas mismatch (app:%d, lib:%d)"
+
+#: src/synfig/main.cpp:138
+#, c-format
+msgid "Size of Layer mismatch (app:%d, lib:%d)"
+msgstr "Size of Layer mismatch (app:%d, lib:%d)"
+
+#: src/synfig/main.cpp:207
+msgid "Starting Subsystem \"Modules\""
+msgstr "Startar delsystem \"Modules\" (moduler)"
+
+#: src/synfig/main.cpp:209
+msgid "Unable to initialize subsystem \"Module\""
+msgstr "Misslyckades med att initialisera delsystem \"Modules\" (moduler)"
+
+#: src/synfig/main.cpp:211
+msgid "Starting Subsystem \"Layers\""
+msgstr "Startar delsystem \"Layers\" (lager)"
+
+#: src/synfig/main.cpp:215
+msgid "Unable to initialize subsystem \"Layers\""
+msgstr "Misslyckades med att initialisera delsystem \"Layers\" (lager)"
+
+#: src/synfig/main.cpp:218
+msgid "Starting Subsystem \"Targets\""
+msgstr "Startar delsystem \"Targets\" (mål)"
+
+#: src/synfig/main.cpp:223
+msgid "Unable to initialize subsystem \"Targets\""
+msgstr "Misslyckades med att initialisera delsystem \"Targets\" (mål) "
+
+#: src/synfig/main.cpp:226
+msgid "Starting Subsystem \"Importers\""
+msgstr "Startar delsystem \"Importers\" (importörer)"
+
+#: src/synfig/main.cpp:232
+msgid "Unable to initialize subsystem \"Importers\""
+msgstr "Misslyckades med att initialisera delsystem \"Importers\" (importörer)"
+
+#: src/synfig/main.cpp:235
+msgid "Starting Subsystem \"Cairo Importers\""
+msgstr ""
+
+#: src/synfig/main.cpp:242
+msgid "Unable to initialize subsystem \"Cairo Importers\""
+msgstr ""
+
+#: src/synfig/main.cpp:245
+msgid "Starting Subsystem \"ValueNodes\""
+msgstr "Startar delsystem \"ValueNodes\" (värdenoder)"
+
+#: src/synfig/main.cpp:253
+msgid "Unable to initialize subsystem \"ValueNodes\""
+msgstr "Misslyckades med att initialisera delsystem \"ValueNodes\" (värdenoder)"
+
+#: src/synfig/main.cpp:290 src/synfig/main.cpp:291
+#, c-format
+msgid "Loading modules from %s"
+msgstr "Laddar moduler från %s"
+
+#: src/synfig/main.cpp:302
+#, c-format
+msgid "Unable to open module list file '%s'"
+msgstr "Kan inte öppna modullist-fil '%s'"
+
+#: src/synfig/main.cpp:316 src/tool/renderprogress.h:141
+msgid "DONE"
+msgstr "KLAR"
+
+#: src/synfig/main.cpp:383 src/tool/progress.h:52 src/tool/renderprogress.h:57
+msgid "error"
+msgstr "fel"
+
+#: src/synfig/main.cpp:398 src/tool/progress.h:59 src/tool/renderprogress.h:64
+msgid "warning"
+msgstr "varning"
+
+#: src/synfig/main.cpp:413
+msgid "info"
+msgstr "info"
+
+#: src/synfig/module.cpp:64
+msgid "Errors on lt_dlinit()"
+msgstr "Fel i lt_dlinit()"
+
+#: src/synfig/module.cpp:101
+#, c-format
+msgid "Unable to load module '%s'"
+msgstr "Kan inte ladda modul '%s'"
+
+#: src/synfig/module.cpp:126
+#, c-format
+msgid "Attempting to register \"%s\""
+msgstr "Försöker registrera \"%s\""
+
+#: src/synfig/module.cpp:133
+#, c-format
+msgid "Unable to find module \"%s\" (%s)"
+msgstr "Kan inte hitta modulen \"%s\" (%s)"
+
+#: src/synfig/module.cpp:137
+#, c-format
+msgid "Found module \"%s\""
+msgstr "Hittade modulen \"%s\""
+
+#: src/synfig/module.cpp:171
+#, c-format
+msgid "Unable to find entrypoint in module \"%s\" (%s)"
+msgstr "Kan inte hitta entrypoint i modul \"%s\" (%s)"
+
+#: src/synfig/module.cpp:184
+msgid "Entrypoint did not return a module."
+msgstr "Entrypoint gav inte en modul"
+
+#: src/synfig/module.cpp:188
+#, c-format
+msgid "Success for \"%s\""
+msgstr "\"%s\" lyckades"
+
+#: src/synfig/palette.cpp:79
+msgid "Unnamed"
+msgstr "Namnlös"
+
+#: src/synfig/palette.cpp:96
+msgid "Surface Palette"
+msgstr "Yt-palett"
+
+#: src/synfig/palette.cpp:291
+#, c-format
+msgid "%0.2f%% Gray"
+msgstr "%0.2f%% Grå"
+
+#: src/synfig/palette.cpp:306
+#, c-format
+msgid "Unable to open %s for write"
+msgstr "Kan inte öppna %s för att skriva"
+
+#: src/synfig/palette.cpp:328
+#, c-format
+msgid "Unable to open %s for read"
+msgstr "Kan inte öppna %s för att läsa"
+
+#: src/synfig/palette.cpp:340 src/synfig/palette.cpp:382
+#, c-format
+msgid "%s does not appear to be a valid %s palette file"
+msgstr ""
+
+#: src/synfig/palette.cpp:437
+#, c-format
+msgid "%s does not appear to be a supported palette file"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:146
+#: src/synfig/valuenode_composite.cpp:447
+msgid "Composite"
+msgstr "Sammansättning"
+
+#: src/synfig/paramdesc.cpp:69
+msgid "Straight"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:70
+msgid "Onto"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:71
+msgid "Straight Onto"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:72
+msgid "Behind"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:73
+msgid "Screen"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:74
+msgid "Overlay"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:75
+msgid "Hard Light"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:76
+msgid "Multiply"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:77
+msgid "Divide"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:78 src/synfig/valuenode.cpp:163
+#: src/synfig/valuenode_add.cpp:190
+msgid "Add"
+msgstr "Addera"
+
+#: src/synfig/paramdesc.cpp:79 src/synfig/valuenode.cpp:153
+#: src/synfig/valuenode_subtract.cpp:194
+msgid "Subtract"
+msgstr "Subtrahera"
+
+#: src/synfig/paramdesc.cpp:80
+msgid "Difference"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:81
+msgid "Brighten"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:82
+msgid "Darken"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:84 src/synfig/valuenode_radialcomposite.cpp:263
+msgid "Hue"
+msgstr "Färg"
+
+#: src/synfig/paramdesc.cpp:85 src/synfig/valuenode_radialcomposite.cpp:260
+#: src/synfig/valuenode_radialcomposite.cpp:266
+msgid "Saturation"
+msgstr "Mättnad"
+
+#: src/synfig/paramdesc.cpp:86
+msgid "Luminance"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:87
+msgid "Alpha Over"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:88
+msgid "Alpha Brighten"
+msgstr ""
+
+#: src/synfig/paramdesc.cpp:89
+msgid "Alpha Darken"
+msgstr ""
+
+#: src/synfig/render.cpp:248 src/synfig/render.cpp:249
+#: src/synfig/render.cpp:303 src/synfig/render.cpp:304
+#: src/synfig/render.cpp:573 src/synfig/render.cpp:574
+#: src/synfig/render.cpp:600 src/synfig/render.cpp:601
+msgid "Target panic"
+msgstr "Target panic"
+
+#: src/synfig/savecanvas.cpp:359
+#, c-format
+msgid "Unknown value(%s), cannot create XML representation!"
+msgstr "Okänt värde(%s), kan inte skapa XML!"
+
+#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
+#, c-format
+msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
+msgstr "Okänd typ av värdenod (%s), kan inte skapa XML"
+
+#: src/synfig/target_cairo.cpp:92 src/synfig/target_cairo_tile.cpp:194
+#: src/synfig/target_scanline.cpp:98 src/synfig/target_tile.cpp:281
+msgid "Target initialization failure"
+msgstr "Initialisering av mål misslyckades"
+
+#: src/synfig/target_cairo.cpp:155
+msgid "Frame Renderer Failure"
+msgstr ""
+
+#: src/synfig/target_cairo.cpp:165 src/synfig/target_scanline.cpp:260
+#: src/synfig/target_scanline.cpp:407
+msgid "Unable to put surface on target"
+msgstr "Kan inte sätta yta på mål"
+
+#: src/synfig/target_cairo.cpp:173
+msgid "Not supported render method"
+msgstr ""
+
+#: src/synfig/target_cairo.cpp:180 src/synfig/target_cairo_tile.cpp:259
+#: src/synfig/target_scanline.cpp:420 src/synfig/target_tile.cpp:398
+msgid "Caught string :"
+msgstr "Fångade sträng:"
+
+#: src/synfig/target_cairo.cpp:185 src/synfig/target_cairo_tile.cpp:264
+#: src/synfig/target_scanline.cpp:425 src/synfig/target_tile.cpp:403
+msgid "Ran out of memory (Probably a bug)"
+msgstr "Slut på minne (förmodligen en bugg)"
+
+#: src/synfig/target_cairo.cpp:190 src/synfig/target_cairo_tile.cpp:269
+#: src/synfig/target_scanline.cpp:430 src/synfig/target_tile.cpp:408
+msgid "Caught unknown error, rethrowing..."
+msgstr "Fångade upp okänt fel, kastar igen"
+
+#: src/synfig/target_cairo.cpp:201
+msgid "Cairo Surface bad status"
+msgstr ""
+
+#: src/synfig/target_cairo_tile.cpp:104 src/synfig/target_tile.cpp:112
+msgid "Bad Tile Size"
+msgstr "Ogiltig kakelstorlek"
+
+#: src/synfig/target_cairo_tile.cpp:148 src/synfig/target_cairo_tile.cpp:251
+#: src/synfig/target_scanline.cpp:205 src/synfig/target_scanline.cpp:251
+#: src/synfig/target_scanline.cpp:350 src/synfig/target_scanline.cpp:398
+#: src/synfig/target_tile.cpp:225
+msgid "Accelerated Renderer Failure"
+msgstr "Accelererad rendering misslyckades"
+
+#: src/synfig/target_cairo_tile.cpp:157
+#, c-format
+msgid "Bad surface: %s"
+msgstr ""
+
+#: src/synfig/target_cairo_tile.cpp:164 src/synfig/target_tile.cpp:179
+#: src/synfig/target_tile.cpp:245
+msgid "add_tile():Unable to put surface on target"
+msgstr "add_tile():Kan inte sätta yta på mål"
+
+#: src/synfig/target_cairo_tile.cpp:222
+msgid "Can't start frame"
+msgstr ""
+
+#: src/synfig/target_tile.cpp:162
+msgid "Parametric Renderer Failure"
+msgstr "Parametrisk rendering misslyckades"
+
+#: src/synfig/target_tile.cpp:169 src/synfig/target_tile.cpp:233
+msgid "Bad surface"
+msgstr "Ogiltig yta"
+
+#: src/synfig/time.cpp:119
+#, c-format
+msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
+msgstr "Time():Ingen enhet given i tidskod, använder BILDRUTOR (\"%s\")"
+
+#: src/synfig/time.cpp:124
+msgid ""
+"Time(): No unit provided in time code and frame rate is unknown! Assuming "
+"SECONDS"
+msgstr "Time():Ingen enhet angiven i tidskod och FPS är okänt! Använder SEKUNDER"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
+msgid "bool"
+msgstr "boolesk"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
+msgid "integer"
+msgstr "heltal"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
+msgid "angle"
+msgstr "vinkel"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
+msgid "time"
+msgstr "tid"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
+msgid "real"
+msgstr "reell"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
+msgid "vector"
+msgstr "vektor"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
+msgid "color"
+msgstr "färg"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
+msgid "segment"
+msgstr "segment"
+
+#: src/synfig/value.cpp:348
+msgid "bline_point"
+msgstr "bline_punkt"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+msgid "matrix"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+msgid "bone_weight_pair"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
+msgid "width_point"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
+msgid "dash_item"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
+msgid "list"
+msgstr "lista"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
+msgid "canvas"
+msgstr "rityta"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
+msgid "string"
+msgstr "sträng"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
+msgid "gradient"
+msgstr "gradient"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+msgid "bone_object"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+msgid "bone_valuenode"
+msgstr ""
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
+msgid "nil"
+msgstr "inget"
+
+#. TRANSLATORS: this is the name of a type -- see
+#. http://synfig.org/wiki/Dev:Types
+#: src/synfig/value.cpp:392
+msgid "spline_point"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_radialcomposite.cpp:234
+msgid "Radial Composite"
+msgstr "Radiell sammansättning"
+
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_reference.cpp:123
+msgid "Reference"
+msgstr "Referens"
+
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_segcalctangent.cpp:106
+msgid "Segment Tangent"
+msgstr "Segmenttangent"
+
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_segcalcvertex.cpp:104
+msgid "Segment Vertex"
+msgstr "Segmenthörn"
+
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode_stripes.cpp:171
+msgid "Stripes"
+msgstr "Ränder"
+
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_twotone.cpp:135
+msgid "Two-Tone"
+msgstr "Två-tonig"
+
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_dynamiclist.cpp:762
+msgid "Dynamic List"
+msgstr "Dynamisk lista"
+
+#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode_gradientrotate.cpp:146
+msgid "Gradient Rotate"
+msgstr "Gradient-rotation"
+
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_sine.cpp:110
+msgid "Sine"
+msgstr "Sinus"
+
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_timedswap.cpp:221
+msgid "Timed Swap"
+msgstr "Tajmat byte"
+
+#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode_repeat_gradient.cpp:185
+msgid "Repeat Gradient"
+msgstr "Repetera gradient"
+
+#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_exp.cpp:106
+msgid "Exponential"
+msgstr "Exponential"
+
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_blinecalctangent.cpp:184
+msgid "Spline Tangent"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_blinecalcvertex.cpp:152
+msgid "Spline Vertex"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:166 src/synfig/valuenode_range.cpp:257
+msgid "Range"
+msgstr "Rad"
+
+#: src/synfig/valuenode.cpp:168 src/synfig/valuenode_switch.cpp:133
+#: src/synfig/valuenode_switch.cpp:163
+msgid "Switch"
+msgstr "Växla"
+
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_cos.cpp:109
+msgid "Cos"
+msgstr "Kosinus"
+
+#: src/synfig/valuenode.cpp:170
+msgid "aTan2"
+msgstr "aTan2"
+
+#: src/synfig/valuenode.cpp:171
+msgid "Reverse Tangent"
+msgstr "Invertera tangenter"
+
+#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_reciprocal.cpp:147
+msgid "Reciprocal"
+msgstr "Reciprokal"
+
+#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_integer.cpp:172
+msgid "Integer"
+msgstr "Heltal"
+
+#: src/synfig/valuenode.cpp:177 src/synfig/valuenode_blinecalcwidth.cpp:155
+msgid "Spline Width"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:179 src/synfig/valuenode_vectorangle.cpp:128
+msgid "Vector Angle"
+msgstr "Vektorns vinkel"
+
+#: src/synfig/valuenode.cpp:180 src/synfig/valuenode_vectorlength.cpp:127
+msgid "Vector Length"
+msgstr "Vektorns längd"
+
+#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_vectorx.cpp:127
+msgid "Vector X"
+msgstr "Vektor X"
+
+#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_vectory.cpp:127
+msgid "Vector Y"
+msgstr "Vektor Y"
+
+#: src/synfig/valuenode.cpp:183
+msgid "Gradient Color"
+msgstr "Gradientens färg"
+
+#: src/synfig/valuenode.cpp:184
+msgid "Dot Product"
+msgstr "Skalärprodukt"
+
+#: src/synfig/valuenode.cpp:185 src/synfig/valuenode_timestring.cpp:119
+msgid "Time String"
+msgstr "Tidssträng"
+
+#: src/synfig/valuenode.cpp:186 src/synfig/valuenode_real.cpp:161
+#: src/synfig/valuenode_realstring.cpp:175
+msgid "Real"
+msgstr "Tal"
+
+#: src/synfig/valuenode.cpp:187 src/synfig/valuenode_realstring.cpp:125
+msgid "Real String"
+msgstr "Reell sträng"
+
+#: src/synfig/valuenode.cpp:188 src/synfig/valuenode_join.cpp:144
+msgid "Joined List"
+msgstr "Sammanslagen lista"
+
+#: src/synfig/valuenode.cpp:189
+msgid "Angle String"
+msgstr "Vinkelsträng"
+
+#: src/synfig/valuenode.cpp:190
+msgid "Int String"
+msgstr "Heltalssträng"
+
+#: src/synfig/valuenode.cpp:191
+msgid "Logarithm"
+msgstr "Logaritm"
+
+#: src/synfig/valuenode.cpp:192
+msgid "Greyed"
+msgstr "Grånad"
+
+#: src/synfig/valuenode.cpp:193 src/synfig/valuenode_pow.cpp:162
+#: src/synfig/valuenode_pow.cpp:185
+msgid "Power"
+msgstr "Styrks"
+
+#: src/synfig/valuenode.cpp:194 src/synfig/valuenode_compare.cpp:149
+msgid "Compare"
+msgstr "Jämför"
+
+#: src/synfig/valuenode.cpp:195
+msgid "Not"
+msgstr "Inte"
+
+#: src/synfig/valuenode.cpp:196
+msgid "And"
+msgstr "Och"
+
+#: src/synfig/valuenode.cpp:197
+msgid "Or"
+msgstr "Eller"
+
+#: src/synfig/valuenode.cpp:199
+msgid "Bone Influence"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:200
+msgid "Bone"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:201
+msgid "Root Bone"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:202
+msgid "Static List"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:203
+msgid "Bone Weight Pair"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:205 src/synfig/valuenode_wplist.cpp:360
+msgid "WPList"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:206
+msgid "DIList"
+msgstr ""
+
+#: src/synfig/valuenode.cpp:241
+#, c-format
+msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
+msgstr "Ogiltig typ: värdenod '%s' accepterar inte typ '%s'"
+
+#: src/synfig/valuenode.cpp:540
+msgid "Placeholder"
+msgstr "Platshållare"
+
+#: src/synfig/valuenode.h:62
+#, c-format
+msgid "%s:%d wrong type for %s: need %s but got %s"
+msgstr "%s:%d fel typ för %s: behöver %s men fick %s"
+
+#: src/synfig/valuenode_add.cpp:101 src/synfig/valuenode_gradientrotate.cpp:78
+#: src/synfig/valuenode_integer.cpp:82 src/synfig/valuenode_integer.cpp:145
+#: src/synfig/valuenode_range.cpp:89 src/synfig/valuenode_real.cpp:79
+#: src/synfig/valuenode_real.cpp:140
+#: src/synfig/valuenode_repeat_gradient.cpp:84
+#: src/synfig/valuenode_scale.cpp:90 src/synfig/valuenode_stripes.cpp:81
+#: src/synfig/valuenode_subtract.cpp:101
+msgid ":Bad type "
+msgstr ":Ogiltig typ"
+
+#: src/synfig/valuenode_add.cpp:129 src/synfig/valuenode_scale.cpp:122
+#: src/synfig/valuenode_subtract.cpp:133
+msgid "One or both of my parameters aren't set!"
+msgstr "En eller båda av mina parametrar är inte inställda!"
+
+#: src/synfig/valuenode_add.cpp:211 src/synfig/valuenode_compare.cpp:167
+#: src/synfig/valuenode_subtract.cpp:218
+msgid "LHS"
+msgstr "VS"
+
+#: src/synfig/valuenode_add.cpp:212
+msgid "Left Hand Side of the add"
+msgstr "Vänstra sidan av adderingen"
+
+#: src/synfig/valuenode_add.cpp:216 src/synfig/valuenode_compare.cpp:172
+#: src/synfig/valuenode_subtract.cpp:223
+msgid "RHS"
+msgstr "HS"
+
+#: src/synfig/valuenode_add.cpp:217
+msgid "Right Hand Side of the add"
+msgstr "Höger sida av adderingen"
+
+#: src/synfig/valuenode_add.cpp:221 src/synfig/valuenode_scale.cpp:272
+#: src/synfig/valuenode_subtract.cpp:228
+msgid "Scalar"
+msgstr "Skalär"
+
+#: src/synfig/valuenode_add.cpp:222
+msgid "Value that multiplies the add"
+msgstr "Värde som multiplicerar adderingen"
+
+#: src/synfig/valuenode_and.cpp:129
+msgid "AND"
+msgstr "OCH"
+
+#: src/synfig/valuenode_and.cpp:147 src/synfig/valuenode_or.cpp:147
+msgid "Link1"
+msgstr "Länk1"
+
+#: src/synfig/valuenode_and.cpp:148
+msgid "First operand of the AND operation"
+msgstr "Första operanden i OCH-operationen"
+
+#: src/synfig/valuenode_and.cpp:152 src/synfig/valuenode_or.cpp:152
+msgid "Link2"
+msgstr "Länk2"
+
+#: src/synfig/valuenode_and.cpp:153
+msgid "Second operand of the AND operation"
+msgstr "Andra operanden i OCH-operationen"
+
+#: src/synfig/valuenode_animated.cpp:357 src/synfig/valuenode_animated.cpp:381
+#: src/synfig/valuenode_animated.cpp:709 src/synfig/valuenode_animated.cpp:727
+#: src/synfig/valuenode_animated.cpp:811 src/synfig/valuenode_animated.cpp:830
+msgid "A waypoint already exists at this point in time"
+msgstr "Det finns redan en vägpunkt på den här tidpunkten"
+
+#: src/synfig/valuenode_animated.cpp:1173
+#, c-format
+msgid "%s: You cannot use a %s in an animated ValueNode"
+msgstr "%s: Du kan inte använda %s i en animerad värdenod"
+
+#: src/synfig/valuenode_animated.cpp:1208
+msgid "Animated"
+msgstr "Animerad"
+
+#: src/synfig/valuenode_bline.cpp:982 src/synfig/valuenode_dynamiclist.cpp:667
+#: src/synfig/valuenode_wplist.cpp:336
+msgid "No entries in list"
+msgstr "Inget innehåll i listam"
+
+#: src/synfig/valuenode_bline.cpp:985 src/synfig/valuenode_dynamiclist.cpp:670
+#: src/synfig/valuenode_wplist.cpp:339
+msgid "No entries in ret_list"
+msgstr "Inget innehåll i ret_list"
+
+#: src/synfig/valuenode_bline.cpp:994 src/synfig/valuenode_bline.cpp:1111
+#, c-format
+msgid "Vertex %03d"
+msgstr "Vertex %03d"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:242
+msgid "The Spline where the tangent is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalctangent.cpp:247
+#: src/synfig/valuenode_blinecalcvertex.cpp:207
+#: src/synfig/valuenode_blinecalcwidth.cpp:212
+msgid "When checked, the amount would loop"
+msgstr "När detta alternativ är ikryssat, repeteras värdet"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:252
+msgid "The position of the linked tangent on the Spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalctangent.cpp:256
+#: src/synfig/valuenode_composite.cpp:584
+#: src/synfig/valuenode_gradientrotate.cpp:169
+#: src/synfig/valuenode_linear.cpp:213
+msgid "Offset"
+msgstr "Förskjutning"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:257
+msgid "Angle offset of the tangent"
+msgstr "Vinkel-förskjutning av tangenten"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:262
+msgid "Scale of the tangent"
+msgstr "Storlek på tangenten"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:266
+msgid "Fixed Length"
+msgstr "Fast längd"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:267
+msgid "When checked, the tangent's length is fixed"
+msgstr "När detta alternativ är ikryssat, kan inte tangentens längd ändras"
+
+#: src/synfig/valuenode_blinecalctangent.cpp:272
+msgid "When checked, the tangent is Spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:202
+msgid "The spline where the vertex is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:212
+msgid "The position of the linked vertex on the Spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcvertex.cpp:217
+msgid "When checked, the position is Spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:207
+msgid "The spline where the width is linked to"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:217
+msgid "The position of the linked width on the spline (0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:222
+msgid "Scale of the width"
+msgstr "Bredd"
+
+#: src/synfig/valuenode_blinecalcwidth.cpp:227
+msgid "When checked, the width is spline length based"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:229
+msgid "Bad type for composite"
+msgstr "Ogiltig typ för sammansättning"
+
+#: src/synfig/valuenode_composite.cpp:474
+msgid "Red"
+msgstr "Röf"
+
+#: src/synfig/valuenode_composite.cpp:475
+msgid "The red component of the color"
+msgstr "Färgens röda komponent"
+
+#: src/synfig/valuenode_composite.cpp:478
+msgid "Green"
+msgstr "Grön"
+
+#: src/synfig/valuenode_composite.cpp:479
+msgid "The green component of the color"
+msgstr "Färgens gröna komponent"
+
+#: src/synfig/valuenode_composite.cpp:482
+msgid "Blue"
+msgstr "Blå"
+
+#: src/synfig/valuenode_composite.cpp:483
+msgid "The blue component of the color"
+msgstr "Färgens blåa komponent"
+
+#: src/synfig/valuenode_composite.cpp:486
+msgid "Alpha"
+msgstr "Alfa"
+
+#: src/synfig/valuenode_composite.cpp:487
+msgid "The alpha of the color"
+msgstr "Färgens alfa (genomskinlighet)"
+
+#: src/synfig/valuenode_composite.cpp:492
+msgid "Vertex 1"
+msgstr "Vertex 1"
+
+#: src/synfig/valuenode_composite.cpp:493
+msgid "The first vertex of the segment"
+msgstr "Den första vertexen i segmentet"
+
+#: src/synfig/valuenode_composite.cpp:496
+#: src/synfig/valuenode_composite.cpp:536
+msgid "Tangent 1"
+msgstr "Tangent 1"
+
+#: src/synfig/valuenode_composite.cpp:497
+msgid "The first tangent of the segment"
+msgstr "Den första tangenten i segmentet"
+
+#: src/synfig/valuenode_composite.cpp:500
+msgid "Vertex 2"
+msgstr "Vertex 2"
+
+#: src/synfig/valuenode_composite.cpp:501
+msgid "The second vertex of the segment"
+msgstr "Den andra vertexen i segmentet"
+
+#: src/synfig/valuenode_composite.cpp:504
+#: src/synfig/valuenode_composite.cpp:540
+msgid "Tangent 2"
+msgstr "Tangent 2"
+
+#: src/synfig/valuenode_composite.cpp:505
+msgid "The second tangent of the segment"
+msgstr "Den andra tangenten i segmentet"
+
+#: src/synfig/valuenode_composite.cpp:510
+msgid "X-Axis"
+msgstr "X-axeln"
+
+#: src/synfig/valuenode_composite.cpp:511
+msgid "The X-Axis component of the vector"
+msgstr "Vektorns X-komponent"
+
+#: src/synfig/valuenode_composite.cpp:514
+msgid "Y-Axis"
+msgstr "Y-axeln"
+
+#: src/synfig/valuenode_composite.cpp:515
+msgid "The Y-Axis component of the vector"
+msgstr "Vektorns Y-komponent"
+
+#: src/synfig/valuenode_composite.cpp:520
+msgid "Vertex"
+msgstr "Vertex"
+
+#: src/synfig/valuenode_composite.cpp:521
+msgid "The vertex of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:525
+msgid "The width of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:529
+msgid "Defines the Off and On position relative to neighbours"
+msgstr "Bestämmer på/av-värde relativt till grannar"
+
+#: src/synfig/valuenode_composite.cpp:532
+msgid "Split"
+msgstr "Dela"
+
+#: src/synfig/valuenode_composite.cpp:533
+msgid "When checked, tangents are independent"
+msgstr "När detta är på, blir tangenterna oberoende"
+
+#: src/synfig/valuenode_composite.cpp:537
+msgid "The first tangent of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:541
+msgid "The second tangent of the Spline Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:547
+msgid "The [0,1] position of the Width Point over the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:551
+msgid "The width of the Width Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:554
+#: src/synfig/valuenode_composite.cpp:594
+msgid "Side Type Before"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:555
+#: src/synfig/valuenode_composite.cpp:565
+msgid "Defines the interpolation type of the width point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:557
+#: src/synfig/valuenode_composite.cpp:567
+msgid "Interpolate"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:564
+#: src/synfig/valuenode_composite.cpp:603
+msgid "Side Type After"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:574
+msgid "Lower Boundary"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:575
+msgid "Defines the position at start of the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:578
+msgid "Upper Boundary"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:579
+msgid "Defines the position at end of the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:585
+msgid "The offset length of the Dash Item over the Spline"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:589
+#: src/synfig/valuenode_timedswap.cpp:260
+msgid "Length"
+msgstr "Längd"
+
+#: src/synfig/valuenode_composite.cpp:590
+msgid "The length of the Dash Item"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:595
+#: src/synfig/valuenode_composite.cpp:604
+msgid "Defines the side type of the dash item"
+msgstr ""
+
+#: src/synfig/valuenode_compare.cpp:168
+msgid "The left side of the comparison"
+msgstr "Vänstra sidan av jämförelsen"
+
+#: src/synfig/valuenode_compare.cpp:173
+msgid "The right side of the comparison"
+msgstr "Högra sidan av jämförelsen"
+
+#: src/synfig/valuenode_compare.cpp:177
+msgid "Greater"
+msgstr "Större än"
+
+#: src/synfig/valuenode_compare.cpp:178
+msgid "When checked, returns true if LHS > RHS"
+msgstr "När detta är valt, får du ett sant om VÄNSTER > HÖGER"
+
+#: src/synfig/valuenode_compare.cpp:182
+msgid "Equal"
+msgstr "Lika med"
+
+#: src/synfig/valuenode_compare.cpp:183
+msgid "When checked, returns true if LHS = RHS"
+msgstr "När detta är valt, får du ett sant om VÄNSTER = HÖGER"
+
+#: src/synfig/valuenode_compare.cpp:187
+msgid "Less"
+msgstr "Mindre än"
+
+#: src/synfig/valuenode_compare.cpp:188
+msgid "When checked, returns true if LHS < RHS"
+msgstr "När detta är valt, får du ett sant om VÄNSTER < HÖGER"
+
+#: src/synfig/valuenode_cos.cpp:156
+msgid "Value to calculate the cosine"
+msgstr "Värde att räkna ut kosinus för"
+
+#: src/synfig/valuenode_cos.cpp:160 src/synfig/valuenode_sine.cpp:159
+msgid "Amplitude"
+msgstr "Amplitud"
+
+#: src/synfig/valuenode_cos.cpp:161
+msgid "Multiplier of the resulting cosine"
+msgstr "Multiplikator för resultatet av kosinus"
+
+#: src/synfig/valuenode_duplicate.cpp:193
+msgid "From"
+msgstr "Från"
+
+#: src/synfig/valuenode_duplicate.cpp:194
+msgid "Initial value of the index "
+msgstr "Ursprungsvärde för indexet"
+
+#: src/synfig/valuenode_duplicate.cpp:198
+msgid "To"
+msgstr "Till"
+
+#: src/synfig/valuenode_duplicate.cpp:199
+msgid "Final value of the index"
+msgstr "Slutvärde för indexet"
+
+#: src/synfig/valuenode_duplicate.cpp:204
+msgid "Amount increment of the index"
+msgstr "Indexets ökning"
+
+#: src/synfig/valuenode_dynamiclist.cpp:661
+msgid "List type/item type mismatch, throwing away mismatch"
+msgstr "List type/item type mismatch, throwing away mismatch"
+
+#: src/synfig/valuenode_dynamiclist.cpp:709
+#: src/synfig/valuenode_dynamiclist.cpp:964
+#, c-format
+msgid "Item %03d"
+msgstr "Objekt %03d"
+
+#: src/synfig/valuenode_exp.cpp:150
+msgid "Exponent"
+msgstr "Exponent"
+
+#: src/synfig/valuenode_exp.cpp:151
+msgid "The value to raise the constant 'e'"
+msgstr "Värdet att upphöja konstanten 'e' med"
+
+#: src/synfig/valuenode_exp.cpp:156
+msgid "Multiplier of the resulting exponent"
+msgstr "Multiplikator för resultatet av exponenten"
+
+#: src/synfig/valuenode_gradientrotate.cpp:165
+msgid "The source gradient to rotate"
+msgstr "Källgradienten att rotera"
+
+#: src/synfig/valuenode_gradientrotate.cpp:170
+msgid "The amount to offset the gradient"
+msgstr "Mängden förskjutning att tillämpa på gradienten"
+
+#: src/synfig/valuenode_integer.cpp:195
+msgid "The integer value to be converted"
+msgstr "Heltalsvärdet att konvertera"
+
+#: src/synfig/valuenode_join.cpp:194
+msgid "Strings"
+msgstr "Strängar"
+
+#: src/synfig/valuenode_join.cpp:195
+msgid "The List of strings to join"
+msgstr "Listan på strängar att slå ihop"
+
+#: src/synfig/valuenode_join.cpp:199 src/synfig/valuenode_timedswap.cpp:245
+msgid "Before"
+msgstr "Före"
+
+#: src/synfig/valuenode_join.cpp:200
+msgid "The string to place before the joined strings"
+msgstr "En sträng som placeras före de sammanslagna strängarna"
+
+#: src/synfig/valuenode_join.cpp:204
+msgid "Separator"
+msgstr "Separator"
+
+#: src/synfig/valuenode_join.cpp:205
+msgid "The string to place between each string joined"
+msgstr "En sträng som placeras emellan varje sammanslagen sträng"
+
+#: src/synfig/valuenode_join.cpp:209 src/synfig/valuenode_timedswap.cpp:250
+msgid "After"
+msgstr "Efter"
+
+#: src/synfig/valuenode_join.cpp:210
+msgid "The string to place after the joined strings"
+msgstr "En sträng som placeras efter de sammanslagna strängarna"
+
+#: src/synfig/valuenode_linear.cpp:200
+msgid "Rate"
+msgstr ""
+
+#: src/synfig/valuenode_linear.cpp:201 src/synfig/valuenode_linear.cpp:208
+msgid "Value that is multiplied by the current time (in seconds)"
+msgstr ""
+
+#: src/synfig/valuenode_linear.cpp:207
+msgid "Slope"
+msgstr ""
+
+#: src/synfig/valuenode_linear.cpp:214
+msgid "Returned value when the current time is zero"
+msgstr ""
+
+#: src/synfig/valuenode_not.cpp:123
+msgid "NOT"
+msgstr "INTE"
+
+#: src/synfig/valuenode_not.cpp:142
+msgid "Value node used to do the NOT operation"
+msgstr "Värdenod som används för att utföra en INTE-operation"
+
+#: src/synfig/valuenode_or.cpp:129
+msgid "OR"
+msgstr "ELLER"
+
+#: src/synfig/valuenode_or.cpp:148 src/synfig/valuenode_or.cpp:153
+msgid "Value node used for the OR boolean operation"
+msgstr "Värdenod som används för en boolesk ELLER-operation"
+
+#: src/synfig/valuenode_pow.cpp:180
+msgid "Base"
+msgstr "Bas"
+
+#: src/synfig/valuenode_pow.cpp:181
+msgid "The base to be raised to the power"
+msgstr "Basen som ska upphöjas"
+
+#: src/synfig/valuenode_pow.cpp:186
+msgid "The power used to raise the base"
+msgstr "Exponenten för att upphöja basen"
+
+#: src/synfig/valuenode_pow.cpp:190 src/synfig/valuenode_reciprocal.cpp:170
+msgid "Epsilon"
+msgstr "Epsilon"
+
+#: src/synfig/valuenode_pow.cpp:191
+msgid "Value used to compare base or power with zero "
+msgstr "Värde som används för att jämföra basen eller exponenten med noll"
+
+#: src/synfig/valuenode_pow.cpp:195 src/synfig/valuenode_reciprocal.cpp:175
+msgid "Infinite"
+msgstr "Oändligt"
+
+#: src/synfig/valuenode_pow.cpp:196
+msgid "Returned value when result tends to infinite"
+msgstr "Det värde du får när resultatet verkar bli ett oändligt tal"
+
+#: src/synfig/valuenode_radialcomposite.cpp:127
+msgid "Bad type for radialcomposite"
+msgstr " "
+
+#: src/synfig/valuenode_radialcomposite.cpp:257
+msgid "Luma"
+msgstr "Luma"
+
+#: src/synfig/valuenode_radialcomposite.cpp:273
+msgid "The length of the vector"
+msgstr "Längden på vektorn"
+
+#: src/synfig/valuenode_radialcomposite.cpp:276
+msgid "Theta"
+msgstr "Theta"
+
+#: src/synfig/valuenode_radialcomposite.cpp:277
+msgid "The angle of the vector with the X axis"
+msgstr "Vinkeln på vektorn med X-axeln"
+
+#: src/synfig/valuenode_range.cpp:122
+msgid "Some of my parameters aren't set!"
+msgstr "Några av parametrarna är inte inställda!"
+
+#: src/synfig/valuenode_range.cpp:278
+msgid "Min"
+msgstr "Min"
+
+#: src/synfig/valuenode_range.cpp:279
+msgid "Returned value when 'Link' is smaller"
+msgstr "Det värde du får när 'Länk' är mindre"
+
+#: src/synfig/valuenode_range.cpp:283
+msgid "Max"
+msgstr "Max"
+
+#: src/synfig/valuenode_range.cpp:284
+msgid "Returned value when 'Link' is greater"
+msgstr "Det värde du får när 'Länk' är större"
+
+#: src/synfig/valuenode_range.cpp:289
+msgid "The value node to limit its range"
+msgstr "Värdenoden för att begränsa den"
+
+#: src/synfig/valuenode_real.cpp:183
+msgid "The real value to be converted"
+msgstr ""
+
+#: src/synfig/valuenode_realstring.cpp:176
+msgid "Value to convert to string"
+msgstr "Reelt värde att konvertera till sträng"
+
+#: src/synfig/valuenode_realstring.cpp:181
+msgid "Width of the string"
+msgstr "Strängens längd"
+
+#: src/synfig/valuenode_realstring.cpp:185
+msgid "Precision"
+msgstr "Precision"
+
+#: src/synfig/valuenode_realstring.cpp:186
+msgid "Number of decimal places"
+msgstr "Antal decimalplatser"
+
+#: src/synfig/valuenode_realstring.cpp:190
+msgid "Zero Padded"
+msgstr "Fyll ut med nollor"
+
+#: src/synfig/valuenode_realstring.cpp:191
+msgid "When checked, the string is left filled with zeros to match the width"
+msgstr "När detta är på, fylls strängen med nollor från vänster för att få rätt längd"
+
+#: src/synfig/valuenode_reciprocal.cpp:166
+msgid "The value node used to calculate its reciprocal"
+msgstr "Värdenoded för att räkna ut dess reciproka värde"
+
+#: src/synfig/valuenode_reciprocal.cpp:171
+msgid ""
+"The value used to decide whether 'Link' is too small to obtain its "
+"reciprocal"
+msgstr "Värdet som används för att om 'Länk' är för litet för att kunna få tag på dess reciproka värde"
+
+#: src/synfig/valuenode_reciprocal.cpp:176
+msgid "The resulting value when 'Link' < 'Epsilon'"
+msgstr "Resultatvärdet när 'Länk' < 'Epsilon'"
+
+#: src/synfig/valuenode_reference.cpp:144
+msgid "The referenced value"
+msgstr "Det refererade värdet"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:204
+msgid "The source gradient to repeat"
+msgstr "Källgradienten som ska upprepas"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:208
+msgid "Count"
+msgstr "Räkna"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:209
+msgid "The number of repetition of the gradient"
+msgstr "Antalet upprepningar på gradienten"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:214
+msgid ""
+"Specifies how much biased is the source gradeint in the repetition [0,1]"
+msgstr "Anger hur mycket källgradienten avviker i upprepningen [0,1]"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:218
+msgid "Specify Start"
+msgstr "Ange start"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:219
+msgid ""
+"When checked, 'Start Color' is used as the start of the resulting gradient"
+msgstr "När detta är på, används 'Startfärg' som start på den färdiga gradienten"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:223
+msgid "Specify End"
+msgstr "Ange slut"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:224
+msgid ""
+"When checked, 'End Color' is used as the start of the resulting gradient"
+msgstr "När detta är på, används 'Slutfärg' som start på den färdiga gradienten"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:228
+msgid "Start Color"
+msgstr ""
+
+#: src/synfig/valuenode_repeat_gradient.cpp:229
+msgid "Used as the start of the resulting gradient"
+msgstr "Används som start på den färdiga gradienten"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:233
+msgid "End Color"
+msgstr "Slutfärg"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:234
+msgid "Used as the end of the resulting gradient"
+msgstr "Används som slut på den färdiga gradienten"
+
+#: src/synfig/valuenode_scale.cpp:152 src/synfig/valuenode_scale.cpp:173
+#: src/synfig/valuenode_scale.cpp:190
+msgid "Attempting to get the inverse of a non invertible Valuenode"
+msgstr "Försöker invertera en Värdenod som inte kan inverteras"
+
+#: src/synfig/valuenode_scale.cpp:268
+msgid "The value node used to scale"
+msgstr "Värdenoden för att skala (ändra storlek)"
+
+#: src/synfig/valuenode_scale.cpp:273
+msgid "Value that multiplies the value node"
+msgstr "Värde som multiplicerar Värdenoden"
+
+#: src/synfig/valuenode_segcalctangent.cpp:156
+#: src/synfig/valuenode_segcalcvertex.cpp:154
+msgid "Segment"
+msgstr "Segment"
+
+#: src/synfig/valuenode_segcalctangent.cpp:157
+msgid "The Segment where the tangent is linked to"
+msgstr "Segmentet tangenten är länkad med"
+
+#: src/synfig/valuenode_segcalctangent.cpp:162
+msgid "The position of the linked tangent on the Segment (0,1]"
+msgstr "Den länkade tangentens position i segmentet [0,1]"
+
+#: src/synfig/valuenode_segcalcvertex.cpp:155
+msgid "The Segment where the vertex is linked to"
+msgstr "Segmentet vertexen är länkad till"
+
+#: src/synfig/valuenode_segcalcvertex.cpp:160
+msgid "The position of the linked vertex on the Segment (0,1]"
+msgstr "Den länkade vertexens position i segmentet [0,1]"
+
+#: src/synfig/valuenode_sine.cpp:155
+msgid "The angle where the sine is calculated from"
+msgstr "Vinkeln att räkna ut sinus för"
+
+#: src/synfig/valuenode_sine.cpp:160
+msgid "The value that multiplies the resulting sine"
+msgstr "Värde som multiplicerar det uträknade sinus-värdet"
+
+#: src/synfig/valuenode_step.cpp:198
+msgid "The value node used to make the step"
+msgstr "Värdenod för att göra ett steg"
+
+#: src/synfig/valuenode_step.cpp:203
+msgid "The duration of the step"
+msgstr "Längd på steget"
+
+#: src/synfig/valuenode_step.cpp:207 src/tool/printing_functions.cpp:79
+msgid "Start Time"
+msgstr "Starttid"
+
+#: src/synfig/valuenode_step.cpp:208
+msgid "The time when the step conversion starts"
+msgstr "Tiden då steg-övergången startar"
+
+#: src/synfig/valuenode_step.cpp:212
+msgid "Intersection"
+msgstr "Skärningspunkt"
+
+#: src/synfig/valuenode_step.cpp:213
+msgid "Value that define whether the step is centered on the value [0,1]"
+msgstr ""
+
+#: src/synfig/valuenode_stripes.cpp:189 src/synfig/valuenode_twotone.cpp:153
+msgid "Color 1"
+msgstr "Färg 1"
+
+#: src/synfig/valuenode_stripes.cpp:190
+msgid "One color of the gradient stripes"
+msgstr "En av färgerna på gradient-ränderna"
+
+#: src/synfig/valuenode_stripes.cpp:194 src/synfig/valuenode_twotone.cpp:158
+msgid "Color 2"
+msgstr "Färg 2"
+
+#: src/synfig/valuenode_stripes.cpp:195
+msgid "Other color of the gradient stripes"
+msgstr "Den andra färgen på gradient-ränderna"
+
+#: src/synfig/valuenode_stripes.cpp:199
+msgid "Stripe Count"
+msgstr "Antal ränder"
+
+#: src/synfig/valuenode_stripes.cpp:200
+msgid "Number of stripes in the gradient"
+msgstr "Antal ränder i gradienten"
+
+#: src/synfig/valuenode_stripes.cpp:205
+msgid "Width of stripes in the gradient between [0,1]"
+msgstr "Bredd på ränderna i gradienten, mellan [0,1]"
+
+#: src/synfig/valuenode_subtract.cpp:219
+msgid "Left Hand Side of the subtraction"
+msgstr "Vänstra sidan av subtraktionen"
+
+#: src/synfig/valuenode_subtract.cpp:224
+msgid "Right Hand Side of the subtraction"
+msgstr "Högra sidan av subtraktionen"
+
+#: src/synfig/valuenode_subtract.cpp:229
+msgid "Value that multiplies the subtraction"
+msgstr "Värde som multiplicerar subtraktionen"
+
+#: src/synfig/valuenode_switch.cpp:153
+msgid "Link Off"
+msgstr "Länk av"
+
+#: src/synfig/valuenode_switch.cpp:154
+msgid "The value node returned when the switch is off"
+msgstr "Värdenoden som fås när växeln är av"
+
+#: src/synfig/valuenode_switch.cpp:158
+msgid "Link On"
+msgstr "Länk på"
+
+#: src/synfig/valuenode_switch.cpp:159
+msgid "The value node returned when the switch is on"
+msgstr "Värdenod som fås när växeln är på"
+
+#: src/synfig/valuenode_switch.cpp:164
+msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
+msgstr "När detta är på ges \"Länk på\", annars \"Länk av\""
+
+#: src/synfig/valuenode_timedswap.cpp:246
+msgid "The value node returned when current time is before 'time' - 'length'"
+msgstr "Värdenoden som fås när den nuvarande tiden är före 'tid' - 'längd'"
+
+#: src/synfig/valuenode_timedswap.cpp:251
+msgid "The value node returned when current time is after 'time'"
+msgstr "Värdenoden som fås när den nuvarande tiden är efter 'tid'"
+
+#: src/synfig/valuenode_timedswap.cpp:255
+#: src/synfig/valuenode_timestring.cpp:163
+msgid "Time"
+msgstr "Tid"
+
+#: src/synfig/valuenode_timedswap.cpp:256
+msgid "The time when the linear interpolation ends"
+msgstr "Tiden då den linjära interpolationen slutar"
+
+#: src/synfig/valuenode_timedswap.cpp:261
+msgid ""
+"The length of time when the linear interpolation between 'Before' and "
+"'After' is made"
+msgstr "Tiden för den linjära interpolationen mellan att 'Före' och 'Efter' har gjorts"
+
+#: src/synfig/valuenode_timeloop.cpp:175
+msgid "The value node to time loop"
+msgstr "Värdenoden för tidsslingor"
+
+#: src/synfig/valuenode_timeloop.cpp:180
+msgid "Start time of the loop for the value node timeline"
+msgstr "Starttid för slingan för värdenodens tidslinje"
+
+#: src/synfig/valuenode_timestring.cpp:164
+msgid "The time that is converted to string"
+msgstr "Tiden att konvertera till en sträng"
+
+#: src/synfig/valuenode_twotone.cpp:154
+msgid "The start color of the gradient"
+msgstr "Startfärg på gradienten"
+
+#: src/synfig/valuenode_twotone.cpp:159
+msgid "The end color of the gradient"
+msgstr "Slutfärg på gradienten"
+
+#: src/synfig/valuenode_vectorangle.cpp:147
+#: src/synfig/valuenode_vectorlength.cpp:145
+#: src/synfig/valuenode_vectorx.cpp:145 src/synfig/valuenode_vectory.cpp:145
+msgid "Vector"
+msgstr ""
+
+#: src/synfig/valuenode_vectorangle.cpp:148
+msgid "The vector where the angle is calculated from"
+msgstr ""
+
+#: src/synfig/valuenode_vectorlength.cpp:146
+msgid "The vector where the length is calculated from"
+msgstr ""
+
+#: src/synfig/valuenode_vectorx.cpp:146
+msgid "The vector where the X coordinate is extracted from"
+msgstr ""
+
+#: src/synfig/valuenode_vectory.cpp:146
+msgid "The vector where the Y coordinate is extracted from"
+msgstr ""
+
+#: src/synfig/valuenode_wplist.cpp:348
+#, c-format
+msgid "WidthPoint %03d"
+msgstr ""
+
+#: src/tool/main.cpp:140
+msgid "FATAL: Synfig Version Mismatch"
+msgstr ""
+
+#: src/tool/main.cpp:176
+msgid "Settings"
+msgstr ""
+
+#: src/tool/main.cpp:178
+msgid "Specify output target (Default: PNG)"
+msgstr ""
+
+#: src/tool/main.cpp:179
+msgid "Set the image width in pixels (Use zero for file default)"
+msgstr ""
+
+#: src/tool/main.cpp:180
+msgid "Set the image height in pixels (Use zero for file default)"
+msgstr ""
+
+#: src/tool/main.cpp:181
+msgid "Set the diagonal size of image window (Span)"
+msgstr "Ange den diagonala storleken på bildfönstret (spann)"
+
+#: src/tool/main.cpp:182
+msgid "Set antialias amount for parametric renderer."
+msgstr "Ange mängden kantutjämning för parametrisk rendering"
+
+#: src/tool/main.cpp:183
+#, c-format
+msgid "Specify image quality for accelerated renderer (Default: %d)"
+msgstr ""
+
+#: src/tool/main.cpp:184
+msgid "Gamma"
+msgstr ""
+
+#: src/tool/main.cpp:185
+msgid "Enable multithreaded renderer using the specified number of threads"
+msgstr ""
+
+#: src/tool/main.cpp:186
+msgid "Specify input filename"
+msgstr ""
+
+#: src/tool/main.cpp:187
+msgid "Specify output filename"
+msgstr "Ange utdata-filnamn"
+
+#: src/tool/main.cpp:188
+msgid ""
+"Output file sequence separator string (Use double quotes if you want to use "
+"spaces)"
+msgstr ""
+
+#: src/tool/main.cpp:189
+msgid "Render the canvas with the given id instead of the root."
+msgstr "Rendera ritytan med det angivna id:t istället för roten."
+
+#: src/tool/main.cpp:190
+msgid "Set the frame rate"
+msgstr ""
+
+#: src/tool/main.cpp:191
+msgid "Render a single frame at <seconds>"
+msgstr ""
+
+#: src/tool/main.cpp:192 src/tool/main.cpp:193
+msgid "Set the starting time"
+msgstr ""
+
+#: src/tool/main.cpp:194
+msgid "Set the ending time"
+msgstr ""
+
+#: src/tool/main.cpp:195
+msgid "Set the physical resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:196
+msgid "Set the physical X resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:197
+msgid "Set the physical Y resolution (Dots-per-inch)"
+msgstr ""
+
+#: src/tool/main.cpp:200
+msgid "Switch options"
+msgstr ""
+
+#: src/tool/main.cpp:202
+msgid "Output verbosity level"
+msgstr ""
+
+#: src/tool/main.cpp:203
+msgid "Quiet mode (No progress/time-remaining display)"
+msgstr "Tyst läge (visar inte framsteg och kvarvarabde tid)"
+
+#: src/tool/main.cpp:204
+msgid "Print benchmarks"
+msgstr ""
+
+#: src/tool/main.cpp:207
+msgid "Misc options"
+msgstr ""
+
+#: src/tool/main.cpp:209
+msgid "Append layers in <filename> to composition"
+msgstr ""
+
+#: src/tool/main.cpp:210
+msgid "Print out specified details of the root canvas"
+msgstr ""
+
+#: src/tool/main.cpp:211 src/tool/main.cpp:237
+msgid "Print out the list of exported canvases in the composition"
+msgstr ""
+
+#: src/tool/main.cpp:214
+msgid "FFMPEG target options"
+msgstr ""
+
+#: src/tool/main.cpp:216
+msgid "Set the codec for the video. See --ffmpeg-video-codecs"
+msgstr ""
+
+#: src/tool/main.cpp:217
+msgid "Set the bitrate for the output video"
+msgstr ""
+
+#: src/tool/main.cpp:220
+msgid "Synfig info options"
+msgstr ""
+
+#: src/tool/main.cpp:222
+msgid "Produce this help message"
+msgstr ""
+
+#: src/tool/main.cpp:223
+msgid "Print out the list of available importers"
+msgstr ""
+
+#: src/tool/main.cpp:224
+msgid "Print out misc build information"
+msgstr ""
+
+#: src/tool/main.cpp:225
+msgid "Print out the list of available layers"
+msgstr ""
+
+#: src/tool/main.cpp:226
+msgid "Print out layer's description, parameter info, etc."
+msgstr ""
+
+#: src/tool/main.cpp:227
+msgid "Print out license information"
+msgstr ""
+
+#: src/tool/main.cpp:228
+msgid "Print out the list of loaded modules"
+msgstr ""
+
+#: src/tool/main.cpp:229
+msgid "Print out the list of available targets"
+msgstr ""
+
+#: src/tool/main.cpp:230
+msgid ""
+"Print out the list of available video codecs when encoding through FFMPEG"
+msgstr ""
+
+#: src/tool/main.cpp:231
+msgid "Print out the list of available ValueNodes"
+msgstr ""
+
+#: src/tool/main.cpp:232
+msgid "Print out version information"
+msgstr ""
+
+#: src/tool/main.cpp:241
+msgid "Synfig debug flags"
+msgstr ""
+
+#: src/tool/main.cpp:243
+msgid "Test GUID generation"
+msgstr ""
+
+#: src/tool/main.cpp:244
+msgid "Test signal implementation"
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:73
+msgid "Nothing to do!"
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:84
+msgid "Attempting to determine target/outfile..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:90
+msgid "Target name undefined, attempting to figure it out"
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:122
+msgid "Defaulting to PNG target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:147
+msgid "Unable to create ouput for \""
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:149 src/tool/joblistprocessor.cpp:167
+msgid "Throwing out job..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:153
+msgid "Creating the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:165
+msgid "Unknown target for \""
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:177
+msgid "Setting the canvas on the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:180
+msgid "Setting the quality of the target..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
+msgid "Render Failure."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:229
+msgid "Rendering..."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:239
+msgid ": Rendered in "
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:240
+msgid " seconds."
+msgstr ""
+
+#: src/tool/joblistprocessor.cpp:243
+msgid "Done."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:114
+msgid "Unrecognised canvas variable: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:115
+msgid "Recognized variables are:"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:132
+msgid "verbosity set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:147
+msgid "Threads set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:225
+msgid "Layer Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:226
+msgid "Localized Layer Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:228
+msgid "Version: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:233
+msgid "param - "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:235
+msgid " (not critical)"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:236
+msgid "\tLocalized Name: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:240
+msgid "\tDescription: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:244
+msgid "\tHint: "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:310
+#, c-format
+msgid "Antialiasing set to %d, (%d samples per pixel)"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:317
+#, c-format
+msgid "Span set to %d units"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:325
+#, c-format
+msgid "Frame rate set to %d frames per second"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:335
+#, c-format
+msgid "Physical resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:344
+#, c-format
+msgid "Physical X resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:353
+#, c-format
+msgid "Physical Y resolution set to %f dpi"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:380
+msgid "Rendering frame at "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:386
+msgid "Gamma argument is currently ignored"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:401
+#, c-format
+msgid "Resolution set to %dx%d"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:418
+msgid "Both video codec and bitrate parameters are necessary."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:438
+#, c-format
+msgid "Video codec \"%s\" is not supported."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:441
+#, c-format
+msgid "Target video codec set to %s"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:447
+#, c-format
+msgid "Target bitrate set to %dk"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:453
+#, c-format
+msgid "Output file sequence separator set to %s"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:488
+#, c-format
+msgid "Unable to load '%s'."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:495
+msgid "No input file provided."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:500
+msgid "Target set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:514
+msgid "Quality set to "
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:533
+#, c-format
+msgid ""
+"Unable to find canvas with ID \"%s\" in %s.\n"
+"Throwing out job..."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:539
+#, c-format
+msgid ""
+"Invalid canvas name \"%s\" in %s.\n"
+"Throwing out job..."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:558
+msgid "Unable to append '"
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:572
+msgid "Appended contents of "
+msgstr ""
+
+#: src/tool/printing_functions.cpp:86
+msgid "End Time"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:93
+msgid "Frame Rate"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:100
+msgid "Start Frame"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:107
+msgid "End Frame"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:129
+msgid "Image Aspect Ratio"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:139
+msgid "Pixel Width"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:146
+msgid "Pixel Height"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:153
+msgid "Pixel Aspect Ratio"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:163
+msgid "Top Left"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:170
+msgid "Bottom Right"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:177
+msgid "Physical Width"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:184
+msgid "Physical Height"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:191
+msgid "X Resolution"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:197
+msgid "Y Resolution"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:203
+msgid "Diagonal Image Span"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:212
+msgid "Interlaced"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:219
+msgid "Antialias"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:233
+msgid "Flags"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:240
+msgid "Focus"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:247
+msgid "Background Color"
+msgstr ""
+
+#: src/tool/printing_functions.cpp:258
+msgid "Metadata"
+msgstr ""
+
+#: src/tool/renderprogress.h:109
+msgid "Line"
+msgstr ""
+
+#: src/tool/renderprogress.h:109
+msgid " of "
+msgstr ""
+
+#: src/tool/renderprogress.h:124
+msgid "w "
+msgstr ""
+
+#: src/tool/renderprogress.h:127
+msgid "d "
+msgstr ""
+
+#: src/tool/renderprogress.h:130
+msgid "h "
+msgstr ""
+
+#: src/tool/renderprogress.h:133
+msgid "m "
+msgstr ""
+
+#: src/tool/renderprogress.h:136
+msgid "s "
+msgstr ""

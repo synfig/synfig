@@ -335,12 +335,9 @@ LayerTree::create_param_tree()
 		column->set_reorderable();
 		column->set_resizable();
 	}
-	{	// --- T Y P E --------------------------------------------------------
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Type")) );
-		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
-		column->pack_start(*text_cellrenderer,false);
-		column->add_attribute(text_cellrenderer->property_text(), param_model.type);
-		text_cellrenderer->property_attributes()=attr_list;
+	{
+		// --- F L A G S (static/interpolation) -----------------------------------------
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
 
 		// Set up the interpolation icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* interpolation_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
@@ -351,8 +348,23 @@ LayerTree::create_param_tree()
 		// Set up the static icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*static_icon_cellrenderer,false);
-		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-animate_mode_off"),icon_size);
+		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
 		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
+
+		// Finish setting up the column
+		get_param_tree_view().append_column(*column);
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
+		column->set_clickable();
+		column->set_min_width(26);
+		column->set_reorderable();
+		column->set_resizable();
+	}
+	{	// --- T Y P E --------------------------------------------------------
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Type")) );
+		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+		column->pack_start(*text_cellrenderer,false);
+		column->add_attribute(text_cellrenderer->property_text(), param_model.type);
+		text_cellrenderer->property_attributes()=attr_list;
 
 		get_param_tree_view().append_column(*column);
 		column->set_reorderable();

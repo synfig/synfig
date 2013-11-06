@@ -170,26 +170,37 @@ ffmpeg_trgt::init()
 
 	string command;
 
+	String binary_path = synfig::get_binary_path("");
+	if (binary_path != "")
+		binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
+	binary_path += "ffmpeg.exe";
+
 	if( filename.c_str()[0] == '-' )
-		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop_input"
+		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
+							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							" -vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
+							binary_path.c_str(),
 							desc.get_frame_rate(),
 							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 	else
-		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop_input"
+		command = strprintf("\"%s\" -f image2pipe -vcodec ppm -an"
+							" -r %f -i pipe: -loop 1"
 							" -metadata title=\"%s\" "
 							"-vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
+							binary_path.c_str(),
 							desc.get_frame_rate(),
 							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
+
+	// This covers the dumb cmd.exe behavior.
+	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+	command = "\"" + command + "\"";
 
 	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
@@ -198,14 +209,14 @@ ffmpeg_trgt::init()
 	int p[2];
 
 	if (pipe(p)) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (no pipe)"));
 		return false;
 	};
 
 	pid = fork();
 
 	if (pid == -1) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (pid == -1)"));
 		return false;
 	}
 
@@ -215,7 +226,7 @@ ffmpeg_trgt::init()
 		close(p[1]);
 		// Dup pipeout to stdin
 		if( dup2( p[0], STDIN_FILENO ) == -1 ){
-			synfig::error(_("Unable to open pipe to ffmpeg"));
+			synfig::error(_("Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"));
 			return false;
 		}
 		// Close the unneeded pipeout
@@ -227,7 +238,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input", "-metadata",
+					   "-i", "pipe:", "-loop", "1", "-metadata",
 						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 						"-vcodec", video_codec.c_str(),
 						"-b", strprintf("%ik", bitrate).c_str(),
@@ -237,7 +248,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input", "-metadata",
+					   "-i", "pipe:", "-loop", "1", "-metadata",
 						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 						"-vcodec", video_codec.c_str(),
 						"-b", strprintf("%ik", bitrate).c_str(),
@@ -249,7 +260,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input",
+					   "-i", "pipe:", "-loop", "1",
 					   "-metadata",
 					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 					   "-vcodec", video_codec.c_str(),
@@ -260,7 +271,7 @@ ffmpeg_trgt::init()
 				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 					   "ppm", "-an", "-r",
 					   strprintf("%f", desc.get_frame_rate()).c_str(),
-					   "-i", "pipe:", "-loop_input",
+					   "-i", "pipe:", "-loop", "1",
 					   "-metadata",
 					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 					   "-vcodec", video_codec.c_str(),
@@ -269,7 +280,7 @@ ffmpeg_trgt::init()
 		}
 
 		// We should never reach here unless the exec failed
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (exec failed)"));
 		return false;
 	} else {
 		// Parent process
@@ -287,7 +298,7 @@ ffmpeg_trgt::init()
 
 	if(!file)
 	{
-		synfig::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg (no file)"));
 		return false;
 	}
 

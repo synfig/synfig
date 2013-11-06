@@ -10,10 +10,10 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Synfig Studio 0.64.0"
+Name "Synfig Studio 0.64.1"
 
 ; The file to write
-OutFile "synfigstudio-0.64.0.exe"
+OutFile "synfigstudio-0.64.1.exe"
 
 ; The default installation directory and registry
 !include "arch-specific.nsh"
@@ -93,11 +93,11 @@ GtkrcExists:
 
 PastGtkrcCheck:
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
-  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "0.64.0"
+  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "0.64.1"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayName" "Synfig Studio"
-  WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayVersion" "0.64.0"
+  WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayVersion" "0.64.1"
   WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "UninstallString" '"$INSTDIR\${PRODUCT_UNINSTALL_EXE}"'
   WriteRegDWORD HKLM "${PRODUCT_UNINSTALL_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${PRODUCT_UNINSTALL_KEY}" "NoRepair" 1
@@ -135,6 +135,8 @@ SectionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
+
+  SetOutPath "$INSTDIR\bin"
 
   SetShellVarContext All
   CreateDirectory "$SMPROGRAMS\Synfig"

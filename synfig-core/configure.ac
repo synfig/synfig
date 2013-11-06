@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.64.0],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
+AC_INIT([Synfig Core],[0.64.1],[http://www.synfig.org/issues/thebuggenie/synfig],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -159,28 +159,14 @@ AC_ARG_WITH(magickpp,[
 	with_magickpp="yes"
 ])
 if test $with_magickpp = "yes" ; then {
-  AC_CHECK_HEADER([Magick++.h],[
-  	MAGICKPP_LIBS="-lMagick++"
-  	AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
-  	AC_SUBST(MAGICKPP_LIBS)
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
-	AC_CHECK_LIB(Magick,OptimizeImageTransparency,[
-		AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
-		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
+	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
+		with_magickpp="yes"
+                AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
 	],[
-		AC_MSG_RESULT([ *** OptimizeImageTransparency() not available - need ImageMagick 6.3 or newer ])
-		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
+                with_magickpp="no"
+                AC_MSG_RESULT([ *** Magick++ Output target disabled])
+                AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 	])
-  ],[
-	with_magickpp="no"
-  	AC_MSG_RESULT([ *** Magick++ Output target disabled])
-  	TARGET_MAGICKPP="no"
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
-	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
-  ])
-} else {
-	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
-	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
 } ; fi
 
 
@@ -395,14 +381,16 @@ if test $with_jpeg = "no" ; then {
 
 AC_LIB_LTDL
 
-ALL_LINGUAS="es fr it ru de en_GB zh_CN ro no_NO pt_BR pl_PL fa_IR nl sk_SK lt el_GR cs hu ja_JP"
+# Languages list (alphabetical order, please!)
+ALL_LINGUAS="ca cs da de el_GR en_GB es eu eu_ES fa_IR fr hu it ja_JP lt nl no_NO pl_PL pt_BR ro ru si sk_SK sv_SE tr zh_CN"
+
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.16],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.16 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.17],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.17 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -691,8 +679,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $MAGICKPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBPANGO_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $MAGICKPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBPANGO_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"

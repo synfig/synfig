@@ -80,7 +80,7 @@ export EMAIL='root@synfig.org'
 LIBSIGCPP=2.0.18
 GLEW=1.5.1
 CAIROMM=1.8.0
-IMAGEMAGICK=6.4.0
+IMAGEMAGICK=6.8.6
 PANGOMM=2.24.0
 GTKMM=2.16.0 # !!! we need pangomm have show_in_cairo_context()
 FTGL=2.1.2
@@ -195,10 +195,14 @@ fi
 
 mkimagemagick()
 {
+PKG_NAME=ImageMagick
+PKG_VERSION="${IMAGEMAGICK}-10"
+TAREXT=bz2
 if ! pkg-config ImageMagick --exact-version=${IMAGEMAGICK}  --print-errors; then
 	pushd /source
-	[ ! -d ImageMagick-${IMAGEMAGICK} ] && tar -xjf ImageMagick-${IMAGEMAGICK}-10.tar.bz2 && cd ImageMagick-${IMAGEMAGICK} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
-	cd ImageMagick-${IMAGEMAGICK}
+	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.bz2 # && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ../ImageMagick-6.4.0-multilib.patch && cd ..
+	cd ${PKG_NAME}-${PKG_VERSION}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared \
 		--with-modules \
@@ -476,8 +480,6 @@ else
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
 fi
 
-export CXXFLAGS=-I${PREFIX}/include/ImageMagick
-
 ( [[ $MODE == 'package' ]] || [[ $MODE == 'full' ]] ) && make clean || true
 
 if [[ $MODE != 'quick' ]]; then
@@ -552,7 +554,36 @@ mkpack()
 	# bundle libjasper
 	rm -f ${PREFIX}/lib/libjasper* || true
 	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
+	# bundle libltdl
+	rm -f ${PREFIX}/lib/libltdl* || true
+	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
+	
+	cat > $PREFIX/synfig <<EOF
+#!/bin/sh
 
+PREFIX="/opt/synfig"
+
+export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${PREFIX}/
+export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
+
+\$PREFIX/bin/synfig "\$@"
+EOF
+	chmod a+x $PREFIX/synfig
+	
+	cat > $PREFIX/synfigstudio <<EOF
+#!/bin/sh
+
+PREFIX="/opt/synfig"
+
+export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${PREFIX}/
+export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
+
+\$PREFIX/bin/synfigstudio "\$@"
+EOF
+	chmod a+x $PREFIX/synfigstudio
+	
 	#== tar.bz2 ==
 	TBZPREFIX=/tmp/synfigstudio-${VERSION}-${REVISION}.$BREED.$RELEASE.${ARCH}
 	rm -rf $TBZPREFIX
@@ -591,7 +622,7 @@ export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${PREFIX}/
 export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
 
-$GDB\$PREFIX/bin/synfigstudio \$@
+$GDB\$PREFIX/bin/synfigstudio "\$@"
 EOF
 	chmod a+x $TBZPREFIX/synfig
 	chmod a+x $TBZPREFIX/synfigstudio
@@ -673,8 +704,8 @@ mkdir -p \$RPM_BUILD_ROOT/usr/share/pixmaps
 ln -sf ${PREFIX}/share/pixmaps/sif_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/sif_icon.png
 ln -sf ${PREFIX}/share/pixmaps/synfig_icon.png \$RPM_BUILD_ROOT/usr/share/pixmaps/synfig_icon.png
 mkdir -p \$RPM_BUILD_ROOT/usr/bin
-mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfig \$RPM_BUILD_ROOT/usr/bin/
-mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
+cp \$RPM_BUILD_ROOT/${PREFIX}/synfig \$RPM_BUILD_ROOT/usr/bin/
+cp \$RPM_BUILD_ROOT/${PREFIX}/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 
 #if [ -e \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor ]; then
 #mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio-cph-monitor \$RPM_BUILD_ROOT/usr/bin/
@@ -696,7 +727,7 @@ mv \$RPM_BUILD_ROOT/${PREFIX}/bin/synfigstudio \$RPM_BUILD_ROOT/usr/bin/
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.la
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.a
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/cairo/*.la
-rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
+#rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/include
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/libxml++-2.6
@@ -876,11 +907,12 @@ initialize()
 		DEBUG=''
 	fi
 
-
+	if [[ $MODE == 'package' ]]; then
+		PREFIX="/opt/synfig"
+	fi
 
 	if [[ $MODE == 'package' ]] && [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 		SYNFIG_REPO_DIR="/source/synfig.git"
-		PREFIX="/opt/synfig"
 
 		which git || mkgit
 
@@ -905,11 +937,11 @@ initialize()
 			BREED=${BREED%_master}
 		fi
 		if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
-			if [[ $BREED == 'master' ]]; then
+			#if [[ $BREED == 'master' ]]; then
 				BREED=rc${VERSION##*-RC}
-			else
-				BREED=rc${VERSION##*-RC}.$BREED
-			fi
+			#else
+			#	BREED=rc${VERSION##*-RC}.$BREED
+			#fi
 			VERSION=${VERSION%%-*}
 		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
@@ -1046,12 +1078,11 @@ mkpackage()
 			echo "   Library set is changed. Force cleanup..."
 			echo "======================= !!! ======================"
 			sleep 5
-			if [ -e $PACKAGES_BUILDROOT.$ARCH/usr/local ]; then
-				rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local
-			fi
-			if [ -e $PACKAGES_BUILDROOT.$ARCH/$PREFIX ]; then
-				rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX
-			fi
+			echo "Cleaning $PACKAGES_BUILDROOT.$ARCH/usr/local ..."
+			rm -rf $PACKAGES_BUILDROOT.$ARCH/usr/local || true
+			echo "Cleaning $PACKAGES_BUILDROOT.$ARCH/$PREFIX ..."
+			rm -rf $PACKAGES_BUILDROOT.$ARCH/$PREFIX || true
+			echo
 		fi
 		#set library set ID
 		echo "${BUILDROOT_LIBRARY_SET_ID}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot_libset.id
@@ -1067,7 +1098,7 @@ mkpackage()
 			echo "Acquire::http::Proxy \"$http_proxy\";" > $PACKAGES_BUILDROOT.$ARCH/etc/apt/apt.conf
 		fi
 		#fetch sources to cache
-		[ -d $PACKAGES_BUILDROOT.$ARCH/source ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source || true
+		[ -d $PACKAGES_BUILDROOT.$ARCH/source/synfig.git ] && rm -rf $PACKAGES_BUILDROOT.$ARCH/source/synfig.git || true
 		if [ -d $PACKAGES_BUILDROOT/synfig.git ]; then
 			if [[ $WORKDIR_IS_REPO == 1 ]]; then
 				rm -rf "$PACKAGES_BUILDROOT/synfig.git"

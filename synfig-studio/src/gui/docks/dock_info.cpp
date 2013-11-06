@@ -76,8 +76,19 @@ void studio::Dock_Info::on_mouse_move()
 	x.set_text(xv.get_string(3));
 	y.set_text(yv.get_string(3));
 
-	Color c = get_canvas_view()->get_canvas()->get_context( get_canvas_view()->get_context_params() ).get_color(pos);
-	float cr = c.get_r(),cg = c.get_g(), cb = c.get_b();
+	float cr=0.f,cg=0.f,cb=0.f,ca=0.f;
+	if (App::workarea_uses_cairo)
+	{
+		// TODO: This is disabled for now, because it crashes Synfig when *.lst files are imported
+		
+		//CairoColor c = get_canvas_view()->get_canvas()->get_context( get_canvas_view()->get_context_params() ).get_cairocolor(pos);
+		//cr = c.get_r(); cg = c.get_g(); cb = c.get_b(); ca = c.get_a();
+	}
+	else
+	{
+		Color c = get_canvas_view()->get_canvas()->get_context( get_canvas_view()->get_context_params() ).get_color(pos);
+		cr = c.get_r(); cg = c.get_g(); cb = c.get_b(); ca = c.get_a();
+	}
 
 	if(use_colorspace_gamma())
 	{
@@ -89,7 +100,7 @@ void studio::Dock_Info::on_mouse_move()
 	r.set_text(strprintf("%.1f%%",cr*100));
 	g.set_text(strprintf("%.1f%%",cg*100));
 	b.set_text(strprintf("%.1f%%",cb*100));
-	a.set_text(strprintf("%.1f%%",c.get_a()*100));
+	a.set_text(strprintf("%.1f%%",ca*100));
 }
 
 studio::Dock_Info::Dock_Info()
