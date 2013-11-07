@@ -85,6 +85,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Layer_PasteCanvas::Layer_PasteCanvas():
+	param_transformation(Transformation()),
 	param_origin      (Vector(0,0)),
 	param_focus       (Vector(0,0)),
 	param_zoom        (Real(0)),
@@ -137,6 +138,10 @@ Layer_PasteCanvas::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
+	ret.push_back(ParamDesc("transformation")
+		.set_local_name(_("Transformation"))
+		.set_description(_("Position, rotation and scale"))
+	);
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point where you want the origin to be"))
@@ -216,6 +221,7 @@ Layer_PasteCanvas::get_param_vocab()const
 bool
 Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
+	IMPORT_VALUE(param_transformation);
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_focus);
 
@@ -329,6 +335,7 @@ Layer_PasteCanvas::on_canvas_set()
 ValueBase
 Layer_PasteCanvas::get_param(const String& param)const
 {
+	EXPORT_VALUE(param_transformation);
 	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_focus);
 	if (param=="canvas")
