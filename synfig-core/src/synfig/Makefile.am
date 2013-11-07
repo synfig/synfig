@@ -222,6 +222,7 @@ SYNFIGHEADERS = \
 	surfacenew.h \
 	types.h \
 	vector.h \
+	transformation.h \
 	version.h \
 	boneweightpair.h \
 	activepoint.h \
