@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<canvas version="0.9" width="480" height="270" xres="2834.645752" yres="2834.645752" view-box="-4.000000 2.250000 4.000000 -2.250000" antialias="1" fps="24.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="1.0" width="480" height="270" xres="2834.645752" yres="2834.645752" view-box="-4.000000 2.250000 4.000000 -2.250000" antialias="1" fps="24.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Stickman</name>
   <desc>  </desc>
   <meta name="grid_show" content="0"/>
@@ -72,7 +72,7 @@
     <bool value="false" id="(stk)-children-lock"/>
     <string id="(stk)-version">1</string>
   </defs>
-  <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)">
+  <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -90,7 +90,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-forearm2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-forearm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -108,7 +108,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -126,7 +126,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape071 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape071 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -157,7 +157,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="D69756004D5F4C4F5F5C30FA21830F3C">
+                        <bline guid="D69756004D5F4C4F5F5C30FA21830F3C" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -195,6 +195,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -234,6 +240,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -259,8 +271,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -271,7 +295,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-elbow2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-elbow2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -296,7 +320,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="elbow2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="elbow2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-elbow2-r">
                     <y>
@@ -311,7 +335,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -324,7 +348,7 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow2-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -427,6 +451,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -453,10 +483,10 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder2" group="(stk)-control">
                 <param name="origin" use=":(stk)-shoulder2"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -469,7 +499,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -478,7 +508,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -499,8 +529,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-arm2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-arm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -518,7 +560,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -536,7 +578,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape072 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape072 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -567,7 +609,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="8F66989DFA03CD4FB96646F3C74B2D34">
+                        <bline guid="8F66989DFA03CD4FB96646F3C74B2D34" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -605,6 +647,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -644,6 +692,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -669,8 +723,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -681,7 +747,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-wrist2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-wrist2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -706,7 +772,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="wrist2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="wrist2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-wrist2-r">
                     <y>
@@ -721,7 +787,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -734,7 +800,7 @@
                 </param>
                 <param name="amount" use=":(stk)-wrist2-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -837,6 +903,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -863,7 +935,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -876,15 +948,15 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="elbow2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="elbow2" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-elbow2-r" theta=":(stk)-elbow2-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder2">
                 <param name="origin" use=":(stk)-shoulder2"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -897,7 +969,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -906,7 +978,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -927,8 +999,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-palm2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -946,7 +1030,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -964,7 +1048,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape073 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape073 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -1033,6 +1117,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1072,6 +1162,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -1097,8 +1193,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -1109,7 +1217,7 @@
                   <angle value="180.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-palm2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -1134,7 +1242,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="palm2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="palm2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-palm2-r">
                     <y>
@@ -1149,7 +1257,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1162,7 +1270,7 @@
                 </param>
                 <param name="amount" use=":(stk)-palm2-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1180,7 +1288,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="palm2" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="palm2" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" radius=":(stk)-palm2-r" theta=":(stk)-palm2-t"/>
                       </param>
@@ -1205,8 +1313,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1309,6 +1429,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -1335,7 +1461,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1348,12 +1474,12 @@
                 </param>
                 <param name="amount" use=":(stk)-wrist2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="wrist2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="wrist2" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-wrist2-r" theta=":(stk)-wrist2-t"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1366,15 +1492,15 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="elbow2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="elbow2">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-elbow2-r" theta=":(stk)-elbow2-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder2">
                 <param name="origin" use=":(stk)-shoulder2"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1387,7 +1513,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -1396,7 +1522,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -1417,8 +1543,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-forearm1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-forearm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1436,7 +1574,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1454,7 +1592,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="NewBLine432 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="NewBLine432 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -1485,7 +1623,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="D69756004D5F4C4F5F5C30FA21830F3C">
+                        <bline guid="D69756004D5F4C4F5F5C30FA21830F3C" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -1523,6 +1661,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1562,6 +1706,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -1587,8 +1737,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -1599,7 +1761,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-elbow1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-elbow1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -1624,7 +1786,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="elbow1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="elbow1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-elbow1-r">
                     <y>
@@ -1639,7 +1801,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1652,7 +1814,7 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow1-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1755,6 +1917,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -1781,10 +1949,10 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder1" group="(stk)-control">
                 <param name="origin" use=":(stk)-shoulder1"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -1797,7 +1965,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -1806,7 +1974,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -1827,8 +1995,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-arm1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-arm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1846,7 +2026,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -1864,7 +2044,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape074 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape074 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -1895,7 +2075,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="8F66989DFA03CD4FB96646F3C74B2D34">
+                        <bline guid="8F66989DFA03CD4FB96646F3C74B2D34" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -1933,6 +2113,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -1972,6 +2158,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -1997,8 +2189,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -2009,7 +2213,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-wrist1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-wrist1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -2034,7 +2238,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="wrist1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="wrist1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-wrist1-r">
                     <y>
@@ -2049,7 +2253,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2062,7 +2266,7 @@
                 </param>
                 <param name="amount" use=":(stk)-wrist1-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2165,6 +2369,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -2191,7 +2401,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2204,15 +2414,15 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="elbow1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="elbow1" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-elbow1-r" theta=":(stk)-elbow1-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder1">
                 <param name="origin" use=":(stk)-shoulder1"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2225,7 +2435,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -2234,7 +2444,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -2255,8 +2465,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-palm1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2274,7 +2496,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2292,7 +2514,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape075 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape075 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -2361,6 +2583,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2400,6 +2628,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -2425,8 +2659,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-palm1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-palm1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -2451,7 +2697,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="palm1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="palm1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-palm1-r">
                     <y>
@@ -2466,7 +2712,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2479,7 +2725,7 @@
                 </param>
                 <param name="amount" use=":(stk)-palm1-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2497,7 +2743,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="palm1" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="palm1" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" radius=":(stk)-palm1-r" theta=":(stk)-palm1-t"/>
                       </param>
@@ -2522,8 +2768,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2626,6 +2884,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -2652,7 +2916,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2665,12 +2929,12 @@
                 </param>
                 <param name="amount" use=":(stk)-wrist1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="wrist1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="wrist1" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-wrist1-r" theta=":(stk)-wrist1-t"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2683,15 +2947,15 @@
                 </param>
                 <param name="amount" use=":(stk)-elbow1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="elbow1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="elbow1">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-elbow1-r" theta=":(stk)-elbow1-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulder1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulder1">
                 <param name="origin" use=":(stk)-shoulder1"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -2704,7 +2968,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -2713,7 +2977,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -2734,8 +2998,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-head">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-head">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2753,7 +3029,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2771,7 +3047,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -2802,7 +3078,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="5E5BF674091C5097418ECB11B7F0F88A">
+                        <bline guid="5E5BF674091C5097418ECB11B7F0F88A" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -2840,6 +3116,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2879,6 +3161,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2918,6 +3206,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -2957,12 +3251,18 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
                       </param>
                     </layer>
-                    <layer type="outline" active="true" version="0.2" desc="head">
+                    <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="head">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3004,7 +3304,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="5E5BF674091C5097418ECB11B7F0F88A">
+                        <bline guid="5E5BF674091C5097418ECB11B7F0F88A" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -3042,6 +3342,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3081,6 +3387,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3120,6 +3432,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3159,6 +3477,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -3185,7 +3509,7 @@
                         <bool value="true"/>
                       </param>
                     </layer>
-                    <layer type="outline" active="true" version="0.2" desc="NewBLine010 Контур">
+                    <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="NewBLine010 Контур">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3261,6 +3585,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3300,6 +3630,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -3346,8 +3682,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -3358,7 +3706,7 @@
                   <angle value="-90.000000"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -3367,7 +3715,7 @@
                 </param>
                 <param name="amount" use=":(stk)-head-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3385,7 +3733,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="head-angle" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="head-angle" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" radius=":(stk)-head-r" theta=":(stk)-head-t"/>
                       </param>
@@ -3410,11 +3758,23 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="head" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="head" group="(stk)-control">
                 <param name="origin" use=":(stk)-head"/>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -3427,7 +3787,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="shoulders">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders">
                 <param name="origin">
                   <radial_composite type="vector" theta=":(stk)-body-t">
                     <radius>
@@ -3436,7 +3796,7 @@
                   </radial_composite>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -3457,8 +3817,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-body">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-body">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -3476,7 +3848,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3494,7 +3866,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape070 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape070 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3563,6 +3935,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -3602,6 +3980,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -3627,8 +4011,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -3639,7 +4035,7 @@
                   <angle value="-90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-body-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-body-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -3664,7 +4060,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="body">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="body">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-body-r">
                     <y>
@@ -3679,7 +4075,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -3692,7 +4088,7 @@
                 </param>
                 <param name="amount" use=":(stk)-body-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3795,6 +4191,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -3821,7 +4223,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3839,7 +4241,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="shoulders" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="shoulders" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" theta=":(stk)-body-t">
                           <radius>
@@ -3868,8 +4270,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center" group="(stk)-control">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -3890,8 +4304,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-hip1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-hip1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -3909,7 +4335,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -3927,7 +4353,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape076 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape076 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -3958,7 +4384,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="2DA787A07D177461F1D0C43A14344142">
+                        <bline guid="2DA787A07D177461F1D0C43A14344142" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -3996,6 +4422,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4035,6 +4467,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -4060,8 +4498,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -4072,7 +4522,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-knee1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-knee1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4097,7 +4547,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="knee1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="knee1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-knee1-r">
                     <y>
@@ -4112,7 +4562,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -4125,7 +4575,7 @@
                 </param>
                 <param name="amount" use=":(stk)-knee1-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4228,6 +4678,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -4254,10 +4710,10 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip1" group="(stk)-control">
                 <param name="origin" use=":(stk)-hip1"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -4278,8 +4734,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-leg1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-leg1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4297,7 +4765,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4315,7 +4783,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape077 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape077 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -4346,7 +4814,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="98C7C4D875790FE502D7280A49CF2857">
+                        <bline guid="98C7C4D875790FE502D7280A49CF2857" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -4384,6 +4852,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4423,6 +4897,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -4448,8 +4928,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -4460,7 +4952,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-heel1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-heel1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4485,7 +4977,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="heel1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="heel1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-heel1-r">
                     <y>
@@ -4500,7 +4992,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -4513,7 +5005,7 @@
                 </param>
                 <param name="amount" use=":(stk)-heel1-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4616,6 +5108,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -4642,7 +5140,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -4655,15 +5153,15 @@
                 </param>
                 <param name="amount" use=":(stk)-knee1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="knee1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="knee1" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-knee1-r" theta=":(stk)-knee1-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip1">
                 <param name="origin" use=":(stk)-hip1"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -4684,8 +5182,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-foot1">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-foot1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4703,7 +5213,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4721,7 +5231,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape078 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape078 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -4790,6 +5300,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -4829,6 +5345,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -4854,8 +5376,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-toe1-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-toe1-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -4880,7 +5414,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="toe1">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="toe1">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-toe1-r">
                     <y>
@@ -4895,7 +5429,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -4908,7 +5442,7 @@
                 </param>
                 <param name="amount" use=":(stk)-toe1-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -4926,7 +5460,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="toe1" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="toe1" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" radius=":(stk)-toe1-r" theta=":(stk)-toe1-t"/>
                       </param>
@@ -4951,8 +5485,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5055,6 +5601,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -5081,7 +5633,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -5094,12 +5646,12 @@
                 </param>
                 <param name="amount" use=":(stk)-heel1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="heel1" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="heel1" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-heel1-r" theta=":(stk)-heel1-t"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -5112,15 +5664,15 @@
                 </param>
                 <param name="amount" use=":(stk)-knee1-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="knee1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="knee1">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-knee1-r" theta=":(stk)-knee1-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip1">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip1">
                 <param name="origin" use=":(stk)-hip1"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -5141,8 +5693,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-hip2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-hip2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -5160,7 +5724,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5178,7 +5742,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape076 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape076 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -5209,7 +5773,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="2DA787A07D177461F1D0C43A14344142">
+                        <bline guid="2DA787A07D177461F1D0C43A14344142" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -5247,6 +5811,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5286,6 +5856,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -5311,8 +5887,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -5323,7 +5911,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-knee2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-knee2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -5348,7 +5936,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="knee2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="knee2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-knee2-r">
                     <y>
@@ -5363,7 +5951,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -5376,7 +5964,7 @@
                 </param>
                 <param name="amount" use=":(stk)-knee2-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5479,6 +6067,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -5505,10 +6099,10 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip2" group="(stk)-control">
                 <param name="origin" use=":(stk)-hip2"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -5529,8 +6123,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-leg2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-leg2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -5548,7 +6154,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5566,7 +6172,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape077 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape077 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -5597,7 +6203,7 @@
                         <integer value="0"/>
                       </param>
                       <param name="bline">
-                        <bline type="bline_point" loop="true" guid="98C7C4D875790FE502D7280A49CF2857">
+                        <bline guid="98C7C4D875790FE502D7280A49CF2857" type="bline_point" loop="true">
                           <entry>
                             <composite type="bline_point">
                               <point>
@@ -5635,6 +6241,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -5674,6 +6286,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -5699,8 +6317,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -5711,7 +6341,7 @@
                   <angle value="90.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-heel2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-heel2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -5736,7 +6366,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="heel2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="heel2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-heel2-r">
                     <y>
@@ -5751,7 +6381,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -5764,7 +6394,7 @@
                 </param>
                 <param name="amount" use=":(stk)-heel2-t"/>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5867,6 +6497,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -5893,7 +6529,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -5906,15 +6542,15 @@
                 </param>
                 <param name="amount" use=":(stk)-knee2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="knee2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="knee2" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-knee2-r" theta=":(stk)-knee2-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip2">
                 <param name="origin" use=":(stk)-hip2"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -5935,8 +6571,20 @@
           <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="(stk)-foot2">
+        <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-foot2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -5954,7 +6602,7 @@
           </param>
           <param name="canvas">
             <canvas>
-              <layer type="PasteCanvas" active="true" version="0.1" desc="(?) content">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1" desc="(?) content">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -5972,7 +6620,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="region" active="true" version="0.1" desc="shape078 Region">
+                    <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="shape078 Region">
                       <param name="z_depth">
                         <real value="0.0000000000"/>
                       </param>
@@ -6041,6 +6689,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                           <entry>
@@ -6080,6 +6734,12 @@
                                   </theta>
                                 </radial_composite>
                               </t2>
+                              <split_radius>
+                                <bool value="false"/>
+                              </split_radius>
+                              <split_angle>
+                                <bool value="false"/>
+                              </split_angle>
                             </composite>
                           </entry>
                         </bline>
@@ -6105,8 +6765,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <vector>
                     <x>0.0000000000</x>
@@ -6117,7 +6789,7 @@
                   <angle value="180.000000"/>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="(stk)-toe2-r-compensator" group="(stk)-stretches">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="(stk)-toe2-r-compensator" group="(stk)-stretches">
                 <param name="amount">
                   <composite type="vector">
                     <x>
@@ -6142,7 +6814,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="stretch" active="true" version="0.1" desc="toe2">
+              <layer type="stretch" active="true" exclude_from_rendering="false" version="0.1" desc="toe2">
                 <param name="amount">
                   <composite type="vector" x=":(stk)-toe2-r">
                     <y>
@@ -6157,7 +6829,7 @@
                   </vector>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -6170,7 +6842,7 @@
                 </param>
                 <param name="amount" use=":(stk)-toe2-t"/>
               </layer>
-              <layer type="PasteCanvas" active="true" version="0.1">
+              <layer type="PasteCanvas" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -6188,7 +6860,7 @@
                 </param>
                 <param name="canvas">
                   <canvas>
-                    <layer type="translate" active="true" version="0.1" desc="toe2" group="(stk)-control">
+                    <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="toe2" group="(stk)-control">
                       <param name="origin">
                         <radial_composite type="vector" radius=":(stk)-toe2-r" theta=":(stk)-toe2-t"/>
                       </param>
@@ -6213,8 +6885,20 @@
                 <param name="outline_grow">
                   <real value="0.0000000000"/>
                 </param>
+                <param name="z_range">
+                  <bool value="false" static="true"/>
+                </param>
+                <param name="z_range_position">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="z_range_blur">
+                  <real value="0.0000000000"/>
+                </param>
               </layer>
-              <layer type="outline" active="true" version="0.2" desc="stick">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.2" desc="stick">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -6317,6 +7001,12 @@
                             </link>
                           </greyed>
                         </t2>
+                        <split_radius>
+                          <bool value="false"/>
+                        </split_radius>
+                        <split_angle>
+                          <bool value="false"/>
+                        </split_angle>
                       </composite>
                     </entry>
                   </bline>
@@ -6343,7 +7033,7 @@
                   <bool value="true"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -6356,12 +7046,12 @@
                 </param>
                 <param name="amount" use=":(stk)-heel2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="heel2" group="(stk)-control">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="heel2" group="(stk)-control">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-heel2-r" theta=":(stk)-heel2-t"/>
                 </param>
               </layer>
-              <layer type="rotate" active="true" version="0.1">
+              <layer type="rotate" active="true" exclude_from_rendering="false" version="0.1">
                 <param name="origin">
                   <greyed type="vector">
                     <link>
@@ -6374,15 +7064,15 @@
                 </param>
                 <param name="amount" use=":(stk)-knee2-t"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="leg2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="leg2">
                 <param name="origin">
                   <radial_composite type="vector" radius=":(stk)-knee2-r" theta=":(stk)-knee2-t"/>
                 </param>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="hip2">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="hip2">
                 <param name="origin" use=":(stk)-hip2"/>
               </layer>
-              <layer type="translate" active="true" version="0.1" desc="center">
+              <layer type="translate" active="true" exclude_from_rendering="false" version="0.1" desc="center">
                 <param name="origin" use=":(stk)-origin"/>
               </layer>
             </canvas>
@@ -6401,6 +7091,18 @@
             </vector>
           </param>
           <param name="outline_grow">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
             <real value="0.0000000000"/>
           </param>
         </layer>
@@ -6422,6 +7124,18 @@
       </vector>
     </param>
     <param name="outline_grow">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_blur">
       <real value="0.0000000000"/>
     </param>
   </layer>
