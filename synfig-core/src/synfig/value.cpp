@@ -40,6 +40,7 @@
 #include "bone.h"
 #include "matrix.h"
 #include "boneweightpair.h"
+#include "transformation.h"
 
 
 
@@ -87,15 +88,16 @@ ValueBase::ValueBase(Type x):
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
 	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
-	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
+	case TYPE_BONE_WEIGHT_PAIR: data=static_cast<void*>(new BoneWeightPair());	break;
 	case TYPE_WIDTHPOINT:	data=static_cast<void*>(new WidthPoint());			break;
 	case TYPE_DASHITEM:		data=static_cast<void*>(new DashItem());			break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
 	case TYPE_BONE:			data=static_cast<void*>(new Bone());				break;
-	case TYPE_VALUENODE_BONE:	data=static_cast<void*>(new etl::handle<ValueNode_Bone>());	break;
+	case TYPE_VALUENODE_BONE: data=static_cast<void*>(new etl::handle<ValueNode_Bone>());	break;
 	case TYPE_CANVAS:		data=static_cast<void*>(new etl::handle<Canvas>());	break;
+	case TYPE_TRANSFORMATION: data=static_cast<void*>(new Transformation());	break;
 	default:																	break;
 	}
 }
@@ -150,9 +152,16 @@ ValueBase::get_string() const
 	case TYPE_WIDTHPOINT:
 		return strprintf("WidthPoint (%s)", get(WidthPoint()).get_position(), get(WidthPoint()).get_width());
 	case TYPE_DASHITEM:
-				return strprintf("DashItem (%s)", get(DashItem()).get_offset(), get(DashItem()).get_length());
+		return strprintf("DashItem (%s)", get(DashItem()).get_offset(), get(DashItem()).get_length());
+	case TYPE_TRANSFORMATION:
+		return strprintf("Transformation (%f, %f) (%f) (%f, %f)",
+				get(Transformation()).offset[0],
+				get(Transformation()).offset[1],
+				Angle::deg(get(Transformation()).angle).get(),
+				get(Transformation()).scale[0],
+				get(Transformation()).scale[1] );
 
-		// All types after this point require construction/destruction
+	// All types after this point require construction/destruction
 
 	case TYPE_LIST:
 		return strprintf("List (%d elements)", get(list_type()).size());
@@ -351,6 +360,7 @@ ValueBase::clear()
 		case TYPE_GRADIENT:         delete static_cast<Gradient*>(data); break;
 		case TYPE_BONE:             delete static_cast<Bone*>(data); break;
 		case TYPE_VALUENODE_BONE:   delete static_cast<etl::handle<ValueNode_Bone>*>(data); break;
+		case TYPE_TRANSFORMATION:	delete static_cast<Transformation*>(data); break;
 		default:
 			break;
 		}
@@ -386,6 +396,7 @@ ValueBase::type_name(Type id)
 	case TYPE_GRADIENT:            return N_("gradient");
 	case TYPE_BONE:	               return N_("bone_object");
 	case TYPE_VALUENODE_BONE:      return N_("bone_valuenode");
+	case TYPE_TRANSFORMATION:      return N_("transformation");
 	case TYPE_NIL:                 return N_("nil");
 	default:
 		break;
@@ -441,6 +452,8 @@ ValueBase::type_local_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_VALUENODE_BONE:       return N_("bone_valuenode");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_TRANSFORMATION:       return N_("transformation");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_NIL:                  return N_("nil");
 	default: break;
 	}
@@ -487,6 +500,7 @@ ValueBase::ident_type(const String &str)
 			str=="widthpoint")	return TYPE_WIDTHPOINT;
 	else if(str=="dash_item" ||
 			str=="dashitem")	return TYPE_DASHITEM;
+	else if(str=="transformation") return TYPE_TRANSFORMATION;
 
 	return TYPE_NIL;
 }
@@ -508,6 +522,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_ANGLE:                  return get(Angle())==rhs.get(Angle());
 	case TYPE_VECTOR:                 return get(Vector()).is_equal_to(rhs.get(Vector()));
 	case TYPE_COLOR:                  return get(Color())==rhs.get(Color());
+	case TYPE_TRANSFORMATION:         return get(Transformation())==rhs.get(Transformation());
 	case TYPE_STRING:                 return get(String())==rhs.get(String());
 	case TYPE_CANVAS:                 return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
 	case TYPE_LIST:                   return get_list()==rhs.get_list();
