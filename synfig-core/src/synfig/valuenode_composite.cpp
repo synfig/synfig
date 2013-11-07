@@ -41,6 +41,7 @@
 #include "color.h"
 #include "segment.h"
 #include "savecanvas.h"
+#include "transformation.h"
 
 #endif
 
@@ -123,6 +124,14 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			set_link("length",ValueNode_Const::create(ditem.get_length()));
 			set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
+			break;
+		}
+		case ValueBase::TYPE_TRANSFORMATION:
+		{
+			Transformation transformation(value);
+			set_link("offset",ValueNode_Const::create(transformation.offset));
+			set_link("angle",ValueNode_Const::create(transformation.angle));
+			set_link("scale",ValueNode_Const::create(transformation.scale));
 			break;
 		}
 		default:
@@ -228,6 +237,15 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_side_type_after((*components[3])(t).get(int()));
 			return ret;
 		}
+		case ValueBase::TYPE_TRANSFORMATION:
+		{
+			Transformation ret;
+			assert(components[0] && components[1] && components[2]);
+			ret.offset = (*components[0])(t).get(Vector());
+			ret.angle  = (*components[1])(t).get(Angle());
+			ret.scale  = (*components[2])(t).get(Vector());
+			return ret;
+		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
@@ -331,6 +349,18 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return false;
 			}
 			break;
+
+		case ValueBase::TYPE_TRANSFORMATION:
+			if( PlaceholderValueNode::Handle::cast_dynamic(x)
+			 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
+			 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
+			 || (i == 2 && x->get_type()==ValueBase(Vector()).get_type())
+			) {
+				components[i]=x;
+				return true;
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -435,6 +465,13 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
+	case ValueBase::TYPE_TRANSFORMATION:
+		if(name=="offset")
+			return 0;
+		if(name=="angle")
+			return 1;
+		if(name=="scale")
+			return 2;
 	default:
 		break;
 	}
@@ -463,7 +500,8 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_COLOR ||
 		type==ValueBase::TYPE_BLINEPOINT ||
 		type==ValueBase::TYPE_WIDTHPOINT ||
-		type==ValueBase::TYPE_DASHITEM;
+		type==ValueBase::TYPE_DASHITEM ||
+		type==ValueBase::TYPE_TRANSFORMATION;
 }
 
 LinkableValueNode::Vocab
@@ -623,6 +661,20 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+		return ret;
+	case ValueBase::TYPE_TRANSFORMATION:
+		ret.push_back(ParamDesc(ValueBase(),"offset")
+			.set_local_name(_("Offset"))
+			.set_description(_("The Offset component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"angle")
+			.set_local_name(_("Angle"))
+			.set_description(_("The Angle component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"scale")
+			.set_local_name(_("Scale"))
+			.set_description(_("The Scale component of the transformation"))
 		);
 		return ret;
 	default:
