@@ -85,7 +85,7 @@
 #define IMPORT_VALUE(x)                                                         \
 	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
 	{                                                                           \
-		x.copy(value);                                                                \
+		x=value;                                                                \
 		return true;                                                            \
 	}
 
