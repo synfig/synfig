@@ -125,9 +125,10 @@ Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
 synfig::GUID
 Duck::get_data_guid()const
 {
+	synfig::GUID type_guid = synfig::GUID::hasher(get_type());
 	if(value_desc_.is_value_node())
-		return value_desc_.get_value_node()->get_guid();
-	return synfig::GUID::hasher(get_name());
+		return type_guid ^ value_desc_.get_value_node()->get_guid();
+	return type_guid ^ synfig::GUID::hasher(get_name());
 }
 
 void
