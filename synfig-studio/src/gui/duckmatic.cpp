@@ -1104,6 +1104,12 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 	case ValueBase::TYPE_ANGLE:
 		//return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]));
 		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
+	case ValueBase::TYPE_TRANSFORMATION:
+		{
+			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
+			transformation.offset = value;
+			return canvas_interface->change_value(value_desc, transformation);
+		}
 	default:
 		return canvas_interface->change_value(value_desc,value);
 	}
@@ -1956,6 +1962,55 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return true;
 		}
 		break;
+
+	case ValueBase::TYPE_TRANSFORMATION:
+		{
+			etl::handle<Duck> duck=new Duck();
+			duck->set_transform_stack(transform_stack);
+			duck->set_name(guid_string(value_desc));
+
+			duck->set_point(value_desc.get_value(get_time()).get(Transformation()).offset);
+
+			if(value_desc.is_value_node())
+			{
+				// If the ValueNode can be directly manipulated,
+				// then set it as so.
+				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
+			}
+			else
+			{
+				duck->set_editable(true);
+			}
+
+			// If we were passed a parameter description
+			duck->set_type(Duck::TYPE_POSITION);
+
+			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
+			duck->signal_edited().connect(
+				sigc::bind(
+					sigc::mem_fun(
+						*this,
+						&studio::Duckmatic::on_duck_changed),
+					value_desc));
+			duck->set_value_desc(value_desc);
+
+			duck->signal_user_click(2).connect(
+				sigc::bind(
+					sigc::bind(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu),
+							false),
+						1.0f),
+					value_desc));
+			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
+			add_duck(duck);
+
+			return true;
+		}
+		break;
+
 	case ValueBase::TYPE_SEGMENT:
 		{
 			int index;
