@@ -54,6 +54,8 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
+	//! Parameter: (Origin Transfromation) Position, rotation and scale offsets
+	ValueBase param_origin_transformation;
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
 	//! Parameter: (Vector) Origin of the paste canvas layer
@@ -159,6 +161,8 @@ public:
 	Real get_zoom()const { return param_zoom.get(Real()); }
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
+	//! Get origin_transformation parameter
+	Transformation get_origin_transformation()const { return param_origin_transformation.get(Transformation()); }
 	//! Get transformation parameter
 	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
 	//! Get origin parameter
