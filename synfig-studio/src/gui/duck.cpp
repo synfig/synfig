@@ -324,6 +324,9 @@ Duck::type_name(Type id)
 	if (id & TYPE_ANGLE	  ) { if (!ret.empty()) ret += ", "; ret += "angle"   ; }
 	if (id & TYPE_VERTEX  ) { if (!ret.empty()) ret += ", "; ret += "vertex"  ; }
 	if (id & TYPE_WIDTHPOINT_POSITION  ) { if (!ret.empty()) ret += ", "; ret += "widthpoint position"  ; }
+	if (id & TYPE_SCALE   ) { if (!ret.empty()) ret += ", "; ret += "scale"   ; }
+	if (id & TYPE_SCALE_X ) { if (!ret.empty()) ret += ", "; ret += "scale-x" ; }
+	if (id & TYPE_SCALE_Y ) { if (!ret.empty()) ret += ", "; ret += "scale-y" ; }
 
 	if (ret.empty())
 		ret = "none";

@@ -231,11 +231,11 @@ Renderer_Ducks::render_vfunc(
 		point[0]=(point[0]-window_start[0])/pw;
 		point[1]=(point[1]-window_start[1])/ph;
 
-		bool has_connect(false);
-		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
-		{
-			has_connect=true;
-		}
+		bool has_connect = (*iter)->get_tangent()
+		                || ((*iter)->get_type()&( Duck::TYPE_ANGLE
+		        		                       | Duck::TYPE_SCALE
+		        		                       | Duck::TYPE_SCALE_X
+		        		                       | Duck::TYPE_SCALE_Y ));
 		if((*iter)->get_connect_duck())
 		{
 			has_connect=true;

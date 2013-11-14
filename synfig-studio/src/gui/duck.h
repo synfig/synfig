@@ -92,16 +92,19 @@ class Duck : public etl::shared_object
 public:
 	enum Type
 	{
-		TYPE_NONE		=	(0),	//  0
-		TYPE_POSITION	=	(1<<0),	//  1
-		TYPE_TANGENT	=	(1<<1),	//  2
-		TYPE_RADIUS		=	(1<<2),	//  4
-		TYPE_WIDTH		=	(1<<3),	//  8
-		TYPE_ANGLE		=	(1<<4),	// 16
-		TYPE_VERTEX		=	(1<<5),	// 32
-		TYPE_BONE_SETUP	=	(1<<6),	// 64
-		TYPE_BONE_RECURSIVE	=	(1<<7),	// 128
-		TYPE_WIDTHPOINT_POSITION	= (1<<8), //256
+		TYPE_NONE					=	(0),		//    0
+		TYPE_POSITION				=	(1 <<  0),	//    1
+		TYPE_TANGENT				=	(1 <<  1),	//    2
+		TYPE_RADIUS					=	(1 <<  2),	//    4
+		TYPE_WIDTH					=	(1 <<  3),	//    8
+		TYPE_ANGLE					=	(1 <<  4),	//   16
+		TYPE_VERTEX					=	(1 <<  5),	//   32
+		TYPE_BONE_SETUP				=	(1 <<  6),	//   64
+		TYPE_BONE_RECURSIVE			=	(1 <<  7),	//  128
+		TYPE_WIDTHPOINT_POSITION	=	(1 <<  8),	//  256
+		TYPE_SCALE					=	(1 <<  9),	//  512
+		TYPE_SCALE_X				=	(1 << 10),	// 1024
+		TYPE_SCALE_Y				=	(1 << 11),	// 2048
 
 		TYPE_ALL		=	(~0),
 
