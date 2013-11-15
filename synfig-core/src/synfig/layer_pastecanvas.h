@@ -58,14 +58,8 @@ private:
 	ValueBase param_origin_transformation;
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
-	//! Parameter: (Vector) Origin of the paste canvas layer
-	ValueBase param_origin;
-	//! Parameter: (Vector) Focus of the zoom of the paste canvas layer
-	ValueBase param_focus;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
-	//! Parameter: (Real) Zoom of the paste canvas layer
-	ValueBase param_zoom;
 	//! Parameter: (Time) Time offset of the paste canvas layer
 	ValueBase param_time_offset;
 	//! Parameter: (Real) The value to grow the children outline layers
@@ -157,18 +151,12 @@ public:
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
-	//! Gets zoom parameter
-	Real get_zoom()const { return param_zoom.get(Real()); }
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
 	//! Get origin_transformation parameter
 	Transformation get_origin_transformation()const { return param_origin_transformation.get(Transformation()); }
 	//! Get transformation parameter
 	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
-	//! Get origin parameter
-	Point get_origin()const { return param_origin.get(Vector()); }
-	//! Get focus parameter
-	Vector get_focus()const { return param_focus.get(Vector()); }
 	//! Default constructor
 	Layer_PasteCanvas();
 	//! Destructor

@@ -190,6 +190,19 @@ public:
 	}
 
 	static const Vector zero() { return Vector(0,0); }
+
+	Vector multiply_coords(const Vector &rhs) const
+		{ return Vector(_x*rhs._x, _y*rhs._y); }
+	Vector divide_coords(const Vector &rhs) const
+		{ return Vector(_x/rhs._x, _y/rhs._y); }
+	Vector one_divide_coords() const
+		{ return Vector(1.0/_x, 1.0/_y); }
+	Vector rotate(const Angle &rhs) const
+	{
+		value_type s = Angle::sin(rhs).get();
+		value_type c = Angle::cos(rhs).get();
+		return Vector(c*_x - s*_y, s*_x + c*_y);
+	}
 };
 
 /*!	\typedef Point
