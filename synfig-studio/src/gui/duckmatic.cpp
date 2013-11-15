@@ -1691,23 +1691,30 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 		// descend into it
 		if(layer_name=="PasteCanvas")
 		{
-			Vector scale;
-			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));
-			Vector origin(layer->get_param("origin").get(Vector()));
+			Transformation origin_transformation = layer->get_param("origin_transformation").get(Transformation());
+			Transformation transformation = layer->get_param("transformation").get(Transformation());
+
+			Vector &origin = origin_transformation.offset;
+			Vector &offset = transformation.offset;
+			Angle &angle = transformation.angle;
+			Vector &scale = transformation.scale;
 
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
-			Vector focus(layer->get_param("focus").get(Vector()));
 
+			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
+				transform_stack.push(new Transform_Rotate(layer->get_guid(), angle, origin + offset));
 			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.push(new Transform_Scale(layer->get_guid(), scale,origin+focus));
-			if(!origin.is_equal_to(Vector(0,0)))
-				transform_stack.push(new Transform_Translate(layer->get_guid(), origin));
+				transform_stack.push(new Transform_Scale(layer->get_guid(), scale, origin + offset));
+			if(!offset.is_equal_to(Vector(0,0)))
+				transform_stack.push(new Transform_Translate(layer->get_guid(), offset));
 
 			add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
 
-			if(!origin.is_equal_to(Vector(0,0)))
+			if(!offset.is_equal_to(Vector(0,0)))
 				transform_stack.pop();
 			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.pop();
+			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
 				transform_stack.pop();
 		}
 	}
