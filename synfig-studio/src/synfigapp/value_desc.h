@@ -180,6 +180,18 @@ public:
 	get_param_name()const
 		{ assert(parent_is_layer_param()); return name; }
 
+	bool
+	find_param_desc(synfig::ParamDesc &out_param_desc)const {
+		assert(parent_is_layer_param());
+		if (layer) {
+			synfig::Layer::Vocab vocab = layer->get_param_vocab();
+			for(synfig::Layer::Vocab::iterator i = vocab.begin(); i != vocab.end(); i++)
+				if (i->get_name() == name)
+					{ out_param_desc = *i; return true; }
+		}
+		return false;
+	}
+
 	synfig::ValueNode::Handle
 	get_parent_value_node()const
 		{ assert(parent_is_value_node()); return parent_value_node; }

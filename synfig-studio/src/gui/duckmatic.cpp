@@ -1106,37 +1106,55 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
 	case ValueBase::TYPE_TRANSFORMATION:
 		{
+			ParamDesc param_desc;
+			value_desc.find_param_desc(param_desc);
+			synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc.get_origin());
+
+			Transformation origin_transformation = value_desc_origin.get_value(get_time()).get(Transformation());
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
-			float scale_x = duck.get_point() * Vector(1.f, transformation.angle + Angle::deg(180.f));
-			float scale_y = duck.get_point() * Vector(1.f, transformation.angle - Angle::deg(90.f));
+
+			//Vector &offset = transformation.offset;
+			Angle &angle = transformation.angle;
+			Vector &scale = transformation.scale;
+
+			//Vector visible_offset = offset + origin_transformation.offset;
+			Angle visible_angle = angle + origin_transformation.angle;
+			Vector visible_scale = scale.multiply_coords(origin_transformation.scale);
+
+			Real scale_x = duck.get_point() * Vector(1.f, visible_angle + Angle::deg(180.f));
+			Real scale_y = duck.get_point() * Vector(1.f, visible_angle - Angle::deg(90.f));
 
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
-				transformation.offset = value;
+				transformation.offset = value - origin_transformation.offset;
 				break;
 			case Duck::TYPE_ANGLE:
 				transformation.angle += duck.get_rotations();
 				break;
 			case Duck::TYPE_SCALE:
-				if (transformation.scale.mag() > 0.f)
+				if (transformation.scale.mag() > 0.0)
 				{
-					float scale = -scale_y/transformation.scale.mag();
-					if (transformation.scale[1] < 0.f) scale *= -1.f;
-					transformation.scale[0] *= scale;
-					transformation.scale[1] *= scale;
+					Real s = -scale_y/visible_scale.mag();
+					if (visible_scale[1] < 0.f) s *= -1.f;
+					transformation.scale[0] *= s;
+					transformation.scale[1] *= s;
 				}
 				else
+				if (origin_transformation.scale.mag() > 0.0)
 				{
-					float scale = transformation.scale[0] < 0.f ? scale_x : -scale_x;
-					transformation.scale[0] = scale;
-					transformation.scale[1] = scale;
+					Real s = visible_scale[0] < 0.f ? scale_x : -scale_x;
+					s /= origin_transformation.scale.mag();
+					transformation.scale[0] = s;
+					transformation.scale[1] = s;
 				}
 				break;
 			case Duck::TYPE_SCALE_X:
-				transformation.scale[0] = scale_x;
+				if (origin_transformation.scale[0] != 0.0)
+					transformation.scale[0] = scale_x/origin_transformation.scale[0];
 				break;
 			case Duck::TYPE_SCALE_Y:
-				transformation.scale[1] = scale_y;
+				if (origin_transformation.scale[1] != 0.0)
+					transformation.scale[1] = scale_y/origin_transformation.scale[1];
 				break;
 			default:
 				break;
@@ -1696,6 +1714,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 			Vector &origin = origin_transformation.offset;
 			Vector &offset = transformation.offset;
+			Angle &origin_angle = origin_transformation.angle;
 			Angle &angle = transformation.angle;
 			Vector &scale = transformation.scale;
 
@@ -1703,8 +1722,12 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
 				transform_stack.push(new Transform_Rotate(layer->get_guid(), angle, origin + offset));
+			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
+				transform_stack.push(new Transform_Rotate(layer->get_guid(), origin_angle, origin + offset));
 			if(!scale.is_equal_to(Vector(1,1)))
 				transform_stack.push(new Transform_Scale(layer->get_guid(), scale, origin + offset));
+			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
+				transform_stack.push(new Transform_Rotate(layer->get_guid(), -origin_angle, origin + offset));
 			if(!offset.is_equal_to(Vector(0,0)))
 				transform_stack.push(new Transform_Translate(layer->get_guid(), offset));
 
@@ -1712,7 +1735,11 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 			if(!offset.is_equal_to(Vector(0,0)))
 				transform_stack.pop();
+			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
+				transform_stack.pop();
 			if(!scale.is_equal_to(Vector(1,1)))
+				transform_stack.pop();
+			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
 				transform_stack.pop();
 			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
 				transform_stack.pop();
@@ -1859,7 +1886,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_ANGLE:
-			duck->signal_edited().clear();
 			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
@@ -2005,18 +2031,27 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 
 	case ValueBase::TYPE_TRANSFORMATION:
+		if (param_desc != NULL && !param_desc->get_origin().empty())
 		{
+			synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+
+			Transformation origin_transformation = value_desc_origin.get_value(get_time()).get(Transformation());
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
+
 			Vector &offset = transformation.offset;
 			Angle &angle = transformation.angle;
 			Vector &scale = transformation.scale;
+
+			Vector visible_offset = offset + origin_transformation.offset;
+			Angle visible_angle = angle + origin_transformation.angle;
+			Vector visible_scale = scale.multiply_coords(origin_transformation.scale);
 
 			// add offset duck
 			etl::handle<Duck> duck=new Duck();
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc));
 
-			duck->set_point(offset);
+			duck->set_point(visible_offset);
 
 			if(value_desc.is_value_node())
 			{
@@ -2060,7 +2095,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);
 			duck->set_transform_stack(transform_stack);
-			duck->set_point(Point(1.f, scale[0] < 0.f ? angle + Angle::deg(180.f) : angle));
+			duck->set_point(Point(1.f, visible_scale[0] < 0.f ? visible_angle + Angle::deg(180.f) : visible_angle));
 			duck->set_name(guid_string(value_desc) + "-angle");
 			if(value_desc.is_value_node())
 			{
@@ -2103,7 +2138,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_type(Duck::TYPE_SCALE);
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale");
-			duck->set_point(Point(scale.mag(), angle + Angle::deg(scale[1] < 0.f ? -90.f : 90.f)));
+			duck->set_point(Point(visible_scale.mag(), visible_angle + Angle::deg(visible_scale[1] < 0.f ? -90.f : 90.f)));
 			if(value_desc.is_value_node())
 			{
 				// If the ValueNode can be directly manipulated,
@@ -2144,9 +2179,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_type(Duck::TYPE_SCALE_X);
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale-x");
-			duck->set_point(Point(
-				scale[0]*Angle::cos(angle + Angle::deg(180.f)).get(),
-				scale[0]*Angle::sin(angle + Angle::deg(180.f)).get() ));
+			duck->set_point(Point(visible_scale[0], visible_angle + Angle::deg(180.0)));
 			if(value_desc.is_value_node())
 			{
 				// If the ValueNode can be directly manipulated,
@@ -2187,9 +2220,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_type(Duck::TYPE_SCALE_Y);
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale-y");
-			duck->set_point(Point(
-				scale[1]*Angle::cos(angle + Angle::deg(-90.f)).get(),
-				scale[1]*Angle::sin(angle + Angle::deg(-90.f)).get() ));
+			duck->set_point(Point(visible_scale[1], visible_angle + Angle::deg(-90.0)));
 			if(value_desc.is_value_node())
 			{
 				// If the ValueNode can be directly manipulated,
