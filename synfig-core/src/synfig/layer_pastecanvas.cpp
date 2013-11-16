@@ -140,9 +140,11 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Origin Transformation"))
 		.set_description(_("Position, rotation and scale offsets"))
 	);
+	
 	ret.push_back(ParamDesc("transformation")
 		.set_local_name(_("Transformation"))
 		.set_description(_("Position, rotation and scale"))
+		.set_origin("origin_transformation")
 	);
 
 	ret.push_back(ParamDesc("canvas")
@@ -361,11 +363,6 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	Transformation origin_transformation(param_origin_transformation.get(Transformation()));
 	Transformation transformation(param_transformation.get(Transformation()));
 
-	Vector &origin = origin_transformation.offset;
-	Vector &offset = transformation.offset;
-	Angle &angle = transformation.angle;
-	Vector &scale = transformation.scale;
-
 	bool children_lock=param_children_lock.get(bool(true));
 	ContextParams cp(context.get_params());
 	cp.z_range=param_z_range.get(bool());
@@ -373,7 +370,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	cp.z_range_depth=param_z_range_depth.get(Real());
 	cp.z_range_blur=param_z_range_blur.get(Real());
 	if (canvas) {
-		Point target_pos = (pos-origin-offset).rotate(-angle).divide_coords(scale)+origin;
+		Point target_pos = transformation.back_transform(origin_transformation, pos);
 
 		if(canvas && get_amount() && canvas->get_context(cp).get_color(target_pos).get_a()>=0.25)
 		{
@@ -393,11 +390,6 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	Transformation origin_transformation(param_origin_transformation.get(Transformation()));
 	Transformation transformation(param_transformation.get(Transformation()));
 
-	Vector &origin = origin_transformation.offset;
-	Vector &offset = transformation.offset;
-	Angle &angle = transformation.angle;
-	Vector &scale = transformation.scale;
-
 	ContextParams cp(context.get_params());
 	cp.z_range=param_z_range.get(bool());
 	cp.z_range_position=param_z_range_position.get(Real());
@@ -408,7 +400,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 
 	if(depth==MAX_DEPTH)return Color::alpha();depth_counter counter(depth);
 
-	Point target_pos = (pos-origin-offset).rotate(-angle).divide_coords(scale)+origin;
+	Point target_pos = transformation.back_transform(origin_transformation, pos);
 
 	return Color::blend(canvas->get_context(cp).get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
@@ -418,11 +410,6 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 {
 	Transformation origin_transformation(param_origin_transformation.get(Transformation()));
 	Transformation transformation(param_transformation.get(Transformation()));
-
-	Vector &origin = origin_transformation.offset;
-	Vector &offset = transformation.offset;
-	Angle &angle = transformation.angle;
-	Vector &scale = transformation.scale;
 
 	ContextParams cp(context_params);
 	cp.z_range=param_z_range.get(bool());
@@ -442,7 +429,7 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 		Rect transformed_bounds(Rect::zero());
 		for(int i = 0; i < 4; i++)
 		{
-			Vector corner = (corners[i]-origin).multiply_coords(scale).rotate(angle)+origin+offset;
+			Vector corner = transformation.transform(origin_transformation, corners[i]);
 			if (i == 0)
 				transformed_bounds.set_point(corner);
 			else
@@ -468,11 +455,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	Transformation origin_transformation(param_origin_transformation.get(Transformation()));
 	Transformation transformation(param_transformation.get(Transformation()));
 
-	Vector &origin = origin_transformation.offset;
-	Vector &offset = transformation.offset;
-	//Angle &angle = transformation.angle;
-	Vector &scale = transformation.scale;
-
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 	Time curr_time=param_curr_time.get(Time());
@@ -495,8 +477,8 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	RendDesc desc(renddesc);
 	desc.clear_flags();
-	desc.set_tl((desc.get_tl()-origin-offset).divide_coords(scale)+offset);
-	desc.set_br((desc.get_br()-origin-offset).divide_coords(scale)+offset);
+	desc.set_tl(transformation.back_transform(origin_transformation, desc.get_tl()));
+	desc.set_br(transformation.back_transform(origin_transformation, desc.get_br()));
 	desc.set_flags(RendDesc::PX_ASPECT);
 
 	if (is_solid_color() || context->empty())
@@ -548,7 +530,11 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 
-	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-origin).multiply_coords(scale)+origin+offset))
+	Vector pointA(full_bounding_rect.minx, full_bounding_rect.miny);
+	Vector pointB(full_bounding_rect.maxx, full_bounding_rect.maxy);
+	pointA = transformation.transform(origin_transformation, pointA);
+	pointB = transformation.transform(origin_transformation, pointB);
+	if (!etl::intersect(context.get_full_bounding_rect(),Rect(pointA[0], pointA[1], pointB[0], pointB[1])))
 	{
 		// if there's no intersection between the context and our
 		// surface, and we're rendering 'onto', then we're done
@@ -676,11 +662,6 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	Transformation origin_transformation(param_origin_transformation.get(Transformation()));
 	Transformation transformation(param_transformation.get(Transformation()));
 
-	Vector &origin = origin_transformation.offset;
-	Vector &offset = transformation.offset;
-	Angle &angle = transformation.angle;
-	Vector &scale = transformation.scale;
-
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());
 	Time curr_time=param_curr_time.get(Time());
@@ -725,11 +706,12 @@ Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int qual
 	cairo_get_matrix(cr, &matrix);
 	// apply the transformations form the (paste canvas) group layer
 	cairo_set_matrix(subcr, &matrix);
-	cairo_translate(subcr, origin[0], origin[1]);
-	cairo_translate(subcr, offset[0], offset[1]);
-	cairo_rotate(subcr, Angle::rad(angle).get());
-	cairo_scale(subcr, scale[0], scale[1]);
-	cairo_translate(subcr, -origin[0], -origin[1]);
+	cairo_translate(subcr, origin_transformation.offset[0], origin_transformation.offset[1]);
+	cairo_translate(subcr, transformation.offset[0], transformation.offset[1]);
+	cairo_rotate(subcr, Angle::rad(transformation.angle + origin_transformation.angle).get());
+	cairo_scale(subcr, transformation.scale[0], transformation.scale[1]);
+	cairo_rotate(subcr, Angle::rad(-origin_transformation.angle).get());
+	cairo_translate(subcr, -origin_transformation.offset[0], -origin_transformation.offset[1]);
 	// Effectively render the canvas content
 	ret=canvas->get_context(context).accelerated_cairorender(subcr, quality, workdesc, &stagetwo);
 	// we are done apply the result to the source

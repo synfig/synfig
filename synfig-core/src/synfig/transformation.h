@@ -47,20 +47,33 @@ public:
 	Angle angle;
 	Vector scale;
 
-	Transformation(): angle(Angle::rad(0.f)), scale(1.0, 1.0) { };
+	Transformation():
+		angle(Angle::rad(0.0)), scale(1.0, 1.0) { }
 	Transformation(const Vector &offset, const Angle &angle, const Vector &scale):
 		offset(offset), angle(angle), scale(scale) { }
 
 	bool is_valid()const
-		{ return offset.is_valid() && !isnan(Angle::rad(angle).get()) && scale.is_valid(); }
+	{
+		return offset.is_valid()
+		    && !isnan(Angle::rad(angle).get())
+		    && scale.is_valid();
+	}
 
 	bool
 	operator==(const Transformation &rhs)const
-		{ return offset==rhs.offset && angle==rhs.angle && scale==rhs.scale; }
+	{
+		return offset==rhs.offset
+			&& angle==rhs.angle
+			&& scale==rhs.scale;
+	}
 
 	bool
 	operator!=(const Transformation &rhs)const
-		{ return offset!=rhs.offset || angle!=rhs.angle || scale!=rhs.scale; }
+	{
+		return offset!=rhs.offset
+			|| angle!=rhs.angle
+			|| scale!=rhs.scale;
+	}
 
 	bool is_equal_to(const Transformation& rhs)const
 	{
@@ -70,6 +83,20 @@ public:
 		    && a < epsilon_angle
 		    && a > -epsilon_angle
 		    && scale.is_equal_to(rhs.scale);
+	}
+
+	Vector transform(const Transformation &origin, const Vector &v, bool translate = true)
+	{
+		return translate
+			 ? (v-origin.offset).rotate(-origin.angle).multiply_coords(scale).rotate(angle+origin.angle)+origin.offset+offset
+			 : v.rotate(-origin.angle).multiply_coords(scale).rotate(angle+origin.angle);
+	}
+
+	Vector back_transform(const Transformation &origin, const Vector &v, bool translate = true)
+	{
+		return translate
+			 ? (v-origin.offset-offset).rotate(-angle-origin.angle).divide_coords(scale).rotate(origin.angle)+origin.offset
+			 : v.rotate(-angle-origin.angle).divide_coords(scale).rotate(origin.angle);
 	}
 
 	static const Transformation identity() { return Transformation(); }

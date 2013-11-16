@@ -410,6 +410,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name[0]=='a')
 			return 3;
+		break;
 	case ValueBase::TYPE_SEGMENT:
 		if(name=="p1")
 			return 0;
@@ -419,6 +420,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="t2")
 			return 3;
+		break;
 	case ValueBase::TYPE_VECTOR:
 		if(name[0]=='x')
 			return 0;
@@ -426,6 +428,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 1;
 		if(name[0]=='z')		// \todo "z"?  really?
 			return 2;
+		break;
 	case ValueBase::TYPE_BLINEPOINT:
 		if(name[0]=='p' || name=="v1" || name=="p1")
 			return 0;
@@ -443,6 +446,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 6;
 		if(name=="split_angle")
 			return 7;
+		break;
 	case ValueBase::TYPE_WIDTHPOINT:
 		if(name=="position")
 			return 0;
@@ -456,6 +460,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="upper_bound")
 			return 5;
+		break;
 	case ValueBase::TYPE_DASHITEM:
 		if(name=="offset")
 			return 0;
@@ -465,6 +470,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
+		break;
 	case ValueBase::TYPE_TRANSFORMATION:
 		if(name=="offset")
 			return 0;
