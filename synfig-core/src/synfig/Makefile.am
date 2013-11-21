@@ -128,7 +128,8 @@ VALUENODEHEADERS = \
 	valuenode_staticlist.h \
 	valuenode_bone.h \
 	valuenode_boneweightpair.h\
-	valuenode_wplist.h
+	valuenode_wplist.h \
+	valuenode_bonelink.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -188,7 +189,8 @@ VALUENODESOURCES = \
 	valuenode_staticlist.cpp \
 	valuenode_bone.cpp \
 	valuenode_boneweightpair.cpp\
-	valuenode_wplist.cpp
+	valuenode_wplist.cpp \
+	valuenode_bonelink.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \

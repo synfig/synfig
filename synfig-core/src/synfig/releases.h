@@ -52,8 +52,6 @@ namespace synfig {
 		RELEASE_VERSION_0_64_0,
 		RELEASE_VERSION_0_64_1,
 		RELEASE_VERSION_0_65_0,
-
-		RELEASE_VERSION_END
 	} ReleaseVersion;
 
 }; // END of namespace synfig
