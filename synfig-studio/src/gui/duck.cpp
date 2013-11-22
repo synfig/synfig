@@ -76,6 +76,7 @@ int _DuckCounter::counter(0);
 /* === M E T H O D S ======================================================= */
 
 Duck::Duck():
+	type_(TYPE_NONE),
 	rotations(synfig::Angle::deg(0)),
 	origin(0,0),
 	scalar(1),
@@ -102,10 +103,12 @@ Duck::Duck(const synfig::Point &point):
 	linear_(false),
 	tangent_(false),
 	hover_(false),
-	ignore_(false)
+	ignore_(false),
+	exponential_(false)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
+	type_(TYPE_NONE),
 	point(point),
 	rotations(synfig::Angle::deg(0)),
 	origin(origin),
@@ -117,7 +120,8 @@ Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	linear_(true),
 	tangent_(false),
 	hover_(false),
-	ignore_(false)
+	ignore_(false),
+	exponential_(false)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::~Duck() { duck_count--; _DuckCounter::counter--;}

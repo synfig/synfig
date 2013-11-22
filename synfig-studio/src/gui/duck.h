@@ -152,6 +152,7 @@ private:
 	synfig::TransformStack transform_stack_;
 
 	synfigapp::ValueDesc value_desc_;
+	synfigapp::ValueDesc alternative_value_desc_;
 
 	static int duck_count;
 public:
@@ -212,11 +213,13 @@ public:
 	const etl::handle<Duck>& get_box_duck()const { return box_duck; }
 
 	void set_value_desc(synfigapp::ValueDesc x) { value_desc_=x; }
-
 	synfigapp::ValueDesc& get_value_desc() { return value_desc_; }
 
-	void set_transform_stack(const synfig::TransformStack& x) { transform_stack_=x; }
+	void set_alternative_value_desc(synfigapp::ValueDesc x) { alternative_value_desc_=x; }
+	synfigapp::ValueDesc& get_alternative_value_desc() { return alternative_value_desc_; }
+	const synfigapp::ValueDesc& get_alternative_value_desc() const { return alternative_value_desc_; }
 
+	void set_transform_stack(const synfig::TransformStack& x) { transform_stack_=x; }
 	const synfig::TransformStack& get_transform_stack()const { return transform_stack_; }
 
 	//! Sets the type of duck

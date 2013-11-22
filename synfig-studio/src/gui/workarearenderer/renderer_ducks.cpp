@@ -83,8 +83,9 @@ struct ScreenDuck
 	bool selected;
 	bool hover;
 	Real width;
+	bool has_alternative;
 
-	ScreenDuck():width(0) { }
+	ScreenDuck():width(0),has_alternative(false) { }
 };
 
 void
@@ -309,6 +310,7 @@ Renderer_Ducks::render_vfunc(
 		screen_duck.pos=point;
 		screen_duck.selected=selected;
 		screen_duck.hover=hover;
+		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
 
 		if(!(*iter)->get_editable())
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
@@ -597,12 +599,14 @@ Renderer_Ducks::render_vfunc(
 
 	}
 
+	bool alternative = get_work_area()->get_alternative_mode();
 
 	for(;screen_duck_list.size();screen_duck_list.pop_front())
 	{
 		Gdk::Color color(screen_duck_list.front().color);
 		double radius = 4;
 		double outline = 1;
+		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
 
 		// Draw the hovered duck last (on top of everything)
 		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
@@ -634,15 +638,16 @@ Renderer_Ducks::render_vfunc(
 			M_PI*2
 			);
 
-		cr->set_source_rgb(
+		cr->set_source_rgba(
 			color.get_red_p(),
 			color.get_green_p(),
-			color.get_blue_p()
+			color.get_blue_p(),
+			duck_alternative ? 0.5 : 1.0
 			);
 		cr->fill_preserve();
 
 		cr->set_line_width(outline);
-		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
+		cr->set_source_rgba(0,0,0,1); //DUCK_COLOR_OUTLINE
 		cr->stroke();
 
 		cr->restore();

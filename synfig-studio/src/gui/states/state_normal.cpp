@@ -583,6 +583,10 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
+	case GDK_KEY_space:
+		get_canvas_view()->get_work_area()->set_alternative_mode(true);
+		get_canvas_view()->get_work_area()->queue_draw();
+		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		set_rotate_flag(true);
@@ -612,6 +616,10 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
+	case GDK_KEY_space:
+		get_canvas_view()->get_work_area()->set_alternative_mode(false);
+		get_canvas_view()->get_work_area()->queue_draw();
+		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		set_rotate_flag(false);

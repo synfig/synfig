@@ -229,6 +229,8 @@ private:
 	bool curr_transform_stack_set;
 	std::list<sigc::connection> duck_changed_connections;
 
+	bool alternative_mode_;
+
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
 	*/
@@ -271,7 +273,6 @@ private:
 
 	//etl::handle<Duck> selected_duck;
 
-
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
@@ -280,6 +281,9 @@ public:
 
 	Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~Duckmatic();
+
+	void set_alternative_mode(bool x) { alternative_mode_=x; }
+	bool get_alternative_mode()const { return alternative_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
