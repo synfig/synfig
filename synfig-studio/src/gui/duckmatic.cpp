@@ -1128,7 +1128,9 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
-				target.offset = alternative ? value : value - origin_transformation.offset;
+				target.offset = alternative
+				              ? value - transformation.offset
+				              : value - origin_transformation.offset;
 				break;
 			case Duck::TYPE_ANGLE:
 				target.angle += duck.get_rotations();
