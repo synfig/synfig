@@ -69,6 +69,7 @@ public:
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BoneLink* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
+	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
 }; // END of class ValueNode_Pow
 
 }; // END of namespace synfig

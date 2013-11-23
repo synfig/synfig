@@ -55,7 +55,8 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	set_link("bone",		ValueNode_Const::create(Bone()));
+
+	set_link("bone",		ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
 	set_link("translate",	ValueNode_Const::create(true));
 	set_link("rotate",  	ValueNode_Const::create(true));
 	set_link("scale_x", 	ValueNode_Const::create(true));
@@ -86,7 +87,7 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,      ValueBase::TYPE_BONE);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,      ValueBase::TYPE_VALUENODE_BONE);
 	case 1: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
 	case 3: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
@@ -110,6 +111,17 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 	return 0;
 }
 
+void
+ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
+{
+	LinkableValueNode::set_root_canvas(x);
+	bone_->set_root_canvas(x);
+	translate_->set_root_canvas(x);
+	rotate_->set_root_canvas(x);
+	scale_x_->set_root_canvas(x);
+	scale_y_->set_root_canvas(x);
+}
+
 ValueBase
 ValueNode_BoneLink::operator()(Time t)const
 {
@@ -118,23 +130,27 @@ ValueNode_BoneLink::operator()(Time t)const
 
 	Transformation transformation;
 
-	Bone bone      = (*bone_)     (t).get(Bone());
-	bool translate = (*translate_)(t).get(true);
-	bool rotate    = (*rotate_)   (t).get(true);
-	bool scale_x   = (*scale_x_)  (t).get(true);
-	bool scale_y   = (*scale_y_)  (t).get(true);
+	ValueNode_Bone::Handle bone_node = (*bone_)(t).get(ValueNode_Bone::Handle());
+	if (bone_node)
+	{
+		Bone bone      = (*bone_node) (t).get(Bone());
+		bool translate = (*translate_)(t).get(true);
+		bool rotate    = (*rotate_)   (t).get(true);
+		bool scale_x   = (*scale_x_)  (t).get(true);
+		bool scale_y   = (*scale_y_)  (t).get(true);
 
-	Matrix matrix = bone.get_animated_matrix();
-	Vector offset = matrix.get_transformed(Vector(0.0, 0.0));
-	Vector x      = matrix.get_transformed(Vector(1.0, 0.0)) - offset;
-	Vector y      = matrix.get_transformed(Vector(0.0, 1.0)) - offset;
-	Real x_mag = x.mag();
+		Matrix matrix = bone.get_animated_matrix();
+		Vector offset = matrix.get_transformed(Vector(0.0, 0.0));
+		Vector x      = matrix.get_transformed(Vector(1.0, 0.0)) - offset;
+		Vector y      = matrix.get_transformed(Vector(0.0, 1.0)) - offset;
+		Real x_mag = x.mag();
 
-	if (translate) transformation.offset = offset;
-	if (rotate)    transformation.angle = x.angle();
-	if (scale_x)   transformation.scale[0] = x_mag * bone.get_local_scale()[0];
-	if (scale_y && x_mag != 0.0)
-				   transformation.scale[1] = -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
+		if (translate) transformation.offset = offset;
+		if (rotate)    transformation.angle = x.angle();
+		if (scale_x)   transformation.scale[0] = x_mag * bone.get_local_scale()[0];
+		if (scale_y && x_mag != 0.0)
+					   transformation.scale[1] = -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
+	}
 
 	return transformation;
 }
