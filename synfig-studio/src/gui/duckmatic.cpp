@@ -2074,23 +2074,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			Angle visible_angle = angle + origin_transformation.angle;
 			Vector visible_scale = scale.multiply_coords(origin_transformation.scale);
 
+			bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
+			bool alternative_editable = !value_desc_origin.is_value_node() || synfigapp::is_editable(value_desc_origin.get_value_node());
+
 			// add offset duck
 			etl::handle<Duck> duck=new Duck();
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc));
-
 			duck->set_point(visible_offset);
-
-			if(value_desc.is_value_node())
-			{
-				// If the ValueNode can be directly manipulated,
-				// then set it as so.
-				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
-			}
-			else
-			{
-				duck->set_editable(true);
-			}
+			duck->set_editable(editable);
+			duck->set_alternative_editable(alternative_editable);
 
 			// If we were passed a parameter description
 			duck->set_type(Duck::TYPE_POSITION);
@@ -2126,16 +2119,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(transform_stack);
 			duck->set_point(Point(1.f, visible_scale[0] < 0.f ? visible_angle + Angle::deg(180.f) : visible_angle));
 			duck->set_name(guid_string(value_desc) + "-angle");
-			if(value_desc.is_value_node())
-			{
-				// If the ValueNode can be directly manipulated,
-				// then set it as so.
-				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
-			}
-			else
-			{
-				duck->set_editable(true);
-			}
+			duck->set_editable(editable);
+			duck->set_alternative_editable(alternative_editable);
 
 			duck->set_origin(origin_duck);
 
@@ -2169,16 +2154,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale");
 			duck->set_point(Point(visible_scale.mag(), visible_angle + Angle::deg(visible_scale[1] < 0.f ? -90.f : 90.f)));
-			if(value_desc.is_value_node())
-			{
-				// If the ValueNode can be directly manipulated,
-				// then set it as so.
-				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
-			}
-			else
-			{
-				duck->set_editable(true);
-			}
+			duck->set_editable(editable);
+			duck->set_alternative_editable(alternative_editable);
 
 			duck->set_origin(origin_duck);
 			duck->signal_edited().clear();
@@ -2211,16 +2188,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale-x");
 			duck->set_point(Point(visible_scale[0], visible_angle + Angle::deg(180.0)));
-			if(value_desc.is_value_node())
-			{
-				// If the ValueNode can be directly manipulated,
-				// then set it as so.
-				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
-			}
-			else
-			{
-				duck->set_editable(true);
-			}
+			duck->set_editable(editable);
+			duck->set_alternative_editable(alternative_editable);
 
 			duck->set_origin(origin_duck);
 			duck->signal_edited().clear();
@@ -2253,16 +2222,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(transform_stack);
 			duck->set_name(guid_string(value_desc) + "-scale-y");
 			duck->set_point(Point(visible_scale[1], visible_angle + Angle::deg(-90.0)));
-			if(value_desc.is_value_node())
-			{
-				// If the ValueNode can be directly manipulated,
-				// then set it as so.
-				duck->set_editable(synfigapp::is_editable(value_desc.get_value_node()));
-			}
-			else
-			{
-				duck->set_editable(true);
-			}
+			duck->set_editable(editable);
+			duck->set_alternative_editable(alternative_editable);
 
 			duck->set_origin(origin_duck);
 			duck->signal_edited().clear();

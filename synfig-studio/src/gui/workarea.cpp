@@ -1855,7 +1855,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			if(duck)
 			{
-				if (!duck->get_editable())
+				if (!duck->get_editable(get_alternative_mode()))
 					return true;
 
 				//get_selected_duck()->signal_user_click(0)();

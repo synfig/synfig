@@ -139,6 +139,7 @@ private:
 
 	// Flags
 	bool editable;
+	bool alternative_editable;
 	bool edit_immediatelly_;
 	bool radius_;
 	bool linear_;
@@ -169,11 +170,24 @@ public:
 
 	synfig::GUID get_data_guid()const;
 
-	//! Changes the editable flag. If set, the duck will not be able to be moved.
+	bool get_editable(bool is_alternative_mode)const
+	{
+		if (alternative_value_desc_.is_valid())
+			return is_alternative_mode ? alternative_editable : editable;
+		return editable;
+	}
+
+	//! Changes the editable flag.
 	void set_editable(bool x) { editable=x; }
 
 	//! Retrieves the status of the editable flag
 	bool get_editable()const { return editable; }
+
+	//! Changes the editable_alternative flag.
+	void set_alternative_editable(bool x) { alternative_editable=x; }
+
+	//! Retrieves the status of the editable_alternative flag
+	bool get_alternative_editable()const { return alternative_editable; }
 
 	//! If set, the duck will send signal_edited while moving.
 	//! If not set, the duck will send signal_edited when button released.

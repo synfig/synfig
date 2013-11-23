@@ -102,6 +102,7 @@ Renderer_Ducks::render_vfunc(
 	const float pw(get_pw()),ph(get_ph());
 
 	const bool solid_lines(get_work_area()->solid_lines);
+	bool alternative = get_work_area()->get_alternative_mode();
 
 	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
@@ -312,7 +313,7 @@ Renderer_Ducks::render_vfunc(
 		screen_duck.hover=hover;
 		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
 
-		if(!(*iter)->get_editable())
+		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
 			if(0){
@@ -598,8 +599,6 @@ Renderer_Ducks::render_vfunc(
 		}
 
 	}
-
-	bool alternative = get_work_area()->get_alternative_mode();
 
 	for(;screen_duck_list.size();screen_duck_list.pop_front())
 	{
