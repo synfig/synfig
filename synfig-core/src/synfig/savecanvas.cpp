@@ -281,6 +281,15 @@ xmlpp::Element* encode_list(xmlpp::Element* root,std::list<ValueBase> list, Canv
 	return root;
 }
 
+xmlpp::Element* encode_transformation(xmlpp::Element* root,const Transformation &transformation)
+{
+	root->set_name("transformation");
+	encode_vector(root->add_child("offset")->add_child("vector"),transformation.offset);
+	encode_angle(root->add_child("angle")->add_child("angle"),transformation.angle);
+	encode_vector(root->add_child("scale")->add_child("vector"),transformation.scale);
+	return root;
+}
+
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, ValueBase::type_name(data.get_type()).c_str());
@@ -339,6 +348,11 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_dash_item(root,data.get(DashItem()));
 	case ValueBase::TYPE_GRADIENT:
 		encode_gradient(root,data.get(Gradient()));
+		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
+		return root;
+	case ValueBase::TYPE_TRANSFORMATION:
+		encode_transformation(root,data.get(Transformation()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;

@@ -845,6 +845,106 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 	return ret;
 }
 
+Transformation
+CanvasParser::parse_transformation(xmlpp::Element *element)
+{
+	assert(element->get_name()=="transformation");
+
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <transformation>");
+		return Transformation();
+	}
+
+	Transformation transformation;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="offset")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <offset>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			transformation.offset=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="angle")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			transformation.angle=parse_angle(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="scale")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <scale>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			transformation.scale=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
+			error_unexpected_element(child,child->get_name());
+		}
+	}
+	return transformation;
+}
+
 WidthPoint
 CanvasParser::parse_width_point(xmlpp::Element *element)
 {
@@ -1296,16 +1396,22 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ret.set_static(parse_static(element));
 		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
-	}	else
+	}
+	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
 	else
 	if(element->get_name()=="guid")
 		return parse_guid(element);
+	else
 	if(element->get_name()=="width_point")
 		return parse_width_point(element);
+	else
 	if(element->get_name()=="dash_item")
 		return parse_dash_item(element);
+	else
+	if(element->get_name()=="transformation")
+		return parse_transformation(element);
 	else
 	if(element->get_name()=="canvas")
 	{
