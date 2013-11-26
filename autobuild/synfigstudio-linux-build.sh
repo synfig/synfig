@@ -813,6 +813,9 @@ initialize()
 		libatk1.0-dev \
 		bzip2"
 	if which yum >/dev/null; then
+		#
+		#  Fedora
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
@@ -852,6 +855,9 @@ initialize()
 			su -c "yum install $PKG_LIST" || true
 		fi
 	elif which zypper >/dev/null; then
+		#
+		#  OpenSUSE
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
@@ -866,27 +872,78 @@ initialize()
 			su -c "zypper install $PKG_LIST" || true
 		fi
 	elif which apt-get >/dev/null; then
-		PKG_LIST="git-core"
 		if [[ $MODE == 'package' ]]; then
 			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 				#we are inside of chroot
 				PKG_LIST="$DEB_LIST_MINIMAL rpm alien xsltproc wget python"
 			else
 				#we have to prepare chroot
-				PKG_LIST="${PKG_LIST} debootstrap rsync"
+				PKG_LIST="git-core debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libboost-program-options-dev"
+			if ( cat /etc/altlinux-release | egrep "ALT Linux" ); then
+				#
+				#  ALT Linux case
+				#
+				PKG_LIST=" \
+					rpm-build \
+					boost-program_options-devel \
+					git-core \
+					shared-mime-info \
+					libltdl3-devel \
+					intltool \
+					gettext \
+					cvs \
+					libpng12-devel \
+					libjpeg-devel \
+					fontconfig \
+					libfreetype-devel \
+					fontconfig-devel \
+					libxml2-devel \
+					libtiff-devel \
+					libjasper-devel \
+					libdirectfb-devel \
+					libXfixes-devel \
+					libXinerama-devel \
+					libXdamage-devel \
+					libXcomposite-devel \
+					libXcursor-devel \
+					libXft-devel \
+					libXrender-devel \
+					libXt-devel \
+					libXrandr-devel \
+					libXi-devel \
+					libXext-devel \
+					libX11-devel \
+					libatk-devel \
+					bzip2 \
+					libmng-devel \
+					libgtkmm2-devel \
+					libglibmm-devel \
+					libsigc++2-devel \
+					libxml++2-devel \
+				"
+			else
+				#
+				#  Ubuntu/Debian case
+				#
+				PKG_LIST=" \
+					${DEB_LIST_MINIMAL} \
+					git-core \
+					libmng-dev \
+					libgtkmm-2.4-dev \
+					libglibmm-2.4-dev \
+					libsigc++-2.0-dev \
+					libxml++2.6-dev \
+					libboost-program-options-dev \
+				"
+			fi
 		fi
-		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
-			echo "Running apt-get (you need root privelegies to do that)..."
-			echo
-			#echo "http_proxy =====" $http_proxy
-			#env
-			sudo apt-get update || true
-			sudo apt-get install -y $PKG_LIST
-			sudo apt-get install -y autopoint || true # Ubuntu special case
-		fi
+		echo "Running apt-get (you need root privelegies to do that)..."
+		echo
+		sudo apt-get update || true
+		sudo apt-get install -y $PKG_LIST
+		sudo apt-get install -y autopoint || true # Ubuntu special case
 	else
 		if [[ $MODE == 'package' ]]; then
 			if ! ( which git && which debootstrap ) ; then
