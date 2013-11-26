@@ -56,11 +56,12 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 
-	set_link("bone",		ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
-	set_link("translate",	ValueNode_Const::create(true));
-	set_link("rotate",  	ValueNode_Const::create(true));
-	set_link("scale_x", 	ValueNode_Const::create(true));
-	set_link("scale_y", 	ValueNode_Const::create(true));
+	set_link("bone",			ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
+	set_link("transformation",	ValueNode_Const::create(x.get_type() == ValueBase::TYPE_TRANSFORMATION ? x.get(Transformation()) : Transformation()));
+	set_link("translate",		ValueNode_Const::create(true));
+	set_link("rotate",  		ValueNode_Const::create(true));
+	set_link("scale_x", 		ValueNode_Const::create(true));
+	set_link("scale_y", 		ValueNode_Const::create(true));
 }
 
 ValueNode_BoneLink*
@@ -88,10 +89,11 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,      ValueBase::TYPE_VALUENODE_BONE);
-	case 1: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(scale_y_,   ValueBase::TYPE_BOOL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(transformation_, ValueBase::TYPE_TRANSFORMATION);
+	case 2: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
+	case 5: CHECK_TYPE_AND_SET_VALUE(scale_y_,   ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -103,10 +105,11 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 	switch(i)
 	{
 	case 0: return bone_;
-	case 1: return translate_;
-	case 2: return rotate_;
-	case 3: return scale_x_;
-	case 4: return scale_y_;
+	case 1: return transformation_;
+	case 2: return translate_;
+	case 3: return rotate_;
+	case 4: return scale_x_;
+	case 5: return scale_y_;
 	}
 	return 0;
 }
@@ -116,6 +119,7 @@ ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	LinkableValueNode::set_root_canvas(x);
 	bone_->set_root_canvas(x);
+	transformation_->set_root_canvas(x);
 	translate_->set_root_canvas(x);
 	rotate_->set_root_canvas(x);
 	scale_x_->set_root_canvas(x);
@@ -128,7 +132,7 @@ ValueNode_BoneLink::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Transformation transformation;
+	Transformation transformation = (*transformation_)(t).get(Transformation());
 
 	ValueNode_Bone::Handle bone_node = (*bone_)(t).get(ValueNode_Bone::Handle());
 	if (bone_node)
@@ -145,11 +149,12 @@ ValueNode_BoneLink::operator()(Time t)const
 		Vector y      = matrix.get_transformed(Vector(0.0, 1.0)) - offset;
 		Real x_mag = x.mag();
 
-		if (translate) transformation.offset = offset;
-		if (rotate)    transformation.angle = x.angle();
-		if (scale_x)   transformation.scale[0] = x_mag * bone.get_local_scale()[0];
+		if (rotate)    transformation.offset = transformation.offset.rotate(x.angle());
+		if (translate) transformation.offset += offset;
+		if (rotate)    transformation.angle += x.angle();
+		if (scale_x)   transformation.scale[0] *= x_mag * bone.get_local_scale()[0];
 		if (scale_y && x_mag != 0.0)
-					   transformation.scale[1] = -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
+					   transformation.scale[1] *= -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
 	}
 
 	return transformation;
@@ -184,6 +189,11 @@ ValueNode_BoneLink::get_children_vocab_vfunc()const
 	ret.push_back(ParamDesc(ValueBase(),"bone")
 		.set_local_name(_("Bone"))
 		.set_description(_("The linked bone"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"transformation")
+		.set_local_name(_("Transformation"))
+		.set_description(_("Base transformation"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"translate")

@@ -38,6 +38,7 @@ namespace synfig {
 class ValueNode_BoneLink : public LinkableValueNode
 {
 	ValueNode::RHandle bone_;
+	ValueNode::RHandle transformation_;
 	ValueNode::RHandle translate_;
 	ValueNode::RHandle rotate_;
 	ValueNode::RHandle scale_x_;
