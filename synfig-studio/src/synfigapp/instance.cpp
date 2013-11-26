@@ -51,6 +51,7 @@
 #include <synfig/valuenode_range.h>
 #include <synfig/valuenode_integer.h>
 #include <synfig/valuenode_real.h>
+#include <synfig/valuenode_bonelink.h>
 #include <synfig/layer_pastecanvas.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
@@ -93,6 +94,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_Range::Handle::cast_dynamic(value_node)
 		|| ValueNode_Integer::Handle::cast_dynamic(value_node)
 		|| ValueNode_Real::Handle::cast_dynamic(value_node)
+		|| ValueNode_BoneLink::Handle::cast_dynamic(value_node)
 	)
 		return true;
 	return false;
