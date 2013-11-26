@@ -374,6 +374,12 @@ Action::ValueDescSet::prepare()
 			components[3]=value.get(Segment()).t2;
 			n_components=4;
 			break;
+		case ValueBase::TYPE_TRANSFORMATION:
+			components[0]=value.get(Transformation()).offset;
+			components[1]=value.get(Transformation()).angle;
+			components[2]=value.get(Transformation()).scale;
+			n_components=3;
+			break;
 		default:
 			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
