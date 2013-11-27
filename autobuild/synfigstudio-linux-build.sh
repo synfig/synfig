@@ -61,9 +61,9 @@ if [ -d "$PACKAGES_BUILDROOT" ]; then
 PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
-BUILDROOT_VERSION=8
+BUILDROOT_VERSION=9
 BUILDROOT_LIBRARY_SET_ID=3
-MAKE_THREADS=2					#count of threads for make
+MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -71,7 +71,7 @@ MAKE_THREADS=2					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=0
+DEBUG=1
 BREED=
 
 export EMAIL='root@synfig.org'
@@ -90,6 +90,7 @@ GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.24.2		# required by GTKMM 2.20.3
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
+BOOST=1_53_0
 
 # System libraries
 ATK=1.29.4			# required by GTK 2.20.1
@@ -98,7 +99,7 @@ GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
-BOOST=1_53_0
+
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -549,11 +550,11 @@ mkpack()
 	[ -d /packages ] || mkdir /packages
 
 	# bundle libpng
-	rm -f ${PREFIX}/lib/libpng* || true
-	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+	#rm -f ${PREFIX}/lib/libpng* || true
+	#cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
 	# bundle libjasper
-	rm -f ${PREFIX}/lib/libjasper* || true
-	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
+	#rm -f ${PREFIX}/lib/libjasper* || true
+	#cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
@@ -1124,8 +1125,8 @@ mkpackage()
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
-			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo squeeze $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
