@@ -77,7 +77,7 @@ class Matrix
 public:
 	typedef Real value_type;
 
-private:
+public:
 	//! The matrix array
 	value_type m00, m01, m02;
 	value_type m10, m11, m12;
@@ -93,9 +93,18 @@ private:
 	// In affine transformation matrixes the values of
 	// m02=0, m12=0 and m22=1 for non projective transformations.
 
-public:
 	//!Default constructor makes an identity matrix
 	Matrix();
+
+	Matrix(
+		value_type m00, value_type m01, value_type m02,
+		value_type m10, value_type m11, value_type m12,
+		value_type m20, value_type m21, value_type m22
+	):
+		m00(m00), m01(m01), m02(m02),
+		m10(m10), m11(m11), m12(m12),
+		m20(m20), m21(m21), m22(m22)
+	{ }
 
 	//!set_identity member. Set an identity matrix
 	Matrix &set_identity();
@@ -135,7 +144,7 @@ public:
 	//!get_transformed member function.
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
-	Vector get_transformed(const Vector &v)const;
+	Vector get_transformed(const Vector &v, bool translate = true)const;
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation

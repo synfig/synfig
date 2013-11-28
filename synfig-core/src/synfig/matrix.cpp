@@ -131,10 +131,13 @@ Matrix::set_translate(value_type x, value_type y)
 }
 
 Vector
-Matrix::get_transformed(const Vector &v)const
+Matrix::get_transformed(const Vector &v, bool translate)const
 {
-	return Vector(v[0]*m00+v[1]*m10+m20,
-				  v[0]*m01+v[1]*m11+m21);
+	return translate
+		 ? Vector(v[0]*m00+v[1]*m10+m20,
+				  v[0]*m01+v[1]*m11+m21)
+		 : Vector(v[0]*m00+v[1]*m10,
+				  v[0]*m01+v[1]*m11);
 }
 
 Matrix
