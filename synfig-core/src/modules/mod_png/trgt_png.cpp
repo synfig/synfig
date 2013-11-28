@@ -39,6 +39,7 @@
 #include <algorithm>
 #include <functional>
 #include <ETL/misc>
+#include <string.h>
 
 #endif
 

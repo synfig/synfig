@@ -837,6 +837,7 @@ initialize()
 				automake \
 				libtool \
 				libtool-ltdl-devel \
+				boost-devel \
 				boost-program-options \
 				cvs \
 				shared-mime-info \
@@ -857,7 +858,7 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-program-options shared-mime-info"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-devel boost-program-options shared-mime-info"
 			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
