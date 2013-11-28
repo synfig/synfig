@@ -126,9 +126,9 @@ public:
 		inverted_origin_matrix.invert();
 
 		Matrix matrix;
-		matrix *= origin_matrix;
-		matrix *= get_matrix();
 		matrix *= inverted_origin_matrix;
+		matrix *= get_matrix();
+		matrix *= origin_matrix;
 
 		return matrix;
 	}
