@@ -48,6 +48,7 @@ class ValueDescBoneLink :
 private:
 	ValueDesc value_desc;
 	std::list<ValueDesc> value_desc_list;
+	synfig::Time time;
 
 public:
 

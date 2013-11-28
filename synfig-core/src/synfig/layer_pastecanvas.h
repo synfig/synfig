@@ -58,6 +58,8 @@ private:
 	ValueBase param_origin_transformation;
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
+	//! Parameter: (Enable Transfromation)
+	ValueBase param_enable_transformation;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
 	//! Parameter: (Time) Time offset of the paste canvas layer
@@ -153,10 +155,21 @@ public:
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
+
 	//! Get origin_transformation parameter
 	Transformation get_origin_transformation()const { return param_origin_transformation.get(Transformation()); }
 	//! Get transformation parameter
 	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
+	//! Get enable transformation parameter
+	bool get_enable_transformation()const { return param_enable_transformation.get(true); }
+	//! Get summary transformation
+	Transformation get_summary_transformation()const
+	{
+		return get_enable_transformation()
+			 ? get_transformation().transform( get_origin_transformation().get_back_transformation() )
+			 : Transformation();
+	}
+
 	//! Default constructor
 	Layer_PasteCanvas();
 	//! Destructor

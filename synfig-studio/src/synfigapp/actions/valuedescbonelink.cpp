@@ -67,7 +67,8 @@ ACTION_SET_CVS_ID(Action::ValueDescBoneLink,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescBoneLink::ValueDescBoneLink()
+Action::ValueDescBoneLink::ValueDescBoneLink():
+	time(0)
 {
 }
 
@@ -82,6 +83,10 @@ Action::ValueDescBoneLink::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc on Bone to link to"))
+	);
+	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
+		.set_local_name(_("Time"))
+		.set_optional()
 	);
 
 	return ret;
@@ -118,6 +123,12 @@ Action::ValueDescBoneLink::set_param(const synfig::String& name, const Action::P
 		return true;
 	}
 
+	if(name=="time" && param.get_type()==Param::TYPE_TIME)
+	{
+		time=param.get_time();
+		return true;
+	}
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -149,12 +160,17 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.get_value_type() != ValueBase::TYPE_TRANSFORMATION)
 			continue;
 
+		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(ValueBase::TYPE_TRANSFORMATION);
+		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
+
+		if (value_desc.is_value_node())
+			bone_link_node->set_link("transformation", value_desc.get_value_node());
+		else
+			bone_link_node->set_link("transformation", ValueNode_Const::create(value_desc.get_value(time)));
+
 		// exported ValueNode
 		if (value_desc.parent_is_canvas())
 		{
-			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(ValueBase::TYPE_TRANSFORMATION);
-			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
-
 			Action::Handle action = ValueNodeReplace::create();
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
@@ -167,9 +183,6 @@ Action::ValueDescBoneLink::prepare()
 		}
 		else if (value_desc.parent_is_layer_param())
 		{
-			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(ValueBase::TYPE_TRANSFORMATION);
-			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
-
 			Action::Handle action = LayerParamConnect::create();
 			action->set_param("layer", value_desc.get_layer());
 			action->set_param("param", value_desc.get_param_name());

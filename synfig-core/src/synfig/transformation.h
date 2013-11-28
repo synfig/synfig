@@ -119,43 +119,17 @@ public:
 	Matrix get_inverted_matrix() const
 		{ return get_matrix().invert(); }
 
-	Matrix get_matrix(const Transformation &origin) const
-	{
-		Matrix origin_matrix(origin.get_matrix());
-		Matrix inverted_origin_matrix(origin_matrix);
-		inverted_origin_matrix.invert();
-
-		Matrix matrix;
-		matrix *= inverted_origin_matrix;
-		matrix *= get_matrix();
-		matrix *= origin_matrix;
-
-		return matrix;
-	}
-
-	Matrix get_inverted_matrix(const Transformation &origin) const
-		{ return get_matrix(origin).invert(); }
-
-	Transformation get_transformation_with_origin(const Transformation &origin) const
-		{ return Transformation(get_matrix(origin)); }
-
 	Transformation get_back_transformation() const
 		{ return Transformation(get_inverted_matrix()); }
-	Transformation get_back_transformation(const Transformation &origin) const
-		{ return Transformation(get_inverted_matrix(origin)); }
 
 	Vector transform(const Vector &v, bool translate = true) const
 		{ return get_matrix().get_transformed(v, translate); }
-	Vector transform(const Transformation &origin, const Vector &v, bool translate = true) const
-		{ return get_matrix(origin).get_transformed(v, translate); }
 	Transformation transform(const Transformation &transformation) const
 		{ return transformation.get_matrix()*get_matrix(); }
 
 
 	Vector back_transform(const Vector &v, bool translate = true) const
 		{ return get_inverted_matrix().get_transformed(v, translate); }
-	Vector back_transform(const Transformation &origin, const Vector &v, bool translate = true) const
-		{ return get_inverted_matrix(origin).get_transformed(v, translate); }
 	Transformation back_transform(const Transformation &transformation) const
 		{ return transformation.get_matrix()*get_inverted_matrix(); }
 

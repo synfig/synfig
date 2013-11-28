@@ -87,6 +87,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 Layer_PasteCanvas::Layer_PasteCanvas():
 	param_origin_transformation(Transformation()),
 	param_transformation(Transformation()),
+	param_enable_transformation(ValueBase(true)),
 	param_time_offset (Time(0)),
 	depth(0),
 	extra_reference(false)
@@ -144,7 +145,11 @@ Layer_PasteCanvas::get_param_vocab()const
 	ret.push_back(ParamDesc("transformation")
 		.set_local_name(_("Transformation"))
 		.set_description(_("Position, rotation, skew and scale"))
-		.set_origin("origin_transformation")
+	);
+
+	ret.push_back(ParamDesc("enable_transformation")
+		.set_local_name(_("Enable Transformation"))
+		.set_description(_("Enables or disables transformation"))
 	);
 
 	ret.push_back(ParamDesc("canvas")
@@ -210,6 +215,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_origin_transformation);
 	IMPORT_VALUE(param_transformation);
+	IMPORT_VALUE(param_enable_transformation);
 
 	// IMPORT(canvas);
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
@@ -322,6 +328,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_origin_transformation);
 	EXPORT_VALUE(param_transformation);
+	EXPORT_VALUE(param_enable_transformation);
 	if (param=="canvas")
 	{
 		synfig::ValueBase ret(canvas);
@@ -360,10 +367,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 {
 	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
 
-	Transformation transformation(
-		param_transformation.get(Transformation())
-			.get_transformation_with_origin(
-				param_origin_transformation.get(Transformation()) ) );
+	Transformation transformation(get_summary_transformation());
 
 	bool children_lock=param_children_lock.get(bool(true));
 	ContextParams cp(context.get_params());
@@ -389,10 +393,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 Color
 Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 {
-	Transformation transformation(
-		param_transformation.get(Transformation())
-			.get_transformation_with_origin(
-				param_origin_transformation.get(Transformation()) ) );
+	Transformation transformation(get_summary_transformation());
 
 	ContextParams cp(context.get_params());
 	cp.z_range=param_z_range.get(bool());
@@ -412,10 +413,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 Rect
 Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
 {
-	Transformation transformation(
-		param_transformation.get(Transformation())
-			.get_transformation_with_origin(
-				param_origin_transformation.get(Transformation()) ) );
+	Transformation transformation(get_summary_transformation());
 
 	ContextParams cp(context_params);
 	cp.z_range=param_z_range.get(bool());
@@ -458,10 +456,7 @@ Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Transformation transformation(
-		param_transformation.get(Transformation())
-			.get_transformation_with_origin(
-				param_origin_transformation.get(Transformation()) ) );
+	Transformation transformation(get_summary_transformation());
 
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());
@@ -667,10 +662,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 bool
 Layer_PasteCanvas::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Transformation transformation(
-		param_transformation.get(Transformation())
-			.get_transformation_with_origin(
-				param_origin_transformation.get(Transformation()) ) );
+	Transformation transformation(get_summary_transformation());
 
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());

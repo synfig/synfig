@@ -1107,49 +1107,36 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
 	case ValueBase::TYPE_TRANSFORMATION:
 		{
-			const synfigapp::ValueDesc& origin_value_desc = duck.get_alternative_value_desc();
-			Transformation origin_transformation = origin_value_desc.get_value(get_time()).get(Transformation());
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
-			Transformation visible_transformation = origin_transformation.transform(transformation);
 
 			Vector scale(
-				duck.get_point() * Vector(1.f, visible_transformation.angle + Angle::deg(180.f)),
-				duck.get_point() * Vector(1.f, visible_transformation.angle - Angle::deg(90.f)) );
+				duck.get_point() * Vector(1.f, transformation.angle + Angle::deg(180.f)),
+				duck.get_point() * Vector(1.f, transformation.angle - Angle::deg(90.f)) );
 
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
-				visible_transformation.offset = value;
+				transformation.offset = value;
 				break;
 			case Duck::TYPE_ANGLE:
-				visible_transformation.angle += duck.get_rotations();
+				transformation.angle += duck.get_rotations();
 				break;
 			case Duck::TYPE_SCALE:
-				if (visible_transformation.scale.mag() == 0.0)
-					visible_transformation.scale = Vector(-scale[1], -scale[1]) * sqrt(2.0);
+				if (transformation.scale.mag() == 0.0)
+					transformation.scale = Vector(-scale[1], -scale[1]) * sqrt(2.0);
 				else
-					visible_transformation.scale *= -scale[1] / visible_transformation.scale.mag();
+					transformation.scale *= -scale[1] / transformation.scale.mag();
 				break;
 			case Duck::TYPE_SCALE_X:
-				visible_transformation.scale[0] = scale[0];
+				transformation.scale[0] = scale[0];
 				break;
 			case Duck::TYPE_SCALE_Y:
-				visible_transformation.scale[1] = scale[1];
+				transformation.scale[1] = scale[1];
 				break;
 			default:
 				break;
 			}
 
-			if (get_alternative_mode())
-			{
-				Transformation t( transformation.get_inverted_matrix()
-							    * visible_transformation.get_matrix() );
-				return canvas_interface->change_value(origin_value_desc, t);
-			}
-			else
-			{
-				Transformation t = origin_transformation.back_transform(visible_transformation);
-				return canvas_interface->change_value(value_desc, t);
-			}
+			return canvas_interface->change_value(value_desc, transformation);
 		}
 		break;
 	default:
@@ -1697,11 +1684,14 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(layer_name=="PasteCanvas")
+		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 		{
-			Transformation origin_transformation = layer->get_param("origin_transformation").get(Transformation());
-			Transformation transformation = layer->get_param("transformation").get(Transformation());
-			transform_stack.push_back(new Transform_Matrix(GUID(), transformation.get_matrix(origin_transformation)));
+			transform_stack.push_back(
+				new Transform_Matrix(
+					layer->get_guid(),
+					layer_pastecanvas->get_summary_transformation().get_matrix()
+				)
+			);
 
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
 			add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
@@ -1995,195 +1985,181 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 
 	case ValueBase::TYPE_TRANSFORMATION:
-		if (param_desc != NULL && !param_desc->get_origin().empty())
+		if (value_desc.parent_is_layer_param() && param_desc != NULL)
 		{
-			synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			bool enable_transformation = layer->get_enable_transformation();
+			if (param_desc->get_name() == (enable_transformation ? "transformation" : "origin_transformation"))
+			{
+				Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
 
-			Transformation origin_transformation = value_desc_origin.get_value(get_time()).get(Transformation());
-			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
-			Transformation visible_transformation = origin_transformation.transform(transformation);
+				bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
 
-			Vector visible_offset = visible_transformation.offset;
-			Angle visible_angle = visible_transformation.angle;
-			Vector visible_scale = visible_transformation.scale;
+				// add offset duck
+				etl::handle<Duck> duck=new Duck();
+				duck->set_transform_stack(transform_stack);
+				duck->set_name(guid_string(value_desc));
+				duck->set_point(transformation.offset);
+				duck->set_editable(editable);
 
-			bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
-			bool alternative_editable = !value_desc_origin.is_value_node() || synfigapp::is_editable(value_desc_origin.get_value_node());
+				// If we were passed a parameter description
+				duck->set_type(Duck::TYPE_POSITION);
 
-			// add offset duck
-			etl::handle<Duck> duck=new Duck();
-			duck->set_transform_stack(transform_stack);
-			duck->set_name(guid_string(value_desc));
-			duck->set_point(visible_offset);
-			duck->set_editable(editable);
-			duck->set_alternative_editable(alternative_editable);
+				duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
+				duck->signal_edited().connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						value_desc));
+				duck->set_value_desc(value_desc);
 
-			// If we were passed a parameter description
-			duck->set_type(Duck::TYPE_POSITION);
-
-			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
-			duck->signal_edited().connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
-					value_desc));
-			duck->set_value_desc(value_desc);
-			duck->set_alternative_value_desc(value_desc_origin);
-
-			duck->signal_user_click(2).connect(
-				sigc::bind(
+				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
-							false),
-						1.0f),
-					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
-			add_duck(duck);
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							1.0f),
+						value_desc));
+				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
+				add_duck(duck);
 
-			etl::handle<Duck> origin_duck = duck;
+				etl::handle<Duck> origin_duck = duck;
 
-			// add angle duck
-			duck=new Duck();
-			duck->set_type(Duck::TYPE_ANGLE);
-			duck->set_transform_stack(transform_stack);
-			duck->set_point(Point(1.f, visible_scale[0] < 0.f ? visible_angle + Angle::deg(180.f) : visible_angle));
-			duck->set_name(guid_string(value_desc) + "-angle");
-			duck->set_editable(editable);
-			duck->set_alternative_editable(alternative_editable);
+				// add angle duck
+				duck=new Duck();
+				duck->set_type(Duck::TYPE_ANGLE);
+				duck->set_transform_stack(transform_stack);
+				duck->set_point(Point(1.f, transformation.scale[0] < 0.f ? transformation.angle + Angle::deg(180.f) : transformation.angle));
+				duck->set_name(guid_string(value_desc) + "-angle");
+				duck->set_editable(editable);
 
-			duck->set_origin(origin_duck);
+				duck->set_origin(origin_duck);
 
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
-					value_desc));
-			duck->set_value_desc(value_desc);
-			duck->set_alternative_value_desc(value_desc_origin);
+				duck->signal_edited().clear();
+				duck->signal_edited().connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						value_desc));
+				duck->set_value_desc(value_desc);
 
-			duck->signal_user_click(2).connect(
-				sigc::bind(
+				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
-							false),
-						0.0f),
-					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("angle"));
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							0.0f),
+						value_desc));
+				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("angle"));
 
-			add_duck(duck);
+				add_duck(duck);
 
-			// add scale duck
-			duck=new Duck();
-			duck->set_type(Duck::TYPE_SCALE);
-			duck->set_transform_stack(transform_stack);
-			duck->set_name(guid_string(value_desc) + "-scale");
-			duck->set_point(Point(visible_scale.mag(), visible_angle + Angle::deg(visible_scale[1] < 0.f ? -90.f : 90.f)));
-			duck->set_editable(editable);
-			duck->set_alternative_editable(alternative_editable);
+				// add scale duck
+				duck=new Duck();
+				duck->set_type(Duck::TYPE_SCALE);
+				duck->set_transform_stack(transform_stack);
+				duck->set_name(guid_string(value_desc) + "-scale");
+				duck->set_point(Point(transformation.scale.mag(), transformation.angle + Angle::deg(transformation.scale[1] < 0.f ? -90.f : 90.f)));
+				duck->set_editable(editable);
 
-			duck->set_origin(origin_duck);
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
-					value_desc));
-			duck->set_value_desc(value_desc);
-			duck->set_alternative_value_desc(value_desc_origin);
+				duck->set_origin(origin_duck);
+				duck->signal_edited().clear();
+				duck->signal_edited().connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						value_desc));
+				duck->set_value_desc(value_desc);
 
-			duck->signal_user_click(2).connect(
-				sigc::bind(
+				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
-							false),
-						0.0f),
-					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale"));
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							0.0f),
+						value_desc));
+				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale"));
 
-			add_duck(duck);
+				add_duck(duck);
 
-			// add scale-x duck
-			duck=new Duck();
-			duck->set_type(Duck::TYPE_SCALE_X);
-			duck->set_transform_stack(transform_stack);
-			duck->set_name(guid_string(value_desc) + "-scale-x");
-			duck->set_point(Point(visible_scale[0], visible_angle + Angle::deg(180.0)));
-			duck->set_editable(editable);
-			duck->set_alternative_editable(alternative_editable);
+				// add scale-x duck
+				duck=new Duck();
+				duck->set_type(Duck::TYPE_SCALE_X);
+				duck->set_transform_stack(transform_stack);
+				duck->set_name(guid_string(value_desc) + "-scale-x");
+				duck->set_point(Point(transformation.scale[0], transformation.angle + Angle::deg(180.0)));
+				duck->set_editable(editable);
 
-			duck->set_origin(origin_duck);
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
-					value_desc));
-			duck->set_value_desc(value_desc);
-			duck->set_alternative_value_desc(value_desc_origin);
+				duck->set_origin(origin_duck);
+				duck->signal_edited().clear();
+				duck->signal_edited().connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						value_desc));
+				duck->set_value_desc(value_desc);
 
-			duck->signal_user_click(2).connect(
-				sigc::bind(
+				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
-							false),
-						0.0f),
-					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale-x"));
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							0.0f),
+						value_desc));
+				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale-x"));
 
-			add_duck(duck);
+				add_duck(duck);
 
-			// add scale-y duck
-			duck=new Duck();
-			duck->set_type(Duck::TYPE_SCALE_Y);
-			duck->set_transform_stack(transform_stack);
-			duck->set_name(guid_string(value_desc) + "-scale-y");
-			duck->set_point(Point(visible_scale[1], visible_angle + Angle::deg(-90.0)));
-			duck->set_editable(editable);
-			duck->set_alternative_editable(alternative_editable);
+				// add scale-y duck
+				duck=new Duck();
+				duck->set_type(Duck::TYPE_SCALE_Y);
+				duck->set_transform_stack(transform_stack);
+				duck->set_name(guid_string(value_desc) + "-scale-y");
+				duck->set_point(Point(transformation.scale[1], transformation.angle + Angle::deg(-90.0)));
+				duck->set_editable(editable);
 
-			duck->set_origin(origin_duck);
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this,
-						&studio::Duckmatic::on_duck_changed),
-					value_desc));
-			duck->set_value_desc(value_desc);
-			duck->set_alternative_value_desc(value_desc_origin);
+				duck->set_origin(origin_duck);
+				duck->signal_edited().clear();
+				duck->signal_edited().connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*this,
+							&studio::Duckmatic::on_duck_changed),
+						value_desc));
+				duck->set_value_desc(value_desc);
 
-			duck->signal_user_click(2).connect(
-				sigc::bind(
+				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
-							false),
-						0.0f),
-					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale-y"));
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							0.0f),
+						value_desc));
+				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("scale-y"));
 
-			add_duck(duck);
+				add_duck(duck);
 
-			return true;
+				return true;
+			}
 		}
 		break;
 
