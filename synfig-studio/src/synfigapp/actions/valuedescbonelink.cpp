@@ -97,13 +97,15 @@ Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
-	return (ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+	return value_desc.parent_is_value_node()
+		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
 }
 
 bool
 Action::ValueDescBoneLink::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC
+	 && param.get_value_desc().parent_is_value_node()
 	 && ValueNode_Bone::Handle::cast_dynamic(param.get_value_desc().get_parent_value_node()) )
 	{
 		value_desc = param.get_value_desc();
@@ -136,7 +138,9 @@ Action::ValueDescBoneLink::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	clear();
-	ValueNode_Bone::Handle bone_value_node(ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+	ValueNode_Bone::Handle bone_value_node;
+	if (value_desc.parent_is_value_node())
+		bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
 
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{

@@ -348,38 +348,11 @@ Action::ValueDescSet::prepare()
 	if(value_desc.is_value_node() && ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueNode_BoneLink::Handle value_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
-		ValueDesc transformation_value_desc(value_node, 1);
+		ValueDesc transformation_value_desc(value_node, value_node->get_link_index_from_name("transformation"));
 
-		Transformation transformation = value.get(Transformation());
-		ValueNode_Bone::Handle bone_node = (*value_node->get_link(0))(time).get(ValueNode_Bone::Handle());
-		if (bone_node)
-		{
-			Bone bone      = (*bone_node)(time).get(Bone());
-			Transformation prev_transformation = (*value_node->get_link(1))(time).get(Transformation());
-			bool translate = (*value_node->get_link(2))(time).get(true);
-			bool rotate    = (*value_node->get_link(3))(time).get(true);
-			bool scale_x   = (*value_node->get_link(4))(time).get(true);
-			bool scale_y   = (*value_node->get_link(5))(time).get(true);
-
-			Matrix matrix = bone.get_animated_matrix();
-			Vector offset = matrix.get_transformed(Vector(0.0, 0.0));
-			Vector x      = matrix.get_transformed(Vector(1.0, 0.0)) - offset;
-			Vector y      = matrix.get_transformed(Vector(0.0, 1.0)) - offset;
-			Real x_mag = x.mag();
-			Real div_x = x_mag * bone.get_local_scale()[0];
-			Real div_y = x_mag == 0.0 ? 0.0 : -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
-
-			if (scale_x)   transformation.scale[0] = div_x == 0.0
-												   ? prev_transformation.scale[0]
-												   : transformation.scale[0] / div_x;
-			if (scale_y && x_mag != 0.0)
-						   transformation.scale[1] = div_y == 0.0
-												   ? prev_transformation.scale[1]
-												   : transformation.scale[1] / div_y;
-			if (rotate)    transformation.angle -= x.angle();
-			if (translate) transformation.offset -= offset;
-			if (rotate)    transformation.offset = transformation.offset.rotate(-x.angle());
-		}
+		Transformation transformation =
+			value_node->get_bone_transformation(time).back_transform(
+				value.get(Transformation()) );
 
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
@@ -430,8 +403,9 @@ Action::ValueDescSet::prepare()
 		case ValueBase::TYPE_TRANSFORMATION:
 			components[0]=value.get(Transformation()).offset;
 			components[1]=value.get(Transformation()).angle;
-			components[2]=value.get(Transformation()).scale;
-			n_components=3;
+			components[2]=value.get(Transformation()).skew_angle;
+			components[3]=value.get(Transformation()).scale;
+			n_components=4;
 			break;
 		default:
 			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());

@@ -1110,86 +1110,46 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 			const synfigapp::ValueDesc& origin_value_desc = duck.get_alternative_value_desc();
 			Transformation origin_transformation = origin_value_desc.get_value(get_time()).get(Transformation());
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
+			Transformation visible_transformation = origin_transformation.transform(transformation);
 
-			//Vector &offset = transformation.offset;
-			Angle &angle = transformation.angle;
-			Vector &scale = transformation.scale;
-
-			//Vector visible_offset = offset + origin_transformation.offset;
-			Angle visible_angle = angle + origin_transformation.angle;
-			Vector visible_scale = scale.multiply_coords(origin_transformation.scale);
-
-			Real scale_x = duck.get_point() * Vector(1.f, visible_angle + Angle::deg(180.f));
-			Real scale_y = duck.get_point() * Vector(1.f, visible_angle - Angle::deg(90.f));
-
-			bool alternative = get_alternative_mode();
-			Transformation target = alternative ? origin_transformation : transformation;
-			const synfigapp::ValueDesc& target_desc = alternative ? origin_value_desc : value_desc;
+			Vector scale(
+				duck.get_point() * Vector(1.f, visible_transformation.angle + Angle::deg(180.f)),
+				duck.get_point() * Vector(1.f, visible_transformation.angle - Angle::deg(90.f)) );
 
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
-				target.offset = alternative
-				              ? value - transformation.offset
-				              : value - origin_transformation.offset;
+				visible_transformation.offset = value;
 				break;
 			case Duck::TYPE_ANGLE:
-				target.angle += duck.get_rotations();
+				visible_transformation.angle += duck.get_rotations();
 				break;
 			case Duck::TYPE_SCALE:
-				if (transformation.scale.mag() > 0.0)
-				{
-					Real s = -scale_y/visible_scale.mag();
-					if (visible_scale[1] < 0.f) s *= -1.f;
-					target.scale[0] *= s;
-					target.scale[1] *= s;
-				}
+				if (visible_transformation.scale.mag() == 0.0)
+					visible_transformation.scale = Vector(-scale[1], -scale[1]) * sqrt(2.0);
 				else
-				if (alternative && transformation.scale.mag() > 0.0)
-				{
-					Real s = visible_scale[0] < 0.f ? scale_x : -scale_x;
-					s /= transformation.scale.mag();
-					target.scale[0] = s;
-					target.scale[1] = s;
-				}
-				else
-				if (!alternative && origin_transformation.scale.mag() > 0.0)
-				{
-					Real s = visible_scale[0] < 0.f ? scale_x : -scale_x;
-					s /= origin_transformation.scale.mag();
-					target.scale[0] = s;
-					target.scale[1] = s;
-				}
-				else
-				if (alternative)
-				{
-					Real s = visible_scale[0] < 0.f ? scale_x : -scale_x;
-					target.scale[0] = s;
-					target.scale[1] = s;
-				}
+					visible_transformation.scale *= -scale[1] / visible_transformation.scale.mag();
 				break;
 			case Duck::TYPE_SCALE_X:
-				if (alternative && transformation.scale[0] != 0.0)
-					target.scale[0] = scale_x/transformation.scale[0];
-				else
-				if (!alternative && origin_transformation.scale[0] != 0.0)
-					target.scale[0] = scale_x/origin_transformation.scale[0];
-				else
-					target.scale[0] = scale_x;
+				visible_transformation.scale[0] = scale[0];
 				break;
 			case Duck::TYPE_SCALE_Y:
-				if (alternative && transformation.scale[1] != 0.0)
-					target.scale[1] = scale_y/transformation.scale[1];
-				else
-				if (!alternative && origin_transformation.scale[1] != 0.0)
-					target.scale[1] = scale_y/origin_transformation.scale[1];
-				else
-				if (alternative)
-					target.scale[1] = scale_y;
+				visible_transformation.scale[1] = scale[1];
 				break;
 			default:
 				break;
 			}
-			return canvas_interface->change_value(target_desc, target);
+
+			if (get_alternative_mode())
+			{
+				Transformation t( transformation.get_inverted_matrix()
+							    * visible_transformation.get_matrix() );
+				return canvas_interface->change_value(origin_value_desc, t);
+			}
+			else
+			{
+				Transformation t = origin_transformation.back_transform(visible_transformation);
+				return canvas_interface->change_value(value_desc, t);
+			}
 		}
 		break;
 	default:
@@ -1741,38 +1701,12 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 		{
 			Transformation origin_transformation = layer->get_param("origin_transformation").get(Transformation());
 			Transformation transformation = layer->get_param("transformation").get(Transformation());
-
-			Vector &origin = origin_transformation.offset;
-			Vector &offset = transformation.offset;
-			Angle &origin_angle = origin_transformation.angle;
-			Angle &angle = transformation.angle;
-			Vector &scale = transformation.scale;
+			transform_stack.push_back(new Transform_Matrix(GUID(), transformation.get_matrix(origin_transformation)));
 
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
-
-			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.push(new Transform_Rotate(layer->get_guid(), angle, origin + offset));
-			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.push(new Transform_Rotate(layer->get_guid(), origin_angle, origin + offset));
-			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.push(new Transform_Scale(layer->get_guid(), scale, origin + offset));
-			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.push(new Transform_Rotate(layer->get_guid(), -origin_angle, origin + offset));
-			if(!offset.is_equal_to(Vector(0,0)))
-				transform_stack.push(new Transform_Translate(layer->get_guid(), offset));
-
 			add_ducks_layers(child_canvas,selected_layer_set,canvas_view,transform_stack);
 
-			if(!offset.is_equal_to(Vector(0,0)))
-				transform_stack.pop();
-			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.pop();
-			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.pop();
-			if(origin_angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.pop();
-			if(angle.dist(Angle::deg(0.0)) != Angle::deg(0.0))
-				transform_stack.pop();
+			transform_stack.pop();
 		}
 	}
 	// Remove all of the transforms we have added
@@ -2067,14 +2001,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			Transformation origin_transformation = value_desc_origin.get_value(get_time()).get(Transformation());
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
+			Transformation visible_transformation = origin_transformation.transform(transformation);
 
-			Vector &offset = transformation.offset;
-			Angle &angle = transformation.angle;
-			Vector &scale = transformation.scale;
-
-			Vector visible_offset = offset + origin_transformation.offset;
-			Angle visible_angle = angle + origin_transformation.angle;
-			Vector visible_scale = scale.multiply_coords(origin_transformation.scale);
+			Vector visible_offset = visible_transformation.offset;
+			Angle visible_angle = visible_transformation.angle;
+			Vector visible_scale = visible_transformation.scale;
 
 			bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
 			bool alternative_editable = !value_desc_origin.is_value_node() || synfigapp::is_editable(value_desc_origin.get_value_node());
