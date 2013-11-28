@@ -322,6 +322,7 @@ po/Makefile.in
 synfigstudio.mime
 synfigstudio.keys
 synfigstudio.xml
+synfigstudio.appdata.xml
 synfigstudio-thumbnailer.schemas
 src/Makefile
 src/gui/Makefile
