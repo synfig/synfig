@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2013 Yu Chen <jcomee@gmail.com> -->
+<application>
+ <id type="desktop">synfigstudio.desktop</id>
+ <licence>CC0</licence>
+ <description>
+  <_p>
+   Synfig Studio is a free and open-source 2D animation software, designed as powerful industrial-strength solution for creating film-quality animation using a vector and bitmap artwork. It eliminates the need to create animation frame-by frame, allowing you to produce 2D animation of a higher quality with fewer people and resources. 
+  </_p>
+  <_p>Features:</_p>
+  <ul>
+   <_li>Spatial resolution-independence</_li>
+   <_li>Temporal resolution independence</_li>
+   <_li>High Dynamic-Range Imaging (HDRI)</_li>
+   <_li>Pentablet-friendly tools</_li>
+   <_li>Artist-oriented design</_li>
+   <_li>Path-based Gradients</_li>
+   <_li>Multitude of layers of various types</_li>
+  </ul>
+ </description>
+ <screenshots>
+  <screenshot type="default" width="800" height="600">http://synfig.org/gallary/screenshots/interface.png</screenshot>
+  <screenshot width="800" height="600">http://synfig.org/gallary/screenshots/interface-2.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://www.synfig.org</url>
+ <updatecontact>synfig-devl@lists.sourceforge.net</updatecontact>
+</application>

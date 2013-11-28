@@ -46,6 +46,7 @@ EXTRA_DIST = \
 	m4/ETL.m4 \
 	ChangeLog.old \
 	synfigstudio.desktop.in \
+	synfigstudio.appdata.xml.in \
 	synfigstudio.xml.in \
 	synfigstudio-thumbnailer.schemas.in
 
@@ -60,6 +61,14 @@ desktop_DATA = synfigstudio.desktop
 
 mimeinfodir              = $(prefix)/share/mime-info
 mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
+
+# Appdata
+@INTLTOOL_XML_RULE@
+appdata_in_files = synfigstudio.appdata.xml.in
+app_data_files = $(app_data_in_files:.xml.in=.xml)
+
+appdatadir = $(datadir)/appdata
+appdata_DATA = $(app_data_files)
 
 # Icon
 icondir                 = $(datadir)/pixmaps
