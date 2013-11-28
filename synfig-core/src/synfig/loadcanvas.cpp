@@ -906,11 +906,35 @@ CanvasParser::parse_transformation(xmlpp::Element *element)
 
 			if((*iter)->get_name()!="angle")
 			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
 				continue;
 			}
 
 			transformation.angle=parse_angle(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="skew_angle")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
+				continue;
+			}
+
+			transformation.skew_angle=parse_angle(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
 		if(child->get_name()=="scale")

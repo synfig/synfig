@@ -286,6 +286,7 @@ xmlpp::Element* encode_transformation(xmlpp::Element* root,const Transformation 
 	root->set_name("transformation");
 	encode_vector(root->add_child("offset")->add_child("vector"),transformation.offset);
 	encode_angle(root->add_child("angle")->add_child("angle"),transformation.angle);
+	encode_angle(root->add_child("skew_angle")->add_child("angle"),transformation.skew_angle);
 	encode_vector(root->add_child("scale")->add_child("vector"),transformation.scale);
 	return root;
 }
