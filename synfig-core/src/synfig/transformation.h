@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "vector.h"
+#include "matrix.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,6 +46,7 @@ class Transformation
 public:
 	Vector offset;
 	Angle angle;
+	Angle skew_angle;
 	Vector scale;
 
 	Transformation():
@@ -56,6 +58,7 @@ public:
 	{
 		return offset.is_valid()
 		    && !isnan(Angle::rad(angle).get())
+		    && !isnan(Angle::rad(skew_angle).get())
 		    && scale.is_valid();
 	}
 
@@ -64,6 +67,7 @@ public:
 	{
 		return offset==rhs.offset
 			&& angle==rhs.angle
+			&& skew_angle==rhs.skew_angle
 			&& scale==rhs.scale;
 	}
 
@@ -72,6 +76,7 @@ public:
 	{
 		return offset!=rhs.offset
 			|| angle!=rhs.angle
+			|| skew_angle!=rhs.skew_angle
 			|| scale!=rhs.scale;
 	}
 
@@ -79,25 +84,80 @@ public:
 	{
 		static const Angle::rad epsilon_angle(0.0000000000001);
 		Angle::rad a = angle - rhs.angle;
+		Angle::rad sa = skew_angle - rhs.skew_angle;
 		return offset.is_equal_to(rhs.offset)
-		    && a < epsilon_angle
-		    && a > -epsilon_angle
+		    && a < epsilon_angle && a > -epsilon_angle
+		    && sa < epsilon_angle && sa > -epsilon_angle
 		    && scale.is_equal_to(rhs.scale);
 	}
 
-	Vector transform(const Transformation &origin, const Vector &v, bool translate = true)
+	Matrix get_matrix() const
 	{
-		return translate
-			 ? (v-origin.offset).rotate(-origin.angle).multiply_coords(scale).rotate(angle+origin.angle)+origin.offset+offset
-			 : v.rotate(-origin.angle).multiply_coords(scale).rotate(angle+origin.angle);
+		Vector axis_x(scale[0], angle);
+		Vector axis_y(scale[1], angle + skew_angle + Angle::deg(90.0));
+		return Matrix(
+			axis_x[0], axis_x[1], 0.0,
+			axis_y[0], axis_y[1], 0.0,
+			offset[0], offset[1], 1.0 );
 	}
 
-	Vector back_transform(const Transformation &origin, const Vector &v, bool translate = true)
+	void set_matrix(const Matrix &matrix)
 	{
-		return translate
-			 ? (v-origin.offset-offset).rotate(-angle-origin.angle).divide_coords(scale).rotate(origin.angle)+origin.offset
-			 : v.rotate(-angle-origin.angle).divide_coords(scale).rotate(origin.angle);
+		Vector axis_x(matrix.m00, matrix.m01);
+		Vector axis_y(matrix.m10, matrix.m11);
+		angle = axis_x.angle();
+		skew_angle = axis_y.angle() - angle - Angle::deg(90.0);
+		scale[0] = axis_x.mag();
+		scale[1] = axis_y.mag();
+		offset[0] = matrix.m20;
+		offset[1] = matrix.m21;
 	}
+
+	Transformation(const Matrix &matrix)
+		{ set_matrix(matrix); }
+
+	Matrix get_inverted_matrix() const
+		{ return get_matrix().invert(); }
+
+	Matrix get_matrix(const Transformation &origin) const
+	{
+		Matrix origin_matrix(origin.get_matrix());
+		Matrix inverted_origin_matrix(origin_matrix);
+		inverted_origin_matrix.invert();
+
+		Matrix matrix;
+		matrix *= origin_matrix;
+		matrix *= get_matrix();
+		matrix *= inverted_origin_matrix;
+
+		return matrix;
+	}
+
+	Matrix get_inverted_matrix(const Transformation &origin) const
+		{ return get_matrix(origin).invert(); }
+
+	Transformation get_transformation_with_origin(const Transformation &origin) const
+		{ return Transformation(get_matrix(origin)); }
+
+	Transformation get_back_transformation() const
+		{ return Transformation(get_inverted_matrix()); }
+	Transformation get_back_transformation(const Transformation &origin) const
+		{ return Transformation(get_inverted_matrix(origin)); }
+
+	Vector transform(const Vector &v, bool translate = true) const
+		{ return get_matrix().get_transformed(v, translate); }
+	Vector transform(const Transformation &origin, const Vector &v, bool translate = true) const
+		{ return get_matrix(origin).get_transformed(v, translate); }
+	Transformation transform(const Transformation &transformation) const
+		{ return transformation.get_matrix()*get_matrix(); }
+
+
+	Vector back_transform(const Vector &v, bool translate = true) const
+		{ return get_inverted_matrix().get_transformed(v, translate); }
+	Vector back_transform(const Transformation &origin, const Vector &v, bool translate = true) const
+		{ return get_inverted_matrix(origin).get_transformed(v, translate); }
+	Transformation back_transform(const Transformation &transformation) const
+		{ return transformation.get_matrix()*get_inverted_matrix(); }
 
 	static const Transformation identity() { return Transformation(); }
 };
