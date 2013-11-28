@@ -60,6 +60,7 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 	set_link("transformation",	ValueNode_Const::create(x.get_type() == ValueBase::TYPE_TRANSFORMATION ? x.get(Transformation()) : Transformation()));
 	set_link("translate",		ValueNode_Const::create(true));
 	set_link("rotate",  		ValueNode_Const::create(true));
+	set_link("skew", 	 		ValueNode_Const::create(true));
 	set_link("scale_x", 		ValueNode_Const::create(true));
 	set_link("scale_y", 		ValueNode_Const::create(true));
 }
@@ -92,8 +93,9 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 	case 1: CHECK_TYPE_AND_SET_VALUE(transformation_, ValueBase::TYPE_TRANSFORMATION);
 	case 2: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
 	case 3: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(scale_y_,   ValueBase::TYPE_BOOL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(skew_,      ValueBase::TYPE_BOOL);
+	case 5: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scale_y_,   ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -108,8 +110,9 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 	case 1: return transformation_;
 	case 2: return translate_;
 	case 3: return rotate_;
-	case 4: return scale_x_;
-	case 5: return scale_y_;
+	case 4: return skew_;
+	case 5: return scale_x_;
+	case 6: return scale_y_;
 	}
 	return 0;
 }
@@ -122,8 +125,36 @@ ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
 	transformation_->set_root_canvas(x);
 	translate_->set_root_canvas(x);
 	rotate_->set_root_canvas(x);
+	skew_->set_root_canvas(x);
 	scale_x_->set_root_canvas(x);
 	scale_y_->set_root_canvas(x);
+}
+
+Transformation
+ValueNode_BoneLink::get_bone_transformation(Time t)const
+{
+	Transformation transformation;
+	ValueNode_Bone::Handle bone_node = (*bone_)(t).get(ValueNode_Bone::Handle());
+	if (bone_node)
+	{
+		Bone bone      = (*bone_node) (t).get(Bone());
+		bool translate = (*translate_)(t).get(true);
+		bool rotate    = (*rotate_)   (t).get(true);
+		bool skew      = (*rotate_)   (t).get(true);
+		bool scale_x   = (*scale_x_)  (t).get(true);
+		bool scale_y   = (*scale_y_)  (t).get(true);
+
+		Matrix matrix = bone.get_animated_matrix();
+		transformation.set_matrix(matrix);
+
+		if (!translate) transformation.offset = Vector(0.0, 0.0);
+		if (!rotate) transformation.angle = Angle::zero();
+		if (!skew) transformation.skew_angle = Angle::zero();
+		if (!scale_x) transformation.scale[0] = 1.0;
+		if (!scale_y) transformation.scale[1] = 1.0;
+	}
+
+	return transformation;
 }
 
 ValueBase
@@ -131,33 +162,8 @@ ValueNode_BoneLink::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
-
-	Transformation transformation = (*transformation_)(t).get(Transformation());
-
-	ValueNode_Bone::Handle bone_node = (*bone_)(t).get(ValueNode_Bone::Handle());
-	if (bone_node)
-	{
-		Bone bone      = (*bone_node) (t).get(Bone());
-		bool translate = (*translate_)(t).get(true);
-		bool rotate    = (*rotate_)   (t).get(true);
-		bool scale_x   = (*scale_x_)  (t).get(true);
-		bool scale_y   = (*scale_y_)  (t).get(true);
-
-		Matrix matrix = bone.get_animated_matrix();
-		Vector offset = matrix.get_transformed(Vector(0.0, 0.0));
-		Vector x      = matrix.get_transformed(Vector(1.0, 0.0)) - offset;
-		Vector y      = matrix.get_transformed(Vector(0.0, 1.0)) - offset;
-		Real x_mag = x.mag();
-
-		if (rotate)    transformation.offset = transformation.offset.rotate(x.angle());
-		if (translate) transformation.offset += offset;
-		if (rotate)    transformation.angle += x.angle();
-		if (scale_x)   transformation.scale[0] *= x_mag * bone.get_local_scale()[0];
-		if (scale_y && x_mag != 0.0)
-					   transformation.scale[1] *= -(x.perp()*y)/x_mag * bone.get_local_scale()[1];
-	}
-
-	return transformation;
+	return get_bone_transformation(t).transform(
+			(*transformation_)(t).get(Transformation()) );
 }
 
 String
@@ -204,6 +210,11 @@ ValueNode_BoneLink::get_children_vocab_vfunc()const
 	ret.push_back(ParamDesc(ValueBase(),"rotate")
 		.set_local_name(_("Rotate"))
 		.set_description(_("Make rotation"))
+	);
+
+	ret.push_back(ParamDesc(ValueBase(),"skew")
+		.set_local_name(_("Skew"))
+		.set_description(_("Make skew"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"scale_x")

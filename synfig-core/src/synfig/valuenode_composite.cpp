@@ -128,9 +128,10 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		}
 		case ValueBase::TYPE_TRANSFORMATION:
 		{
-			Transformation transformation(value);
+			Transformation transformation(value.get(Transformation()));
 			set_link("offset",ValueNode_Const::create(transformation.offset));
 			set_link("angle",ValueNode_Const::create(transformation.angle));
+			set_link("skew_angle",ValueNode_Const::create(transformation.skew_angle));
 			set_link("scale",ValueNode_Const::create(transformation.scale));
 			break;
 		}
@@ -240,10 +241,11 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		case ValueBase::TYPE_TRANSFORMATION:
 		{
 			Transformation ret;
-			assert(components[0] && components[1] && components[2]);
-			ret.offset = (*components[0])(t).get(Vector());
-			ret.angle  = (*components[1])(t).get(Angle());
-			ret.scale  = (*components[2])(t).get(Vector());
+			assert(components[0] && components[1] && components[2] && components[3]);
+			ret.offset    = (*components[0])(t).get(Vector());
+			ret.angle     = (*components[1])(t).get(Angle());
+			ret.skew_angle = (*components[2])(t).get(Angle());
+			ret.scale     = (*components[3])(t).get(Vector());
 			return ret;
 		}
 		default:
@@ -354,7 +356,8 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			if( PlaceholderValueNode::Handle::cast_dynamic(x)
 			 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
 			 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
-			 || (i == 2 && x->get_type()==ValueBase(Vector()).get_type())
+			 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
+			 || (i == 3 && x->get_type()==ValueBase(Vector()).get_type())
 			) {
 				components[i]=x;
 				return true;
@@ -476,8 +479,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 0;
 		if(name=="angle")
 			return 1;
-		if(name=="scale")
+		if(name=="skew_angle")
 			return 2;
+		if(name=="scale")
+			return 3;
 	default:
 		break;
 	}
@@ -677,6 +682,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"angle")
 			.set_local_name(_("Angle"))
 			.set_description(_("The Angle component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"skew_angle")
+			.set_local_name(_("Skew Angle"))
+			.set_description(_("The Skew Angle component of the transformation"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"scale")
 			.set_local_name(_("Scale"))

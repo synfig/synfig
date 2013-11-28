@@ -41,6 +41,7 @@ class ValueNode_BoneLink : public LinkableValueNode
 	ValueNode::RHandle transformation_;
 	ValueNode::RHandle translate_;
 	ValueNode::RHandle rotate_;
+	ValueNode::RHandle skew_;
 	ValueNode::RHandle scale_x_;
 	ValueNode::RHandle scale_y_;
 
@@ -50,6 +51,7 @@ public:
 
 	ValueNode_BoneLink(const ValueBase &x);
 
+	Transformation get_bone_transformation(Time t)const;
 	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_BoneLink();
