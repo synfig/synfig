@@ -63,12 +63,9 @@ mimeinfodir              = $(prefix)/share/mime-info
 mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Appdata
-@INTLTOOL_XML_RULE@
-appdata_in_files = synfigstudio.appdata.xml.in
-app_data_files = $(app_data_in_files:.xml.in=.xml)
-
 appdatadir = $(datadir)/appdata
-appdata_DATA = $(app_data_files)
+appdata_DATA = synfigstudio.appdata.xml
+@INTLTOOL_XML_RULE@
 
 # Icon
 icondir                 = $(datadir)/pixmaps
