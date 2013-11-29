@@ -1,4 +1,5 @@
 synfigstudio.desktop.in
+synfigstudio.appdata.xml.in
 synfigstudio-thumbnailer.schemas.in
 synfigstudio.keys.in
 plugins/add-skeleton-simple/plugin.xml.in
@@ -260,8 +261,8 @@ src/gui/splash.cpp
 src/gui/splash.h
 src/gui/statemanager.cpp
 src/gui/statemanager.h
-src/gui/toolbox.cpp
-src/gui/toolbox.h
+src/gui/docks/dock_toolbox.cpp
+src/gui/docks/dock_toolbox.h
 src/gui/valuelink.cpp
 src/gui/valuelink.h
 src/gui/workarea.cpp
