@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#TODO: Replace version numbers in the .nsi file
-
 set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
@@ -231,9 +229,6 @@ autoreconf --install --force
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
 make install
 }
-
-#TODO: Magick++
-
 
 #synfig-core
 mksynfig()
