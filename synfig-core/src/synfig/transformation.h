@@ -50,9 +50,11 @@ public:
 	Vector scale;
 
 	Transformation():
-		angle(Angle::rad(0.0)), scale(1.0, 1.0) { }
-	Transformation(const Vector &offset, const Angle &angle, const Vector &scale):
-		offset(offset), angle(angle), scale(scale) { }
+		offset(0.0, 0.0),
+		angle(Angle::rad(0.0)),
+		skew_angle(Angle::rad(0.0)),
+		scale(1.0, 1.0)
+	{ }
 
 	bool is_valid()const
 	{
@@ -113,7 +115,7 @@ public:
 		offset[1] = matrix.m21;
 	}
 
-	Transformation(const Matrix &matrix)
+	explicit Transformation(const Matrix &matrix)
 		{ set_matrix(matrix); }
 
 	Matrix get_inverted_matrix() const
@@ -122,16 +124,36 @@ public:
 	Transformation get_back_transformation() const
 		{ return Transformation(get_inverted_matrix()); }
 
+	static Rect transform_bounds(const Matrix &matrix, const Rect &bounds) const
+	{
+		Rect transformed_bounds(
+			get_matrix().get_transformed(
+				Vector(bounds.minx, bounds.miny) ));
+		transformed_bounds.expand(
+			get_matrix().get_transformed(
+				Vector(bounds.maxx, bounds.maxy) ));
+		transformed_bounds.expand(
+			get_matrix().get_transformed(
+				Vector(bounds.minx, bounds.maxy) ));
+		transformed_bounds.expand(
+			get_matrix().get_transformed(
+				Vector(bounds.maxx, bounds.miny) ));
+		return transformed_bounds;
+	}
+
 	Vector transform(const Vector &v, bool translate = true) const
 		{ return get_matrix().get_transformed(v, translate); }
 	Transformation transform(const Transformation &transformation) const
 		{ return transformation.get_matrix()*get_matrix(); }
-
+	Rect transform_bounds(const Rect &bounds) const
+		{ return transform_bounds(get_matrix(), bounds); }
 
 	Vector back_transform(const Vector &v, bool translate = true) const
 		{ return get_inverted_matrix().get_transformed(v, translate); }
 	Transformation back_transform(const Transformation &transformation) const
-		{ return transformation.get_matrix()*get_inverted_matrix(); }
+		{ return Transformation( transformation.get_matrix()*get_inverted_matrix() ); }
+	Rect back_transform_bounds(const Rect &bounds) const
+		{ return transform_bounds(get_inverted_matrix(), bounds); }
 
 	static const Transformation identity() { return Transformation(); }
 };
