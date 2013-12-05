@@ -413,33 +413,17 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 Rect
 Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &context_params)const
 {
-	Transformation transformation(get_summary_transformation());
-
-	ContextParams cp(context_params);
-	cp.z_range=param_z_range.get(bool());
-	cp.z_range_position=param_z_range_position.get(Real());
-	cp.z_range_depth=param_z_range_depth.get(Real());
-	cp.z_range_blur=param_z_range_blur.get(Real());
-
 	if (canvas)
 	{
-		Rect bounds = canvas->get_context(cp).get_full_bounding_rect();
-		Vector corners[] = {
-			Vector(bounds.minx, bounds.miny),
-			Vector(bounds.maxx, bounds.maxy),
-			Vector(bounds.minx, bounds.maxy),
-			Vector(bounds.maxx, bounds.miny)
-		};
-		Rect transformed_bounds(Rect::zero());
-		for(int i = 0; i < 4; i++)
-		{
-			Vector corner = transformation.transform(corners[i]);
-			if (i == 0)
-				transformed_bounds.set_point(corner);
-			else
-				transformed_bounds.expand(corner);
-		}
-		return transformed_bounds;
+		ContextParams cp(context_params);
+		cp.z_range=param_z_range.get(bool());
+		cp.z_range_position=param_z_range_position.get(Real());
+		cp.z_range_depth=param_z_range_depth.get(Real());
+		cp.z_range_blur=param_z_range_blur.get(Real());
+
+		return get_summary_transformation()
+			.transform_bounds(
+				canvas->get_context(cp).get_full_bounding_rect() );
 	}
 	return Rect::zero();
 }
@@ -478,12 +462,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
 
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	desc.set_tl(transformation.back_transform(desc.get_tl()));
-	desc.set_br(transformation.back_transform(desc.get_br()));
-	desc.set_flags(RendDesc::PX_ASPECT);
-
 	if (is_solid_color() || context->empty())
 	{
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
@@ -503,6 +481,13 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	bool blend_using_straight = false; // use 'straight' just for the central blit
 
+	Rect inner_bounds(
+		// transformation.back_transform_bounds(renddesc.get_rect())
+	    full_bounding_rect.get_min(),
+	    full_bounding_rect.get_max()
+	);
+	Rect outer_bounds(transformation.transform_bounds(inner_bounds));
+	
 	// sometimes the user changes the parameters while we're
 	// rendering, causing our pasted canvas' bounding box to shrink
 	// and no longer overlap with our tile.  if that has happened,
@@ -515,7 +500,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	//   error: Context::accelerated_render(): Layer "shade" threw a bad_alloc exception!
 	// where the shade layer tries to allocate itself a canvas of
 	// negative proportions, due to changing bounding boxes.
-	if (!etl::intersect(desc.get_rect(), full_bounding_rect))
+	if (!inner_bounds.is_valid())
 	{
 		warning("%s:%d bounding box shrank while rendering?", __FILE__, __LINE__);
 		return true;
@@ -533,11 +518,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 
-	Vector pointA(full_bounding_rect.minx, full_bounding_rect.miny);
-	Vector pointB(full_bounding_rect.maxx, full_bounding_rect.maxy);
-	pointA = transformation.transform(pointA);
-	pointB = transformation.transform(pointB);
-	if (!etl::intersect(context.get_full_bounding_rect(),Rect(pointA[0], pointA[1], pointB[0], pointB[1])))
+	if (!etl::intersect(context.get_full_bounding_rect(),outer_bounds))
 	{
 		// if there's no intersection between the context and our
 		// surface, and we're rendering 'onto', then we're done
@@ -559,98 +540,78 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 #endif	// SYNFIG_CLIP_PASTECANVAS
 	}
 
-#ifdef SYNFIG_CLIP_PASTECANVAS
-	Rect area(desc.get_rect() & full_bounding_rect);
+	Vector width_vector(
+		transformation.transform(
+			Vector(inner_bounds.maxx - inner_bounds.minx, 0.0) ));
+	Vector pixels_width_vector(
+		width_vector[0]/renddesc.get_pw(),
+		width_vector[1]/renddesc.get_ph() );
+	int inner_width_pixels = ceil(pixels_width_vector.mag());
 
-	Point min(area.get_min());
-	Point max(area.get_max());
+	Vector ortho_axis_x(width_vector.norm());
+	Vector ortho_axis_y(-ortho_axis_x.perp());
 
-	if (desc.get_tl()[0] > desc.get_br()[0]) swap(min[0], max[0]);
-	if (desc.get_tl()[1] > desc.get_br()[1]) swap(min[1], max[1]);
+	Vector height_vector(
+		transformation.transform(
+			Vector(0.0, inner_bounds.maxy - inner_bounds.miny) ));
+	Vector ortho_height_vector(
+		ortho_axis_y * (height_vector*ortho_axis_y) );
+	Vector pixels_height_vector(
+		ortho_height_vector[0]/renddesc.get_pw(),
+		ortho_height_vector[1]/renddesc.get_ph() );
+	int inner_height_pixels = ceil(pixels_height_vector.mag());
 
-	const int x(floor_to_int((min[0] - desc.get_tl()[0]) / desc.get_pw()));
-	const int y(floor_to_int((min[1] - desc.get_tl()[1]) / desc.get_ph()));
-	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
-	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
+	RendDesc intermediate_desc(renddesc);
+	intermediate_desc.clear_flags();
+	intermediate_desc.set_tl(Vector(inner_bounds.minx,inner_bounds.maxy));
+	intermediate_desc.set_br(Vector(inner_bounds.maxx,inner_bounds.miny));
+	intermediate_desc.set_flags(RendDesc::PX_ASPECT);
+	intermediate_desc.set_w(4*inner_width_pixels);
+	intermediate_desc.set_h(4*inner_height_pixels);
 
-	const int tw = desc.get_w();
-	const int th = desc.get_h();
-
-	desc.set_subwindow(x,y,w,h);
-
-	// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
-	//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
-	if(desc.get_w()==0 || desc.get_h()==0)
-	{
-		if(cb && !cb->amount_complete(10000,10000)) return false;
-		return true;
-	}
-
-	// SYNFIG_CLIP_PASTECANVAS is defined, so we are only touching the
-	// pixels within the affected rectangle.  If the blend method is
-	// 'straight', then we need to blend transparent pixels with the
-	// clipped areas of this tile, because with the 'straight' blend
-	// method, even transparent pixels have an effect on the layers below
-	if (Color::is_straight(blend_method))
-	{
-		Surface clearsurface;
-
-		Surface::alpha_pen apen(surface->begin());
-		apen.set_alpha(get_amount());
-
-		// the area we're about to blit is transparent, so it doesn't
-		// matter whether we use 'straight' or 'straight onto' here
-		if (blend_method == Color::BLEND_ALPHA_BRIGHTEN)
-			apen.set_blend_method(blend_method);
-		else
-			apen.set_blend_method(Color::BLEND_STRAIGHT);
-
-		/* This represents the area we're pasting into the tile,
-		 * within the tile as a whole.	Areas (A), (B), (C) and (D)
-		 * need blending with the underlying context if they're not
-		 * zero-sized:
-		 *
-		 *		 0	   x		 x+w	  tw
-		 *	 0	 +------------------------+
-		 *		 |						  |
-		 *		 |			(A)			  |
-		 *		 |						  |
-		 *	 y	 | - - +----------+ - - - |
-		 *		 |	   |		  |		  |
-		 *		 | (C) |  w by h  |	 (D)  |
-		 *		 |	   |		  |		  |
-		 *	 y+h | - - +----------+ - - - |
-		 *		 |						  |
-		 *		 |			(B)			  |
-		 *		 |						  |
-		 *	 tw	 +------------------------+
-		 */
-
-		if (y > 0)				// draw the full-width strip above the rectangle (A)
-		{ apen.move_to(0,0);   clearsurface.set_wh(tw,y);        clearsurface.clear(); clearsurface.blit_to(apen); }
-		if (y+h < th)			// draw the full-width strip below the rectangle (B)
-		{ apen.move_to(0,y+h); clearsurface.set_wh(tw,th-(y+h)); clearsurface.clear(); clearsurface.blit_to(apen); }
-		if (x > 0)				// draw the box directly left of the rectangle (C)
-		{ apen.move_to(0,y);   clearsurface.set_wh(x,h);         clearsurface.clear(); clearsurface.blit_to(apen); }
-		if (x+w < tw)			// draw the box directly right of the rectangle (D)
-		{ apen.move_to(x+w,y); clearsurface.set_wh(tw-(x+w),h);  clearsurface.clear(); clearsurface.blit_to(apen); }
-	}
-#endif	// SYNFIG_CLIP_PASTECANVAS
-
-	// render the canvas to be pasted onto pastesurface
-	Surface pastesurface;
-	if(!canvas->get_context(context).accelerated_render(&pastesurface,quality,desc,&stagetwo))
+	Surface intermediate_surface;
+	if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 		return false;
 
-#ifdef SYNFIG_CLIP_PASTECANVAS
-	Surface::alpha_pen apen(surface->get_pen(x,y));
-#else  // SYNFIG_CLIP_PASTECANVAS
-	Surface::alpha_pen apen(surface->begin());
-#endif	// SYNFIG_CLIP_PASTECANVAS
+	Rect pixels_outer_bounds(
+		Vector((outer_bounds.minx-renddesc.get_tl()[0])/renddesc.get_pw(),
+			   (outer_bounds.miny-renddesc.get_tl()[1])/renddesc.get_ph()),
+		Vector((outer_bounds.maxx-renddesc.get_tl()[0])/renddesc.get_pw(),
+			   (outer_bounds.maxy-renddesc.get_tl()[1])/renddesc.get_ph())
+	);
 
-	apen.set_alpha(get_amount());
-	apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
-	pastesurface.blit_to(apen);
+	int left   = (int)floor(pixels_outer_bounds.minx);
+	int top    = (int)floor(pixels_outer_bounds.miny);
+	int right  = (int)ceil (pixels_outer_bounds.maxx);
+	int bottom = (int)ceil (pixels_outer_bounds.maxy);
+
+	//left = 0; right = renddesc.get_w() - 1;
+	//top = 0; bottom = renddesc.get_h() - 1;
+
+	#define PASTECANVAS_CLAMP(x, m) \
+		if ((x) < 0) (x) = 0; else if ((x) > (m)) (x) = (m) - 1;
+	PASTECANVAS_CLAMP(left,   renddesc.get_w());
+	PASTECANVAS_CLAMP(right,  renddesc.get_w());
+	PASTECANVAS_CLAMP(top,    renddesc.get_h());
+	PASTECANVAS_CLAMP(bottom, renddesc.get_h());
+	#undef PASTECANVAS_CLAMP
+
+	for(int y = top; y <= bottom; y++) {
+		for(int x = left; x <= right; x++) {
+			Vector outer_pos(x*renddesc.get_pw(), y*renddesc.get_ph());
+			outer_pos += renddesc.get_tl();
+			Vector inner_pos = transformation.back_transform(outer_pos);
+			Vector inner_surface_pos(inner_pos - intermediate_desc.get_tl());
+			inner_surface_pos[0] /= intermediate_desc.get_pw();
+			inner_surface_pos[1] /= intermediate_desc.get_ph();
+			Color color = intermediate_surface.linear_sample(inner_surface_pos[0], inner_surface_pos[1]);
+
+			Surface::alpha_pen apen(surface->get_pen(x,y));
+			apen.set_alpha(get_amount());
+			apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
+			apen.put_value(color);
+		}
+	}
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 
