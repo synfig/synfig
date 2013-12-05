@@ -29,6 +29,7 @@
 
 #include "vector.h"
 #include "matrix.h"
+#include "rect.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -124,19 +125,19 @@ public:
 	Transformation get_back_transformation() const
 		{ return Transformation(get_inverted_matrix()); }
 
-	static Rect transform_bounds(const Matrix &matrix, const Rect &bounds) const
+	static Rect transform_bounds(const Matrix &matrix, const Rect &bounds)
 	{
 		Rect transformed_bounds(
-			get_matrix().get_transformed(
+			matrix.get_transformed(
 				Vector(bounds.minx, bounds.miny) ));
 		transformed_bounds.expand(
-			get_matrix().get_transformed(
+			matrix.get_transformed(
 				Vector(bounds.maxx, bounds.maxy) ));
 		transformed_bounds.expand(
-			get_matrix().get_transformed(
+			matrix.get_transformed(
 				Vector(bounds.minx, bounds.maxy) ));
 		transformed_bounds.expand(
-			get_matrix().get_transformed(
+			matrix.get_transformed(
 				Vector(bounds.maxx, bounds.miny) ));
 		return transformed_bounds;
 	}
@@ -144,7 +145,7 @@ public:
 	Vector transform(const Vector &v, bool translate = true) const
 		{ return get_matrix().get_transformed(v, translate); }
 	Transformation transform(const Transformation &transformation) const
-		{ return transformation.get_matrix()*get_matrix(); }
+		{ return Transformation( transformation.get_matrix()*get_matrix() ); }
 	Rect transform_bounds(const Rect &bounds) const
 		{ return transform_bounds(get_matrix(), bounds); }
 
