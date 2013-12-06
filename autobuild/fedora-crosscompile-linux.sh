@@ -18,11 +18,13 @@ fi
 export WORKSPACE=$HOME/synfig-buildroot
 export PREFIX=$WORKSPACE/linux$ARCH/sys
 export PREFIX_BUNDLE=$WORKSPACE/linux$ARCH/bundle
+export PREFIX_DEPS=$WORKSPACE/linux$ARCH/sys-deps
 export PREFIX_SRC=$WORKSPACE/linux$ARCH/source
 export DISTPREFIX=$WORKSPACE/tmp/linux$ARCH
 export CACHEDIR=$WORKSPACE/cache
 
 [ -e ${PREFIX_SRC} ] || mkdir -p ${PREFIX_SRC}
+[ -e ${PREFIX_DEPS} ] || mkdir -p ${PREFIX_DEPS}
 
 export EMAIL='root@synfig.org'
 SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
@@ -47,6 +49,7 @@ BOOST_VERSION=1_53_0
 ATK_VERSION=1.29.4			# required by GTK 2.20.1
 GLIB_VERSION=2.24.2			# required by GLIBMM 2.24.2
 GTK_VERSION=2.20.1			# !!! we need Notebook.set_action_widget()
+GTKENGINES_VERSION=2.20.2
 PIXMAN_VERSION=0.22.0		# required by CAIRO 1.12.0
 PANGO_VERSION=1.24.5
 FONTCONFIG_VERSION=2.5.0
@@ -79,17 +82,17 @@ popd > /dev/null
 
 set_environment()
 {
-	#export LD_LIBRARY_PATH=${PREFIX}/usr/local/lib:/${LIBDIR}:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
-	#export LD_LIBRARY_PATH=${PREFIX}/lib-native:${PREFIX_BUNDLE}/lib:${PREFIX}/usr/local/lib:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
+	#export LD_LIBRARY_PATH=${PREFIX_DEPS}/lib:/${LIBDIR}:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
+	#export LD_LIBRARY_PATH=${PREFIX}/lib-native:${PREFIX_BUNDLE}/lib:${PREFIX_DEPS}/lib:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
 	export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
-	export LD_LIBRARY_PATH=${PREFIX_BUNDLE}/lib:${PREFIX}/usr/local/lib:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
-	export PATH=${PREFIX_BUNDLE}/bin:${PREFIX}/usr/local/bin:${PREFIX}/bin:${PREFIX}/usr/bin:$PATH
+	export LD_LIBRARY_PATH=${PREFIX_BUNDLE}/lib:${PREFIX_DEPS}/lib:${PREFIX}/${LIBDIR}:${PREFIX}/usr/${LIBDIR}
+	export PATH=${PREFIX_BUNDLE}/bin:${PREFIX_DEPS}/bin:${PREFIX}/bin:${PREFIX}/usr/bin
 	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -Wl,-rpath -Wl,${PREFIX}/${LIBDIR}" # -L${PREFIX}/usr/${LIBDIR}
-	#export CFLAGS=" -nostdinc  -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX_BUNDLE}/include  -I${PREFIX}/usr/local/include -I${PREFIX}/usr/include"
-	#export CXXFLAGS=" -nostdinc   -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX}/usr/local/include -I${PREFIX}/usr/include"
-	export PKG_CONFIG_PATH=${PREFIX_BUNDLE}/lib/pkgconfig:${PREFIX}/usr/local/lib/pkgconfig:${PREFIX}/usr/lib/pkgconfig
+	#export CFLAGS=" -nostdinc  -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX_BUNDLE}/include  -I${PREFIX_DEPS}/include -I${PREFIX}/usr/include"
+	#export CXXFLAGS=" -nostdinc   -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX_DEPS}/include -I${PREFIX}/usr/include"
+	export PKG_CONFIG_PATH=${PREFIX_BUNDLE}/lib/pkgconfig:${PREFIX_DEPS}/lib/pkgconfig:${PREFIX}/usr/lib/pkgconfig
 	PERL_VERSION=`perl -v | sed -n '3p' | sed "s|This is perl, v||g" | cut -f 1 -d " "`
-	export PERL5LIB="${PREFIX}/etc/perl:${PREFIX}/usr/local/lib/perl/${PERL_VERSION}:${PREFIX}/usr/local/share/perl/${PERL_VERSION}:${PREFIX}/usr/lib/perl5:${PREFIX}/usr/share/perl5:${PREFIX}/usr/lib/perl/${PERL_VERSION}:${PREFIX}/usr/share/perl/${PERL_VERSION}:/usr/local/lib/site_perl"
+	export PERL5LIB="${PREFIX}/etc/perl:${PREFIX_DEPS}/lib/perl/${PERL_VERSION}:${PREFIX_DEPS}/share/perl/${PERL_VERSION}:${PREFIX}/usr/lib/perl5:${PREFIX}/usr/share/perl5:${PREFIX}/usr/lib/perl/${PERL_VERSION}:${PREFIX}/usr/share/perl/${PERL_VERSION}:${PREFIX_DEPS}/lib/site_perl"
 }
 
 run_native()
@@ -184,23 +187,31 @@ done
 #	cp -L ${PREFIX}/${LIBDIR}/\${lib} \${LIB_PATH}
 #done
 
-#mkdir -p $PREFIX/usr/local/bin || true
-cat > $PREFIX/usr/local/bin/gcc-- <<EOF
+[ -e ${PREFIX_DEPS}/bin ] || mkdir -p ${PREFIX_DEPS}/bin
+
+cat > ${PREFIX_DEPS}/bin/gcc-- <<EOF
 #!/bin/sh
 
-${PREFIX}/usr/bin/gcc -nostdinc -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX}/usr/local/include -I${PREFIX}/usr/include "\$@"
+${PREFIX}/usr/bin/gcc -nostdinc -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX_DEPS}/include -I${PREFIX}/usr/include "\$@"
 EOF
-#chmod a+x  $PREFIX/usr/local/bin/gcc
+#chmod a+x  ${PREFIX_DEPS}/bin/gcc
 
-cat > $PREFIX/usr/local/bin/g++ <<EOF
+cat > ${PREFIX_DEPS}/bin/g++ <<EOF
 #!/bin/sh
 
-${PREFIX}/usr/bin/g++ -nostdinc   -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX}/usr/local/include -I${PREFIX}/usr/include "\$@"
+${PREFIX}/usr/bin/g++ -nostdinc   -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${PREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${PREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX_BUNDLE}/include  -I${PREFIX_DEPS}/include -I${PREFIX}/usr/include "\$@"
 EOF
-chmod a+x  $PREFIX/usr/local/bin/g++
+chmod a+x  ${PREFIX_DEPS}/bin/g++
+
+cat > ${PREFIX_DEPS}/bin/rsync <<EOF
+#!/bin/sh
+
+/usr/bin/rsync "\$@"
+EOF
+chmod a+x  ${PREFIX_DEPS}/bin/rsync
 
 #for binary in bzip2; do
-#	ln -sf /usr/bin/$binary  $PREFIX/usr/local/bin/$binary
+#	ln -sf /usr/bin/$binary  ${PREFIX_DEPS}/bin/$binary
 #done
 
 }
@@ -215,7 +226,7 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX}/usr/local/
+	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -232,7 +243,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX}/usr/local/
+	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -249,7 +260,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX}/usr/local/
+	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -266,7 +277,7 @@ if ! pkg-config ${PKG_NAME}-1 --exact-version=${PKG_VERSION}  --print-errors; th
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX}/usr/local/
+	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -306,7 +317,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX}/usr/local/
+	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -319,12 +330,32 @@ PKG_NAME=gtk\+
 PKG_VERSION="${GTK_VERSION}"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk+/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX}/usr/local/ \
+	./configure --prefix=${PREFIX_DEPS}/ \
 		--disable-examples --disable-demos --disable-docs \
+		--disable-static --enable-shared
+	make -j${THREADS} install
+	cd ..
+	popd
+fi
+}
+
+mkgtkengines()
+{
+PKG_NAME=gtk-engines
+PKG_VERSION="${GTKENGINES_VERSION}"
+TAREXT=bz2
+if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
+	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/gnome/sources/gtk-engines/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	pushd ${PREFIX_SRC}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --prefix=${PREFIX_DEPS}/ \
 		--disable-static --enable-shared
 	make -j${THREADS} install
 	cd ..
@@ -340,6 +371,7 @@ TAREXT=bz2
 if ! pkg-config sigc++-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
 	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	rsync -av ${SOURCES_URL}/libsigc++-2.0_2.0.18-2.diff ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff
+	#( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -380,7 +412,7 @@ if ! pkg-config libxml++-2.6 --exact-version=${PKG_VERSION}  --print-errors; the
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=$p{PREFIX_BUNDLE} --includedir=${PREFIX_BUNDLE}/include \
+	./configure --prefix=${PREFIX_BUNDLE} --includedir=${PREFIX_BUNDLE}/include \
 		--disable-static --enable-shared
 	make -j${THREADS} install
 	cd ..
@@ -394,7 +426,7 @@ PKG_NAME=ImageMagick
 PKG_VERSION="${IMAGEMAGICK_VERSION}-10"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-errors; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	( cd ${WORKSPACE}/cache/ && wget -c http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -418,18 +450,18 @@ mkboost()
 PKG_NAME=boost
 PKG_VERSION="${BOOST_VERSION}"
 TAREXT=bz2
-if ! cat ${PREFIX}/usr/local/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_VERSION%_*}\""; then
+if ! cat ${PREFIX_BUNDLE}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_VERSION%_*}\""; then
 	#PATH_BAK=$PATH
-	#PATH="$PREFIX/usr/local/bin-gcc/:$PATH"
-	rm -rf ${PREFIX}/usr/local/lib/libboost_program_options* || true
-	rm -rf ${PREFIX_BUNDLE}/lib/libboost_program_options* || true
+	#PATH="${PREFIX_DEPS}/bin-gcc/:$PATH"
+	#rm -rf ${PREFIX_DEPS}/lib/libboost_program_options* || true
+	#rm -rf ${PREFIX_BUNDLE}/lib/libboost_program_options* || true
 	rsync -av ${SOURCES_URL}/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT}
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}_${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}_${PKG_VERSION}
-	./bootstrap.sh --prefix=${PREFIX}/usr/local \
-		--libdir=${PREFIX}/usr/local/lib \
-		--exec-prefix=--prefix=${PREFIX}/usr/local \
+	./bootstrap.sh --prefix=${PREFIX_BUNDLE} \
+		--libdir=${PREFIX_BUNDLE}/lib \
+		--exec-prefix=${PREFIX_BUNDLE} \
 		--with-libraries=program_options
 	./b2
 	./b2 install || true
@@ -437,7 +469,7 @@ if ! cat ${PREFIX}/usr/local/include/boost/version.hpp |egrep "BOOST_LIB_VERSION
 	popd
 	#PATH="$PATH_BAK"
 fi
-cp ${PREFIX}/usr/local/lib/libboost_program_options.so.*.0 ${PREFIX_BUNDLE}/lib/
+#cp ${PREFIX_DEPS}/lib/libboost_program_options.so.*.0 ${PREFIX_BUNDLE}/lib/
 }
 
 mkcairomm()
@@ -484,7 +516,8 @@ PKG_NAME=gtkmm
 PKG_VERSION="${GTKMM_VERSION}"
 TAREXT=bz2
 if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/gtkmm/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
@@ -502,16 +535,34 @@ mkautoconf()
 PKG_NAME=autoconf
 PKG_VERSION="2.69"
 TAREXT=gz
-if [ ! -e ${PREFIX}/usr/local/bin/autoconf ]; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget http://ftp.gnu.org/gnu/autoconf/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+
+mkdir -p $PREFIX/tmp/${PKG_NAME}-bin || true
+cat > $PREFIX/tmp/${PKG_NAME}-bin/m4 <<EOF
+#!/bin/sh
+
+/usr/bin/m4  "\$@"
+
+EOF
+chmod a+x  $PREFIX/tmp/${PKG_NAME}-bin/m4
+
+
+
+PATH_BAK=$PATH
+PATH="$PREFIX/tmp/${PKG_NAME}-bin/:$PATH"
+
+if [ ! -e ${PREFIX_DEPS}/bin/autoconf ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.gnu.org/gnu/autoconf/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX}/usr/local
+	./configure --prefix=${PREFIX_DEPS}
 	make -j${THREADS} install
 	cd ..
 	popd
 fi
+
+
+PATH="$PATH_BAK"
 }
 
 mkautomake()
@@ -519,12 +570,12 @@ mkautomake()
 PKG_NAME=automake
 PKG_VERSION="1.14"
 TAREXT=gz
-if [ ! -e ${PREFIX}/usr/local/bin/automake ]; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget http://ftp.gnu.org/gnu/automake/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+if [ ! -e ${PREFIX_DEPS}/bin/automake ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.gnu.org/gnu/automake/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX}/usr/local
+	./configure --prefix=${PREFIX_DEPS}
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -549,19 +600,22 @@ chmod a+x  $PREFIX/tmp/${PKG_NAME}-bin/gcc
 
 
 PATH_BAK=$PATH
-PATH="$PREFIX/tmp/gettext-bin/:$PATH"
+PATH="$PREFIX/tmp/${PKG_NAME}-bin/:$PATH"
 
 
-if [ ! -e ${PREFIX_BUNDLE}/bin/libtoolize ]; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget http://ftpmirror.gnu.org/libtool/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+if [ ! -e ${PREFIX_DEPS}/bin/libtoolize ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c http://ftpmirror.gnu.org/libtool/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX_BUNDLE}
+	./configure --prefix=${PREFIX_DEPS}
 	make -j${THREADS} install
 	cd ..
 	popd
 fi
+
+rm -rf ${PREFIX_BUNDLE}/lib/libltdl* || true
+cp ${PREFIX_DEPS}/lib/libltdl.so* ${PREFIX_BUNDLE}/lib/
 
 PATH="$PATH_BAK"
 }
@@ -573,12 +627,12 @@ PKG_VERSION="0.50.2"
 TAREXT=gz
 
 
-if [ ! -e ${PREFIX}/usr/local/bin/intltoolize ]; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget --no-check-certificate https://launchpad.net/intltool/trunk/0.50.2/+download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+if [ ! -e ${PREFIX_DEPS}/bin/intltoolize ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate https://launchpad.net/intltool/trunk/0.50.2/+download/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX}/usr/local
+	./configure --prefix=${PREFIX_DEPS}
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -615,13 +669,13 @@ PATH_BAK=$PATH
 PATH="$PREFIX/tmp/gettext-bin/:$PATH"
 
 
-if [ ! -e ${PREFIX}/usr/local/bin/gettext ]; then
-	[ -e ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || (cd ${WORKSPACE}/cache/ && wget http://ftp.gnu.org/pub/gnu/gettext/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+if [ ! -e ${PREFIX_DEPS}/bin/gettext ]; then
+	( cd ${WORKSPACE}/cache/ && wget -c http://ftp.gnu.org/pub/gnu/gettext/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	# cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/gettext-${PKG_VERSION}-4.patch && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX}/usr/local \
+	./configure --prefix=${PREFIX_DEPS} \
 		--disable-java --disable-native-java
 	make -j${THREADS} install
 	cd ..
@@ -661,7 +715,7 @@ autoreconf --install --force
 	--sysconfdir=${PREFIX_BUNDLE}/etc \
 	--disable-static --enable-shared \
 	--with-magickpp --without-libavcodec \
-	--with-boost=${PREFIX}/usr/local/ \
+	--with-boost=${PREFIX_BUNDLE}/ \
 	--enable-warnings=minimum \
 	$DEBUG_OPT
 make -j${THREADS} install
@@ -681,6 +735,33 @@ make clean || true
 	--disable-static --enable-shared \
 	$DEBUG_OPT
 make -j${THREADS} install
+
+}
+
+mkconfig()
+{
+
+cat > ${PREFIX_BUNDLE}/synfigstudio <<EOF
+#!/bin/sh
+
+# Create install-location-dependent config files for Pango and GDK image loaders
+# We have to do this every time because its possible that BIN_DIR has changed
+
+sed "s?@ROOTDIR@/modules?$LIB_DIR/modules?" < $ETC_DIR/pango.modules.in > $USER_ARDOUR_DIR/pango.modules
+sed "s?@ROOTDIR@/loaders?$LIB_DIR/loaders?" < $ETC_DIR/gdk-pixbuf.loaders.in > $USER_ARDOUR_DIR/gdk-pixbuf.loaders
+
+# 1 check if test application starts without warnings
+LANG=C GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/gtk-test --g-fatal-warnings | egrep "Gtk+ version too old (micro mismatch)"
+
+# If everything is fine then start with GTK_PATH
+
+GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
+
+# otherwise start with custom GTKRC
+
+GTK2_RC_FILES=/home/zelgadis/synfig-buildroot/linux64/bundle/gtkrc:$GTK2_RC_FILES /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
+
+EOF
 
 }
 
@@ -741,7 +822,7 @@ cp -rf $SCRIPTPATH/../synfig-studio/images/installer_logo.bmp $PREFIX/
 [ -d $CACHEDIR ] || mkdir -p $CACHEDIR
 cd $CACHEDIR
 
-[ -e ffmpeg-latest-win32-static.7z ] || wget http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
+[ -e ffmpeg-latest-win32-static.7z ] || wget -c http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
 [ ! -d ffmpeg ] || rm -rf ffmpeg
 mkdir -p ffmpeg
 cd ffmpeg
@@ -752,7 +833,7 @@ cp *.txt $PREFIX/licenses
 cd ..
 rm -rf ffmpeg
 
-[ -e portable-python-3.2.5.1.zip ] || wget http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
+[ -e portable-python-3.2.5.1.zip ] || wget -c http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
 [ ! -d python ] || rm -rf python
 unzip portable-python-3.2.5.1.zip
 [ ! -d $PREFIX/python ] || rm -rf $PREFIX/python
@@ -791,6 +872,14 @@ mkall()
 	
 	set_environment
 	
+	# build tools
+	mkautoconf
+	mkautomake
+	mklibtool
+	mkintltool
+	mkgettext
+	
+	# system libraries
 	mkglib
 	mkfontconfig
 	mkatk
@@ -798,12 +887,6 @@ mkall()
 	mkcairo # bundled library
 	mkpango
 	mkgtk
-	
-	# build tools
-	mkautoconf
-	mkautomake
-	mklibtool
-	mkgettext
 	
 	# synfig-core deps
 	mklibsigcpp
