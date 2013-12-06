@@ -627,6 +627,16 @@ cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
+
+cat > ${MINGWPREFIX}/etc/gtk-2.0/gtkrc <<EOF
+
+# Enable native look
+gtk-theme-name = "MS-Windows"
+
+# Use small toolbar buttons
+gtk-toolbar-style = 0
+
+EOF
 }
 
 mkpackage()

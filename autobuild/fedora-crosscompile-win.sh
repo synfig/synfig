@@ -258,6 +258,17 @@ chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
 make install -j$THREADS
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
+
+[ -e ${PREFIX}/etc/gtk-2.0 ] || mkdir -p ${PREFIX}/etc/gtk-2.0
+cat > ${PREFIX}/etc/gtk-2.0/gtkrc <<EOF
+
+# Enable native look
+gtk-theme-name = "MS-Windows"
+
+# Use small toolbar buttons
+gtk-toolbar-style = 0
+
+EOF
 }
 
 mkpackage()
