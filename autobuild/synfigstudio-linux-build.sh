@@ -551,11 +551,11 @@ mkpack()
 	[ -d /packages ] || mkdir /packages
 
 	# bundle libpng
-	#rm -f ${PREFIX}/lib/libpng* || true
-	#cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
+	rm -f ${PREFIX}/lib/libpng* || true
+	cp -av /usr/lib/libpng*.so* ${PREFIX}/lib
 	# bundle libjasper
-	#rm -f ${PREFIX}/lib/libjasper* || true
-	#cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
+	rm -f ${PREFIX}/lib/libjasper* || true
+	cp -av /usr/lib/libjasper*.so* ${PREFIX}/lib
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
