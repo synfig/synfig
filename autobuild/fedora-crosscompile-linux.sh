@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# TODO: LD_PRELOAD wrapper
+# TODO: rpm/deb/tgz packaging
+# TODO: i386 build
+# TODO: Migrate to crosstool-ng ???
+# TODO: Bundle ALL dependent libs
+# TODO: GTK themin issues
+
 set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
