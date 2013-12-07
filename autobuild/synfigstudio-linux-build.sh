@@ -62,7 +62,7 @@ PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
 BUILDROOT_VERSION=9
-BUILDROOT_LIBRARY_SET_ID=3
+BUILDROOT_LIBRARY_SET_ID=4
 MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
@@ -77,7 +77,7 @@ BREED=
 export EMAIL='root@synfig.org'
 
 # Bundled libraries
-LIBSIGCPP=2.0.18
+LIBSIGCPP=2.2.10
 GLEW=1.5.1
 CAIROMM=1.8.0
 IMAGEMAGICK=6.8.6
@@ -123,7 +123,8 @@ mklibsigcpp()
 {
 if ! pkg-config sigc\+\+-2.0 --exact-version=${LIBSIGCPP}  --print-errors; then
 	pushd /source
-	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${LIBSIGCPP%.*}/libsigc++-${LIBSIGCPP}.tar.bz2
+	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 #&& cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
 	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared

@@ -30,7 +30,7 @@ export EMAIL='root@synfig.org'
 SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
 
 # Bundled libraries
-LIBSIGCPP_VERSION=2.0.18
+LIBSIGCPP_VERSION=2.2.10
 GLEW_VERSION=1.5.1
 CAIROMM_VERSION=1.8.0
 IMAGEMAGICK_VERSION=6.8.6
@@ -369,11 +369,11 @@ PKG_NAME=libsigc++
 PKG_VERSION="${LIBSIGCPP_VERSION}"
 TAREXT=bz2
 if ! pkg-config sigc++-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
-	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-	rsync -av ${SOURCES_URL}/libsigc++-2.0_2.0.18-2.diff ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff
-	#( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
+	#rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	#rsync -av ${SOURCES_URL}/libsigc++-2.0_2.0.18-2.diff ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff
+	( cd ${WORKSPACE}/cache/ && wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${PKG_VERSION%.*}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} )
 	pushd ${PREFIX_SRC}
-	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff && cd ..
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} # && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
 	./configure --prefix=${PREFIX_BUNDLE} --includedir=${PREFIX_BUNDLE}/include \
 		--disable-static --enable-shared
@@ -614,6 +614,7 @@ if [ ! -e ${PREFIX_DEPS}/bin/libtoolize ]; then
 	popd
 fi
 
+[ -e ${PREFIX_BUNDLE}/lib/ ] || mkdir -p ${PREFIX_BUNDLE}/lib/
 rm -rf ${PREFIX_BUNDLE}/lib/libltdl* || true
 cp ${PREFIX_DEPS}/lib/libltdl.so* ${PREFIX_BUNDLE}/lib/
 
