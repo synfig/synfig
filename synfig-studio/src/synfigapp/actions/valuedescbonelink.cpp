@@ -162,11 +162,10 @@ Action::ValueDescBoneLink::prepare()
 
 		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(ValueBase::TYPE_TRANSFORMATION);
 		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
-
-		if (value_desc.is_value_node())
-			bone_link_node->set_link("transformation", value_desc.get_value_node());
-		else
-			bone_link_node->set_link("transformation", ValueNode_Const::create(value_desc.get_value(time)));
+		bone_link_node->set_link("transformation",
+			ValueNode_Const::create(
+				bone_link_node->get_bone_transformation(time).back_transform(
+					value_desc.get_value(time).get(Transformation()) )));
 
 		// exported ValueNode
 		if (value_desc.parent_is_canvas())
