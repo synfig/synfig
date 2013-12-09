@@ -41,7 +41,7 @@ export BUILDROOT_VERSION=1
 
 BUILDDIR=~/src/macports/SynfigStudio-app
 MACPORTS=/tmp/skl/SynfigStudio.app/Contents/Resources
-MPSRC=MacPorts-2.0.3
+MPSRC=MacPorts-2.2.1
 
 SYNFIG_REPO_DIR=~/src/synfig
 SCRIPTDIR_IS_REPO=0

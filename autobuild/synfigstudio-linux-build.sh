@@ -61,9 +61,9 @@ if [ -d "$PACKAGES_BUILDROOT" ]; then
 PACKAGES_BUILDROOT=`cd $PACKAGES_BUILDROOT; pwd`	# canonify buildroot path
 fi
 
-BUILDROOT_VERSION=8
-BUILDROOT_LIBRARY_SET_ID=3
-MAKE_THREADS=2					#count of threads for make
+BUILDROOT_VERSION=9
+BUILDROOT_LIBRARY_SET_ID=4
+MAKE_THREADS=4					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -71,13 +71,13 @@ MAKE_THREADS=2					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=0
+DEBUG=1
 BREED=
 
 export EMAIL='root@synfig.org'
 
 # Bundled libraries
-LIBSIGCPP=2.0.18
+LIBSIGCPP=2.2.10
 GLEW=1.5.1
 CAIROMM=1.8.0
 IMAGEMAGICK=6.8.6
@@ -90,6 +90,7 @@ GTKGLEXTMM=1.2.0
 LIBXMLPP=2.22.0
 GLIBMM=2.24.2		# required by GTKMM 2.20.3
 CAIRO=1.12.0		# required by the cairo render engine 2013-04-01
+BOOST=1_53_0
 
 # System libraries
 ATK=1.29.4			# required by GTK 2.20.1
@@ -98,7 +99,7 @@ GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
-BOOST=1_53_0
+
 
 GITVERSION=1.7.0   # git version for chroot environment
 
@@ -122,7 +123,8 @@ mklibsigcpp()
 {
 if ! pkg-config sigc\+\+-2.0 --exact-version=${LIBSIGCPP}  --print-errors; then
 	pushd /source
-	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 && cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
+	wget -c --no-check-certificate http://ftp.gnome.org/pub/GNOME/sources/libsigc++/${LIBSIGCPP%.*}/libsigc++-${LIBSIGCPP}.tar.bz2
+	[ ! -d libsigc++-${LIBSIGCPP} ] && tar -xjf libsigc++-${LIBSIGCPP}.tar.bz2 #&& cd libsigc++-${LIBSIGCPP} && patch -p1 < ../libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
 	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared
@@ -813,6 +815,9 @@ initialize()
 		libatk1.0-dev \
 		bzip2"
 	if which yum >/dev/null; then
+		#
+		#  Fedora
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
@@ -852,6 +857,9 @@ initialize()
 			su -c "yum install $PKG_LIST" || true
 		fi
 	elif which zypper >/dev/null; then
+		#
+		#  OpenSUSE
+		#
 		PKG_LIST="git"
 		if [[ $MODE == 'package' ]]; then
 			PKG_LIST="${PKG_LIST} \
@@ -866,27 +874,78 @@ initialize()
 			su -c "zypper install $PKG_LIST" || true
 		fi
 	elif which apt-get >/dev/null; then
-		PKG_LIST="git-core"
 		if [[ $MODE == 'package' ]]; then
 			if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot v${BUILDROOT_VERSION}" ]]; then
 				#we are inside of chroot
 				PKG_LIST="$DEB_LIST_MINIMAL rpm alien xsltproc wget python"
 			else
 				#we have to prepare chroot
-				PKG_LIST="${PKG_LIST} debootstrap rsync"
+				PKG_LIST="git-core debootstrap rsync"
 			fi
 		else
-			PKG_LIST="${PKG_LIST} ${DEB_LIST_MINIMAL} libmng-dev libgtkmm-2.4-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libboost-program-options-dev"
+			if ( cat /etc/altlinux-release | egrep "ALT Linux" ); then
+				#
+				#  ALT Linux case
+				#
+				PKG_LIST=" \
+					rpm-build \
+					boost-program_options-devel \
+					git-core \
+					shared-mime-info \
+					libltdl3-devel \
+					intltool \
+					gettext \
+					cvs \
+					libpng12-devel \
+					libjpeg-devel \
+					fontconfig \
+					libfreetype-devel \
+					fontconfig-devel \
+					libxml2-devel \
+					libtiff-devel \
+					libjasper-devel \
+					libdirectfb-devel \
+					libXfixes-devel \
+					libXinerama-devel \
+					libXdamage-devel \
+					libXcomposite-devel \
+					libXcursor-devel \
+					libXft-devel \
+					libXrender-devel \
+					libXt-devel \
+					libXrandr-devel \
+					libXi-devel \
+					libXext-devel \
+					libX11-devel \
+					libatk-devel \
+					bzip2 \
+					libmng-devel \
+					libgtkmm2-devel \
+					libglibmm-devel \
+					libsigc++2-devel \
+					libxml++2-devel \
+				"
+			else
+				#
+				#  Ubuntu/Debian case
+				#
+				PKG_LIST=" \
+					${DEB_LIST_MINIMAL} \
+					git-core \
+					libmng-dev \
+					libgtkmm-2.4-dev \
+					libglibmm-2.4-dev \
+					libsigc++-2.0-dev \
+					libxml++2.6-dev \
+					libboost-program-options-dev \
+				"
+			fi
 		fi
-		if ! ( dpkg -s $PKG_LIST >/dev/null ); then
-			echo "Running apt-get (you need root privelegies to do that)..."
-			echo
-			#echo "http_proxy =====" $http_proxy
-			#env
-			sudo apt-get update || true
-			sudo apt-get install -y $PKG_LIST
-			sudo apt-get install -y autopoint || true # Ubuntu special case
-		fi
+		echo "Running apt-get (you need root privelegies to do that)..."
+		echo
+		sudo apt-get update || true
+		sudo apt-get install -y $PKG_LIST
+		sudo apt-get install -y autopoint || true # Ubuntu special case
 	else
 		if [[ $MODE == 'package' ]]; then
 			if ! ( which git && which debootstrap ) ; then
@@ -1067,8 +1126,8 @@ mkpackage()
 			if [ -e $PACKAGES_BUILDROOT.$ARCH/ ]; then
 				rm -rf $PACKAGES_BUILDROOT.$ARCH/
 			fi
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
-			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo lenny $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
+			#debootstrap --arch=$ARCH --variant=buildd  --include=sudo squeeze $PACKAGES_BUILDROOT.$ARCH http://ftp.de.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot v${BUILDROOT_VERSION}" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
