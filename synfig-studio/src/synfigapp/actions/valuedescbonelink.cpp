@@ -55,7 +55,7 @@ using namespace Action;
 ACTION_INIT(Action::ValueDescBoneLink);
 ACTION_SET_NAME(Action::ValueDescBoneLink,"ValueDescBoneLink");
 ACTION_SET_LOCAL_NAME(Action::ValueDescBoneLink,N_("Link to Bone"));
-ACTION_SET_TASK(Action::ValueDescBoneLink,"connect");
+ACTION_SET_TASK(Action::ValueDescBoneLink,"bone_link");
 ACTION_SET_CATEGORY(Action::ValueDescBoneLink,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescBoneLink,0);
 ACTION_SET_VERSION(Action::ValueDescBoneLink,"0.0");

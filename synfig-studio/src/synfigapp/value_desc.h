@@ -62,6 +62,10 @@ class ValueDesc
 	// Info for visual editon
 	synfig::Real scalar;
 
+	ValueDesc *parent_desc;
+
+	static const ValueDesc blank;
+
 public:
 	bool operator==(const ValueDesc &rhs)const
 	{
@@ -85,38 +89,96 @@ public:
 	{
 		return !operator==(rhs);
 	}
+	ValueDesc& operator=(const ValueDesc &other)
+	{
+		layer = other.layer;
+		name = other.name;
+		parent_value_node = other.parent_value_node;
+		index = other.index;
+		waypoint_time = other.waypoint_time;
+		canvas = other.canvas;
+		scalar = other.scalar;
+		if (parent_desc != NULL) delete parent_desc;
+		parent_desc = other.parent_desc == NULL ? NULL : new ValueDesc(*other.parent_desc);
+		return *this;
+	}
 
-	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name):
+	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
-		name(param_name) { }
+		name(param_name),
+		index(-1),
+		scalar(0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name):
+	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
-		name(param_name) { }
+		name(param_name),
+		index(-1),
+		scalar(0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s=1.0):
+	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(index),
-		scalar(s) { }
+		scalar(1.0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name):
+	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s,const ValueDesc &parent = blank):
+		parent_value_node(parent_value_node),
+		index(index),
+		scalar(s),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
+
+//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name,const ValueDesc &parent = blank):
 //		parent_value_node(parent_value_node),
-//		index(parent_value_node->get_link_index_from_name(param_name)) { }
+//		index(parent_value_node->get_link_index_from_name(param_name)),
+//		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+//	{ }
 
-	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time):
+	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(-2),
-		waypoint_time(waypoint_time) { }
+		waypoint_time(waypoint_time),
+		scalar(0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name):
+	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name,const ValueDesc &parent = blank):
 		name(name),
-		canvas(canvas) { }
+		index(-1),
+		canvas(canvas),
+		scalar(0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node):
+	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
-		index(-1) { }
+		index(-1),
+		scalar(0),
+		parent_desc(parent.is_valid() ? new ValueDesc(parent) : NULL)
+	{ }
 
-	ValueDesc() { }
+	// copy
+	ValueDesc(const ValueDesc &other):
+		layer(other.layer),
+		name(other.name),
+		parent_value_node(other.parent_value_node),
+		index(other.index),
+		waypoint_time(other.waypoint_time),
+		canvas(other.canvas),
+		scalar(other.scalar),
+		parent_desc(other.parent_desc == NULL ? NULL : new ValueDesc(*other.parent_desc))
+	{ }
+
+	ValueDesc():
+		index(-1), scalar(0), parent_desc(NULL) { }
+
+	~ValueDesc()
+		{ if (parent_desc != NULL) delete parent_desc; }
 
 	// Instrocpection members
 	bool
@@ -170,8 +232,15 @@ public:
 			 synfig::ValueNode_Animated::Handle::cast_dynamic(get_value_node())
 			);
 		}
+
+	bool
+	is_parent_desc_declared()const
+		{ return parent_desc != NULL; }
 	
 	// Get members
+	const ValueDesc& get_parent_desc()
+		{ return parent_desc == NULL ? blank : *parent_desc; }
+
 	synfig::Layer::Handle
 	get_layer()const
 		{ assert(parent_is_layer_param()); return layer; }

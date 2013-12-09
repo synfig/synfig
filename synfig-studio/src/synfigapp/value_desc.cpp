@@ -48,6 +48,8 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
+const ValueDesc ValueDesc::blank;
+
 String
 ValueDesc::get_description(bool show_exported_name)const
 {

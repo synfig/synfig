@@ -2914,7 +2914,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			case ValueBase::TYPE_BONE:
 				printf("%s:%d adding ducks\n", __FILE__, __LINE__);
 				for(i=0;i<value_node->link_count();i++)
-					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i,value_desc),canvas_view,transform_stack))
 						return false;
 				printf("%s:%d adding ducks done\n\n", __FILE__, __LINE__);
 				break;
@@ -3149,6 +3149,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	case ValueBase::TYPE_BONE:
 	case ValueBase::TYPE_VALUENODE_BONE:
 	{
+		const synfigapp::ValueDesc &orig_value_desc = value_desc;
 		ValueNode::Handle value_node(value_desc.get_value_node());
 
 		if (type == ValueBase::TYPE_VALUENODE_BONE)
@@ -3186,7 +3187,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				Bone parent_bone((*bone.get_parent())(time).get(Bone()));
 
 				// add the parent's ducks too
-				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent")),canvas_view,transform_stack);
+				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent"), value_desc),canvas_view,transform_stack);
 
 				if (setup)
 				{
@@ -3237,7 +3238,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// origin
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
@@ -3266,7 +3267,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// fake
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_NONE);
@@ -3286,7 +3287,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		// width
 		if (!setup)
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_WIDTH);
@@ -3318,7 +3319,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// angle
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "angle0" : "angle"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "angle0" : "angle"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);
@@ -3350,7 +3351,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// tip
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"), orig_value_desc);
 
 			etl::handle<Duck> duck;
 			if (add_to_ducks(value_desc,canvas_view,bone_transform_stack,REAL_COOKIE))
@@ -3376,7 +3377,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		ValueNode_BoneWeightPair::Handle value_node;
 		if(value_desc.is_value_node() &&
 		   (value_node=ValueNode_BoneWeightPair::Handle::cast_dynamic(value_desc.get_value_node())))
-			add_to_ducks(synfigapp::ValueDesc(value_node, value_node->get_link_index_from_name("bone")), canvas_view, transform_stack);
+			add_to_ducks(synfigapp::ValueDesc(value_node, value_node->get_link_index_from_name("bone"), value_desc), canvas_view, transform_stack);
 		break;
 	}
 	default:

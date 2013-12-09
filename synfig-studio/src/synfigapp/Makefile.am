@@ -62,7 +62,8 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedescset.h \
 	actions/valuedescsetinterpolation.h \
 	actions/valuedescremovesmart.h \
-	actions/valuedescbonelink.h
+	actions/valuedescbonelink.h \
+	actions/valuedesccreatechildbone.h
 
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp \
@@ -74,7 +75,8 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescset.cpp \
 	actions/valuedescsetinterpolation.cpp \
 	actions/valuedescremovesmart.cpp \
-	actions/valuedescbonelink.cpp
+	actions/valuedescbonelink.cpp \
+	actions/valuedesccreatechildbone.cpp
 
 
 VALUENODE_ACTION_HH = \
