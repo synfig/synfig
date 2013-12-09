@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig\n"
 "Report-Msgid-Bugs-To: http://www.synfig.org/issues/thebuggenie/synfig\n"
-"POT-Creation-Date: 2013-10-10 22:47+0700\n"
-"PO-Revision-Date: 2013-10-11 06:53+0000\n"
+"POT-Creation-Date: 2013-12-08 10:55+0700\n"
+"PO-Revision-Date: 2013-12-08 03:56+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/synfig/language/sv_SE/)\n"
 "MIME-Version: 1.0\n"
@@ -174,7 +174,7 @@ msgid "Text"
 msgstr "Text"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:67
-#: src/modules/lyr_std/import.cpp:60 src/modules/lyr_std/stroboscope.cpp:61
+#: src/modules/lyr_std/import.cpp:61 src/modules/lyr_std/stroboscope.cpp:61
 #: src/modules/lyr_std/supersample.cpp:58 src/modules/lyr_std/timeloop.cpp:60
 #: src/modules/lyr_std/xorpattern.cpp:56 src/modules/mod_particle/plant.cpp:71
 #: src/synfig/layer_duplicate.cpp:57 src/synfig/layer_pastecanvas.cpp:81
@@ -292,8 +292,8 @@ msgstr "Textens orientering"
 #: src/modules/mod_geometry/checkerboard.cpp:150
 #: src/modules/mod_geometry/circle.cpp:161
 #: src/modules/mod_gradient/curvegradient.cpp:550
-#: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:136
-#: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:528
+#: src/modules/mod_particle/plant.cpp:431 src/synfig/layer_pastecanvas.cpp:141
+#: src/synfig/layer_shape.cpp:1225 src/synfig/valuenode_composite.cpp:535
 msgid "Origin"
 msgstr "Utgångspunkt"
 
@@ -466,28 +466,28 @@ msgstr "Botten"
 msgid "Lower boundary of the clamping"
 msgstr "Nedre gränsen för clampningen"
 
-#: src/modules/lyr_std/import.cpp:59
+#: src/modules/lyr_std/import.cpp:60
 msgid "Import Image"
 msgstr "Importera bild"
 
-#: src/modules/lyr_std/import.cpp:154 src/modules/lyr_std/import.cpp:206
+#: src/modules/lyr_std/import.cpp:160 src/modules/lyr_std/import.cpp:217
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
 msgstr "Filnamnet ser ut att redan vara inställt på \"%s\" (%s)"
 
-#: src/modules/lyr_std/import.cpp:293
+#: src/modules/lyr_std/import.cpp:316
 msgid "Filename"
 msgstr "Filnamn"
 
-#: src/modules/lyr_std/import.cpp:294
+#: src/modules/lyr_std/import.cpp:317
 msgid "File to import"
 msgstr "Fil att importera"
 
-#: src/modules/lyr_std/import.cpp:298 src/synfig/layer_pastecanvas.cpp:151
+#: src/modules/lyr_std/import.cpp:321 src/synfig/layer_pastecanvas.cpp:156
 msgid "Time Offset"
 msgstr "Tidsförskjutning"
 
-#: src/modules/lyr_std/import.cpp:299
+#: src/modules/lyr_std/import.cpp:322
 msgid "Time Offset to apply to the imported file"
 msgstr "Förskjutning i tid att tillämpa på den importerade filen"
 
@@ -669,7 +669,7 @@ msgstr "Tranformera"
 
 #: src/modules/lyr_std/rotate.cpp:118 src/modules/lyr_std/translate.cpp:101
 #: src/modules/mod_filter/radialblur.cpp:111
-#: src/synfig/layer_pastecanvas.cpp:137
+#: src/synfig/layer_pastecanvas.cpp:142
 msgid "Point where you want the origin to be"
 msgstr "Peka där du vill att utgångspunkten ska vara"
 
@@ -703,7 +703,7 @@ msgid "Spherize"
 msgstr "Sfärifisera"
 
 #: src/modules/lyr_std/sphere_distort.cpp:141
-#: src/synfig/valuenode_composite.cpp:546
+#: src/synfig/valuenode_composite.cpp:562
 msgid "Position"
 msgstr "Position"
 
@@ -778,8 +778,8 @@ msgstr "Kan inte skapa ytmål"
 #: src/modules/lyr_std/supersample.cpp:337
 #: src/modules/lyr_std/curvewarp.cpp:402
 #: src/modules/mod_gradient/curvegradient.cpp:555
-#: src/synfig/valuenode_composite.cpp:524
-#: src/synfig/valuenode_composite.cpp:550
+#: src/synfig/valuenode_composite.cpp:531
+#: src/synfig/valuenode_composite.cpp:566
 #: src/synfig/valuenode_realstring.cpp:180
 #: src/synfig/valuenode_repeat_gradient.cpp:213
 #: src/synfig/valuenode_stripes.cpp:204 src/tool/printing_functions.cpp:117
@@ -1023,42 +1023,42 @@ msgstr ""
 msgid "Point to scale from"
 msgstr ""
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:131 src/modules/mod_bmp/mptr_bmp.cpp:132
-#: src/modules/mod_ppm/mptr_ppm.cpp:78
+#: src/modules/mod_bmp/mptr_bmp.cpp:132 src/modules/mod_bmp/mptr_bmp.cpp:133
+#: src/modules/mod_ppm/mptr_ppm.cpp:70
 #, c-format
 msgid "Unable to open %s"
 msgstr "Kan inte öppna %s"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:143 src/modules/mod_bmp/mptr_bmp.cpp:144
+#: src/modules/mod_bmp/mptr_bmp.cpp:144 src/modules/mod_bmp/mptr_bmp.cpp:145
 #, c-format
 msgid "%s is not in BMP format"
 msgstr "%s är inte i BMP-format"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:150
+#: src/modules/mod_bmp/mptr_bmp.cpp:151
 #, c-format
-msgid "Failure while reading BITMAPFILEHEADER from %s"
+msgid "Failure while reading BITMAP::FILEHEADER from %s"
 msgstr ""
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:158
+#: src/modules/mod_bmp/mptr_bmp.cpp:159
 #, c-format
-msgid "Failure while reading BITMAPINFOHEADER from %s"
+msgid "Failure while reading BITMAP::INFOHEADER from %s"
 msgstr ""
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:168
+#: src/modules/mod_bmp/mptr_bmp.cpp:169
 #, c-format
-msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
+msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
 msgstr ""
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:176
+#: src/modules/mod_bmp/mptr_bmp.cpp:177
 #, c-format
-msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
+msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %d)"
 msgstr ""
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:194 src/modules/mod_bmp/mptr_bmp.cpp:195
+#: src/modules/mod_bmp/mptr_bmp.cpp:195 src/modules/mod_bmp/mptr_bmp.cpp:196
 msgid "Reading compressed bitmaps is not supported"
 msgstr "Läsning av komprimerade bitmap-filer stöds ej"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:201 src/modules/mod_bmp/mptr_bmp.cpp:202
+#: src/modules/mod_bmp/mptr_bmp.cpp:202 src/modules/mod_bmp/mptr_bmp.cpp:203
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
 msgstr "Bit-djupet stöds ej (bit_count=%d, bör vara 24 eller 32)"
@@ -1088,12 +1088,24 @@ msgid "Unable to open pipe to encodedv"
 msgstr "Kan inte öppna pipe till encodedv"
 
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:212
+msgid "Unable to open pipe to ffmpeg (no pipe)"
+msgstr ""
+
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:219
+msgid "Unable to open pipe to ffmpeg (pid == -1)"
+msgstr ""
+
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:229
+msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
+msgstr ""
+
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:283
+msgid "Unable to open pipe to ffmpeg (exec failed)"
+msgstr ""
+
 #: src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:301
-msgid "Unable to open pipe to ffmpeg"
-msgstr "Kan inte öppna pipe till ffmpeg"
+msgid "Unable to open pipe to ffmpeg (no file)"
+msgstr ""
 
 #: src/modules/mod_filter/blur.cpp:69
 msgid "Blur"
@@ -1345,37 +1357,37 @@ msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1152
 #: src/modules/mod_geometry/advanced_outline.cpp:1161
-#: src/synfig/valuenode_composite.cpp:558
-#: src/synfig/valuenode_composite.cpp:568
-#: src/synfig/valuenode_composite.cpp:597
-#: src/synfig/valuenode_composite.cpp:606
+#: src/synfig/valuenode_composite.cpp:574
+#: src/synfig/valuenode_composite.cpp:584
+#: src/synfig/valuenode_composite.cpp:613
+#: src/synfig/valuenode_composite.cpp:622
 msgid "Rounded Stop"
 msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1153
 #: src/modules/mod_geometry/advanced_outline.cpp:1162
-#: src/synfig/valuenode_composite.cpp:559
-#: src/synfig/valuenode_composite.cpp:569
-#: src/synfig/valuenode_composite.cpp:598
-#: src/synfig/valuenode_composite.cpp:607
+#: src/synfig/valuenode_composite.cpp:575
+#: src/synfig/valuenode_composite.cpp:585
+#: src/synfig/valuenode_composite.cpp:614
+#: src/synfig/valuenode_composite.cpp:623
 msgid "Squared Stop"
 msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1154
 #: src/modules/mod_geometry/advanced_outline.cpp:1163
-#: src/synfig/valuenode_composite.cpp:560
-#: src/synfig/valuenode_composite.cpp:570
-#: src/synfig/valuenode_composite.cpp:599
-#: src/synfig/valuenode_composite.cpp:608
+#: src/synfig/valuenode_composite.cpp:576
+#: src/synfig/valuenode_composite.cpp:586
+#: src/synfig/valuenode_composite.cpp:615
+#: src/synfig/valuenode_composite.cpp:624
 msgid "Peak Stop"
 msgstr ""
 
 #: src/modules/mod_geometry/advanced_outline.cpp:1155
 #: src/modules/mod_geometry/advanced_outline.cpp:1164
-#: src/synfig/valuenode_composite.cpp:561
-#: src/synfig/valuenode_composite.cpp:571
-#: src/synfig/valuenode_composite.cpp:600
-#: src/synfig/valuenode_composite.cpp:609
+#: src/synfig/valuenode_composite.cpp:577
+#: src/synfig/valuenode_composite.cpp:587
+#: src/synfig/valuenode_composite.cpp:616
+#: src/synfig/valuenode_composite.cpp:625
 msgid "Flat Stop"
 msgstr ""
 
@@ -1681,54 +1693,54 @@ msgstr "Medurs"
 msgid "When checked the spiral turns clockwise"
 msgstr "När detta alternativ är ikryssat snurrar spiralen medurs"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:103
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:104
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:216
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:105
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:217
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:218
 msgid "No file to load"
 msgstr "Ingen fil att ladda"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
-#: src/synfig/cairolistimporter.cpp:191 src/synfig/cairolistimporter.cpp:192
-#: src/synfig/listimporter.cpp:185 src/synfig/listimporter.cpp:186
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:159
+#: src/synfig/cairolistimporter.cpp:193 src/synfig/cairolistimporter.cpp:194
+#: src/synfig/listimporter.cpp:188 src/synfig/listimporter.cpp:189
 msgid "Unable to open "
 msgstr "Kan inte öppna"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
-#: src/synfig/cairolistimporter.cpp:198 src/synfig/cairolistimporter.cpp:199
-#: src/synfig/listimporter.cpp:192 src/synfig/listimporter.cpp:193
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:166
+#: src/synfig/cairolistimporter.cpp:200 src/synfig/cairolistimporter.cpp:201
+#: src/synfig/listimporter.cpp:195 src/synfig/listimporter.cpp:196
 msgid "Unable to get frame from "
 msgstr "Unable to get frame from "
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:171
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:172
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:173
 msgid "Bad surface from "
 msgstr "Ogiltig yta från"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:227
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:228
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:229
 msgid "Unable to open pipe to imagemagick"
 msgstr "Kan inte öppna pipe till imagemagick"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:240
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:241
 msgid "Reached end of stream without finding PPM header"
 msgstr "Nådde slutet på strömmen utan att hitta PPM header"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:248
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:250
 msgid "stream not in PPM format"
 msgstr "strömmen är inte i PPM-format"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:260
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:261
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:262
 msgid "Premature end of file (after header)"
 msgstr "För tidigt slut på fil (efter sidhuvud)"
 
-#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:273
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:274
+#: src/modules/mod_imagemagick/mptr_imagemagick.cpp:275
 msgid "Premature end of file"
 msgstr "För tidig slut på fil"
 
@@ -1778,7 +1790,7 @@ msgstr "Närmaste granne"
 
 #: src/modules/mod_noise/distort.cpp:241 src/modules/mod_noise/noise.cpp:286
 #: src/modules/mod_noise/valuenode_random.cpp:291 src/synfig/valuenode.cpp:155
-#: src/synfig/valuenode_bline.cpp:1006
+#: src/synfig/valuenode_bline.cpp:1009
 #: src/synfig/valuenode_blinecalctangent.cpp:241
 #: src/synfig/valuenode_blinecalcvertex.cpp:201
 #: src/synfig/valuenode_blinecalcwidth.cpp:206
@@ -2018,30 +2030,30 @@ msgstr "Använd bredd"
 msgid "Scale the velocity by the spline's width"
 msgstr ""
 
-#: src/modules/mod_ppm/mptr_ppm.cpp:86
+#: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
 msgid "%s was not in PPM format"
 msgstr "%s var inte i PPM-format"
 
-#: src/synfig/cairoimporter.cpp:88 src/synfig/importer.cpp:90
-msgid "Importer::open(): Cannot open empty filename"
-msgstr "Importer::open():Kan inte öppna tomt filnamn"
+#: src/synfig/cairoimporter.cpp:88
+msgid "CairoImporter::open(): Cannot open empty filename"
+msgstr ""
 
-#: src/synfig/cairoimporter.cpp:102 src/synfig/importer.cpp:104
-msgid "Importer::open(): Couldn't find extension"
-msgstr "Importer::open():Kunde inte hitta filnamnstillägg"
+#: src/synfig/cairoimporter.cpp:102
+msgid "CairoImporter::open(): Couldn't find extension"
+msgstr ""
 
-#: src/synfig/cairoimporter.cpp:113 src/synfig/importer.cpp:115
-msgid "Importer::open(): Unknown file type -- "
-msgstr "Importer::open():Okänt filformat --"
+#: src/synfig/cairoimporter.cpp:113
+msgid "CairoImporter::open(): Unknown file type -- "
+msgstr ""
 
-#: src/synfig/cairolistimporter.cpp:163 src/synfig/cairolistimporter.cpp:164
-#: src/synfig/listimporter.cpp:162 src/synfig/listimporter.cpp:163
+#: src/synfig/cairolistimporter.cpp:165 src/synfig/cairolistimporter.cpp:166
+#: src/synfig/listimporter.cpp:165 src/synfig/listimporter.cpp:166
 msgid "No images in list"
 msgstr "Inga bilder i listan"
 
-#: src/synfig/canvas.cpp:834 src/synfig/canvas.cpp:902
-#: src/synfig/canvas.cpp:927
+#: src/synfig/canvas.cpp:838 src/synfig/canvas.cpp:909
+#: src/synfig/canvas.cpp:934
 msgid "in line"
 msgstr "i linje"
 
@@ -2069,15 +2081,27 @@ msgstr "Millimeter"
 msgid "Centimeters"
 msgstr "Centimeter"
 
-#: src/synfig/layer.cpp:550 src/synfig/layer_composite.cpp:130
+#: src/synfig/importer.cpp:88
+msgid "Importer::open(): Cannot open empty filename"
+msgstr "Importer::open():Kan inte öppna tomt filnamn"
+
+#: src/synfig/importer.cpp:102
+msgid "Importer::open(): Couldn't find extension"
+msgstr "Importer::open():Kunde inte hitta filnamnstillägg"
+
+#: src/synfig/importer.cpp:113
+msgid "Importer::open(): Unknown file type -- "
+msgstr "Importer::open():Okänt filformat --"
+
+#: src/synfig/layer.cpp:557 src/synfig/layer_composite.cpp:130
 msgid "Unable to create surface target"
 msgstr "Kan inte skapa ytmål"
 
-#: src/synfig/layer.cpp:605
+#: src/synfig/layer.cpp:612
 msgid "Z Depth"
 msgstr "Z-djup"
 
-#: src/synfig/layer.cpp:607
+#: src/synfig/layer.cpp:614
 msgid "Modifies the position of the layer in the layer stack"
 msgstr "Anger lagrets postion i lagerhögen"
 
@@ -2178,56 +2202,88 @@ msgstr "Slutmängd på subsampling"
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
 msgstr "Relativ mängd på sista subsamplingen, för linjär kurvtyp"
 
-#: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:123
-#: src/synfig/layer_pastecanvas.cpp:124
+#: src/synfig/layer_pastecanvas.cpp:80 src/synfig/layer_pastecanvas.cpp:128
+#: src/synfig/layer_pastecanvas.cpp:129
 msgid "Group"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:140
+#: src/synfig/layer_pastecanvas.cpp:145
 msgid "Canvas"
 msgstr "Rityta"
 
-#: src/synfig/layer_pastecanvas.cpp:141
+#: src/synfig/layer_pastecanvas.cpp:146
 msgid "Group content"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:144
+#: src/synfig/layer_pastecanvas.cpp:149
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/synfig/layer_pastecanvas.cpp:145
+#: src/synfig/layer_pastecanvas.cpp:150
 msgid "Size of canvas"
 msgstr "Storleken på ritytan"
 
-#: src/synfig/layer_pastecanvas.cpp:152
+#: src/synfig/layer_pastecanvas.cpp:157
 msgid "Time Offset to apply to the context"
 msgstr "Tidsförskjutning att tillämpa på området"
 
-#: src/synfig/layer_pastecanvas.cpp:156
+#: src/synfig/layer_pastecanvas.cpp:161
 msgid "Children Lock"
 msgstr "Lås ättlingar"
 
-#: src/synfig/layer_pastecanvas.cpp:157
+#: src/synfig/layer_pastecanvas.cpp:162
 msgid "When checked prevents to select the children using the mouse click"
 msgstr "När detta alternativ är ikryssat kan inte ättlingar markeras med musklick"
 
-#: src/synfig/layer_pastecanvas.cpp:162
+#: src/synfig/layer_pastecanvas.cpp:167
 msgid "Focus Point"
 msgstr "Fokuspunkt"
 
-#: src/synfig/layer_pastecanvas.cpp:165
+#: src/synfig/layer_pastecanvas.cpp:170
 msgid "Point to remain fixed when zooming"
 msgstr "Den punkt som ska förbli stilla när man zoomar"
 
-#: src/synfig/layer_pastecanvas.cpp:170
+#: src/synfig/layer_pastecanvas.cpp:175
 msgid "Outline Grow"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:171
+#: src/synfig/layer_pastecanvas.cpp:176
 msgid "Exponential value to grow children Outline layers width"
 msgstr ""
 
-#: src/synfig/layer_pastecanvas.cpp:186
+#: src/synfig/layer_pastecanvas.cpp:184
+msgid "Z Range"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:185
+msgid "When checked, only layers inside range are visible"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:189
+msgid "Z Range Position"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:190
+msgid "Starting position where layers are visible"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:193
+msgid "Z Range Depth"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:194
+msgid "Depth where layers are visible in range"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:197
+msgid "Z Range Blur"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:198
+msgid "Area where layers inside are partially visible"
+msgstr ""
+
+#: src/synfig/layer_pastecanvas.cpp:208
 msgid "Current Time"
 msgstr "Nuvarande tid"
 
@@ -2287,307 +2343,307 @@ msgstr "Jämn/udda"
 msgid "Solid Color"
 msgstr "Solid färg"
 
-#: src/synfig/loadcanvas.cpp:143
+#: src/synfig/loadcanvas.cpp:141
 #, c-format
 msgid "cannot load '%s' recursively"
 msgstr "kan inte ladda \"%s\" rekursivt"
 
-#: src/synfig/loadcanvas.cpp:186
+#: src/synfig/loadcanvas.cpp:185
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
 msgstr "Unexpected element <%s>, Expected <%s>"
 
-#: src/synfig/loadcanvas.cpp:192
+#: src/synfig/loadcanvas.cpp:191
 #, c-format
 msgid "Unexpected element <%s>"
 msgstr "Unexpected element <%s>"
 
-#: src/synfig/loadcanvas.cpp:206
+#: src/synfig/loadcanvas.cpp:205
 msgid "Too many warnings"
 msgstr "För många varningar"
 
-#: src/synfig/loadcanvas.cpp:237
+#: src/synfig/loadcanvas.cpp:236
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr "<%s> saknar attributet \"%s\""
 
-#: src/synfig/loadcanvas.cpp:267 src/synfig/loadcanvas.cpp:286
-#: src/synfig/loadcanvas.cpp:305 src/synfig/loadcanvas.cpp:324
-#: src/synfig/loadcanvas.cpp:494 src/synfig/loadcanvas.cpp:1149
+#: src/synfig/loadcanvas.cpp:266 src/synfig/loadcanvas.cpp:285
+#: src/synfig/loadcanvas.cpp:304 src/synfig/loadcanvas.cpp:323
+#: src/synfig/loadcanvas.cpp:493 src/synfig/loadcanvas.cpp:1148
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr "<%s> borde inte innehålla någonting"
 
-#: src/synfig/loadcanvas.cpp:271 src/synfig/loadcanvas.cpp:290
-#: src/synfig/loadcanvas.cpp:309 src/synfig/loadcanvas.cpp:328
-#: src/synfig/loadcanvas.cpp:498 src/synfig/loadcanvas.cpp:1153
+#: src/synfig/loadcanvas.cpp:270 src/synfig/loadcanvas.cpp:289
+#: src/synfig/loadcanvas.cpp:308 src/synfig/loadcanvas.cpp:327
+#: src/synfig/loadcanvas.cpp:497 src/synfig/loadcanvas.cpp:1152
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr "<%s> saknar attributet \"value\""
 
-#: src/synfig/loadcanvas.cpp:509 src/synfig/loadcanvas.cpp:1182
-#: src/synfig/loadcanvas.cpp:1200
+#: src/synfig/loadcanvas.cpp:508 src/synfig/loadcanvas.cpp:1181
+#: src/synfig/loadcanvas.cpp:1199
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr "Ogiltigt värde \"%s\" i <%s>"
 
-#: src/synfig/loadcanvas.cpp:533
+#: src/synfig/loadcanvas.cpp:532
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr "<%s> saknar attributet \"pos\""
 
-#: src/synfig/loadcanvas.cpp:1353
+#: src/synfig/loadcanvas.cpp:1352
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr "Kan inte skapa <animated> med typ \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1375
+#: src/synfig/loadcanvas.cpp:1374
 msgid "<waypoint> is missing attribute \"time\""
 msgstr "<vägpunkt> saknar attributet \"time\""
 
-#: src/synfig/loadcanvas.cpp:1388
+#: src/synfig/loadcanvas.cpp:1387
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr "Fann attributet \"use\" för <wägpunkt>, men den var inte tom. Ignorerar innehåll..."
 
-#: src/synfig/loadcanvas.cpp:1404
+#: src/synfig/loadcanvas.cpp:1403
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1410 src/synfig/loadcanvas.cpp:1422
+#: src/synfig/loadcanvas.cpp:1409 src/synfig/loadcanvas.cpp:1421
 #, c-format
 msgid "<%s> is missing its data"
 msgstr "\"%s\" saknar sin data"
 
-#: src/synfig/loadcanvas.cpp:1439
+#: src/synfig/loadcanvas.cpp:1438
 msgid "Bad data for <waypoint>"
 msgstr "Ogiltig data för <wägpunkt>"
 
-#: src/synfig/loadcanvas.cpp:1455
+#: src/synfig/loadcanvas.cpp:1454
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr "Oväntad beståndsdel <%s> efter <vägpunkt>-data, ignorerar..."
 
-#: src/synfig/loadcanvas.cpp:1556
+#: src/synfig/loadcanvas.cpp:1555
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr "<%s> saknar attributet \"type\""
 
-#: src/synfig/loadcanvas.cpp:1565
+#: src/synfig/loadcanvas.cpp:1564
 #, c-format
 msgid "Bad type in <%s>"
 msgstr "Ogiltig typ i <%s>"
 
-#: src/synfig/loadcanvas.cpp:1577
+#: src/synfig/loadcanvas.cpp:1576
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr "Fel vid skapande av värdenod <%s> med typ '%s'. Refererar till '%s'"
 
-#: src/synfig/loadcanvas.cpp:1587
+#: src/synfig/loadcanvas.cpp:1586
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr "<%s> accepterade inte typen '%s'"
 
-#: src/synfig/loadcanvas.cpp:1612 src/synfig/loadcanvas.cpp:1683
+#: src/synfig/loadcanvas.cpp:1611 src/synfig/loadcanvas.cpp:1682
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr "'%s' är redan definierad i <%s>"
 
-#: src/synfig/loadcanvas.cpp:1625
+#: src/synfig/loadcanvas.cpp:1624
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr "'%s' attribute in <%s> references unknown ID '%s'"
 
-#: src/synfig/loadcanvas.cpp:1634
+#: src/synfig/loadcanvas.cpp:1633
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr "Kan inte skapa länk '\"%s\" till värdenod \"%s\" (länk #%d i \"%s\")"
 
-#: src/synfig/loadcanvas.cpp:1658
+#: src/synfig/loadcanvas.cpp:1657
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr "Okänt undantag uppkom vid referens till värdenod \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1698
+#: src/synfig/loadcanvas.cpp:1697
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr "<%s> saknar sitt innehåll"
 
-#: src/synfig/loadcanvas.cpp:1707
+#: src/synfig/loadcanvas.cpp:1706
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr "Analysering av '%s' misslyckades"
 
-#: src/synfig/loadcanvas.cpp:1714
+#: src/synfig/loadcanvas.cpp:1713
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1732
+#: src/synfig/loadcanvas.cpp:1731
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr "Okänt undantag uppkom vid arbetet med '%s'"
 
-#: src/synfig/loadcanvas.cpp:1811
+#: src/synfig/loadcanvas.cpp:1828
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr "<%s> is missing link %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1861
+#: src/synfig/loadcanvas.cpp:1878
 msgid "Unable to create <list>"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:1903 src/synfig/loadcanvas.cpp:2150
+#: src/synfig/loadcanvas.cpp:1920 src/synfig/loadcanvas.cpp:2167
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr "<entry> saknar sitt innehåll, eller saknar \"use\"-element"
 
-#: src/synfig/loadcanvas.cpp:1998
+#: src/synfig/loadcanvas.cpp:2015
 msgid "Unable to create <dynamic_list>"
 msgstr "Unable to create <dynamic_list>"
 
-#: src/synfig/loadcanvas.cpp:2220
+#: src/synfig/loadcanvas.cpp:2237
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Ogiltig data i <%s>"
 
-#: src/synfig/loadcanvas.cpp:2283
+#: src/synfig/loadcanvas.cpp:2300
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr "Värdenod förväntad. Refererar till '%s'"
 
-#: src/synfig/loadcanvas.cpp:2304
+#: src/synfig/loadcanvas.cpp:2321
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Ogiltig ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:2310
+#: src/synfig/loadcanvas.cpp:2327
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr "Dubbelt ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:2316
+#: src/synfig/loadcanvas.cpp:2333
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr "Okänt undantag uppkom när värdenod \"%s\" lades till"
 
-#: src/synfig/loadcanvas.cpp:2373
+#: src/synfig/loadcanvas.cpp:2390
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr "Saknar attribut \"type\" för elementet \"layer\""
 
-#: src/synfig/loadcanvas.cpp:2392
+#: src/synfig/loadcanvas.cpp:2409
 msgid "Installed layer version is smaller than layer version in file"
 msgstr "Installerad lagerversion är mindre än filens lagerversion"
 
-#: src/synfig/loadcanvas.cpp:2415
+#: src/synfig/loadcanvas.cpp:2432
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr "<name>-värde för <layer> stöds ännu inte. Ignorerar..."
 
-#: src/synfig/loadcanvas.cpp:2418
+#: src/synfig/loadcanvas.cpp:2435
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr "<desc>-värde för <layer> stöds ännu inte. Ignorerar..."
 
-#: src/synfig/loadcanvas.cpp:2426
+#: src/synfig/loadcanvas.cpp:2443
 msgid "Missing \"name\" attribute for <param>."
 msgstr "Saknar \"name\"-attribut för <param>"
 
-#: src/synfig/loadcanvas.cpp:2443
+#: src/synfig/loadcanvas.cpp:2460
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr "Hittade \"use\"-attribut för <param>, men den var inte tom. Ignorerar innehåll..."
 
-#: src/synfig/loadcanvas.cpp:2448
+#: src/synfig/loadcanvas.cpp:2465
 msgid "Empty use=\"\" value in <param>"
 msgstr "Tomt use=\"\"-värde i <param>"
 
-#: src/synfig/loadcanvas.cpp:2454
+#: src/synfig/loadcanvas.cpp:2471
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr "Laddning av del-ritytan '%s' misslyckades"
 
-#: src/synfig/loadcanvas.cpp:2456
+#: src/synfig/loadcanvas.cpp:2473
 msgid "Layer rejected canvas link"
 msgstr "Lager förkastade ritytans länk"
 
-#: src/synfig/loadcanvas.cpp:2480
+#: src/synfig/loadcanvas.cpp:2497
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2496
+#: src/synfig/loadcanvas.cpp:2513
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr "<param> saknar antingen sitt innehåll, eller saknar ett \"use\"-attribut"
 
-#: src/synfig/loadcanvas.cpp:2508 src/synfig/loadcanvas.cpp:2528
+#: src/synfig/loadcanvas.cpp:2525 src/synfig/loadcanvas.cpp:2545
 msgid "Bad data for <param>"
 msgstr "Ogiltig data för <param>"
 
-#: src/synfig/loadcanvas.cpp:2516
+#: src/synfig/loadcanvas.cpp:2533
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr "Layer '%s' rejected value for parameter '%s'"
 
-#: src/synfig/loadcanvas.cpp:2539
+#: src/synfig/loadcanvas.cpp:2556
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr "Oväntat element <%s> efter <param>-data, ignorerar..."
 
-#: src/synfig/loadcanvas.cpp:2615 src/synfig/loadcanvas.cpp:2623
+#: src/synfig/loadcanvas.cpp:2633 src/synfig/loadcanvas.cpp:2641
 msgid "Canvas with width or height less than one is not allowed"
 msgstr "Rityta med bredd eller höjd under ett är inte tillåtet"
 
-#: src/synfig/loadcanvas.cpp:2710
+#: src/synfig/loadcanvas.cpp:2728
 msgid "Group canvases cannot have a <defs> section"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2717
+#: src/synfig/loadcanvas.cpp:2735
 msgid "Inline canvas cannot have a <bones> section"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2725
+#: src/synfig/loadcanvas.cpp:2743
 msgid "Group canvases cannot have keyframes"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2737
+#: src/synfig/loadcanvas.cpp:2755
 msgid "Group canvases cannot have metadata"
 msgstr ""
 
-#: src/synfig/loadcanvas.cpp:2745
+#: src/synfig/loadcanvas.cpp:2763
 msgid "<meta> must have a name"
 msgstr "<meta> måste ha ett namn"
 
-#: src/synfig/loadcanvas.cpp:2751
+#: src/synfig/loadcanvas.cpp:2769
 msgid "<meta> must have content"
 msgstr "<meta> måste ha ett innehåll"
 
-#: src/synfig/loadcanvas.cpp:2763
+#: src/synfig/loadcanvas.cpp:2781
 msgid "blank \"name\" entity"
 msgstr "tom \"namn\"-enhet"
 
-#: src/synfig/loadcanvas.cpp:2778
+#: src/synfig/loadcanvas.cpp:2796
 msgid "blank \"desc\" entity"
 msgstr "tom \"desc\"-enhet"
 
-#: src/synfig/loadcanvas.cpp:2793
+#: src/synfig/loadcanvas.cpp:2811
 msgid "blank \"author\" entity"
 msgstr "tom \"author\"-enhet"
 
-#: src/synfig/loadcanvas.cpp:2828
+#: src/synfig/loadcanvas.cpp:2846
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "Ritytan '%s\" har odefinierad %s: %s"
 
-#: src/synfig/loadcanvas.cpp:2830 src/synfig/valuenode.cpp:374
+#: src/synfig/loadcanvas.cpp:2848 src/synfig/valuenode.cpp:374
 msgid "ValueNode"
 msgstr "Värdenod"
 
-#: src/synfig/loadcanvas.cpp:2830
+#: src/synfig/loadcanvas.cpp:2848
 msgid "ValueNodes"
 msgstr "Värdenoder"
 
-#: src/synfig/loadcanvas.cpp:2910 src/synfig/loadcanvas.cpp:2966
+#: src/synfig/loadcanvas.cpp:2936 src/synfig/loadcanvas.cpp:2992
 msgid "Can't open file"
 msgstr "Kan ej öppna fil"
 
@@ -2762,7 +2818,7 @@ msgid "%s does not appear to be a supported palette file"
 msgstr ""
 
 #: src/synfig/paramdesc.cpp:68 src/synfig/valuenode.cpp:146
-#: src/synfig/valuenode_composite.cpp:447
+#: src/synfig/valuenode_composite.cpp:454
 msgid "Composite"
 msgstr "Sammansättning"
 
@@ -2856,12 +2912,12 @@ msgstr ""
 msgid "Target panic"
 msgstr "Target panic"
 
-#: src/synfig/savecanvas.cpp:359
+#: src/synfig/savecanvas.cpp:365
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
 msgstr "Okänt värde(%s), kan inte skapa XML!"
 
-#: src/synfig/savecanvas.cpp:674 src/synfig/savecanvas.cpp:699
+#: src/synfig/savecanvas.cpp:680 src/synfig/savecanvas.cpp:705
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
 msgstr "Okänd typ av värdenod (%s), kan inte skapa XML"
@@ -2949,125 +3005,125 @@ msgstr "Time():Ingen enhet angiven i tidskod och FPS är okänt! Använder SEKUN
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:340 src/synfig/value.cpp:376 src/synfig/value.cpp:437
+#: src/synfig/value.cpp:370 src/synfig/value.cpp:406 src/synfig/value.cpp:467
 msgid "bool"
 msgstr "boolesk"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:341 src/synfig/value.cpp:378 src/synfig/value.cpp:435
+#: src/synfig/value.cpp:371 src/synfig/value.cpp:408 src/synfig/value.cpp:465
 msgid "integer"
 msgstr "heltal"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:342 src/synfig/value.cpp:380
+#: src/synfig/value.cpp:372 src/synfig/value.cpp:410
 msgid "angle"
 msgstr "vinkel"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:343 src/synfig/value.cpp:382 src/synfig/value.cpp:429
+#: src/synfig/value.cpp:373 src/synfig/value.cpp:412 src/synfig/value.cpp:459
 msgid "time"
 msgstr "tid"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:344 src/synfig/value.cpp:384 src/synfig/value.cpp:432
+#: src/synfig/value.cpp:374 src/synfig/value.cpp:414 src/synfig/value.cpp:462
 msgid "real"
 msgstr "reell"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:345 src/synfig/value.cpp:386
+#: src/synfig/value.cpp:375 src/synfig/value.cpp:416
 msgid "vector"
 msgstr "vektor"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:346 src/synfig/value.cpp:388
+#: src/synfig/value.cpp:376 src/synfig/value.cpp:418
 msgid "color"
 msgstr "färg"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:347 src/synfig/value.cpp:390
+#: src/synfig/value.cpp:377 src/synfig/value.cpp:420
 msgid "segment"
 msgstr "segment"
 
-#: src/synfig/value.cpp:348
+#: src/synfig/value.cpp:378
 msgid "bline_point"
 msgstr "bline_punkt"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:349 src/synfig/value.cpp:394
+#: src/synfig/value.cpp:379 src/synfig/value.cpp:424
 msgid "matrix"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:350 src/synfig/value.cpp:396
+#: src/synfig/value.cpp:380 src/synfig/value.cpp:426
 msgid "bone_weight_pair"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:351 src/synfig/value.cpp:398
+#: src/synfig/value.cpp:381 src/synfig/value.cpp:428
 msgid "width_point"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:352 src/synfig/value.cpp:400
+#: src/synfig/value.cpp:382 src/synfig/value.cpp:430
 msgid "dash_item"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:353 src/synfig/value.cpp:402
+#: src/synfig/value.cpp:383 src/synfig/value.cpp:432
 msgid "list"
 msgstr "lista"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:354 src/synfig/value.cpp:404
+#: src/synfig/value.cpp:384 src/synfig/value.cpp:434
 msgid "canvas"
 msgstr "rityta"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:355 src/synfig/value.cpp:406
+#: src/synfig/value.cpp:385 src/synfig/value.cpp:436
 msgid "string"
 msgstr "sträng"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:356 src/synfig/value.cpp:408
+#: src/synfig/value.cpp:386 src/synfig/value.cpp:438
 msgid "gradient"
 msgstr "gradient"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:357 src/synfig/value.cpp:410
+#: src/synfig/value.cpp:387 src/synfig/value.cpp:440
 msgid "bone_object"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:358 src/synfig/value.cpp:412
+#: src/synfig/value.cpp:388 src/synfig/value.cpp:442
 msgid "bone_valuenode"
 msgstr ""
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:359 src/synfig/value.cpp:414
+#: src/synfig/value.cpp:389 src/synfig/value.cpp:444
 msgid "nil"
 msgstr "inget"
 
 #. TRANSLATORS: this is the name of a type -- see
 #. http://synfig.org/wiki/Dev:Types
-#: src/synfig/value.cpp:392
+#: src/synfig/value.cpp:422
 msgid "spline_point"
 msgstr ""
 
@@ -3360,17 +3416,17 @@ msgstr "%s: Du kan inte använda %s i en animerad värdenod"
 msgid "Animated"
 msgstr "Animerad"
 
-#: src/synfig/valuenode_bline.cpp:982 src/synfig/valuenode_dynamiclist.cpp:667
+#: src/synfig/valuenode_bline.cpp:985 src/synfig/valuenode_dynamiclist.cpp:667
 #: src/synfig/valuenode_wplist.cpp:336
 msgid "No entries in list"
 msgstr "Inget innehåll i listam"
 
-#: src/synfig/valuenode_bline.cpp:985 src/synfig/valuenode_dynamiclist.cpp:670
+#: src/synfig/valuenode_bline.cpp:988 src/synfig/valuenode_dynamiclist.cpp:670
 #: src/synfig/valuenode_wplist.cpp:339
 msgid "No entries in ret_list"
 msgstr "Inget innehåll i ret_list"
 
-#: src/synfig/valuenode_bline.cpp:994 src/synfig/valuenode_bline.cpp:1111
+#: src/synfig/valuenode_bline.cpp:997 src/synfig/valuenode_bline.cpp:1114
 #, c-format
 msgid "Vertex %03d"
 msgstr "Vertex %03d"
@@ -3390,7 +3446,7 @@ msgid "The position of the linked tangent on the Spline (0,1]"
 msgstr ""
 
 #: src/synfig/valuenode_blinecalctangent.cpp:256
-#: src/synfig/valuenode_composite.cpp:584
+#: src/synfig/valuenode_composite.cpp:600
 #: src/synfig/valuenode_gradientrotate.cpp:169
 #: src/synfig/valuenode_linear.cpp:213
 msgid "Offset"
@@ -3444,183 +3500,199 @@ msgstr "Bredd"
 msgid "When checked, the width is spline length based"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:229
+#: src/synfig/valuenode_composite.cpp:232
 msgid "Bad type for composite"
 msgstr "Ogiltig typ för sammansättning"
 
-#: src/synfig/valuenode_composite.cpp:474
+#: src/synfig/valuenode_composite.cpp:481
 msgid "Red"
 msgstr "Röf"
 
-#: src/synfig/valuenode_composite.cpp:475
+#: src/synfig/valuenode_composite.cpp:482
 msgid "The red component of the color"
 msgstr "Färgens röda komponent"
 
-#: src/synfig/valuenode_composite.cpp:478
+#: src/synfig/valuenode_composite.cpp:485
 msgid "Green"
 msgstr "Grön"
 
-#: src/synfig/valuenode_composite.cpp:479
+#: src/synfig/valuenode_composite.cpp:486
 msgid "The green component of the color"
 msgstr "Färgens gröna komponent"
 
-#: src/synfig/valuenode_composite.cpp:482
+#: src/synfig/valuenode_composite.cpp:489
 msgid "Blue"
 msgstr "Blå"
 
-#: src/synfig/valuenode_composite.cpp:483
+#: src/synfig/valuenode_composite.cpp:490
 msgid "The blue component of the color"
 msgstr "Färgens blåa komponent"
 
-#: src/synfig/valuenode_composite.cpp:486
+#: src/synfig/valuenode_composite.cpp:493
 msgid "Alpha"
 msgstr "Alfa"
 
-#: src/synfig/valuenode_composite.cpp:487
+#: src/synfig/valuenode_composite.cpp:494
 msgid "The alpha of the color"
 msgstr "Färgens alfa (genomskinlighet)"
 
-#: src/synfig/valuenode_composite.cpp:492
+#: src/synfig/valuenode_composite.cpp:499
 msgid "Vertex 1"
 msgstr "Vertex 1"
 
-#: src/synfig/valuenode_composite.cpp:493
+#: src/synfig/valuenode_composite.cpp:500
 msgid "The first vertex of the segment"
 msgstr "Den första vertexen i segmentet"
 
-#: src/synfig/valuenode_composite.cpp:496
-#: src/synfig/valuenode_composite.cpp:536
+#: src/synfig/valuenode_composite.cpp:503
+#: src/synfig/valuenode_composite.cpp:544
 msgid "Tangent 1"
 msgstr "Tangent 1"
 
-#: src/synfig/valuenode_composite.cpp:497
+#: src/synfig/valuenode_composite.cpp:504
 msgid "The first tangent of the segment"
 msgstr "Den första tangenten i segmentet"
 
-#: src/synfig/valuenode_composite.cpp:500
+#: src/synfig/valuenode_composite.cpp:507
 msgid "Vertex 2"
 msgstr "Vertex 2"
 
-#: src/synfig/valuenode_composite.cpp:501
+#: src/synfig/valuenode_composite.cpp:508
 msgid "The second vertex of the segment"
 msgstr "Den andra vertexen i segmentet"
 
-#: src/synfig/valuenode_composite.cpp:504
-#: src/synfig/valuenode_composite.cpp:540
+#: src/synfig/valuenode_composite.cpp:511
+#: src/synfig/valuenode_composite.cpp:548
 msgid "Tangent 2"
 msgstr "Tangent 2"
 
-#: src/synfig/valuenode_composite.cpp:505
+#: src/synfig/valuenode_composite.cpp:512
 msgid "The second tangent of the segment"
 msgstr "Den andra tangenten i segmentet"
 
-#: src/synfig/valuenode_composite.cpp:510
+#: src/synfig/valuenode_composite.cpp:517
 msgid "X-Axis"
 msgstr "X-axeln"
 
-#: src/synfig/valuenode_composite.cpp:511
+#: src/synfig/valuenode_composite.cpp:518
 msgid "The X-Axis component of the vector"
 msgstr "Vektorns X-komponent"
 
-#: src/synfig/valuenode_composite.cpp:514
+#: src/synfig/valuenode_composite.cpp:521
 msgid "Y-Axis"
 msgstr "Y-axeln"
 
-#: src/synfig/valuenode_composite.cpp:515
+#: src/synfig/valuenode_composite.cpp:522
 msgid "The Y-Axis component of the vector"
 msgstr "Vektorns Y-komponent"
 
-#: src/synfig/valuenode_composite.cpp:520
+#: src/synfig/valuenode_composite.cpp:527
 msgid "Vertex"
 msgstr "Vertex"
 
-#: src/synfig/valuenode_composite.cpp:521
+#: src/synfig/valuenode_composite.cpp:528
 msgid "The vertex of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:525
+#: src/synfig/valuenode_composite.cpp:532
 msgid "The width of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:529
+#: src/synfig/valuenode_composite.cpp:536
 msgid "Defines the Off and On position relative to neighbours"
 msgstr "Bestämmer på/av-värde relativt till grannar"
 
-#: src/synfig/valuenode_composite.cpp:532
+#: src/synfig/valuenode_composite.cpp:539
 msgid "Split"
 msgstr "Dela"
 
-#: src/synfig/valuenode_composite.cpp:533
+#: src/synfig/valuenode_composite.cpp:540
 msgid "When checked, tangents are independent"
 msgstr "När detta är på, blir tangenterna oberoende"
 
-#: src/synfig/valuenode_composite.cpp:537
+#: src/synfig/valuenode_composite.cpp:545
 msgid "The first tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:541
+#: src/synfig/valuenode_composite.cpp:549
 msgid "The second tangent of the Spline Point"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:547
-msgid "The [0,1] position of the Width Point over the Spline"
+#: src/synfig/valuenode_composite.cpp:552
+msgid "Radius Split"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:551
-msgid "The width of the Width Point"
+#: src/synfig/valuenode_composite.cpp:553
+msgid "When checked, tangent's radius are independent"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:554
-#: src/synfig/valuenode_composite.cpp:594
-msgid "Side Type Before"
-msgstr ""
-
-#: src/synfig/valuenode_composite.cpp:555
-#: src/synfig/valuenode_composite.cpp:565
-msgid "Defines the interpolation type of the width point"
+#: src/synfig/valuenode_composite.cpp:556
+msgid "Angle Split"
 msgstr ""
 
 #: src/synfig/valuenode_composite.cpp:557
+msgid "When checked, tangent's angles are independent"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:563
+msgid "The [0,1] position of the Width Point over the Spline"
+msgstr ""
+
 #: src/synfig/valuenode_composite.cpp:567
+msgid "The width of the Width Point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:570
+#: src/synfig/valuenode_composite.cpp:610
+msgid "Side Type Before"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:571
+#: src/synfig/valuenode_composite.cpp:581
+msgid "Defines the interpolation type of the width point"
+msgstr ""
+
+#: src/synfig/valuenode_composite.cpp:573
+#: src/synfig/valuenode_composite.cpp:583
 msgid "Interpolate"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:564
-#: src/synfig/valuenode_composite.cpp:603
+#: src/synfig/valuenode_composite.cpp:580
+#: src/synfig/valuenode_composite.cpp:619
 msgid "Side Type After"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:574
+#: src/synfig/valuenode_composite.cpp:590
 msgid "Lower Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:575
+#: src/synfig/valuenode_composite.cpp:591
 msgid "Defines the position at start of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:578
+#: src/synfig/valuenode_composite.cpp:594
 msgid "Upper Boundary"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:579
+#: src/synfig/valuenode_composite.cpp:595
 msgid "Defines the position at end of the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:585
+#: src/synfig/valuenode_composite.cpp:601
 msgid "The offset length of the Dash Item over the Spline"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:589
+#: src/synfig/valuenode_composite.cpp:605
 #: src/synfig/valuenode_timedswap.cpp:260
 msgid "Length"
 msgstr "Längd"
 
-#: src/synfig/valuenode_composite.cpp:590
+#: src/synfig/valuenode_composite.cpp:606
 msgid "The length of the Dash Item"
 msgstr ""
 
-#: src/synfig/valuenode_composite.cpp:595
-#: src/synfig/valuenode_composite.cpp:604
+#: src/synfig/valuenode_composite.cpp:611
+#: src/synfig/valuenode_composite.cpp:620
 msgid "Defines the side type of the dash item"
 msgstr ""
 
@@ -4343,217 +4415,217 @@ msgstr ""
 msgid "Test signal implementation"
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:73
+#: src/tool/joblistprocessor.cpp:74
 msgid "Nothing to do!"
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:84
+#: src/tool/joblistprocessor.cpp:85
 msgid "Attempting to determine target/outfile..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:90
+#: src/tool/joblistprocessor.cpp:91
 msgid "Target name undefined, attempting to figure it out"
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:122
+#: src/tool/joblistprocessor.cpp:123
 msgid "Defaulting to PNG target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:147
+#: src/tool/joblistprocessor.cpp:148
 msgid "Unable to create ouput for \""
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:149 src/tool/joblistprocessor.cpp:167
+#: src/tool/joblistprocessor.cpp:150 src/tool/joblistprocessor.cpp:168
 msgid "Throwing out job..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:153
+#: src/tool/joblistprocessor.cpp:154
 msgid "Creating the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:165
+#: src/tool/joblistprocessor.cpp:166
 msgid "Unknown target for \""
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:177
+#: src/tool/joblistprocessor.cpp:178
 msgid "Setting the canvas on the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:180
+#: src/tool/joblistprocessor.cpp:181
 msgid "Setting the quality of the target..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:225 src/tool/joblistprocessor.cpp:235
+#: src/tool/joblistprocessor.cpp:227 src/tool/joblistprocessor.cpp:237
 msgid "Render Failure."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:229
+#: src/tool/joblistprocessor.cpp:231
 msgid "Rendering..."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:239
+#: src/tool/joblistprocessor.cpp:241
 msgid ": Rendered in "
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:240
+#: src/tool/joblistprocessor.cpp:242
 msgid " seconds."
 msgstr ""
 
-#: src/tool/joblistprocessor.cpp:243
+#: src/tool/joblistprocessor.cpp:245
 msgid "Done."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:114
+#: src/tool/optionsprocessor.cpp:117
 msgid "Unrecognised canvas variable: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:115
+#: src/tool/optionsprocessor.cpp:118
 msgid "Recognized variables are:"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:132
+#: src/tool/optionsprocessor.cpp:135
 msgid "verbosity set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:147
+#: src/tool/optionsprocessor.cpp:150
 msgid "Threads set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:225
+#: src/tool/optionsprocessor.cpp:228
 msgid "Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:226
+#: src/tool/optionsprocessor.cpp:229
 msgid "Localized Layer Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:228
+#: src/tool/optionsprocessor.cpp:231
 msgid "Version: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:233
+#: src/tool/optionsprocessor.cpp:236
 msgid "param - "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:235
+#: src/tool/optionsprocessor.cpp:238
 msgid " (not critical)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:236
+#: src/tool/optionsprocessor.cpp:239
 msgid "\tLocalized Name: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:240
+#: src/tool/optionsprocessor.cpp:243
 msgid "\tDescription: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:244
+#: src/tool/optionsprocessor.cpp:247
 msgid "\tHint: "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:310
+#: src/tool/optionsprocessor.cpp:313
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:317
+#: src/tool/optionsprocessor.cpp:320
 #, c-format
 msgid "Span set to %d units"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:325
+#: src/tool/optionsprocessor.cpp:328
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:335
+#: src/tool/optionsprocessor.cpp:338
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:344
+#: src/tool/optionsprocessor.cpp:347
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:353
+#: src/tool/optionsprocessor.cpp:356
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:380
+#: src/tool/optionsprocessor.cpp:383
 msgid "Rendering frame at "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:386
+#: src/tool/optionsprocessor.cpp:389
 msgid "Gamma argument is currently ignored"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:401
+#: src/tool/optionsprocessor.cpp:404
 #, c-format
 msgid "Resolution set to %dx%d"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:418
+#: src/tool/optionsprocessor.cpp:421
 msgid "Both video codec and bitrate parameters are necessary."
-msgstr ""
-
-#: src/tool/optionsprocessor.cpp:438
-#, c-format
-msgid "Video codec \"%s\" is not supported."
 msgstr ""
 
 #: src/tool/optionsprocessor.cpp:441
 #, c-format
+msgid "Video codec \"%s\" is not supported."
+msgstr ""
+
+#: src/tool/optionsprocessor.cpp:444
+#, c-format
 msgid "Target video codec set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:447
+#: src/tool/optionsprocessor.cpp:450
 #, c-format
 msgid "Target bitrate set to %dk"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:453
+#: src/tool/optionsprocessor.cpp:456
 #, c-format
 msgid "Output file sequence separator set to %s"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:488
+#: src/tool/optionsprocessor.cpp:507
 #, c-format
 msgid "Unable to load '%s'."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:495
+#: src/tool/optionsprocessor.cpp:514
 msgid "No input file provided."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:500
+#: src/tool/optionsprocessor.cpp:519
 msgid "Target set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:514
+#: src/tool/optionsprocessor.cpp:533
 msgid "Quality set to "
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:533
+#: src/tool/optionsprocessor.cpp:552
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:539
+#: src/tool/optionsprocessor.cpp:558
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:558
+#: src/tool/optionsprocessor.cpp:595
 msgid "Unable to append '"
 msgstr ""
 
-#: src/tool/optionsprocessor.cpp:572
+#: src/tool/optionsprocessor.cpp:609
 msgid "Appended contents of "
 msgstr ""
 
