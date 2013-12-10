@@ -482,11 +482,12 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	bool blend_using_straight = false; // use 'straight' just for the central blit
 
 	Rect inner_bounds(
-		// transformation.back_transform_bounds(renddesc.get_rect())
 	    full_bounding_rect.get_min(),
 	    full_bounding_rect.get_max()
 	);
+	//inner_bounds &= transformation.back_transform_bounds(renddesc.get_rect());
 	Rect outer_bounds(transformation.transform_bounds(inner_bounds));
+	outer_bounds &= renddesc.get_rect();
 	
 	// sometimes the user changes the parameters while we're
 	// rendering, causing our pasted canvas' bounding box to shrink
@@ -542,32 +543,42 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	Vector width_vector(
 		transformation.transform(
-			Vector(inner_bounds.maxx - inner_bounds.minx, 0.0) ));
+			Vector(inner_bounds.maxx - inner_bounds.minx, 0.0), false ));
 	Vector pixels_width_vector(
 		width_vector[0]/renddesc.get_pw(),
 		width_vector[1]/renddesc.get_ph() );
-	int inner_width_pixels = ceil(pixels_width_vector.mag());
+	int inner_width_pixels = (int)ceil(pixels_width_vector.mag());
 
 	Vector ortho_axis_x(width_vector.norm());
 	Vector ortho_axis_y(-ortho_axis_x.perp());
 
 	Vector height_vector(
 		transformation.transform(
-			Vector(0.0, inner_bounds.maxy - inner_bounds.miny) ));
+			Vector(0.0, inner_bounds.maxy - inner_bounds.miny), false ));
 	Vector ortho_height_vector(
 		ortho_axis_y * (height_vector*ortho_axis_y) );
 	Vector pixels_height_vector(
 		ortho_height_vector[0]/renddesc.get_pw(),
 		ortho_height_vector[1]/renddesc.get_ph() );
-	int inner_height_pixels = ceil(pixels_height_vector.mag());
+	int inner_height_pixels = (int)ceil(pixels_height_vector.mag());
+
+	// make 8 pixels border for bicubic resampling
+	float intermediate_pw = (inner_bounds.maxx-inner_bounds.minx)/(float)inner_width_pixels;
+	float intermediate_ph = (inner_bounds.maxy-inner_bounds.miny)/(float)inner_height_pixels;
+	inner_bounds.maxx += 8.f*intermediate_pw;
+	inner_bounds.minx -= 8.f*intermediate_pw;
+	inner_bounds.maxy += 8.f*intermediate_ph;
+	inner_bounds.miny -= 8.f*intermediate_ph;
+	inner_width_pixels += 16;
+	inner_height_pixels += 16;
 
 	RendDesc intermediate_desc(renddesc);
 	intermediate_desc.clear_flags();
 	intermediate_desc.set_tl(Vector(inner_bounds.minx,inner_bounds.maxy));
 	intermediate_desc.set_br(Vector(inner_bounds.maxx,inner_bounds.miny));
-	intermediate_desc.set_flags(RendDesc::PX_ASPECT);
-	intermediate_desc.set_w(4*inner_width_pixels);
-	intermediate_desc.set_h(4*inner_height_pixels);
+	intermediate_desc.set_flags(0);
+	intermediate_desc.set_w(inner_width_pixels);
+	intermediate_desc.set_h(inner_height_pixels);
 
 	Surface intermediate_surface;
 	if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
@@ -585,26 +596,23 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	int right  = (int)ceil (pixels_outer_bounds.maxx);
 	int bottom = (int)ceil (pixels_outer_bounds.maxy);
 
-	//left = 0; right = renddesc.get_w() - 1;
-	//top = 0; bottom = renddesc.get_h() - 1;
+	int w = min(surface->get_w(), renddesc.get_w());
+	int h = min(surface->get_h(), renddesc.get_h());
 
-	#define PASTECANVAS_CLAMP(x, m) \
-		if ((x) < 0) (x) = 0; else if ((x) > (m)) (x) = (m) - 1;
-	PASTECANVAS_CLAMP(left,   renddesc.get_w());
-	PASTECANVAS_CLAMP(right,  renddesc.get_w());
-	PASTECANVAS_CLAMP(top,    renddesc.get_h());
-	PASTECANVAS_CLAMP(bottom, renddesc.get_h());
-	#undef PASTECANVAS_CLAMP
+	if (left < 0) left = 0;
+	if (top < 0) top = 0;
+	if (right > w) right = w;
+	if (bottom > h) bottom = h;
 
-	for(int y = top; y <= bottom; y++) {
-		for(int x = left; x <= right; x++) {
+	for(int y = top; y < bottom; y++) {
+		for(int x = left; x < right; x++) {
 			Vector outer_pos(x*renddesc.get_pw(), y*renddesc.get_ph());
 			outer_pos += renddesc.get_tl();
 			Vector inner_pos = transformation.back_transform(outer_pos);
 			Vector inner_surface_pos(inner_pos - intermediate_desc.get_tl());
 			inner_surface_pos[0] /= intermediate_desc.get_pw();
 			inner_surface_pos[1] /= intermediate_desc.get_ph();
-			Color color = intermediate_surface.linear_sample(inner_surface_pos[0], inner_surface_pos[1]);
+			Color color = intermediate_surface.cubic_sample(inner_surface_pos[0], inner_surface_pos[1]);
 
 			Surface::alpha_pen apen(surface->get_pen(x,y));
 			apen.set_alpha(get_amount());
