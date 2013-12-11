@@ -120,7 +120,6 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 
 			Real length(next.get(Bone()).get_length());
 			new_bone.set_origin(Point(1.1*length,0));
-			new_bone.set_origin0(Point(1.1*length,0));
 
 			ret=ValueNode_Const::create(new_bone, get_parent_canvas());
 		}

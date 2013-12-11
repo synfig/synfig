@@ -64,7 +64,6 @@ using namespace synfig;
 
 static ValueNode_Bone::CanvasMap canvas_map;
 static int bone_counter;
-// static map<ValueNode_Bone::Handle, Matrix> setup_matrix_map;
 // static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
 static Time last_time = Time::begin();
 
@@ -221,8 +220,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 // this should only be used when creating the root bone
 ValueNode_Bone::ValueNode_Bone():
-	LinkableValueNode(ValueBase::TYPE_BONE),
-	setup_(false)
+	LinkableValueNode(ValueBase::TYPE_BONE)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
@@ -231,8 +229,7 @@ ValueNode_Bone::ValueNode_Bone():
 }
 
 ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
-	LinkableValueNode(value.get_type()),
-	setup_(false)
+	LinkableValueNode(value.get_type())
 {
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
 	{
@@ -262,8 +259,6 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_link("scalely",ValueNode_Const::create(bone.get_scalely()));
 		set_link("scalex",ValueNode_Const::create(bone.get_scalex()));
 		set_link("scaley",ValueNode_Const::create(bone.get_scaley()));
-		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
-		set_link("angle0",ValueNode_Const::create(bone.get_angle0()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
 #endif
@@ -360,40 +355,6 @@ ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
 			printf("%s:%d canvases are the same\n", __FILE__, __LINE__);
 }
 
-//!Setup Transformation matrix.
-//!This matrix applied to a setup point in global
-//!coordinates calculates the local coordinates of
-//!the point relative to the current bone.
-Matrix
-ValueNode_Bone::get_setup_matrix(Time t)const
-{
-	Point  origin0	((*origin0_	)(t).get(Point()));
-	Angle  angle0	((*angle0_	)(t).get(Angle()));
-
-	return (get_parent(t)->get_setup_matrix(t) *
-			Matrix().set_translate(-origin0) *
-			Matrix().set_rotate(-angle0));
-}
-
-Matrix
-ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNode_Bone::ConstHandle parent)const
-{
-	Matrix parent_matrix(parent->get_setup_matrix(t));
-	Matrix ret(parent_matrix *
-			   Matrix().set_translate(-translate) *
-			   Matrix().set_rotate(-rotate));
-
-	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION"))
-	{
-		printf("%s  *\n", parent_matrix.get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(-rotate).get())).c_str());
-		printf("%s  *\n", Matrix().set_translate(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f) (%s)", -translate[0], -translate[1], get_bone_name(t).c_str())).c_str());
-		printf("%s  =\n", Matrix().set_rotate(-rotate).get_string(18).c_str());
-		printf("%s\n",	  ret.get_string(18).c_str());
-	}
-
-	return ret;
-}
-
 //!Animated Transformation matrix.
 //!This matrix applied to a setup point in local
 //!coordinates (the one obtained form the Setup
@@ -478,13 +439,8 @@ ValueNode_Bone::operator()(Time t)const
 	Real   bone_scalely			((*scalely_	)(t).get(Real()));
 	Real   bone_scalex			((*scalex_	)(t).get(Real()));
 	Real   bone_scaley			((*scaley_	)(t).get(Real()));
-	Point  bone_origin0			((*origin0_	)(t).get(Point()));
-	Angle  bone_angle0			((*angle0_	)(t).get(Angle()));
 	Real   bone_length			((*length_	)(t).get(Real()));
 	Real   bone_strength		((*strength_)(t).get(Real()));
-	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
-	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
-	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex, bone_scaley, bone_angle, bone_origin, bone_parent));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
@@ -501,14 +457,10 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scalely			(bone_scalely);
 	ret.set_scalex			(bone_scalex);
 	ret.set_scaley			(bone_scaley);
-	ret.set_origin0			(bone_origin0);
-	ret.set_angle0			(bone_angle0);
 	ret.set_length			(bone_length);
 	ret.set_strength		(bone_strength);
-	ret.set_setup_matrix	(bone_setup_matrix);
 	ret.set_animated_matrix	(bone_animated_matrix);
 #endif
-	ret.set_setup			(setup_);
 
 	return ret;
 }
@@ -597,10 +549,8 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 5: CHECK_TYPE_AND_SET_VALUE(scalely_,	ValueBase::TYPE_REAL);
 	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
 	case 7: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
-	case 9: CHECK_TYPE_AND_SET_VALUE(angle0_,	ValueBase::TYPE_ANGLE);
-	case 10:CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
-	case 11:CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
+	case 8:CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
+	case 9:CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
 #endif
 	}
 	return false;
@@ -622,10 +572,8 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 5: return scalely_;
 	case 6: return scalex_;
 	case 7: return scaley_;
-	case 8: return origin0_;
-	case 9: return angle0_;
-	case 10:return length_;
-	case 11:return strength_;
+	case 8:return length_;
+	case 9:return strength_;
 #endif
 	}
 
@@ -676,16 +624,6 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 		ret.push_back(ParamDesc(ValueBase(),"scaley")
 		.set_local_name(_("Recursive Width Scale"))
 		.set_description(_("The scale of the bone and its children perpendicular to its length"))
-	);
-
-		ret.push_back(ParamDesc(ValueBase(),"origin0")
-		.set_local_name(_("Origin Setup"))
-		.set_description(_("The rotating origin of the bone relative to its parent at setup"))
-	);
-
-		ret.push_back(ParamDesc(ValueBase(),"angle0")
-		.set_local_name(_("Angle Setup"))
-		.set_description(_("The rotating angle of the bone relative to its parent at setup"))
 	);
 
 		ret.push_back(ParamDesc(ValueBase(),"length")
@@ -1125,12 +1063,6 @@ ValueNode_Bone_Root::create_new()const
 {
 	assert(0);
 	return rooot.get();
-}
-
-Matrix
-ValueNode_Bone_Root::get_setup_matrix(Time t __attribute__ ((unused)))const
-{
-	return Matrix();
 }
 
 Matrix

@@ -109,7 +109,7 @@ using namespace studio;
 
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
-	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_SETUP-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
+	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
@@ -2345,48 +2345,39 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node(
 					ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)));
 
-				// set if we are editing a composite node or a boneinfluence node in setup mode
+				// set if we are editing a composite node or a boneinfluence node
 				ValueNode_Composite::Handle composite_vertex_value_node (
 					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)) );
 
-				// set if we are editing a boneinfluence node with a composite link in non-setup mode
+				// set if we are editing a boneinfluence node with a composite link
 				ValueNode_Composite::Handle composite_bone_link_value_node;
 				synfig::TransformStack bone_transform_stack(transform_stack);
 
 				if (bone_influence_vertex_value_node)
 				{
-					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
-					{
-						// If in setup mode, add the original ducks prior to the bones transformation
-						composite_vertex_value_node = ValueNode_Composite::Handle::cast_dynamic(
-							bone_influence_vertex_value_node->get_link("link") );
-					}
-					else
-					{
-						// If not in setup mode, apply bones transformation to the ducks
-						composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
-							bone_influence_vertex_value_node->get_link("link") );
+					// apply bones transformation to the ducks
+					composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
+						bone_influence_vertex_value_node->get_link("link") );
 
-						if(param_desc)
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
 						{
-							if(!param_desc->get_origin().empty())
-							{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
-								bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
-							}
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+							bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
 						}
-
-						Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
-						GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
-
-						bone_transform_stack.push(new Transform_Matrix(guid, transform));
-
-						// this environmental variable affects bone functionality in core
-						// \todo remove it, as it is now defunct
-						assert(!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"));
 					}
+
+					Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
+					GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+
+					bone_transform_stack.push(new Transform_Matrix(guid, transform));
+
+					// this environmental variable affects bone functionality in core
+					// \todo remove it, as it is now defunct
+					assert(!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"));
 				}
 
 
@@ -2724,34 +2715,25 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				synfig::TransformStack bone_transform_stack(transform_stack);
 				if (bone_influence_vertex_value_node)
 				{
-					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
-					{
-						// If in setup mode, add the original ducks prior to the bones transformation
-						composite_vertex_value_node = ValueNode_Composite::Handle::cast_dynamic(
-							bone_influence_vertex_value_node->get_link("link") );
-					}
-					else
-					{
-						// If not in setup mode, apply bones transformation to the ducks
-						composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
-							bone_influence_vertex_value_node->get_link("link") );
+					// apply bones transformation to the ducks
+					composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
+						bone_influence_vertex_value_node->get_link("link") );
 
-						if(param_desc)
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
 						{
-							if(!param_desc->get_origin().empty())
-							{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
-								bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
-							}
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+							bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
 						}
-
-						Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
-						GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
-
-						bone_transform_stack.push(new Transform_Matrix(guid, transform));
 					}
+
+					Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
+					GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+
+					bone_transform_stack.push(new Transform_Matrix(guid, transform));
 				}
 				// Add the vertex duck
 				duck=first_duck;
@@ -3162,7 +3144,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		Duck::Handle fake_duck;
 		synfig::TransformStack origin_transform_stack(transform_stack), bone_transform_stack;
-		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
 		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
 
 		ValueNode_Bone::Handle bone_value_node;
@@ -3189,25 +3170,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// add the parent's ducks too
 				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent"), value_desc),canvas_view,transform_stack);
 
-				if (setup)
-				{
-					transform = parent_bone.get_setup_matrix().invert();
-					origin_transform_stack.push(new Transform_Matrix(guid, transform));
-					bone_transform_stack = origin_transform_stack;
-					bone_transform_stack.push(new Transform_Translate(guid, bone.get_origin0()));
-				}
-				else
-				{
-					transform = parent_bone.get_animated_matrix();
-					origin_transform_stack.push(new Transform_Matrix(guid, transform));
-					bone_transform_stack = origin_transform_stack;
-					invertible = transform.is_invertible();
+				transform = parent_bone.get_animated_matrix();
+				origin_transform_stack.push(new Transform_Matrix(guid, transform));
+				bone_transform_stack = origin_transform_stack;
+				invertible = transform.is_invertible();
 
-					Vector scale(parent_bone.get_local_scale());
-					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0])*bone.get_origin()[0],
-																				  (scale[1])*bone.get_origin()[1])));
-					origin_transform_stack.push(new Transform_Scale(guid, scale));
-				}
+				Vector scale(parent_bone.get_local_scale());
+				bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0])*bone.get_origin()[0],
+																			  (scale[1])*bone.get_origin()[1])));
+				origin_transform_stack.push(new Transform_Scale(guid, scale));
 
 #ifdef TRY_TO_ALIGN_WIDTH_DUCKS
 				// this stuff doesn't work very well - we can find out
@@ -3218,9 +3189,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				printf("%s:%d bone %s:\n", __FILE__, __LINE__, bone.get_name().c_str());
 				while (true) {
 					printf("%s:%d parent_angle = %5.2f + %5.2f = %5.2f\n", __FILE__, __LINE__,
-						   Angle::deg(parent_angle).get(), Angle::deg(setup ? parent_bone.get_angle0() : parent_bone.get_angle()).get(),
-						   Angle::deg(parent_angle + (setup ? parent_bone.get_angle0() : parent_bone.get_angle())).get());
-					parent_angle += setup ? parent_bone.get_angle0() : parent_bone.get_angle();
+						   Angle::deg(parent_angle).get(), Angle::deg(parent_bone.get_angle()).get(),
+						   Angle::deg(parent_angle + (parent_bone.get_angle())).get());
+					parent_angle += parent_bone.get_angle();
 					if (parent_bone.is_root()) break;
 					parent_bone = (*parent_bone.get_parent())(time).get(Bone());
 				}
@@ -3230,15 +3201,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			else
 			{
 				bone_transform_stack = origin_transform_stack;
-				bone_transform_stack.push(new Transform_Translate(guid, setup ? bone.get_origin0() : bone.get_origin()));
+				bone_transform_stack.push(new Transform_Translate(guid, bone.get_origin()));
 			}
 		}
 
-		bone_transform_stack.push(new Transform_Rotate(guid, setup ? bone.get_angle0() : bone.get_angle()));
+		bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
 
 		// origin
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"), orig_value_desc);
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("origin"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
@@ -3285,7 +3256,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// width
-		if (!setup)
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"), orig_value_desc);
 
@@ -3319,7 +3289,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// angle
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "angle0" : "angle"), orig_value_desc);
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("angle"), orig_value_desc);
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);
@@ -3328,7 +3298,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 
 			angle = value_desc.get_value(time).get(Angle());
-			Real length(bone.get_length() * (setup ? 1 : bone.get_scalex() * bone.get_scalelx()));
+			Real length(bone.get_length() * (bone.get_scalex() * bone.get_scalelx()));
 			duck->set_point(Point(length*0.9, 0));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
@@ -3351,7 +3321,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// tip
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"), orig_value_desc);
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
 			etl::handle<Duck> duck;
 			if (add_to_ducks(value_desc,canvas_view,bone_transform_stack,REAL_COOKIE))
@@ -3363,8 +3333,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_linear(true, Angle::deg(0));
 
 				Real scale();
-				duck->set_scalar(setup     ? 1 :
-								 recursive ? bone.get_length()*bone.get_scalelx() :
+				duck->set_scalar(recursive ? bone.get_length()*bone.get_scalelx() :
 											 bone.get_length()*bone.get_scalex());
 			}
 		}

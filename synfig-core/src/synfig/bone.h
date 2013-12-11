@@ -36,17 +36,19 @@
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
+
 // how many hex digits of the guid string to show in debug messages
 #define GUID_PREFIX_LEN 6
 
 #define COUT_BONE(bone)													  \
 	cout<<"[name]="<<bone.name_<<endl;									  \
-	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	  \
-	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		  \
+	cout<<"[origin]="<<bone.origin_<<endl;	                              \
+	cout<<"[angle]="<<bone.angle_<<endl;		                          \
 	cout<<"[scalelx]="<<bone.scalelx_<<"[scalely]="<<bone.scalely_<<endl; \
 	cout<<"[scalex]="<<bone.scalex_<<"[scaley]="<<bone.scaley_<<endl;	  \
 	cout<<"[length]="<<bone.length_<<"[strength]="<<bone.strength_<<endl; \
 	cout<<"[parent]="<<bone.parent_<<endl
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -73,12 +75,8 @@ private:
 	String name_;
 	//!This is the current origin of the bone relative to parent
 	Point origin_;
-	//!This is the origin of the bone at the setup time
-	Point origin0_;
 	//!This is the current angle if the bone relative to parent.
 	Angle angle_;
-	//!This is the angle of the bone at the setup time
-	Angle angle0_;
 	//!This is the current local x scale of the bone.
 	Real scalelx_;
 	//!This is the current local y scale of the bone.
@@ -91,12 +89,9 @@ private:
 	Real length_;
 	//!This is the strength at setup time
 	Real strength_;
-	//!Whether the bone is currently showing its setup position
-	bool setup_;
 	//!The parent bone.
 	const ValueNode_Bone* parent_;
 
-	Matrix setup_matrix_;
 	Matrix animated_matrix_;
 
 public:
@@ -110,17 +105,13 @@ public:
 	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}
 
-	//!Wrappers for origin_ & origin0_
+	//!Wrappers for origin_
 	const Point& get_origin()const {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
-	const Point& get_origin0()const {return origin0_;}
-	void set_origin0(const Point &x) {origin0_=x;}
 
-	//!Wrappers for angle_ & angle0_
+	//!Wrappers for angle_
 	const Angle& get_angle()const {return angle_;}
 	void set_angle(const Angle &x) {angle_=x;}
-	const Angle& get_angle0()const {return angle0_;}
-	void set_angle0(const Angle &x) {angle0_=x;}
 
 	//!Wrapper for scalelx
 	const Real& get_scalelx()const {return scalelx_;}
@@ -146,10 +137,6 @@ public:
 	const Real& get_strength()const {return strength_;}
 	void set_strength(const Real &x) {strength_=x;}
 
-	//!Wrapper for setup
-	const bool& get_setup()const {return setup_;}
-	void set_setup(const bool &x) {setup_=x;}
-
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
 	Point get_tip();
@@ -161,13 +148,6 @@ public:
 
 	void add_bone_to_map();
 	Bone* find_bone_in_map(int uid);
-
-	//!Setup Transformation matrix.
-	//!This matrix applied to a setup point in global
-	//!coordinates calculates the local coordinates of
-	//!the point relative to the current bone.
-	Matrix get_setup_matrix() const { return setup_matrix_; }
-	void set_setup_matrix(Matrix x) { setup_matrix_ = x; }
 
 	//!Animated Transformation matrix.
 	//!This matrix applied to a setup point in local
@@ -199,8 +179,8 @@ public:
  * I think that we can leave the bone as a simple information holder
  * and only give it the responsibility of:
  * Set and get:
- * 		-origin, origin0,
- * 		-angle, angle0,
+ * 		-origin,
+ * 		-angle,
  * 		-scalelx,
  * 		-scalely,
  * 		-scalex,
@@ -214,7 +194,6 @@ public:
  * 		parent_tree is not needed.
  * 		-Skeletons Pointer (see below)
  * Also the bone should:
- * 		-get_setup_matrix
  * 		-get_animated_matrix
  * 		-get_tip
  *

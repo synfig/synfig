@@ -1710,7 +1710,6 @@ CanvasView::init_menus()
 		DUCK_MASK(radius,RADIUS,_("Show Radius Handles"));
 		DUCK_MASK(width,WIDTH,_("Show Width Handles"));
 		DUCK_MASK(angle,ANGLE,_("Show Angle Handles"));
-		DUCK_MASK(bone-setup,BONE_SETUP,_("Show Bone Setup Handles"));
 		action_mask_bone_setup_ducks = action;
 		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Handles"));
 		action_mask_bone_recursive_ducks = action;
@@ -3855,16 +3854,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	else
 		work_area->set_type_mask(work_area->get_type_mask()|type);
 
-	if (type == Duck::TYPE_BONE_SETUP)
-	{
-		bool value(work_area->get_type_mask() & type);
-		ValueNode_Bone::BoneMap bone_map(ValueNode_Bone::get_bone_map(get_canvas()));
-		for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
-			iter->second->set_setup(value);
-
-		queue_rebuild_ducks();
-	}
-	else if (type == Duck::TYPE_BONE_RECURSIVE && !(work_area->get_type_mask()&Duck::TYPE_BONE_SETUP))
+	if (type == Duck::TYPE_BONE_RECURSIVE)
 		queue_rebuild_ducks();
 
 	work_area->queue_draw();
@@ -3898,17 +3888,9 @@ void
 CanvasView::mask_bone_ducks()
 {
 	Duck::Type mask(work_area->get_type_mask());
-	bool setup(mask & Duck::TYPE_BONE_SETUP);
 	bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
 
-	// setup -> none -> recursive -> setup
-	if (setup)
-	{
-		if (recursive)
-			action_mask_bone_recursive_ducks->set_active(false);
-		action_mask_bone_setup_ducks->set_active(false);
-	}
-	else if (recursive)
+	if (recursive)
 	{
 		action_mask_bone_setup_ducks->set_active(true);
 		action_mask_bone_recursive_ducks->set_active(false);

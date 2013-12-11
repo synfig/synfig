@@ -145,8 +145,7 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 		bool scale_y   = (*scale_y_)  (t).get(true);
 
 		transformation.set_matrix(
-				bone.get_setup_matrix()
-			  * Matrix().set_scale(bone.get_local_scale())
+			    Matrix().set_scale(bone.get_local_scale())
 			  * bone.get_animated_matrix()
 		);
 

@@ -91,15 +91,11 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,
 
 		gc->set_rgb_fg_color(Gdk::Color("#5f0000"));
 
-		bool setup(get_work_area()->get_type_mask() & Duck::TYPE_BONE_SETUP);
 		bool recursive(get_work_area()->get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
-		if (setup || recursive)
+		if (recursive)
 		{
 			int w, h;
-			if (setup)
-				layout->set_text(_("Bone Setup Mode"));
-			else
-				layout->set_text(_("Bone Recursive Scale Mode"));
+			layout->set_text(_("Bone Recursive Scale Mode"));
 			layout->get_size(w, h);
 			get_work_area()->bonesetup_width = int(w*1.0/Pango::SCALE);
 			get_work_area()->bonesetup_height = int(h*1.0/Pango::SCALE);

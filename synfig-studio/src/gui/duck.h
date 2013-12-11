@@ -99,12 +99,11 @@ public:
 		TYPE_WIDTH					=	(1 <<  3),	//    8
 		TYPE_ANGLE					=	(1 <<  4),	//   16
 		TYPE_VERTEX					=	(1 <<  5),	//   32
-		TYPE_BONE_SETUP				=	(1 <<  6),	//   64
-		TYPE_BONE_RECURSIVE			=	(1 <<  7),	//  128
-		TYPE_WIDTHPOINT_POSITION	=	(1 <<  8),	//  256
-		TYPE_SCALE					=	(1 <<  9),	//  512
-		TYPE_SCALE_X				=	(1 << 10),	// 1024
-		TYPE_SCALE_Y				=	(1 << 11),	// 2048
+		TYPE_BONE_RECURSIVE			=	(1 <<  6),	//   64
+		TYPE_WIDTHPOINT_POSITION	=	(1 <<  7),	//  128
+		TYPE_SCALE					=	(1 <<  8),	//  256
+		TYPE_SCALE_X				=	(1 <<  9),	//  512
+		TYPE_SCALE_Y				=	(1 << 10),	// 1024
 
 		TYPE_ALL		=	(~0),
 
