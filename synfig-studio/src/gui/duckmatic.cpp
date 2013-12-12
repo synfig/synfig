@@ -1095,6 +1095,35 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
+		if (value_desc.parent_is_value_node())
+		{
+			etl::handle<ValueNode_Bone> bone_node =
+				etl::handle<ValueNode_Bone>::cast_dynamic(
+					value_desc.get_parent_value_node());
+			if (bone_node)
+			{
+				int index1 = bone_node->get_link_index_from_name("scalex");
+				int index2 = bone_node->get_link_index_from_name("scalelx");
+				int angleIndex = bone_node->get_link_index_from_name("angle");
+				if (value_desc.get_index() == index1
+				 || value_desc.get_index() == index2)
+				{
+					//Bone bone((*bone_node)(get_time()).get(Bone()));
+					//Real prev_duck_length = bone.get_length() * bone.get_scalex() * bone.get_scalex();
+					//Real duck_length = duck.get_point().mag();
+					//Real prev_length = value_desc.get_value(get_time()).get(Real());
+					//Real new_length = prev_length == 0.f || prev_duck_length == 0.f
+					//                ? duck_length
+					//                : prev_length * duck_length / prev_duck_length;
+					Real new_length = duck.get_point().mag();
+					Angle angle = (*bone_node->get_link(angleIndex))(get_time()).get(Angle());
+					angle += duck.get_rotations();
+					return canvas_interface->change_value(synfigapp::ValueDesc(bone_node, angleIndex, value_desc.get_parent_desc()), angle)
+						&& canvas_interface->change_value(value_desc, new_length);
+				}
+			}
+		}
+
 		// Zoom duck value (PasteCanvas and Zoom layers) should be
 		// converted back from exponent to normal
 		if( duck.get_exponential() ) {
@@ -1138,10 +1167,11 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 
 			return canvas_interface->change_value(value_desc, transformation);
 		}
-		break;
+		return false;
 	default:
-		return canvas_interface->change_value(value_desc,value);
+		break;
 	}
+	return canvas_interface->change_value(value_desc,value);
 }
 
 void
@@ -3323,19 +3353,41 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
-			etl::handle<Duck> duck;
-			if (add_to_ducks(value_desc,canvas_view,bone_transform_stack,REAL_COOKIE))
-			{
-				duck=last_duck();
-				duck->set_origin(fake_duck);
-				duck->set_type(Duck::TYPE_RADIUS);
-				duck->set_name(guid_string(value_desc));
-				duck->set_linear(true, Angle::deg(0));
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			//Real length = bone.get_length()*bone.get_scalex()*bone.get_scalelx();
+			Real length = value_desc.get_value(time).get(Real());
+			duck->set_point(Vector(length, 0.0));
 
-				Real scale();
-				duck->set_scalar(recursive ? bone.get_length()*bone.get_scalelx() :
-											 bone.get_length()*bone.get_scalex());
-			}
+			duck->set_guid(calc_duck_guid(value_desc,origin_transform_stack)^synfig::GUID::hasher(".tip"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!invertible ? false :
+							   !value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*this, &studio::Duckmatic::on_duck_changed), value_desc));
+			duck->signal_user_click(2).connect(
+				sigc::bind(
+					sigc::bind(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu
+							),
+							false // bezier
+						),
+						0.0f // location
+					),
+					value_desc
+				)
+			);
+			duck->set_origin(fake_duck);
+			add_duck(duck);
 		}
 
 		return true;

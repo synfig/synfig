@@ -226,25 +226,17 @@ Duck::get_sub_trans_point()const
 void
 Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 {
-	if (get_type() == Duck::TYPE_TANGENT ||
-		get_type() == Duck::TYPE_ANGLE)
-	{
-		Angle old_angle = get_point().angle();
-		set_point((x-get_sub_trans_origin())/get_scalar());
-		Angle change = get_point().angle() - old_angle;
-		while (change < Angle::deg(-180)) change += Angle::deg(360);
-		while (change > Angle::deg(180)) change -= Angle::deg(360);
-		//int old_halves = round_to_int(Angle::deg(rotations).get()/180);
-		rotations += change;
-		//int new_halves = round_to_int(Angle::deg(rotations).get()/180);
-		/*if (old_halves != new_halves &&
-			(new_halves > 1 || new_halves < -1 ||
-			 old_halves > 1 || old_halves < -1))
-			synfig::info("rotation: %.2f turns", new_halves/2.0)*/;
-	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION || get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
-	{
-		set_point((x-get_sub_trans_origin())/get_scalar());
+	Angle old_angle = get_point().angle();
+	set_point((x-get_sub_trans_origin())/get_scalar());
+	Angle change = get_point().angle() - old_angle;
+	while (change < Angle::deg(-180)) change += Angle::deg(360);
+	while (change > Angle::deg(180)) change -= Angle::deg(360);
+	rotations += change;
 
+	if(get_type() == Duck::TYPE_VERTEX
+	|| get_type() == Duck::TYPE_POSITION
+	|| get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
+	{
 		ValueNode_BLineCalcVertex::Handle bline_vertex;
 		ValueNode_Composite::Handle composite;
 
@@ -286,29 +278,17 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 				}
 			}
 	}
-	else set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
 void
 Duck::set_sub_trans_point(const synfig::Point &x)
 {
-	if (get_type() == Duck::TYPE_TANGENT ||
-		get_type() == Duck::TYPE_ANGLE)
-	{
-		Angle old_angle = get_point().angle();
-		set_point((x-get_sub_trans_origin())/get_scalar());
-		Angle change = get_point().angle() - old_angle;
-		while (change < Angle::deg(-180)) change += Angle::deg(360);
-		while (change > Angle::deg(180)) change -= Angle::deg(360);
-		//int old_halves = round_to_int(Angle::deg(rotations).get()/180);
-		rotations += change;
-		//int new_halves = round_to_int(Angle::deg(rotations).get()/180);
-		/*if (old_halves != new_halves &&
-			(new_halves > 1 || new_halves < -1 ||
-			 old_halves > 1 || old_halves < -1))
-			synfig::info("rotation: %.2f turns", new_halves/2.0);*/
-	}
-	else set_point((x-get_sub_trans_origin())/get_scalar());
+	Angle old_angle = get_point().angle();
+	set_point((x-get_sub_trans_origin())/get_scalar());
+	Angle change = get_point().angle() - old_angle;
+	while (change < Angle::deg(-180)) change += Angle::deg(360);
+	while (change > Angle::deg(180)) change -= Angle::deg(360);
+	rotations += change;
 }
 
 synfig::Point
