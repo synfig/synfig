@@ -259,26 +259,27 @@ ValueBase::copy(const ValueBase& x)
 {
 	switch(x.type)
 	{
-	case TYPE_BOOL:			set(x.get(bool())); break;
-	case TYPE_INTEGER:		set(x.get(int())); break;
-	case TYPE_ANGLE:		set(x.get(Angle())); break;
-	case TYPE_VECTOR:		set(x.get(Vector())); break;
-	case TYPE_TIME:			set(x.get(Time())); break;
-	case TYPE_REAL:			set(x.get(Real())); break;
-	case TYPE_COLOR:		set(x.get(Color())); break;
-	case TYPE_SEGMENT:		set(x.get(Segment())); break;
+	case TYPE_BOOL:				set(x.get(bool())); break;
+	case TYPE_INTEGER:			set(x.get(int())); break;
+	case TYPE_ANGLE:			set(x.get(Angle())); break;
+	case TYPE_VECTOR:			set(x.get(Vector())); break;
+	case TYPE_TIME:				set(x.get(Time())); break;
+	case TYPE_REAL:				set(x.get(Real())); break;
+	case TYPE_COLOR:			set(x.get(Color())); break;
+	case TYPE_SEGMENT:			set(x.get(Segment())); break;
 	case TYPE_BLINEPOINT:		set(x.get(BLinePoint())); break;
-	case TYPE_MATRIX:		set(x.get(Matrix())); break;
+	case TYPE_MATRIX:			set(x.get(Matrix())); break;
 	case TYPE_BONE_WEIGHT_PAIR:	set(x.get(BoneWeightPair())); break;
 	case TYPE_WIDTHPOINT:		set(x.get(WidthPoint())); break;
-	case TYPE_DASHITEM:		set(x.get(DashItem())); break;
-	case TYPE_LIST:			set(x.get(list_type())); break;
-	case TYPE_STRING:		set(x.get(String())); break;
-	case TYPE_GRADIENT:		set(x.get(Gradient())); break;
-	case TYPE_BONE:			set(x.get(Bone())); break;
+	case TYPE_DASHITEM:			set(x.get(DashItem())); break;
+	case TYPE_LIST:				set(x.get(list_type())); break;
+	case TYPE_STRING:			set(x.get(String())); break;
+	case TYPE_GRADIENT:			set(x.get(Gradient())); break;
+	case TYPE_TRANSFORMATION:	set(x.get(Transformation())); break;
+	case TYPE_BONE:				set(x.get(Bone())); break;
 	case TYPE_VALUENODE_BONE:	set(x.get(etl::handle<ValueNode_Bone>())); break;
-	case TYPE_CANVAS:		set(x.get(etl::handle<Canvas>())); break;
-	default:																	break;
+	case TYPE_CANVAS:			set(x.get(etl::handle<Canvas>())); break;
+	default:					break;
 	}
 
 	copy_properties_of(x);
