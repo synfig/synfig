@@ -485,7 +485,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	    full_bounding_rect.get_min(),
 	    full_bounding_rect.get_max()
 	);
-	//inner_bounds &= transformation.back_transform_bounds(renddesc.get_rect());
+	inner_bounds &= transformation.back_transform_bounds(renddesc.get_rect());
 	Rect outer_bounds(transformation.transform_bounds(inner_bounds));
 	outer_bounds &= renddesc.get_rect();
 	
