@@ -83,6 +83,7 @@ using namespace studio;
 #define GDK_KEY_Alt_R GDK_Alt_R
 #define GDK_KEY_Meta_L GDK_Meta_L
 #define GDK_KEY_Meta_R GDK_Meta_R
+#define GDK_KEY_space GDK_space
 #endif
 
 /* === G L O B A L S ======================================================= */
