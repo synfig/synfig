@@ -682,7 +682,7 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*x*/)
+StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 {
 	// synfig::info("STATE NORMAL: Received multiple duck click event");
 
@@ -705,7 +705,13 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*
 	Gtk::Menu *menu=manage(new Gtk::Menu());
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
-	canvas_view_->get_instance()->make_param_menu(menu,canvas_view_->get_canvas(),value_desc_list);
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	canvas_view_->get_instance()->make_param_menu(
+			menu,
+			canvas_view_->get_canvas(),
+			value_desc_list,
+			event.duck ? event.duck->get_value_desc() : synfigapp::ValueDesc()
+		);
 
 	menu->popup(3,gtk_get_current_event_time());
 

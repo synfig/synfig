@@ -219,7 +219,7 @@ public:
 
 	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location=0.5f, bool bezier=false);
 
-	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list);
+	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list, const synfigapp::ValueDesc &value_desc = synfigapp::ValueDesc());
 
 
 	static void edit_waypoint(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);

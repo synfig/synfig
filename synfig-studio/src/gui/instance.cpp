@@ -1139,9 +1139,9 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	const DuckList selected_ducks(find_canvas_view(canvas)->get_work_area()->get_selected_ducks());
 	for(DuckList::const_iterator iter=selected_ducks.begin();iter!=selected_ducks.end();++iter)
 	{
-		synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
-		if(value_desc.is_valid())
-			param_list.add("selected_value_desc",value_desc);
+		synfigapp::ValueDesc selected_value_desc((*iter)->get_value_desc());
+		if(selected_value_desc.is_valid() && value_desc != selected_value_desc)
+			param_list.add("selected_value_desc",selected_value_desc);
 	}
 
 	if(param_list2.empty())
@@ -1542,7 +1542,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 }
 
 void
-Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list)
+Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list, const synfigapp::ValueDesc &value_desc)
 {
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
 
@@ -1567,4 +1567,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 		));
 	}
 	// add here the rest of specific actions for multiple selected value_descs
+	if (value_desc.is_valid())
+		make_param_menu(menu,canvas,value_desc, 0.f, false);
 }

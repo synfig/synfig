@@ -106,7 +106,7 @@ public:
 		waypoint_time = other.waypoint_time;
 		canvas = other.canvas;
 		scalar = other.scalar;
-		if (parent_desc != NULL && 0 >= parent_desc->links_count--)
+		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 		parent_desc = other.parent_desc;
 		if (parent_desc != NULL) parent_desc->links_count++;
@@ -200,7 +200,8 @@ public:
 
 	~ValueDesc()
 	{
-		if (parent_desc != NULL && 0 >= parent_desc->links_count--)
+		assert(links_count == 0);
+		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 	}
 
