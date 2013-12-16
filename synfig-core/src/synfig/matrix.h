@@ -164,18 +164,18 @@ public:
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting matrix
-	Matrix operator*(const Matrix &rhs);
+	Matrix operator*(const Matrix &rhs)const;
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting matrix
-	Matrix operator*(const value_type &rhs);
+	Matrix operator*(const value_type &rhs)const;
 
 	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
 	//! @return the resulting matrix
 	Matrix
-	operator+(const Matrix &rhs);
+	operator+(const Matrix &rhs)const;
 
 	bool is_invertible()const;
 

@@ -146,6 +146,8 @@ public:
 		{ return get_matrix().get_transformed(v, translate); }
 	Transformation transform(const Transformation &transformation) const
 		{ return Transformation( transformation.get_matrix()*get_matrix() ); }
+	Matrix transform(const Matrix &matrix) const
+		{ return matrix*get_matrix(); }
 	Rect transform_bounds(const Rect &bounds) const
 		{ return transform_bounds(get_matrix(), bounds); }
 
@@ -153,6 +155,8 @@ public:
 		{ return get_inverted_matrix().get_transformed(v, translate); }
 	Transformation back_transform(const Transformation &transformation) const
 		{ return Transformation( transformation.get_matrix()*get_inverted_matrix() ); }
+	Matrix back_transform(const Matrix &matrix) const
+		{ return matrix*get_inverted_matrix(); }
 	Rect back_transform_bounds(const Rect &bounds) const
 		{ return transform_bounds(get_inverted_matrix(), bounds); }
 

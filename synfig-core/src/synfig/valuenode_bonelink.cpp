@@ -33,6 +33,7 @@
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
 #include "general.h"
+#include "valuetransformation.h"
 
 #endif
 
@@ -57,7 +58,7 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 	set_children_vocab(ret);
 
 	set_link("bone",			ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
-	set_link("transformation",	ValueNode_Const::create(x.get_type() == ValueBase::TYPE_TRANSFORMATION ? x.get(Transformation()) : Transformation()));
+	set_link("base_value",		ValueNode_Const::create(x));
 	set_link("translate",		ValueNode_Const::create(true));
 	set_link("rotate",  		ValueNode_Const::create(true));
 	set_link("skew", 	 		ValueNode_Const::create(true));
@@ -87,10 +88,19 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
+
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,      ValueBase::TYPE_VALUENODE_BONE);
-	case 1: CHECK_TYPE_AND_SET_VALUE(transformation_, ValueBase::TYPE_TRANSFORMATION);
+	case 1:
+		if (get_type() == ValueBase::TYPE_NIL)
+		{
+			VALUENODE_SET_VALUE(base_value_);
+		}
+		else
+		{
+			CHECK_TYPE_AND_SET_VALUE(base_value_, get_type());
+		}
 	case 2: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
 	case 3: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
 	case 4: CHECK_TYPE_AND_SET_VALUE(skew_,      ValueBase::TYPE_BOOL);
@@ -107,7 +117,7 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 	switch(i)
 	{
 	case 0: return bone_;
-	case 1: return transformation_;
+	case 1: return base_value_;
 	case 2: return translate_;
 	case 3: return rotate_;
 	case 4: return skew_;
@@ -122,7 +132,7 @@ ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	LinkableValueNode::set_root_canvas(x);
 	bone_->set_root_canvas(x);
-	transformation_->set_root_canvas(x);
+	base_value_->set_root_canvas(x);
 	translate_->set_root_canvas(x);
 	rotate_->set_root_canvas(x);
 	skew_->set_root_canvas(x);
@@ -164,8 +174,8 @@ ValueNode_BoneLink::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
-	return get_bone_transformation(t).transform(
-			(*transformation_)(t).get(Transformation()) );
+	return ValueTransformation::transform(
+		get_bone_transformation(t), (*base_value_)(t) );
 }
 
 String
@@ -183,7 +193,7 @@ ValueNode_BoneLink::get_local_name()const
 bool
 ValueNode_BoneLink::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_TRANSFORMATION;
+	return ValueTransformation::check_type(type);
 }
 
 LinkableValueNode::Vocab
@@ -199,9 +209,9 @@ ValueNode_BoneLink::get_children_vocab_vfunc()const
 		.set_description(_("The linked bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"transformation")
-		.set_local_name(_("Transformation"))
-		.set_description(_("Base transformation"))
+	ret.push_back(ParamDesc(ValueBase(),"base_value")
+		.set_local_name(_("Base value"))
+		.set_description(_("Base value"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"translate")

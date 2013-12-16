@@ -273,7 +273,8 @@ SYNFIGHEADERS = \
 	filecontainer.h \
 	filecontainerzip.h \
 	filecontainertemporary.h \
-	zstreambuf.h
+	zstreambuf.h \
+	valuetransformation.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \

@@ -199,19 +199,19 @@ Matrix::operator+=(const Matrix &rhs)
 }
 
 Matrix
-Matrix::operator*(const Matrix &rhs)
+Matrix::operator*(const Matrix &rhs)const
 {
 	return Matrix(*this)*=rhs;
 }
 
 Matrix
-Matrix::operator*(const value_type &rhs)
+Matrix::operator*(const value_type &rhs)const
 {
 	return Matrix(*this)*=rhs;
 }
 
 Matrix
-Matrix::operator+(const Matrix &rhs)
+Matrix::operator+(const Matrix &rhs)const
 {
 	return Matrix(*this)+=rhs;
 }
