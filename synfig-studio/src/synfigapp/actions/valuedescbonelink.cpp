@@ -39,6 +39,7 @@
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_bone.h>
 #include <synfig/valuenode_bonelink.h>
+#include <synfig/valuetransformation.h>
 
 #include <synfigapp/general.h>
 
@@ -157,15 +158,18 @@ Action::ValueDescBoneLink::prepare()
 	{
 		ValueDesc& value_desc(*iter);
 
-		if (value_desc.get_value_type() != ValueBase::TYPE_TRANSFORMATION)
+		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
+			continue;
+		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
-		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(ValueBase::TYPE_TRANSFORMATION);
+		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type());
 		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
-		bone_link_node->set_link("transformation",
+		bone_link_node->set_link("base_value",
 			ValueNode_Const::create(
-				bone_link_node->get_bone_transformation(time).back_transform(
-					value_desc.get_value(time).get(Transformation()) )));
+				ValueTransformation::back_transform(
+					bone_link_node->get_bone_transformation(time),
+					value_desc.get_value(time) )));
 
 		// exported ValueNode
 		if (value_desc.parent_is_canvas())
@@ -187,6 +191,19 @@ Action::ValueDescBoneLink::prepare()
 			action->set_param("param", value_desc.get_param_name());
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
+			action->set_param("value_node", ValueNode::Handle(bone_link_node));
+
+			assert(action->is_ready());
+			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action);
+		}
+		else if (value_desc.parent_is_value_node())
+		{
+			Action::Handle action = ValueNodeLinkConnect::create();
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", get_canvas_interface());
+			action->set_param("parent_value_node", value_desc.get_parent_value_node());
+			action->set_param("index", value_desc.get_index());
 			action->set_param("value_node", ValueNode::Handle(bone_link_node));
 
 			assert(action->is_ready());

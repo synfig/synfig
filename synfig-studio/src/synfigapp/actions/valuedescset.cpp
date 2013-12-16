@@ -55,6 +55,7 @@
 #include <synfig/valuenode_real.h>
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/valuenode_bone.h>
+#include <synfig/valuetransformation.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
@@ -348,11 +349,11 @@ Action::ValueDescSet::prepare()
 	if(value_desc.is_value_node() && ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueNode_BoneLink::Handle value_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
-		ValueDesc transformation_value_desc(value_node, value_node->get_link_index_from_name("transformation"));
+		ValueDesc base_value_desc(value_node, value_node->get_link_index_from_name("base_value"));
 
-		Transformation transformation =
-			value_node->get_bone_transformation(time).back_transform(
-				value.get(Transformation()) );
+		ValueBase new_base_value =
+			ValueTransformation::back_transform(
+				value_node->get_bone_transformation(time), value );
 
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
@@ -360,8 +361,8 @@ Action::ValueDescSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
-		action->set_param("new_value",ValueBase(transformation));
-		action->set_param("value_desc",transformation_value_desc);
+		action->set_param("new_value",new_base_value);
+		action->set_param("value_desc",base_value_desc);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
