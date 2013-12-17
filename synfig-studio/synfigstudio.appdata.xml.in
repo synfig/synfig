@@ -19,8 +19,7 @@
   </ul>
  </description>
  <screenshots>
-  <screenshot type="default" width="800" height="600">http://synfig.org/gallary/screenshots/interface.png</screenshot>
-  <screenshot width="800" height="600">http://synfig.org/gallary/screenshots/interface-2.png</screenshot>
+  <screenshot type="default" width="1360" height="768">http://download.tuxfamily.org/synfig/wiki/images/2/2f/Synfigstudio-0.64.0-linux-screenshot_1360x768.png</screenshot>
  </screenshots>
  <url type="homepage">http://www.synfig.org</url>
  <updatecontact>synfig-devl@lists.sourceforge.net</updatecontact>
