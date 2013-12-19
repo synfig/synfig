@@ -87,13 +87,15 @@ Duck::Duck():
 	ignore_(false),
 	exponential_(false),
 	track_axes_(false),
+	lock_aspect_(false),
 	scalar_(1),
 	origin_(0,0),
 	axis_x_angle_(Angle::deg(0)),
 	axis_x_mag_(1),
 	axis_y_angle_(Angle::deg(90)),
 	axis_y_mag_(1),
-	rotations_(synfig::Angle::deg(0))
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++; }
 
 Duck::Duck(const synfig::Point &point):
@@ -108,6 +110,7 @@ Duck::Duck(const synfig::Point &point):
 	ignore_(false),
 	exponential_(false),
 	track_axes_(false),
+	lock_aspect_(false),
 	scalar_(1),
 	origin_(0,0),
 	axis_x_angle_(Angle::deg(0)),
@@ -115,7 +118,8 @@ Duck::Duck(const synfig::Point &point):
 	axis_y_angle_(Angle::deg(90)),
 	axis_y_mag_(1),
 	point_(point),
-	rotations_(synfig::Angle::deg(0))
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
@@ -130,6 +134,7 @@ Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	ignore_(false),
 	exponential_(false),
 	track_axes_(false),
+	lock_aspect_(false),
 	scalar_(1),
 	origin_(origin),
 	axis_x_angle_(Angle::deg(0)),
@@ -137,7 +142,8 @@ Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	axis_y_angle_(Angle::deg(90)),
 	axis_y_mag_(1),
 	point_(point),
-	rotations_(synfig::Angle::deg(0))
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::~Duck() { duck_count--; _DuckCounter::counter--;}

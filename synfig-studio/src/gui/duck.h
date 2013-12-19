@@ -140,6 +140,7 @@ private:
 	bool ignore_;
 	bool exponential_;
 	bool track_axes_;
+	bool lock_aspect_;
 
 
 	// positioning
@@ -171,6 +172,7 @@ private:
 	synfig::Point point_;
 	etl::smart_ptr<synfig::Point> shared_point_;
 	synfig::Angle rotations_;
+	synfig::Point aspect_point_;
 
 	static int duck_count;
 public:
@@ -290,6 +292,11 @@ public:
 	void set_track_axes(bool r)
 		{ track_axes_=r; }
 
+	bool is_aspect_locked()const
+		{ return lock_aspect_; }
+	void set_lock_aspect(bool r)
+		{ if (!lock_aspect_ && r) aspect_point_=point_.norm(); lock_aspect_=r; }
+
 
 	// positioning
 
@@ -394,7 +401,12 @@ public:
 
 	//! Sets the location of the duck with respect to the origin
 	void set_point(const synfig::Point &x)
-		{ (shared_point_?*shared_point_:point_) = x; }
+	{
+		(shared_point_?*shared_point_:point_) =
+			lock_aspect_
+			? aspect_point_*(x*aspect_point_)
+		    : x;
+	}
 	//! Returns the location of the duck
 	synfig::Point get_point()const
 		{ return shared_point_?*shared_point_:point_; }

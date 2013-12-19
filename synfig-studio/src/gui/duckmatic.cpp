@@ -2069,8 +2069,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_name(guid_string(value_desc) + "-skew");
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
-				duck->set_axis_x_angle(angle_duck, Angle::deg(90));
-				duck->set_axis_y_angle(angle_duck, Angle::deg(180));
+				duck->set_axis_x_angle(angle_duck, transformation.scale[0] > 0 ? Angle::deg(90) : Angle::deg(-90));
+				duck->set_axis_y_angle(angle_duck, transformation.scale[0] > 0 ? Angle::deg(180) : Angle::deg(0));
 				duck->set_value_desc(value_desc);
 				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple)^synfig::GUID::hasher("skew"));
 				connect_signals(duck, value_desc, *canvas_view);
@@ -2084,6 +2084,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_transform_stack(transform_stack);
 				duck->set_name(guid_string(value_desc) + "-scale-x");
 				duck->set_point(Point(transformation.scale[0],0));
+				duck->set_scalar(transformation.scale[0] > 0 ? 1 : -1);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, angle_duck);
@@ -2100,6 +2101,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_transform_stack(transform_stack);
 				duck->set_name(guid_string(value_desc) + "-scale-y");
 				duck->set_point(Point(transformation.scale[1],0));
+				duck->set_scalar(transformation.scale[1] > 0 ? 1 : -1);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, skew_duck);
@@ -2116,6 +2118,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_transform_stack(transform_stack);
 				duck->set_name(guid_string(value_desc) + "-scale");
 				duck->set_point(Point(1,1));
+				duck->set_lock_aspect(true);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_axis_x_angle(scale_x_duck);
