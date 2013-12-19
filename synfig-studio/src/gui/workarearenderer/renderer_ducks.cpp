@@ -216,17 +216,6 @@ Renderer_Ducks::render_vfunc(
 				sub_trans_point[1] = sub_trans_origin[1];
 		}
 
-		if ((*iter)->is_linear())
-		{
-			Point sub_trans_offset(sub_trans_point - sub_trans_origin);
-			Angle constrained_angle((*iter)->get_linear_angle());
-			Angle difference(Angle::tan(sub_trans_offset[1], sub_trans_offset[0])-constrained_angle);
-			Real length(Angle::cos(difference).get()*sub_trans_offset.mag());
-			if (length < 0) length = 0;
-			sub_trans_point[0] = sub_trans_origin[0] + length * Angle::cos(constrained_angle).get();
-			sub_trans_point[1] = sub_trans_origin[1] + length * Angle::sin(constrained_angle).get();
-		}
-
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
@@ -235,7 +224,7 @@ Renderer_Ducks::render_vfunc(
 
 		bool has_connect = (*iter)->get_tangent()
 		                || ((*iter)->get_type()&( Duck::TYPE_ANGLE
-		        		                       | Duck::TYPE_SCALE
+		                					   | Duck::TYPE_SKEW
 		        		                       | Duck::TYPE_SCALE_X
 		        		                       | Duck::TYPE_SCALE_Y ));
 		if((*iter)->get_connect_duck())
@@ -290,6 +279,42 @@ Renderer_Ducks::render_vfunc(
 				round_to_int(abs(boxpoint[0]-point[0])),
 				round_to_int(abs(boxpoint[1]-point[1]))
 				);
+
+			// Solid white box
+			cr->set_line_width(1.0);
+			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->stroke_preserve();
+
+			// Dashes
+			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			cr->stroke();
+
+			cr->restore();
+		}
+
+		if((*iter)->is_axes_tracks())
+		{
+			Point pos((*iter)->get_point());
+			Point points[] = {
+				(*iter)->get_sub_trans_origin(),
+				(*iter)->get_sub_trans_point(Point(pos[0],0)),
+				(*iter)->get_sub_trans_point(),
+				(*iter)->get_sub_trans_point(Point(0,pos[1])),
+				(*iter)->get_sub_trans_origin()
+			};
+
+			cr->save();
+
+			for(int i = 0; i < 5; i++) {
+				Point p((*iter)->get_transform_stack().perform(points[i]));
+				Real x = (p[0]-window_start[0])/pw;
+				Real y = (p[1]-window_start[1])/ph;
+				if (i == 0) cr->move_to(x, y); else cr->line_to(x, y);
+			}
 
 			// Solid white box
 			cr->set_line_width(1.0);
