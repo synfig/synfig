@@ -98,22 +98,18 @@ public:
 	{
 		Vector axis_x(scale[0], angle);
 		Vector axis_y(scale[1], angle + skew_angle + Angle::deg(90.0));
-		return Matrix(
-			axis_x[0], axis_x[1], 0.0,
-			axis_y[0], axis_y[1], 0.0,
-			offset[0], offset[1], 1.0 );
+		return Matrix(axis_x, axis_y, offset);
 	}
 
 	void set_matrix(const Matrix &matrix)
 	{
-		Vector axis_x(matrix.m00, matrix.m01);
-		Vector axis_y(matrix.m10, matrix.m11);
+		Vector axis_x(matrix.get_axis_x());
+		Vector axis_y(matrix.get_axis_y());
 		angle = axis_x.angle();
 		skew_angle = axis_y.angle() - angle - Angle::deg(90.0);
 		scale[0] = axis_x.mag();
 		scale[1] = axis_y.mag();
-		offset[0] = matrix.m20;
-		offset[1] = matrix.m21;
+		offset = matrix.get_offset();
 	}
 
 	explicit Transformation(const Matrix &matrix)

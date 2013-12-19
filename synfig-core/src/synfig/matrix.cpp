@@ -227,17 +227,29 @@ Matrix::is_invertible()const
 Matrix&
 Matrix::invert()
 {
-	assert(is_invertible() && !m02 && !m12 && m22==1);
-
-	value_type det(m00*m11-m01*m10);
-	value_type tmp(m20);
-	m20=(m10*m21-m11*m20)/det;
-	m21=(m01*tmp-m00*m21)/det;
-	tmp=m00;
-	m00=m11/det;
-	m11=tmp/det;
-	m01=-m01/det;
-	m10=-m10/det;
+	if (is_invertible())
+	{
+		value_type det(m00*m11-m01*m10);
+		value_type tmp(m20);
+		m20=(m10*m21-m11*m20)/det;
+		m21=(m01*tmp-m00*m21)/det;
+		tmp=m00;
+		m00=m11/det;
+		m11=tmp/det;
+		m01=-m01/det;
+		m10=-m10/det;
+	}
+	else
+	if (m00*m00+m01*m01 > m10*m10+m11*m11)
+	{
+		m10=m01; m20=-m20*m00-m21*m01;
+		m01=0; m11=0; m21=0;
+	}
+	else
+	{
+		m01=m10; m21=-m20*m10-m21*m11;
+		m00=0; m10=0; m20=0;
+	}
 	return *this;
 }
 

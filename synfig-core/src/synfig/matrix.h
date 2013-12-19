@@ -106,6 +106,16 @@ public:
 		m20(m20), m21(m21), m22(m22)
 	{ }
 
+	Matrix(Vector axis_x, Vector axis_y, Vector offset):
+		m00(axis_x[0]), m01(axis_x[1]), m02(0),
+		m10(axis_y[0]), m11(axis_y[1]), m12(0),
+		m20(offset[0]), m21(offset[1]), m22(1)
+	{ }
+
+	Vector get_axis_x()const { return Vector(m00, m01); }
+	Vector get_axis_y()const { return Vector(m10, m11); }
+	Vector get_offset()const { return Vector(m20, m21); }
+
 	//!set_identity member. Set an identity matrix
 	Matrix &set_identity();
 
