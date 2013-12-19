@@ -273,6 +273,8 @@ private:
 
 	//etl::handle<Duck> selected_duck;
 
+	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
