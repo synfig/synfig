@@ -40,8 +40,8 @@ AC_DEFUN([ETL_DEPS],
 AC_DEFUN([USING_ETL],
 [
 	AC_ARG_WITH(ETL-includes,
-	[  --with-ETL-includes    Specify location of ETL headers],[
-	CXXFLAGS="$CXXFLAGS -I$withval"
+		AS_HELP_STRING(--with-ETL-includes, Specify location of ETL headers),[
+		CXXFLAGS="$CXXFLAGS -I$withval"
 	])
 
 	AC_PATH_PROG(ETL_CONFIG,ETL-config,no)
