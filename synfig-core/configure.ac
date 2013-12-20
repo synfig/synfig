@@ -118,11 +118,7 @@ AC_ARG_WITH(imagemagick,[
 	AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
 	with_imagemagick=$imagemagick_convert
 ])
-if test $with_imagemagick = "no" ; then {
-	AM_CONDITIONAL(WITH_IMAGEMAGICK,false)
-} else {
-	AM_CONDITIONAL(WITH_IMAGEMAGICK,true)
-} ; fi
+AM_CONDITIONAL(WITH_IMAGEMAGICK, test "x$with_image_magick" = "xyes")
 
 
 
@@ -166,11 +162,7 @@ AC_ARG_WITH(ffmpeg,[
 ],[
 	with_ffmpeg="yes"
 ])
-if test $with_ffmpeg = "no" ; then {
-	AM_CONDITIONAL(WITH_FFMPEG,false)
-} else {
-	AM_CONDITIONAL(WITH_FFMPEG,true)
-} ; fi
+AM_CONDITIONAL(WITH_FFMPEG, test "x$with_ffmpeg" = "xyes")
 
 
 
@@ -196,11 +188,7 @@ AC_ARG_WITH(libdv,[
 ],[
 	with_libdv="yes"
 ])
-if test $with_libdv = "no" ; then {
-	AM_CONDITIONAL(WITH_LIBDV,false)
-} else {
-	AM_CONDITIONAL(WITH_LIBDV,true)
-} ; fi
+AM_CONDITIONAL(WITH_LIBDV, test "x$with_libdv" = "xyes")
 
 
 
@@ -216,12 +204,8 @@ AC_ARG_WITH(libavcodec,[
 if test $with_libavcodec != "no" ; then {
 	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec libavformat],[],[echo no; with_libavcodec="no"])
 } ; fi
-if test $with_libavcodec = "yes" ; then {
-	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
-	AM_CONDITIONAL(WITH_LIBAVCODEC,true)
-} else {
-	AM_CONDITIONAL(WITH_LIBAVCODEC,false)
-} ; fi
+
+AM_CONDITIONAL(WITH_LIBAVCODEC, test "x$with_libavcodec" = "xyes")
 
 
 if test $with_libavcodec = "yes" ; then {
@@ -290,11 +274,7 @@ if test $with_freetype != "no" ; then {
 	])
 } ; fi
 
-if test $with_freetype = "no" ; then {
-	AM_CONDITIONAL(WITH_FREETYPE,false)
-} else {
-	AM_CONDITIONAL(WITH_FREETYPE,true)
-} ; fi
+AM_CONDITIONAL(WITH_FREETYPE, test "x$with_freetype" = "xyes")
 
 
 # FONTCONFIG CHECK--------------------
@@ -313,12 +293,7 @@ if test $with_fontconfig != "no" ; then {
 	])
 } ; fi
 
-if test $with_fontconfig = "yes" ; then {
-	AC_DEFINE(WITH_FONTCONFIG,[],[enable fontconfig support])
-	AM_CONDITIONAL(WITH_FONTCONFIG,true)
-} else {
-	AM_CONDITIONAL(WITH_FONTCONFIG,false)
-} ; fi
+AM_CONDITIONAL(WITH_FONTCONFIG, test "x$with_fontconfig" = "xyes")
 
 
 # OPENEXR CHECK------------------------
@@ -361,6 +336,7 @@ if test $with_jpeg = "no" ; then {
 } else {
 	AM_CONDITIONAL(WITH_JPEG,true)
 } ; fi
+AM_CONDITIONAL(WITH_JPEG, test "x$with_jpeg" = "xyes")
 
 
 
