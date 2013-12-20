@@ -8,7 +8,6 @@ AC_REVISION
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
-dnl AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([nostdinc])
 AM_MAINTAINER_MODE
@@ -66,19 +65,7 @@ AC_ARG_ENABLE(g5opt,[
 	true
 ])
 
-#MINGW_FLAGS="-mno-cygwin"
-
 AC_WIN32_QUIRKS
-
-# If we are in debug mode, use the debugging version of the
-# Microsoft Visual C Runtime Library
-#if [[ $debug = "yes" ]] ; then {
-#	WIN32_DEBUG_LIBRARY="msvcr70d"
-#	WIN32_DEBUG_LIBRARY="msvcrtd"
-#	LIBTOOL_PATCH_SED="$LIBTOOL_PATCH_SED
-#		s/-lmsvcrt/-l$WIN32_DEBUG_LIBRARY/g;
-#	";
-#} ; fi
 
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
@@ -87,16 +74,6 @@ AC_ENABLE_SHARED
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_LIBTOOL_PATCH
-
-#if [[ "$LIBTOOL_PATCH_SED""x" != "x" ]] ; then {
-#	printf "Patching libtool... "
-#	cat libtool | sed "$LIBTOOL_PATCH_SED" > libtool2
-#	rm libtool
-#	mv libtool2 libtool
-#	chmod +x libtool
-#	AC_MSG_RESULT([patched])
-#} fi ;
-
 
 dnl
 dnl dynamic linker
@@ -419,13 +396,9 @@ PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
 
 PKG_CHECK_MODULES(LIBSIGC, [sigc++-2.0],,[
 	AC_MSG_ERROR([ ** libsigc++-2.0 not found. It is required. You should really install it.])
-dnl	PKG_CHECK_MODULES(LIBSIGC, [sigc++-1.2],,[
-dnl		AC_MSG_ERROR([ ** At least libsigc++-1.2 is required.])
-dnl	])
 ])
 CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
 
-dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 
 
@@ -574,10 +547,6 @@ AC_CHECK_HEADERS([process.h io.h fcntl.h])
 
 # -- F U N C T I O N S ----------------------------------------
 
-dnl AC_CHECK_FUNCS([floor pow sqrt],[],[
-dnl 	AC_MSG_ERROR([ ** Could not find proper math functions.])
-dnl ])
-
 AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([kill])
 AC_CHECK_FUNCS([pipe])
@@ -691,8 +660,6 @@ examples/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-core.info
 ])
-## src/modules/trgt_mpg/Makefile
-## src/modules/mptr_mplayer/Makefile
 AC_OUTPUT
 
 # -- S U M M A R Y --------------------------------------------
