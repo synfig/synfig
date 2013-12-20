@@ -46,8 +46,8 @@ AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
 AC_ARG_PROFILING
 
-AC_ARG_ENABLE(g5opt,[
-  --enable-g5opt           enable optimizations specific to G5 proc],[
+AC_ARG_ENABLE(g5opt,
+	AS_HELP_STRING(--enable-g5opt, [enable optimizations specific to G5 proc]),[
     G5OPTFLAGS="-mpowerpc-gpopt -mno-multiple -mno-update -mcpu=970  -mtune=970 -falign-loops=16 -falign-functions=16"
 ],
 [
@@ -147,8 +147,8 @@ windowsys="gtkmm"
 AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
 AM_CONDITIONAL(WINDOWSYS_GTKMM,true)
 
-AC_ARG_WITH(userdir,[
-  --with-userdir=(dirname)         Relative path to user directory],[
+AC_ARG_WITH(userdir,
+	AS_HELP_STRING(--with-userdir=(dirname), [Relative path to user directory]),[
 ],[
 case "$host" in
 	*mingw* | *cygwin*)
@@ -165,8 +165,8 @@ esac
 AC_DEFINE_UNQUOTED(SYNFIG_USER_APP_DIR,"$with_userdir",[Synfig User Data Directory])
 
 # --- FMOD CHECK -------------
-AC_ARG_WITH(libfmod,[
-  --with-libfmod         Enable support for FMOD],[
+AC_ARG_WITH(libfmod,
+	AS_HELP_STRING(--with-libfmod, [Enable support for FMOD]),[
 ],[
 	AC_CHECK_LIB(fmod, FSOUND_Init,[
 		with_libfmod="yes"
