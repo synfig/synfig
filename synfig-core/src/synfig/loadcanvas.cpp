@@ -2562,6 +2562,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	ValueNode_Add::Handle offset_node;
 	ValueNode_Scale::Handle scale_scalar_node;
 	ValueNode_Exp::Handle scale_node;
+	bool origin_const=true, focus_const=true, zoom_const=true;
 	if (old_pastecanvas) {
 		origin_transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
 		transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
@@ -2702,18 +2703,26 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			if (old_pastecanvas)
 			{
 				processed = true;
+				bool is_const = !value_node;
 				ValueNode::Handle node = value_node ? value_node : ValueNode_Const::create(data,canvas);
 				if (param_name == "origin")
+				{
+					if (!is_const) origin_const = false;
 					offset_node->set_link("lhs", node);
+				}
 				else
 				if (param_name == "focus")
 				{
+					if (!is_const) focus_const = false;
 					origin_transformation_node->set_link("offset", node);
 					offset_node->set_link("rhs", node);
 				}
 				else
 				if (param_name == "zoom")
+				{
+					if (!is_const) zoom_const = false;
 					scale_node->set_link("exp", node);
+				}
 				else
 					processed = false;
 			}
@@ -2746,6 +2755,47 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		{
 			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
+	}
+
+	// Simplify old pastecanvas conversion
+	if (old_pastecanvas) {
+		bool focus_zero = focus_const && (*origin_transformation_node->get_link("offset"))(0).get(Vector()) == Vector(0,0);
+		bool zoom_zero = zoom_const && (*scale_node->get_link("exp"))(0).get(Real()) == 0;
+		if (origin_const && focus_const && zoom_const)
+		{
+			ValueBase origin_transformation = (*origin_transformation_node)(0);
+			ValueBase transformation = (*transformation_node)(0);
+			layer->disconnect_dynamic_param("origin_transformation");
+			layer->disconnect_dynamic_param("transformation");
+			layer->set_param("origin_transformation", origin_transformation);
+			layer->set_param("transformation", transformation);
+		} else {
+			if (origin_const && focus_const)
+			{
+				ValueBase origin_transformation = (*origin_transformation_node)(0);
+				layer->disconnect_dynamic_param("origin_transformation");
+				layer->set_param("origin_transformation", origin_transformation);
+				transformation_node->set_link("offset", ValueNode_Const::create((*offset_node)(0), canvas));
+			} else
+			if (focus_zero)
+			{
+				layer->disconnect_dynamic_param("origin_transformation");
+				transformation_node->set_link("offset", offset_node->get_link("lhs"));
+			}
+			else
+			if (focus_const)
+			{
+				ValueBase origin_transformation = (*origin_transformation_node)(0);
+				layer->disconnect_dynamic_param("origin_transformation");
+				layer->set_param("origin_transformation", origin_transformation);
+			}
+
+			if (zoom_zero)
+				transformation_node->set_link("scale", ValueNode_Const::create(ValueBase(Vector(1,1)), canvas));
+			else
+			if (zoom_const)
+				transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
 		}
 	}
 
