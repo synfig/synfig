@@ -148,7 +148,7 @@ AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
 AM_CONDITIONAL(WINDOWSYS_GTKMM,true)
 
 AC_ARG_WITH(userdir,
-	AS_HELP_STRING(--with-userdir=(dirname), [Relative path to user directory]),[
+	AS_HELP_STRING(--with-userdir=(dirname), [relative path to user directory]),[
 ],[
 case "$host" in
 	*mingw* | *cygwin*)
@@ -166,7 +166,7 @@ AC_DEFINE_UNQUOTED(SYNFIG_USER_APP_DIR,"$with_userdir",[Synfig User Data Directo
 
 # --- FMOD CHECK -------------
 AC_ARG_WITH(libfmod,
-	AS_HELP_STRING(--with-libfmod, [Enable support for FMOD]),[
+	AS_HELP_STRING(--with-libfmod, [enable support for FMOD]),[
 ],[
 	AC_CHECK_LIB(fmod, FSOUND_Init,[
 		with_libfmod="yes"
