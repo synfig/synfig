@@ -114,7 +114,7 @@ AC_ARG_WITH(imagemagick,
 	AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
 	with_imagemagick=$imagemagick_convert
 ])
-AM_CONDITIONAL(WITH_IMAGEMAGICK, test "x$with_image_magick" = "xyes")
+AM_CONDITIONAL(WITH_IMAGEMAGICK, test "x$with_imagemagick" = "xyes")
 
 
 
