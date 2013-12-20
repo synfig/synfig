@@ -10,7 +10,7 @@ AC_DEFUN([ETL_DEPS],
 	AC_CHECK_LIB(user32, main)
 	AC_CHECK_LIB([kernel32], [CreateMutex])
 	AC_CHECK_LIB([pthread], [pthread_mutex_init])
-		
+
 	AC_HEADER_STDC
 	
 	AC_CHECK_HEADERS(pthread.h)
