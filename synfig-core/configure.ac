@@ -83,8 +83,8 @@ AC_CHECK_LIB(c, dlopen,
 	AC_CHECK_LIB(
 		dl,
 		dlopen,
-        DYNAMIC_LD_LIBS="-ldl",
-	    DYNAMIC_LD_LIBS=""
+		DYNAMIC_LD_LIBS="-ldl",
+		DYNAMIC_LD_LIBS=""
 	)
 )
 
@@ -117,8 +117,8 @@ if test $use_layerprofiling = "yes" ; then {
 AC_ARG_WITH(imagemagick,[
   --without-imagemagick   Disable support for ImageMagick],[
 ],[
-    AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
-    with_imagemagick=$imagemagick_convert
+	AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
+	with_imagemagick=$imagemagick_convert
 ])
 if test $with_imagemagick = "no" ; then {
 	AM_CONDITIONAL(WITH_IMAGEMAGICK,false)
@@ -136,25 +136,25 @@ AC_ARG_WITH(magickpp,[
 	with_magickpp="yes"
 ])
 if test $with_magickpp = "yes" ; then {
-  AC_CHECK_HEADER([Magick++.h],[
-  	MAGICKPP_LIBS="-lMagick++"
-  	AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
-  	AC_SUBST(MAGICKPP_LIBS)
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
-	AC_CHECK_LIB(Magick,OptimizeImageTransparency,[
-		AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
-		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
+	AC_CHECK_HEADER([Magick++.h],[
+		MAGICKPP_LIBS="-lMagick++"
+		AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
+		AC_SUBST(MAGICKPP_LIBS)
+		AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
+		AC_CHECK_LIB(Magick,OptimizeImageTransparency,[
+			AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
+			AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
+		],[
+			AC_MSG_RESULT([ *** OptimizeImageTransparency() not available - need ImageMagick 6.3 or newer ])
+			AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
+		])
 	],[
-		AC_MSG_RESULT([ *** OptimizeImageTransparency() not available - need ImageMagick 6.3 or newer ])
+		with_magickpp="no"
+		AC_MSG_RESULT([ *** Magick++ Output target disabled])
+		TARGET_MAGICKPP="no"
+		AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
 	])
-  ],[
-	with_magickpp="no"
-  	AC_MSG_RESULT([ *** Magick++ Output target disabled])
-  	TARGET_MAGICKPP="no"
-  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
-	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
-  ])
 } else {
 	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
