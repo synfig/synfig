@@ -56,8 +56,6 @@ AC_ARG_BRANCH_PROBABILITIES
 
 AC_ARG_ENABLE(g5opt,[
   --enable-g5opt           enable optimizations specific to G5 proc],[
-#	CXXFLAGS="$CXXFLAGS -fastf -fPIC"
-#	CFLAGS="$CFLAGS -fastf -fPIC"
 	CXXFLAGS="$CXXFLAGS -mtune=G5 -falign-loops=32"
 	CFLAGS="$CFLAGS -mtune=G5"
 ],
