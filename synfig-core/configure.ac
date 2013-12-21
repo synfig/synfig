@@ -328,11 +328,6 @@ AC_ARG_WITH(jpeg,
 ],[
 	with_jpeg="yes"
 ])
-if test $with_jpeg = "no" ; then {
-	AM_CONDITIONAL(WITH_JPEG,false)
-} else {
-	AM_CONDITIONAL(WITH_JPEG,true)
-} ; fi
 AM_CONDITIONAL(WITH_JPEG, test "x$with_jpeg" = "xyes")
 
 
