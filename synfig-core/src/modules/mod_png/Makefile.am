@@ -18,6 +18,8 @@ libmod_png_la_SOURCES = \
 	main.cpp \
 	trgt_png.cpp \
 	trgt_png.h \
+	trgt_png_spritesheet.cpp \
+	trgt_png_spritesheet.h \
 	trgt_cairo_png.cpp \
 	trgt_cairo_png.h \
 	mptr_png.cpp \
