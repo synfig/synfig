@@ -290,7 +290,12 @@ if test $with_fontconfig != "no" ; then {
 	])
 } ; fi
 
-AM_CONDITIONAL(WITH_FONTCONFIG, test "x$with_fontconfig" = "xyes")
+if test "x$with_fontconfig" = "xyes"; then {
+	AC_DEFINE(WITH_FONTCONFIG,[],[enable fontconfig support])
+	AM_CONDITIONAL(WITH_FONTCONFIG,true)
+} else {
+	AM_CONDITIONAL(WITH_FONTCONFIG,false)
+}; fi
 
 
 # OPENEXR CHECK------------------------
