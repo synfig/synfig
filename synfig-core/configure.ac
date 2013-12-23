@@ -143,11 +143,7 @@ AC_ARG_WITH(imagemagick,[
     AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
     with_imagemagick=$imagemagick_convert
 ])
-if test $with_imagemagick = "no" ; then {
-	AM_CONDITIONAL(WITH_IMAGEMAGICK,false)
-} else {
-	AM_CONDITIONAL(WITH_IMAGEMAGICK,true)
-} ; fi
+AM_CONDITIONAL(WITH_IMAGEMAGICK, test $with_imagemagick = yes)
 
 
 
@@ -182,6 +178,7 @@ if test $with_ffmpeg = "no" ; then {
 } else {
 	AM_CONDITIONAL(WITH_FFMPEG,true)
 } ; fi
+AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
 
 
@@ -207,11 +204,7 @@ AC_ARG_WITH(libdv,[
 ],[
 	with_libdv="yes"
 ])
-if test $with_libdv = "no" ; then {
-	AM_CONDITIONAL(WITH_LIBDV,false)
-} else {
-	AM_CONDITIONAL(WITH_LIBDV,true)
-} ; fi
+AM_CONDITIONAL(WITH_LIBDV, test $with_libdv = yes)
 
 
 
@@ -300,12 +293,7 @@ if test $with_freetype != "no" ; then {
 		])
 	])
 } ; fi
-
-if test $with_freetype = "no" ; then {
-	AM_CONDITIONAL(WITH_FREETYPE,false)
-} else {
-	AM_CONDITIONAL(WITH_FREETYPE,true)
-} ; fi
+AM_CONDITIONAL(WITH_FREETYPE, test $with_freetype = yes)
 
 
 # FONTCONFIG CHECK--------------------
@@ -367,11 +355,7 @@ AC_ARG_WITH(jpeg,[
 ],[
 	with_jpeg="yes"
 ])
-if test $with_jpeg = "no" ; then {
-	AM_CONDITIONAL(WITH_JPEG,false)
-} else {
-	AM_CONDITIONAL(WITH_JPEG,true)
-} ; fi
+AM_CONDITIONAL(WITH_JPEG, test $with_jpeg = yes)
 
 
 
