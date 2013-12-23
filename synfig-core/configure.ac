@@ -57,8 +57,6 @@ AC_ARG_BRANCH_PROBABILITIES
 
 AC_ARG_ENABLE(g5opt,
 	AS_HELP_STRING(--enable-g5opt, [enable optimizations specific to G5 proc]),[
-#	CXXFLAGS="$CXXFLAGS -fastf -fPIC"
-#	CFLAGS="$CFLAGS -fastf -fPIC"
 	CXXFLAGS="$CXXFLAGS -mtune=G5 -falign-loops=32"
 	CFLAGS="$CFLAGS -mtune=G5"
 ],
@@ -70,16 +68,6 @@ AC_ARG_ENABLE(g5opt,
 
 AC_WIN32_QUIRKS
 
-# If we are in debug mode, use the debugging version of the
-# Microsoft Visual C Runtime Library
-#if [[ $debug = "yes" ]] ; then {
-#	WIN32_DEBUG_LIBRARY="msvcr70d"
-#	WIN32_DEBUG_LIBRARY="msvcrtd"
-#	LIBTOOL_PATCH_SED="$LIBTOOL_PATCH_SED
-#		s/-lmsvcrt/-l$WIN32_DEBUG_LIBRARY/g;
-#	";
-#} ; fi
-
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 AC_DISABLE_STATIC
@@ -87,16 +75,6 @@ AC_ENABLE_SHARED
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_LIBTOOL_PATCH
-
-#if [[ "$LIBTOOL_PATCH_SED""x" != "x" ]] ; then {
-#	printf "Patching libtool... "
-#	cat libtool | sed "$LIBTOOL_PATCH_SED" > libtool2
-#	rm libtool
-#	mv libtool2 libtool
-#	chmod +x libtool
-#	AC_MSG_RESULT([patched])
-#} fi ;
-
 
 dnl
 dnl dynamic linker
@@ -373,15 +351,6 @@ PKG_CHECK_MODULES(ETL, [ETL >= 0.04.18],,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
-# The pkgconfig detection is not available for old
-# versions of zlib, so  it is disabled for now.
-#
-#PKG_CHECK_MODULES(LIBZ, zlib,[
-#	CONFIG_DEPS="$CONFIG_DEPS zlib"
-#],[
-#	AC_MSG_ERROR([ ** You need to install zlib])
-#])
-#
 AC_CHECK_HEADER([zlib.h],[
 	LIBZ_LIBS="-lz"
 	AC_SUBST(LIBZ_LIBS)
@@ -414,9 +383,6 @@ PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
 
 PKG_CHECK_MODULES(LIBSIGC, [sigc++-2.0],,[
 	AC_MSG_ERROR([ ** libsigc++-2.0 not found. It is required. You should really install it.])
-dnl	PKG_CHECK_MODULES(LIBSIGC, [sigc++-1.2],,[
-dnl		AC_MSG_ERROR([ ** At least libsigc++-1.2 is required.])
-dnl	])
 ])
 CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
 
@@ -439,7 +405,6 @@ if test "x$ax_cv_boost_program_options" = "xno" ; then
 fi
 # Boost Program Options is just a dependency of the synfig cli and so,
 # not required to link against the synfig library.
-#CONFIG_DEPS="$CONFIG_DEPS boost_program_options"
 
 
 TARGET_PNG="yes"
