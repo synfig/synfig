@@ -55,8 +55,8 @@ AC_ARG_PROFILING
 AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
 
-AC_ARG_ENABLE(g5opt,[
-  --enable-g5opt           enable optimizations specific to G5 proc],[
+AC_ARG_ENABLE(g5opt,
+	AS_HELP_STRING(--enable-g5opt, [enable optimizations specific to G5 proc]),[
 #	CXXFLAGS="$CXXFLAGS -fastf -fPIC"
 #	CFLAGS="$CFLAGS -fastf -fPIC"
 	CXXFLAGS="$CXXFLAGS -mtune=G5 -falign-loops=32"
@@ -113,8 +113,8 @@ AC_CHECK_LIB(c, dlopen,
 
 AC_SUBST(DYNAMIC_LD_LIBS)
 
-AC_ARG_ENABLE(half,[
-  --enable-half           Use OpenEXR's "half" type for color],[
+AC_ARG_ENABLE(half,
+	AS_HELP_STRING(--enable-half, [Use OpenEXR's "half" type for color]),[
 	use_openexr_half=$enableval
 ],
 [
@@ -123,8 +123,8 @@ AC_ARG_ENABLE(half,[
 
 
 
-AC_ARG_ENABLE(layer-profiling,[
-  --enable-layer-profiling       Enable layer profiling],[
+AC_ARG_ENABLE(layer-profiling,
+	AS_HELP_STRING(--enable-layer-profiling, [Enable layer profiling]),[
 	use_layerprofiling=$enableval
 ],
 [
@@ -137,8 +137,8 @@ if test $use_layerprofiling = "yes" ; then {
 
 
 
-AC_ARG_WITH(imagemagick,[
-  --without-imagemagick   Disable support for ImageMagick],[
+AC_ARG_WITH(imagemagick,
+	AS_HELP_STRING(--without-imagemagick, [Disable support for ImageMagick]),[
 ],[
     AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
     with_imagemagick=$imagemagick_convert
@@ -149,8 +149,8 @@ AM_CONDITIONAL(WITH_IMAGEMAGICK, test $with_imagemagick = yes)
 
 
 
-AC_ARG_WITH(magickpp,[
-  --without-magickpp        Disable support for Magick++],[
+AC_ARG_WITH(magickpp,
+	AS_HELP_STRING(--without-magickpp, [Disable support for Magick++]),[
 ],[
 	with_magickpp="yes"
 ])
@@ -168,8 +168,8 @@ if test $with_magickpp = "yes" ; then {
 
 
 
-AC_ARG_WITH(ffmpeg,[
-  --without-ffmpeg        Disable support for FFMPEG],[
+AC_ARG_WITH(ffmpeg,
+	AS_HELP_STRING(--without-ffmpeg, [Disable support for FFMPEG]),[
 ],[
 	with_ffmpeg="yes"
 ])
@@ -183,8 +183,8 @@ AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
 
 
-AC_ARG_WITH(vimage,[
-  --with-vimage        Enable support for apple vImage],[
+AC_ARG_WITH(vimage,
+	AS_HELP_STRING(--with-vimage, [Enable support for apple vImage]),[
 ],[
 	with_vimage="no"
 ])
@@ -199,8 +199,8 @@ if test $with_vimage = "no" ; then {
 
 
 
-AC_ARG_WITH(libdv,[
-  --without-libdv         Disable support for libdv],[
+AC_ARG_WITH(libdv,
+	AS_HELP_STRING(--without-libdv, [Disable support for libdv]),[
 ],[
 	with_libdv="yes"
 ])
@@ -211,8 +211,8 @@ AM_CONDITIONAL(WITH_LIBDV, test $with_libdv = yes)
 
 # LIBAVCODEC CHECK--------------------
 
-AC_ARG_WITH(libavcodec,[
-  --with-libavcodec         Enable support for libavcodec (Default=no)],[
+AC_ARG_WITH(libavcodec,
+	AS_HELP_STRING(--with-libavcodec, [Enable support for libavcodec (Default=no)]),[
 ],[
 	with_libavcodec="no"
 ])
@@ -276,8 +276,8 @@ AM_CONDITIONAL(WITH_LIBSWSCALE, test "x$with_libswscale" = "xyes")
 
 # FREETYPE2 CHECK--------------------
 
-AC_ARG_WITH(freetype,[
-  --without-freetype         disable support for freetype (Default=auto)],[
+AC_ARG_WITH(freetype,
+	AS_HELP_STRING(--without-freetype, [disable support for freetype (Default=auto)]),[
 ],[
 	with_freetype="yes"
 ])
@@ -298,8 +298,8 @@ AM_CONDITIONAL(WITH_FREETYPE, test $with_freetype = yes)
 
 # FONTCONFIG CHECK--------------------
 
-AC_ARG_WITH(fontconfig,[
-  --without-fontconfig         disable support for fontconfig (Default=auto)],[
+AC_ARG_WITH(fontconfig,
+	AS_HELP_STRING(--without-fontconfig, [disable support for fontconfig (Default=auto)]),[
 ],[
 	with_fontconfig="yes"
 ])
@@ -321,8 +321,8 @@ if test $with_fontconfig = "yes" ; then {
 
 
 # OPENEXR CHECK------------------------
-AC_ARG_WITH(openexr,[
-  --without-openexr        Disable support for ILM's OpenEXR],[
+AC_ARG_WITH(openexr,
+	AS_HELP_STRING(--without-openexr, [Disable support for ILM's OpenEXR]),[
 ],[
 	with_openexr="yes"
 ])
@@ -350,8 +350,8 @@ if test $use_openexr_half = yes ; then {
 
 
 # JPEG CHECK (commandline switch) ------------------------
-AC_ARG_WITH(jpeg,[
-  --without-jpeg        Disable support for JPEG],[
+AC_ARG_WITH(jpeg,
+	AS_HELP_STRING(--without-jpeg, [Disable support for JPEG]),[
 ],[
 	with_jpeg="yes"
 ])
