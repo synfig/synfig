@@ -173,11 +173,6 @@ AC_ARG_WITH(ffmpeg,
 ],[
 	with_ffmpeg="yes"
 ])
-if test $with_ffmpeg = "no" ; then {
-	AM_CONDITIONAL(WITH_FFMPEG,false)
-} else {
-	AM_CONDITIONAL(WITH_FFMPEG,true)
-} ; fi
 AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
 
