@@ -8,7 +8,6 @@ AC_REVISION
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
-dnl AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([nostdinc])
 AM_MAINTAINER_MODE
@@ -62,8 +61,6 @@ AC_ARG_ENABLE(g5opt,
 ],
 [
 ])
-
-#MINGW_FLAGS="-mno-cygwin"
 
 AC_WIN32_QUIRKS
 
@@ -560,10 +557,6 @@ AC_CHECK_HEADERS([process.h io.h fcntl.h])
 # -- T Y P E S & S T R U C T S --------------------------------
 
 # -- F U N C T I O N S ----------------------------------------
-
-dnl AC_CHECK_FUNCS([floor pow sqrt],[],[
-dnl 	AC_MSG_ERROR([ ** Could not find proper math functions.])
-dnl ])
 
 AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([kill])
