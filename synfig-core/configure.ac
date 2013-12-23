@@ -202,8 +202,12 @@ if test $with_libavcodec != "no" ; then {
 	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec libavformat],[],[echo no; with_libavcodec="no"])
 } ; fi
 
-AM_CONDITIONAL(WITH_LIBAVCODEC, test "x$with_libavcodec" = "xyes")
-
+if test "x$with_libavcodec" = "yes" ; then {
+	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
+	AM_CONDITIONAL(WITH_LIBAVCODEC,true)
+} else {
+	AM_CONDITIONAL(WITH_LIBAVCODEC,false)
+} ; fi
 
 if test $with_libavcodec = "yes" ; then {
 
