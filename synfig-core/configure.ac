@@ -114,7 +114,7 @@ AC_CHECK_LIB(c, dlopen,
 AC_SUBST(DYNAMIC_LD_LIBS)
 
 AC_ARG_ENABLE(half,
-	AS_HELP_STRING(--enable-half, [Use OpenEXR's "half" type for color]),[
+	AS_HELP_STRING(--enable-half, [use OpenEXR "half" type for color]),[
 	use_openexr_half=$enableval
 ],
 [
@@ -124,7 +124,7 @@ AC_ARG_ENABLE(half,
 
 
 AC_ARG_ENABLE(layer-profiling,
-	AS_HELP_STRING(--enable-layer-profiling, [Enable layer profiling]),[
+	AS_HELP_STRING(--enable-layer-profiling, [enable layer profiling]),[
 	use_layerprofiling=$enableval
 ],
 [
@@ -138,7 +138,7 @@ if test $use_layerprofiling = "yes" ; then {
 
 
 AC_ARG_WITH(imagemagick,
-	AS_HELP_STRING(--without-imagemagick, [Disable support for ImageMagick]),[
+	AS_HELP_STRING(--without-imagemagick, [do not support ImageMagick]),[
 ],[
     AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
     with_imagemagick=$imagemagick_convert
@@ -150,7 +150,7 @@ AM_CONDITIONAL(WITH_IMAGEMAGICK, test $with_imagemagick = yes)
 
 
 AC_ARG_WITH(magickpp,
-	AS_HELP_STRING(--without-magickpp, [Disable support for Magick++]),[
+	AS_HELP_STRING(--without-magickpp, [do not support Magick++]),[
 ],[
 	with_magickpp="yes"
 ])
@@ -169,7 +169,7 @@ if test $with_magickpp = "yes" ; then {
 
 
 AC_ARG_WITH(ffmpeg,
-	AS_HELP_STRING(--without-ffmpeg, [Disable support for FFMPEG]),[
+	AS_HELP_STRING(--without-ffmpeg, [do not support FFMPEG]),[
 ],[
 	with_ffmpeg="yes"
 ])
@@ -179,7 +179,7 @@ AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
 
 AC_ARG_WITH(vimage,
-	AS_HELP_STRING(--with-vimage, [Enable support for apple vImage]),[
+	AS_HELP_STRING(--with-vimage, [support Apple vImage]),[
 ],[
 	with_vimage="no"
 ])
@@ -195,7 +195,7 @@ if test $with_vimage = "no" ; then {
 
 
 AC_ARG_WITH(libdv,
-	AS_HELP_STRING(--without-libdv, [Disable support for libdv]),[
+	AS_HELP_STRING(--without-libdv, [do not support libdv]),[
 ],[
 	with_libdv="yes"
 ])
@@ -207,7 +207,7 @@ AM_CONDITIONAL(WITH_LIBDV, test $with_libdv = yes)
 # LIBAVCODEC CHECK--------------------
 
 AC_ARG_WITH(libavcodec,
-	AS_HELP_STRING(--with-libavcodec, [Enable support for libavcodec (Default=no)]),[
+	AS_HELP_STRING(--with-libavcodec, [support libavcodec (default=no)]),[
 ],[
 	with_libavcodec="no"
 ])
@@ -237,7 +237,7 @@ if test $with_libavcodec = "yes" ; then {
 
 	AC_ARG_WITH(libswscale,
 		[AS_HELP_STRING([--without-libswscale],
-			[disable support for libswscale (Default=auto)])],
+			[do not support libswscale (default=auto)])],
 		[],
 		[with_libswscale="yes"]
 	)
@@ -272,7 +272,7 @@ AM_CONDITIONAL(WITH_LIBSWSCALE, test "x$with_libswscale" = "xyes")
 # FREETYPE2 CHECK--------------------
 
 AC_ARG_WITH(freetype,
-	AS_HELP_STRING(--without-freetype, [disable support for freetype (Default=auto)]),[
+	AS_HELP_STRING(--without-freetype, [do not support FreeType text rendering (default=auto)]),[
 ],[
 	with_freetype="yes"
 ])
@@ -294,7 +294,7 @@ AM_CONDITIONAL(WITH_FREETYPE, test $with_freetype = yes)
 # FONTCONFIG CHECK--------------------
 
 AC_ARG_WITH(fontconfig,
-	AS_HELP_STRING(--without-fontconfig, [disable support for fontconfig (Default=auto)]),[
+	AS_HELP_STRING(--without-fontconfig, [do not support fontconfig (default=auto)]),[
 ],[
 	with_fontconfig="yes"
 ])
@@ -317,7 +317,7 @@ if test $with_fontconfig = "yes" ; then {
 
 # OPENEXR CHECK------------------------
 AC_ARG_WITH(openexr,
-	AS_HELP_STRING(--without-openexr, [Disable support for ILM's OpenEXR]),[
+	AS_HELP_STRING(--without-openexr, [do not support OpenEXR]),[
 ],[
 	with_openexr="yes"
 ])
@@ -346,7 +346,7 @@ if test $use_openexr_half = yes ; then {
 
 # JPEG CHECK (commandline switch) ------------------------
 AC_ARG_WITH(jpeg,
-	AS_HELP_STRING(--without-jpeg, [Disable support for JPEG]),[
+	AS_HELP_STRING(--without-jpeg, [do not support JPEG]),[
 ],[
 	with_jpeg="yes"
 ])
