@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
-**  Copyright (c) 2013 Moritz Grosch (LittleFox) <littlefox@fsfe.org>
+**	Copyright (c) 2013 Moritz Grosch (LittleFox) <littlefox@fsfe.org>
 **
 **  Based on trgt_png.cpp
 **
@@ -54,8 +54,8 @@ using namespace etl;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_TARGET_INIT(png_trgt_spritesheet);
-SYNFIG_TARGET_SET_NAME(png_trgt_spritesheet,"png_spritesheet");
-SYNFIG_TARGET_SET_EXT(png_trgt_spritesheet,"png_spritesheet");
+SYNFIG_TARGET_SET_NAME(png_trgt_spritesheet,"png-spritesheet");
+SYNFIG_TARGET_SET_EXT(png_trgt_spritesheet,"png");
 SYNFIG_TARGET_SET_VERSION(png_trgt_spritesheet,"0.1");
 SYNFIG_TARGET_SET_CVS_ID(png_trgt_spritesheet,"$Id$");
 
@@ -169,8 +169,6 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
         }
         png_init_io(png_ptr,file);
         png_set_filter(png_ptr,0,PNG_FILTER_NONE);
-
-        synfig::warning(strprintf("%dx%d - %d/%d/%d", desc.get_w(), desc.get_h(), imagecount, lastimage, numimages).c_str());
 
         setjmp(png_jmpbuf(png_ptr));
         png_set_IHDR(png_ptr,info_ptr,desc.get_w(),desc.get_h() * numimages,8,PNG_COLOR_TYPE_RGBA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
