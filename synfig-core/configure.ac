@@ -83,7 +83,7 @@ AC_CHECK_LIB(c, dlopen,
 	AC_CHECK_LIB(
 		dl,
 		dlopen,
-        DYNAMIC_LD_LIBS="-ldl",
+	DYNAMIC_LD_LIBS="-ldl",
 	    DYNAMIC_LD_LIBS=""
 	)
 )
@@ -117,8 +117,8 @@ if test $use_layerprofiling = "yes" ; then {
 AC_ARG_WITH(imagemagick,
 	AS_HELP_STRING(--without-imagemagick, [do not support ImageMagick]),[
 ],[
-    AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
-    with_imagemagick=$imagemagick_convert
+	AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
+	with_imagemagick=$imagemagick_convert
 ])
 AM_CONDITIONAL(WITH_IMAGEMAGICK, test $with_imagemagick = yes)
 
@@ -134,11 +134,11 @@ AC_ARG_WITH(magickpp,
 if test $with_magickpp = "yes" ; then {
 	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
-                AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
+		AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
 	],[
-                with_magickpp="no"
-                AC_MSG_RESULT([ *** Magick++ Output target disabled])
-                AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+		with_magickpp="no"
+		AC_MSG_RESULT([ *** Magick++ Output target disabled])
+		AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 	])
 } ; fi
 
@@ -235,7 +235,7 @@ if test $with_libavcodec = "yes" ; then {
 		AC_CHECK_HEADERS(libswscale/swscale.h swscale.h ffmpeg/swscale.h)
 		CPPFLAGS="${ac_save_CPPFLAGS}"
 		CFLAGS="${ac_save_CFLAGS}"
-    	} else {
+	} else {
 		AC_CHECK_LIB(avcodec, img_convert,
 			[AC_MSG_RESULT([ *** Using deprecated function img_convert.])],
 			[AC_MSG_FAILURE([Neither libswscale nor function img_convert was found.])],
