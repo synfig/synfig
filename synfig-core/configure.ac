@@ -61,7 +61,6 @@ AC_ARG_ENABLE(g5opt,
 	CFLAGS="$CFLAGS -mtune=G5"
 ],
 [
-	true
 ])
 
 #MINGW_FLAGS="-mno-cygwin"
