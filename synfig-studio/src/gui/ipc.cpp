@@ -40,7 +40,9 @@
 #include <sys/stat.h>
 #endif
 
-#ifdef HAVE_SYS_ERRNO_H
+#ifdef __OpenBSD__
+#include <errno.h>
+#elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
 

@@ -453,7 +453,7 @@ synfig::get_binary_path(const String &fallback_path)
 	if (start_pos != std::string::npos)
 		result.replace(start_pos, artifact.length(), "/");
 	
-#else
+#elif !defined(__OpenBSD__)
 
 	size_t buf_size = PATH_MAX - 1;
 	char* path = (char*)malloc(buf_size);
