@@ -171,6 +171,8 @@ private:
 
 	synfig::Point point_;
 	etl::smart_ptr<synfig::Point> shared_point_;
+	etl::smart_ptr<synfig::Angle> shared_angle_;
+	etl::smart_ptr<synfig::Real> shared_mag_;
 	synfig::Angle rotations_;
 	synfig::Point aspect_point_;
 
@@ -402,19 +404,37 @@ public:
 	//! Sets the location of the duck with respect to the origin
 	void set_point(const synfig::Point &x)
 	{
-		(shared_point_?*shared_point_:point_) =
-			lock_aspect_
-			? aspect_point_*(x*aspect_point_)
-		    : x;
+		point_ = x;
+		if (shared_point_) *shared_point_ = x;
+		if (shared_angle_) *shared_angle_ = x.angle();
+		if (shared_mag_)   *shared_mag_ = x.mag();
 	}
 	//! Returns the location of the duck
 	synfig::Point get_point()const
-		{ return shared_point_?*shared_point_:point_; }
+	{
+		if (!shared_point_ && !shared_angle_ && !shared_mag_)
+			return point_;
+		if (shared_point_)
+			return *shared_point_;
+		return synfig::Point(
+			shared_mag_ ? *shared_mag_ : point_.mag(),
+			shared_angle_ ? *shared_angle_ : point_.angle() );
+	}
 
 	void set_shared_point(const etl::smart_ptr<synfig::Point>&x)
 		{ shared_point_=x; }
 	const etl::smart_ptr<synfig::Point>& get_shared_point()const
 		{ return shared_point_; }
+
+	void set_shared_angle(const etl::smart_ptr<synfig::Angle>&x)
+		{ shared_angle_=x; }
+	const etl::smart_ptr<synfig::Angle>& get_shared_angle()const
+		{ return shared_angle_; }
+
+	void set_shared_mag(const etl::smart_ptr<synfig::Real>&x)
+		{ shared_mag_=x; }
+	const etl::smart_ptr<synfig::Real>& get_shared_mag()const
+		{ return shared_mag_; }
 
 	//! Returns the rotations of the duck
 	//! For angle and tangent ducks, rotations are used instead of the location
