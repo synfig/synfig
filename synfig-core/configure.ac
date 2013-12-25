@@ -80,8 +80,8 @@ AC_CHECK_LIB(c, dlopen,
 	AC_CHECK_LIB(
 		dl,
 		dlopen,
-	DYNAMIC_LD_LIBS="-ldl",
-	    DYNAMIC_LD_LIBS=""
+		DYNAMIC_LD_LIBS="-ldl",
+		DYNAMIC_LD_LIBS=""
 	)
 )
 
