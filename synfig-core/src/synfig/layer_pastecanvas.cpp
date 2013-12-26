@@ -604,20 +604,48 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if (right > w) right = w;
 	if (bottom > h) bottom = h;
 
-	for(int y = top; y < bottom; y++) {
-		for(int x = left; x < right; x++) {
-			Vector outer_pos(x*renddesc.get_pw(), y*renddesc.get_ph());
-			outer_pos += renddesc.get_tl();
-			Vector inner_pos = transformation.back_transform(outer_pos);
-			Vector inner_surface_pos(inner_pos - intermediate_desc.get_tl());
-			inner_surface_pos[0] /= intermediate_desc.get_pw();
-			inner_surface_pos[1] /= intermediate_desc.get_ph();
-			Color color = intermediate_surface.cubic_sample(inner_surface_pos[0], inner_surface_pos[1]);
+	int decx = right - left;
+	if (top < bottom && left < right) {
+		Vector initial_outer_pos(left*renddesc.get_pw(), top*renddesc.get_ph());
+		initial_outer_pos += renddesc.get_tl();
+		Vector initial_inner_pos = transformation.back_transform(initial_outer_pos);
+		Vector initial_inner_surface_pos(initial_inner_pos - intermediate_desc.get_tl());
+		initial_inner_surface_pos[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos[1] /= intermediate_desc.get_ph();
 
-			Surface::alpha_pen apen(surface->get_pen(x,y));
-			apen.set_alpha(get_amount());
-			apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
-			apen.put_value(color);
+		Vector initial_outer_pos01((left+1)*renddesc.get_pw(), top*renddesc.get_ph());
+		initial_outer_pos01 += renddesc.get_tl();
+		Vector initial_inner_pos01 = transformation.back_transform(initial_outer_pos01);
+		Vector initial_inner_surface_pos01(initial_inner_pos01 - intermediate_desc.get_tl());
+		initial_inner_surface_pos01[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos01[1] /= intermediate_desc.get_ph();
+
+		Vector initial_outer_pos10(left*renddesc.get_pw(), (top+1)*renddesc.get_ph());
+		initial_outer_pos10 += renddesc.get_tl();
+		Vector initial_inner_pos10 = transformation.back_transform(initial_outer_pos10);
+		Vector initial_inner_surface_pos10(initial_inner_pos10 - intermediate_desc.get_tl());
+		initial_inner_surface_pos10[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos10[1] /= intermediate_desc.get_ph();
+
+		Vector dx(initial_inner_surface_pos01 - initial_inner_surface_pos);
+		Vector dy(initial_inner_surface_pos10 - initial_inner_surface_pos);
+
+		Vector row_inner_surface_pos(initial_inner_surface_pos);
+		Vector inner_surface_pos;
+
+		Surface::alpha_pen apen(surface->get_pen(left, top));
+		apen.set_alpha(get_amount());
+		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
+		for(int y = top; y < bottom; y++) {
+			inner_surface_pos = row_inner_surface_pos;
+			for(int x = left; x < right; x++) {
+				apen.put_value( intermediate_surface.cubic_sample(inner_surface_pos[0], inner_surface_pos[1]) );
+				apen.inc_x();
+				inner_surface_pos += dx;
+			}
+			apen.dec_x(decx);
+			apen.inc_y();
+			row_inner_surface_pos += dy;
 		}
 	}
 
