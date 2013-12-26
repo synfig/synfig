@@ -123,6 +123,12 @@ public:
 
 	static Rect transform_bounds(const Matrix &matrix, const Rect &bounds)
 	{
+		if (isnan(bounds.minx) || isinf(bounds.minx)
+		 || isnan(bounds.maxx) || isinf(bounds.maxx)
+		 || isnan(bounds.miny) || isinf(bounds.miny)
+		 || isnan(bounds.maxy) || isinf(bounds.maxy))
+			return Rect::infinite();
+
 		Rect transformed_bounds(
 			matrix.get_transformed(
 				Vector(bounds.minx, bounds.miny) ));

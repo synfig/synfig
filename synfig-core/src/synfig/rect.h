@@ -65,6 +65,16 @@ public:
 		);
 	}
 
+	static Rect infinite()
+	{
+		return Rect(
+			-INFINITY,
+			-INFINITY,
+			INFINITY,
+			INFINITY
+		);
+	}
+
 	Rect() { }
 
 	Rect(const Point& x) { set_point(x); }

@@ -41,6 +41,10 @@
 extern "C" { __declspec(dllimport) int _isnan(double x); }
 #define isnan _isnan
 #endif
+#ifndef isinf
+extern "C" { __declspec(dllimport) int _isinf(double x); }
+#define isinf _isinf
+#endif
 #endif
 
 // For some reason isnan() isn't working on macosx any more.
@@ -52,9 +56,18 @@ extern "C" { __declspec(dllimport) int _isnan(double x); }
 inline bool isnan(double x) { return x != x; }
 inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
+#ifdef isinf
+#undef isinf
+#endif
+inline bool isinf(double x) { return !isnan(x) && isnan(x - x); }
+inline bool isinf(float x) { return !isnan(x) && isnan(x - x); }
+#define SYNFIG_ISINF_FIX 1
 #else
 #ifndef isnan
 #define isnan(x) (std::isnan)(x)
+#endif
+#ifndef isinf
+#define isinf(x) (std::isinf)(x)
 #endif
 #endif
 
