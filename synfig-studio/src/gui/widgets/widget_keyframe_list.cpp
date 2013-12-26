@@ -85,7 +85,6 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 bool
 Widget_Keyframe_List::redraw()
 {
-					synfig::warning(_("redraw01"));
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> window = get_window();
 	if(!window) return true;
@@ -187,7 +186,6 @@ Widget_Keyframe_List::redraw()
 			x-h/2+1, 0, h, h );
 		}
 	}
-						synfig::warning(_("redrawfin"));
 	return true;
 }
 
@@ -204,7 +202,7 @@ Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
-	if (x == selected_none) return;
+	if (x == selected_none || x == selected_kf) return;
 					synfig::warning(_("set_selected_keyframe1"));
 	selected_kf=x;
 	selected_=true;

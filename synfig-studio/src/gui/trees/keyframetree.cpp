@@ -138,7 +138,9 @@ KeyframeTree::KeyframeTree()
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 
-//	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
+	get_selection()->set_select_function (sigc::mem_fun(*this, &studio::KeyframeTree::select_function) );
+	send_selection = false;
 }
 
 KeyframeTree::~KeyframeTree()
@@ -267,6 +269,11 @@ KeyframeTree::on_event(GdkEvent *event)
 {
     switch(event->type)
     {
+	case GDK_KEY_PRESS:
+		{
+			send_selection = true;
+		}
+		break;
 	case GDK_BUTTON_PRESS:
 		{
 			Gtk::TreeModel::Path path;
@@ -274,6 +281,8 @@ KeyframeTree::on_event(GdkEvent *event)
 			int cell_x, cell_y;
 			int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
 			//tree_to_widget_coords (,, wx, wy);
+			send_selection = true;
+
 			if(!get_path_at_pos(
 				wx,wy,	// x, y
 				path, // TreeModel::Path&
@@ -283,9 +292,20 @@ KeyframeTree::on_event(GdkEvent *event)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
 if(get_selection()->get_selected())
+{
 	synfig::warning(_("KeyframeTree::GDK_BUTTON_PRESS selected"));
+
+//	Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
+//	if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
+//	{
+//		selected_kf = keyframe;
+//		keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+//	}
+
+}
 else
 	synfig::warning(_("KeyframeTree::GDK_BUTTON_PRESS !selected"));
+
 			signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if (synfig::String(column->get_title ()) == _("Jump"))
 			{
@@ -325,23 +345,42 @@ else
 void
 KeyframeTree::on_selection_changed()
 {
+	//Connected on treeview::selection::changed
+
 	if (!has_focus ())
 	{
 		synfig::warning(_("KeyframeTree::on_selection_changed :!has_focus ()"));
 
 		return;
-	}
-	if(has_focus () && get_selection()->count_selected_rows()==1)
+	}else
 	{
+		synfig::warning(_("KeyframeTree::on_selection_changed :has_focus ()"));
+	}
+synfig::info("send_selectionsend_selection %d",send_selection);
+
+	if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
+	{
+
 		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
 		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
 		{
-							synfig::warning(_("KeyframeTree::on_selection_changed"));
+							synfig::warning(_("KeyframeTree::on_selection_changed 1"));
 							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
 			selected_kf = keyframe;
 			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+							synfig::warning(_("KeyframeTree::on_selection_changed 2"));
 		}
+
 	}
+}
+
+bool KeyframeTree::select_function(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path, bool)
+{
+	const Gtk::TreeRow row(*(model->get_iter(path)));
+
+	synfig::warning(_("KeyframeTree::selec_function "));
+
+	return true;
 }
 
 void
@@ -352,23 +391,33 @@ KeyframeTree::on_cursor_changed()
 		synfig::warning(_("KeyframeTree::on_cursor_changed :!has_focus ()"));
 
 		return;
-	}	if(has_focus () && get_selection()->count_selected_rows()==1)
-	{
-		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
-		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
-		{
-							synfig::warning(_("KeyframeTree::on_cursor_changed"));
-							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
-			selected_kf = keyframe;
-			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
-		}
 	}
+	else 		synfig::warning(_("KeyframeTree::on_cursor_changed :has_focus ()"));
+
+//	if(has_focus () && get_selection()->count_selected_rows()==1)
+//	{
+//		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
+//		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
+//		{
+//							synfig::warning(_("KeyframeTree::on_cursor_changed 1"));
+//							synfig::info("keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
+//			selected_kf = keyframe;
+//			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+//							synfig::warning(_("KeyframeTree::on_cursor_changed 2"));
+//		}
+//	}
 }
 
 void
 KeyframeTree::on_keyframe_changed(synfig::Keyframe keyframe)
 {
 	Gtk::TreeModel::Path path;
-	if(keyframe_tree_store_ && keyframe_tree_store_->find_keyframe_path(keyframe,path))
-		set_cursor (path);
+
+	if(keyframe && keyframe != selected_kf)
+	{
+		selected_kf = keyframe;
+		send_selection = false;
+		if(keyframe_tree_store_ && keyframe_tree_store_->find_keyframe_path(keyframe,path))
+			set_cursor (path);
+	} else send_selection = true;
 }

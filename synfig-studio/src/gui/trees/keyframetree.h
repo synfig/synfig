@@ -95,6 +95,8 @@ private:
 
 	bool editable_;
 
+	bool send_selection;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -122,6 +124,8 @@ private:
 	//! Action performed when a keyframe is selected in the widget
 	//! This is where keyframe selected signal is fired
 	void on_selection_changed();
+
+	bool select_function(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path, bool);
 
 	//! Signal handler for select keyframe signal from canvas interface
 	void on_keyframe_changed(synfig::Keyframe);
