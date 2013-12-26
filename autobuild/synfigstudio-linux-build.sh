@@ -63,7 +63,7 @@ fi
 
 BUILDROOT_VERSION=9
 BUILDROOT_LIBRARY_SET_ID=4
-MAKE_THREADS=4					#count of threads for make
+MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -71,7 +71,7 @@ MAKE_THREADS=4					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=1
+DEBUG=0
 BREED=
 
 export EMAIL='root@synfig.org'
@@ -489,7 +489,22 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG
+	if [ -e /etc/debian_version ]; then
+		# Debian/Ubuntu multiarch
+		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
+		if [ -d "$MULTIARCH_LIBDIR" ]; then
+			export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
+		fi
+	fi
+	export CONFIG_SHELL=/bin/bash
+	/bin/bash ./configure --prefix=${PREFIX} \
+		--includedir=${PREFIX}/include \
+		--disable-static --enable-shared \
+		--with-magickpp \
+		--without-libavcodec \
+		--without-included-ltdl \
+		$BOOST_CONFIGURE_OPTIONS \
+		$DEBUG
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -804,7 +819,6 @@ initialize()
 		gettext \
 		cvs \
 		libpng12-dev \
-		libjpeg62-dev \
 		fontconfig \
 		libfreetype6-dev \
 		libfontconfig1-dev \
@@ -813,6 +827,7 @@ initialize()
 		libjasper-dev \
 		x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
 		libatk1.0-dev \
+		imagemagick \
 		bzip2"
 	if which yum >/dev/null; then
 		#
