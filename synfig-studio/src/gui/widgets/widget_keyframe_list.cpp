@@ -203,23 +203,22 @@ void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
 	if (x == selected_none || x == selected_kf) return;
-					synfig::warning(_("set_selected_keyframe1"));
+
 	selected_kf=x;
 	selected_=true;
 	dragging_kf_time=selected_kf.get_time();
-					synfig::warning(_("set_selected_keyframe2"));
+
 	if(canvas_interface_)
 		canvas_interface_->signal_keyframe_selected()(selected_kf);
-					synfig::warning(_("set_selected_keyframe3"));
+
 	dragging_=false;
 	queue_draw();
-					synfig::warning(_("set_selected_keyframe4"));
+
 }
 
 void
 Widget_Keyframe_List::on_keyframe_changed(const synfig::Keyframe keyframe)
 {
-					synfig::warning(_("on_keyframe_changed"));
 	if (keyframe == selected_kf)	return;
 
 	selected_kf=keyframe;
@@ -381,21 +380,18 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
 				)
 				{
-					synfig::warning(_("GDK_BUTTON_PRESS selected_none"));
 					set_selected_keyframe(selected_none);
 					selected_=false;
 					queue_draw();
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
-					synfig::warning(_("GDK_BUTTON_PRESSelse if"));
 					set_selected_keyframe(*(kf_list_->find_prev(t, false)));
 					queue_draw();
 					selected_=true;
 				}
 				else
 				{
-					synfig::warning(_("GDK_BUTTON_PRESSelse"));
 					set_selected_keyframe(*(kf_list_->find_next(t, false)));
 					queue_draw();
 					selected_=true;

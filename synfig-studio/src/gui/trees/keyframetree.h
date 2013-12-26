@@ -125,11 +125,9 @@ private:
 	//! This is where keyframe selected signal is fired
 	void on_selection_changed();
 
-	bool select_function(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path, bool);
-
 	//! Signal handler for select keyframe signal from canvas interface
 	void on_keyframe_changed(synfig::Keyframe);
-
+	sigc::connection	keyframechanged;
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -163,7 +161,6 @@ public:
 
 	protected:
 
-	virtual void on_cursor_changed();
 }; // END of KeyframeTree
 
 }; // END of namespace studio
