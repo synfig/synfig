@@ -547,10 +547,10 @@ if [ $OS -eq 10 ]; then
 	OSNAME=Snowleopard
 fi
 
-#if [ ! $OS -eq 12 ]; then # if not Lion then set compatibility mode
+if [ ! $OS -eq 13 ]; then # if not Mountain Lion then set compatibility mode
 export MACOSX_DEPLOYMENT_TARGET=10.5
 echo "Enabling binary compatibility mode: MACOSX_DEPLOYMENT_TARGET=10.5"
-#fi
+fi
 
 prepare
 
