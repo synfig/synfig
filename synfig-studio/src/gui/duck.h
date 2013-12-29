@@ -142,7 +142,6 @@ private:
 	bool track_axes_;
 	bool lock_aspect_;
 
-
 	// positioning
 
 	synfig::TransformStack transform_stack_;
@@ -298,7 +297,6 @@ public:
 		{ return lock_aspect_; }
 	void set_lock_aspect(bool r)
 		{ if (!lock_aspect_ && r) aspect_point_=point_.norm(); lock_aspect_=r; }
-
 
 	// positioning
 

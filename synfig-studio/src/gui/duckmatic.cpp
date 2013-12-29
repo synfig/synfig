@@ -1138,10 +1138,10 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 				transformation.scale = transformation.scale.multiply_coords(duck.get_point());
 				break;
 			case Duck::TYPE_SCALE_X:
-				transformation.scale[0] = duck.get_point()[0];
+				transformation.scale[0] *= duck.get_point()[0];
 				break;
 			case Duck::TYPE_SCALE_Y:
-				transformation.scale[1] = duck.get_point()[0];
+				transformation.scale[1] *= duck.get_point()[0];
 				break;
 			default:
 				break;
@@ -2069,8 +2069,16 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
 
 				bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
-				Point axis_x(transformation.scale[0], transformation.angle);
-				Point axis_y(transformation.scale[1], transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
+				Point axis_x(1, transformation.angle);
+				Point axis_y(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
+
+				Point screen_offset = transform_stack.unperform(transformation.offset);
+				Point screen_axis_x = transform_stack.unperform(transformation.offset + axis_x) - screen_offset;
+				Point screen_axis_y = transform_stack.unperform(transformation.offset + axis_y) - screen_offset;
+				Real scalar_x = screen_axis_x.mag();
+				if (scalar_x > 0.0) scalar_x = 1.0/scalar_x;
+				Real scalar_y = screen_axis_y.mag();
+				if (scalar_y > 0.0) scalar_y = 1.0/scalar_y;
 
 				Duck::Handle duck;
 
@@ -2092,7 +2100,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_ANGLE);
 				duck->set_transform_stack(transform_stack);
-				duck->set_point(Point(0.9*transformation.scale[0],transformation.angle));
+				duck->set_point(Point(0.9,transformation.angle));
+				duck->set_scalar(scalar_x);
 				duck->set_name(guid_string(value_desc) + "-angle");
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
@@ -2107,7 +2116,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck=new Duck();
 				duck->set_type(Duck::TYPE_SKEW);
 				duck->set_transform_stack(transform_stack);
-				duck->set_point(Point(0.9*transformation.scale[1],transformation.skew_angle));
+				duck->set_point(Point(0.9,transformation.skew_angle));
+				duck->set_scalar(scalar_y);
 				duck->set_name(guid_string(value_desc) + "-skew");
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
@@ -2125,8 +2135,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_type(Duck::TYPE_SCALE_X);
 				duck->set_transform_stack(transform_stack);
 				duck->set_name(guid_string(value_desc) + "-scale-x");
-				duck->set_point(Point(transformation.scale[0],0));
-				duck->set_scalar(transformation.scale[0] > 0 ? 1 : -1);
+				duck->set_point(Point(1,0));
+				duck->set_scalar(scalar_x);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, angle_duck);
@@ -2142,8 +2152,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_type(Duck::TYPE_SCALE_Y);
 				duck->set_transform_stack(transform_stack);
 				duck->set_name(guid_string(value_desc) + "-scale-y");
-				duck->set_point(Point(transformation.scale[1],0));
-				duck->set_scalar(transformation.scale[1] > 0 ? 1 : -1);
+				duck->set_point(Point(1,0));
+				duck->set_scalar(scalar_y);
 				duck->set_editable(editable);
 				duck->set_origin(origin_duck);
 				duck->set_linear(true, skew_duck);
