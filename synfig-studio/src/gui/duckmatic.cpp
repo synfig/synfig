@@ -1119,6 +1119,23 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		//return canvas_interface->change_value(value_desc,Angle::tan(value[1],value[0]));
 		return canvas_interface->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + duck.get_rotations());
 	case ValueBase::TYPE_TRANSFORMATION:
+		if (get_alternative_mode()
+		 && duck.get_alternative_editable()
+		 && duck.get_alternative_value_desc().is_valid()
+		 && duck.get_alternative_value_desc().parent_is_layer_param()
+		 && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_alternative_value_desc().get_layer())
+		 && duck.get_alternative_value_desc().get_param_name() == "origin")
+		{
+			Point origin = duck.get_alternative_value_desc().get_value(get_time()).get(Point());
+			Transformation transformation = duck.get_value_desc().get_value(get_time()).get(Transformation());
+			Point delta_offset = value - transformation.offset;
+			Point delta_origin = transformation.back_transform(delta_offset, false);
+			transformation.offset += delta_offset;
+			origin += delta_origin;
+			return canvas_interface->change_value(duck.get_alternative_value_desc(), origin)
+			    && canvas_interface->change_value(duck.get_value_desc(), transformation);
+		}
+		else
 		{
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
 			Point axis_x_one(1, transformation.angle);
@@ -2066,9 +2083,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			bool enable_transformation = layer && layer->get_enable_transformation();
 			if (enable_transformation)
 			{
+				synfigapp::ValueDesc alternative_value_desc(value_desc.get_layer(), "origin");
 				Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
 
-				bool editable = !value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node());
+				bool editable = !value_desc.is_value_node()
+					|| synfigapp::is_editable(value_desc.get_value_node());
+				bool alternative_editable = !alternative_value_desc.is_value_node()
+					|| synfigapp::is_editable(alternative_value_desc.get_value_node());
+				alternative_editable = alternative_editable && editable;
 				Point axis_x(1, transformation.angle);
 				Point axis_y(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
 
@@ -2090,8 +2112,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_name(guid_string(value_desc));
 				duck->set_point(transformation.offset);
 				duck->set_editable(editable);
+				duck->set_alternative_editable(alternative_editable);
 				duck->set_type(Duck::TYPE_POSITION);
 				duck->set_value_desc(value_desc);
+				duck->set_alternative_value_desc(alternative_value_desc);
 				duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
 				connect_signals(duck, value_desc, *canvas_view);
 				add_duck(duck);

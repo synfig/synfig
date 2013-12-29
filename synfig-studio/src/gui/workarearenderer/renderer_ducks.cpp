@@ -349,7 +349,7 @@ Renderer_Ducks::render_vfunc(
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
 				// Retrieve the split value of the bline point.
-				synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+				const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
 				synfig::LinkableValueNode::Handle parent;
 				if(v_d.parent_is_linkable_value_node())
 				{

@@ -215,14 +215,12 @@ public:
 	synfig::String type_name()const { return type_name(get_type()); }
 #endif	// _DEBUG
 
-	void set_value_desc(synfigapp::ValueDesc x)
+	void set_value_desc(const synfigapp::ValueDesc &x)
 		{ value_desc_=x; }
-	synfigapp::ValueDesc& get_value_desc()
+	const synfigapp::ValueDesc& get_value_desc() const
 		{ return value_desc_; }
-	void set_alternative_value_desc(synfigapp::ValueDesc x)
+	void set_alternative_value_desc(const synfigapp::ValueDesc &x)
 		{ alternative_value_desc_=x; }
-	synfigapp::ValueDesc& get_alternative_value_desc()
-		{ return alternative_value_desc_; }
 	const synfigapp::ValueDesc& get_alternative_value_desc() const
 		{ return alternative_value_desc_; }
 
