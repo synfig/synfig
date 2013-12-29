@@ -2094,9 +2094,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				Point axis_x(1, transformation.angle);
 				Point axis_y(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
 
-				Point screen_offset = transform_stack.unperform(transformation.offset);
-				Point screen_axis_x = transform_stack.unperform(transformation.offset + axis_x) - screen_offset;
-				Point screen_axis_y = transform_stack.unperform(transformation.offset + axis_y) - screen_offset;
+				Point screen_offset = transform_stack.perform(transformation.offset);
+				Point screen_axis_x = transform_stack.perform(transformation.offset + axis_x) - screen_offset;
+				Point screen_axis_y = transform_stack.perform(transformation.offset + axis_y) - screen_offset;
 				Real scalar_x = screen_axis_x.mag();
 				if (scalar_x > 0.0) scalar_x = 1.0/scalar_x;
 				Real scalar_y = screen_axis_y.mag();

@@ -3503,6 +3503,7 @@ studio::WorkArea::set_zoom(float z)
 	refreshes+=5;
 	async_update_preview();
 	//queue_render_preview();
+	canvas_view->queue_rebuild_ducks();
 }
 
 void

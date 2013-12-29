@@ -305,10 +305,10 @@ synfig::Point
 Duck::get_sub_trans_point(const Handle &duck, const Point &def, bool translate)const
 {
 	// The origin needs to have the same transform stack as this duck
-	if (!duck) return def;
-	if (translate)
-		return transform_stack_.unperform(duck->get_trans_point());
-	return transform_stack_.unperform(duck->get_sub_trans_point_without_offset());
+	return !duck ? def
+		 : translate ? transform_stack_.unperform(duck->get_trans_point())
+	     : transform_stack_.unperform(duck->get_trans_point())
+		 - transform_stack_.unperform(duck->get_trans_origin());
 }
 
 synfig::Point
