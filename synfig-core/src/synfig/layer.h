@@ -29,7 +29,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "string_decl.h"
 #include <map>
 #include <ETL/handle>
 #include "real.h"

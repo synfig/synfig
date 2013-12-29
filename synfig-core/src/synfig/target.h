@@ -30,7 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <sigc++/signal.h>
-#include "string_decl.h"
+#include "string.h"
 #include <utility>
 #include <map>
 #include <ETL/handle>
