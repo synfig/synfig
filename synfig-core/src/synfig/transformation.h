@@ -57,6 +57,18 @@ public:
 		scale(1.0, 1.0)
 	{ }
 
+	Transformation(
+		const Vector &offset,
+		const Angle &angle = Angle::rad(0.0),
+		const Angle &skew_angle = Angle::rad(0.0),
+		const Vector &scale = Vector(1.0, 1.0)
+	):
+		offset(offset),
+		angle(angle),
+		skew_angle(skew_angle),
+		scale(scale)
+	{ }
+
 	bool is_valid()const
 	{
 		return offset.is_valid()
