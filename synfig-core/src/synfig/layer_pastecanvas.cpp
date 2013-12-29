@@ -85,7 +85,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Layer_PasteCanvas::Layer_PasteCanvas():
-	param_origin_transformation(Transformation()),
+	param_origin(Transformation()),
 	param_transformation(Transformation()),
 	param_enable_transformation(ValueBase(true)),
 	param_time_offset (Time(0)),
@@ -137,9 +137,9 @@ Layer_PasteCanvas::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-	ret.push_back(ParamDesc("origin_transformation")
-		.set_local_name(_("Origin Transformation"))
-		.set_description(_("Position, rotation, skew and scale offsets"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
+		.set_description(_("Position offset"))
 	);
 	
 	ret.push_back(ParamDesc("transformation")
@@ -213,7 +213,7 @@ Layer_PasteCanvas::get_param_vocab()const
 bool
 Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_origin_transformation);
+	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_transformation);
 	IMPORT_VALUE(param_enable_transformation);
 
@@ -326,7 +326,7 @@ Layer_PasteCanvas::on_canvas_set()
 ValueBase
 Layer_PasteCanvas::get_param(const String& param)const
 {
-	EXPORT_VALUE(param_origin_transformation);
+	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_transformation);
 	EXPORT_VALUE(param_enable_transformation);
 	if (param=="canvas")

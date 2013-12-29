@@ -54,8 +54,8 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	//! Parameter: (Origin Transfromation) Position, rotation and scale offsets
-	ValueBase param_origin_transformation;
+	//! Parameter: (Origin) Position offset
+	ValueBase param_origin;
 	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
 	//! Parameter: (Enable Transfromation)
@@ -85,7 +85,7 @@ private:
 	mutable int depth;
 
 	//! Boundaries of the paste canvas layer. It is the canvas's boundary
-	//! affected by the zoom, origin and focus.
+	//! affected by the origin and transformation.
 	mutable Rect bounds;
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
@@ -156,8 +156,8 @@ public:
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
 
-	//! Get origin_transformation parameter
-	Transformation get_origin_transformation()const { return param_origin_transformation.get(Transformation()); }
+	//! Get origin parameter
+	Point get_origin()const { return param_origin.get(Point()); }
 	//! Get transformation parameter
 	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
 	//! Get enable transformation parameter
@@ -166,7 +166,7 @@ public:
 	Transformation get_summary_transformation()const
 	{
 		return get_enable_transformation()
-			 ? get_transformation().transform( get_origin_transformation().get_back_transformation() )
+			 ? get_transformation().transform( Transformation(-get_origin()) )
 			 : Transformation();
 	}
 

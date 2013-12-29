@@ -2557,21 +2557,21 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	// Load old groups
 	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
-	ValueNode_Composite::Handle origin_transformation_node;
+	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;
 	ValueNode_Add::Handle offset_node;
 	ValueNode_Scale::Handle scale_scalar_node;
 	ValueNode_Exp::Handle scale_node;
 	bool origin_const=true, focus_const=true, zoom_const=true;
 	if (old_pastecanvas) {
-		origin_transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
 		transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
-
-		layer->connect_dynamic_param("origin_transformation", ValueNode::Handle(origin_transformation_node));
 		layer->connect_dynamic_param("transformation", ValueNode::Handle(transformation_node));
 
 		offset_node = ValueNode_Add::create(ValueBase(Vector(0,0)));
 		transformation_node->set_link("offset", offset_node);
+
+		origin_node = offset_node->get_link("rhs");
+		layer->connect_dynamic_param("origin_node", ValueNode::Handle(origin_node));
 
 		scale_scalar_node = ValueNode_Scale::create(ValueBase(Vector(1,1)));
 		transformation_node->set_link("scale", scale_scalar_node);
@@ -2714,7 +2714,8 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				if (param_name == "focus")
 				{
 					if (!is_const) focus_const = false;
-					origin_transformation_node->set_link("offset", node);
+					origin_node = node;
+					layer->connect_dynamic_param("origin_node", ValueNode::Handle(origin_node));
 					offset_node->set_link("rhs", node);
 				}
 				else
@@ -2760,35 +2761,35 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 	// Simplify old pastecanvas conversion
 	if (old_pastecanvas) {
-		bool focus_zero = focus_const && (*origin_transformation_node->get_link("offset"))(0).get(Vector()) == Vector(0,0);
+		bool focus_zero = focus_const && (*origin_node)(0).get(Vector()) == Vector(0,0);
 		bool zoom_zero = zoom_const && (*scale_node->get_link("exp"))(0).get(Real()) == 0;
 		if (origin_const && focus_const && zoom_const)
 		{
-			ValueBase origin_transformation = (*origin_transformation_node)(0);
+			ValueBase origin = (*origin_node)(0);
 			ValueBase transformation = (*transformation_node)(0);
 			layer->disconnect_dynamic_param("origin_transformation");
 			layer->disconnect_dynamic_param("transformation");
-			layer->set_param("origin_transformation", origin_transformation);
+			layer->set_param("origin", origin);
 			layer->set_param("transformation", transformation);
 		} else {
 			if (origin_const && focus_const)
 			{
-				ValueBase origin_transformation = (*origin_transformation_node)(0);
-				layer->disconnect_dynamic_param("origin_transformation");
-				layer->set_param("origin_transformation", origin_transformation);
+				ValueBase origin = (*origin_node)(0);
+				layer->disconnect_dynamic_param("origin");
+				layer->set_param("origin", origin);
 				transformation_node->set_link("offset", ValueNode_Const::create((*offset_node)(0), canvas));
 			} else
 			if (focus_zero)
 			{
-				layer->disconnect_dynamic_param("origin_transformation");
+				layer->disconnect_dynamic_param("origin");
 				transformation_node->set_link("offset", offset_node->get_link("lhs"));
 			}
 			else
 			if (focus_const)
 			{
-				ValueBase origin_transformation = (*origin_transformation_node)(0);
-				layer->disconnect_dynamic_param("origin_transformation");
-				layer->set_param("origin_transformation", origin_transformation);
+				ValueBase origin = (*origin_node)(0);
+				layer->disconnect_dynamic_param("origin");
+				layer->set_param("origin", origin);
 			}
 
 			if (zoom_zero)
