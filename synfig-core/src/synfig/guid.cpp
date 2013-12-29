@@ -45,8 +45,7 @@
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
-// 2013-12-28: Next line is disabled because of OSX 10.9
-// #include FUNCTIONAL_H
+#include FUNCTIONAL_H
 #endif
 
 #ifdef _WIN32
