@@ -85,7 +85,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Layer_PasteCanvas::Layer_PasteCanvas():
-	param_origin(Transformation()),
+	param_origin(Point()),
 	param_transformation(Transformation()),
 	param_enable_transformation(ValueBase(true)),
 	param_time_offset (Time(0)),
