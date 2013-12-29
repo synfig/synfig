@@ -2079,6 +2079,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (scalar_x > 0.0) scalar_x = 1.0/scalar_x;
 				Real scalar_y = screen_axis_y.mag();
 				if (scalar_y > 0.0) scalar_y = 1.0/scalar_y;
+				scalar_x /= zoom;
+				scalar_y /= zoom;
 
 				Duck::Handle duck;
 
