@@ -54,7 +54,7 @@
 #include <cstdio>
 #include <ctype.h>
 #include <math.h>
-#include <synfig/string_decl.h>
+#include <synfig/string.h>
 
 #endif
 
