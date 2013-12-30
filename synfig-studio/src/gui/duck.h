@@ -398,24 +398,9 @@ public:
 	// value
 
 	//! Sets the location of the duck with respect to the origin
-	void set_point(const synfig::Point &x)
-	{
-		point_ = x;
-		if (shared_point_) *shared_point_ = x;
-		if (shared_angle_) *shared_angle_ = x.angle();
-		if (shared_mag_)   *shared_mag_ = x.mag();
-	}
+	void set_point(const synfig::Point &x);
 	//! Returns the location of the duck
-	synfig::Point get_point()const
-	{
-		if (!shared_point_ && !shared_angle_ && !shared_mag_)
-			return point_;
-		if (shared_point_)
-			return *shared_point_;
-		return synfig::Point(
-			shared_mag_ ? *shared_mag_ : point_.mag(),
-			shared_angle_ ? *shared_angle_ : point_.angle() );
-	}
+	synfig::Point get_point()const;
 
 	void set_shared_point(const etl::smart_ptr<synfig::Point>&x)
 		{ shared_point_=x; }

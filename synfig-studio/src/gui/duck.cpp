@@ -183,6 +183,40 @@ Duck::operator==(const Duck &rhs)const
 		//(shared_point?*shared_point==*rhs.shared_point:point==rhs.point) ;
 }
 
+//! Sets the location of the duck with respect to the origin
+void
+Duck::set_point(const synfig::Point &x)
+{
+	if (is_aspect_locked())
+		point_ = aspect_point_ * (x * aspect_point_);
+	else
+		point_ = x;
+	if (shared_point_) *shared_point_ = point_;
+	if (shared_angle_) *shared_angle_ = point_.angle();
+	if (shared_mag_)   *shared_mag_ = point_.mag();
+}
+
+//! Returns the location of the duck
+synfig::Point
+Duck::get_point()const
+{
+	synfig::Point p;
+	if (!shared_point_ && !shared_angle_ && !shared_mag_)
+		p = point_;
+	else
+	if (shared_point_)
+		p = *shared_point_;
+	else
+		p = synfig::Point(
+				shared_mag_ ? *shared_mag_ : point_.mag(),
+				shared_angle_ ? *shared_angle_ : point_.angle() );
+
+	if (is_aspect_locked())
+		p = aspect_point_ * (p * aspect_point_);
+
+	return p;
+}
+
 synfig::Point
 Duck::get_trans_point()const
 {
