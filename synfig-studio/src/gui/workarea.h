@@ -537,6 +537,8 @@ public:
 
 	void save_meta_data();
 	void load_meta_data();
+	//! Test initial meta data values
+	bool have_meta_data();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

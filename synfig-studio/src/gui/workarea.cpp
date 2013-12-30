@@ -1155,6 +1155,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	meta_data_lock=false;
 	set_focus_point(Point(0,0));
 
+	// If no meta data in canvas, assume it's new file and save default
+	if (!have_meta_data())
+		save_meta_data();
 
 	load_meta_data();
 	// Load sketch
@@ -1252,6 +1255,20 @@ WorkArea::save_meta_data()
 	}
 
 	meta_data_lock=false;
+}
+
+bool
+WorkArea::have_meta_data()
+{
+	String data_size, data_show;
+
+	data_size=canvas->get_meta_data("grid_size");
+	data_show=canvas->get_meta_data("grid_show");
+
+	if(data_size.empty() && !data_show.size())
+		return false;
+
+	return true;
 }
 
 void
