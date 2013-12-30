@@ -1455,6 +1455,24 @@ WorkArea::disable_grid()
 	queue_draw();
 }
 
+
+
+void
+WorkArea::toggle_grid()
+{
+	show_grid=!show_grid;
+	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::toggle_grid_snap()
+{
+	Duckmatic::toggle_grid_snap();
+	save_meta_data();
+	queue_draw();
+}
+
 void
 WorkArea::set_show_guides(bool x)
 {
@@ -1464,9 +1482,9 @@ WorkArea::set_show_guides(bool x)
 }
 
 void
-WorkArea::toggle_grid()
+WorkArea::toggle_guide_snap()
 {
-	show_grid=!show_grid;
+	Duckmatic::toggle_guide_snap();
 	save_meta_data();
 	queue_draw();
 }
