@@ -2571,7 +2571,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		transformation_node->set_link("offset", offset_node);
 
 		origin_node = offset_node->get_link("rhs");
-		layer->connect_dynamic_param("origin_node", ValueNode::Handle(origin_node));
+		layer->connect_dynamic_param("origin", ValueNode::Handle(origin_node));
 
 		scale_scalar_node = ValueNode_Scale::create(ValueBase(Vector(1,1)));
 		transformation_node->set_link("scale", scale_scalar_node);
@@ -2767,7 +2767,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		{
 			ValueBase origin = (*origin_node)(0);
 			ValueBase transformation = (*transformation_node)(0);
-			layer->disconnect_dynamic_param("origin_transformation");
+			layer->disconnect_dynamic_param("origin");
 			layer->disconnect_dynamic_param("transformation");
 			layer->set_param("origin", origin);
 			layer->set_param("transformation", transformation);
