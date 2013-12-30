@@ -41,10 +41,6 @@
 extern "C" { __declspec(dllimport) int _isnan(double x); }
 #define isnan _isnan
 #endif
-#ifndef isinf
-extern "C" { __declspec(dllimport) int _isinf(double x); }
-#define isinf _isinf
-#endif
 #endif
 
 // For some reason isnan() isn't working on macosx any more.
