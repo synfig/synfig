@@ -1315,31 +1315,27 @@ WorkArea::load_meta_data()
 	{
 		float gr(get_grid_color().get_r()),gg(get_grid_color().get_g()),gb(get_grid_color().get_b());
 
-		String::iterator iter(find(data.begin(),data.end(),' '));
-		String tmp(data.begin(),iter);
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
 
-		if(!tmp.empty())
-			gr=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
 
-		if(iter==data.end())
-			tmp.clear();
+		if (tokens.size() != 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning("Unable to set \"grid_color\"");
+		}
 		else
-			tmp=String(++iter,data.end());
-
-		if(!tmp.empty())
-			gg=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
-		if(iter==data.end())
-			tmp.clear();
-		else
-			tmp=String(++iter,data.end());
-		if(!tmp.empty())
-			gb=stratof(tmp);
-		else
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
 
 		set_grid_color(synfig::Color(gr,gg,gb));
 	}
@@ -1361,8 +1357,8 @@ WorkArea::load_meta_data()
 
 		if (tokens.size() != 3)
 		{
-			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"guides_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
-			canvas_interface->get_ui_interface()->warning("Unable to set \"guides_color\"");
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"guide_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning("Unable to set \"guide_color\"");
 		}
 		else
 		{
