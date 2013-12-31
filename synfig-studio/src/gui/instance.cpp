@@ -413,15 +413,16 @@ Instance::close()
 	 1) the list is scrolled down
 	 2) user closes file
 	*/
-	Gtk::Widget* tree_view_keyframes = find_canvas_view(get_canvas())->get_ext_widget("keyframes");
+	handle<CanvasView> canvas_view=find_canvas_view(get_canvas());
+	Gtk::Widget* tree_view_keyframes = canvas_view->get_ext_widget("keyframes");
 	tree_view_keyframes->hide();
 
-	Gtk::Widget* tree_view_params = find_canvas_view(get_canvas())->get_ext_widget("params");
+	Gtk::Widget* tree_view_params = canvas_view->get_ext_widget("params");
 	tree_view_params->hide();
 
-	Gtk::Widget* tree_view_children = find_canvas_view(get_canvas())->get_ext_widget("children");
+	Gtk::Widget* tree_view_children = canvas_view->get_ext_widget("children");
 	tree_view_children->hide();
-	
+
 	// Make sure we aren't selected as the current instance
 	if(studio::App::get_selected_instance()==this)
 		studio::App::set_selected_instance(0);
