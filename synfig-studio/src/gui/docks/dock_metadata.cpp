@@ -63,28 +63,50 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
-	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data"))
+	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
+	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
 {
-
-	add_button(
+	action_group->add(Gtk::Action::create(
+		"action-MetadataAdd",
 		Gtk::StockID("gtk-add"),
-		_("Add new MetaData entry")
-	)->signal_clicked().connect(
+		_("Add new MetaData entry"),
+		_("Add a new MetaData entry to the canvas")
+	),
 		sigc::mem_fun(
 			*this,
 			&Dock_MetaData::on_add_pressed
 		)
 	);
 
-	add_button(
+	action_group->add(Gtk::Action::create(
+		"action-MetadataRemove",
 		Gtk::StockID("gtk-delete"),
-		_("Remove selected MetaData entry")
-	)->signal_clicked().connect(
+		_("Remove selected MetaData entry"),
+		_("Remove the selected MetaData entry")
+	),
 		sigc::mem_fun(
 			*this,
 			&Dock_MetaData::on_delete_pressed
 		)
 	);
+
+	action_group->add( Gtk::Action::create("toolbar-meta_data", _("Canvas MetaData")) );
+	App::ui_manager()->insert_action_group(action_group);
+
+	Glib::ustring ui_info =
+	"<ui>"
+	"	<toolbar action='toolbar-meta_data'>"
+	"	<toolitem action='action-MetadataAdd' />"
+	"	<toolitem action='action-MetadataRemove' />"
+	"	</toolbar>"
+	"</ui>"
+	;
+
+	App::ui_manager()->add_ui_from_string(ui_info);
+
+	action_group->set_sensitive(false);
+
+	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data")));
 }
 
 Dock_MetaData::~Dock_MetaData()
@@ -111,9 +133,14 @@ Dock_MetaData::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
 		add(*tree_view);
 		tree_view->show();
+
+		action_group->set_sensitive(true);
 	}
 	else
+	{
 		clear_previous();
+		action_group->set_sensitive(false);
+	}
 }
 
 void

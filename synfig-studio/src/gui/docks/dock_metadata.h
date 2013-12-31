@@ -45,6 +45,7 @@ class Instance;
 
 class Dock_MetaData : public Dock_CanvasSpecific
 {
+	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 	void on_add_pressed();
 	void on_delete_pressed();
