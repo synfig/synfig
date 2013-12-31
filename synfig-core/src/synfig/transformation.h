@@ -106,6 +106,11 @@ public:
 		    && scale.is_equal_to(rhs.scale);
 	}
 
+	bool is_identity()const
+	{
+		return is_equal_to(Transformation());
+	}
+
 	Matrix get_matrix() const
 	{
 		Vector axis_x(scale[0], angle);
