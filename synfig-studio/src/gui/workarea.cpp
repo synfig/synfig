@@ -1148,6 +1148,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("solid_lines").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 
@@ -1211,14 +1212,17 @@ WorkArea::save_meta_data()
 	meta_data_lock=true;
 
 	Vector s(get_grid_size());
-	Color c(get_grid_color());
 	canvas_interface->set_meta_data("grid_size",strprintf("%f %f",s[0],s[1]));
+	Color c(get_grid_color());
 	canvas_interface->set_meta_data("grid_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
+	c = get_guides_color();
+	canvas_interface->set_meta_data("guide_color",strprintf("%f %f %f",c.get_r(),c.get_g(),c.get_b()));
 	canvas_interface->set_meta_data("grid_snap",get_grid_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_snap",get_guide_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_show",get_show_guides()?"1":"0");
 	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
 	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
+
 	{
 		String data;
 		GuideList::const_iterator iter;
@@ -1338,6 +1342,36 @@ WorkArea::load_meta_data()
 			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\"",data.c_str());
 
 		set_grid_color(synfig::Color(gr,gg,gb));
+	}
+
+	data=canvas->get_meta_data("guide_color");
+	if(!data.empty())
+	{
+		float gr(get_guides_color().get_r()),gg(get_guides_color().get_g()),gb(get_guides_color().get_b());
+
+		String tmp;
+		// Insert the string into a stream
+		stringstream ss(data);
+		// Create vector to hold our colors
+		std::vector<String> tokens;
+
+		int imaxcolor = 0;
+		while (ss >> tmp && imaxcolor++ < 3)
+			tokens.push_back(tmp);
+
+		if (tokens.size() != 3)
+		{
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"guides_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
+			canvas_interface->get_ui_interface()->warning("Unable to set \"guides_color\"");
+		}
+		else
+		{
+			gr=atof(tokens.at(0).data());
+			gg=atof(tokens.at(1).data());
+			gb=atof(tokens.at(2).data());
+		}
+
+		set_guides_color(synfig::Color(gr,gg,gb));
 	}
 
 	data=canvas->get_meta_data("grid_show");
@@ -1485,6 +1519,14 @@ void
 WorkArea::toggle_guide_snap()
 {
 	Duckmatic::toggle_guide_snap();
+	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::set_guides_color(const synfig::Color &c)
+{
+	Duckmatic::set_guides_color(c);
 	save_meta_data();
 	queue_draw();
 }

@@ -251,6 +251,8 @@ protected:
 	synfig::Vector grid_size;
 	synfig::Color grid_color;
 
+	synfig::Color guides_color;
+
 	float zoom;					//!< Zoom factor
 	float prev_zoom;			//!< Previous Zoom factor
 
@@ -292,6 +294,10 @@ public:
 	void set_guide_snap(bool x=true);
 	bool get_guide_snap()const { return guide_snap; }
 	void toggle_guide_snap() { set_guide_snap(!get_guide_snap()); }
+	//! Sets the color of the guides
+	void set_guides_color(const synfig::Color &c);
+	//! Returns the color of the guides
+	const synfig::Color &get_guides_color()const { return guides_color;}
 
 	//! Sets the state of the grid snap flag
 	void set_grid_snap(bool x=true);
@@ -312,10 +318,12 @@ public:
 
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
+	//! Sets the color of the grid
 	void set_grid_color(const synfig::Color &c);
 
 	//! Returns the size of the grid
 	const synfig::Vector &get_grid_size()const { return grid_size; }
+	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return grid_color;}
 
 

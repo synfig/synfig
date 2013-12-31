@@ -431,25 +431,33 @@ public:
 
 	//! Enables showing of the grid
 	void enable_grid();
-
 	//! Disables showing of the grid
 	void disable_grid();
-
 	//! Toggles the showing of the grid
 	void toggle_grid();
-
 	//! Returns the state of the show_grid flag
 	bool grid_status()const { return show_grid; }
-
 	//! Toggles the snap of the grid
 	void toggle_grid_snap();
-	//void toggle_grid_snap() { Duckmatic::toggle_grid_snap(); }
+	//! Sets the size of the grid
+	void set_grid_size(const synfig::Vector &s);
+	//! Sets the color of the grid
+	void set_grid_color(const synfig::Color &c);
+	//! Returns the color of the grid
+	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
+	//! Returns the state of the show_guides flag
 	bool get_show_guides()const { return show_guides; }
+	//! Sets the showing of the grid
 	void set_show_guides(bool x);
+	//! Toggles the showing of the guides
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
 	//! Toggles the snap of the guides
 	void toggle_guide_snap();
+	//! Sets the color of the guides
+	void set_guides_color(const synfig::Color &c);
+	//! Returns the color of the guides
+	const synfig::Color &get_guides_color()const { return Duckmatic::get_guides_color();}
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
@@ -457,11 +465,6 @@ public:
 
 	//! ???
 	void queue_scroll();
-
-	//! Sets the size of the grid
-	void set_grid_size(const synfig::Vector &s);
-	void set_grid_color(const synfig::Color &c);
-	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
 	//! ??
 	void popup_menu();
