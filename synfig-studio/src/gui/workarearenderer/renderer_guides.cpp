@@ -206,6 +206,8 @@ Renderer_Guides::render_vfunc(
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
+	synfig::Color guides_color(get_work_area()->get_guides_color());
+
 	// Draw out the guides
 	{
 		Duckmatic::GuideList::const_iterator iter;
@@ -229,7 +231,7 @@ Renderer_Guides::render_vfunc(
 			if(iter==get_work_area()->curr_guide)
 				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
-				cr->set_source_rgb(111.0/255.0,111.0/255.0,1.0);
+				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 
 			cr->move_to(
 				x,
@@ -249,7 +251,7 @@ Renderer_Guides::render_vfunc(
 			if(iter==get_work_area()->curr_guide)
 				cr->set_source_rgb(1.0,111.0/255.0,111.0/255.0);
 			else
-				cr->set_source_rgb(111.0/255.0,111.0/255.0,1.0);
+				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 
 			cr->move_to(
 				0,
