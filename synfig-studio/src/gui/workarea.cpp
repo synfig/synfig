@@ -1325,7 +1325,7 @@ WorkArea::load_meta_data()
 		while (ss >> tmp && imaxcolor++ < 3)
 			tokens.push_back(tmp);
 
-		if (tokens.size() != 3)
+		if (tokens.size() != 3 || imaxcolor > 3)
 		{
 			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
 			canvas_interface->get_ui_interface()->warning("Unable to set \"grid_color\"");
@@ -1355,7 +1355,7 @@ WorkArea::load_meta_data()
 		while (ss >> tmp && imaxcolor++ < 3)
 			tokens.push_back(tmp);
 
-		if (tokens.size() != 3)
+		if (tokens.size() != 3 || imaxcolor > 3)
 		{
 			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"guide_color\", which was \"%s\". \"red green blue\" in [0,1] was expected",data.c_str());
 			canvas_interface->get_ui_interface()->warning("Unable to set \"guide_color\"");
