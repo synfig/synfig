@@ -1842,28 +1842,28 @@ App::reset_initial_window_configuration()
 	float sy = (float)rect.get_height();
 
 	std::string tpl =
-	"[mainwindow|%5X|%5Y|%90x|%90y|"
-		"[hor|%30x"
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%75x"
 			"|[vert|%70y"
-				"|[hor|%15x"
+				"|[hor|%10x"
 					"|[book|toolbox]"
 					"|[mainnotebook]"
 				"]"
 				"|[hor|%25x"
-					"|[book|params]"
-					"|[book|keyframes]"
+					"|[book|params|children|keyframes]"
+					"|[book|timetrack|curves|meta_data]"
 				"]"
 			"]"
 			"|[vert|%20y"
-				"|[book|canvases]"
+				"|[book|navigator|info|pal_edit]"
 				"|[vert|%25y"
-					"|[book|history]"
-					"|[book|layers]"
+					"|[book|tool_options|history|canvases]"
+                                        "|[book|layers|groups]"
 				"]"
 			"]"
 		"]"
 	"]";
-
+         
 	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
 	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
