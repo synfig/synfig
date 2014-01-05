@@ -166,7 +166,7 @@ Action::ValueDescBoneLink::prepare()
 		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type());
 		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
 		bone_link_node->set_link("base_value",
-			ValueNode_Const::create(
+			ValueNode_Composite::create(
 				ValueTransformation::back_transform(
 					bone_link_node->get_bone_transformation(time),
 					value_desc.get_value(time) )));
