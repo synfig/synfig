@@ -2766,11 +2766,10 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		if (origin_const && focus_const && zoom_const)
 		{
 			ValueBase origin = (*origin_node)(0);
-			ValueBase transformation = (*transformation_node)(0);
+			transformation_node->set_link("offset", ValueNode_Const::create((*offset_node)(0), canvas));
+			transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
 			layer->disconnect_dynamic_param("origin");
-			layer->disconnect_dynamic_param("transformation");
 			layer->set_param("origin", origin);
-			layer->set_param("transformation", transformation);
 		} else {
 			if (origin_const && focus_const)
 			{
