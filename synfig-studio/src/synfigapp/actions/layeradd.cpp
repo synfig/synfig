@@ -32,8 +32,9 @@
 
 #include "layeradd.h"
 #include <synfigapp/canvasinterface.h>
-
 #include <synfigapp/general.h>
+#include <synfig/layer_pastecanvas.h>
+#include <synfig/valuenode_composite.h>
 
 #endif
 
@@ -124,6 +125,13 @@ Action::LayerAdd::perform()
 
 	// Mark ourselves as dirty if necessary
 	//set_dirty(layer->active());
+
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)
+	 && layer->dynamic_param_list().count("transformation") == 0)
+			layer->connect_dynamic_param("transformation",
+				ValueNode_Composite::create(
+					layer->get_param("transformation"),
+					get_canvas() ));
 
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
