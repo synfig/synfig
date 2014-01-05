@@ -4,8 +4,8 @@
 # TODO: rpm/deb/tgz packaging
 # TODO: i386 build
 # TODO: Migrate to crosstool-ng ???
-# TODO: Bundle ALL dependent libs
-# TODO: GTK themin issues
+# TODO: Bundle ALL dependent lib (libltdl issue)
+# TODO: GTK theming issues
 
 set -e
 
@@ -25,7 +25,8 @@ fi
 export WORKSPACE=$HOME/synfig-buildroot
 export PREFIX=$WORKSPACE/linux$ARCH/sys
 export PREFIX_BUNDLE=$WORKSPACE/linux$ARCH/bundle
-export PREFIX_DEPS=$WORKSPACE/linux$ARCH/sys-deps
+export PREFIX_DEPS=$WORKSPACE/linux$ARCH/bundle
+#export PREFIX_DEPS=$WORKSPACE/linux$ARCH/sys-deps
 export PREFIX_SRC=$WORKSPACE/linux$ARCH/source
 export DISTPREFIX=$WORKSPACE/tmp/linux$ARCH
 export CACHEDIR=$WORKSPACE/cache
@@ -221,6 +222,8 @@ chmod a+x  ${PREFIX_DEPS}/bin/rsync
 #	ln -sf /usr/bin/$binary  ${PREFIX_DEPS}/bin/$binary
 #done
 
+cp ${PREFIX}/usr/lib/libltdl* ${PREFIX_BUNDLE}/lib/
+
 }
 
 mkglib()
@@ -324,7 +327,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --prefix=${PREFIX_DEPS}/
+	./configure --prefix=${PREFIX_DEPS}/ \
+		--disable-static --enable-shared \
+		--with-included-modules=yes
 	make -j${THREADS} install
 	cd ..
 	popd
@@ -615,15 +620,17 @@ if [ ! -e ${PREFIX_DEPS}/bin/libtoolize ]; then
 	pushd ${PREFIX_SRC}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --prefix=${PREFIX_DEPS}
+	./configure --prefix=${PREFIX_DEPS} --enable-ltdl-install
 	make -j${THREADS} install
 	cd ..
 	popd
 fi
 
 [ -e ${PREFIX_BUNDLE}/lib/ ] || mkdir -p ${PREFIX_BUNDLE}/lib/
-rm -rf ${PREFIX_BUNDLE}/lib/libltdl* || true
-cp ${PREFIX_DEPS}/lib/libltdl.so* ${PREFIX_BUNDLE}/lib/
+if [[ "${PREFIX_BUNDLE}" != "${PREFIX_DEPS}" ]]; then
+	#rm -rf ${PREFIX_BUNDLE}/lib/libltdl* || true
+	cp ${PREFIX_DEPS}/lib/libltdl.so* ${PREFIX_BUNDLE}/lib/
+fi
 
 PATH="$PATH_BAK"
 }
@@ -749,14 +756,35 @@ make -j${THREADS} install
 mkconfig()
 {
 
+#if [ ! -e "${PREFIX_BUNDLE}/etc/pango/pango.modules.in" ]; then
+#	sed "s?${PREFIX_BUNDLE}/lib/pango/1.6.0/modules?@ROOTDIR@/modules?" < ${PREFIX_BUNDLE}/etc/pango/pango.modules > ${PREFIX_BUNDLE}/etc/pango/pango.modules.in
+#fi
+if [ ! -e "${PREFIX_BUNDLE}/etc/gtk-2.0/gdk-pixbuf.loaders.in" ]; then
+	sed "s?${PREFIX_BUNDLE}/lib/gtk-2.0/2.10.0/loaders?@ROOTDIR@/loaders?" < ${PREFIX_BUNDLE}/etc/gtk-2.0/gdk-pixbuf.loaders > ${PREFIX_BUNDLE}/etc/gtk-2.0/gdk-pixbuf.loaders.in
+fi
+
 cat > ${PREFIX_BUNDLE}/synfigstudio <<EOF
 #!/bin/sh
 
-# Create install-location-dependent config files for Pango and GDK image loaders
-# We have to do this every time because its possible that BIN_DIR has changed
+PREFIX=\`dirname "\$0"\`
 
-sed "s?@ROOTDIR@/modules?$LIB_DIR/modules?" < $ETC_DIR/pango.modules.in > $USER_ARDOUR_DIR/pango.modules
-sed "s?@ROOTDIR@/loaders?$LIB_DIR/loaders?" < $ETC_DIR/gdk-pixbuf.loaders.in > $USER_ARDOUR_DIR/gdk-pixbuf.loaders
+export ETC_DIR=\${PREFIX}/etc
+export LD_LIBRARY_PATH=\${PREFIX}/lib:$LD_LIBRARY_PATH
+export SYNFIG_ROOT=\${PREFIX}/
+export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
+export GDK_PIXBUF_MODULE_FILE="\${PREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders"
+#export GDK_PIXBUF_MODULEDIR="\${PREFIX}/lib/gtk-2.0/2.10.0/loaders"
+export FONTCONFIG_PATH="\${PREFIX}/etc/fonts"
+
+# Create install-location-dependent config files for Pango and GDK image loaders
+# We have to do this every time because its possible that PREFIX has changed
+
+#sed "s?@ROOTDIR@/modules?\${PREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$ETC_DIR/pango/pango.modules
+sed "s?@ROOTDIR@/loaders?\${PREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders
+
+\${PREFIX}/bin/synfigstudio "\$@"
+
+exit 0
 
 # 1 check if test application starts without warnings
 LANG=C GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bundle/bin/gtk-test --g-fatal-warnings | egrep "Gtk+ version too old (micro mismatch)"
@@ -770,6 +798,8 @@ GTK_PATH=/usr/lib64/gtk-2.0/2.10.0/ /home/zelgadis/synfig-buildroot/linux64/bund
 GTK2_RC_FILES=/home/zelgadis/synfig-buildroot/linux64/bundle/gtkrc:$GTK2_RC_FILES /home/zelgadis/synfig-buildroot/linux64/bundle/bin/synfigstudio
 
 EOF
+
+chmod +x ${PREFIX_BUNDLE}/synfigstudio
 
 }
 
@@ -920,6 +950,7 @@ mkall()
 	mketl
 	mksynfig
 	mksynfigstudio
+	mkconfig
 	#mkpackage
 }
 
