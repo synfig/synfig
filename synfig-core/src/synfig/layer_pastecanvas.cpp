@@ -546,8 +546,13 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
 		intermediate_desc.set_flags(0);
-		if(!canvas->get_context(context).accelerated_render(surface,quality,intermediate_desc,&stagetwo))
+		Surface intermediate_surface;
+		if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
+		Surface::alpha_pen apen(surface->get_pen(0, 0));
+		apen.set_alpha(get_amount());
+		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
+		intermediate_surface.blit_to(apen);
 	}
 	else
 	{
