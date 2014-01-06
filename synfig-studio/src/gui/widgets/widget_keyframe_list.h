@@ -139,7 +139,7 @@ public:
 	bool on_event(GdkEvent *event);
 
 	//! Signal handler for select keyframe signal from canvas interface
-	void on_keyframe_changed(synfig::Keyframe, void* emiter);
+	void on_keyframe_changed(synfig::Keyframe, void* emitter);
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

@@ -217,14 +217,9 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 }
 
 void
-Widget_Keyframe_List::on_keyframe_changed(synfig::Keyframe keyframe, void* emiter)
+Widget_Keyframe_List::on_keyframe_changed(synfig::Keyframe keyframe, void* emitter)
 {
-//	if (dynamic_cast<const Widget_Keyframe_List*>(emiter))
-	{
-		if (keyframe == selected_kf)	return;
-	}
-	//Gtk::Object* ouip = dynamic_cast<Gtk::Object*>(emiter);
-	//if((void*)this == emiter)	return;
+	if((void*)this == emitter)	return;
 
 	if (keyframe == selected_kf)	return;
 

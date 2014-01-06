@@ -337,7 +337,6 @@ KeyframeTree::on_selection_changed()
 
 	//if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
 	if(send_selection && get_selection()->count_selected_rows()==1)
-	//if(has_focus () && get_selection()->count_selected_rows()==1)
 	{
 
 		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
@@ -351,11 +350,11 @@ KeyframeTree::on_selection_changed()
 }
 
 void
-KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe, void* emiter)
+KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe, void* emitter)
 {
 	Gtk::TreeModel::Path path;
 
-	//if((void*)this == emiter)	return;
+	if((void*)this == emitter)	return;
 
 	if(keyframe && keyframe != selected_kf)
 	{
