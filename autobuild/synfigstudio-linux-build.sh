@@ -492,7 +492,7 @@ if [[ $MODE != 'quick' ]]; then
 	if [ -e /etc/debian_version ]; then
 		# Debian/Ubuntu multiarch
 		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
-		if [ -d "$MULTIARCH_LIBDIR" ]; then
+		if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
 			export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
 		fi
 	fi
