@@ -162,7 +162,9 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 void
 Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
 {
-	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
+	if (selection_data.get_length() >= 0
+	 && selection_data.get_format() == 8
+	 && selection_data.get_data_type() == "DOCK")
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
 
