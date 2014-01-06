@@ -597,6 +597,12 @@ CellRenderer_TimeTrack::activate_vfunc(
 	const Gdk::Rectangle& cell_area,
 	Gtk::CellRendererState /*flags*/)
 {
+	if (!event)
+	{
+		// Catch a null event received us a result of a keypress (only?)
+		return true; //On tab key press, Focus go to next panel. If return false, focus goes to canvas
+	}
+
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
 	Gtk::Adjustment *adjustment=get_adjustment();
