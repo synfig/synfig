@@ -1956,7 +1956,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 	case ValueBase::TYPE_VECTOR:
 		{
-			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			etl::handle<Layer_PasteCanvas> layer;
+			if (value_desc.parent_is_layer_param())
+				layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 			bool enable = !layer || !layer->get_enable_transformation();
 			if (enable) {
 				etl::handle<Duck> duck=new Duck();
