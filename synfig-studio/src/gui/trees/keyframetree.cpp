@@ -145,7 +145,7 @@ KeyframeTree::KeyframeTree()
 
 KeyframeTree::~KeyframeTree()
 {
-	keyframechanged.disconnect();
+	keyframeselected.disconnect();
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("KeyframeTree::~KeyframeTree(): Deleted");
 }
@@ -184,10 +184,10 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	cell_renderer_time_delta->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
 
 	//Listen to kf selection change from canvas interface
-	keyframechanged = keyframe_tree_store_->canvas_interface()->signal_keyframe_selected().connect(
+	keyframeselected = keyframe_tree_store_->canvas_interface()->signal_keyframe_selected().connect(
 		sigc::mem_fun(
 			*this,
-			&studio::KeyframeTree::on_keyframe_changed
+			&studio::KeyframeTree::on_keyframe_selected
 		)
 	);
 }
@@ -335,23 +335,27 @@ KeyframeTree::on_selection_changed()
 {
 	//Connected on treeview::selection::changed
 
-	if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
+	//if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
+	if(send_selection && get_selection()->count_selected_rows()==1)
+	//if(has_focus () && get_selection()->count_selected_rows()==1)
 	{
 
 		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
 		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
 		{
 			selected_kf = keyframe;
-			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe);
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe, (void*)this);
 		}
 
 	}
 }
 
 void
-KeyframeTree::on_keyframe_changed(synfig::Keyframe keyframe)
+KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe, void* emiter)
 {
 	Gtk::TreeModel::Path path;
+
+	//if((void*)this == emiter)	return;
 
 	if(keyframe && keyframe != selected_kf)
 	{

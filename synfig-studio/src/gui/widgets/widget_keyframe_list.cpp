@@ -209,7 +209,7 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 	dragging_kf_time=selected_kf.get_time();
 
 	if(canvas_interface_)
-		canvas_interface_->signal_keyframe_selected()(selected_kf);
+		canvas_interface_->signal_keyframe_selected()(selected_kf, (void*)this);
 
 	dragging_=false;
 	queue_draw();
@@ -217,8 +217,15 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 }
 
 void
-Widget_Keyframe_List::on_keyframe_changed(const synfig::Keyframe keyframe)
+Widget_Keyframe_List::on_keyframe_changed(synfig::Keyframe keyframe, void* emiter)
 {
+//	if (dynamic_cast<const Widget_Keyframe_List*>(emiter))
+	{
+		if (keyframe == selected_kf)	return;
+	}
+	//Gtk::Object* ouip = dynamic_cast<Gtk::Object*>(emiter);
+	//if((void*)this == emiter)	return;
+
 	if (keyframe == selected_kf)	return;
 
 	selected_kf=keyframe;
@@ -259,7 +266,7 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 			try
 			{
 				canvas_interface_->get_instance()->perform_action(action);
-				canvas_interface_->signal_keyframe_selected()(selected_kf);
+				canvas_interface_->signal_keyframe_selected()(selected_kf, (void*)this);
 			}
 			catch(...)
 			{
