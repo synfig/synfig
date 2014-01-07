@@ -52,9 +52,18 @@ extern "C" { __declspec(dllimport) int _isnan(double x); }
 inline bool isnan(double x) { return x != x; }
 inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
+#ifdef isinf
+#undef isinf
+#endif
+inline bool isinf(double x) { return !isnan(x) && isnan(x - x); }
+inline bool isinf(float x) { return !isnan(x) && isnan(x - x); }
+#define SYNFIG_ISINF_FIX 1
 #else
 #ifndef isnan
 #define isnan(x) (std::isnan)(x)
+#endif
+#ifndef isinf
+#define isinf(x) (std::isinf)(x)
 #endif
 #endif
 
@@ -190,6 +199,19 @@ public:
 	}
 
 	static const Vector zero() { return Vector(0,0); }
+
+	Vector multiply_coords(const Vector &rhs) const
+		{ return Vector(_x*rhs._x, _y*rhs._y); }
+	Vector divide_coords(const Vector &rhs) const
+		{ return Vector(_x/rhs._x, _y/rhs._y); }
+	Vector one_divide_coords() const
+		{ return Vector(1.0/_x, 1.0/_y); }
+	Vector rotate(const Angle &rhs) const
+	{
+		value_type s = Angle::sin(rhs).get();
+		value_type c = Angle::cos(rhs).get();
+		return Vector(c*_x - s*_y, s*_x + c*_y);
+	}
 };
 
 /*!	\typedef Point

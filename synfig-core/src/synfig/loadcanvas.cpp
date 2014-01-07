@@ -52,7 +52,9 @@
 #include "valuenode_linear.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
+#include "valuenode_add.h"
 #include "valuenode_scale.h"
+#include "valuenode_exp.h"
 #include "valuenode_timedswap.h"
 #include "valuenode_twotone.h"
 #include "valuenode_stripes.h"
@@ -845,6 +847,130 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 	return ret;
 }
 
+Transformation
+CanvasParser::parse_transformation(xmlpp::Element *element)
+{
+	assert(element->get_name()=="transformation");
+
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <transformation>");
+		return Transformation();
+	}
+
+	Transformation transformation;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="offset")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <offset>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			transformation.offset=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="angle")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
+				continue;
+			}
+
+			transformation.angle=parse_angle(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="skew_angle")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
+				continue;
+			}
+
+			transformation.skew_angle=parse_angle(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="scale")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <scale>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			transformation.scale=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
+			error_unexpected_element(child,child->get_name());
+		}
+	}
+	return transformation;
+}
+
 WidthPoint
 CanvasParser::parse_width_point(xmlpp::Element *element)
 {
@@ -1296,16 +1422,22 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		ret.set_static(parse_static(element));
 		ret.set_interpolation(parse_interpolation(element,"interpolation"));
 		return ret;
-	}	else
+	}
+	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
 	else
 	if(element->get_name()=="guid")
 		return parse_guid(element);
+	else
 	if(element->get_name()=="width_point")
 		return parse_width_point(element);
+	else
 	if(element->get_name()=="dash_item")
 		return parse_dash_item(element);
+	else
+	if(element->get_name()=="transformation")
+		return parse_transformation(element);
 	else
 	if(element->get_name()=="canvas")
 	{
@@ -2402,9 +2534,10 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 
 	// Handle the version attribute
+	String version;
 	if(element->get_attribute("version"))
 	{
-		String version(element->get_attribute("version")->get_value());
+		version = element->get_attribute("version")->get_value();
 		if(version>layer->get_version())
 			warning(element,_("Installed layer version is smaller than layer version in file"));
 		if(version!=layer->get_version())
@@ -2420,6 +2553,32 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(element->get_attribute("exclude_from_rendering"))
 		layer->set_exclude_from_rendering(element->get_attribute("exclude_from_rendering")->get_value()=="false"?false:true);
+
+	// Load old groups
+	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
+	ValueNode::Handle origin_node;
+	ValueNode_Composite::Handle transformation_node;
+	ValueNode_Add::Handle offset_node;
+	ValueNode_Scale::Handle scale_scalar_node;
+	ValueNode_Exp::Handle scale_node;
+	bool origin_const=true, focus_const=true, zoom_const=true;
+	if (old_pastecanvas) {
+		transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
+		layer->connect_dynamic_param("transformation", ValueNode::Handle(transformation_node));
+
+		offset_node = ValueNode_Add::create(ValueBase(Vector(0,0)));
+		transformation_node->set_link("offset", offset_node);
+
+		origin_node = offset_node->get_link("rhs");
+		layer->connect_dynamic_param("origin", ValueNode::Handle(origin_node));
+
+		scale_scalar_node = ValueNode_Scale::create(ValueBase(Vector(1,1)));
+		transformation_node->set_link("scale", scale_scalar_node);
+
+		scale_node = ValueNode_Exp::create(ValueBase(Real(1)));
+		scale_scalar_node->set_link("scalar", scale_node);
+	}
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -2514,40 +2673,77 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
+			ValueBase data;
+			handle<ValueNode> value_node;
+
 			// If we recognize the element name as a
 			// ValueBase, then treat is at one
 			if(/*(*iter)->get_name()!="canvas" && */ValueBase::ident_type((*iter)->get_name()) && !dynamic_cast<xmlpp::Element*>(*iter)->get_attribute("guid"))
 			{
-				ValueBase data=parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+				data=parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
 
 				if(!data.is_valid())
 				{
 					error((*iter),_("Bad data for <param>"));
 					continue;
 				}
-
-				// Set the layer's parameter, and make sure that
-				// the layer liked it
-				if(!layer->set_param(param_name,data))
-				{
-					warning((*iter),strprintf(_("Layer '%s' rejected value for parameter '%s'"),
-											  element->get_attribute("type")->get_value().c_str(),
-											  param_name.c_str()));
-					continue;
-				}
 			}
 			else	// ... otherwise, we assume that it is a ValueNode
 			{
-				handle<ValueNode> value_node=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+				value_node=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
 
 				if(!value_node)
 				{
 					error((*iter),_("Bad data for <param>"));
 					continue;
 				}
+			}
 
-				// Assign the value_node to the dynamic parameter list
-				layer->connect_dynamic_param(param_name,value_node);
+			bool processed = false;
+			if (old_pastecanvas)
+			{
+				processed = true;
+				bool is_const = !value_node;
+				ValueNode::Handle node = value_node ? value_node : ValueNode_Const::create(data,canvas);
+				if (param_name == "origin")
+				{
+					if (!is_const) origin_const = false;
+					offset_node->set_link("lhs", node);
+				}
+				else
+				if (param_name == "focus")
+				{
+					if (!is_const) focus_const = false;
+					origin_node = node;
+					layer->connect_dynamic_param("origin_node", ValueNode::Handle(origin_node));
+					offset_node->set_link("rhs", node);
+				}
+				else
+				if (param_name == "zoom")
+				{
+					if (!is_const) zoom_const = false;
+					scale_node->set_link("exp", node);
+				}
+				else
+					processed = false;
+			}
+
+			if (!processed)
+			{
+				if (value_node) {
+					// Assign the value_node to the dynamic parameter list
+					layer->connect_dynamic_param(param_name,value_node);
+				} else {
+					// Set the layer's parameter, and make sure that
+					// the layer liked it
+					if(!layer->set_param(param_name,data))
+					{
+						warning((*iter),strprintf(_("Layer '%s' rejected value for parameter '%s'"),
+												  element->get_attribute("type")->get_value().c_str(),
+												  param_name.c_str()));
+						continue;
+					}
+				}
 			}
 
 			// Warn if there is trash after the param value
@@ -2560,6 +2756,46 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		{
 			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
+	}
+
+	// Simplify old pastecanvas conversion
+	if (old_pastecanvas) {
+		bool focus_zero = focus_const && (*origin_node)(0).get(Vector()) == Vector(0,0);
+		bool zoom_zero = zoom_const && (*scale_node->get_link("exp"))(0).get(Real()) == 0;
+		if (origin_const && focus_const && zoom_const)
+		{
+			ValueBase origin = (*origin_node)(0);
+			transformation_node->set_link("offset", ValueNode_Const::create((*offset_node)(0), canvas));
+			transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
+			layer->disconnect_dynamic_param("origin");
+			layer->set_param("origin", origin);
+		} else {
+			if (origin_const && focus_const)
+			{
+				ValueBase origin = (*origin_node)(0);
+				layer->disconnect_dynamic_param("origin");
+				layer->set_param("origin", origin);
+				transformation_node->set_link("offset", ValueNode_Const::create((*offset_node)(0), canvas));
+			} else
+			if (focus_zero)
+			{
+				layer->disconnect_dynamic_param("origin");
+				transformation_node->set_link("offset", offset_node->get_link("lhs"));
+			}
+			else
+			if (focus_const)
+			{
+				ValueBase origin = (*origin_node)(0);
+				layer->disconnect_dynamic_param("origin");
+				layer->set_param("origin", origin);
+			}
+
+			if (zoom_zero)
+				transformation_node->set_link("scale", ValueNode_Const::create(ValueBase(Vector(1,1)), canvas));
+			else
+			if (zoom_const)
+				transformation_node->set_link("scale", ValueNode_Const::create((*scale_scalar_node)(0), canvas));
 		}
 	}
 

@@ -65,6 +65,16 @@ public:
 		);
 	}
 
+	static Rect infinite()
+	{
+		return Rect(
+			-INFINITY,
+			-INFINITY,
+			INFINITY,
+			INFINITY
+		);
+	}
+
 	Rect() { }
 
 	Rect(const Point& x) { set_point(x); }
@@ -173,6 +183,11 @@ public:
 	bool operator!=(const Rect &rhs)const { return get_min() != rhs.get_min() || get_max() != rhs.get_max(); }
 
 	bool is_valid()const { return valid(); }
+
+	Rect multiply_coords(const Vector &rhs) const
+		{ return Rect(minx*rhs[0], miny*rhs[1], maxx*rhs[0], maxy*rhs[1]); }
+	Rect divide_coords(const Vector &rhs) const
+		{ return Rect(minx/rhs[0], miny/rhs[1], maxx/rhs[0], maxy/rhs[1]); }
 }; // END of class Rect
 
 }; // END of namespace synfig

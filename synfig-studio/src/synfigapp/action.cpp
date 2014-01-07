@@ -88,6 +88,8 @@
 #include "actions/valuedesclink.h"
 #include "actions/valuedescblinelink.h"
 #include "actions/valuedescremovesmart.h"
+#include "actions/valuedescbonelink.h"
+#include "actions/valuedesccreatechildbone.h"
 
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
@@ -235,6 +237,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescLinkOpposite);
 	ADD_ACTION(Action::ValueDescBLineLink);
 	ADD_ACTION(Action::ValueDescRemoveSmart);
+	ADD_ACTION(Action::ValueDescBoneLink);
+	ADD_ACTION(Action::ValueDescCreateChildBone);
 
 	ADD_ACTION(Action::WaypointAdd);
 	ADD_ACTION(Action::WaypointSet);

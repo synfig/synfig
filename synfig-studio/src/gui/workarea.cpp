@@ -1855,7 +1855,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			if(duck)
 			{
-				if (!duck->get_editable())
+				if (!duck->get_editable(get_alternative_mode()))
 					return true;
 
 				//get_selected_duck()->signal_user_click(0)();
@@ -2000,7 +2000,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if(get_selected_ducks().size()<=1)
 					duck->signal_user_click(2)();
 				else
-					canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,BUTTON_RIGHT,mouse_pos,pressure,modifier));
+					canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,BUTTON_RIGHT,mouse_pos,pressure,modifier,duck));
 				return true;
 			}
 			else if(bezier)
@@ -3503,6 +3503,7 @@ studio::WorkArea::set_zoom(float z)
 	refreshes+=5;
 	async_update_preview();
 	//queue_render_preview();
+	canvas_view->queue_rebuild_ducks();
 }
 
 void

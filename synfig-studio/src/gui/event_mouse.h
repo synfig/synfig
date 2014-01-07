@@ -30,6 +30,7 @@
 #include <synfig/vector.h>
 #include "smach.h"
 #include <gdkmm/types.h>
+#include "duck.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -57,21 +58,24 @@ struct EventMouse : public Smach::event
 	MouseButton button;
 	float pressure;
 	Gdk::ModifierType modifier;
+	etl::handle<Duck> duck;
 
-	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0), etl::handle<Duck> duck = etl::handle<Duck>()):
 		Smach::event(id),
 		pos(pos),
 		button(button),
 		pressure(button==BUTTON_NONE?0.0f:1.0f),
-		modifier(modifier)
+		modifier(modifier),
+		duck(duck)
 	{ }
 
-	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, float pressure, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, float pressure, Gdk::ModifierType modifier=Gdk::ModifierType(0), etl::handle<Duck> duck = etl::handle<Duck>()):
 		Smach::event(id),
 		pos(pos),
 		button(button),
 		pressure(pressure),
-		modifier(modifier)
+		modifier(modifier),
+		duck(duck)
 	{ }
 }; // END of EventMouse
 

@@ -43,6 +43,7 @@
 #include "dashitem.h"
 #include "exception.h"
 #include "interpolation.h"
+#include "transformation.h"
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -117,6 +118,7 @@ public:
 		TYPE_GRADIENT,		//!< Color Gradient
 		TYPE_BONE,			//!< Bone
 		TYPE_VALUENODE_BONE,//!< ValueNode_Bone
+		TYPE_TRANSFORMATION,//!< Transformation
 
 		TYPE_END			//!< Not a valid type, used for sanity checks
 	};
@@ -389,6 +391,7 @@ public:
 		{ return TYPE_LIST; }
 	template <class T> static Type get_type(const std::list<T> &/*x*/)
 		{ return TYPE_LIST; }
+	static Type get_type(const Transformation&) { return TYPE_TRANSFORMATION; }
 	// ========================================================================
 
 
@@ -414,6 +417,7 @@ public:
 	//operator const char *()const {  return get(String()).c_str(); }
 	operator const Segment&()const { return get(Segment()); }
 	operator const Bone&()const { return get(Bone()); }
+	operator const Transformation&()const { return get(Transformation()); }
 
 
 	/*

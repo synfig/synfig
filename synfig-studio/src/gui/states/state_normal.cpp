@@ -83,6 +83,7 @@ using namespace studio;
 #define GDK_KEY_Alt_R GDK_Alt_R
 #define GDK_KEY_Meta_L GDK_Meta_L
 #define GDK_KEY_Meta_R GDK_Meta_R
+#define GDK_KEY_space GDK_space
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -583,6 +584,10 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
+	case GDK_KEY_space:
+		get_canvas_view()->get_work_area()->set_alternative_mode(true);
+		get_canvas_view()->get_work_area()->queue_draw();
+		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		set_rotate_flag(true);
@@ -612,6 +617,10 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
 	{
+	case GDK_KEY_space:
+		get_canvas_view()->get_work_area()->set_alternative_mode(false);
+		get_canvas_view()->get_work_area()->queue_draw();
+		break;
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		set_rotate_flag(false);
@@ -674,7 +683,7 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*x*/)
+StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 {
 	// synfig::info("STATE NORMAL: Received multiple duck click event");
 
@@ -697,7 +706,13 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*
 	Gtk::Menu *menu=manage(new Gtk::Menu());
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
-	canvas_view_->get_instance()->make_param_menu(menu,canvas_view_->get_canvas(),value_desc_list);
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	canvas_view_->get_instance()->make_param_menu(
+			menu,
+			canvas_view_->get_canvas(),
+			value_desc_list,
+			event.duck ? event.duck->get_value_desc() : synfigapp::ValueDesc()
+		);
 
 	menu->popup(3,gtk_get_current_event_time());
 

@@ -197,6 +197,8 @@ private:
 	Gradient parse_gradient(xmlpp::Element *node);
 	//! Bline Point Value Base Parsing Function
 	BLinePoint parse_bline_point(xmlpp::Element *node);
+	//! Transformation Value Base Parsing Function
+	Transformation parse_transformation(xmlpp::Element *node);
 
 	GUID parse_guid(xmlpp::Element *node);
 

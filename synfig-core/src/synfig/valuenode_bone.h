@@ -40,9 +40,7 @@ class ValueNode_Bone : public LinkableValueNode
 {
 	ValueNode::RHandle name_;
 	ValueNode::RHandle origin_;
-	ValueNode::RHandle origin0_;
 	ValueNode::RHandle angle_;
-	ValueNode::RHandle angle0_;
 	ValueNode::RHandle scalelx_;
 	ValueNode::RHandle scalely_;
 	ValueNode::RHandle scalex_;
@@ -50,7 +48,6 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle length_;
 	ValueNode::RHandle strength_;
 	ValueNode::RHandle parent_;
-	bool setup_;
 
 protected:
 	ValueNode_Bone();
@@ -117,9 +114,6 @@ public:
 
 	static ValueNode_Bone::Handle get_root_bone();
 
-	bool get_setup() { return setup_; }
-	void set_setup(bool value) { setup_ = value; changed(); }
-
 #ifdef _DEBUG
 	virtual void ref()const;
 	virtual bool unref()const;
@@ -128,8 +122,6 @@ public:
 #endif
 
 private:
-	virtual Matrix get_setup_matrix(Time t)const;
-	Matrix get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const;
 	virtual Matrix get_animated_matrix(Time t, Point child_origin)const;
 	Matrix get_animated_matrix(Time t, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
 	ValueNode_Bone::ConstHandle get_parent(Time t)const;
@@ -156,7 +148,6 @@ public:
 	virtual bool is_root()const { return true; }
 
 private:
-	Matrix get_setup_matrix(Time t)const;
 	Matrix get_animated_matrix(Time t, Point child_origin)const;
 
 protected:

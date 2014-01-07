@@ -37,6 +37,7 @@
 #include "canvasbase.h"
 #include "canvas.h"
 #include "rect.h"
+#include "transformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -53,14 +54,14 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	//! Parameter: (Vector) Origin of the paste canvas layer
+	//! Parameter: (Origin) Position offset
 	ValueBase param_origin;
-	//! Parameter: (Vector) Focus of the zoom of the paste canvas layer
-	ValueBase param_focus;
+	//! Parameter: (Transfromation) Position, rotation and scale of the paste canvas layer
+	ValueBase param_transformation;
+	//! Parameter: (Enable Transfromation)
+	ValueBase param_enable_transformation;
 	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
-	//! Parameter: (Real) Zoom of the paste canvas layer
-	ValueBase param_zoom;
 	//! Parameter: (Time) Time offset of the paste canvas layer
 	ValueBase param_time_offset;
 	//! Parameter: (Real) The value to grow the children outline layers
@@ -84,7 +85,7 @@ private:
 	mutable int depth;
 
 	//! Boundaries of the paste canvas layer. It is the canvas's boundary
-	//! affected by the zoom, origin and focus.
+	//! affected by the origin and transformation.
 	mutable Rect bounds;
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
@@ -152,14 +153,23 @@ public:
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
-	//! Gets zoom parameter
-	Real get_zoom()const { return param_zoom.get(Real()); }
 	//! Gets time offset parameter
 	Time get_time_offset()const { return param_time_offset.get(Time()); }
+
 	//! Get origin parameter
-	Point get_origin()const { return param_origin.get(Vector()); }
-	//! Get focus parameter
-	Vector get_focus()const { return param_focus.get(Vector()); }
+	Point get_origin()const { return param_origin.get(Point()); }
+	//! Get transformation parameter
+	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
+	//! Get enable transformation parameter
+	bool get_enable_transformation()const { return param_enable_transformation.get(true); }
+	//! Get summary transformation
+	Transformation get_summary_transformation()const
+	{
+		return get_enable_transformation()
+			 ? get_transformation().transform( Transformation(-get_origin()) )
+			 : Transformation();
+	}
+
 	//! Default constructor
 	Layer_PasteCanvas();
 	//! Destructor

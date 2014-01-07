@@ -83,8 +83,9 @@ struct ScreenDuck
 	bool selected;
 	bool hover;
 	Real width;
+	bool has_alternative;
 
-	ScreenDuck():width(0) { }
+	ScreenDuck():width(0),has_alternative(false) { }
 };
 
 void
@@ -101,6 +102,7 @@ Renderer_Ducks::render_vfunc(
 	const float pw(get_pw()),ph(get_ph());
 
 	const bool solid_lines(get_work_area()->solid_lines);
+	bool alternative = get_work_area()->get_alternative_mode();
 
 	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
@@ -214,28 +216,17 @@ Renderer_Ducks::render_vfunc(
 				sub_trans_point[1] = sub_trans_origin[1];
 		}
 
-		if ((*iter)->is_linear())
-		{
-			Point sub_trans_offset(sub_trans_point - sub_trans_origin);
-			Angle constrained_angle((*iter)->get_linear_angle());
-			Angle difference(Angle::tan(sub_trans_offset[1], sub_trans_offset[0])-constrained_angle);
-			Real length(Angle::cos(difference).get()*sub_trans_offset.mag());
-			if (length < 0) length = 0;
-			sub_trans_point[0] = sub_trans_origin[0] + length * Angle::cos(constrained_angle).get();
-			sub_trans_point[1] = sub_trans_origin[1] + length * Angle::sin(constrained_angle).get();
-		}
-
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
 		point[0]=(point[0]-window_start[0])/pw;
 		point[1]=(point[1]-window_start[1])/ph;
 
-		bool has_connect(false);
-		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
-		{
-			has_connect=true;
-		}
+		bool has_connect = (*iter)->get_tangent()
+		                || ((*iter)->get_type()&( Duck::TYPE_ANGLE
+		                					   | Duck::TYPE_SKEW
+		        		                       | Duck::TYPE_SCALE_X
+		        		                       | Duck::TYPE_SCALE_Y ));
 		if((*iter)->get_connect_duck())
 		{
 			has_connect=true;
@@ -305,12 +296,49 @@ Renderer_Ducks::render_vfunc(
 			cr->restore();
 		}
 
+		if((*iter)->is_axes_tracks())
+		{
+			Point pos((*iter)->get_point());
+			Point points[] = {
+				(*iter)->get_sub_trans_origin(),
+				(*iter)->get_sub_trans_point(Point(pos[0],0)),
+				(*iter)->get_sub_trans_point(),
+				(*iter)->get_sub_trans_point(Point(0,pos[1])),
+				(*iter)->get_sub_trans_origin()
+			};
+
+			cr->save();
+
+			for(int i = 0; i < 5; i++) {
+				Point p((*iter)->get_transform_stack().perform(points[i]));
+				Real x = (p[0]-window_start[0])/pw;
+				Real y = (p[1]-window_start[1])/ph;
+				if (i == 0) cr->move_to(x, y); else cr->line_to(x, y);
+			}
+
+			// Solid white box
+			cr->set_line_width(1.0);
+			cr->set_source_rgb(1,1,1); //DUCK_COLOR_BOX_1
+			cr->stroke_preserve();
+
+			// Dashes
+			cr->set_source_rgb(0,0,0); //DUCK_COLOR_BOX_2
+			std::valarray<double> dashes(2);
+			dashes[0]=5.0;
+			dashes[1]=5.0;
+			cr->set_dash(dashes, 0);
+			cr->stroke();
+
+			cr->restore();
+		}
+
 		ScreenDuck screen_duck;
 		screen_duck.pos=point;
 		screen_duck.selected=selected;
 		screen_duck.hover=hover;
+		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
 
-		if(!(*iter)->get_editable())
+		if(!(*iter)->get_editable(alternative))
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
 			if(0){
@@ -321,7 +349,7 @@ Renderer_Ducks::render_vfunc(
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
 				// Retrieve the split value of the bline point.
-				synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+				const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
 				synfig::LinkableValueNode::Handle parent;
 				if(v_d.parent_is_linkable_value_node())
 				{
@@ -597,12 +625,12 @@ Renderer_Ducks::render_vfunc(
 
 	}
 
-
 	for(;screen_duck_list.size();screen_duck_list.pop_front())
 	{
 		Gdk::Color color(screen_duck_list.front().color);
 		double radius = 4;
 		double outline = 1;
+		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
 
 		// Draw the hovered duck last (on top of everything)
 		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
@@ -634,15 +662,16 @@ Renderer_Ducks::render_vfunc(
 			M_PI*2
 			);
 
-		cr->set_source_rgb(
+		cr->set_source_rgba(
 			color.get_red_p(),
 			color.get_green_p(),
-			color.get_blue_p()
+			color.get_blue_p(),
+			duck_alternative ? 0.5 : 1.0
 			);
 		cr->fill_preserve();
 
 		cr->set_line_width(outline);
-		cr->set_source_rgb(0,0,0); //DUCK_COLOR_OUTLINE
+		cr->set_source_rgba(0,0,0,1); //DUCK_COLOR_OUTLINE
 		cr->stroke();
 
 		cr->restore();

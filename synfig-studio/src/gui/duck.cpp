@@ -76,48 +76,74 @@ int _DuckCounter::counter(0);
 /* === M E T H O D S ======================================================= */
 
 Duck::Duck():
-	rotations(synfig::Angle::deg(0)),
-	origin(0,0),
-	scalar(1),
-	editable(false),
+	guid_(0),
+	type_(TYPE_NONE),
+	editable_(false),
+	alternative_editable_(false),
 	edit_immediatelly_(false),
 	radius_(false),
-	linear_(false),
 	tangent_(false),
 	hover_(false),
 	ignore_(false),
-	exponential_(false)
+	exponential_(false),
+	track_axes_(false),
+	lock_aspect_(false),
+	scalar_(1),
+	origin_(0,0),
+	axis_x_angle_(Angle::deg(0)),
+	axis_x_mag_(1),
+	axis_y_angle_(Angle::deg(90)),
+	axis_y_mag_(1),
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++; }
 
 Duck::Duck(const synfig::Point &point):
-	type_(TYPE_POSITION),
-	point(point),
-	rotations(synfig::Angle::deg(0)),
-	origin(0,0),
-	scalar(1),
 	guid_(0),
-	editable(false),
+	type_(TYPE_POSITION),
+	editable_(false),
+	alternative_editable_(false),
 	edit_immediatelly_(false),
 	radius_(false),
-	linear_(false),
 	tangent_(false),
 	hover_(false),
-	ignore_(false)
+	ignore_(false),
+	exponential_(false),
+	track_axes_(false),
+	lock_aspect_(false),
+	scalar_(1),
+	origin_(0,0),
+	axis_x_angle_(Angle::deg(0)),
+	axis_x_mag_(1),
+	axis_y_angle_(Angle::deg(90)),
+	axis_y_mag_(1),
+	point_(point),
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
-	point(point),
-	rotations(synfig::Angle::deg(0)),
-	origin(origin),
-	scalar(1),
 	guid_(0),
-	editable(false),
+	type_(TYPE_NONE),
+	editable_(false),
+	alternative_editable_(false),
 	edit_immediatelly_(false),
 	radius_(true),
-	linear_(true),
 	tangent_(false),
 	hover_(false),
-	ignore_(false)
+	ignore_(false),
+	exponential_(false),
+	track_axes_(false),
+	lock_aspect_(false),
+	scalar_(1),
+	origin_(origin),
+	axis_x_angle_(Angle::deg(0)),
+	axis_x_mag_(1),
+	axis_y_angle_(Angle::deg(90)),
+	axis_y_mag_(1),
+	point_(point),
+	rotations_(synfig::Angle::deg(0)),
+	aspect_point_(1,1)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
@@ -125,9 +151,10 @@ Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
 synfig::GUID
 Duck::get_data_guid()const
 {
+	synfig::GUID type_guid = synfig::GUID::hasher(get_type());
 	if(value_desc_.is_value_node())
-		return value_desc_.get_value_node()->get_guid();
-	return synfig::GUID::hasher(get_name());
+		return type_guid ^ value_desc_.get_value_node()->get_guid();
+	return type_guid ^ synfig::GUID::hasher(get_name());
 }
 
 void
@@ -148,12 +175,46 @@ Duck::operator==(const Duck &rhs)const
 		return true;
 	return
 		name==rhs.name &&
-		scalar==rhs.scalar &&
+		scalar_==rhs.scalar_ &&
 		type_==rhs.type_ &&
 		transform_stack_.size()==rhs.transform_stack_.size();
 		//true;
 		//(origin_duck?*origin_duck==*rhs.origin_duck:origin==rhs.origin) &&
 		//(shared_point?*shared_point==*rhs.shared_point:point==rhs.point) ;
+}
+
+//! Sets the location of the duck with respect to the origin
+void
+Duck::set_point(const synfig::Point &x)
+{
+	if (is_aspect_locked())
+		point_ = aspect_point_ * (x * aspect_point_);
+	else
+		point_ = x;
+	if (shared_point_) *shared_point_ = point_;
+	if (shared_angle_) *shared_angle_ = point_.angle();
+	if (shared_mag_)   *shared_mag_ = point_.mag();
+}
+
+//! Returns the location of the duck
+synfig::Point
+Duck::get_point()const
+{
+	synfig::Point p;
+	if (!shared_point_ && !shared_angle_ && !shared_mag_)
+		p = point_;
+	else
+	if (shared_point_)
+		p = *shared_point_;
+	else
+		p = synfig::Point(
+				shared_mag_ ? *shared_mag_ : point_.mag(),
+				shared_angle_ ? *shared_angle_ : point_.angle() );
+
+	if (is_aspect_locked())
+		p = aspect_point_ * (p * aspect_point_);
+
+	return p;
 }
 
 synfig::Point
@@ -174,34 +235,6 @@ Duck::set_trans_point(const synfig::Point &x, const synfig::Time &time)
 	set_sub_trans_point(transform_stack_.unperform(x), time);
 }
 
-//! Sets the origin point.
-void
-Duck::set_origin(const synfig::Point &x)
-{
-	origin=x; origin_duck=0;
-}
-
-//! Sets the origin point as another duck
-void
-Duck::set_origin(const etl::handle<Duck> &x)
-{
-	origin_duck=x;
-}
-
-//! Retrieves the origin location
-synfig::Point
-Duck::get_origin()const
-{
-	return origin_duck?origin_duck->get_point():origin;
-}
-
-//! Retrieves the origin duck
-const etl::handle<Duck> &
-Duck::get_origin_duck() const
-{
-	return origin_duck;
-}
-
 //! Retrieves the origin location
 synfig::Point
 Duck::get_trans_origin()const
@@ -210,33 +243,55 @@ Duck::get_trans_origin()const
 }
 
 synfig::Point
+Duck::get_sub_trans_point_without_offset(const synfig::Point &x)const {
+	Point p(x*get_scalar());
+	return get_axis_x()*p[0]
+	     + get_axis_y()*p[1];
+}
+
+synfig::Point
+Duck::get_sub_trans_point(const synfig::Point &x)const
+{
+	Point p(x*get_scalar());
+	return get_axis_x()*p[0]
+	     + get_axis_y()*p[1]
+	     + get_sub_trans_origin();
+}
+
+synfig::Point
 Duck::get_sub_trans_point()const
 {
-	return get_point()*get_scalar()+get_sub_trans_origin();
+	return get_sub_trans_point(get_point());
+}
+
+synfig::Point
+Duck::get_sub_trans_point_without_offset()const {
+	return get_sub_trans_point_without_offset(get_point());
+}
+
+void
+Duck::set_sub_trans_point(const synfig::Point &x)
+{
+	Matrix m(get_axis_x(), get_axis_y(), get_sub_trans_origin());
+	m.invert();
+
+	Angle old_angle = get_point().angle();
+	set_point(m.get_transformed(x)/get_scalar());
+	Angle change = get_point().angle() - old_angle;
+	while (change < Angle::deg(-180)) change += Angle::deg(360);
+	while (change > Angle::deg(180)) change -= Angle::deg(360);
+	rotations_ += change;
 }
 
 void
 Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 {
-	if (get_type() == Duck::TYPE_TANGENT ||
-		get_type() == Duck::TYPE_ANGLE)
-	{
-		Angle old_angle = get_point().angle();
-		set_point((x-get_sub_trans_origin())/get_scalar());
-		Angle change = get_point().angle() - old_angle;
-		while (change < Angle::deg(-180)) change += Angle::deg(360);
-		while (change > Angle::deg(180)) change -= Angle::deg(360);
-		//int old_halves = round_to_int(Angle::deg(rotations).get()/180);
-		rotations += change;
-		//int new_halves = round_to_int(Angle::deg(rotations).get()/180);
-		/*if (old_halves != new_halves &&
-			(new_halves > 1 || new_halves < -1 ||
-			 old_halves > 1 || old_halves < -1))
-			synfig::info("rotation: %.2f turns", new_halves/2.0)*/;
-	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION || get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
-	{
-		set_point((x-get_sub_trans_origin())/get_scalar());
+	set_sub_trans_point(x);
 
+	if(get_type() == Duck::TYPE_VERTEX
+	|| get_type() == Duck::TYPE_POSITION
+	|| get_type() == Duck::TYPE_WIDTHPOINT_POSITION)
+	{
 		ValueNode_BLineCalcVertex::Handle bline_vertex;
 		ValueNode_Composite::Handle composite;
 
@@ -278,36 +333,22 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 				}
 			}
 	}
-	else set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
-void
-Duck::set_sub_trans_point(const synfig::Point &x)
+synfig::Point
+Duck::get_sub_trans_point(const Handle &duck, const Point &def, bool translate)const
 {
-	if (get_type() == Duck::TYPE_TANGENT ||
-		get_type() == Duck::TYPE_ANGLE)
-	{
-		Angle old_angle = get_point().angle();
-		set_point((x-get_sub_trans_origin())/get_scalar());
-		Angle change = get_point().angle() - old_angle;
-		while (change < Angle::deg(-180)) change += Angle::deg(360);
-		while (change > Angle::deg(180)) change -= Angle::deg(360);
-		//int old_halves = round_to_int(Angle::deg(rotations).get()/180);
-		rotations += change;
-		//int new_halves = round_to_int(Angle::deg(rotations).get()/180);
-		/*if (old_halves != new_halves &&
-			(new_halves > 1 || new_halves < -1 ||
-			 old_halves > 1 || old_halves < -1))
-			synfig::info("rotation: %.2f turns", new_halves/2.0);*/
-	}
-	else set_point((x-get_sub_trans_origin())/get_scalar());
+	// The origin needs to have the same transform stack as this duck
+	return !duck ? def
+		 : translate ? transform_stack_.unperform(duck->get_trans_point())
+	     : transform_stack_.unperform(duck->get_trans_point())
+		 - transform_stack_.unperform(duck->get_trans_origin());
 }
 
 synfig::Point
 Duck::get_sub_trans_origin()const
 {
-	// The origin needs to have the same transform stack as this duck
-	return origin_duck?transform_stack_.unperform(origin_duck->get_trans_point()):origin;
+	return get_sub_trans_point(origin_duck_,origin_);
 }
 
 #ifdef _DEBUG
@@ -322,7 +363,11 @@ Duck::type_name(Type id)
 	if (id & TYPE_WIDTH	  ) { if (!ret.empty()) ret += ", "; ret += "width"   ; }
 	if (id & TYPE_ANGLE	  ) { if (!ret.empty()) ret += ", "; ret += "angle"   ; }
 	if (id & TYPE_VERTEX  ) { if (!ret.empty()) ret += ", "; ret += "vertex"  ; }
-	if (id & TYPE_WIDTHPOINT_POSITION  ) { if (!ret.empty()) ret += ", "; ret += "widthpoint position"  ; }
+	if (id & TYPE_WIDTHPOINT_POSITION) { if (!ret.empty()) ret += ", "; ret += "widthpoint position"  ; }
+	if (id & TYPE_SCALE   ) { if (!ret.empty()) ret += ", "; ret += "scale"   ; }
+	if (id & TYPE_SCALE_X ) { if (!ret.empty()) ret += ", "; ret += "scale-x" ; }
+	if (id & TYPE_SCALE_Y ) { if (!ret.empty()) ret += ", "; ret += "scale-y" ; }
+	if (id & TYPE_SKEW    ) { if (!ret.empty()) ret += ", "; ret += "skew" ; }
 
 	if (ret.empty())
 		ret = "none";

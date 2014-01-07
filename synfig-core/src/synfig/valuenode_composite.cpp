@@ -41,6 +41,7 @@
 #include "color.h"
 #include "segment.h"
 #include "savecanvas.h"
+#include "transformation.h"
 
 #endif
 
@@ -123,6 +124,15 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			set_link("length",ValueNode_Const::create(ditem.get_length()));
 			set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
 			set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
+			break;
+		}
+		case ValueBase::TYPE_TRANSFORMATION:
+		{
+			Transformation transformation(value.get(Transformation()));
+			set_link("offset",ValueNode_Const::create(transformation.offset));
+			set_link("angle",ValueNode_Const::create(transformation.angle));
+			set_link("skew_angle",ValueNode_Const::create(transformation.skew_angle));
+			set_link("scale",ValueNode_Const::create(transformation.scale));
 			break;
 		}
 		default:
@@ -228,6 +238,16 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_side_type_after((*components[3])(t).get(int()));
 			return ret;
 		}
+		case ValueBase::TYPE_TRANSFORMATION:
+		{
+			Transformation ret;
+			assert(components[0] && components[1] && components[2] && components[3]);
+			ret.offset    = (*components[0])(t).get(Vector());
+			ret.angle     = (*components[1])(t).get(Angle());
+			ret.skew_angle = (*components[2])(t).get(Angle());
+			ret.scale     = (*components[3])(t).get(Vector());
+			return ret;
+		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
@@ -331,6 +351,19 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return false;
 			}
 			break;
+
+		case ValueBase::TYPE_TRANSFORMATION:
+			if( PlaceholderValueNode::Handle::cast_dynamic(x)
+			 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
+			 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
+			 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
+			 || (i == 3 && x->get_type()==ValueBase(Vector()).get_type())
+			) {
+				components[i]=x;
+				return true;
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -380,6 +413,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name[0]=='a')
 			return 3;
+		break;
 	case ValueBase::TYPE_SEGMENT:
 		if(name=="p1")
 			return 0;
@@ -389,6 +423,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="t2")
 			return 3;
+		break;
 	case ValueBase::TYPE_VECTOR:
 		if(name[0]=='x')
 			return 0;
@@ -396,6 +431,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 1;
 		if(name[0]=='z')		// \todo "z"?  really?
 			return 2;
+		break;
 	case ValueBase::TYPE_BLINEPOINT:
 		if(name[0]=='p' || name=="v1" || name=="p1")
 			return 0;
@@ -413,6 +449,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 6;
 		if(name=="split_angle")
 			return 7;
+		break;
 	case ValueBase::TYPE_WIDTHPOINT:
 		if(name=="position")
 			return 0;
@@ -426,6 +463,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="upper_bound")
 			return 5;
+		break;
 	case ValueBase::TYPE_DASHITEM:
 		if(name=="offset")
 			return 0;
@@ -434,6 +472,16 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 		if(name=="side_before")
 			return 2;
 		if(name=="side_after")
+			return 3;
+		break;
+	case ValueBase::TYPE_TRANSFORMATION:
+		if(name=="offset")
+			return 0;
+		if(name=="angle")
+			return 1;
+		if(name=="skew_angle")
+			return 2;
+		if(name=="scale")
 			return 3;
 	default:
 		break;
@@ -463,7 +511,8 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_COLOR ||
 		type==ValueBase::TYPE_BLINEPOINT ||
 		type==ValueBase::TYPE_WIDTHPOINT ||
-		type==ValueBase::TYPE_DASHITEM;
+		type==ValueBase::TYPE_DASHITEM ||
+		type==ValueBase::TYPE_TRANSFORMATION;
 }
 
 LinkableValueNode::Vocab
@@ -623,6 +672,24 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 			.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		);
+		return ret;
+	case ValueBase::TYPE_TRANSFORMATION:
+		ret.push_back(ParamDesc(ValueBase(),"offset")
+			.set_local_name(_("Offset"))
+			.set_description(_("The Offset component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"angle")
+			.set_local_name(_("Angle"))
+			.set_description(_("The Angle component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"skew_angle")
+			.set_local_name(_("Skew Angle"))
+			.set_description(_("The Skew Angle component of the transformation"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"scale")
+			.set_local_name(_("Scale"))
+			.set_description(_("The Scale component of the transformation"))
 		);
 		return ret;
 	default:

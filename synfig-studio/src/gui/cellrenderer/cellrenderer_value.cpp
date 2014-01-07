@@ -418,6 +418,27 @@ CellRenderer_ValueBase::render_vfunc(
 		}
 		break;
 
+	case ValueBase::TYPE_TRANSFORMATION:
+		{
+			const Transformation &transformation=data.get(Transformation());
+			const Vector &offset = transformation.offset;
+			const Angle::deg angle(transformation.angle);
+			const Vector &scale = transformation.scale;
+			Distance x(offset[0],Distance::SYSTEM_UNITS),y(offset[1],Distance::SYSTEM_UNITS);
+			x.convert(App::distance_system,get_canvas()->rend_desc());
+			y.convert(App::distance_system,get_canvas()->rend_desc());
+			Distance sx(scale[0],Distance::SYSTEM_UNITS),sy(scale[1],Distance::SYSTEM_UNITS);
+			sx.convert(App::distance_system,get_canvas()->rend_desc());
+			sy.convert(App::distance_system,get_canvas()->rend_desc());
+			property_text()=static_cast<Glib::ustring>(strprintf(
+				"%s,%s,%.2fᵒ,%s,%s",
+				x.get_string(6).c_str(), y.get_string(6).c_str(),
+				(Real)angle.get(),
+				sx.get_string(6).c_str(), sy.get_string(6).c_str()
+			));
+		}
+		break;
+
 	case ValueBase::TYPE_STRING:
 
 		if(data.get_type()==ValueBase::TYPE_STRING)

@@ -77,7 +77,7 @@ class Matrix
 public:
 	typedef Real value_type;
 
-private:
+public:
 	//! The matrix array
 	value_type m00, m01, m02;
 	value_type m10, m11, m12;
@@ -93,9 +93,28 @@ private:
 	// In affine transformation matrixes the values of
 	// m02=0, m12=0 and m22=1 for non projective transformations.
 
-public:
 	//!Default constructor makes an identity matrix
 	Matrix();
+
+	Matrix(
+		value_type m00, value_type m01, value_type m02,
+		value_type m10, value_type m11, value_type m12,
+		value_type m20, value_type m21, value_type m22
+	):
+		m00(m00), m01(m01), m02(m02),
+		m10(m10), m11(m11), m12(m12),
+		m20(m20), m21(m21), m22(m22)
+	{ }
+
+	Matrix(Vector axis_x, Vector axis_y, Vector offset):
+		m00(axis_x[0]), m01(axis_x[1]), m02(0),
+		m10(axis_y[0]), m11(axis_y[1]), m12(0),
+		m20(offset[0]), m21(offset[1]), m22(1)
+	{ }
+
+	Vector get_axis_x()const { return Vector(m00, m01); }
+	Vector get_axis_y()const { return Vector(m10, m11); }
+	Vector get_offset()const { return Vector(m20, m21); }
 
 	//!set_identity member. Set an identity matrix
 	Matrix &set_identity();
@@ -135,7 +154,7 @@ public:
 	//!get_transformed member function.
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
-	Vector get_transformed(const Vector &v)const;
+	Vector get_transformed(const Vector &v, bool translate = true)const;
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
@@ -155,18 +174,18 @@ public:
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting matrix
-	Matrix operator*(const Matrix &rhs);
+	Matrix operator*(const Matrix &rhs)const;
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting matrix
-	Matrix operator*(const value_type &rhs);
+	Matrix operator*(const value_type &rhs)const;
 
 	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
 	//! @return the resulting matrix
 	Matrix
-	operator+(const Matrix &rhs);
+	operator+(const Matrix &rhs)const;
 
 	bool is_invertible()const;
 

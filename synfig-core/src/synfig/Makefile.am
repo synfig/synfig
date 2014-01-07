@@ -128,7 +128,8 @@ VALUENODEHEADERS = \
 	valuenode_staticlist.h \
 	valuenode_bone.h \
 	valuenode_boneweightpair.h\
-	valuenode_wplist.h
+	valuenode_wplist.h \
+	valuenode_bonelink.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -188,7 +189,8 @@ VALUENODESOURCES = \
 	valuenode_staticlist.cpp \
 	valuenode_bone.cpp \
 	valuenode_boneweightpair.cpp\
-	valuenode_wplist.cpp
+	valuenode_wplist.cpp \
+	valuenode_bonelink.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \
@@ -222,6 +224,7 @@ SYNFIGHEADERS = \
 	surfacenew.h \
 	types.h \
 	vector.h \
+	transformation.h \
 	version.h \
 	boneweightpair.h \
 	activepoint.h \
@@ -270,7 +273,8 @@ SYNFIGHEADERS = \
 	filecontainer.h \
 	filecontainerzip.h \
 	filecontainertemporary.h \
-	zstreambuf.h
+	zstreambuf.h \
+	valuetransformation.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
