@@ -137,10 +137,15 @@ KeyframeTree::KeyframeTree()
 
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
+
+	// Listen to the changed selection signal to perform kf synchro thrue canvas interface
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::KeyframeTree::on_selection_changed));
+	send_selection = false;
 }
 
 KeyframeTree::~KeyframeTree()
 {
+	keyframeselected.disconnect();
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("KeyframeTree::~KeyframeTree(): Deleted");
 }
@@ -177,6 +182,14 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	);
 	cell_renderer_time->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
 	cell_renderer_time_delta->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
+
+	//Listen to kf selection change from canvas interface
+	keyframeselected = keyframe_tree_store_->canvas_interface()->signal_keyframe_selected().connect(
+		sigc::mem_fun(
+			*this,
+			&studio::KeyframeTree::on_keyframe_selected
+		)
+	);
 }
 
 void
@@ -258,6 +271,11 @@ KeyframeTree::on_event(GdkEvent *event)
 {
     switch(event->type)
     {
+	case GDK_KEY_PRESS:
+		{
+			send_selection = true;
+		}
+		break;
 	case GDK_BUTTON_PRESS:
 		{
 			Gtk::TreeModel::Path path;
@@ -265,6 +283,8 @@ KeyframeTree::on_event(GdkEvent *event)
 			int cell_x, cell_y;
 			int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
 			//tree_to_widget_coords (,, wx, wy);
+			send_selection = true;
+
 			if(!get_path_at_pos(
 				wx,wy,	// x, y
 				path, // TreeModel::Path&
@@ -308,4 +328,39 @@ KeyframeTree::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+}
+
+void
+KeyframeTree::on_selection_changed()
+{
+	//Connected on treeview::selection::changed
+
+	//if(send_selection && has_focus () && get_selection()->count_selected_rows()==1)
+	if(send_selection && get_selection()->count_selected_rows()==1)
+	{
+
+		Keyframe keyframe((*get_selection()->get_selected())[model.keyframe]);
+		if(keyframe && keyframe != selected_kf && keyframe_tree_store_)
+		{
+			selected_kf = keyframe;
+			keyframe_tree_store_->canvas_interface()->signal_keyframe_selected()(keyframe, (void*)this);
+		}
+
+	}
+}
+
+void
+KeyframeTree::on_keyframe_selected(synfig::Keyframe keyframe, void* emitter)
+{
+	Gtk::TreeModel::Path path;
+
+	if((void*)this == emitter)	return;
+
+	if(keyframe && keyframe != selected_kf)
+	{
+		selected_kf = keyframe;
+		send_selection = false;
+		if(keyframe_tree_store_ && keyframe_tree_store_->find_keyframe_path(keyframe,path))
+			set_cursor (path);
+	} else send_selection = true;
 }
