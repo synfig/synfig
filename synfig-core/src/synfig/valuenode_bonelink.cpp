@@ -32,8 +32,11 @@
 #include "valuenode_bonelink.h"
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
+#include "valuenode_staticlist.h"
+#include "valuenode_boneweightpair.h"
 #include "general.h"
 #include "valuetransformation.h"
+#include "boneweightpair.h"
 
 #endif
 
@@ -45,31 +48,40 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define epsilon 1e-6
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
+ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x, etl::loose_handle<Canvas> canvas):
 	LinkableValueNode(x.get_type())
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 
-	set_link("bone",			ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
-	set_link("base_value",		ValueNode_Const::create(x));
-	set_link("translate",		ValueNode_Const::create(true));
-	set_link("rotate",  		ValueNode_Const::create(true));
-	set_link("skew", 	 		ValueNode_Const::create(true));
-	set_link("scale_x", 		ValueNode_Const::create(true));
-	set_link("scale_y", 		ValueNode_Const::create(true));
+	ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
+	bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
+
+	set_link("bone_weight_list", bone_weight_list);
+	set_link("base_value",		 ValueNode_Const::create(x));
+	set_link("translate",		 ValueNode_Const::create(true));
+	set_link("rotate",  		 ValueNode_Const::create(true));
+	set_link("skew", 	 		 ValueNode_Const::create(true));
+	set_link("scale_x", 		 ValueNode_Const::create(true));
+	set_link("scale_y", 		 ValueNode_Const::create(true));
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for bone influence to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()));
+	set_parent_canvas(canvas);
 }
 
 ValueNode_BoneLink*
-ValueNode_BoneLink::create(const ValueBase &x)
+ValueNode_BoneLink::create(const ValueBase &x, etl::loose_handle<Canvas> canvas)
 {
-	return new ValueNode_BoneLink(x);
+	return new ValueNode_BoneLink(x, canvas);
 }
 
 LinkableValueNode*
@@ -91,7 +103,7 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,      ValueBase::TYPE_VALUENODE_BONE);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_, ValueBase::TYPE_LIST);
 	case 1:
 		if (get_type() == ValueBase::TYPE_NIL)
 		{
@@ -116,7 +128,7 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 	assert(i>=0 && i<link_count());
 	switch(i)
 	{
-	case 0: return bone_;
+	case 0: return bone_weight_list_;
 	case 1: return base_value_;
 	case 2: return translate_;
 	case 3: return rotate_;
@@ -131,7 +143,7 @@ void
 ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	LinkableValueNode::set_root_canvas(x);
-	bone_->set_root_canvas(x);
+	bone_weight_list_->set_root_canvas(x);
 	base_value_->set_root_canvas(x);
 	translate_->set_root_canvas(x);
 	rotate_->set_root_canvas(x);
@@ -143,21 +155,45 @@ ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
 Transformation
 ValueNode_BoneLink::get_bone_transformation(Time t)const
 {
-	Transformation transformation;
-	ValueNode_Bone::Handle bone_node = (*bone_)(t).get(ValueNode_Bone::Handle());
-	if (bone_node)
+	Matrix matrix;
+	matrix *= 0;
+	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
+	Real total_weight = 0;
+	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
 	{
-		Bone bone      = (*bone_node) (t).get(Bone());
+		Bone bone(iter->get(BoneWeightPair()).get_bone());
+		Real weight(iter->get(BoneWeightPair()).get_weight());
+
+		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+		{
+			printf("%s  *\n", Matrix().set_scale(bone.get_local_scale()).get_string(15, "local scale").c_str());
+			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
+		}
+
+		matrix += (Matrix().set_scale(bone.get_local_scale()) *
+				  bone.get_animated_matrix() *
+				  weight);
+		total_weight += weight;
+	}
+
+	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+	{
+		printf("%s:%d matrix:\n%s\n", __FILE__, __LINE__, matrix.get_string().c_str());
+		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
+	}
+
+	if (abs(total_weight) > epsilon) {
+		matrix *= (1/total_weight);
+		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+			printf("%s:%d final matrix:\n%s\n", __FILE__, __LINE__, matrix.get_string().c_str());
+
+		Transformation transformation(matrix);
+
 		bool translate = (*translate_)(t).get(true);
 		bool rotate    = (*rotate_)   (t).get(true);
 		bool skew      = (*rotate_)   (t).get(true);
 		bool scale_x   = (*scale_x_)  (t).get(true);
 		bool scale_y   = (*scale_y_)  (t).get(true);
-
-		transformation.set_matrix(
-			    Matrix().set_scale(bone.get_local_scale())
-			  * bone.get_animated_matrix()
-		);
 
 		if (!translate) transformation.offset = Vector(0.0, 0.0);
 		if (!rotate) transformation.angle = Angle::zero();
@@ -166,7 +202,7 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 		if (!scale_y) transformation.scale[1] = 1.0;
 	}
 
-	return transformation;
+	return Transformation();
 }
 
 ValueBase
@@ -204,9 +240,9 @@ ValueNode_BoneLink::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"bone")
-		.set_local_name(_("Bone"))
-		.set_description(_("The linked bone"))
+	ret.push_back(ParamDesc(ValueBase(),"bone_weight_list")
+		.set_local_name(_("Bone Weight List"))
+		.set_description(_("List of bones used to calculate the transformation"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"base_value")
