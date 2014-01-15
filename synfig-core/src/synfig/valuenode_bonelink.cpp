@@ -63,7 +63,7 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x, etl::loose_handle<Can
 	set_children_vocab(ret);
 
 	ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
-	bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
+	//bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 
 	set_link("bone_weight_list", bone_weight_list);
 	set_link("base_value",		 ValueNode_Const::create(x));
@@ -200,6 +200,7 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 		if (!skew) transformation.skew_angle = Angle::zero();
 		if (!scale_x) transformation.scale[0] = 1.0;
 		if (!scale_y) transformation.scale[1] = 1.0;
+		return transformation;
 	}
 
 	return Transformation();
