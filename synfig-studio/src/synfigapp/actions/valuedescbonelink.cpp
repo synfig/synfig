@@ -33,12 +33,16 @@
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
 #include "valuedescbonelink.h"
+#include "valuenodestaticlistinsert.h"
 
 #include <synfigapp/canvasinterface.h>
+#include <synfig/boneweightpair.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_bone.h>
 #include <synfig/valuenode_bonelink.h>
+#include <synfig/valuenode_boneweightpair.h>
+#include <synfig/valuenode_staticlist.h>
 #include <synfig/valuetransformation.h>
 
 #include <synfigapp/general.h>
@@ -154,6 +158,12 @@ Action::ValueDescBoneLink::prepare()
 	if (value_desc.parent_is_value_node())
 		bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
 
+	if (!bone_value_node)
+		throw Error(Error::TYPE_NOTREADY);
+
+	ValueNode_BoneWeightPair::Handle bone_weight_pair_node = ValueNode_BoneWeightPair::create(BoneWeightPair((*bone_value_node)(time), 1), get_canvas());
+	bone_weight_pair_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node), get_canvas()));
+
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
 		ValueDesc& value_desc(*iter);
@@ -163,8 +173,33 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
-		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type());
-		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
+		if (value_desc.is_value_node())
+		{
+			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
+			if (bone_link_node) {
+				// add bone into existant BoneLink
+				Action::Handle action = ValueNodeStaticListInsert::create();
+				action->set_param("canvas", get_canvas());
+				action->set_param("canvas_interface", get_canvas_interface());
+				action->set_param("value_desc", ValueDesc(ValueNode::Handle(bone_link_node->get_link("bone_weight_list")), 0));
+				action->set_param("item", ValueNode::Handle(bone_weight_pair_node));
+
+				assert(action->is_ready());
+				if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+				add_action_front(action);
+
+				continue;
+			}
+		}
+
+		// create new BoneLink
+		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
+
+		ValueNode_StaticList::Handle list_node = ValueNode_StaticList::Handle::cast_dynamic(bone_link_node->get_link("bone_weight_list"));
+		if (!list_node) continue;
+		list_node->add(bone_weight_pair_node);
+		list_node->changed();
+
 		bone_link_node->set_link("base_value",
 			ValueNode_Composite::create(
 				ValueTransformation::back_transform(
