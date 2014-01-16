@@ -57,6 +57,7 @@ MODULE_INVENTORY_BEGIN(mod_png)
 		TARGET(cairo_png_trgt)
 		TARGET(png_trgt)
 		TARGET(png_trgt_spritesheet)
+		TARGET_EXT(png_trgt, "png")
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER(png_mptr)
