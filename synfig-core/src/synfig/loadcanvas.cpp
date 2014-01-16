@@ -46,6 +46,7 @@
 #include "layer_pastecanvas.h"
 #include "loadcanvas.h"
 #include "valuenode.h"
+#include "boneweightpair.h"
 #include "valuenode_animated.h"
 #include "valuenode_composite.h"
 #include "valuenode_const.h"
@@ -62,6 +63,8 @@
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
 #include "valuenode_bone.h"
+#include "valuenode_boneweightpair.h"
+#include "valuenode_bonelink.h"
 #include "valuenode_wplist.h"
 #include "valuenode_dilist.h"
 
@@ -1736,6 +1739,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				continue;
 
 			try {
+				bool load_old_bonelink = false;
+				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && name == "bone")
+				{
+					name = "bone_weight_list";
+					load_old_bonelink = true;
+				}
+
 				index = value_node->get_link_index_from_name(name);
 
 				if(c[index])
@@ -1758,6 +1768,21 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 											 element->get_name().c_str(),
 											 id.c_str()));
 					continue;
+				}
+
+				if (load_old_bonelink)
+				{
+					LinkableValueNode::Handle v = ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(),1), canvas);
+					if (!v->set_link("bone", c[index]))
+					{
+						error(element, strprintf(_("Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),
+												 value_node->link_name(index).c_str(),
+												 id.c_str(),
+												 index,
+												 element->get_name().c_str()));
+						continue;
+					}
+					c[index] = v;
 				}
 
 				if(!value_node->set_link(index, c[index]))
