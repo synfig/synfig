@@ -1773,7 +1773,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				if (load_old_bonelink)
 				{
 					LinkableValueNode::Handle v = ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(),1), canvas);
-					if (!v->set_link("bone", c[index]))
+					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(value_node->get_link(index));
+					if (!list || !v->set_link("bone", c[index]))
 					{
 						error(element, strprintf(_("Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),
 												 value_node->link_name(index).c_str(),
@@ -1781,8 +1782,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 												 index,
 												 element->get_name().c_str()));
 						continue;
+					} else {
+						list->add(v);
+						list->changed();
 					}
-					c[index] = v;
+					c[index] = list;
 				}
 
 				if(!value_node->set_link(index, c[index]))
@@ -1832,6 +1836,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 				child_name = child->get_name();
 
+				bool load_old_bonelink = false;
+				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && child_name == "bone")
+				{
+					child_name = "bone_weight_list";
+					load_old_bonelink = true;
+				}
+
 				index = value_node->get_link_index_from_name(child_name);
 
 				if(c[index])
@@ -1863,6 +1874,24 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					error((*iter),strprintf(_("Parse of '%s' failed"),
 											child_name.c_str()));
 					continue;
+				}
+
+				if (load_old_bonelink)
+				{
+					LinkableValueNode::Handle v = ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(),1), canvas);
+					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(value_node->get_link(index));
+					if (!list || !v->set_link("bone", c[index]))
+					{
+						error(child,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d (%s)"),
+											  c[index]->get_name().c_str(),
+											  ValueBase::type_local_name(c[index]->get_type()).c_str(),
+											  index,
+											  value_node->link_name(index).c_str()));						continue;
+					} else {
+						list->add(v);
+						list->changed();
+					}
+					c[index] = list;
 				}
 
 				if(!value_node->set_link(index,c[index]))
