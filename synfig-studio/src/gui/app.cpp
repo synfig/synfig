@@ -92,6 +92,7 @@
 #include "states/state_draw.h"
 #include "states/state_fill.h"
 #include "states/state_bline.h"
+#include "states/state_brush.h"
 #include "states/state_polygon.h"
 #include "states/state_sketch.h"
 #include "states/state_gradient.h"
@@ -1536,6 +1537,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		/* other */
 		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		if(!getenv("SYNFIG_DISABLE_BRUSH"  )) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
 
