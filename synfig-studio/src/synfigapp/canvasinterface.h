@@ -188,6 +188,7 @@ public:	// Signal Interface
 	//! Signal called when a keyframe is changed
 	sigc::signal<void,synfig::Keyframe>& signal_keyframe_changed() { return signal_keyframe_changed_; }
 	//! Signal called when a keyframe is selected
+	/*!	Second parameter (void*) hold 'this*' of the signal emiter class (to prevent endless loop)*/
 	sigc::signal<void,synfig::Keyframe,void*>& signal_keyframe_selected() { return signal_keyframe_selected_; }
 
 public:
