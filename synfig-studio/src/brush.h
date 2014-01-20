@@ -69,9 +69,9 @@ namespace brush {
 			float radius,
 			float color_r, float color_g, float color_b,
 			float opaque, float hardness = 0.5,
-			float alpha_eraser = 1.0,
+			float /* alpha_eraser */ = 1.0,
 			float aspect_ratio = 1.0, float angle = 0.0,
-			float lock_alpha = 0.0
+			float /* lock_alpha */ = 0.0
 		) {
 			if (surface == NULL) return false;
 
@@ -120,7 +120,7 @@ namespace brush {
 
 		virtual void get_color(
 			float x, float y,
-			float radius,
+			float /* radius */,
 			float * color_r, float * color_g, float * color_b, float * color_a
 		) {
 			if (surface == NULL) {

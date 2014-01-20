@@ -31,9 +31,9 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <glibmm/timeval.h>
 
 #include "state_brush.h"
-#include "state_stroke.h"
 #include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
@@ -91,6 +91,9 @@ class studio::StateBrush_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
+	Glib::TimeVal time;
+	brush::Brush br;
+	brush::SurfaceWrapper wrapper;
 	TargetLayerHandle layer;
 
 	void refresh_ducks();
@@ -104,7 +107,8 @@ public:
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_down_handler(const Smach::event& x);
-	Smach::event_result event_stroke(const Smach::event& x);
+	Smach::event_result event_mouse_up_handler(const Smach::event& x);
+	Smach::event_result event_mouse_draw_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
@@ -129,7 +133,8 @@ StateBrush::StateBrush():
 	insert(event_def(EVENT_STOP,&StateBrush_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateBrush_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateBrush_Context::event_mouse_down_handler));
-	insert(event_def(EVENT_WORKAREA_STROKE,&StateBrush_Context::event_stroke));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateBrush_Context::event_mouse_up_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateBrush_Context::event_mouse_draw_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateBrush_Context::event_refresh_tool_options));
 }
 
@@ -177,6 +182,27 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 {
 	load_settings();
 
+	// configure brush
+	br.set_base_value(BRUSH_OPAQUE, 					 0.85f );
+	br.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
+	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
+	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
+	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
+	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
+	br.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
+	br.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
+	br.set_base_value(BRUSH_HARDNESS,					 0.69f );
+	br.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
+	br.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
+	br.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
+	br.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
+	br.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
+	br.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
+	br.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
+	br.set_base_value(BRUSH_SMUDGE,						 0.9f  );
+	br.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
+	br.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC, 4.0f  );
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -195,11 +221,9 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
-
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::dock_toolbox->refresh();
-
 	refresh_ducks();
 }
 
@@ -265,7 +289,9 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			layer = TargetLayerHandle::cast_dynamic( canvas_view_->get_selection_manager()->get_selected_layer() );
 			if (layer)
 			{
-				get_canvas_view()->get_smach().push_state(&state_stroke);
+				time.assign_current_time();
+				wrapper.surface = &layer->surface;
+				br.reset();
 				return Smach::RESULT_ACCEPT;
 			}
 			break;
@@ -277,66 +303,62 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 	return Smach::RESULT_OK;
 }
 
-#define SIMILAR_TANGENT_THRESHOLD	(0.2)
-
 Smach::event_result
-StateBrush_Context::event_stroke(const Smach::event& x)
+StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 {
-	const EventStroke& event(*reinterpret_cast<const EventStroke*>(&x));
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
+	{
+	case BUTTON_LEFT:
+		{
+			if (layer)
+			{
+				wrapper.surface = NULL;
+				layer = NULL;
+				return Smach::RESULT_ACCEPT;
+			}
+			break;
+		}
 
-	assert(event.stroke_data);
+	default:
+		break;
+	}
 
-	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
-
-	DirtyTrap dirty_trap(get_work_area());
-	Smach::event_result result = process_stroke(
-			layer,
-			event.stroke_data,
-			event.width_data,
-			(event.modifier & (Gdk::CONTROL_MASK | Gdk::BUTTON2_MASK)) != 0);
-	layer = NULL;
-	return result;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
-StateBrush_Context::process_stroke(etl::handle<Layer_Bitmap> layer, StrokeData stroke_data, WidthData /* width_data */, bool /* region_flag */)
+StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 {
-	brush::SurfaceWrapper wrapper(&layer->surface);
-	brush::Brush br;
-
-	// configure brush
-	// opaque_multiply 0.0 | pressure (0.000000 0.000000), (0.222222 0.000000), (0.324074 1.000000), (1.000000 1.000000)
-	br.set_base_value(BRUSH_OPAQUE, 					 0.85f );
-	br.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
-	br.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
-	br.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
-	br.set_base_value(BRUSH_HARDNESS,					 0.69f );
-	br.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
-	br.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
-	br.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
-	br.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
-	br.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
-	br.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
-	br.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
-	br.set_base_value(BRUSH_SMUDGE,						 0.9f  );
-	br.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
-	br.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC, 4.0f  );
-
-	Rect r = layer->get_bounding_rect();
-	for(StrokeData::value_type::const_iterator i = stroke_data->begin(); i != stroke_data->end(); i++)
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
 	{
-		br.stroke_to(
-			&wrapper,
-			((*i)[0] - r.minx)/(r.maxx - r.minx)*wrapper.surface->get_w(),
-			(1.0 - ((*i)[1] - r.miny)/(r.maxy - r.miny))*wrapper.surface->get_h(),
-			1.f, 0.f, 0.f, 1.f);
+	case BUTTON_LEFT:
+		{
+			if (layer)
+			{
+				Glib::TimeVal prev_time = time;
+				time.assign_current_time();
+				double delta_time = (time - prev_time).as_double();
+				Rect r = layer->get_bounding_rect();
+				br.stroke_to(
+					&wrapper,
+					(event.pos[0] - r.minx)/(r.maxx - r.minx)*wrapper.surface->get_w(),
+					(1.0 - (event.pos[1] - r.miny)/(r.maxy - r.miny))*wrapper.surface->get_h(),
+					event.pressure,
+					0.f, 0.f,
+					delta_time );
+				layer->changed();
+				return Smach::RESULT_ACCEPT;
+			}
+			break;
+		}
+
+	default:
+		break;
 	}
-	layer->changed();
-	return Smach::RESULT_ACCEPT;
+
+	return Smach::RESULT_OK;
 }
 
 void
