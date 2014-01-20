@@ -101,7 +101,10 @@ namespace brush {
 			float sn = sinf(angle/180.f*(float)PI);
 
 			// calculate bounds
-			float maxr = fabsf(aspect_ratio) > 1.f ? fabsf(radius*aspect_ratio) : fabsf(radius);
+			if (aspect_ratio < 1.0) aspect_ratio = 1.0;
+			if (hardness > 1.0) hardness = 1.0;
+			if (hardness < 0.0) hardness = 0.0;
+			float maxr = fabsf(radius);
 			int x0 = (int)(x - maxr - 1.f);
 			int x1 = (int)(x + maxr + 1.f);
 			int y0 = (int)(y - maxr - 1.f);
@@ -141,7 +144,6 @@ namespace brush {
 			apen.set_value(synfig::Color(color_r, color_g, color_b));
 			for(int py = y0; py <= y1; py++)
 			{
-				surface_type::alpha_pen ap(apen);
 				for(int px = x0; px <= x1; px++)
 				{
 					float dx = (float)px - x;
@@ -149,15 +151,17 @@ namespace brush {
 					float dyr = (dy*cs-dx*sn)*aspect_ratio;
 					float dxr = (dy*sn+dx*cs);
 					float dd = (dyr*dyr + dxr*dxr) / (radius*radius);
-					if (dd > 1.f) continue;
-
-					float opa = dd < hardness
-							  ? dd + 1-(dd/hardness)
-							  : hardness/(1-hardness)*(1-dd);
-					ap.set_alpha(opa * opaque);
-					ap.put_value();
-					ap.inc_x();
+					if (dd <= 1.f)
+					{
+						float opa = dd < hardness
+								  ? dd + 1-(dd/hardness)
+								  : hardness/(1-hardness)*(1-dd);
+						apen.set_alpha(opa * opaque);
+						apen.put_value();
+					}
+					apen.inc_x();
 				}
+				apen.dec_x(x1-x0+1);
 				apen.inc_y();
 			}
 
