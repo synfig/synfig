@@ -61,8 +61,27 @@ namespace brush {
 	public:
 		typedef synfig::Surface surface_type;
 		surface_type *surface;
+		int extra_left;
+		int extra_right;
+		int extra_top;
+		int extra_bottom;
+		int offset_x;
+		int offset_y;
 
-		explicit SurfaceWrapper(surface_type *surface = NULL): surface(surface) { }
+		explicit SurfaceWrapper(surface_type *surface = NULL):
+			surface(surface),
+			extra_left(0), extra_right(0),
+			extra_top(0), extra_bottom(0),
+			offset_x(0), offset_y(0) { }
+
+		void reset() {
+			extra_left = 0;
+			extra_right = 0;
+			extra_top = 0;
+			extra_bottom = 0;
+			offset_x = 0;
+			offset_y = 0;
+		}
 
 		virtual bool draw_dab(
 			float x, float y,
@@ -75,6 +94,9 @@ namespace brush {
 		) {
 			if (surface == NULL) return false;
 
+			x += (float)offset_x;
+			y += (float)offset_y;
+
 			float cs = cosf(angle/180.f*(float)PI);
 			float sn = sinf(angle/180.f*(float)PI);
 
@@ -85,10 +107,34 @@ namespace brush {
 			int y0 = (int)(y - maxr - 1.f);
 			int y1 = (int)(y + maxr + 1.f);
 
-			if (x0 < 0) x0 = 0;
-			if (x1 > surface->get_w()-1) x1 = surface->get_w()-1;
-			if (y0 < 0) y0 = 0;
-			if (y1 > surface->get_h()-1) y1 = surface->get_h()-1;
+			if (x0 < 0
+			 || y0 < 0
+			 || x1+1 > surface->get_w()
+			 || y1+1 > surface->get_h() )
+			{
+				int l = x0 < 0 ? x0 : 0;
+				int t = y0 < 0 ? y0 : 0;
+				int r = x1+1 > surface->get_w() ? x1+1 : surface->get_w();
+				int b = y1+1 > surface->get_h() ? y1+1 : surface->get_h();
+
+				extra_left   -= l; // increase because l and t is negative
+				extra_top    -= t;
+				extra_right  += r - surface->get_w();
+				extra_bottom += b - surface->get_h();
+
+				synfig::Surface tmp(surface->get_w(), surface->get_h());
+				tmp.copy(*surface);
+				surface->set_wh(r-l, b-t);
+				surface->clear();
+				synfig::Surface::pen p(surface->get_pen(-l, -t));
+				tmp.blit_to(p);
+
+				offset_x -= l;
+				offset_y -= t;
+				x -= (float)l; y -= (float)t;
+				x0 -= l; y0 -= t;
+				x1 -= l; y1 -= t;
+			}
 
 			surface_type::alpha_pen apen(surface->get_pen(x0, y0));
 			apen.set_blend_method(synfig::Color::BLEND_COMPOSITE);
@@ -127,6 +173,9 @@ namespace brush {
 				*color_r = 0.f; *color_g = 0.f; *color_b = 0.f; *color_a = 0.f;
 				return;
 			}
+
+			x += (float)offset_x;
+			y += (float)offset_y;
 
 			synfig::Color c = surface->cubic_sample(x, y);
 			*color_r = c.get_r();

@@ -256,6 +256,8 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
+			Mutex::Lock lock(mutex);
+
 			if (trimmed)
 			{
 				surface_pos[0]*=width;
@@ -333,6 +335,8 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
+			Mutex::Lock lock(mutex);
+
 			if (trimmed)
 			{
 				surface_pos[0]*=width;
@@ -392,6 +396,8 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 bool
 Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	Mutex::Lock lock(mutex);
+
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
 	int c(param_c.get(int()));
@@ -670,6 +676,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 bool
 Layer_Bitmap::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	Mutex::Lock lock(mutex);
+
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
 	int c(param_c.get(int()));

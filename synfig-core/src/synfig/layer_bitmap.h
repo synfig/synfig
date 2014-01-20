@@ -56,6 +56,7 @@ public:
 	ValueBase param_c;
 	ValueBase param_gamma_adjust;
 
+	mutable synfig::Mutex mutex;
 	mutable Surface surface;
 	mutable CairoSurface csurface;
 	mutable bool trimmed;

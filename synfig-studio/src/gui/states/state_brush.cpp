@@ -92,8 +92,7 @@ class studio::StateBrush_Context : public sigc::trackable
 	Gtk::Menu menu;
 
 	Glib::TimeVal time;
-	brush::Brush br;
-	brush::SurfaceWrapper wrapper;
+	brush::Brush brush_;
 	TargetLayerHandle layer;
 
 	void refresh_ducks();
@@ -183,25 +182,25 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	load_settings();
 
 	// configure brush
-	br.set_base_value(BRUSH_OPAQUE, 					 0.85f );
-	br.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
-	br.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
-	br.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
-	br.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
-	br.set_base_value(BRUSH_HARDNESS,					 0.69f );
-	br.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
-	br.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
-	br.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
-	br.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
-	br.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
-	br.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
-	br.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
-	br.set_base_value(BRUSH_SMUDGE,						 0.9f  );
-	br.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
-	br.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC, 4.0f  );
+	brush_.set_base_value(BRUSH_OPAQUE, 					 0.85f );
+	brush_.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
+	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
+	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
+	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
+	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
+	brush_.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
+	brush_.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
+	brush_.set_base_value(BRUSH_HARDNESS,					 0.69f );
+	brush_.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
+	brush_.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
+	brush_.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
+	brush_.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
+	brush_.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
+	brush_.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
+	brush_.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
+	brush_.set_base_value(BRUSH_SMUDGE,						 0.9f  );
+	brush_.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
+	brush_.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC, 4.0f  );
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -290,8 +289,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			if (layer)
 			{
 				time.assign_current_time();
-				wrapper.surface = &layer->surface;
-				br.reset();
+				brush_.reset();
 				return Smach::RESULT_ACCEPT;
 			}
 			break;
@@ -313,7 +311,6 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 		{
 			if (layer)
 			{
-				wrapper.surface = NULL;
 				layer = NULL;
 				return Smach::RESULT_ACCEPT;
 			}
@@ -340,14 +337,39 @@ StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 				Glib::TimeVal prev_time = time;
 				time.assign_current_time();
 				double delta_time = (time - prev_time).as_double();
-				Rect r = layer->get_bounding_rect();
-				br.stroke_to(
-					&wrapper,
-					(event.pos[0] - r.minx)/(r.maxx - r.minx)*wrapper.surface->get_w(),
-					(1.0 - (event.pos[1] - r.miny)/(r.maxy - r.miny))*wrapper.surface->get_h(),
-					event.pressure,
-					0.f, 0.f,
-					delta_time );
+
+				brush::SurfaceWrapper wrapper(&layer->surface);
+
+				Point p = event.pos;
+				Point tl = layer->get_param("tl").get(Point());
+				Point br = layer->get_param("br").get(Point());
+				int w = wrapper.surface->get_w();
+				int h = wrapper.surface->get_h();
+
+				{
+					Mutex::Lock lock(layer->mutex);
+					brush_.stroke_to(
+						&wrapper,
+						(float)((p[0] - tl[0])/(br[0] - tl[0])*w),
+						(float)((p[1] - tl[1])/(br[1] - tl[1])*h),
+						(float)event.pressure,
+						0.f, 0.f,
+						delta_time );
+				}
+
+				if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
+					Point d(
+						(Real)wrapper.extra_left/(Real)w*(br[0] - tl[0]),
+						(Real)wrapper.extra_top/(Real)h*(br[1] - tl[1]) );
+					layer->set_param("tl", ValueBase(tl-d));
+				}
+				if (wrapper.extra_right > 0 || wrapper.extra_bottom > 0) {
+					Point d(
+						(Real)wrapper.extra_right/(Real)w*(br[0] - tl[0]),
+						(Real)wrapper.extra_bottom/(Real)h*(br[1] - tl[1]) );
+					layer->set_param("br", ValueBase(br+d));
+				}
+
 				layer->changed();
 				return Smach::RESULT_ACCEPT;
 			}
