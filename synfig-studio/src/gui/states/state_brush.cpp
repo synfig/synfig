@@ -48,6 +48,7 @@
 #include <synfigapp/blineconvert.h>
 #include <synfigapp/wplistconverter.h>
 #include <synfigapp/main.h>
+#include <synfigapp/actions/layerpaint.h>
 
 #include <ETL/gaussian>
 #include "docks/dialog_tooloptions.h"
@@ -94,6 +95,9 @@ class studio::StateBrush_Context : public sigc::trackable
 	Glib::TimeVal time;
 	brush::Brush brush_;
 	TargetLayerHandle layer;
+	Surface undo_surface;
+	Point undo_tl;
+	Point undo_br;
 
 	void refresh_ducks();
 
@@ -288,6 +292,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			layer = TargetLayerHandle::cast_dynamic( canvas_view_->get_selection_manager()->get_selected_layer() );
 			if (layer)
 			{
+				synfig::Surface &surface = layer->surface;
+				undo_surface.set_wh(surface.get_w(), surface.get_h());
+				undo_surface.copy(surface);
+				undo_tl = layer->get_param("tl").get(Point());
+				undo_br = layer->get_param("br").get(Point());
 				time.assign_current_time();
 				brush_.reset();
 				return Smach::RESULT_ACCEPT;
@@ -311,7 +320,17 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 		{
 			if (layer)
 			{
+				etl::handle<synfigapp::Action::LayerPaint> action(new synfigapp::Action::LayerPaint());
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+
+				action->mark_as_already_applied(layer, undo_surface, undo_tl, undo_br);
+				get_canvas_interface()->get_instance()->perform_action(action);
+
 				layer = NULL;
+				undo_surface.set_wh(1, 1);
 				return Smach::RESULT_ACCEPT;
 			}
 			break;

@@ -18,6 +18,7 @@ LAYER_ACTION_HH = \
 	actions/layerlower.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
+	actions/layerpaint.h \
 	actions/layerparamconnect.h \
 	actions/layerparamdisconnect.h \
 	actions/layerparamset.h \
@@ -40,6 +41,7 @@ LAYER_ACTION_CC = \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
+	actions/layerpaint.cpp \
 	actions/layerparamconnect.cpp \
 	actions/layerparamdisconnect.cpp \
 	actions/layerparamset.cpp \
