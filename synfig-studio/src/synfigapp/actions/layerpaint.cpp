@@ -56,12 +56,158 @@ ACTION_SET_CVS_ID(Action::LayerPaint,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
+Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::first = NULL;
+Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::last = NULL;
+
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerPaint::LayerPaint():
+Action::LayerPaint::PaintStroke::PaintStroke():
+	prev(NULL),
+	next(NULL),
+	prevSameLayer(NULL),
+	nextSameLayer(NULL),
+	prepared(false),
 	applied(false)
+{
+}
+
+Action::LayerPaint::PaintStroke::~PaintStroke()
+{
+	if (prepared)
+	{
+		if (nextSameLayer != NULL)
+		{
+			if (prevSameLayer == NULL)
+				paint_self(nextSameLayer->surface);
+			else
+				nextSameLayer->points.insert(nextSameLayer->points.begin(), points.begin(), points.end());
+			nextSameLayer->prevSameLayer = prevSameLayer;
+		}
+		if (prevSameLayer != NULL) prevSameLayer->nextSameLayer = nextSameLayer;
+		if (prev == NULL) first = next; else prev->next = next;
+		if (next == NULL) last = prev; else next->prev = prev;
+	}
+}
+
+void
+Action::LayerPaint::PaintStroke::paint_prev(synfig::Surface &surface)
+{
+	if (prevSameLayer == NULL) {
+		surface = this->surface;
+		return;
+	}
+	prevSameLayer->paint_self(surface);
+}
+
+void
+Action::LayerPaint::PaintStroke::paint_self(synfig::Surface &surface)
+{
+	paint_prev(surface);
+	brushlib::SurfaceWrapper wrapper(&surface);
+	brush_.reset();
+	for(std::vector<PaintPoint>::const_iterator i = points.begin(); i != points.end(); i++)
+	{
+		brush_.stroke_to(&wrapper, i->x, i->y, i->pressure, 0.f, 0.f, i->dtime);
+		wrapper.offset_x = 0;
+		wrapper.offset_y = 0;
+	}
+}
+
+void
+Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
+{
+	assert(prepared);
+	assert(applied || points.empty());
+	assert(prevSameLayer == NULL || prevSameLayer->applied);
+	assert(nextSameLayer == NULL);
+
+	points.push_back(point);
+	applied = true;
+
+	brushlib::SurfaceWrapper wrapper(&layer->surface);
+	int w = wrapper.surface->get_w();
+	int h = wrapper.surface->get_h();
+	{
+		Mutex::Lock lock(layer->mutex);
+		brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.f, 0.f, point.dtime);
+	}
+
+	if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
+		new_tl -= Point(
+			(Real)wrapper.extra_left/(Real)w*(new_br[0] - new_tl[0]),
+			(Real)wrapper.extra_top/(Real)h*(new_br[1] - new_tl[1]) );
+		layer->set_param("tl", ValueBase(new_tl));
+	}
+	if (wrapper.extra_right > 0 || wrapper.extra_bottom > 0) {
+		new_br += Point(
+			(Real)wrapper.extra_right/(Real)w*(new_br[0] - new_tl[0]),
+			(Real)wrapper.extra_bottom/(Real)h*(new_br[1] - new_tl[1]) );
+		layer->set_param("br", ValueBase(new_br));
+	}
+	layer->changed();
+}
+
+void
+Action::LayerPaint::PaintStroke::prepare()
+{
+	assert(layer);
+	assert(!prepared);
+
+	prev = last; last = this;
+	if (prev == NULL) first = this; else prev->next = this;
+
+	for(PaintStroke *p = prev; p != NULL; p = p->prev)
+		if (p->layer == layer)
+		{
+			assert(p->nextSameLayer == NULL);
+			prevSameLayer = p;
+			p->nextSameLayer = this;
+			break;
+		}
+
+	if (prevSameLayer == NULL) surface = layer->surface;
+	new_tl = tl = layer->get_param("tl").get(Point());
+	new_br = br = layer->get_param("br").get(Point());
+
+	prepared = true;
+}
+
+
+void
+Action::LayerPaint::PaintStroke::undo()
+{
+	assert(prepared);
+	if (!applied) return;
+	{
+		Mutex::Lock lock(layer->mutex);
+		paint_prev(layer->surface);
+	}
+	applied = false;
+	layer->set_param("tl", ValueBase(tl));
+	layer->set_param("br", ValueBase(br));
+	layer->changed();
+}
+
+void
+Action::LayerPaint::PaintStroke::apply()
+{
+	assert(prepared);
+	if (applied) return;
+	{
+		Mutex::Lock lock(layer->mutex);
+		paint_self(layer->surface);
+	}
+	applied = true;
+	layer->set_param("tl", ValueBase(new_tl));
+	layer->set_param("br", ValueBase(new_br));
+	layer->changed();
+}
+
+
+
+Action::LayerPaint::LayerPaint()
 {
 }
 
@@ -73,7 +219,7 @@ Action::LayerPaint::get_param_vocab()
 }
 
 bool
-Action::LayerPaint::is_candidate(const ParamList &x)
+Action::LayerPaint::is_candidate(const ParamList & /* x */)
 {
 	return false;
 }
@@ -87,64 +233,19 @@ Action::LayerPaint::set_param(const synfig::String& name, const Action::Param &p
 bool
 Action::LayerPaint::is_ready()const
 {
-	if(!layer)
+	if(!stroke.is_prepared())
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
 
 void
-Action::LayerPaint::mark_as_already_applied(
-	etl::handle<synfig::Layer_Bitmap> layer,
-	const synfig::Surface &undo_surface,
-	const synfig::Point &undo_tl,
-	const synfig::Point &undo_br )
-{
-	assert(!applied);
-
-	Mutex::Lock lock(layer->mutex);
-
-	this->layer = layer;
-
-	this->undo_surface.set_wh(undo_surface.get_w(), undo_surface.get_h());
-	this->undo_surface.copy(undo_surface);
-	this->undo_tl = undo_tl;
-	this->undo_br = undo_br;
-
-	surface.set_wh(layer->surface.get_w(), layer->surface.get_h());
-	surface.copy(layer->surface);
-	tl = layer->get_param("tl").get(Point());
-	br = layer->get_param("br").get(Point());
-
-	applied = true;
-}
-
-void
 Action::LayerPaint::perform()
 {
-	if (!applied)
-	{
-		{
-			Mutex::Lock lock(layer->mutex);
-			layer->surface.set_wh(surface.get_w(), surface.get_h());
-			layer->surface.copy(surface);
-		}
-		layer->changed();
-		layer->set_param("tl", tl);
-		layer->set_param("br", br);
-		applied = true;
-	}
+	stroke.apply();
 }
 
 void
 Action::LayerPaint::undo()
 {
-	applied = false;
-	{
-		Mutex::Lock lock(layer->mutex);
-		layer->surface.set_wh(undo_surface.get_w(), undo_surface.get_h());
-		layer->surface.copy(undo_surface);
-	}
-	layer->changed();
-	layer->set_param("tl", undo_tl);
-	layer->set_param("br", undo_br);
+	stroke.undo();
 }

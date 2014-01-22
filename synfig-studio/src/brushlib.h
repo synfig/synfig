@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file brush.h
+/*!	\file brushlib.h
 **	\brief Helper file to integrte brushlib into synfig
 **
 **	$Id$
@@ -37,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace brush {
+namespace brushlib {
 	class ActiveSurface: public Surface {
 	public:
 		virtual bool draw_dab(
@@ -125,8 +125,8 @@ namespace brush {
 				extra_right  += r - surface->get_w();
 				extra_bottom += b - surface->get_h();
 
-				synfig::Surface tmp(surface->get_w(), surface->get_h());
-				tmp.copy(*surface);
+				synfig::Surface tmp;
+				tmp = *surface;
 				surface->set_wh(r-l, b-t);
 				surface->clear();
 				synfig::Surface::pen p(surface->get_pen(-l, -t));

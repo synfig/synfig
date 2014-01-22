@@ -28,7 +28,7 @@
 #define MAX3(a, b, c) ((a)>(b)?MAX((a),(c)):MAX((b),(c)))
 #define MIN3(a, b, c) ((a)<(b)?MIN((a),(c)):MIN((b),(c)))
 
-namespace brush {
+namespace brushlib {
 
 typedef struct { int x, y, w, h; } Rect;
 // originally from my mass project (mass.sourceforge.net)

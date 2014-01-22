@@ -29,6 +29,7 @@
 
 #include <synfig/layer_bitmap.h>
 #include <synfigapp/action.h>
+#include <brushlib.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,31 +47,62 @@ class LayerPaint :
 	public Undoable,
 	public CanvasSpecific
 {
-private:
-	etl::handle<synfig::Layer_Bitmap> layer;
-
-	synfig::Surface undo_surface;
-	synfig::Point undo_tl;
-	synfig::Point undo_br;
-
-	synfig::Surface surface;
-	synfig::Point tl;
-	synfig::Point br;
-
-	bool applied;
-
 public:
+	struct PaintPoint {
+		float x, y, pressure;
+		double dtime;
+		PaintPoint(): x(0), y(0), pressure(0), dtime(0) { }
+		PaintPoint(float x, float y, float pressure, double dtime):
+			x(x), y(y), pressure(pressure), dtime(dtime) { }
+	};
+
+	class PaintStroke {
+	private:
+		static PaintStroke *first, *last;
+		PaintStroke *prev, *next;
+		PaintStroke *prevSameLayer, *nextSameLayer;
+
+		etl::handle<synfig::Layer_Bitmap> layer;
+		brushlib::Brush brush_;
+
+		synfig::Surface surface;
+		synfig::Point tl;
+		synfig::Point br;
+
+		synfig::Point new_tl;
+		synfig::Point new_br;
+
+		std::vector<PaintPoint> points;
+		bool prepared;
+		bool applied;
+
+		void paint_prev(synfig::Surface &surface);
+		void paint_self(synfig::Surface &surface);
+
+	public:
+		PaintStroke();
+		~PaintStroke();
+
+		void set_layer(etl::handle<synfig::Layer_Bitmap> layer) { assert(!prepared); this->layer = layer; }
+		etl::handle<synfig::Layer_Bitmap> get_layer() const { return layer; }
+
+		brushlib::Brush &brush() { assert(!prepared); return brush_; }
+		const brushlib::Brush &get_brush() const { return brush_; }
+
+		bool is_prepared() const { return prepared; }
+
+		void prepare();
+		void undo();
+		void apply();
+		void add_point_and_apply(const PaintPoint &point);
+	};
+
+	PaintStroke stroke;
 
 	LayerPaint();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
-
-	void mark_as_already_applied(
-		etl::handle<synfig::Layer_Bitmap> layer,
-		const synfig::Surface &undo_surface,
-		const synfig::Point &undo_tl,
-		const synfig::Point &undo_br );
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;

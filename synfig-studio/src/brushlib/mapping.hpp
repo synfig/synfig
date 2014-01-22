@@ -20,7 +20,7 @@
 // user-defined mappings
 // (the curves you can edit in the brush settings)
 
-namespace brush {
+namespace brushlib {
 
 class Mapping {
 private:

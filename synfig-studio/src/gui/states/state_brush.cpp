@@ -55,10 +55,6 @@
 
 #include "general.h"
 
-#include "brush.h"
-
-#include <synfig/layer_bitmap.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -78,11 +74,6 @@ StateBrush studio::state_brush;
 
 class studio::StateBrush_Context : public sigc::trackable
 {
-	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
-	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
-	typedef Layer_Bitmap TargetLayer;
-	typedef etl::handle<TargetLayer> TargetLayerHandle;
-
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
@@ -93,11 +84,7 @@ class studio::StateBrush_Context : public sigc::trackable
 	Gtk::Menu menu;
 
 	Glib::TimeVal time;
-	brush::Brush brush_;
-	TargetLayerHandle layer;
-	Surface undo_surface;
-	Point undo_tl;
-	Point undo_br;
+	etl::handle<synfigapp::Action::LayerPaint> action;
 
 	void refresh_ducks();
 
@@ -115,7 +102,6 @@ public:
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
-	Smach::event_result process_stroke(TargetLayerHandle layer, StrokeData stroke_data, WidthData width_data, bool region_flag=false);
 
 	StateBrush_Context(CanvasView* canvas_view);
 	~StateBrush_Context();
@@ -185,27 +171,6 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 {
 	load_settings();
 
-	// configure brush
-	brush_.set_base_value(BRUSH_OPAQUE, 					 0.85f );
-	brush_.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
-	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
-	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
-	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
-	brush_.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
-	brush_.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
-	brush_.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
-	brush_.set_base_value(BRUSH_HARDNESS,					 0.69f );
-	brush_.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
-	brush_.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
-	brush_.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
-	brush_.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
-	brush_.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
-	brush_.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
-	brush_.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
-	brush_.set_base_value(BRUSH_SMUDGE,						 0.9f  );
-	brush_.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
-	brush_.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC, 4.0f  );
-
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -269,6 +234,12 @@ StateBrush_Context::~StateBrush_Context()
 Smach::event_result
 StateBrush_Context::event_stop_handler(const Smach::event& /*x*/)
 {
+	if (action)
+	{
+		get_canvas_interface()->get_instance()->perform_action(action);
+		action = NULL;
+	}
+
 	throw &state_normal;
 	return Smach::RESULT_OK;
 }
@@ -289,16 +260,41 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 	case BUTTON_LEFT:
 		{
 			// Enter the stroke state to get the stroke
-			layer = TargetLayerHandle::cast_dynamic( canvas_view_->get_selection_manager()->get_selected_layer() );
+			etl::handle<Layer_Bitmap> layer =
+				etl::handle<Layer_Bitmap>::cast_dynamic( canvas_view_->get_selection_manager()->get_selected_layer() );
 			if (layer)
 			{
-				synfig::Surface &surface = layer->surface;
-				undo_surface.set_wh(surface.get_w(), surface.get_h());
-				undo_surface.copy(surface);
-				undo_tl = layer->get_param("tl").get(Point());
-				undo_br = layer->get_param("br").get(Point());
+				action = new synfigapp::Action::LayerPaint();
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+
+				action->stroke.set_layer(layer);
+
+				// configure brush
+				brushlib::Brush &brush = action->stroke.brush();
+				brush.set_base_value(BRUSH_OPAQUE, 					 0.85f );
+				brush.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
+				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
+				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
+				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
+				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
+				brush.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
+				brush.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
+				brush.set_base_value(BRUSH_HARDNESS,					 0.69f );
+				brush.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
+				brush.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
+				brush.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
+				brush.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
+				brush.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
+				brush.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
+				brush.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
+				brush.set_base_value(BRUSH_SMUDGE,						 0.9f  );
+				brush.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
+				brush.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC,  4.0f  );
+
+				action->stroke.prepare();
+
 				time.assign_current_time();
-				brush_.reset();
 				return Smach::RESULT_ACCEPT;
 			}
 			break;
@@ -318,19 +314,10 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 	{
 	case BUTTON_LEFT:
 		{
-			if (layer)
+			if (action)
 			{
-				etl::handle<synfigapp::Action::LayerPaint> action(new synfigapp::Action::LayerPaint());
-				assert(action);
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-
-				action->mark_as_already_applied(layer, undo_surface, undo_tl, undo_br);
 				get_canvas_interface()->get_instance()->perform_action(action);
-
-				layer = NULL;
-				undo_surface.set_wh(1, 1);
+				action = NULL;
 				return Smach::RESULT_ACCEPT;
 			}
 			break;
@@ -351,45 +338,25 @@ StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 	{
 	case BUTTON_LEFT:
 		{
-			if (layer)
+			if (action)
 			{
 				Glib::TimeVal prev_time = time;
 				time.assign_current_time();
 				double delta_time = (time - prev_time).as_double();
 
-				brush::SurfaceWrapper wrapper(&layer->surface);
-
 				Point p = event.pos;
-				Point tl = layer->get_param("tl").get(Point());
-				Point br = layer->get_param("br").get(Point());
-				int w = wrapper.surface->get_w();
-				int h = wrapper.surface->get_h();
+				Point tl = action->stroke.get_layer()->get_param("tl").get(Point());
+				Point br = action->stroke.get_layer()->get_param("br").get(Point());
+				int w = action->stroke.get_layer()->surface.get_w();
+				int h = action->stroke.get_layer()->surface.get_h();
 
-				{
-					Mutex::Lock lock(layer->mutex);
-					brush_.stroke_to(
-						&wrapper,
+				action->stroke.add_point_and_apply(
+					synfigapp::Action::LayerPaint::PaintPoint(
 						(float)((p[0] - tl[0])/(br[0] - tl[0])*w),
 						(float)((p[1] - tl[1])/(br[1] - tl[1])*h),
 						(float)event.pressure,
-						0.f, 0.f,
-						delta_time );
-				}
+						delta_time ));
 
-				if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
-					Point d(
-						(Real)wrapper.extra_left/(Real)w*(br[0] - tl[0]),
-						(Real)wrapper.extra_top/(Real)h*(br[1] - tl[1]) );
-					layer->set_param("tl", ValueBase(tl-d));
-				}
-				if (wrapper.extra_right > 0 || wrapper.extra_bottom > 0) {
-					Point d(
-						(Real)wrapper.extra_right/(Real)w*(br[0] - tl[0]),
-						(Real)wrapper.extra_bottom/(Real)h*(br[1] - tl[1]) );
-					layer->set_param("br", ValueBase(br+d));
-				}
-
-				layer->changed();
 				return Smach::RESULT_ACCEPT;
 			}
 			break;

@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-namespace brush {
+namespace brushlib {
 
 // surface interface required by brush.hpp
 class Surface {

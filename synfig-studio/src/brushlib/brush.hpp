@@ -40,7 +40,7 @@
    copied into the global one, leaving the state intact.
  */
 
-namespace brush {
+namespace brushlib {
 
 class Brush {
 public:
