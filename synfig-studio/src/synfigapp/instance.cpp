@@ -53,6 +53,8 @@
 #include <synfig/valuenode_real.h>
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/layer_pastecanvas.h>
+#include <synfig/layer_bitmap.h>
+#include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
 #include <map>
@@ -385,6 +387,38 @@ Instance::save_as(const synfig::String &file_name)
 	bool embed_data = false;
 	bool extract_data = false;
 	std::string canvas_filename = file_name;
+
+	// save all layers
+	std::set<Layer::Handle> layers_to_save_set;
+	for(std::list<Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
+		layers_to_save_set.insert(*i);
+	for(std::set<Layer::Handle>::iterator i = layers_to_save_set.begin(); i != layers_to_save_set.end(); i++)
+	{
+		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(*i);
+		if (!layer_bitmap) continue;
+		if (!(*i)->get_param_list().count("filename")) continue;
+		ValueBase value = (*i)->get_param("filename");
+		if (!value.same_type_as(String())) continue;
+		String filename = value.get(String());
+		if (filename_extension(filename) != ".png") continue;
+		etl::handle<Target_Scanline> target
+			= etl::handle<Target_Scanline>(Target::create(Target::ext_book()["png"],filename,TargetParam()));
+		if (!target) continue;
+		target->set_canvas(get_canvas());
+		Surface &surface = layer_bitmap->surface;
+		RendDesc desc;
+		desc.set_w(surface.get_w());
+		desc.set_h(surface.get_h());
+		desc.set_x_res(1);
+		desc.set_y_res(1);
+		desc.set_frame_rate(1);
+		desc.set_frame(0);
+		desc.set_frame_start(0);
+		desc.set_frame_end(0);
+		target->set_rend_desc(&desc);
+		target->add_frame(&surface);
+	}
+
 	if (filename_extension(file_name) == ".sfg")
 	{
 		save_canvas_reference_directory_ = "#images/";

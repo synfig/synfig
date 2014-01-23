@@ -32,6 +32,7 @@
 #include "layerpaint.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/general.h>
+#include <synfigapp/instance.h>
 #include <synfig/layer_pastecanvas.h>
 #include <synfig/valuenode_composite.h>
 
@@ -242,10 +243,16 @@ void
 Action::LayerPaint::perform()
 {
 	stroke.apply();
+	get_canvas_interface()
+		->get_instance()
+		->register_layer_to_save(stroke.get_layer());
 }
 
 void
 Action::LayerPaint::undo()
 {
 	stroke.undo();
+	get_canvas_interface()
+		->get_instance()
+		->unregister_layer_to_save(stroke.get_layer());
 }

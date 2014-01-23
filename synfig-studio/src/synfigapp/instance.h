@@ -34,6 +34,7 @@
 #include <synfig/filecontainertemporary.h>
 #include <synfig/filesystemgroup.h>
 #include <list>
+#include <set>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 #include "action_system.h"
@@ -103,6 +104,8 @@ private:
 	std::string save_canvas_reference_directory_;
 	std::string save_canvas_reference_local_directory_;
 	FileReferenceList save_canvas_references_;
+	std::list< synfig::Layer::Handle > layers_to_save;
+
 	static bool save_canvas_callback(void *instance_ptr, synfig::Layer::ConstHandle layer, const std::string &param_name, std::string &filename);
 	void update_references_in_canvas(synfig::Canvas::Handle canvas);
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
@@ -116,8 +119,14 @@ protected:
 	*/
 
 public:
-
 	~Instance();
+
+	void register_layer_to_save(synfig::Layer::Handle layer) { layers_to_save.push_back(layer); }
+	void unregister_layer_to_save(synfig::Layer::Handle layer)
+	{
+		for(std::list<synfig::Layer::Handle>::iterator i = layers_to_save.begin(); i != layers_to_save.end(); i++)
+			if (*i == layer) { layers_to_save.erase(i); break; }
+	}
 
 	void set_selection_manager(const etl::handle<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
