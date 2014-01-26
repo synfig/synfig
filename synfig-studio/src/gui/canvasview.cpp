@@ -1471,9 +1471,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("options", _("Options")),
 		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
-	action_group->add( Gtk::Action::create("close", Gtk::StockID("gtk-close"), _("Close Window")),
-		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_view))
-	);
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance))
 	);
