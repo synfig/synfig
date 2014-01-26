@@ -967,13 +967,6 @@ init_ui_manager()
 "		<menuitem action='close' />"
 "		<menuitem action='close-document' />"
 "		<separator name='sep-file5'/>"
-"		<menu action='menu-panels'>"
-"			<menuitem action='panels-vertical' />"
-"			<menuitem action='panels-horizontal' />"
-"			<separator name='sep-file-panels1'/>"
-"			<menuitem action='panels-reset' />"
-"			<separator name='sep-file-panels2'/>"
-"		</menu>"
 "		<menuitem action='input-devices' />"
 "		<menuitem action='setup' />"
 "		<menuitem action='reset-initial-preferences' />"
@@ -1111,6 +1104,13 @@ init_ui_manager()
 "		<menuitem action='help-support'/>"
 "		<separator name='sep-help3'/>"
 "		<menuitem action='help-about'/>"
+"	</menu>"
+"	<menu action='menu-panels'>"
+"		<menuitem action='panels-vertical' />"
+"		<menuitem action='panels-horizontal' />"
+"		<separator name='sep-file-panels1'/>"
+"		<menuitem action='panels-reset' />"
+"		<separator name='sep-file-panels2'/>"
 "	</menu>";
 
 	Glib::ustring ui_info =
