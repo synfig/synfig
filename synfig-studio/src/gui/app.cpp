@@ -825,7 +825,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
 	// Add the synfigapp actions...
-	synfigapp::Action::Book::iterator iter;
+/*	synfigapp::Action::Book::iterator iter;
 	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 	{
 		actions_action_group->add(Gtk::Action::create(
@@ -834,7 +834,7 @@ init_ui_manager()
 			iter->second.local_name,iter->second.local_name
 		));
 	}
-
+*/
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
