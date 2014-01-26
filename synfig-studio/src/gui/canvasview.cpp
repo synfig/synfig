@@ -1438,7 +1438,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::Stock::SAVE_AS),
+	action_group->add( Gtk::Action::create("save-as", Gtk::Stock::SAVE_AS, _("Save As...")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
@@ -1456,19 +1456,19 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("cvs-commit", Gtk::StockID("synfig-cvs_commit")),
 		sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_cvs_commit))
 	);
-	action_group->add( Gtk::Action::create("import", _("Import")),
+	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &studio::CanvasView::image_import))
 	);
-	action_group->add( Gtk::Action::create("render", _("Render")),
+	action_group->add( Gtk::Action::create("render", _("Render...")),
 		sigc::mem_fun0(render_settings,&studio::RenderSettings::present)
 	);
-	action_group->add( Gtk::Action::create("preview", _("Preview")),
+	action_group->add( Gtk::Action::create("preview", _("Preview...")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
 	);
-	action_group->add( Gtk::Action::create("sound", _("Sound File")),
+	action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
 		sigc::mem_fun(*this,&CanvasView::on_audio_option)
 	);
-	action_group->add( Gtk::Action::create("options", _("Options")),
+	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
