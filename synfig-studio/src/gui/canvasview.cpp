@@ -1502,7 +1502,7 @@ CanvasView::init_menus()
 		SLOT_EVENT(EVENT_REFRESH)
 	);
 
-	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
+	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
 		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
 
