@@ -1122,26 +1122,6 @@ init_ui_manager()
 	#undef DEFINE_ACTION_2
 	#undef DEFINE_ACTION_SIG
 
-/*		"<ui>"
-        "  <menubar name='MenuBar'>"
-        "    <menu action='MenuFile'>"
-        "      <menuitem action='New'/>"
-        "      <menuitem action='Open'/>"
-        "      <separator/>"
-        "      <menuitem action='Quit'/>"
-        "    </menu>"
-        "    <menu action='MenuEdit'>"
-        "      <menuitem action='Cut'/>"
-        "      <menuitem action='Copy'/>"
-        "      <menuitem action='Paste'/>"
-        "    </menu>"
-        "  </menubar>"
-        "  <toolbar  name='ToolBar'>"
-        "    <toolitem action='Open'/>"
-        "    <toolitem action='Quit'/>"
-        "  </toolbar>"
-        "</ui>";
-*/
 	try
 	{
 		actions_action_group->set_sensitive(false);
