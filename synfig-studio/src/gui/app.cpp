@@ -836,82 +836,12 @@ init_ui_manager()
 	}
 
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
-#define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); actions_action_group->add(action); }
-#define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
 	DEFINE_ACTION("redo", Gtk::StockID("gtk-redo"));
 	DEFINE_ACTION("cut", Gtk::StockID("gtk-cut"));
 	DEFINE_ACTION("copy", Gtk::StockID("gtk-copy"));
 	DEFINE_ACTION("paste", Gtk::StockID("gtk-paste"));
-	DEFINE_ACTION("select-all-ducks", _("Select All Handles"));
-	DEFINE_ACTION("unselect-all-ducks", _("Unselect All Handles"));
-	DEFINE_ACTION("select-all-layers", _("Select All Layers"));
-	DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"));
-	DEFINE_ACTION("properties", _("Properties"));
-
-	DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
-	DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Handles"));
-	DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Handles"));
-	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Handles"));
-	DEFINE_ACTION("mask-width-ducks", _("Show Width Handles"));
-	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Handles"));
-	DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Handles"));
-	DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Handles"));
-	DEFINE_ACTION("mask-bone-ducks", _("Next Bone Handles"));
-	DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
-	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
-	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
-	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
-	DEFINE_ACTION("quality-03", _("Use Quality Level 3"));
-	DEFINE_ACTION("quality-04", _("Use Quality Level 4"));
-	DEFINE_ACTION("quality-05", _("Use Quality Level 5"));
-	DEFINE_ACTION("quality-06", _("Use Quality Level 6"));
-	DEFINE_ACTION("quality-07", _("Use Quality Level 7"));
-	DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
-	DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
-	DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
-	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-		DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
-	DEFINE_ACTION("play", _("Play"));
-	// DEFINE_ACTION("pause", _("Pause"));
-	DEFINE_ACTION("stop", _("Stop"));
-	DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
-	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
-	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
-	DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
-	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
-	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
-	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
-	DEFINE_ACTION("toggle-onion-skin", _("Toggle Onion Skin"));
-	DEFINE_ACTION("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
-	DEFINE_ACTION("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
-	DEFINE_ACTION("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit"));
-	DEFINE_ACTION("canvas-zoom-100", Gtk::StockID("gtk-zoom-100"));
-	DEFINE_ACTION("time-zoom-in", Gtk::StockID("gtk-zoom-in"));
-	DEFINE_ACTION("time-zoom-out", Gtk::StockID("gtk-zoom-out"));
-	DEFINE_ACTION("jump-next-keyframe", _("Jump to Next Keyframe"));
-	DEFINE_ACTION("jump-prev-keyframe", _("Jump to Prev Keyframe"));
-	DEFINE_ACTION("seek-next-frame", _("Next Frame"));
-	DEFINE_ACTION("seek-prev-frame", _("Prev Frame"));
-	DEFINE_ACTION("seek-next-second", _("Seek Forward"));
-	DEFINE_ACTION("seek-prev-second", _("Seek Backward"));
-	DEFINE_ACTION("seek-begin", _("Seek to Begin"));
-	DEFINE_ACTION("seek-end", _("Seek to End"));
-
-	DEFINE_ACTION("action-group_add", _("Add set"));
-
-	DEFINE_ACTION("canvas-new", _("New Canvas"));
-
-	DEFINE_ACTION("amount-inc", _("Increase Amount"));
-	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
-
-	DEFINE_ACTION("help", Gtk::Stock::HELP);
-	DEFINE_ACTION("help-tutorials", _("Tutorials"));
-	DEFINE_ACTION("help-reference", _("Reference"));
-	DEFINE_ACTION("help-faq", _("Frequently Asked Questions"));
-	DEFINE_ACTION("help-support", _("Get Support"));
-	DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
 
   //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
