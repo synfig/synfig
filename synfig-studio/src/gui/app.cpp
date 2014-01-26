@@ -808,7 +808,7 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
 	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")) );
-	menus_action_group->add( Gtk::Action::create("menu-panels", _("Panels")) );
+	menus_action_group->add( Gtk::Action::create("menu-panel", _("_Panel")) );
 	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
@@ -859,9 +859,9 @@ init_ui_manager()
 	DEFINE_ACTION("options", _("Options"));
 	DEFINE_ACTION("close", _("Close View"));
 	DEFINE_ACTION("close-document", _("Close Document"));
-	DEFINE_ACTION("panels-vertical", _("Vertical Docks: Canvases, History, Layers"));
-	DEFINE_ACTION("panels-horizontal", _("Horizontal Docks: Parameters, Keyframes"));
-	DEFINE_ACTION("panels-reset", _("Reset Panels to Original Layout"));
+	DEFINE_ACTION("panel-vertical", _("Vertical Docks: Canvases, History, Layers"));
+	DEFINE_ACTION("panel-horizontal", _("Horizontal Docks: Parameters, Keyframes"));
+	DEFINE_ACTION("panel-reset", _("Reset Panels to Original Layout"));
 	DEFINE_ACTION("input-devices", _("Input Devices..."));
 	DEFINE_ACTION("setup", _("Setup..."));
 	DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
@@ -1105,12 +1105,12 @@ init_ui_manager()
 "		<separator name='sep-help3'/>"
 "		<menuitem action='help-about'/>"
 "	</menu>"
-"	<menu action='menu-panels'>"
-"		<menuitem action='panels-vertical' />"
-"		<menuitem action='panels-horizontal' />"
-"		<separator name='sep-file-panels1'/>"
-"		<menuitem action='panels-reset' />"
-"		<separator name='sep-file-panels2'/>"
+"	<menu action='menu-panel'>"
+"		<menuitem action='panel-vertical' />"
+"		<menuitem action='panel-horizontal' />"
+"		<separator name='sep-file-panel1'/>"
+"		<menuitem action='panel-reset' />"
+"		<separator name='sep-file-panel2'/>"
 "	</menu>";
 
 	Glib::ustring ui_info =

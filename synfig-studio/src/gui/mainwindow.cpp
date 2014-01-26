@@ -112,8 +112,8 @@ MainWindow::MainWindow()
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	init_menus();
-	panels_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
-	App::ui_manager()->insert_action_group(panels_action_group);
+	panel_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	App::ui_manager()->insert_action_group(panel_action_group);
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
@@ -199,14 +199,14 @@ MainWindow::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
-	// file -> panels
-	action_group->add( Gtk::Action::create("panels-vertical", _("Vertical Docks: Canvases, History, Layers")),
+	// panel menu
+	action_group->add( Gtk::Action::create("panel-vertical", _("Vertical Docks: Canvases, History, Layers")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog1)
 	);
-	action_group->add( Gtk::Action::create("panels-horizontal", _("Horizontal Docks: Parameters, Keyframes")),
+	action_group->add( Gtk::Action::create("panel-horizontal", _("Horizontal Docks: Parameters, Keyframes")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog2)
 	);
-	action_group->add( Gtk::Action::create("panels-reset", _("Reset Panels to Original Layout")),
+	action_group->add( Gtk::Action::create("panel-reset", _("Reset Panels to Original Layout")),
 		sigc::ptr_fun(App::reset_initial_window_configuration)
 	);
 
@@ -283,12 +283,12 @@ MainWindow::on_recent_files_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-	panels_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
+	panel_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
 		sigc::mem_fun(*dockable, &Dockable::present)
 	);
 
 	std::string ui_info =
-		"<menu action='menu-panels'>"
+		"<menu action='menu-panel'>"
 	    "<menuitem action='panel-" + dockable->get_name() + "' />"
 	    "</menu>";
 	std::string ui_info_popup =
