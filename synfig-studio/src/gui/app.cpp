@@ -840,7 +840,7 @@ init_ui_manager()
 #define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
 
 	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
-	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
+	DEFINE_ACTION2("about", Gtk::StockID("synfig-about"), _("About Synfig Studio"));
 	DEFINE_ACTION("new", Gtk::Stock::NEW);
 	DEFINE_ACTION2("open", Gtk::Stock::OPEN, _("Open..."));
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);

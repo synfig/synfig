@@ -229,7 +229,8 @@ MainWindow::init_menus()
 	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
 	SITE("help-support",	_("Get Support"),				_("/en/support")		);
 
-	action_group->add( Gtk::Action::create("help-about", Gtk::StockID("synfig-about")),
+	action_group->add( Gtk::Action::create(
+			"help-about", Gtk::StockID("synfig-about"), _("About Synfig studio")),
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
 
