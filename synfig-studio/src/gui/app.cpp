@@ -964,7 +964,6 @@ init_ui_manager()
 "		<menuitem action='sound' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='options' />"
-"		<menuitem action='close' />"
 "		<menuitem action='close-document' />"
 "		<separator name='sep-file5'/>"
 "		<menuitem action='input-devices' />"
