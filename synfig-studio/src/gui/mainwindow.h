@@ -48,7 +48,7 @@ namespace studio {
 	private:
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
-		Glib::RefPtr<Gtk::ActionGroup> panel_action_group;
+		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
