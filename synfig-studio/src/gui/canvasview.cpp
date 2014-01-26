@@ -1435,7 +1435,6 @@ CanvasView::init_menus()
 	*/
 	action_group = Gtk::ActionGroup::create("canvasview");
 
-	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
