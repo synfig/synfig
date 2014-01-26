@@ -112,8 +112,8 @@ MainWindow::MainWindow()
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	init_menus();
-	panel_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
-	App::ui_manager()->insert_action_group(panel_action_group);
+	window_action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	App::ui_manager()->insert_action_group(window_action_group);
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
@@ -284,12 +284,12 @@ MainWindow::on_recent_files_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-	panel_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
+	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
 		sigc::mem_fun(*dockable, &Dockable::present)
 	);
 
 	std::string ui_info =
-		"<menu action='menu-panel'>"
+		"<menu action='menu-window'>"
 	    "<menuitem action='panel-" + dockable->get_name() + "' />"
 	    "</menu>";
 	std::string ui_info_popup =

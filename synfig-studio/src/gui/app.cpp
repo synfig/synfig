@@ -808,7 +808,9 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
 	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")) );
-	menus_action_group->add( Gtk::Action::create("menu-panel", _("_Panel")) );
+	menus_action_group->add( Gtk::Action::create("menu-window", _("_Window")) );
+	menus_action_group->add( Gtk::Action::create("menu-arrange", _("_Arrange")) );
+	menus_action_group->add( Gtk::Action::create("menu-workspace", _("_Workscape")) );
 	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
 	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
 	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
@@ -986,17 +988,20 @@ init_ui_manager()
 		synfigapp::PluginManager::plugin plugin = *p;
 		
 		DEFINE_ACTION(plugin.id, plugin.name);
-		ui_info_menu += strprintf("		<menuitem action='%s'/>", plugin.id.c_str());
+		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
 	ui_info_menu +=
 "	</menu>"
-"	<menu action='menu-panel'>"
-"		<menuitem action='panel-vertical' />"
-"		<menuitem action='panel-horizontal' />"
-"		<separator name='sep-file-panel1'/>"
-"		<menuitem action='panel-reset' />"
-"		<separator name='sep-file-panel2'/>"
+"	<menu action='menu-window'>"
+"		<menu action='menu-arrange'> </menu>"
+"		<menu action='menu-workspace'>"
+"			<menuitem action='panel-vertical' />"
+"			<menuitem action='panel-horizontal' />"
+"			<separator name='sep-file-window1'/>"
+"			<menuitem action='panel-reset' />"
+"		</menu>"
+"		<separator name='sep-file-window2'/>"
 "	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
