@@ -839,33 +839,6 @@ init_ui_manager()
 #define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); actions_action_group->add(action); }
 #define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
 
-	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
-	DEFINE_ACTION2("about", Gtk::StockID("synfig-about"), _("About Synfig Studio"));
-	DEFINE_ACTION("new", Gtk::Stock::NEW);
-	DEFINE_ACTION2("open", Gtk::Stock::OPEN, _("Open..."));
-	DEFINE_ACTION("save", Gtk::Stock::SAVE);
-	DEFINE_ACTION2("save-as", Gtk::Stock::SAVE_AS, _("Save As..."));
-	DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
-	DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
-	DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
-	DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
-	DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
-	DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
-	DEFINE_ACTION("import", _("Import..."));
-	DEFINE_ACTION("render", _("Render..."));
-	DEFINE_ACTION("preview", _("Preview..."));
-	DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
-	DEFINE_ACTION("sound", _("Import Sound File..."));
-	DEFINE_ACTION("options", _("Options..."));
-	DEFINE_ACTION("close-document", _("Close Document"));
-	DEFINE_ACTION("panel-vertical", _("Vertical Docks: Canvases, History, Layers"));
-	DEFINE_ACTION("panel-horizontal", _("Horizontal Docks: Parameters, Keyframes"));
-	DEFINE_ACTION("panel-reset", _("Reset Panels to Original Layout"));
-	DEFINE_ACTION("input-devices", _("Input Devices..."));
-	DEFINE_ACTION("setup", _("Setup..."));
-	DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
-	DEFINE_ACTION("quit", Gtk::Stock::QUIT);
-
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
 	DEFINE_ACTION("redo", Gtk::StockID("gtk-redo"));
 	DEFINE_ACTION("cut", Gtk::StockID("gtk-cut"));
