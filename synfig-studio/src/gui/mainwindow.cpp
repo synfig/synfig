@@ -180,7 +180,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
-	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
+	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN, _("Open...")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-saveall")),
