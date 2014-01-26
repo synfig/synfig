@@ -288,9 +288,9 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	);
 
 	std::string ui_info =
-		"<menu action='menu-file'><menu action='menu-panels'>"
+		"<menu action='menu-panels'>"
 	    "<menuitem action='panel-" + dockable->get_name() + "' />"
-	    "</menu></menu>";
+	    "</menu>";
 	std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
 	std::string ui_info_menubar =
