@@ -230,7 +230,7 @@ MainWindow::init_menus()
 	SITE("help-support",	_("Get Support"),				_("/en/support")		);
 
 	action_group->add( Gtk::Action::create(
-			"help-about", Gtk::StockID("synfig-about"), _("About Synfig studio")),
+			"help-about", Gtk::StockID("synfig-about"), _("About Synfig Studio")),
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
 
