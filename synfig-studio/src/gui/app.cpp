@@ -1088,6 +1088,13 @@ init_ui_manager()
 
 	ui_info_menu +=
 "	</menu>"
+"	<menu action='menu-panel'>"
+"		<menuitem action='panel-vertical' />"
+"		<menuitem action='panel-horizontal' />"
+"		<separator name='sep-file-panel1'/>"
+"		<menuitem action='panel-reset' />"
+"		<separator name='sep-file-panel2'/>"
+"	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
 "		<separator name='sep-help1'/>"
@@ -1098,13 +1105,6 @@ init_ui_manager()
 "		<menuitem action='help-support'/>"
 "		<separator name='sep-help3'/>"
 "		<menuitem action='help-about'/>"
-"	</menu>"
-"	<menu action='menu-panel'>"
-"		<menuitem action='panel-vertical' />"
-"		<menuitem action='panel-horizontal' />"
-"		<separator name='sep-file-panel1'/>"
-"		<menuitem action='panel-reset' />"
-"		<separator name='sep-file-panel2'/>"
 "	</menu>";
 
 	Glib::ustring ui_info =
