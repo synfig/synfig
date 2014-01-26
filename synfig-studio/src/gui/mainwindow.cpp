@@ -189,7 +189,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
-	action_group->add( Gtk::Action::create("setup", _("Setup...")),
+	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
 	action_group->add( Gtk::Action::create("reset-initial-preferences", _("Reset to default Setup values")),
