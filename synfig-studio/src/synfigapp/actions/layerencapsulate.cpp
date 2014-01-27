@@ -144,7 +144,7 @@ Action::LayerEncapsulate::prepare()
 	if(!child_canvas)
 		child_canvas=Canvas::create_inline(get_canvas());
 
-	Layer::Handle new_layer(Layer::create("PasteCanvas"));
+	Layer::Handle new_layer(Layer::create("group"));
 
 	new_layer->set_param("canvas",child_canvas);
 

@@ -429,7 +429,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 			layer_style=parent_style;
 		}
 		//build
-		root->set_attribute("type","PasteCanvas");
+		root->set_attribute("type","group");
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
 		if(!label.empty())	root->set_attribute("desc",label);
@@ -1060,7 +1060,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 		if (mtx || data->transform) {
 			xmlpp::Element* layer=root->add_child("layer");
 
-			layer->set_attribute("type","PasteCanvas");
+			layer->set_attribute("type","group");
 			layer->set_attribute("active","true");
 			layer->set_attribute("version","0.1");
 			layer->set_attribute("desc",data->name);
@@ -1440,7 +1440,7 @@ Svg_parser::build_vector (xmlpp::Element* root,String name,float x,float y,Strin
 
 xmlpp::Element*
 Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, String name){
-	root->set_attribute("type","PasteCanvas");
+	root->set_attribute("type","group");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
 	root->set_attribute("desc",name);

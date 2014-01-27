@@ -608,7 +608,7 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_other_duplicate");
 	else if(layer=="importimage" || layer=="import")
 		return Gtk::StockID("synfig-layer_other_importimage");
-	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
+	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
 		return Gtk::StockID("synfig-layer_other_pastecanvas");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");

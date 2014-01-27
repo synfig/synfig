@@ -30,7 +30,7 @@
 
 #include <synfig/color.h>
 #include <synfig/vector.h>
-#include <synfig/layer_pastecanvas.h>
+#include <synfig/layer_group.h>
 #include <synfig/value.h>
 
 #include "svg_parser.h"
@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class svg_layer : public synfig::Layer_PasteCanvas
+class svg_layer : public synfig::Layer_Group
 {
 	SYNFIG_LAYER_MODULE_EXT
 

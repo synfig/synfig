@@ -43,7 +43,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "layer_pastecanvas.h"
+#include "layer_group.h"
 #include "loadcanvas.h"
 #include "valuenode.h"
 #include "boneweightpair.h"
@@ -149,7 +149,7 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as
 		Canvas::Handle canvas(Canvas::create());
 		canvas->set_identifier(identifier);
 		canvas->set_file_name(as);
-		Layer::Handle paste(Layer_PasteCanvas::create());
+		Layer::Handle paste(Layer_Group::create());
 		canvas->push_back(paste);
 		paste->set_description(warning);
 		return canvas;

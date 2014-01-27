@@ -318,7 +318,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
-		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
+		if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) &&
 		   !layer->get_param("children_lock").get(bool()))
 			return false;
 	}
@@ -1841,8 +1841,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 					
 					Layer::Handle layer=value_desc.get_layer();
-					String layer_name=layer->get_name();
-					if(layer_name=="PasteCanvas")
+					if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 					{
 						Vector focus(layer->get_param("focus").get(Vector()));
 						duck->set_origin(last_duck()->get_point() + focus);

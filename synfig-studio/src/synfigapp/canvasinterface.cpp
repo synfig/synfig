@@ -686,7 +686,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
 	if(ext=="svg"){//I don't like it, but worse is nothing
-		Layer::Handle _new_layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle _new_layer(add_layer_to("group",get_canvas()));
 		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
 		if(_aux_layer){
 			_aux_layer->set_param("filename",ValueBase(filename));
@@ -719,7 +719,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 
-		Layer::Handle layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle layer(add_layer_to("group",get_canvas()));
 		if(!layer)
 			throw String(_("Unable to create \"Group\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))

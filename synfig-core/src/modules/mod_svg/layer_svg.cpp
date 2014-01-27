@@ -58,7 +58,7 @@ SYNFIG_LAYER_SET_CVS_ID(svg_layer,"$Id: layer_svg.cpp 2240 2008-11-22 15:35:33Z 
 /* === P R O C E D U R E S ================================================= */
 
 svg_layer::svg_layer():
-	Layer_PasteCanvas(),
+	Layer_Group(),
 	filename("none")
 {
 }
@@ -81,7 +81,7 @@ svg_layer::set_param(const String & param, const ValueBase &value)
 			}
 		}
 	}
-	return Layer_PasteCanvas::set_param(param,value);
+	return Layer_Group::set_param(param,value);
 }
 
 ValueBase
@@ -95,13 +95,13 @@ svg_layer::get_param(const String &param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return Layer_PasteCanvas::get_param(param);
+	return Layer_Group::get_param(param);
 }
 
 Layer::Vocab
 svg_layer::get_param_vocab()const
 {
-	Layer::Vocab ret(Layer_PasteCanvas::get_param_vocab());
+	Layer::Vocab ret(Layer_Group::get_param_vocab());
 
 	ret.push_back(ParamDesc("filename")
 		.set_local_name(_("Filename"))

@@ -69,6 +69,7 @@
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_bone.h>
 #include <synfig/layer.h>
+#include <synfig/layer_pastecanvas.h>
 #include <synfig/context.h>
 
 #include <synfigapp/uimanager.h>
@@ -1774,7 +1775,7 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 
 	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 
-	if(layer->get_name()=="PasteCanvas")
+	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 	{
 		Gtk::Image* image(manage(new Gtk::Image()));
 		Gtk::Stock::lookup(Gtk::StockID("synfig-select_all_child_layers"),Gtk::ICON_SIZE_MENU,*image);
@@ -2277,7 +2278,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				build_new_layer_menu(*newlayers);
 
 				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
-				if(!multiple_selected && layer->get_name()=="PasteCanvas")
+				if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 				{
 					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
 						sigc::bind(

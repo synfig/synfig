@@ -37,6 +37,8 @@
 
 #include <synfigapp/general.h>
 
+#include <synfig/layer_group.h>
+
 #endif
 
 using namespace std;
@@ -158,7 +160,10 @@ Action::LayerZDepthRangeSet::prepare()
 		throw Error(_("No layers selected"));
 
 	Layer::Handle layer=layers.front();
-	Layer::Handle paste=layer->get_parent_paste_canvas_layer();
+
+	etl::handle<Layer_Group> paste=
+		etl::handle<Layer_Group>::cast_dynamic(
+			layer->get_parent_paste_canvas_layer() );
 	if(!paste)
 		throw Error(_("Parent Group doesn't found!"));
 	// Z ENABLE
@@ -170,7 +175,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_range"));
+		action->set_param("value_desc",ValueDesc(Layer::Handle(paste), "z_range"));
 		action->set_param("recursive", true);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
@@ -185,7 +190,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_range_position"));
+		action->set_param("value_desc",ValueDesc(Layer::Handle(paste), "z_range_position"));
 		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
@@ -200,7 +205,7 @@ Action::LayerZDepthRangeSet::prepare()
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(paste, "z_range_depth"));
+		action->set_param("value_desc",ValueDesc(Layer::Handle(paste), "z_range_depth"));
 		action->set_param("recursive", false);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
