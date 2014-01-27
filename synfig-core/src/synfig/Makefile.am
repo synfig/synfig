@@ -20,25 +20,29 @@ LAYERHEADERS = \
 	layer_bitmap.h \
 	layer_composite.h \
 	layer_duplicate.h \
+	layer_group.h \
 	layer_mime.h \
 	layer_motionblur.h \
 	layer_pastecanvas.h \
 	layer_polygon.h \
 	layer_shape.h \
 	layer_solidcolor.h \
-	layer_skeleton.h
+	layer_skeleton.h \
+	layer_switch.h
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
 	layer_composite.cpp \
 	layer_duplicate.cpp \
+	layer_group.cpp \
 	layer_mime.cpp \
 	layer_motionblur.cpp \
 	layer_pastecanvas.cpp \
 	layer_polygon.cpp \
 	layer_shape.cpp \
 	layer_solidcolor.cpp \
-	layer_skeleton.cpp
+	layer_skeleton.cpp \
+	layer_switch.cpp
 
 
 TARGETHEADERS = \
