@@ -199,14 +199,14 @@ MainWindow::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
-	// panel menu
+	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("panel-vertical", _("Vertical Docks: Canvases, History, Layers")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog1)
 	);
 	action_group->add( Gtk::Action::create("panel-horizontal", _("Horizontal Docks: Parameters, Keyframes")),
 		sigc::ptr_fun(&MainWindow::create_stock_dialog2)
 	);
-	action_group->add( Gtk::Action::create("panel-reset", _("Reset Panels to Original Layout")),
+	action_group->add( Gtk::Action::create("panel-reset", _("Default")),
 		sigc::ptr_fun(App::reset_initial_window_configuration)
 	);
 
