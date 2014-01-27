@@ -48,6 +48,7 @@
 #include "actions/layerparamconnect.h"
 #include "actions/layerparamdisconnect.h"
 #include "actions/layerencapsulate.h"
+#include "actions/layerencapsulateswitch.h"
 #include "actions/layerduplicate.h"
 #include "actions/layersetdesc.h"
 #include "actions/layersetexcludefromrendering.h"
@@ -194,6 +195,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerParamConnect);
 	ADD_ACTION(Action::LayerParamDisconnect);
 	ADD_ACTION(Action::LayerEncapsulate);
+	ADD_ACTION(Action::LayerEncapsulateSwitch);
 	ADD_ACTION(Action::LayerDuplicate);
 	ADD_ACTION(Action::LayerSetDesc);
 	ADD_ACTION(Action::LayerZDepthRangeSet);
