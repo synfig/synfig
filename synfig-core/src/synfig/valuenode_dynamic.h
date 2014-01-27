@@ -37,6 +37,14 @@ namespace synfig {
 
 class ValueNode_Dynamic : public LinkableValueNode
 {
+public:
+	/* The type of container used to hold the state vector */
+	typedef std::vector< double > state_type;
+	/* The rhs of x' = f(x) */
+	void oscilator(const state_type &x , state_type &dxdt , const double t);
+
+private:
+
 	ValueNode::RHandle tip_static_;    // Equilibrium position without external forces
 	ValueNode::RHandle origin_;        // Basement of the dynamic system
 	ValueNode::RHandle force_;         // External force applied on the mass center of gravity
@@ -48,12 +56,29 @@ class ValueNode_Dynamic : public LinkableValueNode
 	ValueNode::RHandle inertia_;       // Moment of Inertia
 
 	ValueNode_Dynamic(const ValueBase &value);
+	/*
+		State types (4) for:
+		q=radius
+		p=d/dt(radius)
+		b=angle
+		g=d/dt(angle)
 
+		where
+
+		p=dxdt[0]
+		p'=dxdt[1]
+		g=dxdt[2]
+		g'=dxdt[3]
+		q=x[0]
+		q'=x[1]
+		b=x[2]
+		b'=x[3]
+	*/
+	state_type x[4];
 public:
 
 	typedef etl::handle<ValueNode_Dynamic> Handle;
 	typedef etl::handle<const ValueNode_Dynamic> ConstHandle;
-
 
 	virtual ValueBase operator()(Time t)const;
 

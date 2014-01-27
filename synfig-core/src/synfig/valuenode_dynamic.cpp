@@ -73,6 +73,12 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
+
+	/* Initial values*/
+	x[0]=(*tip_static_)(0).get(Vector()).mag(); // The size of the vector
+	x[1]=0; // d/dt(radius) = 0 initially
+	x[2]=(*tip_static_)(0).get(Vector()).angle(); // the angle of the vector
+	x[3]=0; // d/dt(angle) = 0 initially
 }
 
 LinkableValueNode*
@@ -102,6 +108,36 @@ ValueNode_Dynamic::operator()(Time t)const
 
 }
 
+void ValueNode_Dynamic::oscilator(const state_type &x , state_type &dxdt , const double t)
+{
+	Vector u(cos(x[2]), sin(x[2]);
+	Vector v(-u[1], u[0]);
+	Vector s=(*origin_)(t).get(Vector());
+	Vector f=(*force_)(t).get(Vector());
+	Real c=(*damping_coef_)(t).get(Real());
+	Real mu=(*friction_coef_)(t).get(Real());
+	Real k=(*spring_coef_)(t).get(Real());
+	Real tau=(*torsion_coef_)(t).get(Real());
+	Real m=(*mass_)(t).get(Real());
+	Real i=(*inertia_)(t).get(Real());
+	Real tip=(*tip_static_)(t).get(Real());
+
+	Real fr=f*u;
+	Real fa=f*v;
+
+	Real sr=s*u;
+	Real sa=s*v;
+	Real srp=0; // TODO This is the derivative
+	Real sap=0; // TODO This is the deerivative
+
+	Real r0=tip.mag();
+	Real a0=tip.angle();
+
+	dxdt[0]=x[1];
+	dxdt[1]=(fr+k*sa+c*(srp+sa)-c*x[1]-k*(x[0]-r0))/m;
+	dxdt[2]=x[2];
+	dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sap-sr)/x[0] - x[1]*sa/([x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
+}
 
 String
 ValueNode_Dynamic::get_name()const
