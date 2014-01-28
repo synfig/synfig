@@ -74,7 +74,7 @@ private:
 		b=x[2]
 		b'=x[3]
 	*/
-	state_type x[4];
+	state_type x;
 public:
 
 	typedef etl::handle<ValueNode_Dynamic> Handle;
