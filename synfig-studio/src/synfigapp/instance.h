@@ -134,7 +134,7 @@ public:
 
 	etl::handle< synfig::FileSystemGroup > get_file_system() const { return file_system_; };
 	etl::handle< synfig::FileContainerTemporary > get_container() const { return container_; };
-
+	void save_surface(const synfig::Surface &surface, const synfig::String &filename);
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 

@@ -373,6 +373,35 @@ Instance::import_external_canvases()
 	while(import_external_canvas(get_canvas(), imported));
 }
 
+void Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
+{
+	if (surface.get_h() <= 0 || surface.get_w() <= 0) return;
+
+	String ext = filename_extension(filename);
+	if (ext.empty()) return;
+	ext.erase(0, 1);
+	String tmpfile = FileContainerTemporary::generate_temporary_filename();
+
+	etl::handle<Target_Scanline> target
+		= etl::handle<Target_Scanline>(Target::create(Target::ext_book()[ext],tmpfile,TargetParam()));
+	if (!target) return;
+	target->set_canvas(get_canvas());
+	RendDesc desc;
+	desc.set_w(surface.get_w());
+	desc.set_h(surface.get_h());
+	desc.set_x_res(1);
+	desc.set_y_res(1);
+	desc.set_frame_rate(1);
+	desc.set_frame(0);
+	desc.set_frame_start(0);
+	desc.set_frame_end(0);
+	target->set_rend_desc(&desc);
+	target->add_frame(&surface);
+	target = NULL;
+
+	FileSystem::copy(FileSystemNative::instance(), tmpfile, get_file_system(), filename);
+	FileSystemNative::instance()->file_remove(tmpfile);
+}
 
 bool
 Instance::save()
@@ -399,24 +428,7 @@ Instance::save_as(const synfig::String &file_name)
 		if (!(*i)->get_param_list().count("filename")) continue;
 		ValueBase value = (*i)->get_param("filename");
 		if (!value.same_type_as(String())) continue;
-		String filename = value.get(String());
-		if (filename_extension(filename) != ".png") continue;
-		etl::handle<Target_Scanline> target
-			= etl::handle<Target_Scanline>(Target::create(Target::ext_book()["png"],filename,TargetParam()));
-		if (!target) continue;
-		target->set_canvas(get_canvas());
-		Surface &surface = layer_bitmap->surface;
-		RendDesc desc;
-		desc.set_w(surface.get_w());
-		desc.set_h(surface.get_h());
-		desc.set_x_res(1);
-		desc.set_y_res(1);
-		desc.set_frame_rate(1);
-		desc.set_frame(0);
-		desc.set_frame_start(0);
-		desc.set_frame_end(0);
-		target->set_rend_desc(&desc);
-		target->add_frame(&surface);
+		save_surface(layer_bitmap->surface, value.get(String()));
 	}
 
 	if (filename_extension(file_name) == ".sfg")

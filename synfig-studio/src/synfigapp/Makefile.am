@@ -16,6 +16,7 @@ LAYER_ACTION_HH = \
 	actions/layerencapsulateswitch.h \
 	actions/layerextract.h \
 	actions/layerfit.h \
+	actions/layerimagecopy.h \
 	actions/layerlower.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
@@ -40,6 +41,7 @@ LAYER_ACTION_CC = \
 	actions/layerencapsulateswitch.cpp \
 	actions/layerextract.cpp \
 	actions/layerfit.cpp \
+	actions/layerimagecopy.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \

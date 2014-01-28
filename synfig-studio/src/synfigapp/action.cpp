@@ -41,6 +41,7 @@
 #include "actions/layeradd.h"
 #include "actions/layeractivate.h"
 #include "actions/layerfit.h"
+#include "actions/layerimagecopy.h"
 #include "actions/layermakebline.h"
 #include "actions/layerparamset.h"
 #include "actions/layerparamsetstatic.h"
@@ -203,6 +204,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerExtract);
 	ADD_ACTION(Action::LayerSetExcludeFromRenderingOn);
 	ADD_ACTION(Action::LayerSetExcludeFromRenderingOff);
+	ADD_ACTION(Action::LayerImageCopy);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
 	ADD_ACTION(Action::ValueNodeConstSetStatic);
