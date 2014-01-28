@@ -53,8 +53,6 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
-		static void create_stock_dialog1();
-		static void create_stock_dialog2();
 		static void save_all();
 		static void show_dialog_input();
 		void on_recent_files_changed();

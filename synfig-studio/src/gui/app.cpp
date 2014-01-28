@@ -996,10 +996,9 @@ init_ui_manager()
 "	<menu action='menu-window'>"
 "		<menu action='menu-arrange'> </menu>"
 "		<menu action='menu-workspace'>"
-"			<menuitem action='panel-vertical' />"
-"			<menuitem action='panel-horizontal' />"
-"			<separator name='sep-file-window1'/>"
-"			<menuitem action='panel-reset' />"
+"			<menuitem action='workspace-default' />"
+"			<menuitem action='workspace-compositing' />"
+"			<menuitem action='workspace-animating' />"
 "		</menu>"
 "		<separator name='sep-file-window2'/>"
 "	</menu>"
@@ -1356,7 +1355,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		if (!load_settings())
 		{
 			gamma.set_gamma(1.0/2.2);
-			reset_initial_window_configuration();
+			set_workspace_default();
 		}
 		load_file_window_size();
 
@@ -1708,7 +1707,7 @@ App::load_file_window_size()
 }
 
 void
-App::reset_initial_window_configuration()
+App::set_workspace_default()
 {
 	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
 	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
@@ -1750,6 +1749,73 @@ App::reset_initial_window_configuration()
 	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
 }
+
+void
+App::set_workspace_compositing()
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
+
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%1x"
+			"|[vert|%1y|[book|toolbox]|[book|tool_options]]"
+			"|[hor|%60x|[mainnotebook]"
+				"|[hor|%50x|[book|params]"
+					"|[vert|%30y|[book|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	dock_manager->load_layout_from_string(layout);
+	dock_manager->show_all_dock_dialogs();
+}
+
+void
+App::set_workspace_animating()
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
+
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%70x"
+			"|[vert|%1y"
+				"|[hor|%1x|[book|toolbox]|[mainnotebook]]"
+				"|[hor|%25x|[book|params|children]|[book|timetrack|curves]]"
+			"]"
+			"|[vert|%30y"
+				"|[book|keyframes|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	dock_manager->load_layout_from_string(layout);
+	dock_manager->show_all_dock_dialogs();
+}
+
 
 void
 App::reset_initial_preferences()

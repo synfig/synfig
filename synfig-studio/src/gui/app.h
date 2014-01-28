@@ -310,7 +310,9 @@ public:
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void load_file_window_size();
-	static void reset_initial_window_configuration();
+	static void set_workspace_default();
+	static void set_workspace_compositing();
+	static void set_workspace_animating();
 	static void reset_initial_preferences();
 
 	static const std::list<std::string>& get_recent_files();
