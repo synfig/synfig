@@ -840,15 +840,103 @@ init_ui_manager()
 		));
 	}
 
+// predefined actions to initial menu items, so that there is all menu items listing
+// even there is no any canvas instance existed, for example, when app just opened.
+// the menu items (action names) should be named consistently with those in canvasview.cpp and others.
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
-	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
-	DEFINE_ACTION("redo", Gtk::StockID("gtk-redo"));
-	DEFINE_ACTION("cut", Gtk::StockID("gtk-cut"));
-	DEFINE_ACTION("copy", Gtk::StockID("gtk-copy"));
-	DEFINE_ACTION("paste", Gtk::StockID("gtk-paste"));
+// actions in File menu
+DEFINE_ACTION("save", Gtk::Stock::SAVE);
+DEFINE_ACTION("save-as", _("Save As..."));
+DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
+DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
+DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
+DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
+DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
+DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
+DEFINE_ACTION("import", _("Import..."));
+DEFINE_ACTION("render", _("Render..."));
+DEFINE_ACTION("preview", _("Preview..."));
+DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
+DEFINE_ACTION("sound", _("Import Sound File..."));
+DEFINE_ACTION("close-document", _("Close Document"));
+DEFINE_ACTION("quit", Gtk::Stock::QUIT);
 
-  //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
+// actions in Edit menu
+DEFINE_ACTION("copy", Gtk::Stock::COPY);
+DEFINE_ACTION("cut", Gtk::Stock::CUT);
+DEFINE_ACTION("paste", Gtk::Stock::PASTE);
+DEFINE_ACTION("select-all-ducks", _("Select All Handles"));
+DEFINE_ACTION("unselect-all-ducks", _("Unselect All Handles"));
+DEFINE_ACTION("select-all-layers", _("Select All Layers"))
+DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"))
+DEFINE_ACTION("input-devices", _("Input Devices..."));
+DEFINE_ACTION("setup", _("Preferences..."));
+DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
+
+// actions in View menu
+DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
+DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Handles"));
+DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Handles"));
+DEFINE_ACTION("mask-radius-ducks", _("Show Radius Handles"));
+DEFINE_ACTION("mask-width-ducks", _("Show Width Handles"));
+DEFINE_ACTION("mask-angle-ducks", _("Show Angle Handles"));
+DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Handles"));
+DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Handles"));
+DEFINE_ACTION("mask-bone-ducks", _("Next Bone Handles"));
+DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
+DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
+DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
+DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
+DEFINE_ACTION("quality-03", _("Use Quality Level 3"));
+DEFINE_ACTION("quality-04", _("Use Quality Level 4"));
+DEFINE_ACTION("quality-05", _("Use Quality Level 5"));
+DEFINE_ACTION("quality-06", _("Use Quality Level 6"));
+DEFINE_ACTION("quality-07", _("Use Quality Level 7"));
+DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
+DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
+DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
+
+for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+  DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
+
+DEFINE_ACTION("play", _("Play"));
+DEFINE_ACTION("stop", _("Stop"));
+
+DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
+DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
+DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
+DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
+DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
+DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
+DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
+DEFINE_ACTION("toggle-onion-skin", _("Toggle Onion Skin"));
+DEFINE_ACTION("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
+DEFINE_ACTION("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
+DEFINE_ACTION("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit"));
+DEFINE_ACTION("canvas-zoom-100", Gtk::StockID("gtk-zoom-100"));
+DEFINE_ACTION("time-zoom-in", Gtk::StockID("gtk-zoom-in"));
+DEFINE_ACTION("time-zoom-out", Gtk::StockID("gtk-zoom-out"));
+DEFINE_ACTION("jump-next-keyframe", _("Jump to Next Keyframe"));
+DEFINE_ACTION("jump-prev-keyframe", _("Jump to Prev Keyframe"));
+DEFINE_ACTION("seek-next-frame", _("Next Frame"));
+DEFINE_ACTION("seek-prev-frame", _("Prev Frame"));
+DEFINE_ACTION("seek-next-second", _("Seek Forward"));
+DEFINE_ACTION("seek-prev-second", _("Seek Backward"));
+DEFINE_ACTION("seek-begin", _("Seek to Begin"));
+DEFINE_ACTION("seek-end", _("Seek to End"));
+
+// actions in Canvas menu
+DEFINE_ACTION("properties", _("Properties..."));
+DEFINE_ACTION("options", _("Options..."));
+
+// actions in Window menu
+DEFINE_ACTION("workspace-compositing", _("Compositing"));
+DEFINE_ACTION("workspace-default", _("Default"));
+DEFINE_ACTION("workspace-animating", _("Animating"));
+
+
+//Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
 "		<menuitem action='new' />"
