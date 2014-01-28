@@ -806,24 +806,27 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
-	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
-	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")) );
-	menus_action_group->add( Gtk::Action::create("menu-window", _("_Window")) );
-	menus_action_group->add( Gtk::Action::create("menu-arrange", _("_Arrange")) );
-	menus_action_group->add( Gtk::Action::create("menu-workspace", _("_Workscape")) );
-	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
-	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
-	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
-	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")) );
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Handles")) );
-	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")) );
-	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")) );
-	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
-	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
-	menus_action_group->add( Gtk::Action::create("menu-group", _("Set")) );
-	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
-	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
-	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")) );
+	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")));
+	menus_action_group->add( Gtk::Action::create("menu-open-recent", _("Open Recent")));
+
+	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")));
+
+	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")));
+	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Handles")));
+	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")));
+	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")));
+
+	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")));
+
+	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")));
+	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")));
+	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")));
+	menus_action_group->add( Gtk::Action::create("menu-plugins", _("Plug-Ins")));
+
+	menus_action_group->add( Gtk::Action::create("menu-window", _("_Window")));
+	menus_action_group->add( Gtk::Action::create("menu-arrange", _("_Arrange")));
+	menus_action_group->add( Gtk::Action::create("menu-workspace", _("Work_scape")));
+
 	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
 	// Add the synfigapp actions...
@@ -961,21 +964,10 @@ init_ui_manager()
 "		<menuitem action='options'/>"
 "		<menuitem action='canvas-new'/>"
 "	</menu>"
-"	<menu name='menu-state' action='menu-state'>"
-"	</menu>"
-"	<menu action='menu-group'>"
-"		<menuitem action='action-group_add'/>"
-"	</menu>"
 "	<menu action='menu-layer'>"
 "		<menu action='menu-layer-new'></menu>"
 "		<menuitem action='amount-inc'/>"
 "		<menuitem action='amount-dec'/>"
-"	</menu>"
-"	<menu action='menu-keyframe'>"
-"		<menuitem action='action-KeyframeAdd'/>"
-"		<menuitem action='action-KeyframeDuplicate'/>"
-"		<menuitem action='action-KeyframeRemove'/>"
-"		<menuitem action='keyframe-properties'/>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
 ;
