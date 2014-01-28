@@ -129,33 +129,6 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow() { }
 
-void MainWindow::create_stock_dialog1()
-{
-	// Canvases, History
-
-	std::string layout =
-		"[vert|200"
-			"|[book|canvases]"
-			"|[vert|200|[book|history]|[book|layers]]"
-		"]";
-	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
-	if (widget != NULL)
-		DockManager::add_widget(App::main_window->main_dock_book(), *widget, false, false);
-}
-
-void MainWindow::create_stock_dialog2()
-{
-	// Layers, Library, Parameters
-
-	std::string layout =
-		"[hor|200"
-			"|[book|params]"
-			"|[book|keyframes]"
-		"]";
-	Gtk::Widget *widget = App::dock_manager->load_widget_from_string(layout);
-	if (widget != NULL)
-		DockManager::add_widget(App::main_window->main_dock_book(), *widget, true, false);
-}
 
 void
 MainWindow::save_all()
@@ -200,14 +173,14 @@ MainWindow::init_menus()
 	);
 
 	// pre defined workspace (window ui layout)
-	action_group->add( Gtk::Action::create("panel-vertical", _("Vertical Docks: Canvases, History, Layers")),
-		sigc::ptr_fun(&MainWindow::create_stock_dialog1)
+	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
+		sigc::ptr_fun(App::set_workspace_compositing)
 	);
-	action_group->add( Gtk::Action::create("panel-horizontal", _("Horizontal Docks: Parameters, Keyframes")),
-		sigc::ptr_fun(&MainWindow::create_stock_dialog2)
+	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
+		sigc::ptr_fun(App::set_workspace_animating)
 	);
-	action_group->add( Gtk::Action::create("panel-reset", _("Default")),
-		sigc::ptr_fun(App::reset_initial_window_configuration)
+	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
+		sigc::ptr_fun(App::set_workspace_default)
 	);
 
 	// help
