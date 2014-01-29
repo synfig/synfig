@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_VALUENODE_INTERPOLATION_DYNAMIC_H
-#define __SYNFIG_VALUENODE_INTERPOLATION_DYNAMIC_H
+#ifndef __SYNFIG_VALUENODE_DYNAMIC_H
+#define __SYNFIG_VALUENODE_DYNAMIC_H
 
 /* === H E A D E R S ======================================================= */
 
