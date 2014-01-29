@@ -198,6 +198,7 @@ private:
 	bool	supports_multiple_;
 	bool	requires_multiple_;
 	bool	optional_;
+	bool	value_provided_;
 
 public:
 	ParamDesc(const synfig::String &name, Param::Type type):
@@ -207,7 +208,8 @@ public:
 		user_supplied_(false),
 		supports_multiple_(false),
 		requires_multiple_(false),
-		optional_(false)
+		optional_(false),
+		value_provided_(false)
 	{ }
 
 	const synfig::String& get_name()const { return name_; }
@@ -219,6 +221,7 @@ public:
 	bool get_supports_multiple()const { return supports_multiple_||requires_multiple_; }
 	bool get_requires_multiple()const { return requires_multiple_; }
 	bool get_optional()const { return optional_; }
+	bool get_value_provided()const { return value_provided_; }
 
 	ParamDesc& set_local_name(const synfig::String& x) { local_name_=x; return *this; }
 	ParamDesc& set_desc(const synfig::String& x) { desc_=x; return *this; }
@@ -227,6 +230,7 @@ public:
 	ParamDesc& set_supports_multiple(bool x=true) { supports_multiple_=x; return *this; }
 	ParamDesc& set_requires_multiple(bool x=true) { requires_multiple_=x; if(x)supports_multiple_=true; return *this; }
 	ParamDesc& set_optional(bool x=true) { optional_=x; return *this; }
+	ParamDesc& set_value_provided(bool x=true) { value_provided_=x; return *this; }
 }; // END of class ParamDesc
 
 class ParamVocab : public std::list< ParamDesc > { };
