@@ -857,7 +857,6 @@ DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 DEFINE_ACTION("import", _("Import..."));
 DEFINE_ACTION("render", _("Render..."));
 DEFINE_ACTION("preview", _("Preview..."));
-DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 DEFINE_ACTION("sound", _("Import Sound File..."));
 DEFINE_ACTION("close-document", _("Close Document"));
 DEFINE_ACTION("quit", Gtk::Stock::QUIT);
@@ -902,6 +901,7 @@ for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != Ca
 
 DEFINE_ACTION("play", _("Play"));
 DEFINE_ACTION("stop", _("Stop"));
+DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 
 DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
@@ -1019,7 +1019,6 @@ DEFINE_ACTION("workspace-animating", _("Animating"));
 "		</menu>"
 "		<separator name='sep-view1'/>"
 "		<menuitem action='play'/>"
-//"		<menuitem action='pause'/>"
 "		<menuitem action='stop'/>"
 "		<menuitem action='dialog-flipbook'/>"
 "		<separator name='sep-view2'/>"
