@@ -165,8 +165,8 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
-	action_group->add( Gtk::Action::create("reset-initial-preferences", _("Reset to default Setup values")),
-		sigc::ptr_fun(&studio::App::reset_initial_preferences)
+	action_group->add( Gtk::Action::create("restore-default-preferences", _("Restore Default Preferences Values")),
+		sigc::ptr_fun(&studio::App::restore_default_preferences)
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
