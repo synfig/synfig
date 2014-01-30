@@ -80,6 +80,10 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	x[1]=0.0; // d/dt(radius) = 0 initially
 	x[2]=(double)(Angle::rad((*tip_static_)(0).get(Vector()).angle()).get()); // the angle of the vector
 	x[3]=0.0; // d/dt(angle) = 0 initially
+
+	/*Derivative of the base position*/
+	origin_d_=ValueNode_Derivative::create(ValueBase(Vector()));
+	origin_d_->set_link("link", origin_);
 }
 
 LinkableValueNode*

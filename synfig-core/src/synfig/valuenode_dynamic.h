@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "valuenode.h"
+#include "valuenode_derivative.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -55,6 +56,8 @@ private:
 	ValueNode::RHandle mass_;          // Mass 
 	ValueNode::RHandle inertia_;       // Moment of Inertia
 
+
+	ValueNode_Derivative::RHandle origin_d_;      // Derivative of the origin along the time
 	ValueNode_Dynamic(const ValueBase &value);
 	/*
 		State types (4) for:
