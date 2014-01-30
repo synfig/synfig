@@ -37,7 +37,7 @@
 
 namespace synfig {
 /*!	\class Layer_Switch
-**	\brief Class of the Group layer.
+**	\brief Class of the Switch layer.
 */
 class Layer_Switch : public Layer_PasteCanvas
 {
@@ -61,6 +61,8 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
+
+	Layer::Handle get_current_layer()const;
 
 	//! Sets z_range* fields of specified ContextParams \a cp
 	virtual void apply_z_range_to_params(ContextParams &cp)const;

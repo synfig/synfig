@@ -112,23 +112,31 @@ Layer_Switch::get_param(const String& param)const
 	return Layer_PasteCanvas::get_param(param);
 }
 
+Layer::Handle
+Layer_Switch::get_current_layer()const
+{
+	Canvas::Handle canvas = get_sub_canvas();
+	String n = param_layer_name.get(String());
+	if (canvas)
+		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+			if ((*i)->get_description() == n)
+				return *i;
+	return NULL;
+}
+
 
 void
 Layer_Switch::apply_z_range_to_params(ContextParams &cp)const
 {
-	etl::handle<Canvas> canvas = get_sub_canvas();
-	if (canvas) {
-		String n = param_layer_name.get(String());
-		for(IndependentContext i = canvas->get_independent_context(); *i; i++) {
-			if ((*i)->get_description() == n) {
-				cp.z_range=true;
-				cp.z_range_position=(*i)->get_depth();
-				cp.z_range_depth=0;
-				cp.z_range_blur=0;
-				return;
-			}
-		}
+	Layer::Handle layer = get_current_layer();
+	if (layer) {
+		cp.z_range=true;
+		cp.z_range_position=layer->get_depth();
+		cp.z_range_depth=0;
+		cp.z_range_blur=0;
+		return;
 	}
+
 	cp.z_range=true;
 	cp.z_range_position=0;
 	cp.z_range_depth=-1;
