@@ -146,6 +146,7 @@ Action::LayerEncapsulateSwitch::prepare()
 	Layer::Handle new_layer(Layer::create("switch"));
 
 	new_layer->set_param("canvas",child_canvas);
+	new_layer->set_param("layer_name",layers.front()->get_description());
 
 	int target_depth(lowest_depth());
 
