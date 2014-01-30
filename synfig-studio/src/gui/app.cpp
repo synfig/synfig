@@ -901,7 +901,6 @@ for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != Ca
 
 DEFINE_ACTION("play", _("Play"));
 DEFINE_ACTION("stop", _("Stop"));
-DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 
 DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
@@ -934,6 +933,7 @@ DEFINE_ACTION("options", _("Options..."));
 DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default", _("Default"));
 DEFINE_ACTION("workspace-animating", _("Animating"));
+DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
@@ -1020,7 +1020,6 @@ DEFINE_ACTION("workspace-animating", _("Animating"));
 "		<separator name='sep-view1'/>"
 "		<menuitem action='play'/>"
 "		<menuitem action='stop'/>"
-"		<menuitem action='dialog-flipbook'/>"
 "		<separator name='sep-view2'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
@@ -1081,6 +1080,7 @@ DEFINE_ACTION("workspace-animating", _("Animating"));
 "			<menuitem action='workspace-animating' />"
 "		</menu>"
 "		<separator name='sep-file-window2'/>"
+"		<menuitem action='dialog-flipbook'/>"
 "	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
