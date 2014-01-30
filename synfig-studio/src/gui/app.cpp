@@ -868,8 +868,8 @@ DEFINE_ACTION("cut", Gtk::Stock::CUT);
 DEFINE_ACTION("paste", Gtk::Stock::PASTE);
 DEFINE_ACTION("select-all-ducks", _("Select All Handles"));
 DEFINE_ACTION("unselect-all-ducks", _("Unselect All Handles"));
-DEFINE_ACTION("select-all-layers", _("Select All Layers"))
-DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"))
+DEFINE_ACTION("select-all-layers", _("Select All Layers"));
+DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"));
 DEFINE_ACTION("input-devices", _("Input Devices..."));
 DEFINE_ACTION("setup", _("Preferences..."));
 DEFINE_ACTION("reset-initial-preferences", _("Reset to default Setup values"));
@@ -1105,8 +1105,6 @@ DEFINE_ACTION("workspace-animating", _("Animating"));
 "</ui>";
 
 	#undef DEFINE_ACTION
-	#undef DEFINE_ACTION_2
-	#undef DEFINE_ACTION_SIG
 
 	try
 	{
