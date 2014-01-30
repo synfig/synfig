@@ -86,6 +86,7 @@ Action::ValueNodeRename::get_param_vocab()
 		.set_local_name(_("Name"))
 		.set_desc(_("The new name of the ValueNode"))
 		.set_user_supplied()
+		.set_value_provided()
 	);
 
 	return ret;
@@ -126,6 +127,19 @@ Action::ValueNodeRename::set_param(const synfig::String& name, const Action::Par
 	}
 
 	return Action::CanvasSpecific::set_param(name,param);
+}
+
+bool
+Action::ValueNodeRename::get_param(const synfig::String& name, Action::Param &param)
+{
+	if(name=="name")
+	{
+		param=value_node->get_id();
+
+		return true;
+	}
+
+	return Action::CanvasSpecific::get_param(name,param);
 }
 
 bool
