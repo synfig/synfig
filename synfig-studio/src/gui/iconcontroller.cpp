@@ -151,23 +151,23 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	// ToolBox Tools
 	INIT_STOCK_ICON(normal,"tool_normal_icon."IMAGE_EXT,_("Transform Tool"));
-        INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
-        INIT_STOCK_ICON(bline,"tool_spline_icon."IMAGE_EXT,_("Spline Tool"));
-        INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
-        INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
-        INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
-        INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
-        INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
-        INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
-        INIT_STOCK_ICON(smooth_move,"tool_smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
-        INIT_STOCK_ICON(rotate,"tool_rotate_icon."IMAGE_EXT,"Rotate Tool");
-        INIT_STOCK_ICON(width,"tool_width_icon."IMAGE_EXT,_("Width Tool"));
-        INIT_STOCK_ICON(scale,"tool_scale_icon."IMAGE_EXT,"Scale Tool");
-        INIT_STOCK_ICON(zoom,"tool_zoom_icon."IMAGE_EXT,_("Zoom Tool"));
-        INIT_STOCK_ICON(mirror,"tool_mirror_icon."IMAGE_EXT,_("Mirror Tool"));
-        INIT_STOCK_ICON(text,"tool_text_icon."IMAGE_EXT,"Text Tool");
-        INIT_STOCK_ICON(gradient,"tool_gradient_icon."IMAGE_EXT,_("Gradient Tool"));
-        INIT_STOCK_ICON(star,"tool_star_icon."IMAGE_EXT,_("Star Tool"));
+	INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
+	INIT_STOCK_ICON(bline,"tool_spline_icon."IMAGE_EXT,_("Spline Tool"));
+	INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
+	INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
+	INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
+	INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
+	INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
+	INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
+	INIT_STOCK_ICON(smooth_move,"tool_smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
+	INIT_STOCK_ICON(rotate,"tool_rotate_icon."IMAGE_EXT,"Rotate Tool");
+	INIT_STOCK_ICON(width,"tool_width_icon."IMAGE_EXT,_("Width Tool"));
+	INIT_STOCK_ICON(scale,"tool_scale_icon."IMAGE_EXT,"Scale Tool");
+	INIT_STOCK_ICON(zoom,"tool_zoom_icon."IMAGE_EXT,_("Zoom Tool"));
+	INIT_STOCK_ICON(mirror,"tool_mirror_icon."IMAGE_EXT,_("Mirror Tool"));
+	INIT_STOCK_ICON(text,"tool_text_icon."IMAGE_EXT,"Text Tool");
+	INIT_STOCK_ICON(gradient,"tool_gradient_icon."IMAGE_EXT,_("Gradient Tool"));
+	INIT_STOCK_ICON(star,"tool_star_icon."IMAGE_EXT,_("Star Tool"));
 	//ToolBox Others
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
