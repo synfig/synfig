@@ -33,6 +33,8 @@
 #include <gtkmm/entry.h>
 #include <glibmm/timeval.h>
 
+#include <synfig/layer_switch.h>
+
 #include "state_brush.h"
 #include "state_normal.h"
 #include "canvasview.h"
@@ -260,8 +262,14 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 	case BUTTON_LEFT:
 		{
 			// Enter the stroke state to get the stroke
-			etl::handle<Layer_Bitmap> layer =
-				etl::handle<Layer_Bitmap>::cast_dynamic( canvas_view_->get_selection_manager()->get_selected_layer() );
+			Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+			etl::handle<Layer_Bitmap> layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			if (!layer)
+			{
+				etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
+				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
+			}
+
 			if (layer)
 			{
 				action = new synfigapp::Action::LayerPaint();
