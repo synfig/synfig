@@ -65,6 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Switch,"$Id$");
 Layer_Switch::Layer_Switch()
 {
 	param_layer_name=ValueBase(String());
+	set_param("children_lock",ValueBase(true));
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
