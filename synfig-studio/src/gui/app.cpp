@@ -846,6 +846,8 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
+DEFINE_ACTION("new", Gtk::Stock::NEW);
+DEFINE_ACTION("open", Gtk::Stock::OPEN);
 DEFINE_ACTION("save", Gtk::Stock::SAVE);
 DEFINE_ACTION("save-as", _("Save As..."));
 DEFINE_ACTION("save-all", Gtk::StockID("synfig-saveall"));
@@ -862,6 +864,8 @@ DEFINE_ACTION("close-document", _("Close Document"));
 DEFINE_ACTION("quit", Gtk::Stock::QUIT);
 
 // actions in Edit menu
+DEFINE_ACTION("undo", Gtk::Stock::UNDO);
+DEFINE_ACTION("redo", Gtk::Stock::REDO);
 DEFINE_ACTION("copy", Gtk::Stock::COPY);
 DEFINE_ACTION("cut", Gtk::Stock::CUT);
 DEFINE_ACTION("paste", Gtk::Stock::PASTE);
@@ -929,11 +933,23 @@ DEFINE_ACTION("seek-end", Gtk::StockID("synfig-animate_seek_end_icon"));
 DEFINE_ACTION("properties", _("Properties..."));
 DEFINE_ACTION("options", _("Options..."));
 
+// actions in Layer menu
+DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
+DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
+
 // actions in Window menu
 DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default", _("Default"));
 DEFINE_ACTION("workspace-animating", _("Animating"));
 DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
+
+// actions in Help menu
+DEFINE_ACTION("help", Gtk::Stock::HELP);
+DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP);
+DEFINE_ACTION("help-reference", Gtk::Stock::HELP);
+DEFINE_ACTION("help-faq", Gtk::Stock::HELP);
+DEFINE_ACTION("help-support", Gtk::Stock::HELP);
+DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
 
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
@@ -1049,7 +1065,6 @@ DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
-"		<menuitem action='canvas-new'/>"
 "	</menu>"
 "	<menu action='menu-layer'>"
 "		<menu action='menu-layer-new'></menu>"
