@@ -206,6 +206,7 @@ public:
 	virtual void perform()=0;
 
 	virtual bool set_param(const synfig::String& /*name*/, const Param &) { return false; }
+	virtual bool get_param(const synfig::String& /*name*/, Param &) { return false; }
 	virtual bool is_ready()const=0;
 
 	virtual synfig::String get_name()const =0;
@@ -279,6 +280,7 @@ public:
 
 	static ParamVocab get_param_vocab();
 	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool get_param(const synfig::String& /*name*/, Param &) { return false; }
 	virtual bool is_ready()const;
 
 	EditMode get_edit_mode()const;
@@ -288,7 +290,7 @@ public:
 	bool is_dirty()const { return is_dirty_; }
 	void set_dirty(bool x=true) { is_dirty_=x; }
 
-}; // END of class Action::Undoable
+}; // END of class Action::CanvasSpecific
 
 typedef std::list< etl::handle<Action::Undoable> > ActionList;
 
