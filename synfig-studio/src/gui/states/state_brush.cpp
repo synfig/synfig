@@ -189,8 +189,6 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
 
-	// Disable the time bar
-	get_canvas_view()->set_sensitive_timebar(false);
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::dock_toolbox->refresh();
@@ -220,9 +218,6 @@ StateBrush_Context::~StateBrush_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
-
-	// Enable the time bar
-	get_canvas_view()->set_sensitive_timebar(true);
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
