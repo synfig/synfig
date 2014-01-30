@@ -805,6 +805,19 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,filename);
 
+		// add imported layer into switch
+		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
+		assert(action);
+		if(!action) return false;
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("layer",layer);
+		action->set_param("description",layer->get_description());
+		if(!action->is_ready())
+			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
+		if(!get_instance()->perform_action(action))
+			{ get_ui_interface()->error(_("Action Failed.")); return false; }
+
 		return true;
 	}
 	catch(...)

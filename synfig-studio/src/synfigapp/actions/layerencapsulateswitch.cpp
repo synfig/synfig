@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulateSwitch);
-ACTION_SET_NAME(Action::LayerEncapsulateSwitch,"LayerEncapsulate");
+ACTION_SET_NAME(Action::LayerEncapsulateSwitch,"LayerEncapsulateSwitch");
 ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateSwitch,N_("Group Layer into Switch"));
 ACTION_SET_TASK(Action::LayerEncapsulateSwitch,"encapsulate_switch");
 ACTION_SET_CATEGORY(Action::LayerEncapsulateSwitch,Action::CATEGORY_LAYER);
@@ -81,6 +81,11 @@ Action::LayerEncapsulateSwitch::get_param_vocab()
 		.set_desc(_("Layer to be grouped"))
 		.set_supports_multiple()
 	);
+	ret.push_back(ParamDesc("description",Param::TYPE_STRING)
+		.set_local_name(_("Description"))
+		.set_desc(_("Description of new switch"))
+		.set_optional()
+	);
 
 	return ret;
 }
@@ -97,7 +102,11 @@ Action::LayerEncapsulateSwitch::set_param(const synfig::String& name, const Acti
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layers.push_back(param.get_layer());
-
+		return true;
+	}
+	if(name=="description" && param.get_type()==Param::TYPE_STRING)
+	{
+		description = param.get_string();
 		return true;
 	}
 
@@ -145,6 +154,7 @@ Action::LayerEncapsulateSwitch::prepare()
 
 	Layer::Handle new_layer(Layer::create("switch"));
 
+	if (!description.empty()) new_layer->set_description(description);
 	new_layer->set_param("canvas",child_canvas);
 	new_layer->set_param("layer_name",layers.front()->get_description());
 

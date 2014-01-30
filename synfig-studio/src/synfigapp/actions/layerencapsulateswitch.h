@@ -47,6 +47,7 @@ class LayerEncapsulateSwitch :
 {
 private:
 	synfig::Canvas::Handle child_canvas;
+	synfig::String description;
 	std::list<synfig::Layer::Handle> layers;
 
 	int lowest_depth()const;
