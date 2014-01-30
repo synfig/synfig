@@ -90,6 +90,7 @@ Action::LayerSetDesc::get_param_vocab()
 		.set_local_name(_("New Description"))
 		.set_local_name(_("Enter a new description for this layer"))
 		.set_user_supplied()
+		.set_value_provided()
 	);
 
 	return ret;
@@ -119,6 +120,18 @@ Action::LayerSetDesc::set_param(const synfig::String& name, const Action::Param 
 	}
 
 	return Action::CanvasSpecific::set_param(name,param);
+}
+
+bool
+Action::LayerSetDesc::get_param(const synfig::String& name, Action::Param &param)
+{
+	if(name=="new_description")
+	{
+		param=layer->get_description();
+
+		return true;
+	}
+	return Action::CanvasSpecific::get_param(name,param);
 }
 
 bool
