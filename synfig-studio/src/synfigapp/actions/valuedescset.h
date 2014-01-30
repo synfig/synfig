@@ -51,6 +51,7 @@ private:
 	synfig::ValueBase value;
 	synfig::Time time;
 	bool recursive;
+	bool animate;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
 public:
