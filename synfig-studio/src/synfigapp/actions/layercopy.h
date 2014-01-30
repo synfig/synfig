@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerimagecopy.h
+/*!	\file layercopy.h
 **	\brief Template File
 **
 **	$Id$
@@ -22,14 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_LAYERIMAGECOPY_H
-#define __SYNFIG_APP_ACTION_LAYERIMAGECOPY_H
+#ifndef __SYNFIG_APP_ACTION_LAYERCOPY_H
+#define __SYNFIG_APP_ACTION_LAYERCOPY_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer.h>
-#include <synfig/layer_bitmap.h>
-#include <synfig/layer_switch.h>
+#include <synfig/filesystem.h>
 #include <synfigapp/action.h>
 #include <list>
 #include <synfig/guid.h>
@@ -44,21 +43,27 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerImageCopy :
+class LayerCopy :
 	public Super
 {
 private:
-	synfig::Time time;
-	synfig::String filename;
-	etl::handle<synfig::Layer_Bitmap> layer_bitmap;
-	etl::handle<synfig::Layer_Switch> layer_switch;
+	std::list<synfig::String> filenames;
+	std::list<synfig::Layer::Handle> layers;
 
 public:
 
-	LayerImageCopy();
+	LayerCopy();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
+
+	static void generateNewName(
+		synfig::Layer::Handle layer,
+		synfig::Canvas::Handle canvas,
+		synfig::FileSystem::Handle file_system,
+		synfig::String &out_description,
+		synfig::String &out_filename,
+		synfig::String &out_filename_param );
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
