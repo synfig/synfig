@@ -167,6 +167,7 @@ Action::LayerAddFrame::prepare()
 		action->set_param("value_desc",ValueDesc(Layer::Handle(layer_switch), "layer_name"));
 		action->set_param("time",time);
 		action->set_param("new_value",ValueBase(description));
+		action->set_param("animate",true);
 		add_action(action);
 	}
 }
