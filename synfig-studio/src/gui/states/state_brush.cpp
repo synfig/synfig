@@ -55,6 +55,8 @@
 #include <ETL/gaussian>
 #include "docks/dialog_tooloptions.h"
 
+#include "ducktransform_matrix.h"
+
 #include "general.h"
 
 #endif
@@ -87,6 +89,7 @@ class studio::StateBrush_Context : public sigc::trackable
 
 	Glib::TimeVal time;
 	etl::handle<synfigapp::Action::LayerPaint> action;
+	TransformStack transform_stack;
 
 	void refresh_ducks();
 
@@ -102,6 +105,12 @@ public:
 	Smach::event_result event_mouse_up_handler(const Smach::event& x);
 	Smach::event_result event_mouse_draw_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
+
+	static bool build_transform_stack(
+		Canvas::Handle canvas,
+		Layer::Handle layer,
+		CanvasView::Handle canvas_view,
+		TransformStack& transform_stack );
 
 	void refresh_tool_options();
 
@@ -248,6 +257,44 @@ StateBrush_Context::event_refresh_handler(const Smach::event& /*x*/)
 	return Smach::RESULT_ACCEPT;
 }
 
+bool
+StateBrush_Context::build_transform_stack(
+	Canvas::Handle canvas,
+	Layer::Handle layer,
+	CanvasView::Handle canvas_view,
+	TransformStack& transform_stack )
+{
+	int count = 0;
+	for(Canvas::iterator i = canvas->begin(); i != canvas->end() ;++i)
+	{
+		if(*i == layer) return true;
+
+		if((*i)->active())
+		{
+			Transform::Handle trans((*i)->get_transform());
+			if(trans) { transform_stack.push(trans); count++; }
+		}
+
+		// If this is a paste canvas layer, then we need to
+		// descend into it
+		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i))
+		{
+			transform_stack.push_back(
+				new Transform_Matrix(
+						layer_pastecanvas->get_guid(),
+					layer_pastecanvas->get_summary_transformation().get_matrix()
+				)
+			);
+			if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack))
+				return true;
+			transform_stack.pop();
+		}
+	}
+	while(count-- > 0) transform_stack.pop();
+	return false;
+}
+
+
 Smach::event_result
 StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 {
@@ -267,38 +314,42 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 
 			if (layer)
 			{
-				action = new synfigapp::Action::LayerPaint();
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
+				transform_stack.clear();
+				if (build_transform_stack(get_canvas(), layer, get_canvas_view(), transform_stack))
+				{
+					action = new synfigapp::Action::LayerPaint();
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
 
-				action->stroke.set_layer(layer);
+					action->stroke.set_layer(layer);
 
-				// configure brush
-				brushlib::Brush &brush = action->stroke.brush();
-				brush.set_base_value(BRUSH_OPAQUE, 					 0.85f );
-				brush.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
-				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
-				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
-				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
-				brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
-				brush.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
-				brush.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
-				brush.set_base_value(BRUSH_HARDNESS,					 0.69f );
-				brush.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
-				brush.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
-				brush.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
-				brush.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
-				brush.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
-				brush.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
-				brush.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
-				brush.set_base_value(BRUSH_SMUDGE,						 0.9f  );
-				brush.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
-				brush.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC,  4.0f  );
+					// configure brush
+					brushlib::Brush &brush = action->stroke.brush();
+					brush.set_base_value(BRUSH_OPAQUE, 					 0.85f );
+					brush.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
+					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
+					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
+					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
+					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
+					brush.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
+					brush.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
+					brush.set_base_value(BRUSH_HARDNESS,					 0.69f );
+					brush.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
+					brush.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
+					brush.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
+					brush.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
+					brush.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
+					brush.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
+					brush.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
+					brush.set_base_value(BRUSH_SMUDGE,						 0.9f  );
+					brush.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
+					brush.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC,  4.0f  );
 
-				action->stroke.prepare();
+					action->stroke.prepare();
 
-				time.assign_current_time();
-				return Smach::RESULT_ACCEPT;
+					time.assign_current_time();
+					return Smach::RESULT_ACCEPT;
+				}
 			}
 			break;
 		}
@@ -321,6 +372,7 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 			{
 				get_canvas_interface()->get_instance()->perform_action(action);
 				action = NULL;
+				transform_stack.clear();
 				return Smach::RESULT_ACCEPT;
 			}
 			break;
@@ -347,7 +399,7 @@ StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 				time.assign_current_time();
 				double delta_time = (time - prev_time).as_double();
 
-				Point p = event.pos;
+				Point p = transform_stack.unperform( event.pos );
 				Point tl = action->stroke.get_layer()->get_param("tl").get(Point());
 				Point br = action->stroke.get_layer()->get_param("br").get(Point());
 				int w = action->stroke.get_layer()->surface.get_w();
