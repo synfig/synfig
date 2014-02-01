@@ -829,6 +829,8 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
+	menus_action_group->add(Gtk::Action::create("menu-keyframe","Keyframe"));
+
 	// Add the synfigapp actions (layer panel toolbar items, etc...)
 	synfigapp::Action::Book::iterator iter;
 	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
@@ -951,6 +953,9 @@ DEFINE_ACTION("help-faq", Gtk::Stock::HELP);
 DEFINE_ACTION("help-support", Gtk::Stock::HELP);
 DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
 
+// actions: Keyframe
+DEFINE_ACTION("keyframe-properties","Properties");
+
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
@@ -1060,7 +1065,6 @@ DEFINE_ACTION("help-about", Gtk::StockID("synfig-about"));
 "		<menuitem action='seek-next-second'/>"
 "		<menuitem action='seek-begin'/>"
 "		<menuitem action='seek-end'/>"
-
 "	</menu>"
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
