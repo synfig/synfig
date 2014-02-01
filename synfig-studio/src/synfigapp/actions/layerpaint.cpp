@@ -117,6 +117,29 @@ Action::LayerPaint::PaintStroke::paint_self(synfig::Surface &surface)
 }
 
 void
+Action::LayerPaint::PaintStroke::copy_to_cairo_surface(const synfig::Surface &surface, synfig::CairoSurface &csurface)
+{
+	int stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, surface.get_w());
+	unsigned char *data = (unsigned char*)malloc(stride * surface.get_h());
+	unsigned char *p = data;
+	for(int y = 0; y < surface.get_h(); ++y, p += stride)
+	{
+		CairoColor *c = (CairoColor*)p;
+		for(int x = 0; x < surface.get_w(); ++x, ++c)
+			*c = CairoColor(surface[y][x]);
+	}
+	cairo_surface_t *cs = cairo_image_surface_create_for_data(
+		data,
+		CAIRO_FORMAT_ARGB32,
+		surface.get_w(),
+		surface.get_h(),
+		stride );
+	csurface.set_cairo_surface(cs);
+	csurface.map_cairo_image();
+	cairo_surface_destroy(cs);
+}
+
+void
 Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 {
 	assert(prepared);
@@ -133,6 +156,7 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	{
 		Mutex::Lock lock(layer->mutex);
 		brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.f, 0.f, point.dtime);
+		copy_to_cairo_surface(layer->surface, layer->csurface);
 	}
 
 	if (wrapper.extra_left > 0 || wrapper.extra_top > 0) {
@@ -184,6 +208,7 @@ Action::LayerPaint::PaintStroke::undo()
 	{
 		Mutex::Lock lock(layer->mutex);
 		paint_prev(layer->surface);
+		copy_to_cairo_surface(layer->surface, layer->csurface);
 	}
 	applied = false;
 	layer->set_param("tl", ValueBase(tl));
@@ -199,6 +224,7 @@ Action::LayerPaint::PaintStroke::apply()
 	{
 		Mutex::Lock lock(layer->mutex);
 		paint_self(layer->surface);
+		copy_to_cairo_surface(layer->surface, layer->csurface);
 	}
 	applied = true;
 	layer->set_param("tl", ValueBase(new_tl));
