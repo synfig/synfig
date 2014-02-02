@@ -877,7 +877,7 @@ DEFINE_ACTION("select-all-layers", _("Select All Layers"));
 DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"));
 DEFINE_ACTION("input-devices", _("Input Devices..."));
 DEFINE_ACTION("setup", _("Preferences..."));
-DEFINE_ACTION("restore-default-preferences", _("Restore Default Preferences Values"));
+DEFINE_ACTION("restore-default-settings", _("Restore Default Settings"));
 
 // actions in View menu
 DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
@@ -999,7 +999,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<separator name='sep-edit3'/>"
 "		<menuitem action='input-devices' />"
 "		<menuitem action='setup' />"
-"		<menuitem action='restore-default-preferences' />"
+"		<menuitem action='restore-default-settings' />"
 "	</menu>"
 "	<menu action='menu-view'>"
 "		<menu action='menu-duck-mask'>"
@@ -1915,7 +1915,7 @@ App::set_workspace_animating()
 
 
 void
-App::restore_default_preferences()
+App::restore_default_settings()
 {
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");

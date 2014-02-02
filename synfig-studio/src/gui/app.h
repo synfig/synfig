@@ -313,7 +313,7 @@ public:
 	static void set_workspace_default();
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
-	static void restore_default_preferences();
+	static void restore_default_settings();
 
 	static const std::list<std::string>& get_recent_files();
 
