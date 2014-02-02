@@ -1632,9 +1632,9 @@ CanvasView::init_menus()
 	{
 		Glib::RefPtr<Gtk::Action> action;
 
-		action=Gtk::Action::create("seek-next-frame", Gtk::Stock::GO_FORWARD,_("Next Frame"),_("Next Frame"));
+		action=Gtk::Action::create("seek-next-frame", Gtk::StockID("synfig-animate_seek_next_frame"));
 		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame),1));
-		action=Gtk::Action::create("seek-prev-frame", Gtk::Stock::GO_BACK,_("Prev Frame"),_("Prev Frame"));
+		action=Gtk::Action::create("seek-prev-frame", Gtk::StockID("synfig-animate_seek_prev_frame"));
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame),-1));
 
 		action=Gtk::Action::create("seek-next-second", Gtk::Stock::GO_FORWARD,_("Seek Forward"),_("Seek Forward"));
@@ -1642,16 +1642,16 @@ CanvasView::init_menus()
 		action=Gtk::Action::create("seek-prev-second", Gtk::Stock::GO_BACK,_("Seek Backward"),_("Seek Backward"));
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time(-1)));
 
-		action=Gtk::Action::create("seek-end", Gtk::Stock::GOTO_LAST,_("Seek to End"),_("Seek to End"));
+		action=Gtk::Action::create("seek-end", Gtk::StockID("synfig-animate_seek_end"));
 		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time::end()));
 
-		action=Gtk::Action::create("seek-begin", Gtk::Stock::GOTO_FIRST,_("Seek to Begin"),_("Seek to Begin"));
+		action=Gtk::Action::create("seek-begin", Gtk::StockID("synfig-animate_seek_begin"));
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time::begin()));
 
-		action=Gtk::Action::create("jump-next-keyframe", Gtk::Stock::GO_FORWARD,_("Jump to Next Keyframe"),_("Jump to Next Keyframe"));
+		action=Gtk::Action::create("jump-next-keyframe", Gtk::StockID("synfig-animate_seek_next_keyframe"));
 		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
 
-		action=Gtk::Action::create("jump-prev-keyframe", Gtk::Stock::GO_BACK,_("Jump to Prev Keyframe"),_("Jump to Prev Keyframe"));
+		action=Gtk::Action::create("jump-prev-keyframe", Gtk::StockID("synfig-animate_seek_prev_keyframe"));
 		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 
 		action=Gtk::Action::create("canvas-zoom-in", Gtk::Stock::ZOOM_IN);
