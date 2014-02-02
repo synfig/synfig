@@ -999,7 +999,6 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<separator name='sep-edit3'/>"
 "		<menuitem action='input-devices' />"
 "		<menuitem action='setup' />"
-"		<menuitem action='restore-default-settings' />"
 "	</menu>"
 "	<menu action='menu-view'>"
 "		<menu action='menu-duck-mask'>"

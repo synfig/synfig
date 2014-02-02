@@ -91,22 +91,20 @@ Dialog_Setup::Dialog_Setup():
 
 	{
 	// Setup the buttons
+	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Default Settings"))));
+	restore_button->show();
+	add_action_widget(*restore_button,1);
+	restore_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_restore_pressed));
+
+	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	cancel_button->show();
+	add_action_widget(*cancel_button,0);
+	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::hide));
 
 	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
 	ok_button->show();
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_ok_pressed));
-
-	Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
-	apply_button->show();
-	add_action_widget(*apply_button,1);
-	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_apply_pressed));
-
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
-	cancel_button->show();
-	add_action_widget(*cancel_button,0);
-	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::hide));
-
 
 	// Notebook
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
@@ -322,6 +320,15 @@ Dialog_Setup::on_ok_pressed()
     on_apply_pressed();
 	hide();
 }
+
+
+void
+Dialog_Setup::on_restore_pressed()
+{
+    App::restore_default_settings();
+	hide();
+}
+
 
 void
 Dialog_Setup::on_apply_pressed()

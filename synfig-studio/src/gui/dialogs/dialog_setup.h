@@ -156,6 +156,7 @@ class Dialog_Setup : public Gtk::Dialog
 
 	void on_ok_pressed();
 	void on_apply_pressed();
+	void on_restore_pressed();
 
 	void on_gamma_r_change();
 	void on_gamma_g_change();
