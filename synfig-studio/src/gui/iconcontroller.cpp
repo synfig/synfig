@@ -277,15 +277,15 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(set_outline_color,"set_outline_color."IMAGE_EXT,_("Set as Outline"));
 	INIT_STOCK_ICON(set_fill_color,"set_fill_color."IMAGE_EXT,_("Set as Fill"));
 
-	INIT_STOCK_ICON(animate_seek_begin,"animate_seek_begin_icon."IMAGE_EXT,_("Seek to begin"));
-	INIT_STOCK_ICON(animate_seek_prev_keyframe,"animate_seek_prev_keyframe_icon."IMAGE_EXT,_("Previous keyframe"));
-	INIT_STOCK_ICON(animate_seek_prev_frame,"animate_seek_prev_frame_icon."IMAGE_EXT,_("Previous frame"));
+	INIT_STOCK_ICON(animate_seek_begin,"animate_seek_begin_icon."IMAGE_EXT,_("Seek to Begin"));
+	INIT_STOCK_ICON(animate_seek_prev_keyframe,"animate_seek_prev_keyframe_icon."IMAGE_EXT,_("Seek to Previous Keyframe"));
+	INIT_STOCK_ICON(animate_seek_prev_frame,"animate_seek_prev_frame_icon."IMAGE_EXT,_("Seek to Previous Frame"));
 	INIT_STOCK_ICON(animate_play,"animate_play_icon."IMAGE_EXT,_("Play"));
 	INIT_STOCK_ICON(animate_stop,"animate_stop_icon."IMAGE_EXT,_("Stop"));
 	INIT_STOCK_ICON(animate_pause,"animate_pause_icon."IMAGE_EXT,_("Pause"));
-	INIT_STOCK_ICON(animate_seek_next_frame,"animate_seek_next_frame_icon."IMAGE_EXT,_("Next frame"));
-	INIT_STOCK_ICON(animate_seek_next_keyframe,"animate_seek_next_keyframe_icon."IMAGE_EXT,_("Next keyframe"));
-	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to end"));
+	INIT_STOCK_ICON(animate_seek_next_frame,"animate_seek_next_frame_icon."IMAGE_EXT,_("Seek to Next frame"));
+	INIT_STOCK_ICON(animate_seek_next_keyframe,"animate_seek_next_keyframe_icon."IMAGE_EXT,_("Seek to Next Keyframe"));
+	INIT_STOCK_ICON(animate_seek_end,"animate_seek_end_icon."IMAGE_EXT,_("Seek to End"));
 	INIT_STOCK_ICON(animate_loop,"animate_loop_icon."IMAGE_EXT,_("Animate Loop"));
 
 	INIT_STOCK_ICON(add_to_group,"action_add_to_set_icon."IMAGE_EXT,_("Add Layer to Set"));
