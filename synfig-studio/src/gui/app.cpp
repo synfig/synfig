@@ -922,14 +922,14 @@ DEFINE_ACTION("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit"));
 DEFINE_ACTION("canvas-zoom-100", Gtk::StockID("gtk-zoom-100"));
 DEFINE_ACTION("time-zoom-in", Gtk::StockID("gtk-zoom-in"));
 DEFINE_ACTION("time-zoom-out", Gtk::StockID("gtk-zoom-out"));
-DEFINE_ACTION("jump-next-keyframe", Gtk::StockID("synfig-animate_seek_next_keyframe_icon"));
-DEFINE_ACTION("jump-prev-keyframe", Gtk::StockID("synfig-animate_seek_prev_keyframe_icon"));
-DEFINE_ACTION("seek-next-frame", Gtk::StockID("synfig-animate_seek_next_frame_icon"));
-DEFINE_ACTION("seek-prev-frame", Gtk::StockID("synfig-animate_seek_prev_frame_icon"));
+DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"));
+DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"));
+DEFINE_ACTION("seek-next-frame", _("Seek to Next Frame"));
+DEFINE_ACTION("seek-prev-frame", _("Seek to Previous Frame"));
 DEFINE_ACTION("seek-next-second", _("Seek Forward"));
 DEFINE_ACTION("seek-prev-second", _("Seek Backward"));
-DEFINE_ACTION("seek-begin", Gtk::StockID("synfig-animate_seek_begin_icon"));
-DEFINE_ACTION("seek-end", Gtk::StockID("synfig-animate_seek_end_icon"));
+DEFINE_ACTION("seek-begin", _("Seek to Begin"));
+DEFINE_ACTION("seek-end", _("Seek to End"));
 
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."));
