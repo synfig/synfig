@@ -944,6 +944,21 @@ DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default", _("Default"));
 DEFINE_ACTION("workspace-animating", _("Animating"));
 DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
+DEFINE_ACTION("panel-toolbox","Toolbox");
+DEFINE_ACTION("panel-tool_options",_("Tool Options"));
+DEFINE_ACTION("panel-history", "History");
+DEFINE_ACTION("panel-canvases",_("Canvas Browser"));
+DEFINE_ACTION("panel-keyframes",_("Keyframes"));
+DEFINE_ACTION("panel-layers",_("Layers"));
+DEFINE_ACTION("panel-params",_("Parameters"));
+DEFINE_ACTION("panel-meta_data",_("Canvas MetaData"));
+DEFINE_ACTION("panel-children",_("Library"));
+DEFINE_ACTION("panel-info",_("Info"));
+DEFINE_ACTION("panel-navigator",_("Navigator"));
+DEFINE_ACTION("panel-timetrack",_("Timetrack"));
+DEFINE_ACTION("panel-curves",_("Graphs"));
+DEFINE_ACTION("panel-groups",_("Sets"));
+DEFINE_ACTION("panel-pal_edit",_("Palette Editor"));
 
 // actions in Help menu
 DEFINE_ACTION("help", Gtk::Stock::HELP);
@@ -1097,8 +1112,25 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "			<menuitem action='workspace-compositing' />"
 "			<menuitem action='workspace-animating' />"
 "		</menu>"
-"		<separator name='sep-file-window2'/>"
+"		<separator />"
 "		<menuitem action='dialog-flipbook'/>"
+"		<menuitem action='panel-toolbox' />"
+"		<menuitem action='panel-tool_options' />"
+"		<menuitem action='panel-history' />"
+"		<menuitem action='panel-canvases' />"
+"		<menuitem action='panel-keyframes' />"
+"		<menuitem action='panel-layers' />"
+"		<menuitem action='panel-params' />"
+"		<menuitem action='panel-meta_data' />"
+"		<menuitem action='panel-children' />"
+"		<menuitem action='panel-info' />"
+"		<menuitem action='panel-navigator' />"
+"		<menuitem action='panel-timetrack' />"
+"		<menuitem action='panel-curves' />"
+"		<menuitem action='panel-groups' />"
+"		<menuitem action='panel-pal_edit' />"
+"		<separator />"
+// opened documents will be listed here below the above separator.
 "	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
