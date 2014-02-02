@@ -425,10 +425,15 @@ Instance::save_as(const synfig::String &file_name)
 	{
 		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(*i);
 		if (!layer_bitmap) continue;
+		if (!layer_bitmap->get_canvas()) continue;
 		if (!(*i)->get_param_list().count("filename")) continue;
 		ValueBase value = (*i)->get_param("filename");
 		if (!value.same_type_as(String())) continue;
-		save_surface(layer_bitmap->surface, value.get(String()));
+		String filename = value.get(String());
+		// TODO: literals '#' and 'images/'
+		if (!filename.empty() && filename[0] == '#')
+			filename.insert(1, "images/");
+		save_surface(layer_bitmap->surface, filename);
 	}
 
 	if (filename_extension(file_name) == ".sfg")
