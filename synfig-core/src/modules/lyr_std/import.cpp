@@ -107,10 +107,6 @@ Import::set_param(const String & param, const ValueBase &value)
 		String newfilename=value.get(string());
 		String filename_with_path;
 
-		// TODO: "images" and "container:" literals
-		if (newfilename.substr(0, String("#").size()) == "#")
-			newfilename = "#images/" + newfilename.substr(String("#").size());
-
 		// Get rid of any %20 crap
 		{
 			String::size_type n;
@@ -134,6 +130,11 @@ Import::set_param(const String & param, const ValueBase &value)
 			synfig::info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
 		}
 #endif
+
+		// TODO: "images" and "container:" literals
+		String newfilename_orig = newfilename;
+		if (newfilename_orig.substr(0, String("#").size()) == "#")
+			newfilename_orig = "#images/" + newfilename_orig.substr(String("#").size());
 
 		if(filename.empty())
 			filename=newfilename;
@@ -167,11 +168,11 @@ Import::set_param(const String & param, const ValueBase &value)
 				if (!file_system) file_system = FileSystemNative::instance();
 
 				// todo: literal "container:"
-				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("#").size())=="#")
-					filename_with_path=newfilename;
+				if(is_absolute_path(newfilename_orig)
+				|| newfilename_orig.substr(0, std::string("#").size())=="#")
+					filename_with_path=newfilename_orig;
 				else
-					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
+					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename_orig);
 
 				handle<Importer> newimporter;
 
@@ -179,7 +180,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 				if(!newimporter)
 				{
-					newimporter=Importer::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename)));
+					newimporter=Importer::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
 					if(!newimporter)
 					{
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
@@ -223,11 +224,11 @@ Import::set_param(const String & param, const ValueBase &value)
 				if (!file_system) file_system = FileSystemNative::instance();
 
 				// todo: literal "container:"
-				if(is_absolute_path(newfilename)
-				|| newfilename.substr(0, std::string("#").size())=="#")
-					filename_with_path=newfilename;
+				if(is_absolute_path(newfilename_orig)
+				|| newfilename_orig.substr(0, std::string("#").size())=="#")
+					filename_with_path=newfilename_orig;
 				else
-					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename);
+					filename_with_path=absolute_path(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename_orig);
 				 
 				handle<CairoImporter> newimporter;
 				 
@@ -235,7 +236,7 @@ Import::set_param(const String & param, const ValueBase &value)
 				 
 				if(!newimporter)
 				{
-					newimporter=CairoImporter::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename)));
+					newimporter=CairoImporter::open(file_system->get_identifier(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename_orig)));
 					if(!newimporter)
 					{
 						synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
