@@ -31,7 +31,9 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/togglebutton.h>
 #include <glibmm/timeval.h>
+#include <giomm.h>
 
 #include <synfig/layer_switch.h>
 
@@ -78,19 +80,63 @@ StateBrush studio::state_brush;
 
 class studio::StateBrush_Context : public sigc::trackable
 {
+public:
+	class BrushConfig {
+	public:
+		struct MapEntry {
+			float x, y;
+			MapEntry(): x(0.f), y(0.f) { }
+		};
+
+		struct InputEntry {
+			int input;
+			std::vector<MapEntry> mapping;
+			InputEntry(): input(0) { }
+		};
+
+		struct Entry {
+			float base;
+			std::vector<InputEntry> inputs;
+			Entry(): base(0.f) { }
+		};
+
+		Entry settings[BRUSH_SETTINGS_COUNT];
+
+		void clear();
+		void load(const String &filename);
+		void apply(brushlib::Brush &brush);
+
+	private:
+		static const char * setting_names[BRUSH_SETTINGS_COUNT];
+		static const char * input_names[INPUT_COUNT];
+
+		bool read_row(const char **pos);
+		bool read_space(const char **pos);
+		bool read_to_line_end(const char **pos);
+		bool read_key(const char **pos, const char *key);
+		bool read_word(const char **pos, String &out_value);
+		bool read_float(const char **pos, float &out_value);
+		bool read_input_entry(const char **pos, InputEntry &out_value);
+		bool read_map_entry(const char **pos, MapEntry &out_value);
+	};
+
+private:
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-
 	WorkArea::PushState push_state;
 
-	bool prev_table_status;
-
 	Gtk::Menu menu;
+
+	std::set<String> paths;
 
 	Glib::TimeVal time;
 	etl::handle<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
+	BrushConfig selected_brush_config;
+	Gtk::ToggleButton *selected_brush_button;
 
+	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
+	void select_brush(Gtk::ToggleButton *button, String filename);
 	void refresh_ducks();
 
 	synfigapp::Settings& settings;
@@ -127,6 +173,65 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
+const char * StateBrush_Context::BrushConfig::setting_names[] = {
+		"opaque",                      // BRUSH_OPAQUE                       0
+		"opaque_multiply",             // BRUSH_OPAQUE_MULTIPLY              1
+		"opaque_linearize",            // BRUSH_OPAQUE_LINEARIZE             2
+		"radius_logarithmic",          // BRUSH_RADIUS_LOGARITHMIC           3
+		"hardness",                    // BRUSH_HARDNESS                     4
+		"anti_aliasing",               // BRUSH_ANTI_ALIASING                5
+		"dabs_per_basic_radius",       // BRUSH_DABS_PER_BASIC_RADIUS        6
+		"dabs_per_actual_radius",      // BRUSH_DABS_PER_ACTUAL_RADIUS       7
+		"dabs_per_second",             // BRUSH_DABS_PER_SECOND              8
+		"radius_by_random",            // BRUSH_RADIUS_BY_RANDOM             9
+		"speed1_slowness",             // BRUSH_SPEED1_SLOWNESS             10
+		"speed2_slowness",             // BRUSH_SPEED2_SLOWNESS             11
+		"speed1_gamma",                // BRUSH_SPEED1_GAMMA                12
+		"speed2_gamma",                // BRUSH_SPEED2_GAMMA                13
+		"offset_by_random",            // BRUSH_OFFSET_BY_RANDOM            14
+		"offset_by_speed",             // BRUSH_OFFSET_BY_SPEED             15
+		"offset_by_speed_slowness",    // BRUSH_OFFSET_BY_SPEED_SLOWNESS    16
+		"slow_tracking",               // BRUSH_SLOW_TRACKING               17
+		"slow_tracking_per_dab",       // BRUSH_SLOW_TRACKING_PER_DAB       18
+		"tracking_noise",              // BRUSH_TRACKING_NOISE              19
+		"color_h",                     // BRUSH_COLOR_H                     20
+		"color_s",                     // BRUSH_COLOR_S                     21
+		"color_v",                     // BRUSH_COLOR_V                     22
+		"restore_color",               // BRUSH_RESTORE_COLOR               23
+		"change_color_h",              // BRUSH_CHANGE_COLOR_H              24
+		"change_color_l",              // BRUSH_CHANGE_COLOR_L              25
+		"change_color_hsl_s",          // BRUSH_CHANGE_COLOR_HSL_S          26
+		"change_color_v",              // BRUSH_CHANGE_COLOR_V              27
+		"change_color_hsv_s",          // BRUSH_CHANGE_COLOR_HSV_S          28
+		"smudge",                      // BRUSH_SMUDGE                      29
+		"smudge_length",               // BRUSH_SMUDGE_LENGTH               30
+		"smudge_radius_log",           // BRUSH_SMUDGE_RADIUS_LOG           31
+		"eraser",                      // BRUSH_ERASER                      32
+		"stroke_treshold",             // BRUSH_STROKE_THRESHOLD            33
+		"stroke_duration_logarithmic", // BRUSH_STROKE_DURATION_LOGARITHMIC 34
+		"stroke_holdtime",             // BRUSH_STROKE_HOLDTIME             35
+		"custom_input",                // BRUSH_CUSTOM_INPUT                36
+		"custom_input_slowness",       // BRUSH_CUSTOM_INPUT_SLOWNESS       37
+		"elliptical_dab_ratio",        // BRUSH_ELLIPTICAL_DAB_RATIO        38
+		"elliptical_dab_angle",        // BRUSH_ELLIPTICAL_DAB_ANGLE        39
+		"direction_filter",            // BRUSH_DIRECTION_FILTER            40
+		"lock_alpha"                   // BRUSH_LOCK_ALPHA                  41
+};
+
+const char * StateBrush_Context::BrushConfig::input_names[] = {
+		"pressure",                    // INPUT_PRESSURE                     0
+		"speed1",                      // INPUT_SPEED1                       1
+		"speed2",                      // INPUT_SPEED2                       2
+		"random",                      // INPUT_RANDOM                       3
+		"stroke",                      // INPUT_STROKE                       4
+		"direction",                   // INPUT_DIRECTION                    5
+		"tilt_declination",            // INPUT_TILT_DECLINATION             6
+		"tilt_ascension",              // INPUT_TILT_ASCENSION               7
+		"custom",                      // INPUT_CUSTOM                       8
+};
+
+
+
 StateBrush::StateBrush():
 	Smach::state<StateBrush_Context>("brush")
 {
@@ -142,6 +247,187 @@ StateBrush::~StateBrush()
 {
 }
 
+void
+StateBrush_Context::BrushConfig::clear()
+{
+	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+	{
+		settings[i].base = 0;
+		settings[i].inputs.clear();
+	}
+}
+
+bool StateBrush_Context::BrushConfig::read_space(const char **pos)
+{
+	while (**pos > 0 && **pos <= ' ') ++(*pos);
+	return true;
+}
+
+bool StateBrush_Context::BrushConfig::read_to_line_end(const char **pos)
+{
+	while (**pos != 0 && **pos != '\n' && **pos != '\r') ++(*pos);
+	if (**pos == 0) return false;
+	if (**pos == '\n' && *(++(*pos)) == '\r') ++(*pos);
+	if (**pos == '\r' && *(++(*pos)) == '\n') ++(*pos);
+	return true;
+}
+
+bool StateBrush_Context::BrushConfig::read_key(const char **pos, const char *key)
+{
+	size_t l = strlen(key);
+	if (strncmp(*pos, key, l) == 0)
+		{ *pos += l; return true; }
+	return false;
+}
+
+bool StateBrush_Context::BrushConfig::read_word(const char **pos, String &out_value)
+{
+	out_value.clear();
+	const char *p = *pos;
+	while ((*p >= 'a' && *p <= 'z') || *p == '_') ++p;
+	if (p > *pos) { out_value.assign(*pos, p); *pos = p; return true; }
+	return false;
+}
+
+bool StateBrush_Context::BrushConfig::read_float(const char **pos, float &out_value)
+{
+	out_value = 0.f;
+
+	const char *p = *pos;
+	bool negative = *p == '-';
+	if (negative) ++p;
+	const char *num_start = p;
+	while(*p >= '0' && *p <= '9')
+		out_value = 10.f*out_value + (float)(*(p++) - '0');
+	if (p <= num_start) return false;
+
+	if (*p == '.')
+	{
+		++p;
+		float amplifier = 1.f;
+		while(*p >= '0' && *p <= '9')
+			out_value += (amplifier *= 0.1f)*(float)(*(p++) - '0');
+	}
+
+	*pos = p;
+	return true;
+}
+
+bool StateBrush_Context::BrushConfig::read_map_entry(const char **pos, MapEntry &out_value)
+{
+	out_value.x = 0.f;
+	out_value.y = 0.f;
+	const char *p = *pos;
+	bool success = read_key(&p, "(")
+				&& read_space(&p)
+	            && read_float(&p, out_value.x)
+				&& read_space(&p)
+	            && read_float(&p, out_value.y)
+				&& read_space(&p)
+	            && read_key(&p, ")");
+	if (success) { *pos = p; return true; }
+	out_value.x = 0.f;
+	out_value.y = 0.f;
+	return false;
+}
+
+bool StateBrush_Context::BrushConfig::read_input_entry(const char **pos, InputEntry &out_value)
+{
+	out_value.input = 0;
+	out_value.mapping.clear();
+
+	const char *p = *pos;
+	String word;
+	if (read_space(&p) && read_word(&p, word))
+	{
+		for(int i = 0; i < INPUT_COUNT; ++i)
+		{
+			if (word == input_names[i])
+			{
+				MapEntry entry;
+				const char *pp = p;
+				while(read_space(&pp) && (out_value.mapping.empty() || (read_key(&pp, ",") && read_space(&pp))) && read_map_entry(&pp, entry))
+					{ out_value.mapping.push_back(entry); p = pp; }
+				if (out_value.mapping.size() > 1)
+				{
+					out_value.input = i;
+					*pos = p;
+					return true;
+				}
+				out_value.mapping.clear();
+				break;
+			}
+		}
+	}
+	return false;
+}
+
+bool
+StateBrush_Context::BrushConfig::read_row(const char **pos)
+{
+	const char *p = *pos;
+	String word;
+	if (read_space(&p) && read_word(&p, word))
+	{
+		for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+		{
+			if (word == setting_names[i])
+			{
+				if (read_space(&p) && read_float(&p, settings[i].base))
+				{
+					InputEntry entry;
+					const char *pp = p;
+					while(read_space(&pp) && read_key(&pp, "|") && read_space(&pp) && read_input_entry(&pp, entry))
+						{ settings[i].inputs.push_back(entry); p = pp; }
+					*pos = p;
+				}
+				break;
+			}
+		}
+	}
+	return read_to_line_end(pos);
+}
+
+void
+StateBrush_Context::BrushConfig::load(const String &filename)
+{
+	clear();
+
+	char *buffer = NULL;
+	{
+		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename);
+		goffset s = file->query_info()->get_size();
+		if (s < 0) return;
+		size_t size = s > INT_MAX-1 ? INT_MAX-1 : (size_t)s;
+		buffer = new char[size+1];
+		memset(buffer, 0, size+1);
+
+		Glib::RefPtr<Gio::FileInputStream> stream = file->read();
+		stream->read(buffer, size);
+		stream->close();
+	}
+
+	const char *pos = buffer;
+	if (pos != NULL) while(read_row(&pos)) { }
+	free(buffer);
+}
+
+void
+StateBrush_Context::BrushConfig::apply(brushlib::Brush &brush)
+{
+	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+	{
+		brush.set_base_value(i, settings[i].base);
+		for(int j = 0; j < INPUT_COUNT; ++j)
+			brush.set_mapping_n(i, j, 0);
+		for(std::vector<InputEntry>::const_iterator j = settings[i].inputs.begin(); j != settings[i].inputs.end(); ++j)
+		{
+			brush.set_mapping_n(i, j->input, (int)j->mapping.size());
+			for(std::vector<MapEntry>::const_iterator k = j->mapping.begin(); k != j->mapping.end(); ++k)
+				brush.set_mapping_point(i, j->input, (int)(k - j->mapping.begin()), k->x, k->y);
+		}
+	}
+}
 
 void
 StateBrush_Context::load_settings()
@@ -150,8 +436,22 @@ StateBrush_Context::load_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		String value;
-
-		// TODO: load something
+		if(settings.get_value("brush.path_count",value))
+		{
+			paths.clear();
+			int count = atoi(value.c_str());
+			for(int i = 0; i < count; ++i)
+				if(settings.get_value(strprintf("brush.path_%d", i),value))
+					paths.insert(value);
+			refresh_tool_options();
+		}
+		// TODO: remove following code
+		else
+		{
+			// force add Ubuntu path to mypaint brushes
+			paths.insert("/usr/share/mypaint/brushes");
+			refresh_tool_options();
+		}
 	}
 	catch(...)
 	{
@@ -165,8 +465,10 @@ StateBrush_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
-		// TODO: save something
+		settings.set_value("brush.path_count", strprintf("%d", (int)paths.size()));
+		int j = 0;
+		for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+			settings.set_value(strprintf("brush.path_%d", j++), *i);
 	}
 	catch(...)
 	{
@@ -178,6 +480,7 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(get_work_area()),
+	selected_brush_button(NULL),
 	settings(synfigapp::Main::get_selected_input_device()->settings())
 {
 	load_settings();
@@ -195,29 +498,10 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	// Turn off duck clicking
 	get_work_area()->set_allow_duck_clicks(false);
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::dock_toolbox->refresh();
 	refresh_ducks();
-}
-
-void
-StateBrush_Context::refresh_tool_options()
-{
-	App::dialog_tool_options->clear();
-	// TODO: add some widget
-	App::dialog_tool_options->set_local_name(_("Brush Tool"));
-	App::dialog_tool_options->set_name("brush");
-}
-
-Smach::event_result
-StateBrush_Context::event_refresh_tool_options(const Smach::event& /*x*/)
-{
-	refresh_tool_options();
-	return Smach::RESULT_ACCEPT;
 }
 
 StateBrush_Context::~StateBrush_Context()
@@ -228,13 +512,109 @@ StateBrush_Context::~StateBrush_Context()
 
 	get_work_area()->reset_cursor();
 
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
 	App::dock_toolbox->refresh();
+}
+
+bool
+StateBrush_Context::scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files)
+{
+	if (scan_sub_levels < 0) return false;
+	Glib::RefPtr<Gio::File> directory = Gio::File::create_for_path(path);
+	Glib::RefPtr<Gio::FileEnumerator> e;
+
+	try
+	{
+		e = directory->enumerate_children();
+	}
+	catch(Gio::Error&) { return false; }
+	catch(Glib::FileError&) { return false; }
+
+	Glib::RefPtr<Gio::FileInfo> info;
+	while((bool)(info = e->next_file()))
+	{
+		String filepath = directory->get_child(info->get_name())->get_path();
+		if (!scan_directory(filepath, scan_sub_levels-1, out_files))
+			out_files.insert(filepath);
+	}
+
+	return true;
+}
+
+void
+StateBrush_Context::refresh_tool_options()
+{
+	App::dialog_tool_options->clear();
+	App::dialog_tool_options->set_local_name(_("Brush Tool"));
+	App::dialog_tool_options->set_name("brush");
+
+	// create container widget
+	int cols = 2;
+	Gtk::Table *table = Gtk::manage(new Gtk::Table(1, cols));
+
+	// load brushes
+	// scan directories
+	std::set<String> files;
+	for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+		scan_directory(*i, 1, files);
+
+	// load files
+	int col = 0; int row = 0;
+	Gtk::ToggleButton *first_button = NULL;
+	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+	{
+		if (filename_extension(*i) == ".myb")
+		{
+			const String &brush_file = *i;
+			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
+			if (files.count(icon_file))
+			{
+				// create button
+				Gtk::ToggleButton *button = Gtk::manage(new Gtk::ToggleButton());
+				button->set_image(*Gtk::manage(new Gtk::Image(icon_file)));
+				button->signal_toggled().connect(
+					sigc::bind(sigc::mem_fun(*this, &StateBrush_Context::select_brush), button, brush_file) );
+				if (first_button == NULL) first_button = button;
+
+				if (col >= cols)
+				{
+					// add row
+					col = 0;
+					++row;
+					table->resize(row + 1, cols);
+				}
+
+				// add button
+				table->attach(*button, col, col+1, row, row+1);
+				++col;
+			}
+		}
+	}
+	table->show_all();
+
+	App::dialog_tool_options->add(*table);
+
+	// select first brush
+	if (first_button != NULL) first_button->set_active(true);
+}
+
+void
+StateBrush_Context::select_brush(Gtk::ToggleButton *button, String filename)
+{
+	if (button != NULL && button->get_active())
+	{
+		if (selected_brush_button != NULL) selected_brush_button->set_active(false);
+		selected_brush_config.load(filename);
+	}
+}
+
+Smach::event_result
+StateBrush_Context::event_refresh_tool_options(const Smach::event& /*x*/)
+{
+	refresh_tool_options();
+	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -320,31 +700,8 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					action = new synfigapp::Action::LayerPaint();
 					action->set_param("canvas",get_canvas());
 					action->set_param("canvas_interface",get_canvas_interface());
-
 					action->stroke.set_layer(layer);
-
-					// configure brush
-					brushlib::Brush &brush = action->stroke.brush();
-					brush.set_base_value(BRUSH_OPAQUE, 					 0.85f );
-					brush.set_mapping_n(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 4);
-					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 0, 0.f, 0.f);
-					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 1, 0.222222f, 0.f);
-					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 0.324074f, 1.f);
-					brush.set_mapping_point(BRUSH_OPAQUE_MULTIPLY, INPUT_PRESSURE, 2, 1.f, 1.f);
-					brush.set_base_value(BRUSH_OPAQUE_LINEARIZE,			 0.9f  );
-					brush.set_base_value(BRUSH_RADIUS_LOGARITHMIC,			 2.6f  );
-					brush.set_base_value(BRUSH_HARDNESS,					 0.69f );
-					brush.set_base_value(BRUSH_DABS_PER_ACTUAL_RADIUS,		 6.0f  );
-					brush.set_base_value(BRUSH_DABS_PER_SECOND, 			54.45f );
-					brush.set_base_value(BRUSH_SPEED1_SLOWNESS, 			 0.04f );
-					brush.set_base_value(BRUSH_SPEED2_SLOWNESS, 			 0.08f );
-					brush.set_base_value(BRUSH_SPEED1_GAMMA, 				 4.0f  );
-					brush.set_base_value(BRUSH_SPEED2_GAMMA, 				 4.0f  );
-					brush.set_base_value(BRUSH_OFFSET_BY_SPEED_SLOWNESS,	 1.0f  );
-					brush.set_base_value(BRUSH_SMUDGE,						 0.9f  );
-					brush.set_base_value(BRUSH_SMUDGE_LENGTH,				 0.12f );
-					brush.set_base_value(BRUSH_STROKE_DURATION_LOGARITHMIC,  4.0f  );
-
+					selected_brush_config.apply( action->stroke.brush() );
 					action->stroke.prepare();
 
 					time.assign_current_time();
