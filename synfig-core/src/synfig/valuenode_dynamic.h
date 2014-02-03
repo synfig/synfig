@@ -36,14 +36,11 @@
 
 namespace synfig {
 
+class Oscillator;
+
 class ValueNode_Dynamic : public LinkableValueNode
 {
-public:
-	/* The type of container used to hold the state vector */
-	typedef std::vector< double > state_type;
-	/* The rhs of x' = f(x) */
-	void oscilator(const state_type &x , state_type &dxdt , const double t);
-
+	friend class Oscillator;
 private:
 
 	ValueNode::RHandle tip_static_;    // Equilibrium position without external forces
@@ -58,26 +55,9 @@ private:
 
 
 	ValueNode_Derivative::RHandle origin_d_;      // Derivative of the origin along the time
+	Time last_time;
 	ValueNode_Dynamic(const ValueBase &value);
-	/*
-		State types (4) for:
-		q=radius
-		p=d/dt(radius)
-		b=angle
-		g=d/dt(angle)
 
-		where
-
-		p=dxdt[0]
-		p'=dxdt[1]
-		g=dxdt[2]
-		g'=dxdt[3]
-		q=x[0]
-		q'=x[1]
-		b=x[2]
-		b'=x[3]
-	*/
-	state_type x;
 public:
 
 	typedef etl::handle<ValueNode_Dynamic> Handle;
@@ -105,6 +85,45 @@ public:
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Dynamic
 
+
+class Oscillator
+{
+	etl::handle<const ValueNode_Dynamic> d;
+public:
+    Oscillator(const ValueNode_Dynamic* x) : d(x) { }
+    void operator() ( const std::vector<double> &x , std::vector<double> &dxdt , const double t )
+	{
+		Vector u(cos(x[2]), sin(x[2]));
+		Vector v(-u[1], u[0]);
+		Vector s=(*(d->origin_))(t).get(Vector());
+		Vector sd=(*(d->origin_d_))(t).get(Vector());
+		Vector f=(*(d->force_))(t).get(Vector());
+		double c=(*(d->damping_coef_))(t).get(double());
+		double mu=(*(d->friction_coef_))(t).get(double());
+		double k=(*(d->spring_coef_))(t).get(double());
+		double tau=(*(d->torsion_coef_))(t).get(double());
+		double m=(*(d->mass_))(t).get(double());
+		double i=(*(d->inertia_))(t).get(double());
+		Vector tip=(*(d->tip_static_))(t).get(Vector());
+	
+		double fr=f*u;
+		double fa=f*v;
+
+		double sr=s*u;
+		double sa=s*v;
+		double srd=sd*u;
+		double sad=sd*v;
+
+		double r0=tip.mag();
+		double a0=(double)(Angle::rad(tip.angle()).get());
+		// TODO: check infinites.
+		dxdt[0]=x[1];
+		dxdt[1]=(fr+k*sa+c*(srd+sa)-c*x[1]-k*(x[0]-r0))/m;
+		dxdt[2]=x[2];
+		dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sad-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
+	}
+
+};
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

@@ -34,6 +34,7 @@
 #include "general.h"
 #include <ETL/misc>
 
+#include <boost/numeric/odeint/integrate/integrate.hpp>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -41,11 +42,30 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
-
+using namespace boost::numeric::odeint;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+	/*
+		State types (4) for:
+		q=radius
+		p=d/dt(radius)
+		b=angle
+		g=d/dt(angle)
 
+		where
+
+		p=dxdt[0]
+		p'=dxdt[1]
+		g=dxdt[2]
+		g'=dxdt[3]
+		q=x[0]
+		q'=x[1]
+		b=x[2]
+		b'=x[3]
+	*/
+	typedef std::vector<double> state_type;
+	static  state_type state;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -75,15 +95,17 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	}
 
 	/* Initial values*/
-	x.resize(4);
-	x[0]=(*tip_static_)(0).get(Vector()).mag(); // The size of the vector;
-	x[1]=0.0; // d/dt(radius) = 0 initially
-	x[2]=(double)(Angle::rad((*tip_static_)(0).get(Vector()).angle()).get()); // the angle of the vector
-	x[3]=0.0; // d/dt(angle) = 0 initially
+	state.resize(4);
+	state[0]=(*tip_static_)(0).get(Vector()).mag(); // The size of the vector;
+	state[1]=0.0; // d/dt(radius) = 0 initially
+	state[2]=(double)(Angle::rad((*tip_static_)(0).get(Vector()).angle()).get()); // the angle of the vector
+	state[3]=0.0; // d/dt(angle) = 0 initially
 
 	/*Derivative of the base position*/
 	origin_d_=ValueNode_Derivative::create(ValueBase(Vector()));
-	origin_d_->set_link("link", origin_);
+
+	/* Initialize the last time called to be 0*/
+	last_time=Time(0);
 }
 
 LinkableValueNode*
@@ -108,41 +130,22 @@ ValueNode_Dynamic::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	double t0=last_time;
+	double t1=t;
+	double step=fabs((t1-t0)/4.0);
 
-	return (*tip_static_)(t).get(Vector());
+	// Before call the integrator we need to be sure that the derivative of the
+	// origin is properly set. Maybe the user changed the origin
+	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
+	value_node->replace(origin_);
+	Oscillator oscillator(this);
+	size_t steps = integrate(oscillator, state, t0, t1, step);
 
+	synfig::info("Integration in %d steps", steps);
+
+	return (*origin_)(t).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
 }
 
-void ValueNode_Dynamic::oscilator(const state_type &x , state_type &dxdt , const double t)
-{
-	Vector u(cos(x[2]), sin(x[2]));
-	Vector v(-u[1], u[0]);
-	Vector s=(*origin_)(t).get(Vector());
-	Vector f=(*force_)(t).get(Vector());
-	double c=(*damping_coef_)(t).get(double());
-	double mu=(*friction_coef_)(t).get(double());
-	double k=(*spring_coef_)(t).get(double());
-	double tau=(*torsion_coef_)(t).get(double());
-	double m=(*mass_)(t).get(double());
-	double i=(*inertia_)(t).get(double());
-	Vector tip=(*tip_static_)(t).get(Vector());
-
-	double fr=f*u;
-	double fa=f*v;
-
-	double sr=s*u;
-	double sa=s*v;
-	double srp=0; // TODO This is the derivative
-	double sap=0; // TODO This is the derivative
-
-	double r0=tip.mag();
-	double a0=(double)(Angle::rad(tip.angle()).get());
-
-	dxdt[0]=x[1];
-	dxdt[1]=(fr+k*sa+c*(srp+sa)-c*x[1]-k*(x[0]-r0))/m;
-	dxdt[2]=x[2];
-	dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sap-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
-}
 
 String
 ValueNode_Dynamic::get_name()const
@@ -249,3 +252,4 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 	);
 	return ret;
 }
+
