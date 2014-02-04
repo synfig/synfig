@@ -906,7 +906,9 @@ for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != Ca
   DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 
 DEFINE_ACTION("play", _("Play"));
-DEFINE_ACTION("stop", _("Stop"));
+// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
+// icon. the internal code is still using stop.
+DEFINE_ACTION("stop", _("Pause"));
 
 DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
