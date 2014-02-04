@@ -143,6 +143,7 @@ ValueNode_Dynamic::operator()(Time t)const
 
 	synfig::info("Integration in %d steps", steps);
 
+	last_time=Time(t1);
 	return (*origin_)(t).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
 }
 
