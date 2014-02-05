@@ -254,7 +254,17 @@ MainWindow::on_recent_files_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), dockable->get_local_name()),
+
+	// replace _ in panel names (filenames) by __ or it won't show up in the menu,
+	// this block code is just a copy from MainWindow::on_recent_files_changed().
+	std::string raw = dockable->get_local_name();
+	std::string quoted;
+	size_t pos = 0, last_pos = 0;
+	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+	quoted += raw.substr(last_pos);
+
+	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), quoted),
 		sigc::mem_fun(*dockable, &Dockable::present)
 	);
 
