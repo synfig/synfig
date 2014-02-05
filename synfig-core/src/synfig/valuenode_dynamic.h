@@ -132,14 +132,13 @@ public:
 		double srd=sd*u;
 		double sad=sd*v;
 
-		double r0=tip.mag();
-		double a0=(double)(Angle::rad(tip.angle()).get());
+		double r0=(tip-s).mag();
+		double a0=(double)(Angle::rad((tip-s).angle()).get());
 		// TODO: check infinites.
 		dxdt[0]=x[1];
 		dxdt[1]=(fr+k*sr+c*(srd+sa)-c*x[1]-k*(x[0]-r0))/m;
 		dxdt[2]=x[3];
-		//dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sad-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
-		dxdt[3]=0.0;
+		dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sad-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
 	}
 
 };
