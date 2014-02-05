@@ -46,26 +46,8 @@ using namespace boost::numeric::odeint;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-	/*
-		State types (4) for:
-		q=radius
-		p=d/dt(radius)
-		b=angle
-		g=d/dt(angle)
 
-		where
 
-		p=dxdt[0]
-		p'=dxdt[1]
-		g=dxdt[2]
-		g'=dxdt[3]
-		q=x[0]
-		q'=x[1]
-		b=x[2]
-		b'=x[3]
-	*/
-	typedef std::vector<double> state_type;
-	static  state_type state;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -139,11 +121,14 @@ ValueNode_Dynamic::operator()(Time t)const
 	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
-	size_t steps = integrate(oscillator, state, t0, t1, step);
+	std::vector<double> x(state.begin(), state.end());
+	size_t steps = integrate(oscillator, x, t0, t1, step);
 
 	synfig::info("Integration in %d steps", steps);
 
 	last_time=Time(t1);
+	state.assign(x.begin(), x.end());
+
 	return (*origin_)(t).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
 }
 
