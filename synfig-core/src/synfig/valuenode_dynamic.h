@@ -76,6 +76,7 @@ private:
 		b'=x[3]
 		*/
 	mutable std::vector<double> state;
+	void reset_state(Time t)const;
 public:
 
 	typedef etl::handle<ValueNode_Dynamic> Handle;
@@ -137,8 +138,10 @@ public:
 		// TODO: check infinites.
 		dxdt[0]=x[1];
 		dxdt[1]=(fr+k*sr+c*(srd+sa)-c*x[1]-k*(x[0]-r0))/m;
-		dxdt[2]=x[3];
-		dxdt[3]=(fa*x[0]+mu*sa/(x[0])+tau*((sad-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
+		dxdt[2]=0;
+		//x[3];
+		dxdt[3]=0;
+		//(fa*x[0]+mu*sa/(x[0])+tau*((sad-sr)/x[0] - x[1]*sa/(x[0]*x[0]))-tau*x[3]-mu*(x[2]-a0))/i;
 	}
 
 };

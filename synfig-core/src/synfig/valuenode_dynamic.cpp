@@ -78,10 +78,7 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 
 	/* Initial values*/
 	state.resize(4);
-	state[0]=(*tip_static_)(0).get(Vector()).mag(); // The size of the vector;
-	state[1]=0.0; // d/dt(radius) = 0 initially
-	state[2]=(double)(Angle::rad((*tip_static_)(0).get(Vector()).angle()).get()); // the angle of the vector
-	state[3]=0.0; // d/dt(angle) = 0 initially
+	reset_state(Time(0.0));
 
 	/*Derivative of the base position*/
 	origin_d_=ValueNode_Derivative::create(ValueBase(Vector()));
@@ -90,6 +87,14 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	last_time=Time(0);
 }
 
+void
+ValueNode_Dynamic::reset_state(Time t)const
+{
+	state[0]=((*tip_static_)(t).get(Vector())-(*origin_)(t).get(Vector())).mag();
+	state[1]=0.0; // d/dt(radius) = 0 initially
+	state[2]=(double)((Angle::rad(((*tip_static_)(t).get(Vector())-(*origin_)(t).get(Vector())).angle())).get());
+	state[3]=0.0; // d/dt(angle) = 0 initially
+}
 LinkableValueNode*
 ValueNode_Dynamic::create_new()const
 {
@@ -115,13 +120,26 @@ ValueNode_Dynamic::operator()(Time t)const
 	double t0=last_time;
 	double t1=t;
 	double step=fabs((t1-t0)/4.0);
-
+	// If we are at the initial conditions
+	if(t1==t0 && t0==0.0)
+	{
+		reset_state(Time(0.0));
+		return (*origin_)(0).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
+	}
+	// If we are playing backwards then calculate the value from the initial conditions
+	if(t1<t0 && t0>0.0)
+	{
+		reset_state(Time(0.0));
+		last_time=Time(0);
+		t0=0.0;
+	}
 	// Before call the integrator we need to be sure that the derivative of the
 	// origin is properly set. Maybe the user changed the origin
 	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
 	std::vector<double> x(state.begin(), state.end());
+	synfig::info("x.angle speed  = %f", x[3]);
 	size_t steps = integrate(oscillator, x, t0, t1, step);
 
 	synfig::info("Integration in %d steps", steps);
