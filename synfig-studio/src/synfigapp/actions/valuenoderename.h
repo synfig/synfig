@@ -61,6 +61,7 @@ public:
 	static bool is_candidate(const ParamList &x);
 
 	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool get_param(const synfig::String& name, Param &);
 	virtual bool is_ready()const;
 
 	virtual void perform();
