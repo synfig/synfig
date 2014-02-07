@@ -119,7 +119,7 @@ ValueNode_Dynamic::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 	double t0=last_time;
 	double t1=t;
-	double step=fabs((t1-t0)/4.0);
+	double step;
 	// If we are at the initial conditions
 	if(t1==t0 && t0==0.0)
 	{
@@ -133,6 +133,8 @@ ValueNode_Dynamic::operator()(Time t)const
 		last_time=Time(0);
 		t0=0.0;
 	}
+	// Prepare the step size based on distance between start and end time
+	step=(t1-t0)/4.0;
 	// Before call the integrator we need to be sure that the derivative of the
 	// origin is properly set. Maybe the user changed the origin
 	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
@@ -144,7 +146,8 @@ ValueNode_Dynamic::operator()(Time t)const
 
 	synfig::info("Integration in %d steps", steps);
 
-	last_time=Time(t1);
+	// Remember time and state for the next call
+	last_time=Time(t);
 	state.assign(x.begin(), x.end());
 
 	return (*origin_)(t).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
