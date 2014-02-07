@@ -141,7 +141,6 @@ ValueNode_Dynamic::operator()(Time t)const
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
 	std::vector<double> x(state.begin(), state.end());
-	synfig::info("x.angle speed  = %f", x[3]);
 	size_t steps = integrate(oscillator, x, t0, t1, step);
 
 	synfig::info("Integration in %d steps", steps);
