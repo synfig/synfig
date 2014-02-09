@@ -100,118 +100,12 @@ using namespace sigc;
 
 /* === M E T H O D S ======================================================= */
 
-#define TOGGLE_TOOLBOX_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::ToggleButton());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->show();	\
-	button->show()
-
-#define TOOLBOX_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4)));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->show();	\
-	button->show()
-
-#define ADD_TOOLBOX_BUTTON(button,stockid,tooltip)	Gtk::Button *TOOLBOX_BUTTON(button,stockid,tooltip)
-
-void
-save_selected_instance()
-{
-	if(!studio::App::get_selected_instance())
-	{
-		App::dialog_error_blocking(_("Cannot save"),_("Nothing to save"));
-		return;
-	}
-
-	studio::App::get_selected_instance()->save();
-}
-
-void
-save_as_selected_instance()
-{
-	if(!studio::App::get_selected_instance())
-	{
-		App::dialog_error_blocking(_("Cannot save as"),_("Nothing to save"));
-		return;
-	}
-
-	studio::App::get_selected_instance()->dialog_save_as();
-}
-
-void
-save_all()
-{
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
-		(*iter)->save();
-}
-
-void
-close_selected_instance()
-{
-	etl::handle<studio::Instance> instance=studio::App::get_selected_instance();
-
-	if(!instance)
-	{
-		App::dialog_error_blocking(_("Cannot close"),_("Nothing to close"));
-		return;
-	}
-
-	instance->safe_close();
-
-	//assert(instance.unique());
-}
 
 Dock_Toolbox::Dock_Toolbox():
 	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-toolbox"))
 {
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
-
-	Gtk::Image *icon;
-
-	ADD_TOOLBOX_BUTTON(button_new,"gtk-new",_("New..."));
-	ADD_TOOLBOX_BUTTON(button_open,"gtk-open",_("Open..."));
-	ADD_TOOLBOX_BUTTON(button_save,"gtk-save",_("Save"));
-	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as",_("Save As..."));
-	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall",_("Save All"));
-	TOOLBOX_BUTTON(button_undo,"gtk-undo",_("Undo"));
-	TOOLBOX_BUTTON(button_redo,"gtk-redo",_("Redo"));
-	ADD_TOOLBOX_BUTTON(button_setup,"gtk-properties",_("Setup"));
-	ADD_TOOLBOX_BUTTON(button_about,"synfig-about",_("About Synfig Studio"));
-	ADD_TOOLBOX_BUTTON(button_help,"gtk-help",_("Help"));
-
-	button_setup->signal_clicked().connect(sigc::ptr_fun(studio::App::show_setup));
-	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
-	button_help->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_help));
-	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
-	button_open->signal_clicked().connect(sigc::bind(sigc::ptr_fun(studio::App::dialog_open), ""));
-	button_save->signal_clicked().connect(sigc::ptr_fun(save_selected_instance));
-	button_saveas->signal_clicked().connect(sigc::ptr_fun(save_as_selected_instance));
-	button_save_all->signal_clicked().connect(sigc::ptr_fun(save_all));
-	button_undo->signal_clicked().connect(sigc::ptr_fun(studio::App::undo));
-	button_redo->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
-
-	// Create the file button cluster
-	Gtk::Table *file_buttons=manage(new class Gtk::Table());
-
-	file_buttons->attach(*button_new,      0,1, 0,1,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_open,     1,2, 0,1,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_save,     2,3, 0,1,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_saveas,   3,4, 0,1,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_save_all, 4,5, 0,1,Gtk::SHRINK,Gtk::SHRINK);
-
-	file_buttons->attach(*button_undo,     0,1, 1,2,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_redo,     1,2, 1,2,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_setup,    2,3, 1,2,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_about,    3,4, 1,2,Gtk::SHRINK,Gtk::SHRINK);
-	file_buttons->attach(*button_help,     4,5, 1,2,Gtk::SHRINK,Gtk::SHRINK);
-
-	file_buttons->show();
 
 	tool_table=manage(new class Gtk::Table());
 	tool_table->show();
@@ -233,7 +127,6 @@ Dock_Toolbox::Dock_Toolbox():
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
 	table1->set_col_spacings(0);
-	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->show_all();
@@ -245,9 +138,6 @@ Dock_Toolbox::Dock_Toolbox():
 			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_undo_redo)
 		)
 	);
-
-	button_undo->set_sensitive(false);
-	button_redo->set_sensitive(false);
 
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -406,17 +296,13 @@ void
 Dock_Toolbox::update_undo_redo()
 {
 	etl::handle<Instance> instance=App::get_selected_instance();
-	if(instance)
-	{
-		button_undo->set_sensitive(instance->get_undo_status());
-		button_redo->set_sensitive(instance->get_redo_status());
-	}
+	etl::handle<CanvasView> canvas_view=App::get_selected_canvas_view();
 
 	// This should probably go elsewhere, but it should
 	// work fine here with no troubles.
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
-	if(instance && App::get_selected_canvas_view())
+	if(instance && canvas_view)
 	{
 		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 
@@ -431,7 +317,6 @@ Dock_Toolbox::update_undo_redo()
 			iter->second->set_sensitive(false);
 	}
 
-	etl::handle<CanvasView> canvas_view=App::get_selected_canvas_view();
 	if(canvas_view && canvas_view->get_smach().get_state_name())
 	{
 		set_active_state(canvas_view->get_smach().get_state_name());
