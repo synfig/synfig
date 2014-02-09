@@ -43,13 +43,8 @@
 #include <gdkmm/pixbufloader.h>
 #include <gtkmm/viewport.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
-#include <gtkmm/statusbar.h>
-#include <gtkmm/menubar.h>
-#include <gtkmm/menu.h>
 #include <gtkmm/button.h>
-#include <gtkmm/toolbar.h>
 #include <gtkmm/box.h>
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
@@ -73,7 +68,6 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
 #include "docks/dialog_tooloptions.h"
-#include "dialogs/dialog_preview.h"
 #include "docks/dockable.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdialog.h"
