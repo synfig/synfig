@@ -1146,6 +1146,19 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='help-about'/>"
 "	</menu>";
 
+	Glib::ustring ui_info_main_tool =
+"		<toolitem action='new'/>"
+"		<toolitem action='open'/>"
+"		<toolitem action='save'/>"
+"		<toolitem action='save-as'/>"
+"		<toolitem action='save-all'/>"
+"		<separator />"
+"		<toolitem action='redo'/>"
+"		<toolitem action='undo'/>"
+"		<separator />"
+"		<toolitem action='render'/>"
+"		<toolitem action='preview'/>";
+
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
@@ -1154,6 +1167,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "	</popup>"
 "	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
 "	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+"	<toolbar name='toolbar-main'>" + ui_info_main_tool + "</toolbar>"
 "</ui>";
 
 	#undef DEFINE_ACTION

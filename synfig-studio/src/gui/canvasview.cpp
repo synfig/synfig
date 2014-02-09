@@ -1459,10 +1459,10 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &studio::CanvasView::image_import))
 	);
-	action_group->add( Gtk::Action::create("render", _("Render...")),
+	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options")),
 		sigc::mem_fun0(render_settings,&studio::RenderSettings::present)
 	);
-	action_group->add( Gtk::Action::create("preview", _("Preview...")),
+	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
 	);
 	action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
