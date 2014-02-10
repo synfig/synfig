@@ -48,7 +48,6 @@
 #include <gtkmm/box.h>
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
-#include <gtkmm/handlebox.h>
 #include <gtkmm/accelmap.h>
 
 #include <gtkmm/inputdialog.h>
@@ -103,26 +102,16 @@ Dock_Toolbox::Dock_Toolbox():
 
 	tool_table=manage(new class Gtk::Table());
 	tool_table->show();
-	Gtk::HandleBox* handle_tools(manage(new Gtk::HandleBox()));
-	handle_tools->add(*tool_table);
-	handle_tools->show();
-	handle_tools->set_handle_position(Gtk::POS_TOP);
-	handle_tools->set_snap_edge(Gtk::POS_TOP);
 
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 	widget_defaults->show();
-	Gtk::HandleBox* handle_defaults(manage(new Gtk::HandleBox()));
-	handle_defaults->add(*widget_defaults);
-	handle_defaults->show();
-	handle_defaults->set_handle_position(Gtk::POS_TOP);
-	handle_defaults->set_snap_edge(Gtk::POS_TOP);
 
 	// Create the toplevel table
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
-	table1->set_row_spacings(0);
+	table1->set_row_spacings(10);
 	table1->set_col_spacings(0);
-	table1->attach(*handle_tools,    0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->attach(*handle_defaults, 0,1, 2,3, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*tool_table,    0,1, 0,1, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*widget_defaults, 0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->show_all();
 
 	add(*table1);
