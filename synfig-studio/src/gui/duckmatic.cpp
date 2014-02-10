@@ -2440,14 +2440,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				{
 					// add width duck
-					Vector width_vector =
-						(bline_point.get_tangent1() + bline_point.get_tangent2()).norm().perp()
-						* (-bline_point.get_width());
 
 					duck=new Duck();
 					duck->set_transform_stack(transform_stack);
 					duck->set_name(guid_string(sub_value_desc) + "-width");
-					duck->set_point(width_vector);
+					duck->set_radius(true);
+					duck->set_point(Point(bline_point.get_width(), 0));
 					duck->set_editable(editable);
 					duck->set_type(Duck::TYPE_WIDTH);
 					duck->set_origin(vertex_duck);
