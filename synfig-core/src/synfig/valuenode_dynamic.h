@@ -137,7 +137,7 @@ public:
 		dxdt[0]=x[1];
 		dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
 		dxdt[2]=x[3];
-		dxdt[3]=(fa*x[0]-tau*x[3]-mu*(x[2]-a0))/i-sad;
+		dxdt[3]=(fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
 	}
 
 };
