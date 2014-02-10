@@ -176,7 +176,7 @@ void
 Instance::set_undo_status(bool x)
 {
 	undo_status_=x;
-	App::dock_toolbox->update_undo_redo();
+	App::dock_toolbox->update_tools();
 	signal_undo_redo_status_changed()();
 }
 
@@ -184,7 +184,7 @@ void
 Instance::set_redo_status(bool x)
 {
 	redo_status_=x;
-	App::dock_toolbox->update_undo_redo();
+	App::dock_toolbox->update_tools();
 	signal_undo_redo_status_changed()();
 }
 

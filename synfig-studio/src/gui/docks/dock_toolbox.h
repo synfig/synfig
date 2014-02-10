@@ -76,9 +76,9 @@ public:
 
 	void change_state(const synfig::String& statename);
 
-	void update_undo_redo();
+	void update_tools();
 
-	void refresh() { update_undo_redo(); }
+	void refresh() { update_tools(); }
 
 	void set_active_state(const synfig::String& statename);
 

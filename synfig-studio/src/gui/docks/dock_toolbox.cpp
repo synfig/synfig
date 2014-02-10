@@ -121,15 +121,15 @@ Dock_Toolbox::Dock_Toolbox():
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
 	table1->set_col_spacings(0);
-	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*handle_tools,    0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
+	table1->attach(*handle_defaults, 0,1, 2,3, Gtk::FILL,Gtk::FILL, 0, 0);
 	table1->show_all();
 
 	add(*table1);
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_undo_redo)
+			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_tools)
 		)
 	);
 
@@ -287,13 +287,11 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 
 void
-Dock_Toolbox::update_undo_redo()
+Dock_Toolbox::update_tools()
 {
 	etl::handle<Instance> instance=App::get_selected_instance();
 	etl::handle<CanvasView> canvas_view=App::get_selected_canvas_view();
 
-	// This should probably go elsewhere, but it should
-	// work fine here with no troubles.
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
 	if(instance && canvas_view)
