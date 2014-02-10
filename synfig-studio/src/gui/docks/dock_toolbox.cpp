@@ -254,6 +254,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
 	button->add(*icon);
 	button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	button->set_relief(Gtk::RELIEF_NONE);
 	icon->show();
 	button->show();
 
