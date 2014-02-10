@@ -47,10 +47,93 @@ using namespace synfig;
 #define E(x,t,y) ( (*x)(t).get(y) )
 // D= DERIVATIVE
 // See http://en.wikipedia.org/wiki/Finite_difference_coefficients#Central_finite_difference
-#define D_ROUGH(x,t,h,y) ( (E(x,t-h,y)*-1.0/2.0+E(x,t+h,y)*1.0/2.0)/(h) )
-#define D_NORMAL(x,t,h,y) ( (E(x,t-2*h,y)*1.0/12.0-E(x,t-h,y)*2.0/3.0+E(x,t+h,y)*2.0/3.0-E(x,t+2*h,y)*1.0/12.0)/(h) )
-#define D_FINE(x,t,h,y) ( (E(x,t-3*h,y)*-1.0/60.0+E(x,t-2*h,y)*3.0/20.0-E(x,t-h,y)*3.0/4.0+E(x,t+h,y)*3.0/4.0-E(x,t+2*h,y)*3.0/20.0+E(x,t+3*h,y)*1.0/60.0)/(h) )
-#define D_EXTREME(x,t,h,y) ( (E(x,t-4*h,y)*1.0/280.0-E(x,t-3*h,y)*4.0/105.0+E(x,t-2*h,y)*1.0/5.0-E(x,t-h,y)*4.0/5.0+E(x,t+h,y)*4.0/5.0-E(x,t+2*h,y)*1.0/5.0+E(x,t+3*h,y)*4.0/105.0-E(x,t+4*h,y)*1.0/280.0)/(h) )
+// First Derivatives
+#define D_ROUGH(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-h,y)*(-1.0/2.0)+      \
+				E(x,t+h,y)*( 1.0/2.0)       \
+				)/(h)                       \
+				)
+#define D_NORMAL(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-2*h,y)*( 1.0/12.0)+   \
+				E(x,t-h  ,y)*( -2.0/3.0)+   \
+				E(x,t+h  ,y)*(  2.0/3.0)+   \
+				E(x,t+2*h,y)*(-1.0/12.0)    \
+				)/(h)                       \
+				)
+#define D_FINE(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-3*h,y)*(-1.0/60.0)+   \
+				E(x,t-2*h,y)*( 3.0/20.0)+   \
+				E(x,t-h  ,y)*( -3.0/4.0)+   \
+				E(x,t+h  ,y)*(  3.0/4.0)+   \
+				E(x,t+2*h,y)*(-3.0/20.0)+   \
+				E(x,t+3*h,y)*( 1.0/60.0)    \
+				)/(h)                       \
+				)
+#define D_EXTREME(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-4*h,y)*( 1.0/280.0)+  \
+				E(x,t-3*h,y)*(  -4.0/105)+  \
+				E(x,t-2*h,y)*(   1.0/5.0)+  \
+				E(x,t-h  ,y)*(  -4.0/5.0)+  \
+				E(x,t+h  ,y)*(   4.0/5.0)+  \
+				E(x,t+2*h,y)*(  -1.0/5.0)+  \
+				E(x,t+3*h,y)*( 4.0/105.0)+  \
+				E(x,t+4*h,y)*(-1.0/280.0)   \
+				)/(h)                       \
+				)
+
+// Second Derivatives
+#define DD_ROUGH(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-h,y)*( 1.0)+          \
+				E(x,t,y  )*(-2.0)+          \
+				E(x,t+h,y)*( 1.0)           \
+				)/(h*h)                     \
+				)
+#define DD_NORMAL(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-2*h,y)*(-1.0/12.0)+   \
+				E(x,t-h  ,y)*(  4.0/3.0)+   \
+				E(x,t    ,y)*( -5.0/2.0)+   \
+				E(x,t+h  ,y)*(  4.0/3.0)+   \
+				E(x,t+2*h,y)*(-1.0/12.0)    \
+				)/(h*h)                     \
+				)
+#define DD_FINE(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-3*h,y)*(  1.0/90.0)+  \
+				E(x,t-2*h,y)*( -3.0/20.0)+  \
+				E(x,t-h  ,y)*(   3.0/2.0)+  \
+				E(x,t    ,y)*(-49.0/18.0)+  \
+				E(x,t+h  ,y)*(   3.0/2.0)+  \
+				E(x,t+2*h,y)*( -3.0/20.0)+  \
+				E(x,t+3*h,y)*(  1.0/90.0)   \
+				)/(h*h)                     \
+				)
+#define DD_EXTREME(x,t,h,y)\
+				(                           \
+				(                           \
+				E(x,t-4*h,y)*( -1.0/560.0)+ \
+				E(x,t-3*h,y)*(  8.0/315.0)+ \
+				E(x,t-2*h,y)*(   -1.0/5.0)+ \
+				E(x,t-h  ,y)*(    8.0/5.0)+ \
+				E(x,t    ,y)*(-205.0/72.0)+ \
+				E(x,t+h  ,y)*(    8.0/5.0)+ \
+				E(x,t+2*h,y)*(   -1.0/5.0)+ \
+				E(x,t+3*h,y)*(  8.0/315.0)+ \
+				E(x,t+4*h,y)*( -1.0/560.0)  \
+				)/(h*h)                     \
+				)
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -64,6 +147,7 @@ ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 	set_children_vocab(ret);
 	set_link("interval",      ValueNode_Const::create(Real(0.01))); // Default interval
 	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
+	set_link("order",         ValueNode_Const::create((int)(FIRST)));
 
 	switch(get_type())
 	{
@@ -114,17 +198,25 @@ ValueNode_Derivative::operator()(Time t)const
 		switch((*accuracy_)(t).get(int()))
 			{
 			case ROUGH:
-				return D_ROUGH(link_,t,(*interval_)(t).get(Real()),Real());
+				return (*order_)(t).get(int())?
+						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Real()):
+						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Real());
 				break;
 			case FINE:
-				return D_FINE(link_,t,(*interval_)(t).get(Real()),Real());
+				return (*order_)(t).get(int())?
+						DD_FINE(link_,t,(*interval_)(t).get(Real()),Real()):
+						D_FINE(link_,t,(*interval_)(t).get(Real()),Real());
 				break;
 			case EXTREME:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Real());
+				return (*order_)(t).get(int())?
+						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Real()):
+						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Real());
 				break;
 			case NORMAL:
 			default:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Real());
+				return (*order_)(t).get(int())?
+						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Real()):
+						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Real());
 			break;
 			}
 		break;
@@ -132,17 +224,25 @@ ValueNode_Derivative::operator()(Time t)const
 		switch((*accuracy_)(t).get(int()))
 			{
 			case ROUGH:
-				return D_ROUGH(link_,t,(*interval_)(t).get(Real()),Time());
+				return (*order_)(t).get(int())?
+						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Time()):
+						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Time());
 				break;
 			case FINE:
-				return D_FINE(link_,t,(*interval_)(t).get(Real()),Time());
+				return (*order_)(t).get(int())?
+						DD_FINE(link_,t,(*interval_)(t).get(Real()),Time()):
+						D_FINE(link_,t,(*interval_)(t).get(Real()),Time());
 				break;
 			case EXTREME:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Time());
+				return (*order_)(t).get(int())?
+						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Time()):
+						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Time());
 				break;
 			case NORMAL:
 			default:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Time());
+				return (*order_)(t).get(int())?
+						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Time()):
+						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Time());
 			break;
 			}
 		break;
@@ -150,17 +250,25 @@ ValueNode_Derivative::operator()(Time t)const
 		switch((*accuracy_)(t).get(int()))
 			{
 			case ROUGH:
-				return D_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle());
+				return (*order_)(t).get(int())?
+						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle()):
+						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle());
 				break;
 			case FINE:
-				return D_FINE(link_,t,(*interval_)(t).get(Real()),Angle());
+				return (*order_)(t).get(int())?
+						DD_FINE(link_,t,(*interval_)(t).get(Real()),Angle()):
+						D_FINE(link_,t,(*interval_)(t).get(Real()),Angle());
 				break;
 			case EXTREME:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle());
+				return (*order_)(t).get(int())?
+						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle()):
+						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle());
 				break;
 			case NORMAL:
 			default:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle());
+				return (*order_)(t).get(int())?
+						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle()):
+						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle());
 			break;
 			}		
 		break;
@@ -168,17 +276,25 @@ ValueNode_Derivative::operator()(Time t)const
 		switch((*accuracy_)(t).get(int()))
 			{
 			case ROUGH:
-				return D_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector());
+				return (*order_)(t).get(int())?
+						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector()):
+						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector());
 				break;
 			case FINE:
-				return D_FINE(link_,t,(*interval_)(t).get(Real()),Vector());
+				return (*order_)(t).get(int())?
+						DD_FINE(link_,t,(*interval_)(t).get(Real()),Vector()):
+						D_FINE(link_,t,(*interval_)(t).get(Real()),Vector());
 				break;
 			case EXTREME:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector());
+				return (*order_)(t).get(int())?
+						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector()):
+						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector());
 				break;
 			case NORMAL:
 			default:
-				return D_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector());
+				return (*order_)(t).get(int())?
+						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector()):
+						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector());
 			break;
 			}		break;
 	default:
@@ -220,6 +336,7 @@ ValueNode_Derivative::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_,    get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(interval_,ValueBase::TYPE_REAL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(accuracy_,ValueBase::TYPE_INTEGER);
+	case 3: CHECK_TYPE_AND_SET_VALUE(order_,ValueBase::TYPE_INTEGER);
 	}
 	return false;
 }
@@ -234,6 +351,7 @@ ValueNode_Derivative::get_link_vfunc(int i)const
 	case 0: return link_;
 	case 1: return interval_;
 	case 2: return accuracy_;
+	case 3: return order_;
 	default:
 		return 0;
 	}
@@ -262,6 +380,13 @@ ValueNode_Derivative::get_children_vocab_vfunc()const
 		.add_enum_value(NORMAL,"normal",_("Normal"))
 		.add_enum_value(FINE,"fine",_("Fine"))
 		.add_enum_value(EXTREME,"extreme",_("Extreme"))
+	);
+	ret.push_back(ParamDesc(ValueBase(),"order")
+		.set_local_name(_("Order"))
+		.set_description(_("Order of the derivative"))
+		.set_hint("enum")
+		.add_enum_value(FIRST,"first",_("First Derivative"))
+		.add_enum_value(SECOND,"second",_("Second Derivative"))
 	);
 	return ret;
 }

@@ -46,6 +46,7 @@ class ValueNode_Derivative : public LinkableValueNode
 	ValueNode::RHandle link_;         // Value Node whom is calculated the derivative
 	ValueNode::RHandle interval_;     // Size of the interval to calculate the finite differences
 	ValueNode::RHandle accuracy_;     // Accuracy order
+	ValueNode::RHandle order_;        // First or Second order derivative
 
 	ValueNode_Derivative(const ValueBase &value);
 
@@ -56,9 +57,13 @@ public:
 		ROUGH     =0,
 		NORMAL    =1,
 		FINE      =2,
-		EXTREME   =3,
+		EXTREME   =3
 	};
-
+	enum Order
+	{
+		FIRST     =0,
+		SECOND    =1
+	};
 	typedef etl::handle<ValueNode_Derivative> Handle;
 	typedef etl::handle<const ValueNode_Derivative> ConstHandle;
 
