@@ -82,6 +82,7 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 
 	/*Derivative of the base position*/
 	origin_d_=ValueNode_Derivative::create(ValueBase(Vector()));
+	origin_d_->set_link("order", ValueNode_Const::create((int)(ValueNode_Derivative::SECOND)));
 
 	/* Initialize the last time called to be 0*/
 	last_time=Time(0);
