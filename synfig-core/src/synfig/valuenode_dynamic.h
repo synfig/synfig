@@ -140,7 +140,7 @@ public:
 				&&
 			k ==0.0)
 				||
-			m ==0,0);
+			m ==0.0);
 		// Check if the torsion is constant and zero. It means no torsion (riggid)
 		bool torsion_is_riggid=(
 			(ValueNode_Const::Handle::cast_dynamic(d->torsion_coef_)
