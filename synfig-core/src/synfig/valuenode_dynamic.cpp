@@ -59,12 +59,12 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	set_children_vocab(ret);
 	set_link("origin",       ValueNode_Const::create(Vector(0,0)));
 	set_link("force",        ValueNode_Const::create(Vector(0,0)));
-	set_link("damping",      ValueNode_Const::create(Real(0.1)));
-	set_link("friction",     ValueNode_Const::create(Real(0.1)));
-	set_link("spring",       ValueNode_Const::create(Real(1.0)));
-	set_link("torsion",      ValueNode_Const::create(Real(1.0)));
-	set_link("mass",         ValueNode_Const::create(Real(1.0)));
-	set_link("inertia",      ValueNode_Const::create(Real(1.0)));
+	set_link("damping",      ValueNode_Const::create(Real(0.4)));
+	set_link("friction",     ValueNode_Const::create(Real(0.4)));
+	set_link("spring",       ValueNode_Const::create(Real(30.0)));
+	set_link("torsion",      ValueNode_Const::create(Real(30.0)));
+	set_link("mass",         ValueNode_Const::create(Real(0.3)));
+	set_link("inertia",      ValueNode_Const::create(Real(0.3)));
 
 
 	switch(get_type())
