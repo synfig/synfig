@@ -131,8 +131,8 @@ public:
 		double srd=sd*u;
 		double sad=sd*v;
 
-		double r0=(tip).mag();
-		double a0=(double)(Angle::rad((tip).angle()).get());
+		double r0=tip.mag();
+		double a0=(double)(Angle::rad(tip.angle()).get());
 		// TODO: check infinites.
 		dxdt[0]=x[1];
 		dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;

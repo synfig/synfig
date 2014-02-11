@@ -91,9 +91,9 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 void
 ValueNode_Dynamic::reset_state(Time t)const
 {
-	state[0]=((*tip_static_)(t).get(Vector())-(*origin_)(t).get(Vector())).mag();
+	state[0]=((*tip_static_)(t).get(Vector())).mag();
 	state[1]=0.0; // d/dt(radius) = 0 initially
-	state[2]=(double)((Angle::rad(((*tip_static_)(t).get(Vector())-(*origin_)(t).get(Vector())).angle())).get());
+	state[2]=(double)(Angle::rad(((*tip_static_)(t).get(Vector())).angle()).get());
 	state[3]=0.0; // d/dt(angle) = 0 initially
 }
 LinkableValueNode*
