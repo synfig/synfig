@@ -37,7 +37,7 @@
 #include "renddesc.h"
 #include "surface.h"
 #include "value.h"
-#include "valuenode.h"
+#include "valuenode_bone.h"
 
 #endif
 
@@ -63,7 +63,8 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Skeleton::Layer_Skeleton():
-	param_name(ValueBase("skeleton"))
+	param_name(ValueBase("skeleton")),
+	param_bone_shape_width(ValueBase(0.1))
 {
 	std::vector<synfig::Bone> bones;
 	int bone_count = 1;
@@ -78,6 +79,9 @@ Layer_Skeleton::Layer_Skeleton():
 	param_bones.set(bones);
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
+
+	set_exclude_from_rendering(true);
+	Layer_Polygon::set_param("color", ValueBase(Color(0.5, 0.5, 1.0, 0.75)));
 }
 
 #ifdef _DEBUG
@@ -91,15 +95,26 @@ Layer_Skeleton::~Layer_Skeleton()
 bool
 Layer_Skeleton::set_param(const String & param, const ValueBase &value)
 {
+	// lock color param
+	if (param == "color") return false;
+
 	IMPORT_VALUE(param_name);
 
 	if (param=="bones" && param_bones.get_type()==value.get_type())
 	{
 		param_bones = value;
+		sync();
 		return true;
 	}
 
-	return Layer::set_param(param,value);
+	if (param=="bone_shape_width" && param_bone_shape_width.get_type()==value.get_type())
+	{
+		param_bone_shape_width = value;
+		sync();
+		return true;
+	}
+
+	return Layer_Polygon::set_param(param,value);
 }
 
 ValueBase
@@ -107,11 +122,12 @@ Layer_Skeleton::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_name);
 	EXPORT_VALUE(param_bones);
+	EXPORT_VALUE(param_bone_shape_width);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return Layer::get_param(param);
+	return Layer_Polygon::get_param(param);
 }
 
 Layer::Vocab
@@ -119,25 +135,66 @@ Layer_Skeleton::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer::get_param_vocab());
 
+	// Params from layer Layer_Shape
+	//ret.push_back(ParamDesc("color")
+	//	.set_local_name(_("Color"))
+	//);
+
+	// Self params
 	ret.push_back(ParamDesc("name")
 		.set_local_name(_("Name"))
 	);
-
 	ret.push_back(ParamDesc("bones")
 		.set_local_name(_("Bones"))
+	);
+	ret.push_back(ParamDesc("bone_shape_width")
+		.set_local_name(_("Bone Shape Width"))
 	);
 
 	return ret;
 }
 
-bool
-Layer_Skeleton::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+void
+Layer_Skeleton::set_time(IndependentContext context, Time time)const
 {
-	return context.accelerated_render(surface,quality,renddesc,cb);
+	const_cast<Layer_Skeleton*>(this)->sync();
+	context.set_time(time);
 }
 
-bool
-Layer_Skeleton::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+void
+Layer_Skeleton::set_time(IndependentContext context, Time time, const Point &pos)const
 {
-	return context.accelerated_cairorender(cr,quality,renddesc,cb);
+	const_cast<Layer_Skeleton*>(this)->sync();
+	context.set_time(time,pos);
+}
+
+void
+Layer_Skeleton::sync()
+{
+ 	const std::vector<ValueBase> &list = param_bones.get_list();
+	Real width = param_bone_shape_width.get(Real());
+
+	clear();
+	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
+ 	{
+		if (!i->same_type_as(Bone())) continue;
+ 		const Bone &bone = i->get(Bone());
+ 		Matrix matrix = bone.get_animated_matrix();
+ 		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+ 		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+ 		Real length = bone.get_length() * bone.get_scalelx();
+
+ 		Vector &o = origin;
+ 		Vector dx = direction * length;
+ 		Vector dy = direction.perp() * width;
+
+		std::vector<Point> vector_list;
+		vector_list.reserve(4);
+ 		vector_list.push_back(o + dy);
+ 		vector_list.push_back(o + dy + dx);
+ 		vector_list.push_back(o - dy + dx);
+ 		vector_list.push_back(o - dy);
+		add_polygon(vector_list);
+ 		upload_polygon(vector_list);
+ 	}
 }

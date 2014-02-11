@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "bone.h"
-#include "layer.h"
+#include "layer_polygon.h"
 // #include <synfig/value.h>
 // #include <vector>
 
@@ -40,7 +40,7 @@
 
 namespace synfig {
 
-class Layer_Skeleton : public Layer
+class Layer_Skeleton : public Layer_Polygon
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -49,6 +49,8 @@ private:
 	ValueBase param_bones;
 	//!Parameter: (synfig::String) Name of the skeleton
 	ValueBase param_name;
+	//!Parameter: (synfig::Real) Width of the visible bone shape
+	ValueBase param_bone_shape_width;
 
 public:
 
@@ -64,9 +66,10 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(synfig::Context context, cairo_t* cr, int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-
+	//! Updates the polygon data to match the parameters.
+	virtual void sync();
+	virtual void set_time(IndependentContext context, Time time)const;
+	virtual void set_time(IndependentContext context, Time time, const Point &pos)const;
 }; // END of class Layer_Skeleton
 
 }; // END of namespace synfig
