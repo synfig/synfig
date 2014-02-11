@@ -29,6 +29,7 @@
 
 #include "valuenode.h"
 #include "valuenode_derivative.h"
+#include "valuenode_const.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -127,17 +128,37 @@ public:
 	
 		double fr=f*u;
 		double fa=f*v;
-
+		// Those are the second derivatives (speed of origin)
 		double srd=sd*u;
 		double sad=sd*v;
-
+		// Calculate the steady position in terms of state
 		double r0=tip.mag();
 		double a0=(double)(Angle::rad(tip.angle()).get());
-		// TODO: check infinites.
+		// Check if the spring is constant and zero. It means no spring (riggid)
+		bool spring_is_riggid=(
+			(ValueNode_Const::Handle::cast_dynamic(d->spring_coef_)
+				&&
+			k ==0.0)
+				||
+			m ==0,0);
+		// Check if the torsion is constant and zero. It means no torsion (riggid)
+		bool torsion_is_riggid=(
+			(ValueNode_Const::Handle::cast_dynamic(d->torsion_coef_)
+				&&
+			mu ==0.0)
+				||
+			i ==0.0);
+		// Integration operations
 		dxdt[0]=x[1];
-		dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
+		if(spring_is_riggid)
+			dxdt[1]=0.0;
+		else
+			dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
 		dxdt[2]=x[3];
-		dxdt[3]=(fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
+		if(torsion_is_riggid)
+			dxdt[3]=0.0;
+		else
+			dxdt[3]=(fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
 	}
 
 };
