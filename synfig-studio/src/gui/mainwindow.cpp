@@ -108,9 +108,11 @@ MainWindow::MainWindow()
 	Gtk::Widget* toolbar = App::ui_manager()->get_widget("/toolbar-main");
 	if (toolbar != NULL)
 	{
+		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+		toolbar->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
+		toolbar->set_property("icon-size", iconsize);
 		toolbar->show();
 		vbox->pack_start(*toolbar, false, false, 0);
-		toolbar->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
 	}
 
 	vbox->pack_end(*bin_, true, true, 0);
