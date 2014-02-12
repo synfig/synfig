@@ -598,6 +598,17 @@ ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, Can
 	set_parent_canvas(canvas);
 }
 
+ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, ValueBase::Type type, etl::loose_handle<Canvas> canvas):
+	LinkableValueNode(type),
+	container_type(container_type),
+	loop_(false)
+{
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for dynamic_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+	set_parent_canvas(canvas);
+}
+
+
 ValueNode_DynamicList::Handle
 ValueNode_DynamicList::create(ValueBase::Type id, Canvas::LooseHandle canvas)
 {

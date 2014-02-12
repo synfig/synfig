@@ -43,7 +43,7 @@
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/valuenode_boneweightpair.h>
 #include <synfig/valuenode_staticlist.h>
-#include <synfig/valuetransformation.h>
+#include <synfig/valueoperations.h>
 
 #include <synfigapp/general.h>
 

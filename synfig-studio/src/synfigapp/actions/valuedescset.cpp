@@ -55,7 +55,7 @@
 #include <synfig/valuenode_real.h>
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/valuenode_bone.h>
-#include <synfig/valuetransformation.h>
+#include <synfig/valueoperations.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>

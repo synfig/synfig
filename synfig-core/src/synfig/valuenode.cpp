@@ -94,6 +94,7 @@
 #include "valuenode_and.h"
 #include "valuenode_or.h"
 #include "valuenode_real.h"
+#include "valuenode_average.h"
 
 #include "layer.h"
 
@@ -206,6 +207,8 @@ ValueNode::subsys_init()
 
 	ADD_VALUENODE(ValueNode_WPList,           "wplist",           _("WPList"),           RELEASE_VERSION_0_63_00);
 	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
+
+	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_0_65_0);
 	
 #undef ADD_VALUENODE_CREATE
 #undef ADD_VALUENODE

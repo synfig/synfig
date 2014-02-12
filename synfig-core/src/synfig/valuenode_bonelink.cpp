@@ -35,7 +35,7 @@
 #include "valuenode_staticlist.h"
 #include "valuenode_boneweightpair.h"
 #include "general.h"
-#include "valuetransformation.h"
+#include "valueoperations.h"
 #include "boneweightpair.h"
 
 #endif
