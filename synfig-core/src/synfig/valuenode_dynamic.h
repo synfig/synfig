@@ -32,7 +32,7 @@
 #include "valuenode_const.h"
 
 /* === M A C R O S ========================================================= */
-
+#define MASS_INERTIA_MINIMUM 0.0000001
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
@@ -136,26 +136,28 @@ public:
 		double a0=(double)(Angle::rad(tip.angle()).get());
 		// Check if the spring is constant and zero. It means no spring (riggid)
 		bool spring_is_riggid=(
-			(ValueNode_Const::Handle::cast_dynamic(d->spring_coef_)
+			ValueNode_Const::Handle::cast_dynamic(d->mass_)
 				&&
-			k ==0.0)
-				||
-			m ==0.0);
+			m ==0.0
+			);
 		// Check if the torsion is constant and zero. It means no torsion (riggid)
 		bool torsion_is_riggid=(
-			(ValueNode_Const::Handle::cast_dynamic(d->torsion_coef_)
+			ValueNode_Const::Handle::cast_dynamic(d->inertia_)
 				&&
-			mu ==0.0)
-				||
-			i ==0.0);
+			i ==0.0
+			);
 		// Integration operations
 		dxdt[0]=x[1];
-		if(spring_is_riggid)
+		// Disable movement if the spring is riggid (mass=0.0 and constant)
+		// or if the mass is near to zero but animated.
+		if(spring_is_riggid || fabs(m)<=MASS_INERTIA_MINIMUM)
 			dxdt[1]=0.0;
 		else
 			dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
 		dxdt[2]=x[3];
-		if(torsion_is_riggid)
+		// Disable rotation if the torsion is riggid (inertia=0.0 and constant)
+		// or if the inertia is near to zero but animated.
+		if(torsion_is_riggid || fabs(i)<=MASS_INERTIA_MINIMUM)
 			dxdt[3]=0.0;
 		else
 			dxdt[3]=(fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
