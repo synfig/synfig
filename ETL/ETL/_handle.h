@@ -117,6 +117,26 @@ public:
 		return ret;
 	}
 
+	//! Decrease reference counter without deletion of object
+	//! Returns \c false if references exeed and object should be deleted
+	virtual bool unref_inactive()const
+	{
+		bool ret = true;
+		{
+#ifdef ETL_LOCK_REFCOUNTS
+			etl::mutex::lock lock(mtx);
+#endif
+			assert(refcount>0);
+
+			refcount--;
+
+			if(refcount==0)
+				ret = false;
+		}
+
+		return ret;
+	}
+
 	int count()const { return refcount; }
 
 }; // END of class shared_object
@@ -135,6 +155,7 @@ public:
 	virtual ~virtual_shared_object()=0;
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
+	virtual bool unref_inactive()const=0;
 	virtual int count()const=0;
 }; // END of class virtual_shared_object
 
