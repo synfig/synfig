@@ -142,10 +142,7 @@ ValueNode_Dynamic::operator()(Time t)const
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
 	std::vector<double> x(state.begin(), state.end());
-	size_t steps = integrate(oscillator, x, t0, t1, step);
-
-	synfig::info("Integration in %d steps", steps);
-
+	integrate(oscillator, x, t0, t1, step);
 	// Remember time and state for the next call
 	last_time=Time(t);
 	state.assign(x.begin(), x.end());
