@@ -58,7 +58,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRADIENT_HEIGHT		16
+#define GRADIENT_HEIGHT		24
 #define DEFAULT_INCREMENT	(0.25)
 #define DEFAULT_WIDTH		(synfig::Distance(3,synfig::Distance::SYSTEM_POINTS))
 
@@ -206,6 +206,8 @@ Widget_Defaults::Widget_Defaults()
 {
 	//set_size_request(48,48+GRADIENT_HEIGHT+16);
 	//set_size_request(48,-1);
+	set_row_spacings(2);// space between each widget, the spacing between tools and default widgets is 10. 
+	set_col_spacings(0);
 
 	{
 		Gtk::Table* subtable(manage(new Gtk::Table()));
