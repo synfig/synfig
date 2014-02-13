@@ -32,6 +32,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/actiongroup.h>
+#include <gtkmm/toggleaction.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -57,6 +58,14 @@ namespace studio {
 		static void show_dialog_input();
 		void on_recent_files_changed();
 		void on_dockable_registered(Dockable* dockable);
+		void toggle_show_maintoolbar();
+		void toggle_show_menubar();
+
+		Glib::RefPtr<Gtk::ToggleAction> toggle_maintoolbar;
+		Glib::RefPtr<Gtk::ToggleAction> toggle_menubar;
+		bool toggling_show_toolbar;
+		bool toggling_show_menubar;
+
 
 	public:
 		MainWindow();

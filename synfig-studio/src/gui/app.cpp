@@ -880,6 +880,9 @@ DEFINE_ACTION("setup", _("Preferences..."));
 DEFINE_ACTION("restore-default-settings", _("Restore Default Settings"));
 
 // actions in View menu
+DEFINE_ACTION("toggle-maintoolbar", _("Toolbar"));
+DEFINE_ACTION("toggle-menubar", _("Menubar"));
+
 DEFINE_ACTION("mask-position-ducks", _("Show Position Handles"));
 DEFINE_ACTION("mask-vertex-ducks", _("Show Vertex Handles"));
 DEFINE_ACTION("mask-tangent-ducks", _("Show Tangent Handles"));
@@ -1018,6 +1021,8 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='setup' />"
 "	</menu>"
 "	<menu action='menu-view'>"
+"	<menuitem action='toggle-maintoolbar' />"
+"	<menuitem action='toggle-menubar' />"
 "		<menu action='menu-duck-mask'>"
 "			<menuitem action='mask-position-ducks' />"
 "			<menuitem action='mask-vertex-ducks' />"

@@ -71,6 +71,8 @@ using namespace studio;
 MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
+	toggling_show_toolbar = true;
+	toggling_show_menubar = true;
 
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
@@ -101,7 +103,6 @@ MainWindow::MainWindow()
 	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
 	if (menubar != NULL)
 	{
-		menubar->show();
 		vbox->pack_start(*menubar, false, false, 0);
 	}
 
@@ -111,7 +112,6 @@ MainWindow::MainWindow()
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 		toolbar->set_property("toolbar-style", Gtk::TOOLBAR_ICONS);
 		toolbar->set_property("icon-size", iconsize);
-		toolbar->show();
 		vbox->pack_start(*toolbar, false, false, 0);
 	}
 
@@ -179,6 +179,16 @@ MainWindow::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
+	// View menu
+	//Glib::RefPtr<Gtk::ToggleAction> action;
+	toggle_maintoolbar = Gtk::ToggleAction::create("toggle-maintoolbar", _("Show Toolbar"));
+	toggle_maintoolbar->set_active(toggling_show_toolbar);
+	action_group->add(toggle_maintoolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_maintoolbar));
+
+	toggle_menubar = Gtk::ToggleAction::create("toggle-menubar", _("Show Menubar"));
+	toggle_menubar->set_active(toggling_show_menubar);
+	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
+
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
 		sigc::ptr_fun(App::set_workspace_compositing)
@@ -218,6 +228,42 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
+}
+
+
+void
+MainWindow::toggle_show_maintoolbar()
+{
+	Gtk::Widget* toolbar = App::ui_manager()->get_widget("/toolbar-main");
+
+	if(toggling_show_toolbar)
+	{
+		toolbar->hide();
+		toggling_show_toolbar = false;
+	}
+	else
+	{
+		toolbar->show();
+		toggling_show_toolbar = true;
+	}	
+}
+
+
+void
+MainWindow::toggle_show_menubar()
+{
+	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
+
+	if(toggling_show_menubar)
+	{
+		menubar->hide();
+		toggling_show_menubar = false;
+	}
+	else
+	{
+		menubar->show();
+		toggling_show_menubar = true;
+	}
 }
 
 
