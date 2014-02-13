@@ -107,7 +107,7 @@ OneMoment::OneMoment():
 
 	label->set_size_request(400,60);
 
-	//set_transient_for(get_root_window()); //--not works, parent should be passed
+	set_transient_for((Gtk::Window&)(*App::main_window));
 	
 	// show everything off
 	show_all();

@@ -215,7 +215,7 @@ public:
 
 	const synfig::Time::Format& get_time_format()const { return time_format; }
 
-	Dialog_Setup();
+	Dialog_Setup(Gtk::Window& parent);
 	~Dialog_Setup();
 
     void refresh();

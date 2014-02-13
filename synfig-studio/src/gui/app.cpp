@@ -1489,7 +1489,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
 
 		studio_init_cb.task(_("Init Setup Dialog..."));
-		dialog_setup=new studio::Dialog_Setup();
+		dialog_setup=new studio::Dialog_Setup(*App::main_window);
 
 		studio_init_cb.task(_("Init Input Dialog..."));
 		dialog_input=new Gtk::InputDialog();
@@ -2151,7 +2151,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
@@ -2234,7 +2234,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
     dialog->set_current_folder(prev_path);
     dialog->add_button("Open history", RESPONSE_ACCEPT_WITH_HISTORY);
@@ -2319,7 +2319,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
@@ -2454,7 +2454,7 @@ App::dialog_error_blocking(const std::string &title, const std::string &message)
 void
 App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
 {
-	Gtk::Dialog dialog(title, true, true);
+	Gtk::Dialog dialog(title, (Gtk::Window&)(*App::main_window), false);
 	Gtk::ScrolledWindow scrolled;
 	Gtk::Label label(message, 0, 0);
 	label.set_line_wrap();

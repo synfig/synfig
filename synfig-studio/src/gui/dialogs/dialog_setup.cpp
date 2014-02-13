@@ -71,8 +71,8 @@ attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypa
 	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 }
 
-Dialog_Setup::Dialog_Setup():
-	Dialog(_("Synfig Studio Setup"),false,true),
+Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
+	Dialog(_("Synfig Studio Setup"),parent,true),
 	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),
@@ -306,7 +306,7 @@ Dialog_Setup::Dialog_Setup():
 	// Render - Use Cairo on WorkArea
 	attach_label(render_table, _("Use Cairo render on WorkArea"), 2, xpadding, ypadding);
 	render_table->attach(toggle_workarea_uses_cairo, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
-
+	
 	show_all_children();
 }
 

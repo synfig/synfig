@@ -102,7 +102,7 @@ extern const guint gtk_interface_age;
 
 About::About()
 {
-
+	set_transient_for((Gtk::Window&)(*App::main_window));
 #ifdef HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME
 	set_program_name(PACKAGE_NAME);
 #else
