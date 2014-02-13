@@ -169,14 +169,16 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-saveall")),
 		sigc::ptr_fun(save_all)
 	);
+	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
+		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
+	);
+
+	// Edit menu
 	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
 	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
-	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
 	// View menu
