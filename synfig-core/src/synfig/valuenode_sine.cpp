@@ -111,7 +111,7 @@ ValueNode_Sine::get_local_name()const
 }
 
 bool
-ValueNode_Sine::check_type(ValueBase::Type type)
+ValueNode_Sine::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

@@ -46,7 +46,7 @@ public:
 	typedef etl::handle<ValueNode_Real> Handle;
 	typedef etl::handle<const ValueNode_Real> ConstHandle;
 
-	ValueNode_Real(const ValueBase::Type &x);
+	ValueNode_Real(const ValueBase::TypeId &x);
 	ValueNode_Real(const ValueBase &x);
 
 	virtual ValueBase operator()(Time t)const;
@@ -69,7 +69,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_Real* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Real

@@ -211,7 +211,7 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 		}
 }
 
-ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type, Canvas::LooseHandle canvas): // line 548
+ValueNode_StaticList::ValueNode_StaticList(ValueBase::TypeId container_type, Canvas::LooseHandle canvas): // line 548
 	LinkableValueNode(ValueBase::TYPE_LIST),
 	container_type	(container_type),
 	loop_(false)
@@ -240,7 +240,7 @@ ValueNode_StaticList::~ValueNode_StaticList()
 }
 
 ValueNode_StaticList::Handle
-ValueNode_StaticList::create(ValueBase::Type id, Canvas::LooseHandle canvas) // line 557
+ValueNode_StaticList::create(ValueBase::TypeId id, Canvas::LooseHandle canvas) // line 557
 {
 	return new ValueNode_StaticList(id, canvas);
 }
@@ -255,7 +255,7 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 	if(value_list.empty())
 		return 0;
 
-	ValueBase::Type type(value.get_contained_type());
+	ValueBase::TypeId type(value.get_contained_type());
 	ValueNode_StaticList* value_node(new ValueNode_StaticList(type));
 
 	// when creating a list of vectors, start it off being looped.
@@ -391,7 +391,7 @@ ValueNode_StaticList::get_local_name()const // line 711
 }
 
 bool
-ValueNode_StaticList::check_type(ValueBase::Type type) // line 717
+ValueNode_StaticList::check_type(ValueBase::TypeId type) // line 717
 {
 	return type==ValueBase::TYPE_LIST;
 }
@@ -421,7 +421,7 @@ ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // lin
 	}
 }
 
-ValueBase::Type
+ValueBase::TypeId
 ValueNode_StaticList::get_contained_type()const // line 730
 {
 	return container_type;

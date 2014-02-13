@@ -130,7 +130,7 @@ ValueNode_And::get_local_name()const
 }
 
 bool
-ValueNode_And::check_type(ValueBase::Type type)
+ValueNode_And::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }

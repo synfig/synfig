@@ -42,7 +42,7 @@ class ValueNode_BLineRevTangent : public LinkableValueNode
 	ValueNode::RHandle reference_;
 	ValueNode::RHandle reverse_;
 
-	ValueNode_BLineRevTangent(const ValueBase::Type &x=ValueBase::TYPE_BLINEPOINT);
+	ValueNode_BLineRevTangent(const ValueBase::TypeId &x=ValueBase::TYPE_BLINEPOINT);
 	ValueNode_BLineRevTangent(const ValueNode::Handle &x);
 
 public:
@@ -66,7 +66,7 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_BLineRevTangent* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLineRevTangent

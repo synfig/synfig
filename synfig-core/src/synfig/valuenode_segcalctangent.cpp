@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_SegCalcTangent::ValueNode_SegCalcTangent(const ValueBase::Type &x):
+ValueNode_SegCalcTangent::ValueNode_SegCalcTangent(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
@@ -107,7 +107,7 @@ ValueNode_SegCalcTangent::get_local_name()const
 }
 
 bool
-ValueNode_SegCalcTangent::check_type(ValueBase::Type type)
+ValueNode_SegCalcTangent::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_VECTOR;
 }

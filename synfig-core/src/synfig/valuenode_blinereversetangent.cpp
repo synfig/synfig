@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueBase::Type &x):
+ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 }
@@ -147,7 +147,7 @@ ValueNode_BLineRevTangent::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineRevTangent::check_type(ValueBase::Type type)
+ValueNode_BLineRevTangent::check_type(ValueBase::TypeId type)
 {
 	return (type==ValueBase::TYPE_BLINEPOINT);
 }

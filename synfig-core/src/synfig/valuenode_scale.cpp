@@ -63,7 +63,7 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(Real(1.0))));
-	ValueBase::Type id(value.get_type());
+	ValueBase::TypeId id(value.get_type());
 
 	switch(id)
 	{
@@ -244,7 +244,7 @@ ValueNode_Scale::get_local_name()const
 }
 
 bool
-ValueNode_Scale::check_type(ValueBase::Type type)
+ValueNode_Scale::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||

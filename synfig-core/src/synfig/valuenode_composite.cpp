@@ -503,7 +503,7 @@ ValueNode_Composite::get_local_name()const
 }
 
 bool
-ValueNode_Composite::check_type(ValueBase::Type type)
+ValueNode_Composite::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_SEGMENT ||

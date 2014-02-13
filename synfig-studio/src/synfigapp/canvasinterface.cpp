@@ -266,7 +266,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 				if (list.size())
 				{
 					vector<ValueBase>::iterator iter2 = list.begin();
-					ValueBase::Type type(iter2->get_type());
+					ValueBase::TypeId type(iter2->get_type());
 					for (iter2++; iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type)
 							break;

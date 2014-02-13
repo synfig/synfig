@@ -57,7 +57,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::Type &x):
+ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 }
@@ -210,7 +210,7 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BoneInfluence::check_type(ValueBase::Type type)
+ValueNode_BoneInfluence::check_type(ValueBase::TypeId type)
 {
 	return 	type==ValueBase::TYPE_VECTOR ||
 			type==ValueBase::TYPE_BLINEPOINT;

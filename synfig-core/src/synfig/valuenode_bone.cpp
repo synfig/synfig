@@ -515,7 +515,7 @@ ValueNode_Bone::get_bone_name(Time t)const
 }
 
 bool
-ValueNode_Bone::check_type(ValueBase::Type type)
+ValueNode_Bone::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_BONE;
 }
@@ -1072,7 +1072,7 @@ ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)), Point 
 }
 
 bool
-ValueNode_Bone_Root::check_type(ValueBase::Type type __attribute__ ((unused)))
+ValueNode_Bone_Root::check_type(ValueBase::TypeId type __attribute__ ((unused)))
 {
 	return false;
 }

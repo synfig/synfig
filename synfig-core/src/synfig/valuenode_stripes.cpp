@@ -73,7 +73,7 @@ ValueNode_Stripes::create_new()const
 ValueNode_Stripes*
 ValueNode_Stripes::create(const ValueBase& x)
 {
-	ValueBase::Type id(x.get_type());
+	ValueBase::TypeId id(x.get_type());
 
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
@@ -172,7 +172,7 @@ ValueNode_Stripes::get_local_name()const
 }
 
 bool
-ValueNode_Stripes::check_type(ValueBase::Type type)
+ValueNode_Stripes::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }

@@ -858,8 +858,8 @@ Action::ValueDescSet::prepare()
 				// this is valid only for value types that allows it.
 				ValueNode_Animated::Handle animated=ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
 				Waypoint waypoint;
-				ValueBase::Type type=animated->get_type();
-				ValueBase::Type value_type=value.get_type();
+				ValueBase::TypeId type=animated->get_type();
+				ValueBase::TypeId value_type=value.get_type();
 				if(value_type==type &&
 					(type == ValueBase::TYPE_INTEGER
 					|| type == ValueBase::TYPE_ANGLE

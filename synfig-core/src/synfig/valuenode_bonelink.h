@@ -69,7 +69,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_BoneLink* create(const ValueBase &x, etl::loose_handle<Canvas> canvas=0);
 	virtual Vocab get_children_vocab_vfunc()const;
 	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);

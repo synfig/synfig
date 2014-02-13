@@ -113,7 +113,7 @@ protected:
 
 public:
 
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	// Creates a Value Node Width Point List from another compatible list
 	static ValueNode_WPList* create(const ValueBase &x=ValueBase::TYPE_LIST);
 }; // END of class ValueNode_WPList

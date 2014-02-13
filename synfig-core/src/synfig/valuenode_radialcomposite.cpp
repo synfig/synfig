@@ -235,7 +235,7 @@ ValueNode_RadialComposite::get_local_name()const
 }
 
 bool
-ValueNode_RadialComposite::check_type(ValueBase::Type type)
+ValueNode_RadialComposite::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_VECTOR ||

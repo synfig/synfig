@@ -110,7 +110,7 @@ ValueNode_Cos::get_local_name()const
 }
 
 bool
-ValueNode_Cos::check_type(ValueBase::Type type)
+ValueNode_Cos::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

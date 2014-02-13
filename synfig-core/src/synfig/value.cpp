@@ -69,7 +69,7 @@ ValueBase::ValueBase():type(TYPE_NIL),data(0),ref_count(0),loop_(0),static_(0),i
 {
 }
 
-ValueBase::ValueBase(Type x):
+ValueBase::ValueBase(TypeId x):
 	type(x),
 	data(0),
 	loop_(0),
@@ -299,7 +299,7 @@ ValueBase::empty()const
 	return !is_valid() || ((type==TYPE_LIST)?get_list().empty():false);
 }
 
-ValueBase::Type
+ValueBase::TypeId
 ValueBase::get_contained_type()const
 {
 	if(type!=TYPE_LIST || empty())
@@ -373,7 +373,7 @@ ValueBase::clear()
 }
 
 String
-ValueBase::type_name(Type id)
+ValueBase::type_name(TypeId id)
 {
 	// don't internationalize these type names - they're used in .sif files
 	switch(id)
@@ -402,13 +402,13 @@ ValueBase::type_name(Type id)
 	default:
 		break;
 	}
-	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with an TypeId of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }
 
 String
-ValueBase::type_local_name(Type id)
+ValueBase::type_local_name(TypeId id)
 {
 //	return dgettext("synfig",type_name(id).c_str());
 
@@ -458,13 +458,13 @@ ValueBase::type_local_name(Type id)
 	case TYPE_NIL:                  return N_("nil");
 	default: break;
 	}
-	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with a TypeId of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }
 
 
-ValueBase::Type
+ValueBase::TypeId
 ValueBase::ident_type(const String &str)
 {
 	if(str=="nil" ||

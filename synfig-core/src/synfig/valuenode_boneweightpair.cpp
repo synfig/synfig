@@ -123,7 +123,7 @@ ValueNode_BoneWeightPair::get_local_name()const
 }
 
 bool
-ValueNode_BoneWeightPair::check_type(ValueBase::Type type)
+ValueNode_BoneWeightPair::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_BONE_WEIGHT_PAIR;
 }

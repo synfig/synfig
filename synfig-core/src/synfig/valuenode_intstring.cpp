@@ -152,7 +152,7 @@ ValueNode_IntString::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_IntString::check_type(ValueBase::Type type)
+ValueNode_IntString::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_STRING;

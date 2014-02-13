@@ -76,7 +76,7 @@ ValueNode_Repeat_Gradient::create_new()const
 ValueNode_Repeat_Gradient*
 ValueNode_Repeat_Gradient::create(const ValueBase& x)
 {
-	ValueBase::Type id(x.get_type());
+	ValueBase::TypeId id(x.get_type());
 
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
@@ -186,7 +186,7 @@ ValueNode_Repeat_Gradient::get_local_name()const
 }
 
 bool
-ValueNode_Repeat_Gradient::check_type(ValueBase::Type type)
+ValueNode_Repeat_Gradient::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }

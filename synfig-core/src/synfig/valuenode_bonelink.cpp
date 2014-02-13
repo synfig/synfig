@@ -228,7 +228,7 @@ ValueNode_BoneLink::get_local_name()const
 }
 
 bool
-ValueNode_BoneLink::check_type(ValueBase::Type type)
+ValueNode_BoneLink::check_type(ValueBase::TypeId type)
 {
 	return ValueTransformation::check_type(type);
 }

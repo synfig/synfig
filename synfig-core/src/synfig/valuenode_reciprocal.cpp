@@ -148,7 +148,7 @@ ValueNode_Reciprocal::get_local_name()const
 }
 
 bool
-ValueNode_Reciprocal::check_type(ValueBase::Type type)
+ValueNode_Reciprocal::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

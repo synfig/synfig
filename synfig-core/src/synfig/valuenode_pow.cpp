@@ -163,7 +163,7 @@ ValueNode_Pow::get_local_name()const
 }
 
 bool
-ValueNode_Pow::check_type(ValueBase::Type type)
+ValueNode_Pow::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

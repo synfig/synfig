@@ -229,7 +229,7 @@ ValueNode::subsys_stop()
 	return true;
 }
 
-ValueNode::ValueNode(ValueBase::Type type):type(type)
+ValueNode::ValueNode(ValueBase::TypeId type):type(type)
 {
 	value_node_count++;
 }
@@ -256,7 +256,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 }
 
 bool
-LinkableValueNode::check_type(const String &name, ValueBase::Type x)
+LinkableValueNode::check_type(const String &name, ValueBase::TypeId x)
 {
 	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
 	// user creating them for themselves, so check_type() fails for
@@ -566,7 +566,7 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 }
 
 PlaceholderValueNode::Handle
-PlaceholderValueNode::create(ValueBase::Type type)
+PlaceholderValueNode::create(ValueBase::TypeId type)
 {
 	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
 		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
@@ -580,7 +580,7 @@ PlaceholderValueNode::operator()(Time /*t*/)const
 	return ValueBase();
 }
 
-PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
+PlaceholderValueNode::PlaceholderValueNode(ValueBase::TypeId type):
 	ValueNode(type)
 {
 }

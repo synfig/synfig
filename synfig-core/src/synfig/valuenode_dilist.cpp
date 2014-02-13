@@ -187,7 +187,7 @@ ValueNode_DIList::create_new()const
 }
 
 bool
-ValueNode_DIList::check_type(ValueBase::Type type)
+ValueNode_DIList::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_LIST;
 }

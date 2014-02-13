@@ -142,7 +142,7 @@ ValueNode_Logarithm::get_local_name()const
 }
 
 bool
-ValueNode_Logarithm::check_type(ValueBase::Type type)
+ValueNode_Logarithm::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

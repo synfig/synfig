@@ -60,7 +60,7 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	ValueBase::Type id(value.get_type());
+	ValueBase::TypeId id(value.get_type());
 
 	switch(id)
 	{
@@ -258,7 +258,7 @@ ValueNode_Range::get_local_name()const
 }
 
 bool
-ValueNode_Range::check_type(ValueBase::Type type)
+ValueNode_Range::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_ANGLE
 		|| type==ValueBase::TYPE_INTEGER

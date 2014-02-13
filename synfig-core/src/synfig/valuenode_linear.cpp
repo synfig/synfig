@@ -147,7 +147,7 @@ ValueNode_Linear::get_local_name()const
 }
 
 bool
-ValueNode_Linear::check_type(ValueBase::Type type)
+ValueNode_Linear::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE		||

@@ -222,7 +222,7 @@ ValueNode_TimedSwap::get_local_name()const
 }
 
 bool
-ValueNode_TimedSwap::check_type(ValueBase::Type type)
+ValueNode_TimedSwap::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||

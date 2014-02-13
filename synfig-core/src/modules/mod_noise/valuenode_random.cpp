@@ -219,7 +219,7 @@ ValueNode_Random::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Random::check_type(ValueBase::Type type)
+ValueNode_Random::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE		||

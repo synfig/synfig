@@ -86,7 +86,7 @@ class ValueBase
 public:
 
 	//! This enum lists all the types of values
-	enum Type
+	enum TypeId
 	{
 		TYPE_NIL=0,			//!< Represents an empty value
 
@@ -133,7 +133,7 @@ private:
 
 protected:
 	//! The type of value
-	Type type;
+	TypeId type;
 	//! Pointer to hold the data of the value
 	void *data;
 	//! Counter of Value Nodes that refers to this Value Base
@@ -164,7 +164,7 @@ public:
 		{ set(x); }
 
 	//! Copy constructor. The data is not copied, just the type.
-	ValueBase(Type x);
+	ValueBase(TypeId x);
 
 	//! Default destructor
 	~ValueBase();
@@ -230,7 +230,7 @@ public:
 	bool empty()const;
 
 	//! Gets the contained type in the Value Base
-	Type get_contained_type()const;
+	TypeId get_contained_type()const;
 
 	//! Returns true if the contained value is defined and valid.
 	bool is_valid()const;
@@ -239,25 +239,25 @@ public:
 	String type_name()const { return type_name(type); }
 
 	//! Returns the type of the contained value
-	const Type & get_type()const { return type; }
+	const TypeId & get_type()const { return type; }
 
 	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
 	//! Template for any class
 	template <class T> bool
 	same_type_as(const T &x)const
 	{
-		const Type testtype(get_type(x));
+		const TypeId testtype(get_type(x));
 
 		return same_type_as(type, testtype);
 	}
 	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
-	bool same_type_as(const Type testtype)const
+	bool same_type_as(const TypeId testtype)const
 	{
 		return same_type_as(type, testtype);
 	}
 
 	//! Compares two types.  Returns true if they are the same type.
-	static bool same_type_as(const Type type1, const Type type2)
+	static bool same_type_as(const TypeId type1, const TypeId type2)
 	{
 		if (type1 == type2) return true;
 		if ((type1 == TYPE_REAL || type1 == TYPE_TIME) &&
@@ -350,48 +350,48 @@ public:
 public:
 
 	//!	Returns a string containing the name of the given Type
-	static String type_name(Type id);
+	static String type_name(TypeId id);
 
 	//!	Returns a string containing the translated name of the given Type
-	static String type_local_name(Type id);
+	static String type_local_name(TypeId id);
 
 	//!	Returns a the corresponding Type of the described type.
 	//! Notice that this is used in the loadcanvas. It should keep all
 	//! all type names used in previous sif files
-	static Type ident_type(const String &str);
+	static TypeId ident_type(const String &str);
 
 
 	// === GET TYPE MEMBERS ===================================================
-	static Type get_type(bool) { return TYPE_BOOL; }
-	static Type get_type(int) { return TYPE_INTEGER; }
-	static Type get_type(const Angle&) { return TYPE_ANGLE; }
-	static Type get_type(const Time&) { return TYPE_TIME; }
-	static Type get_type(const Real&) { return TYPE_REAL; }
-	static Type get_type(const float&) { return TYPE_REAL; }
-	static Type get_type(const Vector&) { return TYPE_VECTOR; }
-	static Type get_type(const Color&) { return TYPE_COLOR; }
-	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
-	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
-	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
-	static Type get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
-	static Type get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
-	static Type get_type(const DashItem&) { return TYPE_DASHITEM; }
-	static Type get_type(const String&) { return TYPE_STRING; }
-	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
-	static Type get_type(const Bone&) { return TYPE_BONE; }
-	static Type get_type(const etl::handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
-	static Type get_type(const etl::loose_handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
-	static Type get_type(Canvas*) { return TYPE_CANVAS; }
-	static Type get_type(const etl::handle<Canvas>&)
+	static TypeId get_type(bool) { return TYPE_BOOL; }
+	static TypeId get_type(int) { return TYPE_INTEGER; }
+	static TypeId get_type(const Angle&) { return TYPE_ANGLE; }
+	static TypeId get_type(const Time&) { return TYPE_TIME; }
+	static TypeId get_type(const Real&) { return TYPE_REAL; }
+	static TypeId get_type(const float&) { return TYPE_REAL; }
+	static TypeId get_type(const Vector&) { return TYPE_VECTOR; }
+	static TypeId get_type(const Color&) { return TYPE_COLOR; }
+	static TypeId get_type(const Segment&) { return TYPE_SEGMENT; }
+	static TypeId get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static TypeId get_type(const Matrix&) {return TYPE_MATRIX;}
+	static TypeId get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
+	static TypeId get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
+	static TypeId get_type(const DashItem&) { return TYPE_DASHITEM; }
+	static TypeId get_type(const String&) { return TYPE_STRING; }
+	static TypeId get_type(const Gradient&) { return TYPE_GRADIENT; }
+	static TypeId get_type(const Bone&) { return TYPE_BONE; }
+	static TypeId get_type(const etl::handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
+	static TypeId get_type(const etl::loose_handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
+	static TypeId get_type(Canvas*) { return TYPE_CANVAS; }
+	static TypeId get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
-	static Type get_type(const etl::loose_handle<Canvas>&)
+	static TypeId get_type(const etl::loose_handle<Canvas>&)
 		{ return TYPE_CANVAS; }
-	static Type get_type(const list_type&) { return TYPE_LIST; }
-	template <class T> static Type get_type(const std::vector<T> &/*x*/)
+	static TypeId get_type(const list_type&) { return TYPE_LIST; }
+	template <class T> static TypeId get_type(const std::vector<T> &/*x*/)
 		{ return TYPE_LIST; }
-	template <class T> static Type get_type(const std::list<T> &/*x*/)
+	template <class T> static TypeId get_type(const std::list<T> &/*x*/)
 		{ return TYPE_LIST; }
-	static Type get_type(const Transformation&) { return TYPE_TRANSFORMATION; }
+	static TypeId get_type(const Transformation&) { return TYPE_TRANSFORMATION; }
 	// ========================================================================
 
 
@@ -430,7 +430,7 @@ public:
 	half get(const half &)const { return get(Real()); }
 	void put(half*x)const { *x=get(Real()); }
 	void set(const half &x) { _set(Real(x)); }
-	static Type get_type(const half&) { return TYPE_REAL; }
+	static TypeId get_type(const half&) { return TYPE_REAL; }
 	operator half()const { return get(Real()); }
 #endif
 
@@ -458,7 +458,7 @@ private:
 	template <typename T> void
 	_set(const T& x)
 	{
-		const Type newtype(get_type(x));
+		const TypeId newtype(get_type(x));
 
 		assert(newtype!=TYPE_NIL);
 

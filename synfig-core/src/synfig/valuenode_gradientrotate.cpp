@@ -71,7 +71,7 @@ ValueNode_GradientRotate::create_new()const
 ValueNode_GradientRotate*
 ValueNode_GradientRotate::create(const ValueBase& x)
 {
-	ValueBase::Type id(x.get_type());
+	ValueBase::TypeId id(x.get_type());
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
@@ -147,7 +147,7 @@ ValueNode_GradientRotate::get_local_name()const
 }
 
 bool
-ValueNode_GradientRotate::check_type(ValueBase::Type type)
+ValueNode_GradientRotate::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_GRADIENT;
 }

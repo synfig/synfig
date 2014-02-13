@@ -339,7 +339,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
-		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::TypeId(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -405,7 +405,7 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 }
 
 Gtk::StockID
-studio::value_icon(synfig::ValueBase::Type type)
+studio::value_icon(synfig::ValueBase::TypeId type)
 {
 		switch(type)
 		{
@@ -499,7 +499,7 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-studio::get_tree_pixbuf(synfig::ValueBase::Type type)
+studio::get_tree_pixbuf(synfig::ValueBase::TypeId type)
 {
 	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[int(type)];

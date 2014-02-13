@@ -41,7 +41,7 @@ class ValueNode_SegCalcVertex : public LinkableValueNode
 	ValueNode::RHandle segment_;
 	ValueNode::RHandle amount_;
 
-	ValueNode_SegCalcVertex(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
+	ValueNode_SegCalcVertex(const ValueBase::TypeId &x=ValueBase::TYPE_VECTOR);
 
 public:
 
@@ -64,7 +64,7 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_SegCalcVertex* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_SegCalcVertex

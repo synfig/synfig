@@ -176,7 +176,7 @@ ValueNode_Join::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Join::check_type(ValueBase::Type type)
+ValueNode_Join::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_STRING;

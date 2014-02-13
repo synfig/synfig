@@ -108,7 +108,7 @@ ValueNode_Atan2::get_local_name()const
 }
 
 bool
-ValueNode_Atan2::check_type(ValueBase::Type type)
+ValueNode_Atan2::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_ANGLE;
 }

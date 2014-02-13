@@ -367,7 +367,7 @@ ValueNode_WPList::create_new()const
 }
 
 bool
-ValueNode_WPList::check_type(ValueBase::Type type)
+ValueNode_WPList::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_LIST;
 }

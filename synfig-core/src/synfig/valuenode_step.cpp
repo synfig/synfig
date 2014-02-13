@@ -143,7 +143,7 @@ ValueNode_Step::get_local_name()const
 }
 
 bool
-ValueNode_Step::check_type(ValueBase::Type type)
+ValueNode_Step::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE		||

@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Real::ValueNode_Real(const ValueBase::Type &x):
+ValueNode_Real::ValueNode_Real(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 }
@@ -162,7 +162,7 @@ ValueNode_Real::get_local_name()const
 }
 
 bool
-ValueNode_Real::check_type(ValueBase::Type type __attribute__ ((unused)))
+ValueNode_Real::check_type(ValueBase::TypeId type __attribute__ ((unused)))
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||

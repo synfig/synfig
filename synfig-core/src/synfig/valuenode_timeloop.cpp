@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueBase::Type &x):
+ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 }
@@ -154,7 +154,7 @@ ValueNode_TimeLoop::get_local_name()const
 }
 
 bool
-ValueNode_TimeLoop::check_type(ValueBase::Type type)
+ValueNode_TimeLoop::check_type(ValueBase::TypeId type)
 {
 	if(type)
 		return true;

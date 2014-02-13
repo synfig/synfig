@@ -150,7 +150,7 @@ ValueNode_Compare::get_local_name()const
 }
 
 bool
-ValueNode_Compare::check_type(ValueBase::Type type)
+ValueNode_Compare::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_BOOL;
 }

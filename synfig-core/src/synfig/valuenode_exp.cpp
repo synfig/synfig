@@ -133,7 +133,7 @@ ValueNode_Exp::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Exp::check_type(ValueBase::Type type)
+ValueNode_Exp::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

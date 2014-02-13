@@ -151,7 +151,7 @@ ValueNode_DotProduct::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_DotProduct::check_type(ValueBase::Type type)
+ValueNode_DotProduct::check_type(ValueBase::TypeId type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE ||

@@ -141,7 +141,7 @@ ValueNode_GradientColor::get_local_name()const
 }
 
 bool
-ValueNode_GradientColor::check_type(ValueBase::Type type)
+ValueNode_GradientColor::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_COLOR;
 }

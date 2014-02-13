@@ -48,7 +48,7 @@ public:
 	typedef etl::handle<ValueNode_Duplicate> Handle;
 	typedef etl::handle<const ValueNode_Duplicate> ConstHandle;
 
-	ValueNode_Duplicate(const ValueBase::Type &x);
+	ValueNode_Duplicate(const ValueBase::TypeId &x);
 	ValueNode_Duplicate(const ValueBase &x);
 
 	virtual ValueBase operator()(Time t)const;
@@ -71,7 +71,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_Duplicate* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Duplicate

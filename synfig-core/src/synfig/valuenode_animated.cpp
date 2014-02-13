@@ -1133,13 +1133,13 @@ ValueNode_Animated::add(const Waypoint &x)
 }
 
 void
-ValueNode_Animated::set_type(ValueBase::Type t)
+ValueNode_Animated::set_type(ValueBase::TypeId t)
 {
 	ValueNode::set_type(t);
 }
 
 ValueNode_Animated::Handle
-synfig::ValueNode_Animated::create(ValueBase::Type type)
+synfig::ValueNode_Animated::create(ValueBase::TypeId type)
 {
 	switch(type)
 	{

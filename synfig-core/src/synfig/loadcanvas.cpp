@@ -1472,7 +1472,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 		return ValueNode_Animated::Handle();
 	}
 
-	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
 
 	if(!type)
 	{
@@ -1692,7 +1692,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		return 0;
 	}
 
-	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
 
 	if(!type)
 	{
@@ -2047,7 +2047,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 		return handle<ValueNode_StaticList>();
 	}
 
-	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
 
 	if(!type)
 	{
@@ -2144,7 +2144,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		return handle<ValueNode_DynamicList>();
 	}
 
-	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
 
 	if(!type)
 	{

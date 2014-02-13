@@ -1016,7 +1016,7 @@ ValueNode_BLine::create_new()const
 }
 
 bool
-ValueNode_BLine::check_type(ValueBase::Type type)
+ValueNode_BLine::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_LIST;
 }

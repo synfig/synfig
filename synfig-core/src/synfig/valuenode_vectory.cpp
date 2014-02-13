@@ -128,7 +128,7 @@ ValueNode_VectorY::get_local_name()const
 }
 
 bool
-ValueNode_VectorY::check_type(ValueBase::Type type)
+ValueNode_VectorY::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_REAL;
 }

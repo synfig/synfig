@@ -124,7 +124,7 @@ public:
 private:
 	//! The type of the Value Node
 	//! \see ValueBase
-	ValueBase::Type type;
+	ValueBase::TypeId type;
 	//! The name of the Value Node. This is the string that is used in the
 	//! sif file to define the value type: i.e. <param name="amount">
 	String name;
@@ -187,7 +187,7 @@ public:
 
 protected:
 
-	ValueNode(ValueBase::Type type=ValueBase::TYPE_NIL);
+	ValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL);
 
 public:
 
@@ -229,7 +229,7 @@ public:
 	bool is_exported()const { return !get_id().empty(); }
 
 	//! Returns the type of the ValueNode
-	ValueBase::Type get_type()const { return type; }
+	ValueBase::TypeId get_type()const { return type; }
 
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_parent_canvas()const;
@@ -262,7 +262,7 @@ public:
 
 protected:
 	//! Sets the type of the ValueNode
-	void set_type(ValueBase::Type t) { type=t; }
+	void set_type(ValueBase::TypeId t) { type=t; }
 
 	virtual void on_changed();
 }; // END of class ValueNode
@@ -285,7 +285,7 @@ public:
 
 private:
 
-	PlaceholderValueNode(ValueBase::Type type=ValueBase::TYPE_NIL);
+	PlaceholderValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL);
 
 public:
 
@@ -299,7 +299,7 @@ public:
 
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
-	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
+	static Handle create(ValueBase::TypeId type=ValueBase::TYPE_NIL);
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &/*set*/) const {}
@@ -338,7 +338,7 @@ public:
 	/*! As a pointer to the member, it represents a fucntion that checks
 	**  the type of the provided ValueBase
 	*/
-	typedef bool (*CheckType)(ValueBase::Type);
+	typedef bool (*CheckType)(ValueBase::TypeId);
 
 	struct BookEntry
 	{
@@ -371,10 +371,10 @@ public:
 	//! Each derived Linkable Value Node has to implement this fucntion and
 	//! should return true only if the type matches. \name is the name of
 	//! the linked value node and \x is the returned value type
-	static bool check_type(const String &name, ValueBase::Type x);
+	static bool check_type(const String &name, ValueBase::TypeId x);
 
 public:
-	LinkableValueNode(ValueBase::Type type=ValueBase::TYPE_NIL):
+	LinkableValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL):
 		ValueNode(type) { }
 
 protected:
@@ -426,7 +426,7 @@ protected:
 	//! Member to store the children vocabulary
 	Vocab children_vocab;
 	//! Sets the type of the ValueNode
-	void set_type(ValueBase::Type t) { ValueNode::set_type(t); }
+	void set_type(ValueBase::TypeId t) { ValueNode::set_type(t); }
 
 	//! Virtual member to get the linked Value Node Handle
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const=0;

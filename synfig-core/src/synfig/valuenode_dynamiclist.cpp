@@ -588,7 +588,7 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 }
 
 
-ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, Canvas::LooseHandle canvas):
+ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::TypeId container_type, Canvas::LooseHandle canvas):
 	LinkableValueNode(ValueBase::TYPE_LIST),
 	container_type	(container_type),
 	loop_(false)
@@ -610,7 +610,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, Val
 
 
 ValueNode_DynamicList::Handle
-ValueNode_DynamicList::create(ValueBase::Type id, Canvas::LooseHandle canvas)
+ValueNode_DynamicList::create(ValueBase::TypeId id, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_DynamicList(id, canvas);
 }
@@ -774,7 +774,7 @@ ValueNode_DynamicList::get_local_name()const
 }
 
 bool
-ValueNode_DynamicList::check_type(ValueBase::Type type)
+ValueNode_DynamicList::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_LIST;
 }
@@ -786,7 +786,7 @@ ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
 		iter->value_node->set_parent_canvas(canvas);
 }
 
-ValueBase::Type
+ValueBase::TypeId
 ValueNode_DynamicList::get_contained_type()const
 {
 	return container_type;

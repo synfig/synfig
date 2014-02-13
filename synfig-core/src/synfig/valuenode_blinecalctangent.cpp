@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x):
+ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::TypeId &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
@@ -222,7 +222,7 @@ ValueNode_BLineCalcTangent::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
+ValueNode_BLineCalcTangent::check_type(ValueBase::TypeId type)
 {
 	return (type==ValueBase::TYPE_ANGLE ||
 			type==ValueBase::TYPE_REAL  ||

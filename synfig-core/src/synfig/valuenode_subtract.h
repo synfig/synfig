@@ -59,7 +59,7 @@ public:
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 
 	//! Gets the left-hand-side value_node
 	ValueNode::Handle get_lhs()const { return ref_a; }

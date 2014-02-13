@@ -64,7 +64,7 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_AngleString* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_AngleString

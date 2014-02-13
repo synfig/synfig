@@ -43,7 +43,7 @@ class ValueNode_BLineCalcVertex : public LinkableValueNode
 	ValueNode::RHandle amount_;
 	ValueNode::RHandle homogeneous_;
 
-	ValueNode_BLineCalcVertex(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
+	ValueNode_BLineCalcVertex(const ValueBase::TypeId &x=ValueBase::TYPE_VECTOR);
 
 public:
 
@@ -66,7 +66,7 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(ValueBase::TypeId type);
 	static ValueNode_BLineCalcVertex* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLineCalcVertex

@@ -129,7 +129,7 @@ ValueNode_VectorAngle::get_local_name()const
 }
 
 bool
-ValueNode_VectorAngle::check_type(ValueBase::Type type)
+ValueNode_VectorAngle::check_type(ValueBase::TypeId type)
 {
 	return type==ValueBase::TYPE_ANGLE;
 }
