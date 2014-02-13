@@ -203,6 +203,8 @@ VALUEHEADERS = \
 	widthpoint.h \
 	dashitem.h \
 	gradient.h \
+	type.h \
+	base_types.h \
 	value.h
 
 VALUESOURCES = \
@@ -210,6 +212,8 @@ VALUESOURCES = \
 	widthpoint.cpp \
 	dashitem.cpp \
 	gradient.cpp \
+	type.cpp \
+	base_types.cpp \
 	value.cpp
 
 
