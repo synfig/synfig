@@ -2393,7 +2393,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 bool
 App::dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index)
 {
-	Gtk::Dialog dialog(title, true, true);
+	Gtk::Dialog dialog(title, *App::main_window, true);
 
 	Gtk::Label label(message, 0, 0);
 	label.set_line_wrap();
@@ -2454,7 +2454,7 @@ App::dialog_error_blocking(const std::string &title, const std::string &message)
 void
 App::dialog_warning_blocking(const std::string &title, const std::string &message, const Gtk::StockID &stock_id)
 {
-	Gtk::Dialog dialog(title, (Gtk::Window&)(*App::main_window), false);
+	Gtk::Dialog dialog(title, *App::main_window, false);
 	Gtk::ScrolledWindow scrolled;
 	Gtk::Label label(message, 0, 0);
 	label.set_line_wrap();
@@ -2477,9 +2477,9 @@ bool
 App::dialog_yes_no(const std::string &title, const std::string &message)
 {
 	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true		// use_separator
+		title,			// Title
+		*App::main_window,	// Parent
+		true			// Modal
 	);
 	Gtk::Label label(message);
 	label.show();
@@ -2495,9 +2495,9 @@ int
 App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
 {
 	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true		// use_separator
+		title,			// Title
+		*App::main_window,	// Parent
+		true			// Modal
 	);
 	Gtk::Label label(message);
 	label.show();
@@ -2513,7 +2513,7 @@ App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
 void
 App::dialog_not_implemented()
 {
-	Gtk::MessageDialog dialog(_("Feature not available"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+	Gtk::MessageDialog dialog(*App::main_window, _("Feature not available"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	dialog.set_secondary_text(_("Sorry, this feature has not yet been implemented."));
 	dialog.run();
 }
@@ -2599,7 +2599,7 @@ App::dialog_help()
 {
 	if (!try_open_url("http://synfig.org/wiki/Category:Manual"))
 	{
-		Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
+		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
 		dialog.set_title(_("Help"));
 		dialog.run();
@@ -2611,7 +2611,7 @@ App::open_url(const std::string &url)
 {
 	if(!try_open_url(url))
 	{
-		Gtk::MessageDialog dialog(_("No browser was found. Please load this website manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+		Gtk::MessageDialog dialog(*App::main_window, _("No browser was found. Please load this website manually:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(url);
 		dialog.set_title(_("No browser found"));
 		dialog.run();
@@ -2622,9 +2622,10 @@ bool
 App::dialog_entry(const std::string &title, const std::string &message,std::string &text)
 {
 	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true);		// use_separator
+		title,			// Title
+		*App::main_window,	// Parent
+		true			// Modal
+	);
 
 	Gtk::Label label(message);
 	label.show();
@@ -2656,9 +2657,10 @@ bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
 {
 	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true);		// use_separator
+		title,			// Title
+		*App::main_window,	// Parent
+		true			// Modal
+	);
 
 	Gtk::Label label(message);
 	label.show();
