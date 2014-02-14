@@ -47,6 +47,7 @@ private:
 	ValueNode::RHandle tip_static_;    // Equilibrium position without external forces
 	ValueNode::RHandle origin_;        // Basement of the dynamic system
 	ValueNode::RHandle force_;         // External force applied on the mass center of gravity
+	ValueNode::RHandle torque_;        // Momentum applied at the origin
 	ValueNode::RHandle damping_coef_;  // Radial Damping coeficient 
 	ValueNode::RHandle friction_coef_; // Rotational friction coeficient
 	ValueNode::RHandle spring_coef_;   // Spring coeficient 
@@ -118,6 +119,7 @@ public:
 		Vector s=(*(d->origin_))(t).get(Vector());
 		Vector sd=(*(d->origin_d_))(t).get(Vector());
 		Vector f=(*(d->force_))(t).get(Vector());
+		double to=(*(d->torque_))(t).get(double());
 		double c=(*(d->damping_coef_))(t).get(double());
 		double mu=(*(d->friction_coef_))(t).get(double());
 		double k=(*(d->spring_coef_))(t).get(double());
@@ -160,7 +162,7 @@ public:
 		if(torsion_is_riggid || fabs(i)<=MASS_INERTIA_MINIMUM)
 			dxdt[3]=0.0;
 		else
-			dxdt[3]=(fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
+			dxdt[3]=(to+fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
 	}
 
 };

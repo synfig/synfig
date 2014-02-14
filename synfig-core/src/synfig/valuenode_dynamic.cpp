@@ -59,6 +59,7 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	set_children_vocab(ret);
 	set_link("origin",       ValueNode_Const::create(Vector(0,0)));
 	set_link("force",        ValueNode_Const::create(Vector(0,0)));
+	set_link("torque",       ValueNode_Const::create(Real(0.0)));
 	set_link("damping",      ValueNode_Const::create(Real(0.4)));
 	set_link("friction",     ValueNode_Const::create(Real(0.4)));
 	set_link("spring",       ValueNode_Const::create(Real(30.0)));
@@ -180,12 +181,13 @@ ValueNode_Dynamic::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(tip_static_,    get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,        ValueBase::TYPE_VECTOR);
 	case 2: CHECK_TYPE_AND_SET_VALUE(force_,         ValueBase::TYPE_VECTOR);
-	case 3: CHECK_TYPE_AND_SET_VALUE(damping_coef_,  ValueBase::TYPE_REAL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(friction_coef_, ValueBase::TYPE_REAL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(spring_coef_,   ValueBase::TYPE_REAL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(torsion_coef_,  ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(mass_,          ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(inertia_,       ValueBase::TYPE_REAL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(torque_,        ValueBase::TYPE_REAL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(damping_coef_,  ValueBase::TYPE_REAL);
+	case 5: CHECK_TYPE_AND_SET_VALUE(friction_coef_, ValueBase::TYPE_REAL);
+	case 6: CHECK_TYPE_AND_SET_VALUE(spring_coef_,   ValueBase::TYPE_REAL);
+	case 7: CHECK_TYPE_AND_SET_VALUE(torsion_coef_,  ValueBase::TYPE_REAL);
+	case 8: CHECK_TYPE_AND_SET_VALUE(mass_,          ValueBase::TYPE_REAL);
+	case 9: CHECK_TYPE_AND_SET_VALUE(inertia_,       ValueBase::TYPE_REAL);
 	}
 	return false;
 }
@@ -200,12 +202,13 @@ ValueNode_Dynamic::get_link_vfunc(int i)const
 	case 0: return tip_static_;
 	case 1: return origin_;
 	case 2: return force_;
-	case 3: return damping_coef_;
-	case 4: return friction_coef_;
-	case 5: return spring_coef_;
-	case 6: return torsion_coef_;
-	case 7: return mass_;
-	case 8: return inertia_;
+	case 3: return torque_;
+	case 4: return damping_coef_;
+	case 5: return friction_coef_;
+	case 6: return spring_coef_;
+	case 7: return torsion_coef_;
+	case 8: return mass_;
+	case 9: return inertia_;
 	default:
 		return 0;
 	}
@@ -230,6 +233,10 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 		.set_local_name(_("Force"))
 		.set_description(_("External force applied on the mass center of gravity"))
 	);
+	ret.push_back(ParamDesc(ValueBase(),"torque")
+		.set_local_name(_("Torque"))
+		.set_description(_("External momentum applied at the center of inertia"))
+	);
 	ret.push_back(ParamDesc(ValueBase(),"damping")
 		.set_local_name(_("Damping coeficient"))
 		.set_description(_("Radial damping coeficient of the dynamic sytem"))
@@ -251,7 +258,7 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 		.set_description(_("Mass of the dynamic system"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"inertia")
-		.set_local_name(_("Moment of inertia"))
+		.set_local_name(_("Moment of Inertia"))
 		.set_description(_("Moment of inertia of the dynamic system"))
 	);
 	return ret;
