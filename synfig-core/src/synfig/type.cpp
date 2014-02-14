@@ -54,12 +54,19 @@ namespace types_namespace {
 	{
 	protected:
 		TypeNil(): Type(NIL) { }
+		virtual void initialize_vfunc(Description &description)
+		{
+			Type::initialize_vfunc(description);
+			description.name = "nil";
+			description.local_name = N_("nil");
+			description.aliases.push_back("null");
+		}
 	public:
 		static TypeNil instance;
 		virtual void* create() { return NULL; }
-		virtual void* create(const void *) { return NULL; }
-		virtual void destroy(const void *) { }
-		virtual String to_string(const void *) { return "Nil"; }
+		virtual void assign(void*, const void*) { }
+		virtual void destroy(const void*) { }
+		virtual String to_string(const void*) { return "Nil"; }
 	};
 
 	TypeNil TypeNil::instance;

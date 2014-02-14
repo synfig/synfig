@@ -89,6 +89,11 @@ public:
 				 : other.type_a < type_a ? false
 				 : type_b < other.type_b;
 		}
+
+		static Description comparison(TypeId type_a, TypeId type_b)
+			{ return Description(TYPE_COMPARE, 0, type_a, type_b); }
+		static Description comparison(TypeId type)
+			{ return Description(TYPE_COMPARE, 0, type); }
 	};
 
 	class Convert
@@ -271,7 +276,7 @@ protected:
 
 public:
 	virtual void* create() = 0;
-	virtual void* create(const void *data) = 0;
+	virtual void assign(void *dest, const void *src) = 0;
 	virtual void destroy(const void *data) = 0;
 	virtual String to_string(const void *data) = 0;
 
@@ -385,6 +390,9 @@ protected:
 									get_type_id<TypeB>() ),
 			&Operation::Convert::comparison<TypeA, TypeB> );
 	}
+
+	void register_comparison(Operation::CompareFunc func)
+		{ register_operation(Operation::Description::comparison(identifier), func); }
 }; // END of class Type
 
 
@@ -396,11 +404,13 @@ template<typename T>
 class TypeGeneric: public Type
 {
 public:
-	virtual void* create() { return new T(); }
-	virtual void* create(const void *data) { return new T(*(const T*)data); }
-	virtual void destroy(const void *data) { delete (const T*)data; }
+	typedef T Base;
+	typedef TypeGeneric Parent;
+	virtual void* create() { return new Base(); }
+	virtual void assign(void *dest, const void *src) { *(Base*)dest = *(const Base*)src; }
+	virtual void destroy(const void *data) { delete (const Base*)data; }
 	virtual String to_string(const T &x) = 0;
-	virtual String to_string(const void *data) { return to_string(*(const T*)data); }
+	virtual String to_string(const void *data) { return to_string(*(const Base*)data); }
 }; // END of class TypeGeneric
 
 
@@ -408,6 +418,7 @@ template<typename T>
 class TypeComparableGeneric: public TypeGeneric<T>
 {
 protected:
+	typedef TypeComparableGeneric Parent;
 	virtual void initialize_vfunc(Type::Description &description)
 	{
 		TypeGeneric<T>::initialize_vfunc(description);
