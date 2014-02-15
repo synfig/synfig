@@ -50,14 +50,6 @@
 #define gamma_in(x)				((x>=0) ? pow((float)x,1.0f/colorspace_gamma()) : -pow((float)-x,1.0f/colorspace_gamma()))
 #define gamma_out(x)			((x>=0) ? pow((float)x,     colorspace_gamma()) : -pow((float)-x,     colorspace_gamma()))
 
-#ifdef WIN32
-#include <float.h>
-#ifndef isnan
-extern "C" { __declspec(dllimport) int _isnan(double x); }
-#define isnan _isnan
-#endif
-#endif
-
 // For some reason isnan() isn't working on macosx any more.
 // This is a quick fix.
 #if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)

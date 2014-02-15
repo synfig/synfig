@@ -130,7 +130,9 @@ VALUENODEHEADERS = \
 	valuenode_boneweightpair.h\
 	valuenode_wplist.h \
 	valuenode_bonelink.h \
-	valuenode_average.h
+	valuenode_average.h \
+	valuenode_dynamic.h \
+	valuenode_derivative.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -192,7 +194,9 @@ VALUENODESOURCES = \
 	valuenode_boneweightpair.cpp\
 	valuenode_wplist.cpp \
 	valuenode_bonelink.cpp \
-	valuenode_average.cpp
+	valuenode_average.cpp\
+	valuenode_dynamic.cpp \
+	valuenode_derivative.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \

@@ -380,7 +380,7 @@ mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$re
 enabled=1
 EOF
 
-URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=18 --installroot="$WORKSPACE/mingw-rpms" $1`
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=19 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
