@@ -297,8 +297,9 @@ protected:
 	void initialize_vfunc(Description &description)
 	{
 		Parent::initialize_vfunc(description);
-		description.name = "bone_weight_pair";
-		description.local_name = N_("bone_weight_pair");
+		description.name = "width_point";
+		description.aliases.push_back("widthpoint");
+		description.local_name = N_("width_point");
 	}
 public:
 	String to_string(const Base &x) { return etl::strprintf("WidthPoint (%f, %f)", x.get_position(), x.get_width()); }
@@ -330,7 +331,7 @@ Type& get_type(const DashItem*) { return TypeDashItem::instance; }
 
 // List
 
-class TypeList: public TypeComparableGeneric< std::vector<ValueBase> >
+class TypeList: public TypeComparableGeneric< ValueBase::List >
 {
 protected:
 	void initialize_vfunc(Description &description)
@@ -344,7 +345,7 @@ public:
 	static TypeList instance;
 };
 TypeList TypeList::instance;
-Type& get_type(const std::vector<ValueBase>*) { return TypeList::instance; }
+Type& get_type(const ValueBase::List*) { return TypeList::instance; }
 
 
 // Canvas
