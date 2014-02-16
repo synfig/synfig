@@ -161,10 +161,10 @@ Action::ValueNodeRename::perform()
 {
 	assert(value_node->is_exported());
 
+	old_name=value_node->get_id();
+
 	if(get_canvas()->value_node_list().count(new_name))
 		throw Error(_("A ValueNode with this ID already exists in this canvas"));
-
-	old_name=value_node->get_id();
 
 	value_node->set_id(new_name);
 
