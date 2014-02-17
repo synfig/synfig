@@ -35,22 +35,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <gtkmm/uimanager.h>
-
-#include <gtkmm/ruler.h>
-#include <gtkmm/arrow.h>
-#include <gtkmm/image.h>
-#include <gdkmm/pixbufloader.h>
-#include <gtkmm/viewport.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/box.h>
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/accelmap.h>
-
-#include <gtkmm/inputdialog.h>
 
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
@@ -58,6 +43,7 @@
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 
+#include "general.h"
 #include <sstream>
 
 #include "docks/dock_toolbox.h"
@@ -70,12 +56,8 @@
 #include "docks/dockable.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdialog.h"
-
 #include "widgets/widget_defaults.h"
-
 #include <synfigapp/main.h>
-
-#include "general.h"
 
 #endif
 
@@ -242,8 +224,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
 
-	Gtk::ToggleButton* button;
-	button=manage(new class Gtk::ToggleButton());
+	tool_button=manage(new class Gtk::ToggleButton());
 
 	Gtk::AccelKey key;
 	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
@@ -252,20 +233,20 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Glib::ustring accel_path = key.get_abbrev ();
 
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
-	button->add(*icon);
-	button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
-	button->set_relief(Gtk::RELIEF_NONE);
+	tool_button->add(*icon);
+	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	tool_button->set_relief(Gtk::RELIEF_NONE);
 	icon->show();
-	button->show();
+	tool_button->show();
 
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	tool_table->attach(*tool_button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-	state_button_map[name]=button;
+	state_button_map[name]=tool_button;
 
-	button->signal_clicked().connect(
+	tool_button->signal_clicked().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
 			state

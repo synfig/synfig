@@ -32,7 +32,6 @@
 #include "docks/dockable.h"
 
 #include <gtkmm/tooltip.h>
-#include <gtkmm/button.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/table.h>
 #include <synfig/string.h>
@@ -59,10 +58,8 @@ class Dock_Toolbox : public Dockable
 {
 	friend class studio::StateManager;
 
-	Gtk::Button *button_undo;
-	Gtk::Button *button_redo;
-
 	Gtk::Table *tool_table;
+	Gtk::ToggleButton* tool_button;
 
 	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;
 
