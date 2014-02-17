@@ -66,6 +66,8 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	set_link("torsion",      ValueNode_Const::create(Real(30.0)));
 	set_link("mass",         ValueNode_Const::create(Real(0.3)));
 	set_link("inertia",      ValueNode_Const::create(Real(0.3)));
+	set_link("spring_rigid",ValueNode_Const::create(false));
+	set_link("torsion_rigid",ValueNode_Const::create(false));
 
 
 	switch(get_type())
@@ -168,7 +170,7 @@ bool
 ValueNode_Dynamic::check_type(ValueBase::Type type)
 {
 	return
-		type==ValueBase::TYPE_VECTOR	;
+		type==ValueBase::TYPE_VECTOR;
 }
 
 bool
@@ -188,6 +190,8 @@ ValueNode_Dynamic::set_link_vfunc(int i,ValueNode::Handle value)
 	case 7: CHECK_TYPE_AND_SET_VALUE(torsion_coef_,  ValueBase::TYPE_REAL);
 	case 8: CHECK_TYPE_AND_SET_VALUE(mass_,          ValueBase::TYPE_REAL);
 	case 9: CHECK_TYPE_AND_SET_VALUE(inertia_,       ValueBase::TYPE_REAL);
+	case 10: CHECK_TYPE_AND_SET_VALUE(spring_rigid_,ValueBase::TYPE_BOOL);
+	case 11: CHECK_TYPE_AND_SET_VALUE(torsion_rigid_,ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -209,8 +213,10 @@ ValueNode_Dynamic::get_link_vfunc(int i)const
 	case 7: return torsion_coef_;
 	case 8: return mass_;
 	case 9: return inertia_;
+	case 10: return spring_rigid_;
+	case 11: return torsion_rigid_;
 	default:
-		return 0;
+	return 0;
 	}
 }
 
@@ -260,6 +266,14 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 	ret.push_back(ParamDesc(ValueBase(),"inertia")
 		.set_local_name(_("Moment of Inertia"))
 		.set_description(_("Moment of inertia of the dynamic system"))
+	);
+	ret.push_back(ParamDesc(ValueBase(),"spring_rigid")
+		.set_local_name(_("Spring rigid"))
+		.set_description(_("When checked, linear spring is rigid"))
+	);
+	ret.push_back(ParamDesc(ValueBase(),"torsion_rigid")
+		.set_local_name(_("Torsion rigid"))
+		.set_description(_("When checked torsion spring is rigid"))
 	);
 	return ret;
 }
