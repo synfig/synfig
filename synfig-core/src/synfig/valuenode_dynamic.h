@@ -118,7 +118,6 @@ public:
 	{
 		Vector u(cos(x[2]), sin(x[2]));
 		Vector v(-u[1], u[0]);
-		Vector s=(*(d->origin_))(t).get(Vector());
 		Vector sd=(*(d->origin_d_))(t).get(Vector());
 		Vector f=(*(d->force_))(t).get(Vector());
 		double to=(*(d->torque_))(t).get(double());

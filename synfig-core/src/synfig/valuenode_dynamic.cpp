@@ -149,8 +149,14 @@ ValueNode_Dynamic::operator()(Time t)const
 	// Remember time and state for the next call
 	last_time=Time(t);
 	state.assign(x.begin(), x.end());
+	// We need to check if the spring or the torsion are riggid
+	bool spring_is_rigid=(*(spring_rigid_))(t).get(bool());
+	bool torsion_is_rigid=(*(torsion_rigid_))(t).get(bool());
+	Vector tip=(*(tip_static_))(t).get(Vector());
 
-	return (*origin_)(t).get(Vector()) + Vector(state[0], Angle::rad(state[2]));
+	return (*origin_)(t).get(Vector())
+		+
+		Vector(spring_is_rigid?tip.mag():state[0], torsion_is_rigid?tip.angle():Angle::rad(state[2]));
 }
 
 
