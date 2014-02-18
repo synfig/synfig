@@ -395,7 +395,7 @@ PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	AC_MSG_ERROR([ ** You need to install pango])
 ])
 
-AX_BOOST_BASE([1.32.0])
+AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
 AX_BOOST_PROGRAM_OPTIONS
 if test "x$ax_cv_boost_program_options" = "xno" ; then
 	AC_MSG_ERROR([ ** You need to install Boost program-options library])
