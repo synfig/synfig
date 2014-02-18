@@ -68,6 +68,7 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	set_link("inertia",      ValueNode_Const::create(Real(0.3)));
 	set_link("spring_rigid",ValueNode_Const::create(false));
 	set_link("torsion_rigid",ValueNode_Const::create(false));
+	set_link("origin_drags_tip",ValueNode_Const::create(true));
 
 
 	switch(get_type())
@@ -153,8 +154,10 @@ ValueNode_Dynamic::operator()(Time t)const
 	bool spring_is_rigid=(*(spring_rigid_))(t).get(bool());
 	bool torsion_is_rigid=(*(torsion_rigid_))(t).get(bool());
 	Vector tip=(*(tip_static_))(t).get(Vector());
+	// Also check if origin drags tip
+	bool origin_drags_tip=(*(origin_drags_tip_))(t).get(bool());
 
-	return (*origin_)(t).get(Vector())
+	return Vector(origin_drags_tip?(*origin_)(t).get(Vector()):Vector(0,0))
 		+
 		Vector(spring_is_rigid?tip.mag():state[0], torsion_is_rigid?tip.angle():Angle::rad(state[2]));
 }
@@ -198,6 +201,7 @@ ValueNode_Dynamic::set_link_vfunc(int i,ValueNode::Handle value)
 	case 9: CHECK_TYPE_AND_SET_VALUE(inertia_,       ValueBase::TYPE_REAL);
 	case 10: CHECK_TYPE_AND_SET_VALUE(spring_rigid_,ValueBase::TYPE_BOOL);
 	case 11: CHECK_TYPE_AND_SET_VALUE(torsion_rigid_,ValueBase::TYPE_BOOL);
+	case 12: CHECK_TYPE_AND_SET_VALUE(origin_drags_tip_,ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -221,6 +225,7 @@ ValueNode_Dynamic::get_link_vfunc(int i)const
 	case 9: return inertia_;
 	case 10: return spring_rigid_;
 	case 11: return torsion_rigid_;
+	case 12: return origin_drags_tip_;
 	default:
 	return 0;
 	}
@@ -280,6 +285,10 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 	ret.push_back(ParamDesc(ValueBase(),"torsion_rigid")
 		.set_local_name(_("Torsion rigid"))
 		.set_description(_("When checked torsion spring is rigid"))
+	);
+	ret.push_back(ParamDesc(ValueBase(),"origin_drags_tip")
+		.set_local_name(_("Origin drags tip"))
+		.set_description(_("When checked result is origin + tip otherwise result is just tip"))
 	);
 	return ret;
 }

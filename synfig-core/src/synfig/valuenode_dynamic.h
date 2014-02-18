@@ -56,6 +56,7 @@ private:
 	ValueNode::RHandle inertia_;       // Moment of Inertia
 	ValueNode::RHandle spring_rigid_;  // True if spring is solid rigid
 	ValueNode::RHandle torsion_rigid_; // True if torsion is solid rigid
+	ValueNode::RHandle origin_drags_tip_; // If true result=origin+state otherwise result=state
 
 
 	ValueNode_Derivative::RHandle origin_d_;      // Derivative of the origin along the time
