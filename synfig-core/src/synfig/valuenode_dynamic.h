@@ -136,6 +136,11 @@ public:
 		// Calculate the steady position in terms of state
 		double r0=tip.mag();
 		double a0=(double)(Angle::rad(tip.angle()).get());
+		double r=x[0]-r0; // effective radius
+		double a=x[2]-a0; // effective alpha
+		double rd=x[1]; // radius speed
+		double ad=x[3]; // alpha speed
+		double imr2=i+m*x[0]*x[0]; // effective inertia
 		// Check if the spring is constant and zero. It means no spring (riggid)
 		bool spring_is_riggid=(
 			ValueNode_Const::Handle::cast_dynamic(d->mass_)
@@ -146,7 +151,7 @@ public:
 		bool torsion_is_riggid=(
 			ValueNode_Const::Handle::cast_dynamic(d->inertia_)
 				&&
-			i ==0.0
+			imr2 ==0.0
 			);
 		// Integration operations
 		dxdt[0]=x[1];
@@ -155,14 +160,14 @@ public:
 		if(spring_is_riggid || fabs(m)<=MASS_INERTIA_MINIMUM)
 			dxdt[1]=0.0;
 		else
-			dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
+			dxdt[1]=(fr-c*rd-k*r)/m-srd;
 		dxdt[2]=x[3];
 		// Disable rotation if the torsion is riggid (inertia=0.0 and constant)
 		// or if the inertia is near to zero but animated.
-		if(torsion_is_riggid || fabs(i)<=MASS_INERTIA_MINIMUM)
+		if(torsion_is_riggid || fabs(imr2)<=MASS_INERTIA_MINIMUM)
 			dxdt[3]=0.0;
 		else
-			dxdt[3]=(to+fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
+			dxdt[3]=(to+fa*r-mu*ad-tau*a)/imr2-sad;
 	}
 
 };
