@@ -161,7 +161,7 @@ public:
 		if(torsion_is_rigid || fabs(imr2)<=MASS_INERTIA_MINIMUM)
 			dxdt[3]=0.0;
 		else
-			dxdt[3]=(to+fa*r-mu*ad-tau*a)/imr2-sad;
+			dxdt[3]=(to+fa*x[0]-mu*ad-tau*a)/imr2-sad;
 	}
 
 };
