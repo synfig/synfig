@@ -54,6 +54,9 @@ private:
 	ValueNode::RHandle torsion_coef_;  // Torsion coeficient
 	ValueNode::RHandle mass_;          // Mass 
 	ValueNode::RHandle inertia_;       // Moment of Inertia
+	ValueNode::RHandle spring_rigid_;  // True if spring is solid rigid
+	ValueNode::RHandle torsion_rigid_; // True if torsion is solid rigid
+	ValueNode::RHandle origin_drags_tip_; // If true result=origin+state otherwise result=state
 
 
 	ValueNode_Derivative::RHandle origin_d_;      // Derivative of the origin along the time
@@ -116,7 +119,6 @@ public:
 	{
 		Vector u(cos(x[2]), sin(x[2]));
 		Vector v(-u[1], u[0]);
-		Vector s=(*(d->origin_))(t).get(Vector());
 		Vector sd=(*(d->origin_d_))(t).get(Vector());
 		Vector f=(*(d->force_))(t).get(Vector());
 		double to=(*(d->torque_))(t).get(double());
@@ -136,33 +138,30 @@ public:
 		// Calculate the steady position in terms of state
 		double r0=tip.mag();
 		double a0=(double)(Angle::rad(tip.angle()).get());
-		// Check if the spring is constant and zero. It means no spring (riggid)
-		bool spring_is_riggid=(
-			ValueNode_Const::Handle::cast_dynamic(d->mass_)
-				&&
-			m ==0.0
-			);
-		// Check if the torsion is constant and zero. It means no torsion (riggid)
-		bool torsion_is_riggid=(
-			ValueNode_Const::Handle::cast_dynamic(d->inertia_)
-				&&
-			i ==0.0
-			);
+		double r=x[0]-r0; // effective radius
+		double a=x[2]-a0; // effective alpha
+		double rd=x[1]; // radius speed
+		double ad=x[3]; // alpha speed
+		double imr2=i+m*x[0]*x[0]; // effective inertia
+		// Check if the spring rigid
+		bool spring_is_rigid=(*(d->spring_rigid_))(t).get(bool());
+		// Check if the torsion rigid
+		bool torsion_is_rigid=(*(d->torsion_rigid_))(t).get(bool());
 		// Integration operations
 		dxdt[0]=x[1];
-		// Disable movement if the spring is riggid (mass=0.0 and constant)
+		// Disable movement if the spring is rigid 
 		// or if the mass is near to zero but animated.
-		if(spring_is_riggid || fabs(m)<=MASS_INERTIA_MINIMUM)
+		if(spring_is_rigid || fabs(m)<=MASS_INERTIA_MINIMUM)
 			dxdt[1]=0.0;
 		else
-			dxdt[1]=(fr-c*x[1]-k*(x[0]-r0))/m-srd;
+			dxdt[1]=(fr-c*rd-k*r)/m-srd;
 		dxdt[2]=x[3];
-		// Disable rotation if the torsion is riggid (inertia=0.0 and constant)
+		// Disable rotation if the torsion is rigid
 		// or if the inertia is near to zero but animated.
-		if(torsion_is_riggid || fabs(i)<=MASS_INERTIA_MINIMUM)
+		if(torsion_is_rigid || fabs(imr2)<=MASS_INERTIA_MINIMUM)
 			dxdt[3]=0.0;
 		else
-			dxdt[3]=(to+fa*x[0]-mu*x[3]-tau*(x[2]-a0))/i-sad;
+			dxdt[3]=(to+fa*x[0]-mu*ad-tau*a)/imr2-sad;
 	}
 
 };
