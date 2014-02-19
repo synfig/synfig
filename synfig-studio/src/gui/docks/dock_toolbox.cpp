@@ -82,21 +82,25 @@ Dock_Toolbox::Dock_Toolbox():
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
-	tool_table=manage(new class Gtk::Table());
-	tool_table->show();
+	tool_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0, 0.0));	
+	tool_table = manage(new class Gtk::Table());
+	tool_alignment->add(*tool_table);
 
+	separator = manage(new class Gtk::HSeparator());
+
+	default_widgets_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0, 0.0));		
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
-	widget_defaults->show();
+	default_widgets_alignment->add(*widget_defaults);
 
-	// Create the toplevel table
-	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
-	table1->set_row_spacings(10);
-	table1->set_col_spacings(0);
-	table1->attach(*tool_table,    0,1, 0,1, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->attach(*widget_defaults, 0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->show_all();
+	// pack tools and default widgets
+	tool_box = manage(new class Gtk::VBox(false, 2));
+	tool_box->pack_start(*tool_alignment);
+	tool_box->pack_start(*separator);
+	tool_box->pack_start(*default_widgets_alignment);
+	tool_box->set_border_width(2);
+	tool_box->show_all();
 
-	add(*table1);
+	add(*tool_box);
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
@@ -232,7 +236,8 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	//Gets the accelerator representation for labels
 	Glib::ustring accel_path = key.get_abbrev ();
 
-	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	icon=manage(new Gtk::Image(stock_item.get_stock_id(), iconsize));
 	tool_button->add(*icon);
 	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
 	tool_button->set_relief(Gtk::RELIEF_NONE);
@@ -242,7 +247,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*tool_button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	tool_table->attach(*tool_button,col,col+1,row,row+1, Gtk::FILL, Gtk::FILL, 0, 0);
 
 	state_button_map[name]=tool_button;
 
