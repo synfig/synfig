@@ -335,6 +335,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	icon_factory->add_default();
 
+	Gtk::IconSize::register_new("synfig-tiny_icon", 8, 8);
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
