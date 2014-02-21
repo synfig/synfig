@@ -58,7 +58,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRADIENT_HEIGHT		22
 #define DEFAULT_INCREMENT	(0.25)
 #define DEFAULT_WIDTH		(synfig::Distance(3,synfig::Distance::SYSTEM_POINTS))
 
@@ -107,17 +106,6 @@ public:
 		// Fill in the fill color
 		render_color_to_window(window,Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
 
-/*
-		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_fill_color()));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		window->draw_rectangle(
-			gc,
-			true,	// Fill?
-			0,0,	// x,y
-			w,h	//w,h
-		);
-*/
-
 		// Draw in the circle
 		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_outline_color()));
 		gc->set_function(Gdk::COPY);
@@ -139,11 +127,9 @@ public:
 	bool
 	on_event(GdkEvent *event)
 	{
-//		const int x(static_cast<int>(event->button.x));
 		const int y(static_cast<int>(event->button.y));
 
 		const int h(get_height());
-//		const int w(get_width());
 
 		switch(event->type)
 		{
@@ -352,31 +338,6 @@ Widget_Defaults::Widget_Defaults()
 	blend_method_refresh();
 	opacity_refresh();
 	interpolation_refresh();
-/*
-	set_size_request(48,48+GRADIENT_HEIGHT);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Defaults::redraw));
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
-
-	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-
-	if(App::dialog_gradient)
-	{
-		App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
-		App::dialog_gradient->reset();
-		App::dialog_gradient->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_gradient));
-	}
-
-	if(App::dialog_color)
-	{
-		App::dialog_color->set_color(synfigapp::Main::get_outline_color());
-		App::dialog_color->reset();
-		App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_outline_color));
-	}
-*/
 }
 
 Widget_Defaults::~Widget_Defaults()
@@ -492,145 +453,3 @@ Widget_Defaults::on_gradient_clicked()
 	App::dialog_gradient->present();
 }
 
-
-/*
-bool
-Widget_Defaults::redraw(GdkEventExpose*bleh)
-{
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
-
-	const int h(get_height());
-	const int w(get_width());
-	const int size=std::min(h-GRADIENT_HEIGHT,w);
-
-	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),synfigapp::Main::get_fill_color());
-	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),synfigapp::Main::get_outline_color());
-	render_gradient_to_window(get_window(),Gdk::Rectangle(0,h-GRADIENT_HEIGHT,w,GRADIENT_HEIGHT-1),synfigapp::Main::get_gradient());
-
-
-
-
-
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-
-	gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-	layout->set_text(synfigapp::Main::get_bline_width().get_string(2));
-	layout->set_alignment(Pango::ALIGN_CENTER);
-	layout->set_width(w/2);
-	get_window()->draw_layout(gc, w*3/4, (h-GRADIENT_HEIGHT)-16, layout);
-
-	return true;
-}
-
-bool
-Widget_Defaults::on_event(GdkEvent *event)
-{
-	const int x(static_cast<int>(event->button.x));
-	const int y(static_cast<int>(event->button.y));
-
-	const int h(get_height());
-	const int w(get_width());
-	const int size=std::min(h-GRADIENT_HEIGHT,w);
-
-	switch(event->type)
-	{
-	case GDK_MOTION_NOTIFY:
-		break;
-	case GDK_BUTTON_PRESS:
-//			if(event->button.button==1 && y>get_height()-CONTROL_HEIGHT)
-		break;
-	case GDK_BUTTON_RELEASE:
-		if(event->button.button==1)
-		{
-			if(y>size)
-			{
-				// Left click on gradient
-				App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
-				App::dialog_gradient->reset();
-				App::dialog_gradient->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_gradient));
-				App::dialog_gradient->present();
-				return true;
-			}
-			if(x>0 && x<=size)
-			{
-				if(x<size*3/4 && y<size*3/4)
-				{
-					// Left click on outline coloe
-					App::dialog_color->set_color(synfigapp::Main::get_outline_color());
-					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_outline_color));
-					App::dialog_color->present();
-					return true;
-				}
-				if(x>size*3/4 && y>size/4)
-				{
-					// Left click on fill color
-					App::dialog_color->set_color(synfigapp::Main::get_fill_color());
-					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_fill_color));
-					App::dialog_color->present();
-					return true;
-				}
-			}
-			if(x>size) // Left click on BLine Width
-			{
-				Distance dist(synfigapp::Main::get_bline_width());
-
-				if(y<size/2) // increase BLine size
-				{
-					dist+=DEFAULT_INCREMENT;
-				}
-				else // Decrease BLine size
-				{
-					dist-=DEFAULT_INCREMENT;
-				}
-				synfigapp::Main::set_bline_width(dist);
-			}
-		}
-		if(event->button.button==3)
-		{
-			if(y>size)
-			{
-				// right click on gradient
-				synfigapp::Main::set_gradient_default_colors();
-				return true;
-			}
-			else
-			{
-				if(x<size)
-				{
-					// right click on colors
-					synfigapp::Main::color_swap();
-					return true;
-				}
-
-				if(x>w/2)
-				{
-					// right click on bline width
-					synfigapp::Main::set_bline_width(DEFAULT_WIDTH);
-				}
-
-			}
-		}
-		break;
-	case GDK_SCROLL:
-		{
-			Distance dist(synfigapp::Main::get_bline_width());
-
-			if(event->scroll.direction==GDK_SCROLL_UP)
-			{
-				dist+=DEFAULT_INCREMENT;
-			}
-			else if(event->scroll.direction==GDK_SCROLL_DOWN)
-			{
-				dist-=DEFAULT_INCREMENT;
-			}
-			synfigapp::Main::set_bline_width(dist);
-		}
-	default:
-		break;
-	}
-
-	return false;
-}
-*/
