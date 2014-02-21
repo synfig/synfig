@@ -39,6 +39,7 @@
 #include <png.h>
 #include <ETL/stringf>
 #include <cstdio>
+#include <cstring> 
 #include <algorithm>
 #include <functional>
 #include <ETL/misc>
