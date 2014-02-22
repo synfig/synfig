@@ -199,7 +199,7 @@ Action::ValueDescSet::prepare()
 	// if we are a boneinfluence value node, then we need to distribute the changes to the linked value node
 	// This is only valid for vector type converted to bone influence
 	// Not valid for a whole blinepoint converted to bone influence
-	if(value_desc.is_value_node() && value.get_type() == ValueBase::TYPE_VECTOR)
+	if(value_desc.is_value_node() && value.get_type() == type_vector)
 	{
 		if (ValueNode_BoneInfluence::Handle bone_influence_value_node =
 			ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -208,7 +208,7 @@ Action::ValueDescSet::prepare()
 												bone_influence_value_node->get_link_index_from_name("link"));
 
 			if (bone_influence_value_node->has_inverse_transform())
-				value = bone_influence_value_node->get_inverse_transform().get_transformed(value);
+				value = bone_influence_value_node->get_inverse_transform().get_transformed(value.get(Vector()));
 			else
 				throw Error(_("this node isn't editable - in the future it will be greyed to prevent editing"));
 
@@ -262,39 +262,47 @@ Action::ValueDescSet::prepare()
 	// individual parts
 	// except if we are TYPE WIDTHPOINT which is handled individually
 	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-	 && value_desc.get_value_node()->get_type()!=ValueBase::TYPE_WIDTHPOINT)
+	 && value_desc.get_value_node()->get_type()!=type_width_point)
 	{
 		ValueBase components[8];
 		int n_components(0);
-		switch(value.get_type())
+		Type &type(value.get_type());
+		if (type == type_vector)
 		{
-		case ValueBase::TYPE_VECTOR:
 			components[0]=value.get(Vector())[0];
 			components[1]=value.get(Vector())[1];
 			n_components=2;
-			break;
-		case ValueBase::TYPE_COLOR:
+		}
+		else
+		if (type == type_color)
+		{
 			components[0]=value.get(Color()).get_r();
 			components[1]=value.get(Color()).get_g();
 			components[2]=value.get(Color()).get_b();
 			components[3]=value.get(Color()).get_a();
 			n_components=4;
-			break;
-		case ValueBase::TYPE_SEGMENT:
+		}
+		else
+		if (type == type_segment)
+		{
 			components[0]=value.get(Segment()).p1;
 			components[1]=value.get(Segment()).t1;
 			components[2]=value.get(Segment()).p2;
 			components[3]=value.get(Segment()).t2;
 			n_components=4;
-			break;
-		case ValueBase::TYPE_TRANSFORMATION:
+		}
+		else
+		if (type == type_transformation)
+		{
 			components[0]=value.get(Transformation()).offset;
 			components[1]=value.get(Transformation()).angle;
 			components[2]=value.get(Transformation()).skew_angle;
 			components[3]=value.get(Transformation()).scale;
 			n_components=4;
-			break;
-		case ValueBase::TYPE_BLINEPOINT:
+		}
+		else
+		if (type == type_bline_point)
+		{
 			components[0]=value.get(BLinePoint()).get_vertex();
 			components[1]=value.get(BLinePoint()).get_width();
 			components[2]=value.get(BLinePoint()).get_origin();
@@ -304,11 +312,10 @@ Action::ValueDescSet::prepare()
 			components[6]=value.get(BLinePoint()).get_split_tangent_radius();
 			components[7]=value.get(BLinePoint()).get_split_tangent_angle();
 			n_components=8;
-			break;
-		default:
-			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
-			break;
 		}
+		else
+			throw Error(_("Bad type for composite (%s)"), type.description.local_name.c_str());
+
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
@@ -334,9 +341,8 @@ Action::ValueDescSet::prepare()
 	{
 		ValueBase components[6];
 		int n_components(0);
-		switch(value.get_type())
-		{
-		case ValueBase::TYPE_VECTOR:
+		Type &type(value.get_type());
+		if (type == type_vector)
 		{
 			Angle old_angle = (*(ValueNode_RadialComposite::Handle::cast_dynamic(
 									 value_desc.get_value_node())->get_link("theta")))(time).get(Angle());
@@ -348,18 +354,18 @@ Action::ValueDescSet::prepare()
 			components[1]=old_angle + change;
 			n_components=2;
 		}
-			break;
-		case ValueBase::TYPE_COLOR:
+		else
+		if (type == type_color)
+		{
 			components[0]=value.get(Color()).get_y();
 			components[1]=value.get(Color()).get_s();
 			components[2]=value.get(Color()).get_hue();
 			components[3]=value.get(Color()).get_a();
 			n_components=4;
-			break;
-		default:
-			throw Error(_("Bad type for radial composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
-			break;
 		}
+		else
+			throw Error(_("Bad type for radial composite (%s)"), type.description.local_name.c_str());
+
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(ValueNode_RadialComposite::Handle::cast_dynamic(value_desc.get_value_node()),i);
@@ -390,11 +396,11 @@ Action::ValueDescSet::prepare()
 			return;
 		}
 		ValueBase new_value;
-		if (value.get_type() == ValueBase::TYPE_ANGLE)
+		if (value.get_type() == type_angle)
 			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
-		else if(value.get_type() == ValueBase::TYPE_VECTOR)
+		else if(value.get_type() == type_vector)
 			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
-		else if(value.get_type() == ValueBase::TYPE_REAL)
+		else if(value.get_type() == type_real)
 			new_value = scale_value_node->get_inverse(time, value.get(Real()));
 		else
 			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
@@ -415,7 +421,7 @@ Action::ValueDescSet::prepare()
 	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueBase new_value;
-		if (value.get_type() == ValueBase::TYPE_ANGLE)
+		if (value.get_type() == type_angle)
 			new_value = range_value_node->get_inverse(time, value.get(Angle()));
 		else
 			throw Error(_("Inverse manipulation of %s range values not implemented in core."), value.type_name().c_str());
@@ -436,9 +442,9 @@ Action::ValueDescSet::prepare()
 	if (ValueNode_Integer::Handle integer_value_node = ValueNode_Integer::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueBase new_value;
-		if (value.get_type() == ValueBase::TYPE_ANGLE)
+		if (value.get_type() == type_angle)
 			new_value = integer_value_node->get_inverse(time, value.get(Angle()));
-		else if(value.get_type() == ValueBase::TYPE_REAL)
+		else if(value.get_type() == type_real)
 			new_value = integer_value_node->get_inverse(time, value.get(Real()));
 		else
 			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
@@ -459,7 +465,7 @@ Action::ValueDescSet::prepare()
 	if (ValueNode_Real::Handle real_value_node = ValueNode_Real::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueBase new_value;
-		if (value.get_type() == ValueBase::TYPE_ANGLE)
+		if (value.get_type() == type_angle)
 			new_value = real_value_node->get_inverse(time, value.get(Angle()));
 		else
 			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
@@ -502,7 +508,7 @@ Action::ValueDescSet::prepare()
 	{
 		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
 		Real radius = 0.0;
-		ValueBase new_amount;
+		Real new_amount;
 		if (((*(bline_vertex->get_link("loop")))(time).get(bool())))
 		{
 			// The bline is looped. Animation may require an amount parameter
@@ -510,7 +516,7 @@ Action::ValueDescSet::prepare()
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
 
-			Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+			Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 			//fmod is called twice to avoid negative values
 			if (difference > 0.5)
@@ -518,10 +524,10 @@ Action::ValueDescSet::prepare()
 			new_amount = amount_old+difference;
 		}
 		else
-			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+			new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
 		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 		if(homogeneous)
-			new_amount=std_to_hom((*bline)(time), new_amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline->get_loop() );
 		Action::Handle action(Action::create("ValueDescSet"));
 		if(!action)
 			throw Error(_("Unable to find action ValueDescSet (bug)"));
@@ -542,9 +548,8 @@ Action::ValueDescSet::prepare()
 		ValueBase new_scale;
 		ValueDesc scale_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("scale"));
 		ValueDesc offset_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("offset"));
-		switch(value_desc.get_value_type())
-		{
-		case ValueBase::TYPE_REAL:
+		Type &type(value_desc.get_value_type());
+		if (type == type_real)
 		{
 			Real old_length = (*bline_tangent)(time).get(Real());
 			Real new_length = value.get(Vector()).mag();
@@ -553,13 +558,15 @@ Action::ValueDescSet::prepare()
 			if (fixed_length)
 			{
 				new_scale = new_length;
-				break;
 			}
-			if (old_length == 0)
-				return;
-			new_scale = new_length * scale / old_length;
+			else
+			{
+				if (old_length == 0) return;
+				new_scale = new_length * scale / old_length;
+			}
 		}
-		case ValueBase::TYPE_VECTOR:
+		else
+		if (type == type_vector)
 		{
 			Vector old_tangent = (*bline_tangent)(time).get(Vector());
 			Angle old_angle = old_tangent.angle();
@@ -572,8 +579,8 @@ Action::ValueDescSet::prepare()
 			if (fixed_length)
 			{
 				new_scale = new_length;
-				break;
 			}
+			else
 			if (old_length != 0)
 			{
 				new_scale = new_length * scale / old_length;
@@ -590,8 +597,8 @@ Action::ValueDescSet::prepare()
 				add_action(action);
 			}
 		}
-		break;
-		case ValueBase::TYPE_ANGLE:
+		else
+		if (type == type_angle)
 		{
 			Angle old_angle = (*bline_tangent)(time).get(Angle());
 			Angle new_angle = value.get(Angle());
@@ -609,10 +616,8 @@ Action::ValueDescSet::prepare()
 			add_action(action);
 			return;
 		}
-		default:
-			break;
-		}
-		if (new_scale)
+
+		if (new_scale.get(bool()))
 		{
 			Action::Handle action(Action::create("ValueDescSet"));
 			if(!action)
@@ -634,9 +639,9 @@ Action::ValueDescSet::prepare()
 	// WidthPoint Composite: adjust the width point position
 	// to achieve the desired point on bline
 	// (Code copied from BLineCalcVertex above)
-	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_LIST)
+	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == type_list)
 	{
-		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == ValueBase::TYPE_WIDTHPOINT)
+		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == type_width_point)
 		{
 			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
 			if(wplist)
@@ -662,8 +667,8 @@ Action::ValueDescSet::prepare()
 							}
 						}
 					Real radius = 0.0;
-					ValueBase new_amount;
-					WidthPoint wp((*wpoint_composite)(time));
+					Real new_amount;
+					WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
 					if (wplistloop)
 					{
 						// The wplist is looped. Animation may require a position parameter
@@ -674,7 +679,7 @@ Action::ValueDescSet::prepare()
 						// If it is homogeneous then convert it to standard
 						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
 						// grab a new position given by duck's position on the bline
-						Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, blineloop);
+						Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
 						// calculate the difference between old and new amounts
 						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 						//fmod is called twice to avoid negative values
@@ -683,7 +688,7 @@ Action::ValueDescSet::prepare()
 						// calculate a new value for the position
 						new_amount=amount_old+difference;
 						// restore the homogeneous value if needed
-						new_amount = homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
 						// this is the difference between the new amount and the old amount inside the boundaries
 						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
 						// add the new diff to the current amount
@@ -692,9 +697,9 @@ Action::ValueDescSet::prepare()
 					else
 					{
 						// grab a new amount given by duck's position on the bline
-						new_amount = synfig::find_closest_point((*bline)(time), value , radius, blineloop);
+						new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
 						// if it is homogeneous then convert to it
-						new_amount=homogeneous?ValueBase(std_to_hom((*bline)(time), new_amount, wplistloop, blineloop)):new_amount;
+						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
 						// convert the value inside the boundaries
 						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
 					}
@@ -727,7 +732,7 @@ Action::ValueDescSet::prepare()
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 		assert(parent_value_node);
 		int i=value_desc.get_index();
-		if(parent_value_node->get_type() == ValueBase::TYPE_WIDTHPOINT && (i==4 || i==5))
+		if(parent_value_node->get_type() == type_width_point && (i==4 || i==5))
 		{
 			ValueNode::Handle low(parent_value_node->get_link("lower_bound"));
 			ValueNode::Handle upp(parent_value_node->get_link("upper_bound"));
@@ -858,14 +863,14 @@ Action::ValueDescSet::prepare()
 				// this is valid only for value types that allows it.
 				ValueNode_Animated::Handle animated=ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
 				Waypoint waypoint;
-				ValueBase::TypeId type=animated->get_type();
-				ValueBase::TypeId value_type=value.get_type();
+				Type &type=animated->get_type();
+				Type &value_type=value.get_type();
 				if(value_type==type &&
-					(type == ValueBase::TYPE_INTEGER
-					|| type == ValueBase::TYPE_ANGLE
-					|| type == ValueBase::TYPE_TIME
-					|| type == ValueBase::TYPE_REAL
-					|| type == ValueBase::TYPE_VECTOR)
+					(  type == type_integer
+					|| type == type_angle
+					|| type == type_time
+					|| type == type_real
+					|| type == type_vector)
 					)
 				{
 					synfig::ValueNode_Animated::WaypointList::const_iterator iter;
@@ -873,26 +878,21 @@ Action::ValueDescSet::prepare()
 					{
 						waypoint=*iter;
 						ValueBase waypoint_value(waypoint.get_value());
-						switch (type)
-						{
-							case ValueBase::TYPE_INTEGER:
-								waypoint_value=ValueBase(waypoint_value.get(int())+value.get(int())-(*animated)(time).get(int()));
-								break;
-							case ValueBase::TYPE_ANGLE:
-								waypoint_value=ValueBase(waypoint_value.get(Angle())+value.get(Angle())-(*animated)(time).get(Angle()));
-								break;
-							case ValueBase::TYPE_TIME:
-								waypoint_value=ValueBase(waypoint_value.get(Time())+value.get(Time())-(*animated)(time).get(Time()));
-								break;
-							case ValueBase::TYPE_REAL:
-								waypoint_value=ValueBase(waypoint_value.get(Real())+value.get(Real())-(*animated)(time).get(Real()));
-								break;
-							case ValueBase::TYPE_VECTOR:
-								waypoint_value=ValueBase(waypoint_value.get(Vector())+value.get(Vector())-(*animated)(time).get(Vector()));
-								break;
-							default:
-								break;
-						}
+						if (type == type_integer)
+							waypoint_value=ValueBase(waypoint_value.get(int())+value.get(int())-(*animated)(time).get(int()));
+						else
+						if (type == type_angle)
+							waypoint_value=ValueBase(waypoint_value.get(Angle())+value.get(Angle())-(*animated)(time).get(Angle()));
+						else
+						if (type == type_time)
+							waypoint_value=ValueBase(waypoint_value.get(Time())+value.get(Time())-(*animated)(time).get(Time()));
+						else
+						if (type == type_real)
+							waypoint_value=ValueBase(waypoint_value.get(Real())+value.get(Real())-(*animated)(time).get(Real()));
+						else
+						if (type == type_vector)
+							waypoint_value=ValueBase(waypoint_value.get(Vector())+value.get(Vector())-(*animated)(time).get(Vector()));
+
 						waypoint.set_value(waypoint_value);
 						Action::Handle action(WaypointSet::create());
 						action->set_param("canvas",get_canvas());

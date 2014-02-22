@@ -287,7 +287,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_blend_method->show();
 	widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
 	widget_blend_method->set_param_desc(
-		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		ParamDesc((int)Color::BLEND_COMPOSITE,"blend_method")
 		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
 	);
 	attach(*widget_blend_method,0, 2, 2, 3, Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);

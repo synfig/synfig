@@ -412,7 +412,7 @@ LayerParamTreeStore::rebuild()
 				)
 			);
 		}
-		if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
+		if(value_desc.get_value_type()==type_canvas)
 		{
 			Canvas::Handle canvas_handle = value_desc.get_value().get(Canvas::Handle());
 			if(canvas_handle) changed_connection_list.push_back(

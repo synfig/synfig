@@ -577,7 +577,7 @@ StatePolygon_Context::run()
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		layer->disconnect_dynamic_param("vector_list");
-		if(!layer->set_param("vector_list",polygon_point_list))
+		if(!layer->set_param("vector_list",ValueBase::List(polygon_point_list.begin(), polygon_point_list.end())))
 		{
 			group.cancel();
 			get_canvas_view()->get_ui_interface()->error("Unable to set layer parameter");

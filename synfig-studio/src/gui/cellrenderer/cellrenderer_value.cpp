@@ -312,7 +312,7 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustr
 	ValueBase old_value=property_value_.get_value();
 	ValueBase value;
 
-	if(old_value.get_type()==ValueBase::TYPE_TIME)
+	if(old_value.get_type()==type_time)
 	{
 		value=ValueBase(Time((String)str,get_canvas()->rend_desc().get_frame_rate()));
 	}
@@ -356,9 +356,9 @@ CellRenderer_ValueBase::render_vfunc(
 
 	ValueBase data=property_value_.get_value();
 
-	switch(data.get_type())
+	Type &type(data.get_type());
+	if (type == type_real)
 	{
-	case ValueBase::TYPE_REAL:
 		if(((synfig::ParamDesc)property_param_desc_).get_is_distance())
 		{
 			Distance x(data.get(Real()),Distance::SYSTEM_UNITS);
@@ -367,89 +367,93 @@ CellRenderer_ValueBase::render_vfunc(
 		}
 		else
 			property_text()=(Glib::ustring)strprintf("%.6f",data.get(Real()));
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
+	{
 		property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format());
-		break;
-	case ValueBase::TYPE_ANGLE:
+	}
+	else
+	if (type == type_angle)
+	{
 		property_text()=(Glib::ustring)strprintf("%.2fᵒ",(Real)Angle::deg(data.get(Angle())).get());
-		break;
-	case ValueBase::TYPE_INTEGER:
+	}
+	else
+	if (type == type_integer)
+	{
+		String param_hint, child_param_hint;
+		param_hint=get_param_desc().get_hint();
+		child_param_hint=get_child_param_desc().get_hint();
+		if(param_hint!="enum" && child_param_hint!="enum")
 		{
-			String param_hint, child_param_hint;
-			param_hint=get_param_desc().get_hint();
-			child_param_hint=get_child_param_desc().get_hint();
-			if(param_hint!="enum" && child_param_hint!="enum")
-			{
-				property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
-			}
-			else
-			{
-				property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
-				std::list<synfig::ParamDesc::EnumData> enum_list;
-				if(param_hint=="enum")
-					enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
-				else if(child_param_hint=="enum")
-					enum_list=((synfig::ParamDesc)property_child_param_desc_).get_enum_list();
-				std::list<synfig::ParamDesc::EnumData>::iterator iter;
-				for(iter=enum_list.begin();iter!=enum_list.end();iter++)
-					if(iter->value==data.get(int()))
-					{
-						// don't show the key_board s_hortcut under_scores
-						String local_name = iter->local_name;
-						String::size_type pos = local_name.find_first_of('_');
-						if (pos != String::npos)
-							property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
-						else
-							property_text() = local_name;
-						break;
-					}
-			}
+			property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
 		}
-		break;
-
-	case ValueBase::TYPE_VECTOR:
+		else
 		{
-			Vector vector=data.get(Vector());
-			Distance x(vector[0],Distance::SYSTEM_UNITS),y(vector[1],Distance::SYSTEM_UNITS);
-			x.convert(App::distance_system,get_canvas()->rend_desc());
-			y.convert(App::distance_system,get_canvas()->rend_desc());
-			property_text()=static_cast<Glib::ustring>(strprintf("%s,%s",x.get_string(6).c_str(),y.get_string(6).c_str()));
+			property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
+			std::list<synfig::ParamDesc::EnumData> enum_list;
+			if(param_hint=="enum")
+				enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
+			else if(child_param_hint=="enum")
+				enum_list=((synfig::ParamDesc)property_child_param_desc_).get_enum_list();
+			std::list<synfig::ParamDesc::EnumData>::iterator iter;
+			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
+				if(iter->value==data.get(int()))
+				{
+					// don't show the key_board s_hortcut under_scores
+					String local_name = iter->local_name;
+					String::size_type pos = local_name.find_first_of('_');
+					if (pos != String::npos)
+						property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
+					else
+						property_text() = local_name;
+					break;
+				}
 		}
-		break;
-
-	case ValueBase::TYPE_TRANSFORMATION:
-		{
-			const Transformation &transformation=data.get(Transformation());
-			const Vector &offset = transformation.offset;
-			const Angle::deg angle(transformation.angle);
-			const Vector &scale = transformation.scale;
-			Distance x(offset[0],Distance::SYSTEM_UNITS),y(offset[1],Distance::SYSTEM_UNITS);
-			x.convert(App::distance_system,get_canvas()->rend_desc());
-			y.convert(App::distance_system,get_canvas()->rend_desc());
-			Distance sx(scale[0],Distance::SYSTEM_UNITS),sy(scale[1],Distance::SYSTEM_UNITS);
-			sx.convert(App::distance_system,get_canvas()->rend_desc());
-			sy.convert(App::distance_system,get_canvas()->rend_desc());
-			property_text()=static_cast<Glib::ustring>(strprintf(
-				"%s,%s,%.2fᵒ,%s,%s",
-				x.get_string(6).c_str(), y.get_string(6).c_str(),
-				(Real)angle.get(),
-				sx.get_string(6).c_str(), sy.get_string(6).c_str()
-			));
-		}
-		break;
-
-	case ValueBase::TYPE_STRING:
-
-		if(data.get_type()==ValueBase::TYPE_STRING)
+	}
+	else
+	if (type == type_vector)
+	{
+		Vector vector=data.get(Vector());
+		Distance x(vector[0],Distance::SYSTEM_UNITS),y(vector[1],Distance::SYSTEM_UNITS);
+		x.convert(App::distance_system,get_canvas()->rend_desc());
+		y.convert(App::distance_system,get_canvas()->rend_desc());
+		property_text()=static_cast<Glib::ustring>(strprintf("%s,%s",x.get_string(6).c_str(),y.get_string(6).c_str()));
+	}
+	else
+	if (type == type_transformation)
+	{
+		const Transformation &transformation=data.get(Transformation());
+		const Vector &offset = transformation.offset;
+		const Angle::deg angle(transformation.angle);
+		const Vector &scale = transformation.scale;
+		Distance x(offset[0],Distance::SYSTEM_UNITS),y(offset[1],Distance::SYSTEM_UNITS);
+		x.convert(App::distance_system,get_canvas()->rend_desc());
+		y.convert(App::distance_system,get_canvas()->rend_desc());
+		Distance sx(scale[0],Distance::SYSTEM_UNITS),sy(scale[1],Distance::SYSTEM_UNITS);
+		sx.convert(App::distance_system,get_canvas()->rend_desc());
+		sy.convert(App::distance_system,get_canvas()->rend_desc());
+		property_text()=static_cast<Glib::ustring>(strprintf(
+			"%s,%s,%.2fᵒ,%s,%s",
+			x.get_string(6).c_str(), y.get_string(6).c_str(),
+			(Real)angle.get(),
+			sx.get_string(6).c_str(), sy.get_string(6).c_str()
+		));
+	}
+	else
+	if (type == type_string)
+	{
+		if(data.get_type()==type_string)
 		{
 			if(!data.get(synfig::String()).empty())
 				property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
 			else
 				property_text()=Glib::ustring("<empty>");
 		}
-		break;
-	case ValueBase::TYPE_CANVAS:
+	}
+	else
+	if (type == type_canvas)
+	{
 		if(data.get(etl::handle<synfig::Canvas>()))
 		{
 			if(data.get(etl::handle<synfig::Canvas>())->is_inline())
@@ -459,42 +463,49 @@ CellRenderer_ValueBase::render_vfunc(
 		}
 		else
 			property_text()=_("<No Image Selected>");
-		break;
-	case ValueBase::TYPE_COLOR:
-		{
-			render_color_to_window(window,ca,data.get(Color()));
-			return;
-		}
-		break;
-	case ValueBase::TYPE_BOOL:
-		{
-			widget.get_style()->paint_check(
-				Glib::RefPtr<Gdk::Window>::cast_static(window), state,
-				data.get(bool())?Gtk::SHADOW_IN:Gtk::SHADOW_OUT,
-				ca, widget, "cellcheck",
-				ca.get_x()/* + x_offset + cell_xpad*/,
-				ca.get_y()/* + y_offset + cell_ypad*/,
-				height-1,height-1);
-			return;
-		}
-		break;
-	case ValueBase::TYPE_NIL:
+	}
+	else
+	if (type == type_color)
+	{
+		render_color_to_window(window,ca,data.get(Color()));
+		return;
+	}
+	else
+	if (type == type_bool)
+	{
+		widget.get_style()->paint_check(
+			Glib::RefPtr<Gdk::Window>::cast_static(window), state,
+			data.get(bool())?Gtk::SHADOW_IN:Gtk::SHADOW_OUT,
+			ca, widget, "cellcheck",
+			ca.get_x()/* + x_offset + cell_xpad*/,
+			ca.get_y()/* + y_offset + cell_ypad*/,
+			height-1,height-1);
+		return;
+	}
+	else
+	if (type == type_nil)
+	{
 		//property_text()=(Glib::ustring)" ";
 		return;
-		break;
-	case ValueBase::TYPE_GRADIENT:
+	}
+	else
+	if (type == type_gradient)
+	{
 		render_gradient_to_window(window,ca,data.get(Gradient()));
 		return;
-		break;
-	case ValueBase::TYPE_BONE:
-	case ValueBase::TYPE_SEGMENT:
-	case ValueBase::TYPE_LIST:
-	case ValueBase::TYPE_BLINEPOINT:
-	case ValueBase::TYPE_WIDTHPOINT:
-	case ValueBase::TYPE_DASHITEM:
-		property_text()=(Glib::ustring)(ValueBase::type_local_name(data.get_type()));
-		break;
-	case ValueBase::TYPE_VALUENODE_BONE:
+	}
+	else
+	if (type == type_bone_object
+	 || type == type_segment
+	 || type == type_list
+	 || type == type_bline_point
+	 || type == type_width_point
+	 || type == type_dash_item)
+	{
+		property_text()=(Glib::ustring)(data.get_type().description.local_name);
+	}
+	else
+	if (type == type_bone_valuenode)
 	{
 		ValueNode_Bone::Handle bone_node(data.get(ValueNode_Bone::Handle()));
 		String name(_("No Parent"));
@@ -507,12 +518,12 @@ CellRenderer_ValueBase::render_vfunc(
 		}
 
 		property_text()=(Glib::ustring)(name);
-		break;
 	}
-	default:
+	else
+	{
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
-		break;
 	}
+
 	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
 }
 
@@ -528,13 +539,15 @@ CellRenderer_ValueBase::activate_vfunc(	GdkEvent* event,
 {
 	ValueBase data=(ValueBase)property_value_.get_value();
 
-	switch(data.type)
+	if (data.type == type_bool)
 	{
-	case ValueBase::TYPE_BOOL:
 		if(property_editable())
 			signal_edited_(path,ValueBase(!data.get(bool())));
     	return true;
-	case ValueBase::TYPE_STRING:
+    }
+    else
+    if (data.type == type_string)
+    {
 		return CellRendererText::activate_vfunc(event,widget,path,background_area,cell_area,flags);
 	}
 	return false;
@@ -575,16 +588,21 @@ CellRenderer_ValueBase::start_editing_vfunc(
 
 	ValueBase data=property_value_.get_value();
 
-	switch(data.get_type())
+	Type &type(data.get_type());
+	if (type == type_bool)
 	{
-	case ValueBase::TYPE_BOOL:
 		signal_edited_(path,ValueBase(!data.get(bool())));
     	return NULL;
-	//case ValueBase::TYPE_TIME:
+	}
+	//else
+	//if (type == type_time)
+	//{
 	//	property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
 	//	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
-
-	case ValueBase::TYPE_GRADIENT:
+	//}
+	else
+	if (type == type_gradient)
+	{
 		App::dialog_gradient->reset();
 		App::dialog_gradient->set_gradient(data.get(Gradient()));
 		App::dialog_gradient->signal_edited().connect(
@@ -595,10 +613,11 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		);
 		App::dialog_gradient->set_default_button_set_sensitive(true);
 		App::dialog_gradient->present();
-
 		return NULL;
-
-	case ValueBase::TYPE_COLOR:
+	}
+	else
+	if (type == type_color)
+	{
 		App::dialog_color->reset();
 		App::dialog_color->set_color(data.get(Color()));
 		App::dialog_color->signal_edited().connect(
@@ -608,9 +627,11 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			)
 		);
 		App::dialog_color->present();
-
 		return NULL;
-	case ValueBase::TYPE_STRING:
+	}
+	else
+	if (type == type_string)
+	{
 		if(get_param_desc().get_hint()=="paragraph")
 		{
 			synfig::String string;
@@ -621,22 +642,23 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		}
 		// if(get_param_desc().get_hint()!="filename")
 			// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
-	default:
-		{
-			assert(get_canvas());
-			//delete value_entry;
-			value_entry=manage(new ValueBase_Entry());
-			value_entry->set_path(path);
-			value_entry->set_canvas(get_canvas());
-			value_entry->set_param_desc(get_param_desc());
-			value_entry->set_value_desc(get_value_desc());
-			value_entry->set_child_param_desc(get_child_param_desc());
-			value_entry->set_value(data);
-			value_entry->set_parent(&widget);
-			value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
-			return value_entry;
-		}
 	}
+	else
+	{
+		assert(get_canvas());
+		//delete value_entry;
+		value_entry=manage(new ValueBase_Entry());
+		value_entry->set_path(path);
+		value_entry->set_canvas(get_canvas());
+		value_entry->set_param_desc(get_param_desc());
+		value_entry->set_value_desc(get_value_desc());
+		value_entry->set_child_param_desc(get_child_param_desc());
+		value_entry->set_value(data);
+		value_entry->set_parent(&widget);
+		value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
+		return value_entry;
+	}
+
 	return NULL;
 }
 

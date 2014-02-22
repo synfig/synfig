@@ -169,7 +169,7 @@ LayerTree::LayerTree():
 
 	disable_amount_changed_signal=false;
 
-	blend_method_widget.set_param_desc(ParamDesc(Color::BlendMethod(),"blend_method"));
+	blend_method_widget.set_param_desc(ParamDesc((int)Color::BlendMethod(),"blend_method"));
 
 	blend_method_widget.set_value((int)Color::BLEND_COMPOSITE);
 	blend_method_widget.set_size_request(150,-1);

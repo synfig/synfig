@@ -352,7 +352,7 @@ public:
 		return synfig::ValueBase();
 	}
 
-	synfig::ValueBase::TypeId
+	synfig::Type&
 	get_value_type()const
 	{
 		synfig::ValueNode::Handle value_node=get_value_node();

@@ -92,7 +92,7 @@ Action::GradientSet::is_candidate(const ParamList &x)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
-	return x.find("value_desc")->second.get_value_desc().get_value_type()==ValueBase::TYPE_GRADIENT;
+	return x.find("value_desc")->second.get_value_desc().get_value_type()==type_gradient;
 }
 
 bool
@@ -106,7 +106,7 @@ Action::GradientSet::set_param(const synfig::String& name, const Action::Param &
 		// Grab the current gradient
 		gradient=synfigapp::Main::get_gradient();
 
-		return value_desc.get_value_type()==ValueBase::TYPE_GRADIENT;
+		return value_desc.get_value_type()==type_gradient;
 	}
 
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
@@ -122,7 +122,7 @@ Action::GradientSet::set_param(const synfig::String& name, const Action::Param &
 bool
 Action::GradientSet::is_ready()const
 {
-	if(!value_desc || value_desc.get_value_type()!=ValueBase::TYPE_GRADIENT)
+	if(!value_desc || value_desc.get_value_type()!=type_gradient)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }

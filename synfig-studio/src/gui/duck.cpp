@@ -297,7 +297,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 
 		if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(get_value_desc().get_value_node())) ||
 			((composite = ValueNode_Composite::Handle::cast_dynamic(get_value_desc().get_value_node())) &&
-			 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+			 composite->get_type() == type_bline_point &&
 			 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
 		{
 			synfig::Point closest_point = get_point();
@@ -314,7 +314,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 		ValueNode_Composite::Handle wpoint_composite;
 		ValueNode_WPList::Handle wplist;
 		wpoint_composite=ValueNode_Composite::Handle::cast_dynamic(get_value_desc().get_value_node());
-		if(wpoint_composite && wpoint_composite->get_type() == ValueBase::TYPE_WIDTHPOINT)
+		if(wpoint_composite && wpoint_composite->get_type() == type_width_point)
 			if(get_value_desc().parent_is_value_node())
 			{
 				wplist=ValueNode_WPList::Handle::cast_dynamic(get_value_desc().get_parent_value_node());

@@ -107,7 +107,7 @@ Action::ColorSet::is_candidate(const ParamList &x)
 	for (iter = x.begin(); iter != x.end(); ++iter)
 	{
 		if (iter->first == "value_desc" &&
-				iter->second.get_value_desc().get_value_type() != ValueBase::TYPE_COLOR)
+				iter->second.get_value_desc().get_value_type() != type_color)
 			return false;
 	}
 
@@ -121,7 +121,7 @@ Action::ColorSet::set_param(const synfig::String& name, const Action::Param &par
 	{
 		// Grab the value_desc
 		ValueDesc value_desc = param.get_value_desc();
-		if (value_desc.get_value_type() != ValueBase::TYPE_COLOR)
+		if (value_desc.get_value_type() != type_color)
 			return false;
 
 		value_desc_list.push_back(value_desc);

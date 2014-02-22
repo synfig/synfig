@@ -129,7 +129,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
 	if(getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") ||
-	   v.get_value_type() != synfig::ValueBase::TYPE_CANVAS)
+	   v.get_value_type() != synfig::type_canvas)
 		return synfig::Time::zero();
 
 	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
@@ -154,7 +154,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v)
 {
 	if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
-	   v.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
+	   v.get_value_type() == synfig::type_canvas)
 	{
 		synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 
@@ -757,7 +757,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 				etl::handle<synfig::Node> node;
 				if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
-				   valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
+				   valdesc.get_value(stime).get_type()==type_canvas)
 				{
 					node=Canvas::Handle(valdesc.get_value(stime).get(Canvas::Handle()));
 				}
@@ -801,7 +801,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					param_list.add("canvas_interface",canvas_interface());
 
 					if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
-					   sel_value.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
+					   sel_value.get_value_type() == synfig::type_canvas)
 					{
 						param_list.add("addcanvas",sel_value.get_value().get(Canvas::Handle()));
 					}else
