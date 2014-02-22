@@ -82,21 +82,15 @@ Dock_Toolbox::Dock_Toolbox():
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
-	tool_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0, 0.0));	
 	tool_table = manage(new class Gtk::Table());
-	tool_alignment->add(*tool_table);
-
 	separator = manage(new class Gtk::HSeparator());
-
-	default_widgets_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_TOP, 0.0, 0.0));		
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
-	default_widgets_alignment->add(*widget_defaults);
 
 	// pack tools and default widgets
 	tool_box = manage(new class Gtk::VBox(false, 2));
-	tool_box->pack_start(*tool_alignment, Gtk::PACK_SHRINK, 0);
+	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 0);
 	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 0);
-	tool_box->pack_start(*default_widgets_alignment, Gtk::PACK_SHRINK, 0);
+	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 0);
 	tool_box->set_border_width(2);
 	tool_box->show_all();
 
@@ -241,13 +235,16 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	tool_button->add(*icon);
 	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
 	tool_button->set_relief(Gtk::RELIEF_NONE);
-	icon->show();
-	tool_button->show();
+
+	// use Gtk::Alignment widget to have fixed size (width and height) of tool button
+	tool_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
+	tool_alignment->add(*tool_button);
+	tool_alignment->show_all();
 
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*tool_button,col,col+1,row,row+1, Gtk::FILL, Gtk::FILL, 0, 0);
+	tool_table->attach(*tool_alignment, col, col+1, row, row+1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND, 0, 0);
 
 	state_button_map[name]=tool_button;
 
