@@ -88,9 +88,9 @@ Dock_Toolbox::Dock_Toolbox():
 
 	// pack tools and default widgets
 	tool_box = manage(new class Gtk::VBox(false, 2));
-	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 0);
+	tool_box->pack_start(*tool_table, Gtk::PACK_EXPAND_WIDGET, 0);
 	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 0);
-	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 0);
+	tool_box->pack_start(*widget_defaults, Gtk::PACK_EXPAND_WIDGET, 0);
 	tool_box->set_border_width(2);
 	tool_box->show_all();
 
