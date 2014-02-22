@@ -825,7 +825,7 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-window", _("_Window")));
 	menus_action_group->add( Gtk::Action::create("menu-arrange", _("_Arrange")));
-	menus_action_group->add( Gtk::Action::create("menu-workspace", _("Work_scape")));
+	menus_action_group->add( Gtk::Action::create("menu-workspace", _("Work_space")));
 
 	menus_action_group->add( Gtk::Action::create("menu-help", _("_Help")) );
 
