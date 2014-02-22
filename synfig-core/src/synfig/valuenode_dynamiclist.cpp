@@ -595,9 +595,9 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Canvas::Loose
 	set_parent_canvas(canvas);
 }
 
-ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, ValueBase::Type type, etl::loose_handle<Canvas> canvas):
+ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, Canvas::LooseHandle canvas):
 	LinkableValueNode(type),
-	container_type(container_type),
+	container_type(&container_type),
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
