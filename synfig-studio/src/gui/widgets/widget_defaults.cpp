@@ -229,7 +229,6 @@ Widget_Defaults::Widget_Defaults()
 
 		// Reset button
 		Gtk::Button* button_reset(manage(new Gtk::Button()));
-		button_reset->show();
 		button_reset->set_relief(Gtk::RELIEF_NONE);
 		button_reset->set_border_width(0);
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
