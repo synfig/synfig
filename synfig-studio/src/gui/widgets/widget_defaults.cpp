@@ -344,13 +344,13 @@ Widget_Defaults::Widget_Defaults()
 			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
 
-		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 0);
-		pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 0);
-		pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 0);
-		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 0);
-		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 0);
+		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 4);
 
-	// show all widgets
+		// show all widgets
 		widget_colors_gradient->show_all();
 		widget_blend_method->show();
 		widget_opacity->show();
