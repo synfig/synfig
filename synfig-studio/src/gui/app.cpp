@@ -2237,7 +2237,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
     Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
     dialog->set_current_folder(prev_path);
-    dialog->add_button("Open history", RESPONSE_ACCEPT_WITH_HISTORY);
+    dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
 
@@ -2903,7 +2903,7 @@ App::dialog_open(string filename)
 		filename="*.sif";
 
 	bool show_history = false;
-	while(dialog_open_file_with_history_button("Open", filename, show_history, ANIMATION_DIR_PREFERENCE))
+	while(dialog_open_file_with_history_button(_("Open"), filename, show_history, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
