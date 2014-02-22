@@ -54,7 +54,7 @@ using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
-#define TRY_FIX_FOR_BUG_27
+//#define TRY_FIX_FOR_BUG_27
 
 /* === G L O B A L S ======================================================= */
 
@@ -68,426 +68,487 @@ namespace types_namespace {
 
 // Bool
 
-class TypeBool: public TypeComparableGeneric<bool>
+class TypeBool: public synfig::Type
 {
-protected:
+	static String to_string(const bool &x) { return etl::strprintf("Bool (%s)", x ? "true" : "false"); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "bool";
 		description.aliases.push_back(_("bool"));
 		description.local_name = N_("bool");
+		register_all<bool, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Bool (%s)", x ? "true" : "false"); }
 	static TypeBool instance;
 };
 TypeBool TypeBool::instance;
-Type& get_type(const bool*) { return TypeBool::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(bool, TypeBool)
 
 
 // Integer
 
-class TypeInteger: public TypeComparableGeneric<int>
+class TypeInteger: public Type
 {
-protected:
+	static String to_string(const int &x) { return etl::strprintf("Integer (%d)", x); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "integer";
 		description.aliases.push_back("int");
 		description.aliases.push_back(_("integer"));
 		description.local_name = N_("integer");
+		register_all<int, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Integer (%d)", x); }
 	static TypeInteger instance;
 };
 TypeInteger TypeInteger::instance;
-Type& get_type(const int*) { return TypeInteger::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(int, TypeInteger)
 
 
 // Angle
 
-class TypeAngle: public TypeComparableGeneric<Angle>
+class TypeAngle: public Type
 {
-protected:
+	static String to_string(const Angle &x) { return etl::strprintf("Angle (%.2f)", Angle::deg(x).get()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "angle";
 		description.aliases.push_back("degrees");
 		description.aliases.push_back("radians");
 		description.aliases.push_back("rotations");
 		description.local_name = N_("angle");
+		register_all<Angle, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Angle (%.2f)", Angle::deg(x).get()); }
 	static TypeAngle instance;
 };
 TypeAngle TypeAngle::instance;
-Type& get_type(const Angle*) { return TypeAngle::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Angle, TypeAngle)
 
 
 // Time
 
-class TypeTime: public TypeComparableGeneric<Time>
+class TypeTime: public Type
 {
-protected:
+	static String to_string(const Time &x) { return etl::strprintf("Time (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "time";
 		description.aliases.push_back(_("time"));
 		description.local_name = N_("time");
+		register_all<Time, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Time (%s)", x.get_string().c_str()); }
 	static TypeTime instance;
 };
 TypeTime TypeTime::instance;
-Type& get_type(const Time*) { return TypeTime::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Time, TypeTime)
 
 
 // Real
 
-class TypeReal: public TypeGeneric<Real>
+class TypeReal: public Type
 {
-protected:
-	static bool comparison(const void *a, const void *b) { return abs(*(Real*)a - *(Real*)b) <= 0.00000000000001; }
-
+	class Inner
+	{
+	public:
+		mutable float f;
+		Real r;
+		Inner(): f(0.f), r(0.0) { }
+		Inner& operator= (const float &other) { r = other; return *this; }
+		Inner& operator= (const Real &other) { r = other; return *this; }
+		Inner& operator= (const Inner &other) { return *this = other.r; }
+		bool operator== (const Inner &other) const { return r == other.r; }
+		operator const float&() const { return f = r; }
+		operator const Real&() const { return r; }
+	};
+	static bool compare(const InternalPointer a, const InternalPointer b)
+		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 0.00000000000001; }
+	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", x); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "real";
 		description.aliases.push_back("float");
 		description.aliases.push_back(_("real"));
 		description.local_name = N_("real");
-		register_comparison(&comparison);
+		register_all_but_compare<Inner, Real, to_string>();
+		register_alias<Inner, float>();
+		register_compare(compare);
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Real (%f)", x); }
 	static TypeReal instance;
 };
 TypeReal TypeReal::instance;
-Type& get_type(const Real*) { return TypeReal::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Real, TypeReal)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(float, TypeReal)
 
 
 // Vector
 
-class TypeVector: public TypeComparableGeneric<Vector>
+class TypeVector: public Type
 {
-protected:
+	static String to_string(const Vector &x) { return etl::strprintf("Vector (%f, %f)", x[0], x[1]); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "vector";
 		description.aliases.push_back("point");
 		description.local_name = N_("vector");
+		register_all<Vector, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Vector (%f, %f)", x[0], x[1]); }
 	static TypeVector instance;
 };
 TypeVector TypeVector::instance;
-Type& get_type(const Vector*) { return TypeVector::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Vector, TypeVector)
 
 
 // Color
 
-class TypeColor: public TypeComparableGeneric<Color>
+class TypeColor: public Type
 {
-protected:
+	static String to_string(const Color &x) { return etl::strprintf("Color (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "color";
 		description.local_name = N_("color");
+		register_all<Color, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Color (%s)", x.get_string().c_str()); }
 	static TypeColor instance;
 };
 TypeColor TypeColor::instance;
-Type& get_type(const Color*) { return TypeColor::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Color, TypeColor)
 
 
 // Segment
 
-class TypeSegment: public TypeGeneric<Segment>
+class TypeSegment: public Type
 {
-protected:
+	static String to_string(const Segment &x) { return etl::strprintf("Segment ((%f, %f) to (%f, %f))", x.p1[0], x.p1[1], x.p2[0], x.p2[1]); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "segment";
 		description.local_name = N_("segment");
+		register_all_but_compare<Segment, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Segment ((%f, %f) to (%f, %f))", x.p1[0], x.p1[1], x.p2[0], x.p2[1]); }
 	static TypeSegment instance;
 };
 TypeSegment TypeSegment::instance;
-Type& get_type(const Segment*) { return TypeSegment::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Segment, TypeSegment)
 
 
 // BLinePoint
 
-class TypeBLinePoint: public TypeGeneric<BLinePoint>
+class TypeBLinePoint: public Type
 {
-protected:
+	static String to_string(const BLinePoint &x) { return etl::strprintf("BLinePoint (%f, %f)", x.get_vertex()[0], x.get_vertex()[1]); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "bline_point";
 		description.aliases.push_back("blinepoint");
 		description.local_name = N_("spline_point");
+		register_all_but_compare<BLinePoint, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("BLinePoint (%f, %f)", x.get_vertex()[0], x.get_vertex()[1]); }
 	static TypeBLinePoint instance;
 };
 TypeBLinePoint TypeBLinePoint::instance;
-Type& get_type(const BLinePoint*) { return TypeBLinePoint::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(BLinePoint, TypeBLinePoint)
 
 
 // Matrix
 
-class TypeMatrix: public TypeGeneric<Matrix>
+class TypeMatrix: public Type
 {
-protected:
+	static String to_string(const Matrix &x) { return etl::strprintf("Matrix (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "matrix";
 		description.local_name = N_("matrix");
+		register_all_but_compare<Matrix, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Matrix (%s)", x.get_string().c_str()); }
 	static TypeMatrix instance;
 };
 TypeMatrix TypeMatrix::instance;
-Type& get_type(const Matrix*) { return TypeMatrix::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Matrix, TypeMatrix)
 
 
 // BoneWeightPair
 
-class TypeBoneWeightPair: public TypeGeneric<BoneWeightPair>
+class TypeBoneWeightPair: public Type
 {
-protected:
+	static String to_string(const BoneWeightPair &x) { return etl::strprintf("Bone Weight Pair (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "bone_weight_pair";
 		description.local_name = N_("bone_weight_pair");
+		register_all_but_compare<BoneWeightPair, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Bone Weight Pair (%s)", x.get_string().c_str()); }
 	static TypeBoneWeightPair instance;
 };
 TypeBoneWeightPair TypeBoneWeightPair::instance;
-Type& get_type(const BoneWeightPair*) { return TypeBoneWeightPair::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(BoneWeightPair, TypeBoneWeightPair)
 
 
 // WidthPoint
 
-class TypeWidthPoint: public TypeGeneric<WidthPoint>
+class TypeWidthPoint: public Type
 {
-protected:
+	static String to_string(const WidthPoint &x) { return etl::strprintf("WidthPoint (%f, %f)", x.get_position(), x.get_width()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "width_point";
 		description.aliases.push_back("widthpoint");
 		description.local_name = N_("width_point");
+		register_all_but_compare<WidthPoint, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("WidthPoint (%f, %f)", x.get_position(), x.get_width()); }
 	static TypeWidthPoint instance;
 };
 TypeWidthPoint TypeWidthPoint::instance;
-Type& get_type(const WidthPoint*) { return TypeWidthPoint::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(WidthPoint, TypeWidthPoint)
 
 
 // DashItem
 
-class TypeDashItem: public TypeComparableGeneric<DashItem>
+class TypeDashItem: public Type
 {
-protected:
+	static String to_string(const DashItem &x) { return etl::strprintf("DashItem (%f, %f)", x.get_offset(), x.get_length()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "dash_item";
 		description.aliases.push_back("dashitem");
 		description.local_name = N_("dash_item");
+		register_all<DashItem, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("DashItem (%f, %f)", x.get_offset(), x.get_length()); }
 	static TypeDashItem instance;
 };
 TypeDashItem TypeDashItem::instance;
-Type& get_type(const DashItem*) { return TypeDashItem::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(DashItem, TypeDashItem)
 
 
 // List
 
-class TypeList: public TypeComparableGeneric< ValueBase::List >
+class TypeList: public Type
 {
-protected:
+	static String to_string(const ValueBase::List &x) { return etl::strprintf("List (%d elements)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "list";
 		description.local_name = N_("list");
+		register_all<ValueBase::List, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("List (%d elements)", x.size()); }
 	static TypeList instance;
 };
 TypeList TypeList::instance;
-Type& get_type(const ValueBase::List*) { return TypeList::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueBase::List, TypeList)
 
 
 // Canvas
 
-class TypeCanvas: public TypeComparableGeneric< etl::loose_handle<Canvas> >
+class TypeCanvas: public Type
 {
-protected:
+	class Inner
+	{
+	public:
+#ifdef TRY_FIX_FOR_BUG_27
+		bool fake_handle;
+#endif
+		etl::loose_handle<Canvas> lh;
+		etl::handle<Canvas> h;
+		mutable Canvas* p;
+#ifdef TRY_FIX_FOR_BUG_27
+		Inner(): fake_handle(false), p(NULL) { }
+		~Inner() { if (fake_handle) h->ref(); }
+#else
+		Inner(): p(NULL) { }
+#endif
+		Inner& operator= (const etl::loose_handle<Canvas> &other)
+		{
+#ifdef TRY_FIX_FOR_BUG_27
+			if (fake_handle) h->ref();
+#endif
+			lh = other;
+			h = other;
+#ifdef TRY_FIX_FOR_BUG_27
+			fake_handle = h && h->is_inline();
+			if (fake_handle) h->unref_inactive();
+#endif
+			return *this;
+		}
+		Inner& operator= (const etl::handle<Canvas> &other)
+			{ return *this = etl::loose_handle<Canvas>(other); }
+		Inner& operator= (Canvas* const &other)
+			{ return *this = etl::loose_handle<Canvas>(other); }
+		Inner& operator= (const Inner &other)
+			{ return *this = other.lh; }
+		bool operator== (const Inner &other) const
+			{ return lh == other.lh; }
+		operator const etl::loose_handle<Canvas>&() const { return lh; }
+		operator const etl::handle<Canvas>&() const { return h; }
+		operator Canvas* const&() const { return p = &*lh; }
+	};
+	static String to_string(const Inner &x) { return etl::strprintf("Canvas (%s)", x.lh ? x.lh->get_id().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "canvas";
 		description.local_name = N_("canvas");
+		register_all<Inner, etl::loose_handle<Canvas>, to_string>();
+		register_alias< Inner, etl::handle<Canvas> >();
+		register_alias<Inner, Canvas*>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Canvas (%s)", x->get_id().c_str()); }
 	static TypeCanvas instance;
-
-#ifdef TRY_FIX_FOR_BUG_27
-	virtual void* create() {
-		void *p0 = malloc(sizeof(etl::loose_handle<Canvas>) + sizeof(etl::handle<Canvas>));
-		void *p1 = (char*)p0 + sizeof(etl::loose_handle<Canvas>);
-		new (p0) etl::loose_handle<Canvas>();
-		new (p1) etl::handle<Canvas>();
-		return p0;
-	}
-
-	virtual void assign(void *dest, const void *src) {
-		void *dest1 = (char*)dest + sizeof(etl::loose_handle<Canvas>);
-		const etl::loose_handle<Canvas> &slh = *(etl::loose_handle<Canvas>*)src;
-		etl::loose_handle<Canvas> &dlh = *(etl::loose_handle<Canvas>*)dest;
-		etl::handle<Canvas> &dh = *(etl::handle<Canvas>*)dest1;
-		dlh = slh;
-		if (slh && slh->is_inline()) dh = slh; else dh = etl::handle<Canvas>();
-	}
-
-	virtual void destroy(const void *data) {
-		void *data1 = (char*)data + sizeof(etl::loose_handle<Canvas>);
-		const etl::loose_handle<Canvas> &lh = *(const etl::loose_handle<Canvas>*)data;
-		const etl::handle<Canvas> &h = *(const etl::handle<Canvas>*)data1;
-		lh.~loose_handle();
-		h.~handle();
-		free(*(void**)(void*)&data);
-	}
-#endif // TRY_FIX_FOR_BUG_27
 };
 TypeCanvas TypeCanvas::instance;
-Type& get_type(const etl::loose_handle<Canvas>*) { return TypeCanvas::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::loose_handle<Canvas>, TypeCanvas)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::handle<Canvas>, TypeCanvas)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Canvas*, TypeCanvas)
 
 
 // String
 
-class TypeString: public TypeComparableGeneric<String>
+class TypeString: public Type
 {
-protected:
+	class Inner: public String
+	{
+		mutable const char *c;
+	public:
+		operator const char * const &() const { return c = c_str(); }
+		String& operator=(const String &x) { std::string::operator=(x); return *this; }
+		String& operator=(const char * const &x) { std::string::operator=(x); return *this; }
+	};
+	static String to_string(const Inner &x) { return etl::strprintf("String (%s)", x.c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "string";
 		description.local_name = N_("string");
+		register_all<Inner, String, to_string>();
+		register_alias<Inner, const char*>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("String (%s)", x.c_str()); }
 	static TypeString instance;
 };
 TypeString TypeString::instance;
-Type& get_type(const String*) { return TypeString::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(String, TypeString)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(const char*, TypeString)
 
 
 // Gradient
 
-class TypeGradient: public TypeGeneric<Gradient>
+class TypeGradient: public Type
 {
-protected:
+	static String to_string(const Gradient &x) { return etl::strprintf("Gradient (%d cpoints)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "gradient";
 		description.local_name = N_("gradient");
+		register_all_but_compare<Gradient, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Gradient (%d cpoints)", x.size()); }
 	static TypeGradient instance;
 };
 TypeGradient TypeGradient::instance;
-Type& get_type(const Gradient*) { return TypeGradient::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Gradient, TypeGradient)
 
 
 // Bone
 
-class TypeBoneObject: public TypeGeneric<Bone>
+class TypeBoneObject: public Type
 {
-protected:
+	static String to_string(const Bone &x) { return etl::strprintf("Bone (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "bone_object";
 		description.local_name = N_("bone_object");
+		register_all_but_compare<Bone, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Bone (%s)", x.get_string().c_str()); }
 	static TypeBoneObject instance;
 };
 TypeBoneObject TypeBoneObject::instance;
-Type& get_type(const Bone*) { return TypeBoneObject::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Bone, TypeBoneObject)
 
 
 // BoneValueNode
 
-class TypeBoneValueNode: public TypeComparableGeneric<ValueNode_Bone::Handle>
+class TypeBoneValueNode: public Type
 {
-protected:
+	class Inner
+	{
+	public:
+		ValueNode_Bone::Handle h;
+		mutable ValueNode_Bone::LooseHandle lh;
+		mutable ValueNode_Bone* p;
+		Inner(): p(NULL) { }
+		Inner& operator= (const ValueNode_Bone::LooseHandle &other) { h = other; return *this; }
+		Inner& operator= (const ValueNode_Bone::Handle &other) { h = other; return *this; }
+		Inner& operator= (ValueNode_Bone* const &other) { h = other; return *this; }
+		Inner& operator= (const Inner &other) { return *this = other.h; }
+		bool operator== (const Inner &other) const { return h == other.h; }
+		operator const ValueNode_Bone::LooseHandle&() const { return lh = h; }
+		operator ValueNode_Bone* const&() const { return p = &*h; }
+		operator const ValueNode_Bone::Handle&() const { return h; }
+	};
+	static String to_string(const Inner &x) { return etl::strprintf("ValueNodeBone (%s)", x.lh ? x.lh->get_string().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "bone_valuenode";
 		description.local_name = N_("bone_valuenode");
+		register_all<Inner, ValueNode_Bone::LooseHandle, to_string>();
+		register_alias<Inner, ValueNode_Bone::Handle>();
+		register_alias<Inner, ValueNode_Bone*>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("ValueNodeBone (%s)", x->get_string().c_str()); }
 	static TypeBoneValueNode instance;
 };
 TypeBoneValueNode TypeBoneValueNode::instance;
-Type& get_type(const ValueNode_Bone::Handle*) { return TypeBoneValueNode::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone::Handle, TypeBoneValueNode)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone::LooseHandle, TypeBoneValueNode)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone*, TypeBoneValueNode)
 
 
 // Transformation
 
-class TypeTransformation: public TypeComparableGeneric<Transformation>
+class TypeTransformation: public Type
 {
-protected:
+	static String to_string(const Transformation &x) { return etl::strprintf("Transformation (%f, %f) (%f) (%f, %f)", x.offset[0], x.offset[1], Angle::deg(x.angle).get(), x.scale[0], x.scale[1]); }
 	void initialize_vfunc(Description &description)
 	{
-		Parent::initialize_vfunc(description);
+		Type::initialize_vfunc(description);
 		description.name = "transformation";
 		description.local_name = N_("transformation");
+		register_all<Transformation, to_string>();
 	}
 public:
-	String to_string(const Base &x) { return etl::strprintf("Transformation (%f, %f) (%f) (%f, %f)", x.offset[0], x.offset[1], Angle::deg(x.angle).get(), x.scale[0], x.scale[1]); }
 	static TypeTransformation instance;
 };
 TypeTransformation TypeTransformation::instance;
-Type& get_type(const Transformation*) { return TypeTransformation::instance; }
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Transformation, TypeTransformation)
 
 }} // END of namespaces types_namespace and synfig
 
