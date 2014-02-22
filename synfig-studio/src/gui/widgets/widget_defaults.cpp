@@ -70,7 +70,6 @@ public:
 	{
 		signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Brush::redraw));
 
-		set_size_request(22, 22);
 		add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 		add_events(Gdk::BUTTON1_MOTION_MASK);
 
@@ -194,22 +193,25 @@ Widget_Defaults::Widget_Defaults()
 	set_col_spacings(2);
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	// widget colors: outline color and fill color
+	// widget colors: outline color and fill color.
+
+	/*
+	* the width of colors widget, outline and fill color widgets,
+	* is depending on the brush and bline width widgets' height,
+	* and Widget_Color is a square shape.
+	*/
+
 	Gtk::Table* widget_colors(manage(new Gtk::Table()));
 	{
-		int x = 22;
-
 		// Outline Color
 		widget_otln_color=manage(new Widget_Color());
 		widget_otln_color->show();
-		widget_otln_color->set_size_request(x, x);
 		widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
 		widget_otln_color->set_tooltip_text(_("Outline Color"));
 
 		// Fill Color
 		widget_fill_color=manage(new Widget_Color());
 		widget_fill_color->show();
-		widget_fill_color->set_size_request(x, x);
 		widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
 		widget_fill_color->set_tooltip_text(_("Fill Color"));
 
@@ -248,7 +250,7 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget brush
 	widget_brush=manage(new Widget_Brush());
-	widget_brush->set_size_request(22, 22);
+	widget_brush->set_size_request(24, 24); // mini size of brush preview widget
 	widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	// widget bline width
@@ -256,18 +258,26 @@ Widget_Defaults::Widget_Defaults()
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_range(0,10000000);
-	widget_bline_width->set_size_request(64, 22);
+	widget_bline_width->set_size_request(48, -1); //mini width of bline width widget, this value also affects mini width of whole default_widgets.
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_bline_width_changed));
 	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
 	// widget blend method
+
+	/*
+	* the blend method widget affects the width of whole default_widgets widget,
+	* since it requires mini width by it lengest item, "By Layer Default". If it
+	* was removed from toolbox as planned, then toolbutton in toolbox will have
+	* proper column spacing by default. I will let it as it is, because the toolbox
+	* still need more love.
+	*/
+
 	widget_blend_method=manage(new Widget_Enum());
 	widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
 	widget_blend_method->set_param_desc(
 		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
 	);
-	widget_blend_method->set_size_request(-1, 22);
 	widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	// widget interpolation
@@ -288,7 +298,6 @@ Widget_Defaults::Widget_Defaults()
 	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"), iconsize));
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"), iconsize));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
-	widget_interpolation->set_size_request(-1, 22);
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 
 	// widget opacity
@@ -302,17 +311,17 @@ Widget_Defaults::Widget_Defaults()
 	// widget gradient
 	widget_gradient=manage(new Widget_Gradient());
 	widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
-	widget_gradient->set_size_request(-1, 22);
+	widget_gradient->set_size_request(-1, 24);
 	widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 	// ship widgets together
 	attach(*widget_colors, 		0, 1, 0, 2, Gtk::FILL, Gtk::FILL, 0, 0);
 	attach(*widget_brush, 		1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 	attach(*widget_bline_width, 	1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
-	attach(*widget_blend_method, 	0, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
-	attach(*widget_opacity,		0, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_blend_method, 	0, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_opacity,		0, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 	attach(*widget_interpolation, 	0, 2, 5, 6, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
-	attach(*widget_gradient, 	0, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_gradient, 	0, 2, 6, 7, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 
 	// show all widgets
 	widget_colors->show();
