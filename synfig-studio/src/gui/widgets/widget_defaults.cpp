@@ -290,7 +290,6 @@ Widget_Defaults::Widget_Defaults()
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	widget_interpolation->set_size_request(-1, 22);
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
-	widget_interpolation->show();
 
 	// widget opacity
 	widget_opacity=manage(new Gtk::HScale(0.0f,1.01f,0.01f));
@@ -302,8 +301,8 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget gradient
 	widget_gradient=manage(new Widget_Gradient());
-	widget_gradient->set_size_request(-1, 22);
 	widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
+	widget_gradient->set_size_request(-1, 22);
 	widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 	// ship widgets together
@@ -320,6 +319,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_brush->show();
 	widget_bline_width->show();
 	widget_blend_method->show();
+	widget_interpolation->show();
 	widget_opacity->show();
 	widget_gradient->show();
 
