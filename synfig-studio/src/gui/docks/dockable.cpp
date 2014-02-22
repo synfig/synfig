@@ -355,7 +355,7 @@ Dockable::create_tab_label()
 		// Check to make sure the icon is valid
 		if(Gtk::Stock::lookup(stock_id,item))
 		{
-			Gtk::Image* icon(manage(new Gtk::Image(stock_id,Gtk::IconSize(4))));
+			Gtk::Image* icon(manage(new Gtk::Image(stock_id,Gtk::IconSize(1))));
 			event_box->add(*icon);
 			event_box->set_tooltip_text(get_local_name());
 			icon->show();
