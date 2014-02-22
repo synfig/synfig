@@ -320,8 +320,8 @@ Widget_Defaults::Widget_Defaults()
 	attach(*widget_bline_width, 	1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 	attach(*widget_blend_method, 	0, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 	attach(*widget_opacity,		0, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
-	attach(*widget_interpolation, 	0, 2, 5, 6, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
-	attach(*widget_gradient, 	0, 2, 6, 7, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_gradient, 	0, 2, 5, 6, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_interpolation, 	0, 2, 6, 7, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 
 	// show all widgets
 	widget_colors->show();
