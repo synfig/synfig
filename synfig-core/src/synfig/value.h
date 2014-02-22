@@ -29,6 +29,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "base_types.h"
+
+// TODO: remove following includes
 #include "angle.h"
 #include "segment.h"
 #include "string.h"
@@ -60,6 +63,7 @@
 
 namespace synfig {
 
+// TODO: remove following predeclarations
 class Canvas;
 class Vector;
 class Time;
@@ -84,48 +88,7 @@ class ValueBase
 	*/
 
 public:
-
-	//! This enum lists all the types of values
-	enum TypeId
-	{
-		TYPE_NIL=0,			//!< Represents an empty value
-
-		TYPE_BOOL,			//!< Boolean value (1 or 0)
-		TYPE_INTEGER,		//!< Integer value -1, 0, 1, etc.
-		TYPE_ANGLE,			//!< Angle value (Real number internally)
-
-		// All types after this point are larger than 32 bits
-
-		TYPE_TIME,			//!< Time value
-		TYPE_REAL,			//!< Real value (floating point number)
-
-		// All types after this point are larger than 64 bits
-
-		TYPE_VECTOR,		//!< Vector value (Real, Real) Points are Vectors too
-		TYPE_COLOR,			//!< Color (Real, Real, Real, Real)
-		TYPE_SEGMENT,		//!< Segment Point and Vector
-		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
-		TYPE_MATRIX,		//!< Matrix
-		TYPE_BONE_WEIGHT_PAIR,	//!< pair<Bone,Real>
-		TYPE_WIDTHPOINT,	//!< WidthPoint Position (Real), Width (Real), 2xSide Type (int enum)
-		TYPE_DASHITEM,		//!< DashItem Offset (Real distance), Length (Real distance), 2xSide Type (int enum)
-
-		// All types after this point require construction/destruction
-
-		TYPE_LIST,			//!< List of any of above
-		TYPE_CANVAS,		//!< Canvas
-		TYPE_STRING,		//!< String
-		TYPE_GRADIENT,		//!< Color Gradient
-		TYPE_BONE,			//!< Bone
-		TYPE_VALUENODE_BONE,//!< ValueNode_Bone
-		TYPE_TRANSFORMATION,//!< Transformation
-
-		TYPE_END			//!< Not a valid type, used for sanity checks
-	};
-
-private:
-
-	typedef std::vector<ValueBase> list_type;
+	typedef std::vector<ValueBase> List;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -133,7 +96,7 @@ private:
 
 protected:
 	//! The type of value
-	TypeId type;
+	Type *type;
 	//! Pointer to hold the data of the value
 	void *data;
 	//! Counter of Value Nodes that refers to this Value Base
@@ -159,12 +122,18 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 		{ set(x); }
 
+	template <typename T>
+	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
+		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
+		interpolation_(INTERPOLATION_UNDEFINED)
+	{ set_list_of(x); }
+
 	//! Copy constructor. The data is not copied, just the type.
-	ValueBase(TypeId x);
+	ValueBase(Type &x);
 
 	//! Default destructor
 	~ValueBase();
@@ -191,7 +160,7 @@ public:
 
 	//!	Constant index operator for when value is of type TYPE_LIST
 	const ValueBase &operator[](int index)const
-		{ assert(type==TYPE_LIST); assert(index>0); return get_list()[index]; }
+		{ assert(type==&type_list); assert(index>0); return get_list()[index]; }
 
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------
@@ -230,117 +199,84 @@ public:
 	bool empty()const;
 
 	//! Gets the contained type in the Value Base
-	TypeId get_contained_type()const;
+	Type& get_contained_type()const;
 
 	//! Returns true if the contained value is defined and valid.
 	bool is_valid()const;
 
 	//!	Returns a string containing the name of the type. Used for sif files
-	String type_name()const { return type_name(type); }
+	String type_name()const { return type->description.name; }
 
 	//! Returns the type of the contained value
-	const TypeId & get_type()const { return type; }
+	Type& get_type()const { return *type; }
 
-	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
-	//! Template for any class
-	template <class T> bool
-	same_type_as(const T &x)const
-	{
-		const TypeId testtype(get_type(x));
+	template<typename T>
+	inline static bool can_get(const TypeId type, const T &x)
+		{ return _can_get(type, types_namespace::get_type_alias(x)); }
+	template<typename T>
+	inline static bool can_get(const Type& type, const T &x) { return can_get(type.identifier, x); }
+	template<typename T>
+	inline static bool can_set(const TypeId type, const T &x)
+		{ return _can_set(type, types_namespace::get_type_alias(x)); }
+	template<typename T>
+	inline static bool can_set(const Type& type, const T &x) { return can_set(type.identifier, x); }
+	template<typename T>
+	inline static bool can_put(const TypeId type, const T &x)
+		{ return _can_put(type, types_namespace::get_type_alias(x)); }
+	template<typename T>
+	inline static bool can_put(const Type& type, const T &x) { return can_put(type.identifier, x); }
+	inline static bool can_copy(const TypeId dest, const TypeId src)
+		{ return NULL != Type::get_operation<Operation::CopyFunc>(Operation::Description::get_copy(dest, src)); }
+	inline static bool can_copy(const Type& dest, const Type& src) { return can_copy(dest.identifier, src.identifier); }
 
-		return same_type_as(type, testtype);
-	}
-	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
-	bool same_type_as(const TypeId testtype)const
-	{
-		return same_type_as(type, testtype);
-	}
+	template<typename T> inline bool can_get(const T &x) const { return is_valid() && can_get(*type, x); }
+	template<typename T> inline bool can_set(const T &x) const { return can_set(*type, x); }
+	template<typename T> inline bool can_put(const T &x) const { return is_valid() && can_put(*type, x); }
+	bool can_copy_from(const TypeId type) const { return can_copy(this->type->identifier, type); }
+	bool can_copy_from(const Type& type) const { return can_copy(*this->type, type); }
+	bool can_copy_to(const TypeId type) const { return can_copy(type, this->type->identifier); }
+	bool can_copy_to(const Type& type) const { return can_copy(type, *this->type); }
 
-	//! Compares two types.  Returns true if they are the same type.
-	static bool same_type_as(const TypeId type1, const TypeId type2)
-	{
-		if (type1 == type2) return true;
-		if ((type1 == TYPE_REAL || type1 == TYPE_TIME) &&
-			(type2 == TYPE_REAL || type2 == TYPE_TIME))
-			return true;
-		return false;
-	}
-
+	template<typename T> bool same_type_as(const T&x) const { return can_get(x) && can_set(x) && can_put(x); }
 
 	// === GET MEMBERS ========================================================
 	//! Template to get the ValueBase class data by casting the type
 	template <typename T>
-	const T &get(const T& x __attribute__ ((unused)))const
-	{
-#ifdef _DEBUG
-		if (!is_valid())
-			printf("%s:%d !is_valid()\n", __FILE__, __LINE__);
-		else if (!same_type_as(x))
-			printf("%s:%d !'%s'.same_type_as('%s')\n", __FILE__, __LINE__, type_name(type).c_str(), type_name(get_type(x)).c_str());
-#endif
-		assert(is_valid() && same_type_as(x));
-		return *static_cast<const T*>(data);
-	}
-	//! Gets the Real part of the data
-	float get(const float &)const { return get(Real()); }
-	//! Gets the Canvas Handle part of the data based on Canvas Handle type
-	etl::loose_handle<Canvas> get(const etl::handle<Canvas>&)const
-		{ return get(etl::loose_handle<Canvas>()); }
-	//! Gets the Canvas Handle part of the data based on Canvas pointer type
-	etl::loose_handle<Canvas> get(Canvas*)const
-		{ return get(etl::loose_handle<Canvas>()); }
-	//! Gets the data as char pointer based on char pointer
-	const char* get(const char*)const;
+	inline const T &get(const T &x)const { return (const T&)_get(types_namespace::get_type_alias(x)); }
+
 	//! Gets the data as List Type
-	const list_type& get_list()const { return get(list_type()); }
+	const List& get_list()const { return get(List()); }
+
+	template<typename T>
+	std::vector<T> get_list_of(const T &x)const
+	{
+		const List &list = get_list();
+		std::vector<T> out_list;
+		out_list.reserve(list.size());
+		for(List::const_iterator i = list.begin(); i != list.end(); ++i)
+			if (i->can_get(x))
+				out_list.push_back(i->get(x));
+		return out_list;
+	}
+
+	template<typename T>
+	void set_list_of(const std::vector<T> &list)
+	{
+		*this = List(list.begin(), list.end());
+	}
 
 #ifdef _DEBUG
 	String get_string() const;
 #endif	// _DEBUG
 	// ========================================================================
 
-
-
-	// === PUT MEMBERS ========================================================
 	//! Put template for any class
 	template <typename T>
-	void put(T* x)const
-	{
-		assert(same_type_as(*x));
-		*x=*static_cast<const T*>(data);
-	}
-	//! Put for float values
-	void put(float* x)const { *x=get(Real()); }
-	//! Put for char values (Not defined??)
-	void put(char** x)const;
-	// ========================================================================
+	inline void put(T* x)const { _put(types_namespace::get_type_alias(*x), x); }
 
-
-
-	// === SET MEMBERS ========================================================
 	//! Set template for any class
-	template <typename T> void set(const T& x) { _set(x); }
-	//! Set for float
-	void set(const float &x) { _set(Real(x)); }
-	//! Set for List Type
-	void set(const list_type &x);
-	//! Set for char string
-	void set(const char* x);
-	//! Set for char string
-	void set(char* x);
-	//! Set for Canvas pointer
-	void set(Canvas*x);
-	//! Set for Canvas handle
-	void set(etl::loose_handle<Canvas> x);
-	//! Set for Canvas handle
-	void set(etl::handle<Canvas> x);
-	//! Set template for standar vector
-	template <class T> void set(const std::vector<T> &x)
-		{ _set(list_type(x.begin(),x.end())); }
-	//! Set template for standar list
-	template <class T> void set(const std::list<T> &x)
-		{ _set(list_type(x.begin(),x.end())); }
-	// ========================================================================
+	template <typename T>
+	inline void set(const T& x) { _set(x); }
 
 
 	/*
@@ -348,50 +284,29 @@ public:
 	*/
 
 public:
-
-	//!	Returns a string containing the name of the given Type
-	static String type_name(TypeId id);
-
-	//!	Returns a string containing the translated name of the given Type
-	static String type_local_name(TypeId id);
-
 	//!	Returns a the corresponding Type of the described type.
 	//! Notice that this is used in the loadcanvas. It should keep all
 	//! all type names used in previous sif files
-	static TypeId ident_type(const String &str);
+	static Type& ident_type(const String &str);
 
 
 	// === GET TYPE MEMBERS ===================================================
-	static TypeId get_type(bool) { return TYPE_BOOL; }
-	static TypeId get_type(int) { return TYPE_INTEGER; }
-	static TypeId get_type(const Angle&) { return TYPE_ANGLE; }
-	static TypeId get_type(const Time&) { return TYPE_TIME; }
-	static TypeId get_type(const Real&) { return TYPE_REAL; }
-	static TypeId get_type(const float&) { return TYPE_REAL; }
-	static TypeId get_type(const Vector&) { return TYPE_VECTOR; }
-	static TypeId get_type(const Color&) { return TYPE_COLOR; }
-	static TypeId get_type(const Segment&) { return TYPE_SEGMENT; }
-	static TypeId get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
-	static TypeId get_type(const Matrix&) {return TYPE_MATRIX;}
-	static TypeId get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
-	static TypeId get_type(const WidthPoint&) { return TYPE_WIDTHPOINT; }
-	static TypeId get_type(const DashItem&) { return TYPE_DASHITEM; }
-	static TypeId get_type(const String&) { return TYPE_STRING; }
-	static TypeId get_type(const Gradient&) { return TYPE_GRADIENT; }
-	static TypeId get_type(const Bone&) { return TYPE_BONE; }
-	static TypeId get_type(const etl::handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
-	static TypeId get_type(const etl::loose_handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
-	static TypeId get_type(Canvas*) { return TYPE_CANVAS; }
-	static TypeId get_type(const etl::handle<Canvas>&)
-		{ return TYPE_CANVAS; }
-	static TypeId get_type(const etl::loose_handle<Canvas>&)
-		{ return TYPE_CANVAS; }
-	static TypeId get_type(const list_type&) { return TYPE_LIST; }
-	template <class T> static TypeId get_type(const std::vector<T> &/*x*/)
-		{ return TYPE_LIST; }
-	template <class T> static TypeId get_type(const std::list<T> &/*x*/)
-		{ return TYPE_LIST; }
-	static TypeId get_type(const Transformation&) { return TYPE_TRANSFORMATION; }
+	template<typename T>
+	static Type& get_type(const T&) { return Type::get_type<T>(); }
+
+	// TODO: remove this, when removed all references in code
+	static Type& get_type(const List &)
+		{ return Type::get_type<List>(); }
+	static Type& get_type(Canvas* const &)
+		{ return Type::get_type<Canvas*>(); }
+	static Type& get_type(ValueNode_Bone* const &)
+		{ return Type::get_type<ValueNode_Bone*>(); }
+	template <typename T> static Type& get_type(const T* &)
+		{ int i[(int)1 - (int)sizeof(T)]; return type_nil; }
+	template <typename T> static Type& get_type(const std::vector<T> &)
+		{ int i[(int)1 - (int)sizeof(T)]; return type_nil; }
+	template <typename T> static Type& get_type(const std::list<T> &)
+		{ int i[(int)1 - (int)sizeof(T)]; return type_nil; }
 	// ========================================================================
 
 
@@ -401,86 +316,121 @@ public:
 
 public:
 	//! I wonder why are those casting operators disabled...
-	operator const list_type&()const { return get_list(); }
-	operator const Angle&()const { return get(Angle()); }
-	//operator const Color&()const { return get(Color()); }
-	operator const Real&()const { return get(Real()); }
-	//operator const Time&()const { return get(Time()); }
-
-	operator const Vector&()const {  return get(Vector()); }
-	operator const BLinePoint&()const {  return get(BLinePoint()); }
-	operator const Matrix&()const { return get(Matrix()); }
-	operator const WidthPoint&()const {  return get(WidthPoint()); }
-	operator const DashItem&()const {  return get(DashItem()); }
-	//operator const int&()const {  return get(int()); }
-	//operator const String&()const {  return get(String()); }
-	//operator const char *()const {  return get(String()).c_str(); }
-	operator const Segment&()const { return get(Segment()); }
-	operator const Bone&()const { return get(Bone()); }
-	operator const Transformation&()const { return get(Transformation()); }
-
+	/*
+	template<typename T>
+	operator const T&() const
+	{
+		Type &t = Type::get_type<T>();
+		Operation::GenericFuncs<T>::GetFunc func =
+			Type::get_operation<Operation::GenericFuncs<T>::GetFunc>(
+				Operation::Description::get_get(t.identifier) );
+		assert(func != NULL);
+		return func(data);
+	}
+	*/
 
 	/*
  --	** -- O T H E R -----------------------------------------------------------
 	*/
 
-public:
-
-#ifdef USE_HALF_TYPE
-	half get(const half &)const { return get(Real()); }
-	void put(half*x)const { *x=get(Real()); }
-	void set(const half &x) { _set(Real(x)); }
-	static TypeId get_type(const half&) { return TYPE_REAL; }
-	operator half()const { return get(Real()); }
-#endif
-
-
-	//! Cast operator template to obtain the standard list from the TYPE LIST
-	template <class T>
-	operator std::list<T>()const
-	{
-		assert(type==TYPE_LIST);
-		std::list<T> ret(get_list().begin(),get_list().end());
-		return ret;
-	}
-	//! Cast operator template to obtain the standard vector from the TYPE LIST
-	template <class T>
-	operator std::vector<T>()const
-	{
-		assert(type==TYPE_LIST);
-		std::vector<T> ret(get_list().begin(),get_list().end());
-		return ret;
-	}
-
-
 private:
-	//! Internal set template. Takes in consideration the reference counter
-	template <typename T> void
-	_set(const T& x)
+	void create(Type &type);
+	inline void create() { create(*type); }
+
+	template <typename T>
+	inline static bool _can_get(const TypeId type, const T &)
 	{
-		const TypeId newtype(get_type(x));
+		typedef typename T::AliasedType TT;
+		return NULL !=
+			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
+				Operation::Description::get_get(type) );
+	}
 
-		assert(newtype!=TYPE_NIL);
+	template <typename T>
+	inline static bool _can_put(const TypeId type, const T &)
+	{
+		typedef typename T::AliasedType TT;
+		return NULL !=
+			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
+				Operation::Description::get_put(type) );
+	}
 
-		if(newtype==type)
+	template <typename T>
+	inline static bool _can_set(const TypeId type, const T &)
+	{
+		typedef typename T::AliasedType TT;
+		return NULL !=
+			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
+				Operation::Description::get_set(type) );
+	}
+
+	template <typename T>
+	const typename T::AliasedType& _get(const T &)const
+	{
+		typedef typename T::AliasedType TT;
+#ifdef _DEBUG
+		if (!is_valid())
+			printf("%s:%d !is_valid()\n", __FILE__, __LINE__);
+#endif
+		assert(is_valid());
+		typename Operation::GenericFuncs<TT>::GetFunc func =
+			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
+				Operation::Description::get_get(type->identifier) );
+#ifdef _DEBUG
+		if (func == NULL)
+			printf("%s:%d %s get_func == NULL\n", __FILE__, __LINE__, type->description.name.c_str());
+#endif
+		assert(func !=  NULL);
+		return func(data);
+	}
+
+	template <typename T>
+	void _put(const T &, typename T::AliasedType *x)const
+	{
+		assert(is_valid());
+		typedef typename T::AliasedType TT;
+		typename Operation::GenericFuncs<TT>::PutFunc func =
+			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
+				Operation::Description::get_put(type->identifier) );
+		assert(func !=  NULL);
+		func(*x, data);
+	}
+
+	template<typename T>
+	void __set(const T &alias, const typename T::AliasedType &x)
+	{
+		typedef typename T::AliasedType TT;
+		Type &current_type = *type;
+		if (current_type != type_nil)
 		{
-			if(ref_count.unique())
+			typename Operation::GenericFuncs<TT>::SetFunc func =
+				Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
+					Operation::Description::get_set(current_type.identifier) );
+			if (func != NULL)
 			{
-				*reinterpret_cast<T*>(data)=x;
+				if (!ref_count.unique()) create(current_type);
+				func(data, x);
 				return;
 			}
 		}
 
-		clear();
+		Type &new_type = alias.type;
+		assert(new_type != current_type);
+		assert(new_type != type_nil);
 
-		type=newtype;
-		ref_count.reset();
+		typename Operation::GenericFuncs<TT>::SetFunc func =
+			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
+				Operation::Description::get_set(new_type.identifier) );
+		assert(func != NULL);
 
-//		if (type == TYPE_BONE && &x == 0)
-//			data = 0;
-//		else
-		data=new T(x);
+		create(new_type);
+		assert(*type != type_nil);
+		func(data, x);
 	}
+
+	//! Internal set template. Takes in consideration the reference counter
+	template <typename T>
+	inline void _set(const T& x) { __set(types_namespace::get_type_alias(x), x); }
 
 }; // END of class ValueBase
 
@@ -492,36 +442,14 @@ template <class T>
 class Value : public ValueBase
 {
 public:
-	Value(const T &x):ValueBase(x)
-	{
-	}
-
-	Value(const ValueBase &x):ValueBase(x)
-	{
-		if(!x.same_type_as(T()))
-			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
-	}
-
-	Value()
-	{
-	}
-
+	Value(const T &x):ValueBase(x) { }
+	Value(const ValueBase &x):ValueBase(x) { }
 	T get()const { return ValueBase::get(T()); }
-
 	void put(T* x)const	{ ValueBase::put(x); }
-
 	void set(const T& x) { ValueBase::operator=(x); }
-
 	Value<T>& operator=(const T& x) { set(x); return *this; }
-
 	Value<T>& operator=(const Value<T>& x) { return ValueBase::operator=(x); }
-
-	Value<T>& operator=(const ValueBase& x)
-	{
-		if(!x.same_type_as(T()))
-			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
-		return ValueBase::operator=(x);
-	}
+	Value<T>& operator=(const ValueBase& x) { return ValueBase::operator=(x); }
 
 }; // END of class Value
 
