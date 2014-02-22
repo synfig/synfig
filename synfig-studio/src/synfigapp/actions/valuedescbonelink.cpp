@@ -173,6 +173,7 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
+		/*
 		if (value_desc.is_value_node())
 		{
 			ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node());
@@ -191,6 +192,7 @@ Action::ValueDescBoneLink::prepare()
 				continue;
 			}
 		}
+		*/
 
 		// create new BoneLink
 		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
