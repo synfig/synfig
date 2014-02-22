@@ -40,7 +40,8 @@ export RELEASE=1
 export BUILDROOT_VERSION=1
 
 BUILDDIR=~/src/macports/SynfigStudio-app
-MACPORTS=/tmp/skl/SynfigStudio.app/Contents/Resources
+LNKDIR=/tmp/skl/SynfigStudio
+MACPORTS=$LNKDIR/Contents/Resources
 MPSRC=MacPorts-2.2.1
 
 SYNFIG_REPO_DIR=~/src/synfig
@@ -58,6 +59,11 @@ export LD_LIBRARY_PATH=${MACPORTS}/lib:${SYNFIG_PREFIX}/lib:${SYNFIG_PREFIX}/lib
 #export CPPFLAGS="-fpermissive -I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export CPPFLAGS="-I${MACPORTS}/include -I${SYNFIG_PREFIX}/include"
 export LDFLAGS="-L${MACPORTS}/lib -L${SYNFIG_PREFIX}/lib"
+
+if [ `whoami` != "root" ]; then
+	echo "Please use sudo to run this script. Aborting."
+	exit 1
+fi
 
 if [ -z $DEBUG ]; then
 	export DEBUG=0
@@ -96,11 +102,9 @@ prepare()
 	echo -n setting symlink to build directory...
 	test -d /tmp/skl || mkdir -p /tmp/skl
 	chmod a+w /tmp/skl
-	pushd /tmp/skl > /dev/null
-	test -L SynfigStudio.app && rm SynfigStudio.app
-	ln -s "$BUILDDIR" SynfigStudio.app
-	chmod a+w SynfigStudio.app
-	popd > /dev/null
+	test -L $LNKDIR && rm $LNKDIR
+	ln -s "$BUILDDIR" $LNKDIR
+	chmod a+w $LNKDIR
 	echo
 }
 
@@ -489,15 +493,15 @@ mkall()
 
 	#Workaround:
 	#[ ! -e ~/src/macports/synfig-build ] || rm -rf ~/src/macports/synfig-build
-	#cd /tmp/skl/SynfigStudio.app/Contents/Resources/var/macports/build/
+	#cd $MACPORTS/var/macports/build/
 	#DIRPATH=`ls`
 	#cd -
 	#VERSION=`synfig --version 2>&1 | cut -d " " -f 2`
-	#cp -R "/tmp/skl/SynfigStudio.app/Contents/Resources/var/macports/build/$DIRPATH/synfigstudio/work/synfigstudio-$VERSION" ~/src/macports/synfig-build
+	#cp -R "$MACPORTS/var/macports/build/$DIRPATH/synfigstudio/work/synfigstudio-$VERSION" ~/src/macports/synfig-build
 	#cd ~/src/macports/synfig-build/images
 	#make
 	#cd -
-	#cp -R ~/src/macports/synfig-build/images/* #"/tmp/skl/SynfigStudio.app/Contents/Resources/var/macports/build/$DIRPATH/synfigstudio/work/synfigstudio-$VERSION/images"
+	#cp -R ~/src/macports/synfig-build/images/* #"$MACPORTS/var/macports/build/$DIRPATH/synfigstudio/work/synfigstudio-$VERSION/images"
 	#Workaround end
 
 	#port install synfigstudio
@@ -515,6 +519,7 @@ do_cleanup()
 		rm -rf $MACPORTS/tmp/app || true
 		mv $MACPORTS/tmp/app.bak $MACPORTS/tmp/app
 	fi
+	rm -rf $LNKDIR || true
 }
 
 ###=================================== MAIN ======================================
