@@ -204,9 +204,14 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Init the subsystems
 	if(cb)cb->amount_complete(0, 100);
+
+	if(cb)cb->task(_("Starting Subsystem \"Types\""));
+	if(!Type::subsys_init())
+		throw std::runtime_error(_("Unable to initialize subsystem \"Types\""));
+
 	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
 	if(!Module::subsys_init(prefix))
-		throw std::runtime_error(_("Unable to initialize subsystem \"Module\""));
+		throw std::runtime_error(_("Unable to initialize subsystem \"Modules\""));
 
 	if(cb)cb->task(_("Starting Subsystem \"Layers\""));
 	if(!Layer::subsys_init())

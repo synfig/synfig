@@ -78,39 +78,38 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	else
 		prev=next;
 
-	switch(get_contained_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(get_contained_type());
+	if (type == type_vector)
 	{
 		Vector a(prev.get(Vector())), b(next.get(Vector()));
 		ret=ValueNode_Const::create((b-a)*origin+a);
-		break;
 	}
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 	{
 		Real a(prev.get(Real())), b(next.get(Real()));
 		ret=ValueNode_Const::create((b-a)*origin+a);
-		break;
 	}
-	case ValueBase::TYPE_COLOR:
+	else
+	if (type == type_color)
 	{
 		Color a(prev.get(Color())), b(next.get(Color()));
 		ret=ValueNode_Composite::create((b-a)*origin+a);
-		break;
 	}
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 	{
 		Angle a(prev.get(Angle())), b(next.get(Angle()));
 		ret=ValueNode_Const::create((b-a)*origin+a);
-		break;
 	}
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 	{
 		Time a(prev.get(Time())), b(next.get(Time()));
 		ret=ValueNode_Const::create((b-a)*origin+a);
-		break;
 	}
-	case ValueBase::TYPE_BONE:
+	else
+	if (type == type_bone_object)
 	{
 		ValueNode::Handle value_node(list[index]);
 		if (ValueNode_Bone::Handle value_node_bone = ValueNode_Bone::Handle::cast_dynamic(value_node))
@@ -124,17 +123,16 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 			ret=ValueNode_Const::create(new_bone, get_parent_canvas());
 		}
 		else
-			ret=ValueNode_Const::create(ValueBase::TYPE_BONE, get_parent_canvas());
-		break;
+			ret=ValueNode_Const::create(type_bone_object, get_parent_canvas());
 	}
-	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+	else
+	if (type == type_bone_weight_pair)
 	{
 		ret=ValueNode_Const::create(BoneWeightPair(Bone(), next.get(BoneWeightPair()).get_weight()), get_parent_canvas());
-		break;
 	}
-	default:
+	else
+	{
 		ret=ValueNode_Const::create(get_contained_type(), get_parent_canvas());
-		break;
 	}
 
 	ret->set_parent_canvas(get_parent_canvas());
@@ -211,9 +209,9 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 		}
 }
 
-ValueNode_StaticList::ValueNode_StaticList(ValueBase::TypeId container_type, Canvas::LooseHandle canvas): // line 548
-	LinkableValueNode(ValueBase::TYPE_LIST),
-	container_type	(container_type),
+ValueNode_StaticList::ValueNode_StaticList(Type &container_type, Canvas::LooseHandle canvas): // line 548
+	LinkableValueNode(type_list),
+	container_type(&container_type),
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
@@ -240,9 +238,9 @@ ValueNode_StaticList::~ValueNode_StaticList()
 }
 
 ValueNode_StaticList::Handle
-ValueNode_StaticList::create(ValueBase::TypeId id, Canvas::LooseHandle canvas) // line 557
+ValueNode_StaticList::create(Type &type, Canvas::LooseHandle canvas) // line 557
 {
-	return new ValueNode_StaticList(id, canvas);
+	return new ValueNode_StaticList(type, canvas);
 }
 
 ValueNode_StaticList*
@@ -255,18 +253,18 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 	if(value_list.empty())
 		return 0;
 
-	ValueBase::TypeId type(value.get_contained_type());
+	Type &type(value.get_contained_type());
 	ValueNode_StaticList* value_node(new ValueNode_StaticList(type));
 
 	// when creating a list of vectors, start it off being looped.
 	// I think the only time this is used if for creating polygons,
 	// and we want them to be looped by default
-	if (value_node->get_contained_type() == ValueBase::TYPE_VECTOR)
+	if (value_node->get_contained_type() == type_vector)
 		value_node->set_loop(true);
 
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
 	{
-		if (type == ValueBase::TYPE_BONE)
+		if (type == type_bone_object)
 		{
 			ValueNode::Handle item(ValueNode_Bone::create(*iter));
 			value_node->add(item);
@@ -289,10 +287,10 @@ ValueNode_StaticList::operator()(Time t)const // line 596
 	std::vector<ValueBase> ret_list;
 	std::vector<ReplaceableListEntry>::const_iterator iter;
 
-	assert(container_type);
+	assert(*container_type != type_nil);
 
 	for(iter=list.begin();iter!=list.end();++iter)
-		if((*iter)->get_type()==container_type)
+		if((*iter)->get_type()==*container_type)
 			ret_list.push_back((**iter)(t));
 		else
 			synfig::warning(string("ValueNode_StaticList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
@@ -313,7 +311,7 @@ ValueNode_StaticList::set_link_vfunc(int i,ValueNode::Handle x) // line 628
 
 	if((unsigned)i>=list.size())
 		return false;
-	if(x->get_type()!=container_type)
+	if(x->get_type()!=*container_type)
 		return false;
 	list[i]=x;
 	return true;
@@ -391,9 +389,9 @@ ValueNode_StaticList::get_local_name()const // line 711
 }
 
 bool
-ValueNode_StaticList::check_type(ValueBase::TypeId type) // line 717
+ValueNode_StaticList::check_type(Type &type) // line 717
 {
-	return type==ValueBase::TYPE_LIST;
+	return type==type_list;
 }
 
 LinkableValueNode::Vocab
@@ -421,16 +419,16 @@ ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // lin
 	}
 }
 
-ValueBase::TypeId
+Type&
 ValueNode_StaticList::get_contained_type()const // line 730
 {
-	return container_type;
+	return *container_type;
 }
 
 LinkableValueNode*
 ValueNode_StaticList::create_new()const // line 736
 {
-	return new ValueNode_StaticList(container_type);
+	return new ValueNode_StaticList(*container_type);
 }
 
 #ifdef _DEBUG

@@ -1168,7 +1168,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 			// Any layer with an amount of zero is implicitly disabled.
 			ValueBase value(layer->get_param("amount"));
-			if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
+			if(value.get_type()==type_real && value.get(Real())==0)
 				continue;
 
 			if(layer->get_name()=="MotionBlur" || layer->get_name()=="duplicate")
@@ -1210,7 +1210,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 		// Any layer with an amount of zero is implicitly disabled.
 		ValueBase value(layer->get_param("amount"));
-		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
+		if(value.get_type()==type_real && value.get(Real())==0)
 			continue;
 
 		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
@@ -1282,7 +1282,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 							throw int();
 
 						ValueBase value(layer->get_param("blend_method"));
-						if(value.get_type()!=ValueBase::TYPE_INTEGER || value.get(int())!=(int)Color::BLEND_COMPOSITE)
+						if(value.get_type()!=type_integer || value.get(int())!=(int)Color::BLEND_COMPOSITE)
 							throw int();
 					}
 

@@ -64,7 +64,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
 		param_amount		(a),
-		param_blend_method	(Color::BlendMethod(bm)),
+		param_blend_method	((int)Color::BlendMethod(bm)),
 		converted_blend_	(false),
 		transparent_color_	(false)
 	{
@@ -267,7 +267,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 		if (blend_method < 0 || blend_method >= Color::BLEND_END)
 		{
 			warning("illegal value (%d) for blend_method - using Composite instead", blend_method);
-			param_blend_method.set(Color::BLEND_COMPOSITE);
+			param_blend_method.set((int)Color::BLEND_COMPOSITE);
 			return false;
 		}
 
@@ -285,7 +285,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 								version.c_str(), get_non_empty_description().c_str());
 					else
 					{
-						param_blend_method.set(Color::BLEND_COMPOSITE);
+						param_blend_method.set(int(Color::BLEND_COMPOSITE));
 						converted_blend_ = true;
 
 						// if this layer has a transparent color, go back and set the color again

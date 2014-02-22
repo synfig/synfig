@@ -56,13 +56,13 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::TypeId &x):
+ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(Type &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	if(x!=ValueBase::TYPE_ANGLE && x!=ValueBase::TYPE_REAL && x!=ValueBase::TYPE_VECTOR)
-		throw Exception::BadType(ValueBase::type_local_name(x));
+	if(x!=type_angle && x!=type_real && x!=type_vector)
+		throw Exception::BadType(x.description.local_name);
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 	set_link("bline",value_node);
@@ -114,13 +114,14 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 
 	if (!looped) size--;
 	if (size < 1)
-		switch (get_type())
-		{
-			case ValueBase::TYPE_ANGLE:  return Angle();
-			case ValueBase::TYPE_REAL:   return Real();
-			case ValueBase::TYPE_VECTOR: return Vector();
-			default: assert(0); return ValueBase();
-		}
+	{
+		Type &type(get_type());
+		if (type == type_angle)  return Angle();
+		if (type == type_real)   return Real();
+		if (type == type_vector) return Vector();
+		assert(0);
+		return ValueBase();
+	}
 	if (loop)
 	{
 		amount = amount - int(amount);
@@ -138,31 +139,32 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	amount = amount * size;
 	from_vertex = int(amount);
 	if (from_vertex > size-1) from_vertex = size-1;
-	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
-	blinepoint1 = *(next+from_vertex);
+	blinepoint0 = from_vertex ? (next+from_vertex-1)->get(BLinePoint()) : iter->get(BLinePoint());
+	blinepoint1 = (next+from_vertex)->get(BLinePoint());
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	switch (get_type())
+	Type &type(get_type());
+	if (type == type_angle)
+		return deriv(amount-from_vertex).angle() + offset;
+	if (type == type_real)
 	{
-		case ValueBase::TYPE_ANGLE:  return deriv(amount-from_vertex).angle() + offset;
-		case ValueBase::TYPE_REAL:
-		{
-			if (fixed_length) return scale;
-			return deriv(amount-from_vertex).mag() * scale;
-		}
-		case ValueBase::TYPE_VECTOR:
-		{
-			Vector tangent(deriv(amount-from_vertex));
-			Angle angle(tangent.angle() + offset);
-			Real mag = fixed_length ? scale : (tangent.mag() * scale);
-			return Vector(Angle::cos(angle).get()*mag,
-						  Angle::sin(angle).get()*mag);
-		}
-		default: assert(0); return ValueBase();
+		if (fixed_length) return scale;
+		return deriv(amount-from_vertex).mag() * scale;
 	}
+	if (type == type_vector)
+	{
+		Vector tangent(deriv(amount-from_vertex));
+		Angle angle(tangent.angle() + offset);
+		Real mag = fixed_length ? scale : (tangent.mag() * scale);
+		return Vector(Angle::cos(angle).get()*mag,
+					  Angle::sin(angle).get()*mag);
+	}
+
+	assert(0);
+	return ValueBase();
 }
 
 ValueBase
@@ -191,13 +193,13 @@ ValueNode_BLineCalcTangent::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,		ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,			ValueBase::TYPE_BOOL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(amount_,		ValueBase::TYPE_REAL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(offset_,		ValueBase::TYPE_ANGLE);
-	case 4: CHECK_TYPE_AND_SET_VALUE(scale_,		ValueBase::TYPE_REAL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(fixed_length_,	ValueBase::TYPE_BOOL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(homogeneous_,	ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,		type_list);
+	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,			type_bool);
+	case 2: CHECK_TYPE_AND_SET_VALUE(amount_,		type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(offset_,		type_angle);
+	case 4: CHECK_TYPE_AND_SET_VALUE(scale_,		type_real);
+	case 5: CHECK_TYPE_AND_SET_VALUE(fixed_length_,	type_bool);
+	case 6: CHECK_TYPE_AND_SET_VALUE(homogeneous_,	type_bool);
 	}
 	return false;
 }
@@ -222,11 +224,11 @@ ValueNode_BLineCalcTangent::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineCalcTangent::check_type(ValueBase::TypeId type)
+ValueNode_BLineCalcTangent::check_type(Type &type)
 {
-	return (type==ValueBase::TYPE_ANGLE ||
-			type==ValueBase::TYPE_REAL  ||
-			type==ValueBase::TYPE_VECTOR);
+	return (type==type_angle ||
+			type==type_real  ||
+			type==type_vector);
 }
 
 LinkableValueNode::Vocab

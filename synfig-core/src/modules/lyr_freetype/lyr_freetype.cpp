@@ -102,11 +102,11 @@ Layer_Freetype::Layer_Freetype()
 	param_vcompress=ValueBase(Real(1.0));
 	param_weight=ValueBase(WEIGHT_NORMAL);
 	param_style=ValueBase(PANGO_STYLE_NORMAL);
-	param_family=ValueBase("Sans Serif");
+	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
 	param_invert=ValueBase(false);
-	param_font=ValueBase("");
+	param_font=ValueBase(synfig::String());
 
 	old_version=false;
 

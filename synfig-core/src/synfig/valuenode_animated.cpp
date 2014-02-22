@@ -1133,48 +1133,43 @@ ValueNode_Animated::add(const Waypoint &x)
 }
 
 void
-ValueNode_Animated::set_type(ValueBase::TypeId t)
+ValueNode_Animated::set_type(Type &t)
 {
 	ValueNode::set_type(t);
 }
 
 ValueNode_Animated::Handle
-synfig::ValueNode_Animated::create(ValueBase::TypeId type)
+synfig::ValueNode_Animated::create(Type &type)
 {
-	switch(type)
-	{
-		case ValueBase::TYPE_TIME:
-			return ValueNode_Animated::Handle(new _Hermite<Time>);
-		case ValueBase::TYPE_REAL:
-			return ValueNode_Animated::Handle(new _Hermite<Vector::value_type>);
-		case ValueBase::TYPE_INTEGER:
-			return ValueNode_Animated::Handle(new _Hermite<int>);
-		case ValueBase::TYPE_ANGLE:
-			return ValueNode_Animated::Handle(new _Hermite<Angle>);
-		case ValueBase::TYPE_VECTOR:
-			return ValueNode_Animated::Handle(new _Hermite<Vector>);
-		case ValueBase::TYPE_COLOR:
-			return ValueNode_Animated::Handle(new _Hermite<Color>);
+	if (type == type_time)
+		return ValueNode_Animated::Handle(new _Hermite<Time>);
+	if (type == type_real)
+		return ValueNode_Animated::Handle(new _Hermite<Vector::value_type>);
+	if (type == type_integer)
+		return ValueNode_Animated::Handle(new _Hermite<int>);
+	if (type == type_angle)
+		return ValueNode_Animated::Handle(new _Hermite<Angle>);
+	if (type == type_vector)
+		return ValueNode_Animated::Handle(new _Hermite<Vector>);
+	if (type == type_color)
+		return ValueNode_Animated::Handle(new _Hermite<Color>);
+	if (type == type_string)
+		return ValueNode_Animated::Handle(new _Constant<String>);
+	if (type == type_bone_valuenode)
+		return ValueNode_Animated::Handle(new _Constant<ValueNode_Bone::LooseHandle>);
+	if (type == type_bone_object)
+		return ValueNode_Animated::Handle(new _Constant<Bone>);
+	if (type == type_gradient)
+		return ValueNode_Animated::Handle(new _Hermite<Gradient>);
+	if (type == type_bool)
+		return ValueNode_Animated::Handle(new _AnimBool);
+	if (type == type_canvas)
+		return ValueNode_Animated::Handle(new _Constant<Canvas::LooseHandle>);
 
-		case ValueBase::TYPE_STRING:
-			return ValueNode_Animated::Handle(new _Constant<String>);
-		case ValueBase::TYPE_VALUENODE_BONE:
-			return ValueNode_Animated::Handle(new _Constant<ValueNode_Bone::LooseHandle>);
-		case ValueBase::TYPE_BONE:
-			return ValueNode_Animated::Handle(new _Constant<Bone>);
-		case ValueBase::TYPE_GRADIENT:
-			return ValueNode_Animated::Handle(new _Hermite<Gradient>);
-		case ValueBase::TYPE_BOOL:
-			return ValueNode_Animated::Handle(new _AnimBool);
-		case ValueBase::TYPE_CANVAS:
-			return ValueNode_Animated::Handle(new _Constant<Canvas::LooseHandle>);
-		default:
-			throw
-				Exception::BadType(strprintf(_("%s: You cannot use a %s in an animated ValueNode"),"synfig::ValueNode_Animated::create()",
-					ValueBase::type_local_name(type).c_str())
-				);
-			break;
-	}
+	throw
+		Exception::BadType(strprintf(_("%s: You cannot use a %s in an animated ValueNode"),"synfig::ValueNode_Animated::create()",
+			type.description.local_name.c_str())
+		);
 	return ValueNode_Animated::Handle();
 }
 

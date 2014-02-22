@@ -90,7 +90,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 			ret+=waypoint_collect(waypoint_set,time,iter->second);
 
 		ValueBase canvas_value(layer->get_param("canvas"));
-		if(canvas_value.get_type()==ValueBase::TYPE_CANVAS)
+		if(canvas_value.get_type()==type_canvas)
 		{
 			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 			if (p)

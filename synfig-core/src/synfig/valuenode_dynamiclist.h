@@ -162,10 +162,10 @@ public:
 	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
 
 protected:
-	ValueNode_DynamicList(ValueBase::Type container_type=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_DynamicList(ValueBase::Type container_type, ValueBase::Type type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type, Type type, etl::loose_handle<Canvas> canvas = 0);
 
-	ValueBase::Type container_type;
+	Type *container_type;
 
 	bool loop_;
 

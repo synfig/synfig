@@ -61,29 +61,26 @@ ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	set_link("start_time",   ValueNode_Const::create(Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_COLOR:
+	else
+	if (type == type_color)
 		set_link("link",ValueNode_Const::create(value.get(Color())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
 		set_link("link",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 		set_link("link",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		set_link("link",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	else
+	if (type == type_vector)
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
-	}
+	else
+		throw Exception::BadType(get_type().description.local_name);
 }
 
 LinkableValueNode*
@@ -115,18 +112,16 @@ ValueNode_Step::operator()(Time t)const
 
 	t = (floor((t - start_time) / duration) + intersection) * duration + start_time;
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:   return (*link_)(t).get( Angle());
-	case ValueBase::TYPE_COLOR:   return (*link_)(t).get( Color());
-	case ValueBase::TYPE_INTEGER: return (*link_)(t).get(   int());
-	case ValueBase::TYPE_REAL:    return (*link_)(t).get(  Real());
-	case ValueBase::TYPE_TIME:    return (*link_)(t).get(  Time());
-	case ValueBase::TYPE_VECTOR:  return (*link_)(t).get(Vector());
-	default:
-		assert(0);
-		return ValueBase();
-	}
+	Type &type(get_type());
+	if (type == type_angle)   return (*link_)(t).get( Angle());
+	if (type == type_color)   return (*link_)(t).get( Color());
+	if (type == type_integer) return (*link_)(t).get(   int());
+	if (type == type_real)    return (*link_)(t).get(  Real());
+	if (type == type_time)    return (*link_)(t).get(  Time());
+	if (type == type_vector)  return (*link_)(t).get(Vector());
+
+	assert(0);
+	return ValueBase();
 }
 
 
@@ -143,15 +138,15 @@ ValueNode_Step::get_local_name()const
 }
 
 bool
-ValueNode_Step::check_type(ValueBase::TypeId type)
+ValueNode_Step::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE		||
-		type==ValueBase::TYPE_COLOR		||
-		type==ValueBase::TYPE_INTEGER	||
-		type==ValueBase::TYPE_REAL		||
-		type==ValueBase::TYPE_TIME		||
-		type==ValueBase::TYPE_VECTOR	;
+		type==type_angle	||
+		type==type_color	||
+		type==type_integer	||
+		type==type_real		||
+		type==type_time		||
+		type==type_vector	;
 }
 
 bool
@@ -162,9 +157,9 @@ ValueNode_Step::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_,         get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(duration_,     ValueBase::TYPE_TIME);
-	case 2: CHECK_TYPE_AND_SET_VALUE(start_time_,   ValueBase::TYPE_TIME);
-	case 3: CHECK_TYPE_AND_SET_VALUE(intersection_, ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(duration_,     type_time);
+	case 2: CHECK_TYPE_AND_SET_VALUE(start_time_,   type_time);
+	case 3: CHECK_TYPE_AND_SET_VALUE(intersection_, type_real);
 	}
 	return false;
 }

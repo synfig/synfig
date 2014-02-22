@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Reference::ValueNode_Reference(const ValueBase::TypeId &x):
+ValueNode_Reference::ValueNode_Reference(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -124,9 +124,9 @@ ValueNode_Reference::get_local_name()const
 }
 
 bool
-ValueNode_Reference::check_type(ValueBase::TypeId type)
+ValueNode_Reference::check_type(Type &type)
 {
-	if(type)
+	if(type != type_nil)
 		return true;
 	return false;
 }

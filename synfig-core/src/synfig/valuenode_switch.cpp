@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Switch::ValueNode_Switch(const ValueBase::TypeId &x):
+ValueNode_Switch::ValueNode_Switch(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -92,7 +92,7 @@ ValueNode_Switch::set_link_vfunc(int i,ValueNode::Handle value)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_off_, get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(link_on_,  get_type());
-	case 2: CHECK_TYPE_AND_SET_VALUE(switch_,   ValueBase::TYPE_BOOL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(switch_,   type_bool);
 	}
 	return false;
 }
@@ -134,9 +134,9 @@ ValueNode_Switch::get_local_name()const
 }
 
 bool
-ValueNode_Switch::check_type(ValueBase::TypeId type)
+ValueNode_Switch::check_type(Type &type)
 {
-	if(type)
+	if(type != type_nil)
 		return true;
 	return false;
 }

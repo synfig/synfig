@@ -58,24 +58,25 @@ synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &va
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-		{
-			Vector vect(value.get(Vector()));
-			set_link("r",ValueNode_Const::create(vect.mag()));
-			set_link("t",ValueNode_Const::create(Angle(Angle::tan(vect[1],vect[0]))));
-		}
-			break;
-		case ValueBase::TYPE_COLOR:
-			set_link("y",ValueNode_Const::create(value.get(Color()).get_y()));
-			set_link("s",ValueNode_Const::create(value.get(Color()).get_s()));
-			set_link("h",ValueNode_Const::create(value.get(Color()).get_hue()));
-			set_link("a",ValueNode_Const::create(value.get(Color()).get_a()));
-			break;
-		default:
-			assert(0);
-			throw Exception::BadType(ValueBase::type_local_name(get_type()));
+		Vector vect(value.get(Vector()));
+		set_link("r",ValueNode_Const::create(vect.mag()));
+		set_link("t",ValueNode_Const::create(Angle(Angle::tan(vect[1],vect[0]))));
+	}
+	else
+	if (type == type_color)
+	{
+		set_link("y",ValueNode_Const::create(value.get(Color()).get_y()));
+		set_link("s",ValueNode_Const::create(value.get(Color()).get_s()));
+		set_link("h",ValueNode_Const::create(value.get(Color()).get_hue()));
+		set_link("a",ValueNode_Const::create(value.get(Color()).get_a()));
+	}
+	else
+	{
+		assert(0);
+		throw Exception::BadType(type.description.local_name);
 	}
 }
 
@@ -102,32 +103,31 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-		{
-			Real mag;
-			Angle angle;
-			assert(components[0] && components[1]);
-			mag=(*components[0])(t).get(mag);
-			angle=(*components[1])(t).get(angle);
-			return Vector(Angle::cos(angle).get()*mag,Angle::sin(angle).get()*mag);
-		}
-		case ValueBase::TYPE_COLOR:
-		{
-			assert(components[0] && components[1] && components[2] && components[3]);
-			return Color::YUV(
-				(*components[0])(t).get(Real()),
-				(*components[1])(t).get(Real()),
-				(*components[2])(t).get(Angle()),
-				(*components[3])(t).get(Real())
-			);
-		}
-		default:
-			synfig::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
-			assert(components[0]);
-			return (*components[0])(t);
+		Real mag;
+		Angle angle;
+		assert(components[0] && components[1]);
+		mag=(*components[0])(t).get(mag);
+		angle=(*components[1])(t).get(angle);
+		return Vector(Angle::cos(angle).get()*mag,Angle::sin(angle).get()*mag);
 	}
+	else
+	if (type == type_color)
+	{
+		assert(components[0] && components[1] && components[2] && components[3]);
+		return Color::YUV(
+			(*components[0])(t).get(Real()),
+			(*components[1])(t).get(Real()),
+			(*components[2])(t).get(Angle()),
+			(*components[3])(t).get(Real())
+		);
+	}
+
+	synfig::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
+	assert(components[0]);
+	return (*components[0])(t);
 }
 
 bool
@@ -141,30 +141,27 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 		return true;
 	}
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-			if(i==0 && x->get_type()!=ValueBase::TYPE_REAL)
-				return false;
-			if(i==1 && x->get_type()!=ValueBase::TYPE_ANGLE)
-				return false;
-			components[i]=x;
-			return true;
-			break;
-
-		case ValueBase::TYPE_COLOR:
-			if((i==0 || i==1 || i==3) && x->get_type()!=ValueBase::TYPE_REAL)
-				return false;
-			if((i==2) && x->get_type()!=ValueBase::TYPE_ANGLE)
-				return false;
-			components[i]=x;
-			return true;
-			break;
-
-
-		default:
-			break;
+		if(i==0 && x->get_type()!=type_real)
+			return false;
+		if(i==1 && x->get_type()!=type_angle)
+			return false;
+		components[i]=x;
+		return true;
 	}
+	else
+	if (type == type_color)
+	{
+		if((i==0 || i==1 || i==3) && x->get_type()!=type_real)
+			return false;
+		if((i==2) && x->get_type()!=type_angle)
+			return false;
+		components[i]=x;
+		return true;
+	}
+
 	return false;
 }
 
@@ -199,9 +196,9 @@ ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
 	if(name[0]=='c' && name.size() == 2 && name[1]-'0' >= 0 && name[1]-'0' < link_count())
 		return name[1]-'0';
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_color)
 	{
-	case ValueBase::TYPE_COLOR:
 		if(name[0]=='y')
 			return 0;
 		if(name[0]=='s')
@@ -210,13 +207,14 @@ ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name[0]=='a')
 			return 3;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		if(name[0]=='r')
 			return 0;
 		if(name[0]=='t')
 			return 1;
-	default:
-		break;
 	}
 
 	throw Exception::BadLinkName(name);
@@ -235,11 +233,11 @@ ValueNode_RadialComposite::get_local_name()const
 }
 
 bool
-ValueNode_RadialComposite::check_type(ValueBase::TypeId type)
+ValueNode_RadialComposite::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_VECTOR ||
-		type==ValueBase::TYPE_COLOR;
+		type==type_vector ||
+		type==type_color;
 }
 
 LinkableValueNode::Vocab
@@ -250,9 +248,9 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_color)
 	{
-	case ValueBase::TYPE_COLOR:
 		ret.push_back(ParamDesc(ValueBase(),"y_luma")
 		.set_local_name(_("Luma"))
 		);
@@ -266,8 +264,10 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 		.set_local_name(_("Saturation"))
 		);
 		return ret;
-		break;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("The length of the vector"))
@@ -277,9 +277,6 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 		.set_description(_("The angle of the vector with the X axis"))
 		);
 		return ret;
-		break;
-	default:
-		break;
 	}
 
 	return ret;

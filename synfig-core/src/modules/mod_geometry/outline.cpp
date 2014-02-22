@@ -160,7 +160,7 @@ Outline::Outline()
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	param_bline.set(bline_point_list);
+	param_bline.set_list_of(bline_point_list);
 
 	needs_sync=true;
 	
@@ -199,13 +199,13 @@ Outline::sync()
 	const bool loop(bline.get_loop());
 
 	ValueNode_BLine::Handle bline_valuenode;
-	if (bline.get_contained_type() == ValueBase::TYPE_SEGMENT)
+	if (bline.get_contained_type() == type_segment)
 	{
 		bline_valuenode = ValueNode_BLine::create(bline);
 		bline = (*bline_valuenode)(0);
 	}
 
-	const vector<synfig::BLinePoint> bline_(bline.get_list().begin(),bline.get_list().end());
+	const vector<synfig::BLinePoint> bline_(bline.get_list_of(synfig::BLinePoint()));
 #define bline bline_
 
 	vector<BLinePoint>::const_iterator
@@ -416,7 +416,7 @@ Outline::sync()
 #else /* 1 */
 
 	bool loop_;
-	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
+	if(bline.get_contained_type()==type_bline_point)
 	{
 		ValueBase value(bline);
 
@@ -701,9 +701,9 @@ Outline::set_param(const String & param, const ValueBase &value)
 			synfig::warning("Outline::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 
-	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)
+	if(	(param=="segment_list" || param=="bline") && value.get_type()==type_list)
 	{
-		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
+		//if(value.get_contained_type()!=type_bline_point)
 		//	return false;
 
 		param_bline=value;
@@ -711,7 +711,7 @@ Outline::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	/*
-	if(	param=="seg" && value.get_type()==ValueBase::TYPE_SEGMENT)
+	if(	param=="seg" && value.get_type()==type_segment)
 	{
 		if(!segment_list.empty())
 			segment_list.clear();
@@ -721,7 +721,7 @@ Outline::set_param(const String & param, const ValueBase &value)
 		//sync();
 		return true;
 	}
-	if(	param=="w[0]" && value.get_type()==ValueBase::TYPE_REAL)
+	if(	param=="w[0]" && value.get_type()==type_real)
 	{
 		if(width_list.size()<2)
 		{
@@ -737,7 +737,7 @@ Outline::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	if(	param=="w[1]" && value.get_type()==ValueBase::TYPE_REAL)
+	if(	param=="w[1]" && value.get_type()==type_real)
 	{
 		if(width_list.size()<2)
 		{

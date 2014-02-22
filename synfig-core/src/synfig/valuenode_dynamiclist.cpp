@@ -168,9 +168,8 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		}
 	}
 
-	switch(get_contained_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(get_contained_type());
+	if (type == type_vector)
 	{
 		if(c)
 		{
@@ -181,9 +180,9 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		{
 			ret.value_node=ValueNode_Const::create(Vector());
 		}
-		break;
 	}
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 	{
 		if(c)
 		{
@@ -194,9 +193,9 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		{
 			ret.value_node=ValueNode_Const::create(Real());
 		}
-		break;
 	}
-	case ValueBase::TYPE_COLOR:
+	else
+	if (type == type_color)
 	{
 		if(c)
 		{
@@ -207,9 +206,9 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		{
 			ret.value_node=ValueNode_Const::create(Color());
 		}
-		break;
 	}
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 	{
 		if(c)
 		{
@@ -220,9 +219,9 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		{
 			ret.value_node=ValueNode_Const::create(Angle());
 		}
-		break;
 	}
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 	{
 		if(c)
 		{
@@ -233,15 +232,13 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		{
 			ret.value_node=ValueNode_Const::create(Time());
 		}
-		break;
 	}
-	default:
+	else
+	{
 		ret.value_node=ValueNode_Const::create(get_contained_type());
-		break;
 	}
 
 	ret.value_node->set_parent_canvas(get_parent_canvas());
-
 	return ret;
 }
 
@@ -588,9 +585,9 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 }
 
 
-ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::TypeId container_type, Canvas::LooseHandle canvas):
-	LinkableValueNode(ValueBase::TYPE_LIST),
-	container_type	(container_type),
+ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Canvas::LooseHandle canvas):
+	LinkableValueNode(type_list),
+	container_type(&container_type),
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
@@ -610,9 +607,9 @@ ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, Val
 
 
 ValueNode_DynamicList::Handle
-ValueNode_DynamicList::create(ValueBase::TypeId id, Canvas::LooseHandle canvas)
+ValueNode_DynamicList::create(Type &type, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_DynamicList(id, canvas);
+	return new ValueNode_DynamicList(type, canvas);
 }
 
 ValueNode_DynamicList::~ValueNode_DynamicList()
@@ -636,7 +633,7 @@ ValueNode_DynamicList::create_from(const ValueBase &value)
 	// when creating a list of vectors, start it off being looped.
 	// I think the only time this is used if for creating polygons,
 	// and we want them to be looped by default
-	if (value_node->get_contained_type() == ValueBase::TYPE_VECTOR)
+	if (value_node->get_contained_type() == type_vector)
 		value_node->set_loop(true);
 
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
@@ -665,7 +662,7 @@ ValueNode_DynamicList::operator()(Time t)const
 
 		if(state)
 		{
-			if(iter->value_node->get_type()==container_type)
+			if(iter->value_node->get_type()==*container_type)
 				ret_list.push_back((*iter->value_node)(t));
 			else
 			{
@@ -690,7 +687,7 @@ ValueNode_DynamicList::set_link_vfunc(int i,ValueNode::Handle x)
 
 	if((unsigned)i>=list.size())
 		return false;
-	if(x->get_type()!=container_type)
+	if(x->get_type()!=*container_type)
 		return false;
 	list[i].value_node=x;
 	return true;
@@ -774,9 +771,9 @@ ValueNode_DynamicList::get_local_name()const
 }
 
 bool
-ValueNode_DynamicList::check_type(ValueBase::TypeId type)
+ValueNode_DynamicList::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_LIST;
+	return type==type_list;
 }
 
 void
@@ -786,16 +783,16 @@ ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
 		iter->value_node->set_parent_canvas(canvas);
 }
 
-ValueBase::TypeId
+Type&
 ValueNode_DynamicList::get_contained_type()const
 {
-	return container_type;
+	return *container_type;
 }
 
 LinkableValueNode*
 ValueNode_DynamicList::create_new()const
 {
-	return new ValueNode_DynamicList(container_type);
+	return new ValueNode_DynamicList(*container_type);
 }
 
 int

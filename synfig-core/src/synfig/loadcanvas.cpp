@@ -1431,7 +1431,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		return parse_bline_point(element);
 	else
 	if(element->get_name()=="guid")
-		return parse_guid(element);
+		return parse_guid(element).get_string();
 	else
 	if(element->get_name()=="width_point")
 		return parse_width_point(element);
@@ -1472,9 +1472,9 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 		return ValueNode_Animated::Handle();
 	}
 
-	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
 
-	if(!type)
+	if(type == type_nil)
 	{
 		error(element,"Bad type in <animated>");
 		return ValueNode_Animated::Handle();
@@ -1484,7 +1484,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(!value_node)
 	{
-		error(element,strprintf(_("Unable to create <animated> with type \"%s\""),ValueBase::type_local_name(type).c_str()));
+		error(element,strprintf(_("Unable to create <animated> with type \"%s\""), type.description.local_name.c_str()));
 		return ValueNode_Animated::Handle();
 	}
 
@@ -1526,7 +1526,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				//      <animated type="canvas">
 				//        <waypoint time="0s" use="mycanvas"/>
 				//      </animated>
-				if (type==ValueBase::TYPE_CANVAS)
+				if (type==type_canvas)
 				{
 					String warnings;
 					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value(), warnings));
@@ -1645,7 +1645,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	// when loading a version 0.1 canvas, modify constant angle
 	// waypoints to that they are within 180 degrees of the previous
 	// waypoint's value
-	if (type == ValueBase::TYPE_ANGLE)
+	if (type == type_angle)
 	{
 		if (canvas->get_version() == "0.1")
 		{
@@ -1692,16 +1692,16 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		return 0;
 	}
 
-	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
 
-	if(!type)
+	if(type == type_nil)
 	{
 		error(element, strprintf(_("Bad type in <%s>"), element->get_name().c_str()));
 		printf("%s:%d parse_linkable_value_node done bad type\n", __FILE__, __LINE__);
 		return 0;
 	}
 
-	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), ValueBase::type_name(type).c_str());
+	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
 	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type,canvas);
  	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
 	std::vector<handle<ValueNode> > c(value_node->link_count());
@@ -1710,7 +1710,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		error(element, strprintf(_("Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"),
 								 element->get_name().c_str(),
-								 ValueBase::type_local_name(type).c_str(),
+								 type.description.local_name.c_str(),
 								 VALUENODE_COMPATIBILITY_URL));
 		printf("%s:%d parse_linkable_value_node done error creating\n", __FILE__, __LINE__);
 		return 0;
@@ -1720,7 +1720,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		error(element, strprintf(_("<%s> did not accept type '%s'"),
 								 element->get_name().c_str(),
-								 ValueBase::type_local_name(type).c_str()));
+								 type.description.local_name.c_str()));
 		printf("%s:%d parse_linkable_value_node unacceptable type\n", __FILE__, __LINE__);
 		return 0;
 	}
@@ -1884,7 +1884,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					{
 						error(child,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d (%s)"),
 											  c[index]->get_name().c_str(),
-											  ValueBase::type_local_name(c[index]->get_type()).c_str(),
+											  c[index]->get_type().description.local_name.c_str(),
 											  index,
 											  value_node->link_name(index).c_str()));						continue;
 					} else {
@@ -1898,7 +1898,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				{
 					error(child,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d (%s)"),
 										  c[index]->get_name().c_str(),
-										  ValueBase::type_local_name(c[index]->get_type()).c_str(),
+										  c[index]->get_type().description.local_name.c_str(),
 										  index,
 										  value_node->link_name(index).c_str()));
 					continue;
@@ -2047,9 +2047,9 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 		return handle<ValueNode_StaticList>();
 	}
 
-	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	Type &type=ValueBase::ident_type(element->get_attribute("type")->get_value());
 
-	if(!type)
+	if(type == type_nil)
 	{
 		error(element,"Bad type in <list>");
 		return handle<ValueNode_StaticList>();
@@ -2144,9 +2144,9 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		return handle<ValueNode_DynamicList>();
 	}
 
-	ValueBase::TypeId type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
 
-	if(!type)
+	if(type == type_nil)
 	{
 		error(element,"Bad type in <dynamic_list>");
 		return handle<ValueNode_DynamicList>();
@@ -2159,7 +2159,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(element->get_name()=="bline")
 	{
-		value_node=bline_value_node=ValueNode_BLine::create(ValueBase::TYPE_LIST, canvas);
+		value_node=bline_value_node=ValueNode_BLine::create(type_list, canvas);
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
@@ -2393,7 +2393,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		if(value_node)
 		{
 			if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_value_node done early\n", __FILE__, __LINE__);
-			if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
+			if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()) != type_nil)
 			{
 				if (element->get_name() == "bone_valuenode")
 				{
@@ -2413,7 +2413,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 
 	// If ValueBase::ident_type() recognizes the name, then we know it's a ValueBase
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d element name = '%s'\n", __FILE__, __LINE__, element->get_name().c_str());
-	if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
+	if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()) != type_nil)
 	{
 		if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_value_node calls parse_value\n", __FILE__, __LINE__);
 		ValueBase data=parse_value(element,canvas);
@@ -2676,7 +2676,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 				if (str.empty())
 					error(child,_("Empty use=\"\" value in <param>"));
-				else if(layer->get_param(param_name).get_type()==ValueBase::TYPE_CANVAS)
+				else if(layer->get_param(param_name).get_type()==type_canvas)
 				{
 					String warnings;
 					Canvas::Handle c(canvas->surefind_canvas(str, warnings));
@@ -2732,7 +2732,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 			// If we recognize the element name as a
 			// ValueBase, then treat is at one
-			if(/*(*iter)->get_name()!="canvas" && */ValueBase::ident_type((*iter)->get_name()) && !dynamic_cast<xmlpp::Element*>(*iter)->get_attribute("guid"))
+			if(/*(*iter)->get_name()!="canvas" && */ValueBase::ident_type((*iter)->get_name()) != type_nil && !dynamic_cast<xmlpp::Element*>(*iter)->get_attribute("guid"))
 			{
 				data=parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
 

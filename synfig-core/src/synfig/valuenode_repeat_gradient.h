@@ -69,15 +69,15 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-//	static bool check_type(const ValueBase::TypeId &type);
+//	static bool check_type(Type &type);
 
 	LinkableValueNode* create_new()const;
 
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::TypeId type);
-	static ValueNode_Repeat_Gradient* create(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	static bool check_type(Type &type);
+	static ValueNode_Repeat_Gradient* create(const ValueBase &x=type_gradient);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Repeat_Gradient
 

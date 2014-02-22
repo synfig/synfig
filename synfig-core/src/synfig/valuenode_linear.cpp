@@ -58,34 +58,45 @@ ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_angle)
 	{
-	case ValueBase::TYPE_ANGLE:
 		set_link("slope",ValueNode_Const::create(Angle::deg(0)));
 		set_link("offset",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_COLOR:
+	}
+	else
+	if (type == type_color)
+	{
 		set_link("slope",ValueNode_Const::create(Color(0,0,0,0)));
 		set_link("offset",ValueNode_Const::create(value.get(Color())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	}
+	else
+	if (type == type_integer)
+	{
 		set_link("slope",ValueNode_Const::create(int(0)));
 		set_link("offset",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	}
+	else
+	if (type == type_real)
+	{
 		set_link("slope",ValueNode_Const::create(Real(0)));
 		set_link("offset",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
+	{
 		set_link("slope",ValueNode_Const::create(Time(0)));
 		set_link("offset",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		set_link("slope",ValueNode_Const::create(Vector(0,0)));
 		set_link("offset",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(type.description.local_name);
 	}
 }
 
@@ -112,24 +123,21 @@ ValueNode_Linear::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return (*m_)(t).get( Angle())*t+(*b_)(t).get( Angle());
-	case ValueBase::TYPE_COLOR:
+	if (type == type_color)
 		return (*m_)(t).get( Color())*t+(*b_)(t).get( Color());
-	case ValueBase::TYPE_INTEGER:
+	if (type == type_integer)
 		return round_to_int((*m_)(t).get(int())*t+(*b_)(t).get(int()));
-	case ValueBase::TYPE_REAL:
+	if (type == type_real)
 		return (*m_)(t).get(  Real())*t+(*b_)(t).get(  Real());
-	case ValueBase::TYPE_TIME:
+	if (type == type_time)
 		return (*m_)(t).get(  Time())*t+(*b_)(t).get(  Time());
-	case ValueBase::TYPE_VECTOR:
+	if (type == type_vector)
 		return (*m_)(t).get(Vector())*t+(*b_)(t).get(Vector());
-	default:
-		assert(0);
-		break;
-	}
+
+	assert(0);
 	return ValueBase();
 }
 
@@ -147,15 +155,15 @@ ValueNode_Linear::get_local_name()const
 }
 
 bool
-ValueNode_Linear::check_type(ValueBase::TypeId type)
+ValueNode_Linear::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE		||
-		type==ValueBase::TYPE_COLOR		||
-		type==ValueBase::TYPE_INTEGER	||
-		type==ValueBase::TYPE_REAL		||
-		type==ValueBase::TYPE_TIME		||
-		type==ValueBase::TYPE_VECTOR	;
+		type==type_angle	||
+		type==type_color	||
+		type==type_integer	||
+		type==type_real		||
+		type==type_time		||
+		type==type_vector;
 }
 
 bool
@@ -189,20 +197,20 @@ ValueNode_Linear::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_angle
+	 || type == type_color
+	 || type == type_integer
+	 || type == type_real
+	 || type == type_time)
 	{
-	case ValueBase::TYPE_ANGLE:
-	case ValueBase::TYPE_COLOR:
-	case ValueBase::TYPE_INTEGER:
-	case ValueBase::TYPE_REAL:
-	case ValueBase::TYPE_TIME:
 		ret.push_back(ParamDesc(ValueBase(),"slope")
 			.set_local_name(_("Rate"))
 			.set_description(_("Value that is multiplied by the current time (in seconds)"))
 		);
-	break;
-	case ValueBase::TYPE_VECTOR:
-	default:
+	}
+	else
+	{
 		ret.push_back(ParamDesc(ValueBase(),"slope")
 			.set_local_name(_("Slope"))
 			.set_description(_("Value that is multiplied by the current time (in seconds)"))

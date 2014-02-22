@@ -220,7 +220,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 // this should only be used when creating the root bone
 ValueNode_Bone::ValueNode_Bone():
-	LinkableValueNode(ValueBase::TYPE_BONE)
+	LinkableValueNode(type_bone_object)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
@@ -239,9 +239,8 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 	}
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_BONE:
+	Type &type = value.get_type();
+	if (type == type_bone_object)
 	{
 		Bone bone(value.get(Bone()));
 		String name(bone.get_name());
@@ -275,11 +274,10 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_parent_canvas(canvas);
 
 		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), uintptr_t(this)));
-
-		break;
 	}
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -515,9 +513,9 @@ ValueNode_Bone::get_bone_name(Time t)const
 }
 
 bool
-ValueNode_Bone::check_type(ValueBase::TypeId type)
+ValueNode_Bone::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_BONE;
+	return type==type_bone_object;
 }
 
 bool
@@ -527,10 +525,10 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(name_,		ValueBase::TYPE_STRING);
+	case 0: CHECK_TYPE_AND_SET_VALUE(name_, type_string);
 	case 1:
 	{
-		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
+		VALUENODE_CHECK_TYPE(type_bone_valuenode);
 
 		// check for loops
 		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
@@ -543,14 +541,14 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 		VALUENODE_SET_VALUE(parent_);
 	}
 #ifndef HIDE_BONE_FIELDS
-	case 2: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
-	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
-	case 4: CHECK_TYPE_AND_SET_VALUE(scalelx_,	ValueBase::TYPE_REAL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(scalely_,	ValueBase::TYPE_REAL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
-	case 8:CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
-	case 9:CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(origin_,	type_vector);
+	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	type_angle);
+	case 4: CHECK_TYPE_AND_SET_VALUE(scalelx_,	type_real);
+	case 5: CHECK_TYPE_AND_SET_VALUE(scalely_,	type_real);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	type_real);
+	case 7: CHECK_TYPE_AND_SET_VALUE(scaley_,	type_real);
+	case 8: CHECK_TYPE_AND_SET_VALUE(length_,	type_real);
+	case 9: CHECK_TYPE_AND_SET_VALUE(strength_,	type_real);
 #endif
 	}
 	return false;
@@ -767,7 +765,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
 	{
 		ValueBase value_node(value_node_const->get_value());
-		if (value_node.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		if (value_node.get_type() == type_bone_valuenode)
 			if (ValueNode_Bone::Handle bone = value_node.get(ValueNode_Bone::Handle()))
 			{
 				// do we want to check for bone references in other bone fields or just 'parent'?
@@ -786,7 +784,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	// if it's a ValueNode_Animated
 	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
 	{
-		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
+		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(type_bone_object);
 		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
 		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
 		{
@@ -1072,7 +1070,7 @@ ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)), Point 
 }
 
 bool
-ValueNode_Bone_Root::check_type(ValueBase::TypeId type __attribute__ ((unused)))
+ValueNode_Bone_Root::check_type(Type &type __attribute__ ((unused)))
 {
 	return false;
 }

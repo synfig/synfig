@@ -63,7 +63,7 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 
-	if (x.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+	if (x.get_type() == type_bone_valuenode)
 		add_child(x.get(ValueNode_Bone::Handle()).get());
 
 	set_parent_canvas(canvas);
@@ -74,14 +74,14 @@ ValueNode*
 ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
 	// this is nasty - shouldn't it be done somewhere else?
-	if (x.get_type() == ValueBase::TYPE_BONE)
+	if (x.get_type() == type_bone_object)
 	{
 		printf("%s:%d forcing convert to ValueNode_Bone\n", __FILE__, __LINE__);
 		return ValueNode_Bone::create(x, canvas);
 	}
 
 	// this too
-	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
+	if (x.get_type() == type_bone_weight_pair)
 	{
 		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
 		return ValueNode_BoneWeightPair::create(x, canvas);
@@ -104,7 +104,7 @@ ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)
 
 ValueNode_Const::~ValueNode_Const()
 {
-	if (get_value().get_type() == ValueBase::TYPE_VALUENODE_BONE)
+	if (get_value().get_type() == type_bone_valuenode)
 		remove_child(get_value().get(ValueNode_Bone::Handle()).get());
 }
 
@@ -136,10 +136,10 @@ ValueNode_Const::set_value(const ValueBase &data)
 {
 	if(data!=value)
 	{
-		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		if (value.get_type() == type_bone_valuenode)
 			remove_child(value.get(ValueNode_Bone::Handle()).get());
 
-		if (data.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		if (data.get_type() == type_bone_valuenode)
 			add_child(data.get(ValueNode_Bone::Handle()).get());
 
 		value=data;

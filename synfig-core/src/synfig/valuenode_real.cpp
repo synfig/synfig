@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Real::ValueNode_Real(const ValueBase::TypeId &x):
+ValueNode_Real::ValueNode_Real(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -63,20 +63,19 @@ ValueNode_Real::ValueNode_Real(const ValueBase &x):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(x.get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(x.get_type());
+	if (type == type_angle)
 		set_link("link", ValueNode_Const::create(Angle::deg(x.get(Angle())).get()));
-		break;
-	case ValueBase::TYPE_BOOL:
+	else
+	if (type == type_bool)
 		set_link("link", ValueNode_Const::create(float(x.get(bool()))));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
 		set_link("link", ValueNode_Const::create(float(x.get(int()))));
-		break;
-	default:
+	else
+	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(x.get_type()));
+		throw runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
 	}
 }
 
@@ -104,7 +103,7 @@ ValueNode_Real::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(real_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(real_, type_real);
 	}
 	return false;
 }
@@ -127,18 +126,16 @@ ValueNode_Real::operator()(Time t)const
 
 	float real = (*real_)(t).get(float());
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return Angle::deg(real);
-	case ValueBase::TYPE_BOOL:
+	if (type == type_bool)
 		return bool(real);
-	case ValueBase::TYPE_INTEGER:
+	if (type == type_integer)
 		return int(real);
-	default:
-		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(get_type()));
-	}
+
+	assert(0);
+	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
 }
 
 synfig::ValueBase
@@ -162,12 +159,12 @@ ValueNode_Real::get_local_name()const
 }
 
 bool
-ValueNode_Real::check_type(ValueBase::TypeId type __attribute__ ((unused)))
+ValueNode_Real::check_type(Type &type __attribute__ ((unused)))
 {
 	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_BOOL  ||
-		type==ValueBase::TYPE_INTEGER;
+		type==type_angle ||
+		type==type_bool  ||
+		type==type_integer;
 }
 
 LinkableValueNode::Vocab

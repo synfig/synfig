@@ -45,7 +45,7 @@ class ValueNode_BLineCalcWidth : public LinkableValueNode
 	ValueNode::RHandle scale_;
 	ValueNode::RHandle homogeneous_;
 
-	ValueNode_BLineCalcWidth(const ValueBase::TypeId &x=ValueBase::TYPE_REAL);
+	ValueNode_BLineCalcWidth(Type &x=type_real);
 
 public:
 
@@ -69,8 +69,8 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::TypeId type);
-	static ValueNode_BLineCalcWidth* create(const ValueBase &x=ValueBase::TYPE_REAL);
+	static bool check_type(Type &type);
+	static ValueNode_BLineCalcWidth* create(const ValueBase &x=type_real);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLineCalcWidth
 

@@ -47,11 +47,11 @@ public:
 	typedef etl::handle<ValueNode_BoneInfluence> Handle;
 	typedef etl::handle<const ValueNode_BoneInfluence> ConstHandle;
 
-	ValueNode_BoneInfluence(const ValueBase::TypeId &x);
+	ValueNode_BoneInfluence(Type &x);
 
 	ValueNode_BoneInfluence(const ValueNode::Handle &x, etl::loose_handle<Canvas> canvas);
 
-//	static Handle create(const ValueBase::TypeId &x);
+//	static Handle create(Type &x);
 //	static Handle create(const ValueNode::Handle &x);
 
 
@@ -72,7 +72,7 @@ protected:
 
 public:
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::TypeId type);
+	static bool check_type(Type &type);
 	virtual Vocab get_children_vocab_vfunc()const;
 	static ValueNode_BoneInfluence* create(const ValueBase &x, etl::loose_handle<Canvas>);
 

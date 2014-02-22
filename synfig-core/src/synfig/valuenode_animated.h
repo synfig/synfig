@@ -128,7 +128,7 @@ public:
 	virtual String get_local_name()const;
 
 	//! Creates a Valuenode_Animated by type
-	static Handle create(ValueBase::TypeId type);
+	static Handle create(Type &type);
 	//! Creates a Valuenode_Animated by ValueBase and Time
 	static Handle create(const ValueBase& value, const Time& time);
 	//! Creates a Valuenode_Animated by ValueNode and Time
@@ -153,7 +153,7 @@ protected:
 	ValueNode_Animated();
 
 	//! Sets the type of the Animated Value Node
-	void set_type(ValueBase::TypeId t);
+	void set_type(Type &t);
 	//!	Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points. Time Point is like Waypoint but
 	//! without value node

@@ -114,7 +114,7 @@ Plant::Plant():
 	bline[0].set_width(1.0f);
 	bline[1].set_width(1.0f);
 	bline[2].set_width(1.0f);
-	param_bline.set(bline);
+	param_bline.set_list_of(bline);
 	
 	bline_loop=true;
 	mass=(0.5);
@@ -171,7 +171,7 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 void
 Plant::calc_bounding_rect()const
 {
-	std::vector<BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Real velocity=param_velocity.get(Real());
 	Vector gravity=param_gravity.get(Vector());
 	Real size=param_size.get(Real());
@@ -208,7 +208,7 @@ Plant::calc_bounding_rect()const
 void
 Plant::sync()const
 {
-	std::vector<BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Real step_=param_step.get(Real());
 	Gradient gradient=param_gradient.get(Gradient());
 	Real random_factor=param_random_factor.get(Real());

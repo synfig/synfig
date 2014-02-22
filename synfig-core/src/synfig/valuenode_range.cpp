@@ -60,39 +60,45 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	ValueBase::TypeId id(value.get_type());
+	Type &type(value.get_type());
 
-	switch(id)
+	if (type == type_angle)
 	{
-	case ValueBase::TYPE_ANGLE:
 		set_link("min",ValueNode_Const::create(value.get(Angle())));
 		set_link("max",ValueNode_Const::create(value.get(Angle())));
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	}
+	else
+	if (type == type_integer)
+	{
 		set_link("min",ValueNode_Const::create(value.get(int())));
 		set_link("max",ValueNode_Const::create(value.get(int())));
 		set_link("link",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	}
+	else
+	if (type == type_real)
+	{
 		set_link("min",ValueNode_Const::create(value.get(Real())));
 		set_link("max",ValueNode_Const::create(value.get(Real())));
 		set_link("link",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
+	{
 		set_link("min",ValueNode_Const::create(value.get(Time())));
 		set_link("max",ValueNode_Const::create(value.get(Time())));
 		set_link("link",ValueNode_Const::create(value.get(Time())));
-		break;
-	default:
+	}
+	else
+	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
-	assert(min_->get_type()==id);
-	assert(max_->get_type()==id);
-	assert(link_->get_type()==id);
-	assert(get_type()==id);
+	assert(min_->get_type()==type);
+	assert(max_->get_type()==type);
+	assert(link_->get_type()==type);
+	assert(get_type()==type);
 }
 
 LinkableValueNode*
@@ -121,9 +127,8 @@ synfig::ValueNode_Range::operator()(Time t)const
 	if(!min_ || !max_ || !link_)
 		throw runtime_error(strprintf("ValueNode_Range: %s",_("Some of my parameters aren't set!")));
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 	{
 		Angle minimum = (* min_)(t).get(Angle());
 		Angle maximum = (* max_)(t).get(Angle());
@@ -147,53 +152,54 @@ synfig::ValueNode_Range::operator()(Time t)const
 		else
 			return maximum;
 	}
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
 		return std::max((*min_)(t).get(int()),  std::min((*max_)(t).get(int()),  (*link_)(t).get(int())));
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 		return std::max((*min_)(t).get(Real()), std::min((*max_)(t).get(Real()), (*link_)(t).get(Real())));
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		return std::max((*min_)(t).get(Time()), std::min((*max_)(t).get(Time()), (*link_)(t).get(Time())));
-	default:
-		assert(0);
-		break;
-	}
+
+	assert(0);
 	return ValueBase();
 }
 
 synfig::ValueBase
 synfig::ValueNode_Range::get_inverse(Time t, const synfig::Vector &target_value) const
 {
-	switch (get_type())
+	Type &type(get_type());
+	if (type == type_integer)
 	{
-		case ValueBase::TYPE_INTEGER:
-			{
-			int max_value((*max_)(t).get(int()));
-			int min_value((*min_)(t).get(int()));
-			return std::max(min_value, std::min(max_value, int(target_value.mag())));
-			}
-		case ValueBase::TYPE_REAL:
-			{
-			Real max_value((*max_)(t).get(Real()));
-			Real min_value((*min_)(t).get(Real()));
-			return std::max(min_value, std::min(max_value, target_value.mag()));
-			}
-		case ValueBase::TYPE_ANGLE:
-			{
-			Angle max_value((*max_)(t).get(Angle()));
-			Angle min_value((*min_)(t).get(Angle()));
-			Angle target_angle(Angle::tan(target_value[1],target_value[0]));
-			return target_angle>max_value?max_value:target_angle<min_value?min_value:target_angle;
-			}
-		case ValueBase::TYPE_TIME:
-			{
-			Real max_value((*max_)(t).get(Time()));
-			Real min_value((*min_)(t).get(Time()));
-			return std::max(min_value, std::min(max_value, target_value.mag()));
-			}
-		default:
-			return target_value;
+		int max_value((*max_)(t).get(int()));
+		int min_value((*min_)(t).get(int()));
+		return std::max(min_value, std::min(max_value, int(target_value.mag())));
 	}
-	return ValueBase();
+	else
+	if (type == type_real)
+	{
+		Real max_value((*max_)(t).get(Real()));
+		Real min_value((*min_)(t).get(Real()));
+		return std::max(min_value, std::min(max_value, target_value.mag()));
+	}
+	else
+	if (type == type_angle)
+	{
+		Angle max_value((*max_)(t).get(Angle()));
+		Angle min_value((*min_)(t).get(Angle()));
+		Angle target_angle(Angle::tan(target_value[1],target_value[0]));
+		return target_angle>max_value?max_value:target_angle<min_value?min_value:target_angle;
+	}
+	else
+	if (type == type_time)
+	{
+		Real max_value((*max_)(t).get(Time()));
+		Real min_value((*min_)(t).get(Time()));
+		return std::max(min_value, std::min(max_value, target_value.mag()));
+	}
+
+	return target_value;
 }
 
 synfig::ValueBase
@@ -202,17 +208,12 @@ synfig::ValueNode_Range::get_inverse(Time t, const synfig::Angle &target_value) 
 	Angle minimum = (* min_)(t).get(Angle());
 	Angle maximum = (* max_)(t).get(Angle());
 	// Angle link = (*link_)(t).get(Angle());
-		switch (get_type())
-		{
-			default:
-
-		if(Angle::rad(maximum).get()>=Angle::rad(target_value).get() && Angle::rad(target_value).get()>=Angle::rad(minimum).get())
-			return target_value;
-		else if (Angle::rad(minimum).get()>Angle::rad(target_value).get())
-			return minimum;
-		else
-			return maximum;
-		}
+	if(Angle::rad(maximum).get()>=Angle::rad(target_value).get() && Angle::rad(target_value).get()>=Angle::rad(minimum).get())
+		return target_value;
+	else if (Angle::rad(minimum).get()>Angle::rad(target_value).get())
+		return minimum;
+	else
+		return maximum;
 	return ValueBase();
 }
 
@@ -258,12 +259,12 @@ ValueNode_Range::get_local_name()const
 }
 
 bool
-ValueNode_Range::check_type(ValueBase::TypeId type)
+ValueNode_Range::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_ANGLE
-		|| type==ValueBase::TYPE_INTEGER
-		|| type==ValueBase::TYPE_REAL
-		|| type==ValueBase::TYPE_TIME;
+	return type==type_angle
+		|| type==type_integer
+		|| type==type_real
+		|| type==type_time;
 }
 
 LinkableValueNode::Vocab

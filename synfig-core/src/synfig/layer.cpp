@@ -376,7 +376,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	ParamList param_list(get_param_list());
 	for(ParamList::const_iterator iter(param_list.begin()); iter != param_list.end(); ++iter)
 	{
-		if(dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==ValueBase::TYPE_CANVAS)
+		if(dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
 		{
 			// This parameter is a canvas.  We need a close look.
 			Canvas::Handle canvas(iter->second.get(Canvas::Handle()));
@@ -403,7 +403,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
 	{
 		// Make sure we clone inline canvases
-		if(iter->second->get_type()==ValueBase::TYPE_CANVAS)
+		if(iter->second->get_type()==type_canvas)
 		{
 			Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
 			if(canvas->is_inline())

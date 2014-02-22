@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Integer::ValueNode_Integer(const ValueBase::TypeId &x):
+ValueNode_Integer::ValueNode_Integer(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -63,23 +63,22 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(x.get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(x.get_type());
+	if (type == type_angle)
 		set_link("link", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));
-		break;
-	case ValueBase::TYPE_BOOL:
+	else
+	if (type == type_bool)
 		set_link("link", ValueNode_Const::create(int(x.get(bool()))));
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 		set_link("link", ValueNode_Const::create(round_to_int(x.get(Real()))));
-		break;
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		set_link("link", ValueNode_Const::create(round_to_int(x.get(Time()))));
-		break;
-	default:
+	else
+	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(x.get_type()));
+		throw runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
 	}
 }
 
@@ -107,7 +106,7 @@ ValueNode_Integer::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(integer_, ValueBase::TYPE_INTEGER);
+	case 0: CHECK_TYPE_AND_SET_VALUE(integer_, type_integer);
 	}
 	return false;
 }
@@ -130,20 +129,18 @@ ValueNode_Integer::operator()(Time t)const
 
 	int integer = (*integer_)(t).get(int());
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return Angle::deg(integer);
-	case ValueBase::TYPE_BOOL:
+	if (type == type_bool)
 		return bool(integer);
-	case ValueBase::TYPE_REAL:
+	if (type == type_real)
 		return Real(integer);
-	case ValueBase::TYPE_TIME:
+	if (type == type_time)
 		return Time(integer);
-	default:
-		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(get_type()));
-	}
+
+	assert(0);
+	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
 }
 
 ValueBase
@@ -173,13 +170,13 @@ ValueNode_Integer::get_local_name()const
 }
 
 bool
-ValueNode_Integer::check_type(ValueBase::TypeId type __attribute__ ((unused)))
+ValueNode_Integer::check_type(Type &type __attribute__ ((unused)))
 {
 	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_BOOL  ||
-		type==ValueBase::TYPE_REAL  ||
-		type==ValueBase::TYPE_TIME;
+		type==type_angle ||
+		type==type_bool  ||
+		type==type_real  ||
+		type==type_time;
 }
 
 LinkableValueNode::Vocab

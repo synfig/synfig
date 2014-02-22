@@ -67,32 +67,29 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	set_link("smooth",ValueNode_Const::create(int(RandomNoise::SMOOTH_CUBIC)));
 	set_link("loop",ValueNode_Const::create(Real(0)));
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_BOOL:
+	else
+	if (type == type_bool)
 		set_link("link",ValueNode_Const::create(value.get(bool())));
-		break;
-	case ValueBase::TYPE_COLOR:
+	else
+	if (type == type_color)
 		set_link("link",ValueNode_Const::create(value.get(Color())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
 		set_link("link",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 		set_link("link",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		set_link("link",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	else
+	if (type == type_vector)
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
-	}
+	else
+		throw Exception::BadType(type.description.local_name);
 }
 
 LinkableValueNode*
@@ -126,48 +123,36 @@ ValueNode_Random::operator()(Time t)const
 
 	random.set_seed(seed);
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return ((*link_)(t).get( Angle()) +
 				Angle::deg(random(Smooth(smooth), 0, 0, 0, speed, loop) * radius));
-
-	case ValueBase::TYPE_BOOL:
+	if (type == type_bool)
 		return round_to_int((*link_)(t).get(  bool()) +
 							random(Smooth(smooth), 0, 0, 0, speed, loop) * radius) > 0;
-
-	case ValueBase::TYPE_COLOR:
+	if (type == type_color)
 		return (((*link_)(t).get( Color()) +
 				 Color(random(Smooth(smooth), 0, 0, 0, speed, loop),
 					   random(Smooth(smooth), 1, 0, 0, speed, loop),
 					   random(Smooth(smooth), 2, 0, 0, speed, loop), 0) * radius).clamped());
-
-	case ValueBase::TYPE_INTEGER:
+	if (type == type_integer)
 		return round_to_int((*link_)(t).get(   int()) +
 							random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
-
-	case ValueBase::TYPE_REAL:
+	if (type == type_real)
 		return ((*link_)(t).get(  Real()) +
 				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
-
-	case ValueBase::TYPE_TIME:
+	if (type == type_time)
 		return ((*link_)(t).get(  Time()) +
 				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
-
-	case ValueBase::TYPE_VECTOR:
+	if (type == type_vector)
 	{
 		float length(random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 		Angle::rad angle(random(Smooth(smooth), 1, 0, 0, speed, loop) * PI);
-
 		return ((*link_)(t).get(Vector()) +
 				Vector(Angle::cos(angle).get(), Angle::sin(angle).get()) * length);
 	}
 
-	default:
-		assert(0);
-		break;
-	}
-
+	assert(0);
 	return ValueBase();
 }
 
@@ -192,11 +177,11 @@ ValueNode_Random::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_,   get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(radius_, ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(seed_,   ValueBase::TYPE_INTEGER);
-	case 3: CHECK_TYPE_AND_SET_VALUE(speed_,  ValueBase::TYPE_REAL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(smooth_, ValueBase::TYPE_INTEGER);
-	case 5: CHECK_TYPE_AND_SET_VALUE(loop_,  ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(radius_, type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(seed_,   type_integer);
+	case 3: CHECK_TYPE_AND_SET_VALUE(speed_,  type_real);
+	case 4: CHECK_TYPE_AND_SET_VALUE(smooth_, type_integer);
+	case 5: CHECK_TYPE_AND_SET_VALUE(loop_,  type_real);
 	}
 	return false;
 }
@@ -219,16 +204,16 @@ ValueNode_Random::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Random::check_type(ValueBase::TypeId type)
+ValueNode_Random::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE		||
-		type==ValueBase::TYPE_BOOL		||
-		type==ValueBase::TYPE_COLOR		||
-		type==ValueBase::TYPE_INTEGER	||
-		type==ValueBase::TYPE_REAL		||
-		type==ValueBase::TYPE_TIME		||
-		type==ValueBase::TYPE_VECTOR	;
+		type==type_angle	||
+		type==type_bool		||
+		type==type_color	||
+		type==type_integer	||
+		type==type_real		||
+		type==type_time		||
+		type==type_vector;
 }
 
 ValueNode::Handle

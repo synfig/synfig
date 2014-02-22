@@ -56,14 +56,14 @@ ValueNode_Exp::ValueNode_Exp(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_real)
 	{
-	case ValueBase::TYPE_REAL:
 		set_link("exp",ValueNode_Const::create(Real(0)));
 		set_link("scale",ValueNode_Const::create(value.get(Real())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -113,8 +113,8 @@ ValueNode_Exp::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(exp_,   ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(scale_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(exp_,   type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(scale_, type_real);
 	}
 	return false;
 }
@@ -133,9 +133,9 @@ ValueNode_Exp::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Exp::check_type(ValueBase::TypeId type)
+ValueNode_Exp::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_REAL;
+	return type==type_real;
 }
 
 LinkableValueNode::Vocab

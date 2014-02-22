@@ -57,15 +57,15 @@ ValueNode_IntString::ValueNode_IntString(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_string)
 	{
-	case ValueBase::TYPE_STRING:
 		set_link("int",ValueNode_Const::create(int(0)));
 		set_link("width",ValueNode_Const::create(int(0)));
 		set_link("zero_pad",ValueNode_Const::create(bool(false)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -96,15 +96,10 @@ ValueNode_IntString::operator()(Time t)const
 	int width((*width_)(t).get(int()));
 	int zero_pad((*zero_pad_)(t).get(bool()));
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_STRING:
+	if (get_type() == type_string)
 		return strprintf(strprintf("%%%s%dd",
 								   zero_pad ? "0" : "",
 								   width).c_str(), integer);
-	default:
-		break;
-	}
 
 	assert(0);
 	return ValueBase();
@@ -129,9 +124,9 @@ ValueNode_IntString::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(int_, ValueBase::TYPE_INTEGER);
-	case 1: CHECK_TYPE_AND_SET_VALUE(width_, ValueBase::TYPE_INTEGER);
-	case 2: CHECK_TYPE_AND_SET_VALUE(zero_pad_, ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(int_, type_integer);
+	case 1: CHECK_TYPE_AND_SET_VALUE(width_, type_integer);
+	case 2: CHECK_TYPE_AND_SET_VALUE(zero_pad_, type_bool);
 	}
 	return false;
 }
@@ -152,10 +147,10 @@ ValueNode_IntString::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_IntString::check_type(ValueBase::TypeId type)
+ValueNode_IntString::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_STRING;
+		type==type_string;
 }
 
 LinkableValueNode::Vocab

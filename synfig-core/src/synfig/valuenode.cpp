@@ -229,7 +229,7 @@ ValueNode::subsys_stop()
 	return true;
 }
 
-ValueNode::ValueNode(ValueBase::TypeId type):type(type)
+ValueNode::ValueNode(Type &type):type(&type)
 {
 	value_node_count++;
 }
@@ -248,7 +248,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 
 	if (!check_type(name, x.get_type()))
 	{
-		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), ValueBase::type_local_name(x.get_type()).c_str());
+		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
 		return 0;
 	}
 
@@ -256,13 +256,13 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 }
 
 bool
-LinkableValueNode::check_type(const String &name, ValueBase::TypeId x)
+LinkableValueNode::check_type(const String &name, Type &x)
 {
 	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
 	// user creating them for themselves, so check_type() fails for
 	// them even when it is valid
-	if((name == "bone_root" && x == ValueBase::TYPE_BONE) ||
-	   (name == "duplicate" && x == ValueBase::TYPE_REAL))
+	if((name == "bone_root" && x == type_bone_object) ||
+	   (name == "duplicate" && x == type_real))
 		return true;
 
 	if(!book().count(name) || !book()[name].check_type)
@@ -566,7 +566,7 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 }
 
 PlaceholderValueNode::Handle
-PlaceholderValueNode::create(ValueBase::TypeId type)
+PlaceholderValueNode::create(Type &type)
 {
 	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
 		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
@@ -580,7 +580,7 @@ PlaceholderValueNode::operator()(Time /*t*/)const
 	return ValueBase();
 }
 
-PlaceholderValueNode::PlaceholderValueNode(ValueBase::TypeId type):
+PlaceholderValueNode::PlaceholderValueNode(Type &type):
 	ValueNode(type)
 {
 }

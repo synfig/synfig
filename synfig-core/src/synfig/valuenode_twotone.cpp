@@ -54,18 +54,18 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableValueNode(synfig::type_gradient)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_gradient)
 	{
-	case ValueBase::TYPE_GRADIENT:
 		set_link("color1",ValueNode_Const::create(value.get(Gradient())(0)));
 		set_link("color2",ValueNode_Const::create(value.get(Gradient())(1)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -102,8 +102,8 @@ ValueNode_TwoTone::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a, ValueBase::TYPE_COLOR);
-	case 1: CHECK_TYPE_AND_SET_VALUE(ref_b, ValueBase::TYPE_COLOR);
+	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a, type_color);
+	case 1: CHECK_TYPE_AND_SET_VALUE(ref_b, type_color);
 	}
 	return false;
 }
@@ -136,9 +136,9 @@ ValueNode_TwoTone::get_local_name()const
 }
 
 bool
-ValueNode_TwoTone::check_type(ValueBase::TypeId type)
+ValueNode_TwoTone::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_GRADIENT;
+	return type==type_gradient;
 }
 
 LinkableValueNode::Vocab

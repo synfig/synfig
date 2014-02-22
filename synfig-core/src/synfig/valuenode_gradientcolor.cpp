@@ -57,15 +57,15 @@ ValueNode_GradientColor::ValueNode_GradientColor(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() ==  type_color)
 	{
-	case ValueBase::TYPE_COLOR:
 		set_link("gradient", ValueNode_Const::create(Gradient(value.get(Color()),value.get(Color()))));
 		set_link("index",    ValueNode_Const::create(Real(0.5)));
 		set_link("loop",    ValueNode_Const::create(bool(false)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -106,9 +106,9 @@ ValueNode_GradientColor::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_,	ValueBase::TYPE_GRADIENT);
-	case 1: CHECK_TYPE_AND_SET_VALUE(index_,	ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(loop_,		ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_,	type_gradient);
+	case 1: CHECK_TYPE_AND_SET_VALUE(index_,	type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(loop_,		type_bool);
 	}
 	return false;
 }
@@ -141,9 +141,9 @@ ValueNode_GradientColor::get_local_name()const
 }
 
 bool
-ValueNode_GradientColor::check_type(ValueBase::TypeId type)
+ValueNode_GradientColor::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_COLOR;
+	return type==type_color;
 }
 
 LinkableValueNode::Vocab

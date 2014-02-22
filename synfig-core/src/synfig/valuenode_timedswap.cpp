@@ -59,34 +59,45 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_angle)
 	{
-	case ValueBase::TYPE_ANGLE:
 		set_link("before",ValueNode_Const::create(value.get(Angle())));
 		set_link("after",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_COLOR:
+	}
+	else
+	if (type == type_color)
+	{
 		set_link("before",ValueNode_Const::create(value.get(Color())));
 		set_link("after",ValueNode_Const::create(value.get(Color())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	}
+	else
+	if (type == type_integer)
+	{
 		set_link("before",ValueNode_Const::create(value.get(int())));
 		set_link("after",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	}
+	else
+	if (type == type_real)
+	{
 		set_link("before",ValueNode_Const::create(value.get(Real())));
 		set_link("after",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
+	{
 		set_link("before",ValueNode_Const::create(value.get(Time())));
 		set_link("after",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		set_link("before",ValueNode_Const::create(value.get(Vector())));
 		set_link("after",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(type.description.local_name);
 	}
 
 	set_link("time",ValueNode_Const::create(Time(2)));
@@ -128,47 +139,48 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 		// if amount==0.0, then we are after
 		// if amount==1.0, then we are before
 
-		switch(get_type())
+		Type &type(get_type());
+		if (type == type_angle)
 		{
-		case ValueBase::TYPE_ANGLE:
-			{
-				Angle a=(*after)(t).get(Angle());
-				Angle b=(*before)(t).get(Angle());
-				return (b-a)*amount+a;
-			}
-		case ValueBase::TYPE_COLOR:
-			{
-				Color a=(*after)(t).get(Color());
-				Color b=(*before)(t).get(Color());
-				// note: Shouldn't this use a straight blend?
-				return (b-a)*amount+a;
-			}
-		case ValueBase::TYPE_INTEGER:
-			{
-				float a=(float)(*after)(t).get(int());
-				float b=(float)(*before)(t).get(int());
-				return round_to_int((b-a)*amount+a);
-			}
-		case ValueBase::TYPE_REAL:
-			{
-				Real a=(*after)(t).get(Real());
-				Real b=(*before)(t).get(Real());
-				return (b-a)*amount+a;
-			}
-		case ValueBase::TYPE_TIME:
-			{
-				Time a=(*after)(t).get(Time());
-				Time b=(*before)(t).get(Time());
-				return (b-a)*amount+a;
-			}
-		case ValueBase::TYPE_VECTOR:
-			{
-				Vector a=(*after)(t).get(Vector());
-				Vector b=(*before)(t).get(Vector());
-				return (b-a)*amount+a;
-			}
-		default:
-			break;
+			Angle a=(*after)(t).get(Angle());
+			Angle b=(*before)(t).get(Angle());
+			return (b-a)*amount+a;
+		}
+		else
+		if (type == type_color)
+		{
+			Color a=(*after)(t).get(Color());
+			Color b=(*before)(t).get(Color());
+			// note: Shouldn't this use a straight blend?
+			return (b-a)*amount+a;
+		}
+		else
+		if (type == type_integer)
+		{
+			float a=(float)(*after)(t).get(int());
+			float b=(float)(*before)(t).get(int());
+			return round_to_int((b-a)*amount+a);
+		}
+		else
+		if (type == type_real)
+		{
+			Real a=(*after)(t).get(Real());
+			Real b=(*before)(t).get(Real());
+			return (b-a)*amount+a;
+		}
+		else
+		if (type == type_time)
+		{
+			Time a=(*after)(t).get(Time());
+			Time b=(*before)(t).get(Time());
+			return (b-a)*amount+a;
+		}
+		else
+		if (type == type_vector)
+		{
+			Vector a=(*after)(t).get(Vector());
+			Vector b=(*before)(t).get(Vector());
+			return (b-a)*amount+a;
 		}
 	}
 
@@ -188,8 +200,8 @@ ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle value)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(before,      get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(after,       get_type());
-	case 2: CHECK_TYPE_AND_SET_VALUE(swap_time,   ValueBase::TYPE_TIME);
-	case 3: CHECK_TYPE_AND_SET_VALUE(swap_length, ValueBase::TYPE_TIME);
+	case 2: CHECK_TYPE_AND_SET_VALUE(swap_time,   type_time);
+	case 3: CHECK_TYPE_AND_SET_VALUE(swap_length, type_time);
 	}
 	return false;
 }
@@ -222,15 +234,15 @@ ValueNode_TimedSwap::get_local_name()const
 }
 
 bool
-ValueNode_TimedSwap::check_type(ValueBase::TypeId type)
+ValueNode_TimedSwap::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_INTEGER ||
-		type==ValueBase::TYPE_REAL ||
-		type==ValueBase::TYPE_TIME ||
-		type==ValueBase::TYPE_VECTOR;
+		type==type_angle	||
+		type==type_color	||
+		type==type_integer	||
+		type==type_real 	||
+		type==type_time 	||
+		type==type_vector;
 }
 
 LinkableValueNode::Vocab

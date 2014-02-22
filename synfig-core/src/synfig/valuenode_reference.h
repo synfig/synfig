@@ -43,11 +43,11 @@ public:
 	typedef etl::handle<ValueNode_Reference> Handle;
 	typedef etl::handle<const ValueNode_Reference> ConstHandle;
 
-	ValueNode_Reference(const ValueBase::TypeId &x);
+	ValueNode_Reference(Type &x);
 
 	ValueNode_Reference(const ValueNode::Handle &x);
 
-//	static Handle create(const ValueBase::TypeId &x);
+//	static Handle create(Type &x);
 //	static Handle create(const ValueNode::Handle &x);
 
 
@@ -68,7 +68,7 @@ protected:
 
 public:
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::TypeId type);
+	static bool check_type(Type &type);
 	static ValueNode_Reference* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Reference

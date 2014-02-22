@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueBase::TypeId &x):
+ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -66,8 +66,8 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	if(x->get_type()!=ValueBase::TYPE_BLINEPOINT)
-		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
+	if(x->get_type()!=type_bline_point)
+		throw Exception::BadType(x->get_type().description.local_name);
 
 	set_link("reference",x);
 	set_link("reverse",ValueNode_Const::create(bool(false)));
@@ -98,7 +98,7 @@ ValueNode_BLineRevTangent::operator()(Time t)const
 
 	if ((*reverse_)(t).get(bool()))
 	{
-		BLinePoint reference((*reference_)(t));
+		BLinePoint reference((*reference_)(t).get(BLinePoint()));
 		BLinePoint ret(reference);
 		ret.reverse();
 		return ret;
@@ -127,7 +127,7 @@ ValueNode_BLineRevTangent::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(reference_, get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(reverse_,   ValueBase::TYPE_BOOL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(reverse_,   type_bool);
 	}
 	return false;
 }
@@ -147,9 +147,9 @@ ValueNode_BLineRevTangent::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineRevTangent::check_type(ValueBase::TypeId type)
+ValueNode_BLineRevTangent::check_type(Type &type)
 {
-	return (type==ValueBase::TYPE_BLINEPOINT);
+	return (type==type_bline_point);
 }
 
 LinkableValueNode::Vocab

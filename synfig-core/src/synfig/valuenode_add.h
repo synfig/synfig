@@ -59,7 +59,7 @@ public:
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-	static bool check_type(ValueBase::TypeId type);
+	static bool check_type(Type &type);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Add
 

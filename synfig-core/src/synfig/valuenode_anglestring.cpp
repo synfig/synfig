@@ -57,16 +57,16 @@ ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_string)
 	{
-	case ValueBase::TYPE_STRING:
 		set_link("angle",ValueNode_Const::create(Angle::deg(0)));
 		set_link("width",ValueNode_Const::create(int(0)));
 		set_link("precision",ValueNode_Const::create(int(3)));
 		set_link("zero_pad",ValueNode_Const::create(bool(false)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -99,16 +99,12 @@ ValueNode_AngleString::operator()(Time t)const
 	int zero_pad((*zero_pad_)(t).get(bool()));
 
 	if(precision<0) precision=0;
-	switch (get_type())
-	{
-	case ValueBase::TYPE_STRING:
+
+	if (get_type() == type_string)
 		return strprintf(strprintf("%%%s%d.%df",
 								   zero_pad ? "0" : "",
 								   width,
 								   precision).c_str(), angle)+"°";
-	default:
-		break;
-	}
 
 	assert(0);
 	return ValueBase();
@@ -133,10 +129,10 @@ ValueNode_AngleString::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(angle_, ValueBase::TYPE_ANGLE);
-	case 1: CHECK_TYPE_AND_SET_VALUE(width_, ValueBase::TYPE_INTEGER);
-	case 2: CHECK_TYPE_AND_SET_VALUE(precision_, ValueBase::TYPE_INTEGER);
-	case 3: CHECK_TYPE_AND_SET_VALUE(zero_pad_, ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(angle_, type_angle);
+	case 1: CHECK_TYPE_AND_SET_VALUE(width_, type_integer);
+	case 2: CHECK_TYPE_AND_SET_VALUE(precision_, type_integer);
+	case 3: CHECK_TYPE_AND_SET_VALUE(zero_pad_, type_bool);
 	}
 	return false;
 }
@@ -158,10 +154,10 @@ ValueNode_AngleString::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_AngleString::check_type(ValueBase::TypeId type)
+ValueNode_AngleString::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_STRING;
+		type==type_string;
 }
 
 LinkableValueNode::Vocab

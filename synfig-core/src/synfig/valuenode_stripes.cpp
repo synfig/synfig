@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::type_gradient)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
@@ -73,17 +73,17 @@ ValueNode_Stripes::create_new()const
 ValueNode_Stripes*
 ValueNode_Stripes::create(const ValueBase& x)
 {
-	ValueBase::TypeId id(x.get_type());
+	Type &type(x.get_type());
 
-	if(id!=ValueBase::TYPE_GRADIENT)
+	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Stripes"))+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(String(_("Stripes"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();
 
-	assert(value_node->get_type()==id);
+	assert(value_node->get_type()==type);
 
 	return value_node;
 }
@@ -132,10 +132,10 @@ ValueNode_Stripes::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(color1_,  ValueBase::TYPE_COLOR);
-	case 1: CHECK_TYPE_AND_SET_VALUE(color2_,  ValueBase::TYPE_COLOR);
-	case 2: CHECK_TYPE_AND_SET_VALUE(stripes_, ValueBase::TYPE_INTEGER);
-	case 3: CHECK_TYPE_AND_SET_VALUE(width_,   ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(color1_,  type_color);
+	case 1: CHECK_TYPE_AND_SET_VALUE(color2_,  type_color);
+	case 2: CHECK_TYPE_AND_SET_VALUE(stripes_, type_integer);
+	case 3: CHECK_TYPE_AND_SET_VALUE(width_,   type_real);
 	}
 	return false;
 }
@@ -172,9 +172,9 @@ ValueNode_Stripes::get_local_name()const
 }
 
 bool
-ValueNode_Stripes::check_type(ValueBase::TypeId type)
+ValueNode_Stripes::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_GRADIENT;
+	return type==type_gradient;
 }
 
 LinkableValueNode::Vocab

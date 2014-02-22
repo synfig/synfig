@@ -91,10 +91,10 @@ ValueNode_Pow::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(base_,     ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(power_,    ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(epsilon_,  ValueBase::TYPE_REAL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(infinite_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(base_,     type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(power_,    type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(epsilon_,  type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(infinite_, type_real);
 	}
 	return false;
 }
@@ -163,9 +163,9 @@ ValueNode_Pow::get_local_name()const
 }
 
 bool
-ValueNode_Pow::check_type(ValueBase::TypeId type)
+ValueNode_Pow::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_REAL;
+	return type==type_real;
 }
 
 LinkableValueNode::Vocab

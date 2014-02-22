@@ -67,7 +67,7 @@ Circle::Circle():
 	param_radius    (Real(1)),
 	param_feather   (Real(0)),
 	param_invert    (bool(false)),
-	param_falloff   (FALLOFF_INTERPOLATION_LINEAR)
+	param_falloff   ((int)FALLOFF_INTERPOLATION_LINEAR)
 {
 	constructcache();
 	SET_INTERPOLATION_DEFAULTS();

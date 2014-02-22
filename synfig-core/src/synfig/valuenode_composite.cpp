@@ -64,80 +64,85 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-			set_link("x",ValueNode_Const::create(value.get(Vector())[0]));
-			set_link("y",ValueNode_Const::create(value.get(Vector())[1]));
-			break;
-		case ValueBase::TYPE_COLOR:
-			set_link("r",ValueNode_Const::create(value.get(Color()).get_r()));
-			set_link("g",ValueNode_Const::create(value.get(Color()).get_g()));
-			set_link("b",ValueNode_Const::create(value.get(Color()).get_b()));
-			set_link("a",ValueNode_Const::create(value.get(Color()).get_a()));
-			break;
-		case ValueBase::TYPE_SEGMENT:
-			set_link("p1",ValueNode_Const::create(value.get(Segment()).p1));
-			set_link("t1",ValueNode_Const::create(value.get(Segment()).t1));
-			set_link("p2",ValueNode_Const::create(value.get(Segment()).p2));
-			set_link("t2",ValueNode_Const::create(value.get(Segment()).t2));
-			break;
-		case ValueBase::TYPE_BLINEPOINT:
+		set_link("x",ValueNode_Const::create(value.get(Vector())[0]));
+		set_link("y",ValueNode_Const::create(value.get(Vector())[1]));
+	}
+	else
+	if (type == type_color)
+	{
+		set_link("r",ValueNode_Const::create(value.get(Color()).get_r()));
+		set_link("g",ValueNode_Const::create(value.get(Color()).get_g()));
+		set_link("b",ValueNode_Const::create(value.get(Color()).get_b()));
+		set_link("a",ValueNode_Const::create(value.get(Color()).get_a()));
+	}
+	else
+	if (type == type_segment)
+	{
+		set_link("p1",ValueNode_Const::create(value.get(Segment()).p1));
+		set_link("t1",ValueNode_Const::create(value.get(Segment()).t1));
+		set_link("p2",ValueNode_Const::create(value.get(Segment()).p2));
+		set_link("t2",ValueNode_Const::create(value.get(Segment()).t2));
+	}
+	else
+	if (type == type_bline_point)
+	{
+		BLinePoint bline_point(value.get(BLinePoint()));
+		set_link("point",ValueNode_Const::create(bline_point.get_vertex()));
+		set_link("width",ValueNode_Const::create(bline_point.get_width()));
+		set_link("origin",ValueNode_Const::create(bline_point.get_origin()));
+		set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_both()));
+		set_link("split_radius",ValueNode_Const::create(bline_point.get_split_tangent_radius()));
+		set_link("split_angle",ValueNode_Const::create(bline_point.get_split_tangent_angle()));
+		set_link("t1",ValueNode_RadialComposite::create(bline_point.get_tangent1()));
+		set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
+	}
+	else
+	if (type == type_width_point)
+	{
+		WidthPoint wpoint(value.get(WidthPoint()));
+		set_link("position",ValueNode_Const::create(wpoint.get_position()));
+		set_link("width",ValueNode_Const::create(wpoint.get_width()));
+		set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
+		set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
+		ValueNode_Const::Handle value_node;
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_lower_bound()));
+		if(value_node)
 		{
-			BLinePoint bline_point(value);
-			set_link("point",ValueNode_Const::create(bline_point.get_vertex()));
-			set_link("width",ValueNode_Const::create(bline_point.get_width()));
-			set_link("origin",ValueNode_Const::create(bline_point.get_origin()));
-			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_both()));
-			set_link("split_radius",ValueNode_Const::create(bline_point.get_split_tangent_radius()));
-			set_link("split_angle",ValueNode_Const::create(bline_point.get_split_tangent_angle()));
-			set_link("t1",ValueNode_RadialComposite::create(bline_point.get_tangent1()));
-			set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
-			break;
+			value_node->set_static(true);
+			set_link("lower_bound",value_node);
 		}
-		case ValueBase::TYPE_WIDTHPOINT:
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_upper_bound()));
+		if(value_node)
 		{
-			WidthPoint wpoint(value);
-			set_link("position",ValueNode_Const::create(wpoint.get_position()));
-			set_link("width",ValueNode_Const::create(wpoint.get_width()));
-			set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
-			set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
-			ValueNode_Const::Handle value_node;
-			value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_lower_bound()));
-			if(value_node) 
-			{
-				value_node->set_static(true);
-				set_link("lower_bound",value_node);
-			}
-			value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_upper_bound()));
-			if(value_node)
-			{
-				value_node->set_static(true);
-				set_link("upper_bound",value_node);
-			}
-			break;
+			value_node->set_static(true);
+			set_link("upper_bound",value_node);
 		}
-		case ValueBase::TYPE_DASHITEM:
-		{
-			DashItem ditem(value);
-			set_link("offset",ValueNode_Const::create(ditem.get_offset()));
-			set_link("length",ValueNode_Const::create(ditem.get_length()));
-			set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
-			set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
-			break;
-		}
-		case ValueBase::TYPE_TRANSFORMATION:
-		{
-			Transformation transformation(value.get(Transformation()));
-			set_link("offset",ValueNode_Const::create(transformation.offset));
-			set_link("angle",ValueNode_Const::create(transformation.angle));
-			set_link("skew_angle",ValueNode_Const::create(transformation.skew_angle));
-			set_link("scale",ValueNode_Const::create(transformation.scale));
-			break;
-		}
-		default:
-			assert(0);
-			throw Exception::BadType(ValueBase::type_local_name(get_type()));
+	}
+	else
+	if (type == type_dash_item)
+	{
+		DashItem ditem(value.get(DashItem()));
+		set_link("offset",ValueNode_Const::create(ditem.get_offset()));
+		set_link("length",ValueNode_Const::create(ditem.get_length()));
+		set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
+		set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
+	}
+	else
+	if (type == type_transformation)
+	{
+		Transformation transformation(value.get(Transformation()));
+		set_link("offset",ValueNode_Const::create(transformation.offset));
+		set_link("angle",ValueNode_Const::create(transformation.angle));
+		set_link("skew_angle",ValueNode_Const::create(transformation.skew_angle));
+		set_link("scale",ValueNode_Const::create(transformation.scale));
+	}
+	else
+	{
+		assert(0);
+		throw Exception::BadType(get_type().description.local_name);
 	}
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
@@ -168,91 +173,89 @@ synfig::ValueNode_Composite::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-		{
-			Vector vect;
-			assert(components[0] && components[1]);
-			vect[0]=(*components[0])(t).get(Vector::value_type());
-			vect[1]=(*components[1])(t).get(Vector::value_type());
-			return vect;
-		}
-		case ValueBase::TYPE_COLOR:
-		{
-			Color color;
-			assert(components[0] && components[1] && components[2] && components[3]);
-			color.set_r((*components[0])(t).get(Vector::value_type()));
-			color.set_g((*components[1])(t).get(Vector::value_type()));
-			color.set_b((*components[2])(t).get(Vector::value_type()));
-			color.set_a((*components[3])(t).get(Vector::value_type()));
-			return color;
-		}
-		case ValueBase::TYPE_SEGMENT:
-		{
-			Segment seg;
-			assert(components[0] && components[1] && components[2] && components[3]);
-			seg.p1=(*components[0])(t).get(Point());
-			seg.t1=(*components[1])(t).get(Vector());
-			seg.p2=(*components[2])(t).get(Point());
-			seg.t2=(*components[3])(t).get(Vector());
-			return seg;
-		}
-		case ValueBase::TYPE_BLINEPOINT:
-		{
-			BLinePoint ret;
-			assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5] && components[6] && components[7]);
-			ret.set_vertex((*components[0])(t).get(Point()));
-			ret.set_width((*components[1])(t).get(Real()));
-			ret.set_origin((*components[2])(t).get(Real()));
-			ret.set_split_tangent_both((*components[3])(t).get(bool()));
-			ret.set_split_tangent_radius((*components[6])(t).get(bool()));
-			ret.set_split_tangent_angle((*components[7])(t).get(bool()));
-			ret.set_tangent1((*components[4])(t).get(Vector()));
-			ret.set_tangent2((*components[5])(t).get(Vector()));
-			return ret;
-		}
-		case ValueBase::TYPE_WIDTHPOINT:
-		{
-			WidthPoint ret;
-			assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5]);
-			ret.set_position((*components[0])(t).get(Real()));
-			ret.set_width((*components[1])(t).get(Real()));
-			ret.set_side_type_before((*components[2])(t).get(int()));
-			ret.set_side_type_after((*components[3])(t).get(int()));
-			ret.set_lower_bound((*components[4])(t).get(Real()));
-			ret.set_upper_bound((*components[5])(t).get(Real()));
-			return ret;
-		}
-		case ValueBase::TYPE_DASHITEM:
-		{
-			DashItem ret;
-			assert(components[0] && components[1] && components[2] && components[3]);
-			Real offset((*components[0])(t).get(Real()));
-			if(offset < 0.0) offset=0.0;
-			Real length((*components[1])(t).get(Real()));
-			if(length < 0.0) length=0.0;
-			ret.set_offset(offset);
-			ret.set_length(length);
-			ret.set_side_type_before((*components[2])(t).get(int()));
-			ret.set_side_type_after((*components[3])(t).get(int()));
-			return ret;
-		}
-		case ValueBase::TYPE_TRANSFORMATION:
-		{
-			Transformation ret;
-			assert(components[0] && components[1] && components[2] && components[3]);
-			ret.offset    = (*components[0])(t).get(Vector());
-			ret.angle     = (*components[1])(t).get(Angle());
-			ret.skew_angle = (*components[2])(t).get(Angle());
-			ret.scale     = (*components[3])(t).get(Vector());
-			return ret;
-		}
-		default:
-			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
-			assert(components[0]);
-			return (*components[0])(t);
+		Vector vect;
+		assert(components[0] && components[1]);
+		vect[0]=(*components[0])(t).get(Vector::value_type());
+		vect[1]=(*components[1])(t).get(Vector::value_type());
+		return vect;
 	}
+	if (type == type_color)
+	{
+		Color color;
+		assert(components[0] && components[1] && components[2] && components[3]);
+		color.set_r((*components[0])(t).get(Vector::value_type()));
+		color.set_g((*components[1])(t).get(Vector::value_type()));
+		color.set_b((*components[2])(t).get(Vector::value_type()));
+		color.set_a((*components[3])(t).get(Vector::value_type()));
+		return color;
+	}
+	if (type == type_segment)
+	{
+		Segment seg;
+		assert(components[0] && components[1] && components[2] && components[3]);
+		seg.p1=(*components[0])(t).get(Point());
+		seg.t1=(*components[1])(t).get(Vector());
+		seg.p2=(*components[2])(t).get(Point());
+		seg.t2=(*components[3])(t).get(Vector());
+		return seg;
+	}
+	if (type == type_bline_point)
+	{
+		BLinePoint ret;
+		assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5] && components[6] && components[7]);
+		ret.set_vertex((*components[0])(t).get(Point()));
+		ret.set_width((*components[1])(t).get(Real()));
+		ret.set_origin((*components[2])(t).get(Real()));
+		ret.set_split_tangent_both((*components[3])(t).get(bool()));
+		ret.set_split_tangent_radius((*components[6])(t).get(bool()));
+		ret.set_split_tangent_angle((*components[7])(t).get(bool()));
+		ret.set_tangent1((*components[4])(t).get(Vector()));
+		ret.set_tangent2((*components[5])(t).get(Vector()));
+		return ret;
+	}
+	if (type == type_width_point)
+	{
+		WidthPoint ret;
+		assert(components[0] && components[1] && components[2] && components[3] && components[4] && components[5]);
+		ret.set_position((*components[0])(t).get(Real()));
+		ret.set_width((*components[1])(t).get(Real()));
+		ret.set_side_type_before((*components[2])(t).get(int()));
+		ret.set_side_type_after((*components[3])(t).get(int()));
+		ret.set_lower_bound((*components[4])(t).get(Real()));
+		ret.set_upper_bound((*components[5])(t).get(Real()));
+		return ret;
+	}
+	if (type == type_dash_item)
+	{
+		DashItem ret;
+		assert(components[0] && components[1] && components[2] && components[3]);
+		Real offset((*components[0])(t).get(Real()));
+		if(offset < 0.0) offset=0.0;
+		Real length((*components[1])(t).get(Real()));
+		if(length < 0.0) length=0.0;
+		ret.set_offset(offset);
+		ret.set_length(length);
+		ret.set_side_type_before((*components[2])(t).get(int()));
+		ret.set_side_type_after((*components[3])(t).get(int()));
+		return ret;
+	}
+	if (type == type_transformation)
+	{
+		Transformation ret;
+		assert(components[0] && components[1] && components[2] && components[3]);
+		ret.offset    = (*components[0])(t).get(Vector());
+		ret.angle     = (*components[1])(t).get(Angle());
+		ret.skew_angle = (*components[2])(t).get(Angle());
+		ret.scale     = (*components[3])(t).get(Vector());
+		return ret;
+	}
+
+	synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
+	assert(components[0]);
+	return (*components[0])(t);
 }
 
 bool
@@ -266,107 +269,110 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		return true;
 	}
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_vector)
 	{
-		case ValueBase::TYPE_VECTOR:
-			if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
-			{
-				components[i]=x;
-				return true;
-			}
-			break;
-
-		case ValueBase::TYPE_COLOR:
-			if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
-			{
-				components[i]=x;
-				return true;
-			}
-			break;
-
-		case ValueBase::TYPE_SEGMENT:
-			if(x->get_type()==ValueBase(Point()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
-			{
-				components[i]=x;
-				return true;
-			}
-			break;
-
-		case ValueBase::TYPE_BLINEPOINT:
-			if((i==0 || i==4 || i==5) && x->get_type()==ValueBase(Point()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==1 || i==2) && x->get_type()==ValueBase(Real()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==3 || i==6 || i==7) && x->get_type()==ValueBase(bool()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			break;
-		case ValueBase::TYPE_DASHITEM:
-		case ValueBase::TYPE_WIDTHPOINT:
-			if((i==0 || i==1) && x->get_type()==ValueBase(Real()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==2 || i==3) && x->get_type()==ValueBase(int()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==4 || i==5) && x->get_type()==ValueBase(Real()).get_type())
-			{
-				if(ValueNode_Const::Handle::cast_dynamic(x))
-				{
-					if(i==4 && components[5])
-					{
-						if(i==4 && (*x)(0).get(Real()) < (*components[5])(0).get(Real()))
-						{
-							components[i]=x;
-							return true;
-						}
-						else
-							return false;
-					}
-					if(i==5 && components[4])
-					{
-						if((i==5 && (*x)(0).get(Real()) > (*components[4])(0).get(Real())))
-						{
-							components[i]=x;
-							return true;
-						}
-						else
-							return false;
-					}
-					components[i]=x;
-					return true;
-				}
-				return false;
-			}
-			break;
-
-		case ValueBase::TYPE_TRANSFORMATION:
-			if( PlaceholderValueNode::Handle::cast_dynamic(x)
-			 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
-			 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
-			 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
-			 || (i == 3 && x->get_type()==ValueBase(Vector()).get_type())
-			) {
-				components[i]=x;
-				return true;
-			}
-			break;
-
-		default:
-			break;
+		if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		{
+			components[i]=x;
+			return true;
+		}
 	}
+	else
+	if (type == type_color)
+	{
+		if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		{
+			components[i]=x;
+			return true;
+		}
+	}
+	else
+	if (type == type_segment)
+	{
+		if(x->get_type()==ValueBase(Point()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		{
+			components[i]=x;
+			return true;
+		}
+	}
+	else
+	if (type == type_bline_point)
+	{
+		if((i==0 || i==4 || i==5) && x->get_type()==ValueBase(Point()).get_type())
+		{
+			components[i]=x;
+			return true;
+		}
+		if((i==1 || i==2) && x->get_type()==ValueBase(Real()).get_type())
+		{
+			components[i]=x;
+			return true;
+		}
+		if((i==3 || i==6 || i==7) && x->get_type()==ValueBase(bool()).get_type())
+		{
+			components[i]=x;
+			return true;
+		}
+	}
+	else
+	if (type == type_dash_item
+	 || type == type_width_point)
+	{
+		if((i==0 || i==1) && x->get_type()==ValueBase(Real()).get_type())
+		{
+			components[i]=x;
+			return true;
+		}
+		if((i==2 || i==3) && x->get_type()==ValueBase(int()).get_type())
+		{
+			components[i]=x;
+			return true;
+		}
+		if((i==4 || i==5) && x->get_type()==ValueBase(Real()).get_type())
+		{
+			if(ValueNode_Const::Handle::cast_dynamic(x))
+			{
+				if(i==4 && components[5])
+				{
+					if(i==4 && (*x)(0).get(Real()) < (*components[5])(0).get(Real()))
+					{
+						components[i]=x;
+						return true;
+					}
+					else
+						return false;
+				}
+				if(i==5 && components[4])
+				{
+					if((i==5 && (*x)(0).get(Real()) > (*components[4])(0).get(Real())))
+					{
+						components[i]=x;
+						return true;
+					}
+					else
+						return false;
+				}
+				components[i]=x;
+				return true;
+			}
+			return false;
+		}
+	}
+	else
+	if (type == type_transformation)
+	{
+		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
+		 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
+		 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
+		 || (i == 3 && x->get_type()==ValueBase(Vector()).get_type())
+		) {
+			components[i]=x;
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -402,9 +408,9 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 	if(name[0]=='c' && name.size() == 2 && name[1]-'1' >= 0 && name[1]-'1' < link_count())
 		return name[1]-'1';
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_color)
 	{
-	case ValueBase::TYPE_COLOR:
 		if(name[0]=='r')
 			return 0;
 		if(name[0]=='g')
@@ -413,8 +419,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name[0]=='a')
 			return 3;
-		break;
-	case ValueBase::TYPE_SEGMENT:
+	}
+	else
+	if (type == type_segment)
+	{
 		if(name=="p1")
 			return 0;
 		if(name=="t1")
@@ -423,16 +431,20 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="t2")
 			return 3;
-		break;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		if(name[0]=='x')
 			return 0;
 		if(name[0]=='y')
 			return 1;
 		if(name[0]=='z')		// \todo "z"?  really?
 			return 2;
-		break;
-	case ValueBase::TYPE_BLINEPOINT:
+	}
+	else
+	if (type == type_bline_point)
+	{
 		if(name[0]=='p' || name=="v1" || name=="p1")
 			return 0;
 		if(name=="w" || name=="width")
@@ -449,8 +461,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 6;
 		if(name=="split_angle")
 			return 7;
-		break;
-	case ValueBase::TYPE_WIDTHPOINT:
+	}
+	else
+	if (type == type_width_point)
+	{
 		if(name=="position")
 			return 0;
 		if(name=="width")
@@ -463,8 +477,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="upper_bound")
 			return 5;
-		break;
-	case ValueBase::TYPE_DASHITEM:
+	}
+	else
+	if (type == type_dash_item)
+	{
 		if(name=="offset")
 			return 0;
 		if(name=="length")
@@ -473,8 +489,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="side_after")
 			return 3;
-		break;
-	case ValueBase::TYPE_TRANSFORMATION:
+	}
+	else
+	if (type == type_transformation)
+	{
 		if(name=="offset")
 			return 0;
 		if(name=="angle")
@@ -483,8 +501,6 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 2;
 		if(name=="scale")
 			return 3;
-	default:
-		break;
 	}
 
 	throw Exception::BadLinkName(name);
@@ -503,16 +519,16 @@ ValueNode_Composite::get_local_name()const
 }
 
 bool
-ValueNode_Composite::check_type(ValueBase::TypeId type)
+ValueNode_Composite::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_SEGMENT ||
-		type==ValueBase::TYPE_VECTOR ||
-		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_BLINEPOINT ||
-		type==ValueBase::TYPE_WIDTHPOINT ||
-		type==ValueBase::TYPE_DASHITEM ||
-		type==ValueBase::TYPE_TRANSFORMATION;
+		type==type_segment		||
+		type==type_vector		||
+		type==type_color		||
+		type==type_bline_point	||
+		type==type_width_point	||
+		type==type_dash_item 	||
+		type==type_transformation;
 }
 
 LinkableValueNode::Vocab
@@ -523,9 +539,9 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_color)
 	{
-	case ValueBase::TYPE_COLOR:
 		ret.push_back(ParamDesc(ValueBase(),"red")
 			.set_local_name(_("Red"))
 			.set_description(_("The red component of the color"))
@@ -543,7 +559,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("The alpha of the color"))
 		);
 		return ret;
-	case ValueBase::TYPE_SEGMENT:
+	}
+	else
+	if (type == type_segment)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"p1")
 			.set_local_name(_("Vertex 1"))
 			.set_description(_("The first vertex of the segment"))
@@ -561,7 +580,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("The second tangent of the segment"))
 		);
 		return ret;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"x")
 			.set_local_name(_("X-Axis"))
 			.set_description(_("The X-Axis component of the vector"))
@@ -571,7 +593,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("The Y-Axis component of the vector"))
 		);
 		return ret;
-	case ValueBase::TYPE_BLINEPOINT:
+	}
+	else
+	if (type == type_bline_point)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"point")
 			.set_local_name(_("Vertex"))
 			.set_description(_("The vertex of the Spline Point"))
@@ -606,7 +631,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("When checked, tangent's angles are independent"))
 		);
 		return ret;
-	case ValueBase::TYPE_WIDTHPOINT:
+	}
+	else
+	if (type == type_width_point)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"position")
 			.set_local_name(_("Position"))
 			.set_description(_("The [0,1] position of the Width Point over the Spline"))
@@ -644,7 +672,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("Defines the position at end of the Spline"))
 		);
 		return ret;
-	case ValueBase::TYPE_DASHITEM:
+	}
+	else
+	if (type == type_dash_item)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The offset length of the Dash Item over the Spline"))
@@ -674,7 +705,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
 		);
 		return ret;
-	case ValueBase::TYPE_TRANSFORMATION:
+	}
+	else
+	if (type == type_transformation)
+	{
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The Offset component of the transformation"))
@@ -692,8 +726,6 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_description(_("The Scale component of the transformation"))
 		);
 		return ret;
-	default:
-		break;
 	}
 
 	return ret;

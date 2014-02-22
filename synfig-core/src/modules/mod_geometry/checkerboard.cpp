@@ -114,7 +114,7 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 		return set_param("origin", value);
 
 	for(int i=0;i<2;i++)
-		if(param==strprintf("pos[%d]",i) && value.get_type()==ValueBase::TYPE_REAL)
+		if(param==strprintf("pos[%d]",i) && value.get_type()==type_real)
 		{
 			Point p=param_origin.get(Point());
 			p[i]=value.get(Real());

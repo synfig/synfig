@@ -54,7 +54,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 synfig::ValueNode_GradientRotate::ValueNode_GradientRotate(const Gradient& x):
-	LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+	LinkableValueNode(synfig::type_gradient)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
@@ -71,16 +71,16 @@ ValueNode_GradientRotate::create_new()const
 ValueNode_GradientRotate*
 ValueNode_GradientRotate::create(const ValueBase& x)
 {
-	ValueBase::TypeId id(x.get_type());
-	if(id!=ValueBase::TYPE_GRADIENT)
+	Type &type(x.get_type());
+	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Gradient Rotate"))+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(String(_("Gradient Rotate"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate(x.get(Gradient()));
 
-	assert(value_node->get_type()==id);
+	assert(value_node->get_type()==type);
 
 	return value_node;
 }
@@ -113,8 +113,8 @@ ValueNode_GradientRotate::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(ref_gradient, ValueBase::TYPE_GRADIENT);
-	case 1: CHECK_TYPE_AND_SET_VALUE(ref_offset,   ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(ref_gradient, type_gradient);
+	case 1: CHECK_TYPE_AND_SET_VALUE(ref_offset,   type_real);
 	}
 	return false;
 }
@@ -147,9 +147,9 @@ ValueNode_GradientRotate::get_local_name()const
 }
 
 bool
-ValueNode_GradientRotate::check_type(ValueBase::TypeId type)
+ValueNode_GradientRotate::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_GRADIENT;
+	return type==type_gradient;
 }
 
 LinkableValueNode::Vocab

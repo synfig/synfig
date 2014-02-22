@@ -56,19 +56,20 @@ ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	Type &type(value.get_type());
+	if (type == type_real)
 	{
-	case ValueBase::TYPE_REAL:
 		set_link("lhs",ValueNode_Const::create(Vector(value.get(Real()),0)));
 		set_link("rhs",ValueNode_Const::create(Vector(1,0)));
-		break;
-	case ValueBase::TYPE_ANGLE:
+	}
+	else
+	if (type == type_angle)
+	{
 		set_link("lhs",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(), Angle::sin(value.get(Angle())).get())));
 		set_link("rhs",ValueNode_Const::create(Vector(1,0)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
+
+	throw Exception::BadType(value.get_type().description.local_name);
 }
 
 LinkableValueNode*
@@ -97,15 +98,11 @@ ValueNode_DotProduct::operator()(Time t)const
 	Vector lhs((*lhs_)(t).get(Vector()));
 	Vector rhs((*rhs_)(t).get(Vector()));
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return Angle::cos(lhs * rhs / lhs.mag() / rhs.mag()).mod();
-	case ValueBase::TYPE_REAL:
+	if (type == type_real)
 		return lhs * rhs;
-	default:
-		break;
-	}
 
 	assert(0);
 	return ValueBase();
@@ -130,8 +127,8 @@ ValueNode_DotProduct::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(lhs_, ValueBase::TYPE_VECTOR);
-	case 1: CHECK_TYPE_AND_SET_VALUE(rhs_, ValueBase::TYPE_VECTOR);
+	case 0: CHECK_TYPE_AND_SET_VALUE(lhs_, type_vector);
+	case 1: CHECK_TYPE_AND_SET_VALUE(rhs_, type_vector);
 	}
 	return false;
 }
@@ -151,11 +148,11 @@ ValueNode_DotProduct::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_DotProduct::check_type(ValueBase::TypeId type)
+ValueNode_DotProduct::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_REAL;
+		type==type_angle ||
+		type==type_real;
 }
 
 LinkableValueNode::Vocab

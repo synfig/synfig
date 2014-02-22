@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::type_gradient)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
@@ -76,17 +76,17 @@ ValueNode_Repeat_Gradient::create_new()const
 ValueNode_Repeat_Gradient*
 ValueNode_Repeat_Gradient::create(const ValueBase& x)
 {
-	ValueBase::TypeId id(x.get_type());
+	Type &type(x.get_type());
 
-	if(id!=ValueBase::TYPE_GRADIENT)
+	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Repeat Gradient"))+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(String(_("Repeat Gradient"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_Repeat_Gradient* value_node=new ValueNode_Repeat_Gradient(x.get(Gradient()));
 
-	assert(value_node->get_type()==id);
+	assert(value_node->get_type()==type);
 
 	return value_node;
 }
@@ -145,12 +145,12 @@ ValueNode_Repeat_Gradient::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_,	     get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(count_,		 ValueBase::TYPE_INTEGER);
-	case 2: CHECK_TYPE_AND_SET_VALUE(width_,		 ValueBase::TYPE_REAL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(specify_start_, ValueBase::TYPE_BOOL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(specify_end_,   ValueBase::TYPE_BOOL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(start_color_,   ValueBase::TYPE_COLOR);
-	case 6: CHECK_TYPE_AND_SET_VALUE(end_color_,     ValueBase::TYPE_COLOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(count_,		 type_integer);
+	case 2: CHECK_TYPE_AND_SET_VALUE(width_,		 type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(specify_start_, type_bool);
+	case 4: CHECK_TYPE_AND_SET_VALUE(specify_end_,   type_bool);
+	case 5: CHECK_TYPE_AND_SET_VALUE(start_color_,   type_color);
+	case 6: CHECK_TYPE_AND_SET_VALUE(end_color_,     type_color);
 	}
 	return false;
 }
@@ -186,9 +186,9 @@ ValueNode_Repeat_Gradient::get_local_name()const
 }
 
 bool
-ValueNode_Repeat_Gradient::check_type(ValueBase::TypeId type)
+ValueNode_Repeat_Gradient::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_GRADIENT;
+	return type==type_gradient;
 }
 
 LinkableValueNode::Vocab

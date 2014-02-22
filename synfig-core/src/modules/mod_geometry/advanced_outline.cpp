@@ -103,7 +103,7 @@ param_dilist(ValueBase(std::vector<synfig::DashItem>()))
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	param_bline.set(bline_point_list);
+	param_bline.set_list_of(bline_point_list);
 	
 	vector<WidthPoint> wpoint_list;
 	wpoint_list.push_back(WidthPoint());
@@ -114,11 +114,11 @@ param_dilist(ValueBase(std::vector<synfig::DashItem>()))
 	wpoint_list[1].set_width(1.0);
 	wpoint_list[0].set_side_type_before(WidthPoint::TYPE_INTERPOLATE);
 	wpoint_list[1].set_side_type_after(WidthPoint::TYPE_INTERPOLATE);
-	param_wplist.set(wpoint_list);
+	param_wplist.set_list_of(wpoint_list);
 	
 	vector<DashItem> ditem_list;
 	ditem_list.push_back(DashItem());
-	param_dilist.set(ditem_list);
+	param_dilist.set_list_of(ditem_list);
 	
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -155,21 +155,21 @@ Advanced_Outline::sync()
 	try
 	{
 		// The list of blinepoints
-		vector<BLinePoint> bline(bline_.get_list().begin(),bline_.get_list().end());
+		vector<BLinePoint> bline(bline_.get_list_of(BLinePoint()));
 		// The list of blinepoints standard and homogeneous positions
 		vector<Real> bline_pos, hbline_pos;
 		// This is the list of widthpoints coming form the WPList
 		// Notice that wplist will contain the dash items if applicable
 		// and some of the widthpoints are removed when lies on empty space of the
 		// dash items.
-		vector<WidthPoint> wplist(wplist_.get_list().begin(), wplist_.get_list().end());
+		vector<WidthPoint> wplist(wplist_.get_list_of(WidthPoint()));
 		// This is the same than wplist but with standard positions.
 		vector<WidthPoint> swplist;
 		// This is a copy of wplist without dash items and with all the original widthpoints
 		// standard and homogeneous ones
 		vector<WidthPoint> cwplist,scwplist;
 		// This is the list of dash items
-		vector<DashItem> dilist(dilist_.get_list().begin(), dilist_.get_list().end());
+		vector<DashItem> dilist(dilist_.get_list_of(DashItem()));
 		// This is the list of widthpoints created for the dashed outlines
 		vector<WidthPoint> dwplist;
 		// This is the temporarly filtered (removed unused) list of dash widthpoints
@@ -1064,8 +1064,8 @@ Advanced_Outline::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_expand);
 	IMPORT_VALUE_PLUS(param_smoothness,
 		{
-			if(value > 1.0) param_smoothness.set(Real(1.0));
-			else if(value < 0.0) param_smoothness.set(Real(0.0));
+			if(value.get(Real()) > 1.0) param_smoothness.set(Real(1.0));
+			else if(value.get(Real()) < 0.0) param_smoothness.set(Real(0.0));
 		}
 	);
 	IMPORT_VALUE(param_homogeneous);
@@ -1253,11 +1253,11 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 bool
 Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
-	if(x->get_type() != ValueBase::TYPE_LIST)
+	if(x->get_type() != type_list)
 		return false;
 	if((*x)(Time(0)).empty())
 		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
+	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
 		return false;
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
@@ -1273,11 +1273,11 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 bool
 Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
-	if(x->get_type() != ValueBase::TYPE_LIST)
+	if(x->get_type() != type_list)
 		return false;
 	if((*x)(Time(0)).empty())
 		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != ValueBase::TYPE_BLINEPOINT)
+	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
 		return false;
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));

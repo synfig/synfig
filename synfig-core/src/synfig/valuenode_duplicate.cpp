@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase::TypeId &x):
+ValueNode_Duplicate::ValueNode_Duplicate(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -91,9 +91,9 @@ ValueNode_Duplicate::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(from_, ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(to_,   ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(step_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(from_, type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(to_,   type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(step_, type_real);
 	}
 	return false;
 }
@@ -175,7 +175,7 @@ ValueNode_Duplicate::get_local_name()const
 }
 
 bool
-ValueNode_Duplicate::check_type(ValueBase::TypeId type __attribute__ ((unused)))
+ValueNode_Duplicate::check_type(Type &type __attribute__ ((unused)))
 {
 	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
 	return false;

@@ -85,9 +85,9 @@ protected:
 
 public:
 
-	static bool check_type(ValueBase::TypeId type);
+	static bool check_type(Type &type);
 	// Creates a Value Node Width Point List from another compatible list
-	static ValueNode_DIList* create(const ValueBase &x=ValueBase::TYPE_LIST);
+	static ValueNode_DIList* create(const ValueBase &x=type_list);
 }; // END of class ValueNode_DIList
 
 typedef ValueNode_DIList::ListEntry::ActivepointList ActivepointList;

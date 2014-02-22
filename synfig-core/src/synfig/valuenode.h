@@ -51,19 +51,19 @@
 
 #define VALUENODE_CHECK_TYPE(type) 										\
 	/* I don't think this ever happens - maybe remove this code? */		\
-	if (get_type() == ValueBase::TYPE_NIL) {							\
+	if (get_type() == type_nil) {										\
 		warning("%s:%d get_type() IS nil sometimes!",					\
 				__FILE__, __LINE__);									\
 		return false;													\
 	}																	\
-	if (get_type() != ValueBase::TYPE_NIL &&							\
-		!(ValueBase::same_type_as(value->get_type(), type)) &&			\
+	if (get_type() != type_nil &&										\
+		!(ValueBase::can_copy(value->get_type(), type)) &&				\
 		!PlaceholderValueNode::Handle::cast_dynamic(value)) {			\
 		error(_("%s:%d wrong type for %s: need %s but got %s"),			\
 			  __FILE__, __LINE__,										\
 			  link_local_name(i).c_str(),								\
-			  ValueBase::type_local_name(type).c_str(),					\
-			  ValueBase::type_local_name(value->get_type()).c_str());	\
+			  type.description.local_name.c_str(),						\
+			  value->get_type().description.local_name.c_str() );		\
 		return false;													\
 	}
 
@@ -124,7 +124,7 @@ public:
 private:
 	//! The type of the Value Node
 	//! \see ValueBase
-	ValueBase::TypeId type;
+	Type *type;
 	//! The name of the Value Node. This is the string that is used in the
 	//! sif file to define the value type: i.e. <param name="amount">
 	String name;
@@ -187,7 +187,7 @@ public:
 
 protected:
 
-	ValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL);
+	ValueNode(Type &type=type_nil);
 
 public:
 
@@ -229,7 +229,7 @@ public:
 	bool is_exported()const { return !get_id().empty(); }
 
 	//! Returns the type of the ValueNode
-	ValueBase::TypeId get_type()const { return type; }
+	Type& get_type()const { return *type; }
 
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_parent_canvas()const;
@@ -262,7 +262,7 @@ public:
 
 protected:
 	//! Sets the type of the ValueNode
-	void set_type(ValueBase::TypeId t) { type=t; }
+	void set_type(Type &t) { type=&t; }
 
 	virtual void on_changed();
 }; // END of class ValueNode
@@ -285,7 +285,7 @@ public:
 
 private:
 
-	PlaceholderValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL);
+	PlaceholderValueNode(Type &type=type_nil);
 
 public:
 
@@ -299,7 +299,7 @@ public:
 
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
-	static Handle create(ValueBase::TypeId type=ValueBase::TYPE_NIL);
+	static Handle create(Type &type=type_nil);
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &/*set*/) const {}
@@ -338,7 +338,7 @@ public:
 	/*! As a pointer to the member, it represents a fucntion that checks
 	**  the type of the provided ValueBase
 	*/
-	typedef bool (*CheckType)(ValueBase::TypeId);
+	typedef bool (*CheckType)(Type &type);
 
 	struct BookEntry
 	{
@@ -371,10 +371,10 @@ public:
 	//! Each derived Linkable Value Node has to implement this fucntion and
 	//! should return true only if the type matches. \name is the name of
 	//! the linked value node and \x is the returned value type
-	static bool check_type(const String &name, ValueBase::TypeId x);
+	static bool check_type(const String &name, Type &x);
 
 public:
-	LinkableValueNode(ValueBase::TypeId type=ValueBase::TYPE_NIL):
+	LinkableValueNode(Type &type=type_nil):
 		ValueNode(type) { }
 
 protected:
@@ -426,7 +426,7 @@ protected:
 	//! Member to store the children vocabulary
 	Vocab children_vocab;
 	//! Sets the type of the ValueNode
-	void set_type(ValueBase::TypeId t) { ValueNode::set_type(t); }
+	void set_type(Type &t) { ValueNode::set_type(t); }
 
 	//! Virtual member to get the linked Value Node Handle
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const=0;
