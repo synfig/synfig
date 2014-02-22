@@ -307,12 +307,12 @@ Widget_Defaults::Widget_Defaults()
 
 	// ship widgets together
 	attach(*widget_colors, 		0, 1, 0, 2, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_brush, 		1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_bline_width, 	1, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_blend_method, 	0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_opacity,		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_interpolation, 	0, 2, 5, 6, Gtk::FILL, Gtk::FILL, 0, 0);
-	attach(*widget_gradient, 	0, 2, 4, 5, Gtk::FILL, Gtk::FILL, 0, 0);
+	attach(*widget_brush, 		1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_bline_width, 	1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_blend_method, 	0, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_opacity,		0, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_interpolation, 	0, 2, 5, 6, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
+	attach(*widget_gradient, 	0, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::FILL, 0, 0);
 
 	// show all widgets
 	widget_colors->show();
