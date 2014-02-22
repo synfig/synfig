@@ -29,6 +29,8 @@
 
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
+#include <gtkmm/box.h>
+#include <gtkmm/alignment.h>
 #include <synfig/gradient.h>
 #include "widgets/widget_gradient.h"
 #include <gtkmm/tooltip.h>
@@ -48,16 +50,34 @@ class Widget_Color;
 class Widget_Distance;
 class Widget_Enum;
 
-class Widget_Defaults : public Gtk::Table
+class Widget_Defaults : public Gtk::VBox
 {
-	Widget_Brush *widget_brush;
-	Widget_Color *widget_otln_color;
-	Widget_Color *widget_fill_color;
+	Widget_Color 	*_widget_otln_color;
+	Gtk::Alignment 	*widget_otln_color;
+
+	Widget_Color 	*_widget_fill_color;
+	Gtk::Alignment 	*widget_fill_color;
+
+	Gtk::Table	*_widget_colors;
+	Gtk::Alignment	*widget_colors;
+
+	Widget_Gradient	*_widget_gradient;
+	Gtk::Alignment	*widget_gradient;
+
+	Gtk::HBox 	*widget_colors_gradient;
+
+	Widget_Brush 	*_widget_brush;
+	Gtk::Alignment 	*widget_brush;
+
 	Widget_Distance *widget_bline_width;
-	Widget_Gradient *widget_gradient;
+
+	Gtk::HBox 	*widget_brush_bline_width;
+
 	Widget_Enum	*widget_blend_method;
+
 	Widget_Enum	*widget_interpolation;
-	Gtk::HScale *widget_opacity;
+
+	Gtk::HScale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
