@@ -61,8 +61,8 @@ class Dock_Toolbox : public Dockable
 {
 	friend class studio::StateManager;
 
-	Gtk::Alignment *tool_alignment;
-	Gtk::ToggleButton *tool_button;
+	Gtk::Alignment *tool_button;
+	Gtk::ToggleButton *_tool_button;
 	Gtk::Table *tool_table;
 	Gtk::HSeparator *separator;
 	Gtk::VBox *tool_box;

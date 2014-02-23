@@ -222,7 +222,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
 
-	tool_button=manage(new class Gtk::ToggleButton());
+	_tool_button = manage(new class Gtk::ToggleButton());
 
 	Gtk::AccelKey key;
 	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
@@ -231,23 +231,23 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Glib::ustring accel_path = key.get_abbrev ();
 
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(), Gtk::ICON_SIZE_SMALL_TOOLBAR));
-	tool_button->add(*icon);
-	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
-	tool_button->set_relief(Gtk::RELIEF_NONE);
+	_tool_button->add(*icon);
+	_tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	_tool_button->set_relief(Gtk::RELIEF_NONE);
 
 	// use Gtk::Alignment widget to have fixed size (width and height) of tool button
-	tool_alignment = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	tool_alignment->add(*tool_button);
-	tool_alignment->show_all();
+	tool_button = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
+	tool_button->add(*_tool_button);
+	tool_button->show_all();
 
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*tool_alignment, col, col+1, row, row+1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND, 0, 0);
+	tool_table->attach(*tool_button, col, col+1, row, row+1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND, 0, 0);
 
-	state_button_map[name]=tool_button;
+	state_button_map[name] = _tool_button;
 
-	tool_button->signal_clicked().connect(
+	_tool_button->signal_clicked().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
 			state
