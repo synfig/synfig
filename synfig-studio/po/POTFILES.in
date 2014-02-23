@@ -341,6 +341,9 @@ src/synfigapp/actions/layerduplicate.cpp
 src/synfigapp/actions/layerduplicate.h
 src/synfigapp/actions/layerencapsulate.cpp
 src/synfigapp/actions/layerencapsulate.h
+scr/synfigapp/actions/layerembed.cpp
+scr/synfigapp/actions/layerextract.cpp
+scr/synfigapp/actions/layerfit.cpp
 src/synfigapp/actions/layerlower.cpp
 src/synfigapp/actions/layerlower.h
 src/synfigapp/actions/layermakebline.cpp
@@ -363,6 +366,7 @@ src/synfigapp/actions/layerremove.h
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
 src/synfigapp/actions/layersetexcludefromrendering.cpp
+scr/synfigapp/actions/layerzdepthrangeset.cpp
 src/synfigapp/actions/timepointscopy.cpp
 src/synfigapp/actions/timepointscopy.h
 src/synfigapp/actions/timepointsdelete.cpp
@@ -371,10 +375,12 @@ src/synfigapp/actions/timepointsmove.cpp
 src/synfigapp/actions/timepointsmove.h
 src/synfigapp/actions/valuedescblinelink.cpp
 src/synfigapp/actions/valuedescblinelink.h
+scr/synfigapp/actions/valuedescbonelink.cpp
 src/synfigapp/actions/valuedescconnect.cpp
 src/synfigapp/actions/valuedescconnect.h
 src/synfigapp/actions/valuedescconvert.cpp
 src/synfigapp/actions/valuedescconvert.h
+scr/synfigapp/actions/valuedesccreatechildbone.cpp
 src/synfigapp/actions/valuedescdisconnect.cpp
 src/synfigapp/actions/valuedescdisconnect.h
 src/synfigapp/actions/valuedescexport.cpp
