@@ -163,7 +163,7 @@ public:
 
 protected:
 	ValueNode_DynamicList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_DynamicList(Type &container_type, Type type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type, Type &type, etl::loose_handle<Canvas> canvas = 0);
 
 	Type *container_type;
 
@@ -204,7 +204,7 @@ public:
 
 	void set_member_canvas(etl::loose_handle<Canvas>);
 
-	ValueBase::Type get_contained_type()const;
+	Type& get_contained_type()const;
 
 
 	template <typename iterator> static Handle
@@ -235,11 +235,11 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is ValueBase::TYPE_LIST)
 	*/
-	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
+	static Handle create(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
-	static ValueNode_DynamicList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	static bool check_type(Type &type);
+	static ValueNode_DynamicList* create_from(const ValueBase &x=type_gradient);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_DynamicList
 

@@ -71,14 +71,10 @@ ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	set_link("origin_drags_tip",ValueNode_Const::create(true));
 
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	if (get_type() == type_vector)
 		set_link("tip_static",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
-	}
+	else
+		throw Exception::BadType(get_type().description.local_name);
 
 	/* Initial values*/
 	state.resize(4);
@@ -176,10 +172,9 @@ ValueNode_Dynamic::get_local_name()const
 }
 
 bool
-ValueNode_Dynamic::check_type(ValueBase::Type type)
+ValueNode_Dynamic::check_type(Type &type)
 {
-	return
-		type==ValueBase::TYPE_VECTOR;
+	return type==type_vector;
 }
 
 bool
@@ -190,18 +185,18 @@ ValueNode_Dynamic::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(tip_static_,    get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,        ValueBase::TYPE_VECTOR);
-	case 2: CHECK_TYPE_AND_SET_VALUE(force_,         ValueBase::TYPE_VECTOR);
-	case 3: CHECK_TYPE_AND_SET_VALUE(torque_,        ValueBase::TYPE_REAL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(damping_coef_,  ValueBase::TYPE_REAL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(friction_coef_, ValueBase::TYPE_REAL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(spring_coef_,   ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(torsion_coef_,  ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(mass_,          ValueBase::TYPE_REAL);
-	case 9: CHECK_TYPE_AND_SET_VALUE(inertia_,       ValueBase::TYPE_REAL);
-	case 10: CHECK_TYPE_AND_SET_VALUE(spring_rigid_,ValueBase::TYPE_BOOL);
-	case 11: CHECK_TYPE_AND_SET_VALUE(torsion_rigid_,ValueBase::TYPE_BOOL);
-	case 12: CHECK_TYPE_AND_SET_VALUE(origin_drags_tip_,ValueBase::TYPE_BOOL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,        type_vector);
+	case 2: CHECK_TYPE_AND_SET_VALUE(force_,         type_vector);
+	case 3: CHECK_TYPE_AND_SET_VALUE(torque_,        type_real);
+	case 4: CHECK_TYPE_AND_SET_VALUE(damping_coef_,  type_real);
+	case 5: CHECK_TYPE_AND_SET_VALUE(friction_coef_, type_real);
+	case 6: CHECK_TYPE_AND_SET_VALUE(spring_coef_,   type_real);
+	case 7: CHECK_TYPE_AND_SET_VALUE(torsion_coef_,  type_real);
+	case 8: CHECK_TYPE_AND_SET_VALUE(mass_,          type_real);
+	case 9: CHECK_TYPE_AND_SET_VALUE(inertia_,       type_real);
+	case 10: CHECK_TYPE_AND_SET_VALUE(spring_rigid_, type_bool);
+	case 11: CHECK_TYPE_AND_SET_VALUE(torsion_rigid_,type_bool);
+	case 12: CHECK_TYPE_AND_SET_VALUE(origin_drags_tip_,type_bool);
 	}
 	return false;
 }

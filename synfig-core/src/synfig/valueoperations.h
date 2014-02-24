@@ -49,63 +49,57 @@ private:
 	ValueTransformation() { }
 
 public:
-	static bool check_type(ValueBase::Type type) {
-		switch(type) {
-		case ValueBase::TYPE_ANGLE:
-		case ValueBase::TYPE_BLINEPOINT:
-		case ValueBase::TYPE_MATRIX:
-		case ValueBase::TYPE_SEGMENT:
-		case ValueBase::TYPE_TRANSFORMATION:
-		case ValueBase::TYPE_VECTOR:
-		case ValueBase::TYPE_WIDTHPOINT:
-			return true;
-		default:
-			break;
-		}
-		return false;
+	static bool check_type(Type &type) {
+		return type == type_angle
+			|| type == type_bline_point
+			|| type == type_matrix
+			|| type == type_segment
+			|| type == type_transformation
+			|| type == type_vector
+			|| type == type_width_point;
 	}
 
 	static bool check_type(const ValueBase &value)
 		{ return check_type(value.get_type()); }
 
 	static ValueBase transform(const Transformation &transformation, const ValueBase &value) {
-		switch(value.get_type()) {
-		case ValueBase::TYPE_ANGLE:
+		Type &type(value.get_type());
+		if (type == type_angle)
 			return value.get(Angle()) + transformation.angle;
-		case ValueBase::TYPE_BLINEPOINT:
-			{
-				BLinePoint bp(value.get(BLinePoint()));
-				bp.set_vertex( transformation.transform(bp.get_vertex()) );
-				bp.set_tangent1( transformation.transform(bp.get_tangent1(), false) );
-				bp.set_tangent2( transformation.transform(bp.get_tangent2(), false) );
-				return bp;
-			}
-			break;
-		case ValueBase::TYPE_MATRIX:
+		else
+		if (type == type_bline_point)
+		{
+			BLinePoint bp(value.get(BLinePoint()));
+			bp.set_vertex( transformation.transform(bp.get_vertex()) );
+			bp.set_tangent1( transformation.transform(bp.get_tangent1(), false) );
+			bp.set_tangent2( transformation.transform(bp.get_tangent2(), false) );
+			return bp;
+		}
+		else
+		if (type == type_matrix)
 			return transformation.transform(value.get(Matrix()));
-		case ValueBase::TYPE_SEGMENT:
-			{
-				Segment s(value.get(Segment()));
-				s.p1 = transformation.transform(s.p1);
-				s.t1 = transformation.transform(s.t1, false);
-				s.p2 = transformation.transform(s.p2);
-				s.t2 = transformation.transform(s.t2, false);
-				return s;
-			}
-			break;
-		case ValueBase::TYPE_TRANSFORMATION:
+		else
+		if (type == type_segment)
+		{
+			Segment s(value.get(Segment()));
+			s.p1 = transformation.transform(s.p1);
+			s.t1 = transformation.transform(s.t1, false);
+			s.p2 = transformation.transform(s.p2);
+			s.t2 = transformation.transform(s.t2, false);
+			return s;
+		}
+		else
+		if (type == type_transformation)
 			return transformation.transform(value.get(Transformation()));
-		case ValueBase::TYPE_VECTOR:
+		else
+		if (type == type_vector)
 			return transformation.transform(value.get(Vector()));
-		case ValueBase::TYPE_WIDTHPOINT:
-			{
-				WidthPoint wp(value.get(WidthPoint()));
-				wp.set_width( wp.get_width()*transformation.scale[1] );
-				return wp;
-			}
-			break;
-		default:
-			break;
+		else
+		if (type == type_width_point)
+		{
+			WidthPoint wp(value.get(WidthPoint()));
+			wp.set_width( wp.get_width()*transformation.scale[1] );
+			return wp;
 		}
 		return value;
 	}
@@ -124,20 +118,14 @@ private:
 	ValueAverage() { }
 
 public:
-	static bool check_type(ValueBase::Type type) {
-		switch(type) {
-		case ValueBase::TYPE_REAL:
-		case ValueBase::TYPE_BLINEPOINT:
-		case ValueBase::TYPE_MATRIX:
-		case ValueBase::TYPE_SEGMENT:
-		case ValueBase::TYPE_TRANSFORMATION:
-		case ValueBase::TYPE_VECTOR:
-		case ValueBase::TYPE_WIDTHPOINT:
-			return true;
-		default:
-			break;
-		}
-		return false;
+	static bool check_type(Type& type) {
+		return type == type_real
+			|| type == type_bline_point
+			|| type == type_matrix
+			|| type == type_segment
+			|| type == type_transformation
+			|| type == type_vector
+			|| type == type_width_point;
 	}
 
 	static bool check_type(const ValueBase &value)
@@ -147,48 +135,48 @@ public:
 	{
 		if (value_a.get_type() != value_b.get_type()) return default_value;
 
-		switch(value_a.get_type()) {
-		case ValueBase::TYPE_REAL:
+		Type &type(value_a.get_type());
+		if (type == type_real)
 			return value_a.get(Real()) + value_b.get(Real());
-		case ValueBase::TYPE_BLINEPOINT:
-			{
-				BLinePoint res(value_a.get(BLinePoint()));
-				const BLinePoint &b = value_b.get(BLinePoint());
-				res.set_vertex( res.get_vertex() + b.get_vertex() );
-				res.set_tangent1( res.get_tangent1() + b.get_tangent1() );
-				res.set_tangent2( res.get_tangent2() + b.get_tangent2() );
-				return res;
-			}
-			break;
-		case ValueBase::TYPE_MATRIX:
+		else
+		if (type == type_bline_point)
+		{
+			BLinePoint res(value_a.get(BLinePoint()));
+			const BLinePoint &b = value_b.get(BLinePoint());
+			res.set_vertex( res.get_vertex() + b.get_vertex() );
+			res.set_tangent1( res.get_tangent1() + b.get_tangent1() );
+			res.set_tangent2( res.get_tangent2() + b.get_tangent2() );
+			return res;
+		}
+		else
+		if (type == type_matrix)
 			return value_a.get(Matrix()) + value_b.get(Matrix());
-		case ValueBase::TYPE_SEGMENT:
-			{
-				Segment res(value_a.get(Segment()));
-				const Segment &b = value_b.get(Segment());
-				res.p1 += b.p1;
-				res.t1 += b.t1;
-				res.p2 += b.p2;
-				res.t2 += b.t2;
-				return res;
-			}
-			break;
-		case ValueBase::TYPE_TRANSFORMATION:
+		else
+		if (type == type_segment)
+		{
+			Segment res(value_a.get(Segment()));
+			const Segment &b = value_b.get(Segment());
+			res.p1 += b.p1;
+			res.t1 += b.t1;
+			res.p2 += b.p2;
+			res.t2 += b.t2;
+			return res;
+		}
+		else
+		if (type == type_transformation)
 			return Transformation(
 				value_a.get(Transformation()).get_matrix()
 			  + value_b.get(Transformation()).get_matrix() );
-		case ValueBase::TYPE_VECTOR:
+		else
+		if (type == type_vector)
 			return value_a.get(Vector()) + value_b.get(Vector());
-		case ValueBase::TYPE_WIDTHPOINT:
-			{
-				WidthPoint res(value_a.get(WidthPoint()));
-				const WidthPoint &b = value_b.get(WidthPoint());
-				res.set_width( res.get_width() + b.get_width() );
-				return res;
-			}
-			break;
-		default:
-			break;
+		else
+		if (type == type_width_point)
+		{
+			WidthPoint res(value_a.get(WidthPoint()));
+			const WidthPoint &b = value_b.get(WidthPoint());
+			res.set_width( res.get_width() + b.get_width() );
+			return res;
 		}
 
 		return default_value;
@@ -199,43 +187,43 @@ public:
 
 	static ValueBase multiply(const ValueBase &value, Real amplifier)
 	{
-		switch(value.get_type()) {
-		case ValueBase::TYPE_REAL:
+		Type &type(value.get_type());
+		if (type == type_real)
 			return value.get(Real()) * amplifier;
-		case ValueBase::TYPE_BLINEPOINT:
-			{
-				BLinePoint res(value.get(BLinePoint()));
-				res.set_vertex( res.get_vertex() * amplifier );
-				res.set_tangent1( res.get_tangent1() * amplifier );
-				res.set_tangent2( res.get_tangent2() * amplifier );
-				return res;
-			}
-			break;
-		case ValueBase::TYPE_MATRIX:
+		else
+		if (type == type_bline_point)
+		{
+			BLinePoint res(value.get(BLinePoint()));
+			res.set_vertex( res.get_vertex() * amplifier );
+			res.set_tangent1( res.get_tangent1() * amplifier );
+			res.set_tangent2( res.get_tangent2() * amplifier );
+			return res;
+		}
+		else
+		if (type == type_matrix)
 			return value.get(Matrix()) * amplifier;
-		case ValueBase::TYPE_SEGMENT:
-			{
-				Segment res(value.get(Segment()));
-				res.p1 *= amplifier;
-				res.t1 *= amplifier;
-				res.p2 *= amplifier;
-				res.t2 *= amplifier;
-				return res;
-			}
-			break;
-		case ValueBase::TYPE_TRANSFORMATION:
+		else
+		if (type == type_segment)
+		{
+			Segment res(value.get(Segment()));
+			res.p1 *= amplifier;
+			res.t1 *= amplifier;
+			res.p2 *= amplifier;
+			res.t2 *= amplifier;
+			return res;
+		}
+		else
+		if (type == type_transformation)
 			return Transformation( value.get(Transformation()).get_matrix() * amplifier );
-		case ValueBase::TYPE_VECTOR:
+		else
+		if (type == type_vector)
 			return value.get(Vector()) * amplifier;
-		case ValueBase::TYPE_WIDTHPOINT:
-			{
-				WidthPoint res(value.get(WidthPoint()));
-				res.set_width( res.get_width() * amplifier );
-				return res;
-			}
-			break;
-		default:
-			break;
+		else
+		if (type == type_width_point)
+		{
+			WidthPoint res(value.get(WidthPoint()));
+			res.set_width( res.get_width() * amplifier );
+			return res;
 		}
 
 		return value;
@@ -255,7 +243,7 @@ public:
 
 		// check values
 		int count = 0;
-		ValueBase::Type type = (*begin).get_type();
+		Type &type = (*begin).get_type();
 		if (!check_type(type)) return ValueBase();
 		for(ConstIterator i(begin); !(i == end); ++i, ++count)
 			if ((*i).get_type() != type) return ValueBase();
@@ -291,7 +279,7 @@ public:
 				summary = add(summary, multiply(*i, amplifier), ValueBase());
 		}
 
-		return summary.get_type() == ValueBase::TYPE_NIL ? default_value : summary;
+		return summary.get_type() == type_nil ? default_value : summary;
 	}
 
 	template<typename ConstIterator>
@@ -300,17 +288,17 @@ public:
 
 	static ValueBase average(const ValueBase &list, const ValueBase &weights, const ValueBase &default_value)
 	{
-		if (list.get_type() != ValueBase::TYPE_LIST) return default_value;
+		if (list.get_type() != type_list) return default_value;
 
 		const std::vector<ValueBase> &list_vector = list.get_list();
-		if (weights.get_type() == ValueBase::TYPE_LIST)
+		if (weights.get_type() == type_list)
 		{
 			std::vector<Real> weights_vector_real;
 			weights_vector_real.reserve(weights.get_list().size());
 			const std::vector<ValueBase> &weights_vector = weights.get_list();
 			for(std::vector<ValueBase>::const_iterator i = weights_vector.begin(); i != weights_vector.end(); ++i)
-				if (i->get_type() == ValueBase::TYPE_REAL)
-					weights_vector_real.push_back(*i); else break;
+				if (i->get_type() == type_real)
+					weights_vector_real.push_back(i->get(Real())); else break;
 			if (weights_vector.size() >= list_vector.size())
 				return average_generic(
 					list_vector.begin(), list_vector.end(),

@@ -149,24 +149,20 @@ ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
 	set_link("order",         ValueNode_Const::create((int)(FIRST)));
 
-	switch(get_type())
-	{
-	case ValueBase::TYPE_REAL:
+	Type &type(get_type());
+	if (type == type_real)
 		set_link("link",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		set_link("link",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	else
+	if (type == type_vector)
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(get_type()));
-	}
-
+	else
+		throw Exception::BadType(type.description.local_name);
 }
 
 LinkableValueNode*
@@ -192,116 +188,119 @@ ValueNode_Derivative::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	switch(get_type())
+	Type &type(get_type());
+	if (type == type_real)
 	{
-	case ValueBase::TYPE_REAL:
 		switch((*accuracy_)(t).get(int()))
-			{
-			case ROUGH:
-				return (*order_)(t).get(int())?
-						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Real()):
-						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Real());
-				break;
-			case FINE:
-				return (*order_)(t).get(int())?
-						DD_FINE(link_,t,(*interval_)(t).get(Real()),Real()):
-						D_FINE(link_,t,(*interval_)(t).get(Real()),Real());
-				break;
-			case EXTREME:
-				return (*order_)(t).get(int())?
-						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Real()):
-						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Real());
-				break;
-			case NORMAL:
-			default:
-				return (*order_)(t).get(int())?
-						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Real()):
-						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Real());
+		{
+		case ROUGH:
+			return (*order_)(t).get(int())?
+					DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Real()):
+					D_ROUGH(link_,t,(*interval_)(t).get(Real()),Real());
 			break;
-			}
+		case FINE:
+			return (*order_)(t).get(int())?
+					DD_FINE(link_,t,(*interval_)(t).get(Real()),Real()):
+					D_FINE(link_,t,(*interval_)(t).get(Real()),Real());
+			break;
+		case EXTREME:
+			return (*order_)(t).get(int())?
+					DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Real()):
+					D_EXTREME(link_,t,(*interval_)(t).get(Real()),Real());
+			break;
+		case NORMAL:
+		default:
+			return (*order_)(t).get(int())?
+					DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Real()):
+					D_NORMAL(link_,t,(*interval_)(t).get(Real()),Real());
 		break;
-	case ValueBase::TYPE_TIME:
+		}
+	}
+	else
+	if (type == type_time)
+	{
 		switch((*accuracy_)(t).get(int()))
-			{
-			case ROUGH:
-				return (*order_)(t).get(int())?
-						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Time()):
-						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Time());
-				break;
-			case FINE:
-				return (*order_)(t).get(int())?
-						DD_FINE(link_,t,(*interval_)(t).get(Real()),Time()):
-						D_FINE(link_,t,(*interval_)(t).get(Real()),Time());
-				break;
-			case EXTREME:
-				return (*order_)(t).get(int())?
-						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Time()):
-						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Time());
-				break;
-			case NORMAL:
-			default:
-				return (*order_)(t).get(int())?
-						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Time()):
-						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Time());
+		{
+		case ROUGH:
+			return (*order_)(t).get(int())?
+					DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Time()):
+					D_ROUGH(link_,t,(*interval_)(t).get(Real()),Time());
 			break;
-			}
+		case FINE:
+			return (*order_)(t).get(int())?
+					DD_FINE(link_,t,(*interval_)(t).get(Real()),Time()):
+					D_FINE(link_,t,(*interval_)(t).get(Real()),Time());
+			break;
+		case EXTREME:
+			return (*order_)(t).get(int())?
+					DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Time()):
+					D_EXTREME(link_,t,(*interval_)(t).get(Real()),Time());
+			break;
+		case NORMAL:
+		default:
+			return (*order_)(t).get(int())?
+					DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Time()):
+					D_NORMAL(link_,t,(*interval_)(t).get(Real()),Time());
 		break;
-	case ValueBase::TYPE_ANGLE:
+		}
+	}
+	else
+	if (type == type_angle)
+	{
 		switch((*accuracy_)(t).get(int()))
-			{
-			case ROUGH:
-				return (*order_)(t).get(int())?
-						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle()):
-						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle());
-				break;
-			case FINE:
-				return (*order_)(t).get(int())?
-						DD_FINE(link_,t,(*interval_)(t).get(Real()),Angle()):
-						D_FINE(link_,t,(*interval_)(t).get(Real()),Angle());
-				break;
-			case EXTREME:
-				return (*order_)(t).get(int())?
-						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle()):
-						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle());
-				break;
-			case NORMAL:
-			default:
-				return (*order_)(t).get(int())?
-						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle()):
-						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle());
+		{
+		case ROUGH:
+			return (*order_)(t).get(int())?
+					DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle()):
+					D_ROUGH(link_,t,(*interval_)(t).get(Real()),Angle());
 			break;
-			}		
+		case FINE:
+			return (*order_)(t).get(int())?
+					DD_FINE(link_,t,(*interval_)(t).get(Real()),Angle()):
+					D_FINE(link_,t,(*interval_)(t).get(Real()),Angle());
+			break;
+		case EXTREME:
+			return (*order_)(t).get(int())?
+					DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle()):
+					D_EXTREME(link_,t,(*interval_)(t).get(Real()),Angle());
+			break;
+		case NORMAL:
+		default:
+			return (*order_)(t).get(int())?
+					DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle()):
+					D_NORMAL(link_,t,(*interval_)(t).get(Real()),Angle());
 		break;
-	case ValueBase::TYPE_VECTOR:
+		}
+	}
+	else
+	if (type == type_vector)
+	{
 		switch((*accuracy_)(t).get(int()))
-			{
-			case ROUGH:
-				return (*order_)(t).get(int())?
-						DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector()):
-						D_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector());
-				break;
-			case FINE:
-				return (*order_)(t).get(int())?
-						DD_FINE(link_,t,(*interval_)(t).get(Real()),Vector()):
-						D_FINE(link_,t,(*interval_)(t).get(Real()),Vector());
-				break;
-			case EXTREME:
-				return (*order_)(t).get(int())?
-						DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector()):
-						D_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector());
-				break;
-			case NORMAL:
-			default:
-				return (*order_)(t).get(int())?
-						DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector()):
-						D_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector());
+		{
+		case ROUGH:
+			return (*order_)(t).get(int())?
+					DD_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector()):
+					D_ROUGH(link_,t,(*interval_)(t).get(Real()),Vector());
 			break;
-			}		break;
-	default:
+		case FINE:
+			return (*order_)(t).get(int())?
+					DD_FINE(link_,t,(*interval_)(t).get(Real()),Vector()):
+					D_FINE(link_,t,(*interval_)(t).get(Real()),Vector());
+			break;
+		case EXTREME:
+			return (*order_)(t).get(int())?
+					DD_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector()):
+					D_EXTREME(link_,t,(*interval_)(t).get(Real()),Vector());
+			break;
+		case NORMAL:
+		default:
+			return (*order_)(t).get(int())?
+					DD_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector()):
+					D_NORMAL(link_,t,(*interval_)(t).get(Real()),Vector());
 		break;
+		}
 	}
 	return ValueBase();
-
 }
 
 String
@@ -317,13 +316,13 @@ ValueNode_Derivative::get_local_name()const
 }
 
 bool
-ValueNode_Derivative::check_type(ValueBase::Type type)
+ValueNode_Derivative::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_REAL ||
-		type==ValueBase::TYPE_TIME ||
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_VECTOR;
+		type==type_real ||
+		type==type_time ||
+		type==type_angle ||
+		type==type_vector;
 }
 
 bool
@@ -334,9 +333,9 @@ ValueNode_Derivative::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_,    get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(interval_,ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(accuracy_,ValueBase::TYPE_INTEGER);
-	case 3: CHECK_TYPE_AND_SET_VALUE(order_,ValueBase::TYPE_INTEGER);
+	case 1: CHECK_TYPE_AND_SET_VALUE(interval_,type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(accuracy_,type_integer);
+	case 3: CHECK_TYPE_AND_SET_VALUE(order_,type_integer);
 	}
 	return false;
 }

@@ -56,7 +56,7 @@ ValueNode_Average::ValueNode_Average(const ValueBase &value, Canvas::LooseHandle
 	if (!check_type(value.get_type()))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(value.get_type()));
+		throw runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
 	}
 
 	ref();
@@ -64,13 +64,13 @@ ValueNode_Average::ValueNode_Average(const ValueBase &value, Canvas::LooseHandle
 	unref_inactive();
 }
 
-ValueNode_Average::ValueNode_Average(ValueBase::Type type, Canvas::LooseHandle canvas):
+ValueNode_Average::ValueNode_Average(Type &type, Canvas::LooseHandle canvas):
 	ValueNode_DynamicList(type, type, canvas)
 {
 	if (!check_type(type))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(type));
+		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 }
 
@@ -101,5 +101,5 @@ ValueNode_Average::create_new()const
 	{ return new ValueNode_Average(get_type()); }
 
 bool
-ValueNode_Average::check_type(ValueBase::Type type)
+ValueNode_Average::check_type(Type &type)
 	{ return ValueAverage::check_type(type); }
