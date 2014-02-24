@@ -14,16 +14,6 @@ fi
 
 export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
 
-export WORKSPACE=$HOME/synfig-buildroot
-export PREFIX=$WORKSPACE/win$ARCH
-export DISTPREFIX=$WORKSPACE/tmp/win$ARCH
-export CACHEDIR=$WORKSPACE/cache
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
-export PATH=${PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
-
 if [[ $TOOLCHAIN == "mingw32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
 elif [[ $TOOLCHAIN == "mingw64" ]]; then
@@ -32,6 +22,16 @@ else
     echo "Error: Unknown toolchain"
     exit 1
 fi
+
+export WORKSPACE=$HOME/synfig-buildroot
+export PREFIX=$WORKSPACE/win$ARCH/build
+export DISTPREFIX=$WORKSPACE/win$ARCH/dist
+export SRCPREFIX=$WORKSPACE/win$ARCH/source
+export CACHEDIR=$WORKSPACE/cache
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
+export PATH=${PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${PREFIX}/lib
+
 
 if [ -z $DEBUG ]; then
 	export DEBUG=0
@@ -45,6 +45,9 @@ if [[ $DEBUG == 1 ]]; then
 else
 	DEBUG=''
 fi
+
+[ -e $SRCPREFIX ] || mkdir -p $SRCPREFIX
+[ -e $CACHE ] || mkdir -p $CACHE
 
 export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SCRIPTPATH}" > /dev/null
@@ -69,6 +72,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
 		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
 		${TOOLCHAIN}-libtiff \
 		mingw32-nsis \
@@ -183,13 +187,16 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION=6.8.6-10
+#PKG_VERSION=6.8.6-10
+PKG_VERSION=6.8.7-10
+#PKG_VERSION=6.8.8-7
 TAREXT=bz2
 
-cd $WORKSPACE
+cd $CACHEDIR
 [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+cd $SRCPREFIX
 if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd ${PKG_NAME}-${PKG_VERSION}
 else
     cd ${PKG_NAME}-${PKG_VERSION}
@@ -214,6 +221,7 @@ ${TOOLCHAIN}-configure \
 --without-modules \
 --without-perl \
 --without-x \
+--without-wmf \
 --with-threads \
 --with-magick_plus_plus
 
@@ -239,7 +247,7 @@ make clean || true
 libtoolize --ltdl --copy --force
 autoreconf --install --force
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
+echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
 make install -j$THREADS
@@ -253,7 +261,7 @@ make clean || true
 [ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
+echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
 make install -j$THREADS
@@ -352,7 +360,7 @@ sed -i "s/@VERSION@/$VERSION/g" $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
 
-mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+mv synfigstudio-${VERSION}.exe ../../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()
