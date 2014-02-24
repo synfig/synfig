@@ -189,7 +189,7 @@ public:
 
 Widget_Defaults::Widget_Defaults()
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-tiny_icon");
 
 	// widget colors: outline color and fill color.
 
@@ -220,31 +220,36 @@ Widget_Defaults::Widget_Defaults()
 		Gtk::Image* icon;
 
 		// Swap button
-		Gtk::Button* button_swap(manage(new Gtk::Button()));
-		button_swap->set_relief(Gtk::RELIEF_NONE);
-		button_swap->set_border_width(0);
+		Gtk::Button* _button_swap(manage(new Gtk::Button()));
+		_button_swap->set_relief(Gtk::RELIEF_NONE);
+		_button_swap->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"), iconsize));
-		button_swap->add(*icon);
-		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_padding(0, 0);
-		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
-		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
+		_button_swap->add(*icon);
+		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_padding(0, 0);
+		_button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
+		_button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
+
+		Gtk::Alignment *button_swap(manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0, 0)));
+		button_swap->add(*_button_swap);
 
 		// Reset button
-		Gtk::Button* button_reset(manage(new Gtk::Button()));
-		button_reset->set_relief(Gtk::RELIEF_NONE);
-		button_reset->set_border_width(0);
+		Gtk::Button* _button_reset(manage(new Gtk::Button()));
+		_button_reset->set_relief(Gtk::RELIEF_NONE);
+		_button_reset->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
-		button_reset->add(*icon);
-		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_padding(0, 0);
-		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
-		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
+		_button_reset->add(*icon);
+		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_padding(0, 0);
+		_button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
+		_button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
+		Gtk::Alignment *button_reset (manage (new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0 ,0)));
+		button_reset->add(*_button_reset);
 
 		// ship child widgets together
-		_widget_colors->attach(*widget_otln_color, 0, 4, 0, 4, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
-		_widget_colors->attach(*widget_fill_color, 3, 7, 3, 7, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
-//		widget_colors->attach(*button_swap, 		6, 7, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0);
-//		widget_colors->attach(*button_reset, 		1, 2, 6, 7, Gtk::FILL, Gtk::FILL, 0, 0);
+		_widget_colors->attach(*widget_otln_color,	 0, 8, 0, 7, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
+		_widget_colors->attach(*widget_fill_color,	 3, 11, 3, 10, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
+		_widget_colors->attach(*button_swap, 		 9, 10, 0, 1, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
+		_widget_colors->attach(*button_reset,		 0, 1, 9, 10, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
 
 		// fixed colors widget size
 		widget_colors = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
@@ -301,11 +306,11 @@ Widget_Defaults::Widget_Defaults()
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
 	);
-	widget_interpolation->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"), iconsize));
-	widget_interpolation->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"), iconsize));
-	widget_interpolation->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"), iconsize));
-	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"), iconsize));
-	widget_interpolation->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"), iconsize));
+	widget_interpolation->set_icon(0, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_clamped"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(1, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_tcb"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(2, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(3, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation->set_icon(4, Gtk::Button().render_icon(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 
