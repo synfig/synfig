@@ -390,7 +390,7 @@ class TypeCanvas: public Type
 			lh = other;
 			h = other;
 #ifdef TRY_FIX_FOR_BUG_27
-			fake_handle = h && h->is_inline();
+			fake_handle = h && !h->is_inline();
 			if (fake_handle) h->unref_inactive();
 #endif
 			return *this;
