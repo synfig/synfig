@@ -40,7 +40,7 @@ class ValueNode_Greyed : public ValueNode_Reference
 {
 public:
 	typedef etl::handle<ValueNode_Greyed> Handle;
-	ValueNode_Greyed(const ValueBase::Type &x);
+	ValueNode_Greyed(Type &x);
 	ValueNode_Greyed(const ValueNode::Handle &x);
 
 	virtual String get_name()const;

@@ -89,8 +89,8 @@ ValueNode_And::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link1_,    ValueBase::TYPE_BOOL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(link2_,    ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link1_,    type_bool);
+	case 1: CHECK_TYPE_AND_SET_VALUE(link2_,    type_bool);
 	}
 	return false;
 }
@@ -130,9 +130,9 @@ ValueNode_And::get_local_name()const
 }
 
 bool
-ValueNode_And::check_type(ValueBase::Type type)
+ValueNode_And::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_BOOL;
+	return type==type_bool;
 }
 
 LinkableValueNode::Vocab

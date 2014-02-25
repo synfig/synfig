@@ -968,7 +968,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	param_list.add("origin",location);
 
 #ifdef BLINEPOINT_MENU_IS_VERTEX_MENU
-	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	if(value_desc.get_value_type()==type_bline_point && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		param_list2=canvas_interface->generate_param_list(
 			synfigapp::ValueDesc(
@@ -1025,7 +1025,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	// and value is not canvas type
 	if (((value_desc.is_const() && !value_desc.get_static()) || value_desc.is_animated())
 	&&
-		value_desc.get_value_type()!= ValueBase::TYPE_CANVAS
+		value_desc.get_value_type()!= type_canvas
 		)
 	{
 		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
@@ -1158,7 +1158,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	else
 		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
 
-	if((value_desc2.get_value_type()==ValueBase::TYPE_BLINEPOINT || value_desc2.get_value_type()==ValueBase::TYPE_WIDTHPOINT)
+	if((value_desc2.get_value_type()==type_bline_point || value_desc2.get_value_type()==type_width_point)
 	 && value_desc2.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc2.get_value_node()))
 	{
 		// the index=0 is position for widthpoint and vertex for blinepoint
@@ -1197,7 +1197,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	//// Add here the rest of actions here for specific single value descriptions
 	//
 	// Specific actions for Widthpoints (Composite)
-	if(value_desc.get_value_type()==ValueBase::TYPE_WIDTHPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+	if(value_desc.get_value_type()==type_width_point && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
 		synfigapp::Action::ParamList param_list;
@@ -1210,7 +1210,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		////// Before //////////////////
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
 		///////////////// Interpolate
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_INTERPOLATE));
 		Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		before_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1227,7 +1227,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Rounded
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_ROUNDED));
 		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		before_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1244,7 +1244,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Squared
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_SQUARED));
 		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		before_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1261,7 +1261,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Peak
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_PEAK));
 		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		before_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1278,7 +1278,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Flat
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_FLAT));
 		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		before_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1299,7 +1299,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
 		///////////////// Interpolate
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_INTERPOLATE));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_INTERPOLATE));
 		image=new Gtk::Image(Gtk::StockID("synfig-interpolate_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		after_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1316,7 +1316,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Rounded
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_ROUNDED));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_ROUNDED));
 		image=new Gtk::Image(Gtk::StockID("synfig-rounded_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		after_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1333,7 +1333,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Squared
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_SQUARED));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_SQUARED));
 		image=new Gtk::Image(Gtk::StockID("synfig-squared_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		after_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1350,7 +1350,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Peak
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_PEAK));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_PEAK));
 		image=new Gtk::Image(Gtk::StockID("synfig-peak_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		after_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1367,7 +1367,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list.erase("new_value");
 		///////////////// Flat
-		param_list.add("new_value", ValueBase(WidthPoint::TYPE_FLAT));
+		param_list.add("new_value", ValueBase((int)WidthPoint::TYPE_FLAT));
 		image=new Gtk::Image(Gtk::StockID("synfig-flat_interpolation"),Gtk::IconSize::from_name("synfig-small_icon"));
 		after_menu->items().push_back(
 			Gtk::Menu_Helpers::ImageMenuElem(
@@ -1460,12 +1460,12 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
 		{
 			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
-			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			if(compo && compo->get_type() == type_width_point)
 			{
 				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position"));
 				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("position")));
 			}
-			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			if(compo && compo->get_type() == type_bline_point)
 			{
 				value_desc=synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point"));
 				//value_node=ValueNode_Animated::Handle::cast_dynamic(compo->get_link(compo->get_link_index_from_name("point")));

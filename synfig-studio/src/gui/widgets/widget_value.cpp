@@ -221,37 +221,44 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 
 	value=data;
 	try{
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
-		vector_widget->set_canvas(canvas);
-		vector_widget->set_value(value.get(Vector()));
-		vector_widget->show();
-		break;
-	case ValueBase::TYPE_REAL:
-		if(( child_param_desc.get_is_distance() || param_desc.get_is_distance() )&& canvas)
+		Type &type(value.get_type());
+		if (type == type_vector)
 		{
-			Distance dist(value.get(Real()),Distance::SYSTEM_UNITS);
-			dist.convert(App::distance_system,canvas->rend_desc());
-			distance_widget->set_value(dist);
-			distance_widget->show();
+			vector_widget->set_canvas(canvas);
+			vector_widget->set_value(value.get(Vector()));
+			vector_widget->show();
 		}
 		else
+		if (type == type_real)
 		{
-			real_widget->set_value(value.get(Real()));
-			real_widget->show();
+			if(( child_param_desc.get_is_distance() || param_desc.get_is_distance() )&& canvas)
+			{
+				Distance dist(value.get(Real()),Distance::SYSTEM_UNITS);
+				dist.convert(App::distance_system,canvas->rend_desc());
+				distance_widget->set_value(dist);
+				distance_widget->show();
+			}
+			else
+			{
+				real_widget->set_value(value.get(Real()));
+				real_widget->show();
+			}
 		}
-		break;
-	case ValueBase::TYPE_TIME:
-		if(canvas)time_widget->set_fps(canvas->rend_desc().get_frame_rate());
-		time_widget->set_value(value.get(Time()));
-		time_widget->show();
-		break;
-	case ValueBase::TYPE_ANGLE:
-		angle_widget->set_value(Angle::deg(value.get(Angle())).get());
-		angle_widget->show();
-		break;
-	case ValueBase::TYPE_INTEGER:
+		else
+		if (type == type_time)
+		{
+			if(canvas)time_widget->set_fps(canvas->rend_desc().get_frame_rate());
+			time_widget->set_value(value.get(Time()));
+			time_widget->show();
+		}
+		else
+		if (type == type_angle)
+		{
+			angle_widget->set_value(Angle::deg(value.get(Angle())).get());
+			angle_widget->show();
+		}
+		else
+		if (type == type_integer)
 		{
 			String child_param_hint(child_param_desc.get_hint());
 			String param_hint(param_desc.get_hint());
@@ -270,85 +277,94 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 				enum_widget->show();
 			}
 		}
-		break;
-	case ValueBase::TYPE_VALUENODE_BONE:
-		assert(canvas);
-		bone_widget->set_parent_canvas(canvas);
-		bone_widget->set_value_desc(get_value_desc());
-		bone_widget->set_value(value.get(etl::loose_handle<synfig::ValueNode_Bone>()));
-		bone_widget->show();
-		break;
-	case ValueBase::TYPE_CANVAS:
-		assert(canvas);
-		canvas_widget->set_parent_canvas(canvas);
-		canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
-		canvas_widget->show();
-		break;
-	case ValueBase::TYPE_BOOL:
-		bool_widget->set_active(value.get(bool()));
-		bool_widget->show();
-		break;
-	case ValueBase::TYPE_STRING:
-		if(child_param_desc.get_hint()!="filename" && param_desc.get_hint()!="filename")
+		else
+		if (type == type_bone_valuenode)
 		{
-			string_widget->set_text(value.get(string()));
-			string_widget->show();
+			assert(canvas);
+			bone_widget->set_parent_canvas(canvas);
+			bone_widget->set_value_desc(get_value_desc());
+			bone_widget->set_value(value.get(etl::loose_handle<synfig::ValueNode_Bone>()));
+			bone_widget->show();
+		}
+		else
+		if (type == type_canvas)
+		{
+			assert(canvas);
+			canvas_widget->set_parent_canvas(canvas);
+			canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
+			canvas_widget->show();
+		}
+		else
+		if (type == type_bool)
+		{
+			bool_widget->set_active(value.get(bool()));
+			bool_widget->show();
+		}
+		else
+		if (type == type_string)
+		{
+			if(child_param_desc.get_hint()!="filename" && param_desc.get_hint()!="filename")
+			{
+				string_widget->set_text(value.get(string()));
+				string_widget->show();
+			}
+			else
+			{
+				filename_widget->set_value(value.get(string()));
+				filename_widget->show();
+			}
+		}
+		else
+		if (type == type_color)
+		{
+			color_widget->set_value(value.get(synfig::Color()));
+			color_widget->show();
+	/*
+				Gdk::Color gdkcolor;
+				synfig::Color color=value.get(synfig::Color());
+				gdkcolor.set_rgb_p(color.get_r(),color.get_g(),color.get_b());
+				color_widget->set_current_color(gdkcolor);
+				color_widget->set_has_opacity_control(true);
+				color_widget->set_current_alpha((unsigned short)(color.get_a()*65535.0));
+				color_widget->show();
+	*/
 		}
 		else
 		{
-			filename_widget->set_value(value.get(string()));
-			filename_widget->show();
+			label->show();
 		}
-		break;
-	case ValueBase::TYPE_COLOR:
-        {
-		color_widget->set_value(value.get(synfig::Color()));
-		color_widget->show();
-/*
-			Gdk::Color gdkcolor;
-			synfig::Color color=value.get(synfig::Color());
-			gdkcolor.set_rgb_p(color.get_r(),color.get_g(),color.get_b());
-			color_widget->set_current_color(gdkcolor);
-			color_widget->set_has_opacity_control(true);
-			color_widget->set_current_alpha((unsigned short)(color.get_a()*65535.0));
-			color_widget->show();
-*/
-		}
-		break;
-	default:
-		label->show();
-		break;
-	}
 	}catch(...) { synfig::error(__FILE__":%d: Caught something that was thrown",__LINE__); }
 }
 
 const synfig::ValueBase &
 Widget_ValueBase::get_value()
 {
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(value.get_type());
+	if (type == type_vector)
 		value=vector_widget->get_value();
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
+	{
 		if((child_param_desc.get_is_distance() || param_desc.get_is_distance()) && canvas)
 			value=distance_widget->get_value().units(canvas->rend_desc());
 		else
 			value=real_widget->get_value();
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
 		value=time_widget->get_value();
-		break;
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 		value=Angle::deg(angle_widget->get_value());
-		break;
-	case ValueBase::TYPE_VALUENODE_BONE:
+	else
+	if (type == type_bone_valuenode)
 		value=bone_widget->get_value();
-		break;
-	case ValueBase::TYPE_CANVAS:
+	else
+	if (type == type_canvas)
 		value=canvas_widget->get_value();
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
+	{
 		if(child_param_desc.get_hint()!="enum" && param_desc.get_hint()!="enum")
 		{
 			value=integer_widget->get_value_as_int();
@@ -357,12 +373,13 @@ Widget_ValueBase::get_value()
 		{
 			value=enum_widget->get_value();
 		}
-
-		break;
-	case ValueBase::TYPE_BOOL:
+	}
+	else
+	if (type == type_bool)
 		value=bool_widget->get_active();
-		break;
-	case ValueBase::TYPE_STRING:
+	else
+	if (type == type_string)
+	{
 		if(param_desc.get_hint()!="filename")
 		{
 			value=string(string_widget->get_text());
@@ -371,25 +388,22 @@ Widget_ValueBase::get_value()
 		{
 			value=string(filename_widget->get_value());
 		}
-		break;
-	case ValueBase::TYPE_COLOR:
-        {
-			value=color_widget->get_value();
+	}
+	else
+	if (type == type_color)
+	{
+		value=color_widget->get_value();
 /*
-			Gdk::Color gdkcolor;
-			synfig::Color color;
-			gdkcolor=color_widget->get_current_color();
-			color.set_r(gdkcolor.get_red_p());
-            color.set_g(gdkcolor.get_green_p());
-            color.set_b(gdkcolor.get_blue_p());
-			color.set_a(color_widget->get_current_alpha()/65535.0);
+		Gdk::Color gdkcolor;
+		synfig::Color color;
+		gdkcolor=color_widget->get_current_color();
+		color.set_r(gdkcolor.get_red_p());
+		color.set_g(gdkcolor.get_green_p());
+		color.set_b(gdkcolor.get_blue_p());
+		color.set_a(color_widget->get_current_alpha()/65535.0);
 
-			value=color;
+		value=color;
 */
-		}
-		break;
-	default:
-		break;
 	}
 
 	return value;
@@ -399,30 +413,32 @@ Widget_ValueBase::get_value()
 void
 Widget_ValueBase::on_grab_focus()
 {
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(value.get_type());
+	if (type == type_vector)
 		vector_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
+	{
 		if(param_desc.get_is_distance()&& canvas)
 			distance_widget->grab_focus();
 		else
 			real_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
 		time_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 		angle_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_VALUENODE_BONE:
+	else
+	if (type == type_bone_valuenode)
 		bone_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_CANVAS:
+	else
+	if (type == type_canvas)
 		canvas_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
+	{
 		if(child_param_desc.get_hint()!="enum" && param_desc.get_hint()!="enum")
 		{
 			integer_widget->grab_focus();
@@ -431,12 +447,13 @@ Widget_ValueBase::on_grab_focus()
 		{
 			enum_widget->grab_focus();
 		}
-
-		break;
-	case ValueBase::TYPE_BOOL:
+	}
+	else
+	if (type == type_bool)
 		bool_widget->grab_focus();
-		break;
-	case ValueBase::TYPE_STRING:
+	else
+	if (type == type_string)
+	{
 		if(param_desc.get_hint()!="filename")
 		{
 			string_widget->grab_focus();
@@ -445,56 +462,53 @@ Widget_ValueBase::on_grab_focus()
 		{
 			filename_widget->grab_focus();
 		}
-		break;
-	case ValueBase::TYPE_COLOR:
-        {
-			color_widget->grab_focus();
-		}
-		break;
-	default:
-		break;
 	}
+	else
+	if (type == type_color)
+		color_widget->grab_focus();
 }
 
 /*
 Glib::SignalProxy0<void>
 Widget_ValueBase::signal_activate()
 {
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(value.get_type());
+	if (type == type_vector)
 		return vector_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
+	{
 		if(param_desc.get_is_distance()&& canvas)
 			return distance_widget->signal_activate();
 		else
 			return real_widget->signal_activate();
-
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
 		return time_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_ANGLE:
+	else
+	if (type == type_angle)
 		return angle_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_VALUENODE_BONE:
+	else
+	if (type == type_bone_valuenode)
 		return bone_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_CANVAS:
+	else
+	if (type == type_canvas)
 		return canvas_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
+	{
 		if(param_desc.get_hint()!="enum")
 			return integer_widget->signal_activate();
 		else
 			return enum_widget->signal_activate();
-
-		break;
-	case ValueBase::TYPE_BOOL:
+	}
+	else
+	if (type == type_bool)
 		return string_widget->signal_activate();
-		break;
-	case ValueBase::TYPE_STRING:
+	else
+	if (type == type_string)
+	{
 		if(param_desc.get_hint()!="filename")
 		{
 			return string_widget->signal_activate();
@@ -503,15 +517,11 @@ Widget_ValueBase::signal_activate()
 		{
 			return filename_widget->signal_activate();
 		}
-		break;
-	case ValueBase::TYPE_COLOR:
-        {
-			return color_widget->signal_activate();
-		}
-		break;
-	default:
-		return string_widget->signal_activate();
-		break;
 	}
+	else
+	if (type == type_color)
+		return color_widget->signal_activate();
+
+	return string_widget->signal_activate();
 }
 */

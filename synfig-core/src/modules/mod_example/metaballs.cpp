@@ -81,9 +81,9 @@ Metaballs::Metaballs():
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point( 2,  1));	radii.push_back(2.5);	weights.push_back(1);
-	param_centers.set(centers);
-	param_radii.set(radii);
-	param_weights.set(weights);
+	param_centers.set_list_of(centers);
+	param_radii.set_list_of(radii);
+	param_weights.set_list_of(weights);
 	
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -200,9 +200,9 @@ Metaballs::densityfunc(const synfig::Point &p, const synfig::Point &c, Real R)co
 Real
 Metaballs::totaldensity(const Point &pos)const
 {
-	std::vector<synfig::Point> centers(param_centers.get_list().begin(),param_centers.get_list().end());
-	std::vector<synfig::Real> radii(param_radii.get_list().begin(),param_radii.get_list().end());
-	std::vector<synfig::Real> weights(param_weights.get_list().begin(),param_weights.get_list().end());
+	std::vector<synfig::Point> centers(param_centers.get_list_of(synfig::Point()));
+	std::vector<synfig::Real> radii(param_radii.get_list_of(synfig::Real()));
+	std::vector<synfig::Real> weights(param_weights.get_list_of(synfig::Real()));
 	synfig::Real threshold=param_threshold.get(Real());
 	synfig::Real threshold2=param_threshold2.get(Real());
 

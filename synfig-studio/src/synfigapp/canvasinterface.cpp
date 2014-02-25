@@ -240,7 +240,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 	if(synfigapp::Main::get_blend_method() != Color::BLEND_BY_LAYER)
 	{
 		p=layer->get_param("blend_method");
-		p.set(synfigapp::Main::get_blend_method());
+		p.set((int)synfigapp::Main::get_blend_method());
 		layer->set_param("blend_method",p);
 	}
 
@@ -259,25 +259,26 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 			// into dynamic list valuenodes, unless every element of
 			// the list is a blinepoint, in which case convert it to a
 			// bline
-			if(iter->second.get_type()==ValueBase::TYPE_LIST)
+			if(iter->second.get_type()==type_list)
 			{
 				// check whether it's a list of blinepoints or widthpoints only
 				vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
 					vector<ValueBase>::iterator iter2 = list.begin();
-					ValueBase::Type type(iter2->get_type());
+					Type &type(iter2->get_type());
 					for (iter2++; iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type)
 							break;
 					if (iter2 == list.end())
 					{
-						if (type == ValueBase::TYPE_BLINEPOINT)
+						if (type == type_bline_point)
 						{
 							value_node=LinkableValueNode::create("bline",iter->second,canvas);
 							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 						}
-						else if (type == ValueBase::TYPE_BONE)
+						else
+						if (type == type_bone_object)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
@@ -290,7 +291,8 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
-						else if (type == ValueBase::TYPE_VECTOR)
+						else
+						if (type == type_vector)
 						{
 							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
 							{
@@ -305,7 +307,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 						}
 					}
 					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
-						if (iter2->get_type() != ValueBase::TYPE_WIDTHPOINT)
+						if (iter2->get_type() != type_width_point)
 							break;
 					if (iter2 == list.end())
 					{
@@ -313,7 +315,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
-						if (iter2->get_type() != ValueBase::TYPE_DASHITEM)
+						if (iter2->get_type() != type_dash_item)
 							break;
 					if (iter2 == list.end())
 					{
@@ -329,8 +331,8 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 			// 'composite' (other than the types that can be radial
 			// composite) then do so
 			else if(LinkableValueNode::check_type("composite",iter->second.get_type()) &&
-					 (iter->second.get_type()!=ValueBase::TYPE_COLOR &&
-					  iter->second.get_type()!=ValueBase::TYPE_VECTOR))
+					 (iter->second.get_type()!=type_color &&
+					  iter->second.get_type()!=type_vector))
 				value_node=LinkableValueNode::create("composite",iter->second,canvas);
 
 			if(value_node)
@@ -521,7 +523,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 		// because by the time the handle is destructed the canvas
 		// will no longer be inline.  So let's not propogate that
 		// ValueBase any further than here.
-		if (value_desc.get_value_type() == ValueBase::TYPE_CANVAS)
+		if (value_desc.get_value_type() == type_canvas)
 			param_list.add("value",Canvas::LooseHandle(value_desc.get_value().get(Canvas::LooseHandle())));
 		else
 			param_list.add("value",value_desc.get_value());
@@ -759,7 +761,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		h=layer->get_param("_height").get(int());
 		if(w&&h)
 		{
-			Vector x, size=ValueBase(get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl());
+			Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
 
 			// vector from top left of canvas to bottom right
 			if (resize_image)
@@ -1031,7 +1033,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 {
 	int ret(0);
 
-	if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
+	if(value_desc.get_value_type()==type_canvas)
 	{
 		Canvas::Handle canvas;
 		canvas=value_desc.get_value().get(canvas);

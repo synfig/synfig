@@ -113,9 +113,9 @@ protected:
 
 public:
 
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(Type &type);
 	// Creates a Value Node Width Point List from another compatible list
-	static ValueNode_WPList* create(const ValueBase &x=ValueBase::TYPE_LIST);
+	static ValueNode_WPList* create(const ValueBase &x=type_list);
 }; // END of class ValueNode_WPList
 
 typedef ValueNode_WPList::ListEntry::ActivepointList ActivepointList;

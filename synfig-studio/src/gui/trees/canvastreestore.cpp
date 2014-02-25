@@ -85,7 +85,7 @@ ValueNode::Handle
 CanvasTreeStore::expandable_bone_parent(ValueNode::Handle node)
 {
 	if ((!getenv("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS")) &&
-		node->get_type() == ValueBase::TYPE_VALUENODE_BONE &&
+		node->get_type() == type_bone_valuenode &&
 		(node->get_name() == "constant" || node->get_name() == "animated"))
 		if (ValueNode::Handle bone_node = (*node)(canvas_interface()->get_time()).get(ValueNode_Bone::Handle()))
 			return bone_node;
@@ -111,9 +111,9 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			x.set(value_desc.get_value());
 		else
 		if(value_desc.is_value_node())
-			switch(value_desc.get_value_type())
-			{
-			case ValueBase::TYPE_BONE:
+		{
+			Type &type(value_desc.get_value_type());
+			if (type == type_bone_object)
 			{
 				Time time(canvas_interface()->get_time());
 				Bone bone((*(value_desc.get_value_node()))(time).get(Bone()));
@@ -122,24 +122,26 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				if (!parent->is_root())
 					display += " --> " + String((*parent->get_link("name"))(time).get(String()));
 				x.set(display);
-				break;
 			}
-			case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+			else
+			if (type == type_bone_weight_pair)
 			{
 				Time time(canvas_interface()->get_time());
 				BoneWeightPair bone_weight_pair((*(value_desc.get_value_node()))(time).get(BoneWeightPair()));
 				x.set(bone_weight_pair.get_string());
-				break;
 			}
-			case ValueBase::TYPE_SEGMENT:
-			case ValueBase::TYPE_LIST:
-			case ValueBase::TYPE_BLINEPOINT:
-				x.set(ValueBase::type_local_name(value_desc.get_value_type()));
-				break;
-			default:
+			else
+			if (type == type_segment
+			 || type == type_list
+			 || type == type_bline_point)
+			{
+				x.set(value_desc.get_value_type().description.local_name);
+			}
+			else
+			{
 				x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
-				break;
 			}
+		}
 		else
 		{
 			synfig::error(__FILE__":%d: Unable to figure out value",__LINE__);
@@ -249,7 +251,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		}
 		else
 		{
-			stype=ValueBase::type_local_name(value_desc.get_value_type());
+			stype=value_desc.get_value_type().description.local_name;
 			if(!value_desc.is_const())
 				stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
 		}

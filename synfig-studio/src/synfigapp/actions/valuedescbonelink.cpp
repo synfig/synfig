@@ -161,7 +161,9 @@ Action::ValueDescBoneLink::prepare()
 	if (!bone_value_node)
 		throw Error(Error::TYPE_NOTREADY);
 
-	ValueNode_BoneWeightPair::Handle bone_weight_pair_node = ValueNode_BoneWeightPair::create(BoneWeightPair((*bone_value_node)(time), 1), get_canvas());
+	ValueNode_BoneWeightPair::Handle bone_weight_pair_node =
+		ValueNode_BoneWeightPair::create(
+			BoneWeightPair((*bone_value_node)(time).get(Bone()), 1), get_canvas() );
 	bone_weight_pair_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node), get_canvas()));
 
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)

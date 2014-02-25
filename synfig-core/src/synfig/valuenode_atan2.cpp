@@ -56,14 +56,14 @@ ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_angle)
 	{
-	case ValueBase::TYPE_ANGLE:
 		set_link("x",ValueNode_Const::create(Angle::cos(value.get(Angle())).get()));
 		set_link("y",ValueNode_Const::create(Angle::sin(value.get(Angle())).get()));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -108,9 +108,9 @@ ValueNode_Atan2::get_local_name()const
 }
 
 bool
-ValueNode_Atan2::check_type(ValueBase::Type type)
+ValueNode_Atan2::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_ANGLE;
+	return type==type_angle;
 }
 
 bool
@@ -120,8 +120,8 @@ ValueNode_Atan2::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(x_, ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(y_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(x_, type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(y_, type_real);
 	}
 	return false;
 }

@@ -56,11 +56,11 @@ public:
 	typedef ValueNode::RHandle ReplaceableListEntry;
 
 protected:
-	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_StaticList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
 
 	virtual ~ValueNode_StaticList();
 
-	ValueBase::Type container_type;
+	Type *container_type;
 
 	bool loop_;
 
@@ -92,7 +92,7 @@ public:
 
 	void set_member_canvas(etl::loose_handle<Canvas>);
 
-	ValueBase::Type get_contained_type()const;
+	Type& get_contained_type()const;
 
 
 	template <typename iterator> static Handle
@@ -121,13 +121,13 @@ protected:
 public:
 	/*! \note The construction parameter (\a id) is the type that the list
 	**	contains, rather than the type that it will yield
-	**	(which is ValueBase::TYPE_LIST)
+	**	(which is type_list)
 	*/
-	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
+	static Handle create(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
-	static ValueNode_StaticList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	static bool check_type(Type &type);
+	static ValueNode_StaticList* create_from(const ValueBase &x=type_gradient);
 	virtual Vocab get_children_vocab_vfunc()const;
 
 #ifdef _DEBUG

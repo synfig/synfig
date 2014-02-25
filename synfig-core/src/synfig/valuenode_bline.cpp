@@ -114,14 +114,14 @@ synfig::convert_bline_to_segment_list(const ValueBase& bline)
 
 //	std::vector<BLinePoint> list(bline.operator std::vector<BLinePoint>());
 	//std::vector<BLinePoint> list(bline);
-	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	std::vector<BLinePoint>::const_iterator	iter;
 
 	BLinePoint prev,first;
 
 	//start with prev = first and iter on the second...
 
-	if(list.empty()) return ValueBase(ret,bline.get_loop());
+	if(list.empty()) return ValueBase(ValueBase::List(ret.begin(), ret.end()),bline.get_loop());
 	first = prev = list.front();
 
 	for(iter=++list.begin();iter!=list.end();++iter)
@@ -156,11 +156,11 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 	std::vector<Real> ret;
 //	std::vector<BLinePoint> list(bline.operator std::vector<BLinePoint>());
 	//std::vector<BLinePoint> list(bline);
-	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	std::vector<BLinePoint>::const_iterator	iter;
 
 	if(bline.empty())
-		return ValueBase(ValueBase::TYPE_LIST);
+		return ValueBase(type_list);
 
 	for(iter=list.begin();iter!=list.end();++iter)
 		ret.push_back(iter->get_width());
@@ -168,7 +168,7 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 	if(bline.get_loop())
 		ret.push_back(list.front().get_width());
 
-	return ValueBase(ret,bline.get_loop());
+	return ValueBase(ValueBase::List(ret.begin(), ret.end()),bline.get_loop());
 }
 
 Real
@@ -184,7 +184,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 	Real closest(10000000);
 
 	int i=0;
-	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	typedef std::vector<BLinePoint>::const_iterator iterT;
 	iterT iter, prev, first;
 	for(iter=list.begin(); iter!=list.end(); ++i, ++iter)
@@ -288,7 +288,7 @@ Real
 synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
 	BLinePoint blinepoint0, blinepoint1;
-	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	int size = list.size(), from_vertex;
 	// trivial cases
 	if(pos == 0.0 || pos == 1.0)
@@ -342,7 +342,7 @@ Real
 synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
 	BLinePoint blinepoint0, blinepoint1;
-	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	int size = list.size(), from_vertex(0);
 	// trivial cases
 	if(pos == 0.0 || pos == 1.0)
@@ -437,7 +437,7 @@ Real
 synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *lengths)
 {
 	BLinePoint blinepoint0, blinepoint1;
-	const std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	int size(list.size());
 	if(!bline_loop) size--;
 	if(size < 1) return Real();
@@ -462,7 +462,7 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 
 
 ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
-	ValueNode_DynamicList(ValueBase::TYPE_BLINEPOINT, canvas)
+	ValueNode_DynamicList(type_bline_point, canvas)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 		printf("%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
@@ -475,7 +475,7 @@ ValueNode_BLine::~ValueNode_BLine()
 ValueNode_BLine*
 ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 {
-	if(value.get_type()!=ValueBase::TYPE_LIST)
+	if(value.get_type()!=type_list)
 		return 0;
 
 	// don't set the parent canvas yet - do it just before returning from this function
@@ -485,13 +485,12 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 
 	if(!value.empty())
 	{
-		switch(value.get_contained_type())
-		{
-		case ValueBase::TYPE_BLINEPOINT:
+		Type &type(value.get_contained_type());
+		if (type == type_bline_point)
 		{
 //			std::vector<BLinePoint> bline_points(value.operator std::vector<BLinePoint>());
 			//std::vector<BLinePoint> bline_points(value);
-			std::vector<BLinePoint> bline_points(value.get_list().begin(),value.get_list().end());
+			std::vector<BLinePoint> bline_points(value.get_list_of(BLinePoint()));
 			std::vector<BLinePoint>::const_iterator iter;
 
 			for(iter=bline_points.begin();iter!=bline_points.end();iter++)
@@ -500,8 +499,8 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 			}
 			value_node->set_loop(value.get_loop());
 		}
-			break;
-		case ValueBase::TYPE_SEGMENT:
+		else
+		if (type == type_segment)
 		{
 			// Here, we want to convert a list of segments
 			// into a list of BLinePoints. We make an assumption
@@ -511,7 +510,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 			value_node->set_loop(false);
 //			std::vector<Segment> segments(value.operator std::vector<Segment>());
 //			std::vector<Segment> segments(value);
-			std::vector<Segment> segments(value.get_list().begin(),value.get_list().end());
+			std::vector<Segment> segments(value.get_list_of(Segment()));
 			std::vector<Segment>::const_iterator iter,last(segments.end());
 			--last;
 			ValueNode_Const::Handle prev,first;
@@ -523,7 +522,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev=ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas));
+					prev=ValueNode_Const::Handle::cast_dynamic(create(type_bline_point, canvas));
 					{
 						BLinePoint prev_point(PREV_POINT);
 						prev_point.set_vertex(iter->p1);
@@ -549,7 +548,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 					continue;
 				}
 
-				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas)));
+				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(type_bline_point, canvas)));
 				{
 					BLinePoint curr_point(CURR_POINT);
 					curr_point.set_vertex(iter->p2);
@@ -571,12 +570,11 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 			}
 
 		}
-			break;
-		default:
+		else
+		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
 			return 0;
-			break;
 		}
 	}
 
@@ -603,8 +601,8 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		else
 			next_i=index;
 		prev_i=find_prev_valid_entry(index,time);
-		next=(*list[next_i].value_node)(time);
-		prev=(*list[prev_i].value_node)(time);
+		next=(*list[next_i].value_node)(time).get(BLinePoint());
+		prev=(*list[prev_i].value_node)(time).get(BLinePoint());
 		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
 		etl::hermite<Vector> left;
 		etl::hermite<Vector> right;
@@ -987,7 +985,7 @@ ValueNode_BLine::operator()(Time t)const
 	if(ret_list.empty())
 		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
 
-	return ValueBase(ret_list,get_loop());
+	return ValueBase(ValueBase::List(ret_list.begin(), ret_list.end()),get_loop());
 }
 
 String
@@ -1016,9 +1014,9 @@ ValueNode_BLine::create_new()const
 }
 
 bool
-ValueNode_BLine::check_type(ValueBase::Type type)
+ValueNode_BLine::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_LIST;
+	return type==type_list;
 }
 
 

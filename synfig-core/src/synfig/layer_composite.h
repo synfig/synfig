@@ -74,7 +74,7 @@ public:
 	//! Gets the blend method of the layer
 	Color::BlendMethod get_blend_method()const { return Color::BlendMethod((param_blend_method.get(int()))); }
 	//! Sets the blend method of the layer and returns this layer
-	Layer_Composite& set_blend_method(Color::BlendMethod x) { param_blend_method.set(x); return *this; }
+	Layer_Composite& set_blend_method(Color::BlendMethod x) { param_blend_method.set(int(x)); return *this; }
 	//! Returns true is amount is 1 and blend method is straight
 	virtual bool is_solid_color()const { return param_amount.get(Real())==1.0f && param_blend_method.get(int())==Color::BLEND_STRAIGHT; }
 	//! Returns true if the amount is zero.

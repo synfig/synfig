@@ -137,114 +137,133 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 	CurveStruct(const synfigapp::ValueDesc& x):
 		value_desc(x)
 	{
-		switch(value_desc.get_value_type())
+		Type &type(value_desc.get_value_type());
+		if (type == type_real)
 		{
-			case ValueBase::TYPE_REAL:
-				channels.push_back(Channel());
-				channels.back().name="real";
-				channels.back().color=Gdk::Color("#007f7f");
-				break;
-			case ValueBase::TYPE_TIME:
-				channels.push_back(Channel());
-				channels.back().name="time";
-				channels.back().color=Gdk::Color("#7f7f00");
-				break;
-			case ValueBase::TYPE_INTEGER:
-				channels.push_back(Channel());
-				channels.back().name="int";
-				channels.back().color=Gdk::Color("#7f0000");
-				break;
-			case ValueBase::TYPE_BOOL:
-				channels.push_back(Channel());
-				channels.back().name="bool";
-				channels.back().color=Gdk::Color("#ff7f00");
-				break;
-			case ValueBase::TYPE_ANGLE:
-				channels.push_back(Channel());
-				channels.back().name="theta";
-				channels.back().color=Gdk::Color("#004f4f");
-				break;
-			case ValueBase::TYPE_COLOR:
-				channels.push_back(Channel());
-				channels.back().name="red";
-				channels.back().color=Gdk::Color("#7f0000");
-				channels.push_back(Channel());
-				channels.back().name="green";
-				channels.back().color=Gdk::Color("#007f00");
-				channels.push_back(Channel());
-				channels.back().name="blue";
-				channels.back().color=Gdk::Color("#00007f");
-				channels.push_back(Channel());
-				channels.back().name="alpha";
-				channels.back().color=Gdk::Color("#000000");
-				break;
-			case ValueBase::TYPE_VECTOR:
-				channels.push_back(Channel());
-				channels.back().name="x";
-				channels.back().color=Gdk::Color("#7f007f");
-				channels.push_back(Channel());
-				channels.back().name="y";
-				channels.back().color=Gdk::Color("#007f7f");
-				break;
-			case ValueBase::TYPE_BLINEPOINT:
-				channels.push_back(Channel());
-				channels.back().name="v.x";
-				channels.back().color=Gdk::Color("#ff7f00");
-				channels.push_back(Channel());
-				channels.back().name="v.y";
-				channels.back().color=Gdk::Color("#7f3f00");
+			channels.push_back(Channel());
+			channels.back().name="real";
+			channels.back().color=Gdk::Color("#007f7f");
+		}
+		else
+		if (type == type_time)
+		{
+			channels.push_back(Channel());
+			channels.back().name="time";
+			channels.back().color=Gdk::Color("#7f7f00");
+		}
+		else
+		if (type == type_integer)
+		{
+			channels.push_back(Channel());
+			channels.back().name="int";
+			channels.back().color=Gdk::Color("#7f0000");
+		}
+		else
+		if (type == type_bool)
+		{
+			channels.push_back(Channel());
+			channels.back().name="bool";
+			channels.back().color=Gdk::Color("#ff7f00");
+		}
+		else
+		if (type == type_angle)
+		{
+			channels.push_back(Channel());
+			channels.back().name="theta";
+			channels.back().color=Gdk::Color("#004f4f");
+		}
+		else
+		if (type == type_color)
+		{
+			channels.push_back(Channel());
+			channels.back().name="red";
+			channels.back().color=Gdk::Color("#7f0000");
+			channels.push_back(Channel());
+			channels.back().name="green";
+			channels.back().color=Gdk::Color("#007f00");
+			channels.push_back(Channel());
+			channels.back().name="blue";
+			channels.back().color=Gdk::Color("#00007f");
+			channels.push_back(Channel());
+			channels.back().name="alpha";
+			channels.back().color=Gdk::Color("#000000");
+		}
+		else
+		if (type == type_vector)
+		{
+			channels.push_back(Channel());
+			channels.back().name="x";
+			channels.back().color=Gdk::Color("#7f007f");
+			channels.push_back(Channel());
+			channels.back().name="y";
+			channels.back().color=Gdk::Color("#007f7f");
+		}
+		else
+		if (type == type_bline_point)
+		{
+			channels.push_back(Channel());
+			channels.back().name="v.x";
+			channels.back().color=Gdk::Color("#ff7f00");
+			channels.push_back(Channel());
+			channels.back().name="v.y";
+			channels.back().color=Gdk::Color("#7f3f00");
 
-				channels.push_back(Channel());
-				channels.back().name="width";
-				channels.back().color=Gdk::Color("#000000");
+			channels.push_back(Channel());
+			channels.back().name="width";
+			channels.back().color=Gdk::Color("#000000");
 
-				channels.push_back(Channel());
-				channels.back().name="origin";
-				channels.back().color=Gdk::Color("#ffffff");
+			channels.push_back(Channel());
+			channels.back().name="origin";
+			channels.back().color=Gdk::Color("#ffffff");
 
-				channels.push_back(Channel());
-				channels.back().name="tsplit";
-				channels.back().color=Gdk::Color("#ff00ff");
+			channels.push_back(Channel());
+			channels.back().name="tsplit";
+			channels.back().color=Gdk::Color("#ff00ff");
 
-				channels.push_back(Channel());
-				channels.back().name="t1.x";
-				channels.back().color=Gdk::Color("#ff0000");
-				channels.push_back(Channel());
-				channels.back().name="t1.y";
-				channels.back().color=Gdk::Color("#7f0000");
+			channels.push_back(Channel());
+			channels.back().name="t1.x";
+			channels.back().color=Gdk::Color("#ff0000");
+			channels.push_back(Channel());
+			channels.back().name="t1.y";
+			channels.back().color=Gdk::Color("#7f0000");
 
-				channels.push_back(Channel());
-				channels.back().name="t2.x";
-				channels.back().color=Gdk::Color("#ffff00");
-				channels.push_back(Channel());
-				channels.back().name="t2.y";
-				channels.back().color=Gdk::Color("#7f7f00");
+			channels.push_back(Channel());
+			channels.back().name="t2.x";
+			channels.back().color=Gdk::Color("#ffff00");
+			channels.push_back(Channel());
+			channels.back().name="t2.y";
+			channels.back().color=Gdk::Color("#7f7f00");
 
-				channels.push_back(Channel());
-				channels.back().name="rsplit";
-				channels.back().color=Gdk::Color("#ff00ff");
-				channels.push_back(Channel());
-				channels.back().name="asplit";
-				channels.back().color=Gdk::Color("#ff00ff");
-				break;
-			case ValueBase::TYPE_WIDTHPOINT:
-				channels.push_back(Channel());
-				channels.back().name="position";
-				channels.back().color=Gdk::Color("#ff0000");
-				channels.push_back(Channel());
-				channels.back().name="width";
-				channels.back().color=Gdk::Color("#00ff00");
-				break;
-			case ValueBase::TYPE_DASHITEM:
-				channels.push_back(Channel());
-				channels.back().name="offset";
-				channels.back().color=Gdk::Color("#ff0000");
-				channels.push_back(Channel());
-				channels.back().name="length";
-				channels.back().color=Gdk::Color("#00ff00");
-				break;
-			default:
-				throw synfig::Exception::BadType("Bad type for curves");
+			channels.push_back(Channel());
+			channels.back().name="rsplit";
+			channels.back().color=Gdk::Color("#ff00ff");
+			channels.push_back(Channel());
+			channels.back().name="asplit";
+			channels.back().color=Gdk::Color("#ff00ff");
+		}
+		else
+		if (type == type_width_point)
+		{
+			channels.push_back(Channel());
+			channels.back().name="position";
+			channels.back().color=Gdk::Color("#ff0000");
+			channels.push_back(Channel());
+			channels.back().name="width";
+			channels.back().color=Gdk::Color("#00ff00");
+		}
+		else
+		if (type == type_dash_item)
+		{
+			channels.push_back(Channel());
+			channels.back().name="offset";
+			channels.back().color=Gdk::Color("#ff0000");
+			channels.push_back(Channel());
+			channels.back().name="length";
+			channels.back().color=Gdk::Color("#00ff00");
+		}
+		else
+		{
+			throw synfig::Exception::BadType("Bad type for curves");
 		}
 	}
 
@@ -270,52 +289,59 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 		// to go ahead and figure out what the
 		// actual value is at that time.
 		ValueBase value(value_desc.get_value(time));
-		switch(value.get_type())
+		Type &type(value.get_type());
+		if (type == type_real)
+			channels[0].values[time]=value.get(Real());
+		else
+		if (type == type_time)
+			channels[0].values[time]=value.get(Time());
+		else
+		if (type == type_integer)
+			channels[0].values[time]=value.get(int());
+		else
+		if (type == type_bool)
+			channels[0].values[time]=value.get(bool());
+		else
+		if (type == type_angle)
+			channels[0].values[time]=Angle::rad(value.get(Angle())).get();
+		else
+		if (type == type_color)
 		{
-			case ValueBase::TYPE_REAL:
-				channels[0].values[time]=value.get(Real());
-				break;
-			case ValueBase::TYPE_TIME:
-				channels[0].values[time]=value.get(Time());
-				break;
-			case ValueBase::TYPE_INTEGER:
-				channels[0].values[time]=value.get(int());
-				break;
-			case ValueBase::TYPE_BOOL:
-				channels[0].values[time]=value.get(bool());
-				break;
-			case ValueBase::TYPE_ANGLE:
-				channels[0].values[time]=Angle::rad(value.get(Angle())).get();
-				break;
-			case ValueBase::TYPE_COLOR:
-				channels[0].values[time]=value.get(Color()).get_r();
-				channels[1].values[time]=value.get(Color()).get_g();
-				channels[2].values[time]=value.get(Color()).get_b();
-				channels[3].values[time]=value.get(Color()).get_a();
-				break;
-			case ValueBase::TYPE_VECTOR:
-				channels[0].values[time]=value.get(Vector())[0];
-				channels[1].values[time]=value.get(Vector())[1];
-				break;
-			case ValueBase::TYPE_BLINEPOINT:
-				channels[0].values[time]=value.get(BLinePoint()).get_vertex()[0];
-				channels[1].values[time]=value.get(BLinePoint()).get_vertex()[1];
-				channels[2].values[time]=value.get(BLinePoint()).get_width();
-				channels[3].values[time]=value.get(BLinePoint()).get_origin();
-				channels[4].values[time]=value.get(BLinePoint()).get_split_tangent_both();
-				channels[5].values[time]=value.get(BLinePoint()).get_tangent1()[0];
-				channels[6].values[time]=value.get(BLinePoint()).get_tangent1()[1];
-				channels[7].values[time]=value.get(BLinePoint()).get_tangent2()[0];
-				channels[8].values[time]=value.get(BLinePoint()).get_tangent2()[1];
-				channels[9].values[time]=value.get(BLinePoint()).get_split_tangent_radius();
-				channels[10].values[time]=value.get(BLinePoint()).get_split_tangent_angle();
-				break;
-			case ValueBase::TYPE_WIDTHPOINT:
-				channels[0].values[time]=value.get(WidthPoint()).get_position();
-				channels[1].values[time]=value.get(WidthPoint()).get_width();
-				break;
-			default:
-				return 0;
+			channels[0].values[time]=value.get(Color()).get_r();
+			channels[1].values[time]=value.get(Color()).get_g();
+			channels[2].values[time]=value.get(Color()).get_b();
+			channels[3].values[time]=value.get(Color()).get_a();
+		}
+		else
+		if (type == type_vector)
+		{
+			channels[0].values[time]=value.get(Vector())[0];
+			channels[1].values[time]=value.get(Vector())[1];
+		}
+		else
+		if (type == type_bline_point)
+		{
+			channels[0].values[time]=value.get(BLinePoint()).get_vertex()[0];
+			channels[1].values[time]=value.get(BLinePoint()).get_vertex()[1];
+			channels[2].values[time]=value.get(BLinePoint()).get_width();
+			channels[3].values[time]=value.get(BLinePoint()).get_origin();
+			channels[4].values[time]=value.get(BLinePoint()).get_split_tangent_both();
+			channels[5].values[time]=value.get(BLinePoint()).get_tangent1()[0];
+			channels[6].values[time]=value.get(BLinePoint()).get_tangent1()[1];
+			channels[7].values[time]=value.get(BLinePoint()).get_tangent2()[0];
+			channels[8].values[time]=value.get(BLinePoint()).get_tangent2()[1];
+			channels[9].values[time]=value.get(BLinePoint()).get_split_tangent_radius();
+			channels[10].values[time]=value.get(BLinePoint()).get_split_tangent_angle();
+		}
+		else
+		if (type == type_width_point)
+		{
+			channels[0].values[time]=value.get(WidthPoint()).get_position();
+			channels[1].values[time]=value.get(WidthPoint()).get_width();
+		}
+		else
+		{
+			return 0;
 		}
 
 		return -channels[chan].values[time];
@@ -323,11 +349,11 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 
 	static bool is_not_supported(const synfigapp::ValueDesc& x)
 	{
-		return x.get_value_type() == ValueBase::TYPE_STRING
-			|| x.get_value_type() == ValueBase::TYPE_CANVAS
-			|| x.get_value_type() == ValueBase::TYPE_GRADIENT
-			|| x.get_value_type() == ValueBase::TYPE_LIST
-			|| x.get_value_type() == ValueBase::TYPE_SEGMENT;
+		return x.get_value_type() == type_string
+			|| x.get_value_type() == type_canvas
+			|| x.get_value_type() == type_gradient
+			|| x.get_value_type() == type_list
+			|| x.get_value_type() == type_segment;
 	}
 };
 

@@ -82,7 +82,7 @@ synfig::Layer_Bitmap::set_param(const String & param, const ValueBase & value)
 	IMPORT_VALUE(param_br);
 	IMPORT_VALUE(param_c);
 	IMPORT_VALUE_PLUS(param_gamma_adjust,
-		if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
+		if(param=="gamma_adjust"&& value.get_type()==type_real)
 		{
 			param_gamma_adjust.set(Real(1.0/value.get(Real())));
 			return true;
@@ -107,9 +107,9 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 
 	if(param=="_width")
 	{
-		ValueBase ret1(ValueBase::TYPE_INTEGER);
+		ValueBase ret1(type_integer);
 		ret1=int(width);
-		ValueBase ret2(ValueBase::TYPE_INTEGER);
+		ValueBase ret2(type_integer);
 		switch (method)
 		{
 				case SOFTWARE:
@@ -125,9 +125,9 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	}
 	if(param=="_height")
 	{
-		ValueBase ret1(ValueBase::TYPE_INTEGER);
+		ValueBase ret1(type_integer);
 		ret1=int(height);
-		ValueBase ret2(ValueBase::TYPE_INTEGER);
+		ValueBase ret2(type_integer);
 		switch (method)
 		{
 			case SOFTWARE:

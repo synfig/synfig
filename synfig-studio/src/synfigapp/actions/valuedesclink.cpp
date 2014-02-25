@@ -117,12 +117,12 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		if(value_desc.is_value_node() && value_desc.parent_is_linkable_value_node())
 		{
 			synfig::ValueNode_Composite::Handle compo(synfig::ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
-			if(compo && compo->get_type() == ValueBase::TYPE_WIDTHPOINT)
+			if(compo && compo->get_type() == type_width_point)
 			{
 				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("position")));
 				return set_param("value_desc", param);
 			}
-			if(compo && compo->get_type() == ValueBase::TYPE_BLINEPOINT)
+			if(compo && compo->get_type() == type_bline_point)
 			{
 				synfigapp::Action::Param param(synfigapp::ValueDesc(compo, compo->get_link_index_from_name("point")));
 				return set_param("value_desc", param);
@@ -261,8 +261,8 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			// Everything must be of the same type
 			poison=true;
 			status_message = (strprintf(_("Cannot link two values of different types ('%s' and '%s')"),
-										ValueBase::type_local_name(value_desc.get_value_type()).c_str(),
-										ValueBase::type_local_name(value_desc_list.front().get_value_type()).c_str()));
+										value_desc.get_value_type().description.local_name.c_str(),
+										value_desc_list.front().get_value_type().description.local_name.c_str()));
 			return false;
 		}
 

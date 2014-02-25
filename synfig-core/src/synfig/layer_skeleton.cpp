@@ -63,7 +63,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Skeleton::Layer_Skeleton():
-	param_name(ValueBase("skeleton")),
+	param_name(ValueBase((const char*)"skeleton")),
 	param_bone_shape_width(ValueBase(0.1))
 {
 	std::vector<synfig::Bone> bones;
@@ -76,7 +76,7 @@ Layer_Skeleton::Layer_Skeleton():
 	while (bone_count--)
 		bones.push_back(Bone());
 
-	param_bones.set(bones);
+	param_bones.set_list_of(bones);
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 

@@ -56,13 +56,13 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
+ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(Type &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	if(x!=ValueBase::TYPE_REAL)
-		throw Exception::BadType(ValueBase::type_local_name(x));
+	if(x!=type_real)
+		throw Exception::BadType(x.description.local_name);
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 	set_link("bline",value_node);
@@ -75,7 +75,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
 LinkableValueNode*
 ValueNode_BLineCalcWidth::create_new()const
 {
-	return new ValueNode_BLineCalcWidth(ValueBase::TYPE_REAL);
+	return new ValueNode_BLineCalcWidth(type_real);
 }
 
 ValueNode_BLineCalcWidth*
@@ -127,8 +127,8 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 	amount = amount * size;
 	from_vertex = int(amount);
 	if (from_vertex > size-1) from_vertex = size-1;
-	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
-	blinepoint1 = *(next+from_vertex);
+	blinepoint0 = from_vertex ? (next+from_vertex-1)->get(BLinePoint()) : iter->get(BLinePoint());
+	blinepoint1 = (next+from_vertex)->get(BLinePoint());
 
 	float width0 = blinepoint0.get_width();
 	float width1 = blinepoint1.get_width();
@@ -162,11 +162,11 @@ ValueNode_BLineCalcWidth::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(scale_,  ValueBase::TYPE_REAL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(homogeneous_,  ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  type_list);
+	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   type_bool);
+	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(scale_,  type_real);
+	case 4: CHECK_TYPE_AND_SET_VALUE(homogeneous_,  type_bool);
 	}
 	return false;
 }
@@ -189,9 +189,9 @@ ValueNode_BLineCalcWidth::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineCalcWidth::check_type(ValueBase::Type type)
+ValueNode_BLineCalcWidth::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_REAL;
+	return type==type_real;
 }
 
 LinkableValueNode::Vocab

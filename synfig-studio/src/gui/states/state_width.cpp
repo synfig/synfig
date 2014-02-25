@@ -464,7 +464,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 				synfigapp::ValueDesc origin_value_desc(iduck_origin->get_value_desc());
 				ValueNode::Handle wpvn(ValueNode::Handle::cast_dynamic(origin_value_desc.get_value_node()));
 				// if the origin duck is widthpoint type and it belongs to a list
-				if(wpvn && wpvn->get_type() == ValueBase::TYPE_WIDTHPOINT && origin_value_desc.parent_is_linkable_value_node())
+				if(wpvn && wpvn->get_type() == type_width_point && origin_value_desc.parent_is_linkable_value_node())
 				{
 					// and if the width point list that it belongs to...
 					ValueNode_WPList::Handle wplist(ValueNode_WPList::Handle::cast_dynamic(origin_value_desc.get_parent_value_node()));
@@ -476,7 +476,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 						if(bline && (bline==bezier_bline))
 						{
 							// ... then update the values properly
-							synfig::WidthPoint wpoint((*wpvn)(get_canvas()->get_time()));
+							synfig::WidthPoint wpoint((*wpvn)(get_canvas()->get_time()).get(synfig::WidthPoint()));
 							Real pos(wpoint.get_norm_position(wplist->get_loop()));
 							Real tpos(p1_pos+t*bezier_size);
 							// The factor of 20 can be modified by the user as a preference.
@@ -584,7 +584,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		{
 			//for each duck modify IT!!!
 			ValueDesc desc = i->first->get_value_desc();
-			if(	desc.get_value_type() == ValueBase::TYPE_REAL )
+			if(	desc.get_value_type() == type_real )
 			{
 				Action::Handle action(Action::create("ValueDescSet"));
 				assert(action);

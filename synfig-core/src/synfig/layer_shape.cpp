@@ -1132,7 +1132,7 @@ Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
 	param_antialias      (bool(true)),
 	param_blurtype       (int(Blur::FASTGAUSSIAN)),
 	param_feather        (Real(0.0)),
-	param_winding_style	 (WINDING_NON_ZERO),
+	param_winding_style	 (int(WINDING_NON_ZERO)),
 	bytestream           (0),
 	lastbyteop           (Primitive::NONE),
 	lastoppos            (-1)
@@ -2201,7 +2201,7 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 	Color color=param_color.get(Color());
 	bool invert =param_invert.get(bool(true));
 	bool antialias =param_antialias.get(bool(true));
-	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+	WindingStyle winding_style=(WindingStyle)param_winding_style.get(int());
 
 	Surface::alpha_pen p(surface->begin(),got_amount,got_blend_method);
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
@@ -2330,7 +2330,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 {
 	bool invert =param_invert.get(bool(true));
 	bool antialias =param_antialias.get(bool(true));
-	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+	WindingStyle winding_style=(WindingStyle)param_winding_style.get(int());
 
 	etl::surface<float>::pen p(surface->begin());
 	PolySpan::cover_array::iterator cur_mark = polyspan.covers.begin();
@@ -2684,7 +2684,7 @@ Layer_Shape::accelerated_cairorender(Context context,cairo_t *cr, int quality, c
 	bool antialias =param_antialias.get(bool(true));
 	int blurtype=param_blurtype.get(int());
 	Real feather=param_feather.get(Real());
-	WindingStyle winding_style=param_winding_style.get(WINDING_NON_ZERO);
+	WindingStyle winding_style=(WindingStyle)param_winding_style.get(int());
 
 	// Grab the rgba values
 	const float r(color.get_r());

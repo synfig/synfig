@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueBase::Type &x):
+ValueNode_TimeLoop::ValueNode_TimeLoop(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -92,9 +92,9 @@ ValueNode_TimeLoop::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(link_,       get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(link_time_,  ValueBase::TYPE_TIME);
-	case 2: CHECK_TYPE_AND_SET_VALUE(local_time_, ValueBase::TYPE_TIME);
-	case 3: CHECK_TYPE_AND_SET_VALUE(duration_,   ValueBase::TYPE_TIME);
+	case 1: CHECK_TYPE_AND_SET_VALUE(link_time_,  type_time);
+	case 2: CHECK_TYPE_AND_SET_VALUE(local_time_, type_time);
+	case 3: CHECK_TYPE_AND_SET_VALUE(duration_,   type_time);
 	}
 	return false;
 }
@@ -154,9 +154,9 @@ ValueNode_TimeLoop::get_local_name()const
 }
 
 bool
-ValueNode_TimeLoop::check_type(ValueBase::Type type)
+ValueNode_TimeLoop::check_type(Type &type)
 {
-	if(type)
+	if(type != type_nil)
 		return true;
 	return false;
 }

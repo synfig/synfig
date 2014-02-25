@@ -561,7 +561,7 @@ Renderer_Ducks::render_vfunc(
 									break;
 								}
 							}
-						WidthPoint wp((*wpoint_composite)(time));
+						WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
 						if(wplistloop)
 						{
 							// The wplist is looped. This may require a position parameter

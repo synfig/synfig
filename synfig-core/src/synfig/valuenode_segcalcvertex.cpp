@@ -55,15 +55,15 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(const ValueBase::Type &x):
+ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(Type &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	if(x!=ValueBase::TYPE_VECTOR)
-		throw Exception::BadType(ValueBase::type_local_name(x));
+	if(x!=type_vector)
+		throw Exception::BadType(x.description.local_name);
 
-	set_link("segment",ValueNode_Const::create(ValueBase::TYPE_SEGMENT));
+	set_link("segment",ValueNode_Const::create(type_segment));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
 }
 
@@ -105,9 +105,9 @@ ValueNode_SegCalcVertex::get_local_name()const
 }
 
 bool
-ValueNode_SegCalcVertex::check_type(ValueBase::Type type)
+ValueNode_SegCalcVertex::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_VECTOR;
+	return type==type_vector;
 }
 
 bool
@@ -117,8 +117,8 @@ ValueNode_SegCalcVertex::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(segment_, ValueBase::TYPE_SEGMENT);
-	case 1: CHECK_TYPE_AND_SET_VALUE(amount_,  ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(segment_, type_segment);
+	case 1: CHECK_TYPE_AND_SET_VALUE(amount_,  type_real);
 	}
 	return false;
 }
@@ -139,7 +139,7 @@ ValueNode_SegCalcVertex::get_link_vfunc(int i)const
 LinkableValueNode*
 ValueNode_SegCalcVertex::create_new()const
 {
-	return new ValueNode_SegCalcVertex(ValueBase::TYPE_VECTOR);
+	return new ValueNode_SegCalcVertex(type_vector);
 }
 
 LinkableValueNode::Vocab

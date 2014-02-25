@@ -56,13 +56,13 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
+ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(Type &x):
 	LinkableValueNode(x)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	if(x!=ValueBase::TYPE_VECTOR)
-		throw Exception::BadType(ValueBase::type_local_name(x));
+	if(x!=type_vector)
+		throw Exception::BadType(x.description.local_name);
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 	set_link("bline",value_node);
@@ -74,7 +74,7 @@ ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 LinkableValueNode*
 ValueNode_BLineCalcVertex::create_new()const
 {
-	return new ValueNode_BLineCalcVertex(ValueBase::TYPE_VECTOR);
+	return new ValueNode_BLineCalcVertex(type_vector);
 }
 
 ValueNode_BLineCalcVertex*
@@ -126,8 +126,8 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	amount = amount * size;
 	from_vertex = int(amount);
 	if (from_vertex > size-1) from_vertex = size-1;
-	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
-	blinepoint1 = *(next+from_vertex);
+	blinepoint0 = from_vertex ? (next+from_vertex-1)->get(BLinePoint()) : iter->get(BLinePoint());
+	blinepoint1 = (next+from_vertex)->get(BLinePoint());
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
@@ -159,10 +159,10 @@ ValueNode_BLineCalcVertex::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(homogeneous_, ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  type_list);
+	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   type_bool);
+	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(homogeneous_, type_bool);
 	}
 	return false;
 }
@@ -184,9 +184,9 @@ ValueNode_BLineCalcVertex::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BLineCalcVertex::check_type(ValueBase::Type type)
+ValueNode_BLineCalcVertex::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_VECTOR;
+	return type==type_vector;
 }
 
 LinkableValueNode::Vocab

@@ -59,13 +59,13 @@ synfig::convert_bline_to_wplist(const ValueBase& bline)
 {
 	// returns if the parameter is not a list or if it is a list, it is empty
 	if(bline.empty())
-		return ValueBase(ValueBase::TYPE_LIST);
+		return ValueBase(type_list);
 	// returns if the contained type is not blinepoint
-	if(bline.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
-		return ValueBase(ValueBase::TYPE_LIST);
+	if(bline.get_contained_type()!=type_bline_point)
+		return ValueBase(type_list);
 
 	std::vector<WidthPoint> ret;
-	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	std::vector<BLinePoint>::const_iterator iter;
 	Real position, totalpoints, i(0);
 	totalpoints=(Real)list.size();
@@ -204,7 +204,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 
 
 ValueNode_WPList::ValueNode_WPList():
-	ValueNode_DynamicList(ValueBase::TYPE_WIDTHPOINT)
+	ValueNode_DynamicList(type_width_point)
 {
 }
 
@@ -216,18 +216,16 @@ ValueNode_WPList*
 ValueNode_WPList::create(const ValueBase &value)
 {
 	// if the parameter is not a list type, return null
-	if(value.get_type()!=ValueBase::TYPE_LIST)
+	if(value.get_type()!=type_list)
 		return NULL;
 	// create an empty list
 	ValueNode_WPList* value_node(new ValueNode_WPList());
 	// If the value parameter is not empty
 	if(!value.empty())
 	{
-		switch(value.get_contained_type())
+		if (value.get_contained_type() == type_width_point)
 		{
-		case ValueBase::TYPE_WIDTHPOINT:
-		{
-			std::vector<WidthPoint> list(value.get_list().begin(),value.get_list().end());
+			std::vector<WidthPoint> list(value.get_list_of(WidthPoint()));
 			std::vector<WidthPoint>::const_iterator iter;
 
 			for(iter=list.begin();iter!=list.end();iter++)
@@ -236,12 +234,11 @@ ValueNode_WPList::create(const ValueBase &value)
 			}
 			value_node->set_loop(value.get_loop());
 		}
-			break;
-		default:
+		else
+		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
 			return NULL;
-			break;
 		}
 	}
 
@@ -367,9 +364,9 @@ ValueNode_WPList::create_new()const
 }
 
 bool
-ValueNode_WPList::check_type(ValueBase::Type type)
+ValueNode_WPList::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_LIST;
+	return type==type_list;
 }
 
 synfig::WidthPoint

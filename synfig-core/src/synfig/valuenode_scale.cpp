@@ -63,36 +63,34 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(Real(1.0))));
-	ValueBase::Type id(value.get_type());
+	Type &type(value.get_type());
 
-	switch(id)
-	{
-	case ValueBase::TYPE_ANGLE:
+	if (type == type_angle)
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
-		break;
-	case ValueBase::TYPE_COLOR:
+	else
+	if (type == type_color)
 		set_link("link",ValueNode_Const::create(value.get(Color())));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	else
+	if (type == type_integer)
 		set_link("link",ValueNode_Const::create(value.get(int())));
-		break;
-	case ValueBase::TYPE_REAL:
+	else
+	if (type == type_real)
 		set_link("link",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_TIME:
+	else
+	if (type == type_time)
 		set_link("link",ValueNode_Const::create(value.get(Time())));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	else
+	if (type == type_vector)
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
-		break;
-	default:
+	else
+	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
 	assert(value_node);
-	assert(value_node->get_type()==id);
-	assert(get_type()==id);
+	assert(value_node->get_type()==type);
+	assert(get_type()==type);
 }
 
 LinkableValueNode*
@@ -120,9 +118,9 @@ synfig::ValueNode_Scale::operator()(Time t)const
 
 	if(!value_node || !scalar)
 		throw runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));
-	else if(get_type()==ValueBase::TYPE_ANGLE)
+	else if(get_type()==type_angle)
 		return (*value_node)(t).get(Angle())*(*scalar)(t).get(Real());
-	else if(get_type()==ValueBase::TYPE_COLOR)
+	else if(get_type()==type_color)
 	{
 		Color ret((*value_node)(t).get(Color()));
 		Real s((*scalar)(t).get(Real()));
@@ -131,13 +129,13 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		ret.set_b(ret.get_b()*s);
 		return ret;
 	}
-	else if(get_type()==ValueBase::TYPE_INTEGER)
+	else if(get_type()==type_integer)
 		return round_to_int((*value_node)(t).get(int())*(*scalar)(t).get(Real()));
-	else if(get_type()==ValueBase::TYPE_REAL)
+	else if(get_type()==type_real)
 		return (*value_node)(t).get(Real())*(*scalar)(t).get(Real());
-	else if(get_type()==ValueBase::TYPE_TIME)
+	else if(get_type()==type_time)
 		return (*value_node)(t).get(Time())*(*scalar)(t).get(Time());
-	else if(get_type()==ValueBase::TYPE_VECTOR)
+	else if(get_type()==type_vector)
 		return (*value_node)(t).get(Vector())*(*scalar)(t).get(Real());
 
 	assert(0);
@@ -152,15 +150,11 @@ synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Vector &target_value)
 			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
 	else
 		{
-			switch (get_type())
-			{
-				case ValueBase::TYPE_REAL:
-					return target_value.mag() / scalar_value;
-				case ValueBase::TYPE_ANGLE:
-					return Angle::tan(target_value[1] / scalar_value ,target_value[0] / scalar_value);
-				default:
-					return target_value / scalar_value;
-			}
+			if (get_type() == type_real)
+				return target_value.mag() / scalar_value;
+			if (get_type() == type_angle)
+				return Angle::tan(target_value[1] / scalar_value ,target_value[0] / scalar_value);
+			return target_value / scalar_value;
 		}
 	return ValueBase();
 }
@@ -170,15 +164,9 @@ synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Angle &target_value) 
 {
 	Real scalar_value((*scalar)(t).get(Real()));
 	if(scalar_value==0)
-			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
+		throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
 	else
-		{
-			switch (get_type())
-			{
-					default:
-					return target_value / scalar_value;
-			}
-		}
+		return target_value / scalar_value;
 	return ValueBase();
 }
 
@@ -187,15 +175,9 @@ synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Real &target_value) c
 {
 	Real scalar_value((*scalar)(t).get(Real()));
 	if(scalar_value==0)
-			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
+		throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
 	else
-		{
-			switch (get_type())
-			{
-					default:
-					return target_value / scalar_value;
-			}
-		}
+		return target_value / scalar_value;
 	return ValueBase();
 }
 
@@ -214,7 +196,7 @@ ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(value_node, get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(scalar,     ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(scalar,     type_real);
 	}
 	return false;
 }
@@ -244,15 +226,15 @@ ValueNode_Scale::get_local_name()const
 }
 
 bool
-ValueNode_Scale::check_type(ValueBase::Type type)
+ValueNode_Scale::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_INTEGER ||
-		type==ValueBase::TYPE_REAL ||
-		type==ValueBase::TYPE_TIME ||
-		type==ValueBase::TYPE_VECTOR;
+		type==type_angle	||
+		type==type_color	||
+		type==type_integer	||
+		type==type_real		||
+		type==type_time		||
+		type==type_vector;
 }
 
 LinkableValueNode::Vocab

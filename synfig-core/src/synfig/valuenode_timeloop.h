@@ -48,7 +48,7 @@ public:
 	typedef etl::handle<ValueNode_TimeLoop> Handle;
 	typedef etl::handle<const ValueNode_TimeLoop> ConstHandle;
 
-	ValueNode_TimeLoop(const ValueBase::Type &x);
+	ValueNode_TimeLoop(Type &x);
 	ValueNode_TimeLoop(const ValueNode::Handle &x);
 
 	virtual ValueBase operator()(Time t)const;
@@ -68,7 +68,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(Type &type);
 	static ValueNode_TimeLoop* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_TimeLoop

@@ -64,7 +64,7 @@ Layer_MotionBlur::Layer_MotionBlur():
 	Layer_Composite         (1.0,Color::BLEND_STRAIGHT),
 	param_aperture          (ValueBase(Time(0))),
 	param_subsamples_factor (ValueBase(Real(1.0))),
-	param_subsampling_type  (ValueBase(SUBSAMPLING_HYPERBOLIC)),
+	param_subsampling_type  (ValueBase(int(SUBSAMPLING_HYPERBOLIC))),
 	param_subsample_start   (ValueBase(Real(0.0))),
 	param_subsample_end     (ValueBase(Real(1.0)))
 {
@@ -168,7 +168,7 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 {
 	Time aperture=param_aperture.get(Time());
 	Real subsamples_factor=param_subsamples_factor.get(Real());
-	SubsamplingType subsampling_type=param_subsampling_type.get(SUBSAMPLING_LINEAR);
+	SubsamplingType subsampling_type=(SubsamplingType)param_subsampling_type.get(int());
 	Real subsample_start=param_subsample_start.get(Real());
 	Real subsample_end=param_subsample_end.get(Real());
 	

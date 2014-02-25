@@ -97,6 +97,7 @@
 #include "valuenode_average.h"
 #include "valuenode_dynamic.h"
 #include "valuenode_derivative.h"
+#include "valuenode_weightedaverage.h"
 
 #include "layer.h"
 
@@ -211,6 +212,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
 
 	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_0_65_0);
+	ADD_VALUENODE(ValueNode_WeightedAverage,  "weighted_average", _("Weighted Average"), RELEASE_VERSION_0_65_0);
 	
 	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_0_65_0);
 	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_0_65_0);
@@ -229,7 +231,7 @@ ValueNode::subsys_stop()
 	return true;
 }
 
-ValueNode::ValueNode(ValueBase::Type type):type(type)
+ValueNode::ValueNode(Type &type):type(&type)
 {
 	value_node_count++;
 }
@@ -248,7 +250,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 
 	if (!check_type(name, x.get_type()))
 	{
-		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), ValueBase::type_local_name(x.get_type()).c_str());
+		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
 		return 0;
 	}
 
@@ -256,13 +258,13 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 }
 
 bool
-LinkableValueNode::check_type(const String &name, ValueBase::Type x)
+LinkableValueNode::check_type(const String &name, Type &x)
 {
 	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
 	// user creating them for themselves, so check_type() fails for
 	// them even when it is valid
-	if((name == "bone_root" && x == ValueBase::TYPE_BONE) ||
-	   (name == "duplicate" && x == ValueBase::TYPE_REAL))
+	if((name == "bone_root" && x == type_bone_object) ||
+	   (name == "duplicate" && x == type_real))
 		return true;
 
 	if(!book().count(name) || !book()[name].check_type)
@@ -566,7 +568,7 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 }
 
 PlaceholderValueNode::Handle
-PlaceholderValueNode::create(ValueBase::Type type)
+PlaceholderValueNode::create(Type &type)
 {
 	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
 		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
@@ -580,7 +582,7 @@ PlaceholderValueNode::operator()(Time /*t*/)const
 	return ValueBase();
 }
 
-PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
+PlaceholderValueNode::PlaceholderValueNode(Type &type):
 	ValueNode(type)
 {
 }

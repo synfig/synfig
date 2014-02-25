@@ -1,0 +1,646 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file type.h
+**	\brief Template Header
+**
+**	$Id$
+**
+**	\legal
+**	......... ... 2014 Ivan Mahonin
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === S T A R T =========================================================== */
+
+#ifndef __SYNFIG_TYPE_H
+#define __SYNFIG_TYPE_H
+
+/* === H E A D E R S ======================================================= */
+
+#include <cassert>
+#include <vector>
+#include <map>
+#include "string.h"
+#include "general.h"
+
+/* === M A C R O S ========================================================= */
+
+/* === T Y P E D E F S ===================================================== */
+
+/* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace synfig {
+	class Type;
+
+	template<typename T>
+	class TypeAlias {
+	public:
+		typedef T AliasedType;
+		Type &type;
+		TypeAlias(Type &type): type(type) { }
+	};
+}
+
+#include "real.h"
+#include "string.h"
+#include "angle.h"
+#include <ETL/handle>
+
+namespace synfig {
+
+class Time;
+class Color;
+struct Segment;
+class BLinePoint;
+class Matrix;
+class BoneWeightPair;
+class WidthPoint;
+class DashItem;
+class ValueBase;
+class Canvas;
+class Vector;
+class Gradient;
+class Bone;
+class ValueNode_Bone;
+class Transformation;
+template<typename T> class WeightedValue;
+
+namespace types_namespace
+{
+#define SYNFIG_DECLARE_TYPE_ALIAS(T) \
+	TypeAlias< T > get_type_alias(T const&);
+#define SYNFIG_IMPLEMENT_TYPE_ALIAS(T, Class) \
+	TypeAlias< T > get_type_alias(T const&) { return TypeAlias< T >(Class::instance); }
+
+	SYNFIG_DECLARE_TYPE_ALIAS(bool)
+	SYNFIG_DECLARE_TYPE_ALIAS(int)
+	SYNFIG_DECLARE_TYPE_ALIAS(Angle)
+	SYNFIG_DECLARE_TYPE_ALIAS(Time)
+	SYNFIG_DECLARE_TYPE_ALIAS(Real)
+	SYNFIG_DECLARE_TYPE_ALIAS(float)
+	SYNFIG_DECLARE_TYPE_ALIAS(Vector)
+	SYNFIG_DECLARE_TYPE_ALIAS(Color)
+	SYNFIG_DECLARE_TYPE_ALIAS(Segment)
+	SYNFIG_DECLARE_TYPE_ALIAS(BLinePoint)
+	SYNFIG_DECLARE_TYPE_ALIAS(Matrix)
+	SYNFIG_DECLARE_TYPE_ALIAS(BoneWeightPair)
+	SYNFIG_DECLARE_TYPE_ALIAS(WidthPoint)
+	SYNFIG_DECLARE_TYPE_ALIAS(DashItem)
+	SYNFIG_DECLARE_TYPE_ALIAS(std::vector<ValueBase>)
+	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<Canvas>)
+	SYNFIG_DECLARE_TYPE_ALIAS(etl::handle<Canvas>)
+	SYNFIG_DECLARE_TYPE_ALIAS(Canvas*)
+	SYNFIG_DECLARE_TYPE_ALIAS(String)
+	SYNFIG_DECLARE_TYPE_ALIAS(const char*)
+	SYNFIG_DECLARE_TYPE_ALIAS(Gradient)
+	SYNFIG_DECLARE_TYPE_ALIAS(Bone)
+	SYNFIG_DECLARE_TYPE_ALIAS(etl::handle<ValueNode_Bone>)
+	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>)
+	SYNFIG_DECLARE_TYPE_ALIAS(ValueNode_Bone*)
+	SYNFIG_DECLARE_TYPE_ALIAS(Transformation)
+
+	template<typename T>
+	TypeAlias< WeightedValue<T> > get_type_alias(WeightedValue<T> const&);
+} // namespace types_namespace
+} // namespace synfig
+
+namespace synfig {
+
+extern Type &type_nil;
+
+typedef unsigned int TypeId;
+
+/*!	\class Operation
+**	\brief Provides methods to create operation with Values
+*/
+class Operation
+{
+public:
+	typedef void* InternalPointer;
+
+	enum OperationType {
+		TYPE_NONE,
+		TYPE_CREATE,
+		TYPE_DESTROY,
+		TYPE_SET,
+		TYPE_PUT,
+		TYPE_GET,
+		TYPE_COPY,
+		TYPE_COMPARE,
+		TYPE_TO_STRING,
+	};
+
+	typedef InternalPointer	(*CreateFunc)	();
+	typedef void			(*DestroyFunc)	(const InternalPointer);
+	typedef void			(*CopyFunc)		(const InternalPointer dest, const InternalPointer src);
+	typedef bool			(*CompareFunc)	(const InternalPointer, const InternalPointer);
+	typedef InternalPointer	(*BinaryFunc)	(const InternalPointer, const InternalPointer);
+	typedef String			(*ToStringFunc)	(const InternalPointer);
+
+	template<typename T>
+	class GenericFuncs
+	{
+	public:
+		typedef void 		(*SetFunc)		(InternalPointer dest, const T &src);
+		typedef void 		(*PutFunc)		(T &dest, const InternalPointer src);
+		typedef const T&	(*GetFunc)		(const InternalPointer);
+	private:
+		GenericFuncs() { }
+	};
+
+	class DefaultFuncs
+	{
+	public:
+		template<typename Inner>
+		static InternalPointer create()
+			{ return new Inner(); }
+		template<typename Inner>
+		static void destroy(const InternalPointer x)
+			{ return delete (Inner*)x; }
+		template<typename Inner, typename Outer>
+		static void set(InternalPointer dest, const Outer &src)
+			{ *(Inner*)dest = src; }
+		template<typename Inner, typename Outer>
+		static void put(Outer &dest, const InternalPointer src)
+			{ dest = static_cast<const Outer&>(*(Inner*)src); }
+		template<typename Inner, typename Outer>
+		static const Outer& get(const InternalPointer x)
+			{ return static_cast<const Outer&>(*(Inner*)x); }
+		template<typename Inner>
+		static void copy(InternalPointer dest, const InternalPointer src)
+			{ *(Inner*)dest = *(Inner*)src; }
+		template<typename Inner>
+		static bool compare(InternalPointer a, const InternalPointer b)
+			{ return *(Inner*)a == *(Inner*)b; }
+		template<typename Inner, String (*Func)(const Inner&)>
+		static String to_string(const InternalPointer x)
+			{ return Func(*(const Inner*)x); }
+	private:
+		DefaultFuncs() { }
+	};
+
+	struct Description
+	{
+		OperationType operation_type;
+		TypeId return_type;
+		TypeId type_a;
+		TypeId type_b;
+
+		Description(OperationType operation_type = TYPE_NONE, TypeId return_type = 0, TypeId type_a = 0, TypeId type_b = 0):
+			operation_type(operation_type), return_type(return_type), type_a(type_a), type_b(type_b) { }
+
+		bool operator < (const Description &other) const
+		{
+			return return_type < other.return_type ? true
+				 : other.return_type < return_type ? false
+				 : type_a < other.type_a ? true
+				 : other.type_a < type_a ? false
+				 : type_b < other.type_b;
+		}
+
+		bool operator > (const Description &other) const { return other < *this; }
+		bool operator != (const Description &other) const { return *this < other || other < *this; }
+		bool operator == (const Description &other) const { return !(*this != other); }
+
+		inline static Description get_create(TypeId type)
+			{ return Description(TYPE_CREATE, type); }
+		inline static Description get_destroy(TypeId type)
+			{ return Description(TYPE_DESTROY, 0, type); }
+		inline static Description get_set(TypeId type)
+			{ return Description(TYPE_SET, 0, type); }
+		inline static Description get_put(TypeId type)
+			{ return Description(TYPE_PUT, 0, 0, type); }
+		inline static Description get_get(TypeId type)
+			{ return Description(TYPE_GET, 0, type); }
+		inline static Description get_copy(TypeId type_a, TypeId type_b)
+			{ return Description(TYPE_COPY, 0, type_a, type_b); }
+		inline static Description get_copy(TypeId type)
+			{ return get_compare(type, type); }
+		inline static Description get_compare(TypeId type_a, TypeId type_b)
+			{ return Description(TYPE_COPY, 0, type_a, type_b); }
+		inline static Description get_compare(TypeId type)
+			{ return get_compare(type, type); }
+		inline static Description get_to_string(TypeId type)
+			{ return Description(TYPE_TO_STRING, 0, type); }
+		inline static Description get_binary(OperationType operation_type, TypeId return_type, TypeId type_a, TypeId type_b)
+			{ return Description(operation_type, return_type, type_a, type_b); }
+	};
+
+private:
+	Operation() { }
+}; // END of class Operation
+
+
+/*!	\class Type
+**	\brief Class for the Type of Values of Synfig
+*/
+class Type
+{
+public:
+	enum { NIL = 0 };
+	typedef Operation::InternalPointer InternalPointer;
+
+	struct Description
+	{
+		String version;
+		String name;
+		String local_name;
+		std::vector<String> aliases;
+	};
+
+private:
+	class OperationBookBase
+	{
+	private:
+		static OperationBookBase *first, *last;
+		OperationBookBase *previous, *next;
+
+		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL) { }
+		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
+
+	protected:
+		OperationBookBase():
+			previous(last), next(NULL)
+		{
+			(previous == NULL ? first : previous->next) = last = this;
+		}
+
+	public:
+		virtual void remove_type(const Type &type) = 0;
+		virtual ~OperationBookBase()
+		{
+			(previous == NULL ? first : previous->next) = next;
+			(next     == NULL ? last  : next->previous) = previous;
+		}
+
+		static void remove_type_from_all_books(TypeId identifier)
+		{
+			for(OperationBookBase *book = first; book != NULL; book = book->next)
+				book->remove_type(identifier);
+		}
+	};
+
+	template<typename T>
+	class OperationBook
+	{
+	public:
+		typedef std::pair<Type*, T> Entry;
+		typedef std::map<Operation::Description, Entry> Map;
+
+		static OperationBook instance;
+		Map map;
+
+		virtual void remove_type(const Type& type)
+		{
+			for(typename Map::iterator i = map.begin(); i != map.end();)
+				if (i->second.first == &type)
+					map.erase(i++); else ++i;
+		}
+	};
+
+	static Type *first, *last;
+	static TypeId last_identifier;
+
+	static std::vector<Type*> typesById;
+	static std::map<String, Type*> typesByName;
+
+	Type *previous, *next;
+	bool initialized;
+	Description private_description;
+
+public:
+	const TypeId identifier;
+	const Description &description;
+
+protected:
+	Type(TypeId):
+		previous(last),
+		next(NULL),
+		initialized(false),
+		identifier(NIL),
+		description(private_description)
+	{
+		(previous == NULL ? first : previous->next) = last = this;
+	}
+
+	Type():
+		previous(last),
+		next(NULL),
+		initialized(false),
+		identifier(++last_identifier),
+		description(private_description)
+	{
+		assert(last_identifier != NIL);
+		(previous == NULL ? first : previous->next) = last = this;
+	}
+
+private:
+	// lock default copy constructor
+	Type(const Type &):
+		previous(NULL), next(NULL),
+		initialized(false),
+		identifier(0), description(private_description) { assert(false); }
+	// lock default assignment
+	Type& operator= (const Type &) { assert(false); return *this; }
+
+	void register_type()
+	{
+		// register id
+		if (typesById.size() <= identifier) typesById.resize(identifier + 1, NULL);
+		assert(typesById[identifier] == NULL);
+		typesById[identifier] = this;
+
+		// register names
+		assert(!typesByName.count(description.name));
+		typesByName[description.name] = this;
+		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
+		{
+			assert(!typesByName.count(*i) || typesByName[*i] == this);
+			typesByName[*i] = this;
+		}
+	}
+
+	void unregister_type()
+	{
+		// unregister operations
+		OperationBookBase::remove_type_from_all_books(identifier);
+
+		// unregister id
+		if (typesById.size() > identifier) typesById[identifier] = NULL;
+
+		// unregister names
+		typesByName.erase(description.name);
+		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
+			typesByName.erase(*i);
+	}
+
+private:
+	template<typename T>
+	void register_operation(const Operation::Description &description, T func)
+	{
+		typedef typename OperationBook<T>::Entry Entry;
+		typedef typename OperationBook<T>::Map Map;
+		Map &map = OperationBook<T>::instance.map;
+		assert(!map.count(description) || map[description].first == this);
+		map[description] = Entry(this, func);
+	}
+
+protected:
+	virtual void initialize_vfunc(Description &description)
+	{
+		description.version = "0.0";
+	}
+
+public:
+	void initialize()
+	{
+		if (initialized) return;
+		initialize_vfunc(private_description);
+		register_type();
+		initialized = true;
+	}
+
+	virtual ~Type()
+	{
+		if (initialized) unregister_type();
+		(previous == NULL ? first : previous->next) = next;
+		(next     == NULL ? last  : next->previous) = previous;
+	}
+
+	bool operator== (const Type &other) { return this == &other; }
+	bool operator!= (const Type &other) { return this != &other; }
+
+	static void initialize_all()
+	{
+		for(Type *type = first; type != NULL; type = type->next)
+			type->initialize();
+	}
+
+	inline Type* get_next() const { return next; }
+	inline static Type* get_first() { return first; }
+
+	template<typename T>
+	static T get_operation(const Operation::Description &description)
+	{
+		typedef typename OperationBook<T>::Map Map;
+		typename Map::const_iterator i = OperationBook<T>::instance.map.find(description);
+		return i == OperationBook<T>::instance.map.end() ? NULL : i->second.second;
+	}
+
+	template<typename T>
+	static T get_operation_by_type(const Operation::Description &description, T)
+		{ return get_operation<T>(description); }
+
+	template<typename T>
+	inline static Type& get_type()
+	{
+		return types_namespace::get_type_alias(T()).type;
+	}
+
+	template<typename T>
+	inline static const TypeId& get_type_id()
+		{ return get_type<T>().identifier; }
+
+	template<typename T>
+	inline static Type& get_type_by_pointer(const T *x)
+		{ return get_type<T>(); }
+
+	template<typename T>
+	inline static Type& get_type_by_reference(const T &x)
+		{ return get_type<T>(); }
+
+	static Type* try_get_type_by_id(TypeId id)
+		{ return id < typesById.size() ? typesById[id] : NULL; }
+
+	static Type* try_get_type_by_name(const String &name)
+	{
+		std::map<String, Type*>::const_iterator i = typesByName.find(name);
+		return i == typesByName.end() ? NULL : i->second;
+	}
+
+	static Type& get_type_by_id(TypeId id)
+		{ assert(try_get_type_by_id(id) != NULL); return *try_get_type_by_id(id); }
+
+	static Type& get_type_by_name(const String &name)
+		{ assert(try_get_type_by_name(name) != NULL); return *try_get_type_by_name(name); }
+
+private:
+	inline void register_create(TypeId type, Operation::CreateFunc func)
+		{ register_operation(Operation::Description::get_create(type), func); }
+	inline void register_destroy(TypeId type, Operation::DestroyFunc func)
+		{ register_operation(Operation::Description::get_destroy(type), func); }
+	template<typename T>
+	inline void register_set(TypeId type, typename Operation::GenericFuncs<T>::SetFunc func)
+		{ register_operation(Operation::Description::get_set(type), func); }
+	template<typename T>
+	inline void register_put(TypeId type, typename Operation::GenericFuncs<T>::PutFunc func)
+		{ register_operation(Operation::Description::get_put(type), func); }
+	template<typename T>
+	inline void register_get(TypeId type, typename Operation::GenericFuncs<T>::GetFunc func)
+		{ register_operation(Operation::Description::get_get(type), func); }
+
+protected:
+	inline void register_copy(TypeId type_a, TypeId type_b, Operation::CopyFunc func)
+		{ register_operation(Operation::Description::get_copy(type_a, type_b), func); }
+	inline void register_copy(TypeId type, Operation::CopyFunc func)
+		{ register_operation(Operation::Description::get_copy(type), func); }
+	inline void register_compare(TypeId type_a, TypeId type_b, Operation::CompareFunc func)
+		{ register_operation(Operation::Description::get_compare(type_a, type_b), func); }
+	inline void register_compare(TypeId type, Operation::CompareFunc func)
+		{ register_operation(Operation::Description::get_compare(type), func); }
+	inline void register_to_string(TypeId type, Operation::ToStringFunc func)
+		{ register_operation(Operation::Description::get_to_string(type), func); }
+	inline void register_binary(Operation::OperationType operation_type, TypeId type_return, TypeId type_a, TypeId type_b, Operation::BinaryFunc func)
+		{ register_operation(Operation::Description::get_binary(operation_type, type_return, type_a, type_b), func); }
+	inline void register_binary(const Operation::Description &description, Operation::BinaryFunc func)
+		{ register_operation(description, func); }
+
+	inline void register_create(Operation::CreateFunc func)
+		{ register_create(identifier, func); }
+	inline void register_destroy(Operation::DestroyFunc func)
+		{ register_destroy(identifier, func); }
+	template<typename T>
+	inline void register_set(typename Operation::GenericFuncs<T>::SetFunc func)
+		{ register_set(identifier, func); }
+	template<typename T>
+	inline void register_put(typename Operation::GenericFuncs<T>::PutFunc func)
+		{ register_put(identifier, func); }
+	template<typename T>
+	inline void register_get(typename Operation::GenericFuncs<T>::GetFunc func)
+		{ register_get(identifier, func); }
+	inline void register_copy(Operation::CopyFunc func)
+		{ register_copy(identifier, func); }
+	inline void register_compare(Operation::CompareFunc func)
+		{ register_compare(identifier, func); }
+	inline void register_to_string(Operation::ToStringFunc func)
+		{ register_to_string(identifier, func); }
+
+	// default register
+	inline void register_default(Operation::CreateFunc func)
+		{ register_create(identifier, func); }
+	inline void register_default(Operation::DestroyFunc func)
+		{ register_destroy(identifier, func); }
+	template<typename T>
+	inline void register_default(typename Operation::GenericFuncs<T>::SetFunc func)
+		{ register_set<T>(identifier, func); }
+	template<typename T>
+	inline void register_default(typename Operation::GenericFuncs<T>::PutFunc func)
+		{ register_put<T>(identifier, func); }
+	template<typename T>
+	inline void register_default(typename Operation::GenericFuncs<T>::GetFunc func)
+		{ register_get<T>(identifier, func); }
+	inline void register_default(Operation::CopyFunc func)
+		{ register_copy(identifier, func); }
+	inline void register_default(Operation::CompareFunc func)
+		{ register_compare(identifier, func); }
+	inline void register_default(Operation::ToStringFunc func)
+		{ register_to_string(identifier, func); }
+
+	template<typename Inner, typename Outer, String (*Func)(const Inner&)>
+	inline void register_all()
+	{
+		register_default(Operation::DefaultFuncs::create<Inner>);
+		register_default(Operation::DefaultFuncs::destroy<Inner>);
+		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
+		register_default(Operation::DefaultFuncs::copy<Inner>);
+		register_default(Operation::DefaultFuncs::compare<Inner>);
+		register_default(Operation::DefaultFuncs::to_string<Inner, Func>);
+	}
+
+	template<typename Inner, typename Outer, String (*Func)(const Inner&)>
+	inline void register_all_but_compare()
+	{
+		register_default(Operation::DefaultFuncs::create<Inner>);
+		register_default(Operation::DefaultFuncs::destroy<Inner>);
+		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
+		register_default(Operation::DefaultFuncs::copy<Inner>);
+		register_default(Operation::DefaultFuncs::to_string<Inner, Func>);
+	}
+
+	template<typename Inner, typename Outer>
+	inline void register_alias()
+	{
+		register_default<Outer>(Operation::DefaultFuncs::set<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::put<Inner, Outer>);
+		register_default<Outer>(Operation::DefaultFuncs::get<Inner, Outer>);
+	}
+
+	template<typename Outer, String (*Func)(const Outer&)>
+	inline void register_all()
+		{ register_all<Outer, Outer, Func>(); }
+	template<typename Outer, String (*Func)(const Outer&)>
+	inline void register_all_but_compare()
+		{ register_all_but_compare<Outer, Outer, Func>(); }
+
+private:
+	template<typename T>
+	static String _value_to_string(const T &alias, const typename T::AliasedType &x)
+	{
+		if (alias.type.identifier == NIL) {
+			Operation::ToStringFunc to_string_func =
+				Type::get_operation<Operation::ToStringFunc>(
+					Operation::Description::get_to_string(alias.type.identifier) );
+			return to_string_func(NULL);
+		}
+
+		typedef typename T::AliasedType TT;
+
+		Operation::CreateFunc create_func =
+			Type::get_operation<Operation::CreateFunc>(
+				Operation::Description::get_create(alias.type.identifier) );
+		typename Operation::GenericFuncs<TT>::SetFunc set_func =
+			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
+				Operation::Description::get_set(alias.type.identifier) );
+		Operation::ToStringFunc to_string_func =
+			Type::get_operation<Operation::ToStringFunc>(
+				Operation::Description::get_to_string(alias.type.identifier) );
+		Operation::DestroyFunc destroy_func =
+			Type::get_operation<Operation::DestroyFunc>(
+				Operation::Description::get_destroy(alias.type.identifier) );
+		assert(create_func != NULL);
+		assert(set_func != NULL);
+		assert(to_string_func != NULL);
+		assert(destroy_func != NULL);
+
+		InternalPointer data = create_func();
+		set_func(data, x);
+		String res = to_string_func(data);
+		destroy_func(data);
+		return res;
+	}
+
+public:
+	template<typename T>
+	static String value_to_string(const T &x)
+		{ return _value_to_string(types_namespace::get_type_alias(x), x); }
+
+public:
+	static bool subsys_init() {
+		initialize_all();
+		return true;
+	}
+}; // END of class Type
+
+
+template<typename T>
+Type::OperationBook<T> Type::OperationBook<T>::instance;
+
+}; // END of namespace synfig
+
+/* === E N D =============================================================== */
+
+#endif

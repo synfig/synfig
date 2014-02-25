@@ -108,7 +108,7 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 		ValueDesc value_desc=x.find("value_desc")->second.get_value_desc();
 		if(!value_desc)
 			return false;
-		if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
+		if(value_desc.get_value_type()==type_canvas)
 			if(!value_desc.get_value().get(Canvas::Handle()))
 				return false;
 		if(
@@ -122,7 +122,7 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 	// Don't allow to export lower and upper boundaries of the WidhtPoint
 		if(value_desc.parent_is_linkable_value_node()
 			&& value_desc.get_parent_value_node()->get_name()=="composite"
-			&& value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_WIDTHPOINT
+			&& value_desc.get_parent_value_node()->get_type()==type_width_point
 			&& (value_desc.get_index()==4 || value_desc.get_index()==5))
 			return false;
 		return true;
@@ -244,7 +244,7 @@ Action::ValueDescExport::prepare()
 
 	ValueNode::Handle value_node;
 
-	if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
+	if(value_desc.get_value_type()==type_canvas)
 	{
 		// action: CanvasAdd
 		if(!value_desc.is_const())

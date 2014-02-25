@@ -202,7 +202,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 inline void
 CurveGradient::sync()
 {
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	curve_length_=calculate_distance(bline, bline_loop);
 }
 
@@ -232,7 +232,7 @@ CurveGradient::CurveGradient():
 	bline[1].set_width(1.0f);
 	bline[2].set_width(1.0f);
 	bline_loop=true;
-	param_bline.set(bline);
+	param_bline.set_list_of(bline);
 
 	sync();
 
@@ -245,7 +245,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 {
 	Point origin=param_origin.get(Point());
 	Real width=param_width.get(Real());
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(), param_bline.get_list().end());
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Gradient gradient=param_gradient.get(Gradient());
 	bool loop=param_loop.get(bool());
 	bool zigzag=param_zigzag.get(bool());
@@ -504,7 +504,7 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_width);
-	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
+	if(param=="bline" && value.get_type()==type_list)
 	{
 		param_bline=value;
 		bline_loop=value.get_loop();

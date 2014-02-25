@@ -806,7 +806,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 	{
 		if(iter->get_hidden())
 			continue;
-		if(handle->get_param(iter->get_name()).get_type()!=ValueBase::TYPE_CANVAS)
+		if(handle->get_param(iter->get_name()).get_type()!=type_canvas)
 			continue;
 
 		{

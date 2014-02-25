@@ -57,16 +57,16 @@ ValueNode_RealString::ValueNode_RealString(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
+	if (value.get_type() == type_string)
 	{
-	case ValueBase::TYPE_STRING:
 		set_link("real",ValueNode_Const::create(Real(0)));
 		set_link("width",ValueNode_Const::create(int(0)));
 		set_link("precision",ValueNode_Const::create(int(3)));
 		set_link("zero_pad",ValueNode_Const::create(bool(false)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -98,16 +98,11 @@ ValueNode_RealString::operator()(Time t)const
 	int precision((*precision_)(t).get(int()));
 	int zero_pad((*zero_pad_)(t).get(bool()));
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_STRING:
+	if (get_type() == type_string)
 		return strprintf(strprintf("%%%s%d.%df",
 								   zero_pad ? "0" : "",
 								   width,
 								   precision).c_str(), real);
-	default:
-		break;
-	}
 
 	assert(0);
 	return ValueBase();
@@ -132,10 +127,10 @@ ValueNode_RealString::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(real_, ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(width_, ValueBase::TYPE_INTEGER);
-	case 2: CHECK_TYPE_AND_SET_VALUE(precision_, ValueBase::TYPE_INTEGER);
-	case 3: CHECK_TYPE_AND_SET_VALUE(zero_pad_, ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(real_, type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(width_, type_integer);
+	case 2: CHECK_TYPE_AND_SET_VALUE(precision_, type_integer);
+	case 3: CHECK_TYPE_AND_SET_VALUE(zero_pad_, type_bool);
 	}
 	return false;
 }
@@ -157,10 +152,10 @@ ValueNode_RealString::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_RealString::check_type(ValueBase::Type type)
+ValueNode_RealString::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_STRING;
+		type==type_string;
 }
 
 LinkableValueNode::Vocab

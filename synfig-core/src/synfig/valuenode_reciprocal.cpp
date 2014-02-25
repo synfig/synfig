@@ -94,9 +94,9 @@ ValueNode_Reciprocal::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_,     ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(epsilon_,  ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(infinite_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,     type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(epsilon_,  type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(infinite_, type_real);
 	}
 	return false;
 }
@@ -148,9 +148,9 @@ ValueNode_Reciprocal::get_local_name()const
 }
 
 bool
-ValueNode_Reciprocal::check_type(ValueBase::Type type)
+ValueNode_Reciprocal::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_REAL;
+	return type==type_real;
 }
 
 LinkableValueNode::Vocab

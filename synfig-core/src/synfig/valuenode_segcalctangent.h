@@ -41,14 +41,14 @@ class ValueNode_SegCalcTangent : public LinkableValueNode
 	ValueNode::RHandle segment_;
 	ValueNode::RHandle amount_;
 
-	ValueNode_SegCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
+	ValueNode_SegCalcTangent(Type &x=type_vector);
 
 public:
 
 	typedef etl::handle<ValueNode_SegCalcTangent> Handle;
 	typedef etl::handle<const ValueNode_SegCalcTangent> ConstHandle;
 
-	//static Handle create(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
+	//static Handle create(Type &x=type_vector);
 
 
 	virtual ValueBase operator()(Time t)const;
@@ -67,8 +67,8 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
-	static ValueNode_SegCalcTangent* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
+	static bool check_type(Type &type);
+	static ValueNode_SegCalcTangent* create(const ValueBase &x=type_vector);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_SegCalcTangent
 

@@ -282,7 +282,7 @@ Import::get_param(const String & param)const
 	{
 		if(param=="filename")
 		{
-			ValueBase ret(ValueBase::TYPE_STRING);
+			ValueBase ret(type_string);
 			// This line is needed to copy the internals of ValueBase from param_filename
 			ret=param_filename;
 			

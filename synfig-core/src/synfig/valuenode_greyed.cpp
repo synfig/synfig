@@ -47,7 +47,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Greyed::ValueNode_Greyed(const ValueBase::Type &x):
+ValueNode_Greyed::ValueNode_Greyed(Type &x):
 	ValueNode_Reference(x)
 {
 }

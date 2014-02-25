@@ -58,24 +58,22 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_STRING:
+	if (value.get_type() == type_string)
 	{
 		vector<ValueBase> v(1, value.get(String()));
 
 		// "insert item (smart)" inserts before the selected entry, making it hard to append to the end
 		// add an extra element at the end to allow the easy insertion of text after the given value's string
-		v.push_back("");
+		v.push_back(String());
 
 		set_link("strings",ValueNode_DynamicList::create_from(v));
 		set_link("before",ValueNode_Const::create(String("")));
 		set_link("separator",ValueNode_Const::create(String("")));
 		set_link("after",ValueNode_Const::create(String("")));
-		break;
 	}
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -107,9 +105,7 @@ ValueNode_Join::operator()(Time t)const
 	const String separator((*separator_)(t).get(String()));
 	const String after((*after_)(t).get(String()));
 
-	switch (get_type())
-	{
-	case ValueBase::TYPE_STRING:
+	if (get_type() == type_string)
 	{
 		bool first = true;
 		String ret(before);
@@ -123,9 +119,6 @@ ValueNode_Join::operator()(Time t)const
 		}
 		ret += after;
 		return ret;
-	}
-	default:
-		break;
 	}
 
 	assert(0);
@@ -151,10 +144,10 @@ ValueNode_Join::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(strings_, ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(before_, ValueBase::TYPE_STRING);
-	case 2: CHECK_TYPE_AND_SET_VALUE(separator_, ValueBase::TYPE_STRING);
-	case 3: CHECK_TYPE_AND_SET_VALUE(after_, ValueBase::TYPE_STRING);
+	case 0: CHECK_TYPE_AND_SET_VALUE(strings_, type_list);
+	case 1: CHECK_TYPE_AND_SET_VALUE(before_, type_string);
+	case 2: CHECK_TYPE_AND_SET_VALUE(separator_, type_string);
+	case 3: CHECK_TYPE_AND_SET_VALUE(after_, type_string);
 	}
 	return false;
 }
@@ -176,10 +169,10 @@ ValueNode_Join::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_Join::check_type(ValueBase::Type type)
+ValueNode_Join::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_STRING;
+		type==type_string;
 }
 
 LinkableValueNode::Vocab

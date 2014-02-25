@@ -44,7 +44,7 @@ public:
 
 
 	ValueNode_Average(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_Average(ValueBase::Type type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_Average(Type &type, etl::loose_handle<Canvas> canvas = 0);
 	virtual ~ValueNode_Average();
 
  	virtual ValueBase operator()(Time t)const;
@@ -56,7 +56,7 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(Type &type);
 	static ValueNode_Average* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
 }; // END of class ValueNode_Average
 

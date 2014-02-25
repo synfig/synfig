@@ -57,7 +57,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::Type &x):
+ValueNode_BoneInfluence::ValueNode_BoneInfluence(Type &x):
 	LinkableValueNode(x)
 {
 }
@@ -65,13 +65,10 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::Type &x):
 ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Canvas::LooseHandle canvas):
 	LinkableValueNode(x->get_type())
 {
-	switch(x->get_type())
+	Type &type(x->get_type());
+	if (type == type_vector || type == type_bline_point)
 	{
-	case ValueBase::TYPE_VECTOR:
-	case ValueBase::TYPE_BLINEPOINT:
-	//case ValueBase::TYPE_BLINE:
-	{
-		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
+		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(type_bone_weight_pair, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 		set_link("bone_weight_list",	bone_weight_list);
 		set_link("link",				x);
@@ -79,18 +76,17 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 			printf("%s:%d set parent canvas for bone influence to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()));
 		set_parent_canvas(canvas);
-
-		break;
 	}
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
+	else
+	{
+		throw Exception::BadType(type.description.local_name);
 	}
 }
 
 ValueNode_BoneInfluence*
 ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
-	if (x.get_type() == ValueBase::TYPE_BLINEPOINT)
+	if (x.get_type() == type_bline_point)
 		return new ValueNode_BoneInfluence(ValueNode_Composite::create(x, canvas), canvas);
 
 	return new ValueNode_BoneInfluence(ValueNode_Const::create(x, canvas), canvas);
@@ -114,9 +110,8 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Matrix transform(get_transform(true, t));
-	switch(link_->get_type())
-	{
-	case ValueBase::TYPE_VECTOR:
+	Type &type(link_->get_type());
+	if (type == type_vector)
 	{
 		Vector link((*link_)(t).get(Vector()));
 
@@ -131,7 +126,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 
 		return transform.get_transformed(link);
 	}
-	case ValueBase::TYPE_BLINEPOINT:
+	if (type == type_bline_point)
 	{
 		BLinePoint link((*link_)(t).get(BLinePoint()));
 		Point v(link.get_vertex());
@@ -161,10 +156,8 @@ ValueNode_BoneInfluence::operator()(Time t)const
 														  )).c_str());
 		return link;
 	}
-	default:
-		assert(0);
-		break;
-	}
+
+	assert(0);
 	return ValueBase();
 }
 
@@ -188,7 +181,7 @@ ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	type_list);
 	case 1: CHECK_TYPE_AND_SET_VALUE(link_,				get_type());
 	}
 
@@ -210,10 +203,10 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_BoneInfluence::check_type(ValueBase::Type type)
+ValueNode_BoneInfluence::check_type(Type &type)
 {
-	return 	type==ValueBase::TYPE_VECTOR ||
-			type==ValueBase::TYPE_BLINEPOINT;
+	return 	type==type_vector ||
+			type==type_bline_point;
 }
 
 LinkableValueNode::Vocab

@@ -68,7 +68,7 @@ BooleanCurve::~BooleanCurve()
 
 bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &value)
 {
-	if(param=="regions" && value.same_type_as(regions))
+	if(param=="regions" && value.same_type_as(synfig::ValueBase::List()))
 	{
 		vector<BLinePoint> bv;
 		int size = value.get_list().size();
@@ -78,7 +78,7 @@ bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &valu
 		regions.clear();
 		for(int i = 0; i < size; ++i)
 		{
-			regions.push_back(vector<BLinePoint>(vlist[i].get_list().begin(),vlist[i].get_list().end()));
+			regions.push_back(vector<BLinePoint>(vlist[i].get_list_of(BLinePoint())));
 		}
 		return true;
 	}

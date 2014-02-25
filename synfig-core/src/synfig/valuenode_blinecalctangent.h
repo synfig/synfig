@@ -47,7 +47,7 @@ class ValueNode_BLineCalcTangent : public LinkableValueNode
 	ValueNode::RHandle fixed_length_;
 	ValueNode::RHandle homogeneous_;
 
-	ValueNode_BLineCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
+	ValueNode_BLineCalcTangent(Type &x=type_vector);
 
 public:
 
@@ -71,8 +71,8 @@ protected:
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
-	static ValueNode_BLineCalcTangent* create(const ValueBase &x=ValueBase::TYPE_VECTOR);
+	static bool check_type(Type &type);
+	static ValueNode_BLineCalcTangent* create(const ValueBase &x=type_vector);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BLineCalcTangent
 

@@ -46,11 +46,11 @@ public:
 	typedef etl::handle<ValueNode_Switch> Handle;
 	typedef etl::handle<const ValueNode_Switch> ConstHandle;
 
-	ValueNode_Switch(const ValueBase::Type &x);
+	ValueNode_Switch(Type &x);
 
 	ValueNode_Switch(const ValueNode::Handle &x);
 
-//	static Handle create(const ValueBase::Type &x);
+//	static Handle create(Type &x);
 //	static Handle create(const ValueNode::Handle &x);
 
 
@@ -71,7 +71,7 @@ protected:
 
 public:
 	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(ValueBase::Type type);
+	static bool check_type(Type &type);
 	static ValueNode_Switch* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_Switch

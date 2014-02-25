@@ -88,7 +88,7 @@ Region::Region()
 	bline_point_list[0].set_width(1.0f);
 	bline_point_list[1].set_width(1.0f);
 	bline_point_list[2].set_width(1.0f);
-	param_bline.set(bline_point_list);
+	param_bline.set_list_of(bline_point_list);
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -99,10 +99,10 @@ Region::sync()
 {
 	ValueBase bline=param_bline;
 	
-	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
-		segment_list=convert_bline_to_segment_list(bline);
-	else if(bline.get_contained_type()==ValueBase::TYPE_SEGMENT)
-		segment_list=vector<synfig::Segment>(bline.get_list().begin(), bline.get_list().end());
+	if(bline.get_contained_type()==type_bline_point)
+		segment_list=convert_bline_to_segment_list(bline).get_list_of(synfig::Segment());
+	else if(bline.get_contained_type()==type_segment)
+		segment_list=vector<synfig::Segment>(bline.get_list_of(synfig::Segment()));
 	else
 	{
 		synfig::warning("Region: incorrect type on bline, layer disabled");
@@ -190,9 +190,9 @@ Region::set_param(const String & param, const ValueBase &value)
 			synfig::warning("Region::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 
-	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)
+	if(	(param=="segment_list" || param=="bline") && value.get_type()==type_list)
 	{
-		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
+		//if(value.get_contained_type()!=type_bline_point)
 		//	return false;
 
 		param_bline=value;
@@ -200,12 +200,12 @@ Region::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-/*	if(	param=="segment_list" && value.get_type()==ValueBase::TYPE_LIST)
+/*	if(	param=="segment_list" && value.get_type()==type_list)
 	{
-		if(value.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
+		if(value.get_contained_type()==type_bline_point)
 			segment_list=convert_bline_to_segment_list(value);
 		else
-		if(value.get_contained_type()==ValueBase::TYPE_SEGMENT)
+		if(value.get_contained_type()==type_segment)
 			segment_list=value;
 		else
 		if(value.empty())

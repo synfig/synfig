@@ -61,7 +61,7 @@ Waypoint::Waypoint(ValueBase value, Time time):
 	time_tension(0.0f)
 {
 	//!Writeme
-	if(value.get_type()==ValueBase::TYPE_ANGLE)
+	if(value.get_type()==type_angle)
 		after=before=INTERPOLATION_LINEAR;
 }
 
@@ -76,7 +76,7 @@ Waypoint::Waypoint(etl::handle<ValueNode> value_node, Time time):
 	bias(0),
 	time_tension(0.0f)
 {
-	if(value_node->get_type()==ValueBase::TYPE_ANGLE)
+	if(value_node->get_type()==type_angle)
 		after=before=INTERPOLATION_LINEAR;
 }
 
@@ -96,7 +96,7 @@ Waypoint::set_value(const ValueBase &x)
 {
 	//! If the value node is not set and we are seting the value
 	//! of an angle, then set both interpolation to linear... why?
-	if(!value_node && x.get_type()==ValueBase::TYPE_ANGLE)
+	if(!value_node && x.get_type()==type_angle)
 		after=before=INTERPOLATION_LINEAR;
 
 	value_node=ValueNode_Const::create(x);
@@ -111,7 +111,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 	//! If the value node is not set and we are seting the value
 	//! of an angle, then set both interpolation to linear... why?
 
-	if(!value_node && x->get_type()==ValueBase::TYPE_ANGLE)
+	if(!value_node && x->get_type()==type_angle)
 		after=before=INTERPOLATION_LINEAR;
 
 	if (value_node == x)

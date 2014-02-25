@@ -56,14 +56,10 @@ ValueNode_VectorLength::ValueNode_VectorLength(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_REAL:
+	if (value.get_type() == type_real)
 		set_link("vector",ValueNode_Const::create(Vector(value.get(Real()), 0)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
-	}
+	else
+		throw Exception::BadType(value.get_type().description.local_name);
 }
 
 LinkableValueNode*
@@ -100,7 +96,7 @@ ValueNode_VectorLength::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(vector_, ValueBase::TYPE_VECTOR);
+	case 0: CHECK_TYPE_AND_SET_VALUE(vector_, type_vector);
 	}
 	return false;
 }
@@ -128,9 +124,9 @@ ValueNode_VectorLength::get_local_name()const
 }
 
 bool
-ValueNode_VectorLength::check_type(ValueBase::Type type)
+ValueNode_VectorLength::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_REAL;
+	return type==type_real;
 }
 
 LinkableValueNode::Vocab

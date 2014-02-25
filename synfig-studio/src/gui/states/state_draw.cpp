@@ -770,7 +770,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		// as it is the default for new adv. outlines layers
 		std::list<synfig::WidthPoint>::iterator iter;
 		for(iter=wplist.begin(); iter!=wplist.end(); iter++)
-			iter->set_position(hom_to_std(bline, iter->get_position(), false, false));
+			iter->set_position(hom_to_std(ValueBase::List(bline.begin(), bline.end()), iter->get_position(), false, false));
 	}
 	// print out resutls
 	//synfig::info("-----------widths");
@@ -943,52 +943,51 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		// if the new line's start didn't extend an existing line,
 		// check whether it needs to be linked to an existing duck
 		if(!extend_start&&get_auto_link_flag()&&start_duck&&start_duck_value_desc)
-			switch(start_duck_value_desc.get_value_type())
-			{
-			case synfig::ValueBase::TYPE_BLINEPOINT:
+		{
+			synfig::Type &type(start_duck_value_desc.get_value_type());
+			if (type == synfig::type_bline_point)
 				start_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_desc.get_value_node()),0);
-				// fall through
-			case synfig::ValueBase::TYPE_VECTOR:
-				if (shift_origin && shift_origin_vector != start_duck->get_origin())
-					break;
-				shift_origin = true;
-				shift_origin_vector = start_duck->get_origin();
-				get_canvas_interface()->auto_export(start_duck_value_desc);
-				if (extend_finish)
-					if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
-						extend_finish_join_same=true;
+			if (type == synfig::type_bline_point || type == synfig::type_vector)
+			{
+				if (!shift_origin || shift_origin_vector == start_duck->get_origin())
+				{
+					shift_origin = true;
+					shift_origin_vector = start_duck->get_origin();
+					get_canvas_interface()->auto_export(start_duck_value_desc);
+					if (extend_finish)
+						if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
+							extend_finish_join_same=true;
+						else
+							extend_finish_join_different=true;
 					else
-						extend_finish_join_different=true;
-				else
-					join_start_no_extend=true;
-				// fall through
-			default:break;
+						join_start_no_extend=true;
+				}
 			}
-
+		}
 		// if the new line's end didn't extend an existing line,
 		// check whether it needs to be linked to an existing duck
 		if(!extend_finish&&get_auto_link_flag()&&finish_duck&&finish_duck_value_desc)
-			switch(finish_duck_value_desc.get_value_type())
-			{
-			case synfig::ValueBase::TYPE_BLINEPOINT:
+		{
+			synfig::Type &type(finish_duck_value_desc.get_value_type());
+			if (type == synfig::type_bline_point)
 				finish_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_desc.get_value_node()),0);
-				// fall through
-			case synfig::ValueBase::TYPE_VECTOR:
-				if (shift_origin && shift_origin_vector != finish_duck->get_origin())
-					break;
-				shift_origin = true;
-				shift_origin_vector = finish_duck->get_origin();
-				get_canvas_interface()->auto_export(finish_duck_value_desc);
-				if(extend_start)
-					if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
-						extend_start_join_same=true;
+			if (type == synfig::type_bline_point || type == synfig::type_vector)
+			{
+				if (!shift_origin || shift_origin_vector == finish_duck->get_origin())
+				{
+					shift_origin = true;
+					shift_origin_vector = finish_duck->get_origin();
+					get_canvas_interface()->auto_export(finish_duck_value_desc);
+					if(extend_start)
+						if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
+							extend_start_join_same=true;
+						else
+							extend_start_join_different=true;
 					else
-						extend_start_join_different=true;
-				else
-					join_finish_no_extend=true;
-				// fall through
-			default:break;
+						join_finish_no_extend=true;
+				}
 			}
+		}
 	}
 
 	ValueNode_BLine::Handle value_node;
@@ -1022,7 +1021,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 			trans_bline.push_back(bline_point);
 		}
-		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
+		value_node=ValueNode_BLine::create(synfig::ValueBase(synfig::ValueBase::List(trans_bline.begin(), trans_bline.end()),loop_bline_flag));
 
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		Layer::Handle layer(get_canvas_view()->get_selection_manager()->get_selected_layer());
@@ -1241,7 +1240,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 			synfigapp::Action::Handle action2(synfigapp::Action::create("LayerParamConnect"));
 			assert(action2);
 			ValueNode_WPList::Handle value_node_wplist;
-			value_node_wplist=ValueNode_WPList::create(synfig::ValueBase(wplist));
+			value_node_wplist=ValueNode_WPList::create(synfig::ValueBase(synfig::ValueBase::List(wplist.begin(), wplist.end())));
 			if(value_node_wplist) value_node_wplist->set_member_canvas(get_canvas());
 			action2->set_param("canvas",get_canvas());
 			action2->set_param("canvas_interface",get_canvas_interface());
@@ -1481,16 +1480,11 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				continue;
 			}
 
-			switch(value_desc.get_value_type())
+			if (value_desc.get_value_type() == synfig::type_bline_point)
 			{
-			case synfig::ValueBase::TYPE_BLINEPOINT:
 				//if(vertex_list.empty() || value_desc!=vertex_list.back())
 				vertex_list.push_back(value_desc);
 				assert(vertex_list.back().is_valid());
-
-				break;
-			default:
-				break;
 			}
 		}
 	}
@@ -2023,13 +2017,13 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	// First copy the list of BlinePoints
 	std::list<synfig::BLinePoint> inserted_bline(bline.begin(), bline.end());
 	// Add at the end the first BLinePoint of the bline to extend (it is the place where it connects)
-	inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front());
+	inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front().get(BLinePoint()));
 	// if doing complete loop then add at the start the last BLinePoint of the bline to extend
 	// (it is where the loop closes)
 	if(complete_loop)
-		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back());
+		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
 	bool is_advanced_outline(false);
@@ -2065,7 +2059,9 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 			//
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
-			old_wplist.assign(wplist_value_base.get_list().begin(),wplist_value_base.get_list().end());
+			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
+			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
 			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
@@ -2212,13 +2208,13 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	// First copy the list of BlinePoints
 	std::list<synfig::BLinePoint> inserted_bline(bline.begin(), bline.end());
 	// Add at the start, the last BLinePoint of the bline to extend (it is the place where it connects)
-	inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back());
+	inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back().get(BLinePoint()));
 	// if doing complete loop then add at the end the last BLinePoint of the bline to extend
 	// (it is where the loop closes)
 	if(complete_loop)
-		inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front());
+		inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase(inserted_bline), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
 	bool is_advanced_outline(false);
@@ -2254,7 +2250,9 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 			//
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
-			old_wplist.assign(wplist_value_base.get_list().begin(),wplist_value_base.get_list().end());
+			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
+			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
 			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)

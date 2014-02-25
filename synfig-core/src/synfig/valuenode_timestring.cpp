@@ -57,14 +57,10 @@ ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_STRING:
+	if (value.get_type() == type_string)
 		set_link("time",ValueNode_Const::create(Time(0)));
-		break;
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
-	}
+	else
+		throw Exception::BadType(value.get_type().description.local_name);
 }
 
 LinkableValueNode*
@@ -92,15 +88,12 @@ ValueNode_TimeString::operator()(Time t)const
 
 	Time time((*time_)(t).get(Time()));
 
-	switch (get_type())
+	if (get_type() == type_string)
 	{
-	case ValueBase::TYPE_STRING:
 		if (get_root_canvas())
 			return time.get_string(get_root_canvas()->rend_desc().get_frame_rate());
 		else
 			return time.get_string();
-	default:
-		break;
 	}
 
 	assert(0);
@@ -126,7 +119,7 @@ ValueNode_TimeString::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(time_, ValueBase::TYPE_TIME);
+	case 0: CHECK_TYPE_AND_SET_VALUE(time_, type_time);
 	}
 	return false;
 }
@@ -145,10 +138,10 @@ ValueNode_TimeString::get_link_vfunc(int i)const
 }
 
 bool
-ValueNode_TimeString::check_type(ValueBase::Type type)
+ValueNode_TimeString::check_type(Type &type)
 {
 	return
-		type==ValueBase::TYPE_STRING;
+		type==type_string;
 }
 
 LinkableValueNode::Vocab

@@ -65,7 +65,7 @@ using namespace synfig;
 Layer_Mime::Layer_Mime(String x):name(x)
 {
 	// Throw a bogus default version onto the parameter list.
-	param_list["Version"]="9";
+	param_list["Version"]=(const char*)"9";
 }
 
 String

@@ -62,7 +62,7 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x, etl::loose_handle<Can
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 
-	ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
+	ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(type_bone_weight_pair, canvas));
 	//bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 
 	set_link("bone_weight_list", bone_weight_list);
@@ -103,9 +103,9 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_, ValueBase::TYPE_LIST);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_, type_list);
 	case 1:
-		if (get_type() == ValueBase::TYPE_NIL)
+		if (get_type() == type_nil)
 		{
 			VALUENODE_SET_VALUE(base_value_);
 		}
@@ -113,11 +113,11 @@ ValueNode_BoneLink::set_link_vfunc(int i,ValueNode::Handle value)
 		{
 			CHECK_TYPE_AND_SET_VALUE(base_value_, get_type());
 		}
-	case 2: CHECK_TYPE_AND_SET_VALUE(translate_, ValueBase::TYPE_BOOL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(rotate_,    ValueBase::TYPE_BOOL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(skew_,      ValueBase::TYPE_BOOL);
-	case 5: CHECK_TYPE_AND_SET_VALUE(scale_x_,   ValueBase::TYPE_BOOL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(scale_y_,   ValueBase::TYPE_BOOL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(translate_, type_bool);
+	case 3: CHECK_TYPE_AND_SET_VALUE(rotate_,    type_bool);
+	case 4: CHECK_TYPE_AND_SET_VALUE(skew_,      type_bool);
+	case 5: CHECK_TYPE_AND_SET_VALUE(scale_x_,   type_bool);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scale_y_,   type_bool);
 	}
 	return false;
 }
@@ -228,7 +228,7 @@ ValueNode_BoneLink::get_local_name()const
 }
 
 bool
-ValueNode_BoneLink::check_type(ValueBase::Type type)
+ValueNode_BoneLink::check_type(Type &type)
 {
 	return ValueTransformation::check_type(type);
 }

@@ -64,41 +64,53 @@ synfig::ValueNode_Add::ValueNode_Add(const ValueBase &value):
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
-	ValueBase::Type id(value.get_type());
+	Type& type(value.get_type());
 
-	switch(id)
+	if (type == type_angle)
 	{
-	case ValueBase::TYPE_ANGLE:
 		set_link("lhs",ValueNode_Const::create(value.get(Angle())));
 		set_link("rhs",ValueNode_Const::create(Angle::deg(0)));
-		break;
-	case ValueBase::TYPE_COLOR:
+	}
+	else
+	if (type == type_color)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(Color())));
 		set_link("rhs",ValueNode_Const::create(Color(0,0,0,0)));
-		break;
-	case ValueBase::TYPE_GRADIENT:
+	}
+	else
+	if (type == type_gradient)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(Gradient())));
 		set_link("rhs",ValueNode_Const::create(Gradient()));
-		break;
-	case ValueBase::TYPE_INTEGER:
+	}
+	else
+	if (type == type_integer)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(int())));
 		set_link("rhs",ValueNode_Const::create(int(0)));
-		break;
-	case ValueBase::TYPE_REAL:
+	}
+	else
+	if (type == type_real)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(Real())));
 		set_link("rhs",ValueNode_Const::create(Real(0)));
-		break;
-	case ValueBase::TYPE_TIME:
+	}
+	else
+	if (type == type_time)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(Time())));
 		set_link("rhs",ValueNode_Const::create(Time(0)));
-		break;
-	case ValueBase::TYPE_VECTOR:
+	}
+	else
+	if (type == type_vector)
+	{
 		set_link("lhs",ValueNode_Const::create(value.get(Vector())));
 		set_link("rhs",ValueNode_Const::create(Vector(0,0)));
-		break;
-	default:
+	}
+	else
+	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 }
 
@@ -127,26 +139,23 @@ synfig::ValueNode_Add::operator()(Time t)const
 
 	if(!ref_a || !ref_b)
 		throw runtime_error(strprintf("ValueNode_Add: %s",_("One or both of my parameters aren't set!")));
-	switch(get_type())
-	{
-	case ValueBase::TYPE_ANGLE:
+	Type &type(get_type());
+	if (type == type_angle)
 		return ((*ref_a)(t).get(Angle())+(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
-	case ValueBase::TYPE_COLOR:
+	if (type == type_color)
 		return ((*ref_a)(t).get(Color())+(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
-	case ValueBase::TYPE_GRADIENT:
+	if (type == type_gradient)
 		return ((*ref_a)(t).get(Gradient())+(*ref_b)(t).get(Gradient()))*(*scalar)(t).get(Real());
-	case ValueBase::TYPE_INTEGER:
+	if (type == type_integer)
 		return round_to_int(((*ref_a)(t).get(int())+(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()));
-	case ValueBase::TYPE_REAL:
+	if (type == type_real)
 		return ((*ref_a)(t).get(Vector::value_type())+(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
-	case ValueBase::TYPE_TIME:
+	if (type == type_time)
 		return ((*ref_a)(t).get(Time())+(*ref_b)(t).get(Time()))*(*scalar)(t).get(Real());
-	case ValueBase::TYPE_VECTOR:
+	if (type == type_vector)
 		return ((*ref_a)(t).get(Vector())+(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
-	default:
-		assert(0);
-		break;
-	}
+
+	assert(0);
 	return ValueBase();
 }
 
@@ -159,7 +168,7 @@ ValueNode_Add::set_link_vfunc(int i,ValueNode::Handle value)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a,  get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(ref_b,  get_type());
-	case 2: CHECK_TYPE_AND_SET_VALUE(scalar, ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(scalar, type_real);
 	}
 	return false;
 }
@@ -191,15 +200,15 @@ ValueNode_Add::get_local_name()const
 }
 
 bool
-ValueNode_Add::check_type(ValueBase::Type type)
+ValueNode_Add::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_ANGLE
-		|| type==ValueBase::TYPE_COLOR
-		|| type==ValueBase::TYPE_GRADIENT
-		|| type==ValueBase::TYPE_INTEGER
-		|| type==ValueBase::TYPE_REAL
-		|| type==ValueBase::TYPE_TIME
-		|| type==ValueBase::TYPE_VECTOR;
+	return type==type_angle
+		|| type==type_color
+		|| type==type_gradient
+		|| type==type_integer
+		|| type==type_real
+		|| type==type_time
+		|| type==type_vector;
 }
 
 LinkableValueNode::Vocab

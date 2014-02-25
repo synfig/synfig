@@ -57,9 +57,7 @@ using namespace synfig;
 ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
-	switch(value.get_type())
-	{
-	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+	if (value.get_type() == type_bone_weight_pair)
 	{
 		BoneWeightPair bone_weight_pair(value.get(BoneWeightPair()));
 		ValueBase bone(bone_weight_pair.get_bone());
@@ -73,11 +71,10 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canva
 		set_parent_canvas(canvas);
 
 		ValueNode_Bone::show_bone_map(canvas, __FILE__, __LINE__, "after making new boneweightpair");
-
-		break;
 	}
-	default:
-		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	else
+	{
+		throw Exception::BadType(value.get_type().description.local_name);
 	}
 }
 
@@ -123,9 +120,9 @@ ValueNode_BoneWeightPair::get_local_name()const
 }
 
 bool
-ValueNode_BoneWeightPair::check_type(ValueBase::Type type)
+ValueNode_BoneWeightPair::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_BONE_WEIGHT_PAIR;
+	return type==type_bone_weight_pair;
 }
 
 bool
@@ -135,8 +132,8 @@ ValueNode_BoneWeightPair::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_, ValueBase::TYPE_VALUENODE_BONE);
-	case 1: CHECK_TYPE_AND_SET_VALUE(weight_,   ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_,   type_bone_valuenode);
+	case 1: CHECK_TYPE_AND_SET_VALUE(weight_, type_real);
 	}
 	return false;
 }

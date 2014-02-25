@@ -219,7 +219,7 @@ xmlpp::Element* encode_segment(xmlpp::Element* root,Segment seg)
 
 xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 {
-	root->set_name(ValueBase::type_name(ValueBase::TYPE_BLINEPOINT));
+	root->set_name(type_bline_point.description.name);
 
 	encode_vector(root->add_child("vertex")->add_child("vector"),bline_point.get_vertex());
 	encode_vector(root->add_child("t1")->add_child("vector"),bline_point.get_tangent1());
@@ -234,7 +234,7 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 
 xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
 {
-	root->set_name(ValueBase::type_name(ValueBase::TYPE_WIDTHPOINT));
+	root->set_name(type_width_point.description.name);
 	encode_real(root->add_child("position")->add_child("real"),width_point.get_position());
 	encode_real(root->add_child("width")->add_child("real"),width_point.get_width());
 	encode_integer(root->add_child("side_before")->add_child("integer"),width_point.get_side_type_before());
@@ -244,7 +244,7 @@ xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
 
 xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 {
-	root->set_name(ValueBase::type_name(ValueBase::TYPE_DASHITEM));
+	root->set_name(type_dash_item.description.name);
 	encode_real(root->add_child("offset")->add_child("real"),dash_item.get_offset());
 	encode_real(root->add_child("length")->add_child("real"),dash_item.get_length());
 	encode_integer(root->add_child("side_before")->add_child("integer"),dash_item.get_side_type_before());
@@ -268,14 +268,14 @@ xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas=0);
 
-xmlpp::Element* encode_list(xmlpp::Element* root,std::list<ValueBase> list, Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Canvas::ConstHandle canvas=0)
 {
 	root->set_name("list");
 
 	while(!list.empty())
 	{
 		encode_value(root->add_child("value"),list.front(),canvas);
-		list.pop_front();
+		list.erase(list.begin());
 	}
 
 	return root;
@@ -293,76 +293,100 @@ xmlpp::Element* encode_transformation(xmlpp::Element* root,const Transformation 
 
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas)
 {
-	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, ValueBase::type_name(data.get_type()).c_str());
-	switch(data.get_type())
+	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, data.get_type().description.name.c_str());
+	Type &type(data.get_type());
+	if (type == type_real)
 	{
-	case ValueBase::TYPE_REAL:
 		encode_real(root,data.get(Real()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_TIME:
+	}
+	if (type == type_time)
+	{
 		encode_time(root,data.get(Time()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_INTEGER:
+	}
+	if (type == type_integer)
+	{
 		encode_integer(root,data.get(int()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_COLOR:
+	}
+	if (type == type_color)
+	{
 		encode_color(root,data.get(Color()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_VECTOR:
+	}
+	if (type == type_vector)
+	{
 		encode_vector(root,data.get(Vector()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_ANGLE:
+	}
+	if (type == type_angle)
+	{
 		encode_angle(root,data.get(Angle()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_BOOL:
+	}
+	if (type == type_bool)
+	{
 		encode_bool(root,data.get(bool()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_STRING:
+	}
+	if (type == type_string)
+	{
 		encode_string(root,data.get(String()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_SEGMENT:
+	}
+	if (type == type_segment)
+	{
 		encode_segment(root,data.get(Segment()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_BLINEPOINT:
+	}
+	if (type == type_bline_point)
 		return encode_bline_point(root,data.get(BLinePoint()));
-	case ValueBase::TYPE_WIDTHPOINT:
+	if (type == type_width_point)
 		return encode_width_point(root,data.get(WidthPoint()));
-	case ValueBase::TYPE_DASHITEM:
+	if (type == type_dash_item)
 		return encode_dash_item(root,data.get(DashItem()));
-	case ValueBase::TYPE_GRADIENT:
+	if (type == type_gradient)
+	{
 		encode_gradient(root,data.get(Gradient()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_TRANSFORMATION:
+	}
+	if (type == type_transformation)
+	{
 		encode_transformation(root,data.get(Transformation()));
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
-	case ValueBase::TYPE_LIST:
-		return encode_list(root,data,canvas);
-	case ValueBase::TYPE_CANVAS:
+	}
+	if (type == type_list)
+		return encode_list(root,data.get_list(),canvas);
+	if (type == type_canvas)
+	{
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
-		encode_static(root, data.get_static());
-	case ValueBase::TYPE_VALUENODE_BONE:
+		//encode_static(root, data.get_static());
+	}
+	if (type == type_bone_valuenode)
+	{
 		if (!canvas)
 		{
 			printf("%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
@@ -372,15 +396,17 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		root = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
 		root->set_name("bone_valuenode");
 		return root;
-	case ValueBase::TYPE_NIL:
+	}
+	if (type == type_nil)
+	{
 		synfig::error("Encountered NIL ValueBase");
 		root->set_name("nil");
 		return root;
-	default:
-		synfig::error(strprintf(_("Unknown value(%s), cannot create XML representation!"),ValueBase::type_local_name(data.get_type()).c_str()));
-		root->set_name("nil");
-		return root;
 	}
+
+	synfig::error(strprintf(_("Unknown value(%s), cannot create XML representation!"), data.get_type().description.local_name.c_str()));
+	root->set_name("nil");
+	return root;
 }
 
 xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHandle value_node,Canvas::ConstHandle canvas=0)
@@ -388,7 +414,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 	assert(value_node);
 	root->set_name("animated");
 
-	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
+	root->set_attribute("type",value_node->get_type().description.name);
 
 	const ValueNode_Animated::WaypointList &waypoint_list=value_node->waypoint_list();
 	ValueNode_Animated::WaypointList::const_iterator iter;
@@ -407,7 +433,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 			{
 				const ValueBase data = ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value();
-				if (data.get_type() == ValueBase::TYPE_CANVAS)
+				if (data.get_type() == type_canvas)
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
 				else
 					encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
@@ -453,7 +479,7 @@ xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHa
 	assert(lhs);
 	assert(rhs);
 
-	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
+	root->set_attribute("type",value_node->get_type().description.name);
 
 	if(lhs==rhs)
 		warning("LHS is equal to RHS, this <subtract> will always be zero!");
@@ -486,7 +512,7 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 
 	root->set_name(value_node->get_name());
 
-	root->set_attribute("type",ValueBase::type_name(value_node->get_contained_type()));
+	root->set_attribute("type",value_node->get_contained_type().description.name);
 
 	vector<ValueNode::RHandle>::const_iterator iter;
 
@@ -514,7 +540,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 	root->set_name(value_node->get_name());
 
-	root->set_attribute("type",ValueBase::type_name(value_node->get_contained_type()));
+	root->set_attribute("type",value_node->get_contained_type().description.name);
 
 	vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
 
@@ -626,7 +652,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 	root->set_name(name);
 
-	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
+	root->set_attribute("type",value_node->get_type().description.name);
 
 	int i;
 	synfig::ParamVocab child_vocab(value_node->get_children_vocab());
@@ -744,7 +770,7 @@ xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHand
 xmlpp::Element* encode_value_node_bone_id(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
 {
 	root->set_name("bone");
-	root->set_attribute("type",ValueBase::type_name(ValueBase::TYPE_BONE));
+	root->set_attribute("type",type_bone_object.description.name);
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node_bone_id %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
 	if(!value_node->get_id().empty())
 		root->set_attribute("id",value_node->get_id());
@@ -814,7 +840,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 				continue;
 			}
 
-			if(value.get_type()==ValueBase::TYPE_CANVAS)
+			if(value.get_type()==type_canvas)
 			{
 				// the ->is_inline() below was crashing if the canvas
 				// contained a PasteCanvas with the default <No Image
@@ -842,7 +868,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			// remember filename param if need
 			if (save_canvas_external_file_callback != NULL
 			 && iter->get_name() == "filename"
-			 && value.get_type() == ValueBase::TYPE_STRING)
+			 && value.get_type() == type_string)
 			{
 				std::string filename( value.get(String()) );
 				std::string ext = filename_extension(filename);

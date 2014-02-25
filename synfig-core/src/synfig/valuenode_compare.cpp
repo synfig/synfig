@@ -93,11 +93,11 @@ ValueNode_Compare::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(lhs_,      ValueBase::TYPE_REAL);
-	case 1: CHECK_TYPE_AND_SET_VALUE(rhs_,      ValueBase::TYPE_REAL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(greater_,  ValueBase::TYPE_BOOL);
-	case 3: CHECK_TYPE_AND_SET_VALUE(equal_,    ValueBase::TYPE_BOOL);
-	case 4: CHECK_TYPE_AND_SET_VALUE(less_,     ValueBase::TYPE_BOOL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(lhs_,      type_real);
+	case 1: CHECK_TYPE_AND_SET_VALUE(rhs_,      type_real);
+	case 2: CHECK_TYPE_AND_SET_VALUE(greater_,  type_bool);
+	case 3: CHECK_TYPE_AND_SET_VALUE(equal_,    type_bool);
+	case 4: CHECK_TYPE_AND_SET_VALUE(less_,     type_bool);
 	}
 	return false;
 }
@@ -150,9 +150,9 @@ ValueNode_Compare::get_local_name()const
 }
 
 bool
-ValueNode_Compare::check_type(ValueBase::Type type)
+ValueNode_Compare::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_BOOL;
+	return type==type_bool;
 }
 
 LinkableValueNode::Vocab

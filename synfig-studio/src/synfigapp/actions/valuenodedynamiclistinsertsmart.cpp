@@ -262,7 +262,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 				// once we add a new item, we need to update the tangent's radius
 				// of the previous and next entries from the index to keep the
 				// shape of the curve
-				if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
+				if(value_node->get_contained_type() == type_bline_point)
 				{
 					int prev, next, after, before;
 					if(!value_node->list[index].status_at_time(time))
@@ -368,7 +368,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 			// once we add a new item, we need to update the tangent's radius
 			// of the previous and next entries from the index to keep the
 			// shape of the curve
-			if(value_node->get_contained_type() == ValueBase::TYPE_BLINEPOINT)
+			if(value_node->get_contained_type() == type_bline_point)
 			{
 				int prev, next, after, before;
 				if(!value_node->list[index].status_at_time(time))

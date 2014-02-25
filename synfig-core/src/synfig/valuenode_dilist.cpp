@@ -58,7 +58,7 @@ using namespace synfig;
 
 
 ValueNode_DIList::ValueNode_DIList():
-	ValueNode_DynamicList(ValueBase::TYPE_DASHITEM)
+	ValueNode_DynamicList(type_dash_item)
 {
 }
 
@@ -70,18 +70,17 @@ ValueNode_DIList*
 ValueNode_DIList::create(const ValueBase &value)
 {
 	// if the parameter is not a list type, return null
-	if(value.get_type()!=ValueBase::TYPE_LIST)
+	if(value.get_type()!=type_list)
 		return NULL;
 	// create an empty list
 	ValueNode_DIList* value_node(new ValueNode_DIList());
 	// If the value parameter is not empty
 	if(!value.empty())
 	{
-		switch(value.get_contained_type())
+		Type &type(value.get_contained_type());
+		if (type == type_dash_item)
 		{
-		case ValueBase::TYPE_DASHITEM:
-		{
-			std::vector<DashItem> list(value.get_list().begin(),value.get_list().end());
+			std::vector<DashItem> list(value.get_list_of(DashItem()));
 			std::vector<DashItem>::const_iterator iter;
 
 			for(iter=list.begin();iter!=list.end();iter++)
@@ -90,12 +89,11 @@ ValueNode_DIList::create(const ValueBase &value)
 			}
 			value_node->set_loop(value.get_loop());
 		}
-			break;
-		default:
+		else
+		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
 			return NULL;
-			break;
 		}
 	}
 
@@ -187,9 +185,9 @@ ValueNode_DIList::create_new()const
 }
 
 bool
-ValueNode_DIList::check_type(ValueBase::Type type)
+ValueNode_DIList::check_type(Type &type)
 {
-	return type==ValueBase::TYPE_LIST;
+	return type==type_list;
 }
 
 ValueNode::LooseHandle

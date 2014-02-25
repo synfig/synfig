@@ -72,7 +72,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_value_type[(int)synfig::ValueBase::TYPE_END];
+static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
 
 #ifdef WIN32
@@ -338,8 +338,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
-	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
-		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
+		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -347,8 +347,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 IconController::~IconController()
 {
-	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
-		_tree_pixbuf_table_value_type[i]=Glib::RefPtr<Gdk::Pixbuf>();
+	_tree_pixbuf_table_value_type.clear();
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
 		_tree_pixbuf_table_interpolation[i]=Glib::RefPtr<Gdk::Pixbuf>();
 
@@ -405,54 +404,36 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 }
 
 Gtk::StockID
-studio::value_icon(synfig::ValueBase::Type type)
+studio::value_icon(Type &type)
 {
-		switch(type)
-		{
-		case ValueBase::TYPE_BOOL:
-			return Gtk::StockID("synfig-type_bool");
-			break;
-		case ValueBase::TYPE_INTEGER:
-			return Gtk::StockID("synfig-type_integer");
-			break;
-		case ValueBase::TYPE_ANGLE:
-			return Gtk::StockID("synfig-type_angle");
-			break;
-		case ValueBase::TYPE_TIME:
-			return Gtk::StockID("synfig-type_time");
-			break;
-		case ValueBase::TYPE_REAL:
-			return Gtk::StockID("synfig-type_real");
-			break;
-		case ValueBase::TYPE_VECTOR:
-			return Gtk::StockID("synfig-type_vector");
-			break;
-		case ValueBase::TYPE_COLOR:
-			return Gtk::StockID("synfig-type_color");
-			break;
-		case ValueBase::TYPE_SEGMENT:
-			return Gtk::StockID("synfig-type_segment");
-			break;
-		case ValueBase::TYPE_BLINEPOINT:
-			return Gtk::StockID("synfig-type_blinepoint");
-			break;
-		case ValueBase::TYPE_LIST:
-			return Gtk::StockID("synfig-type_list");
-			break;
-		case ValueBase::TYPE_CANVAS:
-			return Gtk::StockID("synfig-type_canvas");
-			break;
-		case ValueBase::TYPE_STRING:
-			return Gtk::StockID("synfig-type_string");
-			break;
-		case ValueBase::TYPE_GRADIENT:
-			return Gtk::StockID("synfig-type_gradient");
-			break;
-		case ValueBase::TYPE_NIL:
-		default:
-			return Gtk::StockID("synfig-unknown");
-			break;
-		}
+	if (type == type_bool)
+		return Gtk::StockID("synfig-type_bool");
+	if (type == type_integer)
+		return Gtk::StockID("synfig-type_integer");
+	if (type == type_angle)
+		return Gtk::StockID("synfig-type_angle");
+	if (type == type_time)
+		return Gtk::StockID("synfig-type_time");
+	if (type == type_real)
+		return Gtk::StockID("synfig-type_real");
+	if (type == type_vector)
+		return Gtk::StockID("synfig-type_vector");
+	if (type == type_color)
+		return Gtk::StockID("synfig-type_color");
+	if (type == type_segment)
+		return Gtk::StockID("synfig-type_segment");
+	if (type == type_bline_point)
+		return Gtk::StockID("synfig-type_blinepoint");
+	if (type == type_list)
+		return Gtk::StockID("synfig-type_list");
+	if (type == type_canvas)
+		return Gtk::StockID("synfig-type_canvas");
+	if (type == type_string)
+		return Gtk::StockID("synfig-type_string");
+	if (type == type_gradient)
+		return Gtk::StockID("synfig-type_gradient");
+
+	return Gtk::StockID("synfig-unknown");
 }
 
 Gtk::StockID
@@ -499,10 +480,10 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-studio::get_tree_pixbuf(synfig::ValueBase::Type type)
+studio::get_tree_pixbuf(Type &type)
 {
 	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	return _tree_pixbuf_table_value_type[int(type)];
+	return _tree_pixbuf_table_value_type[type.identifier];
 }
 
 Glib::RefPtr<Gdk::Pixbuf>

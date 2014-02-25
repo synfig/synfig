@@ -150,7 +150,7 @@ find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,co
 inline void
 CurveWarp::sync()
 {
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(),param_bline.get_list().end());
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(synfig::BLinePoint()));
 	Point start_point=param_start_point.get(Point());
 	Point end_point=param_end_point.get(Point());
 	
@@ -175,7 +175,7 @@ CurveWarp::CurveWarp():
 	bline[1].set_tangent(Point(1, -0.1));
 	bline[0].set_width(1.0f);
 	bline[1].set_width(1.0f);
-	param_bline.set(bline);
+	param_bline.set_list_of(bline);
 	sync();
 
 	SET_INTERPOLATION_DEFAULTS();
@@ -185,7 +185,7 @@ CurveWarp::CurveWarp():
 inline Point
 CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)const
 {
-	std::vector<synfig::BLinePoint> bline(param_bline.get_list().begin(),param_bline.get_list().end());
+	std::vector<synfig::BLinePoint> bline(param_bline.get_list_of(synfig::BLinePoint()));
 	Point start_point=param_start_point.get(Point());
 	Point end_point=param_end_point.get(Point());
 	Point origin=param_origin.get(Point());
