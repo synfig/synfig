@@ -702,6 +702,30 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					action->set_param("canvas_interface",get_canvas_interface());
 					action->stroke.set_layer(layer);
 					selected_brush_config.apply( action->stroke.brush() );
+
+					Color color = synfigapp::Main::get_outline_color();
+
+					Real epsilon = 0.00000001;
+					Real r(color.get_r()), g(color.get_g()), b(color.get_b());
+					Real max_rgb = max(r, max(g, b));
+					Real min_rgb = min(r, min(g, b));
+					Real diff = max_rgb-min_rgb;
+
+					Real val = max_rgb;
+					Real sat = val > epsilon ? 1.0 - min_rgb/val : 0;
+					Real hue = diff < epsilon   ? 0
+							 : r >= g && r >= b ? 0.0 + 60.0*(g > b ? g - b : b - g)/diff
+							 : g >= b           ? 120.0 + 60.0*(b - r)/diff
+							 :                    240.0 + 60.0*(r - g)/diff;
+
+					Real opaque = color.get_a();
+					Real radius = synfigapp::Main::get_bline_width();
+
+					action->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
+					action->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
+					action->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
+					action->stroke.brush().set_base_value(BRUSH_OPAQUE, opaque);
+					action->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
 					action->stroke.prepare();
 
 					time.assign_current_time();
