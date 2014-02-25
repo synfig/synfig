@@ -42,6 +42,8 @@
 #include "segment.h"
 #include "savecanvas.h"
 #include "transformation.h"
+#include "valueoperations.h"
+#include "weightedvalue.h"
 
 #endif
 
@@ -140,6 +142,15 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		set_link("scale",ValueNode_Const::create(transformation.scale));
 	}
 	else
+	if (ValueAverage::check_weighted_type(type))
+	{
+		types_namespace::TypeWeightedValueBase *t =
+			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
+		assert(t != NULL);
+		set_link("weight",ValueNode_Const::create(t->extract_weight(value)));
+		set_link("value",ValueNode_Const::create(t->extract_value(value)));
+	}
+	else
 	{
 		assert(0);
 		throw Exception::BadType(get_type().description.local_name);
@@ -182,6 +193,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		vect[1]=(*components[1])(t).get(Vector::value_type());
 		return vect;
 	}
+	else
 	if (type == type_color)
 	{
 		Color color;
@@ -192,6 +204,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		color.set_a((*components[3])(t).get(Vector::value_type()));
 		return color;
 	}
+	else
 	if (type == type_segment)
 	{
 		Segment seg;
@@ -202,6 +215,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		seg.t2=(*components[3])(t).get(Vector());
 		return seg;
 	}
+	else
 	if (type == type_bline_point)
 	{
 		BLinePoint ret;
@@ -216,6 +230,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		ret.set_tangent2((*components[5])(t).get(Vector()));
 		return ret;
 	}
+	else
 	if (type == type_width_point)
 	{
 		WidthPoint ret;
@@ -228,6 +243,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		ret.set_upper_bound((*components[5])(t).get(Real()));
 		return ret;
 	}
+	else
 	if (type == type_dash_item)
 	{
 		DashItem ret;
@@ -242,6 +258,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		ret.set_side_type_after((*components[3])(t).get(int()));
 		return ret;
 	}
+	else
 	if (type == type_transformation)
 	{
 		Transformation ret;
@@ -251,6 +268,15 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		ret.skew_angle = (*components[2])(t).get(Angle());
 		ret.scale     = (*components[3])(t).get(Vector());
 		return ret;
+	}
+	else
+	if (ValueAverage::check_weighted_type(type))
+	{
+		types_namespace::TypeWeightedValueBase *tp =
+			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
+		assert(tp != NULL);
+		assert(components[0] && components[1]);
+		return tp->create_weighted_value((*components[0])(t).get(Real()), (*components[1])(t));
 	}
 
 	synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
@@ -367,6 +393,20 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
 		 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
 		 || (i == 3 && x->get_type()==ValueBase(Vector()).get_type())
+		) {
+			components[i]=x;
+			return true;
+		}
+	}
+	else
+	if (ValueAverage::check_weighted_type(type))
+	{
+		types_namespace::TypeWeightedValueBase *tp =
+			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
+		assert(tp != NULL);
+		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		 || (i == 0 && x->get_type()==ValueBase(Real()).get_type())
+		 || (i == 1 && x->get_type()==tp->get_contained_type())
 		) {
 			components[i]=x;
 			return true;
@@ -502,6 +542,14 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 		if(name=="scale")
 			return 3;
 	}
+	else
+	if (ValueAverage::check_weighted_type(type))
+	{
+		if(name=="weight")
+			return 0;
+		if(name=="value")
+			return 1;
+	}
 
 	throw Exception::BadLinkName(name);
 }
@@ -521,14 +569,14 @@ ValueNode_Composite::get_local_name()const
 bool
 ValueNode_Composite::check_type(Type &type)
 {
-	return
-		type==type_segment		||
-		type==type_vector		||
-		type==type_color		||
-		type==type_bline_point	||
-		type==type_width_point	||
-		type==type_dash_item 	||
-		type==type_transformation;
+	return type==type_segment
+		|| type==type_vector
+		|| type==type_color
+		|| type==type_bline_point
+		|| type==type_width_point
+		|| type==type_dash_item
+		|| type==type_transformation
+		|| ValueAverage::check_weighted_type(type);
 }
 
 LinkableValueNode::Vocab
@@ -724,6 +772,19 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"scale")
 			.set_local_name(_("Scale"))
 			.set_description(_("The Scale component of the transformation"))
+		);
+		return ret;
+	}
+	else
+	if (ValueAverage::check_weighted_type(type))
+	{
+		ret.push_back(ParamDesc(ValueBase(),"weight")
+			.set_local_name(_("Weight"))
+			.set_description(_("The Weight of the value"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"value")
+			.set_local_name(_("Value"))
+			.set_description(_("The Value"))
 		);
 		return ret;
 	}

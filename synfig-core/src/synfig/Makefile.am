@@ -132,7 +132,8 @@ VALUENODEHEADERS = \
 	valuenode_bonelink.h \
 	valuenode_average.h \
 	valuenode_dynamic.h \
-	valuenode_derivative.h
+	valuenode_derivative.h \
+	valuenode_weightedaverage.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -196,7 +197,8 @@ VALUENODESOURCES = \
 	valuenode_bonelink.cpp \
 	valuenode_average.cpp\
 	valuenode_dynamic.cpp \
-	valuenode_derivative.cpp
+	valuenode_derivative.cpp \
+	valuenode_weightedaverage.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \
@@ -284,7 +286,8 @@ SYNFIGHEADERS = \
 	filecontainerzip.h \
 	filecontainertemporary.h \
 	zstreambuf.h \
-	valueoperations.h
+	valueoperations.h \
+	weightedvalue.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -332,7 +335,8 @@ SYNFIGSOURCES = \
 	filecontainer.cpp \
 	filecontainerzip.cpp \
 	filecontainertemporary.cpp \
-	zstreambuf.cpp
+	zstreambuf.cpp \
+	valueoperations.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

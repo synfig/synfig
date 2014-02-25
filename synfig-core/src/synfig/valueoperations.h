@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valueoperations.h
-**	\brief Affine Transformation of ValueBase class
+**	\brief Common operations with ValueBase
 **
 **	$Id$
 **
@@ -38,6 +38,8 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+
+namespace types_namespace { class TypeWeightedValueBase; }
 
 /*!	\class ValueTransformation
 **	\todo writeme
@@ -117,17 +119,15 @@ private:
 	//! it's static class
 	ValueAverage() { }
 
-public:
-	static bool check_type(Type& type) {
-		return type == type_real
-			|| type == type_bline_point
-			|| type == type_matrix
-			|| type == type_segment
-			|| type == type_transformation
-			|| type == type_vector
-			|| type == type_width_point;
-	}
+	static types_namespace::TypeWeightedValueBase *allowed_types[];
 
+public:
+	static types_namespace::TypeWeightedValueBase* get_weighted_type_for(Type &type);
+	static Type& convert_to_weighted_type(Type &type);
+
+	static bool check_weighted_type(Type& type);
+	static bool check_type(Type& type)
+		{ return get_weighted_type_for(type) != NULL; }
 	static bool check_type(const ValueBase &value)
 		{ return check_type(value.get_type()); }
 
@@ -312,6 +312,10 @@ public:
 		{ return average(list, weights, ValueBase()); }
 	static ValueBase average(const ValueBase &list)
 		{ return average(list, ValueBase()); }
+
+	static ValueBase average_weighted(const ValueBase &weighted_list, const ValueBase &default_value);
+	static ValueBase average_weighted(const ValueBase &weighted_list)
+		{ return average_weighted(weighted_list, ValueBase()); }
 };
 
 }; // END of namespace synfig

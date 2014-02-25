@@ -521,7 +521,7 @@ CellRenderer_ValueBase::render_vfunc(
 	}
 	else
 	{
-		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
+		property_text()=static_cast<Glib::ustring>(type.description.local_name);
 	}
 
 	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);

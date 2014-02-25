@@ -73,6 +73,7 @@ class Gradient;
 class Bone;
 class ValueNode_Bone;
 class Transformation;
+template<typename T> class WeightedValue;
 
 namespace types_namespace
 {
@@ -107,6 +108,9 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>)
 	SYNFIG_DECLARE_TYPE_ALIAS(ValueNode_Bone*)
 	SYNFIG_DECLARE_TYPE_ALIAS(Transformation)
+
+	template<typename T>
+	TypeAlias< WeightedValue<T> > get_type_alias(WeightedValue<T> const&);
 } // namespace types_namespace
 } // namespace synfig
 
@@ -581,6 +585,48 @@ protected:
 	template<typename Outer, String (*Func)(const Outer&)>
 	inline void register_all_but_compare()
 		{ register_all_but_compare<Outer, Outer, Func>(); }
+
+private:
+	template<typename T>
+	static String _value_to_string(const T &alias, const typename T::AliasedType &x)
+	{
+		if (alias.type.identifier == NIL) {
+			Operation::ToStringFunc to_string_func =
+				Type::get_operation<Operation::ToStringFunc>(
+					Operation::Description::get_to_string(alias.type.identifier) );
+			return to_string_func(NULL);
+		}
+
+		typedef typename T::AliasedType TT;
+
+		Operation::CreateFunc create_func =
+			Type::get_operation<Operation::CreateFunc>(
+				Operation::Description::get_create(alias.type.identifier) );
+		typename Operation::GenericFuncs<TT>::SetFunc set_func =
+			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
+				Operation::Description::get_set(alias.type.identifier) );
+		Operation::ToStringFunc to_string_func =
+			Type::get_operation<Operation::ToStringFunc>(
+				Operation::Description::get_to_string(alias.type.identifier) );
+		Operation::DestroyFunc destroy_func =
+			Type::get_operation<Operation::DestroyFunc>(
+				Operation::Description::get_destroy(alias.type.identifier) );
+		assert(create_func != NULL);
+		assert(set_func != NULL);
+		assert(to_string_func != NULL);
+		assert(destroy_func != NULL);
+
+		InternalPointer data = create_func();
+		set_func(data, x);
+		String res = to_string_func(data);
+		destroy_func(data);
+		return res;
+	}
+
+public:
+	template<typename T>
+	static String value_to_string(const T &x)
+		{ return _value_to_string(types_namespace::get_type_alias(x), x); }
 
 public:
 	static bool subsys_init() {
