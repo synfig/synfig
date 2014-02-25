@@ -129,43 +129,32 @@ TypeAngle TypeAngle::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Angle, TypeAngle)
 
 
-// Time
-
-class TypeTime: public Type
-{
-	static String to_string(const Time &x) { return etl::strprintf("Time (%s)", x.get_string().c_str()); }
-	void initialize_vfunc(Description &description)
-	{
-		Type::initialize_vfunc(description);
-		description.name = "time";
-		description.aliases.push_back(_("time"));
-		description.local_name = N_("time");
-		register_all<Time, to_string>();
-	}
-public:
-	static TypeTime instance;
-};
-TypeTime TypeTime::instance;
-SYNFIG_IMPLEMENT_TYPE_ALIAS(Time, TypeTime)
-
-
 // Real
 
 class TypeReal: public Type
 {
+public:
 	class Inner
 	{
 	public:
 		mutable float f;
+		mutable Time t;
 		Real r;
-		Inner(): f(0.f), r(0.0) { }
-		Inner& operator= (const float &other) { r = other; return *this; }
-		Inner& operator= (const Real &other) { r = other; return *this; }
-		Inner& operator= (const Inner &other) { return *this = other.r; }
+		Inner(): f(0.f), t(0.0), r(0.0) { }
+
 		bool operator== (const Inner &other) const { return r == other.r; }
-		operator const float&() const { return f = r; }
+		Inner& operator= (const Inner &other) { return *this = other.r; }
+
+		Inner& operator= (const Real &other) { r = other; return *this; }
 		operator const Real&() const { return r; }
+
+		Inner& operator= (const float &other) { r = other; return *this; }
+		operator const float&() const { return f = r; }
+
+		Inner& operator= (const Time &other) { r = other; return *this; }
+		operator const Time&() const { return t = r; }
 	};
+private:
 	static bool compare(const InternalPointer a, const InternalPointer b)
 		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 0.00000000000001; }
 	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", x); }
@@ -178,6 +167,7 @@ class TypeReal: public Type
 		description.local_name = N_("real");
 		register_all_but_compare<Inner, Real, to_string>();
 		register_alias<Inner, float>();
+		register_alias<Inner, Time>();
 		register_compare(compare);
 	}
 public:
@@ -186,6 +176,35 @@ public:
 TypeReal TypeReal::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Real, TypeReal)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(float, TypeReal)
+
+
+// Time
+
+class TypeTime: public Type
+{
+	typedef TypeReal::Inner Inner;
+	static String to_string(const Inner &x) { return etl::strprintf("Time (%s)", ((const Time&)x).get_string().c_str()); }
+	static bool compare(const InternalPointer a, const InternalPointer b)
+		{ return (const Time&)*(Inner*)a == (const Time&)*(Inner*)b; }
+	void initialize_vfunc(Description &description)
+	{
+		Type::initialize_vfunc(description);
+		TypeReal::instance.initialize();
+		description.name = "time";
+		description.aliases.push_back(_("time"));
+		description.local_name = N_("time");
+		register_all_but_compare<Inner, Time, to_string>();
+		register_alias<Inner, Real>();
+		register_alias<Inner, Time>();
+		register_compare(compare);
+		register_copy(identifier, TypeReal::instance.identifier, Operation::DefaultFuncs::copy<Inner>);
+		register_copy(TypeReal::instance.identifier, identifier, Operation::DefaultFuncs::copy<Inner>);
+	}
+public:
+	static TypeTime instance;
+};
+TypeTime TypeTime::instance;
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Time, TypeTime)
 
 
 // Vector

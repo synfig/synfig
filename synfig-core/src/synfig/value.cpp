@@ -163,10 +163,23 @@ ValueBase::operator=(const ValueBase& x)
 {
 	if(data!=x.data)
 	{
-		clear();
-		type=x.type;
-		data=x.data;
-		ref_count=x.ref_count;
+		Type &current_type = *type;
+		Type &new_type = *x.type;
+		Operation::CopyFunc func =
+			Type::get_operation<Operation::CopyFunc>(
+				Operation::Description::get_copy(current_type.identifier, new_type.identifier) );
+		if (func != NULL)
+		{
+			create(current_type);
+			func(data, x.data);
+		}
+		else
+		{
+			clear();
+			type=x.type;
+			data=x.data;
+			ref_count=x.ref_count;
+		}
 	}
 	loop_=x.loop_;
 	static_=x.static_;
