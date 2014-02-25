@@ -212,7 +212,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_DIList,           "dilist",           _("DIList"),           RELEASE_VERSION_0_63_01);
 
 	ADD_VALUENODE(ValueNode_Average,		  "average",		  _("Average"),			 RELEASE_VERSION_0_65_0);
-	ADD_VALUENODE(ValueNode_WeightedAverage,  "weightred_average",_("Weighted Average"), RELEASE_VERSION_0_65_0);
+	ADD_VALUENODE(ValueNode_WeightedAverage,  "weighted_average", _("Weighted Average"), RELEASE_VERSION_0_65_0);
 	
 	ADD_VALUENODE(ValueNode_Dynamic,           "dynamic",         _("Dynamic"),          RELEASE_VERSION_0_65_0);
 	ADD_VALUENODE(ValueNode_Derivative,        "derivative",      _("Derivative"),       RELEASE_VERSION_0_65_0);
