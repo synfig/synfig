@@ -313,7 +313,8 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION=6.8.6-10
+#PKG_VERSION=6.8.6-10
+PKG_VERSION=6.8.7-10
 TAREXT=bz2
 
 cd $WORKSPACE
@@ -410,7 +411,8 @@ $CYGWIN_SETUP \
 -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
--P gcc \
+-P gcc-core \
+-P gcc-g++ \
 -P gdb \
 -P intltool \
 -P autoconf \
