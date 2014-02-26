@@ -52,10 +52,11 @@ using namespace synfig;
 Bone::Bone():
 	origin_(Point(0,0)),
 	angle_(Angle::deg(0.0)),
-	scalelx_(1.0), scalely_(1.0),
-	scalex_(1.0),  scaley_(1.0),
+	scalelx_(1.0),
+	scalex_(1.0),
 	length_(1.0),
-	strength_(1.0),
+	width_(0.3),
+	tipwidth_(0.3),
 	parent_(0)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -66,10 +67,11 @@ Bone::Bone():
 Bone::Bone(const Point &o, const Point &t):
 	origin_(o),
 	angle_((t-o).angle()),
-	scalelx_(1.0), scalely_(1.0),
-	scalex_(1.0),  scaley_(1.0),
+	scalelx_(1.0),
+	scalex_(1.0),
 	length_(1.0),
-	strength_(1.0),
+	width_(0.3),
+	tipwidth_(0.3),
 	parent_(0)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -81,10 +83,11 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const
 	name_(n),
 	origin_(o),
 	angle_(a),
-	scalelx_(1.0), scalely_(1.0),
-	scalex_(1.0),  scaley_(1.0),
+	scalelx_(1.0),
+	scalex_(1.0),
 	length_(l),
-	strength_(s),
+	width_(0.3),
+	tipwidth_(0.3),
 	parent_(p)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -122,11 +125,11 @@ Bone::get_tip()
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sly=%.4f sx=%.4f sy=%.4f l=%.4f St=%.4f P=%lx",
+	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sx=%.4f l=%.4f w=%.4f tw=%.4f P=%lx",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 Angle::deg(angle_).get(),
-					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, uintptr_t(parent_));
+					 scalelx_, scalex_, length_, width_, tipwidth_, uintptr_t(parent_));
 }
 
 bool
