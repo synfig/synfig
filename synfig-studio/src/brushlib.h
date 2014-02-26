@@ -88,7 +88,7 @@ namespace brushlib {
 			float radius,
 			float color_r, float color_g, float color_b,
 			float opaque, float hardness = 0.5,
-			float /* alpha_eraser */ = 1.0,
+			float alpha_eraser = 1.0,
 			float aspect_ratio = 1.0, float angle = 0.0,
 			float /* lock_alpha */ = 0.0
 		) {
@@ -139,9 +139,7 @@ namespace brushlib {
 				x1 -= l; y1 -= t;
 			}
 
-			surface_type::alpha_pen apen(surface->get_pen(x0, y0));
-			apen.set_blend_method(synfig::Color::BLEND_COMPOSITE);
-			apen.set_value(synfig::Color(color_r, color_g, color_b));
+			bool erase = alpha_eraser < 1.0;
 			for(int py = y0; py <= y1; py++)
 			{
 				for(int px = x0; px <= x1; px++)
@@ -156,13 +154,24 @@ namespace brushlib {
 						float opa = dd < hardness
 								  ? dd + 1-(dd/hardness)
 								  : hardness/(1-hardness)*(1-dd);
-						apen.set_alpha(opa * opaque);
-						apen.put_value();
+						opa *= opaque;
+						synfig::Color &c = (*surface)[py][px];
+						if (erase)
+						{
+							c.set_a(c.get_a()*(1.0 - (1.0 - alpha_eraser)*opa));
+						}
+						else
+						{
+							float sum_alpha = opa + c.get_a();
+							if (sum_alpha > 1.0) sum_alpha = 1.0;
+							float inv_opa = sum_alpha - opa;
+							c.set_r(c.get_r()*inv_opa + color_r*opa);
+							c.set_g(c.get_g()*inv_opa + color_g*opa);
+							c.set_b(c.get_b()*inv_opa + color_b*opa);
+							c.set_a(sum_alpha);
+						}
 					}
-					apen.inc_x();
 				}
-				apen.dec_x(x1-x0+1);
-				apen.inc_y();
 			}
 
 			return true;

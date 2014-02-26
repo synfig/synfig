@@ -141,6 +141,8 @@ private:
 
 	synfigapp::Settings& settings;
 
+	Gtk::CheckButton eraser_checkbox;
+
 public:
 	void load_settings();
 	void save_settings();
@@ -481,7 +483,8 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	is_working(*canvas_view),
 	push_state(get_work_area()),
 	selected_brush_button(NULL),
-	settings(synfigapp::Main::get_selected_input_device()->settings())
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
+	eraser_checkbox(_("Eraser"))
 {
 	load_settings();
 
@@ -550,9 +553,15 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
 	App::dialog_tool_options->set_name("brush");
 
-	// create container widget
+	// create container
+	Gtk::Table *table = Gtk::manage(new Gtk::Table(1, 2, false));
+
+	// create options
+	table->attach(eraser_checkbox, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK);
+
+	// create brushes container widget
 	int cols = 2;
-	Gtk::Table *table = Gtk::manage(new Gtk::Table(1, cols));
+	Gtk::Table *brushes_table = Gtk::manage(new Gtk::Table(1, cols));
 
 	// load brushes
 	// scan directories
@@ -583,17 +592,20 @@ StateBrush_Context::refresh_tool_options()
 					// add row
 					col = 0;
 					++row;
-					table->resize(row + 1, cols);
+					brushes_table->resize(row + 1, cols);
 				}
 
 				// add button
-				table->attach(*button, col, col+1, row, row+1);
+				brushes_table->attach(*button, col, col+1, row, row+1);
 				++col;
 			}
 		}
 	}
-	table->show_all();
+	Gtk::ScrolledWindow *brushes_scroll = Gtk::manage(new Gtk::ScrolledWindow());
+	brushes_scroll->add(*brushes_table);
+	table->attach(*brushes_scroll, 0, 1, 1, 2);
 
+	table->show_all();
 	App::dialog_tool_options->add(*table);
 
 	// select first brush
@@ -721,11 +733,14 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					Real opaque = color.get_a();
 					Real radius = synfigapp::Main::get_bline_width();
 
+					Real eraser = eraser_checkbox.get_active() ? 1.0 : 0.0;
+
 					action->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
 					action->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
 					action->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
 					action->stroke.brush().set_base_value(BRUSH_OPAQUE, opaque);
 					action->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
+					action->stroke.brush().set_base_value(BRUSH_ERASER, eraser);
 					action->stroke.prepare();
 
 					time.assign_current_time();
