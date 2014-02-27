@@ -100,6 +100,7 @@ public:
 			Entry(): base(0.f) { }
 		};
 
+		String filename;
 		Entry settings[BRUSH_SETTINGS_COUNT];
 
 		void clear();
@@ -134,15 +135,17 @@ private:
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
 	Gtk::ToggleButton *selected_brush_button;
+	std::map<String, Gtk::ToggleButton*> brush_buttons;
 
 	bool scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files);
 	void select_brush(Gtk::ToggleButton *button, String filename);
 	void refresh_ducks();
 
-	synfigapp::Settings& settings;
+	synfigapp::Settings &settings;
 
 	Gtk::CheckButton eraser_checkbox;
 
+	void draw_to(Vector pos, Real pressure);
 public:
 	void load_settings();
 	void save_settings();
@@ -252,6 +255,7 @@ StateBrush::~StateBrush()
 void
 StateBrush_Context::BrushConfig::clear()
 {
+	filename.clear();
 	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
 	{
 		settings[i].base = 0;
@@ -412,6 +416,7 @@ StateBrush_Context::BrushConfig::load(const String &filename)
 	const char *pos = buffer;
 	if (pos != NULL) while(read_row(&pos)) { }
 	free(buffer);
+	this->filename = filename;
 }
 
 void
@@ -445,15 +450,21 @@ StateBrush_Context::load_settings()
 			for(int i = 0; i < count; ++i)
 				if(settings.get_value(strprintf("brush.path_%d", i),value))
 					paths.insert(value);
-			refresh_tool_options();
 		}
 		// TODO: remove following code
 		else
 		{
 			// force add Ubuntu path to mypaint brushes
 			paths.insert("/usr/share/mypaint/brushes");
-			refresh_tool_options();
 		}
+		refresh_tool_options();
+
+		if (settings.get_value("brush.selected_brush_filename",value))
+			if (brush_buttons.count(value))
+				brush_buttons[value]->set_active(true);
+
+		if (settings.get_value("brush.eraser",value))
+			eraser_checkbox.set_active(value == "true");
 	}
 	catch(...)
 	{
@@ -467,10 +478,14 @@ StateBrush_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+
 		settings.set_value("brush.path_count", strprintf("%d", (int)paths.size()));
 		int j = 0;
 		for(std::set<String>::const_iterator i = paths.begin(); i != paths.end(); ++i)
 			settings.set_value(strprintf("brush.path_%d", j++), *i);
+
+		settings.set_value("brush.selected_brush_filename", selected_brush_config.filename);
+		settings.set_value("brush.eraser", eraser_checkbox.get_active() ? "true" : "false");
 	}
 	catch(...)
 	{
@@ -488,7 +503,7 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 {
 	load_settings();
 
-	refresh_tool_options();
+	//refresh_tool_options();
 	App::dialog_tool_options->present();
 
 	// Hide all tangent and width ducks
@@ -509,8 +524,17 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 
 StateBrush_Context::~StateBrush_Context()
 {
+	if (action)
+	{
+		get_canvas_interface()->get_instance()->perform_action(action);
+		action = NULL;
+		transform_stack.clear();
+	}
+
 	save_settings();
 
+	brush_buttons.clear();
+	selected_brush_button = NULL;
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
@@ -549,6 +573,7 @@ StateBrush_Context::scan_directory(const String &path, int scan_sub_levels, std:
 void
 StateBrush_Context::refresh_tool_options()
 {
+	brush_buttons.clear();
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
 	App::dialog_tool_options->set_name("brush");
@@ -574,14 +599,14 @@ StateBrush_Context::refresh_tool_options()
 	Gtk::ToggleButton *first_button = NULL;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
-		if (filename_extension(*i) == ".myb")
+		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
 		{
 			const String &brush_file = *i;
 			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
 				// create button
-				Gtk::ToggleButton *button = Gtk::manage(new Gtk::ToggleButton());
+				Gtk::ToggleButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::ToggleButton());
 				button->set_image(*Gtk::manage(new Gtk::Image(icon_file)));
 				button->signal_toggled().connect(
 					sigc::bind(sigc::mem_fun(*this, &StateBrush_Context::select_brush), button, brush_file) );
@@ -619,6 +644,7 @@ StateBrush_Context::select_brush(Gtk::ToggleButton *button, String filename)
 	{
 		if (selected_brush_button != NULL) selected_brush_button->set_active(false);
 		selected_brush_config.load(filename);
+		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 	}
 }
 
@@ -709,7 +735,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				transform_stack.clear();
 				if (build_transform_stack(get_canvas(), layer, get_canvas_view(), transform_stack))
 				{
-					action = new synfigapp::Action::LayerPaint();
+					etl::handle<synfigapp::Action::LayerPaint> action = new synfigapp::Action::LayerPaint();
 					action->set_param("canvas",get_canvas());
 					action->set_param("canvas_interface",get_canvas_interface());
 					action->stroke.set_layer(layer);
@@ -744,6 +770,9 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 					action->stroke.prepare();
 
 					time.assign_current_time();
+					this->action = action;
+					draw_to(event.pos, 0);
+
 					return Smach::RESULT_ACCEPT;
 				}
 			}
@@ -781,6 +810,28 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 	return Smach::RESULT_OK;
 }
 
+void
+StateBrush_Context::draw_to(Vector pos, Real pressure)
+{
+	Glib::TimeVal prev_time = time;
+	time.assign_current_time();
+	double delta_time = (time - prev_time).as_double();
+	if (delta_time < 0.00001) delta_time = 0.00001;
+
+	Point p = transform_stack.unperform( pos );
+	Point tl = action->stroke.get_layer()->get_param("tl").get(Point());
+	Point br = action->stroke.get_layer()->get_param("br").get(Point());
+	int w = action->stroke.get_layer()->surface.get_w();
+	int h = action->stroke.get_layer()->surface.get_h();
+
+	action->stroke.add_point_and_apply(
+		synfigapp::Action::LayerPaint::PaintPoint(
+			(float)((p[0] - tl[0])/(br[0] - tl[0])*w),
+			(float)((p[1] - tl[1])/(br[1] - tl[1])*h),
+			(float)pressure,
+			delta_time ));
+}
+
 Smach::event_result
 StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 {
@@ -791,23 +842,7 @@ StateBrush_Context::event_mouse_draw_handler(const Smach::event& x)
 		{
 			if (action)
 			{
-				Glib::TimeVal prev_time = time;
-				time.assign_current_time();
-				double delta_time = (time - prev_time).as_double();
-
-				Point p = transform_stack.unperform( event.pos );
-				Point tl = action->stroke.get_layer()->get_param("tl").get(Point());
-				Point br = action->stroke.get_layer()->get_param("br").get(Point());
-				int w = action->stroke.get_layer()->surface.get_w();
-				int h = action->stroke.get_layer()->surface.get_h();
-
-				action->stroke.add_point_and_apply(
-					synfigapp::Action::LayerPaint::PaintPoint(
-						(float)((p[0] - tl[0])/(br[0] - tl[0])*w),
-						(float)((p[1] - tl[1])/(br[1] - tl[1])*h),
-						(float)event.pressure,
-						delta_time ));
-
+				draw_to(event.pos, event.pressure);
 				return Smach::RESULT_ACCEPT;
 			}
 			break;

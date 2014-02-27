@@ -107,13 +107,25 @@ Action::LayerPaint::PaintStroke::paint_self(synfig::Surface &surface)
 {
 	paint_prev(surface);
 	brushlib::SurfaceWrapper wrapper(&surface);
-	brush_.reset();
+	if (!points.empty()) reset(points.front());
 	for(std::vector<PaintPoint>::const_iterator i = points.begin(); i != points.end(); i++)
 	{
 		brush_.stroke_to(&wrapper, i->x, i->y, i->pressure, 0.f, 0.f, i->dtime);
 		wrapper.offset_x = 0;
 		wrapper.offset_y = 0;
 	}
+}
+
+void Action::LayerPaint::PaintStroke::reset(const PaintPoint &point)
+{
+    for (int i=0; i<STATE_COUNT; i++)
+    	brush_.set_state(i, 0);
+    brush_.set_state(STATE_X, point.x);
+    brush_.set_state(STATE_Y, point.y);
+    brush_.set_state(STATE_PRESSURE, point.pressure);
+    brush_.set_state(STATE_ACTUAL_X, brush_.get_state(STATE_X));
+    brush_.set_state(STATE_ACTUAL_Y, brush_.get_state(STATE_Y));
+    brush_.set_state(STATE_STROKE, 1.0); // start in a state as if the stroke was long finished
 }
 
 void
@@ -147,6 +159,7 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	assert(prevSameLayer == NULL || prevSameLayer->applied);
 	assert(nextSameLayer == NULL);
 
+	if (points.empty()) reset(point);
 	points.push_back(point);
 	applied = true;
 
