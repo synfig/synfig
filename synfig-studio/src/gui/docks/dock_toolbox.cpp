@@ -88,9 +88,9 @@ Dock_Toolbox::Dock_Toolbox():
 
 	// pack tools and default widgets
 	tool_box = manage(new class Gtk::VBox(false, 2));
-	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 4);
-	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 4);
-	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 4);
+	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 3);
+	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 3);
+	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 3);
 	tool_box->set_border_width(2);
 	tool_box->show_all();
 
@@ -229,8 +229,9 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
 	//Gets the accelerator representation for labels
 	Glib::ustring accel_path = key.get_abbrev ();
-
-	icon=manage(new Gtk::Image(stock_item.get_stock_id(), Gtk::ICON_SIZE_SMALL_TOOLBAR));
+	
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	icon=manage(new Gtk::Image(stock_item.get_stock_id(), iconsize));
 	_tool_button->add(*icon);
 	_tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
 	_tool_button->set_relief(Gtk::RELIEF_NONE);
