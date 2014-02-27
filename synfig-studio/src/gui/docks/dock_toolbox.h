@@ -74,7 +74,7 @@ class Dock_Toolbox : public Dockable
 
 public:
 
-	void change_state(const synfig::String& statename);
+	void change_state(const synfig::String& statename, bool force = false);
 
 	void update_tools();
 
