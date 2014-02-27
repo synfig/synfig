@@ -32,6 +32,7 @@
 #endif
 
 #include "layer_composite.h"
+#include "layer_pastecanvas.h"
 #include "context.h"
 #include "time.h"
 #include "color.h"
@@ -280,7 +281,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 
 				if (version == "0.1" || version == "0.2")
 				{
-					if (get_name() == "PasteCanvas")
+					if (dynamic_cast<Layer_PasteCanvas*>(this) != NULL)
 						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
 								version.c_str(), get_non_empty_description().c_str());
 					else

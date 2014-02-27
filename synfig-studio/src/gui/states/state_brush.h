@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_svg.h
-**	\brief Header file for implementation of the Svg Canvas layer
+/*!	\file state_brush.h
+**	\brief Template Header
 **
-**	$Id:$
+**	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2009 Carlos A. Sosa Navarro
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,17 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_SVG_LAYER_H
-#define __SYNFIG_SVG_LAYER_H
+#ifndef __SYNFIG_STUDIO_STATE_BRUSH_H
+#define __SYNFIG_STUDIO_STATE_BRUSH_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/layer_group.h>
-#include <synfig/value.h>
+#include "smach.h"
 
-#include "svg_parser.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,27 +36,21 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class svg_layer : public synfig::Layer_Group
+namespace studio {
+
+class StateBrush_Context;
+
+class StateBrush : public Smach::state<StateBrush_Context>
 {
-	SYNFIG_LAYER_MODULE_EXT
-
-private:
-
-	synfig::String filename;
-	synfig::String errors,warnings;
-
 public:
+	StateBrush();
+	~StateBrush();
+}; // END of class StateBrush
 
-	svg_layer();
+extern StateBrush state_brush;
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-
-	virtual Vocab get_param_vocab()const;
-}; // END of class svg_layer
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 
 #endif
-

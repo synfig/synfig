@@ -48,6 +48,8 @@
 
 #include "general.h"
 
+#include <synfig/layer_pastecanvas.h>
+
 #endif
 
 using namespace synfig;
@@ -141,7 +143,7 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 
 	synfig::Layer::Handle layer = v.get_layer();
 
-	if (layer->get_name()!="PasteCanvas")
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 		return synfig::Time::zero();
 
 	return layer->get_param("time_offset").get(Time());

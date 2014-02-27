@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_svg.h
-**	\brief Header file for implementation of the Svg Canvas layer
+/*!	\file layerencapsulateswitch.h
+**	\brief Template File
 **
-**	$Id:$
+**	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2009 Carlos A. Sosa Navarro
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,17 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_SVG_LAYER_H
-#define __SYNFIG_SVG_LAYER_H
+#ifndef __SYNFIG_APP_ACTION_LAYERENCAPSULATESWITCH_H
+#define __SYNFIG_APP_ACTION_LAYERENCAPSULATESWITCH_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/layer_group.h>
-#include <synfig/value.h>
-
-#include "svg_parser.h"
+#include <synfig/layer.h>
+#include <synfigapp/action.h>
+#include <list>
+#include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,27 +38,38 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class svg_layer : public synfig::Layer_Group
+namespace synfigapp {
+
+namespace Action {
+
+class LayerEncapsulateSwitch :
+	public Super
 {
-	SYNFIG_LAYER_MODULE_EXT
-
 private:
+	synfig::Canvas::Handle child_canvas;
+	synfig::String description;
+	std::list<synfig::Layer::Handle> layers;
 
-	synfig::String filename;
-	synfig::String errors,warnings;
+	int lowest_depth()const;
 
 public:
 
-	svg_layer();
+	LayerEncapsulateSwitch();
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
 
-	virtual Vocab get_param_vocab()const;
-}; // END of class svg_layer
+	virtual void prepare();
+
+	ACTION_MODULE_EXT
+};
+
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 
 #endif
-

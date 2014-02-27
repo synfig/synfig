@@ -33,6 +33,7 @@
 
 #include "context.h"
 #include "layer.h"
+#include "layer_pastecanvas.h"
 #include "string.h"
 #include "vector.h"
 #include "color.h"
@@ -178,7 +179,7 @@ IndependentContext::set_dirty_outlines()
 			(
 			(*context)->get_name() == "outline" ||
 			(*context)->get_name() == "advanced_outline" ||
-			(*context)->get_name() == "PasteCanvas"
+			dynamic_cast<Layer_PasteCanvas*>((*context).get()) != NULL
 			)
 		  )
 			{

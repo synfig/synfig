@@ -17,7 +17,8 @@ STATES_HH = \
 	states/state_stroke.h \
 	states/state_text.h \
 	states/state_width.h \
-	states/state_zoom.h
+	states/state_zoom.h \
+	states/state_brush.h
 
 STATES_CC = \
 	states/state_bline.cpp \
@@ -38,7 +39,8 @@ STATES_CC = \
 	states/state_stroke.cpp \
 	states/state_text.cpp \
 	states/state_width.cpp \
-	states/state_zoom.cpp
+	states/state_zoom.cpp \
+	states/state_brush.cpp
 
 synfigstudio_src += \
 	$(STATES_HH) \

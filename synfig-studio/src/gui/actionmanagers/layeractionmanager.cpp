@@ -289,7 +289,7 @@ LayerActionManager::refresh()
 				}
 			}
 
-			if(!multiple_selected && layer->get_name()=="PasteCanvas")
+			if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 			{
 				if (select_all_child_layers_connection)
 					select_all_child_layers_connection.disconnect();

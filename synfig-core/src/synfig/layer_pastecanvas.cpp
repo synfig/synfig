@@ -8,6 +8,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -75,13 +76,6 @@ public:
 
 /* === G L O B A L S ======================================================= */
 
-SYNFIG_LAYER_INIT(Layer_PasteCanvas);
-SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas"); // todo: use paste_canvas
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,N_("Group"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
-
 /* === M E T H O D S ======================================================= */
 
 Layer_PasteCanvas::Layer_PasteCanvas():
@@ -97,11 +91,6 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	param_curr_time=ValueBase(Time::begin());
 
 	muck_with_time_=true;
-
-	param_z_range=ValueBase(bool(false));
-	param_z_range_position=ValueBase(Real(0.0));
-	param_z_range_depth=ValueBase(Real(0.0));
-	param_z_range_blur=ValueBase(Real(0.0));
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -125,11 +114,9 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 String
 Layer_PasteCanvas::get_local_name()const
 {
-	if(!canvas)	return _("Group");
-	if(canvas->is_inline()) return _("Group");
-	if(canvas->get_root()==get_canvas()->get_root()) return '[' + canvas->get_id() + ']';
-
-	return '[' + canvas->get_file_name() + ']';
+	if(!canvas || canvas->is_inline()) return String();
+	if(canvas->get_root()==get_canvas()->get_root()) return canvas->get_id();
+	return canvas->get_file_name();
 }
 
 Layer::Vocab
@@ -176,24 +163,6 @@ Layer_PasteCanvas::get_param_vocab()const
 	{
 		ret.back().hidden();
 	}
-
-	ret.push_back(ParamDesc("z_range")
-		.set_local_name(_("Z Range"))
-		.set_description(_("When checked, only layers inside range are visible"))
-		.set_static(true)
-	);
-	ret.push_back(ParamDesc("z_range_position")
-		.set_local_name(_("Z Range Position"))
-		.set_description(_("Starting position where layers are visible"))
-	);
-	ret.push_back(ParamDesc("z_range_depth")
-		.set_local_name(_("Z Range Depth"))
-		.set_description(_("Depth where layers are visible in range"))
-	);
-	ret.push_back(ParamDesc("z_range_blur")
-		.set_local_name(_("Z Range Blur"))
-		.set_description(_("Area where layers inside are partially visible"))
-	);
 
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
@@ -248,10 +217,6 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_children_lock);
 	IMPORT_VALUE(param_outline_grow);
 	IMPORT_VALUE(param_curr_time);
-	IMPORT_VALUE(param_z_range);
-	IMPORT_VALUE(param_z_range_position);
-	IMPORT_VALUE(param_z_range_depth);
-	IMPORT_VALUE(param_z_range_blur);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -338,13 +303,6 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT_VALUE(param_children_lock);
 	EXPORT_VALUE(param_curr_time);
 	EXPORT_VALUE(param_outline_grow);
-	EXPORT_VALUE(param_z_range);
-	EXPORT_VALUE(param_z_range_position);
-	EXPORT_VALUE(param_z_range_depth);
-	EXPORT_VALUE(param_z_range_blur);
-
-	EXPORT_NAME();
-	EXPORT_VERSION();
 
 	return Layer_Composite::get_param(param);
 }
@@ -362,6 +320,11 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 		canvas->set_time(time+time_offset);
 }
 
+void
+Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
+{
+}
+
 synfig::Layer::Handle
 Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
@@ -371,10 +334,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 
 	bool children_lock=param_children_lock.get(bool(true));
 	ContextParams cp(context.get_params());
-	cp.z_range=param_z_range.get(bool());
-	cp.z_range_position=param_z_range_position.get(Real());
-	cp.z_range_depth=param_z_range_depth.get(Real());
-	cp.z_range_blur=param_z_range_blur.get(Real());
+	apply_z_range_to_params(cp);
 	if (canvas) {
 		Point target_pos = transformation.back_transform(pos);
 
@@ -396,10 +356,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	Transformation transformation(get_summary_transformation());
 
 	ContextParams cp(context.get_params());
-	cp.z_range=param_z_range.get(bool());
-	cp.z_range_position=param_z_range_position.get(Real());
-	cp.z_range_depth=param_z_range_depth.get(Real());
-	cp.z_range_blur=param_z_range_blur.get(Real());
+	apply_z_range_to_params(cp);
 	if(!canvas || !get_amount())
 		return context.get_color(pos);
 
@@ -416,10 +373,7 @@ Layer_PasteCanvas::get_bounding_rect_context_dependent(const ContextParams &cont
 	if (canvas)
 	{
 		ContextParams cp(context_params);
-		cp.z_range=param_z_range.get(bool());
-		cp.z_range_position=param_z_range_position.get(Real());
-		cp.z_range_depth=param_z_range_depth.get(Real());
-		cp.z_range_blur=param_z_range_blur.get(Real());
+		apply_z_range_to_params(cp);
 
 		return get_summary_transformation()
 			.transform_bounds(

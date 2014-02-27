@@ -1215,10 +1215,9 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
 		//		 time-shifted layers weren't being sorted by z-depth (bug #1806852)
-		if(layer->get_name()=="PasteCanvas")
+		Layer_PasteCanvas* paste_canvas(dynamic_cast<Layer_PasteCanvas*>(layer.get()));
+		if(paste_canvas!=NULL)
 		{
-			Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
-
 			// we need to blur the sub canvas if:
 			// our parent is blurred,
 			// or the child is lower than a local blur,
@@ -1250,10 +1249,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				else
 					paste_sub_canvas->set_grow_value(0.0);
 				ContextParams params=context.get_params();
-				params.z_range=paste_canvas->get_param("z_range").get(bool());
-				params.z_range_position=paste_canvas->get_param("z_range_position").get(Real());
-				params.z_range_depth=paste_canvas->get_param("z_range_depth").get(Real());
-				params.z_range_blur=paste_canvas->get_param("z_range_blur").get(Real());
+				paste_canvas->apply_z_range_to_params(params);
 				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
 			}
 
@@ -1301,7 +1297,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				{ }
 #endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
 
-			Layer::Handle new_layer(Layer::create("PasteCanvas"));
+			Layer::Handle new_layer(Layer::create("group"));
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
 			if (motion_blurred)
 			{
@@ -1344,9 +1340,9 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 				// don't use clone() because it re-randomizes the seeds of any random valuenodes
 				sub_canvas->push_back(composite = composite->simple_clone());
-				layer = Layer::create("PasteCanvas");
+				layer = Layer::create("group");
 				composite->set_description(strprintf("Wrapped clone of '%s'", composite->get_non_empty_description().c_str()));
-				layer->set_description(strprintf("PasteCanvas wrapper for '%s'", composite->get_non_empty_description().c_str()));
+				layer->set_description(strprintf("Group wrapper for '%s'", composite->get_non_empty_description().c_str()));
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 				paste_canvas->set_blend_method(composite->get_blend_method());
 				paste_canvas->set_amount(composite->get_amount());
@@ -1363,7 +1359,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		{
 			// Let's clone the composite layer if it is not a Paste Canvas
 			// (because paste will be always new layer)
-			if(layer->get_name()!="PasteCanvas")
+			if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 				composite = composite->simple_clone();
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
@@ -1562,7 +1558,7 @@ Canvas::show_structure(int i) const
 		else
 			printf(": no composite");
 		printf("\n");
-		if(layer->get_name()=="PasteCanvas")
+		if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 		{
 			Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 			paste_canvas->get_sub_canvas()->show_structure(i+1);

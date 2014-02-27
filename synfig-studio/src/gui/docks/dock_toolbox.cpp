@@ -180,12 +180,12 @@ Dock_Toolbox::set_active_state(const synfig::String& statename)
 }
 
 void
-Dock_Toolbox::change_state(const synfig::String& statename)
+Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 {
 	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
 	{
-		if(statename==canvas_view->get_smach().get_state_name())
+		if(!force && statename==canvas_view->get_smach().get_state_name())
 		{
 			return;
 		}

@@ -156,6 +156,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
 	INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
 	INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
+    INIT_STOCK_ICON(brush,"tool_brush_icon."IMAGE_EXT,_("Brush Tool"));
 	INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
 	INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
 	INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
@@ -607,7 +608,7 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_other_duplicate");
 	else if(layer=="importimage" || layer=="import")
 		return Gtk::StockID("synfig-layer_other_importimage");
-	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
+	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
 		return Gtk::StockID("synfig-layer_other_pastecanvas");
 	else if(layer=="plant")
 		return Gtk::StockID("synfig-layer_other_plant");

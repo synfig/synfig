@@ -294,22 +294,23 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<Pango::Weight> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		synfig::Layer::Handle paste=layer->get_parent_paste_canvas_layer();
+		etl::handle<Layer_PasteCanvas> paste=
+			etl::handle<Layer_PasteCanvas>::cast_dynamic(
+				layer->get_parent_paste_canvas_layer() );
 		if(paste)
 		{
 			etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
 			if(sub_canvas && !sub_canvas->is_inline())
 			{
 				Gtk::TreeRow row=*iter;
-				paste=(*row.parent())[model.layer];
+				paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
+						Layer::Handle((*row.parent())[model.layer]) );
 			}
 		}
 		if(paste)
 		{
 			synfig::ContextParams cp;
-			cp.z_range=paste->get_param("z_range").get(bool());
-			cp.z_range_position=paste->get_param("z_range_position").get(Real());
-			cp.z_range_depth=paste->get_param("z_range_depth").get(Real());
+			paste->apply_z_range_to_params(cp);
 			float visibility=synfig::Context::z_depth_visibility(cp, *layer);
 			x.set(visibility==1.0 && cp.z_range ? Pango::WEIGHT_BOLD : Pango::WEIGHT_NORMAL);
 		}

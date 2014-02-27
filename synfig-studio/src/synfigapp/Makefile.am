@@ -10,14 +10,18 @@ AM_CPPFLAGS = \
 LAYER_ACTION_HH = \
 	actions/layeractivate.h \
 	actions/layeradd.h \
+	actions/layeraddframe.h \
+	actions/layercopy.h \
 	actions/layerduplicate.h \
 	actions/layerembed.h \
 	actions/layerencapsulate.h \
+	actions/layerencapsulateswitch.h \
 	actions/layerextract.h \
 	actions/layerfit.h \
 	actions/layerlower.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
+	actions/layerpaint.h \
 	actions/layerparamconnect.h \
 	actions/layerparamdisconnect.h \
 	actions/layerparamset.h \
@@ -32,14 +36,18 @@ LAYER_ACTION_HH = \
 LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
 	actions/layeradd.cpp \
+	actions/layeraddframe.cpp \
+	actions/layercopy.cpp \
 	actions/layerduplicate.cpp \
 	actions/layerembed.cpp \
 	actions/layerencapsulate.cpp \
+	actions/layerencapsulateswitch.cpp \
 	actions/layerextract.cpp \
 	actions/layerfit.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
+	actions/layerpaint.cpp \
 	actions/layerparamconnect.cpp \
 	actions/layerparamdisconnect.cpp \
 	actions/layerparamset.cpp \

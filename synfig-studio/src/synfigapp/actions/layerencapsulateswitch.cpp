@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerencapsulate.cpp
+/*!	\file layerencapsulateswitch.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007, 2008 Chris Moore
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "layerencapsulate.h"
+#include "layerencapsulateswitch.h"
 #include "layeradd.h"
 #include "layerremove.h"
 #include <synfigapp/canvasinterface.h>
@@ -47,14 +46,14 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulate);
-ACTION_SET_NAME(Action::LayerEncapsulate,"LayerEncapsulate");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Group Layer"));
-ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
-ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerEncapsulate,0);
-ACTION_SET_VERSION(Action::LayerEncapsulate,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulateSwitch);
+ACTION_SET_NAME(Action::LayerEncapsulateSwitch,"LayerEncapsulateSwitch");
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateSwitch,N_("Group Layer into Switch"));
+ACTION_SET_TASK(Action::LayerEncapsulateSwitch,"encapsulate_switch");
+ACTION_SET_CATEGORY(Action::LayerEncapsulateSwitch,Action::CATEGORY_LAYER);
+ACTION_SET_PRIORITY(Action::LayerEncapsulateSwitch,0);
+ACTION_SET_VERSION(Action::LayerEncapsulateSwitch,"0.0");
+ACTION_SET_CVS_ID(Action::LayerEncapsulateSwitch,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -62,18 +61,18 @@ ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerEncapsulate::LayerEncapsulate()
+Action::LayerEncapsulateSwitch::LayerEncapsulateSwitch()
 {
 }
 
 synfig::String
-Action::LayerEncapsulate::get_local_name()const
+Action::LayerEncapsulateSwitch::get_local_name()const
 {
-	return get_layer_descriptions(layers, _("Group Layer"), _("Group Layers"));
+	return get_layer_descriptions(layers, _("Group Layer into Switch"), _("Group Layers into Switch"));
 }
 
 Action::ParamVocab
-Action::LayerEncapsulate::get_param_vocab()
+Action::LayerEncapsulateSwitch::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -92,13 +91,13 @@ Action::LayerEncapsulate::get_param_vocab()
 }
 
 bool
-Action::LayerEncapsulate::is_candidate(const ParamList &x)
+Action::LayerEncapsulateSwitch::is_candidate(const ParamList &x)
 {
 	return candidate_check(get_param_vocab(),x);
 }
 
 bool
-Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerEncapsulateSwitch::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -115,7 +114,7 @@ Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Pa
 }
 
 bool
-Action::LayerEncapsulate::is_ready()const
+Action::LayerEncapsulateSwitch::is_ready()const
 {
 	if(layers.empty())
 		return false;
@@ -123,7 +122,7 @@ Action::LayerEncapsulate::is_ready()const
 }
 
 int
-Action::LayerEncapsulate::lowest_depth()const
+Action::LayerEncapsulateSwitch::lowest_depth()const
 {
 	std::list<synfig::Layer::Handle>::const_iterator iter;
 	int lowest_depth(0x7fffffff);
@@ -140,7 +139,7 @@ Action::LayerEncapsulate::lowest_depth()const
 }
 
 void
-Action::LayerEncapsulate::prepare()
+Action::LayerEncapsulateSwitch::prepare()
 {
 
 	if(!first_time())
@@ -153,10 +152,11 @@ Action::LayerEncapsulate::prepare()
 	if(!child_canvas)
 		child_canvas=Canvas::create_inline(get_canvas());
 
-	Layer::Handle new_layer(Layer::create("group"));
+	Layer::Handle new_layer(Layer::create("switch"));
 
 	if (!description.empty()) new_layer->set_description(description);
 	new_layer->set_param("canvas",child_canvas);
+	new_layer->set_param("layer_name",layers.front()->get_description());
 
 	int target_depth(lowest_depth());
 

@@ -43,7 +43,8 @@
 
 #include "layer_solidcolor.h"
 #include "layer_polygon.h"
-#include "layer_pastecanvas.h"
+#include "layer_group.h"
+#include "layer_switch.h"
 #include "layer_motionblur.h"
 #include "layer_duplicate.h"
 #include "layer_skeleton.h"
@@ -116,13 +117,20 @@ Layer::subsys_init()
 				  class::cvs_id__,								\
 				  class::version__)
 
-	INCLUDE_LAYER(Layer_SolidColor);	LAYER_ALIAS(Layer_SolidColor,	"solid_color");
-	INCLUDE_LAYER(Layer_PasteCanvas);	LAYER_ALIAS(Layer_PasteCanvas,	"paste_canvas");
-	INCLUDE_LAYER(Layer_Polygon);		LAYER_ALIAS(Layer_Polygon,		"Polygon");
-	INCLUDE_LAYER(Layer_MotionBlur);	LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
+	INCLUDE_LAYER(Layer_SolidColor);
+		LAYER_ALIAS(Layer_SolidColor,	"solid_color");
+	INCLUDE_LAYER(Layer_Group);
+		LAYER_ALIAS(Layer_Group,		"paste_canvas");
+		LAYER_ALIAS(Layer_Group,		"PasteCanvas");
+	INCLUDE_LAYER(Layer_Switch);
+	INCLUDE_LAYER(Layer_Polygon);
+		LAYER_ALIAS(Layer_Polygon,		"Polygon");
+	INCLUDE_LAYER(Layer_MotionBlur);
+		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 
+#undef LAYER_ALIAS
 #undef INCLUDE_LAYER
 
 	return true;
@@ -686,7 +694,7 @@ synfig::Layer::get_parent_paste_canvas_layer()const
 		for(iter=parent_canvas->begin();iter!=parent_canvas->end();++iter)
 		{
 			Layer::LooseHandle layer=iter->get();
-			if(layer->get_name()=="PasteCanvas")
+			if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 			{
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 				Canvas::Handle sub_canvas=paste_canvas->get_sub_canvas();

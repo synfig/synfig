@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_PASTEIMAGE_H
-#define __SYNFIG_LAYER_PASTEIMAGE_H
+#ifndef __SYNFIG_LAYER_PASTECANVAS_H
+#define __SYNFIG_LAYER_PASTECANVAS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -51,8 +51,6 @@ namespace synfig {
 */
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
-	//! Layer module: defines the needed members to belong to a layer's factory.
-	SYNFIG_LAYER_MODULE_EXT
 private:
 	//! Parameter: (Origin) Position offset
 	ValueBase param_origin;
@@ -70,14 +68,6 @@ private:
 	ValueBase param_children_lock;
 	//! Parameter: Current time of the paste canvas layer. \see set_time
 	mutable ValueBase param_curr_time;
-	//! Parameter: (bool) Z_Depth Range is active
-	ValueBase param_z_range;
-	//! Parameter: (Real) Z_Depth Range position
-	ValueBase param_z_range_position;
-	//! Parameter: (Real) Z_Depth Range depth
-	ValueBase param_z_range_depth;
-	//! Parameter: (Real) Z_Depth Range transition
-	ValueBase param_z_range_blur;
 
 	//! \todo writeme!
 	bool muck_with_time_;
@@ -180,6 +170,8 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	//! Get the value of the specified parameter. \see Layer::get_param
 	virtual ValueBase get_param(const String & param)const;
+	//! Sets z_range* fields of specified ContextParams \a cp
+	virtual void apply_z_range_to_params(ContextParams &cp)const;
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 	//! Sets the time of the Paste Canvas Layer and those under it

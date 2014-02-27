@@ -686,7 +686,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
 	if(ext=="svg"){//I don't like it, but worse is nothing
-		Layer::Handle _new_layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle _new_layer(add_layer_to("group",get_canvas()));
 		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
 		if(_aux_layer){
 			_aux_layer->set_param("filename",ValueBase(filename));
@@ -719,7 +719,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 
-		Layer::Handle layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle layer(add_layer_to("group",get_canvas()));
 		if(!layer)
 			throw String(_("Unable to create \"Group\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))
@@ -804,6 +804,19 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 
 		layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,filename);
+
+		// add imported layer into switch
+		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
+		assert(action);
+		if(!action) return false;
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("layer",layer);
+		action->set_param("description",layer->get_description());
+		if(!action->is_ready())
+			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
+		if(!get_instance()->perform_action(action))
+			{ get_ui_interface()->error(_("Action Failed.")); return false; }
 
 		return true;
 	}

@@ -87,7 +87,8 @@ ACTION_SET_CVS_ID(Action::ValueDescSet,"$Id$");
 
 Action::ValueDescSet::ValueDescSet():
 	time(0),
-	recursive(true)
+	recursive(true),
+	animate(false)
 {
 }
 
@@ -121,6 +122,10 @@ Action::ValueDescSet::get_param_vocab()
 		.set_local_name(_("Recursive"))
 		.set_optional()
 	);
+	ret.push_back(ParamDesc("animate", Param::TYPE_BOOL)
+		.set_local_name(_("Animate"))
+		.set_optional()
+	);
 
 	return ret;
 }
@@ -137,26 +142,26 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		value_desc=param.get_value_desc();
-
 		return true;
 	}
-
 	if(name=="new_value" && param.get_type()==Param::TYPE_VALUE)
 	{
 		value=param.get_value();
 		return true;
 	}
-
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-
 		return true;
 	}
 	if(name=="recursive" && param.get_type()==Param::TYPE_BOOL)
 	{
 		recursive=param.get_bool();
-
+		return true;
+	}
+	if(name=="animate" && param.get_type()==Param::TYPE_BOOL)
+	{
+		animate=param.get_bool();
 		return true;
 	}
 
@@ -767,7 +772,7 @@ Action::ValueDescSet::prepare()
 
 	// If we are in animate editing mode
 	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
-	if(get_edit_mode()&MODE_ANIMATE && !value_desc.get_static())
+	if((animate || get_edit_mode()&MODE_ANIMATE) && !value_desc.get_static())
 	{
 		ValueNode_Animated::Handle& value_node(value_node_animated);
 		// If this value isn't a ValueNode_Animated, but
