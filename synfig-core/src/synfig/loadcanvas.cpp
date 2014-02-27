@@ -1958,10 +1958,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				continue;
 
 			// todo: remove this - it's temporary; accept bones with 'scalel' missing - it's new
+			// todo: remove this AFTER release, which is subsequent to 0.64.1
 			if (element->get_name() == "bone" &&
 				(value_node->link_name(i) == "scalel" ||
 				 value_node->link_name(i) == "scalelx" ||
-				 value_node->link_name(i) == "scalely"))
+				 value_node->link_name(i) == "scalely" ||
+				 value_node->link_name(i) == "width" ||
+				 value_node->link_name(i) == "tipwidth" ))
 				continue;
 
 			// 'homogeneous' was added while canvas version 0.7 was in use and the BLineCalcVertex,
