@@ -585,7 +585,7 @@ StateBrush_Context::refresh_tool_options()
 	table->attach(eraser_checkbox, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK);
 
 	// create brushes container widget
-	int cols = 2;
+	int cols = 4;
 	Gtk::Table *brushes_table = Gtk::manage(new Gtk::Table(1, cols));
 
 	// load brushes
@@ -597,6 +597,7 @@ StateBrush_Context::refresh_tool_options()
 	// load files
 	int col = 0; int row = 0;
 	Gtk::ToggleButton *first_button = NULL;
+	Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
@@ -607,7 +608,11 @@ StateBrush_Context::refresh_tool_options()
 			{
 				// create button
 				Gtk::ToggleButton *button = brush_buttons[*i] = Gtk::manage(new Gtk::ToggleButton());
-				button->set_image(*Gtk::manage(new Gtk::Image(icon_file)));
+				Glib::RefPtr<Gdk::Pixbuf> pixbuf, pixbuf_scaled;
+				pixbuf = Gdk::Pixbuf::create_from_file(icon_file);
+				pixbuf_scaled = pixbuf->scale_simple(48, 48, Gdk::INTERP_BILINEAR);
+				button->set_image(*Gtk::manage(new Gtk::Image(pixbuf_scaled)));
+				button->set_relief(Gtk::RELIEF_NONE);
 				button->signal_toggled().connect(
 					sigc::bind(sigc::mem_fun(*this, &StateBrush_Context::select_brush), button, brush_file) );
 				if (first_button == NULL) first_button = button;
