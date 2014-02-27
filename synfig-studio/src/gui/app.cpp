@@ -1160,8 +1160,8 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<toolitem action='save-as'/>"
 "		<toolitem action='save-all'/>"
 "		<separator />"
-"		<toolitem action='redo'/>"
 "		<toolitem action='undo'/>"
+"		<toolitem action='redo'/>"
 "		<separator />"
 "		<toolitem action='render'/>"
 "		<toolitem action='preview'/>";

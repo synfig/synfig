@@ -35,22 +35,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <gtkmm/uimanager.h>
-
-#include <gtkmm/ruler.h>
-#include <gtkmm/arrow.h>
-#include <gtkmm/image.h>
-#include <gdkmm/pixbufloader.h>
-#include <gtkmm/viewport.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/box.h>
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/accelmap.h>
-
-#include <gtkmm/inputdialog.h>
 
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
@@ -58,6 +43,7 @@
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 
+#include "general.h"
 #include <sstream>
 
 #include "docks/dock_toolbox.h"
@@ -70,12 +56,8 @@
 #include "docks/dockable.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdialog.h"
-
 #include "widgets/widget_defaults.h"
-
 #include <synfigapp/main.h>
-
-#include "general.h"
 
 #endif
 
@@ -100,21 +82,19 @@ Dock_Toolbox::Dock_Toolbox():
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
-	tool_table=manage(new class Gtk::Table());
-	tool_table->show();
-
+	tool_table = manage(new class Gtk::Table());
+	separator = manage(new class Gtk::HSeparator());
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
-	widget_defaults->show();
 
-	// Create the toplevel table
-	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
-	table1->set_row_spacings(10);
-	table1->set_col_spacings(0);
-	table1->attach(*tool_table,    0,1, 0,1, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->attach(*widget_defaults, 0,1, 1,2, Gtk::FILL,Gtk::FILL, 0, 0);
-	table1->show_all();
+	// pack tools and default widgets
+	tool_box = manage(new class Gtk::VBox(false, 2));
+	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 4);
+	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 4);
+	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 4);
+	tool_box->set_border_width(2);
+	tool_box->show_all();
 
-	add(*table1);
+	add(*tool_box);
 
 	App::signal_instance_selected().connect(
 		sigc::hide(
@@ -242,8 +222,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
 
-	Gtk::ToggleButton* button;
-	button=manage(new class Gtk::ToggleButton());
+	_tool_button = manage(new class Gtk::ToggleButton());
 
 	Gtk::AccelKey key;
 	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
@@ -251,21 +230,24 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	//Gets the accelerator representation for labels
 	Glib::ustring accel_path = key.get_abbrev ();
 
-	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
-	button->add(*icon);
-	button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
-	button->set_relief(Gtk::RELIEF_NONE);
-	icon->show();
-	button->show();
+	icon=manage(new Gtk::Image(stock_item.get_stock_id(), Gtk::ICON_SIZE_SMALL_TOOLBAR));
+	_tool_button->add(*icon);
+	_tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	_tool_button->set_relief(Gtk::RELIEF_NONE);
+
+	// use Gtk::Alignment widget to have fixed size (width and height) of tool button
+	tool_button = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
+	tool_button->add(*_tool_button);
+	tool_button->show_all();
 
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	tool_table->attach(*tool_button, col, col+1, row, row+1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND, 0, 0);
 
-	state_button_map[name]=button;
+	state_button_map[name] = _tool_button;
 
-	button->signal_clicked().connect(
+	_tool_button->signal_clicked().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
 			state
