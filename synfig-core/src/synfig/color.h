@@ -112,8 +112,8 @@ private:
 
 public:
 	
-	static const value_type ceil=1;	
-	static const value_type floor=0;
+	static const value_type ceil;
+	static const value_type floor;
 	
 	const String get_string(void)const;
 
