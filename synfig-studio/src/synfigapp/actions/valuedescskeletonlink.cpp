@@ -116,7 +116,9 @@ Action::ValueDescSkeletonLink::set_param(const synfig::String& name, const Actio
 {
 	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC
 	 && param.get_value_desc().parent_is_value_node()
-	 && ValueNode_Bone::Handle::cast_dynamic(param.get_value_desc().get_parent_value_node()) )
+	 && ValueNode_Bone::Handle::cast_dynamic(param.get_value_desc().get_parent_value_node())
+	 && param.get_value_desc().get_parent_desc().parent_is_value_node()
+	 && ValueNode_StaticList::Handle::cast_dynamic(param.get_value_desc().get_parent_desc().get_parent_value_node()) )
 	{
 		value_desc = param.get_value_desc();
 		return true;
@@ -154,6 +156,8 @@ Action::ValueDescSkeletonLink::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	clear();
+
+	// get bone
 	ValueNode_Bone::Handle bone_value_node;
 	if (value_desc.parent_is_value_node())
 		bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
@@ -161,108 +165,140 @@ Action::ValueDescSkeletonLink::prepare()
 	if (!bone_value_node)
 		throw Error(Error::TYPE_NOTREADY);
 
-	/*
-	 * 
-	 * FURTHER TEXT IS COMMENTED, BECAUSE ITS MOSTLY A PSEUDOCODE
-	 * 
-	
-	// Take bone_value_node and get its parent Skeleton layer:
-	skeleton_layer = ...
-	// Get list of all bones in this skeleton layer
-	bones_list = ...
-	
+	// get static list of bones (skeleton layer)
+	const ValueDesc &parent = value_desc.get_parent_desc();
+	ValueNode_StaticList::Handle bone_list_value_node;
+	if (parent.parent_is_value_node())
+		bone_list_value_node = ValueNode_StaticList::Handle::cast_dynamic(parent.get_parent_value_node());
 
-	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
+	if (!bone_list_value_node)
+		throw Error(Error::TYPE_NOTREADY);
+
+	// bones list
+	typedef std::vector<ValueNode_Bone::Handle> List;
+	const ValueBase::List &value_bone_list = (*bone_list_value_node)(time).get_list();
+	List list;
+	list.reserve(value_bone_list.size());
+	for(ValueBase::List::const_iterator i = value_bone_list.begin(); i != value_bone_list.end(); ++i)
+		list.push_back(i->get(ValueNode_Bone::Handle()));
+	
+	// process all selected ducks
+	List current_list;
+	current_list.reserve(list.size());
+	for(std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
 		ValueDesc& value_desc(*iter);
 
+		// check type
 		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
 			continue;
-		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
+		// don't link bones to bones
+		if (value_desc.parent_is_value_node() && ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			continue;
 		
 		// List of bones influencing current item
-		std::list<ValueNode_Bone::Handle> influence_list;
-		for each bone in bones_list
-		{
-			if (bone->have_influence_on(value_desc.get_value(time)))
-				influence_list.push(bone);
-		}
-		
-		if (influence_list.size() == 1)
-		{
-			// create new BoneLink
-			ValueNode_BoneLink::Handle link_node = ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
+		for(List::iterator i = list.begin(); i != list.end(); ++i)
+			if ((*i)->have_influence_on(value_desc.get_value(time)))
+				current_list.push_back(*i);
 
-			ValueNode_StaticList::Handle list_node = ValueNode_StaticList::Handle::cast_dynamic(link_node->get_link("bone_weight_list"));
-			if (!list_node) continue;
+		if (current_list.empty()) continue;
 
-			// BoneWeightPair is deprecated. Placed here only for compatibility
-			ValueNode_BoneWeightPair::Handle bone_weight_pair_node =
-				ValueNode_BoneWeightPair::create(
-					BoneWeightPair((*bone_value_node)(time).get(Bone()), 1), get_canvas() );
-			bone_weight_pair_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node), get_canvas()));
-			list_node->add(bone_weight_pair_node);
-			list_node->changed();
+		ValueNode::Handle node;
 
-			link_node->set_link("base_value",
-				ValueNode_Composite::create(
-					ValueTransformation::back_transform(
-						link_node->get_bone_transformation(time),
-						value_desc.get_value(time) )));
-		}
-		else if ( influence_list.size() > 1 )
+		if (current_list.size() > 1)
 		{
-			ValueNode_Average::Handle link_node = ValueNode_Average::create(...);
-			// add each bone from influence_list ot Average convert
-			for (std::list<ValueNode_Bone::Handle>::iterator boneiter = influence_list.begin(); boneiter != influence_list.end(); ++boneiter)
+			// make average node
+			Type &type(value_desc.get_value_type());
+			ValueNode_Average::Handle average_node = new ValueNode_Average(type, get_canvas());
+
+			// get type of weighted value
+			types_namespace::TypeWeightedValueBase *wt = ValueAverage::get_weighted_type_for(type);
+			assert(wt != NULL);
+
+			// add each bone from influence_list to Average convert
+			for(List::iterator i = current_list.begin() + 1; i != current_list.end(); ++i)
 			{
-				ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
-				//...
+				// make bone link
+				ValueNode_BoneLink::Handle bone_link_node
+					= ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
+
+				bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(*i), get_canvas()));
+				bone_link_node->set_link("base_value",
+					ValueNode_Composite::create(
+						ValueTransformation::back_transform(
+							bone_link_node->get_bone_transformation(time),
+							value_desc.get_value(time) )));
+
+				// make weighted value
+				ValueNode_Composite::Handle weighted_node
+					= ValueNode_Composite(wt->create_weighted_value(1, value_desc.get_value(time)));
+
+				weighted_node->set_link("value", bone_link_node);
+
+				// add
+				average_node->add(ValueNode::Handle(weighted_node));
 			}
 
+			node = average_node;
 		}
-		
+		else
+		{
+			// make bone link
+			ValueNode_BoneLink::Handle bone_link_node
+				= ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
 
-		// exported ValueNode
+			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(current_list.front()), get_canvas()));
+			bone_link_node->set_link("base_value",
+				ValueNode_Composite::create(
+					ValueTransformation::back_transform(
+						bone_link_node->get_bone_transformation(time),
+						value_desc.get_value(time) )));
+
+			node = bone_link_node;
+		}
+
+		if (!node) continue;
+
+		// enqueue suitable action to assign node
 		if (value_desc.parent_is_canvas())
 		{
 			Action::Handle action = ValueNodeReplace::create();
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
-			action->set_param("src", ValueNode::Handle(link_node));
+			action->set_param("src", ValueNode::Handle(node));
 			action->set_param("dest", value_desc.get_value_node());
 
 			assert(action->is_ready());
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action);
 		}
-		else if (value_desc.parent_is_layer_param())
+		else
+		if (value_desc.parent_is_layer_param())
 		{
 			Action::Handle action = LayerParamConnect::create();
 			action->set_param("layer", value_desc.get_layer());
 			action->set_param("param", value_desc.get_param_name());
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
-			action->set_param("value_node", ValueNode::Handle(link_node));
+			action->set_param("value_node", ValueNode::Handle(node));
 
 			assert(action->is_ready());
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action);
 		}
-		else if (value_desc.parent_is_value_node())
+		else
+		if (value_desc.parent_is_value_node())
 		{
 			Action::Handle action = ValueNodeLinkConnect::create();
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
 			action->set_param("parent_value_node", value_desc.get_parent_value_node());
 			action->set_param("index", value_desc.get_index());
-			action->set_param("value_node", ValueNode::Handle(link_node));
+			action->set_param("value_node", ValueNode::Handle(node));
 
 			assert(action->is_ready());
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action);
 		}
 	}
-	 */
 }
