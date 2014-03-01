@@ -77,7 +77,7 @@ public:
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	
 	// checks if point belongs to the range of influence of current bone
-	static bool have_influence_on(Vector v)const;
+	bool have_influence_on(Time t, const Vector &x)const;
 
 protected:
 	LinkableValueNode* create_new()const;
