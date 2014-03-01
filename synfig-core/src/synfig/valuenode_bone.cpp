@@ -514,6 +514,25 @@ ValueNode_Bone::check_type(Type &type)
 }
 
 bool
+ValueNode_Bone::have_influence_on(Vector p)const
+{
+	Vector t1; // bone origin
+	Vector t2; // bone tip;
+	Vector v1 = p - t1;
+	Vector v2 = t2 - t1;
+	
+	Vector p0; // p0 is a projection of p to the line, defined by bone
+	p0 = t1 + v2 * ((v1 * v2) / v2.mag_squared());
+	
+	if((v1 * v2 >= 0.0f) && ((v1 * v2) / (v2.mag_squared()) <= 1.0f))
+	{
+		// p0 belongs to bone, let's calculate the distance from p to p0
+	} else {
+		// p0 is outside of bone, let's calculate the distance from p0 to the closest bone tip
+	}
+}
+
+bool
 ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
