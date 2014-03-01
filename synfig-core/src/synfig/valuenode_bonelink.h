@@ -37,7 +37,7 @@ namespace synfig {
 
 class ValueNode_BoneLink : public LinkableValueNode
 {
-	ValueNode::RHandle bone_weight_list_;
+	ValueNode::RHandle bone_;
 	ValueNode::RHandle base_value_;
 	ValueNode::RHandle translate_;
 	ValueNode::RHandle rotate_;
@@ -49,7 +49,7 @@ public:
 	typedef etl::handle<ValueNode_BoneLink> Handle;
 	typedef etl::handle<const ValueNode_BoneLink> ConstHandle;
 
-	ValueNode_BoneLink(const ValueBase &x, etl::loose_handle<Canvas> canvas=0);
+	ValueNode_BoneLink(const ValueBase &x);
 
 	Transformation get_bone_transformation(Time t)const;
 	virtual ValueBase operator()(Time t)const;
@@ -70,7 +70,7 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_BoneLink* create(const ValueBase &x, etl::loose_handle<Canvas> canvas=0);
+	static ValueNode_BoneLink* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
 }; // END of class ValueNode_Pow
