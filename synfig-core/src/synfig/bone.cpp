@@ -133,7 +133,7 @@ Bone::get_string()const
 }
 
 bool
-Bone::is_root()
+Bone::is_root()const
 {
 	return get_parent()->is_root();
 }

@@ -43,7 +43,9 @@
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/valuenode_boneweightpair.h>
 #include <synfig/valuenode_staticlist.h>
+#include <synfig/valuenode_weightedaverage.h>
 #include <synfig/valueoperations.h>
+#include <synfig/weightedvalue.h>
 
 #include <synfigapp/general.h>
 
@@ -176,12 +178,20 @@ Action::ValueDescSkeletonLink::prepare()
 
 	// bones list
 	typedef std::vector<ValueNode_Bone::Handle> List;
-	const ValueBase::List &value_bone_list = (*bone_list_value_node)(time).get_list();
+	ValueBase::List value_bone_list = (*bone_list_value_node)(time).get_list();
 	List list;
-	list.reserve(value_bone_list.size());
-	for(ValueBase::List::const_iterator i = value_bone_list.begin(); i != value_bone_list.end(); ++i)
-		list.push_back(i->get(ValueNode_Bone::Handle()));
+	list.reserve(bone_list_value_node->link_count());
+	for(int i = 0; i < bone_list_value_node->link_count(); ++i)
+	{
+		ValueNode_Bone::Handle bone_value_node =
+			ValueNode_Bone::Handle::cast_dynamic(bone_list_value_node->get_link(i));
+		if (bone_value_node)
+			list.push_back(bone_value_node);
+	}
 	
+	if (list.empty())
+		throw Error(Error::TYPE_NOTREADY);
+
 	// process all selected ducks
 	List current_list;
 	current_list.reserve(list.size());
@@ -190,15 +200,20 @@ Action::ValueDescSkeletonLink::prepare()
 		ValueDesc& value_desc(*iter);
 
 		// check type
-		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
+		Type &type(value_desc.get_value_type());
+		if (!ValueNode_BoneLink::check_type(type)
+		 || !ValueNode_WeightedAverage::check_type(type)
+		 || !ValueVector::check_type(type) )
 			continue;
+
 		// don't link bones to bones
-		if (value_desc.parent_is_value_node() && ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+		if (value_desc.parent_is_value_node()
+		 && ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node()) )
 			continue;
 		
 		// List of bones influencing current item
 		for(List::iterator i = list.begin(); i != list.end(); ++i)
-			if ((*i)->have_influence_on(value_desc.get_value(time)))
+			if ((*i)->have_influence_on(time, ValueVector::get_vector(value_desc.get_value(time))))
 				current_list.push_back(*i);
 
 		if (current_list.empty()) continue;
@@ -208,8 +223,7 @@ Action::ValueDescSkeletonLink::prepare()
 		if (current_list.size() > 1)
 		{
 			// make average node
-			Type &type(value_desc.get_value_type());
-			ValueNode_Average::Handle average_node = new ValueNode_Average(type, get_canvas());
+			ValueNode_WeightedAverage::Handle average_node = new ValueNode_WeightedAverage(type, get_canvas());
 
 			// get type of weighted value
 			types_namespace::TypeWeightedValueBase *wt = ValueAverage::get_weighted_type_for(type);
@@ -219,8 +233,8 @@ Action::ValueDescSkeletonLink::prepare()
 			for(List::iterator i = current_list.begin() + 1; i != current_list.end(); ++i)
 			{
 				// make bone link
-				ValueNode_BoneLink::Handle bone_link_node
-					= ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
+				ValueNode_BoneLink::Handle bone_link_node =
+					ValueNode_BoneLink::create(value_desc.get_value(time));
 
 				bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(*i), get_canvas()));
 				bone_link_node->set_link("base_value",
@@ -230,8 +244,8 @@ Action::ValueDescSkeletonLink::prepare()
 							value_desc.get_value(time) )));
 
 				// make weighted value
-				ValueNode_Composite::Handle weighted_node
-					= ValueNode_Composite(wt->create_weighted_value(1, value_desc.get_value(time)));
+				ValueNode_Composite::Handle weighted_node =
+					ValueNode_Composite::create(wt->create_weighted_value(1, value_desc.get_value(time)), get_canvas());
 
 				weighted_node->set_link("value", bone_link_node);
 
@@ -244,8 +258,8 @@ Action::ValueDescSkeletonLink::prepare()
 		else
 		{
 			// make bone link
-			ValueNode_BoneLink::Handle bone_link_node
-				= ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
+			ValueNode_BoneLink::Handle bone_link_node =
+				ValueNode_BoneLink::create(value_desc.get_value(time));
 
 			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(current_list.front()), get_canvas()));
 			bone_link_node->set_link("base_value",

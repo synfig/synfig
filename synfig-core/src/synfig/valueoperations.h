@@ -41,6 +41,44 @@ namespace synfig {
 
 namespace types_namespace { class TypeWeightedValueBase; }
 
+/*!	\class ValueVector
+**	\todo writeme
+*/
+class ValueVector
+{
+private:
+	//! it's static class
+	ValueVector() { }
+
+public:
+	static bool check_type(Type &type) {
+		return type == type_bline_point
+			|| type == type_matrix
+			|| type == type_transformation
+			|| type == type_vector;
+	}
+
+	static bool check_type(const ValueBase &value)
+		{ return check_type(value.get_type()); }
+
+	static Vector get_vector(const ValueBase &value) {
+		Type &type(value.get_type());
+		if (type == type_bline_point)
+			return value.get(BLinePoint()).get_vertex();
+		else
+		if (type == type_matrix)
+			return value.get(Matrix()).get_transformed(Vector(0, 0));
+		else
+		if (type == type_transformation)
+			return value.get(Transformation()).transform(Vector(0,0));
+		else
+		if (type == type_vector)
+			return value.get(Vector());
+		return Vector(0, 0);
+	}
+};
+
+
 /*!	\class ValueTransformation
 **	\todo writeme
 */

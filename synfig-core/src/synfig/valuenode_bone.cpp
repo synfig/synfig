@@ -514,22 +514,57 @@ ValueNode_Bone::check_type(Type &type)
 }
 
 bool
-ValueNode_Bone::have_influence_on(Vector p)const
+ValueNode_Bone::have_influence_on(Time t, const Vector &x)const
 {
-	Vector t1; // bone origin
-	Vector t2; // bone tip;
-	Vector v1 = p - t1;
-	Vector v2 = t2 - t1;
-	
-	Vector p0; // p0 is a projection of p to the line, defined by bone
-	p0 = t1 + v2 * ((v1 * v2) / v2.mag_squared());
-	
-	if((v1 * v2 >= 0.0f) && ((v1 * v2) / (v2.mag_squared()) <= 1.0f))
+	static const Real precision = 0.000000001;
+
+	Bone bone = (*this)(t).get(Bone());
+
+	Matrix matrix;
+	matrix.set_identity();
+	if (!bone.is_root())
 	{
-		// p0 belongs to bone, let's calculate the distance from p to p0
-	} else {
-		// p0 is outside of bone, let's calculate the distance from p0 to the closest bone tip
+		Bone parent_bone((*bone.get_parent())(t).get(Bone()));
+
+		matrix = parent_bone.get_animated_matrix();
+		Vector scale(parent_bone.get_local_scale());
+		matrix.set_scale(scale);
+		matrix.set_translate(
+				scale[0]*bone.get_origin()[0],
+				scale[1]*bone.get_origin()[1]);
 	}
+	else
+	{
+		matrix.set_translate(bone.get_origin());
+	}
+
+	// bone points
+	Vector bp0 = matrix.get_transformed(Vector(0, 0));
+	Vector bp1 = matrix.get_transformed(Vector(bone.get_scalex(), 0));
+
+	// bone radiuses
+	Real r0 = matrix.get_transformed(Vector(bone.get_width(), 0), false).mag();
+	Real r1 = matrix.get_transformed(Vector(bone.get_tipwidth(), 0), false).mag();
+
+	Vector bone_vector = bp1 - bp0;
+	Real bone_mag_squared = bone_vector.mag_squared();
+	Vector bone_perp = bone_vector.perp();
+	Real bone_perp_mag_squared = bone_perp.mag_squared();
+	if (bone_mag_squared > precision
+	 && bone_perp_mag_squared > precision)
+	{
+		Vector p = x - bp0;
+		Real pos = (p * bone_vector)/bone_mag_squared;
+		if (pos >= 0.0 && pos <= 1.0)
+		{
+			Real dist = (p * bone_perp)/sqrt(bone_perp_mag_squared);
+			Real max_dist = r0*(1.0 - pos) + r1*pos;
+			return fabs(dist) <= max_dist;
+		}
+	}
+
+	return (x - bp0).mag_squared() < r0*r0
+		|| (x - bp1).mag_squared() < r1*r1;
 }
 
 bool

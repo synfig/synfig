@@ -161,7 +161,7 @@ public:
 	//!components.
 	synfig::String get_string()const;
 
-	bool is_root();
+	bool is_root()const;
 
 }; // END of class Bone
 
