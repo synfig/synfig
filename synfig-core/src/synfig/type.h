@@ -473,11 +473,11 @@ public:
 		{ return get_type<T>().identifier; }
 
 	template<typename T>
-	inline static Type& get_type_by_pointer(const T *x)
+	inline static Type& get_type_by_pointer(const T *x __attribute__ ((unused)))
 		{ return get_type<T>(); }
 
 	template<typename T>
-	inline static Type& get_type_by_reference(const T &x)
+	inline static Type& get_type_by_reference(const T &x __attribute__ ((unused)))
 		{ return get_type<T>(); }
 
 	static Type* try_get_type_by_id(TypeId id)
