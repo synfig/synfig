@@ -373,6 +373,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 		hex_color = manage(new Gtk::Entry());
 		hex_color->set_width_chars(8);
 		hex_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_hex_edited));
+		hex_color->signal_focus_out_event().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_hex_focus_out));
 		table->attach(*hex_color, 0, 1, 8, 9, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	}
 	{
@@ -447,6 +448,13 @@ Widget_ColorEdit::on_hex_edited()
 	color.set_hex(s);
 	set_value(color);
 	signal_value_changed_();
+}
+
+bool
+Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* event)
+{
+	on_hex_edited();
+	return true;
 }
 
 void
