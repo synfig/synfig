@@ -165,6 +165,7 @@ public:
 
 	void on_slider_moved(ColorSlider::Type type, float amount);
 	void on_hex_edited();
+	bool on_hex_focus_out(GdkEventFocus* event);
 
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 
