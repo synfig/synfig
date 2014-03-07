@@ -520,51 +520,47 @@ ValueNode_Bone::have_influence_on(Time t, const Vector &x)const
 
 	Bone bone = (*this)(t).get(Bone());
 
-	Matrix matrix;
-	matrix.set_identity();
-	if (!bone.is_root())
-	{
-		Bone parent_bone((*bone.get_parent())(t).get(Bone()));
+	Matrix matrix = bone.get_animated_matrix();
+	Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+	Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+	Real length = bone.get_length() * bone.get_scalelx();
 
-		matrix = parent_bone.get_animated_matrix();
-		Vector scale(parent_bone.get_local_scale());
-		matrix.set_scale(scale);
-		matrix.set_translate(
-				scale[0]*bone.get_origin()[0],
-				scale[1]*bone.get_origin()[1]);
-	}
-	else
-	{
-		matrix.set_translate(bone.get_origin());
+	if (length < 0) {
+		length *= -1;
+		direction *= -1;
 	}
 
-	// bone points
-	Vector bp0 = matrix.get_transformed(Vector(0, 0));
-	Vector bp1 = matrix.get_transformed(Vector(bone.get_scalex(), 0));
+	const Vector &p0 = origin;
+	const Vector p1 = origin + direction * length;
 
-	// bone radiuses
-	Real r0 = matrix.get_transformed(Vector(bone.get_width(), 0), false).mag();
-	Real r1 = matrix.get_transformed(Vector(bone.get_tipwidth(), 0), false).mag();
+	Real r0 = fabs(bone.get_width());
+	Real r1 = fabs(bone.get_tipwidth());
 
-	Vector bone_vector = bp1 - bp0;
-	Real bone_mag_squared = bone_vector.mag_squared();
-	Vector bone_perp = bone_vector.perp();
-	Real bone_perp_mag_squared = bone_perp.mag_squared();
-	if (bone_mag_squared > precision
-	 && bone_perp_mag_squared > precision)
-	{
-		Vector p = x - bp0;
-		Real pos = (p * bone_vector)/bone_mag_squared;
-		if (pos >= 0.0 && pos <= 1.0)
-		{
-			Real dist = (p * bone_perp)/sqrt(bone_perp_mag_squared);
-			Real max_dist = r0*(1.0 - pos) + r1*pos;
-			return fabs(dist) <= max_dist;
-		}
-	}
+	// check circles
+	if ((x - p0).mag() < r0) return true;
+	if ((x - p1).mag() < r1) return true;
 
-	return (x - bp0).mag_squared() < r0*r0
-		|| (x - bp1).mag_squared() < r1*r1;
+	if (length + precision <= fabs(r1 - r0)) return false;
+
+	// check line
+	Real cos0 = (r0 - r1)/length;
+	Real cos1 = -cos0;
+
+	Real sin0 = sqrt(1 + precision - cos0*cos0);
+	Real sin1 = sin0;
+
+	Real ll = length - r0*cos0 - r1*cos1;
+	Vector pp0(direction * (r0*cos0));
+	Vector pp1(direction * (length - r1*cos1));
+	Real rr0 = r0*sin0;
+	Real rr1 = r1*sin1;
+
+	Real percent = (x - pp0)*direction/ll;
+	if (percent < 0.0 || percent > 1.0) return false;
+
+	Real distance = fabs((x - pp0)*direction.perp());
+	Real max_distance = rr0*(1.0 - percent) + rr1*percent;
+	return distance < max_distance;
 }
 
 bool
