@@ -3203,7 +3203,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 			duck->set_radius(true);
 			duck->set_scalar(1);
-			duck->set_point(Point(value_desc.get_value(time).get(Real()), 0));
+			duck->set_point(Point(0, value_desc.get_value(time).get(Real())));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".width"));
@@ -3236,7 +3236,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 			duck->set_radius(true);
 			duck->set_scalar(1);
-			duck->set_point(Point(value_desc.get_value(time).get(Real()), 0));
+			duck->set_point(Point(0, value_desc.get_value(time).get(Real())));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".tipwidth"));
