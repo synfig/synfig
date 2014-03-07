@@ -69,7 +69,7 @@ ValueNode_WeightedAverage::ValueNode_WeightedAverage(const ValueBase &value, Can
 }
 
 ValueNode_WeightedAverage::ValueNode_WeightedAverage(Type &type, Canvas::LooseHandle canvas):
-	ValueNode_DynamicList(type, ValueAverage::convert_to_weighted_type(type), canvas)
+	ValueNode_DynamicList(ValueAverage::convert_to_weighted_type(type), type, canvas)
 {
 	if (!check_type(type))
 	{

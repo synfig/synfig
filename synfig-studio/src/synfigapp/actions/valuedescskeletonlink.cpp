@@ -199,6 +199,14 @@ Action::ValueDescSkeletonLink::prepare()
 	{
 		ValueDesc& value_desc(*iter);
 
+		// skip region/outline origin
+		if (value_desc.parent_is_layer_param()
+		 && value_desc.get_param_name() == "origin"
+		 && (value_desc.get_layer()->get_name() == "advanced_outline"
+		  || value_desc.get_layer()->get_name() == "outline"
+		  || value_desc.get_layer()->get_name() == "region"))
+			continue;
+
 		// check type
 		Type &type(value_desc.get_value_type());
 		if (!ValueNode_BoneLink::check_type(type)
@@ -212,6 +220,7 @@ Action::ValueDescSkeletonLink::prepare()
 			continue;
 		
 		// List of bones influencing current item
+		current_list.clear();
 		for(List::iterator i = list.begin(); i != list.end(); ++i)
 			if ((*i)->have_influence_on(time, ValueVector::get_vector(value_desc.get_value(time))))
 				current_list.push_back(*i);
@@ -230,7 +239,7 @@ Action::ValueDescSkeletonLink::prepare()
 			assert(wt != NULL);
 
 			// add each bone from influence_list to Average convert
-			for(List::iterator i = current_list.begin() + 1; i != current_list.end(); ++i)
+			for(List::iterator i = current_list.begin(); i != current_list.end(); ++i)
 			{
 				// make bone link
 				ValueNode_BoneLink::Handle bone_link_node =
@@ -279,7 +288,7 @@ Action::ValueDescSkeletonLink::prepare()
 			Action::Handle action = ValueNodeReplace::create();
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
-			action->set_param("src", ValueNode::Handle(node));
+			action->set_param("src", node);
 			action->set_param("dest", value_desc.get_value_node());
 
 			assert(action->is_ready());
@@ -294,7 +303,7 @@ Action::ValueDescSkeletonLink::prepare()
 			action->set_param("param", value_desc.get_param_name());
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", get_canvas_interface());
-			action->set_param("value_node", ValueNode::Handle(node));
+			action->set_param("value_node", node);
 
 			assert(action->is_ready());
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
@@ -308,7 +317,7 @@ Action::ValueDescSkeletonLink::prepare()
 			action->set_param("canvas_interface", get_canvas_interface());
 			action->set_param("parent_value_node", value_desc.get_parent_value_node());
 			action->set_param("index", value_desc.get_index());
-			action->set_param("value_node", ValueNode::Handle(node));
+			action->set_param("value_node", node);
 
 			assert(action->is_ready());
 			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
