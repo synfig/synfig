@@ -49,8 +49,6 @@ private:
 	ValueBase param_bones;
 	//!Parameter: (synfig::String) Name of the skeleton
 	ValueBase param_name;
-	//!Parameter: (synfig::Real) Width of the visible bone shape
-	ValueBase param_bone_shape_width;
 
 public:
 
