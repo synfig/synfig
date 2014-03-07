@@ -63,8 +63,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Skeleton::Layer_Skeleton():
-	param_name(ValueBase((const char*)"skeleton")),
-	param_bone_shape_width(ValueBase(0.1))
+	param_name(ValueBase((const char*)"skeleton"))
 {
 	std::vector<synfig::Bone> bones;
 	int bone_count = 1;
@@ -107,13 +106,6 @@ Layer_Skeleton::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	if (param=="bone_shape_width" && param_bone_shape_width.get_type()==value.get_type())
-	{
-		param_bone_shape_width = value;
-		sync();
-		return true;
-	}
-
 	return Layer_Polygon::set_param(param,value);
 }
 
@@ -122,7 +114,6 @@ Layer_Skeleton::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_name);
 	EXPORT_VALUE(param_bones);
-	EXPORT_VALUE(param_bone_shape_width);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -147,9 +138,6 @@ Layer_Skeleton::get_param_vocab()const
 	ret.push_back(ParamDesc("bones")
 		.set_local_name(_("Bones"))
 	);
-	ret.push_back(ParamDesc("bone_shape_width")
-		.set_local_name(_("Bone Shape Width"))
-	);
 
 	return ret;
 }
@@ -172,7 +160,10 @@ void
 Layer_Skeleton::sync()
 {
  	const std::vector<ValueBase> &list = param_bones.get_list();
-	Real width = param_bone_shape_width.get(Real());
+
+	static const Real precision = 0.000000001;
+	int segments_count = 64;
+	Real segment_angle = 2*PI/(Real)segments_count;
 
 	clear();
 	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
@@ -184,17 +175,47 @@ Layer_Skeleton::sync()
  		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
  		Real length = bone.get_length() * bone.get_scalelx();
 
- 		Vector &o = origin;
- 		Vector dx = direction * length;
- 		Vector dy = direction.perp() * width;
+ 		if (length < 0) {
+ 			length *= -1;
+ 			direction *= -1;
+ 		}
 
-		std::vector<Point> vector_list;
-		vector_list.reserve(4);
- 		vector_list.push_back(o + dy);
- 		vector_list.push_back(o + dy + dx);
- 		vector_list.push_back(o - dy + dx);
- 		vector_list.push_back(o - dy);
-		add_polygon(vector_list);
- 		upload_polygon(vector_list);
+ 		const Vector &p0 = origin;
+ 		const Vector p1 = origin + direction * length;
+
+ 		Real r0 = fabs(bone.get_width());
+ 		Real r1 = fabs(bone.get_tipwidth());
+ 		Real direction_angle = atan2(direction[1], direction[0]);
+
+ 		Real angle0_base = length - precision > fabs(r1 - r0)
+ 				         ? acos((r0 - r1)/length)
+ 				         : (r0 > r1 ? 0.0 : PI);
+ 		Real angle1_base = PI - angle0_base;
+
+ 		int segments_count0 = (int)round(2*angle1_base / segment_angle);
+ 		Real segment_angle0 = 2*angle1_base / (Real)segments_count0;
+
+ 		int segments_count1 = (int)round(2*angle0_base / segment_angle);
+ 		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
+
+		std::vector<Point> list;
+		list.reserve(segments_count0 + segments_count1 + 2);
+
+		int j = 0;
+		Real angle = direction_angle + angle0_base;
+		while(true)
+		{
+			list.push_back( Point(r0*cos(angle) + p0[0], r0*sin(angle) + p0[1]) );
+			if (j++ >= segments_count0) break; else angle += segment_angle0;
+		}
+		j = 0;
+		while(true)
+		{
+			list.push_back( Point(r1*cos(angle) + p1[0], r1*sin(angle) + p1[1]) );
+			if (j++ >= segments_count1) break; else angle += segment_angle1;
+		}
+
+		add_polygon(list);
+ 		upload_polygon(list);
  	}
 }
