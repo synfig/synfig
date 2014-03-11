@@ -55,8 +55,8 @@ Bone::Bone():
 	scalelx_(1.0),
 	scalex_(1.0),
 	length_(1.0),
-	width_(0.3),
-	tipwidth_(0.3),
+	width_(0.1),
+	tipwidth_(0.1),
 	parent_(0)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
