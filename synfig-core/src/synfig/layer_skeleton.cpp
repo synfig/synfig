@@ -80,7 +80,8 @@ Layer_Skeleton::Layer_Skeleton():
 	SET_STATIC_DEFAULTS();
 
 	set_exclude_from_rendering(true);
-	Layer_Polygon::set_param("color", ValueBase(Color(0.5, 0.5, 1.0, 0.75)));
+	Layer_Polygon::set_param("color", ValueBase(Color(0.5, 0.5, 1.0, 1.0)));
+	Layer_Polygon::set_param("amount", ValueBase(Real(0.5)));
 }
 
 #ifdef _DEBUG
@@ -130,6 +131,11 @@ Layer_Skeleton::get_param_vocab()const
 	//ret.push_back(ParamDesc("color")
 	//	.set_local_name(_("Color"))
 	//);
+	
+	ret.push_back(ParamDesc("amount")
+		.set_local_name(_("Amount"))
+		.set_description(_("Alpha channel of the layer"))
+	);
 
 	// Self params
 	ret.push_back(ParamDesc("name")
