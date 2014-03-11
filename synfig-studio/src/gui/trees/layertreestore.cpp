@@ -279,7 +279,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 
 		Glib::Value<Pango::Style> x;
 		g_value_init(x.gobj(),x.value_type());
-
+		//Change style to italic for current layer in treeview in case of excluded from rendering
 		x.set(layer->get_exclude_from_rendering() ? Pango::STYLE_ITALIC : Pango::STYLE_NORMAL);
 
 		g_value_init(value.gobj(),x.value_type());
@@ -303,12 +303,16 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 			if(sub_canvas && !sub_canvas->is_inline())
 			{
 				Gtk::TreeRow row=*iter;
-				paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
-						Layer::Handle((*row.parent())[model.layer]) );
+				if(*row.parent())
+				{
+					paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
+							Layer::Handle((*row.parent())[model.layer]) );
+				}
 			}
 		}
 		if(paste)
 		{
+			//Change style to bold for current layer in treeview in case of visible in z_depth_visibility
 			synfig::ContextParams cp;
 			paste->apply_z_range_to_params(cp);
 			float visibility=synfig::Context::z_depth_visibility(cp, *layer);
