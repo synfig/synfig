@@ -87,6 +87,9 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	Glib::Mutex mutex;
 	sigc::connection done_connection;
 
+	Glib::TimeVal start_time;
+	Glib::TimeVal finish_time;
+
 	/*
  --	** -- P A R E N T   M E M B E R S -----------------------------------------
 	*/
@@ -106,6 +109,7 @@ public:
 
 	bool has_error()const { return error; }
 	bool has_success()const { return success; }
+	synfig::Real get_execution_time() const { return (finish_time - start_time).as_double(); }
 
 	sigc::signal<void>& signal_finished() { return signal_finished_; }
 	sigc::signal<void>& signal_success() { return signal_success_; }

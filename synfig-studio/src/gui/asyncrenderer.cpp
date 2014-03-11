@@ -686,10 +686,12 @@ public:
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	error(false),
 	success(false),
-	cb(cb)
+	cb(cb),
 #ifdef SINGLE_THREADED
-	, updating(false)
+	updating(false),
 #endif
+	start_time(0, 0),
+	finish_time(0, 0)
 {
 	render_thread=0;
 	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
@@ -765,6 +767,8 @@ AsyncRenderer::stop()
 #endif
 				render_thread->join();
 #endif
+			finish_time.assign_current_time();
+
 
 			// Make sure all the dispatch crap is cleared out
 			//Glib::MainContext::get_default()->iteration(false);
@@ -793,6 +797,8 @@ AsyncRenderer::resume()
 void
 AsyncRenderer::start()
 {
+	start_time.assign_current_time();
+	finish_time = start_time;
 	done_connection=Glib::signal_timeout().connect(
 		sigc::bind_return(
 			mem_fun(*this,&AsyncRenderer::start_),
