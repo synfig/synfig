@@ -231,7 +231,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 	p.set(synfigapp::Main::get_gradient());
 	layer->set_param("gradient",p);
 	
-	if(name!="zoom")
+	if(name!="zoom" && name!="skeleton")
 	{
 		p=layer->get_param("amount");
 		p.set(synfigapp::Main::get_opacity());
