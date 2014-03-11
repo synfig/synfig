@@ -363,7 +363,11 @@ RenderSettings::on_render_pressed()
 void
 RenderSettings::on_finished()
 {
-	canvas_interface_->get_ui_interface()->task(_("File rendered successfully"));
+	String text(_("File rendered successfully"));
+	Real execution_time = async_renderer ? async_renderer->get_execution_time() : 0.0;
+	if (execution_time > 0) text += strprintf(" (%f %s)", execution_time, _("sec"));
+
+	canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 }
 
