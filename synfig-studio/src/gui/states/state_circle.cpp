@@ -93,6 +93,8 @@ class studio::StateCircle_Context : public sigc::trackable
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
+	void on_opacity_changed();
+	void opacity_refresh();
 
 	bool prev_workarea_layer_status_;
 
@@ -103,6 +105,8 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Table options_table;
 
 	Gtk::Entry		entry_id; //what to name the layer
+
+	Gtk::HScale 	*widget_opacity;
 
 	Widget_Enum		enum_falloff;
 	Widget_Enum		enum_blend;
@@ -432,6 +436,16 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	egress_on_selection_change=true;
 
 	// Set up the tool options dialog
+
+	// widget opacity
+	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
+	widget_opacity->set_digits(2);
+	widget_opacity->set_value_pos(Gtk::POS_LEFT);
+	widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_opacity_changed));
+	widget_opacity->set_tooltip_text(_("Default Opacity"));
+	widget_opacity->set_value_pos(Gtk::POS_LEFT);
+
+	// feather falloff
 	enum_falloff.set_param_desc(ParamDesc("falloff")
 		.set_local_name(_("Falloff"))
 		.set_description(_("Determines the falloff function for the feather"))
@@ -490,34 +504,39 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(enum_blend,
 		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-
-	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
+	options_table.attach(*manage(new Gtk::Label("Opacity:")),
 		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(enum_falloff,
+	options_table.attach(*widget_opacity,
 		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	);
+	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
+		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(enum_falloff,
+		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//feather stuff
 	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),
-		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-  options_table.attach(spin_feather,
-		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-
-	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
 		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(spin_number_of_bline_points,
+  options_table.attach(spin_feather,
 		1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
+	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
+		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_number_of_bline_points,
+		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+
 options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),
-	0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(spin_bline_point_angle_offset,
-		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.show_all();
@@ -535,6 +554,7 @@ options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),
 	get_work_area()->queue_draw();
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
+	synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::opacity_refresh));
 
 	App::dock_toolbox->refresh();
 }
@@ -546,6 +566,7 @@ StateCircle_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Circle Tool"));
 	App::dialog_tool_options->set_name("circle");
+	opacity_refresh();
 }
 
 Smach::event_result
@@ -1164,4 +1185,16 @@ StateCircle_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+}
+
+void
+StateCircle_Context::on_opacity_changed()
+{
+	synfigapp::Main::set_opacity(widget_opacity->get_value());
+}
+
+void
+StateCircle_Context::opacity_refresh()
+{
+	widget_opacity->set_value(synfigapp::Main::get_opacity());
 }
