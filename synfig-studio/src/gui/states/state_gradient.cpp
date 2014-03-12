@@ -33,6 +33,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/optionmenu.h>
 
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
@@ -48,7 +49,6 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 
 #include "widgets/widget_enum.h"
@@ -98,24 +98,30 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	Gtk::Table options_table;
-	Gtk::Entry entry_id;
-	Widget_Enum enum_type;
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	Widget_Enum	enum_blend;
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	Gtk::VBox options_vbox;
+
+	Gtk::HBox id_hbox;
+	Gtk::HBox type_hbox;
+	Gtk::HBox blend_hbox;
+
+	Gtk::Label title_label;
+	Gtk::Label id_label;
+	Gtk::Label type_label;
+	Gtk::Label blend_label;
+
+	Gtk::Entry id_entry;
+	Widget_Enum type_enum;
+	Widget_Enum	blend_enum;
 
 public:
-	synfig::String get_id()const { return entry_id.get_text(); }
-	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return id_entry.get_text(); }
+	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	int get_type()const { return enum_type.get_value(); }
-	void set_type(int x) { return enum_type.set_value(x); }
+	int get_type()const { return type_enum.get_value(); }
+	void set_type(int x) { return type_enum.set_value(x); }
 
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	int get_blend()const { return enum_blend.get_value(); }
-	void set_blend(int x) { return enum_blend.set_value(x); }
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	int get_blend()const { return blend_enum.get_value(); }
+	void set_blend(int x) { return blend_enum.set_value(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -125,6 +131,8 @@ public:
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
+	void on_blend_method_changed();
+	void blend_method_refresh();
 
 	StateGradient_Context(CanvasView* canvas_view);
 
@@ -211,9 +219,7 @@ StateGradient_Context::save_settings()
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("gradient.id",get_id().c_str());
 		settings.set_value("gradient.type",strprintf("%d",get_type()));
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 	}
 	catch(...)
 	{
@@ -278,36 +284,61 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	entry_id()
+	id_entry()
 {
 	egress_on_selection_change=true;
-	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,										0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	enum_type.set_param_desc(ParamDesc("type")
+	// Set up the tool options dialog
+
+	// title
+	title_label.set_label("Gradient Creation");
+
+	// name
+	id_label.set_label("Name");
+
+	// gradient type
+	type_label.set_label("Gradient Type");
+	type_enum.set_param_desc(ParamDesc("type")
 		.set_local_name(_("Gradient Type"))
 		.set_description(_("Determines the type of Gradient used"))
 		.set_hint("enum")
 		.add_enum_value(GRADIENT_INTERPOLATION_LINEAR,"linear",_("Linear"))
 		.add_enum_value(GRADIENT_RADIAL,"radial",_("Radial"))
 		.add_enum_value(GRADIENT_CONICAL,"conical",_("Conical"))
-		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral")));
+		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral"))
+		);
 
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
-		.set_local_name(_("Blend Method"))
-		.set_description(_("The blend method the gradient will use")));
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	// gradient blend method
+	blend_label.set_label("Blend Method");
+	blend_enum.signal_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_blend_method_changed));
+	blend_enum.set_param_desc(
+		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
+		);
+
+	// attach child widgets
+	{
+		id_hbox.pack_start(id_label, Gtk::PACK_SHRINK, 3);
+		id_hbox.pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 3);
+	}
+	{
+		type_hbox.pack_start(type_label, Gtk::PACK_SHRINK, 3);
+		type_hbox.pack_end(type_enum, Gtk::PACK_EXPAND_WIDGET, 3);
+	}
+	{
+		blend_hbox.pack_start(blend_label, Gtk::PACK_SHRINK, 3);
+		blend_hbox.pack_end(blend_enum, Gtk::PACK_EXPAND_WIDGET, 3);
+	}
+
+	options_vbox.pack_start(title_label, Gtk::PACK_EXPAND_PADDING, 3);
+	options_vbox.pack_start(id_hbox, Gtk::PACK_SHRINK, 3);
+	options_vbox.pack_start(type_hbox, Gtk::PACK_SHRINK, 3);
+	options_vbox.pack_start(blend_hbox, Gtk::PACK_SHRINK, 3);
+
+	options_vbox.set_border_width(2);
+	options_vbox.show_all();
 
 	load_settings();
-
-	options_table.attach(enum_type, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	options_table.attach(enum_blend, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
-
-	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -333,6 +364,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_user_click));
+	synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::blend_method_refresh));
 
 	App::dock_toolbox->refresh();
 }
@@ -341,9 +373,10 @@ void
 StateGradient_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_vbox);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
 	App::dialog_tool_options->set_name("gradient");
+	blend_method_refresh();
 }
 
 Smach::event_result
@@ -487,10 +520,8 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		return;
 	}
 
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	layer->set_param("blend_method",get_blend());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -560,4 +591,18 @@ StateGradient_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+}
+
+
+void
+StateGradient_Context::on_blend_method_changed()
+{
+	synfigapp::Main::set_blend_method(Color::BlendMethod(blend_enum.get_value()));
+}
+
+
+void
+StateGradient_Context::blend_method_refresh()
+{
+	blend_enum.set_value(synfigapp::Main::get_blend_method());
 }
