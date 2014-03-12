@@ -51,6 +51,7 @@
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include "widgets/widget_enum.h"
+#include "widgets/widget_distance.h"
 #include <synfigapp/main.h>
 
 #include "general.h"
@@ -95,6 +96,8 @@ class studio::StateCircle_Context : public sigc::trackable
 	void refresh_ducks();
 	void on_opacity_changed();
 	void opacity_refresh();
+	void on_bline_width_changed();
+	void bline_width_refresh();
 
 	bool prev_workarea_layer_status_;
 
@@ -107,6 +110,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Entry		entry_id; //what to name the layer
 
 	Gtk::HScale 	*widget_opacity;
+	Widget_Distance *widget_bline_width;
 
 	Widget_Enum		enum_falloff;
 	Widget_Enum		enum_blend;
@@ -445,6 +449,15 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	widget_opacity->set_tooltip_text(_("Default Opacity"));
 	widget_opacity->set_value_pos(Gtk::POS_LEFT);
 
+	// widget bline width
+	widget_bline_width = manage(new Widget_Distance());
+	bline_width_refresh();
+	widget_bline_width->set_digits(2);
+	widget_bline_width->set_range(0,10000000);
+	widget_bline_width->set_size_request(48, -1); //mini width of bline width widget, this value also affects mini width of whole default_widgets.
+	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_bline_width_changed));
+	widget_bline_width->set_tooltip_text(_("Brush Size"));
+
 	// feather falloff
 	enum_falloff.set_param_desc(ParamDesc("falloff")
 		.set_local_name(_("Falloff"))
@@ -510,33 +523,39 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*widget_opacity,
 		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
-	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
+	options_table.attach(*manage(new Gtk::Label(_("Brush Size:"))),
 		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(enum_falloff,
+	options_table.attach(*widget_bline_width,
 		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
+		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(enum_falloff,
+		1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//feather stuff
 	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),
-		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-  options_table.attach(spin_feather,
-		1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-
-	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
 		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(spin_number_of_bline_points,
+  options_table.attach(spin_feather,
 		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
+	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
+		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_number_of_bline_points,
+		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+
 options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),
-	0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(spin_bline_point_angle_offset,
-		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.show_all();
@@ -1197,4 +1216,16 @@ void
 StateCircle_Context::opacity_refresh()
 {
 	widget_opacity->set_value(synfigapp::Main::get_opacity());
+}
+
+void
+StateCircle_Context::bline_width_refresh()
+{
+	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
+}
+
+void
+StateCircle_Context::on_bline_width_changed()
+{
+	synfigapp::Main::set_bline_width(widget_bline_width->get_value());
 }
