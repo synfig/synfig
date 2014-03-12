@@ -74,9 +74,10 @@ Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
 	}
 
 bool
-Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
+Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	RendDesc renddesc(renddesc_);
+	RENDER_TRANSFORMED_IF_NEED
+
 	Real amount(param_amount.get(Real()));
 	if(!amount)
 		return context.accelerated_render(surface,quality,renddesc,cb);

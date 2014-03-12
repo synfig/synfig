@@ -453,6 +453,8 @@ Circle::get_color(Context context, const Point &point)const
 bool
 Circle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Real radius = param_radius.get(Real());
 	Real feather = param_feather.get(Real());
 	Point origin = param_origin.get(Point());

@@ -239,6 +239,8 @@ Metaballs::get_cairocolor(Context context, const Point &pos)const
 bool
 Metaballs::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Gradient gradient=param_gradient.get(Gradient());
 	
 	// Width and Height of a pixel

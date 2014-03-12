@@ -157,6 +157,8 @@ SimpleCircle::hit_check(synfig::Context context, const synfig::Point &pos)const
 bool
 SimpleCircle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		// Mark our progress as starting

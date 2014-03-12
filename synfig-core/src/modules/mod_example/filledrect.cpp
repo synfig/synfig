@@ -371,6 +371,8 @@ FilledRect::get_color(Context context, const Point &pos)const
 bool
 FilledRect::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Point point1=param_point1.get(Point());
 	Point point2=param_point2.get(Point());
 

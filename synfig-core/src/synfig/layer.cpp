@@ -553,12 +553,167 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 	return context.hit_check(pos);
 }
 
+// Temporary function to render transformed layer for layers which yet not suppurt transformed rendering
+bool
+Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)
+{
+	Transformation transformation(renddesc.get_transformation_matrix());
+
+	if(cb && !cb->amount_complete(0,10000)) return false;
+
+	SuperCallback stageone(cb,0,4500,10000);
+	SuperCallback stagetwo(cb,4500,9000,10000);
+	SuperCallback stagethree(cb,9000,9999,10000);
+
+	surface->set_wh(renddesc.get_w(),renddesc.get_h());
+	surface->clear();
+
+	const Rect full_bounding_rect(layer->get_full_bounding_rect(context));
+	Rect inner_bounds(
+	    full_bounding_rect.get_min(),
+	    full_bounding_rect.get_max()
+	);
+	inner_bounds &= transformation.back_transform_bounds(renddesc.get_rect());
+	Rect outer_bounds(transformation.transform_bounds(inner_bounds));
+	outer_bounds &= renddesc.get_rect();
+
+	// sometimes the user changes the parameters while we're
+	// rendering, causing our pasted canvas' bounding box to shrink
+	// and no longer overlap with our tile.  if that has happened,
+	// let's just stop now - we'll be refreshing soon anyway
+	//! \todo shouldn't a mutex ensure this isn't needed?
+	// http://synfig.org/images/d/d2/Bbox-change.sifz is an example
+	// that shows this happening - open the encapsulation, select the
+	// 'shade', and toggle the 'invert' parameter quickly.
+	// Occasionally you'll see:
+	//   error: Context::accelerated_render(): Layer "shade" threw a bad_alloc exception!
+	// where the shade layer tries to allocate itself a canvas of
+	// negative proportions, due to changing bounding boxes.
+	if (!inner_bounds.is_valid())
+	{
+		warning("%s:%d bounding box shrank while rendering?", __FILE__, __LINE__);
+		return true;
+	}
+
+	Vector width_vector(
+		transformation.transform(
+			Vector(inner_bounds.maxx - inner_bounds.minx, 0.0), false ));
+	Vector pixels_width_vector(
+		width_vector[0]/renddesc.get_pw(),
+		width_vector[1]/renddesc.get_ph() );
+	int inner_width_pixels = (int)ceil(pixels_width_vector.mag());
+
+	Vector ortho_axis_x(width_vector.norm());
+	Vector ortho_axis_y(-ortho_axis_x.perp());
+
+	Vector height_vector(
+		transformation.transform(
+			Vector(0.0, inner_bounds.maxy - inner_bounds.miny), false ));
+	Vector ortho_height_vector(
+		ortho_axis_y * (height_vector*ortho_axis_y) );
+	Vector pixels_height_vector(
+		ortho_height_vector[0]/renddesc.get_pw(),
+		ortho_height_vector[1]/renddesc.get_ph() );
+	int inner_height_pixels = (int)ceil(pixels_height_vector.mag());
+
+	// make 8 pixels border for bicubic resampling
+	float intermediate_pw = (inner_bounds.maxx-inner_bounds.minx)/(float)inner_width_pixels;
+	float intermediate_ph = (inner_bounds.maxy-inner_bounds.miny)/(float)inner_height_pixels;
+	inner_bounds.maxx += 8.f*intermediate_pw;
+	inner_bounds.minx -= 8.f*intermediate_pw;
+	inner_bounds.maxy += 8.f*intermediate_ph;
+	inner_bounds.miny -= 8.f*intermediate_ph;
+	inner_width_pixels += 16;
+	inner_height_pixels += 16;
+
+	RendDesc intermediate_desc(renddesc);
+	intermediate_desc.clear_flags();
+	intermediate_desc.set_tl(Vector(inner_bounds.minx,inner_bounds.maxy));
+	intermediate_desc.set_br(Vector(inner_bounds.maxx,inner_bounds.miny));
+	intermediate_desc.set_flags(0);
+	intermediate_desc.set_w(inner_width_pixels);
+	intermediate_desc.set_h(inner_height_pixels);
+
+	Surface intermediate_surface;
+	if(layer->accelerated_render(context,&intermediate_surface,quality,intermediate_desc,&stagetwo))
+		return false;
+
+	Rect pixels_outer_bounds(
+		Vector((outer_bounds.minx-renddesc.get_tl()[0])/renddesc.get_pw(),
+			   (outer_bounds.miny-renddesc.get_tl()[1])/renddesc.get_ph()),
+		Vector((outer_bounds.maxx-renddesc.get_tl()[0])/renddesc.get_pw(),
+			   (outer_bounds.maxy-renddesc.get_tl()[1])/renddesc.get_ph())
+	);
+
+	int left   = (int)floor(pixels_outer_bounds.minx);
+	int top    = (int)floor(pixels_outer_bounds.miny);
+	int right  = (int)ceil (pixels_outer_bounds.maxx);
+	int bottom = (int)ceil (pixels_outer_bounds.maxy);
+
+	int w = min(surface->get_w(), renddesc.get_w());
+	int h = min(surface->get_h(), renddesc.get_h());
+
+	if (left < 0) left = 0;
+	if (top < 0) top = 0;
+	if (right > w) right = w;
+	if (bottom > h) bottom = h;
+
+	int decx = right - left;
+	if (top < bottom && left < right) {
+		Vector initial_outer_pos(left*renddesc.get_pw(), top*renddesc.get_ph());
+		initial_outer_pos += renddesc.get_tl();
+		Vector initial_inner_pos = transformation.back_transform(initial_outer_pos);
+		Vector initial_inner_surface_pos(initial_inner_pos - intermediate_desc.get_tl());
+		initial_inner_surface_pos[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos[1] /= intermediate_desc.get_ph();
+
+		Vector initial_outer_pos01((left+1)*renddesc.get_pw(), top*renddesc.get_ph());
+		initial_outer_pos01 += renddesc.get_tl();
+		Vector initial_inner_pos01 = transformation.back_transform(initial_outer_pos01);
+		Vector initial_inner_surface_pos01(initial_inner_pos01 - intermediate_desc.get_tl());
+		initial_inner_surface_pos01[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos01[1] /= intermediate_desc.get_ph();
+
+		Vector initial_outer_pos10(left*renddesc.get_pw(), (top+1)*renddesc.get_ph());
+		initial_outer_pos10 += renddesc.get_tl();
+		Vector initial_inner_pos10 = transformation.back_transform(initial_outer_pos10);
+		Vector initial_inner_surface_pos10(initial_inner_pos10 - intermediate_desc.get_tl());
+		initial_inner_surface_pos10[0] /= intermediate_desc.get_pw();
+		initial_inner_surface_pos10[1] /= intermediate_desc.get_ph();
+
+		Vector dx(initial_inner_surface_pos01 - initial_inner_surface_pos);
+		Vector dy(initial_inner_surface_pos10 - initial_inner_surface_pos);
+
+		Vector row_inner_surface_pos(initial_inner_surface_pos);
+		Vector inner_surface_pos;
+
+		Surface::pen pen(surface->get_pen(left, top));
+		for(int y = top; y < bottom; y++) {
+			inner_surface_pos = row_inner_surface_pos;
+			for(int x = left; x < right; x++) {
+				pen.put_value( intermediate_surface.cubic_sample(inner_surface_pos[0], inner_surface_pos[1]) );
+				pen.inc_x();
+				inner_surface_pos += dx;
+			}
+			pen.dec_x(decx);
+			pen.inc_y();
+			row_inner_surface_pos += dy;
+		}
+	}
+
+	if(cb && !cb->amount_complete(10000,10000)) return false;
+
+	return true;
+}
+
 /* 	The default accelerated renderer
 **	is anything but accelerated...
 */
 bool
-Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
+Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	handle<Target_Scanline> target=surface_target(surface);
 	if(!target)
 	{

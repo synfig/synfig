@@ -46,6 +46,12 @@
 
 /* === M A C R O S ========================================================= */
 
+// This macros should be removed when rendering optimization complete
+#define RENDER_TRANSFORMED_IF_NEED \
+	if (!renddesc.get_transformation_matrix().is_identity()) \
+		return render_transformed(this, context, surface, quality, renddesc, cb);
+
+
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_LAYER_MODULE_EXT															\
@@ -539,6 +545,9 @@ public:
 	//! Sets the render method to the layer. Not all layers uses this virtual member
 	virtual void set_render_method(Context context, RenderMethod x);
 	
+	// Temporary function to render transformed layer for leyers which yet not suppurt transformed rendering
+	static bool render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb);
+
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param surface		Pointer to Surface to render to.

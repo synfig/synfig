@@ -158,6 +158,8 @@ Zoom::get_transform()const
 bool
 Zoom::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Vector center=param_center.get(Vector());
 	Real amount=param_amount.get(Real());
 

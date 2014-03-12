@@ -321,7 +321,7 @@ Layer_PasteCanvas::set_time(IndependentContext context, Time time)const
 }
 
 void
-Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
+Layer_PasteCanvas::apply_z_range_to_params(ContextParams &/*cp*/)const
 {
 }
 
@@ -394,6 +394,8 @@ Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Transformation transformation(get_summary_transformation());
 
 	Real outline_grow=param_outline_grow.get(Real());

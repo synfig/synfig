@@ -219,6 +219,8 @@ SpiralGradient::get_color(Context context, const Point &pos)const
 bool
 SpiralGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	SuperCallback supercb(cb,0,9500,10000);
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)

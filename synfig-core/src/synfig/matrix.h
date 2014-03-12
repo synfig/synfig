@@ -110,6 +110,8 @@ public:
 	//!set_identity member. Set an identity matrix
 	Matrix &set_identity();
 
+	bool is_identity() const;
+
 	//!set_scale member function. Sets a scale matrix
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis

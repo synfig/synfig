@@ -198,6 +198,8 @@ Halftone2::get_color(Context context, const Point &point)const
 bool
 Halftone2::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	SuperCallback supercb(cb,0,9500,10000);
 
 	if(!context.accelerated_render(surface,quality,renddesc,&supercb))

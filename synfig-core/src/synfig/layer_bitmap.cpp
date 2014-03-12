@@ -394,8 +394,10 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 
 
 bool
-Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
+Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Mutex::Lock lock(mutex);
 
 	Point tl(param_tl.get(Point()));
@@ -411,13 +413,13 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	// We can only handle NN and Linear at the moment
 	//if(interp>1)
-	//	return Layer_Composite::accelerated_render(context,out_surface,quality,renddesc,cb);
+	//	return Layer_Composite::accelerated_render(context,surface,quality,renddesc,cb);
 
 	//if we don't actually have a valid surface just skip us
-	if(!surface.is_valid())
+	if(!this->surface.is_valid())
 	{
 		// Render what is behind us
-		return context.accelerated_render(out_surface,quality,renddesc,cb);
+		return context.accelerated_render(surface,quality,renddesc,cb);
 	}
 
 	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
@@ -429,19 +431,19 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 		renddesc.get_br()==br)
 	{
 		// Check for the trivial case
-		if(surface.get_w()==renddesc.get_w() && surface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
+		if(this->surface.get_w()==renddesc.get_w() && this->surface.get_h()==renddesc.get_h() && gamma_adjust==1.0f)
 		{
 			if(cb && !cb->amount_complete(0,100)) return false;
-			*out_surface=surface;
+			*surface=this->surface;
 			if(cb && !cb->amount_complete(100,100)) return false;
 			return true;
 		}
-		out_surface->set_wh(renddesc.get_w(),renddesc.get_h());
+		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	}
 	else
 	{
 		// Render what is behind us
-		if(!context.accelerated_render(out_surface,quality,renddesc,&subcb))
+		if(!context.accelerated_render(surface,quality,renddesc,&subcb))
 			return false;
 	}
 
@@ -461,8 +463,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	float	outwf = obr[0] - otl[0];
 	float	outhf = obr[1] - otl[1];
 
-	int		inw = surface.get_w();
-	int		inh = surface.get_h();
+	int		inw = this->surface.get_w();
+	int		inh = this->surface.get_h();
 
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
@@ -472,8 +474,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	if (trimmed)
 	{
-		inwf = (br[0] - tl[0])*surface.get_w()/width;
-		inhf = (br[1] - tl[1])*surface.get_h()/height;
+		inwf = (br[0] - tl[0])*this->surface.get_w()/width;
+		inhf = (br[1] - tl[1])*this->surface.get_h()/height;
 		itl = Point(tl[0] + (br[0]-tl[0])*left/width,
 					tl[1] + (br[1]-tl[1])*top/height);
 		ibr = Point(tl[0] + (br[0]-tl[0])*(left+inw)/width,
@@ -525,7 +527,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	//start drawing at the start of the bitmap (either origin or corner of input...)
 	//and get other info
-	Surface::alpha_pen pen(out_surface->get_pen(x_start,y_start));
+	Surface::alpha_pen pen(surface->get_pen(x_start,y_start));
 	pen.set_alpha(get_amount());
 	pen.set_blend_method(get_blend_method());
 
@@ -554,13 +556,13 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				inx = inx_start;//+0.5f;
 				for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 				{
-					Color rc = surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
+					Color rc = this->surface.sample_rect_clip(inx,iny,inx+indx,iny+indy);
 					pen.put_value(filter(rc));
 				}
 				pen.dec_x(x_end-x_start);
 			}
 
-			//Color c = (*out_surface)[0][0];
+			//Color c = (*surface)[0][0];
 			//synfig::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
 
 			return true;
@@ -583,7 +585,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
 				int xclamp = min(inw-1, max(0, round_to_int(inx)));
-				Color c = filter(surface[yclamp][xclamp]);
+				Color c = filter(this->surface[yclamp][xclamp]);
 				pen.put_value(c); //must get rid of the clip
 			}
 			pen.dec_x(x_end-x_start);
@@ -608,7 +610,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(surface.linear_sample(inx,iny));
+				Color col(this->surface.linear_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
@@ -634,7 +636,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(surface.cosine_sample(inx,iny));
+				Color col(this->surface.cosine_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
@@ -659,7 +661,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				Color col(surface.cubic_sample(inx,iny));
+				Color col(this->surface.cubic_sample(inx,iny));
 				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);

@@ -176,6 +176,8 @@ Layer_Stretch::get_transform()const
 bool
 Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Vector amount=param_amount.get(Vector());
 	Point center=param_center.get(Point());
 

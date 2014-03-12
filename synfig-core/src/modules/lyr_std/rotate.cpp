@@ -181,6 +181,8 @@ Rotate::get_color(Context context, const Point &p)const
 bool
 Rotate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Vector origin=param_origin.get(Vector());
 	Angle amount=param_amount.get(Angle());
 	

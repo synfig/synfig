@@ -526,6 +526,8 @@ Plant::set_version(const String &ver)
 bool
 Plant::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	bool ret(context.accelerated_render(surface,quality,renddesc,cb));
 	if(is_disabled() || !ret)
 		return ret;

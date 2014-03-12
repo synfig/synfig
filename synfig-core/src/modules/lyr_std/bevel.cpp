@@ -179,6 +179,8 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 bool
 Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	synfig::Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
 	synfig::Color color1=param_color1.get(synfig::Color());

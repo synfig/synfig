@@ -334,6 +334,8 @@ Layer_SphereDistort::get_color(Context context, const Point &pos)const
 bool
 Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	/*	Things to consider:
 		1) Block expansion for distortion (ouch... quality level??)
 		2) Bounding box clipping

@@ -166,6 +166,8 @@ Layer_MotionBlur::get_param_vocab()const
 bool
 Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED
+
 	Time aperture=param_aperture.get(Time());
 	Real subsamples_factor=param_subsamples_factor.get(Real());
 	SubsamplingType subsampling_type=(SubsamplingType)param_subsampling_type.get(int());
