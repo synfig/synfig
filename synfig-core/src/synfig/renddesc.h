@@ -34,6 +34,7 @@
 #include "types.h"
 #include <cmath>
 #include "rect.h"
+#include "matrix.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -103,6 +104,8 @@ private:
 	float frame_rate;
 	//! Begin time and end time of the Composition to render
 	Time time_begin, time_end;
+	//! Transformation matrix which should be applied for each primitive before rendering
+	Matrix transformation_matrix;
 
 public:
 	//! Anti alias filers types. Seems never implemented
@@ -132,7 +135,8 @@ public:
 		render_excluded_contexts(false),
 		frame_rate	(24),
 		time_begin	(0),
-		time_end	(0)
+		time_end	(0),
+		AntialiasFilter(ANTIALIAS_UNIFORM)
 	{ }
 
 	//! Applies the given Render Description \x to the current one
@@ -311,6 +315,10 @@ public:
 	RendDesc &set_duration(Time t);
 	//! Gets the duration of the animation
 	const Time get_duration();
+	//! Sets the transformation matrix
+	void set_transformation_matrix(const Matrix &x) { transformation_matrix = x; }
+	//! Gets the transformation matrix
+	const Matrix& get_transformation_matrix() const { return transformation_matrix; }
 };	// END of class RendDesc
 
 //! This operator allows the combining of RendDesc::Lock flags using the '|' operator
