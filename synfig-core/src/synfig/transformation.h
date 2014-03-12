@@ -113,6 +113,7 @@ public:
 
 	Matrix get_matrix() const
 	{
+		if (is_identity()) return Matrix();
 		Vector axis_x(scale[0], angle);
 		Vector axis_y(scale[1], angle + skew_angle + Angle::deg(90.0));
 		return Matrix(axis_x, axis_y, offset);

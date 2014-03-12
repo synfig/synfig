@@ -394,8 +394,6 @@ Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
-
 	Transformation transformation(get_summary_transformation());
 
 	Real outline_grow=param_outline_grow.get(Real());
@@ -435,8 +433,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context(context).get_full_bounding_rect());
 
-	bool blend_using_straight = false; // use 'straight' just for the central blit
-
 	Rect inner_bounds(
 	    full_bounding_rect.get_min(),
 	    full_bounding_rect.get_max()
@@ -444,6 +440,8 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	inner_bounds &= transformation.back_transform_bounds(renddesc.get_rect());
 	Rect outer_bounds(transformation.transform_bounds(inner_bounds));
 	outer_bounds &= renddesc.get_rect();
+	if (!outer_bounds.is_valid())
+		return true;
 	
 	// sometimes the user changes the parameters while we're
 	// rendering, causing our pasted canvas' bounding box to shrink
@@ -462,6 +460,8 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		warning("%s:%d bounding box shrank while rendering?", __FILE__, __LINE__);
 		return true;
 	}
+
+	bool blend_using_straight = false; // use 'straight' just for the central blit
 
 	// we have rendered what's under us, if necessary
 	if(context->empty())
@@ -497,132 +497,53 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 #endif	// SYNFIG_CLIP_PASTECANVAS
 	}
 
-	if (transformation.is_identity())
-	{
+	int w = renddesc.get_w();
+	int h = renddesc.get_h();
+	Vector tl = renddesc.get_tl();
+	Vector br = renddesc.get_br();
+	Vector size = br - tl;
+	Real rx0 = (outer_bounds.minx - tl[0])/size[0]*w;
+	Real rx1 = (outer_bounds.maxx - tl[0])/size[0]*w;
+	Real ry0 = (outer_bounds.miny - tl[1])/size[1]*h;
+	Real ry1 = (outer_bounds.maxy - tl[1])/size[1]*h;
+	if (rx1 < rx0) { Real rx = rx0; rx0 = rx1; rx1 = rx; }
+	if (ry1 < ry0) { Real ry = ry0; ry0 = ry1; ry1 = ry; }
+	int x0((floor(rx0)));
+	int x1((ceil(rx1)));
+	int y0((floor(ry0)));
+	int y1((ceil(ry1)));
+
+	if (x0 < 0) x0 = 0; else if (x0 > w) x0 = w;
+	if (x1 < 0) x1 = 0; else if (x1 > w) x1 = w;
+	if (y0 < 0) y0 = 0; else if (y0 > h) y0 = h;
+	if (y1 < 0) y1 = 0; else if (y1 > h) y1 = h;
+	int intermediate_w = x1 - x0;
+	int intermediate_h = y1 - y0;
+	Vector pixel_aligned_tl(
+		(Real)x0/(Real)w*size[0] + tl[0],
+		(Real)y0/(Real)h*size[1] + tl[1] );
+	Vector pixel_aligned_br(
+		(Real)x1/(Real)w*size[0] + tl[0],
+		(Real)y1/(Real)h*size[1] + tl[1] );
+
+	if (intermediate_w > 0 && intermediate_h > 0) {
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
 		intermediate_desc.set_flags(0);
+		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
+		intermediate_desc.set_wh(intermediate_w, intermediate_h);
+		intermediate_desc.set_tl(pixel_aligned_tl);
+		intermediate_desc.set_br(pixel_aligned_br);
 		Surface intermediate_surface;
 		if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
 			return false;
-		Surface::alpha_pen apen(surface->get_pen(0, 0));
+		Surface::alpha_pen apen(surface->get_pen(x0, y0));
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
 		intermediate_surface.blit_to(apen);
 	}
-	else
-	{
-		Vector width_vector(
-			transformation.transform(
-				Vector(inner_bounds.maxx - inner_bounds.minx, 0.0), false ));
-		Vector pixels_width_vector(
-			width_vector[0]/renddesc.get_pw(),
-			width_vector[1]/renddesc.get_ph() );
-		int inner_width_pixels = (int)ceil(pixels_width_vector.mag());
-
-		Vector ortho_axis_x(width_vector.norm());
-		Vector ortho_axis_y(-ortho_axis_x.perp());
-
-		Vector height_vector(
-			transformation.transform(
-				Vector(0.0, inner_bounds.maxy - inner_bounds.miny), false ));
-		Vector ortho_height_vector(
-			ortho_axis_y * (height_vector*ortho_axis_y) );
-		Vector pixels_height_vector(
-			ortho_height_vector[0]/renddesc.get_pw(),
-			ortho_height_vector[1]/renddesc.get_ph() );
-		int inner_height_pixels = (int)ceil(pixels_height_vector.mag());
-
-		// make 8 pixels border for bicubic resampling
-		float intermediate_pw = (inner_bounds.maxx-inner_bounds.minx)/(float)inner_width_pixels;
-		float intermediate_ph = (inner_bounds.maxy-inner_bounds.miny)/(float)inner_height_pixels;
-		inner_bounds.maxx += 8.f*intermediate_pw;
-		inner_bounds.minx -= 8.f*intermediate_pw;
-		inner_bounds.maxy += 8.f*intermediate_ph;
-		inner_bounds.miny -= 8.f*intermediate_ph;
-		inner_width_pixels += 16;
-		inner_height_pixels += 16;
-
-		RendDesc intermediate_desc(renddesc);
-		intermediate_desc.clear_flags();
-		intermediate_desc.set_tl(Vector(inner_bounds.minx,inner_bounds.maxy));
-		intermediate_desc.set_br(Vector(inner_bounds.maxx,inner_bounds.miny));
-		intermediate_desc.set_flags(0);
-		intermediate_desc.set_w(inner_width_pixels);
-		intermediate_desc.set_h(inner_height_pixels);
-
-		Surface intermediate_surface;
-		if(!canvas->get_context(context).accelerated_render(&intermediate_surface,quality,intermediate_desc,&stagetwo))
-			return false;
-
-		Rect pixels_outer_bounds(
-			Vector((outer_bounds.minx-renddesc.get_tl()[0])/renddesc.get_pw(),
-				   (outer_bounds.miny-renddesc.get_tl()[1])/renddesc.get_ph()),
-			Vector((outer_bounds.maxx-renddesc.get_tl()[0])/renddesc.get_pw(),
-				   (outer_bounds.maxy-renddesc.get_tl()[1])/renddesc.get_ph())
-		);
-
-		int left   = (int)floor(pixels_outer_bounds.minx);
-		int top    = (int)floor(pixels_outer_bounds.miny);
-		int right  = (int)ceil (pixels_outer_bounds.maxx);
-		int bottom = (int)ceil (pixels_outer_bounds.maxy);
-
-		int w = min(surface->get_w(), renddesc.get_w());
-		int h = min(surface->get_h(), renddesc.get_h());
-
-		if (left < 0) left = 0;
-		if (top < 0) top = 0;
-		if (right > w) right = w;
-		if (bottom > h) bottom = h;
-
-		int decx = right - left;
-		if (top < bottom && left < right) {
-			Vector initial_outer_pos(left*renddesc.get_pw(), top*renddesc.get_ph());
-			initial_outer_pos += renddesc.get_tl();
-			Vector initial_inner_pos = transformation.back_transform(initial_outer_pos);
-			Vector initial_inner_surface_pos(initial_inner_pos - intermediate_desc.get_tl());
-			initial_inner_surface_pos[0] /= intermediate_desc.get_pw();
-			initial_inner_surface_pos[1] /= intermediate_desc.get_ph();
-
-			Vector initial_outer_pos01((left+1)*renddesc.get_pw(), top*renddesc.get_ph());
-			initial_outer_pos01 += renddesc.get_tl();
-			Vector initial_inner_pos01 = transformation.back_transform(initial_outer_pos01);
-			Vector initial_inner_surface_pos01(initial_inner_pos01 - intermediate_desc.get_tl());
-			initial_inner_surface_pos01[0] /= intermediate_desc.get_pw();
-			initial_inner_surface_pos01[1] /= intermediate_desc.get_ph();
-
-			Vector initial_outer_pos10(left*renddesc.get_pw(), (top+1)*renddesc.get_ph());
-			initial_outer_pos10 += renddesc.get_tl();
-			Vector initial_inner_pos10 = transformation.back_transform(initial_outer_pos10);
-			Vector initial_inner_surface_pos10(initial_inner_pos10 - intermediate_desc.get_tl());
-			initial_inner_surface_pos10[0] /= intermediate_desc.get_pw();
-			initial_inner_surface_pos10[1] /= intermediate_desc.get_ph();
-
-			Vector dx(initial_inner_surface_pos01 - initial_inner_surface_pos);
-			Vector dy(initial_inner_surface_pos10 - initial_inner_surface_pos);
-
-			Vector row_inner_surface_pos(initial_inner_surface_pos);
-			Vector inner_surface_pos;
-
-			Surface::alpha_pen apen(surface->get_pen(left, top));
-			apen.set_alpha(get_amount());
-			apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
-			for(int y = top; y < bottom; y++) {
-				inner_surface_pos = row_inner_surface_pos;
-				for(int x = left; x < right; x++) {
-					apen.put_value( intermediate_surface.cubic_sample(inner_surface_pos[0], inner_surface_pos[1]) );
-					apen.inc_x();
-					inner_surface_pos += dx;
-				}
-				apen.dec_x(decx);
-				apen.inc_y();
-				row_inner_surface_pos += dy;
-			}
-		}
-	}
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
-
 	return true;
 }
 

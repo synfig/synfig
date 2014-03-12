@@ -77,7 +77,7 @@ Matrix::set_identity()
 bool
 Matrix::is_identity() const
 {
-	static const double e = 0.00000000001;
+	static const double e = 0.000001;
 	return fabs(m00 - 1.0) < e && fabs(m01) < e && fabs(m02) < e
 		&& fabs(m10) < e && fabs(m11 - 1.0) < e && fabs(m12) < e
 		&& fabs(m20) < e && fabs(m21) < e && fabs(m22 - 1.0) < e;

@@ -628,6 +628,7 @@ Layer::render_transformed(const Layer *layer, Context context,Surface *surface,i
 
 	RendDesc intermediate_desc(renddesc);
 	intermediate_desc.clear_flags();
+	intermediate_desc.set_transformation_matrix(Matrix());
 	intermediate_desc.set_tl(Vector(inner_bounds.minx,inner_bounds.maxy));
 	intermediate_desc.set_br(Vector(inner_bounds.maxx,inner_bounds.miny));
 	intermediate_desc.set_flags(0);
@@ -635,7 +636,7 @@ Layer::render_transformed(const Layer *layer, Context context,Surface *surface,i
 	intermediate_desc.set_h(inner_height_pixels);
 
 	Surface intermediate_surface;
-	if(layer->accelerated_render(context,&intermediate_surface,quality,intermediate_desc,&stagetwo))
+	if(!layer->accelerated_render(context,&intermediate_surface,quality,intermediate_desc,&stagetwo))
 		return false;
 
 	Rect pixels_outer_bounds(
