@@ -98,11 +98,11 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	Gtk::VBox options_vbox;
+	Gtk::VBox *options_vbox;
 
-	Gtk::HBox id_hbox;
-	Gtk::HBox type_hbox;
-	Gtk::HBox blend_hbox;
+	Gtk::HBox *id_hbox;
+	Gtk::HBox *type_hbox;
+	Gtk::HBox *blend_hbox;
 
 	Gtk::Label title_label;
 	Gtk::Label id_label;
@@ -292,12 +292,17 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// title
 	title_label.set_label("Gradient Creation");
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// name
-	id_label.set_label("Name");
+	id_label.set_label("Name: ");
 
 	// gradient type
-	type_label.set_label("Gradient Type");
+	type_label.set_label("Gradient Type: ");
 	type_enum.set_param_desc(ParamDesc("type")
 		.set_local_name(_("Gradient Type"))
 		.set_description(_("Determines the type of Gradient used"))
@@ -309,7 +314,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 		);
 
 	// gradient blend method
-	blend_label.set_label("Blend Method");
+	blend_label.set_label("Blend Method: ");
 	blend_enum.signal_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_blend_method_changed));
 	blend_enum.set_param_desc(
 		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -318,25 +323,43 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// attach child widgets
 	{
-		id_hbox.pack_start(id_label, Gtk::PACK_SHRINK, 3);
-		id_hbox.pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 3);
+		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+		space->set_size_request(8);
+
+		id_hbox = manage(new class Gtk::HBox(false, 3));
+
+		id_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
+		id_hbox->pack_start(id_label, Gtk::PACK_SHRINK, 0);
+		id_hbox->pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 0);
 	}
 	{
-		type_hbox.pack_start(type_label, Gtk::PACK_SHRINK, 3);
-		type_hbox.pack_end(type_enum, Gtk::PACK_EXPAND_WIDGET, 3);
+		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+		space->set_size_request(8);
+
+		type_hbox = manage(new class Gtk::HBox(false, 3));
+
+		type_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
+		type_hbox->pack_start(type_label, Gtk::PACK_SHRINK, 0);
+		type_hbox->pack_end(type_enum, Gtk::PACK_EXPAND_WIDGET, 0);
 	}
 	{
-		blend_hbox.pack_start(blend_label, Gtk::PACK_SHRINK, 3);
-		blend_hbox.pack_end(blend_enum, Gtk::PACK_EXPAND_WIDGET, 3);
+		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+		space->set_size_request(8);
+
+		blend_hbox = manage(new class Gtk::HBox(false, 3));
+
+		blend_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
+		blend_hbox->pack_start(blend_label, Gtk::PACK_SHRINK, 0);
+		blend_hbox->pack_end(blend_enum, Gtk::PACK_EXPAND_WIDGET, 0);
 	}
+	options_vbox = manage(new class Gtk::VBox(true, 5));
+	options_vbox->pack_start(title_label, Gtk::PACK_SHRINK, 0);
+	options_vbox->pack_start(*id_hbox, Gtk::PACK_SHRINK, 0);
+	options_vbox->pack_start(*type_hbox, Gtk::PACK_SHRINK, 0);
+	options_vbox->pack_start(*blend_hbox, Gtk::PACK_SHRINK, 0);
 
-	options_vbox.pack_start(title_label, Gtk::PACK_EXPAND_PADDING, 3);
-	options_vbox.pack_start(id_hbox, Gtk::PACK_SHRINK, 3);
-	options_vbox.pack_start(type_hbox, Gtk::PACK_SHRINK, 3);
-	options_vbox.pack_start(blend_hbox, Gtk::PACK_SHRINK, 3);
-
-	options_vbox.set_border_width(2);
-	options_vbox.show_all();
+	options_vbox->set_border_width(3);
+	options_vbox->show_all();
 
 	load_settings();
 	refresh_tool_options();
@@ -373,7 +396,7 @@ void
 StateGradient_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_vbox);
+	App::dialog_tool_options->set_widget(*options_vbox);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
 	App::dialog_tool_options->set_name("gradient");
 	blend_method_refresh();
