@@ -515,6 +515,22 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_curve_gradient.set_relief(Gtk::RELIEF_NONE);
 	}
 
+	// pack all layer creation buttons in one hbox
+	Gtk::HBox *layer_types_box = manage(new class Gtk::HBox());
+
+	layer_types_box->pack_start(togglebutton_layer_circle);
+	layer_types_box->pack_start(togglebutton_layer_region);
+	layer_types_box->pack_start(togglebutton_layer_outline);
+	layer_types_box->pack_start(togglebutton_layer_advanced_outline);
+	layer_types_box->pack_start(togglebutton_layer_plant);
+	layer_types_box->pack_start(togglebutton_layer_curve_gradient);
+
+	// pack entry_id and id_label together in one hbox
+	Gtk::HBox *id_box = manage(new class Gtk::HBox());
+
+	id_box->pack_start(*id_label);
+	id_box->pack_start(entry_id);
+
 	// widget opacity
 	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
 	widget_opacity->set_digits(2);
@@ -549,92 +565,74 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	load_settings();
 
 	options_table.attach(*title_label,
-		0, 3,  0,  1, Gtk::EXPAND, Gtk::EXPAND, 0, 0
+		0, 2,  0,  1, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(*id_label,
-		0, 1, 1, 2, Gtk::FILL, Gtk::FILL
-		);
-	options_table.attach(entry_id,
-		1, 6, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+	options_table.attach(*id_box,
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL
 		);
 	options_table.attach(*layer_types_label,
-		0, 6, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(togglebutton_layer_circle,
-		0, 1, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(togglebutton_layer_outline,
-		1, 2,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(togglebutton_layer_advanced_outline,
-		2, 3,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(togglebutton_layer_region,
-		3, 4,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(togglebutton_layer_plant,
-		4, 5,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(togglebutton_layer_curve_gradient,
-		5, 6,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
+	options_table.attach(*layer_types_box,
+		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(checkbutton_layer_link_origins,
-		0, 6,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(checkbutton_layer_origins_at_center,
-		0, 6,  9,  10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//invert flag
 	options_table.attach(checkbutton_invert,
-		0, 6,  10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 2,  6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.attach(*blend_label,
-		0, 3, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_blend,
-		3, 6, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*opacity_label,
-		0, 3, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_opacity,
-		3, 6, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(*bline_width_label,
-		0, 3, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_bline_width,
-		3, 6, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*falloff_label,
-		0, 3, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_falloff,
-		3, 6, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//feather stuff
 	options_table.attach(*feather_label,
-		0, 3, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
   options_table.attach(spin_feather,
-		3, 6, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.attach(*bline_points_label,
-		0, 3, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_number_of_bline_points,
-		3, 6, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 options_table.attach(*bline_point_angle_offset_label,
-	0, 3, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(spin_bline_point_angle_offset,
-		3, 6, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.show_all();
