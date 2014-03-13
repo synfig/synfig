@@ -471,10 +471,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Gtk::Label *feather_label = manage(new class Gtk::Label(_("Feather:")));
 	feather_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Pints:")));
+	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Points:")));
 	bline_points_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Point Angle Offset:")));
+	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Point Offset:")));
 	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	Gtk::Label *label_invert = manage(new class Gtk::Label("Invert"));
@@ -527,6 +527,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	// pack all layer creation buttons in one hbox
 	Gtk::HBox *layer_types_box = manage(new class Gtk::HBox());
 
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	space->set_size_request(10);
+
+	layer_types_box->pack_start(*space, Gtk::PACK_SHRINK);
 	layer_types_box->pack_start(togglebutton_layer_circle, Gtk::PACK_SHRINK);
 	layer_types_box->pack_start(togglebutton_layer_region, Gtk::PACK_SHRINK);
 	layer_types_box->pack_start(togglebutton_layer_outline, Gtk::PACK_SHRINK);
@@ -539,6 +543,24 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	id_box->pack_start(*id_label);
 	id_box->pack_start(entry_id);
+
+	// pack spline point offset and a space in a hbox
+	Gtk::HBox *bline_point_angle_offset_box = manage(new class Gtk::HBox());
+
+	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
+	space2->set_size_request(10);
+
+	bline_point_angle_offset_box->pack_start(*space2, Gtk::PACK_SHRINK);
+	bline_point_angle_offset_box->pack_start(*bline_point_angle_offset_label, Gtk::PACK_SHRINK);
+
+	// pack spline point offset and a space in a hbox
+	Gtk::HBox *falloff_box = manage(new class Gtk::HBox());
+
+	Gtk::Alignment *space3 = Gtk::manage(new Gtk::Alignment());
+	space3->set_size_request(10);
+
+	falloff_box->pack_start(*space3, Gtk::PACK_SHRINK);
+	falloff_box->pack_start(*falloff_label, Gtk::PACK_SHRINK);
 
 	// pack checkbuttons and their own labels together
 	Gtk::HBox *box_invert = manage(new class Gtk::HBox());
@@ -629,8 +651,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(spin_number_of_bline_points,
 		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	// 7, offset
-	options_table.attach(*bline_point_angle_offset_label,
+	// 7, spline points offset
+	options_table.attach(*bline_point_angle_offset_box,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_bline_point_angle_offset,
@@ -648,7 +670,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
   // 9, falloff
-  options_table.attach(*falloff_label,
+  options_table.attach(*falloff_box,
 		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_falloff,
@@ -663,6 +685,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 2,  13,  14, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
+	options_table.set_border_width(3);
+	options_table.set_homogeneous(true);
 	options_table.show_all();
 
 	refresh_tool_options();
