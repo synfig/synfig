@@ -527,12 +527,12 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	// pack all layer creation buttons in one hbox
 	Gtk::HBox *layer_types_box = manage(new class Gtk::HBox());
 
-	layer_types_box->pack_start(togglebutton_layer_circle);
-	layer_types_box->pack_start(togglebutton_layer_region);
-	layer_types_box->pack_start(togglebutton_layer_outline);
-	layer_types_box->pack_start(togglebutton_layer_advanced_outline);
-	layer_types_box->pack_start(togglebutton_layer_plant);
-	layer_types_box->pack_start(togglebutton_layer_curve_gradient);
+	layer_types_box->pack_start(togglebutton_layer_circle, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_region, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_outline, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_advanced_outline, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_plant, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_curve_gradient, Gtk::PACK_SHRINK);
 
 	// pack entry_id and id_label together in one hbox
 	Gtk::HBox *id_box = manage(new class Gtk::HBox());
