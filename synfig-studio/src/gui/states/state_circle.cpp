@@ -454,7 +454,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_range(0,10000000);
-	widget_bline_width->set_size_request(48, -1); //mini width of bline width widget, this value also affects mini width of whole default_widgets.
+	widget_bline_width->set_size_request(48, -1);
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_bline_width_changed));
 	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
