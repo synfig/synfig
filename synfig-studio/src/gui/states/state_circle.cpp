@@ -442,6 +442,41 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// Set up the tool options dialog
 
+	// labels
+	Gtk::Label *title_label = manage(new class Gtk::Label(_("Circle Creation")));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label->set_attributes(list);
+	title_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *id_label = manage(new class Gtk::Label(_("Name:")));
+	id_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *layer_types_label = manage(new class Gtk::Label(_("Create:")));
+	layer_types_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *blend_label = manage(new class Gtk::Label(_("Blend Method:")));
+	blend_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *opacity_label = manage(new class Gtk::Label(_("Opacity:")));
+	opacity_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *bline_width_label = manage(new class Gtk::Label(_("Brush Size:")));
+	bline_width_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *falloff_label = manage(new class Gtk::Label(_("Falloff:")));
+	falloff_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *feather_label = manage(new class Gtk::Label(_("Feather:")));
+	feather_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Pints:")));
+	bline_points_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Point Angle Offset:")));
+	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
 	// add icons to layer creation buttons
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_circle"),
@@ -513,17 +548,20 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	load_settings();
 
-	options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))),
-		0, 1,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(*title_label,
+		0, 3,  0,  1, Gtk::EXPAND, Gtk::EXPAND, 0, 0
+		);
+	options_table.attach(*id_label,
+		0, 1, 1, 2, Gtk::FILL, Gtk::FILL
 		);
 	options_table.attach(entry_id,
-		0, 6,  1,  2, Gtk::FILL, Gtk::FILL, 0, 0
+		1, 6, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(*manage(new Gtk::Label(_("Layer Creation:"))),
-		0, 6,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0.5, 0
+	options_table.attach(*layer_types_label,
+		0, 6, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(togglebutton_layer_circle,
-		0, 1,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(togglebutton_layer_outline,
 		1, 2,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
@@ -552,25 +590,25 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 6,  10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
-	options_table.attach(*manage(new Gtk::Label("Blend Method:")),
+	options_table.attach(*blend_label,
 		0, 3, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_blend,
 		3, 6, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(*manage(new Gtk::Label("Opacity:")),
+	options_table.attach(*opacity_label,
 		0, 3, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_opacity,
 		3, 6, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
-	options_table.attach(*manage(new Gtk::Label(_("Brush Size:"))),
+	options_table.attach(*bline_width_label,
 		0, 3, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_bline_width,
 		3, 6, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
-	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
+	options_table.attach(*falloff_label,
 		0, 3, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_falloff,
@@ -578,21 +616,21 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		);
 
 	//feather stuff
-	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),
+	options_table.attach(*feather_label,
 		0, 3, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
   options_table.attach(spin_feather,
 		3, 6, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
-	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
+	options_table.attach(*bline_points_label,
 		0, 3, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_number_of_bline_points,
 		3, 6, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
-options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),
+options_table.attach(*bline_point_angle_offset_label,
 	0, 3, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(spin_bline_point_angle_offset,
