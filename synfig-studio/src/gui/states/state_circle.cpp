@@ -434,9 +434,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	togglebutton_layer_advanced_outline(),
 	togglebutton_layer_curve_gradient(),
 	togglebutton_layer_plant(),
-	checkbutton_invert(_("Invert")),
-	checkbutton_layer_link_origins(_("Link Origins")),
-	checkbutton_layer_origins_at_center(_("Spline Origins at Center"))
+	checkbutton_invert(),
+	checkbutton_layer_link_origins(),
+	checkbutton_layer_origins_at_center()
 {
 	egress_on_selection_change=true;
 
@@ -476,6 +476,15 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Point Angle Offset:")));
 	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *label_invert = manage(new class Gtk::Label("Invert"));
+	label_invert->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *label_link_origins = manage(new class Gtk::Label("Link Origins"));
+	label_link_origins->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	Gtk::Label *label_origins_at_center = manage(new class Gtk::Label("Spline Origins at Center"));
+	label_origins_at_center->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// add icons to layer creation buttons
 	{
@@ -531,6 +540,19 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_box->pack_start(*id_label);
 	id_box->pack_start(entry_id);
 
+	// pack checkbuttons and their own labels together
+	Gtk::HBox *box_invert = manage(new class Gtk::HBox());
+	box_invert->pack_start(*label_invert);
+	box_invert->pack_end(checkbutton_invert, Gtk::PACK_SHRINK);
+
+	Gtk::HBox *box_link_origins = manage(new class Gtk::HBox());
+	box_link_origins->pack_start(*label_link_origins);
+	box_link_origins->pack_end(checkbutton_layer_link_origins, Gtk::PACK_SHRINK);
+
+	Gtk::HBox *box_origins_at_center = manage(new class Gtk::HBox());
+	box_origins_at_center->pack_start(*label_origins_at_center);
+	box_origins_at_center->pack_end(checkbutton_layer_origins_at_center, Gtk::PACK_SHRINK);
+
 	// widget opacity
 	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
 	widget_opacity->set_digits(2);
@@ -576,16 +598,16 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*layer_types_box,
 		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_link_origins,
-		0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(*box_link_origins,
+		0, 2,  4,  5, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_origins_at_center,
-		0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(*box_origins_at_center,
+		0, 2,  5,  6, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	//invert flag
-	options_table.attach(checkbutton_invert,
-		0, 2,  6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(*box_invert,
+		0, 2,  6, 7, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	options_table.attach(*blend_label,
