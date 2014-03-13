@@ -122,13 +122,14 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::SpinButton	spin_number_of_bline_points;
 	Gtk::SpinButton	spin_bline_point_angle_offset;
 
+	Gtk::ToggleButton togglebutton_layer_circle;
+	Gtk::ToggleButton togglebutton_layer_region;
+	Gtk::ToggleButton togglebutton_layer_outline;
+	Gtk::ToggleButton togglebutton_layer_advanced_outline;
+	Gtk::ToggleButton togglebutton_layer_curve_gradient;
+	Gtk::ToggleButton togglebutton_layer_plant;
+
 	Gtk::CheckButton checkbutton_invert;
-	Gtk::CheckButton checkbutton_layer_circle;
-	Gtk::CheckButton checkbutton_layer_region;
-	Gtk::CheckButton checkbutton_layer_outline;
-	Gtk::CheckButton checkbutton_layer_advanced_outline;
-	Gtk::CheckButton checkbutton_layer_curve_gradient;
-	Gtk::CheckButton checkbutton_layer_plant;
 	Gtk::CheckButton checkbutton_layer_link_origins;
 	Gtk::CheckButton checkbutton_layer_origins_at_center;
 
@@ -167,23 +168,23 @@ public:
 	bool get_invert()const { return checkbutton_invert.get_active(); }
 	void set_invert(bool i) { checkbutton_invert.set_active(i); }
 
-	bool get_layer_circle_flag()const { return checkbutton_layer_circle.get_active(); }
-	void set_layer_circle_flag(bool x) { return checkbutton_layer_circle.set_active(x); }
+	bool get_layer_circle_flag()const { return togglebutton_layer_circle.get_active(); }
+	void set_layer_circle_flag(bool x) { return togglebutton_layer_circle.set_active(x); }
 
-	bool get_layer_region_flag()const { return checkbutton_layer_region.get_active(); }
-	void set_layer_region_flag(bool x) { return checkbutton_layer_region.set_active(x); }
+	bool get_layer_region_flag()const { return togglebutton_layer_region.get_active(); }
+	void set_layer_region_flag(bool x) { return togglebutton_layer_region.set_active(x); }
 
-	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
-	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
+	bool get_layer_outline_flag()const { return togglebutton_layer_outline.get_active(); }
+	void set_layer_outline_flag(bool x) { return togglebutton_layer_outline.set_active(x); }
 
-	bool get_layer_advanced_outline_flag()const { return checkbutton_layer_advanced_outline.get_active(); }
-	void set_layer_advanced_outline_flag(bool x) { return checkbutton_layer_advanced_outline.set_active(x); }
+	bool get_layer_advanced_outline_flag()const { return togglebutton_layer_advanced_outline.get_active(); }
+	void set_layer_advanced_outline_flag(bool x) { return togglebutton_layer_advanced_outline.set_active(x); }
 
-	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
-	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
+	bool get_layer_curve_gradient_flag()const { return togglebutton_layer_curve_gradient.get_active(); }
+	void set_layer_curve_gradient_flag(bool x) { return togglebutton_layer_curve_gradient.set_active(x); }
 
-	bool get_layer_plant_flag()const { return checkbutton_layer_plant.get_active(); }
-	void set_layer_plant_flag(bool x) { return checkbutton_layer_plant.set_active(x); }
+	bool get_layer_plant_flag()const { return togglebutton_layer_plant.get_active(); }
+	void set_layer_plant_flag(bool x) { return togglebutton_layer_plant.set_active(x); }
 
 	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
 	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
@@ -427,19 +428,57 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
+	togglebutton_layer_circle(),
+	togglebutton_layer_region(),
+	togglebutton_layer_outline(),
+	togglebutton_layer_advanced_outline(),
+	togglebutton_layer_curve_gradient(),
+	togglebutton_layer_plant(),
 	checkbutton_invert(_("Invert")),
-	checkbutton_layer_circle(_("Create Circle Layer")),
-	checkbutton_layer_region(_("Create Region")),
-	checkbutton_layer_outline(_("Create Outline")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
-	checkbutton_layer_plant(_("Create Plant")),
 	checkbutton_layer_link_origins(_("Link Origins")),
 	checkbutton_layer_origins_at_center(_("Spline Origins at Center"))
 {
 	egress_on_selection_change=true;
 
 	// Set up the tool options dialog
+
+	// add icons to layer creation buttons
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_circle"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_circle.add(*icon);
+		togglebutton_layer_circle.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_region"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_region.add(*icon);
+		togglebutton_layer_region.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_outline"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_outline.add(*icon);
+		togglebutton_layer_outline.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_advanced_outline"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_advanced_outline.add(*icon);
+		togglebutton_layer_advanced_outline.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_plant"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_plant.add(*icon);
+		togglebutton_layer_plant.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_curve"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_curve_gradient.add(*icon);
+		togglebutton_layer_curve_gradient.set_relief(Gtk::RELIEF_NONE);
+	}
 
 	// widget opacity
 	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
@@ -454,7 +493,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_range(0,10000000);
-	widget_bline_width->set_size_request(48, -1);
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_bline_width_changed));
 	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
@@ -476,86 +514,89 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	load_settings();
 
 	options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))),
-		0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(entry_id,
-		0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 6,  1,  2, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_circle,
-		0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(*manage(new Gtk::Label(_("Layer Creation:"))),
+		0, 6,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0.5, 0
 		);
-	options_table.attach(checkbutton_layer_outline,
-		0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(togglebutton_layer_circle,
+		0, 1,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_advanced_outline,
-		0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(togglebutton_layer_outline,
+		1, 2,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_region,
-		0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(togglebutton_layer_advanced_outline,
+		2, 3,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_plant,
-		0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(togglebutton_layer_region,
+		3, 4,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(checkbutton_layer_curve_gradient,
-		0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(togglebutton_layer_plant,
+		4, 5,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(togglebutton_layer_curve_gradient,
+		5, 6,  3,  4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(checkbutton_layer_link_origins,
-		0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 6,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(checkbutton_layer_origins_at_center,
-		0, 2,  9,  10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 6,  9,  10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//invert flag
 	options_table.attach(checkbutton_invert,
-		0, 2,  10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 6,  10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.attach(*manage(new Gtk::Label("Blend Method:")),
-		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_blend,
-		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*manage(new Gtk::Label("Opacity:")),
-		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_opacity,
-		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(*manage(new Gtk::Label(_("Brush Size:"))),
-		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_bline_width,
-		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),
-		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_falloff,
-		1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	//feather stuff
 	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),
-		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
   options_table.attach(spin_feather,
-		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.attach(*manage(new Gtk::Label(_("Spline Points:"))),
-		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 3, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_number_of_bline_points,
-		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),
-	0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	0, 3, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 	);
 	options_table.attach(spin_bline_point_angle_offset,
-		1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		3, 6, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
 		);
 
 	options_table.show_all();
