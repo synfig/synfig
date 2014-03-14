@@ -66,7 +66,9 @@ private:
 	void refresh_instances();
 
 	bool close();
-
+	//! Signal handler of signal_row_activated, look for the desired canvas, and
+	//! give it the focus
+	/*! \see studio::Instance::focus */
 	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
 	//bool on_tree_event(GdkEvent *event);
 
