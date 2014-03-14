@@ -958,6 +958,8 @@ void CanvasView::deactivate()
 void CanvasView::present()
 {
 	Dockable::present();
+	// If hided by CanvasView::close_view, time to come back to the show
+	if(!get_visible())show();
 	update_title();
 }
 
