@@ -541,7 +541,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	// pack entry_id and id_label together in one hbox
 	Gtk::HBox *id_box = manage(new class Gtk::HBox());
 
-	id_box->pack_start(*id_label);
+	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
+	space1->set_size_request(10);
+
+	id_box->pack_start(*id_label, Gtk::PACK_SHRINK);
+	id_box->pack_start(*space1, Gtk::PACK_SHRINK);
 	id_box->pack_start(entry_id);
 
 	// pack spline point offset and a space in a hbox
