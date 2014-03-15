@@ -272,7 +272,7 @@ private:
 		OperationBookBase():
 			previous(last), next(NULL)
 		{
-			(previous == NULL ? first : previous->next) = last = this;
+			(previous == NULL ? first : previous->next) = (last = this);
 		}
 
 	public:
@@ -330,7 +330,7 @@ protected:
 		identifier(NIL),
 		description(private_description)
 	{
-		(previous == NULL ? first : previous->next) = last = this;
+		(previous == NULL ? first : previous->next) = (last = this);
 	}
 
 	Type():
@@ -341,7 +341,7 @@ protected:
 		description(private_description)
 	{
 		assert(last_identifier != NIL);
-		(previous == NULL ? first : previous->next) = last = this;
+		(previous == NULL ? first : previous->next) = (last = this);
 	}
 
 private:
