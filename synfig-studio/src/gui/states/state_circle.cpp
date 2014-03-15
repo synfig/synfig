@@ -689,8 +689,14 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 2,  13,  14, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
-	options_table.set_border_width(3);
-	options_table.set_homogeneous(true);
+	// fine-tune options layout
+	options_table.set_border_width(6); // border width 6 px
+	options_table.set_row_spacings(3); // row gap 3 px
+	options_table.set_row_spacing(0, 0); // the first row using border width of table
+	options_table.set_row_spacing(2, 0); // row gap between label and icon of layer type 0 px
+	options_table.set_row_spacing(13, 0); // the final row using border width of table
+	options_table.set_homogeneous(true); // same size (width and height)
+
 	options_table.show_all();
 
 	refresh_tool_options();
