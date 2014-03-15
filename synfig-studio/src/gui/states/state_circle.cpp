@@ -618,7 +618,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		);
 	// 1, name
 	options_table.attach(*id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 2, layer types creation
 	options_table.attach(*layer_types_label,
@@ -629,56 +629,56 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		);
 	// 3, blend method
 	options_table.attach(*blend_label,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_blend,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 4, opacity
 	options_table.attach(*opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_opacity,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 	);
 	// 5, brush size
 	options_table.attach(*bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(*widget_bline_width,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 6, spline points
 	options_table.attach(*bline_points_label,
-		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_number_of_bline_points,
-		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 7, spline points offset
 	options_table.attach(*bline_point_angle_offset_box,
-		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(spin_bline_point_angle_offset,
-		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 7, invert
 	options_table.attach(*box_invert,
-		0, 2,  9, 10, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 8, feather
 	options_table.attach(*feather_label,
-		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
   options_table.attach(spin_feather,
-		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
   // 9, falloff
   options_table.attach(*falloff_box,
-		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(enum_falloff,
-		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 10, link origins
 	options_table.attach(*box_link_origins,
@@ -692,10 +692,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	// fine-tune options layout
 	options_table.set_border_width(6); // border width 6 px
 	options_table.set_row_spacings(3); // row gap 3 px
-	options_table.set_row_spacing(0, 0); // the first row using border width of table
-	options_table.set_row_spacing(2, 0); // row gap between label and icon of layer type 0 px
+	options_table.set_row_spacing(0, 6); // the gap between first and second row.
+	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type 1 px
 	options_table.set_row_spacing(13, 0); // the final row using border width of table
-	options_table.set_homogeneous(true); // same size (width and height)
 
 	options_table.show_all();
 
