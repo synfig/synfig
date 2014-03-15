@@ -474,7 +474,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Points:")));
 	bline_points_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Point Offset:")));
+	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Offset:")));
 	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	Gtk::Label *label_invert = manage(new class Gtk::Label("Invert"));
