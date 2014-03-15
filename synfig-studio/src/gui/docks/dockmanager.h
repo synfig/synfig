@@ -60,6 +60,7 @@ class DockManager : public sigc::trackable
 	std::list<DockDialog*> dock_dialog_list_;
 
 	sigc::signal<void,Dockable*> signal_dockable_registered_;
+	sigc::signal<void,Dockable*> signal_dockable_unregistered_;
 
 	etl::smart_ptr<DockSettings> dock_settings;
 
@@ -84,8 +85,12 @@ public:
 
 	DockDialog& find_dock_dialog(int id);
 	const DockDialog& find_dock_dialog(int id)const;
-
+	//! Connect to that signal to get the info a dock has been registred
+	/*! \see studio::DockManager::register_dockable */
 	sigc::signal<void,Dockable*>& signal_dockable_registered() { return signal_dockable_registered_; }
+	//! Connect to that signal to get the info that a dock has been unregistred
+	/*! \see studio::DockManager::unregister_dockable */
+	sigc::signal<void,Dockable*>& signal_dockable_unregistered() { return signal_dockable_unregistered_; }
 
 	void register_dockable(Dockable& x);
 	bool unregister_dockable(Dockable& x);

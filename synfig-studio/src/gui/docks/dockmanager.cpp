@@ -205,6 +205,7 @@ DockManager::unregister_dockable(Dockable& x)
 		{
 			remove_widget_recursive(x);
 			dockable_list_.erase(iter);
+			signal_dockable_unregistered()(&x);
 			synfig::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
 			update_window_titles();
 			return true;
