@@ -230,8 +230,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	//Gets the, is exist, accelerator representation for labels
 	Glib::ustring accel_path = !key.is_null() ? key.get_abbrev () :"";
 	
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	icon=manage(new Gtk::Image(stock_item.get_stock_id(), iconsize));
+	icon=manage(new Gtk::Image(stock_item.get_stock_id(), Gtk::ICON_SIZE_SMALL_TOOLBAR));
 	_tool_button->add(*icon);
 	_tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
 	_tool_button->set_relief(Gtk::RELIEF_NONE);
