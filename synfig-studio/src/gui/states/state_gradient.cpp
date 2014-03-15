@@ -133,8 +133,6 @@ public:
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
-	void on_blend_method_changed();
-	void blend_method_refresh();
 
 	StateGradient_Context(CanvasView* canvas_view);
 
@@ -200,12 +198,10 @@ StateGradient_Context::load_settings()
 		else
 			set_type(GRADIENT_INTERPOLATION_LINEAR);
 
-#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 		if(settings.get_value("gradient.blend",value))
 			set_blend(atoi(value.c_str()));
 		else
 			set_blend(Color::BLEND_COMPOSITE);
-#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 	}
 	catch(...)
 	{
@@ -363,11 +359,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	blend_label.set_label("Blend Method:");
 	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	blend_enum.signal_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_blend_method_changed));
-	blend_enum.set_param_desc(
-		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
-		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
-		);
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method"));
 
 	// pack id_label(Name) and entry in a box
 	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
@@ -441,7 +433,6 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_user_click));
-	synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::blend_method_refresh));
 
 	App::dock_toolbox->refresh();
 }
@@ -453,7 +444,6 @@ StateGradient_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(*options_table);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
 	App::dialog_tool_options->set_name("gradient");
-	blend_method_refresh();
 }
 
 Smach::event_result
@@ -668,18 +658,4 @@ StateGradient_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
-}
-
-
-void
-StateGradient_Context::on_blend_method_changed()
-{
-	synfigapp::Main::set_blend_method(Color::BlendMethod(blend_enum.get_value()));
-}
-
-
-void
-StateGradient_Context::blend_method_refresh()
-{
-	blend_enum.set_value(synfigapp::Main::get_blend_method());
 }
