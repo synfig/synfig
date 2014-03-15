@@ -98,11 +98,8 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	Gtk::VBox *options_vbox;
-
+	Gtk::Table *options_table;
 	Gtk::HBox *id_hbox;
-	Gtk::HBox *type_hbox;
-	Gtk::HBox *blend_hbox;
 
 	Gtk::Label title_label;
 	Gtk::Label id_label;
@@ -110,6 +107,11 @@ class studio::StateGradient_Context : public sigc::trackable
 	Gtk::Label blend_label;
 
 	Gtk::Entry id_entry;
+	Gtk::ToggleButton togglebutton_layer_linear_gradient;
+	Gtk::ToggleButton togglebutton_layer_radial_gradient;
+	Gtk::ToggleButton togglebutton_layer_conical_gradient;
+	Gtk::ToggleButton togglebutton_layer_spiral_gradient;
+
 	Widget_Enum type_enum;
 	Widget_Enum	blend_enum;
 
@@ -284,7 +286,11 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	id_entry()
+	id_entry(),
+	togglebutton_layer_linear_gradient(),
+	togglebutton_layer_radial_gradient(),
+	togglebutton_layer_conical_gradient(),
+	togglebutton_layer_spiral_gradient()
 {
 	egress_on_selection_change=true;
 
@@ -299,10 +305,12 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// name
-	id_label.set_label("Name: ");
+	id_label.set_label("Name:");
 
 	// gradient type
-	type_label.set_label("Gradient Type: ");
+	type_label.set_label("Create:");
+	type_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
 	type_enum.set_param_desc(ParamDesc("type")
 		.set_local_name(_("Gradient Type"))
 		.set_description(_("Determines the type of Gradient used"))
@@ -313,53 +321,99 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral"))
 		);
 
+	// gradient togglebuttons
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_linear"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_linear_gradient.add(*icon);
+		togglebutton_layer_linear_gradient.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_radial"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_radial_gradient.add(*icon);
+		togglebutton_layer_radial_gradient.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_conical"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_conical_gradient.add(*icon);
+		togglebutton_layer_conical_gradient.set_relief(Gtk::RELIEF_NONE);
+	}
+	{
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_spiral"),
+			Gtk::ICON_SIZE_SMALL_TOOLBAR));
+		togglebutton_layer_spiral_gradient.add(*icon);
+		togglebutton_layer_spiral_gradient.set_relief(Gtk::RELIEF_NONE);
+	}
+
+	// pack all layer creation buttons in one hbox
+	Gtk::HBox *layer_types_box = manage(new class Gtk::HBox());
+
+	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
+	space1->set_size_request(10);
+
+	layer_types_box->pack_start(*space1, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_linear_gradient, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_radial_gradient, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_conical_gradient, Gtk::PACK_SHRINK);
+	layer_types_box->pack_start(togglebutton_layer_spiral_gradient, Gtk::PACK_SHRINK);
+
 	// gradient blend method
-	blend_label.set_label("Blend Method: ");
+	blend_label.set_label("Blend Method:");
+	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
 	blend_enum.signal_changed().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_blend_method_changed));
 	blend_enum.set_param_desc(
 		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
 		);
 
-	// attach child widgets
-	{
-		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-		space->set_size_request(8);
+	// pack id_label(Name) and entry in a box
+	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
+	space2->set_size_request(10);
 
-		id_hbox = manage(new class Gtk::HBox(false, 3));
+	id_hbox = manage(new class Gtk::HBox());
 
-		id_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
-		id_hbox->pack_start(id_label, Gtk::PACK_SHRINK, 0);
-		id_hbox->pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 0);
-	}
-	{
-		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-		space->set_size_request(8);
+	id_hbox->pack_start(id_label, Gtk::PACK_SHRINK, 0);
+	id_hbox->pack_start(*space2, Gtk::PACK_SHRINK, 0);
+	id_hbox->pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 0);
 
-		type_hbox = manage(new class Gtk::HBox(false, 3));
+	// attach all child widgets in a table
+	options_table = manage(new class Gtk::Table());
+	// 0, title
+	options_table->attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 1, name
+	options_table->attach(*id_hbox,
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 2, create label
+	options_table->attach(type_label,
+		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	// 3, layer type togglebuttons
+	options_table->attach(*layer_types_box,
+		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	// 4, blend method
+	options_table->attach(blend_label,
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table->attach(blend_enum,
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
 
-		type_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
-		type_hbox->pack_start(type_label, Gtk::PACK_SHRINK, 0);
-		type_hbox->pack_end(type_enum, Gtk::PACK_EXPAND_WIDGET, 0);
-	}
-	{
-		Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-		space->set_size_request(8);
+	// fine-tune options layout
+	options_table->set_border_width(6); // border width 6 px
+	options_table->set_row_spacings(3); // row gap 3 px
+	options_table->set_row_spacing(0, 0); // the first row using border width of table
+	options_table->set_row_spacing(2, 0); // row gap between label and icon of layer type 0 px
+	options_table->set_row_spacing(4, 0); // the final row using border width of table
+	options_table->set_homogeneous(true); // same size (width and height)
 
-		blend_hbox = manage(new class Gtk::HBox(false, 3));
-
-		blend_hbox->pack_start(*space, Gtk::PACK_SHRINK, 0);
-		blend_hbox->pack_start(blend_label, Gtk::PACK_SHRINK, 0);
-		blend_hbox->pack_end(blend_enum, Gtk::PACK_EXPAND_WIDGET, 0);
-	}
-	options_vbox = manage(new class Gtk::VBox(true, 5));
-	options_vbox->pack_start(title_label, Gtk::PACK_SHRINK, 0);
-	options_vbox->pack_start(*id_hbox, Gtk::PACK_SHRINK, 0);
-	options_vbox->pack_start(*type_hbox, Gtk::PACK_SHRINK, 0);
-	options_vbox->pack_start(*blend_hbox, Gtk::PACK_SHRINK, 0);
-
-	options_vbox->set_border_width(3);
-	options_vbox->show_all();
+	options_table->show_all();
 
 	load_settings();
 	refresh_tool_options();
@@ -396,7 +450,7 @@ void
 StateGradient_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(*options_vbox);
+	App::dialog_tool_options->set_widget(*options_table);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
 	App::dialog_tool_options->set_name("gradient");
 	blend_method_refresh();
