@@ -94,8 +94,6 @@ class studio::StateCircle_Context : public sigc::trackable
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
-	void on_opacity_changed();
-	void opacity_refresh();
 	void on_bline_width_changed();
 	void bline_width_refresh();
 
@@ -109,7 +107,7 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	Gtk::Entry		entry_id; //what to name the layer
 
-	Gtk::HScale 	*widget_opacity;
+	Gtk::HScale 	hsc_opacity;
 	Widget_Distance *widget_bline_width;
 
 	Widget_Enum		enum_falloff;
@@ -155,6 +153,9 @@ public:
 
 	int get_blend()const { return enum_blend.get_value(); }
 	void set_blend(int x) { return enum_blend.set_value(x); }
+
+	Real get_opacity()const { return hsc_opacity.get_value(); }
+	void set_opacity(Real x) { hsc_opacity.set_value(x); }
 
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
@@ -270,6 +271,11 @@ StateCircle_Context::load_settings()
 		else
 			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
 
+		if(settings.get_value("circle.opacity",value))
+			set_opacity(atof(value.c_str()));
+		else
+			set_opacity(0);
+
 		if(settings.get_value("circle.feather",value))
 			set_feather(atof(value.c_str()));
 		else
@@ -345,6 +351,7 @@ StateCircle_Context::save_settings()
 		settings.set_value("circle.id",get_id());
 		settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 		settings.set_value("circle.blend",strprintf("%d",get_blend()));
+		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
@@ -423,6 +430,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),				//   value lower upper  step page
 	adj_feather(					0,    0,    1, 0.01, 0.1),
+	hsc_opacity(0.0f,1.01f,0.01f),
 	adj_number_of_bline_points(		0,    2,  120, 1   , 1  ),
 	adj_bline_point_angle_offset(	0, -360,  360, 0.1 , 1  ),
 	spin_feather(adj_feather,0.1,3),
@@ -580,12 +588,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	box_origins_at_center->pack_end(checkbutton_layer_origins_at_center, Gtk::PACK_SHRINK);
 
 	// widget opacity
-	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
-	widget_opacity->set_digits(2);
-	widget_opacity->set_value_pos(Gtk::POS_LEFT);
-	widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_opacity_changed));
-	widget_opacity->set_tooltip_text(_("Default Opacity"));
-	widget_opacity->set_value_pos(Gtk::POS_LEFT);
+	hsc_opacity.set_digits(2);
+	hsc_opacity.set_value_pos(Gtk::POS_LEFT);
+	hsc_opacity.set_tooltip_text(_("Opacity"));
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
@@ -638,7 +643,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*opacity_label,
 		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(*widget_opacity,
+	options_table.attach(hsc_opacity,
 		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 	);
 	// 5, brush size
@@ -711,7 +716,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	get_work_area()->queue_draw();
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-	synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::opacity_refresh));
 
 	App::dock_toolbox->refresh();
 }
@@ -723,7 +727,6 @@ StateCircle_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Circle Tool"));
 	App::dialog_tool_options->set_name("circle");
-	opacity_refresh();
 }
 
 Smach::event_result
@@ -863,6 +866,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("falloff",get_falloff());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"falloff");
 
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
@@ -925,6 +931,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
@@ -996,6 +1005,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -1065,6 +1077,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
@@ -1144,6 +1159,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
@@ -1218,6 +1236,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
@@ -1344,17 +1365,6 @@ StateCircle_Context::refresh_ducks()
 	get_work_area()->queue_draw();
 }
 
-void
-StateCircle_Context::on_opacity_changed()
-{
-	synfigapp::Main::set_opacity(widget_opacity->get_value());
-}
-
-void
-StateCircle_Context::opacity_refresh()
-{
-	widget_opacity->set_value(synfigapp::Main::get_opacity());
-}
 
 void
 StateCircle_Context::bline_width_refresh()
