@@ -353,7 +353,12 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 void
 MainWindow::on_dockable_unregistered(Dockable* dockable)
 {
-
-	return;
+	// remove the document from the menus
+	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+	if(canvas_view)
+	{
+		App::ui_manager()->remove_ui(canvas_view->get_popup_id());
+		App::ui_manager()->remove_ui(canvas_view->get_toolbar_id());
+	}
 }
 /* === E N T R Y P O I N T ================================================= */
