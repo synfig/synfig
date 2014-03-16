@@ -373,6 +373,9 @@ private:
 	//! Menu members
 	Gtk::Menu parammenu;
 
+	Gtk::UIManager::ui_merge_id merge_id_popup_;
+	Gtk::UIManager::ui_merge_id merge_id_toolbar_;
+
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
@@ -521,6 +524,11 @@ public:
 
 	Gtk::Widget* get_ext_widget(const synfig::String& x);
 	void set_ext_widget(const synfig::String& x, Gtk::Widget* y);
+
+	Gtk::UIManager::ui_merge_id get_popup_id();
+	void set_popup_id(Gtk::UIManager::ui_merge_id popup_id);
+	Gtk::UIManager::ui_merge_id get_toolbar_id();
+	void set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id);
 
 	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
 	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return tree_view_book_; }
