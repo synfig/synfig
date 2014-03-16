@@ -134,6 +134,9 @@ MainWindow::MainWindow()
 	App::dock_manager->signal_dockable_registered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_registered) );
 
+	App::dock_manager->signal_dockable_unregistered().connect(
+		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
+
 	GRAB_HINT_DATA("mainwindow");
 }
 
@@ -339,4 +342,11 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
 }
 
+void
+MainWindow::on_dockable_unregistered(Dockable* dockable)
+{
+
+
+	return;
+}
 /* === E N T R Y P O I N T ================================================= */
