@@ -3887,6 +3887,30 @@ CanvasView::set_ext_widget(const synfig::String& x, Gtk::Widget* y)
 		keyframe_tree=dynamic_cast<KeyframeTree*>(y);
 }
 
+Gtk::UIManager::ui_merge_id
+CanvasView::get_popup_id()
+{
+	return merge_id_popup_;
+}
+
+void
+CanvasView::set_popup_id(Gtk::UIManager::ui_merge_id popup_id)
+{
+	merge_id_popup_ = popup_id;
+}
+
+Gtk::UIManager::ui_merge_id
+CanvasView::get_toolbar_id()
+{
+	return merge_id_toolbar_;
+}
+
+void
+CanvasView::set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id)
+{
+	merge_id_toolbar_ = toolbar_id;
+}
+
 bool
 CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
 {

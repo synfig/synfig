@@ -134,6 +134,9 @@ MainWindow::MainWindow()
 	App::dock_manager->signal_dockable_registered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_registered) );
 
+	App::dock_manager->signal_dockable_unregistered().connect(
+		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
+
 	GRAB_HINT_DATA("mainwindow");
 }
 
@@ -335,8 +338,27 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	std::string ui_info_menubar =
 		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
 
-	App::ui_manager()->add_ui_from_string(ui_info_popup);
-	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);
+	Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
+
+	// record CanvasView toolbar and popup id's
+	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+	if(canvas_view)
+	{
+		canvas_view->set_popup_id(merge_id_popup);
+		canvas_view->set_toolbar_id(merge_id_menubar);
+	}
 }
 
+void
+MainWindow::on_dockable_unregistered(Dockable* dockable)
+{
+	// remove the document from the menus
+	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+	if(canvas_view)
+	{
+		App::ui_manager()->remove_ui(canvas_view->get_popup_id());
+		App::ui_manager()->remove_ui(canvas_view->get_toolbar_id());
+	}
+}
 /* === E N T R Y P O I N T ================================================= */
