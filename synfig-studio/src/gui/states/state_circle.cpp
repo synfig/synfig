@@ -94,8 +94,6 @@ class studio::StateCircle_Context : public sigc::trackable
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
-	void on_bline_width_changed();
-	void bline_width_refresh();
 
 	bool prev_workarea_layer_status_;
 
@@ -105,13 +103,13 @@ class studio::StateCircle_Context : public sigc::trackable
 	//Toolbox display
 	Gtk::Table options_table;
 
-	Gtk::Entry		entry_id; //what to name the layer
+	Gtk::Entry entry_id; //what to name the layer
 
-	Gtk::HScale 	hsc_opacity;
-	Widget_Distance *widget_bline_width;
+	Widget_Enum enum_falloff;
+	Widget_Enum enum_blend;
+	Widget_Distance dist_bline_width;
 
-	Widget_Enum		enum_falloff;
-	Widget_Enum		enum_blend;
+	Gtk::HScale hsc_opacity;
 
 	Gtk::Adjustment	adj_feather;
 	Gtk::Adjustment	adj_number_of_bline_points;
@@ -156,6 +154,9 @@ public:
 
 	Real get_opacity()const { return hsc_opacity.get_value(); }
 	void set_opacity(Real x) { hsc_opacity.set_value(x); }
+
+	Distance get_bline_width()const { return (dist_bline_width.get_value()); }
+	void set_bline_width(Distance d){ dist_bline_width.set_value(Distance(d, Distance::SYSTEM_POINTS)); }
 
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
@@ -276,6 +277,11 @@ StateCircle_Context::load_settings()
 		else
 			set_opacity(0);
 
+		if(settings.get_value("circle.bline_width",value) && value != "")
+			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+		else
+			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+
 		if(settings.get_value("circle.feather",value))
 			set_feather(atof(value.c_str()));
 		else
@@ -352,6 +358,7 @@ StateCircle_Context::save_settings()
 		settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 		settings.set_value("circle.blend",strprintf("%d",get_blend()));
 		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("circle.bline_width", strprintf("%s", "0.01u"));//(???)get_bline_width()));
 		settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
@@ -429,11 +436,12 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),				//   value lower upper  step page
-	adj_feather(					0,    0,    1, 0.01, 0.1),
 	hsc_opacity(0.0f,1.01f,0.01f),
+	dist_bline_width(),
 	adj_number_of_bline_points(		0,    2,  120, 1   , 1  ),
 	adj_bline_point_angle_offset(	0, -360,  360, 0.1 , 1  ),
-	spin_feather(adj_feather,0.1,3),
+	adj_feather(0, 0, 1, 0.01, 0.1),
+	spin_feather(adj_feather, 0.1, 3),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
 	togglebutton_layer_circle(),
@@ -556,6 +564,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_box->pack_start(*space1, Gtk::PACK_SHRINK);
 	id_box->pack_start(entry_id);
 
+	dist_bline_width.set_digits(2);
+	dist_bline_width.set_range(0,10000000);
+
 	// pack spline point offset and a space in a hbox
 	Gtk::HBox *bline_point_angle_offset_box = manage(new class Gtk::HBox());
 
@@ -591,14 +602,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	hsc_opacity.set_digits(2);
 	hsc_opacity.set_value_pos(Gtk::POS_LEFT);
 	hsc_opacity.set_tooltip_text(_("Opacity"));
-
-	// widget bline width
-	widget_bline_width = manage(new Widget_Distance());
-	bline_width_refresh();
-	widget_bline_width->set_digits(2);
-	widget_bline_width->set_range(0,10000000);
-	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_bline_width_changed));
-	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
 	// feather falloff
 	enum_falloff.set_param_desc(ParamDesc("falloff")
@@ -650,7 +653,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*bline_width_label,
 		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(*widget_bline_width,
+	options_table.attach(dist_bline_width,
 		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 6, spline points
@@ -935,6 +938,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -1162,6 +1168,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
@@ -1239,6 +1248,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
 
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
@@ -1363,17 +1375,4 @@ StateCircle_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
-}
-
-
-void
-StateCircle_Context::bline_width_refresh()
-{
-	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
-}
-
-void
-StateCircle_Context::on_bline_width_changed()
-{
-	synfigapp::Main::set_bline_width(widget_bline_width->get_value());
 }
