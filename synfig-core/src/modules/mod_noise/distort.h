@@ -82,6 +82,7 @@ public:
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual void set_time(synfig::IndependentContext context, synfig::Time time)const;
 	virtual void set_time(synfig::IndependentContext context, synfig::Time time, const synfig::Point &point)const;
+	using Layer::get_bounding_rect;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
