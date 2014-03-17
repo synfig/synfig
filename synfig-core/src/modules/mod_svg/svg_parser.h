@@ -36,6 +36,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstring>
+#include <glibmm/ustring.h>
 
 #include <libxml++/libxml++.h>
 #include <ETL/angle>
