@@ -155,8 +155,13 @@ public:
 	Real get_opacity()const { return hsc_opacity.get_value(); }
 	void set_opacity(Real x) { hsc_opacity.set_value(x); }
 
-	Distance get_bline_width()const { return (dist_bline_width.get_value()); }
-	void set_bline_width(Distance d){ dist_bline_width.set_value(Distance(d, Distance::SYSTEM_POINTS)); }
+	Real get_bline_width() const {
+		return dist_bline_width.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_bline_width(Distance x) { return dist_bline_width.set_value(x);}
 
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
@@ -358,7 +363,7 @@ StateCircle_Context::save_settings()
 		settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 		settings.set_value("circle.blend",strprintf("%d",get_blend()));
 		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
-		settings.set_value("circle.bline_width", strprintf("%s", "0.01u"));//(???)get_bline_width()));
+		settings.set_value("circle.bline_width", dist_bline_width.get_value().get_string());
 		settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
