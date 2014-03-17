@@ -108,13 +108,12 @@ class studio::StateCircle_Context : public sigc::trackable
 	Widget_Enum enum_falloff;
 	Widget_Enum enum_blend;
 	Widget_Distance dist_bline_width;
+	Widget_Distance dist_feather_size;
 
 	Gtk::HScale hsc_opacity;
 
-	Gtk::Adjustment	adj_feather;
 	Gtk::Adjustment	adj_number_of_bline_points;
 	Gtk::Adjustment	adj_bline_point_angle_offset;
-	Gtk::SpinButton	spin_feather;
 	Gtk::SpinButton	spin_number_of_bline_points;
 	Gtk::SpinButton	spin_bline_point_angle_offset;
 
@@ -163,8 +162,13 @@ public:
 	}
 	void set_bline_width(Distance x) { return dist_bline_width.set_value(x);}
 
-	Real get_feather()const { return adj_feather.get_value(); }
-	void set_feather(Real f) { adj_feather.set_value(f); }
+	Real get_feather_size() const {
+		return dist_feather_size.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_feather_size(Distance x) { return dist_feather_size.set_value(x);}
 
 	Real get_number_of_bline_points()const { return adj_number_of_bline_points.get_value(); }
 	void set_number_of_bline_points(Real f) { adj_number_of_bline_points.set_value(f); }
@@ -288,9 +292,9 @@ StateCircle_Context::load_settings()
 			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
 
 		if(settings.get_value("circle.feather",value))
-			set_feather(atof(value.c_str()));
+			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
 		else
-			set_feather(0);
+			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
 
 		if(settings.get_value("circle.number_of_bline_points",value))
 			set_number_of_bline_points(atof(value.c_str()));
@@ -364,7 +368,7 @@ StateCircle_Context::save_settings()
 		settings.set_value("circle.blend",strprintf("%d",get_blend()));
 		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("circle.bline_width", dist_bline_width.get_value().get_string());
-		settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
+		settings.set_value("circle.feather", dist_feather_size.get_value().get_string());
 		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
 		settings.set_value("circle.invert",get_invert()?"1":"0");
@@ -445,8 +449,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	dist_bline_width(),
 	adj_number_of_bline_points(		0,    2,  120, 1   , 1  ),
 	adj_bline_point_angle_offset(	0, -360,  360, 0.1 , 1  ),
-	adj_feather(0, 0, 1, 0.01, 0.1),
-	spin_feather(adj_feather, 0.1, 3),
+	dist_feather_size(),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
 	togglebutton_layer_circle(),
@@ -572,6 +575,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	dist_bline_width.set_digits(2);
 	dist_bline_width.set_range(0,10000000);
 
+	dist_feather_size.set_digits(2);
+	dist_feather_size.set_range(0,10000000);
+
 	// pack spline point offset and a space in a hbox
 	Gtk::HBox *bline_point_angle_offset_box = manage(new class Gtk::HBox());
 
@@ -683,7 +689,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*feather_label,
 		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-  options_table.attach(spin_feather,
+  options_table.attach(dist_feather_size,
 		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
   // 9, falloff
@@ -877,7 +883,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -1092,7 +1098,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -1176,7 +1182,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("width",get_bline_width());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -1257,7 +1263,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("width",get_bline_width());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
