@@ -130,6 +130,8 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::HBox *box_origins_at_center;
 	Gtk::HBox *box_link_origins;
 	Gtk::Label *feather_label;
+	Gtk::Label *bline_points_label;
+	Gtk::HBox *bline_point_angle_offset_box;
 
 public:
 
@@ -503,8 +505,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	feather_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	feather_label->set_sensitive(false);
 
-	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Points:")));
+	bline_points_label = manage(new class Gtk::Label(_("Spline Points:")));
 	bline_points_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_points_label->set_sensitive(false);
+	spin_number_of_bline_points.set_sensitive(false);
 
 	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Offset:")));
 	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -607,7 +611,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	dist_feather_size.set_range(0,10000000);
 
 	// pack spline point offset and a space in a hbox
-	Gtk::HBox *bline_point_angle_offset_box = manage(new class Gtk::HBox());
+	bline_point_angle_offset_box = manage(new class Gtk::HBox());
 
 	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
 	space2->set_size_request(10);
@@ -1436,6 +1440,24 @@ StateCircle_Context::toggle_layer_creation()
 	{
 		bline_width_label->set_sensitive(false);
 		dist_bline_width.set_sensitive(false);
+	}
+
+	// spline points and offset angle
+	if (!get_layer_region_flag() &&
+		!get_layer_outline_flag() &&
+		!get_layer_advanced_outline_flag() &&
+		!get_layer_plant_flag() &&
+		!get_layer_curve_gradient_flag())
+	{
+		bline_points_label->set_sensitive(false);
+		spin_number_of_bline_points.set_sensitive(false);
+		bline_point_angle_offset_box->set_sensitive(false);
+	}
+	else
+	{
+		bline_points_label->set_sensitive(true);
+		spin_number_of_bline_points.set_sensitive(true);
+		bline_point_angle_offset_box->set_sensitive(true);
 	}
 
 	// feather size
