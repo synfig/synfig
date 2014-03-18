@@ -124,6 +124,9 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_link_origins;
 	Gtk::CheckButton checkbutton_layer_origins_at_center;
 
+	Gtk::Label *blend_label;
+	Gtk::Label *falloff_label;
+
 public:
 
 	// this only counts the layers which will have their origins linked
@@ -231,6 +234,8 @@ public:
 	}
 
 	void make_circle(const Point& p1, const Point& p2);
+
+	void toggle_circle_creation();
 
 };	// END of class StateCircle_Context
 
@@ -476,7 +481,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Gtk::Label *layer_types_label = manage(new class Gtk::Label(_("Create:")));
 	layer_types_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	Gtk::Label *blend_label = manage(new class Gtk::Label(_("Blend Method:")));
+	blend_label = manage(new class Gtk::Label(_("Blend Method:")));
 	blend_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	Gtk::Label *opacity_label = manage(new class Gtk::Label(_("Opacity:")));
@@ -484,9 +489,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	Gtk::Label *bline_width_label = manage(new class Gtk::Label(_("Brush Size:")));
 	bline_width_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label->set_sensitive(false);
 
-	Gtk::Label *falloff_label = manage(new class Gtk::Label(_("Falloff:")));
+	falloff_label = manage(new class Gtk::Label(_("Falloff:")));
 	falloff_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	falloff_label->set_sensitive(false);
 
 	Gtk::Label *feather_label = manage(new class Gtk::Label(_("Feather:")));
 	feather_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -512,6 +519,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_circle.add(*icon);
 		togglebutton_layer_circle.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_circle.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_circle_creation));
+
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_region"),
@@ -570,6 +581,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	dist_bline_width.set_digits(2);
 	dist_bline_width.set_range(0,10000000);
+	dist_bline_width.set_sensitive(false);
 
 	dist_feather_size.set_digits(2);
 	dist_feather_size.set_range(0,10000000);
@@ -600,10 +612,12 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Gtk::HBox *box_link_origins = manage(new class Gtk::HBox());
 	box_link_origins->pack_start(*label_link_origins);
 	box_link_origins->pack_end(checkbutton_layer_link_origins, Gtk::PACK_SHRINK);
+	box_link_origins->set_sensitive(false);
 
 	Gtk::HBox *box_origins_at_center = manage(new class Gtk::HBox());
 	box_origins_at_center->pack_start(*label_origins_at_center);
 	box_origins_at_center->pack_end(checkbutton_layer_origins_at_center, Gtk::PACK_SHRINK);
+	box_origins_at_center->set_sensitive(false);
 
 	// widget opacity
 	hsc_opacity.set_digits(2);
@@ -620,6 +634,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		.add_enum_value(CIRCLE_SQRT,"sqrt",_("Square Root"))
 		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
 		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
+	enum_falloff.set_sensitive(false);
 
 	// blend method
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -1383,4 +1398,20 @@ StateCircle_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+}
+
+
+void
+StateCircle_Context::toggle_circle_creation()
+{
+	if(get_layer_circle_flag())
+	{
+		falloff_label->set_sensitive(true);
+		enum_falloff.set_sensitive(true);
+	}
+	else
+	{
+		falloff_label->set_sensitive(false);
+		enum_falloff.set_sensitive(false);
+	}
 }
