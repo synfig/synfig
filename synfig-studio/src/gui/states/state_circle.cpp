@@ -127,6 +127,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label *blend_label;
 	Gtk::Label *falloff_label;
 	Gtk::Label *bline_width_label;
+	Gtk::HBox *box_origins_at_center;
 
 public:
 
@@ -531,6 +532,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_region.add(*icon);
 		togglebutton_layer_region.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_region.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_outline_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_outline"),
@@ -555,6 +559,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_plant.add(*icon);
 		togglebutton_layer_plant.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_plant.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_outline_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_curve"),
@@ -625,7 +632,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	box_link_origins->pack_end(checkbutton_layer_link_origins, Gtk::PACK_SHRINK);
 	box_link_origins->set_sensitive(false);
 
-	Gtk::HBox *box_origins_at_center = manage(new class Gtk::HBox());
+	box_origins_at_center = manage(new class Gtk::HBox());
 	box_origins_at_center->pack_start(*label_origins_at_center);
 	box_origins_at_center->pack_end(checkbutton_layer_origins_at_center, Gtk::PACK_SHRINK);
 	box_origins_at_center->set_sensitive(false);
@@ -1415,7 +1422,7 @@ StateCircle_Context::refresh_ducks()
 void
 StateCircle_Context::toggle_circle_layer_creation()
 {
-	if(get_layer_circle_flag())
+	if (get_layer_circle_flag())
 	{
 		falloff_label->set_sensitive(true);
 		enum_falloff.set_sensitive(true);
@@ -1430,6 +1437,7 @@ StateCircle_Context::toggle_circle_layer_creation()
 void
 StateCircle_Context::toggle_outline_layer_creation()
 {
+	// brush size
 	if (get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag() ||
 		get_layer_curve_gradient_flag())
@@ -1442,4 +1450,16 @@ StateCircle_Context::toggle_outline_layer_creation()
 		bline_width_label->set_sensitive(false);
 		dist_bline_width.set_sensitive(false);
 	}
+
+	// orignis at center
+	if (get_layer_region_flag() ||
+		get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag() ||
+		get_layer_plant_flag() ||
+		get_layer_curve_gradient_flag())
+	{
+		box_origins_at_center->set_sensitive(true);
+	}
+	else
+		box_origins_at_center->set_sensitive(false);
 }
