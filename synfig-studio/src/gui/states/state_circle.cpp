@@ -30,9 +30,6 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 #include <synfig/valuenode_bline.h>
@@ -48,7 +45,6 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include "widgets/widget_enum.h"
 #include "widgets/widget_distance.h"
@@ -625,6 +621,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
 		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
 
+	// blend method
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for circles")));
