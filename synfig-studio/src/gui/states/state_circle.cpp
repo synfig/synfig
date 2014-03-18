@@ -131,7 +131,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::HBox *box_link_origins;
 	Gtk::Label *feather_label;
 	Gtk::Label *bline_points_label;
-	Gtk::HBox *bline_point_angle_offset_box;
+	Gtk::Label *bline_point_angle_offset_label;
 
 public:
 
@@ -510,8 +510,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_points_label->set_sensitive(false);
 	spin_number_of_bline_points.set_sensitive(false);
 
-	Gtk::Label *bline_point_angle_offset_label = manage(new class Gtk::Label(_("Offset:")));
+	bline_point_angle_offset_label = manage(new class Gtk::Label(_("Offset:")));
 	bline_point_angle_offset_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_point_angle_offset_label->set_sensitive(false);
+	spin_bline_point_angle_offset.set_sensitive(false);
 
 	Gtk::Label *label_invert = manage(new class Gtk::Label("Invert"));
 	label_invert->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -609,9 +611,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	dist_feather_size.set_digits(2);
 	dist_feather_size.set_range(0,10000000);
+	dist_feather_size.set_sensitive(false);
 
 	// pack spline point offset and a space in a hbox
-	bline_point_angle_offset_box = manage(new class Gtk::HBox());
+	Gtk::HBox *bline_point_angle_offset_box = manage(new class Gtk::HBox());
 
 	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
 	space2->set_size_request(10);
@@ -1451,13 +1454,15 @@ StateCircle_Context::toggle_layer_creation()
 	{
 		bline_points_label->set_sensitive(false);
 		spin_number_of_bline_points.set_sensitive(false);
-		bline_point_angle_offset_box->set_sensitive(false);
+		bline_point_angle_offset_label->set_sensitive(false);
+		spin_bline_point_angle_offset.set_sensitive(false);
 	}
 	else
 	{
 		bline_points_label->set_sensitive(true);
 		spin_number_of_bline_points.set_sensitive(true);
-		bline_point_angle_offset_box->set_sensitive(true);
+		bline_point_angle_offset_label->set_sensitive(true);
+		spin_bline_point_angle_offset.set_sensitive(true);
 	}
 
 	// feather size
