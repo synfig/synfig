@@ -129,6 +129,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label *bline_width_label;
 	Gtk::HBox *box_origins_at_center;
 	Gtk::HBox *box_link_origins;
+	Gtk::Label *feather_label;
 
 public:
 
@@ -238,8 +239,7 @@ public:
 
 	void make_circle(const Point& p1, const Point& p2);
 
-	void toggle_circle_layer_creation();
-	void toggle_outline_layer_creation();
+	void toggle_layer_creation();
 
 };	// END of class StateCircle_Context
 
@@ -499,8 +499,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	falloff_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	falloff_label->set_sensitive(false);
 
-	Gtk::Label *feather_label = manage(new class Gtk::Label(_("Feather:")));
+	feather_label = manage(new class Gtk::Label(_("Feather:")));
 	feather_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label->set_sensitive(false);
 
 	Gtk::Label *bline_points_label = manage(new class Gtk::Label(_("Spline Points:")));
 	bline_points_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -525,7 +526,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_circle.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_circle.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_circle_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 
 	}
 	{
@@ -535,7 +536,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_region.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_region.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_outline_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_outline"),
@@ -544,7 +545,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_outline.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_outline.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_outline_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_advanced_outline"),
@@ -553,7 +554,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_advanced_outline.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_advanced_outline.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_outline_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_plant"),
@@ -562,7 +563,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_plant.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_plant.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_outline_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_curve"),
@@ -571,7 +572,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_curve_gradient.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_curve_gradient.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_outline_layer_creation));
+			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 
 	// pack all layer creation buttons in one hbox
@@ -1421,34 +1422,7 @@ StateCircle_Context::refresh_ducks()
 
 
 void
-StateCircle_Context::toggle_circle_layer_creation()
-{
-	if (get_layer_circle_flag())
-	{
-		falloff_label->set_sensitive(true);
-		enum_falloff.set_sensitive(true);
-	}
-	else
-	{
-		falloff_label->set_sensitive(false);
-		enum_falloff.set_sensitive(false);
-	}
-
-	// link origins
-	if (get_layer_region_flag() +
-		get_layer_outline_flag() +
-		get_layer_advanced_outline_flag() +
-		get_layer_plant_flag() +
-		get_layer_curve_gradient_flag() +
-		get_layer_circle_flag() >= 2)
-		{
-			box_link_origins->set_sensitive(true);
-		}
-	else box_link_origins->set_sensitive(false);
-}
-
-void
-StateCircle_Context::toggle_outline_layer_creation()
+StateCircle_Context::toggle_layer_creation()
 {
 	// brush size
 	if (get_layer_outline_flag() ||
@@ -1462,6 +1436,37 @@ StateCircle_Context::toggle_outline_layer_creation()
 	{
 		bline_width_label->set_sensitive(false);
 		dist_bline_width.set_sensitive(false);
+	}
+
+	// feather size
+	if (get_layer_circle_flag() ||
+		get_layer_circle_flag() ||
+		get_layer_region_flag() ||
+		get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag())
+	{
+		feather_label->set_sensitive(true);
+		dist_feather_size.set_sensitive(true);
+	}
+	else
+	{
+		feather_label->set_sensitive(false);
+		dist_feather_size.set_sensitive(false);
+	}
+
+	// falloff type for circle layer only
+	if (get_layer_circle_flag())
+	{
+		dist_feather_size.set_sensitive(true);
+		feather_label->set_sensitive(true);
+
+		falloff_label->set_sensitive(true);
+		enum_falloff.set_sensitive(true);
+	}
+	else
+	{
+		falloff_label->set_sensitive(false);
+		enum_falloff.set_sensitive(false);
 	}
 
 	// orignis at center
