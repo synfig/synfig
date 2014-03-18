@@ -126,6 +126,7 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	Gtk::Label *blend_label;
 	Gtk::Label *falloff_label;
+	Gtk::Label *bline_width_label;
 
 public:
 
@@ -235,7 +236,8 @@ public:
 
 	void make_circle(const Point& p1, const Point& p2);
 
-	void toggle_circle_creation();
+	void toggle_circle_layer_creation();
+	void toggle_outline_layer_creation();
 
 };	// END of class StateCircle_Context
 
@@ -487,7 +489,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Gtk::Label *opacity_label = manage(new class Gtk::Label(_("Opacity:")));
 	opacity_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	Gtk::Label *bline_width_label = manage(new class Gtk::Label(_("Brush Size:")));
+	bline_width_label = manage(new class Gtk::Label(_("Brush Size:")));
 	bline_width_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	bline_width_label->set_sensitive(false);
 
@@ -521,7 +523,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		togglebutton_layer_circle.set_relief(Gtk::RELIEF_NONE);
 
 		togglebutton_layer_circle.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_circle_creation));
+			&studio::StateCircle_Context::toggle_circle_layer_creation));
 
 	}
 	{
@@ -535,12 +537,18 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_outline.add(*icon);
 		togglebutton_layer_outline.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_outline.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_outline_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_advanced_outline"),
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_advanced_outline.add(*icon);
 		togglebutton_layer_advanced_outline.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_advanced_outline.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_outline_layer_creation));
 	}
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_plant"),
@@ -553,6 +561,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
 		togglebutton_layer_curve_gradient.add(*icon);
 		togglebutton_layer_curve_gradient.set_relief(Gtk::RELIEF_NONE);
+
+		togglebutton_layer_curve_gradient.signal_toggled().connect(sigc::mem_fun(*this,
+			&studio::StateCircle_Context::toggle_outline_layer_creation));
 	}
 
 	// pack all layer creation buttons in one hbox
@@ -1402,7 +1413,7 @@ StateCircle_Context::refresh_ducks()
 
 
 void
-StateCircle_Context::toggle_circle_creation()
+StateCircle_Context::toggle_circle_layer_creation()
 {
 	if(get_layer_circle_flag())
 	{
@@ -1413,5 +1424,22 @@ StateCircle_Context::toggle_circle_creation()
 	{
 		falloff_label->set_sensitive(false);
 		enum_falloff.set_sensitive(false);
+	}
+}
+
+void
+StateCircle_Context::toggle_outline_layer_creation()
+{
+	if (get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag() ||
+		get_layer_curve_gradient_flag())
+	{
+		bline_width_label->set_sensitive(true);
+		dist_bline_width.set_sensitive(true);
+	}
+	else
+	{
+		bline_width_label->set_sensitive(false);
+		dist_bline_width.set_sensitive(false);
 	}
 }
