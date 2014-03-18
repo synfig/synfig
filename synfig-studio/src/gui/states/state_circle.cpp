@@ -128,6 +128,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label *falloff_label;
 	Gtk::Label *bline_width_label;
 	Gtk::HBox *box_origins_at_center;
+	Gtk::HBox *box_link_origins;
 
 public:
 
@@ -627,7 +628,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	box_invert->pack_start(*label_invert);
 	box_invert->pack_end(checkbutton_invert, Gtk::PACK_SHRINK);
 
-	Gtk::HBox *box_link_origins = manage(new class Gtk::HBox());
+	box_link_origins = manage(new class Gtk::HBox());
 	box_link_origins->pack_start(*label_link_origins);
 	box_link_origins->pack_end(checkbutton_layer_link_origins, Gtk::PACK_SHRINK);
 	box_link_origins->set_sensitive(false);
@@ -1432,6 +1433,18 @@ StateCircle_Context::toggle_circle_layer_creation()
 		falloff_label->set_sensitive(false);
 		enum_falloff.set_sensitive(false);
 	}
+
+	// link origins
+	if (get_layer_region_flag() +
+		get_layer_outline_flag() +
+		get_layer_advanced_outline_flag() +
+		get_layer_plant_flag() +
+		get_layer_curve_gradient_flag() +
+		get_layer_circle_flag() >= 2)
+		{
+			box_link_origins->set_sensitive(true);
+		}
+	else box_link_origins->set_sensitive(false);
 }
 
 void
@@ -1462,4 +1475,16 @@ StateCircle_Context::toggle_outline_layer_creation()
 	}
 	else
 		box_origins_at_center->set_sensitive(false);
+
+	// link origins
+	if (get_layer_region_flag() +
+		get_layer_outline_flag() +
+		get_layer_advanced_outline_flag() +
+		get_layer_plant_flag() +
+		get_layer_curve_gradient_flag() +
+		get_layer_circle_flag() >= 2)
+		{
+			box_link_origins->set_sensitive(true);
+		}
+	else box_link_origins->set_sensitive(false);
 }
