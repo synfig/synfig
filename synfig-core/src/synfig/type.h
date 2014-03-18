@@ -201,7 +201,9 @@ public:
 
 		bool operator < (const Description &other) const
 		{
-			return return_type < other.return_type ? true
+			return return_type < other.operation_type ? true
+				 : other.operation_type < operation_type ? false
+				 : return_type < other.return_type ? true
 				 : other.return_type < return_type ? false
 				 : type_a < other.type_a ? true
 				 : other.type_a < type_a ? false
