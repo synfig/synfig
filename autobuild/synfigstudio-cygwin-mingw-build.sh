@@ -370,18 +370,20 @@ installonly_limit=3
 [fedora]
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
-mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+#mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/20/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
 [updates]
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
-mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+#mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/20/i386/
 enabled=1
 EOF
 
-URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=19 --installroot="$WORKSPACE/mingw-rpms" $1`
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=20 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
