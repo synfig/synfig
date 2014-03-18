@@ -227,8 +227,8 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::AccelKey key;
 	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
-	//Gets the accelerator representation for labels
-	Glib::ustring accel_path = key.get_abbrev ();
+	//Gets the, is exist, accelerator representation for labels
+	Glib::ustring accel_path = !key.is_null() ? key.get_abbrev () :"";
 	
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	icon=manage(new Gtk::Image(stock_item.get_stock_id(), iconsize));
