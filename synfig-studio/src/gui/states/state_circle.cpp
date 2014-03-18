@@ -289,7 +289,7 @@ StateCircle_Context::load_settings()
 		if(settings.get_value("circle.opacity",value))
 			set_opacity(atof(value.c_str()));
 		else
-			set_opacity(0);
+			set_opacity(1);
 
 		if(settings.get_value("circle.bline_width",value) && value != "")
 			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
