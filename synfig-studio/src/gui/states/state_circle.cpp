@@ -117,6 +117,17 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::ToggleButton layer_plant_togglebutton;
 	Gtk::HBox layer_types_box;
 
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip) ;\
+	button.signal_toggled().connect(sigc::mem_fun(*this, &studio::StateCircle_Context::toggle_layer_creation))
+#endif
+
 	// blend method
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
@@ -483,13 +494,13 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	id_entry(),				//   value lower upper  step page
-	opacity_hscl(0.0f,1.01f,0.01f),
+	opacity_hscl(0.0f, 1.01f, 0.01f),
 	bline_width_dist(),
-	number_of_bline_points_adj(		0,    2,  120, 1   , 1  ),
-	bline_point_angle_offset_adj(	0, -360,  360, 0.1 , 1  ),
+	number_of_bline_points_adj(0, 2, 120, 1, 1),
+	bline_point_angle_offset_adj(0, -360, 360, 0.1, 1),
 	feather_dist(),
-	number_of_bline_points_spin(number_of_bline_points_adj,1,0),
-	bline_point_angle_offset_spin(bline_point_angle_offset_adj,1,1),
+	number_of_bline_points_spin(number_of_bline_points_adj, 1, 0),
+	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1),
 	layer_circle_togglebutton(),
 	layer_region_togglebutton(),
 	layer_outline_togglebutton(),
@@ -555,62 +566,24 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
 	origins_at_center_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	// add icons to layer creation buttons
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_circle"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_circle_togglebutton.add(*icon);
-		layer_circle_togglebutton.set_relief(Gtk::RELIEF_NONE);
+	// define layer creation buttons
+	LAYER_CREATION(layer_circle_togglebutton,
+		("synfig-layer_geometry_circle"), _("Create a circle layer."));
 
-		layer_circle_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
+	LAYER_CREATION(layer_region_togglebutton,
+		("synfig-layer_geometry_region"), _("Create a region layer."));
 
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_region"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_region_togglebutton.add(*icon);
-		layer_region_togglebutton.set_relief(Gtk::RELIEF_NONE);
+	LAYER_CREATION(layer_outline_togglebutton,
+		("synfig-layer_geometry_outline"), _("Create a outline layer."));
 
-		layer_region_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_outline"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_outline_togglebutton.add(*icon);
-		layer_outline_togglebutton.set_relief(Gtk::RELIEF_NONE);
+	LAYER_CREATION(layer_advanced_outline_togglebutton,
+		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer."));
 
-		layer_outline_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_advanced_outline"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_advanced_outline_togglebutton.add(*icon);
-		layer_advanced_outline_togglebutton.set_relief(Gtk::RELIEF_NONE);
+	LAYER_CREATION(layer_plant_togglebutton,
+		("synfig-layer_other_plant"), _("Create a plant layer."));
 
-		layer_advanced_outline_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_plant"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_plant_togglebutton.add(*icon);
-		layer_plant_togglebutton.set_relief(Gtk::RELIEF_NONE);
-
-		layer_plant_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_curve"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		layer_curve_gradient_togglebutton.add(*icon);
-		layer_curve_gradient_togglebutton.set_relief(Gtk::RELIEF_NONE);
-
-		layer_curve_gradient_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
-			&studio::StateCircle_Context::toggle_layer_creation));
-	}
+	LAYER_CREATION(layer_curve_gradient_togglebutton,
+		("synfig-layer_gradient_curve"), _("Create a gradient layer."));
 
 	// pack all layer creation buttons in one hbox
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
