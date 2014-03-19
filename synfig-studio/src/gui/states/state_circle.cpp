@@ -111,7 +111,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_circle_togglebutton;
 	Gtk::ToggleButton layer_region_togglebutton;
-	Gtk::ToggleButton togglebutton_layer_outline;
+	Gtk::ToggleButton layer_outline_togglebutton;
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
@@ -221,8 +221,8 @@ public:
 	bool get_layer_region_flag()const { return layer_region_togglebutton.get_active(); }
 	void set_layer_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
 
-	bool get_layer_outline_flag()const { return togglebutton_layer_outline.get_active(); }
-	void set_layer_outline_flag(bool x) { return togglebutton_layer_outline.set_active(x); }
+	bool get_layer_outline_flag()const { return layer_outline_togglebutton.get_active(); }
+	void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
 
 	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
 	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
@@ -492,7 +492,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_point_angle_offset_spin(bline_point_angle_offset_adj,1,1),
 	layer_circle_togglebutton(),
 	layer_region_togglebutton(),
-	togglebutton_layer_outline(),
+	layer_outline_togglebutton(),
 	layer_advanced_outline_togglebutton(),
 	layer_curve_gradient_togglebutton(),
 	layer_plant_togglebutton(),
@@ -578,10 +578,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	{
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_geometry_outline"),
 			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		togglebutton_layer_outline.add(*icon);
-		togglebutton_layer_outline.set_relief(Gtk::RELIEF_NONE);
+		layer_outline_togglebutton.add(*icon);
+		layer_outline_togglebutton.set_relief(Gtk::RELIEF_NONE);
 
-		togglebutton_layer_outline.signal_toggled().connect(sigc::mem_fun(*this,
+		layer_outline_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,
 			&studio::StateCircle_Context::toggle_layer_creation));
 	}
 	{
@@ -619,7 +619,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(*space, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_circle_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(togglebutton_layer_outline, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
