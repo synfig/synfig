@@ -584,22 +584,22 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// define layer creation buttons
 	LAYER_CREATION(layer_circle_togglebutton,
-		("synfig-layer_geometry_circle"), _("Create a circle layer."));
+		("synfig-layer_geometry_circle"), _("Create a circle layer"));
 
 	LAYER_CREATION(layer_region_togglebutton,
-		("synfig-layer_geometry_region"), _("Create a region layer."));
+		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create a outline layer."));
+		("synfig-layer_geometry_outline"), _("Create a outline layer"));
 
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer."));
+		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
 
 	LAYER_CREATION(layer_plant_togglebutton,
-		("synfig-layer_other_plant"), _("Create a plant layer."));
+		("synfig-layer_other_plant"), _("Create a plant layer"));
 
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
-		("synfig-layer_gradient_curve"), _("Create a gradient layer."));
+		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
 	// pack all layer creation buttons in one hbox
 	SPACING(indentation1, INDENTION);
