@@ -93,7 +93,7 @@ enum CircleFalloff
 #endif
 
 #define GAP	(3)
-#define INDENTION (6)
+#define INDENTATION (6)
 
 /* === G L O B A L S ======================================================= */
 
@@ -602,7 +602,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
 	// pack all layer creation buttons in one hbox
-	SPACING(indentation1, INDENTION);
+	SPACING(indentation1, INDENTATION);
 	layer_types_box.pack_start(*indentation1, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_circle_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
@@ -626,12 +626,12 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	feather_dist.set_sensitive(false);
 
 	// pack spline point offset and indention in a hbox
-	SPACING(indentation3, INDENTION);
+	SPACING(indentation3, INDENTATION);
 	bline_point_angle_offset_box.pack_start(*indentation3, Gtk::PACK_SHRINK);
 	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, Gtk::PACK_SHRINK);
 
 	// pack spline point offset and indention in a hbox
-	SPACING(indentation4, INDENTION);
+	SPACING(indentation4, INDENTATION);
 	falloff_box.pack_start(*indentation4, Gtk::PACK_SHRINK);
 	falloff_box.pack_start(falloff_label, Gtk::PACK_SHRINK);
 
