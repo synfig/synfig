@@ -72,6 +72,29 @@ enum CircleFalloff
 	CIRCLE_NUM_FALLOFF
 };
 
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip) ;\
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StateCircle_Context::toggle_layer_creation))
+#endif
+
+// indentation for options layout
+#ifndef SPACING
+#define SPACING(name, px) \
+	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
+	name->set_size_request(px)
+#endif
+
+#define GAP	(3)
+#define INDENTION (6)
+
 /* === G L O B A L S ======================================================= */
 
 StateCircle studio::state_circle;
@@ -117,19 +140,9 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::ToggleButton layer_plant_togglebutton;
 	Gtk::HBox layer_types_box;
 
-#ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
-	button.set_relief(Gtk::RELIEF_NONE); \
-	button.set_tooltip_text(tooltip) ;\
-	button.signal_toggled().connect(sigc::mem_fun(*this, &studio::StateCircle_Context::toggle_layer_creation))
-#endif
-
 	// blend method
 	Gtk::Label blend_label;
+	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
 
 	// opacity
@@ -531,6 +544,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(gap1, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*gap1, Gtk::PACK_SHRINK);
 
 	opacity_label.set_label(_("Opacity:"));
 	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -586,10 +602,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		("synfig-layer_gradient_curve"), _("Create a gradient layer."));
 
 	// pack all layer creation buttons in one hbox
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(10);
-
-	layer_types_box.pack_start(*space, Gtk::PACK_SHRINK);
+	SPACING(indentation1, INDENTION);
+	layer_types_box.pack_start(*indentation1, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_circle_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
@@ -597,13 +611,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
 
-	// pack id_entry and id_label together in one hbox
-
-	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
-	space1->set_size_request(10);
-
+	// pack id_label, gap and id_label together in one hbox
+	SPACING(gap2, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*space1, Gtk::PACK_SHRINK);
+	id_box.pack_start(*gap2, Gtk::PACK_SHRINK);
 	id_box.pack_start(id_entry);
 
 	bline_width_dist.set_digits(2);
@@ -614,18 +625,14 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
 
-	// pack spline point offset and a space in a hbox
-	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
-	space2->set_size_request(10);
-
-	bline_point_angle_offset_box.pack_start(*space2, Gtk::PACK_SHRINK);
+	// pack spline point offset and indention in a hbox
+	SPACING(indentation3, INDENTION);
+	bline_point_angle_offset_box.pack_start(*indentation3, Gtk::PACK_SHRINK);
 	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, Gtk::PACK_SHRINK);
 
-	// pack spline point offset and a space in a hbox
-	Gtk::Alignment *space3 = Gtk::manage(new Gtk::Alignment());
-	space3->set_size_request(10);
-
-	falloff_box.pack_start(*space3, Gtk::PACK_SHRINK);
+	// pack spline point offset and indention in a hbox
+	SPACING(indentation4, INDENTION);
+	falloff_box.pack_start(*indentation4, Gtk::PACK_SHRINK);
 	falloff_box.pack_start(falloff_label, Gtk::PACK_SHRINK);
 
 	// pack checkbuttons and their own labels together
@@ -681,7 +688,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 3, blend method
-	options_table.attach(blend_label,
+	options_table.attach(blend_box,
 		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(blend_enum,
@@ -693,7 +700,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		);
 	options_table.attach(opacity_hscl,
 		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	);
+		);
 	// 5, brush size
 	options_table.attach(bline_width_label,
 		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
