@@ -557,6 +557,8 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 bool
 Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)
 {
+	warning("Resampling used while rendering - possible overhead", __FILE__, __LINE__);
+
 	Transformation transformation(renddesc.get_transformation_matrix());
 
 	if(cb && !cb->amount_complete(0,10000)) return false;
