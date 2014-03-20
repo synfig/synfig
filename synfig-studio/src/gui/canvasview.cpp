@@ -357,6 +357,7 @@ public:
 	virtual bool
 	task(const std::string &task)
 	{
+		cout << task.c_str() << endl;
 		if(!view->is_playing_)
 		{
 			view->statusbar->pop();
