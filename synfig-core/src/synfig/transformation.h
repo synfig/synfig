@@ -121,6 +121,7 @@ public:
 
 	void set_matrix(const Matrix &matrix)
 	{
+		if (matrix.is_identity()) *this = Transformation();
 		Vector axis_x(matrix.get_axis_x());
 		Vector axis_y(matrix.get_axis_y());
 		angle = axis_x.angle();

@@ -394,7 +394,9 @@ Layer_PasteCanvas::get_full_bounding_rect(Context context)const
 bool
 Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Transformation transformation(get_summary_transformation());
+	Transformation transformation(
+		get_summary_transformation().get_matrix()
+	  * renddesc.get_transformation_matrix() );
 
 	Real outline_grow=param_outline_grow.get(Real());
 	Time time_offset=param_time_offset.get(Time());
@@ -529,7 +531,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if (intermediate_w > 0 && intermediate_h > 0) {
 		RendDesc intermediate_desc(renddesc);
 		intermediate_desc.clear_flags();
-		intermediate_desc.set_flags(0);
 		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
 		intermediate_desc.set_wh(intermediate_w, intermediate_h);
 		intermediate_desc.set_tl(pixel_aligned_tl);
