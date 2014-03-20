@@ -2507,8 +2507,6 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 bool
 Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
-
 	Color color=param_color.get(Color());
 	Point origin=param_origin.get(Point());
 	bool invert =param_invert.get(bool(true));
@@ -3092,33 +3090,37 @@ bool
 Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	Point origin=param_origin.get(Point());
+	// If our amount is set to zero, no need to render anything
+	if(!get_amount())
+		return true;
+
+	const Real pw = renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
+	const Real ph = renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
+
+	// if the pixels are zero sized then we're too zoomed out to see anything
+	if (pw == 0 || ph == 0)
+		return true;
+
+	Matrix matrix(
+		Matrix().set_translate(param_origin.get(Point()))
+	  * renddesc.get_transformation_matrix()
+	  * Matrix().set_translate(-renddesc.get_tl())
+	  * Matrix().set_scale(pw, ph)
+	);
 
 	int tmp(0);
 
 	SuperCallback	progress(cb,0,renddesc.get_h(),renddesc.get_h());
 
-	// If our amount is set to zero, no need to render anything
-	if(!get_amount())
-		return true;
-
 	//test new polygon renderer
 	// Build edge table
 	// Width and Height of a pixel
-	const int 	w = renddesc.get_w();
-	const int	h = renddesc.get_h();
-	const Real	pw = renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	const Real	ph = renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-
-	const Point	tl = renddesc.get_tl();
+	const int w = renddesc.get_w();
+	const int h = renddesc.get_h();
 
 	Vector tangent (0,0);
 
 	PolySpan	span;
-
-	// if the pixels are zero sized then we're too zoomed out to see anything
-	if (pw == 0 || ph == 0)
-		return true;
 
 	//optimization for tessellating only inside tiles
 	span.window.minx = 0;
@@ -3194,10 +3196,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 			{
 				case Primitive::MOVE_TO:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					if(curnum == 0)
 					{
@@ -3221,10 +3220,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 				case Primitive::LINE_TO:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = x - span.cur_x;
 					tangent[1] = y - span.cur_y;
@@ -3236,15 +3232,8 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 				case Primitive::CONIC_TO:
 				{
-					x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = 2*(x - x1);
 					tangent[1] = 2*(y - y1);
@@ -3256,10 +3245,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 				case Primitive::CONIC_TO_SMOOTH:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					x1 = span.cur_x + tangent[0]/2;
 					y1 = span.cur_y + tangent[1]/2;
@@ -3275,20 +3261,9 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 				case Primitive::CUBIC_TO:
 				{
-					x = data[curnum+2][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+2][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum+1][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum+1][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+2][0], data[curnum+2][1]);
+					matrix.get_transformed(x2, y2, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = 2*(x - x2);
 					tangent[1] = 2*(y - y2);
@@ -3301,15 +3276,8 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 				case Primitive::CUBIC_TO_SMOOTH:
 				{
-					x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					x1 = span.cur_x + tangent[0]/3.0;
 					y1 = span.cur_y + tangent[1]/3.0;
@@ -3338,20 +3306,29 @@ bool
 Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback */*cb*/)const
 {
-	Point origin=param_origin.get(Point());
 	// If our amount is set to zero, no need to render anything
 	if(!get_amount())
 		return true;
+
+	const Real pw = renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
+	const Real ph = renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
+
+	// if the pixels are zero sized then we're too zoomed out to see anything
+	if (pw == 0 || ph == 0)
+		return true;
+
+	Matrix matrix(
+		Matrix().set_translate(param_origin.get(Point()))
+	  * renddesc.get_transformation_matrix()
+	  * Matrix().set_translate(-renddesc.get_tl())
+	  * Matrix().set_scale(pw, ph)
+	);
 
 	//test new polygon renderer
 	// Build edge table
 	// Width and Height of a pixel
 	const int 	w = renddesc.get_w();
 	const int	h = renddesc.get_h();
-	const Real	pw = renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	const Real	ph = renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-
-	const Point	tl = renddesc.get_tl();
 
 	Vector tangent (0,0);
 
@@ -3424,10 +3401,7 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 			{
 				case Primitive::MOVE_TO:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					if(curnum == 0)
 					{
@@ -3451,10 +3425,7 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 
 				case Primitive::LINE_TO:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = x - span.cur_x;
 					tangent[1] = y - span.cur_y;
@@ -3466,15 +3437,8 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 
 				case Primitive::CONIC_TO:
 				{
-					x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = 2*(x - x1);
 					tangent[1] = 2*(y - y1);
@@ -3486,10 +3450,7 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 
 				case Primitive::CONIC_TO_SMOOTH:
 				{
-					x = data[curnum][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum][1];
-					y = (y - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum][0], data[curnum][1]);
 
 					x1 = span.cur_x + tangent[0]/2;
 					y1 = span.cur_y + tangent[1]/2;
@@ -3505,20 +3466,9 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 
 				case Primitive::CUBIC_TO:
 				{
-					x = data[curnum+2][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+2][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum+1][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum+1][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
-
-					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + origin[0])*pw;
-					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+2][0], data[curnum+2][1]);
+					matrix.get_transformed(x2, y2, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					tangent[0] = 2*(x - x2);
 					tangent[1] = 2*(y - y2);
@@ -3531,15 +3481,8 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 
 				case Primitive::CUBIC_TO_SMOOTH:
 				{
-					x = data[curnum+1][0];
-					x = (x - tl[0] + origin[0])*pw;
-					y = data[curnum+1][1];
-					y = (y - tl[1] + origin[1])*ph;
-
-					x2 = data[curnum][0];
-					x2 = (x2 - tl[0] + origin[0])*pw;
-					y2 = data[curnum][1];
-					y2 = (y2 - tl[1] + origin[1])*ph;
+					matrix.get_transformed(x, y, data[curnum+1][0], data[curnum+1][1]);
+					matrix.get_transformed(x1, y1, data[curnum][0], data[curnum][1]);
 
 					x1 = span.cur_x + tangent[0]/3.0;
 					y1 = span.cur_y + tangent[1]/3.0;

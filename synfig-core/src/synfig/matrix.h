@@ -148,6 +148,7 @@ public:
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
 	Vector get_transformed(const Vector &v, bool translate = true)const;
+	void get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate = true)const;
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation

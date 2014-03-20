@@ -140,6 +140,21 @@ Matrix::get_transformed(const Vector &v, bool translate)const
 				  v[0]*m01+v[1]*m11);
 }
 
+void
+Matrix::get_transformed(value_type &out_x, value_type &out_y, const value_type x, const value_type y, bool translate)const
+{
+	if (translate)
+	{
+		out_x = x*m00+y*m10+m20;
+		out_y = x*m01+y*m11+m21;
+	}
+	else
+	{
+		out_x = x*m00+y*m10;
+		out_y = x*m01+y*m11;
+	}
+}
+
 Matrix
 Matrix::operator*=(const Matrix &rhs)
 {
