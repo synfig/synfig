@@ -961,7 +961,7 @@ typedef rect<int> ContextRect;
 class Layer_Shape::PolySpan
 {
 public:
-	typedef	deque<PenMark> 	cover_array;
+	typedef	vector<PenMark> 	cover_array;
 
 	Point			arc[3*MAX_SUBDIVISION_SIZE + 1];
 
@@ -973,6 +973,10 @@ public:
 	//ending position of last primitive
 	Real			cur_x;
 	Real			cur_y;
+
+	//ending position of last primitive
+	Real			optimized_cur_x;
+	Real			optimized_cur_y;
 
 	//starting position of current primitive list
 	Real			close_x;
@@ -994,7 +998,7 @@ public:
 	//default constructor - 0 everything
 	PolySpan() :current(0,0,0,0),flags(NotSorted)
 	{
-		cur_x = cur_y = close_x = close_y = 0;
+		cur_x = cur_y = optimized_cur_x = optimized_cur_y = close_x = close_y = 0;
 		open_index = 0;
 	}
 
@@ -1007,7 +1011,7 @@ public:
 	void clear()
 	{
 		covers.clear();
-		cur_x = cur_y = close_x = close_y = 0;
+		cur_x = cur_y = optimized_cur_x = optimized_cur_y = close_x = close_y = 0;
 		open_index = 0;
 		current.set(0,0,0,0);
 		flags = NotSorted;
@@ -1018,6 +1022,8 @@ public:
 	{
 		if(current.cover || current.area)
 		{
+			if (covers.size() == covers.capacity())
+				covers.reserve(covers.size() + 1024*1024);
 			covers.push_back(current);
 		}
 	}
@@ -1083,8 +1089,8 @@ public:
 		if(isnan(x))x=0;
 		if(isnan(y))y=0;
 		move_pen((int)floor(x),(int)floor(y));
-		close_y = cur_y = y;
-		close_x = cur_x = x;
+		close_y = optimized_cur_y = cur_y = y;
+		close_x = optimized_cur_x = cur_x = x;
 	}
 
 	//primitive_to functions
@@ -1341,33 +1347,37 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 
 	const Real xin(x), yin(y);
 
-	Real dx = x - cur_x;
-	Real dy = y - cur_y;
+	Real dx = x - optimized_cur_x;
+	Real dy = y - optimized_cur_y;
+	cur_x = x;
+	cur_y = y;
+
+	if (dx*dx + dy*dy < 0.25) return;
 
 	//CLIP IT!!!!
 	try {
 	//outside y - ignore entirely
-	if(	 (cur_y >= window.maxy && y >= window.maxy)
-	   ||(cur_y <  window.miny && y <  window.miny) )
+	if(	 (optimized_cur_y >= window.maxy && y >= window.maxy)
+	   ||(optimized_cur_y <  window.miny && y <  window.miny) )
 	{
-		cur_x = x;
-		cur_y = y;
+		optimized_cur_x = x;
+		optimized_cur_y = y;
 	}
 	else //not degenerate - more complicated
 	{
 		if(dy > 0) //be sure it's not tooooo small
 		{
-			// cur_y ... window.miny ... window.maxy ... y
+			// optimized_cur_y ... window.miny ... window.maxy ... y
 
 			//initial degenerate - initial clip
-			if(cur_y < window.miny)
+			if(optimized_cur_y < window.miny)
 			{
 				//new clipped start point (must also move pen)
-				n[2] = cur_x + (window.miny - cur_y) * dx / dy;
+				n[2] = optimized_cur_x + (window.miny - optimized_cur_y) * dx / dy;
 
-				cur_x = n[2];
-				cur_y = window.miny;
-				move_pen((int)floor(cur_x),window.miny);
+				optimized_cur_x = n[2];
+				optimized_cur_y = window.miny;
+				move_pen((int)floor(optimized_cur_x),window.miny);
 			}
 
 			//generate data for the ending clipped info
@@ -1384,14 +1394,14 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 		else
 		{
 			//initial degenerate - initial clip
-			if(cur_y > window.maxy)
+			if(optimized_cur_y > window.maxy)
 			{
 				//new clipped start point (must also move pen)
-				n[2] = cur_x + (window.maxy - cur_y) * dx / dy;
+				n[2] = optimized_cur_x + (window.maxy - optimized_cur_y) * dx / dy;
 
-				cur_x = n[2];
-				cur_y = window.maxy;
-				move_pen((int)floor(cur_x),window.maxy);
+				optimized_cur_x = n[2];
+				optimized_cur_y = window.maxy;
+				move_pen((int)floor(optimized_cur_x),window.maxy);
 			}
 
 			//generate data for the ending clipped info
@@ -1407,24 +1417,24 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 		}
 
 		//all degenerate - but require bounded clipped values
-		if(   (cur_x >= window.maxx && x >= window.maxx)
-			||(cur_x <  window.minx && x <  window.minx) )
+		if(   (optimized_cur_x >= window.maxx && x >= window.maxx)
+			||(optimized_cur_x <  window.minx && x <  window.minx) )
 		{
 			//clip both vertices - but only needed in the x direction
-			cur_x = max(cur_x,	(Real)window.minx);
-			cur_x = min(cur_x,	(Real)window.maxx);
+			optimized_cur_x = max(optimized_cur_x,	(Real)window.minx);
+			optimized_cur_x = min(optimized_cur_x,	(Real)window.maxx);
 
 			//clip the dest values - y is already clipped
 			x = max(x,(Real)window.minx);
 			x = min(x,(Real)window.maxx);
 
 			//must start at new point...
-			move_pen((int)floor(cur_x),(int)floor(cur_y));
+			move_pen((int)floor(optimized_cur_x),(int)floor(optimized_cur_y));
 
-			draw_line(cur_x,cur_y,x,y);
+			draw_line(optimized_cur_x,optimized_cur_y,x,y);
 
-			cur_x = xin;
-			cur_y = yin;
+			optimized_cur_x = xin;
+			optimized_cur_y = yin;
 		}
 		else
 		{
@@ -1432,16 +1442,16 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 			if(dx > 0)
 			{
 				//initial degenerate - initial clip
-				if(cur_x < window.minx)
+				if(optimized_cur_x < window.minx)
 				{
-					//need to draw an initial segment from clippedx,cur_y to clippedx,intersecty
-					n[2] = cur_y + (window.minx - cur_x) * dy / dx;
+					//need to draw an initial segment from clippedx,optimized_cur_y to clippedx,intersecty
+					n[2] = optimized_cur_y + (window.minx - optimized_cur_x) * dy / dx;
 
-					move_pen(window.minx,(int)floor(cur_y));
-					draw_line(window.minx,cur_y,window.minx,n[2]);
+					move_pen(window.minx,(int)floor(optimized_cur_y));
+					draw_line(window.minx,optimized_cur_y,window.minx,n[2]);
 
-					cur_x = window.minx;
-					cur_y = n[2];
+					optimized_cur_x = window.minx;
+					optimized_cur_y = n[2];
 				}
 
 				//generate data for the ending clipped info
@@ -1461,16 +1471,16 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 			}else
 			{
 				//initial degenerate - initial clip
-				if(cur_x > window.maxx)
+				if(optimized_cur_x > window.maxx)
 				{
-					//need to draw an initial segment from clippedx,cur_y to clippedx,intersecty
-					n[2] = cur_y + (window.maxx - cur_x) * dy / dx;
+					//need to draw an initial segment from clippedx,optimized_cur_y to clippedx,intersecty
+					n[2] = optimized_cur_y + (window.maxx - optimized_cur_x) * dy / dx;
 
-					move_pen(window.maxx,(int)floor(cur_y));
-					draw_line(window.maxx,cur_y,window.maxx,n[2]);
+					move_pen(window.maxx,(int)floor(optimized_cur_y));
+					draw_line(window.maxx,optimized_cur_y,window.maxx,n[2]);
 
-					cur_x = window.maxx;
-					cur_y = n[2];
+					optimized_cur_x = window.maxx;
+					optimized_cur_y = n[2];
 				}
 
 				//generate data for the ending clipped info
@@ -1489,17 +1499,17 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 				}
 			}
 
-			move_pen((int)floor(cur_x),(int)floor(cur_y));
+			move_pen((int)floor(optimized_cur_x),(int)floor(optimized_cur_y));
 			//draw the relevant line (clipped)
-			draw_line(cur_x,cur_y,x,y);
+			draw_line(optimized_cur_x,optimized_cur_y,x,y);
 
 			if(afterx)
 			{
 				draw_line(x,y,n[0],n[1]);
 			}
 
-			cur_x = xin;
-			cur_y = yin;
+			optimized_cur_x = xin;
+			optimized_cur_y = yin;
 		}
 	}
 	} catch(...) { synfig::error("line_to: cur_x=%f, cur_y=%f, x=%f, y=%f", cur_x, cur_y, x, y); throw; }
