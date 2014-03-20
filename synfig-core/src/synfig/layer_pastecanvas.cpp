@@ -420,8 +420,10 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if (is_solid_color() || context->empty())
 	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		surface->clear();
+		RendDesc intermediate_desc(renddesc);
+		intermediate_desc.clear_flags();
+		intermediate_desc.set_transformation_matrix(transformation.get_matrix());
+		return canvas->get_context(context).accelerated_render(surface,quality,intermediate_desc,&stagetwo);
 	}
 	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
@@ -445,6 +447,8 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if (!outer_bounds.is_valid())
 		return true;
 	
+	Rect next_bounds( Transformation::transform_bounds(renddesc.get_transformation_matrix(), context.get_full_bounding_rect()) );
+
 	// sometimes the user changes the parameters while we're
 	// rendering, causing our pasted canvas' bounding box to shrink
 	// and no longer overlap with our tile.  if that has happened,
@@ -465,19 +469,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	bool blend_using_straight = false; // use 'straight' just for the central blit
 
-	// we have rendered what's under us, if necessary
-	if(context->empty())
-	{
-		// if there's nothing under us, and we're blending 'onto', then we've finished
-		if (Color::is_onto(blend_method)) return true;
-
-		// there's nothing under us, so using straight blending is
-		// faster than and equivalent to using composite, but we don't
-		// want to blank the surrounding areas
-		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
-	}
-
-	if (!etl::intersect(context.get_full_bounding_rect(),outer_bounds))
+	if (!etl::intersect(next_bounds,outer_bounds))
 	{
 		// if there's no intersection between the context and our
 		// surface, and we're rendering 'onto', then we're done
