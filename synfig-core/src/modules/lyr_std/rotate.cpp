@@ -181,13 +181,12 @@ Rotate::get_color(Context context, const Point &p)const
 bool
 Rotate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
-
 	Vector origin=param_origin.get(Vector());
 	Angle amount=param_amount.get(Angle());
 	
 	if(amount.dist(Angle::deg(0))==Angle::deg(0))
 		return context.accelerated_render(surface,quality,renddesc,cb);
+
 	if(amount.dist(Angle::deg(180))==Angle::deg(0))
 	{
 		RendDesc desc(renddesc);
@@ -200,156 +199,14 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 		return context.accelerated_render(surface,quality,desc,cb);
 	}
 
-	SuperCallback stageone(cb,0,9000,10000);
-	SuperCallback stagetwo(cb,9000,10000,10000);
-
-	if(cb && !cb->amount_complete(0,10000))
-		return false;
-
-	Point tl(renddesc.get_tl()-origin);
-	Point br(renddesc.get_br()-origin);
-
-	{
-		Point rot_tl(cos_val*tl[0]+sin_val*tl[1],-sin_val*tl[0]+cos_val*tl[1]);
-		Point rot_br(cos_val*br[0]+sin_val*br[1],-sin_val*br[0]+cos_val*br[1]);
-		Point rot_tr(cos_val*br[0]+sin_val*tl[1],-sin_val*br[0]+cos_val*tl[1]);
-		Point rot_bl(cos_val*tl[0]+sin_val*br[1],-sin_val*tl[0]+cos_val*br[1]);
-		rot_tl+=origin;
-		rot_br+=origin;
-		rot_tr+=origin;
-		rot_bl+=origin;
-
-		Point min_point(min(min(min(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),min(min(min(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
-		Point max_point(max(max(max(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),max(max(max(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
-
-		if(tl[0]>br[0])
-		{
-			tl[0]=max_point[0];
-			br[0]=min_point[0];
-		}
-		else
-		{
-			br[0]=max_point[0];
-			tl[0]=min_point[0];
-		}
-		if(tl[1]>br[1])
-		{
-			tl[1]=max_point[1];
-			br[1]=min_point[1];
-		}
-		else
-		{
-			br[1]=max_point[1];
-			tl[1]=min_point[1];
-		}
-	}
-
-	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-
-	// we're going to round the canvas size to an integer number of pixels, so round the
-	// tl-br rectangle accordingly - otherwise we see the jittering described in bug 2152666
-	br[0] -= (pw*(br[0]-tl[0]) - round_to_int(pw*(br[0]-tl[0]))) / pw;
-	br[1] -= (ph*(br[1]-tl[1]) - round_to_int(ph*(br[1]-tl[1]))) / ph;
-
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	//desc.set_flags(RendDesc::PX_ASPECT);
-	desc.set_tl(tl);
-	desc.set_br(br);
-	desc.set_wh(round_to_int(pw*(br[0]-tl[0])),round_to_int(ph*(br[1]-tl[1])));
-
-	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",renddesc.get_tl()[0],renddesc.get_tl()[1],renddesc.get_br()[0],renddesc.get_br()[1],renddesc.get_w(),renddesc.get_h());
-	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
-
-	Surface source;
-	source.set_wh(desc.get_w(),desc.get_h());
-
-	if(!context.accelerated_render(&source,quality,desc,&stageone))
-		return false;
-
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-
-	Surface::pen pen(surface->begin());
-
-	// There is not need to supersample when the rotation is 90 or -90
-	// There is a one to one pixel correspondence.
-	if(amount.dist(Angle::deg(90))== Angle::deg(0.0) || amount.dist(Angle::deg(-90))== Angle::deg(0.0))
-		quality = 7;
-
-	if(quality<=4)
-	{
-		// CUBIC
-		int x,y;//,u,v,u2,v2;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=Point(cos_val*(point[0]-origin[0])+sin_val*(point[1]-origin[1]),-sin_val*(point[0]-origin[0])+cos_val*(point[1]-origin[1])) +origin;
-				(*surface)[y][x]=source.cubic_sample((tmp[0]-tl[0])*pw,(tmp[1]-tl[1])*ph);
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-	else
-	if(quality<=6)
-	{
-		// INTERPOLATION_LINEAR
-		int x,y;//,u,v,u2,v2;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=Point(cos_val*(point[0]-origin[0])+sin_val*(point[1]-origin[1]),-sin_val*(point[0]-origin[0])+cos_val*(point[1]-origin[1])) +origin;
-				(*surface)[y][x]=source.linear_sample((tmp[0]-tl[0])*pw,(tmp[1]-tl[1])*ph);
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-	else
-	{
-		// NEAREST_NEIGHBOR
-		int x,y,u,v;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=Point(cos_val*(point[0]-origin[0])+sin_val*(point[1]-origin[1]),-sin_val*(point[0]-origin[0])+cos_val*(point[1]-origin[1])) +origin;
-				u=int((tmp[0]-tl[0])*pw);
-				v=int((tmp[1]-tl[1])*ph);
-				if(u<0)
-					u=0;
-				if(v<0)
-					v=0;
-				if(u>=source.get_w())
-					u=source.get_w()-1;
-				if(v>=source.get_h())
-					v=source.get_h()-1;
-				//pen.set_value(source[v][u]);
-				(*surface)[y][x]=source[v][u];
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-
-	if(cb && !cb->amount_complete(10000,10000)) return false;
-
-	return true;
+	RendDesc transformed_renddesc(renddesc);
+	transformed_renddesc.clear_flags();
+	transformed_renddesc.set_transformation_matrix(
+		Matrix().set_translate(-origin)
+	  * Matrix().set_rotate(amount)
+	  * Matrix().set_translate(origin)
+	  * renddesc.get_transformation_matrix() );
+	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
 }
 
 ///////////
