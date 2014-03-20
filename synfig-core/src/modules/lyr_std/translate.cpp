@@ -148,17 +148,16 @@ Translate::get_transform()const
 bool
 Translate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
-
 	Vector origin=param_origin.get(Vector());
-	RendDesc desc(renddesc);
 
-	desc.clear_flags();
-	desc.set_tl(desc.get_tl()-origin);
-	desc.set_br(desc.get_br()-origin);
+	RendDesc transformed_renddesc(renddesc);
+	transformed_renddesc.clear_flags();
+	transformed_renddesc.set_transformation_matrix(
+		Matrix().set_translate(origin)
+	  * renddesc.get_transformation_matrix() );
 
 	// Render the scene
-	if(!context.accelerated_render(surface,quality,desc,cb))
+	if(!context.accelerated_render(surface,quality,transformed_renddesc,cb))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
