@@ -544,9 +544,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	SPACING(gap1, GAP);
+	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*gap1, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
 
 	opacity_label.set_label(_("Opacity:"));
 	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
@@ -602,8 +602,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
 	// pack all layer creation buttons in one hbox
-	SPACING(indentation1, INDENTATION);
-	layer_types_box.pack_start(*indentation1, Gtk::PACK_SHRINK);
+	SPACING(layer_type_indent, INDENTATION);
+	layer_types_box.pack_start(*layer_type_indent, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_circle_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
@@ -612,9 +612,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
 
 	// pack id_label, gap and id_label together in one hbox
-	SPACING(gap2, GAP);
+	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*gap2, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 	id_box.pack_start(id_entry);
 
 	bline_width_dist.set_digits(2);
@@ -626,13 +626,13 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	feather_dist.set_sensitive(false);
 
 	// pack spline point offset and indention in a hbox
-	SPACING(indentation3, INDENTATION);
-	bline_point_angle_offset_box.pack_start(*indentation3, Gtk::PACK_SHRINK);
+	SPACING(bline_point_angle_offset_indent, INDENTATION);
+	bline_point_angle_offset_box.pack_start(*bline_point_angle_offset_indent, Gtk::PACK_SHRINK);
 	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, Gtk::PACK_SHRINK);
 
 	// pack spline point offset and indention in a hbox
-	SPACING(indentation4, INDENTATION);
-	falloff_box.pack_start(*indentation4, Gtk::PACK_SHRINK);
+	SPACING(falloff_indent, INDENTATION);
+	falloff_box.pack_start(*falloff_indent, Gtk::PACK_SHRINK);
 	falloff_box.pack_start(falloff_label, Gtk::PACK_SHRINK);
 
 	// pack checkbuttons and their own labels together
