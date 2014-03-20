@@ -31,10 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/optionmenu.h>
-
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
@@ -67,13 +63,28 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-enum
-{
-	GRADIENT_INTERPOLATION_LINEAR=0,
-	GRADIENT_RADIAL=1,
-	GRADIENT_CONICAL=2,
-	GRADIENT_SPIRAL=3
-};
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, fun, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip); \
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StateGradient_Context::fun))
+#endif
+
+// indentation for options layout
+#ifndef SPACING
+#define SPACING(name, px) \
+	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
+	name->set_size_request(px)
+#endif
+
+#define GAP	(3)
+#define INDENTATION (6)
 
 /* === G L O B A L S ======================================================= */
 
@@ -98,32 +109,45 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	Gtk::Table *options_table;
-	Gtk::HBox *id_hbox;
+	// holder of options
+	Gtk::Table options_table;
 
+	// title
 	Gtk::Label title_label;
+
+	// layer name:
 	Gtk::Label id_label;
-	Gtk::Label type_label;
-	Gtk::Label blend_label;
-
+	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
-	Gtk::ToggleButton togglebutton_layer_linear_gradient;
-	Gtk::ToggleButton togglebutton_layer_radial_gradient;
-	Gtk::ToggleButton togglebutton_layer_conical_gradient;
-	Gtk::ToggleButton togglebutton_layer_spiral_gradient;
 
-	Widget_Enum type_enum;
-	Widget_Enum	blend_enum;
+	// layer types to create:
+	Gtk::Label layer_types_label;
+	Gtk::ToggleButton layer_circle_togglebutton;
+	Gtk::ToggleButton layer_linear_gradient_togglebutton;
+	Gtk::ToggleButton layer_radial_gradient_togglebutton;
+	Gtk::ToggleButton layer_conical_gradient_togglebutton;
+	Gtk::ToggleButton layer_spiral_gradient_togglebutton;
+	Gtk::HBox layer_types_box;
+
+	// blend method
+	Gtk::Label blend_label;
+	Gtk::HBox blend_box;
+	Widget_Enum blend_enum;
+
+	// opacity
+	Gtk::Label opacity_label;
+	Gtk::HScale opacity_hscl;
+
 
 public:
 	synfig::String get_id()const { return id_entry.get_text(); }
 	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	int get_type()const { return type_enum.get_value(); }
-	void set_type(int x) { return type_enum.set_value(x); }
-
 	int get_blend()const { return blend_enum.get_value(); }
 	void set_blend(int x) { return blend_enum.set_value(x); }
+
+	Real get_opacity()const { return opacity_hscl.get_value(); }
+	void set_opacity(Real x) { opacity_hscl.set_value(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -131,6 +155,42 @@ public:
 
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
+
+	bool get_layer_linear_gradient_flag()const
+	{
+		return layer_linear_gradient_togglebutton.get_active();
+	}
+	void set_layer_linear_gradient_flag(bool x)
+	{
+		return layer_linear_gradient_togglebutton.set_active(x);
+	}
+
+	bool get_layer_radial_gradient_flag()const
+	{
+		return layer_radial_gradient_togglebutton.get_active();
+	}
+	void set_layer_radial_gradient_flag(bool x)
+	{
+		return layer_radial_gradient_togglebutton.set_active(x);
+	}
+
+	bool get_layer_conical_gradient_flag()const
+	{
+		return layer_conical_gradient_togglebutton.get_active();
+	}
+	void set_layer_conical_gradient_flag(bool x)
+	{
+		return layer_conical_gradient_togglebutton.set_active(x);
+	}
+
+	bool get_layer_spiral_gradient_flag()const
+	{
+		return layer_spiral_gradient_togglebutton.get_active();
+	}
+	void set_layer_spiral_gradient_flag(bool x)
+	{
+		return layer_spiral_gradient_togglebutton.set_active(x);
+	}
 
 	void refresh_tool_options();
 
@@ -157,6 +217,12 @@ public:
 			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
+
+	void toggle_layer_linear_gradient();
+	void toggle_layer_radial_gradient();
+	void toggle_layer_conical_gradient();
+	void toggle_layer_spiral_gradient();
+
 
 };	// END of class StateGradient_Context
 
@@ -193,15 +259,41 @@ StateGradient_Context::load_settings()
 		else
 			set_id("Gradient");
 
-		if(settings.get_value("gradient.type",value))
-			set_type(atoi(value.c_str()));
+		if(settings.get_value("gradient.layer_linear_gradient",value) && value=="0")
+			set_layer_linear_gradient_flag(false);
 		else
-			set_type(GRADIENT_INTERPOLATION_LINEAR);
+			set_layer_linear_gradient_flag(true);
+
+		if(settings.get_value("gradient.layer_radial_gradient",value) && value=="0")
+			set_layer_radial_gradient_flag(false);
+		else
+			set_layer_radial_gradient_flag(true);
+
+		if(settings.get_value("gradient.layer_conical_gradient",value) && value=="0")
+			set_layer_conical_gradient_flag(false);
+		else
+			set_layer_conical_gradient_flag(true);
+
+		if(settings.get_value("gradient.layer_spiral_gradient",value) && value=="0")
+			set_layer_spiral_gradient_flag(false);
+		else
+			set_layer_spiral_gradient_flag(true);
+
+//
+//		if(settings.get_value("gradient.type",value))
+//			set_type(atoi(value.c_str()));
+//		else
+//			set_type(GRADIENT_INTERPOLATION_LINEAR);
 
 		if(settings.get_value("gradient.blend",value))
 			set_blend(atoi(value.c_str()));
 		else
 			set_blend(Color::BLEND_COMPOSITE);
+
+		if(settings.get_value("gradient.opacity",value))
+			set_opacity(atof(value.c_str()));
+		else
+			set_opacity(1);
 	}
 	catch(...)
 	{
@@ -216,8 +308,12 @@ StateGradient_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("gradient.id",get_id().c_str());
-		settings.set_value("gradient.type",strprintf("%d",get_type()));
+		settings.set_value("gradient.layer_linear_gradient",get_layer_linear_gradient_flag()?"1":"0");
+		settings.set_value("gradient.layer_radial_gradient",get_layer_radial_gradient_flag()?"1":"0");
+		settings.set_value("gradient.layer_conical_gradient",get_layer_conical_gradient_flag()?"1":"0");
+		settings.set_value("gradient.layer_spiral_gradient",get_layer_spiral_gradient_flag()?"1":"0");
 		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
+		settings.set_value("gradient.opacity",strprintf("%f",(float)get_opacity()));
 	}
 	catch(...)
 	{
@@ -283,129 +379,110 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	id_entry(),
-	togglebutton_layer_linear_gradient(),
-	togglebutton_layer_radial_gradient(),
-	togglebutton_layer_conical_gradient(),
-	togglebutton_layer_spiral_gradient()
+	layer_linear_gradient_togglebutton(),
+	layer_radial_gradient_togglebutton(),
+	layer_conical_gradient_togglebutton(),
+	layer_spiral_gradient_togglebutton(),
+	opacity_hscl(0.0f, 1.01f, 0.01f)
+
 {
 	egress_on_selection_change=true;
 
 	// Set up the tool options dialog
 
 	// title
-	title_label.set_label("Gradient Creation");
+	title_label.set_label(_("Gradient Creation"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
 	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	// name
-	id_label.set_label("Name:");
+	// layer name
+	id_label.set_label(_("Name:"));
+	SPACING(name_gap, GAP);
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*name_gap, Gtk::PACK_SHRINK);
+	id_box.pack_start(id_entry, Gtk::PACK_EXPAND_WIDGET);
 
-	// gradient type
-	type_label.set_label("Create:");
-	type_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	// layer (gradient) creation label
+	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	// layer creation buttons
+	LAYER_CREATION(layer_linear_gradient_togglebutton, toggle_layer_linear_gradient,
+		("synfig-layer_gradient_linear"), _("Create a linear gradient"));
+	LAYER_CREATION(layer_radial_gradient_togglebutton, toggle_layer_radial_gradient,
+		("synfig-layer_gradient_radial"), _("Create a radial gradient"));
+	LAYER_CREATION(layer_conical_gradient_togglebutton, toggle_layer_conical_gradient,
+		("synfig-layer_gradient_conical"), _("Create a conical gradient"));
+	LAYER_CREATION(layer_spiral_gradient_togglebutton, toggle_layer_spiral_gradient,
+		("synfig-layer_gradient_spiral"), _("Create a spiral gradient"));
 
-	type_enum.set_param_desc(ParamDesc("type")
-		.set_local_name(_("Gradient Type"))
-		.set_description(_("Determines the type of Gradient used"))
-		.set_hint("enum")
-		.add_enum_value(GRADIENT_INTERPOLATION_LINEAR,"linear",_("Linear"))
-		.add_enum_value(GRADIENT_RADIAL,"radial",_("Radial"))
-		.add_enum_value(GRADIENT_CONICAL,"conical",_("Conical"))
-		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral"))
-		);
+	SPACING(layer_types_indent, INDENTATION);
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_linear_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_radial_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_conical_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_spiral_gradient_togglebutton, Gtk::PACK_SHRINK);
 
-	// gradient togglebuttons
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_linear"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		togglebutton_layer_linear_gradient.add(*icon);
-		togglebutton_layer_linear_gradient.set_relief(Gtk::RELIEF_NONE);
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_radial"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		togglebutton_layer_radial_gradient.add(*icon);
-		togglebutton_layer_radial_gradient.set_relief(Gtk::RELIEF_NONE);
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_conical"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		togglebutton_layer_conical_gradient.add(*icon);
-		togglebutton_layer_conical_gradient.set_relief(Gtk::RELIEF_NONE);
-	}
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-layer_gradient_spiral"),
-			Gtk::ICON_SIZE_SMALL_TOOLBAR));
-		togglebutton_layer_spiral_gradient.add(*icon);
-		togglebutton_layer_spiral_gradient.set_relief(Gtk::RELIEF_NONE);
-	}
-
-	// pack all layer creation buttons in one hbox
-	Gtk::HBox *layer_types_box = manage(new class Gtk::HBox());
-
-	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
-	space1->set_size_request(10);
-
-	layer_types_box->pack_start(*space1, Gtk::PACK_SHRINK);
-	layer_types_box->pack_start(togglebutton_layer_linear_gradient, Gtk::PACK_SHRINK);
-	layer_types_box->pack_start(togglebutton_layer_radial_gradient, Gtk::PACK_SHRINK);
-	layer_types_box->pack_start(togglebutton_layer_conical_gradient, Gtk::PACK_SHRINK);
-	layer_types_box->pack_start(togglebutton_layer_spiral_gradient, Gtk::PACK_SHRINK);
-
-	// gradient blend method
-	blend_label.set_label("Blend Method:");
+	// blend method label
+	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(blend_gap, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	// blend method
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.set_local_name(_("Blend Method"))
+		.set_description(_("Defines the blend method to be used for grdients")));
 
-	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method"));
+	// opacity label
+	opacity_label.set_label(_("Opacity:"));
+	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	// opacity
+	opacity_hscl.set_digits(2);
+	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
+	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// pack id_label(Name) and entry in a box
-	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
-	space2->set_size_request(10);
-
-	id_hbox = manage(new class Gtk::HBox());
-
-	id_hbox->pack_start(id_label, Gtk::PACK_SHRINK, 0);
-	id_hbox->pack_start(*space2, Gtk::PACK_SHRINK, 0);
-	id_hbox->pack_end(id_entry, Gtk::PACK_EXPAND_WIDGET, 0);
-
-	// attach all child widgets in a table
-	options_table = manage(new class Gtk::Table());
+	// options table
 	// 0, title
-	options_table->attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+	options_table.attach(title_label,
+		0, 2,  0,  1, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 1, name
-	options_table->attach(*id_hbox,
+	options_table.attach(id_box,
 		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 2, create label
-	options_table->attach(type_label,
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	// 2, layer types creation
+	options_table.attach(layer_types_label,
+		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 3, layer type togglebuttons
-	options_table->attach(*layer_types_box,
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(layer_types_box,
+		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 4, blend method
-	options_table->attach(blend_label,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	// 3, blend method
+	options_table.attach(blend_box,
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table->attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+	options_table.attach(blend_enum,
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 4, opacity
+	options_table.attach(opacity_label,
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(opacity_hscl,
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	// fine-tune options layout
-	options_table->set_border_width(6); // border width 6 px
-	options_table->set_row_spacings(3); // row gap 3 px
-	options_table->set_row_spacing(0, 0); // the first row using border width of table
-	options_table->set_row_spacing(2, 0); // row gap between label and icon of layer type 0 px
-	options_table->set_row_spacing(4, 0); // the final row using border width of table
-	options_table->set_homogeneous(true); // same size (width and height)
+	options_table.set_border_width(GAP*2); // border width
+	options_table.set_row_spacings(GAP); // row gap
+	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
+	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	options_table.set_row_spacing(6, 0); // the final row using border width of table
 
-	options_table->show_all();
+	options_table.show_all();
 
 	load_settings();
 	refresh_tool_options();
@@ -441,7 +518,7 @@ void
 StateGradient_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(*options_table);
+	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
 	App::dialog_tool_options->set_name("gradient");
 }
@@ -519,10 +596,8 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
-	switch(get_type())
+	if (get_layer_linear_gradient_flag())
 	{
-	case GRADIENT_INTERPOLATION_LINEAR:
-
 		layer=get_canvas_interface()->add_layer_to("linear_gradient",canvas,depth);
 		if (!layer)
 		{
@@ -534,8 +609,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		get_canvas_interface()->signal_layer_param_changed()(layer,"p1");
 		layer->set_param("p2",p2);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"p2");
-		break;
-	case GRADIENT_RADIAL:
+	}
+
+	else if (get_layer_radial_gradient_flag())
+	{
 		layer=get_canvas_interface()->add_layer_to("radial_gradient",canvas,depth);
 		if (!layer)
 		{
@@ -547,8 +624,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		get_canvas_interface()->signal_layer_param_changed()(layer,"center");
 		layer->set_param("radius",(p2-p1).mag());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
-		break;
-	case GRADIENT_CONICAL:
+	}
+
+	else if (get_layer_conical_gradient_flag())
+	{
 		layer=get_canvas_interface()->add_layer_to("conical_gradient",canvas,depth);
 		if (!layer)
 		{
@@ -563,8 +642,11 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 			layer->set_param("angle",Angle::tan(diff[1],diff[0]));
 			get_canvas_interface()->signal_layer_param_changed()(layer,"angle");
 		}
-		break;
-	case GRADIENT_SPIRAL:
+	}
+
+	else if (get_layer_spiral_gradient_flag())
+	{
+
 		layer=get_canvas_interface()->add_layer_to("spiral_gradient",canvas,depth);
 		if (!layer)
 		{
@@ -581,14 +663,15 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 			layer->set_param("angle",Angle::tan(diff[1],diff[0]));
 			get_canvas_interface()->signal_layer_param_changed()(layer,"angle");
 		}
-		break;
-
-	default:
-		return;
 	}
 
-	layer->set_param("blend_method",get_blend());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+	else return;
+
+	layer->set_param("blend_method", get_blend());
+	get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
+
+	layer->set_param("amount", get_opacity());
+	get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
 
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -658,4 +741,52 @@ StateGradient_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+}
+
+void
+StateGradient_Context::toggle_layer_linear_gradient()
+{
+	if(get_layer_linear_gradient_flag())
+	{
+		set_layer_radial_gradient_flag(false);
+		set_layer_conical_gradient_flag(false);
+		set_layer_spiral_gradient_flag(false);
+	}
+	else return;
+}
+
+void
+StateGradient_Context::toggle_layer_radial_gradient()
+{
+	if(get_layer_radial_gradient_flag())
+	{
+		set_layer_linear_gradient_flag(false);
+		set_layer_spiral_gradient_flag(false);
+		set_layer_conical_gradient_flag(false);
+	}
+	else return;
+}
+
+void
+StateGradient_Context::toggle_layer_conical_gradient()
+{
+	if(get_layer_conical_gradient_flag())
+	{
+		set_layer_linear_gradient_flag(false);
+		set_layer_radial_gradient_flag(false);
+		set_layer_spiral_gradient_flag(false);
+	}
+	else return;
+}
+
+void
+StateGradient_Context::toggle_layer_spiral_gradient()
+{
+	if(get_layer_spiral_gradient_flag())
+	{
+		set_layer_linear_gradient_flag(false);
+		set_layer_radial_gradient_flag(false);
+		set_layer_conical_gradient_flag(false);
+	}
+	else return;
 }
