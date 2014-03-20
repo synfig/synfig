@@ -279,12 +279,6 @@ StateGradient_Context::load_settings()
 		else
 			set_layer_spiral_gradient_flag(true);
 
-//
-//		if(settings.get_value("gradient.type",value))
-//			set_type(atoi(value.c_str()));
-//		else
-//			set_type(GRADIENT_INTERPOLATION_LINEAR);
-
 		if(settings.get_value("gradient.blend",value))
 			set_blend(atoi(value.c_str()));
 		else
