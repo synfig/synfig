@@ -189,9 +189,9 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
-		Matrix().set_translate(center)
+		Matrix().set_translate(-center)
 	  *	Matrix().set_scale(amount)
-	  *	Matrix().set_translate(-center)
+	  *	Matrix().set_translate(center)
 	  * renddesc.get_transformation_matrix() );
 
 	// Render the scene

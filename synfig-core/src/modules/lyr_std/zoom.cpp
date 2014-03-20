@@ -158,22 +158,19 @@ Zoom::get_transform()const
 bool
 Zoom::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
-
 	Vector center=param_center.get(Vector());
 	Real amount=param_amount.get(Real());
 
-	Vector::value_type zoomfactor=1.0/exp(amount);
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-
-    // Adjust the top_left and bottom_right points
-	// for our zoom amount
-	desc.set_tl((desc.get_tl()-center)*zoomfactor+center);
-	desc.set_br((desc.get_br()-center)*zoomfactor+center);
+	RendDesc transformed_renddesc(renddesc);
+	transformed_renddesc.clear_flags();
+	transformed_renddesc.set_transformation_matrix(
+		Matrix().set_translate(-center)
+	  *	Matrix().set_scale(exp(amount))
+	  *	Matrix().set_translate(center)
+	  * renddesc.get_transformation_matrix() );
 
 	// Render the scene
-	return context.accelerated_render(surface,quality,desc,cb);
+	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
 }
 
 
