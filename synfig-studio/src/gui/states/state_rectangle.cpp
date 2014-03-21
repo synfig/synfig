@@ -152,8 +152,7 @@ class studio::StateRectangle_Context : public sigc::trackable
 
 	// expansion
 	Gtk::Label expand_label;
-	Gtk::Adjustment	expand_adj;
-	Gtk::SpinButton expand_spin;
+	Widget_Distance expand_dist;
 
 	// feather size
 	Gtk::Label feather_label;
@@ -203,8 +202,13 @@ public:
 	}
 	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
 
-	Real get_expand()const { return expand_adj.get_value(); }
-	void set_expand(Real f) { expand_adj.set_value(f); }
+	Real get_expand_size() const {
+		return expand_dist.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_expand_size(Distance x) { return expand_dist.set_value(x);}
 
 	bool get_invert()const { return invert_checkbutton.get_active(); }
 	void set_invert(bool i) { invert_checkbutton.set_active(i); }
@@ -316,9 +320,9 @@ StateRectangle_Context::load_settings()
 			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
 
 		if(settings.get_value("rectangle.expand",value))
-			set_expand(atof(value.c_str()));
+			set_expand_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
 		else
-			set_expand(0);
+			set_expand_size(Distance(0, Distance::SYSTEM_POINTS)); // default expansion
 
 		if(settings.get_value("rectangle.feather",value))
 			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
@@ -381,7 +385,7 @@ StateRectangle_Context::save_settings()
 		settings.set_value("rectangle.blend",strprintf("%d",get_blend()));
 		settings.set_value("rectangle.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("rectangle.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
+		settings.set_value("rectangle.expand",expand_dist.get_value().get_string());
 		settings.set_value("rectangle.feather", feather_dist.get_value().get_string());
 		settings.set_value("rectangle.invert",get_invert()?"1":"0");
 		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
@@ -466,8 +470,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	bline_width_dist(),
 	feather_dist(),
 	invert_checkbutton(),
-	expand_adj(0,0,1,0.01,0.1),
-	expand_spin(expand_adj,0.1,3),
+	expand_dist(),
 	layer_link_origins_checkbutton()
 {
 	egress_on_selection_change=true;
@@ -563,7 +566,9 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	expand_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	expand_label.set_sensitive(false);
 
-	expand_spin.set_sensitive(false);
+	expand_dist.set_digits(2);
+	expand_dist.set_range(0, 1000000);
+	expand_dist.set_sensitive(false);
 
 	// 8, feather
 	feather_label.set_label(_("Feather:"));
@@ -630,7 +635,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	options_table.attach(expand_label,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(expand_spin,
+	options_table.attach(expand_dist,
 		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 8, feather
@@ -751,7 +756,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	Real x_min, x_max, y_min, y_max;
 	if (p1[0] < p2[0]) { x_min = p1[0]; x_max = p2[0]; } else { x_min = p2[0]; x_max = p1[0]; }
 	if (p1[1] < p2[1]) { y_min = p1[1]; y_max = p2[1]; } else { y_min = p2[1]; y_max = p1[1]; }
-	x_min -= get_expand(); x_max += get_expand(); y_min -= get_expand(); y_max += get_expand();
+	x_min -= get_expand_size(); x_max += get_expand_size(); y_min -= get_expand_size(); y_max += get_expand_size();
 
 	std::vector<BLinePoint> new_list;
 	for (int i = 0; i < 4; i++)
@@ -801,7 +806,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		layer->set_param("point2",p2);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
 
-		layer->set_param("expand",get_expand());
+		layer->set_param("expand",get_expand_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
 
 		layer->set_param("invert",get_invert());
@@ -1300,12 +1305,12 @@ StateRectangle_Context::toggle_layer_creation()
 	{
 
 		expand_label.set_sensitive(true);
-		expand_spin.set_sensitive(true);
+		expand_dist.set_sensitive(true);
 	}
 	else
 	{
 		expand_label.set_sensitive(false);
-		expand_spin.set_sensitive(false);
+		expand_dist.set_sensitive(false);
 	}
 
 	// link origins
