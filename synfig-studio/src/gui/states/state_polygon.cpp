@@ -454,8 +454,9 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	layer_curve_gradient_togglebutton(),
 	layer_plant_togglebutton(),
 	layer_link_origins_checkbutton(),
-	button_make(_("Make")),
-	feather_dist()
+	opacity_hscl(0.0f, 1.01f, 0.01f),
+	feather_dist(),
+	button_make(_("Make"))
 {
 	egress_on_selection_change=true;
 
