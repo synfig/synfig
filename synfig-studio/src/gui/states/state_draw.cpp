@@ -184,22 +184,30 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	// min pressure, sub option of pressure width
 	Gtk::Label min_pressure_label;
+	Gtk::HBox min_pressure_label_box;
 
 	Gtk::CheckButton min_pressure_checkbutton;
 	Gtk::Adjustment	 min_pressure_adj;
 	Gtk::SpinButton  min_pressure_spin;
 	Gtk::HBox min_pressure_box;
 
-	// local error (?)
-	Gtk::Label localerror_label;
+	// smoothness
+	Gtk::Label smoothness_label;
+
+	// local threshold
+	Gtk::Label localthres_label;
+	Gtk::Adjustment localthres_adj;
+	Gtk::SpinButton localthres_spin;
+	Gtk::HBox localthres_box;
+
 	Gtk::CheckButton localerror_checkbutton;
 	Gtk::HBox localerror_box;
 
-	// golbal/local threshold
-	Gtk::Label threshold_label;
-	Gtk::Adjustment	 localthres_adj;
+	// golbal threshold
+	Gtk::Label globalthres_label;
 	Gtk::Adjustment	 globalthres_adj;
 	Gtk::SpinButton  globalthres_spin;
+	Gtk::HBox globalthres_box;
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
@@ -579,12 +587,17 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	min_pressure_adj(0,0,1,0.01,0.1),
 	min_pressure_spin(min_pressure_adj,0.1,3),
 	min_pressure_checkbutton(),
-	globalthres_adj(.70f,0.01,10000,0.01,0.1),
-	globalthres_spin(globalthres_adj,0.01,3),
+
+//	globalthres_spin.set_increments(0.1,1);
+//	globalthres_spin.set_increments(0.01,.1);
+
+	localthres_adj(20, 1, 100000, 0.1, 1),
+	localthres_spin(localthres_adj, 0.1, 1),
+	globalthres_adj(.70f, 0.01, 10000, 0.01, 0.1),
+	globalthres_spin(globalthres_adj, 0.01, 3),
 	width_max_error_label(),
 	width_max_error_adj(1.0f, 0.01, 100.0, 0.1,1),
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
-	localthres_adj(20,1,100000,0.1,1),
 	localerror_checkbutton()
 
 {
@@ -654,69 +667,80 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	bline_width_dist.set_range(0,10000000);
 
 	// 6, pressure width
-	pressure_width_label.set_label(_("Pressure"));
+	pressure_width_label.set_label(_("Pressure Sensitive"));
 	pressure_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
 	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
 
 	// 7, min pressure, sub option of pressure width
+	SPACING(min_pressure_indent, INDENTATION);
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	min_pressure_label_box.pack_start(*min_pressure_indent, Gtk::PACK_SHRINK);
+	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
 
 	min_pressure_box.pack_end(min_pressure_checkbutton, Gtk::PACK_SHRINK);
 	min_pressure_box.pack_end(min_pressure_spin);
 
-	// 8, local error
-	localerror_label.set_label(_("Smoothness"));
-	localerror_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	// 8, Smoothness
+	smoothness_label.set_label(_("Smoothness"));
+	smoothness_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	localerror_box.pack_start(localerror_label);
-	localerror_box.pack_end(localerror_checkbutton, Gtk::PACK_SHRINK);
+	// 9, local threshold
+	SPACING(localthres_indent, INDENTATION);
+	localthres_label.set_label(_("Local:"));
+	localthres_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
+	localthres_box.pack_start(localthres_label, Gtk::PACK_SHRINK);
 
-	// 9, global threshold
-	threshold_label.set_label(_("Global:"));
-	threshold_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	// 10, width max error of advanced outline layer
+	// 10, global threshold
+	SPACING(globalthres_indent, INDENTATION);
+	globalthres_label.set_label(_("Global:"));
+	globalthres_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
+	globalthres_box.pack_start(globalthres_label, Gtk::PACK_SHRINK);
+
+	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
 	width_max_error_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	// 11, round ends
+	// 12, round ends
 	round_ends_label.set_label(_("Round Ends"));
 	round_ends_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	round_ends_box.pack_start(round_ends_label, Gtk::PACK_SHRINK);
 	round_ends_box.pack_end(round_ends_checkbutton, Gtk::PACK_SHRINK);
 
-	// 12, auto loop
+	// 13, auto loop
 	auto_loop_label.set_label(_("Auto Loop"));
 	auto_loop_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	auto_loop_box.pack_start(auto_loop_label, Gtk::PACK_SHRINK);
 	auto_loop_box.pack_end(auto_loop_checkbutton, Gtk::PACK_SHRINK);
 
-	// 13, auto extend
+	// 14, auto extend
 	auto_extend_label.set_label(_("Auto Extend"));
 	auto_extend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	auto_extend_box.pack_start(auto_extend_label, Gtk::PACK_SHRINK);
 	auto_extend_box.pack_end(auto_extend_checkbutton, Gtk::PACK_SHRINK);
 
-	// 14, auto link
+	// 15, auto link
 	auto_link_label.set_label(_("Auto Link"));
 	auto_link_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	auto_link_box.pack_start(auto_link_label, Gtk::PACK_SHRINK);
 	auto_link_box.pack_end(auto_link_checkbutton, Gtk::PACK_SHRINK);
 
-	// 15, feather
+	// 16, feather
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 
-	// 16, auto export
+	// 17, auto export
 	auto_export_label.set_label(_("Auto Export"));
 	auto_export_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
@@ -775,56 +799,63 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 7, min pressure, sub-option of pressure width
-	options_table.attach(min_pressure_label,
+	options_table.attach(min_pressure_label_box,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(min_pressure_box,
 		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 8, local error
-	options_table.attach(localerror_box,
+	// 8, smoothness
+	options_table.attach(smoothness_label,
 		0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 9, global threshold
-	options_table.attach(threshold_label,
+	// 9, local threshold
+	options_table.attach(localthres_box,
 		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(globalthres_spin,
+	options_table.attach(localthres_spin,
 		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 10, width max error of advanced outline layer
-	options_table.attach(width_max_error_label,
+	// 10, global threshold
+	options_table.attach(globalthres_box,
 		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(width_max_error_spin,
+	options_table.attach(globalthres_spin,
 		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 11, round ends
-	options_table.attach(round_ends_box,
-		0, 2, 12, 13, Gtk::FILL, Gtk::FILL, 0, 0
+	// 11, width max error of advanced outline layer
+	options_table.attach(width_max_error_label,
+		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 12, auto loop
-	options_table.attach(auto_loop_box,
+	options_table.attach(width_max_error_spin,
+		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 12, round ends
+	options_table.attach(round_ends_box,
 		0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 13, auto extend
-	options_table.attach(auto_extend_box,
+	// 13, auto loop
+	options_table.attach(auto_loop_box,
 		0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 14, auto link
-	options_table.attach(auto_link_box,
+	// 14, auto extend
+	options_table.attach(auto_extend_box,
 		0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 15, auto feather
+	// 15, auto link
+	options_table.attach(auto_link_box,
+		0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 16, feather
 	options_table.attach(feather_label,
-		0, 1, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(feather_dist,
-		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 14, auto export
+	// 17, auto export
 	options_table.attach(auto_export_box,
-		0, 2, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	// fine-tune options layout
@@ -878,13 +909,13 @@ StateDraw_Context::UpdateErrorBox()
 {
 	if(get_local_error_flag())
 	{
-		threshold_label.set_label(_("Local:"));
-		globalthres_spin.set_adjustment(localthres_adj);
-		globalthres_spin.set_value(localthres_adj.get_value());
-		globalthres_spin.set_increments(0.1,1);
+		localthres_label.set_label(_("Local:"));
+		localthres_spin.set_adjustment(localthres_adj);
+		localthres_spin.set_value(localthres_adj.get_value());
+		localthres_spin.set_increments(0.1,1);
 	}else
 	{
-		threshold_label.set_label(_("Global:"));
+		globalthres_label.set_label(_("Global:"));
 		globalthres_spin.set_adjustment(globalthres_adj);
 		globalthres_spin.set_value(globalthres_adj.get_value());
 		globalthres_spin.set_increments(0.01,.1);
@@ -897,6 +928,7 @@ void
 StateDraw_Context::UpdateUsePressure()
 {
 	bool status(get_pressure_width_flag());
+	min_pressure_label.set_sensitive(status);
 	min_pressure_checkbutton.set_sensitive(status);
 	min_pressure_spin.set_sensitive(status);
 }
@@ -904,6 +936,7 @@ StateDraw_Context::UpdateUsePressure()
 void
 StateDraw_Context::UpdateCreateAdvancedOutline()
 {
+	width_max_error_label.set_sensitive(get_advanced_outline_flag());
 	width_max_error_spin.set_sensitive(get_advanced_outline_flag());
 }
 
