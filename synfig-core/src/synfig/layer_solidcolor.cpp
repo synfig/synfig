@@ -146,7 +146,7 @@ Layer_SolidColor::get_color(Context context, const Point &pos)const
 bool
 Layer_SolidColor::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	Color color=param_color.get(Color());
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)

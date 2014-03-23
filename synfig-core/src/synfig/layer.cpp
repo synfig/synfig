@@ -554,10 +554,16 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 }
 
 // Temporary function to render transformed layer for layers which yet not suppurt transformed rendering
+#ifdef _DEBUG
 bool
-Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)
+Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line)
 {
-	warning("%s:%d Resampling used while rendering - possible overhead", __FILE__, __LINE__);
+	warning("%s:%d Resampling used while rendering - possible overhead (called from %s:%d)", __FILE__, __LINE__, file, line);
+#else
+bool
+Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *, int)
+{
+#endif
 
 	Transformation transformation(renddesc.get_transformation_matrix());
 
@@ -715,7 +721,7 @@ Layer::render_transformed(const Layer *layer, Context context,Surface *surface,i
 bool
 Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	handle<Target_Scanline> target=surface_target(surface);
 	if(!target)

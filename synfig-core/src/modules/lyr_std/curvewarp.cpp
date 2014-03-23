@@ -434,7 +434,7 @@ CurveWarp::get_color(Context context, const Point &point)const
 bool
 CurveWarp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	Point start_point=param_start_point.get(Point());
 	Point end_point=param_end_point.get(Point());

@@ -396,7 +396,7 @@ synfig::Layer_Bitmap::get_cairocolor(Context context, const Point &pos)const
 bool
 Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	Mutex::Lock lock(mutex);
 

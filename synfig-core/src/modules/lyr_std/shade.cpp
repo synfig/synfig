@@ -168,7 +168,7 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 bool
 Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	synfig::Vector size=param_size.get(synfig::Vector());
 	int type=param_type.get(int());

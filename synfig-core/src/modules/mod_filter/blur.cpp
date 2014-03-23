@@ -135,7 +135,7 @@ Blur_Layer::get_color(Context context, const Point &pos)const
 bool
 Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	synfig::Point size=param_size.get(Point());
 	int type=param_type.get(int());

@@ -168,7 +168,7 @@ Layer_Duplicate::get_duplicate_param()const
 bool
 Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	if(quality == 10)
 		return context.accelerated_render(surface,quality,renddesc,cb);

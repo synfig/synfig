@@ -504,7 +504,7 @@ Warp::get_color(Context context, const Point &p)const
 bool
 Warp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	Point src_tl=param_src_tl.get(Point());
 	Point src_br=param_src_br.get(Point());

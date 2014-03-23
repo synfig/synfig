@@ -687,7 +687,7 @@ Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 bool
 Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	bool use_kerning=param_use_kerning.get(bool());
 	bool grid_fit=param_grid_fit.get(bool());

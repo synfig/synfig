@@ -335,7 +335,7 @@ Noise::get_cairocolor(Context context, const Point &point)const
 bool
 Noise::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	SuperCallback supercb(cb,0,9500,10000);
 

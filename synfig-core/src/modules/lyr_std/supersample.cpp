@@ -118,7 +118,7 @@ SuperSample::get_param(const String& param)const
 bool
 SuperSample::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	int width=param_width.get(int());
 	int height=param_height.get(int());
