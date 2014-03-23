@@ -879,7 +879,9 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateUsePressure));
 	layer_advanced_outline_togglebutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateCreateAdvancedOutline));
-	localthres_radiobutton.signal_toggled().connect(sigc::mem_fun(*this,
+	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
+		&StateDraw_Context::UpdateSmoothness));
+	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateDraw_Context::UpdateSmoothness));
 
 
@@ -934,8 +936,8 @@ StateDraw_Context::UpdateCreateAdvancedOutline()
 void
 StateDraw_Context::UpdateSmoothness()
 {
-	localthres_spin.set_sensitive(get_local_threshold_flag());
-	globalthres_spin.set_sensitive(get_global_threshold_flag());
+	localthres_radiobutton.set_active(localthres_spin.is_focus());
+	globalthres_radiobutton.set_active(globalthres_spin.is_focus());
 }
 
 
