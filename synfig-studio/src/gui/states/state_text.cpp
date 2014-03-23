@@ -31,9 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
 #include "state_text.h"
 #include "state_normal.h"
 #include "canvasview.h"
@@ -45,7 +42,6 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
@@ -62,6 +58,27 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip)
+#endif
+
+// indentation for options layout
+#ifndef SPACING
+#define SPACING(name, px) \
+	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
+	name->set_size_request(px)
+#endif
+
+#define GAP	(3)
+#define INDENTATION (6)
 
 /* === G L O B A L S ======================================================= */
 
@@ -83,30 +100,74 @@ class studio::StateText_Context
 	//Toolbox settings
 	synfigapp::Settings& settings;
 
-	//Toolbox display
+	// holder of options
 	Gtk::Table options_table;
 
-	Gtk::Entry		entry_id; //what to name the layer
-	Gtk::Entry		entry_family;
-	Widget_Vector	widget_size;
-	Widget_Vector	widget_orientation;
-	Gtk::CheckButton checkbutton_paragraph;
+	// title
+	Gtk::Label title_label;
+
+	// layer name:
+	Gtk::Label id_label;
+	Gtk::HBox id_box;
+	Gtk::Entry id_entry;
+
+	// layer types to create:
+	Gtk::Label layer_types_label;
+	Gtk::ToggleButton layer_text_togglebutton;
+	Gtk::HBox layer_types_box;
+
+	// blend method
+	Gtk::Label blend_label;
+	Gtk::HBox blend_box;
+	Widget_Enum blend_enum;
+
+	// opacity
+	Gtk::Label opacity_label;
+	Gtk::HScale opacity_hscl;
+
+	// paragraph
+	Gtk::Label paragraph_label;
+	Gtk::CheckButton paragraph_checkbutton;
+	Gtk::HBox paragraph_box;
+
+	// size
+	Gtk::Label size_label;
+	Widget_Vector size_widget;
+
+	// orientation
+	Gtk::Label orientation_label;
+	Widget_Vector orientation_widget;
+
+	// font family
+	Gtk::Label family_label;
+	Gtk::Entry family_entry;
+
 
 public:
-	synfig::String get_id()const { return entry_id.get_text(); }
-	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
-	bool get_paragraph_flag()const { return checkbutton_paragraph.get_active(); }
-	void set_paragraph_flag(bool x) { return checkbutton_paragraph.set_active(x); }
+	synfig::String get_id()const { return id_entry.get_text(); }
+	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	Vector get_size() { return widget_size.get_value(); }
-	void set_size(Vector s) { return widget_size.set_value(s); }
+	bool get_layer_text_flag()const { return layer_text_togglebutton.get_active(); }
+	void set_layer_text_flag(bool x) { return layer_text_togglebutton.set_active(x); }
 
-	Vector get_orientation() { return widget_orientation.get_value(); }
-	void set_orientation(Vector s) { return widget_orientation.set_value(s); }
+	int get_blend()const { return blend_enum.get_value(); }
+	void set_blend(int x) { return blend_enum.set_value(x); }
 
-	String get_family()const { return entry_family.get_text(); }
-	void set_family(String s) { return entry_family.set_text(s); }
+	Real get_opacity()const { return opacity_hscl.get_value(); }
+	void set_opacity(Real x) { opacity_hscl.set_value(x); }
+
+	bool get_paragraph_flag()const { return paragraph_checkbutton.get_active(); }
+	void set_paragraph_flag(bool x) { return paragraph_checkbutton.set_active(x); }
+
+	Vector get_size() { return size_widget.get_value(); }
+	void set_size(Vector s) { return size_widget.set_value(s); }
+
+	Vector get_orientation() { return orientation_widget.get_value(); }
+	void set_orientation(Vector s) { return orientation_widget.set_value(s); }
+
+	String get_family()const { return family_entry.get_text(); }
+	void set_family(String s) { return family_entry.set_text(s); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -176,6 +237,16 @@ StateText_Context::load_settings()
 		else
 			set_id("Text");
 
+		if(settings.get_value("text.blend",value) && value != "")
+			set_blend(atoi(value.c_str()));
+		else
+			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+
+		if(settings.get_value("text.opacity",value))
+			set_opacity(atof(value.c_str()));
+		else
+			set_opacity(1);
+
 		if(settings.get_value("text.paragraph",value) && value=="1")
 			set_paragraph_flag(true);
 		else
@@ -205,6 +276,12 @@ StateText_Context::load_settings()
 			set_family(value);
 		else
 			set_family("Sans Serif");
+
+		// since we have only text layer creation button, always turn it on.
+		if(settings.get_value("text.layer_text",value) && value=="0")
+			set_layer_text_flag(true);
+		else
+			set_layer_text_flag(true);
 	}
 	catch(...)
 	{
@@ -219,6 +296,9 @@ StateText_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("text.id",get_id());
+		settings.set_value("text.layer_polygon",get_layer_text_flag()?"1":"0");
+		settings.set_value("text.blend",strprintf("%d",get_blend()));
+		settings.set_value("text.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("text.paragraph",get_paragraph_flag()?"1":"0");
 		settings.set_value("text.size_x",strprintf("%f",(float)get_size()[0]));
 		settings.set_value("text.size_y",strprintf("%f",(float)get_size()[1]));
@@ -289,29 +369,154 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	entry_id(),
-	checkbutton_paragraph(_("Multiline Editor"))
+	id_entry(),
+	opacity_hscl(0.0f, 1.01f, 0.01f),
+	layer_text_togglebutton(),
+	paragraph_checkbutton()
 {
 	egress_on_selection_change=true;
 
-	widget_size.set_digits(2);
-	widget_size.set_canvas(canvas_view->get_canvas());
 
-	widget_orientation.set_digits(2);
+	/* Set up the tool options dialog */
 
-	options_table.attach(*manage(new Gtk::Label(_("Text Tool"))),		0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,										0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_paragraph,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Size:"))),			0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(widget_size,									1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Orientation:"))),	0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(widget_orientation,							1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Family:"))),			0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_family,									1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// 0, title
+	title_label.set_label(_("Text Creation"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
-	load_settings();
+	// 1, layer name label and entry
+	id_label.set_label(_("Name:"));
+	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(id_gap, GAP);
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+
+	id_box.pack_start(id_entry);
+
+	// 2, layer types creation
+	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	LAYER_CREATION(layer_text_togglebutton,
+		("synfig-layer_other_text"), _("Create a text layer"));
+
+	SPACING(layer_types_indent, INDENTATION);
+
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_text_togglebutton, Gtk::PACK_SHRINK);
+
+	// 3, blend method label and dropdown list
+	blend_label.set_label(_("Blend Method:"));
+	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(blend_gap, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.set_local_name(_("Blend Method"))
+		.set_description(_("Defines the blend method to be used for texts")));
+
+	// 4, opacity label and slider
+	opacity_label.set_label(_("Opacity:"));
+	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	opacity_hscl.set_digits(2);
+	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
+	opacity_hscl.set_tooltip_text(_("Opacity"));
+
+	// 5, paragraph
+	paragraph_label.set_label(_("Multiline Text"));
+	paragraph_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	paragraph_box.pack_start(paragraph_label, Gtk::PACK_SHRINK);
+	paragraph_box.pack_end(paragraph_checkbutton, Gtk::PACK_SHRINK);
+
+	// 6, size
+	size_label.set_label(_("Size:"));
+	size_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	size_widget.set_digits(2);
+	size_widget.set_canvas(canvas_view->get_canvas());
+
+	// 7, orientation
+	orientation_label.set_label(_("Orientation:"));
+	orientation_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	orientation_widget.set_digits(2);
+
+	// 8, family
+	family_label.set_label(_("Family:"));
+	family_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// pack all options to the options_table
+
+	// 0, title
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 1, name
+	options_table.attach(id_box,
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 2, layer types creation
+	options_table.attach(layer_types_label,
+		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(layer_types_box,
+		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 3, blend method
+	options_table.attach(blend_box,
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(blend_enum,
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 4, opacity
+	options_table.attach(opacity_label,
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(opacity_hscl,
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 5, paragraph
+	options_table.attach(paragraph_box,
+		0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 6, size
+	options_table.attach(size_label,
+		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(size_widget,
+		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 7, orientation
+	options_table.attach(orientation_label,
+		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(orientation_widget,
+		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 8, family
+	options_table.attach(family_label,
+		0, 1, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(family_entry,
+		1, 2, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+		// fine-tune options layout
+	options_table.set_border_width(GAP*2); // border width
+	options_table.set_row_spacings(GAP); // row gap
+	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
+	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	// the final row using border width of table
+	options_table.set_row_spacing(options_table.property_n_rows(), 0);
 
 	options_table.show_all();
+
+	load_settings();
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -390,6 +595,9 @@ StateText_Context::event_refresh_handler(const Smach::event& /*x*/)
 void
 StateText_Context::make_text(const Point& _point)
 {
+	if (get_layer_text_flag())
+	{
+
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Text"));
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
@@ -428,6 +636,12 @@ StateText_Context::make_text(const Point& _point)
 	}
 	layer_selection.push_back(layer);
 
+	layer->set_param("blend_method", get_blend());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+	layer->set_param("amount", get_opacity());
+	get_canvas_interface()->signal_layer_param_changed()(layer, "amount");
+
 	layer->set_param("origin",point);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 
@@ -453,6 +667,7 @@ StateText_Context::make_text(const Point& _point)
 
 	reset();
 	increment_id();
+}
 }
 
 Smach::event_result
