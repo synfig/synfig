@@ -61,14 +61,11 @@ SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 inline void
-LinearGradient::sync()
+LinearGradient::Params::calc_diff()
 {
-	Point p1=param_p1.get(Point());
-	Point p2=param_p2.get(Point());
-	
 	diff=(p2-p1);
-	const Real mag(diff.inv_mag());
-	diff*=mag*mag;
+	Real mag_squared = diff.mag_squared();
+	if (mag_squared > 0.0) diff /= mag_squared;
 }
 
 
@@ -85,57 +82,62 @@ LinearGradient::LinearGradient():
 	SET_STATIC_DEFAULTS();
 }
 
-inline Color
-LinearGradient::color_func(const Point &point, float supersample)const
+inline void
+LinearGradient::fill_params(Params &params)const
 {
-	Point p1=param_p1.get(Point());
-	Gradient gradient=param_gradient.get(Gradient());
-	bool loop=param_loop.get(bool());
-	bool zigzag=param_zigzag.get(bool());
-	
-	Real dist(point*diff-p1*diff);
+	params.p1=param_p1.get(Point());
+	params.p2=param_p2.get(Point());
+	params.gradient=param_gradient.get(Gradient());
+	params.loop=param_loop.get(bool());
+	params.zigzag=param_zigzag.get(bool());
+	params.calc_diff();
+}
 
-	if(loop)
+inline Color
+LinearGradient::color_func(const Params &params, const Point &point, synfig::Real supersample)const
+{
+	Real dist(point*params.diff-params.p1*params.diff);
+
+	if(params.loop)
 		dist-=floor(dist);
 
-	if(zigzag)
+	if(params.zigzag)
 	{
 		dist*=2.0;
 		supersample*=2.0;
 		if(dist>1)dist=2.0-dist;
 	}
 
-	if(loop)
+	if(params.loop)
 	{
 		if(dist+supersample*0.5>1.0)
 		{
-			float  left(supersample*0.5-(dist-1.0));
-			float right(supersample*0.5+(dist-1.0));
-			Color pool(gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
-			if (zigzag) pool+=gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
-			else		pool+=gradient(right*0.5,right).premult_alpha()*right/supersample;
+			synfig::Real  left(supersample*0.5-(dist-1.0));
+			synfig::Real right(supersample*0.5+(dist-1.0));
+			Color pool(params.gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
+			if (params.zigzag) pool+=params.gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
+			else		       pool+=params.gradient(right*0.5,right).premult_alpha()*right/supersample;
 			return pool.demult_alpha();
 		}
 		if(dist-supersample*0.5<0.0)
 		{
-			float  left(supersample*0.5-dist);
-			float right(supersample*0.5+dist);
-			Color pool(gradient(right*0.5,right).premult_alpha()*right/supersample);
-			if (zigzag) pool+=gradient(left*0.5,left).premult_alpha()*left/supersample;
-			else		pool+=gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
+			synfig::Real  left(supersample*0.5-dist);
+			synfig::Real right(supersample*0.5+dist);
+			Color pool(params.gradient(right*0.5,right).premult_alpha()*right/supersample);
+			if (params.zigzag) pool+=params.gradient(left*0.5,left).premult_alpha()*left/supersample;
+			else		       pool+=params.gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
 			return pool.demult_alpha();
 		}
 	}
-	return gradient(dist,supersample);
+	return params.gradient(dist,supersample);
 }
 
-float
-LinearGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
+inline synfig::Real
+LinearGradient::calc_supersample(const Params &params, synfig::Real pw, synfig::Real /*ph*/)const
 {
-	Point p1=param_p1.get(Point());
-	Point p2=param_p2.get(Point());
-
-	return pw/(p2-p1).mag();
+	// it's copy of code
+	// see also other calc_supersample overload
+	return pw/(params.p2-params.p1).mag();
 }
 
 synfig::Layer::Handle
@@ -145,7 +147,11 @@ LinearGradient::hit_check(synfig::Context context, const synfig::Point &point)co
 		return const_cast<LinearGradient*>(this);
 	if(get_amount()==0.0)
 		return context.hit_check(point);
-	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(point).get_a()>0.5)
+
+	Params params;
+	fill_params(params);
+
+	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(params, point).get_a()>0.5)
 		return const_cast<LinearGradient*>(this);
 	return context.hit_check(point);
 }
@@ -209,7 +215,10 @@ LinearGradient::get_param_vocab()const
 Color
 LinearGradient::get_color(Context context, const Point &point)const
 {
-	const Color color(color_func(point));
+	Params params;
+	fill_params(params);
+
+	const Color color(color_func(params, point));
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
@@ -220,7 +229,29 @@ LinearGradient::get_color(Context context, const Point &point)const
 bool
 LinearGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	Params params;
+	fill_params(params);
+
+	if (!renddesc.get_transformation_matrix().is_identity())
+	{
+		Point origin = params.p1;
+		Point axis_x = params.p2 - origin;
+		Point axis_y = axis_x.perp();
+		origin = renddesc.get_transformation_matrix().get_transformed(origin);
+		axis_x = renddesc.get_transformation_matrix().get_transformed(axis_x, false);
+		axis_y = renddesc.get_transformation_matrix().get_transformed(axis_y, false);
+
+		Point valid_axis_x = -axis_y.perp();
+		Real mag_squared = valid_axis_x.mag_squared();
+		if (mag_squared > 0.0)
+			valid_axis_x *= (valid_axis_x * axis_x)/mag_squared;
+		else
+			valid_axis_x = axis_x;
+
+		params.p1 = origin;
+		params.p2 = origin + valid_axis_x;
+		params.calc_diff();
+	}
 
 	SuperCallback supercb(cb,0,9500,10000);
 
@@ -245,18 +276,19 @@ LinearGradient::accelerated_render(Context context,Surface *surface,int quality,
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
+	synfig::Real supersample = calc_supersample(params, pw, ph);
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,calc_supersample(pos,pw,ph)));
+				pen.put_value(color_func(params,pos,supersample));
 	}
 	else
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph)),pen.get_value(),get_amount(),get_blend_method()));
+				pen.put_value(Color::blend(color_func(params,pos,supersample),pen.get_value(),get_amount(),get_blend_method()));
 	}
 
 	// Mark our progress as finished
@@ -313,7 +345,7 @@ LinearGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)c
 	bool zigzag=param_zigzag.get(bool());
 
 	bool cpoints_all_opaque=true;
-	float a,r,g,b;
+	synfig::Real a,r,g,b;
 	Gradient::CPoint cp;
 	Gradient::const_iterator iter;
 	mygradient.sort();
