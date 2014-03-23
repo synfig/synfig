@@ -177,24 +177,22 @@ Action::ValueDescSkeletonLink::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	// bones list
-	typedef std::vector<ValueNode_Bone::Handle> List;
+	typedef std::set<ValueNode_Bone::Handle> Set;
 	ValueBase::List value_bone_list = (*bone_list_value_node)(time).get_list();
-	List list;
-	list.reserve(bone_list_value_node->link_count());
+	Set list;
 	for(int i = 0; i < bone_list_value_node->link_count(); ++i)
 	{
 		ValueNode_Bone::Handle bone_value_node =
 			ValueNode_Bone::Handle::cast_dynamic(bone_list_value_node->get_link(i));
 		if (bone_value_node)
-			list.push_back(bone_value_node);
+			list.insert(bone_value_node);
 	}
 	
 	if (list.empty())
 		throw Error(Error::TYPE_NOTREADY);
 
 	// process all selected ducks
-	List current_list;
-	current_list.reserve(list.size());
+	Set current_list;
 	for(std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
 		ValueDesc& value_desc(*iter);
@@ -221,9 +219,9 @@ Action::ValueDescSkeletonLink::prepare()
 		
 		// List of bones influencing current item
 		current_list.clear();
-		for(List::iterator i = list.begin(); i != list.end(); ++i)
+		for(Set::iterator i = list.begin(); i != list.end(); ++i)
 			if ((*i)->have_influence_on(time, ValueVector::get_vector(value_desc.get_value(time))))
-				current_list.push_back(*i);
+				current_list.insert(*i);
 
 		if (current_list.empty()) continue;
 
@@ -239,7 +237,7 @@ Action::ValueDescSkeletonLink::prepare()
 			assert(wt != NULL);
 
 			// add each bone from influence_list to Average convert
-			for(List::iterator i = current_list.begin(); i != current_list.end(); ++i)
+			for(Set::iterator i = current_list.begin(); i != current_list.end(); ++i)
 			{
 				// make bone link
 				ValueNode_BoneLink::Handle bone_link_node =
@@ -270,7 +268,7 @@ Action::ValueDescSkeletonLink::prepare()
 			ValueNode_BoneLink::Handle bone_link_node =
 				ValueNode_BoneLink::create(value_desc.get_value(time));
 
-			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(current_list.front()), get_canvas()));
+			bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(*current_list.begin()), get_canvas()));
 			bone_link_node->set_link("base_value",
 				ValueNode_Composite::create(
 					ValueTransformation::back_transform(

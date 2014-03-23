@@ -550,8 +550,8 @@ ValueNode_Bone::have_influence_on(Time t, const Vector &x)const
 	Real sin1 = sin0;
 
 	Real ll = length - r0*cos0 - r1*cos1;
-	Vector pp0(direction * (r0*cos0));
-	Vector pp1(direction * (length - r1*cos1));
+	Vector pp0(p0 + direction * (r0*cos0));
+	Vector pp1(p0 + direction * (length - r1*cos1));
 	Real rr0 = r0*sin0;
 	Real rr1 = r1*sin1;
 
