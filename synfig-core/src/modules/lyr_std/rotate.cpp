@@ -184,21 +184,6 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 	Vector origin=param_origin.get(Vector());
 	Angle amount=param_amount.get(Angle());
 	
-	if(amount.dist(Angle::deg(0))==Angle::deg(0))
-		return context.accelerated_render(surface,quality,renddesc,cb);
-
-	if(amount.dist(Angle::deg(180))==Angle::deg(0))
-	{
-		RendDesc desc(renddesc);
-		desc.clear_flags();
-		Point tmp;
-		tmp=renddesc.get_tl()-origin;
-		desc.set_tl(Point(-tmp[0],-tmp[1])+origin);
-		tmp=renddesc.get_br()-origin;
-		desc.set_br(Point(-tmp[0],-tmp[1])+origin);
-		return context.accelerated_render(surface,quality,desc,cb);
-	}
-
 	RendDesc transformed_renddesc(renddesc);
 	transformed_renddesc.clear_flags();
 	transformed_renddesc.set_transformation_matrix(
