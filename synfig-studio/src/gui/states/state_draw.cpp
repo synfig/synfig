@@ -193,9 +193,10 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	// smoothness
 	Gtk::Label smoothness_label;
+	Gtk::RadioButton::Group smoothness_group;
 
 	// local threshold
-	Gtk::Label localthres_label;
+	Gtk::RadioButton localthres_radiobutton;
 	Gtk::Adjustment localthres_adj;
 	Gtk::SpinButton localthres_spin;
 	Gtk::HBox localthres_box;
@@ -204,7 +205,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::HBox localerror_box;
 
 	// golbal threshold
-	Gtk::Label globalthres_label;
+	Gtk::RadioButton globalthres_radiobutton;
 	Gtk::Adjustment	 globalthres_adj;
 	Gtk::SpinButton  globalthres_spin;
 	Gtk::HBox globalthres_box;
@@ -248,9 +249,9 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::Button fill_last_stroke_button;
 
 
-	void UpdateErrorBox();	//switches the stuff if need be :)
 	void UpdateUsePressure();
 	void UpdateCreateAdvancedOutline();
+	void UpdateSmoothness();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
@@ -316,8 +317,11 @@ public:
 	Real get_width_max_error() const { return width_max_error_adj.get_value(); }
 	void set_width_max_error(Real x) { return width_max_error_adj.set_value(x); }
 
-	bool get_local_error_flag() const { return localerror_checkbutton.get_active(); }
-	void set_local_error_flag(bool x) { localerror_checkbutton.set_active(x); }
+	bool get_local_threshold_flag() const { return localthres_radiobutton.get_active(); }
+	void set_local_threshold_flag(bool x) { localthres_radiobutton.set_active(x); }
+
+	bool get_global_threshold_flag() const { return globalthres_radiobutton.get_active(); }
+	void set_global_threshold_flag(bool x) { globalthres_radiobutton.set_active(x); }
 
 	bool get_min_pressure_flag()const { return min_pressure_checkbutton.get_active(); }
 	void set_min_pressure_flag(bool x) { min_pressure_checkbutton.set_active(x); }
@@ -478,9 +482,12 @@ StateDraw_Context::load_settings()
 		}
 
 		if(settings.get_value("draw.localize",value) && value == "1")
-			set_local_error_flag(true);
+			//set_local_error_flag(true);
+			set_local_threshold_flag(true);
 		else
-			set_local_error_flag(false);
+			//set_local_error_flag(false);
+			//set_local_threshold_flag(false);
+			set_global_threshold_flag(true);
 	}
 	catch(...)
 	{
@@ -512,7 +519,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
 		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
+		settings.set_value("draw.localize",get_local_threshold_flag()?"1":"0");
 	}
 	catch(...)
 	{
@@ -587,10 +594,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	min_pressure_adj(0,0,1,0.01,0.1),
 	min_pressure_spin(min_pressure_adj,0.1,3),
 	min_pressure_checkbutton(),
-
-//	globalthres_spin.set_increments(0.1,1);
-//	globalthres_spin.set_increments(0.01,.1);
-
 	localthres_adj(20, 1, 100000, 0.1, 1),
 	localthres_spin(localthres_adj, 0.1, 1),
 	globalthres_adj(.70f, 0.01, 10000, 0.01, 0.1),
@@ -689,17 +692,18 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 9, local threshold
 	SPACING(localthres_indent, INDENTATION);
-	localthres_label.set_label(_("Local:"));
-	localthres_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
-	localthres_box.pack_start(localthres_label, Gtk::PACK_SHRINK);
+	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
+	localthres_radiobutton.set_label("Local:");
 
 	// 10, global threshold
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_label.set_label(_("Global:"));
-	globalthres_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
-	globalthres_box.pack_start(globalthres_label, Gtk::PACK_SHRINK);
+	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
+	globalthres_radiobutton.set_label("Global:");
+
+	smoothness_group = localthres_radiobutton.get_group();
+	globalthres_radiobutton.set_group(smoothness_group);
 
 	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
@@ -751,9 +755,9 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	nested=0;
 	load_settings();
 
-	UpdateErrorBox();
 	UpdateUsePressure();
 	UpdateCreateAdvancedOutline();
+	UpdateSmoothness();
 
 
 	// pack all options to the options_table
@@ -869,10 +873,15 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_table.show_all();
 
 
-	fill_last_stroke_button.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
-	localerror_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
-	pressure_width_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateUsePressure));
-	layer_advanced_outline_togglebutton.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateCreateAdvancedOutline));
+	fill_last_stroke_button.signal_pressed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::fill_last_stroke));
+	pressure_width_checkbutton.signal_toggled().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateUsePressure));
+	layer_advanced_outline_togglebutton.signal_toggled().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateCreateAdvancedOutline));
+	localthres_radiobutton.signal_toggled().connect(sigc::mem_fun(*this,
+		&StateDraw_Context::UpdateSmoothness));
+
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -904,25 +913,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-void
-StateDraw_Context::UpdateErrorBox()
-{
-	if(get_local_error_flag())
-	{
-		localthres_label.set_label(_("Local:"));
-		localthres_spin.set_adjustment(localthres_adj);
-		localthres_spin.set_value(localthres_adj.get_value());
-		localthres_spin.set_increments(0.1,1);
-	}else
-	{
-		globalthres_label.set_label(_("Global:"));
-		globalthres_spin.set_adjustment(globalthres_adj);
-		globalthres_spin.set_value(globalthres_adj.get_value());
-		globalthres_spin.set_increments(0.01,.1);
-	}
-
-	globalthres_spin.update();
-}
 
 void
 StateDraw_Context::UpdateUsePressure()
@@ -939,6 +929,15 @@ StateDraw_Context::UpdateCreateAdvancedOutline()
 	width_max_error_label.set_sensitive(get_advanced_outline_flag());
 	width_max_error_spin.set_sensitive(get_advanced_outline_flag());
 }
+
+
+void
+StateDraw_Context::UpdateSmoothness()
+{
+	localthres_spin.set_sensitive(get_local_threshold_flag());
+	globalthres_spin.set_sensitive(get_global_threshold_flag());
+}
+
 
 void
 StateDraw_Context::refresh_tool_options()
@@ -1110,20 +1109,23 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
 	blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
 
-	if(get_local_error_flag())
+	if (get_local_threshold_flag())
 	{
 		float pw = get_work_area()->get_pw();
 		float ph = get_work_area()->get_ph();
 
 		blineconv.pixelwidth = sqrt(pw*pw+ph*ph);
 		blineconv.smoothness = get_lthres();
-	}else
+	}
+
+	if (get_global_threshold_flag())
 	{
 		blineconv.pixelwidth = 1;
 		blineconv.smoothness = get_gthres();
 	}
 
 	blineconv(bline,*stroke_data,*width_data);
+
 	if(get_advanced_outline_flag())
 	{
 		wplistconv.err2max=get_width_max_error()/100;
