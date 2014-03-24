@@ -445,17 +445,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	id_entry(),
-	invert_checkbutton(),
-	layer_polygon_togglebutton(),
-	layer_region_togglebutton(),
-	layer_outline_togglebutton(),
-	layer_advanced_outline_togglebutton(),
-	layer_curve_gradient_togglebutton(),
-	layer_plant_togglebutton(),
-	layer_link_origins_checkbutton(),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	feather_dist(),
 	button_make(_("Make"))
 {
 	egress_on_selection_change=true;

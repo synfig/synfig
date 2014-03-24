@@ -201,9 +201,6 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::SpinButton localthres_spin;
 	Gtk::HBox localthres_box;
 
-	Gtk::CheckButton localerror_checkbutton;
-	Gtk::HBox localerror_box;
-
 	// golbal threshold
 	Gtk::RadioButton globalthres_radiobutton;
 	Gtk::Adjustment	 globalthres_adj;
@@ -579,30 +576,16 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	push_state(get_work_area()),
 	loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	id_entry(),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	bline_width_dist(),
-	layer_region_togglebutton(),
-	layer_outline_togglebutton(),
-	layer_advanced_outline_togglebutton(),
-	pressure_width_checkbutton(),
-	auto_loop_checkbutton(),
-	auto_extend_checkbutton(),
-	auto_link_checkbutton(),
-	auto_export_checkbutton(),
-	fill_last_stroke_button(_("Fill Last Stroke")),
 	min_pressure_adj(0,0,1,0.01,0.1),
 	min_pressure_spin(min_pressure_adj,0.1,3),
-	min_pressure_checkbutton(),
 	localthres_adj(20, 1, 100000, 0.1, 1),
 	localthres_spin(localthres_adj, 0.1, 1),
 	globalthres_adj(.70f, 0.01, 10000, 0.01, 0.1),
 	globalthres_spin(globalthres_adj, 0.01, 3),
-	width_max_error_label(),
 	width_max_error_adj(1.0f, 0.01, 100.0, 0.1,1),
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
-	localerror_checkbutton()
-
+	fill_last_stroke_button(_("Fill Last Stroke"))
 {
 	/* Set up the tool options dialog */
 

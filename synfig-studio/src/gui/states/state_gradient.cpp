@@ -372,11 +372,6 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	id_entry(),
-	layer_linear_gradient_togglebutton(),
-	layer_radial_gradient_togglebutton(),
-	layer_conical_gradient_togglebutton(),
-	layer_spiral_gradient_togglebutton(),
 	opacity_hscl(0.0f, 1.01f, 0.01f)
 
 {

@@ -482,16 +482,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	depth(-1),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	id_entry(),
-	layer_region_togglebutton(),
-	layer_outline_togglebutton(),
-	layer_advanced_outline_togglebutton(),
-	layer_curve_gradient_togglebutton(),
-	layer_plant_togglebutton(),
-	layer_link_origins_checkbutton(),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	feather_dist(),
-	auto_export_checkbutton(),
 	button_make(_("Make")),
 	button_clear(_("Clear"))
 {

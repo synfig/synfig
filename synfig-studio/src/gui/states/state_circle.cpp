@@ -506,23 +506,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	id_entry(),
-	layer_circle_togglebutton(),
-	layer_region_togglebutton(),
-	layer_outline_togglebutton(),
-	layer_advanced_outline_togglebutton(),
-	layer_curve_gradient_togglebutton(),
-	layer_plant_togglebutton(),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	bline_width_dist(),
 	number_of_bline_points_adj(0, 2, 120, 1, 1),
-	bline_point_angle_offset_adj(0, -360, 360, 0.1, 1),
-	invert_checkbutton(),
-	feather_dist(),
 	number_of_bline_points_spin(number_of_bline_points_adj, 1, 0),
-	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1),
-	layer_link_origins_checkbutton(),
-	layer_origins_at_center_checkbutton()
+	bline_point_angle_offset_adj(0, -360, 360, 0.1, 1),
+	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1)
 {
 	egress_on_selection_change=true;
 
