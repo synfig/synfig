@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # TODO: LD_PRELOAD wrapper
 # TODO: rpm/deb/tgz packaging
 # TODO: i386 build
 # TODO: Migrate to crosstool-ng ???
-# TODO: Bundle ALL dependent lib (libltdl issue)
+# TODO: Bundle ALL dependent lib (libpng issue)
 # TODO: GTK theming issues
 
 set -e
@@ -28,11 +28,12 @@ export PREFIX=$WORKSPACE/linux$ARCH/build
 export DEPSPREFIX=$WORKSPACE/linux$ARCH/build
 #export DEPSPREFIX=$WORKSPACE/linux$ARCH/sys-deps
 export SRCPREFIX=$WORKSPACE/linux$ARCH/source
-export PREFIX=$WORKSPACE/tmp/linux$ARCH
+export DISTPREFIX=$WORKSPACE/linux$ARCH/dist	# not used yet
 export CACHEDIR=$WORKSPACE/cache
 
 [ -e ${SRCPREFIX} ] || mkdir -p ${SRCPREFIX}
 [ -e ${DEPSPREFIX} ] || mkdir -p ${DEPSPREFIX}
+[ -e ${WORKSPACE}/cache ] || mkdir -p ${WORKSPACE}/cache
 
 export EMAIL='root@synfig.org'
 SOURCES_URL="rsync://download.tuxfamily.org/pub/synfig/packages/sources/base"
@@ -78,9 +79,15 @@ fi
 if [[ $ARCH == "32" ]]; then
 	export SYS_ARCH=i386
 	export LIBDIR="lib"
+	if ( cat /etc/issue | egrep "Ubuntu" ); then
+		export UBUNTU_LIBDIR="/lib/i386-linux-gnu/"
+	fi
 else
 	export SYS_ARCH=amd64
 	export LIBDIR="lib64"
+	if ( cat /etc/issue | egrep "Ubuntu" ); then
+		export UBUNTU_LIBDIR="/lib/x86_64-linux-gnu/"
+	fi
 fi
 
 export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
@@ -92,10 +99,14 @@ set_environment()
 {
 	#export LD_LIBRARY_PATH=${DEPSPREFIX}/lib:/${LIBDIR}:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR}
 	#export LD_LIBRARY_PATH=${SYSPREFIX}/lib-native:${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR}
-	export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
+	if ( cat /etc/issue | egrep "Ubuntu" ); then
+		export LD_PRELOAD=${UBUNTU_LIBDIR}/libc.so.6:${UBUNTU_LIBDIR}/libpthread.so.0:${UBUNTU_LIBDIR}/libdl.so.2
+	else
+		export LD_PRELOAD=/${LIBDIR}/libc.so.6:/${LIBDIR}/libpthread.so.0:/${LIBDIR}/libdl.so.2
+	fi
 	export LD_LIBRARY_PATH=${PREFIX}/lib:${DEPSPREFIX}/lib:${SYSPREFIX}/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR}
 	export PATH=${PREFIX}/bin:${DEPSPREFIX}/bin:${SYSPREFIX}/bin:${SYSPREFIX}/usr/bin
-	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -Wl,-rpath -Wl,${SYSPREFIX}/${LIBDIR}" # -L${SYSPREFIX}/usr/${LIBDIR}
+	export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib -L${PREFIX}/lib -L${SYSPREFIX}/${LIBDIR} -L${SYSPREFIX}/usr/${LIBDIR}"
 	#export CFLAGS=" -nostdinc  -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed  -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	#export CXXFLAGS=" -nostdinc   -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3  -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/x86_64-linux-gnu -I${SYSPREFIX}/usr/lib/gcc/../../include/c++/4.3/backward -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include -I${SYSPREFIX}/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include-fixed -I${PREFIX}/include  -I${DEPSPREFIX}/include -I${SYSPREFIX}/usr/include"
 	export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${DEPSPREFIX}/lib/pkgconfig:${SYSPREFIX}/usr/lib/pkgconfig
@@ -117,18 +128,25 @@ run_native()
 	set_environment
 }
 
-mkSYSPREFIX()
+mkprefix()
 {
 	[ ! -e ${SYSPREFIX}/dev ] || rm -rf ${SYSPREFIX}/dev
 	[ ! -e ${SYSPREFIX}/proc ] || rm -rf ${SYSPREFIX}/proc
-	LD_LIBRARY_PATH=/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
-	PATH=${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:$PATH HOME=/ LOGNAME=root \
+	LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
+	PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root \
 		fakeroot fakechroot \
 		debootstrap --variant=fakechroot --arch=$SYS_ARCH --include=sudo --include=apt lenny \
 		${SYSPREFIX} http://archive.debian.org/debian
 	
 	#LD_LIBRARY_PATH=/lib64 PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/bin:$PATH fakeroot fakechroot chroot ${SYSPREFIX}  /debootstrap/debootstrap --second-stage
 
+	mkprefix-deps
+	
+	echo "Synfig Buildroot v${BUILDROOT_VERSION}" > ${SYSPREFIX}/etc/chroot.id
+}
+
+mkprefix-deps()
+{
 	DEB_LIST_MINIMAL="\
 			build-essential \
 			libpng12-dev \
@@ -138,34 +156,37 @@ mkSYSPREFIX()
 			libtiff4-dev \
 			libjasper-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+			libxml-parser-perl m4 cvs \
 			bzip2"
 
-	LD_LIBRARY_PATH=/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
-		PATH=${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:$PATH HOME=/ LOGNAME=root \
+	LD_LIBRARY_PATH=${UBUNTU_LIBDIR}:/${LIBDIR}:${SYSPREFIX}/usr/${LIBDIR} \
+		PATH=/usr/local/sbin:/usr/sbin:/sbin:/sbin:/bin:/usr/bin:${SYSPREFIX}/usr/sbin:${SYSPREFIX}/sbin:${SYSPREFIX}/usr/bin:${SYSPREFIX}/bin:$PATH HOME=/ LOGNAME=root \
 		fakeroot fakechroot chroot ${SYSPREFIX} \
 		aptitude install -o Aptitude::Cmdline::ignore-trust-violations=true -y ${DEB_LIST_MINIMAL}
-	
-	echo "Synfig Buildroot v${BUILDROOT_VERSION}" > ${SYSPREFIX}/etc/chroot.id
+
 }
 
 mkprep()
 {
 
-if [ -z $NOSU ]; then
-	su -c "yum install -y \
-		automake \
-		debootstrap \
-		dpkg \
-		fakeroot \
-		fakechroot \
-		"
+MISSING_PKGS=""
+for PKG in debootstrap dpkg fakeroot fakechroot; do
+	if ! ( which $PKG ) ; then
+		MISSING_PKGS="$MISSING_PKGS $PKG"
+	fi
+done
+
+if [ ! -z "$MISSING_PKGS" ]; then
+	echo "ERROR: Please install following packages:"
+	echo "         $MISSING_PKGS"
+	exit 1
 fi
 
 if [ ! -e ${SYSPREFIX}/etc/chroot.id ]; then
-	mkSYSPREFIX
+	mkprefix
 elif [[ `cat ${SYSPREFIX}/etc/chroot.id` != "Synfig Buildroot v${BUILDROOT_VERSION}" ]]; then
 	#rm -rf ${SYSPREFIX} || true
-	mkSYSPREFIX
+	mkprefix
 fi
 
 #[ ! -e ${SYSPREFIX}/lib-native ] || rm -rf ${SYSPREFIX}/lib-native
@@ -180,7 +201,7 @@ for lib in libc libpthread; do
 	sed -i "s| /usr/lib/| ${SYSPREFIX}/usr/lib/|g" ${SYSPREFIX}/usr/lib/$lib.so
 done
 for file in `find ${SYSPREFIX}/usr/lib/pkgconfig/ -type f -name "*.pc"`; do
-	sed -i "s|SYSPREFIX=/usr|SYSPREFIX=${SYSPREFIX}/usr|g" ${file}
+	sed -i "s|prefix=/usr|prefix=${SYSPREFIX}/usr|g" ${file}
 done
 for file in `find ${SYSPREFIX}/usr/lib/ -type f -name "*.la"`; do
 	sed -i "s|libdir='/usr/lib'|libdir='${SYSPREFIX}/usr/lib'|g" ${file}
@@ -222,7 +243,9 @@ chmod a+x  ${DEPSPREFIX}/bin/rsync
 #	ln -sf /usr/bin/$binary  ${DEPSPREFIX}/bin/$binary
 #done
 
-cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
+[ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
+#cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
+cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
 
 }
 
@@ -236,8 +259,9 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --SYSPREFIX=${DEPSPREFIX}/
-	make -j${THREADS} install
+	./configure --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -253,11 +277,13 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --SYSPREFIX=${DEPSPREFIX}/
-	make -j${THREADS} install
+	./configure --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
+sed -i "s?<cachedir>${DEPSPREFIX}.*</cachedir>??"  ${DEPSPREFIX}/etc/fonts/fonts.conf
 }
 
 mkatk()
@@ -270,8 +296,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --SYSPREFIX=${DEPSPREFIX}/
-	make -j${THREADS} install
+	./configure --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -287,8 +314,9 @@ if ! pkg-config ${PKG_NAME}-1 --exact-version=${PKG_VERSION}  --print-errors; th
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --disable-static --enable-shared --SYSPREFIX=${DEPSPREFIX}/
-	make -j${THREADS} install
+	./configure --disable-static --enable-shared --prefix=${DEPSPREFIX}/
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -304,14 +332,15 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} \
+	./configure --prefix=${PREFIX} \
 		--disable-static 	\
 		--enable-warnings 	\
 		--enable-xlib 		\
 		--enable-freetype 	\
 	    --enable-gobject    \
 		--disable-gtk-doc
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -327,10 +356,11 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}/ \
+	./configure --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared \
 		--with-included-modules=yes
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -347,10 +377,11 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}/ \
+	./configure --prefix=${DEPSPREFIX}/ \
 		--disable-examples --disable-demos --disable-docs \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -367,9 +398,10 @@ if ! pkg-config ${PKG_NAME}-2.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}/ \
+	./configure --prefix=${DEPSPREFIX}/ \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -387,9 +419,10 @@ if ! pkg-config sigc++-2.0 --exact-version=${PKG_VERSION}  --print-errors; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} # && cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/libsigc++-2.0_2.0.18-2.diff && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -405,10 +438,11 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-fulldocs \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -424,9 +458,10 @@ if ! pkg-config libxml++-2.6 --exact-version=${PKG_VERSION}  --print-errors; the
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -442,7 +477,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-static --enable-shared \
 		--with-modules \
 		--without-perl \
@@ -451,7 +486,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${IMAGEMAGICK_VERSION}  --print-erro
 		--with-magick_plus_plus
 	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -471,9 +507,9 @@ if ! cat ${PREFIX}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_V
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}_${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}_${PKG_VERSION}
-	./bootstrap.sh --SYSPREFIX=${PREFIX} \
+	./bootstrap.sh --prefix=${PREFIX} \
 		--libdir=${PREFIX}/lib \
-		--exec-SYSPREFIX=${PREFIX} \
+		--exec-prefix=${PREFIX} \
 		--with-libraries=program_options
 	./b2
 	./b2 install || true
@@ -494,10 +530,11 @@ if ! pkg-config ${PKG_NAME}-1.0 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--enable-docs=no \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -513,10 +550,11 @@ if ! pkg-config ${PKG_NAME}-1.4 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-docs \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -533,10 +571,11 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${PREFIX} --includedir=${PREFIX}/include \
+	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include \
 		--disable-examples --disable-demos --disable-docs \
 		--disable-static --enable-shared
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -567,8 +606,9 @@ if [ ! -e ${DEPSPREFIX}/bin/autoconf ]; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}
-	make -j${THREADS} install
+	./configure --prefix=${DEPSPREFIX}
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -587,8 +627,9 @@ if [ ! -e ${DEPSPREFIX}/bin/automake ]; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}
-	make -j${THREADS} install
+	./configure --prefix=${DEPSPREFIX}
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -620,8 +661,9 @@ if [ ! -e ${DEPSPREFIX}/bin/libtoolize ]; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX} --enable-ltdl-install
-	make -j${THREADS} install
+	./configure --prefix=${DEPSPREFIX} --enable-ltdl-install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -647,8 +689,9 @@ if [ ! -e ${DEPSPREFIX}/bin/intltoolize ]; then
 	pushd ${SRCPREFIX}
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX}
-	make -j${THREADS} install
+	./configure --prefix=${DEPSPREFIX}
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -690,9 +733,10 @@ if [ ! -e ${DEPSPREFIX}/bin/gettext ]; then
 	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
 	# cd ${PKG_NAME}-${PKG_VERSION} && patch -p1 < ${WORKSPACE}/cache/gettext-${PKG_VERSION}-4.patch && cd ..
 	cd ${PKG_NAME}-${PKG_VERSION}
-	./configure --SYSPREFIX=${DEPSPREFIX} \
+	./configure --prefix=${DEPSPREFIX} \
 		--disable-java --disable-native-java
-	make -j${THREADS} install
+	make -j${THREADS}
+	make install
 	cd ..
 	popd
 fi
@@ -707,11 +751,12 @@ mketl()
 cd $SCRIPTPATH/../ETL
 make clean || true
 run_native autoreconf --install --force
-./configure --SYSPREFIX=${PREFIX} \
+./configure --prefix=${PREFIX} \
 	--includedir=${PREFIX}/include --libdir=${PREFIX}/lib \
 	--bindir=${PREFIX}/bin \
 	$DEBUG_OPT
-make -j${THREADS} install
+make -j${THREADS}
+make install
 }
 
 #synfig-core
@@ -724,7 +769,7 @@ echo "Running libtoolize ..."
 libtoolize --ltdl --copy --force
 echo "Running autoreconf ..."
 autoreconf --install --force
-./configure --SYSPREFIX=${PREFIX} \
+./configure --prefix=${PREFIX} \
 	--includedir=${PREFIX}/include \
 	--libdir=${PREFIX}/lib --bindir=${PREFIX}/bin \
 	--sysconfdir=${PREFIX}/etc \
@@ -733,7 +778,8 @@ autoreconf --install --force
 	--with-boost=${PREFIX}/ \
 	--enable-warnings=minimum \
 	$DEBUG_OPT
-make -j${THREADS} install
+make -j${THREADS}
+make install
 }
 
 #synfig-studio
@@ -743,13 +789,14 @@ cd $SCRIPTPATH/../synfig-studio/
 make clean || true
 [ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
-./configure --SYSPREFIX=${PREFIX} \
+./configure --prefix=${PREFIX} \
 	--includedir=${SYSPREFIX}/include \
 	--libdir=${PREFIX}/lib --bindir=${PREFIX}/bin \
 	--sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  \
 	--disable-static --enable-shared \
 	$DEBUG_OPT
-make -j${THREADS} install
+make -j${THREADS}
+make install
 
 }
 
@@ -770,19 +817,22 @@ cat > ${PREFIX}/synfigstudio <<EOF
 
 SYSPREFIX=\`dirname "\$0"\`
 
+USER_CONFIG_DIR=\$HOME/.config/synfig
 export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${SYSPREFIX}/
 export SYNFIG_MODULE_LIST=\${SYSPREFIX}/etc/synfig_modules.cfg
-export GDK_PIXBUF_MODULE_FILE="\${SYSPREFIX}/etc/gtk-2.0/gdk-pixbuf.loaders"
+export GDK_PIXBUF_MODULE_FILE="\${USER_CONFIG_DIR}/gdk-pixbuf.loaders"
 #export GDK_PIXBUF_MODULEDIR="\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders"
 export FONTCONFIG_PATH="\${SYSPREFIX}/etc/fonts"
 
 # Create install-location-dependent config files for Pango and GDK image loaders
 # We have to do this every time because its possible that SYSPREFIX has changed
 
-#sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$ETC_DIR/pango/pango.modules
-sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders
+[ -e "\$USER_CONFIG_DIR" ] || mkdir -p "\$USER_CONFIG_DIR"
+
+#sed "s?@ROOTDIR@/modules?\${SYSPREFIX}/lib/pango/1.6.0/modules?" < \$ETC_DIR/pango/pango.modules.in > \$USER_CONFIG_DIR/pango/pango.modules
+sed "s?@ROOTDIR@/loaders?\${SYSPREFIX}/lib/gtk-2.0/2.10.0/loaders?" < \$ETC_DIR/gtk-2.0/gdk-pixbuf.loaders.in > \$GDK_PIXBUF_MODULE_FILE
 
 \${SYSPREFIX}/bin/synfigstudio "\$@"
 
@@ -956,17 +1006,26 @@ mkall()
 	#mkpackage
 }
 
-chmod u+rwX ${SYSPREFIX}
+do_cleanup()
+{
+	echo "Cleaning up..."
+	[ ! -e ${SYSPREFIX} ] || mv ${SYSPREFIX} ${SYSPREFIX}.off
+	exit
+}
+
+trap do_cleanup INT SIGINT SIGTERM
+
+[ ! -e ${SYSPREFIX}.off ] || mv ${SYSPREFIX}.off ${SYSPREFIX}
 
 if [ -z $1 ]; then
 	mkall
 else
 	echo "Executing custom user command..."
 	mkprep
-	set_environment
+	set_environment 
 
 
-	$@
+	$@ 
 fi
 
-chmod a-rwX ${SYSPREFIX}
+do_cleanup
