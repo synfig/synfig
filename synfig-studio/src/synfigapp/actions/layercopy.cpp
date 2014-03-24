@@ -143,7 +143,7 @@ Action::LayerCopy::generateNewName(
 	String ext = filename_extension(name);
 	if (ext.find_first_not_of(".0123456789") == String::npos)
 		name = filename_sans_extension(name);
-	for(int i = name.find("#", 0); i != String::npos; i = name.find("#", i))
+	for(size_t i = name.find("#", 0); i != String::npos; i = name.find("#", i))
 		name.erase(i, 1);
 	ext = filename_extension(filename);
 
