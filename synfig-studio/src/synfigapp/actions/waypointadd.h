@@ -51,7 +51,7 @@ private:
 
 	synfig::Waypoint waypoint;
 
-	bool time_overwrite;
+	//bool time_overwrite;
 	synfig::Waypoint overwritten_wp;
 
 	synfig::ValueNode_Animated::Handle value_node;
