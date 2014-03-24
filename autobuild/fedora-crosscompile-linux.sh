@@ -64,7 +64,7 @@ PANGO_VERSION=1.24.5
 FONTCONFIG_VERSION=2.5.0
 
 if [ -z $DEBUG ]; then
-	export DEBUG=0
+	export DEBUG=1
 fi
 
 if [[ $DEBUG == 1 ]]; then
