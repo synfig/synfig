@@ -1071,9 +1071,9 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	DepthCounter depth_counter(nested);
 
 	const float radius(
-		synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
-		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5
-		);
+		// synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
+		get_bline_width() +
+		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5);
 
 	// If we aren't using pressure width,
 	// then set all the width to 1
@@ -1092,7 +1092,8 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 
 	//Changed by Adrian - use resident class :)
 	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
-	blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
+	// blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
+	blineconv.width = get_bline_width();
 
 	if (get_local_threshold_flag())
 	{
@@ -1514,6 +1515,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 				layer->set_param("amount",get_opacity());
 				get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+				layer->set_param("width",get_bline_width());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"width");
 			}
 			if(get_advanced_outline_flag())
 			{
@@ -1532,6 +1536,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 				layer2->set_param("amount",get_opacity());
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"amount");
+
+				layer2->set_param("width",get_bline_width());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"width");
 			}
 		}
 		else
