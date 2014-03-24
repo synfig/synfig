@@ -94,6 +94,12 @@
 
 #include "docks/dockable.h"
 
+#ifndef _JACK_INCLUDED_
+#define _JACK_INCLUDED_
+#include <jack/jack.h>
+#include <jack/transport.h>
+#endif
+
 /* === M A C R O S ========================================================= */
 
 #ifndef DEBUGPOINT_CLASS
@@ -171,6 +177,8 @@ public:
 	typedef LayerTreeStore::Model LayerTreeModel;
 
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
+
+	jack_client_t *client;
 
 	//! Create an instance of this class whenever doing a longer task.
 	/*! Make sure that you check the bool value of this class occasionally
@@ -795,6 +803,8 @@ public:
 
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
+
+	static int syn_jack_process(jack_nframes_t nframes, void *arg);
 
 }; // END of class CanvasView
 

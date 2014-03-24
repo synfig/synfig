@@ -125,6 +125,12 @@
 
 #endif
 
+#ifndef _JACK_INCLUDED_
+#define _JACK_INCLUDED_
+#include <jack/jack.h>
+#include <jack/transport.h>
+#endif
+
 /* === U S I N G =========================================================== */
 
 using namespace std;
@@ -947,6 +953,11 @@ void CanvasView::activate()
 	App::ui_manager()->insert_action_group(action_group);
 	update_title();
 	present();
+
+	// Open a JACK client
+	client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
+	jack_set_process_callback (client, syn_jack_process, 0);
+	jack_activate (client);
 }
 
 void CanvasView::deactivate()
@@ -2948,6 +2959,15 @@ CanvasView::play()
 
 	work_area->clear_ducks();
 
+    // Convert synfig::Time to jack_nframes_t
+	float fps = get_canvas()->rend_desc().get_frame_rate();
+	jack_nframes_t sr = jack_get_sample_rate(client);
+	jack_nframes_t nframes = ((double)sr * time.round(fps));
+
+    // Sync the JACK transport with Synfig
+	jack_transport_locate(client, nframes);
+	jack_transport_start(client);
+
 	for(timer.reset(); time + timer() < endtime;)
 	{
 		//Clamp the time window so we can see the time value as it races across the horizon
@@ -2991,9 +3011,12 @@ CanvasView::play()
 		if(get_cancel_status())
 		{
 			is_playing_=false;
+			jack_transport_stop(client);
 			return;
 		}
 	}
+
+	jack_transport_stop(client);
 	is_playing_=false;
 	time_adjustment().set_value(endtime);
 	time_adjustment().value_changed();
@@ -3939,4 +3962,10 @@ CanvasView::on_play_pause_pressed()
 		framedial->toggle_play_pause_button(is_playing());
 		stop();
 	}
+}
+
+int
+CanvasView::syn_jack_process(jack_nframes_t nframes, void *arg)
+{
+	return 0;
 }
