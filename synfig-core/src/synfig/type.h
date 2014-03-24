@@ -201,7 +201,7 @@ public:
 
 		bool operator < (const Description &other) const
 		{
-			return return_type < other.operation_type ? true
+			return operation_type < other.operation_type ? true
 				 : other.operation_type < operation_type ? false
 				 : return_type < other.return_type ? true
 				 : other.return_type < return_type ? false
@@ -403,6 +403,8 @@ protected:
 		description.version = "0.0";
 	}
 
+	virtual void deinitialize_vfunc(Description &description) { }
+
 public:
 	void initialize()
 	{
@@ -410,6 +412,14 @@ public:
 		initialize_vfunc(private_description);
 		register_type();
 		initialized = true;
+	}
+
+	void deinitialize()
+	{
+		if (!initialized) return;
+		unregister_type();
+		deinitialize_vfunc(private_description);
+		initialized = false;
 	}
 
 	virtual ~Type()
@@ -426,6 +436,12 @@ public:
 	{
 		for(Type *type = first; type != NULL; type = type->next)
 			type->initialize();
+	}
+
+	static void deinitialize_all()
+	{
+		for(Type *type = first; type != NULL; type = type->next)
+			type->deinitialize();
 	}
 
 	inline Type* get_next() const { return next; }
@@ -633,6 +649,11 @@ public:
 public:
 	static bool subsys_init() {
 		initialize_all();
+		return true;
+	}
+
+	static bool subsys_stop() {
+		deinitialize_all();
 		return true;
 	}
 }; // END of class Type

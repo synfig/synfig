@@ -157,7 +157,7 @@ public:
 private:
 	static bool compare(const InternalPointer a, const InternalPointer b)
 		{ return abs((*(Inner*)a).r - (*(Inner*)b).r) <= 0.00000000000001; }
-	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", x); }
+	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", (Real)x); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
