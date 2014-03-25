@@ -151,6 +151,22 @@ PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.65.0] [ETL >= 0.04.18] sigc++-2.0,,[
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
 
+AC_ARG_ENABLE([jack],
+			  AS_HELP_STRING([--enable-jack],
+							 [ Enable experimental JACK transport support experimental ]),
+			  [],
+			  [enable_jack=no]
+)
+if test "x$enable_jack" = "xyes"; then
+   PKG_CHECK_MODULES(JACK,
+					[ jack ],
+					,
+					[AC_MSG_ERROR([ ** Please install JACK to enable JACK support ])]
+)
+	AC_SUBST(JACK_CFLAGS)
+	AC_SUBST(JACK_LIBS)
+fi
+
 windowsys="gtkmm"
 AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
 AM_CONDITIONAL(WINDOWSYS_GTKMM,true)
@@ -350,6 +366,7 @@ Profiling Mode -------------------> $profiling
 Optimizations --------------------> $optimization
 Window System --------------------> $windowsys
 FMOD Enabled ---------------------> $with_libfmod
+JACK Enabled ---------------------> $enable_jack
 
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
