@@ -616,8 +616,8 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	options_table.set_row_spacings(GAP); // row gap
 	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
 	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	// the final row using border width of table
-	options_table.set_row_spacing(options_table.property_n_rows(), 0);
+	options_table.set_row_spacing(10, 0); // the final row using border width of table
+	
 	options_table.show_all();
 
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
