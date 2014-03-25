@@ -140,14 +140,19 @@ private:
 protected:
 
 	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	using Gtk::TreeModel::get_flags_vfunc;
 	virtual Gtk::TreeModelFlags  get_flags_vfunc ();
+	using Gtk::TreeModel::get_n_columns_vfunc;
 	virtual int  get_n_columns_vfunc ();
+	using Gtk::TreeModel::get_column_type_vfunc;
 	virtual GType  get_column_type_vfunc (int index);
 	virtual bool iter_next_vfunc (const iterator& iter, iterator& iter_next) const;
 	virtual bool  get_iter_vfunc (const Gtk::TreeModel::Path& path, iterator& iter_next)const;
 	virtual bool  iter_nth_root_child_vfunc (int n, iterator& iter)const;
 	virtual Gtk::TreeModel::Path  get_path_vfunc (const iterator& iter)const;
+	using Gtk::TreeModel::ref_node_vfunc;
 	virtual void  ref_node_vfunc (iterator& iter)const;
+	using Gtk::TreeModel::unref_node_vfunc;
 	virtual void  unref_node_vfunc (iterator& iter)const;
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 	virtual bool	iter_is_valid (const iterator& iter) const;
