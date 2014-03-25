@@ -165,11 +165,6 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::CheckButton regular_polygon_checkbutton;
 	Gtk::HBox regular_polygon_box;
 
-	// invert
-	Gtk::Label invert_label;
-	Gtk::CheckButton invert_checkbutton;
-	Gtk::HBox invert_box;
-
 	// inner width
 	Gtk::Label outer_width_label;
 	Gtk::Adjustment	outer_width_adj;
@@ -189,6 +184,11 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::Label outer_tangent_label;
 	Gtk::Adjustment	outer_tangent_adj;
 	Gtk::SpinButton	outer_tangent_spin;
+
+	// invert
+	Gtk::Label invert_label;
+	Gtk::CheckButton invert_checkbutton;
+	Gtk::HBox invert_box;
 
 	// feather size
 	Gtk::Label feather_label;
@@ -683,29 +683,29 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	regular_polygon_box.pack_start(regular_polygon_label);
 	regular_polygon_box.pack_end(regular_polygon_checkbutton, Gtk::PACK_SHRINK);
 
-	// 10, invert
+	// 10, inner width
+	inner_width_label.set_label(_("Inner Width:"));
+	inner_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 11, inner tangent
+	inner_tangent_label.set_label(_("Inner Tangent:"));
+	inner_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 12, outer width
+	outer_width_label.set_label(_("Inner Width:"));
+	outer_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 13, outer tangent
+	outer_tangent_label.set_label(_("Inner Tangent:"));
+	outer_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 14, invert
 	invert_label.set_label(_("Invert"));
 	invert_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	invert_box.pack_start(invert_label);
 	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
 	invert_box.set_sensitive(false);
-
-	// 11, inner width
-	inner_width_label.set_label(_("Inner Width:"));
-	inner_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-
-	// 12, inner tangent
-	inner_tangent_label.set_label(_("Inner Tangent:"));
-	inner_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-
-	// 13, outer width
-	outer_width_label.set_label(_("Inner Width:"));
-	outer_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-
-	// 14, outer tangent
-	outer_tangent_label.set_label(_("Inner Tangent:"));
-	outer_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// 15, feather
 	feather_label.set_label(_("Feather:"));
@@ -797,52 +797,52 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(regular_polygon_box,
 		0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 10, invert
-	options_table.attach(invert_box,
-		0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 11, inner width
+	// 10, inner width
 	options_table.attach(inner_width_label,
-		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(inner_width_spin,
-		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 12, inner tangent
+	// 11, inner tangent
 	options_table.attach(inner_tangent_label,
-		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(inner_tangent_spin,
-		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 13, outer width
+	// 12, outer width
 	options_table.attach(outer_width_label,
-		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(outer_width_spin,
-		1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 14, outer tangent
+	// 13, outer tangent
 	options_table.attach(outer_tangent_label,
-		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(outer_tangent_spin,
-		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 14, invert
+	options_table.attach(invert_box,
+		0, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 15, feather
 	options_table.attach(feather_label,
-		0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(feather_dist,
-		1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 16, link origins
 	options_table.attach(link_origins_box,
-		0, 2, 19, 20, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 2, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 17, origins at center
 	options_table.attach(origins_at_center_box,
-		0, 2, 20, 21, Gtk::FILL, Gtk::FILL, 0, 0
+		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	// fine-tune options layout
@@ -850,7 +850,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.set_row_spacings(GAP); // row gap
 	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
 	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	options_table.set_row_spacing(21, 0); // the final row using border width of table
+	options_table.set_row_spacing(19, 0); // the final row using border width of table
 
 	options_table.show_all();
 
