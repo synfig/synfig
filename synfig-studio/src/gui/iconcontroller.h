@@ -42,7 +42,7 @@
 
 namespace synfig { class ValueNode; class Layer; }
 
-namespace synfigapp { namespace Action { class BookEntry; };};
+namespace synfigapp { namespace Action { struct BookEntry; };};
 
 namespace studio {
 
