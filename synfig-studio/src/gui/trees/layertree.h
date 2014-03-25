@@ -150,6 +150,9 @@ private:
 
 	Widget_ValueBase blend_method_widget;
 
+	//widget used to get the column size
+	Gtk::Label param_tree_columnzero_label;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/

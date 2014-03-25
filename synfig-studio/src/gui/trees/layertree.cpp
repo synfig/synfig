@@ -282,6 +282,11 @@ LayerTree::create_param_tree()
 	{	// --- N A M E --------------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
 
+		// Affect a widget to the first column to retrieve it when style is updated
+		param_tree_columnzero_label.set_text(column->get_title());
+		column->set_widget(param_tree_columnzero_label);
+		param_tree_columnzero_label.show();
+
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_start(*icon_cellrenderer,false);
