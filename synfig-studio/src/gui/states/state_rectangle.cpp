@@ -150,13 +150,13 @@ class studio::StateRectangle_Context : public sigc::trackable
 	Gtk::CheckButton invert_checkbutton;
 	Gtk::HBox invert_box;
 
-	// expansion
-	Gtk::Label expand_label;
-	Widget_Distance expand_dist;
-
 	// feather size
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
+
+	// expansion
+	Gtk::Label expand_label;
+	Widget_Distance expand_dist;
 
 	// link origins
 	Gtk::Label link_origins_label;
@@ -549,16 +549,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
 	invert_box.set_sensitive(false);
 
-	// 7, expansion
-	expand_label.set_label(_("Expansion:"));
-	expand_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	expand_label.set_sensitive(false);
-
-	expand_dist.set_digits(2);
-	expand_dist.set_range(0, 1000000);
-	expand_dist.set_sensitive(false);
-
-	// 8, feather
+	// 7, feather
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
@@ -566,6 +557,15 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
+
+	// 8, expansion
+	expand_label.set_label(_("Expansion:"));
+	expand_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	expand_label.set_sensitive(false);
+
+	expand_dist.set_digits(2);
+	expand_dist.set_range(0, 1000000);
+	expand_dist.set_sensitive(false);
 
 	// 9, link origins
 	link_origins_label.set_label(_("Link Origins"));
@@ -619,18 +619,18 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	options_table.attach(invert_box,
 		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 7, expansion
-	options_table.attach(expand_label,
+	// 7, feather
+	options_table.attach(feather_label,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(expand_dist,
+	options_table.attach(feather_dist,
 		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 8, feather
-	options_table.attach(feather_label,
+	// 8, expansion
+	options_table.attach(expand_label,
 		0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	options_table.attach(feather_dist,
+	options_table.attach(expand_dist,
 		1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 9, link origins
