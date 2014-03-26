@@ -3165,7 +3165,8 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 
 		filename=as;
 		total_warnings_=0;
-
+		
+		synfig::info(String("Loading file: ") + filename);
 		FileSystem::ReadStreamHandle stream = identifier.get_read_stream();
 		if (stream)
 		{
@@ -3197,6 +3198,8 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 
 				return canvas;
 			}
+		} else {
+			throw runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename + "\"");
 		}
 	}
 	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
