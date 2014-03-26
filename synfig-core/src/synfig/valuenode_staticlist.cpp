@@ -118,7 +118,10 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 			new_bone.set_parent(value_node_bone.get());
 
 			Real length(next.get(Bone()).get_length());
+			Real width(next.get(Bone()).get_tipwidth());
 			new_bone.set_origin(Point(1.1*length,0));
+			new_bone.set_width(width);
+			new_bone.set_tipwidth(width);
 
 			ret=ValueNode_Const::create(new_bone, get_parent_canvas());
 		}
