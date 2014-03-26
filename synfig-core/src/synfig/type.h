@@ -33,10 +33,9 @@
 #include "string.h"
 #include "general.h"
 
-#include <iostream>
-#include <typeinfo>
-
 /* === M A C R O S ========================================================= */
+
+//#define INITIALIZE_TYPE_BEFOR_USE
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -274,13 +273,12 @@ private:
 		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
 
 		bool initialized;
-		OperationBookBase *alias;		
 
 		OperationBookBase();
 
 	public:
 		virtual void remove_type(const Type &type) = 0;
-		virtual void move_entries_to_alias() = 0;
+		virtual void set_alias(OperationBookBase *alias) = 0;
 		virtual ~OperationBookBase();
 
 		static void remove_type_from_all_books(TypeId identifier)
@@ -306,34 +304,35 @@ private:
 
 	private:
 		Map map;
+		Map *map_alias;
 
-		OperationBook()
-		{
-			std::cout << "create instance of book " << typeid(*this).name() << " root anchor " << (long long)(void*)&first << std::endl;
-		}
+		OperationBook(): map_alias(&map) { }
 
 	public:
 		inline Map& get_map()
 		{
+#ifdef INITIALIZE_TYPE_BEFOR_USE
 			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
-			return OperationBookBase::alias == NULL ? map : ((OperationBook<T>*)OperationBookBase::alias)->map;
+#endif
+			return *map_alias;
 		}
 
 		inline const Map& get_map() const
 		{
+#ifdef INITIALIZE_TYPE_BEFOR_USE
 			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
-			return OperationBookBase::alias == NULL ? map : ((OperationBook<T>*)OperationBookBase::alias)->map;
+#endif
+			return *map_alias;
 		}
 
-		virtual void move_entries_to_alias()
+		virtual void set_alias(OperationBookBase *alias)
 		{
-			if (alias == NULL) return;
-			if (dynamic_cast<OperationBook<T>*>(alias) == NULL)
-				std::cout << typeid(*this).name() << " map alias is equal" << std::endl;
-			else
-				std::cout << typeid(*this).name() << " map alias not equal" << std::endl;
-			((OperationBook<T>*)OperationBookBase::alias)->map.insert(map.begin(), map.end());
-			map.clear();
+			map_alias = alias == NULL ? &map : ((OperationBook<T>*)alias)->map_alias;
+			if (map_alias != &map)
+			{
+				map_alias->insert(map.begin(), map.end());
+				map.clear();
+			}
 		}
 
 		virtual void remove_type(const Type& type)
@@ -412,7 +411,6 @@ private:
 		Map &map = OperationBook<T>::instance.get_map();
 		assert(!map.count(description) || map[description].first == this);
 		map[description] = Entry(this, func);
-		std::cout << "func added into book: " << typeid(OperationBook<T>::instance).name() << ", entries in book: " << map.size() << " root " << (long long)(void*)&first << std::endl;
 	}
 
 protected:
@@ -457,7 +455,6 @@ public:
 		typedef typename OperationBook<T>::Map Map;
 		const Map &map = OperationBook<T>::instance.get_map();
 		typename Map::const_iterator i = map.find(description);
-		if (i == map.end()) std::cout << "cannot find func in book: " << typeid(OperationBook<T>::instance).name() << ", entries in book: " << map.size() << " root " << (long long)(void*)&first << std::endl;
 		return i == map.end() ? NULL : i->second.second;
 	}
 

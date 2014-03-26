@@ -30,6 +30,7 @@
 #endif
 
 #include "type.h"
+#include <typeinfo>
 
 #endif
 
@@ -49,58 +50,29 @@ TypeId Type::last_identifier = 0;
 std::vector<Type*> Type::typesById;
 std::map<String, Type*> Type::typesByName;
 
-namespace synfig {
-namespace types_namespace {
-	class TypeNil: public Type
-	{
-	protected:
-		TypeNil(): Type(NIL) { }
-
-		static String to_string(const InternalPointer) { return "Nil"; }
-
-		virtual void initialize_vfunc(Description &description)
-		{
-			Type::initialize_vfunc(description);
-			description.name = "nil";
-			description.local_name = N_("nil");
-			description.aliases.push_back("null");
-			register_default(to_string);
-		}
-	public:
-		static TypeNil instance;
-	};
-
-	TypeNil TypeNil::instance;
-}
 
 Type::OperationBookBase::OperationBookBase():
-	previous(last), next(NULL), initialized(false), alias(NULL)
+	previous(last), next(NULL), initialized(false)
 {
 	(previous == NULL ? first : previous->next) = last = this;
-	std::cout << "Type::OperationBookBase::OperationBookBase()" << " root anchor " << (long long)(void*)&first << std::endl;
 }
 
 Type::OperationBookBase::~OperationBookBase()
 {
 	(previous == NULL ? first : previous->next) = next;
 	(next     == NULL ? last  : next->previous) = previous;
-	std::cout << "Type::OperationBookBase::~OperationBookBase()" << " root anchor " << (long long)(void*)&first << std::endl;
 }
 
 void Type::OperationBookBase::initialize()
 {
 	if (initialized) return;
-	alias = NULL;
 	for(OperationBookBase *book = first; book != NULL && book != this; book = book->next)
 	{
-		if (book->alias != NULL) continue;
-		if (std::string(typeid(*book).name()) == typeid(*this).name())
+		book->initialize();
+		if (std::string( typeid(*book).name() ) == typeid(*this).name())
 		{
-			alias = book;
-			move_entries_to_alias();
-			std::cout << "find another instance of type " << typeid(*this).name() << std::endl;
-			if (typeid(*book) != typeid(*this))
-				std::cout << "types instances of " << typeid(*this).name() << " has different typeid" << std::endl;
+			set_alias(book);
+			break;
 		}
 	}
 	initialized = true;
@@ -109,18 +81,16 @@ void Type::OperationBookBase::initialize()
 void Type::OperationBookBase::deinitialize()
 {
 	if (!initialized) return;
-	alias = NULL;
+	set_alias(NULL);
 }
 
 void Type::OperationBookBase::initialize_all()
 {
-	std::cout << "Type::OperationBookBase::initalize_all()" << " root anchor " << (long long)(void*)&first << std::endl;
 	for(OperationBookBase *book = first; book != NULL; book = book->next)
 		book->initialize();
 }
 
 void Type::OperationBookBase::deinitialize_all() {
-	std::cout << "Type::OperationBookBase::deinitalize_all()" << " root anchor " << (long long)(void*)&first << std::endl;
 	for(OperationBookBase *book = first; book != NULL; book = book->next)
 		book->deinitialize();
 }
@@ -156,7 +126,6 @@ Type::~Type()
 
 void Type::initialize_all()
 {
-	std::cout << "Type::initialize_all()" << " root anchor " << (long long)(void*)&first << std::endl;
 	OperationBookBase::initialize_all();
 	for(Type *type = first; type != NULL; type = type->next)
 		type->initialize();
@@ -164,14 +133,37 @@ void Type::initialize_all()
 
 void Type::deinitialize_all()
 {
-	std::cout << "Type::deinitialize_all()" << " root anchor " << (long long)(void*)&first << std::endl;
 	for(Type *type = first; type != NULL; type = type->next)
 		type->deinitialize();
 	OperationBookBase::deinitialize_all();
 }
 
-Type &type_nil = types_namespace::TypeNil::instance;
 
+namespace synfig {
+namespace types_namespace {
+	class TypeNil: public Type
+	{
+	protected:
+		TypeNil(): Type(NIL) { }
+
+		static String to_string(const InternalPointer) { return "Nil"; }
+
+		virtual void initialize_vfunc(Description &description)
+		{
+			Type::initialize_vfunc(description);
+			description.name = "nil";
+			description.local_name = N_("nil");
+			description.aliases.push_back("null");
+			register_default(to_string);
+		}
+	public:
+		static TypeNil instance;
+	};
+
+	TypeNil TypeNil::instance;
+}
+
+Type &type_nil = types_namespace::TypeNil::instance;
 }
 
 /* === P R O C E D U R E S ================================================= */
