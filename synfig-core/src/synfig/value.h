@@ -124,13 +124,13 @@ public:
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
 		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
-		{ set(x); }
+	{ type->initialize(); set(x); }
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
 		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
-	{ set_list_of(x); }
+	{ type->initialize(); set_list_of(x); }
 
 	//! Copy constructor. The data is not copied, just the type.
 	ValueBase(Type &x);
@@ -400,6 +400,8 @@ private:
 	void __set(const T &alias, const typename T::AliasedType &x)
 	{
 		typedef typename T::AliasedType TT;
+		alias.type.initialize();
+
 		Type &current_type = *type;
 		if (current_type != type_nil)
 		{

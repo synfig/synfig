@@ -67,11 +67,12 @@ using namespace etl;
 
 ValueBase::ValueBase():
 	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
-{ }
+{ type->initialize(); }
 
 ValueBase::ValueBase(Type &x):
 	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
+	type->initialize();
 	create(x);
 }
 
@@ -100,6 +101,7 @@ ValueBase::is_valid()const
 void
 ValueBase::create(Type &type)
 {
+	type.initialize();
 	if (type == type_nil) { clear(); return; }
 	Operation::CreateFunc func =
 		Type::get_operation<Operation::CreateFunc>(
