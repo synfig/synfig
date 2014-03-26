@@ -68,7 +68,7 @@ using namespace etl;
 ValueBase::ValueBase():
 	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 	type->initialize();
 #endif
 }
@@ -76,7 +76,7 @@ ValueBase::ValueBase():
 ValueBase::ValueBase(Type &x):
 	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 	type->initialize();
 #endif
 	create(x);
@@ -107,7 +107,7 @@ ValueBase::is_valid()const
 void
 ValueBase::create(Type &type)
 {
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 	type.initialize();
 #endif
 	if (type == type_nil) { clear(); return; }

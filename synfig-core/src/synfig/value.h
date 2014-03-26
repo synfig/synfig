@@ -124,7 +124,7 @@ public:
 		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 		type->initialize();
 #endif
 		set(x);
@@ -135,7 +135,7 @@ public:
 		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 		type->initialize();
 #endif
 		set_list_of(x);
@@ -409,7 +409,7 @@ private:
 	void __set(const T &alias, const typename T::AliasedType &x)
 	{
 		typedef typename T::AliasedType TT;
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 		alias.type.initialize();
 #endif
 

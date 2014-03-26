@@ -35,7 +35,7 @@
 
 /* === M A C R O S ========================================================= */
 
-//#define INITIALIZE_TYPE_BEFOR_USE
+//#define INITIALIZE_TYPE_BEFORE_USE
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -311,7 +311,7 @@ private:
 	public:
 		inline Map& get_map()
 		{
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
 #endif
 			return *map_alias;
@@ -319,7 +319,7 @@ private:
 
 		inline const Map& get_map() const
 		{
-#ifdef INITIALIZE_TYPE_BEFOR_USE
+#ifdef INITIALIZE_TYPE_BEFORE_USE
 			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
 #endif
 			return *map_alias;
