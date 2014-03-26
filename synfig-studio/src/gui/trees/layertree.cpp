@@ -431,6 +431,7 @@ LayerTree::create_param_tree()
 
 	// To get the initial style
 	param_tree_style_changed = true;
+	param_tree_header_size = 0;
 
 	//column_time_track->set_visible(false);
 
@@ -1317,6 +1318,7 @@ LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::St
 //{
 //	if (param_tree_style_changed)
 //	{
+//		update_param_tree_header_size();
 //		param_tree_style_changed = false;
 //	}
 //	return true;
@@ -1327,7 +1329,35 @@ LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
 {
 	if (param_tree_style_changed)
 	{
+		update_param_tree_header_size();
 		param_tree_style_changed = false;
 	}
 	return true;
+}
+
+bool
+LayerTree::update_param_tree_header_size()
+{
+	bool header_size_updated = false;
+	const Gtk::TreeViewColumn* column = get_param_tree_view().get_column (0);
+	if (column)
+	{
+		if(column->get_widget())
+		{
+			if(column->get_widget()->get_parent())
+			{
+				const Gtk::Container* container;
+				if((container = column->get_widget()->get_parent()->get_parent()))
+				{
+					int header_size = container->get_height();
+					if (header_size != param_tree_header_size)
+					{
+						param_tree_header_size = header_size;
+						header_size_updated = true;
+					}
+				}
+			}
+		}
+	}
+	return header_size_updated;
 }
