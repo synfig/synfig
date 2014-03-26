@@ -77,7 +77,6 @@ LinearGradient::LinearGradient():
 	param_loop(ValueBase(false)),
 	param_zigzag(ValueBase(false))
 {
-	sync();
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
@@ -159,8 +158,8 @@ LinearGradient::hit_check(synfig::Context context, const synfig::Point &point)co
 bool
 LinearGradient::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_p1,sync());
-	IMPORT_VALUE_PLUS(param_p2,sync());
+	IMPORT_VALUE(param_p1);
+	IMPORT_VALUE(param_p2);
 	IMPORT_VALUE(param_gradient);
 	IMPORT_VALUE(param_loop);
 	IMPORT_VALUE(param_zigzag);
