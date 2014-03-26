@@ -33,17 +33,13 @@
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
 #include "valuedescbonelink.h"
-#include "valuenodestaticlistinsert.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfig/boneweightpair.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_bone.h>
 #include <synfig/valuenode_bonelink.h>
-#include <synfig/valuenode_boneweightpair.h>
-#include <synfig/valuenode_staticlist.h>
-#include <synfig/valueoperations.h>
+#include <synfig/valuetransformation.h>
 
 #include <synfigapp/general.h>
 
@@ -161,11 +157,6 @@ Action::ValueDescBoneLink::prepare()
 	if (!bone_value_node)
 		throw Error(Error::TYPE_NOTREADY);
 
-	ValueNode_BoneWeightPair::Handle bone_weight_pair_node =
-		ValueNode_BoneWeightPair::create(
-			BoneWeightPair((*bone_value_node)(time).get(Bone()), 1), get_canvas() );
-	bone_weight_pair_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node), get_canvas()));
-
 	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
 		ValueDesc& value_desc(*iter);
@@ -197,13 +188,8 @@ Action::ValueDescBoneLink::prepare()
 		*/
 
 		// create new BoneLink
-		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type(), get_canvas());
-
-		ValueNode_StaticList::Handle list_node = ValueNode_StaticList::Handle::cast_dynamic(bone_link_node->get_link("bone_weight_list"));
-		if (!list_node) continue;
-		list_node->add(bone_weight_pair_node);
-		list_node->changed();
-
+		ValueNode_BoneLink::Handle bone_link_node = ValueNode_BoneLink::create(value_desc.get_value_type());
+		bone_link_node->set_link("bone", ValueNode_Const::create(ValueBase(bone_value_node)));
 		bone_link_node->set_link("base_value",
 			ValueNode_Composite::create(
 				ValueTransformation::back_transform(

@@ -1739,11 +1739,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				continue;
 
 			try {
-				bool load_old_bonelink = false;
-				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && name == "bone")
+				bool load_old_weighted_bonelink = false;
+				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && name == "bone_weight_list")
 				{
-					name = "bone_weight_list";
-					load_old_bonelink = true;
+					name = "bone";
+					load_old_weighted_bonelink = true;
 				}
 
 				index = value_node->get_link_index_from_name(name);
@@ -1770,23 +1770,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					continue;
 				}
 
-				if (load_old_bonelink)
+				if (load_old_weighted_bonelink)
 				{
-					LinkableValueNode::Handle v = ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(),1), canvas);
-					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(value_node->get_link(index));
-					if (!list || !v->set_link("bone", c[index]))
-					{
-						error(element, strprintf(_("Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),
-												 value_node->link_name(index).c_str(),
-												 id.c_str(),
-												 index,
-												 element->get_name().c_str()));
-						continue;
-					} else {
-						list->add(v);
-						list->changed();
-					}
-					c[index] = list;
+					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
+					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
+					ValueNode::Handle bone = wp->get_link_vfunc(0);
+					
+					c[index] = bone;
 				}
 
 				if(!value_node->set_link(index, c[index]))
@@ -1836,11 +1826,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 				child_name = child->get_name();
 
-				bool load_old_bonelink = false;
-				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && child_name == "bone")
-				{
-					child_name = "bone_weight_list";
-					load_old_bonelink = true;
+				bool load_old_weighted_bonelink = false;
+				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && child_name == "bone_weight_list"){
+					synfig::info("!!!");
+					child_name = "bone";
+					load_old_weighted_bonelink = true;
 				}
 
 				index = value_node->get_link_index_from_name(child_name);
@@ -1876,22 +1866,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					continue;
 				}
 
-				if (load_old_bonelink)
+				if (load_old_weighted_bonelink)
 				{
-					LinkableValueNode::Handle v = ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(),1), canvas);
-					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(value_node->get_link(index));
-					if (!list || !v->set_link("bone", c[index]))
-					{
-						error(child,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d (%s)"),
-											  c[index]->get_name().c_str(),
-											  c[index]->get_type().description.local_name.c_str(),
-											  index,
-											  value_node->link_name(index).c_str()));						continue;
-					} else {
-						list->add(v);
-						list->changed();
-					}
-					c[index] = list;
+					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
+					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
+					ValueNode::Handle bone = wp->get_link_vfunc(0);
+					
+					c[index] = bone;
 				}
 
 				if(!value_node->set_link(index,c[index]))
@@ -1958,10 +1939,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				continue;
 
 			// todo: remove this - it's temporary; accept bones with 'scalel' missing - it's new
+			// todo: remove this AFTER release, which is subsequent to 0.64.1
 			if (element->get_name() == "bone" &&
 				(value_node->link_name(i) == "scalel" ||
 				 value_node->link_name(i) == "scalelx" ||
-				 value_node->link_name(i) == "scalely"))
+				 value_node->link_name(i) == "scalely" ||
+				 value_node->link_name(i) == "width" ||
+				 value_node->link_name(i) == "tipwidth" ))
 				continue;
 
 			// 'homogeneous' was added while canvas version 0.7 was in use and the BLineCalcVertex,

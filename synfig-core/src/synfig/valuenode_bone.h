@@ -42,11 +42,10 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle origin_;
 	ValueNode::RHandle angle_;
 	ValueNode::RHandle scalelx_;
-	ValueNode::RHandle scalely_;
 	ValueNode::RHandle scalex_;
-	ValueNode::RHandle scaley_;
 	ValueNode::RHandle length_;
-	ValueNode::RHandle strength_;
+        ValueNode::RHandle width_;
+	ValueNode::RHandle tipwidth_;
 	ValueNode::RHandle parent_;
 
 protected:
@@ -76,6 +75,9 @@ public:
 	virtual String get_bone_name(Time t)const;
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	
+	// checks if point belongs to the range of influence of current bone
+	bool have_influence_on(Time t, const Vector &x)const;
 
 protected:
 	LinkableValueNode* create_new()const;

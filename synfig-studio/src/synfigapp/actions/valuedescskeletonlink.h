@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_skeleton.h
-**	\brief Header file for implementation of the "Layer_Skeleton" layer
+/*!	\file valuedescskeletonlink.h
+**	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	......... ... 2013 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,15 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_SKELETON_H
-#define __SYNFIG_LAYER_SKELETON_H
+#ifndef __SYNFIG_APP_ACTION_VALUEDESCSKELETONLINK_H
+#define __SYNFIG_APP_ACTION_VALUEDESCSKELETONLINK_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "bone.h"
-#include "layer_polygon.h"
-// #include <synfig/value.h>
-// #include <vector>
+#include <synfigapp/action.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <list>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,39 +38,35 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig {
+namespace synfigapp {
 
-class Layer_Skeleton : public Layer_Polygon
+namespace Action {
+
+class ValueDescSkeletonLink :
+	public Super
 {
-	SYNFIG_LAYER_MODULE_EXT
 private:
-
-	//!Parameter: (std::vector<synfig::Bone>) Bones list of the skeleton
-	ValueBase param_bones;
-	//!Parameter: (synfig::String) Name of the skeleton
-	ValueBase param_name;
+	ValueDesc value_desc;
+	std::list<ValueDesc> value_desc_list;
+	synfig::Time time;
 
 public:
 
-	Layer_Skeleton();
+	ValueDescSkeletonLink();
 
-#ifdef _DEBUG
-	~Layer_Skeleton();
-#endif
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+	virtual void prepare();
 
-	virtual Vocab get_param_vocab()const;
+	ACTION_MODULE_EXT
+};
 
-	//! Updates the polygon data to match the parameters.
-	virtual void sync();
-	virtual void set_time(IndependentContext context, Time time)const;
-	virtual void set_time(IndependentContext context, Time time, const Point &pos)const;
-}; // END of class Layer_Skeleton
-
-}; // END of namespace synfig
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

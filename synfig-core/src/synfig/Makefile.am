@@ -291,6 +291,7 @@ SYNFIGHEADERS = \
 	filecontainertemporary.h \
 	zstreambuf.h \
 	valueoperations.h \
+	valuetransformation.h \
 	weightedvalue.h
 
 SYNFIGSOURCES = \

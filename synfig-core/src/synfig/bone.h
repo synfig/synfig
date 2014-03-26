@@ -44,9 +44,11 @@
 	cout<<"[name]="<<bone.name_<<endl;									  \
 	cout<<"[origin]="<<bone.origin_<<endl;	                              \
 	cout<<"[angle]="<<bone.angle_<<endl;		                          \
-	cout<<"[scalelx]="<<bone.scalelx_<<"[scalely]="<<bone.scalely_<<endl; \
-	cout<<"[scalex]="<<bone.scalex_<<"[scaley]="<<bone.scaley_<<endl;	  \
-	cout<<"[length]="<<bone.length_<<"[strength]="<<bone.strength_<<endl; \
+	cout<<"[scalelx]="<<bone.scalelx_<<endl; \
+	cout<<"[scalex]="<<bone.scalex_<<endl;	  \
+	cout<<"[length]="<<bone.length_<<endl;         \
+	cout<<"[width]="<<bone.width_<<endl; \
+	cout<<"[tipwidth]="<<bone.tipwidth_<<endl; \
 	cout<<"[parent]="<<bone.parent_<<endl
 
 /* === T Y P E D E F S ===================================================== */
@@ -79,16 +81,14 @@ private:
 	Angle angle_;
 	//!This is the current local x scale of the bone.
 	Real scalelx_;
-	//!This is the current local y scale of the bone.
-	Real scalely_;
 	//!This is the current recursive x scale of the bone.
 	Real scalex_;
 	//!This is the current recursive y scale of the bone.
-	Real scaley_;
-	//!This is the length at setup time
 	Real length_;
-	//!This is the strength at setup time
-	Real strength_;
+	//!This is the width of bone at its origin
+	Real width_;
+	//!This is the width of bone at its tip
+	Real tipwidth_;
 	//!The parent bone.
 	const ValueNode_Bone* parent_;
 
@@ -117,25 +117,21 @@ public:
 	const Real& get_scalelx()const {return scalelx_;}
 	void set_scalelx(const Real &x) {scalelx_=x;}
 
-	//!Wrapper for scalely
-	const Real& get_scalely()const {return scalely_;}
-	void set_scalely(const Real &y) {scalely_=y;}
-
 	//!Wrapper for scalex
 	const Real& get_scalex()const {return scalex_;}
 	void set_scalex(const Real &x) {scalex_=x;}
-
-	//!Wrapper for scaley
-	const Real& get_scaley()const {return scaley_;}
-	void set_scaley(const Real &y) {scaley_=y;}
 
 	//!Wrapper for length. Notice that a length of 0 is not allowed.
 	const Real& get_length()const {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
 
-	//!Wrapper for strength
-	const Real& get_strength()const {return strength_;}
-	void set_strength(const Real &x) {strength_=x;}
+	//!Wrapper for width
+	const Real& get_width()const {return width_;}
+	void set_width(const Real &x) {width_=x;}
+	
+	//!Wrapper for tipwidth
+	const Real& get_tipwidth()const {return tipwidth_;}
+	void set_tipwidth(const Real &x) {tipwidth_=x;}
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
@@ -158,14 +154,14 @@ public:
 	Matrix get_animated_matrix() const { return animated_matrix_; }
 	void set_animated_matrix(Matrix x) { animated_matrix_ = x; }
 
-	Vector get_local_scale() const { return Vector(scalelx_, scalely_); }
+	Vector get_local_scale() const { return Vector(scalelx_, 1.0); }
 
 	//!Get the string of the Bone
 	//!@return String type. A string representation of the bone
 	//!components.
 	synfig::String get_string()const;
 
-	bool is_root();
+	bool is_root()const;
 
 }; // END of class Bone
 
