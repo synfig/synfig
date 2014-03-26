@@ -282,10 +282,11 @@ LayerTree::create_param_tree()
 	{	// --- N A M E --------------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
 
-		// Affect a widget to the first column to retrieve it when style is updated
-		param_tree_columnzero_label.set_text(column->get_title());
-		column->set_widget(param_tree_columnzero_label);
-		param_tree_columnzero_label.show();
+		// Affect a widget to the first column button to retrieve it when style is updated
+		Gtk::Label* columnzero_label = Gtk::manage( new Gtk::Label() );
+		columnzero_label->set_text(column->get_title());
+		column->set_widget(*columnzero_label);
+		columnzero_label->show();
 
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
@@ -409,6 +410,16 @@ LayerTree::create_param_tree()
 
 	get_param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
 	get_param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
+	// Column widget label event used to retrieve column size
+	Gtk::Widget* columnzero_label = get_param_tree_view().get_column(0)->get_widget ();
+	/* GTKMM 3 remplacement for columnzero_label signal_style_changed
+	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_updated));
+	*/
+	columnzero_label->signal_style_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_changed));
+	/* GTKMM 3 remplacement for columnzero_label signal_expose_event
+	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_draw));
+	*/
+	columnzero_label->signal_expose_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_expose_draw));
 	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
@@ -417,6 +428,9 @@ LayerTree::create_param_tree()
 	//scroll->add(get_param_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scroll->show();
+
+	// To get the initial style
+	param_tree_style_changed = true;
 
 	//column_time_track->set_visible(false);
 
@@ -1283,3 +1297,37 @@ LayerTree::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, 
 	context->drag_finish(false, false, time);
 }
 */
+
+// GTKMM 3 remplacement for on_param_tree_column_label_style_changed
+//void
+//LayerTree::on_param_tree_column_label_style_updated ()
+//{
+//	param_tree_style_changed = true;
+//}
+
+void
+LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::Style >& /*previous_style*/)
+{
+	param_tree_style_changed = true;
+}
+
+// GTKMM 3 remplacement for on_param_tree_column_label_expose_draw
+//bool
+//LayerTree::on_param_tree_column_label_draw (const ::Cairo::RefPtr< ::Cairo::Context>& /*cr*/)
+//{
+//	if (param_tree_style_changed)
+//	{
+//		param_tree_style_changed = false;
+//	}
+//	return true;
+//}
+
+bool
+LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
+{
+	if (param_tree_style_changed)
+	{
+		param_tree_style_changed = false;
+	}
+	return true;
+}

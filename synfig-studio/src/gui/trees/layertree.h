@@ -150,8 +150,7 @@ private:
 
 	Widget_ValueBase blend_method_widget;
 
-	//widget used to get the column size
-	Gtk::Label param_tree_columnzero_label;
+	bool param_tree_style_changed;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -193,6 +192,15 @@ private:
 	void on_amount_value_changed();
 
 	void on_blend_method_changed();
+
+	/* GTKMM 3
+	void on_param_column_label_tree_style_updated ();
+	*/
+	void on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::Style >& previous_style);
+	/* GTKMM 3
+	bool on_param_column_label_tree_draw (const ::Cairo::RefPtr< ::Cairo::Context>& cr);
+	*/
+	bool on_param_tree_column_label_expose_draw (GdkEventExpose * event);
 
 public:
 
