@@ -186,20 +186,16 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 		return true;
 	}
 
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-    // Adjust the top_left and bottom_right points
-	// for our zoom amount
-	Point npos;
-	npos[0]=(desc.get_tl()[0]-center[0])/amount[0]+center[0];
-	npos[1]=(desc.get_tl()[1]-center[1])/amount[1]+center[1];
-	desc.set_tl(npos);
-	npos[0]=(desc.get_br()[0]-center[0])/amount[0]+center[0];
-	npos[1]=(desc.get_br()[1]-center[1])/amount[1]+center[1];
-	desc.set_br(npos);
+	RendDesc transformed_renddesc(renddesc);
+	transformed_renddesc.clear_flags();
+	transformed_renddesc.set_transformation_matrix(
+		Matrix().set_translate(-center)
+	  *	Matrix().set_scale(amount)
+	  *	Matrix().set_translate(center)
+	  * renddesc.get_transformation_matrix() );
 
 	// Render the scene
-	return context.accelerated_render(surface,quality,desc,cb);
+	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
 }
 
 

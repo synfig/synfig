@@ -113,6 +113,7 @@ public:
 
 	Matrix get_matrix() const
 	{
+		if (is_identity()) return Matrix();
 		Vector axis_x(scale[0], angle);
 		Vector axis_y(scale[1], angle + skew_angle + Angle::deg(90.0));
 		return Matrix(axis_x, axis_y, offset);
@@ -120,6 +121,7 @@ public:
 
 	void set_matrix(const Matrix &matrix)
 	{
+		if (matrix.is_identity()) *this = Transformation();
 		Vector axis_x(matrix.get_axis_x());
 		Vector axis_y(matrix.get_axis_y());
 		angle = axis_x.angle();

@@ -3089,13 +3089,20 @@ studio::WorkArea::async_update_finished()
 	// we aren't dirty anymore
 	if(async_renderer->has_success())
 	{
-		dirty=false;
-		//queued=false;
-		String text(_("Idle"));
-		String text2(_("Last rendering time"));
-		Real execution_time = async_renderer ? async_renderer->get_execution_time() : 0.0;
-		if (execution_time > 0) text += strprintf(" (%s = %f %s)", text2.c_str(), execution_time, _("sec"));
-		cb->task(text);
+		Real execution_time = async_renderer->get_execution_time();
+		if (execution_time > 0.0)
+		{
+			cb->task( strprintf("%s (%s %f %s)",
+				_("Idle"),
+				_("Last rendering time"),
+				async_renderer->get_execution_time(),
+				_("sec") ));
+		}
+		else
+		{
+			cb->task(_("Idle"));
+		}
+
 	}
 	else
 	{

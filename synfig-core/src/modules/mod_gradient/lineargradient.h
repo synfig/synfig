@@ -51,7 +51,6 @@ class LinearGradient : public Layer_Composite, public Layer_NoDeform
 private:
 	//! Parameter: (Point)
 	ValueBase param_p1,param_p2;
-	Vector diff;
 	//! Parameter: (Gradient)
 	ValueBase param_gradient;
 	//! Parameter: (bool)
@@ -59,11 +58,21 @@ private:
 	//! Parameter: (bool)
 	ValueBase param_zigzag;
 
-	void sync();
+	struct Params {
+		synfig::Point p1;
+		synfig::Point p2;
+		synfig::Point diff;
+		synfig::Gradient gradient;
+		bool loop;
+		bool zigzag;
+		inline Params(): loop(false), zigzag(false) { }
+		void calc_diff();
+	};
 
-	synfig::Color color_func(const synfig::Point &x, float supersample=0)const;
+	void fill_params(Params &params)const;
+	synfig::Color color_func(const Params &params, const synfig::Point &x, synfig::Real supersample = 0.0)const;
+	synfig::Real calc_supersample(const Params &params, synfig::Real pw, synfig::Real ph)const;
 
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 	bool compile_gradient(cairo_pattern_t* pattern, Gradient gradient)const;
 
 public:

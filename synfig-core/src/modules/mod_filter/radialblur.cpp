@@ -134,6 +134,8 @@ RadialBlur::get_color(Context context, const Point &p)const
 bool
 RadialBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+
 	Vector origin=param_origin.get(Vector());
 	Real size=param_size.get(Real());
 	bool fade_out=param_fade_out.get(bool());
