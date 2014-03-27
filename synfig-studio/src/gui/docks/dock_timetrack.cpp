@@ -514,5 +514,8 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 void
 Dock_Timetrack::on_update_header_size( int header_size)
 {
-
+	//add the border size
+	header_size+=2;
+	widget_timeslider_->set_size_request(-1,header_size-header_size/3+1);
+	widget_kf_list_->set_size_request(-1,header_size/3+1);
 }
