@@ -30,6 +30,7 @@
 #endif
 
 #include "type.h"
+#include <typeinfo>
 
 #endif
 
@@ -48,6 +49,95 @@ Type *Type::last = NULL;
 TypeId Type::last_identifier = 0;
 std::vector<Type*> Type::typesById;
 std::map<String, Type*> Type::typesByName;
+
+
+Type::OperationBookBase::OperationBookBase():
+	previous(last), next(NULL), initialized(false)
+{
+	(previous == NULL ? first : previous->next) = last = this;
+}
+
+Type::OperationBookBase::~OperationBookBase()
+{
+	(previous == NULL ? first : previous->next) = next;
+	(next     == NULL ? last  : next->previous) = previous;
+}
+
+void Type::OperationBookBase::initialize()
+{
+	if (initialized) return;
+	for(OperationBookBase *book = first; book != NULL && book != this; book = book->next)
+	{
+		book->initialize();
+		if (std::string( typeid(*book).name() ) == typeid(*this).name())
+		{
+			set_alias(book);
+			break;
+		}
+	}
+	initialized = true;
+}
+
+void Type::OperationBookBase::deinitialize()
+{
+	if (!initialized) return;
+	set_alias(NULL);
+}
+
+void Type::OperationBookBase::initialize_all()
+{
+	for(OperationBookBase *book = first; book != NULL; book = book->next)
+		book->initialize();
+}
+
+void Type::OperationBookBase::deinitialize_all() {
+	for(OperationBookBase *book = first; book != NULL; book = book->next)
+		book->deinitialize();
+}
+
+
+Type::Type(TypeId):
+	previous(last),
+	next(NULL),
+	initialized(false),
+	identifier(NIL),
+	description(private_description)
+{
+	(previous == NULL ? first : previous->next) = last = this;
+}
+
+Type::Type():
+	previous(last),
+	next(NULL),
+	initialized(false),
+	identifier(++last_identifier),
+	description(private_description)
+{
+	assert(last_identifier != NIL);
+	(previous == NULL ? first : previous->next) = last = this;
+}
+
+Type::~Type()
+{
+	if (initialized) unregister_type();
+	(previous == NULL ? first : previous->next) = next;
+	(next     == NULL ? last  : next->previous) = previous;
+}
+
+void Type::initialize_all()
+{
+	OperationBookBase::initialize_all();
+	for(Type *type = first; type != NULL; type = type->next)
+		type->initialize();
+}
+
+void Type::deinitialize_all()
+{
+	for(Type *type = first; type != NULL; type = type->next)
+		type->deinitialize();
+	OperationBookBase::deinitialize_all();
+}
+
 
 namespace synfig {
 namespace types_namespace {

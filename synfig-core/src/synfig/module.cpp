@@ -31,6 +31,7 @@
 
 #include "module.h"
 #include "general.h"
+#include "type.h"
 #include <ETL/stringf>
 
 #ifndef USE_CF_BUNDLES
@@ -127,6 +128,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	module=lt_dlopenext((string("lib")+module_name).c_str());
 	if(!module)module=lt_dlopenext(module_name.c_str());
+	Type::initialize_all();
 
 	if(!module)
 	{

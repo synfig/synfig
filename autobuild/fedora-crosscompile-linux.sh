@@ -1013,7 +1013,7 @@ do_cleanup()
 	exit
 }
 
-trap do_cleanup INT SIGINT SIGTERM
+trap do_cleanup INT SIGINT SIGTERM EXIT
 
 [ ! -e ${SYSPREFIX}.off ] || mv ${SYSPREFIX}.off ${SYSPREFIX}
 
@@ -1022,10 +1022,10 @@ if [ -z $1 ]; then
 else
 	echo "Executing custom user command..."
 	mkprep
-	set_environment 
+	set_environment
 
 
-	$@ 
+	$@
 fi
 
 do_cleanup

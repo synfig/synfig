@@ -35,6 +35,8 @@
 
 /* === M A C R O S ========================================================= */
 
+//#define INITIALIZE_TYPE_BEFORE_USE
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -201,7 +203,9 @@ public:
 
 		bool operator < (const Description &other) const
 		{
-			return return_type < other.return_type ? true
+			return operation_type < other.operation_type ? true
+				 : other.operation_type < operation_type ? false
+				 : return_type < other.return_type ? true
 				 : other.return_type < return_type ? false
 				 : type_a < other.type_a ? true
 				 : other.type_a < type_a ? false
@@ -261,47 +265,79 @@ public:
 private:
 	class OperationBookBase
 	{
-	private:
+	protected:
 		static OperationBookBase *first, *last;
 		OperationBookBase *previous, *next;
 
 		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL) { }
 		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
 
-	protected:
-		OperationBookBase():
-			previous(last), next(NULL)
-		{
-			(previous == NULL ? first : previous->next) = last = this;
-		}
+		bool initialized;
+
+		OperationBookBase();
 
 	public:
 		virtual void remove_type(const Type &type) = 0;
-		virtual ~OperationBookBase()
-		{
-			(previous == NULL ? first : previous->next) = next;
-			(next     == NULL ? last  : next->previous) = previous;
-		}
+		virtual void set_alias(OperationBookBase *alias) = 0;
+		virtual ~OperationBookBase();
 
 		static void remove_type_from_all_books(TypeId identifier)
 		{
 			for(OperationBookBase *book = first; book != NULL; book = book->next)
 				book->remove_type(identifier);
 		}
+
+		void initialize();
+		void deinitialize();
+		static void initialize_all();
+		static void deinitialize_all();
 	};
 
 	template<typename T>
-	class OperationBook
+	class OperationBook : public OperationBookBase
 	{
 	public:
 		typedef std::pair<Type*, T> Entry;
 		typedef std::map<Operation::Description, Entry> Map;
 
 		static OperationBook instance;
+
+	private:
 		Map map;
+		Map *map_alias;
+
+		OperationBook(): map_alias(&map) { }
+
+	public:
+		inline Map& get_map()
+		{
+#ifdef INITIALIZE_TYPE_BEFORE_USE
+			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
+#endif
+			return *map_alias;
+		}
+
+		inline const Map& get_map() const
+		{
+#ifdef INITIALIZE_TYPE_BEFORE_USE
+			if (!OperationBookBase::initialized) OperationBookBase::initialize_all();
+#endif
+			return *map_alias;
+		}
+
+		virtual void set_alias(OperationBookBase *alias)
+		{
+			map_alias = alias == NULL ? &map : ((OperationBook<T>*)alias)->map_alias;
+			if (map_alias != &map)
+			{
+				map_alias->insert(map.begin(), map.end());
+				map.clear();
+			}
+		}
 
 		virtual void remove_type(const Type& type)
 		{
+			Map &map = get_map();
 			for(typename Map::iterator i = map.begin(); i != map.end();)
 				if (i->second.first == &type)
 					map.erase(i++); else ++i;
@@ -323,26 +359,8 @@ public:
 	const Description &description;
 
 protected:
-	Type(TypeId):
-		previous(last),
-		next(NULL),
-		initialized(false),
-		identifier(NIL),
-		description(private_description)
-	{
-		(previous == NULL ? first : previous->next) = last = this;
-	}
-
-	Type():
-		previous(last),
-		next(NULL),
-		initialized(false),
-		identifier(++last_identifier),
-		description(private_description)
-	{
-		assert(last_identifier != NIL);
-		(previous == NULL ? first : previous->next) = last = this;
-	}
+	Type(TypeId);
+	Type();
 
 private:
 	// lock default copy constructor
@@ -390,7 +408,7 @@ private:
 	{
 		typedef typename OperationBook<T>::Entry Entry;
 		typedef typename OperationBook<T>::Map Map;
-		Map &map = OperationBook<T>::instance.map;
+		Map &map = OperationBook<T>::instance.get_map();
 		assert(!map.count(description) || map[description].first == this);
 		map[description] = Entry(this, func);
 	}
@@ -401,8 +419,10 @@ protected:
 		description.version = "0.0";
 	}
 
+	virtual void deinitialize_vfunc(Description & /* description */) { }
+
 public:
-	void initialize()
+	inline void initialize()
 	{
 		if (initialized) return;
 		initialize_vfunc(private_description);
@@ -410,21 +430,21 @@ public:
 		initialized = true;
 	}
 
-	virtual ~Type()
+	inline void deinitialize()
 	{
-		if (initialized) unregister_type();
-		(previous == NULL ? first : previous->next) = next;
-		(next     == NULL ? last  : next->previous) = previous;
+		if (!initialized) return;
+		unregister_type();
+		deinitialize_vfunc(private_description);
+		initialized = false;
 	}
+
+	virtual ~Type();
 
 	bool operator== (const Type &other) { return this == &other; }
 	bool operator!= (const Type &other) { return this != &other; }
 
-	static void initialize_all()
-	{
-		for(Type *type = first; type != NULL; type = type->next)
-			type->initialize();
-	}
+	static void initialize_all();
+	static void deinitialize_all();
 
 	inline Type* get_next() const { return next; }
 	inline static Type* get_first() { return first; }
@@ -433,8 +453,9 @@ public:
 	static T get_operation(const Operation::Description &description)
 	{
 		typedef typename OperationBook<T>::Map Map;
-		typename Map::const_iterator i = OperationBook<T>::instance.map.find(description);
-		return i == OperationBook<T>::instance.map.end() ? NULL : i->second.second;
+		const Map &map = OperationBook<T>::instance.get_map();
+		typename Map::const_iterator i = map.find(description);
+		return i == map.end() ? NULL : i->second.second;
 	}
 
 	template<typename T>
@@ -631,6 +652,11 @@ public:
 public:
 	static bool subsys_init() {
 		initialize_all();
+		return true;
+	}
+
+	static bool subsys_stop() {
+		deinitialize_all();
 		return true;
 	}
 }; // END of class Type
