@@ -64,6 +64,10 @@ public:
 
 	Dock_Timetrack();
 	~Dock_Timetrack();
+
+private:
+	//! Signal handler for studio::LayerTree::
+	void on_update_header_size( int header_size);
 }; // END of Dock_Timetrack
 
 }; // END of namespace studio

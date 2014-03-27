@@ -46,6 +46,7 @@
 #include "widgets/widget_timeslider.h"
 #include "widgets/widget_keyframe_list.h"
 #include "general.h"
+#include "trees/layertree.h"
 #include <synfig/timepointcollect.h>
 
 #endif
@@ -416,6 +417,9 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
+	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+	tree_layer->signal_param_tree_header_size_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_size));
+
 	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
@@ -505,4 +509,10 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	{
 		//clear_previous();
 	}
+}
+
+void
+Dock_Timetrack::on_update_header_size( int header_size)
+{
+
 }
