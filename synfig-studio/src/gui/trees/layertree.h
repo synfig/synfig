@@ -140,6 +140,8 @@ private:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_layertree_;
 
+	sigc::signal<void,int> signal_param_tree_header_size_changed_;
+
 	bool disable_amount_changed_signal;
 
 	Gtk::Button *button_raise;
@@ -259,6 +261,10 @@ public:
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_param_user_click() { return signal_param_user_click_; }
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_layertree() { return signal_waypoint_clicked_layertree_; }
+
+	//! Signal fired when the param treeview header size has changed. The first parameter hold the header size
+	/*! \see LayerTree::update_param_tree_header_size() */
+	sigc::signal<void,int>& signal_param_tree_header_size_changed() { return signal_param_tree_header_size_changed_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 

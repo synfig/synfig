@@ -1318,7 +1318,7 @@ LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::St
 //{
 //	if (param_tree_style_changed)
 //	{
-//		update_param_tree_header_size();
+//		if (update_param_tree_header_size())	signal_param_tree_header_size_changed()(param_tree_header_size);
 //		param_tree_style_changed = false;
 //	}
 //	return true;
@@ -1329,7 +1329,7 @@ LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
 {
 	if (param_tree_style_changed)
 	{
-		update_param_tree_header_size();
+		if (update_param_tree_header_size())	signal_param_tree_header_size_changed()(param_tree_header_size);
 		param_tree_style_changed = false;
 	}
 	return true;
