@@ -431,7 +431,7 @@ LayerTree::create_param_tree()
 
 	// To get the initial style
 	param_tree_style_changed = true;
-	param_tree_header_size = 0;
+	param_tree_header_height = 0;
 
 	//column_time_track->set_visible(false);
 
@@ -1318,7 +1318,7 @@ LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::St
 //{
 //	if (param_tree_style_changed)
 //	{
-//		if (update_param_tree_header_size())	signal_param_tree_header_size_changed()(param_tree_header_size);
+//		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
 //		param_tree_style_changed = false;
 //	}
 //	return true;
@@ -1329,16 +1329,17 @@ LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
 {
 	if (param_tree_style_changed)
 	{
-		if (update_param_tree_header_size())	signal_param_tree_header_size_changed()(param_tree_header_size);
+		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
 		param_tree_style_changed = false;
 	}
-	return true;
+	//tell gtkmm to pass (x window) signal to the next signal handler
+	return false;
 }
 
 bool
-LayerTree::update_param_tree_header_size()
+LayerTree::update_param_tree_header_height()
 {
-	bool header_size_updated = false;
+	bool header_height_updated = false;
 	const Gtk::TreeViewColumn* column = get_param_tree_view().get_column (0);
 	if (column)
 	{
@@ -1349,15 +1350,15 @@ LayerTree::update_param_tree_header_size()
 				const Gtk::Container* container;
 				if((container = column->get_widget()->get_parent()->get_parent()))
 				{
-					int header_size = container->get_height();
-					if (header_size != param_tree_header_size)
+					int header_height = container->get_height();
+					if (header_height != param_tree_header_height)
 					{
-						param_tree_header_size = header_size;
-						header_size_updated = true;
+						param_tree_header_height = header_height;
+						header_height_updated = true;
 					}
 				}
 			}
 		}
 	}
-	return header_size_updated;
+	return header_height_updated;
 }

@@ -66,8 +66,9 @@ public:
 	~Dock_Timetrack();
 
 private:
-	//! Signal handler for studio::LayerTree::
-	void on_update_header_size( int header_size);
+	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
+	/* \see studio::LayerTree::signal_param_tree_header_height_changed */
+	void on_update_header_height( int header_height);
 }; // END of Dock_Timetrack
 
 }; // END of namespace studio

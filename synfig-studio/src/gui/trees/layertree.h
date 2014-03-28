@@ -140,7 +140,7 @@ private:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_layertree_;
 
-	sigc::signal<void,int> signal_param_tree_header_size_changed_;
+	sigc::signal<void,int> signal_param_tree_header_height_changed_;
 
 	bool disable_amount_changed_signal;
 
@@ -154,7 +154,7 @@ private:
 
 	bool param_tree_style_changed;
 
-	int param_tree_header_size;
+	int param_tree_header_height;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -164,10 +164,10 @@ private:
 
 	Gtk::Widget* create_layer_tree();
 	Gtk::Widget* create_param_tree();
-	//! Update the param_tree_view header size.
-	/*! \return true if param_tree_header_size updated, else false
+	//! Update the param_tree_view header height.
+	/*! \return true if param_tree_header_height updated, else false
 	*/
-	bool update_param_tree_header_size();
+	bool update_param_tree_header_height();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -262,9 +262,9 @@ public:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_layertree() { return signal_waypoint_clicked_layertree_; }
 
-	//! Signal fired when the param treeview header size has changed. The first parameter hold the header size
-	/*! \see LayerTree::update_param_tree_header_size() */
-	sigc::signal<void,int>& signal_param_tree_header_size_changed() { return signal_param_tree_header_size_changed_; }
+	//! Signal fired when the param treeview header height has changed. The first parameter hold the header height
+	/*! \see LayerTree::update_param_tree_header_height() */
+	sigc::signal<void,int>& signal_param_tree_header_height_changed() { return signal_param_tree_header_height_changed_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 

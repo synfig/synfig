@@ -123,6 +123,9 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 		)
 	);
 
+	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height));
+
 	canvas_view->set_ext_widget(get_name(),curves);
 }
 
@@ -190,4 +193,12 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	{
 		//clear_previous();
 	}
+}
+
+void
+Dock_Curves::on_update_header_height( int header_height)
+{
+	//add the border size
+	header_height+=2;
+	widget_timeslider_->set_size_request(-1,header_height+1);
 }
