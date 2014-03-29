@@ -103,4 +103,34 @@ ValueBase ValueAverage::average_weighted(const ValueBase &weighted_list, const V
 		default_value );
 }
 
+void ValueAverage::set_average_value_weighted(ValueBase &weighted_list, const ValueBase &value)
+{
+	if (weighted_list.get_type() != type_list) return;
+
+	ValueBase::List list = weighted_list.get_list();
+	if (list.empty()) return;
+	types_namespace::TypeWeightedValueBase *t =
+		dynamic_cast<types_namespace::TypeWeightedValueBase *>(&(list.front().get_type()));
+	if (t == NULL) return;
+	if (!check_weighted_type(*t)) return;
+
+	ValueBase::List values_list;
+	values_list.reserve(list.size());
+	std::vector<Real> weights_list;
+	weights_list.reserve(list.size());
+	for(ValueBase::List::const_iterator i = list.begin(); i != list.end(); ++i) {
+		if (i->get_type() != *t) return;
+		weights_list.push_back( t->extract_weight(*i) );
+		values_list.push_back( t->extract_value(*i) );
+	}
+	set_average_value_generic(
+		values_list.begin(), values_list.end(),
+		weights_list.begin(), weights_list.end(),
+		value );
+
+	std::vector<Real>::const_iterator j = weights_list.begin();
+	for(ValueBase::List::const_iterator i = values_list.begin(); i != values_list.end(); ++i, ++j)
+		list[i - values_list.begin()] = t->create_weighted_value(*j, *i);
+	weighted_list = list;
+}
 
