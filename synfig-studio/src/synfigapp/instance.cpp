@@ -52,6 +52,8 @@
 #include <synfig/valuenode_integer.h>
 #include <synfig/valuenode_real.h>
 #include <synfig/valuenode_bonelink.h>
+#include <synfig/valuenode_average.h>
+#include <synfig/valuenode_weightedaverage.h>
 #include <synfig/layer_pastecanvas.h>
 #include <synfig/layer_bitmap.h>
 #include <synfig/target_scanline.h>
@@ -97,6 +99,8 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_Integer::Handle::cast_dynamic(value_node)
 		|| ValueNode_Real::Handle::cast_dynamic(value_node)
 		|| ValueNode_BoneLink::Handle::cast_dynamic(value_node)
+		|| ValueNode_Average::Handle::cast_dynamic(value_node)
+		|| ValueNode_WeightedAverage::Handle::cast_dynamic(value_node)
 	)
 		return true;
 	return false;
