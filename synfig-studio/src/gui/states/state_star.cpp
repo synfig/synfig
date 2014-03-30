@@ -159,6 +159,7 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::Label angle_offset_label;
 	Gtk::Adjustment	angle_offset_adj;
 	Gtk::SpinButton	angle_offset_spin;
+	Gtk::HBox angle_offset_box;
 
 	// regular polygon
 	Gtk::Label regular_polygon_label;
@@ -669,8 +670,11 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	number_of_points_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// 7, angle offset
-	angle_offset_label.set_label(_("Angle Offset:"));
+	SPACING(angle_offset_indent, INDENTATION);
+	angle_offset_label.set_label(_("Offset:"));
 	angle_offset_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	angle_offset_box.pack_start(*angle_offset_indent, Gtk::PACK_SHRINK);
+	angle_offset_box.pack_start(angle_offset_label, Gtk::PACK_SHRINK);
 
 	// 8, radius ratio
 	radius_ratio_label.set_label(_("Radius Ratio:"));
@@ -692,11 +696,11 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	inner_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// 12, outer width
-	outer_width_label.set_label(_("Inner Width:"));
+	outer_width_label.set_label(_("Outer Width:"));
 	outer_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// 13, outer tangent
-	outer_tangent_label.set_label(_("Inner Tangent:"));
+	outer_tangent_label.set_label(_("Outer Tangent:"));
 	outer_tangent_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 
 	// 14, invert
@@ -780,7 +784,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 7, star points offset
-	options_table.attach(angle_offset_label,
+	options_table.attach(angle_offset_box,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(angle_offset_spin,
@@ -1565,6 +1569,34 @@ StateStar_Context::toggle_layer_creation()
 	{
 		bline_width_label.set_sensitive(false);
 		bline_width_dist.set_sensitive(false);
+	}
+
+	// inner/outer width and tangent
+	if (get_layer_region_flag() ||
+		get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag() ||
+		get_layer_plant_flag() ||
+		get_layer_curve_gradient_flag())
+	{
+		inner_width_label.set_sensitive(true);
+		inner_width_spin.set_sensitive(true);
+		inner_tangent_label.set_sensitive(true);
+		inner_tangent_spin.set_sensitive(true);
+		outer_width_label.set_sensitive(true);
+		outer_width_spin.set_sensitive(true);
+		outer_tangent_label.set_sensitive(true);
+		outer_tangent_spin.set_sensitive(true);
+	}
+	else
+	{
+		inner_width_label.set_sensitive(false);
+		inner_width_spin.set_sensitive(false);
+		inner_tangent_label.set_sensitive(false);
+		inner_tangent_spin.set_sensitive(false);
+		outer_width_label.set_sensitive(false);
+		outer_width_spin.set_sensitive(false);
+		outer_tangent_label.set_sensitive(false);
+		outer_tangent_spin.set_sensitive(false);
 	}
 
 	// invert
