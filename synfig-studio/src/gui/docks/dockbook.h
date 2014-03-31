@@ -61,6 +61,7 @@ public:
 	sigc::signal<void>& signal_empty() { return signal_empty_; }
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
+	using Gtk::Container::add;
 	void add(Dockable& dockable, int position=-1);
 	void remove(Dockable& dockable);
 
