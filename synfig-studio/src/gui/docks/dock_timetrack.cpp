@@ -82,6 +82,15 @@ public:
 
 	TimeTrackView()
 	{
+		//Text attributes must be the same that layer param tree's to have aligned rows
+		Pango::AttrList attr_list;
+		{
+			Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
+			pango_size.set_start_index(0);
+			pango_size.set_end_index(64);
+			attr_list.change(pango_size);
+		}
+
 		int label_index(append_column_editable(_("Name"),model.label));
 		Gtk::TreeView::Column* label_column = get_column(label_index-1);
 
@@ -98,6 +107,11 @@ public:
 			//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
 
 			//column->pack_start(*cellrenderer_time_track);
+
+			// Add a fixed size (same that layer param tree) empty text renderer to align the rows with params dock
+			Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+			text_cellrenderer->property_attributes()=attr_list;
+			column->pack_end(*text_cellrenderer,false);
 
 			// Finish setting up the column
 			column->set_reorderable();
