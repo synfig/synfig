@@ -597,7 +597,8 @@ StateBrush_Context::refresh_tool_options()
 	// load files
 	int col = 0; int row = 0;
 	Gtk::ToggleButton *first_button = NULL;
-	Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
+	//Gtk::IconSize iconsize = Gtk::ICON_SIZE_LARGE_TOOLBAR;
+	//Warning:unused variable iconsize
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")

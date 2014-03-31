@@ -131,8 +131,9 @@ class BezierDrag_Default : public BezierDrag_Base
 	synfig::Vector c2_initial;
 	float c1_ratio;
 	float c2_ratio;
-	bool c1_selected;
-	bool c2_selected;
+	//bool c1_selected;
+	//bool c2_selected;
+	//Warning: unused variables c1_selected c2_selected
 	bool is_moving;
 
 public:

@@ -86,8 +86,8 @@ Renderer_Timecode::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
+	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
+	//Warning: Unused variable focus_point
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());

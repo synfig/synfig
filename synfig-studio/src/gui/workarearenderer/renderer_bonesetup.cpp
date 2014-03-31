@@ -75,16 +75,16 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,
 	if(!get_work_area())
 		return;
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
+	//const synfig::Vector focus_point(get_work_area()->get_focus_point());
+	//Warning: unused variable focus_point
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
-	synfig::Time cur_time(canvas->get_time());
-
+	//synfig::Time cur_time(canvas->get_time());
+	//Warning: Unused variable cur_time
 	// Print out the bonesetup
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));

@@ -53,7 +53,7 @@ class Widget_Enum;
 class Widget_Defaults : public Gtk::VBox
 {
 	Widget_Color 	*_widget_otln_color;
-	Gtk::Alignment 	*widget_otln_color;
+	//Gtk::Alignment 	*widget_otln_color; // Seems to be unused
 
 	Widget_Color 	*_widget_fill_color;
 	Gtk::Alignment 	*widget_fill_color;

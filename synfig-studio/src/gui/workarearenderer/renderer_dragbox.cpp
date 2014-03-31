@@ -86,8 +86,8 @@ Renderer_Dragbox::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	const synfig::Vector focus_point(get_work_area()->get_focus_point());
-
+	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
+	// Warning : Unused focus_point
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
 
