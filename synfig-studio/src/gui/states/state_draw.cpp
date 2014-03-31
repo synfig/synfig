@@ -209,6 +209,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
+	Gtk::HBox width_max_error_box;
 	Gtk::Adjustment width_max_error_adj;
 	Gtk::SpinButton width_max_error_spin;
 
@@ -670,12 +671,14 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 7, min pressure, sub option of pressure width
 	SPACING(min_pressure_indent, INDENTATION);
+	SPACING(min_pressure_gap, GAP);
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	min_pressure_label_box.pack_start(*min_pressure_indent, Gtk::PACK_SHRINK);
 	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
 
 	min_pressure_box.pack_end(min_pressure_checkbutton, Gtk::PACK_SHRINK);
+	min_pressure_box.pack_end(*min_pressure_gap, Gtk::PACK_SHRINK);
 	min_pressure_box.pack_end(min_pressure_spin);
 
 	// 8, Smoothness
@@ -699,7 +702,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
+	SPACING(width_max_error_gap, GAP);
 	width_max_error_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
+	width_max_error_box.pack_start(*width_max_error_gap, Gtk::PACK_SHRINK);
 
 	// 12, round ends
 	round_ends_label.set_label(_("Round Ends"));
@@ -820,7 +826,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 11, width max error of advanced outline layer
-	options_table.attach(width_max_error_label,
+	options_table.attach(width_max_error_box,
 		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(width_max_error_spin,
