@@ -1573,7 +1573,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				}
 			}
 		}
-		else
+		if(get_region_flag())
 		{
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 			if (!layer)
