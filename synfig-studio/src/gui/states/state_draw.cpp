@@ -323,6 +323,9 @@ public:
 	bool get_min_pressure_flag()const { return min_pressure_checkbutton.get_active(); }
 	void set_min_pressure_flag(bool x) { min_pressure_checkbutton.set_active(x); }
 
+	bool get_round_ends_flag()const { return round_ends_checkbutton.get_active();}
+	void set_round_ends_flag(bool x) {round_ends_checkbutton.set_active(x);}
+
 	void load_settings();
 	void save_settings();
 	void increment_id();
@@ -485,6 +488,11 @@ StateDraw_Context::load_settings()
 			//set_local_error_flag(false);
 			//set_local_threshold_flag(false);
 			set_global_threshold_flag(true);
+
+		if(settings.get_value("draw.round_ends", value) && value == "1")
+			set_round_ends_flag(true);
+		else
+			set_round_ends_flag(false);
 	}
 	catch(...)
 	{
@@ -517,6 +525,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
 		settings.set_value("draw.localize",get_local_threshold_flag()?"1":"0");
+		settings.set_value("draw.round_ends", get_round_ends_flag()?"1":"0");
 	}
 	catch(...)
 	{
@@ -1517,6 +1526,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 				layer->set_param("width",get_bline_width());
 				get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
+				layer->set_param("round_tip[0]", get_round_ends_flag());
+				get_canvas_interface()->signal_layer_param_changed()(layer, "round_tip[0]");
+
+				layer->set_param("round_tip[1]", get_round_ends_flag());
+				get_canvas_interface()->signal_layer_param_changed()(layer, "round_tip[1]");
 			}
 			if(get_advanced_outline_flag())
 			{
@@ -1538,6 +1553,24 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 				layer2->set_param("width",get_bline_width());
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"width");
+
+				// advanced outline tip types: 1, rounded 2, squared 3, peak 4, flat
+				if(get_round_ends_flag())
+				{
+					layer2->set_param((ValueBase(),"start_tip"), 1);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(),"start_tip"));
+
+					layer2->set_param((ValueBase(),"end_tip"), 1);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "end_tip"));
+				}
+				else
+				{
+					layer2->set_param((ValueBase(),"start_tip"), 4);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "start_tip"));
+
+					layer2->set_param((ValueBase(),"end_tip"), 4);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "end_tip"));
+				}
 			}
 		}
 		else
