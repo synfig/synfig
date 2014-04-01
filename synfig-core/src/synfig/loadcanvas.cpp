@@ -65,8 +65,10 @@
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
 #include "valuenode_bonelink.h"
+#include "valuenode_weightedaverage.h"
 #include "valuenode_wplist.h"
 #include "valuenode_dilist.h"
+#include "valueoperations.h"
 
 #include "layer.h"
 #include "string.h"
@@ -2118,7 +2120,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	assert(element->get_name()=="dynamic_list" ||
 		element->get_name()=="bline" ||
 		element->get_name()=="wplist" ||
-		element->get_name()=="dilist");
+		element->get_name()=="dilist" ||
+		element->get_name()=="weighted_average" );
 
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
 
@@ -2140,6 +2143,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	handle<ValueNode_BLine> bline_value_node;
 	handle<ValueNode_WPList> wplist_value_node;
 	handle<ValueNode_DIList> dilist_value_node;
+	handle<ValueNode_WeightedAverage> weightedaverage_value_node;
 
 	if(element->get_name()=="bline")
 	{
@@ -2175,6 +2179,19 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				dilist_value_node->set_loop(true);
 			else
 				dilist_value_node->set_loop(false);
+		}
+	}
+	else if(element->get_name()=="weighted_average")
+	{
+		Type& contained_type = ValueAverage::get_type_from_weighted(type);
+		value_node=weightedaverage_value_node=ValueNode_WeightedAverage::create(contained_type, canvas);
+		if(element->get_attribute("loop"))
+		{
+			String loop=element->get_attribute("loop")->get_value();
+			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
+				weightedaverage_value_node->set_loop(true);
+			else
+				weightedaverage_value_node->set_loop(false);
 		}
 	}
 	else
@@ -2445,6 +2462,9 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(element->get_name()=="dilist") // This is not a typo. The dynamic list parser will parse a dilist.
+		value_node=parse_dynamic_list(element,canvas);
+	else
+	if(element->get_name()=="weighted_average") // This is not a typo. The dynamic list parser will parse a weighted_average.
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(LinkableValueNode::book().count(element->get_name()))

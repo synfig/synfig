@@ -162,6 +162,7 @@ private:
 public:
 	static types_namespace::TypeWeightedValueBase* get_weighted_type_for(Type &type);
 	static Type& convert_to_weighted_type(Type &type);
+	static Type& get_type_from_weighted(Type& type);
 
 	static bool check_weighted_type(Type& type);
 	static bool check_type(Type& type)
@@ -354,6 +355,70 @@ public:
 	static ValueBase average_weighted(const ValueBase &weighted_list, const ValueBase &default_value);
 	static ValueBase average_weighted(const ValueBase &weighted_list)
 		{ return average_weighted(weighted_list, ValueBase()); }
+
+
+	// iterators should provide following operations:
+	// comparison i == j, increment ++i, indirection *i, copy constructor i(j)
+	template<typename Iterator, typename ConstWeightIterator>
+	static void set_average_value_generic(
+		Iterator begin,
+		Iterator end,
+		ConstWeightIterator weight_begin,
+		ConstWeightIterator weight_end,
+		const ValueBase &value )
+	{
+		if (begin == end) return;
+
+		// check values
+		int count = 0;
+		Type &type = (*begin).get_type();
+		if (!check_type(type)) return;
+		for(Iterator i(begin); !(i == end); ++i, ++count)
+			if ((*i).get_type() != type) return;
+
+		// find difference
+		ValueBase previous_value = average_generic(begin, end, weight_begin, weight_end);
+		ValueBase difference = add(value, multiply(previous_value, -1.0));
+
+		// simple
+		for(Iterator i(begin); !(i == end); ++i)
+			*i = add(*i, difference);
+	}
+
+	template<typename Iterator>
+	static void set_average_value_generic(Iterator begin, Iterator end, const ValueBase &value)
+		{ set_average_value_generic(begin, end, (Real*)NULL, (Real*)NULL, value); }
+
+	static void set_average_value(ValueBase &list, const ValueBase &weights, const ValueBase &value)
+	{
+		if (list.get_type() != type_list) return;
+
+		std::vector<ValueBase> list_vector = list.get_list();
+		if (weights.get_type() == type_list)
+		{
+			std::vector<Real> weights_vector_real;
+			weights_vector_real.reserve(weights.get_list().size());
+			const std::vector<ValueBase> &weights_vector = weights.get_list();
+			for(std::vector<ValueBase>::const_iterator i = weights_vector.begin(); i != weights_vector.end(); ++i)
+				if (i->get_type() == type_real)
+					weights_vector_real.push_back(i->get(Real())); else break;
+			if (weights_vector.size() >= list_vector.size())
+			{
+				set_average_value_generic(
+					list_vector.begin(), list_vector.end(),
+					weights_vector_real.begin(), weights_vector_real.end(),
+					value );
+				return;
+			}
+		}
+		set_average_value_generic(list_vector.begin(), list_vector.end(), value);
+		list = list_vector;
+	}
+
+	static void set_average_value(ValueBase &list, const ValueBase &value)
+		{ return set_average_value(list, ValueBase(), value); }
+
+	static void set_average_value_weighted(ValueBase &weighted_list, const ValueBase &value);
 };
 
 }; // END of namespace synfig

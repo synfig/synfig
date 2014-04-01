@@ -55,7 +55,10 @@
 #include <synfig/valuenode_real.h>
 #include <synfig/valuenode_bonelink.h>
 #include <synfig/valuenode_bone.h>
+#include <synfig/valuenode_average.h>
+#include <synfig/valuenode_weightedaverage.h>
 #include <synfig/valueoperations.h>
+#include <synfig/weightedvalue.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
@@ -237,6 +240,80 @@ Action::ValueDescSet::prepare()
 		}
 	}
 
+    // Set ValueNode_Average
+	if(value_desc.is_value_node() && ValueNode_Average::check_type(value.get_type()))
+	{
+		if (ValueNode_Average::Handle bone_average_value_node =
+			ValueNode_Average::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueBase::List values_list;
+			values_list.reserve(bone_average_value_node->link_count());
+			for(int i = 0; i < bone_average_value_node->link_count(); ++i)
+				values_list.push_back((*bone_average_value_node->get_link(i))(time));
+
+			ValueAverage::set_average_value_generic(values_list.begin(), values_list.end(), value);
+
+			for(int i = 0; i < bone_average_value_node->link_count(); ++i)
+			{
+				Action::Handle action(Action::create("ValueDescSet"));
+
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",values_list[i]);
+				action->set_param("value_desc",ValueDesc(value_desc.get_value_node(), i));
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+
+			return;
+		}
+	}
+
+    // Set ValueNode_WeightedAverage
+	if(value_desc.is_value_node() && ValueNode_WeightedAverage::check_type(value.get_type()))
+	{
+		if (ValueNode_WeightedAverage::Handle bone_weighted_average_value_node =
+			ValueNode_WeightedAverage::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueBase::List values_list;
+			values_list.reserve(bone_weighted_average_value_node->link_count());
+			for(int i = 0; i < bone_weighted_average_value_node->link_count(); ++i)
+				values_list.push_back((*bone_weighted_average_value_node->get_link(i))(time));
+
+			ValueBase values_list_value(values_list);
+			ValueAverage::set_average_value_weighted(values_list_value, value);
+			const ValueBase::List &new_values_list = values_list_value.get_list();
+
+			for(int i = 0; i < bone_weighted_average_value_node->link_count(); ++i)
+			{
+				Action::Handle action(Action::create("ValueDescSet"));
+
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",new_values_list[i]);
+				action->set_param("value_desc",ValueDesc(value_desc.get_value_node(), i));
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+
+			return;
+		}
+	}
+
 	// If we are a bone link value node, then
 	// we need to change the transformation part
 	if(value_desc.is_value_node() && ValueNode_BoneLink::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -317,6 +394,15 @@ Action::ValueDescSet::prepare()
 			components[6]=value.get(BLinePoint()).get_split_tangent_radius();
 			components[7]=value.get(BLinePoint()).get_split_tangent_angle();
 			n_components=8;
+		}
+		else
+		if (dynamic_cast<synfig::types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+		{
+			types_namespace::TypeWeightedValueBase *tp =
+				dynamic_cast<synfig::types_namespace::TypeWeightedValueBase*>(&type);
+			components[0]=tp->extract_weight(value);
+			components[1]=tp->extract_value(value);
+			n_components=2;
 		}
 		else
 			throw Error(_("Bad type for composite (%s)"), type.description.local_name.c_str());
