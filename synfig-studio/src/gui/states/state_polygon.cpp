@@ -31,9 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 #include <synfig/valuenode_bline.h>
@@ -49,6 +46,8 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
+#include "widgets/widget_enum.h"
+#include "widgets/widget_distance.h"
 #include <synfigapp/main.h>
 
 #include "general.h"
@@ -64,6 +63,29 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip) ;\
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StatePolygon_Context::toggle_layer_creation))
+#endif
+
+// indentation for options layout
+#ifndef SPACING
+#define SPACING(name, px) \
+	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
+	name->set_size_request(px)
+#endif
+
+#define GAP	(3)
+#define INDENTATION (6)
+
 /* === G L O B A L S ======================================================= */
 
 StatePolygon studio::state_polygon;
@@ -78,35 +100,72 @@ class studio::StatePolygon_Context : public sigc::trackable
 	bool prev_table_status;
 	bool prev_workarea_layer_status_;
 
-	Gtk::Menu menu;
-
 	Duckmatic::Push duckmatic_push;
 
 	std::list<synfig::Point> polygon_point_list;
-	synfigapp::Settings& settings;
-
 
 	bool on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter);
-
-
 	void popup_handle_menu(synfigapp::ValueDesc value_desc);
-
-
 	void refresh_ducks();
 
+	//Toolbox settings
+	synfigapp::Settings& settings;
+
+	// holder of options
 	Gtk::Table options_table;
-	Gtk::Entry entry_id;
-	Gtk::CheckButton checkbutton_invert;
-	Gtk::CheckButton checkbutton_layer_polygon;
-	Gtk::CheckButton checkbutton_layer_region;
-	Gtk::CheckButton checkbutton_layer_outline;
-	Gtk::CheckButton checkbutton_layer_advanced_outline;
-	Gtk::CheckButton checkbutton_layer_curve_gradient;
-	Gtk::CheckButton checkbutton_layer_plant;
-	Gtk::CheckButton checkbutton_layer_link_origins;
+
+	// title
+	Gtk::Label title_label;
+
+	// layer name:
+	Gtk::Label id_label;
+	Gtk::HBox id_box;
+	Gtk::Entry id_entry;
+
+	// layer types to create:
+	Gtk::Label layer_types_label;
+	Gtk::ToggleButton layer_polygon_togglebutton;
+	Gtk::ToggleButton layer_region_togglebutton;
+	Gtk::ToggleButton layer_outline_togglebutton;
+	Gtk::ToggleButton layer_advanced_outline_togglebutton;
+	Gtk::ToggleButton layer_curve_gradient_togglebutton;
+	Gtk::ToggleButton layer_plant_togglebutton;
+	Gtk::HBox layer_types_box;
+
+	// blend method
+	Gtk::Label blend_label;
+	Gtk::HBox blend_box;
+	Widget_Enum blend_enum;
+
+	// opacity
+	Gtk::Label opacity_label;
+	Gtk::HScale opacity_hscl;
+
+	// brush size
+	Gtk::Label bline_width_label;
+	Widget_Distance bline_width_dist;
+
+	// invert
+	Gtk::Label invert_label;
+	Gtk::CheckButton invert_checkbutton;
+	Gtk::HBox invert_box;
+
+	// feather size
+	Gtk::Label feather_label;
+	Widget_Distance feather_dist;
+
+	// link origins
+	Gtk::Label link_origins_label;
+	Gtk::CheckButton layer_link_origins_checkbutton;
+	Gtk::HBox link_origins_box;
+
+	// spline origins at center
+	Gtk::Label origins_at_center_label;
+	Gtk::CheckButton layer_origins_at_center_checkbutton;
+	Gtk::HBox origins_at_center_box;
+
+	// toolbar buttons
 	Gtk::Button button_make;
-	Gtk::Adjustment	 adj_feather;
-	Gtk::SpinButton  spin_feather;
 
 public:
 
@@ -122,35 +181,54 @@ public:
 			get_layer_plant_flag();
 	}
 
-	synfig::String get_id()const { return entry_id.get_text(); }
-	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return id_entry.get_text(); }
+	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	bool get_invert()const { return checkbutton_invert.get_active(); }
-	void set_invert(bool i) { checkbutton_invert.set_active(i); }
+	int get_blend()const { return blend_enum.get_value(); }
+	void set_blend(int x) { return blend_enum.set_value(x); }
 
-	bool get_layer_polygon_flag()const { return checkbutton_layer_polygon.get_active(); }
-	void set_layer_polygon_flag(bool x) { return checkbutton_layer_polygon.set_active(x); }
+	Real get_opacity()const { return opacity_hscl.get_value(); }
+	void set_opacity(Real x) { opacity_hscl.set_value(x); }
 
-	bool get_layer_region_flag()const { return checkbutton_layer_region.get_active(); }
-	void set_layer_region_flag(bool x) { return checkbutton_layer_region.set_active(x); }
+	Real get_bline_width() const {
+		return bline_width_dist.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_bline_width(Distance x) { return bline_width_dist.set_value(x);}
 
-	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
-	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
+	Real get_feather_size() const {
+		return feather_dist.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
 
-	bool get_layer_advanced_outline_flag()const { return checkbutton_layer_advanced_outline.get_active(); }
-	void set_layer_advanced_outline_flag(bool x) { return checkbutton_layer_advanced_outline.set_active(x); }
+	bool get_invert()const { return invert_checkbutton.get_active(); }
+	void set_invert(bool i) { invert_checkbutton.set_active(i); }
 
-	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
-	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
+	bool get_layer_polygon_flag()const { return layer_polygon_togglebutton.get_active(); }
+	void set_layer_polygon_flag(bool x) { return layer_polygon_togglebutton.set_active(x); }
 
-	bool get_layer_plant_flag()const { return checkbutton_layer_plant.get_active(); }
-	void set_layer_plant_flag(bool x) { return checkbutton_layer_plant.set_active(x); }
+	bool get_layer_region_flag()const { return layer_region_togglebutton.get_active(); }
+	void set_layer_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
 
-	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
-	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
+	bool get_layer_outline_flag()const { return layer_outline_togglebutton.get_active(); }
+	void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
 
-	Real get_feather() const { return adj_feather.get_value(); }
-	void set_feather(Real x) { return adj_feather.set_value(x); }
+	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
+	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
+
+	bool get_layer_curve_gradient_flag()const { return layer_curve_gradient_togglebutton.get_active(); }
+	void set_layer_curve_gradient_flag(bool x) { return layer_curve_gradient_togglebutton.set_active(x); }
+
+	bool get_layer_plant_flag()const { return layer_plant_togglebutton.get_active(); }
+	void set_layer_plant_flag(bool x) { return layer_plant_togglebutton.set_active(x); }
+
+	bool get_layer_link_origins_flag()const { return layer_link_origins_checkbutton.get_active(); }
+	void set_layer_link_origins_flag(bool x) { return layer_link_origins_checkbutton.set_active(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -183,6 +261,8 @@ public:
 	}
 
 	void run();
+	void toggle_layer_creation();
+
 };	// END of class StatePolygon_Context
 
 /* === M E T H O D S ======================================================= */
@@ -214,6 +294,26 @@ StatePolygon_Context::load_settings()
 			set_id(value);
 		else
 			set_id("Polygon");
+
+		if(settings.get_value("polygon.blend",value) && value != "")
+			set_blend(atoi(value.c_str()));
+		else
+			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+
+		if(settings.get_value("polygon.opacity",value))
+			set_opacity(atof(value.c_str()));
+		else
+			set_opacity(1);
+
+		if(settings.get_value("polygon.bline_width",value) && value != "")
+			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+		else
+			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+
+		if(settings.get_value("polygon.feather",value))
+			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+		else
+			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
 
 		if(settings.get_value("polygon.invert",value) && value != "0")
 			set_invert(true);
@@ -254,12 +354,6 @@ StatePolygon_Context::load_settings()
 			set_layer_link_origins_flag(false);
 		else
 			set_layer_link_origins_flag(true);
-
-		if(settings.get_value("polygon.feather",value))
-		{
-			Real n = atof(value.c_str());
-			set_feather(n);
-		}
 	}
 	catch(...)
 	{
@@ -274,6 +368,10 @@ StatePolygon_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("polygon.id",get_id().c_str());
+		settings.set_value("polygon.blend",strprintf("%d",get_blend()));
+		settings.set_value("polygon.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("polygon.bline_width", bline_width_dist.get_value().get_string());
+		settings.set_value("polygon.feather", feather_dist.get_value().get_string());
 		settings.set_value("polygon.invert",get_invert()?"1":"0");
 		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
 		settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
@@ -282,7 +380,6 @@ StatePolygon_Context::save_settings()
 		settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 		settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
 		settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("polygon.feather",strprintf("%f",get_feather()));
 	}
 	catch(...)
 	{
@@ -348,44 +445,182 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	entry_id(),
-	checkbutton_invert(_("Invert")),
-	checkbutton_layer_polygon(_("Create Polygon Layer")),
-	checkbutton_layer_region(_("Create Region")),
-	checkbutton_layer_outline(_("Create Outline")),
-	checkbutton_layer_advanced_outline(_("Create Advanced Outline")),
-	checkbutton_layer_curve_gradient(_("Create Curve Gradient")),
-	checkbutton_layer_plant(_("Create Plant")),
-	checkbutton_layer_link_origins(_("Link Origins")),
-	button_make(_("Make")),
-	adj_feather(0,0,10000,0.01,0.1),
-	spin_feather(adj_feather,0.01,4)
+	opacity_hscl(0.0f, 1.01f, 0.01f),
+	button_make(_("Make"))
 {
 	egress_on_selection_change=true;
+
+
+	/* Set up the tool options dialog */
+
+	// 0, title
+	title_label.set_label(_("Polygon Creation"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 1, layer name label and entry
+	id_label.set_label(_("Name:"));
+	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(id_gap, GAP);
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+
+	id_box.pack_start(id_entry);
+
+	// 2, layer types creation
+	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	LAYER_CREATION(layer_polygon_togglebutton,
+		("synfig-layer_geometry_polygon"), _("Create a polygon layer"));
+
+	LAYER_CREATION(layer_region_togglebutton,
+		("synfig-layer_geometry_region"), _("Create a region layer"));
+
+	LAYER_CREATION(layer_outline_togglebutton,
+		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+
+	LAYER_CREATION(layer_advanced_outline_togglebutton,
+		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+
+	LAYER_CREATION(layer_plant_togglebutton,
+		("synfig-layer_other_plant"), _("Create a plant layer"));
+
+	LAYER_CREATION(layer_curve_gradient_togglebutton,
+		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
+
+	SPACING(layer_types_indent, INDENTATION);
+
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_polygon_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
+
+	// 3, blend method label and dropdown list
+	blend_label.set_label(_("Blend Method:"));
+	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(blend_gap, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.set_local_name(_("Blend Method"))
+		.set_description(_("Defines the blend method to be used for polygons")));
+
+	// 4, opacity label and slider
+	opacity_label.set_label(_("Opacity:"));
+	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	opacity_hscl.set_digits(2);
+	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
+	opacity_hscl.set_tooltip_text(_("Opacity"));
+
+	// 5, brush size
+	bline_width_label.set_label(_("Brush Size:"));
+	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_sensitive(false);
+
+	bline_width_dist.set_digits(2);
+	bline_width_dist.set_range(0,10000000);
+	bline_width_dist.set_sensitive(false);
+
+	// 6, invert
+	invert_label.set_label(_("Invert"));
+	invert_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	invert_box.pack_start(invert_label);
+	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
+	invert_box.set_sensitive(false);
+
+	// 7, feather
+	feather_label.set_label(_("Feather:"));
+	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_sensitive(false);
+
+	feather_dist.set_digits(2);
+	feather_dist.set_range(0,10000000);
+	feather_dist.set_sensitive(false);
+
+	// 8, link origins
+	link_origins_label.set_label(_("Link Origins"));
+	link_origins_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	link_origins_box.pack_start(link_origins_label);
+	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.set_sensitive(false);
+
 	load_settings();
 
-	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))),	0, 2, 0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,										0, 2, 1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// pack all options to the options_table
 
-	options_table.attach(checkbutton_layer_polygon,						0, 2, 2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_outline,						0, 2, 3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_advanced_outline,			0, 2, 4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_region,						0, 2, 5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_plant,						0, 2, 6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_curve_gradient,				0, 2, 7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_link_origins,				0, 2, 8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// 0, title
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 1, name
+	options_table.attach(id_box,
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 2, layer types creation
+	options_table.attach(layer_types_label,
+		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(layer_types_box,
+		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 3, blend method
+	options_table.attach(blend_box,
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(blend_enum,
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 4, opacity
+	options_table.attach(opacity_label,
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(opacity_hscl,
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 5, brush size
+	options_table.attach(bline_width_label,
+		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(bline_width_dist,
+		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 6, invert
+	options_table.attach(invert_box,
+		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 7, feather
+	options_table.attach(feather_label,
+		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(feather_dist,
+		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 8, link origins
+	options_table.attach(link_origins_box,
+		0, 2, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
+		);
 
-	//invert flag
-	options_table.attach(checkbutton_invert,							0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	//feather stuff
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1,10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,									1, 2,10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
+	// fine-tune options layout
+	options_table.set_border_width(GAP*2); // border width
+	options_table.set_row_spacings(GAP); // row gap
+	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
+	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	options_table.set_row_spacing(10, 0); // the final row using border width of table
+	
 	options_table.show_all();
+
+	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -567,9 +802,9 @@ StatePolygon_Context::run()
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
-		if(get_feather())
+		if(get_feather_size())
 		{
-			layer->set_param("feather",get_feather());
+			layer->set_param("feather",get_feather_size());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 		}
 
@@ -643,6 +878,15 @@ StatePolygon_Context::run()
 		layer->set_description(get_id()+_(" Gradient"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -704,6 +948,12 @@ StatePolygon_Context::run()
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Plant"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
@@ -767,7 +1017,13 @@ StatePolygon_Context::run()
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -837,7 +1093,16 @@ StatePolygon_Context::run()
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -905,7 +1170,16 @@ StatePolygon_Context::run()
 		layer->set_description(get_id()+_(" Advanced Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		layer->set_param("feather",get_feather());
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+		layer->set_param("amount",get_opacity());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+		layer->set_param("width",get_bline_width());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
+		layer->set_param("feather",get_feather_size());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
@@ -1027,4 +1301,62 @@ StatePolygon_Context::on_polygon_duck_change(const studio::Duck &duck, std::list
 {
 	*iter=duck.get_point();
 	return true;
+}
+
+
+void
+StatePolygon_Context::toggle_layer_creation()
+{
+	// brush size
+	if (get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag() ||
+		get_layer_curve_gradient_flag())
+	{
+		bline_width_label.set_sensitive(true);
+		bline_width_dist.set_sensitive(true);
+	}
+	else
+	{
+		bline_width_label.set_sensitive(false);
+		bline_width_dist.set_sensitive(false);
+	}
+
+	// invert
+	if (get_layer_polygon_flag() ||
+		get_layer_region_flag() ||
+		get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag())
+	{
+		invert_box.set_sensitive(true);
+	}
+	else
+		invert_box.set_sensitive(false);
+
+	// feather size
+	if (get_layer_polygon_flag() ||
+		get_layer_polygon_flag() ||
+		get_layer_region_flag() ||
+		get_layer_outline_flag() ||
+		get_layer_advanced_outline_flag())
+	{
+		feather_label.set_sensitive(true);
+		feather_dist.set_sensitive(true);
+	}
+	else
+	{
+		feather_label.set_sensitive(false);
+		feather_dist.set_sensitive(false);
+	}
+
+	// link origins
+	if (get_layer_region_flag() +
+		get_layer_outline_flag() +
+		get_layer_advanced_outline_flag() +
+		get_layer_plant_flag() +
+		get_layer_curve_gradient_flag() +
+		get_layer_polygon_flag() >= 2)
+		{
+			link_origins_box.set_sensitive(true);
+		}
+	else link_origins_box.set_sensitive(false);
 }

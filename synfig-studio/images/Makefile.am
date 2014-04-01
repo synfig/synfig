@@ -106,7 +106,7 @@ EXTRA_DIST = \
 	layer_geometry_star_icon.sif \
 	layer_gradient_conical_icon.sif \
 	layer_gradient_curve_icon.sif \
-	layer_gradient_lineal_icon.sif \
+	layer_gradient_linear_icon.sif \
 	layer_gradient_noise_icon.sif \
 	layer_gradient_radial_icon.sif \
 	layer_gradient_spiral_icon.sif \
@@ -273,7 +273,7 @@ IMAGES = \
 	layer_geometry_star_icon.$(EXT) \
 	layer_gradient_conical_icon.$(EXT) \
 	layer_gradient_curve_icon.$(EXT) \
-	layer_gradient_lineal_icon.$(EXT) \
+	layer_gradient_linear_icon.$(EXT) \
 	layer_gradient_noise_icon.$(EXT) \
 	layer_gradient_radial_icon.$(EXT) \
 	layer_gradient_spiral_icon.$(EXT) \

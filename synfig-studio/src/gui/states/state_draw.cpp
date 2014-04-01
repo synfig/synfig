@@ -32,41 +32,35 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
+#include <ETL/hermite>
+#include <ETL/calculus>
+#include <ETL/gaussian>
 
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_wplist.h>
+#include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_dynamiclist.h>
 
+#include <synfigapp/blineconvert.h>
+#include <synfigapp/wplistconverter.h>
+#include <synfigapp/main.h>
+
+#include "widgets/widget_distance.h"
+#include "widgets/widget_enum.h"
+
+#include "event_mouse.h"
+#include "event_layerclick.h"
+#include "docks/dock_toolbox.h"
+#include "docks/dialog_tooloptions.h"
 #include "state_draw.h"
 #include "state_stroke.h"
 #include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <synfig/valuenode_bline.h>
-#include <synfig/valuenode_wplist.h>
-#include <synfig/valuenode_composite.h>
-#include <ETL/hermite>
-#include <ETL/calculus>
+
 #include <utility>
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "docks/dock_toolbox.h"
-
-#include <synfigapp/blineconvert.h>
-#include <synfigapp/wplistconverter.h>
-#include <synfigapp/main.h>
-
-#include <ETL/gaussian>
-#include "docks/dialog_tooloptions.h"
-
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
-#include <gtkmm/button.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/scale.h>
 #include <sigc++/connection.h>
-#include "widgets/widget_distance.h"
 
 #include "general.h"
 
@@ -80,6 +74,27 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip)
+#endif
+
+// indentation for options layout
+#ifndef SPACING
+#define SPACING(name, px) \
+	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
+	name->set_size_request(px)
+#endif
+
+#define GAP	(3)
+#define INDENTATION (6)
 
 /* === G L O B A L S ======================================================= */
 
@@ -128,94 +143,189 @@ class studio::StateDraw_Context : public sigc::trackable
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 	void reverse_wplist(std::list<synfig::WidthPoint> &wplist);
 
+	//Toolbox settings
 	synfigapp::Settings& settings;
 
+	// holder of options
 	Gtk::Table options_table;
-	Gtk::Entry entry_id;
-	Gtk::CheckButton checkbutton_pressure_width;
-	Gtk::CheckButton checkbutton_round_ends;
-	Gtk::CheckButton checkbutton_auto_loop;	  // whether to loop new strokes which start and end in the same place
-	Gtk::CheckButton checkbutton_auto_extend; // whether to extend existing lines
-	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
-	Gtk::CheckButton checkbutton_region;	  // whether to create regions
-	Gtk::CheckButton checkbutton_outline;	  // whether to create outlines
-	Gtk::CheckButton checkbutton_advanced_outline;
-	Gtk::CheckButton checkbutton_auto_export;
-	Gtk::Button button_fill_last_stroke;
 
-	//pressure spinner and such
-	Gtk::Adjustment	 adj_min_pressure;
-	Gtk::SpinButton  spin_min_pressure;
-	Gtk::CheckButton check_min_pressure;
+	// title
+	Gtk::Label title_label;
 
-	Widget_Distance *feather_size;
+	// layer name:
+	Gtk::Label id_label;
+	Gtk::HBox id_box;
+	Gtk::Entry id_entry;
 
-	Gtk::Label threshold_label;
-	Gtk::Adjustment	 adj_globalthres;
-	Gtk::SpinButton  spin_globalthres;
+	// layer types to create:
+	Gtk::Label layer_types_label;
+	Gtk::ToggleButton layer_region_togglebutton;
+	Gtk::ToggleButton layer_outline_togglebutton;
+	Gtk::ToggleButton layer_advanced_outline_togglebutton;
+	Gtk::HBox layer_types_box;
 
+	// blend method
+	Gtk::Label blend_label;
+	Gtk::HBox blend_box;
+	Widget_Enum blend_enum;
+
+	// opacity
+	Gtk::Label opacity_label;
+	Gtk::HScale opacity_hscl;
+
+	// brush size
+	Gtk::Label bline_width_label;
+	Widget_Distance bline_width_dist;
+
+	// pressure width
+	Gtk::Label pressure_width_label;
+	Gtk::CheckButton pressure_width_checkbutton;
+	Gtk::HBox pressure_width_box;
+
+	// min pressure, sub option of pressure width
+	Gtk::Label min_pressure_label;
+	Gtk::HBox min_pressure_label_box;
+
+	Gtk::CheckButton min_pressure_checkbutton;
+	Gtk::Adjustment	 min_pressure_adj;
+	Gtk::SpinButton  min_pressure_spin;
+	Gtk::HBox min_pressure_box;
+
+	// smoothness
+	Gtk::Label smoothness_label;
+	Gtk::RadioButton::Group smoothness_group;
+
+	// local threshold
+	Gtk::RadioButton localthres_radiobutton;
+	Gtk::Adjustment localthres_adj;
+	Gtk::SpinButton localthres_spin;
+	Gtk::HBox localthres_box;
+
+	// golbal threshold
+	Gtk::RadioButton globalthres_radiobutton;
+	Gtk::Adjustment	 globalthres_adj;
+	Gtk::SpinButton  globalthres_spin;
+	Gtk::HBox globalthres_box;
+
+	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
-	Gtk::Adjustment adj_width_max_error;
-	Gtk::SpinButton spin_width_max_error;
+	Gtk::HBox width_max_error_box;
+	Gtk::Adjustment width_max_error_adj;
+	Gtk::SpinButton width_max_error_spin;
 
-	Gtk::Adjustment	 adj_localthres;
-	Gtk::CheckButton check_localerror;
-	void UpdateErrorBox();	//switches the stuff if need be :)
+	// constructing control
+	// round ends
+	Gtk::Label round_ends_label;
+	Gtk::CheckButton round_ends_checkbutton;
+	Gtk::HBox round_ends_box;
+
+	// whether to loop new strokes which start and end in the same place
+	Gtk::Label auto_loop_label;
+	Gtk::CheckButton auto_loop_checkbutton;
+	Gtk::HBox auto_loop_box;
+
+	// whether to extend existing lines
+	Gtk::Label auto_extend_label;
+	Gtk::CheckButton auto_extend_checkbutton;
+	Gtk::HBox auto_extend_box;
+
+	// whether to link new ducks to existing ducks
+	Gtk::Label auto_link_label;
+	Gtk::CheckButton auto_link_checkbutton;
+	Gtk::HBox auto_link_box;
+
+	// feather size
+	Gtk::Label feather_label;
+	Widget_Distance feather_dist;
+
+	// auto export
+	Gtk::Label auto_export_label;
+	Gtk::CheckButton auto_export_checkbutton;
+	Gtk::HBox auto_export_box;
+
+	// toolbar buttons
+	Gtk::Button fill_last_stroke_button;
+
+
 	void UpdateUsePressure();
 	void UpdateCreateAdvancedOutline();
+	void UpdateSmoothness();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
 	synfigapp::WPListConverter wplistconv;
 
 public:
-	synfig::String get_id()const { return entry_id.get_text(); }
-	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return id_entry.get_text(); }
+	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
 
-	bool get_pressure_width_flag()const { return checkbutton_pressure_width.get_active(); }
-	void set_pressure_width_flag(bool x) { return checkbutton_pressure_width.set_active(x); }
+	int get_blend()const { return blend_enum.get_value(); }
+	void set_blend(int x) { return blend_enum.set_value(x); }
 
-	bool get_auto_loop_flag()const { return checkbutton_auto_loop.get_active(); }
-	void set_auto_loop_flag(bool x) { return checkbutton_auto_loop.set_active(x); }
+	Real get_opacity()const { return opacity_hscl.get_value(); }
+	void set_opacity(Real x) { opacity_hscl.set_value(x); }
 
-	bool get_auto_extend_flag()const { return checkbutton_auto_extend.get_active(); }
-	void set_auto_extend_flag(bool x) { return checkbutton_auto_extend.set_active(x); }
+	Real get_bline_width() const {
+		return bline_width_dist.get_value().get(
+			Distance::SYSTEM_UNITS,
+			get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_bline_width(Distance x) { return bline_width_dist.set_value(x);}
 
-	bool get_auto_link_flag()const { return checkbutton_auto_link.get_active(); }
-	void set_auto_link_flag(bool x) { return checkbutton_auto_link.set_active(x); }
+	bool get_pressure_width_flag()const { return pressure_width_checkbutton.get_active(); }
+	void set_pressure_width_flag(bool x) { return pressure_width_checkbutton.set_active(x); }
 
-	bool get_region_flag()const { return checkbutton_region.get_active(); }
-	void set_region_flag(bool x) { return checkbutton_region.set_active(x); }
+	bool get_auto_loop_flag()const { return auto_loop_checkbutton.get_active(); }
+	void set_auto_loop_flag(bool x) { return auto_loop_checkbutton.set_active(x); }
 
-	bool get_outline_flag()const { return checkbutton_outline.get_active(); }
-	void set_outline_flag(bool x) { return checkbutton_outline.set_active(x); }
+	bool get_auto_extend_flag()const { return auto_extend_checkbutton.get_active(); }
+	void set_auto_extend_flag(bool x) { return auto_extend_checkbutton.set_active(x); }
 
-	bool get_advanced_outline_flag()const { return checkbutton_advanced_outline.get_active(); }
-	void set_advanced_outline_flag(bool x) { return checkbutton_advanced_outline.set_active(x); }
+	bool get_auto_link_flag()const { return auto_link_checkbutton.get_active(); }
+	void set_auto_link_flag(bool x) { return auto_link_checkbutton.set_active(x); }
 
-	bool get_auto_export_flag()const { return checkbutton_auto_export.get_active(); }
-	void set_auto_export_flag(bool x) { return checkbutton_auto_export.set_active(x); }
+	bool get_region_flag()const { return layer_region_togglebutton.get_active(); }
+	void set_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
 
-	Real get_min_pressure() const { return adj_min_pressure.get_value(); }
-	void set_min_pressure(Real x) { return adj_min_pressure.set_value(x); }
+	bool get_outline_flag()const { return layer_outline_togglebutton.get_active(); }
+	void set_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
 
-	Real get_feather() const { return feather_size->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc()); }
-	void set_feather(Distance x) { return feather_size->set_value(x); }
+	bool get_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
+	void set_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
 
-	Real get_gthres() const { return adj_globalthres.get_value(); }
-	void set_gthres(Real x) { return adj_globalthres.set_value(x); }
+	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
+	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
 
-	Real get_lthres() const { return adj_localthres.get_value(); }
-	void set_lthres(Real x) { return adj_localthres.set_value(x); }
+	Real get_min_pressure() const { return min_pressure_adj.get_value(); }
+	void set_min_pressure(Real x) { return min_pressure_adj.set_value(x); }
 
-	Real get_width_max_error() const { return adj_width_max_error.get_value(); }
-	void set_width_max_error(Real x) { return adj_width_max_error.set_value(x); }
+	Real get_feather_size() const {
+		return feather_dist.get_value().get(Distance::SYSTEM_UNITS,
+		get_canvas_view()->get_canvas()->rend_desc());
+	}
+	void set_feather_size(Distance x) { return feather_dist.set_value(x); }
 
-	bool get_local_error_flag() const { return check_localerror.get_active(); }
-	void set_local_error_flag(bool x) { check_localerror.set_active(x); }
+	Real get_gthres() const { return globalthres_adj.get_value(); }
+	void set_gthres(Real x) { return globalthres_adj.set_value(x); }
 
-	bool get_min_pressure_flag()const { return check_min_pressure.get_active(); }
-	void set_min_pressure_flag(bool x) { check_min_pressure.set_active(x); }
+	Real get_lthres() const { return localthres_adj.get_value(); }
+	void set_lthres(Real x) { return localthres_adj.set_value(x); }
+
+	Real get_width_max_error() const { return width_max_error_adj.get_value(); }
+	void set_width_max_error(Real x) { return width_max_error_adj.set_value(x); }
+
+	bool get_local_threshold_flag() const { return localthres_radiobutton.get_active(); }
+	void set_local_threshold_flag(bool x) { localthres_radiobutton.set_active(x); }
+
+	bool get_global_threshold_flag() const { return globalthres_radiobutton.get_active(); }
+	void set_global_threshold_flag(bool x) { globalthres_radiobutton.set_active(x); }
+
+	bool get_min_pressure_flag()const { return min_pressure_checkbutton.get_active(); }
+	void set_min_pressure_flag(bool x) { min_pressure_checkbutton.set_active(x); }
+
+	bool get_round_ends_flag()const { return round_ends_checkbutton.get_active();}
+	void set_round_ends_flag(bool x) {round_ends_checkbutton.set_active(x);}
 
 	void load_settings();
 	void save_settings();
@@ -282,6 +392,21 @@ StateDraw_Context::load_settings()
 		else
 			set_id("NewDrawing");
 
+		if(settings.get_value("draw.blend",value) && value != "")
+			set_blend(atoi(value.c_str()));
+		else
+			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+
+		if(settings.get_value("draw.opacity",value))
+			set_opacity(atof(value.c_str()));
+		else
+			set_opacity(1);
+
+		if(settings.get_value("draw.bline_width",value) && value != "")
+			set_bline_width(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
+		else
+			set_bline_width(Distance(1, Distance::SYSTEM_POINTS)); // default width
+
 		if(settings.get_value("draw.pressure_width",value) && value=="0")
 			set_pressure_width_flag(false);
 		else
@@ -335,9 +460,9 @@ StateDraw_Context::load_settings()
 			set_min_pressure(0);
 
 		if(settings.get_value("draw.feather",value))
-			set_feather(Distance(value.c_str()));
+			set_feather_size(Distance(value.c_str()));
 		else
-			set_feather(Distance("0pt"));
+			set_feather_size(Distance("0pt"));
 
 		if(settings.get_value("draw.gthreshold",value))
 		{
@@ -358,9 +483,17 @@ StateDraw_Context::load_settings()
 		}
 
 		if(settings.get_value("draw.localize",value) && value == "1")
-			set_local_error_flag(true);
+			//set_local_error_flag(true);
+			set_local_threshold_flag(true);
 		else
-			set_local_error_flag(false);
+			//set_local_error_flag(false);
+			//set_local_threshold_flag(false);
+			set_global_threshold_flag(true);
+
+		if(settings.get_value("draw.round_ends", value) && value == "1")
+			set_round_ends_flag(true);
+		else
+			set_round_ends_flag(false);
 	}
 	catch(...)
 	{
@@ -375,6 +508,9 @@ StateDraw_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("draw.id",get_id().c_str());
+		settings.set_value("draw.blend",strprintf("%d",get_blend()));
+		settings.set_value("draw.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("draw.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
 		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
 		settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
@@ -384,12 +520,13 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.advanced_outline",get_advanced_outline_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
-		settings.set_value("draw.feather",feather_size->get_value().get_string());
+		settings.set_value("draw.feather",feather_dist.get_value().get_string());
 		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
 		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
 		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
 		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
+		settings.set_value("draw.localize",get_local_threshold_flag()?"1":"0");
+		settings.set_value("draw.round_ends", get_round_ends_flag()?"1":"0");
 	}
 	catch(...)
 	{
@@ -449,72 +586,302 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	push_state(get_work_area()),
 	loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	entry_id(),
-	checkbutton_pressure_width(_("Pressure Width")),
-	checkbutton_auto_loop(_("Auto Loop")),
-	checkbutton_auto_extend(_("Auto Extend")),
-	checkbutton_auto_link(_("Auto Link")),
-	checkbutton_region(_("Create Region")),
-	checkbutton_outline(_("Create Outline")),
-	checkbutton_advanced_outline(_("Create Advanced Outline")),
-	checkbutton_auto_export(_("Auto Export")),
-	button_fill_last_stroke(_("Fill Last Stroke")),
-	adj_min_pressure(0,0,1,0.01,0.1),
-	spin_min_pressure(adj_min_pressure,0.1,3),
-	check_min_pressure(_("Min Pressure")),
-	adj_globalthres(.70f,0.01,10000,0.01,0.1),
-	spin_globalthres(adj_globalthres,0.01,3),
-	width_max_error_label(_("Max Width Error")),
-	adj_width_max_error(1.0f, 0.01, 100.0, 0.1,1),
-	spin_width_max_error(adj_width_max_error, 0.01, 2),
-	adj_localthres(20,1,100000,0.1,1),
-	check_localerror(_("LocalError"))
-
+	opacity_hscl(0.0f, 1.01f, 0.01f),
+	min_pressure_adj(0,0,1,0.01,0.1),
+	min_pressure_spin(min_pressure_adj,0.1,3),
+	localthres_adj(20, 1, 100000, 0.1, 1),
+	localthres_spin(localthres_adj, 0.1, 1),
+	globalthres_adj(.70f, 0.01, 10000, 0.01, 0.1),
+	globalthres_spin(globalthres_adj, 0.01, 3),
+	width_max_error_adj(1.0f, 0.01, 100.0, 0.1,1),
+	width_max_error_spin(width_max_error_adj, 0.01, 2),
+	fill_last_stroke_button(_("Fill Last Stroke"))
 {
-	feather_size=manage(new Widget_Distance());
-	feather_size->show();
-	feather_size->set_digits(2);
-	feather_size->set_range(0,10000000);
+	/* Set up the tool options dialog */
+
+	// 0, title
+	title_label.set_label(_("Drawing"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 1, layer name label and entry
+	id_label.set_label(_("Name:"));
+	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(id_gap, GAP);
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+
+	id_box.pack_start(id_entry);
+
+	// 2, layer types creation
+	layer_types_label.set_label(_("Create:"));
+	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	LAYER_CREATION(layer_region_togglebutton,
+		("synfig-layer_geometry_region"), _("Create a region layer"));
+
+	LAYER_CREATION(layer_outline_togglebutton,
+		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+
+	LAYER_CREATION(layer_advanced_outline_togglebutton,
+		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+
+	SPACING(layer_types_indent, INDENTATION);
+
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
+
+	// 3, blend method label and dropdown list
+	blend_label.set_label(_("Blend Method:"));
+	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	SPACING(blend_gap, GAP);
+	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
+	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+
+	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.set_local_name(_("Blend Method"))
+		.set_description(_("Defines the blend method to be used for draws")));
+
+	// 4, opacity label and slider
+	opacity_label.set_label(_("Opacity:"));
+	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	opacity_hscl.set_digits(2);
+	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
+	opacity_hscl.set_tooltip_text(_("Opacity"));
+
+	// 5, brush size
+	bline_width_label.set_label(_("Brush Size:"));
+	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	bline_width_dist.set_digits(2);
+	bline_width_dist.set_range(0,10000000);
+
+	// 6, pressure width
+	pressure_width_label.set_label(_("Pressure Sensitive"));
+	pressure_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
+	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
+
+	// 7, min pressure, sub option of pressure width
+	SPACING(min_pressure_indent, INDENTATION);
+	SPACING(min_pressure_gap, GAP);
+	min_pressure_label.set_label(_("Min Width:"));
+	min_pressure_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	min_pressure_label_box.pack_start(*min_pressure_indent, Gtk::PACK_SHRINK);
+	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
+
+	min_pressure_box.pack_end(min_pressure_checkbutton, Gtk::PACK_SHRINK);
+	min_pressure_box.pack_end(*min_pressure_gap, Gtk::PACK_SHRINK);
+	min_pressure_box.pack_end(min_pressure_spin);
+
+	// 8, Smoothness
+	smoothness_label.set_label(_("Smoothness"));
+	smoothness_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	// 9, local threshold
+	SPACING(localthres_indent, INDENTATION);
+	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
+	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
+	localthres_radiobutton.set_label("Local:");
+
+	// 10, global threshold
+	SPACING(globalthres_indent, INDENTATION);
+	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
+	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
+	globalthres_radiobutton.set_label("Global:");
+
+	smoothness_group = localthres_radiobutton.get_group();
+	globalthres_radiobutton.set_group(smoothness_group);
+
+	// 11, width max error of advanced outline layer
+	width_max_error_label.set_label(_("Width Max Error:"));
+	SPACING(width_max_error_gap, GAP);
+	width_max_error_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
+	width_max_error_box.pack_start(*width_max_error_gap, Gtk::PACK_SHRINK);
+
+	// 12, round ends
+	round_ends_label.set_label(_("Round Ends"));
+	round_ends_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	round_ends_box.pack_start(round_ends_label, Gtk::PACK_SHRINK);
+	round_ends_box.pack_end(round_ends_checkbutton, Gtk::PACK_SHRINK);
+
+	// 13, auto loop
+	auto_loop_label.set_label(_("Auto Loop"));
+	auto_loop_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	auto_loop_box.pack_start(auto_loop_label, Gtk::PACK_SHRINK);
+	auto_loop_box.pack_end(auto_loop_checkbutton, Gtk::PACK_SHRINK);
+
+	// 14, auto extend
+	auto_extend_label.set_label(_("Auto Extend"));
+	auto_extend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	auto_extend_box.pack_start(auto_extend_label, Gtk::PACK_SHRINK);
+	auto_extend_box.pack_end(auto_extend_checkbutton, Gtk::PACK_SHRINK);
+
+	// 15, auto link
+	auto_link_label.set_label(_("Auto Link"));
+	auto_link_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	auto_link_box.pack_start(auto_link_label, Gtk::PACK_SHRINK);
+	auto_link_box.pack_end(auto_link_checkbutton, Gtk::PACK_SHRINK);
+
+	// 16, feather
+	feather_label.set_label(_("Feather:"));
+	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	feather_dist.set_digits(2);
+	feather_dist.set_range(0,10000000);
+
+	// 17, auto export
+	auto_export_label.set_label(_("Auto Export"));
+	auto_export_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+
+	auto_export_box.pack_start(auto_export_label, Gtk::PACK_SHRINK);
+	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
+
 
 	nested=0;
 	load_settings();
 
-	UpdateErrorBox();
 	UpdateUsePressure();
 	UpdateCreateAdvancedOutline();
+	UpdateSmoothness();
 
-	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,                                0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_outline,                     0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_advanced_outline,            0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region,                      0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop,                   0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_extend,                 0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_link,                   0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_export,                 0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_pressure_width,              0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(check_localerror,                        0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure,                      0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure,                       1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// pack all options to the options_table
 
-	options_table.attach(threshold_label,                         0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres,                        1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// 0, title
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 1, name
+	options_table.attach(id_box,
+		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 2, layer types creation
+	options_table.attach(layer_types_label,
+		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(layer_types_box,
+		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 3, blend method
+	options_table.attach(blend_box,
+		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(blend_enum,
+		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 4, opacity
+	options_table.attach(opacity_label,
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(opacity_hscl,
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 5, brush size
+	options_table.attach(bline_width_label,
+		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(bline_width_dist,
+		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 6, pressure width
+	options_table.attach(pressure_width_box,
+		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 7, min pressure, sub-option of pressure width
+	options_table.attach(min_pressure_label_box,
+		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(min_pressure_box,
+		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 8, smoothness
+	options_table.attach(smoothness_label,
+		0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 9, local threshold
+	options_table.attach(localthres_box,
+		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(localthres_spin,
+		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 10, global threshold
+	options_table.attach(globalthres_box,
+		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(globalthres_spin,
+		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 11, width max error of advanced outline layer
+	options_table.attach(width_max_error_box,
+		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(width_max_error_spin,
+		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 12, round ends
+	options_table.attach(round_ends_box,
+		0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 13, auto loop
+	options_table.attach(auto_loop_box,
+		0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 14, auto extend
+	options_table.attach(auto_extend_box,
+		0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 15, auto link
+	options_table.attach(auto_link_box,
+		0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 16, feather
+	options_table.attach(feather_label,
+		0, 1, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(feather_dist,
+		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 17, auto export
+	options_table.attach(auto_export_box,
+		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
+		);
 
-	options_table.attach(width_max_error_label,                   0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_width_max_error,                    1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))),   0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*feather_size,                           1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
-	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
-	checkbutton_pressure_width.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateUsePressure));
-	checkbutton_advanced_outline.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateCreateAdvancedOutline));
+	// fine-tune options layout
+	options_table.set_border_width(GAP*2); // border width
+	options_table.set_row_spacings(GAP); // row gap
+	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
+	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
+	options_table.set_row_spacing(19, 0); // the final row using border width of table
 
 	options_table.show_all();
+
+
+	fill_last_stroke_button.signal_pressed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::fill_last_stroke));
+	pressure_width_checkbutton.signal_toggled().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateUsePressure));
+	layer_advanced_outline_togglebutton.signal_toggled().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateCreateAdvancedOutline));
+	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
+		&StateDraw_Context::UpdateSmoothness));
+	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
+		&StateDraw_Context::UpdateSmoothness));
+
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -545,39 +912,31 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-void
-StateDraw_Context::UpdateErrorBox()
-{
-	if(get_local_error_flag())
-	{
-		threshold_label.set_label(_("Spline Local Error"));
-		spin_globalthres.set_adjustment(adj_localthres);
-		spin_globalthres.set_value(adj_localthres.get_value());
-		spin_globalthres.set_increments(0.1,1);
-	}else
-	{
-		threshold_label.set_label(_("Spline Smoothness"));
-		spin_globalthres.set_adjustment(adj_globalthres);
-		spin_globalthres.set_value(adj_globalthres.get_value());
-		spin_globalthres.set_increments(0.01,.1);
-	}
-
-	spin_globalthres.update();
-}
 
 void
 StateDraw_Context::UpdateUsePressure()
 {
 	bool status(get_pressure_width_flag());
-	check_min_pressure.set_sensitive(status);
-	spin_min_pressure.set_sensitive(status);
+	min_pressure_label.set_sensitive(status);
+	min_pressure_checkbutton.set_sensitive(status);
+	min_pressure_spin.set_sensitive(status);
 }
 
 void
 StateDraw_Context::UpdateCreateAdvancedOutline()
 {
-	spin_width_max_error.set_sensitive(get_advanced_outline_flag());
+	width_max_error_label.set_sensitive(get_advanced_outline_flag());
+	width_max_error_spin.set_sensitive(get_advanced_outline_flag());
 }
+
+
+void
+StateDraw_Context::UpdateSmoothness()
+{
+	localthres_radiobutton.set_active(localthres_spin.is_focus());
+	globalthres_radiobutton.set_active(globalthres_spin.is_focus());
+}
+
 
 void
 StateDraw_Context::refresh_tool_options()
@@ -725,8 +1084,10 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 //	debugclass debugger("StateDraw_Context::process_stroke");
 	DepthCounter depth_counter(nested);
 
-	const float radius(synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc())+(abs(get_work_area()->get_pw())+abs(get_work_area()->get_ph()))*5);
-
+	const float radius(
+		// synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
+		get_bline_width() +
+		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5);
 
 	// If we aren't using pressure width,
 	// then set all the width to 1
@@ -745,22 +1106,26 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 
 	//Changed by Adrian - use resident class :)
 	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
-	blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
+	// blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
+	blineconv.width = get_bline_width();
 
-	if(get_local_error_flag())
+	if (get_local_threshold_flag())
 	{
 		float pw = get_work_area()->get_pw();
 		float ph = get_work_area()->get_ph();
 
 		blineconv.pixelwidth = sqrt(pw*pw+ph*ph);
 		blineconv.smoothness = get_lthres();
-	}else
+	}
+
+	if (get_global_threshold_flag())
 	{
 		blineconv.pixelwidth = 1;
 		blineconv.smoothness = get_gthres();
 	}
 
 	blineconv(bline,*stroke_data,*width_data);
+
 	if(get_advanced_outline_flag())
 	{
 		wplistconv.err2max=get_width_max_error()/100;
@@ -1158,6 +1523,21 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 					return Smach::RESULT_ERROR;
 				}
 				layer->set_description(get_id()+_(" Outline"));
+
+				layer->set_param("blend_method",get_blend());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+				layer->set_param("amount",get_opacity());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
+
+				layer->set_param("width",get_bline_width());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"width");
+
+				layer->set_param("round_tip[0]", get_round_ends_flag());
+				get_canvas_interface()->signal_layer_param_changed()(layer, "round_tip[0]");
+
+				layer->set_param("round_tip[1]", get_round_ends_flag());
+				get_canvas_interface()->signal_layer_param_changed()(layer, "round_tip[1]");
 			}
 			if(get_advanced_outline_flag())
 			{
@@ -1170,9 +1550,36 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 					return Smach::RESULT_ERROR;
 				}
 				layer2->set_description(get_id()+_(" Advanced Outline"));
+
+				layer2->set_param("blend_method",get_blend());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"blend_method");
+
+				layer2->set_param("amount",get_opacity());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"amount");
+
+				layer2->set_param("width",get_bline_width());
+				get_canvas_interface()->signal_layer_param_changed()(layer2,"width");
+
+				// advanced outline tip types: 1, rounded 2, squared 3, peak 4, flat
+				if(get_round_ends_flag())
+				{
+					layer2->set_param((ValueBase(),"start_tip"), 1);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(),"start_tip"));
+
+					layer2->set_param((ValueBase(),"end_tip"), 1);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "end_tip"));
+				}
+				else
+				{
+					layer2->set_param((ValueBase(),"start_tip"), 4);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "start_tip"));
+
+					layer2->set_param((ValueBase(),"end_tip"), 4);
+					get_canvas_interface()->signal_layer_param_changed()(layer2, (ValueBase(), "end_tip"));
+				}
 			}
 		}
-		else
+		if(get_region_flag())
 		{
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 			if (!layer)
@@ -1183,18 +1590,24 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				return Smach::RESULT_ERROR;
 			}
 			layer->set_description(get_id()+_(" Region"));
+
+			layer->set_param("blend_method",get_blend());
+			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+			layer->set_param("amount",get_opacity());
+			get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 		}
 
-		if(get_feather())
+		if(get_feather_size())
 		{
 			if(layer)
 			{
-				layer->set_param("feather",get_feather());
+				layer->set_param("feather",get_feather_size());
 				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 			}
 			if(get_advanced_outline_flag())
 			{
-				layer2->set_param("feather",get_feather());
+				layer2->set_param("feather",get_feather_size());
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"feather");
 			}
 
@@ -1958,9 +2371,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			return Smach::RESULT_ERROR;
 		}
 
-		if(get_feather())
+		if(get_feather_size())
 		{
-			layer->set_param("feather",get_feather());
+			layer->set_param("feather",get_feather_size());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 		}
 		get_canvas_interface()->signal_layer_param_changed()(layer,"color");
@@ -2446,6 +2859,12 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 	layer=get_canvas_interface()->add_layer_to("region", canvas, depth);
 	if (!layer) return Smach::RESULT_ERROR;
 	layer->set_description(last_stroke_id + _(" Region"));
+
+	layer->set_param("blend_method",get_blend());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+
+	layer->set_param("amount",get_opacity());
+	get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 

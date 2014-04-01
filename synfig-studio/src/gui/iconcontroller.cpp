@@ -221,7 +221,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_gradient_conical,"layer_gradient_conical_icon."IMAGE_EXT,_("Conical Gradient Layer"));
 	INIT_STOCK_ICON(layer_gradient_curve,"layer_gradient_curve_icon."IMAGE_EXT,_("Curve Gradient Layer"));
 	INIT_STOCK_ICON(layer_gradient_noise,"layer_gradient_noise_icon."IMAGE_EXT,_("Noise Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_lineal,"layer_gradient_lineal_icon."IMAGE_EXT,_("Linear Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_linear,"layer_gradient_linear_icon."IMAGE_EXT,_("Linear Gradient Layer"));
 	INIT_STOCK_ICON(layer_gradient_radial,"layer_gradient_radial_icon."IMAGE_EXT,_("Radial Gradient Layer"));
 	INIT_STOCK_ICON(layer_gradient_spiral,"layer_gradient_spiral_icon."IMAGE_EXT,_("Spiral Gradient Layer"));
 	// Other Layers
@@ -599,7 +599,7 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="noise")
 		return Gtk::StockID("synfig-layer_gradient_noise");
 	else if(layer=="linear_gradient")
-		return Gtk::StockID("synfig-layer_gradient_lineal");
+		return Gtk::StockID("synfig-layer_gradient_linear");
 	else if(layer=="radial_gradient")
 		return Gtk::StockID("synfig-layer_gradient_radial");
 	else if(layer=="spiral_gradient")
