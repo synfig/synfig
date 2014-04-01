@@ -40,7 +40,8 @@ namespace studio {
 
 class Renderer_Guides : public studio::WorkAreaRenderer
 {
-	bool dragging;
+	//bool dragging;
+	// Warining: Unused variable dragging
 public:
 	Renderer_Guides();
 	~Renderer_Guides();

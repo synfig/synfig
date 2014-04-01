@@ -451,7 +451,7 @@ Widget_ColorEdit::on_hex_edited()
 }
 
 bool
-Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* event)
+Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* /*event*/)
 {
 	on_hex_edited();
 	return true;

@@ -46,7 +46,7 @@ class png_trgt : public synfig::Target_Scanline
 	SYNFIG_TARGET_MODULE_EXT
 private:
 	FILE *file;
-	int w,h;
+	//int w,h;
 	png_structp png_ptr;
 	png_infop info_ptr;
 

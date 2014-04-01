@@ -1083,7 +1083,7 @@ Layer_Freetype::accelerated_cairorender(Context context, cairo_t *cr, int qualit
 	// Vertical
 	int total_lines=pango_layout_get_line_count(layout);
 	float vspace_total=vcompress>1.0?0.4*logical_layout.height*(vcompress-1.0):(vcompress<1.0)?0.6*logical_layout.height*(vcompress-1.0):0;
-	float vspace;
+	float vspace=0;
 	if(total_lines>1)
 		vspace=vspace_total/(total_lines-1);
 	pango_layout_set_spacing(layout, vspace*PANGO_SCALE);

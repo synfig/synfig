@@ -230,7 +230,7 @@ public:
 	typedef float value_type;
 	typedef float time_type;
 private:
-	affine_combo<value_type,time_type> affine_func;
+	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
 	time_type r,s;
 
@@ -310,7 +310,7 @@ public:
 	typedef double value_type;
 	typedef float time_type;
 private:
-	affine_combo<value_type,time_type> affine_func;
+	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
 	time_type r,s;
 

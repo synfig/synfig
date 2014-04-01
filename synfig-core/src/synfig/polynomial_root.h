@@ -89,9 +89,9 @@ public:
 		if(p.size() < 2) return *this;
 
 		this->resize(this->size() + p.degree());
-		for(int i = 0; i < nc.size(); ++i)
+		for(i = 0; i < nc.size(); ++i)
 		{
-			for(int j = 1; j < p.size(); ++j)
+			for(j = 1; j < p.size(); ++j)
 			{
 				nc[i+j] += nc[i]*p[j];
 			}
@@ -104,7 +104,7 @@ public:
 class RootFinder
 {
 	std::vector< std::complex<float> >	workcoefs;
-	int	its;
+	//int	its;
 
 public:
 	std::vector< std::complex<float> >	coefs; //the number of coefficients determines the degree of polynomial

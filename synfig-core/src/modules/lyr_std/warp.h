@@ -63,7 +63,7 @@ private:
 	//! Parameter: (bool)
 	ValueBase param_clip;
 
-	Real cache_a,cache_b,cache_c,cache_d,cache_e,cache_f,cache_i,cache_j;
+	//Real cache_a,cache_b,cache_c,cache_d,cache_e,cache_f,cache_i,cache_j;
 
 	Real matrix[3][3];
 	Real inv_matrix[3][3];

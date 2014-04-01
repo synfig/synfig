@@ -115,7 +115,7 @@ class SuperCallback : public ProgressCallback
 public:
 
 	SuperCallback() { cb=NULL; }
-	SuperCallback(ProgressCallback *cb,int start, int end, int total):cb(cb),start(start),end(end),tot(total)
+	SuperCallback(ProgressCallback *cb,int start_, int end_, int total):cb(cb),start(start_),end(end_),tot(total)
 	{
 		//make sure we don't "inherit" if our subcallback is invalid
 		if(!cb || !cb->valid())

@@ -193,7 +193,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	unsigned int i;
 #ifdef _DEBUG
+#ifndef __APPLE__
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
+#endif
 #endif
 
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)

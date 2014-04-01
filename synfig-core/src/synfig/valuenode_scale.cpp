@@ -185,7 +185,7 @@ bool
 synfig::ValueNode_Scale::is_invertible(Time t) const
 {
 	Real scalar_value((*scalar)(t).get(Real()));
-	return (!scalar_value==0);
+	return (!(scalar_value==0));
 }
 
 bool

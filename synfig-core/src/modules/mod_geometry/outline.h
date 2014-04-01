@@ -85,6 +85,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
+	using Layer::set_time;
 	virtual void set_time(IndependentContext context, Time time)const;
 	virtual void set_time(IndependentContext context, Time time, Vector pos)const;
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}

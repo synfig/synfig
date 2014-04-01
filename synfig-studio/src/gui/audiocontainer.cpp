@@ -71,8 +71,8 @@ using namespace synfig;
 #endif
 
 /* === G L O B A L S ======================================================= */
-const double delay_factor = 3;
-
+//const double delay_factor = 3;
+//Warning: Unused variable delay_factor
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */

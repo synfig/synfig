@@ -112,8 +112,8 @@ private:
 
 public:
 	
-	static const value_type ceil=1;	
-	static const value_type floor=0;
+	static const value_type ceil;
+	static const value_type floor;
 	
 	const String get_string(void)const;
 
@@ -581,7 +581,7 @@ private:
 public:
 	static const unsigned char ceil=255;	
 	static const unsigned char floor=0;
-	static const float range=ceil-floor;
+	static const float range;
 	static const value_type amask=0xFF<<24;
 	static const value_type rmask=0xFF<<16;
 	static const value_type gmask=0xFF<<8;

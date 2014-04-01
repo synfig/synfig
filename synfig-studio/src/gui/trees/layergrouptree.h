@@ -69,7 +69,7 @@ private:
 
 	Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_;
 
-	Gtk::CellRendererText *cell_renderer_description;
+	// Gtk::CellRendererText *cell_renderer_description; // seems to be unused
 
 	bool editable_;
 

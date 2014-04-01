@@ -832,7 +832,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
-	ValueNode::Handle value_node();
+	//ValueNode::Handle value_node();
 	waypoint_duplicate(value_desc.get_value_node(), waypoint);
 }
 
@@ -861,7 +861,7 @@ CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoin
 void
 CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
-	ValueNode::Handle value_node();
+	//ValueNode::Handle value_node();
 	waypoint_remove(value_desc.get_value_node(), waypoint);
 }
 

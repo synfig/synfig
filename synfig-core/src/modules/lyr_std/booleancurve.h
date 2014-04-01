@@ -53,7 +53,7 @@ class BooleanCurve : public Layer_Shape
 		Num_Boolean_Ops
 	};
 
-	int operation;
+	//int operation;
 
 public:
 
