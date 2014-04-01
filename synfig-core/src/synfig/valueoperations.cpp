@@ -67,6 +67,14 @@ types_namespace::TypeWeightedValueBase* ValueAverage::get_weighted_type_for(Type
 	return NULL;
 }
 
+Type& ValueAverage::get_type_from_weighted(Type& type)
+{
+	for(unsigned int i = 0; i < sizeof(allowed_types)/sizeof(allowed_types[0]); ++i)
+		if (allowed_types[i] == &type)
+			return allowed_types[i]->get_contained_type();
+	return type_nil;
+}
+
 Type& ValueAverage::convert_to_weighted_type(Type &type)
 {
 	Type* t = get_weighted_type_for(type);

@@ -162,6 +162,7 @@ private:
 public:
 	static types_namespace::TypeWeightedValueBase* get_weighted_type_for(Type &type);
 	static Type& convert_to_weighted_type(Type &type);
+	static Type& get_type_from_weighted(Type& type);
 
 	static bool check_weighted_type(Type& type);
 	static bool check_type(Type& type)
