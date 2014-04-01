@@ -77,8 +77,7 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	//! Set to true when target render succedded
 	bool success;
 
-	//synfig::ProgressCallback *cb;
-	//Warning: unused variable cb
+	synfig::ProgressCallback *cb;
 	//! Signal to be emmited when the target is requested to stop
 	sigc::signal<void> signal_stop_;
 
