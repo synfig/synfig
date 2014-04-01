@@ -49,7 +49,7 @@ class CairoSurface;
 class Target_Cairo : public Target
 {
 	//! Number of threads to use
-	int threads_;
+	// int threads_;
 
 public:
 	typedef etl::handle<Target_Cairo> Handle;

@@ -56,14 +56,14 @@ ACTION_SET_CVS_ID(Action::LayerMove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
-static const int nindex=-1;
+// static const int nindex=-1;
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 Action::LayerMove::LayerMove():
-	new_index(0xdeadbeef)
+	new_index(0xdeadbeef) // Dead beef? LOL
 {
 }
 

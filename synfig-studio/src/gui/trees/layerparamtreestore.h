@@ -108,6 +108,7 @@ private:
 protected:
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	using CanvasTreeStore::set_row;
 	virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc);
 
 	/*

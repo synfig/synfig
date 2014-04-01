@@ -50,7 +50,7 @@ class jpeg_trgt : public synfig::Target_Scanline
 	SYNFIG_TARGET_MODULE_EXT
 private:
 	FILE *file;
-	int w,h,quality;
+	int /*w,h,*/quality;
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 

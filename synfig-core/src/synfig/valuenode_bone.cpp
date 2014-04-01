@@ -467,7 +467,8 @@ ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 
 	if (!name_link->is_exported())
 	{
-		if (const_name_link = ValueNode_Const::Handle::cast_dynamic(name_link))
+		const_name_link = ValueNode_Const::Handle::cast_dynamic(name_link);
+		if (const_name_link)
 		{
 			String name(old_name = const_name_link->get_value().get(String()));
 //			printf("got old name '%s'\n", name.c_str());

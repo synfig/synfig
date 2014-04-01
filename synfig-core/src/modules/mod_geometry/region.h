@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig { class Segment; }
+namespace synfig { struct Segment; }
 
 using namespace synfig;
 using namespace std;
@@ -66,6 +66,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
+	using Layer::set_time;
 	virtual void set_time(IndependentContext context, Time time)const;
 	virtual void set_time(IndependentContext context, Time time, Vector pos)const;
 };

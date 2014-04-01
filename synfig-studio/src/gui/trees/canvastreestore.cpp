@@ -382,7 +382,7 @@ CanvasTreeStore::find_first_value_desc(const synfigapp::ValueDesc& value_desc, G
 		}
 		Gtk::TreeIter iter2(++iter);
 		if(!iter2)
-			iter==iter->parent();
+			iter=iter->parent();
 		else
 			iter=iter2;
 	}
@@ -408,7 +408,7 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 		Gtk::TreeIter iter2(++iter);
 		if(!iter2)
 		{
-			iter==iter->parent();
+			iter=iter->parent();
 			if(iter)++iter;
 		}
 		else
@@ -439,7 +439,7 @@ CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_no
 		}
 		Gtk::TreeIter iter2(++iter);
 		if(!iter2)
-			iter==iter->parent();
+			iter=iter->parent();
 		else
 			iter=iter2;
 	}
@@ -465,7 +465,7 @@ CanvasTreeStore::find_next_value_node(const synfig::ValueNode::Handle& value_nod
 		Gtk::TreeIter iter2(++iter);
 		if(!iter2)
 		{
-			iter==iter->parent();
+			iter=iter->parent();
 			if(iter)++iter;
 		}
 		else

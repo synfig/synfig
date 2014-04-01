@@ -244,7 +244,7 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 	Gradient gradient=param_gradient.get(Gradient());
 	
 	// Width and Height of a pixel
-	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
+	const Point /*br(renddesc.get_br()),*/ tl(renddesc.get_tl());
 	const int 	 w(renddesc.get_w()), 	h(renddesc.get_h());
 	const Real	pw(renddesc.get_pw()), ph(renddesc.get_ph());
 

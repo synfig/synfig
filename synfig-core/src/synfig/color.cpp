@@ -49,7 +49,9 @@ using namespace std;
 #define COLOR_EPSILON	(0.000001f)
 
 /* === G L O B A L S ======================================================= */
-
+const Color::value_type Color::ceil=1;
+const Color::value_type Color::floor=0;
+const float CairoColor::range=CairoColor::ceil-CairoColor::floor;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */

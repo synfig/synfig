@@ -52,7 +52,7 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
+#define MAX_CHANNELS 15
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -551,15 +551,17 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 
 	std::list<CurveStruct>::iterator curve_iter;
 	//Figure out maximun number of channels
-	int min_channels(100);
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
 		int channels(curve_iter->channels.size());
-		if(channels<min_channels)
-			min_channels=channels;
+		if(channels>MAX_CHANNELS)
+		{
+			channels=MAX_CHANNELS;
+			synfig::warning("Not allowed more than %d channels! Truncating...", MAX_CHANNELS);
+		}
 	}
 	// and use it when sizing the points
-	vector<Gdk::Point> points[min_channels];
+	vector<Gdk::Point> points[MAX_CHANNELS];
 
 	gc->set_function(Gdk::COPY);
 	gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);

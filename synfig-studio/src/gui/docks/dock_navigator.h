@@ -85,6 +85,7 @@ class Widget_NavView : public Gtk::Table
 	void on_zoom_out();
 
 	//handles the zoom scroller
+	using Gtk::Widget::on_scroll_event;
 	bool on_scroll_event(GdkEvent *event);
 	void on_number_modify();
 

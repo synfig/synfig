@@ -94,7 +94,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	map<handle<Duck>,Real>	changetable;
 
 	etl::clock	clocktime;
-	Real		lastt;
+	// Real		lastt; // unused
 
 	bool added;
 

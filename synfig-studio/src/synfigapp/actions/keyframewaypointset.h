@@ -23,7 +23,7 @@
 /* === S T A R T =========================================================== */
 
 #ifndef __SYNFIG_APP_ACTION_KEYFRAMEWAYPOINTSET_H
-#define __SYNFIG_APP_ACTION_KEYFRAMESET_H
+#define __SYNFIG_APP_ACTION_KEYFRAMEWAYPOINTSET_H
 
 /* === H E A D E R S ======================================================= */
 

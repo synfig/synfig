@@ -56,7 +56,7 @@ ACTION_SET_CVS_ID(Action::LayerSetDesc,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
-static const int nindex=-1;
+// static const int nindex=-1;
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -47,7 +47,7 @@ class cairo_png_trgt : public synfig::Target_Cairo
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
-	int w,h;
+	//int w,h;
 
 	bool multi_image;
 	int imagecount;
