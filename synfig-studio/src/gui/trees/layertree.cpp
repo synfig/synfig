@@ -269,6 +269,7 @@ LayerTree::create_layer_tree()
 Gtk::Widget*
 LayerTree::create_param_tree()
 {
+	//Text attributes must be the same that TimeTrackView tree's to have aligned rows
 	Pango::AttrList attr_list;
 	{
 		Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
