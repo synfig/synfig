@@ -1,11 +1,4 @@
 # FIXME: move libsynfig into a separate domain
-src/modules/mod_example/filledrect.cpp
-src/modules/mod_example/filledrect.h
-src/modules/mod_example/main.cpp
-src/modules/mod_example/metaballs.cpp
-src/modules/mod_example/metaballs.h
-src/modules/mod_example/simplecircle.cpp
-src/modules/mod_example/simplecircle.h
 src/modules/lyr_freetype/lyr_freetype.cpp
 src/modules/lyr_freetype/lyr_freetype.h
 src/modules/lyr_freetype/main.cpp
@@ -15,6 +8,8 @@ src/modules/lyr_std/booleancurve.cpp
 src/modules/lyr_std/booleancurve.h
 src/modules/lyr_std/clamp.cpp
 src/modules/lyr_std/clamp.h
+src/modules/lyr_std/curvewarp.cpp
+src/modules/lyr_std/curvewarp.h
 src/modules/lyr_std/import.cpp
 src/modules/lyr_std/import.h
 src/modules/lyr_std/insideout.cpp
@@ -44,8 +39,6 @@ src/modules/lyr_std/twirl.cpp
 src/modules/lyr_std/twirl.h
 src/modules/lyr_std/warp.cpp
 src/modules/lyr_std/warp.h
-src/modules/lyr_std/curvewarp.cpp
-src/modules/lyr_std/curvewarp.h
 src/modules/lyr_std/xorpattern.cpp
 src/modules/lyr_std/xorpattern.h
 src/modules/lyr_std/zoom.cpp
@@ -58,6 +51,13 @@ src/modules/mod_bmp/trgt_bmp.h
 src/modules/mod_dv/main.cpp
 src/modules/mod_dv/trgt_dv.cpp
 src/modules/mod_dv/trgt_dv.h
+src/modules/mod_example/filledrect.cpp
+src/modules/mod_example/filledrect.h
+src/modules/mod_example/main.cpp
+src/modules/mod_example/metaballs.cpp
+src/modules/mod_example/metaballs.h
+src/modules/mod_example/simplecircle.cpp
+src/modules/mod_example/simplecircle.h
 src/modules/mod_ffmpeg/main.cpp
 src/modules/mod_ffmpeg/mptr_ffmpeg.cpp
 src/modules/mod_ffmpeg/mptr_ffmpeg.h
@@ -78,13 +78,13 @@ src/modules/mod_filter/lumakey.h
 src/modules/mod_filter/main.cpp
 src/modules/mod_filter/radialblur.cpp
 src/modules/mod_filter/radialblur.h
+src/modules/mod_geometry/advanced_outline.cpp
+src/modules/mod_geometry/advanced_outline.h
 src/modules/mod_geometry/checkerboard.cpp
 src/modules/mod_geometry/checkerboard.h
 src/modules/mod_geometry/circle.cpp
 src/modules/mod_geometry/circle.h
 src/modules/mod_geometry/main.cpp
-src/modules/mod_geometry/advanced_outline.cpp
-src/modules/mod_geometry/advanced_outline.h
 src/modules/mod_geometry/outline.cpp
 src/modules/mod_geometry/outline.h
 src/modules/mod_geometry/rectangle.cpp
