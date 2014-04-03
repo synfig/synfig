@@ -146,8 +146,6 @@ src/gui/trees/childrentreestore.cpp
 src/gui/trees/childrentreestore.h
 src/gui/trees/historytreestore.cpp
 src/gui/trees/historytreestore.h
-src/gui/trees/historytreestore.cpp
-src/gui/trees/historytreestore.h
 src/gui/trees/keyframetree.cpp
 src/gui/trees/keyframetree.h
 src/gui/trees/keyframetreestore.cpp
