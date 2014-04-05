@@ -379,14 +379,14 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 
 						if (changed) (*iter)->set_point(point);
 
-						if(!(*iter)->signal_edited()(point))
+						if(!(*iter)->signal_edited()(**iter))
 						{
 							throw String("Bad edit");
 						}
 					}
 					else
 					{
-						if(!(*iter)->signal_edited()((*iter)->get_point()))
+						if(!(*iter)->signal_edited()(**iter))
 						{
 							throw String("Bad edit");
 						}
