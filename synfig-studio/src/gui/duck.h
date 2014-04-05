@@ -181,7 +181,7 @@ public:
 	// constructors
 
 	Duck();
-	Duck(const synfig::Point &point);
+	explicit Duck(const synfig::Point &point);
 	Duck(const synfig::Point &point,const synfig::Point &origin);
 	~Duck();
 
