@@ -108,18 +108,23 @@ public:
 
 			//column->pack_start(*cellrenderer_time_track);
 
-			// Add a fixed size (same that layer param tree) empty text renderer to align the rows with params dock
+			// Add a fixed size (same that layer param tree) empty text renderer
+			// to align the rows with params dock when the text is taller than value_type icons height
 			Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 			text_cellrenderer->property_attributes()=attr_list;
 			column->pack_end(*text_cellrenderer,false);
+			text_cellrenderer->set_fixed_size (0,-1);
 
-			// Set up the icon cell-renderer
+			// Add a fixed size (1pixel widht, same height than value_type icon) empty (alpha) icon
+			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 			column->pack_end(*icon_cellrenderer,false);
-			column->add_attribute(icon_cellrenderer->property_pixbuf() , model.icon);
-//			Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file("/home/haricot/Sources/Synfig/test.png");
-//			icon_cellrenderer->property_pixbuf() = image;
-
+//			column->add_attribute(icon_cellrenderer->property_pixbuf() , model.icon);
+// TEMPORARY HARD LINKED IMAGE
+			Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file("/home/haricot/Sources/Synfig/test.png");
+			icon_cellrenderer->property_pixbuf() = image;
+// END TEMPORARY HARD LINKED IMAGE
+			icon_cellrenderer->set_fixed_size (0,-1);
 
 			// Finish setting up the column
 			column->set_reorderable();
@@ -504,7 +509,10 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
 
 		assert(tree_view);
-
+		// Fixed size drawing area to align the widget_timeslider and tree_view time cursors
+		Gtk::DrawingArea* align_drawingArea = Gtk::manage(new Gtk::DrawingArea);
+		align_drawingArea->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#ff0000"));
+		align_drawingArea->set_size_request(4,-1);
 
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
@@ -515,12 +523,32 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 
 		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
-		table_=new Gtk::Table(2,3);
+
+/*
+	0------1------2------3
+	|  KF  |  A   |  v   |
+	|      |  L   |  s   |
+	1------x--I---x--c---x
+	|  TS  |  G   |  r   |
+	|      |  N   |  o   |
+	2------x------x--l---x
+	|  TV  |  TV  |  l   |
+	|      |      |  b   |
+	3------x------x------x
+	| hscrollbar
+
+KF = widget_kf_list
+TS = widget_timeslider
+TV = tree_view
+ALIGN = align_drawingArea
+*/
+		table_=new Gtk::Table(3,3);
 		table_->attach(*widget_timeslider_, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*tree_view, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*align_drawingArea, 1, 2, 0, 2, Gtk::SHRINK, Gtk::FILL);
+		table_->attach(*tree_view, 0, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*vscrollbar_, 1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*vscrollbar_, 2, 3, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 
 		//add(*last_widget_curves_);
