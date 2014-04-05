@@ -113,6 +113,14 @@ public:
 			text_cellrenderer->property_attributes()=attr_list;
 			column->pack_end(*text_cellrenderer,false);
 
+			// Set up the icon cell-renderer
+			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
+			column->pack_end(*icon_cellrenderer,false);
+			column->add_attribute(icon_cellrenderer->property_pixbuf() , model.icon);
+//			Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file("/home/haricot/Sources/Synfig/test.png");
+//			icon_cellrenderer->property_pixbuf() = image;
+
+
 			// Finish setting up the column
 			column->set_reorderable();
 			column->set_resizable();
