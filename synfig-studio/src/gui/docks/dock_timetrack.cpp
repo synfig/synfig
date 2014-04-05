@@ -119,11 +119,9 @@ public:
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 			column->pack_end(*icon_cellrenderer,false);
-//			column->add_attribute(icon_cellrenderer->property_pixbuf() , model.icon);
-// TEMPORARY HARD LINKED IMAGE
-			Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file("/home/haricot/Sources/Synfig/test.png");
-			icon_cellrenderer->property_pixbuf() = image;
-// END TEMPORARY HARD LINKED IMAGE
+			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+			pixbuf=Gtk::Button().render_icon(Gtk::StockID("utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+			icon_cellrenderer->property_pixbuf() = pixbuf;
 			icon_cellrenderer->set_fixed_size (0,-1);
 
 			// Finish setting up the column
@@ -505,13 +503,13 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(canvas_view)
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
-	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-	tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
+		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
+		tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
 
 		assert(tree_view);
 		// Fixed size drawing area to align the widget_timeslider and tree_view time cursors
+		// Todo : one align_drawingArea.(1, 2, 0, 1) modify_bg KF's color another (1, 2, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#ff0000"));
 		align_drawingArea->set_size_request(4,-1);
 
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
