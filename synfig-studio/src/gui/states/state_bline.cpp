@@ -262,7 +262,7 @@ public:
 	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
-	Smach::event_result event_hijack(const Smach::event& /*x*/) { return Smach::RESULT_ACCEPT; }
+	Smach::event_result event_hijack(const Smach::event& /*x*/) { refresh_ducks(); return Smach::RESULT_ACCEPT; }
 
 	void refresh_tool_options();
 

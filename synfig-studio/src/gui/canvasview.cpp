@@ -2742,6 +2742,7 @@ CanvasView::rebuild_ducks()
 		}
 	}while(0);
 	work_area->refresh_selected_ducks();
+	get_smach().process_event(EVENT_REFRESH_DUCKS);
 	work_area->queue_draw_preview();
 }
 

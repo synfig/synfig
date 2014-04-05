@@ -369,6 +369,7 @@ StateDraw::StateDraw():
 {
 	insert(event_def(EVENT_STOP,&StateDraw_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateDraw_Context::event_refresh_handler));
+	insert(event_def(EVENT_REFRESH_DUCKS,&StateDraw_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateDraw_Context::event_mouse_down_handler));
 	insert(event_def(EVENT_WORKAREA_STROKE,&StateDraw_Context::event_stroke));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateDraw_Context::event_refresh_tool_options));
