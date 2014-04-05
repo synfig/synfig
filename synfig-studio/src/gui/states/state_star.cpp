@@ -575,14 +575,14 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	radius_ratio_spin(radius_ratio_adj,1,2),
 	angle_offset_adj(0, -360, 360, 0.1, 1),
 	angle_offset_spin(angle_offset_adj,1,1),
+	outer_width_adj(0, -10, 10, 0.01, 0.1),
+	outer_width_spin(outer_width_adj,1,2),
 	inner_tangent_adj(0,-10, 10, 0.01, 0.1),
 	inner_tangent_spin(inner_tangent_adj,1,2),
-	outer_tangent_adj(0,-10, 10, 0.01, 0.1),
-	outer_tangent_spin(outer_tangent_adj,1,2),
 	inner_width_adj(0, -10, 10, 0.01, 0.1),
 	inner_width_spin(inner_width_adj,1,2),
-	outer_width_adj(0, -10, 10, 0.01, 0.1),
-	outer_width_spin(outer_width_adj,1,2)
+	outer_tangent_adj(0,-10, 10, 0.01, 0.1),
+	outer_tangent_spin(outer_tangent_adj,1,2)
 {
 	egress_on_selection_change=true;
 
