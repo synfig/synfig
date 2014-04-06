@@ -156,8 +156,8 @@ src/modules/mod_png/trgt_cairo_png.cpp
 src/modules/mod_png/trgt_cairo_png.h
 src/modules/mod_png/trgt_png.cpp
 src/modules/mod_png/trgt_png.h
-src/modules/mod_png/trgt_png_spritessheet.cpp
-src/modules/mod_png/trgt_png_spritessheet.h
+src/modules/mod_png/trgt_png_spritesheet.cpp
+src/modules/mod_png/trgt_png_spritesheet.h
 src/modules/mod_ppm/main.cpp
 src/modules/mod_ppm/mptr_ppm.cpp
 src/modules/mod_ppm/mptr_ppm.h
@@ -367,8 +367,8 @@ src/synfig/valuenode_const.cpp
 src/synfig/valuenode_const.h
 src/synfig/valuenode_cos.cpp
 src/synfig/valuenode_cos.h
-src/synfig/valuenode_derivate.cpp
-src/synfig/valuenode_derivate.h
+src/synfig/valuenode_derivative.cpp
+src/synfig/valuenode_derivative.h
 src/synfig/valuenode_dilist.cpp
 src/synfig/valuenode_dilist.h
 src/synfig/valuenode_dotproduct.cpp
