@@ -244,3 +244,4 @@ void process_job (Job& job) throw (SynfigToolException&)
 
 	VERBOSE_OUT(1) << _("Done.") << endl;
 }
+
