@@ -83,7 +83,9 @@ using namespace studio;
 		button.add(*icon); \
 	} \
 	button.set_relief(Gtk::RELIEF_NONE); \
-	button.set_tooltip_text(tooltip)
+	button.set_tooltip_text(tooltip); \
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StateDraw_Context::toggle_layer_creation))
 #endif
 
 // indentation for options layout
@@ -285,14 +287,14 @@ public:
 	bool get_auto_link_flag()const { return auto_link_checkbutton.get_active(); }
 	void set_auto_link_flag(bool x) { return auto_link_checkbutton.set_active(x); }
 
-	bool get_region_flag()const { return layer_region_togglebutton.get_active(); }
-	void set_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
+	bool get_layer_region_flag()const { return layer_region_togglebutton.get_active(); }
+	void set_layer_region_flag(bool x) { return layer_region_togglebutton.set_active(x); }
 
-	bool get_outline_flag()const { return layer_outline_togglebutton.get_active(); }
-	void set_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
+	bool get_layer_outline_flag()const { return layer_outline_togglebutton.get_active(); }
+	void set_layer_outline_flag(bool x) { return layer_outline_togglebutton.set_active(x); }
 
-	bool get_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
-	void set_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
+	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
+	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
 
 	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
 	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
@@ -327,6 +329,10 @@ public:
 	bool get_round_ends_flag()const { return round_ends_checkbutton.get_active();}
 	void set_round_ends_flag(bool x) {round_ends_checkbutton.set_active(x);}
 
+  bool layer_region_flag;
+  bool layer_outline_flag;
+  bool layer_advanced_outline_flag;
+
 	void load_settings();
 	void save_settings();
 	void increment_id();
@@ -359,6 +365,9 @@ public:
 	//void on_user_click(synfig::Point point);
 
 //	bool run();
+
+	void toggle_layer_creation();
+
 };	// END of class StateDraw_Context
 
 
@@ -429,19 +438,19 @@ StateDraw_Context::load_settings()
 			set_auto_link_flag(true);
 
 		if(settings.get_value("draw.region",value) && value=="0")
-			set_region_flag(false);
+			set_layer_region_flag(false);
 		else
-			set_region_flag(true);
+			set_layer_region_flag(true);
 
 		if(settings.get_value("draw.outline",value) && value=="0")
-			set_outline_flag(false);
+			set_layer_outline_flag(false);
 		else
-			set_outline_flag(true);
+			set_layer_outline_flag(true);
 
 		if(settings.get_value("draw.advanced_outline",value) && value=="0")
-			set_advanced_outline_flag(false);
+			set_layer_advanced_outline_flag(false);
 		else
-			set_advanced_outline_flag(true);
+			set_layer_advanced_outline_flag(true);
 
 		if(settings.get_value("draw.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
@@ -495,6 +504,11 @@ StateDraw_Context::load_settings()
 			set_round_ends_flag(true);
 		else
 			set_round_ends_flag(false);
+
+	  // determine layer flags
+	  layer_region_flag = get_layer_region_flag();
+	  layer_outline_flag = get_layer_outline_flag();
+	  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
 	}
 	catch(...)
 	{
@@ -516,9 +530,9 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
 		settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
 		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
-		settings.set_value("draw.region",get_region_flag()?"1":"0");
-		settings.set_value("draw.outline",get_outline_flag()?"1":"0");
-		settings.set_value("draw.advanced_outline",get_advanced_outline_flag()?"1":"0");
+		settings.set_value("draw.region",get_layer_region_flag()?"1":"0");
+		settings.set_value("draw.outline",get_layer_outline_flag()?"1":"0");
+		settings.set_value("draw.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 		settings.set_value("draw.feather",feather_dist.get_value().get_string());
@@ -926,8 +940,8 @@ StateDraw_Context::UpdateUsePressure()
 void
 StateDraw_Context::UpdateCreateAdvancedOutline()
 {
-	width_max_error_label.set_sensitive(get_advanced_outline_flag());
-	width_max_error_spin.set_sensitive(get_advanced_outline_flag());
+	width_max_error_label.set_sensitive(get_layer_advanced_outline_flag());
+	width_max_error_spin.set_sensitive(get_layer_advanced_outline_flag());
 }
 
 
@@ -1127,7 +1141,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 
 	blineconv(bline,*stroke_data,*width_data);
 
-	if(get_advanced_outline_flag())
+	if(get_layer_advanced_outline_flag())
 	{
 		wplistconv.err2max=get_width_max_error()/100;
 		wplistconv(wplist, *stroke_data,*width_data);
@@ -1152,7 +1166,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	if(get_min_pressure_flag())
 	{
 		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
-		if(get_advanced_outline_flag())
+		if(get_layer_advanced_outline_flag())
 			synfigapp::WPListConverter::EnforceMinWidth(wplist,get_min_pressure());
 	}
 
@@ -1173,7 +1187,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			width=bline.back().get_width();
 			bline.pop_back();
 			std::list<synfig::WidthPoint>::iterator iter;
-			if(get_advanced_outline_flag())
+			if(get_layer_advanced_outline_flag())
 				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
 					iter->set_position(iter->get_position()+1/(size-1));
 		}
@@ -1197,7 +1211,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			Real tmp_width(bline.front().get_width()+width);
 			tmp_width=tmp_width<=1?tmp_width:1;
 			bline.front().set_width(tmp_width);
-			if(get_advanced_outline_flag())
+			if(get_layer_advanced_outline_flag())
 			{
 				Real width_front=wplist.front().get_width();
 				Real width_back=wplist.back().get_width();
@@ -1493,7 +1507,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		}
 
 		// fill_last_stroke() will take care of clearing the selection if we're calling it
-		if((get_outline_flag() || get_advanced_outline_flag()) && get_region_flag())
+		if((get_layer_outline_flag() || get_layer_advanced_outline_flag()) && get_layer_region_flag())
 		{
 			if (fill_last_stroke_and_unselect_other_layers() == Smach::RESULT_ERROR)
 			{
@@ -1511,9 +1525,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		// if they're both defined, we'll add the region later
-		if(get_outline_flag() || get_advanced_outline_flag())
+		if(get_layer_outline_flag() || get_layer_advanced_outline_flag())
 		{
-			if(get_outline_flag())
+			if(get_layer_outline_flag())
 			{
 				layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
 				if (!layer)
@@ -1540,7 +1554,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				layer->set_param("round_tip[1]", get_round_ends_flag());
 				get_canvas_interface()->signal_layer_param_changed()(layer, "round_tip[1]");
 			}
-			if(get_advanced_outline_flag())
+			if(get_layer_advanced_outline_flag())
 			{
 				layer2=get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth);
 				if (!layer2)
@@ -1580,7 +1594,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				}
 			}
 		}
-		if(get_region_flag())
+		if(get_layer_region_flag())
 		{
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 			if (!layer)
@@ -1606,15 +1620,15 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				layer->set_param("feather",get_feather_size());
 				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 			}
-			if(get_advanced_outline_flag())
+			if(get_layer_advanced_outline_flag())
 			{
 				layer2->set_param("feather",get_feather_size());
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"feather");
 			}
 
 		}
-		if(get_outline_flag()) assert(layer);
-		if(get_advanced_outline_flag()) assert(layer2);
+		if(get_layer_outline_flag()) assert(layer);
+		if(get_layer_advanced_outline_flag()) assert(layer2);
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
@@ -2898,4 +2912,23 @@ StateDraw_Context::fill_last_stroke()
 	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 	fill_last_stroke_and_unselect_other_layers();
 	get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+}
+
+void
+StateDraw_Context::toggle_layer_creation()
+{
+  // don't allow none layer creation
+  if (get_layer_region_flag() +
+     get_layer_outline_flag() +
+     get_layer_advanced_outline_flag() == 0)
+  {
+    if(layer_region_flag) set_layer_region_flag(true);
+    else if(layer_outline_flag) set_layer_outline_flag(true);
+    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
+  }
+
+	// update layer flags
+	layer_region_flag = get_layer_region_flag();
+	layer_outline_flag = get_layer_outline_flag();
+	layer_advanced_outline_flag = get_layer_advanced_outline_flag();
 }
