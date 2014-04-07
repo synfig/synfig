@@ -67,7 +67,9 @@ using namespace studio;
 		button.add(*icon); \
 	} \
 	button.set_relief(Gtk::RELIEF_NONE); \
-	button.set_tooltip_text(tooltip)
+	button.set_tooltip_text(tooltip); \
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StateText_Context::toggle_layer_creation))
 #endif
 
 // indentation for options layout
@@ -169,6 +171,8 @@ public:
 	String get_family()const { return family_entry.get_text(); }
 	void set_family(String s) { return family_entry.set_text(s); }
 
+  bool layer_text_flag;
+
 	void refresh_tool_options(); //to refresh the toolbox
 
 	//events
@@ -200,6 +204,7 @@ public:
 	}
 
 	void make_text(const Point& point);
+	void toggle_layer_creation();
 
 }; // END of class StateText_Context
 
@@ -282,6 +287,9 @@ StateText_Context::load_settings()
 			set_layer_text_flag(true);
 		else
 			set_layer_text_flag(true);
+
+	  // determine layer flags
+		layer_text_flag = get_layer_text_flag();
 	}
 	catch(...)
 	{
@@ -685,4 +693,17 @@ StateText_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+}
+
+void
+StateText_Context::toggle_layer_creation()
+{
+  // don't allow none layer creation
+  if (get_layer_text_flag() == 0)
+  {
+    if(layer_text_flag) set_layer_text_flag(true);
+  }
+
+  // update layer flags
+  layer_text_flag = get_layer_text_flag();
 }
