@@ -1617,6 +1617,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		splash_screen.hide();
 
 		String warnings;
+		/*
 		if (App::enable_experimental_features) {
 			warnings += _("EXPERIMENTAL FEATURES:");
 			warnings += "\n\n";
@@ -1628,6 +1629,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			warnings += "\n\n";
 			warnings += _("You can disable experimental features on the \"Misc\" tab of Setup dialog.");
 		}
+		*/
 #ifdef WIN32
 		if (warnings!="")
 			warnings += "\n\n";

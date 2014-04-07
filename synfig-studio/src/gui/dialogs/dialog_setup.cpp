@@ -209,8 +209,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - resize_imported_images
 	misc_table->attach(toggle_resize_imported_images, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	
-	// Misc - resize_imported_images
-	misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	// Misc - enable_experimental_features
+	//misc_table->attach(toggle_enable_experimental_features, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	
 #ifdef SINGLE_THREADED
 	// Misc - single_threaded

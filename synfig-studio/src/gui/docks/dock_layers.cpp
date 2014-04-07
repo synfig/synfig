@@ -90,12 +90,6 @@ Dock_Layers::Dock_Layers():
 		if(lyr.second.category==CATEGORY_DO_NOT_USE)
 			continue;
 		
-		if (!App::enable_experimental_features)
-		{
-			if (lyr.first=="skeleton")
-				continue;
-		}
-
 		action_group_new_layers->add(Gtk::Action::create(
 			strprintf("layer-new-%s",lyr.first.c_str()),
 			layer_icon(lyr.first.c_str()),
