@@ -422,6 +422,7 @@ StateCircle_Context::load_settings()
 			set_layer_origins_at_center_flag(true);
 
   // determine layer flags
+	layer_circle_flag = get_layer_circle_flag();
   layer_region_flag = get_layer_region_flag();
   layer_outline_flag = get_layer_outline_flag();
   layer_advanced_outline_flag = get_layer_outline_flag();
