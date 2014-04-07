@@ -2103,8 +2103,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				scalar_y /= zoom;
 				Real pw = canvas_interface->get_canvas()->rend_desc().get_pw();
 				Real ph = canvas_interface->get_canvas()->rend_desc().get_ph();
-				scalar_x *= 50.0 * fabs(pw);
-				scalar_y *= 50.0 * fabs(ph);
+				scalar_x *= 75.0 * fabs(pw);
+				scalar_y *= 75.0 * fabs(ph);
 
 				Duck::Handle duck;
 
