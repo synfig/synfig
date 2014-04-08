@@ -2184,7 +2184,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	else if(element->get_name()=="weighted_average")
 	{
 		Type& contained_type = ValueAverage::get_type_from_weighted(type);
-		value_node=weightedaverage_value_node=ValueNode_WeightedAverage::create(contained_type, canvas);
+		weightedaverage_value_node=new ValueNode_WeightedAverage(contained_type, canvas);
+		value_node=ValueNode_DynamicList::Handle::cast_dynamic(weightedaverage_value_node);
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();

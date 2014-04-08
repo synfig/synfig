@@ -59,13 +59,6 @@ ValueNode_WeightedAverage::ValueNode_WeightedAverage(const ValueBase &value, Can
 		assert(0);
 		throw runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
 	}
-
-	types_namespace::TypeWeightedValueBase *t = ValueAverage::get_weighted_type_for(get_type());
-	assert(t != NULL);
-
-	ref();
-	add(ValueNode::Handle(ValueNode_Const::create(t->create_weighted_value(1, value), canvas)));
-	unref_inactive();
 }
 
 ValueNode_WeightedAverage::ValueNode_WeightedAverage(Type &type, Canvas::LooseHandle canvas):
@@ -82,7 +75,18 @@ ValueNode_WeightedAverage::~ValueNode_WeightedAverage() { }
 
 ValueNode_WeightedAverage*
 ValueNode_WeightedAverage::create(const ValueBase &value, Canvas::LooseHandle canvas)
-	{ return new ValueNode_WeightedAverage(value, canvas); }
+{ 
+	ValueNode_WeightedAverage* value_node(new ValueNode_WeightedAverage(value, canvas));
+	
+	types_namespace::TypeWeightedValueBase *t = ValueAverage::get_weighted_type_for(value_node->get_type());
+	assert(t != NULL);
+
+	value_node->ref();
+	value_node->add(ValueNode::Handle(ValueNode_Const::create(t->create_weighted_value(1, value), canvas)));
+	value_node->unref_inactive();
+	
+	return value_node;
+}
 
 ValueBase
 ValueNode_WeightedAverage::operator()(Time t)const
