@@ -443,6 +443,11 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+
+	synfig::info("#161 -Dock_Timetrack 1 signal_param_tree_header_height_changed connected");
+	/*
+	if(!getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
 	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
@@ -562,8 +567,10 @@ ALIGN = align_drawingArea
 void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
+synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
 	//add the border size
 	header_height+=2;
 	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list_->set_size_request(-1,header_height/3+1);
+synfig::info("#161 -Dock_Timetrack 3 on_update_header_height : end");
 }
