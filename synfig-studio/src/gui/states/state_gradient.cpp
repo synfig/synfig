@@ -192,6 +192,11 @@ public:
 		return layer_spiral_gradient_togglebutton.set_active(x);
 	}
 
+  bool layer_linear_gradient_flag;
+  bool layer_radial_gradient_flag;
+  bool layer_conical_gradient_flag;
+  bool layer_spiral_gradient_flag;
+
 	void refresh_tool_options();
 
 	StateGradient_Context(CanvasView* canvas_view);
@@ -288,6 +293,12 @@ StateGradient_Context::load_settings()
 			set_opacity(atof(value.c_str()));
 		else
 			set_opacity(1);
+
+	  // determine layer flags
+		layer_linear_gradient_flag = get_layer_linear_gradient_flag();
+	  layer_radial_gradient_flag = get_layer_radial_gradient_flag();
+	  layer_conical_gradient_flag = get_layer_conical_gradient_flag();
+	  layer_spiral_gradient_flag = get_layer_spiral_gradient_flag();
 	}
 	catch(...)
 	{
@@ -731,50 +742,110 @@ StateGradient_Context::refresh_ducks()
 	get_work_area()->queue_draw();
 }
 
+
 void
 StateGradient_Context::toggle_layer_linear_gradient()
 {
-	if(get_layer_linear_gradient_flag())
+	// enable linear gradient layer and disable the others
+	if(!layer_linear_gradient_flag)
 	{
+		set_layer_linear_gradient_flag(true);
 		set_layer_radial_gradient_flag(false);
 		set_layer_conical_gradient_flag(false);
 		set_layer_spiral_gradient_flag(false);
+
+		// update flags
+		layer_linear_gradient_flag = true;
+		layer_radial_gradient_flag = false;
+		layer_conical_gradient_flag = false;
+		layer_spiral_gradient_flag = false;
 	}
-	else return;
+
+	// don't allow to disable the enabled layer
+	if(get_layer_linear_gradient_flag() +
+		get_layer_radial_gradient_flag() +
+		get_layer_conical_gradient_flag() +
+		get_layer_spiral_gradient_flag() == 0
+			) set_layer_linear_gradient_flag(true);
 }
+
 
 void
 StateGradient_Context::toggle_layer_radial_gradient()
 {
-	if(get_layer_radial_gradient_flag())
+	// enable radial gradient layer and disable the others
+	if(!layer_radial_gradient_flag)
 	{
 		set_layer_linear_gradient_flag(false);
+		set_layer_radial_gradient_flag(true);
 		set_layer_spiral_gradient_flag(false);
 		set_layer_conical_gradient_flag(false);
+
+		// update flags
+		layer_linear_gradient_flag = false;
+		layer_radial_gradient_flag = true;
+		layer_conical_gradient_flag = false;
+		layer_spiral_gradient_flag = false;
 	}
-	else return;
+
+	// don't allow to disable the enabled layer
+	if(get_layer_linear_gradient_flag() +
+		get_layer_radial_gradient_flag() +
+		get_layer_conical_gradient_flag() +
+		get_layer_spiral_gradient_flag() == 0
+			) set_layer_radial_gradient_flag(true);
 }
+
 
 void
 StateGradient_Context::toggle_layer_conical_gradient()
 {
-	if(get_layer_conical_gradient_flag())
+	// enable conical gradient layer and disable the others
+	if(!layer_conical_gradient_flag)
 	{
 		set_layer_linear_gradient_flag(false);
 		set_layer_radial_gradient_flag(false);
+		set_layer_conical_gradient_flag(true);
 		set_layer_spiral_gradient_flag(false);
+
+		// update flags
+		layer_linear_gradient_flag = false;
+		layer_radial_gradient_flag = false;
+		layer_conical_gradient_flag = true;
+		layer_spiral_gradient_flag = false;
 	}
-	else return;
+
+	// don't allow to disable the enabled layer
+	if(get_layer_linear_gradient_flag() +
+		get_layer_radial_gradient_flag() +
+		get_layer_conical_gradient_flag() +
+		get_layer_spiral_gradient_flag() == 0
+			) set_layer_conical_gradient_flag(true);
 }
+
 
 void
 StateGradient_Context::toggle_layer_spiral_gradient()
 {
-	if(get_layer_spiral_gradient_flag())
+	// enable spiral gradient layer and disable the others
+	if(!layer_spiral_gradient_flag)
 	{
 		set_layer_linear_gradient_flag(false);
 		set_layer_radial_gradient_flag(false);
 		set_layer_conical_gradient_flag(false);
+		set_layer_spiral_gradient_flag(true);
+
+		// update flags
+		layer_linear_gradient_flag = false;
+		layer_radial_gradient_flag = false;
+		layer_conical_gradient_flag = false;
+		layer_spiral_gradient_flag = true;
 	}
-	else return;
+
+	// don't allow to disable the enabled layer
+	if(get_layer_linear_gradient_flag() +
+		get_layer_radial_gradient_flag() +
+		get_layer_conical_gradient_flag() +
+		get_layer_spiral_gradient_flag() == 0
+			) set_layer_spiral_gradient_flag(true);
 }

@@ -230,6 +230,13 @@ public:
 	bool get_layer_link_origins_flag()const { return layer_link_origins_checkbutton.get_active(); }
 	void set_layer_link_origins_flag(bool x) { return layer_link_origins_checkbutton.set_active(x); }
 
+  bool layer_polygon_flag;
+  bool layer_region_flag;
+  bool layer_outline_flag;
+  bool layer_advanced_outline_flag;
+  bool layer_curve_gradient_flag;
+  bool layer_plant_flag;
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -354,6 +361,14 @@ StatePolygon_Context::load_settings()
 			set_layer_link_origins_flag(false);
 		else
 			set_layer_link_origins_flag(true);
+
+	  // determine layer flags
+		layer_polygon_flag = get_layer_polygon_flag();
+	  layer_region_flag = get_layer_region_flag();
+	  layer_outline_flag = get_layer_outline_flag();
+	  layer_advanced_outline_flag = get_layer_outline_flag();
+	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+	  layer_plant_flag = get_layer_plant_flag();
 	}
 	catch(...)
 	{
@@ -1307,6 +1322,22 @@ StatePolygon_Context::on_polygon_duck_change(const studio::Duck &duck, std::list
 void
 StatePolygon_Context::toggle_layer_creation()
 {
+  // don't allow none layer creation
+  if (get_layer_polygon_flag() +
+     get_layer_region_flag() +
+     get_layer_outline_flag() +
+     get_layer_advanced_outline_flag() +
+     get_layer_curve_gradient_flag() +
+     get_layer_plant_flag() == 0)
+  {
+    if(layer_polygon_flag) set_layer_polygon_flag(true);
+    else if(layer_region_flag) set_layer_region_flag(true);
+    else if(layer_outline_flag) set_layer_outline_flag(true);
+    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
+    else if(layer_curve_gradient_flag) set_layer_curve_gradient_flag(true);
+    else if(layer_plant_flag) set_layer_plant_flag(true);
+  }
+
 	// brush size
 	if (get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag() ||
@@ -1359,4 +1390,12 @@ StatePolygon_Context::toggle_layer_creation()
 			link_origins_box.set_sensitive(true);
 		}
 	else link_origins_box.set_sensitive(false);
+
+  // update layer flags
+  layer_polygon_flag = get_layer_polygon_flag();
+  layer_region_flag = get_layer_region_flag();
+  layer_outline_flag = get_layer_outline_flag();
+  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+  layer_plant_flag = get_layer_plant_flag();
 }

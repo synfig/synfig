@@ -122,7 +122,6 @@ class studio::StateBLine_Context : public sigc::trackable
 	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 
-
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node);
@@ -252,6 +251,12 @@ public:
 
 	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
 	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
+
+  bool layer_region_flag;
+  bool layer_outline_flag;
+  bool layer_advanced_outline_flag;
+  bool layer_curve_gradient_flag;
+  bool layer_plant_flag;
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -384,6 +389,13 @@ StateBLine_Context::load_settings()
 			set_feather_size(Distance(atof(value.c_str()), Distance::SYSTEM_POINTS));
 		else
 			set_feather_size(Distance(0, Distance::SYSTEM_POINTS)); // default feather
+
+	  // determine layer flags
+	  layer_region_flag = get_layer_region_flag();
+	  layer_outline_flag = get_layer_outline_flag();
+	  layer_advanced_outline_flag = get_layer_outline_flag();
+	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+	  layer_plant_flag = get_layer_plant_flag();
 
 		sanity_check();
 	}
@@ -1819,6 +1831,20 @@ StateBLine_Context::bline_set_split_handle(synfig::ValueNode_Const::Handle value
 void
 StateBLine_Context::toggle_layer_creation()
 {
+  // don't allow none layer creation
+  if (get_layer_region_flag() +
+     get_layer_outline_flag() +
+     get_layer_advanced_outline_flag() +
+     get_layer_curve_gradient_flag() +
+     get_layer_plant_flag() == 0)
+  {
+    if(layer_region_flag) set_layer_region_flag(true);
+    else if(layer_outline_flag) set_layer_outline_flag(true);
+    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
+    else if(layer_curve_gradient_flag) set_layer_curve_gradient_flag(true);
+    else if(layer_plant_flag) set_layer_plant_flag(true);
+  }
+
 	// brush size
 	if (get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag() ||
@@ -1857,4 +1883,11 @@ StateBLine_Context::toggle_layer_creation()
 			link_origins_box.set_sensitive(true);
 		}
 	else link_origins_box.set_sensitive(false);
+
+  // update layer flags
+  layer_region_flag = get_layer_region_flag();
+  layer_outline_flag = get_layer_outline_flag();
+  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+  layer_plant_flag = get_layer_plant_flag();
 }
