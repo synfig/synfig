@@ -304,6 +304,9 @@ String studio::App::sequence_separator(".");
 bool studio::App::navigator_uses_cairo=false;
 bool studio::App::workarea_uses_cairo=false;
 
+bool studio::App::enable_mainwin_menubar = true;
+bool studio::App::enable_mainwin_toolbar = true;
+
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
 void studio::App::set_max_recent_files(int x) { max_recent_files_=x; }
@@ -621,6 +624,16 @@ public:
 				value=strprintf("%i",(int)App::workarea_uses_cairo);
 				return true;
 			}
+			if(key=="enable_mainwin_menubar")
+			{
+				value=strprintf("%i", (int)App::enable_mainwin_menubar);
+				return true;
+			}
+			if(key=="enable_mainwin_toolbar")
+			{
+				value=strprintf("%i", (int)App::enable_mainwin_toolbar);
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -759,6 +772,18 @@ public:
 				App::workarea_uses_cairo=i;
 				return true;
 			}
+			if(key=="enable_mainwin_menubar")
+			{
+				int i(atoi(value.c_str()));
+				App::enable_mainwin_menubar = i;
+				return true;
+			}
+			if(key=="enable_mainwin_toolbar")
+			{
+				int i(atoi(value.c_str()));
+				App::enable_mainwin_toolbar = i;
+				return true;
+			}
 		}
 		catch(...)
 		{
@@ -792,6 +817,9 @@ public:
 		ret.push_back("sequence_separator");
 		ret.push_back("navigator_uses_cairo");
 		ret.push_back("workarea_uses_cairo");
+		ret.push_back("enable_mainwin_menubar");
+		ret.push_back("enable_mainwin_toolbar");
+
 		return ret;
 	}
 };
@@ -1367,14 +1395,13 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	try
 	{
-		
-		
-		
 		// Try to load settings early to get access to some important
 		// values, like "enable_experimental_features".
 		studio_init_cb.task(_("Loading Basic Settings..."));
 		load_settings("pref.enable_experimental_features");
-		
+		load_settings("pref.enable_mainwin_menubar");
+		load_settings("pref.enable_mainwin_toolbar");
+
 		studio_init_cb.task(_("Loading Plugins..."));
 		
 		std::string pluginsprefix;
@@ -1398,8 +1425,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		pluginsprefix=Glib::build_filename(synfigapp::Main::get_user_app_directory(),"plugins");
 		plugin_manager.load_dir(pluginsprefix);
 		
-		
-		
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
@@ -1413,7 +1438,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow();
 		main_window->add_accel_group(App::ui_manager_->get_accel_group());
-
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();
@@ -1991,6 +2015,9 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("sequence_separator", ".");
 	synfigapp::Main::settings().set_value("navigator_uses_cairo", "0");
 	synfigapp::Main::settings().set_value("workarea_uses_cairo", "0");
+	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar", "1");
+	synfigapp::Main::settings().set_value("pref.enable_mainwin_toolbar", "1");
+
 }
 
 bool

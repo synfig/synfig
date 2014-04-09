@@ -215,7 +215,7 @@ public:
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
 	static bool enable_experimental_features;
-	
+
 	static synfigapp::PluginManager plugin_manager;
 	
 	static synfig::String browser_command;
@@ -228,6 +228,9 @@ public:
 	static synfig::String sequence_separator;
 	static bool navigator_uses_cairo;
 	static bool workarea_uses_cairo;
+	static bool enable_mainwin_menubar;
+	static bool enable_mainwin_toolbar;
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
