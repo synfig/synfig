@@ -189,13 +189,13 @@ MainWindow::init_menus()
 
 	// View menu
 	//Glib::RefPtr<Gtk::ToggleAction> action;
-	toggle_maintoolbar = Gtk::ToggleAction::create("toggle-maintoolbar", _("Show Toolbar"));
-	toggle_maintoolbar->set_active(toggling_show_toolbar);
-	action_group->add(toggle_maintoolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_maintoolbar));
-
-	toggle_menubar = Gtk::ToggleAction::create("toggle-menubar", _("Show Menubar"));
+	toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(toggling_show_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
+
+	toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Show Toolbar"));
+	toggle_toolbar->set_active(toggling_show_toolbar);
+	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
 
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
@@ -240,7 +240,7 @@ MainWindow::init_menus()
 
 
 void
-MainWindow::toggle_show_maintoolbar()
+MainWindow::toggle_show_toolbar()
 {
 	Gtk::Widget* toolbar = App::ui_manager()->get_widget("/toolbar-main");
 
