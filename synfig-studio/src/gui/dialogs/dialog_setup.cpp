@@ -91,7 +91,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	{
 	// Setup the buttons
-	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Default Settings"))));
+	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Defaults"))));
 	restore_button->show();
 	add_action_widget(*restore_button,1);
 	restore_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_restore_pressed));
