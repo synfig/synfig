@@ -71,8 +71,8 @@ using namespace studio;
 MainWindow::MainWindow()
 {
 	set_default_size(600, 400);
-	toggling_show_toolbar = true;
-	toggling_show_menubar = true;
+	toggling_show_menubar = App::enable_mainwin_menubar;
+	toggling_show_toolbar = App::enable_mainwin_toolbar;
 
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
@@ -117,6 +117,9 @@ MainWindow::MainWindow()
 
 	vbox->pack_end(*bin_, true, true, 0);
 	vbox->show();
+	if(!App::enable_mainwin_menubar) menubar->hide();
+	if(!App::enable_mainwin_toolbar) toolbar->hide();
+
 	add(*vbox);
 
 	add_accel_group(App::ui_manager()->get_accel_group());
@@ -140,7 +143,7 @@ MainWindow::MainWindow()
 	GRAB_HINT_DATA("mainwindow");
 }
 
-MainWindow::~MainWindow() { }
+MainWindow::~MainWindow(){ }
 
 
 void
@@ -250,7 +253,8 @@ MainWindow::toggle_show_maintoolbar()
 	{
 		toolbar->show();
 		toggling_show_toolbar = true;
-	}	
+	}
+	App::enable_mainwin_toolbar = toggling_show_toolbar;
 }
 
 
@@ -269,6 +273,7 @@ MainWindow::toggle_show_menubar()
 		menubar->show();
 		toggling_show_menubar = true;
 	}
+	App::enable_mainwin_menubar = toggling_show_menubar;
 }
 
 
