@@ -570,7 +570,21 @@ Dock_Timetrack::on_update_header_height( int header_height)
 synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
 	//add the border size
 	header_height+=2;
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
-synfig::info("#161 -Dock_Timetrack 3 on_update_header_height : end");
+//	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
+//	widget_kf_list_->set_size_request(-1,header_height/3+1);
+
+	widget_timeslider_->set_size_request(1,1);
+	widget_kf_list_->set_size_request(1,1);
+
+	widget_timeslider_->set_property("width-request",-1);
+	widget_timeslider_->set_property("height-request",header_height-header_height/3+1);
+
+	widget_kf_list_->set_property("width-request",-1);
+	widget_kf_list_->set_property("height-request",header_height/3+1);
+
+int height_kf; int height_ts;
+widget_timeslider_->get_property("height-request",height_ts);
+widget_kf_list_->get_property("height-request",height_kf);
+
+synfig::info("#161 -Dock_Timetrack 3 on_update_header_height kf:%d ts:%d : end",height_kf , height_ts);
 }
