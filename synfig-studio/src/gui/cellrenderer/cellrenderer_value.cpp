@@ -630,19 +630,16 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		return NULL;
 	}
 	else
-	if (type == type_string)
+	if (type == type_string && get_param_desc().get_hint()=="paragraph")
 	{
-		if(get_param_desc().get_hint()=="paragraph")
-		{
-			synfig::String string;
-			string=data.get(string);
-			if(get_paragraph(string))
-				signal_edited_(path,ValueBase(string));
-			return NULL;
-		}
-		// if(get_param_desc().get_hint()!="filename")
-			// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
+		synfig::String string;
+		string=data.get(string);
+		if(get_paragraph(string))
+			signal_edited_(path,ValueBase(string));
+		return NULL;
 	}
+	// if (type == type_string) && (get_param_desc().get_hint()!="filename")
+		// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 	else
 	{
 		assert(get_canvas());
