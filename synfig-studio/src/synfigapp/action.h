@@ -340,8 +340,6 @@ public:
 
 	virtual void prepare() { };
 
-	using CanvasSpecific::set_param;
-	using Base::set_param;
 	virtual bool set_param(const synfig::String& /*name*/, const Param &)const { return false; }
 	virtual bool is_ready()const { return ready_; }
 
