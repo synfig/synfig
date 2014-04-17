@@ -35,6 +35,7 @@
 #include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/fixed.h>
 #include <cassert>
 #include "instance.h"
 #include <sigc++/signal.h>
@@ -517,6 +518,12 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		Gtk::DrawingArea* align_drawingArea = Gtk::manage(new Gtk::DrawingArea);
 		align_drawingArea->set_size_request(4,-1);
 
+		Gtk::Fixed* fixed_timeslider = Gtk::manage(new Gtk::Fixed ());
+		Gtk::Fixed* fixed_kf_list = Gtk::manage(new Gtk::Fixed ());
+
+		fixed_timeslider->put(*widget_timeslider_, 0, 0);
+		fixed_kf_list->put(*widget_kf_list_, 0, 0);
+
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
@@ -540,14 +547,18 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	3------x------x------x
 	| hscrollbar
 
-KF = widget_kf_list
-TS = widget_timeslider
+KF = widget_kf_list (inside Gtk:Fixed)
+TS = widget_timeslider (inside Gtk:Fixed)
 TV = tree_view
 ALIGN = align_drawingArea
 */
 		table_=new Gtk::Table(3,3);
-		table_->attach(*widget_timeslider_, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+//		table_->attach(*widget_timeslider_, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+//		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+
+		table_->attach(*fixed_timeslider, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*fixed_kf_list, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+
 		table_->attach(*align_drawingArea, 1, 2, 0, 2, Gtk::SHRINK, Gtk::FILL);
 		table_->attach(*tree_view, 0, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
@@ -573,18 +584,43 @@ synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_heigh
 //	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
 //	widget_kf_list_->set_size_request(-1,header_height/3+1);
 
-	widget_timeslider_->set_size_request(1,1);
-	widget_kf_list_->set_size_request(1,1);
+//	widget_timeslider_->set_size_request(1,1);
+//	widget_kf_list_->set_size_request(1,1);
 
-	widget_timeslider_->set_property("width-request",-1);
+//	TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
+//	assert(tree_view);
+
+	int width_hscrollbar;
+	width_hscrollbar = hscrollbar_->get_width();
+
+synfig::info("#161 -Dock_Timetrack 3 on_update_header_height width_hscrollbar:%d",width_hscrollbar);
+
+	widget_timeslider_->set_property("width-request",width_hscrollbar);
 	widget_timeslider_->set_property("height-request",header_height-header_height/3+1);
 
-	widget_kf_list_->set_property("width-request",-1);
+	widget_kf_list_->set_property("width-request",width_hscrollbar);
 	widget_kf_list_->set_property("height-request",header_height/3+1);
 
 int height_kf; int height_ts;
 widget_timeslider_->get_property("height-request",height_ts);
 widget_kf_list_->get_property("height-request",height_kf);
 
-synfig::info("#161 -Dock_Timetrack 3 on_update_header_height kf:%d ts:%d : end",height_kf , height_ts);
+synfig::info("#161 -Dock_Timetrack 4 on_update_header_height kf:%d ts:%d : end",height_kf , height_ts);
+}
+
+void
+Dock_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
+{
+	int width_hscrollbar;
+	width_hscrollbar = hscrollbar_->get_width();
+
+synfig::info("#161 -Dock_Timetrack on_size_allocate width_hscrollbar:%d",width_hscrollbar);
+
+	widget_timeslider_->set_property("width-request",width_hscrollbar);
+//	widget_timeslider_->set_property("height-request",header_height-header_height/3+1);
+
+	widget_kf_list_->set_property("width-request",width_hscrollbar);
+//	widget_kf_list_->set_property("height-request",header_height/3+1);
+
+	Dock_CanvasSpecific::on_size_allocate(allocation);
 }
