@@ -516,13 +516,13 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		// Fixed size drawing area to align the widget_timeslider and tree_view time cursors
 		// Todo : one align_drawingArea.(1, 2, 0, 1) modify_bg KF's color another (1, 2, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea = Gtk::manage(new Gtk::DrawingArea);
-		align_drawingArea->set_size_request(4,-1);
+		align_drawingArea->set_size_request(6,-1);
 
 		Gtk::Fixed* fixed_timeslider = Gtk::manage(new Gtk::Fixed ());
 		Gtk::Fixed* fixed_kf_list = Gtk::manage(new Gtk::Fixed ());
-
-		fixed_timeslider->put(*widget_timeslider_, 0, 0);
-		fixed_kf_list->put(*widget_kf_list_, 0, 0);
+		// Fix x position to get widget_timeslider and Dock_Timetrack time cursor aligned
+		fixed_timeslider->put(*widget_timeslider_, 2, 0);
+		fixed_kf_list->put(*widget_kf_list_, 2, 0);
 
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
