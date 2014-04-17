@@ -35,6 +35,7 @@
 #include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/fixed.h>
 #include <cassert>
 #include "instance.h"
 #include <sigc++/signal.h>
@@ -82,6 +83,15 @@ public:
 
 	TimeTrackView()
 	{
+		//Text attributes must be the same that layer param tree's to have aligned rows
+		Pango::AttrList attr_list;
+		{
+			Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
+			pango_size.set_start_index(0);
+			pango_size.set_end_index(64);
+			attr_list.change(pango_size);
+		}
+
 		int label_index(append_column_editable(_("Name"),model.label));
 		Gtk::TreeView::Column* label_column = get_column(label_index-1);
 
@@ -98,6 +108,22 @@ public:
 			//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
 
 			//column->pack_start(*cellrenderer_time_track);
+
+			// Add a fixed size (same that layer param tree) empty text renderer
+			// to align the rows with params dock when the text is taller than value_type icons height
+			Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+			text_cellrenderer->property_attributes()=attr_list;
+			column->pack_end(*text_cellrenderer,false);
+			text_cellrenderer->set_fixed_size (0,-1);
+
+			// Add a fixed size (1pixel widht, same height than value_type icon) empty (alpha) icon
+			// to align the rows with params dock when the text is smaller than value_type icons height
+			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
+			column->pack_end(*icon_cellrenderer,false);
+			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+			pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+			icon_cellrenderer->property_pixbuf() = pixbuf;
+			icon_cellrenderer->set_fixed_size (0,-1);
 
 			// Finish setting up the column
 			column->set_reorderable();
@@ -418,6 +444,11 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+
+	synfig::info("#161 -Dock_Timetrack 1 signal_param_tree_header_height_changed connected");
+	/*
+	if(!getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
 	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
@@ -478,11 +509,20 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(canvas_view)
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
-	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-	tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
+		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
+		tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
 
 		assert(tree_view);
+		// Fixed size drawing area to align the widget_timeslider and tree_view time cursors
+		// Todo : one align_drawingArea.(1, 2, 0, 1) modify_bg KF's color another (1, 2, 1, 2) modify_bg TS's color
+		Gtk::DrawingArea* align_drawingArea = Gtk::manage(new Gtk::DrawingArea);
+		align_drawingArea->set_size_request(6,-1);
 
+		Gtk::Fixed* fixed_timeslider = Gtk::manage(new Gtk::Fixed ());
+		Gtk::Fixed* fixed_kf_list = Gtk::manage(new Gtk::Fixed ());
+		// Fix x position to get widget_timeslider and Dock_Timetrack time cursor aligned
+		fixed_timeslider->put(*widget_timeslider_, 2, 0);
+		fixed_kf_list->put(*widget_kf_list_, 2, 0);
 
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
@@ -493,12 +533,36 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 
 		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
-		table_=new Gtk::Table(2,3);
-		table_->attach(*widget_timeslider_, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*tree_view, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+
+/*
+	0------1------2------3
+	|  KF  |  A   |  v   |
+	|      |  L   |  s   |
+	1------x--I---x--c---x
+	|  TS  |  G   |  r   |
+	|      |  N   |  o   |
+	2------x------x--l---x
+	|  TV  |  TV  |  l   |
+	|      |      |  b   |
+	3------x------x------x
+	| hscrollbar
+
+KF = widget_kf_list (inside Gtk:Fixed)
+TS = widget_timeslider (inside Gtk:Fixed)
+TV = tree_view
+ALIGN = align_drawingArea
+*/
+		table_=new Gtk::Table(3,3);
+//		table_->attach(*widget_timeslider_, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+//		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+
+		table_->attach(*fixed_timeslider, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*fixed_kf_list, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+
+		table_->attach(*align_drawingArea, 1, 2, 0, 2, Gtk::SHRINK, Gtk::FILL);
+		table_->attach(*tree_view, 0, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*vscrollbar_, 1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*vscrollbar_, 2, 3, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
 
 		//add(*last_widget_curves_);
@@ -514,8 +578,49 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
+synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
 	//add the border size
 	header_height+=2;
-	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
-	widget_kf_list_->set_size_request(-1,header_height/3+1);
+//	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
+//	widget_kf_list_->set_size_request(-1,header_height/3+1);
+
+//	widget_timeslider_->set_size_request(1,1);
+//	widget_kf_list_->set_size_request(1,1);
+
+//	TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
+//	assert(tree_view);
+
+	int width_hscrollbar;
+	width_hscrollbar = hscrollbar_->get_width();
+
+synfig::info("#161 -Dock_Timetrack 3 on_update_header_height width_hscrollbar:%d",width_hscrollbar);
+
+	widget_timeslider_->set_property("width-request",width_hscrollbar);
+	widget_timeslider_->set_property("height-request",header_height-header_height/3+1);
+
+	widget_kf_list_->set_property("width-request",width_hscrollbar);
+	widget_kf_list_->set_property("height-request",header_height/3+1);
+
+int height_kf; int height_ts;
+widget_timeslider_->get_property("height-request",height_ts);
+widget_kf_list_->get_property("height-request",height_kf);
+
+synfig::info("#161 -Dock_Timetrack 4 on_update_header_height kf:%d ts:%d : end",height_kf , height_ts);
+}
+
+void
+Dock_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
+{
+	int width_hscrollbar;
+	width_hscrollbar = hscrollbar_->get_width();
+
+synfig::info("#161 -Dock_Timetrack on_size_allocate width_hscrollbar:%d",width_hscrollbar);
+
+	widget_timeslider_->set_property("width-request",width_hscrollbar);
+//	widget_timeslider_->set_property("height-request",header_height-header_height/3+1);
+
+	widget_kf_list_->set_property("width-request",width_hscrollbar);
+//	widget_kf_list_->set_property("height-request",header_height/3+1);
+
+	Dock_CanvasSpecific::on_size_allocate(allocation);
 }

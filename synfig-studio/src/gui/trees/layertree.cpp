@@ -269,6 +269,7 @@ LayerTree::create_layer_tree()
 Gtk::Widget*
 LayerTree::create_param_tree()
 {
+	//Text attributes must be the same that TimeTrackView tree's to have aligned rows
 	Pango::AttrList attr_list;
 	{
 		Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
@@ -1343,20 +1344,37 @@ LayerTree::update_param_tree_header_height()
 	const Gtk::TreeViewColumn* column = get_param_tree_view().get_column (0);
 	if (column)
 	{
+		synfig::info("#161 -1- colum != NULL");
 		if(column->get_widget())
 		{
+			synfig::info("#161 -2- colum get_widget != NULL");
 			if(column->get_widget()->get_parent())
 			{
+				synfig::info("#161 -3- get_widget get_parent != NULL");
+				synfig::info("#161 -4- get_widget get_parent height %d",column->get_widget()->get_parent()->get_height());
 				const Gtk::Container* container;
 				if((container = column->get_widget()->get_parent()->get_parent()))
 				{
+					synfig::info("#161 -5- container != NULL");
 					int header_height = container->get_height();
 					if (header_height != param_tree_header_height)
 					{
+						synfig::info("#161 -6- header_height %d (updated!)",header_height);
 						param_tree_header_height = header_height;
 						header_height_updated = true;
 					}
 				}
+				else
+				{
+					int header_height = column->get_widget()->get_parent()->get_height();
+					if (header_height != param_tree_header_height)
+					{
+						synfig::info("#161 -7- header_height %d (updated!)",header_height);
+						param_tree_header_height = header_height;
+						header_height_updated = true;
+					}
+				}
+
 			}
 		}
 	}

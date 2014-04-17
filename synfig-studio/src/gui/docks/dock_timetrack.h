@@ -55,6 +55,8 @@ protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
+	virtual void on_size_allocate(Gtk::Allocation& allocation);
+
 	void refresh_selected_param();
 	//animation render description change signal handler
 	void refresh_rend_desc();
@@ -69,6 +71,10 @@ private:
 	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
 	/* \see studio::LayerTree::signal_param_tree_header_height_changed */
 	void on_update_header_height( int header_height);
+
+	//! Signal handler for Gtk::Widget::signal_configure_event (window resizing).
+//	bool on_timetrack_configure_event(GdkEventConfigure* event);
+
 }; // END of Dock_Timetrack
 
 }; // END of namespace studio
