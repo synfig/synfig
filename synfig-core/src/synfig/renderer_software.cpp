@@ -84,14 +84,14 @@ Renderer::Result RendererSoftware::render_mesh(const Params &params, const Primi
 
 void
 RendererSoftware::render_triangle(
-	Surface &target_surface,
+	synfig::Surface &target_surface,
 	const Vector &p0,
 	const Vector &t0,
 	const Vector &p1,
 	const Vector &t1,
 	const Vector &p2,
 	const Vector &t2,
-	const Surface &texture,
+	const synfig::Surface &texture,
 	Real alpha,
 	Color::BlendMethod blend_method )
 {
@@ -254,10 +254,31 @@ RendererSoftware::render_triangle(
     }
 }
 
-bool
-RendererSoftware::render_mesh(Surface &target_surface, const Mesh &mesh, const Surface &texture)
+void
+RendererSoftware::render_mesh(
+	synfig::Surface &target_surface,
+	const synfig::Mesh &mesh,
+	const synfig::Surface &texture,
+	const Matrix &transform_matrix,
+	const Matrix &texture_matrix,
+	Real alpha,
+	Color::BlendMethod blend_method )
 {
+	if (!target_surface.is_valid()) return;
+	if (!texture.is_valid()) return;
 
+	for(synfig::Mesh::TriangleList::const_iterator i = mesh.triangles.begin(); i != mesh.triangles.begin(); ++i)
+		render_triangle(
+			target_surface,
+			transform_matrix.get_transformed(mesh.vertices[i->vertices[0]].position),
+			texture_matrix.get_transformed(mesh.vertices[i->vertices[0]].tex_coords),
+			transform_matrix.get_transformed(mesh.vertices[i->vertices[1]].position),
+			texture_matrix.get_transformed(mesh.vertices[i->vertices[1]].tex_coords),
+			transform_matrix.get_transformed(mesh.vertices[i->vertices[2]].position),
+			texture_matrix.get_transformed(mesh.vertices[i->vertices[2]].tex_coords),
+			texture,
+			alpha,
+			blend_method );
 }
 
 

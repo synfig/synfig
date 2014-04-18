@@ -63,17 +63,25 @@ public:
 	static void deinitialize();
 
 	static void render_triangle(
-		Surface &target_surface,
+		synfig::Surface &target_surface,
 		const Vector &p0,
 		const Vector &t0,
 		const Vector &p1,
 		const Vector &t1,
 		const Vector &p2,
 		const Vector &t2,
-		const Surface &texture,
+		const synfig::Surface &texture,
 		Real alpha,
 		Color::BlendMethod blend_method );
-	static bool render_mesh(Surface &target_surface, const Mesh &mesh, const Surface &texture);
+
+	static void render_mesh(
+		synfig::Surface &target_surface,
+		const synfig::Mesh &mesh,
+		const synfig::Surface &texture,
+		const Matrix &transform_matrix,
+		const Matrix &texture_matrix,
+		Real alpha,
+		Color::BlendMethod blend_method );
 
 	RendererSoftware();
 	virtual Result render_surface(const Params &params, const Primitive<PrimitiveTypeSurface> &primitive);
