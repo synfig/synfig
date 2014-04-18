@@ -29,6 +29,8 @@
 
 #include "renderer.h"
 #include "surface.h"
+#include "vector.h"
+#include "mesh.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,6 +47,9 @@ template<>
 class Renderer::TypesTemplate<RendererSoftware, Renderer::PrimitiveTypeSurface>:
 	public Renderer::TypesTemplateBase<synfig::Surface> { };
 
+template<>
+class Renderer::TypesTemplate<RendererSoftware, Renderer::PrimitiveTypeMesh>:
+	public Renderer::TypesTemplateBase<synfig::Mesh> { };
 
 class RendererSoftware: public Renderer {
 private:
@@ -56,6 +61,19 @@ public:
 	static RendererId get_id();
 	static void initialize();
 	static void deinitialize();
+
+	static void render_triangle(
+		Surface &target_surface,
+		const Vector &p0,
+		const Vector &t0,
+		const Vector &p1,
+		const Vector &t1,
+		const Vector &p2,
+		const Vector &t2,
+		const Surface &texture,
+		Real alpha,
+		Color::BlendMethod blend_method );
+	static bool render_mesh(Surface &target_surface, const Mesh &mesh, const Surface &texture);
 
 	RendererSoftware();
 	virtual Result render_surface(const Params &params, const Primitive<PrimitiveTypeSurface> &primitive);

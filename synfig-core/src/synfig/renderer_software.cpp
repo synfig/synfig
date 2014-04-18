@@ -81,4 +81,184 @@ Renderer::Result RendererSoftware::render_colored_polygon(const Params &params, 
 Renderer::Result RendererSoftware::render_mesh(const Params &params, const Primitive<PrimitiveTypeMesh> &primitive)
 	{ return ResultNotSupported; }
 
+
+void
+RendererSoftware::render_triangle(
+	Surface &target_surface,
+	const Vector &p0,
+	const Vector &t0,
+	const Vector &p1,
+	const Vector &t1,
+	const Vector &p2,
+	const Vector &t2,
+	const Surface &texture,
+	Real alpha,
+	Color::BlendMethod blend_method )
+{
+	struct Helper {
+		enum { FIXED_SHIFT = sizeof(int)*8 };
+
+		inline static long long int_to_fixed(int i)
+			{ return (long long)i << FIXED_SHIFT; }
+		inline static int fixed_to_int(long long f)
+			{ return (int)(f >> FIXED_SHIFT); }
+
+		inline static void norm_tex_coords(Vector &coords, const Vector &size)
+		{
+			if (coords[0] < 0.0 || coords[0] > size[0])
+				coords[0] -= floor(coords[0]/size[0])*size[0];
+			if (coords[1] < 0.0 || coords[1] > size[1])
+				coords[1] -= floor(coords[1]/size[1])*size[1];
+		}
+	};
+
+	struct IntVector {
+		union {
+			struct { int x, y; };
+			int coords[2];
+		};
+
+		inline IntVector(): x(0), y(0) { }
+		inline IntVector(int x, int y): x(x), y(y) { }
+		inline IntVector(const Vector &v): x((int)roundf(v[0])), y((int)roundf(v[1])) { }
+		inline int& operator[] (int index) { return coords[index]; }
+		inline const int& operator[] (int index) const { return coords[index]; }
+		inline bool operator == (const IntVector &other) const { return x == other.x && y == other.y; }
+		inline bool operator != (const IntVector &other) const { return !(*this == other); }
+		inline IntVector operator+ (const IntVector &other) const { return IntVector(x+other.x, y+other.y); }
+		inline IntVector operator- (const IntVector &other) const { return IntVector(x-other.x, y-other.y); }
+
+		inline Vector to_real() const { return Vector(Real(x), Real(y)); }
+		inline long long get_fixed_x_div_y() { return y == 0 ? 0 : Helper::int_to_fixed(x)/y; }
+	};
+
+	// convert points to int
+	IntVector ip0(p0), ip1(p1), ip2(p2);
+	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
+
+	int width = target_surface.get_w();
+	int height = target_surface.get_h();
+	if (width == 0 || height == 0) return;
+
+	int tex_width = texture.get_w();
+	int tex_height = texture.get_h();
+	if (tex_width == 0 || tex_height == 0) return;
+	Vector tex_size(Real(tex_width), Real(tex_height));
+
+
+	// prepare texture matrix
+	Matrix matrix_of_texture_triangle(
+		t1[0]-t0[0], t1[1]-t0[1], 0.0,
+		t2[0]-t0[0], t2[1]-t0[1], 0.0,
+		t0[0], t0[1], 1.0 );
+	Matrix matrix_of_target_triangle(
+		p1[0]-p0[0], p1[1]-p0[1], 0.0,
+		p2[0]-p0[0], p2[1]-p0[1], 0.0,
+		p0[0], p0[1], 1.0 );
+
+	matrix_of_target_triangle.invert();
+	matrix_of_texture_triangle.invert();
+
+	Matrix matrix = matrix_of_texture_triangle * matrix_of_target_triangle;
+	Vector tdx = matrix.get_transformed(Vector(1.0, 0.0), false);
+	//Vector tdy = matrix.get_transformed(Vector(0.0, 1.0), false);
+
+	Surface::alpha_pen apen(target_surface.get_pen(0, 0));
+	apen.set_alpha(alpha);
+	apen.set_blend_method(blend_method);
+
+    // sort points
+    if (ip0.y > ip1.y) swap(ip0, ip1);
+    if (ip0.y > ip2.y) swap(ip0, ip2);
+    if (ip1.y > ip2.y) swap(ip1, ip2);
+
+    // increments
+    long long dx02 = (ip2-ip0).get_fixed_x_div_y();
+    long long dx01 = (ip1-ip0).get_fixed_x_div_y();
+    long long dx12 = (ip2-ip1).get_fixed_x_div_y();
+
+    // work points
+    // initially at top point (p0)
+    long long wx0 = Helper::int_to_fixed(ip0.x);
+    long long wx1 = wx0;
+
+    // process top part of triangle
+
+    // make copy of dx02
+    long long dx02_copy = dx02;
+    // sort increments
+    if (dx01 < dx02) swap(dx02, dx01);
+    // rasterize
+    for (int y = ip0.y; y < ip1.y; ++y)
+    {
+		// draw horizontal line (this code has a copy below)
+    	if (y >= 0 && y < height)
+    	{
+			int x0 = Helper::fixed_to_int(wx0);
+			int x1 = Helper::fixed_to_int(wx1);
+			if (x0 < 0) x0 = 0;
+			if (x1 >= width) x1 = width-1;
+			if (x1 >= x0)
+			{
+				apen.move_to(x0, y);
+				Vector tex_point = matrix.get_transformed(Vector(Real(x0), Real(y)));
+				for(int x = x0; x <= x1; ++x)
+				{
+					Helper::norm_tex_coords(tex_point, tex_size);
+					apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					apen.inc_x();
+					tex_point += tdx;
+				}
+			}
+    	}
+
+		wx0 += dx02;
+		wx1 += dx01;
+    }
+
+    if (ip0.y == ip1.y) {
+		wx0 = Helper::int_to_fixed(ip0.x);
+		wx1 = Helper::int_to_fixed(ip1.x);
+    }
+
+    // process bottom part of triangle
+
+    // sort increments
+    if (dx02_copy < dx12) swap(dx02_copy, dx12);
+
+    // rasterize
+    for (int y = ip1.y; y <= ip2.y; ++y){
+		// draw horizontal line (this code has a copy above)
+    	if (y >= 0 && y < height)
+    	{
+			int x0 = Helper::fixed_to_int(wx0);
+			int x1 = Helper::fixed_to_int(wx1);
+			if (x0 < 0) x0 = 0;
+			if (x1 >= width) x1 = width-1;
+			if (x1 >= x0)
+			{
+				apen.move_to(x0, y);
+				Vector tex_point = matrix.get_transformed(Vector(Real(x0), Real(y)));
+				for(int x = x0; x <= x1; ++x)
+				{
+					Helper::norm_tex_coords(tex_point, tex_size);
+					apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					apen.inc_x();
+					tex_point += tdx;
+				}
+			}
+    	}
+
+		wx0 += dx02_copy;
+		wx1 += dx12;
+    }
+}
+
+bool
+RendererSoftware::render_mesh(Surface &target_surface, const Mesh &mesh, const Surface &texture)
+{
+
+}
+
+
 /* === E N T R Y P O I N T ================================================= */

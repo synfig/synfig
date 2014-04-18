@@ -244,6 +244,8 @@ public:
 		// TODO: blend method, color
 		PrimitiveBase *out_surface;
 		const PrimitiveBase *back_surface;
+		const PrimitiveBase *mesh_texture_surface;
+		inline Params(): out_surface(NULL), back_surface(NULL), mesh_texture_surface(NULL) { }
 	};
 
 	enum Result {
