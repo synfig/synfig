@@ -73,7 +73,7 @@ public:
 
 	//! Sets z_range* fields of specified ContextParams \a cp
 	virtual void apply_z_range_to_params(ContextParams &cp)const;
-}; // END of class Layer_Switch
+}; // END of class Layer_Group
 
 }; // END of namespace synfig
 
