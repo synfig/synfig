@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/renderer_software.h
+/*!	\file synfig/renderersoftware.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_SOFTWARE_H
-#define __SYNFIG_RENDERER_SOFTWARE_H
+#ifndef __SYNFIG_RENDERERSOFTWARE_H
+#define __SYNFIG_RENDERERSOFTWARE_H
 
 /* === H E A D E R S ======================================================= */
 

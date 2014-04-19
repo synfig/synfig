@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/renderer_software.cpp
+/*!	\file synfig/renderersoftware.cpp
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2014 IvanMahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -35,7 +35,7 @@
 #include <signal.h>
 #endif
 
-#include "renderer_software.h"
+#include "renderersoftware.h"
 
 #endif
 
@@ -155,9 +155,7 @@ RendererSoftware::render_triangle(
 		p1[0]-p0[0], p1[1]-p0[1], 0.0,
 		p2[0]-p0[0], p2[1]-p0[1], 0.0,
 		p0[0], p0[1], 1.0 );
-
 	matrix_of_target_triangle.invert();
-	matrix_of_texture_triangle.invert();
 
 	Matrix matrix = matrix_of_texture_triangle * matrix_of_target_triangle;
 	Vector tdx = matrix.get_transformed(Vector(1.0, 0.0), false);
@@ -204,8 +202,17 @@ RendererSoftware::render_triangle(
 				Vector tex_point = matrix.get_transformed(Vector(Real(x0), Real(y)));
 				for(int x = x0; x <= x1; ++x)
 				{
-					Helper::norm_tex_coords(tex_point, tex_size);
-					apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					if (tex_point[0] < 0.0 || tex_point[0] > tex_size[0]
+					 || tex_point[1] < 0.0 || tex_point[1] > tex_size[1])
+					{
+						apen.set_alpha(0.0);
+						apen.put_value(Color());
+					}
+					else
+					{
+						apen.set_alpha(alpha);
+						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					}
 					apen.inc_x();
 					tex_point += tdx;
 				}
@@ -241,8 +248,17 @@ RendererSoftware::render_triangle(
 				Vector tex_point = matrix.get_transformed(Vector(Real(x0), Real(y)));
 				for(int x = x0; x <= x1; ++x)
 				{
-					Helper::norm_tex_coords(tex_point, tex_size);
-					apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					if (tex_point[0] < 0.0 || tex_point[0] > tex_size[0]
+					 || tex_point[1] < 0.0 || tex_point[1] > tex_size[1])
+					{
+						apen.set_alpha(0.0);
+						apen.put_value(Color());
+					}
+					else
+					{
+						apen.set_alpha(alpha);
+						apen.put_value(texture.cubic_sample(tex_point[0], tex_point[1]));
+					}
 					apen.inc_x();
 					tex_point += tdx;
 				}

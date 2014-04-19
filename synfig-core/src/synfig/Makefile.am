@@ -21,6 +21,7 @@ LAYERHEADERS = \
 	layer_composite.h \
 	layer_duplicate.h \
 	layer_group.h \
+	layer_meshtransform.h \
 	layer_mime.h \
 	layer_motionblur.h \
 	layer_pastecanvas.h \
@@ -35,6 +36,7 @@ LAYERSOURCES = \
 	layer_composite.cpp \
 	layer_duplicate.cpp \
 	layer_group.cpp \
+	layer_meshtransform.cpp \
 	layer_mime.cpp \
 	layer_motionblur.cpp \
 	layer_pastecanvas.cpp \
@@ -292,7 +294,10 @@ SYNFIGHEADERS = \
 	zstreambuf.h \
 	valueoperations.h \
 	valuetransformation.h \
-	weightedvalue.h
+	weightedvalue.h \
+	mesh.h \
+	renderer.h \
+	renderersoftware.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -341,7 +346,10 @@ SYNFIGSOURCES = \
 	filecontainerzip.cpp \
 	filecontainertemporary.cpp \
 	zstreambuf.cpp \
-	valueoperations.cpp
+	valueoperations.cpp \
+	mesh.cpp \
+	renderer.cpp \
+	renderersoftware.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

@@ -319,6 +319,28 @@ public:
 	void set_transformation_matrix(const Matrix &x) { transformation_matrix = x; }
 	//! Gets the transformation matrix
 	const Matrix& get_transformation_matrix() const { return transformation_matrix; }
+
+	Matrix get_world_to_pixels_matrix() const
+	{
+		const Real epsilon = 1e-20;
+		Vector size = get_br() - get_tl();
+		Vector ratio(
+			fabs(size[0]) < epsilon ? 0.0 : 1.0/size[0] * Real(get_w()),
+			fabs(size[1]) < epsilon ? 0.0 : 1.0/size[1] * Real(get_h()) );
+		return Matrix(
+			ratio[0], 0.0, 0.0,
+			0.0, ratio[1], 0.0,
+			-get_tl()[0]*ratio[0], -get_tl()[1]*ratio[1], 1.0 );
+	}
+
+	Matrix get_pixels_to_world_matrix() const
+	{
+		return Matrix(
+			(get_w() > 0 ? 0.0 : 1.0/Real(get_w())*(get_br[0] - get_tl[0])), 0.0, 0.0,
+			0.0, (get_h() > 0 ? 0.0 : 1.0/Real(get_h())*(get_br[1] - get_tl[1])), 0.0,
+			get_tl()[0], get_tl()[1], 1.0 );
+	}
+
 };	// END of class RendDesc
 
 //! This operator allows the combining of RendDesc::Lock flags using the '|' operator

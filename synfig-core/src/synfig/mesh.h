@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2008 Carlos López & Chirs Moore
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -27,14 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "angle.h"
-#include "real.h"
 #include "vector.h"
-#include "string.h"
-#include <cassert>
-#include <math.h>
-#include <iostream>
-#include <ETL/stringf>
 
 /* === M A C R O S ========================================================= */
 
@@ -64,6 +57,32 @@ public:
 
 	VertexList vertices;
 	TriangleList triangles;
+
+	bool transform_coord_world_to_texture(const Vector &src, Vector &dest) const;
+	bool transform_coord_texture_to_world(const Vector &src, Vector &dest) const;
+
+	static bool transform_coord_world_to_texture(
+		const Vector &src,
+		Vector &dest,
+		const Vector &p0,
+		const Vector &t0,
+		const Vector &p1,
+		const Vector &t1,
+		const Vector &p2,
+		const Vector &t2 );
+
+	inline static bool transform_coord_texture_to_world(
+		const Vector &src,
+		Vector &dest,
+		const Vector &p0,
+		const Vector &t0,
+		const Vector &p1,
+		const Vector &t1,
+		const Vector &p2,
+		const Vector &t2 )
+	{
+		return transform_coord_world_to_texture(src, dest, t0, p0, t1, p1, t2, p2);
+	}
 };
 
 }; // END of namespace synfig
