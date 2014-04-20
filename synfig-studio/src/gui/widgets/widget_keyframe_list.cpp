@@ -302,6 +302,10 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 bool
 Widget_Keyframe_List::on_event(GdkEvent *event)
 {
+	//Do not respond mouse events if the list is empty
+	if(!kf_list_->size())
+		return true;
+
 	const int x(static_cast<int>(event->button.x));
 	//const int y(static_cast<int>(event->button.y));
 	//!Boundaries of the drawing area in time units.
@@ -313,9 +317,6 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	if(pos>1.0f)pos=1.0f;
 	//! The time where the event x is
 	synfig::Time t((float)(bottom+pos*(top-bottom)));
-	//Do not respond mouse events if the list is empty
-	if(!kf_list_->size())
-		return true;
 
 	//! here the guts of the event
 	switch(event->type)
