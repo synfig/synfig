@@ -353,13 +353,13 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				{
 					synfig::Keyframe kf(*kf_list_->find_prev(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					ttip = kf_name.length() == 0 ? _("No name") : kf_name.c_str();
+					ttip = (kf_name.length() == 0)? _("No name") : kf_name.c_str();
 				}
 				else
 				{
 					synfig::Keyframe kf(*kf_list_->find_next(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					ttip = kf_name.length() == 0 ? _("No name") : kf_name.c_str();
+					ttip = (kf_name.length() == 0)? _("No name") : kf_name.c_str();
 				}
 				set_tooltip_text(ttip);
 				dragging_=false;
