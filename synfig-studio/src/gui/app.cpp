@@ -1121,6 +1121,8 @@ DEFINE_ACTION("keyframe-properties","Properties");
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
 "	</menu>"
+"	<menu action='menu-toolbox'>"
+"	</menu>"
 "	<menu action='menu-layer'>"
 "		<menu action='menu-layer-new'></menu>"
 "		<menuitem action='amount-inc'/>"
