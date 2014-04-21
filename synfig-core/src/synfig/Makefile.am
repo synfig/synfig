@@ -211,6 +211,7 @@ VALUEHEADERS = \
 	widthpoint.h \
 	dashitem.h \
 	gradient.h \
+	skeletondeformationentry.h \
 	type.h \
 	base_types.h \
 	value.h
@@ -220,6 +221,7 @@ VALUESOURCES = \
 	widthpoint.cpp \
 	dashitem.cpp \
 	gradient.cpp \
+	skeletondeformationentry.cpp \
 	type.cpp \
 	base_types.cpp \
 	value.cpp
