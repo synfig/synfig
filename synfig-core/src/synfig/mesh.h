@@ -44,12 +44,16 @@ public:
 	public:
 		Vector position;
 		Vector tex_coords;
+		inline Vertex() { }
+		inline Vertex(const Vector &position, const Vector &tex_coords):
+			position(position), tex_coords(tex_coords) { }
 	};
 
 	class Triangle {
 	public:
 		int vertices[3];
 		inline Triangle() { vertices[0] = vertices[1] = vertices[2] = 0; }
+		inline Triangle(int v0, int v1, int v2) { vertices[0] = v0; vertices[1] = v1; vertices[2] = v2; }
 	};
 
 	typedef std::vector<Vertex> VertexList;
@@ -58,6 +62,7 @@ public:
 	VertexList vertices;
 	TriangleList triangles;
 
+	void clear() { vertices.clear(); triangles.clear(); }
 	bool transform_coord_world_to_texture(const Vector &src, Vector &dest) const;
 	bool transform_coord_texture_to_world(const Vector &src, Vector &dest) const;
 
