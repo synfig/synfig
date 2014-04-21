@@ -56,6 +56,7 @@ namespace synfig {
 	extern Type &type_bone_object;
 	extern Type &type_bone_valuenode;
 	extern Type &type_transformation;
+	extern Type &type_skeleton_deformation_entry;
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

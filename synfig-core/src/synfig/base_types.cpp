@@ -45,6 +45,7 @@
 #include "time.h"
 #include "segment.h"
 #include "color.h"
+#include "skeletondeformationentry.h"
 
 #endif
 
@@ -569,6 +570,31 @@ public:
 TypeTransformation TypeTransformation::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Transformation, TypeTransformation)
 
+// SkeletonDeformationEntry
+
+class TypeSkeletonDeformationEntry: public Type
+{
+	static String to_string(const SkeletonDeformationEntry &x)
+	{
+		return etl::strprintf("SkeletonDeformationEntry from (%f, %f, %f)-(%f, %f, %f) to (%f, %f, %f)-(%f, %f, %f)",
+							  x.initial_pos.p0[0], x.initial_pos.p0[1], x.initial_pos.r0,
+							  x.initial_pos.p1[0], x.initial_pos.p1[1], x.initial_pos.r1,
+							  x.current_pos.p0[0], x.current_pos.p0[1], x.current_pos.r0,
+							  x.current_pos.p1[0], x.current_pos.p1[1], x.current_pos.r1 );
+	}
+	void initialize_vfunc(Description &description)
+	{
+		Type::initialize_vfunc(description);
+		description.name = "skeleton_deformation_entry";
+		description.local_name = N_("skeleton_deformation_entry");
+		register_all<SkeletonDeformationEntry, to_string>();
+	}
+public:
+	static TypeSkeletonDeformationEntry instance;
+};
+TypeSkeletonDeformationEntry TypeSkeletonDeformationEntry::instance;
+SYNFIG_IMPLEMENT_TYPE_ALIAS(SkeletonDeformationEntry, TypeSkeletonDeformationEntry)
+
 }} // END of namespaces types_namespace and synfig
 
 namespace synfig {
@@ -592,4 +618,5 @@ namespace synfig {
 	Type &type_bone_object		= TypeBoneObject::instance;
 	Type &type_bone_valuenode	= TypeBoneValueNode::instance;
 	Type &type_transformation	= TypeTransformation::instance;
+	Type &type_skeleton_deformation_entry = TypeSkeletonDeformationEntry::instance;
 }; // END of namespace synfig
