@@ -66,6 +66,18 @@ class Bone: public UniqueID
 
 public:
 	typedef etl::handle<Bone> Handle;
+
+	struct Shape {
+		Vector p0;
+		Real r0;
+		Vector p1
+		Real r1;
+		inline Shape():
+			r0(0.0), r1(0.0) { }
+		inline Shape(const Vector &p0, Real r0, const Vector &p1, Real r1):
+			p0(p0), r0(r0), p1(p1), r1(r1) { }
+	};
+
 	// typedef etl::loose_handle<Bone> LooseHandle;
 
 	/*
@@ -163,6 +175,23 @@ public:
 
 	bool is_root()const;
 
+	Shape get_shape() const;
+
+	static Real distance_to_shape_center_percent(const Shape &shape, const Vector &x);
+	static Real influence_function(Real distance_percent);
+
+	static Real influence_percent(const Shape &shape, const Vector &x)
+		{ return influence_function(distance_to_shape_center_percent(shape, x)); }
+
+	Real distance_to_shape_center_percent(const Vector &x)const
+		{ return distance_to_shape_center_percent(get_shape(), x); }
+
+	Real influence_percent(const Vector &x)const
+		{ return influence_percent(get_shape(), x); }
+
+	// checks if point belongs to the range of influence of current bone
+	bool have_influence_on(const Vector &x)const
+		{ return distance_to_shape_center_percent(x) > 0.0; }
 }; // END of class Bone
 
 }; // END of namespace synfig

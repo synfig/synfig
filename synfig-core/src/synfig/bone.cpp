@@ -34,6 +34,9 @@
 #include "guid.h"
 #include "valuenode_bone.h"
 #include <ETL/stringf>
+#include <algorithm>
+#include <cmath>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -137,6 +140,83 @@ Bone::is_root()const
 {
 	return get_parent()->is_root();
 }
+
+Bone::Shape
+Bone::get_shape() const
+{
+	Matrix matrix = get_animated_matrix();
+	Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+	Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+	Real length = get_length() * get_scalelx();
+
+	if (length < 0) {
+		length *= -1;
+		direction *= -1;
+	}
+
+	Shape shape;
+	shape.p0 = origin;
+	shape.p1 = origin + direction * length;
+
+	shape.r0 = fabs(get_width());
+	shape.r1 = fabs(get_tipwidth());
+
+	return shape;
+}
+
+Real
+Bone::distance_to_shape_center_percent(const Shape &shape, const Vector &x)
+{
+	static const Real precision = 0.000000001;
+
+	const Vector &p0 = shape.p0;
+	const Vector &p1 = shape.p1;
+	Real r0 = fabs(shape.r0);
+	Real r1 = fabs(shape.r1);
+
+	Real length = (p1 - p0).mag();
+
+	Real percent_p0 = r0 > precision ? 1.0 - (x - p0).mag()/r0 : 0.0;
+	Real percent_p1 = r1 > precision ? 1.0 - (x - p1).mag()/r1 : 0.0;
+
+	// check line
+	Real percent_line = 0.0;
+	if (length + precision <= fabs(r1 - r0))
+	{
+		Real cos0 = (r0 - r1)/length;
+		Real cos1 = -cos0;
+
+		Real sin0 = sqrt(1 + precision - cos0*cos0);
+		Real sin1 = sin0;
+
+		Real ll = length - r0*cos0 - r1*cos1;
+		Vector direction = (p1 - p0)/length;
+		Vector pp0(p0 + direction * (r0*cos0));
+		Vector pp1(p0 + direction * (length - r1*cos1));
+		Real rr0 = r0*sin0;
+		Real rr1 = r1*sin1;
+
+		Real pos_at_line = (x - pp0)*direction/ll;
+		if (pos_at_line < 0.0 || pos_at_line > 1.0) return false;
+
+		Real distance = fabs((x - pp0)*direction.perp());
+		Real max_distance = rr0*(1.0 - pos_at_line) + rr1*pos_at_line;
+		if (max_distance > 0.0) percent_line = 1.0 - distance/max_distance;
+	}
+
+	Real percent = 0.0;
+	if (percent_p0 > percent) percent = percent_p0;
+	if (percent_p1 > percent) percent = percent_p1;
+	if (percent_line > percent) percent = percent_line;
+	return percent;
+}
+
+Real
+Bone::influence_function(Real x)
+{
+	return cos(x*PI/2.0);
+}
+
 
 /* === M E T H O D S ======================================================= */
 
