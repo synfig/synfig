@@ -202,7 +202,15 @@ Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
-	if (x == selected_none || x == selected_kf) return;
+	if (x == selected_none) return;
+
+	if (x == selected_kf)
+	{
+		// synfig::Keyframe::operator== act only on keyframe::time_
+		// In any case, affect keyframe description to do not loose it
+		selected_kf.set_description(x.get_description());
+		return;
+	}
 
 	selected_kf=x;
 	selected_=true;
