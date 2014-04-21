@@ -29,7 +29,8 @@ LAYERHEADERS = \
 	layer_shape.h \
 	layer_solidcolor.h \
 	layer_skeleton.h \
-	layer_switch.h
+	layer_switch.h \
+	layer_skeletondeformation.h
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
@@ -44,7 +45,8 @@ LAYERSOURCES = \
 	layer_shape.cpp \
 	layer_solidcolor.cpp \
 	layer_skeleton.cpp \
-	layer_switch.cpp
+	layer_switch.cpp \
+	layer_skeletondeformation.cpp
 
 
 TARGETHEADERS = \
