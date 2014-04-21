@@ -37,19 +37,15 @@
 
 namespace synfig {
 
-class BoneShapePosition
-{
-public:
-	Vector p0, p1;
-	Real r0, r1;
-	inline BoneShapePosition(Real r0, Real r1): r0(0.0), r1(0.0) { }
-};
-
 class SkeletonDeformationEntry
 {
 public:
-	BoneShapePosition initial_pos;
-	BoneShapePosition current_pos;
+	Real r0, r1;
+	Vector initial_p0;
+	Vector initial_p1;
+	Vector current_p0;
+	Vector current_p1;
+	inline SkeletonDeformationEntry(): r0(0.0), r1(0.0) { }
 }; // END of class SkeletonDeformationEntry
 
 }; // END of namespace synfig

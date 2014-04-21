@@ -576,11 +576,12 @@ class TypeSkeletonDeformationEntry: public Type
 {
 	static String to_string(const SkeletonDeformationEntry &x)
 	{
-		return etl::strprintf("SkeletonDeformationEntry from (%f, %f, %f)-(%f, %f, %f) to (%f, %f, %f)-(%f, %f, %f)",
-							  x.initial_pos.p0[0], x.initial_pos.p0[1], x.initial_pos.r0,
-							  x.initial_pos.p1[0], x.initial_pos.p1[1], x.initial_pos.r1,
-							  x.current_pos.p0[0], x.current_pos.p0[1], x.current_pos.r0,
-							  x.current_pos.p1[0], x.current_pos.p1[1], x.current_pos.r1 );
+		return etl::strprintf("SkeletonDeformationEntry from (%f, %f)-(%f, %f) to (%f, %f)-(%f, %f), radiuses (%f, %f)",
+			x.initial_p0[0], x.initial_p0[1],
+			x.initial_p1[0], x.initial_p1[1],
+			x.current_p0[0], x.current_p0[1],
+			x.current_p1[0], x.current_p1[1],
+			x.r0, x.r1 );
 	}
 	void initialize_vfunc(Description &description)
 	{
