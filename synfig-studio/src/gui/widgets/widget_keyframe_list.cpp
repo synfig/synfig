@@ -90,9 +90,6 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	moving_tooltip_label_->show();
 
 	moving_tooltip_->add(*moving_tooltip_label_);
-
-	//! Get the user display
-	user_display_ = get_display ();
 }
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
@@ -361,22 +358,20 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				queue_draw();
 
 				//! Moving tooltip displaying the dragging time
-				if(user_display_)
 				{
-					int pointerx; int pointery; Gdk::ModifierType pointermask;
-					user_display_->get_pointer (pointerx, pointery, pointermask );
-					//! Display the dragging time according the global fps settings
+					int x_root = static_cast<int>(event->button.x_root);
+					int y_root = static_cast<int>(event->button.y_root);
 					Glib::ustring tooltip_label (dragging_kf_time.get_string(fps,App::get_time_format()));
 					moving_tooltip_label_->set_text (tooltip_label);
 
 					if(!moving_tooltip_->is_visible ())
 					{
-						moving_tooltip_->move(pointerx, pointery);
+						moving_tooltip_->move(x_root, y_root);
 						moving_tooltip_->show();
 					}
 					else
 					{
-						moving_tooltip_->move(pointerx, pointery);
+						moving_tooltip_->move(x_root, y_root);
 					}
 				}
 
