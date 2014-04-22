@@ -87,9 +87,6 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 	moving_tooltip_label_ = Gtk::manage(new Gtk::Label());
 	moving_tooltip_label_->set_alignment(0.5, 0.5);
-// TEMP text
-	moving_tooltip_label_->set_text ("keyframe time");
-// TEMP text
 	moving_tooltip_label_->show();
 
 	moving_tooltip_->add(*moving_tooltip_label_);
@@ -363,10 +360,14 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				dragging_=true;
 				queue_draw();
 
+				//! Moving tooltip displaying the dragging time
 				if(user_display_)
 				{
 					int pointerx; int pointery; Gdk::ModifierType pointermask;
 					user_display_->get_pointer (pointerx, pointery, pointermask );
+
+					Glib::ustring tooltip_label (dragging_kf_time.get_string());
+					moving_tooltip_label_->set_text (tooltip_label);
 
 					if(!moving_tooltip_->is_visible ())
 					{
