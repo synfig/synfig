@@ -365,8 +365,8 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				{
 					int pointerx; int pointery; Gdk::ModifierType pointermask;
 					user_display_->get_pointer (pointerx, pointery, pointermask );
-
-					Glib::ustring tooltip_label (dragging_kf_time.get_string());
+					//! Display the dragging time according the global fps settings
+					Glib::ustring tooltip_label (dragging_kf_time.get_string(fps,App::get_time_format()));
 					moving_tooltip_label_->set_text (tooltip_label);
 
 					if(!moving_tooltip_->is_visible ())
@@ -546,5 +546,3 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 		);
 	}
 }
-
-
