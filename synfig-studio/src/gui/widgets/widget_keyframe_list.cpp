@@ -80,10 +80,20 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	//! Create the window of the moving tooltip
 	moving_tooltip_ = Gtk::manage(new Gtk::Window(Gtk::WINDOW_POPUP));
 	moving_tooltip_->set_resizable(false);
+	moving_tooltip_->set_name("gtk-tooltips");
+	moving_tooltip_->set_border_width (4);
 	moving_tooltip_->set_default_size(10, 10);
-	// Temporary fake size
-	moving_tooltip_->set_size_request (100, 10);
 	moving_tooltip_->set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
+
+	moving_tooltip_label_ = Gtk::manage(new Gtk::Label());
+	moving_tooltip_label_->set_alignment(0.5, 0.5);
+// TEMP text
+	moving_tooltip_label_->set_text ("keyframe time");
+// TEMP text
+	moving_tooltip_label_->show();
+
+	moving_tooltip_->add(*moving_tooltip_label_);
+
 	//! Get the user display
 	user_display_ = get_display ();
 }
