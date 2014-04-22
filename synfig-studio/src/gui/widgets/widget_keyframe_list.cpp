@@ -76,6 +76,12 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	add_events(Gdk::POINTER_MOTION_MASK);
 	set_time_adjustment(&adj_default);
 	queue_draw();
+
+	//! Create the window of the moving tooltip
+	moving_tooltip_ = Gtk::manage(new Gtk::Window(Gtk::WINDOW_POPUP));
+	moving_tooltip_->set_resizable(false);
+	moving_tooltip_->set_default_size(10, 10);
+	moving_tooltip_->set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
 }
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
