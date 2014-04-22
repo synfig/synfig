@@ -149,6 +149,7 @@ public:
 private:
 
 	Gtk::Window *moving_tooltip_;
+	Glib::RefPtr<Gdk::Display> user_display_;
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

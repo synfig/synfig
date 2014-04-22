@@ -81,7 +81,11 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	moving_tooltip_ = Gtk::manage(new Gtk::Window(Gtk::WINDOW_POPUP));
 	moving_tooltip_->set_resizable(false);
 	moving_tooltip_->set_default_size(10, 10);
+	// Temporary fake size
+	moving_tooltip_->set_size_request (100, 10);
 	moving_tooltip_->set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
+	//! Get the user display
+	user_display_ = get_display ();
 }
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
@@ -348,6 +352,23 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				dragging_kf_time=t;
 				dragging_=true;
 				queue_draw();
+
+				if(user_display_)
+				{
+					int pointerx; int pointery; Gdk::ModifierType pointermask;
+					user_display_->get_pointer (pointerx, pointery, pointermask );
+
+					if(!moving_tooltip_->is_visible ())
+					{
+						moving_tooltip_->move(pointerx, pointery);
+						moving_tooltip_->show();
+					}
+					else
+					{
+						moving_tooltip_->move(pointerx, pointery);
+					}
+				}
+
 				return true;
 			}
 			// here is captured mouse motion
@@ -439,6 +460,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					{
 						stat=perform_move_kf(false);
 					}
+					moving_tooltip_->hide();
 				}
 			dragging_=false;
 			return stat;
