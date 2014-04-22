@@ -31,6 +31,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/tooltip.h>
+#include <gtkmm/window.h>
 #include <synfig/keyframe.h>
 #include <sigc++/connection.h>
 #include <synfigapp/canvasinterface.h>
@@ -140,6 +141,14 @@ public:
 
 	//! Signal handler for select keyframe signal from canvas interface
 	void on_keyframe_changed(synfig::Keyframe, void* emitter);
+
+	/*
+ -- ** -- P R I V A T E   D A T A ---------------------------------------------
+	*/
+
+private:
+
+	Gtk::Window *moving_tooltip_;
 }; // END of class Keyframe_List
 
 }; // END of namespace studio
