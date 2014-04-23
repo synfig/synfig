@@ -578,11 +578,15 @@ synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_heigh
 #ifdef __WINDOWS__
 	header_height-=2;
 #else
+#ifdef WIN32
+	header_height-=2;
+#else
 #ifdef __APPLE__
 	header_height+=6;
 #else
 // *nux and others
 	header_height+=2;
+#endif
 #endif
 #endif
 
