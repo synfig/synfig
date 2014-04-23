@@ -568,8 +568,19 @@ void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
 synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
-	//add the border size
+	// FIXME very bad hack
+	//! Adapt the border size "according" to different windows manager rendering
+#ifdef __WINDOWS__
+	header_height-=2;
+#else
+#ifdef __APPLE__
+	header_height+=6;
+#else
+// *nux and others
 	header_height+=2;
+#endif
+#endif
+
 	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list_->set_size_request(-1,header_height/3+1);
 synfig::info("#161 -Dock_Timetrack 3 on_update_header_height : end");
