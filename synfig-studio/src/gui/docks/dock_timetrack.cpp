@@ -93,6 +93,7 @@ public:
 
 		int label_index(append_column_editable(_("Name"),model.label));
 		Gtk::TreeView::Column* label_column = get_column(label_index-1);
+		label_column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 
 		{	// --- T I M E   T R A C K --------------------------------------------
 			Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
@@ -353,7 +354,7 @@ public:
 
 			if(adjustment.get_page_size()>get_height())
 				adjustment.set_page_size(get_height());
-
+/* Commented during Align attempt
 			int row_height = 0;
 			if(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"))
 				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
@@ -361,6 +362,7 @@ public:
 				row_height = 18;
 
 			cellrenderer_time_track->set_fixed_size(-1,row_height);
+*/
 		}
 	}
 
