@@ -395,8 +395,10 @@ LayerTree::create_param_tree()
 
 		// Finish setting up the column
 		column->set_reorderable();
+		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 		column->set_resizable();
-		column->set_min_width(200);
+// Commented during Align attempt
+//		column->set_min_width(200);
 
 		if (!getenv("SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK"))
 			get_param_tree_view().append_column(*column);

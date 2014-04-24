@@ -126,8 +126,10 @@ public:
 
 			// Finish setting up the column
 			column->set_reorderable();
+			column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 			column->set_resizable();
-			column->set_min_width(200);
+// Commented during Align attempt
+// 			column->set_min_width(200);
 
 			append_column(*column);
 		}
@@ -575,7 +577,16 @@ Dock_Timetrack::on_update_header_height( int header_height)
 synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
 	// FIXME very bad hack
 	//! Adapt the border size "according" to different windows manager rendering
-#ifdef __WINDOWS__
+#ifdef WIN32
+	header_height-=2;
+#elif defined(__APPLE__)
+	header_height+=6;
+#else
+// *nux and others
+	header_height+=2;
+#endif
+
+/*#ifdef __WINDOWS__
 	header_height-=2;
 #else
 #ifdef WIN32
@@ -588,7 +599,7 @@ synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_heigh
 	header_height+=2;
 #endif
 #endif
-#endif
+#endif*/
 
 	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list_->set_size_request(-1,header_height/3+1);
