@@ -448,7 +448,6 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 
-	synfig::info("#161 -Dock_Timetrack 1 signal_param_tree_header_height_changed connected");
 	/*
 	if(!getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
 	*/
@@ -576,7 +575,6 @@ ALIGN2 = align_drawingArea2
 void
 Dock_Timetrack::on_update_header_height( int header_height)
 {
-synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_height);
 	// FIXME very bad hack (curves dock also contains this)
 	//! Adapt the border size "according" to different windows manager rendering
 #ifdef WIN32
@@ -590,5 +588,4 @@ synfig::info("#161 -Dock_Timetrack 2 on_update_header_height : %d", header_heigh
 
 	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list_->set_size_request(-1,header_height/3+1);
-synfig::info("#161 -Dock_Timetrack 3 on_update_header_height : end");
 }
