@@ -361,7 +361,11 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				{
 					int x_root = static_cast<int>(event->button.x_root);
 					int y_root = static_cast<int>(event->button.y_root);
-					Glib::ustring tooltip_label (dragging_kf_time.get_string(fps,App::get_time_format()));
+					Glib::ustring tooltip_label (_("Time : "));
+					tooltip_label.append( dragging_kf_time.get_string(fps,App::get_time_format()) );
+					tooltip_label.append("\n");
+					tooltip_label.append( _("Old Time : ") );
+					tooltip_label.append(selected_kf.get_time().get_string(fps,App::get_time_format()));
 					moving_tooltip_label_->set_text (tooltip_label);
 
 					if(!moving_tooltip_->is_visible ())
