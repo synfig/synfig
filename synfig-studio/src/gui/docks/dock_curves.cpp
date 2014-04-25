@@ -106,6 +106,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 void
 Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
+	// FIXME Memory leak ? When curves is formally deleted ?
 	Widget_Curves* curves(new Widget_Curves());
 	curves->set_time_adjustment(canvas_view->time_adjustment());
 

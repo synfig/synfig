@@ -129,7 +129,8 @@ public:
 			column->set_reorderable();
 			column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 			column->set_resizable();
-// Commented during Align attempt
+// Commented during Align rows fixing
+// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 // 			column->set_min_width(200);
 
 			append_column(*column);
@@ -354,7 +355,8 @@ public:
 
 			if(adjustment.get_page_size()>get_height())
 				adjustment.set_page_size(get_height());
-/* Commented during Align attempt
+/* Commented during Align rows fixing
+// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 			int row_height = 0;
 			if(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"))
 				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
@@ -406,9 +408,12 @@ Dock_Timetrack::Dock_Timetrack():
 	widget_kf_list_= new Widget_Keyframe_List();
 
 	int header_height = 0;
+/* Commented during Align rows fixing
+// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
 		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
 	if (header_height < 3)
+*/
 		header_height = 24;
 
 	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);

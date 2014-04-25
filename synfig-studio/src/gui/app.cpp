@@ -1462,6 +1462,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_keyframes=new studio::Dock_Keyframes();
 		dock_manager->register_dockable(*dock_keyframes);
 
+//! Must be done before Dock_Timetrack and Dock_Curves :
+//! both are connected to a studio::LayerTree::param_tree_view_'s signal, and
+//! studio::LayerTree is created from Dock_Layers::init_canvas_view_vfunc
 		studio_init_cb.task(_("Init Layers..."));
 		dock_layers=new studio::Dock_Layers();
 		dock_manager->register_dockable(*dock_layers);

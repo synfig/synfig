@@ -227,6 +227,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	layer_tree_store=LayerTreeStore::create(canvas_view->canvas_interface());
 
 	canvas_view->set_tree_model(get_name(),layer_tree_store);
+	// FIXME Memory leak ? when layer_tree is formally deleted ?
 	LayerTree* layer_tree(new LayerTree());
 	layer_tree->set_time_adjustment(canvas_view->time_adjustment());
 
