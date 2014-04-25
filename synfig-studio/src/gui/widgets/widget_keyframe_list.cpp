@@ -221,6 +221,7 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 	if (x == selected_kf)
 	{
 		// synfig::Keyframe::operator== only on uniqueid::operator==
+		// \see synfig::UniqueID::operator==
 		// In all case, refresh keyframe description to do not loose it
 		selected_kf.set_description(x.get_description());
 		// refresh keyframe time also.
@@ -237,11 +238,10 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 
 	dragging_=false;
 	queue_draw();
-
 }
 
 void
-Widget_Keyframe_List::on_keyframe_changed(synfig::Keyframe keyframe, void* emitter)
+Widget_Keyframe_List::on_keyframe_selected(synfig::Keyframe keyframe, void* emitter)
 {
 	if((void*)this == emitter)	return;
 
@@ -543,7 +543,7 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 			)
 		);
 		canvas_interface_->signal_keyframe_selected().connect(
-				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::on_keyframe_changed)
+				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::on_keyframe_selected)
 		);
 	}
 }
