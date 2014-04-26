@@ -362,7 +362,9 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				//! Moving tooltip displaying the dragging time
 				{
 					int x_root = static_cast<int>(event->button.x_root);
-					int y_root = static_cast<int>(event->button.y_root);
+					int x_origin; int y_origin;
+					get_window()->get_origin (x_origin, y_origin);
+
 					Glib::ustring tooltip_label (_("Time : "));
 					tooltip_label.append( dragging_kf_time.get_string(fps,App::get_time_format()) );
 					tooltip_label.append("\n");
@@ -372,13 +374,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 
 					if(!moving_tooltip_->is_visible ())
 					{
-						moving_tooltip_->move(x_root, y_root);
+						//! Show the tooltip and fix his y coordinate (up to the widget)
 						moving_tooltip_->show();
+						moving_tooltip_y_ = y_origin - moving_tooltip_->get_height();
 					}
-					else
-					{
-						moving_tooltip_->move(x_root, y_root);
-					}
+					//! Move the tooltip to a nice position
+					moving_tooltip_->move(x_root, moving_tooltip_y_);
 				}
 
 				return true;
