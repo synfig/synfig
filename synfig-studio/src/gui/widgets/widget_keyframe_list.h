@@ -31,6 +31,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/tooltip.h>
+#include <gtkmm/window.h>
 #include <synfig/keyframe.h>
 #include <sigc++/connection.h>
 #include <synfigapp/canvasinterface.h>
@@ -111,35 +112,53 @@ public:
 	void set_selected_keyframe(const synfig::Keyframe &x);
 
 	//!Returns the selected keyframe
+	// \return The selected keyframe
 	const synfig::Keyframe& get_selected_keyframe() { return selected_kf; }
 
 	//! Set the time adjustment and proper connects its change signals
 	void set_time_adjustment(Gtk::Adjustment *x);
 
-	//! Set the fps
+	//! Affect the global frames per second
+	// \param x[in] Value for the frames per second
 	void set_fps(float x);
 
 	//! Set the canvas interface, it's the place where signals are connected
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h);
 
 	//! Performs the keyframe movement. Returns true if it was sucessful
-	//! @return true: if success otherwise false
-	//! |delta=false: permorm normal move. true: perform delta movement
+	//! \param[in] delta If false permorm normal move. If true perform delta movement.
+	//! \return true: if success otherwise false
 	bool perform_move_kf(bool delta);
 
 
 
 /* ======================= EVENTS HANDLERS ===========================*/
-	//!Redraw event. Should draw background and all the keyframes : the selected, the dragged, disabled
-	//connected on signal_expose_event()
-	//! @return true: if success or !editable. false: if there are not keyframes to draw
+	//! Redraw event. Should draw background and all the keyframes : the selected, the dragged, disabled
+	//! connected on signal_expose_event()
+	//! \return true: if success or !editable. false: if there are not keyframes to draw
 	bool redraw();
 
-	//!Mouse event handler.
+	//! Gtk Widget main loop event, catch the Mouse events.
 	bool on_event(GdkEvent *event);
 
-	//! Signal handler for select keyframe signal from canvas interface
-	void on_keyframe_changed(synfig::Keyframe, void* emitter);
+	//! Signal handler for the selected keyframe from the canvas interface
+	// \param[in] keyframe The selected keyframe
+	// \param[in] emitter The widget who emit the signal
+	void on_keyframe_selected(synfig::Keyframe keyframe, void* emitter);
+
+	/*
+ -- ** -- P R I V A T E   D A T A ---------------------------------------------
+	*/
+
+private:
+
+	//! The Moving handmade tooltip window
+	Gtk::Window *moving_tooltip_;
+	//! The Moving handmade tooltip label
+	Gtk::Label *moving_tooltip_label_;
+	//! The Moving handmade tooltip y fixed coordinate
+	int moving_tooltip_y_;
+
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

@@ -76,6 +76,20 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	add_events(Gdk::POINTER_MOTION_MASK);
 	set_time_adjustment(&adj_default);
 	queue_draw();
+
+	//! Create the window of the moving tooltip
+	moving_tooltip_ = Gtk::manage(new Gtk::Window(Gtk::WINDOW_POPUP));
+	moving_tooltip_->set_resizable(false);
+	moving_tooltip_->set_name("gtk-tooltips");
+	moving_tooltip_->set_border_width (4);
+	moving_tooltip_->set_default_size(10, 10);
+	moving_tooltip_->set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
+
+	moving_tooltip_label_ = Gtk::manage(new Gtk::Label());
+	moving_tooltip_label_->set_alignment(0.5, 0.5);
+	moving_tooltip_label_->show();
+
+	moving_tooltip_->add(*moving_tooltip_label_);
 }
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
@@ -202,7 +216,18 @@ Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
-	if (x == selected_none || x == selected_kf) return;
+	if (x == selected_none) return;
+
+	if (x == selected_kf)
+	{
+		// synfig::Keyframe::operator== only on uniqueid::operator==
+		// \see synfig::UniqueID::operator==
+		// In all case, refresh keyframe description to do not loose it
+		selected_kf.set_description(x.get_description());
+		// refresh keyframe time also.
+		selected_kf.set_time(x.get_time());
+		return;
+	}
 
 	selected_kf=x;
 	selected_=true;
@@ -213,11 +238,10 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 
 	dragging_=false;
 	queue_draw();
-
 }
 
 void
-Widget_Keyframe_List::on_keyframe_changed(synfig::Keyframe keyframe, void* emitter)
+Widget_Keyframe_List::on_keyframe_selected(synfig::Keyframe keyframe, void* emitter)
 {
 	if((void*)this == emitter)	return;
 
@@ -302,6 +326,10 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 bool
 Widget_Keyframe_List::on_event(GdkEvent *event)
 {
+	//Do not respond mouse events if the list is empty
+	if(!kf_list_->size())
+		return true;
+
 	const int x(static_cast<int>(event->button.x));
 	//const int y(static_cast<int>(event->button.y));
 	//!Boundaries of the drawing area in time units.
@@ -313,9 +341,6 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	if(pos>1.0f)pos=1.0f;
 	//! The time where the event x is
 	synfig::Time t((float)(bottom+pos*(top-bottom)));
-	//Do not respond mouse events if the list is empty
-	if(!kf_list_->size())
-		return true;
 
 	//! here the guts of the event
 	switch(event->type)
@@ -333,6 +358,30 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				dragging_kf_time=t;
 				dragging_=true;
 				queue_draw();
+
+				//! Moving tooltip displaying the dragging time
+				{
+					int x_root = static_cast<int>(event->button.x_root);
+					int x_origin; int y_origin;
+					get_window()->get_origin (x_origin, y_origin);
+
+					Glib::ustring tooltip_label (_("Time : "));
+					tooltip_label.append( dragging_kf_time.get_string(fps,App::get_time_format()) );
+					tooltip_label.append("\n");
+					tooltip_label.append( _("Old Time : ") );
+					tooltip_label.append(selected_kf.get_time().get_string(fps,App::get_time_format()));
+					moving_tooltip_label_->set_text (tooltip_label);
+
+					if(!moving_tooltip_->is_visible ())
+					{
+						//! Show the tooltip and fix his y coordinate (up to the widget)
+						moving_tooltip_->show();
+						moving_tooltip_y_ = y_origin - moving_tooltip_->get_height();
+					}
+					//! Move the tooltip to a nice position
+					moving_tooltip_->move(x_root, moving_tooltip_y_);
+				}
+
 				return true;
 			}
 			// here is captured mouse motion
@@ -353,13 +402,13 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				{
 					synfig::Keyframe kf(*kf_list_->find_prev(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					ttip = kf_name.c_str();
+					ttip = (kf_name.length() == 0)? _("No name") : kf_name.c_str();
 				}
 				else
 				{
 					synfig::Keyframe kf(*kf_list_->find_next(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					ttip = kf_name.c_str();
+					ttip = (kf_name.length() == 0)? _("No name") : kf_name.c_str();
 				}
 				set_tooltip_text(ttip);
 				dragging_=false;
@@ -424,6 +473,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					{
 						stat=perform_move_kf(false);
 					}
+					moving_tooltip_->hide();
 				}
 			dragging_=false;
 			return stat;
@@ -494,9 +544,7 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 			)
 		);
 		canvas_interface_->signal_keyframe_selected().connect(
-				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::on_keyframe_changed)
+				sigc::mem_fun(*this,&studio::Widget_Keyframe_List::on_keyframe_selected)
 		);
 	}
 }
-
-
