@@ -78,7 +78,6 @@ Layer_SkeletonDeformation::Layer_SkeletonDeformation()
 	entry0.current_p1 = Vector(1.0, 0.0).rotate(Angle::deg(30.0));
 	bones.push_back(entry0);
 
-	/*
 	SkeletonDeformationEntry entry1;
 	entry1.r0 = 0.25;
 	entry1.r1 = 0.25;
@@ -87,7 +86,6 @@ Layer_SkeletonDeformation::Layer_SkeletonDeformation()
 	entry1.current_p0 = entry0.current_p1;
 	entry1.current_p1 = entry1.current_p0 + Vector(1.0, 0.0).rotate(Angle::deg(-45.0));
 	bones.push_back(entry1);
-	*/
 
 	param_bones.set_list_of(bones);
 
@@ -134,9 +132,32 @@ struct Layer_SkeletonDeformation::GridPoint {
 	}
 };
 
+Real Layer_SkeletonDeformation::distance_to_line(const Vector &p0, const Vector &p1, const Vector &x)
+{
+	const Real epsilon = 1e-10;
+
+	Real distance_to_p0 = (x - p0).mag();
+	Real distance_to_p1 = (x - p1).mag();
+	Real distance_to_line = INFINITY;
+
+	Vector line = p1 - p0;
+	Real line_length = line.mag();
+	if (line_length > epsilon)
+	{
+		Real dist = fabs((x - p0) * line.perp() / line_length);
+		Real pos = (x - p0) * line / line_length;
+		if (pos > 0.0 && pos < line_length)
+			distance_to_line = dist;
+	}
+
+	return std::min(distance_to_line, std::min(distance_to_p0, distance_to_p1) );
+}
+
 void
 Layer_SkeletonDeformation::prepare_mesh()
 {
+	const Real epsilon = 1e-10;
+
 	mesh.clear();
 
 	// TODO: custom grid step
@@ -178,16 +199,14 @@ Layer_SkeletonDeformation::prepare_mesh()
 					entry.current_p0[0], entry.current_p0[1], 1.0
 				);
 				Matrix matrix = into_bone * from_bone;
-				Bone::Shape shape(entry.initial_p0, entry.r0, entry.initial_p1, entry.r1);
 
 				for(std::vector<GridPoint>::iterator j = grid.begin(); j != grid.end(); ++j)
 				{
-					Real influence = Bone::influence_percent(shape, j->initial);
-					if (influence > 0.0)
-					{
-						j->summary += matrix.get_transformed(j->initial) * influence;
-						j->summary_weight += influence;
-					}
+					Real distance = distance_to_line(entry.initial_p0, entry.initial_p1, j->initial);
+					if (distance < epsilon) distance = epsilon;
+					Real weight = 1.0/(distance*distance);
+					j->summary += matrix.get_transformed(j->initial) * weight;
+					j->summary_weight += weight;
 				}
 			}
 		}
