@@ -152,9 +152,12 @@ public:
 
 private:
 
-	//! Moving tooltip operation
+	//! The Moving handmade tooltip window
 	Gtk::Window *moving_tooltip_;
+	//! The Moving handmade tooltip label
 	Gtk::Label *moving_tooltip_label_;
+	//! The Moving handmade tooltip y fixed coordinate
+	int moving_tooltip_y_;
 
 }; // END of class Keyframe_List
 
