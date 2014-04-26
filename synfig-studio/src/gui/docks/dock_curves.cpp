@@ -106,6 +106,10 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 void
 Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
+	//! Curves is registred thrue CanvasView::set_ext_widget
+	//! and will be deleted during CanvasView::~CanvasView()
+	//! \see CanvasView::set_ext_widget
+	//! \see CanvasView::~CanvasView
 	Widget_Curves* curves(new Widget_Curves());
 	curves->set_time_adjustment(canvas_view->time_adjustment());
 
@@ -198,7 +202,16 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 void
 Dock_Curves::on_update_header_height( int header_height)
 {
-	//add the border size
+	// FIXME very bad hack (timetrack dock also contains this)
+	//! Adapt the border size "according" to different windows manager rendering
+#ifdef WIN32
+	header_height-=2;
+#elif defined(__APPLE__)
+	header_height+=6;
+#else
+// *nux and others
 	header_height+=2;
+#endif
+
 	widget_timeslider_->set_size_request(-1,header_height+1);
 }
