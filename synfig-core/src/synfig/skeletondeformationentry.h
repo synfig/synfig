@@ -46,6 +46,18 @@ public:
 	Vector current_p0;
 	Vector current_p1;
 	inline SkeletonDeformationEntry(): r0(0.0), r1(0.0) { }
+	bool operator == (const SkeletonDeformationEntry &other)
+	{
+		return r0 == other.r0
+			&& r1 == other.r1
+			&& initial_p0 == other.initial_p0
+			&& initial_p1 == other.initial_p1
+			&& current_p0 == other.current_p0
+			&& current_p1 == other.current_p1;
+	}
+	bool operator != (const SkeletonDeformationEntry &other)
+		{ return !(*this == other); }
+
 }; // END of class SkeletonDeformationEntry
 
 }; // END of namespace synfig

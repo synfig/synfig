@@ -54,6 +54,8 @@ class Renderer::TypesTemplate<RendererSoftware, Renderer::PrimitiveTypeMesh>:
 class RendererSoftware: public Renderer {
 private:
 	static RendererId id;
+	struct Helper;
+	struct IntVector;
 public:
 	typedef RendererSoftware RendererType;
 	typedef Renderer::TypesBase<RendererType> Types;

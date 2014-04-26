@@ -82,7 +82,7 @@ Bone::Bone(const Point &o, const Point &t):
 }
 
 //!Constructor by origin, angle, length, strength, parent bone (default = no parent)
-Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const Real &s, ValueNode_Bone* p):
+Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, ValueNode_Bone* p):
 	name_(n),
 	origin_(o),
 	angle_(a),
@@ -181,7 +181,7 @@ Bone::distance_to_shape_center_percent(const Shape &shape, const Vector &x)
 
 	// check line
 	Real percent_line = 0.0;
-	if (length + precision <= fabs(r1 - r0))
+	if (length + precision > fabs(r1 - r0))
 	{
 		Real cos0 = (r0 - r1)/length;
 		Real cos1 = -cos0;
@@ -197,11 +197,12 @@ Bone::distance_to_shape_center_percent(const Shape &shape, const Vector &x)
 		Real rr1 = r1*sin1;
 
 		Real pos_at_line = (x - pp0)*direction/ll;
-		if (pos_at_line < 0.0 || pos_at_line > 1.0) return false;
-
-		Real distance = fabs((x - pp0)*direction.perp());
-		Real max_distance = rr0*(1.0 - pos_at_line) + rr1*pos_at_line;
-		if (max_distance > 0.0) percent_line = 1.0 - distance/max_distance;
+		if (pos_at_line > 0.0 && pos_at_line < 1.0)
+		{
+			Real distance = fabs((x - pp0)*direction.perp());
+			Real max_distance = rr0*(1.0 - pos_at_line) + rr1*pos_at_line;
+			if (max_distance > 0.0) percent_line = 1.0 - distance/max_distance;
+		}
 	}
 
 	Real percent = 0.0;
@@ -214,7 +215,7 @@ Bone::distance_to_shape_center_percent(const Shape &shape, const Vector &x)
 Real
 Bone::influence_function(Real x)
 {
-	return cos(x*PI/2.0);
+	return sin(x*PI/2.0);
 }
 
 

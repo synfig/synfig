@@ -34,6 +34,8 @@
 #include <algorithm>
 #include <cmath>
 #include <climits>
+#include "transform.h"
+#include "context.h"
 
 #endif
 
@@ -47,7 +49,7 @@ using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 
-class Mesh_Trans : public Transform
+class synfig::Mesh_Trans : public Transform
 {
 	etl::handle<const Layer_MeshTransform> layer;
 public:
@@ -171,12 +173,12 @@ Layer_MeshTransform::get_color(Context context, const Point &pos)const
 {
 	Vector v;
 	return mesh.transform_coord_world_to_texture(pos, v)
-		 ? context.hit_check(v)
+		 ? context.get_color(v)
 		 : Color();
 }
 
 Rect
-Layer_MeshTransform::get_full_bounding_rect(Context context)const
+Layer_MeshTransform::get_full_bounding_rect(Context /* context */)const
 {
 	return world_bounds;
 }

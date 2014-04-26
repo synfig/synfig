@@ -72,15 +72,52 @@ RendererSoftware::RendererSoftware()
 	// TODO:
 }
 
-Renderer::Result RendererSoftware::render_surface(const Params &params, const Primitive<PrimitiveTypeSurface> &primitive)
+Renderer::Result RendererSoftware::render_surface(const Params &/* params */, const Primitive<PrimitiveTypeSurface> &/* primitive */)
 	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_polygon(const Params &params, const Primitive<PrimitiveTypePolygon> &primitive)
+Renderer::Result RendererSoftware::render_polygon(const Params &/* params */, const Primitive<PrimitiveTypePolygon> &/* primitive */)
 	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_colored_polygon(const Params &params, const Primitive<PrimitiveTypeColoredPolygon> &primitive)
+Renderer::Result RendererSoftware::render_colored_polygon(const Params &/* params */, const Primitive<PrimitiveTypeColoredPolygon> &/* primitive */)
 	{ return ResultNotSupported; }
-Renderer::Result RendererSoftware::render_mesh(const Params &params, const Primitive<PrimitiveTypeMesh> &primitive)
+Renderer::Result RendererSoftware::render_mesh(const Params &/* params */, const Primitive<PrimitiveTypeMesh> &/* primitive */)
 	{ return ResultNotSupported; }
 
+
+struct RendererSoftware::Helper {
+	enum { FIXED_SHIFT = sizeof(int)*8 };
+
+	inline static long long int_to_fixed(int i)
+		{ return (long long)i << FIXED_SHIFT; }
+	inline static int fixed_to_int(long long f)
+		{ return (int)(f >> FIXED_SHIFT); }
+
+	inline static void norm_tex_coords(Vector &coords, const Vector &size)
+	{
+		if (coords[0] < 0.0 || coords[0] > size[0])
+			coords[0] -= floor(coords[0]/size[0])*size[0];
+		if (coords[1] < 0.0 || coords[1] > size[1])
+			coords[1] -= floor(coords[1]/size[1])*size[1];
+	}
+};
+
+struct RendererSoftware::IntVector {
+	union {
+		struct { int x, y; };
+		int coords[2];
+	};
+
+	inline IntVector(): x(0), y(0) { }
+	inline IntVector(int x, int y): x(x), y(y) { }
+	inline IntVector(const Vector &v): x((int)roundf(v[0])), y((int)roundf(v[1])) { }
+	inline int& operator[] (int index) { return coords[index]; }
+	inline const int& operator[] (int index) const { return coords[index]; }
+	inline bool operator == (const IntVector &other) const { return x == other.x && y == other.y; }
+	inline bool operator != (const IntVector &other) const { return !(*this == other); }
+	inline IntVector operator+ (const IntVector &other) const { return IntVector(x+other.x, y+other.y); }
+	inline IntVector operator- (const IntVector &other) const { return IntVector(x-other.x, y-other.y); }
+
+	inline Vector to_real() const { return Vector(Real(x), Real(y)); }
+	inline long long get_fixed_x_div_y() { return y == 0 ? 0 : Helper::int_to_fixed(x)/y; }
+};
 
 void
 RendererSoftware::render_triangle(
@@ -95,43 +132,6 @@ RendererSoftware::render_triangle(
 	Real alpha,
 	Color::BlendMethod blend_method )
 {
-	struct Helper {
-		enum { FIXED_SHIFT = sizeof(int)*8 };
-
-		inline static long long int_to_fixed(int i)
-			{ return (long long)i << FIXED_SHIFT; }
-		inline static int fixed_to_int(long long f)
-			{ return (int)(f >> FIXED_SHIFT); }
-
-		inline static void norm_tex_coords(Vector &coords, const Vector &size)
-		{
-			if (coords[0] < 0.0 || coords[0] > size[0])
-				coords[0] -= floor(coords[0]/size[0])*size[0];
-			if (coords[1] < 0.0 || coords[1] > size[1])
-				coords[1] -= floor(coords[1]/size[1])*size[1];
-		}
-	};
-
-	struct IntVector {
-		union {
-			struct { int x, y; };
-			int coords[2];
-		};
-
-		inline IntVector(): x(0), y(0) { }
-		inline IntVector(int x, int y): x(x), y(y) { }
-		inline IntVector(const Vector &v): x((int)roundf(v[0])), y((int)roundf(v[1])) { }
-		inline int& operator[] (int index) { return coords[index]; }
-		inline const int& operator[] (int index) const { return coords[index]; }
-		inline bool operator == (const IntVector &other) const { return x == other.x && y == other.y; }
-		inline bool operator != (const IntVector &other) const { return !(*this == other); }
-		inline IntVector operator+ (const IntVector &other) const { return IntVector(x+other.x, y+other.y); }
-		inline IntVector operator- (const IntVector &other) const { return IntVector(x-other.x, y-other.y); }
-
-		inline Vector to_real() const { return Vector(Real(x), Real(y)); }
-		inline long long get_fixed_x_div_y() { return y == 0 ? 0 : Helper::int_to_fixed(x)/y; }
-	};
-
 	// convert points to int
 	IntVector ip0(p0), ip1(p1), ip2(p2);
 	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
@@ -143,7 +143,7 @@ RendererSoftware::render_triangle(
 	int tex_width = texture.get_w();
 	int tex_height = texture.get_h();
 	if (tex_width == 0 || tex_height == 0) return;
-	Vector tex_size(Real(tex_width), Real(tex_height));
+	Vector tex_size = Vector(Real(tex_width), Real(tex_height));
 
 
 	// prepare texture matrix
@@ -157,7 +157,7 @@ RendererSoftware::render_triangle(
 		p0[0], p0[1], 1.0 );
 	matrix_of_target_triangle.invert();
 
-	Matrix matrix = matrix_of_texture_triangle * matrix_of_target_triangle;
+	Matrix matrix = matrix_of_target_triangle * matrix_of_texture_triangle;
 	Vector tdx = matrix.get_transformed(Vector(1.0, 0.0), false);
 	//Vector tdy = matrix.get_transformed(Vector(0.0, 1.0), false);
 
@@ -226,6 +226,7 @@ RendererSoftware::render_triangle(
     if (ip0.y == ip1.y) {
 		wx0 = Helper::int_to_fixed(ip0.x);
 		wx1 = Helper::int_to_fixed(ip1.x);
+		if (wx0 > wx1) swap(wx0, wx1);
     }
 
     // process bottom part of triangle
@@ -283,7 +284,7 @@ RendererSoftware::render_mesh(
 	if (!target_surface.is_valid()) return;
 	if (!texture.is_valid()) return;
 
-	for(synfig::Mesh::TriangleList::const_iterator i = mesh.triangles.begin(); i != mesh.triangles.begin(); ++i)
+	for(synfig::Mesh::TriangleList::const_iterator i = mesh.triangles.begin(); i != mesh.triangles.end(); ++i)
 		render_triangle(
 			target_surface,
 			transform_matrix.get_transformed(mesh.vertices[i->vertices[0]].position),

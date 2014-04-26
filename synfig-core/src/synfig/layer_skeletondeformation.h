@@ -46,6 +46,7 @@ class Layer_SkeletonDeformation : public Layer_MeshTransform
 private:
 	//! Parameter: (list) Bones
 	ValueBase param_bones;
+	struct GridPoint;
 
 public:
 	//! Default constructor

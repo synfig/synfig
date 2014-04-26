@@ -60,6 +60,8 @@ Renderer::BookConvertChain Renderer::book_convert_chain;
 
 // PrimitiveBase
 
+Renderer::PrimitiveBase::~PrimitiveBase() { }
+
 Renderer::PrimitiveBase::Map::iterator
 Renderer::PrimitiveBase::get_entry(RendererId renderer_id) const
 {
@@ -87,9 +89,9 @@ Renderer::PrimitiveBase::get_entry(RendererId renderer_id) const
 	{
 		key.renderer_id_from = i->first;
 		key.renderer_id_to = entry->renderer_id_to;
-		PrimitiveDataBase::Handle primitive = entry->func(key, i->second);
+		PrimitiveDataBase::Handle primitive = entry->func(i->second);
 		if (!primitive) break;
-		i = primitives.insert(Pair(key.renderer_id_to, primitive));
+		i = primitives.insert(Pair(key.renderer_id_to, primitive)).first;
 		if (i->first == renderer_id) return i;
 		entry = entry->next;
 	}
@@ -102,7 +104,9 @@ Renderer::PrimitiveBase::get_primitive(RendererId renderer_id) const
 {
 	if (editing) return PrimitiveDataBase::ConstHandle();
 	Map::iterator i = get_entry(renderer_id);
-	return i == primitives.end() ? PrimitiveDataBase::ConstHandle() : i->second;
+	return i == primitives.end()
+		 ? PrimitiveDataBase::ConstHandle()
+		 : PrimitiveDataBase::ConstHandle(i->second);
 }
 
 Renderer::PrimitiveDataBase::Handle
@@ -176,12 +180,12 @@ void Renderer::register_func_create(const KeyCreate &key, FuncCreate func)
 	if (book_create.count(key) == 0) book_create[key] = func;
 }
 
-void Renderer::register_func_copy(const KeyCopy &key,FuncCreate func)
+void Renderer::register_func_copy(const KeyCopy &key, FuncCopy func)
 {
 	if (book_copy.count(key) == 0) book_copy[key] = func;
 }
 
-void Renderer::register_func_convert(const KeyConvert &key,FuncCreate func)
+void Renderer::register_func_convert(const KeyConvert &key, FuncConvert func)
 {
 	if (book_convert.count(key) == 0) book_convert[key] = func;
 	build_convert_chain();
@@ -210,25 +214,25 @@ Renderer::Result Renderer::render(const Params &params, const PrimitiveBase &pri
 	case PrimitiveTypeSurface:
 	{
 		const Primitive<PrimitiveTypeSurface>* p =
-			*dynamic_cast<const Primitive<PrimitiveTypeSurface>*>(&primitive);
+			dynamic_cast<const Primitive<PrimitiveTypeSurface>*>(&primitive);
 		return p == NULL ? ResultFail : Renderer::render_surface(params, *p);
 	}
 	case PrimitiveTypePolygon:
 	{
 		const Primitive<PrimitiveTypePolygon>* p =
-			*dynamic_cast<const Primitive<PrimitiveTypePolygon>*>(&primitive);
+			dynamic_cast<const Primitive<PrimitiveTypePolygon>*>(&primitive);
 		return p == NULL ? ResultFail : Renderer::render_polygon(params, *p);
 	}
 	case PrimitiveTypeColoredPolygon:
 	{
 		const Primitive<PrimitiveTypeColoredPolygon>* p =
-			*dynamic_cast<const Primitive<PrimitiveTypeColoredPolygon>*>(&primitive);
+			dynamic_cast<const Primitive<PrimitiveTypeColoredPolygon>*>(&primitive);
 		return p == NULL ? ResultFail : Renderer::render_colored_polygon(params, *p);
 	}
 	case PrimitiveTypeMesh:
 	{
 		const Primitive<PrimitiveTypeMesh>* p =
-			*dynamic_cast<const Primitive<PrimitiveTypeMesh>*>(&primitive);
+			dynamic_cast<const Primitive<PrimitiveTypeMesh>*>(&primitive);
 		return p == NULL ? ResultFail : Renderer::render_mesh(params, *p);
 	}
 	default:
@@ -237,13 +241,13 @@ Renderer::Result Renderer::render(const Params &params, const PrimitiveBase &pri
 	return ResultFail;
 }
 
-Renderer::Result Renderer::render_surface(const Params &params, const Primitive<PrimitiveTypeSurface> &primitive)
+Renderer::Result Renderer::render_surface(const Params &/* params */, const Primitive<PrimitiveTypeSurface> &/* primitive */)
 	{ return Renderer::ResultNotSupported; }
-Renderer::Result Renderer::render_polygon(const Params &params, const Primitive<PrimitiveTypePolygon> &primitive)
+Renderer::Result Renderer::render_polygon(const Params &/* params */, const Primitive<PrimitiveTypePolygon> &/* primitive */)
 	{ return Renderer::ResultNotSupported; }
-Renderer::Result Renderer::render_colored_polygon(const Params &params, const Primitive<PrimitiveTypeColoredPolygon> &primitive)
+Renderer::Result Renderer::render_colored_polygon(const Params &/* params */, const Primitive<PrimitiveTypeColoredPolygon> &/* primitive */)
 	{ return Renderer::ResultNotSupported; }
-Renderer::Result Renderer::render_mesh(const Params &params, const Primitive<PrimitiveTypeMesh> &primitive)
+Renderer::Result Renderer::render_mesh(const Params &/* params */, const Primitive<PrimitiveTypeMesh> &/* primitive */)
 	{ return Renderer::ResultNotSupported; }
 
 

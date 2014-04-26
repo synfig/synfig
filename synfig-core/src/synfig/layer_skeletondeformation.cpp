@@ -38,6 +38,7 @@
 #include "valuenode.h"
 #include "canvas.h"
 #include "bone.h"
+#include "skeletondeformationentry.h"
 
 
 #endif
@@ -65,7 +66,30 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 Layer_SkeletonDeformation::Layer_SkeletonDeformation()
 {
-	param_bones=ValueBase(ValueBase::List);
+	max_texture_scale = 1.f;
+	std::vector<SkeletonDeformationEntry> bones;
+
+	SkeletonDeformationEntry entry0;
+	entry0.r0 = 0.25;
+	entry0.r1 = 0.25;
+	entry0.initial_p0 = Vector(0.0, 0.0);
+	entry0.initial_p1 = Vector(1.0, 0.0);
+	entry0.current_p0 = Vector(0.0, 0.0);
+	entry0.current_p1 = Vector(1.0, 0.0).rotate(Angle::deg(30.0));
+	bones.push_back(entry0);
+
+	/*
+	SkeletonDeformationEntry entry1;
+	entry1.r0 = 0.25;
+	entry1.r1 = 0.25;
+	entry1.initial_p0 = entry0.initial_p1;
+	entry1.initial_p1 = entry1.initial_p0 + Vector(1.0, 0.0);
+	entry1.current_p0 = entry0.current_p1;
+	entry1.current_p1 = entry1.current_p0 + Vector(1.0, 0.0).rotate(Angle::deg(-45.0));
+	bones.push_back(entry1);
+	*/
+
+	param_bones.set_list_of(bones);
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -96,27 +120,28 @@ Layer_SkeletonDeformation::get_param_vocab()const
 	return ret;
 }
 
+struct Layer_SkeletonDeformation::GridPoint {
+	Vector initial;
+	Vector summary;
+	Real summary_weight;
+	inline GridPoint():
+		summary_weight(0.0) { }
+	inline explicit GridPoint(const Vector &initial):
+		initial(initial), summary_weight(0.0) { }
+	Vector get_average()const {
+		static const Real precision = 1e-10;
+		return summary_weight > precision ? summary/summary_weight : initial;
+	}
+};
+
 void
 Layer_SkeletonDeformation::prepare_mesh()
 {
-	static const Real precision = 1e-10;
 	mesh.clear();
 
 	// TODO: custom grid step
 	// TODO: custom grid size
 	// TODO: build grid with dynamic size
-
-	struct GridPoint {
-		Vector initial;
-		Vector summary;
-		Real summary_weight;
-		inline GridPoint():
-			summary_weight(0.0) { }
-		inline explicit GridPoint(const Vector &initial):
-			initial(initial), summary_weight(0.0) { }
-		Vector get_average()const
-			{ return summary_weight > precision ? summary/summary_weight : initial; }
-	};
 
 	const Real recommended_grid_step = 0.05;
 	const Real grid_size = 10.0;
@@ -160,7 +185,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 					Real influence = Bone::influence_percent(shape, j->initial);
 					if (influence > 0.0)
 					{
-						j->summary += influence * matrix.get_transformed(j->initial);
+						j->summary += matrix.get_transformed(j->initial) * influence;
 						j->summary_weight += influence;
 					}
 				}
@@ -189,6 +214,8 @@ Layer_SkeletonDeformation::prepare_mesh()
 				(j-1)*grid_side_count + i ));
 		}
 	}
+
+	update_mesh();
 }
 
 bool

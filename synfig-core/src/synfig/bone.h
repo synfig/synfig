@@ -70,7 +70,7 @@ public:
 	struct Shape {
 		Vector p0;
 		Real r0;
-		Vector p1
+		Vector p1;
 		Real r1;
 		inline Shape():
 			r0(0.0), r1(0.0) { }
@@ -112,7 +112,7 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, ValueNode_Bone* p=0);
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=0);
 	//!Wrappers for name_
 	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}

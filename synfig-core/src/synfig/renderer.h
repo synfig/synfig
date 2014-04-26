@@ -139,8 +139,8 @@ private:
 protected:
 	static void register_renderer(int &id);
 	static void register_func_create(const KeyCreate &key, FuncCreate func);
-	static void register_func_copy(const KeyCopy &key,FuncCreate func);
-	static void register_func_convert(const KeyConvert &key,FuncCreate func);
+	static void register_func_copy(const KeyCopy &key, FuncCopy func);
+	static void register_func_convert(const KeyConvert &key, FuncConvert func);
 	static void unregister_renderer(int &id);
 
 	template<typename T>
@@ -169,6 +169,7 @@ public:
 		inline PrimitiveBase(PrimitiveType type): editing(false), type(type) { }
 
 	public:
+		virtual ~PrimitiveBase();
 		inline bool is_editing() const { return editing; }
 		PrimitiveDataBase::ConstHandle get_primitive(RendererId renderer_id) const;
 		PrimitiveDataBase::Handle begin_edit_primitive(RendererId renderer_id);
@@ -187,7 +188,7 @@ public:
 		template<typename RendererType>
 		const typename TypesTemplate<RendererType, primitive_type>::Data* get()
 		{
-			typedef typename PrimitiveData<typename TypesTemplate<RendererType, primitive_type>::Data> PrimitiveData;
+			typedef PrimitiveData<typename TypesTemplate<RendererType, primitive_type>::Data> PrimitiveData;
 			typedef typename PrimitiveData::ConstHandle ConstHandle;
 			ConstHandle handle =
 				ConstHandle::cast_dynamic(
@@ -205,7 +206,7 @@ public:
 			if (base_handle)
 			{
 				typedef typename TypesTemplate<RendererType, primitive_type>::Data Data;
-				typedef typename PrimitiveData<Data> PrimitiveData;
+				typedef PrimitiveData<Data> PrimitiveData;
 				typedef typename PrimitiveData::Handle Handle;
 				Handle handle = Handle::cast_dynamic(base_handle);
 				if (handle) return &handle->data;
