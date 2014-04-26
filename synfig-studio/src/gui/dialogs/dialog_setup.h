@@ -165,6 +165,7 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_red_blue_level_change();
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
+	void on_ui_language_combo_change();
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
@@ -198,6 +199,10 @@ class Dialog_Setup : public Gtk::Dialog
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
+	Gtk::ComboBoxText ui_language_combo;
+	std::vector<Glib::ustring> _lang_codes;
+
+
 	Gtk::Entry textbox_custom_filename_prefix;
 	Gtk::Adjustment adj_pref_x_size;
 	Gtk::Adjustment adj_pref_y_size;
@@ -209,6 +214,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Entry image_sequence_separator;
 	Gtk::CheckButton toggle_navigator_uses_cairo;
 	Gtk::CheckButton toggle_workarea_uses_cairo;
+
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

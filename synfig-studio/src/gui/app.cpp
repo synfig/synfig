@@ -306,7 +306,7 @@ bool studio::App::workarea_uses_cairo=false;
 
 bool studio::App::enable_mainwin_menubar = true;
 bool studio::App::enable_mainwin_toolbar = true;
-String studio::App::ui_language("System Language");
+String studio::App::ui_language ("os_LANG");
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -1415,7 +1415,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		// Set ui language
 		load_settings("pref.ui_language");
-		if (!ui_language.empty())
+		if (ui_language != "os_LANG")
 		{
 			setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 		}
@@ -2035,7 +2035,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.enable_experimental_features","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
-	synfigapp::Main::settings().set_value("pref.ui_language", "System Language");
+	synfigapp::Main::settings().set_value("pref.ui_language", "os_LANG");
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
