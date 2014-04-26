@@ -231,7 +231,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		_("Czech"),
 		_("Danish"),
 		_("Dutch "),
-		-("English"),
+		_("English"),
 		_("English (United Kingdom)"),
 		_("Farsi (Iran)"),
 		_("French "),
