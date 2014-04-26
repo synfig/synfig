@@ -264,7 +264,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		"cs",				// CZech
 		"da",				// Danish
 		"nl",				// Dutch
-		"en",				// English
+		"en",					// English - default of development
 		"en_GB",		// English (United Kingdom)
 		"fa_IR",		// Farsi (Iran)
 		"fr",				// French
@@ -479,8 +479,11 @@ Dialog_Setup::on_apply_pressed()
 	// Set the workarea uses cairo flag
 	App::workarea_uses_cairo=toggle_workarea_uses_cairo.get_active();
 
-	App::save_settings();
+	// Set ui language
+	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 
+
+	App::save_settings();
 	App::setup_changed();
 
 }
@@ -553,7 +556,6 @@ Dialog_Setup::on_size_template_combo_change()
 void
 Dialog_Setup::on_ui_language_combo_change()
 {
-	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 }
 
 
