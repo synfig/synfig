@@ -51,9 +51,15 @@
 export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
+if [ -z $TOOLCHAIN ]; then
 export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
-export DEBUG=1
-
+fi
+if [ -z $DEBUG ]; then
+	export DEBUG=1
+fi
+if [ -z $THREADS ]; then
+	export THREADS=4
+fi
 #=========================== EDIT UNTIL HERE ===================================
 
 export DISTPREFIX=$WORKSPACE/dist
@@ -85,7 +91,7 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.1"
+export VERSION=`cat ${SRCPREFIX}/synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -174,7 +180,7 @@ cd $WORKSPACE
 [ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
 cd ${PKG_NAME}-${PKG_VERSION}
 ./autogen.sh
-make -j2 install
+make -j$THREADS install
 
 # remove old version of popt
 [ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
@@ -182,6 +188,9 @@ make -j2 install
 
 mkrpm()
 {
+echo
+echo Building rpm...
+echo
 PKG_NAME=rpm
 #PKG_VERSION=4.11.1
 PKG_VERSION=4.10.3.1
@@ -202,7 +211,7 @@ LDFLAGS=" -L/usr/local/lib" CPPFLAGS="-I/usr/include/nspr -I/usr/include/nss -I/
     --with-external-db \
     --without-lua \
     --enable-python
-make -j2 install
+make -j$THREADS install
 
 cd python
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -309,7 +318,8 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION=6.8.6-10
+#PKG_VERSION=6.8.6-10
+PKG_VERSION=6.8.7-10
 TAREXT=bz2
 
 cd $WORKSPACE
@@ -365,18 +375,20 @@ installonly_limit=3
 [fedora]
 name=Fedora \$releasever - \$basearch
 failovermethod=priority
-mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+#mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-\$releasever&arch=\$basearch
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/releases/20/Everything/i386/os/
 enabled=1
 metadata_expire=7d
 
 [updates]
 name=Fedora \$releasever - \$basearch - Updates
 failovermethod=priority
-mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+#mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f\$releasever&arch=\$basearch
+baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/20/i386/
 enabled=1
 EOF
 
-URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=18 --installroot="$WORKSPACE/mingw-rpms" $1`
+URLS=`yumdownloader --urls --resolve -c $WORKSPACE/mingw-rpms/yum.conf --releasever=20 --installroot="$WORKSPACE/mingw-rpms" $1`
 for URL in $URLS; do
 if ( echo "$URL" | egrep "^http:" > /dev/null ); then
     PKG=`basename $URL`
@@ -406,7 +418,8 @@ $CYGWIN_SETUP \
 -s http://ftp.linux.kiev.ua/pub/cygwin/ \
 -P git \
 -P make \
--P gcc \
+-P gcc-core \
+-P gcc-g++ \
 -P gdb \
 -P intltool \
 -P autoconf \
@@ -425,6 +438,8 @@ $CYGWIN_SETUP \
 -P libiconv \
 -P libdb4.8-devel \
 -P python \
+-P file-devel \
+-P zlib-devel \
 -q
 
 # yum dependencies
@@ -593,7 +608,7 @@ autoreconf --install --force
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --with-magickpp=yes --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
 --enable-maintainer-mode $DEBUG
-make -j2
+make -j$THREADS
 make install
 }
 
@@ -617,12 +632,22 @@ cd $SRCPREFIX/synfig-studio
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
 --enable-maintainer-mode $DEBUG
-make -j2
+make -j$THREADS
 make install 
 cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio/*  /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps
 rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/pixmaps/synfigstudio
 mkdir -p $MINGWPREFIX/licenses
 cp -rf COPYING $MINGWPREFIX/licenses/synfigstudio.txt
+
+cat > ${MINGWPREFIX}/etc/gtk-2.0/gtkrc <<EOF
+
+# Enable native look
+gtk-theme-name = "MS-Windows"
+
+# Use small toolbar buttons
+gtk-toolbar-style = 0
+
+EOF
 }
 
 mkpackage()
@@ -771,6 +796,7 @@ gen_list_nsh share/themes share-themes
 
 #make installer
 cp -f $SRCPREFIX/autobuild/synfigstudio.nsi ./
+sed -i "s/@VERSION@/$VERSION/g" ./synfigstudio.nsi
 cp -f $SRCPREFIX/autobuild/win${ARCH}-specific.nsh ./arch-specific.nsh
 "$NSIS_BINARY" -nocd -- synfigstudio.nsi
 
