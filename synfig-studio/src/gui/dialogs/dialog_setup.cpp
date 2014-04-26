@@ -88,7 +88,6 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_pref_x_size(480,1,10000,1,10,0),
 	adj_pref_y_size(270,1,10000,1,10,0),
 	adj_pref_fps(24.0,1.0,100,0.1,1,0)
-
 	{
 	// Setup the buttons
 	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Defaults"))));
@@ -221,6 +220,93 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
+	// Misc - UI Language
+	Glib::ustring lang_names[] = {
+		_("System Language"),
+		_("Arabic"),
+		_("Basque"),
+		_("Basque (Spain)"),
+		_("Catalan"),
+		_("Chinese (China)"),
+		_("Czech"),
+		_("Danish"),
+		_("Dutch "),
+		_("English"),
+		_("English (United Kingdom)"),
+		_("Farsi (Iran)"),
+		_("French "),
+		_("German"),
+		_("Greek (Greece)"),
+		_("Hebrew "),
+		_("Hungarian "),
+		_("Italian "),
+		_("Japanese (Japan)"),
+		_("Lithuanian "),
+		_("Norwegian (Norway)"),
+		_("Polish (Poland)"),
+		_("Portuguese (Brazil)"),
+		_("Romanian"),
+		_("Russian"),
+		_("Spanish"),
+		_("Sinhala"),
+		_("Slovak (Slovakia)"),
+		_("Swedish (Sweden)"),
+		_("Turkish"),
+	};
+
+   Glib::ustring lang_codes[] = {
+		"os_LANG",	// System Language
+		"ar",				// Arabick
+		"eu",				// Basque
+		"eu_ES",		// Basque (Spain)
+		"ca",				// Catalan
+		"zh_CN",		// Chinese (China)
+		"cs",				// CZech
+		"da",				// Danish
+		"nl",				// Dutch
+		"en",					// English - default of development
+		"en_GB",		// English (United Kingdom)
+		"fa_IR",		// Farsi (Iran)
+		"fr",				// French
+		"de",				// German
+		"el_GR",		// Greek (Greece)
+		"he",				// Hebrew
+		"hu",				// Hungarian
+		"it",				// Italian
+		"ja_JP",		// Japanese (Japan)
+		"lt",				// Lithuanian
+		"no_NO",		// Norwegian (Norway)
+		"pl_PL",		// Polish (Poland)
+		"pt_BR",		// Portuguese (Brazil)
+		"ro",				// Romanian
+		"ru",				// Russian
+		"es",				// Spanish
+		"si",				// Sinhala
+		"sk_SK",		// Slovak (Slovakia)
+		"sv_SE",		// Swedish (Sweden)
+		"tr"				// Turkish
+   };
+
+	int num_items = G_N_ELEMENTS(lang_names);
+	Glib::ustring default_code;
+	int row = 0;
+	Glib::ustring lang_code = App::ui_language;
+
+	for (int i =0 ; i < num_items; ++i)
+	{
+		ui_language_combo.append_text(lang_names[i]);
+		_lang_codes.push_back(lang_codes[i]);
+			if (lang_code == _lang_codes[i])
+			row = i;
+	}
+
+	ui_language_combo.set_active(row);
+	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
+
+	attach_label(misc_table, _("Interface Language"), 5, xpadding, ypadding);
+	misc_table->attach(ui_language_combo, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+
 	// Document
 	Gtk::Table *document_table = manage(new Gtk::Table(2, 4, false));
 	notebook->append_page(*document_table, _("Document"));
@@ -292,6 +378,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	attach_label(document_table,_("New Document FPS"), 4, xpadding, ypadding);
 	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
+
 
 	// Render - Table
 	Gtk::Table *render_table = manage(new Gtk::Table(2, 4, false));
@@ -392,8 +479,11 @@ Dialog_Setup::on_apply_pressed()
 	// Set the workarea uses cairo flag
 	App::workarea_uses_cairo=toggle_workarea_uses_cairo.get_active();
 
-	App::save_settings();
+	// Set ui language
+	App::ui_language = (_lang_codes[ui_language_combo.get_active_row_number()]).c_str();
 
+
+	App::save_settings();
 	App::setup_changed();
 
 }
@@ -461,6 +551,13 @@ Dialog_Setup::on_size_template_combo_change()
 
 	return;
 }
+
+
+void
+Dialog_Setup::on_ui_language_combo_change()
+{
+}
+
 
 void
 Dialog_Setup::on_fps_template_combo_change()
@@ -551,6 +648,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the workarea_uses_cairo flag
 	toggle_workarea_uses_cairo.set_active(App::workarea_uses_cairo);
+
+	// Refresh the ui language
+
 }
 
 GammaPattern::GammaPattern():
