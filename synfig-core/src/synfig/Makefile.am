@@ -213,6 +213,7 @@ VALUEHEADERS = \
 	widthpoint.h \
 	dashitem.h \
 	gradient.h \
+	weightedvalue.h \
 	pair.h \
 	type.h \
 	base_types.h \
@@ -297,7 +298,6 @@ SYNFIGHEADERS = \
 	zstreambuf.h \
 	valueoperations.h \
 	valuetransformation.h \
-	weightedvalue.h \
 	mesh.h \
 	renderer.h \
 	renderersoftware.h
