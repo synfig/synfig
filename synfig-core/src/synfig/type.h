@@ -75,7 +75,6 @@ class Gradient;
 class Bone;
 class ValueNode_Bone;
 class Transformation;
-class SkeletonDeformationEntry;
 template<typename T> class WeightedValue;
 
 namespace types_namespace
@@ -111,7 +110,6 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>)
 	SYNFIG_DECLARE_TYPE_ALIAS(ValueNode_Bone*)
 	SYNFIG_DECLARE_TYPE_ALIAS(Transformation)
-	SYNFIG_DECLARE_TYPE_ALIAS(SkeletonDeformationEntry)
 
 	template<typename T>
 	TypeAlias< WeightedValue<T> > get_type_alias(WeightedValue<T> const&);

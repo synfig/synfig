@@ -570,32 +570,6 @@ public:
 TypeTransformation TypeTransformation::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Transformation, TypeTransformation)
 
-// SkeletonDeformationEntry
-
-class TypeSkeletonDeformationEntry: public Type
-{
-	static String to_string(const SkeletonDeformationEntry &x)
-	{
-		return etl::strprintf("SkeletonDeformationEntry from (%f, %f)-(%f, %f) to (%f, %f)-(%f, %f), radiuses (%f, %f)",
-			x.initial_p0[0], x.initial_p0[1],
-			x.initial_p1[0], x.initial_p1[1],
-			x.current_p0[0], x.current_p0[1],
-			x.current_p1[0], x.current_p1[1],
-			x.r0, x.r1 );
-	}
-	void initialize_vfunc(Description &description)
-	{
-		Type::initialize_vfunc(description);
-		description.name = "skeleton_deformation_entry";
-		description.local_name = N_("skeleton_deformation_entry");
-		register_all<SkeletonDeformationEntry, to_string>();
-	}
-public:
-	static TypeSkeletonDeformationEntry instance;
-};
-TypeSkeletonDeformationEntry TypeSkeletonDeformationEntry::instance;
-SYNFIG_IMPLEMENT_TYPE_ALIAS(SkeletonDeformationEntry, TypeSkeletonDeformationEntry)
-
 }} // END of namespaces types_namespace and synfig
 
 namespace synfig {
