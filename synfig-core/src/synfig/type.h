@@ -115,6 +115,8 @@ namespace types_namespace
 
 	template<typename T>
 	TypeAlias< WeightedValue<T> > get_type_alias(WeightedValue<T> const&);
+	template<typename T1, typename T2>
+	TypeAlias< std::pair<T1, T2> > get_type_alias(std::pair<T1, T2> const&);
 } // namespace types_namespace
 } // namespace synfig
 

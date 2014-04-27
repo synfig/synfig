@@ -405,6 +405,15 @@ Action::ValueDescSet::prepare()
 			n_components=2;
 		}
 		else
+		if (dynamic_cast<synfig::types_namespace::TypePairBase*>(&type) != NULL)
+		{
+			types_namespace::TypePairBase *tp =
+				dynamic_cast<synfig::types_namespace::TypePairBase*>(&type);
+			components[0]=tp->extract_first(value);
+			components[1]=tp->extract_second(value);
+			n_components=2;
+		}
+		else
 			throw Error(_("Bad type for composite (%s)"), type.description.local_name.c_str());
 
 		for(int i=0;i<n_components;i++)

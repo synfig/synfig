@@ -43,6 +43,7 @@
 #include "savecanvas.h"
 #include "transformation.h"
 #include "weightedvalue.h"
+#include "pair.h"
 
 #endif
 
@@ -147,6 +148,14 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
 		set_link("weight",ValueNode_Const::create(t->extract_weight(value)));
 		set_link("value",ValueNode_Const::create(t->extract_value(value)));
+	}
+	else
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		types_namespace::TypePairBase *t =
+			dynamic_cast<types_namespace::TypePairBase*>(&type);
+		set_link("first",ValueNode_Const::create(t->extract_first(value)));
+		set_link("second",ValueNode_Const::create(t->extract_second(value)));
 	}
 	else
 	{
@@ -274,6 +283,14 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
 		assert(components[0] && components[1]);
 		return tp->create_weighted_value((*components[0])(t).get(Real()), (*components[1])(t));
+	}
+	else
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		types_namespace::TypePairBase *tp =
+			dynamic_cast<types_namespace::TypePairBase*>(&type);
+		assert(components[0] && components[1]);
+		return tp->create_value((*components[0])(t), (*components[1])(t));
 	}
 
 	synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
@@ -403,6 +420,19 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		if( PlaceholderValueNode::Handle::cast_dynamic(x)
 		 || (i == 0 && x->get_type()==ValueBase(Real()).get_type())
 		 || (i == 1 && x->get_type()==tp->get_contained_type())
+		) {
+			components[i]=x;
+			return true;
+		}
+	}
+	else
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		types_namespace::TypePairBase *tp =
+			dynamic_cast<types_namespace::TypePairBase*>(&type);
+		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		 || (i == 0 && x->get_type()==tp->get_first_type())
+		 || (i == 1 && x->get_type()==tp->get_second_type())
 		) {
 			components[i]=x;
 			return true;
@@ -546,6 +576,14 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 		if(name=="value")
 			return 1;
 	}
+	else
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		if(name=="first")
+			return 0;
+		if(name=="second")
+			return 1;
+	}
 
 	throw Exception::BadLinkName(name);
 }
@@ -572,7 +610,8 @@ ValueNode_Composite::check_type(Type &type)
 		|| type==type_width_point
 		|| type==type_dash_item
 		|| type==type_transformation
-		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL;
+		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL
+		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL;
 }
 
 LinkableValueNode::Vocab
@@ -781,6 +820,19 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"value")
 			.set_local_name(_("Value"))
 			.set_description(_("The Value"))
+		);
+		return ret;
+	}
+	else
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		ret.push_back(ParamDesc(ValueBase(),"first")
+			.set_local_name(_("First"))
+			.set_description(_("The First Value"))
+		);
+		ret.push_back(ParamDesc(ValueBase(),"second")
+			.set_local_name(_("Second"))
+			.set_description(_("The Second Value"))
 		);
 		return ret;
 	}

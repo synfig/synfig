@@ -214,6 +214,7 @@ VALUEHEADERS = \
 	dashitem.h \
 	gradient.h \
 	skeletondeformationentry.h \
+	pair.h \
 	type.h \
 	base_types.h \
 	value.h
