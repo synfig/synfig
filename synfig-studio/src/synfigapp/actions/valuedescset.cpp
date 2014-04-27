@@ -59,6 +59,7 @@
 #include <synfig/valuenode_weightedaverage.h>
 #include <synfig/valueoperations.h>
 #include <synfig/weightedvalue.h>
+#include <synfig/pair.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>

@@ -88,8 +88,8 @@ namespace types_namespace {
 	TypePair<T1, T2> TypePair<T1, T2>::instance;
 
 	template<typename T1, typename T2>
-	TypeAlias< TypePair<T1, T2> > get_type_alias(typename TypePair<T1, T2>::ValueType const&)
-		{ return TypeAlias< typename TypePair<T1, T2>::ValueType >(TypePair<T1, T2>::instance); }
+	TypeAlias< std::pair<T1, T2> > get_type_alias(typename std::pair<T1, T2> const&)
+		{ return TypeAlias< std::pair<T1, T2> >(TypePair<T1, T2>::instance); }
 }
 
 
