@@ -48,11 +48,10 @@
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
-export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
-if [ -z $TOOLCHAIN ]; then
-export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
+if [ -z $ARCH ]; then
+    export ARCH="32"
 fi
 if [ -z $DEBUG ]; then
 	export DEBUG=1
@@ -66,17 +65,14 @@ export DISTPREFIX=$WORKSPACE/dist
 export SRCPREFIX=`dirname "$0"`
 SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
-if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
-    export ARCH=32
-elif [[ $TOOLCHAIN == "mingw64-x86_64" ]]; then
+    export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
-    export ARCH=32
-elif [[ $TOOLCHAIN == "mingw" ]]; then
-    export TOOLCHAIN_HOST="i686-pc-mingw32"
-else
-    echo "Error: Unknown toolchain"
-    exit 1
+    export TOOLCHAIN="mingw64-x86_64"
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
 fi
 
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
