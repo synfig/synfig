@@ -62,7 +62,8 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Layer_SkeletonDeformation::Layer_SkeletonDeformation()
+Layer_SkeletonDeformation::Layer_SkeletonDeformation():
+	param_name(ValueBase((const char*)"skeleton_deformation"))
 {
 	max_texture_scale = 1.f;
 	param_bones.set_list_of(std::vector<BonePair>(1));
@@ -166,7 +167,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 			{
 				const BonePair &bone_pair = i->get(BonePair());
 				Bone::Shape shape0 = bone_pair.first.get_shape();
-				Bone::Shape shape1 = bone_pair.first.get_shape();
+				Bone::Shape shape1 = bone_pair.second.get_shape();
 
 				Matrix into_bone(
 					shape0.p1[0] - shape0.p0[0], shape0.p1[1] - shape0.p0[1], 0.0,
