@@ -28,6 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "layer_meshtransform.h"
+#include "pair.h"
+#include "bone.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,6 +52,8 @@ private:
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 
 public:
+	typedef std::pair<Bone, Bone> BonePair;
+
 	//! Default constructor
 	Layer_SkeletonDeformation();
 	//! Destructor

@@ -37,8 +37,6 @@
 #include "value.h"
 #include "valuenode.h"
 #include "canvas.h"
-#include "bone.h"
-#include "skeletondeformationentry.h"
 
 
 #endif
@@ -67,27 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 Layer_SkeletonDeformation::Layer_SkeletonDeformation()
 {
 	max_texture_scale = 1.f;
-	std::vector<SkeletonDeformationEntry> bones;
-
-	SkeletonDeformationEntry entry0;
-	entry0.r0 = 0.25;
-	entry0.r1 = 0.25;
-	entry0.initial_p0 = Vector(0.0, 0.0);
-	entry0.initial_p1 = Vector(1.0, 0.0);
-	entry0.current_p0 = Vector(0.0, 0.0);
-	entry0.current_p1 = Vector(1.0, 0.0).rotate(Angle::deg(30.0));
-	bones.push_back(entry0);
-
-	SkeletonDeformationEntry entry1;
-	entry1.r0 = 0.25;
-	entry1.r1 = 0.25;
-	entry1.initial_p0 = entry0.initial_p1;
-	entry1.initial_p1 = entry1.initial_p0 + Vector(1.0, 0.0);
-	entry1.current_p0 = entry0.current_p1;
-	entry1.current_p1 = entry1.current_p0 + Vector(1.0, 0.0).rotate(Angle::deg(-45.0));
-	bones.push_back(entry1);
-
-	param_bones.set_list_of(bones);
+	param_bones.set_list_of(std::vector<BonePair>(1));
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -184,25 +162,28 @@ Layer_SkeletonDeformation::prepare_mesh()
 		const ValueBase::List &bones = param_bones.get_list();
 		for(ValueBase::List::const_iterator i = bones.begin(); i != bones.end(); ++i)
 		{
-			if (i->can_get(SkeletonDeformationEntry()))
+			if (i->can_get(BonePair()))
 			{
-				const SkeletonDeformationEntry &entry = i->get(SkeletonDeformationEntry());
+				const BonePair &bone_pair = i->get(BonePair());
+				Bone::Shape shape0 = bone_pair.first.get_shape();
+				Bone::Shape shape1 = bone_pair.first.get_shape();
+
 				Matrix into_bone(
-					entry.initial_p1[0] - entry.initial_p0[0], entry.initial_p1[1] - entry.initial_p0[1], 0.0,
-					entry.initial_p0[1] - entry.initial_p1[1], entry.initial_p1[0] - entry.initial_p0[0], 0.0,
-					entry.initial_p0[0], entry.initial_p0[1], 1.0
+					shape0.p1[0] - shape0.p0[0], shape0.p1[1] - shape0.p0[1], 0.0,
+					shape0.p0[1] - shape0.p1[1], shape0.p1[0] - shape0.p0[0], 0.0,
+					shape0.p0[0], shape0.p0[1], 1.0
 				);
 				into_bone.invert();
 				Matrix from_bone(
-					entry.current_p1[0] - entry.current_p0[0], entry.current_p1[1] - entry.current_p0[1], 0.0,
-					entry.current_p0[1] - entry.current_p1[1], entry.current_p1[0] - entry.current_p0[0], 0.0,
-					entry.current_p0[0], entry.current_p0[1], 1.0
+					shape1.p1[0] - shape1.p0[0], shape1.p1[1] - shape1.p0[1], 0.0,
+					shape1.p0[1] - shape1.p1[1], shape1.p1[0] - shape1.p0[0], 0.0,
+					shape1.p0[0], shape1.p0[1], 1.0
 				);
 				Matrix matrix = into_bone * from_bone;
 
 				for(std::vector<GridPoint>::iterator j = grid.begin(); j != grid.end(); ++j)
 				{
-					Real distance = distance_to_line(entry.initial_p0, entry.initial_p1, j->initial);
+					Real distance = distance_to_line(shape0.p0, shape0.p1, j->initial);
 					if (distance < epsilon) distance = epsilon;
 					Real weight = 1.0/(distance*distance);
 					j->summary += matrix.get_transformed(j->initial) * weight;
