@@ -45,7 +45,6 @@
 #include "time.h"
 #include "segment.h"
 #include "color.h"
-#include "skeletondeformationentry.h"
 
 #endif
 
@@ -593,5 +592,4 @@ namespace synfig {
 	Type &type_bone_object		= TypeBoneObject::instance;
 	Type &type_bone_valuenode	= TypeBoneValueNode::instance;
 	Type &type_transformation	= TypeTransformation::instance;
-	Type &type_skeleton_deformation_entry = TypeSkeletonDeformationEntry::instance;
 }; // END of namespace synfig
