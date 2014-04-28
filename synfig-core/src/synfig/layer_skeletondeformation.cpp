@@ -142,7 +142,7 @@ Layer_SkeletonDeformation::prepare_mesh()
 	// TODO: custom grid size
 	// TODO: build grid with dynamic size
 
-	const Real recommended_grid_step = 0.05;
+	const Real recommended_grid_step = 0.1;
 	const Real grid_size = 10.0;
 	const int grid_side_count = (int)roundf(grid_size / recommended_grid_step) + 1;
 	const Real grid_step = grid_size / (Real)(grid_side_count - 1);
