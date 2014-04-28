@@ -41,6 +41,7 @@
 #include <list>
 #include <algorithm>
 #include "canvas.h"
+#include "pair.h"
 
 #endif
 
@@ -132,6 +133,50 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	if (type == type_bone_weight_pair)
 	{
 		ret=ValueNode_Const::create(BoneWeightPair(Bone(), next.get(BoneWeightPair()).get_weight()), get_parent_canvas());
+	}
+	else
+	if (type == types_namespace::TypePair<Bone, Bone>::instance)
+	{
+		ValueNode::Handle value_node(list[index]);
+		if (ValueNode_Composite::Handle value_node_composite = ValueNode_Composite::Handle::cast_dynamic(value_node))
+		{
+			ValueNode_Bone::Handle fisrt_bone_node = ValueNode_Bone::Handle::cast_dynamic(value_node_composite->get_link("first"));
+			ValueNode_Bone::Handle second_bone_node = ValueNode_Bone::Handle::cast_dynamic(value_node_composite->get_link("second"));
+			if (fisrt_bone_node && second_bone_node)
+			{
+				std::pair<Bone, Bone> new_pair;
+
+				{ // first
+					ValueNode_Bone::Handle &value_node_bone = fisrt_bone_node;
+					Bone &new_bone = new_pair.first;
+
+					const Bone &bone = (*value_node_bone)(time).get(Bone());
+					new_bone.set_parent(value_node_bone.get());
+					Real length(bone.get_length());
+					Real width(bone.get_tipwidth());
+					new_bone.set_origin(Point(1.1*length,0));
+					new_bone.set_width(width);
+					new_bone.set_tipwidth(width);
+				}
+
+				{ // second
+					ValueNode_Bone::Handle &value_node_bone = second_bone_node;
+					Bone &new_bone = new_pair.second;
+
+					const Bone &bone = (*value_node_bone)(time).get(Bone());
+					new_bone.set_parent(value_node_bone.get());
+					Real length(bone.get_length());
+					Real width(bone.get_tipwidth());
+					new_bone.set_origin(Point(1.1*length,0));
+					new_bone.set_width(width);
+					new_bone.set_tipwidth(width);
+				}
+
+				ret=ValueNode_Const::create(new_pair, get_parent_canvas());
+			}
+		}
+		else
+			ret=ValueNode_Const::create(type_bone_object, get_parent_canvas());
 	}
 	else
 	{
@@ -267,6 +312,7 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
 	{
+		// TODO: both cases is identical, see constructor of ValueNode_Const
 		if (type == type_bone_object)
 		{
 			ValueNode::Handle item(ValueNode_Bone::create(*iter));

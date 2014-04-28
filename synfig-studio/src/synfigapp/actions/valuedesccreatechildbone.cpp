@@ -133,13 +133,19 @@ Action::ValueDescCreateChildBone::prepare()
 	 || !value_desc.get_parent_desc().is_value_node() )
 			throw Error(Error::TYPE_NOTREADY);
 
+	const ValueDesc &parent_desc =
+		value_desc.get_parent_desc().parent_is_value_node()
+	 && value_desc.get_parent_desc().is_parent_desc_declared()
+	 && value_desc.get_parent_desc().get_parent_desc().is_value_node()
+	  ? value_desc.get_parent_desc().get_parent_desc()
+	  : value_desc.get_parent_desc();
+
 	Action::Handle action = ValueNodeStaticListInsertSmart::create();
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", get_canvas_interface());
-	action->set_param("value_desc", value_desc.get_parent_desc());
+	action->set_param("value_desc", parent_desc);
 	action->set_param("time", time);
 
-	assert(action->is_ready());
 	if (!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);
 	add_action_front(action);

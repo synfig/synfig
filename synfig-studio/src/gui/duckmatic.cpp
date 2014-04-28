@@ -2789,7 +2789,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							synfigapp::ValueDesc(
 								value_node_composite,
 								value_node_composite->get_link_index_from_name(edit_second ? "second" : "first"),
-								value_desc ),
+								synfigapp::ValueDesc(value_node,i,value_desc) ),
 							canvas_view,
 							transform_stack );
 					}
