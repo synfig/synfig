@@ -2774,6 +2774,27 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 			}
+			else
+			if (value_node->get_contained_type() == types_namespace::TypePair<Bone, Bone>::instance)
+			{
+				bool edit_second = value_desc.parent_is_layer_param() && value_desc.get_layer()->active();
+				for(i=0;i<value_node->link_count();i++)
+				{
+					ValueNode_Composite::Handle value_node_composite =
+						ValueNode_Composite::Handle::cast_dynamic(
+							value_node->get_link(i) );
+					if (value_node_composite)
+					{
+						add_to_ducks(
+							synfigapp::ValueDesc(
+								value_node_composite,
+								value_node_composite->get_link_index_from_name(edit_second ? "second" : "first"),
+								value_desc ),
+							canvas_view,
+							transform_stack );
+					}
+				}
+			}
 
 			return false;
 		}
@@ -2981,27 +3002,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						continue;
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
-				}
-			}
-			else
-			if (value_node->get_contained_type() == types_namespace::TypePair<Bone, Bone>::instance)
-			{
-				bool edit_second = value_desc.parent_is_layer_param() && value_desc.get_layer()->active();
-				for(i=0;i<value_node->link_count();i++)
-				{
-					ValueNode_Composite::Handle value_node_composite =
-						ValueNode_Composite::Handle::cast_dynamic(
-							value_node->get_link(i) );
-					if (value_node_composite)
-					{
-						add_to_ducks(
-							synfigapp::ValueDesc(
-								value_node_composite,
-								value_node_composite->get_link_index_from_name(edit_second ? "second" : "first"),
-								value_desc ),
-							canvas_view,
-							transform_stack );
-					}
 				}
 			}
 			else

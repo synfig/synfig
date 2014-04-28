@@ -46,6 +46,7 @@
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_wplist.h>
 #include <synfig/valuenode_dilist.h>
+#include <synfig/pair.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -279,6 +280,20 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 						}
 						else
 						if (type == type_bone_object)
+						{
+							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							{
+								value_node=LinkableValueNode::create("dynamic_list",iter->second,canvas);
+								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+							}
+							else // this is the default
+							{
+								value_node=LinkableValueNode::create("static_list",iter->second,canvas);
+								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+							}
+						}
+						else
+						if (type == types_namespace::TypePair<Bone, Bone>::instance)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
