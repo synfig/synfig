@@ -1417,7 +1417,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		load_settings("pref.ui_language");
 		if (ui_language != "os_LANG")
 		{
-			setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
+			Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
 		}
 
 		// Set experimental features
