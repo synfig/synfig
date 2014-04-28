@@ -55,7 +55,7 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Layer_SkeletonDeformation);
 SYNFIG_LAYER_SET_NAME(Layer_SkeletonDeformation,"skeleton_deformation");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SkeletonDeformation,N_("SkeletonDeformation"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SkeletonDeformation,N_("Skeleton Deformation"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SkeletonDeformation,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_SkeletonDeformation,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
@@ -142,8 +142,8 @@ Layer_SkeletonDeformation::prepare_mesh()
 	// TODO: custom grid size
 	// TODO: build grid with dynamic size
 
-	const Real recommended_grid_step = 0.1;
-	const Real grid_size = 10.0;
+	const Real recommended_grid_step = 0.25;
+	const Real grid_size = 8.0;
 	const int grid_side_count = (int)roundf(grid_size / recommended_grid_step) + 1;
 	const Real grid_step = grid_size / (Real)(grid_side_count - 1);
 
