@@ -132,19 +132,30 @@ RendererSoftware::render_triangle(
 	Real alpha,
 	Color::BlendMethod blend_method )
 {
+	if (t0[0] < 0.0 && t1[0] < 0.0 && t2[0] < 0.0) return;
+	if (t0[1] < 0.0 && t1[1] < 0.0 && t2[1] < 0.0) return;
+
 	// convert points to int
 	IntVector ip0(p0), ip1(p1), ip2(p2);
 	if (ip0 == ip1 || ip0 == ip2 || ip1 == ip2) return;
 
+	if (ip0.x < 0 && ip1.x < 0 && ip2.x < 0) return;
+	if (ip0.y < 0 && ip1.y < 0 && ip2.y < 0) return;
+
 	int width = target_surface.get_w();
 	int height = target_surface.get_h();
 	if (width == 0 || height == 0) return;
+
+	if (ip0.x >= width && ip1.x >= width && ip2.x >= width) return;
+	if (ip0.y >= height && ip1.y >= height && ip2.y >= height) return;
 
 	int tex_width = texture.get_w();
 	int tex_height = texture.get_h();
 	if (tex_width == 0 || tex_height == 0) return;
 	Vector tex_size = Vector(Real(tex_width), Real(tex_height));
 
+	if (t0[0] > tex_size[0] && t1[0] > tex_size[0] && t2[0] > tex_size[0]) return;
+	if (t0[1] > tex_size[1] && t1[1] > tex_size[1] && t2[1] > tex_size[1]) return;
 
 	// prepare texture matrix
 	Matrix matrix_of_texture_triangle(
