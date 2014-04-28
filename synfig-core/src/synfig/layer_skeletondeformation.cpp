@@ -62,8 +62,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Layer_SkeletonDeformation::Layer_SkeletonDeformation():
-	param_name(ValueBase((const char*)"skeleton_deformation"))
+Layer_SkeletonDeformation::Layer_SkeletonDeformation()
 {
 	max_texture_scale = 1.f;
 	param_bones.set_list_of(std::vector<BonePair>(1));
