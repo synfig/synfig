@@ -29,9 +29,11 @@ LAYER_ACTION_HH = \
 	actions/layerparamunsetstatic.h\
 	actions/layerraise.h \
 	actions/layerremove.h \
+	actions/layerresetpose.h \
 	actions/layersetdesc.h \
 	actions/layersetexcludefromrendering.h \
 	actions/layerzdepthrangeset.h
+	
 
 LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
@@ -55,6 +57,7 @@ LAYER_ACTION_CC = \
 	actions/layerparamunsetstatic.cpp\
 	actions/layerraise.cpp \
 	actions/layerremove.cpp \
+	actions/layerresetpose.cpp \
 	actions/layersetdesc.cpp \
 	actions/layersetexcludefromrendering.cpp \
 	actions/layerzdepthrangeset.cpp
@@ -72,7 +75,8 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedescremovesmart.h \
 	actions/valuedescbonelink.h \
 	actions/valuedescskeletonlink.h \
-	actions/valuedesccreatechildbone.h
+	actions/valuedesccreatechildbone.h \
+	actions/valuedescresetpose.h
 
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp \
@@ -86,7 +90,8 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescremovesmart.cpp \
 	actions/valuedescbonelink.cpp \
 	actions/valuedescskeletonlink.cpp \
-	actions/valuedesccreatechildbone.cpp
+	actions/valuedesccreatechildbone.cpp \
+	actions/valuedescresetpose.cpp
 
 
 VALUENODE_ACTION_HH = \

@@ -344,7 +344,8 @@ Action::ValueDescSet::prepare()
 	// we need to distribute the changes to the
 	// individual parts
 	// except if we are TYPE WIDTHPOINT which is handled individually
-	if(value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+	if (value_desc.is_value_node()
+	 && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 	 && value_desc.get_value_node()->get_type()!=type_width_point)
 	{
 		ValueBase components[8];
@@ -427,6 +428,48 @@ Action::ValueDescSet::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
+			action->set_param("value_desc",component_value_desc);
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
+		}
+		return;
+	}
+
+	// If we are a bone value node, then
+	// we need to distribute the changes to the
+	// individual parts except 'parent' and 'name' fields
+	if (value.get_type() == type_bone_object
+	 && ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueNode_Bone::Handle bone_value_node =
+			ValueNode_Bone::Handle::cast_dynamic(
+				value_desc.get_value_node() );
+		const Bone &bone = value.get(Bone());
+
+		typedef std::pair<String, ValueBase> KeyValue;
+		std::pair<String, ValueBase> values[] = {
+			KeyValue("origin",   bone.get_origin()),
+			KeyValue("angle",    bone.get_angle()),
+			KeyValue("scalelx",  bone.get_scalelx()),
+			KeyValue("width",    bone.get_width()),
+			KeyValue("scalex",   bone.get_scalex()),
+			KeyValue("tipwidth", bone.get_tipwidth()),
+			KeyValue("length",   bone.get_length())
+		};
+
+		for(int i = 0; i < (int)(sizeof(values)/sizeof(values[0])); ++i)
+		{
+			ValueDesc component_value_desc(
+				bone_value_node,
+				bone_value_node->get_link_index_from_name(values[i].first));
+			Action::Handle action(Action::create("ValueDescSet"));
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",values[i].second);
 			action->set_param("value_desc",component_value_desc);
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
