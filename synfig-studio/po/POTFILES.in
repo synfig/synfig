@@ -215,8 +215,8 @@ src/gui/workarearenderer/renderer_grid.cpp
 src/gui/workarearenderer/renderer_grid.h
 src/gui/workarearenderer/renderer_guides.cpp
 src/gui/workarearenderer/renderer_guides.h
-src/gui/workarearenderer/renderer_timecode.cpp
-src/gui/workarearenderer/renderer_timecode.h
+src/gui/workarearenderer/renderer_keyframe.cpp
+src/gui/workarearenderer/renderer_keyframe.h
 src/gui/workarearenderer/workarearenderer.cpp
 src/gui/workarearenderer/workarearenderer.h
 src/gui/adjust_window.cpp

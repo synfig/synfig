@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_timecode.h
+/*!	\file renderer_keyframe.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_TIMECODE_H
-#define __SYNFIG_RENDERER_TIMECODE_H
+#ifndef __SYNFIG_RENDERER_KEYFRAME_H
+#define __SYNFIG_RENDERER_KEYFRAME_H
 
 /* === H E A D E R S ======================================================= */
 

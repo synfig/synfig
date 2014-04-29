@@ -329,7 +329,7 @@ public:
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
 
-	// used in renderer_timecode.cpp
+	// used in renderer_keyframe.cpp
 	int timecode_width, timecode_height;
 
 	// used in renderer_bonesetup.cpp

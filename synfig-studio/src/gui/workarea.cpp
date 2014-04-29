@@ -69,7 +69,7 @@
 #include "workarearenderer/renderer_canvas.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
-#include "workarearenderer/renderer_timecode.h"
+#include "workarearenderer/renderer_keyframe.h"
 #include "workarearenderer/renderer_bonesetup.h"
 #include "workarearenderer/renderer_ducks.h"
 #include "workarearenderer/renderer_dragbox.h"

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_timecode.cpp
+/*!	\file renderer_keyframe.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -31,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include "renderer_timecode.h"
+#include "renderer_keyframe.h"
 #include "workarea.h"
 #include <pangomm/layout.h>
 #include <pangomm/context.h>
