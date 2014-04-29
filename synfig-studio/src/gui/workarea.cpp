@@ -992,8 +992,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	show_grid(false),
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
-	timecode_width(0),
-	timecode_height(0),
+	keyframe_width(0),
+	keyframe_height(0),
 	bonesetup_width(0),
 	bonesetup_height(0)
 {
@@ -1030,7 +1030,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_Ducks,		300);
 	insert_renderer(new Renderer_BBox,		399);
 	insert_renderer(new Renderer_Dragbox,	400);
-	insert_renderer(new Renderer_Timecode,	500);
+	insert_renderer(new Renderer_Keyframe,	500);
 	insert_renderer(new Renderer_BoneSetup,	501);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
@@ -3297,10 +3297,10 @@ WorkArea::queue_scroll()
 
 	draw_area_window->scroll(-dx,-dy);
 
-	if (timecode_width && timecode_height)
+	if (keyframe_width && keyframe_height)
 	{
-		drawing_area->queue_draw_area(timecode_x,    timecode_y,    timecode_x+timecode_width,    timecode_y+timecode_height);
-		drawing_area->queue_draw_area(timecode_x-dx, timecode_y-dy, timecode_x-dx+timecode_width, timecode_y-dy+timecode_height);
+		drawing_area->queue_draw_area(keyframe_x, keyframe_y, keyframe_x+keyframe_width, keyframe_y+keyframe_height);
+		drawing_area->queue_draw_area(keyframe_x-dx, keyframe_y-dy, keyframe_x-dx+keyframe_width, keyframe_y-dy+keyframe_height);
 	}
 
 	if (bonesetup_width && bonesetup_height)

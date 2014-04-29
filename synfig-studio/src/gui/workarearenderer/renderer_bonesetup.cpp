@@ -101,7 +101,7 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,
 			get_work_area()->bonesetup_height = int(h*1.0/Pango::SCALE);
 		}
 		else
-			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
+			get_work_area()->bonesetup_width = get_work_area()->bonesetup_height = 0;
 
 		drawable->draw_layout(gc, bonesetup_x, bonesetup_y, layout);
 	}

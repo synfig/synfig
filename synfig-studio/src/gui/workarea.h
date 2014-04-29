@@ -330,7 +330,7 @@ public:
 	GuideList::iterator curr_guide;
 
 	// used in renderer_keyframe.cpp
-	int timecode_width, timecode_height;
+	int keyframe_width, keyframe_height;
 
 	// used in renderer_bonesetup.cpp
 	int bonesetup_width, bonesetup_height;

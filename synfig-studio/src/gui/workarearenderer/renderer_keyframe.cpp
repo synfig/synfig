@@ -58,26 +58,20 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_Timecode::~Renderer_Timecode()
+Renderer_Keyframe::~Renderer_Keyframe()
 {
 }
 
 bool
-Renderer_Timecode::get_enabled_vfunc()const
+Renderer_Keyframe::get_enabled_vfunc()const
 {
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	return (canvas->rend_desc().get_time_start()!=canvas->rend_desc().get_time_end() ||
 		canvas->get_time()!=canvas->rend_desc().get_time_start());
 }
 
-synfig::Vector
-Renderer_Timecode::get_grid_size()const
-{
-	return get_work_area()->get_grid_size();
-}
-
 void
-Renderer_Timecode::render_vfunc(
+Renderer_Keyframe::render_vfunc(
 	const Glib::RefPtr<Gdk::Drawable>& drawable,
 	const Gdk::Rectangle& /*expose_area*/
 )
@@ -86,14 +80,12 @@ Renderer_Timecode::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
-	//Warning: Unused variable focus_point
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	synfig::Time cur_time(canvas->get_time());
 
-	// Print out the timecode
+	// Print out the keyframe(s)
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
@@ -102,12 +94,12 @@ Renderer_Timecode::render_vfunc(
 			int w, h;
 			layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
 			layout->get_size(w, h);
-			get_work_area()->timecode_width = int(w*1.0/Pango::SCALE);
-			get_work_area()->timecode_height = int(h*1.0/Pango::SCALE);
+			get_work_area()->keyframe_width = int(w*1.0/Pango::SCALE);
+			get_work_area()->keyframe_height = int(h*1.0/Pango::SCALE);
 		}
 		catch(synfig::Exception::NotFound)
 		{
-			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
+			get_work_area()->keyframe_width = get_work_area()->keyframe_height = 0;
 			return;
 		}
 		catch(...) {
