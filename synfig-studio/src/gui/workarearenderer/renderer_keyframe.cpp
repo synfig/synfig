@@ -76,32 +76,89 @@ Renderer_Keyframe::render_vfunc(
 	const Gdk::Rectangle& /*expose_area*/
 )
 {
-	assert(get_work_area());
-	if(!get_work_area())
+	WorkArea* workarea=get_work_area();
+	assert(workarea);
+	if(!workarea)
 		return;
+	int drawable_w,drawable_h;
+	drawable->get_size(drawable_w,drawable_h);
+
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
-	synfig::Time cur_time(canvas->get_time());
+	KeyframeList keyframe_list=canvas->keyframe_list();
 
+	synfig::Time cur_time(canvas->get_time());
+	synfig::Time prev_time, next_time;
+	// Find out previous and next keyframes
+	try{
+		KeyframeList::iterator prev;
+		prev=keyframe_list.find_prev(cur_time);
+		prev_time=prev->get_time();
+		}
+	catch(synfig::Exception::NotFound)
+	{
+		prev_time=Time::begin();
+	}
+	try{
+		KeyframeList::iterator next;
+		next=keyframe_list.find_next(cur_time);
+		next_time=next->get_time();
+		}
+	catch(synfig::Exception::NotFound)
+	{
+		next_time=Time::end();
+	}
 	// Print out the keyframe(s)
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
-
+		Glib::RefPtr<Pango::Layout> layout_prev(Pango::Layout::create(get_work_area()->get_pango_context()));
+		Glib::RefPtr<Pango::Layout> layout_next(Pango::Layout::create(get_work_area()->get_pango_context()));
 		try
 		{
 			int w, h;
-			layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
+			layout->set_text("<<"+keyframe_list.find(cur_time)->get_description()+">>");
 			layout->get_size(w, h);
 			get_work_area()->keyframe_width = int(w*1.0/Pango::SCALE);
 			get_work_area()->keyframe_height = int(h*1.0/Pango::SCALE);
 		}
 		catch(synfig::Exception::NotFound)
 		{
+			// central keyframe won't print
 			get_work_area()->keyframe_width = get_work_area()->keyframe_height = 0;
-			return;
-		}
+			// Lets see if we can print the other keyframes
+			if(prev_time!=Time::begin())
+			{
+				int w, h;
+				layout_prev->set_text(keyframe_list.find(prev_time)->get_description());
+				layout_prev->get_size(w, h);
+				get_work_area()->keyframe_prev_width = int(w*1.0/Pango::SCALE);
+				get_work_area()->keyframe_prev_height = int(h*1.0/Pango::SCALE);
+			}
+			else
+				get_work_area()->keyframe_prev_width = get_work_area()->keyframe_prev_height = 0;
+			if(next_time!=Time::end())
+			{
+				int w, h;
+				layout_next->set_text(keyframe_list.find(next_time)->get_description());
+				layout_next->get_size(w, h);
+				get_work_area()->keyframe_next_width = int(w*1.0/Pango::SCALE);
+				get_work_area()->keyframe_next_height = int(h*1.0/Pango::SCALE);
+			}
+			else
+				get_work_area()->keyframe_next_width = get_work_area()->keyframe_next_height = 0;
+			cr->save();
+
+			cr->set_source_rgb(95.0/255.0,0,0);
+			// move to center of screen
+			cr->move_to(4,4);
+			layout_prev->show_in_cairo_context(cr);
+			cr->move_to(drawable_w-workarea->keyframe_next_width-4,4);
+			layout_next->show_in_cairo_context(cr);
+
+			cr->restore();
+			}
 		catch(...) {
 			assert(0);
 		}
@@ -109,7 +166,8 @@ Renderer_Keyframe::render_vfunc(
 		cr->save();
 
 		cr->set_source_rgb(95.0/255.0,0,0);
-		cr->move_to(4,4);
+		// move to center of screen
+		cr->move_to((drawable_w-workarea->keyframe_width)*0.5,4);
 		layout->show_in_cairo_context(cr);
 
 		cr->restore();
