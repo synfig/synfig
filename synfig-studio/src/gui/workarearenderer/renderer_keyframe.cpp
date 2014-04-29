@@ -120,21 +120,25 @@ Renderer_Keyframe::render_vfunc(
 			int w, h;
 			layout->set_text("<<"+keyframe_list.find(cur_time)->get_description()+">>");
 			layout->get_size(w, h);
-			get_work_area()->keyframe_width = int(w*1.0/Pango::SCALE);
-			get_work_area()->keyframe_height = int(h*1.0/Pango::SCALE);
+			workarea->keyframe_width = int(w*1.0/Pango::SCALE);
+			workarea->keyframe_height = int(h*1.0/Pango::SCALE);
+			workarea->keyframe_x=(drawable_w-workarea->keyframe_width)*0.5;
+			workarea->keyframe_y=4;
 		}
 		catch(synfig::Exception::NotFound)
 		{
 			// central keyframe won't print
-			get_work_area()->keyframe_width = get_work_area()->keyframe_height = 0;
+			workarea->keyframe_width = get_work_area()->keyframe_height = 0;
 			// Lets see if we can print the other keyframes
 			if(prev_time!=Time::begin())
 			{
 				int w, h;
 				layout_prev->set_text(keyframe_list.find(prev_time)->get_description());
 				layout_prev->get_size(w, h);
-				get_work_area()->keyframe_prev_width = int(w*1.0/Pango::SCALE);
-				get_work_area()->keyframe_prev_height = int(h*1.0/Pango::SCALE);
+				workarea->keyframe_prev_width = int(w*1.0/Pango::SCALE);
+				workarea->keyframe_prev_height = int(h*1.0/Pango::SCALE);
+				workarea->keyframe_prev_x=4;
+				workarea->keyframe_prev_y=4;
 			}
 			else
 				get_work_area()->keyframe_prev_width = get_work_area()->keyframe_prev_height = 0;
@@ -143,18 +147,20 @@ Renderer_Keyframe::render_vfunc(
 				int w, h;
 				layout_next->set_text(keyframe_list.find(next_time)->get_description());
 				layout_next->get_size(w, h);
-				get_work_area()->keyframe_next_width = int(w*1.0/Pango::SCALE);
-				get_work_area()->keyframe_next_height = int(h*1.0/Pango::SCALE);
+				workarea->keyframe_next_width = int(w*1.0/Pango::SCALE);
+				workarea->keyframe_next_height = int(h*1.0/Pango::SCALE);
+				workarea->keyframe_next_x=drawable_w-workarea->keyframe_next_width-4;
+				workarea->keyframe_next_y=4;
 			}
 			else
-				get_work_area()->keyframe_next_width = get_work_area()->keyframe_next_height = 0;
+				workarea->keyframe_next_width = workarea->keyframe_next_height = 0;
 			cr->save();
 
 			cr->set_source_rgb(95.0/255.0,0,0);
 			// move to center of screen
-			cr->move_to(4,4);
+			cr->move_to(workarea->keyframe_prev_x, workarea->keyframe_prev_y);
 			layout_prev->show_in_cairo_context(cr);
-			cr->move_to(drawable_w-workarea->keyframe_next_width-4,4);
+			cr->move_to(workarea->keyframe_next_x, workarea->keyframe_next_y);
 			layout_next->show_in_cairo_context(cr);
 
 			cr->restore();
@@ -167,7 +173,7 @@ Renderer_Keyframe::render_vfunc(
 
 		cr->set_source_rgb(95.0/255.0,0,0);
 		// move to center of screen
-		cr->move_to((drawable_w-workarea->keyframe_width)*0.5,4);
+		cr->move_to(workarea->keyframe_x, workarea->keyframe_y);
 		layout->show_in_cairo_context(cr);
 
 		cr->restore();

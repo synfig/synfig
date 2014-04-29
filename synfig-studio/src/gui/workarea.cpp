@@ -3302,7 +3302,16 @@ WorkArea::queue_scroll()
 		drawing_area->queue_draw_area(keyframe_x, keyframe_y, keyframe_x+keyframe_width, keyframe_y+keyframe_height);
 		drawing_area->queue_draw_area(keyframe_x-dx, keyframe_y-dy, keyframe_x-dx+keyframe_width, keyframe_y-dy+keyframe_height);
 	}
-
+	if (keyframe_prev_width && keyframe_prev_height)
+	{
+		drawing_area->queue_draw_area(keyframe_prev_x, keyframe_prev_y, keyframe_prev_x+keyframe_prev_width, keyframe_prev_y+keyframe_prev_height);
+		drawing_area->queue_draw_area(keyframe_prev_x-dx, keyframe_prev_y-dy, keyframe_prev_x-dx+keyframe_prev_width, keyframe_prev_y-dy+keyframe_prev_height);
+	}
+	if (keyframe_next_width && keyframe_next_height)
+	{
+		drawing_area->queue_draw_area(keyframe_next_x, keyframe_next_y, keyframe_next_x+keyframe_next_width, keyframe_next_y+keyframe_next_height);
+		drawing_area->queue_draw_area(keyframe_next_x-dx, keyframe_next_y-dy, keyframe_next_x-dx+keyframe_next_width, keyframe_next_y-dy+keyframe_next_height);
+	}
 	if (bonesetup_width && bonesetup_height)
 	{
 		drawing_area->queue_draw_area(bonesetup_x,    bonesetup_y,    bonesetup_x+bonesetup_width,    bonesetup_y+bonesetup_height);

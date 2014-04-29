@@ -333,6 +333,9 @@ public:
 	int keyframe_width, keyframe_height;
 	int keyframe_prev_width, keyframe_prev_height;
 	int keyframe_next_width, keyframe_next_height;
+	int keyframe_x, keyframe_y;
+	int keyframe_prev_x, keyframe_prev_y;
+	int keyframe_next_x, keyframe_next_y;
 
 	// used in renderer_bonesetup.cpp
 	int bonesetup_width, bonesetup_height;
