@@ -129,46 +129,48 @@ Renderer_Keyframe::render_vfunc(
 		{
 			// central keyframe won't print
 			workarea->keyframe_width = get_work_area()->keyframe_height = 0;
-			// Lets see if we can print the other keyframes
-			if(prev_time!=Time::begin())
-			{
-				int w, h;
-				layout_prev->set_text(keyframe_list.find(prev_time)->get_description());
-				layout_prev->get_size(w, h);
-				workarea->keyframe_prev_width = int(w*1.0/Pango::SCALE);
-				workarea->keyframe_prev_height = int(h*1.0/Pango::SCALE);
-				workarea->keyframe_prev_x=4;
-				workarea->keyframe_prev_y=4;
-			}
-			else
-				get_work_area()->keyframe_prev_width = get_work_area()->keyframe_prev_height = 0;
-			if(next_time!=Time::end())
-			{
-				int w, h;
-				layout_next->set_text(keyframe_list.find(next_time)->get_description());
-				layout_next->get_size(w, h);
-				workarea->keyframe_next_width = int(w*1.0/Pango::SCALE);
-				workarea->keyframe_next_height = int(h*1.0/Pango::SCALE);
-				workarea->keyframe_next_x=drawable_w-workarea->keyframe_next_width-4;
-				workarea->keyframe_next_y=4;
-			}
-			else
-				workarea->keyframe_next_width = workarea->keyframe_next_height = 0;
-			cr->save();
-
-			cr->set_source_rgb(95.0/255.0,0,0);
-			// move to center of screen
-			cr->move_to(workarea->keyframe_prev_x, workarea->keyframe_prev_y);
-			layout_prev->show_in_cairo_context(cr);
-			cr->move_to(workarea->keyframe_next_x, workarea->keyframe_next_y);
-			layout_next->show_in_cairo_context(cr);
-
-			cr->restore();
-			}
+		}
 		catch(...) {
 			assert(0);
 		}
+		// Lets see if we can print the other keyframes
+		if(prev_time!=Time::begin())
+		{
+			int w, h;
+			layout_prev->set_text(keyframe_list.find(prev_time)->get_description());
+			layout_prev->get_size(w, h);
+			workarea->keyframe_prev_width = int(w*1.0/Pango::SCALE);
+			workarea->keyframe_prev_height = int(h*1.0/Pango::SCALE);
+			workarea->keyframe_prev_x=4;
+			workarea->keyframe_prev_y=4;
+		}
+		else
+			get_work_area()->keyframe_prev_width = get_work_area()->keyframe_prev_height = 0;
+		if(next_time!=Time::end())
+		{
+			int w, h;
+			layout_next->set_text(keyframe_list.find(next_time)->get_description());
+			layout_next->get_size(w, h);
+			workarea->keyframe_next_width = int(w*1.0/Pango::SCALE);
+			workarea->keyframe_next_height = int(h*1.0/Pango::SCALE);
+			workarea->keyframe_next_x=drawable_w-workarea->keyframe_next_width-4;
+			workarea->keyframe_next_y=4;
+		}
+		else
+			workarea->keyframe_next_width = workarea->keyframe_next_height = 0;
+		// Print prev and next keyframes
+		cr->save();
 
+		cr->set_source_rgb(95.0/255.0,0,0);
+		// move to center of screen
+		cr->move_to(workarea->keyframe_prev_x, workarea->keyframe_prev_y);
+		layout_prev->show_in_cairo_context(cr);
+		cr->move_to(workarea->keyframe_next_x, workarea->keyframe_next_y);
+		layout_next->show_in_cairo_context(cr);
+
+		cr->restore();
+
+		// Print central keyframe
 		cr->save();
 
 		cr->set_source_rgb(95.0/255.0,0,0);
