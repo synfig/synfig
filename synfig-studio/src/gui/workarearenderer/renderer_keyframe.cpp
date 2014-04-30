@@ -80,35 +80,36 @@ Renderer_Keyframe::render_vfunc(
 	assert(workarea);
 	if(!workarea)
 		return;
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
-
+	int dw,dh;
+	drawable->get_size(dw,dh);
+	//TODO: Selectable xpad
+	const int xpad=4;
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	KeyframeList keyframe_list=canvas->keyframe_list();
 
-	synfig::Time cur_time(canvas->get_time());
-	synfig::Time prev_time, next_time;
+	synfig::Time c(canvas->get_time());
+	synfig::Time p, n;
 	// Find out previous and next keyframes
 	try{
 		KeyframeList::iterator prev;
-		prev=keyframe_list.find_prev(cur_time);
-		prev_time=prev->get_time();
+		prev=keyframe_list.find_prev(c);
+		p=prev->get_time();
 		}
 	catch(synfig::Exception::NotFound)
 	{
-		prev_time=Time::begin();
+		p=Time::begin();
 	}
 	try{
 		KeyframeList::iterator next;
-		next=keyframe_list.find_next(cur_time);
-		next_time=next->get_time();
+		next=keyframe_list.find_next(c);
+		n=next->get_time();
 		}
 	catch(synfig::Exception::NotFound)
 	{
-		next_time=Time::end();
+		n=Time::end();
 	}
 	// Print out the keyframe(s)
 	{
@@ -118,11 +119,11 @@ Renderer_Keyframe::render_vfunc(
 		try
 		{
 			int w, h;
-			layout->set_text("<<"+keyframe_list.find(cur_time)->get_description()+">>");
+			layout->set_text("<<"+keyframe_list.find(c)->get_description()+">>");
 			layout->get_size(w, h);
 			workarea->keyframe_width = int(w*1.0/Pango::SCALE);
 			workarea->keyframe_height = int(h*1.0/Pango::SCALE);
-			workarea->keyframe_x=(drawable_w-workarea->keyframe_width)*0.5;
+			workarea->keyframe_x=(dw-workarea->keyframe_width)*0.5;
 			workarea->keyframe_y=4;
 		}
 		catch(synfig::Exception::NotFound)
@@ -134,35 +135,49 @@ Renderer_Keyframe::render_vfunc(
 			assert(0);
 		}
 		// Lets see if we can print the other keyframes
-		if(prev_time!=Time::begin())
+		if(p!=Time::begin())
 		{
 			int w, h;
-			layout_prev->set_text(keyframe_list.find(prev_time)->get_description());
+			layout_prev->set_text(keyframe_list.find(p)->get_description());
 			layout_prev->get_size(w, h);
 			workarea->keyframe_prev_width = int(w*1.0/Pango::SCALE);
 			workarea->keyframe_prev_height = int(h*1.0/Pango::SCALE);
-			workarea->keyframe_prev_x=4;
-			workarea->keyframe_prev_y=4;
 		}
 		else
-			get_work_area()->keyframe_prev_width = get_work_area()->keyframe_prev_height = 0;
-		if(next_time!=Time::end())
+		{
+			workarea->keyframe_prev_width = workarea->keyframe_prev_height = 0;
+			p=canvas->rend_desc().get_time_start();
+		}
+		if(n!=Time::end())
 		{
 			int w, h;
-			layout_next->set_text(keyframe_list.find(next_time)->get_description());
+			layout_next->set_text(keyframe_list.find(n)->get_description());
 			layout_next->get_size(w, h);
 			workarea->keyframe_next_width = int(w*1.0/Pango::SCALE);
 			workarea->keyframe_next_height = int(h*1.0/Pango::SCALE);
-			workarea->keyframe_next_x=drawable_w-workarea->keyframe_next_width-4;
-			workarea->keyframe_next_y=4;
 		}
 		else
+		{
 			workarea->keyframe_next_width = workarea->keyframe_next_height = 0;
+			n=canvas->rend_desc().get_time_end();
+
+		}
+		// Calculate keyframe labels positions
+		if(c >= (n+p)/2)
+			workarea->keyframe_prev_x=xpad;
+		else
+			workarea->keyframe_prev_x=c*(dw/2-xpad)/(p-(n+p)/2)+xpad-(n+p)/2*(dw/2-xpad)/(p-(n+p)/2);
+		workarea->keyframe_prev_y=xpad;
+		if(c <= (n+p)/2)
+			workarea->keyframe_next_x=dw-workarea->keyframe_next_width-xpad;
+		else
+			workarea->keyframe_next_x=c*(dw/2-xpad)/((n+p)/2-n)+dw/2-n*(dw/2-xpad)/((n+p)/2-n);
+		workarea->keyframe_next_y=xpad;
 		// Print prev and next keyframes
 		cr->save();
-
+		// TODO: selectable color
 		cr->set_source_rgb(95.0/255.0,0,0);
-		// move to center of screen
+		// Previous keyframe
 		cr->move_to(workarea->keyframe_prev_x, workarea->keyframe_prev_y);
 		layout_prev->show_in_cairo_context(cr);
 		cr->move_to(workarea->keyframe_next_x, workarea->keyframe_next_y);
@@ -172,7 +187,7 @@ Renderer_Keyframe::render_vfunc(
 
 		// Print central keyframe
 		cr->save();
-
+		// TODO: selectable color
 		cr->set_source_rgb(95.0/255.0,0,0);
 		// move to center of screen
 		cr->move_to(workarea->keyframe_x, workarea->keyframe_y);
