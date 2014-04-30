@@ -1289,6 +1289,162 @@ CanvasParser::parse_angle(xmlpp::Element *element)
 	return Angle::deg(atof(val.c_str()));
 }
 
+ValueBase
+CanvasParser::parse_weighted_value(xmlpp::Element *element, types_namespace::TypeWeightedValueBase &type, Canvas::Handle canvas)
+{
+	assert(element->get_name()==type.description.name);
+
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <" + type.description.name + ">");
+		return ValueBase();
+	}
+
+	Real weight = 0.0;
+	ValueBase value;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="weight")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <weight>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			weight = parse_real(dynamic_cast<xmlpp::Element*>(*iter));
+		}
+		else
+		if(child->get_name()=="value")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <value>");
+				continue;
+			}
+
+			if((*iter)->get_name()!=type.get_contained_type().description.name)
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),type.get_contained_type().description.name);
+				continue;
+			}
+
+			value = parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+		}
+		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
+			error_unexpected_element(child,child->get_name());
+		}
+	}
+
+	return type.create_weighted_value(weight, value);
+}
+
+ValueBase
+CanvasParser::parse_pair(xmlpp::Element *element, types_namespace::TypePairBase &type, Canvas::Handle canvas)
+{
+	assert(element->get_name()==type.description.name);
+
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <" + type.description.name + ">");
+		return ValueBase();
+	}
+
+	ValueBase first;
+	ValueBase second;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="first")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <first>");
+				continue;
+			}
+
+			if((*iter)->get_name()!=type.get_first_type().description.name)
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),type.get_first_type().description.name);
+				continue;
+			}
+
+			first = parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+		}
+		else
+		if(child->get_name()=="second")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <second>");
+				continue;
+			}
+
+			if((*iter)->get_name()!=type.get_second_type().description.name)
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),type.get_second_type().description.name);
+				continue;
+			}
+
+			second = parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+		}
+		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
+			error_unexpected_element(child,child->get_name());
+		}
+	}
+
+	return type.create_value(first, second);
+}
+
 Interpolation
 CanvasParser::parse_interpolation(xmlpp::Element *element,String attribute)
 {
@@ -1442,7 +1598,13 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		return parse_dash_item(element);
 	else
 	if(element->get_name()=="transformation")
-		return parse_transformation(element);
+	{
+		ValueBase ret;
+		ret.set(parse_transformation(element));
+		ret.set_static(parse_static(element));
+		ret.set_interpolation(parse_interpolation(element,"interpolation"));
+		return ret;
+	}
 	else
 	if(element->get_name()=="canvas")
 	{
@@ -1453,6 +1615,34 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 	else
 	{
+		// template types
+		Type *type = Type::try_get_type_by_name(element->get_name());
+
+		{ // weighted value
+			types_namespace::TypeWeightedValueBase *type_weighted_value =
+				dynamic_cast<types_namespace::TypeWeightedValueBase*>(type);
+			if (type_weighted_value != NULL)
+			{
+				ValueBase ret = parse_weighted_value(element, *type_weighted_value, canvas);
+				ret.set_static(parse_static(element));
+				ret.set_interpolation(parse_interpolation(element,"interpolation"));
+				return ret;
+			}
+		}
+
+		{ // pair
+			types_namespace::TypePairBase *type_pair =
+				dynamic_cast<types_namespace::TypePairBase*>(type_pair);
+			if (type_pair != NULL)
+			{
+				ValueBase ret = parse_pair(element, *type_pair, canvas);
+				ret.set_static(parse_static(element));
+				ret.set_interpolation(parse_interpolation(element,"interpolation"));
+				return ret;
+			}
+		}
+
+		// else
 		printf("%s:%d\n", __FILE__, __LINE__);
 		error_unexpected_element(element,element->get_name());
 	}
