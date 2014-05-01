@@ -134,8 +134,8 @@ mknative()
 export CBUILD=""
 export CHOST=""
 export CTARGET=""
-export CC=""
-export CXX=""
+export CC="gcc"
+export CXX="g++"
 export F77=""
 export FC=""
 export GCJ=""
@@ -175,8 +175,12 @@ cd $WORKSPACE
 [ -e ${PKG_NAME}-${PKG_VERSION}.tar.gz ] || wget http://rpm5.org/files/popt/${PKG_NAME}-${PKG_VERSION}.tar.gz
 [ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
 cd ${PKG_NAME}-${PKG_VERSION}
-./autogen.sh
+./autogen.sh --noconfigure
+./configure --prefix=/usr/local --libdir=/usr/local/lib 
 make -j$THREADS install
+if [[ $ARCH==64 ]]; then
+	mv /usr/local/lib64/* /usr/local/lib
+fi
 
 # remove old version of popt
 [ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
@@ -436,6 +440,7 @@ $CYGWIN_SETUP \
 -P python \
 -P file-devel \
 -P zlib-devel \
+-P libdb-devel \
 -q
 
 # yum dependencies
