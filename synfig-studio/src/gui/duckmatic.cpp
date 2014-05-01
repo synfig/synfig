@@ -2785,18 +2785,19 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							value_node->get_link(i) );
 					if (value_node_composite)
 					{
-						add_to_ducks(
+						if (!add_to_ducks(
 							synfigapp::ValueDesc(
 								value_node_composite,
 								value_node_composite->get_link_index_from_name(edit_second ? "second" : "first"),
 								synfigapp::ValueDesc(value_node,i,value_desc) ),
 							canvas_view,
-							transform_stack );
+							transform_stack ))
+									return false;
 					}
 				}
 			}
-
-			return false;
+			else
+				return false;
 		}
 
 		else // Check for WPList
