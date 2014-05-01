@@ -48,10 +48,11 @@
 
 #================= EDIT THOSE VARIABLES BEFORE FIRST RUN! ======================
 
-export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export NSIS_BINARY="/cygdrive/c/synfig-build/NSIS/makensis.exe"
 export WORKSPACE="/cygdrive/c/synfig-build/"
-export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
+if [ -z $ARCH ]; then
+    export ARCH="32"
+fi
 if [ -z $DEBUG ]; then
 	export DEBUG=1
 fi
@@ -64,17 +65,14 @@ export DISTPREFIX=$WORKSPACE/dist
 export SRCPREFIX=`dirname "$0"`
 SRCPREFIX=$(cd "$SRCPREFIX/.."; pwd)
 
-if [[ $TOOLCHAIN == "mingw64-i686" ]]; then
+if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
-    export ARCH=32
-elif [[ $TOOLCHAIN == "mingw64-x86_64" ]]; then
+    export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
-    export ARCH=32
-elif [[ $TOOLCHAIN == "mingw" ]]; then
-    export TOOLCHAIN_HOST="i686-pc-mingw32"
-else
-    echo "Error: Unknown toolchain"
-    exit 1
+    export TOOLCHAIN="mingw64-x86_64"
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
 fi
 
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
@@ -136,8 +134,8 @@ mknative()
 export CBUILD=""
 export CHOST=""
 export CTARGET=""
-export CC=""
-export CXX=""
+export CC="gcc"
+export CXX="g++"
 export F77=""
 export FC=""
 export GCJ=""
@@ -177,8 +175,12 @@ cd $WORKSPACE
 [ -e ${PKG_NAME}-${PKG_VERSION}.tar.gz ] || wget http://rpm5.org/files/popt/${PKG_NAME}-${PKG_VERSION}.tar.gz
 [ -d ${PKG_NAME}-${PKG_VERSION} ] || tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.gz
 cd ${PKG_NAME}-${PKG_VERSION}
-./autogen.sh
+./autogen.sh --noconfigure
+./configure --prefix=/usr/local --libdir=/usr/local/lib 
 make -j$THREADS install
+if [[ $ARCH==64 ]]; then
+	mv /usr/local/lib64/* /usr/local/lib
+fi
 
 # remove old version of popt
 [ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
@@ -186,6 +188,9 @@ make -j$THREADS install
 
 mkrpm()
 {
+echo
+echo Building rpm...
+echo
 PKG_NAME=rpm
 #PKG_VERSION=4.11.1
 PKG_VERSION=4.10.3.1
@@ -433,6 +438,9 @@ $CYGWIN_SETUP \
 -P libiconv \
 -P libdb4.8-devel \
 -P python \
+-P file-devel \
+-P zlib-devel \
+-P libdb-devel \
 -q
 
 # yum dependencies
