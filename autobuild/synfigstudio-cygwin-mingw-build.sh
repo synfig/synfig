@@ -178,9 +178,7 @@ cd ${PKG_NAME}-${PKG_VERSION}
 ./autogen.sh --noconfigure
 ./configure --prefix=/usr/local --libdir=/usr/local/lib 
 make -j$THREADS install
-if [[ $ARCH==64 ]]; then
-	mv /usr/local/lib64/* /usr/local/lib
-fi
+mv /usr/local/lib64/* /usr/local/lib || true
 
 # remove old version of popt
 [ ! -e /usr/bin/cygpopt-0.dll ] || rm /usr/bin/cygpopt-0.dll
