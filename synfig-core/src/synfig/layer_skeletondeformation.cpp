@@ -187,9 +187,9 @@ Layer_SkeletonDeformation::prepare_mesh()
 					if (distance < epsilon) distance = epsilon;
 					Real weight =
 						// 1.0/distance;
-						// 1.0/(distance*distance);
+						1.0/(distance*distance);
 						// 1.0/(distance*distance*distance);
-						exp(-4.0*distance);
+						//exp(-4.0*distance);
 					j->summary += matrix.get_transformed(j->initial) * weight;
 					j->summary_weight += weight;
 				}
