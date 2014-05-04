@@ -30,6 +30,7 @@
 #include <cassert>
 #include <vector>
 #include <map>
+#include <typeinfo>
 #include "string.h"
 #include "general.h"
 
@@ -344,20 +345,31 @@ private:
 				if (i->second.first == &type)
 					map.erase(i++); else ++i;
 		}
+
+		~OperationBook() {
+			while(!map.empty())
+				map.begin()->second.first->deinitialize();
+		}
 	};
 
 	static Type *first, *last;
 	static TypeId last_identifier;
 
-	static std::vector<Type*> typesById;
-	static std::map<String, Type*> typesByName;
+	static struct StaticData {
+		std::vector<Type*> typesById;
+		std::map<String, Type*> typesByName;
+		~StaticData() { deinitialize_all(); }
+	} staticData;
 
 	Type *previous, *next;
 	bool initialized;
+	TypeId private_identifier;
 	Description private_description;
 
+	Type *clone_prev, *clone_next;
+
 public:
-	const TypeId identifier;
+	const TypeId &identifier;
 	const Description &description;
 
 protected:
@@ -369,24 +381,28 @@ private:
 	Type(const Type &):
 		previous(NULL), next(NULL),
 		initialized(false),
-		identifier(0), description(private_description) { assert(false); }
+		private_identifier(0),
+		clone_prev(NULL),
+		clone_next(NULL),
+		identifier(private_identifier),
+		description(private_description)
+	{ assert(false); }
 	// lock default assignment
 	Type& operator= (const Type &) { assert(false); return *this; }
 
 	void register_type()
 	{
 		// register id
-		if (typesById.size() <= identifier) typesById.resize(identifier + 1, NULL);
-		assert(typesById[identifier] == NULL);
-		typesById[identifier] = this;
+		if (staticData.typesById.size() <= identifier) staticData.typesById.resize(identifier + 1, NULL);
+		assert(staticData.typesById[identifier] == NULL);
+		staticData.typesById[identifier] = this;
 
 		// register names
-		assert(!typesByName.count(description.name));
-		typesByName[description.name] = this;
+		staticData.typesByName[description.name] = this;
 		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
 		{
-			assert(!typesByName.count(*i) || typesByName[*i] == this);
-			typesByName[*i] = this;
+			assert(!staticData.typesByName.count(*i) || staticData.typesByName[*i] == this);
+			staticData.typesByName[*i] = this;
 		}
 	}
 
@@ -396,12 +412,12 @@ private:
 		OperationBookBase::remove_type_from_all_books(identifier);
 
 		// unregister id
-		if (typesById.size() > identifier) typesById[identifier] = NULL;
+		if (staticData.typesById.size() > identifier) staticData.typesById[identifier] = NULL;
 
 		// unregister names
-		typesByName.erase(description.name);
+		staticData.typesByName.erase(description.name);
 		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
-			typesByName.erase(*i);
+			staticData.typesByName.erase(*i);
 	}
 
 private:
@@ -424,26 +440,58 @@ protected:
 	virtual void deinitialize_vfunc(Description & /* description */) { }
 
 public:
-	inline void initialize()
+	void initialize()
 	{
 		if (initialized) return;
+		if (clone_prev != NULL) { clone_prev->initialize(); return; }
+
 		initialize_vfunc(private_description);
+
+		// if name already registered then assign clone
+		if (staticData.typesByName.count(description.name))
+		{
+			assert(std::string( typeid(*staticData.typesByName[description.name]).name() ) == typeid(*this).name());
+			clone_prev = staticData.typesByName[description.name];
+			clone_next = clone_prev->clone_next;
+			clone_prev->clone_next = this;
+			clone_next->clone_prev = this;
+			deinitialize_vfunc(private_description);
+			clone_prev->initialize();
+			private_identifier = clone_prev->identifier;
+			private_description = clone_prev->private_description;
+			return;
+		}
+
 		register_type();
 		initialized = true;
 	}
 
-	inline void deinitialize()
+	void deinitialize()
 	{
-		if (!initialized) return;
-		unregister_type();
-		deinitialize_vfunc(private_description);
-		initialized = false;
+		if (!initialized && clone_prev == NULL) return;
+
+		Type *initialize_next = NULL;
+		if (clone_prev == NULL)
+		{
+			unregister_type();
+			deinitialize_vfunc(private_description);
+			initialized = false;
+			initialize_next = clone_next;
+		}
+
+		// unassign clone
+		if (clone_prev != NULL) clone_prev->clone_next = clone_next;
+		if (clone_next != NULL) clone_next->clone_prev = clone_prev;
+		clone_prev = NULL;
+		clone_next = NULL;
+
+		initialize_next->initialize();
 	}
 
 	virtual ~Type();
 
-	bool operator== (const Type &other) { return this == &other; }
-	bool operator!= (const Type &other) { return this != &other; }
+	inline bool operator== (const Type &other) { return private_identifier == other.private_identifier; }
+	inline bool operator!= (const Type &other) { return private_identifier != other.private_identifier; }
 
 	static void initialize_all();
 	static void deinitialize_all();
@@ -475,20 +523,20 @@ public:
 		{ return get_type<T>().identifier; }
 
 	template<typename T>
-	inline static Type& get_type_by_pointer(const T *x __attribute__ ((unused)))
+	inline static Type& get_type_by_pointer(const T *)
 		{ return get_type<T>(); }
 
 	template<typename T>
-	inline static Type& get_type_by_reference(const T &x __attribute__ ((unused)))
+	inline static Type& get_type_by_reference(const T &)
 		{ return get_type<T>(); }
 
 	static Type* try_get_type_by_id(TypeId id)
-		{ return id < typesById.size() ? typesById[id] : NULL; }
+		{ return id < staticData.typesById.size() ? staticData.typesById[id] : NULL; }
 
 	static Type* try_get_type_by_name(const String &name)
 	{
-		std::map<String, Type*>::const_iterator i = typesByName.find(name);
-		return i == typesByName.end() ? NULL : i->second;
+		std::map<String, Type*>::const_iterator i = staticData.typesByName.find(name);
+		return i == staticData.typesByName.end() ? NULL : i->second;
 	}
 
 	static Type& get_type_by_id(TypeId id)

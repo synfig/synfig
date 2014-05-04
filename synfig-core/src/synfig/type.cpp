@@ -30,7 +30,6 @@
 #endif
 
 #include "type.h"
-#include <typeinfo>
 
 #endif
 
@@ -47,8 +46,7 @@ Type::OperationBookBase *Type::OperationBookBase::last = NULL;
 Type *Type::first = NULL;
 Type *Type::last = NULL;
 TypeId Type::last_identifier = 0;
-std::vector<Type*> Type::typesById;
-std::map<String, Type*> Type::typesByName;
+Type::StaticData Type::staticData;
 
 
 Type::OperationBookBase::OperationBookBase():
@@ -97,20 +95,24 @@ void Type::OperationBookBase::deinitialize_all() {
 
 
 Type::Type(TypeId):
-	previous(last),
-	next(NULL),
+	previous(last), next(NULL),
 	initialized(false),
-	identifier(NIL),
+	private_identifier(NIL),
+	clone_prev(NULL),
+	clone_next(NULL),
+	identifier(private_identifier),
 	description(private_description)
 {
 	(previous == NULL ? first : previous->next) = last = this;
 }
 
 Type::Type():
-	previous(last),
-	next(NULL),
+	previous(last), next(NULL),
 	initialized(false),
-	identifier(++last_identifier),
+	private_identifier(++last_identifier),
+	clone_prev(NULL),
+	clone_next(NULL),
+	identifier(private_identifier),
 	description(private_description)
 {
 	assert(last_identifier != NIL);
@@ -119,7 +121,7 @@ Type::Type():
 
 Type::~Type()
 {
-	if (initialized) unregister_type();
+	deinitialize();
 	(previous == NULL ? first : previous->next) = next;
 	(next     == NULL ? last  : next->previous) = previous;
 }
