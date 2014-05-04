@@ -2775,9 +2775,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						return false;
 			}
 			else
-			if (dynamic_cast<types_namespace::TypePairBase*>(&contained_type) != NULL
-			 && dynamic_cast<types_namespace::TypePairBase*>(&contained_type)->get_first_type() == type_bone_object
-			 && dynamic_cast<types_namespace::TypePairBase*>(&contained_type)->get_second_type() == type_bone_object)
+			if (value_node->get_contained_type() == types_namespace::TypePair<Bone, Bone>::instance)
 			{
 				bool edit_second = value_desc.parent_is_layer_param() && value_desc.get_layer()->active();
 				for(i=0;i<value_node->link_count();i++)

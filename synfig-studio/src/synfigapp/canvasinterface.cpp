@@ -293,9 +293,7 @@ CanvasInterface::apply_layer_param_defaults(synfig::Layer::Handle layer)
 							}
 						}
 						else
-						if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL
-						 && dynamic_cast<types_namespace::TypePairBase*>(&type)->get_first_type() == type_bone_object
-						 && dynamic_cast<types_namespace::TypePairBase*>(&type)->get_second_type() == type_bone_object)
+						if (type == types_namespace::TypePair<Bone, Bone>::instance)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
