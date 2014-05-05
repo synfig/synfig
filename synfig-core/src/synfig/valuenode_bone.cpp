@@ -515,56 +515,6 @@ ValueNode_Bone::check_type(Type &type)
 }
 
 bool
-ValueNode_Bone::have_influence_on(Time t, const Vector &x)const
-{
-	static const Real precision = 0.000000001;
-
-	Bone bone = (*this)(t).get(Bone());
-
-	Matrix matrix = bone.get_animated_matrix();
-	Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
-	Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
-	Real length = bone.get_length() * bone.get_scalelx();
-
-	if (length < 0) {
-		length *= -1;
-		direction *= -1;
-	}
-
-	const Vector &p0 = origin;
-	const Vector p1 = origin + direction * length;
-
-	Real r0 = fabs(bone.get_width());
-	Real r1 = fabs(bone.get_tipwidth());
-
-	// check circles
-	if ((x - p0).mag() < r0) return true;
-	if ((x - p1).mag() < r1) return true;
-
-	if (length + precision <= fabs(r1 - r0)) return false;
-
-	// check line
-	Real cos0 = (r0 - r1)/length;
-	Real cos1 = -cos0;
-
-	Real sin0 = sqrt(1 + precision - cos0*cos0);
-	Real sin1 = sin0;
-
-	Real ll = length - r0*cos0 - r1*cos1;
-	Vector pp0(p0 + direction * (r0*cos0));
-	Vector pp1(p0 + direction * (length - r1*cos1));
-	Real rr0 = r0*sin0;
-	Real rr1 = r1*sin1;
-
-	Real percent = (x - pp0)*direction/ll;
-	if (percent < 0.0 || percent > 1.0) return false;
-
-	Real distance = fabs((x - pp0)*direction.perp());
-	Real max_distance = rr0*(1.0 - percent) + rr1*percent;
-	return distance < max_distance;
-}
-
-bool
 ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedesccreatechildbone.cpp
+/*!	\file valuedescresetpose.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**	......... ... 2013 Ivan Mahonin
+**	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -29,11 +29,12 @@
 #	include <config.h>
 #endif
 
-#include "valuedesccreatechildbone.h"
-#include "valuenodestaticlistinsertsmart.h"
+#include "valuedescresetpose.h"
+#include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/general.h>
 #include <synfig/valuenode_bone.h>
+#include <synfig/valuenode_composite.h>
 
 #endif
 
@@ -45,14 +46,14 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueDescCreateChildBone);
-ACTION_SET_NAME(Action::ValueDescCreateChildBone,"ValueDescCreateChildBone");
-ACTION_SET_LOCAL_NAME(Action::ValueDescCreateChildBone,N_("Create Child Bone"));
-ACTION_SET_TASK(Action::ValueDescCreateChildBone,"create_child_bone");
-ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_VALUEDESC);
-ACTION_SET_PRIORITY(Action::ValueDescCreateChildBone,0);
-ACTION_SET_VERSION(Action::ValueDescCreateChildBone,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
+ACTION_INIT(Action::ValueDescResetPose);
+ACTION_SET_NAME(Action::ValueDescResetPose,"ValueDescResetPose");
+ACTION_SET_LOCAL_NAME(Action::ValueDescResetPose,N_("Reset Pose"));
+ACTION_SET_TASK(Action::ValueDescResetPose,"reset_pose");
+ACTION_SET_CATEGORY(Action::ValueDescResetPose,Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ValueDescResetPose,0);
+ACTION_SET_VERSION(Action::ValueDescResetPose,"0.0");
+ACTION_SET_CVS_ID(Action::ValueDescResetPose,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -60,13 +61,13 @@ ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
+Action::ValueDescResetPose::ValueDescResetPose():
 	time(0)
 {
 }
 
 Action::ParamVocab
-Action::ValueDescCreateChildBone::get_param_vocab()
+Action::ValueDescResetPose::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -82,25 +83,26 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 }
 
 bool
-Action::ValueDescCreateChildBone::is_candidate(const ParamList &x)
+Action::ValueDescResetPose::is_candidate(const ParamList &x)
 {
-	ParamList::const_iterator i;
-
-	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 	return value_desc.parent_is_value_node()
-		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node());
+		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())
+		&& value_desc.get_parent_desc().parent_is_value_node()
+		&& ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_value_node());
 }
 
 bool
-Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Action::Param &param)
+Action::ValueDescResetPose::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC
 	 && param.get_value_desc().parent_is_value_node()
-	 && ValueNode_Bone::Handle::cast_dynamic(param.get_value_desc().get_parent_value_node()) )
+	 && ValueNode_Bone::Handle::cast_dynamic(param.get_value_desc().get_parent_value_node())
+	 && param.get_value_desc().get_parent_desc().parent_is_value_node()
+	 && ValueNode_Composite::Handle::cast_dynamic(param.get_value_desc().get_parent_desc().get_parent_value_node()) )
 	{
 		value_desc = param.get_value_desc();
 		return true;
@@ -116,7 +118,7 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 }
 
 bool
-Action::ValueDescCreateChildBone::is_ready()const
+Action::ValueDescResetPose::is_ready()const
 {
 	if (!value_desc)
 		return false;
@@ -124,30 +126,30 @@ Action::ValueDescCreateChildBone::is_ready()const
 }
 
 void
-Action::ValueDescCreateChildBone::prepare()
+Action::ValueDescResetPose::prepare()
 {
 	clear();
 
-	if (!value_desc.parent_is_value_node()
-	 || !value_desc.is_parent_desc_declared()
-	 || !value_desc.get_parent_desc().is_value_node() )
-			throw Error(Error::TYPE_NOTREADY);
+	if (!value_desc)
+		throw Error(Error::TYPE_NOTREADY);
 
-	Action::Handle action = ValueNodeStaticListInsertSmart::create();
+	ValueNode_Composite::Handle composite_node =
+		ValueNode_Composite::Handle::cast_dynamic(
+			value_desc.get_parent_desc().get_parent_value_node() );
+
+	ValueNode_Bone::Handle first_bone_node =
+		ValueNode_Bone::Handle::cast_dynamic(
+			composite_node->get_link("first") );
+
+	if (!first_bone_node)
+		throw Error(Error::TYPE_NOTREADY);
+
+	Action::Handle action = ValueDescSet::create();
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", get_canvas_interface());
+	action->set_param("value_desc", ValueDesc(composite_node, composite_node->get_link_index_from_name("second")));
+	action->set_param("new_value", (*first_bone_node)(time));
 	action->set_param("time", time);
-	
-	const ValueDesc &parent_desc = value_desc.get_parent_desc();
-	if (parent_desc.get_parent_desc().get_value_type() == type_list)
-	{
-		// Adding bone to Skeleton layer
-		action->set_param("value_desc", parent_desc);
-	} else {
-		// Adding bone to Skeleton Deform layer
-		action->set_param("value_desc", parent_desc.get_parent_desc());
-	}
-		
 
 	if (!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);

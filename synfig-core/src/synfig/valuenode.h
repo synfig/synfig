@@ -422,6 +422,8 @@ public:
 	//! Gets the children vocabulary for linkable value nodes
 	virtual Vocab get_children_vocab()const;
 
+	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
+
 protected:
 	//! Member to store the children vocabulary
 	Vocab children_vocab;

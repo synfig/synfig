@@ -42,6 +42,8 @@
 #include "keyframe.h"
 #include "guid.h"
 #include "filesystemnative.h"
+#include "weightedvalue.h"
+#include "pair.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -193,6 +195,10 @@ private:
 	Segment parse_segment(xmlpp::Element *node);
 	//! List Value Base Parsing Function
 	ValueBase parse_list(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Weighted Value Base Parsing Function
+	ValueBase parse_weighted_value(xmlpp::Element *node, types_namespace::TypeWeightedValueBase &type, Canvas::Handle canvas);
+	//! Pair Value Base Parsing Function
+	ValueBase parse_pair(xmlpp::Element *node, types_namespace::TypePairBase &type, Canvas::Handle canvas);
 	//! Gradient Value Base Parsing Function
 	Gradient parse_gradient(xmlpp::Element *node);
 	//! Bline Point Value Base Parsing Function

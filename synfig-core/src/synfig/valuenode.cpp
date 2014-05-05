@@ -836,3 +836,11 @@ LinkableValueNode::set_children_vocab(const Vocab &newvocab)
 {
 	children_vocab.assign(newvocab.begin(),newvocab.end());
 }
+
+void
+LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
+{
+	ValueNode::set_root_canvas(x);
+	for(int i = 0; i < link_count(); ++i)
+		get_link(i)->set_root_canvas(x);
+}

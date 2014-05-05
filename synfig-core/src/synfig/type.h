@@ -30,6 +30,7 @@
 #include <cassert>
 #include <vector>
 #include <map>
+#include <typeinfo>
 #include "string.h"
 #include "general.h"
 
@@ -113,6 +114,8 @@ namespace types_namespace
 
 	template<typename T>
 	TypeAlias< WeightedValue<T> > get_type_alias(WeightedValue<T> const&);
+	template<typename T1, typename T2>
+	TypeAlias< std::pair<T1, T2> > get_type_alias(std::pair<T1, T2> const&);
 } // namespace types_namespace
 } // namespace synfig
 
@@ -268,24 +271,19 @@ private:
 	protected:
 		static OperationBookBase *first, *last;
 		OperationBookBase *previous, *next;
-
-		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL) { }
-		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
-
 		bool initialized;
+
+		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL), initialized(false) { }
+		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
 
 		OperationBookBase();
 
 	public:
-		virtual void remove_type(const Type &type) = 0;
+		virtual void remove_type(TypeId identifier) = 0;
 		virtual void set_alias(OperationBookBase *alias) = 0;
 		virtual ~OperationBookBase();
 
-		static void remove_type_from_all_books(TypeId identifier)
-		{
-			for(OperationBookBase *book = first; book != NULL; book = book->next)
-				book->remove_type(identifier);
-		}
+		static void remove_type_from_all_books(TypeId identifier);
 
 		void initialize();
 		void deinitialize();
@@ -335,31 +333,42 @@ private:
 			}
 		}
 
-		virtual void remove_type(const Type& type)
+		virtual void remove_type(TypeId identifier)
 		{
 			Map &map = get_map();
 			for(typename Map::iterator i = map.begin(); i != map.end();)
-				if (i->second.first == &type)
+				if (i->second.first->identifier == identifier)
 					map.erase(i++); else ++i;
+		}
+
+		~OperationBook() {
+			while(!map.empty())
+				map.begin()->second.first->deinitialize();
 		}
 	};
 
 	static Type *first, *last;
 	static TypeId last_identifier;
 
-	static std::vector<Type*> typesById;
-	static std::map<String, Type*> typesByName;
+	static struct StaticData {
+		std::vector<Type*> typesById;
+		std::map<String, Type*> typesByName;
+		~StaticData() { deinitialize_all(); }
+	} staticData;
 
 	Type *previous, *next;
 	bool initialized;
+	TypeId private_identifier;
 	Description private_description;
 
+	Type *clone_prev, *clone_next;
+
 public:
-	const TypeId identifier;
+	const TypeId &identifier;
 	const Description &description;
 
 protected:
-	Type(TypeId);
+	explicit Type(TypeId);
 	Type();
 
 private:
@@ -367,40 +376,17 @@ private:
 	Type(const Type &):
 		previous(NULL), next(NULL),
 		initialized(false),
-		identifier(0), description(private_description) { assert(false); }
+		private_identifier(0),
+		clone_prev(NULL),
+		clone_next(NULL),
+		identifier(private_identifier),
+		description(private_description)
+	{ assert(false); }
 	// lock default assignment
 	Type& operator= (const Type &) { assert(false); return *this; }
 
-	void register_type()
-	{
-		// register id
-		if (typesById.size() <= identifier) typesById.resize(identifier + 1, NULL);
-		assert(typesById[identifier] == NULL);
-		typesById[identifier] = this;
-
-		// register names
-		assert(!typesByName.count(description.name));
-		typesByName[description.name] = this;
-		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
-		{
-			assert(!typesByName.count(*i) || typesByName[*i] == this);
-			typesByName[*i] = this;
-		}
-	}
-
-	void unregister_type()
-	{
-		// unregister operations
-		OperationBookBase::remove_type_from_all_books(identifier);
-
-		// unregister id
-		if (typesById.size() > identifier) typesById[identifier] = NULL;
-
-		// unregister names
-		typesByName.erase(description.name);
-		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
-			typesByName.erase(*i);
-	}
+	void register_type();
+	void unregister_type();
 
 private:
 	template<typename T>
@@ -422,26 +408,13 @@ protected:
 	virtual void deinitialize_vfunc(Description & /* description */) { }
 
 public:
-	inline void initialize()
-	{
-		if (initialized) return;
-		initialize_vfunc(private_description);
-		register_type();
-		initialized = true;
-	}
-
-	inline void deinitialize()
-	{
-		if (!initialized) return;
-		unregister_type();
-		deinitialize_vfunc(private_description);
-		initialized = false;
-	}
-
 	virtual ~Type();
 
-	bool operator== (const Type &other) { return this == &other; }
-	bool operator!= (const Type &other) { return this != &other; }
+	void initialize();
+	void deinitialize();
+
+	inline bool operator== (const Type &other) { return private_identifier == other.private_identifier; }
+	inline bool operator!= (const Type &other) { return private_identifier != other.private_identifier; }
 
 	static void initialize_all();
 	static void deinitialize_all();
@@ -473,20 +446,20 @@ public:
 		{ return get_type<T>().identifier; }
 
 	template<typename T>
-	inline static Type& get_type_by_pointer(const T *x __attribute__ ((unused)))
+	inline static Type& get_type_by_pointer(const T *)
 		{ return get_type<T>(); }
 
 	template<typename T>
-	inline static Type& get_type_by_reference(const T &x __attribute__ ((unused)))
+	inline static Type& get_type_by_reference(const T &)
 		{ return get_type<T>(); }
 
 	static Type* try_get_type_by_id(TypeId id)
-		{ return id < typesById.size() ? typesById[id] : NULL; }
+		{ return id < staticData.typesById.size() ? staticData.typesById[id] : NULL; }
 
 	static Type* try_get_type_by_name(const String &name)
 	{
-		std::map<String, Type*>::const_iterator i = typesByName.find(name);
-		return i == typesByName.end() ? NULL : i->second;
+		std::map<String, Type*>::const_iterator i = staticData.typesByName.find(name);
+		return i == staticData.typesByName.end() ? NULL : i->second;
 	}
 
 	static Type& get_type_by_id(TypeId id)

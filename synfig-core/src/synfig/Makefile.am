@@ -21,6 +21,7 @@ LAYERHEADERS = \
 	layer_composite.h \
 	layer_duplicate.h \
 	layer_group.h \
+	layer_meshtransform.h \
 	layer_mime.h \
 	layer_motionblur.h \
 	layer_pastecanvas.h \
@@ -28,13 +29,15 @@ LAYERHEADERS = \
 	layer_shape.h \
 	layer_solidcolor.h \
 	layer_skeleton.h \
-	layer_switch.h
+	layer_switch.h \
+	layer_skeletondeformation.h
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
 	layer_composite.cpp \
 	layer_duplicate.cpp \
 	layer_group.cpp \
+	layer_meshtransform.cpp \
 	layer_mime.cpp \
 	layer_motionblur.cpp \
 	layer_pastecanvas.cpp \
@@ -42,7 +45,8 @@ LAYERSOURCES = \
 	layer_shape.cpp \
 	layer_solidcolor.cpp \
 	layer_skeleton.cpp \
-	layer_switch.cpp
+	layer_switch.cpp \
+	layer_skeletondeformation.cpp
 
 
 TARGETHEADERS = \
@@ -209,6 +213,8 @@ VALUEHEADERS = \
 	widthpoint.h \
 	dashitem.h \
 	gradient.h \
+	weightedvalue.h \
+	pair.h \
 	type.h \
 	base_types.h \
 	value.h
@@ -292,7 +298,9 @@ SYNFIGHEADERS = \
 	zstreambuf.h \
 	valueoperations.h \
 	valuetransformation.h \
-	weightedvalue.h
+	mesh.h \
+	renderer.h \
+	renderersoftware.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -341,7 +349,10 @@ SYNFIGSOURCES = \
 	filecontainerzip.cpp \
 	filecontainertemporary.cpp \
 	zstreambuf.cpp \
-	valueoperations.cpp
+	valueoperations.cpp \
+	mesh.cpp \
+	renderer.cpp \
+	renderersoftware.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

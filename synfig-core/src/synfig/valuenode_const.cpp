@@ -32,8 +32,10 @@
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
+#include "valuenode_composite.h"
 #include "canvas.h"
 #include "general.h"
+#include "pair.h"
 
 #endif
 
@@ -85,6 +87,13 @@ ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 	{
 		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
 		return ValueNode_BoneWeightPair::create(x, canvas);
+	}
+
+	// and this
+	if (dynamic_cast<types_namespace::TypePairBase*>(&x.get_type()))
+	{
+		printf("%s:%d forcing convert to ValueNode_Composite\n", __FILE__, __LINE__);
+		return ValueNode_Composite::create(x, canvas);
 	}
 
 	return new ValueNode_Const(x, canvas);

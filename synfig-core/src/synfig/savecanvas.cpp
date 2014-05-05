@@ -55,6 +55,8 @@
 #include "layer.h"
 #include "string.h"
 #include "paramdesc.h"
+#include "weightedvalue.h"
+#include "pair.h"
 
 #include "zstreambuf.h"
 #include "importer.h"
@@ -291,6 +293,22 @@ xmlpp::Element* encode_transformation(xmlpp::Element* root,const Transformation 
 	return root;
 }
 
+xmlpp::Element* encode_weighted_value(xmlpp::Element* root,types_namespace::TypeWeightedValueBase &type, const ValueBase &data,Canvas::ConstHandle canvas)
+{
+	root->set_name(type.description.name);
+	encode_real(root->add_child("weight")->add_child("real"), type.extract_weight(data));
+	encode_value(root->add_child("value")->add_child("value"), type.extract_value(data), canvas);
+	return root;
+}
+
+xmlpp::Element* encode_pair(xmlpp::Element* root,types_namespace::TypePairBase &type, const ValueBase &data,Canvas::ConstHandle canvas)
+{
+	root->set_name(type.description.name);
+	encode_value(root->add_child("first")->add_child("value"), type.extract_first(data), canvas);
+	encode_value(root->add_child("second")->add_child("value"), type.extract_second(data), canvas);
+	return root;
+}
+
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, data.get_type().description.name.c_str());
@@ -395,6 +413,20 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		}
 		root = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
 		root->set_name("bone_valuenode");
+		return root;
+	}
+	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	{
+		encode_weighted_value(root, *dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type), data, canvas);
+		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
+		return root;
+	}
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	{
+		encode_pair(root, *dynamic_cast<types_namespace::TypePairBase*>(&type), data, canvas);
+		encode_static(root, data.get_static());
+		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	}
 	if (type == type_nil)

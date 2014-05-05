@@ -57,6 +57,7 @@
 #include "actions/layerzdepthrangeset.h"
 #include "actions/layerembed.h"
 #include "actions/layerextract.h"
+#include "actions/layerresetpose.h"
 
 #include "actions/valuenodeconstset.h"
 #include "actions/valuenodeconstsetstatic.h"
@@ -94,6 +95,7 @@
 #include "actions/valuedescbonelink.h"
 #include "actions/valuedescskeletonlink.h"
 #include "actions/valuedesccreatechildbone.h"
+#include "actions/valuedescresetpose.h"
 
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
@@ -208,6 +210,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerSetExcludeFromRenderingOff);
 	ADD_ACTION(Action::LayerAddFrame);
 	ADD_ACTION(Action::LayerCopy);
+	ADD_ACTION(Action::LayerResetPose);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
 	ADD_ACTION(Action::ValueNodeConstSetStatic);
@@ -247,6 +250,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescBoneLink);
 	ADD_ACTION(Action::ValueDescSkeletonLink);
 	ADD_ACTION(Action::ValueDescCreateChildBone);
+	ADD_ACTION(Action::ValueDescResetPose);
 
 	ADD_ACTION(Action::WaypointAdd);
 	ADD_ACTION(Action::WaypointSet);
@@ -307,7 +311,6 @@ Action::Main::Main()
 Action::Main::~Main()
 {
 	delete book_;
-
 }
 
 

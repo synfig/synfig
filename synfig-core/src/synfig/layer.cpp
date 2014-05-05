@@ -48,6 +48,7 @@
 #include "layer_motionblur.h"
 #include "layer_duplicate.h"
 #include "layer_skeleton.h"
+#include "layer_skeletondeformation.h"
 
 #include "valuenode_const.h"
 
@@ -129,6 +130,7 @@ Layer::subsys_init()
 		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
+	INCLUDE_LAYER(Layer_SkeletonDeformation);
 
 #undef LAYER_ALIAS
 #undef INCLUDE_LAYER

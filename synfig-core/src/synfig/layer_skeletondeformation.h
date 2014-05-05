@@ -1,13 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_group.h
-**	\brief Header file for implementation of the "Group" layer
+/*!	\file layer_skeletondeformation.h
+**	\brief SkeletonDeformation layer
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007, 2008 Chris Moore
-**	Copyright (c) 2012-2013 Carlos López
 **	......... ... 2014 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
@@ -25,12 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_GROUP_H
-#define __SYNFIG_LAYER_GROUP_H
+#ifndef __SYNFIG_LAYER_SKELETONDEFORMATION_H
+#define __SYNFIG_LAYER_SKELETONDEFORMATION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_pastecanvas.h"
+#include "layer_meshtransform.h"
+#include "pair.h"
+#include "bone.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,28 +38,26 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-/*!	\class Layer_Group
-**	\brief Class of the Group layer.
+/*!	\class Layer_SkeletonDeformation
+**	\brief Class of the SkeletonDeformation layer.
 */
-class Layer_Group : public Layer_PasteCanvas
+class Layer_SkeletonDeformation : public Layer_MeshTransform
 {
 	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
-	//! Parameter: (bool) Z_Depth Range is active
-	ValueBase param_z_range;
-	//! Parameter: (Real) Z_Depth Range position
-	ValueBase param_z_range_position;
-	//! Parameter: (Real) Z_Depth Range depth
-	ValueBase param_z_range_depth;
-	//! Parameter: (Real) Z_Depth Range transition
-	ValueBase param_z_range_blur;
+	//! Parameter: (list) Bones
+	ValueBase param_bones;
+	struct GridPoint;
+	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 
 public:
+	typedef std::pair<Bone, Bone> BonePair;
+
 	//! Default constructor
-	Layer_Group();
+	Layer_SkeletonDeformation();
 	//! Destructor
-	virtual ~Layer_Group();
+	virtual ~Layer_SkeletonDeformation();
 	//! Returns a string with the localized name of this layer
 	virtual String get_local_name()const;
 
@@ -71,9 +68,8 @@ public:
 	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
 
-	//! Sets z_range* fields of specified ContextParams \a cp
-	virtual void apply_z_range_to_params(ContextParams &cp)const;
-}; // END of class Layer_Group
+	void prepare_mesh();
+}; // END of class SkeletonDeformation
 
 }; // END of namespace synfig
 
