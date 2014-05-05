@@ -271,24 +271,19 @@ private:
 	protected:
 		static OperationBookBase *first, *last;
 		OperationBookBase *previous, *next;
-
-		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL) { }
-		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
-
 		bool initialized;
+
+		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL), initialized(false) { }
+		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
 
 		OperationBookBase();
 
 	public:
-		virtual void remove_type(const Type &type) = 0;
+		virtual void remove_type(TypeId identifier) = 0;
 		virtual void set_alias(OperationBookBase *alias) = 0;
 		virtual ~OperationBookBase();
 
-		static void remove_type_from_all_books(TypeId identifier)
-		{
-			for(OperationBookBase *book = first; book != NULL; book = book->next)
-				book->remove_type(identifier);
-		}
+		static void remove_type_from_all_books(TypeId identifier);
 
 		void initialize();
 		void deinitialize();
@@ -338,11 +333,11 @@ private:
 			}
 		}
 
-		virtual void remove_type(const Type& type)
+		virtual void remove_type(TypeId identifier)
 		{
 			Map &map = get_map();
 			for(typename Map::iterator i = map.begin(); i != map.end();)
-				if (i->second.first == &type)
+				if (i->second.first->identifier == identifier)
 					map.erase(i++); else ++i;
 		}
 
@@ -373,7 +368,7 @@ public:
 	const Description &description;
 
 protected:
-	Type(TypeId);
+	explicit Type(TypeId);
 	Type();
 
 private:
@@ -390,35 +385,8 @@ private:
 	// lock default assignment
 	Type& operator= (const Type &) { assert(false); return *this; }
 
-	void register_type()
-	{
-		// register id
-		if (staticData.typesById.size() <= identifier) staticData.typesById.resize(identifier + 1, NULL);
-		assert(staticData.typesById[identifier] == NULL);
-		staticData.typesById[identifier] = this;
-
-		// register names
-		staticData.typesByName[description.name] = this;
-		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
-		{
-			assert(!staticData.typesByName.count(*i) || staticData.typesByName[*i] == this);
-			staticData.typesByName[*i] = this;
-		}
-	}
-
-	void unregister_type()
-	{
-		// unregister operations
-		OperationBookBase::remove_type_from_all_books(identifier);
-
-		// unregister id
-		if (staticData.typesById.size() > identifier) staticData.typesById[identifier] = NULL;
-
-		// unregister names
-		staticData.typesByName.erase(description.name);
-		for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
-			staticData.typesByName.erase(*i);
-	}
+	void register_type();
+	void unregister_type();
 
 private:
 	template<typename T>
@@ -440,55 +408,10 @@ protected:
 	virtual void deinitialize_vfunc(Description & /* description */) { }
 
 public:
-	void initialize()
-	{
-		if (initialized) return;
-		if (clone_prev != NULL) { clone_prev->initialize(); return; }
-
-		initialize_vfunc(private_description);
-
-		// if name already registered then assign clone
-		if (staticData.typesByName.count(description.name))
-		{
-			assert(std::string( typeid(*staticData.typesByName[description.name]).name() ) == typeid(*this).name());
-			clone_prev = staticData.typesByName[description.name];
-			clone_next = clone_prev->clone_next;
-			clone_prev->clone_next = this;
-			clone_next->clone_prev = this;
-			deinitialize_vfunc(private_description);
-			clone_prev->initialize();
-			private_identifier = clone_prev->identifier;
-			private_description = clone_prev->private_description;
-			return;
-		}
-
-		register_type();
-		initialized = true;
-	}
-
-	void deinitialize()
-	{
-		if (!initialized && clone_prev == NULL) return;
-
-		Type *initialize_next = NULL;
-		if (clone_prev == NULL)
-		{
-			unregister_type();
-			deinitialize_vfunc(private_description);
-			initialized = false;
-			initialize_next = clone_next;
-		}
-
-		// unassign clone
-		if (clone_prev != NULL) clone_prev->clone_next = clone_next;
-		if (clone_next != NULL) clone_next->clone_prev = clone_prev;
-		clone_prev = NULL;
-		clone_next = NULL;
-
-		initialize_next->initialize();
-	}
-
 	virtual ~Type();
+
+	void initialize();
+	void deinitialize();
 
 	inline bool operator== (const Type &other) { return private_identifier == other.private_identifier; }
 	inline bool operator!= (const Type &other) { return private_identifier != other.private_identifier; }

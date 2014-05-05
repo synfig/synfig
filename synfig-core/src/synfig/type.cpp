@@ -61,13 +61,20 @@ Type::OperationBookBase::~OperationBookBase()
 	(next     == NULL ? last  : next->previous) = previous;
 }
 
+void Type::OperationBookBase::remove_type_from_all_books(TypeId identifier)
+{
+	for(OperationBookBase *book = first; book != NULL; book = book->next)
+		book->remove_type(identifier);
+}
+
 void Type::OperationBookBase::initialize()
 {
 	if (initialized) return;
+	std::string type_name(typeid(*this).name());
 	for(OperationBookBase *book = first; book != NULL && book != this; book = book->next)
 	{
 		book->initialize();
-		if (std::string( typeid(*book).name() ) == typeid(*this).name())
+		if (typeid(*book).name() == type_name)
 		{
 			set_alias(book);
 			break;
@@ -124,6 +131,87 @@ Type::~Type()
 	deinitialize();
 	(previous == NULL ? first : previous->next) = next;
 	(next     == NULL ? last  : next->previous) = previous;
+}
+
+void Type::register_type()
+{
+	// register id
+	if (staticData.typesById.size() <= identifier) staticData.typesById.resize(identifier + 1, NULL);
+	assert(staticData.typesById[identifier] == NULL);
+	staticData.typesById[identifier] = this;
+
+	// register names
+	staticData.typesByName[description.name] = this;
+	for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
+	{
+		assert(!staticData.typesByName.count(*i) || staticData.typesByName[*i] == this);
+		staticData.typesByName[*i] = this;
+	}
+}
+
+void Type::unregister_type()
+{
+	// unregister operations
+	OperationBookBase::remove_type_from_all_books(identifier);
+
+	// unregister id
+	if (staticData.typesById.size() > identifier) staticData.typesById[identifier] = NULL;
+
+	// unregister names
+	staticData.typesByName.erase(description.name);
+	for(std::vector<String>::const_iterator i = description.aliases.begin(); i != description.aliases.end(); ++i)
+		staticData.typesByName.erase(*i);
+}
+
+void Type::initialize()
+{
+	if (initialized) return;
+	if (clone_prev != NULL) { clone_prev->initialize(); return; }
+
+	// find clones
+	if (clone_next == NULL) {
+		std::string type_name(typeid(*this).name());
+		for(Type *i = first; i != NULL; i = i->next)
+		{
+			if (i != this && typeid(*i).name() == type_name)
+			{
+				clone_prev = i;
+				clone_next = clone_prev->clone_next;
+				if (clone_prev != NULL) clone_prev->clone_next = this;
+				if (clone_next != NULL) clone_next->clone_prev = this;
+				i->initialize();
+				private_identifier = clone_prev->identifier;
+				private_description = clone_prev->private_description;
+				return;
+			}
+		}
+	}
+
+	initialize_vfunc(private_description);
+	register_type();
+	initialized = true;
+}
+
+void Type::deinitialize()
+{
+	if (!initialized && clone_prev == NULL) return;
+
+	Type *initialize_next = NULL;
+	if (clone_prev == NULL)
+	{
+		unregister_type();
+		deinitialize_vfunc(private_description);
+		initialized = false;
+		initialize_next = clone_next;
+	}
+
+	// unassign clone
+	if (clone_prev != NULL) clone_prev->clone_next = clone_next;
+	if (clone_next != NULL) clone_next->clone_prev = clone_prev;
+	clone_prev = NULL;
+	clone_next = NULL;
+
+	if (initialize_next != NULL) initialize_next->initialize();
 }
 
 void Type::initialize_all()
