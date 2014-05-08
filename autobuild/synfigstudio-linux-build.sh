@@ -1253,7 +1253,11 @@ case $ARG in
 		mk$ARG
 		exit;;
 	*)
-		MODE='package'
+		if [ -e /etc/chroot.id ]; then
+			MODE='package'
+		else
+			MODE='standart'
+		fi
 		initialize
 		mk$ARG
 		exit;;
