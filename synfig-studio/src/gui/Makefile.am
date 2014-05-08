@@ -108,7 +108,8 @@ synfigstudio_LDADD = \
 	../synfigapp/libsynfigapp.la \
 	@SYNFIG_LIBS@ \
 	@GTKMM_LIBS@ \
-	@FMOD_LIBS@
+	@FMOD_LIBS@ \
+	@JACK_LIBS@
 
 synfigstudio_LDFLAGS = \
 	-dlopen self
@@ -116,6 +117,7 @@ synfigstudio_LDFLAGS = \
 synfigstudio_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@GTKMM_CFLAGS@ \
+	@JACK_CFLAGS@ \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \

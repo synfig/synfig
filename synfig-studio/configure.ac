@@ -153,18 +153,19 @@ AC_SUBST(SYNFIG_LIBS)
 
 AC_ARG_ENABLE([jack],
 			  AS_HELP_STRING([--enable-jack],
-							 [ Enable experimental JACK transport support experimental ]),
-			  [],
-			  [enable_jack=no]
+				 [ Enable experimental JACK transport support experimental ]),
+				 [],
+				 [enable_jack=yes]
 )
 if test "x$enable_jack" = "xyes"; then
    PKG_CHECK_MODULES(JACK,
-					[ jack ],
-					,
-					[AC_MSG_ERROR([ ** Please install JACK to enable JACK support ])]
+	[ jack ],
+	,
+	[AC_MSG_ERROR([ ** Please install JACK to enable JACK support ])]
 )
 	AC_SUBST(JACK_CFLAGS)
 	AC_SUBST(JACK_LIBS)
+	AC_DEFINE(WITH_JACK,[],[JACK support enabled.])
 fi
 
 windowsys="gtkmm"
@@ -375,4 +376,6 @@ JACK Enabled ---------------------> $enable_jack
 "'$'"SYNFIG_LIBS -----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'
 "'$'"GTKMM_LIBS -----------------------> '$GTKMM_LIBS'
+"'$'"JACK_CFLAGS ---------------------> '$JACK_CFLAGS'
+"'$'"JACK_LIBS -----------------------> '$JACK_LIBS'
 "
