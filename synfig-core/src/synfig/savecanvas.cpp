@@ -60,6 +60,7 @@
 #include <ETL/stringf>
 #include "gradient.h"
 #include <errno.h>
+#include <sys/stat.h>
 
 extern "C" {
 #include <libxml/tree.h>
@@ -993,17 +994,24 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 		document.write_to_file_formatted(tmp_filename);
 
 #ifdef _WIN32
-		// On Win32 platforms, rename() has bad behavior. work around it.
-		char old_file[80]="sif.XXXXXXXX";
-		mktemp(old_file);
-		rename(filename.c_str(),old_file);
+		// On Win32 platforms, rename() has bad behavior. Work around it.
+		
+		// Make random filename and ensure there's no file with such name exist
+		struct stat buf;
+		String old_file;
+		do {
+			synfig::GUID guid;
+			old_file = filename+"."+guid.get_string().substr(0,8);
+		} while (stat(old_file.c_str(), &buf) != -1);
+		
+		rename(filename.c_str(),old_file.c_str());
 		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 		{
-			rename(old_file,tmp_filename.c_str());
+			rename(old_file.c_str(),tmp_filename.c_str());
 			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
 			return false;
 		}
-		remove(old_file);
+		remove(old_file.c_str());
 #else
 		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 		{
