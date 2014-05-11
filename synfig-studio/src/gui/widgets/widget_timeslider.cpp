@@ -471,11 +471,6 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 
 	//lines
 
-	//Draw the time line...
-	double tpx = (current-start)*dpdt;
-	gc->set_rgb_fg_color(Gdk::Color("#ffaf00"));
-	window->draw_line(gc,round_to_int(tpx),0,round_to_int(tpx),fullheight);
-
 	//normal line/text color
 	gc->set_rgb_fg_color(Gdk::Color("#333333"));
 
@@ -624,6 +619,11 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 		//increment index
 		if(++sdindex >= subdiv) sdindex -= subdiv;
 	}
+
+	//Draw the time line afer all
+	double tpx = (current-start)*dpdt;
+	gc->set_rgb_fg_color(Gdk::Color("#ffaf00"));
+	window->draw_line(gc,round_to_int(tpx),0,round_to_int(tpx),fullheight);
 
 	return true;
 }

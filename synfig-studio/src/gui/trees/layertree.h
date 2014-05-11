@@ -140,6 +140,8 @@ private:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_layertree_;
 
+	sigc::signal<void,int> signal_param_tree_header_height_changed_;
+
 	bool disable_amount_changed_signal;
 
 	Gtk::Button *button_raise;
@@ -150,6 +152,10 @@ private:
 
 	Widget_ValueBase blend_method_widget;
 
+	bool param_tree_style_changed;
+
+	int param_tree_header_height;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -158,6 +164,10 @@ private:
 
 	Gtk::Widget* create_layer_tree();
 	Gtk::Widget* create_param_tree();
+	//! Update the param_tree_view header height.
+	/*! \return true if param_tree_header_height updated, else false
+	*/
+	bool update_param_tree_header_height();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -190,6 +200,15 @@ private:
 	void on_amount_value_changed();
 
 	void on_blend_method_changed();
+
+	/* GTKMM 3
+	void on_param_column_label_tree_style_updated ();
+	*/
+	void on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::Style >& previous_style);
+	/* GTKMM 3
+	bool on_param_column_label_tree_draw (const ::Cairo::RefPtr< ::Cairo::Context>& cr);
+	*/
+	bool on_param_tree_column_label_expose_draw (GdkEventExpose * event);
 
 public:
 
@@ -242,6 +261,10 @@ public:
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_param_user_click() { return signal_param_user_click_; }
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_layertree() { return signal_waypoint_clicked_layertree_; }
+
+	//! Signal fired when the param treeview header height has changed. The first parameter hold the header height
+	/*! \see LayerTree::update_param_tree_header_height() */
+	sigc::signal<void,int>& signal_param_tree_header_height_changed() { return signal_param_tree_header_height_changed_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 

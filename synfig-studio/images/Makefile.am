@@ -167,7 +167,9 @@ EXTRA_DIST = \
 	navigator_icon.sif \
 	palette_icon.sif \
 	parameters_icon.sif \
-	time_track_icon.sif
+	time_track_icon.sif \
+	\
+	utils_timetrack_align_icon.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -334,7 +336,9 @@ IMAGES = \
 	navigator_icon.$(EXT) \
 	palette_icon.$(EXT) \
 	parameters_icon.$(EXT) \
-	time_track_icon.$(EXT)
+	time_track_icon.$(EXT) \
+	\
+	utils_timetrack_align_icon.$(EXT)
 
 if WIN32_PKG
 ICONS = \
