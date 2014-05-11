@@ -33,8 +33,10 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <sys/stat.h>
 #include "settings.h"
 #include <synfig/general.h>
+#include <synfig/guid.h>
 
 #include "general.h"
 
@@ -208,15 +210,24 @@ Settings::save_to_file(const synfig::String& filename)const
 	}catch(...) { return false; }
 
 #ifdef _WIN32
-	char old_file[80]="sif.XXXXXXXX";
-	mktemp(old_file);
-	rename(filename.c_str(),old_file);
+	
+	// On Win32 platforms, rename() has bad behavior. Work around it.
+		
+	// Make random filename and ensure there's no file with such name exist
+	struct stat buf;
+	String old_file;
+	do {
+		synfig::GUID guid;
+		old_file = filename+"."+guid.get_string().substr(0,8);
+	} while (stat(old_file.c_str(), &buf) != -1);
+	
+	rename(filename.c_str(),old_file.c_str());
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
-		rename(old_file,tmp_filename.c_str());
+		rename(old_file.c_str(),tmp_filename.c_str());
 		return false;
 	}
-	remove(old_file);
+	remove(old_file.c_str());
 #else
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 		return false;
