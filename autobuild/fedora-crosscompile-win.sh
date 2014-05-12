@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#TODO: Replace version numbers in the .nsi file
-
 set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
@@ -10,17 +8,11 @@ if [ -z $ARCH ]; then
 	export ARCH="32"
 fi
 
-export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
+if [ -z $THREADS ]; then
+	export THREADS=4
+fi
 
-export WORKSPACE=$HOME/synfig-buildroot
-export PREFIX=$WORKSPACE/win$ARCH
-export DISTPREFIX=$WORKSPACE/tmp/win$ARCH
-export CACHEDIR=$WORKSPACE/cache
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_LIBDIR
-export PATH=${PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib"
+export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
 
 if [[ $TOOLCHAIN == "mingw32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
@@ -30,6 +22,16 @@ else
     echo "Error: Unknown toolchain"
     exit 1
 fi
+
+export WORKSPACE=$HOME/synfig-buildroot
+export PREFIX=$WORKSPACE/win$ARCH/build
+export DISTPREFIX=$WORKSPACE/win$ARCH/dist
+export SRCPREFIX=$WORKSPACE/win$ARCH/source
+export CACHEDIR=$WORKSPACE/cache
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
+export PATH=${PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${PREFIX}/lib
+
 
 if [ -z $DEBUG ]; then
 	export DEBUG=0
@@ -44,7 +46,10 @@ else
 	DEBUG=''
 fi
 
-export VERSION="0.64.1"
+[ -e $SRCPREFIX ] || mkdir -p $SRCPREFIX
+[ -e $CACHE ] || mkdir -p $CACHE
+
+export VERSION=`cat ${SCRIPTPATH}/../synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 pushd "${SCRIPTPATH}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
@@ -67,6 +72,7 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
 		${TOOLCHAIN}-gtkmm24 \
+		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
 		${TOOLCHAIN}-libtiff \
 		mingw32-nsis \
@@ -181,13 +187,16 @@ fi
 mkimagemagick()
 {
 PKG_NAME=ImageMagick
-PKG_VERSION=6.8.6-10
+#PKG_VERSION=6.8.6-10
+PKG_VERSION=6.8.7-10
+#PKG_VERSION=6.8.8-7
 TAREXT=bz2
 
-cd $WORKSPACE
+cd $CACHEDIR
 [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+cd $SRCPREFIX
 if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-    tar -xjf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd ${PKG_NAME}-${PKG_VERSION}
 else
     cd ${PKG_NAME}-${PKG_VERSION}
@@ -212,10 +221,11 @@ ${TOOLCHAIN}-configure \
 --without-modules \
 --without-perl \
 --without-x \
+--without-wmf \
 --with-threads \
 --with-magick_plus_plus
 
-make install
+make install -j$THREADS
 }
 
 #ETL
@@ -228,9 +238,6 @@ ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdi
 make install
 }
 
-#TODO: Magick++
-
-
 #synfig-core
 mksynfig()
 {
@@ -240,10 +247,10 @@ make clean || true
 libtoolize --ltdl --copy --force
 autoreconf --install --force
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
+echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
-make install -j4
+make install -j$THREADS
 }
 
 #synfig-studio
@@ -254,11 +261,22 @@ make clean || true
 [ ! -e config.cache ] || rm config.cache
 /bin/sh ./bootstrap.sh
 cp ./configure ./configure.real
-echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
+echo -e "#/bin/sh \n export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/:$PKG_CONFIG_PATH \n ./configure.real \$@  \n " > ./configure
 chmod +x ./configure
 ${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin --sysconfdir=${PREFIX}/etc --datadir=${PREFIX}/share  $DEBUG
-make install -j4
+make install -j$THREADS
 cp -rf ${PREFIX}/share/pixmaps/synfigstudio/* ${PREFIX}/share/pixmaps/ && rm -rf ${PREFIX}/share/pixmaps/synfigstudio
+
+[ -e ${PREFIX}/etc/gtk-2.0 ] || mkdir -p ${PREFIX}/etc/gtk-2.0
+cat > ${PREFIX}/etc/gtk-2.0/gtkrc <<EOF
+
+# Enable native look
+gtk-theme-name = "MS-Windows"
+
+# Use small toolbar buttons
+gtk-toolbar-style = 0
+
+EOF
 }
 
 mkpackage()
@@ -338,10 +356,11 @@ gen_list_nsh share/synfig share-synfig
 gen_list_nsh share/themes share-themes
 
 cp -f $SCRIPTPATH/synfigstudio.nsi $PREFIX/synfigstudio.nsi
+sed -i "s/@VERSION@/$VERSION/g" $PREFIX/synfigstudio.nsi
 cp -f $SCRIPTPATH/win${ARCH}-specific.nsh $PREFIX/arch-specific.nsh
 makensis synfigstudio.nsi
 
-mv synfigstudio-${VERSION}.exe ../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
+mv synfigstudio-${VERSION}.exe ../../synfigstudio-${VERSION}-${REVISION}-${ARCH}bit.exe
 }
 
 mkall()
