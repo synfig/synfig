@@ -31,6 +31,9 @@
 
 #include "filesystemnative.h"
 #include <giomm.h>
+#include "general.h"
+#include "guid.h"
+#include <sys/stat.h>
 
 #endif
 
@@ -104,7 +107,32 @@ bool FileSystemNative::file_remove(const std::string &filename)
 
 bool FileSystemNative::file_rename(const std::string &from_filename, const std::string &to_filename)
 {
+#ifdef _WIN32
+	
+	// On Win32 platforms, rename() has bad behavior. Work around it.
+	
+	// Make random filename and ensure there's no file with such name exist
+	struct stat buf;
+	std::string old_file;
+	do {
+		synfig::GUID guid;
+		old_file = to_filename+"."+guid.get_string().substr(0,8);
+	} while (stat(old_file.c_str(), &buf) != -1);
+	
+	rename(to_filename.c_str(),old_file.c_str());
+	
+	if(rename(from_filename.c_str(),to_filename.c_str())!=0)
+	{
+		rename(old_file.c_str(),to_filename.c_str());
+		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
+		return false;
+	}
+	remove(old_file.c_str());
+	
+	return true;
+#else
 	return 0 == rename(from_filename.c_str(), to_filename.c_str());
+#endif
 }
 
 

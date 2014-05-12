@@ -1103,25 +1103,11 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
 		if (safe)
 		{
-#ifdef _WIN32
-			// On Win32 platforms, rename() has bad behavior. work around it.
-			char old_file[80]="sif.XXXXXXXX";
-			mktemp(old_file);
-			identifier.file_system->file_rename(identifier.filename,old_file);
-			if(!identifier.file_system->file_rename(tmp_filename,identifier.filename))
-			{
-				identifier.file_system->file_rename(old_file,tmp_filename);
-				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
-				return false;
-			}
-			identifier.file_system->file_remove(old_file);
-#else
 			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
 			{
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;
 			}
-#endif
 		}
 	}
 	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
