@@ -35,8 +35,8 @@
 
 #include <sigc++/adaptors/hide.h>
 
-#include <ETL/clock>
 #include <sstream>
+#include <algorithm>
 #include <math.h>
 
 #include <gtkmm/paned.h>
@@ -716,6 +716,12 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	selection_manager_		(new CanvasViewSelectionManager(this)),
 	is_playing_				(false),
 
+	jack_enabled			(false),
+	jack_client				(NULL),
+	jack_synchronizing		(true),
+	jack_is_playing			(false),
+	jack_time				(0),
+
 	working_depth			(0),
 	cancel					(false),
 
@@ -907,6 +913,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	instance->signal_canvas_view_created()(this);
 	//synfig::info("Canvasview: Constructor Done");
 
+	jack_dispatcher.connect(sigc::mem_fun(*this, &CanvasView::on_jack_sync));
+
 	App::dock_manager->register_dockable(*this);
 	App::main_window->main_dock_book().add(*this);
 	present();
@@ -914,6 +922,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 CanvasView::~CanvasView()
 {
+	set_jack_enabled(false);
+
 	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
 
@@ -953,11 +963,6 @@ void CanvasView::activate()
 	App::ui_manager()->insert_action_group(action_group);
 	update_title();
 	present();
-
-	// Open a JACK client
-	client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
-	jack_set_process_callback (client, syn_jack_process, 0);
-	jack_activate (client);
 }
 
 void CanvasView::deactivate()
@@ -975,6 +980,33 @@ void CanvasView::present()
 	update_title();
 }
 
+void CanvasView::set_jack_enabled(bool value)
+{
+	if (jack_enabled == value) return;
+	jack_enabled = value;
+	if (jack_enabled)
+	{
+		// initialize jack
+		stop();
+		jack_client = jack_client_open("synfigstudiocanvas", JackNullOption, 0);
+		jack_set_sync_callback(jack_client, jack_sync_callback, this);
+		if (jack_activate(jack_client) != 0)
+		{
+			jack_client_close(jack_client);
+			jack_client = NULL;
+			jack_enabled = false;
+		}
+	}
+	else
+	{
+		// deinitialize jack
+		jack_deactivate(jack_client);
+		jack_client_close(jack_client);
+		jack_client = NULL;
+	}
+
+	framedial->toggle_enable_jack(jack_enabled);
+}
 
 std::list<int>&
 CanvasView::get_pixel_sizes()
@@ -1052,6 +1084,8 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
+	framedial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+	framedial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
 	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1));
 	framedial->signal_play().connect(sigc::mem_fun(*this, &studio::CanvasView::on_play_pause_pressed));
@@ -2433,6 +2467,14 @@ CanvasView::on_time_changed()
 {
 	Time time(get_time());
 
+	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time))
+	{
+		float fps = get_canvas()->rend_desc().get_frame_rate();
+		jack_nframes_t sr = jack_get_sample_rate(jack_client);
+		jack_nframes_t nframes = ((double)sr * time.round(fps));
+		jack_transport_locate(jack_client, nframes);
+	}
+
 	current_time_widget->set_value(time);
 	try {
 		get_canvas()->keyframe_list().find(time);
@@ -2936,6 +2978,104 @@ CanvasView::on_dirty_preview()
 }
 
 void
+CanvasView::play_async()
+{
+	if(is_playing())return;
+
+	playing_timer.reset();
+	playing_time = work_area->get_time();
+
+	// If we are already at the end of time, start over
+	if(playing_time == get_canvas()->rend_desc().get_time_end())
+		playing_time = get_canvas()->rend_desc().get_time_start();
+
+	is_playing_=true;
+
+	work_area->clear_ducks();
+
+	float fps = get_canvas()->rend_desc().get_frame_rate();
+	int timeout = fps <= 0.f ? 0 : (int)roundf(500.f/fps);
+	if (timeout < 10) timeout = 10;
+
+	framedial->toggle_play_pause_button(!is_playing());
+
+	playing_connection = Glib::signal_timeout().connect(
+		sigc::bind_return( sigc::mem_fun(*this, &studio::CanvasView::on_play_timeout), true ),
+		timeout,
+		Glib::PRIORITY_LOW);
+}
+
+void
+CanvasView::stop_async()
+{
+	playing_connection.disconnect();
+	is_playing_=false;
+	framedial->toggle_play_pause_button(!is_playing());
+}
+
+void
+CanvasView::on_play_timeout()
+{
+	Time time;
+	Time endtime = get_canvas()->rend_desc().get_time_end();
+
+	if (jack_enabled)
+	{
+		jack_position_t pos;
+		jack_transport_query(jack_client, &pos);
+		jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
+		time = jack_time;
+		if (time >= endtime) time = endtime;
+	}
+	else
+	{
+		time = playing_time + playing_timer();
+		if (time >= endtime) {
+			time_adjustment().set_value(endtime);
+			time_adjustment().value_changed();
+			stop_async();
+			return;
+		}
+	}
+
+	//Clamp the time window so we can see the time value as it races across the horizon
+	bool timewindreset = false;
+
+	while( time > Time(time_window_adjustment().get_sub_upper()) )
+	{
+		time_window_adjustment().set_value(
+				min(
+					time_window_adjustment().get_value()+time_window_adjustment().get_page_size()/2,
+					time_window_adjustment().get_upper()-time_window_adjustment().get_page_size() )
+			);
+		timewindreset = true;
+	}
+
+	while( time < Time(time_window_adjustment().get_sub_lower()) )
+	{
+		time_window_adjustment().set_value(
+			max(
+				time_window_adjustment().get_value()-time_window_adjustment().get_page_size()/2,
+				time_window_adjustment().get_lower())
+		);
+
+		timewindreset = true;
+	}
+
+	//we need to tell people that the value changed
+	if(timewindreset) time_window_adjustment().value_changed();
+
+	//update actual time to next step
+	time_adjustment().set_value(time);
+	time_adjustment().value_changed();
+
+	if(!work_area->sync_render_preview())
+		stop_async();
+}
+
+
+
+void
 CanvasView::play()
 {
 	assert(get_canvas());
@@ -2958,15 +3098,6 @@ CanvasView::play()
 	is_playing_=true;
 
 	work_area->clear_ducks();
-
-    // Convert synfig::Time to jack_nframes_t
-	float fps = get_canvas()->rend_desc().get_frame_rate();
-	jack_nframes_t sr = jack_get_sample_rate(client);
-	jack_nframes_t nframes = ((double)sr * time.round(fps));
-
-    // Sync the JACK transport with Synfig
-	jack_transport_locate(client, nframes);
-	jack_transport_start(client);
 
 	for(timer.reset(); time + timer() < endtime;)
 	{
@@ -3011,12 +3142,10 @@ CanvasView::play()
 		if(get_cancel_status())
 		{
 			is_playing_=false;
-			jack_transport_stop(client);
 			return;
 		}
 	}
 
-	jack_transport_stop(client);
 	is_playing_=false;
 	time_adjustment().set_value(endtime);
 	time_adjustment().value_changed();
@@ -3951,21 +4080,83 @@ CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
 void
 CanvasView::on_play_pause_pressed()
 {
-	if(!is_playing())
+	if (jack_enabled)
 	{
-		framedial->toggle_play_pause_button(is_playing());
-		play();
-		framedial->toggle_play_pause_button(true); // this call is to restore the play button after play reaches end time.
+		if (jack_is_playing) {
+			jack_transport_stop(jack_client);
+			on_jack_sync();
+			stop_async();
+		} else
+			jack_transport_start(jack_client);
 	}
 	else
 	{
-		framedial->toggle_play_pause_button(is_playing());
-		stop();
+		if(!is_playing())
+			play_async();
+		else
+			stop_async();
 	}
 }
 
-int
-CanvasView::syn_jack_process(jack_nframes_t nframes, void *arg)
+void
+CanvasView::on_toggle_jack_pressed()
 {
-	return 0;
+	set_jack_enabled(!get_jack_enabled());
+}
+
+bool
+CanvasView::is_time_equal_to_current_frame(const synfig::Time &time)
+{
+	float fps(get_canvas()->rend_desc().get_frame_rate());
+	Time starttime = Time(0);
+	Time endtime = get_canvas()->rend_desc().get_time_end();
+
+	synfig::Time t0 = get_time();
+	synfig::Time t1 = time;
+
+	if (fps != 0.f) {
+		t0 = t0.round(fps);
+		t1 = t1.round(fps);
+	}
+
+	t0 = std::max(starttime, std::min(endtime, t0));
+	t1 = std::max(starttime, std::min(endtime, t1));
+
+	return t0.is_equal(t1);
+}
+
+void
+CanvasView::on_jack_sync()
+{
+	jack_position_t pos;
+	jack_transport_state_t state = jack_transport_query(jack_client, &pos);
+
+	jack_is_playing = state == JackTransportRolling || state == JackTransportStarting;
+	jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
+
+	if (is_playing() != jack_is_playing)
+	{
+		if (jack_is_playing)
+			play_async();
+		else
+			stop_async();
+	}
+
+	if (!is_time_equal_to_current_frame(jack_time))
+	{
+		jack_synchronizing = true;
+		set_time(jack_time);
+		time_adjustment().set_value(get_time());
+		time_adjustment().value_changed();
+		jack_synchronizing = false;
+	}
+}
+
+
+int
+CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position_t * /* pos */, void *arg)
+{
+	CanvasView *canvasView = static_cast<CanvasView*>(arg);
+	canvasView->jack_dispatcher.emit();
+	return 1;
 }

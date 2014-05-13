@@ -51,8 +51,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(7, 1, false)
+FrameDial::FrameDial(): Gtk::Table(8, 1, false)
 {
+	enable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_mode_off",_("Enable JACK"));
+	disable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_mode_on",_("Disable JACK"));
 	seek_begin =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin",_("Seek to begin"));
 	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Seek to previous keyframe"));
 	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Seek to previous frame"));
@@ -62,14 +64,17 @@ FrameDial::FrameDial(): Gtk::Table(7, 1, false)
 	seek_next_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe",_("Seek to next keyframe"));
 	seek_end =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_end",_("Seek to end"));
 
-	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_frame, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*play, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*pause, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_keyframe, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*enable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*disable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_begin,			1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_prev_keyframe, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_prev_frame,	3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*play,				4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*pause,				4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_next_frame,	5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_next_keyframe,	6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_end,			7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	disable_jack->hide();
 	pause->hide();
 }
 
@@ -92,14 +97,29 @@ FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char 
 void
 FrameDial::toggle_play_pause_button(bool is_playing)
 {
-	if(!is_playing)
+	if(is_playing)
+	{
+		pause->hide();
+		play->show();
+	}
+	else
 	{
 		play->hide();
 		pause->show();
 	}
+}
+
+void
+FrameDial::toggle_enable_jack(bool jack_is_enabled)
+{
+	if(jack_is_enabled)
+	{
+		enable_jack->hide();
+		disable_jack->show();
+	}
 	else
 	{
-		pause->hide();
-		play->show();
+		disable_jack->hide();
+		enable_jack->show();
 	}
 }

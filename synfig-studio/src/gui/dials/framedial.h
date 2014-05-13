@@ -47,6 +47,8 @@ namespace studio
 
 class FrameDial : public Gtk::Table
 {
+	Gtk::Button *enable_jack;
+	Gtk::Button *disable_jack;
 	Gtk::Button *seek_begin;
 	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_prev_frame;
@@ -60,6 +62,8 @@ class FrameDial : public Gtk::Table
 
 public:
 	FrameDial();
+	Glib::SignalProxy0<void> signal_enable_jack()         { return enable_jack->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_disable_jack()        { return disable_jack->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_begin()          { return seek_begin->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_keyframe()  { return seek_prev_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_prev_frame()     { return seek_prev_frame->signal_clicked(); }
@@ -69,6 +73,7 @@ public:
 	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_end()            { return seek_end->signal_clicked(); }
 
+	void toggle_enable_jack(bool jack_is_enabled);
 	void toggle_play_pause_button(bool is_playing);
 
 }; // END of class FrameDial

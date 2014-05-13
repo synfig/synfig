@@ -48,6 +48,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
 
+#include <ETL/clock>
+
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/string.h>
@@ -177,8 +179,6 @@ public:
 	typedef LayerTreeStore::Model LayerTreeModel;
 
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
-
-	jack_client_t *client;
 
 	//! Create an instance of this class whenever doing a longer task.
 	/*! Make sure that you check the bool value of this class occasionally
@@ -397,11 +397,21 @@ private:
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
 
 	bool is_playing_;
+	sigc::connection playing_connection;
+	etl::clock playing_timer;
+	synfig::Time playing_time;
 
 	sigc::signal<void> signal_deleted_;
 
 	bool rebuild_ducks_queued;
 	sigc::connection queue_rebuild_ducks_connection;
+
+	bool jack_enabled;
+	Glib::Dispatcher jack_dispatcher;
+	jack_client_t *jack_client;
+	bool jack_synchronizing;
+	bool jack_is_playing;
+	synfig::Time jack_time;
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
@@ -508,6 +518,8 @@ private:
 
 	void toggle_animatebutton();
 
+	void on_play_timeout();
+
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -519,6 +531,9 @@ public:
 	void activate();
 	void deactivate();
 	void present();
+
+	bool get_jack_enabled() { return jack_enabled; }
+	void set_jack_enabled(bool value);
 
 	synfig::Rect& get_bbox() { return bbox; }
 
@@ -654,6 +669,9 @@ public:
 	//! Starts "playing" the animation in real-time
 	void play();
 
+	void play_async();
+	void stop_async();
+
 	//! Shows the tables (Layer/Children)
 	void show_tables();
 
@@ -696,6 +714,8 @@ public:
 	void update_quality();
 
 	void toggle_duck_mask(Duckmatic::Type type);
+
+	bool is_time_equal_to_current_frame(const synfig::Time &time);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -784,6 +804,8 @@ private:
 
 	void on_play_pause_pressed();
 
+	void on_toggle_jack_pressed();
+
 	void on_meta_data_changed();
 
 	//! Keyboard event dispatcher following window priority
@@ -804,7 +826,9 @@ public:
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
 
-	static int syn_jack_process(jack_nframes_t nframes, void *arg);
+private:
+	void on_jack_sync();
+	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
 
 }; // END of class CanvasView
 
