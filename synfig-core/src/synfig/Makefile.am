@@ -27,9 +27,10 @@ LAYERHEADERS = \
 	layer_polygon.h \
 	layer_shape.h \
 	layer_solidcolor.h \
+	layer_sound.h \
 	layer_skeleton.h \
-	layer_switch.h \
-	layer_skeletondeformation.h
+	layer_skeletondeformation.h \
+	layer_switch.h
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
@@ -43,9 +44,10 @@ LAYERSOURCES = \
 	layer_polygon.cpp \
 	layer_shape.cpp \
 	layer_solidcolor.cpp \
+	layer_sound.cpp \
 	layer_skeleton.cpp \
-	layer_switch.cpp \
-	layer_skeletondeformation.cpp
+	layer_skeletondeformation.cpp \
+	layer_switch.cpp
 
 
 TARGETHEADERS = \
@@ -298,7 +300,8 @@ SYNFIGHEADERS = \
 	valuetransformation.h \
 	mesh.h \
 	renderer.h \
-	renderersoftware.h
+	renderersoftware.h \
+	soundprocessor.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
@@ -350,7 +353,8 @@ SYNFIGSOURCES = \
 	valueoperations.cpp \
 	mesh.cpp \
 	renderer.cpp \
-	renderersoftware.cpp
+	renderersoftware.cpp \
+	soundprocessor.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la
