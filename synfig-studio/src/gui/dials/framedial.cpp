@@ -53,8 +53,8 @@ using namespace studio;
 
 FrameDial::FrameDial(): Gtk::Table(8, 1, false)
 {
-	enable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_mode_off",_("Enable JACK"));
-	disable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_mode_on",_("Disable JACK"));
+	enable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-jack_mode_off",_("Enable JACK"));
+	disable_jack =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-jack_mode_on",_("Disable JACK"));
 	seek_begin =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin",_("Seek to begin"));
 	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Seek to previous keyframe"));
 	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Seek to previous frame"));
