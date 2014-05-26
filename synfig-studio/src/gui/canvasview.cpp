@@ -125,8 +125,7 @@
 
 #endif
 
-#ifndef _JACK_INCLUDED_
-#define _JACK_INCLUDED_
+#ifdef WITH_JACK
 #include <jack/jack.h>
 #include <jack/transport.h>
 #endif
@@ -717,10 +716,12 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	is_playing_				(false),
 
 	jack_enabled			(false),
+#ifdef WITH_JACK
 	jack_client				(NULL),
 	jack_synchronizing		(true),
 	jack_is_playing			(false),
 	jack_time				(0),
+#endif
 
 	working_depth			(0),
 	cancel					(false),
@@ -913,7 +914,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	instance->signal_canvas_view_created()(this);
 	//synfig::info("Canvasview: Constructor Done");
 
+#ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &CanvasView::on_jack_sync));
+#endif
 
 	App::dock_manager->register_dockable(*this);
 	App::main_window->main_dock_book().add(*this);
@@ -922,7 +925,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 CanvasView::~CanvasView()
 {
+#ifdef WITH_JACK
 	set_jack_enabled(false);
+#endif
 
 	App::dock_manager->unregister_dockable(*this);
 	signal_deleted()();
@@ -980,6 +985,7 @@ void CanvasView::present()
 	update_title();
 }
 
+#ifdef WITH_JACK
 void CanvasView::set_jack_enabled(bool value)
 {
 	if (jack_enabled == value) return;
@@ -1007,6 +1013,7 @@ void CanvasView::set_jack_enabled(bool value)
 
 	framedial->toggle_enable_jack(jack_enabled);
 }
+#endif
 
 std::list<int>&
 CanvasView::get_pixel_sizes()
@@ -1084,8 +1091,10 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
+#ifdef WITH_JACK
 	framedial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
 	framedial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+#endif
 	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1));
 	framedial->signal_play().connect(sigc::mem_fun(*this, &studio::CanvasView::on_play_pause_pressed));
@@ -2467,6 +2476,7 @@ CanvasView::on_time_changed()
 {
 	Time time(get_time());
 
+#ifdef WITH_JACK
 	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time))
 	{
 		float fps = get_canvas()->rend_desc().get_frame_rate();
@@ -2474,6 +2484,7 @@ CanvasView::on_time_changed()
 		jack_nframes_t nframes = ((double)sr * time.round(fps));
 		jack_transport_locate(jack_client, nframes);
 	}
+#endif
 
 	current_time_widget->set_value(time);
 	try {
@@ -3021,11 +3032,13 @@ CanvasView::on_play_timeout()
 
 	if (jack_enabled)
 	{
+#ifdef WITH_JACK
 		jack_position_t pos;
 		jack_transport_query(jack_client, &pos);
 		jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
 		time = jack_time;
 		if (time >= endtime) time = endtime;
+#endif
 	}
 	else
 	{
@@ -4082,12 +4095,14 @@ CanvasView::on_play_pause_pressed()
 {
 	if (jack_enabled)
 	{
+#ifdef WITH_JACK
 		if (jack_is_playing) {
 			jack_transport_stop(jack_client);
 			on_jack_sync();
 			stop_async();
 		} else
 			jack_transport_start(jack_client);
+#endif
 	}
 	else
 	{
@@ -4096,12 +4111,6 @@ CanvasView::on_play_pause_pressed()
 		else
 			stop_async();
 	}
-}
-
-void
-CanvasView::on_toggle_jack_pressed()
-{
-	set_jack_enabled(!get_jack_enabled());
 }
 
 bool
@@ -4123,6 +4132,13 @@ CanvasView::is_time_equal_to_current_frame(const synfig::Time &time)
 	t1 = std::max(starttime, std::min(endtime, t1));
 
 	return t0.is_equal(t1);
+}
+
+#ifdef WITH_JACK
+void
+CanvasView::on_toggle_jack_pressed()
+{
+	set_jack_enabled(!get_jack_enabled());
 }
 
 void
@@ -4160,3 +4176,4 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	canvasView->jack_dispatcher.emit();
 	return 1;
 }
+#endif

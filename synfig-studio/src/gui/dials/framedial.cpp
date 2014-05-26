@@ -75,6 +75,10 @@ FrameDial::FrameDial(): Gtk::Table(8, 1, false)
 	attach(*seek_next_keyframe,	6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_end,			7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	disable_jack->hide();
+#ifndef WITH_JACK
+	enable_jack->set_sensitive(false);
+	disable_jack->set_sensitive(false);
+#endif
 	pause->hide();
 }
 
@@ -109,6 +113,7 @@ FrameDial::toggle_play_pause_button(bool is_playing)
 	}
 }
 
+#ifdef WITH_JACK
 void
 FrameDial::toggle_enable_jack(bool jack_is_enabled)
 {
@@ -123,3 +128,4 @@ FrameDial::toggle_enable_jack(bool jack_is_enabled)
 		enable_jack->show();
 	}
 }
+#endif

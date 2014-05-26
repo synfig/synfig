@@ -96,8 +96,7 @@
 
 #include "docks/dockable.h"
 
-#ifndef _JACK_INCLUDED_
-#define _JACK_INCLUDED_
+#ifdef WITH_JACK
 #include <jack/jack.h>
 #include <jack/transport.h>
 #endif
@@ -407,11 +406,13 @@ private:
 	sigc::connection queue_rebuild_ducks_connection;
 
 	bool jack_enabled;
+#ifdef WITH_JACK
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
 	bool jack_synchronizing;
 	bool jack_is_playing;
 	synfig::Time jack_time;
+#endif
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
@@ -532,8 +533,10 @@ public:
 	void deactivate();
 	void present();
 
+#ifdef WITH_JACK
 	bool get_jack_enabled() { return jack_enabled; }
 	void set_jack_enabled(bool value);
+#endif
 
 	synfig::Rect& get_bbox() { return bbox; }
 
@@ -804,7 +807,9 @@ private:
 
 	void on_play_pause_pressed();
 
+#ifdef WITH_JACK
 	void on_toggle_jack_pressed();
+#endif
 
 	void on_meta_data_changed();
 
@@ -827,8 +832,10 @@ public:
 	static std::list<int>& get_pixel_sizes();
 
 private:
+#ifdef WITH_JACK
 	void on_jack_sync();
 	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
+#endif
 
 }; // END of class CanvasView
 

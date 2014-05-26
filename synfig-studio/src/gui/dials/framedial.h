@@ -73,7 +73,9 @@ public:
 	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_end()            { return seek_end->signal_clicked(); }
 
+#ifdef WITH_JACK
 	void toggle_enable_jack(bool jack_is_enabled);
+#endif
 	void toggle_play_pause_button(bool is_playing);
 
 }; // END of class FrameDial
