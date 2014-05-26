@@ -94,6 +94,7 @@
 #include "adjust_window.h"
 
 #include <synfig/transform.h>
+#include <synfig/soundprocessor.h>
 
 #include "docks/dockable.h"
 
@@ -231,7 +232,10 @@ public:
 	std::auto_ptr<WorkArea> work_area;
 
 	WorkArea* get_work_area() { return work_area.get(); }
+
 private:
+	synfig::SoundProcessor soundProcessor;
+
 	ActivationIndex activation_index_;
 
 	synfig::Rect bbox;

@@ -3022,6 +3022,10 @@ CanvasView::play_async()
 
 	framedial->toggle_play_pause_button(!is_playing());
 
+	soundProcessor.clear();
+	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
+	soundProcessor.set_playing(true);
+
 	playing_connection = Glib::signal_timeout().connect(
 		sigc::bind_return( sigc::mem_fun(*this, &studio::CanvasView::on_play_timeout), true ),
 		timeout,
@@ -3032,6 +3036,7 @@ void
 CanvasView::stop_async()
 {
 	playing_connection.disconnect();
+	soundProcessor.set_playing(false);
 	is_playing_=false;
 	framedial->toggle_play_pause_button(!is_playing());
 }
