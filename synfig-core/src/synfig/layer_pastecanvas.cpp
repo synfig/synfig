@@ -672,3 +672,8 @@ Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
 	context.set_render_method(x);
 }
 
+void
+Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
+{
+	if (active() && canvas) canvas->fill_sound_processor(soundProcessor);
+}
