@@ -1656,3 +1656,10 @@ Canvas::get_string()const
 {
 	return String("Canvas: ") + get_description();
 }
+
+void
+Canvas::fill_sound_processor(SoundProcessor &soundProcessor) const
+{
+	for(IndependentContext c = begin(); *c; ++c)
+		(*c)->fill_sound_processor(soundProcessor);
+}
