@@ -72,6 +72,7 @@
 #include "dialogs/dialog_waypoint.h"
 #include "dialogs/dialog_keyframe.h"
 #include "dials/framedial.h"
+#include "dials/jackdial.h"
 #include "dials/toggleducksdial.h"
 #include "dials/resolutiondial.h"
 #include "widgets/widget_keyframe_list.h"
@@ -310,6 +311,7 @@ private:
 	Gtk::ToggleButton *futurekeyframebutton;
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
+	JackDial *jackdial;
 	ToggleDucksDial *toggleducksdial;
 	bool toggling_ducks_;
 	ResolutionDial *resolutiondial;

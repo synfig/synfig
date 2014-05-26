@@ -1,13 +1,13 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file zoomdial.h
+/*!	\file jackdial.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2009 Gerco Ballintijn
 **	Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_FRAMEDIAL_H
-#define __SYNFIG_STUDIO_FRAMEDIAL_H
+#ifndef __SYNFIG_STUDIO_JACKDIAL_H
+#define __SYNFIG_STUDIO_JACKDIAL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -45,31 +45,21 @@
 namespace studio
 {
 
-class FrameDial : public Gtk::Table
+class JackDial : public Gtk::Table
 {
-	Gtk::Button *seek_begin;
-	Gtk::Button *seek_prev_keyframe;
-	Gtk::Button *seek_prev_frame;
-	Gtk::Button *play;
-	Gtk::Button *pause;
-	Gtk::Button *seek_next_frame;
-	Gtk::Button *seek_next_keyframe;
-	Gtk::Button *seek_end;
+	Gtk::Button *enable_jack;
+	Gtk::Button *disable_jack;
 
 	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
-	FrameDial();
-	Glib::SignalProxy0<void> signal_seek_begin()          { return seek_begin->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_keyframe()  { return seek_prev_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_frame()     { return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play()                { return play->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_pause()               { return pause->signal_clicked();}
-	Glib::SignalProxy0<void> signal_seek_next_frame()     { return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()            { return seek_end->signal_clicked(); }
+	JackDial();
+#ifdef WITH_JACK
+	Glib::SignalProxy0<void> signal_enable_jack()         { return enable_jack->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_disable_jack()        { return disable_jack->signal_clicked(); }
 
-	void toggle_play_pause_button(bool is_playing);
+	void toggle_enable_jack(bool jack_is_enabled);
+#endif
 
 }; // END of class FrameDial
 

@@ -115,6 +115,7 @@
 #include "audiocontainer.h"
 #include "widgets/widget_timeslider.h"
 #include "dials/keyframedial.h"
+#include "dials/jackdial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -1011,7 +1012,7 @@ void CanvasView::set_jack_enabled(bool value)
 		jack_client = NULL;
 	}
 
-	framedial->toggle_enable_jack(jack_enabled);
+	jackdial->toggle_enable_jack(jack_enabled);
 }
 #endif
 
@@ -1091,10 +1092,7 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
-#ifdef WITH_JACK
-	framedial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
-	framedial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
-#endif
+	
 	framedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 	framedial->signal_seek_prev_frame().connect(sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1));
 	framedial->signal_play().connect(sigc::mem_fun(*this, &studio::CanvasView::on_play_pause_pressed));
@@ -1112,7 +1110,7 @@ CanvasView::create_time_bar()
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
 
-	timebar = Gtk::manage(new class Gtk::Table(6, 3, false));
+	timebar = Gtk::manage(new class Gtk::Table(8, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -1124,8 +1122,19 @@ CanvasView::create_time_bar()
 	widget_kf_list->set_size_request(-1,header_height/3+1);
 
 	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(8);
+	space->set_size_request(4);
         space->show();
+	
+	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
+	space2->set_size_request(4);
+        space2->show();
+	
+	jackdial = manage(new class JackDial());
+#ifdef WITH_JACK
+	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+#endif
+	jackdial->show();
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
@@ -1134,9 +1143,11 @@ CanvasView::create_time_bar()
 	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
 	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*keyframedial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*jackdial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*space, 4, 5, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*animatebutton, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*keyframedial, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space2, 6, 7, 0, 2, Gtk::FILL, Gtk::FILL);
+	timebar->attach(*animatebutton, 7, 8, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 	timebar->show();
