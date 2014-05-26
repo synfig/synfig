@@ -592,6 +592,8 @@ public:
 	//! Retrieves the grow value from its parent canvas
 	Real get_parent_canvas_grow_value()const;
 
+	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
+
 protected:
 
 	//! This is called whenever a parameter is changed
