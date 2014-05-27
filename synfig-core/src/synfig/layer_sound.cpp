@@ -47,7 +47,7 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_Sound);
-SYNFIG_LAYER_SET_NAME(Layer_Sound,"Sound");
+SYNFIG_LAYER_SET_NAME(Layer_Sound,"sound");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Sound,N_("Sound"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Sound,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Sound,"0.1");
@@ -101,6 +101,7 @@ Layer_Sound::get_param_vocab()const
 		.set_local_name(_("Filename"))
 		.set_description(_("Path to sound file"))
 		.set_static(true)
+		.set_hint("filename")
 	);
 
 	ret.push_back(ParamDesc("delay")
