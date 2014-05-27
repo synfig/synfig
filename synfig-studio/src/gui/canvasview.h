@@ -724,7 +724,7 @@ public:
 
 	void toggle_duck_mask(Duckmatic::Type type);
 
-	bool is_time_equal_to_current_frame(const synfig::Time &time);
+	bool is_time_equal_to_current_frame(const synfig::Time &time, const synfig::Time &range = synfig::Time(0.0));
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
