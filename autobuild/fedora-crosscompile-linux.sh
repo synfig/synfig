@@ -11,7 +11,7 @@ set -e
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 
-BUILDROOT_VERSION=1
+BUILDROOT_VERSION=2
 BUILDROOT_LIBRARY_SET_ID=1
 
 if [ -z $ARCH ]; then
@@ -62,6 +62,7 @@ GTKENGINES_VERSION=2.20.2
 PIXMAN_VERSION=0.22.0		# required by CAIRO 1.12.0
 PANGO_VERSION=1.24.5
 FONTCONFIG_VERSION=2.5.0
+JACK_VERSION=0.124.1
 
 if [ -z $DEBUG ]; then
 	export DEBUG=1
@@ -156,6 +157,7 @@ mkprefix-deps()
 			libtiff4-dev \
 			libjasper-dev \
 			x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+			libdb-dev uuid-dev \
 			libxml-parser-perl m4 cvs \
 			bzip2"
 
@@ -246,6 +248,9 @@ chmod a+x  ${DEPSPREFIX}/bin/rsync
 [ -e "${PREFIX}/lib" ] || mkdir -p ${PREFIX}/lib
 #cp ${SYSPREFIX}/usr/lib/libltdl* ${PREFIX}/lib/
 cp ${SYSPREFIX}/usr/lib/libpng12* ${PREFIX}/lib/
+
+[ -e "${PREFIX}/lib.extra" ] || mkdir -p ${PREFIX}/lib.extra
+cp ${SYSPREFIX}/usr/lib/libjack.so* ${PREFIX}/lib.extra/
 
 }
 
@@ -581,6 +586,26 @@ if ! pkg-config ${PKG_NAME}-2.4 --exact-version=${PKG_VERSION}  --print-errors; 
 fi
 }
 
+mkjack()
+{
+PKG_NAME=jack-audio-connection-kit
+PKG_VERSION="${JACK_VERSION}"
+TAREXT=gz
+if ! pkg-config jack --exact-version=${PKG_VERSION}  --print-errors; then
+	rsync -av ${SOURCES_URL}/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	pushd ${SRCPREFIX}
+	[ ! -d ${PKG_NAME}-${PKG_VERSION} ] && tar -xzf ${WORKSPACE}/cache/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd ${PKG_NAME}-${PKG_VERSION}
+	./configure --prefix=${SYSPREFIX} --includedir=${SYSPREFIX}/include \
+		--libdir=${SYSPREFIX}/lib \
+		--disable-static --enable-shared
+	make -j${THREADS}
+	make install
+	cd ..
+	popd
+fi
+}
+
 mkautoconf()
 {
 PKG_NAME=autoconf
@@ -817,6 +842,14 @@ cat > ${PREFIX}/synfigstudio <<EOF
 
 SYSPREFIX=\`dirname "\$0"\`
 
+# Check if this system have JACK installed
+if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
+	# No JACK, so disable this functionality.
+	# (The bundled libjack won't work correctly anyway).
+	export SYNFIG_DISABLE_JACK=1
+	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${PREFIX}/lib.extra
+fi
+
 USER_CONFIG_DIR=\$HOME/.config/synfig
 export ETC_DIR=\${SYSPREFIX}/etc
 export LD_LIBRARY_PATH=\${SYSPREFIX}/lib:$LD_LIBRARY_PATH
@@ -977,6 +1010,7 @@ mkall()
 	mkcairo # bundled library
 	mkpango
 	mkgtk
+	mkjack
 	
 	# synfig-core deps
 	mklibsigcpp

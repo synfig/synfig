@@ -99,6 +99,7 @@ GTK=2.20.1			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
+JACK=0.124.1
 
 
 GITVERSION=1.7.0   # git version for chroot environment
@@ -149,6 +150,24 @@ if ! pkg-config glib-2.0 --exact-version=${GLIB}  --print-errors; then
 	popd
 fi
 }
+
+mkjack()
+{
+if ! pkg-config jack --exact-version=${JACK}  --print-errors; then
+	pushd /source
+	apt-get install -y libdb-dev uuid-dev
+	[ ! -d jack-audio-connection-kit-${JACK} ] && tar -xzf jack-audio-connection-kit-${JACK}.tar.gz
+	cd jack-audio-connection-kit-${JACK}
+	#[[ $DOCLEAN == 1 ]] && make clean || true
+	./configure --disable-static --enable-shared \
+		--libdir=/usr/local/lib
+	make -j$MAKE_THREADS
+	make install
+	cd ..
+	popd
+fi
+}
+
 
 mkatk()
 {
@@ -542,7 +561,7 @@ fi
 
 if [[ $MODE != 'quick' ]]; then
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
 make -j$MAKE_THREADS
@@ -574,6 +593,14 @@ mkpack()
 	# bundle libltdl
 	rm -f ${PREFIX}/lib/libltdl* || true
 	cp -av /usr/lib/libltdl*.so* ${PREFIX}/lib
+
+	# A place for optional libs
+	[ -e ${PREFIX}/lib.extra ] || mkdir -p ${PREFIX}/lib.extra
+	# bundle optional libjack
+	rm -f ${PREFIX}/lib.extra/libjack* || true
+	cp -av /usr/local/lib/libjack.so* ${PREFIX}/lib.extra
+	rm -f ${PREFIX}/lib.extra/libdb-4* || true
+	cp -av /usr/lib/libdb-4*.so ${PREFIX}/lib.extra
 	
 	cat > $PREFIX/synfig <<EOF
 #!/bin/sh
@@ -592,6 +619,14 @@ EOF
 #!/bin/sh
 
 PREFIX="/opt/synfig"
+
+# Check if this system have JACK installed
+if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
+	# No JACK, so disable this functionality.
+	# (The bundled libjack won't work correctly anyway).
+	export SYNFIG_DISABLE_JACK=1
+	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${PREFIX}/lib.extra
+fi
 
 export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${PREFIX}/
@@ -635,6 +670,15 @@ EOF
 
 PREFIX=\`dirname \$0\`
 PREFIX=\`cd \$PREFIX; pwd\`
+
+# Check if this system have JACK installed
+if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
+	# No JACK, so disable this functionality.
+	# (The bundled libjack won't work correctly anyway).
+	export SYNFIG_DISABLE_JACK=1
+	export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${PREFIX}/lib.extra
+fi
+
 export LD_LIBRARY_PATH=\${PREFIX}/lib:\$LD_LIBRARY_PATH
 export SYNFIG_ROOT=\${PREFIX}/
 export SYNFIG_MODULE_LIST=\${PREFIX}/etc/synfig_modules.cfg
@@ -864,6 +908,7 @@ initialize()
 				OpenEXR-devel \
 				libmng-devel \
 				ImageMagick-c++-devel \
+				jack-audio-connection-kit-devel \
 				gtkmm24-devel \
 				glibmm24-devel"
 		fi
@@ -948,6 +993,7 @@ initialize()
 					${DEB_LIST_MINIMAL} \
 					git-core \
 					libmng-dev \
+					libjack-dev \
 					libgtkmm-2.4-dev \
 					libglibmm-2.4-dev \
 					libsigc++-2.0-dev \
@@ -1095,6 +1141,7 @@ mkpackage()
 		mkcairo
 		mkpango
 		mkgtk
+		mkjack
 
 
 		#synfig-core deps
