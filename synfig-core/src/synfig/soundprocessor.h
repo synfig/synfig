@@ -82,6 +82,9 @@ public:
 
 	bool get_playing() const;
 	void set_playing(bool value);
+
+	static bool subsys_init();
+	static bool subsys_stop();
 };
 
 }; /* end namespace synfig */

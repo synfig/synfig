@@ -36,6 +36,9 @@
 #endif
 
 #include "soundprocessor.h"
+#include <Mlt.h>
+#include <cmath>
+#include <vector>
 
 #endif
 
@@ -53,23 +56,38 @@ using namespace etl;
 
 class SoundProcessor::Internal {
 public:
+	static bool initialized;
 	std::vector<PlayOptions> stack;
-	// TODO:
+	Mlt::Profile profile;
+	Mlt::Producer *last_track;
+	Mlt::Consumer *consumer;
+	Time position;
+
+	void clear() {
+		if (last_track != NULL) { delete last_track; last_track = NULL; }
+		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
+		stack.clear();
+		stack.push_back(PlayOptions());
+	}
+
+	Internal(): last_track(), consumer(), position(0.0) { clear(); }
+	~Internal() { clear(); }
 };
 
-SoundProcessor::SoundProcessor():
-	internal(new Internal())
-{
-	internal->stack.push_back(PlayOptions());
-	// TODO:
-}
+bool SoundProcessor::Internal::initialized = false;
 
+SoundProcessor::SoundProcessor() {
+	if (!Internal::initialized) {
+		Mlt::Factory::init();
+		Internal::initialized = true;
+	}
+	internal = new Internal();
+}
 SoundProcessor::~SoundProcessor() { delete internal; }
 
 void SoundProcessor::clear()
 {
-	set_playing(false);
-	// TODO:
+	internal->clear();
 }
 
 void SoundProcessor::beginGroup(const PlayOptions &playOptions)
@@ -91,29 +109,86 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 	PlayOptions options(
 			internal->stack.back().delay + playOptions.delay,
 			internal->stack.back().volume * playOptions.volume );
-	// TODO:
+	if (options.volume <= 0.0) return;
+
+	// Create track
+	Mlt::Producer *track = new Mlt::Producer(internal->profile, sound.filename.c_str());
+	if (track->get_producer() == NULL) { delete track; return; }
+	int delay = (int)round(options.delay*internal->profile.fps());
+	if (-delay >= track->get_length()) { delete track; return; }
+	if (delay < 0) {
+		// cut
+		track->set_in_and_out(-delay, -1);
+	} else
+	if (delay > 0) {
+		Mlt::Playlist *playlist = new Mlt::Playlist();
+		playlist->blank(delay);
+		playlist->append(*track);
+		delete track;
+		track = playlist;
+	}
+
+	if (internal->last_track == NULL)
+		{ internal->last_track = track; return; }
+
+	set_position(0.0);
+
+	// Combine tracks
+	Mlt::Tractor *tractor = new Mlt::Tractor();
+
+	Mlt::Multitrack *multitrack = tractor->multitrack();
+	multitrack->connect(*internal->last_track, 0);
+	multitrack->connect(*track, 1);
+	delete multitrack;
+
+	Mlt::Transition transition(internal->profile, "mix");
+	transition.set("combine", 1);
+	Mlt::Field *field = tractor->field();
+	field->plant_transition(transition, 0, 1);
+	delete field;
+
+	delete internal->last_track;
+	internal->last_track = tractor;
 }
 
 Time SoundProcessor::get_position() const
 {
-	// TODO:
-	return Time();
+	return Time(internal->last_track == NULL ? 0.0 :
+				(double)internal->last_track->position()/internal->profile.fps() );
 }
 
 void SoundProcessor::set_position(Time value)
 {
-	// TODO:
+	if (internal->last_track != NULL)
+		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
 }
 
 bool SoundProcessor::get_playing() const
 {
-	// TODO:
-	return false;
+	return internal->consumer != NULL;
 }
 
 void SoundProcessor::set_playing(bool value)
 {
-	// TODO:
+	if (value) {
+		if (internal->consumer == NULL) {
+			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
+			if (internal->last_track != NULL) {
+				internal->consumer->connect(*internal->last_track);
+				internal->consumer->start();
+			}
+		}
+	} else {
+		if (internal->consumer != NULL) {
+			internal->consumer->stop();
+			delete internal->consumer;
+			internal->consumer = NULL;
+		}
+	}
 }
+
+bool SoundProcessor::subsys_init() { return Mlt::Factory::init(); }
+bool SoundProcessor::subsys_stop() { return true; }
+
 
 /* === E N T R Y P O I N T ================================================= */
