@@ -700,6 +700,15 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
+	if (ext=="wav" || ext=="ogg" || ext=="mp3"){
+		Layer::Handle layer(add_layer_to("sound",get_canvas()));
+		if(!layer)
+			throw String(_("Unable to create \"Sound\" layer"));
+		layer->set_param("filename",ValueBase(filename));
+		signal_layer_new_description()(layer,filename);
+		return true;
+	}
+
 	if(ext=="svg"){//I don't like it, but worse is nothing
 		Layer::Handle _new_layer(add_layer_to("group",get_canvas()));
 		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
