@@ -274,6 +274,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	INIT_STOCK_ICON(animate_mode_off,"animate_mode_off_icon."IMAGE_EXT,_("Animate Mode Off"));
 	INIT_STOCK_ICON(animate_mode_on,"animate_mode_on_icon."IMAGE_EXT,_("Animate Mode On"));
+	
+	INIT_STOCK_ICON(jack_mode_off,"jack_mode_off_icon."IMAGE_EXT,_("JACK disabled"));
+	INIT_STOCK_ICON(jack_mode_on,"jack_mode_on_icon."IMAGE_EXT,_("JACK enabled"));
 
 	INIT_STOCK_ICON(set_outline_color,"set_outline_color."IMAGE_EXT,_("Set as Outline"));
 	INIT_STOCK_ICON(set_fill_color,"set_fill_color."IMAGE_EXT,_("Set as Fill"));

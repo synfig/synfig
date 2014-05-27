@@ -1,13 +1,13 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file framedial.cpp
+/*!	\file jackdial.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2009 Gerco Ballintijn
 **	Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@
 #	include <config.h>
 #endif
 
-#include "framedial.h"
+#include "jackdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
@@ -51,30 +51,23 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(8, 1, false)
+JackDial::JackDial(): Gtk::Table(8, 1, false)
 {
-	seek_begin =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_begin",_("Seek to begin"));
-	seek_prev_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_keyframe",_("Seek to previous keyframe"));
-	seek_prev_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_prev_frame",_("Seek to previous frame"));
-	play =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_play",_("Play"));
-	pause = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_pause",_("Pause"));
-	seek_next_frame =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_frame",_("Seek to next frame"));
-	seek_next_keyframe =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_next_keyframe",_("Seek to next keyframe"));
-	seek_end =  create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-animate_seek_end",_("Seek to end"));
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	enable_jack =  create_icon(iconsize, "synfig-jack_mode_off",_("Enable JACK"));
+	disable_jack =  create_icon(iconsize, "synfig-jack_mode_on",_("Disable JACK"));
 
-	attach(*seek_begin,			0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_keyframe, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_frame,	2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*play,				3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*pause,				3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame,	4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_keyframe,	5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end,			6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	pause->hide();
+	attach(*enable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*disable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	disable_jack->hide();
+#ifndef WITH_JACK
+	enable_jack->set_sensitive(false);
+	disable_jack->set_sensitive(false);
+#endif
 }
 
 Gtk::Button *
-FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip)
+JackDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip)
 {
 	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
@@ -89,17 +82,19 @@ FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char 
 	return button;
 }
 
+#ifdef WITH_JACK
 void
-FrameDial::toggle_play_pause_button(bool is_playing)
+JackDial::toggle_enable_jack(bool jack_is_enabled)
 {
-	if(is_playing)
+	if(jack_is_enabled)
 	{
-		pause->hide();
-		play->show();
+		enable_jack->hide();
+		disable_jack->show();
 	}
 	else
 	{
-		play->hide();
-		pause->show();
+		disable_jack->hide();
+		enable_jack->show();
 	}
 }
+#endif

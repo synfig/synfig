@@ -63,8 +63,8 @@ stdenv.mkDerivation rec {
 
   buildInputs = with pkgs; [
     ETL autoconf automake boost cairo gettext glibmm gtk gtkmm
-    imagemagick intltool intltool libsigcxx libtool libxmlxx pkgconfig
-    synfig which
+    imagemagick intltool intltool jackaudio libsigcxx libtool libxmlxx
+    pkgconfig synfig which
   ];
 
   preConfigure = "./bootstrap.sh";
