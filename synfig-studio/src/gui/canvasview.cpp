@@ -1127,14 +1127,17 @@ CanvasView::create_time_bar()
 	
 	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
 	space2->set_size_request(4);
-        space2->show();
 	
 	jackdial = manage(new class JackDial());
 #ifdef WITH_JACK
 	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
 	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+	if ( !getenv("SYNFIG_DISABLE_JACK") )
+	{
+		jackdial->show();
+		space2->show();
+	}
 #endif
-	jackdial->show();
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
