@@ -203,7 +203,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_filter_colorcorrect,"layer_filter_colorcorrect_icon."IMAGE_EXT,_("Color Correct Layer"));
 	INIT_STOCK_ICON(layer_filter_halftone2,"layer_filter_halftone2_icon."IMAGE_EXT,_("Halftone 2 Layer"));
 	INIT_STOCK_ICON(layer_filter_halftone3,"layer_filter_halftone3_icon."IMAGE_EXT,_("Halftone 3 Layer"));
-	INIT_STOCK_ICON(layer_filter_lumakey,"layer_filter_lumakey_icon."IMAGE_EXT,_("Luna Key Layer"));
+	INIT_STOCK_ICON(layer_filter_lumakey,"layer_filter_lumakey_icon."IMAGE_EXT,_("Luma Key Layer"));
 	// Fractal Layers
 	INIT_STOCK_ICON(layer_fractal_julia,"layer_fractal_julia_icon."IMAGE_EXT,_("Julia Set Layer"));
 	INIT_STOCK_ICON(layer_fractal_mandelbrot,"layer_fractal_mandelbrot_icon."IMAGE_EXT,_("Mandelbrot Set Layer"));
