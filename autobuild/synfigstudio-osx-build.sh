@@ -148,9 +148,6 @@ export PATH="$MACPORTS/bin:$MACPORTS/sbin:$PATH"
 # give our build directory user perms so we don't need sudo in further steps. Avoid sudo whenever it's possible!
 #sudo chown -R $UID "$BUILDDIR"
 
-# modifiy macports configuration
-# echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
-
 # do a selfupdate
 echo Now selfupdating MacPorts. Please wait ...
 port -d selfupdate
@@ -191,7 +188,7 @@ mkdeps()
 	sed -i "" -e "s|/Applications/MacPorts|$MACPORTS/tmp/app|g" "$MACPORTS/etc/macports/macports.conf" || true
 	
 	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
-	echo "+nonfree" > $MACPORTS/etc/macports/variants.conf
+	echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
 	
 	# workaround the bug introduced in MacPorts 2.2.0 - https://trac.macports.org/ticket/39850
 	cp -rf $MACPORTS/etc/macports/macports.conf $MACPORTS/etc/macports/macports.conf.bak
@@ -224,6 +221,7 @@ mkdeps()
 	STUDIO_DEPS=" \
 		gtkmm \
 		python33 \
+		gtk-quartz-engine \
 		intltool"
 	port install -f $CORE_DEPS $STUDIO_DEPS
 	
