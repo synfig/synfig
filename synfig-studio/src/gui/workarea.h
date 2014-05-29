@@ -231,6 +231,8 @@ private:
 	//! This flag is set if the guides should be drawn
 	bool show_guides;
 
+	synfig::Time jack_offset;
+
 	bool low_resolution;
 
 	bool meta_data_lock;
@@ -458,6 +460,9 @@ public:
 	void set_guides_color(const synfig::Color &c);
 	//! Returns the color of the guides
 	const synfig::Color &get_guides_color()const { return Duckmatic::get_guides_color();}
+
+	synfig::Time get_jack_offset()const { return jack_offset; }
+	void set_jack_offset(const synfig::Time &x);
 
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);

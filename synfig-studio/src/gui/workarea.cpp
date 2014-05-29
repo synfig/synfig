@@ -990,6 +990,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	progresscallback(0),
 	dragging(DRAG_NONE),
 	show_grid(false),
+	jack_offset(0),
 	tile_w(TILE_SIZE),
 	tile_h(TILE_SIZE),
 	timecode_width(0),
@@ -1023,7 +1024,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	meta_data_lock=false;
 
-	insert_renderer(new Renderer_Background, 000);
+	insert_renderer(new Renderer_Background,000);
 	insert_renderer(new Renderer_Canvas,	010);
 	insert_renderer(new Renderer_Grid,		100);
 	insert_renderer(new Renderer_Guides,	200);
@@ -1221,6 +1222,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap",get_guide_snap()?"1":"0");
 	canvas_interface->set_meta_data("guide_show",get_show_guides()?"1":"0");
 	canvas_interface->set_meta_data("grid_show",show_grid?"1":"0");
+	canvas_interface->set_meta_data("jack_offset",strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin",onion_skin?"1":"0");
 
 	{
@@ -1440,6 +1442,10 @@ WorkArea::load_meta_data()
 	}
 	//sort(get_guide_list_y());
 
+	data = canvas->get_meta_data("jack_offset");
+	if (!data.empty())
+		jack_offset = stratof(data);
+
 	meta_data_lock=false;
 	queue_draw();
 	signal_meta_data_changed()();
@@ -1525,6 +1531,13 @@ WorkArea::set_guides_color(const synfig::Color &c)
 	Duckmatic::set_guides_color(c);
 	save_meta_data();
 	queue_draw();
+}
+
+void
+WorkArea::set_jack_offset(const synfig::Time &x) {
+	if (jack_offset == x) return;
+	jack_offset = x;
+	save_meta_data();
 }
 
 void

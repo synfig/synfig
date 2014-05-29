@@ -722,7 +722,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	jack_synchronizing		(true),
 	jack_is_playing			(false),
 	jack_time				(0),
-	jack_offset				(0),
 #endif
 
 	working_depth			(0),
@@ -1132,6 +1131,7 @@ CanvasView::create_time_bar()
 	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::CanvasView::on_jack_offset_changed));
 	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	jackdial->set_offset(get_jack_offset());
 	if ( !getenv("SYNFIG_DISABLE_JACK") )
 		jackdial->show();
 #endif
@@ -2488,11 +2488,11 @@ CanvasView::on_time_changed()
 	Time time(get_time());
 
 #ifdef WITH_JACK
-	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time-jack_offset))
+	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time - get_jack_offset()))
 	{
 		float fps = get_canvas()->rend_desc().get_frame_rate();
 		jack_nframes_t sr = jack_get_sample_rate(jack_client);
-		jack_nframes_t nframes = ((double)sr * (time+jack_offset).round(fps));
+		jack_nframes_t nframes = ((double)sr * (time + get_jack_offset()).round(fps));
 		jack_transport_locate(jack_client, nframes);
 	}
 #endif
@@ -3048,7 +3048,7 @@ CanvasView::on_play_timeout()
 		jack_position_t pos;
 		jack_transport_query(jack_client, &pos);
 		jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
-		time = jack_time-jack_offset;
+		time = jack_time - get_jack_offset();
 		if (time > endtime) time = endtime;
 		if (time < starttime) time = starttime;
 #endif
@@ -4157,8 +4157,18 @@ CanvasView::on_toggle_jack_pressed()
 void
 CanvasView::on_jack_offset_changed()
 {
-	jack_offset = jackdial->get_offset();
+	set_jack_offset(jackdial->get_offset());
 	if (get_jack_enabled()) on_jack_sync();
+}
+
+synfig::Time
+CanvasView::get_jack_offset()const {
+	return work_area->get_jack_offset();
+}
+
+void
+CanvasView::set_jack_offset(const synfig::Time &value) {
+	work_area->set_jack_offset(value);
 }
 
 void
@@ -4178,10 +4188,10 @@ CanvasView::on_jack_sync()
 			stop_async();
 	}
 
-	if (!is_time_equal_to_current_frame(jack_time-jack_offset))
+	if (!is_time_equal_to_current_frame(jack_time - get_jack_offset()))
 	{
 		jack_synchronizing = true;
-		set_time(jack_time-jack_offset);
+		set_time(jack_time - get_jack_offset());
 		time_adjustment().set_value(get_time());
 		time_adjustment().value_changed();
 		jack_synchronizing = false;
