@@ -396,7 +396,7 @@ PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 ])
 
 PKG_CHECK_MODULES(LIBSIGC, mlt++,,[
-	AC_MSG_ERROR([ ** libsigc++-2.0 not found. It is required. You should really install it.])
+	AC_MSG_ERROR([ ** You need to install mlt++.])
 ])
 CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
