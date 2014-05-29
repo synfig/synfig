@@ -2593,13 +2593,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						{
 							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-							GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+							synfig::GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
 							bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
 						}
 					}
 
 					Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
-					GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+					synfig::GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
 
 					bone_transform_stack.push(new Transform_Matrix(guid, transform));
 				}
@@ -3042,7 +3042,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			assert(0);
 		}
 
-		GUID guid(bone_value_node->get_guid());
+		synfig::GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
 		bool invertible(true);
