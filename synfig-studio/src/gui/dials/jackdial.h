@@ -36,6 +36,8 @@
 
 #include "general.h"
 
+#include <gui/widgets/widget_time.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -49,18 +51,21 @@ class JackDial : public Gtk::Table
 {
 	Gtk::Button *enable_jack;
 	Gtk::Button *disable_jack;
+	Widget_Time *offset;
 
 	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 	JackDial();
-#ifdef WITH_JACK
-	Glib::SignalProxy0<void> signal_enable_jack()         { return enable_jack->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_disable_jack()        { return disable_jack->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_enable_jack()    { return enable_jack->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_disable_jack()   { return disable_jack->signal_clicked(); }
+	sigc::signal<void>& signal_offset_changed()      { return offset->signal_value_changed(); }
 
 	void toggle_enable_jack(bool jack_is_enabled);
-#endif
 
+	void set_offset(const synfig::Time &value)       { offset->set_value(value); }
+	synfig::Time get_offset() const                  { return offset->get_value(); }
+	void set_fps(float value)                        { offset->set_fps(value); }
 }; // END of class FrameDial
 
 }; // END of namespace studio

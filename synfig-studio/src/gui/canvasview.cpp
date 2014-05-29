@@ -722,6 +722,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	jack_synchronizing		(true),
 	jack_is_playing			(false),
 	jack_time				(0),
+	jack_offset				(0),
 #endif
 
 	working_depth			(0),
@@ -1110,7 +1111,7 @@ CanvasView::create_time_bar()
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
 
-	timebar = Gtk::manage(new class Gtk::Table(8, 3, false));
+	timebar = Gtk::manage(new class Gtk::Table(6, 3, false));
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -1125,32 +1126,27 @@ CanvasView::create_time_bar()
 	space->set_size_request(4);
         space->show();
 	
-	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
-	space2->set_size_request(4);
-	
 	jackdial = manage(new class JackDial());
 #ifdef WITH_JACK
 	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
 	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::CanvasView::on_toggle_jack_pressed));
+	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::CanvasView::on_jack_offset_changed));
+	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
 	if ( !getenv("SYNFIG_DISABLE_JACK") )
-	{
 		jackdial->show();
-		space2->show();
-	}
 #endif
 
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	timebar->attach(*framedial, 0, 2, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
-	timebar->attach(*time_window_scroll, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*jackdial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space, 4, 5, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*keyframedial, 5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*space2, 6, 7, 0, 2, Gtk::FILL, Gtk::FILL);
-	timebar->attach(*animatebutton, 7, 8, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*framedial,           0, 2, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*widget_kf_list,      1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*timeslider,          1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*time_window_scroll,  2, 3, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*keyframedial,        3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*space,               4, 5, 0, 2, Gtk::FILL, Gtk::FILL);
+	timebar->attach(*animatebutton,       5, 6, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*jackdial,            3, 6, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 	timebar->show();
@@ -1953,6 +1949,7 @@ void
 CanvasView::refresh_rend_desc()
 {
 	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
 
 	//????
 	//synfig::info("Canvasview: Refreshing render desc info");
@@ -2491,11 +2488,11 @@ CanvasView::on_time_changed()
 	Time time(get_time());
 
 #ifdef WITH_JACK
-	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time))
+	if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time-jack_offset))
 	{
 		float fps = get_canvas()->rend_desc().get_frame_rate();
 		jack_nframes_t sr = jack_get_sample_rate(jack_client);
-		jack_nframes_t nframes = ((double)sr * time.round(fps));
+		jack_nframes_t nframes = ((double)sr * (time+jack_offset).round(fps));
 		jack_transport_locate(jack_client, nframes);
 	}
 #endif
@@ -3042,6 +3039,7 @@ void
 CanvasView::on_play_timeout()
 {
 	Time time;
+	Time starttime = get_canvas()->rend_desc().get_time_start();
 	Time endtime = get_canvas()->rend_desc().get_time_end();
 
 	if (jack_enabled)
@@ -3050,8 +3048,9 @@ CanvasView::on_play_timeout()
 		jack_position_t pos;
 		jack_transport_query(jack_client, &pos);
 		jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
-		time = jack_time;
-		if (time >= endtime) time = endtime;
+		time = jack_time-jack_offset;
+		if (time > endtime) time = endtime;
+		if (time < starttime) time = starttime;
 #endif
 	}
 	else
@@ -4156,6 +4155,13 @@ CanvasView::on_toggle_jack_pressed()
 }
 
 void
+CanvasView::on_jack_offset_changed()
+{
+	jack_offset = jackdial->get_offset();
+	if (get_jack_enabled()) on_jack_sync();
+}
+
+void
 CanvasView::on_jack_sync()
 {
 	jack_position_t pos;
@@ -4172,10 +4178,10 @@ CanvasView::on_jack_sync()
 			stop_async();
 	}
 
-	if (!is_time_equal_to_current_frame(jack_time))
+	if (!is_time_equal_to_current_frame(jack_time-jack_offset))
 	{
 		jack_synchronizing = true;
-		set_time(jack_time);
+		set_time(jack_time-jack_offset);
 		time_adjustment().set_value(get_time());
 		time_adjustment().value_changed();
 		jack_synchronizing = false;

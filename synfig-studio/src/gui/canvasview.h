@@ -414,6 +414,7 @@ private:
 	bool jack_synchronizing;
 	bool jack_is_playing;
 	synfig::Time jack_time;
+	synfig::Time jack_offset;
 #endif
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
@@ -811,6 +812,7 @@ private:
 
 #ifdef WITH_JACK
 	void on_toggle_jack_pressed();
+	void on_jack_offset_changed();
 #endif
 
 	void on_meta_data_changed();

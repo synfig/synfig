@@ -51,18 +51,26 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-JackDial::JackDial(): Gtk::Table(8, 1, false)
+JackDial::JackDial(): Gtk::Table(2, 1, false)
 {
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	enable_jack =  create_icon(iconsize, "synfig-jack_mode_off",_("Enable JACK"));
 	disable_jack =  create_icon(iconsize, "synfig-jack_mode_on",_("Disable JACK"));
+	offset = manage(new Widget_Time());
+	offset->set_value(synfig::Time(0.0));
+	offset->set_size_request(0,-1); // request horizontal shrink
+	offset->set_tooltip_text(_("JACK Offset"));
+	offset->show();
 
-	attach(*enable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*disable_jack,		0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*enable_jack,  0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*disable_jack, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*offset,       1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
+
 	disable_jack->hide();
 #ifndef WITH_JACK
 	enable_jack->set_sensitive(false);
 	disable_jack->set_sensitive(false);
+	offset->set_sensitive(false);
 #endif
 }
 
@@ -82,7 +90,6 @@ JackDial::create_icon(Gtk::IconSize iconsize, const char * stockid, const char *
 	return button;
 }
 
-#ifdef WITH_JACK
 void
 JackDial::toggle_enable_jack(bool jack_is_enabled)
 {
@@ -97,4 +104,3 @@ JackDial::toggle_enable_jack(bool jack_is_enabled)
 		enable_jack->show();
 	}
 }
-#endif
