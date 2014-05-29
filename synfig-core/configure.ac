@@ -395,7 +395,7 @@ PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
 	AC_MSG_ERROR([ ** You need to install pango])
 ])
 
-PKG_CHECK_MODULES(LIBSIGC, mlt++,,[
+PKG_CHECK_MODULES(MLTPP, mlt++,,[
 	AC_MSG_ERROR([ ** You need to install mlt++.])
 ])
 CONFIG_DEPS="$CONFIG_DEPS mlt++"
