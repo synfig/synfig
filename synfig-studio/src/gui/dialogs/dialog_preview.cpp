@@ -66,7 +66,8 @@ Dialog_Preview::Dialog_Preview()
 	set_keep_above();
 	add(preview_table);
 	preview_table.attach(preview, 0, 1, 0, 1);
-	show_all_children();
+	preview.show();
+	preview_table.show();
 
 	//catch key press event
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));

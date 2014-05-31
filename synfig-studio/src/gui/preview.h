@@ -49,8 +49,15 @@
 #include <synfig/canvas.h>
 
 #include "widgets/widget_sound.h"
+#include "dials/jackdial.h"
 
 #include <vector>
+
+#ifdef WITH_JACK
+#include <jack/jack.h>
+#include <jack/transport.h>
+#endif
+
 
 /* === M A C R O S ========================================================= */
 
@@ -191,13 +198,13 @@ class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
 	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-	Gtk::HScale		scr_time_scrub;
+	Gtk::HScale			scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
-	cairo_surface_t* current_surface;
-	int				currentindex;
+	cairo_surface_t* 	current_surface;
+	int					currentindex;
 	//double			timeupdate;
 	double				timedisp;
 	double				audiotime;
@@ -231,7 +238,7 @@ class Widget_Preview : public Gtk::Table
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();
-	void play_pause();
+
 	//bool play_frameupdate();
 	void update();
 
@@ -252,10 +259,6 @@ class Widget_Preview : public Gtk::Table
 	void hide_toolbar();
 	void show_toolbar();
 
-	sigc::signal<void,float>	signal_play_;
-	sigc::signal<void>		signal_pause_;
-	sigc::signal<void,float>	signal_seek_;
-
 public:
 
 	Widget_Preview();
@@ -270,17 +273,17 @@ public:
 
 	void play();
 	void pause();
-	void seek(float t);
+	void seek(const synfig::Time &t);
+	synfig::Time get_position() const;
+	synfig::Time get_time_start() const;
+	synfig::Time get_time_end() const;
+
 
 	void on_play_pause_pressed();
 
 	void seek_frame(int frames);
 
 	void stoprender();
-
-	sigc::signal<void,float>	&signal_play() {return signal_play_;}
-	sigc::signal<void>	&signal_pause() {return signal_pause_;}
-	sigc::signal<void,float>	&signal_seek() {return signal_seek_;}
 
 	bool get_loop_flag() const {return b_loop.get_active();}
 	void set_loop_flag(bool b) {return b_loop.set_active(b);}
@@ -307,13 +310,34 @@ protected:
 	Gtk::ComboBoxEntry zoom_preview; 
 	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
 	
-
 private:
 
 	Gtk::HBox *toolbar;
-	Gtk::Button *play_pausebutton;
+	Gtk::Button *play_button;
+	Gtk::Button *pause_button;
 	bool on_key_pressed(GdkEventKey*);
 	void on_zoom_entry_activated();
+
+	bool is_time_equal_to_current_frame(const synfig::Time &time);
+
+	JackDial *jackdial;
+	bool jack_enabled;
+	bool jack_is_playing;
+	synfig::Time jack_time;
+	synfig::Time jack_offset;
+
+	bool get_jack_enabled() { return jack_enabled; }
+	void set_jack_enabled(bool value);
+	void on_toggle_jack_pressed();
+	void on_jack_offset_changed();
+
+#ifdef WITH_JACK
+	Glib::Dispatcher jack_dispatcher;
+	jack_client_t *jack_client;
+	bool jack_synchronizing;
+	void on_jack_sync();
+	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
+#endif
 };
 
 }; // END of namespace studio

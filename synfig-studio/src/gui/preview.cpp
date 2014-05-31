@@ -375,7 +375,17 @@ Widget_Preview::Widget_Preview():
 	audiotime(0),
 	adj_sound(0, 0, 4),
 	l_lasttime("0s"),
-	playing(false)
+	playing(false),
+	jackdial(NULL),
+	jack_enabled(false),
+	jack_is_playing(false),
+	jack_time(0),
+	jack_offset(0)
+#ifdef WITH_JACK
+	,
+	jack_client(NULL),
+	jack_synchronizing(false)
+#endif
 {
 	//catch key press event for shortcut keys
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
@@ -434,18 +444,31 @@ Widget_Preview::Widget_Preview():
 
 	toolbar->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
 
-	//play pause
-	Gtk::Image *icon1 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
-	play_pausebutton = manage(new class Gtk::Button());
-	play_pausebutton->set_tooltip_text(_("Play"));
-	icon1->set_padding(0,0);
-	icon1->show();
-	play_pausebutton->add(*icon1);
-	play_pausebutton->set_relief(Gtk::RELIEF_NONE);
-	play_pausebutton->show();
-	play_pausebutton->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+	{ //play
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
+		play_button = manage(new class Gtk::Button());
+		play_button->set_tooltip_text(_("Play"));
+		icon->set_padding(0,0);
+		icon->show();
+		play_button->add(*icon);
+		play_button->set_relief(Gtk::RELIEF_NONE);
+		play_button->show();
+		play_button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+		toolbar->pack_start(*play_button, Gtk::PACK_SHRINK, 0);
+	}
 
-	toolbar->pack_start(*play_pausebutton, Gtk::PACK_SHRINK, 0);
+	{ //pause
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
+		pause_button = manage(new class Gtk::Button());
+		pause_button->set_tooltip_text(_("Pause"));
+		icon->set_padding(0,0);
+		icon->show();
+		pause_button->add(*icon);
+		pause_button->set_relief(Gtk::RELIEF_NONE);
+		pause_button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::on_play_pause_pressed));
+		toolbar->pack_start(*pause_button, Gtk::PACK_SHRINK, 0);
+	}
+
 
 	//next rendered frame
 	Gtk::Button *next_framebutton;
@@ -474,8 +497,8 @@ Widget_Preview::Widget_Preview():
 
 	//spacing
 	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
-        space1->set_size_request(24);
-        toolbar->pack_start(*space1, false, true);
+	space1->set_size_request(24);
+	toolbar->pack_start(*space1, false, true);
 
 
 	//halt render
@@ -498,6 +521,25 @@ Widget_Preview::Widget_Preview():
 	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frame(s)"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+
+	//spacing
+	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
+	space1->set_size_request(24);
+	toolbar->pack_start(*space2, false, true);
+
+	//jack
+#ifdef WITH_JACK
+	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
+#endif
+	jackdial = Gtk::manage(new JackDial());
+	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
+	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
+	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_jack_offset_changed));
+	jackdial->set_fps(25.f);
+	jackdial->set_offset(jack_offset);
+	if ( !getenv("SYNFIG_DISABLE_JACK") )
+		jackdial->show();
+	toolbar->pack_start(*jackdial, false, true);
 
 	//zoom preview
 	factor_refTreeModel = Gtk::ListStore::create(factors);
@@ -556,7 +598,8 @@ Widget_Preview::Widget_Preview():
 	attach(*toolbar, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	attach(*status, 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 //	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	show_all();
+	preview_window.show_all();
+	scr_time_scrub.show_all();
 
 	//if(draw_area.get_window()) gc_area = Gdk::GC::create(draw_area.get_window());
 	#endif
@@ -569,11 +612,20 @@ studio::Widget_Preview::~Widget_Preview()
 void studio::Widget_Preview::update()
 {
 	//the meat goes in this locker...
-	double time = adj_time_scrub.get_value();
+	double time = get_position();
 
 	//find the frame and display it...
 	if(preview)
 	{
+		#ifdef WITH_JACK
+		if (jack_enabled && !jack_synchronizing && !is_time_equal_to_current_frame(jack_time - jack_offset))
+		{
+			jack_nframes_t sr = jack_get_sample_rate(jack_client);
+			jack_nframes_t nframes = ((double)sr * (time + jack_offset));
+			jack_transport_locate(jack_client, nframes);
+		}
+		#endif
+
 		//synfig::warning("Updating at %.3f s",time);
 
 		//use time to find closest frame...
@@ -823,7 +875,21 @@ bool studio::Widget_Preview::play_update()
 	if(playing)
 	{
 		//we go to the next one...
-		double time = adj_time_scrub.get_value() + diff;
+		double time = get_position() + diff;
+		bool stop_on_end = true;
+
+		if (jack_enabled)
+		{
+			#ifdef WITH_JACK
+			jack_position_t pos;
+			jack_transport_state_t state = jack_transport_query(jack_client, &pos);
+			if (state != JackTransportRolling && state != JackTransportStarting)
+				{ on_jack_sync(); return true; }
+			jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
+			time = jack_time - jack_offset;
+			stop_on_end = false;
+			#endif
+		}
 
 		//adjust it to be synced with the audio if it can...
 		{
@@ -838,21 +904,21 @@ bool studio::Widget_Preview::play_update()
 		}
 
 		//Looping conditions...
-		if(time >= adj_time_scrub.get_upper())
+		if(time >= get_time_end())
 		{
 			if(get_loop_flag())
 			{
-				time = adj_time_scrub.get_lower();// + time-adj_time_scrub.get_upper();
+				time = get_time_start();
 				currentindex = 0;
 			}else
 			{
-				time = adj_time_scrub.get_upper();
-				adj_time_scrub.set_value(time);
-				play_pause();
-				update();
-
-				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
-				return false;
+				time = get_time_end();
+				if (stop_on_end) {
+					adj_time_scrub.set_value(time);
+					pause();
+					update();
+					return false;
+				}
 			}
 		}
 
@@ -879,7 +945,7 @@ void studio::Widget_Preview::slider_move()
 //for other things updating the value changed signal...
 void studio::Widget_Preview::scrub_updated(double t)
 {
-	pause();
+	if (playing) on_play_pause_pressed();
 
 	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
 	//double oldt = t;
@@ -922,6 +988,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 	{
 		//set the internal values
 		float rate = preview->get_fps();
+		jackdial->set_fps(rate);
 		synfig::info("	FPS = %f",rate);
 		if(rate)
 		{
@@ -973,23 +1040,23 @@ void studio::Widget_Preview::clear()
 
 void studio::Widget_Preview::play()
 {
+	if (playing) return;
 	if(preview)
 	{
-		//synfig::info("Playing at %lf",adj_time_scrub.get_value());
-		//audiotime = adj_time_scrub.get_value();
+		if (!jack_enabled && get_position() == get_time_end()) seek(get_time_start());
+
 		playing = true;
 
-		//adj_time_scrub.set_value(adj_time_scrub.get_lower());
+		play_button->hide();
+		pause_button->show();
+
 		update(); //we don't want to call play update because that will try to advance the timer
-		//synfig::warning("Did update p");
 
 		//approximate length of time in seconds, right?
 		double rate = /*std::min(*/adj_time_scrub.get_step_increment()/*,1/30.0)*/;
 		int timeout = (int)floor(1000*rate);
 
 		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
-
-		signal_play_(adj_time_scrub.get_value());
 
 		//play the audio...
 		if(audio) audio->play(adj_time_scrub.get_value());
@@ -999,69 +1066,44 @@ void studio::Widget_Preview::play()
 	}
 }
 
-void studio::Widget_Preview::play_pause()
-{
-	playing = false;
-	signal_pause()();
-	if(audio) audio->stop(); //!< stop the audio
-	//synfig::info("Stopping...");
-
-	Gtk::Image *icon;
-	icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
-	play_pausebutton->remove();
-	play_pausebutton->add(*icon);
-	play_pausebutton->set_tooltip_text(_("Play"));
-	icon->set_padding(0,0);
-	icon->show();
-	
-}
-
 void studio::Widget_Preview::pause()
 {
 	//synfig::warning("stopping");
-	play_pause();
 	timecon.disconnect();
+	playing = false;
+	pause_button->hide();
+	play_button->show();
+	if(audio) audio->stop(); //!< stop the audio
 }
 
 void studio::Widget_Preview::on_play_pause_pressed()
 {
-	bool play_flag;
-	float begin = preview->get_begintime();
-	float end = preview->get_endtime();
-	float current = adj_time_scrub.get_value();
-	Gtk::Image *icon;
-
-	if(!playing)
+#ifdef WITH_JACK
+	if (jack_enabled)
 	{
-		play_pausebutton->remove();
-		if(current == end) adj_time_scrub.set_value(begin);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
-		play_pausebutton->set_tooltip_text(_("Pause"));
-		play_pausebutton->add(*icon);
-		icon->set_padding(0,0);
-		icon->show();
+		if (jack_is_playing) {
+			jack_transport_stop(jack_client);
+			on_jack_sync();
+		} else
+			jack_transport_start(jack_client);
+		return;
+	}
+#endif
 
-		play_flag=true;
-	}
-	else
-	{
-		play_flag=false;
-	}
-	if(play_flag) play(); else pause();
+	if (playing) pause(); else play();
 }
 
 void studio::Widget_Preview::seek_frame(int frames)
 {
 //	if(!frames)	return;
 
-	if(playing) pause();	//pause playing when seek frame called
+	if(playing) on_play_pause_pressed();	//pause playing when seek frame called
 
 	double fps = preview->get_fps();
-	double currenttime = adj_time_scrub.get_value();
+	double currenttime = get_position();
 	int currentframe = (int)floor(currenttime * fps);
 	Time newtime(double((currentframe + frames + 0.5) / fps));
-	
-	adj_time_scrub.set_value(newtime);
+	seek(newtime);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
@@ -1100,10 +1142,22 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 	scrubcon = disp_sound.signal_scrub().connect(sigc::mem_fun(*a,&AudioContainer::scrub));
 }
 
-void studio::Widget_Preview::seek(float t)
+void studio::Widget_Preview::seek(const synfig::Time &t)
 {
-	pause();
 	adj_time_scrub.set_value(t);
+	adj_time_scrub.value_changed();
+}
+
+synfig::Time studio::Widget_Preview::get_time_start() const {
+	return synfig::Time(adj_time_scrub.get_lower());
+}
+
+synfig::Time studio::Widget_Preview::get_time_end() const {
+	return synfig::Time(adj_time_scrub.get_upper());
+}
+
+synfig::Time studio::Widget_Preview::get_position() const {
+	return synfig::Time(adj_time_scrub.get_value());
 }
 
 void studio::Widget_Preview::repreview()
@@ -1200,7 +1254,6 @@ void Widget_Preview::show_toolbar()
 {
 	toolbar->show();
 	toolbarisshown = 1;
-
 	toolbar->grab_focus();
 }
 
@@ -1298,3 +1351,93 @@ bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 
 	return false;
 }
+
+bool
+Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
+{
+	float fps = preview ? preview->get_fps() : 25.f;
+	Time starttime = get_time_start();
+	Time endtime = get_time_end();
+
+	synfig::Time t0 = get_position();
+	synfig::Time t1 = time;
+
+	if (fps != 0.f) {
+		t0 = t0.round(fps);
+		t1 = t1.round(fps);
+	}
+
+	t0 = std::max(starttime, std::min(endtime, t0));
+	t1 = std::max(starttime, std::min(endtime, t1));
+
+	return t0.is_equal(t1);
+}
+
+void Widget_Preview::on_toggle_jack_pressed() {
+	set_jack_enabled(!get_jack_enabled());
+}
+
+void Widget_Preview::on_jack_offset_changed() {
+	jack_offset = jackdial->get_offset();
+	if (get_jack_enabled()) on_jack_sync();
+}
+
+void Widget_Preview::set_jack_enabled(bool value) {
+	if (jack_enabled == value) return;
+#ifdef WITH_JACK
+	if (playing) pause();
+	jack_enabled = value;
+	if (jack_enabled)
+	{
+		// initialize jack
+		jack_client = jack_client_open("synfigstudiopreview", JackNullOption, 0);
+		jack_set_sync_callback(jack_client, jack_sync_callback, this);
+		if (jack_activate(jack_client) != 0)
+		{
+			jack_client_close(jack_client);
+			jack_client = NULL;
+			jack_enabled = false;
+		}
+	}
+	else
+	{
+		// deinitialize jack
+		jack_deactivate(jack_client);
+		jack_client_close(jack_client);
+		jack_client = NULL;
+	}
+
+	jackdial->toggle_enable_jack(jack_enabled);
+#endif
+}
+
+#ifdef WITH_JACK
+void Widget_Preview::on_jack_sync() {
+	jack_position_t pos;
+	jack_transport_state_t state = jack_transport_query(jack_client, &pos);
+
+	jack_is_playing = state == JackTransportRolling || state == JackTransportStarting;
+	jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
+
+	if (playing != jack_is_playing)
+	{
+		if (jack_is_playing)
+			play();
+		else
+			pause();
+	}
+
+	if (!is_time_equal_to_current_frame(jack_time - jack_offset))
+	{
+		jack_synchronizing = true;
+		seek(jack_time - jack_offset);
+		jack_synchronizing = false;
+	}
+}
+
+int Widget_Preview::jack_sync_callback(jack_transport_state_t /* state */, jack_position_t * /* pos */, void *arg) {
+	Widget_Preview *widget_preview = static_cast<Widget_Preview*>(arg);
+	widget_preview->jack_dispatcher.emit();
+	return 1;
+}
+#endif

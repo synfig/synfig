@@ -126,11 +126,6 @@
 
 #endif
 
-#ifdef WITH_JACK
-#include <jack/jack.h>
-#include <jack/transport.h>
-#endif
-
 /* === U S I N G =========================================================== */
 
 using namespace std;
@@ -4137,7 +4132,7 @@ bool
 CanvasView::is_time_equal_to_current_frame(const synfig::Time &time)
 {
 	float fps(get_canvas()->rend_desc().get_frame_rate());
-	Time starttime = Time(0);
+	Time starttime = get_canvas()->rend_desc().get_time_start();
 	Time endtime = get_canvas()->rend_desc().get_time_end();
 
 	synfig::Time t0 = get_time();
