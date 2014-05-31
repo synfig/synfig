@@ -989,6 +989,7 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 		//set the internal values
 		float rate = preview->get_fps();
 		jackdial->set_fps(rate);
+		jackdial->set_offset(preview->get_jack_offset());
 		synfig::info("	FPS = %f",rate);
 		if(rate)
 		{

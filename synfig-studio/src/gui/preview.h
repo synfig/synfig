@@ -106,6 +106,7 @@ private:
 	//synfig::RendDesc		description; //for rendering the preview...
 	float	zoom,fps;
 	float	begintime,endtime;
+	float	jack_offset;
 	bool 	overbegin,overend;
 	bool	use_cairo;
 	int		quality;
@@ -133,6 +134,9 @@ public:
 
 	float 	get_global_fps() const {return global_fps;}
 	void	set_global_fps(float f){global_fps = f;}
+
+	float   get_jack_offset() const {return jack_offset;}
+	void	set_jack_offset(float t){jack_offset = t;}
 
 	float	get_begintime() const
 	{
