@@ -577,7 +577,7 @@ mkffmpeg()
         mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/ || true
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/
 
-        echo ${FFMPEG_VERSION} > /ffmpeg-done
+        echo ${FFMPEG_VERSION} > /ffmpeg-version
 
         popd
     fi
