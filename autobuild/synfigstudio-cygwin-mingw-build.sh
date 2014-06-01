@@ -512,14 +512,19 @@ TAREXT=gz
 
 #if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
     cd $WORKSPACE
-    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-        tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    #    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #fi
+    #cd ${PKG_NAME}-${PKG_VERSION}
+    if [ ! -d ${PKG_NAME} ]; then
+        git clone https://github.com/morevnaproject/mlt
     fi
-    cd ${PKG_NAME}-${PKG_VERSION}
-    #cd mlt
+    cd mlt
     [ ! -e config.cache ] || rm config.cache
     #autoreconf -i --verbose  # does this really required?
+    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/libmlt* || true
+    rm -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/libmlt* || true
     ./configure \
         --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
         --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
@@ -534,7 +539,8 @@ TAREXT=gz
         --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
         --avformat-shared=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
         --enable-gpl --disable-decklink \
-        --target-os=MinGW --target-arch=$EXT_ARCH
+        --target-os=MinGW --target-arch=$EXT_ARCH \
+        $DEBUG
 
     make all
     make install
