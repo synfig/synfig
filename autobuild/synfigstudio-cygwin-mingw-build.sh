@@ -372,9 +372,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     fi
     cd ${PKG_NAME}-${PKG_VERSION}
-    #cd mlt
     [ ! -e config.cache ] || rm config.cache
-    #autoreconf -i --verbose  # does this really required?
     ./configure \
         --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
         --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
@@ -409,9 +407,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     fi
     cd ${PKG_NAME}-${PKG_VERSION}
-    #cd mlt
     [ ! -e config.cache ] || rm config.cache
-    #autoreconf -i --verbose  # does this really required?
     ./configure \
         --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
         --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
@@ -444,9 +440,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     fi
     cd ${PKG_NAME}-${PKG_VERSION}
-    #cd mlt
     [ ! -e config.cache ] || rm config.cache
-    #autoreconf -i --verbose  # does this really required?
     ./configure \
         --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
         --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
@@ -479,9 +473,7 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     fi
     cd ${PKG_NAME}-${PKG_VERSION}
-    #cd mlt
     [ ! -e config.cache ] || rm config.cache
-    #autoreconf -i --verbose  # does this really required?
     ./configure \
         --prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
         --exec-prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw \
@@ -497,9 +489,6 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 
     make all
     make install
-
-    #mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/melt.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
-    #mv /usr/${TOOLCHAIN_HOST}/sys-root/mingw/libmlt*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
 
 fi
 }
@@ -559,7 +548,7 @@ TAREXT=gz
 mkffmpeg()
 {
     export FFMPEG_VERSION=2.2.2
-    if [[ `cat /ffmpeg-version` != "${FFMPEG_VERSION}" ]]; then
+    if ! pkg-config libswscale --exact-version=${PKG_VERSION}  --print-errors; then
         pushd $WORKSPACE
         # FFmpeg
 
@@ -577,8 +566,19 @@ mkffmpeg()
         mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/ || true
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/
 
-        echo ${FFMPEG_VERSION} > /ffmpeg-version
+		for PKG in libswscale libavformat libavdevice; do
+			cat > /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/${PKG}.pc <<EOF
+prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
+exec_prefix=/usr/${TOOLCHAIN_HOST}/sys-root/mingw
+libdir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib
+includedir=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include
 
+Name: ${PKG}
+Description: Dynamic module loader for GLib
+Version: ${FFMPEG_VERSION}
+
+EOF
+		done
         popd
     fi
 }
