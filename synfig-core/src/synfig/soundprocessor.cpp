@@ -112,7 +112,10 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 	if (options.volume <= 0.0) return;
 
 	// Create track
-	Mlt::Producer *track = new Mlt::Producer(internal->profile, sound.filename.c_str());
+	String filename;
+	filename = String("avformat:")+sound.filename;
+	
+	Mlt::Producer *track = new Mlt::Producer(internal->profile, filename.c_str());
 	if (track->get_producer() == NULL) { delete track; return; }
 	int delay = (int)round(options.delay*internal->profile.fps());
 	if (-delay >= track->get_length()) { delete track; return; }
