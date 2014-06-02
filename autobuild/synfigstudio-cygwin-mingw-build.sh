@@ -499,7 +499,7 @@ PKG_NAME=mlt
 PKG_VERSION=0.9.0
 TAREXT=gz
 
-#if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
     cd $WORKSPACE
     #[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     #if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
@@ -529,7 +529,7 @@ TAREXT=gz
         --avformat-shared=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ \
         --enable-gpl --disable-decklink \
         --target-os=MinGW --target-arch=$EXT_ARCH \
-        $DEBUG
+        #$DEBUG
 
     make all
     make install
@@ -542,7 +542,7 @@ TAREXT=gz
     cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/lib/
     cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/mlt /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin/share/
 
-#fi
+fi
 }
 
 mkffmpeg()
@@ -550,8 +550,6 @@ mkffmpeg()
     export FFMPEG_VERSION=2.2.2
     if ! pkg-config libswscale --exact-version=${PKG_VERSION}  --print-errors; then
         pushd $WORKSPACE
-        # FFmpeg
-
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
         [ ! -d ffmpeg ] || rm -rf ffmpeg
