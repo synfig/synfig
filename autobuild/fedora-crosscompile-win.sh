@@ -31,8 +31,14 @@ export DISTPREFIX=$WORKSPACE/win$ARCH/dist
 export SRCPREFIX=$WORKSPACE/win$ARCH/source
 export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
+export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
 export PATH=${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib
+
+export CC=${TOOLCHAIN_HOST}-gcc
+export CXX=${TOOLCHAIN_HOST}-g++
+export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include -I${PREFIX}/include"
+export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib -L${PREFIX}/lib "
 
 
 if [ -z $DEBUG ]; then
@@ -165,6 +171,7 @@ for file in \
    gtk-2.0 \
    gdk-pixbuf-2.0 \
    pango \
+   pkgconfig \
 # this extra line is required!
 do
 	cp -rf /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/$file ${PREFIX}/lib
@@ -241,7 +248,7 @@ PKG_NAME=libogg
 PKG_VERSION=1.3.1
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config ogg --exact-version=${PKG_VERSION}  --print-errors; then
     cd $CACHEDIR
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/ogg/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd $SRCPREFIX
@@ -256,6 +263,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         --bindir=${PREFIX}/bin \
         --sbindir=${PREFIX}/sbin \
         --libexecdir=${PREFIX}/lib \
+        --libdir=${PREFIX}/lib \
+        --includedir=${PREFIX}/include \
         --datadir=${PREFIX}/share \
         --localstatedir=${PREFIX}/var \
         --sysconfdir=${PREFIX}/etc \
@@ -275,7 +284,7 @@ PKG_NAME=libvorbis
 PKG_VERSION=1.3.4
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config vorbis --exact-version=${PKG_VERSION}  --print-errors; then
     cd $CACHEDIR
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/vorbis/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd $SRCPREFIX
@@ -290,6 +299,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         --bindir=${PREFIX}/bin \
         --sbindir=${PREFIX}/sbin \
         --libexecdir=${PREFIX}/lib \
+        --libdir=${PREFIX}/lib \
+        --includedir=${PREFIX}/include \
         --datadir=${PREFIX}/share \
         --localstatedir=${PREFIX}/var \
         --sysconfdir=${PREFIX}/etc \
@@ -307,7 +318,7 @@ PKG_NAME=libsamplerate
 PKG_VERSION=0.1.8
 TAREXT=gz
 
-if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+if ! pkg-config samplerate --exact-version=${PKG_VERSION}  --print-errors; then
     cd $CACHEDIR
     [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.mega-nerd.com/SRC/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     cd $SRCPREFIX
@@ -322,6 +333,8 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         --bindir=${PREFIX}/bin \
         --sbindir=${PREFIX}/sbin \
         --libexecdir=${PREFIX}/lib \
+        --libdir=${PREFIX}/lib \
+        --includedir=${PREFIX}/include \
         --datadir=${PREFIX}/share \
         --localstatedir=${PREFIX}/var \
         --sysconfdir=${PREFIX}/etc \
@@ -354,6 +367,9 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
         --bindir=${PREFIX}/bin \
         --sbindir=${PREFIX}/sbin \
         --libexecdir=${PREFIX}/lib \
+        --libdir=${PREFIX}/lib \
+        --includedir=${PREFIX}/include \
+        --mandir=${PREFIX}/man \
         --datadir=${PREFIX}/share \
         --localstatedir=${PREFIX}/var \
         --sysconfdir=${PREFIX}/etc \
@@ -368,7 +384,7 @@ fi
 mkffmpeg()
 {
     export FFMPEG_VERSION=2.2.2
-    if ! pkg-config libswscale --exact-version=${PKG_VERSION}  --print-errors; then
+    if ! pkg-config libswscale --exact-version=${FFMPEG_VERSION}  --print-errors; then
         cd $CACHEDIR
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
@@ -376,10 +392,10 @@ mkffmpeg()
         cd $SRCPREFIX
         mkdir -p ffmpeg
         cd ffmpeg
-        7z x $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        7z x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* ${PREFIX}/include/
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* ${PREFIX}/lib/
-        7z x $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        7z x -y $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe ${PREFIX}/bin
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll ${PREFIX}/bin
         mkdir -p ${PREFIX}/share/ffmpeg/presets/ || true
@@ -398,7 +414,6 @@ Version: ${FFMPEG_VERSION}
 
 EOF
 		done
-        popd
     fi
 }
 
@@ -410,10 +425,14 @@ mklibvorbis
 mksox
 	
 PKG_NAME=mlt
-PKG_VERSION=0.9.0
+PKG_VERSION=0.9.1
 TAREXT=gz
 
 if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
+
+    export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/SDL $CPPFLAGS"
+    export LDFLAGS=" $LDFLAGS -lmingw32 -lSDLmain -lSDL -mwindows"
+	
     #[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
     #if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
     #    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
@@ -427,13 +446,16 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
     [ ! -e config.cache ] || rm config.cache
     rm -rf ${PREFIX}/lib/libmlt* || true
     rm -rf ${PREFIX}/bin/libmlt* || true
+
     ${TOOLCHAIN}-configure \
         --prefix=${PREFIX} \
         --exec-prefix=${PREFIX} \
         --bindir=${PREFIX}/bin \
         --sbindir=${PREFIX}/sbin \
         --libexecdir=${PREFIX}/lib \
+        --libdir=${PREFIX}/lib \
         --datadir=${PREFIX}/share \
+        --mandir=${PREFIX}/man \
         --localstatedir=${PREFIX}/var \
         --sysconfdir=${PREFIX}/etc \
         --datarootdir=${PREFIX}/share \
@@ -442,10 +464,10 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         --target-os=MinGW --target-arch=$EXT_ARCH \
         $DEBUG
 
-    make all
-    make install
+    make all -j$THREADS
+    make install -j$THREADS
 
-    mv ${PREFIX}/melt.exe ${PREFIX}/bin
+    mv ${PREFIX}/melt ${PREFIX}/bin/melt.exe
     mv ${PREFIX}/libmlt*.dll ${PREFIX}/bin
 
     mkdir -p ${PREFIX}/bin/lib || true
