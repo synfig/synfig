@@ -16,8 +16,10 @@ export TOOLCHAIN="mingw$ARCH" # mingw32 | mingw64
 
 if [[ $TOOLCHAIN == "mingw32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
+    export EXT_ARCH=i386
 elif [[ $TOOLCHAIN == "mingw64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
+    export EXT_ARCH=x86_64
 else
     echo "Error: Unknown toolchain"
     exit 1
@@ -74,7 +76,8 @@ if [ -z $NOSU ]; then
 		${TOOLCHAIN}-gtkmm24 \
 		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
-		${TOOLCHAIN}-libtiff \
+		${TOOLCHAIN}-dlfcn \
+		${TOOLCHAIN}-SDL \
 		mingw32-nsis \
 		p7zip \
 		ImageMagick \
@@ -84,12 +87,15 @@ fi
 # copy libs
 [ -d ${PREFIX}/bin ] || mkdir -p ${PREFIX}/bin
 for file in \
+   av*.dll \
+   ffmpeg.exe \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
    libboost_program_options\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
+   libdl.dll \
    libexpat\*.dll \
    libffi\*.dll \
    libfontconfig\*.dll \
@@ -112,19 +118,28 @@ for file in \
    libltdl*.dll \
    liblzma\*.dll \
    libMagick*.dll \
+   libmlt*.dll \
+   libogg*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
+   libsamplerate*.dll \
    libsigc\*.dll \
+   libsox*.dll \
    libstdc++\*.dll \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libvorbis*.dll \
    libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
+   postproc*.dll \
    pthread\*.dll \
+   SDL.dll \
+   swscale*.dll \
+   swresample*.dll \
    zlib\*.dll \
    convert.exe \
    pango-querymodules.exe \
@@ -172,15 +187,6 @@ for dir in ETL synfig-core synfig-studio; do
 	popd > /dev/null
 done
 
-export PREP_VERSION=1
-
-if [[ `cat "$PREFIX/prep-done"` != "${PREP_VERSION}" ]]; then
-
-mkimagemagick
-
-echo ${PREP_VERSION} > "$PREFIX/prep-done"
-
-fi
 }
 
 #ImageMagick
@@ -192,40 +198,262 @@ PKG_VERSION=6.8.7-10
 #PKG_VERSION=6.8.8-7
 TAREXT=bz2
 
-cd $CACHEDIR
-[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-cd $SRCPREFIX
-if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
-    tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
-    cd ${PKG_NAME}-${PKG_VERSION}
-else
-    cd ${PKG_NAME}-${PKG_VERSION}
-fi
-[ ! -e config.cache ] || rm config.cache
-${TOOLCHAIN}-configure \
---prefix=${PREFIX} \
---exec-prefix=${PREFIX} \
---bindir=${PREFIX}/bin \
---sbindir=${PREFIX}/sbin \
---libexecdir=${PREFIX}/lib \
---datadir=${PREFIX}/share \
---localstatedir=${PREFIX}/var \
---sysconfdir=${PREFIX}/etc \
---datarootdir=${PREFIX}/share \
---datadir=${PREFIX}/share \
---includedir=${PREFIX}/include \
---libdir=${PREFIX}/lib \
---mandir=${PREFIX}/share/man \
---program-prefix="" \
---disable-static --enable-shared \
---without-modules \
---without-perl \
---without-x \
---without-wmf \
---with-threads \
---with-magick_plus_plus
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION%-*}  --print-errors; then
+	cd $CACHEDIR
+	[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.imagemagick.org/download/legacy/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	cd $SRCPREFIX
+	if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+		tar -xjf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+	fi
+	cd ${PKG_NAME}-${PKG_VERSION}
+	[ ! -e config.cache ] || rm config.cache
+	${TOOLCHAIN}-configure \
+	--prefix=${PREFIX} \
+	--exec-prefix=${PREFIX} \
+	--bindir=${PREFIX}/bin \
+	--sbindir=${PREFIX}/sbin \
+	--libexecdir=${PREFIX}/lib \
+	--datadir=${PREFIX}/share \
+	--localstatedir=${PREFIX}/var \
+	--sysconfdir=${PREFIX}/etc \
+	--datarootdir=${PREFIX}/share \
+	--datadir=${PREFIX}/share \
+	--includedir=${PREFIX}/include \
+	--libdir=${PREFIX}/lib \
+	--mandir=${PREFIX}/share/man \
+	--program-prefix="" \
+	--disable-static --enable-shared \
+	--without-modules \
+	--without-perl \
+	--without-x \
+	--without-wmf \
+	--with-threads \
+	--with-magick_plus_plus
 
-make install -j$THREADS
+	make install -j$THREADS
+fi
+}
+
+mklibogg()
+{
+
+PKG_NAME=libogg
+PKG_VERSION=1.3.1
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/ogg/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ${TOOLCHAIN}-configure \
+        --prefix=${PREFIX} \
+        --exec-prefix=${PREFIX} \
+        --bindir=${PREFIX}/bin \
+        --sbindir=${PREFIX}/sbin \
+        --libexecdir=${PREFIX}/lib \
+        --datadir=${PREFIX}/share \
+        --localstatedir=${PREFIX}/var \
+        --sysconfdir=${PREFIX}/etc \
+        --datarootdir=${PREFIX}/share
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mklibvorbis()
+{
+mklibogg
+
+PKG_NAME=libvorbis
+PKG_VERSION=1.3.4
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://downloads.xiph.org/releases/vorbis/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ${TOOLCHAIN}-configure \
+        --prefix=${PREFIX} \
+        --exec-prefix=${PREFIX} \
+        --bindir=${PREFIX}/bin \
+        --sbindir=${PREFIX}/sbin \
+        --libexecdir=${PREFIX}/lib \
+        --datadir=${PREFIX}/share \
+        --localstatedir=${PREFIX}/var \
+        --sysconfdir=${PREFIX}/etc \
+        --datarootdir=${PREFIX}/share
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mklibsamplerate()
+{
+PKG_NAME=libsamplerate
+PKG_VERSION=0.1.8
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://www.mega-nerd.com/SRC/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ${TOOLCHAIN}-configure \
+        --prefix=${PREFIX} \
+        --exec-prefix=${PREFIX} \
+        --bindir=${PREFIX}/bin \
+        --sbindir=${PREFIX}/sbin \
+        --libexecdir=${PREFIX}/lib \
+        --datadir=${PREFIX}/share \
+        --localstatedir=${PREFIX}/var \
+        --sysconfdir=${PREFIX}/etc \
+        --datarootdir=${PREFIX}/share
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mksox()
+{
+PKG_NAME=sox
+PKG_VERSION=14.4.1
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
+    cd $CACHEDIR
+    [ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+        tar -xzf $CACHEDIR/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    fi
+    cd ${PKG_NAME}-${PKG_VERSION}
+    [ ! -e config.cache ] || rm config.cache
+    ${TOOLCHAIN}-configure \
+        --prefix=${PREFIX} \
+        --exec-prefix=${PREFIX} \
+        --bindir=${PREFIX}/bin \
+        --sbindir=${PREFIX}/sbin \
+        --libexecdir=${PREFIX}/lib \
+        --datadir=${PREFIX}/share \
+        --localstatedir=${PREFIX}/var \
+        --sysconfdir=${PREFIX}/etc \
+        --datarootdir=${PREFIX}/share 
+
+    make all -j$THREADS
+    make install -j$THREADS
+
+fi
+}
+
+mkffmpeg()
+{
+    export FFMPEG_VERSION=2.2.2
+    if ! pkg-config libswscale --exact-version=${PKG_VERSION}  --print-errors; then
+        cd $CACHEDIR
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/dev/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        [ -e ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z ] || wget http://ffmpeg.zeranoe.com/builds/win${ARCH}/shared/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        [ ! -d ffmpeg ] || rm -rf ffmpeg
+        cd $SRCPREFIX
+        mkdir -p ffmpeg
+        cd ffmpeg
+        7z x $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* ${PREFIX}/include/
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* ${PREFIX}/lib/
+        7z x $CACHEDIR/ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe ${PREFIX}/bin
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll ${PREFIX}/bin
+        mkdir -p ${PREFIX}/share/ffmpeg/presets/ || true
+        cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/presets/* /${PREFIX}/share/ffmpeg/presets/
+
+		for PKG in libswscale libavformat libavdevice; do
+			cat > ${PREFIX}/lib/pkgconfig/${PKG}.pc <<EOF
+prefix=${PREFIX}
+exec_prefix=${PREFIX}
+libdir=${PREFIX}/lib
+includedir=${PREFIX}/include
+
+Name: ${PKG}
+Description: Dynamic module loader for GLib
+Version: ${FFMPEG_VERSION}
+
+EOF
+		done
+        popd
+    fi
+}
+
+mkmlt()
+{
+mkffmpeg
+mklibsamplerate
+mklibvorbis
+mksox
+	
+PKG_NAME=mlt
+PKG_VERSION=0.9.0
+TAREXT=gz
+
+if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; then
+    #[ -e ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT} ] || wget http://download.tuxfamily.org/synfig/packages/sources/base/${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #if [ ! -d ${PKG_NAME}-${PKG_VERSION} ]; then
+    #    tar -xzf ${PKG_NAME}-${PKG_VERSION}.tar.${TAREXT}
+    #fi
+    #cd ${PKG_NAME}-${PKG_VERSION}
+    cd $SRCPREFIX
+    if [ ! -d ${PKG_NAME} ]; then
+        git clone https://github.com/morevnaproject/mlt
+    fi
+    cd mlt
+    [ ! -e config.cache ] || rm config.cache
+    rm -rf ${PREFIX}/lib/libmlt* || true
+    rm -rf ${PREFIX}/bin/libmlt* || true
+    ${TOOLCHAIN}-configure \
+        --prefix=${PREFIX} \
+        --exec-prefix=${PREFIX} \
+        --bindir=${PREFIX}/bin \
+        --sbindir=${PREFIX}/sbin \
+        --libexecdir=${PREFIX}/lib \
+        --datadir=${PREFIX}/share \
+        --localstatedir=${PREFIX}/var \
+        --sysconfdir=${PREFIX}/etc \
+        --datarootdir=${PREFIX}/share \
+        --avformat-shared=${PREFIX}/ \
+        --enable-gpl --disable-decklink \
+        --target-os=MinGW --target-arch=$EXT_ARCH \
+        $DEBUG
+
+    make all
+    make install
+
+    mv ${PREFIX}/melt.exe ${PREFIX}/bin
+    mv ${PREFIX}/libmlt*.dll ${PREFIX}/bin
+
+    mkdir -p ${PREFIX}/bin/lib || true
+    mkdir -p ${PREFIX}/bin/share || true
+    cp -rf ${PREFIX}/lib/mlt ${PREFIX}/bin/lib/
+    cp -rf ${PREFIX}/share/mlt ${PREFIX}/bin/share/
+
+fi
 }
 
 #ETL
@@ -299,17 +527,6 @@ cp -rf $SCRIPTPATH/../synfig-studio/images/installer_logo.bmp $PREFIX/
 [ -d $CACHEDIR ] || mkdir -p $CACHEDIR
 cd $CACHEDIR
 
-[ -e ffmpeg-latest-win32-static.7z ] || wget http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
-[ ! -d ffmpeg ] || rm -rf ffmpeg
-mkdir -p ffmpeg
-cd ffmpeg
-7z e ../ffmpeg-latest-win32-static.7z
-cp ffmpeg.exe $PREFIX/bin
-[ -d $PREFIX/licenses ] || mkdir -p $PREFIX/licenses
-cp *.txt $PREFIX/licenses
-cd ..
-rm -rf ffmpeg
-
 [ -e portable-python-3.2.5.1.zip ] || wget http://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip
 [ ! -d python ] || rm -rf python
 unzip portable-python-3.2.5.1.zip
@@ -366,6 +583,8 @@ mv synfigstudio-${VERSION}.exe ../../synfigstudio-${VERSION}-${REVISION}-${ARCH}
 mkall()
 {
 	mkprep
+	mkimagemagick
+	mkmlt
 	mketl
 	mksynfig
 	mksynfigstudio
