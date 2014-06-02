@@ -836,12 +836,15 @@ cp -rf $SRCPREFIX/synfig-studio/COPYING $DISTPREFIX/licenses/synfigstudio.txt
 #cp -rf $MINGWPREFIX/bin/*.dll $DISTPREFIX/bin/
 [ -d ${PREFIX}/bin ] || mkdir -p ${PREFIX}/bin
 for file in \
+   av*.dll \
+   ffmpeg.exe \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
    libboost_program_options\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
+   libdl.dll \
    libexpat\*.dll \
    libffi\*.dll \
    libfontconfig\*.dll \
@@ -864,27 +867,38 @@ for file in \
    libltdl*.dll \
    liblzma\*.dll \
    libMagick*.dll \
+   libmlt*.dll \
+   libogg*.dll \
    libpango\*.dll \
    libpixman\*.dll \
    libpng\*.dll \
+   libsamplerate*.dll \
    libsigc\*.dll \
+   libsox*.dll \
    libstdc++\*.dll \
    libsynfig\*.dll \
    libtiff\*.dll \
    libturbojpeg.dll \
+   libvorbis*.dll \
    libwinpthread*.dll \
    libxml2\*.dll \
    libxml++\*.dll \
    libz\*.dll \
+   postproc*.dll \
    pthread\*.dll \
+   SDL.dll \
+   swscale*.dll \
+   swresample*.dll \
    zlib\*.dll \
    convert.exe \
    pango-querymodules.exe \
    synfig.exe \
    synfigstudio.exe \
+   lib \
+   share \
 # this extra line is required!
 do
-	cp $MINGWPREFIX/bin/$file $DISTPREFIX/bin || true
+	cp -rf $MINGWPREFIX/bin/$file $DISTPREFIX/bin || true
 done
 cp -rf $MINGWPREFIX/etc $DISTPREFIX
 #cp -rf $MINGWPREFIX/lib/gdk-pixbuf-2.0 $DISTPREFIX/lib
@@ -930,7 +944,7 @@ cd $DISTPREFIX
 #generate file lists
 
 gen_list_nsh bin bin
-sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from he list of binaries - it will go into separate group
+sed -i '/ffmpeg\.exe/d' bin.nsh		# exclude ffmpeg from the list of binaries - it will go into separate group
 gen_list_nsh etc etc
 gen_list_nsh examples examples
 gen_list_nsh lib/gtk-2.0 lib-gtk
