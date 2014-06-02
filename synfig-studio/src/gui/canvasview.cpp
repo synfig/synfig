@@ -1534,9 +1534,9 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
 	);
-	action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
-		sigc::mem_fun(*this,&CanvasView::on_audio_option)
-	);
+	//action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
+	//	sigc::mem_fun(*this,&CanvasView::on_audio_option)
+	//);
 	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
