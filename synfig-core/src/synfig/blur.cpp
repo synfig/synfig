@@ -179,7 +179,6 @@ static void GaussianBlur_3x3(etl::surface<T,AT,VP> &surface)
 
 	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x]=(AT)(surface[0][x])*4;
-	memset(SC1,0,w*sizeof(AT));
 
 	for(y=0;y<=h;y++)
 	{
@@ -227,9 +226,6 @@ inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,AT *SC0,AT *
 
 	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+2]=(AT)(surface[0][x])*24;
-	memset(SC1,0,(w+2)*sizeof(AT));
-	memset(SC2,0,(w+2)*sizeof(AT));
-	memset(SC3,0,(w+2)*sizeof(AT));
 
 	for(y=0;y<h+2;y++)
 	{
@@ -314,7 +310,6 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
 			return;
 		}
-		memset(SC[i],0,(w+half_n)*sizeof(AT));
 	}
 
 	// Setup the first row
@@ -327,7 +322,8 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 		else
 			v=y;
 
-		memset(SR,0,(n-1)*sizeof(AT));
+		if(y!=0)
+			memset(SR,0,(n-1)*sizeof(AT));
 
 //		SR[0]=surface[v][0]*(2.0-1.9/n);
 
@@ -738,10 +734,6 @@ bool Blur::operator()(const Surface &surface,
 			ColorAccumulator *SC1=new ColorAccumulator[w+2];
 			ColorAccumulator *SC2=new ColorAccumulator[w+2];
 			ColorAccumulator *SC3=new ColorAccumulator[w+2];
-			memset(SC0,0,(w+2)*sizeof(ColorAccumulator));
-			memset(SC1,0,(w+2)*sizeof(ColorAccumulator));
-			memset(SC2,0,(w+2)*sizeof(ColorAccumulator));
-			memset(SC3,0,(w+2)*sizeof(ColorAccumulator));
 
 			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
@@ -1124,10 +1116,6 @@ bool Blur::operator()(cairo_surface_t *surface,
 			CairoColorAccumulator *SC1=new class CairoColorAccumulator[w+2];
 			CairoColorAccumulator *SC2=new class CairoColorAccumulator[w+2];
 			CairoColorAccumulator *SC3=new class CairoColorAccumulator[w+2];
-			memset(SC0,0,(w+2)*sizeof(CairoColorAccumulator));
-			memset(SC1,0,(w+2)*sizeof(CairoColorAccumulator));
-			memset(SC2,0,(w+2)*sizeof(CairoColorAccumulator));
-			memset(SC3,0,(w+2)*sizeof(CairoColorAccumulator));
 						
 			while(bw&&bh)
 			{

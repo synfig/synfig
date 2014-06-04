@@ -970,7 +970,7 @@ public:
 		{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
 		
 	public:
-		CairoColorAccumulator() { }
+		CairoColorAccumulator(): a_(), r_(), g_(), b_() { }
 		
 		/*!	\param R Red
 		 **	\param G Green
@@ -1137,7 +1137,7 @@ public:
 	{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
 
 public:
-	ColorAccumulator() { }
+	ColorAccumulator(): a_(), r_(), g_(), b_() { }
 
 	/*!	\param R Red
 	**	\param G Green
