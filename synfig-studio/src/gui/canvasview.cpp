@@ -1952,6 +1952,7 @@ CanvasView::refresh_rend_desc()
 {
 	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
 	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	widget_kf_list->set_fps(get_canvas()->rend_desc().get_frame_rate());
 
 	//????
 	//synfig::info("Canvasview: Refreshing render desc info");
