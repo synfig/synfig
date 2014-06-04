@@ -81,23 +81,24 @@ png_trgt_spritesheet::png_out_warning(png_struct *png_data,const char *msg)
 
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
-png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename,
-        const synfig::TargetParam&  params )
+png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::TargetParam &params):
+	file(NULL),
+	png_ptr(NULL),
+	info_ptr(NULL),
+	ready(false),
+	initialized(false),
+	imagecount(),
+	lastimage(),
+	numimages(),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	sequence_separator(params.sequence_separator)
 {
-    file=NULL;
-    filename=Filename;
-    buffer=NULL;
-    ready=false;
-    initialized = false;
-    color_buffer=0;
-    sequence_separator=params.sequence_separator;
-
-    if(filename=="-")
-    {
-        file=stdout;
-    }
-
-    file=fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
+    if (filename=="-")
+    	file=stdout;
+    else
+    	file=fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 }
 
 png_trgt_spritesheet::~png_trgt_spritesheet()

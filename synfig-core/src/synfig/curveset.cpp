@@ -86,11 +86,15 @@ struct ipoint
 
 	int 	go_in;	//going in = 1, coming out = -1
 
-	ipoint()
+	ipoint():
+		curveindex(),
+		vertindex(),
+		tvalue(),
+		go_in()
 	{
 		next = this;
 		prev = this;
-		neighbor = 0;
+		neighbor = NULL;
 	}
 
 	bool operator<(const ipoint &rhs) const

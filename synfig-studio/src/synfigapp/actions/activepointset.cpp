@@ -60,7 +60,8 @@ ACTION_SET_CVS_ID(Action::ActivepointSet,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ActivepointSet::ActivepointSet()
+Action::ActivepointSet::ActivepointSet():
+	index()
 {
 	set_dirty(true);
 }

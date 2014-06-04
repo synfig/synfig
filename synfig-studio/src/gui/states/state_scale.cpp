@@ -246,9 +246,10 @@ StateScale_Context::~StateScale_Context()
 
 
 DuckDrag_Scale::DuckDrag_Scale():
+	move_only(),
+	bad_drag(),
 	lock_aspect(true)
-{
-}
+{ }
 
 #ifndef EPSILON
 #define EPSILON	0.0000001

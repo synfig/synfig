@@ -69,7 +69,7 @@ private:
 
 public:
 
-	Distance(){ }
+	Distance(): value_(), system_() { }
 	Distance(const value_type& value, System system):value_(value),system_(system) { }
 	explicit Distance(const synfig::String& string);
 

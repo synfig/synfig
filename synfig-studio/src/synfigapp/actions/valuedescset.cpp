@@ -911,7 +911,7 @@ Action::ValueDescSet::prepare()
 
 	// If we are in animate editing mode
 	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
-	if((animate || get_edit_mode()&MODE_ANIMATE) && !value_desc.get_static())
+	if((animate || (get_edit_mode()&MODE_ANIMATE)) && !value_desc.get_static())
 	{
 		ValueNode_Animated::Handle& value_node(value_node_animated);
 		// If this value isn't a ValueNode_Animated, but

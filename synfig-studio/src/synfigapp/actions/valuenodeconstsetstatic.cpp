@@ -60,9 +60,9 @@ ACTION_SET_CVS_ID(Action::ValueNodeConstSetStatic,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueNodeConstSetStatic::ValueNodeConstSetStatic()
-{
-}
+Action::ValueNodeConstSetStatic::ValueNodeConstSetStatic():
+	old_static_value()
+{ }
 
 Action::ParamVocab
 Action::ValueNodeConstSetStatic::get_param_vocab()

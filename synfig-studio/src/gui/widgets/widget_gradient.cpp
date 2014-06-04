@@ -382,6 +382,7 @@ Widget_Gradient::on_event(GdkEvent *event)
 				if(changed_)signal_value_changed_();
 				return true;
 			}
+			break;
 		default:
 			break;
 		}

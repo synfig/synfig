@@ -51,10 +51,9 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-WPListConverter::WPListConverter()
-{
-	err2max=0.01;
-}
+WPListConverter::WPListConverter():
+	n(), se(), err2max(0.01)
+{ }
 
 void
 WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::list<synfig::Point> &p, const std::list<synfig::Real> &w)

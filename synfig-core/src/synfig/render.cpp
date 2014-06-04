@@ -483,7 +483,8 @@ synfig::render_threaded(
 			pipe_read,
 			pipe_write,
 			pid;
-		_render_thread()
+		_render_thread():
+			pipe_read(), pipe_write(), pid()
 		{
 			pipe(&pipe_read);
 			pid=0;

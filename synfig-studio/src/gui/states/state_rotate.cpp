@@ -259,10 +259,12 @@ StateRotate_Context::~StateRotate_Context()
 
 
 
-DuckDrag_Rotate::DuckDrag_Rotate()
-{
-	use_magnitude=true;
-}
+DuckDrag_Rotate::DuckDrag_Rotate():
+	original_mag(),
+	bad_drag(),
+	move_only(),
+	use_magnitude(true)
+{ }
 
 void
 DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)

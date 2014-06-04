@@ -59,15 +59,14 @@ static const guint no_prev_popup((guint)-1);
 /* === M E T H O D S ======================================================= */
 
 KeyframeActionManager::KeyframeActionManager():
+	keyframe_tree_(),
 	action_group_(Gtk::ActionGroup::create("action_group_keyframe_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
-{
-}
+{ }
 
 KeyframeActionManager::~KeyframeActionManager()
-{
-}
+{ }
 
 void
 KeyframeActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)

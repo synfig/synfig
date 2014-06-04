@@ -279,12 +279,15 @@ StateNormal_Context::~StateNormal_Context()
 }
 
 DuckDrag_Combo::DuckDrag_Combo():
+	original_mag(),
+	bad_drag(),
+	move_only(),
 	is_moving(false),
+	canvas_view_(NULL),
 	scale(false),
 	rotate(false),
 	constrain(false) // Lock aspect for scale
-{
-}
+{ }
 
 void
 DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)

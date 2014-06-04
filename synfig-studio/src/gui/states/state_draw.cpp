@@ -1066,7 +1066,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 	{
 		DirtyTrap dirty_trap(get_work_area());
 		Smach::event_result result;
-		result=process_stroke(event.stroke_data,event.width_data,event.modifier&Gdk::CONTROL_MASK || event.modifier&Gdk::BUTTON2_MASK);
+		result=process_stroke(event.stroke_data,event.width_data,(event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		process_queue();
 		return result;
 	}

@@ -60,15 +60,14 @@ static const guint no_prev_popup((guint)-1);
 /* === M E T H O D S ======================================================= */
 
 GroupActionManager::GroupActionManager():
+	group_tree_(),
 	action_group_(Gtk::ActionGroup::create("action_group_group_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
-{
-}
+{ }
 
 GroupActionManager::~GroupActionManager()
-{
-}
+{ }
 
 void
 GroupActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)

@@ -52,8 +52,8 @@ class KeyMapSettings : public Gtk::Dialog
 
 		bool				on;
 
-		AcKeyInfo(guint k = 0, Gdk::ModifierType m = Gdk::ModifierType())
-		:key(k),mod(m) {}
+		AcKeyInfo(guint k = 0, Gdk::ModifierType m = Gdk::ModifierType()):
+			key(k), mod(m), on() { }
 	};
 
 	//std::map<const char *,AcKeyInfo>	pathmap; //uses string info from paths set

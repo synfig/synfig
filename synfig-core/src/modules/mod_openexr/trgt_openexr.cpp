@@ -61,18 +61,18 @@ exr_trgt::ready()
 	return (bool)exr_file;
 }
 
-exr_trgt::exr_trgt(const char *Filename,
-				   const synfig::TargetParam&  params):
+exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 	multi_image(false),
 	imagecount(0),
+	scanline(),
 	filename(Filename),
-	exr_file(0)
-{
-	buffer=0;
+	exr_file(NULL),
+	buffer(NULL)
 #ifndef USE_HALF_TYPE
-	buffer_color=0;
+	,
+	buffer_color(NULL)
 #endif
-
+{
 	// OpenEXR uses linear gamma
 	gamma().set_gamma(1.0);
 	sequence_separator=params.sequence_separator;

@@ -53,7 +53,9 @@ using namespace synfig;
 
 Target_Multi::Target_Multi(Target_Scanline::Handle a,Target_Scanline::Handle b):
 	a(a),
-	b(b)
+	b(b),
+	buffer_a(),
+	buffer_b()
 {
 }
 

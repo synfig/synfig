@@ -97,17 +97,21 @@ mng_error_proc(mng_handle mng __attribute__ ((unused)), mng_int32 error __attrib
 	return MNG_TRUE;
 }
 
-mng_trgt::mng_trgt(const char *Filename,
-				   const synfig::TargetParam& /* params */) :
-	filename(Filename)
-{
-	file=NULL;
-	buffer=NULL;
-	color_buffer=NULL;
-	zbuffer=NULL;
-	zbuffer_len=0;
-	ready=false;
-}
+mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
+	file(NULL),
+	w(),
+	h(),
+	mng(NULL),
+	multi_image(),
+	ready(false),
+	imagecount(),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	zstream(),
+	zbuffer(NULL),
+	zbuffer_len(0)
+{ }
 
 mng_trgt::~mng_trgt()
 {

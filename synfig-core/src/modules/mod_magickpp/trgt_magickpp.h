@@ -56,9 +56,19 @@ private:
 
 public:
 
-	magickpp_trgt(const char *filename,
-				  const synfig::TargetParam& params) :
-		filename(filename), sequence_separator(params.sequence_separator) { }
+	magickpp_trgt(const char *filename, const synfig::TargetParam &params):
+		width(),
+		height(),
+		filename(filename),
+		buffer1(NULL),
+		start_pointer(NULL),
+		buffer_pointer(NULL),
+		buffer2(NULL),
+		previous_buffer_pointer(NULL),
+		transparent(),
+		color_buffer(NULL),
+		sequence_separator(params.sequence_separator)
+	{ }
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

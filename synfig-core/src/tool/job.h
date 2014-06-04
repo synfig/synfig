@@ -41,35 +41,67 @@ struct Job
 	bool sifout;
 	bool list_canvases;
 
-	bool canvas_info, canvas_info_all, canvas_info_time_start,
-		 canvas_info_time_end, canvas_info_frame_rate,
-		 canvas_info_frame_start, canvas_info_frame_end,
-		 canvas_info_w, canvas_info_h, canvas_info_image_aspect,
-		 canvas_info_pw, canvas_info_ph, canvas_info_pixel_aspect,
-		 canvas_info_tl, canvas_info_br, canvas_info_physical_w,
-		 canvas_info_physical_h, canvas_info_x_res, canvas_info_y_res,
-		 canvas_info_span, canvas_info_interlaced,
-		 canvas_info_antialias, canvas_info_clamp, canvas_info_flags,
-		 canvas_info_focus, canvas_info_bg_color,
-		 canvas_info_metadata;
+	bool
+		canvas_info,
+		canvas_info_all,
+		canvas_info_time_start,
+		canvas_info_time_end,
+		canvas_info_frame_rate,
+		canvas_info_frame_start,
+		canvas_info_frame_end,
+		canvas_info_w,
+		canvas_info_h,
+		canvas_info_image_aspect,
+		canvas_info_pw,
+		canvas_info_ph,
+		canvas_info_pixel_aspect,
+		canvas_info_tl,
+		canvas_info_br,
+		canvas_info_physical_w,
+		canvas_info_physical_h,
+		canvas_info_x_res,
+		canvas_info_y_res,
+		canvas_info_span,
+		canvas_info_interlaced,
+		canvas_info_antialias,
+		canvas_info_clamp,
+		canvas_info_flags,
+		canvas_info_focus,
+		canvas_info_bg_color,
+		canvas_info_metadata;
 
-    Job()
-    {
-		canvas_info = canvas_info_all = canvas_info_time_start =
-		  canvas_info_time_end = canvas_info_frame_rate =
-		  canvas_info_frame_start = canvas_info_frame_end =
-		  canvas_info_w = canvas_info_h = canvas_info_image_aspect =
-		  canvas_info_pw = canvas_info_ph = canvas_info_pixel_aspect =
-		  canvas_info_tl = canvas_info_br = canvas_info_physical_w =
-		  canvas_info_physical_h = canvas_info_x_res = canvas_info_y_res =
-		  canvas_info_span = canvas_info_interlaced =
-		  canvas_info_antialias = canvas_info_clamp =  canvas_info_flags =
-		  canvas_info_focus = canvas_info_bg_color = canvas_info_metadata
-		  = false;
-
-		quality = DEFAULT_QUALITY;
-		sifout = false;
-	}
+    Job():
+		quality(DEFAULT_QUALITY),
+		sifout(false),
+		list_canvases(),
+		canvas_info(),
+		canvas_info_all(),
+		canvas_info_time_start(),
+		canvas_info_time_end(),
+		canvas_info_frame_rate(),
+		canvas_info_frame_start(),
+		canvas_info_frame_end(),
+		canvas_info_w(),
+		canvas_info_h(),
+		canvas_info_image_aspect(),
+		canvas_info_pw(),
+		canvas_info_ph(),
+		canvas_info_pixel_aspect(),
+		canvas_info_tl(),
+		canvas_info_br(),
+		canvas_info_physical_w(),
+		canvas_info_physical_h(),
+		canvas_info_x_res(),
+		canvas_info_y_res(),
+		canvas_info_span(),
+		canvas_info_interlaced(),
+		canvas_info_antialias(),
+		canvas_info_clamp(),
+		canvas_info_flags(),
+		canvas_info_focus(),
+		canvas_info_bg_color(),
+		canvas_info_metadata()
+    { }
 
 };
 

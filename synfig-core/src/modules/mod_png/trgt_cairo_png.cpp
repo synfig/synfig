@@ -60,17 +60,16 @@ SYNFIG_TARGET_SET_CVS_ID(cairo_png_trgt,"$Id$");
 
 //Target *cairo_png_trgt::New(const char *filename){	return new cairo_png_trgt(filename);}
 
-cairo_png_trgt::cairo_png_trgt(const char *Filename,
-				   const synfig::TargetParam&  params )
-{
-	base_filename=Filename;
-	filename=Filename;
-	sequence_separator=params.sequence_separator;
-}
+cairo_png_trgt::cairo_png_trgt(const char *Filename, const synfig::TargetParam &params):
+	multi_image(false),
+	imagecount(0),
+	filename(Filename),
+	base_filename(Filename),
+	sequence_separator(params.sequence_separator)
+{ }
 
 cairo_png_trgt::~cairo_png_trgt()
-{
-}
+{ }
 
 bool
 cairo_png_trgt::set_rend_desc(RendDesc *given_desc)

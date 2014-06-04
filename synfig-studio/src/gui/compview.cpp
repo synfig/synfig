@@ -556,6 +556,7 @@ CompView::on_action_event(GdkEvent *event)
 						get_selected_instance()->redo();
 				}
 			}
+			break;
 		}
 
 	case GDK_BUTTON_RELEASE:
@@ -587,6 +588,7 @@ CompView::on_tree_event(GdkEvent *event)
 			menu.show();
 			break;
 		}
+		break;
 		default:
 			break;
 		}

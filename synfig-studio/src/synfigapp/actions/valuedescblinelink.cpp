@@ -70,9 +70,10 @@ ACTION_SET_CVS_ID(Action::ValueDescBLineLink,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescBLineLink::ValueDescBLineLink()
-{
-}
+Action::ValueDescBLineLink::ValueDescBLineLink():
+	origin(),
+	index()
+{ }
 
 Action::ParamVocab
 Action::ValueDescBLineLink::get_param_vocab()

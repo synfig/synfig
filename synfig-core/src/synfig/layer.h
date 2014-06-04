@@ -218,7 +218,7 @@ public:
 		String category;
 		String cvs_id;
 		String version;
-		BookEntry() { }
+		BookEntry(): factory() { }
 		BookEntry(Factory		 factory,
 				  const String	&name,
 				  const String	&local_name,

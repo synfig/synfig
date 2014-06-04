@@ -63,9 +63,10 @@ ACTION_SET_CVS_ID(Action::ValueDescSetInterpolation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescSetInterpolation::ValueDescSetInterpolation()
-{
-}
+Action::ValueDescSetInterpolation::ValueDescSetInterpolation():
+	value(),
+	old_value()
+{ }
 
 synfig::String
 Action::ValueDescSetInterpolation::get_local_name()const

@@ -94,7 +94,7 @@ mplayer_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &rendde
 	int w=4,h=4,x,y;
 	char bleh[500];
 
-	fscanf(sizefile,"%s %s %dx%d",bleh,bleh,&w,&h);
+	fscanf(sizefile,"%499s %499s %dx%d",bleh,bleh,&w,&h);
 
 	cerr<<strprintf("w:%d, h:%d, time:%f",w,h,time)<<endl;
 	fseek(rgbfile,2047+3*8,SEEK_CUR);

@@ -56,17 +56,20 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-jpeg_trgt::jpeg_trgt(const char *Filename,
-					 const synfig::TargetParam&  params)
+jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
+	file(NULL),
+	quality(95),
+	cinfo(),
+	jerr(),
+	multi_image(),
+	ready(false),
+	imagecount(),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	sequence_separator(params.sequence_separator)
 {
-	file=NULL;
-	filename=Filename;
-	buffer=NULL;
-	ready=false;
-	quality=95;
-	color_buffer=0;
 	set_remove_alpha();
-	sequence_separator=params.sequence_separator;
 }
 
 jpeg_trgt::~jpeg_trgt()

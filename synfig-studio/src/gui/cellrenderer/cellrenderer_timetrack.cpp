@@ -80,15 +80,14 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Glib::ObjectBase	(typeid(CellRenderer_TimeTrack)),
 	Gtk::CellRenderer	(),
 	adjustment_			(10,10,20,0,0,0),
-
+	mode				(),
+	selection			(false),
+	dragging			(false),
 	property_valuedesc_	(*this,"value_desc",synfigapp::ValueDesc()),
 	property_canvas_	(*this,"canvas",synfig::Canvas::Handle()),
 	property_adjustment_(*this,"adjustment",&adjustment_),
 	property_enable_timing_info_(*this,"enable-timing-info", false)
-{
-	dragging=false;
-	selection=false;
-}
+{ }
 
 CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 {

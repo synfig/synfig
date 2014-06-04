@@ -162,15 +162,16 @@ public:
 public:
 	
 	WorkAreaTarget_Cairo_Tile(WorkArea *workarea,int w, int h):
-	workarea(workarea),
-	low_res(workarea->get_low_resolution_flag()),
-	w(w),
-	h(h),
-	real_tile_w(workarea->tile_w),
-	real_tile_h(workarea->tile_h),
-	refresh_id(workarea->refreshes),
-	onionskin(false),
-	onion_layers(0)
+		workarea(workarea),
+		low_res(workarea->get_low_resolution_flag()),
+		w(w),
+		h(h),
+		real_tile_w(workarea->tile_w),
+		real_tile_h(workarea->tile_h),
+		refresh_id(workarea->refreshes),
+		onionskin(false),
+		onion_first_tile(),
+		onion_layers(0)
 	{
 		set_clipping(true);
 		if(low_res)
@@ -387,6 +388,7 @@ public:
 		real_tile_h(workarea->tile_h),
 		refresh_id(workarea->refreshes),
 		onionskin(false),
+		onion_first_tile(),
 		onion_layers(0)
 	{
 		//set_remove_alpha();
@@ -650,20 +652,22 @@ public:
 public:
 	
 	WorkAreaTarget_Cairo(WorkArea *workarea,int w, int h):
-	workarea(workarea),
-	low_res(workarea->get_low_resolution_flag()),
-	w(w),
-	h(h),
-	refresh_id(workarea->refreshes),
-	onionskin(false),
-	onion_layers(0)
+		workarea(workarea),
+		low_res(workarea->get_low_resolution_flag()),
+		w(w),
+		h(h),
+		refresh_id(workarea->refreshes),
+		onionskin(false),
+		onion_first_tile(),
+		onion_layers(0)
 	{
 		set_canvas(workarea->get_canvas());
 		set_quality(workarea->get_quality());
 	}
+
 	~WorkAreaTarget_Cairo()
-	{
-	}
+	{ }
+
 	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
 	{
 		assert(workarea);
@@ -814,8 +818,11 @@ public:
 		low_res(workarea->get_low_resolution_flag()),
 		w(w),
 		h(h),
+		real_tile_w(),
+		real_tile_h(),
 		refresh_id(workarea->refreshes),
 		onionskin(false),
+		onion_first_tile(),
 		onion_layers(0)
 	{
 		set_canvas(workarea->get_canvas());
@@ -823,8 +830,7 @@ public:
 	}
 
 	~WorkAreaTarget_Full()
-	{
-	}
+	{ }
 
 	virtual bool set_rend_desc(synfig::RendDesc *newdesc)
 	{
@@ -1875,7 +1881,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
 				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
-				if (event->motion.state&GDK_SHIFT_MASK && duck->get_type() == Duck::TYPE_TANGENT)
+				if ((event->motion.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
 				{
 					synfigapp::ValueDesc value_desc = duck->get_value_desc();
 
@@ -2148,15 +2154,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if(dragging == DRAG_WINDOW)
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-		else if (event->motion.state & GDK_BUTTON1_MASK &&
+		else if ((event->motion.state & GDK_BUTTON1_MASK) &&
 				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
 																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)
 			return true;
-		else if (event->motion.state & GDK_BUTTON2_MASK &&
+		else if ((event->motion.state & GDK_BUTTON2_MASK) &&
 				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_MIDDLE,
 																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
 			return true;
-		else if (event->motion.state & GDK_BUTTON3_MASK &&
+		else if ((event->motion.state & GDK_BUTTON3_MASK) &&
 				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_RIGHT,
 																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
 			return true;

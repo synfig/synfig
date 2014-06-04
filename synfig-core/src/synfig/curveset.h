@@ -65,13 +65,12 @@ public:
 	void SetClamp(int &i, int &si);
 
 	//actual stuff
-	CurveSet()
-	{
-	}
+	CurveSet(): invert() { }
 
 	//anything supporting iterator type operations
 	template < typename Iterator >
-	CurveSet(Iterator begin, Iterator end, bool invert = false)
+	CurveSet(Iterator begin, Iterator end, bool invert = false):
+		invert()
 	{
 		set.push_back(std::vector<CurvePoint>(begin,end));
 		CleanUp(invert);

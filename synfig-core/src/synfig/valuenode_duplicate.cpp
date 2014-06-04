@@ -52,19 +52,20 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 ValueNode_Duplicate::ValueNode_Duplicate(Type &x):
-	LinkableValueNode(x)
+	LinkableValueNode(x),
+	index()
 {
 }
 
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
-	LinkableValueNode(x.get_type())
+	LinkableValueNode(x.get_type()),
+	index(1.0)
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
 	set_link("from", ValueNode_Const::create(Real(1.0)));
 	set_link("to",   ValueNode_Const::create(x.get(Real())));
 	set_link("step", ValueNode_Const::create(Real(1.0)));
-	index = 1.0;
 }
 
 ValueNode_Duplicate*

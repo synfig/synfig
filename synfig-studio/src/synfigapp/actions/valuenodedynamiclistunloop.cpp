@@ -62,9 +62,9 @@ ACTION_SET_CVS_ID(Action::ValueNodeDynamicListUnLoop,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueNodeDynamicListUnLoop::ValueNodeDynamicListUnLoop()
-{
-}
+Action::ValueNodeDynamicListUnLoop::ValueNodeDynamicListUnLoop():
+	old_loop_value()
+{ }
 
 Action::ParamVocab
 Action::ValueNodeDynamicListUnLoop::get_param_vocab()

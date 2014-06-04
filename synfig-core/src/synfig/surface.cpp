@@ -114,13 +114,10 @@ public:
 	virtual bool end_scanline();
 };
 
-target2surface::target2surface(Surface *surface):surface(surface)
-{
-}
+target2surface::target2surface(Surface *surface):
+	surface(surface), sized() { }
 
-target2surface::~target2surface()
-{
-}
+target2surface::~target2surface() { }
 
 bool
 target2surface::set_rend_desc(synfig::RendDesc *newdesc)

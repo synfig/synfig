@@ -450,26 +450,21 @@ studio::interpolation_icon(synfig::Interpolation type)
 	{
 		case INTERPOLATION_TCB:
 			return Gtk::StockID("synfig-interpolation_type_tcb");
-			break;
 		case INTERPOLATION_CONSTANT:
 			return Gtk::StockID("synfig-interpolation_type_const");
-			break;
 		case INTERPOLATION_LINEAR:
 			return Gtk::StockID("synfig-interpolation_type_linear");
-			break;
 		case INTERPOLATION_HALT:
 			return Gtk::StockID("synfig-interpolation_type_ease");
-			break;
 		case INTERPOLATION_CLAMPED:
 			return Gtk::StockID("synfig-interpolation_type_clamped");
-			break;
 		case INTERPOLATION_MANUAL:
 		case INTERPOLATION_UNDEFINED:
 		case INTERPOLATION_NIL:
 		default:
-			return Gtk::StockID();
 			break;
 	}
+	return Gtk::StockID();
 }
 
 

@@ -92,10 +92,14 @@ Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnin
 	return canvas;
 }
 
-Svg_parser::Svg_parser(){
-	uid=0;
-	kux=60;
-	set_canvas=0;//we must run parser_canvas method
+Svg_parser::Svg_parser():
+	nodeRoot(NULL),
+	uid(0),
+	kux(60),
+	set_canvas(0), //we must run parser_canvas method
+	ox(0),
+	oy(0)
+{
 	// 0.5 in gamma parameter of color correct layer is 1/0.5 = 2 (thinking) it must be 2.2!!!!
 	gamma.set_gamma(2.2);
 }

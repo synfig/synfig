@@ -67,7 +67,7 @@ private:
 	static value_type epsilon_() { return static_cast<value_type>(0.0005); }
 
 public:
-	Time() { }
+	Time(): value_() { }
 
 	Time(const value_type &x):value_(x) { }
 

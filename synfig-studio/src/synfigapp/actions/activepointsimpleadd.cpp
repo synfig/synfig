@@ -59,7 +59,9 @@ ACTION_SET_CVS_ID(Action::ActivepointSimpleAdd,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ActivepointSimpleAdd::ActivepointSimpleAdd()
+Action::ActivepointSimpleAdd::ActivepointSimpleAdd():
+	index(),
+	time_overwrite()
 {
 	set_dirty(true);
 	activepoint.set_time(Time::begin()-1);

@@ -55,7 +55,7 @@ private:
 	Real weight;
 
 public:
-	BoneWeightPair() {}
+	BoneWeightPair(): weight() {}
 	BoneWeightPair(Bone bone, Real weight): bone(bone), weight(weight) { }
 
 	Real get_weight()const { return weight; }

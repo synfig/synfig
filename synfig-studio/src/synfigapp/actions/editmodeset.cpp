@@ -59,9 +59,9 @@ ACTION_SET_CVS_ID(Action::EditModeSet,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::EditModeSet::EditModeSet()
-{
-}
+Action::EditModeSet::EditModeSet():
+	old_edit_mode()
+{ }
 
 Action::ParamVocab
 Action::EditModeSet::get_param_vocab()

@@ -63,9 +63,9 @@ ACTION_SET_CVS_ID(Action::LayerMove,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Action::LayerMove::LayerMove():
+	old_index(),
 	new_index(0xdeadbeef) // Dead beef? LOL
-{
-}
+{ }
 
 synfig::String
 Action::LayerMove::get_local_name()const

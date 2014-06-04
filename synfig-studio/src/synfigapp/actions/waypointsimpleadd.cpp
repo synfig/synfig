@@ -59,7 +59,8 @@ ACTION_SET_CVS_ID(Action::WaypointSimpleAdd,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::WaypointSimpleAdd::WaypointSimpleAdd()
+Action::WaypointSimpleAdd::WaypointSimpleAdd():
+	time_overwrite()
 {
 	set_dirty(true);
 	waypoint.set_time(Time::begin()-1);

@@ -959,7 +959,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell_renderer())
+			if (((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK))
+			 && column && cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);

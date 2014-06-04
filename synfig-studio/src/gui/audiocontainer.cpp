@@ -736,14 +736,15 @@ struct studio::AudioContainer::AudioImp
 	}
 
 public: //structors
-	AudioImp()
-	:sample(0),
-	channel(0),
-	sfreq(0),
-	length(0),
-	offset(0),
-	playing(false),
-	scrptr(0)
+	AudioImp():
+		sample(0),
+		channel(0),
+		sfreq(0),
+		length(0),
+		offset(0),
+		playing(false),
+		curscrubpos(),
+		scrptr(0)
 	{
 		//reuse the channel...
 		#ifdef WITH_FMOD
@@ -843,10 +844,10 @@ public: //forward interface
 };
 
 //--------------- Audio Container definitions --------------------------
-studio::AudioContainer::AudioContainer()
-{
-	imp = 0;
-}
+studio::AudioContainer::AudioContainer():
+	imp(NULL),
+	profilevalid()
+{ }
 
 studio::AudioContainer::~AudioContainer()
 {

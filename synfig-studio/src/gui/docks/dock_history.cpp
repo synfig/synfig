@@ -422,6 +422,7 @@ Dock_History::on_action_event(GdkEvent *event)
 					return true;
 				}
 			}
+			break;
 		}
 
 	case GDK_BUTTON_RELEASE:

@@ -60,13 +60,12 @@ using namespace Gtk;
 /* === E N T R Y P O I N T ================================================= */
 
 // KeyMapSettings Definitions
-KeyMapSettings::KeyMapSettings()
-{
-}
+KeyMapSettings::KeyMapSettings():
+	unsaved()
+{ }
 
 KeyMapSettings::~KeyMapSettings()
-{
-}
+{ }
 
 bool KeyMapSettings::set_key(const char *path, guint key, Gdk::ModifierType mod, bool replace)
 {

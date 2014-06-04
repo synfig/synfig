@@ -9,7 +9,6 @@ AM_CPPFLAGS = \
 	@INCLTDL@
 
 EXTRA_DIST = \
-	surfacenew.cpp \
 	pch.h \
 	synfig.nsh \
 	synfig.h \
@@ -243,7 +242,6 @@ SYNFIGHEADERS = \
 	smartfile.h \
 	string.h \
 	string_decl.h \
-	surfacenew.h \
 	types.h \
 	vector.h \
 	transformation.h \

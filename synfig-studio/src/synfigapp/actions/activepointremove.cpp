@@ -60,7 +60,8 @@ ACTION_SET_CVS_ID(Action::ActivepointRemove,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ActivepointRemove::ActivepointRemove()
+Action::ActivepointRemove::ActivepointRemove():
+	index()
 {
 	activepoint.set_time(Time::begin()-1);
 	set_dirty(true);

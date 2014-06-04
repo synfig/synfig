@@ -71,7 +71,7 @@ MAKE_THREADS=2					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=0
+DEBUG=1
 BREED=
 
 export EMAIL='root@synfig.org'
@@ -522,6 +522,7 @@ if [[ $MODE != 'quick' ]]; then
 		--with-magickpp \
 		--without-libavcodec \
 		--without-included-ltdl \
+		--with-boost=$HOME/synfig/ \
 		$BOOST_CONFIGURE_OPTIONS \
 		$DEBUG
 fi
@@ -993,7 +994,7 @@ initialize()
 					${DEB_LIST_MINIMAL} \
 					git-core \
 					libmng-dev \
-					libjack-dev \
+					libjack-jackd2-dev \
 					libgtkmm-2.4-dev \
 					libglibmm-2.4-dev \
 					libsigc++-2.0-dev \

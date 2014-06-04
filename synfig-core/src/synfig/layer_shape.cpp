@@ -440,6 +440,7 @@ struct CurveArray
 		return sqrtb2_4ac == 0 ? 1 : 2;
 	}
 
+	/* TODO: function not finished - no return value. To remove?
 	//Newton-Raphson root polishing (we don't care about bounds, assumes very near the desired root)
 	static Real polish_cubicroot(Real a, Real b, Real c, Real d, Real t, Real *dpdt)
 	{
@@ -476,6 +477,7 @@ struct CurveArray
 			oldpmag = fabs(p);
 		}
 	}
+	*/
 
 	static int intersect_cubic(Real x, Real y, Point *p, int /*level*/ = 0)
 	{
@@ -939,7 +941,7 @@ struct PenMark
 	int y,x;
 	Real cover,area;
 
-	PenMark(){}
+	PenMark(): y(), x(), cover(), area() {}
 	PenMark(int xin, int yin, Real c, Real a)
 		:y(yin),x(xin),cover(c),area(a) {}
 

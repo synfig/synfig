@@ -53,13 +53,12 @@ using namespace studio;
 
 WorkAreaRenderer::WorkAreaRenderer():
 	enabled_(true),
-	priority_(0)
-{
-}
+	priority_(0),
+	work_area_(NULL)
+{ }
 
 WorkAreaRenderer::~WorkAreaRenderer()
-{
-}
+{ }
 
 bool
 WorkAreaRenderer::get_enabled_vfunc()const

@@ -55,14 +55,16 @@ SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename, const synfig::TargetParam&  params )
+ppm::ppm(const char *Filename, const synfig::TargetParam &params):
+	imagecount(),
+	multi_image(false),
+	file(),
+	filename(Filename),
+	color_buffer(NULL),
+	buffer(NULL),
+	sequence_separator(params.sequence_separator)
 {
-	filename=Filename;
-	multi_image=false;
-	buffer=NULL;
-	color_buffer=0;
 	set_remove_alpha();
-	sequence_separator=params.sequence_separator;
 }
 
 ppm::~ppm()

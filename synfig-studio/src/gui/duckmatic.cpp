@@ -310,7 +310,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		return false;
 
 	synfigapp::ValueDesc value_desc(x->get_value_desc());
-	if(value_desc.parent_is_layer_param() && type & Duck::TYPE_POSITION)
+	if(value_desc.parent_is_layer_param() && (type & Duck::TYPE_POSITION))
 	{
 		Layer::Handle layer(value_desc.get_layer());
 		String layer_name(layer->get_name());

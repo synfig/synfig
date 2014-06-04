@@ -108,13 +108,16 @@ inline short little_endian_short(const short &x)
 #define little_endian_short(x)	(x)
 #endif
 
-bmp::bmp(const char *Filename, const synfig::TargetParam& params)
+bmp::bmp(const char *Filename, const synfig::TargetParam& params):
+	rowspan(),
+	imagecount(),
+	multi_image(false),
+	file(NULL),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	pf()
 {
-	file=NULL;
-	filename=Filename;
-	multi_image=false;
-	buffer=0;
-	color_buffer=0;
 	set_remove_alpha();
 	sequence_separator=params.sequence_separator;
 }

@@ -31,8 +31,6 @@
 #	include <config.h>
 #endif
 
-#include "trgt_av.h"
-
 extern "C"
 {
 
@@ -47,6 +45,8 @@ extern "C"
 #	include <avformat.h>
 #elif defined(HAVE_FFMPEG_AVFORMAT_H)
 #	include <ffmpeg/avformat.h>
+#else
+#   define DISABLE_MODULE
 #endif
 
 #ifdef WITH_LIBSWSCALE
@@ -61,12 +61,17 @@ extern "C"
 
 }
 
-#include <synfig/general.h>
-
-#include <cstdio>
-#include <algorithm>
-#include <functional>
+#ifndef DISABLE_MODULE
+#	include "trgt_av.h"
+#	include <synfig/general.h>
+#	include <cstdio>
+#	include <algorithm>
+#	include <functional>
 #endif
+
+#endif
+
+#ifndef DISABLE_MODULE
 
 #ifdef WIN32
 #define snprintf	_snprintf
@@ -980,3 +985,5 @@ bool Target_LibAVCodec::init()
 
 	return true;
 }
+
+#endif

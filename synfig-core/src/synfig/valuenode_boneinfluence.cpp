@@ -58,12 +58,16 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 ValueNode_BoneInfluence::ValueNode_BoneInfluence(Type &x):
-	LinkableValueNode(x)
+	LinkableValueNode(x),
+	checked_inverse_(),
+	has_inverse_()
 {
 }
 
 ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Canvas::LooseHandle canvas):
-	LinkableValueNode(x->get_type())
+	LinkableValueNode(x->get_type()),
+	checked_inverse_(),
+	has_inverse_()
 {
 	Type &type(x->get_type());
 	if (type == type_vector || type == type_bline_point)

@@ -60,9 +60,10 @@ ACTION_SET_CVS_ID(Action::LayerActivate,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerActivate::LayerActivate()
-{
-}
+Action::LayerActivate::LayerActivate():
+	old_status(),
+	new_status()
+{ }
 
 synfig::String
 Action::LayerActivate::get_local_name()const

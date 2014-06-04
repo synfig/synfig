@@ -53,7 +53,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Enum::Widget_Enum()
+Widget_Enum::Widget_Enum():
+	value()
 {
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);

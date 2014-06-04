@@ -55,11 +55,19 @@ SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-gif::gif(const char *filename_, const synfig::TargetParam& /* params */):
+gif::gif(const char *filename_, const synfig::TargetParam & /* params */):
+	bs(),
 	filename(filename_),
 	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
+	i(),
+	codesize(),
+	rootsize(),
+	nextcode(),
+	table(NULL),
+	next(NULL),
+	node(NULL),
 	imagecount(0),
-
+	cur_scanline(),
 	lossy(true),
 	multi_image(false),
 	dithering(true),
@@ -67,8 +75,7 @@ gif::gif(const char *filename_, const synfig::TargetParam& /* params */):
 	iframe_density(30),
 	loop_count(0x7fff),
 	local_palette(true)
-{
-}
+{ }
 
 gif::~gif()
 {

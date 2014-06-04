@@ -60,9 +60,9 @@ ACTION_SET_CVS_ID(Action::ValueNodeStaticListLoop,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueNodeStaticListLoop::ValueNodeStaticListLoop()
-{
-}
+Action::ValueNodeStaticListLoop::ValueNodeStaticListLoop():
+	old_loop_value()
+{ }
 
 Action::ParamVocab
 Action::ValueNodeStaticListLoop::get_param_vocab()

@@ -64,7 +64,8 @@ ACTION_SET_CVS_ID(Action::KeyframeToggl,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::KeyframeToggl::KeyframeToggl()
+Action::KeyframeToggl::KeyframeToggl():
+	new_status()
 {
 	keyframe.set_time(Time::begin()-1);
 	set_dirty(true);

@@ -53,13 +53,12 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_CanvasChooser::Widget_CanvasChooser()
-{
-}
+Widget_CanvasChooser::Widget_CanvasChooser():
+	canvas_menu(NULL)
+{ }
 
 Widget_CanvasChooser::~Widget_CanvasChooser()
-{
-}
+{ }
 
 void
 Widget_CanvasChooser::set_parent_canvas(synfig::Canvas::Handle x)

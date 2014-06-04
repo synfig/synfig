@@ -36,6 +36,7 @@
 #include <ETL/stringf>
 #include <algorithm>
 #include <cmath>
+#include <inttypes.h>
 
 #endif
 

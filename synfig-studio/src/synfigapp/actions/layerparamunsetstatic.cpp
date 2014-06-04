@@ -60,9 +60,9 @@ ACTION_SET_CVS_ID(Action::LayerParamUnSetStatic,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::LayerParamUnSetStatic::LayerParamUnSetStatic()
-{
-}
+Action::LayerParamUnSetStatic::LayerParamUnSetStatic():
+	old_static_value()
+{ }
 
 Action::ParamVocab
 Action::LayerParamUnSetStatic::get_param_vocab()

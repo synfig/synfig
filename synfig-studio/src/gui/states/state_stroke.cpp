@@ -124,7 +124,8 @@ StateStroke::~StateStroke()
 StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	duckmatic_push(get_work_area())
+	duckmatic_push(get_work_area()),
+	modifier()
 {
 	width_data.spawn();
 	stroke_data.spawn();

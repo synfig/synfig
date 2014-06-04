@@ -53,7 +53,7 @@ struct GradientCPoint : public UniqueID
 	bool operator<(const GradientCPoint &rhs)const { return pos<rhs.pos; }
 	bool operator<(const Real &rhs)const { return pos<rhs; }
 
-	GradientCPoint() { }
+	GradientCPoint(): pos() { }
 	GradientCPoint(const Real &pos, const Color &color):pos(pos),color(color) { }
 }; // END of class GradientCPoint
 

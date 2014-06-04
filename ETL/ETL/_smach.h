@@ -201,14 +201,6 @@ public:
 		//! Returns given the name of the state
 		virtual const char *get_name() const { return name; }
 
-		state_context_type& get_context(smach& machine)
-		{
-			state_context_type *context(dynamic_cast<state_context_type*>(machine.state_context));
-			if(context)
-				return context;
-
-		}
-
 		//! Adds an event_def onto the list and then make sure it is sorted correctly.
 		void
 		insert(const event_def &x)

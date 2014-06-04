@@ -450,7 +450,10 @@ public:
 
 public:
 	AsyncTarget_Scanline(etl::handle<synfig::Target_Scanline> warm_target):
-		warm_target(warm_target)
+		warm_target(warm_target),
+		scanline_(),
+		alive_flag(),
+		ready_next()
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
@@ -579,7 +582,11 @@ public:
 	
 public:
 	AsyncTarget_Cairo(etl::handle<synfig::Target_Cairo> warm_target):
-	warm_target(warm_target)
+		warm_target(warm_target),
+		surface(),
+		callback(),
+		alive_flag(),
+		ready_next()
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());

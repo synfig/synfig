@@ -67,7 +67,8 @@ ACTION_SET_CVS_ID(Action::ActivepointSetSmart,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ActivepointSetSmart::ActivepointSetSmart()
+Action::ActivepointSetSmart::ActivepointSetSmart():
+	index()
 {
 	activepoint.set_time(Time::begin()-1);
 	time_set=false;

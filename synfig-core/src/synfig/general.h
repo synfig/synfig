@@ -114,13 +114,13 @@ class SuperCallback : public ProgressCallback
 	int w;
 public:
 
-	SuperCallback() { cb=NULL; }
-	SuperCallback(ProgressCallback *cb,int start_, int end_, int total):cb(cb),start(start_),end(end_),tot(total)
+	SuperCallback(): cb(), start(), end(), tot(), w() { }
+	SuperCallback(ProgressCallback *cb,int start_, int end_, int total):
+		cb(cb),start(start_),end(end_),tot(total),w(end-start)
 	{
 		//make sure we don't "inherit" if our subcallback is invalid
 		if(!cb || !cb->valid())
 			cb = NULL;
-		w=end-start;
 	}
 	virtual bool task(const String &task) { if(cb)return cb->task(task); return true; }
 	virtual bool error(const String &task) { if(cb)return cb->error(task); return true; }

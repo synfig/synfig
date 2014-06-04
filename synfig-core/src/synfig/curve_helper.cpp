@@ -491,7 +491,7 @@ struct CIntersect::SCurve
 	float 	mag;			//approximate sum of magnitudes of each edge of control polygon
 	Rect	aabb;			//Axis Aligned Bounding Box for quick (albeit less accurate) collision
 
-	SCurve() {}
+	SCurve(): b(), rt(), st(), mag() {}
 
 	SCurve(const bezier<Point> &c,float rin, float sin)
 	:b(c),rt(rin),st(sin),mag(1)

@@ -85,7 +85,7 @@ struct ScreenDuck
 	Real width;
 	bool has_alternative;
 
-	ScreenDuck():width(0),has_alternative(false) { }
+	ScreenDuck(): selected(), hover(), width(0), has_alternative(false) { }
 };
 
 void

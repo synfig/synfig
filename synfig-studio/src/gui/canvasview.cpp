@@ -2400,12 +2400,11 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 #endif
 }
 		return true;
-		break;
 
 	default:
-		return false;
 		break;
 	}
+	return false;
 }
 
 bool
@@ -2432,12 +2431,11 @@ CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::C
 			}
 		}
 		return true;
-		break;
 
 	default:
-		return false;
 		break;
 	}
+	return false;
 }
 
 bool

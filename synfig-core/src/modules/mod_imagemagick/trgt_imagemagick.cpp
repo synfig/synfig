@@ -78,17 +78,17 @@ SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-imagemagick_trgt::imagemagick_trgt(const char *Filename,
-								   const synfig::TargetParam& params)
-{
-	pid=-1;
-	file=NULL;
-	filename=Filename;
-	multi_image=false;
-	buffer=NULL;
-	color_buffer=0;
-	sequence_separator=params.sequence_separator;
-}
+imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetParam &params):
+	pid(-1),
+	imagecount(),
+	multi_image(false),
+	file(NULL),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	pf(),
+	sequence_separator(params.sequence_separator)
+{ }
 
 imagemagick_trgt::~imagemagick_trgt()
 {

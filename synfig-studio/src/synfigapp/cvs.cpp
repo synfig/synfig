@@ -79,10 +79,12 @@ CVSInfo::CVSInfo(const synfig::String& file_name)
 	set_file_name(file_name);
 }
 
-CVSInfo::CVSInfo()
-{
-	update_available_=false;
-}
+CVSInfo::CVSInfo():
+	in_sandbox_(),
+	in_repository_(),
+	update_available_(false),
+	original_timestamp_()
+{ }
 
 CVSInfo::~CVSInfo()
 {

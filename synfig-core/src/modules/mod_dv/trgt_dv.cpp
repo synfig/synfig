@@ -78,17 +78,16 @@ SYNFIG_TARGET_SET_CVS_ID(dv_trgt,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 
-dv_trgt::dv_trgt(const char *Filename,
-				 const synfig::TargetParam& /* params */)
+dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */):
+	pid(-1),
+	imagecount(0),
+	wide_aspect(false),
+	file(NULL),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL)
 {
-	pid=-1;
-	file=NULL;
-	filename=Filename;
-	buffer=NULL;
-	wide_aspect=false;
-	color_buffer=0;
-		set_remove_alpha();
-
+	set_remove_alpha();
 }
 
 dv_trgt::~dv_trgt()

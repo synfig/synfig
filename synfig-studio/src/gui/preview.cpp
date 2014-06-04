@@ -197,12 +197,18 @@ public:
 	}
 };
 
-studio::Preview::Preview(const studio::CanvasView::LooseHandle &h, float zoom, float f)
-:canvasview(h),zoom(zoom),fps(f)
-{
-	overbegin = false;
-	overend = false;
-}
+studio::Preview::Preview(const studio::CanvasView::LooseHandle &h, float zoom, float f):
+	canvasview(h),
+	zoom(zoom),
+	fps(f),
+	begintime(),
+	endtime(),
+	overbegin(false),
+	overend(false),
+	use_cairo(),
+	quality(),
+	global_fps()
+{ }
 
 void studio::Preview::set_canvasview(const studio::CanvasView::LooseHandle &h)
 {
@@ -1117,6 +1123,7 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 			{
 				pause();
 			}
+			break;
 		}
 
 		default: break;

@@ -78,15 +78,16 @@ SYNFIG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ffmpeg_trgt::ffmpeg_trgt(const char *Filename,
-						 const synfig::TargetParam& params)
+ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
+	pid(-1),
+	imagecount(0),
+	multi_image(false),
+	file(NULL),
+	filename(Filename),
+	buffer(NULL),
+	color_buffer(NULL),
+	bitrate()
 {
-	pid=-1;
-	file=NULL;
-	filename=Filename;
-	multi_image=false;
-	buffer=NULL;
-	color_buffer=0;
 	set_remove_alpha();
 
 	// Set default video codec and bitrate if they weren't given.

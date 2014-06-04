@@ -69,7 +69,7 @@ public:
 	const int & get_type() const { return type; }
 	int & get_type() { return type; }
 
-	Blur() {}
+	Blur(): type(), cb() {}
 	Blur(const Point &s, int t, ProgressCallback *callb=0):size(s), type(t), cb(callb) {}
 	Blur(Real sx, Real sy, int t, ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
 
