@@ -561,7 +561,7 @@ fi
 
 if [[ $MODE != 'quick' ]]; then
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack --enable-warnings=fatal $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
 make -j$MAKE_THREADS

@@ -31,6 +31,11 @@ AC_PROG_INSTALL
 
 AC_LANG([C++])
 
+DK_ARG_ENABLE_WARNINGS([SYNFIG_WARNING_FLAGS],
+	[-Wall -w1],
+	[-pedantic -Wall -Wextra -w1],
+	[G GDK GDK_PIXBUF PANGO GTK])
+
 
 AC_ARG_DEBUG
 
