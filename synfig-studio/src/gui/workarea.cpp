@@ -3533,7 +3533,10 @@ studio::WorkArea::set_zoom(float z)
 	refreshes+=5;
 	async_update_preview();
 	//queue_render_preview();
-	canvas_view->queue_rebuild_ducks();
+	// TODO: FIXME: QuickHack
+	if (canvas_view->get_smach().get_state_name() != std::string("polygon")
+	 && canvas_view->get_smach().get_state_name() != std::string("bline"))
+			canvas_view->queue_rebuild_ducks();
 }
 
 void
