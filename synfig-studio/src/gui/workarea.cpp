@@ -1886,22 +1886,21 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					synfigapp::ValueDesc value_desc = duck->get_value_desc();
 
 					// we have the tangent, but need the vertex - that's the parent
-					if (value_desc.parent_is_value_node()) {
-						ValueNode_Composite::Handle parent_value_node = value_desc.get_parent_value_node();
-						BLinePoint bp((*parent_value_node)(get_time()).get(BLinePoint()));
+					if (value_desc.is_value_node()) {
+						ValueNode_Composite::Handle value_node = value_desc.get_value_node();
+						BLinePoint bp((*value_node)(get_time()).get(BLinePoint()));
 						// if the tangent isn't split, then split it
 						if (!bp.get_split_tangent_both())
 						{
-							if (get_canvas_view()->canvas_interface()->
-								change_value(synfigapp::ValueDesc(parent_value_node,
-																  parent_value_node->get_link_index_from_name("split_radius")),
-											 true)
-								&&
-								get_canvas_view()->canvas_interface()->
-								change_value(synfigapp::ValueDesc(parent_value_node,
-																  parent_value_node->get_link_index_from_name("split_angle")),
-											 true)
-								)
+							if (get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
+									value_node,
+									value_node->get_link_index_from_name("split_radius")),
+									true)
+							 && get_canvas_view()->canvas_interface()->change_value(synfigapp::ValueDesc(
+									value_node,
+									value_node->get_link_index_from_name("split_angle")),
+									true )
+							)
 							{
 								// rebuild the ducks from scratch, so the tangents ducks aren't connected
 								get_canvas_view()->rebuild_ducks();
