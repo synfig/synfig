@@ -3885,7 +3885,9 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	prev->set_endtime(info.endtime);
 	prev->set_quality(work_area->get_quality());
 	prev->set_use_cairo(info.use_cairo);
+#ifdef WITH_JACK
 	prev->set_jack_offset(get_jack_offset());
+#endif
 
 	//render it out...
 	prev->render();

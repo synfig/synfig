@@ -534,14 +534,15 @@ Widget_Preview::Widget_Preview():
 	toolbar->pack_start(*space2, false, true);
 
 	//jack
+	jackdial = Gtk::manage(new JackDial());
 #ifdef WITH_JACK
 	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
-#endif
-	jackdial = Gtk::manage(new JackDial());
 	jackdial->signal_enable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
-	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_jack_offset_changed));
-	jackdial->set_fps(25.f);
+	jackdial->signal_disable_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_toggle_jack_pressed));
+#endif
+	//FIXME: Hardcoded FPS!
+	jackdial->set_fps(24.f);
 	jackdial->set_offset(jack_offset);
 	if ( !getenv("SYNFIG_DISABLE_JACK") )
 		jackdial->show();
@@ -1381,15 +1382,6 @@ Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
 	return t0.is_equal(t1);
 }
 
-void Widget_Preview::on_toggle_jack_pressed() {
-	set_jack_enabled(!get_jack_enabled());
-}
-
-void Widget_Preview::on_jack_offset_changed() {
-	jack_offset = jackdial->get_offset();
-	if (get_jack_enabled()) on_jack_sync();
-}
-
 void Widget_Preview::set_jack_enabled(bool value) {
 	if (jack_enabled == value) return;
 #ifdef WITH_JACK
@@ -1420,6 +1412,16 @@ void Widget_Preview::set_jack_enabled(bool value) {
 }
 
 #ifdef WITH_JACK
+
+void Widget_Preview::on_toggle_jack_pressed() {
+	set_jack_enabled(!get_jack_enabled());
+}
+
+void Widget_Preview::on_jack_offset_changed() {
+	jack_offset = jackdial->get_offset();
+	if (get_jack_enabled()) on_jack_sync();
+}
+
 void Widget_Preview::on_jack_sync() {
 	jack_position_t pos;
 	jack_transport_state_t state = jack_transport_query(jack_client, &pos);

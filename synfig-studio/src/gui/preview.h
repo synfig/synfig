@@ -329,10 +329,10 @@ private:
 
 	bool get_jack_enabled() { return jack_enabled; }
 	void set_jack_enabled(bool value);
-	void on_toggle_jack_pressed();
-	void on_jack_offset_changed();
 
 #ifdef WITH_JACK
+	void on_toggle_jack_pressed();
+	void on_jack_offset_changed();
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
 	bool jack_synchronizing;
