@@ -297,8 +297,6 @@ src/synfig/string.h
 src/synfig/string_decl.h
 src/synfig/surface.cpp
 src/synfig/surface.h
-src/synfig/surfacenew.cpp
-src/synfig/surfacenew.h
 src/synfig/synfig.h
 src/synfig/target.cpp
 src/synfig/target.h
