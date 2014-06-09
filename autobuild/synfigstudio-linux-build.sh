@@ -71,7 +71,7 @@ MAKE_THREADS=2					#count of threads for make
 # package = chroot, clean, configure, make
 MODE='standart'
 OPENGL=0
-DEBUG=1
+DEBUG=0
 BREED=
 
 export EMAIL='root@synfig.org'
@@ -508,7 +508,7 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	if [ -e /etc/debian_version ]; then
+	if [ -e /etc/debian_version ] && [ -z $BOOST_CONFIGURE_OPTIONS ]; then
 		# Debian/Ubuntu multiarch
 		MULTIARCH_LIBDIR="/usr/lib/`uname -i`-linux-gnu/"
 		if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
@@ -522,7 +522,6 @@ if [[ $MODE != 'quick' ]]; then
 		--with-magickpp \
 		--without-libavcodec \
 		--without-included-ltdl \
-		--with-boost=$HOME/synfig/ \
 		$BOOST_CONFIGURE_OPTIONS \
 		$DEBUG
 fi
