@@ -27,6 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/property.h>
+#include <glibmm/propertyproxy.h>
+
 #include <gtkmm/entry.h>
 #include <gtkmm/cellrenderertext.h>
 

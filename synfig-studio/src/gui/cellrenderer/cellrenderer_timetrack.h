@@ -29,7 +29,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtk/gtk.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>
@@ -51,6 +50,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/menu.h>
 
+#include <glibmm/property.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>

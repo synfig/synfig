@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/treeview.h>
 #include <synfigapp/canvasinterface.h>

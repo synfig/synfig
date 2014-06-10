@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <glibmm.h>
 #include "layeractionmanager.h"
 #include "trees/layertree.h"
 #include <synfig/context.h>

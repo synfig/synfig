@@ -35,7 +35,7 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/combobox.h>
 
 #include <synfig/string.h>
 #include <synfig/targetparam.h>

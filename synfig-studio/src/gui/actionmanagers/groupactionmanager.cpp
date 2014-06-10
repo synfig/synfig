@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <glibmm.h>
 #include "groupactionmanager.h"
 #include "trees/layergrouptree.h"
 #include <synfigapp/action_param.h>
