@@ -40,7 +40,7 @@
 
 namespace studio {
 
-void render_time_point_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
+void render_time_point_to_window(const Glib::RefPtr<Gdk::Window>& window,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
 
 
 /* Design for the timeslider...

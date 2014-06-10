@@ -101,7 +101,7 @@ Renderer_Canvas::get_rendering()const
 
 void
 Renderer_Canvas::render_vfunc(
-	const Glib::RefPtr<Gdk::Drawable>& drawable,
+	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& /*expose_area*/
 )
 {

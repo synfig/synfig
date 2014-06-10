@@ -59,7 +59,7 @@ using namespace studio;
 
 /*
 void
-studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color)
+studio::render_color_to_window(const Glib::RefPtr<Gdk::Window>& window,const Gdk::Rectangle& ca,const synfig::Color &color)
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());

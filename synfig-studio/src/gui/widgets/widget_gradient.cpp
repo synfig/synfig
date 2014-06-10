@@ -56,7 +56,7 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 void
-studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Gradient &gradient)
+studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Window>& window,const Gdk::Rectangle& ca,const synfig::Gradient &gradient)
 {
 	int	height = ca.get_height();
 	int	width = ca.get_width()-4;

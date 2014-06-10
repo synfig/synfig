@@ -68,7 +68,7 @@ Renderer_BBox::get_bbox()
 
 void
 Renderer_BBox::render_vfunc(
-	const Glib::RefPtr<Gdk::Drawable>& drawable,
+	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& /*expose_area*/
 )
 {

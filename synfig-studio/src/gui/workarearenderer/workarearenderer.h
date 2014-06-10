@@ -86,7 +86,7 @@ public:
 	void set_work_area(WorkArea* work_area_);
 
 	virtual void render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const Glib::RefPtr<Gdk::Window>& window,
 		const Gdk::Rectangle& expose_area
 	);
 

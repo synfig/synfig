@@ -70,7 +70,7 @@ CellRenderer_Gradient::~CellRenderer_Gradient()
 
 void
 CellRenderer_Gradient::render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const Glib::RefPtr<Gdk::Window>& window,
 		Gtk::Widget& /*widget*/,
 		const Gdk::Rectangle& /*background_area*/,
 		const Gdk::Rectangle& ca,

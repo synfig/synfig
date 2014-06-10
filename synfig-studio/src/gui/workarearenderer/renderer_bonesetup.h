@@ -46,7 +46,7 @@ class Renderer_BoneSetup : public studio::WorkAreaRenderer
 public:
 	~Renderer_BoneSetup();
 
-	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 
 protected:
 	bool get_enabled_vfunc()const;

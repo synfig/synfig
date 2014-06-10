@@ -46,7 +46,7 @@ private:
 public:
 	~Renderer_Background();
 			
-	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 	
 protected:
 	bool get_enabled_vfunc()const;

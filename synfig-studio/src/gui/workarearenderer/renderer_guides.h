@@ -49,7 +49,7 @@ public:
 	std::list<float>& get_guide_list_x();
 	std::list<float>& get_guide_list_y();
 
-	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
 	bool event_vfunc(GdkEvent* event);
 
 protected:

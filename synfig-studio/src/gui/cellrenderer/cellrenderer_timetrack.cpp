@@ -223,7 +223,7 @@ bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const T
 
 void
 CellRenderer_TimeTrack::render_vfunc(
-		const Glib::RefPtr<Gdk::Drawable>& window,
+		const Glib::RefPtr<Gdk::Window>& window,
 		Gtk::Widget& widget,
 		const Gdk::Rectangle& /*background_area*/,
 		const Gdk::Rectangle& area_,
