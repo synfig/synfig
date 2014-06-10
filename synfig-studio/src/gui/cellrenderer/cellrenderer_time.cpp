@@ -78,14 +78,13 @@ CellRenderer_Time::string_edited_(const Glib::ustring&path,const Glib::ustring&s
 
 void
 CellRenderer_Time::render_vfunc(
-		const Glib::RefPtr<Gdk::Window>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
-		Gtk::CellRendererState flags)
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	Gtk::Widget& widget,
+	const Gdk::Rectangle& background_area,
+	const Gdk::Rectangle& cell_area,
+	Gtk::CellRendererState flags)
 {
-	if(!window)
+	if(!cr)
 		return;
 	//int	height = ca.get_height();
 
@@ -94,7 +93,7 @@ CellRenderer_Time::render_vfunc(
 
 	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format());
 
-	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
+	CellRendererText::render_vfunc(cr,widget,background_area,cell_area,flags);
 }
 
 

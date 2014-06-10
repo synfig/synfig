@@ -325,14 +325,13 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustr
 
 void
 CellRenderer_ValueBase::render_vfunc(
-		const Glib::RefPtr<Gdk::Window>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& background_area,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
-		Gtk::CellRendererState flags)
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	Gtk::Widget& widget,
+	const Gdk::Rectangle& background_area,
+	const Gdk::Rectangle& cell_area,
+	Gtk::CellRendererState flags)
 {
-	if(!window)
+	if(!cr)
 		return;
 //	const unsigned int cell_xpad = property_xpad();
 //	const unsigned int cell_ypad = property_ypad();
@@ -524,7 +523,7 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=static_cast<Glib::ustring>(type.description.local_name);
 	}
 
-	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
+	CellRendererText::render_vfunc(cr,widget,background_area,cell_area,flags);
 }
 
 

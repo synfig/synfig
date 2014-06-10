@@ -223,14 +223,13 @@ bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const T
 
 void
 CellRenderer_TimeTrack::render_vfunc(
-		const Glib::RefPtr<Gdk::Window>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& /*background_area*/,
-		const Gdk::Rectangle& area_,
-		const Gdk::Rectangle& /*expose_area*/,
-		Gtk::CellRendererState /*flags*/)
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	Gtk::Widget& widget,
+	const Gdk::Rectangle& background_area,
+	const Gdk::Rectangle& cell_area,
+	Gtk::CellRendererState flags)
 {
-	if(!window)
+	if(!cr)
 		return;
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));

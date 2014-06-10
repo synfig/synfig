@@ -70,16 +70,15 @@ CellRenderer_Gradient::~CellRenderer_Gradient()
 
 void
 CellRenderer_Gradient::render_vfunc(
-		const Glib::RefPtr<Gdk::Window>& window,
-		Gtk::Widget& /*widget*/,
-		const Gdk::Rectangle& /*background_area*/,
-		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& /*expose_area*/,
-		Gtk::CellRendererState /*flags*/)
+		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+		Gtk::Widget& /* widget */,
+		const Gdk::Rectangle& /* background_area */,
+		const Gdk::Rectangle& /* cell_area */,
+		Gtk::CellRendererState /* flags */);
 {
-	if(!window)
+	if(!cr)
 		return;
-	render_gradient_to_window(window,ca,property_gradient_.get_value());
+	render_gradient_to_window(cr,ca,property_gradient_.get_value());
 }
 
 
