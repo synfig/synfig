@@ -95,7 +95,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 LayerTree::LayerTree():
-	layer_amount_adjustment_(1,0,1,0.01,0.01,0)
+	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
 {
 	param_tree_view_=new Gtk::TreeView;
 	layer_tree_view_=new Gtk::TreeView;
@@ -122,7 +122,7 @@ LayerTree::LayerTree():
 	layer_amount_hscale->set_sensitive(false);
 	layer_amount_hscale->set_update_policy( Gtk::UPDATE_DISCONTINUOUS);
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
-	layer_amount_adjustment_.signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
+	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::Image *icon;
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
@@ -600,13 +600,13 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 }
 
 void
-LayerTree::set_time_adjustment(Gtk::Adjustment &adjustment)
+LayerTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
 {
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 	cellrenderer_time_track->set_adjustment(adjustment);
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-	adjustment.signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
-	adjustment.signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment->signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment->signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 }
 
 void
@@ -617,7 +617,7 @@ LayerTree::on_dirty_preview()
 	{
 		layer_amount_hscale->set_sensitive(true);
 		disable_amount_changed_signal=true;
-		layer_amount_adjustment_.set_value(quick_layer->get_param("amount").get(Real()));
+		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
 		disable_amount_changed_signal=false;
 		if(quick_layer->get_param("blend_method").is_valid())
 		{
@@ -687,7 +687,7 @@ LayerTree::on_selection_changed()
 	{
 		layer_amount_hscale->set_sensitive(true);
 		disable_amount_changed_signal=true;
-		layer_amount_adjustment_.set_value(quick_layer->get_param("amount").get(Real()));
+		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
 		disable_amount_changed_signal=false;
 		if(quick_layer->get_param("blend_method").is_valid())
 		{
@@ -731,7 +731,7 @@ LayerTree::on_amount_value_changed()
 		return;
 
 	disable_amount_changed_signal=true;
-	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_.get_value()));
+	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_->get_value()));
 	disable_amount_changed_signal=false;
 }
 

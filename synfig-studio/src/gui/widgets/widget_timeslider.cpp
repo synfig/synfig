@@ -342,8 +342,8 @@ const int fullheight = 20;
 
 Widget_Timeslider::Widget_Timeslider()
 :layout(Pango::Layout::create(get_pango_context())),
-adj_default(0,0,2,1/defaultfps,10/defaultfps),
-adj_timescale(0),
+adj_default(Gtk::Adjustment::create(0,0,2,1/defaultfps,10/defaultfps)),
+adj_timescale(),
 //invalidated(false),
 last_event_time(0),
 fps(defaultfps),
@@ -355,7 +355,7 @@ dragscroll(false)
 	add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK
 				| Gdk::BUTTON_MOTION_MASK | Gdk::SCROLL_MASK );
 
-	set_time_adjustment(&adj_default);
+	set_time_adjustment(adj_default);
 	//update_times();
 }
 
@@ -363,7 +363,7 @@ Widget_Timeslider::~Widget_Timeslider()
 {
 }
 
-void Widget_Timeslider::set_time_adjustment(Gtk::Adjustment *x)
+void Widget_Timeslider::set_time_adjustment(const Gtk::Adjustment<Gtk::Adjustment> &x)
 {
 	//disconnect old connections
 	time_value_change.disconnect();

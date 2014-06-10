@@ -53,8 +53,8 @@ class Widget_Vector : public Gtk::HBox
 	Widget_Distance* distance_x;
 	Widget_Distance* distance_y;
 
-	Gtk::Adjustment x_adjustment;
-	Gtk::Adjustment y_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> x_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> y_adjustment;
 
 	synfig::Vector vector;
 

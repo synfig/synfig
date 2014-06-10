@@ -82,11 +82,11 @@ class Widget_ValueBase : public Gtk::HBox
 
 	Widget_Vector *vector_widget;
 	Gtk::SpinButton *real_widget;
-	Gtk::Adjustment real_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> real_adjustment;
 	Gtk::SpinButton *integer_widget;
-	Gtk::Adjustment integer_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> integer_adjustment;
 	Gtk::SpinButton *angle_widget;
-	Gtk::Adjustment angle_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
 	Gtk::CheckButton *bool_widget;
 	//Gtk::ColorSelection *color_widget;

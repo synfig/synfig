@@ -52,14 +52,14 @@ class Widget_RendDesc : public Gtk::Notebook
 	synfig::RendDesc rend_desc_;
 	sigc::signal<void> signal_changed_;
 
-	Gtk::Adjustment adjustment_width;
-	Gtk::Adjustment adjustment_height;
-	Gtk::Adjustment adjustment_xres;
-	Gtk::Adjustment adjustment_yres;
-	Gtk::Adjustment adjustment_phy_width;
-	Gtk::Adjustment adjustment_phy_height;
-	Gtk::Adjustment adjustment_fps;
-	Gtk::Adjustment adjustment_span;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_width;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_height;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_xres;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_yres;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_phy_width;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_phy_height;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_fps;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_span;
 
 	Gtk::SpinButton *entry_width;
 	Gtk::SpinButton *entry_height;

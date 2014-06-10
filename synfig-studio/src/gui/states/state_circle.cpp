@@ -155,12 +155,12 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	// spline points
 	Gtk::Label bline_points_label;
-	Gtk::Adjustment	number_of_bline_points_adj;
+	Glib::RefPtr<Gtk::Adjustment> number_of_bline_points_adj;
 	Gtk::SpinButton	number_of_bline_points_spin;
 
 	// spline point angle offset
 	Gtk::Label bline_point_angle_offset_label;
-	Gtk::Adjustment	bline_point_angle_offset_adj;
+	Glib::RefPtr<Gtk::Adjustment> bline_point_angle_offset_adj;
 	Gtk::SpinButton	bline_point_angle_offset_spin;
 	Gtk::HBox bline_point_angle_offset_box;
 
@@ -230,11 +230,11 @@ public:
 	}
 	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
 
-	Real get_number_of_bline_points()const { return number_of_bline_points_adj.get_value(); }
-	void set_number_of_bline_points(Real f) { number_of_bline_points_adj.set_value(f); }
+	Real get_number_of_bline_points()const { return number_of_bline_points_adj->get_value(); }
+	void set_number_of_bline_points(Real f) { number_of_bline_points_adj->set_value(f); }
 
-	Real get_bline_point_angle_offset()const { return bline_point_angle_offset_adj.get_value(); }
-	void set_bline_point_angle_offset(Real f) { bline_point_angle_offset_adj.set_value(f); }
+	Real get_bline_point_angle_offset()const { return bline_point_angle_offset_adj->get_value(); }
+	void set_bline_point_angle_offset(Real f) { bline_point_angle_offset_adj->set_value(f); }
 
 	bool get_invert()const { return invert_checkbutton.get_active(); }
 	void set_invert(bool i) { invert_checkbutton.set_active(i); }
@@ -524,9 +524,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	number_of_bline_points_adj(0, 2, 120, 1, 1),
+	number_of_bline_points_adj(Gtk::Adjustment::create(0, 2, 120, 1, 1)),
 	number_of_bline_points_spin(number_of_bline_points_adj, 1, 0),
-	bline_point_angle_offset_adj(0, -360, 360, 0.1, 1),
+	bline_point_angle_offset_adj(Gtk::Adjustment::create(0, -360, 360, 0.1, 1)),
 	bline_point_angle_offset_spin(bline_point_angle_offset_adj, 1, 1)
 {
 	egress_on_selection_change=true;

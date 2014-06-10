@@ -58,10 +58,10 @@ using namespace studio;
 
 Widget_WaypointModel::Widget_WaypointModel():
 	Gtk::Table(4,3,false),
-	adj_tension(0.0,-20,20,0.1,1),
-	adj_continuity(0.0,-20,20,0.1,1),
-	adj_bias(0.0,-20,20,0.1,1),
-	adj_temporal_tension(0.0,-20,20,0.1,1),
+	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_temporal_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	checkbutton_after(_("Out:")),
 	checkbutton_before(_("In:")),
 	checkbutton_tension(_("Tension:")),
@@ -121,10 +121,10 @@ Widget_WaypointModel::Widget_WaypointModel():
 	checkbutton_bias.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	checkbutton_temporal_tension.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
-	adj_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_continuity.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_bias.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	adj_temporal_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_tension->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_continuity->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_bias->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
+	adj_temporal_tension->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 
 	before_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	after_options->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
@@ -158,10 +158,10 @@ Widget_WaypointModel::on_change()
 	waypoint_model.set_before((Waypoint::Interpolation)before_options->get_value());
 	waypoint_model.set_after((Waypoint::Interpolation)after_options->get_value());
 
-	waypoint_model.set_tension(adj_tension.get_value());
-	waypoint_model.set_continuity(adj_continuity.get_value());
-	waypoint_model.set_bias(adj_bias.get_value());
-	waypoint_model.set_temporal_tension(adj_temporal_tension.get_value());
+	waypoint_model.set_tension(adj_tension->get_value());
+	waypoint_model.set_continuity(adj_continuity->get_value());
+	waypoint_model.set_bias(adj_bias->get_value());
+	waypoint_model.set_temporal_tension(adj_temporal_tension->get_value());
 
 	waypoint_model.set_before_flag(checkbutton_before.get_active());
 	waypoint_model.set_after_flag(checkbutton_after.get_active());

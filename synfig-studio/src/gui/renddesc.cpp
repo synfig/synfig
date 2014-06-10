@@ -79,14 +79,14 @@ using namespace studio;
 
 Widget_RendDesc::Widget_RendDesc():
 	Gtk::Notebook(),
-	adjustment_width(1,1,SYNFIG_MAX_PIXEL_WIDTH),
-	adjustment_height(1,1,SYNFIG_MAX_PIXEL_HEIGHT),
-	adjustment_xres(0,0.0000000001,10000000),
-	adjustment_yres(0,0.0000000001,10000000),
-	adjustment_phy_width(0,0.0000000001,10000000),
-	adjustment_phy_height(0,0.0000000001,10000000),
-	adjustment_fps(0,0.0000000001,10000000),
-	adjustment_span(0,0.0000000001,10000000)
+	adjustment_width(Gtk::Adjustment::create(1,1,SYNFIG_MAX_PIXEL_WIDTH)),
+	adjustment_height(Gtk::Adjustment::create(1,1,SYNFIG_MAX_PIXEL_HEIGHT)),
+	adjustment_xres(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_yres(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_phy_width(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_phy_height(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_fps(Gtk::Adjustment::create(0,0.0000000001,10000000)),
+	adjustment_span(Gtk::Adjustment::create(0,0.0000000001,10000000))
 {
 	update_lock=0;
 
@@ -120,12 +120,12 @@ void
 Widget_RendDesc::refresh()
 {
 	UpdateLock lock(update_lock);
-	adjustment_width.set_value(rend_desc_.get_w());
-	adjustment_height.set_value(rend_desc_.get_h());
-	adjustment_phy_width.set_value(METERS2INCHES(rend_desc_.get_physical_w()));
-	adjustment_phy_height.set_value(METERS2INCHES(rend_desc_.get_physical_h()));
-	adjustment_xres.set_value(DPM2DPI(rend_desc_.get_x_res()));
-	adjustment_yres.set_value(DPM2DPI(rend_desc_.get_y_res()));
+	adjustment_width->set_value(rend_desc_.get_w());
+	adjustment_height->set_value(rend_desc_.get_h());
+	adjustment_phy_width->set_value(METERS2INCHES(rend_desc_.get_physical_w()));
+	adjustment_phy_height->set_value(METERS2INCHES(rend_desc_.get_physical_h()));
+	adjustment_xres->set_value(DPM2DPI(rend_desc_.get_x_res()));
+	adjustment_yres->set_value(DPM2DPI(rend_desc_.get_y_res()));
 	entry_start_time->set_fps(rend_desc_.get_frame_rate());
 	entry_start_time->set_value(rend_desc_.get_time_start());
 	entry_end_time->set_fps(rend_desc_.get_frame_rate());
@@ -133,8 +133,8 @@ Widget_RendDesc::refresh()
 	entry_duration->set_fps(rend_desc_.get_frame_rate());
 	entry_duration->set_value(rend_desc_.get_duration());
 
-	adjustment_fps.set_value(rend_desc_.get_frame_rate());
-	adjustment_span.set_value(rend_desc_.get_span());
+	adjustment_fps->set_value(rend_desc_.get_frame_rate());
+	adjustment_span->set_value(rend_desc_.get_span());
 	entry_tl->set_value(rend_desc_.get_tl());
 	entry_br->set_value(rend_desc_.get_br());
 	entry_focus->set_value(rend_desc_.get_focus());
@@ -165,7 +165,7 @@ Widget_RendDesc::on_width_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_w(round_to_int(adjustment_width.get_value()));
+	rend_desc_.set_w(round_to_int(adjustment_width->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -201,7 +201,7 @@ Widget_RendDesc::on_height_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_h(round_to_int(adjustment_height.get_value()));
+	rend_desc_.set_h(round_to_int(adjustment_height->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -211,7 +211,7 @@ Widget_RendDesc::on_phy_width_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_physical_w(INCHES2METERS(adjustment_phy_width.get_value()));
+	rend_desc_.set_physical_w(INCHES2METERS(adjustment_phy_width->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -221,7 +221,7 @@ Widget_RendDesc::on_phy_height_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_physical_h(INCHES2METERS(adjustment_phy_height.get_value()));
+	rend_desc_.set_physical_h(INCHES2METERS(adjustment_phy_height->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -231,7 +231,7 @@ Widget_RendDesc::on_xres_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_x_res(DPI2DPM(adjustment_xres.get_value()));
+	rend_desc_.set_x_res(DPI2DPM(adjustment_xres->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -241,7 +241,7 @@ Widget_RendDesc::on_yres_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_y_res(DPI2DPM(adjustment_yres.get_value()));
+	rend_desc_.set_y_res(DPI2DPM(adjustment_yres->get_value()));
 	refresh();
 	signal_changed()();
 }
@@ -282,7 +282,7 @@ Widget_RendDesc::on_fps_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_frame_rate(adjustment_fps.get_value());
+	rend_desc_.set_frame_rate(adjustment_fps->get_value());
 	refresh();
 	signal_changed()();
 }
@@ -322,7 +322,7 @@ Widget_RendDesc::on_span_changed()
 {
 	if(update_lock)return;
 	UpdateLock lock(update_lock);
-	rend_desc_.set_span(adjustment_span.get_value());
+	rend_desc_.set_span(adjustment_span->get_value());
 	refresh();
 	signal_changed()();
 }

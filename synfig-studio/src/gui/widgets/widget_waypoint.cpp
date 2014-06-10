@@ -67,10 +67,10 @@ using namespace studio;
 Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	Gtk::Alignment(0, 0, 1, 1),
 	waypoint(synfig::ValueBase(),0),
-	adj_tension(0.0,-20,20,0.1,1),
-	adj_continuity(0.0,-20,20,0.1,1),
-	adj_bias(0.0,-20,20,0.1,1),
-	adj_temporal_tension(0.0,-20,20,0.1,1)
+	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
+	adj_temporal_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1))
 {
 	value_widget=manage(new Widget_ValueBase());
 	value_widget->set_canvas(canvas);
@@ -266,10 +266,10 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	before_options->set_value((Waypoint::Interpolation)waypoint.get_before());
 	after_options->set_value((Waypoint::Interpolation)waypoint.get_after());
 
-	adj_tension.set_value(waypoint.get_tension());
-	adj_continuity.set_value(waypoint.get_continuity());
-	adj_bias.set_value(waypoint.get_bias());
-	adj_temporal_tension.set_value(waypoint.get_temporal_tension());
+	adj_tension->set_value(waypoint.get_tension());
+	adj_continuity->set_value(waypoint.get_continuity());
+	adj_bias->set_value(waypoint.get_bias());
+	adj_temporal_tension->set_value(waypoint.get_temporal_tension());
 
 }
 const synfig::Waypoint &
@@ -283,10 +283,10 @@ Widget_Waypoint::get_waypoint()const
 	waypoint.set_before((Waypoint::Interpolation)before_options->get_value());
 	waypoint.set_after((Waypoint::Interpolation)after_options->get_value());
 
-	waypoint.set_tension(adj_tension.get_value());
-	waypoint.set_continuity(adj_continuity.get_value());
-	waypoint.set_bias(adj_bias.get_value());
-	waypoint.set_temporal_tension(adj_temporal_tension.get_value());
+	waypoint.set_tension(adj_tension->get_value());
+	waypoint.set_continuity(adj_continuity->get_value());
+	waypoint.set_bias(adj_bias->get_value());
+	waypoint.set_temporal_tension(adj_temporal_tension->get_value());
 	return waypoint;
 }
 

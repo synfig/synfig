@@ -108,7 +108,7 @@ private:
 
 	Gtk::HBox *hbox;
 
-	Gtk::Adjustment layer_amount_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> layer_amount_adjustment_;
 
 	Gtk::HScale *layer_amount_hscale;
 
@@ -246,7 +246,7 @@ public:
 
 	void set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store_);
 
-	void set_time_adjustment(Gtk::Adjustment &adjustment);
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment);
 
 	void set_show_timetrack(bool x=true);
 

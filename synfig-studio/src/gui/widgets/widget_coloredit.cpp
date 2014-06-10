@@ -292,10 +292,10 @@ ColorSlider::on_event(GdkEvent *event)
 /* === M E T H O D S ======================================================= */
 
 Widget_ColorEdit::Widget_ColorEdit():
-	R_adjustment(0,-10000000,10000000,1,10,0),
-	G_adjustment(0,-10000000,10000000,1,10,0),
-	B_adjustment(0,-10000000,10000000,1,10,0),
-	A_adjustment(0,-10000000,10000000,1,10,0)
+	R_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	G_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	B_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
+	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0))
 {
 	notebook=manage(new Gtk::Notebook);
 
@@ -319,10 +319,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 	Gtk::Label *label;
 
-	R_adjustment.set_lower(-10000000);
-	G_adjustment.set_lower(-10000000);
-	B_adjustment.set_lower(-10000000);
-	A_adjustment.set_lower(-10000000);
+	R_adjustment->set_lower(-10000000);
+	G_adjustment->set_lower(-10000000);
+	B_adjustment->set_lower(-10000000);
+	A_adjustment->set_lower(-10000000);
 
 	clamp_=true;
 
@@ -398,10 +398,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 	spinbutton_B->signal_activate().connect(sigc::mem_fun(*spinbutton_A,&Gtk::SpinButton::grab_focus));
 	spinbutton_A->signal_activate().connect(sigc::mem_fun(*spinbutton_R,&Gtk::SpinButton::grab_focus));
 
-	R_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	G_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	B_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	A_adjustment.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	R_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	G_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	B_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+	A_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
 
 	show_all_children();
 
@@ -518,17 +518,17 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 
 	if(use_colorspace_gamma())
 	{
-		R_adjustment.set_value(gamma_in(color.get_r())*100);
-		G_adjustment.set_value(gamma_in(color.get_g())*100);
-		B_adjustment.set_value(gamma_in(color.get_b())*100);
+		R_adjustment->set_value(gamma_in(color.get_r())*100);
+		G_adjustment->set_value(gamma_in(color.get_g())*100);
+		B_adjustment->set_value(gamma_in(color.get_b())*100);
 	}
 	else
 	{
-		R_adjustment.set_value(color.get_r()*100);
-		G_adjustment.set_value(color.get_g()*100);
-		B_adjustment.set_value(color.get_b()*100);
+		R_adjustment->set_value(color.get_r()*100);
+		G_adjustment->set_value(color.get_g()*100);
+		B_adjustment->set_value(color.get_b()*100);
 	}
-	A_adjustment.set_value(color.get_a()*100);
+	A_adjustment->set_value(color.get_a()*100);
 
 	slider_R->set_color(color);
 	slider_G->set_color(color);
@@ -551,17 +551,17 @@ Widget_ColorEdit::get_value_raw()
 	Color color;
 	if(use_colorspace_gamma())
 	{
-		color.set_r(gamma_out(R_adjustment.get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment.get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment.get_value()/100.0f));
+		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
+		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
+		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
 	}
 	else
 	{
-		color.set_r(R_adjustment.get_value()/100);
-		color.set_g(G_adjustment.get_value()/100);
-		color.set_b(B_adjustment.get_value()/100);
+		color.set_r(R_adjustment->get_value()/100);
+		color.set_g(G_adjustment->get_value()/100);
+		color.set_b(B_adjustment->get_value()/100);
 	}
-	color.set_a(A_adjustment.get_value()/100);
+	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	return color;
@@ -572,19 +572,19 @@ Widget_ColorEdit::get_value()
 {
 	if(use_colorspace_gamma())
 	{
-		color.set_r(gamma_out(R_adjustment.get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment.get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment.get_value()/100.0f));
+		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
+		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
+		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
 		assert(color.is_valid());
 	}
 	else
 	{
-		color.set_r(R_adjustment.get_value()/100);
-		color.set_g(G_adjustment.get_value()/100);
-		color.set_b(B_adjustment.get_value()/100);
+		color.set_r(R_adjustment->get_value()/100);
+		color.set_g(G_adjustment->get_value()/100);
+		color.set_b(B_adjustment->get_value()/100);
 		assert(color.is_valid());
 	}
-	color.set_a(A_adjustment.get_value()/100);
+	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	if(notebook->get_current_page()!=0)

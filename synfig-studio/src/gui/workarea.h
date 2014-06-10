@@ -179,8 +179,8 @@ private:
 
 	// Widgets
 	Gtk::DrawingArea *drawing_area;
-	Gtk::Adjustment scrollx_adjustment;
-	Gtk::Adjustment scrolly_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
 	Gtk::VRuler *vruler;
 	Gtk::HRuler *hruler;
 	Gtk::Button *menubutton;
@@ -417,10 +417,10 @@ public:
 
 	const synfig::Point& get_cursor_pos()const { return curr_point; }
 
-	Gtk::Adjustment *get_scrollx_adjustment() { return &scrollx_adjustment; }
-	Gtk::Adjustment *get_scrolly_adjustment() { return &scrolly_adjustment; }
-	const Gtk::Adjustment *get_scrollx_adjustment()const { return &scrollx_adjustment; }
-	const Gtk::Adjustment *get_scrolly_adjustment()const { return &scrolly_adjustment; }
+	Glib::RefPtr<Gtk::Adjustment> get_scrollx_adjustment() { return scrollx_adjustment; }
+	Glib::RefPtr<Gtk::Adjustment> get_scrolly_adjustment() { return scrolly_adjustment; }
+	Glib::RefPtr<const Gtk::Adjustment> get_scrollx_adjustment() const { return scrollx_adjustment; }
+	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
 	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }

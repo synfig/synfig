@@ -64,7 +64,7 @@ using namespace studio;
 Dialog_Gradient::Dialog_Gradient():
 	Dialog(_("Gradient Editor"),false,true),
 	dialog_settings(this,"gradient"),
-	adjustment_pos(0,0.0,1.0,0.001,0.001,0)
+	adjustment_pos(Gtk::Adjustment::create(0,0.0,1.0,0.001,0.001,0))
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_DIALOG);
 	set_keep_above(false);
@@ -101,8 +101,8 @@ Dialog_Gradient::Dialog_Gradient():
 
 	spinbutton_pos=manage(new class Gtk::SpinButton(adjustment_pos,0.0001,4));
 	spinbutton_pos->set_update_policy(Gtk::UPDATE_ALWAYS);
-	adjustment_pos.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_values_adjusted));
-	adjustment_pos.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
+	adjustment_pos->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_values_adjusted));
+	adjustment_pos->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
 	table->attach(*spinbutton_pos, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 
@@ -147,7 +147,7 @@ void
 Dialog_Gradient::on_cpoint_selected(synfig::Gradient::CPoint x)
 {
 	widget_color->set_value(x.color);
-	adjustment_pos.set_value(x.pos);
+	adjustment_pos->set_value(x.pos);
 }
 
 void
@@ -155,7 +155,7 @@ Dialog_Gradient::on_values_adjusted()
 {
 	synfig::Gradient::CPoint x(widget_gradient->get_selected_cpoint());
 	x.color=widget_color->get_value();
-	x.pos=adjustment_pos.get_value();
+	x.pos=adjustment_pos->get_value();
 	widget_gradient->update_cpoint(x);
 }
 

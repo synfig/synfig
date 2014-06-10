@@ -32,7 +32,6 @@
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>
 #include <gtkmm/viewport.h>
-#include <gtkmm/adjustment.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
 #include <gtkmm/statusbar.h>

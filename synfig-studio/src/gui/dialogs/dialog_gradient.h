@@ -53,7 +53,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Menu; class SpinButton; class Adjustment; };
+namespace Gtk { class Menu; class SpinButton; };
 
 namespace synfigapp {
 class CanvasInterface;
@@ -70,7 +70,7 @@ class Dialog_Gradient : public Gtk::Dialog
 
 	Gtk::SpinButton *spinbutton_pos;
 
-	Gtk::Adjustment adjustment_pos;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_pos;
 
 
 	sigc::signal<void,synfig::Gradient> signal_edited_;

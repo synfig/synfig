@@ -50,8 +50,8 @@ class Widget_Curves : public Gtk::DrawingArea
 	struct Channel;
 	struct CurveStruct;
 
-	Gtk::Adjustment* time_adjustment_;
-	Gtk::Adjustment* range_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> range_adjustment_;
 
 	std::list<CurveStruct> curve_list_;
 
@@ -64,9 +64,9 @@ public:
 	void clear();
 	void refresh();
 
-	Gtk::Adjustment& get_range_adjustment() { return *range_adjustment_; }
-	Gtk::Adjustment& get_time_adjustment() { return *time_adjustment_; }
-	void set_time_adjustment(Gtk::Adjustment&);
+	Glib::RefPtr<Gtk::Adjustment> get_range_adjustment() { return range_adjustment_; }
+	Glib::RefPtr<Gtk::Adjustment> get_time_adjustment() { return time_adjustment_; }
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment>&);
 
 private:
 	bool redraw(GdkEventExpose*bleh);

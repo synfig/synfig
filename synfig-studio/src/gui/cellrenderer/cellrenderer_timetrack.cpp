@@ -78,13 +78,13 @@ enum MODMODE
 CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Glib::ObjectBase	(typeid(CellRenderer_TimeTrack)),
 	Gtk::CellRenderer	(),
-	adjustment_			(10,10,20,0,0,0),
+	adjustment_			(Gtk::Adjustment::create(10,10,20,0,0,0)),
 	mode				(),
 	selection			(false),
 	dragging			(false),
 	property_valuedesc_	(*this,"value_desc",synfigapp::ValueDesc()),
 	property_canvas_	(*this,"canvas",synfig::Canvas::Handle()),
-	property_adjustment_(*this,"adjustment",&adjustment_),
+	property_adjustment_(*this,"adjustment",adjustment_),
 	property_enable_timing_info_(*this,"enable-timing-info", false)
 { }
 
@@ -95,9 +95,9 @@ CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 }
 
 void
-CellRenderer_TimeTrack::set_adjustment(Gtk::Adjustment &x)
+CellRenderer_TimeTrack::set_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
-	property_adjustment_=&x;
+	property_adjustment_=x;
 //	x.signal_value_changed().connect(sigc::mem_fun(*this,&Gtk::Widget::queue_draw));
 }
 
@@ -107,16 +107,16 @@ CellRenderer_TimeTrack::get_canvas()const
 	return const_cast<CellRenderer_TimeTrack*>(this)->property_canvas().get_value();
 }
 
-Gtk::Adjustment *
+Glib::RefPtr<Gtk::Adjustment>
 CellRenderer_TimeTrack::get_adjustment()
 {
-	return (Gtk::Adjustment*)property_adjustment_;
+	return (Glib::RefPtr<Gtk::Adjustment>)property_adjustment_;
 }
 
-const Gtk::Adjustment *
+Glib::RefPtr<const Gtk::Adjustment>
 CellRenderer_TimeTrack::get_adjustment()const
 {
-	return (const Gtk::Adjustment*)property_adjustment_;
+	return (Glib::RefPtr<const Gtk::Adjustment>)property_adjustment_;
 }
 
 bool
@@ -234,7 +234,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	Glib::RefPtr<Gdk::GC> inactive_gc(Gdk::GC::create(window));
-	Gtk::Adjustment *adjustment=get_adjustment();
+	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
 	// Gtk::StateType state = Gtk::STATE_ACTIVE;
 	// Gtk::ShadowType shadow;
 
@@ -604,7 +604,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;
-	Gtk::Adjustment *adjustment=get_adjustment();
+	Glib::RefPtr<Gtk::Adjustment> adjustment=get_adjustment();
 
 	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
@@ -893,10 +893,10 @@ CellRenderer_TimeTrack::property_canvas()
 	return Glib::PropertyProxy<synfig::Canvas::Handle>(this,"canvas");
 }
 
-Glib::PropertyProxy<Gtk::Adjustment* >
+Glib::PropertyProxy< Glib::RefPtr<Gtk::Adjustment> >
 CellRenderer_TimeTrack::property_adjustment()
 {
-	return Glib::PropertyProxy<Gtk::Adjustment* >(this,"adjustment");
+	return Glib::PropertyProxy< Glib::RefPtr<Gtk::Adjustment> >(this,"adjustment");
 }
 
 void

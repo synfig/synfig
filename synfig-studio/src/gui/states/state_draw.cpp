@@ -189,7 +189,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::HBox min_pressure_label_box;
 
 	Gtk::CheckButton min_pressure_checkbutton;
-	Gtk::Adjustment	 min_pressure_adj;
+	Glib::RefPtr<Gtk::Adjustment> min_pressure_adj;
 	Gtk::SpinButton  min_pressure_spin;
 	Gtk::HBox min_pressure_box;
 
@@ -199,20 +199,20 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	// local threshold
 	Gtk::RadioButton localthres_radiobutton;
-	Gtk::Adjustment localthres_adj;
+	Glib::RefPtr<Gtk::Adjustment> localthres_adj;
 	Gtk::SpinButton localthres_spin;
 	Gtk::HBox localthres_box;
 
 	// golbal threshold
 	Gtk::RadioButton globalthres_radiobutton;
-	Gtk::Adjustment	 globalthres_adj;
-	Gtk::SpinButton  globalthres_spin;
+	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
+	Gtk::SpinButton globalthres_spin;
 	Gtk::HBox globalthres_box;
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
 	Gtk::HBox width_max_error_box;
-	Gtk::Adjustment width_max_error_adj;
+	Glib::RefPtr<Gtk::Adjustment> width_max_error_adj;
 	Gtk::SpinButton width_max_error_spin;
 
 	// constructing control
@@ -299,8 +299,8 @@ public:
 	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
 	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
 
-	Real get_min_pressure() const { return min_pressure_adj.get_value(); }
-	void set_min_pressure(Real x) { return min_pressure_adj.set_value(x); }
+	Real get_min_pressure() const { return min_pressure_adj->get_value(); }
+	void set_min_pressure(Real x) { return min_pressure_adj->set_value(x); }
 
 	Real get_feather_size() const {
 		return feather_dist.get_value().get(Distance::SYSTEM_UNITS,
@@ -308,20 +308,20 @@ public:
 	}
 	void set_feather_size(Distance x) { return feather_dist.set_value(x); }
 
-	Real get_gthres() const { return globalthres_adj.get_value(); }
-	void set_gthres(Real x) { return globalthres_adj.set_value(x); }
+	Real get_gthres() const { return globalthres_adj->get_value(); }
+	void set_gthres(Real x) { return globalthres_adj->set_value(x); }
 
-	Real get_lthres() const { return localthres_adj.get_value(); }
-	void set_lthres(Real x) { return localthres_adj.set_value(x); }
+	Real get_lthres() const { return localthres_adj->get_value(); }
+	void set_lthres(Real x) { return localthres_adj->set_value(x); }
 
-	Real get_width_max_error() const { return width_max_error_adj.get_value(); }
-	void set_width_max_error(Real x) { return width_max_error_adj.set_value(x); }
+	Real get_width_max_error() const { return width_max_error_adj->get_value(); }
+	void set_width_max_error(Real x) { return width_max_error_adj->set_value(x); }
 
-	bool get_local_threshold_flag() const { return localthres_radiobutton.get_active(); }
-	void set_local_threshold_flag(bool x) { localthres_radiobutton.set_active(x); }
+	bool get_local_threshold_flag() const { return localthres_radiobutton->get_active(); }
+	void set_local_threshold_flag(bool x) { localthres_radiobutton->set_active(x); }
 
-	bool get_global_threshold_flag() const { return globalthres_radiobutton.get_active(); }
-	void set_global_threshold_flag(bool x) { globalthres_radiobutton.set_active(x); }
+	bool get_global_threshold_flag() const { return globalthres_radiobutton->get_active(); }
+	void set_global_threshold_flag(bool x) { globalthres_radiobutton->set_active(x); }
 
 	bool get_min_pressure_flag()const { return min_pressure_checkbutton.get_active(); }
 	void set_min_pressure_flag(bool x) { min_pressure_checkbutton.set_active(x); }
@@ -601,13 +601,13 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	min_pressure_adj(0,0,1,0.01,0.1),
+	min_pressure_adj(Gtk::Adjustment::create(0,0,1,0.01,0.1)),
 	min_pressure_spin(min_pressure_adj,0.1,3),
-	localthres_adj(20, 1, 100000, 0.1, 1),
+	localthres_adj(Gtk::Adjustment::create(20, 1, 100000, 0.1, 1)),
 	localthres_spin(localthres_adj, 0.1, 1),
-	globalthres_adj(.70f, 0.01, 10000, 0.01, 0.1),
+	globalthres_adj(Gtk::Adjustment::create(0.70f, 0.01, 10000, 0.01, 0.1)),
 	globalthres_spin(globalthres_adj, 0.01, 3),
-	width_max_error_adj(1.0f, 0.01, 100.0, 0.1,1),
+	width_max_error_adj(Gtk::Adjustment::create(1.0f, 0.01, 100.0, 0.1,1)),
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
 	fill_last_stroke_button(_("Fill Last Stroke"))
 {

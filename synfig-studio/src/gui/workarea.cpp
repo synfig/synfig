@@ -988,8 +988,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	Duckmatic(canvas_interface),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
-	scrollx_adjustment(0,-4,4,0.01,0.1),
-	scrolly_adjustment(0,-4,4,0.01,0.1),
+	scrollx_adjustment(Gtk::Adjustment::create(0,-4,4,0.01,0.1)),
+	scrolly_adjustment(Gtk::Adjustment::create(0,-4,4,0.01,0.1)),
 	w(TILE_SIZE),
 	h(TILE_SIZE),
 	last_event_time(0),
@@ -1107,8 +1107,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 
-	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(*get_scrolly_adjustment()));
-	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(*get_scrollx_adjustment()));
+	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(get_scrolly_adjustment()));
+	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(get_scrollx_adjustment()));
 	vscrollbar1->show();
 	attach(*vscrollbar1, 2, 3, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
@@ -2598,14 +2598,14 @@ WorkArea::refresh_dimension_info()
 	pw=canvaswidth/w;
 	ph=canvasheight/h;
 
-	scrollx_adjustment.set_page_increment(abs(get_grid_size()[0]));
-	scrollx_adjustment.set_step_increment(abs(pw));
-	scrollx_adjustment.set_lower(-abs(canvaswidth));
-	scrollx_adjustment.set_upper(abs(canvaswidth));
-	scrolly_adjustment.set_lower(-abs(canvasheight));
-	scrolly_adjustment.set_upper(abs(canvasheight));
-	scrolly_adjustment.set_step_increment(abs(ph));
-	scrolly_adjustment.set_page_increment(abs(get_grid_size()[1]));
+	scrollx_adjustment->set_page_increment(abs(get_grid_size()[0]));
+	scrollx_adjustment->set_step_increment(abs(pw));
+	scrollx_adjustment->set_lower(-abs(canvaswidth));
+	scrollx_adjustment->set_upper(abs(canvaswidth));
+	scrolly_adjustment->set_lower(-abs(canvasheight));
+	scrolly_adjustment->set_upper(abs(canvasheight));
+	scrolly_adjustment->set_step_increment(abs(ph));
+	scrolly_adjustment->set_page_increment(abs(get_grid_size()[1]));
 
 
 

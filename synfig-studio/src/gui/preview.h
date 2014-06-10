@@ -198,8 +198,8 @@ public:
 class Widget_Preview : public Gtk::Table
 {
 	Gtk::DrawingArea	draw_area;
-	Gtk::Adjustment 	adj_time_scrub; //the adjustment for the managed scrollbar
-	Gtk::HScale			scr_time_scrub;
+	Glib::RefPtr<Gtk::Adjustment> adj_time_scrub; //the adjustment for the managed scrollbar
+	Gtk::HScale		scr_time_scrub;
 	Gtk::ToggleButton	b_loop;
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
@@ -221,7 +221,7 @@ class Widget_Preview : public Gtk::Table
 	sigc::connection	prevchanged;
 
 	Widget_Sound		disp_sound;
-	Gtk::Adjustment		adj_sound;
+	Glib::RefPtr<Gtk::Adjustment> adj_sound;
 
 	Gtk::Label		l_lasttime;
 	Gtk::Label		l_currenttime;

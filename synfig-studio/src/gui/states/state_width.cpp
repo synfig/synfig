@@ -108,7 +108,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	//Toolbox display
 	Gtk::Table options_table;
 
-	Gtk::Adjustment	adj_delta;
+	Glib::RefPtr<Gtk::Adjustment> adj_delta;
 	Gtk::SpinButton	spin_delta;
 
 	Widget_Distance *influence_radius;
@@ -119,8 +119,8 @@ class studio::StateWidth_Context : public sigc::trackable
 
 public:
 
-	Real get_delta()const { return adj_delta.get_value(); }
-	void set_delta(Real f) { adj_delta.set_value(f); }
+	Real get_delta()const { return adj_delta->get_value(); }
+	void set_delta(Real f) { adj_delta->set_value(f); }
 
 	Real get_radius()const { return influence_radius->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc());}
 	void set_radius(Distance f) { influence_radius->set_value(f); }
@@ -231,7 +231,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
-	adj_delta(6,0,20,0.01,0.1),
+	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
 	spin_delta(adj_delta,0.01,3),
 
 	check_relative(_("Relative Growth"))

@@ -350,11 +350,11 @@ public:
 	{
 		if(mimic_tree_view)
 		{
-			Gtk::Adjustment &adjustment(*mimic_tree_view->get_vadjustment());
+			Glib::RefPtr<Gtk::Adjustment> adjustment(mimic_tree_view->get_vadjustment());
 			set_vadjustment(adjustment);
 
-			if(adjustment.get_page_size()>get_height())
-				adjustment.set_page_size(get_height());
+			if(adjustment->get_page_size()>get_height())
+				adjustment->set_page_size(get_height());
 /* Commented during Align rows fixing
 // http://www.synfig.org/issues/thebuggenie/synfig/issues/161
 			int row_height = 0;

@@ -62,10 +62,10 @@ class RenderSettings : public Gtk::Dialog
 
 	Gtk::Entry entry_filename;
 
-	Gtk::Adjustment adjustment_quality;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_quality;
 	Gtk::SpinButton entry_quality;
 
-	Gtk::Adjustment adjustment_antialias;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_antialias;
 	Gtk::SpinButton entry_antialias;
 
 	Gtk::CheckButton toggle_single_frame;

@@ -56,11 +56,11 @@ class Widget_Timeslider : public Gtk::DrawingArea
 protected: //implementation that other interfaces can see
 	Glib::RefPtr<Pango::Layout> layout; //implementation awesomeness for text drawing
 
-	Gtk::Adjustment adj_default;
-	Gtk::Adjustment *adj_timescale;
+	Glib::RefPtr<Gtk::Adjustment> adj_default;
+	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
 
 	//HACK - I should not have to see this...
-	Gtk::Adjustment *adj_bounds;
+	Glib::RefPtr<Gtk::Adjustment> adj_bounds;
 	double time_per_tickmark;
 
 	//Statistics used for drawing stuff (and making sure we don't if we don't need to)
@@ -118,12 +118,12 @@ public: //Time Interface
 	void set_global_fps(float d);
 
 	//accessors for the time adjustment
-	Gtk::Adjustment &get_time_adjustment() const {return *adj_timescale;}
-	void set_time_adjustment(Gtk::Adjustment *x);
+	Glib::RefPtr<Gtk::Adjustment> get_time_adjustment() const { return adj_timescale; }
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
 
 	//HACK - I should not have to see these bounds (should be boundless)
-	Gtk::Adjustment &get_bounds_adjustment() const {return *adj_bounds;}
-	void set_bounds_adjustment(Gtk::Adjustment *x) {adj_bounds = x;}
+	Glib::RefPtr<Gtk::Adjustment> get_bounds_adjustment() const { return adj_bounds; }
+	void set_bounds_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x) { adj_bounds = x; }
 };
 
 }; // END of namespace studio

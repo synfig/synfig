@@ -360,7 +360,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
-	range_adjustment_(new Gtk::Adjustment(-1,-2,2,0.1,0.1,2))
+	range_adjustment_(Gtk::Adjustment::create(-1,-2,2,0.1,0.1,2))
 {
 	set_size_request(64,64);
 
@@ -376,7 +376,7 @@ Widget_Curves::Widget_Curves():
 			&Widget_Curves::queue_draw
 		)
 	);
-	//set_vadjustment(*range_adjustment_);
+	//set_vadjustment(range_adjustment_);
 
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Curves::redraw));
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
@@ -388,9 +388,9 @@ Widget_Curves::~Widget_Curves()
 }
 
 void
-Widget_Curves::set_time_adjustment(Gtk::Adjustment&x)
+Widget_Curves::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
-	time_adjustment_=&x;
+	time_adjustment_=x;
 	time_adjustment_->signal_changed().connect(
 		sigc::mem_fun(
 			*this,

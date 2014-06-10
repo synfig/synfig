@@ -696,12 +696,12 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//layer_tree_store_		(LayerTreeStore::create(canvas_interface_)),
 	//children_tree_store_	(ChildrenTreeStore::create(canvas_interface_)),
 	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),
-	time_adjustment_		(0,0,25,0,0,0),
-	time_window_adjustment_	(0,0,25,0,0,0),
+	time_adjustment_		(Gtk::Adjustment::create(0,0,25,0,0,0)),
+	time_window_adjustment_	(new studio::Adjust_Window(0,0,25,0,0,0)),
 	statusbar				(manage(new class Gtk::Statusbar())),
-	quality_adjustment_		(8,1,10,1,1,0),
-	future_onion_adjustment_ (0,0,2,1,1,0),
-	past_onion_adjustment_  (0,0,2,1,1,0),
+	quality_adjustment_		(Gtk::Adjustment::create(8,1,10,1,1,0)),
+	future_onion_adjustment_(Gtk::Adjustment::create(0,0,2,1,1,0)),
+	past_onion_adjustment_  (Gtk::Adjustment::create(0,0,2,1,1,0)),
 
 	timeslider				(new Widget_Timeslider),
 	widget_kf_list			(new Widget_Keyframe_List),
@@ -810,9 +810,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	waypoint_dialog.signal_delete().connect(sigc::mem_fun(*this,&studio::CanvasView::on_waypoint_delete));
 
 	//MODIFIED TIME ADJUSTMENT STUFF....
-	time_window_adjustment().set_child_adjustment(&time_adjustment());
-	time_window_adjustment().signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_time_window));
-	time_adjustment().signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::time_was_changed));
+	time_window_adjustment()->set_child_adjustment(time_adjustment());
+	time_window_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_time_window));
+	time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::time_was_changed));
 
 	work_area->signal_layer_selected().connect(sigc::mem_fun(*this,&studio::CanvasView::workarea_layer_selected));
 	work_area->signal_input_device_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_input_device_changed));
@@ -859,13 +859,13 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
 	if(length<10.0)
 	{
-		time_window_adjustment().set_page_increment(length);
-		time_window_adjustment().set_page_size(length);
+		time_window_adjustment()->set_page_increment(length);
+		time_window_adjustment()->set_page_size(length);
 	}
 	else
 	{
-		time_window_adjustment().set_page_increment(10.0);
-		time_window_adjustment().set_page_size(10.0);
+		time_window_adjustment()->set_page_increment(10.0);
+		time_window_adjustment()->set_page_size(10.0);
 	}
 	*/
 
@@ -896,8 +896,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	//synfig::info("Canvasview: Before Final time set up");
 	//MORE TIME STUFF
-	time_window_adjustment().set_value(get_canvas()->rend_desc().get_time_start());
-	time_window_adjustment().value_changed();
+	time_window_adjustment()->set_value(get_canvas()->rend_desc().get_time_start());
+	time_window_adjustment()->value_changed();
 
 	refresh_rend_desc();
 	hide_tables();
@@ -1028,11 +1028,11 @@ CanvasView::create_time_bar()
 	//Gtk::HScrollbar *time_scroll = manage(new class Gtk::HScrollbar(time_adjustment()));
 	//TIME BAR TEMPORARY POSITION
 	//Widget_Timeslider *time_scroll = manage(new Widget_Timeslider);
-	timeslider->set_time_adjustment(&time_adjustment());
-	timeslider->set_bounds_adjustment(&time_window_adjustment());
+	timeslider->set_time_adjustment(time_adjustment());
+	timeslider->set_bounds_adjustment(time_window_adjustment());
 	//layout_table->attach(*timeslider, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	//Setup the keyframe list widget
-	widget_kf_list->set_time_adjustment(&time_adjustment());
+	widget_kf_list->set_time_adjustment(time_adjustment());
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
 
@@ -1060,7 +1060,7 @@ CanvasView::create_time_bar()
 
 	//Setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
-	disp_audio->set_time_adjustment(&time_adjustment());
+	disp_audio->set_time_adjustment(time_adjustment());
 	disp_audio->signal_start_scrubbing().connect(
 		sigc::mem_fun(*audio,&AudioContainer::start_scrubbing)
 	);
@@ -1955,22 +1955,22 @@ CanvasView::refresh_rend_desc()
 
 	//????
 	//synfig::info("Canvasview: Refreshing render desc info");
-	if(!get_time().is_equal(time_adjustment().get_value()))
+	if(!get_time().is_equal(time_adjustment()->get_value()))
 	{
-		time_adjustment().set_value(get_time());
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(get_time());
+		time_adjustment()->value_changed();
 	}
 
 	Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
 	if(length<DEFAULT_TIME_WINDOW_SIZE)
 	{
-		time_window_adjustment().set_page_increment(length);
-		time_window_adjustment().set_page_size(length);
+		time_window_adjustment()->set_page_increment(length);
+		time_window_adjustment()->set_page_size(length);
 	}
 	else
 	{
-		time_window_adjustment().set_page_increment(DEFAULT_TIME_WINDOW_SIZE);
-		time_window_adjustment().set_page_size(DEFAULT_TIME_WINDOW_SIZE);
+		time_window_adjustment()->set_page_increment(DEFAULT_TIME_WINDOW_SIZE);
+		time_window_adjustment()->set_page_size(DEFAULT_TIME_WINDOW_SIZE);
 	}
 
 	//set the FPS of the timeslider
@@ -1981,43 +1981,43 @@ CanvasView::refresh_rend_desc()
 	Time end_time=get_canvas()->rend_desc().get_time_end();
 
 	// Setup the time_window adjustment
-	time_window_adjustment().set_lower(begin_time);
-	time_window_adjustment().set_upper(end_time);
-	time_window_adjustment().set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_window_adjustment()->set_lower(begin_time);
+	time_window_adjustment()->set_upper(end_time);
+	time_window_adjustment()->set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
 
 	//Time length(get_canvas()->rend_desc().get_time_end()-get_canvas()->rend_desc().get_time_start());
-	if(length < time_window_adjustment().get_page_size())
+	if(length < time_window_adjustment()->get_page_size())
 	{
-		time_window_adjustment().set_page_increment(length);
-		time_window_adjustment().set_page_size(length);
+		time_window_adjustment()->set_page_increment(length);
+		time_window_adjustment()->set_page_size(length);
 	}
 
 	/*synfig::info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
-				&time_window_adjustment_, time_window_adjustment_.get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_.get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_.get_child_adjustment()
+				&time_window_adjustment_, time_window_adjustment_->get_lower(),
+				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
+				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment()
 	);*/
 
-	time_window_adjustment().changed(); //only non-value stuff was changed
+	time_window_adjustment()->changed(); //only non-value stuff was changed
 
 	// Setup the time adjustment
 
 	//NOTE THESE TWO SHOULD BE CHANGED BY THE changed() CALL ABOVE
-	//time_adjustment().set_lower(time_window_adjustment().get_value());
-	//time_adjustment().set_upper(time_window_adjustment().get_value()+time_window_adjustment().get_page_size());
+	//time_adjustment()->set_lower(time_window_adjustment()->get_value());
+	//time_adjustment()->set_upper(time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size());
 
-//	time_adjustment().set_lower(get_canvas()->rend_desc().get_time_start());
-//	time_adjustment().set_upper(get_canvas()->rend_desc().get_time_end());
-	time_adjustment().set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
-	time_adjustment().set_page_increment(synfig::Time(1.0));
-	time_adjustment().set_page_size(0);
+//	time_adjustment()->set_lower(get_canvas()->rend_desc().get_time_start());
+//	time_adjustment()->set_upper(get_canvas()->rend_desc().get_time_end());
+	time_adjustment()->set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
+	time_adjustment()->set_page_increment(synfig::Time(1.0));
+	time_adjustment()->set_page_size(0);
 
-	time_adjustment().changed();
+	time_adjustment()->changed();
 
 	/*synfig::info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
-				&time_window_adjustment_, time_window_adjustment_.get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_.get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_.get_child_adjustment()
+				&time_window_adjustment_, time_window_adjustment_->get_lower(),
+				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
+				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment()
 	);	*/
 
 	if(begin_time==end_time)
@@ -2030,38 +2030,38 @@ CanvasView::refresh_rend_desc()
 	}
 
 	//clamp time to big bounds...
-	if(time_window_adjustment().get_value() < begin_time)
+	if(time_window_adjustment()->get_value() < begin_time)
 	{
-		time_window_adjustment().set_value(begin_time);
-		time_window_adjustment().value_changed();
+		time_window_adjustment()->set_value(begin_time);
+		time_window_adjustment()->value_changed();
 	}
 
-	if(time_window_adjustment().get_value() + time_window_adjustment().get_page_size() > end_time)
+	if(time_window_adjustment()->get_value() + time_window_adjustment()->get_page_size() > end_time)
 	{
-		time_window_adjustment().set_value(end_time - time_window_adjustment().get_page_size());
-		time_window_adjustment().value_changed();
+		time_window_adjustment()->set_value(end_time - time_window_adjustment()->get_page_size());
+		time_window_adjustment()->value_changed();
 	}
 
-	if(time_adjustment().get_value() < begin_time)
+	if(time_adjustment()->get_value() < begin_time)
 	{
-		time_adjustment().set_value(begin_time);
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(begin_time);
+		time_adjustment()->value_changed();
 	}
 
-	if(time_adjustment().get_value() > end_time)
+	if(time_adjustment()->get_value() > end_time)
 	{
-		time_adjustment().set_value(end_time);
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(end_time);
+		time_adjustment()->value_changed();
 	}
 
 	/*synfig::info("Time stats: \n"
 				"w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n"
 				"t: %p - [%.3f,%.3f] %.3f",
-				&time_window_adjustment_, time_window_adjustment_.get_lower(),
-				time_window_adjustment_.get_upper(),time_window_adjustment_.get_value(),
-				time_window_adjustment_.get_page_size(),time_window_adjustment_.get_child_adjustment(),
-				&time_adjustment_,time_adjustment_.get_lower(),time_adjustment_.get_upper(),
-				time_adjustment_.get_value()
+				&time_window_adjustment_, time_window_adjustment_->get_lower(),
+				time_window_adjustment_.get_upper(),time_window_adjustment_->get_value(),
+				time_window_adjustment_.get_page_size(),time_window_adjustment_->get_child_adjustment(),
+				&time_adjustment_,time_adjustment_.get_lower(),time_adjustment_->get_upper(),
+				time_adjustment_->get_value()
 	);*/
 
 	work_area->queue_render_preview();
@@ -2467,15 +2467,15 @@ void
 CanvasView::refresh_time_window()
 {
 	//THESE SHOULD AUTOMATICALLY BE TAKEN CARE OF
-	//time_adjustment().set_lower(time_window_adjustment().get_value());
-	//time_adjustment().set_upper(time_window_adjustment().get_value()+time_window_adjustment().get_page_size());
+	//time_adjustment()->set_lower(time_window_adjustment()->get_value());
+	//time_adjustment()->set_upper(time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size());
 
-	time_adjustment().set_page_increment(1.0); // One second
-	time_adjustment().set_page_size(0);
+	time_adjustment()->set_page_increment(1.0); // One second
+	time_adjustment()->set_page_size(0);
 
 	if(get_canvas())
-		time_adjustment().set_step_increment(1.0/get_canvas()->rend_desc().get_frame_rate());
-	time_adjustment().changed();
+		time_adjustment()->set_step_increment(1.0/get_canvas()->rend_desc().get_frame_rate());
+	time_adjustment()->changed();
 
 	//NOTE THIS SHOULD HOOK INTO THE CORRECT SIGNALS...
 	if(children_tree)
@@ -2508,18 +2508,18 @@ CanvasView::on_time_changed()
 		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#000000"));
 	}
 
-	if(get_time() != time_adjustment().get_value())
+	if(get_time() != time_adjustment()->get_value())
 	{
 		//Recenters the window, causing it to jump (possibly undesirably... but whatever)
-		if(time < time_window_adjustment().get_value() ||
-			time > time_window_adjustment().get_value()+time_window_adjustment().get_page_size())
+		if(time < time_window_adjustment()->get_value() ||
+			time > time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size())
 		{
-			time_window_adjustment().set_value(
-				time-time_window_adjustment().get_page_size()/2
+			time_window_adjustment()->set_value(
+				time-time_window_adjustment()->get_page_size()/2
 			);
 		}
-		time_adjustment().set_value(time);
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(time);
+		time_adjustment()->value_changed();
 
 		// Shouldn't these trees just hook into
 		// the time changed signal...?
@@ -2535,11 +2535,11 @@ CanvasView::time_zoom_in()
 	float frame_rate = get_canvas()->rend_desc().get_frame_rate();
 	Time min_page_size = 2/frame_rate;
 
-	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()*0.75);
-	if (time_window_adjustment().get_page_size() < min_page_size)
-		time_window_adjustment().set_page_size(min_page_size);
-	time_window_adjustment().set_page_increment(time_window_adjustment().get_page_size());
-	time_window_adjustment().changed();
+	time_window_adjustment()->set_page_size(time_window_adjustment()->get_page_size()*0.75);
+	if (time_window_adjustment()->get_page_size() < min_page_size)
+		time_window_adjustment()->set_page_size(min_page_size);
+	time_window_adjustment()->set_page_increment(time_window_adjustment()->get_page_size());
+	time_window_adjustment()->changed();
 
 	refresh_time_window();
 }
@@ -2550,11 +2550,11 @@ CanvasView::time_zoom_out()
 	Time length = (get_canvas()->rend_desc().get_time_end() -
 				   get_canvas()->rend_desc().get_time_start());
 
-	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()/0.75);
-	if (time_window_adjustment().get_page_size() > length)
-		time_window_adjustment().set_page_size(length);
-	time_window_adjustment().set_page_increment(time_window_adjustment().get_page_size());
-	time_window_adjustment().changed();
+	time_window_adjustment()->set_page_size(time_window_adjustment()->get_page_size()/0.75);
+	if (time_window_adjustment()->get_page_size() > length)
+		time_window_adjustment()->set_page_size(length);
+	time_window_adjustment()->set_page_increment(time_window_adjustment()->get_page_size());
+	time_window_adjustment()->changed();
 
 	refresh_time_window();
 }
@@ -2562,7 +2562,7 @@ CanvasView::time_zoom_out()
 void
 CanvasView::time_was_changed()
 {
-	synfig::Time time((synfig::Time)(double)time_adjustment().get_value());
+	synfig::Time time((synfig::Time)(double)time_adjustment()->get_value());
 	set_time(time);
 }
 
@@ -3066,8 +3066,8 @@ CanvasView::on_play_timeout()
 	{
 		time = playing_time + playing_timer();
 		if (time >= endtime) {
-			time_adjustment().set_value(endtime);
-			time_adjustment().value_changed();
+			time_adjustment()->set_value(endtime);
+			time_adjustment()->value_changed();
 			stop_async();
 			return;
 		}
@@ -3076,33 +3076,33 @@ CanvasView::on_play_timeout()
 	//Clamp the time window so we can see the time value as it races across the horizon
 	bool timewindreset = false;
 
-	while( time > Time(time_window_adjustment().get_sub_upper()) )
+	while( time > Time(time_window_adjustment()->get_sub_upper()) )
 	{
-		time_window_adjustment().set_value(
+		time_window_adjustment()->set_value(
 				min(
-					time_window_adjustment().get_value()+time_window_adjustment().get_page_size()/2,
-					time_window_adjustment().get_upper()-time_window_adjustment().get_page_size() )
+					time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size()/2,
+					time_window_adjustment()->get_upper()-time_window_adjustment()->get_page_size() )
 			);
 		timewindreset = true;
 	}
 
-	while( time < Time(time_window_adjustment().get_sub_lower()) )
+	while( time < Time(time_window_adjustment()->get_sub_lower()) )
 	{
-		time_window_adjustment().set_value(
+		time_window_adjustment()->set_value(
 			max(
-				time_window_adjustment().get_value()-time_window_adjustment().get_page_size()/2,
-				time_window_adjustment().get_lower())
+				time_window_adjustment()->get_value()-time_window_adjustment()->get_page_size()/2,
+				time_window_adjustment()->get_lower())
 		);
 
 		timewindreset = true;
 	}
 
 	//we need to tell people that the value changed
-	if(timewindreset) time_window_adjustment().value_changed();
+	if(timewindreset) time_window_adjustment()->value_changed();
 
 	//update actual time to next step
-	time_adjustment().set_value(time);
-	time_adjustment().value_changed();
+	time_adjustment()->set_value(time);
+	time_adjustment()->value_changed();
 
 	if(!work_area->sync_render_preview())
 		stop_async();
@@ -3139,33 +3139,33 @@ CanvasView::play()
 		//Clamp the time window so we can see the time value as it races across the horizon
 		bool timewindreset = false;
 
-		while( time + timer() > Time(time_window_adjustment().get_sub_upper()) )
+		while( time + timer() > Time(time_window_adjustment()->get_sub_upper()) )
 		{
-			time_window_adjustment().set_value(
+			time_window_adjustment()->set_value(
 					min(
-						time_window_adjustment().get_value()+time_window_adjustment().get_page_size()/2,
-						time_window_adjustment().get_upper()-time_window_adjustment().get_page_size() )
+						time_window_adjustment()->get_value()+time_window_adjustment()->get_page_size()/2,
+						time_window_adjustment()->get_upper()-time_window_adjustment()->get_page_size() )
 				);
 			timewindreset = true;
 		}
 
-		while( time + timer() < Time(time_window_adjustment().get_sub_lower()) )
+		while( time + timer() < Time(time_window_adjustment()->get_sub_lower()) )
 		{
-			time_window_adjustment().set_value(
+			time_window_adjustment()->set_value(
 				max(
-					time_window_adjustment().get_value()-time_window_adjustment().get_page_size()/2,
-					time_window_adjustment().get_lower())
+					time_window_adjustment()->get_value()-time_window_adjustment()->get_page_size()/2,
+					time_window_adjustment()->get_lower())
 			);
 
 			timewindreset = true;
 		}
 
 		//we need to tell people that the value changed
-		if(timewindreset) time_window_adjustment().value_changed();
+		if(timewindreset) time_window_adjustment()->value_changed();
 
 		//update actual time to next step
-		time_adjustment().set_value(time+timer());
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(time+timer());
+		time_adjustment()->value_changed();
 
 		if(!work_area->sync_render_preview())
 			break;
@@ -3182,8 +3182,8 @@ CanvasView::play()
 	}
 
 	is_playing_=false;
-	time_adjustment().set_value(endtime);
-	time_adjustment().value_changed();
+	time_adjustment()->set_value(endtime);
+	time_adjustment()->value_changed();
 }
 
 void
@@ -4207,8 +4207,8 @@ CanvasView::on_jack_sync()
 	{
 		jack_synchronizing = true;
 		set_time(jack_time - get_jack_offset());
-		time_adjustment().set_value(get_time());
-		time_adjustment().value_changed();
+		time_adjustment()->set_value(get_time());
+		time_adjustment()->value_changed();
 		jack_synchronizing = false;
 	}
 }

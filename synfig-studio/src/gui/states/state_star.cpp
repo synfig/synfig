@@ -147,17 +147,17 @@ class studio::StateStar_Context : public sigc::trackable
 
 	// star points
 	Gtk::Label number_of_points_label;
-	Gtk::Adjustment	number_of_points_adj;
+	Glib::RefPtr<Gtk::Adjustment> number_of_points_adj;
 	Gtk::SpinButton	number_of_points_spin;
 
 	// radius ratio
 	Gtk::Label radius_ratio_label;
-	Gtk::Adjustment	radius_ratio_adj;
+	Glib::RefPtr<Gtk::Adjustment> radius_ratio_adj;
 	Gtk::SpinButton	radius_ratio_spin;
 
 	// angle offset
 	Gtk::Label angle_offset_label;
-	Gtk::Adjustment	angle_offset_adj;
+	Glib::RefPtr<Gtk::Adjustment> angle_offset_adj;
 	Gtk::SpinButton	angle_offset_spin;
 	Gtk::HBox angle_offset_box;
 
@@ -168,22 +168,22 @@ class studio::StateStar_Context : public sigc::trackable
 
 	// inner width
 	Gtk::Label outer_width_label;
-	Gtk::Adjustment	outer_width_adj;
+	Glib::RefPtr<Gtk::Adjustment> outer_width_adj;
 	Gtk::SpinButton	outer_width_spin;
 
 	// inner tangent
 	Gtk::Label inner_tangent_label;
-	Gtk::Adjustment	inner_tangent_adj;
+	Glib::RefPtr<Gtk::Adjustment> inner_tangent_adj;
 	Gtk::SpinButton	inner_tangent_spin;
 
 	// outer width
 	Gtk::Label inner_width_label;
-	Gtk::Adjustment	inner_width_adj;
+	Glib::RefPtr<Gtk::Adjustment> inner_width_adj;
 	Gtk::SpinButton	inner_width_spin;
 
 	// outer tangent
 	Gtk::Label outer_tangent_label;
-	Gtk::Adjustment	outer_tangent_adj;
+	Glib::RefPtr<Gtk::Adjustment> outer_tangent_adj;
 	Gtk::SpinButton	outer_tangent_spin;
 
 	// invert
@@ -244,26 +244,26 @@ public:
 	}
 	void set_feather_size(Distance x) { return feather_dist.set_value(x);}
 
-	Real get_number_of_points()const { return number_of_points_adj.get_value(); }
-	void set_number_of_points(Real f) { number_of_points_adj.set_value(f); }
+	Real get_number_of_points()const { return number_of_points_adj->get_value(); }
+	void set_number_of_points(Real f) { number_of_points_adj->set_value(f); }
 
-	Real get_inner_tangent()const { return inner_tangent_adj.get_value(); }
-	void set_inner_tangent(Real f) { inner_tangent_adj.set_value(f); }
+	Real get_inner_tangent()const { return inner_tangent_adj->get_value(); }
+	void set_inner_tangent(Real f) { inner_tangent_adj->set_value(f); }
 
-	Real get_outer_tangent()const { return outer_tangent_adj.get_value(); }
-	void set_outer_tangent(Real f) { outer_tangent_adj.set_value(f); }
+	Real get_outer_tangent()const { return outer_tangent_adj->get_value(); }
+	void set_outer_tangent(Real f) { outer_tangent_adj->set_value(f); }
 
-	Real get_inner_width()const { return inner_width_adj.get_value(); }
-	void set_inner_width(Real f) { inner_width_adj.set_value(f); }
+	Real get_inner_width()const { return inner_width_adj->get_value(); }
+	void set_inner_width(Real f) { inner_width_adj->set_value(f); }
 
-	Real get_outer_width()const { return outer_width_adj.get_value(); }
-	void set_outer_width(Real f) { outer_width_adj.set_value(f); }
+	Real get_outer_width()const { return outer_width_adj->get_value(); }
+	void set_outer_width(Real f) { outer_width_adj->set_value(f); }
 
-	Real get_radius_ratio()const { return radius_ratio_adj.get_value(); }
-	void set_radius_ratio(Real f) { radius_ratio_adj.set_value(f); }
+	Real get_radius_ratio()const { return radius_ratio_adj->get_value(); }
+	void set_radius_ratio(Real f) { radius_ratio_adj->set_value(f); }
 
-	Real get_angle_offset()const { return angle_offset_adj.get_value(); }
-	void set_angle_offset(Real f) { angle_offset_adj.set_value(f); }
+	Real get_angle_offset()const { return angle_offset_adj->get_value(); }
+	void set_angle_offset(Real f) { angle_offset_adj->set_value(f); }
 
 	bool get_invert()const { return invert_checkbutton.get_active(); }
 	void set_invert(bool i) { invert_checkbutton.set_active(i); }
@@ -584,19 +584,19 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.01f, 0.01f),
-	number_of_points_adj(0, 2, 120, 1, 1),
+	number_of_points_adj(Gtk::Adjustment::create(0, 2, 120, 1, 1)),
 	number_of_points_spin(number_of_points_adj,1,0),
-	radius_ratio_adj(0, -10, 10, 0.01, 0.1),
+	radius_ratio_adj(Gtk::Adjustment::create(0, -10, 10, 0.01, 0.1)),
 	radius_ratio_spin(radius_ratio_adj,1,2),
-	angle_offset_adj(0, -360, 360, 0.1, 1),
+	angle_offset_adj(Gtk::Adjustment::create(0, -360, 360, 0.1, 1)),
 	angle_offset_spin(angle_offset_adj,1,1),
-	outer_width_adj(0, -10, 10, 0.01, 0.1),
+	outer_width_adj(Gtk::Adjustment::create(0, -10, 10, 0.01, 0.1)),
 	outer_width_spin(outer_width_adj,1,2),
-	inner_tangent_adj(0,-10, 10, 0.01, 0.1),
+	inner_tangent_adj(Gtk::Adjustment::create(0,-10, 10, 0.01, 0.1)),
 	inner_tangent_spin(inner_tangent_adj,1,2),
-	inner_width_adj(0, -10, 10, 0.01, 0.1),
+	inner_width_adj(Gtk::Adjustment::create(0, -10, 10, 0.01, 0.1)),
 	inner_width_spin(inner_width_adj,1,2),
-	outer_tangent_adj(0,-10, 10, 0.01, 0.1),
+	outer_tangent_adj(Gtk::Adjustment::create(0,-10, 10, 0.01, 0.1)),
 	outer_tangent_spin(outer_tangent_adj,1,2)
 {
 	egress_on_selection_change=true;

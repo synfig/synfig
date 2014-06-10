@@ -69,7 +69,7 @@ const double log_10_2 = log(2.0);
 /* === E N T R Y P O I N T ================================================= */
 studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 :canvview(cv),
-adj_zoom(0,-4,4,1,2),
+adj_zoom(Gtk::Adjustment::create(0,-4,4,1,2)),
 scrolling(false),
 surface(new synfig::Surface),
 cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
@@ -90,7 +90,7 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 	show_all();
 
-	adj_zoom.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_NavView::on_number_modify));
+	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_NavView::on_number_modify));
 
 	if(cv)
 	{
@@ -114,7 +114,7 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 		queue_draw();
 	}
 
-	adj_zoom.set_value(0);
+	adj_zoom->set_value(0);
 }
 
 studio::Widget_NavView::~Widget_NavView()
@@ -407,7 +407,7 @@ bool studio::Widget_NavView::on_scroll_event(GdkEvent *event)
 {
 	if(get_canvas_view() && get_canvas_view()->get_work_area())
 	{
-		double z = unit_to_zoom(adj_zoom.get_value());
+		double z = unit_to_zoom(adj_zoom->get_value());
 
 		switch(event->type)
 		{
@@ -443,9 +443,9 @@ bool studio::Widget_NavView::on_scroll_event(GdkEvent *event)
 
 void studio::Widget_NavView::on_number_modify()
 {
-	double z = unit_to_zoom(adj_zoom.get_value());
+	double z = unit_to_zoom(adj_zoom->get_value());
 	zoom_print.set_text(strprintf("%.1f%%",z*100.0));
-	//synfig::warning("Updating zoom to %f",adj_zoom.get_value());
+	//synfig::warning("Updating zoom to %f",adj_zoom->get_value());
 
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom())
 	{
@@ -461,10 +461,10 @@ void studio::Widget_NavView::on_workarea_view_change()
 	double z = zoom_to_unit(wz);
 
 	//synfig::warning("Updating zoom to %f -> %f",wz,z);
-	if(!scrolling && z != adj_zoom.get_value())
+	if(!scrolling && z != adj_zoom->get_value())
 	{
-		adj_zoom.set_value(z);
-		//adj_zoom.value_changed();
+		adj_zoom->set_value(z);
+		//adj_zoom->value_changed();
 	}
 	queue_draw();
 }

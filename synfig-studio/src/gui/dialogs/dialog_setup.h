@@ -172,12 +172,12 @@ class Dialog_Setup : public Gtk::Dialog
 	RedBlueLevelSelector red_blue_level_selector;
 	Gtk::OptionMenu timestamp_optionmenu;
 
-	Gtk::Adjustment adj_gamma_r;
-	Gtk::Adjustment adj_gamma_g;
-	Gtk::Adjustment adj_gamma_b;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_r;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_g;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_b;
 
-	Gtk::Adjustment adj_recent_files;
-	Gtk::Adjustment adj_undo_depth;
+	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
+	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
 
 	Gtk::CheckButton toggle_use_colorspace_gamma;
 #ifdef SINGLE_THREADED
@@ -204,9 +204,9 @@ class Dialog_Setup : public Gtk::Dialog
 
 
 	Gtk::Entry textbox_custom_filename_prefix;
-	Gtk::Adjustment adj_pref_x_size;
-	Gtk::Adjustment adj_pref_y_size;
-	Gtk::Adjustment adj_pref_fps;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_y_size;
+	Glib::RefPtr<Gtk::Adjustment> adj_pref_fps;
 	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::SpinButton* pref_y_size_spinbutton;
 	Gtk::SpinButton* pref_x_size_spinbutton;

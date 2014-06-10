@@ -110,14 +110,14 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 
 	Gtk::Table options_table;
 
-	Gtk::Adjustment	 adj_radius;
+	Glib::RefPtr<Gtk::Adjustment> adj_radius;
 	Gtk::SpinButton  spin_radius;
 
 	float pressure;
 
 public:
-	float get_radius()const { return adj_radius.get_value(); }
-	void set_radius(float x) { return adj_radius.set_value(x); }
+	float get_radius()const { return adj_radius->get_value(); }
+	void set_radius(float x) { return adj_radius->set_value(x); }
 
 	void refresh_radius() { duck_dragger_->set_radius(get_radius()*pressure); }
 
@@ -192,7 +192,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 //	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_SmoothMove()),
-	adj_radius(1,0,100000,0.01,0.1),
+	adj_radius(Gtk::Adjustment::create(1,0,100000,0.01,0.1)),
 	spin_radius(adj_radius,0.1,3)
 {
 	pressure=1.0f;

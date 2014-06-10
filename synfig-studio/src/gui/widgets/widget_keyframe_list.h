@@ -51,8 +51,8 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	//! Time adjustment window
-	Gtk::Adjustment adj_default;
-	Gtk::Adjustment *adj_timescale;
+	Glib::RefPtr<Gtk::Adjustment> adj_default;
+	Glib::RefPtr<Gtk::Adjustment> adj_timescale;
 
 	//!The list of keyframes to be drawn on the widget and moved with mouse
 	synfig::KeyframeList default_kf_list_;
@@ -116,7 +116,7 @@ public:
 	const synfig::Keyframe& get_selected_keyframe() { return selected_kf; }
 
 	//! Set the time adjustment and proper connects its change signals
-	void set_time_adjustment(Gtk::Adjustment *x);
+	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
 
 	//! Affect the global frames per second
 	// \param x[in] Value for the frames per second

@@ -283,11 +283,11 @@ private:
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
 	//! The time adjustment's scope is defined by the time_window adjustment
-	Gtk::Adjustment time_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> time_adjustment_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	//Gtk::Adjustment time_window_adjustment_;
-	studio::Adjust_Window time_window_adjustment_;
+	//Glib::RefPtr<Gtk::Adjustment> time_window_adjustment_;
+	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment_;
 
 	LayerTree *layer_tree;
 
@@ -320,10 +320,10 @@ private:
 	bool toggling_ducks_;
 	ResolutionDial *resolutiondial;
 	bool changing_resolution_;
-	Gtk::Adjustment quality_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> quality_adjustment_;
 	Gtk::SpinButton *quality_spin;
-	Gtk::Adjustment future_onion_adjustment_;
-	Gtk::Adjustment past_onion_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> future_onion_adjustment_;
+	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
 	bool updating_quality_;
@@ -588,13 +588,11 @@ public:
 
 	Mode get_mode()const { return canvas_interface()->get_mode(); }
 
-	Gtk::Adjustment &time_adjustment() { return time_adjustment_; }
+	Glib::RefPtr<Gtk::Adjustment> time_adjustment() { return time_adjustment_; }
+	Glib::RefPtr<const Gtk::Adjustment> time_adjustment()const { return time_adjustment_; }
 
-	const Gtk::Adjustment &time_adjustment()const { return time_adjustment_; }
-
-	studio::Adjust_Window &time_window_adjustment() { return time_window_adjustment_; }
-
-	const studio::Adjust_Window &time_window_adjustment()const { return time_window_adjustment_; }
+	Glib::RefPtr<studio::Adjust_Window> time_window_adjustment() { return time_window_adjustment_; }
+	Glib::RefPtr<const studio::Adjust_Window> time_window_adjustment()const { return time_window_adjustment_; }
 
 	etl::handle<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
 

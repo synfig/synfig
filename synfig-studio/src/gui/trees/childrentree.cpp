@@ -243,7 +243,7 @@ ChildrenTree::set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store)
 }
 
 void
-ChildrenTree::set_time_adjustment(Gtk::Adjustment &adjustment)
+ChildrenTree::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &adjustment)
 {
 	cellrenderer_time_track->set_adjustment(adjustment);
 }

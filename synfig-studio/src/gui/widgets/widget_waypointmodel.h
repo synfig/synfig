@@ -64,7 +64,7 @@ class Widget_WaypointModel : public Gtk::Table
 	Widget_Enum *before_options,*after_options;
 
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
-	Gtk::Adjustment adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
+	Glib::RefPtr<Gtk::Adjustment> adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
 
 	Gtk::CheckButton checkbutton_after;
 	Gtk::CheckButton checkbutton_before;

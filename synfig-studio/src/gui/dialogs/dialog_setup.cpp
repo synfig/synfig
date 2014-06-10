@@ -73,11 +73,11 @@ attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypa
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog(_("Synfig Studio Setup"),parent,true),
-	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_recent_files(15,1,50,1,1,0),
-	adj_undo_depth(100,10,5000,1,1,1),
+	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
+	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
 #ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
@@ -85,9 +85,9 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Handles to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	toggle_enable_experimental_features(_("Enable experimental features (restart required)")),
-	adj_pref_x_size(480,1,10000,1,10,0),
-	adj_pref_y_size(270,1,10000,1,10,0),
-	adj_pref_fps(24.0,1.0,100,0.1,1,0)
+	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
+	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
+	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
 	{
 	// Setup the buttons
 	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Defaults"))));
@@ -119,17 +119,17 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Red"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_r.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
+	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
 
 	Gtk::HScale* scale_gamma_g(manage(new Gtk::HScale(adj_gamma_g)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Green"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_g.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
+	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
 	Gtk::HScale* scale_gamma_b(manage(new Gtk::HScale(adj_gamma_b)));
 	gamma_table->attach(*manage(new Gtk::Label(_("Blue"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	adj_gamma_b.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
+	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
 	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"))), 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -420,9 +420,14 @@ Dialog_Setup::on_restore_pressed()
 void
 Dialog_Setup::on_apply_pressed()
 {
-	App::gamma.set_all(1.0/adj_gamma_r.get_value(),1.0/adj_gamma_g.get_value(),1.0/adj_gamma_b.get_value(),black_level_selector.get_value(),red_blue_level_selector.get_value());
+	App::gamma.set_all(
+		1.0/adj_gamma_r->get_value(),
+		1.0/adj_gamma_g->get_value(),
+		1.0/adj_gamma_b->get_value(),
+		black_level_selector.get_value(),
+		red_blue_level_selector.get_value());
 
-	App::set_max_recent_files((int)adj_recent_files.get_value());
+	App::set_max_recent_files((int)adj_recent_files->get_value());
 
 	// Set the time format
 	App::set_time_format(get_time_format());
@@ -456,10 +461,10 @@ Dialog_Setup::on_apply_pressed()
 	App::custom_filename_prefix=textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred new Document X dimension
-	App::preferred_x_size=int(adj_pref_x_size.get_value());
+	App::preferred_x_size=int(adj_pref_x_size->get_value());
 
 	// Set the preferred new Document Y dimension
-	App::preferred_y_size=int(adj_pref_y_size.get_value());
+	App::preferred_y_size=int(adj_pref_y_size->get_value());
 
 	// Set the preferred Predefined size
 	App::predefined_size=size_template_combo->get_active_text();
@@ -468,7 +473,7 @@ Dialog_Setup::on_apply_pressed()
 	App::predefined_fps=fps_template_combo->get_active_text();
 
 	// Set the preferred FPS
-	App::preferred_fps=Real(adj_pref_fps.get_value());
+	App::preferred_fps=Real(adj_pref_fps->get_value());
 
 	// Set the preferred image sequence separator
 	App::sequence_separator=image_sequence_separator.get_text();
@@ -491,7 +496,7 @@ Dialog_Setup::on_apply_pressed()
 void
 Dialog_Setup::on_gamma_r_change()
 {
-	gamma_pattern.set_gamma_r(1.0/adj_gamma_r.get_value());
+	gamma_pattern.set_gamma_r(1.0/adj_gamma_r->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -499,7 +504,7 @@ Dialog_Setup::on_gamma_r_change()
 void
 Dialog_Setup::on_gamma_g_change()
 {
-	gamma_pattern.set_gamma_g(1.0/adj_gamma_g.get_value());
+	gamma_pattern.set_gamma_g(1.0/adj_gamma_g->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -507,7 +512,7 @@ Dialog_Setup::on_gamma_g_change()
 void
 Dialog_Setup::on_gamma_b_change()
 {
-	gamma_pattern.set_gamma_b(1.0/adj_gamma_b.get_value());
+	gamma_pattern.set_gamma_b(1.0/adj_gamma_b->get_value());
 	gamma_pattern.refresh();
 	gamma_pattern.queue_draw();
 }
@@ -544,8 +549,8 @@ Dialog_Setup::on_size_template_combo_change()
 	String y_size(selection.substr(locx+1,locspace));
 	int x=atoi(x_size.c_str());
 	int y=atoi(y_size.c_str());
-	adj_pref_x_size.set_value(x);
-	adj_pref_y_size.set_value(y);
+	adj_pref_x_size->set_value(x);
+	adj_pref_y_size->set_value(y);
 	pref_y_size_spinbutton->set_sensitive(false);
 	pref_x_size_spinbutton->set_sensitive(false);
 
@@ -568,7 +573,7 @@ Dialog_Setup::on_fps_template_combo_change()
 		pref_fps_spinbutton->set_sensitive(true);
 		return;
 	}
-	adj_pref_fps.set_value(atof(selection.c_str()));
+	adj_pref_fps->set_value(atof(selection.c_str()));
 	pref_fps_spinbutton->set_sensitive(false);
 	return;
 }
@@ -584,15 +589,15 @@ Dialog_Setup::refresh()
 	gamma_pattern.set_black_level(App::gamma.get_black_level());
 	gamma_pattern.set_red_blue_level(App::gamma.get_red_blue_level());
 
-	adj_gamma_r.set_value(1.0/App::gamma.get_gamma_r());
-	adj_gamma_g.set_value(1.0/App::gamma.get_gamma_g());
-	adj_gamma_b.set_value(1.0/App::gamma.get_gamma_b());
+	adj_gamma_r->set_value(1.0/App::gamma.get_gamma_r());
+	adj_gamma_g->set_value(1.0/App::gamma.get_gamma_g());
+	adj_gamma_b->set_value(1.0/App::gamma.get_gamma_b());
 	black_level_selector.set_value(App::gamma.get_black_level());
 	red_blue_level_selector.set_value(App::gamma.get_red_blue_level());
 
 	gamma_pattern.refresh();
 
-	adj_recent_files.set_value(App::get_max_recent_files());
+	adj_recent_files->set_value(App::get_max_recent_files());
 
 	// Refresh the time format
 	set_time_format(App::get_time_format());
@@ -626,16 +631,16 @@ Dialog_Setup::refresh()
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
 
 	// Refresh the preferred new Document X dimension
-	adj_pref_x_size.set_value(App::preferred_x_size);
+	adj_pref_x_size->set_value(App::preferred_x_size);
 
 	// Refresh the preferred new Document Y dimension
-	adj_pref_y_size.set_value(App::preferred_y_size);
+	adj_pref_y_size->set_value(App::preferred_y_size);
 
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
 
 	//Refresh the preferred FPS
-	adj_pref_fps.set_value(App::preferred_fps);
+	adj_pref_fps->set_value(App::preferred_fps);
 
 	//Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);

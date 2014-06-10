@@ -373,13 +373,13 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 Widget_Preview::Widget_Preview():
 	Gtk::Table(1, 5),
-	adj_time_scrub(0, 0, 1000, 0, 10, 0),
+	adj_time_scrub(Gtk::Adjustment::create(0, 0, 1000, 0, 10, 0)),
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
 	current_surface(NULL),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	audiotime(0),
-	adj_sound(0, 0, 4),
+	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
 	l_lasttime("0s"),
 	playing(false),
 	jackdial(NULL),
@@ -414,13 +414,13 @@ Widget_Preview::Widget_Preview():
 	draw_area.modify_bg(Gtk::STATE_NORMAL, bg_color);
 
 
-	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
+	adj_time_scrub->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
 	
 	scr_time_scrub.set_draw_value(0);
 
-	disp_sound.set_time_adjustment(&adj_sound);
+	disp_sound.set_time_adjustment(adj_sound);
 	timedisp = -1;
 
 	//Set up signals to modify time value as it should be...
@@ -620,7 +620,7 @@ studio::Widget_Preview::~Widget_Preview()
 void studio::Widget_Preview::update()
 {
 	//the meat goes in this locker...
-	double time = get_position();
+	double time = adj_time_scrub->get_value();
 
 	//find the frame and display it...
 	if(preview)
@@ -713,7 +713,7 @@ void studio::Widget_Preview::update()
 		}
 	}
 
-	if(disp_sound.get_profile() && adj_sound.get_value() != time)
+	if(disp_sound.get_profile() && adj_sound->get_value() != time)
 	{
 		//timeupdate = time;
 
@@ -883,12 +883,12 @@ bool studio::Widget_Preview::play_update()
 	if(playing)
 	{
 		//we go to the next one...
-		double time = get_position() + diff;
+		double time = adj_time_scrub->get_value() + diff;
 		bool stop_on_end = true;
 
 		if (jack_enabled)
 		{
-			#ifdef WITH_JACK
+#ifdef WITH_JACK
 			jack_position_t pos;
 			jack_transport_state_t state = jack_transport_query(jack_client, &pos);
 			if (state != JackTransportRolling && state != JackTransportStarting)
@@ -896,7 +896,7 @@ bool studio::Widget_Preview::play_update()
 			jack_time = Time((Time::value_type)pos.frame/(Time::value_type)pos.frame_rate);
 			time = jack_time - jack_offset;
 			stop_on_end = false;
-			#endif
+#endif
 		}
 
 		//adjust it to be synced with the audio if it can...
@@ -912,27 +912,27 @@ bool studio::Widget_Preview::play_update()
 		}
 
 		//Looping conditions...
-		if(time >= get_time_end())
+		if(time >= adj_time_scrub->get_upper())
 		{
 			if(get_loop_flag())
 			{
-				time = get_time_start();
+				time = adj_time_scrub->get_lower();// + time-adj_time_scrub.get_upper();
 				currentindex = 0;
 			}else
 			{
-				time = get_time_end();
-				if (stop_on_end) {
-					adj_time_scrub.set_value(time);
-					pause();
-					update();
-					return false;
-				}
+				time = adj_time_scrub->get_upper();
+				adj_time_scrub->set_value(time);
+				play_pause();
+				update();
+
+				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
+				return false;
 			}
 		}
 
 		//set the new time...
-		adj_time_scrub.set_value(time);
-		adj_time_scrub.value_changed();
+		adj_time_scrub->set_value(time);
+		adj_time_scrub->value_changed();
 
 		//update the window to the correct image we might want to do this later...
 		//update();
@@ -967,10 +967,10 @@ void studio::Widget_Preview::scrub_updated(double t)
 
 	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 
-	if(adj_time_scrub.get_value() != t)
+	if(adj_time_scrub->get_value() != t)
 	{
-		adj_time_scrub.set_value(t);
-		adj_time_scrub.value_changed();
+		adj_time_scrub->set_value(t);
+		adj_time_scrub->value_changed();
 	}
 }
 
@@ -1006,21 +1006,21 @@ void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 
 			rate = 1/rate;
 
-			adj_time_scrub.set_lower(start);
-			adj_time_scrub.set_upper(end);
-			adj_time_scrub.set_value(start);
-			adj_time_scrub.set_step_increment(rate);
-			adj_time_scrub.set_page_increment(10*rate);
+			adj_time_scrub->set_lower(start);
+			adj_time_scrub->set_upper(end);
+			adj_time_scrub->set_value(start);
+			adj_time_scrub->set_step_increment(rate);
+			adj_time_scrub->set_page_increment(10*rate);
 
 			//if the begin time and the end time are the same there is only a single frame
 			singleframe = end==start;
 		}else
 		{
-			adj_time_scrub.set_lower(0);
-			adj_time_scrub.set_upper(0);
-			adj_time_scrub.set_value(0);
-			adj_time_scrub.set_step_increment(0);
-			adj_time_scrub.set_page_increment(0);
+			adj_time_scrub->set_lower(0);
+			adj_time_scrub->set_upper(0);
+			adj_time_scrub->set_value(0);
+			adj_time_scrub->set_step_increment(0);
+			adj_time_scrub->set_page_increment(0);
 			singleframe = true;
 		}
 
@@ -1054,21 +1054,26 @@ void studio::Widget_Preview::play()
 	{
 		if (!jack_enabled && get_position() == get_time_end()) seek(get_time_start());
 
+		//synfig::info("Playing at %lf",adj_time_scrub->get_value());
+		//audiotime = adj_time_scrub->get_value();
 		playing = true;
 
 		play_button->hide();
 		pause_button->show();
 
+		//adj_time_scrub->set_value(adj_time_scrub->get_lower());
 		update(); //we don't want to call play update because that will try to advance the timer
 
 		//approximate length of time in seconds, right?
-		double rate = /*std::min(*/adj_time_scrub.get_step_increment()/*,1/30.0)*/;
+		double rate = /*std::min(*/adj_time_scrub->get_step_increment()/*,1/30.0)*/;
 		int timeout = (int)floor(1000*rate);
 
 		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
 
+		signal_play_(adj_time_scrub->get_value());
+
 		//play the audio...
-		if(audio) audio->play(adj_time_scrub.get_value());
+		if(audio) audio->play(adj_time_scrub->get_value());
 
 		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
 		timer.reset();
@@ -1087,6 +1092,29 @@ void studio::Widget_Preview::pause()
 
 void studio::Widget_Preview::on_play_pause_pressed()
 {
+	bool play_flag;
+	float begin = preview->get_begintime();
+	float end = preview->get_endtime();
+	float current = adj_time_scrub->get_value();
+	Gtk::Image *icon;
+
+	if(!playing)
+	{
+		play_pausebutton->remove();
+		if(current == end) adj_time_scrub->set_value(begin);
+		icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
+		play_pausebutton->set_tooltip_text(_("Pause"));
+		play_pausebutton->add(*icon);
+		icon->set_padding(0,0);
+		icon->show();
+
+		play_flag=true;
+	}
+	else
+	{
+		play_flag=false;
+	}
+	
 #ifdef WITH_JACK
 	if (jack_enabled)
 	{
@@ -1099,7 +1127,7 @@ void studio::Widget_Preview::on_play_pause_pressed()
 	}
 #endif
 
-	if (playing) pause(); else play();
+	if(play_flag) play(); else pause();
 }
 
 void studio::Widget_Preview::seek_frame(int frames)
@@ -1109,10 +1137,12 @@ void studio::Widget_Preview::seek_frame(int frames)
 	if(playing) on_play_pause_pressed();	//pause playing when seek frame called
 
 	double fps = preview->get_fps();
-	double currenttime = get_position();
+
+	double currenttime = adj_time_scrub->get_value();
 	int currentframe = (int)floor(currenttime * fps);
 	Time newtime(double((currentframe + frames + 0.5) / fps));
-	seek(newtime);
+	
+	adj_time_scrub->set_value(newtime);
 }
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
@@ -1154,20 +1184,8 @@ void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 
 void studio::Widget_Preview::seek(const synfig::Time &t)
 {
-	adj_time_scrub.set_value(t);
-	adj_time_scrub.value_changed();
-}
-
-synfig::Time studio::Widget_Preview::get_time_start() const {
-	return synfig::Time(adj_time_scrub.get_lower());
-}
-
-synfig::Time studio::Widget_Preview::get_time_end() const {
-	return synfig::Time(adj_time_scrub.get_upper());
-}
-
-synfig::Time studio::Widget_Preview::get_position() const {
-	return synfig::Time(adj_time_scrub.get_value());
+	pause();
+	adj_time_scrub->set_value(t);
 }
 
 void studio::Widget_Preview::repreview()

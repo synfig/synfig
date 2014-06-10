@@ -59,7 +59,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Widget_Keyframe_List::Widget_Keyframe_List():
-	adj_default(0,0,2,1/WIDGET_KEYFRAME_LIST_DEFAULT_FPS,10/WIDGET_KEYFRAME_LIST_DEFAULT_FPS),
+	adj_default(Gtk::Adjustment::create(0,0,2,1/WIDGET_KEYFRAME_LIST_DEFAULT_FPS,10/WIDGET_KEYFRAME_LIST_DEFAULT_FPS)),
 	kf_list_(&default_kf_list_),
 	time_ratio("4f", WIDGET_KEYFRAME_LIST_DEFAULT_FPS)
 {
@@ -74,7 +74,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK /*| Gdk::BUTTON3_MOTION_MASK*/);
 	add_events(Gdk::POINTER_MOTION_MASK);
-	set_time_adjustment(&adj_default);
+	set_time_adjustment(adj_default);
 	queue_draw();
 
 	//! Create the window of the moving tooltip
@@ -486,7 +486,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 }
 
 
-void Widget_Keyframe_List::set_time_adjustment(Gtk::Adjustment *x)
+void Widget_Keyframe_List::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
 	//disconnect old connections
 	time_value_change.disconnect();

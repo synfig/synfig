@@ -62,7 +62,7 @@ class Widget_NavView : public Gtk::Table
 	Gtk::DrawingArea drawto;
 
 	//The input stuff
-	Gtk::Adjustment adj_zoom;
+	Glib::RefPtr<Gtk::Adjustment> adj_zoom;
 	Gtk::Label zoom_print;
 
 	//zoom window stuff
