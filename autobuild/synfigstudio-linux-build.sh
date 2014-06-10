@@ -82,7 +82,7 @@ GLEW=1.5.1
 CAIROMM=1.8.0
 IMAGEMAGICK=6.8.6
 PANGOMM=2.26.3		# required by GTKMM 2.20.3
-GTKMM=2.20.3 		# !!! we need Notebook.set_action_widget()
+GTKMM=3.0.0 		# !!! we need Notebook.set_action_widget()
 FTGL=2.1.2
 FREEGLUT=2.4.0
 GTKGLEXT=1.2.0
@@ -95,7 +95,7 @@ BOOST=1_53_0
 # System libraries
 ATK=1.29.4			# required by GTK 2.20.1
 GLIB=2.24.2			# required by GLIBMM 2.24.2
-GTK=2.20.1			# !!! we need Notebook.set_action_widget()
+GTK=3.0.0			# !!! we need Notebook.set_action_widget()
 PIXMAN=0.22.0		# required by CAIRO 1.12.0
 PANGO=1.24.5
 FONTCONFIG=2.5.0
@@ -347,7 +347,7 @@ fi
 
 mkgtk()
 {
-if ! pkg-config gtk\+-2.0 --exact-version=${GTK}  --print-errors; then
+if ! pkg-config gtk\+-3.0 --exact-version=${GTK}  --print-errors; then
 	pushd /source
 	[ ! -d gtk\+-${GTK} ] && tar -xjf gtk\+-${GTK}.tar.bz2
 	cd gtk\+-${GTK}
@@ -362,7 +362,7 @@ fi
 
 mkgtkmm()
 {
-if ! pkg-config gtkmm-2.4 --exact-version=${GTKMM}  --print-errors; then
+if ! pkg-config gtkmm-3.0 --exact-version=${GTKMM}  --print-errors; then
 	pushd /source
 	[ ! -d gtkmm-${GTKMM} ] && tar -xjf gtkmm-${GTKMM}.tar.bz2
 	cd gtkmm-${GTKMM}
@@ -561,7 +561,7 @@ fi
 
 if [[ $MODE != 'quick' ]]; then
 	/bin/sh ./bootstrap.sh
-	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack --enable-warnings=fatal $DEBUG $CONFIGURE_PACKAGE_OPTIONS
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-jack --enable-warnings=max $DEBUG $CONFIGURE_PACKAGE_OPTIONS
 fi
 
 make -j$MAKE_THREADS
@@ -699,11 +699,11 @@ EOF
 	rm -f $TBZPREFIX/lib/*.a
 	rm -f $TBZPREFIX/lib/cairo/*.la
 	rm -rf $TBZPREFIX/include
-	rm -rf $TBZPREFIX/lib/gdkmm-2.4
+	rm -rf $TBZPREFIX/lib/gdkmm-3.0
 	rm -rf $TBZPREFIX/lib/libxml++-2.6
 	rm -rf $TBZPREFIX/lib/glibmm-2.4
 	rm -rf $TBZPREFIX/lib/pangomm-1.4
-	rm -rf $TBZPREFIX/lib/gtkmm-2.4
+	rm -rf $TBZPREFIX/lib/gtkmm-3.0
 	rm -rf $TBZPREFIX/lib/pkgconfig
 	rm -rf $TBZPREFIX/lib/sigc++-2.0
 	rm -rf $TBZPREFIX/share/doc
@@ -790,10 +790,10 @@ rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/*.a
 rm -f \$RPM_BUILD_ROOT/${PREFIX}/lib/cairo/*.la
 #rm -rf \$RPM_BUILD_ROOT/${PREFIX}/bin
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/include
-rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-2.4
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gdkmm-3.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/libxml++-2.6
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/glibmm-2.4
-rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gtkmm-2.4
+rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/gtkmm-3.0
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pangomm-1.4
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/pkgconfig
 rm -rf \$RPM_BUILD_ROOT/${PREFIX}/lib/sigc++-2.0
@@ -893,7 +893,7 @@ initialize()
 				atk-devel \
 				pango-devel \
 				cairo-devel \
-				gtk2-devel \
+				gtk3-devel \
 				gettext-devel \
 				libxml2-devel \
 				libxml++-devel \
@@ -910,7 +910,7 @@ initialize()
 				libmng-devel \
 				ImageMagick-c++-devel \
 				jack-audio-connection-kit-devel \
-				gtkmm24-devel \
+				gtkmm30-devel \
 				glibmm24-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
@@ -927,8 +927,8 @@ initialize()
 				debootstrap \
 				rsync"
 		else
-			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-devel boost-program-options shared-mime-info"
-			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm2-devel glibmm2-devel"
+			PKG_LIST="${PKG_LIST} libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs boost-devel boost-program-options shared-mime-info"
+			PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 		fi
 		if ! ( rpm -qv $PKG_LIST ); then
 			echo "Running zypper (you need root privelegies to do that)..."
@@ -981,7 +981,7 @@ initialize()
 					libatk-devel \
 					bzip2 \
 					libmng-devel \
-					libgtkmm2-devel \
+					libgtkmm3-devel \
 					libglibmm-devel \
 					libsigc++2-devel \
 					libxml++2-devel \
@@ -995,7 +995,7 @@ initialize()
 					git-core \
 					libmng-dev \
 					libjack-jackd2-dev \
-					libgtkmm-2.4-dev \
+					libgtkmm-3.0-dev \
 					libglibmm-2.4-dev \
 					libsigc++-2.0-dev \
 					libxml++2.6-dev \
@@ -1016,7 +1016,7 @@ initialize()
 			fi
 		else
 			echo "WARNING: This build script does not works with package mangement systems other than yum, zypper or apt! You should install dependent packages manually."
-			echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk2-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm24-devel glibmm24-devel"
+			echo "REQUIRED PACKAGES: libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel cvs shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
 			echo ""
 			read
 		fi
@@ -1173,7 +1173,7 @@ mkpackage()
 		mkpack
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
-		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk2.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
+		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk3.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
 		for ARCH in i386 amd64; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'

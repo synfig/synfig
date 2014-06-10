@@ -31,11 +31,6 @@ AC_PROG_INSTALL
 
 AC_LANG([C++])
 
-DK_ARG_ENABLE_WARNINGS([SYNFIG_WARNING_FLAGS],
-	[-Wall -w1],
-	[-pedantic -Wall -Wextra -w1],
-	[G GDK GDK_PIXBUF PANGO GTK])
-
 
 AC_ARG_DEBUG
 
@@ -102,7 +97,7 @@ esac
 
 # -- L I B R A R I E S ----------------------------------------
 
-PKG_CHECK_MODULES(GTKMM, [gtkmm-2.4 >= 2.20.0 ],[
+PKG_CHECK_MODULES(GTKMM, gtkmm-3.0,[
 	AC_MSG_CHECKING([for Gtk::AboutDialog::set_program_name])
 	synfigstudio_save_cxxflags="$CXXFLAGS"
 	CXXFLAGS="$GTKMM_CFLAGS $CXXFLAGS"
@@ -144,7 +139,7 @@ PKG_CHECK_MODULES(GTKMM, [gtkmm-2.4 >= 2.20.0 ],[
 	)
 	CXXFLAGS="$synfigstudio_save_cxxflags"
 ],[
-	AC_MSG_ERROR([ ** You need to install Gtkmm-2.4 version 2.20.0 or higher.])
+	AC_MSG_ERROR([ ** You need to install Gtkmm-3.0])
 ])
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
