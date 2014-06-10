@@ -73,12 +73,12 @@ CellRenderer_Gradient::render_vfunc(
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& /* widget */,
 		const Gdk::Rectangle& /* background_area */,
-		const Gdk::Rectangle& /* cell_area */,
+		const Gdk::Rectangle& cell_area,
 		Gtk::CellRendererState /* flags */);
 {
 	if(!cr)
 		return;
-	render_gradient_to_window(cr,ca,property_gradient_.get_value());
+	render_gradient_to_window(cr,cell_area,property_gradient_.get_value());
 }
 
 
