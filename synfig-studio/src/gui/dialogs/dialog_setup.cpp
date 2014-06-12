@@ -88,7 +88,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0))
-	{
+{
 	// Setup the buttons
 	Gtk::Button *restore_button(manage(new class Gtk::Button(_("Restore Defaults"))));
 	restore_button->show();
@@ -149,17 +149,14 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Misc - Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(misc_table, _("Timestamp"), 0, xpadding, ypadding);
-	misc_table->attach(timestamp_optionmenu, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(timestamp_comboboxtext, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-#define ADD_TIMESTAMP(desc,x)									\
-	timestamp_menu->items().push_back(							\
-		Gtk::Menu_Helpers::MenuElem(							\
-			desc,												\
-			sigc::bind(											\
-				sigc::mem_fun(									\
-					*this,										\
-					&studio::Dialog_Setup::set_time_format),	\
-				x)));
+
+	#define ADD_TIMESTAMP(desc,x) {				\
+		timestamp_comboboxtext.append(desc);	\
+		time_formats[desc] = x;					\
+	}
+
 	ADD_TIMESTAMP("HH:MM:SS.FF",		Time::FORMAT_VIDEO	);
 	ADD_TIMESTAMP("(HHh MMm SSs) FFf",	Time::FORMAT_NORMAL	);
 	ADD_TIMESTAMP("(HHhMMmSSs)FFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	);
@@ -167,9 +164,10 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	ADD_TIMESTAMP("HHhMMmSSsFFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	| Time::FORMAT_FULL);
 	ADD_TIMESTAMP("FFf",				Time::FORMAT_FRAMES );
 
-	timestamp_optionmenu.set_menu(*timestamp_menu);
+	#undef ADD_TIMESTAMP
 
-#undef ADD_TIMESTAMP
+	timestamp_comboboxtext.signal_changed().connect(
+		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
 	{
 		ParamDesc param_desc;
@@ -255,36 +253,36 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	};
 
    Glib::ustring lang_codes[] = {
-		"os_LANG",	// System Language
-		"ar",				// Arabick
-		"eu",				// Basque
+		"os_LANG",		// System Language
+		"ar",			// Arabick
+		"eu",			// Basque
 		"eu_ES",		// Basque (Spain)
-		"ca",				// Catalan
+		"ca",			// Catalan
 		"zh_CN",		// Chinese (China)
-		"cs",				// CZech
-		"da",				// Danish
-		"nl",				// Dutch
-		"en",					// English - default of development
+		"cs",			// CZech
+		"da",			// Danish
+		"nl",			// Dutch
+		"en",			// English - default of development
 		"en_GB",		// English (United Kingdom)
 		"fa_IR",		// Farsi (Iran)
-		"fr",				// French
-		"de",				// German
+		"fr",			// French
+		"de",			// German
 		"el_GR",		// Greek (Greece)
-		"he",				// Hebrew
-		"hu",				// Hungarian
-		"it",				// Italian
+		"he",			// Hebrew
+		"hu",			// Hungarian
+		"it",			// Italian
 		"ja_JP",		// Japanese (Japan)
-		"lt",				// Lithuanian
+		"lt",			// Lithuanian
 		"no_NO",		// Norwegian (Norway)
 		"pl_PL",		// Polish (Poland)
 		"pt_BR",		// Portuguese (Brazil)
-		"ro",				// Romanian
-		"ru",				// Russian
-		"es",				// Spanish
-		"si",				// Sinhala
+		"ro",			// Romanian
+		"ru",			// Russian
+		"es",			// Spanish
+		"si",			// Sinhala
 		"sk_SK",		// Slovak (Slovakia)
 		"sv_SE",		// Swedish (Sweden)
-		"tr"				// Turkish
+		"tr"			// Turkish
    };
 
 	int num_items = G_N_ELEMENTS(lang_names);
@@ -576,6 +574,15 @@ Dialog_Setup::on_fps_template_combo_change()
 	adj_pref_fps->set_value(atof(selection.c_str()));
 	pref_fps_spinbutton->set_sensitive(false);
 	return;
+}
+
+void
+Dialog_Setup::on_time_format_changed()
+{
+	std::map<std::string, synfig::Time::Format>::iterator i =
+		time_formats.find(timestamp_comboboxtext.get_active_text());
+	if (i != time_formats.end())
+		time_format = i->second;
 }
 
 void
@@ -876,35 +883,20 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
 	if (x <= Time::FORMAT_VIDEO)
-		timestamp_optionmenu.set_history(0);
+		timestamp_comboboxtext.set_active(0);
 	else if (x == (Time::FORMAT_NORMAL))
-		timestamp_optionmenu.set_history(1);
+		timestamp_comboboxtext.set_active(1);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
-		timestamp_optionmenu.set_history(2);
+		timestamp_comboboxtext.set_active(2);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_FULL))
-		timestamp_optionmenu.set_history(3);
+		timestamp_comboboxtext.set_active(3);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES | Time::FORMAT_FULL))
-		timestamp_optionmenu.set_history(4);
+		timestamp_comboboxtext.set_active(4);
 	else if (x == (Time::FORMAT_FRAMES))
-		timestamp_optionmenu.set_history(5);
+		timestamp_comboboxtext.set_active(5);
 	else
-		timestamp_optionmenu.set_history(1);
+		timestamp_comboboxtext.set_active(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 RedBlueLevelSelector::RedBlueLevelSelector()
 {

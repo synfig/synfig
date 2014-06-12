@@ -35,7 +35,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/checkbutton.h>
 #include <gui/widgets/widget_time.h>
 #include <gtkmm/tooltip.h>
@@ -166,11 +166,13 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
+	void on_time_format_changed();
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
 	RedBlueLevelSelector red_blue_level_selector;
-	Gtk::OptionMenu timestamp_optionmenu;
+	Gtk::ComboBoxText timestamp_comboboxtext;
+	std::map<std::string, synfig::Time::Format> time_formats;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_gamma_r;
 	Glib::RefPtr<Gtk::Adjustment> adj_gamma_g;
