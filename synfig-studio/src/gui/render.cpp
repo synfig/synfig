@@ -62,7 +62,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::CanvasInterface> canvas_interface):
-	Gtk::Dialog(_("Render Settings"),parent,false,true),
+	Gtk::Dialog(_("Render Settings"),parent),
 	canvas_interface_(canvas_interface),
 	adjustment_quality(Gtk::Adjustment::create(3,0,9)),
 	entry_quality(adjustment_quality,1,0),

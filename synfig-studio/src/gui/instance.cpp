@@ -1428,8 +1428,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	Gtk::Dialog dialog(
 		"Edit Multiple Waypoints",		// Title
-		true,		// Modal
-		true		// use_separator
+		true		// Modal
 	);
 
 	Widget_WaypointModel widget_waypoint_model;

@@ -232,9 +232,8 @@ public:
 bool get_paragraph(synfig::String& text)
 {
 	Gtk::Dialog dialog(
-		_("Paragraph"),		// Title
-		true,		// Modal
-		true		// use_separator
+		_("Paragraph"),	// Title
+		true			// Modal
 	);
 	Gtk::Label label(_("Enter Paragraph Text Here:"));
 	label.show();

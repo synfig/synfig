@@ -297,8 +297,7 @@ public:
 		Gtk::Dialog dialog(
 			title,		// Title
 			*App::main_window, // Parent
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
@@ -318,8 +317,7 @@ public:
 		Gtk::Dialog dialog(
 			title,		// Title
 			*App::main_window, // Parent
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
@@ -340,8 +338,7 @@ public:
 		Gtk::Dialog dialog(
 			title,		// Title
 			*App::main_window, // Parent
-			true,		// Modal
-			true		// use_separator
+			true		// Modal
 		);
 		Gtk::Label label(message);
 		label.show();
