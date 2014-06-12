@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/menu.h>
 #include "app.h"
 

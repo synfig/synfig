@@ -47,7 +47,6 @@
 #include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include <synfigapp/main.h>
 

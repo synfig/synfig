@@ -53,7 +53,6 @@
 #include "event_keyboard.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include <synfig/angle.h>
 #include <synfigapp/main.h>

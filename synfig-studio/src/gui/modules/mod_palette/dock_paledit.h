@@ -33,7 +33,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 
 #include <synfig/gamma.h>

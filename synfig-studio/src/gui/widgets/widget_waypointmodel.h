@@ -31,8 +31,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
-#include <gtkmm/combo.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 

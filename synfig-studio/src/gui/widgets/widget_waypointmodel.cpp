@@ -36,7 +36,6 @@
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypointmodel.h"
 #include "general.h"

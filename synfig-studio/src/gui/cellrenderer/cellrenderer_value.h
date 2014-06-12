@@ -48,7 +48,6 @@
 #include <gtkmm/checkbutton.h>
 
 #include <gtkmm/colorselection.h>
-#include <gtkmm/optionmenu.h>
 
 //#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>

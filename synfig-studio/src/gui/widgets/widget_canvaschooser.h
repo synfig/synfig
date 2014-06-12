@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/canvas.h>
-#include <gtkmm/optionmenu.h>
+#include <gtkmm/comboboxtext.h>
 
 
 /* === M A C R O S ========================================================= */

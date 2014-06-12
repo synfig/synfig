@@ -53,7 +53,6 @@
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include "widgets/widget_distance.h"
-#include <gtkmm/optionmenu.h>
 #include "duck.h"
 
 //#include <synfigapp/value_desc.h>

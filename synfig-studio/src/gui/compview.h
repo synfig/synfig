@@ -35,7 +35,6 @@
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
-#include <gtkmm/optionmenu.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/box.h>
