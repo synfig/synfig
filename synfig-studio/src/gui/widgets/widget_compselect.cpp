@@ -87,7 +87,8 @@ Widget_CompSelect::on_changed()
 {
 	int i = get_active_row_number();
 	if (i < 0 || i >= (int)instances.size()) return;
-	set_selected_instance(instances[i]);
+	if (selected_instance == instances[i]) return;
+	studio::App::set_selected_instance(instances[i]);
 }
 
 void
