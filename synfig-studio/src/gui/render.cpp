@@ -79,24 +79,17 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&RenderSettings::on_rend_desc_changed));
 
-	menu_target=manage(new class Gtk::Menu());
-
-	menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Auto"),
-			sigc::bind(sigc::mem_fun(*this,&RenderSettings::set_target),String())
-		));
-
+	comboboxtext_target.append(_("Auto"));
+	target_names.push_back(String());
 	synfig::Target::Book::iterator iter;
 	synfig::Target::Book book(synfig::Target::book());
-
 	for(iter=book.begin();iter!=book.end();iter++)
 	{
-		menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,
-			sigc::bind(sigc::mem_fun(*this,&RenderSettings::set_target),iter->first)
-		));
+		comboboxtext_target.append(iter->first);
+		target_names.push_back(iter->first);
 	}
-	optionmenu_target.set_menu(*menu_target);
-
-	optionmenu_target.set_history(0);
+	comboboxtext_target.set_active(0);
+	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	dialogPadding->set_padding(12, 12, 12, 12);
@@ -136,9 +129,9 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
 	targetLabel->set_alignment(0, 0.5);
-	targetLabel->set_mnemonic_widget(optionmenu_target);
+	targetLabel->set_mnemonic_widget(comboboxtext_target);
 	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(optionmenu_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(comboboxtext_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	target_table->attach(*tparam_button, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
@@ -231,6 +224,15 @@ RenderSettings::set_entry_filename()
 		synfig::warning("Averted crash!");
 		entry_filename.set_text("output.png");
 	}
+}
+
+void
+RenderSettings::on_comboboxtext_target_changed()
+{
+	int i = comboboxtext_target.get_active_row_number();
+	if (i < 0 || i >= (int)target_names.size()) return;
+	if (target_name == target_names[i]) return;
+	set_target(target_names[i]);
 }
 
 void
