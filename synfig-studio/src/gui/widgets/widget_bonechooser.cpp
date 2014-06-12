@@ -76,19 +76,25 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 }
 
 void
+Widget_BoneChooser::on_changed()
+{
+	int i = get_active_row_number();
+	if (i < 0 || i > (int)bones.size()) return;
+	set_value_(bones[i]);
+}
+
+void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
 	printf("%s:%d Widget_BoneChooser::set_value data = %lx\n", __FILE__, __LINE__, uintptr_t(data.get()));
 	assert(parent_canvas);
 	bone=data;
 
-	bone_menu=manage(new class Gtk::Menu());
 	Time time(parent_canvas->get_time());
 
-	Gtk::Menu_Helpers::MenuElem none(_("<None>"),
-									 sigc::bind(sigc::mem_fun(*this,
-															  &Widget_BoneChooser::set_value_),
-												ValueNode_Bone::get_root_bone()));
+	set_active(-1);
+	remove_all();
+	bones.clear();
 
 	if (get_value_desc().is_value_node())
 	{
@@ -99,15 +105,14 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		if (!bone->is_root())
 		{
 			parent_set.erase(bone); // erase it from the set so it won't be inserted twice
-			String label((*(bone->get_link("name")))(time).get(String()));
-			if (label.empty()) label=bone->get_guid().get_string();
-			bone_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label,
-																	 sigc::bind(sigc::mem_fun(*this,
-																							  &Widget_BoneChooser::set_value_),
-																				bone)));
+			bones.push_back(bone);
+			// (*(bone->get_link("name")))(time).get(String());
 		}
 		else
-			bone_menu->items().push_back(none);
+		{
+			bones.push_back(ValueNode_Bone::get_root_bone());
+			append(_("<None>"));
+		}
 
 		for (ValueNode_Bone::BoneSet::iterator iter=parent_set.begin(); iter!=parent_set.end(); iter++)
 		{
@@ -116,19 +121,19 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 			String label((*(bone_value_node->get_link("name")))(time).get(String()));
 			if (label.empty()) label=bone_value_node->get_guid().get_string();
 
-			bone_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label,
-																	 sigc::bind(sigc::mem_fun(*this,
-																							  &Widget_BoneChooser::set_value_),
-																				bone_value_node)));
+			bones.push_back(bone_value_node);
+			append(label);
 		}
 	}
 
-	if (bone) bone_menu->items().push_back(none);
-
-	set_menu(*bone_menu);
+	if (bone)
+	{
+		bones.push_back(ValueNode_Bone::get_root_bone());
+		append(_("<None>"));
+	}
 
 	if(bone)
-		set_history(0);
+		set_active(0);
 }
 
 const etl::handle<synfig::ValueNode_Bone> &
