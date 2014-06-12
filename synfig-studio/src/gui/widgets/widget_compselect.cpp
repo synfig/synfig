@@ -60,7 +60,6 @@ Widget_CompSelect::Widget_CompSelect()
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Widget_CompSelect::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Widget_CompSelect::set_selected_instance_signal));
 
-	set_menu(instance_list_menu);
 	refresh();
 }
 
@@ -84,6 +83,14 @@ Widget_CompSelect::set_selected_instance_(etl::handle<studio::Instance> instance
 }
 
 void
+Widget_CompSelect::on_changed()
+{
+	int i = get_active_row_number();
+	if (i < 0 || i >= (int)instances.size()) return;
+	set_selected_instance(instances[i]);
+}
+
+void
 Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
@@ -103,14 +110,14 @@ Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
 
 		if (*iter==x) 
 		{
-			set_history(i);
+			set_active(i);
 		} else {
 			synfig::warning("Can't set selected instance! (already closed?)");
 			iter = studio::App::instance_list.begin();
 		}
 	}
 	else
-		set_history(0);
+		set_active(0);
 
 	set_selected_instance_(x);
 }
@@ -135,9 +142,8 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 
 	{
 		std::string name=basename(instance->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::ptr_fun(&studio::App::set_selected_instance),loose_instance)	));
+		instances.push_back(loose_instance);
+		append(name);
 	}
 
 }
@@ -150,17 +156,16 @@ Widget_CompSelect::delete_instance(etl::handle<studio::Instance> instance)
 	if(selected_instance==instance)
 	{
 		set_selected_instance(0);
-		set_history(0);
+		set_active(0);
 	}
 }
 
 void
 Widget_CompSelect::refresh()
 {
-	remove_menu();
-
-	if(!instance_list_menu.items().empty())
-		instance_list_menu.items().clear();
+	set_active(-1);
+	remove_all();
+	instances.clear();
 
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -169,9 +174,7 @@ Widget_CompSelect::refresh()
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 	{
 		std::string name=basename((*iter)->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::ptr_fun(&studio::App::set_selected_instance),*iter)	));
+		instances.push_back( etl::loose_handle<studio::Instance>(*iter) );
+		append(name);
 	}
-	set_menu(instance_list_menu);
 }

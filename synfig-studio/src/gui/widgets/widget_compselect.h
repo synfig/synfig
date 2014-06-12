@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/menu.h>
 #include "app.h"
@@ -41,12 +43,11 @@ namespace Gtk { class Menu; };
 
 namespace studio {
 
-class Widget_CompSelect : public Gtk::OptionMenu
+class Widget_CompSelect : public Gtk::ComboBoxText
 {
-	Gtk::Menu	instance_list_menu;
-
-
+	std::vector< etl::loose_handle<studio::Instance> > instances;
 	etl::loose_handle<studio::Instance>	selected_instance;
+
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 	void new_instance(etl::handle<studio::Instance> x);
@@ -57,8 +58,10 @@ class Widget_CompSelect : public Gtk::OptionMenu
 
 	void set_selected_instance_signal(etl::handle<studio::Instance> x);
 
-public:
+protected:
+	virtual void on_changed();
 
+public:
 	Widget_CompSelect();
 	~Widget_CompSelect();
 
