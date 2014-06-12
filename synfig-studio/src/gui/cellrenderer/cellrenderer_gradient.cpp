@@ -74,7 +74,7 @@ CellRenderer_Gradient::render_vfunc(
 		Gtk::Widget& /* widget */,
 		const Gdk::Rectangle& /* background_area */,
 		const Gdk::Rectangle& cell_area,
-		Gtk::CellRendererState /* flags */);
+		Gtk::CellRendererState /* flags */)
 {
 	if(!cr)
 		return;

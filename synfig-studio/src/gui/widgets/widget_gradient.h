@@ -38,7 +38,7 @@
 
 namespace studio {
 
-void render_gradient_to_window(const Glib::RefPtr<Gdk::Window>& window,const Gdk::Rectangle& ca,const synfig::Gradient &gradient);
+void render_gradient_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Gradient &gradient);
 
 class Widget_Gradient : public Gtk::DrawingArea
 {
