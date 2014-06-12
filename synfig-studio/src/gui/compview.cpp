@@ -80,8 +80,10 @@ CompView::CompView():
 
 	Gtk::Table *table = manage(new class Gtk::Table(2, 1, false));
 
+	instance_selector.show();
+	instance_selector.signal_changed().connect(sigc::mem_fun(this, &CompView::on_instance_selector_changed));
 
-	table->attach(*create_instance_selector(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
+	table->attach(instance_selector, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
 
 	notebook=manage(new class Gtk::Notebook());
 
@@ -311,15 +313,6 @@ CompView::create_action_tree()
 	return table;
 }
 
-Gtk::Widget*
-CompView::create_instance_selector()
-{
-	instance_selector=manage(new class Gtk::OptionMenu());
-	instance_selector->show();
-	instance_selector->set_menu(instance_list_menu);
-	return instance_selector;
-}
-
 bool
 CompView::close()
 {
@@ -421,6 +414,15 @@ CompView::set_selected_instance_(etl::handle<studio::Instance> instance)
 }
 
 void
+CompView::on_instance_selector_changed()
+{
+	int i = instance_selector.get_active_row_number();
+	if (i < 0 || i >= (int)instances.size()) return;
+	if (selected_instance == instances[i]) return;
+	studio::App::set_selected_instance(instances[i]);
+}
+
+void
 CompView::set_selected_instance(etl::loose_handle<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
@@ -439,10 +441,10 @@ CompView::set_selected_instance(etl::loose_handle<studio::Instance> x)
 
 		assert(*iter==x);
 
-		instance_selector->set_history(i);
+		instance_selector.set_active(i);
 	}
 	else
-		instance_selector->set_history(0);
+		instance_selector.set_active(0);
 
 	set_selected_instance_(x);
 }
@@ -467,9 +469,8 @@ CompView::new_instance(etl::handle<studio::Instance> instance)
 
 	{
 		std::string name=basename(instance->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::mem_fun(&studio::App::set_selected_instance),loose_instance)	));
+		instance_selector.append(name);
+		instances.push_back(loose_instance);
 	}
 }
 
@@ -484,7 +485,7 @@ CompView::delete_instance(etl::handle<studio::Instance> instance)
 	if(selected_instance==instance)
 	{
 		set_selected_instance(0);
-		instance_selector->set_history(0);
+		instance_selector.set_active(0);
 	}
 }
 
@@ -494,18 +495,17 @@ CompView::refresh_instances()
 	if(studio::App::shutdown_in_progress)
 		return;
 
-	if(!instance_list_menu.items().empty())
-		instance_list_menu.items().clear();
+	instances.clear();
+	instance_selector.set_active(-1);
+	instance_selector.remove_all();
 
 	std::list<etl::handle<studio::Instance> >::iterator iter;
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 	{
 		std::string name=basename((*iter)->get_file_name());
-
-		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
-			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::mem_fun(&studio::App::set_selected_instance),*iter)	));
+		instance_selector.append(name);
+		instances.push_back( etl::loose_handle<studio::Instance>(*iter) );
 	}
-	instance_selector->set_menu(instance_list_menu);
 }
 
 void
