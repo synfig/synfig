@@ -107,7 +107,8 @@ About::About()
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
 
-	set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
+	// TODO: set_url_hook bot works in GTK3
+	//set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
 	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
