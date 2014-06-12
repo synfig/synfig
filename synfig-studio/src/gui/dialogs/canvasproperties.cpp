@@ -61,7 +61,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface):
-	Gtk::Dialog(_("Canvas Properties"),parent,false,true),
+	Gtk::Dialog(_("Canvas Properties"),parent),
 	canvas_interface_(canvas_interface)
 {
 	widget_rend_desc.show();

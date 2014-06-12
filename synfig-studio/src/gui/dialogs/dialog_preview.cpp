@@ -122,7 +122,7 @@ void Dialog_Preview::close_window_handler()
 
 //dialog_previewoptions stuff
 Dialog_PreviewOptions::Dialog_PreviewOptions()
-:Dialog(_("Preview Options"),false,true),
+:Dialog(_("Preview Options")),
 adj_zoom(Gtk::Adjustment::create(0.5,0.1,5.0,0.1,0.2)),
 adj_fps(Gtk::Adjustment::create(15,1,120,1,5)),
 check_use_cairo(_("Use _Cairo render"), false),

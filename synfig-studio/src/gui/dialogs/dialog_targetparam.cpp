@@ -90,7 +90,7 @@ const char* allowed_video_codecs_description[] =
 /* === E N T R Y P O I N T ================================================= */
 
 Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam):
-	Gtk::Dialog(_("Target Parameters"), parent, false, true)
+	Gtk::Dialog(_("Target Parameters"), parent)
 {
 	set_tparam(tparam);
 	// Custom Video Codec Entry

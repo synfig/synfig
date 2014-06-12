@@ -62,7 +62,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Gradient::Dialog_Gradient():
-	Dialog(_("Gradient Editor"),false,true),
+	Dialog(_("Gradient Editor")),
 	dialog_settings(this,"gradient"),
 	adjustment_pos(Gtk::Adjustment::create(0,0.0,1.0,0.001,0.001,0))
 {
