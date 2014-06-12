@@ -45,7 +45,7 @@ namespace studio {
 
 Gdk::Color colorconv_synfig2gdk(const synfig::Color &c);
 
-void render_color_to_window(const Glib::RefPtr<Gdk::Window>& window,const Gdk::Rectangle& ca,const synfig::Color &color);
+void render_color_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Color &color);
 
 class Widget_Color : public Gtk::DrawingArea
 {

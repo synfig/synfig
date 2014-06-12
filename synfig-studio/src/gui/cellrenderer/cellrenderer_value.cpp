@@ -333,25 +333,18 @@ CellRenderer_ValueBase::render_vfunc(
 {
 	if(!cr)
 		return;
-//	const unsigned int cell_xpad = property_xpad();
-//	const unsigned int cell_ypad = property_ypad();
 
-	//int x_offset = 0, y_offset = 0;
-//	int	width = ca.get_width();
-	int	height = ca.get_height();
-//	get_size(widget, ca, x_offset, y_offset, width, height);
+	int	height = cell_area.get_height();
 
-//	width  -= cell_xpad * 2;
-//	height -= cell_ypad * 2;
-
-//	if(width <= 0 || height <= 0)
-//		return;
-
+	/*
+	TODO: is widget state equals this state variable?
+	      for checkbox only
 	Gtk::StateType state = Gtk::STATE_INSENSITIVE;
 	if(property_editable())
 		state = Gtk::STATE_NORMAL;
 	if((flags & Gtk::CELL_RENDERER_SELECTED) != 0)
 		state = (widget.has_focus()) ? Gtk::STATE_SELECTED : Gtk::STATE_ACTIVE;
+	*/
 
 	ValueBase data=property_value_.get_value();
 
@@ -466,19 +459,19 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_color)
 	{
-		render_color_to_window(window,ca,data.get(Color()));
+		render_color_to_window(cr,cell_area,data.get(Color()));
 		return;
 	}
 	else
 	if (type == type_bool)
 	{
-		widget.get_style()->paint_check(
-			Glib::RefPtr<Gdk::Window>::cast_static(window), state,
-			data.get(bool())?Gtk::SHADOW_IN:Gtk::SHADOW_OUT,
-			ca, widget, "cellcheck",
-			ca.get_x()/* + x_offset + cell_xpad*/,
-			ca.get_y()/* + y_offset + cell_ypad*/,
-			height-1,height-1);
+		widget.get_style_context()->render_check(
+			cr,
+			cell_area.get_x()/* + x_offset + cell_xpad*/,
+			cell_area.get_y()/* + y_offset + cell_ypad*/,
+			height-1,
+			height-1
+		);
 		return;
 	}
 	else
@@ -490,7 +483,7 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_gradient)
 	{
-		render_gradient_to_window(window,ca,data.get(Gradient()));
+		render_gradient_to_window(cr,cell_area,data.get(Gradient()));
 		return;
 	}
 	else
