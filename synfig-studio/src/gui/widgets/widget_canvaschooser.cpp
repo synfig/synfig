@@ -75,50 +75,50 @@ Widget_CanvasChooser::set_value_(synfig::Canvas::Handle data)
 }
 
 void
+Widget_CanvasChooser::on_changed()
+{
+	int i = get_active_row_number();
+	if (i < 0 || i > (int)canvases.size()) return;
+
+	// Check "Other..." item at the end
+	if (i == (int)canvases.size()) { chooser_menu(); return; }
+
+	if (canvas != canvases[i]) set_value_(canvases[i]);
+}
+
+void
 Widget_CanvasChooser::set_value(synfig::Canvas::Handle data)
 {
 	assert(parent_canvas);
 	canvas=data;
 
-	canvas_menu=manage(new class Gtk::Menu());
-
 	synfig::Canvas::Children::iterator iter;
 	synfig::Canvas::Children &children(parent_canvas->children());
 	String label;
 
+	set_active(-1);
+	remove_all();
+	canvases.clear();
+
 	if(canvas)
 	{
 		label=canvas->get_name().empty()?canvas->get_id():canvas->get_name();
-		canvas_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label));
+		canvases.push_back(canvas);
+		append(label);
 	}
 
 	for(iter=children.begin();iter!=children.end();iter++)
 		if(*iter!=canvas)
 		{
 			label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
-			canvas_menu->items().push_back(
-				Gtk::Menu_Helpers::MenuElem(
-					label,
-					sigc::bind(
-						sigc::mem_fun(
-							*this,
-							&Widget_CanvasChooser::set_value_
-						),
-						*iter
-					)
-				)
-			);
+			canvases.push_back(*iter);
+			append(label);
 		}
-	canvas_menu->items().push_back(
-		Gtk::Menu_Helpers::MenuElem(
-			_("Other..."),
-			sigc::mem_fun(*this,&Widget_CanvasChooser::chooser_menu)
-		)
-	);
-	set_menu(*canvas_menu);
+
+	append(_("Other..."));
 
 	if(canvas)
-		set_history(0);
+		set_active(0);
 }
 
 const etl::handle<synfig::Canvas> &

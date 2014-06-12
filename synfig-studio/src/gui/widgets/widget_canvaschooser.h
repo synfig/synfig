@@ -27,6 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
+
 #include <synfig/canvas.h>
 #include <gtkmm/comboboxtext.h>
 
@@ -41,21 +43,26 @@ namespace Gtk { class Menu; };
 
 namespace studio {
 
-class Widget_CanvasChooser : public Gtk::OptionMenu
+class Widget_CanvasChooser : public Gtk::ComboBoxText
 {
 	Gtk::Menu *canvas_menu;
 	synfig::Canvas::Handle parent_canvas;
+	std::vector<synfig::Canvas::Handle> canvases;
 
 	synfig::Canvas::Handle canvas;
 	void set_value_(synfig::Canvas::Handle data);
-public:
 
+protected:
+	virtual void on_changed();
+
+public:
 	Widget_CanvasChooser();
 	~Widget_CanvasChooser();
 
 	void set_parent_canvas(synfig::Canvas::Handle x);
 	void set_value(synfig::Canvas::Handle data);
 	const synfig::Canvas::Handle &get_value();
+
 private:
 	void chooser_menu();
 }; // END of class Widget_CanvasChooser
