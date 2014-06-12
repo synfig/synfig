@@ -79,8 +79,8 @@ void
 Widget_BoneChooser::on_changed()
 {
 	int i = get_active_row_number();
-	if (i < 0 || i > (int)bones.size()) return;
-	set_value_(bones[i]);
+	if (i < 0 || i >= (int)bones.size()) return;
+	if (bone != bones[i]) set_value_(bones[i]);
 }
 
 void
