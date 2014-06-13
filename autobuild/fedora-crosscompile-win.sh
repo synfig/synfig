@@ -32,11 +32,11 @@ export SRCPREFIX=$WORKSPACE/win$ARCH/source
 export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
-export PATH=${PREFIX}/bin:$PATH
+export PATH=/usr/${TOOLCHAIN_HOST}/bin:${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib
 
-export CC=${TOOLCHAIN_HOST}-gcc
-export CXX=${TOOLCHAIN_HOST}-g++
+export CC=/usr/bin/${TOOLCHAIN_HOST}-gcc
+export CXX=/usr/bin/${TOOLCHAIN_HOST}-g++
 export CPPFLAGS=" -I/usr/${TOOLCHAIN_HOST}/sys-root/mingw/include -I${PREFIX}/include"
 export LDFLAGS=" -L/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib -L${PREFIX}/lib "
 
@@ -463,6 +463,11 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         --enable-gpl --disable-decklink \
         --target-os=MinGW --target-arch=$EXT_ARCH \
         $DEBUG
+    
+    if [ $ARCH == "64" ]; then
+        touch src/modules/disable-motion_est
+        touch src/modules/disable-xine
+    fi
 
     make all -j$THREADS
     make install -j$THREADS

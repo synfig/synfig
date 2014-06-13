@@ -69,14 +69,13 @@ if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
     export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
     export EXT_ARCH=i386
-    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
     export TOOLCHAIN="mingw64-x86_64"
     export EXT_ARCH=x86_64
-    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
+    #export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
 fi
-
+export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
 
 
@@ -530,6 +529,11 @@ if ! pkg-config ${PKG_NAME}\+\+ --exact-version=${PKG_VERSION}  --print-errors; 
         --enable-gpl --disable-decklink \
         --target-os=MinGW --target-arch=$EXT_ARCH \
         #$DEBUG
+        
+    if [ $ARCH == "64" ]; then
+        touch src/modules/disable-motion_est
+        touch src/modules/disable-xine
+    fi
 
     make all
     make install
