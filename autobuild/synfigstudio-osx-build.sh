@@ -93,6 +93,9 @@ prepare()
 		mv $MACPORTS/tmp/app $MACPORTS/tmp/app.bak || true
 	fi
 	
+	# Cleanup some stuff, remaining from older installations
+	rm /Library/LaunchDaemons/org.macports.rsyncd.plist || true
+	
 	# == symlinks ==
 	
 	if [ ! -e "$BUILDDIR" ]; then
@@ -189,6 +192,12 @@ mkdeps()
 	
 	#echo "+universal +no_x11 +quartz" > $MACPORTS/etc/macports/variants.conf
 	echo "+no_x11 +quartz -x11 +nonfree" > $MACPORTS/etc/macports/variants.conf
+	
+	pushd ${SCRIPTPATH}/macports
+	portindex
+	popd
+	echo "file://${SCRIPTPATH}/macports [nosync]" > $MACPORTS/etc/macports/sources.conf
+	echo "rsync://rsync.macports.org/release/tarballs/ports.tar [default]" >> $MACPORTS/etc/macports/sources.conf
 	
 	# workaround the bug introduced in MacPorts 2.2.0 - https://trac.macports.org/ticket/39850
 	cp -rf $MACPORTS/etc/macports/macports.conf $MACPORTS/etc/macports/macports.conf.bak

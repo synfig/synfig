@@ -1,0 +1,79 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+#PortGroup           qt4 1.0
+name                mlt
+epoch               3
+version             0.9.0
+revision            5
+categories          multimedia
+maintainers         dennedy.org:dan
+license             GPL-2+
+
+description         Open source multimedia framework - core libraries
+long_description    MLT is an open source multimedia framework, designed and developed for \
+                    television broadcasting. It provides a toolkit for broadcasters, video \
+                    editors, media players, transcoders, web streamers and many more types of \
+                    applications. The functionality of the system is provided via an assortment \
+                    of ready to use tools, xml authoring components, and an extendible plug-in \
+                    based API. \
+                    \
+                    This package contains the files necessary for running applications that use \
+                    the MLT multimedia framework.
+homepage            http://www.mltframework.org/
+master_sites        sourceforge:project/mlt/mlt
+platforms           darwin
+
+checksums           sha1    76bf18f4442801fae963c5a676d6626e383d1617 \
+                    rmd160  c58b21463562367ad1fad46fa3e524f283bd4c82
+
+# frei0r-plugins is not universal
+universal_variant   no
+
+depends_build-append port:git \
+                    port:doxygen
+
+depends_lib-append  port:atk \
+                    port:frei0r-plugins \
+                    path:lib/libavcodec.dylib:ffmpeg \
+                    port:libdv \
+                    port:libsamplerate \
+                    port:libsdl \
+                    port:libvorbis \
+                    port:sox \
+                    port:libxml2
+
+configure.args      --enable-gpl \
+                    --disable-jackrack \
+                    --disable-mmx \
+                    --disable-gtk2 \
+                    --disable-swfdec
+
+platform darwin 10 {
+    if {${build_arch} eq "x86_64"} {
+        configure.args-delete --disable-mmx
+    }
+}
+
+platform darwin {
+    patch.pre_args  -p1
+    patchfiles      patch-configure-clang.diff
+}
+
+configure.cflags-append     "-I${prefix}/include"
+configure.ldflags-delete    "-L${prefix}/lib"
+configure.ldflags-append    "-L${worksrcpath}/src/framework"
+configure.ldflags-append    "-L${prefix}/lib"
+build.env-append            CFLAGS="${configure.cflags}" LDFLAGS="${configure.ldflags}"
+build.args-append           CC="${configure.cc}" CXX="${configure.cxx}" CPP="${configure.cpp}"
+
+
+variant gtk2 description {include the gtk2 module (for additional image and text producers)} {
+    configure.args-delete   --disable-gtk2
+    depends_lib-append      port:gtk2
+}
+
+livecheck.type      regex
+livecheck.url       http://sourceforge.net/projects/${name}/files/
+livecheck.regex     /${name}-(\[0-9.\]+)${extract.suffix}
