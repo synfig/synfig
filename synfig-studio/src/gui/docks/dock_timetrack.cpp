@@ -458,8 +458,8 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	*/
 	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
 
-	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
-	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_adjustment()->signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
+	canvas_view->time_adjustment()->signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
 	canvas_view->set_ext_widget(get_name(),tree_view);
 	// widget_timeslider fps connection to animation render description change
@@ -517,7 +517,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
 		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-		tree_view->set_vadjustment(*param_tree_view->get_vadjustment());
+		tree_view->set_vadjustment(param_tree_view->get_vadjustment());
 
 		assert(tree_view);
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
@@ -528,14 +528,14 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		Gtk::DrawingArea* align_drawingArea2 = Gtk::manage(new Gtk::DrawingArea);
 		align_drawingArea2->set_size_request(6,-1);
 
-		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
-		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
+		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
+		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 
-		widget_kf_list_->set_time_adjustment(&canvas_view->time_adjustment());
+		widget_kf_list_->set_time_adjustment(canvas_view->time_adjustment());
 		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
 
-		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
+		vscrollbar_->set_adjustment(tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
 
 /*
