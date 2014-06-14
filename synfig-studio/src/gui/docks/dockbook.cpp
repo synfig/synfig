@@ -39,6 +39,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/imagemenuitem.h>
 
 #include "general.h"
 
@@ -253,23 +254,21 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
 	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
 
-	tabmenu->items().push_back(
-		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
-			sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable)
-		)
-	);
+	Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-close")));
+	item->signal_activate().connect(
+		sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable) );
 
+	tabmenu->append(*item);
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
 }
 
 void
-DockBook::on_switch_page(GtkNotebookPage* page, guint page_num)
+DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 {
-	Gtk::Notebook::PageList::iterator p = pages().find(page_num);
-	if (p != pages().end()) {
-		CanvasView *canvas_view = dynamic_cast<CanvasView*>(p->get_child());
+	if (page != NULL && this->page_num(*page)) {
+		CanvasView *canvas_view = dynamic_cast<CanvasView*>(page);
 		if (canvas_view && canvas_view != App::get_selected_canvas_view())
 			App::set_selected_canvas_view(canvas_view);
 	}
