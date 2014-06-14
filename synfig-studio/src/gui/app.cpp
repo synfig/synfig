@@ -49,14 +49,13 @@
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
-#include <gtkmm/fileselection.h>
+#include <gtkmm/filechooserdialog.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/label.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stockitem.h>
 #include <gtkmm/iconsource.h>
-#include <gtkmm/inputdialog.h>
 #include <gtkmm/accelmap.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
@@ -1274,7 +1273,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("F8",															"<Actions>/canvasview/properties"						);
 	ACCEL("F12",														"<Actions>/canvasview/options"						);
 	ACCEL("<control>i",													"<Actions>/canvasview/import"							);
-	ACCEL2(Gtk::AccelKey(GDK_Escape,static_cast<Gdk::ModifierType>(0),	"<Actions>/canvasview/stop"							));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), "<Actions>/canvasview/stop"							));
 	ACCEL("<Control>g",													"<Actions>/canvasview/toggle-grid-show"				);
 	ACCEL("<Control>l",													"<Actions>/canvasview/toggle-grid-snap"				);
 	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>/canvasview/toggle-low-res"					));
@@ -1288,8 +1287,8 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("<Mod1>8",													"<Actions>/canvasview/mask-bone-recursive-ducks"		);
 	ACCEL("<Mod1>9",													"<Actions>/canvasview/mask-bone-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-widthpoint-position-ducks"				);
-	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
-	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
 	ACCEL("<Control>2",													"<Actions>/canvasview/quality-02"						);
 	ACCEL("<Control>3",													"<Actions>/canvasview/quality-03"						);
@@ -1302,7 +1301,7 @@ DEFINE_ACTION("keyframe-properties","Properties");
 	ACCEL("<Control>0",													"<Actions>/canvasview/quality-10"						);
 	ACCEL("<Control>z",													"<Actions>/action_group_dock_history/undo"							);
 	ACCEL("<Control>r",													"<Actions>/action_group_dock_history/redo"							);
-	ACCEL2(Gtk::AccelKey(GDK_Delete,Gdk::CONTROL_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRemove"				));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::CONTROL_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRemove"				));
 	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,							"<Actions>/canvasview/decrease-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,							"<Actions>/canvasview/increase-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"						));
@@ -1342,8 +1341,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	app_base_path_=etl::dirname(basepath);
 
 	ui_interface_=new GlobalUIInterface();
-
-	gdk_rgb_init();
 
 	// don't call thread_init() if threads are already initialized
 	// on some machines bonobo_init() initialized threads before we get here
@@ -1540,9 +1537,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_setup=new studio::Dialog_Setup(*App::main_window);
 
 		studio_init_cb.task(_("Init Input Dialog..."));
-		dialog_input=new Gtk::InputDialog();
-		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
-		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+		// TODO: Implement ImputDialog
+		//dialog_input=new Gtk::InputDialog();
+		//dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
+		//dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 		
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();

@@ -69,7 +69,6 @@
 
 namespace Gtk
 {
-	class InputDialog;
 	class UIManager;
 	class ActionGroup;
 };
@@ -180,7 +179,8 @@ private:
 	*/
 
 public:
-	static Gtk::InputDialog* dialog_input;
+	// TODO: Implement InputDialog
+	static void* dialog_input;
 
 	static DeviceTracker*	device_tracker;
 	static AutoRecover*	auto_recover;
