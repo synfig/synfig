@@ -100,7 +100,7 @@ public:
 
 	~GammaPattern();
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 }; // END of class GammaPattern
 
 class BlackLevelSelector : public Gtk::DrawingArea
@@ -121,7 +121,7 @@ public:
 
 	const float &get_value()const { return level; }
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	bool on_event(GdkEvent *event);
 }; // END of class BlackLevelSelector
@@ -144,7 +144,7 @@ public:
 
 	const float &get_value()const { return level; }
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	bool on_event(GdkEvent *event);
 }; // END of class RedBlueSelector

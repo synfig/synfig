@@ -666,11 +666,15 @@ Dialog_Setup::refresh()
 }
 
 GammaPattern::GammaPattern():
+	gamma_r(),
+	gamma_g(),
+	gamma_b(),
+	black_level(),
+	red_blue_level(),
 	tile_w(80),
 	tile_h(80)
 {
 	set_size_request(tile_w*4,tile_h*3);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::GammaPattern::redraw));
 }
 
 GammaPattern::~GammaPattern()
@@ -721,72 +725,69 @@ GammaPattern::refresh()
 }
 
 bool
-GammaPattern::redraw(GdkEventExpose */*bleh*/)
+GammaPattern::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
-	static const char hlines[] = { 3, 0 };
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
+	static unsigned char hlines[] = { 3, 0 };
 
 	int i;
 	Gdk::Color trueblack("#000000");
 
+	Cairo::RefPtr<Cairo::ImageSurface> stipple_mask_img = Cairo::ImageSurface::create(hlines, Cairo::FORMAT_A1, 2, 2, 1);
+
 	// 50% Pattern
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
-		gc->set_fill(Gdk::STIPPLED);
-		gc->set_rgb_fg_color(white[i]);
-		window->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
+        cr->set_source_rgb(white[i].get_red_p(), white[i].get_green_p(), white[i].get_blue_p());
+        cr->mask(stipple_mask_img, 0, 0);
+        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_fill(Gdk::SOLID);
-		gc->set_rgb_fg_color(gray50[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	// 25% Pattern
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
-		gc->set_fill(Gdk::STIPPLED);
-		gc->set_rgb_fg_color(gray50[i]);
-		window->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
+        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
+        cr->mask(stipple_mask_img, 0, 0);
+        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
+        cr->fill();
 
-		gc->set_fill(Gdk::SOLID);
-		gc->set_rgb_fg_color(gray25[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(gray25[i].get_red_p(), gray25[i].get_green_p(), gray25[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	// Black-level Pattern
-	gc->set_rgb_fg_color(trueblack);
-	window->draw_rectangle(gc, true, 0, tile_h*2, tile_w*4, tile_h);
-	gc->set_fill(Gdk::SOLID);
+    cr->set_source_rgb(trueblack.get_red_p(), trueblack.get_green_p(), trueblack.get_blue_p());
+	cr->rectangle(0, tile_h*2, tile_w*4, tile_h);
+	cr->fill();
+
 	for(i=0;i<4;i++)
 	{
-		gc->set_rgb_fg_color(black[i]);
-
-		window->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
+        cr->rectangle(i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
+        cr->fill();
 	}
 
 	return true;
 }
 
 
-BlackLevelSelector::BlackLevelSelector()
+BlackLevelSelector::BlackLevelSelector():
+	level()
 {
 	set_size_request(-1,24);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::BlackLevelSelector::redraw));
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -798,44 +799,41 @@ BlackLevelSelector::~BlackLevelSelector()
 }
 
 bool
-BlackLevelSelector::redraw(GdkEventExpose */*bleh*/)
+BlackLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
 	// Draw the gradient
 	for(i=0;i<w;i++)
 	{
-		color.set_rgb(i*65536/w,i*65536/w,i*65536/w);
-
-		gc->set_rgb_fg_color(color);
-		window->draw_rectangle(gc, true, i, 0, 1, h);
+		double c = (double)i/(double)(w-1);
+        cr->set_source_rgb(c,c,c);
+        cr->rectangle(i, 0, 1, h);
+        cr->fill();
 	}
 
 	// Draw a frame
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	cr->set_source_rgb(0,0,0);
+	cr->rectangle(0, 0, w-1, h-1);
+	cr->stroke();
 
 	// Draw the position of the current value
 	i=(int)(level*w+0.5);
-	gc->set_rgb_fg_color(Gdk::Color("#ff0000"));
-	window->draw_rectangle(gc, true, i, 1, 1, h-1);
+	cr->set_source_rgb(1,0,0);
+	cr->rectangle(i, 1, 1, h-1);
+	cr->fill();
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.01f%%",level*100.0f));
 	layout->set_alignment(Pango::ALIGN_CENTER);
-	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	window->draw_layout(gc, w/2, 4, layout);
+	cr->set_source_rgb(0.627,1,0);
+	cr->move_to(w/2, 4);
+	layout->show_in_cairo_context(cr);
 
 	return true;
 }
@@ -898,10 +896,10 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 		timestamp_comboboxtext.set_active(1);
 }
 
-RedBlueLevelSelector::RedBlueLevelSelector()
+RedBlueLevelSelector::RedBlueLevelSelector():
+	level()
 {
 	set_size_request(-1,24);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::RedBlueLevelSelector::redraw));
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -913,17 +911,11 @@ RedBlueLevelSelector::~RedBlueLevelSelector()
 }
 
 bool
-RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
+RedBlueLevelSelector::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
 	const int w(get_width()),h(get_height());
 
 	Gdk::Color color;
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	int i;
 
@@ -935,31 +927,29 @@ RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
 		if(red_blue>1.0f)red_blue=1.0f;
 		if(blue_red>1.0f)blue_red=1.0f;
 
-		color.set_rgb(
-			round_to_int(min(red_blue,1.0f)*65535),
-			round_to_int(sqrt(min(red_blue,blue_red))*65535),
-			round_to_int(min(blue_red,1.0f)*65535)
-		);
-
-		gc->set_rgb_fg_color(color);
-		window->draw_rectangle(gc, true, i, 0, 1, h);
+		cr->set_source_rgb(red_blue, sqrt(min(red_blue,blue_red)), blue_red);
+		cr->rectangle(i, 0, 1, h);
+		cr->fill();
 	}
 
 	// Draw a frame
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, 0, 0, w-1, h-1);
+	cr->set_source_rgb(0,0,0);
+	cr->rectangle(0, 0, w-1, h-1);
+	cr->stroke();
 
 	// Draw the position of the current value
 	i=(int)(((level-1.0f)*2.0f+1.0f-0.5f)*w+0.5);
-	gc->set_rgb_fg_color(Gdk::Color("#00ff00"));
-	window->draw_rectangle(gc, true, i, 1, 1, h-1);
+	cr->set_source_rgb(0,1,0);
+	cr->rectangle(i, 1, 1, h-1);
+	cr->fill();
 
 	// Print out the value
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.02f",level));
 	layout->set_alignment(Pango::ALIGN_CENTER);
-	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
-	window->draw_layout(gc, w/2, 4, layout);
+	cr->set_source_rgb(0.627,1,0);
+	cr->move_to(w/2, 4);
+	layout->show_in_cairo_context(cr);
 
 	return true;
 }
