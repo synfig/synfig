@@ -95,7 +95,7 @@ color_darken(Gdk::Color x, float amount)
 
 void
 studio::render_time_point_to_window(
-	const Glib::RefPtr<Gdk::Window>& window,
+	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 	const Gdk::Rectangle& area,
 	const synfig::TimePoint &tp,
 	bool selected

@@ -346,7 +346,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_height()-2,
 					area.get_height()-2
 				);
-				render_time_point_to_cairo(cr,area2,*i - time_offset,selected);
+				render_time_point_to_window(cr,area2,*i - time_offset,selected);
 			}
 
 			{
@@ -370,7 +370,7 @@ CellRenderer_TimeTrack::render_vfunc(
 						area.get_height()-2,
 						area.get_height()-2
 					);
-					render_time_point_to_cairo(cr,area2,*i,true);
+					render_time_point_to_window(cr,area2,*i,true);
 				}
 			}
 		}
