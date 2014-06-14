@@ -94,7 +94,7 @@ cairo_surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1))
 
 	if(cv)
 	{
-		drawto.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_NavView::on_expose_draw));
+		drawto.signal_draw().connect(sigc::mem_fun(*this,&Widget_NavView::on_drawto_draw));
 		drawto.signal_event().connect(sigc::mem_fun(*this,&Widget_NavView::on_mouse_event));
 
 		drawto.add_events(Gdk::BUTTON_MOTION_MASK|Gdk::BUTTON_PRESS_MASK);
@@ -266,7 +266,7 @@ static double zoom_to_unit(double f)
 	}else return -999999.0;
 }
 
-bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
+bool studio::Widget_NavView::on_drawto_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 #ifdef SINGLE_THREADED
 	// don't redraw if the previous redraw is still running single-threaded
@@ -332,9 +332,8 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 
 		//trivial escape
 		if(nw == 0 || nh == 0)return true;
-		//draw to drawing area
-		Cairo::RefPtr<Cairo::Context> cr = drawto.get_window()->create_cairo_context();
 
+		//draw to drawing area
 		if(prev && !studio::App::navigator_uses_cairo)
 		{
 			Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
