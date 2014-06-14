@@ -469,7 +469,7 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 	CanvasTreeModel canvas_tree_model;
 	assert(canvas);
 
-	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	row[canvas_tree_model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	row[canvas_tree_model.id] = canvas->get_id();
 	row[canvas_tree_model.name] = canvas->get_name();
 	if(canvas->is_root())

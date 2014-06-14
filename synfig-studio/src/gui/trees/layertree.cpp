@@ -310,7 +310,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*valuenode_icon_cellrenderer,false);
-		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-value_node"),icon_size);
+		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"),icon_size);
 		column->add_attribute(valuenode_icon_cellrenderer->property_visible(), param_model.is_shared);
 
 		// Finish setting up the column
@@ -355,7 +355,7 @@ LayerTree::create_param_tree()
 		// Set up the static icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*static_icon_cellrenderer,false);
-		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
+		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
 		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
 
 		// Finish setting up the column

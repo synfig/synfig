@@ -348,10 +348,10 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
 	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
-		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
-		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 IconController::~IconController()
@@ -382,7 +382,7 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 	pixmap->set_colormap(window->get_colormap());
 	//pixmap->set_colormap(Gdk::Colormap::create(pixmap->get_visual(),false));
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	pixbuf->render_to_drawable_alpha(
 		pixmap,
@@ -486,7 +486,7 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf(Type &type)
 {
-	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	//return Gtk::Button().render_icon_pixbuf(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[type.identifier];
 }
 
@@ -650,6 +650,6 @@ studio::layer_icon(const synfig::String &layer)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
-	return Gtk::Button().render_icon(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	return Gtk::Button().render_icon_pixbuf(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 

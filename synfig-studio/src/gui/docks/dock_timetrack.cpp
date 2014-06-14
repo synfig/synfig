@@ -121,7 +121,7 @@ public:
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 			column->pack_end(*icon_cellrenderer,false);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 			icon_cellrenderer->property_pixbuf() = pixbuf;
 			icon_cellrenderer->set_fixed_size (0,-1);
 

@@ -188,7 +188,7 @@ ChildrenTreeStore::on_canvas_added(synfig::Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
-	row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-type_canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	row[model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-type_canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	row[model.id] = canvas->get_id();
 	row[model.name] = canvas->get_name();
 
