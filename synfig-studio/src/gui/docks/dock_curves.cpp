@@ -177,8 +177,8 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 		vscrollbar_->set_adjustment(last_widget_curves_->get_range_adjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
-		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
-		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
+		widget_timeslider_->set_time_adjustment(canvas_view->time_adjustment());
+		widget_timeslider_->set_bounds_adjustment(canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 
 		table_=new Gtk::Table(2,2);
