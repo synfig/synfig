@@ -104,7 +104,7 @@ Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam 
 	// Appends the codec descriptions to the Combo Box
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
-		vcodec->append_text(allowed_video_codecs_description[i]);
+		vcodec->append(allowed_video_codecs_description[i]);
 	//Adds the Combo Box and the Custom Video Codec entry to the vertical box
 	get_vbox()->pack_start(*label, true, true, 0);
 	get_vbox()->pack_start(*vcodec, true, true, 0);
