@@ -529,7 +529,7 @@ LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk:
 
 		//return true;
 		TreeModel::Path dest_parent(dest);
-		if(!dest_parent.up() || dest.get_depth()==1)
+		if(!dest_parent.up() || dest.size()==1)
 		{
 			//row=(*get_iter(dest));
 			//dest_canvas=(Canvas::Handle)(row[model.canvas]);
