@@ -79,7 +79,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	name_(name),
 	local_name_(local_name),
 //	dialog_settings(this,name),
-	title_label_(local_name,Gtk::ALIGN_LEFT),
+	title_label_(local_name,Gtk::ALIGN_START),
 	stock_id_(stock_id_)
 {
 	scrolled_=0;

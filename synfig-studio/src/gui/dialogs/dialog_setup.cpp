@@ -67,7 +67,7 @@ static void
 attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypadding)
 {
 	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
-	label->set_alignment(Gtk::ALIGN_RIGHT, Gtk::ALIGN_CENTER);
+	label->set_alignment(Gtk::ALIGN_END, Gtk::ALIGN_CENTER);
 	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 }
 
@@ -329,7 +329,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	//Document - Template for predefined sizes of canvases.
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
-	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_table->attach(*label, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*size_template_combo, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
@@ -352,7 +352,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
-	label1->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label1->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	document_table->attach(*label1, 2, 3, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*fps_template_combo,2, 3, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));

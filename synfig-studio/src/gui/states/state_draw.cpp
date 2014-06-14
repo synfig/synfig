@@ -619,11 +619,11 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -632,7 +632,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
@@ -652,7 +652,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -663,7 +663,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -671,14 +671,14 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 
 	// 6, pressure width
 	pressure_width_label.set_label(_("Pressure Sensitive"));
-	pressure_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	pressure_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
 	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
@@ -687,7 +687,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	SPACING(min_pressure_indent, INDENTATION);
 	SPACING(min_pressure_gap, GAP);
 	min_pressure_label.set_label(_("Min Width:"));
-	min_pressure_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	min_pressure_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	min_pressure_label_box.pack_start(*min_pressure_indent, Gtk::PACK_SHRINK);
 	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
 
@@ -697,7 +697,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	// 8, Smoothness
 	smoothness_label.set_label(_("Smoothness"));
-	smoothness_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	smoothness_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 9, local threshold
 	SPACING(localthres_indent, INDENTATION);
@@ -717,48 +717,48 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
 	SPACING(width_max_error_gap, GAP);
-	width_max_error_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	width_max_error_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
 	width_max_error_box.pack_start(*width_max_error_gap, Gtk::PACK_SHRINK);
 
 	// 12, round ends
 	round_ends_label.set_label(_("Round Ends"));
-	round_ends_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	round_ends_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	round_ends_box.pack_start(round_ends_label, Gtk::PACK_SHRINK);
 	round_ends_box.pack_end(round_ends_checkbutton, Gtk::PACK_SHRINK);
 
 	// 13, auto loop
 	auto_loop_label.set_label(_("Auto Loop"));
-	auto_loop_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	auto_loop_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_loop_box.pack_start(auto_loop_label, Gtk::PACK_SHRINK);
 	auto_loop_box.pack_end(auto_loop_checkbutton, Gtk::PACK_SHRINK);
 
 	// 14, auto extend
 	auto_extend_label.set_label(_("Auto Extend"));
-	auto_extend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	auto_extend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_extend_box.pack_start(auto_extend_label, Gtk::PACK_SHRINK);
 	auto_extend_box.pack_end(auto_extend_checkbutton, Gtk::PACK_SHRINK);
 
 	// 15, auto link
 	auto_link_label.set_label(_("Auto Link"));
-	auto_link_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	auto_link_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_link_box.pack_start(auto_link_label, Gtk::PACK_SHRINK);
 	auto_link_box.pack_end(auto_link_checkbutton, Gtk::PACK_SHRINK);
 
 	// 16, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 
 	// 17, auto export
 	auto_export_label.set_label(_("Auto Export"));
-	auto_export_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_export_box.pack_start(auto_export_label, Gtk::PACK_SHRINK);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);

@@ -95,11 +95,11 @@ Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam 
 	set_tparam(tparam);
 	// Custom Video Codec Entry
 	Gtk::Label* custom_label(manage(new Gtk::Label(std::string(CUSTOM_VCODEC_DESCRIPTION)+":")));
-	custom_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	custom_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	customvcodec=Gtk::manage(new Gtk::Entry());
 	// Available Video Codecs Combo Box Text.
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
-	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	vcodec = Gtk::manage(new Gtk::ComboBoxText());
 	// Appends the codec descriptions to the Combo Box
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
@@ -130,7 +130,7 @@ Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam 
 		new Gtk::SpinButton(
 			Gtk::Adjustment::create(double(tparam.bitrate), 10.0,100000.0) ));
 	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
-	label2->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	label2->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	get_vbox()->pack_start(*label2, true, true, 0);
 	get_vbox()->pack_start(*bitrate,true, true, 0);
 

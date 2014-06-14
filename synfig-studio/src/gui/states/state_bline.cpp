@@ -508,11 +508,11 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -521,7 +521,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
@@ -549,7 +549,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -560,7 +560,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -568,7 +568,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
@@ -577,7 +577,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 6, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
@@ -586,7 +586,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 7, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
@@ -594,7 +594,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// 8, auto export
 	auto_export_label.set_label(_("Auto Export"));
-	auto_export_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_export_box.pack_start(auto_export_label);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);

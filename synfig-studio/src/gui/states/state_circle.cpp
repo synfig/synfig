@@ -540,11 +540,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
@@ -553,7 +553,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 2, layer types creation
 	layer_types_label.set_label(_("Create:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_circle_togglebutton,
 		("synfig-layer_geometry_circle"), _("Create a circle layer"));
@@ -585,7 +585,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -596,7 +596,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
@@ -604,7 +604,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
@@ -613,13 +613,13 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 6, spline points
 	bline_points_label.set_label(_("Spline Points:"));
-	bline_points_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_points_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
 
 	// 7, spline point angle offset
 	bline_point_angle_offset_label.set_label(_("Offset:"));
-	bline_point_angle_offset_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	bline_point_angle_offset_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bline_point_angle_offset_label.set_sensitive(false);
 	bline_point_angle_offset_spin.set_sensitive(false);
 
@@ -629,7 +629,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 8, invert
 	invert_label.set_label(_("Invert"));
-	invert_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	invert_box.pack_start(invert_label);
 	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
@@ -637,7 +637,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 9, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
@@ -646,7 +646,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 10, feather falloff for circle layer
 	falloff_label.set_label(_("Falloff:"));
-	falloff_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	falloff_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	falloff_label.set_sensitive(false);
 	SPACING(falloff_indent, INDENTATION);
 	falloff_box.pack_start(*falloff_indent, Gtk::PACK_SHRINK);
@@ -665,7 +665,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 11, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
@@ -673,7 +673,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	// 12, spline origins at center
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
-	origins_at_center_label.set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	origins_at_center_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	origins_at_center_box.pack_start(origins_at_center_label);
 	origins_at_center_box.pack_end(layer_origins_at_center_checkbutton, Gtk::PACK_SHRINK);

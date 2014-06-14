@@ -202,7 +202,7 @@ Widget_Defaults::Widget_Defaults()
 		_widget_otln_color->set_tooltip_text(_("Outline Color"));
 
 		// fixed outline color widget size
-		Gtk::Alignment *widget_otln_color(manage(new Gtk::Alignment(Gtk::ALIGN_RIGHT, Gtk::ALIGN_BOTTOM, 0.0, 0.0)));
+		Gtk::Alignment *widget_otln_color(manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0)));
 		widget_otln_color->add(*_widget_otln_color);
 
 
@@ -213,7 +213,7 @@ Widget_Defaults::Widget_Defaults()
 		_widget_fill_color->set_tooltip_text(_("Fill Color"));
 
 		// fixed fill color wiget size
-		widget_fill_color = manage(new Gtk::Alignment(Gtk::ALIGN_RIGHT, Gtk::ALIGN_BOTTOM, 0.0, 0.0));
+		widget_fill_color = manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0));
 		widget_fill_color->add(*_widget_fill_color);
 
 
@@ -262,7 +262,7 @@ Widget_Defaults::Widget_Defaults()
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	// fixed brush widget size
-	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, 0.0, 0.0));
+	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER, 0.0, 0.0));
 	widget_brush->add(*_widget_brush);
 
 
