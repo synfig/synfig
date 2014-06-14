@@ -321,7 +321,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 			) break;
 			const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 
-			if(column->get_first_cell_renderer()==cellrenderer_time_track)
+			if(column->get_first_cell()==cellrenderer_time_track)
 			{
 				Gdk::Rectangle rect;
 				tree_view.get_cell_area(path,*column,rect);
@@ -331,7 +331,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
-			else if(column->get_first_cell_renderer()==cellrenderer_value)
+			else if(column->get_first_cell()==cellrenderer_value)
 				return signal_user_click()(event->button.button,row,COLUMNID_VALUE);
 			else
 				return signal_user_click()(event->button.button,row,COLUMNID_ID);
@@ -357,7 +357,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 
 			Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 
-			if(cellrenderer_time_track==column->get_first_cell_renderer())
+			if(cellrenderer_time_track==column->get_first_cell())
 			{
 				// Movement on TimeLine
 				Gdk::Rectangle rect;
@@ -389,7 +389,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 
 			Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 
-			if(column && cellrenderer_time_track == column->get_first_cell_renderer())
+			if(column && cellrenderer_time_track == column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				tree_view.get_cell_area(path,*column,rect);

@@ -816,11 +816,11 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column->get_first_cell_renderer()==cellrenderer_time_track)
+			if(column->get_first_cell()==cellrenderer_time_track)
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
 			else
 #endif	// TIMETRACK_IN_PARAMS_PANEL
-			if(column->get_first_cell_renderer()==cellrenderer_value)
+			if(column->get_first_cell()==cellrenderer_value)
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_VALUE);
 			else
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_NAME);
@@ -847,7 +847,7 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			//Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(cellrenderer_time_track==column->get_first_cell_renderer())
+			if(cellrenderer_time_track==column->get_first_cell())
 				// Movement on TimeLine
 				return true;
 			//else
@@ -893,7 +893,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
+			if(column && column->get_first_cell()==cellrenderer_time_track)
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -931,7 +931,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				}
 				else
 				{
-					if(column->get_first_cell_renderer()==cellrenderer_value)
+					if(column->get_first_cell()==cellrenderer_value)
 						return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
 					else
 						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
@@ -959,8 +959,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if (((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK))
-			 && column && cellrenderer_time_track==column->get_first_cell_renderer())
+			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -993,7 +992,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if(column && cellrenderer_time_track==column->get_first_cell_renderer())
+			if(column && cellrenderer_time_track==column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);

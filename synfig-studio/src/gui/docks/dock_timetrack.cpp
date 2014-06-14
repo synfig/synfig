@@ -190,7 +190,7 @@ public:
 				) break;
 				const Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-				if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
+				if(column && column->get_first_cell()==cellrenderer_time_track)
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
@@ -224,7 +224,7 @@ public:
 
 				if (((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK)) &&
 					column &&
-					cellrenderer_time_track == column->get_first_cell_renderer())
+					cellrenderer_time_track == column->get_first_cell())
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
@@ -269,7 +269,7 @@ public:
 
 				Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-				if(column && cellrenderer_time_track==column->get_first_cell_renderer())
+				if(column && cellrenderer_time_track==column->get_first_cell())
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
