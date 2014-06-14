@@ -684,7 +684,7 @@ KeyframeTreeStore::get_path_vfunc (const iterator& gtk_iter)const
 
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->gobj()->user_data));
 
-	path.append_index(iter->index);
+	path.push_back(iter->index);
 
 	return path;
 }
@@ -692,7 +692,7 @@ KeyframeTreeStore::get_path_vfunc (const iterator& gtk_iter)const
 bool
 KeyframeTreeStore::get_iter_vfunc (const Gtk::TreeModel::Path& path, iterator& iter)const
 {
-	if(path.get_depth()>=1)
+	if(path.size()>=1)
 		return iter_nth_root_child_vfunc(path.front(),iter);
 
 	// Error case
