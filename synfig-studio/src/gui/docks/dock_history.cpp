@@ -231,7 +231,7 @@ Dock_History::create_action_tree()
 	action_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*action_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

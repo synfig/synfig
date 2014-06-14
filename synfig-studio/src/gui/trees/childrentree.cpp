@@ -167,7 +167,7 @@ ChildrenTree::ChildrenTree()
 
 	// Create a scrolled window for that tree
 	Gtk::ScrolledWindow *scroll_children_tree = manage(new class Gtk::ScrolledWindow());
-	scroll_children_tree->set_flags(Gtk::CAN_FOCUS);
+	scroll_children_tree->set_can_focus(true);
 	scroll_children_tree->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scroll_children_tree->add(tree_view);
 	scroll_children_tree->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

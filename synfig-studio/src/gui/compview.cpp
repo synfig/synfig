@@ -104,7 +104,7 @@ CompView::CompView():
 
 	Gtk::Table *image_page = manage(new class Gtk::Table(2, 1, false));
 	Gtk::ScrolledWindow *image_list_scroll = manage(new class Gtk::ScrolledWindow());
-	image_list_scroll->set_flags(Gtk::CAN_FOCUS);
+	image_list_scroll->set_can_focus(true);
 	image_list_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	image_list_scroll->add(*image_list);
 	image_page->attach(*image_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -131,7 +131,7 @@ CompView::CompView():
 
 	Gtk::Table *valuenode_page = manage(new class Gtk::Table(2, 1, false));
 	Gtk::ScrolledWindow *valuenode_list_scroll = manage(new class Gtk::ScrolledWindow());
-	valuenode_list_scroll->set_flags(Gtk::CAN_FOCUS);
+	valuenode_list_scroll->set_can_focus(true);
 	valuenode_list_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	valuenode_list_scroll->add(*valuenode_list);
 	valuenode_page->attach(*valuenode_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -211,7 +211,7 @@ CompView::create_canvas_tree()
 	canvas_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*canvas_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -291,7 +291,7 @@ CompView::create_action_tree()
 	action_tree->show();
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*action_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

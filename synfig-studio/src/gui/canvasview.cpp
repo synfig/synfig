@@ -1037,8 +1037,8 @@ CanvasView::create_time_bar()
 	timeslider->set_tooltip_text(_("Changes the current time"));
 	time_window_scroll->show();
 	timeslider->show();
-	//time_window_scroll->set_flags(Gtk::CAN_FOCUS); // Uncomment this produce bad render of the HScroll
-	timeslider->set_flags(Gtk::CAN_FOCUS);
+	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
+	timeslider->set_can_focus(true);
 
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
@@ -1416,7 +1416,7 @@ CanvasView::on_current_time_widget_changed()
 //		keyframe_tree->signal_event().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_tree_event));
 //
 //		Gtk::ScrolledWindow *scroll_layer_tree = manage(new class Gtk::ScrolledWindow());
-//		scroll_layer_tree->set_flags(Gtk::CAN_FOCUS);
+//		scroll_layer_tree->set_can_focus(true);
 //		scroll_layer_tree->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 //		scroll_layer_tree->add(*keyframe_tree);
 //		scroll_layer_tree->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

@@ -127,7 +127,7 @@ Dock_Canvases::create_canvas_tree()
 	canvas_tree->set_headers_visible(false);
 
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
-	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
+	scrolledwindow->set_can_focus(true);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledwindow->add(*canvas_tree);
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

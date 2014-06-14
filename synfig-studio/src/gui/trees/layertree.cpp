@@ -257,7 +257,7 @@ LayerTree::create_layer_tree()
 	get_layer_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_flags(Gtk::CAN_FOCUS);
+	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	//scroll->add(get_layer_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -426,7 +426,7 @@ LayerTree::create_param_tree()
 	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_flags(Gtk::CAN_FOCUS);
+	scroll->set_can_focus(true);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	//scroll->add(get_param_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);

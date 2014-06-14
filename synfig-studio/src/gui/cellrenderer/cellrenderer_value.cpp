@@ -102,7 +102,7 @@ public:
 		add(*valuewidget);
 		valuewidget->show();
 
-		//set_flags(Gtk::CAN_FOCUS);
+		//set_can_focus(true);
 		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 
 		/*

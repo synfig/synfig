@@ -1181,7 +1181,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hruler->property_max_size()=double(10.0);
 	vruler->property_max_size()=double(10.0);
 
-	drawing_area->set_flags(drawing_area->get_flags()|Gtk::CAN_FOCUS);
+	drawing_area->set_can_focus(true);
 }
 
 WorkArea::~WorkArea()

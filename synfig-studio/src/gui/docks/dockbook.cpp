@@ -69,7 +69,8 @@ DockBook::DockBook():
 
 	drag_dest_set(listTargets);
 	//set_sensitive(true);
-	set_flags(get_flags()|Gtk::RECEIVES_DEFAULT|Gtk::HAS_GRAB);
+	set_receives_default(true);
+	set_can_default(true);
 	//add_events(Gdk::ALL_EVENTS_MASK);
 	//set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 	set_show_tabs(true);
