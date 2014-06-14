@@ -43,6 +43,7 @@
 #include "../../widgets/widget_color.h"
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/imagemenuitem.h>
 #include <synfigapp/main.h>
 #include "../../app.h"
 #include "../../dialogs/dialog_color.h"
@@ -311,21 +312,20 @@ Dock_PalEdit::show_menu(int i)
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
-	menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-select-color"),
+	Gtk::MenuItem *item;
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-select-color")));
+	item->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::edit_color),
-			i
-		)
-	));
+			i ));
+	menu->append(*item);
 
-	menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
+	item->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::erase_color),
-			i
-		)
-	));
-
-	//menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+			i ));
+	menu->append(*item);
 
 	menu->popup(3,gtk_get_current_event_time());
 }
