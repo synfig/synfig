@@ -201,7 +201,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 bool
 StateMirror_Context::key_press_event(GdkEventKey *event)
 {
-	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R)
 	{
 		if (shift_is_pressed) return false;
 		shift_is_pressed=true;
@@ -215,7 +215,7 @@ StateMirror_Context::key_press_event(GdkEventKey *event)
 bool
 StateMirror_Context::key_release_event(GdkEventKey *event)
 {
-	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R )
 	{
 		if (!shift_is_pressed) return false;
 		shift_is_pressed = false;
