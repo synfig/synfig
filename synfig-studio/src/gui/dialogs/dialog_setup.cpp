@@ -292,7 +292,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 
 	for (int i =0 ; i < num_items; ++i)
 	{
-		ui_language_combo.append_text(lang_names[i]);
+		ui_language_combo.append(lang_names[i]);
 		_lang_codes.push_back(lang_codes[i]);
 			if (lang_code == _lang_codes[i])
 			row = i;
@@ -333,21 +333,21 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	document_table->attach(*label, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*size_template_combo, 2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	size_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_size_template_combo_change));
-	size_template_combo->prepend_text(_("4096x3112 Full Aperture 4K"));
-	size_template_combo->prepend_text(_("2048x1556 Full Aperture Native 2K"));
-	size_template_combo->prepend_text(_("1920x1080 HDTV 1080p/i"));
-	size_template_combo->prepend_text(_("1280x720  HDTV 720p"));
-	size_template_combo->prepend_text(_("720x576   DVD PAL"));
-	size_template_combo->prepend_text(_("720x480   DVD NTSC"));
-	size_template_combo->prepend_text(_("720x540   Web 720x"));
-	size_template_combo->prepend_text(_("720x405   Web 720x HD"));
-	size_template_combo->prepend_text(_("640x480   Web 640x"));
-	size_template_combo->prepend_text(_("640x360   Web 640x HD"));
-	size_template_combo->prepend_text(_("480x360   Web 480x"));
-	size_template_combo->prepend_text(_("480x270   Web 480x HD"));
-	size_template_combo->prepend_text(_("360x270   Web 360x"));
-	size_template_combo->prepend_text(_("360x203   Web 360x HD"));
-	size_template_combo->prepend_text(DEFAULT_PREDEFINED_SIZE);
+	size_template_combo->prepend(_("4096x3112 Full Aperture 4K"));
+	size_template_combo->prepend(_("2048x1556 Full Aperture Native 2K"));
+	size_template_combo->prepend(_("1920x1080 HDTV 1080p/i"));
+	size_template_combo->prepend(_("1280x720  HDTV 720p"));
+	size_template_combo->prepend(_("720x576   DVD PAL"));
+	size_template_combo->prepend(_("720x480   DVD NTSC"));
+	size_template_combo->prepend(_("720x540   Web 720x"));
+	size_template_combo->prepend(_("720x405   Web 720x HD"));
+	size_template_combo->prepend(_("640x480   Web 640x"));
+	size_template_combo->prepend(_("640x360   Web 640x HD"));
+	size_template_combo->prepend(_("480x360   Web 480x"));
+	size_template_combo->prepend(_("480x270   Web 480x HD"));
+	size_template_combo->prepend(_("360x270   Web 360x"));
+	size_template_combo->prepend(_("360x203   Web 360x HD"));
+	size_template_combo->prepend(DEFAULT_PREDEFINED_SIZE);
 
 	//Document - Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
@@ -367,9 +367,9 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	f[6] = 15;
 	f[7] = 12;
 	for (int i=0; i<8; i++)
-		fps_template_combo->prepend_text(strprintf("%5.3f", f[i]));
+		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
-	fps_template_combo->prepend_text(DEFAULT_PREDEFINED_FPS);
+	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
 
 	// Document - New Document FPS
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
