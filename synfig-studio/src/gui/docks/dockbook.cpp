@@ -64,7 +64,7 @@ using namespace studio;
 DockBook::DockBook():
 	allow_empty(false)
 {
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
 
 	drag_dest_set(listTargets);

@@ -145,7 +145,7 @@ Dockable::~Dockable()
 void
 Dockable::attach_dnd_to(Gtk::Widget& widget)
 {
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
 
 	widget.drag_source_set(listTargets);

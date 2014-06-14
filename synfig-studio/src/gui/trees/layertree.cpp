@@ -242,7 +242,7 @@ LayerTree::create_layer_tree()
 	get_layer_tree_view().set_search_column(layer_model.label);
 	get_layer_tree_view().set_search_equal_func(sigc::ptr_fun(&studio::LayerTreeStore::search_func));
 
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("LAYER") );
 	get_layer_tree_view().drag_dest_set(listTargets);
 

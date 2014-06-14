@@ -844,7 +844,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	*/
 	work_area->queue_render_preview();
 
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/uri-list") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
 	listTargets.push_back( Gtk::TargetEntry("STRING") );

@@ -55,7 +55,7 @@ DockDropArea::DockDropArea(Gtk::Widget *target):
 	Gtk::Table(3, 3, true),
 	target(target)
 {
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
 
 	Gtk::Button *button_left   = manage(new Gtk::Button());

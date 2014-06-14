@@ -102,7 +102,7 @@ Dock_Toolbox::Dock_Toolbox():
 		)
 	);
 
-	std::list<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
 	listTargets.push_back( Gtk::TargetEntry("image") );
 //	listTargets.push_back( Gtk::TargetEntry("image/x-sif") );
