@@ -120,7 +120,6 @@ LayerTree::LayerTree():
 	layer_amount_hscale->set_digits(2);
 	layer_amount_hscale->set_value_pos(Gtk::POS_LEFT);
 	layer_amount_hscale->set_sensitive(false);
-	layer_amount_hscale->set_update_policy( Gtk::UPDATE_DISCONTINUOUS);
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
@@ -415,14 +414,8 @@ LayerTree::create_param_tree()
 	get_param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
 	// Column widget label event used to retrieve column size
 	Gtk::Widget* columnzero_label = get_param_tree_view().get_column(0)->get_widget ();
-	/* GTKMM 3 remplacement for columnzero_label signal_style_changed
-	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_updated));
-	*/
-	columnzero_label->signal_style_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_style_changed));
-	/* GTKMM 3 remplacement for columnzero_label signal_expose_event
-	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_draw));
-	*/
-	columnzero_label->signal_expose_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_column_label_expose_draw));
+	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_style_updated));
+	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_draw));
 	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
@@ -464,7 +457,7 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(int i=path.get_depth();i;i--)
+		for(int i=(int)path.size();i;i--)
 		{
 			int j;
 			path=Gtk::TreePath(iter);
@@ -959,7 +952,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
-			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell())
+			if(((event->motion.state&GDK_BUTTON1_MASK) || (event->motion.state&GDK_BUTTON3_MASK)) && column && cellrenderer_time_track==column->get_first_cell())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -1302,41 +1295,21 @@ LayerTree::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, 
 }
 */
 
-// GTKMM 3 remplacement for on_param_tree_column_label_style_changed
-//void
-//LayerTree::on_param_tree_column_label_style_updated ()
-//{
-//	param_tree_style_changed = true;
-//}
-
 void
-LayerTree::on_param_tree_column_label_style_changed (const Glib::RefPtr< Gtk::Style >& /*previous_style*/)
+LayerTree::on_param_column_label_tree_style_updated()
 {
 	param_tree_style_changed = true;
 }
 
-// GTKMM 3 remplacement for on_param_tree_column_label_expose_draw
-//bool
-//LayerTree::on_param_tree_column_label_draw (const ::Cairo::RefPtr< ::Cairo::Context>& /*cr*/)
-//{
-//	if (param_tree_style_changed)
-//	{
-//		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
-//		param_tree_style_changed = false;
-//	}
-//	return true;
-//}
-
 bool
-LayerTree::on_param_tree_column_label_expose_draw (GdkEventExpose * /*event*/)
+LayerTree::on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& /*cr*/)
 {
 	if (param_tree_style_changed)
 	{
 		if (update_param_tree_header_height())	signal_param_tree_header_height_changed()(param_tree_header_height);
 		param_tree_style_changed = false;
 	}
-	//tell gtkmm to pass (x window) signal to the next signal handler
-	return false;
+	return true;
 }
 
 bool
