@@ -182,7 +182,7 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 		TreeModel::Path path(get_path(iter));
 
-		x.set(path.get_depth()<=1);
+		x.set(path.size()<=1);
 
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
