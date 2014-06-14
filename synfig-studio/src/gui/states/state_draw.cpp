@@ -62,6 +62,9 @@
 #include <utility>
 #include <sigc++/connection.h>
 
+#include <gtkmm/radiobutton.h>
+#include <gtkmm/radiobuttongroup.h>
+
 #include "general.h"
 
 #endif
@@ -317,11 +320,11 @@ public:
 	Real get_width_max_error() const { return width_max_error_adj->get_value(); }
 	void set_width_max_error(Real x) { return width_max_error_adj->set_value(x); }
 
-	bool get_local_threshold_flag() const { return localthres_radiobutton->get_active(); }
-	void set_local_threshold_flag(bool x) { localthres_radiobutton->set_active(x); }
+	bool get_local_threshold_flag() const { return localthres_radiobutton.get_active(); }
+	void set_local_threshold_flag(bool x) { localthres_radiobutton.set_active(x); }
 
-	bool get_global_threshold_flag() const { return globalthres_radiobutton->get_active(); }
-	void set_global_threshold_flag(bool x) { globalthres_radiobutton->set_active(x); }
+	bool get_global_threshold_flag() const { return globalthres_radiobutton.get_active(); }
+	void set_global_threshold_flag(bool x) { globalthres_radiobutton.set_active(x); }
 
 	bool get_min_pressure_flag()const { return min_pressure_checkbutton.get_active(); }
 	void set_min_pressure_flag(bool x) { min_pressure_checkbutton.set_active(x); }
@@ -1066,7 +1069,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 	{
 		DirtyTrap dirty_trap(get_work_area());
 		Smach::event_result result;
-		result=process_stroke(event.stroke_data,event.width_data,(event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
+		result = process_stroke(event.stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		process_queue();
 		return result;
 	}
