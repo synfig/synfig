@@ -41,8 +41,6 @@
 #include <gtkmm/menubar.h>
 #include <gtkmm/box.h>
 
-#include <gtkmm/inputdialog.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -86,11 +84,6 @@ MainWindow::MainWindow()
 			Gtk::Bin::on_size_allocate(allocation);
 			if (get_child() != NULL)
 				get_child()->size_allocate(allocation);
-		}
-		void on_size_request(Gtk::Requisition *requisition) {
-			Gtk::Bin::on_size_request(requisition);
-			if (get_child() != NULL && requisition != NULL)
-				*requisition = get_child()->size_request();
 		}
 	};
 
@@ -157,7 +150,8 @@ MainWindow::save_all()
 void
 MainWindow::show_dialog_input()
 {
-	App::dialog_input->present();
+	// TODO: implement DialogInput
+	//App::dialog_input->present();
 }
 
 void
