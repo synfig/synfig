@@ -50,9 +50,15 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
+#include <gtkmm/menu.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/separatormenuitem.h>
 
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
+
+#include <gdk/gdkdevice.h>
 
 #include <synfig/valuenode_reference.h>
 #include <synfig/valuenode_subtract.h>
@@ -1189,7 +1195,6 @@ CanvasView::create_status_bar()
 	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	statusbartable->attach(*stopbutton, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	statusbar->set_has_resize_grip(false);
 	statusbar->show();
 	stopbutton->show();
 	refreshbutton->show();
@@ -1825,9 +1830,10 @@ CanvasView::add_layer(synfig::String x)
 void
 CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 {
-	//Gtk::Menu* menu(manage(new Gtk::Menu));
 	Gtk::Menu* menu(&parammenu);
-	menu->items().clear();
+	std::vector<Widget*> children = menu->get_children();
+	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+		menu->remove(**i);
 
 	synfigapp::Action::ParamList param_list;
 	param_list.add("time",canvas_interface()->get_time());
@@ -1842,26 +1848,21 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 
 	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 	{
-		Gtk::Image* image(manage(new Gtk::Image()));
-		Gtk::Stock::lookup(Gtk::StockID("synfig-select_all_child_layers"),Gtk::ICON_SIZE_MENU,*image);
-		menu->items().push_back(
-			Gtk::Menu_Helpers::ImageMenuElem(
-						_("Select All Children"),
-						*image,
-						sigc::bind(
-								   sigc::mem_fun(
-												 *layer_tree,
-												 &studio::LayerTree::select_all_children_layers
-												 ),
-									layer
-									)
-											 )
-								);
-		
+		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
+			*manage(new Gtk::Image(
+				Gtk::StockID("synfig-select_all_child_layers"),
+				Gtk::ICON_SIZE_MENU )),
+			_("Select All Children") ));
+		item->signal_activate().connect(
+			sigc::bind(
+				sigc::mem_fun(
+					*layer_tree,
+					&studio::LayerTree::select_all_children_layers ),
+				layer ));
+		menu->append(*item);
 	}
 
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_LAYER);
-
 	menu->popup(3,gtk_get_current_event_time());
 }
 
@@ -2265,7 +2266,9 @@ CanvasView::on_layer_toggle(synfig::Layer::Handle layer)
 void
 CanvasView::popup_param_menu(synfigapp::ValueDesc value_desc, float location, bool bezier)
 {
-	parammenu.items().clear();
+	std::vector<Widget*> children = parammenu.get_children();
+	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+		parammenu.remove(**i);
 	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location,bezier);
 
 	parammenu.popup(3,gtk_get_current_event_time());
@@ -2500,9 +2503,9 @@ CanvasView::on_time_changed()
 	current_time_widget->set_value(time);
 	try {
 		get_canvas()->keyframe_list().find(time);
-		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
+		current_time_widget->override_color(Gdk::RGBA("#FF0000"));
 	}catch(...){
-		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#000000"));
+		current_time_widget->override_color(Gdk::RGBA("#000000"));
 	}
 
 	if(get_time() != time_adjustment()->get_value())
@@ -3361,89 +3364,41 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_both(manage(new Gtk::Menu()));
+		Gtk::MenuItem *item = NULL;
 
 		{
 			Waypoint::Model model;
 
-			model.reset(); model.set_before(INTERPOLATION_TCB);
-			Gtk::Image *image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.reset(); model.set_after(INTERPOLATION_TCB);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.set_before(INTERPOLATION_TCB);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_TCB"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			
-			model.reset(); model.set_before(INTERPOLATION_LINEAR);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.reset(); model.set_after(INTERPOLATION_LINEAR);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.set_before(INTERPOLATION_LINEAR);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Linear"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			
-			model.reset(); model.set_before(INTERPOLATION_HALT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease In"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.reset(); model.set_after(INTERPOLATION_HALT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease Out"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.set_before(INTERPOLATION_HALT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Ease In/Out"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			
-			model.reset(); model.set_before(INTERPOLATION_CONSTANT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.reset(); model.set_after(INTERPOLATION_CONSTANT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.set_before(INTERPOLATION_CONSTANT);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_const"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Constant"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			
-			model.reset(); model.set_before(INTERPOLATION_CLAMPED);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_in->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.reset(); model.set_after(INTERPOLATION_CLAMPED);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_out->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-			model.set_before(INTERPOLATION_CLAMPED);
-			image=new Gtk::Image(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::IconSize::from_name("synfig-small_icon"));
-			interp_menu_both->items().push_back(Gtk::Menu_Helpers::ImageMenuElem(_("_Clamped"),
-				*image,
-				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			#define APPEND_MENU_ITEM(menu, StockId, Text) \
+				item = manage(new Gtk::ImageMenuItem( \
+					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+					_(Text) )); \
+				item->signal_activate().connect( \
+					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
+				menu->append(*item);
+
+			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
+				model.reset(); \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
+				model.reset(); \
+				model.set_after(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_both, StockId, TextBoth)
+
+			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
+				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
+
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
+			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
+
+			#undef APPEND_ITEMS_TO_ALL_MENUS
+			#undef APPEND_ITEMS_TO_ALL_MENUS3
+			#undef APPEND_MENU_ITEM
 		}
 
 		// ------------------------------------------------------------------------
@@ -3453,30 +3408,48 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			get_instance()->make_param_menu(waypoint_menu,canvas_interface()->get_canvas(),value_desc,0.5f);
 
 			// ------------------------------------------------------------------------
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+			waypoint_menu->append(*manage(new Gtk::SeparatorMenuItem()));
 		}
 
 		// ------------------------------------------------------------------------
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Jump To"),
-			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time)));
+		item = manage(new Gtk::MenuItem(_("_Jump To")));
+		item->signal_activate().connect(
+			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time));
+		waypoint_menu->append(*item);
 
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Duplicate"),
-			 sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface())));
+		item = manage(new Gtk::MenuItem(_("_Duplicate")));
+		item->signal_activate().connect(
+			sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface()));
+		waypoint_menu->append(*item);
 
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem((size == 1) ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size),
-			 sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface())));
+		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size)));
+		item->signal_activate().connect(
+			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));
+		waypoint_menu->append(*item);
 
 		if (size == 1 && value_desc.is_valid())
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"),
-				sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show)));
+		{
+			item = manage(new Gtk::MenuItem(_("_Edit")));
+			item->signal_activate().connect(
+					sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show));
+			waypoint_menu->append(*item);
+		}
 
 		// ------------------------------------------------------------------------
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		waypoint_menu->append(*manage(new Gtk::SeparatorMenuItem()));
 
 		// ------------------------------------------------------------------------
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Both"), *interp_menu_both));
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_In"),   *interp_menu_in));
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Out"),  *interp_menu_out));
+		item = manage(new Gtk::MenuItem(_("_Both")));
+		item->set_submenu(*interp_menu_both);
+		waypoint_menu->append(*item);
+
+		item = manage(new Gtk::MenuItem(_("_In")));
+		item->set_submenu(*interp_menu_in);
+		waypoint_menu->append(*item);
+
+		item = manage(new Gtk::MenuItem(_("_Out")));
+		item->set_submenu(*interp_menu_out);
+		waypoint_menu->append(*item);
 
 		// ------------------------------------------------------------------------
 		waypoint_menu->popup(button+1,gtk_get_current_event_time());
@@ -3827,7 +3800,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 	assert(device);
 
 	synfigapp::InputDevice::Handle input_device;
-	input_device=synfigapp::Main::select_input_device(device->name);
+	input_device=synfigapp::Main::select_input_device(gdk_device_get_name(device));
 	App::dock_toolbox->change_state(input_device->get_state(), true);
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }
