@@ -108,7 +108,7 @@ DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
 	}
 	if(key=="visible")
 	{
-		value=window->is_visible()?"1":"0";
+		value=window->get_visible()?"1":"0";
 		return true;
 	}
 
