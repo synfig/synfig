@@ -31,7 +31,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 #include <synfig/vector.h>
-#include <gdkmm/drawable.h>
+#include <gdkmm/window.h>
 #include <gdkmm/rectangle.h>
 
 /* === M A C R O S ========================================================= */

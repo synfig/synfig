@@ -781,7 +781,6 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
 	Glib::ustring text = str;
-	locale_from_utf8 (text);
 	const char *c = text.c_str();
 
 	if (text == _("Fit") || text == "fit")

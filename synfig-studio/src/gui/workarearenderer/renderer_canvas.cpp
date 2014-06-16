@@ -116,8 +116,8 @@ Renderer_Canvas::render_vfunc(
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
 	WorkArea::SurfaceBook& cairo_book(get_cairo_book());
 
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
@@ -138,7 +138,6 @@ Renderer_Canvas::render_vfunc(
 		w(get_w()),
 		h(get_h());
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 	if(studio::App::workarea_uses_cairo)
 	{

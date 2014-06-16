@@ -88,8 +88,8 @@ Renderer_Dragbox::render_vfunc(
 
 	// const synfig::Vector focus_point(get_work_area()->get_focus_point());
 	// Warning : Unused focus_point
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 

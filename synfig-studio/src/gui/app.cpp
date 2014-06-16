@@ -60,6 +60,11 @@
 #include <gtkmm/uimanager.h>
 #include <gtkmm/textview.h>
 
+#include <glibmm/main.h>
+#include <glibmm/thread.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/spawn.h>
+
 #include <gtk/gtk.h>
 
 #include <gdkmm/general.h>
@@ -257,7 +262,8 @@ studio::Dialog_Gradient* studio::App::dialog_gradient;
 
 studio::Dialog_Color* studio::App::dialog_color;
 
-Gtk::InputDialog* studio::App::dialog_input;
+// TODO: implement InputDialog
+//Gtk::InputDialog* studio::App::dialog_input;
 
 studio::Dialog_ToolOptions* studio::App::dialog_tool_options;
 
@@ -1731,7 +1737,8 @@ App::~App()
 
 	delete dialog_color;
 
-	delete dialog_input;
+	// TODO: implement InputDialog
+	//delete dialog_input;
 
 	delete dock_manager;
 

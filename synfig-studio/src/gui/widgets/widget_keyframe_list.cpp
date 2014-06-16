@@ -63,7 +63,6 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	kf_list_(&default_kf_list_),
 	time_ratio("4f", WIDGET_KEYFRAME_LIST_DEFAULT_FPS)
 {
-	adj_timescale=0;
 	editable_=true;
 	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;
 	set_size_request(-1,64);

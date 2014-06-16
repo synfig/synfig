@@ -1132,7 +1132,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// ----------------- Attach signals
 
-	drawing_area->signal_draw().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh)));
+	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
@@ -2781,7 +2781,7 @@ WorkArea::refresh_second_check()
 #endif
 
 bool
-WorkArea::refresh(GdkEventExpose*event)
+WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 #ifdef SINGLE_THREADED
 	/* resize bug workaround */
@@ -2839,7 +2839,7 @@ WorkArea::refresh(GdkEventExpose*event)
 			if((*iter)->get_enabled())
 				(*iter)->render_vfunc(
 					draw_area_window,
-					Gdk::Rectangle(&event->area)
+					Gdk::Rectangle(0, 0, draw_area_window->get_width(), draw_area_window->get_height())
 				);
 		}
 	}

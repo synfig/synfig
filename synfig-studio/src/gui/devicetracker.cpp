@@ -156,7 +156,7 @@ DeviceTracker::save_preferences()
 				vector<synfigapp::InputDevice::DeviceKey> keys(n_keys);
 				for(int j = 0; j < n_keys; ++j) {
 					guint gdk_keyval = 0;
-					GdkModifierType gdk_modifiers = 0;
+					GdkModifierType gdk_modifiers = GdkModifierType();
 					gdk_device_get_key(gdk_device, j, &gdk_keyval, &gdk_modifiers);
 					keys[i].keyval = gdk_keyval;
 					keys[i].modifiers = gdk_modifiers;

@@ -81,8 +81,8 @@ Renderer_Grid::render_vfunc(
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 
 	synfig::Vector grid_size(get_grid_size());
 	if(grid_size[0] < 0) grid_size[0] = -grid_size[0];

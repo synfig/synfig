@@ -541,7 +541,7 @@ public:
 	/* resize bug workaround */
 	void refresh_second_check();
 #endif
-	bool refresh(GdkEventExpose*bleh=NULL);
+	bool refresh(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	void reset_cursor();
 	void refresh_cursor();

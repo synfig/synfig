@@ -80,7 +80,7 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 	int drawable_w = drawable->get_width();
 	int drawable_h = drawable->get_height();
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
+	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	//synfig::Time cur_time(canvas->get_time());
@@ -88,8 +88,6 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 	// Print out the bonesetup
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
-
-		gc->set_rgb_fg_color(Gdk::Color("#5f0000"));
 
 		bool recursive(get_work_area()->get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
 		if (recursive)
@@ -103,6 +101,9 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 		else
 			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
 
-		drawable->draw_layout(gc, bonesetup_x, bonesetup_y, layout);
+		Gdk::RGBA c("#5f0000");
+		cr->set_source_rgb(c.get_red(), c.get_green(), c.get_blue());
+		cr->move_to(bonesetup_x, bonesetup_y);
+		layout->show_in_cairo_context(cr);
 	}
 }

@@ -35,10 +35,15 @@
 
 #include "instance.h"
 #include <cassert>
+
 #include <gtkmm/stock.h>
 #include <gtkmm/image.h>
-#include <iostream>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/separatormenuitem.h>
 #include <gtkmm/button.h>
+
+#include <iostream>
 #include "canvasview.h"
 #include "app.h"
 #include <sigc++/signal.h>
@@ -781,8 +786,8 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
-				*manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
 			item->signal_activate().connect(
 				sigc::bind(
@@ -827,8 +832,8 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
-				*manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
 			item->signal_activate().connect(
 				sigc::bind(
@@ -846,8 +851,8 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
-				*manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
+				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
 			item->signal_activate().connect(
 				sigc::bind(
@@ -978,13 +983,13 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		   !(value_desc.parent_is_layer_param() ||
 			 value_desc.parent_is_value_node()))))
 	{
-		Gtk::Menu *convert_menu=manage(new Gtk::Menu());
+		Gtk::Menu *convert_menu=Gtk::manage(new Gtk::Menu());
 		LinkableValueNode::Book::const_iterator iter;
 		for(iter=LinkableValueNode::book().begin();iter!=LinkableValueNode::book().end();++iter)
 		{
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{
-				item = manage(new Gtk::MenuItem(iter->second.local_name));
+				item = Gtk::manage(new Gtk::MenuItem(iter->second.local_name));
 				item->signal_activate().connect(
 					sigc::hide_return(
 						sigc::bind(
@@ -996,7 +1001,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			}
 		}
 
-		item = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+		item = Gtk::manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 		item->set_submenu(*convert_menu);
 		parammenu.append(*item);
 	}
@@ -1009,7 +1014,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		value_desc.get_value_type()!= type_canvas
 		)
 	{
-		Gtk::Menu *param_interpolation_menu=manage(new Gtk::Menu());
+		Gtk::Menu *param_interpolation_menu=Gtk::manage(new Gtk::Menu());
 		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas", get_canvas());
 		param_list.add("value_desc", value_desc);
@@ -1017,7 +1022,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 		/////// Default
 		param_list.add("new_value", INTERPOLATION_UNDEFINED);
-		item = manage(new Gtk::MenuItem(_("Default")));
+		item = Gtk::manage(new Gtk::MenuItem(_("Default")));
 		item->signal_activate().connect(
 			sigc::bind(
 				sigc::bind(
@@ -1029,8 +1034,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 		#define ADD_IMAGE_MENU_ITEM(Interpolation, StockId, Text) \
 		param_list.add("new_value", Interpolation); \
-		item = manage(new Gtk::ImageMenuItem( \
-			*manage(new Gtk::Image(Gtk::StockID(StockId), Gtk::IconSize::from_name("synfig-small_icon"))), \
+		item = Gtk::manage(new Gtk::ImageMenuItem( \
+			*Gtk::manage(new Gtk::Image(Gtk::StockID(StockId), Gtk::IconSize::from_name("synfig-small_icon"))), \
 			_(Text) )); \
 		item->signal_activate().connect( \
 			sigc::bind( \
@@ -1050,7 +1055,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		
 		#undef ADD_IMAGE_MENU_ITEM
 		
-		item = manage(new Gtk::MenuItem(_("Interpolation")));
+		item = Gtk::manage(new Gtk::MenuItem(_("Interpolation")));
 		item->set_submenu(*param_interpolation_menu);
 		parammenu.append(*item);
 	}
@@ -1091,7 +1096,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 			waypoint_set.insert(*iter);
 
-			item = manage(new Gtk::MenuItem(_("Edit Waypoint")));
+			item = Gtk::manage(new Gtk::MenuItem(_("Edit Waypoint")));
 			item->signal_activate().connect(
 				sigc::bind(
 					sigc::bind(
@@ -1112,18 +1117,18 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	{
 		ValueNode_Composite::Handle wpoint_composite(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()));
 		synfigapp::Action::ParamList param_list;
-		Gtk::Menu *before_menu=manage(new Gtk::Menu());
-		Gtk::Menu *after_menu=manage(new Gtk::Menu());
+		Gtk::Menu *before_menu=Gtk::manage(new Gtk::Menu());
+		Gtk::Menu *after_menu=Gtk::manage(new Gtk::Menu());
 		param_list.add("canvas",canvas);
 		param_list.add("canvas_interface",canvas_interface);
 		param_list.add("time",canvas_interface->get_time());
-		parammenu.append(*manage(new Gtk::SeparatorMenuItem()));
+		parammenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
 
 
 		#define ADD_IMAGE_MENU_ITEM(Type, StockId, Text) \
 			param_list.add("new_value", ValueBase((int)WidthPoint::Type)); \
-			item = manage(new Gtk::ImageMenuItem( \
-				*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+			item = Gtk::manage(new Gtk::ImageMenuItem( \
+				*Gtk::manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
 				_(Text) )); \
 			item->signal_activate().connect( \
 				sigc::bind( \
@@ -1153,14 +1158,14 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Flat")
 
 		///////
-		parammenu.append(*manage(new Gtk::SeparatorMenuItem()));
+		parammenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
 
 		/////// Set WIDTH to ZERO
 		param_list.erase("value_desc");
 		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
 		param_list.add("new_value", ValueBase(Real(0.0)));
-		item = manage(new Gtk::MenuItem(_("Set width to zero")));
+		item = Gtk::manage(new Gtk::MenuItem(_("Set width to zero")));
 		item->signal_activate().connect(
 			sigc::bind(
 				sigc::bind(
@@ -1173,7 +1178,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("width")));
 		param_list.add("new_value", ValueBase(Real(1.0)));
-		item = manage(new Gtk::MenuItem(_("Set width to default")));
+		item = Gtk::manage(new Gtk::MenuItem(_("Set width to default")));
 		item->signal_activate().connect(
 			sigc::bind(
 				sigc::bind(
@@ -1325,7 +1330,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 	// Add the edit waypoints option if that might be useful
 	if(canvas->rend_desc().get_time_end()-Time::epsilon()>canvas->rend_desc().get_time_start())
 	{
-		Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("Edit Waypoints")));
+		Gtk::MenuItem *item = Gtk::manage(new Gtk::MenuItem(_("Edit Waypoints")));
 		item->signal_activate().connect(
 			sigc::bind(
 				sigc::bind(

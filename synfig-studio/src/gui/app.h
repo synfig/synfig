@@ -180,7 +180,7 @@ private:
 
 public:
 	// TODO: Implement InputDialog
-	static void* dialog_input;
+	//static Gtk::InputDialog* dialog_input;
 
 	static DeviceTracker*	device_tracker;
 	static AutoRecover*	auto_recover;

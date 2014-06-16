@@ -69,6 +69,7 @@
 #include <synfig/string.h>
 #include <synfigapp/main.h>
 #include <glibmm/thread.h>
+#include <glibmm/miscutils.h>
 
 #include "general.h"
 

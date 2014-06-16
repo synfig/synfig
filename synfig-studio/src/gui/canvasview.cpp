@@ -55,8 +55,10 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
-#include <gtk/gtktreestore.h>
-#include <gtk/gtkversion.h>
+#include <glibmm/uriutils.h>
+#include <glibmm/convert.h>
+
+#include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
 

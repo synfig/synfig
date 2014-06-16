@@ -118,16 +118,16 @@ IconController::IconController(const synfig::String& /*basepath*/)
 #define INIT_STOCK_ICON(name,iconfile,desc){							\
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
-	Gtk::IconSet icon_set;									\
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
 	icon_source.set_filename(path_to_icons+iconfile);							\
-	icon_set.add_source(icon_source);						\
+	icon_set->add_source(icon_source);						\
 	icon_factory->add(stockitem.get_stock_id(),icon_set); \
 	}
 
 #define INIT_STOCK_ICON_CLONE(name,stockid,desc){							\
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
-	Gtk::IconSet icon_set;									\
+	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create(); \
 	if(Gtk::Stock::lookup(stockitem.get_stock_id(),icon_set))	\
 	icon_factory->add(stockitem.get_stock_id(),icon_set); \
 	}
@@ -365,13 +365,13 @@ IconController::~IconController()
 	icon_factory->remove_default();
 }
 
-Gdk::Cursor
+Glib::RefPtr<Gdk::Cursor>
 IconController::get_normal_cursor()
 {
-	return Gdk::Cursor(Gdk::TOP_LEFT_ARROW);
+	return Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW);
 }
 
-Gdk::Cursor
+Glib::RefPtr<Gdk::Cursor>
 IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
 {
 	//this function is never called

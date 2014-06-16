@@ -568,7 +568,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		{
 			// Draw the curve
 			std::vector<Gdk::Point> &p = points[chan];
-			for(std::vector<Gdk::Point>::iterator i = p.begin(); i != p.end(); p++)
+			for(std::vector<Gdk::Point>::iterator i = p.begin(); i != p.end(); ++i)
 			{
 				if (i == p.begin())
 					cr->move_to(i->get_x(), i->get_y());
@@ -593,7 +593,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}
 
-	if (get_window() != NULL)
+	if (get_window())
 		get_window()->get_update_area();
 
 	return true;
