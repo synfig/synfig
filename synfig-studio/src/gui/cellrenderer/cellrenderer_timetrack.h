@@ -168,8 +168,7 @@ public:
     ~CellRenderer_TimeTrack();
 
 	void set_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x);
-	Glib::RefPtr<Gtk::Adjustment> get_adjustment();
-	Glib::RefPtr<const Gtk::Adjustment> get_adjustment()const;
+	Glib::RefPtr<Gtk::Adjustment> get_adjustment()const;
 
 	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface()const {return canvas_interface_;}
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h); //this should only be called by smart people

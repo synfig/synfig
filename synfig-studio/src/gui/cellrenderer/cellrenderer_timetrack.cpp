@@ -108,15 +108,9 @@ CellRenderer_TimeTrack::get_canvas()const
 }
 
 Glib::RefPtr<Gtk::Adjustment>
-CellRenderer_TimeTrack::get_adjustment()
+CellRenderer_TimeTrack::get_adjustment() const
 {
 	return (Glib::RefPtr<Gtk::Adjustment>)property_adjustment_;
-}
-
-Glib::RefPtr<const Gtk::Adjustment>
-CellRenderer_TimeTrack::get_adjustment()const
-{
-	return (Glib::RefPtr<const Gtk::Adjustment>)property_adjustment_;
 }
 
 bool
