@@ -68,8 +68,6 @@ class studio::Widget_Brush : public Gtk::DrawingArea
 public:
 	Widget_Brush()
 	{
-		signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Brush::redraw));
-
 		add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 		add_events(Gdk::BUTTON1_MOTION_MASK);
 
@@ -80,14 +78,8 @@ public:
 	}
 
 	bool
-	redraw(GdkEventExpose */*bleh*/)
+	on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	{
-		//!Check if the window we want draw is ready
-		Glib::RefPtr<Gdk::Window> window = get_window();
-		if(!window) return false;
-
-		Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-
 		const int h(get_height());
 		const int w(get_width());
 
@@ -103,23 +95,17 @@ public:
 			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
 		// Fill in the fill color
-		render_color_to_window(window,Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
+		render_color_to_window(cr,Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
 
 		// Draw in the circle
-		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_outline_color()));
-		gc->set_function(Gdk::COPY);
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		window->draw_arc(
-			gc,
-			true,
-			round_to_int(((float)w/2.0f)-pixelsize/2.0f),
-			round_to_int(((float)h/2.0f)-pixelsize/2.0f),
-			round_to_int(pixelsize+0.6),
-			round_to_int(pixelsize+0.6),
-			0,
-			360*64
-		);
-
+		Color brush=synfigapp::Main::get_outline_color();
+		double a(brush.get_a());
+		double r  =App::gamma.r_F32_to_F32  (brush.get_r());
+		double g  =App::gamma.g_F32_to_F32  (brush.get_g());
+		double b  =App::gamma.b_F32_to_F32  (brush.get_b());
+		cr->set_source_rgba(r, g, b, a);
+		cr->arc(w/2.0, h/2.0, pixelsize, 0.0, 360*M_PI/180.0);
+		cr->fill();
 		return true;
 	}
 
