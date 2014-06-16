@@ -133,10 +133,7 @@ public:
 
 
 /* ======================= EVENTS HANDLERS ===========================*/
-	//! Redraw event. Should draw background and all the keyframes : the selected, the dragged, disabled
-	//! connected on signal_expose_event()
-	//! \return true: if success or !editable. false: if there are not keyframes to draw
-	bool redraw();
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//! Gtk Widget main loop event, catch the Mouse events.
 	bool on_event(GdkEvent *event);

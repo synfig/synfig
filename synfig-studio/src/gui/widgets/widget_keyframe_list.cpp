@@ -67,8 +67,6 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	editable_=true;
 	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;
 	set_size_request(-1,64);
-	//!This signal is called when the widget need to be redrawn
-	signal_expose_event().connect(sigc::hide(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw)));
 	//! The widget respond to mouse button press and release and to
 	//! left button motion
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
@@ -97,7 +95,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 }
 
 bool
-Widget_Keyframe_List::redraw()
+Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> window = get_window();
@@ -110,16 +108,19 @@ Widget_Keyframe_List::redraw()
 	synfig::Time top(adj_timescale->get_upper());
 	synfig::Time bottom(adj_timescale->get_lower());
 
-	//! The graphic context
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	//! The style of the widget.
-	Glib::RefPtr<Gtk::Style> style = get_style();
+	Glib::RefPtr<Gtk::StyleContext> style = get_style_context();
+	Gtk::StateFlags state = style->get_state();
+
 	//! A rectangle that defines the drawing area.
 	Gdk::Rectangle area(0,0,w,h);
+	Gdk::RGBA background("#9d9d9d");
 
 	//! draw a background
-	gc->set_rgb_fg_color(Gdk::Color("#9d9d9d"));
-	window->draw_rectangle(gc, true, 0, 0, w, h);
+	cr->set_source_rgb(background.get_red(), background.get_green(), background.get_blue());
+	cr->rectangle(0.0, 0.0, w, h);
+	cr->fill();
+	cr->restore();
 
 	if(!editable_)
 	{
@@ -143,13 +144,11 @@ Widget_Keyframe_List::redraw()
 			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for disabled keyframe
 			if (iter->active())
-				style->paint_arrow(window, Gtk::STATE_NORMAL,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-				x-h/2+1, 0, h, h );
+				style->set_state(Gtk::STATE_FLAG_NORMAL);
 			else
-				style->paint_arrow(window, Gtk::STATE_INSENSITIVE,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
-				x-h/2+1, 0, h, h );
+				style->set_state(Gtk::STATE_FLAG_INSENSITIVE);
+			style->render_arrow(cr, 1.5*PI, x+1, h, h);
+			style->set_state(state);
 		}
 		else
 		{
@@ -167,37 +166,32 @@ Widget_Keyframe_List::redraw()
 		{
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			// Change shape for selected disabled keyframe
+			style->set_state(Gtk::STATE_FLAG_NORMAL);
 			if (selected_iter->active())
 			{
 				// Draw a selected arrow with "normal border"
-				style->paint_arrow(window, Gtk::STATE_NORMAL,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-				x-h/2+1, 0, h, h);
-				style->paint_arrow (window, Gtk::STATE_SELECTED,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-				x-h/2+3, 2, h-3, h-3);
+				style->render_arrow(cr, 1.5*PI, x+1, h, h);
+				style->render_arrow(cr, 1.5*PI, x+3, h-1, h-3);
 			}
 			else
-				// Draw a selected arrow with "normal border" looking a right
-				style->paint_arrow(get_window(), Gtk::STATE_NORMAL,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
-				x-h/2+1, 0, h, h );
-				style->paint_arrow (get_window(), Gtk::STATE_SELECTED,
-				Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_RIGHT, 1,
-				x-h/2+3, 2, h-3, h-3);
+			{
+				style->render_arrow(cr, PI, x+h/2+1, h/2, h);
+				style->render_arrow(cr, PI, x+h/2, 2+(h-3)/2, h-3);
+			}
+			style->set_state(state);
 		}
 		// If dragging then show the selected as insensitive and the
 		// dragged as selected
 		else
 		{
+			style->set_state(Gtk::STATE_FLAG_NORMAL);
 			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
-			style->paint_arrow(window, Gtk::STATE_INSENSITIVE,
-			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-			x-h/2, 0, h, h );
+			style->render_arrow(cr, 1.5*PI, x, h, h);
+
 			x=(int)((float)(dragging_kf_time-bottom) * (w/(top-bottom)) ) ;
-			style->paint_arrow(window, Gtk::STATE_SELECTED,
-			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-			x-h/2+1, 0, h, h );
+			style->render_arrow(cr, 1.5*PI, x+1, h, h);
+
+			style->set_state(state);
 		}
 	}
 	return true;
@@ -372,7 +366,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					tooltip_label.append(selected_kf.get_time().get_string(fps,App::get_time_format()));
 					moving_tooltip_label_->set_text (tooltip_label);
 
-					if(!moving_tooltip_->is_visible ())
+					if(!moving_tooltip_->get_visible ())
 					{
 						//! Show the tooltip and fix his y coordinate (up to the widget)
 						moving_tooltip_->show();
@@ -525,21 +519,21 @@ Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasIn
 		canvas_interface_->signal_keyframe_added().connect(
 			sigc::hide_return(
 				sigc::hide(
-					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::queue_draw)
 				)
 			)
 		);
 		canvas_interface_->signal_keyframe_changed().connect(
 			sigc::hide_return(
 				sigc::hide(
-					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::queue_draw)
 				)
 			)
 		);
 		canvas_interface_->signal_keyframe_removed().connect(
 			sigc::hide_return(
 				sigc::hide(
-					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::redraw)
+					sigc::mem_fun(*this,&studio::Widget_Keyframe_List::queue_draw)
 				)
 			)
 		);
