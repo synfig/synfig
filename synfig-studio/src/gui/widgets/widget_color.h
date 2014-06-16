@@ -45,7 +45,7 @@ namespace studio {
 
 Gdk::Color colorconv_synfig2gdk(const synfig::Color &c);
 
-void render_color_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Color &color);
+void render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gdk::Rectangle &ca, const synfig::Color &color);
 
 class Widget_Color : public Gtk::DrawingArea
 {
@@ -68,7 +68,7 @@ public:
 	Widget_Color();
 	~Widget_Color();
 private:
-	bool redraw(GdkEventExpose*bleh);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
 
 }; // END of class Widget_Color

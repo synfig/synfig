@@ -65,14 +65,12 @@ studio::colorconv_synfig2gdk(const synfig::Color &c_)
 }
 
 void
-studio::render_color_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Color &color)
+studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gdk::Rectangle &ca, const synfig::Color &color)
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());
 
 	const int square_size(height/2);
-
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 
 	if(color.get_alpha()!=1.0)
 	{
@@ -81,9 +79,6 @@ studio::render_color_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,cons
 		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
 		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
 
-		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
-		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
-
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
 		{
@@ -91,36 +86,42 @@ studio::render_color_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,cons
 
 			if(toggle)
 			{
-				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+		        cr->set_source_rgb(bg1.get_r(), bg1.get_g(), bg1.get_b());
+		        cr->rectangle(ca.get_x()+i, ca.get_y(), square_width, square_size);
+		        cr->fill();
 
-				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
+		        cr->set_source_rgb(bg2.get_r(), bg2.get_g(), bg2.get_b());
+		        cr->rectangle(ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
+		        cr->fill();
 				toggle=false;
 			}
 			else
 			{
-				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+		        cr->set_source_rgb(bg2.get_r(), bg2.get_g(), bg2.get_b());
+		        cr->rectangle(ca.get_x()+i, ca.get_y(), square_width, square_size);
+		        cr->fill();
 
-				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
+		        cr->set_source_rgb(bg1.get_r(), bg1.get_g(), bg1.get_b());
+		        cr->rectangle(ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
+		        cr->fill();
 				toggle=true;
 			}
 		}
 	}
 	else
 	{
-		// In this case we have a solid color to use
-		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
-
-		gc->set_rgb_fg_color(gdk_c1);
-		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
+        cr->set_source_rgb(color.get_r(), color.get_g(), color.get_b());
+        cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
+        cr->fill();
 	}
-	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-	window->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, width-3, height-3);
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, ca.get_x(), ca.get_y(), width-1, height-1);
+
+	cr->set_source_rgb(1.0, 1.0, 1.0);
+    cr->rectangle(ca.get_x()+1, ca.get_y()+1, width-3, height-3);
+    cr->stroke();
+
+    cr->set_source_rgb(0.0, 0.0, 0.0);
+    cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->stroke();
 }
 
 /* === C L A S S E S ======================================================= */
@@ -132,8 +133,6 @@ Widget_Color::Widget_Color()
 {
 	color=Color(0,0,0,0);
 	set_size_request(-1,16);
-
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Color::redraw));
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 
 }
@@ -187,16 +186,8 @@ Widget_Color::on_event(GdkEvent *event)
 }
 
 bool
-Widget_Color::redraw(GdkEventExpose */*bleh*/)
+Widget_Color::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return true;
-
-	const int h(get_height());
-	const int w(get_width());
-
-	render_color_to_window(window,Gdk::Rectangle(0,0,w,h),color);
-
+	render_color_to_window(cr, Gdk::Rectangle(0,0,get_width(),get_height()), color);
 	return true;
 }
