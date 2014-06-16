@@ -118,7 +118,6 @@ synfigstudio_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@GTKMM_CFLAGS@ \
 	@JACK_CFLAGS@ \
-	@SYNFIG_WARNING_FLAGS@ \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \
