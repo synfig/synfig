@@ -108,9 +108,7 @@ private:
 	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
 	static void slider_color_TYPE_A(synfig::Color &color, float amount);
 
-
-	bool
-	redraw(GdkEventExpose*bleh);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
 }; // END of class ColorSlider
 

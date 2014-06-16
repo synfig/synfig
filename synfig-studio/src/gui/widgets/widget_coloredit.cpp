@@ -66,7 +66,6 @@ using namespace studio;
 ColorSlider::ColorSlider(const ColorSlider::Type &x):
 	type(x)
 {
-	signal_expose_event().connect(sigc::mem_fun(*this, &ColorSlider::redraw));
 	set_size_request(-1,12);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -116,12 +115,8 @@ ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 }
 
 bool
-ColorSlider::redraw(GdkEventExpose */*bleh*/)
+ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return false;
-
 	Color color(color_);
 
 	static const slider_color_func jump_table[int(TYPE_END)] =
@@ -161,7 +156,6 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 
 	Gdk::Rectangle ca(0,0,width,height);
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
 	int i;
@@ -178,42 +172,41 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 
 		if((i*2/height)&1)
 		{
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->fill();
 
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->fill();
 		}
 		else
 		{
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->fill();
 
-			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
-			window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
+	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->fill();
 		}
 	}
 
-	get_style()->paint_arrow(
-		window,
-		(orig_color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE,
-		//use light arrow on dark color, and dark arrow on light color , TODO: detect from style which is darkest from SELECTED or ACTIVE
-		Gtk::SHADOW_OUT,
-		ca,
-		*this,
-		" ",
-		Gtk::ARROW_UP,
-		1,
-		int(amount*width)-height/2,
+	get_style_context()->render_arrow(
+		cr,
+		1.5*M_PI,
+		(int(amount*width)-height/2),
 		0,
-		height,
 		height
 	);
 
-	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-	window->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, width-3, height-3);
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->set_source_rgb(1, 1, 1);
+    cr->rectangle(ca.get_x()+1, ca.get_y()+1, width-3, height-3);
+    cr->stroke();
+
+    cr->set_source_rgb(0, 0, 0);
+    cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->stroke();
 	return true;
 }
 
