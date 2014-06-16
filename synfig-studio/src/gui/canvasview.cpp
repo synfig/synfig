@@ -58,7 +58,7 @@
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
 
-#include <gdk/gdkdevice.h>
+#include <gdk/gdk.h>
 
 #include <synfig/valuenode_reference.h>
 #include <synfig/valuenode_subtract.h>
