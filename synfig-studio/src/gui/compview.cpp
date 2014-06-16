@@ -53,7 +53,7 @@
 #define ADD_TOOLBOX_BUTTON(button,stockid,tooltip)	\
 	Gtk::Button *button = manage(new class Gtk::Button());	\
 	button->add(*manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::IconSize(4))));	\
-	tooltips.set_tip(*button,tooltip);	\
+	tooltip.set_tip(*button,tooltip);	\
 	button->show_all()
 
 using namespace std;
@@ -341,13 +341,23 @@ CompView::clear_redo()
 void
 CompView::init_menu()
 {
-	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-canvas_new"),
-		sigc::mem_fun(*this,&CompView::menu_new_canvas)));
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),
-		sigc::mem_fun(*this,&CompView::menu_delete)));
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-rename"),
-		sigc::mem_fun(*this,&CompView::menu_rename)));
+	Gtk::MenuItem *item = NULL;
+	menu.append(*manage(new Gtk::SeparatorMenuItem()));
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-canvas_new")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_new_canvas));
+	menu.append(*item);
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_delete));
+	menu.append(*item);
+
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-rename")));
+	item->signal_activate().connect(
+		sigc::mem_fun(*this,&CompView::menu_rename));
+	menu.append(*item);
 }
 
 etl::loose_handle<synfig::Canvas>
@@ -558,6 +568,7 @@ CompView::on_action_event(GdkEvent *event)
 			}
 			break;
 		}
+		break;
 
 	case GDK_BUTTON_RELEASE:
 		break;
@@ -578,7 +589,9 @@ CompView::on_tree_event(GdkEvent *event)
 		case 3:
 		if(get_selected_canvas())
 		{
-			menu.items().clear();
+			std::vector<Gtk::Widget*> children = menu.get_children();
+			for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+				menu.remove(**i);
 
 			synfigapp::Action::ParamList param_list;
 			param_list.add("canvas",synfig::Canvas::Handle(get_selected_canvas()));
@@ -586,7 +599,6 @@ CompView::on_tree_event(GdkEvent *event)
 			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,synfigapp::Action::CATEGORY_CANVAS);
 			menu.popup(0,0);
 			menu.show();
-			break;
 		}
 		break;
 		default:

@@ -33,7 +33,7 @@
 
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
@@ -63,7 +63,7 @@ class CompView : public Gtk::Window
 {
 	DialogSettings dialog_settings;
 
-	Gtk::Tooltips tooltips;
+	Gtk::Tooltip tooltip;
 
 	Gtk::ComboBoxText instance_selector;
 	Gtk::Notebook *notebook;
