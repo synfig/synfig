@@ -73,8 +73,8 @@ Renderer_Background::render_vfunc(
 	if(!get_work_area())
 		return;
 
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 	
 	int w=get_w();
 	int h=get_h();
