@@ -40,7 +40,7 @@
 #include <gui/canvasview.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/alignment.h>
-#include <gtkmm/comboboxentrytext.h>
+#include <gtkmm/comboboxtext.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
@@ -254,7 +254,7 @@ class Widget_Preview : public Gtk::Table
 	bool scroll_move_event(GdkEvent *);
 	void disconnect_preview(Preview *);
 
-	bool redraw(GdkEventExpose *heh = 0);
+	bool redraw(const Cairo::RefPtr<Cairo::Context> &cr);
 	void preview_draw();
 
 	void hide_toolbar();
@@ -308,7 +308,7 @@ protected:
 
 	ModelColumns factors;
 
-	Gtk::ComboBoxEntry zoom_preview; 
+	Gtk::ComboBoxText zoom_preview;
 	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
 	
 private:

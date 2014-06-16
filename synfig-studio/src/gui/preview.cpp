@@ -392,6 +392,7 @@ Widget_Preview::Widget_Preview():
 	jack_client(NULL),
 	jack_synchronizing(false)
 #endif
+	zoom_preview(true)
 {
 	//catch key press event for shortcut keys
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_key_pressed));
@@ -407,16 +408,16 @@ Widget_Preview::Widget_Preview():
 	preview_window.add(draw_area);
 
 	//preview window background color
-	Gdk::Color bg_color;
+	Gdk::RGBA bg_color;
 	bg_color.set_red(54*256);
 	bg_color.set_blue(59*256);
 	bg_color.set_green(59*256);
-	draw_area.modify_bg(Gtk::STATE_NORMAL, bg_color);
+	draw_area.override_background_color(bg_color);
 
 
 	adj_time_scrub->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
-	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
+	draw_area.signal_draw().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
 	
 	scr_time_scrub.set_draw_value(0);
 
@@ -573,7 +574,7 @@ Widget_Preview::Widget_Preview():
 	row = *(factor_refTreeModel->append());
 	row[factors.factor_id] = "5";
 	row[factors.factor_value] = _("Fit");
-	zoom_preview.set_text_column(factors.factor_value);
+	zoom_preview.set_entry_text_column(factors.factor_value);
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	entry->set_text("100%"); //default zoom level
@@ -734,7 +735,7 @@ void studio::Widget_Preview::preview_draw()
 	draw_area.queue_draw();//on_expose_event();
 }
 
-bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
+bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;
@@ -830,9 +831,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 
 	//synfig::info("Now to draw to the window...");
 	//copy to window
-	Glib::RefPtr<Gdk::Window>	wind = draw_area.get_window();
-	Cairo::RefPtr<Cairo::Context> cr = wind->create_cairo_context();
-
+	Glib::RefPtr<Gdk::Window> wind = draw_area.get_window();
 	if(!wind) synfig::warning("The destination window is broken...");
 
 	if(!use_cairo)
