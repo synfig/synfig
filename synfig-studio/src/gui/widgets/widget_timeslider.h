@@ -40,7 +40,7 @@
 
 namespace studio {
 
-void render_time_point_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
+void render_time_point_to_window(const Cairo::RefPtr<Cairo::Context> &cr,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
 
 
 /* Design for the timeslider...
@@ -85,9 +85,7 @@ protected: //implementation that other interfaces can see
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 
-	virtual bool on_expose_event(GdkEventExpose */*event*/) {redraw(); return true;}//for drawing
-
-	virtual bool redraw(bool doublebuffer = false);
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	//void update_times();
 
@@ -108,7 +106,7 @@ public: //structors
 
 public: //Normal Interface
 
-	void draw() {redraw();}
+	void draw() {queue_draw();}
 	virtual void refresh(); //reget bluepills, time values and queue_draw if need be
 
 public: //Time Interface

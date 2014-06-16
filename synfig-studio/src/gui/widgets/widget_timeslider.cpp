@@ -57,168 +57,142 @@ const double zoomoutfactor = 1/zoominfactor;
 
 /* === P R O C E D U R E S ================================================= */
 
-Gdk::Color get_interp_color(synfig::Interpolation x)
+Gdk::RGBA get_interp_color(synfig::Interpolation x)
 {
 	switch(x)
 	{
 	case INTERPOLATION_TCB:
-		return Gdk::Color("#73d216");
+		return Gdk::RGBA("#73d216");
 	case INTERPOLATION_LINEAR:
-		return Gdk::Color("#edd400");
+		return Gdk::RGBA("#edd400");
 	case INTERPOLATION_CONSTANT:
-		return Gdk::Color("#cc0000");
+		return Gdk::RGBA("#cc0000");
 	case INTERPOLATION_HALT:
-		return Gdk::Color("#3465a4");
+		return Gdk::RGBA("#3465a4");
 	case INTERPOLATION_MANUAL:
-		return Gdk::Color("#75507b");
+		return Gdk::RGBA("#75507b");
 	case INTERPOLATION_CLAMPED:
-		return Gdk::Color("#c17d11");
-	case INTERPOLATION_UNDEFINED: default:
-		return Gdk::Color("#555753");
+		return Gdk::RGBA("#c17d11");
+	case INTERPOLATION_UNDEFINED:
+	default:
+		break;
 	}
-	return Gdk::Color("#000000");
+	return Gdk::RGBA("#555753");
 }
 
-static Gdk::Color
-color_darken(Gdk::Color x, float amount)
+static Gdk::RGBA
+color_darken(Gdk::RGBA x, float amount)
 {
-	double   red = x.get_red_p()   * amount;
-	double green = x.get_green_p() * amount;
-	double  blue = x.get_blue_p()  * amount;
-
-	x.set_rgb_p(  red > 1 ? 1 : red,
-				green > 1 ? 1 : green,
-				 blue > 1 ? 1 : blue);
-
+	x.set_red(x.get_red() * amount);
+	x.set_green(x.get_green() * amount);
+	x.set_blue(x.get_blue() * amount);
 	return x;
 }
 
 void
 studio::render_time_point_to_window(
-	const ::Cairo::RefPtr< ::Cairo::Context>& cr,
+	const Cairo::RefPtr<Cairo::Context> &cr,
 	const Gdk::Rectangle& area,
 	const synfig::TimePoint &tp,
 	bool selected
 )
 {
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	const Gdk::Color black("#2e3436");
+	const Gdk::RGBA black("#2e3436"); // it's black, trust me
 
 	if(selected)
-		gc->set_line_attributes(2,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+		cr->set_line_width(2.0);
 	else
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+		cr->set_line_width(1.0);
 
-	Gdk::Color color;
-	std::vector<Gdk::Point> points;
+	Gdk::RGBA color;
 
 /*-	BEFORE ------------------------------------- */
 
 	color=get_interp_color(tp.get_before());
 	color=color_darken(color,1.0f);
 	if(selected)color=color_darken(color,1.3f);
-	gc->set_rgb_fg_color(color);
+	cr->set_source_rgb(color.get_red(),color.get_green(),color.get_blue());
 
 	switch(tp.get_before())
 	{
 	case INTERPOLATION_TCB:
-		window->draw_arc(
-			gc,
-			true,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height(),
-			64*90,
-			64*180
-		);
-		gc->set_rgb_fg_color(black);
-		window->draw_arc(
-			gc,
-			false,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height(),
-			64*90,
-			64*180
-		);
+		cr->save();
+		cr->translate(area.get_x(), area.get_y());
+		cr->scale(area.get_width(), area.get_height());
+		cr->arc(0.5, 0.5, 0.5, 90*M_PI/180.0, 270*M_PI/180.0);
+		cr->fill_preserve();
+		cr->restore();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
 		break;
 
 	case INTERPOLATION_HALT:
-		window->draw_arc(
-			gc,
-			true,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height()*2,
-			64*90,
-			64*90
-		);
-		gc->set_rgb_fg_color(black);
-		window->draw_arc(
-			gc,
-			false,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height()*2,
-			64*90,
-			64*90
-		);
+		cr->save();
+		cr->translate(area.get_x(), area.get_y());
+		cr->scale(area.get_width(), area.get_height()*2);
+		cr->move_to(0.5, 0.5);
+		cr->arc(0.5, 0.5, 0.5, 180*M_PI/180.0, 270*M_PI/180.0);
+		cr->fill();
+		cr->arc(0.5, 0.5, 0.5, 180*M_PI/180.0, 270*M_PI/180.0);
+		cr->restore();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
 
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_lines(gc,points);
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->move_to(area.get_x(),area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->stroke();
 
 		break;
 
 	case INTERPOLATION_LINEAR:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x(),area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/4,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/4,area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4,area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x(),area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_UNDEFINED: default:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/3,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/3,area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/3,area.get_y());
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/3);
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3);
+		cr->line_to(area.get_x()+area.get_width()/3,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 	}
 
@@ -227,108 +201,88 @@ studio::render_time_point_to_window(
 	color=get_interp_color(tp.get_after());
 	color=color_darken(color,0.8f);
 	if(selected)color=color_darken(color,1.3f);
-	gc->set_rgb_fg_color(color);
+	cr->set_source_rgb(color.get_red(),color.get_green(),color.get_blue());
 
 	switch(tp.get_after())
 	{
 	case INTERPOLATION_TCB:
-		window->draw_arc(
-			gc,
-			true,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height(),
-			64*270,
-			64*180
-		);
-		gc->set_rgb_fg_color(black);
-		window->draw_arc(
-			gc,
-			false,
-			area.get_x(),
-			area.get_y(),
-			area.get_width(),
-			area.get_height(),
-			64*270,
-			64*180
-		);
+		cr->save();
+		cr->translate(area.get_x(), area.get_y());
+		cr->scale(area.get_width(), area.get_height());
+		cr->arc(0.5, 0.5, 0.5, -90*M_PI/180.0, 90*M_PI/180.0);
+		cr->fill_preserve();
+		cr->restore();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
 		break;
 
 	case INTERPOLATION_HALT:
-		window->draw_arc(
-			gc,
-			true,
-			area.get_x(),
-			area.get_y()-area.get_height(),
-			area.get_width(),
-			area.get_height()*2,
-			64*270,
-			64*90
-		);
-		gc->set_rgb_fg_color(black);
-		window->draw_arc(
-			gc,
-			false,
-			area.get_x(),
-			area.get_y()-area.get_height(),
-			area.get_width(),
-			area.get_height()*2,
-			64*270,
-			64*90
-		);
+		cr->save();
+		cr->translate(area.get_x(), area.get_y());
+		cr->scale(area.get_width(), area.get_height()*2);
+		cr->move_to(0.5, 0.0);
+		cr->arc(0.5, 0.0, 0.5, 0*M_PI/180.0, 90*M_PI/180.0);
+		cr->fill();
+		cr->arc(0.5, 0.0, 0.5, 0*M_PI / 180.0, 90*M_PI / 180.0);
+		cr->restore();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
 
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
-		window->draw_lines(gc,points);
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y());
+		cr->stroke();
 
 		break;
 
 	case INTERPOLATION_LINEAR:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 
 	case INTERPOLATION_UNDEFINED: default:
-		points.clear();
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()-area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()+area.get_height()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
-		window->draw_polygon(gc,true,points);
-		gc->set_rgb_fg_color(black);
-		window->draw_lines(gc,points);
+		cr->save();
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3);
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()-area.get_height()/3);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->fill_preserve();
+		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->stroke();
+		cr->restore();
 		break;
 	}
 
@@ -363,7 +317,7 @@ Widget_Timeslider::~Widget_Timeslider()
 {
 }
 
-void Widget_Timeslider::set_time_adjustment(const Gtk::Adjustment<Gtk::Adjustment> &x)
+void Widget_Timeslider::set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment> &x)
 {
 	//disconnect old connections
 	time_value_change.disconnect();
@@ -428,29 +382,17 @@ void Widget_Timeslider::refresh()
 	}
 }*/
 
-bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
+bool Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	Glib::RefPtr<Gdk::Window> window = get_window();
 
-	if(!window) return false;
-
-	Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(window);
-	if(!gc) return false;
-
-	//synfig::info("Drawing Timeslider");
-	//clear	and update to current values
-	//invalidated = false;
-	//update_times();
-
-	//draw grey rectangle
-	Gdk::Color	c("#7f7f7f");
-	gc->set_rgb_fg_color(c);
-	gc->set_background(c);
-
-	//Get the data for the window and the params to draw it...
 	int w = get_width(), h = get_height();
-
-	window->draw_rectangle(gc,true,0,0,w,h);
+	//draw grey rectangle
+	cr->save();
+	cr->set_source_rgb(0.5, 0.5, 0.5);
+	cr->rectangle(0.0,0.0,w,h);
+	cr->fill();
+	cr->restore();
 
 	const double EPSILON = 1e-6;
 	if(!adj_timescale || w == 0) return true;
@@ -462,17 +404,24 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 
 	if(end-start < EPSILON) return true;
 
-	//synfig::info("Drawing Lines");
-
 	//draw all the time stuff
 	double dtdp = (end - start)/get_width();
 	double dpdt = 1/dtdp;
 
 	//lines
 
-	//normal line/text color
-	gc->set_rgb_fg_color(Gdk::Color("#333333"));
 
+	//Draw the time line...
+	double tpx = round_to_int((current-start)*dpdt)+0.5;
+	cr->save();
+	cr->set_source_rgb(1.0, 175.0/255.0, 0.0);
+	cr->set_line_width(1.0);
+	cr->move_to(tpx, 0.0);
+	cr->line_to(tpx, fullheight);
+	cr->stroke();
+	cr->restore();
+
+	// Calculate the line intervals
 	int ifps = round_to_int(fps);
 	if (ifps < 1) ifps = 1;
 
@@ -576,24 +525,31 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 	//synfig::info("Initial values: %.4lf t, %.1lf pixels, %d i", time,pixel,sdindex);
 
 	//loop to draw
-	const int heightbig = 12;
-	const int heightsmall = 4;
+	const double heightbig = 12;
+	const double heightsmall = 4;
+
+	// Draw the lines and timecode
+	//normal line/text color
+	cr->save();
+	cr->set_source_rgb(51.0/255.0,51.0/255.0,51.0/255.0);
+	cr->set_line_width(1.0);
 
 	int width = get_width();
 	while( pixel < width )
 	{
-		int xpx = round_to_int(pixel);
+		double xpx = round_to_int(pixel)+0.5;
 
 		//draw big
 		if(sdindex == 0)
 		{
-			window->draw_line(gc,xpx,0,xpx,heightbig);
+			cr->move_to(xpx,0);
+			cr->line_to(xpx,heightbig);
+			cr->stroke();
 			//round the time to nearest frame and draw the text
 			Time tm((double)time);
 			if(get_global_fps()) tm.round(get_global_fps());
 			Glib::ustring timecode(tm.get_string(get_global_fps(),App::get_time_format()));
 
-			//gc->set_rgb_fg_color(Gdk::Color("#000000"));
 			layout->set_text(timecode);
 			Pango::AttrList attr_list;
 			// Aproximately a font size of 8 pixels.
@@ -605,10 +561,13 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 			pango_size.set_end_index(64);
 			attr_list.change(pango_size);
 			layout->set_attributes(attr_list);
-			window->draw_layout(gc,xpx+2,0,layout);
+			cr->move_to(xpx+1.0,0);
+			layout->show_in_cairo_context(cr);
 		}else
 		{
-			window->draw_line(gc,xpx,0,xpx,heightsmall);
+			cr->move_to(xpx,0);
+			cr->line_to(xpx,heightsmall);
+			cr->stroke();
 		}
 
 		//increment time and position
@@ -618,11 +577,15 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 		//increment index
 		if(++sdindex >= subdiv) sdindex -= subdiv;
 	}
+	cr->restore();
 
 	//Draw the time line afer all
+	Gdk::RGBA c("#ffaf00");
+	cr->set_source_rgb(c.get_red(), c.get_green(), c.get_blue());
 	double tpx = (current-start)*dpdt;
-	gc->set_rgb_fg_color(Gdk::Color("#ffaf00"));
-	window->draw_line(gc,round_to_int(tpx),0,round_to_int(tpx),fullheight);
+	cr->move_to(round_to_int(tpx),0);
+	cr->line_to(round_to_int(tpx),fullheight);
+	cr->stroke();
 
 	return true;
 }
