@@ -56,54 +56,43 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 void
-studio::render_gradient_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Gradient &gradient)
+studio::render_gradient_to_window(const Cairo::RefPtr<Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Gradient &gradient)
 {
-	int	height = ca.get_height();
-	int	width = ca.get_width()-4;
+	double	height = ca.get_height();
+	double	width = ca.get_width();
 
-	float sample_width(1.0f/(float)width);
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	const Color bg1(0.25, 0.25, 0.25);
-	const Color bg2(0.5, 0.5, 0.5);
-	Gdk::Color gdk_c;
-	int i;
-	for(i=0;i<width;i++)
+	Cairo::RefPtr<Cairo::LinearGradient> gpattern = Cairo::LinearGradient::create(ca.get_x(), ca.get_y(), ca.get_x()+width, ca.get_y());
+	double a, r, g, b;
+	Gradient::CPoint cp;
+	Gradient::const_iterator iter;
+	for(iter=gradient.begin();iter!=gradient.end(); iter++)
 	{
-		const Color c(gradient(float(i)/float(width),sample_width));
-		const Color c1(Color::blend(c,bg1,1.0).clamped());
-		const Color c2(Color::blend(c,bg2,1.0).clamped());
-		gushort r1(256*App::gamma.r_F32_to_U8(c1.get_r()));
-		gushort g1(256*App::gamma.g_F32_to_U8(c1.get_g()));
-		gushort b1(256*App::gamma.b_F32_to_U8(c1.get_b()));
-		gushort r2(256*App::gamma.r_F32_to_U8(c2.get_r()));
-		gushort g2(256*App::gamma.g_F32_to_U8(c2.get_g()));
-		gushort b2(256*App::gamma.b_F32_to_U8(c2.get_b()));
-
-		if((i*2/height)&1)
-		{
-			gdk_c.set_rgb(r1,g1,b1);
-			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);
-
-			gdk_c.set_rgb(r2,g2,b2);
-			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y()+height/2, 1, height/2);
-		}
-		else
-		{
-			gdk_c.set_rgb(r2,g2,b2);
-			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);
-
-			gdk_c.set_rgb(r1,g1,b1);
-			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y()+height/2, 1, height/2);
-		}
+		cp=*iter;
+		a=cp.color.get_a();
+		r=cp.color.get_r();
+		g=cp.color.get_g();
+		b=cp.color.get_b();
+		gpattern->add_color_stop_rgba(cp.pos, r, g, b, a);
 	}
-	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-	window->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, ca.get_width()-3, height-3);
-	gc->set_rgb_fg_color(Gdk::Color("#000000"));
-	window->draw_rectangle(gc, false, ca.get_x(), ca.get_y(), ca.get_width()-1, height-1);
+
+	cr->save();
+	cr->rectangle(ca.get_x(), ca.get_y(), ca.get_width()-2, ca.get_height());
+	cr->set_source(gpattern);
+	cr->fill();
+	cr->restore();
+
+	cr->save();
+	cr->set_line_width(1.0);
+	cr->set_source_rgb(1.0, 1.0, 1.0);
+	cr->rectangle(ca.get_x()+1.5, ca.get_y()+1.5, width-3, height-3);
+	cr->stroke();
+	cr->restore();
+	cr->save();
+	cr->set_line_width(1.0);
+	cr->set_source_rgb(0.0, 0.0, 0.0);
+	cr->rectangle(ca.get_x()+0.5, ca.get_y()+0.5, width-1, height-1);
+	cr->stroke();
+	cr->restore();
 }
 
 /* === M E T H O D S ======================================================= */
@@ -112,7 +101,6 @@ Widget_Gradient::Widget_Gradient():
 	editable_(false)
 {
 	set_size_request(-1,64);
-	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Gradient::redraw));
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
@@ -124,45 +112,34 @@ Widget_Gradient::~Widget_Gradient()
 
 #define CONTROL_HEIGHT		16
 bool
-Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
+Widget_Gradient::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> window = get_window();
-	if(!window) return false;
-
 	const int h(get_height());
 	const int w(get_width());
 
-	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	Gdk::Rectangle area(0,0,w,h);
 	if(!editable_)
 	{
-		render_gradient_to_window(window,area,gradient_);
+		render_gradient_to_window(cr,area,gradient_);
 		return true;
 	}
 
-	render_gradient_to_window(window,Gdk::Rectangle(0,0,w,h),gradient_);
+	render_gradient_to_window(cr,Gdk::Rectangle(0,0,w,h),gradient_);
 
-	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
 	Gradient::iterator iter,selected_iter;
 	bool show_selected(false);
 	for(iter=gradient_.begin();iter!=gradient_.end();iter++)
 	{
 		if(*iter!=selected_cpoint)
-		get_style()->paint_arrow(
-			window,
-		  (iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE, here SELECTED is lighter.
-			Gtk::SHADOW_OUT,
-			area,
-			*this,
-			" ",
-			Gtk::ARROW_UP,
-			1,
-			int(iter->pos*w)-CONTROL_HEIGHT/2+1,
-			h-CONTROL_HEIGHT,
-			CONTROL_HEIGHT,
-			CONTROL_HEIGHT
-		);
+		{
+			get_style_context()->render_arrow(
+				cr,
+				1.5*M_PI,
+				int(iter->pos*w)-CONTROL_HEIGHT/2+1,
+				h-CONTROL_HEIGHT,
+				CONTROL_HEIGHT
+			);
+		}
 		else
 		{
 			selected_iter=iter;
@@ -177,32 +154,18 @@ Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 
 	if(show_selected)
 	{
-		get_style()->paint_arrow(
-			window,
-			(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
-			Gtk::SHADOW_OUT,
-			area,
-			*this,
-			" ",
-			Gtk::ARROW_UP,
-			1,
+		get_style_context()->render_arrow(
+			cr,
+			1.5*M_PI,
 			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT,
-			CONTROL_HEIGHT,
 			CONTROL_HEIGHT
-		); // paint_arrow(window, state_type, shadow_type, area, widget, detail, arrow_type, fill, x, y, width, height)
-		get_style()->paint_arrow(
-			window,
-						(selected_iter->color.get_y()<ARROW_NEGATIVE_THRESHOLD)?Gtk::STATE_SELECTED:Gtk::STATE_ACTIVE, //use light arrow on dark color, and dark arrow on light color , todo detect from style which is darkest from SELECTED or ACTIVE
-			Gtk::SHADOW_OUT,
-			area,
-			*this,
-			" ",
-			Gtk::ARROW_UP,
-			1,
+		);
+		get_style_context()->render_arrow(
+			cr,
+			1.5*M_PI,
 			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT*1.3,
-			CONTROL_HEIGHT,
 			CONTROL_HEIGHT
 		);
 	}
@@ -237,29 +200,27 @@ Widget_Gradient::popup_menu(float x)
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
-	menu->items().clear();
+	std::vector<Gtk::Widget*> children = menu->get_children();
+	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+		menu->remove(**i);
 
-	menu->items().push_back(
-		Gtk::Menu_Helpers::MenuElem(
-			_("Insert Color Stop"),
-			sigc::bind(
-				sigc::mem_fun(*this,&studio::Widget_Gradient::insert_cpoint),
-				x
-			)
-		)
-	);
+	Gtk::MenuItem *item = NULL;
+
+	item = manage(new Gtk::MenuItem(_("Insert Color Stop")));
+	item->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::Widget_Gradient::insert_cpoint),
+			x ));
+	menu->append(*item);
 
 	if(!gradient_.empty())
 	{
-		menu->items().push_back(
-			Gtk::Menu_Helpers::MenuElem(
-				_("Remove Color Stop"),
-				sigc::bind(
-					sigc::mem_fun(*this,&studio::Widget_Gradient::remove_cpoint),
-					x
-				)
-			)
-		);
+		item = manage(new Gtk::MenuItem(_("Remove Color Stop")));
+		item->signal_activate().connect(
+			sigc::bind(
+				sigc::mem_fun(*this,&studio::Widget_Gradient::remove_cpoint),
+				x ));
+		menu->append(*item);
 	}
 
 	menu->popup(0,0);

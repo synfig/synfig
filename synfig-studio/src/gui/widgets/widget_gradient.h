@@ -38,7 +38,7 @@
 
 namespace studio {
 
-void render_gradient_to_window(const ::Cairo::RefPtr< ::Cairo::Context>& cr,const Gdk::Rectangle& ca,const synfig::Gradient &gradient);
+void render_gradient_to_window(const Cairo::RefPtr<Cairo::Context> &cr,const Gdk::Rectangle& ca,const synfig::Gradient &gradient);
 
 class Widget_Gradient : public Gtk::DrawingArea
 {
@@ -90,7 +90,7 @@ public:
 
 
 
-	bool redraw(GdkEventExpose*bleh=NULL);
+	bool on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
 	bool on_event(GdkEvent *event);
 }; // END of class BlackLevelSelector
