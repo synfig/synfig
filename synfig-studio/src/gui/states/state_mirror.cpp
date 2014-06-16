@@ -32,6 +32,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/radiobutton.h>
 
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>

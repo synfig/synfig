@@ -77,8 +77,8 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 
 	//const synfig::Vector focus_point(get_work_area()->get_focus_point());
 	//Warning: unused variable focus_point
-	int drawable_w,drawable_h;
-	drawable->get_size(drawable_w,drawable_h);
+	int drawable_w = drawable->get_width();
+	int drawable_h = drawable->get_height();
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 

@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm/main.h>
+
 #include "layertreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
@@ -42,7 +44,7 @@
 #include <synfigapp/action_system.h>
 #include <synfig/context.h>
 
-#include <gtk/gtkversion.h>
+#include <gtk/gtk.h>
 #include <ETL/clock>
 #include "general.h"
 

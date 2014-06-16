@@ -28,6 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtk/gtk.h>
+
+#include <glibmm/property.h>
+
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbufloader.h>

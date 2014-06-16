@@ -82,20 +82,6 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-#ifdef WIN32
-extern __declspec(dllimport) const guint gtk_major_version;
-extern __declspec(dllimport) const guint gtk_minor_version;
-extern __declspec(dllimport) const guint gtk_micro_version;
-//extern __declspec(dllimport) const guint gtk_binary_age;
-//extern __declspec(dllimport) const guint gtk_interface_age;
-#else
-extern const guint gtk_major_version;
-extern const guint gtk_minor_version;
-extern const guint gtk_micro_version;
-//extern const guint gtk_binary_age;
-//extern const guint gtk_interface_age;
-#endif
-
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */

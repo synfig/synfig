@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm/main.h>
+
 #include "trees/childrentreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>

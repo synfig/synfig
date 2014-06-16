@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm/markup.h>
+
 #include "docks/dock_layers.h"
 #include "app.h"
 

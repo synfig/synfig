@@ -30,6 +30,7 @@
 
 #include "docks/dockable.h"
 #include <gtkmm/treeview.h>
+#include <gtkmm/scrollbar.h>
 #include "instance.h"
 #include "docks/dock_canvasspecific.h"
 

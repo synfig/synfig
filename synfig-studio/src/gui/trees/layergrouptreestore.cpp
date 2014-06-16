@@ -42,7 +42,7 @@
 #include "docks/dockmanager.h"
 #include "docks/dockable.h"
 
-#include <gtk/gtkversion.h>
+#include <gtk/gtk.h>
 #include <ETL/clock>
 #include "general.h"
 

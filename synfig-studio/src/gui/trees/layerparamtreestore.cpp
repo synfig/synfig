@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <glibmm/main.h>
+
 #include "layerparamtreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>

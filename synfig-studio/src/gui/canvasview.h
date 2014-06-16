@@ -29,6 +29,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/dispatcher.h>
+
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/tooltip.h>

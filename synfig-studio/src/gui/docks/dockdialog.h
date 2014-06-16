@@ -32,7 +32,7 @@
 #include "dialogsettings.h"
 #include <synfig/string.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/tooltip.h>
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/handlebox.h>

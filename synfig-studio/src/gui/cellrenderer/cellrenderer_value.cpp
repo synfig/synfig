@@ -37,7 +37,6 @@
 #include <gtkmm/editable.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
-#include <gtk/gtkentry.h> /* see XXX below */
 
 #include "app.h"
 #include "widgets/widget_value.h"

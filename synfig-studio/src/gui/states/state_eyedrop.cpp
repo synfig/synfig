@@ -99,7 +99,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvas_view):
 	is_working(*canvas_view)
 {
 	synfig::info("Entered Eyedrop State");
-	canvas_view->work_area->set_cursor(Gdk::Cursor(Gdk::CROSSHAIR));
+	canvas_view->work_area->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
 	App::dock_toolbox->refresh();
 }
