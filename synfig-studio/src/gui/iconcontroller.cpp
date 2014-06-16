@@ -41,6 +41,8 @@
 #include <synfigapp/action.h>
 #include <synfig/interpolation.h>
 
+#include <gdkmm.h>
+
 #include "general.h"
 
 #endif
@@ -377,39 +379,9 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 	assert(0);
 	// \todo Do we still need it?
 
-	Glib::RefPtr<Gdk::Pixmap> pixmap;
-	pixmap=Gdk::Pixmap::create(window, 64, 64, 8);
-	pixmap->set_colormap(window->get_colormap());
-	//pixmap->set_colormap(Gdk::Colormap::create(pixmap->get_visual(),false));
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	pixbuf->render_to_drawable_alpha(
-		pixmap,
-		0,0,	// SOURCE X,Y
-		0,0,	// DEST X Y
-		-1,-1,	// WIDTH HEIGHT
-		Gdk::PIXBUF_ALPHA_FULL,	// (ignored)
-		64,		//int alpha_threshold,
-		Gdk::RGB_DITHER_MAX,		//RgbDither dither,
-		2,2	//int x_dither, int y_dither
-	);
-/*
-	pixmap->draw_pixbuf(
-		Glib::RefPtr<const Gdk::GC>(0),	// GC
-		pixbuf,
-		0, 0, // Source X,Y
-		0, 0, // Dest X,Y
-		-1, -1, // Width, Height
-		Gdk::RGB_DITHER_MAX, // Dither
-		0,0 // Dither X,Y
-	);
-*/
-
-	Gdk::Color FG("#000000");
-	Gdk::Color BG("#FF00FF");
-
-  	return Gdk::Cursor(pixmap, pixmap, FG, BG, 0, 0);
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf =
+		Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+  	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
 Gtk::StockID
