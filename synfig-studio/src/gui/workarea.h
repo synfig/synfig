@@ -39,7 +39,6 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/image.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/cursor.h>
@@ -181,8 +180,9 @@ private:
 	Gtk::DrawingArea *drawing_area;
 	Glib::RefPtr<Gtk::Adjustment> scrollx_adjustment;
 	Glib::RefPtr<Gtk::Adjustment> scrolly_adjustment;
-	Gtk::VRuler *vruler;
-	Gtk::HRuler *hruler;
+	// TODO: Implement Rulers
+	//Gtk::VRuler *vruler;
+	//Gtk::HRuler *hruler;
 	Gtk::Button *menubutton;
 	Gtk::Frame *drawing_frame;
 
@@ -412,7 +412,7 @@ public:
 	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~WorkArea();
 
-	void set_cursor(const Gdk::Cursor& x);
+	void set_cursor(const Glib::RefPtr<Gdk::Cursor> &x);
 	void set_cursor(Gdk::CursorType x);
 
 	const synfig::Point& get_cursor_pos()const { return curr_point; }

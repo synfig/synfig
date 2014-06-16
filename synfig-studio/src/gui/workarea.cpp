@@ -40,7 +40,6 @@
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/ruler.h>
 #include <gtkmm/arrow.h>
 #include <gtkmm/image.h>
 #include <gtkmm/scrollbar.h>
@@ -1051,7 +1050,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
   	drawing_area=manage(new class Gtk::DrawingArea());
 	drawing_area->show();
-	drawing_area->set_extension_events(Gdk::EXTENSION_EVENTS_ALL);
 
 	drawing_frame=manage(new Gtk::Frame);
 	drawing_frame->add(*drawing_area);
@@ -1078,23 +1076,24 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 
 
+	// TODO: Implement Rulers
 	// Create the vertical and horizontal rulers
-	vruler = manage(new class Gtk::VRuler());
-	hruler = manage(new class Gtk::HRuler());
-	vruler->set_metric(Gtk::PIXELS);
-	hruler->set_metric(Gtk::PIXELS);
-	Pango::FontDescription fd(hruler->get_style()->get_font());
-	fd.set_size(Pango::SCALE*8);
-	vruler->modify_font(fd);
-	hruler->modify_font(fd);
-	vruler->show();
-	hruler->show();
-	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
-	vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
-	hruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
-	vruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
+	//vruler = manage(new class Gtk::VRuler());
+	//hruler = manage(new class Gtk::HRuler());
+	//vruler->set_metric(Gtk::PIXELS);
+	//hruler->set_metric(Gtk::PIXELS);
+	//Pango::FontDescription fd(hruler->get_style()->get_font());
+	//fd.set_size(Pango::SCALE*8);
+	//vruler->modify_font(fd);
+	//hruler->modify_font(fd);
+	//vruler->show();
+	//hruler->show();
+	//attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
+	//vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
+	//hruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
+	//vruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
 
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
@@ -1133,7 +1132,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// ----------------- Attach signals
 
-	drawing_area->signal_expose_event().connect(sigc::mem_fun(*this, &WorkArea::refresh));
+	drawing_area->signal_draw().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh)));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
@@ -1178,8 +1177,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 		}
 	}
 
-	hruler->property_max_size()=double(10.0);
-	vruler->property_max_size()=double(10.0);
+	// TODO: Implement rulers
+	//hruler->property_max_size()=double(10.0);
+	//vruler->property_max_size()=double(10.0);
 
 	drawing_area->set_can_focus(true);
 }
@@ -1659,16 +1659,16 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	Vector nudge;
 	switch(event->keyval)
 	{
-		case GDK_Left:
+		case GDK_KEY_Left:
 			nudge=Vector(-pw,0);
 			break;
-		case GDK_Right:
+		case GDK_KEY_Right:
 			nudge=Vector(pw,0);
 			break;
-		case GDK_Up:
+		case GDK_KEY_Up:
 			nudge=Vector(0,-ph);
 			break;
-		case GDK_Down:
+		case GDK_KEY_Down:
 			nudge=Vector(0,ph);
 			break;
 		default:
@@ -2147,8 +2147,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if(dragging!=DRAG_WINDOW)
 		{	// Update those triangle things on the rulers
 			const synfig::Point point(mouse_pos);
-			hruler->property_position()=Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
-			vruler->property_position()=Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
+			// TODO: Implement Rulers
+			//hruler->property_position()=Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
+			//vruler->property_position()=Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
 		}
 
 		if(dragging == DRAG_WINDOW)
@@ -2486,7 +2487,8 @@ WorkArea::on_hruler_event(GdkEvent *event)
 
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
-			y -= 2*hruler->property_max_size();
+			// TODO: Implement Rulers
+			//y -= 2*hruler->property_max_size();
 
 			// place the recalculated y coordinate back on the event
 			if(event->button.axes)
@@ -2554,7 +2556,8 @@ WorkArea::on_vruler_event(GdkEvent *event)
 
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
-			x -= 2*vruler->property_max_size();
+			// TODO: Implement Rulers
+			//x -= 2*vruler->property_max_size();
 
 			// place the recalculated x coordinate back on the event
 			if(event->button.axes)
@@ -2622,10 +2625,11 @@ WorkArea::refresh_dimension_info()
 	window_tl[1]=rend_desc.get_tl()[1]-ph*y;
 	window_br[1]=rend_desc.get_br()[1]+ph*(drawing_area->get_height()-y-h);
 
-	hruler->property_lower()=Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	hruler->property_upper()=Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	vruler->property_lower()=Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
-	vruler->property_upper()=Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	// TODO: Implement Rulers
+	//hruler->property_lower()=Distance(window_tl[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	//hruler->property_upper()=Distance(window_br[0],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	//vruler->property_lower()=Distance(window_tl[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
+	//vruler->property_upper()=Distance(window_br[1],Distance::SYSTEM_UNITS).get(App::distance_system,rend_desc);
 
 	view_window_changed();
 }
@@ -2820,8 +2824,6 @@ WorkArea::refresh(GdkEventExpose*event)
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return false;
 
-	draw_area_window->clear();
-
 	//const synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
 
 	const synfig::Vector focus_point(get_focus_point());
@@ -2993,7 +2995,7 @@ studio::WorkArea::async_update_preview()
 	//WorkAreaProgress callback(this,get_canvas_view()->get_ui_interface().get());
 	//synfig::ProgressCallback *cb=&callback;
 
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 
 	/*
 	// If we are queued to render the scene at the next idle
@@ -3156,7 +3158,7 @@ again:
 		return false;
 	}
 
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
 	signal_rendering()();
@@ -3250,7 +3252,7 @@ studio::WorkArea::async_render_preview(synfig::Time time)
 	//tile_book.clear();
 
 	refreshes+=5;
-	if(!is_visible())return;
+	if(!get_visible())return;
 
 	get_canvas()->set_time(get_time());
 	get_canvas_view()->get_smach().process_event(EVENT_REFRESH_DUCKS);
@@ -3270,7 +3272,7 @@ studio::WorkArea::sync_render_preview(synfig::Time time)
 	cur_time=time;
 	//tile_book.clear();
 	refreshes+=5;
-	if(!is_visible())return false;
+	if(!get_visible())return false;
 	return sync_update_preview();
 }
 
@@ -3480,7 +3482,7 @@ studio::WorkArea::queue_draw_preview()
 }
 
 void
-studio::WorkArea::set_cursor(const Gdk::Cursor& x)
+studio::WorkArea::set_cursor(const Glib::RefPtr<Gdk::Cursor> &x)
 {
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
@@ -3495,7 +3497,7 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
 	
-	draw_area_window->set_cursor(Gdk::Cursor(x));
+	draw_area_window->set_cursor(Gdk::Cursor::create(x));
 }
 
 //#include "iconcontroller.h"
@@ -3512,7 +3514,7 @@ studio::WorkArea::reset_cursor()
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if(!draw_area_window) return;
 	
-	draw_area_window->set_cursor(Gdk::Cursor(Gdk::TOP_LEFT_ARROW));
+	draw_area_window->set_cursor(Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW));
 //	set_cursor(Gdk::TOP_LEFT_ARROW);
 }
 
