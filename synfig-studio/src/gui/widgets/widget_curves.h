@@ -69,7 +69,7 @@ public:
 	void set_time_adjustment(const Glib::RefPtr<Gtk::Adjustment>&);
 
 private:
-	bool redraw(GdkEventExpose*bleh);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
 
 }; // END of class Widget_Curves
