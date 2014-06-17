@@ -28,6 +28,7 @@
 # * Download Cygwin setup binary (http://www.cygwin.com/) and save it into C:\synfig-build\cygwin-dist\ directory.
 # * Run Cygwin setup and install with the default parameters.
 # * Download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory.
+# * (64-bit build only!) Download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory.
 # * Open Cygwin console (with administrator previlegies) and run the build script:
 # ** bash /cygdrive/c/synfig-build/synfig/autobuild/synfigstudio-cygwin-mingw-build.sh
 # * Installation bundle will be written to C:\synfig-build\
@@ -69,16 +70,16 @@ if [[ $ARCH == "32" ]]; then
     export TOOLCHAIN_HOST="i686-w64-mingw32"
     export TOOLCHAIN="mingw64-i686" # mingw64-i686 | mingw64-x86_64 | mingw
     export EXT_ARCH=i386
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
+    export SZIP_BINARY="7z"
 elif [[ $ARCH == "64" ]]; then
     export TOOLCHAIN_HOST="x86_64-w64-mingw32"
     export TOOLCHAIN="mingw64-x86_64"
     export EXT_ARCH=x86_64
-    #export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
+    export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin64-dist/setup-x86_64.exe"
+    export SZIP_BINARY="/cygdrive/c/synfig-build/7zip/7z.exe"
 fi
-export CYGWIN_SETUP="/cygdrive/c/synfig-build/cygwin-dist/setup-x86.exe"
 export MINGWPREFIX=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/
-
-
 
 set -e
 
@@ -92,6 +93,16 @@ export VERSION=`cat ${SRCPREFIX}/synfig-core/configure.ac |egrep "AC_INIT\(\[Syn
 pushd "${SRCPREFIX}" > /dev/null
 export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 popd > /dev/null
+
+
+if [ ! -e "$SZIP_BINARY" ]; then
+    echo "7zip not found! Please download and install 7zip (http://downloads.sourceforge.net/sevenzip/7z920-x64.msi). Install into C:\synfig-build\7zip\ directory."
+    exit 1
+fi
+if [ ! -e "$NSIS_BINARY" ]; then
+    echo "NSIS not found! Please download and install NSIS >=3.0 (http://nsis.sourceforge.net/). Install into C:\synfig-build\NSIS\ directory."
+    exit 1
+fi
 
 prepare_mingw_env()
 {
@@ -559,10 +570,10 @@ mkffmpeg()
         [ ! -d ffmpeg ] || rm -rf ffmpeg
         mkdir -p ffmpeg
         cd ffmpeg
-        7z x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
+        $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/include/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/include/
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-dev/lib/* /usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/
-        7z x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
+        $SZIP_BINARY x ../ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared.7z
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/ffmpeg.exe /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
         cp -rf ffmpeg-${FFMPEG_VERSION}-win${ARCH}-shared/bin/*.dll /usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin
         mkdir -p /usr/${TOOLCHAIN_HOST}/sys-root/mingw/share/ffmpeg/presets/ || true
