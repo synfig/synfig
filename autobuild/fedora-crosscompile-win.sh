@@ -32,7 +32,7 @@ export SRCPREFIX=$WORKSPACE/win$ARCH/source
 export CACHEDIR=$WORKSPACE/cache
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:/usr/${TOOLCHAIN_HOST}/sys-root/mingw/lib/pkgconfig/
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
-export PATH=/usr/${TOOLCHAIN_HOST}/bin:${PREFIX}/bin:$PATH
+export PATH=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/bin:${PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${PREFIX}/lib
 
 export CC=/usr/bin/${TOOLCHAIN_HOST}-gcc
