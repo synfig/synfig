@@ -53,12 +53,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_BoneChooser::Widget_BoneChooser():
-	bone_menu(NULL)
-{ }
-
-Widget_BoneChooser::~Widget_BoneChooser()
-{ }
+Widget_BoneChooser::Widget_BoneChooser() { }
+Widget_BoneChooser::~Widget_BoneChooser() { }
 
 void
 Widget_BoneChooser::set_parent_canvas(synfig::Canvas::Handle x)

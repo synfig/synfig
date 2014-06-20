@@ -1719,26 +1719,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
 	// Handle input stuff
-	if(
-		event->any.type==GDK_MOTION_NOTIFY ||
-		event->any.type==GDK_BUTTON_PRESS ||
-		event->any.type==GDK_2BUTTON_PRESS ||
-		event->any.type==GDK_3BUTTON_PRESS ||
-		event->any.type==GDK_BUTTON_RELEASE
-	)
+	if (event->any.type==GDK_MOTION_NOTIFY)
 	{
-		GdkDevice *device;
-		if(event->any.type==GDK_MOTION_NOTIFY)
-		{
-			device=event->motion.device;
-			modifier=Gdk::ModifierType(event->motion.state);
-		}
-		else
-		{
-			device=event->button.device;
-			modifier=Gdk::ModifierType(event->button.state);
-			drawing_area->grab_focus();
-		}
+		GdkDevice *device = event->motion.device;
+		modifier = Gdk::ModifierType(event->motion.state);
 
 		// Make sure we recognize the device
 		if(curr_input_device)
@@ -1750,7 +1734,58 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				signal_input_device_changed()(curr_input_device);
 			}
 		}
-		else if(device)
+		else
+		if(device)
+		{
+			curr_input_device=device;
+			signal_input_device_changed()(curr_input_device);
+		}
+
+		assert(curr_input_device);
+
+		// Calculate the position of the
+		// input device in canvas coordinates
+
+		double x = 0.0, y = 0.0, p = 0.0;
+
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
+			x = event->motion.x;
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
+			y = event->motion.y;
+
+		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
+		else
+			p = 1.0;
+
+		if(isnan(x) || isnan(y) || isnan(p))
+			return false;
+
+		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
+		pressure = (float)p;
+	}
+	else
+	if(	event->any.type==GDK_BUTTON_PRESS  ||
+		event->any.type==GDK_2BUTTON_PRESS ||
+		event->any.type==GDK_3BUTTON_PRESS ||
+		event->any.type==GDK_BUTTON_RELEASE )
+	{
+		GdkDevice *device = event->button.device;
+		modifier = Gdk::ModifierType(event->button.state);
+		drawing_area->grab_focus();
+
+		// Make sure we recognize the device
+		if(curr_input_device)
+		{
+			if(curr_input_device!=device)
+			{
+				assert(device);
+				curr_input_device=device;
+				signal_input_device_changed()(curr_input_device);
+			}
+		}
+		else
+		if(device)
 		{
 			curr_input_device=device;
 			signal_input_device_changed()(curr_input_device);
@@ -1761,50 +1796,31 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Calculate the position of the
 		// input device in canvas coordinates
 		// and the buttons
-		if(!event->button.axes)
-		{
-			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->button.x,event->button.y)));
-			button_pressed=event->button.button;
-			pressure=1.0f;
-			is_mouse=true;
-			if(isnan(event->button.x) || isnan(event->button.y))
-				return false;
-		}
+
+		double x = 0.0, y = 0.0, p = 0.0;
+
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
+			x = event->button.x;
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
+			y = event->button.y;
+
+		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
+			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04));
 		else
-		{
-			double x(event->button.axes[0]);
-			double y(event->button.axes[1]);
-			if(isnan(x) || isnan(y))
-				return false;
+			p = 1.0;
 
-			pressure=event->button.axes[2];
-			//synfig::info("pressure=%f",pressure);
-			pressure-=0.04f;
-			pressure/=1.0f-0.04f;
+		if(isnan(x) || isnan(y) || isnan(p))
+			return false;
 
-
-			assert(!isnan(pressure));
-
-			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)));
-
-			button_pressed=event->button.button;
-
-			if(button_pressed==1 && pressure<0 && (event->any.type!=GDK_BUTTON_RELEASE && event->any.type!=GDK_BUTTON_PRESS))
-				button_pressed=0;
-			if(pressure<0)
-				pressure=0;
-
-			//if(event->any.type==GDK_BUTTON_PRESS && button_pressed)
-			//	synfig::info("Button pressed on input device = %d",event->button.button);
-
-			//if(event->button.axes[2]>0.1)
-			//	button_pressed=1;
-			//else
-			//	button_pressed=0;
-		}
+		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x, y)));
+		pressure = (float)p;
+		button_pressed=event->button.button;
+		if(button_pressed==1 && pressure<=0.f && (event->any.type!=GDK_BUTTON_RELEASE && event->any.type!=GDK_BUTTON_PRESS))
+			button_pressed=0;
 	}
+	else
 	// GDK mouse scrolling events
-	else if(event->any.type==GDK_SCROLL)
+	if(event->any.type==GDK_SCROLL)
 	{
 		// GDK information needed to properly interpret mouse
 		// scrolling events are: scroll.state, scroll.x/scroll.y, and
@@ -1881,7 +1897,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
 				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
-				if ((event->motion.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
+				if ((event->button.state&GDK_SHIFT_MASK) && duck->get_type() == Duck::TYPE_TANGENT)
 				{
 					synfigapp::ValueDesc value_desc = duck->get_value_desc();
 
@@ -2471,15 +2487,15 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==false)
 		{
 			double y,x;
-			if(event->button.axes)
+			if(event->motion.axes)
 			{
-				x=(event->button.axes[0]);
-				y=(event->button.axes[1]);
+				x=(event->motion.axes[0]);
+				y=(event->motion.axes[1]);
 			}
 			else
 			{
-				x=event->button.x;
-				y=event->button.y;
+				x=event->motion.x;
+				y=event->motion.y;
 			}
 
 			if(isnan(y) || isnan(x))
@@ -2491,13 +2507,13 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			//y -= 2*hruler->property_max_size();
 
 			// place the recalculated y coordinate back on the event
-			if(event->button.axes)
+			if(event->motion.axes)
 			{
-				event->button.axes[1]=y;
+				event->motion.axes[1]=y;
 			}
 			else
 			{
-				event->button.y=y;
+				event->motion.y=y;
 			}
 			// call the on drawing area event to refresh eveything.
 			on_drawing_area_event(event);
@@ -2540,15 +2556,15 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
 			double y,x;
-			if(event->button.axes)
+			if(event->motion.axes)
 			{
-				x=(event->button.axes[0]);
-				y=(event->button.axes[1]);
+				x=(event->motion.axes[0]);
+				y=(event->motion.axes[1]);
 			}
 			else
 			{
-				x=event->button.x;
-				y=event->button.y;
+				x=event->motion.x;
+				y=event->motion.y;
 			}
 
 			if(isnan(y) || isnan(x))
@@ -2560,13 +2576,13 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			//x -= 2*vruler->property_max_size();
 
 			// place the recalculated x coordinate back on the event
-			if(event->button.axes)
+			if(event->motion.axes)
 			{
-				event->button.axes[0]=x;
+				event->motion.axes[0]=x;
 			}
 			else
 			{
-				event->button.x=x;
+				event->motion.x=x;
 			}
 			// call the on drawing area event to refresh everything.
 			on_drawing_area_event(event);
