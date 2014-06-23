@@ -83,6 +83,7 @@
 #include "canvasview.h"
 #include "dialogs/dialog_setup.h"
 #include "dialogs/dialog_gradient.h"
+#include "dialogs/dialog_input.h"
 #include "dialogs/dialog_color.h"
 #include "mainwindow.h"
 #include "docks/dock_toolbox.h"
@@ -262,8 +263,7 @@ studio::Dialog_Gradient* studio::App::dialog_gradient;
 
 studio::Dialog_Color* studio::App::dialog_color;
 
-// TODO: implement InputDialog
-//Gtk::InputDialog* studio::App::dialog_input;
+studio::Dialog_Input* studio::App::dialog_input;
 
 studio::Dialog_ToolOptions* studio::App::dialog_tool_options;
 
@@ -1543,10 +1543,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_setup=new studio::Dialog_Setup(*App::main_window);
 
 		studio_init_cb.task(_("Init Input Dialog..."));
-		// TODO: Implement ImputDialog
-		//dialog_input=new Gtk::InputDialog();
-		//dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
-		//dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
+		dialog_input=new studio::Dialog_Input(*App::main_window);
+		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 		
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
@@ -1737,8 +1735,7 @@ App::~App()
 
 	delete dialog_color;
 
-	// TODO: implement InputDialog
-	//delete dialog_input;
+	delete dialog_input;
 
 	delete dock_manager;
 

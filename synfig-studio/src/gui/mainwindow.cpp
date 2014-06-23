@@ -35,6 +35,7 @@
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
 #include "docks/dockdroparea.h"
+#include "dialogs/dialog_input.h"
 
 #include <synfigapp/main.h>
 
@@ -150,8 +151,7 @@ MainWindow::save_all()
 void
 MainWindow::show_dialog_input()
 {
-	// TODO: implement DialogInput
-	//App::dialog_input->present();
+	App::dialog_input->present();
 }
 
 void
