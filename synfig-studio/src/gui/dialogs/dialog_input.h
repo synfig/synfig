@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
+#include "dialogsettings.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,9 +42,12 @@ class Dialog_Input : public Gtk::Dialog
 {
 private:
 	struct DeviceOptions;
+	DialogSettings dialog_settings;
 
 	sigc::signal<void> signal_apply_;
 	DeviceOptions *options;
+
+	Gtk::ScrolledWindow *scrolled_window;
 
 	void take_options();
 	void create_widgets();
@@ -59,7 +63,6 @@ public:
 	sigc::signal<void>& signal_apply() { return signal_apply_; }
 
 protected:
-	virtual void on_show();
 	virtual void on_response(int id);
 };
 

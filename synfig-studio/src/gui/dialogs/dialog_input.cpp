@@ -37,6 +37,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/separator.h>
 
 #include "dialog_input.h"
 #include <synfigapp/main.h>
@@ -108,10 +109,14 @@ struct Dialog_Input::DeviceOptions {
 
 
 Dialog_Input::Dialog_Input(Gtk::Window& parent):
-	Dialog(_("Input Dialog"), parent)
+	Gtk::Dialog(_("Input Dialog"), parent),
+	dialog_settings(this, "input"),
+	options(new DeviceOptions()),
+	scrolled_window(NULL)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	options = new DeviceOptions();
+	add_button(_("OK"), Gtk::RESPONSE_OK);
+	add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 	reset();
 }
 
@@ -120,14 +125,10 @@ Dialog_Input::~Dialog_Input()
 	delete options;
 }
 
-void Dialog_Input::on_show()
-{
-	reset();
-}
-
 void Dialog_Input::on_response(int id)
 {
-	if (id == Gtk::RESPONSE_OK) apply();
+	if (id == Gtk::RESPONSE_OK) apply_and_hide(); else
+	if (id == Gtk::RESPONSE_CANCEL) hide();
 }
 
 void Dialog_Input::take_options()
@@ -153,8 +154,8 @@ void Dialog_Input::take_options()
 		{
 			GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
 
-			//if (!synfigapp::Main::find_input_device(gdk_device_get_name(gdk_device)))
-			//	continue;
+			if (!synfigapp::Main::find_input_device(gdk_device_get_name(gdk_device)))
+				continue;
 
 			options->devices.push_back(DeviceOptions::Device());
 			DeviceOptions::Device &device_options = options->devices.back();
@@ -182,15 +183,17 @@ void Dialog_Input::take_options()
 
 void Dialog_Input::create_widgets()
 {
-	std::vector<Gtk::Widget*> children = get_content_area()->get_children();
-	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
-		get_content_area()->remove(**i);
+	if (scrolled_window != NULL)
+	{
+		get_content_area()->remove(*scrolled_window);
+		scrolled_window = NULL;
+	}
 
 	// Devices
 	if (!options->devices.empty())
 	{
-		Gtk::ScrolledWindow *scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
-		Gtk::Table *table = Gtk::manage(new Gtk::Table((int)options->devices.size(), 2));
+		scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
+		Gtk::Table *table = Gtk::manage(new Gtk::Table((int)options->devices.size() + 1, 2));
 
 		for(DeviceOptions::DeviceList::iterator i = options->devices.begin(); i != options->devices.end(); ++i)
 		{
@@ -198,7 +201,7 @@ void Dialog_Input::create_widgets()
 
 			Gtk::Label *label = Gtk::manage(new Gtk::Label(i->name));
 			label->show();
-			table->attach(*label, 0, 1, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+			table->attach(*label, 0, 1, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 
 			Gtk::ComboBoxText *comboboxtext = Gtk::manage(new Gtk::ComboBoxText());
 			comboboxtext->append(_("Disabled"));
@@ -210,17 +213,22 @@ void Dialog_Input::create_widgets()
 					sigc::mem_fun(options, &DeviceOptions::on_mode_comboboxtext_changed),
 					comboboxtext, &*i ));
 			comboboxtext->show();
-			table->attach(*comboboxtext, 1, 2, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+			table->attach(*comboboxtext, 1, 2, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 		}
 
+		table->attach( *manage(new class Gtk::HSeparator()),
+					   0,
+					   2,
+					   (int)options->devices.size(),
+					   (int)options->devices.size()+1,
+					   Gtk::EXPAND | Gtk::FILL,
+					   Gtk::EXPAND | Gtk::FILL );
 		table->show();
+
 		scrolled_window->add(*table);
 		scrolled_window->show();
 		get_content_area()->pack_end(*scrolled_window);
 	}
-
-	add_button(_("OK"), Gtk::RESPONSE_OK);
-	add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 }
 
 void Dialog_Input::reset()

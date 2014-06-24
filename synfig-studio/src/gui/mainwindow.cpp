@@ -151,6 +151,7 @@ MainWindow::save_all()
 void
 MainWindow::show_dialog_input()
 {
+	App::dialog_input->reset();
 	App::dialog_input->present();
 }
 
