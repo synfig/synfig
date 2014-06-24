@@ -64,14 +64,14 @@ class Widget_Defaults : public Gtk::VBox
 	Widget_Gradient	*_widget_gradient;
 	Gtk::Alignment	*widget_gradient;
 
-	Gtk::HBox 	*widget_colors_gradient;
+	Gtk::VBox 	*widget_colors_gradient;
 
 	Widget_Brush 	*_widget_brush;
 	Gtk::Alignment 	*widget_brush;
 
 	Widget_Distance *widget_bline_width;
 
-	Gtk::HBox 	*widget_brush_bline_width;
+	Gtk::VBox 	*widget_brush_bline_width;
 
 	//Widget_Enum	*widget_blend_method;
 

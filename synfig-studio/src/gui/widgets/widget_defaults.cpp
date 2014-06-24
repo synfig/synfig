@@ -244,11 +244,11 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget brush
 	_widget_brush = manage(new Widget_Brush());
-	_widget_brush->set_size_request(26, 26); // mini size of brush preview widget
+	_widget_brush->set_size_request(48, 48);
 	_widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	// fixed brush widget size
-	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER, 0.0, 0.0));
+	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
 	widget_brush->add(*_widget_brush);
 
 
@@ -257,7 +257,8 @@ Widget_Defaults::Widget_Defaults()
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_range(0,10000000);
-	widget_bline_width->set_size_request(48, -1); //mini width of bline width widget, this value also affects mini width of whole default_widgets.
+	widget_bline_width->set_width_chars(4);
+	//widget_bline_width->set_size_request(48, -1); //mini width of bline width widget, this value also affects mini width of whole default_widgets.
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_bline_width_changed));
 	widget_bline_width->set_tooltip_text(_("Brush Size"));
 
@@ -301,6 +302,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
+	widget_interpolation->set_popup_fixed_width(false);
 
 	// widget opacity
 	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
@@ -325,14 +327,14 @@ Widget_Defaults::Widget_Defaults()
 	{
 		// pack colors and gradient widgets
 		{
-			widget_colors_gradient = manage(new Gtk::HBox(false, 0));
+			widget_colors_gradient = manage(new Gtk::VBox(false, 0));
 			widget_colors_gradient->pack_start(*widget_colors);
 			widget_colors_gradient->pack_start(*widget_gradient);
 		}
 
 		// pack brush and bline width widgets
 		{
-			widget_brush_bline_width = manage(new Gtk::HBox(false, 0));
+			widget_brush_bline_width = manage(new Gtk::VBox(false, 0));
 			widget_brush_bline_width->pack_start(*widget_brush, Gtk::PACK_SHRINK, 2);
 			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
@@ -340,8 +342,8 @@ Widget_Defaults::Widget_Defaults()
 		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 4);
+		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
