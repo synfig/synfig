@@ -303,12 +303,12 @@ Widget_Defaults::Widget_Defaults()
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 
 	// widget opacity
-	widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
-	widget_opacity->set_digits(2);
-	widget_opacity->set_value_pos(Gtk::POS_LEFT);
-	widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));
-	widget_opacity->set_tooltip_text(_("Default Opacity"));
-	widget_opacity->set_value_pos(Gtk::POS_LEFT);
+	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
+	//widget_opacity->set_digits(2);
+	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
+	//widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));
+	//widget_opacity->set_tooltip_text(_("Default Opacity"));
+	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 
 	// widget gradient
 	_widget_gradient = manage(new Widget_Gradient());
@@ -339,21 +339,21 @@ Widget_Defaults::Widget_Defaults()
 
 		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
 		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
+		//pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 4);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
 		//widget_blend_method->show();
-		widget_opacity->show();
+		//widget_opacity->show();
 		widget_interpolation->show();
 		widget_brush_bline_width->show_all();
 	}
 
 
 	// Signals
-	synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
+	//synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
 	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
@@ -365,7 +365,7 @@ Widget_Defaults::Widget_Defaults()
 	fill_color_refresh();
 	gradient_refresh();
 	//blend_method_refresh();
-	opacity_refresh();
+	//opacity_refresh();
 	interpolation_refresh();
 }
 
@@ -411,6 +411,7 @@ Widget_Defaults::interpolation_refresh()
 	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
 }
 
+/*
 void
 Widget_Defaults::opacity_refresh()
 {
@@ -423,7 +424,6 @@ Widget_Defaults::on_opacity_changed()
 	synfigapp::Main::set_opacity(widget_opacity->get_value());
 }
 
-/*
 void
 Widget_Defaults::on_blend_method_changed()
 {

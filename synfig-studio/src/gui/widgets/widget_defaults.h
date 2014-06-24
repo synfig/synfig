@@ -77,7 +77,7 @@ class Widget_Defaults : public Gtk::VBox
 
 	Widget_Enum	*widget_interpolation;
 
-	Gtk::HScale 	*widget_opacity;
+	//Gtk::HScale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
@@ -96,8 +96,8 @@ class Widget_Defaults : public Gtk::VBox
 	//void blend_method_refresh();
 	//void on_blend_method_changed();
 
-	void opacity_refresh();
-	void on_opacity_changed();
+	//void opacity_refresh();
+	//void on_opacity_changed();
 
 public:
 

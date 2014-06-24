@@ -84,9 +84,9 @@ public:
 	static synfig::Color::BlendMethod get_blend_method();
 	static const synfig::Real& get_opacity();
 	//static void set_blend_method(synfig::Color::BlendMethod);
-	static void set_opacity(synfig::Real);
+	//static void set_opacity(synfig::Real);
 	//static sigc::signal<void>& signal_blend_method_changed();
-	static sigc::signal<void>& signal_opacity_changed();
+	//static sigc::signal<void>& signal_opacity_changed();
 	static sigc::signal<void>& signal_interpolation_changed();
 
 	// Input Device stuff
