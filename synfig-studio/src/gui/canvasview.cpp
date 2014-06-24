@@ -1194,8 +1194,8 @@ CanvasView::create_status_bar()
 //	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	statusbartable->attach(*stopbutton, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	statusbar->show();
