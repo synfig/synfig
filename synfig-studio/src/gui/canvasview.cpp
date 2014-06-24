@@ -921,6 +921,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	App::dock_manager->register_dockable(*this);
 	App::main_window->main_dock_book().add(*this);
 	present();
+	App::set_selected_canvas_view(this);
 }
 
 CanvasView::~CanvasView()
