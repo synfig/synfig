@@ -265,20 +265,22 @@ Widget_Defaults::Widget_Defaults()
 	// widget blend method
 
 	/*
-	* the blend method widget affects the width of whole default_widgets widget,
+	* NOTE1: the blend method widget affects the width of whole default_widgets widget,
 	* since it requires mini width by it lengest item, "By Layer Default". If it
 	* was removed from toolbox as planned, then toolbutton in toolbox will have
 	* proper column spacing by default. I will let it as it is, because the toolbox
 	* still need more love.
+	* 
+	* NOTE2: Commented out as of 2014-06-24 -- KD.
 	*/
 
-	widget_blend_method = manage(new Widget_Enum());
-	widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
-	widget_blend_method->set_param_desc(
-		ParamDesc((int)Color::BLEND_COMPOSITE,"blend_method")
-		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
-	);
-	widget_blend_method->set_tooltip_text(_("Default Blend Method"));
+	//widget_blend_method = manage(new Widget_Enum());
+	//widget_blend_method->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
+	//widget_blend_method->set_param_desc(
+	//	ParamDesc((int)Color::BLEND_COMPOSITE,"blend_method")
+	//	.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
+	//);
+	//widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	// widget interpolation
 	widget_interpolation = manage(new Widget_Enum());
@@ -336,14 +338,14 @@ Widget_Defaults::Widget_Defaults()
 		}
 
 		pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);
-		pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
+		//pack_start(*widget_blend_method, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_opacity, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_interpolation, Gtk::PACK_EXPAND_PADDING, 4);
 		pack_start(*widget_brush_bline_width, Gtk::PACK_EXPAND_PADDING, 4);
 
 		// show all widgets
 		widget_colors_gradient->show_all();
-		widget_blend_method->show();
+		//widget_blend_method->show();
 		widget_opacity->show();
 		widget_interpolation->show();
 		widget_brush_bline_width->show_all();
@@ -356,13 +358,13 @@ Widget_Defaults::Widget_Defaults()
 	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
-	synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
+	//synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
 	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::interpolation_refresh));
 
 	otln_color_refresh();
 	fill_color_refresh();
 	gradient_refresh();
-	blend_method_refresh();
+	//blend_method_refresh();
 	opacity_refresh();
 	interpolation_refresh();
 }
@@ -395,11 +397,13 @@ Widget_Defaults::bline_width_refresh()
 	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
 }
 
+/*
 void
 Widget_Defaults::blend_method_refresh()
 {
 	widget_blend_method->set_value(synfigapp::Main::get_blend_method());
 }
+*/
 
 void
 Widget_Defaults::interpolation_refresh()
@@ -419,11 +423,13 @@ Widget_Defaults::on_opacity_changed()
 	synfigapp::Main::set_opacity(widget_opacity->get_value());
 }
 
+/*
 void
 Widget_Defaults::on_blend_method_changed()
 {
 	synfigapp::Main::set_blend_method(Color::BlendMethod(widget_blend_method->get_value()));
 }
+*/
 
 void
 Widget_Defaults::on_interpolation_changed()

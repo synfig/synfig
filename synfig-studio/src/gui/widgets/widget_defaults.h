@@ -73,7 +73,7 @@ class Widget_Defaults : public Gtk::VBox
 
 	Gtk::HBox 	*widget_brush_bline_width;
 
-	Widget_Enum	*widget_blend_method;
+	//Widget_Enum	*widget_blend_method;
 
 	Widget_Enum	*widget_interpolation;
 
@@ -93,8 +93,8 @@ class Widget_Defaults : public Gtk::VBox
 	void on_gradient_clicked();
 	void on_interpolation_changed();
 
-	void blend_method_refresh();
-	void on_blend_method_changed();
+	//void blend_method_refresh();
+	//void on_blend_method_changed();
 
 	void opacity_refresh();
 	void on_opacity_changed();

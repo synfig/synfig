@@ -79,7 +79,7 @@ static bool gradient_default_colors_;
 
 static synfig::Distance bline_width_;
 
-static Color::BlendMethod blend_method_;
+//static Color::BlendMethod blend_method_;
 static Real opacity_;
 
 static synfigapp::InputDevice::Handle selected_input_device_;
@@ -89,7 +89,7 @@ trivial<sigc::signal<void> > signal_outline_color_changed_;
 trivial<sigc::signal<void> > signal_fill_color_changed_;
 trivial<sigc::signal<void> > signal_gradient_changed_;
 trivial<sigc::signal<void> > signal_bline_width_changed_;
-trivial<sigc::signal<void> > signal_blend_method_changed_;
+//trivial<sigc::signal<void> > signal_blend_method_changed_;
 trivial<sigc::signal<void> > signal_opacity_changed_;
 trivial<sigc::signal<void> > signal_interpolation_changed_;
 
@@ -132,7 +132,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	signal_fill_color_changed_.construct();
 	signal_gradient_changed_.construct();
 	signal_opacity_changed_.construct();
-	signal_blend_method_changed_.construct();
+	//signal_blend_method_changed_.construct();
 	signal_interpolation_changed_.construct();
 
 	set_outline_color(Color::black());
@@ -140,7 +140,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	set_gradient_default_colors();
 	set_bline_width(Distance(1,Distance::SYSTEM_POINTS));
 	set_opacity(1.0);
-	set_blend_method(Color::BLEND_BY_LAYER);
+	//set_blend_method(Color::BLEND_BY_LAYER);
 }
 
 synfigapp::Main::~Main()
@@ -163,7 +163,7 @@ synfigapp::Main::~Main()
 	signal_gradient_changed_.destruct();
 
 	signal_opacity_changed_.destruct();
-	signal_blend_method_changed_.destruct();
+	//signal_blend_method_changed_.destruct();
 	signal_interpolation_changed_.destruct();
 }
 
@@ -197,11 +197,13 @@ synfigapp::Main::signal_bline_width_changed()
 	return signal_bline_width_changed_;
 }
 
+/*
 sigc::signal<void>&
 synfigapp::Main::signal_blend_method_changed()
 {
 	return signal_blend_method_changed_;
 }
+*/
 
 sigc::signal<void>&
 synfigapp::Main::signal_opacity_changed()
@@ -242,7 +244,7 @@ synfigapp::Main::get_opacity()
 synfig::Color::BlendMethod
 synfigapp::Main::get_blend_method()
 {
-	return blend_method_;
+	return Color::BLEND_BY_LAYER;
 }
 
 void
@@ -362,6 +364,7 @@ synfigapp::Main::set_opacity(synfig::Real x)
 	signal_opacity_changed()();
 }
 
+/*
 void
 synfigapp::Main::set_blend_method(synfig::Color::BlendMethod x)
 {
@@ -370,7 +373,7 @@ synfigapp::Main::set_blend_method(synfig::Color::BlendMethod x)
 		selected_input_device_->set_blend_method(x);
 	signal_blend_method_changed()();
 }
-
+*/
 
 InputDevice::Handle
 synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type type)
@@ -413,7 +416,7 @@ synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 	set_outline_color(input_device->get_outline_color());
 	set_fill_color(input_device->get_fill_color());
 	set_opacity(input_device->get_opacity());
-	set_blend_method(input_device->get_blend_method());
+	//set_blend_method(input_device->get_blend_method());
 
 	return true;
 }
