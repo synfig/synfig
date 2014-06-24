@@ -82,13 +82,27 @@ Dock_Toolbox::Dock_Toolbox():
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
-	tool_table = manage(new class Gtk::Table());
+	tool_item_group = manage(new class Gtk::ToolItemGroup());
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+
+	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
+	palette->add(*tool_item_group);
+	palette->set_expand(*tool_item_group);
+	palette->set_exclusive(*tool_item_group, true);
+	palette->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	palette->show();
+
+	Gtk::ScrolledWindow *scrolled_window = manage(new Gtk::ScrolledWindow());
+	scrolled_window->add(*palette);
+	scrolled_window->show();
+
 	separator = manage(new class Gtk::HSeparator());
+
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
 	// pack tools and default widgets
 	tool_box = manage(new class Gtk::VBox(false, 2));
-	tool_box->pack_start(*tool_table, Gtk::PACK_SHRINK, 3);
+	tool_box->pack_start(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 3);
 	tool_box->pack_start(*widget_defaults, Gtk::PACK_SHRINK, 3);
 	tool_box->set_border_width(2);
@@ -128,7 +142,7 @@ Dock_Toolbox::~Dock_Toolbox()
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
-	std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
+	std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
 
 	changing_state_=true;
 
@@ -172,7 +186,7 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 
 		if(state_button_map.count(statename))
 		{
-			state_button_map[statename]->clicked();
+			state_button_map[statename]->activate();
 		}
 		else
 		{
@@ -222,7 +236,11 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
 
-	_tool_button = manage(new class Gtk::ToggleButton());
+	Gtk::ToggleToolButton *tool_button = manage(new class Gtk::ToggleToolButton(
+		*manage(new Gtk::Image(
+			stock_item.get_stock_id(),
+			Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+		stock_item.get_label() ));
 
 	Gtk::AccelKey key;
 	//Have a look to global fonction init_ui_manager() from app.cpp for "accel_path" definition
@@ -230,25 +248,15 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	//Gets the, is exist, accelerator representation for labels
 	Glib::ustring accel_path = !key.is_null() ? key.get_abbrev () :"";
 	
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	icon=manage(new Gtk::Image(stock_item.get_stock_id(), iconsize));
-	_tool_button->add(*icon);
-	_tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
-	_tool_button->set_relief(Gtk::RELIEF_NONE);
+	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	tool_button->show();
 
-	// use Gtk::Alignment widget to have fixed size (width and height) of tool button
-	tool_button = manage(new class Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	tool_button->add(*_tool_button);
-	tool_button->show_all();
+	tool_item_group->insert(*tool_button);
+	tool_item_group->show_all();
 
-	int row=state_button_map.size()/5;
-	int col=state_button_map.size()%5;
+	state_button_map[name] = tool_button;
 
-	tool_table->attach(*tool_button, col, col+1, row, row+1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND, 0, 0);
-
-	state_button_map[name] = _tool_button;
-
-	_tool_button->signal_clicked().connect(
+	tool_button->signal_clicked().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
 			state
@@ -269,14 +277,14 @@ Dock_Toolbox::update_tools()
 	// so that they are only clickable when they should be.
 	if(instance && canvas_view)
 	{
-		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
+		std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
 
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(true);
 	}
 	else
 	{
-		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
+		std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
 
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(false);

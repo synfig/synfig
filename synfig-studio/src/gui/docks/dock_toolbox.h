@@ -31,8 +31,12 @@
 
 #include "docks/dockable.h"
 
+#include <gtkmm/toolbar.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/togglebutton.h>
+#include <gtkmm/toggletoolbutton.h>
+#include <gtkmm/toolpalette.h>
+#include <gtkmm/toolitemgroup.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/table.h>
@@ -61,13 +65,11 @@ class Dock_Toolbox : public Dockable
 {
 	friend class studio::StateManager;
 
-	Gtk::Alignment *tool_button;
-	Gtk::ToggleButton *_tool_button;
-	Gtk::Table *tool_table;
+	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::HSeparator *separator;
 	Gtk::VBox *tool_box;
 
-	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;
+	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;
 
 	bool changing_state_;
 
